@@ -1,0 +1,51 @@
+{
+  "name": "@notifi-network/notifi-react-hooks",
+  "version": "0.1.0",
+  "description": "React hooks provided as a convenience wrapper around notifi.network platform functionality",
+  "author": "Juni Kim <73hKrn@gmail.com>",
+  "homepage": "https://github.com/nimesh-irisio/notifi-sdk#readme",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nimesh-irisio/notifi-sdk.git"
+  },
+  "scripts": {
+    "build": "npm run clean && npm run compile",
+    "clean": "rimraf ./dist",
+    "compile": "tsc -p tsconfig.build.json",
+    "format": "prettier --config .prettierrc **/*.ts --write",
+    "lint": "eslint ."
+  },
+  "bugs": {
+    "url": "https://github.com/nimesh-irisio/notifi-sdk/issues"
+  },
+  "devDependencies": {
+    "@notifi-network/notifi-core": "^0.1.0",
+    "@types/react": "^17.0.39",
+    "@typescript-eslint/eslint-plugin": "^5.12.0",
+    "@typescript-eslint/parser": "^5.12.0",
+    "eslint": "^8.9.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "prettier": "^2.5.1",
+    "rimraf": "^3.0.2"
+  },
+  "dependencies": {
+    "@notifi-network/notifi-axios-adapter": "^0.1.0",
+    "axios": "^0.26.0",
+    "typescript": "^4.5.5",
+    "use-local-storage-state": "^15.0.0"
+  },
+  "peerDependencies": {
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "declarationMap": true,
+    "incremental": true,
+    "module": "commonjs",
+    "target": "es2017",
+    "outDir": "dist",
+    "inlineSourceMap": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "strict": true,
+    "noFallthroughCasesInSwitch": true,
+    "lib": ["es2017", "DOM"],
+    "typeRoots": ["node_modules/@types"]
+  },
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}
