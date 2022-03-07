@@ -1,6 +1,6 @@
 import {
-  LogInFromDaoInput,
-  LogInFromDaoResult
+  LogInFromDappInput,
+  LogInFromDappResult
 } from '@notifi-network/notifi-core';
 import collectDependencies from '../utils/collectDependencies';
 import { makeRequest } from '../utils/axiosRequest';
@@ -9,15 +9,15 @@ import { userFragment, userFragmentDependencies } from '../fragments';
 const DEPENDENCIES = [...userFragmentDependencies, userFragment];
 
 const MUTATION = `
-mutation logInFromDao(
+mutation logInFromDapp(
   $walletPublicKey: String!
-  $daoAddress: String!
+  $dappAddress: String!
   $timestamp: Long!
   $signature: String!
 ) {
-  logInFromDao(daoLogInInput: {
+  logInFromDapp(dappLogInInput: {
     walletPublicKey: $walletPublicKey
-    daoAddress: $daoAddress
+    dappAddress: $dappAddress
     timestamp: $timestamp
   }, signature: $signature) {
     ...userFragment
@@ -25,9 +25,9 @@ mutation logInFromDao(
 }
 `.trim();
 
-const logInFromDaoImpl = makeRequest<LogInFromDaoInput, LogInFromDaoResult>(
+const logInFromDaoImpl = makeRequest<LogInFromDappInput, LogInFromDappResult>(
   collectDependencies(...DEPENDENCIES, MUTATION),
-  'logInFromDao'
+  'logInFromDapp'
 );
 
 export default logInFromDaoImpl;

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef } from 'react';
 import useLocalStorageState from 'use-local-storage-state';
 
 const useNotifiJwt = (
-  daoAddress: string,
+  dappAddress: string,
   walletPublicKey: string,
   jwtPrefix: string
 ): Readonly<{
@@ -10,7 +10,7 @@ const useNotifiJwt = (
   setJwt: (jwt: string | null) => void;
 }> => {
   const [storage, setStorage] = useLocalStorageState<string | null>(
-    `${jwtPrefix}:${daoAddress}:${walletPublicKey}`,
+    `${jwtPrefix}:${dappAddress}:${walletPublicKey}`,
     { defaultValue: null }
   );
 

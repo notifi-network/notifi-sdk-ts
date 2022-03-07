@@ -10,5 +10,5 @@ export * from './GetSmsTargets';
 export * from './GetSourceGroups';
 export * from './GetTargetGroups';
 export * from './GetTelegramTargets';
-export * from './LogInFromDao';
+export * from './LogInFromDapp';
 export * from './UpdateTargetGroup';

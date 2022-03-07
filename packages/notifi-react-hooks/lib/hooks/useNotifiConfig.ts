@@ -13,11 +13,11 @@ const useNotifiConfig = (env = BlockchainEnvironment.MainNetBeta) => {
       storagePrefix = 'notifi-jwt';
       break;
     case BlockchainEnvironment.TestNet:
-      gqlUrl = 'https://stg-api.notifi.network/gql';
+      gqlUrl = 'https://api.stg.notifi.network/gql';
       storagePrefix = 'notifi-jwt:stg';
       break;
     case BlockchainEnvironment.DevNet:
-      gqlUrl = 'https://dev-api.notifi.network/gql';
+      gqlUrl = 'https://api.dev.notifi.network/gql';
       storagePrefix = 'notifi-jwt:dev';
       break;
     default:

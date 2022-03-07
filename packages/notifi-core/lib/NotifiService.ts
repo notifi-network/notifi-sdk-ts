@@ -12,7 +12,7 @@ export type NotifiService = Operations.CreateAlertService &
   Operations.GetSourceGroupsService &
   Operations.GetTargetGroupsService &
   Operations.GetTelegramTargetsService &
-  Operations.LogInFromDaoService &
+  Operations.LogInFromDappService &
   Operations.UpdateTargetGroupService &
   Readonly<{
     setJwt: (jwt: string | null) => void;
