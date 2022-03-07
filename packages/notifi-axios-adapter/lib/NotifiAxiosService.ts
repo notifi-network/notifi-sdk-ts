@@ -8,7 +8,7 @@ import createTelegramTargetImpl from './mutations/createTelegramTargetImpl';
 import getFiltersImpl from './queries/getFiltersImpl';
 import getSourceGroupsImpl from './queries/getSourceGroupsImpl';
 import getTargetGroupsImpl from './queries/getTargetGroupsImpl';
-import logInFromDaoImpl from './mutations/logInFromDaoImpl';
+import logInFromDappImpl from './mutations/logInFromDappImpl';
 import updateTargetGroupImpl from './mutations/updateTargetGroupImpl';
 import getEmailTargetsImpl from './queries/getEmailTargetsImpl';
 import getSmsTargetsImpl from './queries/getSmsTargetsImpl';
@@ -33,7 +33,7 @@ export class NotifiAxiosService implements NotifiService {
   getSourceGroups: NotifiService['getSourceGroups'];
   getTargetGroups: NotifiService['getTargetGroups'];
   getTelegramTargets: NotifiService['getTelegramTargets'];
-  logInFromDao: NotifiService['logInFromDao'];
+  logInFromDapp: NotifiService['logInFromDapp'];
   updateTargetGroup: NotifiService['updateTargetGroup'];
 
   private jwtContainer;
@@ -70,7 +70,7 @@ export class NotifiAxiosService implements NotifiService {
     this.getSourceGroups = getSourceGroupsImpl.bind(null, a);
     this.getTargetGroups = getTargetGroupsImpl.bind(null, a);
     this.getTelegramTargets = getTelegramTargetsImpl.bind(null, a);
-    this.logInFromDao = logInFromDaoImpl.bind(null, a);
+    this.logInFromDapp = logInFromDappImpl.bind(null, a);
     this.updateTargetGroup = updateTargetGroupImpl.bind(null, a);
   }
 

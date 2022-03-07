@@ -2,7 +2,10 @@ export const userFragment = `
 fragment userFragment on User {
   email
   emailConfirmed
-  token
+  authorization {
+    token
+    expiry
+  }
 }
 `.trim();
 

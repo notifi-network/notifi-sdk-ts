@@ -18,7 +18,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import useNotifiJwt from './useNotifiJwt';
 
 export type NotifiClientConfig = Readonly<{
-  daoAddress: string;
+  dappAddress: string;
   walletPublicKey: string;
   env?: BlockchainEnvironment;
 }>;
@@ -154,10 +154,10 @@ const useNotifiClient = (
     loading: boolean;
     isAuthenticated: () => boolean;
   }> => {
-  const { env, daoAddress, walletPublicKey } = config;
+  const { env, dappAddress, walletPublicKey } = config;
   const notifiConfig = useNotifiConfig(env);
   const { jwtRef, setJwt } = useNotifiJwt(
-    daoAddress,
+    dappAddress,
     walletPublicKey,
     notifiConfig.storagePrefix
   );
@@ -219,21 +219,22 @@ const useNotifiClient = (
       setLoading(true);
       try {
         const messageBuffer = new TextEncoder().encode(
-          `${walletPublicKey}${daoAddress}${timestamp.toString()}`
+          `${walletPublicKey}${dappAddress}${timestamp.toString()}`
         );
         const signedBuffer = await signer.signMessage(messageBuffer);
         const binaryString = String.fromCharCode(...signedBuffer);
         const signature = btoa(binaryString);
-        const result = await service.logInFromDao({
+        const result = await service.logInFromDapp({
           walletPublicKey,
-          daoAddress,
+          dappAddress,
           timestamp,
           signature
         });
 
-        jwtRef.current = result.token;
-        service.setJwt(result.token);
-        setJwt(result.token);
+        const newToken = result.authorization?.token ?? null
+        jwtRef.current = newToken;
+        service.setJwt(newToken);
+        setJwt(newToken);
 
         const newData = await fetchDataImpl(service);
         setInternalData(newData);
@@ -250,7 +251,7 @@ const useNotifiClient = (
         setLoading(false);
       }
     },
-    [service, walletPublicKey, daoAddress]
+    [service, walletPublicKey, dappAddress]
   );
 
   const updateAlert = useCallback(
