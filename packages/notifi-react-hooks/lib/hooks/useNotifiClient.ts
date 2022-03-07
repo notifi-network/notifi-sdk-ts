@@ -17,6 +17,19 @@ import useNotifiConfig, { BlockchainEnvironment } from './useNotifiConfig';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import useNotifiJwt from './useNotifiJwt';
 
+/**
+ * Config options for Notifi SDK
+ * 
+ * @remarks
+ * Configuration object for new Notifi SDK instance
+ * 
+ * @property dappAddress - Blockchain address of the dapp 
+ * @property walletPublicKey - User's wallet address
+ * @property env - Solana blockchain env to use
+ * <br>
+ * <br>
+ * See [Alert Creation Guide]{@link https://docs.notifi.network} for more information on creating Alerts
+ */
 export type NotifiClientConfig = Readonly<{
   dappAddress: string;
   walletPublicKey: string;
@@ -145,6 +158,17 @@ const projectData = (internalData: InternalData | null): ClientData | null => {
   };
 };
 
+/**
+ * React hook for Notifi SDK
+ * 
+ * @remarks
+ * Used to interact with Notifi services
+ * 
+ * @property config - Options to configure the Notifi client
+ * <br>
+ * <br>
+ * See [Alert Creation Guide]{@link https://docs.notifi.network} for more information on creating Alerts
+ */
 const useNotifiClient = (
   config: NotifiClientConfig
 ): NotifiClient &
@@ -167,6 +191,26 @@ const useNotifiClient = (
   const [error, setError] = useState<Error | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
+  /**
+ * User's stored preferences for email, sms, etc.
+ * @typedef {object} ClientData
+ * @property {string | null} email - Email address for Alert notifications
+ * @property {string | null} phoneNumber - Phone number for Alert notifications
+ * @property {string | null} telegramId - Telegram username for Alert notifications
+ * 
+ */
+
+  /**
+ * Fetch user's stored values from Notifi
+ * 
+ * @remarks
+ * Obtains the stored values for a user's Alert, Targets, Sources, etc.
+ * 
+ * @returns {ClientData} User's stored values
+ * <br>
+ * <br>
+ * See [Alert Creation Guide]{@link https://docs.notifi.network} for more information on creating Alerts
+ */
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
@@ -208,6 +252,33 @@ const useNotifiClient = (
     }
   }, [jwtRef.current]);
 
+ /**
+ * Authorization object containing token and metadata
+ * @typedef {object} Authorization
+ * @property {string | null} token - Authorization token
+ * @property {string | null} expiry - Token expiry in ISO 8601-1:2019 format
+ * 
+ */
+
+  /**
+ * User's object describing the user account 
+ * @typedef {object} User
+ * @property {string | null} email - Email address associated with account. For dapp logins, the email is auto assigned, but can be changed later
+ * @property {boolean} emailConfirmed - Is the account in confirmed? Only confirmed accounts can interact with Notifi
+ * 
+ */
+
+ /**
+ * Log in to Notifi
+ * 
+ * @remarks
+ * Log in to Notif and obtain security context for future calls to set/retrieve account data
+ * 
+ * @returns {ClientData} User's stored values
+ * <br>
+ * <br>
+ * See [Alert Creation Guide]{@link https://docs.notifi.network} for more information on creating Alerts
+ */
   const logIn = useCallback(
     async (signer: MessageSigner) => {
       if (signer == null) {
@@ -254,6 +325,18 @@ const useNotifiClient = (
     [service, walletPublicKey, dappAddress]
   );
 
+ /**
+ * Create or update an Alert
+ * 
+ * @remarks
+ * Use this to allow the user to create or update Alerts
+ * 
+ * @param {UpdateAlertInput} input - Input params for upserting an Alert
+ * @returns {UserAlert} An Alert object owned by the user
+ * <br>
+ * <br>
+ * See [Alert Creation Guide]{@link https://docs.notifi.network} for more information on creating Alerts
+ */
   const updateAlert = useCallback(
     async (input: UpdateAlertInput) => {
       const { name, emailAddress, phoneNumber, telegramId } = input;
@@ -346,6 +429,15 @@ const useNotifiClient = (
     [service]
   );
 
+   /**
+ * Is client SDK authenticated?
+ * 
+ * @remarks
+ * This will signal if client SDK is currently in an authenticated state. If true, it is safe to call methods for account updates/retrieval.
+ * If this is false, logIn method must be called and successful.
+ * 
+ * @returns {boolean} An Alert object owned by the user
+ */
   const isAuthenticated = useCallback(() => {
     return jwtRef.current !== null;
   }, [jwtRef]);
