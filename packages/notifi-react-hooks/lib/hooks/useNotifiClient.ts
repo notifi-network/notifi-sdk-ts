@@ -231,9 +231,10 @@ const useNotifiClient = (
           signature
         });
 
-        jwtRef.current = result.token;
-        service.setJwt(result.token);
-        setJwt(result.token);
+        const newToken = result.authorization?.token ?? null
+        jwtRef.current = newToken;
+        service.setJwt(newToken);
+        setJwt(newToken);
 
         const newData = await fetchDataImpl(service);
         setInternalData(newData);
