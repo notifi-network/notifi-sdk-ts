@@ -1,6 +1,6 @@
 {
   "name": "@notifi-network/notifi-axios-adapter",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "The axios adapter for notifi functionality",
   "author": "Juni Kim <73hKrn@gmail.com>",
   "homepage": "https://github.com/nimesh-irisio/notifi-sdk#readme",
@@ -28,7 +28,7 @@
     "url": "https://github.com/nimesh-irisio/notifi-sdk/issues"
   },
   "devDependencies": {
-    "@notifi-network/notifi-core": "^0.1.0",
+    "@notifi-network/notifi-core": "^0.1.1",
     "@typescript-eslint/eslint-plugin": "^5.12.0",
     "@typescript-eslint/parser": "^5.12.0",
     "eslint": "^8.9.0",
