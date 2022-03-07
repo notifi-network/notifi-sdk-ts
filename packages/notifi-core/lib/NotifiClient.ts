@@ -6,6 +6,19 @@ export type ClientData = Readonly<{
   telegramId: string | null;
 }>;
 
+/**
+ * Input param for creating an Alert
+ * 
+ * @remarks
+ * This describes the Alert to be created based on name, emailAddress, phoneNumber and/or telegramId
+ * 
+ * @property emailAddress - The emailAddress to be used
+ * @property phoneNumber - The phone number to be used
+ * @property telegramId - The Telegram account username to be used
+ * <br>
+ * <br>
+ * See [Alert Creation Guide]{@link https://docs.notifi.network} for more information on creating Alerts
+ */
 export type UpdateAlertInput = Readonly<{
   name: string;
   emailAddress: string | null;

@@ -41,6 +41,7 @@
   "dependencies": {
     "@notifi-network/notifi-axios-adapter": "^0.1.1",
     "axios": "^0.26.0",
+    "typedoc-plugin-missing-exports": "^0.22.6",
     "typescript": "^4.5.5",
     "use-local-storage-state": "^15.0.0"
   },
