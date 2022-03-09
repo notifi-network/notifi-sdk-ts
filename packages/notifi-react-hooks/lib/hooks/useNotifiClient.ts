@@ -513,7 +513,15 @@ const useNotifiClient = (
           targetGroupId
         });
 
-        newData.alerts.push(alert);
+        // The returned target group doesn't have individual targets
+        // Work around by spreading the known target group
+        const newAlert = {
+          ...alert,
+          sourceGroup,
+          targetGroup
+        };
+
+        newData.alerts.push(newAlert);
 
         setInternalData(newData);
         return alert;
