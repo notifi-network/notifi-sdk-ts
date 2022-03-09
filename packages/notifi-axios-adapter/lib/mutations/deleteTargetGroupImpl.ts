@@ -11,7 +11,7 @@ const MUTATION = `
 mutation deleteTargetGroup(
   $id: String!
 ) {
-  deleteTargetGroup(TargetGroupInput: {
+  deleteTargetGroup(targetGroupInput: {
     id: $id
   }) {
     id
