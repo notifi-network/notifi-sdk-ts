@@ -1,7 +1,8 @@
 export enum BlockchainEnvironment {
   MainNetBeta,
   TestNet,
-  DevNet
+  DevNet,
+  LocalNet
 }
 
 const useNotifiConfig = (env = BlockchainEnvironment.MainNetBeta) => {
@@ -19,6 +20,10 @@ const useNotifiConfig = (env = BlockchainEnvironment.MainNetBeta) => {
     case BlockchainEnvironment.DevNet:
       gqlUrl = 'https://api.dev.notifi.network/gql';
       storagePrefix = 'notifi-jwt:dev';
+      break;
+    case BlockchainEnvironment.LocalNet:
+      gqlUrl = 'https://localhost:5001/gql';
+      storagePrefix = 'notifi-jwt:local';
       break;
     default:
       assertUnreachable(env);
