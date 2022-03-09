@@ -322,8 +322,7 @@ const useNotifiClient = (
           `${walletPublicKey}${dappAddress}${timestamp.toString()}`
         );
         const signedBuffer = await signer.signMessage(messageBuffer);
-        const binaryString = String.fromCharCode(...signedBuffer);
-        const signature = btoa(binaryString);
+        const signature = Buffer.from(signedBuffer).toString('utf8');
         const result = await service.logInFromDapp({
           walletPublicKey,
           dappAddress,
