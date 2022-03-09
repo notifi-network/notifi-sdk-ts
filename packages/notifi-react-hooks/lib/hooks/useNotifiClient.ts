@@ -191,12 +191,12 @@ const projectData = (internalData: InternalData | null): ClientData | null => {
     return null;
   }
 
-  const { alerts, filters, sourceGroups, targetGroups } = internalData;
+  const { alerts, filters, sources, targetGroups } = internalData;
 
   return {
     alerts,
     filters,
-    sourceGroups,
+    sources,
     targetGroups
   };
 };
