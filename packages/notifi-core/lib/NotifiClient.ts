@@ -1,10 +1,4 @@
-import {
-  Alert,
-  Filter,
-  Source,
-  TargetGroup,
-  User
-} from './models';
+import { Alert, Filter, Source, TargetGroup, User } from './models';
 
 export type ClientData = Readonly<{
   alerts: ReadonlyArray<Alert>;
