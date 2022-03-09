@@ -589,6 +589,7 @@ const useNotifiClient = (
         }
 
         await Promise.all([deleteTargetGroupPromise, deleteSourceGroupPromise]);
+        setInternalData(newData);
 
         return alertId;
       } catch (e: unknown) {
