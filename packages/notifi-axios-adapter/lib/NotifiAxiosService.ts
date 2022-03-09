@@ -89,7 +89,7 @@ export class NotifiAxiosService implements NotifiService {
     this.updateTargetGroup = updateTargetGroupImpl.bind(null, a);
   }
 
-  setJwt(jwt: string | null) {
+  setJwt = (jwt: string | null) => {
     this.jwtContainer.current = jwt;
-  }
+  };
 }
