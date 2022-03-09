@@ -1,7 +1,8 @@
-import { Alert, SourceGroup, TargetGroup, User } from './models';
+import { Alert, Filter, SourceGroup, TargetGroup, User } from './models';
 
 export type ClientData = Readonly<{
   alerts: ReadonlyArray<Alert>;
+  filters: ReadonlyArray<Filter>;
   sourceGroups: ReadonlyArray<SourceGroup>;
   targetGroups: ReadonlyArray<TargetGroup>;
 }>;
