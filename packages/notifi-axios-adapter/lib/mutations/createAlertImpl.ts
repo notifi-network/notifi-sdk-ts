@@ -10,12 +10,14 @@ const DEPENDENCIES = [...alertFragmentDependencies, alertFragment];
 
 const MUTATION = `
 mutation createAlert(
+  $name: String!
   $sourceGroupId: String!
   $filterId: String!
   $targetGroupId: String!
 ) {
   createAlert(
     alertInput: {
+      name: $name
       sourceGroupId: $sourceGroupId
       filterId: $filterId
       targetGroupId: $targetGroupId

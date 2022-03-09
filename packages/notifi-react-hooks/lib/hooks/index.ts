@@ -1,21 +1,40 @@
 import {
+  Alert,
+  ClientCreateAlertInput,
   ClientData,
+  ClientDeleteAlertInput,
+  ClientUpdateAlertInput,
+  EmptyFilterOptions,
+  Filter,
+  FilterOptions,
   MessageSigner,
+  NotifiClient,
   TargetGroup,
-  UpdateAlertInput,
+  ThresholdFilterOptions,
+  Source,
+  SourceGroup,
   User
 } from '@notifi-network/notifi-core';
 import { GqlError } from '@notifi-network/notifi-axios-adapter';
 import useNotifiClient from './useNotifiClient';
 import { BlockchainEnvironment } from './useNotifiConfig';
 
-export {
-  BlockchainEnvironment,
+export type {
+  Alert,
+  ClientCreateAlertInput,
   ClientData,
-  GqlError,
+  ClientDeleteAlertInput,
+  ClientUpdateAlertInput,
+  EmptyFilterOptions,
+  Filter,
+  FilterOptions,
   MessageSigner,
+  NotifiClient,
   TargetGroup,
-  UpdateAlertInput,
-  User,
-  useNotifiClient
+  Source,
+  SourceGroup,
+  ThresholdFilterOptions,
+  User
 };
+
+export { BlockchainEnvironment, GqlError, useNotifiClient };

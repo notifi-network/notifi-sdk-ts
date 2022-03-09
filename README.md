@@ -123,3 +123,5 @@ npx lerna publish --canary
 [scenario-monitor-diagram]: images/monitor_diagram.svg
 
 
+## Regenerate docs
+npm run docs
