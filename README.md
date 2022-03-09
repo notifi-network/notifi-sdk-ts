@@ -22,6 +22,7 @@
     <br />
     <a href="https://notifi-network.github.io/notifi-sdk-ts/"><strong>Explore the docs »</strong></a><br />
     <a href="https://docs.notifi.network"><strong>Explore the API »</strong></a>
+    <a href="https://docs.notifi.network/AlertCreateGuide.html"><strong>Alert Creation Overview »</strong></a>
     <br />
     <a href="https://discord.gg/nAqR3mk3rv"><strong>Join our Discord!!</strong></a>
     <br />
