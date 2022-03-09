@@ -549,7 +549,7 @@ const useNotifiClient = (
       try {
         const newData = await fetchDataImpl(service);
         const alertToDelete = newData.alerts.find((a) => {
-          a.id === alertId;
+          return a.id === alertId;
         });
         if (alertToDelete === undefined) {
           throw new Error(`Unknown alert id ${alertId}`);
