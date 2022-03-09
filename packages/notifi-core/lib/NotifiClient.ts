@@ -1,17 +1,18 @@
-import { TargetGroup, User } from './models';
+import { Alert, SourceGroup, TargetGroup, User } from './models';
 
 export type ClientData = Readonly<{
-  emailAddress: string | null;
-  phoneNumber: string | null;
-  telegramId: string | null;
+  alerts: ReadonlyArray<Alert>;
+  sourceGroups: ReadonlyArray<SourceGroup>;
+  targetGroups: ReadonlyArray<TargetGroup>;
 }>;
 
 /**
- * Input param for creating an Alert
- * 
+ * Input param for updating an Alert
+ *
  * @remarks
- * This describes the Alert to be created based on name, emailAddress, phoneNumber and/or telegramId
- * 
+ * This describes the Alert to be updated based on id, emailAddress, phoneNumber and/or telegramId
+ *
+ * @property alertId - The alert to modify
  * @property emailAddress - The emailAddress to be used
  * @property phoneNumber - The phone number to be used
  * @property telegramId - The Telegram account username to be used
@@ -19,11 +20,40 @@ export type ClientData = Readonly<{
  * <br>
  * See [Alert Creation Guide]{@link https://docs.notifi.network} for more information on creating Alerts
  */
-export type UpdateAlertInput = Readonly<{
-  name: string;
+export type ClientUpdateAlertInput = Readonly<{
+  alertId: string;
   emailAddress: string | null;
   phoneNumber: string | null;
   telegramId: string | null;
+}>;
+
+/**
+ * Input param for creating an Alert
+ *
+ * @remarks
+ * This describes the Alert to be created based on name, emailAddress, phoneNumber and/or telegramId
+ *
+ * @property name - Friendly name (must be unique)
+ * @property sourceGroupId - The SourceGroup to associate
+ * @property filterId - The Filter to associate
+ * @property emailAddress - The emailAddress to be used
+ * @property phoneNumber - The phone number to be used
+ * @property telegramId - The Telegram account username to be used
+ * <br>
+ * <br>
+ * See [Alert Creation Guide]{@link https://docs.notifi.network} for more information on creating Alerts
+ */
+export type ClientCreateAlertInput = Readonly<{
+  name: string;
+  sourceGroupId: string;
+  filterId: string;
+  emailAddress: string | null;
+  phoneNumber: string | null;
+  telegramId: string | null;
+}>;
+
+export type ClientDeleteAlertInput = Readonly<{
+  alertId: string;
 }>;
 
 export type MessageSigner = Readonly<{
@@ -33,5 +63,7 @@ export type MessageSigner = Readonly<{
 export type NotifiClient = Readonly<{
   fetchData: () => Promise<ClientData>;
   logIn: (signer: MessageSigner) => Promise<User>;
-  updateAlert: (input: UpdateAlertInput) => Promise<TargetGroup>;
+  createAlert: (input: ClientCreateAlertInput) => Promise<Alert>;
+  deleteAlert: (input: ClientDeleteAlertInput) => Promise<string>;
+  updateAlert: (input: ClientUpdateAlertInput) => Promise<Alert>;
 }>;

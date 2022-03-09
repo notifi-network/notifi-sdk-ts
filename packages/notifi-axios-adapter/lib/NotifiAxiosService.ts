@@ -14,6 +14,7 @@ import getEmailTargetsImpl from './queries/getEmailTargetsImpl';
 import getSmsTargetsImpl from './queries/getSmsTargetsImpl';
 import getTelegramTargetsImpl from './queries/getTelegramTargetsImpl';
 import getAlertsImpl from './queries/getAlertsImpl';
+import deleteAlertImpl from './mutations/deleteAlertImpl';
 
 export type NotifiAxiosServiceConfig = Readonly<{
   gqlUrl: string;
@@ -26,6 +27,7 @@ export class NotifiAxiosService implements NotifiService {
   createSmsTarget: NotifiService['createSmsTarget'];
   createTargetGroup: NotifiService['createTargetGroup'];
   createTelegramTarget: NotifiService['createTelegramTarget'];
+  deleteAlert: NotifiService['deleteAlert'];
   getAlerts: NotifiService['getAlerts'];
   getEmailTargets: NotifiService['getEmailTargets'];
   getFilters: NotifiService['getFilters'];
@@ -63,6 +65,7 @@ export class NotifiAxiosService implements NotifiService {
     this.createSmsTarget = createSmsTargetImpl.bind(null, a);
     this.createTargetGroup = createTargetGroupImpl.bind(null, a);
     this.createTelegramTarget = createTelegramTargetImpl.bind(null, a);
+    this.deleteAlert = deleteAlertImpl.bind(null, a);
     this.getAlerts = getAlertsImpl.bind(null, a);
     this.getEmailTargets = getEmailTargetsImpl.bind(null, a);
     this.getFilters = getFiltersImpl.bind(null, a);

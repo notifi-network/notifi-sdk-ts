@@ -5,6 +5,7 @@ export type NotifiService = Operations.CreateAlertService &
   Operations.CreateSmsTargetService &
   Operations.CreateTargetGroupService &
   Operations.CreateTelegramTargetService &
+  Operations.DeleteAlertService &
   Operations.GetAlertsService &
   Operations.GetEmailTargetsService &
   Operations.GetFiltersService &

@@ -3,6 +3,7 @@ export * from './CreateEmailTarget';
 export * from './CreateSmsTarget';
 export * from './CreateTargetGroup';
 export * from './CreateTelegramTarget';
+export * from './DeleteAlert';
 export * from './GetAlerts';
 export * from './GetEmailTargets';
 export * from './GetFilters';
