@@ -192,7 +192,7 @@ const projectData = (internalData: InternalData | null): ClientData | null => {
  * @remarks
  * Used to interact with Notifi services
  *
- * @property config - Options to configure the Notifi client
+ * @param config - Options to configure the Notifi client
  * <br>
  * <br>
  * See [Alert Creation Guide]{@link https://docs.notifi.network} for more information on creating Alerts
@@ -438,7 +438,7 @@ const useNotifiClient = (
    */
   const createAlert = useCallback(
     async (input: ClientCreateAlertInput): Promise<Alert> => {
-      const { name, filterId, sourceGroupId } = input;
+      const { name, filterId, filterOptions = {}, sourceGroupId } = input;
 
       setLoading(true);
       try {
@@ -483,6 +483,7 @@ const useNotifiClient = (
           name,
           sourceGroupId,
           filterId,
+          filterOptions: JSON.stringify(filterOptions),
           targetGroupId
         });
 
@@ -510,7 +511,7 @@ const useNotifiClient = (
    * @remarks
    * Use this to allow the user to delete Alerts
    *
-   * @param {ClientDeleteAlertInput} input - Input params for deleting an Alert
+   * @param {@link ClientDeleteAlertInput} input - Input params for deleting an Alert
    * @returns {string} The processed ID
    * <br>
    * <br>
@@ -553,16 +554,20 @@ const useNotifiClient = (
     return projectData(internalData);
   }, [internalData]);
 
+  const client: NotifiClient = {
+    logIn,
+    createAlert,
+    deleteAlert,
+    fetchData,
+    updateAlert
+  };
+
   return {
     data,
     error,
-    fetchData,
     isAuthenticated,
-    logIn,
     loading,
-    createAlert,
-    deleteAlert,
-    updateAlert
+    ...client
   };
 };
 

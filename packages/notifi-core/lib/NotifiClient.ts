@@ -47,10 +47,17 @@ export type ClientCreateAlertInput = Readonly<{
   name: string;
   sourceGroupId: string;
   filterId: string;
+  filterOptions?: FilterOptions;
   emailAddress: string | null;
   phoneNumber: string | null;
   telegramId: string | null;
 }>;
+
+export type EmptyFilterOptions = Record<never, never>;
+export type ThresholdFilterOptions = Readonly<{
+  threshold: number;
+}>;
+export type FilterOptions = EmptyFilterOptions | ThresholdFilterOptions;
 
 export type ClientDeleteAlertInput = Readonly<{
   alertId: string;

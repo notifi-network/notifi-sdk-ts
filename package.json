@@ -2,6 +2,8 @@
   "name": "root",
   "private": true,
   "devDependencies": {
-    "lerna": "^4.0.0"
+    "lerna": "^4.0.0",
+    "typedoc": "^0.22.13",
+    "typedoc-plugin-missing-exports": "^0.22.6"
   }
 }
