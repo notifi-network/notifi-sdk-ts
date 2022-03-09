@@ -1,6 +1,9 @@
 {
   "name": "root",
   "private": true,
+  "scripts": {
+    "docs": "npx typedoc packages/notifi-react-hooks/lib/index.ts"
+  },
   "devDependencies": {
     "lerna": "^4.0.0",
     "typedoc": "^0.22.13",
