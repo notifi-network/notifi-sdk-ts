@@ -15,6 +15,10 @@ import getSmsTargetsImpl from './queries/getSmsTargetsImpl';
 import getTelegramTargetsImpl from './queries/getTelegramTargetsImpl';
 import getAlertsImpl from './queries/getAlertsImpl';
 import deleteAlertImpl from './mutations/deleteAlertImpl';
+import createSourceGroupImpl from './mutations/createSourceGroupImpl';
+import getSourcesImpl from './queries/getSourcesImpl';
+import deleteSourceGroupImpl from './mutations/deleteSourceGroupImpl';
+import deleteTargetGroupImpl from './mutations/deleteTargetGroupImpl';
 
 export type NotifiAxiosServiceConfig = Readonly<{
   gqlUrl: string;
@@ -25,14 +29,18 @@ export class NotifiAxiosService implements NotifiService {
   createAlert: NotifiService['createAlert'];
   createEmailTarget: NotifiService['createEmailTarget'];
   createSmsTarget: NotifiService['createSmsTarget'];
+  createSourceGroup: NotifiService['createSourceGroup'];
   createTargetGroup: NotifiService['createTargetGroup'];
   createTelegramTarget: NotifiService['createTelegramTarget'];
   deleteAlert: NotifiService['deleteAlert'];
+  deleteSourceGroup: NotifiService['deleteSourceGroup'];
+  deleteTargetGroup: NotifiService['deleteTargetGroup'];
   getAlerts: NotifiService['getAlerts'];
   getEmailTargets: NotifiService['getEmailTargets'];
   getFilters: NotifiService['getFilters'];
   getSmsTargets: NotifiService['getSmsTargets'];
   getSourceGroups: NotifiService['getSourceGroups'];
+  getSources: NotifiService['getSources'];
   getTargetGroups: NotifiService['getTargetGroups'];
   getTelegramTargets: NotifiService['getTelegramTargets'];
   logInFromDapp: NotifiService['logInFromDapp'];
@@ -65,12 +73,16 @@ export class NotifiAxiosService implements NotifiService {
     this.createSmsTarget = createSmsTargetImpl.bind(null, a);
     this.createTargetGroup = createTargetGroupImpl.bind(null, a);
     this.createTelegramTarget = createTelegramTargetImpl.bind(null, a);
+    this.createSourceGroup = createSourceGroupImpl.bind(null, a);
     this.deleteAlert = deleteAlertImpl.bind(null, a);
+    this.deleteSourceGroup = deleteSourceGroupImpl.bind(null, a);
+    this.deleteTargetGroup = deleteTargetGroupImpl.bind(null, a);
     this.getAlerts = getAlertsImpl.bind(null, a);
     this.getEmailTargets = getEmailTargetsImpl.bind(null, a);
     this.getFilters = getFiltersImpl.bind(null, a);
     this.getSmsTargets = getSmsTargetsImpl.bind(null, a);
     this.getSourceGroups = getSourceGroupsImpl.bind(null, a);
+    this.getSources = getSourcesImpl.bind(null, a);
     this.getTargetGroups = getTargetGroupsImpl.bind(null, a);
     this.getTelegramTargets = getTelegramTargetsImpl.bind(null, a);
     this.logInFromDapp = logInFromDappImpl.bind(null, a);

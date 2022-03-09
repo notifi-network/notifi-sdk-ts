@@ -46,7 +46,7 @@ export type ClientUpdateAlertInput = Readonly<{
  */
 export type ClientCreateAlertInput = Readonly<{
   name: string;
-  sourceGroupId: string;
+  sourceId: string;
   filterId: string;
   filterOptions?: FilterOptions;
   emailAddress: string | null;

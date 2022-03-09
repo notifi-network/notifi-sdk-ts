@@ -4,6 +4,7 @@ import {
   NotifiService,
   TargetGroup,
   Filter,
+  Source,
   SourceGroup,
   Alert,
   EmailTarget,
@@ -47,6 +48,7 @@ export class NotifiClientError extends Error {
 type InternalData = {
   alerts: Alert[];
   filters: Filter[];
+  sources: Source[];
   sourceGroups: SourceGroup[];
   targetGroups: TargetGroup[];
   emailTargets: EmailTarget[];
@@ -57,7 +59,7 @@ type InternalData = {
 const fetchDataImpl = async (service: NotifiService): Promise<InternalData> => {
   const [
     alerts,
-    filters,
+    sources,
     sourceGroups,
     targetGroups,
     emailTargets,
@@ -65,7 +67,7 @@ const fetchDataImpl = async (service: NotifiService): Promise<InternalData> => {
     telegramTargets
   ] = await Promise.all([
     service.getAlerts(),
-    service.getFilters(),
+    service.getSources(),
     service.getSourceGroups(),
     service.getTargetGroups(),
     service.getEmailTargets(),
@@ -73,9 +75,21 @@ const fetchDataImpl = async (service: NotifiService): Promise<InternalData> => {
     service.getTelegramTargets()
   ]);
 
+  const filterIds = new Set<string | null>();
+  const filters: Filter[] = [];
+  sources.forEach((source) => {
+    source.applicableFilters.forEach((filter) => {
+      if (!filterIds.has(filter.id)) {
+        filters.push(filter);
+        filterIds.add(filter.id);
+      }
+    });
+  });
+
   return {
     alerts: [...alerts],
-    filters: [...filters],
+    filters,
+    sources: [...sources],
     sourceGroups: [...sourceGroups],
     targetGroups: [...targetGroups],
     emailTargets: [...emailTargets],
@@ -438,7 +452,7 @@ const useNotifiClient = (
    */
   const createAlert = useCallback(
     async (input: ClientCreateAlertInput): Promise<Alert> => {
-      const { name, filterId, filterOptions = {}, sourceGroupId } = input;
+      const { name, filterId, filterOptions = {}, sourceId } = input;
 
       setLoading(true);
       try {
@@ -453,31 +467,43 @@ const useNotifiClient = (
           );
         }
 
-        const existingFilter = newData.filters.find((f) => f.id === filterId);
+        const sourceToUse = newData.sources.find((s) => s.id === sourceId);
+        if (sourceToUse === undefined) {
+          throw new Error(`Invalid source id ${sourceId}`);
+        }
+
+        const existingFilter = sourceToUse.applicableFilters.find(
+          (f) => f.id === filterId
+        );
         if (existingFilter === undefined) {
           throw new Error(`Invalid filter id ${filterId}`);
         }
 
-        const existingSourceGroup = newData.sourceGroups.find(
-          (s) => s.id === sourceGroupId
-        );
-        if (existingSourceGroup === undefined) {
-          throw new Error(`Invalid source group id ${sourceGroupId}`);
-        }
+        const [sourceGroup, targetGroup] = await Promise.all([
+          service.createSourceGroup({
+            name,
+            sourceIds: [sourceId]
+          }),
+          service.createTargetGroup({
+            name,
+            emailTargetIds,
+            smsTargetIds,
+            telegramTargetIds
+          })
+        ]);
 
-        const targetGroup = await service.createTargetGroup({
-          name,
-          emailTargetIds,
-          smsTargetIds,
-          telegramTargetIds
-        });
+        newData.sourceGroups.push(sourceGroup);
+        newData.targetGroups.push(targetGroup);
+
+        const sourceGroupId = sourceGroup.id;
+        if (sourceGroupId === null) {
+          throw new Error(`Unknown error creating source group`);
+        }
 
         const targetGroupId = targetGroup.id;
         if (targetGroupId === null) {
           throw new Error(`Unknown error creating target group`);
         }
-
-        newData.targetGroups.push(targetGroup);
 
         const alert = await service.createAlert({
           name,
@@ -521,7 +547,49 @@ const useNotifiClient = (
     async (input: ClientDeleteAlertInput) => {
       const { alertId } = input;
       try {
+        const newData = await fetchDataImpl(service);
+        const alertToDelete = newData.alerts.find((a) => {
+          a.id === alertId;
+        });
+        if (alertToDelete === undefined) {
+          throw new Error(`Unknown alert id ${alertId}`);
+        }
+
+        const targetGroupId = alertToDelete.targetGroup.id;
+        const sourceGroupId = alertToDelete.sourceGroup.id;
+
         await service.deleteAlert({ id: alertId });
+
+        newData.alerts = newData.alerts.filter((a) => a !== alertToDelete);
+
+        let deleteTargetGroupPromise = Promise.resolve();
+        if (targetGroupId !== null) {
+          deleteTargetGroupPromise = service
+            .deleteTargetGroup({
+              id: targetGroupId
+            })
+            .then(() => {
+              newData.targetGroups = newData.targetGroups.filter(
+                (t) => t.id !== targetGroupId
+              );
+            });
+        }
+
+        let deleteSourceGroupPromise = Promise.resolve();
+        if (sourceGroupId !== null) {
+          deleteSourceGroupPromise = service
+            .deleteSourceGroup({
+              id: sourceGroupId
+            })
+            .then(() => {
+              newData.sourceGroups = newData.sourceGroups.filter(
+                (s) => s.id !== sourceGroupId
+              );
+            });
+        }
+
+        await Promise.all([deleteTargetGroupPromise, deleteSourceGroupPromise]);
+
         return alertId;
       } catch (e: unknown) {
         if (e instanceof Error) {

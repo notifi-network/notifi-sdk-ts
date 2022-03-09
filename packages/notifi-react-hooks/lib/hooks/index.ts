@@ -11,6 +11,7 @@ import {
   NotifiClient,
   TargetGroup,
   ThresholdFilterOptions,
+  Source,
   SourceGroup,
   User
 } from '@notifi-network/notifi-core';
@@ -30,6 +31,7 @@ export type {
   MessageSigner,
   NotifiClient,
   TargetGroup,
+  Source,
   SourceGroup,
   ThresholdFilterOptions,
   User

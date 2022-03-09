@@ -2,6 +2,7 @@ export * from './Alert';
 export * from './EmailTarget';
 export * from './Filter';
 export * from './Operation';
+export * from './Source';
 export * from './SourceGroup';
 export * from './SmsTarget';
 export * from './TargetGroup';
