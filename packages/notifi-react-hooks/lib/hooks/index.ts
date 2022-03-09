@@ -18,9 +18,8 @@ import { GqlError } from '@notifi-network/notifi-axios-adapter';
 import useNotifiClient from './useNotifiClient';
 import { BlockchainEnvironment } from './useNotifiConfig';
 
-export {
+export type {
   Alert,
-  BlockchainEnvironment,
   ClientCreateAlertInput,
   ClientData,
   ClientDeleteAlertInput,
@@ -28,12 +27,12 @@ export {
   EmptyFilterOptions,
   Filter,
   FilterOptions,
-  GqlError,
   MessageSigner,
   NotifiClient,
   TargetGroup,
   SourceGroup,
   ThresholdFilterOptions,
-  User,
-  useNotifiClient
+  User
 };
+
+export { BlockchainEnvironment, GqlError, useNotifiClient };
