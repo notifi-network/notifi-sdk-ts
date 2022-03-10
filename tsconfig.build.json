@@ -12,9 +12,11 @@
     "strict": true,
     "noFallthroughCasesInSwitch": true,
     "lib": ["es2017", "DOM"],
+    "types": ["node", "jest"],
     "typeRoots": ["node_modules/@types"]
   },
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "**/*.spec.ts"
   ]
 }

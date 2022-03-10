@@ -1,0 +1,31 @@
+{
+  "name": "@notifi-network/notifi-axios-utils",
+  "version": "0.4.0",
+  "description": "The axios utilities common to notifi libs",
+  "author": "juni-notifi <hyungjoon.kim@notifi.network>",
+  "homepage": "https://github.com/notifi-network/notifi-sdk-ts#readme",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/notifi-network/notifi-sdk-ts.git"
+  },
+  "scripts": {
+    "build": "npm run clean && npm run compile",
+    "clean": "rimraf ./dist",
+    "compile": "tsc -p tsconfig.build.json"
+  },
+  "bugs": {
+    "url": "https://github.com/notifi-network/notifi-sdk-ts/issues"
+  },
+  "peerDependencies": {
+    "axios": "^0.26.1"
+  }
+}
