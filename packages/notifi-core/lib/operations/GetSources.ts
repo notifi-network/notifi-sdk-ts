@@ -1,4 +1,4 @@
-import { Source, ParameterLessOperation } from '../models';
+import { ParameterLessOperation, Source } from '../models';
 
 export type GetSourcesResult = ReadonlyArray<Source>;
 

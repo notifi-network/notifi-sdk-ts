@@ -1,4 +1,4 @@
-import { TelegramTarget, Operation } from '../models';
+import { Operation, TelegramTarget } from '../models';
 
 export type CreateTelegramTargetInput = Readonly<{
   name: string;

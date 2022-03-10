@@ -1,10 +1,10 @@
+import { userFragment, userFragmentDependencies } from '../fragments';
+import { makeRequest } from '../utils/axiosRequest';
+import collectDependencies from '../utils/collectDependencies';
 import {
   LogInFromDappInput,
-  LogInFromDappResult
+  LogInFromDappResult,
 } from '@notifi-network/notifi-core';
-import collectDependencies from '../utils/collectDependencies';
-import { makeRequest } from '../utils/axiosRequest';
-import { userFragment, userFragmentDependencies } from '../fragments';
 
 const DEPENDENCIES = [...userFragmentDependencies, userFragment];
 
@@ -27,7 +27,7 @@ mutation logInFromDapp(
 
 const logInFromDaoImpl = makeRequest<LogInFromDappInput, LogInFromDappResult>(
   collectDependencies(...DEPENDENCIES, MUTATION),
-  'logInFromDapp'
+  'logInFromDapp',
 );
 
 export default logInFromDaoImpl;

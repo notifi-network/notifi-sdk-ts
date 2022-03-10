@@ -1,4 +1,4 @@
-import { SourceGroup, Operation } from '../models';
+import { Operation, SourceGroup } from '../models';
 
 export type CreateSourceGroupInput = Readonly<{
   name: string;

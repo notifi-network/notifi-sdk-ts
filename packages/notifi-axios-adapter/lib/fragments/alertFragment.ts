@@ -1,6 +1,6 @@
 import {
   targetGroupFragment,
-  targetGroupFragmentDependencies
+  targetGroupFragmentDependencies,
 } from './targetGroupFragment';
 
 export const alertFragment = `
@@ -23,5 +23,5 @@ fragment alertFragment on Alert {
 
 export const alertFragmentDependencies = [
   ...targetGroupFragmentDependencies,
-  targetGroupFragment
+  targetGroupFragment,
 ];

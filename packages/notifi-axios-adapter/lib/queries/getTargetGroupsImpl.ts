@@ -1,10 +1,10 @@
-import { GetTargetGroupsResult } from '@notifi-network/notifi-core';
-import collectDependencies from '../utils/collectDependencies';
-import { makeParameterLessRequest } from '../utils/axiosRequest';
 import {
   targetGroupFragment,
-  targetGroupFragmentDependencies
+  targetGroupFragmentDependencies,
 } from '../fragments';
+import { makeParameterLessRequest } from '../utils/axiosRequest';
+import collectDependencies from '../utils/collectDependencies';
+import { GetTargetGroupsResult } from '@notifi-network/notifi-core';
 
 const DEPENDENCIES = [...targetGroupFragmentDependencies, targetGroupFragment];
 
@@ -18,7 +18,7 @@ query getTargetGroups {
 
 const getTargetGroupsImpl = makeParameterLessRequest<GetTargetGroupsResult>(
   collectDependencies(...DEPENDENCIES, MUTATION),
-  'targetGroup'
+  'targetGroup',
 );
 
 export default getTargetGroupsImpl;

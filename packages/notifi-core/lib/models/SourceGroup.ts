@@ -1,4 +1,4 @@
-import { Source } from "./Source";
+import { Source } from './Source';
 
 /**
  * Object describing a SourceGroup

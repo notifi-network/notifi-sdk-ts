@@ -1,10 +1,10 @@
-import { GetEmailTargetsResult } from '@notifi-network/notifi-core';
-import collectDependencies from '../utils/collectDependencies';
-import { makeParameterLessRequest } from '../utils/axiosRequest';
 import {
   emailTargetFragment,
-  emailTargetFragmentDependencies
+  emailTargetFragmentDependencies,
 } from '../fragments';
+import { makeParameterLessRequest } from '../utils/axiosRequest';
+import collectDependencies from '../utils/collectDependencies';
+import { GetEmailTargetsResult } from '@notifi-network/notifi-core';
 
 const DEPENDENCIES = [...emailTargetFragmentDependencies, emailTargetFragment];
 
@@ -18,7 +18,7 @@ query getEmailTargets {
 
 const getEmailTargetsImpl = makeParameterLessRequest<GetEmailTargetsResult>(
   collectDependencies(...DEPENDENCIES, MUTATION),
-  'emailTarget'
+  'emailTarget',
 );
 
 export default getEmailTargetsImpl;

@@ -1,9 +1,9 @@
+import { makeRequest } from '../utils/axiosRequest';
+import collectDependencies from '../utils/collectDependencies';
 import {
   DeleteAlertInput,
-  DeleteAlertResult
+  DeleteAlertResult,
 } from '@notifi-network/notifi-core';
-import collectDependencies from '../utils/collectDependencies';
-import { makeRequest } from '../utils/axiosRequest';
 
 const DEPENDENCIES: string[] = [];
 
@@ -19,7 +19,7 @@ mutation deleteAlert(
 
 const deleteAlertImpl = makeRequest<DeleteAlertInput, DeleteAlertResult>(
   collectDependencies(...DEPENDENCIES, MUTATION),
-  'deleteAlert'
+  'deleteAlert',
 );
 
 export default deleteAlertImpl;

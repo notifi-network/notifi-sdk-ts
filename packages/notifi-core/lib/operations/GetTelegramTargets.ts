@@ -1,4 +1,4 @@
-import { TelegramTarget, ParameterLessOperation } from '../models';
+import { ParameterLessOperation, TelegramTarget } from '../models';
 
 export type GetTelegramTargetsResult = ReadonlyArray<TelegramTarget>;
 

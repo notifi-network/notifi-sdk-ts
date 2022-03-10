@@ -1,24 +1,24 @@
-import { NotifiService } from '@notifi-network/notifi-core';
-import axios from 'axios';
 import createAlertImpl from './mutations/createAlertImpl';
 import createEmailTargetImpl from './mutations/createEmailTargetImpl';
 import createSmsTargetImpl from './mutations/createSmsTargetImpl';
+import createSourceGroupImpl from './mutations/createSourceGroupImpl';
 import createTargetGroupImpl from './mutations/createTargetGroupImpl';
 import createTelegramTargetImpl from './mutations/createTelegramTargetImpl';
-import getFiltersImpl from './queries/getFiltersImpl';
-import getSourceGroupsImpl from './queries/getSourceGroupsImpl';
-import getTargetGroupsImpl from './queries/getTargetGroupsImpl';
-import logInFromDappImpl from './mutations/logInFromDappImpl';
-import updateTargetGroupImpl from './mutations/updateTargetGroupImpl';
-import getEmailTargetsImpl from './queries/getEmailTargetsImpl';
-import getSmsTargetsImpl from './queries/getSmsTargetsImpl';
-import getTelegramTargetsImpl from './queries/getTelegramTargetsImpl';
-import getAlertsImpl from './queries/getAlertsImpl';
 import deleteAlertImpl from './mutations/deleteAlertImpl';
-import createSourceGroupImpl from './mutations/createSourceGroupImpl';
-import getSourcesImpl from './queries/getSourcesImpl';
 import deleteSourceGroupImpl from './mutations/deleteSourceGroupImpl';
 import deleteTargetGroupImpl from './mutations/deleteTargetGroupImpl';
+import logInFromDappImpl from './mutations/logInFromDappImpl';
+import updateTargetGroupImpl from './mutations/updateTargetGroupImpl';
+import getAlertsImpl from './queries/getAlertsImpl';
+import getEmailTargetsImpl from './queries/getEmailTargetsImpl';
+import getFiltersImpl from './queries/getFiltersImpl';
+import getSmsTargetsImpl from './queries/getSmsTargetsImpl';
+import getSourceGroupsImpl from './queries/getSourceGroupsImpl';
+import getSourcesImpl from './queries/getSourcesImpl';
+import getTargetGroupsImpl from './queries/getTargetGroupsImpl';
+import getTelegramTargetsImpl from './queries/getTelegramTargetsImpl';
+import { NotifiService } from '@notifi-network/notifi-core';
+import axios from 'axios';
 
 export type NotifiAxiosServiceConfig = Readonly<{
   gqlUrl: string;
@@ -51,7 +51,7 @@ export class NotifiAxiosService implements NotifiService {
   constructor(c: NotifiAxiosServiceConfig) {
     this.jwtContainer = c.jwtContainer;
     const a = axios.create({
-      baseURL: c.gqlUrl
+      baseURL: c.gqlUrl,
     });
     a.interceptors.request.use((config) => {
       const jwt = this.jwtContainer.current;
@@ -60,8 +60,8 @@ export class NotifiAxiosService implements NotifiService {
           ...config,
           headers: {
             ...config.headers,
-            Authorization: `Bearer ${jwt}`
-          }
+            Authorization: `Bearer ${jwt}`,
+          },
         };
       }
 

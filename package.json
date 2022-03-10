@@ -2,10 +2,19 @@
   "name": "root",
   "private": true,
   "scripts": {
-    "docs": "npx typedoc packages/notifi-react-hooks/lib/index.ts"
+    "docs": "npx typedoc packages/notifi-react-hooks/lib/index.ts",
+    "format": "prettier --config .prettierrc packages/**/lib/**/*.ts --write",
+    "lint": "eslint --ext .ts packages/**/lib --fix"
   },
   "devDependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^3.2.0",
+    "@typescript-eslint/eslint-plugin": "^5.14.0",
+    "@typescript-eslint/parser": "^5.14.0",
+    "eslint": "^8.10.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.0.0",
     "lerna": "^4.0.0",
+    "prettier": "^2.5.1",
     "typedoc": "^0.22.13",
     "typedoc-plugin-missing-exports": "^0.22.6"
   },

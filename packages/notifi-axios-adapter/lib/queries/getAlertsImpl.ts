@@ -1,7 +1,7 @@
-import { GetAlertsResult } from '@notifi-network/notifi-core';
-import collectDependencies from '../utils/collectDependencies';
-import { makeParameterLessRequest } from '../utils/axiosRequest';
 import { alertFragment, alertFragmentDependencies } from '../fragments';
+import { makeParameterLessRequest } from '../utils/axiosRequest';
+import collectDependencies from '../utils/collectDependencies';
+import { GetAlertsResult } from '@notifi-network/notifi-core';
 
 const DEPENDENCIES = [...alertFragmentDependencies, alertFragment];
 
@@ -15,7 +15,7 @@ query getAlerts {
 
 const getAlertsImpl = makeParameterLessRequest<GetAlertsResult>(
   collectDependencies(...DEPENDENCIES, MUTATION),
-  'alert'
+  'alert',
 );
 
 export default getAlertsImpl;

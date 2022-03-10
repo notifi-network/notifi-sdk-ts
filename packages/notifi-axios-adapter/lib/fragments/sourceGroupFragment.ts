@@ -12,5 +12,5 @@ fragment sourceGroupFragment on SourceGroup {
 
 export const sourceGroupFragmentDependencies = [
   ...sourceFragmentDependencies,
-  sourceFragment
+  sourceFragment,
 ];
