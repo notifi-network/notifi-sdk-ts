@@ -28,8 +28,7 @@
     "url": "https://github.com/nimesh-irisio/notifi-sdk/issues"
   },
   "devDependencies": {
-    "@notifi-network/notifi-core": "^0.4.0",
-    "rimraf": "^3.0.2"
+    "@notifi-network/notifi-core": "^0.4.0"
   },
   "peerDependencies": {
     "axios": "^0.26.0"
