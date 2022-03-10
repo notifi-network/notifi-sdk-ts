@@ -13,5 +13,5 @@ fragment sourceFragment on Source {
 
 export const sourceFragmentDependencies = [
   ...filterFragmentDependencies,
-  filterFragment
+  filterFragment,
 ];

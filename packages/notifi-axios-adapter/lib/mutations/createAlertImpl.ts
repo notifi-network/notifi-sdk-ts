@@ -1,10 +1,10 @@
+import { alertFragment, alertFragmentDependencies } from '../fragments';
+import { makeRequest } from '../utils/axiosRequest';
+import collectDependencies from '../utils/collectDependencies';
 import {
   CreateAlertInput,
-  CreateAlertResult
+  CreateAlertResult,
 } from '@notifi-network/notifi-core';
-import collectDependencies from '../utils/collectDependencies';
-import { makeRequest } from '../utils/axiosRequest';
-import { alertFragment, alertFragmentDependencies } from '../fragments';
 
 const DEPENDENCIES = [...alertFragmentDependencies, alertFragment];
 
@@ -34,7 +34,7 @@ mutation createAlert(
 
 const createAlertImpl = makeRequest<CreateAlertInput, CreateAlertResult>(
   collectDependencies(...DEPENDENCIES, MUTATION),
-  'createAlert'
+  'createAlert',
 );
 
 export default createAlertImpl;

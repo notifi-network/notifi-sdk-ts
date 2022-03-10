@@ -1,6 +1,6 @@
 const hasKey = <T, Key extends PropertyKey>(
   obj: T,
-  prop: Key
+  prop: Key,
 ): obj is T & Record<Key, unknown> => {
   return (
     typeof obj === 'object' &&
@@ -10,7 +10,7 @@ const hasKey = <T, Key extends PropertyKey>(
 };
 
 const packageErrors = (
-  errors: ReadonlyArray<unknown>
+  errors: ReadonlyArray<unknown>,
 ): ReadonlyArray<string> => {
   const messages: string[] = [];
   errors.forEach((error) => {
@@ -24,7 +24,7 @@ const packageErrors = (
 export default class GqlError extends Error {
   constructor(
     public operationName: string,
-    public errors: ReadonlyArray<unknown>
+    public errors: ReadonlyArray<unknown>,
   ) {
     super(`GQL Errors occurred during ${operationName}`);
   }

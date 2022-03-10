@@ -1,9 +1,9 @@
+import { makeRequest } from '../utils/axiosRequest';
+import collectDependencies from '../utils/collectDependencies';
 import {
   DeleteTargetGroupInput,
-  DeleteTargetGroupResult
+  DeleteTargetGroupResult,
 } from '@notifi-network/notifi-core';
-import collectDependencies from '../utils/collectDependencies';
-import { makeRequest } from '../utils/axiosRequest';
 
 const DEPENDENCIES: string[] = [];
 
@@ -19,9 +19,9 @@ mutation deleteTargetGroup(
 }
 `.trim();
 
-const deleteTargetGroupImpl = makeRequest<DeleteTargetGroupInput, DeleteTargetGroupResult>(
-  collectDependencies(...DEPENDENCIES, MUTATION),
-  'deleteTargetGroup'
-);
+const deleteTargetGroupImpl = makeRequest<
+  DeleteTargetGroupInput,
+  DeleteTargetGroupResult
+>(collectDependencies(...DEPENDENCIES, MUTATION), 'deleteTargetGroup');
 
 export default deleteTargetGroupImpl;

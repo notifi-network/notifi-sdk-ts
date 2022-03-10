@@ -1,4 +1,4 @@
-import { TargetGroup, ParameterLessOperation } from '../models';
+import { ParameterLessOperation, TargetGroup } from '../models';
 
 export type GetTargetGroupsResult = ReadonlyArray<TargetGroup>;
 

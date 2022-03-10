@@ -1,4 +1,4 @@
-import { SourceGroup, ParameterLessOperation } from '../models';
+import { ParameterLessOperation, SourceGroup } from '../models';
 
 export type GetSourceGroupsResult = ReadonlyArray<SourceGroup>;
 

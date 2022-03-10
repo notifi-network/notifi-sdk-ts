@@ -1,10 +1,10 @@
-import { GetSourceGroupsResult } from '@notifi-network/notifi-core';
-import collectDependencies from '../utils/collectDependencies';
-import { makeParameterLessRequest } from '../utils/axiosRequest';
 import {
   sourceGroupFragment,
-  sourceGroupFragmentDependencies
+  sourceGroupFragmentDependencies,
 } from '../fragments';
+import { makeParameterLessRequest } from '../utils/axiosRequest';
+import collectDependencies from '../utils/collectDependencies';
+import { GetSourceGroupsResult } from '@notifi-network/notifi-core';
 
 const DEPENDENCIES = [...sourceGroupFragmentDependencies, sourceGroupFragment];
 
@@ -18,7 +18,7 @@ query getSourceGroups {
 
 const getSourceGroupsImpl = makeParameterLessRequest<GetSourceGroupsResult>(
   collectDependencies(...DEPENDENCIES, MUTATION),
-  'sourceGroup'
+  'sourceGroup',
 );
 
 export default getSourceGroupsImpl;

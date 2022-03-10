@@ -1,4 +1,4 @@
-import { TargetGroup, Operation } from '../models';
+import { Operation, TargetGroup } from '../models';
 
 export type UpdateTargetGroupInput = Readonly<{
   id: string;

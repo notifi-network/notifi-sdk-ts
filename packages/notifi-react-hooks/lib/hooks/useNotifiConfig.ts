@@ -2,7 +2,7 @@ export enum BlockchainEnvironment {
   MainNetBeta,
   TestNet,
   DevNet,
-  LocalNet
+  LocalNet,
 }
 
 const useNotifiConfig = (env = BlockchainEnvironment.MainNetBeta) => {
@@ -31,7 +31,7 @@ const useNotifiConfig = (env = BlockchainEnvironment.MainNetBeta) => {
 
   return {
     gqlUrl,
-    storagePrefix
+    storagePrefix,
   };
 };
 

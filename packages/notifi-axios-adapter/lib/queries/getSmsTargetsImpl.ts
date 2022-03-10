@@ -1,7 +1,7 @@
-import { GetSmsTargetsResult } from '@notifi-network/notifi-core';
-import collectDependencies from '../utils/collectDependencies';
-import { makeParameterLessRequest } from '../utils/axiosRequest';
 import { smsTargetFragment, smsTargetFragmentDependencies } from '../fragments';
+import { makeParameterLessRequest } from '../utils/axiosRequest';
+import collectDependencies from '../utils/collectDependencies';
+import { GetSmsTargetsResult } from '@notifi-network/notifi-core';
 
 const DEPENDENCIES = [...smsTargetFragmentDependencies, smsTargetFragment];
 
@@ -15,7 +15,7 @@ query getSmsTargets {
 
 const getSmsTargetsImpl = makeParameterLessRequest<GetSmsTargetsResult>(
   collectDependencies(...DEPENDENCIES, MUTATION),
-  'smsTarget'
+  'smsTarget',
 );
 
 export default getSmsTargetsImpl;

@@ -1,14 +1,14 @@
-import { GetTelegramTargetsResult } from '@notifi-network/notifi-core';
-import collectDependencies from '../utils/collectDependencies';
-import { makeParameterLessRequest } from '../utils/axiosRequest';
 import {
   telegramTargetFragment,
-  telegramTargetFragmentDependencies
+  telegramTargetFragmentDependencies,
 } from '../fragments';
+import { makeParameterLessRequest } from '../utils/axiosRequest';
+import collectDependencies from '../utils/collectDependencies';
+import { GetTelegramTargetsResult } from '@notifi-network/notifi-core';
 
 const DEPENDENCIES = [
   ...telegramTargetFragmentDependencies,
-  telegramTargetFragment
+  telegramTargetFragment,
 ];
 
 const MUTATION = `
@@ -22,7 +22,7 @@ query getTelegramTargets {
 const getTelegramTargetsImpl =
   makeParameterLessRequest<GetTelegramTargetsResult>(
     collectDependencies(...DEPENDENCIES, MUTATION),
-    'telegramTarget'
+    'telegramTarget',
   );
 
 export default getTelegramTargetsImpl;

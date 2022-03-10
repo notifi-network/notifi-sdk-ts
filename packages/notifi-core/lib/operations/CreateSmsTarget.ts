@@ -1,4 +1,4 @@
-import { SmsTarget, Operation } from '../models';
+import { Operation, SmsTarget } from '../models';
 
 export type CreateSmsTargetInput = Readonly<{
   name: string;

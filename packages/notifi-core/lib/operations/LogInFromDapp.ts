@@ -1,4 +1,4 @@
-import { User, Operation } from '../models';
+import { Operation, User } from '../models';
 
 export type LogInFromDappInput = Readonly<{
   walletPublicKey: string;

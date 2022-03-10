@@ -1,14 +1,14 @@
 import {
   emailTargetFragment,
-  emailTargetFragmentDependencies
+  emailTargetFragmentDependencies,
 } from './emailTargetFragment';
 import {
   smsTargetFragment,
-  smsTargetFragmentDependencies
+  smsTargetFragmentDependencies,
 } from './smsTargetFragment';
 import {
   telegramTargetFragment,
-  telegramTargetFragmentDependencies
+  telegramTargetFragmentDependencies,
 } from './telegramTargetFragment';
 
 export const targetGroupFragment = `
@@ -33,5 +33,5 @@ export const targetGroupFragmentDependencies = [
   ...telegramTargetFragmentDependencies,
   emailTargetFragment,
   smsTargetFragment,
-  telegramTargetFragment
+  telegramTargetFragment,
 ];

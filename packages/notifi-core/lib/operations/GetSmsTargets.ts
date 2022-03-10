@@ -1,4 +1,4 @@
-import { SmsTarget, ParameterLessOperation } from '../models';
+import { ParameterLessOperation, SmsTarget } from '../models';
 
 export type GetSmsTargetsResult = ReadonlyArray<SmsTarget>;
 
