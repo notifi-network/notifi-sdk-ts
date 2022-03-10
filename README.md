@@ -21,7 +21,6 @@
     Typescript based SDK for React and NodeJS projects.
     <br />
     <a href="https://notifi-network.github.io/notifi-sdk-ts/"><strong>Explore the docs »</strong></a><br />
-    <a href="https://docs.notifi.network"><strong>Explore the API »</strong></a>
     <a href="https://docs.notifi.network/AlertCreateGuide.html"><strong>Alert Creation Overview »</strong></a>
     <br />
     <a href="https://discord.gg/nAqR3mk3rv"><strong>Join our Discord!!</strong></a>
@@ -125,3 +124,9 @@ npx lerna publish --canary
 
 ## Regenerate docs
 npm run docs
+
+<br/>
+<br/>
+
+## Advanced
+We understand that not all scenarios can be solved with the current state of the SDK. When adding SDK features, we'd like to ensure we're building exactly what developers want. If you need to break out of the SDK features for more advanced interaction with Notifi, please see our <a href="https://docs.notifi.network"><strong>Notifi GraphQL API</strong></a> that you can consume alongside the SDK.
