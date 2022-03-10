@@ -32,10 +32,11 @@ const makeRequestInternal = async <Input, Result>(
 
 const makeRequest = <Input, Result>(
   query: string,
-  resultKey: string
+  resultKey: string,
+  mapper: (from: Input) => Input = (it: Input) => it
 ): ((axiosInstance: AxiosInstance, variables: Input) => Promise<Result>) => {
   return (axiosInstance, variables) =>
-    makeRequestInternal(query, resultKey, axiosInstance, variables);
+    makeRequestInternal(query, resultKey, axiosInstance, mapper(variables));
 };
 
 const makeParameterLessRequest = <Result>(

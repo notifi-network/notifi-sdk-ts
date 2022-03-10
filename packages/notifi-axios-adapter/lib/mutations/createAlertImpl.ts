@@ -14,6 +14,8 @@ mutation createAlert(
   $sourceGroupId: String!
   $filterId: String!
   $targetGroupId: String!
+  $filterOptions: String!
+  $groupName: String
 ) {
   createAlert(
     alertInput: {
@@ -21,6 +23,8 @@ mutation createAlert(
       sourceGroupId: $sourceGroupId
       filterId: $filterId
       targetGroupId: $targetGroupId
+      filterOptions: $filterOptions
+      groupName: $groupName
     }
   ) {
     ...alertFragment
@@ -30,7 +34,14 @@ mutation createAlert(
 
 const createAlertImpl = makeRequest<CreateAlertInput, CreateAlertResult>(
   collectDependencies(...DEPENDENCIES, MUTATION),
-  'createAlert'
+  'createAlert',
+  (input: CreateAlertInput): Required<CreateAlertInput> => {
+    const groupName = input.groupName ?? 'default';
+    return {
+      ...input,
+      groupName
+    };
+  }
 );
 
 export default createAlertImpl;

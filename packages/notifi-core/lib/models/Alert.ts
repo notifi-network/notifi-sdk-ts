@@ -14,6 +14,7 @@ import { TargetGroup } from './TargetGroup';
  * @property {string} filterOptions - The filter options associated with the alert
  * @property {SourceGroup} sourceGroup - The sourceGroup associated with this alert
  * @property {TargetGroup} targetGroup - The targetGroup associated with this alert
+ * @property {string | null} groupName - The group associated with this alert
  *
  */
 export type Alert = Readonly<{
@@ -23,4 +24,5 @@ export type Alert = Readonly<{
   filterOptions: string | null;
   sourceGroup: SourceGroup;
   targetGroup: TargetGroup;
+  groupName: string | null;
 }>;

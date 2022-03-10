@@ -6,6 +6,7 @@ export type CreateAlertInput = Readonly<{
   filterId: string;
   targetGroupId: string;
   filterOptions: string;
+  groupName?: string;
 }>;
 
 export type CreateAlertResult = Alert;
