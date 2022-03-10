@@ -452,7 +452,13 @@ const useNotifiClient = (
    */
   const createAlert = useCallback(
     async (input: ClientCreateAlertInput): Promise<Alert> => {
-      const { name, filterId, filterOptions = {}, sourceId } = input;
+      const {
+        name,
+        filterId,
+        filterOptions = {},
+        sourceId,
+        groupName = 'default'
+      } = input;
 
       setLoading(true);
       try {
@@ -510,7 +516,8 @@ const useNotifiClient = (
           sourceGroupId,
           filterId,
           filterOptions: JSON.stringify(filterOptions),
-          targetGroupId
+          targetGroupId,
+          groupName
         });
 
         // The returned target group doesn't have individual targets

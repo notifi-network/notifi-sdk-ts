@@ -52,6 +52,7 @@ export type ClientCreateAlertInput = Readonly<{
   emailAddress: string | null;
   phoneNumber: string | null;
   telegramId: string | null;
+  groupName?: string;
 }>;
 
 export type EmptyFilterOptions = Record<never, never>;

@@ -14,6 +14,8 @@ mutation createAlert(
   $sourceGroupId: String!
   $filterId: String!
   $targetGroupId: String!
+  $filterOptions: String!
+  $groupName: String!
 ) {
   createAlert(
     alertInput: {
@@ -21,6 +23,8 @@ mutation createAlert(
       sourceGroupId: $sourceGroupId
       filterId: $filterId
       targetGroupId: $targetGroupId
+      filterOptions: $filterOptions
+      groupName: $groupName
     }
   ) {
     ...alertFragment
