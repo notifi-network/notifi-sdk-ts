@@ -5,12 +5,16 @@ import {
   makeRequest,
 } from './axiosRequest';
 import collectDependencies from './collectDependencies';
+import type { EnvironmentConfig, NotifiEnvironment } from './notifiConfigs';
+import notifiConfigs, { NOTIFI_CONFIGS } from './notifiConfigs';
 
-export type { AxiosPost };
+export type { AxiosPost, EnvironmentConfig, NotifiEnvironment };
 
 export {
   collectDependencies,
   makeAuthenticatedRequest,
   makeParameterLessRequest,
   makeRequest,
+  notifiConfigs,
+  NOTIFI_CONFIGS,
 };
