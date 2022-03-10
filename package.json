@@ -8,5 +8,10 @@
     "lerna": "^4.0.0",
     "typedoc": "^0.22.13",
     "typedoc-plugin-missing-exports": "^0.22.6"
-  }
+  },
+  "workspaces": [
+    "packages/notifi-axios-adapter",
+    "packages/notifi-core",
+    "packages/notifi-react-hooks"
+  ]
 }
