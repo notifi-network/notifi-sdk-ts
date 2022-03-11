@@ -4,24 +4,35 @@
   "scripts": {
     "docs": "npx typedoc packages/notifi-react-hooks/lib/index.ts",
     "format": "prettier --config .prettierrc packages/**/lib/**/*.ts --write",
-    "lint": "eslint --ext .ts packages/**/lib --fix"
+    "lint": "eslint --ext .ts packages/**/lib --fix",
+    "test": "jest"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^3.2.0",
+    "@types/jest": "^27.4.1",
     "@typescript-eslint/eslint-plugin": "^5.14.0",
     "@typescript-eslint/parser": "^5.14.0",
     "eslint": "^8.10.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
+    "jest": "^27.5.1",
     "lerna": "^4.0.0",
     "prettier": "^2.5.1",
     "rimraf": "^3.0.2",
+    "ts-jest": "^27.1.3",
     "typedoc": "^0.22.13",
     "typedoc-plugin-missing-exports": "^0.22.6"
   },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node"
+  },
   "workspaces": [
     "packages/notifi-axios-adapter",
+    "packages/notifi-axios-utils",
     "packages/notifi-core",
+    "packages/notifi-node",
+    "packages/notifi-node-sample",
     "packages/notifi-react-hooks"
   ]
 }

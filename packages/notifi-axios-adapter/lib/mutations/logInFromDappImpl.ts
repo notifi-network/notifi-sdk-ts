@@ -1,6 +1,8 @@
 import { userFragment, userFragmentDependencies } from '../fragments';
-import { makeRequest } from '../utils/axiosRequest';
-import collectDependencies from '../utils/collectDependencies';
+import {
+  collectDependencies,
+  makeRequest,
+} from '@notifi-network/notifi-axios-utils';
 import {
   LogInFromDappInput,
   LogInFromDappResult,

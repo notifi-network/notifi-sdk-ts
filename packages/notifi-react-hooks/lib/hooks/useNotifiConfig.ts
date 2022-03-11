@@ -1,3 +1,7 @@
+import type { NotifiEnvironment } from '@notifi-network/notifi-axios-utils';
+import { notifiConfigs } from '@notifi-network/notifi-axios-utils';
+
+// TODO: Deprecate and move to NotifiEnvironment
 export enum BlockchainEnvironment {
   MainNetBeta,
   TestNet,
@@ -6,37 +10,28 @@ export enum BlockchainEnvironment {
 }
 
 const useNotifiConfig = (env = BlockchainEnvironment.MainNetBeta) => {
-  let gqlUrl = '';
-  let storagePrefix = '';
+  let notifiEnv: NotifiEnvironment;
   switch (env) {
     case BlockchainEnvironment.MainNetBeta:
-      gqlUrl = 'https://api.notifi.network/gql';
-      storagePrefix = 'notifi-jwt';
+      notifiEnv = 'Production';
       break;
     case BlockchainEnvironment.TestNet:
-      gqlUrl = 'https://api.stg.notifi.network/gql';
-      storagePrefix = 'notifi-jwt:stg';
+      notifiEnv = 'Staging';
       break;
     case BlockchainEnvironment.DevNet:
-      gqlUrl = 'https://api.dev.notifi.network/gql';
-      storagePrefix = 'notifi-jwt:dev';
+      notifiEnv = 'Development';
       break;
     case BlockchainEnvironment.LocalNet:
-      gqlUrl = 'https://localhost:5001/gql';
-      storagePrefix = 'notifi-jwt:local';
+      notifiEnv = 'Local';
       break;
-    default:
-      assertUnreachable(env);
   }
+
+  const { gqlUrl, storagePrefix } = notifiConfigs(notifiEnv);
 
   return {
     gqlUrl,
     storagePrefix,
   };
-};
-
-const assertUnreachable = (_x: never): never => {
-  throw new Error('This should never be reached');
 };
 
 export default useNotifiConfig;

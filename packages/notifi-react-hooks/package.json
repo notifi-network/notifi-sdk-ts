@@ -2,8 +2,8 @@
   "name": "@notifi-network/notifi-react-hooks",
   "version": "0.4.0",
   "description": "React hooks provided as a convenience wrapper around notifi.network platform functionality",
-  "author": "Juni Kim <73hKrn@gmail.com>",
-  "homepage": "https://github.com/nimesh-irisio/notifi-sdk#readme",
+  "author": "juni-notifi <hyungjoon.kim@notifi.network>",
+  "homepage": "https://github.com/notifi-network/notifi-sdk-ts#readme",
   "license": "MIT",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nimesh-irisio/notifi-sdk.git"
+    "url": "git+https://github.com/notifi-network/notifi-sdk-ts.git"
   },
   "scripts": {
     "build": "npm run clean && npm run compile",
@@ -23,7 +23,7 @@
     "compile": "tsc -p tsconfig.build.json"
   },
   "bugs": {
-    "url": "https://github.com/nimesh-irisio/notifi-sdk/issues"
+    "url": "https://github.com/notifi-network/notifi-sdk-ts/issues"
   },
   "devDependencies": {
     "@notifi-network/notifi-core": "^0.4.0",
@@ -32,6 +32,7 @@
   },
   "dependencies": {
     "@notifi-network/notifi-axios-adapter": "^0.4.0",
+    "@notifi-network/notifi-axios-utils": "^0.4.0",
     "axios": "^0.26.0",
     "typedoc-plugin-missing-exports": "^0.22.6",
     "typescript": "^4.5.5",

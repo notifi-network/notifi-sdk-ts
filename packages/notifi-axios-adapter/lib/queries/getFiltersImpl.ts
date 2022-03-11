@@ -1,6 +1,8 @@
 import { filterFragment, filterFragmentDependencies } from '../fragments';
-import { makeParameterLessRequest } from '../utils/axiosRequest';
-import collectDependencies from '../utils/collectDependencies';
+import {
+  collectDependencies,
+  makeParameterLessRequest,
+} from '@notifi-network/notifi-axios-utils';
 import { GetFiltersResult } from '@notifi-network/notifi-core';
 
 const DEPENDENCIES = [...filterFragmentDependencies, filterFragment];
