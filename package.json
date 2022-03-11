@@ -32,6 +32,7 @@
     "packages/notifi-axios-utils",
     "packages/notifi-core",
     "packages/notifi-node",
+    "packages/notifi-node-sample",
     "packages/notifi-react-hooks"
   ]
 }

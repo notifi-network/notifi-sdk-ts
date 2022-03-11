@@ -1,5 +1,5 @@
 {
-  "name": "@notifi-networks/notifi-node",
+  "name": "@notifi-network/notifi-node",
   "version": "0.4.0",
   "description": "The node.js library for server-initiated pushes",
   "author": "juni-notifi <hyungjoon.kim@notifi.network>",

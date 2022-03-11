@@ -5,7 +5,7 @@
   "author": "Juni Kim <73hKrn@gmail.com>",
   "homepage": "https://github.com/nimesh-irisio/notifi-sdk#readme",
   "license": "MIT",
-  "main": "dist/index.js",
+  "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
     "dist"
