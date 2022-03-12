@@ -6,6 +6,7 @@ import {
 } from '@notifi-network/notifi-node';
 import axios from 'axios';
 import * as AxiosLogger from 'axios-logger';
+import { randomUUID } from 'crypto';
 import type { NextFunction, Request, Response } from 'express';
 import express from 'express';
 import morgan from 'morgan';
@@ -186,6 +187,7 @@ app.post('/sendSimpleHealthThreshold', authorizeMiddleware, (req, res) => {
 
   return client
     .sendSimpleHealthThreshold(jwt, {
+      key: randomUUID(),
       walletPublicKey,
       walletBlockchain,
       value,
