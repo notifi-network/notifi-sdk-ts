@@ -7,6 +7,7 @@ export type SendMessageInput = Readonly<{
   input: Readonly<{
     walletPublicKey: string;
     walletBlockchain: 'SOLANA';
+    messageKey: string;
     message: string;
     messageType: 'SIMPLE_HEALTH_THRESHOLD';
   }>;

@@ -5,6 +5,8 @@ import {
   createAxiosInstance,
 } from '@notifi-network/notifi-node';
 import axios from 'axios';
+import * as AxiosLogger from 'axios-logger';
+import type { NextFunction, Request, Response } from 'express';
 import express from 'express';
 import morgan from 'morgan';
 import json from 'morgan-json';
@@ -45,11 +47,41 @@ const parseEnv = (envString: string | undefined): NotifiEnvironment => {
   return notifiEnv;
 };
 
+const axiosInstanceMiddleware = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const body: Readonly<{
+    env?: string;
+  }> = req.body ?? {};
+  const notifiEnv = parseEnv(body.env);
+  const axiosInstance = createAxiosInstance(axios, notifiEnv);
+  AxiosLogger.setGlobalConfig({
+    data: true,
+    method: true,
+    url: true,
+    status: true,
+    statusText: true,
+  });
+  axiosInstance.interceptors.request.use(
+    AxiosLogger.requestLogger,
+    AxiosLogger.errorLogger,
+  );
+  axiosInstance.interceptors.response.use(
+    AxiosLogger.responseLogger,
+    AxiosLogger.errorLogger,
+  );
+  res.locals.axiosInstance = axiosInstance;
+  next();
+};
+
+app.use(axiosInstanceMiddleware);
+
 app.post('/login', (req, res) => {
   const body: Readonly<{
     sid?: string;
     secret?: string;
-    env?: string;
   }> = req.body ?? {};
 
   const sid = body.sid ?? process.env.NOTIFI_SID;
@@ -66,9 +98,7 @@ app.post('/login', (req, res) => {
     });
   }
 
-  const notifiEnv = parseEnv(body.env);
-  const axiosInstance = createAxiosInstance(axios, notifiEnv);
-  const client = new NotifiClient(axiosInstance);
+  const client = new NotifiClient(res.locals.axiosInstance);
 
   return client
     .logIn({ sid, secret })
@@ -82,12 +112,16 @@ app.post('/login', (req, res) => {
       } else if (e instanceof Error) {
         message = e.message;
       }
-
+      console.log('Error in login', message);
       return res.status(500).json({ message });
     });
 });
 
-app.post('/sendSimpleHealthThreshold', (req, res) => {
+const authorizeMiddleware = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const authorization = req.headers.authorization;
   if (authorization === undefined) {
     return res.status(401).json({
@@ -99,7 +133,7 @@ app.post('/sendSimpleHealthThreshold', (req, res) => {
   if (authorization.startsWith('Bearer ')) {
     const tokens = authorization.split(' ');
     if (tokens.length > 1) {
-      jwt = tokens[2];
+      jwt = tokens[1];
     }
   }
 
@@ -109,16 +143,21 @@ app.post('/sendSimpleHealthThreshold', (req, res) => {
     });
   }
 
+  res.locals.jwt = jwt;
+  next();
+};
+
+app.post('/sendSimpleHealthThreshold', authorizeMiddleware, (req, res) => {
+  const jwt: string = res.locals.jwt;
+
   const {
     walletPublicKey,
     walletBlockchain,
     value,
-    env,
   }: Readonly<{
     walletPublicKey?: string;
     walletBlockchain?: string;
     value?: number;
-    env?: string;
   }> = req.body ?? {};
 
   if (walletPublicKey === undefined) {
@@ -143,9 +182,7 @@ app.post('/sendSimpleHealthThreshold', (req, res) => {
     });
   }
 
-  const notifiEnv = parseEnv(env);
-  const axiosInstance = createAxiosInstance(axios, notifiEnv);
-  const client = new NotifiClient(axiosInstance);
+  const client = new NotifiClient(res.locals.axiosInstance);
 
   return client
     .sendSimpleHealthThreshold(jwt, {
@@ -155,6 +192,42 @@ app.post('/sendSimpleHealthThreshold', (req, res) => {
     })
     .then(() => {
       return res.status(200).json({ message: 'success' });
+    })
+    .catch((e: unknown) => {
+      let message = 'Unknown server error';
+      if (e instanceof GqlError) {
+        message = `${e.message}: ${e.getErrorMessages().join(', ')}`;
+      } else if (e instanceof Error) {
+        message = e.message;
+      }
+
+      return res.status(500).json({ message });
+    });
+});
+
+app.post('/deleteUserAlert', authorizeMiddleware, (req, res) => {
+  const jwt: string = res.locals.jwt;
+
+  const {
+    alertId,
+  }: Readonly<{
+    alertId?: string;
+  }> = req.body ?? {};
+
+  if (alertId === undefined) {
+    return res.status(400).json({
+      message: 'alertId is required',
+    });
+  }
+
+  const client = new NotifiClient(res.locals.axiosInstance);
+
+  return client
+    .deleteUserAlert(jwt, {
+      alertId,
+    })
+    .then((alertId) => {
+      return res.status(200).json({ alertId });
     })
     .catch((e: unknown) => {
       let message = 'Unknown server error';
