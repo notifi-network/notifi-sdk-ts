@@ -238,4 +238,90 @@ describe('NotifiClient', () => {
       ).resolves.not.toThrow();
     });
   });
+
+  describe('deleteUserAlert', () => {
+    it('calls post with the right parameters', async () => {
+      postSpy.mockResolvedValueOnce({
+        data: {
+          data: {
+            deleteUserAlert: {
+              id: 'some-id',
+            },
+          },
+        },
+      });
+
+      await subject.deleteUserAlert('some-jwt', {
+        alertId: 'some-id',
+      });
+
+      expect(postSpy).toHaveBeenCalledTimes(1);
+      expect(postSpy).toHaveBeenCalledWith(
+        expect.stringMatching('/'),
+        {
+          query: expect.stringContaining('deleteUserAlert'),
+          variables: {
+            alertId: 'some-id',
+          },
+        },
+        {
+          headers: {
+            Authorization: `Bearer some-jwt`,
+          },
+        },
+      );
+    });
+
+    it('throws when underlying request throws', async () => {
+      postSpy.mockRejectedValueOnce(new Error('Some network error'));
+      await expect(
+        subject.deleteUserAlert('some-jwt', {
+          alertId: 'some-id',
+        }),
+      ).rejects.toThrow();
+    });
+
+    it('throws when query succeeds with errors', async () => {
+      postSpy.mockResolvedValueOnce({
+        data: {
+          errors: [{ message: 'Some graphQL error' }],
+        },
+      });
+
+      await expect(
+        subject.deleteUserAlert('some-jwt', {
+          alertId: 'some-id',
+        }),
+      ).rejects.toThrow();
+    });
+
+    it('throws when query succeeds with no data', async () => {
+      postSpy.mockResolvedValueOnce({
+        data: {},
+      });
+      await expect(
+        subject.deleteUserAlert('some-jwt', {
+          alertId: 'some-id',
+        }),
+      ).rejects.toThrow();
+    });
+
+    it('does not throw when query has both data and errors', async () => {
+      postSpy.mockResolvedValueOnce({
+        data: {
+          data: {
+            deleteUserAlert: {
+              id: 'some-id',
+            },
+          },
+          errors: [{ message: 'Some graphQL error' }],
+        },
+      });
+      await expect(
+        subject.deleteUserAlert('some-jwt', {
+          alertId: 'some-id',
+        }),
+      ).resolves.not.toThrow();
+    });
+  });
 });

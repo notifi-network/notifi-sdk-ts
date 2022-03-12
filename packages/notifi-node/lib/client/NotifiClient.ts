@@ -1,4 +1,8 @@
-import { logInFromServiceImpl, sendMessageImpl } from '../mutations';
+import {
+  deleteUserAlertImpl,
+  logInFromServiceImpl,
+  sendMessageImpl,
+} from '../mutations';
 import { Authorization, newSimpleHealthThresholdMessage } from '../types';
 import type { AxiosPost } from '@notifi-network/notifi-axios-utils';
 
@@ -37,6 +41,16 @@ class NotifiClient {
     if (!result) {
       throw new Error('Send message failed');
     }
+  };
+
+  deleteUserAlert: (
+    jwt: string,
+    params: Readonly<{
+      alertId: string;
+    }>,
+  ) => Promise<string /* AlertID */> = async (jwt, { alertId }) => {
+    await deleteUserAlertImpl(this.a, jwt, { alertId });
+    return alertId;
   };
 }
 
