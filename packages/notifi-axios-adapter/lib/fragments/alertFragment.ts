@@ -6,6 +6,7 @@ import {
 export const alertFragment = `
 fragment alertFragment on Alert {
   id
+  groupName
   name
   filter {
     id
