@@ -1,3 +1,4 @@
+import ensureTargetGroup from '../utils/ensureTargetGroup';
 import ensureTargetIds from '../utils/ensureTargetIds';
 import useNotifiConfig, { BlockchainEnvironment } from './useNotifiConfig';
 import useNotifiJwt from './useNotifiJwt';
@@ -311,18 +312,16 @@ const useNotifiClient = (
           throw new Error(`Invalid Alert ${alertId}`);
         }
 
-        const targetGroupId = existingAlert.targetGroup.id;
-        if (targetGroupId === null) {
-          throw new Error(`No Target Group for alert ${alertId}`);
-        }
-
-        const targetGroup = await service.updateTargetGroup({
-          id: targetGroupId,
-          name,
-          emailTargetIds,
-          smsTargetIds,
-          telegramTargetIds,
-        });
+        const targetGroup = await ensureTargetGroup(
+          service,
+          newData.targetGroups,
+          {
+            name,
+            emailTargetIds,
+            smsTargetIds,
+            telegramTargetIds,
+          },
+        );
 
         const alertIndex = newData.alerts.indexOf(existingAlert);
         newData.alerts[alertIndex] = {
@@ -330,10 +329,6 @@ const useNotifiClient = (
           targetGroup,
         };
 
-        const targetGroupIndex = newData.targetGroups.findIndex(
-          (t) => t.id === targetGroupId,
-        );
-        newData.targetGroups[targetGroupIndex] = targetGroup;
         setInternalData(newData);
         return existingAlert;
       } catch (e: unknown) {
@@ -402,7 +397,7 @@ const useNotifiClient = (
             name,
             sourceIds: [sourceId],
           }),
-          service.createTargetGroup({
+          ensureTargetGroup(service, newData.targetGroups, {
             name,
             emailTargetIds,
             smsTargetIds,
