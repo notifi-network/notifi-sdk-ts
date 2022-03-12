@@ -22,18 +22,20 @@ class NotifiClient {
   sendSimpleHealthThreshold: (
     jwt: string,
     params: Readonly<{
+      key: string;
       walletPublicKey: string;
       walletBlockchain: 'SOLANA';
       value: number;
     }>,
   ) => Promise<void> = async (
     jwt,
-    { walletPublicKey, walletBlockchain, value },
+    { key, walletPublicKey, walletBlockchain, value },
   ) => {
     const message = newSimpleHealthThresholdMessage({ value });
     const input = {
       walletPublicKey,
       walletBlockchain,
+      messageKey: key,
       messageType: message.type,
       message: JSON.stringify(message.payload),
     };

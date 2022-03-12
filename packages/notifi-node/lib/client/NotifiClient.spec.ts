@@ -126,6 +126,13 @@ describe('NotifiClient', () => {
   });
 
   describe('sendSimpleHealthThreshold', () => {
+    const params: Parameters<NotifiClient['sendSimpleHealthThreshold']>[1] = {
+      key: 'some-message-key',
+      walletPublicKey: 'base58string',
+      walletBlockchain: 'SOLANA',
+      value: 0.5,
+    };
+
     it('calls post with the right parameters', async () => {
       postSpy.mockResolvedValueOnce({
         data: {
@@ -135,11 +142,7 @@ describe('NotifiClient', () => {
         },
       });
 
-      await subject.sendSimpleHealthThreshold('some-jwt', {
-        walletPublicKey: 'base58string',
-        walletBlockchain: 'SOLANA',
-        value: 0,
-      });
+      await subject.sendSimpleHealthThreshold('some-jwt', params);
 
       expect(postSpy).toHaveBeenCalledTimes(1);
       expect(postSpy).toHaveBeenCalledWith(
@@ -148,7 +151,8 @@ describe('NotifiClient', () => {
           query: expect.stringContaining('sendMessage'),
           variables: {
             input: {
-              message: JSON.stringify({ value: 0 }),
+              message: JSON.stringify({ value: 0.5 }),
+              messageKey: 'some-message-key',
               messageType: 'SIMPLE_HEALTH_THRESHOLD',
               walletBlockchain: 'SOLANA',
               walletPublicKey: 'base58string',
@@ -173,22 +177,14 @@ describe('NotifiClient', () => {
       });
 
       await expect(
-        subject.sendSimpleHealthThreshold('some-jwt', {
-          walletPublicKey: 'base58string',
-          walletBlockchain: 'SOLANA',
-          value: 0,
-        }),
+        subject.sendSimpleHealthThreshold('some-jwt', params),
       ).rejects.toThrow();
     });
 
     it('throws when underlying request throws', async () => {
       postSpy.mockRejectedValueOnce(new Error('Some network error'));
       await expect(
-        subject.sendSimpleHealthThreshold('some-jwt', {
-          walletPublicKey: 'base58string',
-          walletBlockchain: 'SOLANA',
-          value: 0,
-        }),
+        subject.sendSimpleHealthThreshold('some-jwt', params),
       ).rejects.toThrow();
     });
 
@@ -199,11 +195,7 @@ describe('NotifiClient', () => {
         },
       });
       await expect(
-        subject.sendSimpleHealthThreshold('some-jwt', {
-          walletPublicKey: 'base58string',
-          walletBlockchain: 'SOLANA',
-          value: 0,
-        }),
+        subject.sendSimpleHealthThreshold('some-jwt', params),
       ).rejects.toThrow();
     });
 
@@ -212,11 +204,7 @@ describe('NotifiClient', () => {
         data: {},
       });
       await expect(
-        subject.sendSimpleHealthThreshold('some-jwt', {
-          walletPublicKey: 'base58string',
-          walletBlockchain: 'SOLANA',
-          value: 0,
-        }),
+        subject.sendSimpleHealthThreshold('some-jwt', params),
       ).rejects.toThrow();
     });
 
@@ -230,11 +218,7 @@ describe('NotifiClient', () => {
         },
       });
       await expect(
-        subject.sendSimpleHealthThreshold('some-jwt', {
-          walletPublicKey: 'base58string',
-          walletBlockchain: 'SOLANA',
-          value: 0,
-        }),
+        subject.sendSimpleHealthThreshold('some-jwt', params),
       ).resolves.not.toThrow();
     });
   });
