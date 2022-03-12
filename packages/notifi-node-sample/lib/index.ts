@@ -5,6 +5,7 @@ import {
   createAxiosInstance,
 } from '@notifi-network/notifi-node';
 import axios from 'axios';
+import type { NextFunction, Request, Response } from 'express';
 import express from 'express';
 import morgan from 'morgan';
 import json from 'morgan-json';
@@ -87,7 +88,11 @@ app.post('/login', (req, res) => {
     });
 });
 
-app.post('/sendSimpleHealthThreshold', (req, res) => {
+const authorizeMiddleware = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const authorization = req.headers.authorization;
   if (authorization === undefined) {
     return res.status(401).json({
@@ -108,6 +113,13 @@ app.post('/sendSimpleHealthThreshold', (req, res) => {
       message: 'Bearer token is required',
     });
   }
+
+  res.locals.jwt = jwt;
+  next();
+};
+
+app.post('/sendSimpleHealthThreshold', authorizeMiddleware, (req, res) => {
+  const jwt: string = res.locals.jwt;
 
   const {
     walletPublicKey,
@@ -152,6 +164,46 @@ app.post('/sendSimpleHealthThreshold', (req, res) => {
       walletPublicKey,
       walletBlockchain,
       value,
+    })
+    .then(() => {
+      return res.status(200).json({ message: 'success' });
+    })
+    .catch((e: unknown) => {
+      let message = 'Unknown server error';
+      if (e instanceof GqlError) {
+        message = `${e.message}: ${e.getErrorMessages().join(', ')}`;
+      } else if (e instanceof Error) {
+        message = e.message;
+      }
+
+      return res.status(500).json({ message });
+    });
+});
+
+app.post('/deleteUserAlert', authorizeMiddleware, (req, res) => {
+  const jwt: string = res.locals.jwt;
+
+  const {
+    alertId,
+    env,
+  }: Readonly<{
+    alertId?: string;
+    env?: string;
+  }> = req.body ?? {};
+
+  if (alertId === undefined) {
+    return res.status(400).json({
+      message: 'alertId is required',
+    });
+  }
+
+  const notifiEnv = parseEnv(env);
+  const axiosInstance = createAxiosInstance(axios, notifiEnv);
+  const client = new NotifiClient(axiosInstance);
+
+  return client
+    .deleteUserAlert(jwt, {
+      alertId,
     })
     .then(() => {
       return res.status(200).json({ message: 'success' });
