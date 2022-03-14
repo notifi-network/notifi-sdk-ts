@@ -1,3 +1,4 @@
+import ensureSourceGroup from '../utils/ensureSourceGroup';
 import ensureTargetGroup from '../utils/ensureTargetGroup';
 import ensureTargetIds from '../utils/ensureTargetIds';
 import useNotifiConfig, { BlockchainEnvironment } from './useNotifiConfig';
@@ -393,7 +394,7 @@ const useNotifiClient = (
         }
 
         const [sourceGroup, targetGroup] = await Promise.all([
-          service.createSourceGroup({
+          ensureSourceGroup(service, newData.sourceGroups, {
             name,
             sourceIds: [sourceId],
           }),
@@ -404,9 +405,6 @@ const useNotifiClient = (
             telegramTargetIds,
           }),
         ]);
-
-        newData.sourceGroups.push(sourceGroup);
-        newData.targetGroups.push(targetGroup);
 
         const sourceGroupId = sourceGroup.id;
         if (sourceGroupId === null) {
