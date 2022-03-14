@@ -1,3 +1,8 @@
+import { filterFragment, filterFragmentDependencies } from './filterFragment';
+import {
+  sourceGroupFragment,
+  sourceGroupFragmentDependencies,
+} from './sourceGroupFragment';
 import {
   targetGroupFragment,
   targetGroupFragmentDependencies,
@@ -8,13 +13,12 @@ fragment alertFragment on Alert {
   id
   groupName
   name
+  filterOptions
   filter {
-    id
-    name
+    ...filterFragment
   }
   sourceGroup {
-    id
-    name
+    ...sourceGroupFragment
   }
   targetGroup {
     ...targetGroupFragment
@@ -23,6 +27,10 @@ fragment alertFragment on Alert {
 `.trim();
 
 export const alertFragmentDependencies = [
+  ...sourceGroupFragmentDependencies,
+  ...filterFragmentDependencies,
   ...targetGroupFragmentDependencies,
+  sourceGroupFragment,
+  filterFragment,
   targetGroupFragment,
 ];

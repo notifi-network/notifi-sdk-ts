@@ -154,11 +154,11 @@ app.post('/sendSimpleHealthThreshold', authorizeMiddleware, (req, res) => {
   const {
     walletPublicKey,
     walletBlockchain,
-    value,
+    healthValue,
   }: Readonly<{
     walletPublicKey?: string;
     walletBlockchain?: string;
-    value?: number;
+    healthValue?: number;
   }> = req.body ?? {};
 
   if (walletPublicKey === undefined) {
@@ -177,7 +177,7 @@ app.post('/sendSimpleHealthThreshold', authorizeMiddleware, (req, res) => {
     });
   }
 
-  if (value === undefined) {
+  if (healthValue === undefined) {
     return res.status(400).json({
       message: 'value is required',
     });
@@ -190,7 +190,7 @@ app.post('/sendSimpleHealthThreshold', authorizeMiddleware, (req, res) => {
       key: randomUUID(),
       walletPublicKey,
       walletBlockchain,
-      value,
+      healthValue,
     })
     .then(() => {
       return res.status(200).json({ message: 'success' });
