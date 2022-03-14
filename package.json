@@ -2,6 +2,7 @@
   "name": "root",
   "private": true,
   "scripts": {
+    "build": "npx lerna run build",
     "docs": "npx typedoc packages/notifi-react-hooks/lib/index.ts",
     "format": "prettier --config .prettierrc packages/**/lib/**/*.ts --write",
     "lint": "eslint --ext .ts packages/**/lib --fix",

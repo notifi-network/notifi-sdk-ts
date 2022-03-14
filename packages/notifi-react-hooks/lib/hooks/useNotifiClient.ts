@@ -1,7 +1,7 @@
 import ensureSourceGroup from '../utils/ensureSourceGroup';
 import ensureTargetGroup from '../utils/ensureTargetGroup';
 import ensureTargetIds from '../utils/ensureTargetIds';
-import newFilterOptionsBuilder from '../utils/newFilterOptionsBuilder';
+import packFilterOptions from '../utils/packFilterOptions';
 import useNotifiConfig, { BlockchainEnvironment } from './useNotifiConfig';
 import useNotifiJwt from './useNotifiJwt';
 import useNotifiService from './useNotifiService';
@@ -364,7 +364,7 @@ const useNotifiClient = (
       const {
         name,
         filterId,
-        filterOptions = newFilterOptionsBuilder(),
+        filterOptions,
         sourceId,
         groupName = 'default',
       } = input;
@@ -421,7 +421,7 @@ const useNotifiClient = (
           name,
           sourceGroupId,
           filterId,
-          filterOptions: filterOptions.toJsonString(),
+          filterOptions: packFilterOptions(filterOptions),
           targetGroupId,
           groupName,
         });

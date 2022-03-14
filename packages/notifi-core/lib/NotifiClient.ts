@@ -1,5 +1,4 @@
 import { Alert, Filter, Source, TargetGroup, User } from './models';
-import { FilterOptionsBuilder } from './utils/FilterOptionsBuilder';
 
 export type ClientData = Readonly<{
   alerts: ReadonlyArray<Alert>;
@@ -7,6 +6,15 @@ export type ClientData = Readonly<{
   sources: ReadonlyArray<Source>;
   targetGroups: ReadonlyArray<TargetGroup>;
 }>;
+
+export type AlertFrequency = 'ALWAYS' | 'SINGLE';
+
+export type FilterOptions = Partial<
+  Readonly<{
+    alertFrequency: AlertFrequency;
+    threshold: number;
+  }>
+>;
 
 /**
  * Input param for updating an Alert
@@ -49,7 +57,7 @@ export type ClientCreateAlertInput = Readonly<{
   name: string;
   sourceId: string;
   filterId: string;
-  filterOptions?: FilterOptionsBuilder;
+  filterOptions?: FilterOptions;
   emailAddress: string | null;
   phoneNumber: string | null;
   telegramId: string | null;
