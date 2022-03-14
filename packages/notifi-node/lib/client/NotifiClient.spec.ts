@@ -130,7 +130,7 @@ describe('NotifiClient', () => {
       key: 'some-message-key',
       walletPublicKey: 'base58string',
       walletBlockchain: 'SOLANA',
-      value: 0.5,
+      healthValue: 0.5,
     };
 
     it('calls post with the right parameters', async () => {
@@ -151,7 +151,7 @@ describe('NotifiClient', () => {
           query: expect.stringContaining('sendMessage'),
           variables: {
             input: {
-              message: JSON.stringify({ value: 0.5 }),
+              message: JSON.stringify({ healthValue: 0.5 }),
               messageKey: 'some-message-key',
               messageType: 'SIMPLE_HEALTH_THRESHOLD',
               walletBlockchain: 'SOLANA',

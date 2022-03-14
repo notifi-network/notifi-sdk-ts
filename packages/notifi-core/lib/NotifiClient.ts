@@ -1,4 +1,5 @@
 import { Alert, Filter, Source, TargetGroup, User } from './models';
+import { FilterOptionsBuilder } from './utils/FilterOptionsBuilder';
 
 export type ClientData = Readonly<{
   alerts: ReadonlyArray<Alert>;
@@ -48,18 +49,12 @@ export type ClientCreateAlertInput = Readonly<{
   name: string;
   sourceId: string;
   filterId: string;
-  filterOptions?: FilterOptions;
+  filterOptions?: FilterOptionsBuilder;
   emailAddress: string | null;
   phoneNumber: string | null;
   telegramId: string | null;
   groupName?: string;
 }>;
-
-export type EmptyFilterOptions = Record<never, never>;
-export type ThresholdFilterOptions = Readonly<{
-  threshold: number;
-}>;
-export type FilterOptions = EmptyFilterOptions | ThresholdFilterOptions;
 
 export type ClientDeleteAlertInput = Readonly<{
   alertId: string;

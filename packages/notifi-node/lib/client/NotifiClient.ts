@@ -25,13 +25,13 @@ class NotifiClient {
       key: string;
       walletPublicKey: string;
       walletBlockchain: 'SOLANA';
-      value: number;
+      healthValue: number;
     }>,
   ) => Promise<void> = async (
     jwt,
-    { key, walletPublicKey, walletBlockchain, value },
+    { key, walletPublicKey, walletBlockchain, healthValue },
   ) => {
-    const message = newSimpleHealthThresholdMessage({ value });
+    const message = newSimpleHealthThresholdMessage({ healthValue });
     const input = {
       walletPublicKey,
       walletBlockchain,
