@@ -1,3 +1,7 @@
+import ensureSourceGroup from '../utils/ensureSourceGroup';
+import ensureTargetGroup from '../utils/ensureTargetGroup';
+import ensureTargetIds from '../utils/ensureTargetIds';
+import packFilterOptions from '../utils/packFilterOptions';
 import useNotifiConfig, { BlockchainEnvironment } from './useNotifiConfig';
 import useNotifiJwt from './useNotifiJwt';
 import useNotifiService from './useNotifiService';
@@ -97,94 +101,6 @@ const fetchDataImpl = async (service: NotifiService): Promise<InternalData> => {
     telegramTargets: [...telegramTargets],
   };
 };
-
-type CreateFunc<T> = (service: NotifiService, value: string) => Promise<T>;
-type IdentifyFunc<T> = (arg: T) => string | null;
-
-const ensureTargetHoc = <T extends Readonly<{ id: string | null }>>(
-  create: CreateFunc<T>,
-  identify: IdentifyFunc<T>,
-): ((
-  service: NotifiService,
-  existing: Array<T> | undefined,
-  value: string | null,
-) => Promise<string | null>) => {
-  return async (service, existing, value) => {
-    if (value === null) {
-      return null;
-    }
-
-    const found = existing?.find((it) => identify(it) === value);
-
-    if (found !== undefined) {
-      return found.id;
-    }
-
-    const created = await create(service, value);
-    existing?.push(created);
-    return created.id;
-  };
-};
-
-const ensureEmail = ensureTargetHoc(
-  async (service: NotifiService, value: string) =>
-    await service.createEmailTarget({
-      name: value,
-      value,
-    }),
-  (arg: EmailTarget) => arg.emailAddress,
-);
-
-const ensureSms = ensureTargetHoc(
-  async (service: NotifiService, value: string) =>
-    await service.createSmsTarget({
-      name: value,
-      value,
-    }),
-  (arg: SmsTarget) => arg.phoneNumber,
-);
-
-const ensureTelegram = ensureTargetHoc(
-  async (service: NotifiService, value: string) =>
-    await service.createTelegramTarget({
-      name: value,
-      value,
-    }),
-  (arg: TelegramTarget) => arg.telegramId,
-);
-
-async function ensureTargetIds(
-  service: NotifiService,
-  newData: InternalData,
-  input: Readonly<{
-    emailAddress: string | null;
-    phoneNumber: string | null;
-    telegramId: string | null;
-  }>,
-) {
-  const { emailAddress, phoneNumber, telegramId } = input;
-  const [emailTargetId, smsTargetId, telegramTargetId] = await Promise.all([
-    ensureEmail(service, newData?.emailTargets, emailAddress),
-    ensureSms(service, newData?.smsTargets, phoneNumber),
-    ensureTelegram(service, newData?.telegramTargets, telegramId),
-  ]);
-
-  const emailTargetIds = [];
-  if (emailTargetId !== null) {
-    emailTargetIds.push(emailTargetId);
-  }
-
-  const smsTargetIds = [];
-  if (smsTargetId !== null) {
-    smsTargetIds.push(smsTargetId);
-  }
-
-  const telegramTargetIds = [];
-  if (telegramTargetId !== null) {
-    telegramTargetIds.push(telegramTargetId);
-  }
-  return { emailTargetIds, smsTargetIds, telegramTargetIds };
-}
 
 const projectData = (internalData: InternalData | null): ClientData | null => {
   if (internalData == null) {
@@ -393,24 +309,21 @@ const useNotifiClient = (
         if (existingAlert === undefined) {
           throw new Error(`Unable to find alert ${alertId}`);
         }
-
-        const targetGroupId = existingAlert.targetGroup.id;
-        if (targetGroupId === null) {
-          throw new Error(`No Target Group for alert ${alertId}`);
+        const name = existingAlert.name;
+        if (name === null) {
+          throw new Error(`Invalid Alert ${alertId}`);
         }
 
-        const targetGroupName = existingAlert.targetGroup.name;
-        if (targetGroupName === null) {
-          throw new Error(`Invalid Target Group on alert ${alertId}`);
-        }
-
-        const targetGroup = await service.updateTargetGroup({
-          id: targetGroupId,
-          name: targetGroupName,
-          emailTargetIds,
-          smsTargetIds,
-          telegramTargetIds,
-        });
+        const targetGroup = await ensureTargetGroup(
+          service,
+          newData.targetGroups,
+          {
+            name,
+            emailTargetIds,
+            smsTargetIds,
+            telegramTargetIds,
+          },
+        );
 
         const alertIndex = newData.alerts.indexOf(existingAlert);
         newData.alerts[alertIndex] = {
@@ -418,10 +331,6 @@ const useNotifiClient = (
           targetGroup,
         };
 
-        const targetGroupIndex = newData.targetGroups.findIndex(
-          (t) => t.id === targetGroupId,
-        );
-        newData.targetGroups[targetGroupIndex] = targetGroup;
         setInternalData(newData);
         return existingAlert;
       } catch (e: unknown) {
@@ -455,7 +364,7 @@ const useNotifiClient = (
       const {
         name,
         filterId,
-        filterOptions = {},
+        filterOptions,
         sourceId,
         groupName = 'default',
       } = input;
@@ -486,20 +395,17 @@ const useNotifiClient = (
         }
 
         const [sourceGroup, targetGroup] = await Promise.all([
-          service.createSourceGroup({
+          ensureSourceGroup(service, newData.sourceGroups, {
             name,
             sourceIds: [sourceId],
           }),
-          service.createTargetGroup({
+          ensureTargetGroup(service, newData.targetGroups, {
             name,
             emailTargetIds,
             smsTargetIds,
             telegramTargetIds,
           }),
         ]);
-
-        newData.sourceGroups.push(sourceGroup);
-        newData.targetGroups.push(targetGroup);
 
         const sourceGroupId = sourceGroup.id;
         if (sourceGroupId === null) {
@@ -515,7 +421,7 @@ const useNotifiClient = (
           name,
           sourceGroupId,
           filterId,
-          filterOptions: JSON.stringify(filterOptions),
+          filterOptions: packFilterOptions(filterOptions),
           targetGroupId,
           groupName,
         });

@@ -16,4 +16,5 @@ export * from './GetSourceGroups';
 export * from './GetTargetGroups';
 export * from './GetTelegramTargets';
 export * from './LogInFromDapp';
+export * from './UpdateSourceGroup';
 export * from './UpdateTargetGroup';

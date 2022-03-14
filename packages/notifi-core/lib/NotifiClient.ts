@@ -7,6 +7,15 @@ export type ClientData = Readonly<{
   targetGroups: ReadonlyArray<TargetGroup>;
 }>;
 
+export type AlertFrequency = 'ALWAYS' | 'SINGLE';
+
+export type FilterOptions = Partial<
+  Readonly<{
+    alertFrequency: AlertFrequency;
+    threshold: number;
+  }>
+>;
+
 /**
  * Input param for updating an Alert
  *
@@ -54,12 +63,6 @@ export type ClientCreateAlertInput = Readonly<{
   telegramId: string | null;
   groupName?: string;
 }>;
-
-export type EmptyFilterOptions = Record<never, never>;
-export type ThresholdFilterOptions = Readonly<{
-  threshold: number;
-}>;
-export type FilterOptions = EmptyFilterOptions | ThresholdFilterOptions;
 
 export type ClientDeleteAlertInput = Readonly<{
   alertId: string;

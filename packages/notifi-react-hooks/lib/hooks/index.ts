@@ -3,11 +3,11 @@ import { BlockchainEnvironment } from './useNotifiConfig';
 import { GqlError } from '@notifi-network/notifi-axios-utils';
 import {
   Alert,
+  AlertFrequency,
   ClientCreateAlertInput,
   ClientData,
   ClientDeleteAlertInput,
   ClientUpdateAlertInput,
-  EmptyFilterOptions,
   Filter,
   FilterOptions,
   MessageSigner,
@@ -15,17 +15,16 @@ import {
   Source,
   SourceGroup,
   TargetGroup,
-  ThresholdFilterOptions,
   User,
 } from '@notifi-network/notifi-core';
 
 export type {
   Alert,
+  AlertFrequency,
   ClientCreateAlertInput,
   ClientData,
   ClientDeleteAlertInput,
   ClientUpdateAlertInput,
-  EmptyFilterOptions,
   Filter,
   FilterOptions,
   MessageSigner,
@@ -33,7 +32,6 @@ export type {
   TargetGroup,
   Source,
   SourceGroup,
-  ThresholdFilterOptions,
   User,
 };
 

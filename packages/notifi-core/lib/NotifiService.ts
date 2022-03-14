@@ -18,6 +18,7 @@ export type NotifiService = Operations.CreateAlertService &
   Operations.GetTargetGroupsService &
   Operations.GetTelegramTargetsService &
   Operations.LogInFromDappService &
+  Operations.UpdateSourceGroupService &
   Operations.UpdateTargetGroupService &
   Readonly<{
     setJwt: (jwt: string | null) => void;

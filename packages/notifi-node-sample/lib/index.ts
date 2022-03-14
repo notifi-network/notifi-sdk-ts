@@ -6,6 +6,7 @@ import {
 } from '@notifi-network/notifi-node';
 import axios from 'axios';
 import * as AxiosLogger from 'axios-logger';
+import { randomUUID } from 'crypto';
 import type { NextFunction, Request, Response } from 'express';
 import express from 'express';
 import morgan from 'morgan';
@@ -153,11 +154,11 @@ app.post('/sendSimpleHealthThreshold', authorizeMiddleware, (req, res) => {
   const {
     walletPublicKey,
     walletBlockchain,
-    value,
+    healthValue,
   }: Readonly<{
     walletPublicKey?: string;
     walletBlockchain?: string;
-    value?: number;
+    healthValue?: number;
   }> = req.body ?? {};
 
   if (walletPublicKey === undefined) {
@@ -176,7 +177,7 @@ app.post('/sendSimpleHealthThreshold', authorizeMiddleware, (req, res) => {
     });
   }
 
-  if (value === undefined) {
+  if (healthValue === undefined) {
     return res.status(400).json({
       message: 'value is required',
     });
@@ -186,9 +187,10 @@ app.post('/sendSimpleHealthThreshold', authorizeMiddleware, (req, res) => {
 
   return client
     .sendSimpleHealthThreshold(jwt, {
+      key: randomUUID(),
       walletPublicKey,
       walletBlockchain,
-      value,
+      healthValue,
     })
     .then(() => {
       return res.status(200).json({ message: 'success' });

@@ -2,5 +2,12 @@
   "extends": "./tsconfig.build.json",
   "compilerOptions": {
     "baseUrl": "./packages",
+    "paths": {
+      "@notifi-network/notifi-axios-adapter": ["notifi-axios-adapter/lib"],
+      "@notifi-network/notifi-axios-utils": ["notifi-axios-utils/lib"],
+      "@notifi-network/notifi-core": ["notifi-core/lib"],
+      "@notifi-network/notifi-node": ["notifi-node/lib"],
+      "@notifi-network/notifi-react-hooks": ["notifi-react-hooks/lib"]
+    }
   }
 }

@@ -1,9 +1,13 @@
 import type { Message } from './Message';
 
 export type SimpleHealthThresholdMessagePayload = Readonly<{
-  value: number;
-  template?: string;
+  healthValue: number;
+  targetTemplates?: Readonly<{
+    [TargetType in 'SMS' | 'Email' | 'Telegram']?: string;
+  }>;
+  templateVariables?: Record<string, string>;
 }>;
+
 export type SimpleHealthThresholdMessage = Message<
   'SIMPLE_HEALTH_THRESHOLD',
   SimpleHealthThresholdMessagePayload
