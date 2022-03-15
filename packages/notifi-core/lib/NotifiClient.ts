@@ -9,12 +9,11 @@ export type ClientData = Readonly<{
 
 export type AlertFrequency = 'ALWAYS' | 'SINGLE';
 
-export type FilterOptions = Partial<
-  Readonly<{
-    alertFrequency: AlertFrequency;
-    threshold: number;
-  }>
->;
+export type FilterOptions = Partial<{
+  alertFrequency: AlertFrequency;
+  threshold: number;
+  delayProcessingUntil: string;
+}>;
 
 /**
  * Input param for updating an Alert
@@ -57,7 +56,7 @@ export type ClientCreateAlertInput = Readonly<{
   name: string;
   sourceId: string;
   filterId: string;
-  filterOptions?: FilterOptions;
+  filterOptions?: Readonly<FilterOptions>;
   emailAddress: string | null;
   phoneNumber: string | null;
   telegramId: string | null;

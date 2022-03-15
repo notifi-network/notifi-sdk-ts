@@ -1,7 +1,7 @@
 import type { FilterOptions } from '@notifi-network/notifi-core';
 
 const packFilterOptions = (
-  clientOptions: FilterOptions | undefined,
+  clientOptions: Readonly<FilterOptions> | undefined,
 ): string => {
   const record: Record<string, string> = {};
 
