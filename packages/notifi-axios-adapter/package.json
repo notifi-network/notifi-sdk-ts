@@ -1,6 +1,6 @@
 {
   "name": "@notifi-network/notifi-axios-adapter",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "The axios adapter for notifi functionality",
   "author": "juni-notifi <hyungjoon.kim@notifi.network>",
   "homepage": "https://github.com/nimesh-irisio/notifi-sdk#readme",
