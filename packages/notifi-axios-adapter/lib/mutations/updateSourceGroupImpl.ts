@@ -19,7 +19,7 @@ mutation updateSourceGroup(
   $name: String!
   $sourceIds: [String!]!
 ) {
-  updateSourceGroup(
+  updateSourceGroup: createSourceGroup(
     sourceGroupInput: {
       id: $id
       name: $name
