@@ -1,6 +1,10 @@
 import ensureSourceGroup from '../utils/ensureSourceGroup';
 import ensureTargetGroup from '../utils/ensureTargetGroup';
 import ensureTargetIds from '../utils/ensureTargetIds';
+import fetchDataImpl, {
+  FetchDataState,
+  InternalData,
+} from '../utils/fetchDataImpl';
 import packFilterOptions from '../utils/packFilterOptions';
 import useNotifiConfig, { BlockchainEnvironment } from './useNotifiConfig';
 import useNotifiJwt from './useNotifiJwt';
@@ -11,18 +15,10 @@ import {
   ClientData,
   ClientDeleteAlertInput,
   ClientUpdateAlertInput,
-  EmailTarget,
-  Filter,
   MessageSigner,
   NotifiClient,
-  NotifiService,
-  SmsTarget,
-  Source,
-  SourceGroup,
-  TargetGroup,
-  TelegramTarget,
 } from '@notifi-network/notifi-core';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 /**
  * Config options for Notifi SDK
@@ -48,59 +44,6 @@ export class NotifiClientError extends Error {
     super('NotifiClient encountered an error');
   }
 }
-
-type InternalData = {
-  alerts: Alert[];
-  filters: Filter[];
-  sources: Source[];
-  sourceGroups: SourceGroup[];
-  targetGroups: TargetGroup[];
-  emailTargets: EmailTarget[];
-  smsTargets: SmsTarget[];
-  telegramTargets: TelegramTarget[];
-};
-
-const fetchDataImpl = async (service: NotifiService): Promise<InternalData> => {
-  const [
-    alerts,
-    sources,
-    sourceGroups,
-    targetGroups,
-    emailTargets,
-    smsTargets,
-    telegramTargets,
-  ] = await Promise.all([
-    service.getAlerts(),
-    service.getSources(),
-    service.getSourceGroups(),
-    service.getTargetGroups(),
-    service.getEmailTargets(),
-    service.getSmsTargets(),
-    service.getTelegramTargets(),
-  ]);
-
-  const filterIds = new Set<string | null>();
-  const filters: Filter[] = [];
-  sources.forEach((source) => {
-    source.applicableFilters.forEach((filter) => {
-      if (!filterIds.has(filter.id)) {
-        filters.push(filter);
-        filterIds.add(filter.id);
-      }
-    });
-  });
-
-  return {
-    alerts: [...alerts],
-    filters,
-    sources: [...sources],
-    sourceGroups: [...sourceGroups],
-    targetGroups: [...targetGroups],
-    emailTargets: [...emailTargets],
-    smsTargets: [...smsTargets],
-    telegramTargets: [...telegramTargets],
-  };
-};
 
 const projectData = (internalData: InternalData | null): ClientData | null => {
   if (internalData == null) {
@@ -150,6 +93,8 @@ const useNotifiClient = (
   const [error, setError] = useState<Error | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
+  const fetchDataRef = useRef<FetchDataState>({});
+
   /**
    * User's stored preferences for email, sms, etc.
    * @typedef {object} ClientData
@@ -173,7 +118,7 @@ const useNotifiClient = (
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      const newData = await fetchDataImpl(service);
+      const newData = await fetchDataImpl(service, Date, fetchDataRef.current);
       setInternalData(newData);
 
       const clientData = projectData(newData);
@@ -198,7 +143,7 @@ const useNotifiClient = (
     // Initial load
     if (jwtRef.current !== null) {
       setLoading(true);
-      fetchDataImpl(service)
+      fetchDataImpl(service, Date, fetchDataRef.current)
         .then((newData) => {
           setInternalData(newData);
           setLoading(false);
@@ -265,7 +210,11 @@ const useNotifiClient = (
         service.setJwt(newToken);
         setJwt(newToken);
 
-        const newData = await fetchDataImpl(service);
+        const newData = await fetchDataImpl(
+          service,
+          Date,
+          fetchDataRef.current,
+        );
         setInternalData(newData);
 
         return result;
@@ -301,7 +250,11 @@ const useNotifiClient = (
 
       setLoading(true);
       try {
-        const newData = await fetchDataImpl(service);
+        const newData = await fetchDataImpl(
+          service,
+          Date,
+          fetchDataRef.current,
+        );
         const { emailTargetIds, smsTargetIds, telegramTargetIds } =
           await ensureTargetIds(service, newData, input);
 
@@ -371,7 +324,11 @@ const useNotifiClient = (
 
       setLoading(true);
       try {
-        const newData = await fetchDataImpl(service);
+        const newData = await fetchDataImpl(
+          service,
+          Date,
+          fetchDataRef.current,
+        );
         const { emailTargetIds, smsTargetIds, telegramTargetIds } =
           await ensureTargetIds(service, newData, input);
 
@@ -468,7 +425,11 @@ const useNotifiClient = (
     async (input: ClientDeleteAlertInput) => {
       const { alertId } = input;
       try {
-        const newData = await fetchDataImpl(service);
+        const newData = await fetchDataImpl(
+          service,
+          Date,
+          fetchDataRef.current,
+        );
         const alertToDelete = newData.alerts.find((a) => {
           return a.id === alertId;
         });
