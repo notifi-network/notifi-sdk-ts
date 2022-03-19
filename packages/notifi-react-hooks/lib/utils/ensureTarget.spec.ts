@@ -130,14 +130,37 @@ describe('ensureEmail', () => {
     id: 'existing',
     emailAddress: 'existing@e.mail',
   } as EmailTarget;
-  let existing = [existingItem];
+
+  const nullItem = {
+    id: null,
+    emailAddress: null,
+  } as EmailTarget;
+
+  let existing = [existingItem, nullItem];
 
   const subject = async (value: string | null) =>
     ensureEmail(service, existing, value);
 
   beforeEach(() => {
     createSpy.mockReset();
-    existing = [existingItem];
+    existing = [existingItem, nullItem];
+  });
+
+  describe('when using an existing email with different casing', () => {
+    it('does not call the createFunc', async () => {
+      await subject('Existing@E.mail');
+      expect(createSpy).not.toHaveBeenCalled();
+    });
+
+    it('returns the id of the existing target', async () => {
+      const result = await subject('Existing@E.mail');
+      expect(result).toEqual(existingItem.id);
+    });
+
+    it('does not modify the existing array', async () => {
+      await subject('Existing@E.mail');
+      expect(existing).toStrictEqual([existingItem, nullItem]);
+    });
   });
 
   describe('when using an existing email', () => {
@@ -153,7 +176,7 @@ describe('ensureEmail', () => {
 
     it('does not modify the existing array', async () => {
       await subject(existingItem.emailAddress);
-      expect(existing).toStrictEqual([existingItem]);
+      expect(existing).toStrictEqual([existingItem, nullItem]);
     });
   });
 
@@ -177,7 +200,7 @@ describe('ensureEmail', () => {
 
       it('pushes the created item into existing array', async () => {
         await subject(emailAddress);
-        expect(existing).toStrictEqual([existingItem, createdItem]);
+        expect(existing).toStrictEqual([existingItem, nullItem, createdItem]);
       });
     });
 

@@ -12,10 +12,12 @@ export type CreateFunc<Service, T> = (
   value: string,
 ) => Promise<T>;
 export type IdentifyFunc<T> = (arg: T) => string | null;
+export type ValueTransformFunc = (value: string) => string;
 
 const ensureTarget = <Service, T extends Readonly<{ id: string | null }>>(
   create: CreateFunc<Service, T>,
   identify: IdentifyFunc<T>,
+  valueTransform?: ValueTransformFunc,
 ): ((
   service: Service,
   existing: Array<T> | undefined,
@@ -26,13 +28,16 @@ const ensureTarget = <Service, T extends Readonly<{ id: string | null }>>(
       return null;
     }
 
-    const found = existing?.find((it) => identify(it) === value);
+    const transformedValue =
+      valueTransform !== undefined ? valueTransform(value) : value;
+
+    const found = existing?.find((it) => identify(it) === transformedValue);
 
     if (found !== undefined) {
       return found.id;
     }
 
-    const created = await create(service, value);
+    const created = await create(service, transformedValue);
     existing?.push(created);
     return created.id;
   };
@@ -41,10 +46,11 @@ const ensureTarget = <Service, T extends Readonly<{ id: string | null }>>(
 const ensureEmail = ensureTarget(
   async (service: CreateEmailTargetService, value: string) =>
     await service.createEmailTarget({
-      name: value,
-      value,
+      name: value.toLowerCase(),
+      value: value.toLowerCase(),
     }),
-  (arg: EmailTarget) => arg.emailAddress,
+  (arg: EmailTarget) => arg.emailAddress?.toLowerCase() ?? null,
+  (value: string) => value.toLowerCase(),
 );
 
 const ensureSms = ensureTarget(
