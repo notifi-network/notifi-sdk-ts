@@ -65,10 +65,11 @@ const ensureSms = ensureTarget(
 const ensureTelegram = ensureTarget(
   async (service: CreateTelegramTargetService, value: string) =>
     await service.createTelegramTarget({
-      name: value,
-      value,
+      name: value.toLowerCase(),
+      value: value.toLowerCase(),
     }),
-  (arg: TelegramTarget) => arg.telegramId,
+  (arg: TelegramTarget) => arg.telegramId?.toLowerCase() ?? null,
+  (value) => value.toLowerCase(),
 );
 
 export { ensureEmail, ensureSms, ensureTelegram };

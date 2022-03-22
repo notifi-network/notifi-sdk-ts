@@ -289,14 +289,37 @@ describe('ensureTelegram', () => {
     id: 'existing',
     telegramId: 'some-telegram-id',
   } as TelegramTarget;
-  let existing = [existingItem];
+
+  const nullItem = {
+    id: null,
+    telegramId: null,
+  } as TelegramTarget;
+
+  let existing = [existingItem, nullItem];
 
   const subject = async (value: string | null) =>
     ensureTelegram(service, existing, value);
 
   beforeEach(() => {
     createSpy.mockReset();
-    existing = [existingItem];
+    existing = [existingItem, nullItem];
+  });
+
+  describe('when using an existing telegramId with different casing', () => {
+    it('does not call the createFunc', async () => {
+      await subject('Some-Telegram-ID');
+      expect(createSpy).not.toHaveBeenCalled();
+    });
+
+    it('returns the id of the existing target', async () => {
+      const result = await subject('Some-Telegram-ID');
+      expect(result).toEqual(existingItem.id);
+    });
+
+    it('does not modify the existing array', async () => {
+      await subject('Some-Telegram-ID');
+      expect(existing).toStrictEqual([existingItem, nullItem]);
+    });
   });
 
   describe('when using an existing telegramId', () => {
@@ -312,7 +335,7 @@ describe('ensureTelegram', () => {
 
     it('does not modify the existing array', async () => {
       await subject(existingItem.telegramId);
-      expect(existing).toStrictEqual([existingItem]);
+      expect(existing).toStrictEqual([existingItem, nullItem]);
     });
   });
 
@@ -336,7 +359,7 @@ describe('ensureTelegram', () => {
 
       it('pushes the created item into existing array', async () => {
         await subject(telegramId);
-        expect(existing).toStrictEqual([existingItem, createdItem]);
+        expect(existing).toStrictEqual([existingItem, nullItem, createdItem]);
       });
     });
 
