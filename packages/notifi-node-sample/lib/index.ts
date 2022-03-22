@@ -171,7 +171,7 @@ app.post('/sendSimpleHealthThreshold', authorizeMiddleware, (req, res) => {
     return res.status(400).json({
       message: 'walletBlockchain is required',
     });
-  } else if (walletBlockchain !== 'SOLANA') {
+  } else if (walletBlockchain !== 'SOLANA' && walletBlockchain !== 'NEAR') {
     return res.status(400).json({
       message: 'Unsupported walletBlockchain',
     });
@@ -230,6 +230,159 @@ app.post('/deleteUserAlert', authorizeMiddleware, (req, res) => {
     })
     .then((alertId) => {
       return res.status(200).json({ alertId });
+    })
+    .catch((e: unknown) => {
+      let message = 'Unknown server error';
+      if (e instanceof GqlError) {
+        message = `${e.message}: ${e.getErrorMessages().join(', ')}`;
+      } else if (e instanceof Error) {
+        message = e.message;
+      }
+
+      return res.status(500).json({ message });
+    });
+});
+
+app.post('/createTenantUser', authorizeMiddleware, (req, res) => {
+  const jwt: string = res.locals.jwt;
+
+  const {
+    walletBlockchain,
+    walletPublicKey,
+  }: Readonly<{
+    walletBlockchain?: string;
+    walletPublicKey?: string;
+  }> = req.body ?? {};
+
+  if (walletPublicKey === undefined) {
+    return res.status(400).json({
+      message: 'walletPublicKey is required',
+    });
+  }
+
+  if (walletBlockchain === undefined) {
+    return res.status(400).json({
+      message: 'walletBlockchain is required',
+    });
+  } else if (walletBlockchain !== 'SOLANA' && walletBlockchain !== 'NEAR') {
+    return res.status(400).json({
+      message: 'Unsupported walletBlockchain',
+    });
+  }
+
+  const client = new NotifiClient(res.locals.axiosInstance);
+
+  return client
+    .createTenantUser(jwt, {
+      walletBlockchain,
+      walletPublicKey,
+    })
+    .then((userId) => {
+      return res.status(200).json({ userId });
+    })
+    .catch((e: unknown) => {
+      let message = 'Unknown server error';
+      if (e instanceof GqlError) {
+        message = `${e.message}: ${e.getErrorMessages().join(', ')}`;
+      } else if (e instanceof Error) {
+        message = e.message;
+      }
+
+      return res.status(500).json({ message });
+    });
+});
+
+app.post('/createDirectPushAlert', authorizeMiddleware, (req, res) => {
+  const jwt: string = res.locals.jwt;
+
+  const {
+    userId,
+    email,
+  }: Readonly<{
+    userId?: string;
+    email?: string;
+  }> = req.body ?? {};
+
+  if (userId === undefined) {
+    return res.status(400).json({
+      message: 'userId is required',
+    });
+  }
+
+  if (email === undefined) {
+    return res.status(400).json({
+      message: 'email is required',
+    });
+  }
+
+  const client = new NotifiClient(res.locals.axiosInstance);
+
+  return client
+    .createDirectPushAlert(jwt, {
+      userId,
+      emailAddresses: [email],
+    })
+    .then((alert) => {
+      return res.status(200).json({ alert });
+    })
+    .catch((e: unknown) => {
+      let message = 'Unknown server error';
+      if (e instanceof GqlError) {
+        message = `${e.message}: ${e.getErrorMessages().join(', ')}`;
+      } else if (e instanceof Error) {
+        message = e.message;
+      }
+
+      return res.status(500).json({ message });
+    });
+});
+
+app.post('/sendDirectPush', authorizeMiddleware, (req, res) => {
+  const jwt: string = res.locals.jwt;
+
+  const {
+    walletBlockchain,
+    walletPublicKey,
+    message,
+  }: Readonly<{
+    walletBlockchain?: string;
+    walletPublicKey?: string;
+    message?: string;
+  }> = req.body ?? {};
+
+  if (walletPublicKey === undefined) {
+    return res.status(400).json({
+      message: 'walletPublicKey is required',
+    });
+  }
+
+  if (walletBlockchain === undefined) {
+    return res.status(400).json({
+      message: 'walletBlockchain is required',
+    });
+  } else if (walletBlockchain !== 'SOLANA' && walletBlockchain !== 'NEAR') {
+    return res.status(400).json({
+      message: 'Unsupported walletBlockchain',
+    });
+  }
+
+  if (message === undefined) {
+    return res.status(400).json({
+      message: 'message is required',
+    });
+  }
+
+  const client = new NotifiClient(res.locals.axiosInstance);
+
+  return client
+    .sendDirectPush(jwt, {
+      key: randomUUID(),
+      walletPublicKey,
+      walletBlockchain,
+      message,
+    })
+    .then(() => {
+      return res.status(200).json({ message: 'success' });
     })
     .catch((e: unknown) => {
       let message = 'Unknown server error';

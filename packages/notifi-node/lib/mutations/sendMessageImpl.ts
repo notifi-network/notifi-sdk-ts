@@ -1,3 +1,4 @@
+import type { WalletBlockchain } from './WalletBlockchain';
 import {
   collectDependencies,
   makeAuthenticatedRequest,
@@ -6,10 +7,10 @@ import {
 export type SendMessageInput = Readonly<{
   input: Readonly<{
     walletPublicKey: string;
-    walletBlockchain: 'SOLANA';
+    walletBlockchain: WalletBlockchain;
     messageKey: string;
     message: string;
-    messageType: 'SIMPLE_HEALTH_THRESHOLD';
+    messageType: 'SIMPLE_HEALTH_THRESHOLD' | 'DIRECT_TENANT_MESSAGE';
   }>;
 }>;
 
