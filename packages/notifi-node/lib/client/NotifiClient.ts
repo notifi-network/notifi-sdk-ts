@@ -1,9 +1,17 @@
+import type { ManagedAlert, WalletBlockchain } from '../mutations';
 import {
+  createDirectPushAlertImpl,
+  createTenantUserImpl,
+  deleteDirectPushAlertImpl,
   deleteUserAlertImpl,
   logInFromServiceImpl,
   sendMessageImpl,
 } from '../mutations';
-import { Authorization, newSimpleHealthThresholdMessage } from '../types';
+import {
+  Authorization,
+  newDirectTenantMessage,
+  newSimpleHealthThresholdMessage,
+} from '../types';
 import type { AxiosPost } from '@notifi-network/notifi-axios-utils';
 
 class NotifiClient {
@@ -24,7 +32,7 @@ class NotifiClient {
     params: Readonly<{
       key: string;
       walletPublicKey: string;
-      walletBlockchain: 'SOLANA';
+      walletBlockchain: WalletBlockchain;
       healthValue: number;
     }>,
   ) => Promise<void> = async (
@@ -45,6 +53,33 @@ class NotifiClient {
     }
   };
 
+  sendDirectPush: (
+    jwt: string,
+    params: Readonly<{
+      key: string;
+      walletPublicKey: string;
+      walletBlockchain: WalletBlockchain;
+      message: string;
+    }>,
+  ) => Promise<void> = async (
+    jwt,
+    { key, walletPublicKey, walletBlockchain, message },
+  ) => {
+    const directMessage = newDirectTenantMessage({ message });
+    const input = {
+      walletPublicKey,
+      walletBlockchain,
+      messageKey: key,
+      messageType: directMessage.type,
+      message: JSON.stringify(directMessage.payload),
+    };
+
+    const result = await sendMessageImpl(this.a, jwt, { input });
+    if (!result) {
+      throw new Error('Send message failed');
+    }
+  };
+
   deleteUserAlert: (
     jwt: string,
     params: Readonly<{
@@ -53,6 +88,54 @@ class NotifiClient {
   ) => Promise<string /* AlertID */> = async (jwt, { alertId }) => {
     await deleteUserAlertImpl(this.a, jwt, { alertId });
     return alertId;
+  };
+
+  createTenantUser: (
+    jwt: string,
+    params: Readonly<{
+      walletBlockchain: WalletBlockchain;
+      walletPublicKey: string;
+    }>,
+  ) => Promise<string /* UserID */> = async (
+    jwt,
+    { walletBlockchain, walletPublicKey },
+  ) => {
+    const result = await createTenantUserImpl(this.a, jwt, {
+      input: { walletBlockchain, walletPublicKey },
+    });
+
+    return result.id;
+  };
+
+  createDirectPushAlert: (
+    jwt: string,
+    params: Readonly<{
+      userId: string;
+      emailAddresses?: ReadonlyArray<string>;
+      phoneNumbers?: ReadonlyArray<string>;
+    }>,
+  ) => Promise<ManagedAlert> = async (
+    jwt,
+    { userId, emailAddresses, phoneNumbers },
+  ) => {
+    const input = {
+      userId,
+      emailAddresses: emailAddresses ?? [],
+      phoneNumbers: phoneNumbers ?? [],
+    };
+    return await createDirectPushAlertImpl(this.a, jwt, {
+      input,
+    });
+  };
+
+  deleteDirectPushAlert: (
+    jwt: string,
+    params: Readonly<{
+      alertId: string;
+    }>,
+  ) => Promise<ManagedAlert> = async (jwt, { alertId }) => {
+    const input = { alertId };
+    return await deleteDirectPushAlertImpl(this.a, jwt, { input });
   };
 }
 
