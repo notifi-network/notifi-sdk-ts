@@ -17,11 +17,7 @@ const ensureSource = async (
   existing: Source[],
   input: CreateSourceInput,
 ): Promise<Source> => {
-  const found = existing.find(
-    (it) =>
-      input.blockchainAddress === it.blockchainAddress &&
-      input.type === it.type,
-  );
+  const found = existing.find((it) => input.name === it.name);
   if (found !== undefined) {
     return found;
   }
