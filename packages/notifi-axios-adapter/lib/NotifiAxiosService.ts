@@ -2,6 +2,7 @@ import createAlertImpl from './mutations/createAlertImpl';
 import createEmailTargetImpl from './mutations/createEmailTargetImpl';
 import createSmsTargetImpl from './mutations/createSmsTargetImpl';
 import createSourceGroupImpl from './mutations/createSourceGroupImpl';
+import createSourceImpl from './mutations/createSourceImpl';
 import createTargetGroupImpl from './mutations/createTargetGroupImpl';
 import createTelegramTargetImpl from './mutations/createTelegramTargetImpl';
 import deleteAlertImpl from './mutations/deleteAlertImpl';
@@ -30,6 +31,7 @@ export class NotifiAxiosService implements NotifiService {
   createAlert: NotifiService['createAlert'];
   createEmailTarget: NotifiService['createEmailTarget'];
   createSmsTarget: NotifiService['createSmsTarget'];
+  createSource: NotifiService['createSource'];
   createSourceGroup: NotifiService['createSourceGroup'];
   createTargetGroup: NotifiService['createTargetGroup'];
   createTelegramTarget: NotifiService['createTelegramTarget'];
@@ -75,6 +77,7 @@ export class NotifiAxiosService implements NotifiService {
     this.createSmsTarget = createSmsTargetImpl.bind(null, a);
     this.createTargetGroup = createTargetGroupImpl.bind(null, a);
     this.createTelegramTarget = createTelegramTargetImpl.bind(null, a);
+    this.createSource = createSourceImpl.bind(null, a);
     this.createSourceGroup = createSourceGroupImpl.bind(null, a);
     this.deleteAlert = deleteAlertImpl.bind(null, a);
     this.deleteSourceGroup = deleteSourceGroupImpl.bind(null, a);

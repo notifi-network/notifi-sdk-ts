@@ -3,6 +3,7 @@ import * as Operations from './operations';
 export type NotifiService = Operations.CreateAlertService &
   Operations.CreateEmailTargetService &
   Operations.CreateSmsTargetService &
+  Operations.CreateSourceService &
   Operations.CreateSourceGroupService &
   Operations.CreateTargetGroupService &
   Operations.CreateTelegramTargetService &

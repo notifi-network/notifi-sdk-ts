@@ -16,5 +16,6 @@ export type Source = Readonly<{
   id: string | null;
   name: string | null;
   type: string;
+  blockchainAddress: string;
   applicableFilters: ReadonlyArray<Filter>;
 }>;
