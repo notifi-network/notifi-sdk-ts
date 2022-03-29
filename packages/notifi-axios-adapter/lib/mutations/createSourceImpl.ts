@@ -1,7 +1,4 @@
-import {
-  sourceFragment,
-  sourceFragmentDependencies,
-} from '../fragments';
+import { sourceFragment, sourceFragmentDependencies } from '../fragments';
 import {
   collectDependencies,
   makeRequest,
@@ -31,9 +28,9 @@ mutation createSource(
 }
 `.trim();
 
-const createSourceImpl = makeRequest<
-  CreateSourceInput,
-  CreateSourceResult
->(collectDependencies(...DEPENDENCIES, MUTATION), 'createSource');
+const createSourceImpl = makeRequest<CreateSourceInput, CreateSourceResult>(
+  collectDependencies(...DEPENDENCIES, MUTATION),
+  'createSource',
+);
 
 export default createSourceImpl;

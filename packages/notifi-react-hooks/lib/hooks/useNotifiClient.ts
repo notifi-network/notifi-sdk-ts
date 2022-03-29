@@ -1,7 +1,7 @@
+import { ensureMetaplexAuctionSource } from '../utils/ensureSource';
 import ensureSourceGroup from '../utils/ensureSourceGroup';
 import ensureTargetGroup from '../utils/ensureTargetGroup';
 import ensureTargetIds from '../utils/ensureTargetIds';
-import { ensureMetaplexAuctionSource } from '../utils/ensureSource';
 import packFilterOptions from '../utils/packFilterOptions';
 import useNotifiConfig, { BlockchainEnvironment } from './useNotifiConfig';
 import useNotifiJwt from './useNotifiJwt';
@@ -541,17 +541,18 @@ const useNotifiClient = (
    * <br>
    * See [Alert Creation Guide]{@link https://docs.notifi.network} for more information on creating Alerts
    */
-   const createMetaplexAuctionSource = useCallback(
+  const createMetaplexAuctionSource = useCallback(
     async (input: ClientCreateMetaplexAuctionSourceInput): Promise<Source> => {
-      const {
-        auctionAddressBase58,
-        auctionWebUrl
-      } = input;
+      const { auctionAddressBase58, auctionWebUrl } = input;
 
       setLoading(true);
       try {
         const newData = await fetchDataImpl(service);
-        const source = await ensureMetaplexAuctionSource(service, newData.sources, input);
+        const source = await ensureMetaplexAuctionSource(
+          service,
+          newData.sources,
+          input,
+        );
         setInternalData(newData);
         return source;
       } catch (e: unknown) {
@@ -591,7 +592,7 @@ const useNotifiClient = (
     createMetaplexAuctionSource,
     deleteAlert,
     fetchData,
-    updateAlert
+    updateAlert,
   };
 
   return {

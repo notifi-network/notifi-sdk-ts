@@ -1,7 +1,7 @@
 import type {
   ClientCreateMetaplexAuctionSourceInput,
-  CreateSourceService,
   CreateSourceInput,
+  CreateSourceService,
   Source,
 } from '@notifi-network/notifi-core';
 
@@ -17,36 +17,35 @@ const ensureSource = async (
   existing: Source[],
   input: CreateSourceInput,
 ): Promise<Source> => {
-  
   const found = existing.find(
-    it => input.blockchainAddress === it.blockchainAddress
-    && input.type === it.type
+    (it) =>
+      input.blockchainAddress === it.blockchainAddress &&
+      input.type === it.type,
   );
-  if (found !== undefined)
-  {
+  if (found !== undefined) {
     return found;
   }
 
-  const newSource =  await service.createSource(input);
+  const newSource = await service.createSource(input);
   existing.push(newSource);
 
   return newSource;
-}
+};
 
 const ensureMetaplexAuctionSource = async (
   service: CreateSourceService,
   existing: Source[],
-  input: ClientCreateMetaplexAuctionSourceInput
-  ): Promise<Source> => {
+  input: ClientCreateMetaplexAuctionSourceInput,
+): Promise<Source> => {
   const { auctionAddressBase58, auctionWebUrl } = input;
   const underlyingAddress = `${auctionWebUrl}:;:${auctionAddressBase58}`;
 
   return await ensureSource(service, existing, {
     name: auctionAddressBase58,
     blockchainAddress: underlyingAddress,
-    type: 'SOLANA_METAPLEX_AUCTION'
+    type: 'SOLANA_METAPLEX_AUCTION',
   });
-}
+};
 
 export { ensureMetaplexAuctionSource };
 

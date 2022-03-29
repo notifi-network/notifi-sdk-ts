@@ -1,4 +1,4 @@
-import { Source, Operation } from '../models';
+import { Operation, Source } from '../models';
 
 /**
  * Input param for creating a Source
@@ -16,7 +16,14 @@ import { Source, Operation } from '../models';
 export type CreateSourceInput = Readonly<{
   name: string;
   blockchainAddress: string;
-  type: 'SOLANA_WALLET' | 'TERRA_WALLET' | 'ETHEREUM_WALLET' | 'TRIBECA_PROPOSALS' | 'REALM_PROPOSALS' | 'DIRECT_PUSH' | 'SOLANA_METAPLEX_AUCTION';
+  type:
+    | 'SOLANA_WALLET'
+    | 'TERRA_WALLET'
+    | 'ETHEREUM_WALLET'
+    | 'TRIBECA_PROPOSALS'
+    | 'REALM_PROPOSALS'
+    | 'DIRECT_PUSH'
+    | 'SOLANA_METAPLEX_AUCTION';
 }>;
 
 export type CreateSourceResult = Source;
