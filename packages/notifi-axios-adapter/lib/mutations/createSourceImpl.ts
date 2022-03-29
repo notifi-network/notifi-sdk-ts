@@ -20,7 +20,7 @@ mutation createSource(
     createSourceInput: {
       name: $name
       blockchainAddress: $blockchainAddress
-      type: $blockchainAddressType
+      type: $type
     }
   ) {
     ...sourceFragment
