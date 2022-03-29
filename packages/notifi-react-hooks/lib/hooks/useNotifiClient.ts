@@ -1,6 +1,7 @@
 import ensureSourceGroup from '../utils/ensureSourceGroup';
 import ensureTargetGroup from '../utils/ensureTargetGroup';
 import ensureTargetIds from '../utils/ensureTargetIds';
+import { ensureMetaplexAuctionSource } from '../utils/ensureSource';
 import packFilterOptions from '../utils/packFilterOptions';
 import useNotifiConfig, { BlockchainEnvironment } from './useNotifiConfig';
 import useNotifiJwt from './useNotifiJwt';
@@ -8,6 +9,7 @@ import useNotifiService from './useNotifiService';
 import {
   Alert,
   ClientCreateAlertInput,
+  ClientCreateMetaplexAuctionSourceInput,
   ClientData,
   ClientDeleteAlertInput,
   ClientUpdateAlertInput,
@@ -528,6 +530,45 @@ const useNotifiClient = (
   );
 
   /**
+   * Create a Metaplex Auction Source
+   *
+   * @remarks
+   * Use this to allow the user to create a Source object that emits evevents from Metaplex auctions
+   *
+   * @param {ClientCreateMetaplexAuctionSourceInput} input - Input params for creating a Metaplex Auction Source
+   * @returns {Source} A Source object that can be used to create an Alert
+   * <br>
+   * <br>
+   * See [Alert Creation Guide]{@link https://docs.notifi.network} for more information on creating Alerts
+   */
+   const createMetaplexAuctionSource = useCallback(
+    async (input: ClientCreateMetaplexAuctionSourceInput): Promise<Source> => {
+      const {
+        auctionAddressBase58,
+        auctionWebUrl
+      } = input;
+
+      setLoading(true);
+      try {
+        const newData = await fetchDataImpl(service);
+        const source = await ensureMetaplexAuctionSource(service, newData.sources, input);
+        setInternalData(newData);
+        return source;
+      } catch (e: unknown) {
+        if (e instanceof Error) {
+          setError(e);
+        } else {
+          setError(new NotifiClientError(e));
+        }
+        throw e;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [service],
+  );
+
+  /**
    * Is client SDK authenticated?
    *
    * @remarks
@@ -547,9 +588,10 @@ const useNotifiClient = (
   const client: NotifiClient = {
     logIn,
     createAlert,
+    createMetaplexAuctionSource,
     deleteAlert,
     fetchData,
-    updateAlert,
+    updateAlert
   };
 
   return {

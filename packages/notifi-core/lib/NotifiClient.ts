@@ -63,6 +63,19 @@ export type ClientCreateAlertInput = Readonly<{
   groupName?: string;
 }>;
 
+/**
+ * Input param for creating a new Metaplex Auction Source
+ * 
+ * @property auctionAddressBase58 - Metaplex auction address in base58
+ * @property auctionWebUrl - Web URL where auction can be found
+ * 
+ * See [Alert Creation Guide]{@link https://docs.notifi.network} for more information on creating Alerts
+ */
+export type ClientCreateMetaplexAuctionSourceInput = Readonly<{
+  auctionAddressBase58: string;
+  auctionWebUrl: string
+}>;
+
 export type ClientDeleteAlertInput = Readonly<{
   alertId: string;
 }>;
@@ -75,6 +88,7 @@ export type NotifiClient = Readonly<{
   fetchData: () => Promise<ClientData>;
   logIn: (signer: MessageSigner) => Promise<User>;
   createAlert: (input: ClientCreateAlertInput) => Promise<Alert>;
+  createMetaplexAuctionSource: (input: ClientCreateMetaplexAuctionSourceInput) => Promise<Source>;
   deleteAlert: (input: ClientDeleteAlertInput) => Promise<string>;
   updateAlert: (input: ClientUpdateAlertInput) => Promise<Alert>;
 }>;
