@@ -1,6 +1,6 @@
 {
   "name": "@notifi-network/notifi-core",
-  "version": "0.9.1-alpha.0+acda1d5",
+  "version": "0.9.0",
   "description": "The interfaces for the core functionality provided by the SDK",
   "author": "juni-notifi <hyungjoon.kim@notifi.network>",
   "homepage": "https://github.com/nimesh-irisio/notifi-sdk#readme",
@@ -29,6 +29,5 @@
   },
   "devDependencies": {
     "rimraf": "^3.0.2"
-  },
-  "gitHead": "acda1d543c7c42299387a45dd4449e465ac3094a"
+  }
 }

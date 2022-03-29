@@ -26,12 +26,12 @@
     "url": "https://github.com/notifi-network/notifi-sdk-ts/issues"
   },
   "devDependencies": {
-    "@notifi-network/notifi-core": "^0.9.1-alpha.0+acda1d5",
+    "@notifi-network/notifi-core": "^0.9.0",
     "@types/node": "^17.0.21",
     "@types/react": "^17.0.39"
   },
   "dependencies": {
-    "@notifi-network/notifi-axios-adapter": "^0.9.1-alpha.0+acda1d5",
+    "@notifi-network/notifi-axios-adapter": "^0.9.0",
     "@notifi-network/notifi-axios-utils": "^0.9.0",
     "axios": "^0.26.0",
     "typedoc-plugin-missing-exports": "^0.22.6",
@@ -41,6 +41,5 @@
   "peerDependencies": {
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
-  },
-  "gitHead": "acda1d543c7c42299387a45dd4449e465ac3094a"
+  }
 }
