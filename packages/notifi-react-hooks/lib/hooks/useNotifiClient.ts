@@ -287,7 +287,9 @@ const useNotifiClient = (
           targetGroup,
         };
 
-        setInternalData(newData);
+        setInternalData({
+          ...newData,
+        });
         return existingAlert;
       } catch (e: unknown) {
         if (e instanceof Error) {
@@ -354,18 +356,24 @@ const useNotifiClient = (
           throw new Error(`Invalid filter id ${filterId}`);
         }
 
-        const [sourceGroup, targetGroup] = await Promise.all([
-          ensureSourceGroup(service, newData.sourceGroups, {
+        const sourceGroup = await ensureSourceGroup(
+          service,
+          newData.sourceGroups,
+          {
             name,
             sourceIds: [sourceId],
-          }),
-          ensureTargetGroup(service, newData.targetGroups, {
+          },
+        );
+        const targetGroup = await ensureTargetGroup(
+          service,
+          newData.targetGroups,
+          {
             name,
             emailTargetIds,
             smsTargetIds,
             telegramTargetIds,
-          }),
-        ]);
+          },
+        );
 
         const sourceGroupId = sourceGroup.id;
         if (sourceGroupId === null) {
@@ -396,7 +404,7 @@ const useNotifiClient = (
 
         newData.alerts.push(newAlert);
 
-        setInternalData(newData);
+        setInternalData({ ...newData });
         return alert;
       } catch (e: unknown) {
         if (e instanceof Error) {
@@ -451,9 +459,8 @@ const useNotifiClient = (
 
         newData.alerts = newData.alerts.filter((a) => a !== alertToDelete);
 
-        let deleteTargetGroupPromise = Promise.resolve();
         if (targetGroupId !== null && !keepTargetGroup) {
-          deleteTargetGroupPromise = service
+          await service
             .deleteTargetGroup({
               id: targetGroupId,
             })
@@ -464,9 +471,8 @@ const useNotifiClient = (
             });
         }
 
-        let deleteSourceGroupPromise = Promise.resolve();
         if (sourceGroupId !== null && !keepSourceGroup) {
-          deleteSourceGroupPromise = service
+          await service
             .deleteSourceGroup({
               id: sourceGroupId,
             })
@@ -477,8 +483,7 @@ const useNotifiClient = (
             });
         }
 
-        await Promise.all([deleteTargetGroupPromise, deleteSourceGroupPromise]);
-        setInternalData(newData);
+        setInternalData({ ...newData });
 
         return alertId;
       } catch (e: unknown) {
