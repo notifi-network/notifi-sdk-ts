@@ -76,8 +76,19 @@ export type ClientCreateMetaplexAuctionSourceInput = Readonly<{
   auctionWebUrl: string;
 }>;
 
+/**
+ * Input param for deleting an Alert
+ *
+ * @property alertId - The ID of the Alert to delete
+ * @property keepTargetGroup - Whether to keep the target group on this Alert or to delete it
+ * @property keepSourceGroup - Whether to keep the source group on this Alert or to delete it
+ *
+ * See [Alert Creation Guide]{@link https://docs.notifi.network} for more information on creating Alerts
+ */
 export type ClientDeleteAlertInput = Readonly<{
   alertId: string;
+  keepTargetGroup?: boolean;
+  keepSourceGroup?: boolean;
 }>;
 
 export type MessageSigner = Readonly<{
