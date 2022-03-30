@@ -426,7 +426,11 @@ const useNotifiClient = (
    */
   const deleteAlert = useCallback(
     async (input: ClientDeleteAlertInput) => {
-      const { alertId } = input;
+      const {
+        alertId,
+        keepSourceGroup = false,
+        keepTargetGroup = false,
+      } = input;
       try {
         const newData = await fetchDataImpl(
           service,
@@ -448,7 +452,7 @@ const useNotifiClient = (
         newData.alerts = newData.alerts.filter((a) => a !== alertToDelete);
 
         let deleteTargetGroupPromise = Promise.resolve();
-        if (targetGroupId !== null) {
+        if (targetGroupId !== null && !keepTargetGroup) {
           deleteTargetGroupPromise = service
             .deleteTargetGroup({
               id: targetGroupId,
@@ -461,7 +465,7 @@ const useNotifiClient = (
         }
 
         let deleteSourceGroupPromise = Promise.resolve();
-        if (sourceGroupId !== null) {
+        if (sourceGroupId !== null && !keepSourceGroup) {
           deleteSourceGroupPromise = service
             .deleteSourceGroup({
               id: sourceGroupId,
@@ -505,14 +509,13 @@ const useNotifiClient = (
    */
   const createMetaplexAuctionSource = useCallback(
     async (input: ClientCreateMetaplexAuctionSourceInput): Promise<Source> => {
-      const { auctionAddressBase58, auctionWebUrl } = input;
-
       setLoading(true);
       try {
         const newData = await fetchDataImpl(
           service,
           Date,
-          fetchDataRef.current);
+          fetchDataRef.current,
+        );
         const source = await ensureMetaplexAuctionSource(
           service,
           newData.sources,
