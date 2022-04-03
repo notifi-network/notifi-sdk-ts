@@ -549,7 +549,7 @@ const useNotifiClient = (
    * This will signal if client SDK is currently in an authenticated state. If true, it is safe to call methods for account updates/retrieval.
    * If this is false, logIn method must be called and successful.
    *
-   * @returns {boolean} An Alert object owned by the user
+   * @returns {boolean}
    */
   const isAuthenticated = useCallback(() => {
     return jwtRef.current !== null;
