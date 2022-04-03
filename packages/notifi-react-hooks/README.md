@@ -29,7 +29,7 @@ npm i notifi-react-hooks
 ```
 
 ## 🧩 Build Your UI Components
-Common patterns for UI involve rendering a form in a modal or card to collect the user's contact information (Email, SMS, Telegram, etc).  Below is are example UIs from the integration with Mango DAO and with Solana Labs.  You can also check out how these integrations were completed via [this PR](https://github.com/solana-labs/governance-ui/pull/376) and [this PR](https://github.com/solana-labs/governance-ui/pull/376/files).
+Common patterns for UI involve rendering a form in a modal or card to collect the user's contact information (Email, SMS, Telegram, etc).  Below is are example UIs from the integration with Mango Markets and with Solana Labs.  You can also check out how these integrations were completed via [this PR](https://github.com/solana-labs/governance-ui/pull/376) and [this PR](https://github.com/solana-labs/governance-ui/pull/376/files).
 
 |Modal Component|Card Component|
 |:--:|:--:|
