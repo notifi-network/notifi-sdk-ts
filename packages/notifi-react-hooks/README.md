@@ -78,7 +78,7 @@ const handleLogIn = () => {
 ## 🕹 Rendering Alert Options
 After the user successfully authorizes, fetch the newly created user data from Notifi using the `fetchData()` hook.  This returns the [type `ClientData`](https://notifi-network.github.io/notifi-sdk-ts/modules.html#ClientData).
 
-In our simplest use case, the user will have 1 entry in the `sources` array, which will be based on their connected wallet address.  More about the [`Source` type here](https://notifi-network.github.io/notifi-sdk-ts/modules.html#Source);
+In our simplest use case, the user will have 1 entry in the `sources` array, which will be based on their connected wallet address.  More about the [`Source` type here](https://notifi-network.github.io/notifi-sdk-ts/modules.html#Source).  Use the id of the source when creating the alert later on.
 ```
 const {fetchData} = notifiClient;
 const data = fetchData();
@@ -101,7 +101,7 @@ applicableFilters.map(f: Filter => {
 
 For more complex scenarios where the user has multiple sources, you may want to iterate over each source to accumulate the applicable filters to render.
 ## 🪢 Create the Alert
-Once your user enters their contact information and options to for their first alert, use the `createAlert()` hook.  This accepts the [ClientCreateAlertInput shape](https://notifi-network.github.io/notifi-sdk-ts/modules.html#ClientCreateAlertInput) and will return the [`Alert` object](https://notifi-network.github.io/notifi-sdk-ts/modules.html#Alert) in the response upon success.
+Once your user enters their contact information and options for their first alert, use the `createAlert()` hook.  This accepts the [ClientCreateAlertInput shape](https://notifi-network.github.io/notifi-sdk-ts/modules.html#ClientCreateAlertInput) and will return the [`Alert` object](https://notifi-network.github.io/notifi-sdk-ts/modules.html#Alert) in the response upon success.
 
 ```
 const {createAlert} = notifiClient;
@@ -176,7 +176,7 @@ const handleCreateAlert () => {
 ## 🔃 Updating the Alert
 If a user wants to update their alert by changing the email address notifications are sent to, or to add a phone number for SMS notifications, updating the alert is handled by using the `updateAlert()` hook. It takes the [type `ClientUpdateAlertInput`](https://notifi-network.github.io/notifi-sdk-ts/modules.html#ClientUpdateAlertInput).
 
-You'll want to pass in the `id` of the existing alert to make the update to that alert entity.  In our simplest use case, where the user only has 1 alert in their account, fetch the user's persisted data using `fetchData()`.
+You'll want to pass in the `id` of the existing alert to make the update to that alert entity.  In our simplest use case, where the user only has 1 alert in their account, fetch the user's persisted data using `fetchData()` and get the id of the alert to delete.
 ```
 const {fetchData, updateAlert} = notifiClient;
 
