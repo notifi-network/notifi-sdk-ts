@@ -21,16 +21,26 @@ const useNotifiJwt = (
   const jwtRef = useRef<string | null>(null);
 
   React.useEffect(() => {
-    (async () => {
+    const getItem = async () => {
       const value = await localforage.getItem<string>(key);
       jwtRef.current = value;
-    })();
+    };
+
+    getItem().catch((_e: unknown) => {
+      jwtRef.current = null;
+    });
   }, [key]);
 
   const setJwt = useCallback(
-    async (jwt: string | null): Promise<void> => {
+    (jwt: string | null): void => {
+      const setItem = async () => {
+        await localforage.setItem(key, jwt);
+      };
+
       jwtRef.current = jwt;
-      await localforage.setItem(key, jwt);
+      setItem().catch((_e: unknown) => {
+        /* Intentionally ignore failure to save Jwt */
+      });
     },
     [jwtRef, key],
   );
