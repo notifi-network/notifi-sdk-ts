@@ -1,5 +1,9 @@
-import { useCallback, useEffect, useRef } from 'react';
-import useLocalStorageState from 'use-local-storage-state';
+import localforage from 'localforage';
+import React, { useCallback, useMemo, useRef } from 'react';
+
+localforage.config({
+  name: 'notifi',
+});
 
 const useNotifiJwt = (
   dappAddress: string,
@@ -9,22 +13,26 @@ const useNotifiJwt = (
   jwtRef: React.MutableRefObject<string | null>;
   setJwt: (jwt: string | null) => void;
 }> => {
-  const [storage, setStorage] = useLocalStorageState<string | null>(
-    `${jwtPrefix}:${dappAddress}:${walletPublicKey}`,
-    { defaultValue: null },
+  const key = useMemo(
+    () => `${jwtPrefix}:${dappAddress}:${walletPublicKey}`,
+    [jwtPrefix, dappAddress, walletPublicKey],
   );
 
-  const jwtRef = useRef<string | null>(storage);
-  useEffect(() => {
-    jwtRef.current = storage;
-  }, [storage]);
+  const jwtRef = useRef<string | null>(null);
+
+  React.useEffect(() => {
+    (async () => {
+      const value = await localforage.getItem<string>(key);
+      jwtRef.current = value;
+    })();
+  }, [key]);
 
   const setJwt = useCallback(
-    (jwt: string | null): void => {
+    async (jwt: string | null): Promise<void> => {
       jwtRef.current = jwt;
-      setStorage(jwt);
+      await localforage.setItem(key, jwt);
     },
-    [jwtRef, setStorage],
+    [jwtRef, key],
   );
 
   return { jwtRef, setJwt };
