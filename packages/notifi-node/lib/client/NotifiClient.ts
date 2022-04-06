@@ -59,13 +59,33 @@ class NotifiClient {
       key: string;
       walletPublicKey: string;
       walletBlockchain: WalletBlockchain;
-      message: string;
+      message?: string;
+      template?: {
+        id: string;
+        variables: Record<string, string>;
+      };
     }>,
   ) => Promise<void> = async (
     jwt,
-    { key, walletPublicKey, walletBlockchain, message },
+    { key, walletPublicKey, walletBlockchain, message, template },
   ) => {
-    const directMessage = newDirectTenantMessage({ message });
+    let directMessage;
+    if (message !== undefined) {
+      directMessage = newDirectTenantMessage({ message });
+    } else if (template !== undefined) {
+      directMessage = newDirectTenantMessage({
+        message: '',
+        targetTemplates: {
+          SMS: template.id,
+          Email: template.id,
+          Telegram: template.id,
+        },
+        templateVariables: template.variables,
+      });
+    } else {
+      throw new Error('One of message or template must be set');
+    }
+
     const input = {
       walletPublicKey,
       walletBlockchain,
