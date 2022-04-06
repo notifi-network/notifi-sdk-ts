@@ -78,8 +78,8 @@ class NotifiClient {
       directMessage = newDirectTenantMessage({
         message: '',
         targetTemplates: {
-          SMS: template.emailTemplate ?? undefined,
-          Email: template.smsTemplate ?? undefined,
+          SMS: template.smsTemplate ?? undefined,
+          Email: template.emailTemplate ?? undefined,
           Telegram: template.telegramTemplate ?? undefined,
         },
         templateVariables: template.variables,
