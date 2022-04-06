@@ -61,7 +61,9 @@ class NotifiClient {
       walletBlockchain: WalletBlockchain;
       message?: string;
       template?: {
-        id: string;
+        emailTemplate?: string;
+        smsTemplate?: string;
+        telegramTemplate?: string;
         variables: Record<string, string>;
       };
     }>,
@@ -76,9 +78,9 @@ class NotifiClient {
       directMessage = newDirectTenantMessage({
         message: '',
         targetTemplates: {
-          SMS: template.id,
-          Email: template.id,
-          Telegram: template.id,
+          SMS: template.smsTemplate ?? undefined,
+          Email: template.emailTemplate ?? undefined,
+          Telegram: template.telegramTemplate ?? undefined,
         },
         templateVariables: template.variables,
       });
