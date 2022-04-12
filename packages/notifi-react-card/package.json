@@ -1,0 +1,36 @@
+{
+  "name": "@notifi-network/notifi-react-card",
+  "version": "0.11.0",
+  "description": "A React component for signing up for Notifi notifications",
+  "author": "juni-notifi <hyungjoon.kim@notifi.network>",
+  "homepage": "https://github.com/notifi-network/notifi-sdk-ts#readme",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/notifi-network/notifi-sdk-ts.git"
+  },
+  "scripts": {
+    "build": "npm run clean && npm run compile",
+    "clean": "rimraf ./dist",
+    "compile": "tsc -p tsconfig.build.json",
+    "format": "prettier --config .prettierrc **/*.ts --write",
+    "lint": "eslint ."
+  },
+  "bugs": {
+    "url": "https://github.com/notifi-network/notifi-sdk-ts/issues"
+  },
+  "dependencies": {
+    "@notifi-network/notifi-react-hooks": "^0.11.0"
+  },
+  "devDependencies": {
+    "@notifi-network/notifi-core": "^0.11.0"
+  }
+}
