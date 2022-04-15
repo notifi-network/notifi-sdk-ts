@@ -4,23 +4,24 @@ import {
   NotifiStyleContextProvider,
   NotifiSubscriptionContextProvider,
 } from '../context';
+import { NotifiCard } from './NotifiCard';
 import React from 'react';
 
 export type Props = Readonly<{
   copy: NotifiCopyData;
-  styles: NotifiStyleData;
+  classNames: NotifiStyleData;
 }>;
 
 export const NotifiCardContainer: React.FC<Props> = ({
   children,
   copy,
-  styles,
+  classNames,
 }: React.PropsWithChildren<Props>) => {
   return (
     <NotifiSubscriptionContextProvider>
       <NotifiCopyContextProvider {...copy}>
-        <NotifiStyleContextProvider {...styles}>
-          {children}
+        <NotifiStyleContextProvider {...classNames}>
+          <NotifiCard>{children}</NotifiCard>
         </NotifiStyleContextProvider>
       </NotifiCopyContextProvider>
     </NotifiSubscriptionContextProvider>

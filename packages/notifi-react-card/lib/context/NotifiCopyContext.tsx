@@ -5,6 +5,10 @@ export type NotifiCopyData = DeepPartialReadonly<{
   emailInput: {
     placeholder: string;
   };
+  footer: {
+    poweredBy: string;
+    learnMore: string;
+  };
   smsInput: {
     placeholder: string;
   };

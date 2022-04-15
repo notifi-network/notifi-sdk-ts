@@ -2,11 +2,21 @@ import { DeepPartialReadonly } from '../utils';
 import React, { createContext, useContext } from 'react';
 
 export type NotifiStyleData = DeepPartialReadonly<{
+  card: {
+    container: string;
+  };
   emailInput: {
     container: string;
     iconSpan: string;
     iconSvg: string;
     input: string;
+  };
+  footer: {
+    container: string;
+    poweredBy: string;
+    logoSvg: string;
+    link: string;
+    spacer: string;
   };
   smsInput: {
     container: string;
