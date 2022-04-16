@@ -1,12 +1,12 @@
-import {
-  useNotifiCopyContext,
-  useNotifiStyleContext,
-  useNotifiSubscriptionContext,
-} from '../context';
-import { NotifiSms } from './NotifiSms';
 import React from 'react';
+import { useNotifiCopyContext, useNotifiStyleContext, useNotifiSubscriptionContext } from '../context';
+import { NotifiSms } from './NotifiSms';
 
-export const NotifiSmsInput: React.FC = () => {
+type Props = Readonly<{
+  disabled: boolean;
+}>;
+
+export const NotifiSmsInput: React.FC<Props> = ({ disabled }: Props) => {
   const { smsInput: copy } = useNotifiCopyContext();
   const { smsInput: styles } = useNotifiStyleContext();
   const { phoneNumber, setPhoneNumber } = useNotifiSubscriptionContext();
@@ -19,6 +19,7 @@ export const NotifiSmsInput: React.FC = () => {
       </span>
       <input
         className={styles?.input}
+        disabled={disabled}
         name="notifi-sms"
         type="tel"
         value={phoneNumber}

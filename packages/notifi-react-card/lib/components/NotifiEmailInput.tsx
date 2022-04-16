@@ -1,12 +1,12 @@
-import {
-  useNotifiCopyContext,
-  useNotifiStyleContext,
-  useNotifiSubscriptionContext,
-} from '../context';
-import { NotifiMail } from './NotifiMail';
 import React from 'react';
+import { useNotifiCopyContext, useNotifiStyleContext, useNotifiSubscriptionContext } from '../context';
+import { NotifiMail } from './NotifiMail';
 
-export const NotifiEmailInput: React.FC = () => {
+type Props = Readonly<{
+  disabled: boolean;
+}>;
+
+export const NotifiEmailInput: React.FC<Props> = ({ disabled }: Props) => {
   const { emailInput: copy } = useNotifiCopyContext();
   const { emailInput: styles } = useNotifiStyleContext();
   const { email, setEmail } = useNotifiSubscriptionContext();
@@ -18,6 +18,7 @@ export const NotifiEmailInput: React.FC = () => {
       </span>
       <input
         className={styles?.input}
+        disabled={disabled}
         name="notifi-email"
         type="email"
         value={email}

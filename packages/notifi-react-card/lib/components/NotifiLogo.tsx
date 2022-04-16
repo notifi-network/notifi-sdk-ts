@@ -6,12 +6,7 @@ interface Props {
 
 export const NotifiLogo: React.FC<Props> = ({ className }) => {
   return (
-    <svg
-      className={className}
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 61 14"
-      fill="currentColor"
-    >
+    <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 61 14" fill="currentColor">
       <path
         fillRule="evenodd"
         clipRule="evenodd"
@@ -34,10 +29,7 @@ export const NotifiLogo: React.FC<Props> = ({ className }) => {
         d="M43.2265 2.23669L42.745 4.27485H41.3167V6.16857H42.745V10.5979C42.745 12.9571 43.7079 13.9039 46.0028 13.9039H46.8374V11.9139H46.1954C45.2004 11.9139 44.7511 11.4806 44.7511 10.4856V6.16857H46.8374V4.27485H44.7511V2.23669H43.2265Z"
         fill="#F5F6FB"
       />
-      <path
-        d="M50.2386 13.9039V4.27485H48.2325V13.9039H50.2386Z"
-        fill="#F5F6FB"
-      />
+      <path d="M50.2386 13.9039V4.27485H48.2325V13.9039H50.2386Z" fill="#F5F6FB" />
       <path
         d="M60.5156 13.9039V4.27485H54.995V3.56872C54.995 2.57372 55.4443 2.12435 56.4393 2.12435H57.0813V0.150391H56.2467C53.9518 0.150391 52.9889 1.08121 52.9889 3.45638V4.27485H51.5766V6.16857H52.9889V13.9039H54.995V6.16857H58.5096V13.9039H60.5156Z"
         fill="#F5F6FB"

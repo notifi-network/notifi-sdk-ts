@@ -5,3 +5,7 @@ export * from './NotifiFooter';
 export * from './NotifiMail';
 export * from './NotifiSms';
 export * from './NotifiSmsInput';
+export * from './NotifiSubscribeButton';
+export * from './NotifiWalletConnectedContents';
+export * from './NotifiWalletDisconnectedContents';
+export * from './NotifiWalletUnsupportedContents';

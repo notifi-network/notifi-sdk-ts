@@ -1,5 +1,5 @@
-import { DeepPartialReadonly } from '../utils';
 import React, { createContext, useContext } from 'react';
+import { DeepPartialReadonly } from '../utils';
 
 export type NotifiStyleData = DeepPartialReadonly<{
   card: {
@@ -25,6 +25,10 @@ export type NotifiStyleData = DeepPartialReadonly<{
     iconSvg: string;
     input: string;
   };
+  subscribeButton: {
+    container: string;
+    button: string;
+  };
 }>;
 
 const NotifiStyleContext = createContext<NotifiStyleData>({});
@@ -33,11 +37,7 @@ export const NotifiStyleContextProvider: React.FC<NotifiStyleData> = ({
   children,
   ...styles
 }: React.PropsWithChildren<NotifiStyleData>) => {
-  return (
-    <NotifiStyleContext.Provider value={styles}>
-      {children}
-    </NotifiStyleContext.Provider>
-  );
+  return <NotifiStyleContext.Provider value={styles}>{children}</NotifiStyleContext.Provider>;
 };
 
 export const useNotifiStyleContext: () => NotifiStyleData = () => {

@@ -1,5 +1,5 @@
-import { useNotifiStyleContext } from '../context';
 import React from 'react';
+import { useNotifiStyleContext } from '../context';
 
 export const NotifiCard: React.FC = ({ children }) => {
   const { card } = useNotifiStyleContext();
