@@ -1,10 +1,9 @@
-import React from 'react';
-
+import { useNotifiSubscribe } from '../hooks';
 import { NotifiEmailInput } from './NotifiEmailInput';
+import { NotifiFooter } from './NotifiFooter';
 import { NotifiSmsInput } from './NotifiSmsInput';
 import { NotifiSubscribeButton } from './NotifiSubscribeButton';
-import { NotifiFooter } from './NotifiFooter';
-import { useNotifiSubscribe } from '../hooks';
+import React from 'react';
 
 type SubscribeParams = Parameters<typeof useNotifiSubscribe>[0];
 type Props = Readonly<SubscribeParams>;

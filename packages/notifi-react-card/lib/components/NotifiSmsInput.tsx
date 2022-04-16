@@ -1,6 +1,10 @@
-import React from 'react';
-import { useNotifiCopyContext, useNotifiStyleContext, useNotifiSubscriptionContext } from '../context';
+import {
+  useNotifiCopyContext,
+  useNotifiStyleContext,
+  useNotifiSubscriptionContext,
+} from '../context';
 import { NotifiSms } from './NotifiSms';
+import React from 'react';
 
 type Props = Readonly<{
   disabled: boolean;

@@ -25,7 +25,6 @@ import axios from 'axios';
 
 export type NotifiAxiosServiceConfig = Readonly<{
   gqlUrl: string;
-  jwtContainer: { current: string | null };
 }>;
 
 export class NotifiAxiosService implements NotifiService {
@@ -52,16 +51,15 @@ export class NotifiAxiosService implements NotifiService {
   updateSourceGroup: NotifiService['updateSourceGroup'];
   updateTargetGroup: NotifiService['updateTargetGroup'];
 
-  private jwtContainer;
+  private jwt: string | null = null;
 
   constructor(c: NotifiAxiosServiceConfig) {
-    this.jwtContainer = c.jwtContainer;
     const a = axios.create({
       baseURL: c.gqlUrl,
     });
     a.interceptors.request.use((config) => {
-      const jwt = this.jwtContainer.current;
-      if (jwt !== undefined) {
+      const jwt = this.jwt;
+      if (jwt !== null) {
         return {
           ...config,
           headers: {
@@ -99,6 +97,6 @@ export class NotifiAxiosService implements NotifiService {
   }
 
   setJwt = (jwt: string | null) => {
-    this.jwtContainer.current = jwt;
+    this.jwt = jwt;
   };
 }

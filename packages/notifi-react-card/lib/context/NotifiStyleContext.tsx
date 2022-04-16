@@ -1,5 +1,5 @@
-import React, { createContext, useContext } from 'react';
 import { DeepPartialReadonly } from '../utils';
+import React, { createContext, useContext } from 'react';
 
 export type NotifiStyleData = DeepPartialReadonly<{
   card: {
@@ -37,7 +37,11 @@ export const NotifiStyleContextProvider: React.FC<NotifiStyleData> = ({
   children,
   ...styles
 }: React.PropsWithChildren<NotifiStyleData>) => {
-  return <NotifiStyleContext.Provider value={styles}>{children}</NotifiStyleContext.Provider>;
+  return (
+    <NotifiStyleContext.Provider value={styles}>
+      {children}
+    </NotifiStyleContext.Provider>
+  );
 };
 
 export const useNotifiStyleContext: () => NotifiStyleData = () => {

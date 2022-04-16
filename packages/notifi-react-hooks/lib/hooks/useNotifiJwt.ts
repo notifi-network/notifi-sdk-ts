@@ -1,5 +1,5 @@
 import localforage from 'localforage';
-import React, { useCallback, useMemo, useRef } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
 localforage.config({
   name: 'notifi',
@@ -10,7 +10,7 @@ const useNotifiJwt = (
   walletPublicKey: string,
   jwtPrefix: string,
 ): Readonly<{
-  jwtRef: React.MutableRefObject<string | null>;
+  jwt: string | null;
   setJwt: (jwt: string | null) => void;
 }> => {
   const key = useMemo(
@@ -18,34 +18,34 @@ const useNotifiJwt = (
     [jwtPrefix, dappAddress, walletPublicKey],
   );
 
-  const jwtRef = useRef<string | null>(null);
+  const [jwt, setJwtRaw] = useState<string | null>(null);
 
   React.useEffect(() => {
     const getItem = async () => {
       const value = await localforage.getItem<string>(key);
-      jwtRef.current = value;
+      setJwtRaw(value);
     };
 
     getItem().catch((_e: unknown) => {
-      jwtRef.current = null;
+      setJwtRaw(null);
     });
-  }, [key]);
+  }, [key, setJwtRaw]);
 
   const setJwt = useCallback(
     (jwt: string | null): void => {
       const setItem = async () => {
         await localforage.setItem(key, jwt);
+        setJwtRaw(jwt);
       };
 
-      jwtRef.current = jwt;
       setItem().catch((_e: unknown) => {
         /* Intentionally ignore failure to save Jwt */
       });
     },
-    [jwtRef, key],
+    [key, setJwtRaw],
   );
 
-  return { jwtRef, setJwt };
+  return { jwt, setJwt };
 };
 
 export default useNotifiJwt;

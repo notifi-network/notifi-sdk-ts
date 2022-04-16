@@ -1,7 +1,12 @@
-import { useCallback, useEffect } from 'react';
-import type { Alert, FilterOptions, MessageSigner, TargetGroup } from '@notifi-network/notifi-core';
-import { useNotifiClient } from '@notifi-network/notifi-react-hooks';
 import { useNotifiSubscriptionContext } from '../context';
+import type {
+  Alert,
+  FilterOptions,
+  MessageSigner,
+  TargetGroup,
+} from '@notifi-network/notifi-core';
+import { useNotifiClient } from '@notifi-network/notifi-react-hooks';
+import { useCallback, useEffect } from 'react';
 
 export type SubscriptionData = Readonly<{
   alerts: Readonly<Record<string, Alert>>;
@@ -14,7 +19,9 @@ export type Params = Parameters<typeof useNotifiClient>[0] &
     signer: MessageSigner;
   }>;
 
-const isEmpty: <T extends Record<string, unknown>>(input: T) => boolean = (input) => {
+const isEmpty: <T extends Record<string, unknown>>(input: T) => boolean = (
+  input,
+) => {
   Object.keys(input).forEach((key) => {
     const value = input[key];
     if (value !== undefined) {
@@ -25,7 +32,10 @@ const isEmpty: <T extends Record<string, unknown>>(input: T) => boolean = (input
   return true;
 };
 
-const areFilterOptionsEqual = (input: FilterOptions | null, serialized: string | null): boolean => {
+const areFilterOptionsEqual = (
+  input: FilterOptions | null,
+  serialized: string | null,
+): boolean => {
   if (serialized === null) {
     return input === null || isEmpty(input);
   }
@@ -92,7 +102,7 @@ export const useNotifiSubscribe: (params: Params) => Readonly<{
   }, [initialData, setAlerts, setEmail, setPhoneNumber]);
 
   const subscribe = useCallback(async (): Promise<void> => {
-    if (!isAuthenticated()) {
+    if (!isAuthenticated) {
       await logIn(signer);
     }
 
@@ -133,7 +143,12 @@ export const useNotifiSubscribe: (params: Params) => Readonly<{
         const { filterType, filterOptions, sourceType } = config;
         const source = data.sources.find((s) => s.type === sourceType);
         const filter = data.filters.find((f) => f.filterType === filterType);
-        if (source === undefined || source.id === null || filter === undefined || filter.id === null) {
+        if (
+          source === undefined ||
+          source.id === null ||
+          filter === undefined ||
+          filter.id === null
+        ) {
           await deleteThisAlert();
         } else if (
           existingAlert !== undefined &&

@@ -1,11 +1,22 @@
-import React from 'react';
-import type { BlockchainEnvironment, MessageSigner } from '@notifi-network/notifi-react-hooks';
-import type { AlertConfiguration, NotifiCopyData, NotifiStyleData } from '../context';
-import { NotifiCopyContextProvider, NotifiStyleContextProvider, NotifiSubscriptionContextProvider } from '../context';
+import type {
+  AlertConfiguration,
+  NotifiCopyData,
+  NotifiStyleData,
+} from '../context';
+import {
+  NotifiCopyContextProvider,
+  NotifiStyleContextProvider,
+  NotifiSubscriptionContextProvider,
+} from '../context';
 import { NotifiCard } from './NotifiCard';
 import { NotifiWalletConnectedContents } from './NotifiWalletConnectedContents';
 import { NotifiWalletDisconnectedContents } from './NotifiWalletDisconnectedContents';
 import { NotifiWalletUnsupportedContents } from './NotifiWalletUnsupportedContents';
+import type {
+  BlockchainEnvironment,
+  MessageSigner,
+} from '@notifi-network/notifi-react-hooks';
+import React from 'react';
 
 export type Props = Readonly<{
   alertConfigurations?: Record<string, AlertConfiguration>;
@@ -46,7 +57,9 @@ export const NotifiCardContainer: React.FC<Props> = ({
   }
 
   return (
-    <NotifiSubscriptionContextProvider alertConfigurations={alertConfigurations}>
+    <NotifiSubscriptionContextProvider
+      alertConfigurations={alertConfigurations}
+    >
       <NotifiCopyContextProvider {...copy}>
         <NotifiStyleContextProvider {...classNames}>
           <NotifiCard>{contents}</NotifiCard>

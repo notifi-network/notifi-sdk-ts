@@ -1,8 +1,8 @@
-import React from 'react';
 import { NotifiEmailInput } from './NotifiEmailInput';
+import { NotifiFooter } from './NotifiFooter';
 import { NotifiSmsInput } from './NotifiSmsInput';
 import { NotifiSubscribeButton } from './NotifiSubscribeButton';
-import { NotifiFooter } from './NotifiFooter';
+import React from 'react';
 
 export const NotifiWalletUnsupportedContents: React.FC = ({ children }) => {
   return (
@@ -10,7 +10,12 @@ export const NotifiWalletUnsupportedContents: React.FC = ({ children }) => {
       <NotifiEmailInput disabled />
       <NotifiSmsInput disabled />
       {children}
-      <NotifiSubscribeButton disabled onClick={() => {}} />
+      <NotifiSubscribeButton
+        disabled
+        onClick={() => {
+          /* Intentionally empty */
+        }}
+      />
       <NotifiFooter />
     </>
   );
