@@ -14,6 +14,7 @@ export * from './GetFilters';
 export * from './GetSmsTargets';
 export * from './GetSources';
 export * from './GetSourceGroups';
+export * from './GetSupportedTargetTypesForDapp';
 export * from './GetTargetGroups';
 export * from './GetTelegramTargets';
 export * from './LogInFromDapp';

@@ -16,6 +16,7 @@ export type NotifiService = Operations.CreateAlertService &
   Operations.GetSmsTargetsService &
   Operations.GetSourcesService &
   Operations.GetSourceGroupsService &
+  Operations.GetSupportedTargetTypesForDappService &
   Operations.GetTargetGroupsService &
   Operations.GetTelegramTargetsService &
   Operations.LogInFromDappService &

@@ -16,10 +16,12 @@ import {
   ClientCreateMetaplexAuctionSourceInput,
   ClientData,
   ClientDeleteAlertInput,
+  ClientGetSupportedTargetTypesForDappInput,
   ClientUpdateAlertInput,
   MessageSigner,
   NotifiClient,
   Source,
+  TargetType,
 } from '@notifi-network/notifi-core';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
@@ -543,6 +545,34 @@ const useNotifiClient = (
   );
 
   /**
+   * Get supported TargetTypes for a given dapp
+   * 
+   * @remarks
+   * Use this to determine which Target inputs are supported before a user has authenticated
+   * 
+   * @param {ClientGetSupportedTargetTypesForDappInput} input - Specifies which dapp to query on
+   * 
+   */
+  const getSupportedTargetTypesForDapp = useCallback(
+    async (input: ClientGetSupportedTargetTypesForDappInput): Promise<ReadonlyArray<TargetType>> => {
+      setLoading(true);
+      try {
+        return await service.getSupportedTargetTypesForDapp()
+      } catch (e: unknown) {
+        if (e instanceof Error) {
+          setError(e);
+        } else {
+          setError(new NotifiClientError(e));
+        }
+        throw e;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [service],
+  );
+  
+  /**
    * Is client SDK authenticated?
    *
    * @remarks
@@ -566,6 +596,7 @@ const useNotifiClient = (
     deleteAlert,
     fetchData,
     updateAlert,
+    getSupportedTargetTypesForDapp
   };
 
   return {

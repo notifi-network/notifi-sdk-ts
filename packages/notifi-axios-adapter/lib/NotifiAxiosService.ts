@@ -21,6 +21,7 @@ import getTargetGroupsImpl from './queries/getTargetGroupsImpl';
 import getTelegramTargetsImpl from './queries/getTelegramTargetsImpl';
 import { NotifiService } from '@notifi-network/notifi-core';
 import axios from 'axios';
+import getSupportedTargetTypesForDappImpl from './queries/getSupportedTargetTypesForDapp';
 
 export type NotifiAxiosServiceConfig = Readonly<{
   gqlUrl: string;
@@ -44,6 +45,7 @@ export class NotifiAxiosService implements NotifiService {
   getSmsTargets: NotifiService['getSmsTargets'];
   getSourceGroups: NotifiService['getSourceGroups'];
   getSources: NotifiService['getSources'];
+  getSupportedTargetTypesForDapp: NotifiService['getSupportedTargetTypesForDapp'];
   getTargetGroups: NotifiService['getTargetGroups'];
   getTelegramTargets: NotifiService['getTelegramTargets'];
   logInFromDapp: NotifiService['logInFromDapp'];
@@ -88,6 +90,8 @@ export class NotifiAxiosService implements NotifiService {
     this.getSmsTargets = getSmsTargetsImpl.bind(null, a);
     this.getSourceGroups = getSourceGroupsImpl.bind(null, a);
     this.getSources = getSourcesImpl.bind(null, a);
+    this.getSupportedTargetTypesForDapp =
+      getSupportedTargetTypesForDappImpl.bind(null, a);
     this.getTargetGroups = getTargetGroupsImpl.bind(null, a);
     this.getTelegramTargets = getTelegramTargetsImpl.bind(null, a);
     this.logInFromDapp = logInFromDappImpl.bind(null, a);
