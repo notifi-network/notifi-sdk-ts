@@ -28,7 +28,8 @@
     "url": "https://github.com/notifi-network/notifi-sdk-ts/issues"
   },
   "dependencies": {
-    "@notifi-network/notifi-react-hooks": "^0.11.0"
+    "@notifi-network/notifi-react-hooks": "^0.11.0",
+    "libphonenumber-js": "^1.9.51"
   },
   "devDependencies": {
     "@notifi-network/notifi-core": "^0.11.0"

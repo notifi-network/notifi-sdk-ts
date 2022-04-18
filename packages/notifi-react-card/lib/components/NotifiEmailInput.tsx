@@ -3,7 +3,6 @@ import {
   useNotifiStyleContext,
   useNotifiSubscriptionContext,
 } from '../context';
-import { NotifiMail } from './NotifiMail';
 import React from 'react';
 
 type Props = Readonly<{
@@ -17,9 +16,6 @@ export const NotifiEmailInput: React.FC<Props> = ({ disabled }: Props) => {
 
   return (
     <div className={styles?.container}>
-      <span className={styles?.iconSpan}>
-        <NotifiMail className={styles?.iconSvg} />
-      </span>
       <input
         className={styles?.input}
         disabled={disabled}

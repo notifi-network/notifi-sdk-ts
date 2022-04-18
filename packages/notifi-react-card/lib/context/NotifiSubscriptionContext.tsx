@@ -1,4 +1,5 @@
 import type { Alert, FilterOptions } from '@notifi-network/notifi-core';
+import type { CountryCode } from 'libphonenumber-js';
 import React, {
   createContext,
   useCallback,
@@ -15,6 +16,7 @@ export type AlertConfiguration = Readonly<{
 
 export type NotifiSubscriptionData = Readonly<{
   alerts: Readonly<Record<string, Alert | undefined>>;
+  countryCode: CountryCode;
   email: string;
   phoneNumber: string;
   getAlertConfiguration: (name: string) => AlertConfiguration | null;
@@ -24,6 +26,7 @@ export type NotifiSubscriptionData = Readonly<{
     name: string,
     config: AlertConfiguration | null,
   ) => void;
+  setCountryCode: (countryCode: CountryCode) => void;
   setEmail: (email: string) => void;
   setPhoneNumber: (phoneNumber: string) => void;
 }>;
@@ -42,6 +45,7 @@ export const NotifiSubscriptionContextProvider: React.FC<Props> = ({
 }) => {
   const [email, setEmail] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
+  const [countryCode, setCountryCode] = useState<CountryCode>('US');
   const [alerts, setAlerts] = useState<Record<string, Alert | undefined>>({});
 
   const alertConfigurations = useRef<Record<string, AlertConfiguration>>(
@@ -73,12 +77,14 @@ export const NotifiSubscriptionContextProvider: React.FC<Props> = ({
 
   const value = {
     alerts,
+    countryCode,
     email,
     phoneNumber,
     getAlertConfiguration,
     getAlertConfigurations,
     setAlerts,
     setAlertConfiguration,
+    setCountryCode,
     setEmail,
     setPhoneNumber,
   };

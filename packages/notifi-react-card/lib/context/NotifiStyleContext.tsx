@@ -7,8 +7,6 @@ export type NotifiStyleData = DeepPartialReadonly<{
   };
   emailInput: {
     container: string;
-    iconSpan: string;
-    iconSvg: string;
     input: string;
   };
   footer: {
@@ -21,8 +19,6 @@ export type NotifiStyleData = DeepPartialReadonly<{
   smsInput: {
     container: string;
     countryCodeSpan: string;
-    iconSpan: string;
-    iconSvg: string;
     input: string;
   };
   subscribeButton: {
