@@ -1,23 +1,29 @@
-import {
-  useNotifiCopyContext,
-  useNotifiStyleContext,
-  useNotifiSubscriptionContext,
-} from '../context';
+import { useNotifiSubscriptionContext } from '../context';
+import type { DeepPartialReadonly } from '../utils';
 import React from 'react';
 
 type Props = Readonly<{
+  classNames?: DeepPartialReadonly<{
+    container: string;
+    input: string;
+  }>;
+  copy?: DeepPartialReadonly<{
+    placeholder: string;
+  }>;
   disabled: boolean;
 }>;
 
-export const NotifiEmailInput: React.FC<Props> = ({ disabled }: Props) => {
-  const { emailInput: copy } = useNotifiCopyContext();
-  const { emailInput: styles } = useNotifiStyleContext();
+export const NotifiEmailInput: React.FC<Props> = ({
+  classNames,
+  copy,
+  disabled,
+}: Props) => {
   const { email, setEmail } = useNotifiSubscriptionContext();
 
   return (
-    <div className={styles?.container}>
+    <div className={classNames?.container}>
       <input
-        className={styles?.input}
+        className={classNames?.input}
         disabled={disabled}
         name="notifi-email"
         type="email"

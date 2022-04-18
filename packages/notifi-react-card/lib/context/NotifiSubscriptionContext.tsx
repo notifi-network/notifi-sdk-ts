@@ -1,9 +1,14 @@
 import type { Alert, FilterOptions } from '@notifi-network/notifi-core';
+import type {
+  BlockchainEnvironment,
+  MessageSigner,
+} from '@notifi-network/notifi-react-hooks';
 import type { CountryCode } from 'libphonenumber-js';
 import React, {
   createContext,
   useCallback,
   useContext,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -18,7 +23,10 @@ export type NotifiSubscriptionData = Readonly<{
   alerts: Readonly<Record<string, Alert | undefined>>;
   countryCode: CountryCode;
   email: string;
+  env: BlockchainEnvironment;
   phoneNumber: string;
+  signer: MessageSigner | null;
+  walletPublicKey: string | null;
   getAlertConfiguration: (name: string) => AlertConfiguration | null;
   getAlertConfigurations: () => Readonly<Record<string, AlertConfiguration>>;
   setAlerts: (alerts: Record<string, Alert | undefined>) => void;
@@ -37,10 +45,16 @@ const NotifiSubscriptionContext = createContext<NotifiSubscriptionData>(
 
 type Props = Readonly<{
   alertConfigurations?: Record<string, AlertConfiguration>;
+  env: BlockchainEnvironment;
+  signer: MessageSigner | null;
+  walletPublicKey: string | null;
 }>;
 
 export const NotifiSubscriptionContextProvider: React.FC<Props> = ({
   alertConfigurations: initialConfigs,
+  env,
+  signer,
+  walletPublicKey,
   children,
 }) => {
   const [email, setEmail] = useState<string>('');
@@ -79,7 +93,10 @@ export const NotifiSubscriptionContextProvider: React.FC<Props> = ({
     alerts,
     countryCode,
     email,
+    env,
     phoneNumber,
+    signer,
+    walletPublicKey,
     getAlertConfiguration,
     getAlertConfigurations,
     setAlerts,

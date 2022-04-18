@@ -1,18 +1,25 @@
-import {
-  useNotifiCopyContext,
-  useNotifiStyleContext,
-  useNotifiSubscriptionContext,
-} from '../context';
+import { useNotifiSubscriptionContext } from '../context';
+import type { DeepPartialReadonly } from '../utils';
 import { getCountryCallingCode } from 'libphonenumber-js';
 import React, { useMemo } from 'react';
 
 type Props = Readonly<{
+  classNames?: DeepPartialReadonly<{
+    container: string;
+    countryCodeSpan: string;
+    input: string;
+  }>;
+  copy?: DeepPartialReadonly<{
+    placeholder: string;
+  }>;
   disabled: boolean;
 }>;
 
-export const NotifiSmsInput: React.FC<Props> = ({ disabled }: Props) => {
-  const { smsInput: copy } = useNotifiCopyContext();
-  const { smsInput: styles } = useNotifiStyleContext();
+export const NotifiSmsInput: React.FC<Props> = ({
+  classNames,
+  copy,
+  disabled,
+}: Props) => {
   const { countryCode, phoneNumber, setPhoneNumber } =
     useNotifiSubscriptionContext();
 
@@ -21,10 +28,10 @@ export const NotifiSmsInput: React.FC<Props> = ({ disabled }: Props) => {
   }, [countryCode]);
 
   return (
-    <div className={styles?.container}>
-      <span className={styles?.countryCodeSpan}>+{countryCallingCode}</span>
+    <div className={classNames?.container}>
+      <span className={classNames?.countryCodeSpan}>+{countryCallingCode}</span>
       <input
-        className={styles?.input}
+        className={classNames?.input}
         disabled={disabled}
         name="notifi-sms"
         type="tel"
