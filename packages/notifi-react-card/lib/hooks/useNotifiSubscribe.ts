@@ -1,24 +1,18 @@
 import { useNotifiSubscriptionContext } from '../context';
 import type {
   Alert,
+  ClientData,
   FilterOptions,
-  MessageSigner,
-  TargetGroup,
 } from '@notifi-network/notifi-core';
 import { useNotifiClient } from '@notifi-network/notifi-react-hooks';
 import parsePhoneNumber from 'libphonenumber-js';
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 
 export type SubscriptionData = Readonly<{
   alerts: Readonly<Record<string, Alert>>;
   email: string | null;
   phoneNumber: string | null;
 }>;
-
-export type Params = Parameters<typeof useNotifiClient>[0] &
-  Readonly<{
-    signer: MessageSigner;
-  }>;
 
 const isEmpty: <T extends Record<string, unknown>>(input: T) => boolean = (
   input,
@@ -48,19 +42,26 @@ const areFilterOptionsEqual = (
   return JSON.stringify(input) === serialized;
 };
 
-export const useNotifiSubscribe: (params: Params) => Readonly<{
+export const useNotifiSubscribe: () => Readonly<{
   loading: boolean;
   subscribe: () => Promise<void>;
-}> = ({ signer, ...params }: Params) => {
+}> = () => {
   const {
-    data: initialData,
+    params: { dappAddress, env, walletPublicKey, signer },
+  } = useNotifiSubscriptionContext();
+
+  const {
     loading,
     createAlert,
     deleteAlert,
     fetchData,
     isAuthenticated,
     logIn,
-  } = useNotifiClient(params);
+  } = useNotifiClient({
+    dappAddress,
+    env,
+    walletPublicKey,
+  });
 
   const {
     countryCode: inputCountryCode,
@@ -73,47 +74,28 @@ export const useNotifiSubscribe: (params: Params) => Readonly<{
     setPhoneNumber,
   } = useNotifiSubscriptionContext();
 
-  useEffect(() => {
-    const targetGroup: TargetGroup | undefined = initialData?.targetGroups[0];
-    const emailTarget = targetGroup?.emailTargets[0];
-    const smsTarget = targetGroup?.smsTargets[0];
-
-    if (emailTarget !== undefined) {
-      setEmail(emailTarget.emailAddress ?? '');
-    }
-
-    if (smsTarget !== undefined) {
-      const parsed = parsePhoneNumber(smsTarget.phoneNumber ?? '');
-      if (parsed === undefined) {
-        setPhoneNumber('');
-      } else {
-        if (parsed.country !== undefined) {
-          setCountryCode(parsed.country);
+  const render = useCallback(
+    (newData: ClientData | null) => {
+      const alerts: Record<string, Alert> = {};
+      newData?.alerts.forEach((alert) => {
+        if (alert.name !== null) {
+          alerts[alert.name] = alert;
         }
-        setPhoneNumber(parsed.nationalNumber);
-      }
-    }
-  }, [initialData, setEmail, setPhoneNumber]);
+      });
+      setAlerts(alerts);
 
-  const existing = useEffect(() => {
-    const alerts: Record<string, Alert> = {};
-    initialData?.alerts.forEach((alert) => {
-      if (alert.name !== null) {
-        alerts[alert.name] = alert;
-      }
-    });
-    setAlerts(alerts);
+      const targetGroup = newData?.targetGroups[0];
+      const email = targetGroup?.emailTargets[0]?.id ?? null;
+      setEmail(email ?? '');
 
-    const targetGroup = initialData?.targetGroups[0];
-    const email = targetGroup?.emailTargets[0]?.id ?? null;
-    setEmail(email ?? '');
-
-    const smsTargetPhoneNumber = targetGroup?.smsTargets[0]?.id ?? null;
-    const parsed = parsePhoneNumber(smsTargetPhoneNumber ?? '');
-    const countryCode = parsed?.country ?? 'US'; // Default to US
-    setPhoneNumber(parsed?.nationalNumber ?? '');
-    setCountryCode(countryCode);
-  }, [initialData, setAlerts, setEmail, setPhoneNumber]);
+      const smsTargetPhoneNumber = targetGroup?.smsTargets[0]?.id ?? null;
+      const parsed = parsePhoneNumber(smsTargetPhoneNumber ?? '');
+      const countryCode = parsed?.country ?? 'US'; // Default to US
+      setPhoneNumber(parsed?.nationalNumber ?? '');
+      setCountryCode(countryCode);
+    },
+    [setAlerts, setEmail, setPhoneNumber],
+  );
 
   const subscribe = useCallback(async (): Promise<void> => {
     if (!isAuthenticated) {
@@ -209,6 +191,9 @@ export const useNotifiSubscribe: (params: Params) => Readonly<{
       const alertId = ids[i];
       await deleteAlert({ alertId });
     }
+
+    const newData = await fetchData();
+    render(newData);
   }, [
     createAlert,
     deleteAlert,
@@ -222,7 +207,6 @@ export const useNotifiSubscribe: (params: Params) => Readonly<{
   ]);
 
   return {
-    existing,
     loading,
     subscribe,
   };

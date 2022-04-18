@@ -8,7 +8,6 @@ import React, {
   createContext,
   useCallback,
   useContext,
-  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -19,14 +18,20 @@ export type AlertConfiguration = Readonly<{
   filterOptions: FilterOptions | null;
 }>;
 
+export type NotifiParams = Readonly<{
+  alertConfigurations?: Record<string, AlertConfiguration>;
+  dappAddress: string;
+  env: BlockchainEnvironment;
+  signer: MessageSigner;
+  walletPublicKey: string;
+}>;
+
 export type NotifiSubscriptionData = Readonly<{
   alerts: Readonly<Record<string, Alert | undefined>>;
   countryCode: CountryCode;
   email: string;
-  env: BlockchainEnvironment;
+  params: NotifiParams;
   phoneNumber: string;
-  signer: MessageSigner | null;
-  walletPublicKey: string | null;
   getAlertConfiguration: (name: string) => AlertConfiguration | null;
   getAlertConfigurations: () => Readonly<Record<string, AlertConfiguration>>;
   setAlerts: (alerts: Record<string, Alert | undefined>) => void;
@@ -43,27 +48,17 @@ const NotifiSubscriptionContext = createContext<NotifiSubscriptionData>(
   {} as unknown as NotifiSubscriptionData, // Intentially empty in default, use NotifiSubscriptionContextProvider
 );
 
-type Props = Readonly<{
-  alertConfigurations?: Record<string, AlertConfiguration>;
-  env: BlockchainEnvironment;
-  signer: MessageSigner | null;
-  walletPublicKey: string | null;
-}>;
-
-export const NotifiSubscriptionContextProvider: React.FC<Props> = ({
-  alertConfigurations: initialConfigs,
-  env,
-  signer,
-  walletPublicKey,
+export const NotifiSubscriptionContextProvider: React.FC<NotifiParams> = ({
   children,
-}) => {
+  ...params
+}: React.PropsWithChildren<NotifiParams>) => {
   const [email, setEmail] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [countryCode, setCountryCode] = useState<CountryCode>('US');
   const [alerts, setAlerts] = useState<Record<string, Alert | undefined>>({});
 
   const alertConfigurations = useRef<Record<string, AlertConfiguration>>(
-    initialConfigs ?? {},
+    params.alertConfigurations ?? {},
   );
   const getAlertConfigurations = useCallback((): Readonly<
     Record<string, AlertConfiguration>
@@ -93,10 +88,8 @@ export const NotifiSubscriptionContextProvider: React.FC<Props> = ({
     alerts,
     countryCode,
     email,
-    env,
+    params,
     phoneNumber,
-    signer,
-    walletPublicKey,
     getAlertConfiguration,
     getAlertConfigurations,
     setAlerts,
