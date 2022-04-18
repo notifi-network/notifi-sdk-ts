@@ -4,6 +4,7 @@ fragment telegramTargetFragment on TelegramTarget {
   isConfirmed
   name
   telegramId
+  confirmationUrl
 }
 `.trim();
 
