@@ -283,15 +283,16 @@ const useNotifiClient = (
         );
 
         const alertIndex = newData.alerts.indexOf(existingAlert);
-        newData.alerts[alertIndex] = {
+        const newAlert: Alert = {
           ...existingAlert,
           targetGroup,
         };
+        newData.alerts[alertIndex] = newAlert;
 
         setInternalData({
           ...newData,
         });
-        return existingAlert;
+        return newAlert;
       } catch (e: unknown) {
         if (e instanceof Error) {
           setError(e);
