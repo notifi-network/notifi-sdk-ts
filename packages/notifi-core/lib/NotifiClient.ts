@@ -1,4 +1,11 @@
-import { Alert, Filter, Source, TargetGroup, User } from './models';
+import {
+  Alert,
+  ClientConfiguration,
+  Filter,
+  Source,
+  TargetGroup,
+  User,
+} from './models';
 
 export type ClientData = Readonly<{
   alerts: ReadonlyArray<Alert>;
@@ -103,5 +110,6 @@ export type NotifiClient = Readonly<{
     input: ClientCreateMetaplexAuctionSourceInput,
   ) => Promise<Source>;
   deleteAlert: (input: ClientDeleteAlertInput) => Promise<string>;
+  getConfiguration: () => Promise<ClientConfiguration>;
   updateAlert: (input: ClientUpdateAlertInput) => Promise<Alert>;
 }>;

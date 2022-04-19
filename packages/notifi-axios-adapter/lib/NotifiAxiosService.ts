@@ -12,6 +12,7 @@ import logInFromDappImpl from './mutations/logInFromDappImpl';
 import updateSourceGroupImpl from './mutations/updateSourceGroupImpl';
 import updateTargetGroupImpl from './mutations/updateTargetGroupImpl';
 import getAlertsImpl from './queries/getAlertsImpl';
+import getConfigurationForDappImpl from './queries/getConfigurationForDappImpl';
 import getEmailTargetsImpl from './queries/getEmailTargetsImpl';
 import getFiltersImpl from './queries/getFiltersImpl';
 import getSmsTargetsImpl from './queries/getSmsTargetsImpl';
@@ -39,6 +40,7 @@ export class NotifiAxiosService implements NotifiService {
   deleteSourceGroup: NotifiService['deleteSourceGroup'];
   deleteTargetGroup: NotifiService['deleteTargetGroup'];
   getAlerts: NotifiService['getAlerts'];
+  getConfigurationForDapp: NotifiService['getConfigurationForDapp'];
   getEmailTargets: NotifiService['getEmailTargets'];
   getFilters: NotifiService['getFilters'];
   getSmsTargets: NotifiService['getSmsTargets'];
@@ -83,6 +85,7 @@ export class NotifiAxiosService implements NotifiService {
     this.deleteSourceGroup = deleteSourceGroupImpl.bind(null, a);
     this.deleteTargetGroup = deleteTargetGroupImpl.bind(null, a);
     this.getAlerts = getAlertsImpl.bind(null, a);
+    this.getConfigurationForDapp = getConfigurationForDappImpl.bind(null, a);
     this.getEmailTargets = getEmailTargetsImpl.bind(null, a);
     this.getFilters = getFiltersImpl.bind(null, a);
     this.getSmsTargets = getSmsTargetsImpl.bind(null, a);

@@ -4,6 +4,7 @@ import { GqlError } from '@notifi-network/notifi-axios-utils';
 import {
   Alert,
   AlertFrequency,
+  ClientConfiguration,
   ClientCreateAlertInput,
   ClientData,
   ClientDeleteAlertInput,
@@ -15,12 +16,14 @@ import {
   Source,
   SourceGroup,
   TargetGroup,
+  TargetType,
   User,
 } from '@notifi-network/notifi-core';
 
 export type {
   Alert,
   AlertFrequency,
+  ClientConfiguration,
   ClientCreateAlertInput,
   ClientData,
   ClientDeleteAlertInput,
@@ -30,6 +33,7 @@ export type {
   MessageSigner,
   NotifiClient,
   TargetGroup,
+  TargetType,
   Source,
   SourceGroup,
   User,

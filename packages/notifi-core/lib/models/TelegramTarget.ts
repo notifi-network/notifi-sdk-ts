@@ -8,6 +8,7 @@
  * @property {string | null} name - Friendly name (must be unique)
  * @property {string | null} telegramId - Telegram account for the Target
  * @property {boolean} isConfirmed - Is confirmed? After adding, it must be confirmed via Telegram app by the user
+ * @property {string | null} confirmationUrl - If not confirmed, use this URL to allow the user to start the Telegram bot
  *
  */
 export type TelegramTarget = Readonly<{
@@ -15,4 +16,5 @@ export type TelegramTarget = Readonly<{
   isConfirmed: boolean;
   name: string | null;
   telegramId: string | null;
+  confirmationUrl: string | null;
 }>;

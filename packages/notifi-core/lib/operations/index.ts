@@ -9,6 +9,7 @@ export * from './DeleteAlert';
 export * from './DeleteSourceGroup';
 export * from './DeleteTargetGroup';
 export * from './GetAlerts';
+export * from './GetConfigurationForDapp';
 export * from './GetEmailTargets';
 export * from './GetFilters';
 export * from './GetSmsTargets';

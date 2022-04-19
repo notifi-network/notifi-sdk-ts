@@ -12,6 +12,7 @@ import useNotifiJwt from './useNotifiJwt';
 import useNotifiService from './useNotifiService';
 import {
   Alert,
+  ClientConfiguration,
   ClientCreateAlertInput,
   ClientCreateMetaplexAuctionSourceInput,
   ClientData,
@@ -543,6 +544,33 @@ const useNotifiClient = (
   );
 
   /**
+   * Get the configurations associated with the configured dapp
+   *
+   * @remarks
+   * Use this to determine which Target inputs are supported before a user has authenticated.
+   * This also returns the list of country codes that are supported for SMS
+   *
+   */
+  const getConfiguration =
+    useCallback(async (): Promise<ClientConfiguration> => {
+      setLoading(true);
+      try {
+        return await service.getConfigurationForDapp({
+          dappAddress: config.dappAddress,
+        });
+      } catch (e: unknown) {
+        if (e instanceof Error) {
+          setError(e);
+        } else {
+          setError(new NotifiClientError(e));
+        }
+        throw e;
+      } finally {
+        setLoading(false);
+      }
+    }, [config.dappAddress, service]);
+
+  /**
    * Is client SDK authenticated?
    *
    * @remarks
@@ -565,6 +593,7 @@ const useNotifiClient = (
     createMetaplexAuctionSource,
     deleteAlert,
     fetchData,
+    getConfiguration,
     updateAlert,
   };
 
