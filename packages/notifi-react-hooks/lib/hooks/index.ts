@@ -4,10 +4,10 @@ import { GqlError } from '@notifi-network/notifi-axios-utils';
 import {
   Alert,
   AlertFrequency,
+  ClientConfiguration,
   ClientCreateAlertInput,
   ClientData,
   ClientDeleteAlertInput,
-  ClientGetSupportedTargetTypesForDappInput,
   ClientUpdateAlertInput,
   Filter,
   FilterOptions,
@@ -23,10 +23,10 @@ import {
 export type {
   Alert,
   AlertFrequency,
+  ClientConfiguration,
   ClientCreateAlertInput,
   ClientData,
   ClientDeleteAlertInput,
-  ClientGetSupportedTargetTypesForDappInput,
   ClientUpdateAlertInput,
   Filter,
   FilterOptions,

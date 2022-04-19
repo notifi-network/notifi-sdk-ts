@@ -1,4 +1,11 @@
-import { Alert, Filter, SmsTarget, Source, TargetGroup, TargetType, User } from './models';
+import {
+  Alert,
+  ClientConfiguration,
+  Filter,
+  Source,
+  TargetGroup,
+  User,
+} from './models';
 
 export type ClientData = Readonly<{
   alerts: ReadonlyArray<Alert>;
@@ -77,16 +84,6 @@ export type ClientCreateMetaplexAuctionSourceInput = Readonly<{
 }>;
 
 /**
- * Input param for querying the supported TargetTypes of a dapp
- *
- * @property dappAddress - Address of the dapp to query on
- *
- */
-export type ClientGetSupportedTargetTypesForDappInput = Readonly<{
-  dappAddress: string;
-}>;
-
-/**
  * Input param for deleting an Alert
  *
  * @property alertId - The ID of the Alert to delete
@@ -113,8 +110,6 @@ export type NotifiClient = Readonly<{
     input: ClientCreateMetaplexAuctionSourceInput,
   ) => Promise<Source>;
   deleteAlert: (input: ClientDeleteAlertInput) => Promise<string>;
+  getConfiguration: () => Promise<ClientConfiguration>;
   updateAlert: (input: ClientUpdateAlertInput) => Promise<Alert>;
-  getSupportedTargetTypesForDapp: (
-    input: ClientGetSupportedTargetTypesForDappInput,
-  ) => Promise<ReadonlyArray<TargetType>>;
 }>;

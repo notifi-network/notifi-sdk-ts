@@ -12,16 +12,15 @@ import useNotifiJwt from './useNotifiJwt';
 import useNotifiService from './useNotifiService';
 import {
   Alert,
+  ClientConfiguration,
   ClientCreateAlertInput,
   ClientCreateMetaplexAuctionSourceInput,
   ClientData,
   ClientDeleteAlertInput,
-  ClientGetSupportedTargetTypesForDappInput,
   ClientUpdateAlertInput,
   MessageSigner,
   NotifiClient,
   Source,
-  TargetType,
 } from '@notifi-network/notifi-core';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
@@ -545,19 +544,20 @@ const useNotifiClient = (
   );
 
   /**
-   * Get supported TargetTypes for a given dapp
-   * 
+   * Get the configurations associated with the configured dapp
+   *
    * @remarks
-   * Use this to determine which Target inputs are supported before a user has authenticated
-   * 
-   * @param {ClientGetSupportedTargetTypesForDappInput} input - Specifies which dapp to query on
-   * 
+   * Use this to determine which Target inputs are supported before a user has authenticated.
+   * This also returns the list of country codes that are supported for SMS
+   *
    */
-  const getSupportedTargetTypesForDapp = useCallback(
-    async (input: ClientGetSupportedTargetTypesForDappInput): Promise<ReadonlyArray<TargetType>> => {
+  const getConfiguration =
+    useCallback(async (): Promise<ClientConfiguration> => {
       setLoading(true);
       try {
-        return await service.getSupportedTargetTypesForDapp()
+        return await service.getConfigurationForDapp({
+          dappAddress: config.dappAddress,
+        });
       } catch (e: unknown) {
         if (e instanceof Error) {
           setError(e);
@@ -568,10 +568,8 @@ const useNotifiClient = (
       } finally {
         setLoading(false);
       }
-    },
-    [service],
-  );
-  
+    }, [config.dappAddress, service]);
+
   /**
    * Is client SDK authenticated?
    *
@@ -595,8 +593,8 @@ const useNotifiClient = (
     createMetaplexAuctionSource,
     deleteAlert,
     fetchData,
+    getConfiguration,
     updateAlert,
-    getSupportedTargetTypesForDapp
   };
 
   return {

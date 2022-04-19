@@ -11,12 +11,12 @@ export type NotifiService = Operations.CreateAlertService &
   Operations.DeleteSourceGroupService &
   Operations.DeleteTargetGroupService &
   Operations.GetAlertsService &
+  Operations.GetConfigurationForDappService &
   Operations.GetEmailTargetsService &
   Operations.GetFiltersService &
   Operations.GetSmsTargetsService &
   Operations.GetSourcesService &
   Operations.GetSourceGroupsService &
-  Operations.GetSupportedTargetTypesForDappService &
   Operations.GetTargetGroupsService &
   Operations.GetTelegramTargetsService &
   Operations.LogInFromDappService &

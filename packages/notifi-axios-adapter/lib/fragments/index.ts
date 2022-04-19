@@ -1,4 +1,5 @@
 export * from './alertFragment';
+export * from './clientConfigurationFragment';
 export * from './emailTargetFragment';
 export * from './filterFragment';
 export * from './smsTargetFragment';

@@ -12,6 +12,7 @@ import logInFromDappImpl from './mutations/logInFromDappImpl';
 import updateSourceGroupImpl from './mutations/updateSourceGroupImpl';
 import updateTargetGroupImpl from './mutations/updateTargetGroupImpl';
 import getAlertsImpl from './queries/getAlertsImpl';
+import getConfigurationForDappImpl from './queries/getConfigurationForDappImpl';
 import getEmailTargetsImpl from './queries/getEmailTargetsImpl';
 import getFiltersImpl from './queries/getFiltersImpl';
 import getSmsTargetsImpl from './queries/getSmsTargetsImpl';
@@ -21,7 +22,6 @@ import getTargetGroupsImpl from './queries/getTargetGroupsImpl';
 import getTelegramTargetsImpl from './queries/getTelegramTargetsImpl';
 import { NotifiService } from '@notifi-network/notifi-core';
 import axios from 'axios';
-import getSupportedTargetTypesForDappImpl from './queries/getSupportedTargetTypesForDapp';
 
 export type NotifiAxiosServiceConfig = Readonly<{
   gqlUrl: string;
@@ -40,12 +40,12 @@ export class NotifiAxiosService implements NotifiService {
   deleteSourceGroup: NotifiService['deleteSourceGroup'];
   deleteTargetGroup: NotifiService['deleteTargetGroup'];
   getAlerts: NotifiService['getAlerts'];
+  getConfigurationForDapp: NotifiService['getConfigurationForDapp'];
   getEmailTargets: NotifiService['getEmailTargets'];
   getFilters: NotifiService['getFilters'];
   getSmsTargets: NotifiService['getSmsTargets'];
   getSourceGroups: NotifiService['getSourceGroups'];
   getSources: NotifiService['getSources'];
-  getSupportedTargetTypesForDapp: NotifiService['getSupportedTargetTypesForDapp'];
   getTargetGroups: NotifiService['getTargetGroups'];
   getTelegramTargets: NotifiService['getTelegramTargets'];
   logInFromDapp: NotifiService['logInFromDapp'];
@@ -85,13 +85,12 @@ export class NotifiAxiosService implements NotifiService {
     this.deleteSourceGroup = deleteSourceGroupImpl.bind(null, a);
     this.deleteTargetGroup = deleteTargetGroupImpl.bind(null, a);
     this.getAlerts = getAlertsImpl.bind(null, a);
+    this.getConfigurationForDapp = getConfigurationForDappImpl.bind(null, a);
     this.getEmailTargets = getEmailTargetsImpl.bind(null, a);
     this.getFilters = getFiltersImpl.bind(null, a);
     this.getSmsTargets = getSmsTargetsImpl.bind(null, a);
     this.getSourceGroups = getSourceGroupsImpl.bind(null, a);
     this.getSources = getSourcesImpl.bind(null, a);
-    this.getSupportedTargetTypesForDapp =
-      getSupportedTargetTypesForDappImpl.bind(null, a);
     this.getTargetGroups = getTargetGroupsImpl.bind(null, a);
     this.getTelegramTargets = getTelegramTargetsImpl.bind(null, a);
     this.logInFromDapp = logInFromDappImpl.bind(null, a);
