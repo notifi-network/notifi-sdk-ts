@@ -407,7 +407,7 @@ const useNotifiClient = (
         newData.alerts.push(newAlert);
 
         setInternalData({ ...newData });
-        return alert;
+        return newAlert;
       } catch (e: unknown) {
         if (e instanceof Error) {
           setError(e);
