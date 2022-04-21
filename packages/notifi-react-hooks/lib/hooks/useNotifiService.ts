@@ -1,10 +1,10 @@
-import useNotifiConfig, { BlockchainEnvironment } from './useNotifiConfig';
+import useNotifiConfig from './useNotifiConfig';
 import { NotifiAxiosService } from '@notifi-network/notifi-axios-adapter';
 import { NotifiService } from '@notifi-network/notifi-core';
 import { useMemo } from 'react';
 
 const useNotifiService = (
-  env = BlockchainEnvironment.MainNetBeta,
+  env: Parameters<typeof useNotifiConfig>[0],
 ): NotifiService => {
   const { gqlUrl } = useNotifiConfig(env);
 

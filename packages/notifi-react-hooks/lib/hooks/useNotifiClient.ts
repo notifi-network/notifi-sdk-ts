@@ -10,6 +10,7 @@ import packFilterOptions from '../utils/packFilterOptions';
 import useNotifiConfig, { BlockchainEnvironment } from './useNotifiConfig';
 import useNotifiJwt from './useNotifiJwt';
 import useNotifiService from './useNotifiService';
+import type { NotifiEnvironment } from '@notifi-network/notifi-axios-utils';
 import {
   Alert,
   ClientConfiguration,
@@ -40,7 +41,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 export type NotifiClientConfig = Readonly<{
   dappAddress: string;
   walletPublicKey: string;
-  env?: BlockchainEnvironment;
+  env?: BlockchainEnvironment | NotifiEnvironment;
 }>;
 
 export class NotifiClientError extends Error {

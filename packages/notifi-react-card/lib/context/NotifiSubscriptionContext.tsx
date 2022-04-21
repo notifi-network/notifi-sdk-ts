@@ -1,7 +1,7 @@
 import type { Alert, FilterOptions } from '@notifi-network/notifi-core';
 import type {
-  BlockchainEnvironment,
   MessageSigner,
+  NotifiEnvironment,
 } from '@notifi-network/notifi-react-hooks';
 import React, {
   createContext,
@@ -20,7 +20,7 @@ export type AlertConfiguration = Readonly<{
 export type NotifiParams = Readonly<{
   alertConfigurations?: Record<string, AlertConfiguration>;
   dappAddress: string;
-  env: BlockchainEnvironment;
+  env: NotifiEnvironment;
   signer: MessageSigner;
   walletPublicKey: string;
 }>;
