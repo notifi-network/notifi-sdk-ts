@@ -64,12 +64,10 @@ export const useNotifiSubscribe: () => Readonly<{
   });
 
   const {
-    countryCode: inputCountryCode,
     email: inputEmail,
     phoneNumber: inputPhoneNumber,
     getAlertConfigurations,
     setAlerts,
-    setCountryCode,
     setEmail,
     setPhoneNumber,
   } = useNotifiSubscriptionContext();
@@ -88,11 +86,8 @@ export const useNotifiSubscribe: () => Readonly<{
       const email = targetGroup?.emailTargets[0]?.id ?? null;
       setEmail(email ?? '');
 
-      const smsTargetPhoneNumber = targetGroup?.smsTargets[0]?.id ?? null;
-      const parsed = parsePhoneNumber(smsTargetPhoneNumber ?? '');
-      const countryCode = parsed?.country ?? 'US'; // Default to US
-      setPhoneNumber(parsed?.nationalNumber ?? '');
-      setCountryCode(countryCode);
+      const phoneNumber = targetGroup?.smsTargets[0]?.id ?? null;
+      setPhoneNumber(phoneNumber ?? '');
     },
     [setAlerts, setEmail, setPhoneNumber],
   );
@@ -110,10 +105,7 @@ export const useNotifiSubscribe: () => Readonly<{
 
     let finalPhoneNumber = null;
     if (inputPhoneNumber !== '') {
-      const parsedPhoneNumber = parsePhoneNumber(
-        inputPhoneNumber,
-        inputCountryCode,
-      );
+      const parsedPhoneNumber = parsePhoneNumber(inputPhoneNumber);
       if (parsedPhoneNumber !== undefined) {
         finalPhoneNumber = parsedPhoneNumber.number; // E.164
       }

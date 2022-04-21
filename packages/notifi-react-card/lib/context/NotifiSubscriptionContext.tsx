@@ -3,7 +3,6 @@ import type {
   BlockchainEnvironment,
   MessageSigner,
 } from '@notifi-network/notifi-react-hooks';
-import type { CountryCode } from 'libphonenumber-js';
 import React, {
   createContext,
   useCallback,
@@ -28,7 +27,6 @@ export type NotifiParams = Readonly<{
 
 export type NotifiSubscriptionData = Readonly<{
   alerts: Readonly<Record<string, Alert | undefined>>;
-  countryCode: CountryCode;
   email: string;
   params: NotifiParams;
   phoneNumber: string;
@@ -39,7 +37,6 @@ export type NotifiSubscriptionData = Readonly<{
     name: string,
     config: AlertConfiguration | null,
   ) => void;
-  setCountryCode: (countryCode: CountryCode) => void;
   setEmail: (email: string) => void;
   setPhoneNumber: (phoneNumber: string) => void;
 }>;
@@ -54,7 +51,6 @@ export const NotifiSubscriptionContextProvider: React.FC<NotifiParams> = ({
 }: React.PropsWithChildren<NotifiParams>) => {
   const [email, setEmail] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
-  const [countryCode, setCountryCode] = useState<CountryCode>('US');
   const [alerts, setAlerts] = useState<Record<string, Alert | undefined>>({});
 
   const alertConfigurations = useRef<Record<string, AlertConfiguration>>(
@@ -86,7 +82,6 @@ export const NotifiSubscriptionContextProvider: React.FC<NotifiParams> = ({
 
   const value = {
     alerts,
-    countryCode,
     email,
     params,
     phoneNumber,
@@ -94,7 +89,6 @@ export const NotifiSubscriptionContextProvider: React.FC<NotifiParams> = ({
     getAlertConfigurations,
     setAlerts,
     setAlertConfiguration,
-    setCountryCode,
     setEmail,
     setPhoneNumber,
   };
