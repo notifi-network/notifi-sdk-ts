@@ -20,12 +20,11 @@ export const NotifiSmsInput: React.FC<Props> = ({
   copy,
   disabled,
 }: Props) => {
-  const { countryCode, phoneNumber, setPhoneNumber } =
-    useNotifiSubscriptionContext();
+  const { phoneNumber, setPhoneNumber } = useNotifiSubscriptionContext();
 
   const countryCallingCode = useMemo(() => {
-    return getCountryCallingCode(countryCode);
-  }, [countryCode]);
+    return getCountryCallingCode('US'); // TODO
+  }, []);
 
   return (
     <div className={classNames?.container}>
