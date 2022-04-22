@@ -28,7 +28,7 @@ export const NotifiSmsInput: React.FC<Props> = ({
         name="notifi-sms"
         type="tel"
         value={phoneNumber}
-        onBlur={(e) => {
+        onChange={(e) => {
           setPhoneNumber(e.target.value ?? '');
         }}
         placeholder={copy?.placeholder ?? 'PhoneNumber'}
