@@ -83,10 +83,10 @@ export const useNotifiSubscribe: () => Readonly<{
       setAlerts(alerts);
 
       const targetGroup = newData?.targetGroups[0];
-      const email = targetGroup?.emailTargets[0]?.id ?? null;
+      const email = targetGroup?.emailTargets[0]?.emailAddress ?? null;
       setEmail(email ?? '');
 
-      const phoneNumber = targetGroup?.smsTargets[0]?.id ?? null;
+      const phoneNumber = targetGroup?.smsTargets[0]?.phoneNumber ?? null;
       setPhoneNumber(phoneNumber ?? '');
     },
     [setAlerts, setEmail, setPhoneNumber],
