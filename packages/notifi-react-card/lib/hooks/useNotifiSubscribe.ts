@@ -6,7 +6,7 @@ import type {
 } from '@notifi-network/notifi-core';
 import { useNotifiClient } from '@notifi-network/notifi-react-hooks';
 import parsePhoneNumber from 'libphonenumber-js';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 
 export type SubscriptionData = Readonly<{
   alerts: Readonly<Record<string, Alert>>;
@@ -91,6 +91,19 @@ export const useNotifiSubscribe: () => Readonly<{
     },
     [setAlerts, setEmail, setPhoneNumber],
   );
+
+  // Initial fetch
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchData()
+        .then((data) => {
+          render(data);
+        })
+        .catch((_e) => {
+          /* Intentionally empty */
+        });
+    }
+  }, [isAuthenticated]);
 
   const subscribe = useCallback(async (): Promise<void> => {
     if (!isAuthenticated) {
