@@ -1,6 +1,7 @@
 import type { Message } from './Message';
 
 export type DirectTenantMessagePayload = Readonly<{
+  type?: string;
   message: string;
   targetTemplates?: Readonly<{
     [TargetType in 'SMS' | 'Email' | 'Telegram']?: string;
