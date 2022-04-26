@@ -18,3 +18,17 @@ export const directMessageConfiguration = (
     filterOptions: type === undefined ? null : { directMessageType: type },
   };
 };
+
+export const healthThresholdConfiguration = ({
+  percentage,
+}: Readonly<{
+  percentage: number;
+}>): AlertConfiguration => {
+  return {
+    sourceType: 'DIRECT_PUSH',
+    filterType: 'VALUE_THRESHOLD',
+    filterOptions: {
+      threshold: percentage,
+    },
+  };
+};
