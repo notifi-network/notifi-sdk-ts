@@ -1,7 +1,5 @@
-import {
-  AlertConfiguration,
-  NotifiSubscriptionContextProvider,
-} from '../context';
+import { NotifiSubscriptionContextProvider } from '../context';
+import type { AlertConfiguration } from '../utils';
 import { DeepPartialReadonly } from '../utils';
 import type {
   MessageSigner,
