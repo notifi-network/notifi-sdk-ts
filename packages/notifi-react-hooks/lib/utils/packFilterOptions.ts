@@ -6,10 +6,14 @@ const packFilterOptions = (
   const record: Record<string, string> = {};
 
   if (clientOptions !== undefined) {
-    const { alertFrequency, threshold } = clientOptions;
+    const { alertFrequency, directMessageType, threshold } = clientOptions;
 
     if (alertFrequency !== undefined) {
       record.alertFrequency = alertFrequency;
+    }
+
+    if (directMessageType !== undefined) {
+      record.directMessageType = directMessageType;
     }
 
     if (threshold !== undefined) {

@@ -24,4 +24,11 @@ describe('packFilterOptions', () => {
     });
     expect(result).toEqual('{"alertFrequency":"ALWAYS"}');
   });
+
+  it('encodes the directMessageType to a string', () => {
+    const result = packFilterOptions({
+      directMessageType: 'MARKETING',
+    });
+    expect(result).toEqual('{"directMessageType":"MARKETING"}');
+  });
 });
