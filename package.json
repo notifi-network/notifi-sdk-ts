@@ -4,8 +4,8 @@
   "scripts": {
     "build": "npx lerna run build",
     "docs": "npx typedoc packages/notifi-react-hooks/lib/index.ts",
-    "format": "prettier --config .prettierrc packages/**/lib/**/*.ts --write",
-    "lint": "eslint --ext .ts packages/**/lib --fix",
+    "format": "prettier --config .prettierrc packages/**/lib/**/*.ts* --write",
+    "lint": "eslint --ext .ts,.tsx packages/**/lib --fix",
     "test": "jest"
   },
   "devDependencies": {
@@ -36,6 +36,7 @@
     "packages/notifi-core",
     "packages/notifi-node",
     "packages/notifi-node-sample",
+    "packages/notifi-react-card",
     "packages/notifi-react-hooks"
   ]
 }

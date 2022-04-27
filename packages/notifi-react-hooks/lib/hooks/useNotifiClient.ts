@@ -10,6 +10,7 @@ import packFilterOptions from '../utils/packFilterOptions';
 import useNotifiConfig, { BlockchainEnvironment } from './useNotifiConfig';
 import useNotifiJwt from './useNotifiJwt';
 import useNotifiService from './useNotifiService';
+import type { NotifiEnvironment } from '@notifi-network/notifi-axios-utils';
 import {
   Alert,
   ClientConfiguration,
@@ -40,7 +41,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 export type NotifiClientConfig = Readonly<{
   dappAddress: string;
   walletPublicKey: string;
-  env?: BlockchainEnvironment;
+  env?: BlockchainEnvironment | NotifiEnvironment;
 }>;
 
 export class NotifiClientError extends Error {
@@ -82,16 +83,19 @@ const useNotifiClient = (
     data: ClientData | null;
     error: Error | null;
     loading: boolean;
-    isAuthenticated: () => boolean;
+    isAuthenticated: boolean;
   }> => {
   const { env, dappAddress, walletPublicKey } = config;
   const notifiConfig = useNotifiConfig(env);
-  const { jwtRef, setJwt } = useNotifiJwt(
+  const { jwt, setJwt } = useNotifiJwt(
     dappAddress,
     walletPublicKey,
     notifiConfig.storagePrefix,
   );
-  const service = useNotifiService(env, jwtRef);
+  const service = useNotifiService(env);
+  useEffect(() => {
+    service.setJwt(jwt);
+  }, [jwt, service]);
 
   const [internalData, setInternalData] = useState<InternalData | null>(null);
   const [error, setError] = useState<Error | null>(null);
@@ -145,7 +149,7 @@ const useNotifiClient = (
 
   useEffect(() => {
     // Initial load
-    if (jwtRef.current !== null) {
+    if (jwt !== null) {
       setLoading(true);
       fetchDataImpl(service, Date, fetchDataRef.current)
         .then((newData) => {
@@ -158,7 +162,7 @@ const useNotifiClient = (
           setLoading(false);
         });
     }
-  }, [jwtRef.current]);
+  }, [jwt]);
 
   /**
    * Authorization object containing token and metadata
@@ -210,7 +214,6 @@ const useNotifiClient = (
         });
 
         const newToken = result.authorization?.token ?? null;
-        jwtRef.current = newToken;
         service.setJwt(newToken);
         setJwt(newToken);
 
@@ -580,9 +583,9 @@ const useNotifiClient = (
    *
    * @returns {boolean}
    */
-  const isAuthenticated = useCallback(() => {
-    return jwtRef.current !== null;
-  }, [jwtRef]);
+  const isAuthenticated = useMemo(() => {
+    return jwt !== null;
+  }, [jwt]);
 
   const data = useMemo(() => {
     return projectData(internalData);

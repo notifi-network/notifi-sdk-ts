@@ -60,6 +60,7 @@ class NotifiClient {
       walletPublicKey: string;
       walletBlockchain: WalletBlockchain;
       message?: string;
+      type?: string;
       template?: {
         emailTemplate?: string;
         smsTemplate?: string;
@@ -69,14 +70,15 @@ class NotifiClient {
     }>,
   ) => Promise<void> = async (
     jwt,
-    { key, walletPublicKey, walletBlockchain, message, template },
+    { key, walletPublicKey, walletBlockchain, message, template, type },
   ) => {
     let directMessage;
     if (message !== undefined) {
-      directMessage = newDirectTenantMessage({ message });
+      directMessage = newDirectTenantMessage({ message, type });
     } else if (template !== undefined) {
       directMessage = newDirectTenantMessage({
         message: '',
+        type,
         targetTemplates: {
           SMS: template.smsTemplate ?? undefined,
           Email: template.emailTemplate ?? undefined,

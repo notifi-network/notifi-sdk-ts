@@ -18,6 +18,7 @@ export type AlertFrequency = 'ALWAYS' | 'SINGLE';
 
 export type FilterOptions = Partial<{
   alertFrequency: AlertFrequency;
+  directMessageType: string;
   threshold: number;
   delayProcessingUntil: string;
 }>;

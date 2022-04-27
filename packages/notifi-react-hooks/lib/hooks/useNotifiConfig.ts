@@ -1,7 +1,7 @@
 import type { NotifiEnvironment } from '@notifi-network/notifi-axios-utils';
 import { notifiConfigs } from '@notifi-network/notifi-axios-utils';
 
-// TODO: Deprecate and move to NotifiEnvironment
+// TODO: Deprecate
 export enum BlockchainEnvironment {
   MainNetBeta,
   TestNet,
@@ -9,7 +9,9 @@ export enum BlockchainEnvironment {
   LocalNet,
 }
 
-const useNotifiConfig = (env = BlockchainEnvironment.MainNetBeta) => {
+const useNotifiConfig = (
+  env: BlockchainEnvironment | NotifiEnvironment = 'Production',
+) => {
   let notifiEnv: NotifiEnvironment;
   switch (env) {
     case BlockchainEnvironment.MainNetBeta:
@@ -24,6 +26,8 @@ const useNotifiConfig = (env = BlockchainEnvironment.MainNetBeta) => {
     case BlockchainEnvironment.LocalNet:
       notifiEnv = 'Local';
       break;
+    default:
+      notifiEnv = env;
   }
 
   const { gqlUrl, storagePrefix } = notifiConfigs(notifiEnv);
