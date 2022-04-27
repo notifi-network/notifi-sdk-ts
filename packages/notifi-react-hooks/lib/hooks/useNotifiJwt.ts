@@ -1,9 +1,14 @@
 import localforage from 'localforage';
-import React, { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 localforage.config({
   name: 'notifi',
 });
+
+type Authorization = Readonly<{
+  token: string;
+  expiry: string;
+}>;
 
 const useNotifiJwt = (
   dappAddress: string,
@@ -11,41 +16,62 @@ const useNotifiJwt = (
   jwtPrefix: string,
 ): Readonly<{
   jwt: string | null;
-  setJwt: (jwt: string | null) => void;
+  expiry: string | null;
+  setAuthorization: (authorization: Authorization | null) => void;
 }> => {
-  const key = useMemo(
+  const oldKey = useMemo(
     () => `${jwtPrefix}:${dappAddress}:${walletPublicKey}`,
+    [jwtPrefix, dappAddress, walletPublicKey],
+  );
+  const newKey = useMemo(
+    () => `${jwtPrefix}:${dappAddress}:${walletPublicKey}:authorization`,
     [jwtPrefix, dappAddress, walletPublicKey],
   );
 
   const [jwt, setJwtRaw] = useState<string | null>(null);
+  const [expiry, setExpiry] = useState<string | null>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const getItem = async () => {
-      const value = await localforage.getItem<string>(key);
-      setJwtRaw(value);
+      const oldValue = await localforage.getItem<string>(oldKey);
+      if (oldValue !== null) {
+        const expiry = new Date();
+        expiry.setDate(expiry.getDate() + 1); // Assume not expired
+        const migrated: Authorization = {
+          token: oldValue,
+          expiry: expiry.toISOString(),
+        };
+
+        await localforage.removeItem(oldKey);
+        await localforage.setItem(newKey, migrated);
+      }
+
+      const newValue = await localforage.getItem<Authorization>(newKey);
+      setJwtRaw(newValue?.token ?? null);
+      setExpiry(newValue?.expiry ?? null);
     };
 
     getItem().catch((_e: unknown) => {
       setJwtRaw(null);
     });
-  }, [key, setJwtRaw]);
+  }, [oldKey, newKey, setJwtRaw]);
 
-  const setJwt = useCallback(
-    (jwt: string | null): void => {
+  const setAuthorization = useCallback(
+    (authorization: Authorization | null): void => {
       const setItem = async () => {
-        await localforage.setItem(key, jwt);
-        setJwtRaw(jwt);
+        await localforage.setItem(newKey, authorization);
+        setJwtRaw(authorization?.token ?? null);
+        setExpiry(authorization?.expiry ?? null);
       };
 
       setItem().catch((_e: unknown) => {
         /* Intentionally ignore failure to save Jwt */
       });
     },
-    [key, setJwtRaw],
+    [newKey, setExpiry, setJwtRaw],
   );
 
-  return { jwt, setJwt };
+  return { jwt, expiry, setAuthorization };
 };
 
 export default useNotifiJwt;

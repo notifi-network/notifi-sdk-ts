@@ -87,15 +87,37 @@ const useNotifiClient = (
   }> => {
   const { env, dappAddress, walletPublicKey } = config;
   const notifiConfig = useNotifiConfig(env);
-  const { jwt, setJwt } = useNotifiJwt(
+  const { jwt, expiry, setAuthorization } = useNotifiJwt(
     dappAddress,
     walletPublicKey,
     notifiConfig.storagePrefix,
   );
+
   const service = useNotifiService(env);
+
   useEffect(() => {
     service.setJwt(jwt);
-  }, [jwt, service]);
+
+    if (expiry !== null) {
+      // Refresh if less than a week remaining
+      const refreshTime = new Date();
+      refreshTime.setDate(refreshTime.getDate() + 7);
+      const expiryDate = new Date(expiry);
+      if (expiryDate < refreshTime) {
+        service
+          .refreshAuthorization()
+          .then(({ token, expiry }) => {
+            if (token !== null && expiry !== null) {
+              // Only set if refresh succeeded
+              setAuthorization({ token, expiry });
+            }
+          })
+          .catch((_e: unknown) => {
+            /* Intentionally ignore refresh failure */
+          });
+      }
+    }
+  }, [jwt, expiry, service, setAuthorization]);
 
   const [internalData, setInternalData] = useState<InternalData | null>(null);
   const [error, setError] = useState<Error | null>(null);
@@ -157,8 +179,6 @@ const useNotifiClient = (
           setLoading(false);
         })
         .catch((_e: unknown) => {
-          // Sign out
-          setJwt(null);
           setLoading(false);
         });
     }
@@ -213,9 +233,13 @@ const useNotifiClient = (
           signature,
         });
 
-        const newToken = result.authorization?.token ?? null;
-        service.setJwt(newToken);
-        setJwt(newToken);
+        if (result.authorization !== null) {
+          const { token, expiry } = result.authorization;
+          if (token !== null && expiry !== null) {
+            service.setJwt(token);
+            setAuthorization({ token, expiry });
+          }
+        }
 
         const newData = await fetchDataImpl(
           service,

@@ -1,4 +1,5 @@
 export * from './Alert';
+export * from './Authorization';
 export * from './ClientConfiguration';
 export * from './EmailTarget';
 export * from './Filter';

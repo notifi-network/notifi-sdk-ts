@@ -1,12 +1,19 @@
+import {
+  authorizationFragment,
+  authorizationFragmentDependencies,
+} from './authorizationFragment';
+
 export const userFragment = `
 fragment userFragment on User {
   email
   emailConfirmed
   authorization {
-    token
-    expiry
+    ...authorizationFragment
   }
 }
 `.trim();
 
-export const userFragmentDependencies = [];
+export const userFragmentDependencies = [
+  ...authorizationFragmentDependencies,
+  authorizationFragment,
+];

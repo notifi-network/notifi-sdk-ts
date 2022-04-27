@@ -9,6 +9,7 @@ import deleteAlertImpl from './mutations/deleteAlertImpl';
 import deleteSourceGroupImpl from './mutations/deleteSourceGroupImpl';
 import deleteTargetGroupImpl from './mutations/deleteTargetGroupImpl';
 import logInFromDappImpl from './mutations/logInFromDappImpl';
+import refreshAuthorizationImpl from './mutations/refreshAuthorizationImpl';
 import updateSourceGroupImpl from './mutations/updateSourceGroupImpl';
 import updateTargetGroupImpl from './mutations/updateTargetGroupImpl';
 import getAlertsImpl from './queries/getAlertsImpl';
@@ -48,6 +49,7 @@ export class NotifiAxiosService implements NotifiService {
   getTargetGroups: NotifiService['getTargetGroups'];
   getTelegramTargets: NotifiService['getTelegramTargets'];
   logInFromDapp: NotifiService['logInFromDapp'];
+  refreshAuthorization: NotifiService['refreshAuthorization'];
   updateSourceGroup: NotifiService['updateSourceGroup'];
   updateTargetGroup: NotifiService['updateTargetGroup'];
 
@@ -92,6 +94,7 @@ export class NotifiAxiosService implements NotifiService {
     this.getTargetGroups = getTargetGroupsImpl.bind(null, a);
     this.getTelegramTargets = getTelegramTargetsImpl.bind(null, a);
     this.logInFromDapp = logInFromDappImpl.bind(null, a);
+    this.refreshAuthorization = refreshAuthorizationImpl.bind(null, a);
     this.updateSourceGroup = updateSourceGroupImpl.bind(null, a);
     this.updateTargetGroup = updateTargetGroupImpl.bind(null, a);
   }
