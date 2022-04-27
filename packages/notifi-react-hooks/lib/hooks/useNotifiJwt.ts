@@ -36,7 +36,7 @@ const useNotifiJwt = (
       const oldValue = await localforage.getItem<string>(oldKey);
       if (oldValue !== null) {
         const expiry = new Date();
-        expiry.setDate(expiry.getDate() + 1); // Assume not expired
+        expiry.setMinutes(expiry.getMinutes() - 1); // Assume expired
         const migrated: Authorization = {
           token: oldValue,
           expiry: expiry.toISOString(),
