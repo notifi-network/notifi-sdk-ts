@@ -84,6 +84,7 @@ const useNotifiClient = (
     error: Error | null;
     loading: boolean;
     isAuthenticated: boolean;
+    expiry: string | null;
   }> => {
   const { env, dappAddress, walletPublicKey } = config;
   const notifiConfig = useNotifiConfig(env);
@@ -100,10 +101,12 @@ const useNotifiClient = (
 
     if (expiry !== null) {
       // Refresh if less than a week remaining
-      const refreshTime = new Date();
-      refreshTime.setDate(refreshTime.getDate() + 7);
       const expiryDate = new Date(expiry);
-      if (expiryDate < refreshTime) {
+      const refreshTime = new Date();
+      const isExpired = expiryDate < refreshTime;
+
+      refreshTime.setDate(refreshTime.getDate() + 7);
+      if (!isExpired && expiryDate < refreshTime) {
         service
           .refreshAuthorization()
           .then(({ token, expiry }) => {
@@ -608,8 +611,13 @@ const useNotifiClient = (
    * @returns {boolean}
    */
   const isAuthenticated = useMemo(() => {
-    return jwt !== null;
-  }, [jwt]);
+    if (jwt !== null && expiry !== null) {
+      const expiryDate = new Date(expiry);
+      const now = new Date();
+      return now < expiryDate;
+    }
+    return false;
+  }, [jwt, expiry]);
 
   const data = useMemo(() => {
     return projectData(internalData);
@@ -628,6 +636,7 @@ const useNotifiClient = (
   return {
     data,
     error,
+    expiry,
     isAuthenticated,
     loading,
     ...client,
