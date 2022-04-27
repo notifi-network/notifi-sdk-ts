@@ -7,8 +7,8 @@ import fetchDataImpl, {
   InternalData,
 } from '../utils/fetchDataImpl';
 import packFilterOptions from '../utils/packFilterOptions';
+import storage from '../utils/storage';
 import useNotifiConfig, { BlockchainEnvironment } from './useNotifiConfig';
-import useNotifiJwt from './useNotifiJwt';
 import useNotifiService from './useNotifiService';
 import type { NotifiEnvironment } from '@notifi-network/notifi-axios-utils';
 import {
@@ -84,47 +84,27 @@ const useNotifiClient = (
     error: Error | null;
     loading: boolean;
     isAuthenticated: boolean;
+    isInitialized: boolean;
     expiry: string | null;
   }> => {
   const { env, dappAddress, walletPublicKey } = config;
+  const [isInitialized, setIsInitialized] = useState<boolean>(false);
   const notifiConfig = useNotifiConfig(env);
-  const { jwt, expiry, setAuthorization } = useNotifiJwt(
-    dappAddress,
-    walletPublicKey,
-    notifiConfig.storagePrefix,
-  );
+  const { getAuthorization, setAuthorization } = useMemo(() => {
+    return storage({
+      dappAddress,
+      walletPublicKey,
+      jwtPrefix: notifiConfig.storagePrefix,
+    });
+  }, [dappAddress, walletPublicKey, notifiConfig.storagePrefix]);
 
   const service = useNotifiService(env);
-
-  useEffect(() => {
-    service.setJwt(jwt);
-
-    if (expiry !== null) {
-      // Refresh if less than a week remaining
-      const expiryDate = new Date(expiry);
-      const refreshTime = new Date();
-      const isExpired = expiryDate < refreshTime;
-
-      refreshTime.setDate(refreshTime.getDate() + 7);
-      if (!isExpired && expiryDate < refreshTime) {
-        service
-          .refreshAuthorization()
-          .then(({ token, expiry }) => {
-            if (token !== null && expiry !== null) {
-              // Only set if refresh succeeded
-              setAuthorization({ token, expiry });
-            }
-          })
-          .catch((_e: unknown) => {
-            /* Intentionally ignore refresh failure */
-          });
-      }
-    }
-  }, [jwt, expiry, service, setAuthorization]);
 
   const [internalData, setInternalData] = useState<InternalData | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [expiry, setExpiry] = useState<string | null>(null);
 
   const fetchDataRef = useRef<FetchDataState>({});
 
@@ -172,38 +152,63 @@ const useNotifiClient = (
     }
   }, [service]);
 
-  /**
-   * Is client SDK authenticated?
-   *
-   * @remarks
-   * This will signal if client SDK is currently in an authenticated state. If true, it is safe to call methods for account updates/retrieval.
-   * If this is false, logIn method must be called and successful.
-   *
-   * @returns {boolean}
-   */
-  const isAuthenticated = useMemo(() => {
-    if (jwt !== null && expiry !== null) {
-      const expiryDate = new Date(expiry);
-      const now = new Date();
-      return now < expiryDate;
-    }
-    return false;
-  }, [jwt, expiry]);
-
   useEffect(() => {
     // Initial load
-    if (isAuthenticated) {
-      setLoading(true);
-      fetchDataImpl(service, Date, fetchDataRef.current)
-        .then((newData) => {
-          setInternalData(newData);
-          setLoading(false);
-        })
-        .catch((_e: unknown) => {
-          setLoading(false);
-        });
-    }
-  }, [isAuthenticated]);
+    const doInitialLoad = async () => {
+      const authorization = await getAuthorization();
+      if (authorization === null) {
+        setIsAuthenticated(false);
+        setIsInitialized(true);
+        setExpiry(null);
+        return;
+      }
+
+      const { token, expiry } = authorization;
+      const expiryDate = new Date(expiry);
+      const now = new Date();
+      if (expiryDate <= now) {
+        setIsAuthenticated(false);
+        setIsInitialized(true);
+        setExpiry(expiry);
+        return;
+      }
+
+      // Refresh if less than a week remaining
+      const refreshTime = new Date();
+      refreshTime.setDate(refreshTime.getDate() + 7);
+      if (expiryDate < refreshTime) {
+        try {
+          const { token: newToken, expiry: newExpiry } =
+            await service.refreshAuthorization();
+          if (newToken !== null && newExpiry !== null) {
+            service.setJwt(newToken);
+            setAuthorization({ token: newToken, expiry: newExpiry });
+            setIsAuthenticated(true);
+            setExpiry(newExpiry);
+          }
+        } catch (_e: unknown) {
+          // Explicity ignore refresh errors
+        }
+      } else {
+        service.setJwt(token);
+        setExpiry(expiry);
+        setIsAuthenticated(true);
+      }
+
+      const newData = await fetchDataImpl(service, Date, fetchDataRef.current);
+      setInternalData(newData);
+      setLoading(false);
+    };
+
+    setIsInitialized(false);
+    doInitialLoad()
+      .catch((_e: unknown) => {
+        // Intentionally ignore
+      })
+      .then(() => {
+        setIsInitialized(true);
+      });
+  }, [getAuthorization, setAuthorization]);
 
   /**
    * Authorization object containing token and metadata
@@ -638,6 +643,7 @@ const useNotifiClient = (
     error,
     expiry,
     isAuthenticated,
+    isInitialized,
     loading,
     ...client,
   };
