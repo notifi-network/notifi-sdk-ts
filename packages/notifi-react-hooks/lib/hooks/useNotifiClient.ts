@@ -172,9 +172,27 @@ const useNotifiClient = (
     }
   }, [service]);
 
+  /**
+   * Is client SDK authenticated?
+   *
+   * @remarks
+   * This will signal if client SDK is currently in an authenticated state. If true, it is safe to call methods for account updates/retrieval.
+   * If this is false, logIn method must be called and successful.
+   *
+   * @returns {boolean}
+   */
+  const isAuthenticated = useMemo(() => {
+    if (jwt !== null && expiry !== null) {
+      const expiryDate = new Date(expiry);
+      const now = new Date();
+      return now < expiryDate;
+    }
+    return false;
+  }, [jwt, expiry]);
+
   useEffect(() => {
     // Initial load
-    if (jwt !== null) {
+    if (isAuthenticated) {
       setLoading(true);
       fetchDataImpl(service, Date, fetchDataRef.current)
         .then((newData) => {
@@ -185,7 +203,7 @@ const useNotifiClient = (
           setLoading(false);
         });
     }
-  }, [jwt]);
+  }, [isAuthenticated]);
 
   /**
    * Authorization object containing token and metadata
@@ -600,24 +618,6 @@ const useNotifiClient = (
         setLoading(false);
       }
     }, [config.dappAddress, service]);
-
-  /**
-   * Is client SDK authenticated?
-   *
-   * @remarks
-   * This will signal if client SDK is currently in an authenticated state. If true, it is safe to call methods for account updates/retrieval.
-   * If this is false, logIn method must be called and successful.
-   *
-   * @returns {boolean}
-   */
-  const isAuthenticated = useMemo(() => {
-    if (jwt !== null && expiry !== null) {
-      const expiryDate = new Date(expiry);
-      const now = new Date();
-      return now < expiryDate;
-    }
-    return false;
-  }, [jwt, expiry]);
 
   const data = useMemo(() => {
     return projectData(internalData);
