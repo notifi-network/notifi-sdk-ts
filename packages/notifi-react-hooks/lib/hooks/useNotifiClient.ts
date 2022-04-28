@@ -164,6 +164,8 @@ const useNotifiClient = (
       }
 
       const { token, expiry } = authorization;
+      service.setJwt(token);
+
       const expiryDate = new Date(expiry);
       const now = new Date();
       if (expiryDate <= now) {
@@ -190,7 +192,6 @@ const useNotifiClient = (
           // Explicity ignore refresh errors
         }
       } else {
-        service.setJwt(token);
         setExpiry(expiry);
         setIsAuthenticated(true);
       }
