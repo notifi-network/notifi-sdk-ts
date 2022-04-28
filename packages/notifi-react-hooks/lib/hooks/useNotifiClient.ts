@@ -7,8 +7,8 @@ import fetchDataImpl, {
   InternalData,
 } from '../utils/fetchDataImpl';
 import packFilterOptions from '../utils/packFilterOptions';
+import storage from '../utils/storage';
 import useNotifiConfig, { BlockchainEnvironment } from './useNotifiConfig';
-import useNotifiJwt from './useNotifiJwt';
 import useNotifiService from './useNotifiService';
 import type { NotifiEnvironment } from '@notifi-network/notifi-axios-utils';
 import {
@@ -84,22 +84,27 @@ const useNotifiClient = (
     error: Error | null;
     loading: boolean;
     isAuthenticated: boolean;
+    isInitialized: boolean;
+    expiry: string | null;
   }> => {
   const { env, dappAddress, walletPublicKey } = config;
+  const [isInitialized, setIsInitialized] = useState<boolean>(false);
   const notifiConfig = useNotifiConfig(env);
-  const { jwt, setJwt } = useNotifiJwt(
-    dappAddress,
-    walletPublicKey,
-    notifiConfig.storagePrefix,
-  );
+  const { getAuthorization, setAuthorization } = useMemo(() => {
+    return storage({
+      dappAddress,
+      walletPublicKey,
+      jwtPrefix: notifiConfig.storagePrefix,
+    });
+  }, [dappAddress, walletPublicKey, notifiConfig.storagePrefix]);
+
   const service = useNotifiService(env);
-  useEffect(() => {
-    service.setJwt(jwt);
-  }, [jwt, service]);
 
   const [internalData, setInternalData] = useState<InternalData | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [expiry, setExpiry] = useState<string | null>(null);
 
   const fetchDataRef = useRef<FetchDataState>({});
 
@@ -149,20 +154,64 @@ const useNotifiClient = (
 
   useEffect(() => {
     // Initial load
-    if (jwt !== null) {
-      setLoading(true);
-      fetchDataImpl(service, Date, fetchDataRef.current)
-        .then((newData) => {
-          setInternalData(newData);
-          setLoading(false);
-        })
-        .catch((_e: unknown) => {
-          // Sign out
-          setJwt(null);
-          setLoading(false);
-        });
-    }
-  }, [jwt]);
+    const doInitialLoad = async () => {
+      const authorization = await getAuthorization();
+      if (authorization === null) {
+        setIsAuthenticated(false);
+        setIsInitialized(true);
+        setExpiry(null);
+        return;
+      }
+
+      const { token, expiry } = authorization;
+      service.setJwt(token);
+
+      const expiryDate = new Date(expiry);
+      const now = new Date();
+      if (expiryDate <= now) {
+        setIsAuthenticated(false);
+        setIsInitialized(true);
+        setExpiry(expiry);
+        return;
+      }
+
+      // Refresh if less than a week remaining
+      const refreshTime = new Date();
+      refreshTime.setDate(refreshTime.getDate() + 7);
+      if (expiryDate < refreshTime) {
+        try {
+          const { token: newToken, expiry: newExpiry } =
+            await service.refreshAuthorization();
+          if (newToken !== null && newExpiry !== null) {
+            service.setJwt(newToken);
+            setAuthorization({ token: newToken, expiry: newExpiry });
+            setIsAuthenticated(true);
+            setExpiry(newExpiry);
+          }
+        } catch (_e: unknown) {
+          // Explicity ignore refresh errors
+          setExpiry(expiry);
+          setIsAuthenticated(true);
+        }
+      } else {
+        setExpiry(expiry);
+        setIsAuthenticated(true);
+      }
+
+      const newData = await fetchDataImpl(service, Date, fetchDataRef.current);
+      setInternalData(newData);
+      setLoading(false);
+    };
+
+    setIsInitialized(false);
+    doInitialLoad()
+      .catch((_e: unknown) => {
+        // Intentionally ignore
+      })
+      .then(() => {
+        setIsInitialized(true);
+      });
+  }, [getAuthorization, setAuthorization]);
 
   /**
    * Authorization object containing token and metadata
@@ -213,9 +262,13 @@ const useNotifiClient = (
           signature,
         });
 
-        const newToken = result.authorization?.token ?? null;
-        service.setJwt(newToken);
-        setJwt(newToken);
+        if (result.authorization !== null) {
+          const { token, expiry } = result.authorization;
+          if (token !== null && expiry !== null) {
+            service.setJwt(token);
+            setAuthorization({ token, expiry });
+          }
+        }
 
         const newData = await fetchDataImpl(
           service,
@@ -574,19 +627,6 @@ const useNotifiClient = (
       }
     }, [config.dappAddress, service]);
 
-  /**
-   * Is client SDK authenticated?
-   *
-   * @remarks
-   * This will signal if client SDK is currently in an authenticated state. If true, it is safe to call methods for account updates/retrieval.
-   * If this is false, logIn method must be called and successful.
-   *
-   * @returns {boolean}
-   */
-  const isAuthenticated = useMemo(() => {
-    return jwt !== null;
-  }, [jwt]);
-
   const data = useMemo(() => {
     return projectData(internalData);
   }, [internalData]);
@@ -604,7 +644,9 @@ const useNotifiClient = (
   return {
     data,
     error,
+    expiry,
     isAuthenticated,
+    isInitialized,
     loading,
     ...client,
   };

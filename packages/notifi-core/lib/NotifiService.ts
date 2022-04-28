@@ -20,6 +20,7 @@ export type NotifiService = Operations.CreateAlertService &
   Operations.GetTargetGroupsService &
   Operations.GetTelegramTargetsService &
   Operations.LogInFromDappService &
+  Operations.RefreshAuthorizationService &
   Operations.UpdateSourceGroupService &
   Operations.UpdateTargetGroupService &
   Readonly<{
