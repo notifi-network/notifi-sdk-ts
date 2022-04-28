@@ -190,6 +190,8 @@ const useNotifiClient = (
           }
         } catch (_e: unknown) {
           // Explicity ignore refresh errors
+          setExpiry(expiry);
+          setIsAuthenticated(true);
         }
       } else {
         setExpiry(expiry);
