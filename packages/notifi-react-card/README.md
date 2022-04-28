@@ -1,10 +1,10 @@
-# `@notifi-network/notifi-card`
+# `@notifi-network/notifi-react-card`
 
 > Configurable component for Notifi alerts
 
 ## Usage
 ```
-npm install @notifi-network/notifi-card
+npm install @notifi-network/notifi-react-card
 npm install --save-dev @notifi-network/notifi-core
 ```
 
@@ -106,7 +106,7 @@ export const Notifi: React.FC = () => {
 
   return (
     <NotifiCard
-      dappAddress="HubbLeXBb7qyLHt3x7gvYaRrxQmmgExb7fCJgDqFuB6T"
+      dappAddress="TALK_TO_NOTIFI"
       env="Development"
       signer={adapter as MessageSigner}
       walletPublicKey={publicKey}
