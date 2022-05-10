@@ -1,4 +1,4 @@
-import type { ManagedAlert } from './ManagedAlert';
+import type { ManagedAlert } from '../types';
 import {
   collectDependencies,
   makeAuthenticatedRequest,

@@ -1,4 +1,4 @@
-import type { WalletBlockchain } from './WalletBlockchain';
+import type { WalletBlockchain } from '../types';
 import {
   collectDependencies,
   makeAuthenticatedRequest,

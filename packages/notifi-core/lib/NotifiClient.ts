@@ -14,7 +14,12 @@ export type ClientData = Readonly<{
   targetGroups: ReadonlyArray<TargetGroup>;
 }>;
 
-export type AlertFrequency = 'ALWAYS' | 'SINGLE';
+export type AlertFrequency =
+  | 'ALWAYS'
+  | 'SINGLE'
+  | 'QUARTER_HOUR'
+  | 'HOURLY'
+  | 'DAILY';
 
 export type FilterOptions = Partial<{
   alertFrequency: AlertFrequency;
