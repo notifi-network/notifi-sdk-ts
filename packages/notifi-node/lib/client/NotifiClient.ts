@@ -1,4 +1,3 @@
-import type { ManagedAlert, WalletBlockchain } from '../mutations';
 import {
   createDirectPushAlertImpl,
   createTenantUserImpl,
@@ -7,8 +6,13 @@ import {
   logInFromServiceImpl,
   sendMessageImpl,
 } from '../mutations';
+import { getTenantConnectedWalletImpl } from '../queries';
 import {
-  Authorization,
+  GetTenantConnectedWalletInput,
+  GetTenantConnectedWalletResult,
+} from '../queries/getTenantConnectedWalletImpl';
+import type { Authorization, ManagedAlert, WalletBlockchain } from '../types';
+import {
   newDirectTenantMessage,
   newSimpleHealthThresholdMessage,
 } from '../types';
@@ -160,6 +164,13 @@ class NotifiClient {
   ) => Promise<ManagedAlert> = async (jwt, { alertId }) => {
     const input = { alertId };
     return await deleteDirectPushAlertImpl(this.a, jwt, { input });
+  };
+
+  getTenantConnectedWallet: (
+    jwt: string,
+    params: GetTenantConnectedWalletInput,
+  ) => Promise<GetTenantConnectedWalletResult> = async (jwt, params) => {
+    return await getTenantConnectedWalletImpl(this.a, jwt, params);
   };
 }
 
