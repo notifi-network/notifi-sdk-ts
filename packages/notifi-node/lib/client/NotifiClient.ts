@@ -11,7 +11,12 @@ import {
   GetTenantConnectedWalletInput,
   GetTenantConnectedWalletResult,
 } from '../queries/getTenantConnectedWalletImpl';
-import type { Authorization, ManagedAlert, WalletBlockchain } from '../types';
+import type {
+  Authorization,
+  ManagedAlert,
+  SimpleHealthThresholdMessagePayload,
+  WalletBlockchain,
+} from '../types';
 import {
   newDirectTenantMessage,
   newSimpleHealthThresholdMessage,
@@ -37,13 +42,13 @@ class NotifiClient {
       key: string;
       walletPublicKey: string;
       walletBlockchain: WalletBlockchain;
-      healthValue: number;
-    }>,
+    }> &
+      SimpleHealthThresholdMessagePayload,
   ) => Promise<void> = async (
     jwt,
-    { key, walletPublicKey, walletBlockchain, healthValue },
+    { key, walletPublicKey, walletBlockchain, ...payload },
   ) => {
-    const message = newSimpleHealthThresholdMessage({ healthValue });
+    const message = newSimpleHealthThresholdMessage(payload);
     const input = {
       walletPublicKey,
       walletBlockchain,
