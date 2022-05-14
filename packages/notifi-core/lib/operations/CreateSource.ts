@@ -23,7 +23,10 @@ export type CreateSourceInput = Readonly<{
     | 'TRIBECA_PROPOSALS'
     | 'REALM_PROPOSALS'
     | 'DIRECT_PUSH'
-    | 'SOLANA_METAPLEX_AUCTION';
+    | 'SOLANA_METAPLEX_AUCTION'
+    | 'SOLANA_BONFIDA_AUCTION'
+    | 'DIRECT_PUBLISH'
+    | 'BROADCAST';
 }>;
 
 export type CreateSourceResult = Source;

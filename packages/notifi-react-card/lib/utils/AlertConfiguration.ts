@@ -1,7 +1,13 @@
-import type { FilterOptions } from '@notifi-network/notifi-core';
+import type {
+  CreateSourceInput,
+  FilterOptions,
+} from '@notifi-network/notifi-core';
 
 export type AlertConfiguration = Readonly<{
-  sourceType: string;
+  sourceType: CreateSourceInput['type'];
+  createSource?: Readonly<{
+    address: string;
+  }>;
   filterType: string;
   filterOptions: FilterOptions | null;
 }>;
