@@ -583,6 +583,16 @@ const useNotifiClient = (
           fetchDataRef.current,
         );
         const source = await ensureSource(service, newData.sources, input);
+
+        source.applicableFilters.forEach((applicableFilter) => {
+          const existing = newData.filters.find(
+            (existingFilter) => applicableFilter.id === existingFilter.id,
+          );
+          if (existing !== undefined) {
+            newData.filters.push(applicableFilter);
+          }
+        });
+
         setInternalData(newData);
         return source;
       } catch (e: unknown) {
