@@ -112,7 +112,7 @@ export const useNotifiSubscribe: () => Readonly<{
       await logIn(signer);
     }
 
-    const data = await fetchData();
+    let data = await fetchData();
 
     const configurations = getAlertConfigurations();
     const names = Object.keys(configurations);
@@ -176,6 +176,8 @@ export const useNotifiSubscribe: () => Readonly<{
               blockchainAddress: createSourceParam.address,
               type: sourceType,
             });
+            // Refresh for source filters
+            data = await fetchData();
           }
         } else {
           source = data.sources.find((s) => s.type === sourceType);
