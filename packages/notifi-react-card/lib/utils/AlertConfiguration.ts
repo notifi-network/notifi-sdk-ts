@@ -1,14 +1,10 @@
-import type { FilterOptions } from '@notifi-network/notifi-core';
+import type {
+  CreateSourceInput,
+  FilterOptions,
+} from '@notifi-network/notifi-core';
 
 export type AlertConfiguration = Readonly<{
-  sourceType:
-    | 'SOLANA_WALLET'
-    | 'TERRA_WALLET'
-    | 'ETHEREUM_WALLET'
-    | 'TRIBECA_PROPOSALS'
-    | 'REALM_PROPOSALS'
-    | 'DIRECT_PUSH'
-    | 'SOLANA_METAPLEX_AUCTION';
+  sourceType: CreateSourceInput['type'];
   createSource?: Readonly<{
     address: string;
   }>;
