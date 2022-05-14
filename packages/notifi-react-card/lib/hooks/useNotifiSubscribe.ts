@@ -167,7 +167,6 @@ export const useNotifiSubscribe: () => Readonly<{
           const existing = data.sources.find(
             (s) =>
               s.type === sourceType &&
-              s.name === name &&
               s.blockchainAddress === createSourceParam.address,
           );
           if (existing !== undefined) {
@@ -177,7 +176,7 @@ export const useNotifiSubscribe: () => Readonly<{
             );
           } else {
             source = await createSource({
-              name,
+              name: createSourceParam.address,
               blockchainAddress: createSourceParam.address,
               type: sourceType,
             });
