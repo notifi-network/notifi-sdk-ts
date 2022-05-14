@@ -1,7 +1,17 @@
 import type { FilterOptions } from '@notifi-network/notifi-core';
 
 export type AlertConfiguration = Readonly<{
-  sourceType: string;
+  sourceType:
+    | 'SOLANA_WALLET'
+    | 'TERRA_WALLET'
+    | 'ETHEREUM_WALLET'
+    | 'TRIBECA_PROPOSALS'
+    | 'REALM_PROPOSALS'
+    | 'DIRECT_PUSH'
+    | 'SOLANA_METAPLEX_AUCTION';
+  createSource?: Readonly<{
+    address: string;
+  }>;
   filterType: string;
   filterOptions: FilterOptions | null;
 }>;

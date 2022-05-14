@@ -3,6 +3,7 @@ import type {
   Alert,
   ClientData,
   FilterOptions,
+  Source,
 } from '@notifi-network/notifi-core';
 import { useNotifiClient } from '@notifi-network/notifi-react-hooks';
 import parsePhoneNumber from 'libphonenumber-js';
@@ -53,6 +54,7 @@ export const useNotifiSubscribe: () => Readonly<{
   const {
     loading,
     createAlert,
+    createSource,
     deleteAlert,
     fetchData,
     isAuthenticated,
@@ -151,8 +153,34 @@ export const useNotifiSubscribe: () => Readonly<{
       if (config === undefined) {
         await deleteThisAlert();
       } else {
-        const { filterType, filterOptions, sourceType } = config;
-        const source = data.sources.find((s) => s.type === sourceType);
+        const {
+          filterType,
+          filterOptions,
+          createSource: createSourceParam,
+          sourceType,
+        } = config;
+
+        let source: Source | undefined;
+        if (createSourceParam !== undefined) {
+          const existing = data.sources.find(
+            (s) =>
+              s.type === sourceType &&
+              s.name === name &&
+              s.blockchainAddress === createSourceParam.address,
+          );
+          if (existing !== undefined) {
+            source = existing;
+          } else {
+            source = await createSource({
+              name,
+              blockchainAddress: createSourceParam.address,
+              type: sourceType,
+            });
+          }
+        } else {
+          source = data.sources.find((s) => s.type === sourceType);
+        }
+
         const filter = data.filters.find((f) => f.filterType === filterType);
         if (
           source === undefined ||

@@ -6,6 +6,7 @@ import {
   TargetGroup,
   User,
 } from './models';
+import { CreateSourceInput } from './operations';
 
 export type ClientData = Readonly<{
   alerts: ReadonlyArray<Alert>;
@@ -112,6 +113,7 @@ export type NotifiClient = Readonly<{
   fetchData: () => Promise<ClientData>;
   logIn: (signer: MessageSigner) => Promise<User>;
   createAlert: (input: ClientCreateAlertInput) => Promise<Alert>;
+  createSource: (input: CreateSourceInput) => Promise<Source>;
   createMetaplexAuctionSource: (
     input: ClientCreateMetaplexAuctionSourceInput,
   ) => Promise<Source>;
