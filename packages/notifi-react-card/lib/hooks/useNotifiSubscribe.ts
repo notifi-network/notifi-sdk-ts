@@ -2,6 +2,7 @@ import { useNotifiSubscriptionContext } from '../context';
 import type {
   Alert,
   ClientData,
+  Filter,
   FilterOptions,
   Source,
 } from '@notifi-network/notifi-core';
@@ -112,7 +113,7 @@ export const useNotifiSubscribe: () => Readonly<{
       await logIn(signer);
     }
 
-    let data = await fetchData();
+    const data = await fetchData();
 
     const configurations = getAlertConfigurations();
     const names = Object.keys(configurations);
@@ -161,6 +162,7 @@ export const useNotifiSubscribe: () => Readonly<{
         } = config;
 
         let source: Source | undefined;
+        let filter: Filter | undefined;
         if (createSourceParam !== undefined) {
           const existing = data.sources.find(
             (s) =>
@@ -170,20 +172,26 @@ export const useNotifiSubscribe: () => Readonly<{
           );
           if (existing !== undefined) {
             source = existing;
+            filter = source.applicableFilters.find(
+              (f) => f.filterType === filterType,
+            );
           } else {
             source = await createSource({
               name,
               blockchainAddress: createSourceParam.address,
               type: sourceType,
             });
-            // Refresh for source filters
-            data = await fetchData();
+            filter = source.applicableFilters.find(
+              (f) => f.filterType === filterType,
+            );
           }
         } else {
           source = data.sources.find((s) => s.type === sourceType);
+          filter = source?.applicableFilters.find(
+            (f) => f.filterType === filterType,
+          );
         }
 
-        const filter = data.filters.find((f) => f.filterType === filterType);
         if (
           source === undefined ||
           source.id === null ||
