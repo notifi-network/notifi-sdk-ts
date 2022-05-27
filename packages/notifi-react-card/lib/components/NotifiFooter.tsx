@@ -26,7 +26,7 @@ export const NotifiFooter: React.FC<Props> = ({ classNames, copy }: Props) => {
       <span className={classNames?.spacer} />
       <span className={classNames?.link}>
         <a
-          href="https://docs.notifi.network/NotifiIntegrationsFAQ.html"
+          href="https://notifi.network/faqs"
           target="_blank"
           rel="noopener noreferrer"
         >
