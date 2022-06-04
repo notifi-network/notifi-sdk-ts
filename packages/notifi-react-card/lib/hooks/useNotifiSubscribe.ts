@@ -126,24 +126,11 @@ export const useNotifiSubscribe: () => Readonly<{
         finalPhoneNumber = parsedPhoneNumber.number; // E.164
       }
     }
-    const alertsToRemove = new Set<string>();
-    for (let i = 0; i < data.alerts.length; ++i) {
-      // Mark all alerts for deletion
-      const alert = data.alerts[i];
-      if (alert.id !== null) {
-        alertsToRemove.add(alert.id);
-      }
-    }
 
     const newResults: Record<string, Alert> = {};
     for (let i = 0; i < names.length; ++i) {
       const name = names[i];
       const existingAlert = data.alerts.find((alert) => alert.name === name);
-      if (existingAlert !== undefined && existingAlert.id !== null) {
-        // We'll manage it ourselves
-        alertsToRemove.delete(existingAlert.id);
-      }
-
       const deleteThisAlert = async () => {
         if (existingAlert !== undefined && existingAlert.id !== null) {
           await deleteAlert({ alertId: existingAlert.id });
@@ -151,7 +138,7 @@ export const useNotifiSubscribe: () => Readonly<{
       };
 
       const config = configurations[name];
-      if (config === undefined) {
+      if (config === undefined || config === null) {
         await deleteThisAlert();
       } else {
         const {
@@ -225,13 +212,6 @@ export const useNotifiSubscribe: () => Readonly<{
           newResults[name] = alert;
         }
       }
-    }
-
-    // Untracked alerts
-    const ids = [...alertsToRemove];
-    for (let i = 0; i < ids.length; ++i) {
-      const alertId = ids[i];
-      await deleteAlert({ alertId });
     }
 
     const newData = await fetchData();
