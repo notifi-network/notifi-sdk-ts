@@ -13,7 +13,7 @@ import React, {
 } from 'react';
 
 export type NotifiParams = Readonly<{
-  alertConfigurations?: Record<string, AlertConfiguration>;
+  alertConfigurations?: Record<string, AlertConfiguration | null>;
   dappAddress: string;
   env: NotifiEnvironment;
   signer: MessageSigner;
@@ -26,7 +26,9 @@ export type NotifiSubscriptionData = Readonly<{
   params: NotifiParams;
   phoneNumber: string;
   getAlertConfiguration: (name: string) => AlertConfiguration | null;
-  getAlertConfigurations: () => Readonly<Record<string, AlertConfiguration>>;
+  getAlertConfigurations: () => Readonly<
+    Record<string, AlertConfiguration | null>
+  >;
   setAlerts: (alerts: Record<string, Alert | undefined>) => void;
   setAlertConfiguration: (
     name: string,
@@ -48,11 +50,11 @@ export const NotifiSubscriptionContextProvider: React.FC<NotifiParams> = ({
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [alerts, setAlerts] = useState<Record<string, Alert | undefined>>({});
 
-  const alertConfigurations = useRef<Record<string, AlertConfiguration>>(
+  const alertConfigurations = useRef<Record<string, AlertConfiguration | null>>(
     params.alertConfigurations ?? {},
   );
   const getAlertConfigurations = useCallback((): Readonly<
-    Record<string, AlertConfiguration>
+    Record<string, AlertConfiguration | null>
   > => {
     return alertConfigurations.current;
   }, []);
@@ -67,7 +69,7 @@ export const NotifiSubscriptionContextProvider: React.FC<NotifiParams> = ({
   const setAlertConfiguration = useCallback(
     (name: string, config: AlertConfiguration | null): void => {
       if (config === null) {
-        delete alertConfigurations.current[name];
+        alertConfigurations.current[name] = null;
       } else {
         alertConfigurations.current[name] = config;
       }
