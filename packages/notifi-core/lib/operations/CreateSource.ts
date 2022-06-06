@@ -26,7 +26,8 @@ export type CreateSourceInput = Readonly<{
     | 'SOLANA_METAPLEX_AUCTION'
     | 'SOLANA_BONFIDA_AUCTION'
     | 'DIRECT_PUBLISH'
-    | 'BROADCAST';
+    | 'BROADCAST'
+    | 'SHARKY_PROTOCOL';
 }>;
 
 export type CreateSourceResult = Source;
