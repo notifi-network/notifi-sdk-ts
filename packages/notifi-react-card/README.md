@@ -12,13 +12,13 @@ npm install --save-dev @notifi-network/notifi-core
 ```tsx
 import React, { useEffect, useState } from 'react';
 import {
-  directMessageConfiguration,
+  broadcastMessageConfiguration,
   useNotifiSubscriptionContext
 } from '@notifi-network/notifi-card';
 
-const ALERT_NAME = 'MyMarketingAlert';
-const ALERT_CONFIGURATION = directMessageConfiguration({
-  type: 'MARKETING',
+const ALERT_NAME = 'My Marketing Updates';
+const ALERT_CONFIGURATION: AlertConfiguration = broadcastMessageConfiguration({
+  topicName: `TALK_TO_NOTIFI_TO_GET_THIS_VALUE`,
 });
 
 type Props = Readonly<{

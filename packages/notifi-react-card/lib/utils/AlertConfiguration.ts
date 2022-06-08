@@ -12,6 +12,21 @@ export type AlertConfiguration = Readonly<{
   filterOptions: FilterOptions | null;
 }>;
 
+export const broadcastMessageConfiguration = ({
+  topicName,
+}: Readonly<{
+  topicName: string;
+}>): AlertConfiguration => {
+  return {
+    filterType: 'BROADCAST_MESSAGES',
+    filterOptions: {},
+    sourceType: 'BROADCAST',
+    createSource: {
+      address: topicName,
+    },
+  };
+};
+
 export const directMessageConfiguration = (
   params?: Readonly<{
     type?: string;
