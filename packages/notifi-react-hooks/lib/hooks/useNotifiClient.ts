@@ -58,13 +58,24 @@ const projectData = (internalData: InternalData | null): ClientData | null => {
     return null;
   }
 
-  const { alerts, filters, sources, targetGroups } = internalData;
+  const {
+    alerts,
+    emailTargets,
+    filters,
+    smsTargets,
+    sources,
+    targetGroups,
+    telegramTargets,
+  } = internalData;
 
   return {
     alerts,
+    emailTargets,
     filters,
+    smsTargets,
     sources,
     targetGroups,
+    telegramTargets,
   };
 };
 
