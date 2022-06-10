@@ -1,18 +1,24 @@
 import {
   Alert,
   ClientConfiguration,
+  EmailTarget,
   Filter,
+  SmsTarget,
   Source,
   TargetGroup,
+  TelegramTarget,
   User,
 } from './models';
 import { CreateSourceInput } from './operations';
 
 export type ClientData = Readonly<{
   alerts: ReadonlyArray<Alert>;
+  emailTargets: ReadonlyArray<EmailTarget>;
   filters: ReadonlyArray<Filter>;
+  smsTargets: ReadonlyArray<SmsTarget>;
   sources: ReadonlyArray<Source>;
   targetGroups: ReadonlyArray<TargetGroup>;
+  telegramTargets: ReadonlyArray<TelegramTarget>;
 }>;
 
 export type AlertFrequency =
