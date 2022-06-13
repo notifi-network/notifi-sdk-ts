@@ -7,7 +7,6 @@ import type {
   Source,
 } from '@notifi-network/notifi-core';
 import { useNotifiClient } from '@notifi-network/notifi-react-hooks';
-import parsePhoneNumber from 'libphonenumber-js';
 import { useCallback, useEffect } from 'react';
 
 export type SubscriptionData = Readonly<{
@@ -77,15 +76,21 @@ export const useNotifiSubscribe: () => Readonly<{
 
   const render = useCallback(
     (newData: ClientData | null) => {
+      const configurations = getAlertConfigurations();
+
+      let targetGroup = newData?.targetGroups[0];
+
       const alerts: Record<string, Alert> = {};
       newData?.alerts.forEach((alert) => {
         if (alert.name !== null) {
           alerts[alert.name] = alert;
+          if (alert.name in configurations) {
+            targetGroup = alert.targetGroup;
+          }
         }
       });
       setAlerts(alerts);
 
-      const targetGroup = newData?.targetGroups[0];
       const email = targetGroup?.emailTargets[0]?.emailAddress ?? null;
       setEmail(email ?? '');
 
@@ -121,9 +126,11 @@ export const useNotifiSubscribe: () => Readonly<{
 
     let finalPhoneNumber = null;
     if (inputPhoneNumber !== '') {
-      const parsedPhoneNumber = parsePhoneNumber(inputPhoneNumber);
-      if (parsedPhoneNumber !== undefined) {
-        finalPhoneNumber = parsedPhoneNumber.number; // E.164
+      if (inputPhoneNumber.startsWith('+')) {
+        finalPhoneNumber = inputPhoneNumber;
+      } else {
+        // Assume US for now
+        finalPhoneNumber = `+1${inputPhoneNumber}`;
       }
     }
 
