@@ -19,7 +19,7 @@ export const useNotifiSubscribe: () => Readonly<{
   subscribe: () => Promise<void>;
 }> = () => {
   const {
-    params: { dappAddress, env, walletPublicKey, signer },
+    params: { dappAddress, env, keepSubscriptionData, walletPublicKey, signer },
   } = useNotifiSubscriptionContext();
 
   const {
@@ -112,7 +112,11 @@ export const useNotifiSubscribe: () => Readonly<{
       const existingAlert = data.alerts.find((alert) => alert.name === name);
       const deleteThisAlert = async () => {
         if (existingAlert !== undefined && existingAlert.id !== null) {
-          await deleteAlert({ alertId: existingAlert.id });
+          await deleteAlert({
+            alertId: existingAlert.id,
+            keepSourceGroup: keepSubscriptionData,
+            keepTargetGroup: keepSubscriptionData,
+          });
         }
       };
 

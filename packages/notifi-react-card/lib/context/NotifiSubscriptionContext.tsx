@@ -18,6 +18,7 @@ export type NotifiParams = Readonly<{
   env: NotifiEnvironment;
   signer: MessageSigner;
   walletPublicKey: string;
+  keepSubscriptionData?: boolean;
 }>;
 
 export type NotifiSubscriptionData = Readonly<{
