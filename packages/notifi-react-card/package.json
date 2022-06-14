@@ -31,6 +31,6 @@
     "@notifi-network/notifi-react-hooks": "^0.18.1"
   },
   "devDependencies": {
-    "@notifi-network/notifi-core": "^0.18.0"
+    "@notifi-network/notifi-core": "^0.18.1"
   }
 }
