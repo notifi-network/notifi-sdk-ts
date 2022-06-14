@@ -3,11 +3,9 @@ import type {
   Alert,
   ClientData,
   Filter,
-  FilterOptions,
   Source,
 } from '@notifi-network/notifi-core';
 import { useNotifiClient } from '@notifi-network/notifi-react-hooks';
-import parsePhoneNumber from 'libphonenumber-js';
 import { useCallback, useEffect } from 'react';
 
 export type SubscriptionData = Readonly<{
@@ -15,34 +13,6 @@ export type SubscriptionData = Readonly<{
   email: string | null;
   phoneNumber: string | null;
 }>;
-
-const isEmpty: <T extends Record<string, unknown>>(input: T) => boolean = (
-  input,
-) => {
-  Object.keys(input).forEach((key) => {
-    const value = input[key];
-    if (value !== undefined) {
-      return false;
-    }
-  });
-
-  return true;
-};
-
-const areFilterOptionsEqual = (
-  input: FilterOptions | null,
-  serialized: string | null,
-): boolean => {
-  if (serialized === null) {
-    return input === null || isEmpty(input);
-  }
-
-  if (input === null) {
-    return serialized === '{}';
-  }
-
-  return JSON.stringify(input) === serialized;
-};
 
 export const useNotifiSubscribe: () => Readonly<{
   loading: boolean;
@@ -60,6 +30,7 @@ export const useNotifiSubscribe: () => Readonly<{
     fetchData,
     isAuthenticated,
     logIn,
+    updateAlert,
   } = useNotifiClient({
     dappAddress,
     env,
@@ -77,15 +48,21 @@ export const useNotifiSubscribe: () => Readonly<{
 
   const render = useCallback(
     (newData: ClientData | null) => {
+      const configurations = getAlertConfigurations();
+
+      let targetGroup = newData?.targetGroups[0];
+
       const alerts: Record<string, Alert> = {};
       newData?.alerts.forEach((alert) => {
         if (alert.name !== null) {
           alerts[alert.name] = alert;
+          if (alert.name in configurations) {
+            targetGroup = alert.targetGroup;
+          }
         }
       });
       setAlerts(alerts);
 
-      const targetGroup = newData?.targetGroups[0];
       const email = targetGroup?.emailTargets[0]?.emailAddress ?? null;
       setEmail(email ?? '');
 
@@ -121,9 +98,11 @@ export const useNotifiSubscribe: () => Readonly<{
 
     let finalPhoneNumber = null;
     if (inputPhoneNumber !== '') {
-      const parsedPhoneNumber = parsePhoneNumber(inputPhoneNumber);
-      if (parsedPhoneNumber !== undefined) {
-        finalPhoneNumber = parsedPhoneNumber.number; // E.164
+      if (inputPhoneNumber.startsWith('+')) {
+        finalPhoneNumber = inputPhoneNumber;
+      } else {
+        // Assume US for now
+        finalPhoneNumber = `+1${inputPhoneNumber}`;
       }
     }
 
@@ -185,16 +164,14 @@ export const useNotifiSubscribe: () => Readonly<{
           filter.id === null
         ) {
           await deleteThisAlert();
-        } else if (
-          existingAlert !== undefined &&
-          existingAlert.id !== null &&
-          existingAlert.filter.id === filter.id &&
-          existingAlert.sourceGroup.sources.length > 0 &&
-          existingAlert.sourceGroup.sources[0].id === source.id &&
-          areFilterOptionsEqual(filterOptions, existingAlert.filterOptions)
-        ) {
-          // Alerts are the same
-          newResults[name] = existingAlert;
+        } else if (existingAlert !== undefined && existingAlert.id !== null) {
+          const alert = await updateAlert({
+            alertId: existingAlert.id,
+            emailAddress: finalEmail,
+            phoneNumber: finalPhoneNumber,
+            telegramId: null, // TODO
+          });
+          newResults[name] = alert;
         } else {
           // Call serially because of limitations
           await deleteThisAlert();
