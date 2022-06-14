@@ -1,6 +1,6 @@
 {
   "name": "@notifi-network/notifi-react-card",
-  "version": "0.18.0",
+  "version": "0.18.1",
   "description": "A React component for signing up for Notifi notifications",
   "author": "juni-notifi <hyungjoon.kim@notifi.network>",
   "homepage": "https://github.com/notifi-network/notifi-sdk-ts#readme",
@@ -28,7 +28,7 @@
     "url": "https://github.com/notifi-network/notifi-sdk-ts/issues"
   },
   "dependencies": {
-    "@notifi-network/notifi-react-hooks": "^0.18.0"
+    "@notifi-network/notifi-react-hooks": "^0.18.1"
   },
   "devDependencies": {
     "@notifi-network/notifi-core": "^0.18.0"
