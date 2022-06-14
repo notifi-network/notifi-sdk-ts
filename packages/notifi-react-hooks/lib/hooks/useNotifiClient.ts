@@ -290,9 +290,11 @@ const useNotifiClient = (
           fetchDataRef.current,
         );
         setInternalData(newData);
+        setIsAuthenticated(true);
 
         return result;
       } catch (e: unknown) {
+        setIsAuthenticated(false);
         if (e instanceof Error) {
           setError(e);
         } else {
