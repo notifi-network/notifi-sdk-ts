@@ -201,7 +201,7 @@ export const useNotifiSubscribe: () => Readonly<{
             alertId: existingAlert.id,
             emailAddress: finalEmail,
             phoneNumber: finalPhoneNumber,
-            telegramId: null, // TODO
+            telegramId: finalTelegramId,
           });
           newResults[name] = alert;
         } else {
