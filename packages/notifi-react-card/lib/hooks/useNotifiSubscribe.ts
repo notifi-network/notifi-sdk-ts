@@ -232,6 +232,7 @@ export const useNotifiSubscribe: () => Readonly<{
     getAlertConfigurations,
     inputEmail,
     inputPhoneNumber,
+    inputTelegramId,
     isAuthenticated,
     clientLogIn,
     signer,
