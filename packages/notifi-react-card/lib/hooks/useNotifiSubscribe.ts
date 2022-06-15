@@ -11,6 +11,8 @@ import { useCallback, useEffect } from 'react';
 export type SubscriptionData = Readonly<{
   alerts: Readonly<Record<string, Alert>>;
   email: string | null;
+  isAuthenticated: boolean;
+  isInitialized: boolean;
   phoneNumber: string | null;
 }>;
 
@@ -19,7 +21,14 @@ export const useNotifiSubscribe: () => Readonly<{
   subscribe: () => Promise<void>;
 }> = () => {
   const {
+    email: inputEmail,
+    phoneNumber: inputPhoneNumber,
     params: { dappAddress, env, keepSubscriptionData, walletPublicKey, signer },
+    getAlertConfigurations,
+    setAlerts,
+    setEmail,
+    setIsInitialized,
+    setPhoneNumber,
   } = useNotifiSubscriptionContext();
 
   const {
@@ -29,6 +38,7 @@ export const useNotifiSubscribe: () => Readonly<{
     deleteAlert,
     fetchData,
     isAuthenticated,
+    isInitialized,
     logIn,
     updateAlert,
   } = useNotifiClient({
@@ -37,14 +47,9 @@ export const useNotifiSubscribe: () => Readonly<{
     walletPublicKey,
   });
 
-  const {
-    email: inputEmail,
-    phoneNumber: inputPhoneNumber,
-    getAlertConfigurations,
-    setAlerts,
-    setEmail,
-    setPhoneNumber,
-  } = useNotifiSubscriptionContext();
+  useEffect(() => {
+    setIsInitialized(isInitialized);
+  }, [isInitialized]);
 
   const render = useCallback(
     (newData: ClientData | null) => {
