@@ -19,6 +19,7 @@ export type SubscriptionData = Readonly<{
 export const useNotifiSubscribe: () => Readonly<{
   loading: boolean;
   isInitialized: boolean;
+  logIn: () => Promise<SubscriptionData>;
   subscribe: () => Promise<SubscriptionData>;
 }> = () => {
   const {
@@ -42,7 +43,7 @@ export const useNotifiSubscribe: () => Readonly<{
     fetchData,
     isAuthenticated,
     isInitialized,
-    logIn,
+    logIn: clientLogIn,
     updateAlert,
   } = useNotifiClient({
     dappAddress,
@@ -101,9 +102,18 @@ export const useNotifiSubscribe: () => Readonly<{
     }
   }, [isAuthenticated]);
 
+  const logIn = useCallback(async (): Promise<SubscriptionData> => {
+    if (!isAuthenticated) {
+      clientLogIn(signer);
+    }
+
+    const data = await fetchData();
+    return render(data);
+  }, [clientLogIn, signer]);
+
   const subscribe = useCallback(async (): Promise<SubscriptionData> => {
     if (!isAuthenticated) {
-      await logIn(signer);
+      await clientLogIn(signer);
     }
 
     const data = await fetchData();
@@ -222,12 +232,13 @@ export const useNotifiSubscribe: () => Readonly<{
     inputEmail,
     inputPhoneNumber,
     isAuthenticated,
-    logIn,
+    clientLogIn,
     signer,
   ]);
 
   return {
     loading,
+    logIn,
     isInitialized,
     subscribe,
   };
