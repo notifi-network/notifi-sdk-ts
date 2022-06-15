@@ -12,12 +12,14 @@ export type SubscriptionData = Readonly<{
   alerts: Readonly<Record<string, Alert>>;
   email: string | null;
   phoneNumber: string | null;
+  telegramId: string | null;
+  telegramConfirmationUrl: string | null;
 }>;
 
 export const useNotifiSubscribe: () => Readonly<{
   loading: boolean;
   isInitialized: boolean;
-  subscribe: () => Promise<void>;
+  subscribe: () => Promise<SubscriptionData>;
 }> = () => {
   const {
     email: inputEmail,
@@ -49,7 +51,7 @@ export const useNotifiSubscribe: () => Readonly<{
   });
 
   const render = useCallback(
-    (newData: ClientData | null) => {
+    (newData: ClientData | null): SubscriptionData => {
       const configurations = getAlertConfigurations();
 
       let targetGroup = newData?.targetGroups[0];
@@ -74,6 +76,14 @@ export const useNotifiSubscribe: () => Readonly<{
       const telegramTarget = targetGroup?.telegramTargets[0];
       setTelegramId(telegramTarget?.telegramId ?? '');
       setTelegramConfirmationUrl(telegramTarget?.confirmationUrl ?? undefined);
+
+      return {
+        alerts,
+        email,
+        phoneNumber,
+        telegramId: telegramTarget?.telegramId ?? null,
+        telegramConfirmationUrl: telegramTarget?.confirmationUrl ?? null,
+      };
     },
     [setAlerts, setEmail, setPhoneNumber],
   );
@@ -91,7 +101,7 @@ export const useNotifiSubscribe: () => Readonly<{
     }
   }, [isAuthenticated]);
 
-  const subscribe = useCallback(async (): Promise<void> => {
+  const subscribe = useCallback(async (): Promise<SubscriptionData> => {
     if (!isAuthenticated) {
       await logIn(signer);
     }
@@ -203,7 +213,7 @@ export const useNotifiSubscribe: () => Readonly<{
     }
 
     const newData = await fetchData();
-    render(newData);
+    return render(newData);
   }, [
     createAlert,
     deleteAlert,
