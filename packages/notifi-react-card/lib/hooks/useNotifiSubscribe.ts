@@ -104,7 +104,7 @@ export const useNotifiSubscribe: () => Readonly<{
 
   const logIn = useCallback(async (): Promise<SubscriptionData> => {
     if (!isAuthenticated) {
-      clientLogIn(signer);
+      await clientLogIn(signer);
     }
 
     const data = await fetchData();
