@@ -22,11 +22,14 @@ export const useNotifiSubscribe: () => Readonly<{
   const {
     email: inputEmail,
     phoneNumber: inputPhoneNumber,
+    telegramId: inputTelegramId,
     params: { dappAddress, env, keepSubscriptionData, walletPublicKey, signer },
     getAlertConfigurations,
     setAlerts,
     setEmail,
     setPhoneNumber,
+    setTelegramId,
+    setTelegramConfirmationUrl,
   } = useNotifiSubscriptionContext();
 
   const {
@@ -67,6 +70,10 @@ export const useNotifiSubscribe: () => Readonly<{
 
       const phoneNumber = targetGroup?.smsTargets[0]?.phoneNumber ?? null;
       setPhoneNumber(phoneNumber ?? '');
+
+      const telegramTarget = targetGroup?.telegramTargets[0];
+      setTelegramId(telegramTarget?.telegramId ?? '');
+      setTelegramConfirmationUrl(telegramTarget?.confirmationUrl ?? undefined);
     },
     [setAlerts, setEmail, setPhoneNumber],
   );
@@ -94,6 +101,7 @@ export const useNotifiSubscribe: () => Readonly<{
     const configurations = getAlertConfigurations();
     const names = Object.keys(configurations);
     const finalEmail = inputEmail === '' ? null : inputEmail;
+    const finalTelegramId = inputTelegramId === '' ? null : inputTelegramId;
 
     let finalPhoneNumber = null;
     if (inputPhoneNumber !== '') {
@@ -185,7 +193,7 @@ export const useNotifiSubscribe: () => Readonly<{
             filterOptions: filterOptions ?? undefined,
             emailAddress: finalEmail,
             phoneNumber: finalPhoneNumber,
-            telegramId: null, // TODO
+            telegramId: finalTelegramId,
             groupName: 'managed',
           });
 

@@ -26,6 +26,8 @@ export type NotifiSubscriptionData = Readonly<{
   email: string;
   params: NotifiParams;
   phoneNumber: string;
+  telegramId: string;
+  telegramConfirmationUrl?: string;
   getAlertConfiguration: (name: string) => AlertConfiguration | null;
   getAlertConfigurations: () => Readonly<
     Record<string, AlertConfiguration | null>
@@ -37,6 +39,10 @@ export type NotifiSubscriptionData = Readonly<{
   ) => void;
   setEmail: (email: string) => void;
   setPhoneNumber: (phoneNumber: string) => void;
+  setTelegramId: (telegramId: string) => void;
+  setTelegramConfirmationUrl: (
+    telegramConfirmationUrl: string | undefined,
+  ) => void;
 }>;
 
 const NotifiSubscriptionContext = createContext<NotifiSubscriptionData>(
@@ -49,6 +55,10 @@ export const NotifiSubscriptionContextProvider: React.FC<NotifiParams> = ({
 }: React.PropsWithChildren<NotifiParams>) => {
   const [email, setEmail] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
+  const [telegramId, setTelegramId] = useState<string>('');
+  const [telegramConfirmationUrl, setTelegramConfirmationUrl] = useState<
+    string | undefined
+  >(undefined);
   const [alerts, setAlerts] = useState<Record<string, Alert | undefined>>({});
 
   const alertConfigurations = useRef<Record<string, AlertConfiguration | null>>(
@@ -83,12 +93,16 @@ export const NotifiSubscriptionContextProvider: React.FC<NotifiParams> = ({
     email,
     params,
     phoneNumber,
+    telegramId,
+    telegramConfirmationUrl,
     getAlertConfiguration,
     getAlertConfigurations,
     setAlerts,
     setAlertConfiguration,
     setEmail,
     setPhoneNumber,
+    setTelegramId,
+    setTelegramConfirmationUrl,
   };
 
   return (

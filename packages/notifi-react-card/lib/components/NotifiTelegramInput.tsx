@@ -13,25 +13,25 @@ type Props = Readonly<{
   disabled: boolean;
 }>;
 
-export const NotifiSmsInput: React.FC<Props> = ({
+export const NotifiTelegramInput: React.FC<Props> = ({
   classNames,
   copy,
   disabled,
 }: Props) => {
-  const { phoneNumber, setPhoneNumber } = useNotifiSubscriptionContext();
+  const { telegramId, setTelegramId } = useNotifiSubscriptionContext();
 
   return (
     <div className={classNames?.container}>
       <input
         className={classNames?.input}
         disabled={disabled}
-        name="notifi-sms"
-        type="tel"
-        value={phoneNumber}
+        name="notifi-telegram"
+        type="text"
+        value={telegramId}
         onChange={(e) => {
-          setPhoneNumber(e.target.value ?? '');
+          setTelegramId(e.target.value ?? '');
         }}
-        placeholder={copy?.placeholder ?? 'Phone Number'}
+        placeholder={copy?.placeholder ?? 'Telegram ID'}
       />
     </div>
   );
