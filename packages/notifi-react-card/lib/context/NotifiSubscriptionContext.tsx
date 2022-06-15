@@ -26,7 +26,6 @@ export type NotifiSubscriptionData = Readonly<{
   email: string;
   params: NotifiParams;
   phoneNumber: string;
-  isInitialized: boolean;
   getAlertConfiguration: (name: string) => AlertConfiguration | null;
   getAlertConfigurations: () => Readonly<
     Record<string, AlertConfiguration | null>
@@ -37,7 +36,6 @@ export type NotifiSubscriptionData = Readonly<{
     config: AlertConfiguration | null,
   ) => void;
   setEmail: (email: string) => void;
-  setIsInitialized: (isInitialized: boolean) => void;
   setPhoneNumber: (phoneNumber: string) => void;
 }>;
 
@@ -52,9 +50,6 @@ export const NotifiSubscriptionContextProvider: React.FC<NotifiParams> = ({
   const [email, setEmail] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [alerts, setAlerts] = useState<Record<string, Alert | undefined>>({});
-
-  // TODO: let notifi client play better with the context so we don't have to redefine these states
-  const [isInitialized, setIsInitialized] = useState<boolean>(false);
 
   const alertConfigurations = useRef<Record<string, AlertConfiguration | null>>(
     params.alertConfigurations ?? {},
@@ -86,7 +81,6 @@ export const NotifiSubscriptionContextProvider: React.FC<NotifiParams> = ({
   const value = {
     alerts,
     email,
-    isInitialized,
     params,
     phoneNumber,
     getAlertConfiguration,
@@ -94,7 +88,6 @@ export const NotifiSubscriptionContextProvider: React.FC<NotifiParams> = ({
     setAlerts,
     setAlertConfiguration,
     setEmail,
-    setIsInitialized,
     setPhoneNumber,
   };
 

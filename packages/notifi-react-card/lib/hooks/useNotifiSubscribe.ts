@@ -11,13 +11,12 @@ import { useCallback, useEffect } from 'react';
 export type SubscriptionData = Readonly<{
   alerts: Readonly<Record<string, Alert>>;
   email: string | null;
-  isAuthenticated: boolean;
-  isInitialized: boolean;
   phoneNumber: string | null;
 }>;
 
 export const useNotifiSubscribe: () => Readonly<{
   loading: boolean;
+  isInitialized: boolean;
   subscribe: () => Promise<void>;
 }> = () => {
   const {
@@ -27,7 +26,6 @@ export const useNotifiSubscribe: () => Readonly<{
     getAlertConfigurations,
     setAlerts,
     setEmail,
-    setIsInitialized,
     setPhoneNumber,
   } = useNotifiSubscriptionContext();
 
@@ -46,10 +44,6 @@ export const useNotifiSubscribe: () => Readonly<{
     env,
     walletPublicKey,
   });
-
-  useEffect(() => {
-    setIsInitialized(isInitialized);
-  }, [isInitialized]);
 
   const render = useCallback(
     (newData: ClientData | null) => {
@@ -216,6 +210,7 @@ export const useNotifiSubscribe: () => Readonly<{
 
   return {
     loading,
+    isInitialized,
     subscribe,
   };
 };
