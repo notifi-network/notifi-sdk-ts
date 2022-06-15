@@ -18,6 +18,7 @@ export type SubscriptionData = Readonly<{
 
 export const useNotifiSubscribe: () => Readonly<{
   loading: boolean;
+  isAuthenticated: boolean;
   isInitialized: boolean;
   logIn: () => Promise<SubscriptionData>;
   subscribe: () => Promise<SubscriptionData>;
@@ -239,6 +240,7 @@ export const useNotifiSubscribe: () => Readonly<{
   return {
     loading,
     logIn,
+    isAuthenticated,
     isInitialized,
     subscribe,
   };
