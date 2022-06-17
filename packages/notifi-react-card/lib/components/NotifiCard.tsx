@@ -28,6 +28,7 @@ type Props = Readonly<{
   alertConfigurations?: Record<string, AlertConfiguration>;
   dappAddress: string;
   env: NotifiEnvironment;
+  keepSubscriptionData?: boolean;
   signer: MessageSigner | null;
   walletPublicKey: string | null;
 }>;
@@ -39,6 +40,7 @@ export const NotifiCard: React.FC<Props> = ({
   alertConfigurations,
   dappAddress,
   env,
+  keepSubscriptionData,
   signer,
   walletPublicKey,
 }) => {
@@ -66,6 +68,7 @@ export const NotifiCard: React.FC<Props> = ({
             alertConfigurations,
             dappAddress,
             env,
+            keepSubscriptionData,
             signer,
             walletPublicKey,
           }}

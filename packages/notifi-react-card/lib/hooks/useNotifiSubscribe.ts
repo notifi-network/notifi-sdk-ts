@@ -12,14 +12,28 @@ export type SubscriptionData = Readonly<{
   alerts: Readonly<Record<string, Alert>>;
   email: string | null;
   phoneNumber: string | null;
+  telegramId: string | null;
+  telegramConfirmationUrl: string | null;
 }>;
 
 export const useNotifiSubscribe: () => Readonly<{
   loading: boolean;
-  subscribe: () => Promise<void>;
+  isAuthenticated: boolean;
+  isInitialized: boolean;
+  logIn: () => Promise<SubscriptionData>;
+  subscribe: () => Promise<SubscriptionData>;
 }> = () => {
   const {
-    params: { dappAddress, env, walletPublicKey, signer },
+    email: inputEmail,
+    phoneNumber: inputPhoneNumber,
+    telegramId: inputTelegramId,
+    params: { dappAddress, env, keepSubscriptionData, walletPublicKey, signer },
+    getAlertConfigurations,
+    setAlerts,
+    setEmail,
+    setPhoneNumber,
+    setTelegramId,
+    setTelegramConfirmationUrl,
   } = useNotifiSubscriptionContext();
 
   const {
@@ -29,7 +43,8 @@ export const useNotifiSubscribe: () => Readonly<{
     deleteAlert,
     fetchData,
     isAuthenticated,
-    logIn,
+    isInitialized,
+    logIn: clientLogIn,
     updateAlert,
   } = useNotifiClient({
     dappAddress,
@@ -37,17 +52,8 @@ export const useNotifiSubscribe: () => Readonly<{
     walletPublicKey,
   });
 
-  const {
-    email: inputEmail,
-    phoneNumber: inputPhoneNumber,
-    getAlertConfigurations,
-    setAlerts,
-    setEmail,
-    setPhoneNumber,
-  } = useNotifiSubscriptionContext();
-
   const render = useCallback(
-    (newData: ClientData | null) => {
+    (newData: ClientData | null): SubscriptionData => {
       const configurations = getAlertConfigurations();
 
       let targetGroup = newData?.targetGroups[0];
@@ -68,6 +74,18 @@ export const useNotifiSubscribe: () => Readonly<{
 
       const phoneNumber = targetGroup?.smsTargets[0]?.phoneNumber ?? null;
       setPhoneNumber(phoneNumber ?? '');
+
+      const telegramTarget = targetGroup?.telegramTargets[0];
+      setTelegramId(telegramTarget?.telegramId ?? '');
+      setTelegramConfirmationUrl(telegramTarget?.confirmationUrl ?? undefined);
+
+      return {
+        alerts,
+        email,
+        phoneNumber,
+        telegramId: telegramTarget?.telegramId ?? null,
+        telegramConfirmationUrl: telegramTarget?.confirmationUrl ?? null,
+      };
     },
     [setAlerts, setEmail, setPhoneNumber],
   );
@@ -85,9 +103,18 @@ export const useNotifiSubscribe: () => Readonly<{
     }
   }, [isAuthenticated]);
 
-  const subscribe = useCallback(async (): Promise<void> => {
+  const logIn = useCallback(async (): Promise<SubscriptionData> => {
     if (!isAuthenticated) {
-      await logIn(signer);
+      await clientLogIn(signer);
+    }
+
+    const data = await fetchData();
+    return render(data);
+  }, [clientLogIn, signer]);
+
+  const subscribe = useCallback(async (): Promise<SubscriptionData> => {
+    if (!isAuthenticated) {
+      await clientLogIn(signer);
     }
 
     const data = await fetchData();
@@ -95,6 +122,7 @@ export const useNotifiSubscribe: () => Readonly<{
     const configurations = getAlertConfigurations();
     const names = Object.keys(configurations);
     const finalEmail = inputEmail === '' ? null : inputEmail;
+    const finalTelegramId = inputTelegramId === '' ? null : inputTelegramId;
 
     let finalPhoneNumber = null;
     if (inputPhoneNumber !== '') {
@@ -112,7 +140,11 @@ export const useNotifiSubscribe: () => Readonly<{
       const existingAlert = data.alerts.find((alert) => alert.name === name);
       const deleteThisAlert = async () => {
         if (existingAlert !== undefined && existingAlert.id !== null) {
-          await deleteAlert({ alertId: existingAlert.id });
+          await deleteAlert({
+            alertId: existingAlert.id,
+            keepSourceGroup: keepSubscriptionData,
+            keepTargetGroup: keepSubscriptionData,
+          });
         }
       };
 
@@ -169,7 +201,7 @@ export const useNotifiSubscribe: () => Readonly<{
             alertId: existingAlert.id,
             emailAddress: finalEmail,
             phoneNumber: finalPhoneNumber,
-            telegramId: null, // TODO
+            telegramId: finalTelegramId,
           });
           newResults[name] = alert;
         } else {
@@ -182,7 +214,7 @@ export const useNotifiSubscribe: () => Readonly<{
             filterOptions: filterOptions ?? undefined,
             emailAddress: finalEmail,
             phoneNumber: finalPhoneNumber,
-            telegramId: null, // TODO
+            telegramId: finalTelegramId,
             groupName: 'managed',
           });
 
@@ -192,7 +224,7 @@ export const useNotifiSubscribe: () => Readonly<{
     }
 
     const newData = await fetchData();
-    render(newData);
+    return render(newData);
   }, [
     createAlert,
     deleteAlert,
@@ -200,13 +232,17 @@ export const useNotifiSubscribe: () => Readonly<{
     getAlertConfigurations,
     inputEmail,
     inputPhoneNumber,
+    inputTelegramId,
     isAuthenticated,
-    logIn,
+    clientLogIn,
     signer,
   ]);
 
   return {
     loading,
+    logIn,
+    isAuthenticated,
+    isInitialized,
     subscribe,
   };
 };
