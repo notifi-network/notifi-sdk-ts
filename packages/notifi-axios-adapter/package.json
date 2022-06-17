@@ -1,6 +1,6 @@
 {
   "name": "@notifi-network/notifi-axios-adapter",
-  "version": "0.18.2",
+  "version": "0.19.0",
   "description": "The axios adapter for notifi functionality",
   "author": "juni-notifi <hyungjoon.kim@notifi.network>",
   "homepage": "https://github.com/nimesh-irisio/notifi-sdk#readme",
@@ -28,10 +28,10 @@
     "url": "https://github.com/notifi-network/notifi-sdk-ts/issues"
   },
   "dependencies": {
-    "@notifi-network/notifi-axios-utils": "^0.18.2"
+    "@notifi-network/notifi-axios-utils": "^0.19.0"
   },
   "devDependencies": {
-    "@notifi-network/notifi-core": "^0.18.2"
+    "@notifi-network/notifi-core": "^0.19.0"
   },
   "peerDependencies": {
     "axios": "^0.26.0"
