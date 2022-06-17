@@ -21,6 +21,7 @@ import getSourceGroupsImpl from './queries/getSourceGroupsImpl';
 import getSourcesImpl from './queries/getSourcesImpl';
 import getTargetGroupsImpl from './queries/getTargetGroupsImpl';
 import getTelegramTargetsImpl from './queries/getTelegramTargetsImpl';
+import getTopicsImpl from './queries/getTopicsImpl';
 import { NotifiService } from '@notifi-network/notifi-core';
 import axios from 'axios';
 
@@ -48,6 +49,7 @@ export class NotifiAxiosService implements NotifiService {
   getSources: NotifiService['getSources'];
   getTargetGroups: NotifiService['getTargetGroups'];
   getTelegramTargets: NotifiService['getTelegramTargets'];
+  getTopics: NotifiService['getTopics'];
   logInFromDapp: NotifiService['logInFromDapp'];
   refreshAuthorization: NotifiService['refreshAuthorization'];
   updateSourceGroup: NotifiService['updateSourceGroup'];
@@ -93,6 +95,7 @@ export class NotifiAxiosService implements NotifiService {
     this.getSources = getSourcesImpl.bind(null, a);
     this.getTargetGroups = getTargetGroupsImpl.bind(null, a);
     this.getTelegramTargets = getTelegramTargetsImpl.bind(null, a);
+    this.getTopics = getTopicsImpl.bind(null, a);
     this.logInFromDapp = logInFromDappImpl.bind(null, a);
     this.refreshAuthorization = refreshAuthorizationImpl.bind(null, a);
     this.updateSourceGroup = updateSourceGroupImpl.bind(null, a);
