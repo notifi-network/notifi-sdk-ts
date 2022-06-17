@@ -8,6 +8,7 @@ import {
   TargetGroup,
   TelegramTarget,
   User,
+  UserTopic,
 } from './models';
 import { CreateSourceInput } from './operations';
 
@@ -118,6 +119,7 @@ export type MessageSigner = Readonly<{
 export type NotifiClient = Readonly<{
   fetchData: () => Promise<ClientData>;
   logIn: (signer: MessageSigner) => Promise<User>;
+  logOut: () => Promise<void>;
   createAlert: (input: ClientCreateAlertInput) => Promise<Alert>;
   createSource: (input: CreateSourceInput) => Promise<Source>;
   createMetaplexAuctionSource: (
@@ -125,5 +127,6 @@ export type NotifiClient = Readonly<{
   ) => Promise<Source>;
   deleteAlert: (input: ClientDeleteAlertInput) => Promise<string>;
   getConfiguration: () => Promise<ClientConfiguration>;
+  getTopics: () => Promise<ReadonlyArray<UserTopic>>;
   updateAlert: (input: ClientUpdateAlertInput) => Promise<Alert>;
 }>;

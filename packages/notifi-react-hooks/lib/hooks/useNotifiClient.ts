@@ -25,6 +25,7 @@ import {
   MessageSigner,
   NotifiClient,
   Source,
+  UserTopic,
 } from '@notifi-network/notifi-core';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
@@ -104,13 +105,14 @@ const useNotifiClient = (
   const { env, dappAddress, walletPublicKey } = config;
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
   const notifiConfig = useNotifiConfig(env);
-  const { getAuthorization, setAuthorization } = useMemo(() => {
-    return storage({
-      dappAddress,
-      walletPublicKey,
-      jwtPrefix: notifiConfig.storagePrefix,
-    });
-  }, [dappAddress, walletPublicKey, notifiConfig.storagePrefix]);
+  const { getAuthorization, getRoles, setAuthorization, setRoles } =
+    useMemo(() => {
+      return storage({
+        dappAddress,
+        walletPublicKey,
+        jwtPrefix: notifiConfig.storagePrefix,
+      });
+    }, [dappAddress, walletPublicKey, notifiConfig.storagePrefix]);
 
   const service = useNotifiService(env);
 
@@ -284,6 +286,12 @@ const useNotifiClient = (
           }
         }
 
+        if (result.roles !== null) {
+          setRoles(result.roles);
+        } else {
+          setRoles(null);
+        }
+
         const newData = await fetchDataImpl(
           service,
           Date,
@@ -305,7 +313,7 @@ const useNotifiClient = (
         setLoading(false);
       }
     },
-    [service, walletPublicKey, dappAddress],
+    [setAuthorization, setRoles, service, walletPublicKey, dappAddress],
   );
 
   /**
@@ -691,18 +699,52 @@ const useNotifiClient = (
       }
     }, [config.dappAddress, service]);
 
+  const logOut = useCallback(async (): Promise<void> => {
+    service.setJwt(null);
+    await setAuthorization(null);
+    await setRoles(null);
+    setInternalData(null);
+  }, [setAuthorization, setInternalData, setRoles, service]);
+
+  const getTopics = useCallback(async (): Promise<ReadonlyArray<UserTopic>> => {
+    setLoading(true);
+    try {
+      const roles = await getRoles();
+      const isUserMessenger =
+        roles?.some((role) => role === 'UserMessenger') ?? false;
+      if (!isUserMessenger) {
+        throw new NotifiClientError(
+          'This user is not authorized for getTopics!',
+        );
+      }
+
+      return await service.getTopics();
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        setError(e);
+      } else {
+        setError(new NotifiClientError(e));
+      }
+      throw e;
+    } finally {
+      setLoading(false);
+    }
+  }, [setLoading, getRoles, service, setError]);
+
   const data = useMemo(() => {
     return projectData(internalData);
   }, [internalData]);
 
   const client: NotifiClient = {
     logIn,
+    logOut,
     createAlert,
     createMetaplexAuctionSource,
     createSource,
     deleteAlert,
     fetchData,
     getConfiguration,
+    getTopics,
     updateAlert,
   };
 
