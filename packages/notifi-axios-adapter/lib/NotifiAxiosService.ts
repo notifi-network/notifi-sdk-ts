@@ -1,3 +1,4 @@
+import broadcastMessageImpl from './mutations/broadcastMessageImpl';
 import createAlertImpl from './mutations/createAlertImpl';
 import createEmailTargetImpl from './mutations/createEmailTargetImpl';
 import createSmsTargetImpl from './mutations/createSmsTargetImpl';
@@ -30,6 +31,7 @@ export type NotifiAxiosServiceConfig = Readonly<{
 }>;
 
 export class NotifiAxiosService implements NotifiService {
+  broadcastMessage: NotifiService['broadcastMessage'];
   createAlert: NotifiService['createAlert'];
   createEmailTarget: NotifiService['createEmailTarget'];
   createSmsTarget: NotifiService['createSmsTarget'];
@@ -76,6 +78,7 @@ export class NotifiAxiosService implements NotifiService {
       return config;
     });
 
+    this.broadcastMessage = broadcastMessageImpl.bind(null, a);
     this.createAlert = createAlertImpl.bind(null, a);
     this.createEmailTarget = createEmailTargetImpl.bind(null, a);
     this.createSmsTarget = createSmsTargetImpl.bind(null, a);

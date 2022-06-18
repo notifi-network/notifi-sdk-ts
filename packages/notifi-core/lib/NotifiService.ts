@@ -1,6 +1,7 @@
 import * as Operations from './operations';
 
-export type NotifiService = Operations.CreateAlertService &
+export type NotifiService = Operations.BroadcastMessageService &
+  Operations.CreateAlertService &
   Operations.CreateEmailTargetService &
   Operations.CreateSmsTargetService &
   Operations.CreateSourceService &

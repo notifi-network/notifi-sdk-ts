@@ -15,6 +15,7 @@ import useNotifiService from './useNotifiService';
 import type { NotifiEnvironment } from '@notifi-network/notifi-axios-utils';
 import {
   Alert,
+  ClientBroadcastMessageInput,
   ClientConfiguration,
   ClientCreateAlertInput,
   ClientCreateMetaplexAuctionSourceInput,
@@ -25,6 +26,7 @@ import {
   MessageSigner,
   NotifiClient,
   Source,
+  TargetType,
   UserTopic,
 } from '@notifi-network/notifi-core';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -735,7 +737,88 @@ const useNotifiClient = (
     return projectData(internalData);
   }, [internalData]);
 
+  const broadcastMessage = useCallback(
+    async (
+      { topic, subject, message, isHolderOnly }: ClientBroadcastMessageInput,
+      signer: MessageSigner,
+    ): Promise<string | null> => {
+      setLoading(true);
+      try {
+        if (topic.topicName === null) {
+          throw new NotifiClientError('Invalid UserTopic');
+        }
+
+        let targetTemplates;
+        if (topic.targetTemplate !== null) {
+          const value = topic.targetTemplate;
+          targetTemplates = [
+            {
+              key: 'EMAIL' as TargetType,
+              value,
+            },
+            {
+              key: 'SMS' as TargetType,
+              value,
+            },
+            {
+              key: 'TELEGRAM' as TargetType,
+              value,
+            },
+          ];
+        }
+
+        const timestamp = Math.round(Date.now() / 1000);
+
+        const variables = [
+          {
+            key: 'message',
+            value: message,
+          },
+          {
+            key: 'subject',
+            value: subject,
+          },
+        ];
+
+        if (isHolderOnly && topic.targetCollections !== null) {
+          variables.push({
+            key: 'TargetCollection',
+            value: JSON.stringify(topic.targetCollections),
+          });
+        }
+
+        const messageBuffer = new TextEncoder().encode(
+          `${walletPublicKey}${dappAddress}${timestamp.toString()}`,
+        );
+        const signedBuffer = await signer.signMessage(messageBuffer);
+        const signature = Buffer.from(signedBuffer).toString('base64');
+
+        const result = await service.broadcastMessage({
+          topicName: topic.topicName,
+          targetTemplates,
+          timestamp,
+          variables,
+          walletBlockchain: 'OFF_CHAIN',
+          signature,
+        });
+
+        return result.id ?? null;
+      } catch (e: unknown) {
+        if (e instanceof Error) {
+          setError(e);
+        } else {
+          setError(new NotifiClientError(e));
+        }
+        throw e;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [setLoading, service],
+  );
+
   const client: NotifiClient = {
+    broadcastMessage,
     logIn,
     logOut,
     createAlert,

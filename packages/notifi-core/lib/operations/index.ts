@@ -1,3 +1,4 @@
+export * from './BroadcastMessage';
 export * from './CreateAlert';
 export * from './CreateSource';
 export * from './CreateEmailTarget';
