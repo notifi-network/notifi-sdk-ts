@@ -9,3 +9,4 @@ export * from './sourceGroupFragment';
 export * from './targetGroupFragment';
 export * from './telegramTargetFragment';
 export * from './userFragment';
+export * from './userTopicFragment';

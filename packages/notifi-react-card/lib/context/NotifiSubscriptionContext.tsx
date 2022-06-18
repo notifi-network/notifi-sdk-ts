@@ -4,6 +4,7 @@ import type {
   MessageSigner,
   NotifiEnvironment,
 } from '@notifi-network/notifi-react-hooks';
+import type { PropsWithChildren } from 'react';
 import React, {
   createContext,
   useCallback,
@@ -49,10 +50,9 @@ const NotifiSubscriptionContext = createContext<NotifiSubscriptionData>(
   {} as unknown as NotifiSubscriptionData, // Intentially empty in default, use NotifiSubscriptionContextProvider
 );
 
-export const NotifiSubscriptionContextProvider: React.FC<NotifiParams> = ({
-  children,
-  ...params
-}: React.PropsWithChildren<NotifiParams>) => {
+export const NotifiSubscriptionContextProvider: React.FC<
+  PropsWithChildren<NotifiParams>
+> = ({ children, ...params }) => {
   const [email, setEmail] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [telegramId, setTelegramId] = useState<string>('');

@@ -9,6 +9,7 @@ import {
   GetSourcesService,
   GetTargetGroupsService,
   GetTelegramTargetsService,
+  GetTopicsService,
   SmsTarget,
   Source,
   SourceGroup,
@@ -43,7 +44,8 @@ type Service = GetAlertsService &
   GetTargetGroupsService &
   GetEmailTargetsService &
   GetSmsTargetsService &
-  GetTelegramTargetsService;
+  GetTelegramTargetsService &
+  GetTopicsService;
 
 const doFetchData = async (service: Service): Promise<InternalData> => {
   const [

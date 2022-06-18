@@ -15,6 +15,7 @@ import useNotifiService from './useNotifiService';
 import type { NotifiEnvironment } from '@notifi-network/notifi-axios-utils';
 import {
   Alert,
+  ClientBroadcastMessageInput,
   ClientConfiguration,
   ClientCreateAlertInput,
   ClientCreateMetaplexAuctionSourceInput,
@@ -25,6 +26,8 @@ import {
   MessageSigner,
   NotifiClient,
   Source,
+  TargetType,
+  UserTopic,
 } from '@notifi-network/notifi-core';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
@@ -79,6 +82,32 @@ const projectData = (internalData: InternalData | null): ClientData | null => {
   };
 };
 
+export const SIGNING_MESSAGE = `Sign in with Notifi \n
+    No password needed or gas is needed. \n
+    Clicking “Approve” only means you have proved this wallet is owned by you! \n
+    This request will not trigger any transaction or cost any gas fees. \n
+    Use of our website and service is subject to our terms of service and privacy policy. \n`;
+
+const signMessage = async ({
+  walletPublicKey,
+  dappAddress,
+  signer,
+  timestamp,
+}: Readonly<{
+  walletPublicKey: string;
+  dappAddress: string;
+  signer: MessageSigner;
+  timestamp: number;
+}>): Promise<string> => {
+  const messageBuffer = new TextEncoder().encode(
+    `${SIGNING_MESSAGE} \n 'Nonce:' ${walletPublicKey}${dappAddress}${timestamp.toString()}`,
+  );
+
+  const signedBuffer = await signer.signMessage(messageBuffer);
+  const signature = Buffer.from(signedBuffer).toString('base64');
+  return signature;
+};
+
 /**
  * React hook for Notifi SDK
  *
@@ -104,13 +133,14 @@ const useNotifiClient = (
   const { env, dappAddress, walletPublicKey } = config;
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
   const notifiConfig = useNotifiConfig(env);
-  const { getAuthorization, setAuthorization } = useMemo(() => {
-    return storage({
-      dappAddress,
-      walletPublicKey,
-      jwtPrefix: notifiConfig.storagePrefix,
-    });
-  }, [dappAddress, walletPublicKey, notifiConfig.storagePrefix]);
+  const { getAuthorization, getRoles, setAuthorization, setRoles } =
+    useMemo(() => {
+      return storage({
+        dappAddress,
+        walletPublicKey,
+        jwtPrefix: notifiConfig.storagePrefix,
+      });
+    }, [dappAddress, walletPublicKey, notifiConfig.storagePrefix]);
 
   const service = useNotifiService(env);
 
@@ -264,11 +294,12 @@ const useNotifiClient = (
 
       setLoading(true);
       try {
-        const messageBuffer = new TextEncoder().encode(
-          `${walletPublicKey}${dappAddress}${timestamp.toString()}`,
-        );
-        const signedBuffer = await signer.signMessage(messageBuffer);
-        const signature = Buffer.from(signedBuffer).toString('base64');
+        const signature = await signMessage({
+          walletPublicKey,
+          dappAddress,
+          timestamp,
+          signer,
+        });
         const result = await service.logInFromDapp({
           walletPublicKey,
           dappAddress,
@@ -282,6 +313,12 @@ const useNotifiClient = (
             service.setJwt(token);
             setAuthorization({ token, expiry });
           }
+        }
+
+        if (result.roles !== null) {
+          setRoles(result.roles);
+        } else {
+          setRoles(null);
         }
 
         const newData = await fetchDataImpl(
@@ -305,7 +342,7 @@ const useNotifiClient = (
         setLoading(false);
       }
     },
-    [service, walletPublicKey, dappAddress],
+    [setAuthorization, setRoles, service, walletPublicKey, dappAddress],
   );
 
   /**
@@ -691,18 +728,133 @@ const useNotifiClient = (
       }
     }, [config.dappAddress, service]);
 
+  const logOut = useCallback(async (): Promise<void> => {
+    service.setJwt(null);
+    await setAuthorization(null);
+    await setRoles(null);
+    setInternalData(null);
+  }, [setAuthorization, setInternalData, setRoles, service]);
+
+  const getTopics = useCallback(async (): Promise<ReadonlyArray<UserTopic>> => {
+    setLoading(true);
+    try {
+      const roles = await getRoles();
+      const isUserMessenger =
+        roles?.some((role) => role === 'UserMessenger') ?? false;
+      if (!isUserMessenger) {
+        throw new NotifiClientError(
+          'This user is not authorized for getTopics!',
+        );
+      }
+
+      return await service.getTopics();
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        setError(e);
+      } else {
+        setError(new NotifiClientError(e));
+      }
+      throw e;
+    } finally {
+      setLoading(false);
+    }
+  }, [setLoading, getRoles, service, setError]);
+
   const data = useMemo(() => {
     return projectData(internalData);
   }, [internalData]);
 
+  const broadcastMessage = useCallback(
+    async (
+      { topic, subject, message, isHolderOnly }: ClientBroadcastMessageInput,
+      signer: MessageSigner,
+    ): Promise<string | null> => {
+      setLoading(true);
+      try {
+        if (topic.topicName === null) {
+          throw new NotifiClientError('Invalid UserTopic');
+        }
+
+        let targetTemplates;
+        if (topic.targetTemplate !== null) {
+          const value = topic.targetTemplate;
+          targetTemplates = [
+            {
+              key: 'EMAIL' as TargetType,
+              value,
+            },
+            {
+              key: 'SMS' as TargetType,
+              value,
+            },
+            {
+              key: 'TELEGRAM' as TargetType,
+              value,
+            },
+          ];
+        }
+
+        const timestamp = Math.round(Date.now() / 1000);
+
+        const variables = [
+          {
+            key: 'message',
+            value: message,
+          },
+          {
+            key: 'subject',
+            value: subject,
+          },
+        ];
+
+        if (isHolderOnly && topic.targetCollections !== null) {
+          variables.push({
+            key: 'TargetCollection',
+            value: JSON.stringify(topic.targetCollections),
+          });
+        }
+
+        const signature = await signMessage({
+          walletPublicKey,
+          dappAddress,
+          timestamp,
+          signer,
+        });
+        const result = await service.broadcastMessage({
+          topicName: topic.topicName,
+          targetTemplates,
+          timestamp,
+          variables,
+          walletBlockchain: 'OFF_CHAIN',
+          signature,
+        });
+
+        return result.id ?? null;
+      } catch (e: unknown) {
+        if (e instanceof Error) {
+          setError(e);
+        } else {
+          setError(new NotifiClientError(e));
+        }
+        throw e;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [setLoading, service],
+  );
+
   const client: NotifiClient = {
+    broadcastMessage,
     logIn,
+    logOut,
     createAlert,
     createMetaplexAuctionSource,
     createSource,
     deleteAlert,
     fetchData,
     getConfiguration,
+    getTopics,
     updateAlert,
   };
 

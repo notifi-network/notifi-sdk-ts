@@ -1,3 +1,4 @@
+export * from './BroadcastMessage';
 export * from './CreateAlert';
 export * from './CreateSource';
 export * from './CreateEmailTarget';
@@ -17,6 +18,7 @@ export * from './GetSources';
 export * from './GetSourceGroups';
 export * from './GetTargetGroups';
 export * from './GetTelegramTargets';
+export * from './GetTopics';
 export * from './LogInFromDapp';
 export * from './RefreshAuthorization';
 export * from './UpdateSourceGroup';

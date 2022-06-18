@@ -10,6 +10,7 @@ fragment userFragment on User {
   authorization {
     ...authorizationFragment
   }
+  roles
 }
 `.trim();
 

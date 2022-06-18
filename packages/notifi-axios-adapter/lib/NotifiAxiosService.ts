@@ -1,3 +1,4 @@
+import broadcastMessageImpl from './mutations/broadcastMessageImpl';
 import createAlertImpl from './mutations/createAlertImpl';
 import createEmailTargetImpl from './mutations/createEmailTargetImpl';
 import createSmsTargetImpl from './mutations/createSmsTargetImpl';
@@ -21,6 +22,7 @@ import getSourceGroupsImpl from './queries/getSourceGroupsImpl';
 import getSourcesImpl from './queries/getSourcesImpl';
 import getTargetGroupsImpl from './queries/getTargetGroupsImpl';
 import getTelegramTargetsImpl from './queries/getTelegramTargetsImpl';
+import getTopicsImpl from './queries/getTopicsImpl';
 import { NotifiService } from '@notifi-network/notifi-core';
 import axios from 'axios';
 
@@ -29,6 +31,7 @@ export type NotifiAxiosServiceConfig = Readonly<{
 }>;
 
 export class NotifiAxiosService implements NotifiService {
+  broadcastMessage: NotifiService['broadcastMessage'];
   createAlert: NotifiService['createAlert'];
   createEmailTarget: NotifiService['createEmailTarget'];
   createSmsTarget: NotifiService['createSmsTarget'];
@@ -48,6 +51,7 @@ export class NotifiAxiosService implements NotifiService {
   getSources: NotifiService['getSources'];
   getTargetGroups: NotifiService['getTargetGroups'];
   getTelegramTargets: NotifiService['getTelegramTargets'];
+  getTopics: NotifiService['getTopics'];
   logInFromDapp: NotifiService['logInFromDapp'];
   refreshAuthorization: NotifiService['refreshAuthorization'];
   updateSourceGroup: NotifiService['updateSourceGroup'];
@@ -74,6 +78,7 @@ export class NotifiAxiosService implements NotifiService {
       return config;
     });
 
+    this.broadcastMessage = broadcastMessageImpl.bind(null, a);
     this.createAlert = createAlertImpl.bind(null, a);
     this.createEmailTarget = createEmailTargetImpl.bind(null, a);
     this.createSmsTarget = createSmsTargetImpl.bind(null, a);
@@ -93,6 +98,7 @@ export class NotifiAxiosService implements NotifiService {
     this.getSources = getSourcesImpl.bind(null, a);
     this.getTargetGroups = getTargetGroupsImpl.bind(null, a);
     this.getTelegramTargets = getTelegramTargetsImpl.bind(null, a);
+    this.getTopics = getTopicsImpl.bind(null, a);
     this.logInFromDapp = logInFromDappImpl.bind(null, a);
     this.refreshAuthorization = refreshAuthorizationImpl.bind(null, a);
     this.updateSourceGroup = updateSourceGroupImpl.bind(null, a);

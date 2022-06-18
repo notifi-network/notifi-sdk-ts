@@ -9,6 +9,8 @@ export type Authorization = Readonly<{
   expiry: string;
 }>;
 
+export type Roles = ReadonlyArray<string>;
+
 export type StorageKey = Readonly<{
   dappAddress: string;
   jwtPrefix: string;
@@ -17,7 +19,9 @@ export type StorageKey = Readonly<{
 
 export type Storage = Readonly<{
   getAuthorization: () => Promise<Authorization | null>;
-  setAuthorization: (authorization: Authorization) => Promise<void>;
+  getRoles: () => Promise<Roles | null>;
+  setAuthorization: (authorization: Authorization | null) => Promise<void>;
+  setRoles: (roles: Roles | null) => Promise<void>;
 }>;
 
 const storage = ({
@@ -51,9 +55,20 @@ const storage = ({
     await localforage.setItem(newKey, authorization);
   };
 
+  const rolesKey = `${jwtPrefix}:${dappAddress}:${walletPublicKey}:roles`;
+  const getRoles = async () => {
+    return await localforage.getItem<Roles>(rolesKey);
+  };
+
+  const setRoles = async (roles: Roles | null): Promise<void> => {
+    await localforage.setItem(rolesKey, roles);
+  };
+
   return {
     getAuthorization,
+    getRoles,
     setAuthorization,
+    setRoles,
   };
 };
 

@@ -1,6 +1,7 @@
 import * as Operations from './operations';
 
-export type NotifiService = Operations.CreateAlertService &
+export type NotifiService = Operations.BroadcastMessageService &
+  Operations.CreateAlertService &
   Operations.CreateEmailTargetService &
   Operations.CreateSmsTargetService &
   Operations.CreateSourceService &
@@ -19,6 +20,7 @@ export type NotifiService = Operations.CreateAlertService &
   Operations.GetSourceGroupsService &
   Operations.GetTargetGroupsService &
   Operations.GetTelegramTargetsService &
+  Operations.GetTopicsService &
   Operations.LogInFromDappService &
   Operations.RefreshAuthorizationService &
   Operations.UpdateSourceGroupService &
