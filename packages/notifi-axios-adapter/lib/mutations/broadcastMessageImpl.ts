@@ -27,7 +27,7 @@ mutation broadcastMessage(
     variables: $variables
     timestamp: $timestamp
     walletBlockchain: $walletBlockchain
-  }, signature) {
+  }, signature: $signature) {
     id
   }
 }
