@@ -5,7 +5,7 @@ import type {
   MessageSigner,
   NotifiEnvironment,
 } from '@notifi-network/notifi-react-hooks';
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 
 type Props = Readonly<{
   classNames?: DeepPartialReadonly<{
@@ -33,7 +33,7 @@ type Props = Readonly<{
   walletPublicKey: string | null;
 }>;
 
-export const NotifiCard: React.FC<Props> = ({
+export const NotifiCard: React.FC<PropsWithChildren<Props>> = ({
   children,
   classNames,
   strings,
