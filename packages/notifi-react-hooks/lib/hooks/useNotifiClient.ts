@@ -82,6 +82,32 @@ const projectData = (internalData: InternalData | null): ClientData | null => {
   };
 };
 
+export const SIGNING_MESSAGE = `Sign in with Notifi \n
+    No password needed or gas is needed. \n
+    Clicking “Approve” only means you have proved this wallet is owned by you! \n
+    This request will not trigger any transaction or cost any gas fees. \n
+    Use of our website and service is subject to our terms of service and privacy policy. \n`;
+
+const signMessage = async ({
+  walletPublicKey,
+  dappAddress,
+  signer,
+  timestamp,
+}: Readonly<{
+  walletPublicKey: string;
+  dappAddress: string;
+  signer: MessageSigner;
+  timestamp: number;
+}>): Promise<string> => {
+  const messageBuffer = new TextEncoder().encode(
+    `${SIGNING_MESSAGE} \n 'Nonce:' ${walletPublicKey}${dappAddress}${timestamp.toString()}`,
+  );
+
+  const signedBuffer = await signer.signMessage(messageBuffer);
+  const signature = Buffer.from(signedBuffer).toString('base64');
+  return signature;
+};
+
 /**
  * React hook for Notifi SDK
  *
@@ -268,11 +294,12 @@ const useNotifiClient = (
 
       setLoading(true);
       try {
-        const messageBuffer = new TextEncoder().encode(
-          `${walletPublicKey}${dappAddress}${timestamp.toString()}`,
-        );
-        const signedBuffer = await signer.signMessage(messageBuffer);
-        const signature = Buffer.from(signedBuffer).toString('base64');
+        const signature = await signMessage({
+          walletPublicKey,
+          dappAddress,
+          timestamp,
+          signer,
+        });
         const result = await service.logInFromDapp({
           walletPublicKey,
           dappAddress,
@@ -787,12 +814,12 @@ const useNotifiClient = (
           });
         }
 
-        const messageBuffer = new TextEncoder().encode(
-          `${walletPublicKey}${dappAddress}${timestamp.toString()}`,
-        );
-        const signedBuffer = await signer.signMessage(messageBuffer);
-        const signature = Buffer.from(signedBuffer).toString('base64');
-
+        const signature = await signMessage({
+          walletPublicKey,
+          dappAddress,
+          timestamp,
+          signer,
+        });
         const result = await service.broadcastMessage({
           topicName: topic.topicName,
           targetTemplates,
