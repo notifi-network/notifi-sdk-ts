@@ -1,4 +1,3 @@
-import { userFragment, userFragmentDependencies } from '../fragments';
 import {
   collectDependencies,
   makeRequest,
@@ -8,7 +7,7 @@ import {
   BroadcastMessageResult,
 } from '@notifi-network/notifi-core';
 
-const DEPENDENCIES = [...userFragmentDependencies, userFragment];
+const DEPENDENCIES: string[] = [];
 
 const MUTATION = `
 mutation broadcastMessage(
