@@ -10,5 +10,8 @@ export type BeginLogInByTransactionResult = Readonly<{
 }>;
 
 export type BeginLogInByTransactionService = Readonly<{
-  startLogInByTransaction: Operation<LogInFromDappInput, BeginLogInByTransactionResult>;
+  beginLogInByTransaction: Operation<
+    BeginLogInByTransactionInput,
+    BeginLogInByTransactionResult
+  >;
 }>;

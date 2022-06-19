@@ -40,11 +40,9 @@ export type FilterOptions = Partial<{
  * Object containing information to start the login process
  * 
  * @property walletAddress - Address of the wallet being authenticated against
- * @property dappAddress - Dapp ID
 */
 export type BeginLoginViaTransactionInput = Readonly<{
   walletAddress: string;
-  dappAddress: string;
 }>;
 
 /**
@@ -59,17 +57,17 @@ export type BeginLoginViaTransactionResult = Readonly<{
 /**
  * Object containing information to complete the login process
  * 
- * @property walletAddress - Address of the wallet being authenticated against
- * @property dappAddress - Dapp ID
- * @property randomUuid - Client generated random UUID used in generation of transaction log message
  * @property transactionSignature - Signature of the transaction that contains the log message
  */
 export type CompleteLoginViaTransactionInput = Readonly<{
-  walletAddress: string;
-  dappAddress: string;
-  randomUuid: string;
   transactionSignature: string;
 }>;
+
+/**
+ * Completed authentication response
+ * 
+ */
+export type CompleteLoginViaTransactionResult = Readonly<User>;
 
 /**
  * Input param for updating an Alert
@@ -159,10 +157,16 @@ export type ClientBroadcastMessageInput = Readonly<{
 }>;
 
 export type NotifiClient = Readonly<{
+  beginLoginViaTransaction: (
+    input: BeginLoginViaTransactionInput,
+  ) => Promise<BeginLoginViaTransactionResult>;
   broadcastMessage: (
     input: ClientBroadcastMessageInput,
     signer: MessageSigner,
   ) => Promise<string | null>;
+  completeLoginViaTransaction: (
+    input: CompleteLoginViaTransactionInput,
+  ) => Promise<CompleteLoginViaTransactionResult>;
   fetchData: () => Promise<ClientData>;
   logIn: (signer: MessageSigner) => Promise<User>;
   logOut: () => Promise<void>;
