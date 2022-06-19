@@ -27,7 +27,8 @@ export type CreateSourceInput = Readonly<{
     | 'SOLANA_BONFIDA_AUCTION'
     | 'DIRECT_PUBLISH'
     | 'BROADCAST'
-    | 'SHARKY_PROTOCOL';
+    | 'SHARKY_PROTOCOL'
+    | 'PORT_FINANCE';
 }>;
 
 export type CreateSourceResult = Source;
