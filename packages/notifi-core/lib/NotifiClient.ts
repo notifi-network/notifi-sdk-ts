@@ -37,6 +37,41 @@ export type FilterOptions = Partial<{
 }>;
 
 /**
+ * Object containing information to start the login process
+ * 
+ * @property walletAddress - Address of the wallet being authenticated against
+ * @property dappAddress - Dapp ID
+*/
+export type BeginLoginViaTransactionInput = Readonly<{
+  walletAddress: string;
+  dappAddress: string;
+}>;
+
+/**
+ * Object containing information to continue the login process
+ * 
+ * @property nonce - String value to place in transaction logs
+ */
+export type BeginLoginViaTransactionResult = Readonly<{
+  logValue: string;
+}>;
+
+/**
+ * Object containing information to complete the login process
+ * 
+ * @property walletAddress - Address of the wallet being authenticated against
+ * @property dappAddress - Dapp ID
+ * @property randomUuid - Client generated random UUID used in generation of transaction log message
+ * @property transactionSignature - Signature of the transaction that contains the log message
+ */
+export type CompleteLoginViaTransactionInput = Readonly<{
+  walletAddress: string;
+  dappAddress: string;
+  randomUuid: string;
+  transactionSignature: string;
+}>;
+
+/**
  * Input param for updating an Alert
  *
  * @remarks

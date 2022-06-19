@@ -1,7 +1,9 @@
 import * as Operations from './operations';
 
+<<<<<<< Updated upstream
 export type NotifiService = Operations.BroadcastMessageService &
   Operations.CreateAlertService &
+  Operations.BeginLogInByTransactionService &
   Operations.CreateEmailTargetService &
   Operations.CreateSmsTargetService &
   Operations.CreateSourceService &

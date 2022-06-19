@@ -15,6 +15,7 @@ import useNotifiService from './useNotifiService';
 import type { NotifiEnvironment } from '@notifi-network/notifi-axios-utils';
 import {
   Alert,
+  BeginLoginViaTransactionInput,
   ClientBroadcastMessageInput,
   ClientConfiguration,
   ClientCreateAlertInput,
@@ -30,6 +31,7 @@ import {
   UserTopic,
 } from '@notifi-network/notifi-core';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Hash, randomUUID } from 'crypto';
 
 /**
  * Config options for Notifi SDK
@@ -149,6 +151,7 @@ const useNotifiClient = (
   const [loading, setLoading] = useState<boolean>(false);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [expiry, setExpiry] = useState<string | null>(null);
+  const [clientRandomUuid, setClientRandomUuid] = useState<string | null>(null);
 
   const fetchDataRef = useRef<FetchDataState>({});
 
@@ -344,6 +347,56 @@ const useNotifiClient = (
     },
     [setAuthorization, setRoles, service, walletPublicKey, dappAddress],
   );
+
+  /**
+   * Begin login process leveraging inserting a token in the logs of a transaction
+   */
+  const beginLoginViaTransaction = useCallback(
+    async (
+      input: BeginLoginViaTransactionInput,
+    ): Promise<BeginLoginViaTransactionResult> => {
+      const { walletAddress, dappAddress } = input;
+
+      setLoading(true);
+      try {
+        const result = await service.beginLogInByTransaction({
+          walletPublicKey: walletAddress,
+          dappAddress,
+        });
+
+        if (result.nonce !== null) {
+          const ruuid = randomUUID();
+          const hasher = crypto.createHash('md5');
+          const logValue =
+            'Notifi Auth: ' + hasher.update(result.nonce + ruuid).digest('hex');
+          setClientRandomUuid(ruuid);
+
+          const retVal: BeginLoginViaTransactionResult = {
+            logValue: logValue,
+          }
+
+          return retVal;
+        }
+
+        throw 'Failed to begin login process';
+      } catch (e: unknown) {
+        setIsAuthenticated(false);
+        if (e instanceof Error) {
+          setError(e);
+        } else {
+          setError(new NotifiClientError(e));
+        }
+        throw e;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [service, walletPublicKey, dappAddress],
+  );
+
+  /**
+   * Complete login process leveraging inserting a token in the logs of a transaction
+   */
 
   /**
    * Update an Alert
