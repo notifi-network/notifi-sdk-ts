@@ -35,5 +35,6 @@
   },
   "peerDependencies": {
     "axios": "^0.26.0"
-  }
+  },
+  "gitHead": "ecfc53099c4a622add72a955b7dd1c56767fd26a"
 }
