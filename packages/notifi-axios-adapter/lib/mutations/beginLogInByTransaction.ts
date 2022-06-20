@@ -27,7 +27,7 @@ mutation beginLogInByTransaction(
     walletBlockchain: $walletBlockchain
     dappAddress: $dappAddress
   }) {
-    ...userFragment
+    ...beginLogInByTransactionFragment
   }
 }
 `.trim();
