@@ -367,7 +367,8 @@ const useNotifiClient = (
         }
 
         const result = await service.beginLogInByTransaction({
-          walletPublicKey: walletAddress,
+          walletAddress: walletAddress,
+          walletBlockchain: 'SOLANA',
           dappAddress,
         });
 

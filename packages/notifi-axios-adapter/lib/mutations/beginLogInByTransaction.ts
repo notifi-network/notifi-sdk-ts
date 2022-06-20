@@ -12,11 +12,13 @@ const DEPENDENCIES = [...userFragmentDependencies, userFragment];
 
 const MUTATION = `
 mutation beginLogInByTransaction(
-  $walletPublicKey: String!
+  $walletAddress: String!
+  $walletBlockchain: WalletBlockchain!
   $dappAddress: String!
 ) {
   beginLogInByTransaction(beginLogInByTransactionInput: {
-    walletPublicKey: $walletPublicKey
+    walletAddress: $walletPublicKey
+    walletBlockchain: $walletBlockchain
     dappAddress: $dappAddress
   }) {
     ...userFragment

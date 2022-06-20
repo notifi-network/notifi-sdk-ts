@@ -1,7 +1,8 @@
 import { Operation } from '../models';
 
 export type BeginLogInByTransactionInput = Readonly<{
-  walletPublicKey: string;
+  walletAddress: string;
+  walletBlockchain: string;
   dappAddress: string;
 }>;
 
