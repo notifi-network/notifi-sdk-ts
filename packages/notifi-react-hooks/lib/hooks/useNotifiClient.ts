@@ -356,6 +356,10 @@ const useNotifiClient = (
 
   /**
    * Begin login process leveraging inserting a token in the logs of a transaction
+   * 
+   * @Remarks Call this before starting your transaction to obtain the log string to insert
+   * 
+   * @returns {BeginLoginViaTransactionResult} Contains log string to include in transaction
    */
   const beginLoginViaTransaction =
     useCallback(async (): Promise<BeginLoginViaTransactionResult> => {
@@ -405,6 +409,11 @@ const useNotifiClient = (
 
   /**
    * Complete login process leveraging inserting a token in the logs of a transaction
+   * 
+   * @Remarks Call this right after your transaction with the transaction signature
+   * 
+   * @param {CompleteLoginViaTransactionInput} input - Input params completing the transaction login
+   * @returns {CompleteLoginViaTransactionResult} Contains the User auth object
    */
    const completeLoginViaTransaction = useCallback(
     async (
