@@ -37,6 +37,30 @@ export type FilterOptions = Partial<{
 }>;
 
 /**
+ * Object containing information to continue the login process
+ * 
+ * @property nonce - String value to place in transaction logs
+ */
+export type BeginLoginViaTransactionResult = Readonly<{
+  logValue: string;
+}>;
+
+/**
+ * Object containing information to complete the login process
+ * 
+ * @property transactionSignature - Signature of the transaction that contains the log message
+ */
+export type CompleteLoginViaTransactionInput = Readonly<{
+  transactionSignature: string;
+}>;
+
+/**
+ * Completed authentication response
+ * 
+ */
+export type CompleteLoginViaTransactionResult = Readonly<User>;
+
+/**
  * Input param for updating an Alert
  *
  * @remarks
@@ -124,10 +148,14 @@ export type ClientBroadcastMessageInput = Readonly<{
 }>;
 
 export type NotifiClient = Readonly<{
+  beginLoginViaTransaction: () => Promise<BeginLoginViaTransactionResult>;
   broadcastMessage: (
     input: ClientBroadcastMessageInput,
     signer: MessageSigner,
   ) => Promise<string | null>;
+  completeLoginViaTransaction: (
+    input: CompleteLoginViaTransactionInput,
+  ) => Promise<CompleteLoginViaTransactionResult>;
   fetchData: () => Promise<ClientData>;
   logIn: (signer: MessageSigner) => Promise<User>;
   logOut: () => Promise<void>;

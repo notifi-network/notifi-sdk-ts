@@ -15,6 +15,7 @@ import useNotifiService from './useNotifiService';
 import type { NotifiEnvironment } from '@notifi-network/notifi-axios-utils';
 import {
   Alert,
+  BeginLoginViaTransactionResult,
   ClientBroadcastMessageInput,
   ClientConfiguration,
   ClientCreateAlertInput,
@@ -22,6 +23,8 @@ import {
   ClientData,
   ClientDeleteAlertInput,
   ClientUpdateAlertInput,
+  CompleteLoginViaTransactionInput,
+  CompleteLoginViaTransactionResult,
   CreateSourceInput,
   MessageSigner,
   NotifiClient,
@@ -133,14 +136,19 @@ const useNotifiClient = (
   const { env, dappAddress, walletPublicKey } = config;
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
   const notifiConfig = useNotifiConfig(env);
-  const { getAuthorization, getRoles, setAuthorization, setRoles } =
-    useMemo(() => {
-      return storage({
-        dappAddress,
-        walletPublicKey,
-        jwtPrefix: notifiConfig.storagePrefix,
-      });
-    }, [dappAddress, walletPublicKey, notifiConfig.storagePrefix]);
+  const {
+    getAuthorization,
+    getRoles,
+    getWalletAddress,
+    setAuthorization,
+    setRoles,
+  } = useMemo(() => {
+    return storage({
+      dappAddress,
+      walletPublicKey,
+      jwtPrefix: notifiConfig.storagePrefix,
+    });
+  }, [dappAddress, walletPublicKey, notifiConfig.storagePrefix]);
 
   const service = useNotifiService(env);
 
@@ -149,6 +157,7 @@ const useNotifiClient = (
   const [loading, setLoading] = useState<boolean>(false);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [expiry, setExpiry] = useState<string | null>(null);
+  const clientRandomUuid = useRef<string | null>(null);
 
   const fetchDataRef = useRef<FetchDataState>({});
 
@@ -344,6 +353,107 @@ const useNotifiClient = (
     },
     [setAuthorization, setRoles, service, walletPublicKey, dappAddress],
   );
+
+  /**
+   * Begin login process leveraging inserting a token in the logs of a transaction
+   * 
+   * @Remarks Call this before starting your transaction to obtain the log string to insert
+   * 
+   * @returns {BeginLoginViaTransactionResult} Contains log string to include in transaction
+   */
+  const beginLoginViaTransaction =
+    useCallback(async (): Promise<BeginLoginViaTransactionResult> => {
+      setLoading(true);
+      try {
+        const walletAddress = getWalletAddress();
+        if (!walletAddress) {
+          throw "No wallet address set";
+        }
+
+        const result = await service.beginLogInByTransaction({
+          walletAddress: walletAddress,
+          walletBlockchain: 'SOLANA',
+          dappAddress,
+        });
+
+        if (result.nonce !== null) {
+          const ruuid = window.crypto.randomUUID();
+          const encoder = new TextEncoder();
+          const data = encoder.encode(result.nonce + ruuid);
+          const hashBuffer = await window.crypto.subtle.digest('SHA-256', data);
+          const hashArray = Array.from(new Uint8Array(hashBuffer));
+          const logValue =
+            'Notifi Auth: 0x' +
+            hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+          clientRandomUuid.current = ruuid;
+          const retVal: BeginLoginViaTransactionResult = {
+            logValue: logValue,
+          };
+
+          return retVal;
+        }
+
+        throw 'Failed to begin login process';
+      } catch (e: unknown) {
+        setIsAuthenticated(false);
+        if (e instanceof Error) {
+          setError(e);
+        } else {
+          setError(new NotifiClientError(e));
+        }
+        throw e;
+      } finally {
+        setLoading(false);
+      }
+    }, [service, walletPublicKey, dappAddress]);
+
+  /**
+   * Complete login process leveraging inserting a token in the logs of a transaction
+   * 
+   * @Remarks Call this right after your transaction with the transaction signature
+   * 
+   * @param {CompleteLoginViaTransactionInput} input - Input params completing the transaction login
+   * @returns {CompleteLoginViaTransactionResult} Contains the User auth object
+   */
+   const completeLoginViaTransaction = useCallback(
+    async (
+      input: CompleteLoginViaTransactionInput,
+    ): Promise<CompleteLoginViaTransactionResult> => {
+      const { transactionSignature } = input;
+
+      setLoading(true);
+      try {
+        const walletAddress = getWalletAddress();
+        if (!walletAddress) {
+          throw "WalletAddress not set";
+        }
+
+        if (!clientRandomUuid.current) {
+          throw "BeginLoginViaTransaction is required to be called first";
+        }
+
+        return await service.completeLogInByTransaction({
+          walletAddress,
+          walletBlockchain: 'SOLANA',
+          dappAddress,
+          randomUuid: clientRandomUuid.current,
+          transactionSignature,
+        });
+      } catch (e: unknown) {
+        setIsAuthenticated(false);
+        if (e instanceof Error) {
+          setError(e);
+        } else {
+          setError(new NotifiClientError(e));
+        }
+        throw e;
+      } finally {
+        clientRandomUuid.current = null;
+        setLoading(false);
+      }
+    },
+    [service, dappAddress, clientRandomUuid],
+   );
 
   /**
    * Update an Alert
@@ -845,7 +955,9 @@ const useNotifiClient = (
   );
 
   const client: NotifiClient = {
+    beginLoginViaTransaction,
     broadcastMessage,
+    completeLoginViaTransaction,
     logIn,
     logOut,
     createAlert,

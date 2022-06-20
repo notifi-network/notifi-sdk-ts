@@ -1,5 +1,6 @@
 export * from './alertFragment';
 export * from './authorizationFragment';
+export * from './beginLogInByTransactionFragment';
 export * from './clientConfigurationFragment';
 export * from './emailTargetFragment';
 export * from './filterFragment';
