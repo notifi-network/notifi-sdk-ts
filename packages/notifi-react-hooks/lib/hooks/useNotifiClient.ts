@@ -157,7 +157,7 @@ const useNotifiClient = (
   const [loading, setLoading] = useState<boolean>(false);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [expiry, setExpiry] = useState<string | null>(null);
-  const [clientRandomUuid, setClientRandomUuid] = useState<string | null>(null);
+  const clientRandomUuid = useRef<string | null>(null);
 
   const fetchDataRef = useRef<FetchDataState>({});
 
@@ -381,20 +381,12 @@ const useNotifiClient = (
           const logValue =
             'Notifi Auth: 0x' +
             hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
-          setClientRandomUuid(ruuid);
+          clientRandomUuid.current = ruuid;
           const retVal: BeginLoginViaTransactionResult = {
             logValue: logValue,
           };
-          const p: Promise<BeginLoginViaTransactionResult> =
-            new Promise<BeginLoginViaTransactionResult>((resolve, _) => {
-              useEffect(() => {
-                if (clientRandomUuid) {
-                  resolve(retVal);
-                }
-              }, [clientRandomUuid]);
-            });
 
-          return p;
+          return retVal;
         }
 
         throw 'Failed to begin login process';
@@ -409,9 +401,7 @@ const useNotifiClient = (
       } finally {
         setLoading(false);
       }
-    },
-    [service, walletPublicKey, dappAddress],
-  );
+    }, [service, walletPublicKey, dappAddress]);
 
   /**
    * Complete login process leveraging inserting a token in the logs of a transaction
@@ -429,7 +419,7 @@ const useNotifiClient = (
           throw "WalletAddress not set";
         }
 
-        if (!clientRandomUuid) {
+        if (!clientRandomUuid.current) {
           throw "BeginLoginViaTransaction is required to be called first";
         }
 
@@ -437,7 +427,7 @@ const useNotifiClient = (
           walletPublicKey: walletAddress,
           walletBlockchain: 'SOLANA',
           dappAddress,
-          randomUuid: clientRandomUuid,
+          randomUuid: clientRandomUuid.current,
           transactionSignature,
         });
       } catch (e: unknown) {
@@ -449,6 +439,7 @@ const useNotifiClient = (
         }
         throw e;
       } finally {
+        clientRandomUuid.current = null;
         setLoading(false);
       }
     },
