@@ -431,7 +431,7 @@ const useNotifiClient = (
           walletBlockchain: 'SOLANA',
           dappAddress,
           randomUuid: clientRandomUuid,
-          transactionSignature
+          transactionSignature,
         });
       } catch (e: unknown) {
         setIsAuthenticated(false);
@@ -445,7 +445,7 @@ const useNotifiClient = (
         setLoading(false);
       }
     },
-    [service, walletPublicKey, dappAddress],
+    [service, dappAddress, clientRandomUuid],
    );
 
   /**
