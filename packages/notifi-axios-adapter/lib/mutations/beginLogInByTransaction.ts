@@ -1,4 +1,7 @@
-import { userFragment, userFragmentDependencies } from '../fragments';
+import {
+  beginLogInByTransactionFragment,
+  beginLogInByTransactionFragmentDependencies,
+} from '../fragments';
 import {
   collectDependencies,
   makeRequest,
@@ -8,7 +11,10 @@ import {
   BeginLogInByTransactionResult,
 } from '@notifi-network/notifi-core';
 
-const DEPENDENCIES = [...userFragmentDependencies, userFragment];
+const DEPENDENCIES = [
+  ...beginLogInByTransactionFragmentDependencies,
+  beginLogInByTransactionFragment,
+];
 
 const MUTATION = `
 mutation beginLogInByTransaction(
