@@ -38,8 +38,5 @@
     "packages/notifi-node-sample",
     "packages/notifi-react-card",
     "packages/notifi-react-hooks"
-  ],
-  "dependencies": {
-    "npx": "^10.2.2"
-  }
+  ]
 }
