@@ -424,7 +424,7 @@ const useNotifiClient = (
         }
 
         return await service.completeLogInByTransaction({
-          walletPublicKey: walletAddress,
+          walletAddress,
           walletBlockchain: 'SOLANA',
           dappAddress,
           randomUuid: clientRandomUuid.current,
