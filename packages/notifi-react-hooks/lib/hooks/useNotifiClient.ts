@@ -382,12 +382,19 @@ const useNotifiClient = (
             'Notifi Auth: 0x' +
             hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
           setClientRandomUuid(ruuid);
-
           const retVal: BeginLoginViaTransactionResult = {
             logValue: logValue,
-          }
+          };
+          const p: Promise<BeginLoginViaTransactionResult> =
+            new Promise<BeginLoginViaTransactionResult>((resolve, _) => {
+              useEffect(() => {
+                if (clientRandomUuid) {
+                  resolve(retVal);
+                }
+              }, [clientRandomUuid]);
+            });
 
-          return retVal;
+          return p;
         }
 
         throw 'Failed to begin login process';

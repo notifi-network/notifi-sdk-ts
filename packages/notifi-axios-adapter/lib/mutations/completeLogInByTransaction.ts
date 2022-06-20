@@ -12,7 +12,7 @@ const DEPENDENCIES = [...userFragmentDependencies, userFragment];
 
 const MUTATION = `
 mutation completeLogInByTransaction(
-  $walletPublicKey: String!,
+  $walletAddress: String!,
   $walletBlockchain: WalletBlockchain!,
   $dappAddress: String!,
   $randomUuid: String!,
