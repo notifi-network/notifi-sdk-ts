@@ -376,7 +376,7 @@ const useNotifiClient = (
           const ruuid = randomUUID();
           const encoder = new TextEncoder();
           const data = encoder.encode(result.nonce + ruuid);
-          const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+          const hashBuffer = await new Crypto().subtle.digest('SHA-256', data);
           const hashArray = Array.from(new Uint8Array(hashBuffer));
           const logValue =
             'Notifi Auth: 0x' +
