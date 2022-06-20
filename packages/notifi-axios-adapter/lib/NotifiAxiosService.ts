@@ -1,5 +1,6 @@
 import beginLogInByTransactionImpl from './mutations/beginLogInByTransaction';
 import broadcastMessageImpl from './mutations/broadcastMessageImpl';
+import completeLogInByTransactionImpl from './mutations/completeLogInByTransaction';
 import createAlertImpl from './mutations/createAlertImpl';
 import createEmailTargetImpl from './mutations/createEmailTargetImpl';
 import createSmsTargetImpl from './mutations/createSmsTargetImpl';
@@ -26,7 +27,6 @@ import getTelegramTargetsImpl from './queries/getTelegramTargetsImpl';
 import getTopicsImpl from './queries/getTopicsImpl';
 import { NotifiService } from '@notifi-network/notifi-core';
 import axios from 'axios';
-import completeLogInByTransactionImpl from './mutations/completeLogInByTransaction';
 
 export type NotifiAxiosServiceConfig = Readonly<{
   gqlUrl: string;

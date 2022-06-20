@@ -15,7 +15,7 @@ mutation beginLogInByTransaction(
   $walletPublicKey: String!
   $dappAddress: String!
 ) {
-  beginLogInByTransaction(dappLogInInput: {
+  beginLogInByTransaction(beginLogInByTransactionInput: {
     walletPublicKey: $walletPublicKey
     dappAddress: $dappAddress
   }) {
