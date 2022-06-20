@@ -34,9 +34,7 @@
     "@notifi-network/notifi-axios-adapter": "^0.21.0",
     "@notifi-network/notifi-axios-utils": "^0.21.0",
     "axios": "^0.26.0",
-    "crypto-browserify": "^3.12.0",
     "localforage": "^1.10.0",
-    "stream": "^0.0.2",
     "typedoc-plugin-missing-exports": "^0.22.6",
     "typescript": "^4.5.5"
   },
