@@ -37,15 +37,6 @@ export type FilterOptions = Partial<{
 }>;
 
 /**
- * Object containing information to start the login process
- * 
- * @property walletAddress - Address of the wallet being authenticated against
-*/
-export type BeginLoginViaTransactionInput = Readonly<{
-  walletAddress: string;
-}>;
-
-/**
  * Object containing information to continue the login process
  * 
  * @property nonce - String value to place in transaction logs
@@ -157,9 +148,7 @@ export type ClientBroadcastMessageInput = Readonly<{
 }>;
 
 export type NotifiClient = Readonly<{
-  beginLoginViaTransaction: (
-    input: BeginLoginViaTransactionInput,
-  ) => Promise<BeginLoginViaTransactionResult>;
+  beginLoginViaTransaction: () => Promise<BeginLoginViaTransactionResult>;
   broadcastMessage: (
     input: ClientBroadcastMessageInput,
     signer: MessageSigner,

@@ -15,7 +15,6 @@ import useNotifiService from './useNotifiService';
 import type { NotifiEnvironment } from '@notifi-network/notifi-axios-utils';
 import {
   Alert,
-  BeginLoginViaTransactionInput,
   BeginLoginViaTransactionResult,
   ClientBroadcastMessageInput,
   ClientConfiguration,
@@ -359,14 +358,15 @@ const useNotifiClient = (
   /**
    * Begin login process leveraging inserting a token in the logs of a transaction
    */
-  const beginLoginViaTransaction = useCallback(
-    async (
-      input: BeginLoginViaTransactionInput,
-    ): Promise<BeginLoginViaTransactionResult> => {
-      const { walletAddress } = input;
-
+  const beginLoginViaTransaction =
+    useCallback(async (): Promise<BeginLoginViaTransactionResult> => {
       setLoading(true);
       try {
+        const walletAddress = getWalletAddress();
+        if (!walletAddress) {
+          throw "No wallet address set";
+        }
+
         const result = await service.beginLogInByTransaction({
           walletPublicKey: walletAddress,
           dappAddress,
