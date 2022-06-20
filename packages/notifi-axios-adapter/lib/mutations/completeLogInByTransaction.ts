@@ -18,8 +18,8 @@ mutation completeLogInByTransaction(
   $randomUuid: String!,
   $transactionSignature: String!
 ) {
-  completeLogInByTransaction(dappLogInInput: {
-    walletPublicKey: $walletPublicKey
+  completeLogInByTransaction(CompleteLogInByTransactionInput: {
+    walletAddress: $walletAddress
     walletBlockchain: $walletBlockchain
     dappAddress: $dappAddress
     randomUuid: $randomUuid
