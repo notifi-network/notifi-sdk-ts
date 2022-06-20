@@ -1,7 +1,7 @@
 import { Operation, User } from '../models';
 
 export type CompleteLogInByTransactionInput = Readonly<{
-  walletPublicKey: string;
+  walletAddress: string;
   walletBlockchain: string;
   dappAddress: string;
   randomUuid: string;
