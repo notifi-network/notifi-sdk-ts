@@ -33,7 +33,6 @@ import {
   UserTopic,
 } from '@notifi-network/notifi-core';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { createHash, randomUUID } from 'crypto';
 
 /**
  * Config options for Notifi SDK
@@ -373,15 +372,14 @@ const useNotifiClient = (
         });
 
         if (result.nonce !== null) {
-          const ruuid = randomUUID();
-          //const encoder = new TextEncoder();
-          //const data = encoder.encode(result.nonce + ruuid);
-          const hasher = createHash('sha256');
-          //const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-          //const hashArray = Array.from(new Uint8Array(hashBuffer));
+          const ruuid = window.crypto.randomUUID();
+          const encoder = new TextEncoder();
+          const data = encoder.encode(result.nonce + ruuid);
+          const hashBuffer = await window.crypto.subtle.digest('SHA-256', data);
+          const hashArray = Array.from(new Uint8Array(hashBuffer));
           const logValue =
             'Notifi Auth: 0x' +
-            hasher.update(result.nonce + ruuid).digest('hex');
+            hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
           setClientRandomUuid(ruuid);
 
           const retVal: BeginLoginViaTransactionResult = {
