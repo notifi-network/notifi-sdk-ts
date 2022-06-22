@@ -123,10 +123,13 @@ export const useNotifiSubscribe: () => Readonly<{
       await clientLogIn(signer);
     }
     console.log('In subscribe');
+    const configurations = getAlertConfigurations();
+
     const data = await fetchData();
     console.log('After fetchData');
 
-    const configurations = getAlertConfigurations();
+    //const configurationsAfterFetch = getAlertConfigurations();
+
     const names = Object.keys(configurations);
     const finalEmail = inputEmail === '' ? null : inputEmail;
     const finalTelegramId = inputTelegramId === '' ? null : inputTelegramId;
