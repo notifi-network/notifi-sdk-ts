@@ -55,7 +55,7 @@ export const useNotifiSubscribe: () => Readonly<{
   const render = useCallback(
     (newData: ClientData | null): SubscriptionData => {
       const configurations = getAlertConfigurations();
-
+      console.log('DEBUG: 0');
       let targetGroup = newData?.targetGroups[0];
 
       const alerts: Record<string, Alert> = {};
@@ -68,8 +68,10 @@ export const useNotifiSubscribe: () => Readonly<{
         }
       });
       setAlerts(alerts);
-
+      console.log('DEBUG: 1 ' + JSON.stringify(alerts));
       const email = targetGroup?.emailTargets[0]?.emailAddress ?? null;
+      console.log('DEBUG: 2 ' + JSON.stringify(email));
+
       setEmail(email ?? '');
 
       const phoneNumber = targetGroup?.smsTargets[0]?.phoneNumber ?? null;
@@ -113,13 +115,17 @@ export const useNotifiSubscribe: () => Readonly<{
   }, [clientLogIn, signer]);
 
   const subscribe = useCallback(async (): Promise<SubscriptionData> => {
+    console.log('In subscribe');
+    const configurations = getAlertConfigurations();
+    console.log('configurations =>', configurations);
+
     if (!isAuthenticated) {
       await clientLogIn(signer);
     }
-
+    console.log('After login');
     const data = await fetchData();
+    console.log('After fetchData');
 
-    const configurations = getAlertConfigurations();
     const names = Object.keys(configurations);
     const finalEmail = inputEmail === '' ? null : inputEmail;
     const finalTelegramId = inputTelegramId === '' ? null : inputTelegramId;
@@ -140,6 +146,7 @@ export const useNotifiSubscribe: () => Readonly<{
       const existingAlert = data.alerts.find((alert) => alert.name === name);
       const deleteThisAlert = async () => {
         if (existingAlert !== undefined && existingAlert.id !== null) {
+          console.log('case -5');
           await deleteAlert({
             alertId: existingAlert.id,
             keepSourceGroup: keepSubscriptionData,
@@ -150,8 +157,10 @@ export const useNotifiSubscribe: () => Readonly<{
 
       const config = configurations[name];
       if (config === undefined || config === null) {
+        console.log('case -4');
         await deleteThisAlert();
       } else {
+        console.log('case -3');
         const {
           filterType,
           filterOptions,
@@ -162,17 +171,20 @@ export const useNotifiSubscribe: () => Readonly<{
         let source: Source | undefined;
         let filter: Filter | undefined;
         if (createSourceParam !== undefined) {
+          console.log('case -2');
           const existing = data.sources.find(
             (s) =>
               s.type === sourceType &&
               s.blockchainAddress === createSourceParam.address,
           );
           if (existing !== undefined) {
+            console.log('case -1');
             source = existing;
             filter = source.applicableFilters.find(
               (f) => f.filterType === filterType,
             );
           } else {
+            console.log('case 0');
             source = await createSource({
               name: createSourceParam.address,
               blockchainAddress: createSourceParam.address,
@@ -183,6 +195,7 @@ export const useNotifiSubscribe: () => Readonly<{
             );
           }
         } else {
+          console.log('case 1');
           source = data.sources.find((s) => s.type === sourceType);
           filter = source?.applicableFilters.find(
             (f) => f.filterType === filterType,
@@ -195,8 +208,10 @@ export const useNotifiSubscribe: () => Readonly<{
           filter === undefined ||
           filter.id === null
         ) {
+          console.log('case 2');
           await deleteThisAlert();
         } else if (existingAlert !== undefined && existingAlert.id !== null) {
+          console.log('case 3');
           const alert = await updateAlert({
             alertId: existingAlert.id,
             emailAddress: finalEmail,
@@ -205,6 +220,7 @@ export const useNotifiSubscribe: () => Readonly<{
           });
           newResults[name] = alert;
         } else {
+          console.log('create alert being called');
           // Call serially because of limitations
           await deleteThisAlert();
           const alert = await createAlert({
@@ -222,8 +238,11 @@ export const useNotifiSubscribe: () => Readonly<{
         }
       }
     }
+    console.log('last fetchData called');
 
     const newData = await fetchData();
+    console.log('render being called');
+
     return render(newData);
   }, [
     createAlert,
