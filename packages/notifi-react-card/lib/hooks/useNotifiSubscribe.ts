@@ -124,7 +124,7 @@ export const useNotifiSubscribe: () => Readonly<{
     }
     console.log('In subscribe');
     const configurations = getAlertConfigurations();
-
+    console.log('configurations =>', configurations);
     const data = await fetchData();
     console.log('After fetchData');
 
