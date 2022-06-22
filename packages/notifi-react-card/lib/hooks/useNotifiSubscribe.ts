@@ -115,6 +115,10 @@ export const useNotifiSubscribe: () => Readonly<{
   }, [clientLogIn, signer]);
 
   const subscribe = useCallback(async (): Promise<SubscriptionData> => {
+    console.log(
+      'In subscribe alsdkjflasd;kjflsakdjfl;asdkjflksad;jflksadjfl;kasdjfl;ksadjflk;jasdflk;jasld;kfjl;askdjflk;sadjf',
+    );
+
     if (!isAuthenticated) {
       await clientLogIn(signer);
     }
