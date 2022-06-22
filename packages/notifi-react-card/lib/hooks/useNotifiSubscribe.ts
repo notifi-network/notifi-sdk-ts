@@ -147,6 +147,7 @@ export const useNotifiSubscribe: () => Readonly<{
       const existingAlert = data.alerts.find((alert) => alert.name === name);
       const deleteThisAlert = async () => {
         if (existingAlert !== undefined && existingAlert.id !== null) {
+          console.log('case -5');
           await deleteAlert({
             alertId: existingAlert.id,
             keepSourceGroup: keepSubscriptionData,
@@ -157,8 +158,10 @@ export const useNotifiSubscribe: () => Readonly<{
 
       const config = configurations[name];
       if (config === undefined || config === null) {
+        console.log('case -4');
         await deleteThisAlert();
       } else {
+        console.log('case -3');
         const {
           filterType,
           filterOptions,
@@ -169,17 +172,20 @@ export const useNotifiSubscribe: () => Readonly<{
         let source: Source | undefined;
         let filter: Filter | undefined;
         if (createSourceParam !== undefined) {
+          console.log('case -2');
           const existing = data.sources.find(
             (s) =>
               s.type === sourceType &&
               s.blockchainAddress === createSourceParam.address,
           );
           if (existing !== undefined) {
+            console.log('case -1');
             source = existing;
             filter = source.applicableFilters.find(
               (f) => f.filterType === filterType,
             );
           } else {
+            console.log('case 0');
             source = await createSource({
               name: createSourceParam.address,
               blockchainAddress: createSourceParam.address,
@@ -190,6 +196,7 @@ export const useNotifiSubscribe: () => Readonly<{
             );
           }
         } else {
+          console.log('case 1');
           source = data.sources.find((s) => s.type === sourceType);
           filter = source?.applicableFilters.find(
             (f) => f.filterType === filterType,
@@ -202,8 +209,10 @@ export const useNotifiSubscribe: () => Readonly<{
           filter === undefined ||
           filter.id === null
         ) {
+          console.log('case 2');
           await deleteThisAlert();
         } else if (existingAlert !== undefined && existingAlert.id !== null) {
+          console.log('case 3');
           const alert = await updateAlert({
             alertId: existingAlert.id,
             emailAddress: finalEmail,
