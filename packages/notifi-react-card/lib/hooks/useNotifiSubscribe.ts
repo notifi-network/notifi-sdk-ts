@@ -55,7 +55,7 @@ export const useNotifiSubscribe: () => Readonly<{
   const render = useCallback(
     (newData: ClientData | null): SubscriptionData => {
       const configurations = getAlertConfigurations();
-
+      console.log('DEBUG: 0');
       let targetGroup = newData?.targetGroups[0];
 
       const alerts: Record<string, Alert> = {};
@@ -68,8 +68,10 @@ export const useNotifiSubscribe: () => Readonly<{
         }
       });
       setAlerts(alerts);
-
+      console.log('DEBUG: 1 ' + JSON.stringify(alerts));
       const email = targetGroup?.emailTargets[0]?.emailAddress ?? null;
+      console.log('DEBUG: 2 ' + JSON.stringify(email));
+
       setEmail(email ?? '');
 
       const phoneNumber = targetGroup?.smsTargets[0]?.phoneNumber ?? null;
