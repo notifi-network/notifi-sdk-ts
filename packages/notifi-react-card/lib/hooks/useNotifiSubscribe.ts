@@ -118,13 +118,13 @@ export const useNotifiSubscribe: () => Readonly<{
     console.log(
       'In subscribe alsdkjflasd;kjflsakdjfl;asdkjflksad;jflksadjfl;kasdjfl;ksadjflk;jasdflk;jasld;kfjl;askdjflk;sadjf',
     );
+    const configurations = getAlertConfigurations();
+    console.log('configurations =>', configurations);
 
     if (!isAuthenticated) {
       await clientLogIn(signer);
     }
     console.log('In subscribe');
-    const configurations = getAlertConfigurations();
-    console.log('configurations =>', configurations);
     const data = await fetchData();
     console.log('After fetchData');
 
