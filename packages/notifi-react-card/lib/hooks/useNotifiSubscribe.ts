@@ -115,20 +115,16 @@ export const useNotifiSubscribe: () => Readonly<{
   }, [clientLogIn, signer]);
 
   const subscribe = useCallback(async (): Promise<SubscriptionData> => {
-    console.log(
-      'In subscribe alsdkjflasd;kjflsakdjfl;asdkjflksad;jflksadjfl;kasdjfl;ksadjflk;jasdflk;jasld;kfjl;askdjflk;sadjf',
-    );
+    console.log('In subscribe');
     const configurations = getAlertConfigurations();
     console.log('configurations =>', configurations);
 
     if (!isAuthenticated) {
       await clientLogIn(signer);
     }
-    console.log('In subscribe');
+    console.log('After login');
     const data = await fetchData();
     console.log('After fetchData');
-
-    //const configurationsAfterFetch = getAlertConfigurations();
 
     const names = Object.keys(configurations);
     const finalEmail = inputEmail === '' ? null : inputEmail;
