@@ -118,8 +118,9 @@ export const useNotifiSubscribe: () => Readonly<{
     if (!isAuthenticated) {
       await clientLogIn(signer);
     }
-
+    console.log('In subscribe');
     const data = await fetchData();
+    console.log('After fetchData');
 
     const configurations = getAlertConfigurations();
     const names = Object.keys(configurations);
@@ -207,6 +208,7 @@ export const useNotifiSubscribe: () => Readonly<{
           });
           newResults[name] = alert;
         } else {
+          console.log('create alert being called');
           // Call serially because of limitations
           await deleteThisAlert();
           const alert = await createAlert({
@@ -224,8 +226,11 @@ export const useNotifiSubscribe: () => Readonly<{
         }
       }
     }
+    console.log('last fetchData called');
 
     const newData = await fetchData();
+    console.log('render being called');
+
     return render(newData);
   }, [
     createAlert,
