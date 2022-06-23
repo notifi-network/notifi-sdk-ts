@@ -119,13 +119,6 @@ export const useNotifiSubscribe: () => Readonly<{
     const configurations = getAlertConfigurations();
     console.log('configurations =>', configurations);
 
-    if (!isAuthenticated) {
-      await clientLogIn(signer);
-    }
-    console.log('After login');
-    const data = await fetchData();
-    console.log('After fetchData');
-
     const names = Object.keys(configurations);
     const finalEmail = inputEmail === '' ? null : inputEmail;
     const finalTelegramId = inputTelegramId === '' ? null : inputTelegramId;
@@ -139,6 +132,20 @@ export const useNotifiSubscribe: () => Readonly<{
         finalPhoneNumber = `+1${inputPhoneNumber}`;
       }
     }
+
+    if (!isAuthenticated) {
+      await clientLogIn(signer);
+    }
+
+    console.log('After login');
+    const data = await fetchData();
+    console.log('After fetchData');
+
+    //
+    // Yes, we're ignoring the server side values and just using whatever the client typed in
+    // We should eventually always start from a logged in state from client having called
+    // "refresh" or "fetchData" to obtain existing settings first
+    //
 
     const newResults: Record<string, Alert> = {};
     for (let i = 0; i < names.length; ++i) {
