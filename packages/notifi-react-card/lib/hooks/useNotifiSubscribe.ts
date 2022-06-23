@@ -146,7 +146,7 @@ export const useNotifiSubscribe: () => Readonly<{
     // We should eventually always start from a logged in state from client having called
     // "refresh" or "fetchData" to obtain existing settings first
     //
-    
+
     const newResults: Record<string, Alert> = {};
     for (let i = 0; i < names.length; ++i) {
       const name = names[i];
