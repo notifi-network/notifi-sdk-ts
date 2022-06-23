@@ -9,6 +9,7 @@ export type CreateDirectPushAlertInput = Readonly<{
     userId: string;
     emailAddresses: ReadonlyArray<string>;
     phoneNumbers: ReadonlyArray<string>;
+    telegramIds: ReadonlyArray<string>;
   }>;
 }>;
 
