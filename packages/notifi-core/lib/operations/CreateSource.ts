@@ -26,6 +26,7 @@ export type CreateSourceInput = Readonly<{
     | 'SOLANA_METAPLEX_AUCTION'
     | 'SOLANA_BONFIDA_AUCTION'
     | 'DIRECT_PUBLISH'
+    | 'HEDGE_PROTOCOL'
     | 'BROADCAST'
     | 'SHARKY_PROTOCOL'
     | 'PORT_FINANCE';
