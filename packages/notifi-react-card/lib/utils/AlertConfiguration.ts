@@ -56,3 +56,18 @@ export const healthThresholdConfiguration = ({
     },
   };
 };
+
+export const hedgeProtocolConfiguration = ({
+  walletAddress,
+}: Readonly<{
+  walletAddress: string;
+}>): AlertConfiguration => {
+  return {
+    filterType: 'LIQUIDATIONS',
+    filterOptions: {},
+    sourceType: 'HEDGE_PROTOCOL',
+    createSource: {
+      address: walletAddress,
+    },
+  };
+};
