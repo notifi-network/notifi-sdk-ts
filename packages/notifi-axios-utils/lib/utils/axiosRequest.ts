@@ -15,7 +15,7 @@ const makeRequestInternal = async <Input, Result>(
   config?: AxiosRequestConfig<Input>,
 ): Promise<Result> => {
   const { data } = await axiosInstance.post<PostResponse<Result>>(
-    '/',
+    `/${encodeURIComponent(resultKey)}`,
     {
       query,
       variables,

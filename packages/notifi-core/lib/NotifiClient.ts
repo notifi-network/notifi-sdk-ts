@@ -38,7 +38,7 @@ export type FilterOptions = Partial<{
 
 /**
  * Object containing information to continue the login process
- * 
+ *
  * @property nonce - String value to place in transaction logs
  */
 export type BeginLoginViaTransactionResult = Readonly<{
@@ -47,7 +47,7 @@ export type BeginLoginViaTransactionResult = Readonly<{
 
 /**
  * Object containing information to complete the login process
- * 
+ *
  * @property transactionSignature - Signature of the transaction that contains the log message
  */
 export type CompleteLoginViaTransactionInput = Readonly<{
@@ -56,7 +56,7 @@ export type CompleteLoginViaTransactionInput = Readonly<{
 
 /**
  * Completed authentication response
- * 
+ *
  */
 export type CompleteLoginViaTransactionResult = Readonly<User>;
 
@@ -136,6 +136,23 @@ export type ClientDeleteAlertInput = Readonly<{
   keepSourceGroup?: boolean;
 }>;
 
+/**
+ * Input params for creating or updating a TargetGroup by name
+ *
+ * @property name - The name of the TargetGroup
+ * @property emailAddress - The emailAddress to be used
+ * @property phoneNumber - The phone number to be used
+ * @property telegramId - The Telegram account username to be used
+ * <br>
+ * <br>
+ */
+export type ClientEnsureTargetGroupInput = Readonly<{
+  name: string;
+  emailAddress: string | null;
+  phoneNumber: string | null;
+  telegramId: string | null;
+}>;
+
 export type MessageSigner = Readonly<{
   signMessage: (message: Uint8Array) => Promise<Uint8Array>;
 }>;
@@ -168,4 +185,7 @@ export type NotifiClient = Readonly<{
   getConfiguration: () => Promise<ClientConfiguration>;
   getTopics: () => Promise<ReadonlyArray<UserTopic>>;
   updateAlert: (input: ClientUpdateAlertInput) => Promise<Alert>;
+  ensureTargetGroup: (
+    input: ClientEnsureTargetGroupInput,
+  ) => Promise<TargetGroup>;
 }>;

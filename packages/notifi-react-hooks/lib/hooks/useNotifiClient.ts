@@ -2,7 +2,7 @@ import ensureSource, {
   ensureMetaplexAuctionSource,
 } from '../utils/ensureSource';
 import ensureSourceGroup from '../utils/ensureSourceGroup';
-import ensureTargetGroup from '../utils/ensureTargetGroup';
+import ensureTargetGroupImpl from '../utils/ensureTargetGroup';
 import ensureTargetIds from '../utils/ensureTargetIds';
 import fetchDataImpl, {
   FetchDataState,
@@ -22,6 +22,7 @@ import {
   ClientCreateMetaplexAuctionSourceInput,
   ClientData,
   ClientDeleteAlertInput,
+  ClientEnsureTargetGroupInput,
   ClientUpdateAlertInput,
   CompleteLoginViaTransactionInput,
   CompleteLoginViaTransactionResult,
@@ -29,6 +30,7 @@ import {
   MessageSigner,
   NotifiClient,
   Source,
+  TargetGroup,
   TargetType,
   UserTopic,
 } from '@notifi-network/notifi-core';
@@ -356,9 +358,9 @@ const useNotifiClient = (
 
   /**
    * Begin login process leveraging inserting a token in the logs of a transaction
-   * 
+   *
    * @Remarks Call this before starting your transaction to obtain the log string to insert
-   * 
+   *
    * @returns {BeginLoginViaTransactionResult} Contains log string to include in transaction
    */
   const beginLoginViaTransaction =
@@ -367,7 +369,7 @@ const useNotifiClient = (
       try {
         const walletAddress = getWalletAddress();
         if (!walletAddress) {
-          throw "No wallet address set";
+          throw 'No wallet address set';
         }
 
         const result = await service.beginLogInByTransaction({
@@ -409,13 +411,13 @@ const useNotifiClient = (
 
   /**
    * Complete login process leveraging inserting a token in the logs of a transaction
-   * 
+   *
    * @Remarks Call this right after your transaction with the transaction signature
-   * 
+   *
    * @param {CompleteLoginViaTransactionInput} input - Input params completing the transaction login
    * @returns {CompleteLoginViaTransactionResult} Contains the User auth object
    */
-   const completeLoginViaTransaction = useCallback(
+  const completeLoginViaTransaction = useCallback(
     async (
       input: CompleteLoginViaTransactionInput,
     ): Promise<CompleteLoginViaTransactionResult> => {
@@ -425,11 +427,11 @@ const useNotifiClient = (
       try {
         const walletAddress = getWalletAddress();
         if (!walletAddress) {
-          throw "WalletAddress not set";
+          throw 'WalletAddress not set';
         }
 
         if (!clientRandomUuid.current) {
-          throw "BeginLoginViaTransaction is required to be called first";
+          throw 'BeginLoginViaTransaction is required to be called first';
         }
 
         return await service.completeLogInByTransaction({
@@ -453,7 +455,51 @@ const useNotifiClient = (
       }
     },
     [service, dappAddress, clientRandomUuid],
-   );
+  );
+
+  /**
+   * Creates or updates a TargetGroup by name
+   *
+   * @remarks
+   * In most cases the TargetGroups are updated when creating or updating Alerts @see createAlert and @see updateAlert
+   * @self should be used only when it's necessary to update the targets without creating Alerts
+   *
+   * @param {ClientEnsureTargetGroupInput} input - Input params for the TargetGroup
+   * @returns {TargetGroup}
+   */
+  const ensureTargetGroup = useCallback(
+    async (input: ClientEnsureTargetGroupInput): Promise<TargetGroup> => {
+      setLoading(true);
+
+      try {
+        const newData = await fetchDataImpl(
+          service,
+          Date,
+          fetchDataRef.current,
+        );
+
+        const { emailTargetIds, smsTargetIds, telegramTargetIds } =
+          await ensureTargetIds(service, newData, input);
+
+        return ensureTargetGroupImpl(service, newData.targetGroups, {
+          name: input.name,
+          emailTargetIds,
+          smsTargetIds,
+          telegramTargetIds,
+        });
+      } catch (e: unknown) {
+        if (e instanceof Error) {
+          setError(e);
+        } else {
+          setError(new NotifiClientError(e));
+        }
+        throw e;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [setLoading],
+  );
 
   /**
    * Update an Alert
@@ -490,7 +536,7 @@ const useNotifiClient = (
           throw new Error(`Invalid Alert ${alertId}`);
         }
 
-        const targetGroup = await ensureTargetGroup(
+        const targetGroup = await ensureTargetGroupImpl(
           service,
           newData.targetGroups,
           {
@@ -585,7 +631,7 @@ const useNotifiClient = (
             sourceIds: [sourceId],
           },
         );
-        const targetGroup = await ensureTargetGroup(
+        const targetGroup = await ensureTargetGroupImpl(
           service,
           newData.targetGroups,
           {
@@ -968,6 +1014,7 @@ const useNotifiClient = (
     getConfiguration,
     getTopics,
     updateAlert,
+    ensureTargetGroup,
   };
 
   return {
