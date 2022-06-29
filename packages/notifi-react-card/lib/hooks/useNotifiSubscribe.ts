@@ -46,6 +46,7 @@ export const useNotifiSubscribe: () => Readonly<{
     isInitialized,
     logIn: clientLogIn,
     updateAlert,
+    ensureTargetGroup,
   } = useNotifiClient({
     dappAddress,
     env,
@@ -216,15 +217,6 @@ export const useNotifiSubscribe: () => Readonly<{
           filter.id === null
         ) {
           console.log('case 2');
-          if (keepSubscriptionData && existingAlert?.id != null) {
-            // Update the alert before deleting it so that we save the changes made to the targets
-            await updateAlert({
-              alertId: existingAlert.id,
-              emailAddress: finalEmail,
-              phoneNumber: finalPhoneNumber,
-              telegramId: finalTelegramId,
-            });
-          }
           await deleteThisAlert();
         } else if (existingAlert !== undefined && existingAlert.id !== null) {
           console.log('case 3');
@@ -254,6 +246,20 @@ export const useNotifiSubscribe: () => Readonly<{
         }
       }
     }
+
+    if (
+      Object.getOwnPropertyNames(newResults).length === 0 &&
+      keepSubscriptionData
+    ) {
+      // We didn't create or update any alert, manually update the targets
+      await ensureTargetGroup({
+        name: 'Default',
+        emailAddress: finalEmail,
+        phoneNumber: finalPhoneNumber,
+        telegramId: finalTelegramId,
+      });
+    }
+
     console.log('last fetchData called');
 
     const newData = await fetchData();
