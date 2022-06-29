@@ -457,6 +457,16 @@ const useNotifiClient = (
     [service, dappAddress, clientRandomUuid],
   );
 
+  /**
+   * Creates or updates a TargetGroup by name
+   *
+   * @remarks
+   * In most cases the TargetGroups are updated when creating or updating Alerts @see createAlert and @see updateAlert
+   * @self should be used only when it's necessary to update the targets without creating Alerts
+   *
+   * @param {ClientEnsureTargetGroupInput} input - Input params for the TargetGroup
+   * @returns {TargetGroup}
+   */
   const ensureTargetGroup = useCallback(
     async (input: ClientEnsureTargetGroupInput): Promise<TargetGroup> => {
       setLoading(true);

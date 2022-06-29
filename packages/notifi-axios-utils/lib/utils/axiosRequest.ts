@@ -14,10 +14,6 @@ const makeRequestInternal = async <Input, Result>(
   variables: Input,
   config?: AxiosRequestConfig<Input>,
 ): Promise<Result> => {
-  console.log('### test', {
-    encoded: encodeURIComponent(resultKey),
-    resultKey,
-  });
   const { data } = await axiosInstance.post<PostResponse<Result>>(
     `/${encodeURIComponent(resultKey)}`,
     {

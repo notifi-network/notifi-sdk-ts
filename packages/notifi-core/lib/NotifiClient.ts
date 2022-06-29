@@ -137,12 +137,9 @@ export type ClientDeleteAlertInput = Readonly<{
 }>;
 
 /**
- * TODO
+ * Input params for creating or updating a TargetGroup by name
  *
- * @remarks
- * This describes the Alert to be updated based on id, emailAddress, phoneNumber and/or telegramId
- *
- * @property name - The name of the target group
+ * @property name - The name of the TargetGroup
  * @property emailAddress - The emailAddress to be used
  * @property phoneNumber - The phone number to be used
  * @property telegramId - The Telegram account username to be used
