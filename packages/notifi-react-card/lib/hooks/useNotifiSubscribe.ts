@@ -216,6 +216,15 @@ export const useNotifiSubscribe: () => Readonly<{
           filter.id === null
         ) {
           console.log('case 2');
+          if (keepSubscriptionData && existingAlert?.id != null) {
+            // Update the alert before deleting it so that we save the changes made to the targets
+            await updateAlert({
+              alertId: existingAlert.id,
+              emailAddress: finalEmail,
+              phoneNumber: finalPhoneNumber,
+              telegramId: finalTelegramId,
+            });
+          }
           await deleteThisAlert();
         } else if (existingAlert !== undefined && existingAlert.id !== null) {
           console.log('case 3');
