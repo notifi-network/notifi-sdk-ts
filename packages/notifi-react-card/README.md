@@ -3,18 +3,21 @@
 > Configurable component for Notifi alerts
 
 ## Usage
+
 ```
 npm install @notifi-network/notifi-react-card
 npm install --save-dev @notifi-network/notifi-core
 ```
 
 ### Create a component which controls Alert configuration
+
 ```tsx
-import React, { useEffect, useState } from 'react';
+import type { AlertConfiguration } from '@notifi-network/notifi-react-card';
 import {
   broadcastMessageConfiguration,
-  useNotifiSubscriptionContext
-} from '@notifi-network/notifi-card';
+  useNotifiSubscriptionContext,
+} from '@notifi-network/notifi-react-card';
+import React, { useEffect, useState } from 'react';
 
 const ALERT_NAME = 'My Marketing Updates';
 const ALERT_CONFIGURATION: AlertConfiguration = broadcastMessageConfiguration({
@@ -25,9 +28,7 @@ type Props = Readonly<{
   disabled: boolean;
 }>;
 
-export const MarketingToggle: React.FC<Props> = ({
-  disabled
-}: Props) => {
+export const MarketingToggle: React.FC<Props> = ({ disabled }: Props) => {
   const [enabled, setEnabled] = useState<boolean>(false);
   const { setAlertConfiguration } = useNotifiSubscriptionContext();
 
@@ -51,21 +52,21 @@ export const MarketingToggle: React.FC<Props> = ({
         }}
       />
     </div>
-  )
+  );
 };
 ```
 
 ### Create a wrapper for the contents of the card
+
 ```tsx
-import React from 'react';
+import { MarketingToggle } from './MarketingToggle';
 import {
   NotifiEmailInput,
   NotifiFooter,
   NotifiSmsInput,
-  useNotifiSubscribe
-} from '@notifi-network/notifi-card';
-
-import { MarketingToggle } from './MarketingToggle';
+  useNotifiSubscribe,
+} from '@notifi-network/notifi-react-card';
+import React from 'react';
 
 export const NotifiCardContents: React.FC = () => {
   const { loading, subscribe } = useNotifiSubscribe();
@@ -86,18 +87,18 @@ export const NotifiCardContents: React.FC = () => {
       </button>
       <NotifiFooter />
     </>
-  )
+  );
 };
 ```
 
 ### Render the Card in your app
+
 ```tsx
-import React from 'react';
+import { NotifiCardContents } from './NotifiCardContents';
 import type { MessageSigner } from '@notifi-network/notifi-core';
 import { NotifiCard } from '@notifi-network/notifi-react-card';
 import { useWallet } from '@solana/wallet-adapter-react';
-
-import { NotifiCardContents } from './NotifiCardContents';
+import React from 'react';
 
 export const Notifi: React.FC = () => {
   const { wallet } = useWallet();
