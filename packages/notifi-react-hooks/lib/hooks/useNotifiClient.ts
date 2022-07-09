@@ -32,6 +32,7 @@ import {
   Source,
   TargetGroup,
   TargetType,
+  User,
   UserTopic,
 } from '@notifi-network/notifi-core';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -284,6 +285,37 @@ const useNotifiClient = (
    *
    */
 
+  const handleLogInResult = useCallback(
+    async (result: User) => {
+      if (result.authorization !== null) {
+        const { token, expiry } = result.authorization;
+        if (token !== null && expiry !== null) {
+          service.setJwt(token);
+          setAuthorization({ token, expiry });
+        }
+      }
+
+      if (result.roles !== null) {
+        setRoles(result.roles);
+      } else {
+        setRoles(null);
+      }
+
+      const newData = await fetchDataImpl(service, Date, fetchDataRef.current);
+      setInternalData(newData);
+      setIsAuthenticated(true);
+    },
+    [
+      service,
+      fetchDataRef,
+      setAuthorization,
+      setRoles,
+      fetchDataImpl,
+      setInternalData,
+      setIsAuthenticated,
+    ],
+  );
+
   /**
    * Log in to Notifi
    *
@@ -318,27 +350,7 @@ const useNotifiClient = (
           signature,
         });
 
-        if (result.authorization !== null) {
-          const { token, expiry } = result.authorization;
-          if (token !== null && expiry !== null) {
-            service.setJwt(token);
-            setAuthorization({ token, expiry });
-          }
-        }
-
-        if (result.roles !== null) {
-          setRoles(result.roles);
-        } else {
-          setRoles(null);
-        }
-
-        const newData = await fetchDataImpl(
-          service,
-          Date,
-          fetchDataRef.current,
-        );
-        setInternalData(newData);
-        setIsAuthenticated(true);
+        await handleLogInResult(result);
 
         return result;
       } catch (e: unknown) {
@@ -434,13 +446,17 @@ const useNotifiClient = (
           throw 'BeginLoginViaTransaction is required to be called first';
         }
 
-        return await service.completeLogInByTransaction({
+        const result = await service.completeLogInByTransaction({
           walletAddress,
           walletBlockchain: 'SOLANA',
           dappAddress,
           randomUuid: clientRandomUuid.current,
           transactionSignature,
         });
+
+        await handleLogInResult(result);
+
+        return result;
       } catch (e: unknown) {
         setIsAuthenticated(false);
         if (e instanceof Error) {
@@ -888,8 +904,15 @@ const useNotifiClient = (
     service.setJwt(null);
     await setAuthorization(null);
     await setRoles(null);
+    setIsAuthenticated(false);
     setInternalData(null);
-  }, [setAuthorization, setInternalData, setRoles, service]);
+  }, [
+    setAuthorization,
+    setIsAuthenticated,
+    setInternalData,
+    setRoles,
+    service,
+  ]);
 
   const getTopics = useCallback(async (): Promise<ReadonlyArray<UserTopic>> => {
     setLoading(true);
