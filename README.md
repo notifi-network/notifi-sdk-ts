@@ -31,6 +31,7 @@
     ·
     <a href="https://github.com/notifi-network/notifi-sdk-ts/issues">Request Feature</a>
     ·
+    <a href="https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages">See our packages for more examples!</a>
   </p>
 </div>
 
