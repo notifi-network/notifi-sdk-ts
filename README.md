@@ -20,7 +20,7 @@
   <p align="center">
     Typescript based SDK for React and NodeJS projects.
     <br />
-    <a href="https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages">See our packages for more examples »</a>
+    <a href="https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages">See our packages for more examples »</a><br />
     <a href="https://notifi-network.github.io/notifi-sdk-ts/"><strong>Explore the docs »</strong></a><br />
     <a href="https://docs.notifi.network/AlertCreateGuide.html"><strong>Alert Creation Overview »</strong></a>
     <br />
