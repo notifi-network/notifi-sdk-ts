@@ -945,7 +945,13 @@ const useNotifiClient = (
 
   const broadcastMessage = useCallback(
     async (
-      { topic, subject, message, isHolderOnly }: ClientBroadcastMessageInput,
+      {
+        topic,
+        subject,
+        message,
+        isHolderOnly,
+        variables: extraVariables,
+      }: ClientBroadcastMessageInput,
       signer: MessageSigner,
     ): Promise<string | null> => {
       setLoading(true);
@@ -990,6 +996,22 @@ const useNotifiClient = (
           variables.push({
             key: 'TargetCollection',
             value: JSON.stringify(topic.targetCollections),
+          });
+        }
+
+        if (extraVariables !== undefined) {
+          Object.keys(extraVariables).forEach((key) => {
+            if (
+              key === 'message' ||
+              key === 'subject' ||
+              key === 'TargetCollection'
+            ) {
+              return; // forEach
+            }
+            variables.push({
+              key,
+              value: extraVariables[key],
+            });
           });
         }
 

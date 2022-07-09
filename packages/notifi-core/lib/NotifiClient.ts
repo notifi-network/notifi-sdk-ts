@@ -162,6 +162,7 @@ export type ClientBroadcastMessageInput = Readonly<{
   subject: string;
   message: string;
   isHolderOnly: boolean;
+  variables?: Readonly<Record<string, string>>;
 }>;
 
 export type NotifiClient = Readonly<{
