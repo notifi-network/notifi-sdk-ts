@@ -904,8 +904,15 @@ const useNotifiClient = (
     service.setJwt(null);
     await setAuthorization(null);
     await setRoles(null);
+    setIsAuthenticated(false);
     setInternalData(null);
-  }, [setAuthorization, setInternalData, setRoles, service]);
+  }, [
+    setAuthorization,
+    setIsAuthenticated,
+    setInternalData,
+    setRoles,
+    service,
+  ]);
 
   const getTopics = useCallback(async (): Promise<ReadonlyArray<UserTopic>> => {
     setLoading(true);
