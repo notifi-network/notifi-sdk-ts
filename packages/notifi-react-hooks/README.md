@@ -395,3 +395,62 @@ export const ConnectedForm: React.FC<Props> = ({
   );
 };
 ```
+
+## Logging in via a Transaction
+If the user's wallet does not support `signMessage`, we need to sign in via a transaction. This involves three steps:
+- Obtain nonce from Notifi and hash it
+- Broadcast a transaction which will print the hash
+- Complete the login with Notifi by submitting the transaction signature
+
+### Obtaining a nonce from Notifi
+```tsx
+const {
+  beginLoginViaTransaction,
+} = useNotifiClient({ ... });
+
+const getHashedNonce = useCallback(async (): Promise<string> => {
+  const { logValue } = await beginLoginViaTransaction();
+  return logValue;
+}, [beginLoginViaTransaction]);
+```
+
+### Broadcast a transaction
+```tsx
+const broadcastTxn = useCallback(async (logValue: string): Promise<string> => {
+  if (logValue === "") {
+    throw new Error("Invalid log value");
+  }
+
+  const txn = new Transaction();
+  txn.add(
+    new TransactionInstruction({
+      keys: [
+        {
+          pubkey,
+          isSigner: true,
+          isWritable: false,
+        },
+      ],
+      data: Buffer.from(msg, "utf-8"),
+      programId: new PublicKey("MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr"),
+    })
+  );
+
+  const broadcasted = await wallet.sendTransaction(txn, connection);
+  return broadcasted;
+}, [pubkey, wallet, connection]);
+```
+
+### Complete login
+```tsx
+const {
+  completeLoginViaTransaction,
+} = useNotifiClient({ ... });
+
+const completeLogin = useCallback(async (transactionSignature: string): Promise<User> => {
+  const result = await completeLoginViaTransaction({
+    transactionSignature,
+  });
+  return result;
+}, [completeLoginViaTransaction]);
+```
