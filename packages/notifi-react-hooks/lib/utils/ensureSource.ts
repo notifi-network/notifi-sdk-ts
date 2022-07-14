@@ -1,4 +1,5 @@
 import type {
+  ClientCreateBonfidaAuctionSourceInput,
   ClientCreateMetaplexAuctionSourceInput,
   CreateSourceInput,
   CreateSourceService,
@@ -26,6 +27,21 @@ const ensureSource = async (
   existing.push(newSource);
 
   return newSource;
+};
+
+const ensureBonfidaAuctionSource = async (
+  service: CreateSourceService,
+  existing: Source[],
+  input: ClientCreateBonfidaAuctionSourceInput,
+): Promise<Source> => {
+  const { auctionAddressBase58, auctionName } = input;
+  const underlyingAddress = `${auctionName}:;:${auctionAddressBase58}`;
+
+  return await ensureSource(service, existing, {
+    name: auctionAddressBase58,
+    blockchainAddress: underlyingAddress,
+    type: 'SOLANA_BONFIDA_AUCTION',
+  });
 };
 
 const ensureMetaplexAuctionSource = async (

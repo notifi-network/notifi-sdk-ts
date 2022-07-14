@@ -72,7 +72,7 @@ export type CompleteLoginViaTransactionResult = Readonly<User>;
  * @property telegramId - The Telegram account username to be used
  * <br>
  * <br>
- * See [Alert Creation Guide]{@link https://docs.notifi.network} for more information on creating Alerts
+ * See [Alert Creation Guide]{@link https://notifi-network.github.io/notifi-sdk-ts/} for more information on creating Alerts
  */
 export type ClientUpdateAlertInput = Readonly<{
   alertId: string;
@@ -95,7 +95,7 @@ export type ClientUpdateAlertInput = Readonly<{
  * @property telegramId - The Telegram account username to be used
  * <br>
  * <br>
- * See [Alert Creation Guide]{@link https://docs.notifi.network} for more information on creating Alerts
+ * See [Alert Creation Guide]{@link https://notifi-network.github.io/notifi-sdk-ts/} for more information on creating Alerts
  */
 export type ClientCreateAlertInput = Readonly<{
   name: string;
@@ -113,12 +113,27 @@ export type ClientCreateAlertInput = Readonly<{
  *
  * @property auctionAddressBase58 - Metaplex auction address in base58
  * @property auctionWebUrl - Web URL where auction can be found
+ * 
  *
- * See [Alert Creation Guide]{@link https://docs.notifi.network} for more information on creating Alerts
+ * See [Alert Creation Guide]{@link https://notifi-network.github.io/notifi-sdk-ts/} for more information on creating Alerts
  */
 export type ClientCreateMetaplexAuctionSourceInput = Readonly<{
   auctionAddressBase58: string;
   auctionWebUrl: string;
+}>;
+
+/**
+ * Input param for creating a new Bonfida Auction Source
+ *
+ * @property auctionAddressBase58 - Bonfida auction address in base58
+ * @property auctionName - Name of the auction
+ * 
+ *
+ * See [Alert Creation Guide]{@link https://notifi-network.github.io/notifi-sdk-ts/} for more information on creating Alerts
+ */
+export type ClientCreateBonfidaAuctionSourceInput = Readonly<{
+  auctionAddressBase58: string;
+  auctionName: string;
 }>;
 
 /**
@@ -128,7 +143,7 @@ export type ClientCreateMetaplexAuctionSourceInput = Readonly<{
  * @property keepTargetGroup - Whether to keep the target group on this Alert or to delete it
  * @property keepSourceGroup - Whether to keep the source group on this Alert or to delete it
  *
- * See [Alert Creation Guide]{@link https://docs.notifi.network} for more information on creating Alerts
+ * See [Alert Creation Guide]{@link https://notifi-network.github.io/notifi-sdk-ts/} for more information on creating Alerts
  */
 export type ClientDeleteAlertInput = Readonly<{
   alertId: string;
@@ -181,6 +196,9 @@ export type NotifiClient = Readonly<{
   createSource: (input: CreateSourceInput) => Promise<Source>;
   createMetaplexAuctionSource: (
     input: ClientCreateMetaplexAuctionSourceInput,
+  ) => Promise<Source>;
+  createBonfidaAuctionSource: (
+    input: ClientCreateBonfidaAuctionSourceInput,
   ) => Promise<Source>;
   deleteAlert: (input: ClientDeleteAlertInput) => Promise<string>;
   getConfiguration: () => Promise<ClientConfiguration>;
