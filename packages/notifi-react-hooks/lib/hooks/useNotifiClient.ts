@@ -1,4 +1,5 @@
 import ensureSource, {
+  ensureBonfidaAuctionSource,
   ensureMetaplexAuctionSource,
 } from '../utils/ensureSource';
 import ensureSourceGroup from '../utils/ensureSourceGroup';

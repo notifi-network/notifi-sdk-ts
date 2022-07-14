@@ -59,6 +59,6 @@ const ensureMetaplexAuctionSource = async (
   });
 };
 
-export { ensureMetaplexAuctionSource };
+export { ensureBonfidaAuctionSource, ensureMetaplexAuctionSource };
 
 export default ensureSource;
