@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build": "npx lerna run build",
-    "docs": "npx typedoc packages/notifi-react-hooks/lib/index.ts",
+    "docs": "npx typedoc",
     "format": "prettier --config .prettierrc packages/**/lib/**/*.ts* --write",
     "lint": "eslint --ext .ts,.tsx packages/**/lib --fix",
     "test": "jest"

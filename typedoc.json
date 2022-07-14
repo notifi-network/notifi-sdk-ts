@@ -1,0 +1,4 @@
+{
+  "entryPoints": ["packages/notifi-react-hooks/lib/index.ts"],
+  "tsconfig": "packages/notifi-react-hooks/tsconfig.build.json"
+}
