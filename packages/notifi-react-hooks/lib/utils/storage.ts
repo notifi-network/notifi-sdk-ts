@@ -20,7 +20,6 @@ export type StorageKey = Readonly<{
 export type Storage = Readonly<{
   getAuthorization: () => Promise<Authorization | null>;
   getRoles: () => Promise<Roles | null>;
-  getWalletAddress: () => string | null;
   setAuthorization: (authorization: Authorization | null) => Promise<void>;
   setRoles: (roles: Roles | null) => Promise<void>;
 }>;
@@ -65,14 +64,9 @@ const storage = ({
     await localforage.setItem(rolesKey, roles);
   };
 
-  const getWalletAddress = () => {
-    return walletPublicKey;
-  };
-
   return {
     getAuthorization,
     getRoles,
-    getWalletAddress,
     setAuthorization,
     setRoles,
   };

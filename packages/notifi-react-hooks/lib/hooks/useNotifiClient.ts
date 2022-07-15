@@ -139,19 +139,14 @@ const useNotifiClient = (
   const { env, dappAddress, walletPublicKey } = config;
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
   const notifiConfig = useNotifiConfig(env);
-  const {
-    getAuthorization,
-    getRoles,
-    getWalletAddress,
-    setAuthorization,
-    setRoles,
-  } = useMemo(() => {
-    return storage({
-      dappAddress,
-      walletPublicKey,
-      jwtPrefix: notifiConfig.storagePrefix,
-    });
-  }, [dappAddress, walletPublicKey, notifiConfig.storagePrefix]);
+  const { getAuthorization, getRoles, setAuthorization, setRoles } =
+    useMemo(() => {
+      return storage({
+        dappAddress,
+        walletPublicKey,
+        jwtPrefix: notifiConfig.storagePrefix,
+      });
+    }, [dappAddress, walletPublicKey, notifiConfig.storagePrefix]);
 
   const service = useNotifiService(env);
 
@@ -379,13 +374,8 @@ const useNotifiClient = (
     useCallback(async (): Promise<BeginLoginViaTransactionResult> => {
       setLoading(true);
       try {
-        const walletAddress = getWalletAddress();
-        if (!walletAddress) {
-          throw 'No wallet address set';
-        }
-
         const result = await service.beginLogInByTransaction({
-          walletAddress: walletAddress,
+          walletAddress: walletPublicKey,
           walletBlockchain: 'SOLANA',
           dappAddress,
         });
@@ -419,7 +409,15 @@ const useNotifiClient = (
       } finally {
         setLoading(false);
       }
-    }, [service, walletPublicKey, dappAddress]);
+    }, [
+      setLoading,
+      setIsAuthenticated,
+      setError,
+      window.crypto,
+      service,
+      walletPublicKey,
+      dappAddress,
+    ]);
 
   /**
    * Complete login process leveraging inserting a token in the logs of a transaction
@@ -437,17 +435,12 @@ const useNotifiClient = (
 
       setLoading(true);
       try {
-        const walletAddress = getWalletAddress();
-        if (!walletAddress) {
-          throw 'WalletAddress not set';
-        }
-
         if (!clientRandomUuid.current) {
           throw 'BeginLoginViaTransaction is required to be called first';
         }
 
         const result = await service.completeLogInByTransaction({
-          walletAddress,
+          walletAddress: walletPublicKey,
           walletBlockchain: 'SOLANA',
           dappAddress,
           randomUuid: clientRandomUuid.current,
@@ -470,7 +463,16 @@ const useNotifiClient = (
         setLoading(false);
       }
     },
-    [service, dappAddress, clientRandomUuid],
+    [
+      setLoading,
+      handleLogInResult,
+      setIsAuthenticated,
+      setError,
+      service,
+      dappAddress,
+      clientRandomUuid,
+      walletPublicKey,
+    ],
   );
 
   /**
