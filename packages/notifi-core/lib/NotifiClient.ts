@@ -113,7 +113,7 @@ export type ClientCreateAlertInput = Readonly<{
  *
  * @property auctionAddressBase58 - Metaplex auction address in base58
  * @property auctionWebUrl - Web URL where auction can be found
- * 
+ *
  *
  * See [Alert Creation Guide]{@link https://notifi-network.github.io/notifi-sdk-ts/} for more information on creating Alerts
  */
@@ -127,7 +127,7 @@ export type ClientCreateMetaplexAuctionSourceInput = Readonly<{
  *
  * @property auctionAddressBase58 - Bonfida auction address in base58
  * @property auctionName - Name of the auction
- * 
+ *
  *
  * See [Alert Creation Guide]{@link https://notifi-network.github.io/notifi-sdk-ts/} for more information on creating Alerts
  */
@@ -166,6 +166,15 @@ export type ClientEnsureTargetGroupInput = Readonly<{
   emailAddress: string | null;
   phoneNumber: string | null;
   telegramId: string | null;
+}>;
+
+/**
+ * Input params for the send verification request
+ *
+ * @property targetId -- the id of the EmailTarget
+ */
+export type ClientSendVerificationEmailInput = Readonly<{
+  targetId: string;
 }>;
 
 export type MessageSigner = Readonly<{
@@ -207,4 +216,7 @@ export type NotifiClient = Readonly<{
   ensureTargetGroup: (
     input: ClientEnsureTargetGroupInput,
   ) => Promise<TargetGroup>;
+  sendEmailTargetVerification: (
+    input: ClientSendVerificationEmailInput,
+  ) => Promise<string>;
 }>;

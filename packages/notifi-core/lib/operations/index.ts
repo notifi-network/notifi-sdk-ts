@@ -23,5 +23,6 @@ export * from './GetTelegramTargets';
 export * from './GetTopics';
 export * from './LogInFromDapp';
 export * from './RefreshAuthorization';
+export * from './SendEmailTargetVerificationRequest';
 export * from './UpdateSourceGroup';
 export * from './UpdateTargetGroup';

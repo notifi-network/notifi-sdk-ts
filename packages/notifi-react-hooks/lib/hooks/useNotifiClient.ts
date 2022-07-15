@@ -25,6 +25,7 @@ import {
   ClientData,
   ClientDeleteAlertInput,
   ClientEnsureTargetGroupInput,
+  ClientSendVerificationEmailInput,
   ClientUpdateAlertInput,
   CompleteLoginViaTransactionInput,
   CompleteLoginViaTransactionResult,
@@ -835,7 +836,7 @@ const useNotifiClient = (
     [service],
   );
 
-    /**
+  /**
    * Create a Bonfida Auction Source
    *
    * @remarks
@@ -847,35 +848,35 @@ const useNotifiClient = (
    * <br>
    * See [Alert Creation Guide]{@link https://docs.notifi.network} for more information on creating Alerts
    */
-     const createBonfidaAuctionSource = useCallback(
-      async (input: ClientCreateBonfidaAuctionSourceInput): Promise<Source> => {
-        setLoading(true);
-        try {
-          const newData = await fetchDataImpl(
-            service,
-            Date,
-            fetchDataRef.current,
-          );
-          const source = await ensureBonfidaAuctionSource(
-            service,
-            newData.sources,
-            input,
-          );
-          setInternalData(newData);
-          return source;
-        } catch (e: unknown) {
-          if (e instanceof Error) {
-            setError(e);
-          } else {
-            setError(new NotifiClientError(e));
-          }
-          throw e;
-        } finally {
-          setLoading(false);
+  const createBonfidaAuctionSource = useCallback(
+    async (input: ClientCreateBonfidaAuctionSourceInput): Promise<Source> => {
+      setLoading(true);
+      try {
+        const newData = await fetchDataImpl(
+          service,
+          Date,
+          fetchDataRef.current,
+        );
+        const source = await ensureBonfidaAuctionSource(
+          service,
+          newData.sources,
+          input,
+        );
+        setInternalData(newData);
+        return source;
+      } catch (e: unknown) {
+        if (e instanceof Error) {
+          setError(e);
+        } else {
+          setError(new NotifiClientError(e));
         }
-      },
-      [service],
-    );
+        throw e;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [service],
+  );
 
   /**
    * Create a Metaplex Auction Source
@@ -1091,6 +1092,32 @@ const useNotifiClient = (
     [setLoading, service],
   );
 
+  const sendEmailTargetVerification: (
+    input: ClientSendVerificationEmailInput,
+  ) => Promise<string> = useCallback(async ({ targetId }) => {
+    setLoading(true);
+    try {
+      const emailTarget = await service.sendEmailTargetVerificationRequest({
+        targetId,
+      });
+
+      const id = emailTarget.id;
+      if (id === null) {
+        throw new Error(`Unknown error requesting verification`);
+      }
+      return id;
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        setError(e);
+      } else {
+        setError(new NotifiClientError(e));
+      }
+      throw e;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   const client: NotifiClient = {
     beginLoginViaTransaction,
     broadcastMessage,
@@ -1107,6 +1134,7 @@ const useNotifiClient = (
     getTopics,
     updateAlert,
     ensureTargetGroup,
+    sendEmailTargetVerification,
   };
 
   return {

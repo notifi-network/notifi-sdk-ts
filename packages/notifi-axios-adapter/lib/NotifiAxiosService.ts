@@ -13,6 +13,7 @@ import deleteSourceGroupImpl from './mutations/deleteSourceGroupImpl';
 import deleteTargetGroupImpl from './mutations/deleteTargetGroupImpl';
 import logInFromDappImpl from './mutations/logInFromDappImpl';
 import refreshAuthorizationImpl from './mutations/refreshAuthorizationImpl';
+import sendEmailTargetVerificationRequestImpl from './mutations/sendEmailTargetVerificationRequestImpl';
 import updateSourceGroupImpl from './mutations/updateSourceGroupImpl';
 import updateTargetGroupImpl from './mutations/updateTargetGroupImpl';
 import getAlertsImpl from './queries/getAlertsImpl';
@@ -58,6 +59,7 @@ export class NotifiAxiosService implements NotifiService {
   getTopics: NotifiService['getTopics'];
   logInFromDapp: NotifiService['logInFromDapp'];
   refreshAuthorization: NotifiService['refreshAuthorization'];
+  sendEmailTargetVerificationRequest: NotifiService['sendEmailTargetVerificationRequest'];
   updateSourceGroup: NotifiService['updateSourceGroup'];
   updateTargetGroup: NotifiService['updateTargetGroup'];
 
@@ -84,7 +86,10 @@ export class NotifiAxiosService implements NotifiService {
 
     this.beginLogInByTransaction = beginLogInByTransactionImpl.bind(null, a);
     this.broadcastMessage = broadcastMessageImpl.bind(null, a);
-    this.completeLogInByTransaction = completeLogInByTransactionImpl.bind(null, a);
+    this.completeLogInByTransaction = completeLogInByTransactionImpl.bind(
+      null,
+      a,
+    );
     this.createAlert = createAlertImpl.bind(null, a);
     this.createEmailTarget = createEmailTargetImpl.bind(null, a);
     this.createSmsTarget = createSmsTargetImpl.bind(null, a);
@@ -107,6 +112,8 @@ export class NotifiAxiosService implements NotifiService {
     this.getTopics = getTopicsImpl.bind(null, a);
     this.logInFromDapp = logInFromDappImpl.bind(null, a);
     this.refreshAuthorization = refreshAuthorizationImpl.bind(null, a);
+    this.sendEmailTargetVerificationRequest =
+      sendEmailTargetVerificationRequestImpl.bind(null, a);
     this.updateSourceGroup = updateSourceGroupImpl.bind(null, a);
     this.updateTargetGroup = updateTargetGroupImpl.bind(null, a);
   }

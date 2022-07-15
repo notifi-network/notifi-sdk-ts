@@ -25,6 +25,7 @@ export type NotifiService = Operations.BroadcastMessageService &
   Operations.GetTopicsService &
   Operations.LogInFromDappService &
   Operations.RefreshAuthorizationService &
+  Operations.SendEmailTargetVerificationRequestService &
   Operations.UpdateSourceGroupService &
   Operations.UpdateTargetGroupService &
   Readonly<{
