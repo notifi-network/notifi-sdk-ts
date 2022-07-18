@@ -207,7 +207,7 @@ export const useNotifiSubscribe: () => Readonly<{
     }
 
     if (!isAuthenticated) {
-      await clientLogIn(signer);
+      await logIn();
     }
 
     console.log('After login');
@@ -347,8 +347,7 @@ export const useNotifiSubscribe: () => Readonly<{
     inputPhoneNumber,
     inputTelegramId,
     isAuthenticated,
-    clientLogIn,
-    signer,
+    logIn,
   ]);
 
   return {
