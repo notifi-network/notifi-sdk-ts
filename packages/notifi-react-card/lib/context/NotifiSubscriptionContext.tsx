@@ -4,6 +4,8 @@ import type {
   MessageSigner,
   NotifiEnvironment,
 } from '@notifi-network/notifi-react-hooks';
+import type { WalletContextState } from '@solana/wallet-adapter-react';
+import type { Connection } from '@solana/web3.js';
 import type { PropsWithChildren } from 'react';
 import React, {
   createContext,
@@ -20,6 +22,8 @@ export type NotifiParams = Readonly<{
   signer: MessageSigner;
   walletPublicKey: string;
   keepSubscriptionData?: boolean;
+  connection: Connection;
+  sendTransaction: WalletContextState['sendTransaction'];
 }>;
 
 export type NotifiSubscriptionData = Readonly<{
@@ -29,6 +33,7 @@ export type NotifiSubscriptionData = Readonly<{
   phoneNumber: string;
   telegramId: string;
   telegramConfirmationUrl?: string;
+  useHardwareWallet: boolean;
   getAlertConfiguration: (name: string) => AlertConfiguration | null;
   getAlertConfigurations: () => Readonly<
     Record<string, AlertConfiguration | null>
@@ -44,6 +49,7 @@ export type NotifiSubscriptionData = Readonly<{
   setTelegramConfirmationUrl: (
     telegramConfirmationUrl: string | undefined,
   ) => void;
+  setUseHardwareWallet: (hardwareWallet: boolean) => void;
 }>;
 
 const NotifiSubscriptionContext = createContext<NotifiSubscriptionData>(
@@ -60,6 +66,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
     string | undefined
   >(undefined);
   const [alerts, setAlerts] = useState<Record<string, Alert | undefined>>({});
+  const [useHardwareWallet, setUseHardwareWallet] = useState<boolean>(false);
 
   const alertConfigurations = useRef<Record<string, AlertConfiguration | null>>(
     params.alertConfigurations ?? {},
@@ -95,6 +102,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
     phoneNumber,
     telegramId,
     telegramConfirmationUrl,
+    useHardwareWallet,
     getAlertConfiguration,
     getAlertConfigurations,
     setAlerts,
@@ -103,6 +111,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
     setPhoneNumber,
     setTelegramId,
     setTelegramConfirmationUrl,
+    setUseHardwareWallet,
   };
 
   return (

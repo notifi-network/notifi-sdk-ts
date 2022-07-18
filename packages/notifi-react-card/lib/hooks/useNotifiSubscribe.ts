@@ -6,6 +6,11 @@ import type {
   Source,
 } from '@notifi-network/notifi-core';
 import { useNotifiClient } from '@notifi-network/notifi-react-hooks';
+import {
+  PublicKey,
+  Transaction,
+  TransactionInstruction,
+} from '@solana/web3.js';
 import { useCallback, useEffect } from 'react';
 
 export type SubscriptionData = Readonly<{
@@ -27,7 +32,16 @@ export const useNotifiSubscribe: () => Readonly<{
     email: inputEmail,
     phoneNumber: inputPhoneNumber,
     telegramId: inputTelegramId,
-    params: { dappAddress, env, keepSubscriptionData, walletPublicKey, signer },
+    params: {
+      dappAddress,
+      env,
+      keepSubscriptionData,
+      walletPublicKey,
+      signer,
+      connection,
+      sendTransaction,
+    },
+    useHardwareWallet,
     getAlertConfigurations,
     setAlerts,
     setEmail,
@@ -45,6 +59,8 @@ export const useNotifiSubscribe: () => Readonly<{
     isAuthenticated,
     isInitialized,
     logIn: clientLogIn,
+    beginLoginViaTransaction,
+    completeLoginViaTransaction,
     updateAlert,
     ensureTargetGroup,
   } = useNotifiClient({
@@ -106,14 +122,71 @@ export const useNotifiSubscribe: () => Readonly<{
     }
   }, [isAuthenticated]);
 
+  const logInViaHardwareWallet =
+    useCallback(async (): Promise<SubscriptionData> => {
+      // Obtain nonce from Notifi
+      const { logValue } = await beginLoginViaTransaction();
+
+      // Commit a transaction with the Memo program
+      const publicKey = new PublicKey(walletPublicKey);
+      const latestBlockHash = await connection.getLatestBlockhash();
+      const txn = new Transaction();
+      txn.recentBlockhash = latestBlockHash.blockhash;
+      txn.feePayer = publicKey;
+      txn.add(
+        new TransactionInstruction({
+          keys: [
+            {
+              pubkey: publicKey,
+              isSigner: true,
+              isWritable: false,
+            },
+          ],
+          data: Buffer.from(logValue, 'utf-8'),
+          programId: new PublicKey(
+            'MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr',
+          ),
+        }),
+      );
+
+      // Send transaction and wait for it to confirm
+      const blockHashAgain = await connection.getLatestBlockhash();
+      const signature = await sendTransaction(txn, connection);
+      await connection.confirmTransaction({
+        blockhash: blockHashAgain.blockhash,
+        lastValidBlockHeight: blockHashAgain.lastValidBlockHeight,
+        signature,
+      });
+
+      // Inform Notifi of the signature so that we can complete login
+      await completeLoginViaTransaction({
+        transactionSignature: signature,
+      });
+
+      const newData = await fetchData();
+      return render(newData);
+    }, [
+      walletPublicKey,
+      beginLoginViaTransaction,
+      connection,
+      sendTransaction,
+      completeLoginViaTransaction,
+      fetchData,
+      render,
+    ]);
+
   const logIn = useCallback(async (): Promise<SubscriptionData> => {
     if (!isAuthenticated) {
-      await clientLogIn(signer);
+      if (useHardwareWallet) {
+        await logInViaHardwareWallet();
+      } else {
+        await clientLogIn(signer);
+      }
     }
 
-    const data = await fetchData();
-    return render(data);
-  }, [clientLogIn, signer]);
+    const newData = await fetchData();
+    return render(newData);
+  }, [clientLogIn, signer, useHardwareWallet]);
 
   const subscribe = useCallback(async (): Promise<SubscriptionData> => {
     console.log('In subscribe');
@@ -135,7 +208,7 @@ export const useNotifiSubscribe: () => Readonly<{
     }
 
     if (!isAuthenticated) {
-      await clientLogIn(signer);
+      await logIn();
     }
 
     console.log('After login');
@@ -275,8 +348,7 @@ export const useNotifiSubscribe: () => Readonly<{
     inputPhoneNumber,
     inputTelegramId,
     isAuthenticated,
-    clientLogIn,
-    signer,
+    logIn,
   ]);
 
   return {

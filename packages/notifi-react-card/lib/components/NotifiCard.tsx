@@ -5,6 +5,8 @@ import type {
   MessageSigner,
   NotifiEnvironment,
 } from '@notifi-network/notifi-react-hooks';
+import type { WalletContextState } from '@solana/wallet-adapter-react';
+import type { Connection } from '@solana/web3.js';
 import React, { PropsWithChildren } from 'react';
 
 type Props = Readonly<{
@@ -31,6 +33,8 @@ type Props = Readonly<{
   keepSubscriptionData?: boolean;
   signer: MessageSigner | null;
   walletPublicKey: string | null;
+  connection: Connection;
+  sendTransaction: WalletContextState['sendTransaction'];
 }>;
 
 export const NotifiCard: React.FC<PropsWithChildren<Props>> = ({
@@ -43,6 +47,8 @@ export const NotifiCard: React.FC<PropsWithChildren<Props>> = ({
   keepSubscriptionData,
   signer,
   walletPublicKey,
+  connection,
+  sendTransaction,
 }) => {
   if (walletPublicKey === null) {
     return (
@@ -71,6 +77,8 @@ export const NotifiCard: React.FC<PropsWithChildren<Props>> = ({
             keepSubscriptionData,
             signer,
             walletPublicKey,
+            connection,
+            sendTransaction,
           }}
         >
           {children}
