@@ -6,7 +6,6 @@ import type {
   Source,
 } from '@notifi-network/notifi-core';
 import { useNotifiClient } from '@notifi-network/notifi-react-hooks';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import {
   PublicKey,
   Transaction,
@@ -33,7 +32,15 @@ export const useNotifiSubscribe: () => Readonly<{
     email: inputEmail,
     phoneNumber: inputPhoneNumber,
     telegramId: inputTelegramId,
-    params: { dappAddress, env, keepSubscriptionData, walletPublicKey, signer },
+    params: {
+      dappAddress,
+      env,
+      keepSubscriptionData,
+      walletPublicKey,
+      signer,
+      connection,
+      sendTransaction,
+    },
     useHardwareWallet,
     getAlertConfigurations,
     setAlerts,
@@ -42,9 +49,6 @@ export const useNotifiSubscribe: () => Readonly<{
     setTelegramId,
     setTelegramConfirmationUrl,
   } = useNotifiSubscriptionContext();
-
-  const { connection } = useConnection();
-  const { sendTransaction } = useWallet();
 
   const {
     loading,

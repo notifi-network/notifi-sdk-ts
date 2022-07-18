@@ -4,6 +4,8 @@ import type {
   MessageSigner,
   NotifiEnvironment,
 } from '@notifi-network/notifi-react-hooks';
+import type { WalletContextState } from '@solana/wallet-adapter-react';
+import type { Connection } from '@solana/web3.js';
 import type { PropsWithChildren } from 'react';
 import React, {
   createContext,
@@ -20,6 +22,8 @@ export type NotifiParams = Readonly<{
   signer: MessageSigner;
   walletPublicKey: string;
   keepSubscriptionData?: boolean;
+  connection: Connection;
+  sendTransaction: WalletContextState['sendTransaction'];
 }>;
 
 export type NotifiSubscriptionData = Readonly<{
