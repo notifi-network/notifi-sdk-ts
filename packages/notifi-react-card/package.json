@@ -28,7 +28,9 @@
     "url": "https://github.com/notifi-network/notifi-sdk-ts/issues"
   },
   "dependencies": {
-    "@notifi-network/notifi-react-hooks": "^0.27.0",
+    "@notifi-network/notifi-react-hooks": "^0.27.0"
+  },
+  "peerDependencies": {
     "@solana/wallet-adapter-react": "^0.15.8",
     "@solana/web3.js": "^1.48.0"
   },
