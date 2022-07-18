@@ -44,7 +44,7 @@ export const useNotifiSubscribe: () => Readonly<{
   } = useNotifiSubscriptionContext();
 
   const { connection } = useConnection();
-  const { publicKey, sendTransaction } = useWallet();
+  const { sendTransaction } = useWallet();
 
   const {
     loading,
@@ -120,14 +120,11 @@ export const useNotifiSubscribe: () => Readonly<{
 
   const logInViaHardwareWallet =
     useCallback(async (): Promise<SubscriptionData> => {
-      if (publicKey === null) {
-        throw new Error('Wallet disconnected');
-      }
-
       // Obtain nonce from Notifi
       const { logValue } = await beginLoginViaTransaction();
 
       // Commit a transaction with the Memo program
+      const publicKey = new PublicKey(walletPublicKey);
       const latestBlockHash = await connection.getLatestBlockhash();
       const txn = new Transaction();
       txn.recentBlockhash = latestBlockHash.blockhash;
@@ -165,7 +162,7 @@ export const useNotifiSubscribe: () => Readonly<{
       const newData = await fetchData();
       return render(newData);
     }, [
-      publicKey,
+      walletPublicKey,
       beginLoginViaTransaction,
       connection,
       sendTransaction,
