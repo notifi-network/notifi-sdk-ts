@@ -1,6 +1,6 @@
 {
   "name": "@notifi-network/notifi-react-hooks",
-  "version": "0.28.0",
+  "version": "0.28.1",
   "description": "React hooks provided as a convenience wrapper around notifi.network platform functionality",
   "author": "juni-notifi <hyungjoon.kim@notifi.network>",
   "homepage": "https://github.com/notifi-network/notifi-sdk-ts#readme",
