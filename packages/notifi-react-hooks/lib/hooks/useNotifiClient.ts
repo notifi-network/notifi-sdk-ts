@@ -109,7 +109,7 @@ const signMessage = async ({
   const messageBuffer = new TextEncoder().encode(
     `${SIGNING_MESSAGE} \n 'Nonce:' ${walletPublicKey}${dappAddress}${timestamp.toString()}`,
   );
-  console.log(messageBuffer.toString());
+
   const signedBuffer = await signer.signMessage(messageBuffer);
   const signature = Buffer.from(signedBuffer).toString('base64');
   return signature;
