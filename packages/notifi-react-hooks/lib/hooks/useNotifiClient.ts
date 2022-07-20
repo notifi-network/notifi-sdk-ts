@@ -91,11 +91,9 @@ const projectData = (internalData: InternalData | null): ClientData | null => {
   };
 };
 
-export const SIGNING_MESSAGE = `Sign in with Notifi \n
-    No password needed or gas is needed. \n
-    Clicking “Approve” only means you have proved this wallet is owned by you! \n
-    This request will not trigger any transaction or cost any gas fees. \n
-    Use of our website and service is subject to our terms of service and privacy policy. \n`;
+// Don't split this line into multiple lines due to some packagers or other build modules that
+// modify the string literal, which then causes authentication to fail due to different strings
+export const SIGNING_MESSAGE = `Sign in with Notifi \n\n    No password needed or gas is needed. \n\n    Clicking “Approve” only means you have proved this wallet is owned by you! \n\n    This request will not trigger any transaction or cost any gas fees. \n\n    Use of our website and service is subject to our terms of service and privacy policy. \n`;
 
 const signMessage = async ({
   walletPublicKey,
