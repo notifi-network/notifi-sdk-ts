@@ -29,7 +29,9 @@ export type CreateSourceInput = Readonly<{
     | 'HEDGE_PROTOCOL'
     | 'BROADCAST'
     | 'SHARKY_PROTOCOL'
-    | 'PORT_FINANCE';
+    | 'PORT_FINANCE'
+    | 'METAPLEX_AUCTION_HOUSE'
+    | 'ORCA';
 }>;
 
 export type CreateSourceResult = Source;
