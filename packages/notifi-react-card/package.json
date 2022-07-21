@@ -1,6 +1,6 @@
 {
   "name": "@notifi-network/notifi-react-card",
-  "version": "0.28.1",
+  "version": "0.29.0",
   "description": "A React component for signing up for Notifi notifications",
   "author": "juni-notifi <hyungjoon.kim@notifi.network>",
   "homepage": "https://github.com/notifi-network/notifi-sdk-ts#readme",
@@ -28,13 +28,13 @@
     "url": "https://github.com/notifi-network/notifi-sdk-ts/issues"
   },
   "dependencies": {
-    "@notifi-network/notifi-react-hooks": "^0.28.1"
+    "@notifi-network/notifi-react-hooks": "^0.29.0"
   },
   "peerDependencies": {
     "@solana/wallet-adapter-react": "^0.15.8",
     "@solana/web3.js": "^1.48.0"
   },
   "devDependencies": {
-    "@notifi-network/notifi-core": "^0.28.0"
+    "@notifi-network/notifi-core": "^0.29.0"
   }
 }
