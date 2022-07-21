@@ -611,6 +611,7 @@ const useNotifiClient = (
         filterOptions,
         sourceId,
         groupName = 'default',
+        targetGroupName,
       } = input;
 
       setLoading(true);
@@ -654,7 +655,7 @@ const useNotifiClient = (
           service,
           newData.targetGroups,
           {
-            name,
+            name: targetGroupName ?? name,
             emailTargetIds,
             smsTargetIds,
             telegramTargetIds,
