@@ -106,6 +106,7 @@ export type ClientCreateAlertInput = Readonly<{
   phoneNumber: string | null;
   telegramId: string | null;
   groupName?: string;
+  targetGroupName?: string;
 }>;
 
 /**
