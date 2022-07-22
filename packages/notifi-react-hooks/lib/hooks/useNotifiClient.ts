@@ -500,12 +500,19 @@ const useNotifiClient = (
         const { emailTargetIds, smsTargetIds, telegramTargetIds } =
           await ensureTargetIds(service, newData, input);
 
-        return ensureTargetGroupImpl(service, newData.targetGroups, {
-          name: input.name,
-          emailTargetIds,
-          smsTargetIds,
-          telegramTargetIds,
-        });
+        const targetGroup = await ensureTargetGroupImpl(
+          service,
+          newData.targetGroups,
+          {
+            name: input.name,
+            emailTargetIds,
+            smsTargetIds,
+            telegramTargetIds,
+          },
+        );
+
+        setInternalData(newData);
+        return targetGroup;
       } catch (e: unknown) {
         if (e instanceof Error) {
           setError(e);
