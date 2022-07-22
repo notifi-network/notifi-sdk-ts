@@ -10,7 +10,7 @@ npm install --save-dev @notifi-network/notifi-core
 ```
 
 ### Create a component which controls Alert configuration
-
+#### A Marketing Alert which should be broadcast to all users
 ```tsx
 import type { AlertConfiguration } from '@notifi-network/notifi-react-card';
 import {
@@ -55,11 +55,56 @@ export const MarketingToggle: React.FC<Props> = ({ disabled }: Props) => {
   );
 };
 ```
+#### A Direct Message alert which is targeted at specific users
+```tsx
+import type { AlertConfiguration } from '@notifi-network/notifi-react-card';
+import {
+  directMessageConfiguration,
+  useNotifiSubscriptionContext,
+} from '@notifi-network/notifi-react-card';
+import React, { useEffect, useState } from 'react';
+
+const ALERT_NAME = 'Direct Messages To My Wallet';
+const ALERT_CONFIGURATION: AlertConfiguration = directMessageConfiguration();
+
+type Props = Readonly<{
+  disabled: boolean;
+}>;
+
+export const DirectMessageToggle: React.FC<Props> = ({ disabled }: Props) => {
+  const [enabled, setEnabled] = useState<boolean>(false);
+  const { setAlertConfiguration } = useNotifiSubscriptionContext();
+
+  useEffect(() => {
+    if (enabled) {
+      setAlertConfiguration(ALERT_NAME, ALERT_CONFIGURATION);
+    } else {
+      setAlertConfiguration(ALERT_NAME, null);
+    }
+  }, [enabled]);
+
+  return (
+    <div>
+      <span>Sign up for Direct Messages</span>
+      <input
+        disabled={disabled}
+        type="checkbox"
+        checked={enabled}
+        onChange={(e) => {
+          setEnabled(e.target.checked);
+        }}
+      />
+    </div>
+  );
+};
+```
+
 
 ### Create a wrapper for the contents of the card
 
 ```tsx
 import { MarketingToggle } from './MarketingToggle';
+import { DirectMessageToggle } from './DirectMessageToggle';
 import {
   NotifiEmailInput,
   NotifiFooter,
@@ -76,6 +121,7 @@ export const NotifiCardContents: React.FC = () => {
       <NotifiEmailInput disabled={loading} />
       <NotifiSmsInput disabled={loading} />
       <MarketingToggle disabled={loading} />
+      <DirectMessageToggle disabled={loading} />
       <button
         disabled={loading}
         type="submit"
