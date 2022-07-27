@@ -6,6 +6,9 @@ import {
   logInFromServiceImpl,
   sendMessageImpl,
 } from '../mutations';
+import broadcastMessageImpl, {
+  BroadcastMessageInput,
+} from '../mutations/broadcastMessageImpl';
 import { getTenantConnectedWalletImpl } from '../queries';
 import {
   GetTenantConnectedWalletInput,
@@ -59,6 +62,16 @@ class NotifiClient {
     const result = await sendMessageImpl(this.a, jwt, { input });
     if (!result) {
       throw new Error('Send message failed');
+    }
+  };
+
+  sendBroadcastMessage: (
+    jwt: string,
+    params: BroadcastMessageInput,
+  ) => Promise<void> = async (jwt, params) => {
+    const result = await broadcastMessageImpl(this.a, jwt, params);
+    if (result.id === null) {
+      throw new Error('broadcast message failed');
     }
   };
 

@@ -292,6 +292,68 @@ app.post('/createTenantUser', authorizeMiddleware, (req, res) => {
     });
 });
 
+app.post('/broadcastMessage', authorizeMiddleware, (req, res) => {
+  const jwt: string = res.locals.jwt;
+
+  const {
+    topicName,
+    message,
+    subject,
+  }: Readonly<{
+    topicName?: string;
+    message?: string;
+    subject?: string;
+  }> = req.body ?? {};
+
+  if (topicName === undefined) {
+    return res.status(400).json({
+      message: 'topicName is required',
+    });
+  }
+
+  if (message === undefined) {
+    return res.status(400).json({
+      message: 'message is required',
+    });
+  }
+
+  if (subject === undefined) {
+    return res.status(400).json({
+      message: 'subject is required',
+    });
+  }
+
+  const client = new NotifiClient(res.locals.axiosInstance);
+
+  return client
+    .sendBroadcastMessage(jwt, {
+      topicName,
+      variables: [
+        {
+          key: 'message',
+          value: message,
+        },
+        {
+          key: 'subject',
+          value: subject,
+        },
+      ],
+    })
+    .then(() => {
+      return res.status(200).json({ success: true });
+    })
+    .catch((e: unknown) => {
+      let message = 'Unknown server error';
+      if (e instanceof GqlError) {
+        message = `${e.message}: ${e.getErrorMessages().join(', ')}`;
+      } else if (e instanceof Error) {
+        message = e.message;
+      }
+
+      return res.status(500).json({ message });
+    });
+});
+
 app.post('/createDirectPushAlert', authorizeMiddleware, (req, res) => {
   const jwt: string = res.locals.jwt;
 
