@@ -1,0 +1,13 @@
+schema: https://api.dev.notifi.network/gql/
+documents: ./lib/gql/**/*.gql.ts
+generates:
+  ./lib/gql/generated.ts:
+    config:
+      maybeValue: T | undefined
+      namingConvention:
+        enumValues: 'change-case#upperCase'
+      enumsAsTypes: true
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-graphql-request

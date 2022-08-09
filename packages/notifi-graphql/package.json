@@ -14,8 +14,8 @@
   },
   "scripts": {
     "build": "npm run clean && npm run compile",
-    "compile": "tsup lib/index.ts --format cjs,esm --dts --clean",
-    "clean": "rimraf ./dist",
+    "compile": "graphql-codegen && tsup lib/index.ts --format cjs,esm --dts --clean",
+    "clean": "rimraf ./dist && rimraf ./lib/gql/generated.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepublishOnly": "npm run build"
   },
@@ -30,9 +30,14 @@
   },
   "homepage": "https://github.com/notifi-network/notifi-sdk-ts#readme",
   "dependencies": {
-    "graphql-request": "github:prisma-labs/graphql-request"
+    "graphql": "^16.5.0",
+    "graphql-request": "^4.3.0"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^2.11.5",
+    "@graphql-codegen/typescript": "^2.7.3",
+    "@graphql-codegen/typescript-graphql-request": "^4.5.3",
+    "@graphql-codegen/typescript-operations": "^2.5.3",
     "tsup": "^6.2.1"
   }
 }
