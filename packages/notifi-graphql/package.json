@@ -1,0 +1,38 @@
+{
+  "name": "@notifi-network/notifi-graphql",
+  "version": "0.29.2",
+  "description": "The GraphQL API for Notifi",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "npm run clean && npm run compile",
+    "compile": "tsup lib/index.ts --format cjs,esm --dts --clean",
+    "clean": "rimraf ./dist",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepublishOnly": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/notifi-network/notifi-sdk-ts.git"
+  },
+  "author": "juni-notifi <hyungjoon.kim@notifi.network>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/notifi-network/notifi-sdk-ts/issues"
+  },
+  "homepage": "https://github.com/notifi-network/notifi-sdk-ts#readme",
+  "dependencies": {
+    "graphql-request": "github:prisma-labs/graphql-request"
+  },
+  "devDependencies": {
+    "tsup": "^6.2.1"
+  }
+}

@@ -2,7 +2,6 @@
   "compilerOptions": {
     "declaration": true,
     "declarationMap": true,
-    "incremental": true,
     "module": "commonjs",
     "target": "es2017",
     "outDir": "dist",
@@ -15,8 +14,5 @@
     "types": ["node", "jest"],
     "typeRoots": ["node_modules/@types"]
   },
-  "exclude": [
-    "node_modules",
-    "**/*.spec.ts"
-  ]
+  "exclude": ["node_modules", "**/*.spec.ts"]
 }
