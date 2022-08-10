@@ -18,6 +18,15 @@ export class NotifiService
     Operations.DeleteAlertService,
     Operations.DeleteSourceGroupService,
     Operations.DeleteTargetGroupService,
+    Operations.GetAlertsService,
+    Operations.GetConfigurationForDappService,
+    Operations.GetFiltersService,
+    Operations.GetSmsTargetsService,
+    Operations.GetSourceGroupsService,
+    Operations.GetSourcesService,
+    Operations.GetTargetGroupsService,
+    Operations.GetTelegramTargetsService,
+    Operations.GetTopicsService,
     Operations.LogInFromDappService,
     Operations.RefreshAuthorizationService,
     Operations.SendEmailTargetVerificationRequestService,
@@ -124,6 +133,54 @@ export class NotifiService
     variables: Generated.GetAlertsQueryVariables,
   ): Promise<Generated.GetAlertsQuery> {
     return this._typedClient.getAlerts(variables);
+  }
+
+  async getConfigurationForDapp(
+    variables: Generated.GetConfigurationForDappQueryVariables,
+  ): Promise<Generated.GetConfigurationForDappQuery> {
+    return this._typedClient.getConfigurationForDapp(variables);
+  }
+
+  async getFilters(
+    variables: Generated.GetFiltersQueryVariables,
+  ): Promise<Generated.GetFiltersQuery> {
+    return this._typedClient.getFilters(variables);
+  }
+
+  async getSmsTargets(
+    variables: Generated.GetSmsTargetsQueryVariables,
+  ): Promise<Generated.GetSmsTargetsQuery> {
+    return this._typedClient.getSmsTargets(variables);
+  }
+
+  async getSourceGroups(
+    variables: Generated.GetSourceGroupsQueryVariables,
+  ): Promise<Generated.GetSourceGroupsQuery> {
+    return this._typedClient.getSourceGroups(variables);
+  }
+
+  async getSources(
+    variables: Generated.GetSourcesQueryVariables,
+  ): Promise<Generated.GetSourcesQuery> {
+    return this._typedClient.getSources(variables);
+  }
+
+  async getTargetGroups(
+    variables: Generated.GetTargetGroupsQueryVariables,
+  ): Promise<Generated.GetTargetGroupsQuery> {
+    return this._typedClient.getTargetGroups(variables);
+  }
+
+  async getTelegramTargets(
+    variables: Generated.GetTelegramTargetsQueryVariables,
+  ): Promise<Generated.GetTelegramTargetsQuery> {
+    return this._typedClient.getTelegramTargets(variables);
+  }
+
+  async getTopics(
+    variables: Generated.GetTopicsQueryVariables,
+  ): Promise<Generated.GetTopicsQuery> {
+    return this._typedClient.getTopics(variables);
   }
 
   async logInFromDapp(
