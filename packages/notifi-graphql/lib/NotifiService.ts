@@ -1,44 +1,12 @@
-import {
-  BeginLogInByTransactionMutation,
-  BeginLogInByTransactionMutationVariables,
-  CompleteLogInByTransactionMutation,
-  CompleteLogInByTransactionMutationVariables,
-  CreateAlertMutation,
-  CreateAlertMutationVariables,
-  CreateEmailTargetMutation,
-  CreateEmailTargetMutationVariables,
-  CreateSmsTargetMutation,
-  CreateSmsTargetMutationVariables,
-  CreateSourceGroupMutation,
-  CreateSourceGroupMutationVariables,
-  CreateSourceMutation,
-  CreateSourceMutationVariables,
-  CreateTargetGroupMutation,
-  CreateTargetGroupMutationVariables,
-  CreateTelegramTargetMutation,
-  CreateTelegramTargetMutationVariables,
-  DeleteAlertMutation,
-  DeleteAlertMutationVariables,
-  DeleteSourceGroupMutation,
-  DeleteSourceGroupMutationVariables,
-  DeleteTargetGroupMutation,
-  DeleteTargetGroupMutationVariables,
-  GetAlertsQuery,
-  GetAlertsQueryVariables,
-  LogInFromDappMutation,
-  LogInFromDappMutationVariables,
-  UpdateSourceGroupMutation,
-  UpdateSourceGroupMutationVariables,
-  UpdateTargetGroupMutation,
-  UpdateTargetGroupMutationVariables,
-  getSdk,
-} from './gql/generated';
-import * as Operations from './operations';
+import type * as Generated from './gql/generated';
+import { getSdk } from './gql/generated';
+import type * as Operations from './operations';
 import { GraphQLClient } from 'graphql-request';
 
 export class NotifiService
   implements
     Operations.BeginLogInByTransactionService,
+    Operations.BroadcastMessageService,
     Operations.CompleteLogInByTransactionService,
     Operations.CreateAlertService,
     Operations.CreateEmailTargetService,
@@ -51,6 +19,8 @@ export class NotifiService
     Operations.DeleteSourceGroupService,
     Operations.DeleteTargetGroupService,
     Operations.LogInFromDappService,
+    Operations.RefreshAuthorizationService,
+    Operations.SendEmailTargetVerificationRequestService,
     Operations.GetAlertsService,
     Operations.UpdateSourceGroupService,
     Operations.UpdateTargetGroupService
@@ -64,14 +34,20 @@ export class NotifiService
   }
 
   async beginLogInByTransaction(
-    variables: BeginLogInByTransactionMutationVariables,
-  ): Promise<BeginLogInByTransactionMutation> {
+    variables: Generated.BeginLogInByTransactionMutationVariables,
+  ): Promise<Generated.BeginLogInByTransactionMutation> {
     return this._typedClient.beginLogInByTransaction(variables);
   }
 
+  async broadcastMessage(
+    variables: Generated.BroadcastMessageMutationVariables,
+  ): Promise<Generated.BroadcastMessageMutation> {
+    return this._typedClient.broadcastMessage(variables);
+  }
+
   async completeLogInByTransaction(
-    variables: CompleteLogInByTransactionMutationVariables,
-  ): Promise<CompleteLogInByTransactionMutation> {
+    variables: Generated.CompleteLogInByTransactionMutationVariables,
+  ): Promise<Generated.CompleteLogInByTransactionMutation> {
     const result = await this._typedClient.completeLogInByTransaction(
       variables,
     );
@@ -85,72 +61,74 @@ export class NotifiService
   }
 
   async createAlert(
-    variables: CreateAlertMutationVariables,
-  ): Promise<CreateAlertMutation> {
+    variables: Generated.CreateAlertMutationVariables,
+  ): Promise<Generated.CreateAlertMutation> {
     return this._typedClient.createAlert(variables);
   }
 
   async createEmailTarget(
-    variables: CreateEmailTargetMutationVariables,
-  ): Promise<CreateEmailTargetMutation> {
+    variables: Generated.CreateEmailTargetMutationVariables,
+  ): Promise<Generated.CreateEmailTargetMutation> {
     return this._typedClient.createEmailTarget(variables);
   }
 
   async createSmsTarget(
-    variables: CreateSmsTargetMutationVariables,
-  ): Promise<CreateSmsTargetMutation> {
+    variables: Generated.CreateSmsTargetMutationVariables,
+  ): Promise<Generated.CreateSmsTargetMutation> {
     return this._typedClient.createSmsTarget(variables);
   }
 
   async createSource(
-    variables: CreateSourceMutationVariables,
-  ): Promise<CreateSourceMutation> {
+    variables: Generated.CreateSourceMutationVariables,
+  ): Promise<Generated.CreateSourceMutation> {
     return this._typedClient.createSource(variables);
   }
 
   async createSourceGroup(
-    variables: CreateSourceGroupMutationVariables,
-  ): Promise<CreateSourceGroupMutation> {
+    variables: Generated.CreateSourceGroupMutationVariables,
+  ): Promise<Generated.CreateSourceGroupMutation> {
     return this._typedClient.createSourceGroup(variables);
   }
 
   async createTargetGroup(
-    variables: CreateTargetGroupMutationVariables,
-  ): Promise<CreateTargetGroupMutation> {
+    variables: Generated.CreateTargetGroupMutationVariables,
+  ): Promise<Generated.CreateTargetGroupMutation> {
     return this._typedClient.createTargetGroup(variables);
   }
 
   async createTelegramTarget(
-    variables: CreateTelegramTargetMutationVariables,
-  ): Promise<CreateTelegramTargetMutation> {
+    variables: Generated.CreateTelegramTargetMutationVariables,
+  ): Promise<Generated.CreateTelegramTargetMutation> {
     return this._typedClient.createTelegramTarget(variables);
   }
 
   async deleteAlert(
-    variables: DeleteAlertMutationVariables,
-  ): Promise<DeleteAlertMutation> {
+    variables: Generated.DeleteAlertMutationVariables,
+  ): Promise<Generated.DeleteAlertMutation> {
     return this._typedClient.deleteAlert(variables);
   }
 
   async deleteSourceGroup(
-    variables: DeleteSourceGroupMutationVariables,
-  ): Promise<DeleteSourceGroupMutation> {
+    variables: Generated.DeleteSourceGroupMutationVariables,
+  ): Promise<Generated.DeleteSourceGroupMutation> {
     return this._typedClient.deleteSourceGroup(variables);
   }
 
   async deleteTargetGroup(
-    variables: DeleteTargetGroupMutationVariables,
-  ): Promise<DeleteTargetGroupMutation> {
+    variables: Generated.DeleteTargetGroupMutationVariables,
+  ): Promise<Generated.DeleteTargetGroupMutation> {
     return this._typedClient.deleteTargetGroup(variables);
   }
 
-  async getAlerts(variables: GetAlertsQueryVariables): Promise<GetAlertsQuery> {
+  async getAlerts(
+    variables: Generated.GetAlertsQueryVariables,
+  ): Promise<Generated.GetAlertsQuery> {
     return this._typedClient.getAlerts(variables);
   }
 
   async logInFromDapp(
-    variables: LogInFromDappMutationVariables,
-  ): Promise<LogInFromDappMutation> {
+    variables: Generated.LogInFromDappMutationVariables,
+  ): Promise<Generated.LogInFromDappMutation> {
     const result = await this._typedClient.logInFromDapp(variables);
 
     const token = result.logInFromDapp?.authorization?.token;
@@ -161,15 +139,34 @@ export class NotifiService
     return result;
   }
 
+  async refreshAuthorization(
+    variables: Generated.RefreshAuthorizationMutationVariables,
+  ): Promise<Generated.RefreshAuthorizationMutation> {
+    const result = await this._typedClient.refreshAuthorization(variables);
+
+    const token = result.refreshAuthorization?.token;
+    if (token !== undefined) {
+      this._rawClient.setHeader('Authorization', `Bearer ${token}`);
+    }
+
+    return result;
+  }
+
+  async sendEmailTargetVerificationRequest(
+    variables: Generated.SendEmailTargetVerificationRequestMutationVariables,
+  ): Promise<Generated.SendEmailTargetVerificationRequestMutation> {
+    return this._typedClient.sendEmailTargetVerificationRequest(variables);
+  }
+
   async updateSourceGroup(
-    variables: UpdateSourceGroupMutationVariables,
-  ): Promise<UpdateSourceGroupMutation> {
+    variables: Generated.UpdateSourceGroupMutationVariables,
+  ): Promise<Generated.UpdateSourceGroupMutation> {
     return this._typedClient.updateSourceGroup(variables);
   }
 
   async updateTargetGroup(
-    variables: UpdateTargetGroupMutationVariables,
-  ): Promise<UpdateTargetGroupMutation> {
+    variables: Generated.UpdateTargetGroupMutationVariables,
+  ): Promise<Generated.UpdateTargetGroupMutation> {
     return this._typedClient.updateTargetGroup(variables);
   }
 }

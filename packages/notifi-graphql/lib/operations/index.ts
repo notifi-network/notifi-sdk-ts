@@ -1,4 +1,5 @@
 export * from './BeginLogInByTransaction';
+export * from './BroadcastMessage';
 export * from './CompleteLogInByTransaction';
 export * from './CreateAlert';
 export * from './CreateEmailTarget';
@@ -12,5 +13,7 @@ export * from './DeleteSourceGroup';
 export * from './DeleteTargetGroup';
 export * from './GetAlertsService';
 export * from './LogInFromDappService';
+export * from './RefreshAuthorization';
+export * from './SendEmailTargetVerificationRequest';
 export * from './UpdateSourceGroup';
 export * from './UpdateTargetGroup';
