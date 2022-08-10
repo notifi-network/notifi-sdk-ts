@@ -1,4 +1,3 @@
-import ensureTargetGroup from './ensureTargetGroup';
 import {
   CreateTargetGroupInput,
   CreateTargetGroupService,
@@ -9,6 +8,8 @@ import {
   UpdateTargetGroupInput,
   UpdateTargetGroupService,
 } from '@notifi-network/notifi-core';
+
+import ensureTargetGroup from './ensureTargetGroup';
 
 const createEmailTarget = (id: string): EmailTarget => {
   return {

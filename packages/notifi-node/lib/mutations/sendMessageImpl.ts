@@ -1,8 +1,9 @@
-import type { WalletBlockchain } from '../types';
 import {
   collectDependencies,
   makeAuthenticatedRequest,
 } from '@notifi-network/notifi-axios-utils';
+
+import type { WalletBlockchain } from '../types';
 
 export type SendMessageInput = Readonly<{
   input: Readonly<{

@@ -1,5 +1,6 @@
-import { AlertFragment } from '../fragments/AlertFragment.gql';
 import { gql } from 'graphql-request';
+
+import { AlertFragment } from '../fragments/AlertFragment.gql';
 
 export const CreateAlert = gql`
   mutation createAlert(

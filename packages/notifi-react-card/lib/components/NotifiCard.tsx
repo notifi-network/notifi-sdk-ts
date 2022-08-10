@@ -1,6 +1,3 @@
-import { NotifiSubscriptionContextProvider } from '../context';
-import type { AlertConfiguration } from '../utils';
-import { DeepPartialReadonly } from '../utils';
 import type {
   MessageSigner,
   NotifiEnvironment,
@@ -8,6 +5,10 @@ import type {
 import type { WalletContextState } from '@solana/wallet-adapter-react';
 import type { Connection } from '@solana/web3.js';
 import React, { PropsWithChildren } from 'react';
+
+import { NotifiSubscriptionContextProvider } from '../context';
+import type { AlertConfiguration } from '../utils';
+import { DeepPartialReadonly } from '../utils';
 
 type Props = Readonly<{
   classNames?: DeepPartialReadonly<{

@@ -1,10 +1,11 @@
-import { userTopicFragment, userTopicFragmentDependencies } from '../fragments';
 import {
   AxiosPost,
   collectDependencies,
   makeParameterLessRequest,
 } from '@notifi-network/notifi-axios-utils';
 import { GetTopicsResult, UserTopic } from '@notifi-network/notifi-core';
+
+import { userTopicFragment, userTopicFragmentDependencies } from '../fragments';
 
 const DEPENDENCIES = [...userTopicFragmentDependencies, userTopicFragment];
 

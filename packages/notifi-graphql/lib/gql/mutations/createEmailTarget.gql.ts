@@ -1,5 +1,6 @@
-import { EmailTargetFragment } from '../fragments/EmailTargetFragment.gql';
 import { gql } from 'graphql-request';
+
+import { EmailTargetFragment } from '../fragments/EmailTargetFragment.gql';
 
 export const CreateEmailTarget = gql`
   mutation createEmailTarget($name: String!, $value: String!) {

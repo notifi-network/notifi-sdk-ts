@@ -1,7 +1,8 @@
-import useNotifiConfig from './useNotifiConfig';
 import { NotifiAxiosService } from '@notifi-network/notifi-axios-adapter';
 import { NotifiService } from '@notifi-network/notifi-core';
 import { useMemo } from 'react';
+
+import useNotifiConfig from './useNotifiConfig';
 
 const useNotifiService = (
   env: Parameters<typeof useNotifiConfig>[0],

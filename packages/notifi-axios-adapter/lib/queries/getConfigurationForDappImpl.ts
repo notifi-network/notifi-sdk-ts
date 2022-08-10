@@ -1,8 +1,4 @@
 import {
-  clientConfigurationFragment,
-  clientConfigurationFragmentDependencies,
-} from '../fragments';
-import {
   collectDependencies,
   makeRequest,
 } from '@notifi-network/notifi-axios-utils';
@@ -10,6 +6,11 @@ import {
   GetConfigurationForDappInput,
   GetConfigurationForDappResult,
 } from '@notifi-network/notifi-core';
+
+import {
+  clientConfigurationFragment,
+  clientConfigurationFragmentDependencies,
+} from '../fragments';
 
 const DEPENDENCIES = [
   ...clientConfigurationFragmentDependencies,

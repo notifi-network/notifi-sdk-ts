@@ -1,4 +1,3 @@
-import ensureTargetIds from './ensureTargetIds';
 import {
   CreateEmailTargetService,
   CreateSmsTargetService,
@@ -7,6 +6,8 @@ import {
   SmsTarget,
   TelegramTarget,
 } from '@notifi-network/notifi-core';
+
+import ensureTargetIds from './ensureTargetIds';
 
 describe('ensureTargetIds', () => {
   const testService: CreateEmailTargetService &

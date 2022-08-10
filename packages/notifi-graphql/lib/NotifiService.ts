@@ -1,7 +1,8 @@
+import { GraphQLClient } from 'graphql-request';
+
 import type * as Generated from './gql/generated';
 import { getSdk } from './gql/generated';
 import type * as Operations from './operations';
-import { GraphQLClient } from 'graphql-request';
 
 export class NotifiService
   implements

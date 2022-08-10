@@ -1,10 +1,4 @@
 import {
-  ensureEmail,
-  ensureSms,
-  ensureTelegram,
-  ensureWebhook,
-} from './ensureTarget';
-import {
   ClientCreateWebhookParams,
   CreateEmailTargetService,
   CreateSmsTargetService,
@@ -15,6 +9,13 @@ import {
   TelegramTarget,
   WebhookTarget,
 } from '@notifi-network/notifi-core';
+
+import {
+  ensureEmail,
+  ensureSms,
+  ensureTelegram,
+  ensureWebhook,
+} from './ensureTarget';
 
 export type ExistingData = Readonly<{
   emailTargets?: EmailTarget[];

@@ -1,8 +1,4 @@
 import {
-  targetGroupFragment,
-  targetGroupFragmentDependencies,
-} from '../fragments';
-import {
   collectDependencies,
   makeRequest,
 } from '@notifi-network/notifi-axios-utils';
@@ -10,6 +6,11 @@ import {
   UpdateTargetGroupInput,
   UpdateTargetGroupResult,
 } from '@notifi-network/notifi-core';
+
+import {
+  targetGroupFragment,
+  targetGroupFragmentDependencies,
+} from '../fragments';
 
 const DEPENDENCIES = [...targetGroupFragmentDependencies, targetGroupFragment];
 

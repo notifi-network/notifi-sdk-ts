@@ -1,5 +1,6 @@
-import { SourceFragment } from '../fragments/SourceFragment.gql';
 import { gql } from 'graphql-request';
+
+import { SourceFragment } from '../fragments/SourceFragment.gql';
 
 export const CreateSource = gql`
   mutation createSource(

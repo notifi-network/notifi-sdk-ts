@@ -3,7 +3,6 @@ import {
   CreateEmailTargetService,
   CreateSmsTargetService,
   CreateTelegramTargetService,
-  CreateWebhookTargetInput,
   CreateWebhookTargetService,
   EmailTarget,
   SmsTarget,

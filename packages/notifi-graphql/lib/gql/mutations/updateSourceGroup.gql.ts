@@ -1,5 +1,6 @@
-import { SourceGroupFragment } from '../fragments/SourceGroupFragment.gql';
 import { gql } from 'graphql-request';
+
+import { SourceGroupFragment } from '../fragments/SourceGroupFragment.gql';
 
 export const UpdateSourceGroup = gql`
   mutation updateSourceGroup(

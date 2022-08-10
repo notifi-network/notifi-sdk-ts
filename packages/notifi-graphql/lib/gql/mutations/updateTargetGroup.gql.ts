@@ -1,5 +1,6 @@
-import { TargetGroupFragment } from '../fragments/TargetGroupFragment.gql';
 import { gql } from 'graphql-request';
+
+import { TargetGroupFragment } from '../fragments/TargetGroupFragment.gql';
 
 export const UpdateTargetGroup = gql`
   mutation updateTargetGroup(

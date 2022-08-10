@@ -1,8 +1,4 @@
 import {
-  sourceGroupFragment,
-  sourceGroupFragmentDependencies,
-} from '../fragments';
-import {
   collectDependencies,
   makeRequest,
 } from '@notifi-network/notifi-axios-utils';
@@ -10,6 +6,11 @@ import {
   CreateSourceGroupInput,
   CreateSourceGroupResult,
 } from '@notifi-network/notifi-core';
+
+import {
+  sourceGroupFragment,
+  sourceGroupFragmentDependencies,
+} from '../fragments';
 
 const DEPENDENCIES = [...sourceGroupFragmentDependencies, sourceGroupFragment];
 

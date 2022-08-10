@@ -1,4 +1,3 @@
-import { userFragment, userFragmentDependencies } from '../fragments';
 import {
   collectDependencies,
   makeRequest,
@@ -7,6 +6,8 @@ import {
   CompleteLogInByTransactionInput,
   CompleteLogInByTransactionResult,
 } from '@notifi-network/notifi-core';
+
+import { userFragment, userFragmentDependencies } from '../fragments';
 
 const DEPENDENCIES = [...userFragmentDependencies, userFragment];
 

@@ -1,4 +1,5 @@
-import { userFragment } from "./userFragment";
+import { userFragment } from './userFragment';
+
 export const completeLogInByTransactionFragment = `
 fragment completeLogInByTransactionFragment on CompleteLogInByTransactionResult {
   ...userFragment

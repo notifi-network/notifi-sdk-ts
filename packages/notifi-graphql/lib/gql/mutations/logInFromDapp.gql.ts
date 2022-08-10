@@ -1,5 +1,6 @@
-import { UserFragment } from '../fragments/UserFragment.gql';
 import { gql } from 'graphql-request';
+
+import { UserFragment } from '../fragments/UserFragment.gql';
 
 export const LogInFromDapp = gql`
   ${UserFragment}

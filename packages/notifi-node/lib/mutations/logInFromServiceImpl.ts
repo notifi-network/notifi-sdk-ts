@@ -1,8 +1,9 @@
-import type { Authorization } from '../types';
 import {
   collectDependencies,
   makeRequest,
 } from '@notifi-network/notifi-axios-utils';
+
+import type { Authorization } from '../types';
 
 export type LogInFromServiceInput = Readonly<{
   input: Readonly<{
