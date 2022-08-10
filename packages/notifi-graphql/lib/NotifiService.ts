@@ -17,10 +17,20 @@ import {
   CreateTargetGroupMutationVariables,
   CreateTelegramTargetMutation,
   CreateTelegramTargetMutationVariables,
+  DeleteAlertMutation,
+  DeleteAlertMutationVariables,
+  DeleteSourceGroupMutation,
+  DeleteSourceGroupMutationVariables,
+  DeleteTargetGroupMutation,
+  DeleteTargetGroupMutationVariables,
   GetAlertsQuery,
   GetAlertsQueryVariables,
   LogInFromDappMutation,
   LogInFromDappMutationVariables,
+  UpdateSourceGroupMutation,
+  UpdateSourceGroupMutationVariables,
+  UpdateTargetGroupMutation,
+  UpdateTargetGroupMutationVariables,
   getSdk,
 } from './gql/generated';
 import * as Operations from './operations';
@@ -37,8 +47,13 @@ export class NotifiService
     Operations.CreateSourceGroupService,
     Operations.CreateTargetGroupService,
     Operations.CreateTelegramTargetService,
+    Operations.DeleteAlertService,
+    Operations.DeleteSourceGroupService,
+    Operations.DeleteTargetGroupService,
     Operations.LogInFromDappService,
-    Operations.GetAlertsService
+    Operations.GetAlertsService,
+    Operations.UpdateSourceGroupService,
+    Operations.UpdateTargetGroupService
 {
   _rawClient: GraphQLClient;
   _typedClient: ReturnType<typeof getSdk>;
@@ -57,7 +72,16 @@ export class NotifiService
   async completeLogInByTransaction(
     variables: CompleteLogInByTransactionMutationVariables,
   ): Promise<CompleteLogInByTransactionMutation> {
-    return this._typedClient.completeLogInByTransaction(variables);
+    const result = await this._typedClient.completeLogInByTransaction(
+      variables,
+    );
+
+    const token = result.completeLogInByTransaction?.authorization?.token;
+    if (token !== undefined) {
+      this._rawClient.setHeader('Authorization', `Bearer ${token}`);
+    }
+
+    return result;
   }
 
   async createAlert(
@@ -102,6 +126,24 @@ export class NotifiService
     return this._typedClient.createTelegramTarget(variables);
   }
 
+  async deleteAlert(
+    variables: DeleteAlertMutationVariables,
+  ): Promise<DeleteAlertMutation> {
+    return this._typedClient.deleteAlert(variables);
+  }
+
+  async deleteSourceGroup(
+    variables: DeleteSourceGroupMutationVariables,
+  ): Promise<DeleteSourceGroupMutation> {
+    return this._typedClient.deleteSourceGroup(variables);
+  }
+
+  async deleteTargetGroup(
+    variables: DeleteTargetGroupMutationVariables,
+  ): Promise<DeleteTargetGroupMutation> {
+    return this._typedClient.deleteTargetGroup(variables);
+  }
+
   async getAlerts(variables: GetAlertsQueryVariables): Promise<GetAlertsQuery> {
     return this._typedClient.getAlerts(variables);
   }
@@ -117,5 +159,17 @@ export class NotifiService
     }
 
     return result;
+  }
+
+  async updateSourceGroup(
+    variables: UpdateSourceGroupMutationVariables,
+  ): Promise<UpdateSourceGroupMutation> {
+    return this._typedClient.updateSourceGroup(variables);
+  }
+
+  async updateTargetGroup(
+    variables: UpdateTargetGroupMutationVariables,
+  ): Promise<UpdateTargetGroupMutation> {
+    return this._typedClient.updateTargetGroup(variables);
   }
 }
