@@ -1,21 +1,47 @@
 import {
+  BeginLogInByTransactionMutation,
+  BeginLogInByTransactionMutationVariables,
+  CompleteLogInByTransactionMutation,
+  CompleteLogInByTransactionMutationVariables,
   GetAlertsQuery,
   GetAlertsQueryVariables,
   LogInFromDappMutation,
   LogInFromDappMutationVariables,
   getSdk,
 } from './gql/generated';
-import { GetAlertsService } from './operations/GetAlertsService';
-import { LogInFromDappService } from './operations/LogInFromDappService';
+import {
+  BeginLogInByTransactionService,
+  CompleteLogInByTransactionService,
+  GetAlertsService,
+  LogInFromDappService,
+} from './operations';
 import { GraphQLClient } from 'graphql-request';
 
-export class NotifiService implements LogInFromDappService, GetAlertsService {
+export class NotifiService
+  implements
+    BeginLogInByTransactionService,
+    CompleteLogInByTransactionService,
+    LogInFromDappService,
+    GetAlertsService
+{
   _rawClient: GraphQLClient;
   _typedClient: ReturnType<typeof getSdk>;
 
   constructor(graphQLClient: GraphQLClient) {
     this._rawClient = graphQLClient;
     this._typedClient = getSdk(graphQLClient);
+  }
+
+  async beginLogInByTransaction(
+    variables: BeginLogInByTransactionMutationVariables,
+  ): Promise<BeginLogInByTransactionMutation> {
+    return this._typedClient.beginLogInByTransaction(variables);
+  }
+
+  async completeLogInByTransaction(
+    variables: CompleteLogInByTransactionMutationVariables,
+  ): Promise<CompleteLogInByTransactionMutation> {
+    return this._typedClient.completeLogInByTransaction(variables);
   }
 
   async getAlerts(variables: GetAlertsQueryVariables): Promise<GetAlertsQuery> {
