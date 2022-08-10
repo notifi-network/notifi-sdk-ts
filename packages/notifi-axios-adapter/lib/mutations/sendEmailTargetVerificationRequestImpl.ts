@@ -1,8 +1,4 @@
 import {
-  emailTargetFragment,
-  emailTargetFragmentDependencies,
-} from '../fragments';
-import {
   collectDependencies,
   makeRequest,
 } from '@notifi-network/notifi-axios-utils';
@@ -10,6 +6,11 @@ import {
   SendEmailTargetVerificationRequestInput,
   SendEmailTargetVerificationRequestResult,
 } from '@notifi-network/notifi-core';
+
+import {
+  emailTargetFragment,
+  emailTargetFragmentDependencies,
+} from '../fragments';
 
 const DEPENDENCIES = [...emailTargetFragmentDependencies, emailTargetFragment];
 

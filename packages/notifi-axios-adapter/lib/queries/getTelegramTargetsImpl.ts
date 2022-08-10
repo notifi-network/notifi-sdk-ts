@@ -1,12 +1,13 @@
 import {
-  telegramTargetFragment,
-  telegramTargetFragmentDependencies,
-} from '../fragments';
-import {
   collectDependencies,
   makeParameterLessRequest,
 } from '@notifi-network/notifi-axios-utils';
 import { GetTelegramTargetsResult } from '@notifi-network/notifi-core';
+
+import {
+  telegramTargetFragment,
+  telegramTargetFragmentDependencies,
+} from '../fragments';
 
 const DEPENDENCIES = [
   ...telegramTargetFragmentDependencies,

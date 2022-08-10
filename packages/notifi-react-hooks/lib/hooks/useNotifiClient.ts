@@ -1,18 +1,3 @@
-import ensureSource, {
-  ensureBonfidaAuctionSource,
-  ensureMetaplexAuctionSource,
-} from '../utils/ensureSource';
-import ensureSourceGroup from '../utils/ensureSourceGroup';
-import ensureTargetGroupImpl from '../utils/ensureTargetGroup';
-import ensureTargetIds from '../utils/ensureTargetIds';
-import fetchDataImpl, {
-  FetchDataState,
-  InternalData,
-} from '../utils/fetchDataImpl';
-import packFilterOptions from '../utils/packFilterOptions';
-import storage from '../utils/storage';
-import useNotifiConfig, { BlockchainEnvironment } from './useNotifiConfig';
-import useNotifiService from './useNotifiService';
 import type { NotifiEnvironment } from '@notifi-network/notifi-axios-utils';
 import {
   Alert,
@@ -39,6 +24,22 @@ import {
   UserTopic,
 } from '@notifi-network/notifi-core';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+
+import ensureSource, {
+  ensureBonfidaAuctionSource,
+  ensureMetaplexAuctionSource,
+} from '../utils/ensureSource';
+import ensureSourceGroup from '../utils/ensureSourceGroup';
+import ensureTargetGroupImpl from '../utils/ensureTargetGroup';
+import ensureTargetIds from '../utils/ensureTargetIds';
+import fetchDataImpl, {
+  FetchDataState,
+  InternalData,
+} from '../utils/fetchDataImpl';
+import packFilterOptions from '../utils/packFilterOptions';
+import storage from '../utils/storage';
+import useNotifiConfig, { BlockchainEnvironment } from './useNotifiConfig';
+import useNotifiService from './useNotifiService';
 
 /**
  * Config options for Notifi SDK

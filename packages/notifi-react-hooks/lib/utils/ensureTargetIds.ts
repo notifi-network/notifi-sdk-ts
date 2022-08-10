@@ -1,4 +1,3 @@
-import { ensureEmail, ensureSms, ensureTelegram } from './ensureTarget';
 import {
   CreateEmailTargetService,
   CreateSmsTargetService,
@@ -7,6 +6,8 @@ import {
   SmsTarget,
   TelegramTarget,
 } from '@notifi-network/notifi-core';
+
+import { ensureEmail, ensureSms, ensureTelegram } from './ensureTarget';
 
 export type ExistingData = Readonly<{
   emailTargets?: EmailTarget[];

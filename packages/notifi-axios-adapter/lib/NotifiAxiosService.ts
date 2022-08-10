@@ -1,3 +1,6 @@
+import { NotifiService } from '@notifi-network/notifi-core';
+import axios from 'axios';
+
 import beginLogInByTransactionImpl from './mutations/beginLogInByTransaction';
 import broadcastMessageImpl from './mutations/broadcastMessageImpl';
 import completeLogInByTransactionImpl from './mutations/completeLogInByTransaction';
@@ -26,8 +29,6 @@ import getSourcesImpl from './queries/getSourcesImpl';
 import getTargetGroupsImpl from './queries/getTargetGroupsImpl';
 import getTelegramTargetsImpl from './queries/getTelegramTargetsImpl';
 import getTopicsImpl from './queries/getTopicsImpl';
-import { NotifiService } from '@notifi-network/notifi-core';
-import axios from 'axios';
 
 export type NotifiAxiosServiceConfig = Readonly<{
   gqlUrl: string;

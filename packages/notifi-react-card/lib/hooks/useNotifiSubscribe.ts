@@ -1,4 +1,3 @@
-import { useNotifiSubscriptionContext } from '../context';
 import type {
   Alert,
   ClientData,
@@ -12,6 +11,8 @@ import {
   TransactionInstruction,
 } from '@solana/web3.js';
 import { useCallback, useEffect } from 'react';
+
+import { useNotifiSubscriptionContext } from '../context';
 
 export type SubscriptionData = Readonly<{
   alerts: Readonly<Record<string, Alert>>;

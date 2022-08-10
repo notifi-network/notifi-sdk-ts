@@ -1,8 +1,3 @@
-import ensureTarget, {
-  ensureEmail,
-  ensureSms,
-  ensureTelegram,
-} from './ensureTarget';
 import type {
   CreateEmailTargetService,
   CreateSmsTargetService,
@@ -11,6 +6,12 @@ import type {
   SmsTarget,
   TelegramTarget,
 } from '@notifi-network/notifi-core';
+
+import ensureTarget, {
+  ensureEmail,
+  ensureSms,
+  ensureTelegram,
+} from './ensureTarget';
 
 describe('ensureTarget', () => {
   const createSpy = jest.fn();

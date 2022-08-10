@@ -1,6 +1,7 @@
+import React from 'react';
+
 import type { DeepPartialReadonly } from '../utils';
 import { NotifiLogo } from './NotifiLogo';
-import React from 'react';
 
 type Props = Readonly<{
   classNames?: DeepPartialReadonly<{

@@ -1,4 +1,6 @@
 {
+  "importOrder": ["<THIRD_PARTY_MODULES>", "^[./]"],
+  "importOrderSeparation": true,
   "importOrderSortSpecifiers": true,
   "printWidth": 80,
   "semi": true,

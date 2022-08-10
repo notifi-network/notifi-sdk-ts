@@ -1,4 +1,3 @@
-import ensureSourceGroup from './ensureSourceGroup';
 import {
   CreateSourceGroupInput,
   CreateSourceGroupService,
@@ -7,6 +6,8 @@ import {
   UpdateSourceGroupInput,
   UpdateSourceGroupService,
 } from '@notifi-network/notifi-core';
+
+import ensureSourceGroup from './ensureSourceGroup';
 
 const createSource = (id: string): Source => {
   return {

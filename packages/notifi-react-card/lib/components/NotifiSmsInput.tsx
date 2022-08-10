@@ -1,6 +1,7 @@
+import React from 'react';
+
 import { useNotifiSubscriptionContext } from '../context';
 import type { DeepPartialReadonly } from '../utils';
-import React from 'react';
 
 type Props = Readonly<{
   classNames?: DeepPartialReadonly<{

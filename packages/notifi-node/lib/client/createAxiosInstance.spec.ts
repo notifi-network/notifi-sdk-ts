@@ -1,7 +1,8 @@
-import createAxiosInstance from './createAxiosInstance';
 import type { NotifiEnvironment } from '@notifi-network/notifi-axios-utils';
 import { NOTIFI_CONFIGS } from '@notifi-network/notifi-axios-utils';
 import type { AxiosRequestConfig } from 'axios';
+
+import createAxiosInstance from './createAxiosInstance';
 
 const envs: NotifiEnvironment[] = [
   'Production',

@@ -1,3 +1,5 @@
+import type { AxiosPost } from '@notifi-network/notifi-axios-utils';
+
 import {
   createDirectPushAlertImpl,
   createTenantUserImpl,
@@ -24,7 +26,6 @@ import {
   newDirectTenantMessage,
   newSimpleHealthThresholdMessage,
 } from '../types';
-import type { AxiosPost } from '@notifi-network/notifi-axios-utils';
 
 class NotifiClient {
   constructor(private a: AxiosPost) {}

@@ -1,6 +1,7 @@
+import { AxiosRequestConfig } from 'axios';
+
 import type { AxiosPost } from '../types';
 import { GqlError } from '../types';
-import { AxiosRequestConfig } from 'axios';
 
 type PostResponse<Result> = Readonly<{
   data?: Record<string, Result | null | undefined> | null;
