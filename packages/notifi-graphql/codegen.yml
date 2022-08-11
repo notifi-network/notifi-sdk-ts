@@ -6,6 +6,9 @@ generates:
       maybeValue: T | undefined
       namingConvention:
         enumValues: 'change-case#upperCase'
+      scalars:
+        Decimal: number
+        DateTime: string
       enumsAsTypes: true
     plugins:
       - typescript

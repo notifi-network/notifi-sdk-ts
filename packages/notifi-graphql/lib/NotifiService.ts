@@ -1,4 +1,5 @@
 import { GraphQLClient } from 'graphql-request';
+import { v4 as uuid } from 'uuid';
 
 import type * as Generated from './gql/generated';
 import { getSdk } from './gql/generated';
@@ -35,196 +36,234 @@ export class NotifiService
     Operations.UpdateSourceGroupService,
     Operations.UpdateTargetGroupService
 {
-  _rawClient: GraphQLClient;
-  _typedClient: ReturnType<typeof getSdk>;
+  private _jwt: string | undefined;
+  private _typedClient: ReturnType<typeof getSdk>;
 
   constructor(graphQLClient: GraphQLClient) {
-    this._rawClient = graphQLClient;
     this._typedClient = getSdk(graphQLClient);
   }
 
   async beginLogInByTransaction(
     variables: Generated.BeginLogInByTransactionMutationVariables,
   ): Promise<Generated.BeginLogInByTransactionMutation> {
-    return this._typedClient.beginLogInByTransaction(variables);
+    const headers = this._requestHeaders();
+    return this._typedClient.beginLogInByTransaction(variables, headers);
   }
 
   async broadcastMessage(
     variables: Generated.BroadcastMessageMutationVariables,
   ): Promise<Generated.BroadcastMessageMutation> {
-    return this._typedClient.broadcastMessage(variables);
+    const headers = this._requestHeaders();
+    return this._typedClient.broadcastMessage(variables, headers);
   }
 
   async completeLogInByTransaction(
     variables: Generated.CompleteLogInByTransactionMutationVariables,
   ): Promise<Generated.CompleteLogInByTransactionMutation> {
+    const headers = this._requestHeaders();
     const result = await this._typedClient.completeLogInByTransaction(
       variables,
+      headers,
     );
-
     const token = result.completeLogInByTransaction?.authorization?.token;
     if (token !== undefined) {
-      this._rawClient.setHeader('Authorization', `Bearer ${token}`);
+      this._jwt = token;
     }
-
     return result;
   }
 
   async createAlert(
     variables: Generated.CreateAlertMutationVariables,
   ): Promise<Generated.CreateAlertMutation> {
-    return this._typedClient.createAlert(variables);
+    const headers = this._requestHeaders();
+    return this._typedClient.createAlert(variables, headers);
   }
 
   async createEmailTarget(
     variables: Generated.CreateEmailTargetMutationVariables,
   ): Promise<Generated.CreateEmailTargetMutation> {
-    return this._typedClient.createEmailTarget(variables);
+    const headers = this._requestHeaders();
+    return this._typedClient.createEmailTarget(variables, headers);
   }
 
   async createSmsTarget(
     variables: Generated.CreateSmsTargetMutationVariables,
   ): Promise<Generated.CreateSmsTargetMutation> {
-    return this._typedClient.createSmsTarget(variables);
+    const headers = this._requestHeaders();
+    return this._typedClient.createSmsTarget(variables, headers);
   }
 
   async createSource(
     variables: Generated.CreateSourceMutationVariables,
   ): Promise<Generated.CreateSourceMutation> {
-    return this._typedClient.createSource(variables);
+    const headers = this._requestHeaders();
+    return this._typedClient.createSource(variables, headers);
   }
 
   async createSourceGroup(
     variables: Generated.CreateSourceGroupMutationVariables,
   ): Promise<Generated.CreateSourceGroupMutation> {
-    return this._typedClient.createSourceGroup(variables);
+    const headers = this._requestHeaders();
+    return this._typedClient.createSourceGroup(variables, headers);
   }
 
   async createTargetGroup(
     variables: Generated.CreateTargetGroupMutationVariables,
   ): Promise<Generated.CreateTargetGroupMutation> {
-    return this._typedClient.createTargetGroup(variables);
+    const headers = this._requestHeaders();
+    return this._typedClient.createTargetGroup(variables, headers);
   }
 
   async createTelegramTarget(
     variables: Generated.CreateTelegramTargetMutationVariables,
   ): Promise<Generated.CreateTelegramTargetMutation> {
-    return this._typedClient.createTelegramTarget(variables);
+    const headers = this._requestHeaders();
+    return this._typedClient.createTelegramTarget(variables, headers);
   }
 
   async deleteAlert(
     variables: Generated.DeleteAlertMutationVariables,
   ): Promise<Generated.DeleteAlertMutation> {
-    return this._typedClient.deleteAlert(variables);
+    const headers = this._requestHeaders();
+    return this._typedClient.deleteAlert(variables, headers);
   }
 
   async deleteSourceGroup(
     variables: Generated.DeleteSourceGroupMutationVariables,
   ): Promise<Generated.DeleteSourceGroupMutation> {
-    return this._typedClient.deleteSourceGroup(variables);
+    const headers = this._requestHeaders();
+    return this._typedClient.deleteSourceGroup(variables, headers);
   }
 
   async deleteTargetGroup(
     variables: Generated.DeleteTargetGroupMutationVariables,
   ): Promise<Generated.DeleteTargetGroupMutation> {
-    return this._typedClient.deleteTargetGroup(variables);
+    const headers = this._requestHeaders();
+    return this._typedClient.deleteTargetGroup(variables, headers);
   }
 
   async getAlerts(
     variables: Generated.GetAlertsQueryVariables,
   ): Promise<Generated.GetAlertsQuery> {
-    return this._typedClient.getAlerts(variables);
+    const headers = this._requestHeaders();
+    return this._typedClient.getAlerts(variables, headers);
   }
 
   async getConfigurationForDapp(
     variables: Generated.GetConfigurationForDappQueryVariables,
   ): Promise<Generated.GetConfigurationForDappQuery> {
-    return this._typedClient.getConfigurationForDapp(variables);
+    const headers = this._requestHeaders();
+    return this._typedClient.getConfigurationForDapp(variables, headers);
   }
 
   async getFilters(
     variables: Generated.GetFiltersQueryVariables,
   ): Promise<Generated.GetFiltersQuery> {
-    return this._typedClient.getFilters(variables);
+    const headers = this._requestHeaders();
+    return this._typedClient.getFilters(variables, headers);
   }
 
   async getSmsTargets(
     variables: Generated.GetSmsTargetsQueryVariables,
   ): Promise<Generated.GetSmsTargetsQuery> {
-    return this._typedClient.getSmsTargets(variables);
+    const headers = this._requestHeaders();
+    return this._typedClient.getSmsTargets(variables, headers);
   }
 
   async getSourceGroups(
     variables: Generated.GetSourceGroupsQueryVariables,
   ): Promise<Generated.GetSourceGroupsQuery> {
-    return this._typedClient.getSourceGroups(variables);
+    const headers = this._requestHeaders();
+    return this._typedClient.getSourceGroups(variables, headers);
   }
 
   async getSources(
     variables: Generated.GetSourcesQueryVariables,
   ): Promise<Generated.GetSourcesQuery> {
-    return this._typedClient.getSources(variables);
+    const headers = this._requestHeaders();
+    return this._typedClient.getSources(variables, headers);
   }
 
   async getTargetGroups(
     variables: Generated.GetTargetGroupsQueryVariables,
   ): Promise<Generated.GetTargetGroupsQuery> {
-    return this._typedClient.getTargetGroups(variables);
+    const headers = this._requestHeaders();
+    return this._typedClient.getTargetGroups(variables, headers);
   }
 
   async getTelegramTargets(
     variables: Generated.GetTelegramTargetsQueryVariables,
   ): Promise<Generated.GetTelegramTargetsQuery> {
-    return this._typedClient.getTelegramTargets(variables);
+    const headers = this._requestHeaders();
+    return this._typedClient.getTelegramTargets(variables, headers);
   }
 
   async getTopics(
     variables: Generated.GetTopicsQueryVariables,
   ): Promise<Generated.GetTopicsQuery> {
-    return this._typedClient.getTopics(variables);
+    const headers = this._requestHeaders();
+    return this._typedClient.getTopics(variables, headers);
   }
 
   async logInFromDapp(
     variables: Generated.LogInFromDappMutationVariables,
   ): Promise<Generated.LogInFromDappMutation> {
-    const result = await this._typedClient.logInFromDapp(variables);
-
+    const headers = this._requestHeaders();
+    const result = await this._typedClient.logInFromDapp(variables, headers);
     const token = result.logInFromDapp?.authorization?.token;
     if (token !== undefined) {
-      this._rawClient.setHeader('Authorization', `Bearer ${token}`);
+      this._jwt = token;
     }
-
     return result;
   }
 
   async refreshAuthorization(
     variables: Generated.RefreshAuthorizationMutationVariables,
   ): Promise<Generated.RefreshAuthorizationMutation> {
-    const result = await this._typedClient.refreshAuthorization(variables);
-
+    const headers = this._requestHeaders();
+    const result = await this._typedClient.refreshAuthorization(
+      variables,
+      headers,
+    );
     const token = result.refreshAuthorization?.token;
     if (token !== undefined) {
-      this._rawClient.setHeader('Authorization', `Bearer ${token}`);
+      this._jwt = token;
     }
-
     return result;
   }
 
   async sendEmailTargetVerificationRequest(
     variables: Generated.SendEmailTargetVerificationRequestMutationVariables,
   ): Promise<Generated.SendEmailTargetVerificationRequestMutation> {
-    return this._typedClient.sendEmailTargetVerificationRequest(variables);
+    const headers = this._requestHeaders();
+    return this._typedClient.sendEmailTargetVerificationRequest(
+      variables,
+      headers,
+    );
   }
 
   async updateSourceGroup(
     variables: Generated.UpdateSourceGroupMutationVariables,
   ): Promise<Generated.UpdateSourceGroupMutation> {
-    return this._typedClient.updateSourceGroup(variables);
+    const headers = this._requestHeaders();
+    return this._typedClient.updateSourceGroup(variables, headers);
   }
 
   async updateTargetGroup(
     variables: Generated.UpdateTargetGroupMutationVariables,
   ): Promise<Generated.UpdateTargetGroupMutation> {
-    return this._typedClient.updateTargetGroup(variables);
+    const headers = this._requestHeaders();
+    return this._typedClient.updateTargetGroup(variables, headers);
+  }
+
+  private _requestHeaders(): HeadersInit {
+    const requestId = uuid();
+    const headers: HeadersInit = [['X-Request-Id', requestId]];
+
+    if (this._jwt !== undefined) {
+      headers.push(['Authorization', `Bearer ${this._jwt}`]);
+    }
+
+    return headers;
   }
 }
