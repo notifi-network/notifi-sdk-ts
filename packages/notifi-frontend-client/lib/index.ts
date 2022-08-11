@@ -1,3 +1,2 @@
-export default function () {
-  throw new Error('Unimplemented');
-}
+export * from './configuration/NotifiFrontendConfiguration';
+export * from './NotifiFrontendClient';

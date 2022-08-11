@@ -28,5 +28,8 @@
   "bugs": {
     "url": "https://github.com/notifi-network/notifi-sdk-ts/issues"
   },
-  "homepage": "https://github.com/notifi-network/notifi-sdk-ts#readme"
+  "homepage": "https://github.com/notifi-network/notifi-sdk-ts#readme",
+  "dependencies": {
+    "localforage": "^1.10.0"
+  }
 }
