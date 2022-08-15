@@ -8,6 +8,7 @@ export * from './CreateSmsTarget';
 export * from './CreateSourceGroup';
 export * from './CreateTargetGroup';
 export * from './CreateTelegramTarget';
+export * from './CreateWebhookTarget';
 export * from './DeleteAlert';
 export * from './DeleteSourceGroup';
 export * from './DeleteTargetGroup';

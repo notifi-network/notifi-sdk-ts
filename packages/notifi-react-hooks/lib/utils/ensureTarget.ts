@@ -72,6 +72,16 @@ const ensureTelegram = ensureTarget(
   (value) => value.toLowerCase(),
 );
 
-export { ensureEmail, ensureSms, ensureTelegram };
+const ensureWebhook = ensureTarget(
+  async (service: CreateWebhookTargetService, value: string) =>
+    await service.createWebhookTarget({
+      name: value.toLowerCase(),
+      value: value.toLowerCase(),
+    }),
+  (arg: WebhookTarget) => arg.telegramId?.toLowerCase() ?? null,
+  (value) => value.toLowerCase(),
+);
+
+export { ensureEmail, ensureSms, ensureTelegram, ensureWebhook };
 
 export default ensureTarget;
