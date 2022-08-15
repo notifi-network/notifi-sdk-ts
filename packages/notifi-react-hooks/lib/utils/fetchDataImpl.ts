@@ -10,11 +10,13 @@ import {
   GetTargetGroupsService,
   GetTelegramTargetsService,
   GetTopicsService,
+  GetWebhookTargetsService,
   SmsTarget,
   Source,
   SourceGroup,
   TargetGroup,
   TelegramTarget,
+  WebhookTarget,
 } from '@notifi-network/notifi-core';
 
 export type InternalData = {
@@ -26,6 +28,7 @@ export type InternalData = {
   emailTargets: EmailTarget[];
   smsTargets: SmsTarget[];
   telegramTargets: TelegramTarget[];
+  webhookTargets: WebhookTarget[];
 };
 
 export type FetchDataState = {
@@ -45,7 +48,8 @@ type Service = GetAlertsService &
   GetEmailTargetsService &
   GetSmsTargetsService &
   GetTelegramTargetsService &
-  GetTopicsService;
+  GetTopicsService &
+  GetWebhookTargetsService;
 
 const doFetchData = async (service: Service): Promise<InternalData> => {
   const [
@@ -56,6 +60,7 @@ const doFetchData = async (service: Service): Promise<InternalData> => {
     emailTargets,
     smsTargets,
     telegramTargets,
+    webhookTargets,
   ] = await Promise.all([
     service.getAlerts(),
     service.getSources(),
@@ -64,6 +69,7 @@ const doFetchData = async (service: Service): Promise<InternalData> => {
     service.getEmailTargets(),
     service.getSmsTargets(),
     service.getTelegramTargets(),
+    service.getWebhookTargets(),
   ]);
 
   const filterIds = new Set<string | null>();
@@ -86,6 +92,7 @@ const doFetchData = async (service: Service): Promise<InternalData> => {
     emailTargets: [...emailTargets],
     smsTargets: [...smsTargets],
     telegramTargets: [...telegramTargets],
+    webhookTargets: [...webhookTargets],
   };
 };
 

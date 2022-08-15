@@ -12,3 +12,4 @@ export * from './TargetType';
 export * from './TelegramTarget';
 export * from './UserTopic';
 export * from './User';
+export * from './WebhookTarget';

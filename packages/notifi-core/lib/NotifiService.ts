@@ -10,6 +10,7 @@ export type NotifiService = Operations.BroadcastMessageService &
   Operations.CreateSourceGroupService &
   Operations.CreateTargetGroupService &
   Operations.CreateTelegramTargetService &
+  Operations.CreateWebhookTargetService &
   Operations.DeleteAlertService &
   Operations.DeleteSourceGroupService &
   Operations.DeleteTargetGroupService &
@@ -23,6 +24,7 @@ export type NotifiService = Operations.BroadcastMessageService &
   Operations.GetTargetGroupsService &
   Operations.GetTelegramTargetsService &
   Operations.GetTopicsService &
+  Operations.GetWebhookTargetsService &
   Operations.LogInFromDappService &
   Operations.RefreshAuthorizationService &
   Operations.SendEmailTargetVerificationRequestService &
