@@ -1,38 +1,24 @@
 import { NotifiService } from '@notifi-network/notifi-graphql';
-
 import {
+  BeginLogInByTransactionInput,
   BeginLogInByTransactionResult,
   CompleteLogInByTransactionInput,
   CompleteLogInByTransactionMutation,
   UserFragmentFragment,
-  WalletBlockchain,
-} from '../../notifi-graphql/lib/gql/generated';
+} from '@notifi-network/notifi-graphql/lib/gql/generated';
+
 import type { NotifiFrontendConfiguration } from './configuration/NotifiFrontendConfiguration';
 import type { NotifiStorage } from './storage';
 import { notNullOrEmpty } from './utils/notNullOrEmpty';
 
 export type SignMessageFunction = (message: Uint8Array) => Promise<Uint8Array>;
 
-type LoginProps = {
-  walletPublicKey: string;
-  readonly signMessage: SignMessageFunction;
-};
+type BeginLoginProps = Omit<BeginLogInByTransactionInput, 'dappAddress'>;
 
-type SignMessageProps = {
-  walletPublicKey: string;
-  readonly signMessage: SignMessageFunction;
-  readonly timestamp: number;
-};
-type BeginLoginProps = {
-  walletBlockchain: WalletBlockchain;
-  walletPublicKey: string;
-};
-
-type CompleteLoginProps = {
-  input: CompleteLogInByTransactionInput;
-};
-
-let clientRandomUuid: string;
+type CompleteLoginProps = Omit<
+  CompleteLogInByTransactionInput,
+  'dappAddress, randomUuid'
+>;
 
 // Don't split this line into multiple lines due to some packagers or other build modules that
 // modify the string literal, which then causes authentication to fail due to different strings
@@ -43,6 +29,7 @@ export class NotifiFrontendClient {
     private _configuration: NotifiFrontendConfiguration,
     private _service: NotifiService,
     private _storage: NotifiStorage,
+    private clientRandomUuid: string | null,
   ) {}
 
   async logIn({
@@ -105,41 +92,41 @@ export class NotifiFrontendClient {
 
   async beginLoginViaTransaction({
     walletBlockchain,
-    walletPublicKey,
+    walletAddress,
   }: BeginLoginProps): Promise<BeginLogInByTransactionResult> {
     const { dappAddress } = this._configuration;
 
     const result = await this._service.beginLogInByTransaction({
-      walletAddress: walletPublicKey,
+      walletAddress: walletAddress,
       walletBlockchain: walletBlockchain,
       dappAddress,
     });
 
     const nonce = result.beginLogInByTransaction.nonce;
 
-    clientRandomUuid = await window.crypto.randomUUID();
+    this.clientRandomUuid = await window.crypto.randomUUID();
 
     return { nonce };
   }
 
   async completeLoginViaTransaction({
     walletBlockchain,
-    walletPublicKey,
-    input,
-  }: BeginLoginProps &
-    CompleteLoginProps): Promise<CompleteLogInByTransactionMutation> {
-    const { transactionSignature } = input;
+    walletAddress,
+    transactionSignature,
+  }: CompleteLoginProps): Promise<CompleteLogInByTransactionMutation> {
     const { dappAddress } = this._configuration;
 
-    if (!clientRandomUuid) {
-      throw 'BeginLoginViaTransaction is required to be called first';
+    if (this.clientRandomUuid == null) {
+      throw new Error(
+        'BeginLoginViaTransaction is required to be called first',
+      );
     }
 
     const result = await this._service.completeLogInByTransaction({
-      walletAddress: walletPublicKey,
+      walletAddress: walletAddress,
       walletBlockchain: walletBlockchain,
       dappAddress,
-      randomUuid: clientRandomUuid,
+      randomUuid: this.clientRandomUuid,
       transactionSignature,
     });
 
