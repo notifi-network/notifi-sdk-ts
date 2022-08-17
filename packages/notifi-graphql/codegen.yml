@@ -1,16 +1,13 @@
 schema: https://api.dev.notifi.network/gql/
 documents: ./lib/gql/**/*.gql.ts
 generates:
-   ./lib/gql/generated.ts:
+  ./lib/gql/generated.ts:
     config:
       maybeValue: T | undefined
-      scalars: 
-        Decimal: number
-        DateTime: string
-      namingConvention: 
-        enumValues: "change-case#upperCase"
-      # TODO: enable this once we migrate to using generated GQL types everywhere
-      # enumsAsTypes: true
+      namingConvention:
+        enumValues: 'change-case#upperCase'
+      enumsAsTypes: true
     plugins:
       - typescript
       - typescript-operations
+      - typescript-graphql-request
