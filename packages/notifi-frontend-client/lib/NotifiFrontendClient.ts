@@ -1,11 +1,27 @@
 import { NotifiService } from '@notifi-network/notifi-graphql';
-import { UserFragmentFragment } from 'notifi-graphql/lib/gql/generated';
 
+import {
+  BeginLogInByTransactionResult,
+  CompleteLogInByTransactionInput,
+  UserFragmentFragment,
+  WalletBlockchain,
+} from '../../notifi-graphql/lib/gql/generated';
 import type { NotifiFrontendConfiguration } from './configuration/NotifiFrontendConfiguration';
 import type { NotifiStorage } from './storage';
 import { notNullOrEmpty } from './utils/notNullOrEmpty';
 
 export type SignMessageFunction = (message: Uint8Array) => Promise<Uint8Array>;
+
+export type BeginLoginProps = {
+  walletBlockchain: WalletBlockchain;
+  walletPublicKey: string;
+};
+
+export type CompleteLoginProps = {
+  input: CompleteLogInByTransactionInput;
+};
+
+let clientRandomUuid: string;
 
 // Don't split this line into multiple lines due to some packagers or other build modules that
 // modify the string literal, which then causes authentication to fail due to different strings
@@ -27,6 +43,7 @@ export class NotifiFrontendClient {
     const signature = await this._signMessage({ signMessage, timestamp });
 
     const { walletPublicKey, dappAddress } = this._configuration;
+
     const result = await this._service.logInFromDapp({
       walletPublicKey,
       dappAddress,
@@ -72,5 +89,49 @@ export class NotifiFrontendClient {
         : Promise.resolve();
 
     await Promise.all([saveAuthorizationPromise, saveRolesPromise]);
+  }
+
+  async beginLoginViaTransaction({
+    walletBlockchain,
+    walletPublicKey,
+  }: BeginLoginProps): Promise<BeginLogInByTransactionResult> {
+    const { dappAddress } = this._configuration;
+
+    const result = await this._service.beginLogInByTransaction({
+      walletAddress: walletPublicKey,
+      walletBlockchain: walletBlockchain,
+      dappAddress,
+    });
+
+    const nonce = result.beginLogInByTransaction.nonce;
+
+    clientRandomUuid = await window.crypto.randomUUID();
+
+    return { nonce };
+  }
+
+  async completeLoginViaTransaction({
+    walletBlockchain,
+    walletPublicKey,
+    input,
+  }: BeginLoginProps & CompleteLoginProps): Promise<UserFragmentFragment> {
+    const { transactionSignature } = input;
+    const { dappAddress } = this._configuration;
+
+    if (!clientRandomUuid) {
+      throw 'BeginLoginViaTransaction is required to be called first';
+    }
+
+    const result = await this._service.completeLogInByTransaction({
+      walletAddress: walletPublicKey,
+      walletBlockchain: walletBlockchain,
+      dappAddress,
+      randomUuid: clientRandomUuid,
+      transactionSignature,
+    });
+
+    await this._handleLogInResult(result);
+
+    return result;
   }
 }
