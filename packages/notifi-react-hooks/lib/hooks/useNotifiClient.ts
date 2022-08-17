@@ -497,8 +497,12 @@ const useNotifiClient = (
           fetchDataRef.current,
         );
 
-        const { emailTargetIds, smsTargetIds, telegramTargetIds } =
-          await ensureTargetIds(service, newData, input);
+        const {
+          emailTargetIds,
+          smsTargetIds,
+          telegramTargetIds,
+          webhookTargetIds,
+        } = await ensureTargetIds(service, newData, input);
 
         const targetGroup = await ensureTargetGroupImpl(
           service,
@@ -508,6 +512,7 @@ const useNotifiClient = (
             emailTargetIds,
             smsTargetIds,
             telegramTargetIds,
+            webhookTargetIds,
           },
         );
 
@@ -550,8 +555,12 @@ const useNotifiClient = (
           Date,
           fetchDataRef.current,
         );
-        const { emailTargetIds, smsTargetIds, telegramTargetIds } =
-          await ensureTargetIds(service, newData, input);
+        const {
+          emailTargetIds,
+          smsTargetIds,
+          telegramTargetIds,
+          webhookTargetIds,
+        } = await ensureTargetIds(service, newData, input);
 
         const existingAlert = newData.alerts.find((a) => a.id === alertId);
         if (existingAlert === undefined) {
@@ -570,6 +579,7 @@ const useNotifiClient = (
             emailTargetIds,
             smsTargetIds,
             telegramTargetIds,
+            webhookTargetIds,
           },
         );
 
@@ -628,8 +638,12 @@ const useNotifiClient = (
           Date,
           fetchDataRef.current,
         );
-        const { emailTargetIds, smsTargetIds, telegramTargetIds } =
-          await ensureTargetIds(service, newData, input);
+        const {
+          emailTargetIds,
+          smsTargetIds,
+          telegramTargetIds,
+          webhookTargetIds,
+        } = await ensureTargetIds(service, newData, input);
 
         const existingAlert = newData.alerts.find((a) => a.name === name);
         if (existingAlert !== undefined) {
@@ -666,6 +680,7 @@ const useNotifiClient = (
             emailTargetIds,
             smsTargetIds,
             telegramTargetIds,
+            webhookTargetIds,
           },
         );
 

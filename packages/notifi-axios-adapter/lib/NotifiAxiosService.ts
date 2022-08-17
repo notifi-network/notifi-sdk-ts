@@ -8,6 +8,7 @@ import createSourceGroupImpl from './mutations/createSourceGroupImpl';
 import createSourceImpl from './mutations/createSourceImpl';
 import createTargetGroupImpl from './mutations/createTargetGroupImpl';
 import createTelegramTargetImpl from './mutations/createTelegramTargetImpl';
+import createWebhookTargetImpl from './mutations/createWebhookTargetImpl';
 import deleteAlertImpl from './mutations/deleteAlertImpl';
 import deleteSourceGroupImpl from './mutations/deleteSourceGroupImpl';
 import deleteTargetGroupImpl from './mutations/deleteTargetGroupImpl';
@@ -26,6 +27,7 @@ import getSourcesImpl from './queries/getSourcesImpl';
 import getTargetGroupsImpl from './queries/getTargetGroupsImpl';
 import getTelegramTargetsImpl from './queries/getTelegramTargetsImpl';
 import getTopicsImpl from './queries/getTopicsImpl';
+import getWebhookTargetsImpl from './queries/getWebhookTargetsImpl';
 import { NotifiService } from '@notifi-network/notifi-core';
 import axios from 'axios';
 
@@ -44,6 +46,7 @@ export class NotifiAxiosService implements NotifiService {
   createSourceGroup: NotifiService['createSourceGroup'];
   createTargetGroup: NotifiService['createTargetGroup'];
   createTelegramTarget: NotifiService['createTelegramTarget'];
+  createWebhookTarget: NotifiService['createWebhookTarget'];
   deleteAlert: NotifiService['deleteAlert'];
   deleteSourceGroup: NotifiService['deleteSourceGroup'];
   deleteTargetGroup: NotifiService['deleteTargetGroup'];
@@ -57,6 +60,7 @@ export class NotifiAxiosService implements NotifiService {
   getTargetGroups: NotifiService['getTargetGroups'];
   getTelegramTargets: NotifiService['getTelegramTargets'];
   getTopics: NotifiService['getTopics'];
+  getWebhookTargets: NotifiService['getWebhookTargets'];
   logInFromDapp: NotifiService['logInFromDapp'];
   refreshAuthorization: NotifiService['refreshAuthorization'];
   sendEmailTargetVerificationRequest: NotifiService['sendEmailTargetVerificationRequest'];
@@ -97,6 +101,7 @@ export class NotifiAxiosService implements NotifiService {
     this.createTelegramTarget = createTelegramTargetImpl.bind(null, a);
     this.createSource = createSourceImpl.bind(null, a);
     this.createSourceGroup = createSourceGroupImpl.bind(null, a);
+    this.createWebhookTarget = createWebhookTargetImpl.bind(null, a);
     this.deleteAlert = deleteAlertImpl.bind(null, a);
     this.deleteSourceGroup = deleteSourceGroupImpl.bind(null, a);
     this.deleteTargetGroup = deleteTargetGroupImpl.bind(null, a);
@@ -110,6 +115,7 @@ export class NotifiAxiosService implements NotifiService {
     this.getTargetGroups = getTargetGroupsImpl.bind(null, a);
     this.getTelegramTargets = getTelegramTargetsImpl.bind(null, a);
     this.getTopics = getTopicsImpl.bind(null, a);
+    this.getWebhookTargets = getWebhookTargetsImpl.bind(null, a);
     this.logInFromDapp = logInFromDappImpl.bind(null, a);
     this.refreshAuthorization = refreshAuthorizationImpl.bind(null, a);
     this.sendEmailTargetVerificationRequest =

@@ -1,10 +1,14 @@
 import {
+  ClientCreateWebhookParams,
   CreateEmailTargetService,
   CreateSmsTargetService,
   CreateTelegramTargetService,
+  CreateWebhookTargetInput,
+  CreateWebhookTargetService,
   EmailTarget,
   SmsTarget,
   TelegramTarget,
+  WebhookTarget,
 } from '@notifi-network/notifi-core';
 
 export type CreateFunc<Service, T> = (
@@ -72,6 +76,35 @@ const ensureTelegram = ensureTarget(
   (value) => value.toLowerCase(),
 );
 
-export { ensureEmail, ensureSms, ensureTelegram };
+// Webhook cannot use ensureTarget due to requiring more than one parameter in its creation
+const ensureWebhook = async (
+  service: CreateWebhookTargetService,
+  existing: Array<WebhookTarget> | undefined,
+  params: ClientCreateWebhookParams | undefined,
+) => {
+  if (params === undefined) {
+    return null;
+  }
+
+  const found = existing?.find(
+    (it) =>
+      it.url.toLowerCase() === params.url.toLowerCase() &&
+      it.format === params.format,
+  );
+
+  if (found !== undefined) {
+    return found.id;
+  }
+
+  const created = await service.createWebhookTarget({
+    ...params,
+    name: params.url.toLowerCase(),
+    url: params.url.toLowerCase(),
+  });
+  existing?.push(created);
+  return created.id;
+};
+
+export { ensureEmail, ensureSms, ensureTelegram, ensureWebhook };
 
 export default ensureTarget;

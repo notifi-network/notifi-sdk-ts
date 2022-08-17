@@ -10,7 +10,7 @@ import {
   User,
   UserTopic,
 } from './models';
-import { CreateSourceInput } from './operations';
+import { CreateSourceInput, CreateWebhookTargetInput } from './operations';
 
 export type ClientData = Readonly<{
   alerts: ReadonlyArray<Alert>;
@@ -89,6 +89,7 @@ export type ClientUpdateAlertInput = Readonly<{
   emailAddress: string | null;
   phoneNumber: string | null;
   telegramId: string | null;
+  webhook?: ClientCreateWebhookParams;
 }>;
 
 /**
@@ -117,7 +118,10 @@ export type ClientCreateAlertInput = Readonly<{
   telegramId: string | null;
   groupName?: string;
   targetGroupName?: string;
+  webhook?: ClientCreateWebhookParams;
 }>;
+
+export type ClientCreateWebhookParams = Omit<CreateWebhookTargetInput, 'name'>;
 
 /**
  * Input param for creating a new Metaplex Auction Source
@@ -177,6 +181,7 @@ export type ClientEnsureTargetGroupInput = Readonly<{
   emailAddress: string | null;
   phoneNumber: string | null;
   telegramId: string | null;
+  webhook?: ClientCreateWebhookParams;
 }>;
 
 /**
