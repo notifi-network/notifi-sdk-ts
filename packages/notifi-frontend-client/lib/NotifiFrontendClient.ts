@@ -121,7 +121,9 @@ export class NotifiFrontendClient {
     const { dappAddress } = this._configuration;
 
     if (!clientRandomUuid) {
-      throw 'BeginLoginViaTransaction is required to be called first';
+      throw new Error(
+        'BeginLoginViaTransaction is required to be called first',
+      );
     }
 
     const result = await this._service.completeLogInByTransaction({
