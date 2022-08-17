@@ -1,12 +1,12 @@
 import { NotifiService } from '@notifi-network/notifi-graphql';
-
 import {
   BeginLogInByTransactionResult,
   CompleteLogInByTransactionInput,
   CompleteLogInByTransactionMutation,
   UserFragmentFragment,
   WalletBlockchain,
-} from '../../notifi-graphql/lib/gql/generated';
+} from '@notifi-network/notifi-graphql/lib/gql/generated';
+
 import type { NotifiFrontendConfiguration } from './configuration/NotifiFrontendConfiguration';
 import type { NotifiStorage } from './storage';
 import { notNullOrEmpty } from './utils/notNullOrEmpty';
