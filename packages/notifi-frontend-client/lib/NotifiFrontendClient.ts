@@ -22,8 +22,6 @@ type CompleteLoginProps = {
   input: CompleteLogInByTransactionInput;
 };
 
-let clientRandomUuid: string;
-
 // Don't split this line into multiple lines due to some packagers or other build modules that
 // modify the string literal, which then causes authentication to fail due to different strings
 export const SIGNING_MESSAGE = `Sign in with Notifi \n\n    No password needed or gas is needed. \n\n    Clicking “Approve” only means you have proved this wallet is owned by you! \n\n    This request will not trigger any transaction or cost any gas fees. \n\n    Use of our website and service is subject to our terms of service and privacy policy. \n`;
@@ -33,6 +31,7 @@ export class NotifiFrontendClient {
     private _configuration: NotifiFrontendConfiguration,
     private _service: NotifiService,
     private _storage: NotifiStorage,
+    private clientRandomUuid: string | null,
   ) {}
 
   async logIn({
@@ -106,7 +105,7 @@ export class NotifiFrontendClient {
 
     const nonce = result.beginLogInByTransaction.nonce;
 
-    clientRandomUuid = await window.crypto.randomUUID();
+    this.clientRandomUuid = await window.crypto.randomUUID();
 
     return { nonce };
   }
@@ -120,7 +119,7 @@ export class NotifiFrontendClient {
     const { transactionSignature } = input;
     const { dappAddress } = this._configuration;
 
-    if (!clientRandomUuid) {
+    if (this.clientRandomUuid == null) {
       throw new Error(
         'BeginLoginViaTransaction is required to be called first',
       );
@@ -130,7 +129,7 @@ export class NotifiFrontendClient {
       walletAddress: walletPublicKey,
       walletBlockchain: walletBlockchain,
       dappAddress,
-      randomUuid: clientRandomUuid,
+      randomUuid: this.clientRandomUuid,
       transactionSignature,
     });
 
