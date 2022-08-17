@@ -3,6 +3,7 @@ import { NotifiService } from '@notifi-network/notifi-graphql';
 import {
   BeginLogInByTransactionResult,
   CompleteLogInByTransactionInput,
+  CompleteLogInByTransactionMutation,
   UserFragmentFragment,
   WalletBlockchain,
 } from '../../notifi-graphql/lib/gql/generated';
@@ -12,12 +13,12 @@ import { notNullOrEmpty } from './utils/notNullOrEmpty';
 
 export type SignMessageFunction = (message: Uint8Array) => Promise<Uint8Array>;
 
-export type BeginLoginProps = {
+type BeginLoginProps = {
   walletBlockchain: WalletBlockchain;
   walletPublicKey: string;
 };
 
-export type CompleteLoginProps = {
+type CompleteLoginProps = {
   input: CompleteLogInByTransactionInput;
 };
 
@@ -114,7 +115,8 @@ export class NotifiFrontendClient {
     walletBlockchain,
     walletPublicKey,
     input,
-  }: BeginLoginProps & CompleteLoginProps): Promise<UserFragmentFragment> {
+  }: BeginLoginProps &
+    CompleteLoginProps): Promise<CompleteLogInByTransactionMutation> {
     const { transactionSignature } = input;
     const { dappAddress } = this._configuration;
 
@@ -130,7 +132,7 @@ export class NotifiFrontendClient {
       transactionSignature,
     });
 
-    await this._handleLogInResult(result);
+    await this._handleLogInResult(result.completeLogInByTransaction);
 
     return result;
   }
