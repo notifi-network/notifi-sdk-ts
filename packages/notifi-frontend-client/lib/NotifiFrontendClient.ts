@@ -13,6 +13,16 @@ import { notNullOrEmpty } from './utils/notNullOrEmpty';
 
 export type SignMessageFunction = (message: Uint8Array) => Promise<Uint8Array>;
 
+type LoginProps = {
+  walletPublicKey: string;
+  readonly signMessage: SignMessageFunction;
+};
+
+type SignMessageProps = {
+  walletPublicKey: string;
+  readonly signMessage: SignMessageFunction;
+  readonly timestamp: number;
+};
 type BeginLoginProps = {
   walletBlockchain: WalletBlockchain;
   walletPublicKey: string;
@@ -36,14 +46,17 @@ export class NotifiFrontendClient {
   ) {}
 
   async logIn({
+    walletPublicKey,
     signMessage,
-  }: Readonly<{ signMessage: SignMessageFunction }>): Promise<
-    UserFragmentFragment | undefined
-  > {
+  }: LoginProps): Promise<UserFragmentFragment | undefined> {
     const timestamp = Math.round(Date.now() / 1000);
-    const signature = await this._signMessage({ signMessage, timestamp });
+    const signature = await this._signMessage({
+      walletPublicKey,
+      signMessage,
+      timestamp,
+    });
 
-    const { walletPublicKey, dappAddress } = this._configuration;
+    const { dappAddress } = this._configuration;
 
     const result = await this._service.logInFromDapp({
       walletPublicKey,
@@ -57,13 +70,11 @@ export class NotifiFrontendClient {
   }
 
   private async _signMessage({
+    walletPublicKey,
     signMessage,
     timestamp,
-  }: Readonly<{
-    signMessage: SignMessageFunction;
-    timestamp: number;
-  }>): Promise<string> {
-    const { walletPublicKey, dappAddress } = this._configuration;
+  }: SignMessageProps): Promise<string> {
+    const { dappAddress } = this._configuration;
 
     const messageBuffer = new TextEncoder().encode(
       `${SIGNING_MESSAGE} \n 'Nonce:' ${walletPublicKey}${dappAddress}${timestamp.toString()}`,

@@ -7,5 +7,4 @@ export type NotifiEnvironment =
 export type NotifiFrontendConfiguration = Readonly<{
   dappAddress: string;
   env: NotifiEnvironment;
-  walletPublicKey: string;
 }>;
