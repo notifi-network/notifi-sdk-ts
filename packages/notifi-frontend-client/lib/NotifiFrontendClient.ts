@@ -29,7 +29,7 @@ export class NotifiFrontendClient {
     private _configuration: NotifiFrontendConfiguration,
     private _service: NotifiService,
     private _storage: NotifiStorage,
-    private clientRandomUuid: string | null,
+    private clientRandomUuid: string | null = null,
   ) {}
 
   async logIn({
