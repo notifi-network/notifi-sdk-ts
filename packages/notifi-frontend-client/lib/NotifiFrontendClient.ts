@@ -1,11 +1,4 @@
-import { NotifiService } from '@notifi-network/notifi-graphql';
-import {
-  BeginLogInByTransactionInput,
-  BeginLogInByTransactionResult,
-  CompleteLogInByTransactionInput,
-  CompleteLogInByTransactionMutation,
-  UserFragmentFragment,
-} from '@notifi-network/notifi-graphql/lib/gql/generated';
+import { NotifiService, Types } from '@notifi-network/notifi-graphql';
 
 import type { NotifiFrontendConfiguration } from './configuration/NotifiFrontendConfiguration';
 import type { NotifiStorage } from './storage';
@@ -13,10 +6,10 @@ import { notNullOrEmpty } from './utils/notNullOrEmpty';
 
 export type SignMessageFunction = (message: Uint8Array) => Promise<Uint8Array>;
 
-type BeginLoginProps = Omit<BeginLogInByTransactionInput, 'dappAddress'>;
+type BeginLoginProps = Omit<Types.BeginLogInByTransactionInput, 'dappAddress'>;
 
 type CompleteLoginProps = Omit<
-  CompleteLogInByTransactionInput,
+  Types.CompleteLogInByTransactionInput,
   'dappAddress, randomUuid'
 >;
 
@@ -29,13 +22,13 @@ export class NotifiFrontendClient {
     private _configuration: NotifiFrontendConfiguration,
     private _service: NotifiService,
     private _storage: NotifiStorage,
-    private clientRandomUuid: string | null = null,
+    private _clientRandomUuid: string | null = null,
   ) {}
 
   async logIn({
     signMessage,
   }: Readonly<{ signMessage: SignMessageFunction }>): Promise<
-    UserFragmentFragment | undefined
+    Types.UserFragmentFragment | undefined
   > {
     const timestamp = Math.round(Date.now() / 1000);
     const signature = await this._signMessage({ signMessage, timestamp });
@@ -72,7 +65,7 @@ export class NotifiFrontendClient {
   }
 
   private async _handleLogInResult(
-    user: UserFragmentFragment | undefined,
+    user: Types.UserFragmentFragment | undefined,
   ): Promise<void> {
     const authorization = user?.authorization;
     const saveAuthorizationPromise =
@@ -92,7 +85,7 @@ export class NotifiFrontendClient {
   async beginLoginViaTransaction({
     walletBlockchain,
     walletAddress,
-  }: BeginLoginProps): Promise<BeginLogInByTransactionResult> {
+  }: BeginLoginProps): Promise<Types.BeginLogInByTransactionResult> {
     const { dappAddress } = this._configuration;
 
     const result = await this._service.beginLogInByTransaction({
@@ -103,7 +96,7 @@ export class NotifiFrontendClient {
 
     const nonce = result.beginLogInByTransaction.nonce;
 
-    this.clientRandomUuid = await window.crypto.randomUUID();
+    this._clientRandomUuid = await window.crypto.randomUUID();
 
     return { nonce };
   }
@@ -112,10 +105,11 @@ export class NotifiFrontendClient {
     walletBlockchain,
     walletAddress,
     transactionSignature,
-  }: CompleteLoginProps): Promise<CompleteLogInByTransactionMutation> {
+  }: CompleteLoginProps): Promise<Types.CompleteLogInByTransactionMutation> {
     const { dappAddress } = this._configuration;
+    const clientRandomUuid = this._clientRandomUuid;
 
-    if (this.clientRandomUuid == null) {
+    if (clientRandomUuid === null) {
       throw new Error(
         'BeginLoginViaTransaction is required to be called first',
       );
@@ -125,7 +119,7 @@ export class NotifiFrontendClient {
       walletAddress: walletAddress,
       walletBlockchain: walletBlockchain,
       dappAddress,
-      randomUuid: this.clientRandomUuid,
+      randomUuid: clientRandomUuid,
       transactionSignature,
     });
 
