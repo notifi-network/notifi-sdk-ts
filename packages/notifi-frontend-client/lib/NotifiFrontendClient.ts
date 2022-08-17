@@ -1,10 +1,10 @@
 import { NotifiService } from '@notifi-network/notifi-graphql';
 import {
+  BeginLogInByTransactionInput,
   BeginLogInByTransactionResult,
   CompleteLogInByTransactionInput,
   CompleteLogInByTransactionMutation,
   UserFragmentFragment,
-  WalletBlockchain,
 } from '@notifi-network/notifi-graphql/lib/gql/generated';
 
 import type { NotifiFrontendConfiguration } from './configuration/NotifiFrontendConfiguration';
@@ -13,14 +13,12 @@ import { notNullOrEmpty } from './utils/notNullOrEmpty';
 
 export type SignMessageFunction = (message: Uint8Array) => Promise<Uint8Array>;
 
-type BeginLoginProps = {
-  walletBlockchain: WalletBlockchain;
-  walletPublicKey: string;
-};
+type BeginLoginProps = Omit<BeginLogInByTransactionInput, 'dappAddress'>;
 
-type CompleteLoginProps = {
-  input: CompleteLogInByTransactionInput;
-};
+type CompleteLoginProps = Omit<
+  CompleteLogInByTransactionInput,
+  'dappAddress, randomUuid'
+>;
 
 // Don't split this line into multiple lines due to some packagers or other build modules that
 // modify the string literal, which then causes authentication to fail due to different strings
@@ -93,12 +91,12 @@ export class NotifiFrontendClient {
 
   async beginLoginViaTransaction({
     walletBlockchain,
-    walletPublicKey,
+    walletAddress,
   }: BeginLoginProps): Promise<BeginLogInByTransactionResult> {
     const { dappAddress } = this._configuration;
 
     const result = await this._service.beginLogInByTransaction({
-      walletAddress: walletPublicKey,
+      walletAddress: walletAddress,
       walletBlockchain: walletBlockchain,
       dappAddress,
     });
@@ -112,11 +110,9 @@ export class NotifiFrontendClient {
 
   async completeLoginViaTransaction({
     walletBlockchain,
-    walletPublicKey,
-    input,
-  }: BeginLoginProps &
-    CompleteLoginProps): Promise<CompleteLogInByTransactionMutation> {
-    const { transactionSignature } = input;
+    walletAddress,
+    transactionSignature,
+  }: CompleteLoginProps): Promise<CompleteLogInByTransactionMutation> {
     const { dappAddress } = this._configuration;
 
     if (this.clientRandomUuid == null) {
@@ -126,7 +122,7 @@ export class NotifiFrontendClient {
     }
 
     const result = await this._service.completeLogInByTransaction({
-      walletAddress: walletPublicKey,
+      walletAddress: walletAddress,
       walletBlockchain: walletBlockchain,
       dappAddress,
       randomUuid: this.clientRandomUuid,
