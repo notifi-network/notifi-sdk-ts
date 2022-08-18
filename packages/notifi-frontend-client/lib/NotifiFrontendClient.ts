@@ -108,7 +108,7 @@ export class NotifiFrontendClient {
       const logValue =
         'Notifi Auth: 0x' +
         hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
-      return logValue;
+      return { nonce: logValue };
     } else throw new Error('Failed to begin login process');
   }
 
