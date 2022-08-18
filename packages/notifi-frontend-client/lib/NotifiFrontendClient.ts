@@ -19,8 +19,6 @@ type LoginProps = Readonly<{
 }>;
 
 type SignMessageProps = Readonly<{
-  walletAddress: string;
-  signMessage: SignMessageFunction;
   timestamp: number;
 }>;
 
@@ -64,7 +62,7 @@ export class NotifiFrontendClient {
     walletAddress,
     signMessage,
     timestamp,
-  }: SignMessageProps): Promise<string> {
+  }: LoginProps & SignMessageProps): Promise<string> {
     const { dappAddress } = this._configuration;
 
     const messageBuffer = new TextEncoder().encode(
