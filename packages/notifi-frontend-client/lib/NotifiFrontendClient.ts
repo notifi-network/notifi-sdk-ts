@@ -1,11 +1,17 @@
-import { NotifiService } from '@notifi-network/notifi-graphql';
-import { UserFragmentFragment } from 'notifi-graphql/lib/gql/generated';
+import { NotifiService, Types } from '@notifi-network/notifi-graphql';
 
 import type { NotifiFrontendConfiguration } from './configuration/NotifiFrontendConfiguration';
 import type { NotifiStorage } from './storage';
 import { notNullOrEmpty } from './utils/notNullOrEmpty';
 
 export type SignMessageFunction = (message: Uint8Array) => Promise<Uint8Array>;
+
+type BeginLoginProps = Omit<Types.BeginLogInByTransactionInput, 'dappAddress'>;
+
+type CompleteLoginProps = Omit<
+  Types.CompleteLogInByTransactionInput,
+  'dappAddress, randomUuid'
+>;
 
 // Don't split this line into multiple lines due to some packagers or other build modules that
 // modify the string literal, which then causes authentication to fail due to different strings
@@ -16,17 +22,19 @@ export class NotifiFrontendClient {
     private _configuration: NotifiFrontendConfiguration,
     private _service: NotifiService,
     private _storage: NotifiStorage,
+    private _clientRandomUuid: string | null = null,
   ) {}
 
   async logIn({
     signMessage,
   }: Readonly<{ signMessage: SignMessageFunction }>): Promise<
-    UserFragmentFragment | undefined
+    Types.UserFragmentFragment | undefined
   > {
     const timestamp = Math.round(Date.now() / 1000);
     const signature = await this._signMessage({ signMessage, timestamp });
 
     const { walletPublicKey, dappAddress } = this._configuration;
+
     const result = await this._service.logInFromDapp({
       walletPublicKey,
       dappAddress,
@@ -57,7 +65,7 @@ export class NotifiFrontendClient {
   }
 
   private async _handleLogInResult(
-    user: UserFragmentFragment | undefined,
+    user: Types.UserFragmentFragment | undefined,
   ): Promise<void> {
     const authorization = user?.authorization;
     const saveAuthorizationPromise =
@@ -72,5 +80,66 @@ export class NotifiFrontendClient {
         : Promise.resolve();
 
     await Promise.all([saveAuthorizationPromise, saveRolesPromise]);
+  }
+
+  async beginLoginViaTransaction({
+    walletBlockchain,
+    walletAddress,
+  }: BeginLoginProps): Promise<Types.BeginLogInByTransactionResult> {
+    const { dappAddress } = this._configuration;
+
+    const result = await this._service.beginLogInByTransaction({
+      walletAddress: walletAddress,
+      walletBlockchain: walletBlockchain,
+      dappAddress,
+    });
+
+    const nonce = result.beginLogInByTransaction.nonce;
+
+    if (nonce === null) {
+      throw new Error('Failed to begin login process');
+    }
+
+    const ruuid = crypto.randomUUID();
+    this._clientRandomUuid = ruuid;
+    const encoder = new TextEncoder();
+    const data = encoder.encode(nonce + ruuid);
+
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const logValue =
+      'Notifi Auth: 0x' +
+      hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+    return { nonce: logValue };
+  }
+
+  async completeLoginViaTransaction({
+    walletBlockchain,
+    walletAddress,
+    transactionSignature,
+  }: CompleteLoginProps): Promise<Types.CompleteLogInByTransactionMutation> {
+    const { dappAddress } = this._configuration;
+    const clientRandomUuid = this._clientRandomUuid;
+
+    this._clientRandomUuid = null;
+
+    if (clientRandomUuid === null) {
+      throw new Error(
+        'BeginLoginViaTransaction is required to be called first',
+      );
+    }
+
+    const result = await this._service.completeLogInByTransaction({
+      walletAddress: walletAddress,
+      walletBlockchain: walletBlockchain,
+      dappAddress,
+      randomUuid: clientRandomUuid,
+      transactionSignature,
+    });
+
+    await this._handleLogInResult(result.completeLogInByTransaction);
+
+    return result;
   }
 }
