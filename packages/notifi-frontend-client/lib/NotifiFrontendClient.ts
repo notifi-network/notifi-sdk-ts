@@ -96,9 +96,20 @@ export class NotifiFrontendClient {
 
     const nonce = result.beginLogInByTransaction.nonce;
 
-    this._clientRandomUuid = await window.crypto.randomUUID();
+    if (nonce) {
+      const ruuid = crypto.randomUUID();
+      this._clientRandomUuid = ruuid;
+      const encoder = new TextEncoder();
+      const data = encoder.encode(nonce + ruuid);
 
-    return { nonce };
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const logValue =
+        'Notifi Auth: 0x' +
+        hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+      return logValue;
+    } else throw new Error('Failed to begin login process');
   }
 
   async completeLoginViaTransaction({
