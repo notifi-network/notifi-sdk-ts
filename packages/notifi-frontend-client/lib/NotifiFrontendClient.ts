@@ -96,7 +96,7 @@ export class NotifiFrontendClient {
 
     const nonce = result.beginLogInByTransaction.nonce;
 
-    if (nonce) {
+    if (nonce !== null) {
       const ruuid = crypto.randomUUID();
       this._clientRandomUuid = ruuid;
       const encoder = new TextEncoder();
