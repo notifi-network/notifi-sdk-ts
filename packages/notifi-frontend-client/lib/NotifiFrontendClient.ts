@@ -96,20 +96,22 @@ export class NotifiFrontendClient {
 
     const nonce = result.beginLogInByTransaction.nonce;
 
-    if (nonce !== null) {
-      const ruuid = crypto.randomUUID();
-      this._clientRandomUuid = ruuid;
-      const encoder = new TextEncoder();
-      const data = encoder.encode(nonce + ruuid);
+    if (nonce === null) {
+      throw new Error('Failed to begin login process');
+    }
 
-      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const ruuid = crypto.randomUUID();
+    this._clientRandomUuid = ruuid;
+    const encoder = new TextEncoder();
+    const data = encoder.encode(nonce + ruuid);
 
-      const hashArray = Array.from(new Uint8Array(hashBuffer));
-      const logValue =
-        'Notifi Auth: 0x' +
-        hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
-      return { nonce: logValue };
-    } else throw new Error('Failed to begin login process');
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const logValue =
+      'Notifi Auth: 0x' +
+      hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+    return { nonce: logValue };
   }
 
   async completeLoginViaTransaction({
@@ -119,6 +121,8 @@ export class NotifiFrontendClient {
   }: CompleteLoginProps): Promise<Types.CompleteLogInByTransactionMutation> {
     const { dappAddress } = this._configuration;
     const clientRandomUuid = this._clientRandomUuid;
+
+    this._clientRandomUuid = null;
 
     if (clientRandomUuid === null) {
       throw new Error(
