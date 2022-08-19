@@ -43,5 +43,8 @@
     "packages/notifi-node-sample",
     "packages/notifi-react-card",
     "packages/notifi-react-hooks"
-  ]
+  ],
+  "dependencies": {
+    "jest": "^28.1.3"
+  }
 }
