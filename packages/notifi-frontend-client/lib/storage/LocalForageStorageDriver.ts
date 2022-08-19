@@ -26,9 +26,8 @@ const getEnvPrefix = (env: NotifiEnvironment): string => {
 export const createLocalForageStorageDriver = ({
   env,
   dappAddress,
-  walletPublicKey,
 }: NotifiFrontendConfiguration): StorageDriver => {
-  const keyPrefix = `${getEnvPrefix(env)}:${dappAddress}:${walletPublicKey}`;
+  const keyPrefix = `${getEnvPrefix(env)}:${dappAddress}`;
   const storageDriver: StorageDriver = {
     get: async <T>(key: string): Promise<T | null> => {
       const item = await localforage.getItem<T>(`${keyPrefix}:${key}`);
