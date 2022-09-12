@@ -10,6 +10,7 @@ import {
   ClientData,
   ClientDeleteAlertInput,
   ClientEnsureTargetGroupInput,
+  ClientFetchSubscriptionCardInput,
   ClientSendVerificationEmailInput,
   ClientUpdateAlertInput,
   CompleteLoginViaTransactionInput,
@@ -20,6 +21,7 @@ import {
   Source,
   TargetGroup,
   TargetType,
+  TenantConfig,
   User,
   UserTopic,
 } from '@notifi-network/notifi-core';
@@ -1116,29 +1118,56 @@ const useNotifiClient = (
 
   const sendEmailTargetVerification: (
     input: ClientSendVerificationEmailInput,
-  ) => Promise<string> = useCallback(async ({ targetId }) => {
-    setLoading(true);
-    try {
-      const emailTarget = await service.sendEmailTargetVerificationRequest({
-        targetId,
-      });
+  ) => Promise<string> = useCallback(
+    async ({ targetId }) => {
+      setLoading(true);
+      try {
+        const emailTarget = await service.sendEmailTargetVerificationRequest({
+          targetId,
+        });
 
-      const id = emailTarget.id;
-      if (id === null) {
-        throw new Error(`Unknown error requesting verification`);
+        const id = emailTarget.id;
+        if (id === null) {
+          throw new Error(`Unknown error requesting verification`);
+        }
+        return id;
+      } catch (e: unknown) {
+        if (e instanceof Error) {
+          setError(e);
+        } else {
+          setError(new NotifiClientError(e));
+        }
+        throw e;
+      } finally {
+        setLoading(false);
       }
-      return id;
-    } catch (e: unknown) {
-      if (e instanceof Error) {
-        setError(e);
-      } else {
-        setError(new NotifiClientError(e));
+    },
+    [setError, setLoading, service],
+  );
+
+  const fetchSubscriptionCard = useCallback(
+    async (input: ClientFetchSubscriptionCardInput): Promise<TenantConfig> => {
+      setLoading(true);
+      try {
+        const config = await service.findTenantConfig({
+          ...input,
+          type: 'SUBSCRIPTION_CARD',
+        });
+
+        return config;
+      } catch (e: unknown) {
+        if (e instanceof Error) {
+          setError(e);
+        } else {
+          setError(new NotifiClientError(e));
+        }
+        throw e;
+      } finally {
+        setLoading(false);
       }
-      throw e;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    },
+    [setError, setLoading, service],
+  );
 
   const client: NotifiClient = {
     beginLoginViaTransaction,
@@ -1152,6 +1181,7 @@ const useNotifiClient = (
     createSource,
     deleteAlert,
     fetchData,
+    fetchSubscriptionCard,
     getConfiguration,
     getTopics,
     updateAlert,

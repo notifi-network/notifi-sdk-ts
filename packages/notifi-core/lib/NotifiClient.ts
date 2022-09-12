@@ -7,6 +7,7 @@ import {
   Source,
   TargetGroup,
   TelegramTarget,
+  TenantConfig,
   User,
   UserTopic,
 } from './models';
@@ -209,6 +210,11 @@ export type ClientBroadcastMessageInput = Readonly<{
   variables?: Readonly<Record<string, string>>;
 }>;
 
+export type ClientFetchSubscriptionCardInput = Readonly<{
+  tenant: string;
+  id: string;
+}>;
+
 export type NotifiClient = Readonly<{
   beginLoginViaTransaction: () => Promise<BeginLoginViaTransactionResult>;
   broadcastMessage: (
@@ -239,4 +245,7 @@ export type NotifiClient = Readonly<{
   sendEmailTargetVerification: (
     input: ClientSendVerificationEmailInput,
   ) => Promise<string>;
+  fetchSubscriptionCard: (
+    input: ClientFetchSubscriptionCardInput,
+  ) => Promise<TenantConfig>;
 }>;
