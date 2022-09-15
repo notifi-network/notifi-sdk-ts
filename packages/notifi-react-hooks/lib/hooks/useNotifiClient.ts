@@ -1147,15 +1147,18 @@ const useNotifiClient = (
 
   const fetchSubscriptionCard = useCallback(
     async (input: ClientFetchSubscriptionCardInput): Promise<TenantConfig> => {
+      console.log('fetchSubscriptionCard', input);
       setLoading(true);
       try {
         const config = await service.findTenantConfig({
           ...input,
           type: 'SUBSCRIPTION_CARD',
         });
+        console.log('fetchSubscriptionCard config', config);
 
         return config;
       } catch (e: unknown) {
+        console.log('fetchSubscriptionCard error', e);
         if (e instanceof Error) {
           setError(e);
         } else {
