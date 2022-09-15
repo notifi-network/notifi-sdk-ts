@@ -1,20 +1,20 @@
 import { NotifiEmailInput, NotifiSmsInput, NotifiTelegramInput } from '..';
-import { CardConfigItemV1, useNotifiSubscribe } from '../../hooks';
+import { CardConfigItemV1 } from '../../hooks';
 import { EventTypeBroadcastRow } from './EventTypeBroadcastRow';
 import { EventTypeUnsupportedRow } from './EventTypeUnsupportedRow';
 import React from 'react';
 
 type Props = Readonly<{
+  inputDisabled: boolean;
   data: CardConfigItemV1;
-  inputs?: Record<string, string | undefined>;
+  inputs: Record<string, string | undefined>;
 }>;
 
-export const SubscriptionCardV1: React.FC<Props> = ({ data, inputs = {} }) => {
-  const { loading, isAuthenticated, isInitialized, logIn, subscribe } =
-    useNotifiSubscribe();
-
-  const inputDisabled = loading || !isAuthenticated || !isInitialized;
-
+export const SubscriptionCardV1: React.FC<Props> = ({
+  data,
+  inputDisabled,
+  inputs,
+}) => {
   return (
     <>
       {data.contactInfo.email.active ? (

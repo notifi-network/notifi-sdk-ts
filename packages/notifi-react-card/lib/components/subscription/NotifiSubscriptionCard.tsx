@@ -6,9 +6,13 @@ import React from 'react';
 
 export type Props = Readonly<{
   cardId: string;
+  inputs?: Record<string, string | undefined>;
 }>;
 
-export const NotifiSubscriptionCard: React.FC<Props> = ({ cardId }: Props) => {
+export const NotifiSubscriptionCard: React.FC<Props> = ({
+  cardId,
+  inputs = {},
+}: Props) => {
   const card = useSubscriptionCard(cardId);
   switch (card.state) {
     case 'loading':
@@ -16,6 +20,6 @@ export const NotifiSubscriptionCard: React.FC<Props> = ({ cardId }: Props) => {
     case 'error':
       return <ErrorStateCard card={card} />;
     case 'fetched':
-      return <FetchedStateCard card={card} />;
+      return <FetchedStateCard card={card} inputs={inputs} />;
   }
 };
