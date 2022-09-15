@@ -30,6 +30,6 @@ query findTenantConfig(
 const findTenantConfigImpl = makeRequest<
   FindTenantConfigInput,
   FindTenantConfigResult
->(collectDependencies(...DEPENDENCIES, QUERY), 'configurationForDapp');
+>(collectDependencies(...DEPENDENCIES, QUERY), 'findTenantConfig');
 
 export default findTenantConfigImpl;
