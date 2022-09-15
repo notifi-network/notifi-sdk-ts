@@ -1,7 +1,7 @@
+import { useSubscriptionCard } from '../../hooks';
 import { ErrorStateCard } from './ErrorStateCard';
 import { FetchedStateCard } from './FetchedStateCard';
 import { LoadingStateCard } from './LoadingStateCard';
-import { useSubscriptionCard } from 'notifi-react-card/lib/hooks';
 import React from 'react';
 
 export type Props = Readonly<{

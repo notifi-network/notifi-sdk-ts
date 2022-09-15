@@ -14,7 +14,7 @@ export const ErrorStateCard: React.FC<Props> = ({ card }) => {
       }}
     >
       <div>Something went wrong.</div>
-      <div>{card.reason}</div>
+      <div>{`${card.reason}`}</div>
     </div>
   );
 };

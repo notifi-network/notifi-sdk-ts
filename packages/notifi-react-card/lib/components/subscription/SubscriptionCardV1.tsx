@@ -1,5 +1,5 @@
-import { NotifiEmailInput } from 'notifi-react-card/dist';
-import { CardConfigItemV1 } from 'notifi-react-card/lib/hooks';
+import { NotifiEmailInput } from '..';
+import { CardConfigItemV1 } from '../../hooks';
 import React from 'react';
 
 type Props = Readonly<{
