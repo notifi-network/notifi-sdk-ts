@@ -1,5 +1,12 @@
-import { NotifiService, Types } from '@notifi-network/notifi-graphql';
+import type { Types } from '@notifi-network/notifi-graphql';
+import { NotifiService } from '@notifi-network/notifi-graphql';
 
+import {
+  ensureEmail,
+  ensureSms,
+  ensureTelegram,
+  ensureWebhook,
+} from './client/ensureTarget';
 import type { NotifiFrontendConfiguration } from './configuration/NotifiFrontendConfiguration';
 import type { NotifiStorage } from './storage';
 import { notNullOrEmpty } from './utils/notNullOrEmpty';
@@ -10,7 +17,12 @@ type BeginLoginProps = Omit<Types.BeginLogInByTransactionInput, 'dappAddress'>;
 
 type CompleteLoginProps = Omit<
   Types.CompleteLogInByTransactionInput,
-  'dappAddress, randomUuid'
+  'dappAddress' | 'randomUuid'
+>;
+
+type EnsureWebhookParams = Omit<
+  Types.CreateWebhookTargetMutationVariables,
+  'name'
 >;
 
 // Don't split this line into multiple lines due to some packagers or other build modules that
@@ -141,5 +153,114 @@ export class NotifiFrontendClient {
     await this._handleLogInResult(result.completeLogInByTransaction);
 
     return result;
+  }
+
+  async ensureTargetGroup({
+    name,
+    emailAddress,
+    phoneNumber,
+    telegramId,
+    webhook,
+  }: Readonly<{
+    name: string;
+    emailAddress?: string;
+    phoneNumber?: string;
+    telegramId?: string;
+    webhook?: EnsureWebhookParams;
+  }>): Promise<Types.TargetGroupFragmentFragment> {
+    const [
+      targetGroupsQuery,
+      emailTargetId,
+      smsTargetId,
+      telegramTargetId,
+      webhookTargetId,
+    ] = await Promise.all([
+      this._service.getTargetGroups({}),
+      ensureEmail(this._service, emailAddress),
+      ensureSms(this._service, phoneNumber),
+      ensureTelegram(this._service, telegramId),
+      ensureWebhook(this._service, webhook),
+    ]);
+
+    const emailTargetIds = emailTargetId === undefined ? [] : [emailTargetId];
+    const smsTargetIds = smsTargetId === undefined ? [] : [smsTargetId];
+    const telegramTargetIds =
+      telegramTargetId === undefined ? [] : [telegramTargetId];
+    const webhookTargetIds =
+      webhookTargetId === undefined ? [] : [webhookTargetId];
+
+    const existing = targetGroupsQuery.targetGroup?.find(
+      (it) => it?.name === name,
+    );
+    if (existing !== undefined) {
+      return this._updateTargetGroup({
+        existing,
+        emailTargetIds,
+        smsTargetIds,
+        telegramTargetIds,
+        webhookTargetIds,
+      });
+    }
+
+    const createMutation = await this._service.createTargetGroup({
+      name,
+      emailTargetIds,
+      smsTargetIds,
+      telegramTargetIds,
+      webhookTargetIds,
+    });
+
+    if (createMutation.createTargetGroup === undefined) {
+      throw new Error('Failed to create target group');
+    }
+
+    return createMutation.createTargetGroup;
+  }
+
+  private async _updateTargetGroup({
+    existing,
+    emailTargetIds,
+    smsTargetIds,
+    telegramTargetIds,
+    webhookTargetIds,
+  }: Readonly<{
+    existing: Types.TargetGroupFragmentFragment;
+    emailTargetIds: Array<string>;
+    smsTargetIds: Array<string>;
+    telegramTargetIds: Array<string>;
+    webhookTargetIds: Array<string>;
+  }>): Promise<Types.TargetGroupFragmentFragment> {
+    const areTargetsEqual = <T extends Readonly<{ id: string }>>(
+      ids: ReadonlyArray<string>,
+      targets: ReadonlyArray<T | undefined>,
+    ): boolean => {
+      const idSet = new Set(ids);
+      return targets.every((it) => it !== undefined && idSet.has(it.id));
+    };
+
+    if (
+      areTargetsEqual(emailTargetIds, existing.emailTargets ?? []) &&
+      areTargetsEqual(smsTargetIds, existing.smsTargets ?? []) &&
+      areTargetsEqual(telegramTargetIds, existing.telegramTargets ?? []) &&
+      areTargetsEqual(webhookTargetIds, existing.webhookTargets ?? [])
+    ) {
+      return existing;
+    }
+
+    const updateMutation = await this._service.updateTargetGroup({
+      id: existing.id,
+      name: existing.name ?? existing.id,
+      emailTargetIds,
+      smsTargetIds,
+      telegramTargetIds,
+      webhookTargetIds,
+    });
+
+    const updated = updateMutation.updateTargetGroup;
+    if (updated === undefined) {
+      throw new Error('Failed to update target group');
+    }
+
+    return updated;
   }
 }

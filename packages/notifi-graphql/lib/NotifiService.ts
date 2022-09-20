@@ -17,11 +17,13 @@ export class NotifiService
     Operations.CreateSourceGroupService,
     Operations.CreateTargetGroupService,
     Operations.CreateTelegramTargetService,
+    Operations.CreateWebhookTargetService,
     Operations.DeleteAlertService,
     Operations.DeleteSourceGroupService,
     Operations.DeleteTargetGroupService,
     Operations.GetAlertsService,
     Operations.GetConfigurationForDappService,
+    Operations.GetEmailTargetsService,
     Operations.GetFiltersService,
     Operations.GetSmsTargetsService,
     Operations.GetSourceGroupsService,
@@ -29,6 +31,7 @@ export class NotifiService
     Operations.GetTargetGroupsService,
     Operations.GetTelegramTargetsService,
     Operations.GetTopicsService,
+    Operations.GetWebhookTargetsService,
     Operations.LogInFromDappService,
     Operations.RefreshAuthorizationService,
     Operations.SendEmailTargetVerificationRequestService,
@@ -114,6 +117,13 @@ export class NotifiService
     return this._typedClient.createTargetGroup(variables, headers);
   }
 
+  async createWebhookTarget(
+    variables: Generated.CreateWebhookTargetMutationVariables,
+  ): Promise<Generated.CreateWebhookTargetMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.createWebhookTarget(variables, headers);
+  }
+
   async createTelegramTarget(
     variables: Generated.CreateTelegramTargetMutationVariables,
   ): Promise<Generated.CreateTelegramTargetMutation> {
@@ -154,6 +164,13 @@ export class NotifiService
   ): Promise<Generated.GetConfigurationForDappQuery> {
     const headers = this._requestHeaders();
     return this._typedClient.getConfigurationForDapp(variables, headers);
+  }
+
+  async getEmailTargets(
+    variables: Generated.GetEmailTargetsQueryVariables,
+  ): Promise<Generated.GetEmailTargetsQuery> {
+    const headers = this._requestHeaders();
+    return this._typedClient.getEmailTargets(variables, headers);
   }
 
   async getFilters(
@@ -203,6 +220,13 @@ export class NotifiService
   ): Promise<Generated.GetTopicsQuery> {
     const headers = this._requestHeaders();
     return this._typedClient.getTopics(variables, headers);
+  }
+
+  async getWebhookTargets(
+    variables: Generated.GetWebhookTargetsQueryVariables,
+  ): Promise<Generated.GetWebhookTargetsQuery> {
+    const headers = this._requestHeaders();
+    return this._typedClient.getWebhookTargets(variables, headers);
   }
 
   async logInFromDapp(

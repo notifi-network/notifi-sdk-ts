@@ -3,6 +3,7 @@ import { gql } from 'graphql-request';
 import { EmailTargetFragment } from './EmailTargetFragment.gql';
 import { SmsTargetFragment } from './SmsTargetFragment.gql';
 import { TelegramTargetFragment } from './TelegramTargetFragment.gql';
+import { WebhookTargetFragment } from './WebhookTargetFragment.gql';
 
 export const TargetGroupFragment = gql`
   fragment TargetGroupFragment on TargetGroup {
@@ -17,9 +18,13 @@ export const TargetGroupFragment = gql`
     telegramTargets {
       ...TelegramTargetFragment
     }
+    webhookTargets {
+      ...WebhookTargetFragment
+    }
   }
 
   ${EmailTargetFragment}
   ${SmsTargetFragment}
   ${TelegramTargetFragment}
+  ${WebhookTargetFragment}
 `;

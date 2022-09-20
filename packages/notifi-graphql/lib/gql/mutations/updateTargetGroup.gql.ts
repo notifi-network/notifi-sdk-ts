@@ -9,6 +9,7 @@ export const UpdateTargetGroup = gql`
     $emailTargetIds: [String!]!
     $smsTargetIds: [String!]!
     $telegramTargetIds: [String!]!
+    $webhookTargetIds: [String!]!
   ) {
     updateTargetGroup: createTargetGroup(
       targetGroupInput: {
@@ -17,6 +18,7 @@ export const UpdateTargetGroup = gql`
         emailTargetIds: $emailTargetIds
         smsTargetIds: $smsTargetIds
         telegramTargetIds: $telegramTargetIds
+        webhookTargetIds: $webhookTargetIds
       }
     ) {
       ...TargetGroupFragment
