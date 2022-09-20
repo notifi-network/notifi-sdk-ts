@@ -1,9 +1,10 @@
+import type { FilterOptions } from '@notifi-network/notifi-core';
 import type { Types } from '@notifi-network/notifi-graphql';
 import { NotifiService } from '@notifi-network/notifi-graphql';
 
 import type { NotifiFrontendConfiguration } from '../configuration';
 import type { NotifiStorage } from '../storage';
-import { notNullOrEmpty } from '../utils';
+import { notNullOrEmpty, packFilterOptions } from '../utils';
 import { EnsureSourceParams, ensureSourceGroup } from './ensureSource';
 import {
   ensureEmail,
@@ -288,5 +289,76 @@ export class NotifiFrontendClient {
     }>,
   ): Promise<Types.SourceGroupFragmentFragment> {
     return ensureSourceGroup(this._service, input);
+  }
+
+  async getAlerts(): Promise<ReadonlyArray<Types.AlertFragmentFragment>> {
+    const query = await this._service.getAlerts({});
+    return query.alert?.filter(notNullOrEmpty) ?? [];
+  }
+
+  async ensureAlert({
+    name,
+    sourceGroupId,
+    targetGroupId,
+    filterId,
+    filterOptions,
+    groupName = 'default',
+  }: Readonly<{
+    name: string;
+    sourceGroupId: string;
+    targetGroupId: string;
+    filterId: string;
+    filterOptions?: Readonly<FilterOptions>;
+    groupName?: string;
+  }>): Promise<Types.AlertFragmentFragment> {
+    const query = await this._service.getAlerts({});
+    const existing = query.alert?.find(
+      (it) => it !== undefined && it.name === name,
+    );
+
+    const packedOptions = packFilterOptions(filterOptions);
+    if (existing !== undefined) {
+      if (
+        existing.sourceGroup.id === sourceGroupId &&
+        existing.targetGroup.id === targetGroupId &&
+        existing.filter.id === filterId &&
+        existing.filterOptions === packedOptions
+      ) {
+        return existing;
+      }
+
+      // Alerts are immutable, delete the existing instead
+      await this.deleteAlert({
+        id: existing.id,
+      });
+    }
+
+    const mutation = await this._service.createAlert({
+      name,
+      sourceGroupId,
+      filterId,
+      targetGroupId,
+      filterOptions: packedOptions,
+      groupName,
+    });
+
+    const created = mutation.createAlert;
+    if (created === undefined) {
+      throw new Error('Failed to create alert');
+    }
+
+    return created;
+  }
+
+  async deleteAlert({
+    id,
+  }: Readonly<{
+    id: string;
+  }>): Promise<void> {
+    const mutation = await this._service.deleteAlert({ id });
+    const result = mutation.deleteAlert?.id;
+    if (result === undefined) {
+      throw new Error('Failed to delete alert');
+    }
   }
 }
