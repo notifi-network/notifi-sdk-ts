@@ -1,6 +1,7 @@
 import type { Types } from '@notifi-network/notifi-graphql';
 import { NotifiService } from '@notifi-network/notifi-graphql';
 
+import { EnsureSourceParams, ensureSourceGroup } from './client/ensureSource';
 import {
   ensureEmail,
   ensureSms,
@@ -155,6 +156,14 @@ export class NotifiFrontendClient {
     return result;
   }
 
+  async getTargetGroups(): Promise<
+    ReadonlyArray<Types.TargetGroupFragmentFragment>
+  > {
+    const query = await this._service.getTargetGroups({});
+    const results = query.targetGroup?.filter(notNullOrEmpty) ?? [];
+    return results;
+  }
+
   async ensureTargetGroup({
     name,
     emailAddress,
@@ -262,5 +271,14 @@ export class NotifiFrontendClient {
     }
 
     return updated;
+  }
+
+  async ensureSourceGroup(
+    input: Readonly<{
+      name: string;
+      sourceParams: ReadonlyArray<EnsureSourceParams>;
+    }>,
+  ): Promise<Types.SourceGroupFragmentFragment> {
+    return ensureSourceGroup(this._service, input);
   }
 }
