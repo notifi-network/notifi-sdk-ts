@@ -1,16 +1,16 @@
 import type { Types } from '@notifi-network/notifi-graphql';
 import { NotifiService } from '@notifi-network/notifi-graphql';
 
-import { EnsureSourceParams, ensureSourceGroup } from './client/ensureSource';
+import type { NotifiFrontendConfiguration } from '../configuration';
+import type { NotifiStorage } from '../storage';
+import { notNullOrEmpty } from '../utils';
+import { EnsureSourceParams, ensureSourceGroup } from './ensureSource';
 import {
   ensureEmail,
   ensureSms,
   ensureTelegram,
   ensureWebhook,
-} from './client/ensureTarget';
-import type { NotifiFrontendConfiguration } from './configuration/NotifiFrontendConfiguration';
-import type { NotifiStorage } from './storage';
-import { notNullOrEmpty } from './utils/notNullOrEmpty';
+} from './ensureTarget';
 
 export type SignMessageFunction = (message: Uint8Array) => Promise<Uint8Array>;
 
