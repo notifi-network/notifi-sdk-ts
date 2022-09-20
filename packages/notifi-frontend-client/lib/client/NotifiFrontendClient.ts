@@ -273,6 +273,14 @@ export class NotifiFrontendClient {
     return updated;
   }
 
+  async getSourceGroups(): Promise<
+    ReadonlyArray<Types.SourceGroupFragmentFragment>
+  > {
+    const query = await this._service.getSourceGroups({});
+    const results = query.sourceGroup?.filter(notNullOrEmpty) ?? [];
+    return results;
+  }
+
   async ensureSourceGroup(
     input: Readonly<{
       name: string;
