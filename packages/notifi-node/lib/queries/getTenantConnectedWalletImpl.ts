@@ -1,8 +1,9 @@
-import type { ConnectedWallet, Connection, WalletBlockchain } from '../types';
 import {
   collectDependencies,
   makeAuthenticatedRequest,
 } from '@notifi-network/notifi-axios-utils';
+
+import type { ConnectedWallet, Connection, WalletBlockchain } from '../types';
 
 export type GetTenantConnectedWalletInput = Readonly<{
   input?: Readonly<{

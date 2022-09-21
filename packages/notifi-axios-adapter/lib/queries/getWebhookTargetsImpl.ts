@@ -1,12 +1,13 @@
 import {
-  webhookTargetFragment,
-  webhookTargetFragmentDependencies,
-} from '../fragments';
-import {
   collectDependencies,
   makeParameterLessRequest,
 } from '@notifi-network/notifi-axios-utils';
 import { GetWebhookTargetsResult } from '@notifi-network/notifi-core';
+
+import {
+  webhookTargetFragment,
+  webhookTargetFragmentDependencies,
+} from '../fragments';
 
 const DEPENDENCIES = [
   ...webhookTargetFragmentDependencies,

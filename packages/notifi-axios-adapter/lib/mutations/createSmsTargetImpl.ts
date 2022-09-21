@@ -1,4 +1,3 @@
-import { smsTargetFragment, smsTargetFragmentDependencies } from '../fragments';
 import {
   collectDependencies,
   makeRequest,
@@ -7,6 +6,8 @@ import {
   CreateSmsTargetInput,
   CreateSmsTargetResult,
 } from '@notifi-network/notifi-core';
+
+import { smsTargetFragment, smsTargetFragmentDependencies } from '../fragments';
 
 const DEPENDENCIES = [...smsTargetFragmentDependencies, smsTargetFragment];
 

@@ -1,8 +1,4 @@
 import {
-  beginLogInByTransactionFragment,
-  beginLogInByTransactionFragmentDependencies,
-} from '../fragments';
-import {
   collectDependencies,
   makeRequest,
 } from '@notifi-network/notifi-axios-utils';
@@ -10,6 +6,11 @@ import {
   BeginLogInByTransactionInput,
   BeginLogInByTransactionResult,
 } from '@notifi-network/notifi-core';
+
+import {
+  beginLogInByTransactionFragment,
+  beginLogInByTransactionFragmentDependencies,
+} from '../fragments';
 
 const DEPENDENCIES = [
   ...beginLogInByTransactionFragmentDependencies,

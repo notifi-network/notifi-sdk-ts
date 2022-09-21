@@ -1,4 +1,3 @@
-import { alertFragment, alertFragmentDependencies } from '../fragments';
 import {
   collectDependencies,
   makeRequest,
@@ -7,6 +6,8 @@ import {
   CreateAlertInput,
   CreateAlertResult,
 } from '@notifi-network/notifi-core';
+
+import { alertFragment, alertFragmentDependencies } from '../fragments';
 
 const DEPENDENCIES = [...alertFragmentDependencies, alertFragment];
 

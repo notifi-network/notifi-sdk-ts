@@ -1,5 +1,3 @@
-import useNotifiClient from './useNotifiClient';
-import { BlockchainEnvironment } from './useNotifiConfig';
 import { GqlError } from '@notifi-network/notifi-axios-utils';
 import {
   Alert,
@@ -19,6 +17,9 @@ import {
   TargetType,
   User,
 } from '@notifi-network/notifi-core';
+
+import useNotifiClient from './useNotifiClient';
+import { BlockchainEnvironment } from './useNotifiConfig';
 
 export type {
   Alert,

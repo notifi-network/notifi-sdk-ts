@@ -1,8 +1,9 @@
-import type { ManagedAlert } from '../types';
 import {
   collectDependencies,
   makeAuthenticatedRequest,
 } from '@notifi-network/notifi-axios-utils';
+
+import type { ManagedAlert } from '../types';
 
 export type DeleteDirectPushAlertInput = Readonly<{
   input: Readonly<{

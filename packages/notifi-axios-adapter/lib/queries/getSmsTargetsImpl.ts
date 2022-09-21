@@ -1,9 +1,10 @@
-import { smsTargetFragment, smsTargetFragmentDependencies } from '../fragments';
 import {
   collectDependencies,
   makeParameterLessRequest,
 } from '@notifi-network/notifi-axios-utils';
 import { GetSmsTargetsResult } from '@notifi-network/notifi-core';
+
+import { smsTargetFragment, smsTargetFragmentDependencies } from '../fragments';
 
 const DEPENDENCIES = [...smsTargetFragmentDependencies, smsTargetFragment];
 

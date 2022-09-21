@@ -1,4 +1,3 @@
-import { sourceFragment, sourceFragmentDependencies } from '../fragments';
 import {
   collectDependencies,
   makeRequest,
@@ -7,6 +6,8 @@ import {
   CreateSourceInput,
   CreateSourceResult,
 } from '@notifi-network/notifi-core';
+
+import { sourceFragment, sourceFragmentDependencies } from '../fragments';
 
 const DEPENDENCIES = [...sourceFragmentDependencies, sourceFragment];
 

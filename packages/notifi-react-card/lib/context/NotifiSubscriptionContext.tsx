@@ -1,4 +1,3 @@
-import type { AlertConfiguration } from '../utils';
 import type { Alert } from '@notifi-network/notifi-core';
 import type {
   MessageSigner,
@@ -14,6 +13,8 @@ import React, {
   useRef,
   useState,
 } from 'react';
+
+import type { AlertConfiguration } from '../utils';
 
 export type NotifiParams = Readonly<{
   alertConfigurations?: Record<string, AlertConfiguration | null>;
