@@ -6,6 +6,7 @@ export const LogInFromDapp = gql`
   ${UserFragment}
 
   mutation logInFromDapp(
+    $walletBlockchain: WalletBlockchain!
     $walletPublicKey: String!
     $dappAddress: String!
     $timestamp: Long!
@@ -14,6 +15,7 @@ export const LogInFromDapp = gql`
   ) {
     logInFromDapp(
       dappLogInInput: {
+        walletBlockchain: $walletBlockchain
         walletPublicKey: $walletPublicKey
         dappAddress: $dappAddress
         timestamp: $timestamp

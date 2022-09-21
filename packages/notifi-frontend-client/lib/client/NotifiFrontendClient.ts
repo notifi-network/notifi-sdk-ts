@@ -66,13 +66,14 @@ export class NotifiFrontendClient {
       timestamp,
     });
 
-    const { tenantId } = this._configuration;
+    const { tenantId, walletBlockchain } = this._configuration;
     let loginPromise = Promise.reject<Types.LogInFromDappMutation>(
       'Unsupported blockchain',
     );
-    switch (this._configuration.walletBlockchain) {
+    switch (walletBlockchain) {
       case 'SOLANA': {
         loginPromise = this._service.logInFromDapp({
+          walletBlockchain,
           walletPublicKey: this._configuration.walletPublicKey,
           dappAddress: tenantId,
           timestamp,
@@ -82,6 +83,7 @@ export class NotifiFrontendClient {
       }
       case 'APTOS': {
         loginPromise = this._service.logInFromDapp({
+          walletBlockchain,
           walletPublicKey: this._configuration.authenticationKey,
           accountId: this._configuration.accountAddress,
           dappAddress: tenantId,
