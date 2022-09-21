@@ -4,8 +4,24 @@ export type NotifiEnvironment =
   | 'Development'
   | 'Local';
 
-export type NotifiFrontendConfiguration = Readonly<{
-  dappAddress: string;
+export type NotifiEnvironmentConfiguration = Readonly<{
   env: NotifiEnvironment;
-  walletPublicKey: string;
+  tenantId: string;
 }>;
+
+export type NotifiSolanaConfiguration = Readonly<{
+  walletBlockchain: 'SOLANA';
+  walletPublicKey: string;
+}> &
+  NotifiEnvironmentConfiguration;
+
+export type NotifiAptosConfiguration = Readonly<{
+  walletBlockchain: 'APTOS';
+  authenticationKey: string;
+  accountAddress: string;
+}> &
+  NotifiEnvironmentConfiguration;
+
+export type NotifiFrontendConfiguration =
+  | NotifiSolanaConfiguration
+  | NotifiAptosConfiguration;

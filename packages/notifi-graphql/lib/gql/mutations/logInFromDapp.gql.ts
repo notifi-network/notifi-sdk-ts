@@ -10,12 +10,14 @@ export const LogInFromDapp = gql`
     $dappAddress: String!
     $timestamp: Long!
     $signature: String!
+    $accountId: String
   ) {
     logInFromDapp(
       dappLogInInput: {
         walletPublicKey: $walletPublicKey
         dappAddress: $dappAddress
         timestamp: $timestamp
+        accountId: $accountId
       }
       signature: $signature
     ) {

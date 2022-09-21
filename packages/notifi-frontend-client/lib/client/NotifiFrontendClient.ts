@@ -1,5 +1,5 @@
 import type { FilterOptions } from '@notifi-network/notifi-core';
-import type { Types } from '@notifi-network/notifi-graphql';
+import { Types } from '@notifi-network/notifi-graphql';
 import { NotifiService } from '@notifi-network/notifi-graphql';
 
 import type { NotifiFrontendConfiguration } from '../configuration';
@@ -13,7 +13,14 @@ import {
   ensureWebhook,
 } from './ensureTarget';
 
-export type SignMessageFunction = (message: Uint8Array) => Promise<Uint8Array>;
+// TODO: Clean up blockchain-specific dependencies out of this package
+export type SolanaSignMessageFunction = (
+  message: Uint8Array,
+) => Promise<Uint8Array>;
+export type AptosSignMessageFunction = (
+  message: string,
+  nonce: number,
+) => Promise<string>;
 
 type BeginLoginProps = Omit<Types.BeginLogInByTransactionInput, 'dappAddress'>;
 
@@ -31,6 +38,16 @@ type EnsureWebhookParams = Omit<
 // modify the string literal, which then causes authentication to fail due to different strings
 export const SIGNING_MESSAGE = `Sign in with Notifi \n\n    No password needed or gas is needed. \n\n    Clicking “Approve” only means you have proved this wallet is owned by you! \n\n    This request will not trigger any transaction or cost any gas fees. \n\n    Use of our website and service is subject to our terms of service and privacy policy. \n`;
 
+export type SignMessageParams =
+  | Readonly<{
+      walletBlockchain: 'SOLANA';
+      signMessage: SolanaSignMessageFunction;
+    }>
+  | Readonly<{
+      walletBlockchain: 'APTOS';
+      signMessage: AptosSignMessageFunction;
+    }>;
+
 export class NotifiFrontendClient {
   constructor(
     private _configuration: NotifiFrontendConfiguration,
@@ -39,43 +56,82 @@ export class NotifiFrontendClient {
     private _clientRandomUuid: string | null = null,
   ) {}
 
-  async logIn({
-    signMessage,
-  }: Readonly<{ signMessage: SignMessageFunction }>): Promise<
-    Types.UserFragmentFragment | undefined
-  > {
+  async logIn(
+    signMessageParams: SignMessageParams,
+  ): Promise<Types.UserFragmentFragment | undefined> {
     const timestamp = Math.round(Date.now() / 1000);
-    const signature = await this._signMessage({ signMessage, timestamp });
-
-    const { walletPublicKey, dappAddress } = this._configuration;
-
-    const result = await this._service.logInFromDapp({
-      walletPublicKey,
-      dappAddress,
+    const signature = await this._signMessage({
+      signMessageParams,
       timestamp,
-      signature,
     });
+
+    const { tenantId } = this._configuration;
+    let loginPromise = Promise.reject<Types.LogInFromDappMutation>(
+      'Unsupported blockchain',
+    );
+    switch (this._configuration.walletBlockchain) {
+      case 'SOLANA': {
+        loginPromise = this._service.logInFromDapp({
+          walletPublicKey: this._configuration.walletPublicKey,
+          dappAddress: tenantId,
+          timestamp,
+          signature,
+        });
+        break;
+      }
+      case 'APTOS': {
+        loginPromise = this._service.logInFromDapp({
+          walletPublicKey: this._configuration.authenticationKey,
+          accountId: this._configuration.accountAddress,
+          dappAddress: tenantId,
+          timestamp,
+          signature,
+        });
+        break;
+      }
+    }
+    const result = await loginPromise;
 
     await this._handleLogInResult(result.logInFromDapp);
     return result.logInFromDapp;
   }
 
   private async _signMessage({
-    signMessage,
+    signMessageParams,
     timestamp,
   }: Readonly<{
-    signMessage: SignMessageFunction;
+    signMessageParams: SignMessageParams;
     timestamp: number;
   }>): Promise<string> {
-    const { walletPublicKey, dappAddress } = this._configuration;
+    switch (signMessageParams.walletBlockchain) {
+      case 'SOLANA': {
+        if (this._configuration.walletBlockchain !== 'SOLANA') {
+          throw new Error(
+            'Sign message params and configuration must have the same blockchain',
+          );
+        }
+        const { walletPublicKey, tenantId } = this._configuration;
+        const messageBuffer = new TextEncoder().encode(
+          `${SIGNING_MESSAGE} \n 'Nonce:' ${walletPublicKey}${tenantId}${timestamp.toString()}`,
+        );
 
-    const messageBuffer = new TextEncoder().encode(
-      `${SIGNING_MESSAGE} \n 'Nonce:' ${walletPublicKey}${dappAddress}${timestamp.toString()}`,
-    );
-
-    const signedBuffer = await signMessage(messageBuffer);
-    const signature = Buffer.from(signedBuffer).toString('base64');
-    return signature;
+        const signedBuffer = await signMessageParams.signMessage(messageBuffer);
+        const signature = Buffer.from(signedBuffer).toString('base64');
+        return signature;
+      }
+      case 'APTOS': {
+        if (this._configuration.walletBlockchain !== 'APTOS') {
+          throw new Error(
+            'Sign message params and configuration must have the same blockchain',
+          );
+        }
+        const signature = await signMessageParams.signMessage(
+          `${SIGNING_MESSAGE}  \n 'Nonce:`,
+          timestamp,
+        );
+        return signature;
+      }
+    }
   }
 
   private async _handleLogInResult(
@@ -100,12 +156,12 @@ export class NotifiFrontendClient {
     walletBlockchain,
     walletAddress,
   }: BeginLoginProps): Promise<Types.BeginLogInByTransactionResult> {
-    const { dappAddress } = this._configuration;
+    const { tenantId } = this._configuration;
 
     const result = await this._service.beginLogInByTransaction({
       walletAddress: walletAddress,
       walletBlockchain: walletBlockchain,
-      dappAddress,
+      dappAddress: tenantId,
     });
 
     const nonce = result.beginLogInByTransaction.nonce;
@@ -133,7 +189,7 @@ export class NotifiFrontendClient {
     walletAddress,
     transactionSignature,
   }: CompleteLoginProps): Promise<Types.CompleteLogInByTransactionMutation> {
-    const { dappAddress } = this._configuration;
+    const { tenantId } = this._configuration;
     const clientRandomUuid = this._clientRandomUuid;
 
     this._clientRandomUuid = null;
@@ -147,7 +203,7 @@ export class NotifiFrontendClient {
     const result = await this._service.completeLogInByTransaction({
       walletAddress: walletAddress,
       walletBlockchain: walletBlockchain,
-      dappAddress,
+      dappAddress: tenantId,
       randomUuid: clientRandomUuid,
       transactionSignature,
     });
