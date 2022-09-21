@@ -23,12 +23,21 @@ const getEnvPrefix = (env: NotifiEnvironment): string => {
   }
 };
 
-export const createLocalForageStorageDriver = ({
-  env,
-  dappAddress,
-  walletPublicKey,
-}: NotifiFrontendConfiguration): StorageDriver => {
-  const keyPrefix = `${getEnvPrefix(env)}:${dappAddress}:${walletPublicKey}`;
+export const createLocalForageStorageDriver = (
+  config: NotifiFrontendConfiguration,
+): StorageDriver => {
+  let keyPrefix = `${getEnvPrefix(config.env)}:${config.tenantId}`;
+  switch (config.walletBlockchain) {
+    case 'SOLANA': {
+      keyPrefix += `:${config.walletPublicKey}`;
+      break;
+    }
+    case 'APTOS': {
+      keyPrefix += `:${config.accountAddress}:${config.authenticationKey}`;
+      break;
+    }
+  }
+
   const storageDriver: StorageDriver = {
     get: async <T>(key: string): Promise<T | null> => {
       const item = await localforage.getItem<T>(`${keyPrefix}:${key}`);
