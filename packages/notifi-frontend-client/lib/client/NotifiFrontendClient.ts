@@ -36,7 +36,7 @@ type EnsureWebhookParams = Omit<
 
 // Don't split this line into multiple lines due to some packagers or other build modules that
 // modify the string literal, which then causes authentication to fail due to different strings
-export const SIGNING_MESSAGE = `Sign in with Notifi \n\n    No password needed or gas is needed. \n\n    Clicking “Approve” only means you have proved this wallet is owned by you! \n\n    This request will not trigger any transaction or cost any gas fees. \n\n    Use of our website and service is subject to our terms of service and privacy policy. \n`;
+export const SIGNING_MESSAGE = `Sign in with Notifi \n\n    No password needed or gas is needed. \n\n    Clicking “Approve” only means you have proved this wallet is owned by you! \n\n    This request will not trigger any transaction or cost any gas fees. \n\n    Use of our website and service is subject to our terms of service and privacy policy. \n \n 'Nonce:' `;
 
 export type SignMessageParams =
   | Readonly<{
@@ -115,7 +115,7 @@ export class NotifiFrontendClient {
         }
         const { walletPublicKey, tenantId } = this._configuration;
         const messageBuffer = new TextEncoder().encode(
-          `${SIGNING_MESSAGE} \n 'Nonce:' ${walletPublicKey}${tenantId}${timestamp.toString()}`,
+          `${SIGNING_MESSAGE}${walletPublicKey}${tenantId}${timestamp.toString()}`,
         );
 
         const signedBuffer = await signMessageParams.signMessage(messageBuffer);
@@ -129,7 +129,7 @@ export class NotifiFrontendClient {
           );
         }
         const signature = await signMessageParams.signMessage(
-          `${SIGNING_MESSAGE}  \n 'Nonce:`,
+          SIGNING_MESSAGE,
           timestamp,
         );
         return signature;
