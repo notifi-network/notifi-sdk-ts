@@ -53,8 +53,9 @@ export class NotifiFrontendClient {
     private _configuration: NotifiFrontendConfiguration,
     private _service: NotifiService,
     private _storage: NotifiStorage,
-    private _clientRandomUuid: string | null = null,
   ) {}
+
+  private _clientRandomUuid: string | null = null;
 
   async logIn(
     signMessageParams: SignMessageParams,
