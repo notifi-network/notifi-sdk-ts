@@ -12,6 +12,9 @@
       "types": "./dist/index.d.ts"
     }
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "npm run clean && npm run compile",
     "compile": "tsup lib/index.ts --format cjs,esm --dts --clean",
