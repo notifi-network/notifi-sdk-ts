@@ -22,6 +22,7 @@ export type NotifiParams = Readonly<{
   env: NotifiEnvironment;
   signer: MessageSigner;
   walletPublicKey: string;
+  walletBlockchain: 'SOLANA' | 'ETHEREUM';
   keepSubscriptionData?: boolean;
   connection: Connection;
   sendTransaction: WalletContextState['sendTransaction'];

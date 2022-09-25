@@ -34,6 +34,7 @@ type Props = Readonly<{
   keepSubscriptionData?: boolean;
   signer: MessageSigner | null;
   walletPublicKey: string | null;
+  walletBlockchain: 'SOLANA' | 'ETHEREUM';
   connection: Connection;
   sendTransaction: WalletContextState['sendTransaction'];
 }>;
@@ -48,6 +49,7 @@ export const NotifiCard: React.FC<PropsWithChildren<Props>> = ({
   keepSubscriptionData,
   signer,
   walletPublicKey,
+  walletBlockchain,
   connection,
   sendTransaction,
 }) => {
@@ -78,6 +80,7 @@ export const NotifiCard: React.FC<PropsWithChildren<Props>> = ({
             keepSubscriptionData,
             signer,
             walletPublicKey,
+            walletBlockchain,
             connection,
             sendTransaction,
           }}

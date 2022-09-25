@@ -38,6 +38,7 @@ export const useNotifiSubscribe: () => Readonly<{
       env,
       keepSubscriptionData,
       walletPublicKey,
+      walletBlockchain,
       signer,
       connection,
       sendTransaction,
@@ -68,6 +69,7 @@ export const useNotifiSubscribe: () => Readonly<{
     dappAddress,
     env,
     walletPublicKey,
+    walletBlockchain,
   });
 
   const render = useCallback(

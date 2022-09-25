@@ -28,11 +28,12 @@ export const useSubscriptionCard = (cardId: string): SubscriptionCardState => {
   });
 
   const {
-    params: { dappAddress, env, walletPublicKey },
+    params: { dappAddress, env, walletBlockchain, walletPublicKey },
   } = useNotifiSubscriptionContext();
 
   const notifiClient = useNotifiClient({
     dappAddress,
+    walletBlockchain,
     walletPublicKey,
     env,
   });

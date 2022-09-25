@@ -60,6 +60,7 @@ export type NotifiClientConfig = Readonly<{
   dappAddress: string;
   walletPublicKey: string;
   env?: BlockchainEnvironment | NotifiEnvironment;
+  walletBlockchain: 'SOLANA' | 'ETHEREUM';
 }>;
 
 export class NotifiClientError extends Error {
@@ -140,7 +141,7 @@ const useNotifiClient = (
     isInitialized: boolean;
     expiry: string | null;
   }> => {
-  const { env, dappAddress, walletPublicKey } = config;
+  const { env, dappAddress, walletPublicKey, walletBlockchain } = config;
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
   const notifiConfig = useNotifiConfig(env);
   const { getAuthorization, getRoles, setAuthorization, setRoles } =
@@ -347,6 +348,7 @@ const useNotifiClient = (
           dappAddress,
           timestamp,
           signature,
+          walletBlockchain,
         });
 
         await handleLogInResult(result);
@@ -364,7 +366,14 @@ const useNotifiClient = (
         setLoading(false);
       }
     },
-    [setAuthorization, setRoles, service, walletPublicKey, dappAddress],
+    [
+      setAuthorization,
+      setRoles,
+      service,
+      walletPublicKey,
+      dappAddress,
+      walletBlockchain,
+    ],
   );
 
   /**

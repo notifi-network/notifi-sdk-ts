@@ -17,11 +17,15 @@ mutation logInFromDapp(
   $dappAddress: String!
   $timestamp: Long!
   $signature: String!
+  $walletBlockchain: WalletBlockchain
+  $accountId: String
 ) {
   logInFromDapp(dappLogInInput: {
     walletPublicKey: $walletPublicKey
     dappAddress: $dappAddress
     timestamp: $timestamp
+    walletBlockchain: $walletBlockchain
+    accountId: $accountId
   }, signature: $signature) {
     ...userFragment
   }
