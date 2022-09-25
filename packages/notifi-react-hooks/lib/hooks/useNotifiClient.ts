@@ -100,11 +100,13 @@ const projectData = (internalData: InternalData | null): ClientData | null => {
 export const SIGNING_MESSAGE = `Sign in with Notifi \n\n    No password needed or gas is needed. \n\n    Clicking “Approve” only means you have proved this wallet is owned by you! \n\n    This request will not trigger any transaction or cost any gas fees. \n\n    Use of our website and service is subject to our terms of service and privacy policy. \n`;
 
 const signMessage = async ({
+  walletBlockchain,
   walletPublicKey,
   dappAddress,
   signer,
   timestamp,
 }: Readonly<{
+  walletBlockchain: NotifiClientConfig['walletBlockchain'];
   walletPublicKey: string;
   dappAddress: string;
   signer: MessageSigner;
@@ -115,7 +117,11 @@ const signMessage = async ({
   );
 
   const signedBuffer = await signer.signMessage(messageBuffer);
-  const signature = Buffer.from(signedBuffer).toString('base64');
+  let encoding: BufferEncoding = 'base64';
+  if (walletBlockchain === 'ETHEREUM') {
+    encoding = 'hex';
+  }
+  const signature = Buffer.from(signedBuffer).toString(encoding);
   return signature;
 };
 
@@ -338,6 +344,7 @@ const useNotifiClient = (
       setLoading(true);
       try {
         const signature = await signMessage({
+          walletBlockchain,
           walletPublicKey,
           dappAddress,
           timestamp,
@@ -1096,6 +1103,7 @@ const useNotifiClient = (
         }
 
         const signature = await signMessage({
+          walletBlockchain,
           walletPublicKey,
           dappAddress,
           timestamp,

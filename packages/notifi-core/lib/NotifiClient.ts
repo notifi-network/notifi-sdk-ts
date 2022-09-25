@@ -198,10 +198,6 @@ export type MessageSigner = Readonly<{
   signMessage: (message: Uint8Array) => Promise<Uint8Array>;
 }>;
 
-export type MessageLogger = Readonly<{
-  logMessage: (message: Uint8Array) => Promise<void>;
-}>;
-
 export type ClientBroadcastMessageInput = Readonly<{
   topic: UserTopic;
   subject: string;
