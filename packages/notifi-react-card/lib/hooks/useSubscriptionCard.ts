@@ -1,7 +1,8 @@
-import { useNotifiSubscriptionContext } from '../context';
-import { CardConfigItemV1 } from './SubscriptionCardConfig';
 import { useNotifiClient } from '@notifi-network/notifi-react-hooks';
 import { useEffect, useState } from 'react';
+
+import { useNotifiSubscriptionContext } from '../context';
+import { CardConfigItemV1 } from './SubscriptionCardConfig';
 
 export type LoadingState = Readonly<{
   state: 'loading';

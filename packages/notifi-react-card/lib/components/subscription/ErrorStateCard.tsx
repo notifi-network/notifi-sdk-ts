@@ -1,5 +1,6 @@
-import { ErrorState } from '../../hooks';
 import React from 'react';
+
+import { ErrorState } from '../../hooks';
 
 type Props = Readonly<{
   card: ErrorState;

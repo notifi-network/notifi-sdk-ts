@@ -1,3 +1,5 @@
+import React, { useEffect, useMemo, useState } from 'react';
+
 import { useNotifiSubscriptionContext } from '../../context';
 import { BroadcastEventTypeItem } from '../../hooks';
 import {
@@ -6,7 +8,6 @@ import {
   broadcastMessageConfiguration,
 } from '../../utils';
 import { resolveStringRef } from './resolveRef';
-import React, { useEffect, useMemo, useState } from 'react';
 
 type Props = Readonly<{
   classNames?: DeepPartialReadonly<{

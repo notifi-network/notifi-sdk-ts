@@ -1,5 +1,6 @@
-import { DeepPartialReadonly } from '../../utils';
 import React from 'react';
+
+import { DeepPartialReadonly } from '../../utils';
 
 type Props = Readonly<{
   classNames?: DeepPartialReadonly<{

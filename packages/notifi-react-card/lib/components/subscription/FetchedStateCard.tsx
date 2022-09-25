@@ -1,7 +1,8 @@
+import React, { useCallback } from 'react';
+
 import { FetchedState, useNotifiSubscribe } from '../../hooks';
 import { SubscriptionCardUnsupported } from './SubscriptionCardUnsupported';
 import { SubscriptionCardV1 } from './SubscriptionCardV1';
-import React, { useCallback } from 'react';
 
 type Props = Readonly<{
   card: FetchedState;

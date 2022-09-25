@@ -1,5 +1,6 @@
-import { LoadingState } from '../../hooks';
 import React from 'react';
+
+import { LoadingState } from '../../hooks';
 
 type Props = Readonly<{
   card: LoadingState;

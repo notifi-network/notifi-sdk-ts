@@ -1,8 +1,9 @@
+import React from 'react';
+
 import { NotifiEmailInput, NotifiSmsInput, NotifiTelegramInput } from '..';
 import { CardConfigItemV1 } from '../../hooks';
 import { EventTypeBroadcastRow } from './EventTypeBroadcastRow';
 import { EventTypeUnsupportedRow } from './EventTypeUnsupportedRow';
-import React from 'react';
 
 type Props = Readonly<{
   inputDisabled: boolean;
