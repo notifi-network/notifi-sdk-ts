@@ -50,12 +50,19 @@ export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
   }, [alerts, loading]);
 
   useEffect(() => {
+    console.log(
+      'broadcast useEffect',
+      alertName,
+      alertConfiguration,
+      enabled,
+      setAlertConfiguration,
+    );
     if (enabled) {
       setAlertConfiguration(alertName, alertConfiguration);
     } else {
       setAlertConfiguration(alertName, null);
     }
-  }, [enabled, alertName, alertConfiguration]);
+  }, [enabled, alertName, alertConfiguration, setAlertConfiguration]);
 
   return (
     <div
