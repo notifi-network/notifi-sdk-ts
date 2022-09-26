@@ -6,7 +6,7 @@
 
 Notifi provides notification infrastructure for web3 services and dApps to communicate with their end users.
 
-`notifi-frontend-client` is an SDK designed for frontend dApp developers to integrate Notifi's services via an easy-to-use Hooks interface.
+`notifi-frontend-client` is an SDK designed for frontend dApp developers to integrate Notifi's services.
 
 We currently support **Aptos** and **Solana** via our frontend client.
 
@@ -47,7 +47,7 @@ Instantiate and configure the Notifi Client for your dApp and environment. If yo
 ```
 const tenantId = <Tenant ID received through the Notifi Config Tool>;
 const account = <Your Martian account metadata>;
-const blockchainEnv = "Developemt";
+const blockchainEnv = "Development";
 
 const config = newAptosConfig(account, tenantId, blockchainEnv);
 const client = newAptosClient(config);
@@ -59,8 +59,6 @@ const client = newAptosClient(config);
 For a user to opt-in for notifications, they will need to provide their signature. This signature will then be used to authorize the user's connected wallet address with Notifi and create the account with Notifi.
 
 Using the wallet adapter of your choice, prompt the user to sign and use the signed message in the `logIn()` hook.
-
-📝 The signature type will vary depending on the wallet adapter. Connect with the Notifi devs to ensure success for your scenario.
 
 ```
 const martianLogIn = async () => {
@@ -89,10 +87,7 @@ const martianLogIn = async () => {
 
 After the user successfully authorizes, fetch the newly created user data from Notifi using the `getSourceGroups()` hook.
 
-In our simplest use case, the user will have 1 entry in the `sources` array, which will be based on their connected wallet address. More about the [`Source` type here](https://notifi-network.github.io/notifi-sdk-ts/modules.html#Source). Use the id of the source when creating the alert later on.
-
-For Metaplex/Bonfida auction sources, we provide hooks to help create the sources: createMetaplexAuctionSource and createBonfidaAuctionSource
-This allows the caller to specify the auction ID, along with an auction name or URL for a user to receive in their notifications.
+In our simplest use case, the user will have 1 entry in the `sources` array, which will be based on their connected wallet address.
 
 ```
 const sourceData = await client.getSourceGroups();
