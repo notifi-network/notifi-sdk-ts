@@ -12,6 +12,7 @@ import {
 import { useCallback, useEffect, useRef } from 'react';
 
 import { useNotifiSubscriptionContext } from '../context';
+import { useNotifiClientContext } from '../context/NotifiClientContext';
 
 export type SubscriptionData = Readonly<{
   alerts: Readonly<Record<string, Alert>>;
@@ -28,8 +29,9 @@ export const useNotifiSubscribe: () => Readonly<{
   logIn: () => Promise<SubscriptionData>;
   subscribe: () => Promise<SubscriptionData>;
 }> = () => {
+  const { client } = useNotifiClientContext();
+
   const {
-    client,
     email: inputEmail,
     phoneNumber: inputPhoneNumber,
     telegramId: inputTelegramId,

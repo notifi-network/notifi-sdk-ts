@@ -1,11 +1,4 @@
 import type { Alert } from '@notifi-network/notifi-core';
-import {
-  MessageSigner,
-  NotifiEnvironment,
-  useNotifiClient,
-} from '@notifi-network/notifi-react-hooks';
-import type { WalletContextState } from '@solana/wallet-adapter-react';
-import type { Connection } from '@solana/web3.js';
 import type { PropsWithChildren } from 'react';
 import React, {
   createContext,
@@ -16,22 +9,10 @@ import React, {
 } from 'react';
 
 import type { AlertConfiguration } from '../utils';
-
-export type NotifiParams = Readonly<{
-  alertConfigurations?: Record<string, AlertConfiguration | null>;
-  dappAddress: string;
-  env: NotifiEnvironment;
-  signer: MessageSigner;
-  walletPublicKey: string;
-  walletBlockchain: 'SOLANA' | 'ETHEREUM';
-  keepSubscriptionData?: boolean;
-  connection: Connection;
-  sendTransaction: WalletContextState['sendTransaction'];
-}>;
+import { NotifiParams } from './NotifiContext';
 
 export type NotifiSubscriptionData = Readonly<{
   alerts: Readonly<Record<string, Alert | undefined>>;
-  client: ReturnType<typeof useNotifiClient>;
   email: string;
   params: NotifiParams;
   phoneNumber: string;
@@ -72,14 +53,6 @@ export const NotifiSubscriptionContextProvider: React.FC<
   const [alerts, setAlerts] = useState<Record<string, Alert | undefined>>({});
   const [useHardwareWallet, setUseHardwareWallet] = useState<boolean>(false);
 
-  const { dappAddress, env, walletPublicKey, walletBlockchain } = params;
-  const client = useNotifiClient({
-    dappAddress,
-    env,
-    walletPublicKey,
-    walletBlockchain,
-  });
-
   const alertConfigurations = useRef<Record<string, AlertConfiguration | null>>(
     params.alertConfigurations ?? {},
   );
@@ -109,7 +82,6 @@ export const NotifiSubscriptionContextProvider: React.FC<
 
   const value = {
     alerts,
-    client,
     email,
     params,
     phoneNumber,
