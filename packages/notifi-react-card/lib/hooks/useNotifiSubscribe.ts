@@ -216,6 +216,7 @@ export const useNotifiSubscribe: () => Readonly<{
       };
 
       const config = configurations[name];
+      console.log('handling config', i, name, config);
       if (config === undefined || config === null) {
         await deleteThisAlert();
       } else {
@@ -265,6 +266,7 @@ export const useNotifiSubscribe: () => Readonly<{
           console.log('Could not find source or filter', source, filter);
           await deleteThisAlert();
         } else if (existingAlert !== undefined && existingAlert.id !== null) {
+          console.log('update alert');
           const alert = await client.updateAlert({
             alertId: existingAlert.id,
             emailAddress: finalEmail,
@@ -275,6 +277,7 @@ export const useNotifiSubscribe: () => Readonly<{
         } else {
           // Call serially because of limitations
           await deleteThisAlert();
+          console.log('create alert');
           const alert = await client.createAlert({
             name,
             sourceId: source.id,
@@ -297,6 +300,7 @@ export const useNotifiSubscribe: () => Readonly<{
       keepSubscriptionData
     ) {
       // We didn't create or update any alert, manually update the targets
+      console.log('Just updating targetGroup');
       await client.ensureTargetGroup({
         name: 'Default',
         emailAddress: finalEmail,
