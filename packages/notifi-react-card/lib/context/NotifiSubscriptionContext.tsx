@@ -1,7 +1,8 @@
 import type { Alert } from '@notifi-network/notifi-core';
-import type {
+import {
   MessageSigner,
   NotifiEnvironment,
+  useNotifiClient,
 } from '@notifi-network/notifi-react-hooks';
 import type { WalletContextState } from '@solana/wallet-adapter-react';
 import type { Connection } from '@solana/web3.js';
@@ -30,6 +31,7 @@ export type NotifiParams = Readonly<{
 
 export type NotifiSubscriptionData = Readonly<{
   alerts: Readonly<Record<string, Alert | undefined>>;
+  client: ReturnType<typeof useNotifiClient>;
   email: string;
   params: NotifiParams;
   phoneNumber: string;
@@ -70,6 +72,14 @@ export const NotifiSubscriptionContextProvider: React.FC<
   const [alerts, setAlerts] = useState<Record<string, Alert | undefined>>({});
   const [useHardwareWallet, setUseHardwareWallet] = useState<boolean>(false);
 
+  const { dappAddress, env, walletPublicKey, walletBlockchain } = params;
+  const client = useNotifiClient({
+    dappAddress,
+    env,
+    walletPublicKey,
+    walletBlockchain,
+  });
+
   const alertConfigurations = useRef<Record<string, AlertConfiguration | null>>(
     params.alertConfigurations ?? {},
   );
@@ -99,6 +109,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
 
   const value = {
     alerts,
+    client,
     email,
     params,
     phoneNumber,
