@@ -1,13 +1,13 @@
-.NotifiSubscriptionCard__container {
-  display: 'flex';
-  flex-direction: 'column';
-  background: var(--notifi-card-background);
-}
-
-.NotifiSubscriptionCard__container .notifi__light {
+.notifi__light {
   --notifi-card-background: #eee;
 }
 
-.NotifiSubscriptionCard__container .notifi__dark {
+.notifi__dark {
   --notifi-card-background: #333;
+}
+
+.NotifiSubscriptionCard__container {
+  display: flex;
+  flex-direction: column;
+  background: var(--notifi-card-background);
 }

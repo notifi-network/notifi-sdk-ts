@@ -68,8 +68,8 @@ export const NotifiSubscriptionCard: React.FC<NotifiSubscriptionCardProps> = ({
   return (
     <div
       className={clsx(
-        'NotifiSubscriptionCard__container',
         darkMode ? 'notifi__dark' : 'notifi__light',
+        'NotifiSubscriptionCard__container',
         classNames?.container,
       )}
     >
