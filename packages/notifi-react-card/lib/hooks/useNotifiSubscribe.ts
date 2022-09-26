@@ -9,7 +9,7 @@ import {
   Transaction,
   TransactionInstruction,
 } from '@solana/web3.js';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 import { useNotifiSubscriptionContext } from '../context';
 
@@ -90,8 +90,10 @@ export const useNotifiSubscribe: () => Readonly<{
   );
 
   // Initial fetch
+  const didFetch = useRef(false);
   useEffect(() => {
-    if (client.isAuthenticated) {
+    if (client.isAuthenticated && !didFetch.current) {
+      didFetch.current = true;
       client
         .fetchData()
         .then((data) => {
@@ -101,7 +103,7 @@ export const useNotifiSubscribe: () => Readonly<{
           /* Intentionally empty */
         });
     }
-  }, [client]);
+  }, [client.isAuthenticated]);
 
   const logInViaHardwareWallet =
     useCallback(async (): Promise<SubscriptionData> => {
