@@ -97,19 +97,11 @@ const ensureSourceIds = async (
   service: Operations.GetSourcesService & Operations.CreateSourceService,
   sourceParams: ReadonlyArray<EnsureSourceParams>,
 ): Promise<Set<string>> => {
-  const sourcesQuery = await service.getSources({});
-  // Cache calls to getSources across all ensureSource calls
-  const cachedService = {
-    createSource: service.createSource,
-    getSources: (_var: Types.GetSourcesQueryVariables) =>
-      Promise.resolve(sourcesQuery),
-  };
-
   const sourceIds: Set<string> = new Set();
   // Create sources in series
   for (let i = 0; i < sourceParams.length; ++i) {
     const params = sourceParams[i];
-    const source = await ensureSource(cachedService, params);
+    const source = await ensureSource(service, params);
     sourceIds.add(source.id);
   }
 
