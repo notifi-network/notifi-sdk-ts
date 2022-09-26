@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import React from 'react';
 
 import { ErrorState } from '../../hooks';
@@ -16,8 +17,15 @@ export const ErrorStateCard: React.FC<ErrorStateCardProps> = ({
 }) => {
   return (
     <>
-      <div className={classNames?.label}>Something went wrong.</div>
-      <div className={classNames?.errorMessage}>{`${card.reason}`}</div>
+      <div className={clsx('ErrorStateCard__label', classNames?.label)}>
+        Something went wrong.
+      </div>
+      <div
+        className={clsx(
+          'ErrorStateCard__errorMessage',
+          classNames?.errorMessage,
+        )}
+      >{`${card.reason}`}</div>
     </>
   );
 };

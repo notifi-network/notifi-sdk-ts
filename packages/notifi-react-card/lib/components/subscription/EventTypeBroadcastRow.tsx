@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import React, { useEffect, useMemo, useState } from 'react';
 
 import { useNotifiSubscriptionContext } from '../../context';
@@ -7,13 +8,15 @@ import {
   DeepPartialReadonly,
   broadcastMessageConfiguration,
 } from '../../utils';
+import type { NotifiToggleProps } from './NotifiToggle';
+import { NotifiToggle } from './NotifiToggle';
 import { resolveStringRef } from './resolveRef';
 
 export type EventTypeBroadcastRowProps = Readonly<{
   classNames?: DeepPartialReadonly<{
     container: string;
     label: string;
-    input: string;
+    toggle: NotifiToggleProps['classNames'];
   }>;
   disabled: boolean;
   config: BroadcastEventTypeItem;
@@ -51,16 +54,20 @@ export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
   }, [enabled, alertName, alertConfiguration]);
 
   return (
-    <div className={classNames?.container}>
-      <div className={classNames?.label}>{config.name}</div>
-      <input
-        className={classNames?.input}
+    <div
+      className={clsx(
+        'EventTypeBroadcastRow__container',
+        classNames?.container,
+      )}
+    >
+      <div className={clsx('EventTypeBroadcastRow__label', classNames?.label)}>
+        {config.name}
+      </div>
+      <NotifiToggle
+        classNames={classNames?.toggle}
         disabled={disabled}
-        type="checkbox"
         checked={enabled}
-        onChange={(e) => {
-          setEnabled(e.target.checked);
-        }}
+        setChecked={setEnabled}
       />
     </div>
   );

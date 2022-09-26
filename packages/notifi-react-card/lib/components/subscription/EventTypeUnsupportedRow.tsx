@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import React from 'react';
 
 import { DeepPartialReadonly } from '../../utils';
@@ -13,8 +14,17 @@ export const EventTypeUnsupportedRow: React.FC<
   EventTypeUnsupportedRowProps
 > = ({ classNames }: EventTypeUnsupportedRowProps) => {
   return (
-    <div className={classNames?.container}>
-      <div className={classNames?.label}>Unsupported Event Type</div>
+    <div
+      className={clsx(
+        'EventTypeUnsupportedRow__container',
+        classNames?.container,
+      )}
+    >
+      <div
+        className={clsx('EventTypeUnsupportedRow__label', classNames?.label)}
+      >
+        Unsupported Event Type
+      </div>
     </div>
   );
 };

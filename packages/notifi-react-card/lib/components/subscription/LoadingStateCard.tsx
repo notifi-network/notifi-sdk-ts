@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import React from 'react';
 
 import { LoadingState } from '../../hooks';
@@ -12,11 +13,12 @@ export type LoadingStateCardProps = Readonly<{
 export const LoadingStateCard: React.FC<LoadingStateCardProps> = ({
   classNames,
 }) => {
+  const clz = clsx('LoadingStateCard__glimmer', classNames?.glimmer);
   return (
     <>
-      <div className={classNames?.glimmer} />
-      <div className={classNames?.glimmer} />
-      <div className={classNames?.glimmer} />
+      <div className={clz} />
+      <div className={clz} />
+      <div className={clz} />
     </>
   );
 };

@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import React, { useCallback } from 'react';
 
 import { useNotifiSubscriptionContext } from '../../context';
@@ -26,11 +27,13 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
   const copy = hasAlerts ? 'Update' : 'Subscribe';
   return (
     <button
-      className={classNames?.button}
+      className={clsx('NotifiSubscribeButton__button', classNames?.button)}
       disabled={!isInitialized || loading}
       onClick={onClick}
     >
-      <span className={classNames?.label}>{copy}</span>
+      <span className={clsx('NotifiSubscribeButton__label', classNames?.label)}>
+        {copy}
+      </span>
     </button>
   );
 };
