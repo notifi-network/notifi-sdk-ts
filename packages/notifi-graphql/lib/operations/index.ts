@@ -16,6 +16,7 @@ export * from './GetAlertsService';
 export * from './GetConfigurationForDapp';
 export * from './GetEmailTargets';
 export * from './GetFilters';
+export * from './GetNotificationHistory';
 export * from './GetSmsTargets';
 export * from './GetSourceGroups';
 export * from './GetSources';

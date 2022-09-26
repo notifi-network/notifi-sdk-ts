@@ -25,6 +25,7 @@ export class NotifiService
     Operations.GetConfigurationForDappService,
     Operations.GetEmailTargetsService,
     Operations.GetFiltersService,
+    Operations.GetNotificationHistoryService,
     Operations.GetSmsTargetsService,
     Operations.GetSourceGroupsService,
     Operations.GetSourcesService,
@@ -178,6 +179,13 @@ export class NotifiService
   ): Promise<Generated.GetFiltersQuery> {
     const headers = this._requestHeaders();
     return this._typedClient.getFilters(variables, headers);
+  }
+
+  async getNotificationHistory(
+    variables: Generated.GetNotificationHistoryQueryVariables,
+  ): Promise<Generated.GetNotificationHistoryQuery> {
+    const headers = this._requestHeaders();
+    return this._typedClient.getNotificationHistory(variables, headers);
   }
 
   async getSmsTargets(
