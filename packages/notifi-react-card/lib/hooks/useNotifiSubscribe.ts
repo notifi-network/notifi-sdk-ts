@@ -175,7 +175,8 @@ export const useNotifiSubscribe: () => Readonly<{
   ]);
 
   const subscribe = useCallback(async (): Promise<SubscriptionData> => {
-    const configurations = getAlertConfigurations();
+    const currentConfigs = getAlertConfigurations();
+    const configurations = { ...currentConfigs };
 
     const names = Object.keys(configurations);
     const finalEmail = inputEmail === '' ? null : inputEmail;
