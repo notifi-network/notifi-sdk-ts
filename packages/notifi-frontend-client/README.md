@@ -29,7 +29,6 @@ In this README, we'll cover the simple use case of one user authenticating throu
 ```
 npm i @notifi-network/notifi-frontend-client
 ```
-<!--- ## 📚 Prerequistes --->
 
 ## 🧩 Build Your UI Components
 
@@ -54,8 +53,6 @@ const config = newAptosConfig(account, tenantId, blockchainEnv);
 const client = newAptosClient(config);
 
 ```
-
-<!--- > 📝 To receive a tenant id, please review this document here: --->
 
 ## 🔏 Signature Authorization
 
@@ -121,8 +118,6 @@ Once your user enters their contact information and options for their first aler
 In order to create a target group, `ensureTargetGroup()` must pass in least one email address, phone number, telegramId, or webhook url. Dapp admins can update pass in a webhook url to receive all of the notifications instead of a user email address, phone number, or telegramId.
 
 In order to create a source group, `ensureSourceGroup()` must pass in metadata of the alert options returned in the Rendering Alert Options section. 
-
-<!--- Dapp admins can configure the source params using the config tool. To learn more about how Dapp admins can set up a configuration, please review this here. --->
 
 After creating a target group and source group, use the `ensureAlert()` to create the first alert.
 
