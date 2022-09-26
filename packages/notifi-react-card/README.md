@@ -9,157 +9,89 @@ npm install @notifi-network/notifi-react-card
 npm install --save-dev @notifi-network/notifi-core
 ```
 
-### Create a component which controls Alert configuration
-#### A Marketing Alert which should be broadcast to all users
-```tsx
-import type { AlertConfiguration } from '@notifi-network/notifi-react-card';
-import {
-  broadcastMessageConfiguration,
-  useNotifiSubscriptionContext,
-} from '@notifi-network/notifi-react-card';
-import React, { useEffect, useState } from 'react';
+You can import the default stylesheet to get baseline styling.
 
-const ALERT_NAME = 'My Marketing Updates';
-const ALERT_CONFIGURATION: AlertConfiguration = broadcastMessageConfiguration({
-  topicName: `TALK_TO_NOTIFI_TO_GET_THIS_VALUE`,
-});
-
-type Props = Readonly<{
-  disabled: boolean;
-}>;
-
-export const MarketingToggle: React.FC<Props> = ({ disabled }: Props) => {
-  const [enabled, setEnabled] = useState<boolean>(false);
-  const { setAlertConfiguration } = useNotifiSubscriptionContext();
-
-  useEffect(() => {
-    if (enabled) {
-      setAlertConfiguration(ALERT_NAME, ALERT_CONFIGURATION);
-    } else {
-      setAlertConfiguration(ALERT_NAME, null);
-    }
-  }, [enabled]);
-
-  return (
-    <div>
-      <span>Sign up for Marketing alerts</span>
-      <input
-        disabled={disabled}
-        type="checkbox"
-        checked={enabled}
-        onChange={(e) => {
-          setEnabled(e.target.checked);
-        }}
-      />
-    </div>
-  );
-};
-```
-#### A Direct Message alert which is targeted at specific users
-```tsx
-import type { AlertConfiguration } from '@notifi-network/notifi-react-card';
-import {
-  directMessageConfiguration,
-  useNotifiSubscriptionContext,
-} from '@notifi-network/notifi-react-card';
-import React, { useEffect, useState } from 'react';
-
-const ALERT_NAME = 'Direct Messages To My Wallet';
-const ALERT_CONFIGURATION: AlertConfiguration = directMessageConfiguration();
-
-type Props = Readonly<{
-  disabled: boolean;
-}>;
-
-export const DirectMessageToggle: React.FC<Props> = ({ disabled }: Props) => {
-  const [enabled, setEnabled] = useState<boolean>(false);
-  const { setAlertConfiguration } = useNotifiSubscriptionContext();
-
-  useEffect(() => {
-    if (enabled) {
-      setAlertConfiguration(ALERT_NAME, ALERT_CONFIGURATION);
-    } else {
-      setAlertConfiguration(ALERT_NAME, null);
-    }
-  }, [enabled]);
-
-  return (
-    <div>
-      <span>Sign up for Direct Messages</span>
-      <input
-        disabled={disabled}
-        type="checkbox"
-        checked={enabled}
-        onChange={(e) => {
-          setEnabled(e.target.checked);
-        }}
-      />
-    </div>
-  );
-};
-```
-
-
-### Create a wrapper for the contents of the card
+### Solana
 
 ```tsx
-import { MarketingToggle } from './MarketingToggle';
-import { DirectMessageToggle } from './DirectMessageToggle';
-import {
-  NotifiEmailInput,
-  NotifiFooter,
-  NotifiSmsInput,
-  useNotifiSubscribe,
-} from '@notifi-network/notifi-react-card';
-import React from 'react';
-
-export const NotifiCardContents: React.FC = () => {
-  const { loading, subscribe } = useNotifiSubscribe();
-
-  return (
-    <>
-      <NotifiEmailInput disabled={loading} />
-      <NotifiSmsInput disabled={loading} />
-      <MarketingToggle disabled={loading} />
-      <DirectMessageToggle disabled={loading} />
-      <button
-        disabled={loading}
-        type="submit"
-        onClick={async () => {
-          await subscribe();
-        }}
-      >
-        Subscribe
-      </button>
-      <NotifiFooter />
-    </>
-  );
-};
-```
-
-### Render the Card in your app
-
-```tsx
-import { NotifiCardContents } from './NotifiCardContents';
 import type { MessageSigner } from '@notifi-network/notifi-core';
-import { NotifiCard } from '@notifi-network/notifi-react-card';
-import { useWallet } from '@solana/wallet-adapter-react';
+import {
+  NotifiContext,
+  NotifiSubscriptionCard,
+} from '@notifi-network/notifi-react-card';
+import '@notifi-network/notifi-react-card/dist/index.css';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import React from 'react';
 
-export const Notifi: React.FC = () => {
-  const { wallet } = useWallet();
+export const Remote: React.FC = () => {
+  const { connection } = useConnection();
+  const { wallet, sendTransaction } = useWallet();
   const adapter = wallet?.adapter;
   const publicKey = adapter?.publicKey?.toBase58() ?? null;
 
+  if (publicKey === null) {
+    // publicKey is required
+    return null;
+  }
+
   return (
-    <NotifiCard
-      dappAddress="TALK_TO_NOTIFI"
+    <NotifiContext
+      dappAddress="<YOUR OWN DAPP ADDRESS HERE>"
+      walletBlockchain="SOLANA"
       env="Development"
       signer={adapter as MessageSigner}
       walletPublicKey={publicKey}
+      connection={connection}
+      sendTransaction={sendTransaction}
     >
-      <NotifiCardContents />
-    </NotifiCard>
+      <NotifiSubscriptionCard cardId="<YOUR OWN CARD ID HERE>" darkMode />
+    </NotifiContext>
   );
 };
 ```
+
+### Ethereum
+
+There are some transitive (unused) dependencies on Solana -- it's possible to work around by passing undefined for these things. (We are working on cleaning these up)
+
+```tsx
+import { arrayify } from '@ethersproject/bytes';
+import {
+  NotifiContext,
+  NotifiSubscriptionCard,
+} from '@notifi-network/notifi-react-card';
+import '@notifi-network/notifi-react-card/dist/index.css';
+import { useEthers } from '@usedapp/core';
+import React from 'react';
+
+export const Notifi: React.FC = () => {
+  const { account, library } = useEthers();
+  const signer = library?.getSigner();
+
+  if (account === undefined || signer === undefined) {
+    // account is required
+    return null;
+  }
+
+  return (
+    <NotifiContext
+      dappAddress="<YOUR OWN DAPP ADDRESS HERE>"
+      env="Development"
+      signer={{
+        signMessage: async (message: Uint8Array) => {
+          const result = await signer.signMessage(message);
+          return arrayify(result);
+        },
+      }}
+      walletPublicKey={account}
+      walletBlockchain="ETHEREUM"
+      connection={undefined as any}
+      sendTransaction={undefined as any}
+    >
+      <NotifiSubscriptionCard cardId="<YOUR OWN CARD ID HERE>" darkMode />
+    </NotifiContext>
+  );
+};
+```
+
+### Solana

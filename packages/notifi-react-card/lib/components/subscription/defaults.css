@@ -57,6 +57,13 @@
   flex-grow: 1;
 }
 
+.NotifiFooter__link a {
+  color: var(--notifi-font-color);
+  text-decoration: underline;
+  font-size: 12px;
+  line-height: 14px;
+}
+
 .NotifiEmailInput__container,
 .NotifiSmsInput__container,
 .NotifiTelegramInput__container {
@@ -78,10 +85,11 @@
 .NotifiSmsInput__input,
 .NotifiTelegramInput__input {
   flex-grow: 1;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 20px;
   background: none;
   outline: none;
+  border: none;
 }
 
 .NotifiEmailInput__input::placeholder,
@@ -148,6 +156,9 @@
 .EventTypeBroadcastRow__label {
   flex-grow: 1;
   margin-right: 10px;
+  font-size: 16px;
+  line-height: 20px;
+  text-align: left;
 }
 
 .EventTypeUnsupportedRow__container {
@@ -158,4 +169,9 @@
   padding: 10px;
   background-color: var(--notifi-button-color);
   border-radius: 5px;
+  border: none;
+  font-size: 16px;
+  line-height: 20px;
+  cursor: pointer;
+  color: var(--notifi-font-color);
 }
