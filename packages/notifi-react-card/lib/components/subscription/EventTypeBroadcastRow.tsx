@@ -1,7 +1,10 @@
 import clsx from 'clsx';
 import React, { useEffect, useMemo, useState } from 'react';
 
-import { useNotifiSubscriptionContext } from '../../context';
+import {
+  useNotifiClientContext,
+  useNotifiSubscriptionContext,
+} from '../../context';
 import { BroadcastEventTypeItem } from '../../hooks';
 import {
   AlertConfiguration,
@@ -29,6 +32,9 @@ export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
   config,
   inputs,
 }: EventTypeBroadcastRowProps) => {
+  const {
+    client: { loading },
+  } = useNotifiClientContext();
   const { alerts, setAlertConfiguration } = useNotifiSubscriptionContext();
   const [enabled, setEnabled] = useState(true);
 
@@ -41,9 +47,12 @@ export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
   }, [alertName, config, inputs]);
 
   useEffect(() => {
+    if (loading) {
+      return;
+    }
     const hasAlert = alerts[alertName] !== undefined;
     setEnabled(hasAlert);
-  }, [alerts]);
+  }, [alerts, loading]);
 
   useEffect(() => {
     if (enabled) {

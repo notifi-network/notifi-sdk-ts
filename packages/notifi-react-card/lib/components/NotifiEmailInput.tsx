@@ -31,8 +31,6 @@ export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
         type="email"
         value={email}
         onChange={(e) => {
-          const val = e.target.value ?? '';
-          console.log('setEmail', setEmail, val);
           setEmail(e.target.value ?? '');
         }}
         placeholder={copy?.placeholder ?? 'Email Address'}
