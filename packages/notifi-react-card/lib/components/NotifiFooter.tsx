@@ -23,15 +23,15 @@ export const NotifiFooter: React.FC<NotifiFooterProps> = ({
   copy,
 }: NotifiFooterProps) => {
   return (
-    <div className={clsx('.NotifiFooter__container', classNames?.container)}>
-      <span className={clsx('.NotifiFooter__poweredBy', classNames?.poweredBy)}>
+    <div className={clsx('NotifiFooter__container', classNames?.container)}>
+      <span className={clsx('NotifiFooter__poweredBy', classNames?.poweredBy)}>
         {copy?.poweredBy ?? 'Powered by'}
       </span>
       <NotifiLogo
-        className={clsx('.NotifiFooter__logoSvg', classNames?.logoSvg)}
+        className={clsx('NotifiFooter__logoSvg', classNames?.logoSvg)}
       />
-      <span className={clsx('.NotifiFooter__spacer', classNames?.spacer)} />
-      <span className={clsx('.NotifiFooter__link', classNames?.link)}>
+      <span className={clsx('NotifiFooter__spacer', classNames?.spacer)} />
+      <span className={clsx('NotifiFooter__link', classNames?.link)}>
         <a
           href="https://notifi.network/faqs"
           target="_blank"
