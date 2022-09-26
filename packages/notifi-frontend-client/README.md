@@ -22,7 +22,7 @@ Instantiate and configure the Notifi Client for your dApp and environment. If yo
 
 ```
 const tenantId = <Tenant ID received through the Notifi Config Tool>;
-const account = <Your Martian account metadata>;
+const account = await martian.account();
 const blockchainEnv = "Development";
 
 const config = newAptosConfig(account, tenantId, blockchainEnv);
