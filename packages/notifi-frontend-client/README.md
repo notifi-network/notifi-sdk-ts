@@ -157,6 +157,7 @@ const targetGroup = await client.ensureTargetGroup({
     });
 
     return alert;
+}
 ```
 
 ## 🔃 Updating the Alert
