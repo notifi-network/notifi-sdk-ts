@@ -23,6 +23,7 @@ export type NotifiSubscriptionCardProps = Readonly<{
     NotifiSubscribeButton?: NotifiSubscribeButtonProps['classNames'];
     NotifiFooter?: NotifiFooterProps['classNames'];
   }>;
+  darkMode?: boolean;
   cardId: string;
   inputs?: Record<string, string | undefined>;
 }>;
@@ -30,6 +31,7 @@ export type NotifiSubscriptionCardProps = Readonly<{
 export const NotifiSubscriptionCard: React.FC<NotifiSubscriptionCardProps> = ({
   classNames,
   cardId,
+  darkMode,
   inputs = {},
 }: NotifiSubscriptionCardProps) => {
   const { loading, isAuthenticated, isInitialized } = useNotifiSubscribe();
@@ -67,6 +69,7 @@ export const NotifiSubscriptionCard: React.FC<NotifiSubscriptionCardProps> = ({
     <div
       className={clsx(
         'NotifiSubscriptionCard__container',
+        darkMode ? 'notifi__dark' : 'notifi__light',
         classNames?.container,
       )}
     >
