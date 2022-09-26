@@ -1,13 +1,38 @@
 .notifi__light {
   --notifi-card-background: #eee;
+  --notifi-font-color: #000;
 }
 
 .notifi__dark {
   --notifi-card-background: #333;
+  --notifi-font-color: #fff;
 }
 
 .NotifiSubscriptionCard__container {
+  color: var(--notifi-font-color);
   display: flex;
   flex-direction: column;
   background: var(--notifi-card-background);
+}
+
+.NotifiFooter__container {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+}
+
+.NotifiFooter__container {
+  font-size: 14px;
+  line-height: 16px;
+}
+
+.NotifiFooter__logoSvg {
+  width: 61px;
+  height: 16px;
+  padding-top: 2px;
+  margin-left: 4px;
+}
+
+.NotifiFooter__spacer {
+  flex-grow: 1;
 }

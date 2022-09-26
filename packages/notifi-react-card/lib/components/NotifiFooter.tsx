@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import React from 'react';
 
 import type { DeepPartialReadonly } from '../utils';
@@ -22,13 +23,15 @@ export const NotifiFooter: React.FC<NotifiFooterProps> = ({
   copy,
 }: NotifiFooterProps) => {
   return (
-    <div className={classNames?.container}>
-      <span className={classNames?.poweredBy}>
+    <div className={clsx('.NotifiFooter__container', classNames?.container)}>
+      <span className={clsx('.NotifiFooter__poweredBy', classNames?.poweredBy)}>
         {copy?.poweredBy ?? 'Powered by'}
       </span>
-      <NotifiLogo className={classNames?.logoSvg} />
-      <span className={classNames?.spacer} />
-      <span className={classNames?.link}>
+      <NotifiLogo
+        className={clsx('.NotifiFooter__logoSvg', classNames?.logoSvg)}
+      />
+      <span className={clsx('.NotifiFooter__spacer', classNames?.spacer)} />
+      <span className={clsx('.NotifiFooter__link', classNames?.link)}>
         <a
           href="https://notifi.network/faqs"
           target="_blank"
