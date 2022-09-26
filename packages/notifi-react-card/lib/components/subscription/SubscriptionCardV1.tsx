@@ -9,6 +9,7 @@ import { NotifiEmailInput, NotifiSmsInput, NotifiTelegramInput } from '..';
 import { CardConfigItemV1 } from '../../hooks';
 import type { EventTypeBroadcastRowProps } from './EventTypeBroadcastRow';
 import { EventTypeBroadcastRow } from './EventTypeBroadcastRow';
+import { EventTypeDirectPushRow } from './EventTypeDirectPushRow';
 import type { EventTypeUnsupportedRowProps } from './EventTypeUnsupportedRow';
 import { EventTypeUnsupportedRow } from './EventTypeUnsupportedRow';
 
@@ -56,6 +57,16 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
           case 'broadcast':
             return (
               <EventTypeBroadcastRow
+                key={eventType.name}
+                classNames={classNames?.EventTypeBroadcastRow}
+                disabled={inputDisabled}
+                config={eventType}
+                inputs={inputs}
+              />
+            );
+          case 'directPush':
+            return (
+              <EventTypeDirectPushRow
                 key={eventType.name}
                 classNames={classNames?.EventTypeBroadcastRow}
                 disabled={inputDisabled}
