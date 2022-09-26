@@ -20,7 +20,7 @@
   "scripts": {
     "build": "npm run clean && npm run compile",
     "clean": "rimraf ./dist",
-    "compile": "tsc -p tsconfig.build.json",
+    "compile": "tsup lib/index.ts --format cjs,esm --dts --clean",
     "format": "prettier --config .prettierrc **/*.ts --write",
     "lint": "eslint ."
   },
