@@ -4,15 +4,15 @@ import type {
   Filter,
   Source,
 } from '@notifi-network/notifi-core';
-import { useNotifiClient } from '@notifi-network/notifi-react-hooks';
 import {
   PublicKey,
   Transaction,
   TransactionInstruction,
 } from '@solana/web3.js';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 import { useNotifiSubscriptionContext } from '../context';
+import { useNotifiClientContext } from '../context/NotifiClientContext';
 
 export type SubscriptionData = Readonly<{
   alerts: Readonly<Record<string, Alert>>;
@@ -23,20 +23,19 @@ export type SubscriptionData = Readonly<{
 }>;
 
 export const useNotifiSubscribe: () => Readonly<{
-  loading: boolean;
   isAuthenticated: boolean;
   isInitialized: boolean;
   logIn: () => Promise<SubscriptionData>;
   subscribe: () => Promise<SubscriptionData>;
 }> = () => {
+  const { client } = useNotifiClientContext();
+
   const {
     email: inputEmail,
     phoneNumber: inputPhoneNumber,
     telegramId: inputTelegramId,
     params: {
-      dappAddress,
-      env,
-      keepSubscriptionData,
+      keepSubscriptionData = true,
       walletPublicKey,
       signer,
       connection,
@@ -49,31 +48,12 @@ export const useNotifiSubscribe: () => Readonly<{
     setPhoneNumber,
     setTelegramId,
     setTelegramConfirmationUrl,
+    setLoading,
   } = useNotifiSubscriptionContext();
-
-  const {
-    loading,
-    createAlert,
-    createSource,
-    deleteAlert,
-    fetchData,
-    isAuthenticated,
-    isInitialized,
-    logIn: clientLogIn,
-    beginLoginViaTransaction,
-    completeLoginViaTransaction,
-    updateAlert,
-    ensureTargetGroup,
-  } = useNotifiClient({
-    dappAddress,
-    env,
-    walletPublicKey,
-  });
 
   const render = useCallback(
     (newData: ClientData | null): SubscriptionData => {
       const configurations = getAlertConfigurations();
-      console.log('DEBUG: 0');
       let targetGroup = newData?.targetGroups[0];
 
       const alerts: Record<string, Alert> = {};
@@ -86,9 +66,7 @@ export const useNotifiSubscribe: () => Readonly<{
         }
       });
       setAlerts(alerts);
-      console.log('DEBUG: 1 ' + JSON.stringify(alerts));
       const email = targetGroup?.emailTargets[0]?.emailAddress ?? null;
-      console.log('DEBUG: 2 ' + JSON.stringify(email));
 
       setEmail(email ?? '');
 
@@ -111,9 +89,12 @@ export const useNotifiSubscribe: () => Readonly<{
   );
 
   // Initial fetch
+  const didFetch = useRef(false);
   useEffect(() => {
-    if (isAuthenticated) {
-      fetchData()
+    if (client.isAuthenticated && !didFetch.current) {
+      didFetch.current = true;
+      client
+        .fetchData()
         .then((data) => {
           render(data);
         })
@@ -121,12 +102,12 @@ export const useNotifiSubscribe: () => Readonly<{
           /* Intentionally empty */
         });
     }
-  }, [isAuthenticated]);
+  }, [client.isAuthenticated]);
 
   const logInViaHardwareWallet =
     useCallback(async (): Promise<SubscriptionData> => {
       // Obtain nonce from Notifi
-      const { logValue } = await beginLoginViaTransaction();
+      const { logValue } = await client.beginLoginViaTransaction();
 
       // Commit a transaction with the Memo program
       const publicKey = new PublicKey(walletPublicKey);
@@ -160,39 +141,42 @@ export const useNotifiSubscribe: () => Readonly<{
       });
 
       // Inform Notifi of the signature so that we can complete login
-      await completeLoginViaTransaction({
+      await client.completeLoginViaTransaction({
         transactionSignature: signature,
       });
 
-      const newData = await fetchData();
+      const newData = await client.fetchData();
       return render(newData);
-    }, [
-      walletPublicKey,
-      beginLoginViaTransaction,
-      connection,
-      sendTransaction,
-      completeLoginViaTransaction,
-      fetchData,
-      render,
-    ]);
+    }, [walletPublicKey, client, connection, sendTransaction, render]);
 
   const logIn = useCallback(async (): Promise<SubscriptionData> => {
-    if (!isAuthenticated) {
+    setLoading(true);
+    if (!client.isAuthenticated) {
       if (useHardwareWallet) {
         await logInViaHardwareWallet();
       } else {
-        await clientLogIn(signer);
+        await client.logIn(signer);
       }
     }
 
-    const newData = await fetchData();
-    return render(newData);
-  }, [clientLogIn, signer, useHardwareWallet]);
+    const newData = await client.fetchData();
+    const results = render(newData);
+    setLoading(false);
+    return results;
+  }, [
+    client.isAuthenticated,
+    client.logIn,
+    client.fetchData,
+    signer,
+    useHardwareWallet,
+    logInViaHardwareWallet,
+    render,
+    setLoading,
+  ]);
 
   const subscribe = useCallback(async (): Promise<SubscriptionData> => {
-    console.log('In subscribe');
-    const configurations = getAlertConfigurations();
-    console.log('configurations =>', configurations);
+    const currentConfigs = getAlertConfigurations();
+    const configurations = { ...currentConfigs };
 
     const names = Object.keys(configurations);
     const finalEmail = inputEmail === '' ? null : inputEmail;
@@ -208,13 +192,9 @@ export const useNotifiSubscribe: () => Readonly<{
       }
     }
 
-    if (!isAuthenticated) {
-      await logIn();
-    }
-
-    console.log('After login');
-    const data = await fetchData();
-    console.log('After fetchData');
+    setLoading(true);
+    await logIn();
+    const data = await client.fetchData();
 
     //
     // Yes, we're ignoring the server side values and just using whatever the client typed in
@@ -228,8 +208,7 @@ export const useNotifiSubscribe: () => Readonly<{
       const existingAlert = data.alerts.find((alert) => alert.name === name);
       const deleteThisAlert = async () => {
         if (existingAlert !== undefined && existingAlert.id !== null) {
-          console.log('case -5');
-          await deleteAlert({
+          await client.deleteAlert({
             alertId: existingAlert.id,
             keepSourceGroup: keepSubscriptionData,
             keepTargetGroup: keepSubscriptionData,
@@ -239,10 +218,8 @@ export const useNotifiSubscribe: () => Readonly<{
 
       const config = configurations[name];
       if (config === undefined || config === null) {
-        console.log('case -4');
         await deleteThisAlert();
       } else {
-        console.log('case -3');
         const {
           filterType,
           filterOptions,
@@ -253,21 +230,18 @@ export const useNotifiSubscribe: () => Readonly<{
         let source: Source | undefined;
         let filter: Filter | undefined;
         if (createSourceParam !== undefined) {
-          console.log('case -2');
           const existing = data.sources.find(
             (s) =>
               s.type === sourceType &&
               s.blockchainAddress === createSourceParam.address,
           );
           if (existing !== undefined) {
-            console.log('case -1');
             source = existing;
             filter = source.applicableFilters.find(
               (f) => f.filterType === filterType,
             );
           } else {
-            console.log('case 0');
-            source = await createSource({
+            source = await client.createSource({
               name: createSourceParam.address,
               blockchainAddress: createSourceParam.address,
               type: sourceType,
@@ -277,7 +251,6 @@ export const useNotifiSubscribe: () => Readonly<{
             );
           }
         } else {
-          console.log('case 1');
           source = data.sources.find((s) => s.type === sourceType);
           filter = source?.applicableFilters.find(
             (f) => f.filterType === filterType,
@@ -290,11 +263,9 @@ export const useNotifiSubscribe: () => Readonly<{
           filter === undefined ||
           filter.id === null
         ) {
-          console.log('case 2');
           await deleteThisAlert();
         } else if (existingAlert !== undefined && existingAlert.id !== null) {
-          console.log('case 3');
-          const alert = await updateAlert({
+          const alert = await client.updateAlert({
             alertId: existingAlert.id,
             emailAddress: finalEmail,
             phoneNumber: finalPhoneNumber,
@@ -302,10 +273,9 @@ export const useNotifiSubscribe: () => Readonly<{
           });
           newResults[name] = alert;
         } else {
-          console.log('create alert being called');
           // Call serially because of limitations
           await deleteThisAlert();
-          const alert = await createAlert({
+          const alert = await client.createAlert({
             name,
             sourceId: source.id,
             filterId: filter.id,
@@ -314,6 +284,7 @@ export const useNotifiSubscribe: () => Readonly<{
             phoneNumber: finalPhoneNumber,
             telegramId: finalTelegramId,
             groupName: 'managed',
+            targetGroupName: 'Default',
           });
 
           newResults[name] = alert;
@@ -326,7 +297,7 @@ export const useNotifiSubscribe: () => Readonly<{
       keepSubscriptionData
     ) {
       // We didn't create or update any alert, manually update the targets
-      await ensureTargetGroup({
+      await client.ensureTargetGroup({
         name: 'Default',
         emailAddress: finalEmail,
         phoneNumber: finalPhoneNumber,
@@ -334,29 +305,25 @@ export const useNotifiSubscribe: () => Readonly<{
       });
     }
 
-    console.log('last fetchData called');
+    const newData = await client.fetchData();
 
-    const newData = await fetchData();
-    console.log('render being called');
-
-    return render(newData);
+    const results = render(newData);
+    setLoading(false);
+    return results;
   }, [
-    createAlert,
-    deleteAlert,
-    fetchData,
+    client,
     getAlertConfigurations,
     inputEmail,
     inputPhoneNumber,
     inputTelegramId,
-    isAuthenticated,
     logIn,
+    setLoading,
   ]);
 
   return {
-    loading,
     logIn,
-    isAuthenticated,
-    isInitialized,
+    isAuthenticated: client.isAuthenticated,
+    isInitialized: client.isInitialized,
     subscribe,
   };
 };

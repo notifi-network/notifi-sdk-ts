@@ -1,9 +1,10 @@
+import clsx from 'clsx';
 import React from 'react';
 
 import { useNotifiSubscriptionContext } from '../context';
 import type { DeepPartialReadonly } from '../utils';
 
-type Props = Readonly<{
+export type NotifiTelegramInputProps = Readonly<{
   classNames?: DeepPartialReadonly<{
     container: string;
     input: string;
@@ -14,17 +15,19 @@ type Props = Readonly<{
   disabled: boolean;
 }>;
 
-export const NotifiTelegramInput: React.FC<Props> = ({
+export const NotifiTelegramInput: React.FC<NotifiTelegramInputProps> = ({
   classNames,
   copy,
   disabled,
-}: Props) => {
+}: NotifiTelegramInputProps) => {
   const { telegramId, setTelegramId } = useNotifiSubscriptionContext();
 
   return (
-    <div className={classNames?.container}>
+    <div
+      className={clsx('NotifiTelegramInput__container', classNames?.container)}
+    >
       <input
-        className={classNames?.input}
+        className={clsx('NotifiTelegramInput__input', classNames?.input)}
         disabled={disabled}
         name="notifi-telegram"
         type="text"

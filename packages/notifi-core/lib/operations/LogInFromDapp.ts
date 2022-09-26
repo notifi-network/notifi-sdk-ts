@@ -5,6 +5,8 @@ export type LogInFromDappInput = Readonly<{
   dappAddress: string;
   timestamp: number;
   signature: string;
+  walletBlockchain: 'SOLANA' | 'ETHEREUM';
+  accountId?: string;
 }>;
 
 export type LogInFromDappResult = User;

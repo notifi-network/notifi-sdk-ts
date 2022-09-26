@@ -1,0 +1,177 @@
+.notifi__light {
+  --notifi-card-background: #eee;
+  --notifi-font-color: #000;
+  --notifi-input-background: rgba(255, 255, 255, 0.8);
+  --notifi-placeholder-color: rgba(0, 0, 0, 0.5);
+  --notifi-focus-color: #000;
+  --notifi-toggle-handle: #fff;
+  --notifi-toggle-inactive: rgba(0, 0, 0, 0.2);
+  --notifi-toggle-active: rgba(0, 0, 0, 0.6);
+  --notifi-button-color: rgba(0, 0, 0, 0.4);
+}
+
+.notifi__dark {
+  --notifi-card-background: #333;
+  --notifi-font-color: #fff;
+  --notifi-input-background: rgba(255, 255, 255, 0.2);
+  --notifi-placeholder-color: rgba(255, 255, 255, 0.5);
+  --notifi-focus-color: #fff;
+  --notifi-toggle-handle: #fff;
+  --notifi-toggle-inactive: rgba(255, 255, 255, 0.1);
+  --notifi-toggle-active: rgba(255, 255, 255, 0.4);
+  --notifi-button-color: rgba(255, 255, 255, 0.2);
+}
+
+.NotifiSubscriptionCard__container {
+  color: var(--notifi-font-color);
+  display: flex;
+  flex-direction: column;
+  background-color: var(--notifi-card-background);
+  border-radius: 5px;
+  padding: 20px 20px 5px 20px;
+}
+
+.NotifiSubscriptionCard__container *:not(:last-child) {
+  margin-bottom: 10px;
+}
+
+.NotifiFooter__container {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+}
+
+.NotifiFooter__container {
+  font-size: 12px;
+  line-height: 14px;
+}
+
+.NotifiFooter__logoSvg {
+  width: 61px;
+  height: 14px;
+  padding-top: 2px;
+  margin-left: 4px;
+}
+
+.NotifiFooter__spacer {
+  flex-grow: 1;
+}
+
+.NotifiFooter__link a {
+  color: var(--notifi-font-color);
+  text-decoration: underline;
+  font-size: 12px;
+  line-height: 14px;
+}
+
+.NotifiEmailInput__container,
+.NotifiSmsInput__container,
+.NotifiTelegramInput__container {
+  display: flex;
+  flex-direction: row;
+  background-color: var(--notifi-input-background);
+  border-radius: 5px;
+  padding: 10px;
+  align-items: center;
+}
+
+.NotifiEmailInput__container:focus-within,
+.NotifiSmsInput__container:focus-within,
+.NotifiTelegramInput__container:focus-within {
+  box-shadow: inset 0px 0px 0px 3px var(--notifi-focus-color);
+}
+
+.NotifiEmailInput__input,
+.NotifiSmsInput__input,
+.NotifiTelegramInput__input {
+  flex-grow: 1;
+  font-size: 16px;
+  line-height: 20px;
+  background: none;
+  outline: none;
+  border: none;
+}
+
+.NotifiEmailInput__input::placeholder,
+.NotifiSmsInput__input::placeholder,
+.NotifiTelegramInput__input::placeholder {
+  color: var(--notifi-placeholder-color);
+}
+
+.NotifiToggle__container {
+  --notifi-toggle-size: 18px;
+  --notifi-toggle-padding: 3px;
+  --notifi-toggle-container: calc(
+    var(--notifi-toggle-size) + 2 * var(--notifi-toggle-padding)
+  );
+  position: relative;
+  display: inline-block;
+  width: calc(var(--notifi-toggle-container) + var(--notifi-toggle-size));
+  height: var(--notifi-toggle-container);
+}
+
+.NotifiToggle__input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.NotifiToggle__slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--notifi-toggle-inactive);
+  border-radius: var(--notifi-toggle-container);
+  transition: 0.2s;
+}
+
+.NotifiToggle__slider:before {
+  position: absolute;
+  content: '';
+  height: var(--notifi-toggle-size);
+  width: var(--notifi-toggle-size);
+  left: var(--notifi-toggle-padding);
+  bottom: var(--notifi-toggle-padding);
+  background-color: var(--notifi-toggle-handle);
+  border-radius: 50%;
+  transition: 0.2s;
+}
+
+.NotifiToggle__input:checked + .NotifiToggle__slider {
+  background-color: var(--notifi-toggle-active);
+}
+
+.NotifiToggle__input:checked + .NotifiToggle__slider:before {
+  transform: translateX(var(--notifi-toggle-size));
+}
+
+.EventTypeBroadcastRow__container {
+  display: flex;
+  flex-direction: row;
+}
+
+.EventTypeBroadcastRow__label {
+  flex-grow: 1;
+  margin-right: 10px;
+  font-size: 16px;
+  line-height: 20px;
+  text-align: left;
+}
+
+.EventTypeUnsupportedRow__container {
+  display: none;
+}
+
+.NotifiSubscribeButton__button {
+  padding: 10px;
+  background-color: var(--notifi-button-color);
+  border-radius: 5px;
+  border: none;
+  font-size: 16px;
+  line-height: 20px;
+  cursor: pointer;
+  color: var(--notifi-font-color);
+}

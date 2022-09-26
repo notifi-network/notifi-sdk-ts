@@ -7,6 +7,7 @@ import {
   Source,
   TargetGroup,
   TelegramTarget,
+  TenantConfig,
   User,
   UserTopic,
 } from './models';
@@ -197,16 +198,17 @@ export type MessageSigner = Readonly<{
   signMessage: (message: Uint8Array) => Promise<Uint8Array>;
 }>;
 
-export type MessageLogger = Readonly<{
-  logMessage: (message: Uint8Array) => Promise<void>;
-}>;
-
 export type ClientBroadcastMessageInput = Readonly<{
   topic: UserTopic;
   subject: string;
   message: string;
   isHolderOnly: boolean;
   variables?: Readonly<Record<string, string>>;
+}>;
+
+export type ClientFetchSubscriptionCardInput = Readonly<{
+  tenant: string;
+  id: string;
 }>;
 
 export type NotifiClient = Readonly<{
@@ -239,4 +241,7 @@ export type NotifiClient = Readonly<{
   sendEmailTargetVerification: (
     input: ClientSendVerificationEmailInput,
   ) => Promise<string>;
+  fetchSubscriptionCard: (
+    input: ClientFetchSubscriptionCardInput,
+  ) => Promise<TenantConfig>;
 }>;

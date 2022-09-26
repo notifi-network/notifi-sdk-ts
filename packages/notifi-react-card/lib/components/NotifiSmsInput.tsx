@@ -1,9 +1,10 @@
+import clsx from 'clsx';
 import React from 'react';
 
 import { useNotifiSubscriptionContext } from '../context';
 import type { DeepPartialReadonly } from '../utils';
 
-type Props = Readonly<{
+export type NotifiSmsInputProps = Readonly<{
   classNames?: DeepPartialReadonly<{
     container: string;
     input: string;
@@ -14,17 +15,17 @@ type Props = Readonly<{
   disabled: boolean;
 }>;
 
-export const NotifiSmsInput: React.FC<Props> = ({
+export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
   classNames,
   copy,
   disabled,
-}: Props) => {
+}: NotifiSmsInputProps) => {
   const { phoneNumber, setPhoneNumber } = useNotifiSubscriptionContext();
 
   return (
-    <div className={classNames?.container}>
+    <div className={clsx('NotifiSmsInput__container', classNames?.container)}>
       <input
-        className={classNames?.input}
+        className={clsx('NotifiSmsInput__input', classNames?.input)}
         disabled={disabled}
         name="notifi-sms"
         type="tel"

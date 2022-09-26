@@ -20,6 +20,7 @@ import refreshAuthorizationImpl from './mutations/refreshAuthorizationImpl';
 import sendEmailTargetVerificationRequestImpl from './mutations/sendEmailTargetVerificationRequestImpl';
 import updateSourceGroupImpl from './mutations/updateSourceGroupImpl';
 import updateTargetGroupImpl from './mutations/updateTargetGroupImpl';
+import findTenantConfigImpl from './queries/findTenantConfigImpl';
 import getAlertsImpl from './queries/getAlertsImpl';
 import getConfigurationForDappImpl from './queries/getConfigurationForDappImpl';
 import getEmailTargetsImpl from './queries/getEmailTargetsImpl';
@@ -51,6 +52,7 @@ export class NotifiAxiosService implements NotifiService {
   deleteAlert: NotifiService['deleteAlert'];
   deleteSourceGroup: NotifiService['deleteSourceGroup'];
   deleteTargetGroup: NotifiService['deleteTargetGroup'];
+  findTenantConfig: NotifiService['findTenantConfig'];
   getAlerts: NotifiService['getAlerts'];
   getConfigurationForDapp: NotifiService['getConfigurationForDapp'];
   getEmailTargets: NotifiService['getEmailTargets'];
@@ -106,6 +108,7 @@ export class NotifiAxiosService implements NotifiService {
     this.deleteAlert = deleteAlertImpl.bind(null, a);
     this.deleteSourceGroup = deleteSourceGroupImpl.bind(null, a);
     this.deleteTargetGroup = deleteTargetGroupImpl.bind(null, a);
+    this.findTenantConfig = findTenantConfigImpl.bind(null, a);
     this.getAlerts = getAlertsImpl.bind(null, a);
     this.getConfigurationForDapp = getConfigurationForDappImpl.bind(null, a);
     this.getEmailTargets = getEmailTargetsImpl.bind(null, a);

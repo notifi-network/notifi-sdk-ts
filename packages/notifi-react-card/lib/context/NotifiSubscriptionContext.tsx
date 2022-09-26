@@ -1,10 +1,4 @@
 import type { Alert } from '@notifi-network/notifi-core';
-import type {
-  MessageSigner,
-  NotifiEnvironment,
-} from '@notifi-network/notifi-react-hooks';
-import type { WalletContextState } from '@solana/wallet-adapter-react';
-import type { Connection } from '@solana/web3.js';
 import type { PropsWithChildren } from 'react';
 import React, {
   createContext,
@@ -15,17 +9,7 @@ import React, {
 } from 'react';
 
 import type { AlertConfiguration } from '../utils';
-
-export type NotifiParams = Readonly<{
-  alertConfigurations?: Record<string, AlertConfiguration | null>;
-  dappAddress: string;
-  env: NotifiEnvironment;
-  signer: MessageSigner;
-  walletPublicKey: string;
-  keepSubscriptionData?: boolean;
-  connection: Connection;
-  sendTransaction: WalletContextState['sendTransaction'];
-}>;
+import { NotifiParams } from './NotifiContext';
 
 export type NotifiSubscriptionData = Readonly<{
   alerts: Readonly<Record<string, Alert | undefined>>;
@@ -51,6 +35,8 @@ export type NotifiSubscriptionData = Readonly<{
     telegramConfirmationUrl: string | undefined,
   ) => void;
   setUseHardwareWallet: (hardwareWallet: boolean) => void;
+  loading: boolean;
+  setLoading: (loading: boolean) => void;
 }>;
 
 const NotifiSubscriptionContext = createContext<NotifiSubscriptionData>(
@@ -68,6 +54,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
   >(undefined);
   const [alerts, setAlerts] = useState<Record<string, Alert | undefined>>({});
   const [useHardwareWallet, setUseHardwareWallet] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
 
   const alertConfigurations = useRef<Record<string, AlertConfiguration | null>>(
     params.alertConfigurations ?? {},
@@ -99,6 +86,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
   const value = {
     alerts,
     email,
+    loading,
     params,
     phoneNumber,
     telegramId,
@@ -109,6 +97,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
     setAlerts,
     setAlertConfiguration,
     setEmail,
+    setLoading,
     setPhoneNumber,
     setTelegramId,
     setTelegramConfirmationUrl,

@@ -1,9 +1,10 @@
+import clsx from 'clsx';
 import React from 'react';
 
 import { useNotifiSubscriptionContext } from '../context';
 import type { DeepPartialReadonly } from '../utils';
 
-type Props = Readonly<{
+export type NotifiEmailInputProps = Readonly<{
   classNames?: DeepPartialReadonly<{
     container: string;
     input: string;
@@ -14,17 +15,17 @@ type Props = Readonly<{
   disabled: boolean;
 }>;
 
-export const NotifiEmailInput: React.FC<Props> = ({
+export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
   classNames,
   copy,
   disabled,
-}: Props) => {
+}: NotifiEmailInputProps) => {
   const { email, setEmail } = useNotifiSubscriptionContext();
 
   return (
-    <div className={classNames?.container}>
+    <div className={clsx('NotifiEmailInput__container', classNames?.container)}>
       <input
-        className={classNames?.input}
+        className={clsx('NotifiEmailInput__input', classNames?.input)}
         disabled={disabled}
         name="notifi-email"
         type="email"

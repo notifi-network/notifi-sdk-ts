@@ -10,6 +10,7 @@ export * from './SmsTarget';
 export * from './TargetGroup';
 export * from './TargetType';
 export * from './TelegramTarget';
+export * from './TenantConfig';
 export * from './UserTopic';
 export * from './User';
 export * from './WebhookTarget';

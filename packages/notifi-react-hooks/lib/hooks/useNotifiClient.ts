@@ -10,6 +10,7 @@ import {
   ClientData,
   ClientDeleteAlertInput,
   ClientEnsureTargetGroupInput,
+  ClientFetchSubscriptionCardInput,
   ClientSendVerificationEmailInput,
   ClientUpdateAlertInput,
   CompleteLoginViaTransactionInput,
@@ -20,6 +21,7 @@ import {
   Source,
   TargetGroup,
   TargetType,
+  TenantConfig,
   User,
   UserTopic,
 } from '@notifi-network/notifi-core';
@@ -58,6 +60,7 @@ export type NotifiClientConfig = Readonly<{
   dappAddress: string;
   walletPublicKey: string;
   env?: BlockchainEnvironment | NotifiEnvironment;
+  walletBlockchain: 'SOLANA' | 'ETHEREUM';
 }>;
 
 export class NotifiClientError extends Error {
@@ -97,11 +100,13 @@ const projectData = (internalData: InternalData | null): ClientData | null => {
 export const SIGNING_MESSAGE = `Sign in with Notifi \n\n    No password needed or gas is needed. \n\n    Clicking “Approve” only means you have proved this wallet is owned by you! \n\n    This request will not trigger any transaction or cost any gas fees. \n\n    Use of our website and service is subject to our terms of service and privacy policy. \n`;
 
 const signMessage = async ({
+  walletBlockchain,
   walletPublicKey,
   dappAddress,
   signer,
   timestamp,
 }: Readonly<{
+  walletBlockchain: NotifiClientConfig['walletBlockchain'];
   walletPublicKey: string;
   dappAddress: string;
   signer: MessageSigner;
@@ -112,7 +117,11 @@ const signMessage = async ({
   );
 
   const signedBuffer = await signer.signMessage(messageBuffer);
-  const signature = Buffer.from(signedBuffer).toString('base64');
+  let encoding: BufferEncoding = 'base64';
+  if (walletBlockchain === 'ETHEREUM') {
+    encoding = 'hex';
+  }
+  const signature = Buffer.from(signedBuffer).toString(encoding);
   return signature;
 };
 
@@ -138,7 +147,7 @@ const useNotifiClient = (
     isInitialized: boolean;
     expiry: string | null;
   }> => {
-  const { env, dappAddress, walletPublicKey } = config;
+  const { env, dappAddress, walletPublicKey, walletBlockchain } = config;
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
   const notifiConfig = useNotifiConfig(env);
   const { getAuthorization, getRoles, setAuthorization, setRoles } =
@@ -335,6 +344,7 @@ const useNotifiClient = (
       setLoading(true);
       try {
         const signature = await signMessage({
+          walletBlockchain,
           walletPublicKey,
           dappAddress,
           timestamp,
@@ -345,6 +355,7 @@ const useNotifiClient = (
           dappAddress,
           timestamp,
           signature,
+          walletBlockchain,
         });
 
         await handleLogInResult(result);
@@ -362,7 +373,14 @@ const useNotifiClient = (
         setLoading(false);
       }
     },
-    [setAuthorization, setRoles, service, walletPublicKey, dappAddress],
+    [
+      setAuthorization,
+      setRoles,
+      service,
+      walletPublicKey,
+      dappAddress,
+      walletBlockchain,
+    ],
   );
 
   /**
@@ -576,7 +594,7 @@ const useNotifiClient = (
           service,
           newData.targetGroups,
           {
-            name,
+            name: existingAlert.targetGroup.name ?? name,
             emailTargetIds,
             smsTargetIds,
             telegramTargetIds,
@@ -1085,6 +1103,7 @@ const useNotifiClient = (
         }
 
         const signature = await signMessage({
+          walletBlockchain,
           walletPublicKey,
           dappAddress,
           timestamp,
@@ -1116,29 +1135,56 @@ const useNotifiClient = (
 
   const sendEmailTargetVerification: (
     input: ClientSendVerificationEmailInput,
-  ) => Promise<string> = useCallback(async ({ targetId }) => {
-    setLoading(true);
-    try {
-      const emailTarget = await service.sendEmailTargetVerificationRequest({
-        targetId,
-      });
+  ) => Promise<string> = useCallback(
+    async ({ targetId }) => {
+      setLoading(true);
+      try {
+        const emailTarget = await service.sendEmailTargetVerificationRequest({
+          targetId,
+        });
 
-      const id = emailTarget.id;
-      if (id === null) {
-        throw new Error(`Unknown error requesting verification`);
+        const id = emailTarget.id;
+        if (id === null) {
+          throw new Error(`Unknown error requesting verification`);
+        }
+        return id;
+      } catch (e: unknown) {
+        if (e instanceof Error) {
+          setError(e);
+        } else {
+          setError(new NotifiClientError(e));
+        }
+        throw e;
+      } finally {
+        setLoading(false);
       }
-      return id;
-    } catch (e: unknown) {
-      if (e instanceof Error) {
-        setError(e);
-      } else {
-        setError(new NotifiClientError(e));
+    },
+    [setError, setLoading, service],
+  );
+
+  const fetchSubscriptionCard = useCallback(
+    async (input: ClientFetchSubscriptionCardInput): Promise<TenantConfig> => {
+      setLoading(true);
+      try {
+        const config = await service.findTenantConfig({
+          ...input,
+          type: 'SUBSCRIPTION_CARD',
+        });
+
+        return config;
+      } catch (e: unknown) {
+        if (e instanceof Error) {
+          setError(e);
+        } else {
+          setError(new NotifiClientError(e));
+        }
+        throw e;
+      } finally {
+        setLoading(false);
       }
-      throw e;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    },
+    [setError, setLoading, service],
+  );
 
   const client: NotifiClient = {
     beginLoginViaTransaction,
@@ -1152,6 +1198,7 @@ const useNotifiClient = (
     createSource,
     deleteAlert,
     fetchData,
+    fetchSubscriptionCard,
     getConfiguration,
     getTopics,
     updateAlert,
