@@ -3,7 +3,7 @@ import React from 'react';
 import type { DeepPartialReadonly } from '../utils';
 import { NotifiLogo } from './NotifiLogo';
 
-type Props = Readonly<{
+export type NotifiFooterProps = Readonly<{
   classNames?: DeepPartialReadonly<{
     container: string;
     poweredBy: string;
@@ -17,7 +17,10 @@ type Props = Readonly<{
   }>;
 }>;
 
-export const NotifiFooter: React.FC<Props> = ({ classNames, copy }: Props) => {
+export const NotifiFooter: React.FC<NotifiFooterProps> = ({
+  classNames,
+  copy,
+}: NotifiFooterProps) => {
   return (
     <div className={classNames?.container}>
       <span className={classNames?.poweredBy}>

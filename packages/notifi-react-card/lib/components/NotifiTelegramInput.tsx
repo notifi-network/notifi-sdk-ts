@@ -3,7 +3,7 @@ import React from 'react';
 import { useNotifiSubscriptionContext } from '../context';
 import type { DeepPartialReadonly } from '../utils';
 
-type Props = Readonly<{
+export type NotifiTelegramInputProps = Readonly<{
   classNames?: DeepPartialReadonly<{
     container: string;
     input: string;
@@ -14,11 +14,11 @@ type Props = Readonly<{
   disabled: boolean;
 }>;
 
-export const NotifiTelegramInput: React.FC<Props> = ({
+export const NotifiTelegramInput: React.FC<NotifiTelegramInputProps> = ({
   classNames,
   copy,
   disabled,
-}: Props) => {
+}: NotifiTelegramInputProps) => {
   const { telegramId, setTelegramId } = useNotifiSubscriptionContext();
 
   return (

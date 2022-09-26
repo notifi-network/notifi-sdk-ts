@@ -52,7 +52,6 @@ export const useSubscriptionCard = (cardId: string): SubscriptionCardState => {
         }
 
         const obj = JSON.parse(value);
-        console.log('useSubscriptionCard', obj);
         if (obj.version !== 'v1') {
           return Promise.reject(new Error('Unsupported config format'));
         }

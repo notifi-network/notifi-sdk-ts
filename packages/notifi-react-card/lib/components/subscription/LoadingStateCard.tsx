@@ -2,36 +2,21 @@ import React from 'react';
 
 import { LoadingState } from '../../hooks';
 
-type Props = Readonly<{
+export type LoadingStateCardProps = Readonly<{
   card: LoadingState;
+  classNames?: Readonly<{
+    glimmer?: string;
+  }>;
 }>;
 
-export const LoadingStateCard: React.FC<Props> = () => {
+export const LoadingStateCard: React.FC<LoadingStateCardProps> = ({
+  classNames,
+}) => {
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-      }}
-    >
-      <div
-        style={{
-          background: '#fee',
-          borderRadius: 8,
-        }}
-      />
-      <div
-        style={{
-          background: '#fee',
-          borderRadius: 8,
-        }}
-      />
-      <div
-        style={{
-          background: '#fee',
-          borderRadius: 8,
-        }}
-      />
-    </div>
+    <>
+      <div className={classNames?.glimmer} />
+      <div className={classNames?.glimmer} />
+      <div className={classNames?.glimmer} />
+    </>
   );
 };

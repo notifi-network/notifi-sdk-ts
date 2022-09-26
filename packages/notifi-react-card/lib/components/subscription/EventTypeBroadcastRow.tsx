@@ -9,7 +9,7 @@ import {
 } from '../../utils';
 import { resolveStringRef } from './resolveRef';
 
-type Props = Readonly<{
+export type EventTypeBroadcastRowProps = Readonly<{
   classNames?: DeepPartialReadonly<{
     container: string;
     label: string;
@@ -20,12 +20,12 @@ type Props = Readonly<{
   inputs: Record<string, string | undefined>;
 }>;
 
-export const EventTypeBroadcastRow: React.FC<Props> = ({
+export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
   classNames,
   disabled,
   config,
   inputs,
-}: Props) => {
+}: EventTypeBroadcastRowProps) => {
   const { alerts, setAlertConfiguration } = useNotifiSubscriptionContext();
   const [enabled, setEnabled] = useState(true);
 

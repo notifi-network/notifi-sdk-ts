@@ -3,7 +3,7 @@ import React from 'react';
 import { useNotifiSubscriptionContext } from '../context';
 import type { DeepPartialReadonly } from '../utils';
 
-type Props = Readonly<{
+export type NotifiEmailInputProps = Readonly<{
   classNames?: DeepPartialReadonly<{
     container: string;
     input: string;
@@ -14,11 +14,11 @@ type Props = Readonly<{
   disabled: boolean;
 }>;
 
-export const NotifiEmailInput: React.FC<Props> = ({
+export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
   classNames,
   copy,
   disabled,
-}: Props) => {
+}: NotifiEmailInputProps) => {
   const { email, setEmail } = useNotifiSubscriptionContext();
 
   return (

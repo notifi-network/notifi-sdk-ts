@@ -2,16 +2,16 @@ import React from 'react';
 
 import { DeepPartialReadonly } from '../../utils';
 
-type Props = Readonly<{
+export type EventTypeUnsupportedRowProps = Readonly<{
   classNames?: DeepPartialReadonly<{
     container: string;
     label: string;
   }>;
 }>;
 
-export const EventTypeUnsupportedRow: React.FC<Props> = ({
-  classNames,
-}: Props) => {
+export const EventTypeUnsupportedRow: React.FC<
+  EventTypeUnsupportedRowProps
+> = ({ classNames }: EventTypeUnsupportedRowProps) => {
   return (
     <div className={classNames?.container}>
       <div className={classNames?.label}>Unsupported Event Type</div>

@@ -2,20 +2,22 @@ import React from 'react';
 
 import { ErrorState } from '../../hooks';
 
-type Props = Readonly<{
+export type ErrorStateCardProps = Readonly<{
   card: ErrorState;
+  classNames?: Readonly<{
+    label?: string;
+    errorMessage?: string;
+  }>;
 }>;
 
-export const ErrorStateCard: React.FC<Props> = ({ card }) => {
+export const ErrorStateCard: React.FC<ErrorStateCardProps> = ({
+  card,
+  classNames,
+}) => {
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-      }}
-    >
-      <div>Something went wrong.</div>
-      <div>{`${card.reason}`}</div>
-    </div>
+    <>
+      <div className={classNames?.label}>Something went wrong.</div>
+      <div className={classNames?.errorMessage}>{`${card.reason}`}</div>
+    </>
   );
 };
