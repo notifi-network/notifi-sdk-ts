@@ -1,25 +1,5 @@
 # `@notifi/notifi-frontend-client`
 
-> _Updated Sept 26, 2022_
-
-## 🙋🏻‍♀️ Introduction
-
-Notifi provides notification infrastructure for web3 services and dApps to communicate with their end users.
-
-`notifi-frontend-client` is an SDK designed for frontend dApp developers to integrate Notifi's services.
-
-We currently support **Aptos** and **Solana** via our frontend client.
-
-To see the latest updates on supported L1 and messaging channels and to see what's coming up, check out [Notifi.Network](www.notifi.network) and join the [Discord Community](https://discord.com/invite/nAqR3mk3rv).
-
-To use Notifi, dApps need to onboard to Notifi's services and users are required to authenticate their wallet address by connecting their wallet and signing for the transaction to get notifications.
-
-Currently supported notifications:
-
-- Email Notifications
-- SMS Notifications to mobile numbers with country code (ex: +15557771234)
-- Telegram
-
 ## 🎬 Getting Started using Aptos
 
 In this README, we'll cover the simple use case of one user authenticating through a Martian wallet and creating an alert. 
@@ -29,10 +9,6 @@ In this README, we'll cover the simple use case of one user authenticating throu
 ```
 npm i @notifi-network/notifi-frontend-client
 ```
-
-## 🧩 Build Your UI Components
-
-Common patterns for UI involve rendering a form in a modal or card to collect the user's contact information (Email, SMS, Telegram, etc).
 
 ## 🪝 Hook up the SDK 
 
@@ -83,29 +59,6 @@ const martianLogIn = async () => {
 
 ```
 
-## 🕹 Rendering Alert Options
-
-After the user successfully authorizes, fetch the newly created user data from Notifi using the `getSourceGroups()` hook.
-
-In our simplest use case, the user will have 1 entry in the `sources` array, which will be based on their connected wallet address.
-
-```
-const sourceData = await client.getSourceGroups();
-
-// An array of sources that belong to the user
-const { sources } = sourceData;
-```
-
-You'll want to render the alert options available for the user's source, based on what is returned in the source's `applicableFilters` array. More about the [`Filter` type here](https://notifi-network.github.io/notifi-sdk-ts/modules.html#Filter).
-
-```
-// Render the options to the user
-const {id, applicableFilters} = sources?.[0];
-const filterId = applicableFilters?.[0].id;
-```
-
-For more complex scenarios where the user has multiple sources, you may want to iterate over each source to accumulate the applicable filters to render.
-
 ## 🪢 Create the Alert
 
 Once your user enters their contact information and options for their first alert, use the `ensureTargetGroup()` to create a "target group" of their contact information and a "source group" of their desired alert options.
@@ -131,7 +84,7 @@ const sourceGroup = await client.ensureSourceGroup({
     ]
 });
     
-const source = sourceGroup.sources?.find(it => it?.blockchainAddress === 'notifi__newFeatures');
+const source = sourceGroup.sources?.find(it => it?.blockchainAddress === 'notifi__newFeature');
 const filter = source?.applicableFilters?.find(it => it?.filterType === 'BROADCAST_MESSAGES');
 
 if (filter === undefined) {
