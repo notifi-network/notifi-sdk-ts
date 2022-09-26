@@ -278,7 +278,12 @@ export const useNotifiSubscribe: () => Readonly<{
           });
           newResults[name] = alert;
         } else {
-          console.log('create alert being called');
+          console.log(
+            'create alert being called',
+            finalEmail,
+            finalPhoneNumber,
+            finalTelegramId,
+          );
           // Call serially because of limitations
           await deleteThisAlert();
           const alert = await client.createAlert({

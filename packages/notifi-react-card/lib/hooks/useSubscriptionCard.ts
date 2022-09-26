@@ -1,7 +1,9 @@
-import { useNotifiClient } from '@notifi-network/notifi-react-hooks';
 import { useEffect, useState } from 'react';
 
-import { useNotifiSubscriptionContext } from '../context';
+import {
+  useNotifiClientContext,
+  useNotifiSubscriptionContext,
+} from '../context';
 import { CardConfigItemV1 } from './SubscriptionCardConfig';
 
 export type LoadingState = Readonly<{
@@ -28,19 +30,14 @@ export const useSubscriptionCard = (cardId: string): SubscriptionCardState => {
   });
 
   const {
-    params: { dappAddress, env, walletBlockchain, walletPublicKey },
+    params: { dappAddress },
   } = useNotifiSubscriptionContext();
 
-  const notifiClient = useNotifiClient({
-    dappAddress,
-    walletBlockchain,
-    walletPublicKey,
-    env,
-  });
+  const { client } = useNotifiClientContext();
 
   useEffect(() => {
     setState({ state: 'loading' });
-    notifiClient
+    client
       .fetchSubscriptionCard({
         tenant: dappAddress,
         id: cardId,
