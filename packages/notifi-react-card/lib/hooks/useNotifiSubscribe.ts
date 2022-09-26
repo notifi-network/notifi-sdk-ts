@@ -207,7 +207,6 @@ export const useNotifiSubscribe: () => Readonly<{
       const existingAlert = data.alerts.find((alert) => alert.name === name);
       const deleteThisAlert = async () => {
         if (existingAlert !== undefined && existingAlert.id !== null) {
-          console.log('case -5');
           await client.deleteAlert({
             alertId: existingAlert.id,
             keepSourceGroup: keepSubscriptionData,
@@ -218,10 +217,8 @@ export const useNotifiSubscribe: () => Readonly<{
 
       const config = configurations[name];
       if (config === undefined || config === null) {
-        console.log('case -4');
         await deleteThisAlert();
       } else {
-        console.log('case -3');
         const {
           filterType,
           filterOptions,

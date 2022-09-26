@@ -34,9 +34,9 @@ export const NotifiSubscriptionCard: React.FC<NotifiSubscriptionCardProps> = ({
   darkMode,
   inputs = {},
 }: NotifiSubscriptionCardProps) => {
-  const { isAuthenticated, isInitialized } = useNotifiSubscribe();
+  const { isInitialized } = useNotifiSubscribe();
   const { loading } = useNotifiSubscriptionContext();
-  const inputDisabled = loading || !isAuthenticated || !isInitialized;
+  const inputDisabled = loading || !isInitialized;
 
   const card = useSubscriptionCard(cardId);
   let contents: React.ReactNode = null;

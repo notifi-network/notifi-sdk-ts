@@ -566,7 +566,7 @@ const useNotifiClient = (
    */
   const updateAlert = useCallback(
     async (input: ClientUpdateAlertInput): Promise<Alert> => {
-      const { alertId } = input;
+      const { alertId, targetGroupName } = input;
 
       setLoading(true);
       try {
@@ -595,7 +595,7 @@ const useNotifiClient = (
           service,
           newData.targetGroups,
           {
-            name,
+            name: targetGroupName ?? name,
             emailTargetIds,
             smsTargetIds,
             telegramTargetIds,
