@@ -229,20 +229,17 @@ export const useNotifiSubscribe: () => Readonly<{
         let source: Source | undefined;
         let filter: Filter | undefined;
         if (createSourceParam !== undefined) {
-          console.log('case -2');
           const existing = data.sources.find(
             (s) =>
               s.type === sourceType &&
               s.blockchainAddress === createSourceParam.address,
           );
           if (existing !== undefined) {
-            console.log('case -1');
             source = existing;
             filter = source.applicableFilters.find(
               (f) => f.filterType === filterType,
             );
           } else {
-            console.log('case 0');
             source = await client.createSource({
               name: createSourceParam.address,
               blockchainAddress: createSourceParam.address,
@@ -253,7 +250,6 @@ export const useNotifiSubscribe: () => Readonly<{
             );
           }
         } else {
-          console.log('case 1');
           source = data.sources.find((s) => s.type === sourceType);
           filter = source?.applicableFilters.find(
             (f) => f.filterType === filterType,
@@ -266,24 +262,17 @@ export const useNotifiSubscribe: () => Readonly<{
           filter === undefined ||
           filter.id === null
         ) {
-          console.log('case 2');
           await deleteThisAlert();
         } else if (existingAlert !== undefined && existingAlert.id !== null) {
-          console.log('case 3');
           const alert = await client.updateAlert({
             alertId: existingAlert.id,
             emailAddress: finalEmail,
             phoneNumber: finalPhoneNumber,
             telegramId: finalTelegramId,
+            targetGroupName: 'Default',
           });
           newResults[name] = alert;
         } else {
-          console.log(
-            'create alert being called',
-            finalEmail,
-            finalPhoneNumber,
-            finalTelegramId,
-          );
           // Call serially because of limitations
           await deleteThisAlert();
           const alert = await client.createAlert({
@@ -295,6 +284,7 @@ export const useNotifiSubscribe: () => Readonly<{
             phoneNumber: finalPhoneNumber,
             telegramId: finalTelegramId,
             groupName: 'managed',
+            targetGroupName: 'Default',
           });
 
           newResults[name] = alert;
