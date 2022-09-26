@@ -31,6 +31,8 @@ export const useNotifiSubscribe: () => Readonly<{
 }> = () => {
   const { client } = useNotifiClientContext();
 
+  console.log('rerender', client, client.isAuthenticated);
+
   const {
     email: inputEmail,
     phoneNumber: inputPhoneNumber,

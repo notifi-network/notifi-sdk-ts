@@ -24,6 +24,8 @@ export const NotifiClientContextProvider: React.FC<NotifiParams> = ({
     walletBlockchain,
   });
 
+  console.log('context rerender', client);
+
   return (
     <NotifiClientContext.Provider value={{ client, params }}>
       {children}
