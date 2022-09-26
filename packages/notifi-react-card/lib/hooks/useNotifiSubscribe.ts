@@ -35,7 +35,7 @@ export const useNotifiSubscribe: () => Readonly<{
     phoneNumber: inputPhoneNumber,
     telegramId: inputTelegramId,
     params: {
-      keepSubscriptionData,
+      keepSubscriptionData = true,
       walletPublicKey,
       signer,
       connection,
@@ -262,6 +262,7 @@ export const useNotifiSubscribe: () => Readonly<{
           filter === undefined ||
           filter.id === null
         ) {
+          console.log('Could not find source or filter', source, filter);
           await deleteThisAlert();
         } else if (existingAlert !== undefined && existingAlert.id !== null) {
           const alert = await client.updateAlert({
