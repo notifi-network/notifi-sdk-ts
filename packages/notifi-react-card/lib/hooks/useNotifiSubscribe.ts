@@ -31,8 +31,6 @@ export const useNotifiSubscribe: () => Readonly<{
 }> = () => {
   const { client } = useNotifiClientContext();
 
-  console.log('rerender', client, client.isAuthenticated);
-
   const {
     email: inputEmail,
     phoneNumber: inputPhoneNumber,
@@ -56,7 +54,6 @@ export const useNotifiSubscribe: () => Readonly<{
   const render = useCallback(
     (newData: ClientData | null): SubscriptionData => {
       const configurations = getAlertConfigurations();
-      console.log('DEBUG: 0');
       let targetGroup = newData?.targetGroups[0];
 
       const alerts: Record<string, Alert> = {};
@@ -69,9 +66,7 @@ export const useNotifiSubscribe: () => Readonly<{
         }
       });
       setAlerts(alerts);
-      console.log('DEBUG: 1 ' + JSON.stringify(alerts));
       const email = targetGroup?.emailTargets[0]?.emailAddress ?? null;
-      console.log('DEBUG: 2 ' + JSON.stringify(email));
 
       setEmail(email ?? '');
 
@@ -176,9 +171,7 @@ export const useNotifiSubscribe: () => Readonly<{
   ]);
 
   const subscribe = useCallback(async (): Promise<SubscriptionData> => {
-    console.log('In subscribe');
     const configurations = getAlertConfigurations();
-    console.log('configurations =>', configurations);
 
     const names = Object.keys(configurations);
     const finalEmail = inputEmail === '' ? null : inputEmail;
@@ -195,9 +188,7 @@ export const useNotifiSubscribe: () => Readonly<{
     }
 
     await logIn();
-    console.log('After login');
     const data = await client.fetchData();
-    console.log('After fetchData');
 
     //
     // Yes, we're ignoring the server side values and just using whatever the client typed in
@@ -322,10 +313,7 @@ export const useNotifiSubscribe: () => Readonly<{
       });
     }
 
-    console.log('last fetchData called');
-
     const newData = await client.fetchData();
-    console.log('render being called');
 
     return render(newData);
   }, [

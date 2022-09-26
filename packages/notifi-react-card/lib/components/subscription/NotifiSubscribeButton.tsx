@@ -22,7 +22,7 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
 
   const onClick = useCallback(async () => {
     await subscribe();
-  }, []);
+  }, [subscribe]);
 
   const copy = hasAlerts ? 'Update' : 'Subscribe';
   return (
