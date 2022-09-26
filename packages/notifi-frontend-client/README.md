@@ -6,7 +6,7 @@
 
 Notifi provides notification infrastructure for web3 services and dApps to communicate with their end users.
 
-`notifi-fontend-client` is an SDK designed for frontend dApp developers to integrate Notifi's services via an easy-to-use Hooks interface.
+`notifi-frontend-client` is an SDK designed for frontend dApp developers to integrate Notifi's services via an easy-to-use Hooks interface.
 
 We currently support **Aptos** and **Solana** via our frontend client.
 
