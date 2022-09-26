@@ -290,10 +290,10 @@ export class NotifiService
 
   private _requestHeaders(): HeadersInit {
     const requestId = uuid();
-    const headers: HeadersInit = [['X-Request-Id', requestId]];
+    const headers: HeadersInit = { 'X-Request-Id': requestId };
 
     if (this._jwt !== undefined) {
-      headers.push(['Authorization', `Bearer ${this._jwt}`]);
+      headers['Authorization'] = `Bearer ${this._jwt}`;
     }
 
     return headers;
