@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import React from 'react';
 
 import { useNotifiSubscribe, useSubscriptionCard } from '../../hooks';
@@ -11,6 +12,7 @@ import type { LoadingStateCardProps } from './LoadingStateCard';
 import { LoadingStateCard } from './LoadingStateCard';
 import type { NotifiSubscribeButtonProps } from './NotifiSubscribeButton';
 import { NotifiSubscribeButton } from './NotifiSubscribeButton';
+import './defaults.css';
 
 export type NotifiSubscriptionCardProps = Readonly<{
   classNames?: Readonly<{
@@ -62,7 +64,12 @@ export const NotifiSubscriptionCard: React.FC<NotifiSubscriptionCardProps> = ({
   }
 
   return (
-    <div className={classNames?.container}>
+    <div
+      className={clsx(
+        'NotifiSubscriptionCard__container',
+        classNames?.container,
+      )}
+    >
       {contents}
       <NotifiSubscribeButton classNames={classNames?.NotifiSubscribeButton} />
       <NotifiFooter classNames={classNames?.NotifiFooter} />
