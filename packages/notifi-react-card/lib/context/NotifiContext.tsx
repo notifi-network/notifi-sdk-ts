@@ -22,7 +22,7 @@ export type NotifiParams = Readonly<{
   sendTransaction: WalletContextState['sendTransaction'];
 }>;
 
-export const NotifiContext: React.FC<NotifiParams> = ({
+export const NotifiContext: React.FC<React.PropsWithChildren<NotifiParams>> = ({
   children,
   ...params
 }: React.PropsWithChildren<NotifiParams>) => {
