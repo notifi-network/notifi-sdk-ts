@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import React from 'react';
 
 import { useNotifiSubscriptionContext } from '../context';
@@ -22,9 +23,11 @@ export const NotifiTelegramInput: React.FC<NotifiTelegramInputProps> = ({
   const { telegramId, setTelegramId } = useNotifiSubscriptionContext();
 
   return (
-    <div className={classNames?.container}>
+    <div
+      className={clsx('NotifiTelegramInput__container', classNames?.container)}
+    >
       <input
-        className={classNames?.input}
+        className={clsx('NotifiTelegramInput__input', classNames?.input)}
         disabled={disabled}
         name="notifi-telegram"
         type="text"

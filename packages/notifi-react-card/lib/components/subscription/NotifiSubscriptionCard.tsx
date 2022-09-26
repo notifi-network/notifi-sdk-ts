@@ -12,7 +12,6 @@ import type { LoadingStateCardProps } from './LoadingStateCard';
 import { LoadingStateCard } from './LoadingStateCard';
 import type { NotifiSubscribeButtonProps } from './NotifiSubscribeButton';
 import { NotifiSubscribeButton } from './NotifiSubscribeButton';
-import './defaults.css';
 
 export type NotifiSubscriptionCardProps = Readonly<{
   classNames?: Readonly<{

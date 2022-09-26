@@ -1,3 +1,5 @@
+import './defaults.css';
+
 export * from './ErrorStateCard';
 export * from './EventTypeBroadcastRow';
 export * from './EventTypeUnsupportedRow';

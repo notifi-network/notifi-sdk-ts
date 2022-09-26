@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import React from 'react';
 
 import { useNotifiSubscriptionContext } from '../context';
@@ -22,9 +23,9 @@ export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
   const { email, setEmail } = useNotifiSubscriptionContext();
 
   return (
-    <div className={classNames?.container}>
+    <div className={clsx('NotifiEmailInput__container', classNames?.container)}>
       <input
-        className={classNames?.input}
+        className={clsx('NotifiEmailInput__input', classNames?.input)}
         disabled={disabled}
         name="notifi-email"
         type="email"

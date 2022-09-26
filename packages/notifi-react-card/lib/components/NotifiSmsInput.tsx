@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import React from 'react';
 
 import { useNotifiSubscriptionContext } from '../context';
@@ -22,9 +23,9 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
   const { phoneNumber, setPhoneNumber } = useNotifiSubscriptionContext();
 
   return (
-    <div className={classNames?.container}>
+    <div className={clsx('NotifiSmsInput__container', classNames?.container)}>
       <input
-        className={classNames?.input}
+        className={clsx('NotifiSmsInput__input', classNames?.input)}
         disabled={disabled}
         name="notifi-sms"
         type="tel"
