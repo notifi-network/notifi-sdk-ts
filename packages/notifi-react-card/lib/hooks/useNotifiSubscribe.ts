@@ -23,7 +23,6 @@ export type SubscriptionData = Readonly<{
 }>;
 
 export const useNotifiSubscribe: () => Readonly<{
-  loading: boolean;
   isAuthenticated: boolean;
   isInitialized: boolean;
   logIn: () => Promise<SubscriptionData>;
@@ -49,6 +48,7 @@ export const useNotifiSubscribe: () => Readonly<{
     setPhoneNumber,
     setTelegramId,
     setTelegramConfirmationUrl,
+    setLoading,
   } = useNotifiSubscriptionContext();
 
   const render = useCallback(
@@ -150,6 +150,7 @@ export const useNotifiSubscribe: () => Readonly<{
     }, [walletPublicKey, client, connection, sendTransaction, render]);
 
   const logIn = useCallback(async (): Promise<SubscriptionData> => {
+    setLoading(true);
     if (!client.isAuthenticated) {
       if (useHardwareWallet) {
         await logInViaHardwareWallet();
@@ -159,7 +160,9 @@ export const useNotifiSubscribe: () => Readonly<{
     }
 
     const newData = await client.fetchData();
-    return render(newData);
+    const results = render(newData);
+    setLoading(false);
+    return results;
   }, [
     client.isAuthenticated,
     client.logIn,
@@ -168,6 +171,7 @@ export const useNotifiSubscribe: () => Readonly<{
     useHardwareWallet,
     logInViaHardwareWallet,
     render,
+    setLoading,
   ]);
 
   const subscribe = useCallback(async (): Promise<SubscriptionData> => {
@@ -187,6 +191,7 @@ export const useNotifiSubscribe: () => Readonly<{
       }
     }
 
+    setLoading(true);
     await logIn();
     const data = await client.fetchData();
 
@@ -315,7 +320,9 @@ export const useNotifiSubscribe: () => Readonly<{
 
     const newData = await client.fetchData();
 
-    return render(newData);
+    const results = render(newData);
+    setLoading(false);
+    return results;
   }, [
     client,
     getAlertConfigurations,
@@ -323,10 +330,10 @@ export const useNotifiSubscribe: () => Readonly<{
     inputPhoneNumber,
     inputTelegramId,
     logIn,
+    setLoading,
   ]);
 
   return {
-    loading: client.loading,
     logIn,
     isAuthenticated: client.isAuthenticated,
     isInitialized: client.isInitialized,

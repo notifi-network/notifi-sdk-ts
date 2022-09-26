@@ -35,6 +35,8 @@ export type NotifiSubscriptionData = Readonly<{
     telegramConfirmationUrl: string | undefined,
   ) => void;
   setUseHardwareWallet: (hardwareWallet: boolean) => void;
+  loading: boolean;
+  setLoading: (loading: boolean) => void;
 }>;
 
 const NotifiSubscriptionContext = createContext<NotifiSubscriptionData>(
@@ -52,6 +54,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
   >(undefined);
   const [alerts, setAlerts] = useState<Record<string, Alert | undefined>>({});
   const [useHardwareWallet, setUseHardwareWallet] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
 
   const alertConfigurations = useRef<Record<string, AlertConfiguration | null>>(
     params.alertConfigurations ?? {},
@@ -83,6 +86,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
   const value = {
     alerts,
     email,
+    loading,
     params,
     phoneNumber,
     telegramId,
@@ -93,6 +97,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
     setAlerts,
     setAlertConfiguration,
     setEmail,
+    setLoading,
     setPhoneNumber,
     setTelegramId,
     setTelegramConfirmationUrl,

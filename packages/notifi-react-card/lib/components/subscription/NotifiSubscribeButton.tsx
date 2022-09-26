@@ -14,8 +14,8 @@ export type NotifiSubscribeButtonProps = Readonly<{
 export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
   classNames,
 }) => {
-  const { loading, isInitialized, subscribe } = useNotifiSubscribe();
-  const { alerts } = useNotifiSubscriptionContext();
+  const { isInitialized, subscribe } = useNotifiSubscribe();
+  const { alerts, loading } = useNotifiSubscriptionContext();
   const hasAlerts = Object.values(alerts ?? {}).find(
     (it) => it?.id !== undefined && it?.id !== null,
   );

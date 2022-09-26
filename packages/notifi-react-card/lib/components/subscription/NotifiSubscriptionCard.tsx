@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import React from 'react';
 
+import { useNotifiSubscriptionContext } from '../../context';
 import { useNotifiSubscribe, useSubscriptionCard } from '../../hooks';
 import type { NotifiFooterProps } from '../NotifiFooter';
 import { NotifiFooter } from '../NotifiFooter';
@@ -33,7 +34,8 @@ export const NotifiSubscriptionCard: React.FC<NotifiSubscriptionCardProps> = ({
   darkMode,
   inputs = {},
 }: NotifiSubscriptionCardProps) => {
-  const { loading, isAuthenticated, isInitialized } = useNotifiSubscribe();
+  const { isAuthenticated, isInitialized } = useNotifiSubscribe();
+  const { loading } = useNotifiSubscriptionContext();
   const inputDisabled = loading || !isAuthenticated || !isInitialized;
 
   const card = useSubscriptionCard(cardId);
