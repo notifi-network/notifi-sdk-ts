@@ -269,7 +269,6 @@ export const useNotifiSubscribe: () => Readonly<{
             emailAddress: finalEmail,
             phoneNumber: finalPhoneNumber,
             telegramId: finalTelegramId,
-            targetGroupName: 'Default',
           });
           newResults[name] = alert;
         } else {

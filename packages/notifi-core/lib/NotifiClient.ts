@@ -91,7 +91,6 @@ export type ClientUpdateAlertInput = Readonly<{
   phoneNumber: string | null;
   telegramId: string | null;
   webhook?: ClientCreateWebhookParams;
-  targetGroupName?: string;
 }>;
 
 /**
