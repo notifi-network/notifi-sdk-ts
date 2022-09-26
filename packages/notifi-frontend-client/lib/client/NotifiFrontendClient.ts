@@ -420,4 +420,22 @@ export class NotifiFrontendClient {
       throw new Error('Failed to delete alert');
     }
   }
+
+  async getNotificationHistory(
+    variables: Types.GetNotificationHistoryQueryVariables,
+  ): Promise<
+    Readonly<{
+      pageInfo: Types.PageInfoFragmentFragment;
+      nodes: ReadonlyArray<Types.NotificationHistoryEntryFragmentFragment>;
+    }>
+  > {
+    const query = await this._service.getNotificationHistory(variables);
+    const nodes = query.notificationHistory?.nodes;
+    const pageInfo = query.notificationHistory?.pageInfo;
+    if (nodes === undefined || pageInfo === undefined) {
+      throw new Error('Failed to fetch notification history');
+    }
+
+    return { pageInfo, nodes };
+  }
 }
