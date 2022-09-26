@@ -258,7 +258,13 @@ export const useNotifiSubscribe: () => Readonly<{
           filter = source?.applicableFilters.find(
             (f) => f.filterType === filterType,
           );
-          console.log('find from sources', source, filter);
+          console.log(
+            'find from sources',
+            data.sources,
+            sourceType,
+            source,
+            filter,
+          );
         }
 
         if (
