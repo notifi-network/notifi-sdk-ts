@@ -358,6 +358,7 @@ const useNotifiClient = (
           walletBlockchain,
         });
 
+        console.log('handleLogInResult', result);
         await handleLogInResult(result);
 
         return result;

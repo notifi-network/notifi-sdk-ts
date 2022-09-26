@@ -163,7 +163,15 @@ export const useNotifiSubscribe: () => Readonly<{
 
     const newData = await client.fetchData();
     return render(newData);
-  }, [client, signer, useHardwareWallet]);
+  }, [
+    client.isAuthenticated,
+    client.logIn,
+    client.fetchData,
+    signer,
+    useHardwareWallet,
+    logInViaHardwareWallet,
+    render,
+  ]);
 
   const subscribe = useCallback(async (): Promise<SubscriptionData> => {
     console.log('In subscribe');
@@ -184,10 +192,7 @@ export const useNotifiSubscribe: () => Readonly<{
       }
     }
 
-    if (!client.isAuthenticated) {
-      await logIn();
-    }
-
+    await logIn();
     console.log('After login');
     const data = await client.fetchData();
     console.log('After fetchData');
