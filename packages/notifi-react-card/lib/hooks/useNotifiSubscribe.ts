@@ -217,9 +217,7 @@ export const useNotifiSubscribe: () => Readonly<{
       };
 
       const config = configurations[name];
-      console.log('config', i, name, config);
       if (config === undefined || config === null) {
-        console.log('deleting alert');
         await deleteThisAlert();
       } else {
         const {
@@ -232,7 +230,6 @@ export const useNotifiSubscribe: () => Readonly<{
         let source: Source | undefined;
         let filter: Filter | undefined;
         if (createSourceParam !== undefined) {
-          console.log('createSourceParam', createSourceParam);
           const existing = data.sources.find(
             (s) =>
               s.type === sourceType &&
@@ -258,13 +255,6 @@ export const useNotifiSubscribe: () => Readonly<{
           filter = source?.applicableFilters.find(
             (f) => f.filterType === filterType,
           );
-          console.log(
-            'find from sources',
-            data.sources,
-            sourceType,
-            source,
-            filter,
-          );
         }
 
         if (
@@ -273,10 +263,8 @@ export const useNotifiSubscribe: () => Readonly<{
           filter === undefined ||
           filter.id === null
         ) {
-          console.log('could not find source');
           await deleteThisAlert();
         } else if (existingAlert !== undefined && existingAlert.id !== null) {
-          console.log('updating');
           const alert = await client.updateAlert({
             alertId: existingAlert.id,
             emailAddress: finalEmail,
@@ -285,7 +273,6 @@ export const useNotifiSubscribe: () => Readonly<{
           });
           newResults[name] = alert;
         } else {
-          console.log('creating');
           // Call serially because of limitations
           await deleteThisAlert();
           const alert = await client.createAlert({
