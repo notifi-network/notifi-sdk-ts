@@ -148,12 +148,14 @@
   transform: translateX(var(--notifi-toggle-size));
 }
 
-.EventTypeBroadcastRow__container {
+.EventTypeBroadcastRow__container,
+.EventTypeDirectPushRow__container {
   display: flex;
   flex-direction: row;
 }
 
-.EventTypeBroadcastRow__label {
+.EventTypeBroadcastRow__label,
+.EventTypeDirectPushRow__label {
   flex-grow: 1;
   margin-right: 10px;
   font-size: 16px;

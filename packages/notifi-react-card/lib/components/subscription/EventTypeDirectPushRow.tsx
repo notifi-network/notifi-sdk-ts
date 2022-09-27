@@ -2,42 +2,42 @@ import clsx from 'clsx';
 import React, { useEffect, useMemo, useState } from 'react';
 
 import { useNotifiSubscriptionContext } from '../../context';
-import { BroadcastEventTypeItem } from '../../hooks';
+import { DirectPushEventTypeItem } from '../../hooks';
 import {
   AlertConfiguration,
   DeepPartialReadonly,
-  broadcastMessageConfiguration,
+  directMessageConfiguration,
 } from '../../utils';
 import type { NotifiToggleProps } from './NotifiToggle';
 import { NotifiToggle } from './NotifiToggle';
 import { resolveStringRef } from './resolveRef';
 
-export type EventTypeBroadcastRowProps = Readonly<{
+export type EventTypeDirectPushRowProps = Readonly<{
   classNames?: DeepPartialReadonly<{
     container: string;
     label: string;
     toggle: NotifiToggleProps['classNames'];
   }>;
   disabled: boolean;
-  config: BroadcastEventTypeItem;
+  config: DirectPushEventTypeItem;
   inputs: Record<string, string | undefined>;
 }>;
 
-export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
+export const EventTypeDirectPushRow: React.FC<EventTypeDirectPushRowProps> = ({
   classNames,
   disabled,
   config,
   inputs,
-}: EventTypeBroadcastRowProps) => {
+}: EventTypeDirectPushRowProps) => {
   const { alerts, loading, setAlertConfiguration } =
     useNotifiSubscriptionContext();
   const [enabled, setEnabled] = useState(true);
 
   const alertName = useMemo<string>(() => config.name, [config]);
   const alertConfiguration = useMemo<AlertConfiguration>(() => {
-    const broadcastId = resolveStringRef(alertName, config.broadcastId, inputs);
-    return broadcastMessageConfiguration({
-      topicName: broadcastId,
+    const pushId = resolveStringRef(alertName, config.directPushId, inputs);
+    return directMessageConfiguration({
+      type: pushId,
     });
   }, [alertName, config, inputs]);
 
@@ -60,11 +60,11 @@ export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
   return (
     <div
       className={clsx(
-        'EventTypeBroadcastRow__container',
+        'EventTypeDirectPushRow__container',
         classNames?.container,
       )}
     >
-      <div className={clsx('EventTypeBroadcastRow__label', classNames?.label)}>
+      <div className={clsx('EventTypeDirectPushRow__label', classNames?.label)}>
         {config.name}
       </div>
       <NotifiToggle
