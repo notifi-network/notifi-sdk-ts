@@ -4,6 +4,7 @@ import { GraphQLClient } from 'graphql-request';
 import {
   NotifiAptosConfiguration,
   NotifiFrontendConfiguration,
+  NotifiSolanaConfiguration,
   envUrl,
 } from '../configuration';
 import {
@@ -24,6 +25,12 @@ export const newNotifiService = (config: NotifiFrontendConfiguration) => {
 };
 
 export const newAptosClient = (config: NotifiAptosConfiguration) => {
+  const service = newNotifiService(config);
+  const storage = newNotifiStorage(config);
+  return new NotifiFrontendClient(config, service, storage);
+};
+
+export const newSolanaClient = (config: NotifiSolanaConfiguration) => {
   const service = newNotifiService(config);
   const storage = newNotifiStorage(config);
   return new NotifiFrontendClient(config, service, storage);
