@@ -32,6 +32,8 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
   inputDisabled,
   inputs,
 }) => {
+  const allowedCountryCodes = [...data.contactInfo.sms.supportedCountryCodes];
+
   return (
     <>
       {data.contactInfo.email.active ? (
@@ -40,10 +42,12 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
           classNames={classNames?.NotifiEmailInput}
         />
       ) : null}
+
       {data.contactInfo.sms.active ? (
         <NotifiSmsInput
           disabled={inputDisabled}
           classNames={classNames?.NotifiSmsInput}
+          allowedCountryCodes={allowedCountryCodes}
         />
       ) : null}
       {data.contactInfo.telegram.active ? (
