@@ -2,7 +2,7 @@
 
 ## 🎬 Getting Started using Aptos
 
-In this README, we'll cover the simple use case of one user authenticating through a Martian wallet and creating an alert. 
+In this README, we'll cover the simple use case of one user authenticating through an Aptos wallet and creating an alert.
 
 ## 📥 Installation
 
@@ -10,7 +10,7 @@ In this README, we'll cover the simple use case of one user authenticating throu
 npm i @notifi-network/notifi-frontend-client
 ```
 
-## 🪝 Hook up the SDK 
+## 🪝 Hook up the SDK
 
 Load the Notifi Frontend Client SDK into your component.
 
@@ -21,11 +21,15 @@ const { newAptosClient, newAptosConfig } = require('@notifi-network/notifi-front
 Instantiate and configure the Notifi Client for your dApp and environment. If your user has not connected their wallet, they will need to do so in order to instantiate the client.
 
 ```
+const accountAddress = <The wallet's public account address>;
+const walletPublicKey = <The wallet's public key>;
 const tenantId = <Tenant ID received through the Notifi Config Tool>;
-const account = await martian.account();
 const blockchainEnv = "Development";
 
-const config = newAptosConfig(account, tenantId, blockchainEnv);
+const config = newAptosConfig({
+  address: accountAddress, // string
+  publicKey: walletPublicKey, // string
+}, tenantId, blockchainEnv);
 const client = newAptosClient(config);
 
 ```
@@ -37,19 +41,17 @@ For a user to opt-in for notifications, they will need to provide their signatur
 Using the wallet adapter of your choice, prompt the user to sign and use the signed message in the `logIn()` hook.
 
 ```
-const martianLogIn = async () => {
+const logIn = async () => {
     const loginResult = await client.logIn({
         walletBlockchain: 'APTOS',
         signMessage: async (message, timestamp) => {
-            const signedMessage = await wallet.signMessage({
-                address: true,
-                application: false,
-                chainId: false,
-                message,
-                nonce: timestamp,
+            const { result } = await signMessage({
+              address: true,
+              message,
+              nonce: `${timestamp}`,
             });
-            console.log('signedMessage', signedMessage);
-            return signedMessage.signature;
+            console.log('signedMessage', result);
+            return result.signature;
         },
       });
       // client should be authenticated now
@@ -65,7 +67,7 @@ Once your user enters their contact information and options for their first aler
 
 In order to create a target group, `ensureTargetGroup()` must pass in least one email address, phone number, telegramId, or webhook url. Dapp admins can update pass in a webhook url to receive all of the notifications instead of a user email address, phone number, or telegramId.
 
-In order to create a source group, `ensureSourceGroup()` must pass in metadata of the alert options returned in the Rendering Alert Options section. 
+In order to create a source group, `ensureSourceGroup()` must pass in metadata of the alert options returned in the Rendering Alert Options section.
 
 After creating a target group and source group, use the `ensureAlert()` to create the first alert.
 
@@ -83,7 +85,7 @@ const sourceGroup = await client.ensureSourceGroup({
       }
     ]
 });
-    
+
 const source = sourceGroup.sources?.find(it => it?.blockchainAddress === 'notifi__newFeature');
 const filter = source?.applicableFilters?.find(it => it?.filterType === 'BROADCAST_MESSAGES');
 
@@ -117,7 +119,7 @@ const targetGroup = await client.ensureTargetGroup({
 
 If a user wants to update their alert by changing the email address notifications are sent to, or to add a phone number for SMS notifications, you can still use `ensureAlert()` to update.
 
-You'll want to pass in the `name` of the existing alert to make the update to that alert entity. You can use `getAlerts()` to find the alert entity. 
+You'll want to pass in the `name` of the existing alert to make the update to that alert entity. You can use `getAlerts()` to find the alert entity.
 
 ```
 
@@ -165,7 +167,7 @@ const handleDeleteAlert = async () => {
 
 ## 🔔 Get Notification History
 
-To get notification history, use the getNotificationHistory() 
+To get notification history, use the getNotificationHistory()
 
 ```
 const getNotificationHistory = async (first?: number, after?: string) => {
