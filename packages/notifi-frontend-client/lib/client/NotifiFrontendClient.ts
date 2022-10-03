@@ -59,7 +59,7 @@ export class NotifiFrontendClient {
 
   async logIn(
     signMessageParams: SignMessageParams,
-  ): Promise<Types.UserFragmentFragment | undefined> {
+  ): Promise<Types.UserFragmentFragment> {
     const timestamp = Math.round(Date.now() / 1000);
     const signature = await this._signMessage({
       signMessageParams,
@@ -67,22 +67,22 @@ export class NotifiFrontendClient {
     });
 
     const { tenantId, walletBlockchain } = this._configuration;
-    let loginPromise = Promise.reject<Types.LogInFromDappMutation>(
-      'Unsupported blockchain',
-    );
+
+    let loginResult: Types.UserFragmentFragment | undefined = undefined;
     switch (walletBlockchain) {
       case 'SOLANA': {
-        loginPromise = this._service.logInFromDapp({
+        const result = await this._service.logInFromDapp({
           walletBlockchain,
           walletPublicKey: this._configuration.walletPublicKey,
           dappAddress: tenantId,
           timestamp,
           signature,
         });
+        loginResult = result.logInFromDapp;
         break;
       }
       case 'APTOS': {
-        loginPromise = this._service.logInFromDapp({
+        const result = await this._service.logInFromDapp({
           walletBlockchain,
           walletPublicKey: this._configuration.authenticationKey,
           accountId: this._configuration.accountAddress,
@@ -90,13 +90,17 @@ export class NotifiFrontendClient {
           timestamp,
           signature,
         });
+        loginResult = result.logInFromDapp;
         break;
       }
     }
-    const result = await loginPromise;
 
-    await this._handleLogInResult(result.logInFromDapp);
-    return result.logInFromDapp;
+    if (loginResult === undefined) {
+      return Promise.reject('Failed to login');
+    }
+
+    await this._handleLogInResult(loginResult);
+    return loginResult;
   }
 
   private async _signMessage({

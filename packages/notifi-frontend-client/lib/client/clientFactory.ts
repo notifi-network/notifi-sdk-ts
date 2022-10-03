@@ -7,14 +7,11 @@ import {
   NotifiSolanaConfiguration,
   envUrl,
 } from '../configuration';
-import {
-  NotifiFrontendStorage,
-  createLocalForageStorageDriver,
-} from '../storage';
+import { NotifiFrontendStorage, createInMemoryStorageDriver } from '../storage';
 import { NotifiFrontendClient } from './NotifiFrontendClient';
 
 export const newNotifiStorage = (config: NotifiFrontendConfiguration) => {
-  const driver = createLocalForageStorageDriver(config);
+  const driver = createInMemoryStorageDriver(config);
   return new NotifiFrontendStorage(driver);
 };
 
