@@ -1,14 +1,17 @@
 import clsx from 'clsx';
 import { isValidPhoneNumber } from 'libphonenumber-js';
-import { useNotifiSubscriptionContext } from 'notifi-react-card/lib/context';
-import { DeepPartialReadonly } from 'notifi-react-card/lib/utils';
-import { splitPhoneNumber } from 'notifi-react-card/lib/utils/phoneUtils';
 import React, { useCallback, useEffect, useState } from 'react';
+
+import { useNotifiSubscriptionContext } from '../context';
+import type { DeepPartialReadonly } from '../utils';
+import { splitPhoneNumber } from '../utils/phoneUtils';
 
 export type NotifiSmsInputProps = Readonly<{
   classNames?: DeepPartialReadonly<{
     container: string;
     input: string;
+    dropdownContainer: string;
+    dropdownOption: string;
   }>;
   copy?: DeepPartialReadonly<{
     placeholder: string;
@@ -64,7 +67,14 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
 
   const countryCodes = allowedCountryCodes.map((code) => {
     return (
-      <option key={code} value={code}>
+      <option
+        className={clsx(
+          'NotifiSmsInput__dropdownOption',
+          classNames?.dropdownOption,
+        )}
+        key={code}
+        value={code}
+      >
         {code}
       </option>
     );
@@ -89,7 +99,12 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
 
   return (
     <div className={clsx('NotifiSmsInput__container', classNames?.container)}>
-      <div className={clsx('NotifiSmsInput__dropdownContainer')}>
+      <div
+        className={clsx(
+          'NotifiSmsInput__dropdownContainer',
+          classNames?.dropdownContainer,
+        )}
+      >
         <select
           value={phoneValues.dialCode}
           onChange={handleChange('dialCode')}
