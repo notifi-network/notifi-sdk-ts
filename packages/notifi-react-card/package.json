@@ -29,7 +29,8 @@
   },
   "dependencies": {
     "@notifi-network/notifi-react-hooks": "^0.36.0",
-    "clsx": "^1.2.1"
+    "clsx": "^1.2.1",
+    "libphonenumber-js": "^1.10.13"
   },
   "peerDependencies": {
     "@solana/wallet-adapter-react": "^0.15.8",

@@ -199,6 +199,14 @@
   background-color: var(--notifi-input-background);
 }
 
+.NotifiSmsInput__dropdownSelect::after {
+  content: '';
+  width: 0.8em;
+  height: 0.5em;
+  background-color: var(--notifi-input-background);
+  clip-path: polygon(100% 0%, 0 0%, 50% 100%);
+}
+
 .NotifiSmsInput__dropdownSelect:focus-visible {
   outline: none;
   box-shadow: 0px 0px 0px 1px var(--notifi-focus-color);
