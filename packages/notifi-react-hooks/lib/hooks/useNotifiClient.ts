@@ -43,6 +43,45 @@ import storage from '../utils/storage';
 import useNotifiConfig, { BlockchainEnvironment } from './useNotifiConfig';
 import useNotifiService from './useNotifiService';
 
+// TODO: Dedupe from FrontendClient
+export type Uint8SignMessageFunction = (
+  message: Uint8Array,
+) => Promise<Uint8Array>;
+
+export type AptosSignMessageFunction = (
+  message: string,
+  nonce: number,
+) => Promise<string>;
+
+export type SignMessageParams =
+  | Readonly<{
+      walletBlockchain: 'SOLANA';
+      signMessage: Uint8SignMessageFunction;
+    }>
+  | Readonly<{
+      walletBlockchain: 'ETHEREUM';
+      signMessage: Uint8SignMessageFunction;
+    }>
+  | Readonly<{
+      walletBlockchain: 'APTOS';
+      signMessage: AptosSignMessageFunction;
+    }>;
+
+export type WalletParams =
+  | Readonly<{
+      walletBlockchain: 'SOLANA';
+      walletPublicKey: string;
+    }>
+  | Readonly<{
+      walletBlockchain: 'ETHEREUM';
+      walletPublicKey: string;
+    }>
+  | Readonly<{
+      walletBlockchain: 'APTOS';
+      accountAddress: string;
+      walletPublicKey: string;
+    }>;
+
 /**
  * Config options for Notifi SDK
  *
@@ -58,10 +97,9 @@ import useNotifiService from './useNotifiService';
  */
 export type NotifiClientConfig = Readonly<{
   dappAddress: string;
-  walletPublicKey: string;
   env?: BlockchainEnvironment | NotifiEnvironment;
-  walletBlockchain: 'SOLANA' | 'ETHEREUM';
-}>;
+}> &
+  WalletParams;
 
 export class NotifiClientError extends Error {
   constructor(public underlying: unknown) {
@@ -351,6 +389,8 @@ const useNotifiClient = (
           signer,
         });
         const result = await service.logInFromDapp({
+          accountId:
+            walletBlockchain === 'APTOS' ? config.accountAddress : undefined,
           walletPublicKey,
           dappAddress,
           timestamp,

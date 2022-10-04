@@ -10,17 +10,31 @@ import { AlertConfiguration } from '../utils';
 import { NotifiClientContextProvider } from './NotifiClientContext';
 import { NotifiSubscriptionContextProvider } from './NotifiSubscriptionContext';
 
+export type SolanaParams = Readonly<{
+  walletBlockchain: 'SOLANA';
+  walletPublicKey: string;
+  connection: Connection;
+  sendTransaction: WalletContextState['sendTransaction'];
+}>;
+export type EthereumParams = Readonly<{
+  walletBlockchain: 'ETHEREUM';
+  walletPublicKey: string;
+}>;
+
+export type AptosParams = Readonly<{
+  walletBlockchain: 'APTOS';
+  accountAddress: string;
+  walletPublicKey: string;
+}>;
+
 export type NotifiParams = Readonly<{
   alertConfigurations?: Record<string, AlertConfiguration | null>;
   dappAddress: string;
   env: NotifiEnvironment;
   signer: MessageSigner;
-  walletPublicKey: string;
-  walletBlockchain: 'SOLANA' | 'ETHEREUM';
   keepSubscriptionData?: boolean;
-  connection: Connection;
-  sendTransaction: WalletContextState['sendTransaction'];
-}>;
+}> &
+  (SolanaParams | EthereumParams | AptosParams);
 
 export const NotifiContext: React.FC<React.PropsWithChildren<NotifiParams>> = ({
   children,
