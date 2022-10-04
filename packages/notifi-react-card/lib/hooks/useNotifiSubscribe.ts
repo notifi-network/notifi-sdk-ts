@@ -9,6 +9,7 @@ import {
   Transaction,
   TransactionInstruction,
 } from '@solana/web3.js';
+import { isValidPhoneNumber } from 'libphonenumber-js';
 import { useCallback, useEffect, useRef } from 'react';
 
 import { useNotifiSubscriptionContext } from '../context';
@@ -67,7 +68,6 @@ export const useNotifiSubscribe: () => Readonly<{
       });
       setAlerts(alerts);
       const email = targetGroup?.emailTargets[0]?.emailAddress ?? null;
-
       setEmail(email ?? '');
 
       const phoneNumber = targetGroup?.smsTargets[0]?.phoneNumber ?? null;
@@ -183,13 +183,8 @@ export const useNotifiSubscribe: () => Readonly<{
     const finalTelegramId = inputTelegramId === '' ? null : inputTelegramId;
 
     let finalPhoneNumber = null;
-    if (inputPhoneNumber !== '') {
-      if (inputPhoneNumber.startsWith('+')) {
-        finalPhoneNumber = inputPhoneNumber;
-      } else {
-        // Assume US for now
-        finalPhoneNumber = `+1${inputPhoneNumber}`;
-      }
+    if (isValidPhoneNumber(inputPhoneNumber)) {
+      finalPhoneNumber = inputPhoneNumber;
     }
 
     setLoading(true);
