@@ -12,7 +12,10 @@ export type NotifiSmsInputProps = Readonly<{
     input: string;
     dropdownContainer: string;
     dropdownOption: string;
+<<<<<<< HEAD
     dropdownSelectField: string;
+=======
+>>>>>>> 8806067 (updates dropdown names by adding values)
   }>;
   copy?: DeepPartialReadonly<{
     placeholder: string;
