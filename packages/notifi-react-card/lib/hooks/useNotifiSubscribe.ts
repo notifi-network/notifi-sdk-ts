@@ -46,7 +46,7 @@ export const useNotifiSubscribe: () => Readonly<{
     setLoading,
   } = useNotifiSubscriptionContext();
 
-  const { keepSubscriptionData = true, walletPublicKey, signer } = params;
+  const { keepSubscriptionData = true, walletPublicKey } = params;
 
   const render = useCallback(
     (newData: ClientData | null): SubscriptionData => {
@@ -157,7 +157,7 @@ export const useNotifiSubscribe: () => Readonly<{
       if (useHardwareWallet) {
         await logInViaHardwareWallet();
       } else {
-        await client.logIn(signer);
+        await client.logIn(params);
       }
     }
 
@@ -169,7 +169,7 @@ export const useNotifiSubscribe: () => Readonly<{
     client.isAuthenticated,
     client.logIn,
     client.fetchData,
-    signer,
+    params,
     useHardwareWallet,
     logInViaHardwareWallet,
     render,

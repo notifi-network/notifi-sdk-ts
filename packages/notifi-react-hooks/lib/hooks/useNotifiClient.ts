@@ -16,8 +16,8 @@ import {
   CompleteLoginViaTransactionInput,
   CompleteLoginViaTransactionResult,
   CreateSourceInput,
-  MessageSigner,
   NotifiClient,
+  SignMessageParams,
   Source,
   TargetGroup,
   TargetType,
@@ -42,30 +42,6 @@ import packFilterOptions from '../utils/packFilterOptions';
 import storage from '../utils/storage';
 import useNotifiConfig, { BlockchainEnvironment } from './useNotifiConfig';
 import useNotifiService from './useNotifiService';
-
-// TODO: Dedupe from FrontendClient
-export type Uint8SignMessageFunction = (
-  message: Uint8Array,
-) => Promise<Uint8Array>;
-
-export type AptosSignMessageFunction = (
-  message: string,
-  nonce: number,
-) => Promise<string>;
-
-export type SignMessageParams =
-  | Readonly<{
-      walletBlockchain: 'SOLANA';
-      signMessage: Uint8SignMessageFunction;
-    }>
-  | Readonly<{
-      walletBlockchain: 'ETHEREUM';
-      signMessage: Uint8SignMessageFunction;
-    }>
-  | Readonly<{
-      walletBlockchain: 'APTOS';
-      signMessage: AptosSignMessageFunction;
-    }>;
 
 export type WalletParams =
   | Readonly<{
@@ -135,32 +111,57 @@ const projectData = (internalData: InternalData | null): ClientData | null => {
 
 // Don't split this line into multiple lines due to some packagers or other build modules that
 // modify the string literal, which then causes authentication to fail due to different strings
-export const SIGNING_MESSAGE = `Sign in with Notifi \n\n    No password needed or gas is needed. \n\n    Clicking “Approve” only means you have proved this wallet is owned by you! \n\n    This request will not trigger any transaction or cost any gas fees. \n\n    Use of our website and service is subject to our terms of service and privacy policy. \n`;
+export const SIGNING_MESSAGE = `Sign in with Notifi \n\n    No password needed or gas is needed. \n\n    Clicking “Approve” only means you have proved this wallet is owned by you! \n\n    This request will not trigger any transaction or cost any gas fees. \n\n    Use of our website and service is subject to our terms of service and privacy policy. \n \n 'Nonce:' `;
 
 const signMessage = async ({
-  walletBlockchain,
-  walletPublicKey,
+  params,
   dappAddress,
   signer,
   timestamp,
 }: Readonly<{
-  walletBlockchain: NotifiClientConfig['walletBlockchain'];
-  walletPublicKey: string;
+  params: WalletParams;
   dappAddress: string;
-  signer: MessageSigner;
+  signer: SignMessageParams;
   timestamp: number;
 }>): Promise<string> => {
-  const messageBuffer = new TextEncoder().encode(
-    `${SIGNING_MESSAGE} \n 'Nonce:' ${walletPublicKey}${dappAddress}${timestamp.toString()}`,
-  );
+  switch (params.walletBlockchain) {
+    case 'SOLANA': {
+      if (signer.walletBlockchain !== 'SOLANA') {
+        throw new Error('Signer and config have different walletBlockchain');
+      }
 
-  const signedBuffer = await signer.signMessage(messageBuffer);
-  let encoding: BufferEncoding = 'base64';
-  if (walletBlockchain === 'ETHEREUM') {
-    encoding = 'hex';
+      const { walletPublicKey } = params;
+      const messageBuffer = new TextEncoder().encode(
+        `${SIGNING_MESSAGE} \n 'Nonce:' ${walletPublicKey}${dappAddress}${timestamp.toString()}`,
+      );
+
+      const signedBuffer = await signer.signMessage(messageBuffer);
+      const signature = Buffer.from(signedBuffer).toString('base64');
+      return signature;
+    }
+    case 'ETHEREUM': {
+      if (signer.walletBlockchain !== 'ETHEREUM') {
+        throw new Error('Signer and config have different walletBlockchain');
+      }
+
+      const { walletPublicKey } = params;
+      const messageBuffer = new TextEncoder().encode(
+        `${SIGNING_MESSAGE} \n 'Nonce:' ${walletPublicKey}${dappAddress}${timestamp.toString()}`,
+      );
+
+      const signedBuffer = await signer.signMessage(messageBuffer);
+      const signature = Buffer.from(signedBuffer).toString('hex');
+      return signature;
+    }
+    case 'APTOS': {
+      if (signer.walletBlockchain !== 'APTOS') {
+        throw new Error('Signer and config have different walletBlockchain');
+      }
+
+      const signature = await signer.signMessage(SIGNING_MESSAGE, timestamp);
+      return signature;
+    }
   }
-  const signature = Buffer.from(signedBuffer).toString(encoding);
-  return signature;
 };
 
 /**
@@ -372,7 +373,7 @@ const useNotifiClient = (
    * See [Alert Creation Guide]{@link https://docs.notifi.network} for more information on creating Alerts
    */
   const logIn = useCallback(
-    async (signer: MessageSigner) => {
+    async (signer: SignMessageParams) => {
       if (signer == null) {
         throw new Error('Signer cannot be null');
       }
@@ -382,8 +383,7 @@ const useNotifiClient = (
       setLoading(true);
       try {
         const signature = await signMessage({
-          walletBlockchain,
-          walletPublicKey,
+          params: config,
           dappAddress,
           timestamp,
           signer,
@@ -1079,7 +1079,7 @@ const useNotifiClient = (
         isHolderOnly,
         variables: extraVariables,
       }: ClientBroadcastMessageInput,
-      signer: MessageSigner,
+      signer: SignMessageParams,
     ): Promise<string | null> => {
       setLoading(true);
       try {
@@ -1143,8 +1143,7 @@ const useNotifiClient = (
         }
 
         const signature = await signMessage({
-          walletBlockchain,
-          walletPublicKey,
+          params: config,
           dappAddress,
           timestamp,
           signer,

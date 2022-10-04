@@ -194,10 +194,6 @@ export type ClientSendVerificationEmailInput = Readonly<{
   targetId: string;
 }>;
 
-export type MessageSigner = Readonly<{
-  signMessage: (message: Uint8Array) => Promise<Uint8Array>;
-}>;
-
 export type ClientBroadcastMessageInput = Readonly<{
   topic: UserTopic;
   subject: string;
@@ -211,17 +207,41 @@ export type ClientFetchSubscriptionCardInput = Readonly<{
   id: string;
 }>;
 
+// TODO: Dedupe from FrontendClient
+export type Uint8SignMessageFunction = (
+  message: Uint8Array,
+) => Promise<Uint8Array>;
+
+export type AptosSignMessageFunction = (
+  message: string,
+  nonce: number,
+) => Promise<string>;
+
+export type SignMessageParams =
+  | Readonly<{
+      walletBlockchain: 'SOLANA';
+      signMessage: Uint8SignMessageFunction;
+    }>
+  | Readonly<{
+      walletBlockchain: 'ETHEREUM';
+      signMessage: Uint8SignMessageFunction;
+    }>
+  | Readonly<{
+      walletBlockchain: 'APTOS';
+      signMessage: AptosSignMessageFunction;
+    }>;
+
 export type NotifiClient = Readonly<{
   beginLoginViaTransaction: () => Promise<BeginLoginViaTransactionResult>;
   broadcastMessage: (
     input: ClientBroadcastMessageInput,
-    signer: MessageSigner,
+    signer: SignMessageParams,
   ) => Promise<string | null>;
   completeLoginViaTransaction: (
     input: CompleteLoginViaTransactionInput,
   ) => Promise<CompleteLoginViaTransactionResult>;
   fetchData: () => Promise<ClientData>;
-  logIn: (signer: MessageSigner) => Promise<User>;
+  logIn: (signer: SignMessageParams) => Promise<User>;
   logOut: () => Promise<void>;
   createAlert: (input: ClientCreateAlertInput) => Promise<Alert>;
   createSource: (input: CreateSourceInput) => Promise<Source>;
