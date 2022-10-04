@@ -1,7 +1,6 @@
 import {
   AptosSignMessageFunction,
   NotifiEnvironment,
-  SignMessageParams,
   Uint8SignMessageFunction,
 } from '@notifi-network/notifi-react-hooks';
 import type { WalletContextState } from '@solana/wallet-adapter-react';
@@ -38,7 +37,6 @@ export type NotifiParams = Readonly<{
   env: NotifiEnvironment;
   keepSubscriptionData?: boolean;
 }> &
-  SignMessageParams &
   (SolanaParams | EthereumParams | AptosParams);
 
 export const NotifiContext: React.FC<React.PropsWithChildren<NotifiParams>> = ({
