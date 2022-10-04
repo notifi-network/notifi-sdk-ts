@@ -132,7 +132,7 @@ const signMessage = async ({
 
       const { walletPublicKey } = params;
       const messageBuffer = new TextEncoder().encode(
-        `${SIGNING_MESSAGE} \n 'Nonce:' ${walletPublicKey}${dappAddress}${timestamp.toString()}`,
+        `${SIGNING_MESSAGE}${walletPublicKey}${dappAddress}${timestamp.toString()}`,
       );
 
       const signedBuffer = await signer.signMessage(messageBuffer);
@@ -146,7 +146,7 @@ const signMessage = async ({
 
       const { walletPublicKey } = params;
       const messageBuffer = new TextEncoder().encode(
-        `${SIGNING_MESSAGE} \n 'Nonce:' ${walletPublicKey}${dappAddress}${timestamp.toString()}`,
+        `${SIGNING_MESSAGE}${walletPublicKey}${dappAddress}${timestamp.toString()}`,
       );
 
       const signedBuffer = await signer.signMessage(messageBuffer);
