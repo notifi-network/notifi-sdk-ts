@@ -12,6 +12,7 @@ export type NotifiSmsInputProps = Readonly<{
     input: string;
     dropdownContainer: string;
     dropdownOption: string;
+    dropdownSelectField: string;
   }>;
   copy?: DeepPartialReadonly<{
     placeholder: string;
@@ -108,7 +109,10 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
         <select
           value={phoneValues.dialCode}
           onChange={handleChange('dialCode')}
-          className={clsx('NotifiSmsInput__dropdownSelect')}
+          className={clsx(
+            'NotifiSmsInput__dropdownSelect',
+            classNames?.dropdownSelectField,
+          )}
         >
           {countryCodes}
         </select>
