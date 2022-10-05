@@ -37,6 +37,7 @@ query getTenantConnectedWallet(
       address
       walletBlockchain
       user {
+        id
         alerts {
           id
           name

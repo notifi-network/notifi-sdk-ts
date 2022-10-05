@@ -6,5 +6,6 @@ export type UserAlert = Pick<
 >;
 
 export type UserWithAlerts = Readonly<{
+  id: string;
   alerts: ReadonlyArray<UserAlert>;
 }>;
