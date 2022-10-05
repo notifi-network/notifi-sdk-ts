@@ -14,7 +14,6 @@ You can import the default stylesheet to get baseline styling.
 ### Solana
 
 ```tsx
-import type { MessageSigner } from '@notifi-network/notifi-core';
 import {
   NotifiContext,
   NotifiSubscriptionCard,
@@ -25,7 +24,7 @@ import React from 'react';
 
 export const Remote: React.FC = () => {
   const { connection } = useConnection();
-  const { wallet, sendTransaction } = useWallet();
+  const { wallet, sendTransaction, signMessage } = useWallet();
   const adapter = wallet?.adapter;
   const publicKey = adapter?.publicKey?.toBase58() ?? null;
 
@@ -39,7 +38,7 @@ export const Remote: React.FC = () => {
       dappAddress="<YOUR OWN DAPP ADDRESS HERE>"
       walletBlockchain="SOLANA"
       env="Development"
-      signer={adapter as MessageSigner}
+      signMessage={signMessage}
       walletPublicKey={publicKey}
       connection={connection}
       sendTransaction={sendTransaction}
@@ -51,8 +50,6 @@ export const Remote: React.FC = () => {
 ```
 
 ### Ethereum
-
-There are some transitive (unused) dependencies on Solana -- it's possible to work around by passing undefined for these things. (We are working on cleaning these up)
 
 ```tsx
 import { arrayify } from '@ethersproject/bytes';
@@ -77,16 +74,12 @@ export const Notifi: React.FC = () => {
     <NotifiContext
       dappAddress="<YOUR OWN DAPP ADDRESS HERE>"
       env="Development"
-      signer={{
-        signMessage: async (message: Uint8Array) => {
-          const result = await signer.signMessage(message);
-          return arrayify(result);
-        },
+      signMessage={async (message: Uint8Array) => {
+        const result = await signer.signMessage(message);
+        return arrayify(result);
       }}
       walletPublicKey={account}
       walletBlockchain="ETHEREUM"
-      connection={undefined as any}
-      sendTransaction={undefined as any}
     >
       <NotifiSubscriptionCard cardId="<YOUR OWN CARD ID HERE>" darkMode />
     </NotifiContext>
@@ -94,4 +87,46 @@ export const Notifi: React.FC = () => {
 };
 ```
 
-### Solana
+### Aptos -- Fewcha Wallet
+
+You might have to tinker with the signMessage function, as many wallets seem to disagree on the signature to use. The below example is with Fewcha wallet
+
+```tsx
+import {
+  NotifiContext,
+  NotifiSubscriptionCard,
+} from '@notifi-network/notifi-react-card';
+import '@notifi-network/notifi-react-card/dist/index.css';
+import React from 'react';
+
+export const Notifi: React.FC = ({
+  fewcha,
+  account,
+  publicKey,
+}: Readonly<{
+  fewcha: any; // TODO
+  account: string;
+  publicKey: string;
+}>) => {
+  return (
+    <NotifiContext
+      dappAddress="<YOUR OWN DAPP ADDRESS HERE>"
+      env="Development"
+      walletBlockchain="APTOS"
+      accountAddress={account}
+      walletPublicKey={publicKey}
+      signMessage={async (message: string, nonce: number) => {
+        const result = await fewcha.signMessage({
+          address: true,
+          message,
+          nonce,
+        });
+
+        return result.data.signature;
+      }}
+    >
+      <NotifiSubscriptionCard cardId="<YOUR OWN CARD ID HERE>" darkMode />
+    </NotifiContext>
+  );
+};
+```
