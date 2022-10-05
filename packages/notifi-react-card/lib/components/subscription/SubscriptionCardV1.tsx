@@ -24,6 +24,11 @@ export type SubscriptionCardV1Props = Readonly<{
   inputDisabled: boolean;
   data: CardConfigItemV1;
   inputs: Record<string, string | undefined>;
+  inputLabels?: {
+    email?: string;
+    sms?: string;
+    telegram?: string;
+  };
 }>;
 
 export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
@@ -31,6 +36,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
   data,
   inputDisabled,
   inputs,
+  inputLabels,
 }) => {
   const allowedCountryCodes = [...data.contactInfo.sms.supportedCountryCodes];
 
@@ -40,20 +46,22 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
         <NotifiEmailInput
           disabled={inputDisabled}
           classNames={classNames?.NotifiEmailInput}
+          copy={{ label: inputLabels?.email }}
         />
       ) : null}
-
       {data.contactInfo.sms.active ? (
         <NotifiSmsInput
           disabled={inputDisabled}
           classNames={classNames?.NotifiSmsInput}
           allowedCountryCodes={allowedCountryCodes}
+          copy={{ label: inputLabels?.sms }}
         />
       ) : null}
       {data.contactInfo.telegram.active ? (
         <NotifiTelegramInput
           disabled={inputDisabled}
           classNames={classNames?.NotifiTelegramInput}
+          copy={{ label: inputLabels?.telegram }}
         />
       ) : null}
       {data.eventTypes?.map((eventType) => {

@@ -8,9 +8,11 @@ export type NotifiEmailInputProps = Readonly<{
   classNames?: DeepPartialReadonly<{
     container: string;
     input: string;
+    label: string;
   }>;
   copy?: DeepPartialReadonly<{
     placeholder: string;
+    label: string;
   }>;
   disabled: boolean;
 }>;
@@ -23,18 +25,25 @@ export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
   const { email, setEmail } = useNotifiSubscriptionContext();
 
   return (
-    <div className={clsx('NotifiEmailInput__container', classNames?.container)}>
-      <input
-        className={clsx('NotifiEmailInput__input', classNames?.input)}
-        disabled={disabled}
-        name="notifi-email"
-        type="email"
-        value={email}
-        onChange={(e) => {
-          setEmail(e.target.value ?? '');
-        }}
-        placeholder={copy?.placeholder ?? 'Email Address'}
-      />
-    </div>
+    <>
+      <label className={clsx('NotifiEmailInput__label', classNames?.label)}>
+        {copy?.label}
+      </label>
+      <div
+        className={clsx('NotifiEmailInput__container', classNames?.container)}
+      >
+        <input
+          className={clsx('NotifiEmailInput__input', classNames?.input)}
+          disabled={disabled}
+          name="notifi-email"
+          type="email"
+          value={email}
+          onChange={(e) => {
+            setEmail(e.target.value ?? '');
+          }}
+          placeholder={copy?.placeholder ?? 'Email Address'}
+        />
+      </div>
+    </>
   );
 };

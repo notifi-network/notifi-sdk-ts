@@ -1,6 +1,7 @@
 .notifi__light {
   --notifi-card-background: #eee;
   --notifi-font-color: #000;
+  --notifi-secondary-font-color: rgb(93, 93, 93);
   --notifi-input-background: rgba(255, 255, 255, 0.8);
   --notifi-placeholder-color: rgba(0, 0, 0, 0.5);
   --notifi-focus-color: #000;
@@ -13,6 +14,7 @@
 .notifi__dark {
   --notifi-card-background: #333;
   --notifi-font-color: #fff;
+  --notifi-secondary-font-color: rgb(212, 212, 212);
   --notifi-input-background: rgba(255, 255, 255, 0.2);
   --notifi-placeholder-color: rgba(255, 255, 255, 0.5);
   --notifi-focus-color: #fff;
@@ -112,6 +114,14 @@
   height: var(--notifi-toggle-container);
 }
 
+.NotifiEmailInput__label,
+.NotifiSmsInput__label,
+.NotifiTelegramInput__label {
+  display: flex;
+  margin-bottom: 5px !important;
+  color: var(--notifi-secondary-font-color);
+}
+
 .NotifiToggle__input {
   opacity: 0;
   width: 0;
@@ -197,14 +207,6 @@
 
   color: var(--notifi-font-color);
   background-color: var(--notifi-input-background);
-}
-
-.NotifiSmsInput__dropdownSelect::after {
-  content: '';
-  width: 0.8em;
-  height: 0.5em;
-  background-color: var(--notifi-input-background);
-  clip-path: polygon(100% 0%, 0 0%, 50% 100%);
 }
 
 .NotifiSmsInput__dropdownSelect:focus-visible {
