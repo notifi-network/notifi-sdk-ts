@@ -14,7 +14,7 @@
     "dev": "nodemon lib/index.ts"
   },
   "dependencies": {
-    "@notifi-network/notifi-node": "^0.37.0",
+    "@notifi-network/notifi-node": "^0.37.1",
     "axios": "^0.26.1",
     "axios-logger": "^2.6.0",
     "express": "^4.17.3",
@@ -32,5 +32,5 @@
     "nodemon": "^2.0.15",
     "ts-node": "^10.7.0"
   },
-  "version": "0.37.0"
+  "version": "0.37.1"
 }
