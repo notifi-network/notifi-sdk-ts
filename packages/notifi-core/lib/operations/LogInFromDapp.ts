@@ -5,7 +5,7 @@ export type LogInFromDappInput = Readonly<{
   dappAddress: string;
   timestamp: number;
   signature: string;
-  walletBlockchain: 'SOLANA' | 'ETHEREUM';
+  walletBlockchain: 'SOLANA' | 'ETHEREUM' | 'APTOS';
   accountId?: string;
 }>;
 

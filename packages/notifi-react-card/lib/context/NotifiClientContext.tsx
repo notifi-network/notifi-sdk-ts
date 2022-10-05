@@ -16,13 +16,7 @@ export const NotifiClientContextProvider: React.FC<NotifiParams> = ({
   children,
   ...params
 }: React.PropsWithChildren<NotifiParams>) => {
-  const { dappAddress, env, walletPublicKey, walletBlockchain } = params;
-  const client = useNotifiClient({
-    dappAddress,
-    env,
-    walletPublicKey,
-    walletBlockchain,
-  });
+  const client = useNotifiClient(params);
 
   return (
     <NotifiClientContext.Provider value={{ client, params }}>

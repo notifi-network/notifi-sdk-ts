@@ -2,6 +2,7 @@ import { GqlError } from '@notifi-network/notifi-axios-utils';
 import {
   Alert,
   AlertFrequency,
+  AptosSignMessageFunction,
   ClientConfiguration,
   ClientCreateAlertInput,
   ClientData,
@@ -9,21 +10,23 @@ import {
   ClientUpdateAlertInput,
   Filter,
   FilterOptions,
-  MessageSigner,
   NotifiClient,
+  SignMessageParams,
   Source,
   SourceGroup,
   TargetGroup,
   TargetType,
+  Uint8SignMessageFunction,
   User,
 } from '@notifi-network/notifi-core';
 
-import useNotifiClient from './useNotifiClient';
+import useNotifiClient, { WalletParams } from './useNotifiClient';
 import { BlockchainEnvironment } from './useNotifiConfig';
 
 export type {
   Alert,
   AlertFrequency,
+  AptosSignMessageFunction,
   ClientConfiguration,
   ClientCreateAlertInput,
   ClientData,
@@ -31,13 +34,15 @@ export type {
   ClientUpdateAlertInput,
   Filter,
   FilterOptions,
-  MessageSigner,
   NotifiClient,
   TargetGroup,
   TargetType,
+  SignMessageParams,
   Source,
   SourceGroup,
+  Uint8SignMessageFunction,
   User,
+  WalletParams,
 };
 
 export { BlockchainEnvironment, GqlError, useNotifiClient };

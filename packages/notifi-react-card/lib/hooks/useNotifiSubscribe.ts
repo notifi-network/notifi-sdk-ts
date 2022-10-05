@@ -35,13 +35,7 @@ export const useNotifiSubscribe: () => Readonly<{
     email: inputEmail,
     phoneNumber: inputPhoneNumber,
     telegramId: inputTelegramId,
-    params: {
-      keepSubscriptionData = true,
-      walletPublicKey,
-      signer,
-      connection,
-      sendTransaction,
-    },
+    params,
     useHardwareWallet,
     getAlertConfigurations,
     setAlerts,
@@ -51,6 +45,8 @@ export const useNotifiSubscribe: () => Readonly<{
     setTelegramConfirmationUrl,
     setLoading,
   } = useNotifiSubscriptionContext();
+
+  const { keepSubscriptionData = true, walletPublicKey } = params;
 
   const render = useCallback(
     (newData: ClientData | null): SubscriptionData => {
@@ -106,6 +102,12 @@ export const useNotifiSubscribe: () => Readonly<{
 
   const logInViaHardwareWallet =
     useCallback(async (): Promise<SubscriptionData> => {
+      if (params.walletBlockchain !== 'SOLANA') {
+        throw new Error('Unsupported wallet blockchain');
+      }
+
+      const { connection, sendTransaction } = params;
+
       // Obtain nonce from Notifi
       const { logValue } = await client.beginLoginViaTransaction();
 
@@ -147,7 +149,7 @@ export const useNotifiSubscribe: () => Readonly<{
 
       const newData = await client.fetchData();
       return render(newData);
-    }, [walletPublicKey, client, connection, sendTransaction, render]);
+    }, [walletPublicKey, client, params, render]);
 
   const logIn = useCallback(async (): Promise<SubscriptionData> => {
     setLoading(true);
@@ -155,7 +157,7 @@ export const useNotifiSubscribe: () => Readonly<{
       if (useHardwareWallet) {
         await logInViaHardwareWallet();
       } else {
-        await client.logIn(signer);
+        await client.logIn(params);
       }
     }
 
@@ -167,7 +169,7 @@ export const useNotifiSubscribe: () => Readonly<{
     client.isAuthenticated,
     client.logIn,
     client.fetchData,
-    signer,
+    params,
     useHardwareWallet,
     logInViaHardwareWallet,
     render,
