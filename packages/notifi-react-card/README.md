@@ -87,9 +87,7 @@ export const Notifi: React.FC = () => {
 };
 ```
 
-### Aptos -- Fewcha Wallet
-
-You might have to tinker with the signMessage function, as many wallets seem to disagree on the signature to use. The below example is with Fewcha wallet
+### Aptos
 
 ```tsx
 import {
@@ -98,31 +96,31 @@ import {
 } from '@notifi-network/notifi-react-card';
 import '@notifi-network/notifi-react-card/dist/index.css';
 import React from 'react';
+import { useWallet } from "@manahippo/aptos-wallet-adapter";
 
-export const Notifi: React.FC = ({
-  fewcha,
-  account,
-  publicKey,
-}: Readonly<{
-  fewcha: any; // TODO
-  account: string;
-  publicKey: string;
-}>) => {
+export const Notifi: React.FC = () => {
+  const { signMessage, account } = useWallet();
+  
+  if (account === null || account.address === null || account.publicKey === null) {
+    // account is required
+    return null;
+  }
+
   return (
     <NotifiContext
       dappAddress="<YOUR OWN DAPP ADDRESS HERE>"
       env="Development"
       walletBlockchain="APTOS"
-      accountAddress={account}
-      walletPublicKey={publicKey}
+      accountAddress={account.address.toString()}
+      walletPublicKey={account.publicKey.toString()}
       signMessage={async (message: string, nonce: number) => {
-        const result = await fewcha.signMessage({
+        const result = await signMessage({
           address: true,
           message,
-          nonce,
+          nonce: `${nonce}`,
         });
 
-        return result.data.signature;
+        return result.signature;
       }}
     >
       <NotifiSubscriptionCard cardId="<YOUR OWN CARD ID HERE>" darkMode />
