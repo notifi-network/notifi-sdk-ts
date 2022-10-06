@@ -13,9 +13,11 @@ export type NotifiSmsInputProps = Readonly<{
     dropdownContainer: string;
     dropdownOption: string;
     dropdownSelectField: string;
+    label: string;
   }>;
   copy?: DeepPartialReadonly<{
     placeholder: string;
+    label: string;
   }>;
   disabled: boolean;
   allowedCountryCodes: string[];
@@ -99,33 +101,38 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
     };
 
   return (
-    <div className={clsx('NotifiSmsInput__container', classNames?.container)}>
-      <div
-        className={clsx(
-          'NotifiSmsInput__dropdownContainer',
-          classNames?.dropdownContainer,
-        )}
-      >
-        <select
-          value={phoneValues.dialCode}
-          onChange={handleChange('dialCode')}
+    <>
+      <label className={clsx('NotifiSmsInput__label', classNames?.label)}>
+        {copy?.label}
+      </label>
+      <div className={clsx('NotifiSmsInput__container', classNames?.container)}>
+        <div
           className={clsx(
-            'NotifiSmsInput__dropdownSelect',
-            classNames?.dropdownSelectField,
+            'NotifiSmsInput__dropdownContainer',
+            classNames?.dropdownContainer,
           )}
         >
-          {countryCodes}
-        </select>
+          <select
+            value={phoneValues.dialCode}
+            onChange={handleChange('dialCode')}
+            className={clsx(
+              'NotifiSmsInput__dropdownSelect',
+              classNames?.dropdownSelectField,
+            )}
+          >
+            {countryCodes}
+          </select>
+        </div>
+        <input
+          className={clsx('NotifiSmsInput__input', classNames?.input)}
+          disabled={disabled}
+          name="notifi-sms"
+          type="tel"
+          value={phoneValues.baseNumber}
+          onChange={handleChange('baseNumber')}
+          placeholder={copy?.placeholder ?? 'Phone Number'}
+        />
       </div>
-      <input
-        className={clsx('NotifiSmsInput__input', classNames?.input)}
-        disabled={disabled}
-        name="notifi-sms"
-        type="tel"
-        value={phoneValues.baseNumber}
-        onChange={handleChange('baseNumber')}
-        placeholder={copy?.placeholder ?? 'Phone Number'}
-      />
-    </div>
+    </>
   );
 };
