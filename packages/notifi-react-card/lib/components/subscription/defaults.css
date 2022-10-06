@@ -78,6 +78,11 @@
   max-height: 22px;
 }
 
+.NotifiEmailInput::after,
+.NotifiSmsInput::after {
+  content: 'OR';
+}
+
 .NotifiEmailInput__container:focus-within,
 .NotifiSmsInput__container:focus-within,
 .NotifiTelegramInput__container:focus-within {
@@ -212,4 +217,30 @@
 .NotifiSmsInput__dropdownSelect:focus-visible {
   outline: none;
   box-shadow: 0px 0px 0px 1px var(--notifi-focus-color);
+}
+
+.NotifiInputSeparator__container {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  overflow: hidden;
+  text-align: center;
+  justify-content: center;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.NotifiInputSeparator__container:before,
+.NotifiInputSeparator__container:after {
+  background-color: var(--notifi-secondary-font-color);
+  content: '';
+  display: inline-block;
+  height: 1px;
+  position: relative;
+  vertical-align: middle;
+  width: 45%;
+}
+
+.NotifiInputSeparator__content {
+  padding: 0px 8px 0px 8px;
 }
