@@ -111,6 +111,7 @@ export const NotifiSubscriptionCard: React.FC<NotifiSubscriptionCardProps> = ({
         classNames?.container,
       )}
     >
+      {children}
       {contents}
       <NotifiSubscribeButton classNames={classNames?.NotifiSubscribeButton} />
       <NotifiFooter classNames={classNames?.NotifiFooter} />
