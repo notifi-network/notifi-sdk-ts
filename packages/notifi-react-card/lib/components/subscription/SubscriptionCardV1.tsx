@@ -14,8 +14,8 @@ import { EventTypeDirectPushRow } from './EventTypeDirectPushRow';
 import type { EventTypeUnsupportedRowProps } from './EventTypeUnsupportedRow';
 import { EventTypeUnsupportedRow } from './EventTypeUnsupportedRow';
 import {
+  NotifiInputFooters,
   NotifiInputLabels,
-  NotifiInputSeparators,
 } from './NotifiSubscriptionCard';
 
 export type SubscriptionCardV1Props = Readonly<{
@@ -30,7 +30,7 @@ export type SubscriptionCardV1Props = Readonly<{
   data: CardConfigItemV1;
   inputs: Record<string, string | undefined>;
   inputLabels?: NotifiInputLabels;
-  inputSeparators?: NotifiInputSeparators;
+  inputSeparators?: NotifiInputFooters;
 }>;
 
 export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
@@ -52,20 +52,20 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
           copy={{ label: inputLabels?.email }}
         />
       ) : null}
-      {inputSeparators?.first?.content ? (
+      {inputSeparators?.emailFooter?.content ? (
         <div
           className={clsx(
             'NotifiInputSeparator__container',
-            inputSeparators?.first?.classNames?.container,
+            inputSeparators?.emailFooter?.classNames?.container,
           )}
         >
           <div
             className={clsx(
               'NotifiInputSeparator__content',
-              inputSeparators.first.classNames?.content,
+              inputSeparators.emailFooter.classNames?.content,
             )}
           >
-            {inputSeparators?.first?.content}
+            {inputSeparators?.emailFooter?.content}
           </div>
         </div>
       ) : null}
@@ -77,20 +77,20 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
           copy={{ label: inputLabels?.sms }}
         />
       ) : null}
-      {inputSeparators?.second?.content ? (
+      {inputSeparators?.smsFooter?.content ? (
         <div
           className={clsx(
             'NotifiInputSeparator__container',
-            inputSeparators?.second?.classNames?.container,
+            inputSeparators?.smsFooter?.classNames?.container,
           )}
         >
           <div
             className={clsx(
               'NotifiInputSeparator__content',
-              inputSeparators.second.classNames?.content,
+              inputSeparators.smsFooter.classNames?.content,
             )}
           >
-            {inputSeparators?.second?.content}
+            {inputSeparators?.smsFooter?.content}
           </div>
         </div>
       ) : null}
@@ -100,6 +100,23 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
           classNames={classNames?.NotifiTelegramInput}
           copy={{ label: inputLabels?.telegram }}
         />
+      ) : null}
+      {inputSeparators?.telegramFooter?.content ? (
+        <div
+          className={clsx(
+            'NotifiInputSeparator__container',
+            inputSeparators?.smsFooter?.classNames?.container,
+          )}
+        >
+          <div
+            className={clsx(
+              'NotifiInputSeparator__content',
+              inputSeparators.telegramFooter.classNames?.content,
+            )}
+          >
+            {inputSeparators?.telegramFooter?.content}
+          </div>
+        </div>
       ) : null}
       {data.eventTypes?.map((eventType) => {
         switch (eventType.type) {

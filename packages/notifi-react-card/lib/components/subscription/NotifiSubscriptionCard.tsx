@@ -14,15 +14,22 @@ import { LoadingStateCard } from './LoadingStateCard';
 import type { NotifiSubscribeButtonProps } from './NotifiSubscribeButton';
 import { NotifiSubscribeButton } from './NotifiSubscribeButton';
 
-export type NotifiInputSeparators = {
-  first?: {
+export type NotifiInputFooters = {
+  emailFooter?: {
     classNames?: {
       container: string;
       content: string;
     };
     content: string;
   };
-  second?: {
+  smsFooter?: {
+    classNames?: {
+      container: string;
+      content: string;
+    };
+    content: string;
+  };
+  telegramFooter?: {
     classNames?: {
       container: string;
       content: string;
@@ -50,7 +57,7 @@ export type NotifiSubscriptionCardProps = Readonly<{
   darkMode?: boolean;
   cardId: string;
   inputs?: Record<string, string | undefined>;
-  inputSeparators?: NotifiInputSeparators;
+  inputSeparators?: NotifiInputFooters;
 }>;
 
 export const NotifiSubscriptionCard: React.FC<NotifiSubscriptionCardProps> = ({
