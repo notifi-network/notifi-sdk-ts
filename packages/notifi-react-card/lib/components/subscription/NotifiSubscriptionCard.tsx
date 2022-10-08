@@ -57,7 +57,7 @@ export type NotifiSubscriptionCardProps = Readonly<{
   darkMode?: boolean;
   cardId: string;
   inputs?: Record<string, string | undefined>;
-  inputSeparators?: NotifiInputSeparators;
+  inputSeparators?: NotifiInputFooters;
 }>;
 
 export const NotifiSubscriptionCard: React.FC<NotifiSubscriptionCardProps> = ({
