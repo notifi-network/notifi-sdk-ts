@@ -1,8 +1,9 @@
 import clsx from 'clsx';
+import { useNotifiSubscribe } from 'notifi-react-card/lib/hooks/useNotifiSubscribe';
 import React from 'react';
 
 import { useNotifiSubscriptionContext } from '../../context';
-import { useNotifiSubscribe, useSubscriptionCard } from '../../hooks';
+import { useSubscriptionCard } from '../../hooks';
 import type { NotifiFooterProps } from '../NotifiFooter';
 import { NotifiFooter } from '../NotifiFooter';
 import type { ErrorStateCardProps } from './ErrorStateCard';
@@ -67,7 +68,8 @@ export const NotifiSubscriptionCard: React.FC<NotifiSubscriptionCardProps> = ({
   inputLabels,
   inputs = {},
   inputSeparators,
-}: NotifiSubscriptionCardProps) => {
+  children,
+}: React.PropsWithChildren<NotifiSubscriptionCardProps>) => {
   const { isInitialized } = useNotifiSubscribe();
   const { loading } = useNotifiSubscriptionContext();
   const inputDisabled = loading || !isInitialized;
