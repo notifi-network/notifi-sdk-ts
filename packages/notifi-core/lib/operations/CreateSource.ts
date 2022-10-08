@@ -31,7 +31,9 @@ export type CreateSourceInput = Readonly<{
     | 'SHARKY_PROTOCOL'
     | 'PORT_FINANCE'
     | 'METAPLEX_AUCTION_HOUSE'
-    | 'ORCA';
+    | 'ORCA'
+    | 'BONFIDA_NAME_OFFERS'
+    | 'BONFIDA_NAME_AUCTIONING';
 }>;
 
 export type CreateSourceResult = Source;
