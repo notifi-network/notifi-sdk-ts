@@ -31,6 +31,10 @@ export type NotifiSubscriptionData = Readonly<{
   setEmail: (email: string) => void;
   setPhoneNumber: (phoneNumber: string) => void;
   setTelegramId: (telegramId: string) => void;
+  setEmailErrorMessage: (message: string) => void;
+  setSmsErrorMessage: (message: string) => void;
+  emailErrorMessage: string;
+  smsErrorMessage: string;
   setTelegramConfirmationUrl: (
     telegramConfirmationUrl: string | undefined,
   ) => void;
@@ -49,9 +53,14 @@ export const NotifiSubscriptionContextProvider: React.FC<
   const [email, setEmail] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [telegramId, setTelegramId] = useState<string>('');
+
+  const [emailErrorMessage, setEmailErrorMessage] = useState<string>('');
+  const [smsErrorMessage, setSmsErrorMessage] = useState<string>('');
+
   const [telegramConfirmationUrl, setTelegramConfirmationUrl] = useState<
     string | undefined
   >(undefined);
+
   const [alerts, setAlerts] = useState<Record<string, Alert | undefined>>({});
   const [useHardwareWallet, setUseHardwareWallet] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
@@ -91,6 +100,10 @@ export const NotifiSubscriptionContextProvider: React.FC<
     phoneNumber,
     telegramId,
     telegramConfirmationUrl,
+    setSmsErrorMessage,
+    setEmailErrorMessage,
+    smsErrorMessage,
+    emailErrorMessage,
     useHardwareWallet,
     getAlertConfiguration,
     getAlertConfigurations,

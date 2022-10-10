@@ -9,6 +9,7 @@
   --notifi-toggle-inactive: rgba(0, 0, 0, 0.2);
   --notifi-toggle-active: rgba(0, 0, 0, 0.6);
   --notifi-button-color: rgba(0, 0, 0, 0.4);
+  --notifi-alert-color: rgb(252 0 0);
 }
 
 .notifi__dark {
@@ -22,6 +23,7 @@
   --notifi-toggle-inactive: rgba(255, 255, 255, 0.1);
   --notifi-toggle-active: rgba(255, 255, 255, 0.4);
   --notifi-button-color: rgba(255, 255, 255, 0.2);
+  --notifi-alert-color: rgb(213, 25, 25);
 }
 
 .NotifiSubscriptionCard__container {
@@ -87,6 +89,12 @@
 .NotifiSmsInput__container:focus-within,
 .NotifiTelegramInput__container:focus-within {
   box-shadow: inset 0px 0px 0px 3px var(--notifi-focus-color);
+}
+.NotifiEmailInput__errorMessage,
+.NotifiSmsInput__errorMessage {
+  color: var(--notifi-alert-color);
+  font-size: 14px;
+  margin-bottom: 0px !important;
 }
 
 .NotifiEmailInput__input,
@@ -195,6 +203,12 @@
   color: var(--notifi-font-color);
 }
 
+.NotifiSubscribeButton__button:disabled {
+  cursor: default;
+  color: var(--notifi-secondary-font-color);
+  background-color: var(--notifi-placeholder-color);
+}
+
 .NotifiSmsInput__dropdownContainer {
   position: relative;
   /* Don't want the not-child selector to affect the sms */
@@ -209,7 +223,6 @@
   height: 35px;
   border-radius: 5px;
   font-size: 16px;
-
   color: var(--notifi-font-color);
   background-color: var(--notifi-input-background);
 }

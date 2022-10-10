@@ -14,6 +14,7 @@ export type NotifiSmsInputProps = Readonly<{
     dropdownOption: string;
     dropdownSelectField: string;
     label: string;
+    errorMessage: string;
   }>;
   copy?: DeepPartialReadonly<{
     placeholder: string;
@@ -29,7 +30,8 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
   disabled,
   allowedCountryCodes,
 }: NotifiSmsInputProps) => {
-  const { phoneNumber, setPhoneNumber } = useNotifiSubscriptionContext();
+  const { phoneNumber, setPhoneNumber, setSmsErrorMessage, smsErrorMessage } =
+    useNotifiSubscriptionContext();
 
   const [phoneValues, setPhoneValues] = useState({
     dialCode: '+1',
@@ -83,6 +85,16 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
     );
   });
 
+  const validateSmsInput = () => {
+    if (phoneNumber === '') {
+      return;
+    }
+
+    if (!isValidPhoneNumber(phoneNumber)) {
+      setSmsErrorMessage('The phone number is invalid. Please try again');
+    }
+  };
+
   const handleChange =
     (field: 'dialCode' | 'baseNumber') =>
     (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -127,12 +139,22 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
           className={clsx('NotifiSmsInput__input', classNames?.input)}
           disabled={disabled}
           name="notifi-sms"
+          onBlur={validateSmsInput}
+          onFocus={() => setSmsErrorMessage('')}
           type="tel"
           value={phoneValues.baseNumber}
           onChange={handleChange('baseNumber')}
           placeholder={copy?.placeholder ?? 'Phone Number'}
         />
       </div>
+      <label
+        className={clsx(
+          'NotifiSmsInput__errorMessage',
+          classNames?.errorMessage,
+        )}
+      >
+        {smsErrorMessage}
+      </label>
     </>
   );
 };
