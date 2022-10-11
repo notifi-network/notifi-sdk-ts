@@ -2,8 +2,8 @@ import React from 'react';
 
 import { FetchedState } from '../../hooks';
 import {
-  NotifiInputFooters,
   NotifiInputLabels,
+  NotifiInputSeparators,
 } from './NotifiSubscriptionCard';
 import { SubscriptionCardUnsupported } from './SubscriptionCardUnsupported';
 import type { SubscriptionCardV1Props } from './SubscriptionCardV1';
@@ -17,7 +17,7 @@ export type FetchedStateCardProps = Readonly<{
   inputDisabled: boolean;
   inputs: Record<string, string | undefined>;
   inputLabels?: NotifiInputLabels;
-  inputSeparators?: NotifiInputFooters;
+  inputSeparators?: NotifiInputSeparators;
 }>;
 
 export const FetchedStateCard: React.FC<FetchedStateCardProps> = ({
