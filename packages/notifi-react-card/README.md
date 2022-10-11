@@ -16,8 +16,9 @@ You can import the default stylesheet to get baseline styling.
 ```tsx
 import {
   NotifiContext,
+  NotifiInputSeparators,
   NotifiSubscriptionCard,
-} from '@notifi-network/notifi-react-card';
+} from '@notifi-network/notifi-react-card/lib';
 import '@notifi-network/notifi-react-card/dist/index.css';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import React from 'react';
@@ -33,6 +34,21 @@ export const Remote: React.FC = () => {
     return null;
   }
 
+  const inputLabels = {
+    email: 'Email',
+    sms: 'Text Message',
+    telegram: 'Telegram',
+  };
+
+  const inputSeparators: NotifiInputSeparators = {
+    first: {
+      content: 'OR',
+    },
+    second: {
+      content: 'OR',
+    },
+  };
+
   return (
     <NotifiContext
       dappAddress="<YOUR OWN DAPP ADDRESS HERE>"
@@ -43,7 +59,12 @@ export const Remote: React.FC = () => {
       connection={connection}
       sendTransaction={sendTransaction}
     >
-      <NotifiSubscriptionCard cardId="<YOUR OWN CARD ID HERE>" darkMode />
+      <NotifiSubscriptionCard 
+        cardId="<YOUR OWN CARD ID HERE>"           
+        inputLabels={inputLabels}
+        inputSeparators={inputSeparators}
+        darkMode 
+    />
     </NotifiContext>
   );
 };
@@ -55,8 +76,9 @@ export const Remote: React.FC = () => {
 import { arrayify } from '@ethersproject/bytes';
 import {
   NotifiContext,
+  NotifiInputSeparators,
   NotifiSubscriptionCard,
-} from '@notifi-network/notifi-react-card';
+} from '@notifi-network/notifi-react-card/lib';
 import '@notifi-network/notifi-react-card/dist/index.css';
 import { useEthers } from '@usedapp/core';
 import React from 'react';
@@ -70,6 +92,21 @@ export const Notifi: React.FC = () => {
     return null;
   }
 
+  const inputLabels = {
+    email: 'Email',
+    sms: 'Text Message',
+    telegram: 'Telegram',
+  };
+
+  const inputSeparators: NotifiInputSeparators = {
+    first: {
+      content: 'OR',
+    },
+    second: {
+      content: 'OR',
+    },
+  };
+
   return (
     <NotifiContext
       dappAddress="<YOUR OWN DAPP ADDRESS HERE>"
@@ -81,7 +118,12 @@ export const Notifi: React.FC = () => {
       walletPublicKey={account}
       walletBlockchain="ETHEREUM"
     >
-      <NotifiSubscriptionCard cardId="<YOUR OWN CARD ID HERE>" darkMode />
+      <NotifiSubscriptionCard 
+        cardId="<YOUR OWN CARD ID HERE>"           
+        inputLabels={inputLabels}
+        inputSeparators={inputSeparators}
+        darkMode 
+    />
     </NotifiContext>
   );
 };
@@ -92,8 +134,9 @@ export const Notifi: React.FC = () => {
 ```tsx
 import {
   NotifiContext,
+  NotifiInputSeparators,
   NotifiSubscriptionCard,
-} from '@notifi-network/notifi-react-card';
+} from '@notifi-network/notifi-react-card/lib';
 import '@notifi-network/notifi-react-card/dist/index.css';
 import React from 'react';
 import { useWallet } from "@manahippo/aptos-wallet-adapter";
@@ -105,6 +148,21 @@ export const Notifi: React.FC = () => {
     // account is required
     return null;
   }
+
+  const inputLabels = {
+    email: 'Email',
+    sms: 'Text Message',
+    telegram: 'Telegram',
+  };
+
+  const inputSeparators: NotifiInputSeparators = {
+    first: {
+      content: 'OR',
+    },
+    second: {
+      content: 'OR',
+    },
+  };
 
   return (
     <NotifiContext
@@ -123,7 +181,12 @@ export const Notifi: React.FC = () => {
         return result.signature;
       }}
     >
-      <NotifiSubscriptionCard cardId="<YOUR OWN CARD ID HERE>" darkMode />
+      <NotifiSubscriptionCard 
+        cardId="<YOUR OWN CARD ID HERE>"           
+        inputLabels={inputLabels}
+        inputSeparators={inputSeparators}
+        darkMode 
+    />
     </NotifiContext>
   );
 };
