@@ -1,6 +1,6 @@
 # `@notifi/notifi-react-hooks`
 
-> _Updated July 14, 2022_
+> _Updated Oct 11, 2022_
 
 ## 🙋🏻‍♀️ Introduction
 
@@ -26,6 +26,7 @@ In this README, we'll cover the simple use case of one user creating one alert f
 
 1. Join the [Discord Community](https://discord.com/invite/nAqR3mk3rv) to get support
 1. Hit up the devs in the [#integration-requests](https://discord.com/channels/939658182509334538/950415885619843082) channel to get onboarded to Notifi's services
+1. Your app has been properly wrapped/connected to Solana. https://solana-labs.github.io/wallet-adapter/
 
 ## 📥 Installation
 
@@ -41,17 +42,35 @@ Common patterns for UI involve rendering a form in a modal or card to collect th
 
 Load the Notifi React Hooks SDK into your component.
 
-```
-const notifiReactHooks = require('@notifi-network/notifi-react-hooks');
+```tsx
+import { useNotifiClient } from '@notifi-network/notifi-react-hooks';
 ```
 
 Instantiate and configure the Notifi Client for your dApp and environment. If your user has not connected their wallet, they will need to do so in order to instantiate the client.
 
-```
-const notifiClient = notifiReactHooks.useNotifiClient({
+```tsx
+const notifiClient = useNotifiClient({
   dappAddress: <dApp ID>,
+  walletBlockchain: Blockchain
   env: BlockchainEnvironment,
   walletPublicKey: <Connected Wallet Public Key>,
+});
+```
+
+Here's another example:
+
+```tsx
+const { publicKey } = useWallet();
+
+const DAPP_ADDRESS = 'tenantAddress';
+const blockchainType = 'SOLANA';
+const env = 'Development';
+
+const notifiClient = useNotifiClient({
+  dappAddress: DAPP_ADDRESS,
+  walletBlockchain: blockchainType,
+  env: env,
+  walletPublicKey: publicKey?.toBase58() ?? '',
 });
 ```
 
@@ -65,7 +84,7 @@ Using the wallet adapter of your choice, prompt the user to sign and use the sig
 
 If the server responds with an error, the hook will throw an error of the [type `GqlError`](https://notifi-network.github.io/notifi-sdk-ts/classes/GqlError.html).
 
-```
+```tsx
 const {logIn} = notifiClient;
 
 const handleLogIn = () => {
@@ -77,35 +96,61 @@ const handleLogIn = () => {
     }
   }
 }
+```
 
+Here's an example of logging in.
+
+```tsx
+const { logIn } = notifiClient;
+const { publicKey, signMessage } = useWallet();
+
+const handleLogin = async () => {
+  if (!publicKey) {
+    throw new Error('no public key');
+  }
+  if (!signMessage) {
+    throw new Error('no sign message');
+  }
+  const signer: SignMessageParams = {
+    walletBlockchain: 'SOLANA',
+    signMessage: async (buffer: Uint8Array) => {
+      const result = await signMessage(buffer);
+      return arrayify(result);
+    },
+  };
+
+  await logIn(signer);
+};
 ```
 
 > 📝 The signature type will vary depending on the wallet adapter. Connect with the Notifi devs to ensure success for your scenario
 
 ## 🕹 Rendering Alert Options
 
-After the user successfully authorizes, fetch the newly created user data from Notifi using the `fetchData()` hook. This returns the [type `ClientData`](https://notifi-network.github.io/notifi-sdk-ts/modules.html#ClientData).
+After the user successfully authorizes, fetch the newly created user data from Notifi using the `data` from `useNotifiClient`.
+
+This returns the [type `ClientData`](https://notifi-network.github.io/notifi-sdk-ts/modules.html#ClientData).
 
 In our simplest use case, the user will have 1 entry in the `sources` array, which will be based on their connected wallet address. More about the [`Source` type here](https://notifi-network.github.io/notifi-sdk-ts/modules.html#Source). Use the id of the source when creating the alert later on.
 
 For Metaplex/Bonfida auction sources, we provide hooks to help create the sources: createMetaplexAuctionSource and createBonfidaAuctionSource
 This allows the caller to specify the auction ID, along with an auction name or URL for a user to receive in their notifications.
 
-```
-const {fetchData} = notifiClient;
+```tsx
+const { fetchData } = notifiClient;
 const data = fetchData();
 
 // An array of sources that belong to the user
-const {sources} = data;
+const { sources } = data;
 ```
 
 You'll want to render the alert options available for the user's source, based on what is returned in the source's `applicableFilters` array. More about the [`Filter` type here](https://notifi-network.github.io/notifi-sdk-ts/modules.html#Filter).
 
 There are a handful of available options for different sources with new options on the horizon. Join the [Discord Community](https://discord.com/invite/nAqR3mk3rv) to get the latest updates.
 
-```
+```tsx
 // Render the options to the user
-const {id, applicableFilters} = sources?.[0];
+const { id, applicableFilters } = sources?.[0];
 const filterId = applicableFilters?.[0].id;
 ```
 
@@ -115,7 +160,9 @@ For more complex scenarios where the user has multiple sources, you may want to 
 
 Once your user enters their contact information and options for their first alert, use the `createAlert()` hook. This accepts the [ClientCreateAlertInput shape](https://notifi-network.github.io/notifi-sdk-ts/modules.html#ClientCreateAlertInput) and will return the [`Alert` object](https://notifi-network.github.io/notifi-sdk-ts/modules.html#Alert) in the response upon success.
 
-```
+Note, if a source is missing, it will need to be created using `createSource` from notifiClient.
+
+```tsx
 const {createAlert} = notifiClient;
 
 // User Input
@@ -150,7 +197,7 @@ const handleCreateAlert () => {
 
 This input also accepts a [`filterOptions` parameter](https://notifi-network.github.io/notifi-sdk-ts/modules.html#FilterOptions), if applicable for the chosen filter type, to configure the conditions of when a notification gets triggered:
 
-```
+```tsx
 const {createAlert} = notifiClient;
 
 // User Input
@@ -188,13 +235,74 @@ const handleCreateAlert () => {
 
 ```
 
+## Example of creating a source if a source is missing.
+
+```tsx
+const { data } = notifiClient;
+const sources = data.sources;
+const source = sources?.find(
+  (source) => source.name === "NAME OF THE SOURCE YOU'RE LOOKING FOR",
+);
+
+const handleCreateAlert = async () => {
+    let sourceId = source?.id;
+  ...
+
+  if (sourceId === undefined) {
+    const response = await createSource({
+      type: 'YOUR_SOURCE_TYPE_HERE',
+      name: 'YOUR_SOURCE_NAME_HERE',
+      blockchainAddress: 'YOUR WALLET ADDRESS HERE',
+    });
+    if (response) {
+      sourceId = response.id ?? '';
+    }
+  }
+  ...
+};
+```
+
+## Example of getting the Filter Id.
+
+```tsx
+const { data } = notifiClient;
+const sources = data.sources;
+
+
+
+const handleCreateAlert = async () => {
+const source = sources?.find(
+  (source) => source.name === "NAME OF THE SOURCE YOU'RE LOOKING FOR",
+);
+const sourceId = source?.id
+
+  const desiredFilter = source?.applicableFilters.find(
+      (filter) => filter.filterType === "ASSET_BUYER_EVENTS"
+    );
+
+  const filterId = intendedFilter?.id ?? "";
+
+  const alertInput = {
+    emailAddress: email,
+    filterId: filterId,
+    name: `NAME OF YOUR ALERT`,
+    sourceId: sourceId,
+    phoneNumber: phoneNumber,
+    telegramId: telegramId,
+    };
+
+    const alertResponse = await createAlert(alertInput);
+  ...
+};
+```
+
 ## 🔃 Updating the Alert
 
 If a user wants to update their alert by changing the email address notifications are sent to, or to add a phone number for SMS notifications, updating the alert is handled by using the `updateAlert()` hook. It takes the [type `ClientUpdateAlertInput`](https://notifi-network.github.io/notifi-sdk-ts/modules.html#ClientUpdateAlertInput).
 
 You'll want to pass in the `id` of the existing alert to make the update to that alert entity. In our simplest use case, where the user only has 1 alert in their account, fetch the user's persisted data using `fetchData()` and get the id of the alert to delete.
 
-```
+```tsx
 const {fetchData, updateAlert} = notifiClient;
 
 const handleUpdateAlert = () => {
@@ -220,7 +328,7 @@ const handleUpdateAlert = () => {
 
 To delete an alert, use the `deleteAlert()` hook, which simply [takes the `id` of the alert](https://notifi-network.github.io/notifi-sdk-ts/modules.html#ClientDeleteAlertInput) to be deleted. In our use case where the user only has 1 alert in their account:
 
-```
+```tsx
 const {fetchData, deleteAlert} = notifiClient;
 
 const handleDeleteAlert = () => {
@@ -244,17 +352,15 @@ const handleDeleteAlert = () => {
 
 An example of how to handle these errors in clientside code:
 
-```
+```tsx
 const handleError = (errors: { message: string }[]) => {
-    const error = errors.length > 0 ? errors[0] : null;
-    if (error instanceof GqlError) {
-      setErrorMessage(
-        `${error.message}: ${error.getErrorMessages().join(', ')}`
-      );
-    } else {
-      setErrorMessage(error?.message ?? 'Unknown error');
-    }
+  const error = errors.length > 0 ? errors[0] : null;
+  if (error instanceof GqlError) {
+    setErrorMessage(`${error.message}: ${error.getErrorMessages().join(', ')}`);
+  } else {
+    setErrorMessage(error?.message ?? 'Unknown error');
   }
+};
 ```
 
 [mango-modal-example]: ../images/mango_modal_example.png
@@ -280,22 +386,25 @@ export type Props = Readonly<{
   dappAddress: string;
   signer: MessageSigner;
   walletPublicKey: string;
+  env: string;
 }>;
 
 export const ConnectedForm: React.FC<Props> = ({
   dappAddress,
   signer,
   walletPublicKey,
+  env,
 }) => {
   const [topics, setTopics] = useState<ReadonlyArray<UserTopic>>([]);
   const [topic, setTopic] = useState<UserTopic | undefined>(undefined);
   const shouldFetch = useRef(true);
 
-  const { broadcastMessage, getTopics, logIn, logOut, isAuthenticated } =
+  const { broadcastMessage, getTopics, logIn, logOut, isAuthenticated, data } =
     useNotifiClient({
       dappAddress,
       walletPublicKey,
-      env: 'Development',
+      walletBlockchain,
+      env,
     });
 
   const [subject, setSubject] = useState<string>('');
@@ -485,4 +594,94 @@ const completeLogin = useCallback(async (transactionSignature: string): Promise<
   });
   return result;
 }, [completeLoginViaTransaction]);
+```
+
+### Other Examples
+
+Example of Solana Context Wrapper
+
+`SolanaWalletContextWrapper.tsx`
+
+```tsx
+import { Adapter, WalletAdapterNetwork } from '@solana/wallet-adapter-base';
+import {
+  ConnectionProvider,
+  WalletProvider,
+} from '@solana/wallet-adapter-react';
+import {
+  WalletDisconnectButton,
+  WalletModalProvider,
+  WalletMultiButton,
+} from '@solana/wallet-adapter-react-ui';
+import {
+  PhantomWalletAdapter,
+  SolflareWalletAdapter,
+} from '@solana/wallet-adapter-wallets';
+import { clusterApiUrl } from '@solana/web3.js';
+import React, { FC, useMemo } from 'react';
+
+// Default styles that can be overridden by your app
+require('@solana/wallet-adapter-react-ui/styles.css');
+type Props = {
+  children: React.ReactNode;
+};
+
+export const SolanaWalletContextProvider: FC<Props> = ({ children }) => {
+  // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'.
+  const network = WalletAdapterNetwork.Devnet;
+
+  // You can also provide a custom RPC endpoint.
+  const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+
+  const wallets = useMemo(
+    () => [
+      /**
+       * Select the wallets you wish to support, by instantiating wallet adapters here.
+       *
+       * Common adapters can be found in the npm package `@solana/wallet-adapter-wallets`.
+       * That package supports tree shaking and lazy loading -- only the wallets you import
+       * will be compiled into your application, and only the dependencies of wallets that
+       * your users connect to will be loaded.
+       */
+      new SolflareWalletAdapter(),
+      new PhantomWalletAdapter(),
+    ],
+    [],
+  );
+
+  return (
+    <ConnectionProvider endpoint={endpoint}>
+      <WalletProvider wallets={wallets} autoConnect>
+        <WalletModalProvider>
+          <WalletMultiButton />
+          <WalletDisconnectButton />
+          {children}
+        </WalletModalProvider>
+      </WalletProvider>
+    </ConnectionProvider>
+  );
+};
+```
+
+`Index.tsx`
+
+```tsx
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+
+import App from './App';
+import { SolanaWalletContextProvider } from './SolanaWalletContextProvider';
+import './index.css';
+import reportWebVitals from './reportWebVitals';
+
+const root = ReactDOM.createRoot(
+  document.getElementById('root') as HTMLElement,
+);
+root.render(
+  <React.StrictMode>
+    <SolanaWalletContextProvider>
+      <App />
+    </SolanaWalletContextProvider>
+  </React.StrictMode>,
+);
 ```
