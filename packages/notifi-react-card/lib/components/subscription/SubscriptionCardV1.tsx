@@ -14,8 +14,8 @@ import { EventTypeDirectPushRow } from './EventTypeDirectPushRow';
 import type { EventTypeUnsupportedRowProps } from './EventTypeUnsupportedRow';
 import { EventTypeUnsupportedRow } from './EventTypeUnsupportedRow';
 import {
-  NotifiInputSeparators,
   NotifiInputLabels,
+  NotifiInputSeparators,
 } from './NotifiSubscriptionCard';
 
 export type SubscriptionCardV1Props = Readonly<{

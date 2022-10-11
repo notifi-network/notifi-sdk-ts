@@ -23,6 +23,21 @@ export type EthereumParams = Readonly<{
   walletPublicKey: string;
   signMessage: Uint8SignMessageFunction;
 }>;
+export type PolygonParams = Readonly<{
+  walletBlockchain: 'POLYGON';
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+export type ArbitrumParams = Readonly<{
+  walletBlockchain: 'ARBITRUM';
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+export type BinanceParams = Readonly<{
+  walletBlockchain: 'BINANCE';
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
 
 export type AptosParams = Readonly<{
   walletBlockchain: 'APTOS';
@@ -37,7 +52,14 @@ export type NotifiParams = Readonly<{
   env: NotifiEnvironment;
   keepSubscriptionData?: boolean;
 }> &
-  (SolanaParams | EthereumParams | AptosParams);
+  (
+    | SolanaParams
+    | EthereumParams
+    | PolygonParams
+    | ArbitrumParams
+    | BinanceParams
+    | AptosParams
+  );
 
 export const NotifiContext: React.FC<React.PropsWithChildren<NotifiParams>> = ({
   children,

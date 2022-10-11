@@ -53,6 +53,18 @@ export type WalletParams =
       walletPublicKey: string;
     }>
   | Readonly<{
+      walletBlockchain: 'POLYGON';
+      walletPublicKey: string;
+    }>
+  | Readonly<{
+      walletBlockchain: 'ARBITRUM';
+      walletPublicKey: string;
+    }>
+  | Readonly<{
+      walletBlockchain: 'BINANCE';
+      walletPublicKey: string;
+    }>
+  | Readonly<{
       walletBlockchain: 'APTOS';
       accountAddress: string;
       walletPublicKey: string;
@@ -139,8 +151,11 @@ const signMessage = async ({
       const signature = Buffer.from(signedBuffer).toString('base64');
       return signature;
     }
+    case 'ARBITRUM':
+    case 'POLYGON':
+    case 'BINANCE':
     case 'ETHEREUM': {
-      if (signer.walletBlockchain !== 'ETHEREUM') {
+      if (signer.walletBlockchain !== params.walletBlockchain) {
         throw new Error('Signer and config have different walletBlockchain');
       }
 
