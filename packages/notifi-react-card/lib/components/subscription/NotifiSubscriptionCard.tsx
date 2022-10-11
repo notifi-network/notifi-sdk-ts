@@ -1,9 +1,8 @@
 import clsx from 'clsx';
-import { useNotifiSubscribe } from 'notifi-react-card/lib/hooks/useNotifiSubscribe';
 import React from 'react';
 
 import { useNotifiSubscriptionContext } from '../../context';
-import { useSubscriptionCard } from '../../hooks';
+import { useNotifiSubscribe, useSubscriptionCard } from '../../hooks';
 import type { NotifiFooterProps } from '../NotifiFooter';
 import { NotifiFooter } from '../NotifiFooter';
 import type { ErrorStateCardProps } from './ErrorStateCard';
