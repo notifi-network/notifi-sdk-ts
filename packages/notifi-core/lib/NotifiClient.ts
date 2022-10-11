@@ -227,6 +227,18 @@ export type SignMessageParams =
       signMessage: Uint8SignMessageFunction;
     }>
   | Readonly<{
+      walletBlockchain: 'POLYGON';
+      signMessage: Uint8SignMessageFunction;
+    }>
+  | Readonly<{
+      walletBlockchain: 'ARBITRUM';
+      signMessage: Uint8SignMessageFunction;
+    }>
+  | Readonly<{
+      walletBlockchain: 'BINANCE';
+      signMessage: Uint8SignMessageFunction;
+    }>
+  | Readonly<{
       walletBlockchain: 'APTOS';
       signMessage: AptosSignMessageFunction;
     }>;
