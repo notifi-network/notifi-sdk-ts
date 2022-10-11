@@ -14,8 +14,8 @@ import { EventTypeDirectPushRow } from './EventTypeDirectPushRow';
 import type { EventTypeUnsupportedRowProps } from './EventTypeUnsupportedRow';
 import { EventTypeUnsupportedRow } from './EventTypeUnsupportedRow';
 import {
-  NotifiInputFooters,
   NotifiInputLabels,
+  NotifiInputSeparators,
 } from './NotifiSubscriptionCard';
 
 export type SubscriptionCardV1Props = Readonly<{
@@ -30,7 +30,7 @@ export type SubscriptionCardV1Props = Readonly<{
   data: CardConfigItemV1;
   inputs: Record<string, string | undefined>;
   inputLabels?: NotifiInputLabels;
-  inputSeparators?: NotifiInputFooters;
+  inputSeparators?: NotifiInputSeparators;
 }>;
 
 export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
