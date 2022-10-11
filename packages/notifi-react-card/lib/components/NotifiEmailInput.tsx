@@ -9,6 +9,7 @@ export type NotifiEmailInputProps = Readonly<{
     container: string;
     input: string;
     label: string;
+    errorMessage: string;
   }>;
   copy?: DeepPartialReadonly<{
     placeholder: string;
@@ -22,7 +23,23 @@ export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
   copy,
   disabled,
 }: NotifiEmailInputProps) => {
-  const { email, setEmail } = useNotifiSubscriptionContext();
+  const { email, setEmail, setEmailErrorMessage, emailErrorMessage } =
+    useNotifiSubscriptionContext();
+
+  const validateEmail = () => {
+    if (email === '') {
+      return;
+    }
+
+    const emailRegex = new RegExp(
+      '^[a-zA-Z0-9._:$!%-+]+@[a-zA-Z0-9.-]+.[a-zA-Z]$',
+    );
+    if (emailRegex.test(email)) {
+      setEmailErrorMessage('');
+    } else {
+      setEmailErrorMessage('The email is invalid. Please try again.');
+    }
+  };
 
   return (
     <>
@@ -33,17 +50,27 @@ export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
         className={clsx('NotifiEmailInput__container', classNames?.container)}
       >
         <input
+          onBlur={validateEmail}
           className={clsx('NotifiEmailInput__input', classNames?.input)}
           disabled={disabled}
           name="notifi-email"
           type="email"
           value={email}
+          onFocus={() => setEmailErrorMessage('')}
           onChange={(e) => {
             setEmail(e.target.value ?? '');
           }}
           placeholder={copy?.placeholder ?? 'Email Address'}
         />
       </div>
+      <label
+        className={clsx(
+          'NotifiEmailInput__errorMessage',
+          classNames?.errorMessage,
+        )}
+      >
+        {emailErrorMessage}
+      </label>
     </>
   );
 };
