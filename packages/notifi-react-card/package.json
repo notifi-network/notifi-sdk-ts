@@ -38,10 +38,5 @@
   },
   "devDependencies": {
     "@notifi-network/notifi-core": "^0.38.0"
-  },
-  "tsup": {
-    "noExternal": [
-      "libphonenumber-js"
-    ]
   }
 }
