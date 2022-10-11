@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import React from 'react';
 
 import type {
@@ -12,6 +13,10 @@ import { EventTypeBroadcastRow } from './EventTypeBroadcastRow';
 import { EventTypeDirectPushRow } from './EventTypeDirectPushRow';
 import type { EventTypeUnsupportedRowProps } from './EventTypeUnsupportedRow';
 import { EventTypeUnsupportedRow } from './EventTypeUnsupportedRow';
+import {
+  NotifiInputLabels,
+  NotifiInputSeparators,
+} from './NotifiSubscriptionCard';
 
 export type SubscriptionCardV1Props = Readonly<{
   classNames?: Readonly<{
@@ -24,11 +29,8 @@ export type SubscriptionCardV1Props = Readonly<{
   inputDisabled: boolean;
   data: CardConfigItemV1;
   inputs: Record<string, string | undefined>;
-  inputLabels?: {
-    email?: string;
-    sms?: string;
-    telegram?: string;
-  };
+  inputLabels?: NotifiInputLabels;
+  inputSeparators?: NotifiInputSeparators;
 }>;
 
 export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
@@ -37,6 +39,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
   inputDisabled,
   inputs,
   inputLabels,
+  inputSeparators,
 }) => {
   const allowedCountryCodes = [...data.contactInfo.sms.supportedCountryCodes];
 
@@ -49,6 +52,23 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
           copy={{ label: inputLabels?.email }}
         />
       ) : null}
+      {inputSeparators?.emailSeparator?.content ? (
+        <div
+          className={clsx(
+            'NotifiInputSeparator__container',
+            inputSeparators?.emailSeparator?.classNames?.container,
+          )}
+        >
+          <div
+            className={clsx(
+              'NotifiInputSeparator__content',
+              inputSeparators.emailSeparator.classNames?.content,
+            )}
+          >
+            {inputSeparators?.emailSeparator?.content}
+          </div>
+        </div>
+      ) : null}
       {data.contactInfo.sms.active ? (
         <NotifiSmsInput
           disabled={inputDisabled}
@@ -57,12 +77,46 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
           copy={{ label: inputLabels?.sms }}
         />
       ) : null}
+      {inputSeparators?.smsSeparator?.content ? (
+        <div
+          className={clsx(
+            'NotifiInputSeparator__container',
+            inputSeparators?.smsSeparator?.classNames?.container,
+          )}
+        >
+          <div
+            className={clsx(
+              'NotifiInputSeparator__content',
+              inputSeparators.smsSeparator.classNames?.content,
+            )}
+          >
+            {inputSeparators?.smsSeparator?.content}
+          </div>
+        </div>
+      ) : null}
       {data.contactInfo.telegram.active ? (
         <NotifiTelegramInput
           disabled={inputDisabled}
           classNames={classNames?.NotifiTelegramInput}
           copy={{ label: inputLabels?.telegram }}
         />
+      ) : null}
+      {inputSeparators?.telegramSeparator?.content ? (
+        <div
+          className={clsx(
+            'NotifiInputSeparator__container',
+            inputSeparators?.smsSeparator?.classNames?.container,
+          )}
+        >
+          <div
+            className={clsx(
+              'NotifiInputSeparator__content',
+              inputSeparators.telegramSeparator.classNames?.content,
+            )}
+          >
+            {inputSeparators?.telegramSeparator?.content}
+          </div>
+        </div>
       ) : null}
       {data.eventTypes?.map((eventType) => {
         switch (eventType.type) {

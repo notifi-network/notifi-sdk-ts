@@ -14,6 +14,36 @@ import { LoadingStateCard } from './LoadingStateCard';
 import type { NotifiSubscribeButtonProps } from './NotifiSubscribeButton';
 import { NotifiSubscribeButton } from './NotifiSubscribeButton';
 
+export type NotifiInputSeparators = {
+  emailSeparator?: {
+    classNames?: {
+      container: string;
+      content: string;
+    };
+    content: string;
+  };
+  smsSeparator?: {
+    classNames?: {
+      container: string;
+      content: string;
+    };
+    content: string;
+  };
+  telegramSeparator?: {
+    classNames?: {
+      container: string;
+      content: string;
+    };
+    content: string;
+  };
+};
+
+export type NotifiInputLabels = {
+  email?: string;
+  sms?: string;
+  telegram?: string;
+};
+
 export type NotifiSubscriptionCardProps = Readonly<{
   classNames?: Readonly<{
     container?: string;
@@ -23,14 +53,11 @@ export type NotifiSubscriptionCardProps = Readonly<{
     NotifiSubscribeButton?: NotifiSubscribeButtonProps['classNames'];
     NotifiFooter?: NotifiFooterProps['classNames'];
   }>;
-  inputLabels?: {
-    email?: string;
-    sms?: string;
-    telegram?: string;
-  };
+  inputLabels?: NotifiInputLabels;
   darkMode?: boolean;
   cardId: string;
   inputs?: Record<string, string | undefined>;
+  inputSeparators?: NotifiInputSeparators;
 }>;
 
 export const NotifiSubscriptionCard: React.FC<NotifiSubscriptionCardProps> = ({
@@ -39,6 +66,7 @@ export const NotifiSubscriptionCard: React.FC<NotifiSubscriptionCardProps> = ({
   darkMode,
   inputLabels,
   inputs = {},
+  inputSeparators,
 }: NotifiSubscriptionCardProps) => {
   const { isInitialized } = useNotifiSubscribe();
   const { loading } = useNotifiSubscriptionContext();
@@ -69,6 +97,7 @@ export const NotifiSubscriptionCard: React.FC<NotifiSubscriptionCardProps> = ({
           inputs={inputs}
           inputDisabled={inputDisabled}
           inputLabels={inputLabels}
+          inputSeparators={inputSeparators}
         />
       );
       break;
