@@ -60,7 +60,9 @@ export type NotifiSubscriptionCardProps = Readonly<{
   inputSeparators?: NotifiInputSeparators;
 }>;
 
-export const NotifiSubscriptionCard: React.FC<NotifiSubscriptionCardProps> = ({
+export const NotifiSubscriptionCard: React.FC<
+  React.PropsWithChildren<NotifiSubscriptionCardProps>
+> = ({
   classNames,
   cardId,
   darkMode,
