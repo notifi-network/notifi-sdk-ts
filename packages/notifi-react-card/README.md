@@ -41,10 +41,10 @@ export const Remote: React.FC = () => {
   };
 
   const inputSeparators: NotifiInputSeparators = {
-    first: {
+    smsSeparator: {
       content: 'OR',
     },
-    second: {
+    emailSeparator: {
       content: 'OR',
     },
   };
@@ -99,10 +99,10 @@ export const Notifi: React.FC = () => {
   };
 
   const inputSeparators: NotifiInputSeparators = {
-    first: {
+    smsSeparator: {
       content: 'OR',
     },
-    second: {
+    emailSeparator: {
       content: 'OR',
     },
   };
@@ -156,10 +156,10 @@ export const Notifi: React.FC = () => {
   };
 
   const inputSeparators: NotifiInputSeparators = {
-    first: {
+    smsSeparator: {
       content: 'OR',
     },
-    second: {
+    emailSeparator: {
       content: 'OR',
     },
   };
