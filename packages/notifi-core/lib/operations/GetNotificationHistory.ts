@@ -1,7 +1,15 @@
-import { NotificationHistory, ParameterLessOperation } from '../models';
+import { NotificationHistory, Operation } from '../models';
 
-export type GetNotificationHistoryResult = ReadonlyArray<NotificationHistory>;
+export type GetNotificationHistoryResult = NotificationHistory;
+
+export type GetNotificationHistoryInput = Readonly<{
+  first?: number;
+  after?: string;
+}>;
 
 export type GetNotificationHistoryService = Readonly<{
-  getNotificationHistory: ParameterLessOperation<GetNotificationHistoryResult>;
+  getNotificationHistory: Operation<
+    GetNotificationHistoryInput,
+    GetNotificationHistoryResult
+  >;
 }>;

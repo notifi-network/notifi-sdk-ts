@@ -1,4 +1,3 @@
-import { GetNotificationHistoryQueryVariables } from './../../notifi-graphql/lib/gql/generated';
 import {
   Alert,
   ClientConfiguration,
@@ -13,7 +12,11 @@ import {
   User,
   UserTopic,
 } from './models';
-import { CreateSourceInput, CreateWebhookTargetInput } from './operations';
+import {
+  CreateSourceInput,
+  CreateWebhookTargetInput,
+  GetNotificationHistoryInput,
+} from './operations';
 
 export type ClientData = Readonly<{
   alerts: ReadonlyArray<Alert>;
@@ -268,7 +271,7 @@ export type NotifiClient = Readonly<{
   deleteAlert: (input: ClientDeleteAlertInput) => Promise<string>;
   getConfiguration: () => Promise<ClientConfiguration>;
   getNotificationHistory: (
-    input: GetNotificationHistoryQueryVariables,
+    input: GetNotificationHistoryInput,
   ) => Promise<NotificationHistory>;
   getTopics: () => Promise<ReadonlyArray<UserTopic>>;
   updateAlert: (input: ClientUpdateAlertInput) => Promise<Alert>;

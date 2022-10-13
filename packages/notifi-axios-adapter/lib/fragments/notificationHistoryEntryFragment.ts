@@ -1,9 +1,9 @@
 export const notifictionHistoryEntryFragment = `
 fragment notificationHistoryEntryFragment on NotificationHistoryEntry {
   id
-  category
   createdDate
   detail {
+    __typename
     ... on BroadcastMessageEventDetails {
       type
       subject
