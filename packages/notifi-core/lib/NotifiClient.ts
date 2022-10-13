@@ -1,8 +1,10 @@
+import { GetNotificationHistoryQueryVariables } from './../../notifi-graphql/lib/gql/generated';
 import {
   Alert,
   ClientConfiguration,
   EmailTarget,
   Filter,
+  NotificationHistory,
   SmsTarget,
   Source,
   TargetGroup,
@@ -265,6 +267,9 @@ export type NotifiClient = Readonly<{
   ) => Promise<Source>;
   deleteAlert: (input: ClientDeleteAlertInput) => Promise<string>;
   getConfiguration: () => Promise<ClientConfiguration>;
+  getNotificationHistory: (
+    input: GetNotificationHistoryQueryVariables,
+  ) => Promise<NotificationHistory>;
   getTopics: () => Promise<ReadonlyArray<UserTopic>>;
   updateAlert: (input: ClientUpdateAlertInput) => Promise<Alert>;
   ensureTargetGroup: (

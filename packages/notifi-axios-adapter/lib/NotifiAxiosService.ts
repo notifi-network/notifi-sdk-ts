@@ -25,6 +25,7 @@ import getAlertsImpl from './queries/getAlertsImpl';
 import getConfigurationForDappImpl from './queries/getConfigurationForDappImpl';
 import getEmailTargetsImpl from './queries/getEmailTargetsImpl';
 import getFiltersImpl from './queries/getFiltersImpl';
+import getNotificationHistoryImpl from './queries/getNotificationHistoryImpl';
 import getSmsTargetsImpl from './queries/getSmsTargetsImpl';
 import getSourceGroupsImpl from './queries/getSourceGroupsImpl';
 import getSourcesImpl from './queries/getSourcesImpl';
@@ -55,6 +56,7 @@ export class NotifiAxiosService implements NotifiService {
   findTenantConfig: NotifiService['findTenantConfig'];
   getAlerts: NotifiService['getAlerts'];
   getConfigurationForDapp: NotifiService['getConfigurationForDapp'];
+  getNotificationHistory: NotifiService['getNotificationHistory'];
   getEmailTargets: NotifiService['getEmailTargets'];
   getFilters: NotifiService['getFilters'];
   getSmsTargets: NotifiService['getSmsTargets'];
@@ -113,6 +115,7 @@ export class NotifiAxiosService implements NotifiService {
     this.getConfigurationForDapp = getConfigurationForDappImpl.bind(null, a);
     this.getEmailTargets = getEmailTargetsImpl.bind(null, a);
     this.getFilters = getFiltersImpl.bind(null, a);
+    this.getNotificationHistory = getNotificationHistoryImpl.bind(null, a);
     this.getSmsTargets = getSmsTargetsImpl.bind(null, a);
     this.getSourceGroups = getSourceGroupsImpl.bind(null, a);
     this.getSources = getSourcesImpl.bind(null, a);
