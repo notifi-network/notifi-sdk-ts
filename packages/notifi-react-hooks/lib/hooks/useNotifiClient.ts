@@ -1240,6 +1240,14 @@ const useNotifiClient = (
     [setError, setLoading, service],
   );
 
+  const getNotificationHistory = async () => {
+    const result = await service.getNotificationHistory();
+
+    console.log('res', result);
+
+    return;
+  };
+
   const client: NotifiClient = {
     beginLoginViaTransaction,
     broadcastMessage,
@@ -1254,6 +1262,7 @@ const useNotifiClient = (
     fetchData,
     fetchSubscriptionCard,
     getConfiguration,
+    getNotificationHistory,
     getTopics,
     updateAlert,
     ensureTargetGroup,

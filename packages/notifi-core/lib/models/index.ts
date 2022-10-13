@@ -14,3 +14,4 @@ export * from './TenantConfig';
 export * from './UserTopic';
 export * from './User';
 export * from './WebhookTarget';
+export * from './NotificationHistory';
