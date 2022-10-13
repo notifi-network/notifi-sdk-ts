@@ -1,8 +1,11 @@
 import {
   collectDependencies,
-  makeParameterLessRequest,
+  makeRequest,
 } from '@notifi-network/notifi-axios-utils';
-import { GetNotificationHistoryResult } from '@notifi-network/notifi-core';
+import {
+  GetNotificationHistoryInput,
+  GetNotificationHistoryResult,
+} from '@notifi-network/notifi-core';
 
 import {
   notifictionHistoryEntryFragment,
@@ -13,17 +16,22 @@ const DEPENDENCIES = [
   ...notifictionHistoryEntryFragmentDependencies,
   ...notifictionHistoryEntryFragment,
 ];
-const MUTATION = `
+const QUERY = `
 query getNotificationHistory {
   notificationHistory {
-    ...notificationHistoryEntryFragment
+    nodes{
+      ...notificationHistoryEntryFragment
+    }
+    pageInfo{
+      hasNextPage
+      endCursor
+    }
   }
 }`.trim();
 
-const getNotificationHistoryImpl =
-  makeParameterLessRequest<GetNotificationHistoryResult>(
-    collectDependencies(...DEPENDENCIES, MUTATION),
-    'notificationHistoryEntry',
-  );
+const getNotificationHistoryImpl = makeRequest<
+  GetNotificationHistoryInput,
+  GetNotificationHistoryResult
+>(collectDependencies(...DEPENDENCIES, QUERY), 'notificationHistory');
 
 export default getNotificationHistoryImpl;

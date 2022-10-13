@@ -16,6 +16,7 @@ import {
   CompleteLoginViaTransactionInput,
   CompleteLoginViaTransactionResult,
   CreateSourceInput,
+  GetNotificationHistoryInput,
   NotifiClient,
   SignMessageParams,
   Source,
@@ -1240,13 +1241,24 @@ const useNotifiClient = (
     [setError, setLoading, service],
   );
 
-  const getNotificationHistory = async () => {
-    const result = await service.getNotificationHistory();
-
-    console.log('res', result);
-
-    return;
-  };
+  const getNotificationHistory = useCallback(
+    async (input: GetNotificationHistoryInput) => {
+      try {
+        const result = await service.getNotificationHistory(input);
+        return result;
+      } catch (e: unknown) {
+        if (e instanceof Error) {
+          setError(e);
+        } else {
+          setError(new NotifiClientError(e));
+        }
+        throw e;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [setLoading, setError, service],
+  );
 
   const client: NotifiClient = {
     beginLoginViaTransaction,

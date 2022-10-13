@@ -11,22 +11,32 @@
  */
 
 export type NotificationHistory = Readonly<{
-  notificationHistory: {
-    nodes: {
-      id: string;
-      category: string | null;
-      createdDate: string;
-      detail: {
-        type: string;
-        subject: string | null;
-        message: string | null;
-      } | null;
-    };
-    pageInfo: {
-      endCursor: string | null;
-      hasNextPage: boolean;
-      hasPreviousPage: boolean;
-      startCursor: string | null;
-    } | null;
+  nodes?:
+    | Array<{
+        __typename?: 'NotificationHistoryEntry';
+        id: string;
+        createdDate: string;
+        detail?:
+          | { __typename: 'AccountBalanceChangedEventDetails' }
+          | {
+              __typename: 'BroadcastMessageEventDetails';
+              type: string;
+              subject?: string | undefined;
+              message?: string | undefined;
+            }
+          | { __typename: 'ChatMessageReceivedEventDetails' }
+          | { __typename: 'DAOProposalChangedEventDetails' }
+          | { __typename: 'DirectTenantMessageEventDetails' }
+          | { __typename: 'GenericEventDetails' }
+          | { __typename: 'HealthValueOverThresholdEventDetails' }
+          | { __typename: 'NftAuctionChangedEventDetails' }
+          | { __typename: 'NftCollectionsReportEventDetails' }
+          | { __typename: 'WalletsActivityReportEventDetails' }
+          | undefined;
+      }>
+    | undefined;
+  pageInfo: {
+    hasNextPage: boolean;
+    endCursor?: string | undefined;
   };
 }>;
