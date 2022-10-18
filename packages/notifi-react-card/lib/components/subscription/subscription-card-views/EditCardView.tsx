@@ -1,7 +1,6 @@
 import { CardConfigItemV1 } from '@notifi-network/notifi-react-card';
 import clsx from 'clsx';
 import React from 'react';
-
 import {
   NotifiEmailInput,
   NotifiEmailInputProps,
@@ -11,15 +10,11 @@ import {
   NotifiTelegramInput,
   NotifiTelegramInputProps,
 } from '../../NotifiTelegramInput';
+
 import {
-  EventTypeBroadcastRow,
-  EventTypeBroadcastRowProps,
-} from '../EventTypeBroadcastRow';
-import { EventTypeDirectPushRow } from '../EventTypeDirectPushRow';
-import {
-  EventTypeUnsupportedRow,
-  EventTypeUnsupportedRowProps,
-} from '../EventTypeUnsupportedRow';
+  NotifiSubscribeButton,
+  NotifiSubscribeButtonProps,
+} from '../NotifiSubscribeButton';
 import {
   NotifiInputLabels,
   NotifiInputSeparators,
@@ -32,10 +27,8 @@ export type EditCardViewProps = Readonly<{
     NotifiEmailInput?: NotifiEmailInputProps['classNames'];
     NotifiSmsInput?: NotifiSmsInputProps['classNames'];
     NotifiTelegramInput?: NotifiTelegramInputProps['classNames'];
-    EventTypeBroadcastRow?: EventTypeBroadcastRowProps['classNames'];
-    EventTypeUnsupportedRow?: EventTypeUnsupportedRowProps['classNames'];
+    NotifiSubscribeButton?: NotifiSubscribeButtonProps['classNames'];
   }>;
-  inputs: Record<string, string | undefined>;
   inputSeparators?: NotifiInputSeparators;
   inputLabels?: NotifiInputLabels;
   allowedCountryCodes: string[];
@@ -48,7 +41,6 @@ export const EditCardView: React.FC<EditCardViewProps> = ({
   inputSeparators,
   inputLabels,
   allowedCountryCodes,
-  inputs,
 }) => {
   return (
     <>
@@ -125,37 +117,7 @@ export const EditCardView: React.FC<EditCardViewProps> = ({
           </div>
         </div>
       ) : null}
-      {data.eventTypes?.map((eventType) => {
-        switch (eventType.type) {
-          case 'broadcast':
-            return (
-              <EventTypeBroadcastRow
-                key={eventType.name}
-                classNames={classNames?.EventTypeBroadcastRow}
-                disabled={inputDisabled}
-                config={eventType}
-                inputs={inputs}
-              />
-            );
-          case 'directPush':
-            return (
-              <EventTypeDirectPushRow
-                key={eventType.name}
-                classNames={classNames?.EventTypeBroadcastRow}
-                disabled={inputDisabled}
-                config={eventType}
-                inputs={inputs}
-              />
-            );
-          default:
-            return (
-              <EventTypeUnsupportedRow
-                key={JSON.stringify(eventType)}
-                classNames={classNames?.EventTypeUnsupportedRow}
-              />
-            );
-        }
-      })}
+      <NotifiSubscribeButton classNames={classNames?.NotifiSubscribeButton} />
     </>
   );
 };

@@ -1,9 +1,10 @@
 .notifi__light {
   --notifi-card-background: #eee;
+  --notifi-card-secondary-background: rgb(214, 214, 214);
   --notifi-font-color: #000;
   --notifi-secondary-font-color: rgb(93, 93, 93);
   --notifi-input-background: rgba(255, 255, 255, 0.8);
-  --notifi-placeholder-color: rgba(0, 0, 0, 0.5);
+  --notifi-placeholder-color: rgba(224, 224, 224, 0.5);
   --notifi-focus-color: #000;
   --notifi-toggle-handle: #fff;
   --notifi-toggle-inactive: rgba(0, 0, 0, 0.2);
@@ -15,6 +16,7 @@
 .notifi__dark {
   --notifi-card-background: #333;
   --notifi-font-color: #fff;
+  --notifi-card-secondary-background: rgb(68, 68, 68);
   --notifi-secondary-font-color: rgb(212, 212, 212);
   --notifi-input-background: rgba(255, 255, 255, 0.2);
   --notifi-placeholder-color: rgba(255, 255, 255, 0.5);
@@ -244,7 +246,9 @@
 }
 
 .NotifiInputSeparator__container:before,
-.NotifiInputSeparator__container:after {
+.NotifiInputSeparator__container:after,
+.NotifiPreviewCardSeparator:before,
+.NotifiPreviewCardSeparator::after {
   background-color: var(--notifi-secondary-font-color);
   content: '';
   display: inline-block;
@@ -256,4 +260,26 @@
 
 .NotifiInputSeparator__content {
   padding: 0px 8px 0px 8px;
+}
+
+.NotifiUserInfoPanelContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 16px 0px 16px 24px;
+  border-radius: 5px;
+  background-color: var(--notifi-card-secondary-background);
+}
+
+.NotifiPreviewCard__editButton {
+  display: flex;
+  padding: 10px 20px 10px 20px;
+  background-color: var(--notifi-button-color);
+  border-radius: 10px;
+  border: none;
+  font-size: 16px;
+  line-height: 20px;
+  cursor: pointer;
+  color: var(--notifi-font-color);
 }

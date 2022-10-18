@@ -7,6 +7,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import { FetchedCardView, useFetchedCardState } from '../hooks';
 
 import type { AlertConfiguration } from '../utils';
 import { NotifiParams } from './NotifiContext';
@@ -19,6 +20,8 @@ export type NotifiSubscriptionData = Readonly<{
   telegramId: string;
   telegramConfirmationUrl?: string;
   useHardwareWallet: boolean;
+  cardView: FetchedCardView;
+  setCardView: React.Dispatch<React.SetStateAction<FetchedCardView>>;
   getAlertConfiguration: (name: string) => AlertConfiguration | null;
   getAlertConfigurations: () => Readonly<
     Record<string, AlertConfiguration | null>
@@ -41,6 +44,10 @@ export type NotifiSubscriptionData = Readonly<{
   setUseHardwareWallet: (hardwareWallet: boolean) => void;
   loading: boolean;
   setLoading: (loading: boolean) => void;
+  isEmailConfirmed: boolean | null;
+  isSmsConfirmed: boolean | null;
+  setIsEmailConfirmed: (isConfirmed: boolean | null) => void;
+  setIsSmsConfirmed: (isConfirmed: boolean | null) => void;
 }>;
 
 const NotifiSubscriptionContext = createContext<NotifiSubscriptionData>(
@@ -53,9 +60,14 @@ export const NotifiSubscriptionContextProvider: React.FC<
   const [email, setEmail] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [telegramId, setTelegramId] = useState<string>('');
+  const { cardView, setCardView } = useFetchedCardState();
 
   const [emailErrorMessage, setEmailErrorMessage] = useState<string>('');
   const [smsErrorMessage, setSmsErrorMessage] = useState<string>('');
+  const [isEmailConfirmed, setIsEmailConfirmed] = useState<boolean | null>(
+    null,
+  );
+  const [isSmsConfirmed, setIsSmsConfirmed] = useState<boolean | null>(null);
 
   const [telegramConfirmationUrl, setTelegramConfirmationUrl] = useState<
     string | undefined
@@ -99,15 +111,21 @@ export const NotifiSubscriptionContextProvider: React.FC<
     params,
     phoneNumber,
     telegramId,
+    cardView,
     telegramConfirmationUrl,
     setSmsErrorMessage,
     setEmailErrorMessage,
     smsErrorMessage,
+    isEmailConfirmed,
+    isSmsConfirmed,
+    setIsEmailConfirmed,
+    setIsSmsConfirmed,
     emailErrorMessage,
     useHardwareWallet,
     getAlertConfiguration,
     getAlertConfigurations,
     setAlerts,
+    setCardView,
     setAlertConfiguration,
     setEmail,
     setLoading,
