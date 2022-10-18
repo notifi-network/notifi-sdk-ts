@@ -92,7 +92,8 @@ export const useNotifiSubscribe: () => Readonly<{
       setPhoneNumber(phoneNumber ?? '');
 
       const telegramTarget = targetGroup?.telegramTargets[0];
-      setTelegramId(telegramTarget?.telegramId ?? '');
+      const telegramId = telegramTarget?.telegramId;
+      setTelegramId(telegramId ?? '');
       setTelegramConfirmationUrl(telegramTarget?.confirmationUrl ?? undefined);
 
       return {
@@ -105,7 +106,7 @@ export const useNotifiSubscribe: () => Readonly<{
         telegramId: telegramTarget?.telegramId ?? null,
       };
     },
-    [setAlerts, setEmail, setPhoneNumber],
+    [setAlerts, setEmail, setPhoneNumber, setTelegramId],
   );
 
   // Initial fetch

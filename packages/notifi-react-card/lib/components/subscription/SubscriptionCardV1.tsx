@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import type {
   NotifiEmailInputProps,
@@ -6,7 +6,7 @@ import type {
   NotifiTelegramInputProps,
 } from '..';
 import { useNotifiSubscriptionContext } from '../../context';
-import { CardConfigItemV1 } from '../../hooks';
+import { CardConfigItemV1, useNotifiSubscribe } from '../../hooks';
 import type { EventTypeBroadcastRowProps } from './EventTypeBroadcastRow';
 import type { EventTypeUnsupportedRowProps } from './EventTypeUnsupportedRow';
 import { NotifiSubscribeButtonProps } from './NotifiSubscribeButton';
@@ -51,7 +51,10 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
   inputSeparators,
 }) => {
   const allowedCountryCodes = [...data.contactInfo.sms.supportedCountryCodes];
-  const { cardView } = useNotifiSubscriptionContext();
+  const { cardView, email, phoneNumber, telegramId, setCardView } =
+    useNotifiSubscriptionContext();
+
+  const { isInitialized } = useNotifiSubscribe();
 
   const previewCardClassNames: PreviewCardClassNamesProps = {
     EventTypeBroadcastRow: classNames?.EventTypeBroadcastRow,
@@ -60,6 +63,22 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
   };
 
   let view = null;
+
+  const firstLoad = useRef(false);
+  useEffect(() => {
+    if (firstLoad.current || !isInitialized) {
+      return;
+    }
+
+    firstLoad.current = true;
+    if (
+      (email !== '' && email !== undefined) ||
+      (phoneNumber !== '' && phoneNumber !== undefined) ||
+      (telegramId !== '' && telegramId !== undefined)
+    ) {
+      setCardView({ state: 'preview' });
+    }
+  }, [email, phoneNumber, telegramId, setCardView, cardView, isInitialized]);
 
   switch (cardView.state) {
     case 'preview':

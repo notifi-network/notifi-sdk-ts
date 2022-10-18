@@ -1,5 +1,5 @@
 import type { Alert } from '@notifi-network/notifi-core';
-import type { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 import React, {
   createContext,
   useCallback,
@@ -7,8 +7,8 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { FetchedCardView, useFetchedCardState } from '../hooks';
 
+import { FetchedCardView, useFetchedCardState } from '../hooks';
 import type { AlertConfiguration } from '../utils';
 import { NotifiParams } from './NotifiContext';
 
