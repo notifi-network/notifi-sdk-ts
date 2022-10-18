@@ -1,19 +1,9 @@
 import type { Alert } from '@notifi-network/notifi-core';
 import { PropsWithChildren } from 'react';
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useRef,
-  useState,
-} from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
-import {
-  EventTypeConfig,
-  FetchedCardView,
-  useFetchedCardState,
-} from '../hooks';
-import type { AlertConfiguration } from '../utils';
+import { FetchedCardView, useFetchedCardState } from '../hooks';
+
 import { NotifiParams } from './NotifiContext';
 
 export type NotifiSubscriptionData = Readonly<{
@@ -26,15 +16,7 @@ export type NotifiSubscriptionData = Readonly<{
   useHardwareWallet: boolean;
   cardView: FetchedCardView;
   setCardView: React.Dispatch<React.SetStateAction<FetchedCardView>>;
-  getAlertConfiguration: (name: string) => AlertConfiguration | null;
-  getAlertConfigurations: () => Readonly<
-    Record<string, AlertConfiguration | null>
-  >;
   setAlerts: (alerts: Record<string, Alert | undefined>) => void;
-  setAlertConfiguration: (
-    name: string,
-    config: AlertConfiguration | null,
-  ) => void;
   setEmail: (email: string) => void;
   setPhoneNumber: (phoneNumber: string) => void;
   setTelegramId: (telegramId: string) => void;
@@ -52,8 +34,6 @@ export type NotifiSubscriptionData = Readonly<{
   isSmsConfirmed: boolean | null;
   setIsEmailConfirmed: (isConfirmed: boolean | null) => void;
   setIsSmsConfirmed: (isConfirmed: boolean | null) => void;
-  setEventTypes: (eventTypes: EventTypeConfig) => void;
-  eventTypes: EventTypeConfig;
 }>;
 
 const NotifiSubscriptionContext = createContext<NotifiSubscriptionData>(
@@ -64,7 +44,6 @@ export const NotifiSubscriptionContextProvider: React.FC<
   PropsWithChildren<NotifiParams>
 > = ({ children, ...params }) => {
   const [email, setEmail] = useState<string>('');
-  const [eventTypes, setEventTypes] = useState<EventTypeConfig>([]);
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [telegramId, setTelegramId] = useState<string>('');
   const { cardView, setCardView } = useFetchedCardState();
@@ -84,33 +63,6 @@ export const NotifiSubscriptionContextProvider: React.FC<
   const [useHardwareWallet, setUseHardwareWallet] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
 
-  const alertConfigurations = useRef<Record<string, AlertConfiguration | null>>(
-    params.alertConfigurations ?? {},
-  );
-  const getAlertConfigurations = useCallback((): Readonly<
-    Record<string, AlertConfiguration | null>
-  > => {
-    return alertConfigurations.current;
-  }, []);
-
-  const getAlertConfiguration = useCallback(
-    (name: string): AlertConfiguration | null => {
-      return alertConfigurations.current[name] ?? null;
-    },
-    [],
-  );
-
-  const setAlertConfiguration = useCallback(
-    (name: string, config: AlertConfiguration | null): void => {
-      if (config === null) {
-        alertConfigurations.current[name] = null;
-      } else {
-        alertConfigurations.current[name] = config;
-      }
-    },
-    [],
-  );
-
   const value = {
     alerts,
     email,
@@ -129,19 +81,14 @@ export const NotifiSubscriptionContextProvider: React.FC<
     setIsSmsConfirmed,
     emailErrorMessage,
     useHardwareWallet,
-    getAlertConfiguration,
-    getAlertConfigurations,
     setAlerts,
     setCardView,
-    setAlertConfiguration,
     setEmail,
     setLoading,
     setPhoneNumber,
     setTelegramId,
     setTelegramConfirmationUrl,
     setUseHardwareWallet,
-    setEventTypes,
-    eventTypes,
   };
 
   return (

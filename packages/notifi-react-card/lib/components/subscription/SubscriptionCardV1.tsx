@@ -51,14 +51,8 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
   inputSeparators,
 }) => {
   const allowedCountryCodes = [...data.contactInfo.sms.supportedCountryCodes];
-  const {
-    cardView,
-    email,
-    phoneNumber,
-    telegramId,
-    setCardView,
-    setEventTypes,
-  } = useNotifiSubscriptionContext();
+  const { cardView, email, phoneNumber, telegramId, setCardView } =
+    useNotifiSubscriptionContext();
 
   const { isInitialized } = useNotifiSubscribe();
 
@@ -77,8 +71,6 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
     }
 
     firstLoad.current = true;
-
-    setEventTypes(data.eventTypes ?? []);
 
     if (
       (email !== '' && email !== undefined) ||
