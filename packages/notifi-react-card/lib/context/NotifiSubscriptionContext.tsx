@@ -8,7 +8,11 @@ import React, {
   useState,
 } from 'react';
 
-import { FetchedCardView, useFetchedCardState } from '../hooks';
+import {
+  EventTypeConfig,
+  FetchedCardView,
+  useFetchedCardState,
+} from '../hooks';
 import type { AlertConfiguration } from '../utils';
 import { NotifiParams } from './NotifiContext';
 
@@ -48,6 +52,8 @@ export type NotifiSubscriptionData = Readonly<{
   isSmsConfirmed: boolean | null;
   setIsEmailConfirmed: (isConfirmed: boolean | null) => void;
   setIsSmsConfirmed: (isConfirmed: boolean | null) => void;
+  setEventTypes: (eventTypes: EventTypeConfig) => void;
+  eventTypes: EventTypeConfig;
 }>;
 
 const NotifiSubscriptionContext = createContext<NotifiSubscriptionData>(
@@ -58,6 +64,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
   PropsWithChildren<NotifiParams>
 > = ({ children, ...params }) => {
   const [email, setEmail] = useState<string>('');
+  const [eventTypes, setEventTypes] = useState<EventTypeConfig>([]);
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [telegramId, setTelegramId] = useState<string>('');
   const { cardView, setCardView } = useFetchedCardState();
@@ -133,6 +140,8 @@ export const NotifiSubscriptionContextProvider: React.FC<
     setTelegramId,
     setTelegramConfirmationUrl,
     setUseHardwareWallet,
+    setEventTypes,
+    eventTypes,
   };
 
   return (
