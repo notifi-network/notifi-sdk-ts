@@ -80,6 +80,7 @@
   padding: 10px;
   align-items: center;
   max-height: 22px;
+  box-sizing: content-box;
 }
 
 .NotifiEmailInput::after,
