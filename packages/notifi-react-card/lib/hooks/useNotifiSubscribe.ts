@@ -35,16 +35,18 @@ export const useNotifiSubscribe: () => Readonly<{
   isAuthenticated: boolean;
   isInitialized: boolean;
   logIn: () => Promise<SubscriptionData>;
-  subscribe: () => Promise<SubscriptionData>;
+  subscribe: (
+    alertConfigs: Record<string, AlertConfiguration>,
+  ) => Promise<SubscriptionData>;
   instantSubscribe: (
     subscribeData: InstantSubscribe,
   ) => Promise<SubscriptionData>;
+  updateTargetGroups: () => Promise<SubscriptionData>;
 }> = () => {
   const { client } = useNotifiClientContext();
 
   const {
     email: inputEmail,
-    getAlertConfigurations,
     params,
     phoneNumber: inputPhoneNumber,
     setAlerts,
@@ -63,8 +65,7 @@ export const useNotifiSubscribe: () => Readonly<{
 
   const render = useCallback(
     (newData: ClientData | null): SubscriptionData => {
-      const configurations = getAlertConfigurations();
-      let targetGroup = newData?.targetGroups.find(
+      const targetGroup = newData?.targetGroups.find(
         (tg) => tg.name === 'Default',
       );
 
@@ -72,9 +73,6 @@ export const useNotifiSubscribe: () => Readonly<{
       newData?.alerts.forEach((alert) => {
         if (alert.name !== null) {
           alerts[alert.name] = alert;
-          if (alert.name in configurations) {
-            targetGroup = alert.targetGroup;
-          }
         }
       });
 
@@ -187,6 +185,7 @@ export const useNotifiSubscribe: () => Readonly<{
     }
 
     const newData = await client.fetchData();
+
     const results = render(newData);
     setLoading(false);
     return results;
@@ -201,131 +200,158 @@ export const useNotifiSubscribe: () => Readonly<{
     setLoading,
   ]);
 
-  const subscribe = useCallback(async (): Promise<SubscriptionData> => {
-    const currentConfigs = getAlertConfigurations();
-    const configurations = { ...currentConfigs };
+  const subscribe = useCallback(
+    async (
+      alertConfigs: Record<string, AlertConfiguration>,
+    ): Promise<SubscriptionData> => {
+      const configurations = { ...alertConfigs };
 
-    const names = Object.keys(configurations);
-    const finalEmail = inputEmail === '' ? null : inputEmail;
-    const finalTelegramId = inputTelegramId === '' ? null : inputTelegramId;
+      const names = Object.keys(configurations);
+      const finalEmail = inputEmail === '' ? null : inputEmail;
+      const finalTelegramId = inputTelegramId === '' ? null : inputTelegramId;
 
-    let finalPhoneNumber = null;
-    if (isValidPhoneNumber(inputPhoneNumber)) {
-      finalPhoneNumber = inputPhoneNumber;
-    }
+      let finalPhoneNumber = null;
+      if (isValidPhoneNumber(inputPhoneNumber)) {
+        finalPhoneNumber = inputPhoneNumber;
+      }
 
-    setLoading(true);
-    await logIn();
-    const data = await client.fetchData();
+      setLoading(true);
+      await logIn();
+      const data = await client.fetchData();
 
-    //
-    // Yes, we're ignoring the server side values and just using whatever the client typed in
-    // We should eventually always start from a logged in state from client having called
-    // "refresh" or "fetchData" to obtain existing settings first
-    //
+      //
+      // Yes, we're ignoring the server side values and just using whatever the client typed in
+      // We should eventually always start from a logged in state from client having called
+      // "refresh" or "fetchData" to obtain existing settings first
+      //
 
-    const newResults: Record<string, Alert> = {};
-    for (let i = 0; i < names.length; ++i) {
-      const name = names[i];
-      const existingAlert = data.alerts.find((alert) => alert.name === name);
-      const deleteThisAlert = async () => {
-        if (existingAlert !== undefined && existingAlert.id !== null) {
-          await client.deleteAlert({
-            alertId: existingAlert.id,
-            keepSourceGroup: keepSubscriptionData,
-            keepTargetGroup: keepSubscriptionData,
-          });
-        }
-      };
-
-      const config = configurations[name];
-      if (config === undefined || config === null) {
-        await deleteThisAlert();
-      } else {
-        const {
-          createSource: createSourceParam,
-          filterOptions,
-          filterType,
-          sourceType,
-        } = config;
-
-        let source: Source | undefined;
-        let filter: Filter | undefined;
-        if (createSourceParam !== undefined) {
-          const existing = data.sources.find(
-            (s) =>
-              s.type === sourceType &&
-              s.blockchainAddress === createSourceParam.address,
-          );
-          if (existing !== undefined) {
-            source = existing;
-            filter = source.applicableFilters.find(
-              (f) => f.filterType === filterType,
-            );
-          } else {
-            source = await client.createSource({
-              blockchainAddress: createSourceParam.address,
-              name: createSourceParam.address,
-              type: sourceType,
+      const newResults: Record<string, Alert> = {};
+      for (let i = 0; i < names.length; ++i) {
+        const name = names[i];
+        const existingAlert = data.alerts.find((alert) => alert.name === name);
+        const deleteThisAlert = async () => {
+          if (existingAlert !== undefined && existingAlert.id !== null) {
+            await client.deleteAlert({
+              alertId: existingAlert.id,
+              keepSourceGroup: keepSubscriptionData,
+              keepTargetGroup: keepSubscriptionData,
             });
-            filter = source.applicableFilters.find(
+          }
+        };
+
+        const config = configurations[name];
+        if (config === undefined || config === null) {
+          await deleteThisAlert();
+        } else {
+          const {
+            createSource: createSourceParam,
+            filterOptions,
+            filterType,
+            sourceType,
+          } = config;
+
+          let source: Source | undefined;
+          let filter: Filter | undefined;
+          if (createSourceParam !== undefined) {
+            const existing = data.sources.find(
+              (s) =>
+                s.type === sourceType &&
+                s.blockchainAddress === createSourceParam.address,
+            );
+            if (existing !== undefined) {
+              source = existing;
+              filter = source.applicableFilters.find(
+                (f) => f.filterType === filterType,
+              );
+            } else {
+              source = await client.createSource({
+                blockchainAddress: createSourceParam.address,
+                name: createSourceParam.address,
+                type: sourceType,
+              });
+              filter = source.applicableFilters.find(
+                (f) => f.filterType === filterType,
+              );
+            }
+          } else {
+            source = data.sources.find((s) => s.type === sourceType);
+            filter = source?.applicableFilters.find(
               (f) => f.filterType === filterType,
             );
           }
-        } else {
-          source = data.sources.find((s) => s.type === sourceType);
-          filter = source?.applicableFilters.find(
-            (f) => f.filterType === filterType,
-          );
-        }
 
-        if (
-          source === undefined ||
-          source.id === null ||
-          filter === undefined ||
-          filter.id === null
-        ) {
-          await deleteThisAlert();
-        } else if (existingAlert !== undefined && existingAlert.id !== null) {
-          const alert = await client.updateAlert({
-            alertId: existingAlert.id,
-            emailAddress: finalEmail,
-            phoneNumber: finalPhoneNumber,
-            telegramId: finalTelegramId,
-          });
-          newResults[name] = alert;
-        } else {
-          // Call serially because of limitations
-          await deleteThisAlert();
-          const alert = await client.createAlert({
-            emailAddress: finalEmail,
-            filterId: filter.id,
-            filterOptions: filterOptions ?? undefined,
-            groupName: 'managed',
-            name,
-            phoneNumber: finalPhoneNumber,
-            sourceId: source.id,
-            targetGroupName: 'Default',
-            telegramId: finalTelegramId,
-          });
+          if (
+            source === undefined ||
+            source.id === null ||
+            filter === undefined ||
+            filter.id === null
+          ) {
+            await deleteThisAlert();
+          } else if (existingAlert !== undefined && existingAlert.id !== null) {
+            const alert = await client.updateAlert({
+              alertId: existingAlert.id,
+              emailAddress: finalEmail,
+              phoneNumber: finalPhoneNumber,
+              telegramId: finalTelegramId,
+            });
+            newResults[name] = alert;
+          } else {
+            // Call serially because of limitations
+            await deleteThisAlert();
+            const alert = await client.createAlert({
+              emailAddress: finalEmail,
+              filterId: filter.id,
+              filterOptions: filterOptions ?? undefined,
+              groupName: 'managed',
+              name,
+              phoneNumber: finalPhoneNumber,
+              sourceId: source.id,
+              targetGroupName: 'Default',
+              telegramId: finalTelegramId,
+            });
 
-          newResults[name] = alert;
+            newResults[name] = alert;
+          }
         }
       }
-    }
 
-    if (
-      Object.getOwnPropertyNames(newResults).length === 0 &&
-      keepSubscriptionData
-    ) {
-      // We didn't create or update any alert, manually update the targets
-      await client.ensureTargetGroup({
-        emailAddress: finalEmail,
-        name: 'Default',
-        phoneNumber: finalPhoneNumber,
-        telegramId: finalTelegramId,
-      });
+      if (
+        Object.getOwnPropertyNames(newResults).length === 0 &&
+        keepSubscriptionData
+      ) {
+        // We didn't create or update any alert, manually update the targets
+        await client.ensureTargetGroup({
+          emailAddress: finalEmail,
+          name: 'Default',
+          phoneNumber: finalPhoneNumber,
+          telegramId: finalTelegramId,
+        });
+      }
+
+      const newData = await client.fetchData();
+
+      const results = render(newData);
+      setLoading(false);
+      return results;
+    },
+    [client, inputEmail, inputPhoneNumber, inputTelegramId, logIn, setLoading],
+  );
+
+  const updateTargetGroups = useCallback(async () => {
+    const finalEmail = inputEmail === '' ? null : inputEmail;
+
+    const finalTelegramId = inputTelegramId === '' ? null : inputTelegramId;
+    let finalPhoneNumber = null;
+
+    if (isValidPhoneNumber(inputPhoneNumber)) {
+      finalPhoneNumber = inputPhoneNumber;
     }
+    await client.ensureTargetGroup({
+      emailAddress: finalEmail,
+      name: 'Default',
+      phoneNumber: finalPhoneNumber,
+      telegramId: finalTelegramId,
+    });
 
     const newData = await client.fetchData();
 
@@ -334,11 +360,10 @@ export const useNotifiSubscribe: () => Readonly<{
     return results;
   }, [
     client,
-    getAlertConfigurations,
     inputEmail,
     inputPhoneNumber,
     inputTelegramId,
-    logIn,
+    render,
     setLoading,
   ]);
 
@@ -467,7 +492,6 @@ export const useNotifiSubscribe: () => Readonly<{
     },
     [
       client,
-      getAlertConfigurations,
       inputEmail,
       inputPhoneNumber,
       inputTelegramId,
@@ -478,10 +502,11 @@ export const useNotifiSubscribe: () => Readonly<{
   );
 
   return {
+    instantSubscribe,
     isAuthenticated: client.isAuthenticated,
     isInitialized: client.isInitialized,
     logIn,
-    instantSubscribe,
     subscribe,
+    updateTargetGroups,
   };
 };

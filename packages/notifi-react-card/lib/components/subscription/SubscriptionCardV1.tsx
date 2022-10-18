@@ -71,6 +71,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
     }
 
     firstLoad.current = true;
+
     if (
       (email !== '' && email !== undefined) ||
       (phoneNumber !== '' && phoneNumber !== undefined) ||

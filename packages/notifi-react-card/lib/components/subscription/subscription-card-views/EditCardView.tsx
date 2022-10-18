@@ -117,7 +117,10 @@ export const EditCardView: React.FC<EditCardViewProps> = ({
           </div>
         </div>
       ) : null}
-      <NotifiSubscribeButton classNames={classNames?.NotifiSubscribeButton} />
+      <NotifiSubscribeButton
+        data={data}
+        classNames={classNames?.NotifiSubscribeButton}
+      />
     </>
   );
 };
