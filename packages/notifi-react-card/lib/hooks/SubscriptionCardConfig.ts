@@ -22,7 +22,15 @@ export type BroadcastEventTypeItem = Readonly<{
   broadcastId: ValueOrRef<string>;
 }>;
 
-export type EventTypeItem = DirectPushEventTypeItem | BroadcastEventTypeItem;
+export type LabelEventTypeItem = Readonly<{
+  type: 'label';
+  name: string;
+}>;
+
+export type EventTypeItem =
+  | DirectPushEventTypeItem
+  | BroadcastEventTypeItem
+  | LabelEventTypeItem;
 
 export type EventTypeConfig = ReadonlyArray<EventTypeItem>;
 export type InputType =

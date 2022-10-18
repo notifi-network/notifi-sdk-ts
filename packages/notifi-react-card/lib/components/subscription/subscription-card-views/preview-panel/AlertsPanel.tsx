@@ -5,7 +5,14 @@ import {
   EventTypeBroadcastRow,
   EventTypeBroadcastRowProps,
 } from '../../EventTypeBroadcastRow';
-import { EventTypeDirectPushRow } from '../../EventTypeDirectPushRow';
+import {
+  EventTypeDirectPushRow,
+  EventTypeDirectPushRowProps,
+} from '../../EventTypeDirectPushRow';
+import {
+  EventTypeLabelRow,
+  EventTypeLabelRowProps,
+} from '../../EventTypeLabelRow';
 import {
   EventTypeUnsupportedRow,
   EventTypeUnsupportedRowProps,
@@ -16,6 +23,8 @@ export type AlertsPanelProps = Readonly<{
   inputDisabled: boolean;
   classNames?: Readonly<{
     EventTypeBroadcastRow?: EventTypeBroadcastRowProps['classNames'];
+    EventTypeDirectPushRow?: EventTypeDirectPushRowProps['classNames'];
+    EventTypeLabelRow?: EventTypeLabelRowProps['classNames'];
     EventTypeUnsupportedRow?: EventTypeUnsupportedRowProps['classNames'];
   }>;
   inputs: Record<string, string | undefined>;
@@ -44,10 +53,18 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
             return (
               <EventTypeDirectPushRow
                 key={eventType.name}
-                classNames={classNames?.EventTypeBroadcastRow}
+                classNames={classNames?.EventTypeDirectPushRow}
                 disabled={inputDisabled}
                 config={eventType}
                 inputs={inputs}
+              />
+            );
+          case 'label':
+            return (
+              <EventTypeLabelRow
+                key={eventType.name}
+                classNames={classNames?.EventTypeLabelRow}
+                config={eventType}
               />
             );
           default:

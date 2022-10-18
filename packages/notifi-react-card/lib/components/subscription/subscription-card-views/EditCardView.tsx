@@ -1,6 +1,7 @@
 import { CardConfigItemV1 } from '@notifi-network/notifi-react-card';
 import clsx from 'clsx';
 import React from 'react';
+
 import {
   NotifiEmailInput,
   NotifiEmailInputProps,
@@ -10,7 +11,6 @@ import {
   NotifiTelegramInput,
   NotifiTelegramInputProps,
 } from '../../NotifiTelegramInput';
-
 import {
   NotifiSubscribeButton,
   NotifiSubscribeButtonProps,

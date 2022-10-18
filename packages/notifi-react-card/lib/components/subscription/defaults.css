@@ -176,6 +176,7 @@
   transform: translateX(var(--notifi-toggle-size));
 }
 
+.EventTypeLabelRow__container,
 .EventTypeBroadcastRow__container,
 .EventTypeDirectPushRow__container {
   display: flex;
@@ -188,6 +189,15 @@
   margin-right: 10px;
   font-size: 16px;
   line-height: 20px;
+  text-align: left;
+}
+
+.EventTypeLabelRow__label {
+  color: var(--notifi-secondary-font-color);
+  flex-grow: 1;
+  margin-right: 10px;
+  font-size: 12px;
+  line-height: 16px;
   text-align: left;
 }
 
