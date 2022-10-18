@@ -1,12 +1,12 @@
 import clsx from 'clsx';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useNotifiSubscriptionContext } from '../../context';
-import { BroadcastEventTypeItem } from '../../hooks';
+import { BroadcastEventTypeItem, useNotifiSubscribe } from '../../hooks';
 import {
   AlertConfiguration,
-  DeepPartialReadonly,
   broadcastMessageConfiguration,
+  DeepPartialReadonly,
 } from '../../utils';
 import type { NotifiToggleProps } from './NotifiToggle';
 import { NotifiToggle } from './NotifiToggle';
@@ -25,13 +25,13 @@ export type EventTypeBroadcastRowProps = Readonly<{
 
 export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
   classNames,
-  disabled,
   config,
+  disabled,
   inputs,
 }: EventTypeBroadcastRowProps) => {
-  const { alerts, loading, setAlertConfiguration } =
-    useNotifiSubscriptionContext();
-  const [enabled, setEnabled] = useState(true);
+  const { alerts, loading } = useNotifiSubscriptionContext();
+  const { instantSubscribe } = useNotifiSubscribe();
+  const [enabled, setEnabled] = useState(false);
 
   const alertName = useMemo<string>(() => config.name, [config]);
   const alertConfiguration = useMemo<AlertConfiguration>(() => {
@@ -47,15 +47,24 @@ export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
     }
     const hasAlert = alerts[alertName] !== undefined;
     setEnabled(hasAlert);
-  }, [alerts, loading]);
+  }, [alertName, alerts, loading]);
 
-  useEffect(() => {
-    if (enabled) {
-      setAlertConfiguration(alertName, alertConfiguration);
-    } else {
-      setAlertConfiguration(alertName, null);
+  const handleNewSubscription = useCallback(() => {
+    if (loading) {
+      return;
     }
-  }, [enabled, alertName, alertConfiguration, setAlertConfiguration]);
+    if (!enabled) {
+      instantSubscribe({
+        alertConfiguration: alertConfiguration,
+        alertName: alertName,
+      });
+    } else {
+      instantSubscribe({
+        alertConfiguration: null,
+        alertName: alertName,
+      });
+    }
+  }, [loading, enabled, instantSubscribe, alertConfiguration, alertName]);
 
   return (
     <div
@@ -68,10 +77,10 @@ export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
         {config.name}
       </div>
       <NotifiToggle
+        checked={enabled}
         classNames={classNames?.toggle}
         disabled={disabled}
-        checked={enabled}
-        setChecked={setEnabled}
+        setChecked={handleNewSubscription}
       />
     </div>
   );

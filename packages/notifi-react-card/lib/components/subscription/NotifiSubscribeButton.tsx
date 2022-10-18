@@ -15,14 +15,26 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
   classNames,
 }) => {
   const { isInitialized, subscribe } = useNotifiSubscribe();
-  const { alerts, loading, emailErrorMessage, smsErrorMessage } =
-    useNotifiSubscriptionContext();
+
+  const {
+    alerts,
+    loading,
+    emailErrorMessage,
+    smsErrorMessage,
+    setCardView,
+    email,
+    phoneNumber,
+    telegramId,
+  } = useNotifiSubscriptionContext();
   const hasAlerts = Object.values(alerts ?? {}).find(
     (it) => it?.id !== undefined && it?.id !== null,
   );
 
   const onClick = useCallback(async () => {
-    await subscribe();
+    const result = await subscribe();
+    if (result) {
+      setCardView({ state: 'preview' });
+    }
   }, [subscribe]);
 
   const hasErrors = emailErrorMessage !== '' || smsErrorMessage !== '';
@@ -31,7 +43,12 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
   return (
     <button
       className={clsx('NotifiSubscribeButton__button', classNames?.button)}
-      disabled={!isInitialized || loading || hasErrors}
+      disabled={
+        !isInitialized ||
+        loading ||
+        hasErrors ||
+        (!email && !phoneNumber && !telegramId)
+      }
       onClick={onClick}
     >
       <span className={clsx('NotifiSubscribeButton__label', classNames?.label)}>

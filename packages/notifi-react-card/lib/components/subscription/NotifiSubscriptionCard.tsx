@@ -1,8 +1,9 @@
 import clsx from 'clsx';
+import { useNotifiSubscribe } from 'notifi-react-card/lib/hooks/useNotifiSubscribe';
 import React from 'react';
 
 import { useNotifiSubscriptionContext } from '../../context';
-import { useNotifiSubscribe, useSubscriptionCard } from '../../hooks';
+import { useSubscriptionCard } from '../../hooks';
 import type { NotifiFooterProps } from '../NotifiFooter';
 import { NotifiFooter } from '../NotifiFooter';
 import type { ErrorStateCardProps } from './ErrorStateCard';
@@ -12,7 +13,6 @@ import { FetchedStateCard } from './FetchedStateCard';
 import type { LoadingStateCardProps } from './LoadingStateCard';
 import { LoadingStateCard } from './LoadingStateCard';
 import type { NotifiSubscribeButtonProps } from './NotifiSubscribeButton';
-import { NotifiSubscribeButton } from './NotifiSubscribeButton';
 
 export type NotifiInputSeparators = {
   emailSeparator?: {
@@ -116,7 +116,6 @@ export const NotifiSubscriptionCard: React.FC<
     >
       {children}
       {contents}
-      <NotifiSubscribeButton classNames={classNames?.NotifiSubscribeButton} />
       <NotifiFooter classNames={classNames?.NotifiFooter} />
     </div>
   );
