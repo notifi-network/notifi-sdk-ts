@@ -297,6 +297,12 @@
   color: var(--notifi-font-color);
 }
 
+.NotifiUserInfoPanel__emailConfirmation,
+.NotifiUserInfoPanel__telegramConfirmation {
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+
 .NotifiUserInfoPanel__emailConfirmationLabel,
 .NotifiUserInfoPanel__telegramConfirmationLabel {
   cursor: pointer;
@@ -313,6 +319,7 @@
   justify-content: space-between;
   text-align: left;
   align-items: baseline;
+  overflow-wrap: anywhere;
 }
 
 .NotifiUserInfoPanel__emailLabel,
