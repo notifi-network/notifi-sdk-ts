@@ -1,56 +1,32 @@
 import React, { useEffect, useRef } from 'react';
 
-import type {
-  NotifiEmailInputProps,
-  NotifiSmsInputProps,
-  NotifiTelegramInputProps,
-} from '..';
 import { useNotifiSubscriptionContext } from '../../context';
 import { CardConfigItemV1, useNotifiSubscribe } from '../../hooks';
 import { DeepPartialReadonly } from '../../utils';
-import type { EventTypeBroadcastRowProps } from './EventTypeBroadcastRow';
-import type { EventTypeUnsupportedRowProps } from './EventTypeUnsupportedRow';
-import { NotifiSubscribeButtonProps } from './NotifiSubscribeButton';
 import {
   NotifiInputLabels,
   NotifiInputSeparators,
 } from './NotifiSubscriptionCard';
-import { EditCardViewProps } from './subscription-card-views/EditCardView';
-import { PreviewCard } from './subscription-card-views/PreviewCard';
-import { UserInfoPanelProps } from './subscription-card-views/preview-panel/UserInfoPanel';
+import {
+  EditCardView,
+  EditCardViewProps,
+} from './subscription-card-views/EditCardView';
+import {
+  PreviewCard,
+  PreviewCardProps,
+} from './subscription-card-views/PreviewCard';
 
 export type SubscriptionCardV1Props = Readonly<{
-  classNames?: PreviewCardClassNamesProps &
-    NotifiInputProps &
-    EditCardClassNames &
-    Readonly<{
-      NotifiSubscribeButton?: NotifiSubscribeButtonProps['classNames'];
-    }>;
+  classNames?: {
+    PreviewCard?: DeepPartialReadonly<PreviewCardProps['classNames']>;
+    EditCard?: DeepPartialReadonly<EditCardViewProps['classNames']>;
+  };
   inputDisabled: boolean;
   data: CardConfigItemV1;
   inputs: Record<string, string | undefined>;
   inputLabels?: NotifiInputLabels;
   inputSeparators?: NotifiInputSeparators;
 }>;
-
-export type NotifiInputProps = Readonly<{
-  NotifiEmailInput?: NotifiEmailInputProps['classNames'];
-  NotifiSmsInput?: NotifiSmsInputProps['classNames'];
-  NotifiTelegramInput?: NotifiTelegramInputProps['classNames'];
-}>;
-
-export type PreviewCardClassNamesProps = DeepPartialReadonly<
-  UserInfoPanelProps['classNames']
-> &
-  Readonly<{
-    NotifiPreviewCardSeparator?: string;
-    EventTypeBroadcastRow?: EventTypeBroadcastRowProps['classNames'];
-    EventTypeUnsupportedRow?: EventTypeUnsupportedRowProps['classNames'];
-  }>;
-
-export type EditCardClassNames = DeepPartialReadonly<
-  EditCardViewProps['classNames']
->;
 
 export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
   classNames,
@@ -65,19 +41,6 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
     useNotifiSubscriptionContext();
 
   const { isInitialized } = useNotifiSubscribe();
-
-  const previewCardClassNames: PreviewCardClassNamesProps = {
-    EventTypeBroadcastRow: classNames?.EventTypeBroadcastRow,
-    EventTypeUnsupportedRow: classNames?.EventTypeUnsupportedRow,
-    NotifiPreviewCardSeparator: classNames?.NotifiPreviewCardSeparator,
-  };
-
-  const editCardClassNames: EditCardClassNames = {
-    NotifiEmailInput: classNames?.NotifiEmailInput,
-    NotifiSmsInput: classNames?.NotifiSmsInput,
-    NotifiSubscribeButton: classNames?.NotifiSubscribeButton,
-    NotifiTelegramInput: classNames?.NotifiTelegramInput,
-  };
 
   let view = null;
 
@@ -105,7 +68,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
           data={data}
           inputs={inputs}
           inputDisabled={inputDisabled}
-          classNames={previewCardClassNames}
+          classNames={classNames?.PreviewCard}
         />
       );
       break;
@@ -113,7 +76,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
       view = (
         <EditCardView
           data={data}
-          classNames={editCardClassNames}
+          classNames={classNames?.EditCard}
           inputDisabled={inputDisabled}
           inputLabels={inputLabels}
           inputSeparators={inputSeparators}
