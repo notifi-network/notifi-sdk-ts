@@ -36,7 +36,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
     email,
     telegramId,
     setCardView,
-    isEmailConfirmed,
+    emailIdThatNeedsConfirmation,
     telegramConfirmationUrl,
   } = useNotifiSubscriptionContext();
 
@@ -69,7 +69,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
           >
             {email ?? 'email'}
           </label>
-          {isEmailConfirmed ? null : (
+          {emailIdThatNeedsConfirmation !== '' ? (
             <a
               target="_blank"
               rel="noopener noreferrer"
@@ -88,7 +88,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
                 {confirmationLabels?.email ?? 'Resend Link'}
               </label>
             </a>
-          )}
+          ) : null}
         </div>
       ) : null}
       {data.contactInfo.sms.active ? (

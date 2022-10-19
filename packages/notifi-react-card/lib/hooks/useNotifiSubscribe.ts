@@ -22,8 +22,8 @@ export type SubscriptionData = Readonly<{
   phoneNumber: string | null;
   telegramId: string | null;
   telegramConfirmationUrl: string | null;
-  isEmailConfirmed: boolean | null;
   isPhoneNumberConfirmed: boolean | null;
+  emailIdThatNeedsConfirmation: string;
 }>;
 
 export type InstantSubscribe = Readonly<{
@@ -52,14 +52,13 @@ export const useNotifiSubscribe: () => Readonly<{
     phoneNumber: inputPhoneNumber,
     setAlerts,
     setEmail,
-    setIsEmailConfirmed,
     setIsSmsConfirmed,
     setLoading,
     setPhoneNumber,
     setTelegramConfirmationUrl,
     setTelegramId,
-    setEmailId,
-    emailId,
+    emailIdThatNeedsConfirmation,
+    setEmailIdThatNeedsConfirmation,
     telegramId: inputTelegramId,
     useHardwareWallet,
   } = useNotifiSubscriptionContext();
@@ -68,11 +67,11 @@ export const useNotifiSubscribe: () => Readonly<{
 
   const resendEmailVerificationLink = useCallback(async () => {
     const resend = await client.sendEmailTargetVerification({
-      targetId: emailId,
+      targetId: emailIdThatNeedsConfirmation,
     });
 
     return resend;
-  }, [emailId, client.sendEmailTargetVerification]);
+  }, [emailIdThatNeedsConfirmation, client.sendEmailTargetVerification]);
 
   const render = useCallback(
     (newData: ClientData | null): SubscriptionData => {
@@ -88,13 +87,15 @@ export const useNotifiSubscribe: () => Readonly<{
       });
 
       setAlerts(alerts);
-      const email = targetGroup?.emailTargets[0]?.emailAddress ?? null;
-      const isEmailConfirmed =
-        targetGroup?.emailTargets[0]?.isConfirmed ?? null;
-      setIsEmailConfirmed(isEmailConfirmed);
+      const emailTarget = targetGroup?.emailTargets[0] ?? null;
 
-      setEmailId(targetGroup?.emailTargets[0].id ?? '');
-      setEmail(email ?? '');
+      if (emailTarget !== null && emailTarget?.isConfirmed === false) {
+        setEmailIdThatNeedsConfirmation(emailTarget.id ?? '');
+      } else {
+        setEmailIdThatNeedsConfirmation('');
+      }
+
+      setEmail(emailTarget?.emailAddress ?? '');
 
       const phoneNumber = targetGroup?.smsTargets[0]?.phoneNumber ?? null;
       const isPhoneNumberConfirmed =
@@ -109,9 +110,9 @@ export const useNotifiSubscribe: () => Readonly<{
 
       return {
         alerts,
-        email,
-        isEmailConfirmed,
+        email: emailTarget?.emailAddress ?? null,
         isPhoneNumberConfirmed,
+        emailIdThatNeedsConfirmation,
         phoneNumber,
         telegramConfirmationUrl: telegramTarget?.confirmationUrl ?? null,
         telegramId: telegramTarget?.telegramId ?? null,

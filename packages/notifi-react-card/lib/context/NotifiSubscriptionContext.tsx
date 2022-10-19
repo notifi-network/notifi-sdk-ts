@@ -3,7 +3,6 @@ import { PropsWithChildren } from 'react';
 import React, { createContext, useContext, useState } from 'react';
 
 import { FetchedCardView, useFetchedCardState } from '../hooks';
-
 import { NotifiParams } from './NotifiContext';
 
 export type NotifiSubscriptionData = Readonly<{
@@ -12,16 +11,15 @@ export type NotifiSubscriptionData = Readonly<{
   params: NotifiParams;
   phoneNumber: string;
   telegramId: string;
-  emailId: string;
   telegramConfirmationUrl?: string;
   useHardwareWallet: boolean;
+
   cardView: FetchedCardView;
   setCardView: React.Dispatch<React.SetStateAction<FetchedCardView>>;
   setAlerts: (alerts: Record<string, Alert | undefined>) => void;
   setEmail: (email: string) => void;
   setPhoneNumber: (phoneNumber: string) => void;
   setTelegramId: (telegramId: string) => void;
-  setEmailId: (emailId: string) => void;
   setEmailErrorMessage: (message: string) => void;
   setSmsErrorMessage: (message: string) => void;
   emailErrorMessage: string;
@@ -32,10 +30,10 @@ export type NotifiSubscriptionData = Readonly<{
   setUseHardwareWallet: (hardwareWallet: boolean) => void;
   loading: boolean;
   setLoading: (loading: boolean) => void;
-  isEmailConfirmed: boolean | null;
   isSmsConfirmed: boolean | null;
-  setIsEmailConfirmed: (isConfirmed: boolean | null) => void;
   setIsSmsConfirmed: (isConfirmed: boolean | null) => void;
+  emailIdThatNeedsConfirmation: string;
+  setEmailIdThatNeedsConfirmation: (emailId: string) => void;
 }>;
 
 const NotifiSubscriptionContext = createContext<NotifiSubscriptionData>(
@@ -48,14 +46,12 @@ export const NotifiSubscriptionContextProvider: React.FC<
   const [email, setEmail] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [telegramId, setTelegramId] = useState<string>('');
-  const [emailId, setEmailId] = useState<string>('');
   const { cardView, setCardView } = useFetchedCardState();
 
   const [emailErrorMessage, setEmailErrorMessage] = useState<string>('');
   const [smsErrorMessage, setSmsErrorMessage] = useState<string>('');
-  const [isEmailConfirmed, setIsEmailConfirmed] = useState<boolean | null>(
-    null,
-  );
+  const [emailIdThatNeedsConfirmation, setEmailIdThatNeedsConfirmation] =
+    useState<string>('');
   const [isSmsConfirmed, setIsSmsConfirmed] = useState<boolean | null>(null);
 
   const [telegramConfirmationUrl, setTelegramConfirmationUrl] = useState<
@@ -78,9 +74,9 @@ export const NotifiSubscriptionContextProvider: React.FC<
     setSmsErrorMessage,
     setEmailErrorMessage,
     smsErrorMessage,
-    isEmailConfirmed,
+    emailIdThatNeedsConfirmation,
     isSmsConfirmed,
-    setIsEmailConfirmed,
+    setEmailIdThatNeedsConfirmation,
     setIsSmsConfirmed,
     emailErrorMessage,
     useHardwareWallet,
@@ -92,8 +88,6 @@ export const NotifiSubscriptionContextProvider: React.FC<
     setTelegramId,
     setTelegramConfirmationUrl,
     setUseHardwareWallet,
-    emailId,
-    setEmailId,
   };
 
   return (
