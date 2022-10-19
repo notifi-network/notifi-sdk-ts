@@ -12,6 +12,7 @@ export type NotifiSubscriptionData = Readonly<{
   params: NotifiParams;
   phoneNumber: string;
   telegramId: string;
+  emailId: string;
   telegramConfirmationUrl?: string;
   useHardwareWallet: boolean;
   cardView: FetchedCardView;
@@ -20,6 +21,7 @@ export type NotifiSubscriptionData = Readonly<{
   setEmail: (email: string) => void;
   setPhoneNumber: (phoneNumber: string) => void;
   setTelegramId: (telegramId: string) => void;
+  setEmailId: (emailId: string) => void;
   setEmailErrorMessage: (message: string) => void;
   setSmsErrorMessage: (message: string) => void;
   emailErrorMessage: string;
@@ -46,6 +48,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
   const [email, setEmail] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [telegramId, setTelegramId] = useState<string>('');
+  const [emailId, setEmailId] = useState<string>('');
   const { cardView, setCardView } = useFetchedCardState();
 
   const [emailErrorMessage, setEmailErrorMessage] = useState<string>('');
@@ -89,6 +92,8 @@ export const NotifiSubscriptionContextProvider: React.FC<
     setTelegramId,
     setTelegramConfirmationUrl,
     setUseHardwareWallet,
+    emailId,
+    setEmailId,
   };
 
   return (

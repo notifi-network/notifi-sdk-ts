@@ -42,6 +42,7 @@ export const useNotifiSubscribe: () => Readonly<{
     subscribeData: InstantSubscribe,
   ) => Promise<SubscriptionData>;
   updateTargetGroups: () => Promise<SubscriptionData>;
+  resendEmailVerificationLink: () => Promise<string>;
 }> = () => {
   const { client } = useNotifiClientContext();
 
@@ -57,11 +58,21 @@ export const useNotifiSubscribe: () => Readonly<{
     setPhoneNumber,
     setTelegramConfirmationUrl,
     setTelegramId,
+    setEmailId,
+    emailId,
     telegramId: inputTelegramId,
     useHardwareWallet,
   } = useNotifiSubscriptionContext();
 
   const { keepSubscriptionData = true, walletPublicKey } = params;
+
+  const resendEmailVerificationLink = useCallback(async () => {
+    const resend = await client.sendEmailTargetVerification({
+      targetId: emailId,
+    });
+
+    return resend;
+  }, [emailId, client.sendEmailTargetVerification]);
 
   const render = useCallback(
     (newData: ClientData | null): SubscriptionData => {
@@ -81,6 +92,8 @@ export const useNotifiSubscribe: () => Readonly<{
       const isEmailConfirmed =
         targetGroup?.emailTargets[0]?.isConfirmed ?? null;
       setIsEmailConfirmed(isEmailConfirmed);
+
+      setEmailId(targetGroup?.emailTargets[0].id ?? '');
       setEmail(email ?? '');
 
       const phoneNumber = targetGroup?.smsTargets[0]?.phoneNumber ?? null;
@@ -502,6 +515,7 @@ export const useNotifiSubscribe: () => Readonly<{
   );
 
   return {
+    resendEmailVerificationLink,
     instantSubscribe,
     isAuthenticated: client.isAuthenticated,
     isInitialized: client.isInitialized,
