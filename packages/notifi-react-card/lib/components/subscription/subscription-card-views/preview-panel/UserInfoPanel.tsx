@@ -2,12 +2,14 @@ import clsx from 'clsx';
 import React, { useCallback } from 'react';
 
 import { useNotifiSubscriptionContext } from '../../../../context';
-import { CardConfigItemV1 } from '../../../../hooks';
+import { CardConfigItemV1, useNotifiSubscribe } from '../../../../hooks';
 import { DeepPartialReadonly } from '../../../../utils';
 
 export type UserInfoSection = {
   container: string;
   label: string;
+  confirmationLink: string;
+  confirmationLabel: string;
 };
 
 export type UserInfoPanelProps = {
@@ -19,17 +21,34 @@ export type UserInfoPanelProps = {
     EditButton: string;
   }>;
   data: CardConfigItemV1;
+  confirmationLabels?: {
+    email?: string;
+    telegram?: string;
+  };
 };
 export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
   classNames,
   data,
+  confirmationLabels,
 }) => {
-  const { phoneNumber, email, telegramId, setCardView } =
-    useNotifiSubscriptionContext();
+  const {
+    phoneNumber,
+    email,
+    telegramId,
+    setCardView,
+    emailIdThatNeedsConfirmation,
+    telegramConfirmationUrl,
+  } = useNotifiSubscriptionContext();
+
+  const { resendEmailVerificationLink } = useNotifiSubscribe();
 
   const handleEditClick = useCallback(() => {
     setCardView({ state: 'edit' });
   }, [setCardView, phoneNumber, email, telegramId]);
+
+  const handleResendEmailVerificationClick = useCallback(() => {
+    resendEmailVerificationLink();
+  }, []);
 
   return (
     <div
@@ -50,6 +69,26 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
           >
             {email ?? 'email'}
           </label>
+          {emailIdThatNeedsConfirmation !== '' ? (
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={handleResendEmailVerificationClick}
+              className={clsx(
+                'NotifiUserInfoPanel__emailConfirmation',
+                classNames?.email?.confirmationLink,
+              )}
+            >
+              <label
+                className={clsx(
+                  'NotifiUserInfoPanel__emailConfirmationLabel',
+                  classNames?.email?.confirmationLabel,
+                )}
+              >
+                {confirmationLabels?.email ?? 'Resend Link'}
+              </label>
+            </a>
+          ) : null}
         </div>
       ) : null}
       {data.contactInfo.sms.active ? (
@@ -84,6 +123,26 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
           >
             {telegramId ?? 'telegram'}
           </label>
+          {telegramConfirmationUrl ? (
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href={telegramConfirmationUrl}
+              className={clsx(
+                'NotifiUserInfoPanel__telegramConfirmation',
+                classNames?.telegram?.confirmationLink,
+              )}
+            >
+              <label
+                className={clsx(
+                  'NotifiUserInfoPanel__telegramConfirmationLabel',
+                  classNames?.telegram?.confirmationLabel,
+                )}
+              >
+                {confirmationLabels?.telegram ?? 'Verify Id'}
+              </label>
+            </a>
+          ) : null}
         </div>
       ) : null}
       <button
