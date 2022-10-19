@@ -7,6 +7,7 @@ import type {
 } from '..';
 import { useNotifiSubscriptionContext } from '../../context';
 import { CardConfigItemV1, useNotifiSubscribe } from '../../hooks';
+import { DeepPartialReadonly } from '../../utils';
 import type { EventTypeBroadcastRowProps } from './EventTypeBroadcastRow';
 import type { EventTypeUnsupportedRowProps } from './EventTypeUnsupportedRow';
 import { NotifiSubscribeButtonProps } from './NotifiSubscribeButton';
@@ -14,12 +15,14 @@ import {
   NotifiInputLabels,
   NotifiInputSeparators,
 } from './NotifiSubscriptionCard';
-import { EditCardView } from './subscription-card-views/EditCardView';
+import { EditCardViewProps } from './subscription-card-views/EditCardView';
 import { PreviewCard } from './subscription-card-views/PreviewCard';
+import { UserInfoPanelProps } from './subscription-card-views/preview-panel/UserInfoPanel';
 
 export type SubscriptionCardV1Props = Readonly<{
   classNames?: PreviewCardClassNamesProps &
     NotifiInputProps &
+    EditCardClassNames &
     Readonly<{
       NotifiSubscribeButton?: NotifiSubscribeButtonProps['classNames'];
     }>;
@@ -36,11 +39,18 @@ export type NotifiInputProps = Readonly<{
   NotifiTelegramInput?: NotifiTelegramInputProps['classNames'];
 }>;
 
-export type PreviewCardClassNamesProps = Readonly<{
-  NotifiPreviewCardSeparator?: string;
-  EventTypeBroadcastRow?: EventTypeBroadcastRowProps['classNames'];
-  EventTypeUnsupportedRow?: EventTypeUnsupportedRowProps['classNames'];
-}>;
+export type PreviewCardClassNamesProps = DeepPartialReadonly<
+  UserInfoPanelProps['classNames']
+> &
+  Readonly<{
+    NotifiPreviewCardSeparator?: string;
+    EventTypeBroadcastRow?: EventTypeBroadcastRowProps['classNames'];
+    EventTypeUnsupportedRow?: EventTypeUnsupportedRowProps['classNames'];
+  }>;
+
+export type EditCardClassNames = DeepPartialReadonly<
+  EditCardViewProps['classNames']
+>;
 
 export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
   classNames,
@@ -60,6 +70,13 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
     EventTypeBroadcastRow: classNames?.EventTypeBroadcastRow,
     EventTypeUnsupportedRow: classNames?.EventTypeUnsupportedRow,
     NotifiPreviewCardSeparator: classNames?.NotifiPreviewCardSeparator,
+  };
+
+  const editCardClassNames: EditCardClassNames = {
+    NotifiEmailInput: classNames?.NotifiEmailInput,
+    NotifiSmsInput: classNames?.NotifiSmsInput,
+    NotifiSubscribeButton: classNames?.NotifiSubscribeButton,
+    NotifiTelegramInput: classNames?.NotifiTelegramInput,
   };
 
   let view = null;
@@ -96,7 +113,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
       view = (
         <EditCardView
           data={data}
-          classNames={classNames}
+          classNames={editCardClassNames}
           inputDisabled={inputDisabled}
           inputLabels={inputLabels}
           inputSeparators={inputSeparators}

@@ -8,6 +8,8 @@ import { DeepPartialReadonly } from '../../../../utils';
 export type UserInfoSection = {
   container: string;
   label: string;
+  confirmationLink: string;
+  confirmationLabel: string;
 };
 
 export type UserInfoPanelProps = {
@@ -17,26 +19,17 @@ export type UserInfoPanelProps = {
     telegram?: UserInfoSection;
     sms?: UserInfoSection;
     EditButton: string;
-    confirmation: {
-      email: string;
-      emailLabel: string;
-      telegram: string;
-      telegramLabel: string;
-    };
   }>;
   data: CardConfigItemV1;
   confirmationLabels?: {
-    email: string;
-    telegram: string;
+    email?: string;
+    telegram?: string;
   };
 };
 export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
   classNames,
   data,
-  confirmationLabels = {
-    email: 'Resend link',
-    telegram: 'Verify Id',
-  },
+  confirmationLabels,
 }) => {
   const {
     phoneNumber,
@@ -76,26 +69,26 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
           >
             {email ?? 'email'}
           </label>
-          {!isEmailConfirmed ? (
+          {isEmailConfirmed ? null : (
             <a
               target="_blank"
               rel="noopener noreferrer"
               onClick={handleResendEmailVerificationClick}
               className={clsx(
                 'NotifiUserInfoPanel__emailConfirmation',
-                classNames?.confirmation?.email,
+                classNames?.email?.confirmationLink,
               )}
             >
               <label
                 className={clsx(
                   'NotifiUserInfoPanel__emailConfirmationLabel',
-                  classNames?.confirmation?.emailLabel,
+                  classNames?.email?.confirmationLabel,
                 )}
               >
-                {confirmationLabels.email}
+                {confirmationLabels?.email ?? 'Resend Link'}
               </label>
             </a>
-          ) : null}
+          )}
         </div>
       ) : null}
       {data.contactInfo.sms.active ? (
@@ -137,16 +130,16 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
               href={telegramConfirmationUrl}
               className={clsx(
                 'NotifiUserInfoPanel__telegramConfirmation',
-                classNames?.confirmation?.telegram,
+                classNames?.telegram?.confirmationLink,
               )}
             >
               <label
                 className={clsx(
                   'NotifiUserInfoPanel__telegramConfirmationLabel',
-                  classNames?.confirmation?.telegramLabel,
+                  classNames?.telegram?.confirmationLabel,
                 )}
               >
-                {confirmationLabels.telegram}
+                {confirmationLabels?.telegram ?? 'Verify Id'}
               </label>
             </a>
           ) : null}
