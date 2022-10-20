@@ -2,8 +2,8 @@ import { GetNotificationHistoryResult } from '@notifi-network/notifi-core';
 import clsx from 'clsx';
 import React, { useCallback, useState } from 'react';
 
+import { AlertNotificationRow } from '../../AlertHistory/AlertNotificationRow';
 import { useAlertHistory } from '../../hooks/useAlertHistory';
-import { AlertNotificationRow } from './AlertNotificationRow';
 
 export type AlertHistoryViewProps = Readonly<{
   alertHistoryTitle?: string;
