@@ -1,8 +1,8 @@
 import clsx from 'clsx';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useNotifiSubscriptionContext } from '../../context';
-import { DirectPushEventTypeItem } from '../../hooks';
+import { DirectPushEventTypeItem, useNotifiSubscribe } from '../../hooks';
 import {
   AlertConfiguration,
   DeepPartialReadonly,
@@ -29,9 +29,10 @@ export const EventTypeDirectPushRow: React.FC<EventTypeDirectPushRowProps> = ({
   config,
   inputs,
 }: EventTypeDirectPushRowProps) => {
-  const { alerts, loading, setAlertConfiguration } =
-    useNotifiSubscriptionContext();
-  const [enabled, setEnabled] = useState(true);
+  const { alerts, loading } = useNotifiSubscriptionContext();
+
+  const { instantSubscribe } = useNotifiSubscribe();
+  const [enabled, setEnabled] = useState(false);
 
   const alertName = useMemo<string>(() => config.name, [config]);
   const alertConfiguration = useMemo<AlertConfiguration>(() => {
@@ -47,15 +48,24 @@ export const EventTypeDirectPushRow: React.FC<EventTypeDirectPushRowProps> = ({
     }
     const hasAlert = alerts[alertName] !== undefined;
     setEnabled(hasAlert);
-  }, [alerts, loading]);
+  }, [alertName, alerts, loading]);
 
-  useEffect(() => {
-    if (enabled) {
-      setAlertConfiguration(alertName, alertConfiguration);
-    } else {
-      setAlertConfiguration(alertName, null);
+  const handleNewSubscription = useCallback(() => {
+    if (loading) {
+      return;
     }
-  }, [enabled, alertName, alertConfiguration, setAlertConfiguration]);
+    if (!enabled) {
+      instantSubscribe({
+        alertConfiguration: alertConfiguration,
+        alertName: alertName,
+      });
+    } else {
+      instantSubscribe({
+        alertConfiguration: null,
+        alertName: alertName,
+      });
+    }
+  }, [enabled, instantSubscribe, alertConfiguration, alertName]);
 
   return (
     <div
@@ -71,7 +81,7 @@ export const EventTypeDirectPushRow: React.FC<EventTypeDirectPushRowProps> = ({
         classNames={classNames?.toggle}
         disabled={disabled}
         checked={enabled}
-        setChecked={setEnabled}
+        setChecked={handleNewSubscription}
       />
     </div>
   );

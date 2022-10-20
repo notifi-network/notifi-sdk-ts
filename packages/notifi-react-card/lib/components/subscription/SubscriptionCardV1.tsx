@@ -1,28 +1,26 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 
-import type {
-  NotifiEmailInputProps,
-  NotifiSmsInputProps,
-  NotifiTelegramInputProps,
-} from '..';
-import { CardConfigItemV1 } from '../../hooks';
-import { useFetchedCardState } from '../../hooks/useFetchedCardState';
-import type { EventTypeBroadcastRowProps } from './EventTypeBroadcastRow';
-import type { EventTypeUnsupportedRowProps } from './EventTypeUnsupportedRow';
+import { useNotifiSubscriptionContext } from '../../context';
+import { CardConfigItemV1, useNotifiSubscribe } from '../../hooks';
+import { DeepPartialReadonly } from '../../utils';
 import {
   NotifiInputLabels,
   NotifiInputSeparators,
 } from './NotifiSubscriptionCard';
-import { EditCardView } from './subscription card views/EditCardView';
+import {
+  EditCardView,
+  EditCardViewProps,
+} from './subscription-card-views/EditCardView';
+import {
+  PreviewCard,
+  PreviewCardProps,
+} from './subscription-card-views/PreviewCard';
 
 export type SubscriptionCardV1Props = Readonly<{
-  classNames?: Readonly<{
-    NotifiEmailInput?: NotifiEmailInputProps['classNames'];
-    NotifiSmsInput?: NotifiSmsInputProps['classNames'];
-    NotifiTelegramInput?: NotifiTelegramInputProps['classNames'];
-    EventTypeBroadcastRow?: EventTypeBroadcastRowProps['classNames'];
-    EventTypeUnsupportedRow?: EventTypeUnsupportedRowProps['classNames'];
-  }>;
+  classNames?: {
+    PreviewCard?: DeepPartialReadonly<PreviewCardProps['classNames']>;
+    EditCard?: DeepPartialReadonly<EditCardViewProps['classNames']>;
+  };
   inputDisabled: boolean;
   data: CardConfigItemV1;
   inputs: Record<string, string | undefined>;
@@ -39,18 +37,47 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
   inputSeparators,
 }) => {
   const allowedCountryCodes = [...data.contactInfo.sms.supportedCountryCodes];
-  const { cardView } = useFetchedCardState();
+  const { cardView, email, phoneNumber, telegramId, setCardView } =
+    useNotifiSubscriptionContext();
+
+  const { isInitialized } = useNotifiSubscribe();
 
   let view = null;
 
+  const firstLoad = useRef(false);
+  useEffect(() => {
+    if (firstLoad.current || !isInitialized) {
+      return;
+    }
+
+    firstLoad.current = true;
+
+    if (
+      (email !== '' && email !== undefined) ||
+      (phoneNumber !== '' && phoneNumber !== undefined) ||
+      (telegramId !== '' && telegramId !== undefined)
+    ) {
+      setCardView({ state: 'preview' });
+    }
+  }, [email, phoneNumber, telegramId, setCardView, cardView, isInitialized]);
+
   switch (cardView.state) {
+    case 'preview':
+      view = (
+        <PreviewCard
+          data={data}
+          inputs={inputs}
+          inputDisabled={inputDisabled}
+          classNames={classNames?.PreviewCard}
+        />
+      );
+      break;
     case 'edit':
       view = (
         <EditCardView
           data={data}
-          classNames={classNames}
+          classNames={classNames?.EditCard}
           inputDisabled={inputDisabled}
-          inputs={inputs}
           inputLabels={inputLabels}
           inputSeparators={inputSeparators}
           allowedCountryCodes={allowedCountryCodes}

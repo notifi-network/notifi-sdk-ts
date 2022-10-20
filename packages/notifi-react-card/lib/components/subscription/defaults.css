@@ -1,20 +1,23 @@
 .notifi__light {
   --notifi-card-background: #eee;
+  --notifi-card-secondary-background: rgb(214, 214, 214);
   --notifi-font-color: #000;
   --notifi-secondary-font-color: rgb(93, 93, 93);
   --notifi-input-background: rgba(255, 255, 255, 0.8);
-  --notifi-placeholder-color: rgba(0, 0, 0, 0.5);
+  --notifi-placeholder-color: rgba(224, 224, 224, 0.5);
   --notifi-focus-color: #000;
   --notifi-toggle-handle: #fff;
   --notifi-toggle-inactive: rgba(0, 0, 0, 0.2);
   --notifi-toggle-active: rgba(0, 0, 0, 0.6);
   --notifi-button-color: rgba(0, 0, 0, 0.4);
   --notifi-alert-color: rgb(252 0 0);
+  --notifi-link-color: #0000ee;
 }
 
 .notifi__dark {
   --notifi-card-background: #333;
   --notifi-font-color: #fff;
+  --notifi-card-secondary-background: rgb(68, 68, 68);
   --notifi-secondary-font-color: rgb(212, 212, 212);
   --notifi-input-background: rgba(255, 255, 255, 0.2);
   --notifi-placeholder-color: rgba(255, 255, 255, 0.5);
@@ -24,6 +27,7 @@
   --notifi-toggle-active: rgba(255, 255, 255, 0.4);
   --notifi-button-color: rgba(255, 255, 255, 0.2);
   --notifi-alert-color: rgb(213, 25, 25);
+  --notifi-link-color: #b3b3ff;
 }
 
 .NotifiSubscriptionCard__container {
@@ -78,6 +82,7 @@
   padding: 10px;
   align-items: center;
   max-height: 22px;
+  box-sizing: content-box;
 }
 
 .NotifiEmailInput::after,
@@ -173,6 +178,7 @@
   transform: translateX(var(--notifi-toggle-size));
 }
 
+.EventTypeLabelRow__container,
 .EventTypeBroadcastRow__container,
 .EventTypeDirectPushRow__container {
   display: flex;
@@ -185,6 +191,15 @@
   margin-right: 10px;
   font-size: 16px;
   line-height: 20px;
+  text-align: left;
+}
+
+.EventTypeLabelRow__label {
+  color: var(--notifi-secondary-font-color);
+  flex-grow: 1;
+  margin-right: 10px;
+  font-size: 12px;
+  line-height: 16px;
   text-align: left;
 }
 
@@ -244,7 +259,9 @@
 }
 
 .NotifiInputSeparator__container:before,
-.NotifiInputSeparator__container:after {
+.NotifiInputSeparator__container:after,
+.NotifiPreviewCardSeparator:before,
+.NotifiPreviewCardSeparator::after {
   background-color: var(--notifi-secondary-font-color);
   content: '';
   display: inline-block;
@@ -256,4 +273,56 @@
 
 .NotifiInputSeparator__content {
   padding: 0px 8px 0px 8px;
+}
+
+.NotifiUserInfoPanelContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 16px 24px 16px 24px;
+  border-radius: 5px;
+  background-color: var(--notifi-card-secondary-background);
+}
+
+.NotifiPreviewCard__editButton {
+  display: flex;
+  padding: 10px 20px 10px 20px;
+  background-color: var(--notifi-button-color);
+  border-radius: 10px;
+  border: none;
+  font-size: 16px;
+  line-height: 20px;
+  cursor: pointer;
+  color: var(--notifi-font-color);
+}
+
+.NotifiUserInfoPanel__emailConfirmation,
+.NotifiUserInfoPanel__telegramConfirmation {
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+
+.NotifiUserInfoPanel__emailConfirmationLabel,
+.NotifiUserInfoPanel__telegramConfirmationLabel {
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--notifi-link-color);
+  text-decoration: underline;
+}
+
+.NotifiUserInfoPanel__email,
+.NotifiUserInfoPanel__telegram,
+.NotifiUserInfoPanel__sms {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  text-align: left;
+  align-items: baseline;
+  overflow-wrap: anywhere;
+}
+
+.NotifiUserInfoPanel__emailLabel,
+.NotifiUserInfoPanel__telegramLabel {
+  margin-bottom: 0 !important;
 }

@@ -1,14 +1,8 @@
 import type { Alert } from '@notifi-network/notifi-core';
-import type { PropsWithChildren } from 'react';
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useRef,
-  useState,
-} from 'react';
+import { PropsWithChildren } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
-import type { AlertConfiguration } from '../utils';
+import { FetchedCardView, useFetchedCardState } from '../hooks';
 import { NotifiParams } from './NotifiContext';
 
 export type NotifiSubscriptionData = Readonly<{
@@ -19,15 +13,10 @@ export type NotifiSubscriptionData = Readonly<{
   telegramId: string;
   telegramConfirmationUrl?: string;
   useHardwareWallet: boolean;
-  getAlertConfiguration: (name: string) => AlertConfiguration | null;
-  getAlertConfigurations: () => Readonly<
-    Record<string, AlertConfiguration | null>
-  >;
+
+  cardView: FetchedCardView;
+  setCardView: React.Dispatch<React.SetStateAction<FetchedCardView>>;
   setAlerts: (alerts: Record<string, Alert | undefined>) => void;
-  setAlertConfiguration: (
-    name: string,
-    config: AlertConfiguration | null,
-  ) => void;
   setEmail: (email: string) => void;
   setPhoneNumber: (phoneNumber: string) => void;
   setTelegramId: (telegramId: string) => void;
@@ -41,6 +30,10 @@ export type NotifiSubscriptionData = Readonly<{
   setUseHardwareWallet: (hardwareWallet: boolean) => void;
   loading: boolean;
   setLoading: (loading: boolean) => void;
+  isSmsConfirmed: boolean | null;
+  setIsSmsConfirmed: (isConfirmed: boolean | null) => void;
+  emailIdThatNeedsConfirmation: string;
+  setEmailIdThatNeedsConfirmation: (emailId: string) => void;
 }>;
 
 const NotifiSubscriptionContext = createContext<NotifiSubscriptionData>(
@@ -53,9 +46,13 @@ export const NotifiSubscriptionContextProvider: React.FC<
   const [email, setEmail] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [telegramId, setTelegramId] = useState<string>('');
+  const { cardView, setCardView } = useFetchedCardState();
 
   const [emailErrorMessage, setEmailErrorMessage] = useState<string>('');
   const [smsErrorMessage, setSmsErrorMessage] = useState<string>('');
+  const [emailIdThatNeedsConfirmation, setEmailIdThatNeedsConfirmation] =
+    useState<string>('');
+  const [isSmsConfirmed, setIsSmsConfirmed] = useState<boolean | null>(null);
 
   const [telegramConfirmationUrl, setTelegramConfirmationUrl] = useState<
     string | undefined
@@ -65,33 +62,6 @@ export const NotifiSubscriptionContextProvider: React.FC<
   const [useHardwareWallet, setUseHardwareWallet] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
 
-  const alertConfigurations = useRef<Record<string, AlertConfiguration | null>>(
-    params.alertConfigurations ?? {},
-  );
-  const getAlertConfigurations = useCallback((): Readonly<
-    Record<string, AlertConfiguration | null>
-  > => {
-    return alertConfigurations.current;
-  }, []);
-
-  const getAlertConfiguration = useCallback(
-    (name: string): AlertConfiguration | null => {
-      return alertConfigurations.current[name] ?? null;
-    },
-    [],
-  );
-
-  const setAlertConfiguration = useCallback(
-    (name: string, config: AlertConfiguration | null): void => {
-      if (config === null) {
-        alertConfigurations.current[name] = null;
-      } else {
-        alertConfigurations.current[name] = config;
-      }
-    },
-    [],
-  );
-
   const value = {
     alerts,
     email,
@@ -99,16 +69,19 @@ export const NotifiSubscriptionContextProvider: React.FC<
     params,
     phoneNumber,
     telegramId,
+    cardView,
     telegramConfirmationUrl,
     setSmsErrorMessage,
     setEmailErrorMessage,
     smsErrorMessage,
+    emailIdThatNeedsConfirmation,
+    isSmsConfirmed,
+    setEmailIdThatNeedsConfirmation,
+    setIsSmsConfirmed,
     emailErrorMessage,
     useHardwareWallet,
-    getAlertConfiguration,
-    getAlertConfigurations,
     setAlerts,
-    setAlertConfiguration,
+    setCardView,
     setEmail,
     setLoading,
     setPhoneNumber,

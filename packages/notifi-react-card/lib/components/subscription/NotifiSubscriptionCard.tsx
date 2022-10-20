@@ -12,7 +12,6 @@ import { FetchedStateCard } from './FetchedStateCard';
 import type { LoadingStateCardProps } from './LoadingStateCard';
 import { LoadingStateCard } from './LoadingStateCard';
 import type { NotifiSubscribeButtonProps } from './NotifiSubscribeButton';
-import { NotifiSubscribeButton } from './NotifiSubscribeButton';
 
 export type NotifiInputSeparators = {
   emailSeparator?: {
@@ -116,7 +115,6 @@ export const NotifiSubscriptionCard: React.FC<
     >
       {children}
       {contents}
-      <NotifiSubscribeButton classNames={classNames?.NotifiSubscribeButton} />
       <NotifiFooter classNames={classNames?.NotifiFooter} />
     </div>
   );

@@ -3,6 +3,9 @@ import type {
   FilterOptions,
 } from '@notifi-network/notifi-core';
 
+import { resolveStringRef } from '../components/subscription/resolveRef';
+import { EventTypeConfig } from './../hooks/SubscriptionCardConfig';
+
 export type AlertConfiguration = Readonly<{
   sourceType: CreateSourceInput['type'];
   createSource?: Readonly<{
@@ -70,4 +73,41 @@ export const hedgeProtocolConfiguration = ({
       address: walletAddress,
     },
   };
+};
+
+export const createConfigurations = (
+  eventTypes: EventTypeConfig,
+): Record<string, AlertConfiguration> => {
+  const configs: Record<string, AlertConfiguration> = {};
+  eventTypes.forEach((eventType) => {
+    switch (eventType.type) {
+      case 'broadcast': {
+        const broadcastId = resolveStringRef(
+          eventType.name,
+          eventType.broadcastId,
+          {},
+        );
+
+        configs[eventType.name] = broadcastMessageConfiguration({
+          topicName: broadcastId,
+        });
+        break;
+      }
+      case 'directPush': {
+        const pushId = resolveStringRef(
+          eventType.name,
+          eventType.directPushId,
+          {},
+        );
+
+        configs[eventType.name] = directMessageConfiguration({
+          type: pushId,
+        });
+
+        break;
+      }
+    }
+  });
+
+  return configs;
 };
