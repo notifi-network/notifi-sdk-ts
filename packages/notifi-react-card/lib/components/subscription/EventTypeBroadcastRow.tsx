@@ -42,6 +42,7 @@ export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
       topicName: broadcastId,
     });
   }, [alertName, config, inputs]);
+  const tooltipContent = config.tooltipContent;
 
   useEffect(() => {
     if (loading) {
@@ -77,10 +78,12 @@ export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
     >
       <div className={clsx('EventTypeBroadcastRow__label', classNames?.label)}>
         {config.name}
-        <NotifiTooltip
-          classNames={classNames?.toggle}
-          content={config.tooltipContent}
-        />
+        {tooltipContent.length > 0 ? (
+          <NotifiTooltip
+            classNames={classNames?.toggle}
+            content={tooltipContent}
+          />
+        ) : null}
       </div>
       <NotifiToggle
         checked={enabled}

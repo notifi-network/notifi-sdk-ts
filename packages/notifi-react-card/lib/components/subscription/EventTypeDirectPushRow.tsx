@@ -43,6 +43,7 @@ export const EventTypeDirectPushRow: React.FC<EventTypeDirectPushRowProps> = ({
       type: pushId,
     });
   }, [alertName, config, inputs]);
+  const tooltipContent = config.tooltipContent;
 
   useEffect(() => {
     if (loading) {
@@ -78,10 +79,12 @@ export const EventTypeDirectPushRow: React.FC<EventTypeDirectPushRowProps> = ({
     >
       <div className={clsx('EventTypeDirectPushRow__label', classNames?.label)}>
         {config.name}
-        <NotifiTooltip
-          classNames={classNames?.toggle}
-          content={config.tooltipContent}
-        />
+        {tooltipContent.length > 0 ? (
+          <NotifiTooltip
+            classNames={classNames?.toggle}
+            content={tooltipContent}
+          />
+        ) : null}
       </div>
       <NotifiToggle
         classNames={classNames?.toggle}
