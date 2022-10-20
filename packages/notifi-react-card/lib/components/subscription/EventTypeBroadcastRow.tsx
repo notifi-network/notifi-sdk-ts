@@ -5,11 +5,12 @@ import { useNotifiSubscriptionContext } from '../../context';
 import { BroadcastEventTypeItem, useNotifiSubscribe } from '../../hooks';
 import {
   AlertConfiguration,
-  broadcastMessageConfiguration,
   DeepPartialReadonly,
+  broadcastMessageConfiguration,
 } from '../../utils';
 import type { NotifiToggleProps } from './NotifiToggle';
 import { NotifiToggle } from './NotifiToggle';
+import { NotifiTooltip, NotifiTooltipProps } from './NotifiTooltip';
 import { resolveStringRef } from './resolveRef';
 
 export type EventTypeBroadcastRowProps = Readonly<{
@@ -17,6 +18,7 @@ export type EventTypeBroadcastRowProps = Readonly<{
     container: string;
     label: string;
     toggle: NotifiToggleProps['classNames'];
+    tooltip: NotifiTooltipProps['classNames'];
   }>;
   disabled: boolean;
   config: BroadcastEventTypeItem;
@@ -75,6 +77,10 @@ export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
     >
       <div className={clsx('EventTypeBroadcastRow__label', classNames?.label)}>
         {config.name}
+        <NotifiTooltip
+          classNames={classNames?.toggle}
+          content={config.tooltipContent}
+        />
       </div>
       <NotifiToggle
         checked={enabled}

@@ -14,12 +14,14 @@ export type DirectPushEventTypeItem = Readonly<{
   type: 'directPush';
   name: string;
   directPushId: ValueOrRef<string>;
+  tooltipContent: string;
 }>;
 
 export type BroadcastEventTypeItem = Readonly<{
   type: 'broadcast';
   name: string;
   broadcastId: ValueOrRef<string>;
+  tooltipContent: string;
 }>;
 
 export type LabelEventTypeItem = Readonly<{
