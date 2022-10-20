@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import React, { useCallback, useState } from 'react';
 
 import { useAlertHistory } from '../../../hooks/useAlertHistory';
+import { AlertNotificationRow } from './AlertNotificationRow';
 
 export type AlertHistoryViewProps = Readonly<{
   alertHistoryTitle?: string;
@@ -53,40 +54,17 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
         <div>
           {alertHistoryData?.nodes?.map((notification) => {
             return (
-              <div>
-                {/* <span
-                  className={clsx(
-                    'NotifiAlertHistory__notificationImage',
-                    classNames?.notificationImage,
-                  )}
-                >
-                  {notification.image}
-                </span> */}
-                <span
-                  className={clsx(
-                    'NotifiAlertHistory__notificationDate',
-                    classNames?.notificationDate,
-                  )}
-                >
-                  {notification?.createdDate}
-                </span>
-                <span
-                  className={clsx(
-                    'NotifiAlertHistory__notificationSubject',
-                    classNames?.notificationSubject,
-                  )}
-                >
-                  {notification?.detail}
-                </span>
-                <span
-                  className={clsx(
-                    'NotifiAlertHistory__notificationMessage',
-                    classNames?.notificationMessage,
-                  )}
-                >
-                  {notification?.detail}
-                </span>
-              </div>
+              <AlertNotificationRow
+                notificationSubject={''}
+                notificationDate={''}
+                notificationMessage={''}
+                classNames={{
+                  notificationDate: classNames?.notificationDate,
+                  notificationSubject: classNames?.notificationSubject,
+                  notificationMessage: classNames?.notificationMessage,
+                  notificationImage: classNames?.notificationImage,
+                }}
+              ></AlertNotificationRow>
             );
           })}
         </div>

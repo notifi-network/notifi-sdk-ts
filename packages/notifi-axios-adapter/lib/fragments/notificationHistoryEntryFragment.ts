@@ -54,7 +54,6 @@ fragment NotificationHistoryEntry on NotificationHistoryEntry {
       }
     }
     ... on ChatMessageReceivedEventDetails {
-      messageBody
       senderName
       conversationId
       messageId
