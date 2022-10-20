@@ -30,6 +30,7 @@
   "dependencies": {
     "@notifi-network/notifi-react-hooks": "^0.40.0",
     "clsx": "^1.2.1",
+    "date-fns": "^2.29.3",
     "libphonenumber-js": "^1.10.13"
   },
   "peerDependencies": {
