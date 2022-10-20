@@ -4,11 +4,7 @@ import type {
   Filter,
   Source,
 } from '@notifi-network/notifi-core';
-import {
-  PublicKey,
-  Transaction,
-  TransactionInstruction,
-} from '@solana/web3.js';
+import { PublicKey, Transaction, TransactionInstruction } from '@solanaTypes';
 import { isValidPhoneNumber } from 'libphonenumber-js';
 import { useCallback, useEffect, useRef } from 'react';
 

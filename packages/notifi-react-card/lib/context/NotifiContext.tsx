@@ -3,20 +3,33 @@ import {
   NotifiEnvironment,
   Uint8SignMessageFunction,
 } from '@notifi-network/notifi-react-hooks';
-import type { WalletContextState } from '@solana/wallet-adapter-react';
-import type { Connection } from '@solana/web3.js';
+import type {
+  Connection,
+  SendOptions,
+  Signer,
+  Transaction,
+  TransactionSignature,
+} from '@solanaTypes';
 import React from 'react';
 
 import { AlertConfiguration } from '../utils';
 import { NotifiClientContextProvider } from './NotifiClientContext';
 import { NotifiSubscriptionContextProvider } from './NotifiSubscriptionContext';
 
+export interface SendTransactionOptions extends SendOptions {
+  signers?: Signer[];
+}
+
 export type SolanaParams = Readonly<{
   walletBlockchain: 'SOLANA';
   walletPublicKey: string;
   signMessage: Uint8SignMessageFunction;
   connection: Connection;
-  sendTransaction: WalletContextState['sendTransaction'];
+  sendTransaction: (
+    transaction: Transaction,
+    connection: Connection,
+    options?: SendTransactionOptions,
+  ) => Promise<TransactionSignature>;
 }>;
 export type EthereumParams = Readonly<{
   walletBlockchain: 'ETHEREUM';
