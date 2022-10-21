@@ -2,18 +2,20 @@ import React from 'react';
 
 import { AlertNotificationRow } from './AlertNotificationRow';
 
-export type BroadcastMessageChangedRendererProps = Readonly<{
-  notification;
+type BroadcastMessageChangedRendererProps = Readonly<{
+  createdDate: string;
+  message: string;
+  subject: string;
 }>;
 
 export const BroadcastMessageChangedRenderer: React.FC<
   BroadcastMessageChangedRendererProps
-> = ({ notification }) => {
+> = ({ message, subject, createdDate }) => {
   return (
     <AlertNotificationRow
-      notificationSubject={notification.subject}
-      notificationDate={notification.createdDate}
-      notificationMessage={notification.message}
+      notificationSubject={subject}
+      notificationDate={createdDate}
+      notificationMessage={message}
     />
   );
 };
