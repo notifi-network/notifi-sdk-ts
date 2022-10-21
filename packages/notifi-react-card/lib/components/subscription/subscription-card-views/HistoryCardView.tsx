@@ -1,11 +1,13 @@
 import { GetNotificationHistoryResult } from '@notifi-network/notifi-core';
 import clsx from 'clsx';
-import { getAlertCard } from 'notifi-react-card/lib/utils/AlertHistoryUtils';
+import { BroadcastMessageChangedRenderer } from 'notifi-react-card/lib/AlertHistory/BroadcastMessageChangedRenderer';
 import React, { useCallback, useState } from 'react';
 
+import { NotificationTypeName } from '../../../../../notifi-axios-adapter/lib/fragments/notificationHistoryEntryFragment';
 import { ReactComponent as BackArrow } from '../../../assets/backArrow.svg';
 import { useNotifiSubscriptionContext } from '../../../context';
 import { useAlertHistory } from '../../../hooks/useAlertHistory';
+import { AlertNotificationRow } from './AlertNotificationRow';
 
 export type AlertHistoryViewProps = Readonly<{
   alertHistoryTitle?: string;
@@ -65,7 +67,26 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
       {alertHistoryData ? (
         <div>
           {alertHistoryData?.nodes?.map((notification) => {
-            return getAlertCard(notification);
+            if (
+              notification?.detail?.__typename ===
+              NotificationTypeName.BROADCAST_MESSAGE
+            ) {
+              return (
+                <BroadcastMessageChangedRenderer
+                  createdDate={notification?.createdDate}
+                  message={notification?.detail?.message}
+                  subject={notification?.detail?.subject}
+                />
+              );
+            } else {
+              return (
+                <AlertNotificationRow
+                  notificationSubject={'New notification'}
+                  notificationDate={notification?.createdDate}
+                  notificationMessage={'You have received a new notification'}
+                />
+              );
+            }
           })}
         </div>
       ) : (

@@ -4,8 +4,8 @@ import { AlertNotificationRow } from './AlertNotificationRow';
 
 type BroadcastMessageChangedRendererProps = Readonly<{
   createdDate: string;
-  message: string;
-  subject: string;
+  message: string | undefined;
+  subject: string | undefined;
 }>;
 
 export const BroadcastMessageChangedRenderer: React.FC<

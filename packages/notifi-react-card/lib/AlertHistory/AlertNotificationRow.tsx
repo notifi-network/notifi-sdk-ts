@@ -3,9 +3,9 @@ import React from 'react';
 
 export type AlertNotificationViewProps = Readonly<{
   notificationImage?: string;
-  notificationSubject: string;
+  notificationSubject: string | undefined;
   notificationDate: string;
-  notificationMessage: string;
+  notificationMessage: string | undefined;
   classNames?: Readonly<{
     notificationDate?: string;
     notificationSubject?: string;
