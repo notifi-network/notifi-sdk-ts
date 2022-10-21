@@ -4,10 +4,6 @@ import { useNotifiSubscriptionContext } from '../../context';
 import { CardConfigItemV1, useNotifiSubscribe } from '../../hooks';
 import { DeepPartialReadonly } from '../../utils';
 import {
-  AlertHistoryView,
-  AlertHistoryViewProps,
-} from './NotifiAlertHistoryView';
-import {
   NotifiInputLabels,
   NotifiInputSeparators,
 } from './NotifiSubscriptionCard';
@@ -15,6 +11,10 @@ import {
   EditCardView,
   EditCardViewProps,
 } from './subscription-card-views/EditCardView';
+import {
+  AlertHistoryView,
+  AlertHistoryViewProps,
+} from './subscription-card-views/HistoryCardView';
 import {
   PreviewCard,
   PreviewCardProps,
