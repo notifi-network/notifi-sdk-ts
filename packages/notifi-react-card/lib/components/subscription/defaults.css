@@ -72,6 +72,42 @@
   line-height: 14px;
 }
 
+.NotifiAlertHistory__label {
+  font-size: 22px;
+  line-height: 14px;
+  color: var(--notifi-font-color);
+  text-align: center;
+}
+
+.NotifiAlertHistory__content {
+  display: 'flex';
+  flex-direction: 'column';
+}
+
+.NotifiAlertHistory__dividerLine {
+  border-top: 8px solid var(--notifi-font-color);
+  border-radius: 5px;
+}
+
+.NotifiAlertHistory__header {
+  display: 'flex';
+  flex-direction: 'row';
+  justify-content: 'start';
+}
+
+.NotifiAlertHistory__notificationRow {
+  display: 'flex';
+  flex-direction: 'row';
+  justify-content: 'space-between';
+}
+
+.NotifiAlertHistory_noAlertDescription {
+  font-size: 14px;
+  line-height: 14px;
+  color: var(--notifi-secondary-font-color);
+  text-align: center;
+}
+
 .NotifiEmailInput__container,
 .NotifiSmsInput__container,
 .NotifiTelegramInput__container {

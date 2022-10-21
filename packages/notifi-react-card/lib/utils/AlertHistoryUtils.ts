@@ -1,4 +1,8 @@
+import { GetNotificationHistoryResult } from '@notifi-network/notifi-core';
 import { format, parseISO } from 'date-fns';
+
+import { NotificationTypeName } from '../../../notifi-axios-adapter/lib/fragments/notificationHistoryEntryFragment';
+import { BroadcastMessageChangedRenderer } from './../AlertHistory/BroadcastMessageChangedRenderer';
 
 const isDateInThisWeek = (date: string) => {
   const passedInDate = new Date(date);
@@ -33,5 +37,15 @@ export const formatTimestamp = (date: string): string => {
     return finalDate;
   } catch {
     return '-';
+  }
+};
+
+export const getAlertCard = (notification) => {
+  switch (notification?.detail?.__typename) {
+    case NotificationTypeName.BROADCAST_MESSAGE:
+      return (
+        <BroadcastMessageChangedRenderer></BroadcastMessageChangedRenderer>
+      );
+      break;
   }
 };

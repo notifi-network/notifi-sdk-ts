@@ -16,33 +16,47 @@ export type AlertNotificationViewProps = Readonly<{
 
 export const AlertNotificationRow: React.FC<AlertNotificationViewProps> = ({
   classNames,
+  notificationImage,
+  notificationSubject,
+  notificationDate,
+  notificationMessage,
 }) => {
   return (
-    <div>
-      <span
+    <div className={'NotifiAlertHistory_notificationRow'}>
+      <div
         className={clsx(
           'NotifiAlertHistory__notificationImage',
           classNames?.notificationImage,
         )}
-      ></span>
-      <span
+      >
+        {notificationImage}
+      </div>
+      <div className={'NotifiAlertHistory_content'}>
+        <div
+          className={clsx(
+            'NotifiAlertHistory__notificationSubject',
+            classNames?.notificationSubject,
+          )}
+        >
+          {notificationSubject}
+        </div>
+        <div
+          className={clsx(
+            'NotifiAlertHistory__notificationMessage',
+            classNames?.notificationMessage,
+          )}
+        >
+          {notificationMessage}
+        </div>
+      </div>
+      <div
         className={clsx(
           'NotifiAlertHistory__notificationDate',
           classNames?.notificationDate,
         )}
-      ></span>
-      <span
-        className={clsx(
-          'NotifiAlertHistory__notificationSubject',
-          classNames?.notificationSubject,
-        )}
-      ></span>
-      <span
-        className={clsx(
-          'NotifiAlertHistory__notificationMessage',
-          classNames?.notificationMessage,
-        )}
-      ></span>
+      >
+        {notificationDate}
+      </div>
     </div>
   );
 };
