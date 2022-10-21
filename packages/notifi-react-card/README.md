@@ -63,7 +63,7 @@ export const Remote: React.FC = () => {
         cardId="<YOUR OWN CARD ID HERE>"
         inputLabels={inputLabels}
         inputSeparators={inputSeparators}
-        darkMode
+        darkMode //optional
       />
     </NotifiContext>
   );
@@ -122,7 +122,7 @@ export const Notifi: React.FC = () => {
         cardId="<YOUR OWN CARD ID HERE>"
         inputLabels={inputLabels}
         inputSeparators={inputSeparators}
-        darkMode
+        darkMode //optional
       />
     </NotifiContext>
   );
@@ -189,7 +189,7 @@ export const Notifi: React.FC = () => {
         cardId="<YOUR OWN CARD ID HERE>"
         inputLabels={inputLabels}
         inputSeparators={inputSeparators}
-        darkMode
+        darkMode //optional
       />
     </NotifiContext>
   );
