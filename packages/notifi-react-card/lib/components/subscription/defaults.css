@@ -27,7 +27,7 @@
   --notifi-toggle-inactive: rgba(255, 255, 255, 0.1);
   --notifi-toggle-active: rgba(255, 255, 255, 0.4);
   --notifi-button-color: rgba(255, 255, 255, 0.2);
-  --notifi-tooltip-background: rgba(255, 255, 255, 0.9);
+  --notifi-tooltip-background: rgba(255, 255, 255, 0.6);
   --notifi-alert-color: rgb(213, 25, 25);
   --notifi-link-color: #b3b3ff;
 }
@@ -331,12 +331,13 @@
   margin-bottom: 0 !important;
 }
 
-.Info__icon {
+.NotifiTooltip__infoIcon {
+  fill: var(--notifi-font-color);
   margin-left: 5px;
   vertical-align: -webkit-baseline-middle;
 }
 
-.Info__icon:hover + .NotifiTooltip {
+.NotifiTooltip__infoIcon:hover + .NotifiTooltip {
   display: block;
 }
 
@@ -344,7 +345,7 @@
   position: relative;
 }
 
-.NotifiTooltip {
+.NotifiTooltip__body {
   width: 100%;
   min-width: 140px;
   display: none;

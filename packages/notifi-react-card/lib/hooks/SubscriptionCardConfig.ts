@@ -27,6 +27,7 @@ export type BroadcastEventTypeItem = Readonly<{
 export type LabelEventTypeItem = Readonly<{
   type: 'label';
   name: string;
+  tooltipContent: string;
 }>;
 
 export type EventTypeItem =
