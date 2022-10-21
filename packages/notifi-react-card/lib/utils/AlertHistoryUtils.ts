@@ -2,6 +2,7 @@ import { GetNotificationHistoryResult } from '@notifi-network/notifi-core';
 import { format, parseISO } from 'date-fns';
 
 import { NotificationTypeName } from '../../../notifi-axios-adapter/lib/fragments/notificationHistoryEntryFragment';
+import { NotificationHistoryEntryFragmentFragment } from '../../../notifi-graphql/lib/gql/generated';
 import { BroadcastMessageChangedRenderer } from './../AlertHistory/BroadcastMessageChangedRenderer';
 
 const isDateInThisWeek = (date: string) => {
@@ -25,6 +26,9 @@ const getDayName = (date: string) => {
   return weekday;
 };
 
+export const formatAmount = (amount: number): string =>
+  parseFloat(amount.toFixed(9)).toString();
+
 export const formatTimestamp = (date: string): string => {
   try {
     if (isDateInThisWeek(date)) {
@@ -40,12 +44,14 @@ export const formatTimestamp = (date: string): string => {
   }
 };
 
-export const getAlertCard = (notification) => {
-  switch (notification?.detail?.__typename) {
+export type Detail = NotificationHistoryEntryFragmentFragment['detail'] & {
+  __typename: string;
+};
+
+export const getAlertCard = (notification: Detail) => {
+  switch (notification?.__typename) {
     case NotificationTypeName.BROADCAST_MESSAGE:
-      return (
-        <BroadcastMessageChangedRenderer></BroadcastMessageChangedRenderer>
-      );
+      // return <BroadcastMessageChangedRenderer />;
       break;
   }
 };
