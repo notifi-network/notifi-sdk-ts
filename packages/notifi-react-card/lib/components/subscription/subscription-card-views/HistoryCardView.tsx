@@ -4,7 +4,6 @@ import { BroadcastMessageChangedRenderer } from 'notifi-react-card/lib/AlertHist
 import React, { useCallback, useState } from 'react';
 
 import { NotificationTypeName } from '../../../../../notifi-axios-adapter/lib/fragments/notificationHistoryEntryFragment';
-import { ReactComponent as BackArrow } from '../../../assets/backArrow.svg';
 import { useNotifiSubscriptionContext } from '../../../context';
 import { useAlertHistory } from '../../../hooks/useAlertHistory';
 import { AlertNotificationRow } from './AlertNotificationRow';
@@ -16,6 +15,7 @@ export type AlertHistoryViewProps = Readonly<{
     title?: string;
     header?: string;
     dividerLine?: string;
+    manageAlertLink?: string;
     noAlertDescription?: string;
     notificationDate?: string;
     notificationSubject?: string;
@@ -52,11 +52,24 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
 
   return (
     <>
-      <div className={clsx('NotifiAlertHistory__header', classNames?.header)}>
-        <BackArrow onClick={() => handleBackClick()} />
+      <div
+        className={clsx(
+          'NotifiAlertHistory__notificationRow',
+          classNames?.header,
+        )}
+      >
         <span className={clsx('NotifiAlertHistory__label', classNames?.title)}>
           {alertHistoryTitle}
         </span>
+        <div
+          className={clsx(
+            'NotifiAlertHistory__manageAlertLink',
+            classNames?.manageAlertLink,
+          )}
+          onClick={handleBackClick}
+        >
+          Manage Alerts
+        </div>
       </div>
       <div
         className={clsx(

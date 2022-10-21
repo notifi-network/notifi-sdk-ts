@@ -89,12 +89,6 @@
   border-radius: 5px;
 }
 
-.NotifiAlertHistory__header {
-  display: 'flex';
-  flex-direction: 'row';
-  justify-content: 'start';
-}
-
 .NotifiAlertHistory__notificationRow {
   display: 'flex';
   flex-direction: 'row';
@@ -106,6 +100,12 @@
   line-height: 14px;
   color: var(--notifi-secondary-font-color);
   text-align: center;
+}
+
+.NotifiAlertHistory__manageAlertLink {
+  font-size: 14px;
+  line-height: 14px;
+  color: var(--notifi-link-color);
 }
 
 .NotifiEmailInput__container,
