@@ -14,6 +14,7 @@ export type UserInfoSection = {
 
 export type UserInfoPanelProps = {
   classNames?: DeepPartialReadonly<{
+    alertHistory: string;
     container: string;
     email?: UserInfoSection;
     telegram?: UserInfoSection;
@@ -45,6 +46,10 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
   const handleEditClick = useCallback(() => {
     setCardView({ state: 'edit' });
   }, [setCardView, phoneNumber, email, telegramId]);
+
+  const handleAlertHistoryClick = useCallback(() => {
+    setCardView({ state: 'history' });
+  }, [setCardView]);
 
   const handleResendEmailVerificationClick = useCallback(() => {
     resendEmailVerificationLink();
@@ -145,6 +150,15 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
           ) : null}
         </div>
       ) : null}
+      <div
+        className={clsx(
+          'NotifiPreviewCard__alertHistory',
+          classNames?.alertHistory,
+        )}
+        onClick={handleAlertHistoryClick}
+      >
+        Check Alert History
+      </div>
       <button
         className={clsx(
           'NotifiPreviewCard__editButton',
