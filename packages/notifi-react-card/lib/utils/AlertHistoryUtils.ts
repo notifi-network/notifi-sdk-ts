@@ -1,9 +1,9 @@
-import { GetNotificationHistoryResult } from '@notifi-network/notifi-core';
 import { format, parseISO } from 'date-fns';
 
 import { NotificationTypeName } from '../../../notifi-axios-adapter/lib/fragments/notificationHistoryEntryFragment';
 import { NotificationHistoryEntryFragmentFragment } from '../../../notifi-graphql/lib/gql/generated';
-import { BroadcastMessageChangedRenderer } from './../AlertHistory/BroadcastMessageChangedRenderer';
+
+// import { BroadcastMessageChangedRenderer } from './../AlertHistory/BroadcastMessageChangedRenderer';
 
 const isDateInThisWeek = (date: string) => {
   const passedInDate = new Date(date);
