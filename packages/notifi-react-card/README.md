@@ -18,7 +18,7 @@ import {
   NotifiContext,
   NotifiInputSeparators,
   NotifiSubscriptionCard,
-} from '@notifi-network/notifi-react-card/lib';
+} from '@notifi-network/notifi-react-card';
 import '@notifi-network/notifi-react-card/dist/index.css';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import React from 'react';
@@ -59,12 +59,12 @@ export const Remote: React.FC = () => {
       connection={connection}
       sendTransaction={sendTransaction}
     >
-      <NotifiSubscriptionCard 
-        cardId="<YOUR OWN CARD ID HERE>"           
+      <NotifiSubscriptionCard
+        cardId="<YOUR OWN CARD ID HERE>"
         inputLabels={inputLabels}
         inputSeparators={inputSeparators}
-        darkMode 
-    />
+        darkMode //optional
+      />
     </NotifiContext>
   );
 };
@@ -78,7 +78,7 @@ import {
   NotifiContext,
   NotifiInputSeparators,
   NotifiSubscriptionCard,
-} from '@notifi-network/notifi-react-card/lib';
+} from '@notifi-network/notifi-react-card';
 import '@notifi-network/notifi-react-card/dist/index.css';
 import { useEthers } from '@usedapp/core';
 import React from 'react';
@@ -118,12 +118,12 @@ export const Notifi: React.FC = () => {
       walletPublicKey={account}
       walletBlockchain="ETHEREUM"
     >
-      <NotifiSubscriptionCard 
-        cardId="<YOUR OWN CARD ID HERE>"           
+      <NotifiSubscriptionCard
+        cardId="<YOUR OWN CARD ID HERE>"
         inputLabels={inputLabels}
         inputSeparators={inputSeparators}
-        darkMode 
-    />
+        darkMode //optional
+      />
     </NotifiContext>
   );
 };
@@ -132,19 +132,23 @@ export const Notifi: React.FC = () => {
 ### Aptos
 
 ```tsx
+import { useWallet } from '@manahippo/aptos-wallet-adapter';
 import {
   NotifiContext,
   NotifiInputSeparators,
   NotifiSubscriptionCard,
-} from '@notifi-network/notifi-react-card/lib';
+} from '@notifi-network/notifi-react-card';
 import '@notifi-network/notifi-react-card/dist/index.css';
 import React from 'react';
-import { useWallet } from "@manahippo/aptos-wallet-adapter";
 
 export const Notifi: React.FC = () => {
   const { signMessage, account } = useWallet();
-  
-  if (account === null || account.address === null || account.publicKey === null) {
+
+  if (
+    account === null ||
+    account.address === null ||
+    account.publicKey === null
+  ) {
     // account is required
     return null;
   }
@@ -181,12 +185,12 @@ export const Notifi: React.FC = () => {
         return result.signature;
       }}
     >
-      <NotifiSubscriptionCard 
-        cardId="<YOUR OWN CARD ID HERE>"           
+      <NotifiSubscriptionCard
+        cardId="<YOUR OWN CARD ID HERE>"
         inputLabels={inputLabels}
         inputSeparators={inputSeparators}
-        darkMode 
-    />
+        darkMode //optional
+      />
     </NotifiContext>
   );
 };
