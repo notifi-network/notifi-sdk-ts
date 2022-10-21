@@ -1,7 +1,10 @@
 import { GetNotificationHistoryResult } from '@notifi-network/notifi-core';
 import clsx from 'clsx';
+import { getAlertCard } from 'notifi-react-card/lib/utils/AlertHistoryUtils';
 import React, { useCallback, useState } from 'react';
 
+import { ReactComponent as BackArrow } from '../../../assets/backArrow.svg';
+import { useNotifiSubscriptionContext } from '../../../context';
 import { useAlertHistory } from '../../../hooks/useAlertHistory';
 import { AlertNotificationRow } from './AlertNotificationRow';
 
@@ -10,6 +13,7 @@ export type AlertHistoryViewProps = Readonly<{
   noAlertDescription?: string;
   classNames?: Readonly<{
     title?: string;
+    header?: string;
     dividerLine?: string;
     noAlertDescription?: string;
     notificationDate?: string;
@@ -29,6 +33,12 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
     ? noAlertDescription
     : 'No alerts have been sent to this subscription yet.';
 
+  const { setCardView } = useNotifiSubscriptionContext();
+
+  const handleBackClick = () => {
+    setCardView({ state: 'preview' });
+  };
+
   const [alertHistoryData, setAlertHistoryData] =
     useState<GetNotificationHistoryResult>();
   const { getNotifiAlertHistory } = useAlertHistory({});
@@ -41,9 +51,12 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
 
   return (
     <>
-      <span className={clsx('NotifiAlertHistory__label', classNames?.title)}>
-        {alertHistoryTitle}
-      </span>
+      <div className={clsx('NotifiAlertHistory__header', classNames?.header)}>
+        <BackArrow onClick={() => handleBackClick()} />
+        <span className={clsx('NotifiAlertHistory__label', classNames?.title)}>
+          {alertHistoryTitle}
+        </span>
+      </div>
       <div
         className={clsx(
           'NotifiAlertHistory__dividerLine',
@@ -53,19 +66,7 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
       {alertHistoryData ? (
         <div>
           {alertHistoryData?.nodes?.map((notification) => {
-            return (
-              <AlertNotificationRow
-                notificationSubject={''}
-                notificationDate={''}
-                notificationMessage={''}
-                classNames={{
-                  notificationDate: classNames?.notificationDate,
-                  notificationSubject: classNames?.notificationSubject,
-                  notificationMessage: classNames?.notificationMessage,
-                  notificationImage: classNames?.notificationImage,
-                }}
-              ></AlertNotificationRow>
-            );
+            return getAlertCard(notification);
           })}
         </div>
       ) : (
