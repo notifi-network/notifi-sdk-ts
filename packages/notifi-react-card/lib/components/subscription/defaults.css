@@ -331,10 +331,11 @@
   margin-bottom: 0 !important;
 }
 
-.NotifiTooltip__infoIcon {
-  fill: var(--notifi-font-color);
+.NotifiTooltip__container .NotifiTooltip__infoIcon {
   margin-left: 5px;
-  vertical-align: -webkit-baseline-middle;
+  margin-bottom: 0;
+  vertical-align: middle;
+  fill: var(--notifi-font-color);
 }
 
 .NotifiTooltip__infoIcon:hover + .NotifiTooltip {
