@@ -85,7 +85,7 @@
 }
 
 .NotifiAlertHistory__dividerLine {
-  border-top: 8px solid var(--notifi-font-color);
+  border-top: 2px solid var(--notifi-font-color);
   border-radius: 5px;
 }
 
