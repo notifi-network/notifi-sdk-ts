@@ -11,32 +11,32 @@
  */
 
 export type NotificationHistory = Readonly<{
-  nodes?:
-    | Array<{
-        __typename?: 'NotificationHistoryEntry';
-        id: string;
-        createdDate: string;
-        detail?:
-          | { __typename: 'AccountBalanceChangedEventDetails' }
-          | {
-              __typename: 'BroadcastMessageEventDetails';
-              type: string;
-              subject?: string | undefined;
-              message?: string | undefined;
-            }
-          | { __typename: 'ChatMessageReceivedEventDetails' }
-          | { __typename: 'DAOProposalChangedEventDetails' }
-          | { __typename: 'DirectTenantMessageEventDetails' }
-          | { __typename: 'GenericEventDetails' }
-          | { __typename: 'HealthValueOverThresholdEventDetails' }
-          | { __typename: 'NftAuctionChangedEventDetails' }
-          | { __typename: 'NftCollectionsReportEventDetails' }
-          | { __typename: 'WalletsActivityReportEventDetails' }
-          | undefined;
-      }>
-    | undefined;
+  nodes?: Array<NotificationHistoryEntry> | undefined;
   pageInfo: {
     hasNextPage: boolean;
     endCursor?: string | undefined;
   };
+}>;
+
+export type NotificationHistoryEntry = Readonly<{
+  __typename?: 'NotificationHistoryEntry';
+  id: string;
+  createdDate: string;
+  detail?:
+    | { __typename: 'AccountBalanceChangedEventDetails' }
+    | {
+        __typename: 'BroadcastMessageEventDetails';
+        type: string;
+        subject?: string | undefined;
+        message?: string | undefined;
+      }
+    | { __typename: 'ChatMessageReceivedEventDetails' }
+    | { __typename: 'DAOProposalChangedEventDetails' }
+    | { __typename: 'DirectTenantMessageEventDetails' }
+    | { __typename: 'GenericEventDetails' }
+    | { __typename: 'HealthValueOverThresholdEventDetails' }
+    | { __typename: 'NftAuctionChangedEventDetails' }
+    | { __typename: 'NftCollectionsReportEventDetails' }
+    | { __typename: 'WalletsActivityReportEventDetails' }
+    | undefined;
 }>;

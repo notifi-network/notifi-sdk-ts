@@ -328,7 +328,7 @@ const useNotifiClient = (
       .then(() => {
         setIsInitialized(true);
       });
-  }, [getAuthorization, setAuthorization]);
+  }, [getAuthorization, service, setAuthorization]);
 
   /**
    * Authorization object containing token and metadata
@@ -371,7 +371,6 @@ const useNotifiClient = (
       fetchDataRef,
       setAuthorization,
       setRoles,
-      fetchDataImpl,
       setInternalData,
       setIsAuthenticated,
     ],
@@ -430,12 +429,12 @@ const useNotifiClient = (
       }
     },
     [
-      setAuthorization,
-      setRoles,
-      service,
-      walletPublicKey,
+      config,
       dappAddress,
+      service,
       walletBlockchain,
+      walletPublicKey,
+      handleLogInResult,
     ],
   );
 
@@ -473,7 +472,7 @@ const useNotifiClient = (
           return retVal;
         }
 
-        throw 'Failed to begin login process';
+        throw new Error('Failed to begin login process');
       } catch (e: unknown) {
         setIsAuthenticated(false);
         if (e instanceof Error) {
@@ -489,7 +488,6 @@ const useNotifiClient = (
       setLoading,
       setIsAuthenticated,
       setError,
-      window.crypto,
       service,
       walletPublicKey,
       dappAddress,
@@ -512,7 +510,9 @@ const useNotifiClient = (
       setLoading(true);
       try {
         if (!clientRandomUuid.current) {
-          throw 'BeginLoginViaTransaction is required to be called first';
+          throw new Error(
+            'BeginLoginViaTransaction is required to be called first',
+          );
         }
 
         const result = await service.completeLogInByTransaction({
@@ -604,7 +604,7 @@ const useNotifiClient = (
         setLoading(false);
       }
     },
-    [setLoading],
+    [service],
   );
 
   /**
@@ -1185,7 +1185,7 @@ const useNotifiClient = (
         setLoading(false);
       }
     },
-    [setLoading, service],
+    [config, dappAddress, service],
   );
 
   const sendEmailTargetVerification: (

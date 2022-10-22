@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { formatAmount } from '../utils/AlertHistoryUtils';
+import { formatAmount } from '../../utils/AlertHistoryUtils';
 import { AlertNotificationRow } from './AlertNotificationRow';
 
 export type AccountBalanceChangedRendererProps = Readonly<{

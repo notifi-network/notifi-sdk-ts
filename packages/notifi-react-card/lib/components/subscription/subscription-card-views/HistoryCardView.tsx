@@ -1,12 +1,16 @@
-import { GetNotificationHistoryResult } from '@notifi-network/notifi-core';
+import {
+  GetNotificationHistoryResult,
+  NotificationHistoryEntry,
+} from '@notifi-network/notifi-core';
 import clsx from 'clsx';
-import { BroadcastMessageChangedRenderer } from 'notifi-react-card/lib/AlertHistory/BroadcastMessageChangedRenderer';
-import React, { useCallback, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { NotificationTypeName } from '../../../../../notifi-axios-adapter/lib/fragments/notificationHistoryEntryFragment';
-import { useNotifiSubscriptionContext } from '../../../context';
-import { useAlertHistory } from '../../../hooks/useAlertHistory';
-import { AlertNotificationRow } from './AlertNotificationRow';
+import {
+  useNotifiClientContext,
+  useNotifiSubscriptionContext,
+} from '../../../context';
+import { BackArrow } from '../../AlertHistory/BackArrow';
+import { BroadcastMessageChangedRenderer } from '../../AlertHistory/BroadcastMessageChangedRenderer';
 
 export type AlertHistoryViewProps = Readonly<{
   alertHistoryTitle?: string;
@@ -14,6 +18,7 @@ export type AlertHistoryViewProps = Readonly<{
   classNames?: Readonly<{
     title?: string;
     header?: string;
+    backArrowContainer?: string;
     dividerLine?: string;
     manageAlertLink?: string;
     noAlertDescription?: string;
@@ -23,6 +28,28 @@ export type AlertHistoryViewProps = Readonly<{
     notificationImage?: string;
   }>;
 }>;
+
+export const AlertCard = ({
+  notification,
+}: Readonly<{
+  notification: NotificationHistoryEntry;
+}>): React.ReactElement => {
+  const detail = notification.detail;
+
+  switch (detail?.__typename) {
+    case 'BroadcastMessageEventDetails':
+      return (
+        <BroadcastMessageChangedRenderer
+          createdDate={notification.createdDate}
+          message={detail.message ?? ''}
+          subject={detail.subject ?? ''}
+        />
+      );
+    default:
+  }
+
+  return <></>;
+};
 
 export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
   alertHistoryTitle,
@@ -40,24 +67,28 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
     setCardView({ state: 'preview' });
   };
 
+  const { client } = useNotifiClientContext();
+
   const [alertHistoryData, setAlertHistoryData] =
     useState<GetNotificationHistoryResult>();
-  const { getNotifiAlertHistory } = useAlertHistory({});
-  const notifiAlertHistory = useCallback(async () => {
-    const notifiAlertHistory = await getNotifiAlertHistory();
-    setAlertHistoryData(notifiAlertHistory);
-  }, []);
-
-  notifiAlertHistory();
+  useEffect(() => {
+    client.getNotificationHistory({}).then((result) => {
+      setAlertHistoryData(result);
+    });
+  }, [client]);
 
   return (
     <>
-      <div
-        className={clsx(
-          'NotifiAlertHistory__notificationRow',
-          classNames?.header,
-        )}
-      >
+      <div className={clsx('NotifiAlertHistory__header', classNames?.header)}>
+        <div
+          className={clsx(
+            'NotifiAlertHistory__backArrowContainer',
+            classNames?.backArrowContainer,
+          )}
+          onClick={() => handleBackClick()}
+        >
+          <BackArrow />
+        </div>
         <span className={clsx('NotifiAlertHistory__label', classNames?.title)}>
           {alertHistoryTitle}
         </span>
@@ -80,27 +111,10 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
       {alertHistoryData ? (
         <div>
           {alertHistoryData?.nodes?.map((notification) => {
-            if (
-              notification?.detail?.__typename ===
-              NotificationTypeName.BROADCAST_MESSAGE
-            ) {
-              return (
-                <BroadcastMessageChangedRenderer
-                  createdDate={notification?.createdDate}
-                  message={notification?.detail?.message}
-                  subject={notification?.detail?.subject}
-                />
-              );
-            } else {
-              return (
-                <AlertNotificationRow
-                  notificationSubject={'New notification'}
-                  notificationDate={notification?.createdDate}
-                  notificationMessage={'You have received a new notification'}
-                />
-              );
-            }
-          })}
+            return (
+              <AlertCard key={notification.id} notification={notification} />
+            );
+          }) ?? null}
         </div>
       ) : (
         <span
