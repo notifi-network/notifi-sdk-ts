@@ -9,7 +9,6 @@ import {
   useNotifiClientContext,
   useNotifiSubscriptionContext,
 } from '../../../context';
-import { BackArrow } from '../../AlertHistory/BackArrow';
 import { BroadcastMessageChangedRenderer } from '../../AlertHistory/BroadcastMessageChangedRenderer';
 
 export type AlertHistoryViewProps = Readonly<{
@@ -18,7 +17,6 @@ export type AlertHistoryViewProps = Readonly<{
   classNames?: Readonly<{
     title?: string;
     header?: string;
-    backArrowContainer?: string;
     dividerLine?: string;
     manageAlertLink?: string;
     noAlertDescription?: string;
@@ -80,15 +78,6 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
   return (
     <>
       <div className={clsx('NotifiAlertHistory__header', classNames?.header)}>
-        <div
-          className={clsx(
-            'NotifiAlertHistory__backArrowContainer',
-            classNames?.backArrowContainer,
-          )}
-          onClick={() => handleBackClick()}
-        >
-          <BackArrow />
-        </div>
         <span className={clsx('NotifiAlertHistory__label', classNames?.title)}>
           {alertHistoryTitle}
         </span>
