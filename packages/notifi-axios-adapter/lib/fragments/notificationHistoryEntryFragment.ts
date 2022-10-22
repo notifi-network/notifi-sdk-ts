@@ -11,7 +11,7 @@ export enum NotificationTypeName {
   GENERIC_EVENT = 'GenericEventDetails',
 }
 
-export const notifictionHistoryEntryFragment = `
+export const notificationHistoryEntryFragment = `
 fragment NotificationHistoryEntry on NotificationHistoryEntry {
   id
   createdDate
@@ -109,4 +109,4 @@ fragment NotificationHistoryEntry on NotificationHistoryEntry {
   }
 }`.trim();
 
-export const notifictionHistoryEntryFragmentDependencies = [];
+export const notificationHistoryEntryFragmentDependencies = [];

@@ -8,21 +8,21 @@ import {
 } from '@notifi-network/notifi-core';
 
 import {
-  notifictionHistoryEntryFragment,
-  notifictionHistoryEntryFragmentDependencies,
-} from './../fragments/notificationHistoryEntryFragment';
+  notificationHistoryEntryFragment,
+  notificationHistoryEntryFragmentDependencies,
+} from '../fragments/notificationHistoryEntryFragment';
 
 const DEPENDENCIES = [
-  ...notifictionHistoryEntryFragmentDependencies,
-  ...notifictionHistoryEntryFragment,
+  ...notificationHistoryEntryFragmentDependencies,
+  notificationHistoryEntryFragment,
 ];
-const QUERY = `
-query getNotificationHistory {
+
+const QUERY = `query getNotificationHistory {
   notificationHistory {
-    nodes{
+    nodes {
       ...notificationHistoryEntryFragment
     }
-    pageInfo{
+    pageInfo {
       hasNextPage
       endCursor
     }
