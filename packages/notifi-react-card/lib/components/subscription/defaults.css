@@ -89,10 +89,36 @@
   border-radius: 5px;
 }
 
+.NotifiAlertHistory__notificationDate {
+  font-size: 10px;
+  line-height: 12px;
+  color: var(--notifi-font-color);
+  opacity: 30%;
+}
+
+.NotifiAlertHistory__notificationMessage {
+  font-size: 10px;
+  line-height: 12px;
+  color: var(--notifi-font-color);
+}
+
 .NotifiAlertHistory__notificationRow {
   display: 'flex';
-  flex-direction: 'row';
+  flex-direction: 'column';
   justify-content: 'space-between';
+}
+
+.NotifiAlertHistory__notificationSubject {
+  font-size: 12px;
+  line-height: 14px;
+  color: var(--notifi-font-color);
+}
+
+.NotifiAlertHistory__notificationImage {
+  width: 14px;
+  height: 14px;
+  margin-right: 10px;
+  border-radius: 50%;
 }
 
 .NotifiAlertHistory_noAlertDescription {
