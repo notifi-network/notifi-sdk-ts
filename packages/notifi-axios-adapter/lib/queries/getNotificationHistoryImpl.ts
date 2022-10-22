@@ -20,7 +20,7 @@ const DEPENDENCIES = [
 const QUERY = `query getNotificationHistory {
   notificationHistory {
     nodes {
-      ...notificationHistoryEntryFragment
+      ...NotificationHistoryEntry
     }
     pageInfo {
       hasNextPage
