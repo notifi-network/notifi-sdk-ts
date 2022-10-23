@@ -62,7 +62,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
       (phoneNumber !== '' && phoneNumber !== undefined) ||
       (telegramId !== '' && telegramId !== undefined)
     ) {
-      setCardView({ state: 'preview' });
+      setCardView({ state: 'history' });
     }
   }, [email, phoneNumber, telegramId, setCardView, cardView, isInitialized]);
 
