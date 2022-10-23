@@ -34,7 +34,7 @@ export const PreviewCard: React.FC<PreviewCardProps> = ({
   const { setCardView } = useNotifiSubscriptionContext();
 
   const handlePreviewClick = useCallback(() => {
-    setCardView({ state: 'edit' });
+    setCardView({ state: 'history' });
   }, [setCardView]);
   return (
     <div
@@ -45,7 +45,7 @@ export const PreviewCard: React.FC<PreviewCardProps> = ({
     >
       <div
         className={clsx(
-          'NotifiAlertHistory__backArrowContainer',
+          'NotifiPreviewCard__backArrowContainer',
           classNames?.backArrowContainer,
         )}
         onClick={() => handlePreviewClick()}

@@ -40,7 +40,6 @@ export type NotificationHistoryEntryFragment = {
   sourceAddress?: string | undefined;
   transactionSignature?: string | undefined;
   targets: Array<{
-    __typename?: 'NotificationTarget';
     type: TargetType;
     name?: string | undefined;
   }>;

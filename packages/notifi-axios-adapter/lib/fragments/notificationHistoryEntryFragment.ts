@@ -21,7 +21,8 @@ fragment NotificationHistoryEntry on NotificationHistoryEntry {
   category
   transactionSignature
   targets {
-    ...NotificationTarget
+    type
+    name
   }
   detail {
     __typename

@@ -333,6 +333,11 @@
   width: 45%;
 }
 
+.NotifiPreviewCard__backArrowContainer {
+  height: 20%;
+  width: 20%;
+}
+
 .NotifiInputSeparator__content {
   padding: 0px 8px 0px 8px;
 }
