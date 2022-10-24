@@ -108,7 +108,7 @@
   font-size: 10px;
   line-height: 12px;
   color: var(--notifi-font-color);
-  opacity: 30%;
+  opacity: 60%;
 }
 
 .NotifiAlertHistory__notificationMessage {
