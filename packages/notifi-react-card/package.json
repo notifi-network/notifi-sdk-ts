@@ -28,8 +28,10 @@
     "url": "https://github.com/notifi-network/notifi-sdk-ts/issues"
   },
   "dependencies": {
+    "@notifi-network/notifi-frontend-client": "^0.40.0",
     "@notifi-network/notifi-react-hooks": "^0.40.0",
     "clsx": "^1.2.1",
+    "date-fns": "^2.29.3",
     "libphonenumber-js": "^1.10.13"
   },
   "peerDependencies": {

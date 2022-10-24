@@ -1,6 +1,8 @@
 import clsx from 'clsx';
-import React from 'react';
+import React, { useCallback } from 'react';
 
+import { BackArrow } from '../../../assets/BackArrow';
+import { useNotifiSubscriptionContext } from '../../../context';
 import { CardConfigItemV1 } from '../../../hooks';
 import { DeepPartialReadonly } from '../../../utils';
 import { AlertsPanel, AlertsPanelProps } from './preview-panel/AlertsPanel';
@@ -14,6 +16,7 @@ export type PreviewCardProps = Readonly<{
     NotifiPreviewCardSeparator?: string;
     NotifiPreviewCardContainer?: string;
     AlertsPanel?: DeepPartialReadonly<AlertsPanelProps['classNames']>;
+    backArrowContainer?: string;
     UserInfoPanel?: DeepPartialReadonly<UserInfoPanelProps['classNames']>;
   };
 
@@ -28,6 +31,11 @@ export const PreviewCard: React.FC<PreviewCardProps> = ({
   inputDisabled,
   inputs = {},
 }) => {
+  const { setCardView } = useNotifiSubscriptionContext();
+
+  const handlePreviewClick = useCallback(() => {
+    setCardView({ state: 'history' });
+  }, [setCardView]);
   return (
     <div
       className={clsx(
@@ -35,6 +43,15 @@ export const PreviewCard: React.FC<PreviewCardProps> = ({
         classNames?.NotifiPreviewCardContainer,
       )}
     >
+      <div
+        className={clsx(
+          'NotifiPreviewCard__backArrowContainer',
+          classNames?.backArrowContainer,
+        )}
+        onClick={() => handlePreviewClick()}
+      >
+        <BackArrow />
+      </div>
       <UserInfoPanel classNames={classNames?.UserInfoPanel} data={data} />
       <div
         className={clsx(

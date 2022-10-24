@@ -12,6 +12,10 @@ import {
   EditCardViewProps,
 } from './subscription-card-views/EditCardView';
 import {
+  AlertHistoryView,
+  AlertHistoryViewProps,
+} from './subscription-card-views/HistoryCardView';
+import {
   PreviewCard,
   PreviewCardProps,
 } from './subscription-card-views/PreviewCard';
@@ -19,6 +23,7 @@ import {
 export type SubscriptionCardV1Props = Readonly<{
   classNames?: {
     PreviewCard?: DeepPartialReadonly<PreviewCardProps['classNames']>;
+    HistoryCard?: DeepPartialReadonly<AlertHistoryViewProps['classNames']>;
     EditCard?: DeepPartialReadonly<EditCardViewProps['classNames']>;
   };
   inputDisabled: boolean;
@@ -57,7 +62,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
       (phoneNumber !== '' && phoneNumber !== undefined) ||
       (telegramId !== '' && telegramId !== undefined)
     ) {
-      setCardView({ state: 'preview' });
+      setCardView({ state: 'history' });
     }
   }, [email, phoneNumber, telegramId, setCardView, cardView, isInitialized]);
 
@@ -83,6 +88,9 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
           allowedCountryCodes={allowedCountryCodes}
         />
       );
+      break;
+    case 'history':
+      view = <AlertHistoryView />;
       break;
   }
   return <>{view}</>;

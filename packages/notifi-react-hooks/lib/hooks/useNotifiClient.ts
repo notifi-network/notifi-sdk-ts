@@ -16,6 +16,7 @@ import {
   CompleteLoginViaTransactionInput,
   CompleteLoginViaTransactionResult,
   CreateSourceInput,
+  GetNotificationHistoryInput,
   NotifiClient,
   SignMessageParams,
   Source,
@@ -327,7 +328,7 @@ const useNotifiClient = (
       .then(() => {
         setIsInitialized(true);
       });
-  }, [getAuthorization, setAuthorization]);
+  }, [getAuthorization, service, setAuthorization]);
 
   /**
    * Authorization object containing token and metadata
@@ -370,7 +371,6 @@ const useNotifiClient = (
       fetchDataRef,
       setAuthorization,
       setRoles,
-      fetchDataImpl,
       setInternalData,
       setIsAuthenticated,
     ],
@@ -429,12 +429,12 @@ const useNotifiClient = (
       }
     },
     [
-      setAuthorization,
-      setRoles,
-      service,
-      walletPublicKey,
+      config,
       dappAddress,
+      service,
       walletBlockchain,
+      walletPublicKey,
+      handleLogInResult,
     ],
   );
 
@@ -472,7 +472,7 @@ const useNotifiClient = (
           return retVal;
         }
 
-        throw 'Failed to begin login process';
+        throw new Error('Failed to begin login process');
       } catch (e: unknown) {
         setIsAuthenticated(false);
         if (e instanceof Error) {
@@ -488,7 +488,6 @@ const useNotifiClient = (
       setLoading,
       setIsAuthenticated,
       setError,
-      window.crypto,
       service,
       walletPublicKey,
       dappAddress,
@@ -511,7 +510,9 @@ const useNotifiClient = (
       setLoading(true);
       try {
         if (!clientRandomUuid.current) {
-          throw 'BeginLoginViaTransaction is required to be called first';
+          throw new Error(
+            'BeginLoginViaTransaction is required to be called first',
+          );
         }
 
         const result = await service.completeLogInByTransaction({
@@ -603,7 +604,7 @@ const useNotifiClient = (
         setLoading(false);
       }
     },
-    [setLoading],
+    [service],
   );
 
   /**
@@ -1184,7 +1185,7 @@ const useNotifiClient = (
         setLoading(false);
       }
     },
-    [setLoading, service],
+    [config, dappAddress, service],
   );
 
   const sendEmailTargetVerification: (
@@ -1240,6 +1241,25 @@ const useNotifiClient = (
     [setError, setLoading, service],
   );
 
+  const getNotificationHistory = useCallback(
+    async (input: GetNotificationHistoryInput) => {
+      try {
+        const result = await service.getNotificationHistory(input);
+        return result;
+      } catch (e: unknown) {
+        if (e instanceof Error) {
+          setError(e);
+        } else {
+          setError(new NotifiClientError(e));
+        }
+        throw e;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [setLoading, setError, service],
+  );
+
   const client: NotifiClient = {
     beginLoginViaTransaction,
     broadcastMessage,
@@ -1254,6 +1274,7 @@ const useNotifiClient = (
     fetchData,
     fetchSubscriptionCard,
     getConfiguration,
+    getNotificationHistory,
     getTopics,
     updateAlert,
     ensureTargetGroup,

@@ -3,6 +3,7 @@ import {
   ClientConfiguration,
   EmailTarget,
   Filter,
+  NotificationHistory,
   SmsTarget,
   Source,
   TargetGroup,
@@ -11,7 +12,11 @@ import {
   User,
   UserTopic,
 } from './models';
-import { CreateSourceInput, CreateWebhookTargetInput } from './operations';
+import {
+  CreateSourceInput,
+  CreateWebhookTargetInput,
+  GetNotificationHistoryInput,
+} from './operations';
 
 export type ClientData = Readonly<{
   alerts: ReadonlyArray<Alert>;
@@ -265,6 +270,9 @@ export type NotifiClient = Readonly<{
   ) => Promise<Source>;
   deleteAlert: (input: ClientDeleteAlertInput) => Promise<string>;
   getConfiguration: () => Promise<ClientConfiguration>;
+  getNotificationHistory: (
+    input: GetNotificationHistoryInput,
+  ) => Promise<NotificationHistory>;
   getTopics: () => Promise<ReadonlyArray<UserTopic>>;
   updateAlert: (input: ClientUpdateAlertInput) => Promise<Alert>;
   ensureTargetGroup: (

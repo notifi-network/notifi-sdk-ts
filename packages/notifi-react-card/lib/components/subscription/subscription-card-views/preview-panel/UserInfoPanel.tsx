@@ -14,6 +14,7 @@ export type UserInfoSection = {
 
 export type UserInfoPanelProps = {
   classNames?: DeepPartialReadonly<{
+    alertHistory: string;
     container: string;
     email?: UserInfoSection;
     telegram?: UserInfoSection;
