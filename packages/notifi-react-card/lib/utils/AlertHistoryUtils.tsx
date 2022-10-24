@@ -4,14 +4,10 @@ const isDateInThisWeek = (date: string) => {
   const passedInDate = new Date(date);
   const todayObj = new Date();
   const todayDate = todayObj.getDate();
-  const todayDay = todayObj.getDay();
 
-  const firstDayOfWeek = new Date(todayObj.setDate(todayDate - todayDay));
+  const firstDayOfWeek = new Date(todayObj.setDate(todayDate - 6));
 
-  const lastDayOfWeek = new Date(firstDayOfWeek);
-  lastDayOfWeek.setDate(lastDayOfWeek.getDate() + 6);
-
-  return passedInDate >= firstDayOfWeek && passedInDate <= lastDayOfWeek;
+  return passedInDate >= firstDayOfWeek;
 };
 
 const getDayName = (date: string) => {
@@ -26,6 +22,7 @@ export const formatAmount = (amount: number): string =>
 
 export const formatTimestamp = (date: string): string => {
   try {
+    console.log('isDateInThisWeek(date)', isDateInThisWeek(date));
     if (isDateInThisWeek(date)) {
       return getDayName(date);
     }
