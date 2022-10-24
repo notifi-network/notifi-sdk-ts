@@ -10,6 +10,7 @@ import {
 } from '../../utils';
 import type { NotifiToggleProps } from './NotifiToggle';
 import { NotifiToggle } from './NotifiToggle';
+import { NotifiTooltip, NotifiTooltipProps } from './NotifiTooltip';
 import { resolveStringRef } from './resolveRef';
 
 export type EventTypeDirectPushRowProps = Readonly<{
@@ -17,6 +18,7 @@ export type EventTypeDirectPushRowProps = Readonly<{
     container: string;
     label: string;
     toggle: NotifiToggleProps['classNames'];
+    tooltip: NotifiTooltipProps['classNames'];
   }>;
   disabled: boolean;
   config: DirectPushEventTypeItem;
@@ -41,6 +43,7 @@ export const EventTypeDirectPushRow: React.FC<EventTypeDirectPushRowProps> = ({
       type: pushId,
     });
   }, [alertName, config, inputs]);
+  const tooltipContent = config.tooltipContent;
 
   useEffect(() => {
     if (loading) {
@@ -76,6 +79,12 @@ export const EventTypeDirectPushRow: React.FC<EventTypeDirectPushRowProps> = ({
     >
       <div className={clsx('EventTypeDirectPushRow__label', classNames?.label)}>
         {config.name}
+        {tooltipContent.length > 0 ? (
+          <NotifiTooltip
+            classNames={classNames?.toggle}
+            content={tooltipContent}
+          />
+        ) : null}
       </div>
       <NotifiToggle
         classNames={classNames?.toggle}

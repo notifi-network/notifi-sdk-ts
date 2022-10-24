@@ -10,6 +10,7 @@
   --notifi-toggle-inactive: rgba(0, 0, 0, 0.2);
   --notifi-toggle-active: rgba(0, 0, 0, 0.6);
   --notifi-button-color: rgba(0, 0, 0, 0.4);
+  --notifi-tooltip-background: rgba(255, 255, 255, 0.9);
   --notifi-alert-color: rgb(252 0 0);
   --notifi-link-color: #0000ee;
 }
@@ -26,6 +27,7 @@
   --notifi-toggle-inactive: rgba(255, 255, 255, 0.1);
   --notifi-toggle-active: rgba(255, 255, 255, 0.4);
   --notifi-button-color: rgba(255, 255, 255, 0.2);
+  --notifi-tooltip-background: rgba(255, 255, 255, 0.6);
   --notifi-alert-color: rgb(213, 25, 25);
   --notifi-link-color: #b3b3ff;
 }
@@ -187,6 +189,8 @@
 
 .EventTypeBroadcastRow__label,
 .EventTypeDirectPushRow__label {
+  display: flex;
+  flex-direction: row;
   flex-grow: 1;
   margin-right: 10px;
   font-size: 16px;
@@ -325,4 +329,55 @@
 .NotifiUserInfoPanel__emailLabel,
 .NotifiUserInfoPanel__telegramLabel {
   margin-bottom: 0 !important;
+}
+
+.NotifiTooltip__container .NotifiTooltip__infoIcon {
+  margin-left: 5px;
+  margin-bottom: 0;
+  vertical-align: middle;
+  fill: var(--notifi-font-color);
+}
+
+.NotifiTooltip__infoIcon:hover + .NotifiTooltip {
+  display: block;
+}
+
+.NotifiTooltip__container {
+  position: relative;
+}
+
+.NotifiTooltip__body {
+  width: 100%;
+  min-width: 140px;
+  display: none;
+  position: absolute;
+  left: 30px;
+  top: 2px;
+  font-size: 12px;
+  z-index: 1;
+}
+
+.NotifiTooltip__arrow
+{
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-right-color: transparent;
+  border-style: solid;
+  top: 10px;
+  left: -5px;
+  margin-top: -5px;
+  border-width: 5px 5px 5px 0;
+  border-right-color:var(--notifi-tooltip-background);
+
+}
+
+.NotifiTooltip__label
+{
+  padding: 3px 10px;
+  color: #000;
+  text-align: left;
+  background-color: var(--notifi-tooltip-background);
+  border-radius: 3px;
 }
