@@ -79,9 +79,9 @@ export const EventTypeDirectPushRow: React.FC<EventTypeDirectPushRowProps> = ({
     >
       <div className={clsx('EventTypeDirectPushRow__label', classNames?.label)}>
         {config.name}
-        {tooltipContent.length > 0 ? (
+        {tooltipContent !== undefined && tooltipContent.length > 0 ? (
           <NotifiTooltip
-            classNames={classNames?.toggle}
+            classNames={classNames?.tooltip}
             content={tooltipContent}
           />
         ) : null}
