@@ -113,7 +113,7 @@
 
 .NotifiAlertHistory__notificationMessage {
   font-size: 12px;
-  line-height: 12px;
+  line-height: 14px;
   color: var(--notifi-font-color);
   text-overflow: ellipsis;
   display: block;
