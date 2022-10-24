@@ -1,16 +1,20 @@
 import clsx from 'clsx';
 import React from 'react';
 
+import { formatTimestamp } from '../.././utils/AlertHistoryUtils';
+
 export type AlertNotificationViewProps = Readonly<{
-  notificationImage?: string;
+  notificationImage?: JSX.Element;
   notificationSubject: string | undefined;
   notificationDate: string;
   notificationMessage: string | undefined;
   classNames?: Readonly<{
+    notificationContent?: string;
     notificationDate?: string;
-    notificationSubject?: string;
-    notificationMessage?: string;
     notificationImage?: string;
+    notificationMessage?: string;
+    notificationRow?: string;
+    notificationSubject?: string;
   }>;
 }>;
 
@@ -22,7 +26,12 @@ export const AlertNotificationRow: React.FC<AlertNotificationViewProps> = ({
   notificationMessage,
 }) => {
   return (
-    <div className={'NotifiAlertHistory_notificationRow'}>
+    <div
+      className={clsx(
+        'NotifiAlertHistory__notificationRow',
+        classNames?.notificationRow,
+      )}
+    >
       <div
         className={clsx(
           'NotifiAlertHistory__notificationImage',
@@ -31,7 +40,12 @@ export const AlertNotificationRow: React.FC<AlertNotificationViewProps> = ({
       >
         {notificationImage}
       </div>
-      <div className={'NotifiAlertHistory_content'}>
+      <div
+        className={clsx(
+          'NotifiAlertHistory__content',
+          classNames?.notificationContent,
+        )}
+      >
         <div
           className={clsx(
             'NotifiAlertHistory__notificationSubject',
@@ -55,7 +69,7 @@ export const AlertNotificationRow: React.FC<AlertNotificationViewProps> = ({
           classNames?.notificationDate,
         )}
       >
-        {notificationDate}
+        {formatTimestamp(notificationDate)}
       </div>
     </div>
   );

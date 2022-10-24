@@ -1,7 +1,4 @@
-import { NotificationHistoryEntry } from '@notifi-network/notifi-core';
 import { format, parseISO } from 'date-fns';
-
-import { BroadcastMessageChangedRenderer } from '../components/AlertHistory/BroadcastMessageChangedRenderer';
 
 const isDateInThisWeek = (date: string) => {
   const passedInDate = new Date(date);
