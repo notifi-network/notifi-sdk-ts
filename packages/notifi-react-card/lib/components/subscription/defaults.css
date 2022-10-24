@@ -82,14 +82,16 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin: 10px 0;
+  margin: 10px 15px 0 10px;
+  width: 100%;
+  overflow: hidden;
 }
 
 .NotifiAlertHistory__content {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  margin-right: 10px;
+  margin-right: 20px;
   text-align: start;
 }
 
@@ -119,13 +121,11 @@
   text-overflow: ellipsis;
   display: block;
   overflow: hidden;
-  white-space: nowrap;
 }
 
 .NotifiAlertHistory__notificationSubject {
   font-size: 14px;
   line-height: 14px;
-  white-space: nowrap;
   overflow: hidden;
   display: block;
   color: var(--notifi-font-color);
@@ -443,8 +443,7 @@
   z-index: 1;
 }
 
-.NotifiTooltip__arrow
-{
+.NotifiTooltip__arrow {
   position: absolute;
   width: 0;
   height: 0;
@@ -455,12 +454,10 @@
   left: -5px;
   margin-top: -5px;
   border-width: 5px 5px 5px 0;
-  border-right-color:var(--notifi-tooltip-background);
-
+  border-right-color: var(--notifi-tooltip-background);
 }
 
-.NotifiTooltip__label
-{
+.NotifiTooltip__label {
   padding: 3px 10px;
   color: #000;
   text-align: left;
