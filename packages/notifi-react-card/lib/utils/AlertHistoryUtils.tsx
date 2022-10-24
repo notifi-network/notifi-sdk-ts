@@ -22,7 +22,6 @@ export const formatAmount = (amount: number): string =>
 
 export const formatTimestamp = (date: string): string => {
   try {
-    console.log('isDateInThisWeek(date)', isDateInThisWeek(date));
     if (isDateInThisWeek(date)) {
       return getDayName(date);
     }
