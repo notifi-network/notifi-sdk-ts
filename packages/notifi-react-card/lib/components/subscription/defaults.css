@@ -47,9 +47,6 @@
   display: flex;
   flex-direction: row;
   align-items: baseline;
-}
-
-.NotifiFooter__container {
   font-size: 12px;
   line-height: 14px;
 }
@@ -89,7 +86,9 @@
 .NotifiAlertHistory__content {
   display: flex;
   flex-direction: column;
-  width: 75%;
+  flex-grow: 1;
+  margin-right: 10px;
+  text-align: start;
 }
 
 .NotifiAlertHistory__dividerLine {
@@ -119,13 +118,6 @@
   display: block;
   overflow: hidden;
   white-space: nowrap;
-  width: 100%;
-}
-
-.NotifiAlertHistory__notificationRow {
-  display: 'flex';
-  flex-direction: 'row';
-  justify-content: 'space-between';
 }
 
 .NotifiAlertHistory__notificationSubject {
@@ -137,7 +129,6 @@
   color: var(--notifi-font-color);
   font-weight: bold;
   text-overflow: ellipsis;
-  width: 50%;
 }
 
 .NotifiAlertHistory__notificationImage {
