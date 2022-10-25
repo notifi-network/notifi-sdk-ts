@@ -66,10 +66,18 @@ const client: NotifiClient = getNotifiClient();
 const { token, expiry } = await client.logIn({ sid: MY_SID, secret: MY_SECRET });
 
 // Use the token to send a message to anyone subscribed to that wallet
-await client.sendDirectPush(token, {
-  key: randomUUID(), // Idempotency key, use the same value for each unique event
-  walletBlockchain: 'NEAR', // Or 'SOLANA'
-  walletPublicKey: 'juni-kim.near', // Or other address
-  message: 'Hello world',
-});
+const result = await client.sendDirectPush(token, {
+  key: '<KEY_USED_FOR_IDEMPOTENCY>', // This should be the same value per unique message
+  walletBlockchain: 'SOLANA',
+  walletPublicKey: '<ACCOUNT_ADDRESS>',
+    template: {
+      emailTemplate: '<UUID_OF_TEMPLATE_GROUP>', // You can get these values after submitting your templates
+      smsTemplate: '<UUID_OF_TEMPLATE_GROUP>', // These values will typically be the same, as they refer to a version of a group of templates
+      variables: { // These variables are replaced inside mustache templates you have provided. syntax: https://mustache.github.io/mustache.5.html
+        'someTemplateVariable': 'foo', 
+        'someOtherTemplateVariable': 'bar',
+        'someOtherTemplateVariable1': 'bar1',
+      }
+    }
+  });
 ```
