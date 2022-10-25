@@ -72,7 +72,6 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
 
   const [endCursor, setEndCursor] = useState<string | undefined>();
   const [hasNextPage, setHasNextPage] = useState<boolean | null>(null);
-  const [isScrolling, setIsScrolling] = useState<boolean | null>(null);
 
   const { client } = useNotifiClientContext();
 
@@ -99,13 +98,13 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
   useEffect(() => {
     getNotificationHistory({ first: FIRST_MESSAGES_HISTORY });
 
-    if (isScrolling && hasNextPage) {
+    if (hasNextPage && endCursor) {
       getNotificationHistory({
         first: FIRST_MESSAGES_HISTORY,
         after: endCursor,
       });
     }
-  }, []);
+  }, [hasNextPage, endCursor]);
 
   return (
     <>
@@ -135,7 +134,6 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
             height: notificationListHeight || '400px',
             marginBottom: '25px',
           }}
-          isScrolling={setIsScrolling}
           data={alertHistoryData?.nodes.filter(
             (notification) => notification.detail != undefined,
           )}
