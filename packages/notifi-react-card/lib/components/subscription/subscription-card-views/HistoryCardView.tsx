@@ -4,6 +4,7 @@ import {
 } from '@notifi-network/notifi-core';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
+import { Virtuoso } from 'react-virtuoso';
 
 import {
   useNotifiClientContext,
@@ -14,6 +15,7 @@ import { BroadcastMessageChangedRenderer } from '../../AlertHistory/BroadcastMes
 export type AlertHistoryViewProps = Readonly<{
   alertHistoryTitle?: string;
   noAlertDescription?: string;
+  notificationListHeight?: string;
   classNames?: Readonly<{
     title?: string;
     header?: string;
@@ -24,6 +26,7 @@ export type AlertHistoryViewProps = Readonly<{
     notificationSubject?: string;
     notificationMessage?: string;
     notificationImage?: string;
+    notificationList?: string;
   }>;
 }>;
 
@@ -45,7 +48,6 @@ export const AlertCard = ({
       );
     default:
   }
-
   return <></>;
 };
 
@@ -53,6 +55,7 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
   alertHistoryTitle,
   classNames,
   noAlertDescription,
+  notificationListHeight,
 }) => {
   alertHistoryTitle = alertHistoryTitle ? alertHistoryTitle : 'Alert History';
   noAlertDescription = noAlertDescription
@@ -96,15 +99,22 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
           'NotifiAlertHistory__dividerLine',
           classNames?.dividerLine,
         )}
-      ></div>
-      {alertHistoryData ? (
-        <div>
-          {alertHistoryData?.nodes?.map((notification) => {
+      />
+      {alertHistoryData?.nodes ? (
+        <Virtuoso
+          style={{
+            height: notificationListHeight || '400px',
+            marginBottom: '25px',
+          }}
+          data={alertHistoryData?.nodes.filter(
+            (notification) => notification.detail != undefined,
+          )}
+          itemContent={(index, notification) => {
             return (
               <AlertCard key={notification.id} notification={notification} />
             );
-          }) ?? null}
-        </div>
+          }}
+        />
       ) : (
         <span
           className={clsx(
