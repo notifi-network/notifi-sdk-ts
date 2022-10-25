@@ -107,7 +107,9 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
             maxWidth: '100%',
             marginBottom: '15px',
           }}
-          data={alertHistoryData?.nodes}
+          data={alertHistoryData?.nodes.filter(
+            (notification) => notification.detail != undefined,
+          )}
           itemContent={(index, notification) => {
             return (
               <AlertCard key={notification.id} notification={notification} />

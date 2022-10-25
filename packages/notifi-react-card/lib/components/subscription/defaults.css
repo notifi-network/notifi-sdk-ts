@@ -93,6 +93,8 @@
   flex-grow: 1;
   padding-right: 20px;
   text-align: start;
+  width: 50%;
+  white-space: nowrap;
 }
 
 .NotifiAlertHistory__dividerLine {
@@ -128,17 +130,17 @@
   font-size: 14px;
   line-height: 14px;
   overflow: hidden;
-  display: block;
   color: var(--notifi-font-color);
   font-weight: bold;
   text-overflow: ellipsis;
+  width: 50%;
+  white-space: nowrap;
 }
 
 .NotifiAlertHistory__notificationImage {
   width: 18px;
   height: 18px;
   padding-right: 10px;
-  border-radius: 50%;
 }
 
 .NotifiAlertHistory_noAlertDescription {
