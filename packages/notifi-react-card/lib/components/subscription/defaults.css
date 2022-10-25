@@ -82,7 +82,7 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin: 10px 15px 0 10px;
+  padding: 10px 15px 0 10px;
   width: 100%;
   overflow: hidden;
 }
@@ -91,7 +91,7 @@
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  margin-right: 20px;
+  padding-right: 20px;
   text-align: start;
 }
 
@@ -104,7 +104,7 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin-bottom: 10px;
+  padding-bottom: 10px;
 }
 
 .NotifiAlertHistory__notificationDate {
@@ -112,6 +112,7 @@
   line-height: 12px;
   color: var(--notifi-font-color);
   opacity: 60%;
+  padding-right: 25px;
 }
 
 .NotifiAlertHistory__notificationMessage {
@@ -136,7 +137,7 @@
 .NotifiAlertHistory__notificationImage {
   width: 18px;
   height: 18px;
-  margin-right: 10px;
+  padding-right: 10px;
   border-radius: 50%;
 }
 
