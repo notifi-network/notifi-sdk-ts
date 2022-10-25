@@ -22,7 +22,6 @@ const QUERY = `query getNotificationHistory($after: String, $first: Int) {
     nodes {
       ...NotificationHistoryEntry
     }
-    cursor
     pageInfo {
       hasNextPage
       endCursor
