@@ -85,6 +85,7 @@
   padding: 10px 15px 0 10px;
   width: 100%;
   overflow: hidden;
+  margin: 10px 0;
 }
 
 .NotifiAlertHistory__content {
@@ -95,7 +96,6 @@
   text-align: start;
   width: 50%;
   white-space: nowrap;
-  margin: 10px 0;
 }
 
 .NotifiAlertHistory__dividerLine {
