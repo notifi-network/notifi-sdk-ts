@@ -72,11 +72,20 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
 
   const [alertHistoryData, setAlertHistoryData] =
     useState<GetNotificationHistoryResult>();
+
   useEffect(() => {
-    client.getNotificationHistory({}).then((result) => {
-      setAlertHistoryData(result);
-    });
-  }, [client]);
+    async function getNotificationHistory() {
+      const notificationHistory = await client
+        .getNotificationHistory({
+          first: 10,
+        })
+        .then((result) => {
+          setAlertHistoryData(result);
+        });
+      return notificationHistory;
+    }
+    getNotificationHistory();
+  }, []);
 
   return (
     <>
