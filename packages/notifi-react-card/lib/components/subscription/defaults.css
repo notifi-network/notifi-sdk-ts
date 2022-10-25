@@ -95,6 +95,7 @@
   text-align: start;
   width: 50%;
   white-space: nowrap;
+  margin: 10px 0;
 }
 
 .NotifiAlertHistory__dividerLine {

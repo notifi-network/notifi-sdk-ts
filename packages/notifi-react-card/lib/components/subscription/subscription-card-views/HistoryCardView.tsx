@@ -105,7 +105,7 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
           style={{
             height: notificationListHeight || '400px',
             maxWidth: '100%',
-            marginBottom: '15px',
+            marginBottom: '25px',
           }}
           data={alertHistoryData?.nodes.filter(
             (notification) => notification.detail != undefined,
