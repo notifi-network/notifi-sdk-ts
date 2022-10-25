@@ -1,0 +1,1 @@
+export const FIRST_MESSAGES_HISTORY = 8;
