@@ -104,7 +104,6 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
         <Virtuoso
           style={{
             height: notificationListHeight || '400px',
-            maxWidth: '100%',
             marginBottom: '25px',
           }}
           data={alertHistoryData?.nodes.filter(
