@@ -1,1 +1,1 @@
-export const FIRST_MESSAGES_HISTORY = 8;
+export const FIRST_MESSAGES_HISTORY = 50;
