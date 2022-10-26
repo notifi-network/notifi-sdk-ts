@@ -443,4 +443,24 @@ export class NotifiFrontendClient {
 
     return { pageInfo, nodes };
   }
+
+  async fetchSubscriptionCard({
+    cardId,
+  }: Readonly<{
+    cardId: string;
+  }>): Promise<Types.TenantConfigFragmentFragment> {
+    const query = await this._service.findTenantConfig({
+      input: {
+        id: cardId,
+        tenant: this._configuration.tenantId,
+        type: 'SUBSCRIPTION_CARD',
+      },
+    });
+    const result = query.findTenantConfig;
+    if (result === undefined) {
+      throw new Error('Failed to find tenant config');
+    }
+
+    return result;
+  }
 }

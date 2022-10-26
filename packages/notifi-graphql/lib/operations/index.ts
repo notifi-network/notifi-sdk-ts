@@ -12,6 +12,7 @@ export * from './CreateWebhookTarget';
 export * from './DeleteAlert';
 export * from './DeleteSourceGroup';
 export * from './DeleteTargetGroup';
+export * from './FindTenantConfig';
 export * from './GetAlertsService';
 export * from './GetConfigurationForDapp';
 export * from './GetEmailTargets';

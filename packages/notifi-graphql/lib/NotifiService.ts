@@ -21,6 +21,7 @@ export class NotifiService
     Operations.DeleteAlertService,
     Operations.DeleteSourceGroupService,
     Operations.DeleteTargetGroupService,
+    Operations.FindTenantConfigService,
     Operations.GetAlertsService,
     Operations.GetConfigurationForDappService,
     Operations.GetEmailTargetsService,
@@ -151,6 +152,13 @@ export class NotifiService
   ): Promise<Generated.DeleteTargetGroupMutation> {
     const headers = this._requestHeaders();
     return this._typedClient.deleteTargetGroup(variables, headers);
+  }
+
+  async findTenantConfig(
+    variables: Generated.FindTenantConfigQueryVariables,
+  ): Promise<Generated.FindTenantConfigQuery> {
+    const headers = this._requestHeaders();
+    return this._typedClient.findTenantConfig(variables, headers);
   }
 
   async getAlerts(
