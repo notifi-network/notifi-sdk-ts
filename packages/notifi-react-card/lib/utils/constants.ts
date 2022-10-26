@@ -1,1 +1,1 @@
-export const FIRST_MESSAGES_HISTORY = 50;
+export const MESSAGES_PER_PAGE = 50;

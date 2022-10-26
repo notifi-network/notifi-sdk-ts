@@ -11,7 +11,7 @@ import {
   useNotifiClientContext,
   useNotifiSubscriptionContext,
 } from '../../../context';
-import { FIRST_MESSAGES_HISTORY } from '../../../utils/constants';
+import { MESSAGES_PER_PAGE } from '../../../utils/constants';
 import { BroadcastMessageChangedRenderer } from '../../AlertHistory/BroadcastMessageChangedRenderer';
 
 export type AlertHistoryViewProps = Readonly<{
@@ -105,7 +105,7 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
   useEffect(() => {
     if (!alertHistoryData) {
       getNotificationHistory({
-        first: FIRST_MESSAGES_HISTORY,
+        first: MESSAGES_PER_PAGE,
       });
     }
 
@@ -120,7 +120,7 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
 
     if (isRequestNextPage) {
       getNotificationHistory({
-        first: FIRST_MESSAGES_HISTORY,
+        first: MESSAGES_PER_PAGE,
         after: endCursor,
       });
     }
