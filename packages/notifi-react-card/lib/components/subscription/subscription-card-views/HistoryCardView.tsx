@@ -4,7 +4,7 @@ import {
   NotificationHistoryEntry,
 } from '@notifi-network/notifi-core';
 import clsx from 'clsx';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ListRange, Virtuoso } from 'react-virtuoso';
 
 import {
@@ -126,29 +126,6 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
     }
   }, [currentIndex, visibleRange, hasNextPage, endCursor]);
 
-  const returnVirtualizedContainer = useCallback(() => {
-    if (!allNodes) return;
-    return (
-      <Virtuoso
-        style={{
-          height: notificationListHeight || '400px',
-          marginBottom: '25px',
-        }}
-        isScrolling={setIsScrolling}
-        rangeChanged={setVisibleRange}
-        data={allNodes.filter(
-          (notification) => notification.detail != undefined,
-        )}
-        itemContent={(index, notification) => {
-          setCurrentIndex(index);
-          return (
-            <AlertCard key={notification.id} notification={notification} />
-          );
-        }}
-      />
-    );
-  }, [alertHistoryData]);
-
   return (
     <>
       <div className={clsx('NotifiAlertHistory__header', classNames?.header)}>
@@ -172,7 +149,23 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
         )}
       />
       {alertHistoryData?.nodes ? (
-        returnVirtualizedContainer()
+        <Virtuoso
+          style={{
+            height: notificationListHeight || '400px',
+            marginBottom: '25px',
+          }}
+          isScrolling={setIsScrolling}
+          rangeChanged={setVisibleRange}
+          data={allNodes.filter(
+            (notification) => notification.detail != undefined,
+          )}
+          itemContent={(index, notification) => {
+            setCurrentIndex(index);
+            return (
+              <AlertCard key={notification.id} notification={notification} />
+            );
+          }}
+        />
       ) : (
         <span
           className={clsx(
