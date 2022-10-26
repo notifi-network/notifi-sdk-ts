@@ -4,8 +4,8 @@ import {
   NotificationHistoryEntry,
 } from '@notifi-network/notifi-core';
 import clsx from 'clsx';
-import React, { useEffect, useState } from 'react';
-import { Virtuoso } from 'react-virtuoso';
+import React, { useEffect, useRef, useState } from 'react';
+import { ListRange, Virtuoso } from 'react-virtuoso';
 
 import {
   useNotifiClientContext,
@@ -72,11 +72,16 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
 
   const [endCursor, setEndCursor] = useState<string | undefined>();
   const [hasNextPage, setHasNextPage] = useState<boolean | null>(null);
+  const [currentIndex, setCurrentIndex] = useState<number | null>();
+  const [visibleRange, setVisibleRange] = useState<ListRange>();
+  const [isScrolling, setIsScrolling] = useState<boolean | null>();
 
   const { client } = useNotifiClientContext();
 
   const [alertHistoryData, setAlertHistoryData] =
     useState<GetNotificationHistoryResult>();
+
+  const alertHistoryDataRef = useRef(alertHistoryData);
 
   async function getNotificationHistory({
     first,
@@ -96,15 +101,31 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
   }
 
   useEffect(() => {
-    getNotificationHistory({ first: FIRST_MESSAGES_HISTORY });
+    if (!alertHistoryData) {
+      getNotificationHistory({
+        first: FIRST_MESSAGES_HISTORY,
+      });
+    }
 
-    if (hasNextPage && endCursor) {
+    const isRequestNextPage =
+      alertHistoryData &&
+      currentIndex &&
+      visibleRange &&
+      currentIndex === visibleRange?.endIndex &&
+      currentIndex > 0 &&
+      hasNextPage &&
+      endCursor &&
+      isScrolling;
+
+    alertHistoryDataRef.current = alertHistoryData;
+
+    if (isRequestNextPage) {
       getNotificationHistory({
         first: FIRST_MESSAGES_HISTORY,
         after: endCursor,
       });
     }
-  }, [hasNextPage, endCursor]);
+  }, [alertHistoryData, currentIndex, visibleRange, hasNextPage, endCursor]);
 
   return (
     <>
@@ -134,10 +155,13 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
             height: notificationListHeight || '400px',
             marginBottom: '25px',
           }}
+          isScrolling={setIsScrolling}
+          rangeChanged={setVisibleRange}
           data={alertHistoryData?.nodes.filter(
             (notification) => notification.detail != undefined,
           )}
           itemContent={(index, notification) => {
+            setCurrentIndex(index);
             return (
               <AlertCard key={notification.id} notification={notification} />
             );
