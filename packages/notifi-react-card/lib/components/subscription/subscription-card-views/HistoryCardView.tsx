@@ -4,7 +4,7 @@ import {
   NotificationHistoryEntry,
 } from '@notifi-network/notifi-core';
 import clsx from 'clsx';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ListRange, Virtuoso } from 'react-virtuoso';
 
 import {
@@ -76,12 +76,10 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
   const [visibleRange, setVisibleRange] = useState<ListRange>();
   const [isScrolling, setIsScrolling] = useState<boolean | null>();
 
-  const { client } = useNotifiClientContext();
-
   const [alertHistoryData, setAlertHistoryData] =
     useState<GetNotificationHistoryResult>();
 
-  const alertHistoryDataRef = useRef(alertHistoryData);
+  const { client } = useNotifiClientContext();
 
   async function getNotificationHistory({
     first,
@@ -108,7 +106,6 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
     }
 
     const isRequestNextPage =
-      alertHistoryData &&
       currentIndex &&
       visibleRange &&
       currentIndex === visibleRange?.endIndex &&
@@ -117,15 +114,13 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
       endCursor &&
       isScrolling;
 
-    alertHistoryDataRef.current = alertHistoryData;
-
     if (isRequestNextPage) {
       getNotificationHistory({
         first: FIRST_MESSAGES_HISTORY,
         after: endCursor,
       });
     }
-  }, [alertHistoryData, currentIndex, visibleRange, hasNextPage, endCursor]);
+  }, [currentIndex, visibleRange, hasNextPage, endCursor]);
 
   return (
     <>
@@ -157,7 +152,7 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
           }}
           isScrolling={setIsScrolling}
           rangeChanged={setVisibleRange}
-          data={alertHistoryData?.nodes.filter(
+          data={alertHistoryData.nodes.filter(
             (notification) => notification.detail != undefined,
           )}
           itemContent={(index, notification) => {
