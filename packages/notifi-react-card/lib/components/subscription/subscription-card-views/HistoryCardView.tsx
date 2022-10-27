@@ -1,15 +1,17 @@
 import {
+  GetNotificationHistoryInput,
   GetNotificationHistoryResult,
   NotificationHistoryEntry,
 } from '@notifi-network/notifi-core';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
-import { Virtuoso } from 'react-virtuoso';
+import { ListRange, Virtuoso } from 'react-virtuoso';
 
 import {
   useNotifiClientContext,
   useNotifiSubscriptionContext,
 } from '../../../context';
+import { MESSAGES_PER_PAGE } from '../../../utils/constants';
 import { BroadcastMessageChangedRenderer } from '../../AlertHistory/BroadcastMessageChangedRenderer';
 
 export type AlertHistoryViewProps = Readonly<{
@@ -68,15 +70,61 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
     setCardView({ state: 'preview' });
   };
 
-  const { client } = useNotifiClientContext();
+  const [endCursor, setEndCursor] = useState<string | undefined>();
+  const [hasNextPage, setHasNextPage] = useState<boolean | null>(null);
+  const [currentIndex, setCurrentIndex] = useState<number | null>();
+  const [visibleRange, setVisibleRange] = useState<ListRange>();
+  const [isScrolling, setIsScrolling] = useState<boolean | null>();
+  const [allNodes, setAllNodes] = useState<
+    ReadonlyArray<NotificationHistoryEntry>
+  >([]);
 
   const [alertHistoryData, setAlertHistoryData] =
     useState<GetNotificationHistoryResult>();
+
+  const { client } = useNotifiClientContext();
+
+  async function getNotificationHistory({
+    first,
+    after,
+  }: GetNotificationHistoryInput) {
+    const notificationHistory = await client
+      .getNotificationHistory({
+        first,
+        after,
+      })
+      .then((result) => {
+        setAlertHistoryData(result);
+        if (result.nodes) setAllNodes(allNodes.concat(result.nodes));
+        setEndCursor(result.pageInfo.endCursor);
+        setHasNextPage(result.pageInfo.hasNextPage);
+      });
+    return notificationHistory;
+  }
+
   useEffect(() => {
-    client.getNotificationHistory({}).then((result) => {
-      setAlertHistoryData(result);
-    });
-  }, [client]);
+    if (!alertHistoryData) {
+      getNotificationHistory({
+        first: MESSAGES_PER_PAGE,
+      });
+    }
+
+    const isRequestNextPage =
+      currentIndex &&
+      visibleRange &&
+      currentIndex === visibleRange?.endIndex &&
+      currentIndex > 0 &&
+      hasNextPage &&
+      endCursor &&
+      isScrolling;
+
+    if (isRequestNextPage) {
+      getNotificationHistory({
+        first: MESSAGES_PER_PAGE,
+        after: endCursor,
+      });
+    }
+  }, [currentIndex, visibleRange, hasNextPage, endCursor]);
 
   return (
     <>
@@ -106,10 +154,13 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
             height: notificationListHeight || '400px',
             marginBottom: '25px',
           }}
-          data={alertHistoryData?.nodes.filter(
+          isScrolling={setIsScrolling}
+          rangeChanged={setVisibleRange}
+          data={allNodes.filter(
             (notification) => notification.detail != undefined,
           )}
           itemContent={(index, notification) => {
+            setCurrentIndex(index);
             return (
               <AlertCard key={notification.id} notification={notification} />
             );

@@ -17,8 +17,8 @@ const DEPENDENCIES = [
   notificationHistoryEntryFragment,
 ];
 
-const QUERY = `query getNotificationHistory {
-  notificationHistory {
+const QUERY = `query getNotificationHistory($after: String, $first: Int) {
+  notificationHistory(after: $after, first: $first) {
     nodes {
       ...NotificationHistoryEntry
     }
