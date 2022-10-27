@@ -14,6 +14,9 @@ import {
 } from './ensureTarget';
 import { CardConfigItemV1 } from './models';
 
+// Reexport -- todo: remove notifi-core
+export type { FilterOptions };
+
 // TODO: Clean up blockchain-specific dependencies out of this package
 export type SolanaSignMessageFunction = (
   message: Uint8Array,
