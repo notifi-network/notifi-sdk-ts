@@ -1,1 +1,1 @@
-export const MESSAGES_PER_PAGE = 8;
+export const MESSAGES_PER_PAGE = 50;
