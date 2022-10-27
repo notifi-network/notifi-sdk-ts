@@ -12,6 +12,7 @@ import {
   ensureTelegram,
   ensureWebhook,
 } from './ensureTarget';
+import { CardConfigItemV1 } from './models';
 
 // TODO: Clean up blockchain-specific dependencies out of this package
 export type SolanaSignMessageFunction = (
@@ -48,6 +49,8 @@ export type SignMessageParams =
       walletBlockchain: 'APTOS';
       signMessage: AptosSignMessageFunction;
     }>;
+
+export type SupportedCardConfigType = CardConfigItemV1;
 
 export class NotifiFrontendClient {
   constructor(
@@ -448,7 +451,7 @@ export class NotifiFrontendClient {
     cardId,
   }: Readonly<{
     cardId: string;
-  }>): Promise<Types.TenantConfigFragmentFragment> {
+  }>): Promise<SupportedCardConfigType> {
     const query = await this._service.findTenantConfig({
       input: {
         id: cardId,
@@ -461,6 +464,24 @@ export class NotifiFrontendClient {
       throw new Error('Failed to find tenant config');
     }
 
-    return result;
+    const value = result.dataJson;
+    if (value === undefined) {
+      throw new Error('Invalid config data');
+    }
+
+    const obj = JSON.parse(value);
+    let card: SupportedCardConfigType | undefined = undefined;
+    switch (obj.version) {
+      case 'v1': {
+        card = obj as CardConfigItemV1;
+        break;
+      }
+    }
+
+    if (card === undefined) {
+      throw new Error('Unsupported config format');
+    }
+
+    return card;
   }
 }
