@@ -315,7 +315,10 @@ export class NotifiFrontendClient {
       targets: ReadonlyArray<T | undefined>,
     ): boolean => {
       const idSet = new Set(ids);
-      return targets.every((it) => it !== undefined && idSet.has(it.id));
+      return (
+        targets.length === idSet.size &&
+        targets.every((it) => it !== undefined && idSet.has(it.id))
+      );
     };
 
     if (
