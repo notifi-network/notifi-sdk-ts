@@ -10,7 +10,7 @@ export type FetchFunc<GetService, T> = (
 export type IdentifyFunc<T> = (arg: T | undefined) => string | undefined;
 export type ValueTransformFunc = (value: string) => string;
 
-const ensureTarget = <
+export const ensureTarget = <
   CreateService,
   GetService,
   T extends Readonly<{ id: string }>,
@@ -44,7 +44,7 @@ const ensureTarget = <
   };
 };
 
-const ensureEmail = ensureTarget(
+export const ensureEmail = ensureTarget(
   async (service: Operations.CreateEmailTargetService, value: string) => {
     const mutation = await service.createEmailTarget({
       name: value.toLowerCase(),
@@ -67,7 +67,7 @@ const ensureEmail = ensureTarget(
   (value: string) => value.toLowerCase(),
 );
 
-const ensureSms = ensureTarget(
+export const ensureSms = ensureTarget(
   async (service: Operations.CreateSmsTargetService, value: string) => {
     const mutation = await service.createSmsTarget({
       name: value,
@@ -88,7 +88,7 @@ const ensureSms = ensureTarget(
   (arg: Types.SmsTargetFragmentFragment | undefined) => arg?.phoneNumber,
 );
 
-const ensureTelegram = ensureTarget(
+export const ensureTelegram = ensureTarget(
   async (service: Operations.CreateTelegramTargetService, value: string) => {
     const mutation = await service.createTelegramTarget({
       name: value.toLowerCase(),
@@ -117,7 +117,7 @@ export type EnsureWebhookParams = Omit<
 >;
 
 // Webhook cannot use ensureTarget due to requiring more than one parameter in its creation
-const ensureWebhook = async (
+export const ensureWebhook = async (
   service: Operations.CreateWebhookTargetService &
     Operations.GetWebhookTargetsService,
   params: EnsureWebhookParams | undefined,
@@ -151,7 +151,3 @@ const ensureWebhook = async (
 
   return created.id;
 };
-
-export { ensureEmail, ensureSms, ensureTelegram, ensureWebhook };
-
-export default ensureTarget;

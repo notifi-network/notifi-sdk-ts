@@ -4,7 +4,7 @@ import { SourceFragment } from '../fragments/SourceFragment.gql';
 
 export const CreateSource = gql`
   mutation createSource(
-    $name: String!
+    $name: String
     $blockchainAddress: String!
     $type: SourceType!
   ) {

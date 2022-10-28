@@ -1,21 +1,18 @@
-import type { FilterOptions } from '@notifi-network/notifi-core';
 import { Types } from '@notifi-network/notifi-graphql';
 import { NotifiService } from '@notifi-network/notifi-graphql';
 
 import type { NotifiFrontendConfiguration } from '../configuration';
+import type { CardConfigItemV1, EventTypeItem } from '../models';
 import type { NotifiStorage } from '../storage';
 import { notNullOrEmpty, packFilterOptions } from '../utils';
-import { EnsureSourceParams, ensureSourceGroup } from './ensureSource';
+import { areIdsEqual } from '../utils/areIdsEqual';
+import { ensureSourceAndFilters } from './ensureSource';
 import {
   ensureEmail,
   ensureSms,
   ensureTelegram,
   ensureWebhook,
 } from './ensureTarget';
-import { CardConfigItemV1 } from './models';
-
-// Reexport -- todo: remove notifi-core
-export type { FilterOptions };
 
 // TODO: Clean up blockchain-specific dependencies out of this package
 export type SolanaSignMessageFunction = (
@@ -310,22 +307,11 @@ export class NotifiFrontendClient {
     telegramTargetIds: Array<string>;
     webhookTargetIds: Array<string>;
   }>): Promise<Types.TargetGroupFragmentFragment> {
-    const areTargetsEqual = <T extends Readonly<{ id: string }>>(
-      ids: ReadonlyArray<string>,
-      targets: ReadonlyArray<T | undefined>,
-    ): boolean => {
-      const idSet = new Set(ids);
-      return (
-        targets.length === idSet.size &&
-        targets.every((it) => it !== undefined && idSet.has(it.id))
-      );
-    };
-
     if (
-      areTargetsEqual(emailTargetIds, existing.emailTargets ?? []) &&
-      areTargetsEqual(smsTargetIds, existing.smsTargets ?? []) &&
-      areTargetsEqual(telegramTargetIds, existing.telegramTargets ?? []) &&
-      areTargetsEqual(webhookTargetIds, existing.webhookTargets ?? [])
+      areIdsEqual(emailTargetIds, existing.emailTargets ?? []) &&
+      areIdsEqual(smsTargetIds, existing.smsTargets ?? []) &&
+      areIdsEqual(telegramTargetIds, existing.telegramTargets ?? []) &&
+      areIdsEqual(webhookTargetIds, existing.webhookTargets ?? [])
     ) {
       return existing;
     }
@@ -355,46 +341,44 @@ export class NotifiFrontendClient {
     return results;
   }
 
-  async ensureSourceGroup(
-    input: Readonly<{
-      name: string;
-      sourceParams: ReadonlyArray<EnsureSourceParams>;
-    }>,
-  ): Promise<Types.SourceGroupFragmentFragment> {
-    return ensureSourceGroup(this._service, input);
-  }
-
   async getAlerts(): Promise<ReadonlyArray<Types.AlertFragmentFragment>> {
     const query = await this._service.getAlerts({});
     return query.alert?.filter(notNullOrEmpty) ?? [];
   }
 
   async ensureAlert({
-    name,
-    sourceGroupId,
-    targetGroupId,
-    filterId,
-    filterOptions,
-    groupName = 'default',
+    eventType,
+    inputs,
   }: Readonly<{
-    name: string;
-    sourceGroupId: string;
-    targetGroupId: string;
-    filterId: string;
-    filterOptions?: Readonly<FilterOptions>;
-    groupName?: string;
+    eventType: EventTypeItem;
+    inputs: Record<string, string | undefined>;
   }>): Promise<Types.AlertFragmentFragment> {
-    const query = await this._service.getAlerts({});
-    const existing = query.alert?.find(
+    const [alertsQuery, targetGroupsQuery, sourceAndFilters] =
+      await Promise.all([
+        this._service.getAlerts({}),
+        this._service.getTargetGroups({}),
+        ensureSourceAndFilters(this._service, eventType, inputs),
+      ]);
+
+    const targetGroup = targetGroupsQuery.targetGroup?.find(
+      (it) => it?.name === 'Default',
+    );
+    if (targetGroup === undefined) {
+      throw new Error('Default target group does not exist');
+    }
+
+    const { sourceGroup, filter, filterOptions } = sourceAndFilters;
+    const packedOptions = packFilterOptions(filterOptions);
+
+    const existing = alertsQuery.alert?.find(
       (it) => it !== undefined && it.name === name,
     );
 
-    const packedOptions = packFilterOptions(filterOptions);
     if (existing !== undefined) {
       if (
-        existing.sourceGroup.id === sourceGroupId &&
-        existing.targetGroup.id === targetGroupId &&
-        existing.filter.id === filterId &&
+        existing.sourceGroup.id === sourceGroup.id &&
+        existing.targetGroup.id === targetGroup.id &&
+        existing.filter.id === filter.id &&
         existing.filterOptions === packedOptions
       ) {
         return existing;
@@ -407,12 +391,12 @@ export class NotifiFrontendClient {
     }
 
     const mutation = await this._service.createAlert({
-      name,
-      sourceGroupId,
-      filterId,
-      targetGroupId,
+      name: eventType.name,
+      sourceGroupId: sourceGroup.id,
+      filterId: filter.id,
+      targetGroupId: targetGroup.id,
       filterOptions: packedOptions,
-      groupName,
+      groupName: 'managed',
     });
 
     const created = mutation.createAlert;

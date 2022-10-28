@@ -1,185 +1,225 @@
 import type { Operations, Types } from '@notifi-network/notifi-graphql';
-import { SourceGroupFragmentFragment } from 'notifi-graphql/lib/gql/generated';
+import { SourceFragmentFragment } from 'notifi-graphql/lib/gql/generated';
 
-export type EnsureSourceParams =
-  | Readonly<{
-      type: 'SOLANA_BONFIDA_AUCTION';
-      auctionAddressBase58: string;
-      auctionName: string;
-    }>
-  | Readonly<{
-      type: 'SOLANA_METAPLEX_AUCTION';
-      auctionAddressBase58: string;
-      auctionWebUrl: string;
-    }>
-  | Readonly<{
-      type: Exclude<
-        Types.SourceType,
-        'SOLANA_BONFIDA_AUCTION' | 'SOLANA_METAPLEX_AUCTION'
-      >;
-      name: string;
-      blockchainAddress: string;
-    }>;
+import {
+  BroadcastEventTypeItem,
+  DirectPushEventTypeItem,
+  EventTypeItem,
+  FilterOptions,
+} from '../models';
+import { areIdsEqual } from '../utils/areIdsEqual';
+import { resolveStringRef } from '../utils/resolveRef';
 
-export const ensureSource = async (
-  service: Operations.CreateSourceService & Operations.GetSourcesService,
-  input: EnsureSourceParams,
+const ensureDirectPushSource = async (
+  service: Operations.GetSourcesService & Operations.CreateSourceService,
+  _eventType: DirectPushEventTypeItem,
+  _inputs: Record<string, string | undefined>,
 ): Promise<Types.SourceFragmentFragment> => {
-  switch (input.type) {
-    case 'SOLANA_BONFIDA_AUCTION':
-      return ensureBonfidaAuctionSource(service, input);
-    case 'SOLANA_METAPLEX_AUCTION':
-      return ensureMetaplexAuctionSource(service, input);
-    default:
-      return ensureSourceRaw(service, input);
+  const sourcesQuery = await service.getSources({});
+  const sources = sourcesQuery.source;
+  const source = sources?.find(
+    (it) => it !== undefined && it.type === 'DIRECT_PUSH',
+  );
+
+  if (source === undefined) {
+    throw new Error('Failed to identify direct push source');
   }
+
+  return source;
 };
 
-export const ensureSourceRaw = async (
-  service: Operations.CreateSourceService & Operations.GetSourcesService,
-  input: Types.CreateSourceMutationVariables,
+const ensureBroadcastSource = async (
+  service: Operations.GetSourcesService & Operations.CreateSourceService,
+  eventType: BroadcastEventTypeItem,
+  inputs: Record<string, string | undefined>,
 ): Promise<Types.SourceFragmentFragment> => {
-  const query = await service.getSources({});
-  const existing = query.source;
-  if (existing === undefined) {
+  const sourcesQuery = await service.getSources({});
+  const sources = sourcesQuery.source;
+  if (sources === undefined) {
     throw new Error('Failed to fetch sources');
   }
 
-  const found = existing.find((it) => input.name === it?.name);
-  if (found !== undefined) {
-    return found;
-  }
+  const address = resolveStringRef(
+    eventType.name,
+    eventType.broadcastId,
+    inputs,
+  );
+  const existing = sources.find(
+    (it) => it?.type === 'BROADCAST' && it.blockchainAddress === address,
+  );
 
-  const mutation = await service.createSource(input);
-  const created = mutation.createSource;
-  if (created === undefined) {
-    throw new Error('Failed to create source');
-  }
-
-  return created;
-};
-
-export const ensureBonfidaAuctionSource = async (
-  service: Operations.CreateSourceService & Operations.GetSourcesService,
-  input: Readonly<{
-    auctionAddressBase58: string;
-    auctionName: string;
-  }>,
-): Promise<Types.SourceFragmentFragment> => {
-  const { auctionAddressBase58, auctionName } = input;
-  const underlyingAddress = `${auctionName}:;:${auctionAddressBase58}`;
-
-  return await ensureSourceRaw(service, {
-    name: auctionAddressBase58,
-    blockchainAddress: underlyingAddress,
-    type: 'SOLANA_BONFIDA_AUCTION',
-  });
-};
-
-export const ensureMetaplexAuctionSource = async (
-  service: Operations.CreateSourceService & Operations.GetSourcesService,
-  input: Readonly<{
-    auctionAddressBase58: string;
-    auctionWebUrl: string;
-  }>,
-): Promise<Types.SourceFragmentFragment> => {
-  const { auctionAddressBase58, auctionWebUrl } = input;
-  const underlyingAddress = `${auctionWebUrl}:;:${auctionAddressBase58}`;
-
-  return await ensureSourceRaw(service, {
-    name: auctionAddressBase58,
-    blockchainAddress: underlyingAddress,
-    type: 'SOLANA_METAPLEX_AUCTION',
-  });
-};
-
-const ensureSourceIds = async (
-  service: Operations.GetSourcesService & Operations.CreateSourceService,
-  sourceParams: ReadonlyArray<EnsureSourceParams>,
-): Promise<Set<string>> => {
-  const sourceIds: Set<string> = new Set();
-  // Create sources in series
-  for (let i = 0; i < sourceParams.length; ++i) {
-    const params = sourceParams[i];
-    const source = await ensureSource(service, params);
-    sourceIds.add(source.id);
-  }
-
-  return sourceIds;
-};
-
-const updateSourceGroup = async (
-  service: Operations.UpdateSourceGroupService &
-    Operations.GetSourcesService &
-    Operations.CreateSourceService,
-  existing: Types.SourceGroupFragmentFragment,
-  sourceParams: ReadonlyArray<EnsureSourceParams>,
-) => {
-  const sourceIds = await ensureSourceIds(service, sourceParams);
-  const existingSources = existing.sources ?? [];
-  if (
-    existingSources.length === sourceIds.size &&
-    existingSources.every((it) => it !== undefined && sourceIds.has(it.id))
-  ) {
+  if (existing !== undefined) {
     return existing;
   }
 
-  const mutation = await service.updateSourceGroup({
-    id: existing.id,
-    name: existing.name ?? existing.id,
-    sourceIds: [...sourceIds.keys()],
+  const createMutation = await service.createSource({
+    type: 'BROADCAST',
+    blockchainAddress: address,
   });
 
-  const updated = mutation.updateSourceGroup;
-  if (updated === undefined) {
+  const result = createMutation.createSource;
+  if (result === undefined) {
+    throw new Error('Failed to create source');
+  }
+
+  return result;
+};
+
+const ensureSource = async (
+  service: Operations.GetSourcesService & Operations.CreateSourceService,
+  eventType: EventTypeItem,
+  inputs: Record<string, string | undefined>,
+): Promise<Types.SourceFragmentFragment> => {
+  switch (eventType.type) {
+    case 'directPush': {
+      return ensureDirectPushSource(service, eventType, inputs);
+    }
+    case 'broadcast': {
+      return ensureBroadcastSource(service, eventType, inputs);
+    }
+    case 'label': {
+      throw new Error('Unsupported event type');
+    }
+  }
+};
+
+const ensureSourceGroup = async (
+  service: Operations.CreateSourceService &
+    Operations.GetSourcesService &
+    Operations.GetSourceGroupsService &
+    Operations.CreateSourceGroupService &
+    Operations.UpdateSourceGroupService,
+  name: string,
+  sourceIds: string[],
+): Promise<Types.SourceGroupFragmentFragment> => {
+  const sourceGroupsQuery = await service.getSourceGroups({});
+  const existing = sourceGroupsQuery.sourceGroup?.find(
+    (it) => it !== undefined && it.name === name,
+  );
+
+  if (existing === undefined) {
+    const createMutation = await service.createSourceGroup({
+      name,
+      sourceIds,
+    });
+    const createResult = createMutation.createSourceGroup;
+    if (createResult === undefined) {
+      throw new Error('Failed to create source group');
+    }
+
+    return createResult;
+  }
+
+  if (areIdsEqual(sourceIds, existing.sources ?? [])) {
+    return existing;
+  }
+
+  const updateMutation = await service.updateSourceGroup({
+    id: existing.id,
+    name,
+    sourceIds,
+  });
+  const updateResult = updateMutation.updateSourceGroup;
+  if (updateResult === undefined) {
     throw new Error('Failed to update source group');
   }
 
-  return updated;
+  return updateResult;
 };
 
-const createSourceGroup = async (
-  service: Operations.CreateSourceGroupService &
-    Operations.GetSourcesService &
-    Operations.CreateSourceService,
-  name: string,
-  sourceParams: ReadonlyArray<EnsureSourceParams>,
-) => {
-  const sourceIds = await ensureSourceIds(service, sourceParams);
-  const mutation = await service.createSourceGroup({
-    name,
-    sourceIds: [...sourceIds.keys()],
-  });
+type GetFilterResults = Readonly<{
+  filter: Types.FilterFragmentFragment;
+  filterOptions: FilterOptions;
+}>;
 
-  const created = mutation.createSourceGroup;
-  if (created === undefined) {
-    throw new Error('Failed to create source group');
+const getDirectPushFilter = (
+  source: SourceFragmentFragment,
+  eventType: DirectPushEventTypeItem,
+  inputs: Record<string, string | undefined>,
+): GetFilterResults => {
+  const filter = source.applicableFilters?.find(
+    (it) => it?.filterType === 'DIRECT_TENANT_MESSAGES',
+  );
+  if (filter === undefined) {
+    throw new Error('Failed to retrieve filter');
   }
 
-  return created;
+  const type = resolveStringRef(eventType.name, eventType.directPushId, inputs);
+  const filterOptions: FilterOptions = {
+    directMessageType: type,
+  };
+
+  return {
+    filter,
+    filterOptions,
+  };
 };
 
-export const ensureSourceGroup = async (
-  service: Operations.CreateSourceGroupService &
-    Operations.UpdateSourceGroupService &
+const getBroadcastFilter = (
+  source: SourceFragmentFragment,
+  _eventType: BroadcastEventTypeItem,
+  _inputs: Record<string, string | undefined>,
+): GetFilterResults => {
+  const filter = source.applicableFilters?.find(
+    (it) => it?.filterType === 'BROADCAST_MESSAGES',
+  );
+  if (filter === undefined) {
+    throw new Error('Failed to retrieve filter');
+  }
+
+  return {
+    filter,
+    filterOptions: {},
+  };
+};
+
+export const ensureSourceAndFilters = async (
+  service: Operations.CreateSourceService &
+    Operations.GetSourcesService &
     Operations.GetSourceGroupsService &
-    Operations.GetSourcesService &
-    Operations.CreateSourceService,
-  input: Readonly<{
-    name: string;
-    sourceParams: ReadonlyArray<EnsureSourceParams>;
-  }>,
-): Promise<SourceGroupFragmentFragment> => {
-  const query = await service.getSourceGroups({});
-  const sourceGroups = query.sourceGroup;
-  if (sourceGroups === undefined) {
-    throw new Error('Failed to fetch source groups');
-  }
+    Operations.CreateSourceGroupService &
+    Operations.UpdateSourceGroupService,
+  eventType: EventTypeItem,
+  inputs: Record<string, string | undefined>,
+): Promise<
+  Readonly<{
+    sourceGroup: Types.SourceGroupFragmentFragment;
+    filter: Types.FilterFragmentFragment;
+    filterOptions: FilterOptions;
+  }>
+> => {
+  const source = await ensureSource(service, eventType, inputs);
+  const sourceGroup = await ensureSourceGroup(service, eventType.name, [
+    source.id,
+  ]);
 
-  const existing = sourceGroups.find((it) => it?.name === input.name);
-  if (existing !== undefined) {
-    return updateSourceGroup(service, existing, input.sourceParams);
+  switch (eventType.type) {
+    case 'directPush': {
+      const { filter, filterOptions } = getDirectPushFilter(
+        source,
+        eventType,
+        inputs,
+      );
+      return {
+        sourceGroup,
+        filter,
+        filterOptions,
+      };
+    }
+    case 'broadcast': {
+      const { filter, filterOptions } = getBroadcastFilter(
+        source,
+        eventType,
+        inputs,
+      );
+      return {
+        sourceGroup,
+        filter,
+        filterOptions,
+      };
+    }
+    case 'label': {
+      throw new Error('Unsupported event type');
+    }
   }
-
-  return createSourceGroup(service, input.name, input.sourceParams);
 };
