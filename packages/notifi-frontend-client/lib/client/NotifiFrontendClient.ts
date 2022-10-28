@@ -371,7 +371,7 @@ export class NotifiFrontendClient {
     const packedOptions = packFilterOptions(filterOptions);
 
     const existing = alertsQuery.alert?.find(
-      (it) => it !== undefined && it.name === name,
+      (it) => it !== undefined && it.name === eventType.name,
     );
 
     if (existing !== undefined) {
