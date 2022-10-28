@@ -487,4 +487,18 @@ export class NotifiFrontendClient {
 
     return card;
   }
+
+  async sendEmailTargetVerification({
+    targetId,
+  }: Readonly<{ targetId: string }>): Promise<string> {
+    const emailTarget = await this._service.sendEmailTargetVerificationRequest({
+      targetId,
+    });
+
+    const id = emailTarget.sendEmailTargetVerificationRequest?.id;
+    if (id === undefined) {
+      throw new Error(`Unknown error requesting verification`);
+    }
+    return id;
+  }
 }

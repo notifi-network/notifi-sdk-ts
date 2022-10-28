@@ -37,7 +37,6 @@ export class NotifiService
     Operations.LogInFromDappService,
     Operations.RefreshAuthorizationService,
     Operations.SendEmailTargetVerificationRequestService,
-    Operations.GetAlertsService,
     Operations.UpdateSourceGroupService,
     Operations.UpdateTargetGroupService
 {

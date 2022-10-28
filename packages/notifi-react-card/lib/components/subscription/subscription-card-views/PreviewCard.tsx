@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import React, { useCallback } from 'react';
 
-import { BackArrow } from '../../../assets/BackArrow';
+import { BackArrow } from '../../../assets/backArrow';
 import { useNotifiSubscriptionContext } from '../../../context';
 import { CardConfigItemV1 } from '../../../hooks';
 import { DeepPartialReadonly } from '../../../utils';
