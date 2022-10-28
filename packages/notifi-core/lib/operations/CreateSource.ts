@@ -33,7 +33,9 @@ export type CreateSourceInput = Readonly<{
     | 'METAPLEX_AUCTION_HOUSE'
     | 'ORCA'
     | 'BONFIDA_NAME_OFFERS'
-    | 'BONFIDA_NAME_AUCTIONING';
+    | 'BONFIDA_NAME_AUCTIONING'
+    | 'TOPAZ'
+    | 'SOLANA_SNOWFLAKE';
 }>;
 
 export type CreateSourceResult = Source;
