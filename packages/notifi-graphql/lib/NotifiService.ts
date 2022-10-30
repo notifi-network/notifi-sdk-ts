@@ -47,6 +47,10 @@ export class NotifiService
     this._typedClient = getSdk(graphQLClient);
   }
 
+  async logOut(): Promise<void> {
+    this._jwt = undefined;
+  }
+
   async beginLogInByTransaction(
     variables: Generated.BeginLogInByTransactionMutationVariables,
   ): Promise<Generated.BeginLogInByTransactionMutation> {

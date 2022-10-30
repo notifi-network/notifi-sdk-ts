@@ -3,7 +3,7 @@ import { NotifiService } from '@notifi-network/notifi-graphql';
 
 import type { NotifiFrontendConfiguration } from '../configuration';
 import type { CardConfigItemV1, EventTypeItem } from '../models';
-import type { NotifiStorage } from '../storage';
+import type { Authorization, NotifiStorage, Roles } from '../storage';
 import { notNullOrEmpty, packFilterOptions } from '../utils';
 import { areIdsEqual } from '../utils/areIdsEqual';
 import { ensureSourceAndFilters } from './ensureSource';
@@ -52,6 +52,21 @@ export type SignMessageParams =
 
 export type SupportedCardConfigType = CardConfigItemV1;
 
+export type UserState = Readonly<
+  | {
+      status: 'loggedOut';
+    }
+  | {
+      status: 'authenticated';
+      authorization: Authorization;
+      roles: Roles;
+    }
+  | {
+      status: 'expired';
+      authorization: Authorization;
+    }
+>;
+
 export class NotifiFrontendClient {
   constructor(
     private _configuration: NotifiFrontendConfiguration,
@@ -60,6 +75,62 @@ export class NotifiFrontendClient {
   ) {}
 
   private _clientRandomUuid: string | null = null;
+
+  async initialize(): Promise<UserState> {
+    const [storedAuthorization, roles] = await Promise.all([
+      this._storage.getAuthorization(),
+      this._storage.getRoles(),
+    ]);
+
+    let authorization = storedAuthorization;
+    if (authorization === null) {
+      return {
+        status: 'loggedOut',
+      };
+    }
+
+    const expiryDate = new Date(authorization.expiry);
+    const now = new Date();
+    if (expiryDate <= now) {
+      return {
+        status: 'expired',
+        authorization,
+      };
+    }
+
+    const refreshTime = new Date();
+    refreshTime.setDate(now.getDate() + 7);
+    if (expiryDate < refreshTime) {
+      try {
+        const refreshMutation = await this._service.refreshAuthorization({});
+        const newAuthorization = refreshMutation.refreshAuthorization;
+        if (newAuthorization !== undefined) {
+          this._storage.setAuthorization(newAuthorization);
+          authorization = newAuthorization;
+        }
+      } catch (e: unknown) {
+        console.log('Failed to refresh Notifi token', e);
+      }
+    }
+
+    return {
+      status: 'authenticated',
+      authorization,
+      roles: roles ?? [],
+    };
+  }
+
+  async logOut(): Promise<UserState> {
+    await Promise.all([
+      this._storage.setAuthorization(null),
+      this._storage.setRoles(null),
+      this._service.logOut(),
+    ]);
+
+    return {
+      status: 'loggedOut',
+    };
+  }
 
   async logIn(
     signMessageParams: SignMessageParams,
