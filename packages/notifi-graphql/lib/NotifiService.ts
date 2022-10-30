@@ -1,7 +1,7 @@
 import { GraphQLClient } from 'graphql-request';
 import { v4 as uuid } from 'uuid';
 
-import type * as Generated from './gql/generated';
+import * as Generated from './gql/generated';
 import { getSdk } from './gql/generated';
 import type * as Operations from './operations';
 
@@ -45,6 +45,10 @@ export class NotifiService
 
   constructor(graphQLClient: GraphQLClient) {
     this._typedClient = getSdk(graphQLClient);
+  }
+
+  setJwt(jwt: string | undefined) {
+    this._jwt = jwt;
   }
 
   async logOut(): Promise<void> {

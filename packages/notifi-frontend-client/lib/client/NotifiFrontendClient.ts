@@ -84,6 +84,7 @@ export class NotifiFrontendClient {
 
     let authorization = storedAuthorization;
     if (authorization === null) {
+      this._service.setJwt(undefined);
       return {
         status: 'loggedOut',
       };
@@ -92,6 +93,7 @@ export class NotifiFrontendClient {
     const expiryDate = new Date(authorization.expiry);
     const now = new Date();
     if (expiryDate <= now) {
+      this._service.setJwt(undefined);
       return {
         status: 'expired',
         authorization,
@@ -113,6 +115,7 @@ export class NotifiFrontendClient {
       }
     }
 
+    this._service.setJwt(authorization.token);
     return {
       status: 'authenticated',
       authorization,
