@@ -34,6 +34,7 @@ export class NotifiService
     Operations.GetTopicsService,
     Operations.GetWebhookTargetsService,
     Operations.LogInFromDappService,
+    Operations.MarkNotificationsAsReadService,
     Operations.RefreshAuthorizationService,
     Operations.SendEmailTargetVerificationRequestService,
     Operations.GetAlertsService,
@@ -247,6 +248,13 @@ export class NotifiService
       this._jwt = token;
     }
     return result;
+  }
+
+  async markNotificationsAsRead(
+    variables: Generated.NotifiMutationMarkNotificationsAsReadArgs,
+  ): Promise<Generated.MarkNotificationsAsReadMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.markNotificationsAsRead(variables, headers);
   }
 
   async refreshAuthorization(

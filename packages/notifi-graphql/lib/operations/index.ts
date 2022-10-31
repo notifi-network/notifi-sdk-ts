@@ -25,6 +25,7 @@ export * from './GetTelegramTargets';
 export * from './GetTopics';
 export * from './GetWebhookTargets';
 export * from './LogInFromDappService';
+export * from './MarkNotificationsAsRead';
 export * from './RefreshAuthorization';
 export * from './SendEmailTargetVerificationRequest';
 export * from './UpdateSourceGroup';
