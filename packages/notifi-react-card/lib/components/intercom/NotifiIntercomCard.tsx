@@ -1,11 +1,9 @@
 import clsx from 'clsx';
 import React from 'react';
 
-import { useNotifiSubscriptionContext } from '../../context';
-import { useNotifiSubscribe, useSubscriptionCard } from '../../hooks';
+import { useIntercomCard } from '../../hooks/useIntercomCard';
 import type { ErrorStateCardProps } from './ErrorStateCard';
 import { ErrorStateCard } from './ErrorStateCard';
-import type { FetchedStateCardProps } from './FetchedStateCard';
 import { FetchedStateCard } from './FetchedStateCard';
 import type { LoadingStateCardProps } from './LoadingStateCard';
 import { LoadingStateCard } from './LoadingStateCard';
@@ -49,7 +47,6 @@ export type NotifiIntercomCardProps = Readonly<{
     subtitle1?: string;
     subtitle2?: string;
     ErrorStateCard?: ErrorStateCardProps['classNames'];
-    FetchedStateCard?: FetchedStateCardProps['classNames'];
     LoadingStateCard?: LoadingStateCardProps['classNames'];
     NotifiSubscribeButton?: NotifiStartChatButtonProps['classNames'];
   }>;
@@ -58,7 +55,6 @@ export type NotifiIntercomCardProps = Readonly<{
   companySupportDescription?: string;
   inputLabels?: NotifiInputLabels;
   darkMode?: boolean;
-  cardId: string;
   inputs?: Record<string, string | undefined>;
   inputSeparators?: NotifiInputSeparators;
 }>;
@@ -70,18 +66,13 @@ export const NotifiIntercomCard: React.FC<
   companySupportTitle,
   companySupportSubtitle,
   companySupportDescription,
-  cardId,
   darkMode,
   inputLabels,
   inputs = {},
   inputSeparators,
   children,
 }: React.PropsWithChildren<NotifiIntercomCardProps>) => {
-  const { isInitialized } = useNotifiSubscribe();
-  const { loading } = useNotifiSubscriptionContext();
-  const inputDisabled = loading || !isInitialized;
-
-  const card = useSubscriptionCard(cardId);
+  const card = useIntercomCard();
   let contents: React.ReactNode = null;
 
   companySupportTitle = companySupportTitle || 'Your Company Support';
@@ -108,10 +99,8 @@ export const NotifiIntercomCard: React.FC<
     case 'fetched':
       contents = (
         <FetchedStateCard
-          classNames={classNames?.FetchedStateCard}
           card={card}
           inputs={inputs}
-          inputDisabled={inputDisabled}
           inputLabels={inputLabels}
           inputSeparators={inputSeparators}
         />

@@ -6,14 +6,9 @@ import {
   NotifiInputSeparators,
 } from '../subscription/NotifiSubscriptionCard';
 import { SubscriptionCardUnsupported } from '../subscription/SubscriptionCardUnsupported';
-import type { SubscriptionCardV1Props } from '../subscription/SubscriptionCardV1';
 
 export type FetchedStateCardProps = Readonly<{
-  classNames?: Readonly<{
-    SubscriptionCardV1?: SubscriptionCardV1Props['classNames'];
-  }>;
   card: FetchedState;
-  inputDisabled: boolean;
   inputs: Record<string, string | undefined>;
   inputLabels?: NotifiInputLabels;
   inputSeparators?: NotifiInputSeparators;
