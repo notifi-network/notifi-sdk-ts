@@ -5,6 +5,7 @@ export const NotificationHistoryEntryFragment = gql`
     id
     category
     createdDate
+    read
     detail {
       __typename
       ... on BroadcastMessageEventDetails {
