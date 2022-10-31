@@ -1,13 +1,12 @@
 import React from 'react';
 
-import { FetchedState } from '../../hooks';
+import { FetchedState } from '../../hooks/useIntercomCard';
 import {
   NotifiInputLabels,
   NotifiInputSeparators,
 } from '../subscription/NotifiSubscriptionCard';
 import { SubscriptionCardUnsupported } from '../subscription/SubscriptionCardUnsupported';
 import type { SubscriptionCardV1Props } from '../subscription/SubscriptionCardV1';
-import { SubscriptionCardV1 } from '../subscription/SubscriptionCardV1';
 
 export type FetchedStateCardProps = Readonly<{
   classNames?: Readonly<{
@@ -20,27 +19,15 @@ export type FetchedStateCardProps = Readonly<{
   inputSeparators?: NotifiInputSeparators;
 }>;
 
-export const FetchedStateCard: React.FC<FetchedStateCardProps> = ({
-  inputDisabled,
-  classNames,
-  card,
-  inputs,
-  inputLabels,
-  inputSeparators,
-}) => {
+export const FetchedStateCard: React.FC<FetchedStateCardProps> = ({ card }) => {
   let contents: React.ReactNode = <SubscriptionCardUnsupported />;
-  switch (card.data.version) {
-    case 'v1':
-      contents = (
-        <SubscriptionCardV1
-          classNames={classNames?.SubscriptionCardV1}
-          data={card.data}
-          inputs={inputs}
-          inputDisabled={inputDisabled}
-          inputLabels={inputLabels}
-          inputSeparators={inputSeparators}
-        />
-      );
+  switch (card.data.hasStartedChatting) {
+    case true:
+      contents = <></>;
+      break;
+    case false:
+      contents = <></>;
+      break;
   }
 
   return <>{contents}</>;

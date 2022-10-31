@@ -3,8 +3,6 @@ import React from 'react';
 
 import { useNotifiSubscriptionContext } from '../../context';
 import { useNotifiSubscribe, useSubscriptionCard } from '../../hooks';
-import type { NotifiFooterProps } from '../NotifiFooter';
-import { NotifiFooter } from '../NotifiFooter';
 import type { ErrorStateCardProps } from './ErrorStateCard';
 import { ErrorStateCard } from './ErrorStateCard';
 import type { FetchedStateCardProps } from './FetchedStateCard';
@@ -54,8 +52,10 @@ export type NotifiIntercomCardProps = Readonly<{
     FetchedStateCard?: FetchedStateCardProps['classNames'];
     LoadingStateCard?: LoadingStateCardProps['classNames'];
     NotifiSubscribeButton?: NotifiStartChatButtonProps['classNames'];
-    NotifiFooter?: NotifiFooterProps['classNames'];
   }>;
+  companySupportTitle?: string;
+  companySupportSubtitle?: string;
+  companySupportDescription?: string;
   inputLabels?: NotifiInputLabels;
   darkMode?: boolean;
   cardId: string;
@@ -67,6 +67,9 @@ export const NotifiIntercomCard: React.FC<
   React.PropsWithChildren<NotifiIntercomCardProps>
 > = ({
   classNames,
+  companySupportTitle,
+  companySupportSubtitle,
+  companySupportDescription,
   cardId,
   darkMode,
   inputLabels,
@@ -80,6 +83,13 @@ export const NotifiIntercomCard: React.FC<
 
   const card = useSubscriptionCard(cardId);
   let contents: React.ReactNode = null;
+
+  companySupportTitle = companySupportTitle || 'Your Company Support';
+  companySupportSubtitle =
+    companySupportSubtitle ||
+    'Start chatting with our team to get support. We’re here for you 24/7!';
+  companySupportDescription =
+    companySupportDescription || 'Get notifications for your support request';
 
   switch (card.state) {
     case 'loading':
@@ -118,17 +128,17 @@ export const NotifiIntercomCard: React.FC<
       )}
     >
       <h1 className={clsx('NotifiIntercomCard__title', classNames?.title)}>
-        Your Company Support
+        {{ companySupportTitle }}
       </h1>
       <div
         className={clsx('NotifiIntercomCard__subtitle1', classNames?.subtitle1)}
       >
-        Start chatting with our team to get support. We’re here for you 24/7!
+        {{ companySupportSubtitle }}
       </div>
       <div
         className={clsx('NotifiIntercomCard__subtitle2', classNames?.subtitle2)}
       >
-        Get notifications for your support request
+        {{ companySupportDescription }}
       </div>
       {children}
       {contents}
