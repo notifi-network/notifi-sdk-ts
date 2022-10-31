@@ -468,3 +468,47 @@
   background-color: var(--notifi-tooltip-background);
   border-radius: 3px;
 }
+
+.NotifiStartChatButton__button 
+{
+  height: 49px;
+  width: 266px;
+  background-color: #1448F3;
+  border-radius: 16px;
+  border: 0;
+  margin: 28px;
+}
+
+.NotifiStartChatButton__label
+{
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 19px;
+  text-align: center;  
+}
+
+.NotifiIntercomCard__title
+{
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 27px;
+}
+
+.NotifiIntercomCard__subtitle1
+{
+  color: #80829D;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 19px;
+  
+}
+
+.NotifiIntercomCard__subtitle2
+{
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 19px;
+  margin-top: 13px;
+}
+
