@@ -1,9 +1,9 @@
-import type { FilterOptions } from '@notifi-network/notifi-core';
+import type { FilterOptions } from '../models';
 
 export const packFilterOptions = (
-  clientOptions: Readonly<FilterOptions> | undefined,
+  clientOptions: Readonly<FilterOptions> | null,
 ): string => {
-  if (clientOptions === undefined) {
+  if (clientOptions === null) {
     return '{}';
   }
 

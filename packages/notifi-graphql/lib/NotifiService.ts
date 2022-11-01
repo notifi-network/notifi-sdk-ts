@@ -1,7 +1,7 @@
 import { GraphQLClient } from 'graphql-request';
 import { v4 as uuid } from 'uuid';
 
-import type * as Generated from './gql/generated';
+import * as Generated from './gql/generated';
 import { getSdk } from './gql/generated';
 import type * as Operations from './operations';
 
@@ -21,6 +21,7 @@ export class NotifiService
     Operations.DeleteAlertService,
     Operations.DeleteSourceGroupService,
     Operations.DeleteTargetGroupService,
+    Operations.FindTenantConfigService,
     Operations.GetAlertsService,
     Operations.GetConfigurationForDappService,
     Operations.GetEmailTargetsService,
@@ -36,7 +37,6 @@ export class NotifiService
     Operations.LogInFromDappService,
     Operations.RefreshAuthorizationService,
     Operations.SendEmailTargetVerificationRequestService,
-    Operations.GetAlertsService,
     Operations.UpdateSourceGroupService,
     Operations.UpdateTargetGroupService
 {
@@ -45,6 +45,14 @@ export class NotifiService
 
   constructor(graphQLClient: GraphQLClient) {
     this._typedClient = getSdk(graphQLClient);
+  }
+
+  setJwt(jwt: string | undefined) {
+    this._jwt = jwt;
+  }
+
+  async logOut(): Promise<void> {
+    this._jwt = undefined;
   }
 
   async beginLogInByTransaction(
@@ -151,6 +159,13 @@ export class NotifiService
   ): Promise<Generated.DeleteTargetGroupMutation> {
     const headers = this._requestHeaders();
     return this._typedClient.deleteTargetGroup(variables, headers);
+  }
+
+  async findTenantConfig(
+    variables: Generated.FindTenantConfigQueryVariables,
+  ): Promise<Generated.FindTenantConfigQuery> {
+    const headers = this._requestHeaders();
+    return this._typedClient.findTenantConfig(variables, headers);
   }
 
   async getAlerts(
