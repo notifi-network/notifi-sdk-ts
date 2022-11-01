@@ -30,10 +30,21 @@ export type LabelEventTypeItem = Readonly<{
   tooltipContent?: string;
 }>;
 
+export type PriceChangeDataSource = 'coingecko';
+
+export type PriceChangeEventTypeItem = Readonly<{
+  type: 'priceChange';
+  name: string;
+  tokenIds: ReadonlyArray<string>;
+  dataSource: PriceChangeDataSource;
+  tooltipContent: string;
+}>;
+
 export type EventTypeItem =
   | DirectPushEventTypeItem
   | BroadcastEventTypeItem
-  | LabelEventTypeItem;
+  | LabelEventTypeItem
+  | PriceChangeEventTypeItem;
 
 export type EventTypeConfig = ReadonlyArray<EventTypeItem>;
 export type InputType =

@@ -6,6 +6,7 @@ import {
   DirectPushEventTypeItem,
   EventTypeItem,
   FilterOptions,
+  PriceChangeEventTypeItem,
 } from '../models';
 import { areIdsEqual } from '../utils/areIdsEqual';
 import { resolveStringRef } from '../utils/resolveRef';
@@ -65,17 +66,69 @@ const ensureBroadcastSource = async (
   return result;
 };
 
-const ensureSource = async (
+const ensurePriceChangeSources = async (
+  service: Operations.GetSourcesService & Operations.CreateSourceService,
+  eventType: PriceChangeEventTypeItem,
+  _inputs: Record<string, string | undefined>,
+): Promise<ReadonlyArray<Types.SourceFragmentFragment>> => {
+  const sourcesQuery = await service.getSources({});
+  const sources = sourcesQuery.source;
+  if (sources === undefined) {
+    throw new Error('Failed to fetch sources');
+  }
+
+  const results: Types.SourceFragmentFragment[] = [];
+  const sourcesToCreate = new Set(eventType.tokenIds);
+  sources.forEach((existing) => {
+    if (existing?.type === 'COIN_PRICE_CHANGES') {
+      sourcesToCreate.delete(existing.blockchainAddress);
+      results.push(existing);
+    }
+  });
+
+  if (sourcesToCreate.size > 0) {
+    let createSourcePromise = Promise.resolve();
+    sourcesToCreate.forEach((tokenId) => {
+      createSourcePromise = createSourcePromise.then(async () => {
+        const result = await service.createSource({
+          type: 'COIN_PRICE_CHANGES',
+          blockchainAddress: tokenId,
+        });
+
+        const source = result.createSource;
+        if (source !== undefined) {
+          results.push(source);
+        }
+      });
+    });
+
+    await createSourcePromise;
+  }
+
+  return results;
+};
+
+const ensureSources = async (
   service: Operations.GetSourcesService & Operations.CreateSourceService,
   eventType: EventTypeItem,
   inputs: Record<string, string | undefined>,
-): Promise<Types.SourceFragmentFragment> => {
+): Promise<ReadonlyArray<Types.SourceFragmentFragment>> => {
   switch (eventType.type) {
     case 'directPush': {
-      return ensureDirectPushSource(service, eventType, inputs);
+      const source = await ensureDirectPushSource(service, eventType, inputs);
+      return [source];
     }
     case 'broadcast': {
-      return ensureBroadcastSource(service, eventType, inputs);
+      const source = await ensureBroadcastSource(service, eventType, inputs);
+      return [source];
+    }
+    case 'priceChange': {
+      const sources = await ensurePriceChangeSources(
+        service,
+        eventType,
+        inputs,
+      );
+      return sources;
     }
     case 'label': {
       throw new Error('Unsupported event type');
@@ -173,6 +226,24 @@ const getBroadcastFilter = (
   };
 };
 
+const getPriceChangeFilter = (
+  sources: ReadonlyArray<SourceFragmentFragment>,
+  _eventType: PriceChangeEventTypeItem,
+  _inputs: Record<string, string | undefined>,
+): GetFilterResults => {
+  const filter = sources
+    .flatMap((it) => it.applicableFilters ?? [])
+    .find((it) => it?.filterType === 'COIN_PRICE_CHANGE_EVENTS');
+  if (filter === undefined) {
+    throw new Error('Failed to retrieve filter');
+  }
+
+  return {
+    filter,
+    filterOptions: {},
+  };
+};
+
 export const ensureSourceAndFilters = async (
   service: Operations.CreateSourceService &
     Operations.GetSourcesService &
@@ -188,15 +259,17 @@ export const ensureSourceAndFilters = async (
     filterOptions: FilterOptions;
   }>
 > => {
-  const source = await ensureSource(service, eventType, inputs);
-  const sourceGroup = await ensureSourceGroup(service, eventType.name, [
-    source.id,
-  ]);
+  const sources = await ensureSources(service, eventType, inputs);
+  const sourceGroup = await ensureSourceGroup(
+    service,
+    eventType.name,
+    sources.map((it) => it.id),
+  );
 
   switch (eventType.type) {
     case 'directPush': {
       const { filter, filterOptions } = getDirectPushFilter(
-        source,
+        sources[0],
         eventType,
         inputs,
       );
@@ -208,7 +281,19 @@ export const ensureSourceAndFilters = async (
     }
     case 'broadcast': {
       const { filter, filterOptions } = getBroadcastFilter(
-        source,
+        sources[0],
+        eventType,
+        inputs,
+      );
+      return {
+        sourceGroup,
+        filter,
+        filterOptions,
+      };
+    }
+    case 'priceChange': {
+      const { filter, filterOptions } = getPriceChangeFilter(
+        sources,
         eventType,
         inputs,
       );
