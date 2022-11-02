@@ -1,6 +1,6 @@
 {
   "name": "@notifi-network/notifi-core",
-  "version": "0.42.0",
+  "version": "0.42.1",
   "description": "The interfaces for the core functionality provided by the SDK",
   "author": "juni-notifi <hyungjoon.kim@notifi.network>",
   "homepage": "https://github.com/nimesh-irisio/notifi-sdk#readme",
