@@ -1,5 +1,5 @@
-import { CardConfigItemV1 } from '@notifi-network/notifi-react-card';
 import clsx from 'clsx';
+import { CardConfigItemV1 } from 'notifi-react-card/lib/hooks';
 import React from 'react';
 
 import { NotifiEmailInput, NotifiEmailInputProps } from '../NotifiEmailInput';
