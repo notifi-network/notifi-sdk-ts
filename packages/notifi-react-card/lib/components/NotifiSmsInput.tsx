@@ -2,7 +2,6 @@ import clsx from 'clsx';
 import { isValidPhoneNumber } from 'libphonenumber-js';
 import React, { useCallback, useEffect, useState } from 'react';
 
-import { useNotifiSubscriptionContext } from '../context';
 import type { DeepPartialReadonly } from '../utils';
 import { splitPhoneNumber } from '../utils/phoneUtils';
 
@@ -22,6 +21,13 @@ export type NotifiSmsInputProps = Readonly<{
   }>;
   disabled: boolean;
   allowedCountryCodes: string[];
+  intercomSmsInputStyle?: string;
+  intercomSmsDropdownContainerStyle?: string;
+  intercomSmsDropdownSelectStyle?: string;
+  phoneNumber: string;
+  setPhoneNumber: (phoneNumber: string) => void;
+  smsErrorMessage: string;
+  setSmsErrorMessage: (smsErrorMessage: string) => void;
 }>;
 
 export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
@@ -29,10 +35,14 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
   copy,
   disabled,
   allowedCountryCodes,
+  intercomSmsInputStyle,
+  intercomSmsDropdownContainerStyle,
+  intercomSmsDropdownSelectStyle,
+  phoneNumber,
+  setPhoneNumber,
+  setSmsErrorMessage,
+  smsErrorMessage,
 }: NotifiSmsInputProps) => {
-  const { phoneNumber, setPhoneNumber, setSmsErrorMessage, smsErrorMessage } =
-    useNotifiSubscriptionContext();
-
   const [phoneValues, setPhoneValues] = useState({
     dialCode: '+1',
     baseNumber: '',
@@ -117,10 +127,17 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
       <label className={clsx('NotifiSmsInput__label', classNames?.label)}>
         {copy?.label}
       </label>
-      <div className={clsx('NotifiSmsInput__container', classNames?.container)}>
+      <div
+        className={clsx(
+          'NotifiSmsInput__container',
+          intercomSmsInputStyle,
+          classNames?.container,
+        )}
+      >
         <div
           className={clsx(
             'NotifiSmsInput__dropdownContainer',
+            intercomSmsDropdownContainerStyle,
             classNames?.dropdownContainer,
           )}
         >
@@ -129,6 +146,7 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
             onChange={handleChange('dialCode')}
             className={clsx(
               'NotifiSmsInput__dropdownSelect',
+              intercomSmsDropdownSelectStyle,
               classNames?.dropdownSelectField,
             )}
           >

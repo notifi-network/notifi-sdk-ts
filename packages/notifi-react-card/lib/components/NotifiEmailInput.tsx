@@ -1,7 +1,6 @@
 import clsx from 'clsx';
 import React from 'react';
 
-import { useNotifiSubscriptionContext } from '../context';
 import type { DeepPartialReadonly } from '../utils';
 
 export type NotifiEmailInputProps = Readonly<{
@@ -16,16 +15,23 @@ export type NotifiEmailInputProps = Readonly<{
     label: string;
   }>;
   disabled: boolean;
+  intercomEmailInputStyle?: string;
+  email: string;
+  setEmail: (email: string) => void;
+  emailErrorMessage: string;
+  setEmailErrorMessage: (emailErrorMessage: string) => void;
 }>;
 
 export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
   classNames,
   copy,
   disabled,
+  intercomEmailInputStyle,
+  email,
+  setEmail,
+  emailErrorMessage,
+  setEmailErrorMessage,
 }: NotifiEmailInputProps) => {
-  const { email, setEmail, setEmailErrorMessage, emailErrorMessage } =
-    useNotifiSubscriptionContext();
-
   const validateEmail = () => {
     if (email === '') {
       return;
@@ -47,7 +53,11 @@ export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
         {copy?.label}
       </label>
       <div
-        className={clsx('NotifiEmailInput__container', classNames?.container)}
+        className={clsx(
+          'NotifiEmailInput__container',
+          intercomEmailInputStyle,
+          classNames?.container,
+        )}
       >
         <input
           onBlur={validateEmail}

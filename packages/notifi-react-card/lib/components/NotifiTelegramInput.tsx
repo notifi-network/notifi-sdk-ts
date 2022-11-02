@@ -15,15 +15,19 @@ export type NotifiTelegramInputProps = Readonly<{
     label: string;
   }>;
   disabled: boolean;
+  intercomTelegramInputStyle?: string;
+  telegramId: string;
+  setTelegramId: (telegram: string) => void;
 }>;
 
 export const NotifiTelegramInput: React.FC<NotifiTelegramInputProps> = ({
   classNames,
   copy,
   disabled,
+  intercomTelegramInputStyle,
+  telegramId,
+  setTelegramId,
 }: NotifiTelegramInputProps) => {
-  const { telegramId, setTelegramId } = useNotifiSubscriptionContext();
-
   return (
     <>
       <label className={clsx('NotifiSmsInput__label', classNames?.label)}>
@@ -32,6 +36,7 @@ export const NotifiTelegramInput: React.FC<NotifiTelegramInputProps> = ({
       <div
         className={clsx(
           'NotifiTelegramInput__container',
+          intercomTelegramInputStyle,
           classNames?.container,
         )}
       >
