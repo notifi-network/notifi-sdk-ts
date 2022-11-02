@@ -13,6 +13,15 @@ export const NotificationHistoryEntryFragment = gql`
         subject
         message
       }
+      ... on GenericEventDetails {
+        notificationTypeName
+        sourceName
+        genericMessage: message
+        action {
+          name
+          url
+        }
+      }
     }
   }
 `;
