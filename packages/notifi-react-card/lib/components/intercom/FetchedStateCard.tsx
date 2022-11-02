@@ -62,8 +62,7 @@ export const FetchedStateCard: React.FC<FetchedStateCardProps> = ({
 }) => {
   let contents: React.ReactNode = <SubscriptionCardUnsupported />;
   const allowedCountryCodes = [...data.contactInfo.sms.supportedCountryCodes];
-  // switch (card.data.hasStartedChatting) {
-  //   case true:
+
   contents = (
     <div className={'NotifiSupportNotificationOption__container'}>
       <NotifiEmailInput
@@ -172,11 +171,6 @@ export const FetchedStateCard: React.FC<FetchedStateCardProps> = ({
       </div>
     </div>
   );
-  //     break;
-  //   case false:
-  //     contents = <></>;
-  //     break;
-  // }
 
   return <>{contents}</>;
 };
