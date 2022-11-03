@@ -67,9 +67,7 @@ export const NotifiContext: React.FC<React.PropsWithChildren<NotifiParams>> = ({
 }: React.PropsWithChildren<NotifiParams>) => {
   return (
     <NotifiClientContextProvider {...params}>
-      <NotifiSubscriptionContextProvider {...params}>
-        {children}
-      </NotifiSubscriptionContextProvider>
+      {children}
     </NotifiClientContextProvider>
   );
 };
