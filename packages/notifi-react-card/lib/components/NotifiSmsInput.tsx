@@ -2,6 +2,7 @@ import clsx from 'clsx';
 import { isValidPhoneNumber } from 'libphonenumber-js';
 import React, { useCallback, useEffect, useState } from 'react';
 
+import { useNotifiSubscriptionContext } from '../context';
 import type { DeepPartialReadonly } from '../utils';
 import { splitPhoneNumber } from '../utils/phoneUtils';
 
@@ -24,10 +25,6 @@ export type NotifiSmsInputProps = Readonly<{
   intercomSmsInputStyle?: string;
   intercomSmsDropdownContainerStyle?: string;
   intercomSmsDropdownSelectStyle?: string;
-  phoneNumber: string;
-  setPhoneNumber: (phoneNumber: string) => void;
-  smsErrorMessage: string;
-  setSmsErrorMessage: (smsErrorMessage: string) => void;
 }>;
 
 export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
@@ -38,11 +35,10 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
   intercomSmsInputStyle,
   intercomSmsDropdownContainerStyle,
   intercomSmsDropdownSelectStyle,
-  phoneNumber,
-  setPhoneNumber,
-  setSmsErrorMessage,
-  smsErrorMessage,
 }: NotifiSmsInputProps) => {
+  const { phoneNumber, setPhoneNumber, setSmsErrorMessage, smsErrorMessage } =
+    useNotifiSubscriptionContext();
+
   const [phoneValues, setPhoneValues] = useState({
     dialCode: '+1',
     baseNumber: '',

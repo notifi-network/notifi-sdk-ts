@@ -28,16 +28,6 @@ export type FetchedStateCardProps = Readonly<{
   inputs: Record<string, string | undefined>;
   inputLabels?: NotifiInputLabels;
   inputSeparators?: NotifiInputSeparators;
-  email: string;
-  setEmail: (email: string) => void;
-  emailErrorMessage: string;
-  setEmailErrorMessage: (emailErrorMessage: string) => void;
-  phoneNumber: string;
-  setPhoneNumber: (phoneNumber: string) => void;
-  smsErrorMessage: string;
-  setSmsErrorMessage: (smsErrorMessage: string) => void;
-  telegramId: string;
-  setTelegramId: (telegram: string) => void;
   checked: boolean;
   setChecked: React.Dispatch<React.SetStateAction<boolean>>;
 }>;
@@ -47,16 +37,6 @@ export const FetchedStateCard: React.FC<FetchedStateCardProps> = ({
   inputSeparators,
   classNames,
   inputLabels,
-  email,
-  setEmail,
-  emailErrorMessage,
-  setEmailErrorMessage,
-  phoneNumber,
-  setPhoneNumber,
-  setSmsErrorMessage,
-  smsErrorMessage,
-  telegramId,
-  setTelegramId,
   checked,
   setChecked,
 }) => {
@@ -66,10 +46,6 @@ export const FetchedStateCard: React.FC<FetchedStateCardProps> = ({
   contents = (
     <div className={'NotifiSupportNotificationOption__container'}>
       <NotifiEmailInput
-        email={email}
-        setEmail={setEmail}
-        emailErrorMessage={emailErrorMessage}
-        setEmailErrorMessage={setEmailErrorMessage}
         disabled={false}
         classNames={classNames?.NotifiEmailInput}
         copy={{ label: inputLabels?.email }}
@@ -94,10 +70,6 @@ export const FetchedStateCard: React.FC<FetchedStateCardProps> = ({
         </div>
       ) : null}
       <NotifiSmsInput
-        phoneNumber={phoneNumber}
-        setPhoneNumber={setPhoneNumber}
-        setSmsErrorMessage={setSmsErrorMessage}
-        smsErrorMessage={smsErrorMessage}
         disabled={false}
         classNames={classNames?.NotifiSmsInput}
         allowedCountryCodes={allowedCountryCodes}
@@ -129,8 +101,6 @@ export const FetchedStateCard: React.FC<FetchedStateCardProps> = ({
         </div>
       ) : null}
       <NotifiTelegramInput
-        telegramId={telegramId}
-        setTelegramId={setTelegramId}
         disabled={false}
         classNames={classNames?.NotifiTelegramInput}
         copy={{ label: inputLabels?.telegram }}

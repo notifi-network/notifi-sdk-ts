@@ -1,5 +1,4 @@
 import clsx from 'clsx';
-import { useNotifiSubscriptionContext } from 'notifi-react-card/lib/context';
 import React from 'react';
 
 import { CardConfigItemV1 } from '../../../hooks';
@@ -43,26 +42,10 @@ export const EditCardView: React.FC<EditCardViewProps> = ({
   inputLabels,
   allowedCountryCodes,
 }) => {
-  const {
-    email,
-    setEmail,
-    emailErrorMessage,
-    setEmailErrorMessage,
-    phoneNumber,
-    setPhoneNumber,
-    setSmsErrorMessage,
-    smsErrorMessage,
-    telegramId,
-    setTelegramId,
-  } = useNotifiSubscriptionContext();
   return (
     <>
       {data.contactInfo.email.active ? (
         <NotifiEmailInput
-          email={email}
-          setEmail={setEmail}
-          emailErrorMessage={emailErrorMessage}
-          setEmailErrorMessage={setEmailErrorMessage}
           disabled={inputDisabled}
           classNames={classNames?.NotifiEmailInput}
           copy={{ label: inputLabels?.email }}
@@ -87,10 +70,6 @@ export const EditCardView: React.FC<EditCardViewProps> = ({
       ) : null}
       {data.contactInfo.sms.active ? (
         <NotifiSmsInput
-          phoneNumber={phoneNumber}
-          setPhoneNumber={setPhoneNumber}
-          setSmsErrorMessage={setSmsErrorMessage}
-          smsErrorMessage={smsErrorMessage}
           disabled={inputDisabled}
           classNames={classNames?.NotifiSmsInput}
           allowedCountryCodes={allowedCountryCodes}
@@ -116,8 +95,6 @@ export const EditCardView: React.FC<EditCardViewProps> = ({
       ) : null}
       {data.contactInfo.telegram.active ? (
         <NotifiTelegramInput
-          telegramId={telegramId}
-          setTelegramId={setTelegramId}
           disabled={inputDisabled}
           classNames={classNames?.NotifiTelegramInput}
           copy={{ label: inputLabels?.telegram }}
