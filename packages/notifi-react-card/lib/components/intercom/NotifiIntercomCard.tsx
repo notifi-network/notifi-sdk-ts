@@ -47,7 +47,7 @@ export type NotifiIntercomCardProps = Readonly<{
     subtitle2?: string;
     ErrorStateCard?: ErrorStateCardProps['classNames'];
     LoadingStateCard?: LoadingStateCardProps['classNames'];
-    NotifiSubscribeButton?: NotifiStartChatButtonProps['classNames'];
+    NotifiStartChatButton?: NotifiStartChatButtonProps['classNames'];
   }>;
   companySupportTitle?: string;
   companySupportSubtitle?: string;

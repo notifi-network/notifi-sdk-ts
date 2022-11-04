@@ -3,37 +3,14 @@ import { useNotifiSubscriptionContext } from 'notifi-react-card/lib/context';
 import React, { useState } from 'react';
 
 import { useSubscriptionCard } from '../../hooks';
-import type { ErrorStateCardProps } from './ErrorStateCard';
 import { ErrorStateCard } from './ErrorStateCard';
 import { FetchedStateCard } from './FetchedStateCard';
-import type { LoadingStateCardProps } from './LoadingStateCard';
 import { LoadingStateCard } from './LoadingStateCard';
-import { NotifiInputLabels, NotifiInputSeparators } from './NotifiIntercomCard';
-import type { NotifiStartChatButtonProps } from './NotifiStartChatButton';
+import { NotifiIntercomCardProps } from './NotifiIntercomCard';
 import { NotifiStartChatButton } from './NotifiStartChatButton';
 
-export type NotifiIntercomCardContainerProps = Readonly<{
-  classNames?: Readonly<{
-    container?: string;
-    title?: string;
-    subtitle1?: string;
-    subtitle2?: string;
-    ErrorStateCard?: ErrorStateCardProps['classNames'];
-    LoadingStateCard?: LoadingStateCardProps['classNames'];
-    NotifiSubscribeButton?: NotifiStartChatButtonProps['classNames'];
-  }>;
-  companySupportTitle?: string;
-  companySupportSubtitle?: string;
-  companySupportDescription?: string;
-  inputLabels?: NotifiInputLabels;
-  darkMode?: boolean;
-  inputs?: Record<string, string | undefined>;
-  inputSeparators?: NotifiInputSeparators;
-  cardId: string;
-}>;
-
 export const NotifiIntercomCardContainer: React.FC<
-  React.PropsWithChildren<NotifiIntercomCardContainerProps>
+  React.PropsWithChildren<NotifiIntercomCardProps>
 > = ({
   classNames,
   companySupportTitle,
@@ -45,7 +22,7 @@ export const NotifiIntercomCardContainer: React.FC<
   inputSeparators,
   children,
   cardId,
-}: React.PropsWithChildren<NotifiIntercomCardContainerProps>) => {
+}: React.PropsWithChildren<NotifiIntercomCardProps>) => {
   const [checked, setChecked] = useState<boolean>(true);
   const { email, emailErrorMessage, phoneNumber, smsErrorMessage, telegramId } =
     useNotifiSubscriptionContext();
@@ -117,7 +94,7 @@ export const NotifiIntercomCardContainer: React.FC<
       {contents}
       <NotifiStartChatButton
         disabled={disabled}
-        classNames={classNames?.NotifiSubscribeButton}
+        classNames={classNames?.NotifiStartChatButton}
       />
     </div>
   );
