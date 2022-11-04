@@ -1,17 +1,15 @@
-import clsx from 'clsx';
 import React from 'react';
 
-import { useNotifiSubscriptionContext } from '../../context';
-import { useNotifiSubscribe, useSubscriptionCard } from '../../hooks';
+import {
+  NotifiSubscriptionContextProvider,
+  useNotifiClientContext,
+} from '../../context';
 import type { NotifiFooterProps } from '../NotifiFooter';
-import { NotifiFooter } from '../NotifiFooter';
 import type { ErrorStateCardProps } from './ErrorStateCard';
-import { ErrorStateCard } from './ErrorStateCard';
 import type { FetchedStateCardProps } from './FetchedStateCard';
-import { FetchedStateCard } from './FetchedStateCard';
 import type { LoadingStateCardProps } from './LoadingStateCard';
-import { LoadingStateCard } from './LoadingStateCard';
 import type { NotifiSubscribeButtonProps } from './NotifiSubscribeButton';
+import { NotifiSubscriptionCardContainer } from './NotifiSubscriptionCardContainer';
 
 export type NotifiInputSeparators = {
   emailSeparator?: {
@@ -61,61 +59,12 @@ export type NotifiSubscriptionCardProps = Readonly<{
 
 export const NotifiSubscriptionCard: React.FC<
   React.PropsWithChildren<NotifiSubscriptionCardProps>
-> = ({
-  classNames,
-  cardId,
-  darkMode,
-  inputLabels,
-  inputs = {},
-  inputSeparators,
-  children,
-}: React.PropsWithChildren<NotifiSubscriptionCardProps>) => {
-  const { isInitialized } = useNotifiSubscribe();
-  const { loading } = useNotifiSubscriptionContext();
-  const inputDisabled = loading || !isInitialized;
-
-  const card = useSubscriptionCard(cardId);
-  let contents: React.ReactNode = null;
-
-  switch (card.state) {
-    case 'loading':
-      contents = (
-        <LoadingStateCard
-          classNames={classNames?.LoadingStateCard}
-          card={card}
-        />
-      );
-      break;
-    case 'error':
-      contents = (
-        <ErrorStateCard classNames={classNames?.ErrorStateCard} card={card} />
-      );
-      break;
-    case 'fetched':
-      contents = (
-        <FetchedStateCard
-          classNames={classNames?.FetchedStateCard}
-          card={card}
-          inputs={inputs}
-          inputDisabled={inputDisabled}
-          inputLabels={inputLabels}
-          inputSeparators={inputSeparators}
-        />
-      );
-      break;
-  }
+> = (props: React.PropsWithChildren<NotifiSubscriptionCardProps>) => {
+  const { params } = useNotifiClientContext();
 
   return (
-    <div
-      className={clsx(
-        darkMode ? 'notifi__dark' : 'notifi__light',
-        'NotifiSubscriptionCard__container',
-        classNames?.container,
-      )}
-    >
-      {children}
-      {contents}
-      <NotifiFooter classNames={classNames?.NotifiFooter} />
-    </div>
+    <NotifiSubscriptionContextProvider {...params}>
+      <NotifiSubscriptionCardContainer {...props} />
+    </NotifiSubscriptionContextProvider>
   );
 };
