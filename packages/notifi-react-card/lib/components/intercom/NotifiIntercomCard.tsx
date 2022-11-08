@@ -4,40 +4,14 @@ import {
   NotifiSubscriptionContextProvider,
   useNotifiClientContext,
 } from '../../context';
+import {
+  NotifiInputLabels,
+  NotifiInputSeparators,
+} from '../subscription/NotifiSubscriptionCard';
 import type { ErrorStateCardProps } from './ErrorStateCard';
 import type { LoadingStateCardProps } from './LoadingStateCard';
 import { NotifiIntercomCardContainer } from './NotifiIntercomCardContainer';
 import type { NotifiStartChatButtonProps } from './NotifiStartChatButton';
-
-export type NotifiInputSeparators = {
-  emailSeparator?: {
-    classNames?: {
-      container: string;
-      content: string;
-    };
-    content: string;
-  };
-  smsSeparator?: {
-    classNames?: {
-      container: string;
-      content: string;
-    };
-    content: string;
-  };
-  telegramSeparator?: {
-    classNames?: {
-      container: string;
-      content: string;
-    };
-    content: string;
-  };
-};
-
-export type NotifiInputLabels = {
-  email?: string;
-  sms?: string;
-  telegram?: string;
-};
 
 export type NotifiIntercomCardProps = Readonly<{
   classNames?: Readonly<{

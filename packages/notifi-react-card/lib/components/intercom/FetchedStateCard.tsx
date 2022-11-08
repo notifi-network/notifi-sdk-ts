@@ -13,7 +13,6 @@ import {
   NotifiInputSeparators,
 } from '../subscription/NotifiSubscriptionCard';
 import { NotifiToggle, NotifiToggleProps } from '../subscription/NotifiToggle';
-import { SubscriptionCardUnsupported } from '../subscription/SubscriptionCardUnsupported';
 
 export type FetchedStateCardProps = Readonly<{
   classNames?: Readonly<{
@@ -40,10 +39,9 @@ export const FetchedStateCard: React.FC<FetchedStateCardProps> = ({
   checked,
   setChecked,
 }) => {
-  let contents: React.ReactNode = <SubscriptionCardUnsupported />;
   const allowedCountryCodes = [...data.contactInfo.sms.supportedCountryCodes];
 
-  contents = (
+  return (
     <div className={'NotifiSupportNotificationOption__container'}>
       <NotifiEmailInput
         disabled={false}
@@ -141,6 +139,4 @@ export const FetchedStateCard: React.FC<FetchedStateCardProps> = ({
       </div>
     </div>
   );
-
-  return <>{contents}</>;
 };
