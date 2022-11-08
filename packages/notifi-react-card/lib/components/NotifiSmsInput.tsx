@@ -22,6 +22,9 @@ export type NotifiSmsInputProps = Readonly<{
   }>;
   disabled: boolean;
   allowedCountryCodes: string[];
+  intercomSmsInputStyle?: string;
+  intercomSmsDropdownContainerStyle?: string;
+  intercomSmsDropdownSelectStyle?: string;
 }>;
 
 export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
@@ -29,6 +32,9 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
   copy,
   disabled,
   allowedCountryCodes,
+  intercomSmsInputStyle,
+  intercomSmsDropdownContainerStyle,
+  intercomSmsDropdownSelectStyle,
 }: NotifiSmsInputProps) => {
   const { phoneNumber, setPhoneNumber, setSmsErrorMessage, smsErrorMessage } =
     useNotifiSubscriptionContext();
@@ -117,10 +123,17 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
       <label className={clsx('NotifiSmsInput__label', classNames?.label)}>
         {copy?.label}
       </label>
-      <div className={clsx('NotifiSmsInput__container', classNames?.container)}>
+      <div
+        className={clsx(
+          'NotifiSmsInput__container',
+          intercomSmsInputStyle,
+          classNames?.container,
+        )}
+      >
         <div
           className={clsx(
             'NotifiSmsInput__dropdownContainer',
+            intercomSmsDropdownContainerStyle,
             classNames?.dropdownContainer,
           )}
         >
@@ -129,6 +142,7 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
             onChange={handleChange('dialCode')}
             className={clsx(
               'NotifiSmsInput__dropdownSelect',
+              intercomSmsDropdownSelectStyle,
               classNames?.dropdownSelectField,
             )}
           >
