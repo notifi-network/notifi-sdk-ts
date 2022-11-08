@@ -7,17 +7,19 @@ export type NotifiStartChatButtonProps = Readonly<{
     label?: string;
   }>;
   disabled: boolean;
+  onClick: () => void;
 }>;
 
 export const NotifiStartChatButton: React.FC<NotifiStartChatButtonProps> = ({
   classNames,
   disabled,
+  onClick,
 }) => {
   return (
     <button
       disabled={disabled}
       className={clsx('NotifiStartChatButton__button', classNames?.button)}
-      onClick={() => console.log('start')}
+      onClick={onClick}
     >
       <span className={clsx('NotifiStartChatButton__label', classNames?.label)}>
         Start Chatting
