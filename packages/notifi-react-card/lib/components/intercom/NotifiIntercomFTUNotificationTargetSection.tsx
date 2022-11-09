@@ -14,7 +14,7 @@ import {
 } from '../subscription/NotifiSubscriptionCard';
 import { NotifiToggle, NotifiToggleProps } from '../subscription/NotifiToggle';
 
-export type FetchedStateCardProps = Readonly<{
+export type NotifiIntercomFTUNotificationTargetSectionProps = Readonly<{
   classNames?: Readonly<{
     NotifiEmailInput?: NotifiEmailInputProps['classNames'];
     NotifiSmsInput?: NotifiSmsInputProps['classNames'];
@@ -31,7 +31,9 @@ export type FetchedStateCardProps = Readonly<{
   setChecked: React.Dispatch<React.SetStateAction<boolean>>;
 }>;
 
-export const FetchedStateCard: React.FC<FetchedStateCardProps> = ({
+export const NotifiIntercomFTUNotificationTargetSection: React.FC<
+  NotifiIntercomFTUNotificationTargetSectionProps
+> = ({
   data,
   inputSeparators,
   classNames,

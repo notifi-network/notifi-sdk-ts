@@ -11,7 +11,7 @@ export type ChatMessageDateProps = Readonly<{
 
 export const ChatMessageDate: React.FC<ChatMessageDateProps> = ({
   classNames,
-  date = 'Augest 1',
+  date = 'August 1',
 }) => {
   return (
     <div

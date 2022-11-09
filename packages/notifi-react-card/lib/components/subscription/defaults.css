@@ -706,7 +706,7 @@
 }
 
 .NotifiIntercomChatIncomingMessage__body {
-  padding: 10px 65px 18px 16px;
+  padding: 12px 65px 18px 16px;
   max-width: 230px;
   border-radius: 16px;
   background: #F5F6FB;
@@ -721,7 +721,7 @@
 }
 
 .NotifiIntercomChatOutgoingMessage__body {
-  padding: 10px 65px 18px 16px;
+  padding: 12px 65px 18px 16px;
   max-width: 230px;
   border-radius: 16px;
   background: #E6EBFF;
