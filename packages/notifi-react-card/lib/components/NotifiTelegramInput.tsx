@@ -9,6 +9,7 @@ export type NotifiTelegramInputProps = Readonly<{
     container: string;
     input: string;
     label: string;
+    button: string;
   }>;
   copy?: DeepPartialReadonly<{
     placeholder: string;
@@ -17,6 +18,7 @@ export type NotifiTelegramInputProps = Readonly<{
   disabled: boolean;
   intercomTelegramInputStyle?: string;
   intercomTelegramInputContainerStyle?: string;
+  intercomView?: boolean;
 }>;
 
 export const NotifiTelegramInput: React.FC<NotifiTelegramInputProps> = ({
@@ -25,14 +27,29 @@ export const NotifiTelegramInput: React.FC<NotifiTelegramInputProps> = ({
   disabled,
   intercomTelegramInputStyle,
   intercomTelegramInputContainerStyle,
+  intercomView,
 }: NotifiTelegramInputProps) => {
-  const { telegramId, setTelegramId } = useNotifiSubscriptionContext();
+  const { intercomCardView, telegramId, setTelegramId } =
+    useNotifiSubscriptionContext();
 
   return (
     <>
-      <label className={clsx('NotifiSmsInput__label', classNames?.label)}>
-        {copy?.label}
-      </label>
+      {intercomView ? (
+        intercomCardView.state === 'settingView' ? (
+          <div
+            className={clsx(
+              'NotifiTelegramVerification__button',
+              classNames?.button,
+            )}
+          >
+            Verify ID
+          </div>
+        ) : null
+      ) : (
+        <label className={clsx('NotifiSmsInput__label', classNames?.label)}>
+          {copy?.label}
+        </label>
+      )}
       <div
         className={clsx(
           'NotifiTelegramInput__container',

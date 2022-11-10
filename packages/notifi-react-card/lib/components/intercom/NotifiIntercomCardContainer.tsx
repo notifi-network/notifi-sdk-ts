@@ -61,7 +61,8 @@ export const NotifiIntercomCardContainer: React.FC<
     <div
       className={clsx(
         darkMode ? 'notifi__dark' : 'notifi__light',
-        intercomCardView.state === 'startChatView'
+        intercomCardView.state === 'chatWindowView' ||
+          intercomCardView.state === 'settingView'
           ? 'NotifiIntercomCard__chatWindowContainer'
           : 'NotifiIntercomCard__container',
         classNames?.container,

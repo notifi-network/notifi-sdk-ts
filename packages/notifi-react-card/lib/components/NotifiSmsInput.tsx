@@ -26,6 +26,7 @@ export type NotifiSmsInputProps = Readonly<{
   intercomSmsDropdownContainerStyle?: string;
   intercomSmsDropdownSelectStyle?: string;
   intercomSmsInputContainerStyle?: string;
+  intercomView?: boolean;
 }>;
 
 export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
@@ -37,6 +38,7 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
   intercomSmsDropdownContainerStyle,
   intercomSmsDropdownSelectStyle,
   intercomSmsInputContainerStyle,
+  intercomView,
 }: NotifiSmsInputProps) => {
   const { phoneNumber, setPhoneNumber, setSmsErrorMessage, smsErrorMessage } =
     useNotifiSubscriptionContext();
@@ -122,9 +124,11 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
 
   return (
     <>
-      <label className={clsx('NotifiSmsInput__label', classNames?.label)}>
-        {copy?.label}
-      </label>
+      {intercomView ? null : (
+        <label className={clsx('NotifiSmsInput__label', classNames?.label)}>
+          {copy?.label}
+        </label>
+      )}
       <div
         className={clsx(
           'NotifiSmsInput__container',

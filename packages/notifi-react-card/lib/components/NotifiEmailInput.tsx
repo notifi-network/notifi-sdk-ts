@@ -10,6 +10,7 @@ export type NotifiEmailInputProps = Readonly<{
     input: string;
     label: string;
     errorMessage: string;
+    button: string;
   }>;
   copy?: DeepPartialReadonly<{
     placeholder: string;
@@ -18,6 +19,7 @@ export type NotifiEmailInputProps = Readonly<{
   disabled: boolean;
   intercomEmailInputStyle?: string;
   intercomEmailInputContainerStyle?: string;
+  intercomView?: boolean;
 }>;
 
 export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
@@ -26,9 +28,15 @@ export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
   disabled,
   intercomEmailInputStyle,
   intercomEmailInputContainerStyle,
+  intercomView,
 }: NotifiEmailInputProps) => {
-  const { email, setEmail, setEmailErrorMessage, emailErrorMessage } =
-    useNotifiSubscriptionContext();
+  const {
+    intercomCardView,
+    email,
+    setEmail,
+    setEmailErrorMessage,
+    emailErrorMessage,
+  } = useNotifiSubscriptionContext();
 
   const validateEmail = () => {
     if (email === '') {
@@ -47,9 +55,22 @@ export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
 
   return (
     <>
-      <label className={clsx('NotifiEmailInput__label', classNames?.label)}>
-        {copy?.label}
-      </label>
+      {intercomView ? (
+        intercomCardView.state === 'settingView' ? (
+          <div
+            className={clsx(
+              'NotifiEmailVerification__button',
+              classNames?.button,
+            )}
+          >
+            Resend Verification
+          </div>
+        ) : null
+      ) : (
+        <label className={clsx('NotifiEmailInput__label', classNames?.label)}>
+          {copy?.label}
+        </label>
+      )}
       <div
         className={clsx(
           'NotifiEmailInput__container',

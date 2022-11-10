@@ -559,8 +559,8 @@
   font-size: 16px;
   font-weight: 800;
   line-height: 19px;
-  margin-top: 13px;
-  margin-bottom: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .NotifiSupportNotificationOption__container
@@ -575,6 +575,7 @@
 {
   background-color: var(--notifi-intercom-input-background);
   border-radius: 6px;
+  margin-top: 10px;
 }
 
 .NotifiIntercomEmailInput__container:focus-within,
@@ -608,7 +609,7 @@
   margin-top: 12px;
 }
 
-.NotifiIntercomChatWindowHeader__container {
+.NotifiIntercomHeader__container {
   height: 49px;
   border-bottom: 1px solid #E8EBF5;
   display: flex;
@@ -619,7 +620,7 @@
   padding-right: 20px;
 }
 
-.NotifiIntercomChatWindowHeader__content {
+.NotifiIntercomHeader__content {
   font-size: 14px;
   font-weight: 800;
   line-height: 17px;
@@ -627,7 +628,7 @@
   margin-left: 25px;
 }
 
-.NotifiIntercomChatWindowHeader__leftContainer {
+.NotifiIntercomHeader__leftContainer {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -762,4 +763,22 @@
   line-height: 20px;
   text-align: left;
   margin-bottom: 4px;
+}
+
+.NotifiIntercomChatWindow__settingIcon,
+.NotifiIntercomSettingHeader__backArrow {
+  cursor: pointer;
+}
+
+.NotifiIntercomCardSettingContent__container {
+  padding: 10px 15px 0 15px;
+}
+
+.NotifiEmailVerification__button,
+.NotifiTelegramVerification__button {
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 16px;
+  text-align: right;
+  color: #1448F3;
 }
