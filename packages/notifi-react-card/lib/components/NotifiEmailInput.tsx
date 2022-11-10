@@ -17,6 +17,7 @@ export type NotifiEmailInputProps = Readonly<{
   }>;
   disabled: boolean;
   intercomEmailInputStyle?: string;
+  intercomEmailInputContainerStyle?: string;
 }>;
 
 export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
@@ -24,6 +25,7 @@ export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
   copy,
   disabled,
   intercomEmailInputStyle,
+  intercomEmailInputContainerStyle,
 }: NotifiEmailInputProps) => {
   const { email, setEmail, setEmailErrorMessage, emailErrorMessage } =
     useNotifiSubscriptionContext();
@@ -51,13 +53,17 @@ export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
       <div
         className={clsx(
           'NotifiEmailInput__container',
-          intercomEmailInputStyle,
+          intercomEmailInputContainerStyle,
           classNames?.container,
         )}
       >
         <input
           onBlur={validateEmail}
-          className={clsx('NotifiEmailInput__input', classNames?.input)}
+          className={clsx(
+            'NotifiEmailInput__input',
+            intercomEmailInputStyle,
+            classNames?.input,
+          )}
           disabled={disabled}
           name="notifi-email"
           type="email"
