@@ -25,6 +25,7 @@ export type NotifiSmsInputProps = Readonly<{
   intercomSmsInputStyle?: string;
   intercomSmsDropdownContainerStyle?: string;
   intercomSmsDropdownSelectStyle?: string;
+  intercomSmsInputContainerStyle?: string;
 }>;
 
 export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
@@ -35,6 +36,7 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
   intercomSmsInputStyle,
   intercomSmsDropdownContainerStyle,
   intercomSmsDropdownSelectStyle,
+  intercomSmsInputContainerStyle,
 }: NotifiSmsInputProps) => {
   const { phoneNumber, setPhoneNumber, setSmsErrorMessage, smsErrorMessage } =
     useNotifiSubscriptionContext();
@@ -126,7 +128,7 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
       <div
         className={clsx(
           'NotifiSmsInput__container',
-          intercomSmsInputStyle,
+          intercomSmsInputContainerStyle,
           classNames?.container,
         )}
       >
@@ -150,7 +152,11 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
           </select>
         </div>
         <input
-          className={clsx('NotifiSmsInput__input', classNames?.input)}
+          className={clsx(
+            'NotifiSmsInput__input',
+            intercomSmsInputStyle,
+            classNames?.input,
+          )}
           disabled={disabled}
           name="notifi-sms"
           onBlur={validateSmsInput}
