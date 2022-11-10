@@ -17,7 +17,7 @@ import {
   NotifiStartChatButtonProps,
 } from './NotifiStartChatButton';
 
-export type NotifiConsumerFTUProps = Readonly<{
+export type IntercomCardProps = Readonly<{
   classNames?: Readonly<{
     container?: string;
     title?: string;
@@ -32,13 +32,11 @@ export type NotifiConsumerFTUProps = Readonly<{
   inputLabels?: NotifiInputLabels;
   inputs?: Record<string, string | undefined>;
   inputSeparators?: NotifiInputSeparators;
-  startChat: boolean;
-  setStartChat: (startChat: boolean) => void;
   data: CardConfigItemV1;
 }>;
 
-export const NotifiConsumerFTU: React.FC<
-  React.PropsWithChildren<NotifiConsumerFTUProps>
+export const IntercomCard: React.FC<
+  React.PropsWithChildren<IntercomCardProps>
 > = ({
   classNames,
   companySupportTitle,
@@ -47,13 +45,18 @@ export const NotifiConsumerFTU: React.FC<
   inputLabels,
   inputs = {},
   inputSeparators,
-  startChat,
-  setStartChat,
   data,
-}: React.PropsWithChildren<NotifiConsumerFTUProps>) => {
+}: React.PropsWithChildren<IntercomCardProps>) => {
   const [checked, setChecked] = useState<boolean>(true);
-  const { email, emailErrorMessage, phoneNumber, smsErrorMessage, telegramId } =
-    useNotifiSubscriptionContext();
+  const {
+    intercomCardView,
+    setIntercomCardView,
+    email,
+    emailErrorMessage,
+    phoneNumber,
+    smsErrorMessage,
+    telegramId,
+  } = useNotifiSubscriptionContext();
 
   const hasErrors = emailErrorMessage !== '' || smsErrorMessage !== '';
   const disabled =
@@ -68,15 +71,14 @@ export const NotifiConsumerFTU: React.FC<
     companySupportDescription || 'Get notifications for your support request';
 
   const handleStartChatClick = () => {
-    setStartChat(true);
+    setIntercomCardView({ state: 'chatWindowView' });
   };
-  return (
-    <>
-      {startChat ? (
-        <NotifiIntercomChatWindowContainer
-          classNames={classNames?.NotifiIntercomChatWindowContainer}
-        />
-      ) : (
+
+  let view = null;
+
+  switch (intercomCardView.state) {
+    case 'startChatView':
+      view = (
         <>
           <h1 className={clsx('NotifiIntercomCard__title', classNames?.title)}>
             {companySupportTitle}
@@ -111,7 +113,15 @@ export const NotifiConsumerFTU: React.FC<
             classNames={classNames?.NotifiStartChatButton}
           />
         </>
-      )}
-    </>
-  );
+      );
+      break;
+    case 'chatWindowView':
+      view = (
+        <NotifiIntercomChatWindowContainer
+          classNames={classNames?.NotifiIntercomChatWindowContainer}
+        />
+      );
+      break;
+  }
+  return <>{view}</>;
 };

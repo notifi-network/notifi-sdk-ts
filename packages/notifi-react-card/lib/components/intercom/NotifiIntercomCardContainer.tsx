@@ -1,10 +1,11 @@
 import clsx from 'clsx';
-import React, { useState } from 'react';
+import { useNotifiSubscriptionContext } from 'notifi-react-card/lib/context';
+import React from 'react';
 
 import { useSubscriptionCard } from '../../hooks';
 import { ErrorStateCard } from './ErrorStateCard';
+import { IntercomCard } from './IntercomCard';
 import { LoadingStateCard } from './LoadingStateCard';
-import { NotifiConsumerFTU } from './NotifiConsumerFTU';
 import { NotifiIntercomCardProps } from './NotifiIntercomCard';
 
 export const NotifiIntercomCardContainer: React.FC<
@@ -21,7 +22,7 @@ export const NotifiIntercomCardContainer: React.FC<
   children,
   cardId,
 }: React.PropsWithChildren<NotifiIntercomCardProps>) => {
-  const [startChat, setStartChat] = useState<boolean>(false);
+  const { intercomCardView } = useNotifiSubscriptionContext();
 
   let contents: React.ReactNode = null;
   const card = useSubscriptionCard(cardId);
@@ -42,7 +43,7 @@ export const NotifiIntercomCardContainer: React.FC<
       break;
     case 'fetched':
       contents = (
-        <NotifiConsumerFTU
+        <IntercomCard
           data={card.data}
           inputs={inputs}
           inputLabels={inputLabels}
@@ -51,8 +52,6 @@ export const NotifiIntercomCardContainer: React.FC<
           companySupportTitle={companySupportTitle}
           companySupportSubtitle={companySupportSubtitle}
           companySupportDescription={companySupportDescription}
-          startChat={startChat}
-          setStartChat={setStartChat}
         />
       );
       break;
@@ -62,7 +61,7 @@ export const NotifiIntercomCardContainer: React.FC<
     <div
       className={clsx(
         darkMode ? 'notifi__dark' : 'notifi__light',
-        startChat
+        intercomCardView.state === 'startChatView'
           ? 'NotifiIntercomCard__chatWindowContainer'
           : 'NotifiIntercomCard__container',
         classNames?.container,
