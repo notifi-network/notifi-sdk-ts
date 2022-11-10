@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 export type SendMessageSectionProps = Readonly<{
   classNames?: Readonly<{
     container: string;
-    textarea: string;
+    textArea: string;
     button: string;
   }>;
 }>;
@@ -24,7 +24,7 @@ export const SendMessageSection: React.FC<SendMessageSectionProps> = ({
       <textarea
         className={clsx(
           'NotifiIntercomSendMessageSection__textarea',
-          classNames?.textarea,
+          classNames?.textArea,
         )}
         value={sendMessage}
         onChange={(e) => {

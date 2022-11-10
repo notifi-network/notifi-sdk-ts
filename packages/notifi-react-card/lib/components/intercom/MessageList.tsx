@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import React from 'react';
+import { Virtuoso } from 'react-virtuoso';
 
 import { MessageGroup, MessageGroupProps } from './MessageGroup';
 
@@ -61,14 +62,22 @@ export const MessageList: React.FC<MessageListProps> = ({ classNames }) => {
         classNames?.container,
       )}
     >
-      {mockConversation.map((feed, index) => (
-        <MessageGroup
-          classNames={classNames?.messageGroup}
-          messages={feed.messages}
-          direction={feed.direction}
-          key={index}
-        />
-      ))}
+      <Virtuoso
+        className="virtual-container"
+        data={mockConversation}
+        followOutput="auto"
+        itemContent={(index, feed) => {
+          return (
+            <MessageGroup
+              classNames={classNames?.messageGroup}
+              messages={feed.messages}
+              direction={feed.direction}
+              key={index}
+            />
+          );
+        }}
+        style={{ height: '290px', width: '364px' }}
+      />
     </div>
   );
 };
