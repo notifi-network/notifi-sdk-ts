@@ -227,6 +227,16 @@
   color: var(--notifi-placeholder-color);
 }
 
+.NotifiIntercomEmailInput__input::placeholder,
+.NotifiIntercomSmsInput__input::placeholder,
+.NotifiIntercomTelegramInput__input::placeholder {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 17px;
+  text-align: left;
+  color: #80829D;  
+}
+
 .NotifiToggle__container {
   --notifi-toggle-size: 18px;
   --notifi-toggle-padding: 3px;
@@ -669,7 +679,7 @@
   padding: 12px 20px;
 }
 
-.NNotifiIntercomSendMessageSection__input:focus-visible {
+.NotifiIntercomSendMessageSection__textarea:focus-visible {
   outline: none;
 }
 

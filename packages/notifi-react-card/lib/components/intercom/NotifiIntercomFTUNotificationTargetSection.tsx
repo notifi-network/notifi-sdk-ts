@@ -49,7 +49,8 @@ export const NotifiIntercomFTUNotificationTargetSection: React.FC<
         disabled={false}
         classNames={classNames?.NotifiEmailInput}
         copy={{ label: inputLabels?.email }}
-        intercomEmailInputStyle={'NotifiIntercomEmailInput__container'}
+        intercomEmailInputContainerStyle={'NotifiIntercomEmailInput__container'}
+        intercomEmailInputStyle={'NotifiIntercomEmailInput__input'}
       />
       {inputSeparators?.emailSeparator?.content ? (
         <div
@@ -74,7 +75,8 @@ export const NotifiIntercomFTUNotificationTargetSection: React.FC<
         classNames={classNames?.NotifiSmsInput}
         allowedCountryCodes={allowedCountryCodes}
         copy={{ label: inputLabels?.sms }}
-        intercomSmsInputStyle={'NotifiIntercomSmsInput__container'}
+        intercomSmsInputContainerStyle={'NotifiIntercomSmsInput__container'}
+        intercomSmsInputStyle={'NotifiIntercomSmsInput__input'}
         intercomSmsDropdownContainerStyle={
           'NotifiIntercomSmsInput__dropdownContainer'
         }
@@ -104,7 +106,10 @@ export const NotifiIntercomFTUNotificationTargetSection: React.FC<
         disabled={false}
         classNames={classNames?.NotifiTelegramInput}
         copy={{ label: inputLabels?.telegram }}
-        intercomTelegramInputStyle={'NotifiIntercomTelegramInput__container'}
+        intercomTelegramInputContainerStyle={
+          'NotifiIntercomTelegramInput__container'
+        }
+        intercomTelegramInputStyle={'NotifiIntercomTelegramInput__input'}
       />
       {inputSeparators?.telegramSeparator?.content ? (
         <div
