@@ -11,6 +11,7 @@ import {
 import type { ErrorStateCardProps } from './ErrorStateCard';
 import type { LoadingStateCardProps } from './LoadingStateCard';
 import { NotifiIntercomCardContainer } from './NotifiIntercomCardContainer';
+import { NotifiIntercomChatWindowContainerProps } from './NotifiIntercomChatWindowContainer';
 import type { NotifiStartChatButtonProps } from './NotifiStartChatButton';
 
 export type NotifiIntercomCardProps = Readonly<{
@@ -22,6 +23,7 @@ export type NotifiIntercomCardProps = Readonly<{
     ErrorStateCard?: ErrorStateCardProps['classNames'];
     LoadingStateCard?: LoadingStateCardProps['classNames'];
     NotifiStartChatButton?: NotifiStartChatButtonProps['classNames'];
+    NotifiIntercomChatWindowContainer?: NotifiIntercomChatWindowContainerProps['classNames'];
   }>;
   companySupportTitle?: string;
   companySupportSubtitle?: string;

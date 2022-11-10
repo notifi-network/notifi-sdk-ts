@@ -3,6 +3,10 @@ import { PropsWithChildren } from 'react';
 import React, { createContext, useContext, useState } from 'react';
 
 import { FetchedCardView, useFetchedCardState } from '../hooks';
+import {
+  IntercomCardView,
+  useIntercomCardState,
+} from '../hooks/useIntercomCardState';
 import { NotifiParams } from './NotifiContext';
 
 export type NotifiSubscriptionData = Readonly<{
@@ -16,6 +20,8 @@ export type NotifiSubscriptionData = Readonly<{
 
   cardView: FetchedCardView;
   setCardView: React.Dispatch<React.SetStateAction<FetchedCardView>>;
+  intercomCardView: IntercomCardView;
+  setIntercomCardView: React.Dispatch<React.SetStateAction<IntercomCardView>>;
   setAlerts: (alerts: Record<string, Alert | undefined>) => void;
   setEmail: (email: string) => void;
   setPhoneNumber: (phoneNumber: string) => void;
@@ -47,7 +53,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [telegramId, setTelegramId] = useState<string>('');
   const { cardView, setCardView } = useFetchedCardState();
-
+  const { intercomCardView, setIntercomCardView } = useIntercomCardState();
   const [emailErrorMessage, setEmailErrorMessage] = useState<string>('');
   const [smsErrorMessage, setSmsErrorMessage] = useState<string>('');
   const [emailIdThatNeedsConfirmation, setEmailIdThatNeedsConfirmation] =
@@ -88,6 +94,8 @@ export const NotifiSubscriptionContextProvider: React.FC<
     setTelegramId,
     setTelegramConfirmationUrl,
     setUseHardwareWallet,
+    intercomCardView,
+    setIntercomCardView,
   };
 
   return (

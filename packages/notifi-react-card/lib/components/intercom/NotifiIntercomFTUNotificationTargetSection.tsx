@@ -14,7 +14,7 @@ import {
 } from '../subscription/NotifiSubscriptionCard';
 import { NotifiToggle, NotifiToggleProps } from '../subscription/NotifiToggle';
 
-export type FetchedStateCardProps = Readonly<{
+export type NotifiIntercomFTUNotificationTargetSectionProps = Readonly<{
   classNames?: Readonly<{
     NotifiEmailInput?: NotifiEmailInputProps['classNames'];
     NotifiSmsInput?: NotifiSmsInputProps['classNames'];
@@ -31,7 +31,9 @@ export type FetchedStateCardProps = Readonly<{
   setChecked: React.Dispatch<React.SetStateAction<boolean>>;
 }>;
 
-export const FetchedStateCard: React.FC<FetchedStateCardProps> = ({
+export const NotifiIntercomFTUNotificationTargetSection: React.FC<
+  NotifiIntercomFTUNotificationTargetSectionProps
+> = ({
   data,
   inputSeparators,
   classNames,
@@ -47,7 +49,8 @@ export const FetchedStateCard: React.FC<FetchedStateCardProps> = ({
         disabled={false}
         classNames={classNames?.NotifiEmailInput}
         copy={{ label: inputLabels?.email }}
-        intercomEmailInputStyle={'NotifiIntercomEmailInput__container'}
+        intercomEmailInputContainerStyle={'NotifiIntercomEmailInput__container'}
+        intercomEmailInputStyle={'NotifiIntercomEmailInput__input'}
       />
       {inputSeparators?.emailSeparator?.content ? (
         <div
@@ -72,7 +75,8 @@ export const FetchedStateCard: React.FC<FetchedStateCardProps> = ({
         classNames={classNames?.NotifiSmsInput}
         allowedCountryCodes={allowedCountryCodes}
         copy={{ label: inputLabels?.sms }}
-        intercomSmsInputStyle={'NotifiIntercomSmsInput__container'}
+        intercomSmsInputContainerStyle={'NotifiIntercomSmsInput__container'}
+        intercomSmsInputStyle={'NotifiIntercomSmsInput__input'}
         intercomSmsDropdownContainerStyle={
           'NotifiIntercomSmsInput__dropdownContainer'
         }
@@ -102,7 +106,10 @@ export const FetchedStateCard: React.FC<FetchedStateCardProps> = ({
         disabled={false}
         classNames={classNames?.NotifiTelegramInput}
         copy={{ label: inputLabels?.telegram }}
-        intercomTelegramInputStyle={'NotifiIntercomTelegramInput__container'}
+        intercomTelegramInputContainerStyle={
+          'NotifiIntercomTelegramInput__container'
+        }
+        intercomTelegramInputStyle={'NotifiIntercomTelegramInput__input'}
       />
       {inputSeparators?.telegramSeparator?.content ? (
         <div

@@ -39,7 +39,8 @@
 }
 
 .NotifiSubscriptionCard__container,
-.NotifiIntercomCard__container  
+.NotifiIntercomCard__container,
+.NotifiIntercomCard__chatWindowContainer 
 {
   color: var(--notifi-font-color);
   display: flex;
@@ -63,7 +64,16 @@
 
 .NotifiIntercomCard__container {
   background-color: var(--notifi-intercom-card-background);
-  box-shadow: 0px 4px 30px 0px #0000000A;
+  box-shadow: 0px 4px 30px 30px #0000000A;
+  width: 364px;
+}
+
+.NotifiIntercomCard__chatWindowContainer {
+  padding: 0;
+  background-color: var(--notifi-intercom-card-background);
+  box-shadow: 0px 4px 30px 30px #0000000A;
+  height: 517px;
+  width: 364px;
 }
 
 .NotifiFooter__container {
@@ -236,6 +246,16 @@
   color: var(--notifi-placeholder-color);
 }
 
+.NotifiIntercomEmailInput__input::placeholder,
+.NotifiIntercomSmsInput__input::placeholder,
+.NotifiIntercomTelegramInput__input::placeholder {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 17px;
+  text-align: left;
+  color: #80829D;  
+}
+
 .NotifiToggle__container {
   --notifi-toggle-size: 18px;
   --notifi-toggle-padding: 3px;
@@ -347,7 +367,8 @@
 }
 
 .NotifiSubscribeButton__button:disabled,
-.NotifiStartChatButton__button:disabled 
+.NotifiStartChatButton__button:disabled,
+.NotifiIntercomSendMessageSection__button:disabled
 {
   cursor: default;
   color: var(--notifi-secondary-font-color);
@@ -739,4 +760,160 @@
 
 .BrowserAlertToggle__container {
   margin-top: 12px;
+}
+
+.NotifiIntercomChatWindowHeader__container {
+  height: 49px;
+  border-bottom: 1px solid #E8EBF5;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.NotifiIntercomChatWindowHeader__content {
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 17px;
+  text-align: left;
+  margin-left: 25px;
+}
+
+.NotifiIntercomChatWindowHeader__leftContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.NotifiIntercomChatMessageSection__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 290px;
+  overflow-y:auto;
+}
+
+.NotifiIntercomChatMessageSectionIntro__content {
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 20px;
+  margin-bottom: 12px;
+}
+
+.NotifiIntercomChatMessageDate__container {
+  width: 64px;
+  padding: 5px;
+  background: #F5F6FB;
+  border-radius: 30px;
+  margin: 10px;
+}
+
+.NotifiIntercomChatMessageDate__content {
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 12px;
+  color: #80829D;
+}
+
+.NotifiIntercomSendMessageSection__container {
+  display: flex;
+  flex-direction: column;
+}
+
+.NotifiIntercomSendMessageSection__textarea {
+  font-family: Rota;
+  font-size: 16px;
+  height: 110px;
+  border-bottom: 1px solid #E8EBF5;
+  border-top: 1px solid #E8EBF5;
+  border-right: none;
+  border-left: none;
+  padding: 12px 20px;
+}
+
+.NotifiIntercomSendMessageSection__textarea:focus-visible {
+  outline: none;
+}
+
+.NotifiIntercomSendMessageSection__button {
+  height: 28px;
+  width: 62px;
+  border-radius: 4px;
+  background-color:  #1448F3;
+  text-align: center;
+  border: none;
+  color: #ffffff;
+  margin: 20px;
+  cursor: pointer;
+}
+
+.NotifiIntercomChatIncomingMessageGroup__container {
+  display: flex;
+  flex-direction: column;
+  width: 364px;
+  align-items: flex-start;
+}
+
+.NotifiIntercomChatOutgoingMessageGroup__container {
+  display: flex;
+  flex-direction: column;
+  width: 364px;
+  align-items: flex-end;
+}
+
+.NotifiIntercomChatIncomingMessage__container {
+  display: flex;
+  flex-direction: row;
+  margin-left: 16px;
+}
+
+.NotifiIntercomChatIncomingMessage__body {
+  padding: 12px 65px 18px 16px;
+  max-width: 230px;
+  border-radius: 16px;
+  background: #F5F6FB;
+  text-align: left;
+  margin: 0 16px 8px 12px;
+  position: relative;
+  overflow-wrap: break-word;
+}
+
+.NotifiIntercomChatIncomingMessage__body:first-child {
+  border-radius: 0 16px 16px 16px;
+}
+
+.NotifiIntercomChatOutgoingMessage__body {
+  padding: 12px 65px 18px 16px;
+  max-width: 230px;
+  border-radius: 16px;
+  background: #E6EBFF;
+  text-align: left;
+  margin: 0 16px 8px 12px;
+  position: relative;
+  overflow-wrap: break-word;
+}
+
+.NotifiIntercomChatOutgoingMessage__body:first-child {
+  border-radius: 16px 0 16px 16px;
+}
+
+.NotifiIntercomChatOutgoingMessage__timeStamp {
+  position: absolute;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 12px;
+  color: #80829D;
+  min-width: 50px;
+  bottom: 8px;
+  right: 7px;
+}
+
+.NotifiIntercomChatOutgoingMessage__sender {
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 20px;
+  text-align: left;
+  margin-bottom: 4px;
 }
