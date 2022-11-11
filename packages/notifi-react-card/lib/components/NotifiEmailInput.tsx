@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import React from 'react';
 
+import { EmailIcon } from '../assets/EmailIcon';
 import { useNotifiSubscriptionContext } from '../context';
 import type { DeepPartialReadonly } from '../utils';
 
@@ -36,6 +37,7 @@ export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
     setEmail,
     setEmailErrorMessage,
     emailErrorMessage,
+    emailIdThatNeedsConfirmation,
   } = useNotifiSubscriptionContext();
 
   const validateEmail = () => {
@@ -56,7 +58,8 @@ export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
   return (
     <>
       {intercomView ? (
-        intercomCardView.state === 'settingView' ? (
+        intercomCardView.state === 'settingView' &&
+        emailIdThatNeedsConfirmation != '' ? (
           <div
             className={clsx(
               'NotifiEmailVerification__button',
@@ -78,6 +81,7 @@ export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
           classNames?.container,
         )}
       >
+        <EmailIcon className={'NotifiInput__icon'} />
         <input
           onBlur={validateEmail}
           className={clsx(

@@ -4,7 +4,7 @@ export type Props = Readonly<{
   className?: string;
 }>;
 
-export const BackArrow: React.FC<Props> = ({ className }: Props) => {
+export const IntercomBackArrow: React.FC<Props> = ({ className }: Props) => {
   return (
     <svg
       width="16"

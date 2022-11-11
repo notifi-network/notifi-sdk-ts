@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import React from 'react';
 
+import { TelegramIcon } from '../assets/TelegramIcon';
 import { useNotifiSubscriptionContext } from '../context';
 import type { DeepPartialReadonly } from '../utils';
 
@@ -29,13 +30,13 @@ export const NotifiTelegramInput: React.FC<NotifiTelegramInputProps> = ({
   intercomTelegramInputContainerStyle,
   intercomView,
 }: NotifiTelegramInputProps) => {
-  const { intercomCardView, telegramId, setTelegramId } =
+  const { intercomCardView, telegramId, setTelegramId, isTelegramConfirmed } =
     useNotifiSubscriptionContext();
 
   return (
     <>
       {intercomView ? (
-        intercomCardView.state === 'settingView' ? (
+        intercomCardView.state === 'settingView' && !isTelegramConfirmed ? (
           <div
             className={clsx(
               'NotifiTelegramVerification__button',
@@ -57,6 +58,7 @@ export const NotifiTelegramInput: React.FC<NotifiTelegramInputProps> = ({
           classNames?.container,
         )}
       >
+        <TelegramIcon className={'NotifiInput__icon'} />
         <input
           className={clsx(
             'NotifiTelegramInput__input',

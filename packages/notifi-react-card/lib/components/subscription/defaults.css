@@ -237,6 +237,10 @@
   color: #80829D;  
 }
 
+.NotifiInput__icon {
+  margin-right: 10px;
+}
+
 .NotifiToggle__container {
   --notifi-toggle-size: 18px;
   --notifi-toggle-padding: 3px;

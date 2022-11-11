@@ -2,6 +2,7 @@ import clsx from 'clsx';
 import { isValidPhoneNumber } from 'libphonenumber-js';
 import React, { useCallback, useEffect, useState } from 'react';
 
+import { SmsIcon } from '../assets/SmsIcon';
 import { useNotifiSubscriptionContext } from '../context';
 import type { DeepPartialReadonly } from '../utils';
 import { splitPhoneNumber } from '../utils/phoneUtils';
@@ -136,6 +137,7 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
           classNames?.container,
         )}
       >
+        <SmsIcon className={'NotifiInput__icon'} />
         <div
           className={clsx(
             'NotifiSmsInput__dropdownContainer',
