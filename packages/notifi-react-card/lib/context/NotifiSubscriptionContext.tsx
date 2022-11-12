@@ -40,8 +40,6 @@ export type NotifiSubscriptionData = Readonly<{
   setIsSmsConfirmed: (isConfirmed: boolean | null) => void;
   emailIdThatNeedsConfirmation: string;
   setEmailIdThatNeedsConfirmation: (emailId: string) => void;
-  isTelegramConfirmed: boolean | null;
-  setIsTelegramConfirmed: (isTelegramConfirmed: boolean | null) => void;
 }>;
 
 const NotifiSubscriptionContext = createContext<NotifiSubscriptionData>(
@@ -61,9 +59,6 @@ export const NotifiSubscriptionContextProvider: React.FC<
   const [emailIdThatNeedsConfirmation, setEmailIdThatNeedsConfirmation] =
     useState<string>('');
   const [isSmsConfirmed, setIsSmsConfirmed] = useState<boolean | null>(null);
-  const [isTelegramConfirmed, setIsTelegramConfirmed] = useState<
-    boolean | null
-  >(null);
   const [telegramConfirmationUrl, setTelegramConfirmationUrl] = useState<
     string | undefined
   >(undefined);
@@ -100,8 +95,6 @@ export const NotifiSubscriptionContextProvider: React.FC<
     setUseHardwareWallet,
     intercomCardView,
     setIntercomCardView,
-    isTelegramConfirmed,
-    setIsTelegramConfirmed,
   };
 
   return (

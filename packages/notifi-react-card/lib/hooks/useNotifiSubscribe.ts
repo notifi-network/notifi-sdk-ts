@@ -61,7 +61,6 @@ export const useNotifiSubscribe: () => Readonly<{
     setEmailIdThatNeedsConfirmation,
     telegramId: inputTelegramId,
     useHardwareWallet,
-    setIsTelegramConfirmed,
   } = useNotifiSubscriptionContext();
 
   const { keepSubscriptionData = true, walletPublicKey } = params;
@@ -105,9 +104,6 @@ export const useNotifiSubscribe: () => Readonly<{
       setPhoneNumber(phoneNumber ?? '');
 
       const telegramTarget = targetGroup?.telegramTargets[0];
-      if (telegramTarget !== null && emailTarget?.isConfirmed === false) {
-        setIsTelegramConfirmed(false);
-      }
       const telegramId = telegramTarget?.telegramId;
       setTelegramId(telegramId ?? '');
       setTelegramConfirmationUrl(telegramTarget?.confirmationUrl ?? undefined);

@@ -30,13 +30,18 @@ export const NotifiTelegramInput: React.FC<NotifiTelegramInputProps> = ({
   intercomTelegramInputContainerStyle,
   intercomView,
 }: NotifiTelegramInputProps) => {
-  const { intercomCardView, telegramId, setTelegramId, isTelegramConfirmed } =
-    useNotifiSubscriptionContext();
+  const {
+    intercomCardView,
+    telegramId,
+    setTelegramId,
+    telegramConfirmationUrl,
+  } = useNotifiSubscriptionContext();
 
   return (
     <>
       {intercomView ? (
-        intercomCardView.state === 'settingView' && !isTelegramConfirmed ? (
+        intercomCardView.state === 'settingView' &&
+        telegramConfirmationUrl != null ? (
           <div
             className={clsx(
               'NotifiTelegramVerification__button',
