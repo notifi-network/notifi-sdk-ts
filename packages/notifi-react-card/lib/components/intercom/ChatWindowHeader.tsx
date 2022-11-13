@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import { useNotifiSubscriptionContext } from 'notifi-react-card/lib/context';
 import React from 'react';
 
 import { ChatIcon } from '../../assets/ChatIcon';
@@ -7,7 +8,7 @@ import { SettingIcon } from '../../assets/SettingIcon';
 export type ChatWindowHeaderProps = Readonly<{
   classNames?: Readonly<{
     container: string;
-    text: string;
+    content: string;
   }>;
   chatWindowHeaderContent?: string;
 }>;
@@ -16,6 +17,10 @@ export const ChatWindowHeader: React.FC<ChatWindowHeaderProps> = ({
   classNames,
   chatWindowHeaderContent = 'Customer Support',
 }) => {
+  const { setIntercomCardView } = useNotifiSubscriptionContext();
+  const handleClick = () => {
+    setIntercomCardView({ state: 'settingView' });
+  };
   return (
     <div
       className={clsx(
@@ -28,13 +33,18 @@ export const ChatWindowHeader: React.FC<ChatWindowHeaderProps> = ({
         <div
           className={clsx(
             'NotifiIntercomChatWindowHeader__content',
-            classNames?.text,
+            classNames?.content,
           )}
         >
           {chatWindowHeaderContent}
         </div>
       </div>
-      <SettingIcon />
+      <div
+        onClick={handleClick}
+        className={'NotifiIntercomChatWindow__settingIcon'}
+      >
+        <SettingIcon />
+      </div>
     </div>
   );
 };

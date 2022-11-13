@@ -59,7 +59,6 @@ export const NotifiSubscriptionContextProvider: React.FC<
   const [emailIdThatNeedsConfirmation, setEmailIdThatNeedsConfirmation] =
     useState<string>('');
   const [isSmsConfirmed, setIsSmsConfirmed] = useState<boolean | null>(null);
-
   const [telegramConfirmationUrl, setTelegramConfirmationUrl] = useState<
     string | undefined
   >(undefined);
