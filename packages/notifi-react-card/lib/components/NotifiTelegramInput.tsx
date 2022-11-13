@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import React from 'react';
 
+import { TelegramIcon } from '../assets/TelegramIcon';
 import { useNotifiSubscriptionContext } from '../context';
 import type { DeepPartialReadonly } from '../utils';
 
@@ -9,6 +10,7 @@ export type NotifiTelegramInputProps = Readonly<{
     container: string;
     input: string;
     label: string;
+    button: string;
   }>;
   copy?: DeepPartialReadonly<{
     placeholder: string;
@@ -17,6 +19,7 @@ export type NotifiTelegramInputProps = Readonly<{
   disabled: boolean;
   intercomTelegramInputStyle?: string;
   intercomTelegramInputContainerStyle?: string;
+  intercomView?: boolean;
 }>;
 
 export const NotifiTelegramInput: React.FC<NotifiTelegramInputProps> = ({
@@ -25,14 +28,34 @@ export const NotifiTelegramInput: React.FC<NotifiTelegramInputProps> = ({
   disabled,
   intercomTelegramInputStyle,
   intercomTelegramInputContainerStyle,
+  intercomView,
 }: NotifiTelegramInputProps) => {
-  const { telegramId, setTelegramId } = useNotifiSubscriptionContext();
+  const {
+    intercomCardView,
+    telegramId,
+    setTelegramId,
+    telegramConfirmationUrl,
+  } = useNotifiSubscriptionContext();
 
   return (
     <>
-      <label className={clsx('NotifiSmsInput__label', classNames?.label)}>
-        {copy?.label}
-      </label>
+      {intercomView ? (
+        intercomCardView.state === 'settingView' &&
+        telegramConfirmationUrl != null ? (
+          <div
+            className={clsx(
+              'NotifiTelegramVerification__button',
+              classNames?.button,
+            )}
+          >
+            Verify ID
+          </div>
+        ) : null
+      ) : (
+        <label className={clsx('NotifiSmsInput__label', classNames?.label)}>
+          {copy?.label}
+        </label>
+      )}
       <div
         className={clsx(
           'NotifiTelegramInput__container',
@@ -40,6 +63,7 @@ export const NotifiTelegramInput: React.FC<NotifiTelegramInputProps> = ({
           classNames?.container,
         )}
       >
+        <TelegramIcon className={'NotifiInput__icon'} />
         <input
           className={clsx(
             'NotifiTelegramInput__input',

@@ -1,8 +1,8 @@
 import clsx from 'clsx';
-import { useNotifiSubscriptionContext } from 'notifi-react-card/lib/context';
-import { CardConfigItemV1 } from 'notifi-react-card/lib/hooks';
 import React, { useState } from 'react';
 
+import { useNotifiSubscriptionContext } from '../../context/NotifiSubscriptionContext';
+import { CardConfigItemV1 } from '../../hooks';
 import {
   NotifiInputLabels,
   NotifiInputSeparators,
@@ -16,6 +16,7 @@ import {
   NotifiStartChatButton,
   NotifiStartChatButtonProps,
 } from './NotifiStartChatButton';
+import { SettingHeader, SettingHeaderProps } from './SettingHeader';
 
 export type IntercomCardProps = Readonly<{
   classNames?: Readonly<{
@@ -25,6 +26,7 @@ export type IntercomCardProps = Readonly<{
     subtitle2?: string;
     NotifiStartChatButton?: NotifiStartChatButtonProps['classNames'];
     NotifiIntercomChatWindowContainer?: NotifiIntercomChatWindowContainerProps['classNames'];
+    NotifiIntercomSettingHeader: SettingHeaderProps['classNames'];
   }>;
   companySupportTitle?: string;
   companySupportSubtitle?: string;
@@ -120,6 +122,37 @@ export const IntercomCard: React.FC<
         <NotifiIntercomChatWindowContainer
           classNames={classNames?.NotifiIntercomChatWindowContainer}
         />
+      );
+      break;
+
+    case 'settingView':
+      view = (
+        <>
+          <SettingHeader classNames={classNames?.NotifiIntercomSettingHeader} />
+          <div className={'NotifiIntercomCardSettingContent__container'}>
+            <div
+              className={clsx(
+                'NotifiIntercomCard__subtitle2',
+                classNames?.subtitle2,
+              )}
+            >
+              {companySupportDescription}
+            </div>
+            <NotifiIntercomFTUNotificationTargetSection
+              checked={checked}
+              setChecked={setChecked}
+              data={data}
+              inputs={inputs}
+              inputLabels={inputLabels}
+              inputSeparators={inputSeparators}
+            />
+            <NotifiStartChatButton
+              onClick={handleStartChatClick}
+              disabled={disabled}
+              classNames={classNames?.NotifiStartChatButton}
+            />
+          </div>
+        </>
       );
       break;
   }

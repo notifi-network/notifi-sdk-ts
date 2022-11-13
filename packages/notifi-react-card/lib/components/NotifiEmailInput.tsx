@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import React from 'react';
 
+import { EmailIcon } from '../assets/EmailIcon';
 import { useNotifiSubscriptionContext } from '../context';
 import type { DeepPartialReadonly } from '../utils';
 
@@ -10,6 +11,7 @@ export type NotifiEmailInputProps = Readonly<{
     input: string;
     label: string;
     errorMessage: string;
+    button: string;
   }>;
   copy?: DeepPartialReadonly<{
     placeholder: string;
@@ -18,6 +20,7 @@ export type NotifiEmailInputProps = Readonly<{
   disabled: boolean;
   intercomEmailInputStyle?: string;
   intercomEmailInputContainerStyle?: string;
+  intercomView?: boolean;
 }>;
 
 export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
@@ -26,9 +29,16 @@ export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
   disabled,
   intercomEmailInputStyle,
   intercomEmailInputContainerStyle,
+  intercomView,
 }: NotifiEmailInputProps) => {
-  const { email, setEmail, setEmailErrorMessage, emailErrorMessage } =
-    useNotifiSubscriptionContext();
+  const {
+    intercomCardView,
+    email,
+    setEmail,
+    setEmailErrorMessage,
+    emailErrorMessage,
+    emailIdThatNeedsConfirmation,
+  } = useNotifiSubscriptionContext();
 
   const validateEmail = () => {
     if (email === '') {
@@ -47,9 +57,23 @@ export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
 
   return (
     <>
-      <label className={clsx('NotifiEmailInput__label', classNames?.label)}>
-        {copy?.label}
-      </label>
+      {intercomView ? (
+        intercomCardView.state === 'settingView' &&
+        emailIdThatNeedsConfirmation != '' ? (
+          <div
+            className={clsx(
+              'NotifiEmailVerification__button',
+              classNames?.button,
+            )}
+          >
+            Resend Verification
+          </div>
+        ) : null
+      ) : (
+        <label className={clsx('NotifiEmailInput__label', classNames?.label)}>
+          {copy?.label}
+        </label>
+      )}
       <div
         className={clsx(
           'NotifiEmailInput__container',
@@ -57,6 +81,7 @@ export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
           classNames?.container,
         )}
       >
+        <EmailIcon className={'NotifiInput__icon'} />
         <input
           onBlur={validateEmail}
           className={clsx(
