@@ -51,6 +51,7 @@ export const NotifiIntercomFTUNotificationTargetSection: React.FC<
         copy={{ label: inputLabels?.email }}
         intercomEmailInputContainerStyle={'NotifiIntercomEmailInput__container'}
         intercomEmailInputStyle={'NotifiIntercomEmailInput__input'}
+        intercomView={true}
       />
       {inputSeparators?.emailSeparator?.content ? (
         <div
@@ -83,6 +84,7 @@ export const NotifiIntercomFTUNotificationTargetSection: React.FC<
         intercomSmsDropdownSelectStyle={
           'NotifiIntercomSmsInput__dropdownSelect'
         }
+        intercomView={true}
       />
       {inputSeparators?.smsSeparator?.content ? (
         <div
@@ -110,6 +112,7 @@ export const NotifiIntercomFTUNotificationTargetSection: React.FC<
           'NotifiIntercomTelegramInput__container'
         }
         intercomTelegramInputStyle={'NotifiIntercomTelegramInput__input'}
+        intercomView={true}
       />
       {inputSeparators?.telegramSeparator?.content ? (
         <div
