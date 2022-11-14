@@ -10,20 +10,19 @@ npm install --save-dev @notifi-network/notifi-core
 ```
 
 You can import the default stylesheet to get baseline styling.
+Be sure to get your DAPP ID here: https://bit.ly/NotifiDappSetup
 
 ## Video
 
-Below is a video useful for setting up the Notifi React Card.
+Here is a [link](https://www.youtube.com/watch?v=LIKu-clf9bg) covering how to setup the React Card Config.
 
-<iframe
-    width="640"
-    height="480"
-    src="https://www.youtube.com/embed/LIKu-clf9bg"
-    frameborder="0"
-    allow="autoplay; encrypted-media"
-    allowfullscreen
->
-</iframe>
+The video covers the following:
+
+- Configuring the card
+- Adding Event Types
+- Installing the react package into your project
+- Updating the default values to match your dapp.
+-
 
 ### Design Guidelines
 
@@ -31,8 +30,10 @@ We have general guidelines that we like to follow. You can see them here: [Figma
 
 ###### Example tips
 
-- Embed the bell icon by the wallet selection
+- Embed the bell icon by the wallet login section.
+  ie. ![here](https://i.imgur.com/f2rnrpk.png)
 - There should be a state for the bell icon when connected/not connected.
+  ie. ![example of not connected state](https://i.imgur.com/V9yEeCj.png)
   ie. If not connected, the bell icon should be hidden.
 - Make sure that there is enough contrast between color selections.
 - Styling should be consistent with your current UI.
