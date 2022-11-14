@@ -11,6 +11,32 @@ npm install --save-dev @notifi-network/notifi-core
 
 You can import the default stylesheet to get baseline styling.
 
+## Video
+
+Below is a video useful for setting up the Notifi React Card.
+
+<iframe
+    width="640"
+    height="480"
+    src="https://www.youtube.com/embed/LIKu-clf9bg"
+    frameborder="0"
+    allow="autoplay; encrypted-media"
+    allowfullscreen
+>
+</iframe>
+
+### Design Guidelines
+
+We have general guidelines that we like to follow. You can see them here: [Figma](https://www.figma.com/file/ieF0Ynuc3WI608RCt7wKSf/Notifi-Template?node-id=0%3A1&t=v8zeo6UovJAOb9vR-0).
+
+###### Example tips
+
+- Embed the bell icon by the wallet selection
+- There should be a state for the bell icon when connected/not connected.
+  ie. If not connected, the bell icon should be hidden.
+- Make sure that there is enough contrast between color selections.
+- Styling should be consistent with your current UI.
+
 ### Solana
 
 ```tsx
@@ -70,7 +96,9 @@ export const Remote: React.FC = () => {
 };
 ```
 
-### Ethereum
+### Ethereum OR Polygon
+
+Note: Polygon also uses ethers, so if using polygon be sure to update the `NotifiContext` params accordingly.
 
 ```tsx
 import { arrayify } from '@ethersproject/bytes';
@@ -116,7 +144,8 @@ export const Notifi: React.FC = () => {
         return arrayify(result);
       }}
       walletPublicKey={account}
-      walletBlockchain="ETHEREUM"
+      ßß
+      walletBlockchain="ETHEREUM" // NOTE, if using polygon be sure to use POLYGON
     >
       <NotifiSubscriptionCard
         cardId="<YOUR OWN CARD ID HERE>"
