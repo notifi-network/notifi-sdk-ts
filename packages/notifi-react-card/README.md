@@ -10,6 +10,33 @@ npm install --save-dev @notifi-network/notifi-core
 ```
 
 You can import the default stylesheet to get baseline styling.
+Be sure to get your DAPP ID here: https://bit.ly/NotifiDappSetup
+
+## Video
+
+Here is a [link](https://www.youtube.com/watch?v=LIKu-clf9bg) covering how to setup the React Card Config.
+
+The video covers the following:
+
+- Configuring the card
+- Adding Event Types
+- Installing the react package into your project
+- Updating the default values to match your dapp.
+-
+
+### Design Guidelines
+
+We have general guidelines that we like to follow. You can see them here: [Figma](https://www.figma.com/file/ieF0Ynuc3WI608RCt7wKSf/Notifi-Template?node-id=0%3A1&t=v8zeo6UovJAOb9vR-0).
+
+###### Example tips
+
+- Embed the bell icon by the wallet login section.
+  ie. ![here](https://i.imgur.com/f2rnrpk.png)
+- There should be a state for the bell icon when connected/not connected.
+  ie. ![example of not connected state](https://i.imgur.com/V9yEeCj.png)
+  ie. If not connected, the bell icon should be hidden.
+- Make sure that there is enough contrast between color selections.
+- Styling should be consistent with your current UI.
 
 ### Solana
 
@@ -70,7 +97,9 @@ export const Remote: React.FC = () => {
 };
 ```
 
-### Ethereum
+### Ethereum OR Polygon
+
+Note: Polygon also uses ethers, so if using polygon be sure to update the `NotifiContext` params accordingly.
 
 ```tsx
 import { arrayify } from '@ethersproject/bytes';
@@ -116,7 +145,8 @@ export const Notifi: React.FC = () => {
         return arrayify(result);
       }}
       walletPublicKey={account}
-      walletBlockchain="ETHEREUM"
+      ßß
+      walletBlockchain="ETHEREUM" // NOTE, if using polygon be sure to use POLYGON
     >
       <NotifiSubscriptionCard
         cardId="<YOUR OWN CARD ID HERE>"
