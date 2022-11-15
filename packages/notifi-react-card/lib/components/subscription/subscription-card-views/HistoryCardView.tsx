@@ -148,7 +148,7 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
           classNames?.dividerLine,
         )}
       />
-      {alertHistoryData?.nodes ? (
+      {alertHistoryData?.nodes && alertHistoryData?.nodes?.length > 0 ? (
         <Virtuoso
           style={{
             height: notificationListHeight || '400px',

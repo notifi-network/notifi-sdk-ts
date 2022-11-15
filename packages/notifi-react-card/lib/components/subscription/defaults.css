@@ -149,6 +149,8 @@
   line-height: 14px;
   color: var(--notifi-secondary-font-color);
   text-align: center;
+  height: 400px;
+  line-height: 400px;
 }
 
 .NotifiAlertHistory__manageAlertLink {
