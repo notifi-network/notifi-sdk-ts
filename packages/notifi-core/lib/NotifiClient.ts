@@ -12,11 +12,13 @@ import {
   User,
   UserTopic,
 } from './models';
+import { ConversationMessages } from './models/ConversationMessages';
 import {
   CreateSourceInput,
   CreateWebhookTargetInput,
   GetNotificationHistoryInput,
 } from './operations';
+import { GetConversationMessagesFullInput } from './operations/getConversationMessages';
 
 export type ClientData = Readonly<{
   alerts: ReadonlyArray<Alert>;
@@ -295,4 +297,7 @@ export type NotifiClient = Readonly<{
   fetchSubscriptionCard: (
     input: ClientFetchSubscriptionCardInput,
   ) => Promise<TenantConfig>;
+  getConversationMessages: (
+    input: GetConversationMessagesFullInput,
+  ) => Promise<ConversationMessages>;
 }>;

@@ -15,6 +15,7 @@ export * from './DeleteTargetGroup';
 export * from './FindTenantConfig';
 export * from './GetAlerts';
 export * from './GetConfigurationForDapp';
+export * from './GetConversationMessages';
 export * from './GetEmailTargets';
 export * from './GetFilters';
 export * from './GetNotificationHistory';
