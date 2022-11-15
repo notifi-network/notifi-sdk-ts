@@ -7,9 +7,9 @@ import {
   GetConversationMessagesResult,
 } from '@notifi-network/notifi-core';
 
-import { conversationMessagePageInfoFragment } from '../fragments/conversationMessagePageInfoFragment';
+import { ConvMessagePageInfoFragment } from '../fragments/convMessagePageInfoFragment';
 
-const DEPENDENCIES = [conversationMessagePageInfoFragment];
+const DEPENDENCIES = [ConvMessagePageInfoFragment];
 
 const QUERY = `query conversationMessages(
   $getConversationMessagesInput: GetConversationMessagesInput!
