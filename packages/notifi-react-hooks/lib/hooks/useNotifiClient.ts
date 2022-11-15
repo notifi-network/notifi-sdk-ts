@@ -16,6 +16,7 @@ import {
   CompleteLoginViaTransactionInput,
   CompleteLoginViaTransactionResult,
   CreateSourceInput,
+  GetConversationMessagesFullInput,
   GetNotificationHistoryInput,
   NotifiClient,
   SignMessageParams,
@@ -1260,6 +1261,25 @@ const useNotifiClient = (
     [setLoading, setError, service],
   );
 
+  const getConversationMessages = useCallback(
+    async (input: GetConversationMessagesFullInput) => {
+      try {
+        const result = await service.getConversationMessages(input);
+        return result;
+      } catch (e: unknown) {
+        if (e instanceof Error) {
+          setError(e);
+        } else {
+          setError(new NotifiClientError(e));
+        }
+        throw e;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [setLoading, setError, service],
+  );
+
   const client: NotifiClient = {
     beginLoginViaTransaction,
     broadcastMessage,
@@ -1274,6 +1294,7 @@ const useNotifiClient = (
     fetchData,
     fetchSubscriptionCard,
     getConfiguration,
+    getConversationMessages,
     getNotificationHistory,
     getTopics,
     updateAlert,
