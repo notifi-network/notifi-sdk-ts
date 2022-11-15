@@ -23,6 +23,7 @@ import updateTargetGroupImpl from './mutations/updateTargetGroupImpl';
 import findTenantConfigImpl from './queries/findTenantConfigImpl';
 import getAlertsImpl from './queries/getAlertsImpl';
 import getConfigurationForDappImpl from './queries/getConfigurationForDappImpl';
+import getConversationMessagesImpl from './queries/getConversationMessagesImpl';
 import getEmailTargetsImpl from './queries/getEmailTargetsImpl';
 import getFiltersImpl from './queries/getFiltersImpl';
 import getNotificationHistoryImpl from './queries/getNotificationHistoryImpl';
@@ -56,6 +57,7 @@ export class NotifiAxiosService implements NotifiService {
   findTenantConfig: NotifiService['findTenantConfig'];
   getAlerts: NotifiService['getAlerts'];
   getConfigurationForDapp: NotifiService['getConfigurationForDapp'];
+  getConversationMessages: NotifiService['getConversationMessages'];
   getNotificationHistory: NotifiService['getNotificationHistory'];
   getEmailTargets: NotifiService['getEmailTargets'];
   getFilters: NotifiService['getFilters'];
@@ -113,6 +115,7 @@ export class NotifiAxiosService implements NotifiService {
     this.findTenantConfig = findTenantConfigImpl.bind(null, a);
     this.getAlerts = getAlertsImpl.bind(null, a);
     this.getConfigurationForDapp = getConfigurationForDappImpl.bind(null, a);
+    this.getConversationMessages = getConversationMessagesImpl.bind(null, a);
     this.getEmailTargets = getEmailTargetsImpl.bind(null, a);
     this.getFilters = getFiltersImpl.bind(null, a);
     this.getNotificationHistory = getNotificationHistoryImpl.bind(null, a);
