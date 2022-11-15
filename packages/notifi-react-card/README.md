@@ -22,7 +22,7 @@ The video covers the following:
 - Adding Event Types
 - Installing the react package into your project
 - Updating the default values to match your dapp.
--
+
 
 ### Design Guidelines
 
