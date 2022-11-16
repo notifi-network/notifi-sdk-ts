@@ -39,6 +39,8 @@
   background-color: var(--notifi-card-background);
   border-radius: 5px;
   padding: 20px 20px 5px 20px;
+  height: 600px;
+  justify-content: space-between;
 }
 
 .NotifiSubscriptionCard__container *:not(:last-child) {
@@ -51,6 +53,7 @@
   align-items: baseline;
   font-size: 12px;
   line-height: 14px;
+  flex-grow: 1;
 }
 
 .NotifiFooter__logoSvg {
@@ -103,6 +106,11 @@
   border-radius: 5px;
 }
 
+.NotifiAlertHistory__headerSection {
+  display: flex;
+  flex-direction: column;
+}
+
 .NotifiAlertHistory__header {
   display: flex;
   flex-direction: row;
@@ -149,8 +157,6 @@
   line-height: 14px;
   color: var(--notifi-secondary-font-color);
   text-align: center;
-  height: 400px;
-  line-height: 400px;
 }
 
 .NotifiAlertHistory__manageAlertLink {
@@ -158,6 +164,10 @@
   line-height: 14px;
   color: var(--notifi-link-color);
   cursor: pointer;
+}
+
+.NotifiEditCard__container {
+  display: flex;
 }
 
 .NotifiEmailInput__container,

@@ -24,6 +24,7 @@ export type EditCardViewProps = Readonly<{
   data: CardConfigItemV1;
   inputDisabled: boolean;
   classNames?: Readonly<{
+    container?: string;
     NotifiEmailInput?: NotifiEmailInputProps['classNames'];
     NotifiSmsInput?: NotifiSmsInputProps['classNames'];
     NotifiTelegramInput?: NotifiTelegramInputProps['classNames'];
@@ -42,16 +43,20 @@ export const EditCardView: React.FC<EditCardViewProps> = ({
   inputLabels,
   allowedCountryCodes,
 }) => {
+  const emailInputActive = data.contactInfo.email.active;
+  const smsInputActive = data.contactInfo.sms.active;
+  const telegramInputActive = data.contactInfo.telegram.active;
+
   return (
-    <>
-      {data.contactInfo.email.active ? (
+    <div className={clsx('NotifiEditCard__container', classNames?.container)}>
+      {emailInputActive ? (
         <NotifiEmailInput
           disabled={inputDisabled}
           classNames={classNames?.NotifiEmailInput}
           copy={{ label: inputLabels?.email }}
         />
       ) : null}
-      {inputSeparators?.emailSeparator?.content ? (
+      {smsInputActive && inputSeparators?.emailSeparator?.content ? (
         <div
           className={clsx(
             'NotifiInputSeparator__container',
@@ -68,7 +73,7 @@ export const EditCardView: React.FC<EditCardViewProps> = ({
           </div>
         </div>
       ) : null}
-      {data.contactInfo.sms.active ? (
+      {smsInputActive ? (
         <NotifiSmsInput
           disabled={inputDisabled}
           classNames={classNames?.NotifiSmsInput}
@@ -76,7 +81,7 @@ export const EditCardView: React.FC<EditCardViewProps> = ({
           copy={{ label: inputLabels?.sms }}
         />
       ) : null}
-      {inputSeparators?.smsSeparator?.content ? (
+      {telegramInputActive && inputSeparators?.smsSeparator?.content ? (
         <div
           className={clsx(
             'NotifiInputSeparator__container',
@@ -93,7 +98,7 @@ export const EditCardView: React.FC<EditCardViewProps> = ({
           </div>
         </div>
       ) : null}
-      {data.contactInfo.telegram.active ? (
+      {telegramInputActive ? (
         <NotifiTelegramInput
           disabled={inputDisabled}
           classNames={classNames?.NotifiTelegramInput}
@@ -121,6 +126,6 @@ export const EditCardView: React.FC<EditCardViewProps> = ({
         data={data}
         classNames={classNames?.NotifiSubscribeButton}
       />
-    </>
+    </div>
   );
 };

@@ -21,6 +21,7 @@ export type AlertHistoryViewProps = Readonly<{
   classNames?: Readonly<{
     title?: string;
     header?: string;
+    headerSection?: string;
     dividerLine?: string;
     manageAlertLink?: string;
     noAlertDescription?: string;
@@ -126,29 +127,40 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
     }
   }, [currentIndex, visibleRange, hasNextPage, endCursor]);
 
+  const nodeLength = alertHistoryData?.nodes?.length ?? 0;
+
   return (
     <>
-      <div className={clsx('NotifiAlertHistory__header', classNames?.header)}>
-        <span className={clsx('NotifiAlertHistory__label', classNames?.title)}>
-          {alertHistoryTitle}
-        </span>
-        <div
-          className={clsx(
-            'NotifiAlertHistory__manageAlertLink',
-            classNames?.manageAlertLink,
-          )}
-          onClick={handleBackClick}
-        >
-          Manage Alerts
-        </div>
-      </div>
       <div
         className={clsx(
-          'NotifiAlertHistory__dividerLine',
-          classNames?.dividerLine,
+          'NotifiAlertHistory__headerSection',
+          classNames?.headerSection,
         )}
-      />
-      {alertHistoryData?.nodes && alertHistoryData?.nodes?.length > 0 ? (
+      >
+        <div className={clsx('NotifiAlertHistory__header', classNames?.header)}>
+          <span
+            className={clsx('NotifiAlertHistory__label', classNames?.title)}
+          >
+            {alertHistoryTitle}
+          </span>
+          <div
+            className={clsx(
+              'NotifiAlertHistory__manageAlertLink',
+              classNames?.manageAlertLink,
+            )}
+            onClick={handleBackClick}
+          >
+            Manage Alerts
+          </div>
+        </div>
+        <div
+          className={clsx(
+            'NotifiAlertHistory__dividerLine',
+            classNames?.dividerLine,
+          )}
+        />
+      </div>
+      {nodeLength > 0 ? (
         <Virtuoso
           style={{
             height: notificationListHeight || '400px',
