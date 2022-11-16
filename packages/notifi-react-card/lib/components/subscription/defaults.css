@@ -39,7 +39,8 @@
   background-color: var(--notifi-card-background);
   border-radius: 5px;
   padding: 20px 20px 5px 20px;
-  height: 600px;
+  height: 450px;
+  width: 300px;
   justify-content: space-between;
 }
 
@@ -53,7 +54,6 @@
   align-items: baseline;
   font-size: 12px;
   line-height: 14px;
-  flex-grow: 1;
 }
 
 .NotifiFooter__logoSvg {
@@ -168,6 +168,15 @@
 
 .NotifiEditCard__container {
   display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-grow: 1;
+}
+
+.NotifiEditCard__inputsSection {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 0.5;
 }
 
 .NotifiEmailInput__container,
