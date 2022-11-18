@@ -1,12 +1,8 @@
 import clsx from 'clsx';
 import React from 'react';
 
-type Message = {
-  body: string;
-  timeStamp: string;
-  sender: string;
-  avatar: string;
-};
+import { ChatMessage } from '../../hooks/useIntercomChat';
+import { formatHourTimestamp } from '../../utils/datetimeUtils';
 
 export type MessageGroupProps = Readonly<{
   classNames?: Readonly<{
@@ -16,7 +12,7 @@ export type MessageGroupProps = Readonly<{
     timeStamp: string;
     sender: string;
   }>;
-  messages: Message[];
+  messages: ChatMessage[];
   direction: string;
 }>;
 
@@ -43,12 +39,13 @@ export const MessageGroup: React.FC<MessageGroupProps> = ({
               : 'NotifiIntercomChatOutgoingMessage__container',
             classNames?.messageContainer,
           )}
+          key={index}
         >
-          {isIncoming ? (
+          {/* {isIncoming ? (
             <div>
               <img height={34} src={message.avatar} />
             </div>
-          ) : null}
+          ) : null} */}
           <div
             key={index}
             className={clsx(
@@ -65,17 +62,17 @@ export const MessageGroup: React.FC<MessageGroupProps> = ({
                   classNames?.sender,
                 )}
               >
-                {message.sender}
+                {/* {message.sender} */}
               </div>
             ) : null}
-            <div key={index}>{message.body}</div>
+            <div key={index}>{message.message}</div>
             <div
               className={clsx(
                 'NotifiIntercomChatOutgoingMessage__timeStamp',
                 classNames?.timeStamp,
               )}
             >
-              {message.timeStamp}
+              {formatHourTimestamp(message.createdDate)}
             </div>
           </div>
         </div>
