@@ -1,17 +1,24 @@
 import clsx from 'clsx';
 import React from 'react';
 
+import {
+  formatConversationDateTimestamp,
+  formatConversationStartTimestamp,
+} from '../../utils/datetimeUtils';
+
 export type ChatMessageDateProps = Readonly<{
   classNames?: Readonly<{
     container: string;
     content: string;
   }>;
-  date?: string;
+  createdDate: string;
+  isStartDate?: boolean;
 }>;
 
 export const ChatMessageDate: React.FC<ChatMessageDateProps> = ({
   classNames,
-  date = 'August 1',
+  createdDate,
+  isStartDate = true,
 }) => {
   return (
     <div
@@ -26,7 +33,9 @@ export const ChatMessageDate: React.FC<ChatMessageDateProps> = ({
           classNames?.content,
         )}
       >
-        {date}
+        {isStartDate
+          ? formatConversationStartTimestamp(createdDate)
+          : formatConversationDateTimestamp(createdDate)}
       </div>
     </div>
   );

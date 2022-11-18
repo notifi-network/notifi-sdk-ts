@@ -800,6 +800,10 @@
   overflow-y:auto;
 }
 
+.ChatWindowIntro__virtualContainer {
+  height: 80px;
+}
+
 .NotifiIntercomChatMessageSectionIntro__content {
   font-size: 16px;
   font-weight: 800;
@@ -808,6 +812,7 @@
 }
 
 .NotifiIntercomChatMessageDate__container {
+  display: inline-block;
   width: 64px;
   padding: 5px;
   background: #F5F6FB;
@@ -910,7 +915,7 @@
   font-weight: 600;
   line-height: 12px;
   color: #80829D;
-  min-width: 50px;
+  min-width: 35px;
   bottom: 8px;
   right: 7px;
 }

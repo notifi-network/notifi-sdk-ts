@@ -12,6 +12,7 @@ import {
 
 export type NotifiIntercomChatWindowContainerProps = Readonly<{
   classNames?: Readonly<{
+    container: string;
     header?: ChatWindowHeaderProps['classNames'];
     chatMessageSection?: ChatMessageSectionProps['classNames'];
     sendMessageSection?: SendMessageSectionProps['classNames'];
