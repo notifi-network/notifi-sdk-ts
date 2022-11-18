@@ -45,9 +45,7 @@ export const ChatMessageSection: React.FC<ChatMessageSectionProps> = ({
           startDate={conversation.createdDate}
           chatMessageSectionIntroContent={chatMessageSectionIntroContent}
         />
-      ) : null}
-
-      {conversation.feed.length === 0 ? null : (
+      ) : (
         <Virtuoso
           atTopStateChange={setAtTop}
           className="virtual-container"

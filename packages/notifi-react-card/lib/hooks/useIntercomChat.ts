@@ -5,13 +5,6 @@ import { ListRange } from 'react-virtuoso';
 import { useNotifiClientContext } from '../context';
 import { formatConversationDateTimestamp } from '../utils/datetimeUtils';
 
-export type ChatConversation = FeedEntry &
-  Readonly<{
-    feed: FeedEntry[];
-    createdDate: string | undefined;
-    lastMessage: ChatMessage | undefined;
-  }>;
-
 export type ChatMessage = Readonly<{
   id: string;
   message: string;
@@ -21,9 +14,9 @@ export type ChatMessage = Readonly<{
   conversationId: string;
 }>;
 
-export type MessageDirection = 'INCOMING' | 'OUTGOING';
+type MessageDirection = 'INCOMING' | 'OUTGOING';
 
-export type MessagesBlockFeedEntry = Readonly<{
+type MessagesBlockFeedEntry = Readonly<{
   type: 'MESSAGES_BLOCK';
   direction: MessageDirection;
   messages: ChatMessage[];
