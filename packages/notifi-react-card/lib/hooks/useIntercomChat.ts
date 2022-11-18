@@ -83,6 +83,7 @@ export const useIntercomChat = ({
   }, [hasNextPage, atTop, isScrolling, visibleRange.startIndex]);
 
   const conversation = useMemo(() => {
+    //put the conversation into message group
     const getFeed = () => {
       const messageGroups: ChatMessage[][] = [];
 
@@ -90,14 +91,13 @@ export const useIntercomChat = ({
 
       chatMessages?.forEach((message, index) => {
         const nextMessage = chatMessages[index + 1];
-
+        const isSameUserId = message?.userId === nextMessage?.userId;
+        const isSameDate =
+          formatConversationDateTimestamp(message?.createdDate) ===
+          formatConversationDateTimestamp(nextMessage?.createdDate);
         /// timestamp logic
         messages.unshift(message);
-        if (
-          message?.userId !== nextMessage?.userId ||
-          formatConversationDateTimestamp(message?.createdDate) !=
-            formatConversationDateTimestamp(nextMessage?.createdDate)
-        ) {
+        if (!isSameUserId || !isSameDate) {
           messageGroups.unshift(messages);
           messages = [];
         }
