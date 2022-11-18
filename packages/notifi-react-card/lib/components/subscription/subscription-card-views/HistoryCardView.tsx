@@ -58,7 +58,6 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
   alertHistoryTitle,
   classNames,
   noAlertDescription,
-  notificationListHeight,
 }) => {
   alertHistoryTitle = alertHistoryTitle ? alertHistoryTitle : 'Alert History';
   noAlertDescription = noAlertDescription
@@ -161,23 +160,24 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
         />
       </div>
       {nodeLength > 0 ? (
-        <Virtuoso
-          style={{
-            height: notificationListHeight || '400px',
-            marginBottom: '25px',
-          }}
-          isScrolling={setIsScrolling}
-          rangeChanged={setVisibleRange}
-          data={allNodes.filter(
-            (notification) => notification.detail != undefined,
-          )}
-          itemContent={(index, notification) => {
-            setCurrentIndex(index);
-            return (
-              <AlertCard key={notification.id} notification={notification} />
-            );
-          }}
-        />
+        <div style={{ flexGrow: 1 }}>
+          <Virtuoso
+            style={{
+              marginBottom: '25px',
+            }}
+            isScrolling={setIsScrolling}
+            rangeChanged={setVisibleRange}
+            data={allNodes.filter(
+              (notification) => notification.detail != undefined,
+            )}
+            itemContent={(index, notification) => {
+              setCurrentIndex(index);
+              return (
+                <AlertCard key={notification.id} notification={notification} />
+              );
+            }}
+          />
+        </div>
       ) : (
         <span
           className={clsx(
