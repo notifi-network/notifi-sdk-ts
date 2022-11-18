@@ -16,11 +16,15 @@ export type ChatMessageSectionProps = Readonly<{
     date: ChatMessageDateProps['classNames'];
   }>;
   chatMessageSectionIntroContent?: string;
+  messageListWidth?: string;
+  messageListHeight?: string;
 }>;
 
 export const ChatMessageSection: React.FC<ChatMessageSectionProps> = ({
   classNames,
   chatMessageSectionIntroContent,
+  messageListWidth,
+  messageListHeight,
 }) => {
   const {
     conversation,
@@ -88,7 +92,10 @@ export const ChatMessageSection: React.FC<ChatMessageSectionProps> = ({
               </div>
             );
           }}
-          style={{ width: '364px', height: '290px' }}
+          style={{
+            width: messageListWidth || '364px',
+            height: messageListHeight || '290px',
+          }}
         />
       )}
     </>
