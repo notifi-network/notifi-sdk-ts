@@ -56,6 +56,8 @@ export const ChatMessageSection: React.FC<ChatMessageSectionProps> = ({
           isScrolling={setIsScrolling}
           rangeChanged={setVisibleRange}
           itemContent={(index, feed) => {
+            const isFirstIndexOnLastPage = index === 0 && !hasNextPage;
+
             return (
               <div key={index}>
                 {isLoading ? (
@@ -69,7 +71,7 @@ export const ChatMessageSection: React.FC<ChatMessageSectionProps> = ({
                     Loading...
                   </div>
                 ) : null}
-                {index === 0 && !hasNextPage && (
+                {isFirstIndexOnLastPage && (
                   <ChatWindowIntroSection
                     classNames={classNames?.chatWindowIntro}
                     startDate={conversation.createdDate}
