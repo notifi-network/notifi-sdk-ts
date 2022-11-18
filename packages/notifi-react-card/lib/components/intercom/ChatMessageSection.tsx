@@ -47,6 +47,8 @@ export const ChatMessageSection: React.FC<ChatMessageSectionProps> = ({
         />
       ) : (
         <Virtuoso
+          //TODO: improvement to add the scrollSeekConfiguration property
+          //to render a placeholder element instead of the actual item if the user scrolls too fast
           atTopStateChange={setAtTop}
           className="virtual-container"
           data={conversation.feed}
