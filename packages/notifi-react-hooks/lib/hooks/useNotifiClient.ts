@@ -19,6 +19,7 @@ import {
   GetConversationMessagesFullInput,
   GetNotificationHistoryInput,
   NotifiClient,
+  SendConversationMessagesInput,
   SignMessageParams,
   Source,
   TargetGroup,
@@ -1280,6 +1281,25 @@ const useNotifiClient = (
     [setLoading, setError, service],
   );
 
+  const sendConversationMessages = useCallback(
+    async (input: SendConversationMessagesInput) => {
+      try {
+        const result = await service.sendConversationMessages(input);
+        return result;
+      } catch (e: unknown) {
+        if (e instanceof Error) {
+          setError(e);
+        } else {
+          setError(new NotifiClientError(e));
+        }
+        throw e;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [setLoading, setError, service],
+  );
+
   const client: NotifiClient = {
     beginLoginViaTransaction,
     broadcastMessage,
@@ -1299,6 +1319,7 @@ const useNotifiClient = (
     getTopics,
     updateAlert,
     ensureTargetGroup,
+    sendConversationMessages,
     sendEmailTargetVerification,
   };
 

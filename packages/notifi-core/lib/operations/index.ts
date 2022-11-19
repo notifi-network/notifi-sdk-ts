@@ -29,5 +29,6 @@ export * from './GetWebhookTargets';
 export * from './LogInFromDapp';
 export * from './RefreshAuthorization';
 export * from './SendEmailTargetVerificationRequest';
+export * from './SendConversationMessages';
 export * from './UpdateSourceGroup';
 export * from './UpdateTargetGroup';

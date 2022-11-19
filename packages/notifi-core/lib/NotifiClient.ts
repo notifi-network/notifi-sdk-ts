@@ -17,6 +17,7 @@ import {
   CreateSourceInput,
   CreateWebhookTargetInput,
   GetNotificationHistoryInput,
+  SendConversationMessagesInput,
 } from './operations';
 import { GetConversationMessagesFullInput } from './operations/getConversationMessages';
 
@@ -280,6 +281,9 @@ export type NotifiClient = Readonly<{
   ensureTargetGroup: (
     input: ClientEnsureTargetGroupInput,
   ) => Promise<TargetGroup>;
+  sendConversationMessages: (
+    input: SendConversationMessagesInput,
+  ) => Promise<ConversationMessages>;
   sendEmailTargetVerification: (
     input: ClientSendVerificationEmailInput,
   ) => Promise<string>;
