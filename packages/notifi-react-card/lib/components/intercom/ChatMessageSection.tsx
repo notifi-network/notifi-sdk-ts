@@ -53,6 +53,7 @@ export const ChatMessageSection: React.FC<ChatMessageSectionProps> = ({
         />
       ) : (
         <Virtuoso
+          //TODO: improvement to add the scrollSeekConfiguration property
           atTopStateChange={setAtTop}
           className="virtual-container"
           data={conversation.feed}
