@@ -3,7 +3,7 @@ import {
   makeRequest,
 } from '@notifi-network/notifi-axios-utils';
 import {
-  SendConversationMessagesInput,
+  SendConversationMessageInput,
   SendConversationMessagesResult,
 } from '@notifi-network/notifi-core';
 
@@ -26,7 +26,7 @@ mutation sendConversationMessage($sendConversationMessageInput: SendConversation
 `.trim();
 
 const sendConversationMessageImpl = makeRequest<
-  SendConversationMessagesInput,
+  SendConversationMessageInput,
   SendConversationMessagesResult
 >(collectDependencies(...DEPENDENCIES, MUTATION), 'sendConversationMessage');
 

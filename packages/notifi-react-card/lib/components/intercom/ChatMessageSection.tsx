@@ -8,12 +8,17 @@ import {
   ChatWindowIntroSectionProps,
 } from './ChatWindowIntroSection';
 import { MessageList, MessageListProps } from './MessageList';
+import {
+  SendMessageSection,
+  SendMessageSectionProps,
+} from './SendMessageSection';
 
 export type ChatMessageSectionProps = Readonly<{
   classNames?: Readonly<{
     chatWindowIntro: ChatWindowIntroSectionProps['classNames'];
     messageList: MessageListProps['classNames'];
     date: ChatMessageDateProps['classNames'];
+    sendMessageSection: SendMessageSectionProps['classNames'];
   }>;
   chatMessageSectionIntroContent?: string;
   messageListWidth?: string;
@@ -33,8 +38,9 @@ export const ChatMessageSection: React.FC<ChatMessageSectionProps> = ({
     setAtTop,
     isLoading,
     hasNextPage,
+    sendConversationMessages,
   } = useIntercomChat({
-    conversationId: '8c5ccf41d93c4bb9b5e1e1014002e923',
+    conversationId: 'f03c78b1ffee4d7eb2ff030f6e665cba',
   });
 
   return (
@@ -47,8 +53,6 @@ export const ChatMessageSection: React.FC<ChatMessageSectionProps> = ({
         />
       ) : (
         <Virtuoso
-          //TODO: improvement to add the scrollSeekConfiguration property
-          //to render a placeholder element instead of the actual item if the user scrolls too fast
           atTopStateChange={setAtTop}
           className="virtual-container"
           data={conversation.feed}
@@ -57,7 +61,6 @@ export const ChatMessageSection: React.FC<ChatMessageSectionProps> = ({
           rangeChanged={setVisibleRange}
           itemContent={(index, feed) => {
             const isFirstIndexOnLastPage = index === 0 && !hasNextPage;
-
             return (
               <div key={index}>
                 {isLoading ? (
@@ -100,6 +103,10 @@ export const ChatMessageSection: React.FC<ChatMessageSectionProps> = ({
           }}
         />
       )}
+      <SendMessageSection
+        classNames={classNames?.sendMessageSection}
+        sendConversationMessages={sendConversationMessages}
+      />
     </>
   );
 };

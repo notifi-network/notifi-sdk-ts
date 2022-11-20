@@ -19,7 +19,7 @@ import {
   GetConversationMessagesFullInput,
   GetNotificationHistoryInput,
   NotifiClient,
-  SendConversationMessagesInput,
+  SendConversationMessageInput,
   SignMessageParams,
   Source,
   TargetGroup,
@@ -1282,7 +1282,7 @@ const useNotifiClient = (
   );
 
   const sendConversationMessages = useCallback(
-    async (input: SendConversationMessagesInput) => {
+    async (input: SendConversationMessageInput) => {
       try {
         const result = await service.sendConversationMessages(input);
         return result;

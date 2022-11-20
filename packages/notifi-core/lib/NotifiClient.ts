@@ -12,12 +12,15 @@ import {
   User,
   UserTopic,
 } from './models';
-import { ConversationMessages } from './models/ConversationMessages';
+import {
+  ConversationMessages,
+  ConversationMessagesEntry,
+} from './models/ConversationMessages';
 import {
   CreateSourceInput,
   CreateWebhookTargetInput,
   GetNotificationHistoryInput,
-  SendConversationMessagesInput,
+  SendConversationMessageInput,
 } from './operations';
 import { GetConversationMessagesFullInput } from './operations/getConversationMessages';
 
@@ -282,8 +285,8 @@ export type NotifiClient = Readonly<{
     input: ClientEnsureTargetGroupInput,
   ) => Promise<TargetGroup>;
   sendConversationMessages: (
-    input: SendConversationMessagesInput,
-  ) => Promise<ConversationMessages>;
+    input: SendConversationMessageInput,
+  ) => Promise<ConversationMessagesEntry>;
   sendEmailTargetVerification: (
     input: ClientSendVerificationEmailInput,
   ) => Promise<string>;

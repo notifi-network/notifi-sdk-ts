@@ -1,16 +1,15 @@
 import { Operation } from '../models';
-import { ConversationMessages } from '../models/ConversationMessages';
+import { ConversationMessagesEntry } from '../models/ConversationMessages';
 
-export type SendConversationMessagesResult = ConversationMessages;
+export type SendConversationMessagesResult = ConversationMessagesEntry;
 
-export type SendConversationMessagesInput = Readonly<{
-  conversationId: string;
-  message: string;
+export type SendConversationMessageInput = Readonly<{
+  sendConversationMessageInput: { conversationId: string; message: string };
 }>;
 
 export type SendConversationMessagesService = Readonly<{
   sendConversationMessages: Operation<
-    SendConversationMessagesInput,
+    SendConversationMessageInput,
     SendConversationMessagesResult
   >;
 }>;

@@ -5,10 +5,7 @@ import {
   ChatMessageSectionProps,
 } from './ChatMessageSection';
 import { ChatWindowHeader, ChatWindowHeaderProps } from './ChatWindowHeader';
-import {
-  SendMessageSection,
-  SendMessageSectionProps,
-} from './SendMessageSection';
+import { SendMessageSectionProps } from './SendMessageSection';
 
 export type NotifiIntercomChatWindowContainerProps = Readonly<{
   classNames?: Readonly<{
@@ -28,7 +25,6 @@ export const NotifiIntercomChatWindowContainer: React.FC<
     <>
       <ChatWindowHeader classNames={classNames?.header} />
       <ChatMessageSection classNames={classNames?.chatMessageSection} />
-      <SendMessageSection classNames={classNames?.sendMessageSection} />
     </>
   );
 };
