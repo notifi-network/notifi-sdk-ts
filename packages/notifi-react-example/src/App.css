@@ -1,0 +1,36 @@
+.app {
+  flex-direction: column;
+  gap: 1em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+nav {
+  height: 100px;
+  display: flex;
+  align-items: center;
+}
+
+.container {
+  height: calc(100vh - 110px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.button {
+  margin: 16px 0px 0px;
+  cursor: pointer;
+  vertical-align: middle;
+  min-width: 64px;
+  padding: 10.5px 16px;
+  font-size: 16px;
+  text-transform: capitalize;
+  background-color: rgb(234, 126, 104);
+  color: white;
+  font-weight: 700;
+  height: 48px;
+  border-radius: 30px;
+  border: none;
+}
