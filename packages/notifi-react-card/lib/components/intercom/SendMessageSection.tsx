@@ -14,12 +14,14 @@ export const SendMessageSection: React.FC<SendMessageSectionProps> = ({
   classNames,
   sendConversationMessages,
 }) => {
-  const [sendMessage, setSendMessage] = useState<string>('');
+  const [sendMessage, setSendMessage] = useState<string | undefined>(undefined);
   const disabled = sendMessage === '' || sendMessage === undefined;
 
   const handleSend = () => {
-    sendConversationMessages(sendMessage);
-    setSendMessage('');
+    if (sendMessage) {
+      sendConversationMessages(sendMessage);
+      setSendMessage('');
+    }
   };
   return (
     <div
