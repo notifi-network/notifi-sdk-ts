@@ -17,6 +17,7 @@ import deleteSourceGroupImpl from './mutations/deleteSourceGroupImpl';
 import deleteTargetGroupImpl from './mutations/deleteTargetGroupImpl';
 import logInFromDappImpl from './mutations/logInFromDappImpl';
 import refreshAuthorizationImpl from './mutations/refreshAuthorizationImpl';
+import sendConversationMessagesImpl from './mutations/sendConversationMessagesImpl';
 import sendEmailTargetVerificationRequestImpl from './mutations/sendEmailTargetVerificationRequestImpl';
 import updateSourceGroupImpl from './mutations/updateSourceGroupImpl';
 import updateTargetGroupImpl from './mutations/updateTargetGroupImpl';
@@ -70,6 +71,7 @@ export class NotifiAxiosService implements NotifiService {
   getWebhookTargets: NotifiService['getWebhookTargets'];
   logInFromDapp: NotifiService['logInFromDapp'];
   refreshAuthorization: NotifiService['refreshAuthorization'];
+  sendConversationMessages: NotifiService['sendConversationMessages'];
   sendEmailTargetVerificationRequest: NotifiService['sendEmailTargetVerificationRequest'];
   updateSourceGroup: NotifiService['updateSourceGroup'];
   updateTargetGroup: NotifiService['updateTargetGroup'];
@@ -130,6 +132,7 @@ export class NotifiAxiosService implements NotifiService {
     this.refreshAuthorization = refreshAuthorizationImpl.bind(null, a);
     this.sendEmailTargetVerificationRequest =
       sendEmailTargetVerificationRequestImpl.bind(null, a);
+    this.sendConversationMessages = sendConversationMessagesImpl.bind(null, a);
     this.updateSourceGroup = updateSourceGroupImpl.bind(null, a);
     this.updateTargetGroup = updateTargetGroupImpl.bind(null, a);
   }
