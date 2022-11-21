@@ -4,16 +4,25 @@ import React, { useState } from 'react';
 export type SendMessageSectionProps = Readonly<{
   classNames?: Readonly<{
     container: string;
-    textArea: string;
+    textarea: string;
     button: string;
   }>;
+  sendConversationMessages: (message: string) => void;
 }>;
 
 export const SendMessageSection: React.FC<SendMessageSectionProps> = ({
   classNames,
+  sendConversationMessages,
 }) => {
-  const [sendMessage, setSendMessage] = useState<string>('');
+  const [sendMessage, setSendMessage] = useState<string | undefined>(undefined);
   const disabled = sendMessage === '' || sendMessage === undefined;
+
+  const handleSend = () => {
+    if (sendMessage) {
+      sendConversationMessages(sendMessage);
+      setSendMessage('');
+    }
+  };
   return (
     <div
       className={clsx(
@@ -24,7 +33,7 @@ export const SendMessageSection: React.FC<SendMessageSectionProps> = ({
       <textarea
         className={clsx(
           'NotifiIntercomSendMessageSection__textarea',
-          classNames?.textArea,
+          classNames?.textarea,
         )}
         value={sendMessage}
         onChange={(e) => {
@@ -34,6 +43,7 @@ export const SendMessageSection: React.FC<SendMessageSectionProps> = ({
       />
       <button
         disabled={disabled}
+        onClick={handleSend}
         className={clsx(
           'NotifiIntercomSendMessageSection__button',
           classNames?.button,

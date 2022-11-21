@@ -27,15 +27,17 @@ export type FeedEntry = {
   timestamp: string;
 } & MessagesBlockFeedEntry;
 
-type GetConversationMessagesInputProps = Readonly<{
-  first?: number;
+type UseIntercomChatProps = Readonly<{
+  userId?: string;
   conversationId: string;
 }>;
 
+const MESSAGES_NUMBER = 5;
+
 export const useIntercomChat = ({
-  first = 5,
   conversationId,
-}: GetConversationMessagesInputProps) => {
+  userId = '0ff9528b-9bd4-444f-adcb-482673b31c96',
+}: UseIntercomChatProps) => {
   const [chatMessages, setChatMessages] = useState<ConversationMessagesEntry[]>(
     [],
   );
@@ -50,25 +52,30 @@ export const useIntercomChat = ({
   const [isScrolling, setIsScrolling] = useState<boolean | null>();
   const { client } = useNotifiClientContext();
 
-  const getConversationMessages = useCallback(() => {
-    setIsLoading(true);
-    client
-      .getConversationMessages({
-        first,
-        after: endCursor,
-        getConversationMessagesInput: { conversationId },
-      })
-      .then((response) => {
-        if (Array.isArray(response.nodes)) {
-          setChatMessages([...chatMessages, ...response.nodes]);
-        }
-        if (response.pageInfo) {
-          setEndCursor(response.pageInfo.endCursor);
-          setHasNextPage(response.pageInfo.hasNextPage);
-        }
-        setIsLoading(false);
-      });
-  }, [conversationId, endCursor, chatMessages]);
+  const getConversationMessages = useCallback(
+    (first = MESSAGES_NUMBER) => {
+      setIsLoading(true);
+      if (conversationId) {
+        client
+          .getConversationMessages({
+            first,
+            after: endCursor,
+            getConversationMessagesInput: { conversationId },
+          })
+          .then((response) => {
+            if (Array.isArray(response.nodes)) {
+              setChatMessages([...chatMessages, ...response.nodes]);
+            }
+            if (response.pageInfo) {
+              setEndCursor(response.pageInfo.endCursor);
+              setHasNextPage(response.pageInfo.hasNextPage);
+            }
+            setIsLoading(false);
+          });
+      }
+    },
+    [conversationId, endCursor, chatMessages],
+  );
 
   // initialization - load first batch of messages
   useEffect(() => {
@@ -80,54 +87,73 @@ export const useIntercomChat = ({
     if (hasNextPage && atTop && isScrolling && visibleRange.startIndex === 0) {
       getConversationMessages();
     }
-  }, [hasNextPage, atTop, isScrolling, visibleRange.startIndex]);
+  }, [
+    getConversationMessages,
+    hasNextPage,
+    atTop,
+    isScrolling,
+    visibleRange.startIndex,
+  ]);
 
   const conversation = useMemo(() => {
     //put the conversation into message group
-    const getFeed = () => {
-      const messageGroups: ChatMessage[][] = [];
+    const messageGroups: ChatMessage[][] = [];
 
-      let messages: ChatMessage[] = [];
+    let messages: ChatMessage[] = [];
 
-      chatMessages?.forEach((message, index) => {
-        const nextMessage = chatMessages[index + 1];
-        const isSameUserId = message?.userId === nextMessage?.userId;
-        const isSameDate =
-          formatConversationDateTimestamp(message?.createdDate) ===
-          formatConversationDateTimestamp(nextMessage?.createdDate);
-        /// timestamp logic
-        messages.unshift(message);
-        if (!isSameUserId || !isSameDate) {
-          messageGroups.unshift(messages);
-          messages = [];
-        }
-      });
+    chatMessages?.forEach((message, index) => {
+      const nextMessage = chatMessages[index + 1];
+      const isSameUserId = message?.userId === nextMessage?.userId;
+      const isSameDate =
+        formatConversationDateTimestamp(message?.createdDate) ===
+        formatConversationDateTimestamp(nextMessage?.createdDate);
+      messages.unshift(message);
+      if (!isSameUserId || !isSameDate) {
+        messageGroups.unshift(messages);
+        messages = [];
+      }
+    });
 
-      const feedEntries = messageGroups.map((messageGroup): FeedEntry => {
-        const firstMessage = messageGroup[0];
+    const feed = messageGroups.map((messageGroup): FeedEntry => {
+      const firstMessage = messageGroup[0];
 
-        return {
-          direction:
-            firstMessage?.userId === 'c85e8969-10df-43c6-aa4d-402c068e0159'
-              ? 'OUTGOING'
-              : 'INCOMING',
-          id: firstMessage?.id,
-          messages: [...messageGroup],
-          timestamp: firstMessage?.createdDate,
-          type: 'MESSAGES_BLOCK',
-        };
-      });
+      return {
+        direction: firstMessage?.userId === userId ? 'OUTGOING' : 'INCOMING',
+        id: firstMessage?.id,
+        messages: messageGroup,
+        timestamp: firstMessage?.createdDate,
+        type: 'MESSAGES_BLOCK',
+      };
+    });
 
-      return feedEntries;
-    };
     return {
-      feed: getFeed(),
+      feed,
       createdDate:
         chatMessages?.[chatMessages.length - 1]?.createdDate ??
         new Date().toISOString(),
       lastMessage: chatMessages?.[0],
     };
   }, [chatMessages, conversationId]);
+
+  const sendConversationMessages = useCallback(
+    (message: string) => {
+      if (message === '') {
+        return;
+      } else {
+        client
+          .sendConversationMessages({
+            sendConversationMessageInput: {
+              conversationId,
+              message,
+            },
+          })
+          .then((response) => {
+            setChatMessages([response, ...chatMessages]);
+          });
+      }
+    },
+    [conversationId, chatMessages],
+  );
 
   return {
     conversation,
@@ -137,5 +163,6 @@ export const useIntercomChat = ({
     setAtTop,
     hasNextPage,
     isLoading,
+    sendConversationMessages,
   };
 };
