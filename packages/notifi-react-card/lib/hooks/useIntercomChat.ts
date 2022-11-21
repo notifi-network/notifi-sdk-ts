@@ -28,13 +28,13 @@ export type FeedEntry = {
 } & MessagesBlockFeedEntry;
 
 type UseIntercomChatProps = Readonly<{
-  first?: number;
   userId?: string;
   conversationId: string;
 }>;
 
+const MESSAGES_NUMBER = 5;
+
 export const useIntercomChat = ({
-  first = 5,
   conversationId,
   userId = '0ff9528b-9bd4-444f-adcb-482673b31c96',
 }: UseIntercomChatProps) => {
@@ -52,27 +52,30 @@ export const useIntercomChat = ({
   const [isScrolling, setIsScrolling] = useState<boolean | null>();
   const { client } = useNotifiClientContext();
 
-  const getConversationMessages = useCallback(() => {
-    setIsLoading(true);
-    if (conversationId) {
-      client
-        .getConversationMessages({
-          first,
-          after: endCursor,
-          getConversationMessagesInput: { conversationId },
-        })
-        .then((response) => {
-          if (Array.isArray(response.nodes)) {
-            setChatMessages([...chatMessages, ...response.nodes]);
-          }
-          if (response.pageInfo) {
-            setEndCursor(response.pageInfo.endCursor);
-            setHasNextPage(response.pageInfo.hasNextPage);
-          }
-          setIsLoading(false);
-        });
-    }
-  }, [conversationId, endCursor, chatMessages]);
+  const getConversationMessages = useCallback(
+    (first = MESSAGES_NUMBER) => {
+      setIsLoading(true);
+      if (conversationId) {
+        client
+          .getConversationMessages({
+            first,
+            after: endCursor,
+            getConversationMessagesInput: { conversationId },
+          })
+          .then((response) => {
+            if (Array.isArray(response.nodes)) {
+              setChatMessages([...chatMessages, ...response.nodes]);
+            }
+            if (response.pageInfo) {
+              setEndCursor(response.pageInfo.endCursor);
+              setHasNextPage(response.pageInfo.hasNextPage);
+            }
+            setIsLoading(false);
+          });
+      }
+    },
+    [conversationId, endCursor, chatMessages],
+  );
 
   // initialization - load first batch of messages
   useEffect(() => {
