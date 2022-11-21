@@ -49,17 +49,12 @@ function App() {
     }
   }, [connected, logOut]);
 
-  const Nav = () => {
-    return (
+  return (
+    <div className="app">
       <nav className="nav">
         {connected ? <WalletDisconnectButton /> : <WalletMultiButton />}
       </nav>
-    );
-  };
 
-  return (
-    <div className="app">
-      <Nav />
       <div className="container">
         {connected ? (
           <>
