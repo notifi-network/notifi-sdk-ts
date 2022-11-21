@@ -30,6 +30,7 @@ export type NotifiService = Operations.BroadcastMessageService &
   Operations.GetWebhookTargetsService &
   Operations.LogInFromDappService &
   Operations.RefreshAuthorizationService &
+  Operations.SendConversationMessagesService &
   Operations.SendEmailTargetVerificationRequestService &
   Operations.UpdateSourceGroupService &
   Operations.UpdateTargetGroupService &
