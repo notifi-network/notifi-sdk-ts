@@ -134,7 +134,9 @@ export const useIntercomChat = ({
 
   const sendConversationMessages = useCallback(
     (message: string) => {
-      if (message) {
+      if (message === '') {
+        return;
+      } else {
         client
           .sendConversationMessages({
             sendConversationMessageInput: {
