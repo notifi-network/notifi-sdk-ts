@@ -3,6 +3,7 @@ import React from 'react';
 
 import { EmailIcon } from '../assets/EmailIcon';
 import { useNotifiSubscriptionContext } from '../context';
+import { useNotifiSubscribe } from '../hooks';
 import type { DeepPartialReadonly } from '../utils';
 
 export type NotifiEmailInputProps = Readonly<{
@@ -21,6 +22,7 @@ export type NotifiEmailInputProps = Readonly<{
   intercomEmailInputStyle?: string;
   intercomEmailInputContainerStyle?: string;
   intercomView?: boolean;
+  hasChatAlert?: boolean;
 }>;
 
 export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
@@ -30,15 +32,19 @@ export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
   intercomEmailInputStyle,
   intercomEmailInputContainerStyle,
   intercomView,
+  hasChatAlert = false,
 }: NotifiEmailInputProps) => {
   const {
-    intercomCardView,
     email,
     setEmail,
     setEmailErrorMessage,
     emailErrorMessage,
     emailIdThatNeedsConfirmation,
   } = useNotifiSubscriptionContext();
+
+  const { resendEmailVerificationLink } = useNotifiSubscribe({
+    targetGroupName: 'Intercom',
+  });
 
   const validateEmail = () => {
     if (email === '') {
@@ -55,12 +61,16 @@ export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
     }
   };
 
+  const handleClick = () => {
+    resendEmailVerificationLink();
+  };
+
   return (
     <>
       {intercomView ? (
-        intercomCardView.state === 'settingView' &&
-        emailIdThatNeedsConfirmation != '' ? (
+        email && hasChatAlert && emailIdThatNeedsConfirmation != '' ? (
           <div
+            onClick={handleClick}
             className={clsx(
               'NotifiEmailVerification__button',
               classNames?.button,

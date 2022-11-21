@@ -582,6 +582,11 @@
   margin-top: 10px;
 }
 
+.NotifiIntercomTelegramInput__container
+{
+ margin-bottom: 10px;
+}
+
 .NotifiIntercomEmailInput__container:focus-within,
 .NotifiIntercomSmsInput__container:focus-within,
 .NotifiIntercomTelegramInput__container:focus-within {
@@ -785,6 +790,7 @@
 
 .NotifiEmailVerification__button,
 .NotifiTelegramVerification__button {
+  cursor: pointer;
   font-size: 13px;
   font-weight: 800;
   line-height: 16px;

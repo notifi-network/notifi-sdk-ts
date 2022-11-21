@@ -1,8 +1,9 @@
 import clsx from 'clsx';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { useNotifiSubscriptionContext } from '../../context/NotifiSubscriptionContext';
-import { CardConfigItemV1 } from '../../hooks';
+import { CardConfigItemV1, useNotifiSubscribe } from '../../hooks';
+import { chatConfiguration } from '../../utils/AlertConfiguration';
 import {
   NotifiInputLabels,
   NotifiInputSeparators,
@@ -27,6 +28,7 @@ export type IntercomCardProps = Readonly<{
     NotifiStartChatButton?: NotifiStartChatButtonProps['classNames'];
     NotifiIntercomChatWindowContainer?: NotifiIntercomChatWindowContainerProps['classNames'];
     NotifiIntercomSettingHeader: SettingHeaderProps['classNames'];
+    errorMessage: string;
   }>;
   companySupportTitle?: string;
   companySupportSubtitle?: string;
@@ -49,8 +51,15 @@ export const IntercomCard: React.FC<
   inputSeparators,
   data,
 }: React.PropsWithChildren<IntercomCardProps>) => {
-  const [checked, setChecked] = useState<boolean>(true);
+  const [hasChatAlert, setHasChatAlert] = useState<boolean>(false);
+  const [chatAlertErrorMessage, setChatAlertErrorMessage] =
+    useState<string>('');
+  const { instantSubscribe } = useNotifiSubscribe({
+    targetGroupName: 'Intercom',
+  });
   const {
+    alerts,
+    loading,
     intercomCardView,
     setIntercomCardView,
     email,
@@ -60,10 +69,19 @@ export const IntercomCard: React.FC<
     telegramId,
   } = useNotifiSubscriptionContext();
 
+  const alertName = 'NOTIFI_CHAT_MESSAGES';
+
+  useEffect(() => {
+    if (loading) {
+      return;
+    }
+    const hasAlert = alerts[alertName] !== undefined;
+    setHasChatAlert(hasAlert);
+  }, [loading, alerts]);
+
   const hasErrors = emailErrorMessage !== '' || smsErrorMessage !== '';
   const disabled =
-    (email === '' && phoneNumber === '' && telegramId === '' && !checked) ||
-    hasErrors;
+    (email === '' && phoneNumber === '' && telegramId === '') || hasErrors;
 
   companySupportTitle = companySupportTitle || 'Your Company Support';
   companySupportSubtitle =
@@ -73,7 +91,19 @@ export const IntercomCard: React.FC<
     companySupportDescription || 'Get notifications for your support request';
 
   const handleStartChatClick = () => {
-    setIntercomCardView({ state: 'chatWindowView' });
+    if (loading) {
+      return;
+    }
+    try {
+      instantSubscribe({
+        alertConfiguration: chatConfiguration(),
+        alertName: alertName,
+      });
+
+      setIntercomCardView({ state: 'chatWindowView' });
+    } catch (e) {
+      setChatAlertErrorMessage('Error to subscribe, please try again');
+    }
   };
 
   let view = null;
@@ -102,14 +132,22 @@ export const IntercomCard: React.FC<
             {companySupportDescription}
           </div>
           <NotifiIntercomFTUNotificationTargetSection
-            checked={checked}
-            setChecked={setChecked}
+            hasChatAlert={hasChatAlert}
             data={data}
             inputs={inputs}
             inputLabels={inputLabels}
             inputSeparators={inputSeparators}
           />
+          <label
+            className={clsx(
+              'NotifiEmailInput__errorMessage',
+              classNames?.errorMessage,
+            )}
+          >
+            {chatAlertErrorMessage}
+          </label>
           <NotifiStartChatButton
+            hasChatAlert={hasChatAlert}
             onClick={handleStartChatClick}
             disabled={disabled}
             classNames={classNames?.NotifiStartChatButton}
@@ -139,14 +177,22 @@ export const IntercomCard: React.FC<
               {companySupportDescription}
             </div>
             <NotifiIntercomFTUNotificationTargetSection
-              checked={checked}
-              setChecked={setChecked}
+              hasChatAlert={hasChatAlert}
               data={data}
               inputs={inputs}
               inputLabels={inputLabels}
               inputSeparators={inputSeparators}
             />
+            <label
+              className={clsx(
+                'NotifiEmailInput__errorMessage',
+                classNames?.errorMessage,
+              )}
+            >
+              {chatAlertErrorMessage}
+            </label>
             <NotifiStartChatButton
+              hasChatAlert={hasChatAlert}
               onClick={handleStartChatClick}
               disabled={disabled}
               classNames={classNames?.NotifiStartChatButton}

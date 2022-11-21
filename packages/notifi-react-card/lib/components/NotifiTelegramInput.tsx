@@ -20,6 +20,7 @@ export type NotifiTelegramInputProps = Readonly<{
   intercomTelegramInputStyle?: string;
   intercomTelegramInputContainerStyle?: string;
   intercomView?: boolean;
+  hasChatAlert?: boolean;
 }>;
 
 export const NotifiTelegramInput: React.FC<NotifiTelegramInputProps> = ({
@@ -29,20 +30,23 @@ export const NotifiTelegramInput: React.FC<NotifiTelegramInputProps> = ({
   intercomTelegramInputStyle,
   intercomTelegramInputContainerStyle,
   intercomView,
+  hasChatAlert = false,
 }: NotifiTelegramInputProps) => {
-  const {
-    intercomCardView,
-    telegramId,
-    setTelegramId,
-    telegramConfirmationUrl,
-  } = useNotifiSubscriptionContext();
+  const { telegramId, setTelegramId, telegramConfirmationUrl } =
+    useNotifiSubscriptionContext();
+
+  const handleClick = () => {
+    if (telegramConfirmationUrl != null) {
+      window.open(telegramConfirmationUrl, '_blank');
+    }
+  };
 
   return (
     <>
       {intercomView ? (
-        intercomCardView.state === 'settingView' &&
-        telegramConfirmationUrl != null ? (
+        hasChatAlert && telegramId && telegramConfirmationUrl != null ? (
           <div
+            onClick={handleClick}
             className={clsx(
               'NotifiTelegramVerification__button',
               classNames?.button,

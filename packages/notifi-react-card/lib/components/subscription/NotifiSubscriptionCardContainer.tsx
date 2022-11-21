@@ -20,7 +20,7 @@ export const NotifiSubscriptionCardContainer: React.FC<
   inputSeparators,
   children,
 }: React.PropsWithChildren<NotifiSubscriptionCardProps>) => {
-  const { isInitialized } = useNotifiSubscribe();
+  const { isInitialized } = useNotifiSubscribe({ targetGroupName: 'Default' });
   const { loading } = useNotifiSubscriptionContext();
   const inputDisabled = loading || !isInitialized;
 
