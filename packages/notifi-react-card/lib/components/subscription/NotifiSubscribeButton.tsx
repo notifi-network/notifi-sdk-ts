@@ -21,7 +21,9 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
   data,
 }) => {
   const eventTypes = data.eventTypes;
-  const { isInitialized, subscribe, updateTargetGroups } = useNotifiSubscribe();
+  const { isInitialized, subscribe, updateTargetGroups } = useNotifiSubscribe({
+    targetGroupName: 'Default',
+  });
 
   const { client } = useNotifiClientContext();
 

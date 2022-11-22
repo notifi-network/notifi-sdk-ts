@@ -26,6 +26,7 @@ export type NotifiIntercomCardProps = Readonly<{
     NotifiStartChatButton?: NotifiStartChatButtonProps['classNames'];
     NotifiIntercomChatWindowContainer?: NotifiIntercomChatWindowContainerProps['classNames'];
     NotifiIntercomSettingHeader: SettingHeaderProps['classNames'];
+    errorMessage: string;
   }>;
   companySupportTitle?: string;
   companySupportSubtitle?: string;
