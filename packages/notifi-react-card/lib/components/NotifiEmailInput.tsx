@@ -32,7 +32,6 @@ export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
   intercomEmailInputStyle,
   intercomEmailInputContainerStyle,
   intercomView,
-  hasChatAlert = false,
 }: NotifiEmailInputProps) => {
   const {
     email,
@@ -40,6 +39,7 @@ export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
     setEmailErrorMessage,
     emailErrorMessage,
     emailIdThatNeedsConfirmation,
+    intercomCardView,
   } = useNotifiSubscriptionContext();
 
   const { resendEmailVerificationLink } = useNotifiSubscribe({
@@ -68,7 +68,9 @@ export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
   return (
     <>
       {intercomView ? (
-        email && hasChatAlert && emailIdThatNeedsConfirmation != '' ? (
+        email &&
+        intercomCardView.state === 'settingView' &&
+        emailIdThatNeedsConfirmation != '' ? (
           <div
             onClick={handleClick}
             className={clsx(

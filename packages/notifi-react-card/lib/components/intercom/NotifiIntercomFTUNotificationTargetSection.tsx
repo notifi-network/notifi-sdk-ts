@@ -27,19 +27,17 @@ export type NotifiIntercomFTUNotificationTargetSectionProps = Readonly<{
   inputs: Record<string, string | undefined>;
   inputLabels?: NotifiInputLabels;
   inputSeparators?: NotifiInputSeparators;
-  hasChatAlert: boolean;
 }>;
 
 export const NotifiIntercomFTUNotificationTargetSection: React.FC<
   NotifiIntercomFTUNotificationTargetSectionProps
-> = ({ data, inputSeparators, classNames, inputLabels, hasChatAlert }) => {
+> = ({ data, inputSeparators, classNames, inputLabels }) => {
   const allowedCountryCodes = [...data.contactInfo.sms.supportedCountryCodes];
 
   return (
     <div className={'NotifiSupportNotificationOption__container'}>
       {data.contactInfo.email.active ? (
         <NotifiEmailInput
-          hasChatAlert={hasChatAlert}
           disabled={false}
           classNames={classNames?.NotifiEmailInput}
           copy={{ label: inputLabels?.email }}
@@ -105,7 +103,6 @@ export const NotifiIntercomFTUNotificationTargetSection: React.FC<
       ) : null}
       {data.contactInfo.telegram.active ? (
         <NotifiTelegramInput
-          hasChatAlert={hasChatAlert}
           disabled={false}
           classNames={classNames?.NotifiTelegramInput}
           copy={{ label: inputLabels?.telegram }}

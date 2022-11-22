@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import { useNotifiSubscriptionContext } from 'notifi-react-card/lib/context';
 import React from 'react';
 
 export type NotifiStartChatButtonProps = Readonly<{
@@ -8,15 +9,14 @@ export type NotifiStartChatButtonProps = Readonly<{
   }>;
   disabled: boolean;
   onClick: () => void;
-  hasChatAlert: boolean;
 }>;
 
 export const NotifiStartChatButton: React.FC<NotifiStartChatButtonProps> = ({
   classNames,
   disabled,
   onClick,
-  hasChatAlert,
 }) => {
+  const { intercomCardView } = useNotifiSubscriptionContext();
   return (
     <button
       disabled={disabled}
@@ -24,7 +24,9 @@ export const NotifiStartChatButton: React.FC<NotifiStartChatButtonProps> = ({
       onClick={onClick}
     >
       <span className={clsx('NotifiStartChatButton__label', classNames?.label)}>
-        {hasChatAlert ? 'Save Changes' : 'Start Chatting'}
+        {intercomCardView.state === 'settingView'
+          ? 'Save Changes'
+          : 'Start Chatting'}
       </span>
     </button>
   );

@@ -52,6 +52,32 @@ export const useIntercomChat = ({
   const [isScrolling, setIsScrolling] = useState<boolean | null>();
   const { client } = useNotifiClientContext();
 
+  useEffect(() => {
+    const intervalId = setInterval(function () {
+      client
+        .getConversationMessages({
+          first: MESSAGES_NUMBER,
+          getConversationMessagesInput: { conversationId },
+        })
+        .then((response) => {
+          if (Array.isArray(response.nodes)) {
+            const nodes = response.nodes;
+            if (nodes[0].id === chatMessages[0].id) {
+              return;
+            } else {
+              nodes.forEach((node, index) => {
+                if (node.id === chatMessages[0].id) {
+                  const newMessages = nodes.slice(0, index);
+                  setChatMessages([...newMessages, ...chatMessages]);
+                }
+              });
+            }
+          }
+        });
+    }, 5000);
+    return () => clearInterval(intervalId);
+  }, [chatMessages]);
+
   const getConversationMessages = useCallback(
     (first = MESSAGES_NUMBER) => {
       setIsLoading(true);
