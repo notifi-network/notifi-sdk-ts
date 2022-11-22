@@ -11,6 +11,7 @@ export type NotifiTelegramInputProps = Readonly<{
     input: string;
     label: string;
     button: string;
+    errorMessage: string;
   }>;
   copy?: DeepPartialReadonly<{
     placeholder: string;
@@ -32,13 +33,31 @@ export const NotifiTelegramInput: React.FC<NotifiTelegramInputProps> = ({
   intercomView,
   hasChatAlert = false,
 }: NotifiTelegramInputProps) => {
-  const { telegramId, setTelegramId, telegramConfirmationUrl } =
-    useNotifiSubscriptionContext();
+  const {
+    telegramId,
+    setTelegramId,
+    telegramConfirmationUrl,
+    setTelegramErrorMessage,
+    telegramErrorMessage,
+  } = useNotifiSubscriptionContext();
+
+  const validateTelegram = () => {
+    if (telegramId === '') {
+      return;
+    }
+
+    const TelegramRegex =
+      /^@?(?=\w{5,32}\b)[a-zA-Z0-9]+(?:[a-zA-Z0-9_ ]+[a-zA-Z0-9])*$/;
+
+    if (TelegramRegex.test(telegramId)) {
+      setTelegramErrorMessage('');
+    } else {
+      setTelegramErrorMessage('The telegram is invalid. Please try again.');
+    }
+  };
 
   const handleClick = () => {
-    if (telegramConfirmationUrl != null) {
-      window.open(telegramConfirmationUrl, '_blank');
-    }
+    window.open(telegramConfirmationUrl, '_blank');
   };
 
   return (
@@ -69,6 +88,7 @@ export const NotifiTelegramInput: React.FC<NotifiTelegramInputProps> = ({
       >
         <TelegramIcon className={'NotifiInput__icon'} />
         <input
+          onBlur={validateTelegram}
           className={clsx(
             'NotifiTelegramInput__input',
             intercomTelegramInputStyle,
@@ -78,12 +98,21 @@ export const NotifiTelegramInput: React.FC<NotifiTelegramInputProps> = ({
           name="notifi-telegram"
           type="text"
           value={telegramId}
+          onFocus={() => setTelegramErrorMessage('')}
           onChange={(e) => {
             setTelegramId(e.target.value ?? '');
           }}
           placeholder={copy?.placeholder ?? 'Telegram ID'}
         />
       </div>
+      <label
+        className={clsx(
+          'NotifiTelegramInput__errorMessage',
+          classNames?.errorMessage,
+        )}
+      >
+        {telegramErrorMessage}
+      </label>
     </>
   );
 };

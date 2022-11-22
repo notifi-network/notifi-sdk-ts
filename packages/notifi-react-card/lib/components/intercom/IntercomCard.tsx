@@ -103,6 +103,9 @@ export const IntercomCard: React.FC<
       setIntercomCardView({ state: 'chatWindowView' });
     } catch (e) {
       setChatAlertErrorMessage('Error to subscribe, please try again');
+      setTimeout(() => {
+        setChatAlertErrorMessage('');
+      }, 5000);
     }
   };
 

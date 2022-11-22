@@ -203,7 +203,8 @@
   box-shadow: inset 0px 0px 0px 3px var(--notifi-focus-color);
 }
 .NotifiEmailInput__errorMessage,
-.NotifiSmsInput__errorMessage {
+.NotifiSmsInput__errorMessage,
+.NotifiTelegramInput__errorMessage {
   color: var(--notifi-alert-color);
   font-size: 14px;
   margin-bottom: 0px !important;
