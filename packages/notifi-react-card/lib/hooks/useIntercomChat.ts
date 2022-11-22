@@ -3,7 +3,10 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ListRange } from 'react-virtuoso';
 
 import { useNotifiClientContext } from '../context';
-import { formatConversationDateTimestamp } from '../utils/datetimeUtils';
+import {
+  formatConversationDateTimestamp,
+  sortByDate,
+} from '../utils/datetimeUtils';
 
 export type ChatMessage = Readonly<{
   id: string;
@@ -56,7 +59,7 @@ export const useIntercomChat = ({
     const intervalId = setInterval(function () {
       client
         .getConversationMessages({
-          first: MESSAGES_NUMBER,
+          first: 50,
           getConversationMessagesInput: { conversationId },
         })
         .then((response) => {
@@ -65,12 +68,15 @@ export const useIntercomChat = ({
             if (nodes[0].id === chatMessages[0].id) {
               return;
             } else {
-              nodes.forEach((node, index) => {
-                if (node.id === chatMessages[0].id) {
-                  const newMessages = nodes.slice(0, index);
-                  setChatMessages([...newMessages, ...chatMessages]);
-                }
-              });
+              const chatMessageIds = chatMessages.map((message) => message.id);
+              const dedupeNewMessages = nodes.filter(
+                (node) => !chatMessageIds.includes(node.id),
+              );
+              const dedupeMessages = [...dedupeNewMessages, ...chatMessages];
+              const sortedMessages = dedupeMessages.sort(
+                sortByDate((message) => new Date(message.createdDate), 'DESC'),
+              );
+              setChatMessages([...sortedMessages]);
             }
           }
         });
