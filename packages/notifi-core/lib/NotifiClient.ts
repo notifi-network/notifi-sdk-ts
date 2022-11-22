@@ -39,7 +39,8 @@ export type AlertFrequency =
   | 'SINGLE'
   | 'QUARTER_HOUR'
   | 'HOURLY'
-  | 'DAILY';
+  | 'DAILY'
+  | 'THREE_MINUTES';
 
 export type ValueItemConfig = Readonly<{
   key: string;

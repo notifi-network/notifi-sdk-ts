@@ -12,7 +12,7 @@ import {
   NotifiInputLabels,
   NotifiInputSeparators,
 } from '../subscription/NotifiSubscriptionCard';
-import { NotifiToggle, NotifiToggleProps } from '../subscription/NotifiToggle';
+import { NotifiToggleProps } from '../subscription/NotifiToggle';
 
 export type NotifiIntercomFTUNotificationTargetSectionProps = Readonly<{
   classNames?: Readonly<{
@@ -27,25 +27,18 @@ export type NotifiIntercomFTUNotificationTargetSectionProps = Readonly<{
   inputs: Record<string, string | undefined>;
   inputLabels?: NotifiInputLabels;
   inputSeparators?: NotifiInputSeparators;
-  checked: boolean;
-  setChecked: React.Dispatch<React.SetStateAction<boolean>>;
+  hasChatAlert: boolean;
 }>;
 
 export const NotifiIntercomFTUNotificationTargetSection: React.FC<
   NotifiIntercomFTUNotificationTargetSectionProps
-> = ({
-  data,
-  inputSeparators,
-  classNames,
-  inputLabels,
-  checked,
-  setChecked,
-}) => {
+> = ({ data, inputSeparators, classNames, inputLabels, hasChatAlert }) => {
   const allowedCountryCodes = [...data.contactInfo.sms.supportedCountryCodes];
 
   return (
     <div className={'NotifiSupportNotificationOption__container'}>
       <NotifiEmailInput
+        hasChatAlert={hasChatAlert}
         disabled={false}
         classNames={classNames?.NotifiEmailInput}
         copy={{ label: inputLabels?.email }}
@@ -105,6 +98,7 @@ export const NotifiIntercomFTUNotificationTargetSection: React.FC<
         </div>
       ) : null}
       <NotifiTelegramInput
+        hasChatAlert={hasChatAlert}
         disabled={false}
         classNames={classNames?.NotifiTelegramInput}
         copy={{ label: inputLabels?.telegram }}
@@ -114,39 +108,6 @@ export const NotifiIntercomFTUNotificationTargetSection: React.FC<
         intercomTelegramInputStyle={'NotifiIntercomTelegramInput__input'}
         intercomView={true}
       />
-      {inputSeparators?.telegramSeparator?.content ? (
-        <div
-          className={clsx(
-            'NotifiInputSeparator__container',
-            'NotifiIntercomInputSeparator__container',
-            inputSeparators?.smsSeparator?.classNames?.container,
-          )}
-        >
-          <div
-            className={clsx(
-              'NotifiInputSeparator__content',
-              inputSeparators.telegramSeparator.classNames?.content,
-            )}
-          >
-            {inputSeparators?.telegramSeparator?.content}
-          </div>
-        </div>
-      ) : null}
-      <div
-        className={clsx('BrowserAlertToggle__container', classNames?.container)}
-      >
-        <div className={clsx('BrowserAlertToggle__label', classNames?.label)}>
-          Opt in to browser alerts
-        </div>
-
-        <NotifiToggle
-          classNames={classNames?.toggle}
-          disabled={false}
-          checked={checked}
-          setChecked={setChecked}
-          intercomToggleStyle={'NotifiIntercomToggle__input'}
-        />
-      </div>
     </div>
   );
 };
