@@ -63,7 +63,6 @@ export const NotifiTelegramInput: React.FC<NotifiTelegramInputProps> = ({
   return (
     <>
       {intercomView ? (
-        telegramId &&
         intercomCardView.state === 'settingView' &&
         telegramConfirmationUrl != null ? (
           <div

@@ -68,7 +68,6 @@ export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
   return (
     <>
       {intercomView ? (
-        email &&
         intercomCardView.state === 'settingView' &&
         emailIdThatNeedsConfirmation != '' ? (
           <div
