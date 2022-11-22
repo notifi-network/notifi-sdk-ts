@@ -67,6 +67,7 @@ export const IntercomCard: React.FC<
     phoneNumber,
     smsErrorMessage,
     telegramId,
+    telegramErrorMessage,
   } = useNotifiSubscriptionContext();
 
   const alertName = 'NOTIFI_CHAT_MESSAGES';
@@ -79,7 +80,10 @@ export const IntercomCard: React.FC<
     setHasChatAlert(hasAlert);
   }, [loading, alerts]);
 
-  const hasErrors = emailErrorMessage !== '' || smsErrorMessage !== '';
+  const hasErrors =
+    emailErrorMessage !== '' ||
+    smsErrorMessage !== '' ||
+    telegramErrorMessage !== '';
   const disabled =
     (email === '' && phoneNumber === '' && telegramId === '') || hasErrors;
 
