@@ -31,7 +31,6 @@ export const NotifiTelegramInput: React.FC<NotifiTelegramInputProps> = ({
   intercomTelegramInputStyle,
   intercomTelegramInputContainerStyle,
   intercomView,
-  hasChatAlert = false,
 }: NotifiTelegramInputProps) => {
   const {
     telegramId,
@@ -39,6 +38,7 @@ export const NotifiTelegramInput: React.FC<NotifiTelegramInputProps> = ({
     telegramConfirmationUrl,
     setTelegramErrorMessage,
     telegramErrorMessage,
+    intercomCardView,
   } = useNotifiSubscriptionContext();
 
   const validateTelegram = () => {
@@ -63,7 +63,8 @@ export const NotifiTelegramInput: React.FC<NotifiTelegramInputProps> = ({
   return (
     <>
       {intercomView ? (
-        hasChatAlert && telegramId && telegramConfirmationUrl != null ? (
+        intercomCardView.state === 'settingView' &&
+        telegramConfirmationUrl != null ? (
           <div
             onClick={handleClick}
             className={clsx(

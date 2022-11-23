@@ -12,11 +12,19 @@ export type settingView = Readonly<{
   state: 'settingView';
 }>;
 
-export type IntercomCardView = startChatView | chatWindowView | settingView;
+export type loadingView = Readonly<{
+  state: 'loadingView';
+}>;
+
+export type IntercomCardView =
+  | startChatView
+  | chatWindowView
+  | settingView
+  | loadingView;
 
 export const useIntercomCardState = () => {
   const [intercomCardView, setIntercomCardView] = useState<IntercomCardView>({
-    state: 'startChatView',
+    state: 'loadingView',
   });
 
   return {

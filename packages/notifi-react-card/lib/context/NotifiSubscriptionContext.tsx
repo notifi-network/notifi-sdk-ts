@@ -42,6 +42,8 @@ export type NotifiSubscriptionData = Readonly<{
   setIsSmsConfirmed: (isConfirmed: boolean | null) => void;
   emailIdThatNeedsConfirmation: string;
   setEmailIdThatNeedsConfirmation: (emailId: string) => void;
+  hasChatAlert: boolean;
+  setHasChatAlert: (hasChatAlert: boolean) => void;
 }>;
 
 const NotifiSubscriptionContext = createContext<NotifiSubscriptionData>(
@@ -53,6 +55,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
 > = ({ children, ...params }) => {
   const [email, setEmail] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
+  const [hasChatAlert, setHasChatAlert] = useState<boolean>(false);
   const [telegramId, setTelegramId] = useState<string>('');
   const { cardView, setCardView } = useFetchedCardState();
   const { intercomCardView, setIntercomCardView } = useIntercomCardState();
@@ -100,6 +103,8 @@ export const NotifiSubscriptionContextProvider: React.FC<
     setIntercomCardView,
     telegramErrorMessage,
     setTelegramErrorMessage,
+    hasChatAlert,
+    setHasChatAlert,
   };
 
   return (

@@ -3,7 +3,10 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ListRange } from 'react-virtuoso';
 
 import { useNotifiClientContext } from '../context';
-import { formatConversationDateTimestamp } from '../utils/datetimeUtils';
+import {
+  formatConversationDateTimestamp,
+  sortByDate,
+} from '../utils/datetimeUtils';
 
 export type ChatMessage = Readonly<{
   id: string;
@@ -51,6 +54,33 @@ export const useIntercomChat = ({
   });
   const [isScrolling, setIsScrolling] = useState<boolean | null>();
   const { client } = useNotifiClientContext();
+
+  useEffect(() => {
+    const intervalId = setInterval(function () {
+      client
+        .getConversationMessages({
+          first: 50,
+          getConversationMessagesInput: { conversationId },
+        })
+        .then((response) => {
+          if (Array.isArray(response.nodes)) {
+            const nodes = response.nodes;
+            const chatMessageIds = new Set(
+              chatMessages.map((message) => message.id),
+            );
+            const dedupeNewMessages = nodes.filter(
+              (node) => chatMessageIds.has(node.id) === false,
+            );
+            const dedupeMessages = [...dedupeNewMessages, ...chatMessages];
+            const sortedMessages = dedupeMessages.sort(
+              sortByDate((message) => new Date(message.createdDate), 'DESC'),
+            );
+            setChatMessages([...sortedMessages]);
+          }
+        });
+    }, 5000);
+    return () => clearInterval(intervalId);
+  }, [chatMessages]);
 
   const getConversationMessages = useCallback(
     (first = MESSAGES_NUMBER) => {

@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import { useNotifiClientContext } from 'notifi-react-card/lib/context';
 import React, { useEffect, useState } from 'react';
 
 import { useNotifiSubscriptionContext } from '../../context/NotifiSubscriptionContext';
@@ -51,7 +52,6 @@ export const IntercomCard: React.FC<
   inputSeparators,
   data,
 }: React.PropsWithChildren<IntercomCardProps>) => {
-  const [hasChatAlert, setHasChatAlert] = useState<boolean>(false);
   const [chatAlertErrorMessage, setChatAlertErrorMessage] =
     useState<string>('');
   const { instantSubscribe } = useNotifiSubscribe({
@@ -68,17 +68,26 @@ export const IntercomCard: React.FC<
     smsErrorMessage,
     telegramId,
     telegramErrorMessage,
+    setHasChatAlert,
   } = useNotifiSubscriptionContext();
 
-  const alertName = 'NOTIFI_CHAT_MESSAGES';
+  const { client } = useNotifiClientContext();
 
+  const alertName = 'NOTIFI_CHAT_MESSAGES';
   useEffect(() => {
-    if (loading) {
+    if (
+      loading ||
+      !client.isInitialized ||
+      intercomCardView.state === 'settingView'
+    ) {
       return;
     }
     const hasAlert = alerts[alertName] !== undefined;
     setHasChatAlert(hasAlert);
-  }, [loading, alerts]);
+    setIntercomCardView({
+      state: hasAlert ? 'chatWindowView' : 'startChatView',
+    });
+  }, [alerts, loading]);
 
   const hasErrors =
     emailErrorMessage !== '' ||
@@ -152,7 +161,6 @@ export const IntercomCard: React.FC<
             {companySupportDescription}
           </div>
           <NotifiIntercomFTUNotificationTargetSection
-            hasChatAlert={hasChatAlert}
             data={data}
             inputs={inputs}
             inputLabels={inputLabels}
@@ -167,7 +175,6 @@ export const IntercomCard: React.FC<
             {chatAlertErrorMessage}
           </label>
           <NotifiStartChatButton
-            hasChatAlert={hasChatAlert}
             onClick={handleStartChatClick}
             disabled={disabled}
             classNames={classNames?.NotifiStartChatButton}
@@ -199,7 +206,6 @@ export const IntercomCard: React.FC<
               {companySupportDescription}
             </div>
             <NotifiIntercomFTUNotificationTargetSection
-              hasChatAlert={hasChatAlert}
               data={data}
               inputs={inputs}
               inputLabels={inputLabels}
@@ -214,7 +220,6 @@ export const IntercomCard: React.FC<
               {chatAlertErrorMessage}
             </label>
             <NotifiStartChatButton
-              hasChatAlert={hasChatAlert}
               onClick={handleStartChatClick}
               disabled={disabled}
               classNames={classNames?.NotifiStartChatButton}
@@ -222,6 +227,9 @@ export const IntercomCard: React.FC<
           </div>
         </>
       );
+      break;
+    case 'loadingView':
+      view = null;
       break;
   }
   return <>{view}</>;
