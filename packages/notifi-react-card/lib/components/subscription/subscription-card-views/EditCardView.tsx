@@ -24,6 +24,7 @@ export type EditCardViewProps = Readonly<{
   data: CardConfigItemV1;
   inputDisabled: boolean;
   classNames?: Readonly<{
+    NotifiInputContainer?: string;
     NotifiEmailInput?: NotifiEmailInputProps['classNames'];
     NotifiSmsInput?: NotifiSmsInputProps['classNames'];
     NotifiTelegramInput?: NotifiTelegramInputProps['classNames'];
@@ -43,7 +44,9 @@ export const EditCardView: React.FC<EditCardViewProps> = ({
   allowedCountryCodes,
 }) => {
   return (
-    <>
+    <div
+      className={clsx('NotifiInputContainer', classNames?.NotifiInputContainer)}
+    >
       {data.contactInfo.email.active ? (
         <NotifiEmailInput
           disabled={inputDisabled}
@@ -121,6 +124,6 @@ export const EditCardView: React.FC<EditCardViewProps> = ({
         data={data}
         classNames={classNames?.NotifiSubscribeButton}
       />
-    </>
+    </div>
   );
 };

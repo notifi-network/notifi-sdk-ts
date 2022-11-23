@@ -29,22 +29,15 @@ export const NotifiFooter: React.FC<NotifiFooterProps> = ({
 
   return hideFooter ? null : (
     <div className={clsx('NotifiFooter__container', classNames?.container)}>
-      <span className={clsx('NotifiFooter__poweredBy', classNames?.poweredBy)}>
+      <span
+        style={{ marginBottom: 0 }}
+        className={clsx('NotifiFooter__poweredBy', classNames?.poweredBy)}
+      >
         {copy?.poweredBy ?? 'Powered by'}
       </span>
       <NotifiLogo
         className={clsx('NotifiFooter__logoSvg', classNames?.logoSvg)}
       />
-      <span className={clsx('NotifiFooter__spacer', classNames?.spacer)} />
-      <span className={clsx('NotifiFooter__link', classNames?.link)}>
-        <a
-          href="https://notifi.network/faqs"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {copy?.learnMore ?? 'Learn more'}
-        </a>
-      </span>
     </div>
   );
 };
