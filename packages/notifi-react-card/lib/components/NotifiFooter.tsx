@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import React from 'react';
+import { useNotifiSubscriptionContext } from '../context';
 
 import type { DeepPartialReadonly } from '../utils';
 import { NotifiLogo } from './NotifiLogo';
@@ -22,7 +23,11 @@ export const NotifiFooter: React.FC<NotifiFooterProps> = ({
   classNames,
   copy,
 }: NotifiFooterProps) => {
-  return (
+  const { cardView } = useNotifiSubscriptionContext();
+
+  const hideFooter = cardView.state === 'history';
+
+  return hideFooter ? null : (
     <div className={clsx('NotifiFooter__container', classNames?.container)}>
       <span className={clsx('NotifiFooter__poweredBy', classNames?.poweredBy)}>
         {copy?.poweredBy ?? 'Powered by'}

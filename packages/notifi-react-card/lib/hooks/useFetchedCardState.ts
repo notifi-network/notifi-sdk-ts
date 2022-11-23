@@ -14,7 +14,8 @@ export type FetchedCardView = PreviewView | AlertHistoryView | EditInfoView;
 
 export const useFetchedCardState = () => {
   const [cardView, setCardView] = useState<FetchedCardView>({
-    state: 'edit',
+    // state: 'edit',
+    state: 'history',
   });
 
   return {

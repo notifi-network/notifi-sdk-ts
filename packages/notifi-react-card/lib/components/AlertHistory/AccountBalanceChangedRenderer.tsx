@@ -37,6 +37,7 @@ export const AccountBalanceChangedRenderer: React.FC<
   direction;
   return (
     <AlertNotificationRow
+      notificationTitle={getTitle()}
       notificationSubject={getTitle()}
       notificationDate={createdDate}
       notificationMessage={getMessage()}
