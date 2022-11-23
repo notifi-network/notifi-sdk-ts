@@ -14,17 +14,27 @@ export type NotifiIntercomChatWindowContainerProps = Readonly<{
     chatMessageSection?: ChatMessageSectionProps['classNames'];
     sendMessageSection?: SendMessageSectionProps['classNames'];
   }>;
+  chatIntroQuestion: string;
+  chatWindowHeaderContent: string;
 }>;
 
 export const NotifiIntercomChatWindowContainer: React.FC<
   React.PropsWithChildren<NotifiIntercomChatWindowContainerProps>
 > = ({
   classNames,
+  chatWindowHeaderContent,
+  chatIntroQuestion,
 }: React.PropsWithChildren<NotifiIntercomChatWindowContainerProps>) => {
   return (
     <>
-      <ChatWindowHeader classNames={classNames?.header} />
-      <ChatMessageSection classNames={classNames?.chatMessageSection} />
+      <ChatWindowHeader
+        classNames={classNames?.header}
+        chatWindowHeaderContent={chatWindowHeaderContent}
+      />
+      <ChatMessageSection
+        classNames={classNames?.chatMessageSection}
+        chatIntroQuestion={chatIntroQuestion}
+      />
     </>
   );
 };

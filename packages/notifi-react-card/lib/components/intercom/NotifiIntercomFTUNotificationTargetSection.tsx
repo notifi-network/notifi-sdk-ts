@@ -1,7 +1,7 @@
 import clsx from 'clsx';
-import { CardConfigItemV1 } from 'notifi-react-card/lib/hooks';
 import React from 'react';
 
+import { IntercomCardConfigItemV1 } from '../../hooks/IntercomCardConfig';
 import { NotifiEmailInput, NotifiEmailInputProps } from '../NotifiEmailInput';
 import { NotifiSmsInput, NotifiSmsInputProps } from '../NotifiSmsInput';
 import {
@@ -23,7 +23,7 @@ export type NotifiIntercomFTUNotificationTargetSectionProps = Readonly<{
     label: string;
     toggle: NotifiToggleProps['classNames'];
   }>;
-  data: CardConfigItemV1;
+  data: IntercomCardConfigItemV1;
   inputs: Record<string, string | undefined>;
   inputLabels?: NotifiInputLabels;
   inputSeparators?: NotifiInputSeparators;
@@ -37,15 +37,19 @@ export const NotifiIntercomFTUNotificationTargetSection: React.FC<
 
   return (
     <div className={'NotifiSupportNotificationOption__container'}>
-      <NotifiEmailInput
-        hasChatAlert={hasChatAlert}
-        disabled={false}
-        classNames={classNames?.NotifiEmailInput}
-        copy={{ label: inputLabels?.email }}
-        intercomEmailInputContainerStyle={'NotifiIntercomEmailInput__container'}
-        intercomEmailInputStyle={'NotifiIntercomEmailInput__input'}
-        intercomView={true}
-      />
+      {data.contactInfo.email.active ? (
+        <NotifiEmailInput
+          hasChatAlert={hasChatAlert}
+          disabled={false}
+          classNames={classNames?.NotifiEmailInput}
+          copy={{ label: inputLabels?.email }}
+          intercomEmailInputContainerStyle={
+            'NotifiIntercomEmailInput__container'
+          }
+          intercomEmailInputStyle={'NotifiIntercomEmailInput__input'}
+          intercomView={true}
+        />
+      ) : null}
       {inputSeparators?.emailSeparator?.content ? (
         <div
           className={clsx(
@@ -64,21 +68,23 @@ export const NotifiIntercomFTUNotificationTargetSection: React.FC<
           </div>
         </div>
       ) : null}
-      <NotifiSmsInput
-        disabled={false}
-        classNames={classNames?.NotifiSmsInput}
-        allowedCountryCodes={allowedCountryCodes}
-        copy={{ label: inputLabels?.sms }}
-        intercomSmsInputContainerStyle={'NotifiIntercomSmsInput__container'}
-        intercomSmsInputStyle={'NotifiIntercomSmsInput__input'}
-        intercomSmsDropdownContainerStyle={
-          'NotifiIntercomSmsInput__dropdownContainer'
-        }
-        intercomSmsDropdownSelectStyle={
-          'NotifiIntercomSmsInput__dropdownSelect'
-        }
-        intercomView={true}
-      />
+      {data.contactInfo.sms.active ? (
+        <NotifiSmsInput
+          disabled={false}
+          classNames={classNames?.NotifiSmsInput}
+          allowedCountryCodes={allowedCountryCodes}
+          copy={{ label: inputLabels?.sms }}
+          intercomSmsInputContainerStyle={'NotifiIntercomSmsInput__container'}
+          intercomSmsInputStyle={'NotifiIntercomSmsInput__input'}
+          intercomSmsDropdownContainerStyle={
+            'NotifiIntercomSmsInput__dropdownContainer'
+          }
+          intercomSmsDropdownSelectStyle={
+            'NotifiIntercomSmsInput__dropdownSelect'
+          }
+          intercomView={true}
+        />
+      ) : null}
       {inputSeparators?.smsSeparator?.content ? (
         <div
           className={clsx(
@@ -97,17 +103,19 @@ export const NotifiIntercomFTUNotificationTargetSection: React.FC<
           </div>
         </div>
       ) : null}
-      <NotifiTelegramInput
-        hasChatAlert={hasChatAlert}
-        disabled={false}
-        classNames={classNames?.NotifiTelegramInput}
-        copy={{ label: inputLabels?.telegram }}
-        intercomTelegramInputContainerStyle={
-          'NotifiIntercomTelegramInput__container'
-        }
-        intercomTelegramInputStyle={'NotifiIntercomTelegramInput__input'}
-        intercomView={true}
-      />
+      {data.contactInfo.telegram.active ? (
+        <NotifiTelegramInput
+          hasChatAlert={hasChatAlert}
+          disabled={false}
+          classNames={classNames?.NotifiTelegramInput}
+          copy={{ label: inputLabels?.telegram }}
+          intercomTelegramInputContainerStyle={
+            'NotifiIntercomTelegramInput__container'
+          }
+          intercomTelegramInputStyle={'NotifiIntercomTelegramInput__input'}
+          intercomView={true}
+        />
+      ) : null}
     </div>
   );
 };

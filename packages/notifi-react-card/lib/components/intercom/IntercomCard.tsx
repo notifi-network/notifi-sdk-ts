@@ -2,7 +2,11 @@ import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
 
 import { useNotifiSubscriptionContext } from '../../context/NotifiSubscriptionContext';
-import { CardConfigItemV1, useNotifiSubscribe } from '../../hooks';
+import { useNotifiSubscribe } from '../../hooks';
+import {
+  IntercomCardConfigItemV1,
+  LabelType,
+} from '../../hooks/IntercomCardConfig';
 import { chatConfiguration } from '../../utils/AlertConfiguration';
 import {
   NotifiInputLabels,
@@ -30,22 +34,18 @@ export type IntercomCardProps = Readonly<{
     NotifiIntercomSettingHeader: SettingHeaderProps['classNames'];
     errorMessage: string;
   }>;
-  companySupportTitle?: string;
-  companySupportSubtitle?: string;
-  companySupportDescription?: string;
   inputLabels?: NotifiInputLabels;
   inputs?: Record<string, string | undefined>;
   inputSeparators?: NotifiInputSeparators;
-  data: CardConfigItemV1;
+  data: IntercomCardConfigItemV1;
 }>;
+
+type LabelsMap = Record<LabelType, string | null>;
 
 export const IntercomCard: React.FC<
   React.PropsWithChildren<IntercomCardProps>
 > = ({
   classNames,
-  companySupportTitle,
-  companySupportSubtitle,
-  companySupportDescription,
   inputLabels,
   inputs = {},
   inputSeparators,
@@ -87,12 +87,24 @@ export const IntercomCard: React.FC<
   const disabled =
     (email === '' && phoneNumber === '' && telegramId === '') || hasErrors;
 
-  companySupportTitle = companySupportTitle || 'Your Company Support';
-  companySupportSubtitle =
-    companySupportSubtitle ||
+  const labels = data.labels;
+  const labelsValues = {} as LabelsMap;
+
+  labels.forEach((label) => {
+    labelsValues[label.type] = label.name;
+  });
+  const companySupportTitle =
+    labelsValues.ChatFTUTitle || 'Your Company Support';
+  const companySupportSubtitle =
+    labelsValues.ChatFTUSubTitle ||
     'Start chatting with our team to get support. We’re here for you 24/7!';
-  companySupportDescription =
-    companySupportDescription || 'Get notifications for your support request';
+  const companySupportDescription =
+    labelsValues.ChatFTUDescription ||
+    'Get notifications for your support request';
+  const companyHeaderContent =
+    labelsValues.ChatBannerTitle || 'Company Support';
+  const chatIntroQuestion =
+    labelsValues.ChatIntroQuestion || 'What can we help you with today?';
 
   const handleStartChatClick = () => {
     if (loading) {
@@ -166,6 +178,8 @@ export const IntercomCard: React.FC<
     case 'chatWindowView':
       view = (
         <NotifiIntercomChatWindowContainer
+          chatWindowHeaderContent={companyHeaderContent}
+          chatIntroQuestion={chatIntroQuestion}
           classNames={classNames?.NotifiIntercomChatWindowContainer}
         />
       );

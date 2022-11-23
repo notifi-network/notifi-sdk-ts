@@ -25,7 +25,10 @@ export const NotifiSubscriptionCardContainer: React.FC<
   const { loading } = useNotifiSubscriptionContext();
   const inputDisabled = loading || !isInitialized;
 
-  const card = useSubscriptionCard(cardId);
+  const card = useSubscriptionCard({
+    id: cardId,
+    type: 'SUBSCRIPTION_CARD',
+  });
   let contents: React.ReactNode = null;
 
   switch (card.state) {
