@@ -28,6 +28,7 @@ export const WalletsActivityReportEventRenderer: React.FC<
   };
   return (
     <AlertNotificationRow
+      notificationTitle={getTitle()}
       notificationSubject={getTitle()}
       notificationDate={createdDate}
       notificationMessage={getMessage()}

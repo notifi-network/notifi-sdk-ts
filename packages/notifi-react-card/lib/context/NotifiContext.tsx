@@ -9,7 +9,6 @@ import React from 'react';
 
 import { AlertConfiguration } from '../utils';
 import { NotifiClientContextProvider } from './NotifiClientContext';
-import { NotifiSubscriptionContextProvider } from './NotifiSubscriptionContext';
 
 export type SolanaParams = Readonly<{
   walletBlockchain: 'SOLANA';

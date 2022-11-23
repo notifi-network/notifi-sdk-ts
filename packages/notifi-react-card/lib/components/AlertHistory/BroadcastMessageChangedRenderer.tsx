@@ -7,6 +7,8 @@ type BroadcastMessageChangedRendererProps = Readonly<{
   createdDate: string;
   message: string | undefined;
   subject: string | undefined;
+  notificationTitle: string;
+  handleAlertEntrySelection: () => void;
 }>;
 
 export const getDefaultIcon = () => {
@@ -15,9 +17,17 @@ export const getDefaultIcon = () => {
 
 export const BroadcastMessageChangedRenderer: React.FC<
   BroadcastMessageChangedRendererProps
-> = ({ message, subject, createdDate }) => {
+> = ({
+  message,
+  subject,
+  createdDate,
+  notificationTitle,
+  handleAlertEntrySelection,
+}) => {
   return (
     <AlertNotificationRow
+      handleAlertEntrySelection={handleAlertEntrySelection}
+      notificationTitle={notificationTitle}
       notificationImage={getDefaultIcon()}
       notificationSubject={subject}
       notificationDate={createdDate}

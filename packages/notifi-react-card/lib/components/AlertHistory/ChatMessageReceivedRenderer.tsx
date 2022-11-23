@@ -20,6 +20,7 @@ export const NftCollectionReportRenderer: React.FC<
   };
   return (
     <AlertNotificationRow
+      notificationTitle={getTitle()}
       notificationSubject={getTitle()}
       notificationDate={createdDate}
       notificationMessage={getMessage()}

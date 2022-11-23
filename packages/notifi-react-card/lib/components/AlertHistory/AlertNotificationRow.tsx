@@ -4,6 +4,7 @@ import React from 'react';
 import { formatTimestamp } from '../.././utils/AlertHistoryUtils';
 
 export type AlertNotificationViewProps = Readonly<{
+  notificationTitle: string | undefined;
   notificationImage?: JSX.Element;
   notificationSubject: string | undefined;
   notificationDate: string;
@@ -15,15 +16,19 @@ export type AlertNotificationViewProps = Readonly<{
     notificationMessage?: string;
     notificationRow?: string;
     notificationSubject?: string;
+    notificationTitle?: string;
   }>;
+  handleAlertEntrySelection?: () => void;
 }>;
 
 export const AlertNotificationRow: React.FC<AlertNotificationViewProps> = ({
+  notificationTitle,
   classNames,
   notificationImage,
   notificationSubject,
   notificationDate,
-  notificationMessage,
+  // notificationMessage,
+  handleAlertEntrySelection,
 }) => {
   return (
     <div
@@ -31,6 +36,7 @@ export const AlertNotificationRow: React.FC<AlertNotificationViewProps> = ({
         'NotifiAlertHistory__notificationRow',
         classNames?.notificationRow,
       )}
+      onClick={handleAlertEntrySelection}
     >
       <div
         className={clsx(
@@ -48,19 +54,19 @@ export const AlertNotificationRow: React.FC<AlertNotificationViewProps> = ({
       >
         <div
           className={clsx(
+            'NotifiAlertHistory__notificationTitle',
+            classNames?.notificationTitle,
+          )}
+        >
+          {notificationTitle}
+        </div>
+        <div
+          className={clsx(
             'NotifiAlertHistory__notificationSubject',
             classNames?.notificationSubject,
           )}
         >
           {notificationSubject}
-        </div>
-        <div
-          className={clsx(
-            'NotifiAlertHistory__notificationMessage',
-            classNames?.notificationMessage,
-          )}
-        >
-          {notificationMessage}
         </div>
       </div>
       <div

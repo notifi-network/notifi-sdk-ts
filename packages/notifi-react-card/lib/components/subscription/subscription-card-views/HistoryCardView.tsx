@@ -13,6 +13,9 @@ import {
 } from '../../../context';
 import { MESSAGES_PER_PAGE } from '../../../utils/constants';
 import { BroadcastMessageChangedRenderer } from '../../AlertHistory/BroadcastMessageChangedRenderer';
+import { ReactComponent as SettingsButton } from '../../../assets/settings.svg';
+import { ReactComponent as EmptyAlertsBell } from '../../../assets/notification-empty-bell-icon.svg';
+import { AlertDetailsCard } from '../../AlertHistory/AlertDetailsCard';
 
 export type AlertHistoryViewProps = Readonly<{
   alertHistoryTitle?: string;
@@ -29,13 +32,16 @@ export type AlertHistoryViewProps = Readonly<{
     notificationMessage?: string;
     notificationImage?: string;
     notificationList?: string;
+    emptyAlertsBellIcon?: string;
   }>;
 }>;
 
 export const AlertCard = ({
   notification,
+  handleAlertEntrySelection,
 }: Readonly<{
   notification: NotificationHistoryEntry;
+  handleAlertEntrySelection: () => void;
 }>): React.ReactElement => {
   const detail = notification.detail;
 
@@ -43,6 +49,8 @@ export const AlertCard = ({
     case 'BroadcastMessageEventDetails':
       return (
         <BroadcastMessageChangedRenderer
+          handleAlertEntrySelection={handleAlertEntrySelection}
+          notificationTitle={'Announcement'}
           createdDate={notification.createdDate}
           message={detail.message ?? ''}
           subject={detail.subject ?? ''}
@@ -62,13 +70,17 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
   alertHistoryTitle = alertHistoryTitle ? alertHistoryTitle : 'Alert History';
   noAlertDescription = noAlertDescription
     ? noAlertDescription
-    : 'No alerts have been sent to this subscription yet.';
+    : 'You haven’t received any notifications yet';
 
   const { setCardView } = useNotifiSubscriptionContext();
 
   const handleBackClick = () => {
     setCardView({ state: 'preview' });
   };
+
+  const [selectedAlertEntry, setAlertEntry] = useState<
+    NotificationHistoryEntry | undefined
+  >(undefined);
 
   const [endCursor, setEndCursor] = useState<string | undefined>();
   const [hasNextPage, setHasNextPage] = useState<boolean | null>(null);
@@ -132,15 +144,14 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
         <span className={clsx('NotifiAlertHistory__label', classNames?.title)}>
           {alertHistoryTitle}
         </span>
-        <div
+
+        <SettingsButton
+          onClick={handleBackClick}
           className={clsx(
-            'NotifiAlertHistory__manageAlertLink',
+            'NotifiAlertHistory__settingsIcon',
             classNames?.manageAlertLink,
           )}
-          onClick={handleBackClick}
-        >
-          Manage Alerts
-        </div>
+        />
       </div>
       <div
         className={clsx(
@@ -148,11 +159,18 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
           classNames?.dividerLine,
         )}
       />
-      {alertHistoryData?.nodes ? (
+      {selectedAlertEntry !== undefined ? (
+        <AlertDetailsCard
+          notificationEntry={selectedAlertEntry}
+          handleClose={() => setAlertEntry(undefined)}
+        />
+      ) : null}
+      {alertHistoryData?.nodes && alertHistoryData.nodes.length > 0 ? (
         <Virtuoso
           style={{
             height: notificationListHeight || '400px',
             marginBottom: '25px',
+            overflowX: 'hidden',
           }}
           isScrolling={setIsScrolling}
           rangeChanged={setVisibleRange}
@@ -162,19 +180,31 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
           itemContent={(index, notification) => {
             setCurrentIndex(index);
             return (
-              <AlertCard key={notification.id} notification={notification} />
+              <AlertCard
+                handleAlertEntrySelection={() => setAlertEntry(notification)}
+                key={notification.id}
+                notification={notification}
+              />
             );
           }}
         />
       ) : (
-        <span
-          className={clsx(
-            'NotifiAlertHistory_noAlertDescription',
-            classNames?.noAlertDescription,
-          )}
-        >
-          {noAlertDescription}
-        </span>
+        <div className="NotifiAlertHistory__noAlertContainer">
+          <EmptyAlertsBell
+            className={clsx(
+              'NotifiAlertHistory__emptyAlertsBellIcon',
+              classNames?.emptyAlertsBellIcon,
+            )}
+          />
+          <span
+            className={clsx(
+              'NotifiAlertHistory_noAlertDescription',
+              classNames?.noAlertDescription,
+            )}
+          >
+            {noAlertDescription}
+          </span>
+        </div>
       )}
     </>
   );
