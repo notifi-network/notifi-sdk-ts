@@ -1,5 +1,5 @@
 export const userProfileFragment = `
-fragment userProfileFragment on userProfile {
+fragment userProfileFragment on Profile {
   avatarData
   avatarDataType
   id
