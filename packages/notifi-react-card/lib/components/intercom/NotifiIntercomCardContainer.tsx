@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import { useNotifiSubscriptionContext } from 'notifi-react-card/lib/context';
 import React from 'react';
 
-import { useSubscriptionCard } from '../../hooks';
+import { useIntercomCard } from '../../hooks/useIntercomCard';
 import { ErrorStateCard } from './ErrorStateCard';
 import { IntercomCard } from './IntercomCard';
 import { LoadingStateCard } from './LoadingStateCard';
@@ -12,9 +12,6 @@ export const NotifiIntercomCardContainer: React.FC<
   React.PropsWithChildren<NotifiIntercomCardProps>
 > = ({
   classNames,
-  companySupportTitle,
-  companySupportSubtitle,
-  companySupportDescription,
   darkMode,
   inputLabels,
   inputs = {},
@@ -25,7 +22,7 @@ export const NotifiIntercomCardContainer: React.FC<
   const { intercomCardView } = useNotifiSubscriptionContext();
 
   let contents: React.ReactNode = null;
-  const card = useSubscriptionCard(cardId);
+  const card = useIntercomCard(cardId);
 
   switch (card.state) {
     case 'loading':
@@ -49,9 +46,6 @@ export const NotifiIntercomCardContainer: React.FC<
           inputLabels={inputLabels}
           inputSeparators={inputSeparators}
           classNames={classNames}
-          companySupportTitle={companySupportTitle}
-          companySupportSubtitle={companySupportSubtitle}
-          companySupportDescription={companySupportDescription}
         />
       );
       break;

@@ -10,12 +10,12 @@ export type ChatWindowHeaderProps = Readonly<{
     container: string;
     content: string;
   }>;
-  chatWindowHeaderContent?: string;
+  chatWindowHeaderContent: string;
 }>;
 
 export const ChatWindowHeader: React.FC<ChatWindowHeaderProps> = ({
   classNames,
-  chatWindowHeaderContent = 'Customer Support',
+  chatWindowHeaderContent,
 }) => {
   const { setIntercomCardView } = useNotifiSubscriptionContext();
   const handleClick = () => {

@@ -28,9 +28,6 @@ export type NotifiIntercomCardProps = Readonly<{
     NotifiIntercomSettingHeader: SettingHeaderProps['classNames'];
     errorMessage: string;
   }>;
-  companySupportTitle?: string;
-  companySupportSubtitle?: string;
-  companySupportDescription?: string;
   inputLabels?: NotifiInputLabels;
   darkMode?: boolean;
   inputs?: Record<string, string | undefined>;
