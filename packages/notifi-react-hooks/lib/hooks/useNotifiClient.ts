@@ -28,6 +28,7 @@ import {
   User,
   UserTopic,
 } from '@notifi-network/notifi-core';
+import { config } from 'localforage';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import ensureSource, {
@@ -1223,12 +1224,12 @@ const useNotifiClient = (
     async (input: ClientFetchSubscriptionCardInput): Promise<TenantConfig> => {
       setLoading(true);
       try {
-        const config = await service.findTenantConfig({
+        const tenantConfig = await service.findTenantConfig({
+          tenant: dappAddress,
           ...input,
-          type: 'SUBSCRIPTION_CARD',
         });
 
-        return config;
+        return tenantConfig;
       } catch (e: unknown) {
         if (e instanceof Error) {
           setError(e);
@@ -1240,7 +1241,7 @@ const useNotifiClient = (
         setLoading(false);
       }
     },
-    [setError, setLoading, service],
+    [setError, setLoading, service, dappAddress],
   );
 
   const getNotificationHistory = useCallback(
