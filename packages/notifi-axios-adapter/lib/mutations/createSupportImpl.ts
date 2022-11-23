@@ -1,8 +1,8 @@
 import {
   collectDependencies,
-  makeRequest,
+  makeParameterLessRequest,
 } from '@notifi-network/notifi-axios-utils';
-import { DeleteTargetGroupResult } from '@notifi-network/notifi-core';
+import { CreateSupportResult } from '@notifi-network/notifi-core';
 
 const DEPENDENCIES: string[] = [];
 
@@ -29,7 +29,7 @@ mutation createSupport {
 }
 `.trim();
 
-const createSupportImpl = makeRequest<createSupportResult>(
+const createSupportImpl = makeParameterLessRequest<CreateSupportResult>(
   collectDependencies(...DEPENDENCIES, MUTATION),
   'createSupport',
 );

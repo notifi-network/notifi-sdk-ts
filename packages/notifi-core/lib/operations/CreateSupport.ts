@@ -1,6 +1,7 @@
-import { Authorization, ParameterLessOperation } from '../models';
+import { ParameterLessOperation } from '../models';
+import { SupportConversation } from '../models/SupportConversation';
 
-export type CreateSupportResult = Authorization;
+export type CreateSupportResult = SupportConversation;
 
 export type CreateSupportService = Readonly<{
   createSupport: ParameterLessOperation<CreateSupportResult>;
