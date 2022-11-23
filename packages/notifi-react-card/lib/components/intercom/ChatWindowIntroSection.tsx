@@ -9,9 +9,9 @@ export type ChatWindowIntroSectionProps = Readonly<{
     content: string;
     date: ChatMessageDateProps['classNames'];
   }>;
-  chatMessageSectionIntroContent?: string;
   startDate: string;
   inVirtualContainerStyle?: string;
+  chatIntroQuestion: string;
 }>;
 
 export const ChatWindowIntroSection: React.FC<
@@ -19,9 +19,9 @@ export const ChatWindowIntroSection: React.FC<
 > = ({
   classNames,
   startDate,
-  chatMessageSectionIntroContent = 'What can we help you with today?',
   children,
   inVirtualContainerStyle,
+  chatIntroQuestion,
 }) => {
   return (
     <div
@@ -38,7 +38,7 @@ export const ChatWindowIntroSection: React.FC<
           classNames?.content,
         )}
       >
-        {chatMessageSectionIntroContent}
+        {chatIntroQuestion}
       </div>
       {children}
     </div>

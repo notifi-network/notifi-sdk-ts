@@ -20,16 +20,16 @@ export type ChatMessageSectionProps = Readonly<{
     date: ChatMessageDateProps['classNames'];
     sendMessageSection: SendMessageSectionProps['classNames'];
   }>;
-  chatMessageSectionIntroContent?: string;
   messageListWidth?: string;
   messageListHeight?: string;
+  chatIntroQuestion: string;
 }>;
 
 export const ChatMessageSection: React.FC<ChatMessageSectionProps> = ({
   classNames,
-  chatMessageSectionIntroContent,
   messageListWidth,
   messageListHeight,
+  chatIntroQuestion,
 }) => {
   const {
     conversation,
@@ -47,9 +47,9 @@ export const ChatMessageSection: React.FC<ChatMessageSectionProps> = ({
     <>
       {conversation.feed.length === 0 ? (
         <ChatWindowIntroSection
+          chatIntroQuestion={chatIntroQuestion}
           classNames={classNames?.chatWindowIntro}
           startDate={conversation.createdDate}
-          chatMessageSectionIntroContent={chatMessageSectionIntroContent}
         />
       ) : (
         <Virtuoso
@@ -79,9 +79,7 @@ export const ChatMessageSection: React.FC<ChatMessageSectionProps> = ({
                   <ChatWindowIntroSection
                     classNames={classNames?.chatWindowIntro}
                     startDate={conversation.createdDate}
-                    chatMessageSectionIntroContent={
-                      chatMessageSectionIntroContent
-                    }
+                    chatIntroQuestion={chatIntroQuestion}
                     inVirtualContainerStyle={
                       'ChatWindowIntro__virtualContainer'
                     }
