@@ -32,11 +32,11 @@ export type InstantSubscribe = Readonly<{
 }>;
 
 type useNotifiSubscribeProps = Readonly<{
-  targetGroupName: string;
+  targetGroupName?: string;
 }>;
 
 export const useNotifiSubscribe: ({
-  targetGroupName = 'Default',
+  targetGroupName,
 }: useNotifiSubscribeProps) => Readonly<{
   isAuthenticated: boolean;
   isInitialized: boolean;

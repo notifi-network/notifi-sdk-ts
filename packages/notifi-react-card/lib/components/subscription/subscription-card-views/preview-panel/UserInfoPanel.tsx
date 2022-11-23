@@ -41,7 +41,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
     telegramConfirmationUrl,
   } = useNotifiSubscriptionContext();
 
-  const { resendEmailVerificationLink } = useNotifiSubscribe();
+  const { resendEmailVerificationLink } = useNotifiSubscribe({});
 
   const handleEditClick = useCallback(() => {
     setCardView({ state: 'edit' });
