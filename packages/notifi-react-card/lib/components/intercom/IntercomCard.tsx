@@ -75,7 +75,11 @@ export const IntercomCard: React.FC<
 
   const alertName = 'NOTIFI_CHAT_MESSAGES';
   useEffect(() => {
-    if (loading || !client.isInitialized) {
+    if (
+      loading ||
+      !client.isInitialized ||
+      intercomCardView.state === 'settingView'
+    ) {
       return;
     }
     const hasAlert = alerts[alertName] !== undefined;
