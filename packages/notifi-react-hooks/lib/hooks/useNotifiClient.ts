@@ -28,7 +28,6 @@ import {
   User,
   UserTopic,
 } from '@notifi-network/notifi-core';
-import { config } from 'localforage';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import ensureSource, {
