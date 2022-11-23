@@ -65,19 +65,17 @@ export const useIntercomChat = ({
         .then((response) => {
           if (Array.isArray(response.nodes)) {
             const nodes = response.nodes;
-            if (nodes[0].id === chatMessages[0].id) {
-              return;
-            } else {
-              const chatMessageIds = chatMessages.map((message) => message.id);
-              const dedupeNewMessages = nodes.filter(
-                (node) => !chatMessageIds.includes(node.id),
-              );
-              const dedupeMessages = [...dedupeNewMessages, ...chatMessages];
-              const sortedMessages = dedupeMessages.sort(
-                sortByDate((message) => new Date(message.createdDate), 'DESC'),
-              );
-              setChatMessages([...sortedMessages]);
-            }
+            const chatMessageIds = new Set(
+              chatMessages.map((message) => message.id),
+            );
+            const dedupeNewMessages = nodes.filter(
+              (node) => chatMessageIds.has(node.id) === false,
+            );
+            const dedupeMessages = [...dedupeNewMessages, ...chatMessages];
+            const sortedMessages = dedupeMessages.sort(
+              sortByDate((message) => new Date(message.createdDate), 'DESC'),
+            );
+            setChatMessages([...sortedMessages]);
           }
         });
     }, 5000);
