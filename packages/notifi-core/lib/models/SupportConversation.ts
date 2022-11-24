@@ -1,13 +1,11 @@
 export type SupportConversation = Readonly<{
   __typename?: 'SupportConversation';
-  createSupportConversation: {
-    id: string;
-    conversationType: string;
-    conversationGates?: ConversationGates | undefined;
-    name: string;
-    createdDate: string;
-    participants: Array<Participant>;
-  };
+  id: string;
+  conversationType: string;
+  conversationGates?: ConversationGates | undefined;
+  name: string;
+  createdDate: string;
+  participants: Array<Participant>;
 }>;
 
 export type ConversationGates = Readonly<{

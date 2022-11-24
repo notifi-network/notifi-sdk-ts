@@ -1,4 +1,5 @@
 import { ConversationMessagesEntry } from '@notifi-network/notifi-core/dist/models/ConversationMessages';
+import { Participant } from 'notifi-core/lib/models/ConversationMessages';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ListRange } from 'react-virtuoso';
 
@@ -15,6 +16,7 @@ export type ChatMessage = Readonly<{
   createdDate: string;
   updatedDate: string;
   conversationId: string;
+  conversationParticipant: Participant;
 }>;
 
 type MessageDirection = 'INCOMING' | 'OUTGOING';
@@ -39,7 +41,7 @@ const MESSAGES_NUMBER = 5;
 
 export const useIntercomChat = ({
   conversationId,
-  userId = '0ff9528b-9bd4-444f-adcb-482673b31c96',
+  userId,
 }: UseIntercomChatProps) => {
   const [chatMessages, setChatMessages] = useState<ConversationMessagesEntry[]>(
     [],

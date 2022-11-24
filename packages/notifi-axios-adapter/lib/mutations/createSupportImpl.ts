@@ -21,7 +21,7 @@ mutation createSupport {
        profile {
          id
           preferredAddress
-           preferredName
+          preferredName
        }
        resolvedName
      }
@@ -31,7 +31,7 @@ mutation createSupport {
 
 const createSupportImpl = makeParameterLessRequest<CreateSupportResult>(
   collectDependencies(...DEPENDENCIES, MUTATION),
-  'createSupport',
+  'createSupportConversation',
 );
 
 export default createSupportImpl;

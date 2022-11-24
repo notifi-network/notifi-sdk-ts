@@ -1,10 +1,13 @@
-import { userProfileFragment } from './userProfileFragment';
-
 export const participantFragment = `
 fragment Participant on ConversationParticipant {
   conversationId
   profile {
-    ...userProfileFragment
+    avatarData
+    avatarDataType
+    id
+    preferredAddress
+    preferredBlockchain
+    preferredName
   }
   resolvedName
   userId
@@ -13,7 +16,4 @@ fragment Participant on ConversationParticipant {
 }
 `.trim();
 
-export const participantFragmentDependencies = [
-  participantFragment,
-  ...userProfileFragment,
-];
+export const participantFragmentDependencies = [participantFragment];

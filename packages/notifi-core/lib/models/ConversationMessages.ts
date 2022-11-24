@@ -8,7 +8,7 @@ export type ConversationMessages = Readonly<{
 
 export type ConversationMessagesEntry = Readonly<{
   __typename?: 'ConversationMessage';
-  conversationParticipant: Array<Participant>;
+  conversationParticipant: Participant;
   id: string;
   message: string;
   userId: string;

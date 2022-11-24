@@ -359,6 +359,11 @@
   background-color: var(--notifi-placeholder-color);
 }
 
+.NotifiIntercomSendMessageSection__button:disabled
+{
+  color: #ffffff;
+}
+
 .NotifiSmsInput__dropdownContainer {
   position: relative;
   /* Don't want the not-child selector to affect the sms */
