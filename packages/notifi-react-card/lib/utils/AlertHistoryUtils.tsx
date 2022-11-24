@@ -37,10 +37,14 @@ export const formatTimestamp = (date: string): string => {
     const month = parsedDate.toLocaleString('default', { month: 'short' });
     const clockTime = format(parsedDate, 'HH:mm');
     const dateTime = format(parsedDate, 'dd');
-    const finalDate = `${clockTime} on ${month} ${dateTime}`;
+    const finalDate = `${month} ${dateTime}`;
 
     if (isToday(parsedDate)) {
       return clockTime;
+    }
+
+    if (isDateInThisWeek(date)) {
+      return getDayName(date);
     }
     return finalDate;
   } catch {
