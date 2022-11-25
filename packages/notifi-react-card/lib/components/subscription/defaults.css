@@ -352,15 +352,13 @@
 
 .NotifiSubscribeButton__button:disabled,
 .NotifiStartChatButton__button:disabled,
-.NotifiIntercomSendMessageSection__button:disabled
-{
+.NotifiIntercomSendMessageSection__button:disabled {
   cursor: default;
   color: var(--notifi-secondary-font-color);
   background-color: var(--notifi-placeholder-color);
 }
 
-.NotifiIntercomSendMessageSection__button:disabled
-{
+.NotifiIntercomSendMessageSection__button:disabled {
   color: #ffffff;
 }
 

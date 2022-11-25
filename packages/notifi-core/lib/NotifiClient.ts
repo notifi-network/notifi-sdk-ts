@@ -271,7 +271,7 @@ export type NotifiClient = Readonly<{
   logOut: () => Promise<void>;
   createAlert: (input: ClientCreateAlertInput) => Promise<Alert>;
   createSource: (input: CreateSourceInput) => Promise<Source>;
-  createSupport: () => Promise<SupportConversation>;
+  createSupportConversation: () => Promise<SupportConversation>;
   createMetaplexAuctionSource: (
     input: ClientCreateMetaplexAuctionSourceInput,
   ) => Promise<Source>;

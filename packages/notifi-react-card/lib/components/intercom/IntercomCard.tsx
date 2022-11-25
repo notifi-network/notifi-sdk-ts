@@ -86,7 +86,7 @@ export const IntercomCard: React.FC<
     const hasAlert = alerts[alertName] !== undefined;
     setHasChatAlert(hasAlert);
     if (hasAlert) {
-      client.createSupport().then((result) => {
+      client.createSupportConversation().then((result) => {
         result.participants.forEach((participant) => {
           if (participant.conversationParticipantType === 'MEMBER') {
             setUserId(participant.profile.id);
@@ -139,7 +139,7 @@ export const IntercomCard: React.FC<
         alertConfiguration: chatConfiguration(),
         alertName: alertName,
       });
-      const result = await client.createSupport();
+      const result = await client.createSupportConversation();
       setConversationId(result.id);
       result.participants.forEach((participant) => {
         if (participant.conversationParticipantType === 'MEMBER') {

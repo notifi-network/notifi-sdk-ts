@@ -1300,7 +1300,7 @@ const useNotifiClient = (
     [setLoading, setError, service],
   );
 
-  const createSupport = useCallback(async () => {
+  const createSupportConversation = useCallback(async () => {
     try {
       const result = await service.createSupport();
       return result;
@@ -1337,7 +1337,7 @@ const useNotifiClient = (
     ensureTargetGroup,
     sendConversationMessages,
     sendEmailTargetVerification,
-    createSupport,
+    createSupportConversation,
   };
 
   return {
