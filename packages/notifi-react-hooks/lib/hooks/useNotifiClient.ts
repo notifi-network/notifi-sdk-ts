@@ -1302,7 +1302,7 @@ const useNotifiClient = (
 
   const createSupportConversation = useCallback(async () => {
     try {
-      const result = await service.createSupport();
+      const result = await service.createSupportConversation();
       return result;
     } catch (e: unknown) {
       if (e instanceof Error) {

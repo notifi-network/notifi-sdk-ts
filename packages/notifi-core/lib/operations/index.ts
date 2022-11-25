@@ -3,7 +3,7 @@ export * from './CompleteLogInByTransaction';
 export * from './BroadcastMessage';
 export * from './CreateAlert';
 export * from './CreateSource';
-export * from './CreateSupport';
+export * from './CreateSupportConversation';
 export * from './CreateEmailTarget';
 export * from './CreateSmsTarget';
 export * from './CreateSourceGroup';

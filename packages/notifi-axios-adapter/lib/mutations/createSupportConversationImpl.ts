@@ -2,12 +2,12 @@ import {
   collectDependencies,
   makeParameterLessRequest,
 } from '@notifi-network/notifi-axios-utils';
-import { CreateSupportResult } from '@notifi-network/notifi-core';
+import { CreateSupportConversationResult } from '@notifi-network/notifi-core';
 
 const DEPENDENCIES: string[] = [];
 
 const MUTATION = `
-mutation createSupport {
+mutation createSupportConversation {
   createSupportConversation {
     id
     conversationType
@@ -29,9 +29,10 @@ mutation createSupport {
 }
 `.trim();
 
-const createSupportImpl = makeParameterLessRequest<CreateSupportResult>(
-  collectDependencies(...DEPENDENCIES, MUTATION),
-  'createSupportConversation',
-);
+const createSupportConversationImpl =
+  makeParameterLessRequest<CreateSupportConversationResult>(
+    collectDependencies(...DEPENDENCIES, MUTATION),
+    'createSupportConversation',
+  );
 
-export default createSupportImpl;
+export default createSupportConversationImpl;

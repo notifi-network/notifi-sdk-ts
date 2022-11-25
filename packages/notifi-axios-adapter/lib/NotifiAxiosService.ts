@@ -9,7 +9,7 @@ import createEmailTargetImpl from './mutations/createEmailTargetImpl';
 import createSmsTargetImpl from './mutations/createSmsTargetImpl';
 import createSourceGroupImpl from './mutations/createSourceGroupImpl';
 import createSourceImpl from './mutations/createSourceImpl';
-import createSupportImpl from './mutations/createSupportImpl';
+import createSupportConversationImpl from './mutations/createSupportConversationImpl';
 import createTargetGroupImpl from './mutations/createTargetGroupImpl';
 import createTelegramTargetImpl from './mutations/createTelegramTargetImpl';
 import createWebhookTargetImpl from './mutations/createWebhookTargetImpl';
@@ -50,7 +50,7 @@ export class NotifiAxiosService implements NotifiService {
   createSmsTarget: NotifiService['createSmsTarget'];
   createSource: NotifiService['createSource'];
   createSourceGroup: NotifiService['createSourceGroup'];
-  createSupport: NotifiService['createSupport'];
+  createSupportConversation: NotifiService['createSupportConversation'];
   createTargetGroup: NotifiService['createTargetGroup'];
   createTelegramTarget: NotifiService['createTelegramTarget'];
   createWebhookTarget: NotifiService['createWebhookTarget'];
@@ -112,7 +112,10 @@ export class NotifiAxiosService implements NotifiService {
     this.createTelegramTarget = createTelegramTargetImpl.bind(null, a);
     this.createSource = createSourceImpl.bind(null, a);
     this.createSourceGroup = createSourceGroupImpl.bind(null, a);
-    this.createSupport = createSupportImpl.bind(null, a);
+    this.createSupportConversation = createSupportConversationImpl.bind(
+      null,
+      a,
+    );
     this.createWebhookTarget = createWebhookTargetImpl.bind(null, a);
     this.deleteAlert = deleteAlertImpl.bind(null, a);
     this.deleteSourceGroup = deleteSourceGroupImpl.bind(null, a);
