@@ -8,6 +8,7 @@ export type NotifiService = Operations.BroadcastMessageService &
   Operations.CreateSmsTargetService &
   Operations.CreateSourceService &
   Operations.CreateSourceGroupService &
+  Operations.CreateSupportConversationService &
   Operations.CreateTargetGroupService &
   Operations.CreateTelegramTargetService &
   Operations.CreateWebhookTargetService &

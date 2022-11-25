@@ -62,7 +62,7 @@ export const MessageGroup: React.FC<MessageGroupProps> = ({
                   classNames?.sender,
                 )}
               >
-                {/* {message.sender} */}
+                {message.conversationParticipant.resolvedName}
               </div>
             ) : null}
             <div key={index}>{message.message}</div>

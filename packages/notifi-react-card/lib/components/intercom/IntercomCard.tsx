@@ -69,10 +69,11 @@ export const IntercomCard: React.FC<
     telegramId,
     telegramErrorMessage,
     setHasChatAlert,
+    setConversationId,
+    setUserId,
   } = useNotifiSubscriptionContext();
 
   const { client } = useNotifiClientContext();
-
   const alertName = 'NOTIFI_CHAT_MESSAGES';
   useEffect(() => {
     if (
@@ -84,9 +85,23 @@ export const IntercomCard: React.FC<
     }
     const hasAlert = alerts[alertName] !== undefined;
     setHasChatAlert(hasAlert);
-    setIntercomCardView({
-      state: hasAlert ? 'chatWindowView' : 'startChatView',
-    });
+    if (hasAlert) {
+      client.createSupportConversation().then((result) => {
+        result.participants.forEach((participant) => {
+          if (participant.conversationParticipantType === 'MEMBER') {
+            setUserId(participant.profile.id);
+          }
+        });
+        setConversationId(result.id);
+        setIntercomCardView({
+          state: 'chatWindowView',
+        });
+      });
+    } else {
+      setIntercomCardView({
+        state: 'startChatView',
+      });
+    }
   }, [alerts, loading]);
 
   const hasErrors =
@@ -115,20 +130,27 @@ export const IntercomCard: React.FC<
   const chatIntroQuestion =
     labelsValues.ChatIntroQuestion || 'What can we help you with today?';
 
-  const handleStartChatClick = () => {
+  const handleStartChatClick = async () => {
     if (loading) {
       return;
     }
     try {
-      instantSubscribe({
+      await instantSubscribe({
         alertConfiguration: chatConfiguration(),
         alertName: alertName,
+      });
+      const result = await client.createSupportConversation();
+      setConversationId(result.id);
+      result.participants.forEach((participant) => {
+        if (participant.conversationParticipantType === 'MEMBER') {
+          setUserId(participant.profile.id);
+        }
       });
 
       setIntercomCardView({ state: 'chatWindowView' });
     } catch (e) {
-      setChatAlertErrorMessage('Error to subscribe, please try again');
       //TODO: use useErrorHandler hook instead of setTimeout to handle error messages
+      setChatAlertErrorMessage('Error to subscribe, please try again');
       setTimeout(() => {
         setChatAlertErrorMessage('');
       }, 5000);

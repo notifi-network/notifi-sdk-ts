@@ -1328,6 +1328,22 @@ const useNotifiClient = (
     [setLoading, setError, service],
   );
 
+  const createSupportConversation = useCallback(async () => {
+    try {
+      const result = await service.createSupportConversation();
+      return result;
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        setError(e);
+      } else {
+        setError(new NotifiClientError(e));
+      }
+      throw e;
+    } finally {
+      setLoading(false);
+    }
+  }, [setLoading, setError, service]);
+
   const client: NotifiClient = {
     beginLoginViaTransaction,
     broadcastMessage,
@@ -1349,6 +1365,7 @@ const useNotifiClient = (
     ensureTargetGroup,
     sendConversationMessages,
     sendEmailTargetVerification,
+    createSupportConversation,
   };
 
   return {

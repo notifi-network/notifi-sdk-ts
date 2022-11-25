@@ -16,6 +16,7 @@ import {
   ConversationMessages,
   ConversationMessagesEntry,
 } from './models/ConversationMessages';
+import { SupportConversation } from './models/SupportConversation';
 import {
   CreateSourceInput,
   CreateWebhookTargetInput,
@@ -281,6 +282,7 @@ export type NotifiClient = Readonly<{
   logOut: () => Promise<void>;
   createAlert: (input: ClientCreateAlertInput) => Promise<Alert>;
   createSource: (input: CreateSourceInput) => Promise<Source>;
+  createSupportConversation: () => Promise<SupportConversation>;
   createMetaplexAuctionSource: (
     input: ClientCreateMetaplexAuctionSourceInput,
   ) => Promise<Source>;

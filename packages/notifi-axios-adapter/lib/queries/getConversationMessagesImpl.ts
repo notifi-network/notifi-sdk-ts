@@ -8,8 +8,9 @@ import {
 } from '@notifi-network/notifi-core';
 
 import { ConvMessagePageInfoFragment } from '../fragments/convMessagePageInfoFragment';
+import { participantFragment } from '../fragments/participantFragment';
 
-const DEPENDENCIES = [ConvMessagePageInfoFragment];
+const DEPENDENCIES = [ConvMessagePageInfoFragment, participantFragment];
 
 const QUERY = `query conversationMessages(
   $getConversationMessagesInput: GetConversationMessagesInput!
@@ -28,6 +29,9 @@ const QUERY = `query conversationMessages(
       createdDate
       updatedDate
       conversationId
+      conversationParticipant {
+        ...Participant
+      }
     }
     pageInfo {
       ...ConvMessagePageInfo
