@@ -1,6 +1,7 @@
 import React from 'react';
 import { Virtuoso } from 'react-virtuoso';
 
+import { useNotifiSubscriptionContext } from '../../context';
 import { useIntercomChat } from '../../hooks/useIntercomChat';
 import { ChatMessageDate, ChatMessageDateProps } from './ChatMessageDate';
 import {
@@ -31,6 +32,7 @@ export const ChatMessageSection: React.FC<ChatMessageSectionProps> = ({
   messageListHeight,
   chatIntroQuestion,
 }) => {
+  const { conversationId, userId } = useNotifiSubscriptionContext();
   const {
     conversation,
     setIsScrolling,
@@ -40,7 +42,8 @@ export const ChatMessageSection: React.FC<ChatMessageSectionProps> = ({
     hasNextPage,
     sendConversationMessages,
   } = useIntercomChat({
-    conversationId: 'f03c78b1ffee4d7eb2ff030f6e665cba',
+    conversationId,
+    userId,
   });
 
   return (

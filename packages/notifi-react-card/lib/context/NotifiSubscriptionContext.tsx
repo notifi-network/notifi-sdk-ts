@@ -44,6 +44,10 @@ export type NotifiSubscriptionData = Readonly<{
   setEmailIdThatNeedsConfirmation: (emailId: string) => void;
   hasChatAlert: boolean;
   setHasChatAlert: (hasChatAlert: boolean) => void;
+  conversationId: string;
+  setConversationId: (conversationId: string) => void;
+  userId: string;
+  setUserId: (userId: string) => void;
 }>;
 
 const NotifiSubscriptionContext = createContext<NotifiSubscriptionData>(
@@ -53,6 +57,8 @@ const NotifiSubscriptionContext = createContext<NotifiSubscriptionData>(
 export const NotifiSubscriptionContextProvider: React.FC<
   PropsWithChildren<NotifiParams>
 > = ({ children, ...params }) => {
+  const [conversationId, setConversationId] = useState<string>('');
+  const [userId, setUserId] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [hasChatAlert, setHasChatAlert] = useState<boolean>(false);
@@ -105,6 +111,10 @@ export const NotifiSubscriptionContextProvider: React.FC<
     setTelegramErrorMessage,
     hasChatAlert,
     setHasChatAlert,
+    conversationId,
+    setConversationId,
+    userId,
+    setUserId,
   };
 
   return (
