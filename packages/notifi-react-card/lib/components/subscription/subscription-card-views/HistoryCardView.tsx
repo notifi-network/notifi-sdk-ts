@@ -4,18 +4,18 @@ import {
   NotificationHistoryEntry,
 } from '@notifi-network/notifi-core';
 import clsx from 'clsx';
+import { NotificationEmptyBellIcon } from 'notifi-react-card/lib/assets/NotificationEmptyBellIcon';
 import React, { useEffect, useState } from 'react';
 import { ListRange, Virtuoso } from 'react-virtuoso';
 
+import { Settings } from '../../../assets/Settings';
 import {
   useNotifiClientContext,
   useNotifiSubscriptionContext,
 } from '../../../context';
 import { MESSAGES_PER_PAGE } from '../../../utils/constants';
-import { BroadcastMessageChangedRenderer } from '../../AlertHistory/BroadcastMessageChangedRenderer';
-import { ReactComponent as SettingsButton } from '../../../assets/settings.svg';
-import { ReactComponent as EmptyAlertsBell } from '../../../assets/notification-empty-bell-icon.svg';
 import { AlertDetailsCard } from '../../AlertHistory/AlertDetailsCard';
+import { BroadcastMessageChangedRenderer } from '../../AlertHistory/BroadcastMessageChangedRenderer';
 
 export type AlertHistoryViewProps = Readonly<{
   alertHistoryTitle?: string;
@@ -145,7 +145,7 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
           {alertHistoryTitle}
         </span>
 
-        <SettingsButton
+        <Settings
           onClick={handleBackClick}
           className={clsx(
             'NotifiAlertHistory__settingsIcon',
@@ -190,7 +190,7 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
         />
       ) : (
         <div className="NotifiAlertHistory__noAlertContainer">
-          <EmptyAlertsBell
+          <NotificationEmptyBellIcon
             className={clsx(
               'NotifiAlertHistory__emptyAlertsBellIcon',
               classNames?.emptyAlertsBellIcon,
