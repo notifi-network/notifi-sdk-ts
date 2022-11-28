@@ -150,7 +150,7 @@ export const useIntercomChat = ({
     const feed = messageGroups.map((messageGroup, index): FeedEntry => {
       const firstMessage = messageGroup[0];
 
-      const sameDate = () => {
+      const isSameDate = () => {
         if (messageGroups.length === 1 && index === 0) {
           return false;
         } else if (index >= 1) {
@@ -164,7 +164,7 @@ export const useIntercomChat = ({
       };
 
       return {
-        isSameDate: sameDate(),
+        isSameDate: isSameDate(),
         direction: firstMessage?.userId === userId ? 'OUTGOING' : 'INCOMING',
         id: firstMessage?.id,
         messages: messageGroup,
