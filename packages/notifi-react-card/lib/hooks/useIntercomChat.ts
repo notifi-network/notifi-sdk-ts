@@ -30,6 +30,7 @@ type MessagesBlockFeedEntry = Readonly<{
 export type FeedEntry = {
   id: string;
   timestamp: string;
+  isSameDate: boolean | undefined;
 } & MessagesBlockFeedEntry;
 
 type UseIntercomChatProps = Readonly<{
@@ -146,10 +147,24 @@ export const useIntercomChat = ({
       }
     });
 
-    const feed = messageGroups.map((messageGroup): FeedEntry => {
+    const feed = messageGroups.map((messageGroup, index): FeedEntry => {
       const firstMessage = messageGroup[0];
 
+      const sameDate = () => {
+        if (messageGroups.length === 1 && index === 0) {
+          return false;
+        } else if (index >= 1) {
+          const prevMessageGroup = messageGroups[index - 1];
+          const prevGroupFirstMessage = prevMessageGroup[0];
+          return (
+            formatConversationDateTimestamp(firstMessage?.createdDate) ===
+            formatConversationDateTimestamp(prevGroupFirstMessage?.createdDate)
+          );
+        }
+      };
+
       return {
+        isSameDate: sameDate(),
         direction: firstMessage?.userId === userId ? 'OUTGOING' : 'INCOMING',
         id: firstMessage?.id,
         messages: messageGroup,

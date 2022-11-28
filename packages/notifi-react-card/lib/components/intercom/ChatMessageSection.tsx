@@ -88,7 +88,7 @@ export const ChatMessageSection: React.FC<ChatMessageSectionProps> = ({
                     }
                   />
                 )}
-                {index != 0 && (
+                {index != 0 && !feed.isSameDate && (
                   <ChatMessageDate
                     classNames={classNames?.date}
                     createdDate={feed.timestamp}
