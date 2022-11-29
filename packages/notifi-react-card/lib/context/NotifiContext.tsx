@@ -1,4 +1,5 @@
 import {
+  AcalaSignMessageFunction,
   AptosSignMessageFunction,
   NotifiEnvironment,
   Uint8SignMessageFunction,
@@ -45,6 +46,13 @@ export type AptosParams = Readonly<{
   signMessage: AptosSignMessageFunction;
 }>;
 
+export type AcalaParams = Readonly<{
+  walletBlockchain: 'ACALA';
+  accountAddress: string;
+  walletPublicKey: string;
+  signMessage: AcalaSignMessageFunction;
+}>;
+
 export type NotifiParams = Readonly<{
   alertConfigurations?: Record<string, AlertConfiguration | null>;
   dappAddress: string;
@@ -58,6 +66,7 @@ export type NotifiParams = Readonly<{
     | ArbitrumParams
     | BinanceParams
     | AptosParams
+    | AcalaParams
   );
 
 export const NotifiContext: React.FC<React.PropsWithChildren<NotifiParams>> = ({

@@ -9,6 +9,7 @@ export type LogInFromDappInput = Readonly<{
     | 'SOLANA'
     | 'ETHEREUM'
     | 'APTOS'
+    | 'ACALA'
     | 'POLYGON'
     | 'ARBITRUM'
     | 'BINANCE';

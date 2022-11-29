@@ -26,6 +26,7 @@ import {
   User,
   UserTopic,
 } from '@notifi-network/notifi-core';
+import { stringToHex } from '@polkadot/util';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import ensureSource, {
@@ -67,6 +68,11 @@ export type WalletParams =
     }>
   | Readonly<{
       walletBlockchain: 'APTOS';
+      accountAddress: string;
+      walletPublicKey: string;
+    }>
+  | Readonly<{
+      walletBlockchain: 'ACALA';
       accountAddress: string;
       walletPublicKey: string;
     }>;
@@ -127,11 +133,13 @@ const projectData = (internalData: InternalData | null): ClientData | null => {
 export const SIGNING_MESSAGE = `Sign in with Notifi \n\n    No password needed or gas is needed. \n\n    Clicking “Approve” only means you have proved this wallet is owned by you! \n\n    This request will not trigger any transaction or cost any gas fees. \n\n    Use of our website and service is subject to our terms of service and privacy policy. \n \n 'Nonce:' `;
 
 const signMessage = async ({
+  accountAddress,
   params,
   dappAddress,
   signer,
   timestamp,
 }: Readonly<{
+  accountAddress?: string;
   params: WalletParams;
   dappAddress: string;
   signer: SignMessageParams;
@@ -176,6 +184,21 @@ const signMessage = async ({
 
       const signature = await signer.signMessage(SIGNING_MESSAGE, timestamp);
       return signature;
+    }
+    case 'ACALA': {
+      if (signer.walletBlockchain !== 'ACALA') {
+        throw new Error('Signer and config have different walletBlockchain');
+      }
+
+      if (accountAddress === undefined || accountAddress === null) {
+        throw new Error('Must provide Acala Address to sign');
+      }
+
+      const message = `${SIGNING_MESSAGE}${accountAddress}${dappAddress}${timestamp.toString()}`;
+      const messageBuffer = stringToHex(message);
+
+      const signedBuffer = await signer.signMessage(messageBuffer);
+      return signedBuffer;
     }
   }
 };
@@ -405,7 +428,9 @@ const useNotifiClient = (
         });
         const result = await service.logInFromDapp({
           accountId:
-            walletBlockchain === 'APTOS' ? config.accountAddress : undefined,
+            walletBlockchain === 'APTOS' || walletBlockchain === 'ACALA'
+              ? config.accountAddress
+              : undefined,
           walletPublicKey,
           dappAddress,
           timestamp,
