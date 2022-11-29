@@ -8,6 +8,10 @@ import {
   NotifiInputSeparators,
 } from './NotifiSubscriptionCard';
 import {
+  AlertListPreview,
+  AlertListProps,
+} from './subscription-card-views/AlertListPreview';
+import {
   EditCardView,
   EditCardViewProps,
 } from './subscription-card-views/EditCardView';
@@ -21,10 +25,12 @@ import {
 } from './subscription-card-views/PreviewCard';
 
 export type SubscriptionCardV1Props = Readonly<{
+  buttonText?: string;
   classNames?: {
     PreviewCard?: DeepPartialReadonly<PreviewCardProps['classNames']>;
     HistoryCard?: DeepPartialReadonly<AlertHistoryViewProps['classNames']>;
     EditCard?: DeepPartialReadonly<EditCardViewProps['classNames']>;
+    AlertList?: DeepPartialReadonly<AlertListProps['classNames']>;
   };
   inputDisabled: boolean;
   data: CardConfigItemV1;
@@ -34,6 +40,7 @@ export type SubscriptionCardV1Props = Readonly<{
 }>;
 
 export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
+  buttonText,
   classNames,
   data,
   inputDisabled,
@@ -79,14 +86,18 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
       break;
     case 'edit':
       view = (
-        <EditCardView
-          data={data}
-          classNames={classNames?.EditCard}
-          inputDisabled={inputDisabled}
-          inputLabels={inputLabels}
-          inputSeparators={inputSeparators}
-          allowedCountryCodes={allowedCountryCodes}
-        />
+        <>
+          <AlertListPreview eventTypes={data.eventTypes} />
+          <EditCardView
+            buttonText={buttonText}
+            data={data}
+            classNames={classNames?.EditCard}
+            inputDisabled={inputDisabled}
+            inputLabels={inputLabels}
+            inputSeparators={inputSeparators}
+            allowedCountryCodes={allowedCountryCodes}
+          />
+        </>
       );
       break;
     case 'history':

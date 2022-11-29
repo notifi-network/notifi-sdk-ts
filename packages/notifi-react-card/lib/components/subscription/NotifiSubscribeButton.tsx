@@ -13,10 +13,12 @@ export type NotifiSubscribeButtonProps = Readonly<{
     button?: string;
     label?: string;
   }>;
+  buttonText?: string;
   data: CardConfigItemV1;
 }>;
 
 export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
+  buttonText,
   classNames,
   data,
 }) => {
@@ -26,7 +28,6 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
   const { client } = useNotifiClientContext();
 
   const {
-    alerts,
     email,
     emailErrorMessage,
     loading,
@@ -35,10 +36,6 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
     smsErrorMessage,
     telegramId,
   } = useNotifiSubscriptionContext();
-
-  const hasAlerts = Object.values(alerts ?? {}).find(
-    (it) => it?.id !== undefined && it?.id !== null,
-  );
 
   const onClick = useCallback(async () => {
     const { data: notifiClientData } = client;
@@ -63,7 +60,7 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
 
   const hasErrors = emailErrorMessage !== '' || smsErrorMessage !== '';
 
-  const copy = hasAlerts ? 'Update' : 'Subscribe';
+  const buttonLabel = buttonText ?? 'Next';
   return (
     <button
       className={clsx('NotifiSubscribeButton__button', classNames?.button)}
@@ -76,7 +73,7 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
       onClick={onClick}
     >
       <span className={clsx('NotifiSubscribeButton__label', classNames?.label)}>
-        {copy}
+        {buttonLabel}
       </span>
     </button>
   );

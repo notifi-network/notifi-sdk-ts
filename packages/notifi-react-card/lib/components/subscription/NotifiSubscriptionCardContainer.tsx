@@ -18,6 +18,7 @@ import {
 } from './NotifiSubscriptionCard';
 
 export type NotifiSubscriptionCardProps = Readonly<{
+  buttonText?: string;
   classNames?: Readonly<{
     container?: string;
     ErrorStateCard?: ErrorStateCardProps['classNames'];
@@ -36,6 +37,7 @@ export type NotifiSubscriptionCardProps = Readonly<{
 export const NotifiSubscriptionCardContainer: React.FC<
   React.PropsWithChildren<NotifiSubscriptionCardProps>
 > = ({
+  buttonText,
   classNames,
   cardId,
   darkMode,
@@ -68,6 +70,7 @@ export const NotifiSubscriptionCardContainer: React.FC<
     case 'fetched':
       contents = (
         <FetchedStateCard
+          buttonText={buttonText}
           classNames={classNames?.FetchedStateCard}
           card={card}
           inputs={inputs}

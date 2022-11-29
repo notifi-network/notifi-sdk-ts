@@ -13,6 +13,7 @@
   --notifi-tooltip-background: rgba(255, 255, 255, 0.9);
   --notifi-alert-color: rgb(252 0 0);
   --notifi-link-color: #0000ee;
+  --notifi-checkmark-color: #22af3c;
 }
 
 .notifi__dark {
@@ -30,6 +31,7 @@
   --notifi-tooltip-background: rgba(255, 255, 255, 0.6);
   --notifi-alert-color: rgb(213, 25, 25);
   --notifi-link-color: #b3b3ff;
+  --notifi-checkmark-color: #ea7e68;
 }
 
 .NotifiSubscriptionCard__container {
@@ -490,6 +492,7 @@
 .NotifiAlertHistory__settingsIcon {
   position: absolute;
   right: 35px;
+  height: 20px;
 }
 
 .NotifiAlertHistory__settingsIcon path {
@@ -574,4 +577,49 @@
 
 .NotifiAlertDetails__timestamp {
   font-size: 12px;
+}
+
+/* Alert List on Edit View */
+.NotifiAlertListContainer__container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.NotifiAlertListPreview__descriptionText {
+  font-size: 13px;
+  font-weight: 500;
+  padding-bottom: 8px;
+}
+.NotifiAlertListPreview__headerText {
+  margin-bottom: 12px;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.NotifiAlertListContainer__checkmarkIcon {
+  margin-bottom: 0px !important;
+  height: 15px;
+  width: 15px;
+}
+
+.NotifiAlertListContainer__checkmarkIcon path {
+  fill: var(--notifi-checkmark-color);
+}
+
+.NotifiAlertList__listItem {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.NotifiAlertLisPreview__checkmarkContainer {
+  justify-content: center;
+}
+
+.NotifiAlertListContainer__listItemContent {
+  font-weight: 600;
+  font-size: 14px;
+  margin-left: 14px;
 }

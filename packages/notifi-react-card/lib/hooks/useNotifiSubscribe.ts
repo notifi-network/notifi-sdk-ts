@@ -14,7 +14,7 @@ import { useCallback, useEffect, useRef } from 'react';
 
 import { useNotifiSubscriptionContext } from '../context';
 import { useNotifiClientContext } from '../context/NotifiClientContext';
-import { AlertConfiguration } from './../utils/AlertConfiguration';
+import { AlertConfiguration } from '../utils/AlertConfiguration';
 
 export type SubscriptionData = Readonly<{
   alerts: Readonly<Record<string, Alert>>;

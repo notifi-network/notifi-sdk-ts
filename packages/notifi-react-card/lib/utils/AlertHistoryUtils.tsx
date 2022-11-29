@@ -29,6 +29,20 @@ export const isToday = (date: Date) => {
     date.getFullYear() == today.getFullYear()
   );
 };
+export const formatAlertDetailsTimestamp = (date: string) => {
+  try {
+    const parsedDate = parseISO(date);
+
+    const month = parsedDate.toLocaleString('default', { month: 'short' });
+    const clockTime = format(parsedDate, 'HH:mm');
+    const dateTime = format(parsedDate, 'dd');
+    const finalDate = `${month} ${dateTime} at ${clockTime} `;
+
+    return finalDate;
+  } catch {
+    return '-';
+  }
+};
 
 export const formatTimestamp = (date: string): string => {
   try {

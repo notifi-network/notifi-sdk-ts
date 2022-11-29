@@ -21,6 +21,7 @@ import {
 } from '../NotifiSubscriptionCard';
 
 export type EditCardViewProps = Readonly<{
+  buttonText?: string;
   data: CardConfigItemV1;
   inputDisabled: boolean;
   classNames?: Readonly<{
@@ -36,6 +37,7 @@ export type EditCardViewProps = Readonly<{
 }>;
 
 export const EditCardView: React.FC<EditCardViewProps> = ({
+  buttonText,
   data,
   inputDisabled,
   classNames,
@@ -121,6 +123,7 @@ export const EditCardView: React.FC<EditCardViewProps> = ({
         </div>
       ) : null}
       <NotifiSubscribeButton
+        buttonText={buttonText}
         data={data}
         classNames={classNames?.NotifiSubscribeButton}
       />

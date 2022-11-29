@@ -4,11 +4,11 @@ import {
   NotificationHistoryEntry,
 } from '@notifi-network/notifi-core';
 import clsx from 'clsx';
-import { NotificationEmptyBellIcon } from 'notifi-react-card/lib/assets/NotificationEmptyBellIcon';
 import React, { useEffect, useState } from 'react';
 import { ListRange, Virtuoso } from 'react-virtuoso';
-
+import { NotificationEmptyBellIcon } from '../../../assets/NotificationEmptyBellIcon';
 import { Settings } from '../../../assets/Settings';
+
 import {
   useNotifiClientContext,
   useNotifiSubscriptionContext,

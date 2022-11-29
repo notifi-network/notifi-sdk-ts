@@ -1,8 +1,9 @@
 import { NotificationHistoryEntry } from '@notifi-network/notifi-core';
 import clsx from 'clsx';
 import React, { useMemo } from 'react';
+
 import { BackArrow } from '../../assets/backArrow';
-import { formatTimestamp } from '../../utils/AlertHistoryUtils';
+import { formatAlertDetailsTimestamp } from '../../utils/AlertHistoryUtils';
 
 export type AlertDetailsProps = Readonly<{
   notificationEntry: NotificationHistoryEntry;
@@ -63,7 +64,7 @@ export const AlertDetailsCard: React.FC<AlertDetailsProps> = ({
             {content.topContent}
           </div>
           <div className={clsx('NotifiAlertDetails__timestamp')}>
-            {formatTimestamp(timestamp)}
+            {formatAlertDetailsTimestamp(timestamp)}
           </div>
         </div>
       </div>
