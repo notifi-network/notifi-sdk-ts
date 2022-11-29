@@ -7,10 +7,7 @@ import {
   NotifiInputLabels,
   NotifiInputSeparators,
 } from './NotifiSubscriptionCard';
-import {
-  AlertListPreview,
-  AlertListProps,
-} from './subscription-card-views/AlertListPreview';
+import { AlertListProps } from './subscription-card-views/AlertListPreview';
 import {
   EditCardView,
   EditCardViewProps,
@@ -86,18 +83,15 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
       break;
     case 'edit':
       view = (
-        <>
-          <AlertListPreview eventTypes={data.eventTypes} />
-          <EditCardView
-            buttonText={buttonText}
-            data={data}
-            classNames={classNames?.EditCard}
-            inputDisabled={inputDisabled}
-            inputLabels={inputLabels}
-            inputSeparators={inputSeparators}
-            allowedCountryCodes={allowedCountryCodes}
-          />
-        </>
+        <EditCardView
+          buttonText={buttonText}
+          data={data}
+          classNames={classNames?.EditCard}
+          inputDisabled={inputDisabled}
+          inputLabels={inputLabels}
+          inputSeparators={inputSeparators}
+          allowedCountryCodes={allowedCountryCodes}
+        />
       );
       break;
     case 'history':
