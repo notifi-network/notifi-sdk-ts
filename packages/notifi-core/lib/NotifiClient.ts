@@ -224,7 +224,10 @@ export type AptosSignMessageFunction = (
 
 type hexString = `0x${string}`;
 
-export type AcalaSignMessageFunction = (message: string) => Promise<hexString>;
+export type AcalaSignMessageFunction = (
+  acalaAddress: string,
+  message: string,
+) => Promise<hexString>;
 
 export type SignMessageParams =
   | Readonly<{

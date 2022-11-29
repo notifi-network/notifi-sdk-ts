@@ -197,7 +197,10 @@ const signMessage = async ({
       const message = `${SIGNING_MESSAGE}${accountAddress}${dappAddress}${timestamp.toString()}`;
       const messageBuffer = stringToHex(message);
 
-      const signedBuffer = await signer.signMessage(messageBuffer);
+      const signedBuffer = await signer.signMessage(
+        accountAddress,
+        messageBuffer,
+      );
       return signedBuffer;
     }
   }
