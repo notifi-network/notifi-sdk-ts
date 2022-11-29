@@ -4,9 +4,8 @@ import React from 'react';
 import { useNotifiSubscriptionContext } from '../../context';
 import { useNotifiSubscribe, useSubscriptionCard } from '../../hooks';
 import { NotifiFooter } from '../NotifiFooter';
-import { ErrorStateCard } from './ErrorStateCard';
+import { ErrorStateCard, LoadingStateCard } from '../common';
 import { FetchedStateCard } from './FetchedStateCard';
-import { LoadingStateCard } from './LoadingStateCard';
 import { NotifiSubscriptionCardProps } from './NotifiSubscriptionCard';
 
 export const NotifiSubscriptionCardContainer: React.FC<

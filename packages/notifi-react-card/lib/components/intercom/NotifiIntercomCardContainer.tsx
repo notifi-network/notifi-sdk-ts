@@ -3,9 +3,8 @@ import { useNotifiSubscriptionContext } from 'notifi-react-card/lib/context';
 import React from 'react';
 
 import { useIntercomCard } from '../../hooks/useIntercomCard';
-import { ErrorStateCard } from './ErrorStateCard';
+import { ErrorStateCard, LoadingStateCard } from '../common';
 import { IntercomCard } from './IntercomCard';
-import { LoadingStateCard } from './LoadingStateCard';
 import { NotifiIntercomCardProps } from './NotifiIntercomCard';
 
 export const NotifiIntercomCardContainer: React.FC<

@@ -5,9 +5,9 @@ import {
   useNotifiClientContext,
 } from '../../context';
 import type { NotifiFooterProps } from '../NotifiFooter';
-import type { ErrorStateCardProps } from './ErrorStateCard';
+import type { LoadingStateCardProps } from '../common';
+import type { ErrorStateCardProps } from '../common/ErrorStateCard';
 import type { FetchedStateCardProps } from './FetchedStateCard';
-import type { LoadingStateCardProps } from './LoadingStateCard';
 import type { NotifiSubscribeButtonProps } from './NotifiSubscribeButton';
 import { NotifiSubscriptionCardContainer } from './NotifiSubscriptionCardContainer';
 

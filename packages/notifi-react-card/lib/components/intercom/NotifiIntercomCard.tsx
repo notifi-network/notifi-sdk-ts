@@ -4,12 +4,12 @@ import {
   NotifiSubscriptionContextProvider,
   useNotifiClientContext,
 } from '../../context';
+import type { ErrorStateCardProps } from '../common';
+import type { LoadingStateCardProps } from '../common';
 import {
   NotifiInputLabels,
   NotifiInputSeparators,
 } from '../subscription/NotifiSubscriptionCard';
-import type { ErrorStateCardProps } from './ErrorStateCard';
-import type { LoadingStateCardProps } from './LoadingStateCard';
 import { NotifiIntercomCardContainer } from './NotifiIntercomCardContainer';
 import { NotifiIntercomChatWindowContainerProps } from './NotifiIntercomChatWindowContainer';
 import type { NotifiStartChatButtonProps } from './NotifiStartChatButton';
