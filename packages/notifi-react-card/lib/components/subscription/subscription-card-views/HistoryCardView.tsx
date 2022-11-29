@@ -6,9 +6,9 @@ import {
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
 import { ListRange, Virtuoso } from 'react-virtuoso';
+
 import { NotificationEmptyBellIcon } from '../../../assets/NotificationEmptyBellIcon';
 import { Settings } from '../../../assets/Settings';
-
 import {
   useNotifiClientContext,
   useNotifiSubscriptionContext,

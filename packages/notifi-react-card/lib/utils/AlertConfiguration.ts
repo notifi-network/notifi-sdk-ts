@@ -4,7 +4,7 @@ import type {
 } from '@notifi-network/notifi-core';
 
 import { resolveStringRef } from '../components/subscription/resolveRef';
-import { EventTypeConfig } from '../hooks/SubscriptionCardConfig';
+import { EventTypeConfig } from './../hooks/SubscriptionCardConfig';
 
 export type AlertConfiguration = Readonly<{
   sourceType: CreateSourceInput['type'];

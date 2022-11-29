@@ -37,13 +37,13 @@ export type EditCardViewProps = Readonly<{
 }>;
 
 export const EditCardView: React.FC<EditCardViewProps> = ({
+  allowedCountryCodes,
   buttonText,
+  classNames,
   data,
   inputDisabled,
-  classNames,
   inputSeparators,
   inputLabels,
-  allowedCountryCodes,
 }) => {
   return (
     <div
