@@ -12,8 +12,6 @@ We currently support the following blockchains:
 - Aptos
 - Acala
 
-&nbsp;
-
 # Getting Started
 
 Fill out [this form](https://bit.ly/NotifiDappSetup) to receive a developer login.
@@ -44,13 +42,9 @@ Import the following CSS file into your component to get baseline styling:
 import '@notifi-network/notifi-react-card/dist/index.css';
 ```
 
-&nbsp;
-
 ## Design Guidelines
 
 We have design recommendations on how to best present the UI to your dapp users. Check them out here: [Figma](https://www.figma.com/file/ieF0Ynuc3WI608RCt7wKSf/Notifi-Template?node-id=0%3A1&t=v8zeo6UovJAOb9vR-0).
-
-&nbsp;
 
 ## Tutorial Video
 
@@ -148,8 +142,6 @@ export const Remote: React.FC = () => {
 
 </details>
 
-&nbsp;
-
 ### EVM (Ethereum, Polygon, Arbitrum, or Binance)
 
 <details>
@@ -219,8 +211,6 @@ export const Notifi: React.FC = () => {
 ```
 
 </details>
-
-&nbsp;
 
 ### Aptos
 
@@ -293,8 +283,6 @@ export const Notifi: React.FC = () => {
 ```
 
 </details>
-
-&nbsp;
 
 ### Acala
 
