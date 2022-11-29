@@ -301,10 +301,13 @@ export default function useAcalaWallet() {
     null,
   );
 
-  const getAccounts = useCallback(async () => {
-    const allAccounts = await web3Accounts();
-    const account = allAccounts[0].address;
-    if (account) setAccount(account);
+  useEffect(() => {
+    async function getAccounts() {
+      const allAccounts = await web3Accounts();
+      const account = allAccounts[0].address;
+      if (account) setAccount(account);
+    }
+    getAccounts();
   }, []);
 
   const signMessage = useCallback(async (address: string, message: string) => {
