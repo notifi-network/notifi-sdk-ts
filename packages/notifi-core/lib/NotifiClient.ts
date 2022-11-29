@@ -222,9 +222,9 @@ export type AptosSignMessageFunction = (
   nonce: number,
 ) => Promise<string>;
 
-export type AcalaSignMessageFunction = (
-  message: string,
-) => Promise<`0x${string}`>;
+type hexString = `0x${string}`;
+
+export type AcalaSignMessageFunction = (message: string) => Promise<hexString>;
 
 export type SignMessageParams =
   | Readonly<{
