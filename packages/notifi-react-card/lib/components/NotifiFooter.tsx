@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import React from 'react';
-import { useNotifiSubscriptionContext } from '../context';
 
+import { useNotifiSubscriptionContext } from '../context';
 import type { DeepPartialReadonly } from '../utils';
 import { NotifiLogo } from './NotifiLogo';
 

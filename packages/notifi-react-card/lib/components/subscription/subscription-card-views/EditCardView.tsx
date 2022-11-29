@@ -19,8 +19,10 @@ import {
   NotifiInputLabels,
   NotifiInputSeparators,
 } from '../NotifiSubscriptionCard';
+import { AlertListPreview } from './AlertListPreview';
 
 export type EditCardViewProps = Readonly<{
+  buttonText?: string;
   data: CardConfigItemV1;
   inputDisabled: boolean;
   classNames?: Readonly<{
@@ -36,17 +38,20 @@ export type EditCardViewProps = Readonly<{
 }>;
 
 export const EditCardView: React.FC<EditCardViewProps> = ({
+  allowedCountryCodes,
+  buttonText,
+  classNames,
   data,
   inputDisabled,
-  classNames,
   inputSeparators,
   inputLabels,
-  allowedCountryCodes,
 }) => {
   return (
     <div
       className={clsx('NotifiInputContainer', classNames?.NotifiInputContainer)}
     >
+      <AlertListPreview eventTypes={data.eventTypes} />
+
       {data.contactInfo.email.active ? (
         <NotifiEmailInput
           disabled={inputDisabled}
@@ -121,6 +126,7 @@ export const EditCardView: React.FC<EditCardViewProps> = ({
         </div>
       ) : null}
       <NotifiSubscribeButton
+        buttonText={buttonText}
         data={data}
         classNames={classNames?.NotifiSubscribeButton}
       />
