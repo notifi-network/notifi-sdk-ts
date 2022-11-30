@@ -1,4 +1,4 @@
-# `@notifi-networks/notifi-node`
+# `@notifi-network/notifi-node`
 
 Node SDK for Notifi APIs.
 
