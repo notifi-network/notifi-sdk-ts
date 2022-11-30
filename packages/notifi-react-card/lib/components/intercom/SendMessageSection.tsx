@@ -24,7 +24,7 @@ export const SendMessageSection: React.FC<SendMessageSectionProps> = ({
     }
   };
 
-  const handleKeypressDown = useCallback(
+  const handleKeypressUp = useCallback(
     (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
       if (event.key === 'Enter' && !event.shiftKey) {
         handleSend();
@@ -42,7 +42,7 @@ export const SendMessageSection: React.FC<SendMessageSectionProps> = ({
       )}
     >
       <textarea
-        onKeyDown={(e) => handleKeypressDown(e)}
+        onKeyUp={(e) => handleKeypressUp(e)}
         className={clsx(
           'NotifiIntercomSendMessageSection__textarea',
           classNames?.textarea,
