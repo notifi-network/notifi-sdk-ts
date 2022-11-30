@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 export type SendMessageSectionProps = Readonly<{
   classNames?: Readonly<{
@@ -23,6 +23,17 @@ export const SendMessageSection: React.FC<SendMessageSectionProps> = ({
       setSendMessage('');
     }
   };
+
+  const handleKeypressDown = useCallback(
+    (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+      if (event.key === 'Enter' && !event.shiftKey) {
+        handleSend();
+        event.preventDefault();
+      }
+    },
+    [handleSend],
+  );
+
   return (
     <div
       className={clsx(
@@ -31,6 +42,7 @@ export const SendMessageSection: React.FC<SendMessageSectionProps> = ({
       )}
     >
       <textarea
+        onKeyDown={handleKeypressDown}
         className={clsx(
           'NotifiIntercomSendMessageSection__textarea',
           classNames?.textarea,
