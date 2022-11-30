@@ -22,6 +22,9 @@ export const chatConfiguration = (): AlertConfiguration => {
       alertFrequency: 'THREE_MINUTES',
     },
     sourceType: 'NOTIFI_CHAT',
+    createSource: {
+      address: '*',
+    },
   };
 };
 
