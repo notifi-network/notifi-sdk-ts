@@ -24,15 +24,15 @@ export const ChatWindowHeader: React.FC<ChatWindowHeaderProps> = ({
   return (
     <div
       className={clsx(
-        'NotifiIntercomChatWindowHeader__container',
+        'NotifiIntercomHeader__container',
         classNames?.container,
       )}
     >
-      <div className={'NotifiIntercomChatWindowHeader__leftContainer'}>
+      <div className={'NotifiIntercomHeader__leftContainer'}>
         <ChatIcon />
         <div
           className={clsx(
-            'NotifiIntercomChatWindowHeader__content',
+            'NotifiIntercomHeader__content',
             classNames?.content,
           )}
         >
