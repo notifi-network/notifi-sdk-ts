@@ -42,7 +42,7 @@ export const SendMessageSection: React.FC<SendMessageSectionProps> = ({
       )}
     >
       <textarea
-        onKeyDown={handleKeypressDown}
+        onKeyDown={(e) => handleKeypressDown(e)}
         className={clsx(
           'NotifiIntercomSendMessageSection__textarea',
           classNames?.textarea,
