@@ -24,7 +24,7 @@ export const chatConfiguration = (): AlertConfiguration => {
     sourceType: 'NOTIFI_CHAT',
     createSource: {
       address: '*',
-    }
+    },
   };
 };
 
