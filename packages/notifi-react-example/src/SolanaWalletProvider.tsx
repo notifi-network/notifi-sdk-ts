@@ -3,7 +3,11 @@ import {
   ConnectionProvider,
   WalletProvider,
 } from '@solana/wallet-adapter-react';
-import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
+import {
+  WalletDisconnectButton,
+  WalletModalProvider,
+  WalletMultiButton,
+} from '@solana/wallet-adapter-react-ui';
 import {
   PhantomWalletAdapter,
   SolflareWalletAdapter,
@@ -11,23 +15,42 @@ import {
 import { clusterApiUrl } from '@solana/web3.js';
 import React, { FC, useMemo } from 'react';
 
+import App from './App';
+
+// Default styles that can be overridden by your app
 require('@solana/wallet-adapter-react-ui/styles.css');
 
-export const SolanaWalletProvider: FC = ({ children }) => {
+export const SolanaWalletProvider: FC = () => {
+  // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'.
   const network = WalletAdapterNetwork.Devnet;
 
+  // You can also provide a custom RPC endpoint.
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
 
   const wallets = useMemo(
-    () => [new SolflareWalletAdapter(), new PhantomWalletAdapter()],
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    () => [
+      /**
+       * Select the wallets you wish to support, by instantiating wallet adapters here.
+       *
+       * Common adapters can be found in the npm package `@solana/wallet-adapter-wallets`.
+       * That package supports tree shaking and lazy loading -- only the wallets you import
+       * will be compiled into your application, and only the dependencies of wallets that
+       * your users connect to will be loaded.
+       */
+      new PhantomWalletAdapter({ network }),
+      new SolflareWalletAdapter({ network }),
+    ],
     [network],
   );
 
   return (
     <ConnectionProvider endpoint={endpoint}>
       <WalletProvider wallets={wallets} autoConnect>
-        <WalletModalProvider>{children}</WalletModalProvider>
+        <WalletModalProvider>
+          <WalletMultiButton />
+          <WalletDisconnectButton />
+          <App />
+        </WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>
   );
