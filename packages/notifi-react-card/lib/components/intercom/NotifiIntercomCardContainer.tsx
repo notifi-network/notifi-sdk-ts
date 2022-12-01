@@ -50,16 +50,31 @@ export const NotifiIntercomCardContainer: React.FC<
       break;
   }
 
+  let names: (string | undefined)[] = [];
+  switch (intercomCardView.state) {
+    case 'chatWindowView':
+      names = [
+        'NotifiIntercomCard__chatWindowContainer',
+        classNames?.chatWindowContainer,
+      ];
+      break;
+    case 'startChatView':
+      names = [
+        'NotifiIntercomCard__startChatContainer',
+        classNames?.startChatContainer,
+      ];
+      break;
+    case 'settingView':
+      names = [
+        'NotifiIntercomCard__settingViewContainer',
+        classNames?.settingViewContainer,
+      ];
+      break;
+  }
+
   return (
     <div
-      className={clsx(
-        darkMode ? 'notifi__dark' : 'notifi__light',
-        intercomCardView.state === 'chatWindowView' ||
-          intercomCardView.state === 'settingView'
-          ? 'NotifiIntercomCard__chatWindowContainer'
-          : 'NotifiIntercomCard__container',
-        classNames?.container,
-      )}
+      className={clsx(darkMode ? 'notifi__dark' : 'notifi__light', ...names)}
     >
       {children}
       {contents}
