@@ -1,5 +1,6 @@
 import { GqlError } from '@notifi-network/notifi-axios-utils';
 import {
+  AcalaSignMessageFunction,
   Alert,
   AlertFrequency,
   AptosSignMessageFunction,
@@ -27,6 +28,7 @@ export type {
   Alert,
   AlertFrequency,
   AptosSignMessageFunction,
+  AcalaSignMessageFunction,
   ClientConfiguration,
   ClientCreateAlertInput,
   ClientData,

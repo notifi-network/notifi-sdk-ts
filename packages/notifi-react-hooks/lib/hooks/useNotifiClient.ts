@@ -26,6 +26,7 @@ import {
   User,
   UserTopic,
 } from '@notifi-network/notifi-core';
+import { stringToHex } from '@polkadot/util';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import ensureSource, {
@@ -67,6 +68,11 @@ export type WalletParams =
     }>
   | Readonly<{
       walletBlockchain: 'APTOS';
+      accountAddress: string;
+      walletPublicKey: string;
+    }>
+  | Readonly<{
+      walletBlockchain: 'ACALA';
       accountAddress: string;
       walletPublicKey: string;
     }>;
@@ -176,6 +182,26 @@ const signMessage = async ({
 
       const signature = await signer.signMessage(SIGNING_MESSAGE, timestamp);
       return signature;
+    }
+    case 'ACALA': {
+      if (signer.walletBlockchain !== 'ACALA') {
+        throw new Error('Signer and config have different walletBlockchain');
+      }
+
+      const { accountAddress } = params;
+
+      if (accountAddress === undefined || accountAddress === null) {
+        throw new Error('Must provide Acala Address to sign');
+      }
+
+      const message = `${SIGNING_MESSAGE}${accountAddress}${dappAddress}${timestamp.toString()}`;
+      const messageBuffer = stringToHex(message);
+
+      const signedBuffer = await signer.signMessage(
+        accountAddress,
+        messageBuffer,
+      );
+      return signedBuffer;
     }
   }
 };
@@ -405,7 +431,9 @@ const useNotifiClient = (
         });
         const result = await service.logInFromDapp({
           accountId:
-            walletBlockchain === 'APTOS' ? config.accountAddress : undefined,
+            walletBlockchain === 'APTOS' || walletBlockchain === 'ACALA'
+              ? config.accountAddress
+              : undefined,
           walletPublicKey,
           dappAddress,
           timestamp,

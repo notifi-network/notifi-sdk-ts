@@ -222,6 +222,13 @@ export type AptosSignMessageFunction = (
   nonce: number,
 ) => Promise<string>;
 
+type hexString = `0x${string}`;
+
+export type AcalaSignMessageFunction = (
+  acalaAddress: string,
+  message: string,
+) => Promise<hexString>;
+
 export type SignMessageParams =
   | Readonly<{
       walletBlockchain: 'SOLANA';
@@ -246,6 +253,10 @@ export type SignMessageParams =
   | Readonly<{
       walletBlockchain: 'APTOS';
       signMessage: AptosSignMessageFunction;
+    }>
+  | Readonly<{
+      walletBlockchain: 'ACALA';
+      signMessage: AcalaSignMessageFunction;
     }>;
 
 export type NotifiClient = Readonly<{

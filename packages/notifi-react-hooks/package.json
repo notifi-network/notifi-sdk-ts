@@ -33,6 +33,7 @@
     "@notifi-network/notifi-axios-adapter": "^0.42.1",
     "@notifi-network/notifi-axios-utils": "^0.42.1",
     "@notifi-network/notifi-core": "^0.42.1",
+    "@polkadot/util": "^10.1.14",
     "axios": "^0.26.0",
     "localforage": "^1.10.0",
     "typedoc-plugin-missing-exports": "^0.22.6",
