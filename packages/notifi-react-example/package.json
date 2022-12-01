@@ -5,7 +5,6 @@
   "dependencies": {
     "@ethersproject/bytes": "^5.7.0",
     "@manahippo/aptos-wallet-adapter": "^1.0.2",
-    "@notifi-network/notifi-react-hooks": "^0.42.1",
     "@solana/wallet-adapter-base": "^0.9.18",
     "@solana/wallet-adapter-react": "^0.15.24",
     "@solana/wallet-adapter-react-ui": "^0.9.22",
