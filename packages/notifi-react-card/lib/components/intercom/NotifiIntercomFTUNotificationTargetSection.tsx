@@ -66,7 +66,7 @@ export const NotifiIntercomFTUNotificationTargetSection: React.FC<
           </div>
         </div>
       ) : null}
-      {data.contactInfo.sms.active ? (
+      {/* {data.contactInfo.sms.active ? (
         <NotifiSmsInput
           disabled={false}
           classNames={classNames?.NotifiSmsInput}
@@ -100,7 +100,7 @@ export const NotifiIntercomFTUNotificationTargetSection: React.FC<
             {inputSeparators?.smsSeparator?.content}
           </div>
         </div>
-      ) : null}
+      ) : null} */}
       {data.contactInfo.telegram.active ? (
         <NotifiTelegramInput
           disabled={false}
