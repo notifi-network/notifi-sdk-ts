@@ -10,6 +10,7 @@ export type ChatMessageDateProps = Readonly<{
   classNames?: Readonly<{
     container: string;
     content: string;
+    body: string;
   }>;
   createdDate: string;
   isStartDate?: boolean;
@@ -29,13 +30,20 @@ export const ChatMessageDate: React.FC<ChatMessageDateProps> = ({
     >
       <div
         className={clsx(
-          'NotifiIntercomChatMessageDate__content',
-          classNames?.content,
+          'NotifiIntercomChatMessageDate__body',
+          classNames?.body,
         )}
       >
-        {isStartDate
-          ? formatConversationStartTimestamp(createdDate)
-          : formatConversationDateTimestamp(createdDate)}
+        <div
+          className={clsx(
+            'NotifiIntercomChatMessageDate__content',
+            classNames?.content,
+          )}
+        >
+          {isStartDate
+            ? formatConversationStartTimestamp(createdDate)
+            : formatConversationDateTimestamp(createdDate)}
+        </div>
       </div>
     </div>
   );
