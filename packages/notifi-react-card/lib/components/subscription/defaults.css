@@ -635,7 +635,7 @@
 
 .NotifiIntercomHeader__content {
   font-size: 14px;
-  font-weight: 650;
+  font-weight: 600;
   line-height: 17px;
   text-align: left;
   margin-left: 25px;
@@ -661,7 +661,7 @@
 
 .NotifiIntercomChatMessageSectionIntro__content {
   font-size: 16px;
-  font-weight: 650;
+  font-weight: 600;
   line-height: 20px;
   margin-bottom: 12px;
 }
@@ -783,7 +783,7 @@
 
 .NotifiIntercomChatOutgoingMessage__sender {
   font-size: 16px;
-  font-weight: 650;
+  font-weight: 600;
   line-height: 20px;
   text-align: left;
   margin-bottom: 4px;
