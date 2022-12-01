@@ -789,7 +789,7 @@
 
 .NotifiIntercomHeader__content {
   font-size: 14px;
-  font-weight: 800;
+  font-weight: 600;
   line-height: 17px;
   text-align: left;
   margin-left: 25px;
@@ -815,12 +815,17 @@
 
 .NotifiIntercomChatMessageSectionIntro__content {
   font-size: 16px;
-  font-weight: 800;
+  font-weight: 600;
   line-height: 20px;
   margin-bottom: 12px;
 }
 
 .NotifiIntercomChatMessageDate__container {
+  display: flex;
+  justify-content: center;
+}
+
+.NotifiIntercomChatMessageDate__body {
   display: inline-block;
   width: 64px;
   padding: 5px;
@@ -890,8 +895,8 @@
 }
 
 .NotifiIntercomChatIncomingMessage__body {
-  padding: 12px 65px 18px 16px;
-  max-width: 230px;
+  padding: 12px 55px 18px 16px;
+  max-width: 288px;
   border-radius: 16px;
   background: #F5F6FB;
   text-align: left;
@@ -905,8 +910,8 @@
 }
 
 .NotifiIntercomChatOutgoingMessage__body {
-  padding: 12px 65px 18px 16px;
-  max-width: 230px;
+  padding: 12px 55px 18px 16px;
+  max-width: 288px;
   border-radius: 16px;
   background: #E6EBFF;
   text-align: left;
@@ -932,7 +937,7 @@
 
 .NotifiIntercomChatOutgoingMessage__sender {
   font-size: 16px;
-  font-weight: 800;
+  font-weight: 600;
   line-height: 20px;
   text-align: left;
   margin-bottom: 4px;
