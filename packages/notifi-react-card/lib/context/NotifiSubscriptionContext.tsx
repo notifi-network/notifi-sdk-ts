@@ -1,12 +1,19 @@
 import type { Alert } from '@notifi-network/notifi-core';
 import { PropsWithChildren } from 'react';
-import React, { createContext, useContext, useState } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useRef,
+  useState,
+} from 'react';
 
 import { FetchedCardView, useFetchedCardState } from '../hooks';
 import {
   IntercomCardView,
   useIntercomCardState,
 } from '../hooks/useIntercomCardState';
+import { AlertConfiguration } from '../utils';
 import { NotifiParams } from './NotifiContext';
 
 export type NotifiSubscriptionData = Readonly<{
@@ -48,6 +55,9 @@ export type NotifiSubscriptionData = Readonly<{
   setConversationId: (conversationId: string) => void;
   userId: string;
   setUserId: (userId: string) => void;
+  getAlertConfigurations: () => Readonly<
+    Record<string, AlertConfiguration | null>
+  >;
 }>;
 
 const NotifiSubscriptionContext = createContext<NotifiSubscriptionData>(
@@ -78,6 +88,15 @@ export const NotifiSubscriptionContextProvider: React.FC<
   const [alerts, setAlerts] = useState<Record<string, Alert | undefined>>({});
   const [useHardwareWallet, setUseHardwareWallet] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
+
+  const alertConfigurations = useRef<Record<string, AlertConfiguration | null>>(
+    params.alertConfigurations ?? {},
+  );
+  const getAlertConfigurations = useCallback((): Readonly<
+    Record<string, AlertConfiguration | null>
+  > => {
+    return alertConfigurations.current;
+  }, []);
 
   const value = {
     alerts,
@@ -115,6 +134,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
     setConversationId,
     userId,
     setUserId,
+    getAlertConfigurations,
   };
 
   return (

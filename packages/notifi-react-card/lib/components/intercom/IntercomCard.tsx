@@ -251,7 +251,7 @@ export const IntercomCard: React.FC<
       );
       break;
     case 'loadingView':
-      view = null;
+      view = <div>loading state</div>;
       break;
   }
   return <>{view}</>;
