@@ -67,7 +67,6 @@ export const useNotifiSubscribe: ({
     setEmailIdThatNeedsConfirmation,
     telegramId: inputTelegramId,
     useHardwareWallet,
-    getAlertConfigurations,
   } = useNotifiSubscriptionContext();
 
   const { keepSubscriptionData = true, walletPublicKey } = params;
@@ -82,16 +81,14 @@ export const useNotifiSubscribe: ({
 
   const render = useCallback(
     (newData: ClientData | null): SubscriptionData => {
-      const configurations = getAlertConfigurations();
-      let targetGroup = newData?.targetGroups[0];
+      const targetGroup = newData?.targetGroups.find(
+        (tg) => tg.name === targetGroupName,
+      );
 
       const alerts: Record<string, Alert> = {};
       newData?.alerts.forEach((alert) => {
         if (alert.name !== null) {
           alerts[alert.name] = alert;
-          if (alert.name in configurations) {
-            targetGroup = alert.targetGroup;
-          }
         }
       });
 
