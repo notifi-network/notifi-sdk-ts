@@ -19,7 +19,7 @@ import App from './App';
 // Default styles that can be overridden by your app
 require('@solana/wallet-adapter-react-ui/styles.css');
 
-export const SolanaWalletProvider: FC = () => {
+export const SolanaWalletProvider: FC = ({ children }) => {
   // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'.
   const network = WalletAdapterNetwork.Devnet;
 
@@ -48,7 +48,7 @@ export const SolanaWalletProvider: FC = () => {
         <WalletModalProvider>
           <WalletMultiButton />
           <WalletDisconnectButton />
-          <App />
+          {children}
         </WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>
