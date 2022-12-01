@@ -3,7 +3,6 @@ import React from 'react';
 
 import { IntercomCardConfigItemV1 } from '../../hooks/IntercomCardConfig';
 import { NotifiEmailInput, NotifiEmailInputProps } from '../NotifiEmailInput';
-import { NotifiSmsInputProps } from '../NotifiSmsInput';
 import {
   NotifiTelegramInput,
   NotifiTelegramInputProps,
@@ -17,7 +16,6 @@ import { NotifiToggleProps } from '../subscription/NotifiToggle';
 export type NotifiIntercomFTUNotificationTargetSectionProps = Readonly<{
   classNames?: Readonly<{
     NotifiEmailInput?: NotifiEmailInputProps['classNames'];
-    NotifiSmsInput?: NotifiSmsInputProps['classNames'];
     NotifiTelegramInput?: NotifiTelegramInputProps['classNames'];
     container: string;
     label: string;

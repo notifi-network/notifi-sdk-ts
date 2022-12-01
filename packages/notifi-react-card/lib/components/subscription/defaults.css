@@ -236,7 +236,6 @@
 }
 
 .NotifiIntercomEmailInput__input::placeholder,
-.NotifiIntercomSmsInput__input::placeholder,
 .NotifiIntercomTelegramInput__input::placeholder {
   font-size: 14px;
   font-weight: 500;
@@ -585,7 +584,6 @@
 }
 
 .NotifiIntercomEmailInput__container,
-.NotifiIntercomSmsInput__container,
 .NotifiIntercomTelegramInput__container
 {
   background-color: var(--notifi-intercom-input-background);
@@ -599,25 +597,8 @@
 }
 
 .NotifiIntercomEmailInput__container:focus-within,
-.NotifiIntercomSmsInput__container:focus-within,
 .NotifiIntercomTelegramInput__container:focus-within {
   box-shadow: inset 0px 0px 0px 1px var(--notifi-focus-color);
-}
-
-.NotifiIntercomSmsInput__dropdownContainer
-{
-  background-color: var(--notifi-intercom-input-background);
-}
-
-.NotifiIntercomSmsInput__dropdownSelect
-{
-  background-color: var(--notifi-intercom-input-background);
-  border: 0;
-}
-
-.NotifiIntercomSmsInput__dropdownSelect:focus-visible
-{
-  box-shadow: none;
 }
 
 .BrowserAlertToggle__label {
