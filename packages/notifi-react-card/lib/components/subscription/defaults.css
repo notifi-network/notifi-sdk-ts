@@ -842,6 +842,7 @@
 }
 
 .NotifiIntercomSendMessageSection__textarea {
+  resize: none;
   font-family: inherit;
   font-size: 16px;
   height: 110px;
