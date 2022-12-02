@@ -17,9 +17,7 @@ import { SettingHeaderProps } from './SettingHeader';
 
 export type NotifiIntercomCardProps = Readonly<{
   classNames?: Readonly<{
-    chatWindowContainer?: string;
-    startChatContainer?: string;
-    settingViewContainer?: string;
+    container?: string;
     title?: string;
     subtitle1?: string;
     subtitle2?: string;

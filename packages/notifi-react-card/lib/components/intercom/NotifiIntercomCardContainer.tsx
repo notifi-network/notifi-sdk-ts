@@ -1,5 +1,4 @@
 import clsx from 'clsx';
-import { useNotifiSubscriptionContext } from 'notifi-react-card/lib/context';
 import React from 'react';
 
 import { useIntercomCard } from '../../hooks/useIntercomCard';
@@ -18,8 +17,6 @@ export const NotifiIntercomCardContainer: React.FC<
   children,
   cardId,
 }: React.PropsWithChildren<NotifiIntercomCardProps>) => {
-  const { intercomCardView } = useNotifiSubscriptionContext();
-
   let contents: React.ReactNode = null;
   const card = useIntercomCard(cardId);
 
@@ -50,31 +47,13 @@ export const NotifiIntercomCardContainer: React.FC<
       break;
   }
 
-  let names: (string | undefined)[] = [];
-  switch (intercomCardView.state) {
-    case 'chatWindowView':
-      names = [
-        'NotifiIntercomCard__chatWindowContainer',
-        classNames?.chatWindowContainer,
-      ];
-      break;
-    case 'startChatView':
-      names = [
-        'NotifiIntercomCard__startChatContainer',
-        classNames?.startChatContainer,
-      ];
-      break;
-    case 'settingView':
-      names = [
-        'NotifiIntercomCard__settingViewContainer',
-        classNames?.settingViewContainer,
-      ];
-      break;
-  }
-
   return (
     <div
-      className={clsx(darkMode ? 'notifi__dark' : 'notifi__light', ...names)}
+      className={clsx(
+        darkMode ? 'notifi__dark' : 'notifi__light',
+        'NotifiIntercomCard__container',
+        classNames?.container,
+      )}
     >
       {children}
       {contents}
