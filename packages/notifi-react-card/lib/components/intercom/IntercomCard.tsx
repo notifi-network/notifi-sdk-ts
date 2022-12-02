@@ -102,7 +102,7 @@ export const IntercomCard: React.FC<
         state: 'startChatView',
       });
     }
-  }, [alerts, loading]);
+  }, [alerts, loading, client.isInitialized]);
 
   const hasErrors =
     emailErrorMessage !== '' ||
@@ -251,7 +251,7 @@ export const IntercomCard: React.FC<
       );
       break;
     case 'loadingView':
-      view = null;
+      view = <div>Loading&#8230;</div>;
       break;
   }
   return <>{view}</>;

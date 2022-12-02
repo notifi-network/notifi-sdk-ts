@@ -82,7 +82,7 @@ export const useNotifiSubscribe: ({
   const render = useCallback(
     (newData: ClientData | null): SubscriptionData => {
       const targetGroup = newData?.targetGroups.find(
-        (tg) => tg.name === 'Default',
+        (tg) => tg.name === targetGroupName,
       );
 
       const alerts: Record<string, Alert> = {};
