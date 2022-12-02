@@ -3,36 +3,11 @@ import React from 'react';
 
 import { useNotifiSubscriptionContext } from '../../context';
 import { useNotifiSubscribe, useSubscriptionCard } from '../../hooks';
-import type { NotifiFooterProps } from '../NotifiFooter';
 import { NotifiFooter } from '../NotifiFooter';
-import type { ErrorStateCardProps } from './ErrorStateCard';
 import { ErrorStateCard } from './ErrorStateCard';
-import type { FetchedStateCardProps } from './FetchedStateCard';
 import { FetchedStateCard } from './FetchedStateCard';
-import type { LoadingStateCardProps } from './LoadingStateCard';
 import { LoadingStateCard } from './LoadingStateCard';
-import type { NotifiSubscribeButtonProps } from './NotifiSubscribeButton';
-import {
-  NotifiInputLabels,
-  NotifiInputSeparators,
-} from './NotifiSubscriptionCard';
-
-export type NotifiSubscriptionCardProps = Readonly<{
-  buttonText?: string;
-  classNames?: Readonly<{
-    container?: string;
-    ErrorStateCard?: ErrorStateCardProps['classNames'];
-    FetchedStateCard?: FetchedStateCardProps['classNames'];
-    LoadingStateCard?: LoadingStateCardProps['classNames'];
-    NotifiSubscribeButton?: NotifiSubscribeButtonProps['classNames'];
-    NotifiFooter?: NotifiFooterProps['classNames'];
-  }>;
-  inputLabels?: NotifiInputLabels;
-  darkMode?: boolean;
-  cardId: string;
-  inputs?: Record<string, string | undefined>;
-  inputSeparators?: NotifiInputSeparators;
-}>;
+import { NotifiSubscriptionCardProps } from './NotifiSubscriptionCard';
 
 export const NotifiSubscriptionCardContainer: React.FC<
   React.PropsWithChildren<NotifiSubscriptionCardProps>

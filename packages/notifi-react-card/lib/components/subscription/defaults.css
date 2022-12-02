@@ -1,9 +1,11 @@
 .notifi__light {
   --notifi-card-background: #eee;
   --notifi-card-secondary-background: rgb(214, 214, 214);
+  --notifi-intercom-card-background: #fff;
   --notifi-font-color: #000;
   --notifi-secondary-font-color: rgb(93, 93, 93);
   --notifi-input-background: rgba(255, 255, 255, 0.8);
+  --notifi-intercom-input-background: rgb(245, 246, 251, 1);
   --notifi-placeholder-color: rgba(224, 224, 224, 0.5);
   --notifi-focus-color: #000;
   --notifi-toggle-handle: #fff;
@@ -20,8 +22,10 @@
   --notifi-card-background: #333;
   --notifi-font-color: #fff;
   --notifi-card-secondary-background: rgb(68, 68, 68);
+  --notifi-intercom-card-background: ##333;
   --notifi-secondary-font-color: rgb(212, 212, 212);
   --notifi-input-background: rgba(255, 255, 255, 0.2);
+  --notifi-intercom-input-background: rgb(245, 246, 251, 0.6);
   --notifi-placeholder-color: rgba(255, 255, 255, 0.5);
   --notifi-focus-color: #fff;
   --notifi-toggle-handle: #fff;
@@ -34,7 +38,9 @@
   --notifi-checkmark-color: #ea7e68;
 }
 
-.NotifiSubscriptionCard__container {
+.NotifiSubscriptionCard__container,
+.NotifiIntercomCard__container  
+{
   color: var(--notifi-font-color);
   display: flex;
   flex-direction: column;
@@ -53,6 +59,11 @@
 
 .NotifiSubscriptionCard__container *:not(:last-child) {
   margin-bottom: 10px;
+}
+
+.NotifiIntercomCard__container {
+  background-color: var(--notifi-intercom-card-background);
+  box-shadow: 0px 4px 30px 0px #0000000A;
 }
 
 .NotifiFooter__container {
@@ -283,15 +294,23 @@
   transform: translateX(var(--notifi-toggle-size));
 }
 
+.NotifiIntercomToggle__input:checked + .NotifiToggle__slider {
+  background-color: #1448F3;
+}
+
 .EventTypeLabelRow__container,
 .EventTypeBroadcastRow__container,
-.EventTypeDirectPushRow__container {
+.EventTypeDirectPushRow__container,
+.BrowserAlertToggle__container
+{
   display: flex;
   flex-direction: row;
 }
 
 .EventTypeBroadcastRow__label,
-.EventTypeDirectPushRow__label {
+.EventTypeDirectPushRow__label,
+.BrowserAlertToggle__label 
+{
   display: flex;
   flex-direction: row;
   flex-grow: 1;
@@ -327,7 +346,9 @@
   display: block;
 }
 
-.NotifiSubscribeButton__button:disabled {
+.NotifiSubscribeButton__button:disabled,
+.NotifiStartChatButton__button:disabled 
+{
   cursor: default;
   color: var(--notifi-secondary-font-color);
   background-color: var(--notifi-placeholder-color);
@@ -384,6 +405,12 @@
   height: 20px;
   width: 20px;
   cursor: pointer;
+}
+
+.NotifiIntercomInputSeparator__container
+{
+  color: #80829D;
+  opacity: 45%;
 }
 
 .NotifiInputSeparator__content {
@@ -622,4 +649,94 @@
   font-weight: 600;
   font-size: 14px;
   margin-left: 14px;
+}
+
+.NotifiStartChatButton__button {
+  height: 49px;
+  width: 266px;
+  background-color: #1448F3;
+  border-radius: 16px;
+  border: 0;
+  margin: 28px;
+  margin-top: 18px;
+  cursor: pointer;
+}
+
+.NotifiStartChatButton__label
+{
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 19px;
+  text-align: center;  
+}
+
+.NotifiIntercomCard__title
+{
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 27px;
+}
+
+.NotifiIntercomCard__subtitle1
+{
+  color: #80829D;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 19px;
+
+}
+
+.NotifiIntercomCard__subtitle2
+{
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 19px;
+  margin-top: 13px;
+  margin-bottom: 10px;
+}
+
+.NotifiSupportNotificationOption__container
+{
+  margin-left: 28px;
+  margin-right: 28px;
+}
+
+.NotifiIntercomEmailInput__container,
+.NotifiIntercomSmsInput__container,
+.NotifiIntercomTelegramInput__container
+{
+  background-color: var(--notifi-intercom-input-background);
+  border-radius: 6px;
+}
+
+.NotifiIntercomEmailInput__container:focus-within,
+.NotifiIntercomSmsInput__container:focus-within,
+.NotifiIntercomTelegramInput__container:focus-within {
+  box-shadow: inset 0px 0px 0px 1px var(--notifi-focus-color);
+}
+
+.NotifiIntercomSmsInput__dropdownContainer
+{
+  background-color: var(--notifi-intercom-input-background);
+}
+
+.NotifiIntercomSmsInput__dropdownSelect
+{
+  background-color: var(--notifi-intercom-input-background);
+  border: 0;
+}
+
+.NotifiIntercomSmsInput__dropdownSelect:focus-visible
+{
+  box-shadow: none;
+}
+
+.BrowserAlertToggle__label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.BrowserAlertToggle__container {
+  margin-top: 12px;
 }
