@@ -101,7 +101,7 @@ export const ChatMessageSection: React.FC<ChatMessageSectionProps> = ({
           }}
           style={{
             width: messageListWidth || '364px',
-            height: messageListHeight || '290px',
+            height: messageListHeight || '270px',
           }}
         />
       )}
