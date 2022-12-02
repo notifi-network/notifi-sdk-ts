@@ -16,15 +16,18 @@ mutation createSupportConversation {
     }
     name
     createdDate
-     participants {
+    participants {
       conversationParticipantType
-       profile {
-         id
-          preferredAddress
-          preferredName
-       }
-       resolvedName
-     }
+      profile {
+        id
+        preferredAddress
+        preferredName
+        avatarData
+        avatarDataType
+      }
+      resolvedName
+    }
+    backgroundImageUrl
   }
 }
 `.trim();

@@ -907,9 +907,6 @@
   margin: 0 16px 8px 12px;
   position: relative;
   overflow-wrap: break-word;
-}
-
-.NotifiIntercomChatIncomingMessage__body:first-child {
   border-radius: 0 16px 16px 16px;
 }
 
@@ -922,9 +919,6 @@
   margin: 0 16px 8px 12px;
   position: relative;
   overflow-wrap: break-word;
-}
-
-.NotifiIntercomChatOutgoingMessage__body:first-child {
   border-radius: 16px 0 16px 16px;
 }
 
@@ -966,4 +960,9 @@
   line-height: 16px;
   text-align: right;
   color: #1448F3;
+}
+
+.NotifiIntercomChatMessage__avatar {
+  border-radius: 20px;
+  background-color:   #F5F6FB;
 }

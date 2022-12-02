@@ -6,6 +6,7 @@ export type SupportConversation = Readonly<{
   name: string;
   createdDate: string;
   participants: Array<Participant>;
+  backgroundImageUrl: string;
 }>;
 
 export type ConversationGates = Readonly<{
@@ -20,6 +21,8 @@ export type Participant = Readonly<{
     id: string;
     preferredAddress: string;
     preferredName?: string | undefined;
+    avatarDataType: string;
+    avatarData: string;
   };
   resolvedName?: string | undefined;
 }>;
