@@ -21,6 +21,8 @@ export type Participant = Readonly<{
     id: string;
     preferredAddress: string;
     preferredName?: string | undefined;
+    avatarDataType: string;
+    avatarData: string;
   };
   resolvedName?: string | undefined;
 }>;

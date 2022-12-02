@@ -49,6 +49,10 @@ export const MessageGroup: React.FC<MessageGroupProps> = ({
               <img
                 height={34}
                 src={supportAvatarUrl}
+                onError={(e) => {
+                  const img = e.target as HTMLImageElement;
+                  img.style.display = 'none';
+                }}
                 className={clsx(
                   'NotifiIntercomChatMessage__avatar',
                   classNames?.avatar,

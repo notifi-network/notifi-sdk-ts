@@ -92,9 +92,11 @@ export const IntercomCard: React.FC<
           if (participant.conversationParticipantType === 'MEMBER') {
             setUserId(participant.profile.id);
           }
+          if (participant.conversationParticipantType === 'SUPPORT') {
+            setSupportAvatarUrl(participant.profile.avatarData);
+          }
         });
         setConversationId(result.id);
-        setSupportAvatarUrl(result.backgroundImageUrl);
         setIntercomCardView({
           state: 'chatWindowView',
         });

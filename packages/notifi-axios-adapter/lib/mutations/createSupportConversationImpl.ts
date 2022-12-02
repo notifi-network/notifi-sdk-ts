@@ -22,6 +22,8 @@ mutation createSupportConversation {
         id
         preferredAddress
         preferredName
+        avatarData
+        avatarDataType
       }
       resolvedName
     }
