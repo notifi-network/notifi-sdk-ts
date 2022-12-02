@@ -6,6 +6,7 @@ export type SupportConversation = Readonly<{
   name: string;
   createdDate: string;
   participants: Array<Participant>;
+  backgroundImageUrl: string;
 }>;
 
 export type ConversationGates = Readonly<{

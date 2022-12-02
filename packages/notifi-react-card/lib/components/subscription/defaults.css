@@ -813,3 +813,7 @@
   text-align: right;
   color: #1448F3;
 }
+
+.NotifiIntercomChatMessage__avatar {
+  border-radius: 20px;
+}

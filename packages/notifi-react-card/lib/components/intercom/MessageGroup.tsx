@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import { useNotifiSubscriptionContext } from 'notifi-react-card/lib/context';
 import React from 'react';
 
 import { ChatMessage } from '../../hooks/useIntercomChat';
@@ -11,6 +12,7 @@ export type MessageGroupProps = Readonly<{
     messageBody: string;
     timeStamp: string;
     sender: string;
+    avatar: string;
   }>;
   messages: ChatMessage[];
   direction: string;
@@ -21,6 +23,7 @@ export const MessageGroup: React.FC<MessageGroupProps> = ({
   messages,
   direction,
 }) => {
+  const { supportAvatarUrl } = useNotifiSubscriptionContext();
   const isIncoming = direction === 'INCOMING';
   return (
     <div
@@ -41,11 +44,18 @@ export const MessageGroup: React.FC<MessageGroupProps> = ({
           )}
           key={index}
         >
-          {/* {isIncoming ? (
+          {isIncoming ? (
             <div>
-              <img height={34} src={message.avatar} />
+              <img
+                height={34}
+                src={supportAvatarUrl}
+                className={clsx(
+                  'NotifiIntercomChatMessage__avatar',
+                  classNames?.avatar,
+                )}
+              />
             </div>
-          ) : null} */}
+          ) : null}
           <div
             key={index}
             className={clsx(
