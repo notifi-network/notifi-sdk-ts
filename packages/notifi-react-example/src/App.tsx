@@ -1,7 +1,7 @@
 import React from 'react';
 
 import './App.css';
-import { NotifiCard } from './NotifiCard/NotifiCard';
+import { NotifiCard } from './NotifiCard';
 
 function App() {
   return (
@@ -10,5 +10,4 @@ function App() {
     </div>
   );
 }
-
 export default App;

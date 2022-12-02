@@ -1,26 +1,24 @@
-import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
+import React, { FC, useMemo } from 'react';
 import {
   ConnectionProvider,
   WalletProvider,
 } from '@solana/wallet-adapter-react';
-import {
-  WalletDisconnectButton,
-  WalletModalProvider,
-  WalletMultiButton,
-} from '@solana/wallet-adapter-react-ui';
+import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import {
   PhantomWalletAdapter,
   SolflareWalletAdapter,
 } from '@solana/wallet-adapter-wallets';
+import {
+  WalletModalProvider,
+  WalletDisconnectButton,
+  WalletMultiButton,
+} from '@solana/wallet-adapter-react-ui';
 import { clusterApiUrl } from '@solana/web3.js';
-import React, { FC, useMemo } from 'react';
-
-import App from './App';
 
 // Default styles that can be overridden by your app
 require('@solana/wallet-adapter-react-ui/styles.css');
 
-export const SolanaWalletProvider: FC = () => {
+export const SolanaWalletProvider: FC = ({ children }) => {
   // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'.
   const network = WalletAdapterNetwork.Devnet;
 
@@ -49,7 +47,7 @@ export const SolanaWalletProvider: FC = () => {
         <WalletModalProvider>
           <WalletMultiButton />
           <WalletDisconnectButton />
-          <App />
+          {children}
         </WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>

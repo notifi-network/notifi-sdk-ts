@@ -705,6 +705,7 @@
   font-size: 22px;
   font-weight: 700;
   line-height: 27px;
+  text-align: center;
 }
 
 .NotifiIntercomCard__subtitle1
@@ -713,6 +714,7 @@
   font-size: 16px;
   font-weight: 700;
   line-height: 19px;
+  text-align: center;
 
 }
 
@@ -723,6 +725,7 @@
   line-height: 19px;
   margin-top: 20px;
   margin-bottom: 20px;
+  text-align: center;
 }
 
 .NotifiSupportNotificationOption__container
@@ -826,6 +829,7 @@
 }
 
 .NotifiIntercomChatMessageDate__body {
+  text-align: center;
   display: inline-block;
   width: 64px;
   padding: 5px;

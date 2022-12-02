@@ -1,0 +1,7 @@
+.container {
+  margin: 10px;
+  width: 364px;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+}

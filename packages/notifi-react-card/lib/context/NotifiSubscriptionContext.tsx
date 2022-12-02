@@ -1,12 +1,19 @@
 import type { Alert } from '@notifi-network/notifi-core';
 import { PropsWithChildren } from 'react';
-import React, { createContext, useContext, useState } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useRef,
+  useState,
+} from 'react';
 
 import { FetchedCardView, useFetchedCardState } from '../hooks';
 import {
   IntercomCardView,
   useIntercomCardState,
 } from '../hooks/useIntercomCardState';
+import { AlertConfiguration } from '../utils';
 import { NotifiParams } from './NotifiContext';
 
 export type NotifiSubscriptionData = Readonly<{
