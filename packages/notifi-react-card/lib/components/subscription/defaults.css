@@ -753,9 +753,6 @@
   margin: 0 16px 8px 12px;
   position: relative;
   overflow-wrap: break-word;
-}
-
-.NotifiIntercomChatIncomingMessage__body:first-child {
   border-radius: 0 16px 16px 16px;
 }
 
@@ -768,9 +765,6 @@
   margin: 0 16px 8px 12px;
   position: relative;
   overflow-wrap: break-word;
-}
-
-.NotifiIntercomChatOutgoingMessage__body:first-child {
   border-radius: 16px 0 16px 16px;
 }
 
