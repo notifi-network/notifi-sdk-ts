@@ -93,7 +93,9 @@ export const IntercomCard: React.FC<
             setUserId(participant.profile.id);
           }
           if (participant.conversationParticipantType === 'SUPPORT') {
-            setSupportAvatarUrl(participant.profile.avatarData);
+            if (participant.profile.avatarDataType === 'URL') {
+              setSupportAvatarUrl(participant.profile.avatarData);
+            }
           }
         });
         setConversationId(result.id);
@@ -145,10 +147,14 @@ export const IntercomCard: React.FC<
       });
       const result = await client.createSupportConversation();
       setConversationId(result.id);
-      setSupportAvatarUrl(result.backgroundImageUrl);
       result.participants.forEach((participant) => {
         if (participant.conversationParticipantType === 'MEMBER') {
           setUserId(participant.profile.id);
+        }
+        if (participant.conversationParticipantType === 'SUPPORT') {
+          if (participant.profile.avatarDataType === 'URL') {
+            setSupportAvatarUrl(participant.profile.avatarData);
+          }
         }
       });
 
