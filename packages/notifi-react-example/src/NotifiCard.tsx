@@ -1,4 +1,4 @@
-import { NotifiContext, NotifiInputSeparators, NotifiIntercomCard } from '@notifi-network/notifi-react-card';
+import { NotifiContext, NotifiInputSeparators, NotifiIntercomCard, NotifiSubscriptionCard } from '@notifi-network/notifi-react-card';
 import '@notifi-network/notifi-react-card/dist/index.css';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import React from 'react';
