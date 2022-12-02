@@ -71,7 +71,6 @@ export const IntercomCard: React.FC<
     setHasChatAlert,
     setConversationId,
     setUserId,
-    setSupportAvatarUrl,
   } = useNotifiSubscriptionContext();
 
   const { client } = useNotifiClientContext();
@@ -91,11 +90,6 @@ export const IntercomCard: React.FC<
         result.participants.forEach((participant) => {
           if (participant.conversationParticipantType === 'MEMBER') {
             setUserId(participant.profile.id);
-          }
-          if (participant.conversationParticipantType === 'SUPPORT') {
-            if (participant.profile.avatarDataType === 'URL') {
-              setSupportAvatarUrl(participant.profile.avatarData);
-            }
           }
         });
         setConversationId(result.id);
@@ -150,11 +144,6 @@ export const IntercomCard: React.FC<
       result.participants.forEach((participant) => {
         if (participant.conversationParticipantType === 'MEMBER') {
           setUserId(participant.profile.id);
-        }
-        if (participant.conversationParticipantType === 'SUPPORT') {
-          if (participant.profile.avatarDataType === 'URL') {
-            setSupportAvatarUrl(participant.profile.avatarData);
-          }
         }
       });
 
