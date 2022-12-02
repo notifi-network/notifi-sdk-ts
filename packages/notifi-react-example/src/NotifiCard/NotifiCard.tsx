@@ -1,6 +1,7 @@
 import {
   NotifiContext,
   NotifiInputSeparators,
+  NotifiIntercomCard,
   NotifiSubscriptionCard,
 } from '@notifi-network/notifi-react-card';
 import '@notifi-network/notifi-react-card/dist/index.css';
@@ -55,6 +56,12 @@ export const NotifiCard: React.FC = () => {
           inputSeparators={inputSeparators}
           cardId="71562316475a4171ae9c980adaefab7d"
         ></NotifiSubscriptionCard>
+        <NotifiIntercomCard
+          inputLabels={inputLabels}
+          inputSeparators={inputSeparators}
+          cardId="1045f61752b148eabab0403c08cd60b2"
+        >
+        </NotifiIntercomCard>
       </NotifiContext>
     </div>
   );
