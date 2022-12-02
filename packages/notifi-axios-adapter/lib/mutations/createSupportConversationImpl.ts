@@ -17,7 +17,7 @@ mutation createSupportConversation {
     name
     createdDate
     participants {
-    conversationParticipantType
+      conversationParticipantType
       profile {
         id
         preferredAddress
