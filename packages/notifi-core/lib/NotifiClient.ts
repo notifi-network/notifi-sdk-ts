@@ -19,6 +19,7 @@ import {
 import {
   CreateSourceInput,
   CreateWebhookTargetInput,
+  FindTenantConfigInput,
   GetNotificationHistoryInput,
   SendConversationMessageInput,
 } from './operations';
@@ -214,10 +215,10 @@ export type ClientBroadcastMessageInput = Readonly<{
   variables?: Readonly<Record<string, string>>;
 }>;
 
-export type ClientFetchSubscriptionCardInput = Readonly<{
-  tenant: string;
-  id: string;
-}>;
+export type ClientFetchSubscriptionCardInput = Omit<
+  FindTenantConfigInput,
+  'tenant'
+>;
 
 // TODO: Dedupe from FrontendClient
 export type Uint8SignMessageFunction = (

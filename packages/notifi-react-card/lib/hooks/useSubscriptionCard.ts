@@ -1,9 +1,7 @@
+import { ClientFetchSubscriptionCardInput } from '@notifi-network/notifi-core';
 import { useEffect, useState } from 'react';
 
-import {
-  useNotifiClientContext,
-  useNotifiSubscriptionContext,
-} from '../context';
+import { useNotifiClientContext } from '../context';
 import { CardConfigItemV1 } from './SubscriptionCardConfig';
 
 export type LoadingState = Readonly<{
@@ -24,24 +22,19 @@ export type ErrorState = Readonly<{
 
 export type SubscriptionCardState = LoadingState | FetchedState | ErrorState;
 
-export const useSubscriptionCard = (cardId: string): SubscriptionCardState => {
+export const useSubscriptionCard = (
+  input: ClientFetchSubscriptionCardInput,
+): SubscriptionCardState => {
   const [state, setState] = useState<SubscriptionCardState>({
     state: 'loading',
   });
-
-  const {
-    params: { dappAddress },
-  } = useNotifiSubscriptionContext();
 
   const { client } = useNotifiClientContext();
 
   useEffect(() => {
     setState({ state: 'loading' });
     client
-      .fetchSubscriptionCard({
-        tenant: dappAddress,
-        id: cardId,
-      })
+      .fetchSubscriptionCard(input)
       .then((result) => {
         const value = result.dataJson;
         if (value === null) {
@@ -66,7 +59,7 @@ export const useSubscriptionCard = (cardId: string): SubscriptionCardState => {
           reason: error,
         });
       });
-  }, [dappAddress, cardId]);
+  }, [input]);
 
   return state;
 };
