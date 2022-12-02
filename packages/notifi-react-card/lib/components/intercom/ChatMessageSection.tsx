@@ -21,15 +21,11 @@ export type ChatMessageSectionProps = Readonly<{
     date: ChatMessageDateProps['classNames'];
     sendMessageSection: SendMessageSectionProps['classNames'];
   }>;
-  messageListWidth?: string;
-  messageListHeight?: string;
   chatIntroQuestion: string;
 }>;
 
 export const ChatMessageSection: React.FC<ChatMessageSectionProps> = ({
   classNames,
-  messageListWidth,
-  messageListHeight,
   chatIntroQuestion,
 }) => {
   const { conversationId, userId } = useNotifiSubscriptionContext();
@@ -100,8 +96,9 @@ export const ChatMessageSection: React.FC<ChatMessageSectionProps> = ({
             );
           }}
           style={{
-            width: messageListWidth || '364px',
-            height: messageListHeight || '270px',
+            flexGrow: 1,
+            scrollbarGutter: 'stable',
+            overflowY: 'scroll',
           }}
         />
       )}
