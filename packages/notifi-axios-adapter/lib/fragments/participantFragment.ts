@@ -1,6 +1,7 @@
 export const participantFragment = `
 fragment Participant on ConversationParticipant {
   conversationId
+  conversationParticipantType
   profile {
     avatarData
     avatarDataType
@@ -16,4 +17,4 @@ fragment Participant on ConversationParticipant {
 }
 `.trim();
 
-export const participantFragmentDependencies = [participantFragment];
+export const participantFragmentDependencies = [];

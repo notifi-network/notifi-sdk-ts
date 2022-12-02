@@ -1,4 +1,4 @@
-import { ConversationMessagesEntry } from '@notifi-network/notifi-core/dist/models/ConversationMessages';
+import { ConversationMessagesEntry } from '@notifi-network/notifi-core';
 import { Participant } from 'notifi-core/lib/models/ConversationMessages';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ListRange } from 'react-virtuoso';

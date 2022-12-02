@@ -29,6 +29,7 @@ export type Participant = Readonly<{
     preferredName?: string | undefined;
   };
   conversationId: string;
+  conversationParticipantType: string;
   resolvedName?: string | undefined;
   userId: string;
   walletAddress: string;

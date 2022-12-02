@@ -94,7 +94,7 @@ export const IntercomCard: React.FC<
           }
           if (participant.conversationParticipantType === 'SUPPORT') {
             if (participant.profile.avatarDataType === 'URL') {
-              setSupportAvatarUrl(participant.profile.avatarData);
+              setSupportAvatarUrl(participant.profile.avatarData ?? '');
             }
           }
         });
@@ -153,7 +153,7 @@ export const IntercomCard: React.FC<
         }
         if (participant.conversationParticipantType === 'SUPPORT') {
           if (participant.profile.avatarDataType === 'URL') {
-            setSupportAvatarUrl(participant.profile.avatarData);
+            setSupportAvatarUrl(participant.profile.avatarData ?? '');
           }
         }
       });

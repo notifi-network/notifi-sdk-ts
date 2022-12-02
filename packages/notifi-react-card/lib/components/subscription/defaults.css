@@ -768,6 +768,7 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  flex-shrink: 0;
   padding-left: 20px;
   padding-right: 20px;
 }
@@ -830,6 +831,7 @@
 .NotifiIntercomSendMessageSection__container {
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
 }
 
 .NotifiIntercomSendMessageSection__textarea {

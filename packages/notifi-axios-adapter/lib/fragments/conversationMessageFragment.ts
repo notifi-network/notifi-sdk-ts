@@ -1,3 +1,8 @@
+import {
+  participantFragment,
+  participantFragmentDependencies,
+} from './participantFragment';
+
 export const conversationMessageFragment = `
 fragment ConversationMessage on ConversationMessage {
   id
@@ -6,7 +11,13 @@ fragment ConversationMessage on ConversationMessage {
   createdDate
   updatedDate
   message
+  conversationParticipant {
+    ...Participant
+  }
 }
 `.trim();
 
-export const conversationMessageFragmentDependencies = [];
+export const conversationMessageFragmentDependencies = [
+  ...participantFragmentDependencies,
+  participantFragment,
+];
