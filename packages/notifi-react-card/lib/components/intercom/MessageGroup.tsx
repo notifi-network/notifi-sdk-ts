@@ -1,5 +1,4 @@
 import clsx from 'clsx';
-import { useNotifiSubscriptionContext } from 'notifi-react-card/lib/context';
 import React from 'react';
 
 import { ChatMessage } from '../../hooks/useIntercomChat';
@@ -17,13 +16,11 @@ export type MessageGroupProps = Readonly<{
   messages: ChatMessage[];
   direction: string;
 }>;
-
 export const MessageGroup: React.FC<MessageGroupProps> = ({
   classNames,
   messages,
   direction,
 }) => {
-  const { supportAvatarUrl } = useNotifiSubscriptionContext();
   const isIncoming = direction === 'INCOMING';
   return (
     <div
@@ -34,63 +31,70 @@ export const MessageGroup: React.FC<MessageGroupProps> = ({
         classNames?.messageGroupContainer,
       )}
     >
-      {messages.map((message, index) => (
-        <div
-          className={clsx(
-            isIncoming
-              ? 'NotifiIntercomChatIncomingMessage__container'
-              : 'NotifiIntercomChatOutgoingMessage__container',
-            classNames?.messageContainer,
-          )}
-          key={index}
-        >
-          {isIncoming ? (
-            <div>
-              <img
-                height={34}
-                src={supportAvatarUrl}
-                onError={(e) => {
-                  const img = e.target as HTMLImageElement;
-                  img.style.display = 'none';
-                }}
-                className={clsx(
-                  'NotifiIntercomChatMessage__avatar',
-                  classNames?.avatar,
-                )}
-              />
-            </div>
-          ) : null}
+      {messages.map((message, index) => {
+        const participantProfile = message.conversationParticipant.profile;
+        return (
           <div
-            key={index}
             className={clsx(
               isIncoming
-                ? 'NotifiIntercomChatIncomingMessage__body'
-                : 'NotifiIntercomChatOutgoingMessage__body',
-              classNames?.messageBody,
+                ? 'NotifiIntercomChatIncomingMessage__container'
+                : 'NotifiIntercomChatOutgoingMessage__container',
+              classNames?.messageContainer,
             )}
+            key={index}
           >
             {isIncoming ? (
-              <div
-                className={clsx(
-                  'NotifiIntercomChatOutgoingMessage__sender',
-                  classNames?.sender,
-                )}
-              >
-                {message.conversationParticipant.resolvedName}
+              <div>
+                <img
+                  height={34}
+                  src={
+                    participantProfile.avatarDataType === 'URL'
+                      ? participantProfile.avatarData
+                      : ''
+                  }
+                  onError={(e) => {
+                    const img = e.target as HTMLImageElement;
+                    img.style.display = 'none';
+                  }}
+                  className={clsx(
+                    'NotifiIntercomChatMessage__avatar',
+                    classNames?.avatar,
+                  )}
+                />
               </div>
             ) : null}
-            <div key={index}>{message.message}</div>
             <div
+              key={index}
               className={clsx(
-                'NotifiIntercomChatOutgoingMessage__timeStamp',
-                classNames?.timeStamp,
+                isIncoming
+                  ? 'NotifiIntercomChatIncomingMessage__body'
+                  : 'NotifiIntercomChatOutgoingMessage__body',
+                classNames?.messageBody,
               )}
             >
-              {formatHourTimestamp(message.createdDate)}
+              {isIncoming ? (
+                <div
+                  className={clsx(
+                    'NotifiIntercomChatOutgoingMessage__sender',
+                    classNames?.sender,
+                  )}
+                >
+                  {message.conversationParticipant.resolvedName}
+                </div>
+              ) : null}
+              <div key={index}>{message.message}</div>
+              <div
+                className={clsx(
+                  'NotifiIntercomChatOutgoingMessage__timeStamp',
+                  classNames?.timeStamp,
+                )}
+              >
+                {formatHourTimestamp(message.createdDate)}
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 };

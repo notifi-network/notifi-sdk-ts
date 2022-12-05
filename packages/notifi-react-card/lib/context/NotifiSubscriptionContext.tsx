@@ -48,8 +48,6 @@ export type NotifiSubscriptionData = Readonly<{
   setConversationId: (conversationId: string) => void;
   userId: string;
   setUserId: (userId: string) => void;
-  setSupportAvatarUrl: (supportAvatarUrl: string) => void;
-  supportAvatarUrl: string;
 }>;
 
 const NotifiSubscriptionContext = createContext<NotifiSubscriptionData>(
@@ -60,7 +58,6 @@ export const NotifiSubscriptionContextProvider: React.FC<
   PropsWithChildren<NotifiParams>
 > = ({ children, ...params }) => {
   const [conversationId, setConversationId] = useState<string>('');
-  const [supportAvatarUrl, setSupportAvatarUrl] = useState<string>('');
   const [userId, setUserId] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
@@ -118,8 +115,6 @@ export const NotifiSubscriptionContextProvider: React.FC<
     setConversationId,
     userId,
     setUserId,
-    setSupportAvatarUrl,
-    supportAvatarUrl,
   };
 
   return (
