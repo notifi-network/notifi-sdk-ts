@@ -39,6 +39,12 @@ export const NotifiCard: React.FC = () => {
     },
   };
 
+  const intercomInputSeparators: NotifiInputSeparators = {
+    emailSeparator: {
+      content: 'OR',
+    },
+  };
+
   return (
     <div className="container">
       <NotifiContext
@@ -55,13 +61,12 @@ export const NotifiCard: React.FC = () => {
           inputLabels={inputLabels}
           inputSeparators={inputSeparators}
           cardId="71562316475a4171ae9c980adaefab7d"
-        ></NotifiSubscriptionCard>
+        />
         <NotifiIntercomCard
           inputLabels={inputLabels}
-          inputSeparators={inputSeparators}
+          inputSeparators={intercomInputSeparators}
           cardId="1045f61752b148eabab0403c08cd60b2"
-        >
-        </NotifiIntercomCard>
+        />
       </NotifiContext>
     </div>
   );
