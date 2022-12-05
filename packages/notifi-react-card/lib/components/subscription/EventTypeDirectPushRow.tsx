@@ -33,7 +33,9 @@ export const EventTypeDirectPushRow: React.FC<EventTypeDirectPushRowProps> = ({
 }: EventTypeDirectPushRowProps) => {
   const { alerts, loading } = useNotifiSubscriptionContext();
 
-  const { instantSubscribe } = useNotifiSubscribe();
+  const { instantSubscribe } = useNotifiSubscribe({
+    targetGroupName: 'Default',
+  });
   const [enabled, setEnabled] = useState(false);
 
   const alertName = useMemo<string>(() => config.name, [config]);

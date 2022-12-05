@@ -15,6 +15,19 @@ export type AlertConfiguration = Readonly<{
   filterOptions: FilterOptions | null;
 }>;
 
+export const chatConfiguration = (): AlertConfiguration => {
+  return {
+    filterType: 'NOTIFI_CHAT_MESSAGES',
+    filterOptions: {
+      alertFrequency: 'THREE_MINUTES',
+    },
+    sourceType: 'NOTIFI_CHAT',
+    createSource: {
+      address: '*',
+    },
+  };
+};
+
 export const broadcastMessageConfiguration = ({
   topicName,
 }: Readonly<{

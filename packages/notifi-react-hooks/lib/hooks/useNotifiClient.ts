@@ -16,8 +16,10 @@ import {
   CompleteLoginViaTransactionInput,
   CompleteLoginViaTransactionResult,
   CreateSourceInput,
+  GetConversationMessagesFullInput,
   GetNotificationHistoryInput,
   NotifiClient,
+  SendConversationMessageInput,
   SignMessageParams,
   Source,
   TargetGroup,
@@ -1249,12 +1251,12 @@ const useNotifiClient = (
     async (input: ClientFetchSubscriptionCardInput): Promise<TenantConfig> => {
       setLoading(true);
       try {
-        const config = await service.findTenantConfig({
+        const tenantConfig = await service.findTenantConfig({
+          tenant: dappAddress,
           ...input,
-          type: 'SUBSCRIPTION_CARD',
         });
 
-        return config;
+        return tenantConfig;
       } catch (e: unknown) {
         if (e instanceof Error) {
           setError(e);
@@ -1266,7 +1268,7 @@ const useNotifiClient = (
         setLoading(false);
       }
     },
-    [setError, setLoading, service],
+    [setError, setLoading, service, dappAddress],
   );
 
   const getNotificationHistory = useCallback(
@@ -1288,6 +1290,60 @@ const useNotifiClient = (
     [setLoading, setError, service],
   );
 
+  const getConversationMessages = useCallback(
+    async (input: GetConversationMessagesFullInput) => {
+      try {
+        const result = await service.getConversationMessages(input);
+        return result;
+      } catch (e: unknown) {
+        if (e instanceof Error) {
+          setError(e);
+        } else {
+          setError(new NotifiClientError(e));
+        }
+        throw e;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [setLoading, setError, service],
+  );
+
+  const sendConversationMessages = useCallback(
+    async (input: SendConversationMessageInput) => {
+      try {
+        const result = await service.sendConversationMessages(input);
+        return result;
+      } catch (e: unknown) {
+        if (e instanceof Error) {
+          setError(e);
+        } else {
+          setError(new NotifiClientError(e));
+        }
+        throw e;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [setLoading, setError, service],
+  );
+
+  const createSupportConversation = useCallback(async () => {
+    try {
+      const result = await service.createSupportConversation();
+      return result;
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        setError(e);
+      } else {
+        setError(new NotifiClientError(e));
+      }
+      throw e;
+    } finally {
+      setLoading(false);
+    }
+  }, [setLoading, setError, service]);
+
   const client: NotifiClient = {
     beginLoginViaTransaction,
     broadcastMessage,
@@ -1302,11 +1358,14 @@ const useNotifiClient = (
     fetchData,
     fetchSubscriptionCard,
     getConfiguration,
+    getConversationMessages,
     getNotificationHistory,
     getTopics,
     updateAlert,
     ensureTargetGroup,
+    sendConversationMessages,
     sendEmailTargetVerification,
+    createSupportConversation,
   };
 
   return {

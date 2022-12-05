@@ -2,7 +2,7 @@ import { Operation, TenantConfig } from '../models';
 
 export type FindTenantConfigInput = Readonly<{
   tenant: string;
-  type: 'SUBSCRIPTION_CARD';
+  type: 'SUBSCRIPTION_CARD' | 'INTERCOM_CARD';
   id: string;
 }>;
 export type FindTenantConfigResult = TenantConfig;

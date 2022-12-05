@@ -31,7 +31,13 @@ export type InstantSubscribe = Readonly<{
   alertConfiguration: AlertConfiguration | null;
 }>;
 
-export const useNotifiSubscribe: () => Readonly<{
+type useNotifiSubscribeProps = Readonly<{
+  targetGroupName?: string;
+}>;
+
+export const useNotifiSubscribe: ({
+  targetGroupName,
+}: useNotifiSubscribeProps) => Readonly<{
   isAuthenticated: boolean;
   isInitialized: boolean;
   logIn: () => Promise<SubscriptionData>;
@@ -43,7 +49,7 @@ export const useNotifiSubscribe: () => Readonly<{
   ) => Promise<SubscriptionData>;
   updateTargetGroups: () => Promise<SubscriptionData>;
   resendEmailVerificationLink: () => Promise<string>;
-}> = () => {
+}> = ({ targetGroupName = 'Default' }: useNotifiSubscribeProps) => {
   const { client } = useNotifiClientContext();
 
   const {
@@ -76,7 +82,7 @@ export const useNotifiSubscribe: () => Readonly<{
   const render = useCallback(
     (newData: ClientData | null): SubscriptionData => {
       const targetGroup = newData?.targetGroups.find(
-        (tg) => tg.name === 'Default',
+        (tg) => tg.name === targetGroupName,
       );
 
       const alerts: Record<string, Alert> = {};
@@ -320,7 +326,7 @@ export const useNotifiSubscribe: () => Readonly<{
               name,
               phoneNumber: finalPhoneNumber,
               sourceId: source.id,
-              targetGroupName: 'Default',
+              targetGroupName,
               telegramId: finalTelegramId,
             });
 
@@ -336,7 +342,7 @@ export const useNotifiSubscribe: () => Readonly<{
         // We didn't create or update any alert, manually update the targets
         await client.ensureTargetGroup({
           emailAddress: finalEmail,
-          name: 'Default',
+          name: targetGroupName,
           phoneNumber: finalPhoneNumber,
           telegramId: finalTelegramId,
         });
@@ -362,7 +368,7 @@ export const useNotifiSubscribe: () => Readonly<{
     }
     await client.ensureTargetGroup({
       emailAddress: finalEmail,
-      name: 'Default',
+      name: targetGroupName,
       phoneNumber: finalPhoneNumber,
       telegramId: finalTelegramId,
     });
@@ -481,7 +487,7 @@ export const useNotifiSubscribe: () => Readonly<{
             name: alertName,
             phoneNumber: finalPhoneNumber,
             sourceId: source.id,
-            targetGroupName: 'Default',
+            targetGroupName,
             telegramId: finalTelegramId,
           });
           newResults[alertName] = alert;
@@ -494,7 +500,7 @@ export const useNotifiSubscribe: () => Readonly<{
         // We didn't create or update any alert, manually update the targets
         await client.ensureTargetGroup({
           emailAddress: finalEmail,
-          name: 'Default',
+          name: targetGroupName,
           phoneNumber: finalPhoneNumber,
           telegramId: finalTelegramId,
         });

@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import App from './App';
 import { SolanaWalletProvider } from './SolanaWalletProvider';
 import './index.css';
+import App from './App';
 
 ReactDOM.render(
   <React.StrictMode>

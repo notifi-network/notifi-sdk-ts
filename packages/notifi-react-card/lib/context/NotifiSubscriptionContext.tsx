@@ -3,6 +3,10 @@ import { PropsWithChildren } from 'react';
 import React, { createContext, useContext, useState } from 'react';
 
 import { FetchedCardView, useFetchedCardState } from '../hooks';
+import {
+  IntercomCardView,
+  useIntercomCardState,
+} from '../hooks/useIntercomCardState';
 import { NotifiParams } from './NotifiContext';
 
 export type NotifiSubscriptionData = Readonly<{
@@ -16,14 +20,18 @@ export type NotifiSubscriptionData = Readonly<{
 
   cardView: FetchedCardView;
   setCardView: React.Dispatch<React.SetStateAction<FetchedCardView>>;
+  intercomCardView: IntercomCardView;
+  setIntercomCardView: React.Dispatch<React.SetStateAction<IntercomCardView>>;
   setAlerts: (alerts: Record<string, Alert | undefined>) => void;
   setEmail: (email: string) => void;
   setPhoneNumber: (phoneNumber: string) => void;
   setTelegramId: (telegramId: string) => void;
   setEmailErrorMessage: (message: string) => void;
+  setTelegramErrorMessage: (message: string) => void;
   setSmsErrorMessage: (message: string) => void;
   emailErrorMessage: string;
   smsErrorMessage: string;
+  telegramErrorMessage: string;
   setTelegramConfirmationUrl: (
     telegramConfirmationUrl: string | undefined,
   ) => void;
@@ -34,6 +42,14 @@ export type NotifiSubscriptionData = Readonly<{
   setIsSmsConfirmed: (isConfirmed: boolean | null) => void;
   emailIdThatNeedsConfirmation: string;
   setEmailIdThatNeedsConfirmation: (emailId: string) => void;
+  hasChatAlert: boolean;
+  setHasChatAlert: (hasChatAlert: boolean) => void;
+  conversationId: string;
+  setConversationId: (conversationId: string) => void;
+  userId: string;
+  setUserId: (userId: string) => void;
+  setSupportAvatarUrl: (supportAvatarUrl: string) => void;
+  supportAvatarUrl: string;
 }>;
 
 const NotifiSubscriptionContext = createContext<NotifiSubscriptionData>(
@@ -43,17 +59,21 @@ const NotifiSubscriptionContext = createContext<NotifiSubscriptionData>(
 export const NotifiSubscriptionContextProvider: React.FC<
   PropsWithChildren<NotifiParams>
 > = ({ children, ...params }) => {
+  const [conversationId, setConversationId] = useState<string>('');
+  const [supportAvatarUrl, setSupportAvatarUrl] = useState<string>('');
+  const [userId, setUserId] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
+  const [hasChatAlert, setHasChatAlert] = useState<boolean>(false);
   const [telegramId, setTelegramId] = useState<string>('');
   const { cardView, setCardView } = useFetchedCardState();
-
+  const { intercomCardView, setIntercomCardView } = useIntercomCardState();
   const [emailErrorMessage, setEmailErrorMessage] = useState<string>('');
+  const [telegramErrorMessage, setTelegramErrorMessage] = useState<string>('');
   const [smsErrorMessage, setSmsErrorMessage] = useState<string>('');
   const [emailIdThatNeedsConfirmation, setEmailIdThatNeedsConfirmation] =
     useState<string>('');
   const [isSmsConfirmed, setIsSmsConfirmed] = useState<boolean | null>(null);
-
   const [telegramConfirmationUrl, setTelegramConfirmationUrl] = useState<
     string | undefined
   >(undefined);
@@ -88,6 +108,18 @@ export const NotifiSubscriptionContextProvider: React.FC<
     setTelegramId,
     setTelegramConfirmationUrl,
     setUseHardwareWallet,
+    intercomCardView,
+    setIntercomCardView,
+    telegramErrorMessage,
+    setTelegramErrorMessage,
+    hasChatAlert,
+    setHasChatAlert,
+    conversationId,
+    setConversationId,
+    userId,
+    setUserId,
+    setSupportAvatarUrl,
+    supportAvatarUrl,
   };
 
   return (

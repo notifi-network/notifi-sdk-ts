@@ -9,6 +9,7 @@ import createEmailTargetImpl from './mutations/createEmailTargetImpl';
 import createSmsTargetImpl from './mutations/createSmsTargetImpl';
 import createSourceGroupImpl from './mutations/createSourceGroupImpl';
 import createSourceImpl from './mutations/createSourceImpl';
+import createSupportConversationImpl from './mutations/createSupportConversationImpl';
 import createTargetGroupImpl from './mutations/createTargetGroupImpl';
 import createTelegramTargetImpl from './mutations/createTelegramTargetImpl';
 import createWebhookTargetImpl from './mutations/createWebhookTargetImpl';
@@ -17,12 +18,14 @@ import deleteSourceGroupImpl from './mutations/deleteSourceGroupImpl';
 import deleteTargetGroupImpl from './mutations/deleteTargetGroupImpl';
 import logInFromDappImpl from './mutations/logInFromDappImpl';
 import refreshAuthorizationImpl from './mutations/refreshAuthorizationImpl';
+import sendConversationMessagesImpl from './mutations/sendConversationMessagesImpl';
 import sendEmailTargetVerificationRequestImpl from './mutations/sendEmailTargetVerificationRequestImpl';
 import updateSourceGroupImpl from './mutations/updateSourceGroupImpl';
 import updateTargetGroupImpl from './mutations/updateTargetGroupImpl';
 import findTenantConfigImpl from './queries/findTenantConfigImpl';
 import getAlertsImpl from './queries/getAlertsImpl';
 import getConfigurationForDappImpl from './queries/getConfigurationForDappImpl';
+import getConversationMessagesImpl from './queries/getConversationMessagesImpl';
 import getEmailTargetsImpl from './queries/getEmailTargetsImpl';
 import getFiltersImpl from './queries/getFiltersImpl';
 import getNotificationHistoryImpl from './queries/getNotificationHistoryImpl';
@@ -47,6 +50,7 @@ export class NotifiAxiosService implements NotifiService {
   createSmsTarget: NotifiService['createSmsTarget'];
   createSource: NotifiService['createSource'];
   createSourceGroup: NotifiService['createSourceGroup'];
+  createSupportConversation: NotifiService['createSupportConversation'];
   createTargetGroup: NotifiService['createTargetGroup'];
   createTelegramTarget: NotifiService['createTelegramTarget'];
   createWebhookTarget: NotifiService['createWebhookTarget'];
@@ -56,6 +60,7 @@ export class NotifiAxiosService implements NotifiService {
   findTenantConfig: NotifiService['findTenantConfig'];
   getAlerts: NotifiService['getAlerts'];
   getConfigurationForDapp: NotifiService['getConfigurationForDapp'];
+  getConversationMessages: NotifiService['getConversationMessages'];
   getNotificationHistory: NotifiService['getNotificationHistory'];
   getEmailTargets: NotifiService['getEmailTargets'];
   getFilters: NotifiService['getFilters'];
@@ -68,6 +73,7 @@ export class NotifiAxiosService implements NotifiService {
   getWebhookTargets: NotifiService['getWebhookTargets'];
   logInFromDapp: NotifiService['logInFromDapp'];
   refreshAuthorization: NotifiService['refreshAuthorization'];
+  sendConversationMessages: NotifiService['sendConversationMessages'];
   sendEmailTargetVerificationRequest: NotifiService['sendEmailTargetVerificationRequest'];
   updateSourceGroup: NotifiService['updateSourceGroup'];
   updateTargetGroup: NotifiService['updateTargetGroup'];
@@ -106,6 +112,10 @@ export class NotifiAxiosService implements NotifiService {
     this.createTelegramTarget = createTelegramTargetImpl.bind(null, a);
     this.createSource = createSourceImpl.bind(null, a);
     this.createSourceGroup = createSourceGroupImpl.bind(null, a);
+    this.createSupportConversation = createSupportConversationImpl.bind(
+      null,
+      a,
+    );
     this.createWebhookTarget = createWebhookTargetImpl.bind(null, a);
     this.deleteAlert = deleteAlertImpl.bind(null, a);
     this.deleteSourceGroup = deleteSourceGroupImpl.bind(null, a);
@@ -113,6 +123,7 @@ export class NotifiAxiosService implements NotifiService {
     this.findTenantConfig = findTenantConfigImpl.bind(null, a);
     this.getAlerts = getAlertsImpl.bind(null, a);
     this.getConfigurationForDapp = getConfigurationForDappImpl.bind(null, a);
+    this.getConversationMessages = getConversationMessagesImpl.bind(null, a);
     this.getEmailTargets = getEmailTargetsImpl.bind(null, a);
     this.getFilters = getFiltersImpl.bind(null, a);
     this.getNotificationHistory = getNotificationHistoryImpl.bind(null, a);
@@ -127,6 +138,7 @@ export class NotifiAxiosService implements NotifiService {
     this.refreshAuthorization = refreshAuthorizationImpl.bind(null, a);
     this.sendEmailTargetVerificationRequest =
       sendEmailTargetVerificationRequestImpl.bind(null, a);
+    this.sendConversationMessages = sendConversationMessagesImpl.bind(null, a);
     this.updateSourceGroup = updateSourceGroupImpl.bind(null, a);
     this.updateTargetGroup = updateTargetGroupImpl.bind(null, a);
   }

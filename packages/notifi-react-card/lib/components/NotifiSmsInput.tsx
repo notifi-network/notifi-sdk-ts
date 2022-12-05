@@ -2,6 +2,7 @@ import clsx from 'clsx';
 import { isValidPhoneNumber } from 'libphonenumber-js';
 import React, { useCallback, useEffect, useState } from 'react';
 
+import { SmsIcon } from '../assets/SmsIcon';
 import { useNotifiSubscriptionContext } from '../context';
 import type { DeepPartialReadonly } from '../utils';
 import { splitPhoneNumber } from '../utils/phoneUtils';
@@ -22,6 +23,11 @@ export type NotifiSmsInputProps = Readonly<{
   }>;
   disabled: boolean;
   allowedCountryCodes: string[];
+  intercomSmsInputStyle?: string;
+  intercomSmsDropdownContainerStyle?: string;
+  intercomSmsDropdownSelectStyle?: string;
+  intercomSmsInputContainerStyle?: string;
+  intercomView?: boolean;
 }>;
 
 export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
@@ -29,6 +35,11 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
   copy,
   disabled,
   allowedCountryCodes,
+  intercomSmsInputStyle,
+  intercomSmsDropdownContainerStyle,
+  intercomSmsDropdownSelectStyle,
+  intercomSmsInputContainerStyle,
+  intercomView,
 }: NotifiSmsInputProps) => {
   const { phoneNumber, setPhoneNumber, setSmsErrorMessage, smsErrorMessage } =
     useNotifiSubscriptionContext();
@@ -114,13 +125,23 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
 
   return (
     <>
-      <label className={clsx('NotifiSmsInput__label', classNames?.label)}>
-        {copy?.label}
-      </label>
-      <div className={clsx('NotifiSmsInput__container', classNames?.container)}>
+      {intercomView ? null : (
+        <label className={clsx('NotifiSmsInput__label', classNames?.label)}>
+          {copy?.label}
+        </label>
+      )}
+      <div
+        className={clsx(
+          'NotifiSmsInput__container',
+          intercomSmsInputContainerStyle,
+          classNames?.container,
+        )}
+      >
+        <SmsIcon className={'NotifiInput__icon'} />
         <div
           className={clsx(
             'NotifiSmsInput__dropdownContainer',
+            intercomSmsDropdownContainerStyle,
             classNames?.dropdownContainer,
           )}
         >
@@ -129,6 +150,7 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
             onChange={handleChange('dialCode')}
             className={clsx(
               'NotifiSmsInput__dropdownSelect',
+              intercomSmsDropdownSelectStyle,
               classNames?.dropdownSelectField,
             )}
           >
@@ -136,7 +158,11 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
           </select>
         </div>
         <input
-          className={clsx('NotifiSmsInput__input', classNames?.input)}
+          className={clsx(
+            'NotifiSmsInput__input',
+            intercomSmsInputStyle,
+            classNames?.input,
+          )}
           disabled={disabled}
           name="notifi-sms"
           onBlur={validateSmsInput}

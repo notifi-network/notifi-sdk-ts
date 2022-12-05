@@ -13,10 +13,18 @@ import {
   UserTopic,
 } from './models';
 import {
+  ConversationMessages,
+  ConversationMessagesEntry,
+} from './models/ConversationMessages';
+import { SupportConversation } from './models/SupportConversation';
+import {
   CreateSourceInput,
   CreateWebhookTargetInput,
+  FindTenantConfigInput,
   GetNotificationHistoryInput,
+  SendConversationMessageInput,
 } from './operations';
+import { GetConversationMessagesFullInput } from './operations/getConversationMessages';
 
 export type ClientData = Readonly<{
   alerts: ReadonlyArray<Alert>;
@@ -33,7 +41,8 @@ export type AlertFrequency =
   | 'SINGLE'
   | 'QUARTER_HOUR'
   | 'HOURLY'
-  | 'DAILY';
+  | 'DAILY'
+  | 'THREE_MINUTES';
 
 export type ValueItemConfig = Readonly<{
   key: string;
@@ -207,10 +216,10 @@ export type ClientBroadcastMessageInput = Readonly<{
   variables?: Readonly<Record<string, string>>;
 }>;
 
-export type ClientFetchSubscriptionCardInput = Readonly<{
-  tenant: string;
-  id: string;
-}>;
+export type ClientFetchSubscriptionCardInput = Omit<
+  FindTenantConfigInput,
+  'tenant'
+>;
 
 // TODO: Dedupe from FrontendClient
 export type Uint8SignMessageFunction = (
@@ -273,6 +282,7 @@ export type NotifiClient = Readonly<{
   logOut: () => Promise<void>;
   createAlert: (input: ClientCreateAlertInput) => Promise<Alert>;
   createSource: (input: CreateSourceInput) => Promise<Source>;
+  createSupportConversation: () => Promise<SupportConversation>;
   createMetaplexAuctionSource: (
     input: ClientCreateMetaplexAuctionSourceInput,
   ) => Promise<Source>;
@@ -289,10 +299,16 @@ export type NotifiClient = Readonly<{
   ensureTargetGroup: (
     input: ClientEnsureTargetGroupInput,
   ) => Promise<TargetGroup>;
+  sendConversationMessages: (
+    input: SendConversationMessageInput,
+  ) => Promise<ConversationMessagesEntry>;
   sendEmailTargetVerification: (
     input: ClientSendVerificationEmailInput,
   ) => Promise<string>;
   fetchSubscriptionCard: (
     input: ClientFetchSubscriptionCardInput,
   ) => Promise<TenantConfig>;
+  getConversationMessages: (
+    input: GetConversationMessagesFullInput,
+  ) => Promise<ConversationMessages>;
 }>;

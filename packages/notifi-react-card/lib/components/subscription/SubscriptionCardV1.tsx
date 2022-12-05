@@ -49,7 +49,9 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
   const { cardView, email, phoneNumber, telegramId, setCardView } =
     useNotifiSubscriptionContext();
 
-  const { isInitialized } = useNotifiSubscribe();
+  const { isInitialized } = useNotifiSubscribe({
+    targetGroupName: 'Default',
+  });
 
   let view = null;
 
