@@ -9,3 +9,5 @@ export * from './NotifiSubscribeButton';
 export * from './NotifiSubscriptionCard';
 export * from './SubscriptionCardUnsupported';
 export * from './SubscriptionCardV1';
+export * from './NotifiSubscriptionContextWrapper';
+export * from './subscription-card-views';
