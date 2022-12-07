@@ -20,15 +20,23 @@ export type NotifiSubscriptionData = Readonly<{
 
   cardView: FetchedCardViewState;
   setCardView: React.Dispatch<React.SetStateAction<FetchedCardViewState>>;
+  twitterId: string;
+  discordId: string;
   intercomCardView: IntercomCardView;
   setIntercomCardView: React.Dispatch<React.SetStateAction<IntercomCardView>>;
   setAlerts: (alerts: Record<string, Alert | undefined>) => void;
   setEmail: (email: string) => void;
   setPhoneNumber: (phoneNumber: string) => void;
   setTelegramId: (telegramId: string) => void;
+  setTwitterId: (twitterId: string) => void;
+  setDiscordId: (discordId: string) => void;
+  setDiscordErrorMessage: (message: string) => void;
+  setTwitterErrorMessage: (message: string) => void;
   setEmailErrorMessage: (message: string) => void;
   setTelegramErrorMessage: (message: string) => void;
   setSmsErrorMessage: (message: string) => void;
+  twitterErrorMessage: string;
+  discordErrorMessage: string;
   emailErrorMessage: string;
   smsErrorMessage: string;
   telegramErrorMessage: string;
@@ -79,6 +87,11 @@ export const NotifiSubscriptionContextProvider: React.FC<
   const [useHardwareWallet, setUseHardwareWallet] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
 
+  const [twitterId, setTwitterId] = useState<string>('');
+  const [discordId, setDiscordId] = useState<string>('');
+  const [discordErrorMessage, setDiscordErrorMessage] = useState<string>('');
+  const [twitterErrorMessage, setTwitterErrorMessage] = useState<string>('');
+
   const value = {
     alerts,
     email,
@@ -115,6 +128,16 @@ export const NotifiSubscriptionContextProvider: React.FC<
     setConversationId,
     userId,
     setUserId,
+    setSupportAvatarUrl,
+    supportAvatarUrl,
+    twitterId,
+    discordId,
+    setTwitterId,
+    setDiscordId,
+    discordErrorMessage,
+    setDiscordErrorMessage,
+    twitterErrorMessage,
+    setTwitterErrorMessage,
   };
 
   return (

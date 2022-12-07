@@ -14,6 +14,7 @@ export const NotifiSubscriptionCardContainer: React.FC<
   buttonText,
   classNames,
   cardId,
+  hideAlertListPreview,
   darkMode,
   inputLabels,
   inputs = {},
@@ -49,6 +50,7 @@ export const NotifiSubscriptionCardContainer: React.FC<
         <FetchedStateCard
           buttonText={buttonText}
           classNames={classNames?.FetchedStateCard}
+          hideAlertListPreview={hideAlertListPreview}
           card={card}
           inputs={inputs}
           inputDisabled={inputDisabled}

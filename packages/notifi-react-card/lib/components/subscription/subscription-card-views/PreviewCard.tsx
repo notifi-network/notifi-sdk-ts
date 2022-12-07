@@ -19,7 +19,7 @@ export type PreviewCardProps = Readonly<{
     backArrowContainer?: string;
     UserInfoPanel?: DeepPartialReadonly<UserInfoPanelProps['classNames']>;
   };
-
+  hideBackClick?: boolean;
   data: CardConfigItemV1;
   inputDisabled: boolean;
   inputs: Record<string, string | undefined>;
@@ -28,6 +28,7 @@ export type PreviewCardProps = Readonly<{
 export const PreviewCard: React.FC<PreviewCardProps> = ({
   classNames,
   data,
+  hideBackClick,
   inputDisabled,
   inputs = {},
 }) => {
@@ -43,15 +44,17 @@ export const PreviewCard: React.FC<PreviewCardProps> = ({
         classNames?.NotifiPreviewCardContainer,
       )}
     >
-      <div
-        className={clsx(
-          'NotifiPreviewCard__backArrowContainer',
-          classNames?.backArrowContainer,
-        )}
-        onClick={() => handlePreviewClick()}
-      >
-        <BackArrow />
-      </div>
+      {hideBackClick ? null : (
+        <div
+          className={clsx(
+            'NotifiPreviewCard__backArrowContainer',
+            classNames?.backArrowContainer,
+          )}
+          onClick={() => handlePreviewClick()}
+        >
+          <BackArrow />
+        </div>
+      )}
       <UserInfoPanel
         classNames={classNames?.UserInfoPanel}
         contactInfo={data.contactInfo}

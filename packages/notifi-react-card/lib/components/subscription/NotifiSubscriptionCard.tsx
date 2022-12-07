@@ -33,12 +33,28 @@ export type NotifiInputSeparators = {
     };
     content: string;
   };
+  discordSeparator?: {
+    classNames?: {
+      container: string;
+      content: string;
+    };
+    content: string;
+  };
+  twitterSeparator?: {
+    classNames?: {
+      container: string;
+      content: string;
+    };
+    content: string;
+  };
 };
 
 export type NotifiInputLabels = {
   email?: string;
   sms?: string;
   telegram?: string;
+  discord?: string;
+  twitter?: string;
 };
 
 export type NotifiSubscriptionCardProps = Readonly<{
@@ -51,6 +67,7 @@ export type NotifiSubscriptionCardProps = Readonly<{
     NotifiFooter?: NotifiFooterProps['classNames'];
   }>;
   buttonText?: string;
+  hideAlertListPreview?: boolean;
   inputLabels?: NotifiInputLabels;
   darkMode?: boolean;
   cardId: string;

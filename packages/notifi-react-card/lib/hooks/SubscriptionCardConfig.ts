@@ -63,6 +63,10 @@ export type SmsContactInfo = ContactInfo &
 
 export type TelegramContactInfo = ContactInfo;
 
+export type DiscordContactInfo = ContactInfo;
+
+export type TwitterContactInfo = ContactInfo;
+
 export type WebhookHeaders = Readonly<Record<string, string>>;
 
 export type WebhookContactInfo = ContactInfo &
@@ -75,6 +79,8 @@ export type ContactInfoConfig = Readonly<{
   email: EmailContactInfo;
   sms: SmsContactInfo;
   telegram: TelegramContactInfo;
+  discord: DiscordContactInfo;
+  twitter: TwitterContactInfo;
   webhook: WebhookContactInfo;
 }>;
 
