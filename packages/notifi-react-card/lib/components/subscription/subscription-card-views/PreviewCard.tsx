@@ -1,4 +1,3 @@
-import clsx from 'clsx';
 import React, { useCallback } from 'react';
 
 import { BackArrow } from '../../../assets/backArrow';
