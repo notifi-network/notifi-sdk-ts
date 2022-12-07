@@ -67,15 +67,11 @@ export const NotifiSubscriptionContextProvider: React.FC<
 > = ({ children, ...params }) => {
   const [conversationId, setConversationId] = useState<string>('');
   const [userId, setUserId] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
-  const [phoneNumber, setPhoneNumber] = useState<string>('');
+
   const [hasChatAlert, setHasChatAlert] = useState<boolean>(false);
-  const [telegramId, setTelegramId] = useState<string>('');
   const { cardView, setCardView } = useFetchedCardState();
   const { intercomCardView, setIntercomCardView } = useIntercomCardState();
-  const [emailErrorMessage, setEmailErrorMessage] = useState<string>('');
-  const [telegramErrorMessage, setTelegramErrorMessage] = useState<string>('');
-  const [smsErrorMessage, setSmsErrorMessage] = useState<string>('');
+
   const [emailIdThatNeedsConfirmation, setEmailIdThatNeedsConfirmation] =
     useState<string>('');
   const [isSmsConfirmed, setIsSmsConfirmed] = useState<boolean | null>(null);
@@ -87,8 +83,15 @@ export const NotifiSubscriptionContextProvider: React.FC<
   const [useHardwareWallet, setUseHardwareWallet] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
 
+  const [email, setEmail] = useState<string>('');
+  const [phoneNumber, setPhoneNumber] = useState<string>('');
+  const [telegramId, setTelegramId] = useState<string>('');
   const [twitterId, setTwitterId] = useState<string>('');
   const [discordId, setDiscordId] = useState<string>('');
+
+  const [emailErrorMessage, setEmailErrorMessage] = useState<string>('');
+  const [telegramErrorMessage, setTelegramErrorMessage] = useState<string>('');
+  const [smsErrorMessage, setSmsErrorMessage] = useState<string>('');
   const [discordErrorMessage, setDiscordErrorMessage] = useState<string>('');
   const [twitterErrorMessage, setTwitterErrorMessage] = useState<string>('');
 
@@ -128,8 +131,6 @@ export const NotifiSubscriptionContextProvider: React.FC<
     setConversationId,
     userId,
     setUserId,
-    setSupportAvatarUrl,
-    supportAvatarUrl,
     twitterId,
     discordId,
     setTwitterId,

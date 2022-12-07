@@ -79,8 +79,8 @@ export type ContactInfoConfig = Readonly<{
   email: EmailContactInfo;
   sms: SmsContactInfo;
   telegram: TelegramContactInfo;
-  discord: DiscordContactInfo;
-  twitter: TwitterContactInfo;
+  discord?: DiscordContactInfo;
+  twitter?: TwitterContactInfo;
   webhook: WebhookContactInfo;
 }>;
 

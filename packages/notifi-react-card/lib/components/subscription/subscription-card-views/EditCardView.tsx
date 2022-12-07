@@ -152,7 +152,7 @@ export const EditCardView: React.FC<EditCardViewProps> = ({
           </div>
         </div>
       ) : null}
-      {data.contactInfo.discord.active ? (
+      {data.contactInfo.discord?.active ? (
         <NotifiDiscordInput
           disabled={inputDisabled}
           hideStartIcon={hideStartIcons?.discord}
@@ -177,7 +177,7 @@ export const EditCardView: React.FC<EditCardViewProps> = ({
           </div>
         </div>
       ) : null}
-      {data.contactInfo.twitter.active ? (
+      {data.contactInfo.twitter?.active ? (
         <NotifiTwitterInput
           disabled={inputDisabled}
           hideStartIcon={hideStartIcons?.twitter}
