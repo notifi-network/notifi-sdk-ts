@@ -19,6 +19,7 @@ export type PreviewCardProps = Readonly<{
     backArrowContainer?: string;
     UserInfoPanel?: DeepPartialReadonly<UserInfoPanelProps['classNames']>;
   };
+  hideEditButton?: boolean;
   hideBackClick?: boolean;
   data: CardConfigItemV1;
   inputDisabled: boolean;
@@ -30,6 +31,7 @@ export const PreviewCard: React.FC<PreviewCardProps> = ({
   data,
   hideBackClick,
   inputDisabled,
+  hideEditButton,
   inputs = {},
 }) => {
   const { setCardView } = useNotifiSubscriptionContext();
@@ -56,6 +58,7 @@ export const PreviewCard: React.FC<PreviewCardProps> = ({
         </div>
       )}
       <UserInfoPanel
+        hideEditButton={hideEditButton}
         classNames={classNames?.UserInfoPanel}
         contactInfo={data.contactInfo}
       />

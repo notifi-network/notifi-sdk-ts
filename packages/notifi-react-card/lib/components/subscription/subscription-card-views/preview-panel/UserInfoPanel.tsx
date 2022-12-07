@@ -22,6 +22,7 @@ export type UserInfoPanelProps = {
     EditButton: string;
   }>;
   contactInfo: CardConfigItemV1['contactInfo'];
+  hideEditButton?: boolean;
   confirmationLabels?: {
     email?: string;
     telegram?: string;
@@ -31,6 +32,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
   classNames,
   contactInfo,
   confirmationLabels,
+  hideEditButton,
 }) => {
   const {
     phoneNumber,
@@ -148,15 +150,17 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
           ) : null}
         </div>
       ) : null}
-      <button
-        className={clsx(
-          'NotifiPreviewCard__editButton',
-          classNames?.EditButton,
-        )}
-        onClick={handleEditClick}
-      >
-        Edit
-      </button>
+      {hideEditButton ? null : (
+        <button
+          className={clsx(
+            'NotifiPreviewCard__editButton',
+            classNames?.EditButton,
+          )}
+          onClick={handleEditClick}
+        >
+          Edit
+        </button>
+      )}
     </div>
   );
 };
