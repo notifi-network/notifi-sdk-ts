@@ -67,6 +67,7 @@ export type NotifiSubscriptionCardProps = Readonly<{
     NotifiFooter?: NotifiFooterProps['classNames'];
   }>;
   buttonText?: string;
+  hideAlertListPreview?: boolean;
   inputLabels?: NotifiInputLabels;
   darkMode?: boolean;
   cardId: string;

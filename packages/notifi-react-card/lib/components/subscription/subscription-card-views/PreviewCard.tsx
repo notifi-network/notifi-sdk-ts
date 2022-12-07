@@ -26,6 +26,7 @@ export type PreviewCardProps = Readonly<{
 export const PreviewCard: React.FC<PreviewCardProps> = ({
   classNames,
   data,
+  hideBackClick,
   inputDisabled,
   inputs = {},
 }) => {

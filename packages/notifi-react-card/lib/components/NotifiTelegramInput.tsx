@@ -22,6 +22,7 @@ export type NotifiTelegramInputProps = Readonly<{
   intercomTelegramInputContainerStyle?: string;
   intercomView?: boolean;
   hasChatAlert?: boolean;
+  hideStartIcon?: boolean;
 }>;
 
 export const NotifiTelegramInput: React.FC<NotifiTelegramInputProps> = ({
@@ -31,6 +32,7 @@ export const NotifiTelegramInput: React.FC<NotifiTelegramInputProps> = ({
   intercomTelegramInputStyle,
   intercomTelegramInputContainerStyle,
   intercomView,
+  hideStartIcon,
 }: NotifiTelegramInputProps) => {
   const {
     telegramId,
@@ -87,7 +89,9 @@ export const NotifiTelegramInput: React.FC<NotifiTelegramInputProps> = ({
           classNames?.container,
         )}
       >
-        <TelegramIcon className={'NotifiInput__icon'} />
+        {hideStartIcon ? null : (
+          <TelegramIcon className={'NotifiInput__icon'} />
+        )}
         <input
           onBlur={validateTelegram}
           className={clsx(
