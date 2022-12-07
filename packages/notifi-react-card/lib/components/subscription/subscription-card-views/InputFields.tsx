@@ -1,11 +1,7 @@
 import clsx from 'clsx';
 import React from 'react';
 
-import {
-  NotifiInputLabels,
-  NotifiInputSeparators,
-  NotifiSubscribeButtonProps,
-} from '..';
+import { NotifiInputLabels, NotifiInputSeparators } from '..';
 import { CardConfigItemV1 } from '../../../hooks';
 import {
   NotifiDiscordInput,
