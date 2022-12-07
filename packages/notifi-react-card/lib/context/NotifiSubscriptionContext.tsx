@@ -2,7 +2,7 @@ import type { Alert } from '@notifi-network/notifi-core';
 import { PropsWithChildren } from 'react';
 import React, { createContext, useContext, useState } from 'react';
 
-import { FetchedCardView, useFetchedCardState } from '../hooks';
+import { FetchedCardViewState, useFetchedCardState } from '../hooks';
 import {
   IntercomCardView,
   useIntercomCardState,
@@ -18,8 +18,8 @@ export type NotifiSubscriptionData = Readonly<{
   telegramConfirmationUrl?: string;
   useHardwareWallet: boolean;
 
-  cardView: FetchedCardView;
-  setCardView: React.Dispatch<React.SetStateAction<FetchedCardView>>;
+  cardView: FetchedCardViewState;
+  setCardView: React.Dispatch<React.SetStateAction<FetchedCardViewState>>;
   intercomCardView: IntercomCardView;
   setIntercomCardView: React.Dispatch<React.SetStateAction<IntercomCardView>>;
   setAlerts: (alerts: Record<string, Alert | undefined>) => void;
