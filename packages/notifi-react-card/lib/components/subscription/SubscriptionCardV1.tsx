@@ -29,6 +29,7 @@ export type SubscriptionCardV1Props = Readonly<{
     EditCard?: DeepPartialReadonly<EditCardViewProps['classNames']>;
     AlertList?: DeepPartialReadonly<AlertListProps['classNames']>;
   };
+
   hideAlertListPreview?: boolean;
   inputDisabled: boolean;
   data: CardConfigItemV1;
