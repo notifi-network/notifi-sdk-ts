@@ -947,6 +947,8 @@
 }
 
 .NotifiIntercomChatMessage__avatar {
+  display: block;
   border-radius: 20px;
   background-color: #f5f6fb;
+  height: 34px;
 }
