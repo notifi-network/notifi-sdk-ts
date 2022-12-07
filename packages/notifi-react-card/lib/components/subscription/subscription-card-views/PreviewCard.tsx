@@ -52,7 +52,10 @@ export const PreviewCard: React.FC<PreviewCardProps> = ({
       >
         <BackArrow />
       </div>
-      <UserInfoPanel classNames={classNames?.UserInfoPanel} data={data} />
+      <UserInfoPanel
+        classNames={classNames?.UserInfoPanel}
+        contactInfo={data.contactInfo}
+      />
       <div
         className={clsx(
           'NotifiPreviewCardSeparator',

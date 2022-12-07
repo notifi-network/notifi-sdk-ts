@@ -21,7 +21,7 @@ export type UserInfoPanelProps = {
     sms?: UserInfoSection;
     EditButton: string;
   }>;
-  data: CardConfigItemV1;
+  contactInfo: CardConfigItemV1['contactInfo'];
   confirmationLabels?: {
     email?: string;
     telegram?: string;
@@ -29,7 +29,7 @@ export type UserInfoPanelProps = {
 };
 export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
   classNames,
-  data,
+  contactInfo,
   confirmationLabels,
 }) => {
   const {
@@ -57,7 +57,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
     <div
       className={clsx('NotifiUserInfoPanelContainer', classNames?.container)}
     >
-      {data.contactInfo.email.active ? (
+      {contactInfo.email.active ? (
         <div
           className={clsx(
             'NotifiUserInfoPanel__email',
@@ -94,7 +94,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
           ) : null}
         </div>
       ) : null}
-      {data.contactInfo.sms.active ? (
+      {contactInfo.sms.active ? (
         <div
           className={clsx(
             'NotifiUserInfoPanel__sms',
@@ -111,7 +111,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
           </label>
         </div>
       ) : null}
-      {data.contactInfo.telegram.active ? (
+      {contactInfo.telegram.active ? (
         <div
           className={clsx(
             'NotifiUserInfoPanel__telegram',
