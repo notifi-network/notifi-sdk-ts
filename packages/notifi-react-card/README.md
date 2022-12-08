@@ -438,11 +438,14 @@ export default function useNearWallet() {
   }, []);
 
   useEffect(() => {
-    async function getPublicKey() {
+      async function getPublicKey() {
       const keyPair = await keyStore.getKey(config.networkId, ACCOUNT_ID);
-      setWalletPublicKey(keyPair.getPublicKey().toString());
+      const publicKey = keyPair.getPublicKey().toString();
+      const publicKeyWithoutTypeAppend = publicKey.replace('ed25519:', '');
+      setPublicKey(publicKeyWithoutTypeAppend);
     }
     getPublicKey();
+    }
   }, [keyStore]);
 
   const signMessage = useCallback(
@@ -499,9 +502,9 @@ export const Notifi: React.FC = () => {
       env="Development"
       walletBlockchain="NEAR"
       accountAddress={accountId}
-      walletPublicKey={walletPublicKey}
-      signMessage={async (accountId: string, message: Uint8Array) => {
-        await signMessage(accountId, message);
+      walletPublicKey={walletPublicKey} // remove ed2559: append
+      signMessage={async (message: Uint8Array) => {
+        await signMessage(message);
       }}
     >
       <NotifiSubscriptionCard
