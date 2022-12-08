@@ -449,7 +449,7 @@ export default function useNearWallet() {
   }, [keyStore]);
 
   const signMessage = useCallback(
-    async (accountId: accountId, message: Unit8Array) => {
+    async (message: Unit8Array) => {
       const keyPair = await keyStore.getKey(config.networkId, accountId);
       const { signature } = keyPair.sign(msg);
       return signature;
@@ -502,7 +502,7 @@ export const Notifi: React.FC = () => {
       env="Development"
       walletBlockchain="NEAR"
       accountAddress={accountId}
-      walletPublicKey={walletPublicKey} // remove ed2559: append
+      walletPublicKey={walletPublicKey} // remove ed25519: append
       signMessage={async (message: Uint8Array) => {
         await signMessage(message);
       }}
