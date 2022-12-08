@@ -266,6 +266,10 @@ export type SignMessageParams =
   | Readonly<{
       walletBlockchain: 'ACALA';
       signMessage: AcalaSignMessageFunction;
+    }>
+  | Readonly<{
+      walletBlockchain: 'NEAR';
+      signMessage: Uint8SignMessageFunction;
     }>;
 
 export type NotifiClient = Readonly<{
