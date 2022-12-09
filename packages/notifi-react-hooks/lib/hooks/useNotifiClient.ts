@@ -77,6 +77,11 @@ export type WalletParams =
       walletBlockchain: 'ACALA';
       accountAddress: string;
       walletPublicKey: string;
+    }>
+  | Readonly<{
+      walletBlockchain: 'NEAR';
+      accountAddress: string;
+      walletPublicKey: string;
     }>;
 
 /**
@@ -204,6 +209,27 @@ const signMessage = async ({
         messageBuffer,
       );
       return signedBuffer;
+    }
+    case 'NEAR': {
+      if (signer.walletBlockchain !== 'NEAR') {
+        throw new Error('Signer and config have different walletBlockchain');
+      }
+
+      const { walletPublicKey, accountAddress } = params;
+
+      const message = `${
+        `ed25519:` + walletPublicKey
+      }${dappAddress}${accountAddress}${timestamp.toString()}`;
+      const textAsBuffer = new TextEncoder().encode(message);
+      const hashBuffer = await window.crypto.subtle.digest(
+        'SHA-256',
+        textAsBuffer,
+      );
+      const messageBuffer = new Uint8Array(hashBuffer);
+
+      const signedBuffer = await signer.signMessage(messageBuffer);
+      const signature = Buffer.from(signedBuffer).toString('base64');
+      return signature;
     }
   }
 };
@@ -433,7 +459,9 @@ const useNotifiClient = (
         });
         const result = await service.logInFromDapp({
           accountId:
-            walletBlockchain === 'APTOS' || walletBlockchain === 'ACALA'
+            walletBlockchain === 'APTOS' ||
+            walletBlockchain === 'ACALA' ||
+            walletBlockchain === 'NEAR'
               ? config.accountAddress
               : undefined,
           walletPublicKey,

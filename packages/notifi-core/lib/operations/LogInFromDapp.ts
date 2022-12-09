@@ -12,7 +12,8 @@ export type LogInFromDappInput = Readonly<{
     | 'ACALA'
     | 'POLYGON'
     | 'ARBITRUM'
-    | 'BINANCE';
+    | 'BINANCE'
+    | 'NEAR';
   accountId?: string;
 }>;
 
