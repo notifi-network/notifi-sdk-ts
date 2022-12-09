@@ -3,4 +3,3 @@ export * from './NotifiFooter';
 export * from './NotifiLogo';
 export * from './NotifiSmsInput';
 export * from './NotifiTelegramInput';
-export * from './subscription/NotifiSubscriptionContextWrapper';

@@ -488,7 +488,9 @@
 
 .NotifiUserInfoPanel__email,
 .NotifiUserInfoPanel__telegram,
-.NotifiUserInfoPanel__sms {
+.NotifiUserInfoPanel__sms,
+.NotifiUserInfoPanel__discord,
+.NotifiUserInfoPanel__twitter {
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -498,6 +500,10 @@
 }
 
 .NotifiUserInfoPanel__emailLabel,
+.NotifiUserInfoPanel__smsLabel,
+.NotifiUserInfoPanel__smsLabel,
+.NotifiUserInfoPanel__twitterLabel,
+.NotifiUserInfoPanel__discordLabel,
 .NotifiUserInfoPanel__telegramLabel {
   margin-bottom: 0 !important;
 }

@@ -45,12 +45,21 @@ export const NotifiDiscordInput: React.FC<NotifiDiscordInputProps> = ({
       return;
     }
 
-    const discordRegex = new RegExp('^@?(w){1,15}$');
-    if (discordRegex.test(discordId)) {
+    const discordRegex = new RegExp(/^[a-zA-Z0-9._-]{3,32}#[0-9]{4}$/);
+
+    const formattedDiscordId = discordId.replace(/\s/g, '');
+
+    if (discordRegex.test(formattedDiscordId)) {
       setDiscordErrorMessage('');
     } else {
       setDiscordErrorMessage(
         'The discord username is invalid. Please try again.',
+      );
+    }
+
+    if (discordId.length > 32) {
+      setDiscordErrorMessage(
+        'This username is too long. Please use a shorter one',
       );
     }
   };

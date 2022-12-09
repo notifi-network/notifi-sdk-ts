@@ -45,13 +45,19 @@ export const NotifiTwitterInput: React.FC<NotifiTwitterInputProps> = ({
       return;
     }
 
-    const twitterRegex = new RegExp('^@?(w){1,15}$');
+    const twitterRegex = new RegExp('^[a-zA-Z0-9_]{1,15}$');
     if (twitterRegex.test(twitterId)) {
       setTwitterErrorMessage('');
     } else {
       setTwitterErrorMessage(
         'The twitter handle is invalid. Please try again.',
       );
+
+      if (twitterId.length > 15) {
+        setTwitterErrorMessage(
+          'This username is too long. Please use a shorter one',
+        );
+      }
     }
   };
 
