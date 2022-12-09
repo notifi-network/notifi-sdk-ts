@@ -426,7 +426,7 @@ import React, { useCallback, useEffect, useMemo } from 'react';
 import { useWalletSelector } from '../NEARWalletContextProvider';
 
 export default function useNearWallet() {
-  const [accountId, setAccountId] = useState<string | null>(null);
+  const { accountId } = useWalletSelector();
   const [walletPublicKey, setWalletPublicKey] = useState<string | null>(null);
 
   const config = {
