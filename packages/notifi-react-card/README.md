@@ -441,6 +441,7 @@ export default function useNearWallet() {
       async function getPublicKey() {
       const keyPair = await keyStore.getKey(config.networkId, ACCOUNT_ID);
       const publicKey = keyPair.getPublicKey().toString();
+      // remove the ed25519: appending for the wallet public key
       const publicKeyWithoutTypeAppend = publicKey.replace('ed25519:', '');
       setPublicKey(publicKeyWithoutTypeAppend);
     }
@@ -502,7 +503,7 @@ export const Notifi: React.FC = () => {
       env="Development"
       walletBlockchain="NEAR"
       accountAddress={accountId}
-      walletPublicKey={walletPublicKey} // remove ed25519: append
+      walletPublicKey={walletPublicKey} // require wallet public key without ed25519: append
       signMessage={async (message: Uint8Array) => {
         await signMessage(message);
       }}
