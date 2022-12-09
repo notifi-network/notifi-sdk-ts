@@ -411,3 +411,112 @@ export const Notifi: React.FC = () => {
 ```
 
 </details>
+
+### NEAR
+
+<details>
+<summary>Integrate Card Component</summary>
+
+Create a hook that gets all of the account data using NEAR API
+
+```tsx
+import { keyStores } from 'near-api-js';
+import React, { useCallback, useEffect, useMemo } from 'react';
+
+import { useWalletSelector } from '../NEARWalletContextProvider';
+
+export default function useNearWallet() {
+  const { accountId } = useWalletSelector();
+  const [walletPublicKey, setWalletPublicKey] = useState<string | null>(null);
+
+  const config = {
+    networkId: 'testnet', //adjust based on network type
+  };
+
+  const keyStore = useMemo(() => {
+    return new keyStores.BrowserLocalStorageKeyStore();
+  }, []);
+
+  useEffect(() => {
+      async function getPublicKey() {
+      const keyPair = await keyStore.getKey(config.networkId, ACCOUNT_ID);
+      const publicKey = keyPair.getPublicKey().toString();
+      // remove the ed25519: appending for the wallet public key
+      const publicKeyWithoutTypeAppend = publicKey.replace('ed25519:', '');
+      setPublicKey(publicKeyWithoutTypeAppend);
+    }
+    getPublicKey();
+    }
+  }, [keyStore]);
+
+  const signMessage = useCallback(
+    async (message: Unit8Array) => {
+      const keyPair = await keyStore.getKey(config.networkId, accountId);
+      const { signature } = keyPair.sign(msg);
+      return signature;
+    },
+    [],
+  );
+
+  return { account, walletPublicKey, signMessage };
+}
+```
+
+Create a component for the Notifi React Card
+
+```tsx
+import {
+  NotifiContext,
+  NotifiInputSeparators,
+  NotifiSubscriptionCard,
+} from '@notifi-network/notifi-react-card';
+import '@notifi-network/notifi-react-card/dist/index.css';
+import { useNearWallet } from 'path-to-custom-hook';
+import React, { useCallback, useState } from 'react';
+
+export const Notifi: React.FC = () => {
+  const { acoount, walletPublicKey, signMessage } = useNearWallet();
+
+  if (account === null || walletPublicKey === null) {
+    // account is required
+    return null;
+  }
+
+  const inputLabels = {
+    email: 'Email',
+    sms: 'Text Message',
+    telegram: 'Telegram',
+  };
+
+  const inputSeparators: NotifiInputSeparators = {
+    smsSeparator: {
+      content: 'OR',
+    },
+    emailSeparator: {
+      content: 'OR',
+    },
+  };
+
+  return (
+    <NotifiContext
+      dappAddress="<YOUR OWN DAPP ADDRESS HERE>"
+      env="Development"
+      walletBlockchain="NEAR"
+      accountAddress={accountId}
+      walletPublicKey={walletPublicKey} // require wallet public key without ed25519: append
+      signMessage={async (message: Uint8Array) => {
+        await signMessage(message);
+      }}
+    >
+      <NotifiSubscriptionCard
+        cardId="<YOUR OWN CARD ID HERE>"
+        inputLabels={inputLabels}
+        inputSeparators={inputSeparators}
+        darkMode //optional
+      />
+    </NotifiContext>
+  );
+};
+```
+
+</details>
