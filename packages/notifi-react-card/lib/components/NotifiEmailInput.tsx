@@ -23,7 +23,6 @@ export type NotifiEmailInputProps = Readonly<{
   intercomEmailInputContainerStyle?: string;
   intercomView?: boolean;
   hasChatAlert?: boolean;
-  hideStartIcon?: boolean;
 }>;
 
 export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
@@ -33,7 +32,6 @@ export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
   intercomEmailInputStyle,
   intercomEmailInputContainerStyle,
   intercomView,
-  hideStartIcon,
 }: NotifiEmailInputProps) => {
   const {
     email,
@@ -94,7 +92,7 @@ export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
           classNames?.container,
         )}
       >
-        {hideStartIcon ? null : <EmailIcon className={'NotifiInput__icon'} />}
+        <EmailIcon className={'NotifiInput__icon'} />
         <input
           onBlur={validateEmail}
           className={clsx(

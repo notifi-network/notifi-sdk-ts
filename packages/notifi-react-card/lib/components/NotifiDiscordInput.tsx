@@ -21,14 +21,12 @@ export type NotifiDiscordInputProps = Readonly<{
   disabled: boolean;
   intercomDiscordInputStyle?: string;
   intercomDiscordInputContainerStyle?: string;
-  hideStartIcon?: boolean;
 }>;
 
 export const NotifiDiscordInput: React.FC<NotifiDiscordInputProps> = ({
   classNames,
   copy,
   disabled,
-  hideStartIcon,
   intercomView,
   intercomDiscordInputContainerStyle,
   intercomDiscordInputStyle,
@@ -78,7 +76,7 @@ export const NotifiDiscordInput: React.FC<NotifiDiscordInputProps> = ({
           classNames?.container,
         )}
       >
-        {hideStartIcon ? null : <DiscordIcon className={'NotifiInput__icon'} />}
+        <DiscordIcon className={'NotifiInput__icon'} />
         <input
           onBlur={validateDiscord}
           className={clsx(

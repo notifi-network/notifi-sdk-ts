@@ -21,14 +21,12 @@ export type NotifiTwitterInputProps = Readonly<{
   intercomView?: boolean;
   intercomTwitterInputStyle?: string;
   intercomTwitterInputContainerStyle?: string;
-  hideStartIcon?: boolean;
 }>;
 
 export const NotifiTwitterInput: React.FC<NotifiTwitterInputProps> = ({
   classNames,
   copy,
   disabled,
-  hideStartIcon,
   intercomView,
   intercomTwitterInputContainerStyle,
   intercomTwitterInputStyle,
@@ -75,7 +73,7 @@ export const NotifiTwitterInput: React.FC<NotifiTwitterInputProps> = ({
           classNames?.container,
         )}
       >
-        {hideStartIcon ? null : <TwitterIcon className={'NotifiInput__icon'} />}
+        <TwitterIcon className={'NotifiInput__icon'} />
         <input
           onBlur={validateTwitter}
           className={clsx(

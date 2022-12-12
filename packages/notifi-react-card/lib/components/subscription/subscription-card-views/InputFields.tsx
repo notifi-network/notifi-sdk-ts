@@ -21,20 +21,11 @@ import {
   NotifiTwitterInputProps,
 } from '../../NotifiTwitterInput';
 
-export type HideStartIconProps = {
-  email?: boolean;
-  sms?: boolean;
-  telegram?: boolean;
-  discord?: boolean;
-  twitter?: boolean;
-};
-
 export type InputFieldsProps = {
   data: CardConfigItemV1;
   inputSeparators?: NotifiInputSeparators;
   inputLabels?: NotifiInputLabels;
   allowedCountryCodes: string[];
-  hideStartIcons?: HideStartIconProps;
   inputDisabled: boolean;
   classNames?: Readonly<{
     NotifiEmailInput?: NotifiEmailInputProps['classNames'];
@@ -50,14 +41,12 @@ export const InputFields: React.FC<InputFieldsProps> = ({
   inputSeparators,
   inputLabels,
   allowedCountryCodes,
-  hideStartIcons,
   inputDisabled,
 }) => {
   return (
     <>
       {data.contactInfo.email.active ? (
         <NotifiEmailInput
-          hideStartIcon={hideStartIcons?.email}
           disabled={inputDisabled}
           classNames={classNames?.NotifiEmailInput}
           copy={{ label: inputLabels?.email }}
@@ -83,7 +72,6 @@ export const InputFields: React.FC<InputFieldsProps> = ({
       {data.contactInfo.sms.active ? (
         <NotifiSmsInput
           disabled={inputDisabled}
-          hideStartIcon={hideStartIcons?.sms}
           classNames={classNames?.NotifiSmsInput}
           allowedCountryCodes={allowedCountryCodes}
           copy={{ label: inputLabels?.sms }}
@@ -109,7 +97,6 @@ export const InputFields: React.FC<InputFieldsProps> = ({
       {data.contactInfo.telegram.active ? (
         <NotifiTelegramInput
           disabled={inputDisabled}
-          hideStartIcon={hideStartIcons?.telegram}
           classNames={classNames?.NotifiTelegramInput}
           copy={{ label: inputLabels?.telegram }}
         />
@@ -134,7 +121,6 @@ export const InputFields: React.FC<InputFieldsProps> = ({
       {data.contactInfo.discord?.active ? (
         <NotifiDiscordInput
           disabled={inputDisabled}
-          hideStartIcon={hideStartIcons?.discord}
           classNames={classNames?.NotifiSmsInput}
           copy={{ label: inputLabels?.discord }}
         />
@@ -159,7 +145,6 @@ export const InputFields: React.FC<InputFieldsProps> = ({
       {data.contactInfo.twitter?.active ? (
         <NotifiTwitterInput
           disabled={inputDisabled}
-          hideStartIcon={hideStartIcons?.twitter}
           classNames={classNames?.NotifiTwitterInput}
           copy={{ label: inputLabels?.twitter }}
         />

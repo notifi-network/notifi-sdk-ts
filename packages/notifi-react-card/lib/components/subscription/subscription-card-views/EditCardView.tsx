@@ -12,11 +12,7 @@ import {
   NotifiInputSeparators,
 } from '../NotifiSubscriptionCard';
 import { AlertListPreview } from './AlertListPreview';
-import {
-  HideStartIconProps,
-  InputFields,
-  InputFieldsProps,
-} from './InputFields';
+import { InputFields, InputFieldsProps } from './InputFields';
 
 export type EditCardViewProps = Readonly<{
   buttonText?: string;
@@ -30,8 +26,6 @@ export type EditCardViewProps = Readonly<{
   inputSeparators?: NotifiInputSeparators;
   inputLabels?: NotifiInputLabels;
   allowedCountryCodes: string[];
-  hideAlertListPreview?: boolean;
-  hideStartIcons?: HideStartIconProps;
 }>;
 
 export const EditCardView: React.FC<EditCardViewProps> = ({
@@ -42,16 +36,12 @@ export const EditCardView: React.FC<EditCardViewProps> = ({
   inputDisabled,
   inputSeparators,
   inputLabels,
-  hideAlertListPreview,
-  hideStartIcons,
 }) => {
   return (
     <div
       className={clsx('NotifiInputContainer', classNames?.NotifiInputContainer)}
     >
-      {hideAlertListPreview ? null : (
-        <AlertListPreview eventTypes={data.eventTypes} />
-      )}
+      <AlertListPreview eventTypes={data.eventTypes} />
 
       <InputFields
         data={data}
@@ -59,7 +49,6 @@ export const EditCardView: React.FC<EditCardViewProps> = ({
         inputDisabled={inputDisabled}
         inputSeparators={inputSeparators}
         inputLabels={inputLabels}
-        hideStartIcons={hideStartIcons}
       />
       <NotifiSubscribeButton
         buttonText={buttonText}
