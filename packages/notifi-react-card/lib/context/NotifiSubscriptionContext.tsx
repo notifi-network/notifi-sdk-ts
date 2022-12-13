@@ -30,16 +30,6 @@ export type NotifiSubscriptionData = Readonly<{
   setTelegramId: (telegramId: string) => void;
   setTwitterId: (twitterId: string) => void;
   setDiscordId: (discordId: string) => void;
-  setDiscordErrorMessage: (message: string) => void;
-  setTwitterErrorMessage: (message: string) => void;
-  setEmailErrorMessage: (message: string) => void;
-  setTelegramErrorMessage: (message: string) => void;
-  setSmsErrorMessage: (message: string) => void;
-  twitterErrorMessage: string;
-  discordErrorMessage: string;
-  emailErrorMessage: string;
-  smsErrorMessage: string;
-  telegramErrorMessage: string;
   setTelegramConfirmationUrl: (
     telegramConfirmationUrl: string | undefined,
   ) => void;
@@ -88,13 +78,6 @@ export const NotifiSubscriptionContextProvider: React.FC<
   const [telegramId, setTelegramId] = useState<string>('');
   const [twitterId, setTwitterId] = useState<string>('');
   const [discordId, setDiscordId] = useState<string>('');
-
-  const [emailErrorMessage, setEmailErrorMessage] = useState<string>('');
-  const [telegramErrorMessage, setTelegramErrorMessage] = useState<string>('');
-  const [smsErrorMessage, setSmsErrorMessage] = useState<string>('');
-  const [discordErrorMessage, setDiscordErrorMessage] = useState<string>('');
-  const [twitterErrorMessage, setTwitterErrorMessage] = useState<string>('');
-
   const value = {
     alerts,
     email,
@@ -104,14 +87,11 @@ export const NotifiSubscriptionContextProvider: React.FC<
     telegramId,
     cardView,
     telegramConfirmationUrl,
-    setSmsErrorMessage,
-    setEmailErrorMessage,
-    smsErrorMessage,
+
     emailIdThatNeedsConfirmation,
     isSmsConfirmed,
     setEmailIdThatNeedsConfirmation,
     setIsSmsConfirmed,
-    emailErrorMessage,
     useHardwareWallet,
     setAlerts,
     setCardView,
@@ -123,8 +103,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
     setUseHardwareWallet,
     intercomCardView,
     setIntercomCardView,
-    telegramErrorMessage,
-    setTelegramErrorMessage,
+
     hasChatAlert,
     setHasChatAlert,
     conversationId,
@@ -135,10 +114,6 @@ export const NotifiSubscriptionContextProvider: React.FC<
     discordId,
     setTwitterId,
     setDiscordId,
-    discordErrorMessage,
-    setDiscordErrorMessage,
-    twitterErrorMessage,
-    setTwitterErrorMessage,
   };
 
   return (

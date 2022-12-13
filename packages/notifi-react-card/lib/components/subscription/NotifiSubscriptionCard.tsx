@@ -1,6 +1,7 @@
 import React from 'react';
 
 import {
+  NotifiFormProvider,
   NotifiSubscriptionContextProvider,
   useNotifiClientContext,
 } from '../../context';
@@ -81,7 +82,9 @@ export const NotifiSubscriptionCard: React.FC<
 
   return (
     <NotifiSubscriptionContextProvider {...params}>
-      <NotifiSubscriptionCardContainer {...props} />
+      <NotifiFormProvider>
+        <NotifiSubscriptionCardContainer {...props} />
+      </NotifiFormProvider>
     </NotifiSubscriptionContextProvider>
   );
 };

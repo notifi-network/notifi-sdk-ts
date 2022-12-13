@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import React from 'react';
 
 import { DiscordIcon } from '../assets/DiscordIcon';
-import { useNotifiSubscriptionContext } from '../context';
+import { useNotifiForm } from '../context';
 import type { DeepPartialReadonly } from '../utils';
 
 export type NotifiDiscordInputProps = Readonly<{
@@ -31,21 +31,21 @@ export const NotifiDiscordInput: React.FC<NotifiDiscordInputProps> = ({
   intercomDiscordInputContainerStyle,
   intercomDiscordInputStyle,
 }: NotifiDiscordInputProps) => {
-  const {
-    discordId,
-    setDiscordId,
-    setDiscordErrorMessage,
-    discordErrorMessage,
-  } = useNotifiSubscriptionContext();
+  const { formState, formErrorMessages, setDiscord, setDiscordErrorMessage } =
+    useNotifiForm();
+
+  const { discord } = formState;
+
+  const { discord: discordErrorMessage } = formErrorMessages;
 
   const validateDiscord = () => {
-    if (discordId === '') {
+    if (discord === '') {
       return;
     }
 
     const discordRegex = new RegExp(/^[a-zA-Z0-9._-]{3,32}#[0-9]{4}$/);
 
-    const formattedDiscordId = discordId.replace(/\s/g, '');
+    const formattedDiscordId = discord.replace(/\s/g, '');
 
     if (discordRegex.test(formattedDiscordId)) {
       setDiscordErrorMessage('');
@@ -55,7 +55,7 @@ export const NotifiDiscordInput: React.FC<NotifiDiscordInputProps> = ({
       );
     }
 
-    if (discordId.length > 32) {
+    if (discord.length > 32) {
       setDiscordErrorMessage(
         'This username is too long. Please use a shorter one',
       );
@@ -87,10 +87,10 @@ export const NotifiDiscordInput: React.FC<NotifiDiscordInputProps> = ({
           disabled={disabled}
           name="notifi-discord"
           type="discord"
-          value={discordId}
+          value={discord}
           onFocus={() => setDiscordErrorMessage('')}
           onChange={(e) => {
-            setDiscordId(e.target.value ?? '');
+            setDiscord(e.target.value ?? '');
           }}
           placeholder={copy?.placeholder ?? 'Discord'}
         />
