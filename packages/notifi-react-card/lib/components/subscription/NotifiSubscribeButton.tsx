@@ -3,6 +3,7 @@ import React, { useCallback } from 'react';
 
 import {
   useNotifiClientContext,
+  useNotifiForm,
   useNotifiSubscriptionContext,
 } from '../../context';
 import { CardConfigItemV1, useNotifiSubscribe } from '../../hooks';
@@ -29,15 +30,12 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
 
   const { client } = useNotifiClientContext();
 
-  const {
-    email,
-    emailErrorMessage,
-    loading,
-    phoneNumber,
-    setCardView,
-    smsErrorMessage,
-    telegramId,
-  } = useNotifiSubscriptionContext();
+  const { email, loading, phoneNumber, setCardView, telegramId } =
+    useNotifiSubscriptionContext();
+
+  const { formErrorMessages } = useNotifiForm();
+  const { email: emailErrorMessage, phoneNumber: smsErrorMessage } =
+    formErrorMessages;
 
   const onClick = useCallback(async () => {
     const { data: notifiClientData } = client;

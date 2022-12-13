@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import React from 'react';
 
 import { TwitterIcon } from '../assets/TwitterIcon';
-import { useNotifiSubscriptionContext } from '../context';
+import { useNotifiForm } from '../context';
 import type { DeepPartialReadonly } from '../utils';
 
 export type NotifiTwitterInputProps = Readonly<{
@@ -31,27 +31,27 @@ export const NotifiTwitterInput: React.FC<NotifiTwitterInputProps> = ({
   intercomTwitterInputContainerStyle,
   intercomTwitterInputStyle,
 }: NotifiTwitterInputProps) => {
-  const {
-    twitterId,
-    setTwitterId,
-    setTwitterErrorMessage,
-    twitterErrorMessage,
-  } = useNotifiSubscriptionContext();
+  const { formState, formErrorMessages, setTwitter, setTwitterErrorMessage } =
+    useNotifiForm();
+
+  const { twitter } = formState;
+
+  const { twitter: twitterErrorMessage } = formErrorMessages;
 
   const validateTwitter = () => {
-    if (twitterId === '') {
+    if (twitter === '') {
       return;
     }
 
     const twitterRegex = new RegExp('^[a-zA-Z0-9_]{1,15}$');
-    if (twitterRegex.test(twitterId)) {
+    if (twitterRegex.test(twitter)) {
       setTwitterErrorMessage('');
     } else {
       setTwitterErrorMessage(
         'The twitter handle is invalid. Please try again.',
       );
 
-      if (twitterId.length > 15) {
+      if (twitter.length > 15) {
         setTwitterErrorMessage(
           'This username is too long. Please use a shorter one',
         );
@@ -84,10 +84,10 @@ export const NotifiTwitterInput: React.FC<NotifiTwitterInputProps> = ({
           disabled={disabled}
           name="notifi-twitter"
           type="twitter"
-          value={twitterId}
+          value={twitter}
           onFocus={() => setTwitterErrorMessage('')}
           onChange={(e) => {
-            setTwitterId(e.target.value ?? '');
+            setTwitter(e.target.value ?? '');
           }}
           placeholder={copy?.placeholder ?? 'Twitter'}
         />

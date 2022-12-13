@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import React from 'react';
 
 import { EmailIcon } from '../assets/EmailIcon';
-import { useNotifiSubscriptionContext } from '../context';
+import { useNotifiForm, useNotifiSubscriptionContext } from '../context';
 import { useNotifiSubscribe } from '../hooks';
 import type { DeepPartialReadonly } from '../utils';
 
@@ -23,7 +23,6 @@ export type NotifiEmailInputProps = Readonly<{
   intercomEmailInputContainerStyle?: string;
   intercomView?: boolean;
   hasChatAlert?: boolean;
-  hideStartIcon?: boolean;
 }>;
 
 export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
@@ -33,16 +32,16 @@ export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
   intercomEmailInputStyle,
   intercomEmailInputContainerStyle,
   intercomView,
-  hideStartIcon,
 }: NotifiEmailInputProps) => {
-  const {
-    email,
-    setEmail,
-    setEmailErrorMessage,
-    emailErrorMessage,
-    emailIdThatNeedsConfirmation,
-    intercomCardView,
-  } = useNotifiSubscriptionContext();
+  const { emailIdThatNeedsConfirmation, intercomCardView } =
+    useNotifiSubscriptionContext();
+
+  const { formState, formErrorMessages, setEmail, setEmailErrorMessage } =
+    useNotifiForm();
+
+  const { email } = formState;
+
+  const { email: emailErrorMessage } = formErrorMessages;
 
   const { resendEmailVerificationLink } = useNotifiSubscribe({
     targetGroupName: 'Intercom',
@@ -94,7 +93,7 @@ export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
           classNames?.container,
         )}
       >
-        {hideStartIcon ? null : <EmailIcon className={'NotifiInput__icon'} />}
+        <EmailIcon className={'NotifiInput__icon'} />
         <input
           onBlur={validateEmail}
           className={clsx(

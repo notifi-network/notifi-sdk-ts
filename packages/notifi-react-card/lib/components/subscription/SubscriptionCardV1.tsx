@@ -40,7 +40,6 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
   buttonText,
   classNames,
   data,
-  hideAlertListPreview,
   inputDisabled,
   inputs,
   inputLabels,
@@ -89,7 +88,6 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
     case 'edit':
       view = (
         <EditCardView
-          hideAlertListPreview={hideAlertListPreview}
           buttonText={buttonText}
           data={data}
           classNames={classNames?.EditCard}

@@ -14,6 +14,7 @@ import { useCallback, useEffect, useRef } from 'react';
 
 import { useNotifiSubscriptionContext } from '../context';
 import { useNotifiClientContext } from '../context/NotifiClientContext';
+import { useNotifiForm } from './../context/NotifiFormContext';
 import { AlertConfiguration } from './../utils/AlertConfiguration';
 
 export type SubscriptionData = Readonly<{
@@ -53,9 +54,20 @@ export const useNotifiSubscribe: ({
   const { client } = useNotifiClientContext();
 
   const {
-    email: inputEmail,
+    formState,
+    setEmail: setFormEmail,
+    setTelegram: setFormTelegram,
+    setPhoneNumber: setFormPhoneNumber,
+  } = useNotifiForm();
+
+  const {
+    email: formEmail,
+    telegram: formTelegram,
+    phoneNumber: formPhoneNumber,
+  } = formState;
+
+  const {
     params,
-    phoneNumber: inputPhoneNumber,
     setAlerts,
     setEmail,
     setIsSmsConfirmed,
@@ -65,7 +77,6 @@ export const useNotifiSubscribe: ({
     setTelegramId,
     emailIdThatNeedsConfirmation,
     setEmailIdThatNeedsConfirmation,
-    telegramId: inputTelegramId,
     useHardwareWallet,
   } = useNotifiSubscriptionContext();
 
@@ -94,6 +105,7 @@ export const useNotifiSubscribe: ({
 
       setAlerts(alerts);
       const emailTarget = targetGroup?.emailTargets[0] ?? null;
+      const emailToSet = emailTarget?.emailAddress ?? '';
 
       if (emailTarget !== null && emailTarget?.isConfirmed === false) {
         setEmailIdThatNeedsConfirmation(emailTarget.id ?? '');
@@ -101,17 +113,27 @@ export const useNotifiSubscribe: ({
         setEmailIdThatNeedsConfirmation('');
       }
 
-      setEmail(emailTarget?.emailAddress ?? '');
+      setFormEmail(emailToSet);
+      setEmail(emailToSet);
 
       const phoneNumber = targetGroup?.smsTargets[0]?.phoneNumber ?? null;
+
       const isPhoneNumberConfirmed =
         targetGroup?.smsTargets[0]?.isConfirmed ?? null;
+
+      const phoneNumberToSet = phoneNumber ?? '';
+
       setIsSmsConfirmed(isPhoneNumberConfirmed);
-      setPhoneNumber(phoneNumber ?? '');
+
+      setFormPhoneNumber(phoneNumberToSet);
+      setPhoneNumber(phoneNumberToSet);
 
       const telegramTarget = targetGroup?.telegramTargets[0];
       const telegramId = telegramTarget?.telegramId;
+
+      setFormTelegram(telegramId ?? '');
       setTelegramId(telegramId ?? '');
+
       setTelegramConfirmationUrl(telegramTarget?.confirmationUrl ?? undefined);
 
       return {
@@ -227,12 +249,14 @@ export const useNotifiSubscribe: ({
       const configurations = { ...alertConfigs };
 
       const names = Object.keys(configurations);
-      const finalEmail = inputEmail === '' ? null : inputEmail;
-      const finalTelegramId = inputTelegramId === '' ? null : inputTelegramId;
+
+      const finalEmail = formEmail === '' ? null : formEmail;
+      const finalTelegramId = formTelegram === '' ? null : formTelegram;
 
       let finalPhoneNumber = null;
-      if (isValidPhoneNumber(inputPhoneNumber)) {
-        finalPhoneNumber = inputPhoneNumber;
+      if (isValidPhoneNumber(formPhoneNumber)) {
+        console.log('final phone numbe', finalPhoneNumber);
+        finalPhoneNumber = formPhoneNumber;
       }
 
       setLoading(true);
@@ -354,17 +378,17 @@ export const useNotifiSubscribe: ({
       setLoading(false);
       return results;
     },
-    [client, inputEmail, inputPhoneNumber, inputTelegramId, logIn, setLoading],
+    [client, formEmail, formPhoneNumber, formTelegram, logIn, setLoading],
   );
 
   const updateTargetGroups = useCallback(async () => {
-    const finalEmail = inputEmail === '' ? null : inputEmail;
+    const finalEmail = formEmail === '' ? null : formEmail;
 
-    const finalTelegramId = inputTelegramId === '' ? null : inputTelegramId;
+    const finalTelegramId = formTelegram === '' ? null : formTelegram;
     let finalPhoneNumber = null;
 
-    if (isValidPhoneNumber(inputPhoneNumber)) {
-      finalPhoneNumber = inputPhoneNumber;
+    if (isValidPhoneNumber(formPhoneNumber)) {
+      finalPhoneNumber = formPhoneNumber;
     }
     await client.ensureTargetGroup({
       emailAddress: finalEmail,
@@ -378,25 +402,18 @@ export const useNotifiSubscribe: ({
     const results = render(newData);
     setLoading(false);
     return results;
-  }, [
-    client,
-    inputEmail,
-    inputPhoneNumber,
-    inputTelegramId,
-    render,
-    setLoading,
-  ]);
+  }, [client, formEmail, formPhoneNumber, formTelegram, render, setLoading]);
 
   const instantSubscribe = useCallback(
     async (alertData: InstantSubscribe) => {
       const { alertConfiguration, alertName } = alertData;
 
-      const finalEmail = inputEmail === '' ? null : inputEmail;
+      const finalEmail = formEmail === '' ? null : formEmail;
 
-      const finalTelegramId = inputTelegramId === '' ? null : inputTelegramId;
+      const finalTelegramId = formTelegram === '' ? null : formTelegram;
       let finalPhoneNumber = null;
-      if (isValidPhoneNumber(inputPhoneNumber)) {
-        finalPhoneNumber = inputPhoneNumber;
+      if (isValidPhoneNumber(formPhoneNumber)) {
+        finalPhoneNumber = formPhoneNumber;
       }
       setLoading(true);
 
@@ -512,9 +529,9 @@ export const useNotifiSubscribe: ({
     },
     [
       client,
-      inputEmail,
-      inputPhoneNumber,
-      inputTelegramId,
+      formEmail,
+      formPhoneNumber,
+      formTelegram,
       logIn,
       setLoading,
       subscribe,

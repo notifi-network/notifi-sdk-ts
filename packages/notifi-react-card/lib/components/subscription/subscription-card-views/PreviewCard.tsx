@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import React, { useCallback } from 'react';
 
 import { BackArrow } from '../../../assets/backArrow';
@@ -26,9 +27,7 @@ export type PreviewCardProps = Readonly<{
 export const PreviewCard: React.FC<PreviewCardProps> = ({
   classNames,
   data,
-  hideBackClick,
   inputDisabled,
-  hideEditButton,
   inputs = {},
 }) => {
   const { setCardView } = useNotifiSubscriptionContext();
@@ -54,7 +53,6 @@ export const PreviewCard: React.FC<PreviewCardProps> = ({
       </div>
 
       <UserInfoPanel
-        hideEditButton={hideEditButton}
         classNames={classNames?.UserInfoPanel}
         contactInfo={data.contactInfo}
       />

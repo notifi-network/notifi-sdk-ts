@@ -1,6 +1,7 @@
 import React from 'react';
 
 import {
+  NotifiFormProvider,
   NotifiSubscriptionContextProvider,
   useNotifiClientContext,
 } from '../../context';
@@ -67,7 +68,6 @@ export type NotifiSubscriptionCardProps = Readonly<{
     NotifiFooter?: NotifiFooterProps['classNames'];
   }>;
   buttonText?: string;
-  hideAlertListPreview?: boolean;
   inputLabels?: NotifiInputLabels;
   darkMode?: boolean;
   cardId: string;
@@ -82,7 +82,9 @@ export const NotifiSubscriptionCard: React.FC<
 
   return (
     <NotifiSubscriptionContextProvider {...params}>
-      <NotifiSubscriptionCardContainer {...props} />
+      <NotifiFormProvider>
+        <NotifiSubscriptionCardContainer {...props} />
+      </NotifiFormProvider>
     </NotifiSubscriptionContextProvider>
   );
 };

@@ -14,7 +14,6 @@ export type FetchedStateCardProps = Readonly<{
   classNames?: Readonly<{
     SubscriptionCardV1?: SubscriptionCardV1Props['classNames'];
   }>;
-  hideAlertListPreview?: boolean;
   card: FetchedState;
   inputDisabled: boolean;
   inputs: Record<string, string | undefined>;
@@ -27,7 +26,6 @@ export const FetchedStateCard: React.FC<FetchedStateCardProps> = ({
   inputDisabled,
   classNames,
   card,
-  hideAlertListPreview,
   inputs,
   inputLabels,
   inputSeparators,
@@ -40,7 +38,6 @@ export const FetchedStateCard: React.FC<FetchedStateCardProps> = ({
           buttonText={buttonText}
           classNames={classNames?.SubscriptionCardV1}
           data={card.data}
-          hideAlertListPreview={hideAlertListPreview}
           inputs={inputs}
           inputDisabled={inputDisabled}
           inputLabels={inputLabels}

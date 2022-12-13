@@ -24,7 +24,6 @@ export type UserInfoPanelProps = {
     EditButton: string;
   }>;
   contactInfo: CardConfigItemV1['contactInfo'];
-  hideEditButton?: boolean;
   confirmationLabels?: {
     email?: string;
     telegram?: string;
@@ -34,7 +33,6 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
   classNames,
   contactInfo,
   confirmationLabels,
-  hideEditButton,
 }) => {
   const {
     phoneNumber,
@@ -154,12 +152,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
           ) : null}
         </div>
       ) : null}
-<<<<<<< HEAD
-<<<<<<< HEAD
       {contactInfo.discord?.active ? (
-=======
-      {contactInfo?.discord?.active ? (
->>>>>>> 6019a79 (adds twitter and discord input updates)
         <div
           className={clsx(
             'NotifiUserInfoPanel__discord',
@@ -176,11 +169,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
           </label>
         </div>
       ) : null}
-<<<<<<< HEAD
       {contactInfo.twitter?.active ? (
-=======
-      {contactInfo?.twitter?.active ? (
->>>>>>> 6019a79 (adds twitter and discord input updates)
         <div
           className={clsx(
             'NotifiUserInfoPanel__twitter',
@@ -197,7 +186,6 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
           </label>
         </div>
       ) : null}
-<<<<<<< HEAD
       <button
         className={clsx(
           'NotifiPreviewCard__editButton',
@@ -207,21 +195,6 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
       >
         Edit
       </button>
-=======
-=======
->>>>>>> 6019a79 (adds twitter and discord input updates)
-      {hideEditButton ? null : (
-        <button
-          className={clsx(
-            'NotifiPreviewCard__editButton',
-            classNames?.EditButton,
-          )}
-          onClick={handleEditClick}
-        >
-          Edit
-        </button>
-      )}
->>>>>>> c217e35 (adds field to hide edit button)
     </div>
   );
 };
