@@ -57,6 +57,24 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
     dialCode: '+1',
   });
 
+  const handleDialCodeChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+      setPhoneValues({ ...phoneValues, dialCode: event.target.value });
+      setPhoneNumber(event.target.value + phoneValues.baseNumber);
+    },
+    [phoneValues, setPhoneNumber, setPhoneValues],
+  );
+
+  const handleBaseNumberChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+      const onlyNumberInput = event.target.value.replace(/[^\d]/g, '');
+
+      setPhoneValues({ ...phoneValues, baseNumber: onlyNumberInput });
+      setPhoneNumber(phoneValues.dialCode + event.target.value);
+    },
+    [phoneValues, setPhoneNumber, setPhoneValues],
+  );
+
   const splitPhoneValues = useCallback(() => {
     if (!phoneNumber) {
       return;
@@ -75,13 +93,13 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
       });
       return;
     }
-  }, [phoneNumber]);
+  }, [phoneNumber, handleDialCodeChange]);
 
   useEffect(() => {
     if (phoneNumber) {
       splitPhoneValues();
     }
-  }, [phoneNumber, splitPhoneValues]);
+  }, [phoneNumber]);
 
   useEffect(() => {
     if (phoneValues.baseNumber === '' && phoneNumber !== '') {
@@ -118,25 +136,6 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
     }
   }, [phoneNumber, setPhoneNumberErrorMessage]);
 
-  const handleChange = useCallback(
-    (field: 'dialCode' | 'baseNumber') =>
-      (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        if (field === 'baseNumber') {
-          const onlyNumberInput = event.target.value.replace(/[^\d]/g, '');
-
-          setPhoneValues({ ...phoneValues, [field]: onlyNumberInput });
-        } else {
-          setPhoneValues({ ...phoneValues, [field]: event.target.value });
-        }
-        if (field === 'dialCode') {
-          setPhoneNumber(event.target.value + phoneValues.baseNumber);
-        } else {
-          setPhoneNumber(phoneValues.dialCode + event.target.value);
-        }
-      },
-    [phoneValues, setPhoneNumber, setPhoneValues],
-  );
-
   return (
     <>
       {intercomView ? null : (
@@ -165,7 +164,7 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
               intercomSmsDropdownSelectStyle,
               classNames?.dropdownSelectField,
             )}
-            onChange={handleChange('dialCode')}
+            onChange={(e) => handleDialCodeChange(e)}
             value={phoneValues.dialCode}
           >
             {countryCodes}
@@ -180,7 +179,7 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
           disabled={disabled}
           name="notifi-sms"
           onBlur={validateSmsInput}
-          onChange={handleChange('baseNumber')}
+          onChange={(e) => handleBaseNumberChange(e)}
           onFocus={() => setPhoneNumberErrorMessage('')}
           placeholder={copy?.placeholder ?? 'Phone Number'}
           type="tel"
