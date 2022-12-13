@@ -67,9 +67,7 @@ export const IntercomCard: React.FC<
     setIntercomCardView,
     email,
     phoneNumber,
-    smsErrorMessage,
     telegramId,
-    telegramErrorMessage,
     setHasChatAlert,
     setConversationId,
     setUserId,
@@ -77,7 +75,11 @@ export const IntercomCard: React.FC<
 
   const { formErrorMessages } = useNotifiForm();
 
-  const { email: emailErrorMessage } = formErrorMessages;
+  const {
+    email: emailErrorMessage,
+    telegram: telegramErrorMessage,
+    phoneNumber: smsErrorMessage,
+  } = formErrorMessages;
 
   const { client } = useNotifiClientContext();
   const alertName = 'NOTIFI_CHAT_MESSAGES';

@@ -255,7 +255,6 @@ export const useNotifiSubscribe: ({
 
       let finalPhoneNumber = null;
       if (isValidPhoneNumber(formPhoneNumber)) {
-        console.log('final phone numbe', finalPhoneNumber);
         finalPhoneNumber = formPhoneNumber;
       }
 

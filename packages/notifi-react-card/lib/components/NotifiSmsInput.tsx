@@ -85,7 +85,6 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
 
   useEffect(() => {
     if (phoneValues.baseNumber === '' && phoneNumber !== '') {
-      console.log('phone number', phoneNumber);
       setPhoneNumber('');
     }
   }, [phoneValues.baseNumber, setPhoneNumber, phoneNumber]);
