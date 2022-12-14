@@ -22,10 +22,10 @@
   --notifi-card-background: #333;
   --notifi-font-color: #fff;
   --notifi-card-secondary-background: rgb(68, 68, 68);
-  --notifi-intercom-card-background: ##333;
+  --notifi-intercom-card-background: #333;
   --notifi-secondary-font-color: rgb(212, 212, 212);
   --notifi-input-background: rgba(255, 255, 255, 0.2);
-  --notifi-intercom-input-background: rgb(245, 246, 251, 0.6);
+  --notifi-intercom-input-background: rgba(255, 255, 255, 0.2);
   --notifi-placeholder-color: rgba(255, 255, 255, 0.5);
   --notifi-focus-color: #fff;
   --notifi-toggle-handle: #fff;
@@ -693,6 +693,7 @@
   font-weight: 700;
   line-height: 27px;
   text-align: center;
+  color: var(--notifi-font-color);
 }
 
 .NotifiIntercomCard__subtitle1 {
@@ -714,6 +715,7 @@
   margin-top: 20px;
   margin-bottom: 20px;
   text-align: center;
+  color: var(--notifi-font-color);
 }
 
 .NotifiSupportNotificationOption__container {
@@ -774,6 +776,7 @@
 }
 
 .NotifiIntercomHeader__content {
+  color: var(--notifi-font-color);
   font-size: 14px;
   font-weight: 600;
   line-height: 17px;
@@ -797,6 +800,11 @@
 
 .ChatWindowIntro__virtualContainer {
   height: 80px;
+  color: red;
+}
+
+.NotifiIntercomCard__container .virtual-container {
+  color: var(--notifi-font-color);
 }
 
 .NotifiIntercomChatMessageSectionIntro__content {
@@ -804,6 +812,7 @@
   font-weight: 600;
   line-height: 20px;
   margin-bottom: 12px;
+  color: var(--notifi-secondary-font-color);
 }
 
 .NotifiIntercomChatMessageDate__container {
@@ -839,11 +848,13 @@
   font-family: inherit;
   font-size: 16px;
   height: 100px;
-  border-bottom: 1px solid #e8ebf5;
-  border-top: 1px solid #e8ebf5;
+  border-bottom: 1px solid var(--notifi-intercom-input-background);
+  border-top: 1px solid var(--notifi-intercom-input-background);
   border-right: none;
   border-left: none;
   padding: 12px 20px;
+  background-color: var(--notifi-input-background);
+  color: var(--notifi-font-color);
 }
 
 .NotifiIntercomSendMessageSection__textarea:focus-visible {
@@ -892,6 +903,7 @@
   position: relative;
   overflow-wrap: break-word;
   border-radius: 0 16px 16px 16px;
+  color: #000;
 }
 
 .NotifiIntercomChatOutgoingMessage__body {
@@ -904,6 +916,7 @@
   position: relative;
   overflow-wrap: break-word;
   border-radius: 16px 0 16px 16px;
+  color: #000;
 }
 
 .NotifiIntercomChatOutgoingMessage__timeStamp {
@@ -943,7 +956,7 @@
   font-weight: 800;
   line-height: 16px;
   text-align: right;
-  color: #1448f3;
+  color: var(--notifi-link-color);
 }
 
 .NotifiIntercomChatMessage__avatar {

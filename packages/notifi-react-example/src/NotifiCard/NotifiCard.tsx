@@ -56,17 +56,27 @@ export const NotifiCard: React.FC = () => {
         sendTransaction={sendTransaction}
         signMessage={signMessage}
       >
-        <NotifiSubscriptionCard
-          darkMode
-          inputLabels={inputLabels}
-          inputSeparators={inputSeparators}
-          cardId="71562316475a4171ae9c980adaefab7d"
-        />
-        <NotifiIntercomCard
-          inputLabels={inputLabels}
-          inputSeparators={intercomInputSeparators}
-          cardId="1045f61752b148eabab0403c08cd60b2"
-        />
+        <div
+          style={{
+            display: 'flex',
+            width: '100vw',
+            justifyContent: 'center',
+            gap: '5em',
+          }}
+        >
+          <NotifiIntercomCard
+            inputLabels={inputLabels}
+            inputSeparators={intercomInputSeparators}
+            cardId="1045f61752b148eabab0403c08cd60b2"
+          />
+
+          <NotifiIntercomCard
+            inputLabels={inputLabels}
+            inputSeparators={intercomInputSeparators}
+            cardId="1045f61752b148eabab0403c08cd60b2"
+            darkMode
+          />
+        </div>
       </NotifiContext>
     </div>
   );

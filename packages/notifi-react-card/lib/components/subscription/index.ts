@@ -1,4 +1,4 @@
-import './defaults.css';
+import '../common/defaults.css';
 
 export * from './EventTypeBroadcastRow';
 export * from './EventTypeDirectPushRow';

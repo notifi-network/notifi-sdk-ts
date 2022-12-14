@@ -1,3 +1,5 @@
+import '../common/defaults.css';
+
 export * from './ChatMessageDate';
 export * from './ChatMessageSection';
 export * from './ChatWindowHeader';
