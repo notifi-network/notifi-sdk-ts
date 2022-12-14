@@ -1,4 +1,4 @@
-import '../common/defaults.css';
+import '../defaults.css';
 
 export * from './ChatMessageDate';
 export * from './ChatMessageSection';
