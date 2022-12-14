@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import React from 'react';
 
 import { TelegramIcon } from '../assets/TelegramIcon';
-import { useNotifiSubscriptionContext } from '../context';
+import { useNotifiForm, useNotifiSubscriptionContext } from '../context';
 import type { DeepPartialReadonly } from '../utils';
 
 export type NotifiTelegramInputProps = Readonly<{
@@ -32,24 +32,25 @@ export const NotifiTelegramInput: React.FC<NotifiTelegramInputProps> = ({
   intercomTelegramInputContainerStyle,
   intercomView,
 }: NotifiTelegramInputProps) => {
-  const {
-    telegramId,
-    setTelegramId,
-    telegramConfirmationUrl,
-    setTelegramErrorMessage,
-    telegramErrorMessage,
-    intercomCardView,
-  } = useNotifiSubscriptionContext();
+  const { telegramConfirmationUrl, intercomCardView } =
+    useNotifiSubscriptionContext();
+
+  const { formState, formErrorMessages, setTelegram, setTelegramErrorMessage } =
+    useNotifiForm();
+
+  const { telegram } = formState;
+
+  const { telegram: telegramErrorMessage } = formErrorMessages;
 
   const validateTelegram = () => {
-    if (telegramId === '') {
+    if (telegram === '') {
       return;
     }
 
     const TelegramRegex =
       /^@?(?=\w{5,32}\b)[a-zA-Z0-9]+(?:[a-zA-Z0-9_ ]+[a-zA-Z0-9])*$/;
 
-    if (TelegramRegex.test(telegramId)) {
+    if (TelegramRegex.test(telegram)) {
       setTelegramErrorMessage('');
     } else {
       setTelegramErrorMessage('The telegram is invalid. Please try again.');
@@ -98,10 +99,10 @@ export const NotifiTelegramInput: React.FC<NotifiTelegramInputProps> = ({
           disabled={disabled}
           name="notifi-telegram"
           type="text"
-          value={telegramId}
+          value={telegram}
           onFocus={() => setTelegramErrorMessage('')}
           onChange={(e) => {
-            setTelegramId(e.target.value ?? '');
+            setTelegram(e.target.value ?? '');
           }}
           placeholder={copy?.placeholder ?? 'Telegram ID'}
         />

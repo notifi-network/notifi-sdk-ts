@@ -1,6 +1,7 @@
 import React from 'react';
 
 import {
+  NotifiFormProvider,
   NotifiSubscriptionContextProvider,
   useNotifiClientContext,
 } from '../../context';
@@ -33,12 +34,28 @@ export type NotifiInputSeparators = {
     };
     content: string;
   };
+  discordSeparator?: {
+    classNames?: {
+      container: string;
+      content: string;
+    };
+    content: string;
+  };
+  twitterSeparator?: {
+    classNames?: {
+      container: string;
+      content: string;
+    };
+    content: string;
+  };
 };
 
 export type NotifiInputLabels = {
   email?: string;
   sms?: string;
   telegram?: string;
+  discord?: string;
+  twitter?: string;
 };
 
 export type NotifiSubscriptionCardProps = Readonly<{
@@ -65,7 +82,9 @@ export const NotifiSubscriptionCard: React.FC<
 
   return (
     <NotifiSubscriptionContextProvider {...params}>
-      <NotifiSubscriptionCardContainer {...props} />
+      <NotifiFormProvider>
+        <NotifiSubscriptionCardContainer {...props} />
+      </NotifiFormProvider>
     </NotifiSubscriptionContextProvider>
   );
 };

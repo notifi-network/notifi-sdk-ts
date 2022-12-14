@@ -69,6 +69,8 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
       (telegramId !== '' && telegramId !== undefined)
     ) {
       setCardView({ state: 'history' });
+    } else {
+      setCardView({ state: 'edit' });
     }
   }, [email, phoneNumber, telegramId, setCardView, cardView, isInitialized]);
 

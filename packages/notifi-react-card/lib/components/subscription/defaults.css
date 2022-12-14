@@ -4,7 +4,7 @@
   --notifi-font-color: #000;
   --notifi-secondary-font-color: rgb(93, 93, 93);
   --notifi-input-background: rgba(255, 255, 255, 0.8);
-  --notifi-placeholder-color: rgba(224, 224, 224, 0.5);
+  --notifi-placeholder-color: rgb(33 33 33 / 50%);
   --notifi-focus-color: #000;
   --notifi-toggle-handle: #fff;
   --notifi-toggle-inactive: rgba(0, 0, 0, 0.2);
@@ -17,6 +17,8 @@
   --notifi-intercom-card-background: #fff;
   --notifi-intercom-font-color: #262949;
   --notifi-intercom-secondary-font-color: #80829d;
+  --notifi-intercom-placeholder-color: rgba(224, 224, 224, 0.5)
+    rgb(33 33 33 / 50%);
   --notifi-intercom-intro-color: #262949;
   --notifi-intercom-input-background: #f5f6fb;
   --notifi-intercom-input-border: #e8ebf5;
@@ -217,7 +219,9 @@ input:-webkit-autofill {
 
 .NotifiEmailInput__container,
 .NotifiSmsInput__container,
-.NotifiTelegramInput__container {
+.NotifiTelegramInput__container,
+.NotifiTwitterInput__container,
+.NotifiDiscordInput__container {
   display: flex;
   flex-direction: row;
   background-color: var(--notifi-input-background);
@@ -235,12 +239,16 @@ input:-webkit-autofill {
 
 .NotifiEmailInput__container:focus-within,
 .NotifiSmsInput__container:focus-within,
-.NotifiTelegramInput__container:focus-within {
+.NotifiTelegramInput__container:focus-within,
+.NotifiTwitterInput__container:focus-within,
+.NotifiDiscordInput__container:focus-within {
   box-shadow: inset 0px 0px 0px 3px var(--notifi-focus-color);
 }
 .NotifiEmailInput__errorMessage,
 .NotifiSmsInput__errorMessage,
-.NotifiTelegramInput__errorMessage {
+.NotifiTelegramInput__errorMessage,
+.NotifiTwitterInput__errorMessage,
+.NotifiDiscordInput__errorMessage {
   color: var(--notifi-alert-color);
   font-size: 14px;
   margin-bottom: 0px !important;
@@ -249,7 +257,9 @@ input:-webkit-autofill {
 
 .NotifiEmailInput__input,
 .NotifiSmsInput__input,
-.NotifiTelegramInput__input {
+.NotifiTelegramInput__input,
+.NotifiTwitterInput__input,
+.NotifiDiscordInput__input {
   flex-grow: 1;
   font-size: 16px;
   line-height: 20px;
@@ -261,13 +271,17 @@ input:-webkit-autofill {
 
 .NotifiEmailInput__input::placeholder,
 .NotifiSmsInput__input::placeholder,
-.NotifiTelegramInput__input::placeholder {
+.NotifiTelegramInput__input::placeholder,
+.NotifiTwitterInput__input::placeholder,
+.NotifiDiscordInput__input::placeholder {
   color: var(--notifi-placeholder-color);
 }
 
 .NotifiIntercomEmailInput__input::placeholder,
 .NotifiIntercomSmsInput__input::placeholder,
-.NotifiIntercomTelegramInput__input::placeholder {
+.NotifiIntercomTelegramInput__input::placeholder,
+.NotifiIntercomTwitterInput__input::placeholder,
+.NotifiIntercomDiscordInput__input::placeholder {
   font-size: 14px;
   font-weight: 500;
   line-height: 17px;
@@ -277,6 +291,7 @@ input:-webkit-autofill {
 
 .NotifiInput__icon {
   margin-right: 10px;
+  margin-bottom: 0px !important;
 }
 
 .NotifiToggle__container {
@@ -293,7 +308,9 @@ input:-webkit-autofill {
 
 .NotifiEmailInput__label,
 .NotifiSmsInput__label,
-.NotifiTelegramInput__label {
+.NotifiTelegramInput__label,
+.NotifiTwitterInput__label,
+.NotifiDiscordInput__label {
   display: flex;
   margin-bottom: 5px !important;
   color: var(--notifi-secondary-font-color);
@@ -496,7 +513,9 @@ input:-webkit-autofill {
 
 .NotifiUserInfoPanel__email,
 .NotifiUserInfoPanel__telegram,
-.NotifiUserInfoPanel__sms {
+.NotifiUserInfoPanel__sms,
+.NotifiUserInfoPanel__discord,
+.NotifiUserInfoPanel__twitter {
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -506,6 +525,10 @@ input:-webkit-autofill {
 }
 
 .NotifiUserInfoPanel__emailLabel,
+.NotifiUserInfoPanel__smsLabel,
+.NotifiUserInfoPanel__smsLabel,
+.NotifiUserInfoPanel__twitterLabel,
+.NotifiUserInfoPanel__discordLabel,
 .NotifiUserInfoPanel__telegramLabel {
   margin-bottom: 0 !important;
 }

@@ -1,19 +1,22 @@
 import { useState } from 'react';
 
-export type PreviewView = Readonly<{
+export type PreviewViewState = Readonly<{
   state: 'preview';
 }>;
-export type AlertHistoryView = Readonly<{
+export type AlertHistoryViewState = Readonly<{
   state: 'history';
 }>;
-export type EditInfoView = Readonly<{
+export type EditInfoViewState = Readonly<{
   state: 'edit';
 }>;
 
-export type FetchedCardView = PreviewView | AlertHistoryView | EditInfoView;
+export type FetchedCardViewState =
+  | PreviewViewState
+  | AlertHistoryViewState
+  | EditInfoViewState;
 
 export const useFetchedCardState = () => {
-  const [cardView, setCardView] = useState<FetchedCardView>({
+  const [cardView, setCardView] = useState<FetchedCardViewState>({
     // state: 'edit',
     state: 'history',
   });

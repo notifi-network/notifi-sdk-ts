@@ -19,7 +19,6 @@ export type PreviewCardProps = Readonly<{
     backArrowContainer?: string;
     UserInfoPanel?: DeepPartialReadonly<UserInfoPanelProps['classNames']>;
   };
-
   data: CardConfigItemV1;
   inputDisabled: boolean;
   inputs: Record<string, string | undefined>;
@@ -52,7 +51,11 @@ export const PreviewCard: React.FC<PreviewCardProps> = ({
       >
         <BackArrow />
       </div>
-      <UserInfoPanel classNames={classNames?.UserInfoPanel} data={data} />
+
+      <UserInfoPanel
+        classNames={classNames?.UserInfoPanel}
+        contactInfo={data.contactInfo}
+      />
       <div
         className={clsx(
           'NotifiPreviewCardSeparator',

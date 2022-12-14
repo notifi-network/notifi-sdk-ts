@@ -1,5 +1,8 @@
 import clsx from 'clsx';
-import { useNotifiClientContext } from 'notifi-react-card/lib/context';
+import {
+  useNotifiClientContext,
+  useNotifiForm,
+} from 'notifi-react-card/lib/context';
 import React, { useEffect, useState } from 'react';
 
 import { useNotifiSubscriptionContext } from '../../context/NotifiSubscriptionContext';
@@ -63,15 +66,20 @@ export const IntercomCard: React.FC<
     intercomCardView,
     setIntercomCardView,
     email,
-    emailErrorMessage,
     phoneNumber,
-    smsErrorMessage,
     telegramId,
-    telegramErrorMessage,
     setHasChatAlert,
     setConversationId,
     setUserId,
   } = useNotifiSubscriptionContext();
+
+  const { formErrorMessages } = useNotifiForm();
+
+  const {
+    email: emailErrorMessage,
+    telegram: telegramErrorMessage,
+    phoneNumber: smsErrorMessage,
+  } = formErrorMessages;
 
   const { client } = useNotifiClientContext();
   const alertName = 'NOTIFI_CHAT_MESSAGES';

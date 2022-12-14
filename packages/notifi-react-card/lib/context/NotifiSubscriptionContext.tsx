@@ -2,7 +2,7 @@ import type { Alert } from '@notifi-network/notifi-core';
 import { PropsWithChildren } from 'react';
 import React, { createContext, useContext, useState } from 'react';
 
-import { FetchedCardView, useFetchedCardState } from '../hooks';
+import { FetchedCardViewState, useFetchedCardState } from '../hooks';
 import {
   IntercomCardView,
   useIntercomCardState,
@@ -18,20 +18,18 @@ export type NotifiSubscriptionData = Readonly<{
   telegramConfirmationUrl?: string;
   useHardwareWallet: boolean;
 
-  cardView: FetchedCardView;
-  setCardView: React.Dispatch<React.SetStateAction<FetchedCardView>>;
+  cardView: FetchedCardViewState;
+  setCardView: React.Dispatch<React.SetStateAction<FetchedCardViewState>>;
+  twitterId: string;
+  discordId: string;
   intercomCardView: IntercomCardView;
   setIntercomCardView: React.Dispatch<React.SetStateAction<IntercomCardView>>;
   setAlerts: (alerts: Record<string, Alert | undefined>) => void;
   setEmail: (email: string) => void;
   setPhoneNumber: (phoneNumber: string) => void;
   setTelegramId: (telegramId: string) => void;
-  setEmailErrorMessage: (message: string) => void;
-  setTelegramErrorMessage: (message: string) => void;
-  setSmsErrorMessage: (message: string) => void;
-  emailErrorMessage: string;
-  smsErrorMessage: string;
-  telegramErrorMessage: string;
+  setTwitterId: (twitterId: string) => void;
+  setDiscordId: (discordId: string) => void;
   setTelegramConfirmationUrl: (
     telegramConfirmationUrl: string | undefined,
   ) => void;
@@ -59,15 +57,11 @@ export const NotifiSubscriptionContextProvider: React.FC<
 > = ({ children, ...params }) => {
   const [conversationId, setConversationId] = useState<string>('');
   const [userId, setUserId] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
-  const [phoneNumber, setPhoneNumber] = useState<string>('');
+
   const [hasChatAlert, setHasChatAlert] = useState<boolean>(false);
-  const [telegramId, setTelegramId] = useState<string>('');
   const { cardView, setCardView } = useFetchedCardState();
   const { intercomCardView, setIntercomCardView } = useIntercomCardState();
-  const [emailErrorMessage, setEmailErrorMessage] = useState<string>('');
-  const [telegramErrorMessage, setTelegramErrorMessage] = useState<string>('');
-  const [smsErrorMessage, setSmsErrorMessage] = useState<string>('');
+
   const [emailIdThatNeedsConfirmation, setEmailIdThatNeedsConfirmation] =
     useState<string>('');
   const [isSmsConfirmed, setIsSmsConfirmed] = useState<boolean | null>(null);
@@ -79,6 +73,11 @@ export const NotifiSubscriptionContextProvider: React.FC<
   const [useHardwareWallet, setUseHardwareWallet] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
 
+  const [email, setEmail] = useState<string>('');
+  const [phoneNumber, setPhoneNumber] = useState<string>('');
+  const [telegramId, setTelegramId] = useState<string>('');
+  const [twitterId, setTwitterId] = useState<string>('');
+  const [discordId, setDiscordId] = useState<string>('');
   const value = {
     alerts,
     email,
@@ -88,14 +87,11 @@ export const NotifiSubscriptionContextProvider: React.FC<
     telegramId,
     cardView,
     telegramConfirmationUrl,
-    setSmsErrorMessage,
-    setEmailErrorMessage,
-    smsErrorMessage,
+
     emailIdThatNeedsConfirmation,
     isSmsConfirmed,
     setEmailIdThatNeedsConfirmation,
     setIsSmsConfirmed,
-    emailErrorMessage,
     useHardwareWallet,
     setAlerts,
     setCardView,
@@ -107,14 +103,17 @@ export const NotifiSubscriptionContextProvider: React.FC<
     setUseHardwareWallet,
     intercomCardView,
     setIntercomCardView,
-    telegramErrorMessage,
-    setTelegramErrorMessage,
+
     hasChatAlert,
     setHasChatAlert,
     conversationId,
     setConversationId,
     userId,
     setUserId,
+    twitterId,
+    discordId,
+    setTwitterId,
+    setDiscordId,
   };
 
   return (

@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import React from 'react';
 
 import { EmailIcon } from '../assets/EmailIcon';
-import { useNotifiSubscriptionContext } from '../context';
+import { useNotifiForm, useNotifiSubscriptionContext } from '../context';
 import { useNotifiSubscribe } from '../hooks';
 import type { DeepPartialReadonly } from '../utils';
 
@@ -33,14 +33,15 @@ export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
   intercomEmailInputContainerStyle,
   intercomView,
 }: NotifiEmailInputProps) => {
-  const {
-    email,
-    setEmail,
-    setEmailErrorMessage,
-    emailErrorMessage,
-    emailIdThatNeedsConfirmation,
-    intercomCardView,
-  } = useNotifiSubscriptionContext();
+  const { emailIdThatNeedsConfirmation, intercomCardView } =
+    useNotifiSubscriptionContext();
+
+  const { formState, formErrorMessages, setEmail, setEmailErrorMessage } =
+    useNotifiForm();
+
+  const { email } = formState;
+
+  const { email: emailErrorMessage } = formErrorMessages;
 
   const { resendEmailVerificationLink } = useNotifiSubscribe({
     targetGroupName: 'Intercom',
