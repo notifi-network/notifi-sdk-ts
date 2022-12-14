@@ -2,7 +2,6 @@ import React from 'react';
 
 import './App.css';
 import { NotifiCard } from './NotifiCard/NotifiCard';
-import './defaults.css';
 
 function App() {
   return (
