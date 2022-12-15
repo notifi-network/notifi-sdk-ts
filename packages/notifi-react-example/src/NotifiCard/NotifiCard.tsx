@@ -63,6 +63,7 @@ export const NotifiCard: React.FC = () => {
           cardId="71562316475a4171ae9c980adaefab7d"
         />
         <NotifiIntercomCard
+          darkMode
           inputLabels={inputLabels}
           inputSeparators={intercomInputSeparators}
           cardId="1045f61752b148eabab0403c08cd60b2"
