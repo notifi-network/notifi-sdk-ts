@@ -442,6 +442,12 @@ export default function useNearWallet() {
   }, []);
 
   useEffect(() => {
+    if (!accountId) {
+      setWalletPublicKey(null);
+    }
+  }, [accountId]);
+
+  useEffect(() => {
     async function getPublicKey() {
       const keyPair = await keyStore.getKey(config.networkId, accountId!);
       const publicKey = keyPair.getPublicKey().toString();
