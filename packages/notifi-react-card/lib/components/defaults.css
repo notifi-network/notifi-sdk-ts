@@ -1013,3 +1013,39 @@ input:-webkit-autofill {
   background-color: #f5f6fb;
   height: 34px;
 }
+
+.NotifiExpiredTokenCard__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  padding-top: 32px;
+}
+
+.NotifiExpiredTokenCard__title {
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.NotifiExpiredTokenCard__subtitle {
+  font-size: 13px;
+  opacity: 0.5;
+  padding-bottom: 24px;
+}
+
+.NotifiExpiredTokenCard__button {
+  background-color: var(--notifi-button-color);
+  color: var(--notifi-button-text-color);
+  border-radius: 16px;
+  border: 0;
+  width: 243px;
+  height: 50px;
+  cursor: pointer;
+}
+
+.NotifiExpiredTokenCard__buttonLabel {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+}
