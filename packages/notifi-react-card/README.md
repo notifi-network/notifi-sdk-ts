@@ -5,6 +5,7 @@ A drop-in component that can get your dapp up and running with alert notificatio
 We currently support the following blockchains:
 
 - Solana
+- Near
 - Ethereum
 - Polygon
 - Arbitrum
