@@ -425,6 +425,8 @@ import { keyStores } from 'near-api-js';
 import React, { useCallback, useEffect, useMemo } from 'react';
 
 import { useWalletSelector } from '../NEARWalletContextProvider';
+//assume that you have NEARWalletContextProvider setup
+//example: https://github.com/near/wallet-selector/blob/main/examples/react/contexts/WalletSelectorContext.tsx
 
 export default function useNearWallet() {
   const { accountId } = useWalletSelector();
@@ -439,19 +441,19 @@ export default function useNearWallet() {
   }, []);
 
   useEffect(() => {
-      async function getPublicKey() {
-      const keyPair = await keyStore.getKey(config.networkId, ACCOUNT_ID);
+    async function getPublicKey() {
+      const keyPair = await keyStore.getKey(config.networkId, accountId);
       const publicKey = keyPair.getPublicKey().toString();
       // remove the ed25519: appending for the wallet public key
       const publicKeyWithoutTypeAppend = publicKey.replace('ed25519:', '');
-      setPublicKey(publicKeyWithoutTypeAppend);
+      setWalletPublicKey(publicKeyWithoutTypeAppend);
     }
     getPublicKey();
     }
   }, [keyStore]);
 
   const signMessage = useCallback(
-    async (message: Unit8Array) => {
+    async (message: Uint8Array) => {
       const keyPair = await keyStore.getKey(config.networkId, accountId);
       const { signature } = keyPair.sign(msg);
       return signature;
@@ -459,7 +461,7 @@ export default function useNearWallet() {
     [],
   );
 
-  return { account, walletPublicKey, signMessage };
+  return { account: accountId, walletPublicKey, signMessage };
 }
 ```
 
@@ -505,9 +507,7 @@ export const Notifi: React.FC = () => {
       walletBlockchain="NEAR"
       accountAddress={accountId}
       walletPublicKey={walletPublicKey} // require wallet public key without ed25519: append
-      signMessage={async (message: Uint8Array) => {
-        await signMessage(message);
-      }}
+      signMessage={signMessage}
     >
       <NotifiSubscriptionCard
         cardId="<YOUR OWN CARD ID HERE>"
