@@ -484,7 +484,7 @@ import { useNearWallet } from 'path-to-custom-hook';
 import React, { useCallback, useState } from 'react';
 
 export const Notifi: React.FC = () => {
-  const { acoount, walletPublicKey, signMessage } = useNearWallet();
+  const { account, walletPublicKey, signMessage } = useNearWallet();
 
   if (account === null || walletPublicKey === null) {
     // account is required
