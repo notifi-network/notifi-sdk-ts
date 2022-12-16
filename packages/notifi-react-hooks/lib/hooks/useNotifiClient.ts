@@ -254,6 +254,7 @@ const useNotifiClient = (
     loading: boolean;
     isAuthenticated: boolean;
     isInitialized: boolean;
+    isTokenExpired: boolean;
     expiry: string | null;
   }> => {
   const { env, dappAddress, walletPublicKey, walletBlockchain } = config;
@@ -275,6 +276,7 @@ const useNotifiClient = (
   const [loading, setLoading] = useState<boolean>(false);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [expiry, setExpiry] = useState<string | null>(null);
+  const [isTokenExpired, setisTokenExpired] = useState<boolean>(false);
   const clientRandomUuid = useRef<string | null>(null);
 
   const fetchDataRef = useRef<FetchDataState>({});
@@ -331,6 +333,7 @@ const useNotifiClient = (
         setIsAuthenticated(false);
         setIsInitialized(true);
         setExpiry(null);
+        setisTokenExpired(false);
         return;
       }
 
@@ -343,6 +346,7 @@ const useNotifiClient = (
         setIsAuthenticated(false);
         setIsInitialized(true);
         setExpiry(expiry);
+        setisTokenExpired(true);
         return;
       }
 
@@ -358,6 +362,7 @@ const useNotifiClient = (
             setAuthorization({ token: newToken, expiry: newExpiry });
             setIsAuthenticated(true);
             setExpiry(newExpiry);
+            setisTokenExpired(false);
           }
         } catch (_e: unknown) {
           // Explicity ignore refresh errors
@@ -1400,6 +1405,7 @@ const useNotifiClient = (
     data,
     error,
     expiry,
+    isTokenExpired,
     isAuthenticated,
     isInitialized,
     loading,

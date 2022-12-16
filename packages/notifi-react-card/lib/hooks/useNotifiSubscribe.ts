@@ -41,6 +41,7 @@ export const useNotifiSubscribe: ({
 }: useNotifiSubscribeProps) => Readonly<{
   isAuthenticated: boolean;
   isInitialized: boolean;
+  isTokenExpired: boolean;
   logIn: () => Promise<SubscriptionData>;
   subscribe: (
     alertConfigs: Record<string, AlertConfiguration>,
@@ -542,6 +543,7 @@ export const useNotifiSubscribe: ({
     instantSubscribe,
     isAuthenticated: client.isAuthenticated,
     isInitialized: client.isInitialized,
+    isTokenExpired: client.isTokenExpired,
     logIn,
     subscribe,
     updateTargetGroups,

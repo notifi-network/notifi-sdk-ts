@@ -13,6 +13,10 @@ import {
   EditCardViewProps,
 } from './subscription-card-views/EditCardView';
 import {
+  ExpiredTokenView,
+  ExpiredTokenViewCardProps,
+} from './subscription-card-views/ExpiredTokenViewCard';
+import {
   AlertHistoryView,
   AlertHistoryViewProps,
 } from './subscription-card-views/HistoryCardView';
@@ -28,6 +32,9 @@ export type SubscriptionCardV1Props = Readonly<{
     HistoryCard?: DeepPartialReadonly<AlertHistoryViewProps['classNames']>;
     EditCard?: DeepPartialReadonly<EditCardViewProps['classNames']>;
     AlertList?: DeepPartialReadonly<AlertListProps['classNames']>;
+    ExpiredTokenView?: DeepPartialReadonly<
+      ExpiredTokenViewCardProps['classNames']
+    >;
   };
   inputDisabled: boolean;
   data: CardConfigItemV1;
@@ -49,7 +56,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
   const { cardView, email, phoneNumber, telegramId, setCardView } =
     useNotifiSubscriptionContext();
 
-  const { isInitialized } = useNotifiSubscribe({
+  const { isInitialized, isTokenExpired } = useNotifiSubscribe({
     targetGroupName: 'Default',
   });
 
@@ -69,12 +76,17 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
       (telegramId !== '' && telegramId !== undefined)
     ) {
       setCardView({ state: 'history' });
+    } else if (isTokenExpired) {
+      setCardView({ state: 'expired' });
     } else {
       setCardView({ state: 'edit' });
     }
   }, [email, phoneNumber, telegramId, setCardView, cardView, isInitialized]);
 
   switch (cardView.state) {
+    case 'expired':
+      view = <ExpiredTokenView classNames={classNames?.ExpiredTokenView} />;
+      break;
     case 'preview':
       view = (
         <PreviewCard
