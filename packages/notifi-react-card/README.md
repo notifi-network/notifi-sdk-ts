@@ -422,9 +422,10 @@ Create a hook that gets all of the account data using NEAR API
 
 ```tsx
 import { keyStores } from 'near-api-js';
-import React, { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { useWalletSelector } from '../NEARWalletContextProvider';
+import { useWalletSelector } from '../components/NearWalletContextProvider';
+
 //assume that you have NEARWalletContextProvider setup
 //example: https://github.com/near/wallet-selector/blob/main/examples/react/contexts/WalletSelectorContext.tsx
 
@@ -442,23 +443,22 @@ export default function useNearWallet() {
 
   useEffect(() => {
     async function getPublicKey() {
-      const keyPair = await keyStore.getKey(config.networkId, accountId);
+      const keyPair = await keyStore.getKey(config.networkId, accountId!);
       const publicKey = keyPair.getPublicKey().toString();
       // remove the ed25519: appending for the wallet public key
       const publicKeyWithoutTypeAppend = publicKey.replace('ed25519:', '');
       setWalletPublicKey(publicKeyWithoutTypeAppend);
     }
     getPublicKey();
-    }
-  }, [keyStore]);
+  }, [accountId, config.networkId, keyStore]);
 
   const signMessage = useCallback(
     async (message: Uint8Array) => {
-      const keyPair = await keyStore.getKey(config.networkId, accountId);
-      const { signature } = keyPair.sign(msg);
+      const keyPair = await keyStore.getKey(config.networkId, accountId!);
+      const { signature } = keyPair.sign(message);
       return signature;
     },
-    [],
+    [accountId, config.networkId, keyStore],
   );
 
   return { account: accountId, walletPublicKey, signMessage };
@@ -505,7 +505,7 @@ export const Notifi: React.FC = () => {
       dappAddress="<YOUR OWN DAPP ADDRESS HERE>"
       env="Development"
       walletBlockchain="NEAR"
-      accountAddress={accountId}
+      accountAddress={account}
       walletPublicKey={walletPublicKey} // require wallet public key without ed25519: append
       signMessage={signMessage}
     >
