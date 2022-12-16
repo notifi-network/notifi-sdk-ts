@@ -16,9 +16,11 @@
   --notifi-input-background: #f5f6fb;
   --notifi-input-border: #e8ebf5;
   --notifi-button-color: #1448f3;
+  --notifi-button-text-color: #fff
   --notifi-button-disabled-color: #b6b8d5;
   --notifi-incoming-message: #f5f6fb;
   --notifi-outgoing-message: #e5ebff;
+  --notifi-settings-icon-color: #262949
 }
 
 .notifi__dark {
@@ -40,8 +42,10 @@
   --notifi-input-border: #606060;
   --notifi-button-color: #678afc;
   --notifi-button-disabled-color: #80829d;
+  --notifi-button-text-color: #fff
   --notifi-incoming-message: #474858;
   --notifi-outgoing-message: #678afc;
+  --notifi-settings-icon-color: #fff
 }
 
 input:autofill,
@@ -155,6 +159,7 @@ input:-webkit-autofill {
   justify-content: center;
   align-items: center;
   padding-bottom: 10px;
+  position: relative;
 }
 
 .NotifiAlertHistory__notificationDate {
@@ -387,7 +392,7 @@ input:-webkit-autofill {
   font-size: 16px;
   line-height: 20px;
   cursor: pointer;
-  color: #fff;
+  color: var(--notifi-button-text-color);
   width: 100%;
   display: block;
 }
@@ -482,7 +487,7 @@ input:-webkit-autofill {
   font-size: 16px;
   line-height: 20px;
   cursor: pointer;
-  color: var(--notifi-font-color);
+  color: var(--notifi-button-text-color);
 }
 
 .NotifiUserInfoPanel__emailConfirmation,
@@ -570,12 +575,12 @@ input:-webkit-autofill {
 }
 .NotifiAlertHistory__settingsIcon {
   position: absolute;
-  right: 35px;
+  right: 0px;
   height: 20px;
 }
 
 .NotifiAlertHistory__settingsIcon path {
-  fill: var(--notifi-button-color);
+  fill: var(notifi-settings-icon-color);
   cursor: pointer;
 }
 .NotifiAlertHistory__emptyAlertsBellIcon path {
@@ -597,6 +602,7 @@ input:-webkit-autofill {
   z-index: 10;
   top: 0px;
   left: 0px;
+  max-height: 525px;
   background-color: var(--notifi-card-background);
   width: 360px;
   height: 100%;
