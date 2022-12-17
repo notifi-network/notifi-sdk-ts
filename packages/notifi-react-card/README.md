@@ -194,7 +194,6 @@ export const Notifi: React.FC = () => {
         return arrayify(result);
       }}
       walletPublicKey={account}
-      ßß
       walletBlockchain="ETHEREUM" // NOTE - Please update to the correct chain name.
       //If Polygon, use "POLYGON"
       //If Arbitrum, use "ARBITRUM"
