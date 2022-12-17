@@ -269,7 +269,9 @@ export const Notifi: React.FC = () => {
           nonce: `${nonce}`,
         });
 
-        return result.signature;
+        if (typeof result === 'string') {
+          return result;
+        } else return result.signature;
       }}
     >
       <NotifiSubscriptionCard
