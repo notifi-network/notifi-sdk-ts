@@ -1,7 +1,6 @@
 import {
   NotifiContext,
   NotifiInputSeparators,
-  NotifiIntercomCard,
   NotifiSubscriptionCard,
 } from '@notifi-network/notifi-react-card';
 import '@notifi-network/notifi-react-card/dist/index.css';
@@ -39,11 +38,11 @@ export const NotifiCard: React.FC = () => {
     },
   };
 
-  const intercomInputSeparators: NotifiInputSeparators = {
-    emailSeparator: {
-      content: 'OR',
-    },
-  };
+  // const intercomInputSeparators: NotifiInputSeparators = {
+  //   emailSeparator: {
+  //     content: 'OR',
+  //   },
+  // };
 
   return (
     <div className="container">
@@ -60,14 +59,14 @@ export const NotifiCard: React.FC = () => {
           darkMode
           inputLabels={inputLabels}
           inputSeparators={inputSeparators}
-          cardId="71562316475a4171ae9c980adaefab7d"
+          cardId="f64359eac9b14d358671aede15574731"
         />
-        <NotifiIntercomCard
+        {/* <NotifiIntercomCard
           darkMode
           inputLabels={inputLabels}
           inputSeparators={intercomInputSeparators}
           cardId="1045f61752b148eabab0403c08cd60b2"
-        />
+        /> */}
       </NotifiContext>
     </div>
   );
