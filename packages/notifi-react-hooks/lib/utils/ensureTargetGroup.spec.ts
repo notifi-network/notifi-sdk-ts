@@ -34,6 +34,7 @@ const createTelegramTarget = (id: string): TelegramTarget => {
     id,
     name: 'some-telegram-id',
     telegramId: 'some-telegram-id',
+    confirmationUrl: null,
     isConfirmed: true,
   };
 };

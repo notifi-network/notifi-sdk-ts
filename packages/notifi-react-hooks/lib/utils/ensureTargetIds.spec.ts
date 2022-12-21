@@ -35,6 +35,7 @@ describe('ensureTargetIds', () => {
       return {
         id: 'created-telegram-target',
         name: input.name,
+        confirmationUrl: null,
         telegramId: input.value,
         isConfirmed: true,
       };
