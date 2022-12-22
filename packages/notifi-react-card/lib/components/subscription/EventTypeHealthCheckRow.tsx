@@ -72,8 +72,8 @@ export const EventTypeHealthCheckRow: React.FC<
     } else {
       if (
         customValue.indexOf('%') === customValue.length - 1 &&
-        parseFloat(customValue.slice(0, -1)) > 0 &&
-        parseFloat(customValue.slice(0, -1)) < 100
+        parseFloat(customValue.slice(0, -1)) >= 1 &&
+        parseFloat(customValue.slice(0, -1)) <= 99
       ) {
         console.log(selectedRatio);
         return;
