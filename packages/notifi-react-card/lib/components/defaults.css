@@ -349,6 +349,7 @@ input:-webkit-autofill {
 .EventTypeLabelRow__container,
 .EventTypeBroadcastRow__container,
 .EventTypeDirectPushRow__container,
+.EventTypeHealthCheckRow__container,
 .BrowserAlertToggle__container {
   display: flex;
   flex-direction: row;
@@ -356,6 +357,7 @@ input:-webkit-autofill {
 
 .EventTypeBroadcastRow__label,
 .EventTypeDirectPushRow__label,
+.EventTypeHealthCheckRow__label,
 .BrowserAlertToggle__label {
   display: flex;
   flex-direction: row;
@@ -364,6 +366,17 @@ input:-webkit-autofill {
   font-size: 16px;
   line-height: 20px;
   text-align: left;
+}
+
+.EventTypeHealthCheckRow__container,
+.EventTypeHealthCheckRow__label {
+  margin-bottom: 0 !important;
+}
+
+
+.EventTypeHealthCheckRow__content {
+  font-size: 14px;
+  color: var(--notifi-secondary-font-color);
 }
 
 .EventTypeLabelRow__label {
@@ -1006,4 +1019,39 @@ input:-webkit-autofill {
   border-radius: 20px;
   background-color: #f5f6fb;
   height: 34px;
+}
+
+.EventTypeHealthCheckRow__button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #F6F6FA;
+  color: #808080;
+  height: 47px;
+  width: 65px;
+  border-radius: 8px;
+  opacity: 90%;
+  margin-right: 16px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 20px;
+  border: 1px solid #DAE0E1;
+  cursor: pointer;
+}
+
+.EventTypeHealthCheckRow__buttonSelected {
+  border: 2px solid var( --notifi-button-color);
+  color: #000000;
+}
+
+.EventTypeHealthCheckRow__customButton {
+  text-align: center;
+  width: 110px;
+  color: #000000;
+}
+
+.EventTypeHealthCheckRow__buttonContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }

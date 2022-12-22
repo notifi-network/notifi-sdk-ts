@@ -24,6 +24,25 @@ export type BroadcastEventTypeItem = Readonly<{
   tooltipContent?: string;
 }>;
 
+export type HealthCheckEventTypeItem = Readonly<{
+  type: 'healthCheck';
+  name: string;
+  checkRatios: ValueOrRef<CheckRatio[]>;
+  tooltipContent?: string;
+}>;
+
+type RatiosBelow = Readonly<{
+  type: 'below';
+  ratio: number;
+}>;
+
+type RatiosAbove = Readonly<{
+  type: 'above';
+  ratio: number;
+}>;
+
+export type CheckRatio = RatiosBelow | RatiosAbove;
+
 export type LabelEventTypeItem = Readonly<{
   type: 'label';
   name: string;
@@ -33,6 +52,7 @@ export type LabelEventTypeItem = Readonly<{
 export type EventTypeItem =
   | DirectPushEventTypeItem
   | BroadcastEventTypeItem
+  | HealthCheckEventTypeItem
   | LabelEventTypeItem;
 
 export type EventTypeConfig = ReadonlyArray<EventTypeItem>;

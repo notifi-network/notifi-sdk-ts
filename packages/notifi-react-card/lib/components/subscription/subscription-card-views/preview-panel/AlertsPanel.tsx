@@ -10,6 +10,10 @@ import {
   EventTypeDirectPushRowProps,
 } from '../../EventTypeDirectPushRow';
 import {
+  EventTypeHealthCheckRow,
+  EventTypeHealthCheckRowProps,
+} from '../../EventTypeHealthCheckRow';
+import {
   EventTypeLabelRow,
   EventTypeLabelRowProps,
 } from '../../EventTypeLabelRow';
@@ -24,6 +28,7 @@ export type AlertsPanelProps = Readonly<{
   classNames?: Readonly<{
     EventTypeBroadcastRow?: EventTypeBroadcastRowProps['classNames'];
     EventTypeDirectPushRow?: EventTypeDirectPushRowProps['classNames'];
+    EventTypeHealthCheckRow?: EventTypeHealthCheckRowProps['classNames'];
     EventTypeLabelRow?: EventTypeLabelRowProps['classNames'];
     EventTypeUnsupportedRow?: EventTypeUnsupportedRowProps['classNames'];
   }>;
@@ -54,6 +59,16 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
               <EventTypeDirectPushRow
                 key={eventType.name}
                 classNames={classNames?.EventTypeDirectPushRow}
+                disabled={inputDisabled}
+                config={eventType}
+                inputs={inputs}
+              />
+            );
+          case 'healthCheck':
+            return (
+              <EventTypeHealthCheckRow
+                key={eventType.name}
+                classNames={classNames?.EventTypeHealthCheckRow}
                 disabled={inputDisabled}
                 config={eventType}
                 inputs={inputs}
