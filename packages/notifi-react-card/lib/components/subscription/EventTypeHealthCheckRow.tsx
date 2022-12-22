@@ -1,12 +1,8 @@
 import clsx from 'clsx';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { useNotifiSubscriptionContext } from '../../context';
-import {
-  CheckRatio,
-  HealthCheckEventTypeItem,
-  useNotifiSubscribe,
-} from '../../hooks';
+import { CheckRatio, HealthCheckEventTypeItem } from '../../hooks';
 import { DeepPartialReadonly } from '../../utils';
 import type { NotifiToggleProps } from './NotifiToggle';
 import { NotifiToggle } from './NotifiToggle';
@@ -37,9 +33,9 @@ export const EventTypeHealthCheckRow: React.FC<
   inputs,
 }: EventTypeHealthCheckRowProps) => {
   const { alerts, loading } = useNotifiSubscriptionContext();
-  const { instantSubscribe } = useNotifiSubscribe({
-    targetGroupName: 'Default',
-  });
+  // const { instantSubscribe } = useNotifiSubscribe({
+  //   targetGroupName: 'Default',
+  // });
   const [enabled, setEnabled] = useState(false);
   const [ratios, setRatios] = useState<CheckRatio[]>([]);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
@@ -48,6 +44,7 @@ export const EventTypeHealthCheckRow: React.FC<
   const [cutomButtonPlaceholder, setCustomButtonPlaceholder] =
     useState<string>('Custom');
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const [isShowSelectButton, setIsShowSelectButton] = useState<boolean>(false);
 
   const alertName = useMemo<string>(() => config.name, [config]);
   const tooltipContent = config.tooltipContent;
@@ -69,27 +66,32 @@ export const EventTypeHealthCheckRow: React.FC<
     if (loading) {
       return;
     }
-    if (
-      customValue.indexOf('%') === customValue.length - 1 &&
-      parseFloat(customValue.slice(0, -1)) > 0 &&
-      parseFloat(customValue.slice(0, -1)) <= 100
-    ) {
-      console.log(selectedRatio);
-      return;
-      //TODO: hook up API call here
-      // if (!enabled) {
-      //   instantSubscribe({
-      //     alertConfiguration: alertConfiguration,
-      //     alertName: alertName,
-      //   });
-      // } else {
-      //   instantSubscribe({
-      //     alertConfiguration: null,
-      //     alertName: alertName,
-      //   });
-      // }
+    if (!isShowSelectButton) {
+      setIsShowSelectButton(true);
+      setEnabled(true);
     } else {
-      setErrorMessage('Please enter a valid number');
+      if (
+        customValue.indexOf('%') === customValue.length - 1 &&
+        parseFloat(customValue.slice(0, -1)) > 0 &&
+        parseFloat(customValue.slice(0, -1)) < 100
+      ) {
+        console.log(selectedRatio);
+        return;
+        //TODO: hook up API call here
+        // if (!enabled) {
+        //   instantSubscribe({
+        //     alertConfiguration: alertConfiguration,
+        //     alertName: alertName,
+        //   });
+        // } else {
+        //   instantSubscribe({
+        //     alertConfiguration: null,
+        //     alertName: alertName,
+        //   });
+        // }
+      } else {
+        setErrorMessage('Please enter a valid number');
+      }
     }
   };
 
@@ -119,81 +121,85 @@ export const EventTypeHealthCheckRow: React.FC<
           setChecked={handleNewSubscription}
         />
       </div>
-      <div
-        className={clsx(
-          'EventTypeHealthCheckRow__content',
-          classNames?.content,
-        )}
-      >
-        Alert me when my margin ratio is {ratios[0]?.type}
-      </div>
-      <div
-        className={clsx(
-          'EventTypeHealthCheckRow__buttonContainer',
-          classNames?.buttonContainer,
-        )}
-      >
-        {ratios.map((value, index) => {
-          const percentage = value.ratio * 100 + '%';
-          return (
-            <div
-              key={index}
+      {isShowSelectButton ? (
+        <>
+          <div
+            className={clsx(
+              'EventTypeHealthCheckRow__content',
+              classNames?.content,
+            )}
+          >
+            Alert me when my margin ratio is {ratios[0]?.type}
+          </div>
+          <div
+            className={clsx(
+              'EventTypeHealthCheckRow__buttonContainer',
+              classNames?.buttonContainer,
+            )}
+          >
+            {ratios.map((value, index) => {
+              const percentage = value.ratio * 100 + '%';
+              return (
+                <div
+                  key={index}
+                  className={clsx(
+                    'EventTypeHealthCheckRow__button',
+                    `${
+                      index === selectedIndex
+                        ? ' EventTypeHealthCheckRow__buttonSelected'
+                        : undefined
+                    }`,
+                    classNames?.button,
+                  )}
+                  onClick={() => {
+                    setSelectedIndex(index);
+                    setCustomButtonPlaceholder('Custom');
+                    setCustomValue('');
+                    setSelectedRatio(percentage);
+                    setErrorMessage('');
+                  }}
+                >
+                  {percentage}
+                </div>
+              );
+            })}
+            <input
+              onClick={() => {
+                //assume we should only allow no more than two specific values and one custom value here
+                //need to double check with product
+                //will update in following PR when connect api
+                setSelectedIndex(3);
+                setCustomButtonPlaceholder('0.00%');
+                setErrorMessage('');
+              }}
+              value={customValue}
+              placeholder={cutomButtonPlaceholder}
               className={clsx(
                 'EventTypeHealthCheckRow__button',
+                'EventTypeHealthCheckRow__customButton',
                 `${
-                  index === selectedIndex
+                  selectedIndex === 3
                     ? ' EventTypeHealthCheckRow__buttonSelected'
                     : undefined
                 }`,
                 classNames?.button,
               )}
-              onClick={() => {
-                setSelectedIndex(index);
-                setCustomButtonPlaceholder('Custom');
-                setCustomValue('');
-                setSelectedRatio(percentage);
-                setErrorMessage('');
+              onChange={(e) => {
+                setCustomValue(e.target.value ?? '');
+                setSelectedRatio(e.target.value);
               }}
-            >
-              {percentage}
-            </div>
-          );
-        })}
-        <input
-          onClick={() => {
-            //assume we should only allow no more than two specific values and one custom value here
-            //need to double check with product
-            //will update in following PR when connect api
-            setSelectedIndex(3);
-            setCustomButtonPlaceholder('0.00%');
-            setErrorMessage('');
-          }}
-          value={customValue}
-          placeholder={cutomButtonPlaceholder}
-          className={clsx(
-            'EventTypeHealthCheckRow__button',
-            'EventTypeHealthCheckRow__customButton',
-            `${
-              selectedIndex === 3
-                ? ' EventTypeHealthCheckRow__buttonSelected'
-                : undefined
-            }`,
-            classNames?.button,
-          )}
-          onChange={(e) => {
-            setCustomValue(e.target.value ?? '');
-            setSelectedRatio(e.target.value);
-          }}
-        />
-      </div>
-      <label
-        className={clsx(
-          'NotifiEmailInput__errorMessage',
-          classNames?.errorMessage,
-        )}
-      >
-        {errorMessage}
-      </label>
+            />
+          </div>
+          <label
+            className={clsx(
+              'NotifiEmailInput__errorMessage',
+              classNames?.errorMessage,
+            )}
+          >
+            {errorMessage}
+          </label>
+        </>
+      ) : null}
     </div>
   );
 };
