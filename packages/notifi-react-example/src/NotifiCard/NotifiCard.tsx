@@ -57,10 +57,10 @@ export const NotifiCard: React.FC = () => {
         signMessage={signMessage}
       >
         <NotifiSubscriptionCard
-          // darkMode
+          darkMode
           inputLabels={inputLabels}
           inputSeparators={inputSeparators}
-          cardId="7f35dd52d252453f9c89dc087fc05f13"
+          cardId="71562316475a4171ae9c980adaefab7d"
         />
         <NotifiIntercomCard
           darkMode
