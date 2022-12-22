@@ -120,18 +120,21 @@ export const EventTypeHealthCheckRow: React.FC<
       //   alertName: alertName,
       // });
     } else {
+      const selectedRatioNumber = parseFloat(customValue.slice(0, -1));
       if (
         selectedRatio !== '' ||
         (customValue.indexOf('%') === customValue.length - 1 &&
-          parseFloat(customValue.slice(0, -1)) >= 1 &&
-          parseFloat(customValue.slice(0, -1)) <= 99)
+          selectedRatioNumber >= 1 &&
+          selectedRatioNumber <= 99)
       ) {
-        console.log(selectedRatio);
         return;
-        //TODO: hook up API call here
+        // TODO: hook up API call here
         // if (!enabled) {
         //   instantSubscribe({
-        //     alertConfiguration: alertConfiguration,
+        //     alertConfiguration: healthThresholdConfiguration({
+        //       alertFrequency: 'ALWAYS',
+        //       percentage: selectedRatioNumber,
+        //     }),
         //     alertName: alertName,
         //   });
         // } else {
