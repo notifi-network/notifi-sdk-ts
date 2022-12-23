@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { useNotifiSubscriptionContext } from '../../context';
 import { CheckRatio, HealthCheckEventTypeItem } from '../../hooks';
@@ -123,16 +123,6 @@ export const EventTypeHealthCheckRow: React.FC<
       setErrorMessage('Please enter a valid number');
     }
   };
-
-  const handleKeypressUp = useCallback(
-    (event: React.KeyboardEvent<HTMLInputElement>) => {
-      if (event.key === 'Enter' && !event.shiftKey) {
-        handleCustomRatioButtonNewSubscription();
-        event.preventDefault();
-      }
-    },
-    [handleCustomRatioButtonNewSubscription],
-  );
 
   return (
     <div>
