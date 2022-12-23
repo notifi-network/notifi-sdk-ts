@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { CardConfigItemV1 } from 'notifi-frontend-client/dist';
+import { CardConfigItemV1 } from 'notifi-react-card/lib/hooks';
 import { DeepPartialReadonly } from 'notifi-react-card/lib/utils';
 import React from 'react';
 
