@@ -71,7 +71,6 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
                 classNames={classNames?.EventTypeHealthCheckRow}
                 disabled={inputDisabled}
                 config={eventType}
-                inputs={inputs}
               />
             );
           case 'label':

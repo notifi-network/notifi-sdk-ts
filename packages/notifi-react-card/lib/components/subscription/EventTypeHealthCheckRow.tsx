@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useNotifiSubscriptionContext } from '../../context';
 import { CheckRatio, HealthCheckEventTypeItem } from '../../hooks';
@@ -21,17 +21,11 @@ export type EventTypeHealthCheckRowProps = Readonly<{
   }>;
   disabled: boolean;
   config: HealthCheckEventTypeItem;
-  inputs?: Record<string, string | undefined>;
 }>;
 
 export const EventTypeHealthCheckRow: React.FC<
   EventTypeHealthCheckRowProps
-> = ({
-  classNames,
-  config,
-  disabled,
-  inputs,
-}: EventTypeHealthCheckRowProps) => {
+> = ({ classNames, config, disabled }: EventTypeHealthCheckRowProps) => {
   const { alerts, loading } = useNotifiSubscriptionContext();
   // const { instantSubscribe } = useNotifiSubscribe({
   //   targetGroupName: 'Default',
@@ -39,7 +33,7 @@ export const EventTypeHealthCheckRow: React.FC<
   const [enabled, setEnabled] = useState(false);
   const [ratios, setRatios] = useState<CheckRatio[]>([]);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-  const [selectedRatio, setSelectedRatio] = useState<string>('');
+  const [selectedRatio, setSelectedRatio] = useState<number | null>(null);
   const [customValue, setCustomValue] = useState<string>('');
   const [cutomButtonPlaceholder, setCustomButtonPlaceholder] =
     useState<string>('Custom');
@@ -48,6 +42,7 @@ export const EventTypeHealthCheckRow: React.FC<
 
   const alertName = useMemo<string>(() => config.name, [config]);
   const tooltipContent = config.tooltipContent;
+
   useEffect(() => {
     if (loading) {
       return;
@@ -58,46 +53,86 @@ export const EventTypeHealthCheckRow: React.FC<
 
   useEffect(() => {
     if (config && config.checkRatios.type === 'value') {
-      setRatios(config.checkRatios.value);
+      const ratios = config.checkRatios.value;
+      setRatios(ratios);
+      setSelectedRatio(ratios[-1]?.ratio);
+      setSelectedIndex(ratios.length - 1);
     }
   }, [config, setRatios]);
 
-  const handleNewSubscription = () => {
+  const handleToggleNewSubscription = () => {
     if (loading) {
       return;
     }
-    if (!isShowSelectButton) {
-      setIsShowSelectButton(true);
-      setEnabled(true);
+    setIsShowSelectButton(!isShowSelectButton);
+    // TODO: hook up API call here
+    // if (!enabled) {
+    //   instantSubscribe({
+    //     alertConfiguration: healthThresholdConfiguration({
+    //       alertFrequency: 'ALWAYS',
+    //       percentage: selectedRatio,
+    //     }),
+    //     alertName: alertName,
+    //   });
+    // } else {
+    //   instantSubscribe({
+    //     alertConfiguration: null,
+    //     alertName: alertName,
+    //   });
+    // }
+  };
+
+  const handleRatioButtonNewSubscription = (ratioNumber: number) => {
+    if (loading) {
+      return;
+    }
+    if (ratioNumber) {
+      // TODO: hook up API call here
+      // instantSubscribe({
+      //   alertConfiguration: healthThresholdConfiguration({
+      //     alertFrequency: 'ALWAYS',
+      //     percentage: ratioNumber,
+      //   }),
+      //   alertName: alertName,
+      // });
     } else {
-      const selectedRatioNumber = parseFloat(customValue.slice(0, -1));
+      setErrorMessage('Please enter a valid number');
+    }
+  };
+
+  const handleCustomRatioButtonNewSubscription = () => {
+    if (loading) {
+      return;
+    }
+    if (selectedRatio) {
       if (
-        selectedRatio !== '' ||
-        (customValue.indexOf('%') === customValue.length - 1 &&
-          selectedRatioNumber >= 1 &&
-          selectedRatioNumber <= 99)
+        customValue.indexOf('%') === customValue.length - 1 &&
+        selectedRatio >= 1 &&
+        selectedRatio <= 99
       ) {
-        return;
         // TODO: hook up API call here
-        // if (!enabled) {
-        //   instantSubscribe({
-        //     alertConfiguration: healthThresholdConfiguration({
-        //       alertFrequency: 'ALWAYS',
-        //       percentage: selectedRatioNumber,
-        //     }),
-        //     alertName: alertName,
-        //   });
-        // } else {
-        //   instantSubscribe({
-        //     alertConfiguration: null,
-        //     alertName: alertName,
-        //   });
-        // }
+        // instantSubscribe({
+        //   alertConfiguration: healthThresholdConfiguration({
+        //     alertFrequency: 'ALWAYS',
+        //     percentage: selectedRatioNumber,
+        //   }),
+        //   alertName: alertName,
+        // });
       } else {
         setErrorMessage('Please enter a valid number');
       }
     }
   };
+
+  const handleKeypressUp = useCallback(
+    (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === 'Enter' && !event.shiftKey) {
+        handleCustomRatioButtonNewSubscription();
+        event.preventDefault();
+      }
+    },
+    [handleCustomRatioButtonNewSubscription],
+  );
 
   return (
     <div>
@@ -122,7 +157,7 @@ export const EventTypeHealthCheckRow: React.FC<
           checked={enabled}
           classNames={classNames?.toggle}
           disabled={disabled}
-          setChecked={handleNewSubscription}
+          setChecked={handleToggleNewSubscription}
         />
       </div>
       {isShowSelectButton ? (
@@ -159,8 +194,9 @@ export const EventTypeHealthCheckRow: React.FC<
                     setSelectedIndex(index);
                     setCustomButtonPlaceholder('Custom');
                     setCustomValue('');
-                    setSelectedRatio(percentage);
+                    setSelectedRatio(value.ratio);
                     setErrorMessage('');
+                    handleRatioButtonNewSubscription(value.ratio);
                   }}
                 >
                   {percentage}
@@ -176,6 +212,8 @@ export const EventTypeHealthCheckRow: React.FC<
                 setCustomButtonPlaceholder('0.00%');
                 setErrorMessage('');
               }}
+              onKeyUp={(e) => handleKeypressUp(e)}
+              onBlur={handleCustomRatioButtonNewSubscription}
               value={customValue}
               placeholder={cutomButtonPlaceholder}
               className={clsx(
@@ -190,7 +228,8 @@ export const EventTypeHealthCheckRow: React.FC<
               )}
               onChange={(e) => {
                 setCustomValue(e.target.value ?? '');
-                setSelectedRatio(e.target.value);
+                const ratioNumber = parseFloat(e.target.value.slice(0, -1));
+                setSelectedRatio(ratioNumber);
               }}
             />
           </div>
