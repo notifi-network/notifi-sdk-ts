@@ -99,7 +99,7 @@ Full examples:
 
 - [React component example](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-react-example)
 
-- Additional React component examples in [Aptos](https://github.com/notifi-network/notifi-aptos-example) and [Near](https://github.com/notifi-network/near-sdk-example)
+- Additional React component examples for [Aptos](https://github.com/notifi-network/notifi-aptos-example) and [Near](https://github.com/notifi-network/near-sdk-example)
 
 - [Node example](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-node-sample)
 
