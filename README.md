@@ -16,103 +16,120 @@
   <h3 align="center">Notifi SDK</h3>
 
   <p align="center">
-    Typescript based SDK for React and NodeJS projects.
+    Typescript-based SDK that empowers developers with robust web3 communication infrastructure.
     <br />
-    <a href="https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages">See our packages for more examples »</a><br />
-    <a href="https://notifi-network.github.io/notifi-sdk-ts/"><strong>Explore the docs »</strong></a>
-    <br />
-    <a href="https://discord.gg/nAqR3mk3rv"><strong>Join our Discord!!</strong></a>
+    <a href="https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages">Our packages</a>
     <br />
     <br />
-    ·
-    <a href="https://github.com/notifi-network/notifi-sdk-ts/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/notifi-network/notifi-sdk-ts/issues">Request Feature</a>
-    ·
+    <a href="https://github.com/notifi-network/notifi-sdk-ts/issues">Report bug or request a Feature</a>
+    <br />
+    <span>For any other questions, please <a href="https://discord.gg/nAqR3mk3rv"><strong>join our Discord</strong></a></span>
   </p>
 </div>
 
 <!-- ABOUT THE PROJECT -->
 
-## Usage Scenarios
+# Notifi SDK
 
-<h2>Direct Push</h2>
-This type of interaction assumes you have a server already running and want to push a notification to a member of your dapp. In this scenario, we first require the dapp to directly tell Notifi on our Discord SDK channel that they want to leverage our SDK. Notifi will create a tenancy that is owned by the dapp and transfer a SID/Secret pair. For now this is manual, but we will have a self-service admin panel for dapps to use in the future.
+&nbsp;
 
-For users to sign up for notifications, the dapp will use our React SDK to logInFromDapp and then create/modify notifications. From here, the DApp SVC can send a message to the user's wallet address, where Notifi will take care of any special filtering and routing the user wanted to do. Examples coming soon!
+## 🧑‍💻 What is the Notifi SDK
 
-![Direct Push Diagram][scenario-push-diagram]
+Notifi provides notification infrastructure for web3 services and dApps to communicate with their end users on Solana, Ethereum, Aptos, Acala, Binance, Arbitrum, and Near.
 
-<h2>Monitor and Trigger</h2>
-In this scenario, Notifi can monitor the blockchain and detect important events that users can subscribe to. This is how Notifi implements DAO proposal notifications today. If you have a dapp that you'd like Notifi to monitor, please join our Discord server and tell us about it! We'll be open sourcing our plugins for DAO proposals in the future to help make this more self service. This can seem like a bit of magic, so feel free to ask any questions in our Discord#SDK.
+The Notifi SDK enables easy integration, customizable experiences, and advanced features for dApps and Web3 applications across different tech frameworks. The SDK allows developers to easily deploy messaging features without having to build their own communication infrastructure.
 
-![Monitoring Diagram][scenario-monitor-diagram]
+Most notably, we offer:
 
-<p align="right">(<a href="#top">back to top</a>)</p>
+- A drop-in (React) component
+- Simple APIs for integration for frontend frameworks outside of React, and backend frameworks
 
-### Built With ❤️ and ...
+Currently, developers can utilize the SDK to allow their dapp users to sign up for blockchain event alerts that are sent via Telegram, email, or SMS.
 
-- [Next.js](https://nextjs.org/)
-- [React.js](https://reactjs.org/)
-- [Vue.js](https://vuejs.org/)
-- [Lerna.js](https://lerna.js.org/)
+&nbsp;
 
-<p align="right">(<a href="#top">back to top</a>)</p>
+## 🛠 How to Get Started
 
-<!-- GETTING STARTED -->
+Fill out [this form](https://bit.ly/NotifiDappSetup) to receive a developer login.
 
-## Getting Started with Direct Push
+With a developer login, you can generate an API key and customize component configurations.
 
-- Join our <a href="https://discord.gg/nAqR3mk3rv">Notifi Discord</a>
-- Message our SDK channel for access
-- Install our npm package in your React app
-- Create UI for your users to register for notifications
-- Use our GraphQL API from your service to send messages to Notifi (NodeJS SDK coming soon!)
+&nbsp;
 
-## Getting Started with Notifi Monitoring
+## 📦 Available Packages
 
-- Join our <a href="https://discord.gg/nAqR3mk3rv">Notifi Discord</a>
-- Message our SDK channel with your scenario
+**Required for all tech stacks**
 
-Note: For Notifi's monitoring scenario, we will be releasing our Notifi Monitoring code in the future so you can simply template and/or extend off of existing patterns
+`@notifi-network/notifi-core`
 
-## Steps to deploy canary (for local development of SDK and deploying to npm)
+**Using React**
 
-npx lerna exec -- npx rimraf dist
+Our easy-to-use drop-in component
 
-npx lerna exec -- npx rimraf node_modules
+`@notifi-network/notifi-react-card`
 
-npx lerna bootstrap
+Using direct API integration
 
-npx lerna run build
+`@notifi/notifi-react-hooks`
 
-npx lerna publish --canary
+**Using any other frontend framework, except React**
 
-<p align="right">(<a href="#top">back to top</a>)</p>
+`@notifi-network/notifi-frontend-client`
 
-<!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+**Using Axios (HTTP Requests)**
 
-[contributors-shield]: https://img.shields.io/github/contributors/notifi-network/notifi-sdk-ts.svg?style=for-the-badge
-[contributors-url]: https://github.com/notifi-network/notifi-sdk-ts/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/notifi-network/notifi-sdk-ts.svg?style=for-the-badge
-[forks-url]: https://github.com/notifi-network/notifi-sdk-ts/network/members
-[stars-shield]: https://img.shields.io/github/stars/notifi-network/notifi-sdk-ts.svg?style=for-the-badge
-[stars-url]: https://github.com/notifi-network/notifi-sdk-ts/stargazers
-[issues-shield]: https://img.shields.io/github/issues/notifi-network/notifi-sdk-ts.svg?style=for-the-badge
-[issues-url]: https://github.com/notifi-network/notifi-sdk-ts/issues
-[license-shield]: https://img.shields.io/github/license/notifi-network/notifi-sdk-ts.svg?style=for-the-badge
-[license-url]: https://github.com/notifi-network/notifi-sdk-ts/blob/main/LICENSE.txt
-[scenario-push-diagram]: images/push_diagram.svg
-[scenario-monitor-diagram]: images/monitor_diagram.svg
+`@notifi-network/notifi-axios-adapter`
 
-## Regenerate docs
+`@notifi-network/notifi-axios-utils`
 
-npm run docs
+**Using Node**
 
-<br/>
-<br/>
+`@notifi-networks/notifi-node`
 
-## Advanced
+​​❓ Other Helpful Resources
+[GraphQL Guide for specific Notifi APIs](https://docs.notifi.network/)
 
-We understand that not all scenarios can be solved with the current state of the SDK. When adding SDK features, we'd like to ensure we're building exactly what developers want. If you need to break out of the SDK features for more advanced interaction with Notifi, please see our <a href="https://docs.notifi.network"><strong>Notifi GraphQL API</strong></a> that you can consume alongside the SDK.
+&nbsp;
+
+## 📋 Examples
+
+Code snippets are available in each [package](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages)
+
+Full examples:
+
+- [React component example](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-react-example)
+
+- Additional React component examples in [Aptos](https://github.com/notifi-network/notifi-aptos-example) and [Near](https://github.com/notifi-network/near-sdk-example)
+
+- [Node example](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-node-sample)
+
+- [Using Svelte](https://github.com/notifi-network/notifi-svelte-sample)
+
+If you are looking for other examples, please request in our #SDK channel under the Developments section in our [Discord](https://discord.gg/nAqR3mk3rv).
+
+&nbsp;
+
+## 🛠 How It Works
+
+### **Direct Push**
+
+Direct push applies to dapps that already manage their own backend and want to utilize Notifi to manage the filtered alerts that their users want to subscribe to. In this approach, dapps will utilize our drop-in component or create their own UI to allow users to subscribe and enter their communication channel information.
+
+The dapp will send a message to the wallet address of the user. The user will sign the wallet message to confirm that they would like to receive notifications.
+
+The dapp will send the wallet address information to Notifi. Notifi will create a user profile and save the user’s communication channel information and requested alerts.
+
+Notifi will send the alert to the user's preferred communication channel information.
+
+### **Monitor and trigger**
+
+Monitor and trigger applies to dapps that want Notifi to monitor and send messages directly.
+Dapps will create their own UI to allow users to subscribe and enter their communication channel information.
+
+Notifi will send the alert to user’s preferred communication channel information.
+
+&nbsp;
+
+## 🙋 Want to Learn More
+
+To see the latest updates on supported L1 and messaging channels and to see what’s coming up, check out our website at [notifi.network](https://notifi.network) and join the [Discord Community](https://discord.gg/nAqR3mk3rv).
