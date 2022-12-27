@@ -8,6 +8,8 @@ describe('fetchDataImpl', () => {
     getTargetGroups: jest.fn().mockResolvedValue([]),
     getEmailTargets: jest.fn().mockResolvedValue([]),
     getSmsTargets: jest.fn().mockResolvedValue([]),
+    getTopics: jest.fn().mockResolvedValue([]),
+    getWebhookTargets: jest.fn().mockResolvedValue([]),
     getTelegramTargets: jest.fn().mockResolvedValue([]),
   };
 
@@ -22,6 +24,8 @@ describe('fetchDataImpl', () => {
     service.getTargetGroups.mockClear();
     service.getEmailTargets.mockClear();
     service.getSmsTargets.mockClear();
+    service.getWebhookTargets.mockClear();
+    service.getTopics.mockClear();
     service.getTelegramTargets.mockClear();
     timeProvider.now.mockClear();
   });
@@ -32,6 +36,9 @@ describe('fetchDataImpl', () => {
     expect(service.getSourceGroups).toHaveBeenCalledTimes(count);
     expect(service.getTargetGroups).toHaveBeenCalledTimes(count);
     expect(service.getEmailTargets).toHaveBeenCalledTimes(count);
+    // get topics currently does not work
+    expect(service.getTopics).toHaveBeenCalledTimes(0);
+    expect(service.getWebhookTargets).toHaveBeenCalledTimes(count);
     expect(service.getSmsTargets).toHaveBeenCalledTimes(count);
     expect(service.getTelegramTargets).toHaveBeenCalledTimes(count);
   };

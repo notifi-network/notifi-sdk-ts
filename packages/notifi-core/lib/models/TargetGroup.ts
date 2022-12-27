@@ -1,3 +1,5 @@
+import { WebhookTarget } from 'notifi-core/dist';
+
 import { EmailTarget } from './EmailTarget';
 import { SmsTarget } from './SmsTarget';
 import { TelegramTarget } from './TelegramTarget';
@@ -21,4 +23,5 @@ export type TargetGroup = Readonly<{
   name: string | null;
   smsTargets: ReadonlyArray<SmsTarget>;
   telegramTargets: ReadonlyArray<TelegramTarget>;
+  webHookTargets: ReadonlyArray<WebhookTarget>;
 }>;

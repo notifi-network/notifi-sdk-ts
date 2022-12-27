@@ -13,6 +13,7 @@ const createSource = (id: string): Source => {
   return {
     id,
     name: id,
+    blockchainAddress: 'BBqe9bApNYvr27fKXZxA8QuYdihYDBNX4E2EZJz8zNRY',
     type: 'SOLANA_WALLET',
     applicableFilters: [],
   };
