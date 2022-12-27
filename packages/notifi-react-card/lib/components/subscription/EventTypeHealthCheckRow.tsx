@@ -120,7 +120,28 @@ export const EventTypeHealthCheckRow: React.FC<
       //   alertName: alertName,
       // });
     } else {
-      setErrorMessage('Please enter a valid number');
+      if (
+        customValue.indexOf('%') === customValue.length - 1 &&
+        parseFloat(customValue.slice(0, -1)) > 0 &&
+        parseFloat(customValue.slice(0, -1)) < 100
+      ) {
+        console.log(selectedRatio);
+        return;
+        //TODO: hook up API call here
+        // if (!enabled) {
+        //   instantSubscribe({
+        //     alertConfiguration: alertConfiguration,
+        //     alertName: alertName,
+        //   });
+        // } else {
+        //   instantSubscribe({
+        //     alertConfiguration: null,
+        //     alertName: alertName,
+        //   });
+        // }
+      } else {
+        setErrorMessage('Please enter a valid number');
+      }
     }
   };
 
