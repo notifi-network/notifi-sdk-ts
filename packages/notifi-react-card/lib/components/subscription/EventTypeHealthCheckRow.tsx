@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useNotifiSubscriptionContext } from '../../context';
 import { CheckRatio, HealthCheckEventTypeItem } from '../../hooks';
@@ -120,34 +120,19 @@ export const EventTypeHealthCheckRow: React.FC<
       //   alertName: alertName,
       // });
     } else {
-      const selectedRatioNumber = parseFloat(customValue.slice(0, -1));
-      if (
-        selectedRatio !== '' ||
-        (customValue.indexOf('%') === customValue.length - 1 &&
-          selectedRatioNumber >= 1 &&
-          selectedRatioNumber <= 99)
-      ) {
-        return;
-        // TODO: hook up API call here
-        // if (!enabled) {
-        //   instantSubscribe({
-        //     alertConfiguration: healthThresholdConfiguration({
-        //       alertFrequency: 'ALWAYS',
-        //       percentage: selectedRatioNumber,
-        //     }),
-        //     alertName: alertName,
-        //   });
-        // } else {
-        //   instantSubscribe({
-        //     alertConfiguration: null,
-        //     alertName: alertName,
-        //   });
-        // }
-      } else {
-        setErrorMessage('Please enter a valid number');
-      }
+      setErrorMessage('Please enter a valid number');
     }
   };
+
+  const handleKeypressUp = useCallback(
+    (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === 'Enter' && !event.shiftKey) {
+        handleCustomRatioButtonNewSubscription();
+        event.preventDefault();
+      }
+    },
+    [handleCustomRatioButtonNewSubscription],
+  );
 
   return (
     <div>
