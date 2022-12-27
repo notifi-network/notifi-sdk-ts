@@ -91,6 +91,7 @@ export const EventTypeHealthCheckRow: React.FC<
   ]);
 
   const handleToggleNewSubscription = useCallback(() => {
+    setErrorMessage('');
     if (loading) {
       return;
     }
