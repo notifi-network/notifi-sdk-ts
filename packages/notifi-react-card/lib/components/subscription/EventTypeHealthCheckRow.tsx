@@ -1,5 +1,11 @@
 import clsx from 'clsx';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { useNotifiSubscriptionContext } from '../../context';
 import {
@@ -20,7 +26,7 @@ const getParsedInputNumber = (input: string): number | null => {
 };
 
 const UNABLE_TO_SUBSCRIBE = 'Unable to subscribe, please try again';
-const UNVALID_NUMBER = 'Please enter a valid number';
+const INVALID_NUMBER = 'Please enter a valid number';
 
 export type EventTypeHealthCheckRowProps = Readonly<{
   classNames?: DeepPartialReadonly<{
@@ -40,6 +46,7 @@ export type EventTypeHealthCheckRowProps = Readonly<{
 export const EventTypeHealthCheckRow: React.FC<
   EventTypeHealthCheckRowProps
 > = ({ classNames, config, disabled }: EventTypeHealthCheckRowProps) => {
+  const customInputRef = useRef<HTMLInputElement>(null);
   const { alerts, loading } = useNotifiSubscriptionContext();
   const { instantSubscribe } = useNotifiSubscribe({
     targetGroupName: 'Default',
@@ -98,7 +105,7 @@ export const EventTypeHealthCheckRow: React.FC<
       return;
     }
     setErrorMessage('');
-    if (!enabled && initialRatio) {
+    if (!enabled && initialRatio !== null) {
       instantSubscribe({
         alertConfiguration: healthThresholdConfiguration({
           alertFrequency: 'DAILY',
@@ -135,31 +142,44 @@ export const EventTypeHealthCheckRow: React.FC<
         })
         .catch(() => setErrorMessage(UNABLE_TO_SUBSCRIBE));
     } else {
-      setErrorMessage(UNVALID_NUMBER);
+      setErrorMessage(INVALID_NUMBER);
     }
   };
 
-  const handleCustomRatioButtonNewSubscription = (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleCustomRatioButtonNewSubscription = () => {
     if (loading) {
       return;
     }
     setErrorMessage('');
-    e.target.placeholder = 'Custom';
-    const ratioNumber = getParsedInputNumber(e.target.value);
-    if (ratioNumber && ratioNumber >= 1 && ratioNumber <= 99 && customValue) {
-      instantSubscribe({
-        alertConfiguration: healthThresholdConfiguration({
-          alertFrequency: 'DAILY',
-          percentage: ratioNumber / 100,
-        }),
-        alertName: alertName,
-      })
-        .then(() => setSelectedIndex(3))
-        .catch(() => setErrorMessage(UNABLE_TO_SUBSCRIBE));
-    } else {
-      setErrorMessage(UNVALID_NUMBER);
+    if (customInputRef.current) {
+      customInputRef.current.placeholder = 'Custom';
+      const ratioNumber = getParsedInputNumber(customInputRef.current.value);
+      if (
+        ratioNumber &&
+        ratioNumber >= 0 &&
+        ratioNumber <= 100 &&
+        customValue
+      ) {
+        instantSubscribe({
+          alertConfiguration: healthThresholdConfiguration({
+            alertFrequency: 'DAILY',
+            percentage: ratioNumber / 100,
+          }),
+          alertName: alertName,
+        })
+          .then(() => setSelectedIndex(3))
+          .catch(() => setErrorMessage(UNABLE_TO_SUBSCRIBE));
+      } else {
+        setErrorMessage(INVALID_NUMBER);
+      }
+    }
+  };
+
+  const handleKeypressUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      if (customInputRef.current) {
+        customInputRef.current.blur();
+      }
     }
   };
 
@@ -228,6 +248,8 @@ export const EventTypeHealthCheckRow: React.FC<
               );
             })}
             <input
+              ref={customInputRef}
+              onKeyUp={(e) => handleKeypressUp(e)}
               onFocus={(e) => (e.target.placeholder = '0.00%')}
               onClick={() => {
                 setErrorMessage('');
