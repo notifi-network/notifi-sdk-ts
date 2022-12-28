@@ -19,6 +19,9 @@ const getParsedInputNumber = (input: string): number | null => {
   return null;
 };
 
+const UNABLE_TO_SUBSCRIBE = 'Unable to subscribe, please try again';
+const UNVALID_NUMBER = 'Please enter a valid number';
+
 export type EventTypeHealthCheckRowProps = Readonly<{
   classNames?: DeepPartialReadonly<{
     container: string;
@@ -91,10 +94,10 @@ export const EventTypeHealthCheckRow: React.FC<
   ]);
 
   const handleToggleNewSubscription = useCallback(() => {
-    setErrorMessage('');
     if (loading) {
       return;
     }
+    setErrorMessage('');
     if (!enabled && initialRatio) {
       instantSubscribe({
         alertConfiguration: healthThresholdConfiguration({
@@ -102,21 +105,22 @@ export const EventTypeHealthCheckRow: React.FC<
           percentage: initialRatio,
         }),
         alertName: alertName,
-      });
+      }).catch(() => setErrorMessage(UNABLE_TO_SUBSCRIBE));
     } else {
       instantSubscribe({
         alertConfiguration: null,
         alertName: alertName,
-      });
+      })
+        .then(() => setCustomValue(''))
+        .catch(() => setErrorMessage(UNABLE_TO_SUBSCRIBE));
     }
   }, [initialRatio, enabled, isValueType]);
 
   const handleRatioButtonNewSubscription = (value: number, index: number) => {
-    setCustomValue('');
-    setErrorMessage('');
     if (loading) {
       return;
     }
+    setErrorMessage('');
     if (value) {
       instantSubscribe({
         alertConfiguration: healthThresholdConfiguration({
@@ -125,10 +129,13 @@ export const EventTypeHealthCheckRow: React.FC<
         }),
         alertName: alertName,
       })
-        .then(() => setSelectedIndex(index))
-        .catch(() => setErrorMessage('Unable to subscribe, please try again'));
+        .then(() => {
+          setSelectedIndex(index);
+          setCustomValue('');
+        })
+        .catch(() => setErrorMessage(UNABLE_TO_SUBSCRIBE));
     } else {
-      setErrorMessage('Please enter a valid number');
+      setErrorMessage(UNVALID_NUMBER);
     }
   };
 
@@ -138,6 +145,7 @@ export const EventTypeHealthCheckRow: React.FC<
     if (loading) {
       return;
     }
+    setErrorMessage('');
     e.target.placeholder = 'Custom';
     const ratioNumber = getParsedInputNumber(e.target.value);
     if (ratioNumber && ratioNumber >= 1 && ratioNumber <= 99 && customValue) {
@@ -149,9 +157,9 @@ export const EventTypeHealthCheckRow: React.FC<
         alertName: alertName,
       })
         .then(() => setSelectedIndex(3))
-        .catch(() => setErrorMessage('Unable to subscribe, please try again'));
+        .catch(() => setErrorMessage(UNABLE_TO_SUBSCRIBE));
     } else {
-      setErrorMessage('Please enter a valid number');
+      setErrorMessage(UNVALID_NUMBER);
     }
   };
 
