@@ -1,8 +1,7 @@
-import { WebhookTarget } from 'notifi-core/dist';
-
 import { EmailTarget } from './EmailTarget';
 import { SmsTarget } from './SmsTarget';
 import { TelegramTarget } from './TelegramTarget';
+import { WebhookTarget } from './WebhookTarget';
 
 /**
  * Object describing a TargetGroup
