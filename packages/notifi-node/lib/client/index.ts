@@ -6,3 +6,6 @@ import createAxiosInstance from './createAxiosInstance';
 export type { NotifiEnvironment };
 
 export { createAxiosInstance, NotifiClient };
+
+export * from './createSubscriptionClient';
+export * from './subscribeTenantEntityUpdated';

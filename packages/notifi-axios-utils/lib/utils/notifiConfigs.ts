@@ -7,24 +7,29 @@ export type NotifiEnvironment =
 export type EnvironmentConfig = Readonly<{
   gqlUrl: string;
   storagePrefix: string;
+  wsUrl: string;
 }>;
 
 export const NOTIFI_CONFIGS: Record<NotifiEnvironment, EnvironmentConfig> = {
   Production: {
     gqlUrl: 'https://api.notifi.network/gql',
     storagePrefix: 'notifi-jwt',
+    wsUrl: 'ws://api.notifi.network/gql',
   },
   Staging: {
     gqlUrl: 'https://api.stg.notifi.network/gql',
     storagePrefix: 'notifi-jwt:stg',
+    wsUrl: 'ws://api.stg.notifi.network/gql',
   },
   Development: {
     gqlUrl: 'https://api.dev.notifi.network/gql',
     storagePrefix: 'notifi-jwt:dev',
+    wsUrl: 'ws://api.dev.notifi.network/gql',
   },
   Local: {
     gqlUrl: 'https://localhost:5001/gql',
     storagePrefix: 'notifi-jwt:local',
+    wsUrl: 'ws://localhost:5001/gql',
   },
 };
 
