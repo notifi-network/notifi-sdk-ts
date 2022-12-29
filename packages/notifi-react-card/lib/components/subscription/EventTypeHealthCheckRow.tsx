@@ -73,17 +73,22 @@ export const EventTypeHealthCheckRow: React.FC<
     const alert = alerts[alertName];
     const checkRatios = ratios.map((ratio) => ratio.ratio);
     if (alert) {
-      const alertRatioValue = JSON.parse(alert.filterOptions ?? '').threshold;
+      let alertRatioValue: number | null = null;
+      if (alert.filterOptions) {
+        alertRatioValue = JSON.parse(alert.filterOptions).threshold;
+      }
       setEnabled(true);
-      ratios.forEach((ratio, index) => {
-        if (ratio.ratio === alertRatioValue && customValue === '') {
-          setSelectedIndex(index);
+      if (alertRatioValue) {
+        ratios.forEach((ratio, index) => {
+          if (ratio.ratio === alertRatioValue && customValue === '') {
+            setSelectedIndex(index);
+          }
+        });
+        setInitialRatio(alertRatioValue);
+        if (!checkRatios.includes(alertRatioValue) && customValue === '') {
+          setSelectedIndex(3);
+          setCustomValue(alertRatioValue * 100 + '%');
         }
-      });
-      setInitialRatio(alertRatioValue);
-      if (!checkRatios.includes(alertRatioValue) && customValue === '') {
-        setSelectedIndex(3);
-        setCustomValue(alertRatioValue * 100 + '%');
       }
     } else {
       setEnabled(false);
@@ -179,6 +184,7 @@ export const EventTypeHealthCheckRow: React.FC<
     if (event.key === 'Enter') {
       if (customInputRef.current) {
         customInputRef.current.blur();
+        event.preventDefault();
       }
     }
   };
