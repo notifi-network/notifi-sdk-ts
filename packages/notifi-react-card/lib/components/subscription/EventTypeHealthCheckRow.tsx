@@ -1,9 +1,19 @@
 import clsx from 'clsx';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { useNotifiSubscriptionContext } from '../../context';
-import { CheckRatio, HealthCheckEventTypeItem } from '../../hooks';
-import { DeepPartialReadonly } from '../../utils';
+import {
+  CheckRatio,
+  HealthCheckEventTypeItem,
+  useNotifiSubscribe,
+} from '../../hooks';
+import { DeepPartialReadonly, healthThresholdConfiguration } from '../../utils';
 import type { NotifiToggleProps } from './NotifiToggle';
 import { NotifiToggle } from './NotifiToggle';
 import { NotifiTooltip, NotifiTooltipProps } from './NotifiTooltip';
@@ -14,6 +24,9 @@ const getParsedInputNumber = (input: string): number | null => {
   }
   return null;
 };
+
+const UNABLE_TO_SUBSCRIBE = 'Unable to subscribe, please try again';
+const INVALID_NUMBER = 'Please enter a valid number';
 
 export type EventTypeHealthCheckRowProps = Readonly<{
   classNames?: DeepPartialReadonly<{
@@ -33,16 +46,16 @@ export type EventTypeHealthCheckRowProps = Readonly<{
 export const EventTypeHealthCheckRow: React.FC<
   EventTypeHealthCheckRowProps
 > = ({ classNames, config, disabled }: EventTypeHealthCheckRowProps) => {
+  const customInputRef = useRef<HTMLInputElement>(null);
   const { alerts, loading } = useNotifiSubscriptionContext();
-  // const { instantSubscribe } = useNotifiSubscribe({
-  //   targetGroupName: 'Default',
-  // });
-  // const [, setEnabled] = useState(false);
+  const { instantSubscribe } = useNotifiSubscribe({
+    targetGroupName: 'Default',
+  });
+  const [enabled, setEnabled] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-  const [selectedRatio, setSelectedRatio] = useState<number | null>(null);
+  const [initialRatio, setInitialRatio] = useState<number | null>(null);
   const [customValue, setCustomValue] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string>('');
-  const [isShowSelectButton, setIsShowSelectButton] = useState<boolean>(false);
 
   const alertName = useMemo<string>(() => config.name, [config]);
   const tooltipContent = config.tooltipContent;
@@ -53,74 +66,126 @@ export const EventTypeHealthCheckRow: React.FC<
     ratios = config.checkRatios.value;
   }
 
-  const enabled = !loading && !!alerts[alertName];
-
   useEffect(() => {
-    if (isValueType) {
-      setSelectedRatio(ratios[-1]?.ratio);
+    if (loading) {
+      return;
+    }
+    const alert = alerts[alertName];
+    const checkRatios = ratios.map((ratio) => ratio.ratio);
+    if (alert) {
+      let alertRatioValue: number | null = null;
+      if (alert.filterOptions) {
+        alertRatioValue = JSON.parse(alert.filterOptions).threshold;
+      }
+      setEnabled(true);
+      if (alertRatioValue) {
+        ratios.forEach((ratio, index) => {
+          if (ratio.ratio === alertRatioValue && customValue === '') {
+            setSelectedIndex(index);
+          }
+        });
+        setInitialRatio(alertRatioValue);
+        if (!checkRatios.includes(alertRatioValue) && customValue === '') {
+          setSelectedIndex(3);
+          setCustomValue(alertRatioValue * 100 + '%');
+        }
+      }
+    } else {
+      setEnabled(false);
       setSelectedIndex(ratios.length - 1);
+      setInitialRatio(ratios[ratios.length - 1]?.ratio);
     }
-  }, [isValueType]);
+  }, [
+    alertName,
+    alerts,
+    loading,
+    ratios,
+    setEnabled,
+    setCustomValue,
+    setSelectedIndex,
+  ]);
 
-  const handleToggleNewSubscription = () => {
+  const handleToggleNewSubscription = useCallback(() => {
     if (loading) {
       return;
     }
-    setIsShowSelectButton(!isShowSelectButton);
-    // TODO: hook up API call here
-    // if (!enabled) {
-    //   instantSubscribe({
-    //     alertConfiguration: healthThresholdConfiguration({
-    //       alertFrequency: 'ALWAYS',
-    //       percentage: selectedRatio,
-    //     }),
-    //     alertName: alertName,
-    //   });
-    // } else {
-    //   instantSubscribe({
-    //     alertConfiguration: null,
-    //     alertName: alertName,
-    //   });
-    // }
+    setErrorMessage('');
+    if (!enabled && initialRatio !== null) {
+      instantSubscribe({
+        alertConfiguration: healthThresholdConfiguration({
+          alertFrequency: 'DAILY',
+          percentage: initialRatio,
+        }),
+        alertName: alertName,
+      }).catch(() => setErrorMessage(UNABLE_TO_SUBSCRIBE));
+    } else {
+      instantSubscribe({
+        alertConfiguration: null,
+        alertName: alertName,
+      })
+        .then(() => setCustomValue(''))
+        .catch(() => setErrorMessage(UNABLE_TO_SUBSCRIBE));
+    }
+  }, [initialRatio, enabled, isValueType]);
+
+  const handleRatioButtonNewSubscription = (value: number, index: number) => {
+    if (loading) {
+      return;
+    }
+    setErrorMessage('');
+    if (value) {
+      instantSubscribe({
+        alertConfiguration: healthThresholdConfiguration({
+          alertFrequency: 'DAILY',
+          percentage: value,
+        }),
+        alertName: alertName,
+      })
+        .then(() => {
+          setSelectedIndex(index);
+          setCustomValue('');
+        })
+        .catch(() => setErrorMessage(UNABLE_TO_SUBSCRIBE));
+    } else {
+      setErrorMessage(INVALID_NUMBER);
+    }
   };
 
-  const handleRatioButtonNewSubscription = (ratioNumber: number) => {
+  const handleCustomRatioButtonNewSubscription = () => {
     if (loading) {
       return;
     }
-    if (ratioNumber) {
-      // TODO: hook up API call here
-      // instantSubscribe({
-      //   alertConfiguration: healthThresholdConfiguration({
-      //     alertFrequency: 'ALWAYS',
-      //     percentage: selectedRatio,
-      //   }),
-      //   alertName: alertName,
-      // });
-    } else {
-      setErrorMessage('Please enter a valid number');
+    setErrorMessage('');
+    if (customInputRef.current) {
+      customInputRef.current.placeholder = 'Custom';
+      const ratioNumber = getParsedInputNumber(customInputRef.current.value);
+      if (
+        ratioNumber &&
+        ratioNumber >= 0 &&
+        ratioNumber <= 100 &&
+        customValue
+      ) {
+        instantSubscribe({
+          alertConfiguration: healthThresholdConfiguration({
+            alertFrequency: 'DAILY',
+            percentage: ratioNumber / 100,
+          }),
+          alertName: alertName,
+        })
+          .then(() => setSelectedIndex(3))
+          .catch(() => setErrorMessage(UNABLE_TO_SUBSCRIBE));
+      } else {
+        setErrorMessage(INVALID_NUMBER);
+      }
     }
   };
 
-  const handleCustomRatioButtonNewSubscription = (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    if (loading) {
-      return;
-    }
-    e.target.placeholder = 'Custom';
-    const ratioNumber = getParsedInputNumber(e.target.value);
-    if (ratioNumber && ratioNumber >= 1 && ratioNumber <= 99) {
-      // TODO: hook up API call here
-      // instantSubscribe({
-      //   alertConfiguration: healthThresholdConfiguration({
-      //     alertFrequency: 'ALWAYS',
-      //     percentage: ratioNumber,
-      //   }),
-      //   alertName: alertName,
-      // });
-    } else {
-      setErrorMessage('Please enter a valid number');
+  const handleKeypressUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      if (customInputRef.current) {
+        customInputRef.current.blur();
+        event.preventDefault();
+      }
     }
   };
 
@@ -150,7 +215,7 @@ export const EventTypeHealthCheckRow: React.FC<
           setChecked={handleToggleNewSubscription}
         />
       </div>
-      {isShowSelectButton ? (
+      {enabled ? (
         <>
           <div
             className={clsx(
@@ -181,11 +246,7 @@ export const EventTypeHealthCheckRow: React.FC<
                     classNames?.button,
                   )}
                   onClick={() => {
-                    setSelectedIndex(index);
-                    setCustomValue('');
-                    setSelectedRatio(value.ratio);
-                    setErrorMessage('');
-                    handleRatioButtonNewSubscription(value.ratio);
+                    handleRatioButtonNewSubscription(value.ratio, index);
                   }}
                 >
                   {percentage}
@@ -193,14 +254,12 @@ export const EventTypeHealthCheckRow: React.FC<
               );
             })}
             <input
+              ref={customInputRef}
+              onKeyUp={(e) => handleKeypressUp(e)}
               onFocus={(e) => (e.target.placeholder = '0.00%')}
               onClick={() => {
-                //assume we should only allow no more than two specific values and one custom value here
-                //need to double check with product
-                //will update in following PR when connect api
-                setSelectedRatio(null);
-                setSelectedIndex(3);
                 setErrorMessage('');
+                setSelectedIndex(null);
               }}
               onBlur={handleCustomRatioButtonNewSubscription}
               value={customValue}

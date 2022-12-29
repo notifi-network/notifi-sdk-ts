@@ -485,7 +485,11 @@ export const useNotifiSubscribe: ({
           filter.id === null
         ) {
           await deleteThisAlert();
-        } else if (existingAlert !== undefined && existingAlert.id !== null) {
+        } else if (
+          existingAlert !== undefined &&
+          existingAlert.id !== null &&
+          existingAlert.filterOptions === JSON.stringify(filterOptions)
+        ) {
           const alert = await client.updateAlert({
             alertId: existingAlert.id,
             emailAddress: finalEmail,
