@@ -1,3 +1,4 @@
+import { ExecutionResult } from 'graphql';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 
 import { TenantUser, TenantUserAlert } from '../types';
@@ -84,22 +85,58 @@ export type TenantEntityUpdatedData =
   | AlertCreatedEvent
   | AlertDeletedEvent;
 
+const isKnownTypename = (typename: unknown): boolean => {
+  return (
+    typename === 'UserCreatedEvent' ||
+    typename === 'AlertCreatedEvent' ||
+    typename === 'AlertDeletedEvent'
+  );
+};
+
+const hasKey = <K extends string>(
+  obj: object,
+  key: K,
+): obj is object & { [k in K]: unknown } => {
+  return typeof obj === 'object' && obj !== null && key in obj;
+};
+
+const assertKnownType = (data: unknown): data is TenantEntityUpdatedData => {
+  return (
+    typeof data === 'object' &&
+    data !== null &&
+    hasKey(data, '__typename') &&
+    isKnownTypename(data.__typename)
+  );
+};
+
+const extractTenantEntityUpdate = (
+  executionResult: ExecutionResult | undefined,
+): TenantEntityUpdatedData | undefined => {
+  const { data } = executionResult ?? {};
+  if (typeof data === 'object' && data !== null) {
+    const tenantEntityChanged = data.tenantEntityChanged;
+    if (assertKnownType(tenantEntityChanged)) {
+      return tenantEntityChanged;
+    }
+  }
+};
+
 export const subscribeTenantEntityUpdated = (
   client: SubscriptionClient,
   onNext: (data: TenantEntityUpdatedData) => void,
 ) => {
   return new Promise<void>((resolve, reject) => {
     client.request({ query: QUERY }).subscribe({
-      next: (value) => {
-        console.log('next', value);
-        onNext(value as unknown as TenantEntityUpdatedData);
+      next: (executionResult) => {
+        const update = extractTenantEntityUpdate(executionResult);
+        if (update !== undefined) {
+          onNext(update);
+        }
       },
       error: (err) => {
-        console.log('error', err);
         reject(err);
       },
       complete: () => {
-        console.log('complete');
         resolve();
       },
     });

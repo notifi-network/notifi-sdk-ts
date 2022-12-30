@@ -9,24 +9,17 @@ export const createSubscriptionClient = (
   env: NotifiEnvironment,
   jwt: string,
 ) => {
-  class AuthorizedSocket extends WebSocket {
-    constructor(address: string, protocols?: string | string[]) {
-      super(address, protocols, {
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
-      });
-    }
-  }
-
   const { wsUrl } = notifiConfigs(env);
   const client = new SubscriptionClient(
     wsUrl,
     {
+      connectionParams: {
+        Authorization: `Bearer ${jwt}`,
+      },
       reconnect: true,
       reconnectionAttempts: 5,
     },
-    AuthorizedSocket,
+    WebSocket,
   );
 
   return client;
