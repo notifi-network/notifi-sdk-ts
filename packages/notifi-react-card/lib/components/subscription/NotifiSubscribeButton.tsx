@@ -34,13 +34,7 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
 
   const { formErrorMessages, formState } = useNotifiForm();
 
-  const {
-    phoneNumber,
-    telegram: telegramId,
-    email,
-    discord,
-    twitter,
-  } = formState;
+  const { phoneNumber, telegram: telegramId, email } = formState;
 
   const { email: emailErrorMessage, phoneNumber: smsErrorMessage } =
     formErrorMessages;
@@ -76,7 +70,7 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
         !isInitialized ||
         loading ||
         hasErrors ||
-        (!email && !phoneNumber && !telegramId && !discord && !twitter)
+        (!email && !phoneNumber && !telegramId)
       }
       onClick={onClick}
     >

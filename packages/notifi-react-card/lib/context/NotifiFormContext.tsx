@@ -4,8 +4,6 @@ export type FormInputs = {
   email: string;
   phoneNumber: string;
   telegram: string;
-  twitter: string;
-  discord: string;
 };
 
 export type FormErrorMessages = FormInputs;
@@ -22,20 +20,9 @@ export type NotifiFormData = Readonly<{
 
   setTelegram: (value: string) => void;
   setTelegramErrorMessage: (value: string) => void;
-
-  setDiscord: (value: string) => void;
-  setDiscordErrorMessage: (value: string) => void;
-
-  setTwitter: (value: string) => void;
-  setTwitterErrorMessage: (value: string) => void;
 }>;
 
-export type FormField =
-  | 'email'
-  | 'phoneNumber'
-  | 'telegram'
-  | 'discord'
-  | 'twitter';
+export type FormField = 'email' | 'phoneNumber' | 'telegram';
 
 export type EditFormType = {
   field: FormField;
@@ -49,8 +36,6 @@ export const NotifiFormProvider: React.FC = ({ children }) => {
     email: '',
     phoneNumber: '',
     telegram: '',
-    twitter: '',
-    discord: '',
   });
 
   const [formErrorMessages, setInputErrorMessage] = useState<FormErrorMessages>(
@@ -58,8 +43,6 @@ export const NotifiFormProvider: React.FC = ({ children }) => {
       email: '',
       telegram: '',
       phoneNumber: '',
-      discord: '',
-      twitter: '',
     },
   );
 
@@ -101,21 +84,6 @@ export const NotifiFormProvider: React.FC = ({ children }) => {
     handleErrorMessage({ field: 'phoneNumber', value });
   };
 
-  const setDiscord = (value: string) => {
-    handleFormInput({ field: 'discord', value });
-  };
-
-  const setDiscordErrorMessage = (value: string) => {
-    handleErrorMessage({ field: 'discord', value });
-  };
-  const setTwitter = (value: string) => {
-    handleFormInput({ field: 'discord', value });
-  };
-
-  const setTwitterErrorMessage = (value: string) => {
-    handleErrorMessage({ field: 'discord', value });
-  };
-
   const value = {
     formState,
     formErrorMessages,
@@ -125,10 +93,6 @@ export const NotifiFormProvider: React.FC = ({ children }) => {
     setTelegramErrorMessage,
     setPhoneNumber,
     setPhoneNumberErrorMessage,
-    setDiscord,
-    setDiscordErrorMessage,
-    setTwitter,
-    setTwitterErrorMessage,
   };
 
   return (
