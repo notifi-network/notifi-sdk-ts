@@ -4,10 +4,6 @@ import React from 'react';
 import { NotifiInputLabels, NotifiInputSeparators } from '..';
 import { CardConfigItemV1 } from '../../../hooks';
 import {
-  NotifiDiscordInput,
-  NotifiDiscordInputProps,
-} from '../../NotifiDiscordInput';
-import {
   NotifiEmailInput,
   NotifiEmailInputProps,
 } from '../../NotifiEmailInput';
@@ -16,10 +12,6 @@ import {
   NotifiTelegramInput,
   NotifiTelegramInputProps,
 } from '../../NotifiTelegramInput';
-import {
-  NotifiTwitterInput,
-  NotifiTwitterInputProps,
-} from '../../NotifiTwitterInput';
 
 export type InputFieldsProps = {
   data: CardConfigItemV1;
@@ -29,8 +21,6 @@ export type InputFieldsProps = {
   inputDisabled: boolean;
   classNames?: Readonly<{
     NotifiEmailInput?: NotifiEmailInputProps['classNames'];
-    NotifiDiscordInput?: NotifiDiscordInputProps['classNames'];
-    NotifiTwitterInput?: NotifiTwitterInputProps['classNames'];
     NotifiSmsInput?: NotifiSmsInputProps['classNames'];
     NotifiTelegramInput?: NotifiTelegramInputProps['classNames'];
   }>;
@@ -115,54 +105,6 @@ export const InputFields: React.FC<InputFieldsProps> = ({
             )}
           >
             {inputSeparators?.telegramSeparator?.content}
-          </div>
-        </div>
-      ) : null}
-      {data.contactInfo.discord?.active ? (
-        <NotifiDiscordInput
-          disabled={inputDisabled}
-          classNames={classNames?.NotifiSmsInput}
-          copy={{ label: inputLabels?.discord }}
-        />
-      ) : null}
-      {inputSeparators?.discordSeparator?.content ? (
-        <div
-          className={clsx(
-            'NotifiInputSeparator__container',
-            inputSeparators?.discordSeparator?.classNames?.container,
-          )}
-        >
-          <div
-            className={clsx(
-              'NotifiInputSeparator__content',
-              inputSeparators.discordSeparator.classNames?.content,
-            )}
-          >
-            {inputSeparators?.discordSeparator?.content}
-          </div>
-        </div>
-      ) : null}
-      {data.contactInfo.twitter?.active ? (
-        <NotifiTwitterInput
-          disabled={inputDisabled}
-          classNames={classNames?.NotifiTwitterInput}
-          copy={{ label: inputLabels?.twitter }}
-        />
-      ) : null}
-      {inputSeparators?.twitterSeparator?.content ? (
-        <div
-          className={clsx(
-            'NotifiInputSeparator__container',
-            inputSeparators?.twitterSeparator?.classNames?.container,
-          )}
-        >
-          <div
-            className={clsx(
-              'NotifiInputSeparator__content',
-              inputSeparators.twitterSeparator.classNames?.content,
-            )}
-          >
-            {inputSeparators?.twitterSeparator?.content}
           </div>
         </div>
       ) : null}

@@ -16,8 +16,6 @@ export type UserInfoPanelProps = {
   classNames?: DeepPartialReadonly<{
     alertHistory: string;
     container: string;
-    discord?: UserInfoSection;
-    twitter?: UserInfoSection;
     email?: UserInfoSection;
     telegram?: UserInfoSection;
     sms?: UserInfoSection;
@@ -38,8 +36,6 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
     phoneNumber,
     email,
     telegramId,
-    discordId,
-    twitterId,
     setCardView,
     emailIdThatNeedsConfirmation,
     telegramConfirmationUrl,
@@ -150,40 +146,6 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
               </label>
             </a>
           ) : null}
-        </div>
-      ) : null}
-      {contactInfo.discord?.active ? (
-        <div
-          className={clsx(
-            'NotifiUserInfoPanel__discord',
-            classNames?.discord?.container,
-          )}
-        >
-          <label
-            className={clsx(
-              'NotifiUserInfoPanel__discordLabel',
-              classNames?.discord?.label,
-            )}
-          >
-            {discordId ?? 'discord'}
-          </label>
-        </div>
-      ) : null}
-      {contactInfo.twitter?.active ? (
-        <div
-          className={clsx(
-            'NotifiUserInfoPanel__twitter',
-            classNames?.twitter?.container,
-          )}
-        >
-          <label
-            className={clsx(
-              'NotifiUserInfoPanel__twitterLabel',
-              classNames?.twitter?.label,
-            )}
-          >
-            {twitterId ?? 'twitter'}
-          </label>
         </div>
       ) : null}
       <button

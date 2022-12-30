@@ -20,16 +20,12 @@ export type NotifiSubscriptionData = Readonly<{
 
   cardView: FetchedCardViewState;
   setCardView: React.Dispatch<React.SetStateAction<FetchedCardViewState>>;
-  twitterId: string;
-  discordId: string;
   intercomCardView: IntercomCardView;
   setIntercomCardView: React.Dispatch<React.SetStateAction<IntercomCardView>>;
   setAlerts: (alerts: Record<string, Alert | undefined>) => void;
   setEmail: (email: string) => void;
   setPhoneNumber: (phoneNumber: string) => void;
   setTelegramId: (telegramId: string) => void;
-  setTwitterId: (twitterId: string) => void;
-  setDiscordId: (discordId: string) => void;
   setTelegramConfirmationUrl: (
     telegramConfirmationUrl: string | undefined,
   ) => void;
@@ -76,8 +72,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
   const [email, setEmail] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [telegramId, setTelegramId] = useState<string>('');
-  const [twitterId, setTwitterId] = useState<string>('');
-  const [discordId, setDiscordId] = useState<string>('');
+
   const value = {
     alerts,
     email,
@@ -110,10 +105,6 @@ export const NotifiSubscriptionContextProvider: React.FC<
     setConversationId,
     userId,
     setUserId,
-    twitterId,
-    discordId,
-    setTwitterId,
-    setDiscordId,
   };
 
   return (
