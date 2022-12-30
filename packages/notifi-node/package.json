@@ -27,7 +27,10 @@
   },
   "dependencies": {
     "@notifi-network/notifi-axios-utils": "^0.44.0",
-    "@notifi-network/notifi-core": "^0.44.0"
+    "@notifi-network/notifi-core": "^0.44.0",
+    "graphql": "^16.6.0",
+    "subscriptions-transport-ws": "^0.11.0",
+    "ws": "^8.11.0"
   },
   "peerDependencies": {
     "axios": "^0.26.1 || ^0.27.2"

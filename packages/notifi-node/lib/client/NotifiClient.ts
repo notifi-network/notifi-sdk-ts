@@ -16,6 +16,10 @@ import {
   GetTenantConnectedWalletInput,
   GetTenantConnectedWalletResult,
 } from '../queries/getTenantConnectedWalletImpl';
+import getTenantUserImpl, {
+  GetTenantUserInput,
+  GetTenantUserResult,
+} from '../queries/getTenantUserImpl';
 import type {
   Authorization,
   ManagedAlert,
@@ -190,6 +194,13 @@ class NotifiClient {
     params: GetTenantConnectedWalletInput,
   ) => Promise<GetTenantConnectedWalletResult> = async (jwt, params) => {
     return await getTenantConnectedWalletImpl(this.a, jwt, params);
+  };
+
+  getTenantUser: (
+    jwt: string,
+    params: GetTenantUserInput,
+  ) => Promise<GetTenantUserResult> = async (jwt, params) => {
+    return await getTenantUserImpl(this.a, jwt, params);
   };
 }
 

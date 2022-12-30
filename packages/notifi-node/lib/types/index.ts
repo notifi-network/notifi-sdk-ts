@@ -5,5 +5,8 @@ export * from './DirectTenantMessage';
 export * from './ManagedAlert';
 export * from './Message';
 export * from './SimpleHealthThresholdMessage';
+export * from './TenantConnectedWallet';
+export * from './TenantUser';
+export * from './TenantUserAlert';
 export * from './UserWithAlerts';
 export * from './WalletBlockchain';
