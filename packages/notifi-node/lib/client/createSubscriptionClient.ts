@@ -2,7 +2,7 @@ import {
   NotifiEnvironment,
   notifiConfigs,
 } from '@notifi-network/notifi-axios-utils';
-import { createClient } from 'graphql-ws';
+import { SubscriptionClient } from 'subscriptions-transport-ws';
 import WebSocket from 'ws';
 
 export const createSubscriptionClient = (
@@ -20,10 +20,14 @@ export const createSubscriptionClient = (
   }
 
   const { wsUrl } = notifiConfigs(env);
-  const client = createClient({
-    url: wsUrl,
-    webSocketImpl: AuthorizedSocket,
-  });
+  const client = new SubscriptionClient(
+    wsUrl,
+    {
+      reconnect: true,
+      reconnectionAttempts: 5,
+    },
+    AuthorizedSocket,
+  );
 
   return client;
 };

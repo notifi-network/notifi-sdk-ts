@@ -1,8 +1,4 @@
-import {
-  ExecutionResult,
-  Client as GraphqlWsClient,
-  Sink as GraphqlWsSink,
-} from 'graphql-ws';
+import { SubscriptionClient } from 'subscriptions-transport-ws';
 
 import { TenantUser, TenantUserAlert } from '../types';
 
@@ -89,15 +85,23 @@ export type TenantEntityUpdatedData =
   | AlertDeletedEvent;
 
 export const subscribeTenantEntityUpdated = (
-  client: GraphqlWsClient,
-  sink: GraphqlWsSink<ExecutionResult<TenantEntityUpdatedData>>,
+  client: SubscriptionClient,
+  onNext: (data: TenantEntityUpdatedData) => void,
 ) => {
-  const unsubscribe = client.subscribe(
-    {
-      query: QUERY,
-    },
-    sink,
-  );
-
-  return unsubscribe;
+  return new Promise<void>((resolve, reject) => {
+    client.request({ query: QUERY }).subscribe({
+      next: (value) => {
+        console.log('next', value);
+        onNext(value as unknown as TenantEntityUpdatedData);
+      },
+      error: (err) => {
+        console.log('error', err);
+        reject(err);
+      },
+      complete: () => {
+        console.log('complete');
+        resolve();
+      },
+    });
+  });
 };
