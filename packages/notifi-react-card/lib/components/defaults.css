@@ -16,11 +16,11 @@
   --notifi-input-background: #f5f6fb;
   --notifi-input-border: #e8ebf5;
   --notifi-button-color: #1448f3;
-  --notifi-button-text-color: #fff
+  --notifi-button-text-color: #fff;
   --notifi-button-disabled-color: #b6b8d5;
   --notifi-incoming-message: #f5f6fb;
   --notifi-outgoing-message: #e5ebff;
-  --notifi-settings-icon-color: #262949
+  --notifi-settings-icon-color: #262949;
 }
 
 .notifi__dark {
@@ -42,10 +42,10 @@
   --notifi-input-border: #606060;
   --notifi-button-color: #678afc;
   --notifi-button-disabled-color: #80829d;
-  --notifi-button-text-color: #fff
+  --notifi-button-text-color: #fff;
   --notifi-incoming-message: #474858;
   --notifi-outgoing-message: #678afc;
-  --notifi-settings-icon-color: #fff
+  --notifi-settings-icon-color: #fff;
 }
 
 input:autofill,
@@ -920,7 +920,7 @@ input:-webkit-autofill {
 }
 
 .NotifiIntercomChatIncomingMessage__body {
-  padding: 12px 16px 24px 16px;
+  padding: 12px 20px 24px 20px;
   max-width: 288px;
   border-radius: 16px;
   background: var(--notifi-incoming-message);
@@ -933,7 +933,7 @@ input:-webkit-autofill {
 }
 
 .NotifiIntercomChatOutgoingMessage__body {
-  padding: 12px 16px 24px 16px;
+  padding: 12px 20px 24px 20px;
   max-width: 250px;
   border-radius: 16px;
   background: var(--notifi-outgoing-message);
