@@ -15,7 +15,8 @@ export const SendMessageSection: React.FC<SendMessageSectionProps> = ({
   sendConversationMessages,
 }) => {
   const [sendMessage, setSendMessage] = useState<string | undefined>(undefined);
-  const disabled = sendMessage === '' || sendMessage === undefined;
+  const disabled =
+    sendMessage?.trim().length === 0 || sendMessage === undefined;
 
   const handleSend = () => {
     if (sendMessage) {
@@ -26,7 +27,7 @@ export const SendMessageSection: React.FC<SendMessageSectionProps> = ({
 
   const handleKeypressUp = useCallback(
     (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-      if (event.key === 'Enter' && !event.shiftKey) {
+      if (event.key === 'Enter' && !event.shiftKey && !disabled) {
         handleSend();
         event.preventDefault();
       }

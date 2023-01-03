@@ -65,15 +65,14 @@ export const IntercomCard: React.FC<
     loading,
     intercomCardView,
     setIntercomCardView,
-    email,
-    phoneNumber,
-    telegramId,
     setHasChatAlert,
     setConversationId,
     setUserId,
   } = useNotifiSubscriptionContext();
 
-  const { formErrorMessages } = useNotifiForm();
+  const { formErrorMessages, formState } = useNotifiForm();
+
+  const { phoneNumber, telegram: telegramId, email } = formState;
 
   const {
     email: emailErrorMessage,
@@ -117,7 +116,7 @@ export const IntercomCard: React.FC<
     smsErrorMessage !== '' ||
     telegramErrorMessage !== '';
   const disabled =
-    (email === '' && phoneNumber === '' && telegramId === '') || hasErrors;
+    (email === '' && telegramId === '' && phoneNumber === '') || hasErrors;
 
   const labels = data.labels;
   const labelsValues = {} as LabelsMap;
