@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import React from 'react';
 
-import { NotifiInputLabels, NotifiInputSeparators } from '..';
+import { NotifiInputFieldsText, NotifiInputSeparators } from '..';
 import { CardConfigItemV1 } from '../../../hooks';
 import {
   NotifiEmailInput,
@@ -16,7 +16,7 @@ import {
 export type InputFieldsProps = {
   data: CardConfigItemV1;
   inputSeparators?: NotifiInputSeparators;
-  inputLabels?: NotifiInputLabels;
+  inputLabels?: NotifiInputFieldsText;
   allowedCountryCodes: string[];
   inputDisabled: boolean;
   classNames?: Readonly<{
@@ -39,7 +39,10 @@ export const InputFields: React.FC<InputFieldsProps> = ({
         <NotifiEmailInput
           disabled={inputDisabled}
           classNames={classNames?.NotifiEmailInput}
-          copy={{ label: inputLabels?.email }}
+          copy={{
+            label: inputLabels?.input?.email,
+            placeholder: inputLabels?.placeholder?.email,
+          }}
         />
       ) : null}
       {inputSeparators?.emailSeparator?.content ? (
@@ -64,7 +67,10 @@ export const InputFields: React.FC<InputFieldsProps> = ({
           disabled={inputDisabled}
           classNames={classNames?.NotifiSmsInput}
           allowedCountryCodes={allowedCountryCodes}
-          copy={{ label: inputLabels?.sms }}
+          copy={{
+            label: inputLabels?.input?.sms,
+            placeholder: inputLabels?.placeholder?.sms,
+          }}
         />
       ) : null}
       {inputSeparators?.smsSeparator?.content ? (
@@ -88,7 +94,10 @@ export const InputFields: React.FC<InputFieldsProps> = ({
         <NotifiTelegramInput
           disabled={inputDisabled}
           classNames={classNames?.NotifiTelegramInput}
-          copy={{ label: inputLabels?.telegram }}
+          copy={{
+            label: inputLabels?.input?.telegram,
+            placeholder: inputLabels?.placeholder?.telegram,
+          }}
         />
       ) : null}
       {inputSeparators?.telegramSeparator?.content ? (

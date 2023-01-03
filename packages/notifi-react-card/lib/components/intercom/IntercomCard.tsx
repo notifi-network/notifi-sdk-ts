@@ -13,7 +13,7 @@ import {
 } from '../../hooks/IntercomCardConfig';
 import { chatConfiguration } from '../../utils/AlertConfiguration';
 import {
-  NotifiInputLabels,
+  NotifiInputFieldsText,
   NotifiInputSeparators,
 } from '../subscription/NotifiSubscriptionCard';
 import {
@@ -38,7 +38,7 @@ export type IntercomCardProps = Readonly<{
     NotifiIntercomSettingHeader: SettingHeaderProps['classNames'];
     errorMessage: string;
   }>;
-  inputLabels?: NotifiInputLabels;
+  inputLabels?: NotifiInputFieldsText;
   inputs?: Record<string, string | undefined>;
   inputSeparators?: NotifiInputSeparators;
   data: IntercomCardConfigItemV1;

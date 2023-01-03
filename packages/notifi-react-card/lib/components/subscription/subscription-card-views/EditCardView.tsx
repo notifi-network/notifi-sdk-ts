@@ -8,7 +8,7 @@ import {
   NotifiSubscribeButtonProps,
 } from '../NotifiSubscribeButton';
 import {
-  NotifiInputLabels,
+  NotifiInputFieldsText,
   NotifiInputSeparators,
 } from '../NotifiSubscriptionCard';
 import { AlertListPreview } from './AlertListPreview';
@@ -24,7 +24,7 @@ export type EditCardViewProps = Readonly<{
     NotifiSubscribeButton?: NotifiSubscribeButtonProps['classNames'];
   }>;
   inputSeparators?: NotifiInputSeparators;
-  inputLabels?: NotifiInputLabels;
+  inputLabels?: NotifiInputFieldsText;
   allowedCountryCodes: string[];
 }>;
 

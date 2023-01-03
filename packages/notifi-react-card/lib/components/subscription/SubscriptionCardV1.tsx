@@ -4,7 +4,7 @@ import { useNotifiSubscriptionContext } from '../../context';
 import { CardConfigItemV1, useNotifiSubscribe } from '../../hooks';
 import { DeepPartialReadonly } from '../../utils';
 import {
-  NotifiInputLabels,
+  NotifiInputFieldsText,
   NotifiInputSeparators,
 } from './NotifiSubscriptionCard';
 import { AlertListProps } from './subscription-card-views/AlertListPreview';
@@ -39,7 +39,7 @@ export type SubscriptionCardV1Props = Readonly<{
   inputDisabled: boolean;
   data: CardConfigItemV1;
   inputs: Record<string, string | undefined>;
-  inputLabels?: NotifiInputLabels;
+  inputLabels?: NotifiInputFieldsText;
   inputSeparators?: NotifiInputSeparators;
 }>;
 
