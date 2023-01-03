@@ -16,7 +16,7 @@ import {
 export type InputFieldsProps = {
   data: CardConfigItemV1;
   inputSeparators?: NotifiInputSeparators;
-  inputLabels?: NotifiInputFieldsText;
+  inputTextFields?: NotifiInputFieldsText;
   allowedCountryCodes: string[];
   inputDisabled: boolean;
   classNames?: Readonly<{
@@ -29,7 +29,7 @@ export const InputFields: React.FC<InputFieldsProps> = ({
   data,
   classNames,
   inputSeparators,
-  inputLabels,
+  inputTextFields,
   allowedCountryCodes,
   inputDisabled,
 }) => {
@@ -40,8 +40,8 @@ export const InputFields: React.FC<InputFieldsProps> = ({
           disabled={inputDisabled}
           classNames={classNames?.NotifiEmailInput}
           copy={{
-            label: inputLabels?.input?.email,
-            placeholder: inputLabels?.placeholder?.email,
+            label: inputTextFields?.label?.email,
+            placeholder: inputTextFields?.placeholderText?.email,
           }}
         />
       ) : null}
@@ -68,8 +68,8 @@ export const InputFields: React.FC<InputFieldsProps> = ({
           classNames={classNames?.NotifiSmsInput}
           allowedCountryCodes={allowedCountryCodes}
           copy={{
-            label: inputLabels?.input?.sms,
-            placeholder: inputLabels?.placeholder?.sms,
+            label: inputTextFields?.label?.sms,
+            placeholder: inputTextFields?.placeholderText?.sms,
           }}
         />
       ) : null}
@@ -95,8 +95,8 @@ export const InputFields: React.FC<InputFieldsProps> = ({
           disabled={inputDisabled}
           classNames={classNames?.NotifiTelegramInput}
           copy={{
-            label: inputLabels?.input?.telegram,
-            placeholder: inputLabels?.placeholder?.telegram,
+            label: inputTextFields?.label?.telegram,
+            placeholder: inputTextFields?.placeholderText?.telegram,
           }}
         />
       ) : null}

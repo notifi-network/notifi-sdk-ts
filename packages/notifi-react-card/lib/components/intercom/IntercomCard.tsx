@@ -192,7 +192,7 @@ export const IntercomCard: React.FC<
           <NotifiIntercomFTUNotificationTargetSection
             data={data}
             inputs={inputs}
-            inputLabels={inputLabels}
+            inputTextFields={inputLabels}
             inputSeparators={inputSeparators}
           />
           <label
@@ -237,7 +237,7 @@ export const IntercomCard: React.FC<
             <NotifiIntercomFTUNotificationTargetSection
               data={data}
               inputs={inputs}
-              inputLabels={inputLabels}
+              inputTextFields={inputLabels}
               inputSeparators={inputSeparators}
             />
             <label

@@ -104,7 +104,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
           data={data}
           classNames={classNames?.EditCard}
           inputDisabled={inputDisabled}
-          inputLabels={inputLabels}
+          inputTextFields={inputLabels}
           inputSeparators={inputSeparators}
           allowedCountryCodes={allowedCountryCodes}
         />
