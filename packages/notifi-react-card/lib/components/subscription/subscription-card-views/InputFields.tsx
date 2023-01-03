@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import React from 'react';
 
-import { NotifiInputLabels, NotifiInputSeparators } from '..';
+import { NotifiInputFieldsText, NotifiInputSeparators } from '..';
 import { CardConfigItemV1 } from '../../../hooks';
 import {
   NotifiEmailInput,
@@ -16,7 +16,7 @@ import {
 export type InputFieldsProps = {
   data: CardConfigItemV1;
   inputSeparators?: NotifiInputSeparators;
-  inputLabels?: NotifiInputLabels;
+  inputTextFields?: NotifiInputFieldsText;
   allowedCountryCodes: string[];
   inputDisabled: boolean;
   classNames?: Readonly<{
@@ -29,7 +29,7 @@ export const InputFields: React.FC<InputFieldsProps> = ({
   data,
   classNames,
   inputSeparators,
-  inputLabels,
+  inputTextFields,
   allowedCountryCodes,
   inputDisabled,
 }) => {
@@ -39,7 +39,10 @@ export const InputFields: React.FC<InputFieldsProps> = ({
         <NotifiEmailInput
           disabled={inputDisabled}
           classNames={classNames?.NotifiEmailInput}
-          copy={{ label: inputLabels?.email }}
+          copy={{
+            label: inputTextFields?.label?.email,
+            placeholder: inputTextFields?.placeholderText?.email,
+          }}
         />
       ) : null}
       {inputSeparators?.emailSeparator?.content ? (
@@ -64,7 +67,10 @@ export const InputFields: React.FC<InputFieldsProps> = ({
           disabled={inputDisabled}
           classNames={classNames?.NotifiSmsInput}
           allowedCountryCodes={allowedCountryCodes}
-          copy={{ label: inputLabels?.sms }}
+          copy={{
+            label: inputTextFields?.label?.sms,
+            placeholder: inputTextFields?.placeholderText?.sms,
+          }}
         />
       ) : null}
       {inputSeparators?.smsSeparator?.content ? (
@@ -88,7 +94,10 @@ export const InputFields: React.FC<InputFieldsProps> = ({
         <NotifiTelegramInput
           disabled={inputDisabled}
           classNames={classNames?.NotifiTelegramInput}
-          copy={{ label: inputLabels?.telegram }}
+          copy={{
+            label: inputTextFields?.label?.telegram,
+            placeholder: inputTextFields?.placeholderText?.telegram,
+          }}
         />
       ) : null}
       {inputSeparators?.telegramSeparator?.content ? (

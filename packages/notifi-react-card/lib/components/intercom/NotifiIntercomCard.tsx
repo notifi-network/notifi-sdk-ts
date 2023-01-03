@@ -8,7 +8,7 @@ import {
 import type { ErrorStateCardProps } from '../common';
 import type { LoadingStateCardProps } from '../common';
 import {
-  NotifiInputLabels,
+  NotifiInputFieldsText,
   NotifiInputSeparators,
 } from '../subscription/NotifiSubscriptionCard';
 import { NotifiIntercomCardContainer } from './NotifiIntercomCardContainer';
@@ -29,7 +29,7 @@ export type NotifiIntercomCardProps = Readonly<{
     NotifiIntercomSettingHeader: SettingHeaderProps['classNames'];
     errorMessage: string;
   }>;
-  inputLabels?: NotifiInputLabels;
+  inputLabels?: NotifiInputFieldsText;
   darkMode?: boolean;
   inputs?: Record<string, string | undefined>;
   inputSeparators?: NotifiInputSeparators;

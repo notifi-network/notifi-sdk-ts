@@ -13,7 +13,7 @@ import {
 } from '../../hooks/IntercomCardConfig';
 import { chatConfiguration } from '../../utils/AlertConfiguration';
 import {
-  NotifiInputLabels,
+  NotifiInputFieldsText,
   NotifiInputSeparators,
 } from '../subscription/NotifiSubscriptionCard';
 import {
@@ -38,7 +38,7 @@ export type IntercomCardProps = Readonly<{
     NotifiIntercomSettingHeader: SettingHeaderProps['classNames'];
     errorMessage: string;
   }>;
-  inputLabels?: NotifiInputLabels;
+  inputLabels?: NotifiInputFieldsText;
   inputs?: Record<string, string | undefined>;
   inputSeparators?: NotifiInputSeparators;
   data: IntercomCardConfigItemV1;
@@ -192,7 +192,7 @@ export const IntercomCard: React.FC<
           <NotifiIntercomFTUNotificationTargetSection
             data={data}
             inputs={inputs}
-            inputLabels={inputLabels}
+            inputTextFields={inputLabels}
             inputSeparators={inputSeparators}
           />
           <label
@@ -237,7 +237,7 @@ export const IntercomCard: React.FC<
             <NotifiIntercomFTUNotificationTargetSection
               data={data}
               inputs={inputs}
-              inputLabels={inputLabels}
+              inputTextFields={inputLabels}
               inputSeparators={inputSeparators}
             />
             <label

@@ -36,10 +36,13 @@ export type NotifiInputSeparators = {
   };
 };
 
-export type NotifiInputLabels = {
-  email?: string;
-  sms?: string;
-  telegram?: string;
+export type NotifiInputFieldsText = {
+  label?: {
+    email?: string;
+    sms?: string;
+    telegram?: string;
+  };
+  placeholderText?: { email?: string; sms?: string; telegram?: string };
 };
 
 export type NotifiSubscriptionCardProps = Readonly<{
@@ -52,7 +55,7 @@ export type NotifiSubscriptionCardProps = Readonly<{
     NotifiFooter?: NotifiFooterProps['classNames'];
   }>;
   buttonText?: string;
-  inputLabels?: NotifiInputLabels;
+  inputLabels?: NotifiInputFieldsText;
   darkMode?: boolean;
   cardId: string;
   inputs?: Record<string, string | undefined>;

@@ -1,5 +1,6 @@
 import {
   NotifiContext,
+  NotifiInputFieldsText,
   NotifiInputSeparators,
   NotifiIntercomCard,
   NotifiSubscriptionCard,
@@ -21,10 +22,15 @@ export const NotifiCard: React.FC = () => {
     return null;
   }
 
-  const inputLabels = {
-    email: 'Email',
-    sms: 'Text Message',
-    telegram: 'Telegram',
+  const inputLabels: NotifiInputFieldsText = {
+    label: {
+      email: 'Email',
+      sms: 'Text Message',
+      telegram: 'Telegram',
+    },
+    placeholderText: {
+      email: 'Email',
+    },
   };
 
   const inputSeparators: NotifiInputSeparators = {
