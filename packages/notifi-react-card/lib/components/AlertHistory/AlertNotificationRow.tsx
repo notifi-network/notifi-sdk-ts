@@ -8,7 +8,7 @@ export type AlertNotificationViewProps = Readonly<{
   notificationImage?: JSX.Element;
   notificationSubject: string | undefined;
   notificationDate: string;
-  notificationMessage: string | undefined;
+  notificationMessage?: string | undefined;
   classNames?: Readonly<{
     notificationContent?: string;
     notificationDate?: string;
@@ -27,7 +27,6 @@ export const AlertNotificationRow: React.FC<AlertNotificationViewProps> = ({
   notificationImage,
   notificationSubject,
   notificationDate,
-  // notificationMessage,
   handleAlertEntrySelection,
 }) => {
   return (

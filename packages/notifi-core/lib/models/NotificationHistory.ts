@@ -34,7 +34,12 @@ export type NotificationHistoryEntry = Readonly<{
     | { __typename: 'DAOProposalChangedEventDetails' }
     | { __typename: 'DirectTenantMessageEventDetails' }
     | { __typename: 'GenericEventDetails' }
-    | { __typename: 'HealthValueOverThresholdEventDetails' }
+    | {
+        __typename: 'HealthValueOverThresholdEventDetails';
+        name: string;
+        value: string;
+        threshold: string;
+      }
     | { __typename: 'NftAuctionChangedEventDetails' }
     | { __typename: 'NftCollectionsReportEventDetails' }
     | { __typename: 'WalletsActivityReportEventDetails' }

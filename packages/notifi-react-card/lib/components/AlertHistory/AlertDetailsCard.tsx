@@ -33,6 +33,18 @@ export const AlertDetailsCard: React.FC<AlertDetailsProps> = ({
           bottomContent: detail.message,
         };
       }
+      case 'HealthValueOverThresholdEventDetails': {
+        return {
+          topContent: detail.name,
+          bottomContent: (
+            <>
+              <div>{`value: ${detail.value}`}</div>
+              &nbsp;
+              <div>{`threshold: ${detail.threshold}`}</div>
+            </>
+          ),
+        };
+      }
     }
 
     return {};

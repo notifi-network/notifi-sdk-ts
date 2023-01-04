@@ -16,6 +16,7 @@ import {
 import { MESSAGES_PER_PAGE } from '../../../utils/constants';
 import { AlertDetailsCard } from '../../AlertHistory/AlertDetailsCard';
 import { BroadcastMessageChangedRenderer } from '../../AlertHistory/BroadcastMessageChangedRenderer';
+import { HealthValueOverThresholdEventRenderer } from '../../AlertHistory/HealthValueOverThresholdEventRenderer';
 
 export type AlertHistoryViewProps = Readonly<{
   alertHistoryTitle?: string;
@@ -34,14 +35,22 @@ export type AlertHistoryViewProps = Readonly<{
     notificationList?: string;
     emptyAlertsBellIcon?: string;
   }>;
+  icons?: Readonly<{
+    healthCheckIcon?: JSX.Element;
+    broadcastIcon?: JSX.Element;
+  }>;
 }>;
 
 export const AlertCard = ({
   notification,
   handleAlertEntrySelection,
+  healthCheckIcon,
+  broadcastIcon,
 }: Readonly<{
   notification: NotificationHistoryEntry;
   handleAlertEntrySelection: () => void;
+  healthCheckIcon?: JSX.Element;
+  broadcastIcon?: JSX.Element;
 }>): React.ReactElement => {
   const detail = notification.detail;
 
@@ -49,11 +58,23 @@ export const AlertCard = ({
     case 'BroadcastMessageEventDetails':
       return (
         <BroadcastMessageChangedRenderer
+          broadcastIcon={broadcastIcon}
           handleAlertEntrySelection={handleAlertEntrySelection}
           notificationTitle={'Announcement'}
           createdDate={notification.createdDate}
           message={detail.message ?? ''}
           subject={detail.subject ?? ''}
+        />
+      );
+    case 'HealthValueOverThresholdEventDetails':
+      return (
+        <HealthValueOverThresholdEventRenderer
+          healthCheckIcon={healthCheckIcon}
+          handleAlertEntrySelection={handleAlertEntrySelection}
+          notificationTitle={'Health Check'}
+          createdDate={notification.createdDate}
+          threshold={detail.threshold ?? ''}
+          name={detail.name ?? ''}
         />
       );
     default:
@@ -66,6 +87,7 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
   classNames,
   noAlertDescription,
   notificationListHeight,
+  icons,
 }) => {
   alertHistoryTitle = alertHistoryTitle ? alertHistoryTitle : 'Alert History';
   noAlertDescription = noAlertDescription
@@ -184,6 +206,8 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
                 handleAlertEntrySelection={() => setAlertEntry(notification)}
                 key={notification.id}
                 notification={notification}
+                healthCheckIcon={icons?.healthCheckIcon}
+                broadcastIcon={icons?.broadcastIcon}
               />
             );
           }}

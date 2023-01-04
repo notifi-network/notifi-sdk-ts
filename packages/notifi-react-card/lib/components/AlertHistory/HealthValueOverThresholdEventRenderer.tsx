@@ -3,41 +3,35 @@ import React from 'react';
 import { AnnouncementIcon } from '../../assets/AnnouncementIcon';
 import { AlertNotificationRow } from './AlertNotificationRow';
 
-type BroadcastMessageChangedRendererProps = Readonly<{
+type HealthValueOverThresholdEventRendererProps = Readonly<{
   createdDate: string;
-  message: string | undefined;
-  subject: string | undefined;
+  name: string | undefined;
+  threshold: string | undefined;
   notificationTitle: string;
   handleAlertEntrySelection: () => void;
-  broadcastIcon?: JSX.Element;
+  healthCheckIcon?: JSX.Element;
 }>;
 
-export const getDefaultIcon = () => {
-  return <AnnouncementIcon />;
-};
-
-export const BroadcastMessageChangedRenderer: React.FC<
-  BroadcastMessageChangedRendererProps
+export const HealthValueOverThresholdEventRenderer: React.FC<
+  HealthValueOverThresholdEventRendererProps
 > = ({
-  message,
-  subject,
+  name,
+  threshold,
   createdDate,
   notificationTitle,
   handleAlertEntrySelection,
-  broadcastIcon,
+  healthCheckIcon,
 }) => {
   const getDefaultIcon = () => {
-    return broadcastIcon || <AnnouncementIcon />;
+    return healthCheckIcon || <AnnouncementIcon />;
   };
-
   return (
     <AlertNotificationRow
       handleAlertEntrySelection={handleAlertEntrySelection}
       notificationTitle={notificationTitle}
       notificationImage={getDefaultIcon()}
-      notificationSubject={subject}
+      notificationSubject={`${name} over ${threshold}`}
       notificationDate={createdDate}
-      notificationMessage={message}
     />
   );
 };

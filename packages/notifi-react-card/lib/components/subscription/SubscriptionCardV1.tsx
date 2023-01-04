@@ -36,6 +36,7 @@ export type SubscriptionCardV1Props = Readonly<{
       ExpiredTokenViewCardProps['classNames']
     >;
   };
+  icons?: AlertHistoryViewProps['icons'];
   inputDisabled: boolean;
   data: CardConfigItemV1;
   inputs: Record<string, string | undefined>;
@@ -51,6 +52,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
   inputs,
   inputLabels,
   inputSeparators,
+  icons,
 }) => {
   const allowedCountryCodes = [...data.contactInfo.sms.supportedCountryCodes];
   const { cardView, email, phoneNumber, telegramId, setCardView } =
@@ -111,7 +113,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
       );
       break;
     case 'history':
-      view = <AlertHistoryView />;
+      view = <AlertHistoryView icons={icons} />;
       break;
   }
   return <>{view}</>;
