@@ -16,6 +16,7 @@ import {
 import { MESSAGES_PER_PAGE } from '../../../utils/constants';
 import { AlertDetailsCard } from '../../AlertHistory/AlertDetailsCard';
 import { BroadcastMessageChangedRenderer } from '../../AlertHistory/BroadcastMessageChangedRenderer';
+import { HealthValueOverThresholdEventRenderer } from '../../AlertHistory/HealthValueOverThresholdEventRenderer';
 
 export type AlertHistoryViewProps = Readonly<{
   alertHistoryTitle?: string;
@@ -42,6 +43,8 @@ export const AlertCard = ({
 }: Readonly<{
   notification: NotificationHistoryEntry;
   handleAlertEntrySelection: () => void;
+  healthCheckIcon?: JSX.Element;
+  broadcastIcon?: JSX.Element;
 }>): React.ReactElement => {
   const detail = notification.detail;
 
@@ -54,6 +57,16 @@ export const AlertCard = ({
           createdDate={notification.createdDate}
           message={detail.message ?? ''}
           subject={detail.subject ?? ''}
+        />
+      );
+    case 'HealthValueOverThresholdEventDetails':
+      return (
+        <HealthValueOverThresholdEventRenderer
+          handleAlertEntrySelection={handleAlertEntrySelection}
+          notificationTitle={'Health Check'}
+          createdDate={notification.createdDate}
+          threshold={detail.threshold ?? ''}
+          name={detail.name ?? ''}
         />
       );
     default:
