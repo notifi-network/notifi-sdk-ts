@@ -14,7 +14,6 @@ export type FetchedStateCardProps = Readonly<{
   classNames?: Readonly<{
     SubscriptionCardV1?: SubscriptionCardV1Props['classNames'];
   }>;
-  icons?: SubscriptionCardV1Props['icons'];
   card: FetchedState;
   inputDisabled: boolean;
   inputs: Record<string, string | undefined>;
@@ -30,7 +29,6 @@ export const FetchedStateCard: React.FC<FetchedStateCardProps> = ({
   inputs,
   inputLabels,
   inputSeparators,
-  icons,
 }) => {
   let contents: React.ReactNode = <SubscriptionCardUnsupported />;
   switch (card.data.version) {
@@ -44,7 +42,6 @@ export const FetchedStateCard: React.FC<FetchedStateCardProps> = ({
           inputDisabled={inputDisabled}
           inputLabels={inputLabels}
           inputSeparators={inputSeparators}
-          icons={icons}
         />
       );
   }

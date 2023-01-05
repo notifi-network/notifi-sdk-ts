@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { AnnouncementIcon } from '../../assets/AnnouncementIcon';
+import { RatioCheckIcon } from '../../assets/RatioCheckIcon';
 import { AlertNotificationRow } from './AlertNotificationRow';
 
 type HealthValueOverThresholdEventRendererProps = Readonly<{
@@ -9,7 +9,6 @@ type HealthValueOverThresholdEventRendererProps = Readonly<{
   threshold: string | undefined;
   notificationTitle: string;
   handleAlertEntrySelection: () => void;
-  healthCheckIcon?: JSX.Element;
 }>;
 
 export const HealthValueOverThresholdEventRenderer: React.FC<
@@ -20,18 +19,15 @@ export const HealthValueOverThresholdEventRenderer: React.FC<
   createdDate,
   notificationTitle,
   handleAlertEntrySelection,
-  healthCheckIcon,
 }) => {
-  const getDefaultIcon = () => {
-    return healthCheckIcon || <AnnouncementIcon />;
-  };
   return (
     <AlertNotificationRow
       handleAlertEntrySelection={handleAlertEntrySelection}
       notificationTitle={notificationTitle}
-      notificationImage={getDefaultIcon()}
+      notificationImage={<RatioCheckIcon />}
       notificationSubject={`${name} over ${threshold}`}
       notificationDate={createdDate}
+      notificationMessage={undefined}
     />
   );
 };

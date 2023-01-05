@@ -19,7 +19,6 @@ export const NotifiSubscriptionCardContainer: React.FC<
   inputs = {},
   inputSeparators,
   children,
-  icons,
 }: React.PropsWithChildren<NotifiSubscriptionCardProps>) => {
   const { isInitialized } = useNotifiSubscribe({ targetGroupName: 'Default' });
   const { loading } = useNotifiSubscriptionContext();
@@ -48,7 +47,6 @@ export const NotifiSubscriptionCardContainer: React.FC<
     case 'fetched':
       contents = (
         <FetchedStateCard
-          icons={icons}
           buttonText={buttonText}
           classNames={classNames?.FetchedStateCard}
           card={card}
