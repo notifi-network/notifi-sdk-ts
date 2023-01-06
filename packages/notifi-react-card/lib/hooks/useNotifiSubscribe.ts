@@ -260,7 +260,10 @@ export const useNotifiSubscribe: ({
       }
 
       setLoading(true);
-      await logIn();
+
+      if (!client.isAuthenticated) {
+        await logIn();
+      }
       const data = await client.fetchData();
 
       //
