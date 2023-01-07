@@ -513,7 +513,7 @@ input:-webkit-autofill {
 
 .NotifiSmsInput__dropdownFlag, .NotifiSmsInput__dropdownName {
   margin-top: 0;
-  margin-bottom: 0;
+  margin-bottom: 0 !important;
 }
 
 .NotifiInputSeparator__container {
