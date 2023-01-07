@@ -1,21 +1,21 @@
 import React from 'react';
 
-import { AnnouncementIcon } from '../../assets/AnnouncementIcon';
+import { RatioCheckIcon } from '../../assets/RatioCheckIcon';
 import { AlertNotificationRow } from './AlertNotificationRow';
 
-type BroadcastMessageChangedRendererProps = Readonly<{
+type HealthValueOverThresholdEventRendererProps = Readonly<{
   createdDate: string;
-  message: string | undefined;
-  subject: string | undefined;
+  name: string | undefined;
+  threshold: string | undefined;
   notificationTitle: string;
   handleAlertEntrySelection: () => void;
 }>;
 
-export const BroadcastMessageChangedRenderer: React.FC<
-  BroadcastMessageChangedRendererProps
+export const HealthValueOverThresholdEventRenderer: React.FC<
+  HealthValueOverThresholdEventRendererProps
 > = ({
-  message,
-  subject,
+  name,
+  threshold,
   createdDate,
   notificationTitle,
   handleAlertEntrySelection,
@@ -24,10 +24,10 @@ export const BroadcastMessageChangedRenderer: React.FC<
     <AlertNotificationRow
       handleAlertEntrySelection={handleAlertEntrySelection}
       notificationTitle={notificationTitle}
-      notificationImage={<AnnouncementIcon />}
-      notificationSubject={subject}
+      notificationImage={<RatioCheckIcon />}
+      notificationSubject={`${name} over ${threshold}`}
       notificationDate={createdDate}
-      notificationMessage={message}
+      notificationMessage={undefined}
     />
   );
 };

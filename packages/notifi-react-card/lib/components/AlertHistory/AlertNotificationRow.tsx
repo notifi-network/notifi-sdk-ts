@@ -27,7 +27,6 @@ export const AlertNotificationRow: React.FC<AlertNotificationViewProps> = ({
   notificationImage,
   notificationSubject,
   notificationDate,
-  // notificationMessage,
   handleAlertEntrySelection,
 }) => {
   return (
