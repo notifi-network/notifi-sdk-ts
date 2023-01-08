@@ -3,10 +3,11 @@ import { isValidPhoneNumber } from 'libphonenumber-js';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { SmsIcon } from '../assets/SmsIcon';
-import { countryMap } from '../constants/countryData';
+import { DialCode, countryMap } from '../constants/countryData';
 import { useNotifiForm } from '../context';
 import type { DeepPartialReadonly } from '../utils';
 import { splitPhoneNumber } from '../utils/phoneUtils';
+import NotifiSmsDropdownOption from './NotifiSmsDropdownOption';
 
 export type NotifiSmsInputProps = Readonly<{
   classNames?: DeepPartialReadonly<{
@@ -116,27 +117,14 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
 
   const countryCodes = useMemo(() => {
     return allowedCountryCodes.map((code) => {
-      const countryData = countryMap[code];
-      const { name, dialCode, flag } = countryData;
-
+      const countryData = countryMap[code as DialCode];
       return (
-        <li
+        <NotifiSmsDropdownOption
           key={code}
-          className={clsx(
-            'NotifiSmsInput__dropdownOption',
-            classNames?.dropdownOption,
-            phoneValues.dialCode === dialCode
-              ? 'NotifiSmsInput__dropdownOption-selected'
-              : '',
-          )}
-          onClick={() => handleSelected(dialCode)}
-        >
-          <div className="NotifiSmsInput__dropdownCountry">
-            <p className="NotifiSmsInput__dropdownFlag">{flag} </p>
-            <p className="NotifiSmsInput__dropdownName">{name}</p>
-          </div>
-          <span className="NotifiSmsInput__dropdownCode">{dialCode}</span>
-        </li>
+          countryData={countryData}
+          phoneValues={phoneValues}
+          onSelected={(dialCode) => handleSelected(dialCode)}
+        />
       );
     });
   }, [allowedCountryCodes, classNames, phoneValues.dialCode]);
@@ -196,15 +184,12 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
               />
               <svg
                 className="NotifiSmsInput__dropdownSelectIcon"
-                width="9"
-                height="5"
                 viewBox="0 0 9 5"
-                fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
                   d="M0.539062 0.916016L4.4974 4.87435L8.45573 0.916016H0.539062Z"
-                  fill="#B6B8D5"
+                  fill="inherit"
                 />
               </svg>
             </div>

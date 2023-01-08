@@ -450,9 +450,11 @@ input:-webkit-autofill {
   top: 50%;
   right: 10px;
   width: 10px;
+  height: 5px;
   transition: 0.2s ease;
   z-index: 9999;
   cursor: pointer;
+  fill: var(--notifi-button-disabled-color);
 }
 
 .NotifiSmsInput__dropdownOptionList {
@@ -503,7 +505,7 @@ input:-webkit-autofill {
   display: flex;
   flex-direction: row;
   margin-bottom: 0 !important;
-  flex: 1 1 auto
+  flex: 1 1 auto;
 }
 
 .NotifiSmsInput__dropdownFlag {
@@ -511,7 +513,8 @@ input:-webkit-autofill {
   font-weight: 400;
 }
 
-.NotifiSmsInput__dropdownFlag, .NotifiSmsInput__dropdownName {
+.NotifiSmsInput__dropdownFlag,
+.NotifiSmsInput__dropdownName {
   margin-top: 0;
   margin-bottom: 0 !important;
 }

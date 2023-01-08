@@ -1,14 +1,9 @@
-export type CountryMetadata = {
-  name: string;
-  dialCode: string;
-  flag: string;
-};
+export type CountryMap = typeof countryMap;
 
-type CountryMap = {
-  [countryCode: string]: CountryMetadata;
-};
+export type DialCode = keyof CountryMap;
+export type CountryMetadata = CountryMap[keyof CountryMap];
 
-export const countryMap: CountryMap = {
+export const countryMap = {
   '+1': {
     dialCode: '+1',
     flag: '🇺🇸',
@@ -134,4 +129,4 @@ export const countryMap: CountryMap = {
     flag: '🇬🇧',
     name: 'United Kingdom',
   },
-};
+} as const;
