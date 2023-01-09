@@ -113,7 +113,7 @@ export const EventTypeHealthCheckRow: React.FC<
     if (!enabled && initialRatio !== null) {
       instantSubscribe({
         alertConfiguration: healthThresholdConfiguration({
-          alertFrequency: 'DAILY',
+          alertFrequency: config.alertFrequency,
           percentage: initialRatio,
         }),
         alertName: alertName,
@@ -136,7 +136,7 @@ export const EventTypeHealthCheckRow: React.FC<
     if (value) {
       instantSubscribe({
         alertConfiguration: healthThresholdConfiguration({
-          alertFrequency: 'DAILY',
+          alertFrequency: config.alertFrequency,
           percentage: value,
         }),
         alertName: alertName,
@@ -167,7 +167,7 @@ export const EventTypeHealthCheckRow: React.FC<
       ) {
         instantSubscribe({
           alertConfiguration: healthThresholdConfiguration({
-            alertFrequency: 'DAILY',
+            alertFrequency: config.alertFrequency,
             percentage: ratioNumber / 100,
           }),
           alertName: alertName,
