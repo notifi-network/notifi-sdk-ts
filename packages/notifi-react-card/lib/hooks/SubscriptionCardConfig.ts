@@ -1,5 +1,5 @@
 // TODO: Import from library rather than copy / paste
-import { AlertFrequency } from 'notifi-frontend-client/dist';
+import { AlertFrequency } from '@notifi-network/notifi-core';
 
 export type ValueOrRef<ValueType> =
   | Readonly<{
