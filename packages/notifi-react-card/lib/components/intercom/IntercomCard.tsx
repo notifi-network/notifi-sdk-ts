@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { useNotifiClientContext } from 'notifi-react-card/lib/context';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useNotifiForm, useNotifiSubscriptionContext } from '../../context/';
 import { useNotifiSubscribe } from '../../hooks';
@@ -55,10 +55,14 @@ export const IntercomCard: React.FC<
   const [chatAlertErrorMessage, setChatAlertErrorMessage] =
     useState<string>('');
 
-  const { instantSubscribe, isAuthenticated, isInitialized } =
+  const { instantSubscribe, isAuthenticated, isInitialized, didFetch } =
     useNotifiSubscribe({
       targetGroupName: 'Intercom',
     });
+
+  useEffect(() => {
+    checkForExistingTargetGroups();
+  }, [instantSubscribe]);
 
   const {
     alerts,
@@ -96,9 +100,8 @@ export const IntercomCard: React.FC<
         (email) => email.isConfirmed === true,
       );
 
-      console.log('target group', targetGroup);
       if (confirmedEmailTarget?.emailAddress) {
-        console.log(confirmedEmailTarget);
+        console.log('confirmed email', confirmedEmailTarget);
         setFormEmail(confirmedEmailTarget.emailAddress);
       }
 
@@ -107,7 +110,7 @@ export const IntercomCard: React.FC<
       );
 
       if (confirmedTelegramTarget?.telegramId) {
-        console.log(confirmedTelegramTarget);
+        console.log('confirmed telegram target', confirmedTelegramTarget);
         setFormTelegram(confirmedTelegramTarget?.telegramId);
       }
 
@@ -154,13 +157,26 @@ export const IntercomCard: React.FC<
         });
       });
     } else {
-      console.log('hit');
-      checkForExistingTargetGroups();
       setIntercomCardView({
         state: 'startChatView',
       });
     }
-  }, [alerts, loading, isInitialized, isAuthenticated]);
+  }, [alerts, loading, isInitialized]);
+
+  // const hasLoaded = useRef(false);
+
+  // useEffect(() => {
+  //   if (
+  //     !hasLoaded.current &&
+  //     didFetch.current === true &&
+  //     isInitialized &&
+  //     isAuthenticated
+  //   ) {
+  //     checkForExistingTargetGroups();
+  //     hasLoaded.current = true;
+  //     return;
+  //   }
+  // }, [didFetch, isInitialized, isAuthenticated]);
 
   const hasErrors =
     emailErrorMessage !== '' ||

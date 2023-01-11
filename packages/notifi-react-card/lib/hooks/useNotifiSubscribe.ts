@@ -10,7 +10,7 @@ import {
   TransactionInstruction,
 } from '@solana/web3.js';
 import { isValidPhoneNumber } from 'libphonenumber-js';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { MutableRefObject, useCallback, useEffect, useRef } from 'react';
 
 import { useNotifiSubscriptionContext } from '../context';
 import { useNotifiClientContext } from '../context/NotifiClientContext';
@@ -42,6 +42,7 @@ export const useNotifiSubscribe: ({
   isAuthenticated: boolean;
   isInitialized: boolean;
   isTokenExpired: boolean;
+  didFetch: MutableRefObject<boolean>;
   logIn: () => Promise<SubscriptionData>;
   subscribe: (
     alertConfigs: Record<string, AlertConfiguration>,
@@ -53,9 +54,6 @@ export const useNotifiSubscribe: ({
   resendEmailVerificationLink: () => Promise<string>;
 }> = ({ targetGroupName = 'Default' }: useNotifiSubscribeProps) => {
   const { client } = useNotifiClientContext();
-
-  const [hasCheckedForTargetGroups, setHasCheckedForTargetGroups] =
-    useState<boolean>();
 
   const {
     formState,
@@ -117,6 +115,8 @@ export const useNotifiSubscribe: ({
         setEmailIdThatNeedsConfirmation('');
       }
 
+      console.log('email to set', emailToSet);
+      console.log('target group name', targetGroupName);
       setFormEmail(emailToSet);
       setEmail(emailToSet);
 
@@ -156,7 +156,6 @@ export const useNotifiSubscribe: ({
   // Initial fetch
   const didFetch = useRef(false);
   useEffect(() => {
-    console.log('usEffect');
     if (client.isAuthenticated && !didFetch.current) {
       didFetch.current = true;
       client
@@ -232,7 +231,6 @@ export const useNotifiSubscribe: ({
     }
 
     const newData = await client.fetchData();
-    console.log('within the login');
     const results = render(newData);
     setLoading(false);
     return results;
@@ -556,6 +554,7 @@ export const useNotifiSubscribe: ({
     isInitialized: client.isInitialized,
     isTokenExpired: client.isTokenExpired,
     logIn,
+    didFetch,
     subscribe,
     updateTargetGroups,
   };
