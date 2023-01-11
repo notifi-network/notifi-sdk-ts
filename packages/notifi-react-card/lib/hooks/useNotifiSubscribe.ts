@@ -10,7 +10,7 @@ import {
   TransactionInstruction,
 } from '@solana/web3.js';
 import { isValidPhoneNumber } from 'libphonenumber-js';
-import { MutableRefObject, useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 import { useNotifiSubscriptionContext } from '../context';
 import { useNotifiClientContext } from '../context/NotifiClientContext';
