@@ -1,11 +1,8 @@
 import clsx from 'clsx';
-import {
-  useNotifiClientContext,
-  useNotifiForm,
-} from 'notifi-react-card/lib/context';
-import React, { useEffect, useState } from 'react';
+import { useNotifiClientContext } from 'notifi-react-card/lib/context';
+import React, { useCallback, useEffect, useState } from 'react';
 
-import { useNotifiSubscriptionContext } from '../../context/NotifiSubscriptionContext';
+import { useNotifiForm, useNotifiSubscriptionContext } from '../../context/';
 import { useNotifiSubscribe } from '../../hooks';
 import {
   IntercomCardConfigItemV1,
@@ -57,40 +54,92 @@ export const IntercomCard: React.FC<
 }: React.PropsWithChildren<IntercomCardProps>) => {
   const [chatAlertErrorMessage, setChatAlertErrorMessage] =
     useState<string>('');
-  const { instantSubscribe } = useNotifiSubscribe({
-    targetGroupName: 'Intercom',
-  });
+
+  const { instantSubscribe, isAuthenticated, isInitialized } =
+    useNotifiSubscribe({
+      targetGroupName: 'Intercom',
+    });
+
   const {
     alerts,
-    loading,
     intercomCardView,
-    setIntercomCardView,
-    setHasChatAlert,
+    loading,
     setConversationId,
+    setHasChatAlert,
+    setIntercomCardView,
     setUserId,
   } = useNotifiSubscriptionContext();
 
-  const { formErrorMessages, formState } = useNotifiForm();
+  const {
+    formErrorMessages,
+    formState,
+    setEmail: setFormEmail,
+    setTelegram: setFormTelegram,
+  } = useNotifiForm();
 
-  const { phoneNumber, telegram: telegramId, email } = formState;
+  const { email, phoneNumber, telegram: telegramId } = formState;
 
   const {
     email: emailErrorMessage,
-    telegram: telegramErrorMessage,
     phoneNumber: smsErrorMessage,
+    telegram: telegramErrorMessage,
   } = formErrorMessages;
 
   const { client } = useNotifiClientContext();
+
+  const checkForExistingTargetGroups = useCallback((): void => {
+    for (const alert of Object.values(alerts)) {
+      if (!alert) continue;
+      const { targetGroup } = alert;
+
+      const confirmedEmailTarget = targetGroup.emailTargets.find(
+        (email) => email.isConfirmed === true,
+      );
+
+      console.log('target group', targetGroup);
+      if (confirmedEmailTarget?.emailAddress) {
+        console.log(confirmedEmailTarget);
+        setFormEmail(confirmedEmailTarget.emailAddress);
+      }
+
+      const confirmedTelegramTarget = targetGroup.telegramTargets.find(
+        (telegram) => telegram.isConfirmed === true,
+      );
+
+      if (confirmedTelegramTarget?.telegramId) {
+        console.log(confirmedTelegramTarget);
+        setFormTelegram(confirmedTelegramTarget?.telegramId);
+      }
+
+      if (confirmedEmailTarget || confirmedTelegramTarget) {
+        break;
+      }
+
+      const unconfirmedEmailTarget = targetGroup.emailTargets.find(
+        (email) => email.isConfirmed === false,
+      );
+
+      setFormEmail(unconfirmedEmailTarget?.emailAddress ?? '');
+      const unconfirmedTelegramTarget = targetGroup.telegramTargets.find(
+        (telegram) => telegram.isConfirmed === false,
+      );
+
+      setFormTelegram(unconfirmedTelegramTarget?.telegramId ?? '');
+
+      if (unconfirmedEmailTarget || unconfirmedTelegramTarget) {
+        break;
+      }
+    }
+  }, [alerts]);
+
   const alertName = 'NOTIFI_CHAT_MESSAGES';
   useEffect(() => {
-    if (
-      loading ||
-      !client.isInitialized ||
-      intercomCardView.state === 'settingView'
-    ) {
+    if (loading || !isInitialized || intercomCardView.state === 'settingView') {
       return;
     }
+
     const hasAlert = alerts[alertName] !== undefined;
+
     setHasChatAlert(hasAlert);
     if (hasAlert) {
       client.createSupportConversation().then((result) => {
@@ -105,11 +154,13 @@ export const IntercomCard: React.FC<
         });
       });
     } else {
+      console.log('hit');
+      checkForExistingTargetGroups();
       setIntercomCardView({
         state: 'startChatView',
       });
     }
-  }, [alerts, loading, client.isInitialized]);
+  }, [alerts, loading, isInitialized, isAuthenticated]);
 
   const hasErrors =
     emailErrorMessage !== '' ||
@@ -191,9 +242,9 @@ export const IntercomCard: React.FC<
           </div>
           <NotifiIntercomFTUNotificationTargetSection
             data={data}
-            inputs={inputs}
-            inputTextFields={inputLabels}
             inputSeparators={inputSeparators}
+            inputTextFields={inputLabels}
+            inputs={inputs}
           />
           <label
             className={clsx(
@@ -204,9 +255,9 @@ export const IntercomCard: React.FC<
             {chatAlertErrorMessage}
           </label>
           <NotifiStartChatButton
-            onClick={handleStartChatClick}
-            disabled={disabled}
             classNames={classNames?.NotifiStartChatButton}
+            disabled={disabled}
+            onClick={handleStartChatClick}
           />
         </>
       );
@@ -214,8 +265,8 @@ export const IntercomCard: React.FC<
     case 'chatWindowView':
       view = (
         <NotifiIntercomChatWindowContainer
-          chatWindowHeaderContent={companyHeaderContent}
           chatIntroQuestion={chatIntroQuestion}
+          chatWindowHeaderContent={companyHeaderContent}
           classNames={classNames?.NotifiIntercomChatWindowContainer}
         />
       );
@@ -236,9 +287,9 @@ export const IntercomCard: React.FC<
             </div>
             <NotifiIntercomFTUNotificationTargetSection
               data={data}
-              inputs={inputs}
-              inputTextFields={inputLabels}
               inputSeparators={inputSeparators}
+              inputTextFields={inputLabels}
+              inputs={inputs}
             />
             <label
               className={clsx(
@@ -249,9 +300,9 @@ export const IntercomCard: React.FC<
               {chatAlertErrorMessage}
             </label>
             <NotifiStartChatButton
-              onClick={handleStartChatClick}
-              disabled={disabled}
               classNames={classNames?.NotifiStartChatButton}
+              disabled={disabled}
+              onClick={handleStartChatClick}
             />
           </div>
         </>

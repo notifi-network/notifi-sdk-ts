@@ -10,7 +10,7 @@ import {
   TransactionInstruction,
 } from '@solana/web3.js';
 import { isValidPhoneNumber } from 'libphonenumber-js';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useNotifiSubscriptionContext } from '../context';
 import { useNotifiClientContext } from '../context/NotifiClientContext';
@@ -53,6 +53,9 @@ export const useNotifiSubscribe: ({
   resendEmailVerificationLink: () => Promise<string>;
 }> = ({ targetGroupName = 'Default' }: useNotifiSubscribeProps) => {
   const { client } = useNotifiClientContext();
+
+  const [hasCheckedForTargetGroups, setHasCheckedForTargetGroups] =
+    useState<boolean>();
 
   const {
     formState,
@@ -153,6 +156,7 @@ export const useNotifiSubscribe: ({
   // Initial fetch
   const didFetch = useRef(false);
   useEffect(() => {
+    console.log('usEffect');
     if (client.isAuthenticated && !didFetch.current) {
       didFetch.current = true;
       client
@@ -228,7 +232,7 @@ export const useNotifiSubscribe: ({
     }
 
     const newData = await client.fetchData();
-
+    console.log('within the login');
     const results = render(newData);
     setLoading(false);
     return results;
