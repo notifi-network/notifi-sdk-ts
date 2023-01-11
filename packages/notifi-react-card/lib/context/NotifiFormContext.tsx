@@ -11,6 +11,8 @@ export type FormErrorMessages = FormInputs;
 export type NotifiFormData = Readonly<{
   formState: FormInputs;
   formErrorMessages: FormErrorMessages;
+  hasChanges: boolean;
+  setHasChanges: (value: boolean) => void;
 
   setEmail: (value: string) => void;
   setEmailErrorMessage: (value: string) => void;
@@ -32,6 +34,7 @@ export type EditFormType = {
 const NotifiFormContext = createContext<NotifiFormData>({} as NotifiFormData);
 
 export const NotifiFormProvider: React.FC = ({ children }) => {
+  const [hasChanges, setHasChanges] = useState<boolean>(false);
   const [formState, setFormInput] = useState<FormInputs>({
     email: '',
     phoneNumber: '',
@@ -87,6 +90,8 @@ export const NotifiFormProvider: React.FC = ({ children }) => {
   const value = {
     formState,
     formErrorMessages,
+    hasChanges,
+    setHasChanges,
     setEmail,
     setEmailErrorMessage,
     setTelegram,

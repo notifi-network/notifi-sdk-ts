@@ -61,10 +61,10 @@ export const IntercomCard: React.FC<
     });
 
   useEffect(() => {
-    if (isAuthenticated && isInitialized) {
+    if (isAuthenticated && isInitialized && hasChanges === false) {
       checkForExistingTargetGroups();
     }
-  }, [instantSubscribe]);
+  }, [instantSubscribe, isAuthenticated, isInitialized]);
 
   const {
     alerts,
@@ -81,6 +81,7 @@ export const IntercomCard: React.FC<
     formState,
     setEmail: setFormEmail,
     setTelegram: setFormTelegram,
+    hasChanges,
   } = useNotifiForm();
 
   const { email, phoneNumber, telegram: telegramId } = formState;

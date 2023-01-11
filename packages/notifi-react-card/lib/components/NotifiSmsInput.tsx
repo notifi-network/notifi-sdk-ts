@@ -48,6 +48,7 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
     formState,
     setPhoneNumber,
     setPhoneNumberErrorMessage,
+    setHasChanges,
   } = useNotifiForm();
 
   const { phoneNumber: phoneNumberErrorMessage } = formErrorMessages;
@@ -181,6 +182,10 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
                 className="NotifiSmsInput__dropdownInput"
                 type="hidden"
                 value={phoneValues.dialCode}
+                onChange={(e) => {
+                  setHasChanges(true);
+                  handleBaseNumberChange(e);
+                }}
               />
               <svg
                 className="NotifiSmsInput__dropdownSelectIcon"
@@ -209,7 +214,10 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
           disabled={disabled}
           name="notifi-sms"
           onBlur={validateSmsInput}
-          onChange={(e) => handleBaseNumberChange(e)}
+          onChange={(e) => {
+            setHasChanges(true);
+            handleBaseNumberChange(e);
+          }}
           onFocus={() => setPhoneNumberErrorMessage('')}
           placeholder={copy?.placeholder ?? 'Phone Number'}
           type="tel"
