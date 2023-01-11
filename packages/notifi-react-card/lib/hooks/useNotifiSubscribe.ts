@@ -115,8 +115,6 @@ export const useNotifiSubscribe: ({
         setEmailIdThatNeedsConfirmation('');
       }
 
-      console.log('email to set', emailToSet);
-      console.log('target group name', targetGroupName);
       setFormEmail(emailToSet);
       setEmail(emailToSet);
 

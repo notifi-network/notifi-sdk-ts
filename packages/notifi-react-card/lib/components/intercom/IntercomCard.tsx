@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { useNotifiClientContext } from 'notifi-react-card/lib/context';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { useNotifiForm, useNotifiSubscriptionContext } from '../../context/';
 import { useNotifiSubscribe } from '../../hooks';
@@ -55,13 +55,15 @@ export const IntercomCard: React.FC<
   const [chatAlertErrorMessage, setChatAlertErrorMessage] =
     useState<string>('');
 
-  const { instantSubscribe, isAuthenticated, isInitialized, didFetch } =
+  const { instantSubscribe, isAuthenticated, isInitialized } =
     useNotifiSubscribe({
       targetGroupName: 'Intercom',
     });
 
   useEffect(() => {
-    checkForExistingTargetGroups();
+    if (isAuthenticated && isInitialized) {
+      checkForExistingTargetGroups();
+    }
   }, [instantSubscribe]);
 
   const {
@@ -101,7 +103,6 @@ export const IntercomCard: React.FC<
       );
 
       if (confirmedEmailTarget?.emailAddress) {
-        console.log('confirmed email', confirmedEmailTarget);
         setFormEmail(confirmedEmailTarget.emailAddress);
       }
 
@@ -110,7 +111,6 @@ export const IntercomCard: React.FC<
       );
 
       if (confirmedTelegramTarget?.telegramId) {
-        console.log('confirmed telegram target', confirmedTelegramTarget);
         setFormTelegram(confirmedTelegramTarget?.telegramId);
       }
 
@@ -162,21 +162,6 @@ export const IntercomCard: React.FC<
       });
     }
   }, [alerts, loading, isInitialized]);
-
-  // const hasLoaded = useRef(false);
-
-  // useEffect(() => {
-  //   if (
-  //     !hasLoaded.current &&
-  //     didFetch.current === true &&
-  //     isInitialized &&
-  //     isAuthenticated
-  //   ) {
-  //     checkForExistingTargetGroups();
-  //     hasLoaded.current = true;
-  //     return;
-  //   }
-  // }, [didFetch, isInitialized, isAuthenticated]);
 
   const hasErrors =
     emailErrorMessage !== '' ||
