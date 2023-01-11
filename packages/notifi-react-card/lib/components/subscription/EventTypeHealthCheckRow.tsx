@@ -1,3 +1,4 @@
+import { ThresholdDirection } from '@notifi-network/notifi-core';
 import clsx from 'clsx';
 import React, {
   useCallback,
@@ -62,8 +63,10 @@ export const EventTypeHealthCheckRow: React.FC<
 
   const isValueType = config && config.checkRatios.type === 'value';
   let ratios: CheckRatio[] = [];
+  let thresholdDirection: ThresholdDirection = 'below';
   if (isValueType) {
     ratios = config.checkRatios.value;
+    thresholdDirection = ratios[0].type;
   }
 
   useEffect(() => {
@@ -115,6 +118,7 @@ export const EventTypeHealthCheckRow: React.FC<
         alertConfiguration: healthThresholdConfiguration({
           alertFrequency: 'DAILY',
           percentage: initialRatio,
+          thresholdDirection,
         }),
         alertName: alertName,
       }).catch(() => setErrorMessage(UNABLE_TO_SUBSCRIBE));
@@ -138,6 +142,7 @@ export const EventTypeHealthCheckRow: React.FC<
         alertConfiguration: healthThresholdConfiguration({
           alertFrequency: 'DAILY',
           percentage: value,
+          thresholdDirection,
         }),
         alertName: alertName,
       })
@@ -169,6 +174,7 @@ export const EventTypeHealthCheckRow: React.FC<
           alertConfiguration: healthThresholdConfiguration({
             alertFrequency: 'DAILY',
             percentage: ratioNumber / 100,
+            thresholdDirection,
           }),
           alertName: alertName,
         })

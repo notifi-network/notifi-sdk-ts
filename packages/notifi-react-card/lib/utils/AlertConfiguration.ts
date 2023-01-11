@@ -59,9 +59,11 @@ export const directMessageConfiguration = (
 export const healthThresholdConfiguration = ({
   alertFrequency,
   percentage,
+  thresholdDirection,
 }: Readonly<{
   alertFrequency: FilterOptions['alertFrequency'];
   percentage: number;
+  thresholdDirection: FilterOptions['thresholdDirection'];
 }>): AlertConfiguration => {
   return {
     sourceType: 'DIRECT_PUSH',
@@ -69,6 +71,7 @@ export const healthThresholdConfiguration = ({
     filterOptions: {
       alertFrequency,
       threshold: percentage,
+      thresholdDirection,
     },
   };
 };

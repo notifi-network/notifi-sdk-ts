@@ -67,6 +67,7 @@ export const AlertCard = ({
           createdDate={notification.createdDate}
           threshold={detail.threshold ?? ''}
           name={detail.name ?? ''}
+          value={detail.value ?? ''}
         />
       );
     default:
