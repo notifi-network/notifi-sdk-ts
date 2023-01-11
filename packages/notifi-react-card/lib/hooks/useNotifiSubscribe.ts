@@ -42,7 +42,6 @@ export const useNotifiSubscribe: ({
   isAuthenticated: boolean;
   isInitialized: boolean;
   isTokenExpired: boolean;
-  didFetch: MutableRefObject<boolean>;
   logIn: () => Promise<SubscriptionData>;
   subscribe: (
     alertConfigs: Record<string, AlertConfiguration>,
@@ -552,7 +551,6 @@ export const useNotifiSubscribe: ({
     isInitialized: client.isInitialized,
     isTokenExpired: client.isTokenExpired,
     logIn,
-    didFetch,
     subscribe,
     updateTargetGroups,
   };
