@@ -3,9 +3,11 @@ import { isValidPhoneNumber } from 'libphonenumber-js';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { SmsIcon } from '../assets/SmsIcon';
+import { DialCode, countryMap } from '../constants/countryData';
 import { useNotifiForm } from '../context';
 import type { DeepPartialReadonly } from '../utils';
 import { splitPhoneNumber } from '../utils/phoneUtils';
+import NotifiSmsDropdownOption from './NotifiSmsDropdownOption';
 
 export type NotifiSmsInputProps = Readonly<{
   classNames?: DeepPartialReadonly<{
@@ -56,11 +58,17 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
     baseNumber: '',
     dialCode: '+1',
   });
+  const [isShowOption, setShowOption] = useState(false);
 
-  const handleDialCodeChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-      setPhoneValues({ ...phoneValues, dialCode: event.target.value });
-      setPhoneNumber(event.target.value + phoneValues.baseNumber);
+  const handleShowOption = () => {
+    setShowOption(!isShowOption);
+  };
+
+  const handleSelected = useCallback(
+    (dialCode: string) => {
+      setPhoneValues({ ...phoneValues, dialCode });
+      setPhoneNumber(dialCode + phoneValues.baseNumber);
+      setShowOption(false);
     },
     [phoneValues, setPhoneNumber, setPhoneValues],
   );
@@ -93,7 +101,7 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
       });
       return;
     }
-  }, [phoneNumber, handleDialCodeChange]);
+  }, [phoneNumber, handleSelected]);
 
   useEffect(() => {
     if (phoneNumber) {
@@ -109,20 +117,17 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
 
   const countryCodes = useMemo(() => {
     return allowedCountryCodes.map((code) => {
+      const countryData = countryMap[code as DialCode];
       return (
-        <option
-          className={clsx(
-            'NotifiSmsInput__dropdownOption',
-            classNames?.dropdownOption,
-          )}
+        <NotifiSmsDropdownOption
           key={code}
-          value={code}
-        >
-          {code}
-        </option>
+          countryData={countryData}
+          phoneValues={phoneValues}
+          onSelected={(dialCode) => handleSelected(dialCode)}
+        />
       );
     });
-  }, [allowedCountryCodes, classNames]);
+  }, [allowedCountryCodes, classNames, phoneValues.dialCode]);
 
   const validateSmsInput = useCallback(() => {
     if (phoneNumber === '') {
@@ -158,17 +163,42 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
             classNames?.dropdownContainer,
           )}
         >
-          <select
+          <div
             className={clsx(
               'NotifiSmsInput__dropdownSelect',
               intercomSmsDropdownSelectStyle,
               classNames?.dropdownSelectField,
             )}
-            onChange={(e) => handleDialCodeChange(e)}
-            value={phoneValues.dialCode}
           >
-            {countryCodes}
-          </select>
+            <div
+              className="NotifiSmsInput__dropdownSelected"
+              onClick={handleShowOption}
+            >
+              <div className="NotifiSmsInput__dropdownSelectValue">
+                {phoneValues.dialCode}
+              </div>
+              <input
+                className="NotifiSmsInput__dropdownInput"
+                type="hidden"
+                value={phoneValues.dialCode}
+              />
+              <svg
+                className="NotifiSmsInput__dropdownSelectIcon"
+                viewBox="0 0 9 5"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M0.539062 0.916016L4.4974 4.87435L8.45573 0.916016H0.539062Z"
+                  fill="inherit"
+                />
+              </svg>
+            </div>
+            {isShowOption && (
+              <ul className="NotifiSmsInput__dropdownOptionList">
+                {countryCodes}
+              </ul>
+            )}
+          </div>
         </div>
         <input
           className={clsx(
