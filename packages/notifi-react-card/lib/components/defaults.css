@@ -1183,15 +1183,35 @@ input:-webkit-autofill {
   padding: 10px 0;
 }
 
-.TradingPairAlertRow__name {
+.TradingPairAlertRow__textContainer {
+  display: flex;
   flex-grow: 1;
+  flex-direction: column;
+  align-items: stretch;
+  margin-right: 10px;
   margin-bottom: 0 !important;
+}
+
+.TradingPairAlertRow__name {
+  display: block;
+  font-size: 16px;
+  line-height: 20px;
+  color: var(--notifi-font-color);
+}
+
+.TradingPairAlertRow__description {
+  display: block;
+  font-size: 14px;
+  line-height: 18px;
+  color: var(--notifi-secondary-font-color);
 }
 
 .TradingPairAlertRow__deleteIcon {
   width: 24px;
   height: 24px;
   flex-shrink: 0;
+  fill: var(--notifi-font-color);
+  cursor: pointer;
 }
 
 .TradingPairSettingsRow__priceInputContainer {

@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 
-import { BackArrow } from '../../assets/backArrow';
+import { DeleteIcon } from '../../assets/DeleteIcon';
 import { useNotifiSubscriptionContext } from '../../context';
 import { TradingPairEventTypeItem, useNotifiSubscribe } from '../../hooks';
 import { DeepPartialReadonly, tradingPairContiguration } from '../../utils';
@@ -32,9 +32,17 @@ export const EventTypeTradingPairsRow: React.FC<
       return [];
     }
 
-    return Object.keys(alerts).filter((alertName) => {
-      return alertName.indexOf(config.name) >= 0;
-    });
+    return Object.keys(alerts)
+      .filter((alertName) => alertName.indexOf(config.name) >= 0)
+      .sort((a, b) => {
+        const getTime = (alertName: string) => {
+          const [, time] = alertName.split(':;:');
+          const date = new Date(time);
+          return date.getTime();
+        };
+
+        return getTime(a) - getTime(b);
+      });
   }, [alerts, config.name]);
 
   const [showInput, setShowInput] = useState(false);
@@ -69,7 +77,6 @@ export const EventTypeTradingPairsRow: React.FC<
           <TradingPairAlertRow
             key={alertName}
             classNames={classNames?.tradingPairAlertRow}
-            label={alertName}
             alertName={alertName}
           />
         );
@@ -103,28 +110,56 @@ export const EventTypeTradingPairsRow: React.FC<
 export type TradingPairAlertRowProps = Readonly<{
   classNames?: DeepPartialReadonly<{
     container: string;
+    textContainer: string;
     name: string;
+    description: string;
     deleteIcon: string;
   }>;
-  label: string;
   alertName: string;
 }>;
 
 export const TradingPairAlertRow: React.FC<TradingPairAlertRowProps> = ({
   classNames,
-  label,
   alertName,
 }: TradingPairAlertRowProps) => {
   const { instantSubscribe } = useNotifiSubscribe({
     targetGroupName: 'Default',
   });
+
+  const { name, description } = useMemo(() => {
+    // const alertName = `${config.name}:;:${now}:;:${selectedPair}:;:${
+    //   above ? 'above' : 'below'
+    // }:;:${price}`;
+    const [, , name, above, price] = alertName.split(':;:');
+    const description = `Alert me when trade price is ${above}: ${price}`;
+    return {
+      name,
+      description,
+    };
+  }, [alertName]);
+
   return (
     <div
       className={clsx('TradingPairAlertRow__container', classNames?.container)}
     >
-      <span className={clsx('TradingPairAlertRow__name', classNames?.name)}>
-        {label}
-      </span>
+      <div
+        className={clsx(
+          'TradingPairAlertRow__textContainer',
+          classNames?.textContainer,
+        )}
+      >
+        <span className={clsx('TradingPairAlertRow__name', classNames?.name)}>
+          {name}
+        </span>
+        <span
+          className={clsx(
+            'TradingPairAlertRow__description',
+            classNames?.description,
+          )}
+        >
+          {description}
+        </span>
+      </div>
       <div
         className={clsx(
           'TradingPairAlertRow__deleteIcon',
@@ -137,7 +172,7 @@ export const TradingPairAlertRow: React.FC<TradingPairAlertRowProps> = ({
           });
         }}
       >
-        <BackArrow />
+        <DeleteIcon />
       </div>
     </div>
   );
@@ -265,8 +300,8 @@ export const TradingPairSettingsRow: React.FC<TradingPairSettingsRowProps> = ({
             classNames?.priceInput,
           )}
           name="notifi-tradingpair-price"
-          type="text"
-          inputMode="numeric"
+          type="number"
+          inputMode="decimal"
           value={price}
           onChange={(e) => {
             setPrice(e.target.valueAsNumber);
