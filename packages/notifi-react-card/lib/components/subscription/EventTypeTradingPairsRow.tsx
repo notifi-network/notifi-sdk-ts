@@ -148,9 +148,11 @@ export type TradingPairSettingsRowProps = Readonly<{
     radioButton: string;
     container: string;
     dropdown: string;
+    dropdownContainer: string;
     label: string;
     option: string;
     priceInput: string;
+    priceInputContainer: string;
     saveButton: string;
   }>;
   config: TradingPairEventTypeItem;
@@ -186,34 +188,44 @@ export const TradingPairSettingsRow: React.FC<TradingPairSettingsRowProps> = ({
         classNames?.container,
       )}
     >
-      <select
+      <div
         className={clsx(
-          'TradingPairSettingsRow__dropdown',
-          classNames?.dropdown,
+          'TradingPairSettingsRow__dropdownContainer',
+          classNames?.dropdownContainer,
         )}
-        onChange={(e) => setSelectedPair(e.target.value)}
-        value={selectedPair}
       >
-        <option
-          className={clsx('TradingPairSettingsRow__option', classNames?.option)}
-          key="unselected"
-          value={undefined}
+        <select
+          className={clsx(
+            'TradingPairSettingsRow__dropdown',
+            classNames?.dropdown,
+          )}
+          onChange={(e) => setSelectedPair(e.target.value)}
+          value={selectedPair}
         >
-          Select a trading pair
-        </option>
-        {tradingPairs.map((pair) => (
           <option
             className={clsx(
               'TradingPairSettingsRow__option',
               classNames?.option,
             )}
-            key={pair}
-            value={pair}
+            key="unselected"
+            value={undefined}
           >
-            {pair}
+            Select a trading pair
           </option>
-        ))}
-      </select>
+          {tradingPairs.map((pair) => (
+            <option
+              className={clsx(
+                'TradingPairSettingsRow__option',
+                classNames?.option,
+              )}
+              key={pair}
+              value={pair}
+            >
+              {pair}
+            </option>
+          ))}
+        </select>
+      </div>
       <div
         className={clsx(
           'TradingPairSettingsRow__buttonContainer',
@@ -241,23 +253,32 @@ export const TradingPairSettingsRow: React.FC<TradingPairSettingsRowProps> = ({
           Below
         </button>
       </div>
-      <input
+      <div
         className={clsx(
-          'TradingPairSettingsRow__priceInput',
-          classNames?.priceInput,
+          'TradingPairSettingsRow__priceInputContainer',
+          classNames?.priceInputContainer,
         )}
-        name="notifi-tradingpair-price"
-        type="number"
-        value={price}
-        onChange={(e) => {
-          setPrice(e.target.valueAsNumber);
-        }}
-      />
+      >
+        <input
+          className={clsx(
+            'TradingPairSettingsRow__priceInput',
+            classNames?.priceInput,
+          )}
+          name="notifi-tradingpair-price"
+          type="text"
+          inputMode="numeric"
+          value={price}
+          onChange={(e) => {
+            setPrice(e.target.valueAsNumber);
+          }}
+        />
+      </div>
       <button
         className={clsx(
           'TradingPairSettingsRow__saveButton',
           classNames?.saveButton,
         )}
+        disabled={selectedPair === undefined}
         onClick={async () => {
           if (selectedPair !== undefined) {
             const alertConfiguration = tradingPairContiguration({
