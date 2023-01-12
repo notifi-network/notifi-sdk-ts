@@ -364,7 +364,6 @@ input:-webkit-autofill {
   margin-bottom: 0 !important;
 }
 
-
 .EventTypeHealthCheckRow__content {
   font-size: 14px;
   color: var(--notifi-secondary-font-color);
@@ -1049,7 +1048,7 @@ input:-webkit-autofill {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #F6F6FA;
+  background-color: #f6f6fa;
   color: #808080;
   height: 47px;
   width: 65px;
@@ -1059,12 +1058,12 @@ input:-webkit-autofill {
   font-size: 16px;
   font-weight: 500;
   line-height: 20px;
-  border: 1px solid #DAE0E1;
+  border: 1px solid #dae0e1;
   cursor: pointer;
 }
 
 .EventTypeHealthCheckRow__buttonSelected {
-  border: 2px solid var( --notifi-button-color);
+  border: 2px solid var(--notifi-button-color);
   color: #000000;
 }
 

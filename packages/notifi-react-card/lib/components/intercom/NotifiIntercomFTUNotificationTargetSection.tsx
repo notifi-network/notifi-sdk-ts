@@ -24,7 +24,7 @@ export type NotifiIntercomFTUNotificationTargetSectionProps = Readonly<{
     toggle: NotifiToggleProps['classNames'];
   }>;
   data: IntercomCardConfigItemV1;
-  inputs: Record<string, string | undefined>;
+  inputs: Record<string, unknown>;
   inputTextFields?: NotifiInputFieldsText;
   inputSeparators?: NotifiInputSeparators;
 }>;

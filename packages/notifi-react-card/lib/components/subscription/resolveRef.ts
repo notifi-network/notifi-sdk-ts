@@ -35,3 +35,12 @@ export const resolveStringRef = createRefResolver(
     return typeof item === 'string';
   },
 );
+
+export const resolveStringArrayRef = createRefResolver(
+  (item: unknown): item is ReadonlyArray<string> => {
+    return (
+      Array.isArray(item) &&
+      item.every((element) => typeof element === 'string')
+    );
+  },
+);

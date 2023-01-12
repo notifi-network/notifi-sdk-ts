@@ -58,7 +58,7 @@ export type NotifiSubscriptionCardProps = Readonly<{
   inputLabels?: NotifiInputFieldsText;
   darkMode?: boolean;
   cardId: string;
-  inputs?: Record<string, string | undefined>;
+  inputs?: Record<string, unknown>;
   inputSeparators?: NotifiInputSeparators;
 }>;
 

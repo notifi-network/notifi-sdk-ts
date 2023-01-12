@@ -16,7 +16,7 @@ export type FetchedStateCardProps = Readonly<{
   }>;
   card: FetchedState;
   inputDisabled: boolean;
-  inputs: Record<string, string | undefined>;
+  inputs: Record<string, unknown>;
   inputLabels?: NotifiInputFieldsText;
   inputSeparators?: NotifiInputSeparators;
 }>;
