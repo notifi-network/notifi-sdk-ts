@@ -228,7 +228,6 @@ export const useNotifiSubscribe: ({
     }
 
     const newData = await client.fetchData();
-
     const results = render(newData);
     setLoading(false);
     return results;

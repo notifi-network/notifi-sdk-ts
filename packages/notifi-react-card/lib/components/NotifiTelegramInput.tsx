@@ -35,8 +35,13 @@ export const NotifiTelegramInput: React.FC<NotifiTelegramInputProps> = ({
   const { telegramConfirmationUrl, intercomCardView } =
     useNotifiSubscriptionContext();
 
-  const { formState, formErrorMessages, setTelegram, setTelegramErrorMessage } =
-    useNotifiForm();
+  const {
+    formState,
+    formErrorMessages,
+    setTelegram,
+    setTelegramErrorMessage,
+    setHasChanges,
+  } = useNotifiForm();
 
   const { telegram } = formState;
 
@@ -102,6 +107,7 @@ export const NotifiTelegramInput: React.FC<NotifiTelegramInputProps> = ({
           value={telegram}
           onFocus={() => setTelegramErrorMessage('')}
           onChange={(e) => {
+            setHasChanges(true);
             setTelegram(e.target.value ?? '');
           }}
           placeholder={copy?.placeholder ?? 'Telegram ID'}

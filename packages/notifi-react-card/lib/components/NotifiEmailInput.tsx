@@ -36,8 +36,13 @@ export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
   const { emailIdThatNeedsConfirmation, intercomCardView } =
     useNotifiSubscriptionContext();
 
-  const { formState, formErrorMessages, setEmail, setEmailErrorMessage } =
-    useNotifiForm();
+  const {
+    formState,
+    formErrorMessages,
+    setEmail,
+    setEmailErrorMessage,
+    setHasChanges,
+  } = useNotifiForm();
 
   const { email } = formState;
 
@@ -107,6 +112,7 @@ export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
           value={email}
           onFocus={() => setEmailErrorMessage('')}
           onChange={(e) => {
+            setHasChanges(true);
             setEmail(e.target.value ?? '');
           }}
           placeholder={copy?.placeholder ?? 'Email Address'}
