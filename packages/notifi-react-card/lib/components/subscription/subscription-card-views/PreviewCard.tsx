@@ -21,7 +21,7 @@ export type PreviewCardProps = Readonly<{
   };
   data: CardConfigItemV1;
   inputDisabled: boolean;
-  inputs: Record<string, string | undefined>;
+  inputs: Record<string, unknown>;
 }>;
 
 export const PreviewCard: React.FC<PreviewCardProps> = ({

@@ -427,7 +427,7 @@ export class NotifiFrontendClient {
     inputs,
   }: Readonly<{
     eventType: EventTypeItem;
-    inputs: Record<string, string | undefined>;
+    inputs: Record<string, unknown>;
   }>): Promise<Types.AlertFragmentFragment> {
     const [alertsQuery, targetGroupsQuery, sourceAndFilters] =
       await Promise.all([

@@ -22,7 +22,7 @@ export type EventTypeBroadcastRowProps = Readonly<{
   }>;
   disabled: boolean;
   config: BroadcastEventTypeItem;
-  inputs: Record<string, string | undefined>;
+  inputs: Record<string, unknown>;
 }>;
 
 export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({

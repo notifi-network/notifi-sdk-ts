@@ -62,6 +62,7 @@ export type FilterOptions = Partial<{
     | { and: ReadonlyArray<ValueItemConfig> }
     | { or: ReadonlyArray<ValueItemConfig> }
   >;
+  tradingPair: string;
 }>;
 
 /**

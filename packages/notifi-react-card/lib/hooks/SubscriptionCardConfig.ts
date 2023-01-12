@@ -49,11 +49,19 @@ export type LabelEventTypeItem = Readonly<{
   tooltipContent?: string;
 }>;
 
+export type TradingPairEventTypeItem = Readonly<{
+  type: 'tradingPair';
+  name: string;
+  tooltipContent?: string;
+  tradingPairs: ValueOrRef<ReadonlyArray<string>>;
+}>;
+
 export type EventTypeItem =
   | DirectPushEventTypeItem
   | BroadcastEventTypeItem
   | HealthCheckEventTypeItem
-  | LabelEventTypeItem;
+  | LabelEventTypeItem
+  | TradingPairEventTypeItem;
 
 export type EventTypeConfig = ReadonlyArray<EventTypeItem>;
 export type InputType =

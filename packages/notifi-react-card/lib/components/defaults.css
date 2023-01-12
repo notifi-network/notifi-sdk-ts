@@ -364,7 +364,6 @@ input:-webkit-autofill {
   margin-bottom: 0 !important;
 }
 
-
 .EventTypeHealthCheckRow__content {
   font-size: 14px;
   color: var(--notifi-secondary-font-color);
@@ -1154,7 +1153,7 @@ input:-webkit-autofill {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #F6F6FA;
+  background-color: #f6f6fa;
   color: #808080;
   height: 47px;
   width: 65px;
@@ -1164,12 +1163,12 @@ input:-webkit-autofill {
   font-size: 16px;
   font-weight: 500;
   line-height: 20px;
-  border: 1px solid #DAE0E1;
+  border: 1px solid #dae0e1;
   cursor: pointer;
 }
 
 .EventTypeHealthCheckRow__buttonSelected {
-  border: 2px solid var( --notifi-button-color);
+  border: 2px solid var(--notifi-button-color);
   color: #000000;
 }
 
@@ -1183,4 +1182,181 @@ input:-webkit-autofill {
   display: flex;
   flex-direction: row;
   justify-content: center;
+}
+
+.EventTypeTradingPairsRow__container {
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+}
+
+.EventTypeTradingPairsRow__container > * {
+  margin-bottom: 0 !important;
+}
+
+.EventTypeTradingPairsRow__container > *:not(:first-child) {
+  padding-top: 10px;
+}
+
+.EventTypeTradingPairsRow__container > *:not(:last-child) {
+  padding-bottom: 10px;
+  border-bottom: 1px var(--notifi-font-color) solid;
+}
+
+.EventTypeTradingPairsRow__addPair {
+  display: inline-block;
+  align-self: flex-start;
+  cursor: pointer;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--notifi-link-color);
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.EventTypeTradingPairsRow__addPair:disabled {
+  cursor: default;
+  color: var(--notifi-secondary-font-color);
+}
+
+.EventTypeTradingPairsRow__addPair::before {
+  content: '+ ';
+}
+
+.TradingPairSettingsRow__container {
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+  padding: 10px 0;
+}
+
+.TradingPairSettingsRow__dropdownContainer {
+  background-color: var(--notifi-input-background);
+  display: flex;
+  align-items: center;
+  border: 1px var(--notifi-input-border) solid;
+  border-radius: 5px;
+}
+
+.TradingPairSettingsRow__dropdownContainer::after {
+  content: '';
+  width: 1em;
+  height: 1em;
+  margin-right: 10px;
+  background-color: var(--notifi-font-color);
+  clip-path: polygon(90% 30%, 10% 30%, 50% 70%);
+}
+
+.TradingPairSettingsRow__dropdown {
+  box-sizing: border-box;
+  appearance: none;
+  background-color: transparent;
+  border: none;
+  padding: 10px 20px;
+  margin: 0;
+  width: 100%;
+  color: inherit;
+  cursor: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  outline: none;
+}
+
+.TradingPairSettingsRow__radioButton {
+  font-size: 16px;
+  line-height: 20px;
+  padding: 10px 30px;
+  margin-right: 10px;
+  margin-bottom: 0 !important;
+  border-radius: 5px;
+  border: none;
+  color: #000;
+  background-color: var(--notifi-tooltip-background);
+  cursor: pointer;
+}
+.TradingPairSettingsRow__radioSelected {
+  color: var(--notifi-button-text);
+  background-color: var(--notifi-button-color);
+}
+
+.TradingPairAlertRow__container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.TradingPairAlertRow__textContainer {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  align-items: stretch;
+  margin-right: 10px;
+  margin-bottom: 0 !important;
+}
+
+.TradingPairAlertRow__name {
+  display: block;
+  font-size: 16px;
+  line-height: 20px;
+  color: var(--notifi-font-color);
+}
+
+.TradingPairAlertRow__description {
+  display: block;
+  font-size: 14px;
+  line-height: 18px;
+  color: var(--notifi-secondary-font-color);
+}
+
+.TradingPairAlertRow__deleteIcon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  fill: var(--notifi-font-color);
+  cursor: pointer;
+}
+
+.TradingPairSettingsRow__priceInputContainer {
+  background-color: var(--notifi-input-background);
+  display: flex;
+  align-items: center;
+  border: 1px var(--notifi-input-border) solid;
+  border-radius: 5px;
+}
+
+.TradingPairSettingsRow__priceInput {
+  box-sizing: border-box;
+  appearance: none;
+  background-color: transparent;
+  border: none;
+  padding: 10px 20px;
+  margin: 0;
+  width: 100%;
+  color: inherit;
+  cursor: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  outline: none;
+}
+
+.TradingPairSettingsRow__saveButton {
+  font-size: 16px;
+  line-height: 20px;
+  padding: 5px 20px;
+  align-self: flex-start;
+  border-radius: 5px;
+  border: none;
+  color: var(--notifi-button-text);
+  background-color: var(--notifi-button-color);
+  cursor: pointer;
+}
+
+.TradingPairSettingsRow__saveButton:disabled {
+  cursor: default;
+  color: var(--notifi-secondary-font-color);
+  background-color: var(--notifi-button-disabled-color);
 }

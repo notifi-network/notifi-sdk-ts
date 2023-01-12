@@ -14,7 +14,7 @@ import { resolveStringRef } from '../utils/resolveRef';
 const ensureDirectPushSource = async (
   service: Operations.GetSourcesService & Operations.CreateSourceService,
   _eventType: DirectPushEventTypeItem,
-  _inputs: Record<string, string | undefined>,
+  _inputs: Record<string, unknown>,
 ): Promise<Types.SourceFragmentFragment> => {
   const sourcesQuery = await service.getSources({});
   const sources = sourcesQuery.source;
@@ -32,7 +32,7 @@ const ensureDirectPushSource = async (
 const ensureBroadcastSource = async (
   service: Operations.GetSourcesService & Operations.CreateSourceService,
   eventType: BroadcastEventTypeItem,
-  inputs: Record<string, string | undefined>,
+  inputs: Record<string, unknown>,
 ): Promise<Types.SourceFragmentFragment> => {
   const sourcesQuery = await service.getSources({});
   const sources = sourcesQuery.source;
@@ -69,7 +69,7 @@ const ensureBroadcastSource = async (
 const ensurePriceChangeSources = async (
   service: Operations.GetSourcesService & Operations.CreateSourceService,
   eventType: PriceChangeEventTypeItem,
-  _inputs: Record<string, string | undefined>,
+  _inputs: Record<string, unknown>,
 ): Promise<ReadonlyArray<Types.SourceFragmentFragment>> => {
   const sourcesQuery = await service.getSources({});
   const sources = sourcesQuery.source;
@@ -111,7 +111,7 @@ const ensurePriceChangeSources = async (
 const ensureSources = async (
   service: Operations.GetSourcesService & Operations.CreateSourceService,
   eventType: EventTypeItem,
-  inputs: Record<string, string | undefined>,
+  inputs: Record<string, unknown>,
 ): Promise<ReadonlyArray<Types.SourceFragmentFragment>> => {
   switch (eventType.type) {
     case 'directPush': {
@@ -188,7 +188,7 @@ type GetFilterResults = Readonly<{
 const getDirectPushFilter = (
   source: SourceFragmentFragment,
   eventType: DirectPushEventTypeItem,
-  inputs: Record<string, string | undefined>,
+  inputs: Record<string, unknown>,
 ): GetFilterResults => {
   const filter = source.applicableFilters?.find(
     (it) => it?.filterType === 'DIRECT_TENANT_MESSAGES',
@@ -211,7 +211,7 @@ const getDirectPushFilter = (
 const getBroadcastFilter = (
   source: SourceFragmentFragment,
   _eventType: BroadcastEventTypeItem,
-  _inputs: Record<string, string | undefined>,
+  _inputs: Record<string, unknown>,
 ): GetFilterResults => {
   const filter = source.applicableFilters?.find(
     (it) => it?.filterType === 'BROADCAST_MESSAGES',
@@ -229,7 +229,7 @@ const getBroadcastFilter = (
 const getPriceChangeFilter = (
   sources: ReadonlyArray<SourceFragmentFragment>,
   _eventType: PriceChangeEventTypeItem,
-  _inputs: Record<string, string | undefined>,
+  _inputs: Record<string, unknown>,
 ): GetFilterResults => {
   const filter = sources
     .flatMap((it) => it.applicableFilters ?? [])
@@ -251,7 +251,7 @@ export const ensureSourceAndFilters = async (
     Operations.CreateSourceGroupService &
     Operations.UpdateSourceGroupService,
   eventType: EventTypeItem,
-  inputs: Record<string, string | undefined>,
+  inputs: Record<string, unknown>,
 ): Promise<
   Readonly<{
     sourceGroup: Types.SourceGroupFragmentFragment;

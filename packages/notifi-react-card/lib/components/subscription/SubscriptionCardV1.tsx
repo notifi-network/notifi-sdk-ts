@@ -38,7 +38,7 @@ export type SubscriptionCardV1Props = Readonly<{
   };
   inputDisabled: boolean;
   data: CardConfigItemV1;
-  inputs: Record<string, string | undefined>;
+  inputs: Record<string, unknown>;
   inputLabels?: NotifiInputFieldsText;
   inputSeparators?: NotifiInputSeparators;
 }>;

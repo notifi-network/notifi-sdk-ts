@@ -91,6 +91,33 @@ export const hedgeProtocolConfiguration = ({
   };
 };
 
+export const tradingPairContiguration = ({
+  tradingPair,
+  above,
+  price,
+}: Readonly<{
+  tradingPair: string;
+  above: boolean;
+  price: number;
+}>): AlertConfiguration => {
+  return {
+    sourceType: 'DIRECT_PUSH',
+    filterType: 'DIRECT_TENANT_MESSAGES',
+    filterOptions: {
+      tradingPair,
+      values: {
+        and: [
+          {
+            key: 'spotPrice',
+            op: above ? 'gt' : 'lt',
+            value: price.toFixed(8),
+          },
+        ],
+      },
+    },
+  };
+};
+
 export const createConfigurations = (
   eventTypes: EventTypeConfig,
 ): Record<string, AlertConfiguration> => {

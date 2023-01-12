@@ -22,7 +22,7 @@ export type EventTypeDirectPushRowProps = Readonly<{
   }>;
   disabled: boolean;
   config: DirectPushEventTypeItem;
-  inputs: Record<string, string | undefined>;
+  inputs: Record<string, unknown>;
 }>;
 
 export const EventTypeDirectPushRow: React.FC<EventTypeDirectPushRowProps> = ({
