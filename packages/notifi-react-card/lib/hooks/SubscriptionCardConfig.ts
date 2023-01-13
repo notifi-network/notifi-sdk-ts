@@ -1,4 +1,5 @@
 // TODO: Import from library rather than copy / paste
+import { AlertFrequency } from '@notifi-network/notifi-core';
 
 export type ValueOrRef<ValueType> =
   | Readonly<{
@@ -28,6 +29,7 @@ export type HealthCheckEventTypeItem = Readonly<{
   type: 'healthCheck';
   name: string;
   checkRatios: ValueOrRef<CheckRatio[]>;
+  alertFrequency: AlertFrequency;
   tooltipContent?: string;
 }>;
 
