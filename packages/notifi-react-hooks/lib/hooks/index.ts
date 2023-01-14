@@ -22,6 +22,7 @@ import {
 } from '@notifi-network/notifi-core';
 
 import useNotifiClient, { WalletParams } from './useNotifiClient';
+import useNotifiConfig from './useNotifiConfig';
 import { BlockchainEnvironment } from './useNotifiConfig';
 
 export type {
@@ -47,4 +48,4 @@ export type {
   WalletParams,
 };
 
-export { BlockchainEnvironment, GqlError, useNotifiClient };
+export { BlockchainEnvironment, GqlError, useNotifiClient, useNotifiConfig };
