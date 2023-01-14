@@ -1,7 +1,13 @@
 import { ExecutionResult } from 'graphql';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 
-import { TenantUser, TenantUserAlert } from '../types';
+import { TenantConnectedWallet, TenantUserAlert } from '../types';
+
+export type TenantUser = Readonly<{
+  id: string;
+  alerts: ReadonlyArray<TenantUserAlert>;
+  connectedWallets: ReadonlyArray<TenantConnectedWallet>;
+}>;
 
 const QUERY = `
 fragment TenantUserAlertFragment on TenantUserAlert {

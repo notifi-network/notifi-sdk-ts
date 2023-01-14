@@ -1,8 +1,6 @@
-import { TenantConnectedWallet } from './TenantConnectedWallet';
-import { TenantUserAlert } from './TenantUserAlert';
+import type { Types } from '@notifi-network/notifi-graphql';
 
-export type TenantUser = Readonly<{
-  id: string;
-  alerts: ReadonlyArray<TenantUserAlert>;
-  connectedWallets: ReadonlyArray<TenantConnectedWallet>;
-}>;
+export type GetTenantUserResult = Exclude<
+  Types.GetTenantUserQuery['tenantUser'],
+  undefined
+>;

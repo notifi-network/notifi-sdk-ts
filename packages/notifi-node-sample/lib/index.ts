@@ -2,10 +2,8 @@ import { GqlError } from '@notifi-network/notifi-axios-utils';
 import {
   NotifiClient,
   NotifiEnvironment,
-  createAxiosInstance,
+  createGraphQLClient,
 } from '@notifi-network/notifi-node';
-import axios from 'axios';
-import * as AxiosLogger from 'axios-logger';
 import { randomUUID } from 'crypto';
 import type { NextFunction, Request, Response } from 'express';
 import express from 'express';
@@ -48,7 +46,7 @@ const parseEnv = (envString: string | undefined): NotifiEnvironment => {
   return notifiEnv;
 };
 
-const axiosInstanceMiddleware = (
+const graphQlClientMiddleware = (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -57,27 +55,12 @@ const axiosInstanceMiddleware = (
     env?: string;
   }> = req.body ?? {};
   const notifiEnv = parseEnv(body.env);
-  const axiosInstance = createAxiosInstance(axios, notifiEnv);
-  AxiosLogger.setGlobalConfig({
-    data: true,
-    method: true,
-    url: true,
-    status: true,
-    statusText: true,
-  });
-  axiosInstance.interceptors.request.use(
-    AxiosLogger.requestLogger,
-    AxiosLogger.errorLogger,
-  );
-  axiosInstance.interceptors.response.use(
-    AxiosLogger.responseLogger,
-    AxiosLogger.errorLogger,
-  );
-  res.locals.axiosInstance = axiosInstance;
+  const graphqlClient = createGraphQLClient(notifiEnv);
+  res.locals.graphqlClient = graphqlClient;
   next();
 };
 
-app.use(axiosInstanceMiddleware);
+app.use(graphQlClientMiddleware);
 
 app.post('/login', (req, res) => {
   const body: Readonly<{
@@ -99,7 +82,7 @@ app.post('/login', (req, res) => {
     });
   }
 
-  const client = new NotifiClient(res.locals.axiosInstance);
+  const client = new NotifiClient(res.locals.graphqlClient);
 
   return client
     .logIn({ sid, secret })
@@ -183,7 +166,7 @@ app.post('/sendSimpleHealthThreshold', authorizeMiddleware, (req, res) => {
     });
   }
 
-  const client = new NotifiClient(res.locals.axiosInstance);
+  const client = new NotifiClient(res.locals.graphqlClient);
 
   return client
     .sendSimpleHealthThreshold(jwt, {
@@ -222,7 +205,7 @@ app.post('/deleteUserAlert', authorizeMiddleware, (req, res) => {
     });
   }
 
-  const client = new NotifiClient(res.locals.axiosInstance);
+  const client = new NotifiClient(res.locals.graphqlClient);
 
   return client
     .deleteUserAlert(jwt, {
@@ -270,7 +253,7 @@ app.post('/createTenantUser', authorizeMiddleware, (req, res) => {
     });
   }
 
-  const client = new NotifiClient(res.locals.axiosInstance);
+  const client = new NotifiClient(res.locals.graphqlClient);
 
   return client
     .createTenantUser(jwt, {
@@ -323,7 +306,7 @@ app.post('/broadcastMessage', authorizeMiddleware, (req, res) => {
     });
   }
 
-  const client = new NotifiClient(res.locals.axiosInstance);
+  const client = new NotifiClient(res.locals.graphqlClient);
 
   return client
     .sendBroadcastMessage(jwt, {
@@ -377,7 +360,7 @@ app.post('/createDirectPushAlert', authorizeMiddleware, (req, res) => {
     });
   }
 
-  const client = new NotifiClient(res.locals.axiosInstance);
+  const client = new NotifiClient(res.locals.graphqlClient);
 
   return client
     .createDirectPushAlert(jwt, {
@@ -434,7 +417,7 @@ app.post('/sendDirectPush', authorizeMiddleware, (req, res) => {
     });
   }
 
-  const client = new NotifiClient(res.locals.axiosInstance);
+  const client = new NotifiClient(res.locals.graphqlClient);
 
   return client
     .sendDirectPush(jwt, {
