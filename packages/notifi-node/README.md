@@ -14,11 +14,13 @@ import {
   NotifiClient,
   NotifiEnvironment,
   createGraphQLClient,
+  createNotifiService,
 } from '@notifi-network/notifi-node';
 
 const env: NotifiEnvironment = 'Production'; // Or 'Development'
 const gqlClient = createGraphQLClient(env);
-const client = new NotifiClient(gqlClient);
+const notifiService = createNotifiService(gqlClient);
+const client = new NotifiClient(notifiService);
 ```
 
 ### Creating a Tenant User

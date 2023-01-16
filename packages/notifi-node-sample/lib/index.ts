@@ -3,6 +3,7 @@ import {
   NotifiClient,
   NotifiEnvironment,
   createGraphQLClient,
+  createNotifiService,
 } from '@notifi-network/notifi-node';
 import { randomUUID } from 'crypto';
 import type { NextFunction, Request, Response } from 'express';
@@ -46,7 +47,7 @@ const parseEnv = (envString: string | undefined): NotifiEnvironment => {
   return notifiEnv;
 };
 
-const graphQlClientMiddleware = (
+const notifiServiceMiddleware = (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -56,11 +57,12 @@ const graphQlClientMiddleware = (
   }> = req.body ?? {};
   const notifiEnv = parseEnv(body.env);
   const graphqlClient = createGraphQLClient(notifiEnv);
-  res.locals.graphqlClient = graphqlClient;
+  const notifiService = createNotifiService(graphqlClient);
+  res.locals.notifiService = notifiService;
   next();
 };
 
-app.use(graphQlClientMiddleware);
+app.use(notifiServiceMiddleware);
 
 app.post('/login', (req, res) => {
   const body: Readonly<{
@@ -82,7 +84,7 @@ app.post('/login', (req, res) => {
     });
   }
 
-  const client = new NotifiClient(res.locals.graphqlClient);
+  const client = new NotifiClient(res.locals.notifiService);
 
   return client
     .logIn({ sid, secret })
@@ -166,7 +168,7 @@ app.post('/sendSimpleHealthThreshold', authorizeMiddleware, (req, res) => {
     });
   }
 
-  const client = new NotifiClient(res.locals.graphqlClient);
+  const client = new NotifiClient(res.locals.notifiService);
 
   return client
     .sendSimpleHealthThreshold(jwt, {
@@ -205,7 +207,7 @@ app.post('/deleteUserAlert', authorizeMiddleware, (req, res) => {
     });
   }
 
-  const client = new NotifiClient(res.locals.graphqlClient);
+  const client = new NotifiClient(res.locals.notifiService);
 
   return client
     .deleteUserAlert(jwt, {
@@ -253,7 +255,7 @@ app.post('/createTenantUser', authorizeMiddleware, (req, res) => {
     });
   }
 
-  const client = new NotifiClient(res.locals.graphqlClient);
+  const client = new NotifiClient(res.locals.notifiService);
 
   return client
     .createTenantUser(jwt, {
@@ -306,7 +308,7 @@ app.post('/broadcastMessage', authorizeMiddleware, (req, res) => {
     });
   }
 
-  const client = new NotifiClient(res.locals.graphqlClient);
+  const client = new NotifiClient(res.locals.notifiService);
 
   return client
     .sendBroadcastMessage(jwt, {
@@ -360,7 +362,7 @@ app.post('/createDirectPushAlert', authorizeMiddleware, (req, res) => {
     });
   }
 
-  const client = new NotifiClient(res.locals.graphqlClient);
+  const client = new NotifiClient(res.locals.notifiService);
 
   return client
     .createDirectPushAlert(jwt, {
@@ -417,7 +419,7 @@ app.post('/sendDirectPush', authorizeMiddleware, (req, res) => {
     });
   }
 
-  const client = new NotifiClient(res.locals.graphqlClient);
+  const client = new NotifiClient(res.locals.notifiService);
 
   return client
     .sendDirectPush(jwt, {
