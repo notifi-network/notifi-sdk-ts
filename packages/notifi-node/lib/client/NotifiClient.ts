@@ -1,7 +1,4 @@
-import type {
-  Types as Gql,
-  NotifiService,
-} from '@notifi-network/notifi-graphql';
+import { Types as Gql, NotifiService } from '@notifi-network/notifi-graphql';
 
 import type {
   Authorization,
@@ -226,6 +223,214 @@ class NotifiClient {
 
     return connection;
   };
+
+  createTenantBalanceChangeAlert: (
+    jwt: string,
+    params: Readonly<{
+      name: string;
+      webhook: Gql.CreateWebhookTargetMutationVariables;
+    }>,
+  ) => Promise<Gql.AlertFragmentFragment> = async (jwt, { name, webhook }) => {
+    this.service.setJwt(jwt);
+
+    const webhookTarget = await this.createOrUpdateWebhook(webhook);
+
+    const alertsResult = await this.service.getAlerts({});
+    const alerts = alertsResult.alert;
+    if (alerts === undefined) {
+      throw new Error('Failed to fetch existing alerts');
+    }
+
+    const existing = alerts.find((a) => a?.name === name);
+    if (existing !== undefined) {
+      if (existing.filter.filterType !== 'BALANCE') {
+        throw new Error('Incompatible alert filterType.');
+      }
+
+      const updatedTargetGroup = await this.updateTargetGroup(
+        existing.targetGroup,
+        webhookTarget,
+      );
+      return {
+        ...existing,
+        targetGroup: updatedTargetGroup,
+      };
+    }
+
+    const filtersResult = await this.service.getFilters({});
+    const balanceFilter = filtersResult.filter?.find(
+      (f) => f?.filterType === 'BALANCE',
+    );
+    if (balanceFilter === undefined) {
+      throw new Error('Unable to locate BALANCE filter');
+    }
+
+    const sourceGroup = await this.getOrCreateSourceGroup(name);
+    const targetGroup = await this.getOrCreateTargetGroup(name, webhookTarget);
+
+    const createResult = await this.service.createAlert({
+      name,
+      groupName: 'Managed',
+      sourceGroupId: sourceGroup.id,
+      filterId: balanceFilter.id,
+      targetGroupId: targetGroup.id,
+      filterOptions: '{}',
+    });
+    const alert = createResult.createAlert;
+    if (alert === undefined) {
+      throw new Error('Failed to create alert');
+    }
+
+    return alert;
+  };
+
+  getOrCreateSourceGroup: (
+    name: string,
+  ) => Promise<Gql.SourceGroupFragmentFragment> = async (name) => {
+    const getResult = await this.service.getSourceGroups({});
+    if (getResult.sourceGroup === undefined) {
+      throw new Error('Failed to get SourceGroups');
+    }
+    const existing = getResult.sourceGroup.find((sg) => sg?.name === name);
+    if (existing !== undefined) {
+      return existing;
+    }
+
+    const createResult = await this.service.createSourceGroup({
+      name,
+      sourceIds: [],
+    });
+    if (createResult.createSourceGroup === undefined) {
+      throw new Error('Failed to create SourceGroup');
+    }
+
+    return createResult.createSourceGroup;
+  };
+
+  getOrCreateTargetGroup: (
+    name: string,
+    webhookTarget: Gql.WebhookTargetFragmentFragment,
+  ) => Promise<Gql.TargetGroupFragmentFragment> = async (
+    name,
+    webhookTarget,
+  ) => {
+    const getResult = await this.service.getTargetGroups({});
+    if (getResult.targetGroup === undefined) {
+      throw new Error('Failed to get TargetGroups');
+    }
+
+    const existing = getResult.targetGroup.find((tg) => tg?.name === name);
+    if (existing !== undefined) {
+      return this.updateTargetGroup(existing, webhookTarget);
+    }
+
+    const createResult = await this.service.createTargetGroup({
+      name,
+      emailTargetIds: [],
+      smsTargetIds: [],
+      telegramTargetIds: [],
+      webhookTargetIds: [webhookTarget.id],
+    });
+    if (createResult.createTargetGroup === undefined) {
+      throw new Error('Failed to create TargetGroup');
+    }
+
+    return createResult.createTargetGroup;
+  };
+
+  updateTargetGroup: (
+    targetGroup: Gql.TargetGroupFragmentFragment,
+    webhook: Gql.WebhookTargetFragmentFragment,
+  ) => Promise<Gql.TargetGroupFragmentFragment> = async (
+    targetGroup,
+    webhook,
+  ) => {
+    const updateResult = await this.service.updateTargetGroup({
+      id: targetGroup.id,
+      name: targetGroup.name ?? targetGroup.id,
+      emailTargetIds: [],
+      smsTargetIds: [],
+      telegramTargetIds: [],
+      webhookTargetIds: [webhook.id],
+    });
+
+    const updated = updateResult.updateTargetGroup;
+    if (updated === undefined) {
+      throw new Error('Failed to update targetGroup');
+    }
+
+    return updated;
+  };
+
+  createOrUpdateWebhook: (
+    params: Gql.CreateWebhookTargetMutationVariables,
+  ) => Promise<Gql.WebhookTargetFragmentFragment> = async (params) => {
+    const getResult = await this.service.getWebhookTargets({});
+    const existing = getResult.webhookTarget?.find((w) => {
+      return w.url === params.url && w.format === params.format;
+    });
+
+    if (existing === undefined) {
+      const createResult = await this.service.createWebhookTarget(params);
+      const result = createResult.createWebhookTarget;
+      if (result === undefined) {
+        throw new Error('Failed to create webhook target');
+      }
+      return result;
+    }
+
+    const existingHeaders = keyValuePairsToRecord(existing.headers);
+    const desiredHeaders = keyValuePairsToRecord(params.headers);
+    if (areRecordsEqual(existingHeaders, desiredHeaders)) {
+      return existing;
+    }
+
+    const deleteResult = await this.service.deleteWebhookTarget({
+      id: existing.id,
+    });
+    if (deleteResult.deleteWebhookTarget?.id === undefined) {
+      throw new Error('Failed to delete webhook target');
+    }
+
+    const recreateResult = await this.service.createWebhookTarget(params);
+    const recreated = recreateResult.createWebhookTarget;
+    if (recreated === undefined) {
+      throw new Error('Failed to recreate webhook target');
+    }
+    return recreated;
+  };
 }
+
+// Utils
+type Pair = { key: string; value: string };
+const keyValuePairsToRecord = (
+  pairs: undefined | Pair | Pair[],
+): Record<string, string> => {
+  const results: Record<string, string> = {};
+  if (pairs === undefined) {
+    // Nothing to do
+  } else if (Array.isArray(pairs)) {
+    // Set all values
+    pairs.forEach(({ key, value }) => (results[key] = value));
+  } else {
+    // Singular value
+    results[pairs.key] = pairs.value;
+  }
+
+  return results;
+};
+
+const areRecordsEqual = (
+  a: Record<string, string>,
+  b: Record<string, string>,
+): boolean => {
+  const aKeys = Object.keys(a);
+  return (
+    aKeys.length === Object.keys(b).length &&
+    aKeys.every((key) => {
+      return b[key] !== undefined && a[key] === b[key];
+    })
+  );
+};
 
 export default NotifiClient;
