@@ -1,3 +1,4 @@
+export * from './AddSourceToSourceGroup';
 export * from './BeginLogInByTransaction';
 export * from './BroadcastMessage';
 export * from './CompleteLogInByTransaction';
@@ -35,6 +36,7 @@ export * from './GetWebhookTargets';
 export * from './LogInFromDappService';
 export * from './LogInFromServiceService';
 export * from './RefreshAuthorization';
+export * from './RemoveSourceFromSourceGroup';
 export * from './SendMessageService';
 export * from './SendEmailTargetVerificationRequest';
 export * from './UpdateSourceGroup';

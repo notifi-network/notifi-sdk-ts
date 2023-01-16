@@ -443,6 +443,124 @@ app.post('/sendDirectPush', authorizeMiddleware, (req, res) => {
     });
 });
 
+app.post('/addSourceToSourceGroup', authorizeMiddleware, (req, res) => {
+  const jwt: string = res.locals.jwt;
+
+  const {
+    sourceGroupId,
+    sourceId,
+    walletAddress,
+    sourceType,
+  }: Readonly<{
+    sourceGroupId?: string;
+    sourceId?: string;
+    walletAddress?: string;
+    sourceType?: string;
+  }> = req.body ?? {};
+
+  if (sourceGroupId === undefined) {
+    return res.status(400).json({
+      message: 'walletPublicKey is required',
+    });
+  }
+
+  if (sourceId === undefined) {
+    if (walletAddress === undefined || sourceType === undefined) {
+      return res.status(400).json({
+        message:
+          'Both walletAddress and sourceType are required if sourceId is not provided',
+      });
+    }
+  } else if (walletAddress !== undefined || sourceType === undefined) {
+    return res.status(400).json({
+      message: 'Cannot provide both sourceId and walletAddress/sourceType',
+    });
+  }
+
+  const client = new NotifiClient(res.locals.notifiService);
+
+  return client
+    .addSourceToSourceGroup(jwt, {
+      sourceGroupId,
+      sourceId,
+      walletAddress,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      sourceType: sourceType as any,
+    })
+    .then((sourceGroup) => {
+      return res.status(200).json({ sourceGroup });
+    })
+    .catch((e: unknown) => {
+      let message = 'Unknown server error';
+      if (e instanceof GqlError) {
+        message = `${e.message}: ${e.getErrorMessages().join(', ')}`;
+      } else if (e instanceof Error) {
+        message = e.message;
+      }
+
+      return res.status(500).json({ message });
+    });
+});
+
+app.post('/removeSourceFromSourceGroup', authorizeMiddleware, (req, res) => {
+  const jwt: string = res.locals.jwt;
+
+  const {
+    sourceGroupId,
+    sourceId,
+    walletAddress,
+    sourceType,
+  }: Readonly<{
+    sourceGroupId?: string;
+    sourceId?: string;
+    walletAddress?: string;
+    sourceType?: string;
+  }> = req.body ?? {};
+
+  if (sourceGroupId === undefined) {
+    return res.status(400).json({
+      message: 'walletPublicKey is required',
+    });
+  }
+
+  if (sourceId === undefined) {
+    if (walletAddress === undefined || sourceType === undefined) {
+      return res.status(400).json({
+        message:
+          'Both walletAddress and sourceType are required if sourceId is not provided',
+      });
+    }
+  } else if (walletAddress !== undefined || sourceType === undefined) {
+    return res.status(400).json({
+      message: 'Cannot provide both sourceId and walletAddress/sourceType',
+    });
+  }
+
+  const client = new NotifiClient(res.locals.notifiService);
+
+  return client
+    .removeSourceFromSourceGroup(jwt, {
+      sourceGroupId,
+      sourceId,
+      walletAddress,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      sourceType: sourceType as any,
+    })
+    .then((sourceGroup) => {
+      return res.status(200).json({ sourceGroup });
+    })
+    .catch((e: unknown) => {
+      let message = 'Unknown server error';
+      if (e instanceof GqlError) {
+        message = `${e.message}: ${e.getErrorMessages().join(', ')}`;
+      } else if (e instanceof Error) {
+        message = e.message;
+      }
+
+      return res.status(500).json({ message });
+    });
+});
+
 app.listen(port, () => {
   console.log(`Listening on ${port}`);
 });
