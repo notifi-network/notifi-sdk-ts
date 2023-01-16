@@ -7,6 +7,7 @@ import type * as Operations from './operations';
 
 export class NotifiService
   implements
+    Operations.AddSourceToSourceGroupService,
     Operations.BeginLogInByTransactionService,
     Operations.BroadcastMessageService,
     Operations.CompleteLogInByTransactionService,
@@ -43,6 +44,7 @@ export class NotifiService
     Operations.LogInFromDappService,
     Operations.LogInFromServiceService,
     Operations.RefreshAuthorizationService,
+    Operations.RemoveSourceFromSourceGroupService,
     Operations.SendEmailTargetVerificationRequestService,
     Operations.SendMessageService,
     Operations.UpdateSourceGroupService,
@@ -61,6 +63,13 @@ export class NotifiService
 
   async logOut(): Promise<void> {
     this._jwt = undefined;
+  }
+
+  async addSourceToSourceGroup(
+    variables: Generated.AddSourceToSourceGroupMutationVariables,
+  ): Promise<Generated.AddSourceToSourceGroupMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.addSourceToSourceGroup(variables, headers);
   }
 
   async beginLogInByTransaction(
@@ -346,6 +355,13 @@ export class NotifiService
       this._jwt = token;
     }
     return result;
+  }
+
+  async removeSourceFromSourceGroup(
+    variables: Generated.RemoveSourceFromSourceGroupMutationVariables,
+  ): Promise<Generated.RemoveSourceFromSourceGroupMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.removeSourceFromSourceGroup(variables, headers);
   }
 
   async sendEmailTargetVerificationRequest(

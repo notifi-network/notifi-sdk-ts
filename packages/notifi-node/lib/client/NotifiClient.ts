@@ -284,6 +284,32 @@ class NotifiClient {
     return alert;
   };
 
+  addSourceToSourceGroup: (
+    jwt: string,
+    input: Gql.AddSourceToSourceGroupMutationVariables['input'],
+  ) => Promise<Gql.SourceGroupFragmentFragment> = async (jwt, input) => {
+    this.service.setJwt(jwt);
+    const result = await this.service.addSourceToSourceGroup({ input });
+    if (result.addSourceToSourceGroup === undefined) {
+      throw new Error('Failed to add Source to SourceGroup');
+    }
+
+    return result.addSourceToSourceGroup;
+  };
+
+  removeSourceFromSourceGroup: (
+    jwt: string,
+    input: Gql.RemoveSourceFromSourceGroupMutationVariables['input'],
+  ) => Promise<Gql.SourceGroupFragmentFragment> = async (jwt, input) => {
+    this.service.setJwt(jwt);
+    const result = await this.service.removeSourceFromSourceGroup({ input });
+    if (result.removeSourceFromSourceGroup === undefined) {
+      throw new Error('Failed to remove Source from SourceGroup');
+    }
+
+    return result.removeSourceFromSourceGroup;
+  };
+
   getOrCreateSourceGroup: (
     name: string,
   ) => Promise<Gql.SourceGroupFragmentFragment> = async (name) => {
