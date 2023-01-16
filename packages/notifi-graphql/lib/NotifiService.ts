@@ -11,14 +11,17 @@ export class NotifiService
     Operations.BroadcastMessageService,
     Operations.CompleteLogInByTransactionService,
     Operations.CreateAlertService,
+    Operations.CreateDirectPushAlertService,
     Operations.CreateEmailTargetService,
     Operations.CreateSmsTargetService,
     Operations.CreateSourceService,
     Operations.CreateSourceGroupService,
     Operations.CreateTargetGroupService,
     Operations.CreateTelegramTargetService,
+    Operations.CreateTenantUserService,
     Operations.CreateWebhookTargetService,
     Operations.DeleteAlertService,
+    Operations.DeleteUserAlertService,
     Operations.DeleteSourceGroupService,
     Operations.DeleteTargetGroupService,
     Operations.FindTenantConfigService,
@@ -32,11 +35,15 @@ export class NotifiService
     Operations.GetSourcesService,
     Operations.GetTargetGroupsService,
     Operations.GetTelegramTargetsService,
+    Operations.GetTenantConnectedWalletsService,
+    Operations.GetTenantUserService,
     Operations.GetTopicsService,
     Operations.GetWebhookTargetsService,
     Operations.LogInFromDappService,
+    Operations.LogInFromServiceService,
     Operations.RefreshAuthorizationService,
     Operations.SendEmailTargetVerificationRequestService,
+    Operations.SendMessageService,
     Operations.UpdateSourceGroupService,
     Operations.UpdateTargetGroupService
 {
@@ -91,6 +98,13 @@ export class NotifiService
     return this._typedClient.createAlert(variables, headers);
   }
 
+  async createDirectPushAlert(
+    variables: Generated.CreateDirectPushAlertMutationVariables,
+  ): Promise<Generated.CreateDirectPushAlertMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.createDirectPushAlert(variables, headers);
+  }
+
   async createEmailTarget(
     variables: Generated.CreateEmailTargetMutationVariables,
   ): Promise<Generated.CreateEmailTargetMutation> {
@@ -126,6 +140,13 @@ export class NotifiService
     return this._typedClient.createTargetGroup(variables, headers);
   }
 
+  async createTenantUser(
+    variables: Generated.CreateTenantUserMutationVariables,
+  ): Promise<Generated.CreateTenantUserMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.createTenantUser(variables, headers);
+  }
+
   async createWebhookTarget(
     variables: Generated.CreateWebhookTargetMutationVariables,
   ): Promise<Generated.CreateWebhookTargetMutation> {
@@ -145,6 +166,20 @@ export class NotifiService
   ): Promise<Generated.DeleteAlertMutation> {
     const headers = this._requestHeaders();
     return this._typedClient.deleteAlert(variables, headers);
+  }
+
+  async DeleteDirectPushAlert(
+    variables: Generated.DeleteDirectPushAlertMutationVariables,
+  ): Promise<Generated.DeleteDirectPushAlertMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.deleteDirectPushAlert(variables, headers);
+  }
+
+  async deleteUserAlert(
+    variables: Generated.DeleteUserAlertMutationVariables,
+  ): Promise<Generated.DeleteUserAlertMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.deleteUserAlert(variables, headers);
   }
 
   async deleteSourceGroup(
@@ -238,6 +273,20 @@ export class NotifiService
     return this._typedClient.getTelegramTargets(variables, headers);
   }
 
+  async getTenantConnectedWallets(
+    variables: Generated.GetTenantConnectedWalletQueryVariables,
+  ): Promise<Generated.GetTenantConnectedWalletQuery> {
+    const headers = this._requestHeaders();
+    return this._typedClient.getTenantConnectedWallet(variables, headers);
+  }
+
+  async getTenantUser(
+    variables: Generated.GetTenantUserQueryVariables,
+  ): Promise<Generated.GetTenantUserQuery> {
+    const headers = this._requestHeaders();
+    return this._typedClient.getTenantUser(variables, headers);
+  }
+
   async getTopics(
     variables: Generated.GetTopicsQueryVariables,
   ): Promise<Generated.GetTopicsQuery> {
@@ -258,6 +307,18 @@ export class NotifiService
     const headers = this._requestHeaders();
     const result = await this._typedClient.logInFromDapp(variables, headers);
     const token = result.logInFromDapp?.authorization?.token;
+    if (token !== undefined) {
+      this._jwt = token;
+    }
+    return result;
+  }
+
+  async logInFromService(
+    variables: Generated.LogInFromServiceMutationVariables,
+  ): Promise<Generated.LogInFromServiceMutation> {
+    const headers = this._requestHeaders();
+    const result = await this._typedClient.logInFromService(variables, headers);
+    const token = result.logInFromService?.token;
     if (token !== undefined) {
       this._jwt = token;
     }
@@ -287,6 +348,13 @@ export class NotifiService
       variables,
       headers,
     );
+  }
+
+  async sendMessage(
+    variables: Generated.SendMessageMutationVariables,
+  ): Promise<Generated.SendMessageMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.sendMessage(variables, headers);
   }
 
   async updateSourceGroup(

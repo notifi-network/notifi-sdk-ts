@@ -1,27 +1,12 @@
-import type { AxiosPost } from '@notifi-network/notifi-axios-utils';
+import type {
+  Types as Gql,
+  NotifiService,
+} from '@notifi-network/notifi-graphql';
 
-import {
-  createDirectPushAlertImpl,
-  createTenantUserImpl,
-  deleteDirectPushAlertImpl,
-  deleteUserAlertImpl,
-  logInFromServiceImpl,
-  sendMessageImpl,
-} from '../mutations';
-import broadcastMessageImpl, {
-  BroadcastMessageInput,
-} from '../mutations/broadcastMessageImpl';
-import { getTenantConnectedWalletImpl } from '../queries';
-import {
-  GetTenantConnectedWalletInput,
-  GetTenantConnectedWalletResult,
-} from '../queries/getTenantConnectedWalletImpl';
-import getTenantUserImpl, {
-  GetTenantUserInput,
-  GetTenantUserResult,
-} from '../queries/getTenantUserImpl';
 import type {
   Authorization,
+  GetTenantConnectedWalletResult,
+  GetTenantUserResult,
   ManagedAlert,
   SimpleHealthThresholdMessagePayload,
   WalletBlockchain,
@@ -32,16 +17,17 @@ import {
 } from '../types';
 
 class NotifiClient {
-  constructor(private a: AxiosPost) {}
+  constructor(private service: NotifiService) {}
 
   logIn: (
-    params: Readonly<{
-      sid: string;
-      secret: string;
-    }>,
-  ) => Promise<Authorization> = async ({ sid, secret }) => {
-    const input = { sid, secret };
-    return await logInFromServiceImpl(this.a, { input });
+    input: Gql.LogInFromServiceMutationVariables['input'],
+  ) => Promise<Authorization> = async (input) => {
+    const results = await this.service.logInFromService({ input });
+    const authorization = results.logInFromService;
+    if (authorization === undefined) {
+      throw new Error('Log in failed!');
+    }
+    return authorization;
   };
 
   sendSimpleHealthThreshold: (
@@ -64,18 +50,30 @@ class NotifiClient {
       messageType: message.type,
       message: JSON.stringify(message.payload),
     };
-    const result = await sendMessageImpl(this.a, jwt, { input });
-    if (!result) {
+
+    this.service.setJwt(jwt);
+    const result = await this.service.sendMessage({ input });
+    if (!result.sendMessage) {
       throw new Error('Send message failed');
     }
   };
 
   sendBroadcastMessage: (
     jwt: string,
-    params: BroadcastMessageInput,
+    params: Omit<
+      Gql.BroadcastMessageMutationVariables,
+      'timestamp' | 'walletBlockchain' | 'signature'
+    >,
   ) => Promise<void> = async (jwt, params) => {
-    const result = await broadcastMessageImpl(this.a, jwt, params);
-    if (result.id === null) {
+    this.service.setJwt(jwt);
+    const result = await this.service.broadcastMessage({
+      ...params,
+      timestamp: 0,
+      walletBlockchain: 'OFF_CHAIN',
+      signature: '',
+    });
+
+    if (result.broadcastMessage?.id === undefined) {
       throw new Error('broadcast message failed');
     }
   };
@@ -125,82 +123,108 @@ class NotifiClient {
       message: JSON.stringify(directMessage.payload),
     };
 
-    const result = await sendMessageImpl(this.a, jwt, { input });
-    if (!result) {
+    this.service.setJwt(jwt);
+    const result = await this.service.sendMessage({
+      input,
+    });
+
+    if (!result.sendMessage) {
       throw new Error('Send message failed');
     }
   };
 
   deleteUserAlert: (
     jwt: string,
-    params: Readonly<{
-      alertId: string;
-    }>,
-  ) => Promise<string /* AlertID */> = async (jwt, { alertId }) => {
-    await deleteUserAlertImpl(this.a, jwt, { alertId });
-    return alertId;
+    params: Gql.DeleteUserAlertMutationVariables,
+  ) => Promise<string /* AlertID */> = async (jwt, params) => {
+    this.service.setJwt(jwt);
+    const result = await this.service.deleteUserAlert(params);
+    const deletedId = result.deleteUserAlert?.id;
+    if (deletedId === undefined) {
+      throw new Error('Delete user alert failed');
+    }
+    return deletedId;
   };
 
   createTenantUser: (
     jwt: string,
-    params: Readonly<{
-      walletBlockchain: WalletBlockchain;
-      walletPublicKey: string;
-    }>,
-  ) => Promise<string /* UserID */> = async (
-    jwt,
-    { walletBlockchain, walletPublicKey },
-  ) => {
-    const result = await createTenantUserImpl(this.a, jwt, {
-      input: { walletBlockchain, walletPublicKey },
-    });
-
-    return result.id;
-  };
-
-  createDirectPushAlert: (
-    jwt: string,
-    params: Readonly<{
-      userId: string;
-      emailAddresses?: ReadonlyArray<string>;
-      phoneNumbers?: ReadonlyArray<string>;
-    }>,
-  ) => Promise<ManagedAlert> = async (
-    jwt,
-    { userId, emailAddresses, phoneNumbers },
-  ) => {
-    const input = {
-      userId,
-      emailAddresses: emailAddresses ?? [],
-      phoneNumbers: phoneNumbers ?? [],
-    };
-    return await createDirectPushAlertImpl(this.a, jwt, {
+    params: Gql.CreateTenantUserMutationVariables['input'],
+  ) => Promise<string /* UserID */> = async (jwt, input) => {
+    this.service.setJwt(jwt);
+    const result = await this.service.createTenantUser({
       input,
     });
+
+    const userId = result.createTenantUser?.id;
+    if (userId === undefined) {
+      throw new Error('Create tenant user failed');
+    }
+
+    return userId;
   };
 
+  // TODO: Deprecate ManagedAlert type
+  createDirectPushAlert: (
+    jwt: string,
+    params: Gql.CreateDirectPushAlertMutationVariables['input'],
+  ) => Promise<ManagedAlert> = async (jwt, input) => {
+    this.service.setJwt(jwt);
+    const result = await this.service.createDirectPushAlert({
+      input,
+    });
+    const alertId = result.createDirectPushAlert?.id;
+    if (alertId === undefined) {
+      throw new Error('Create direct push alert failed');
+    }
+
+    return {
+      id: alertId,
+    };
+  };
+
+  // TODO: Deprecate ManagedAlert type
   deleteDirectPushAlert: (
     jwt: string,
-    params: Readonly<{
-      alertId: string;
-    }>,
-  ) => Promise<ManagedAlert> = async (jwt, { alertId }) => {
-    const input = { alertId };
-    return await deleteDirectPushAlertImpl(this.a, jwt, { input });
+    params: Gql.DeleteDirectPushAlertMutationVariables['input'],
+  ) => Promise<ManagedAlert> = async (jwt, input) => {
+    this.service.setJwt(jwt);
+    const result = await this.service.DeleteDirectPushAlert({ input });
+    const alertId = result.deleteDirectPushAlert?.id;
+    if (alertId === undefined) {
+      throw new Error('Delete direct push alert failed');
+    }
+
+    return {
+      id: alertId,
+    };
   };
 
   getTenantConnectedWallet: (
     jwt: string,
-    params: GetTenantConnectedWalletInput,
+    params: Gql.GetTenantConnectedWalletQueryVariables,
   ) => Promise<GetTenantConnectedWalletResult> = async (jwt, params) => {
-    return await getTenantConnectedWalletImpl(this.a, jwt, params);
+    this.service.setJwt(jwt);
+    const result = await this.service.getTenantConnectedWallets(params);
+    const connection = result.tenantConnectedWallet;
+    if (connection === undefined) {
+      throw new Error('Get tenant connected wallet failed');
+    }
+
+    return connection;
   };
 
   getTenantUser: (
     jwt: string,
-    params: GetTenantUserInput,
+    params: Gql.GetTenantUserQueryVariables,
   ) => Promise<GetTenantUserResult> = async (jwt, params) => {
-    return await getTenantUserImpl(this.a, jwt, params);
+    this.service.setJwt(jwt);
+    const result = await this.service.getTenantUser(params);
+    const connection = result.tenantUser;
+    if (connection === undefined) {
+      throw new Error('Get tenant user failed');
+    }
+
+    return connection;
   };
 }
 
