@@ -11,7 +11,6 @@ export type MessageGroupProps = Readonly<{
     messageBody: string;
     timeStamp: string;
     sender: string;
-    avatar: string;
   }>;
   messages: ChatMessage[];
   direction: string;
@@ -32,7 +31,6 @@ export const MessageGroup: React.FC<MessageGroupProps> = ({
       )}
     >
       {messages.map((message, index) => {
-        const participantProfile = message.conversationParticipant.profile;
         return (
           <div
             className={clsx(
@@ -43,23 +41,6 @@ export const MessageGroup: React.FC<MessageGroupProps> = ({
             )}
             key={index}
           >
-            {isIncoming ? (
-              <img
-                src={
-                  participantProfile.avatarDataType === 'URL'
-                    ? participantProfile.avatarData
-                    : ''
-                }
-                onError={(e) => {
-                  const img = e.target as HTMLImageElement;
-                  img.style.display = 'none';
-                }}
-                className={clsx(
-                  'NotifiIntercomChatMessage__avatar',
-                  classNames?.avatar,
-                )}
-              />
-            ) : null}
             <div
               key={index}
               className={clsx(
@@ -69,7 +50,7 @@ export const MessageGroup: React.FC<MessageGroupProps> = ({
                 classNames?.messageBody,
               )}
             >
-              {isIncoming ? (
+              {isIncoming && index === 0 ? (
                 <div
                   className={clsx(
                     'NotifiIntercomChatOutgoingMessage__sender',

@@ -941,6 +941,11 @@ input:-webkit-autofill {
   overflow-y: auto;
 }
 
+.NotifiIntercomChatMessageList__groupContainer {
+  display: flex;
+  flex-direction: row;
+}
+
 .ChatWindowIntro__virtualContainer {
   height: 80px;
   color: red;
@@ -1033,7 +1038,6 @@ input:-webkit-autofill {
 .NotifiIntercomChatIncomingMessage__container {
   display: flex;
   flex-direction: row;
-  margin-left: 16px;
 }
 
 .NotifiIntercomChatIncomingMessage__body {
@@ -1111,6 +1115,7 @@ input:-webkit-autofill {
   border-radius: 20px;
   background-color: #f5f6fb;
   height: 34px;
+  margin-left: 16px;
 }
 
 .NotifiExpiredTokenCard__container {

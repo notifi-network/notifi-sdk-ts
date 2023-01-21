@@ -311,7 +311,16 @@ export const IntercomCard: React.FC<
       );
       break;
     case 'loadingView':
-      view = <div>Loading&#8230;</div>;
+      view = (
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+          }}
+        >
+          Loading&#8230;
+        </div>
+      );
       break;
   }
   return <>{view}</>;
