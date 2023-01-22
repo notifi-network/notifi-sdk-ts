@@ -25,6 +25,7 @@ export * from './GetEmailTargets';
 export * from './GetFilters';
 export * from './GetNotificationHistory';
 export * from './GetSmsTargets';
+export * from './GetSourceConnection';
 export * from './GetSourceGroups';
 export * from './GetSources';
 export * from './GetTargetGroups';

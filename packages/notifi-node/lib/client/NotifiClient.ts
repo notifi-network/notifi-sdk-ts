@@ -364,6 +364,27 @@ class NotifiClient {
     return createResult.createTargetGroup;
   };
 
+  getSourceConnection: (
+    jwt: string,
+    variables: Gql.GetSourceConnectionQueryVariables['input'] &
+      Pick<Gql.GetSourceConnectionQueryVariables, 'after' | 'first'>,
+  ) => Promise<Exclude<Gql.GetSourceConnectionQuery['sources'], undefined>> =
+    async (jwt, variables) => {
+      const { after, first, ...input } = variables;
+
+      const result = await this.service.getSourceConnection({
+        after,
+        first,
+        input,
+      });
+
+      if (result.sources === undefined) {
+        throw new Error('Failed to fetch SourceConnection');
+      }
+
+      return result.sources;
+    };
+
   updateTargetGroup: (
     targetGroup: Gql.TargetGroupFragmentFragment,
     webhook: Gql.WebhookTargetFragmentFragment,
