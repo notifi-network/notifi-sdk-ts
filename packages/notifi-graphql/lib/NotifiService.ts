@@ -33,6 +33,7 @@ export class NotifiService
     Operations.GetFiltersService,
     Operations.GetNotificationHistoryService,
     Operations.GetSmsTargetsService,
+    Operations.GetSourceConnectionService,
     Operations.GetSourceGroupsService,
     Operations.GetSourcesService,
     Operations.GetTargetGroupsService,
@@ -260,6 +261,13 @@ export class NotifiService
   ): Promise<Generated.GetSmsTargetsQuery> {
     const headers = this._requestHeaders();
     return this._typedClient.getSmsTargets(variables, headers);
+  }
+
+  async getSourceConnection(
+    variables: Generated.GetSourceConnectionQueryVariables,
+  ): Promise<Generated.GetSourceConnectionQuery> {
+    const headers = this._requestHeaders();
+    return this._typedClient.getSourceConnection(variables, headers);
   }
 
   async getSourceGroups(
