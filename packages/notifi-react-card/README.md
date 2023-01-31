@@ -218,7 +218,7 @@ export const Notifi: React.FC = () => {
 <summary>Integrate Card Component</summary>
 
 ```tsx
-import { useWallet } from '@manahippo/aptos-wallet-adapter';
+import { useWallet } from '@aptos-labs/wallet-adapter-react';
 import {
   NotifiContext,
   NotifiInputSeparators,
@@ -268,9 +268,14 @@ export const Notifi: React.FC = () => {
           nonce: `${nonce}`,
         });
 
-        if (typeof result === 'string') {
-          return result;
-        } else return result.signature;
+        if (result === null) {
+          throw new Error('failed to sign');
+        }
+
+        if (Array.isArray(result.signature)) {
+          return result.signature[0];
+        }
+        return result.signature;
       }}
     >
       <NotifiSubscriptionCard
