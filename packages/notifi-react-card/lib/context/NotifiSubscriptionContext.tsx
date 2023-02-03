@@ -17,7 +17,6 @@ export type NotifiSubscriptionData = Readonly<{
   telegramId: string;
   telegramConfirmationUrl?: string;
   useHardwareWallet: boolean;
-
   cardView: FetchedCardViewState;
   setCardView: React.Dispatch<React.SetStateAction<FetchedCardViewState>>;
   intercomCardView: IntercomCardView;
@@ -82,7 +81,6 @@ export const NotifiSubscriptionContextProvider: React.FC<
     telegramId,
     cardView,
     telegramConfirmationUrl,
-
     emailIdThatNeedsConfirmation,
     isSmsConfirmed,
     setEmailIdThatNeedsConfirmation,
@@ -98,7 +96,6 @@ export const NotifiSubscriptionContextProvider: React.FC<
     setUseHardwareWallet,
     intercomCardView,
     setIntercomCardView,
-
     hasChatAlert,
     setHasChatAlert,
     conversationId,

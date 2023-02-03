@@ -64,6 +64,10 @@ export type WalletParams =
       walletPublicKey: string;
     }>
   | Readonly<{
+      walletBlockchain: 'AVALANCHE';
+      walletPublicKey: string;
+    }>
+  | Readonly<{
       walletBlockchain: 'BINANCE';
       walletPublicKey: string;
     }>
@@ -167,6 +171,7 @@ const signMessage = async ({
     case 'ARBITRUM':
     case 'POLYGON':
     case 'BINANCE':
+    case 'AVALANCHE':
     case 'ETHEREUM': {
       if (signer.walletBlockchain !== params.walletBlockchain) {
         throw new Error('Signer and config have different walletBlockchain');

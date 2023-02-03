@@ -156,7 +156,7 @@ export const NotifiCard: React.FC = () => {
 
 </details>
 
-### EVM (Ethereum, Polygon, Arbitrum, or Binance)
+### EVM (Ethereum, Polygon, Arbitrum, Avalanche or Binance)
 
 <details>
 <summary>Integrate Card Component</summary>

@@ -260,6 +260,10 @@ export type SignMessageParams =
       signMessage: Uint8SignMessageFunction;
     }>
   | Readonly<{
+      walletBlockchain: 'AVALANCHE';
+      signMessage: Uint8SignMessageFunction;
+    }>
+  | Readonly<{
       walletBlockchain: 'BINANCE';
       signMessage: Uint8SignMessageFunction;
     }>
