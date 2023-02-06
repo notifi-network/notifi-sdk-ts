@@ -183,11 +183,16 @@ export const Notifi: React.FC = () => {
     // account is required
     return null;
   }
-
-  const inputLabels = {
-    email: 'Email',
-    sms: 'Text Message',
-    telegram: 'Telegram',
+  
+  const inputLabels: NotifiInputFieldsText = {
+    label: {
+      email: 'Email',
+      sms: 'Text Message',
+      telegram: 'Telegram',
+    },
+    placeholderText: {
+      email: 'Email',
+    },
   };
 
   const inputSeparators: NotifiInputSeparators = {
@@ -253,10 +258,15 @@ export const Notifi: React.FC = () => {
     return null;
   }
 
-  const inputLabels = {
-    email: 'Email',
-    sms: 'Text Message',
-    telegram: 'Telegram',
+  const inputLabels: NotifiInputFieldsText = {
+    label: {
+      email: 'Email',
+      sms: 'Text Message',
+      telegram: 'Telegram',
+    },
+    placeholderText: {
+      email: 'Email',
+    },
   };
 
   const inputSeparators: NotifiInputSeparators = {
@@ -390,13 +400,16 @@ export const Notifi: React.FC = () => {
     // account is required
     return null;
   }
-
-  const inputLabels = {
-    email: 'Email',
-    sms: 'Text Message',
-    telegram: 'Telegram',
+  const inputLabels: NotifiInputFieldsText = {
+    label: {
+      email: 'Email',
+      sms: 'Text Message',
+      telegram: 'Telegram',
+    },
+    placeholderText: {
+      email: 'Email',
+    },
   };
-
   const inputSeparators: NotifiInputSeparators = {
     smsSeparator: {
       content: 'OR',
@@ -511,10 +524,15 @@ export const Notifi: React.FC = () => {
     return null;
   }
 
-  const inputLabels = {
-    email: 'Email',
-    sms: 'Text Message',
-    telegram: 'Telegram',
+  const inputLabels: NotifiInputFieldsText = {
+    label: {
+      email: 'Email',
+      sms: 'Text Message',
+      telegram: 'Telegram',
+    },
+    placeholderText: {
+      email: 'Email',
+    },
   };
 
   const inputSeparators: NotifiInputSeparators = {
