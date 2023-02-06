@@ -15,9 +15,9 @@ We currently support the following blockchains:
 
 # Getting Started
 
-Fill out [this form](https://bit.ly/NotifiDappSetup) to receive a developer login.
+Head over to https://admin.dev.notifi.network and create a new developer/tenant account if you haven't already.
 
-With a developer login, you can generate an API key and customize component configurations.
+With a developer login, you can generate the cardId to use in the examples below.
 
 &nbsp;
 
