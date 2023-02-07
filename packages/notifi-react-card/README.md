@@ -168,6 +168,7 @@ Note: All EVM chains use Ethers. If using a supported EVM-chain, be sure to upda
 import { arrayify } from '@ethersproject/bytes';
 import {
   NotifiContext,
+  NotifiInputFieldsText,
   NotifiInputSeparators,
   NotifiSubscriptionCard,
 } from '@notifi-network/notifi-react-card';
@@ -240,6 +241,7 @@ export const Notifi: React.FC = () => {
 import { useWallet } from '@aptos-labs/wallet-adapter-react';
 import {
   NotifiContext,
+  NotifiInputFieldsText,
   NotifiInputSeparators,
   NotifiSubscriptionCard,
 } from '@notifi-network/notifi-react-card';
@@ -381,6 +383,7 @@ Create a component for the Notifi React Card
 ```tsx
 import {
   NotifiContext,
+  NotifiInputFieldsText,
   NotifiInputSeparators,
   NotifiSubscriptionCard,
 } from '@notifi-network/notifi-react-card';
@@ -509,6 +512,7 @@ Create a component for the Notifi React Card
 ```tsx
 import {
   NotifiContext,
+  NotifiInputFieldsText,
   NotifiInputSeparators,
   NotifiSubscriptionCard,
 } from '@notifi-network/notifi-react-card';
