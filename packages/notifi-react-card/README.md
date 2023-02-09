@@ -152,7 +152,6 @@ export const NotifiCard: React.FC = () => {
     </div>
   );
 };
-
 ```
 
 </details>
@@ -184,7 +183,7 @@ export const Notifi: React.FC = () => {
     // account is required
     return null;
   }
-  
+
   const inputLabels: NotifiInputFieldsText = {
     label: {
       email: 'Email',
@@ -326,6 +325,7 @@ Create a hook that gets all of the account data using Polkadot util libraries
 
 ```tsx
 import { web3Accounts, web3FromAddress } from '@polkadot/extension-dapp';
+import { stringToHex } from '@polkadot/util';
 
 export default function useAcalaWallet() {
   const [account, setAccount] = useState<string | null>(null);
@@ -346,9 +346,10 @@ export default function useAcalaWallet() {
   const signMessage = useCallback(async (address: string, message: string) => {
     const extension = await web3FromAddress(address);
     const signRaw = extension?.signer?.signRaw;
+    const data = stringToHex(message);
     const signMessage = await signRaw({
       address,
-      data: message,
+      data,
       type: 'bytes',
     });
     return signMessage.signature;

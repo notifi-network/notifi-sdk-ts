@@ -28,7 +28,6 @@ import {
   User,
   UserTopic,
 } from '@notifi-network/notifi-core';
-import { stringToHex } from '@polkadot/util';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import ensureSource, {
@@ -202,12 +201,7 @@ const signMessage = async ({
       }
 
       const message = `${SIGNING_MESSAGE}${accountAddress}${dappAddress}${timestamp.toString()}`;
-      const messageBuffer = stringToHex(message);
-
-      const signedBuffer = await signer.signMessage(
-        accountAddress,
-        messageBuffer,
-      );
+      const signedBuffer = await signer.signMessage(accountAddress, message);
       return signedBuffer;
     }
     case 'NEAR': {
