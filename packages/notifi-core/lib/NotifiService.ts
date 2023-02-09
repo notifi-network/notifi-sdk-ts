@@ -18,6 +18,7 @@ export type NotifiService = Operations.BroadcastMessageService &
   Operations.FindTenantConfigService &
   Operations.GetAlertsService &
   Operations.GetConfigurationForDappService &
+  Operations.GetConnectedWalletsService &
   Operations.GetConversationMessagesService &
   Operations.GetEmailTargetsService &
   Operations.GetFiltersService &

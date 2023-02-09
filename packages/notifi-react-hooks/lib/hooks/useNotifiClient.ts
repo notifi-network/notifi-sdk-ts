@@ -119,6 +119,7 @@ const projectData = (internalData: InternalData | null): ClientData | null => {
 
   const {
     alerts,
+    connectedWallets,
     emailTargets,
     filters,
     smsTargets,
@@ -129,6 +130,7 @@ const projectData = (internalData: InternalData | null): ClientData | null => {
 
   return {
     alerts,
+    connectedWallets,
     emailTargets,
     filters,
     smsTargets,

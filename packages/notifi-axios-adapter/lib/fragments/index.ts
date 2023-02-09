@@ -3,6 +3,7 @@ export * from './authorizationFragment';
 export * from './beginLogInByTransactionFragment';
 export * from './clientConfigurationFragment';
 export * from './completeLogInByTransactionFragment';
+export * from './connectedWalletFragment';
 export * from './conversationMessageFragment';
 export * from './convMessagePageInfoFragment';
 export * from './emailTargetFragment';

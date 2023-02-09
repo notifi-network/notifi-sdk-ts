@@ -1,6 +1,7 @@
 export * from './Alert';
 export * from './Authorization';
 export * from './ClientConfiguration';
+export * from './ConnectedWallet';
 export * from './ConversationMessages';
 export * from './EmailTarget';
 export * from './Filter';

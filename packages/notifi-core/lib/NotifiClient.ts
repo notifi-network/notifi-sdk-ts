@@ -1,6 +1,7 @@
 import {
   Alert,
   ClientConfiguration,
+  ConnectedWallet,
   EmailTarget,
   Filter,
   NotificationHistory,
@@ -28,6 +29,7 @@ import { GetConversationMessagesFullInput } from './operations/getConversationMe
 
 export type ClientData = Readonly<{
   alerts: ReadonlyArray<Alert>;
+  connectedWallets: ReadonlyArray<ConnectedWallet>;
   emailTargets: ReadonlyArray<EmailTarget>;
   filters: ReadonlyArray<Filter>;
   smsTargets: ReadonlyArray<SmsTarget>;
