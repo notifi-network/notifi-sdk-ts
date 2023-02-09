@@ -1,15 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import { AcalaWalletContextProvider } from './AcalaWalletContextProvider';
+import App from './App';
 import { SolanaWalletProvider } from './SolanaWalletProvider';
 import './index.css';
-import App from './App';
 
 ReactDOM.render(
   <React.StrictMode>
-    <SolanaWalletProvider>
-      <App />
-    </SolanaWalletProvider>
+    <AcalaWalletContextProvider>
+      <SolanaWalletProvider>
+        <App />
+      </SolanaWalletProvider>
+    </AcalaWalletContextProvider>
   </React.StrictMode>,
   document.getElementById('root'),
 );
