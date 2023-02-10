@@ -32,17 +32,24 @@ export const EventTypeCustomToggleRow: React.FC<
 
   const alertName = useMemo<string>(() => config.name, [config]);
 
+  if (config.selectedUIType !== 'TOGGLE') {
+    return null;
+  }
+
   const alertConfiguration = useMemo<AlertConfiguration>(() => {
     return {
-      sourceType: config.sourceType ?? 'DIRECT_PUSH',
-      createSource: config.sourceAddress,
-      filterType: config.filterType ?? 'DIRECT_TENANT_MESSAGES',
-      filterOptions: config.filterOptions ?? {},
+      sourceType: config.sourceType,
+      filterType: config.filterType,
+      createSource: {
+        address:
+          config.sourceAddress.type === 'value'
+            ? config.sourceAddress.value
+            : '',
+      },
+      filterOptions: {},
     };
   }, [alertName, config]);
   const tooltipContent = config.tooltipContent;
-
-  console.log('alert name', alertName);
 
   useEffect(() => {
     if (loading) {

@@ -432,6 +432,8 @@ export const useNotifiSubscribe: ({
       const existingAlert = data.alerts.find(
         (alert) => alert.name === alertName,
       );
+
+      console.log('existing alertr', existingAlert);
       const deleteThisAlert = async () => {
         if (existingAlert !== undefined && existingAlert.id !== null) {
           await client.deleteAlert({
@@ -441,7 +443,9 @@ export const useNotifiSubscribe: ({
           });
         }
       };
+      console.log('alert config', alertConfiguration);
       if (alertConfiguration === undefined || alertConfiguration === null) {
+        console.log('right above delet this alert');
         await deleteThisAlert();
       } else {
         const {
@@ -453,6 +457,10 @@ export const useNotifiSubscribe: ({
 
         let source: Source | undefined;
         let filter: Filter | undefined;
+
+        console.log('source', source);
+        console.log('createSourceParam', createSourceParam);
+
         if (createSourceParam !== undefined) {
           const existing = data.sources.find(
             (s) =>
@@ -470,16 +478,22 @@ export const useNotifiSubscribe: ({
               name: createSourceParam.address,
               type: sourceType,
             });
+
+            console.log('created source', source);
             filter = source.applicableFilters.find(
               (f) => f.filterType === filterType,
             );
           }
         } else {
+          console.log('create source param not undefined', createSourceParam);
           source = data.sources.find((s) => s.type === sourceType);
           filter = source?.applicableFilters.find(
             (f) => f.filterType === filterType,
           );
         }
+
+        console.log('source', source);
+        console.log('filter', filter);
         if (
           source === undefined ||
           source.id === null ||
@@ -498,10 +512,13 @@ export const useNotifiSubscribe: ({
             phoneNumber: finalPhoneNumber,
             telegramId: finalTelegramId,
           });
+          console.log('line 506', alert);
+
           newResults[alertName] = alert;
         } else {
           // Call serially because of limitations
           await deleteThisAlert();
+
           const alert = await client.createAlert({
             emailAddress: finalEmail,
             filterId: filter.id,
@@ -513,14 +530,20 @@ export const useNotifiSubscribe: ({
             targetGroupName,
             telegramId: finalTelegramId,
           });
+
+          console.log('alert in else', alert);
           newResults[alertName] = alert;
         }
       }
+
+      console.log('new results', newResults);
       if (
         Object.getOwnPropertyNames(newResults).length === 0 &&
         keepSubscriptionData
       ) {
         // We didn't create or update any alert, manually update the targets
+
+        console.log('nothing happened here');
         await client.ensureTargetGroup({
           emailAddress: finalEmail,
           name: targetGroupName,

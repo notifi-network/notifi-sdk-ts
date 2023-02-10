@@ -70,6 +70,9 @@ EventTypeCustomHealthCheckRowProps) => {
   const UNABLE_TO_SUBSCRIBE = 'Unable to subscribe, please try again';
   const INVALID_NUMBER = 'Please enter a valid number';
 
+  if (config.selectedUIType !== 'HEALTH_CHECK') {
+    return null;
+  }
   useEffect(() => {
     if (loading) {
       return;
@@ -120,7 +123,7 @@ EventTypeCustomHealthCheckRowProps) => {
           : parseFloat(customInputRef.current.value);
 
       if (ratioNumber && customValue) {
-        const checkRatios = config.checkRatios ?? [];
+        const checkRatios = config.checkRatios;
 
         const thresholdDirection = checkRatios[0].type ?? 'below';
         instantSubscribe({
