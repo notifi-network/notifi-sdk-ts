@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { DeleteIcon } from '../../assets/DeleteIcon';
 import { useNotifiSubscriptionContext } from '../../context';
 import { TradingPairEventTypeItem, useNotifiSubscribe } from '../../hooks';
-import { DeepPartialReadonly, tradingPairContiguration } from '../../utils';
+import { DeepPartialReadonly, tradingPairConfiguration } from '../../utils';
 import { NotifiTooltip, NotifiTooltipProps } from './NotifiTooltip';
 import { resolveStringArrayRef } from './resolveRef';
 
@@ -316,7 +316,7 @@ export const TradingPairSettingsRow: React.FC<TradingPairSettingsRowProps> = ({
         disabled={selectedPair === undefined}
         onClick={async () => {
           if (selectedPair !== undefined) {
-            const alertConfiguration = tradingPairContiguration({
+            const alertConfiguration = tradingPairConfiguration({
               tradingPair: selectedPair,
               above,
               price,

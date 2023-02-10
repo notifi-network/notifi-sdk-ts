@@ -1,5 +1,9 @@
 // TODO: Import from library rather than copy / paste
-import { AlertFrequency } from '@notifi-network/notifi-core';
+import {
+  AlertFrequency,
+  CreateSourceInput,
+  FilterOptions,
+} from '@notifi-network/notifi-core';
 
 export type ValueOrRef<ValueType> =
   | Readonly<{
@@ -57,13 +61,44 @@ export type TradingPairEventTypeItem = Readonly<{
   tooltipContent?: string;
   tradingPairs: ValueOrRef<ReadonlyArray<string>>;
 }>;
+export type USER_INTERFACE_TYPE = 'TOGGLE' | 'HEALTH_CHECK';
+
+export type NumberTypeSelect = 'percentage' | 'integer';
+
+export type CustomToggleTypeItem = Readonly<{
+  filterOptions: FilterOptions;
+  selectedUIType: 'TOGGLE';
+  filterType: string;
+  sourceAddress: ValueOrRef<string>;
+  sourceType: CreateSourceInput['type'];
+}>;
+
+export type CustomHealthCheckItem = Readonly<{
+  selectedUIType: 'HEALTH_CHECK';
+  healthCheckSubtitle: string;
+  numberType: NumberTypeSelect;
+  alertFrequency: AlertFrequency;
+  checkRatios: CheckRatio[];
+}>;
+
+export type CustomTopicTypeItem = CustomTypeBase &
+  (CustomToggleTypeItem | CustomHealthCheckItem);
+
+export type UserInterfaceType = CustomTopicTypeItem['selectedUIType'];
+
+export type CustomTypeBase = {
+  type: 'custom';
+  name: string;
+  tooltipContent: string;
+};
 
 export type EventTypeItem =
   | DirectPushEventTypeItem
   | BroadcastEventTypeItem
   | HealthCheckEventTypeItem
   | LabelEventTypeItem
-  | TradingPairEventTypeItem;
+  | TradingPairEventTypeItem
+  | CustomTopicTypeItem;
 
 export type EventTypeConfig = ReadonlyArray<EventTypeItem>;
 export type InputType =

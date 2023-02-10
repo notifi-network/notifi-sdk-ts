@@ -432,6 +432,7 @@ export const useNotifiSubscribe: ({
       const existingAlert = data.alerts.find(
         (alert) => alert.name === alertName,
       );
+
       const deleteThisAlert = async () => {
         if (existingAlert !== undefined && existingAlert.id !== null) {
           await client.deleteAlert({
@@ -453,6 +454,7 @@ export const useNotifiSubscribe: ({
 
         let source: Source | undefined;
         let filter: Filter | undefined;
+
         if (createSourceParam !== undefined) {
           const existing = data.sources.find(
             (s) =>
@@ -470,6 +472,7 @@ export const useNotifiSubscribe: ({
               name: createSourceParam.address,
               type: sourceType,
             });
+
             filter = source.applicableFilters.find(
               (f) => f.filterType === filterType,
             );
@@ -480,6 +483,7 @@ export const useNotifiSubscribe: ({
             (f) => f.filterType === filterType,
           );
         }
+
         if (
           source === undefined ||
           source.id === null ||
@@ -498,10 +502,12 @@ export const useNotifiSubscribe: ({
             phoneNumber: finalPhoneNumber,
             telegramId: finalTelegramId,
           });
+
           newResults[alertName] = alert;
         } else {
           // Call serially because of limitations
           await deleteThisAlert();
+
           const alert = await client.createAlert({
             emailAddress: finalEmail,
             filterId: filter.id,
@@ -513,9 +519,11 @@ export const useNotifiSubscribe: ({
             targetGroupName,
             telegramId: finalTelegramId,
           });
+
           newResults[alertName] = alert;
         }
       }
+
       if (
         Object.getOwnPropertyNames(newResults).length === 0 &&
         keepSubscriptionData
