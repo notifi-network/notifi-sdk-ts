@@ -70,6 +70,7 @@ export const useNotifiSubscribe: ({
   const {
     params,
     setAlerts,
+    setConnectedWallets,
     setEmail,
     setIsSmsConfirmed,
     setLoading,
@@ -105,6 +106,7 @@ export const useNotifiSubscribe: ({
       });
 
       setAlerts(alerts);
+      setConnectedWallets(newData?.connectedWallets ?? []);
       const emailTarget = targetGroup?.emailTargets[0] ?? null;
       const emailToSet = emailTarget?.emailAddress ?? '';
 

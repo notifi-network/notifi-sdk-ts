@@ -16,6 +16,7 @@ import {
   CompleteLoginViaTransactionInput,
   CompleteLoginViaTransactionResult,
   ConnectWalletInput,
+  ConnectWalletParams,
   ConnectedWallet,
   CreateSourceInput,
   GetConversationMessagesFullInput,
@@ -759,16 +760,50 @@ const useNotifiClient = (
    * @returns {ConnectedWallet} The resulting final data.
    */
   const connectWallet = useCallback(
-    async (input: ConnectWalletInput): Promise<ConnectedWallet> => {
-      const result = await service.connectWallet(input);
+    async ({
+      accountId,
+      walletPublicKey,
+      signMessageParams,
+      connectWalletConflictResolutionTechnique,
+    }: ConnectWalletParams): Promise<ConnectedWallet> => {
+      const timestamp = Math.round(Date.now() / 1000);
 
-      if (internalData !== null) {
-        const newList = [...internalData.connectedWallets];
-        newList.push(result);
-        setInternalData({ ...internalData, connectedWallets: newList });
+      setLoading(true);
+      try {
+        const signature = await signMessage({
+          params: config,
+          dappAddress,
+          timestamp,
+          signer: signMessageParams,
+        });
+
+        const result = await service.connectWallet({
+          walletPublicKey,
+          accountId,
+          signature,
+          timestamp,
+          connectWalletConflictResolutionTechnique,
+          walletBlockchain: signMessageParams.walletBlockchain,
+        });
+
+        if (internalData !== null) {
+          const newList = [...internalData.connectedWallets];
+          newList.push(result);
+          setInternalData({ ...internalData, connectedWallets: newList });
+        }
+
+        return result;
+      } catch (e: unknown) {
+        setIsAuthenticated(false);
+        if (e instanceof Error) {
+          setError(e);
+        } else {
+          setError(new NotifiClientError(e));
+        }
+        throw e;
+      } finally {
+        setLoading(false);
       }
-
-      return result;
     },
     [service, internalData],
   );

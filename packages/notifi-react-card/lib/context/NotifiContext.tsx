@@ -2,6 +2,7 @@ import {
   AcalaSignMessageFunction,
   AptosSignMessageFunction,
   NotifiEnvironment,
+  SignMessageParams,
   Uint8SignMessageFunction,
 } from '@notifi-network/notifi-react-hooks';
 import type { WalletContextState } from '@solana/wallet-adapter-react';
@@ -66,6 +67,15 @@ export type AvalancheParams = Readonly<{
   signMessage: Uint8SignMessageFunction;
 }>;
 
+export type OwnedWalletParams = Readonly<{
+  signMessageParams: SignMessageParams;
+  walletPublicKey: string;
+  accountId: string;
+}>;
+export type MultiWalletParams = Readonly<{
+  ownedWallets: ReadonlyArray<OwnedWalletParams>;
+}>;
+
 type WalletParams =
   | SolanaParams
   | EthereumParams
@@ -83,6 +93,7 @@ export type NotifiParams = Readonly<{
   dappAddress: string;
   env: NotifiEnvironment;
   keepSubscriptionData?: boolean;
+  multiWallet?: MultiWalletParams;
 }> &
   WalletParams;
 

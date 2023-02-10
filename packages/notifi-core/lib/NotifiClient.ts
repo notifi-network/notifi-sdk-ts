@@ -283,6 +283,13 @@ export type SignMessageParams =
       signMessage: Uint8SignMessageFunction;
     }>;
 
+export type ConnectWalletParams = Readonly<{
+  signMessageParams: SignMessageParams;
+  walletPublicKey: string;
+  accountId: string;
+  connectWalletConflictResolutionTechnique: ConnectWalletInput['connectWalletConflictResolutionTechnique'];
+}>;
+
 export type NotifiClient = Readonly<{
   beginLoginViaTransaction: () => Promise<BeginLoginViaTransactionResult>;
   broadcastMessage: (
@@ -295,7 +302,7 @@ export type NotifiClient = Readonly<{
   fetchData: () => Promise<ClientData>;
   logIn: (signer: SignMessageParams) => Promise<User>;
   logOut: () => Promise<void>;
-  connectWallet: (input: ConnectWalletInput) => Promise<ConnectedWallet>;
+  connectWallet: (input: ConnectWalletParams) => Promise<ConnectedWallet>;
   createAlert: (input: ClientCreateAlertInput) => Promise<Alert>;
   createSource: (input: CreateSourceInput) => Promise<Source>;
   createSupportConversation: () => Promise<SupportConversation>;

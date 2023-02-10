@@ -3,6 +3,7 @@ import { DeepPartialReadonly } from 'notifi-react-card/lib/utils';
 import React from 'react';
 
 import { CardConfigItemV1 } from '../../../hooks';
+import { WalletList } from '../../WalletList';
 import {
   NotifiSubscribeButton,
   NotifiSubscribeButtonProps,
@@ -41,6 +42,8 @@ export const EditCardView: React.FC<EditCardViewProps> = ({
     <div
       className={clsx('NotifiInputContainer', classNames?.NotifiInputContainer)}
     >
+      <WalletList />
+
       <AlertListPreview eventTypes={data.eventTypes} />
 
       <InputFields

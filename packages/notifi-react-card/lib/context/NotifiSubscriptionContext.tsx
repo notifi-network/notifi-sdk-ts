@@ -1,4 +1,4 @@
-import type { Alert } from '@notifi-network/notifi-core';
+import type { Alert, ConnectedWallet } from '@notifi-network/notifi-core';
 import { PropsWithChildren } from 'react';
 import React, { createContext, useContext, useState } from 'react';
 
@@ -11,6 +11,7 @@ import { NotifiParams } from './NotifiContext';
 
 export type NotifiSubscriptionData = Readonly<{
   alerts: Readonly<Record<string, Alert | undefined>>;
+  connectedWallets: ReadonlyArray<ConnectedWallet>;
   email: string;
   params: NotifiParams;
   phoneNumber: string;
@@ -22,6 +23,9 @@ export type NotifiSubscriptionData = Readonly<{
   intercomCardView: IntercomCardView;
   setIntercomCardView: React.Dispatch<React.SetStateAction<IntercomCardView>>;
   setAlerts: (alerts: Record<string, Alert | undefined>) => void;
+  setConnectedWallets: (
+    connectedWallets: ReadonlyArray<ConnectedWallet>,
+  ) => void;
   setEmail: (email: string) => void;
   setPhoneNumber: (phoneNumber: string) => void;
   setTelegramId: (telegramId: string) => void;
@@ -65,6 +69,9 @@ export const NotifiSubscriptionContextProvider: React.FC<
   >(undefined);
 
   const [alerts, setAlerts] = useState<Record<string, Alert | undefined>>({});
+  const [connectedWallets, setConnectedWallets] = useState<
+    ReadonlyArray<ConnectedWallet>
+  >([]);
   const [useHardwareWallet, setUseHardwareWallet] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
 
@@ -74,6 +81,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
 
   const value = {
     alerts,
+    connectedWallets,
     email,
     loading,
     params,
@@ -87,6 +95,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
     setIsSmsConfirmed,
     useHardwareWallet,
     setAlerts,
+    setConnectedWallets,
     setCardView,
     setEmail,
     setLoading,
