@@ -46,7 +46,7 @@ export const EventTypeCustomToggleRow: React.FC<
             ? config.sourceAddress.value
             : '',
       },
-      filterOptions: {},
+      filterOptions: config.filterOptions ?? {},
     };
   }, [alertName, config]);
   const tooltipContent = config.tooltipContent;

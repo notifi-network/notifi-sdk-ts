@@ -1,5 +1,9 @@
 // TODO: Import from library rather than copy / paste
-import { AlertFrequency, CreateSourceInput } from '@notifi-network/notifi-core';
+import {
+  AlertFrequency,
+  CreateSourceInput,
+  FilterOptions,
+} from '@notifi-network/notifi-core';
 
 export type ValueOrRef<ValueType> =
   | Readonly<{
@@ -62,7 +66,7 @@ export type USER_INTERFACE_TYPE = 'TOGGLE' | 'HEALTH_CHECK';
 export type NumberTypeSelect = 'percentage' | 'integer';
 
 export type CustomToggleTypeItem = Readonly<{
-  filterOptions: string;
+  filterOptions: FilterOptions;
   selectedUIType: 'TOGGLE';
   filterType: string;
   sourceAddress: ValueOrRef<string>;
