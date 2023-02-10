@@ -65,7 +65,6 @@ export const EventTypeCustomToggleRow: React.FC<
       return;
     }
 
-    console.log('alert config', alertConfiguration, 'alertName', alertName);
     if (!enabled) {
       instantSubscribe({
         alertConfiguration: alertConfiguration,

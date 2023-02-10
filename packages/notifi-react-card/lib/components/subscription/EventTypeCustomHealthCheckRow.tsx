@@ -43,12 +43,7 @@ const getParsedInputNumber = (input: string): number | null => {
 
 export const EventTypeCustomHealthCheckRow: React.FC<
   EventTypeCustomHealthCheckRowProps
-> = ({
-  classNames,
-  config,
-  disabled,
-}: // inputs,
-EventTypeCustomHealthCheckRowProps) => {
+> = ({ classNames, config, disabled }: EventTypeCustomHealthCheckRowProps) => {
   const { alerts, loading } = useNotifiSubscriptionContext();
   const { instantSubscribe } = useNotifiSubscribe({
     targetGroupName: 'Default',

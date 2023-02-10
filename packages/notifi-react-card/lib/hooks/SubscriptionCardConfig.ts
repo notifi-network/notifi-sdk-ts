@@ -61,23 +61,6 @@ export type USER_INTERFACE_TYPE = 'TOGGLE' | 'HEALTH_CHECK';
 
 export type NumberTypeSelect = 'percentage' | 'integer';
 
-// export type CustomTopicTypeItem = Readonly<{
-//   type: 'custom';
-//   name: string;
-//   selectedUIType?: USER_INTERFACE_TYPE;
-//   sourceName?: string;
-//   sourceType?: CreateSourceInput['type'];
-//   filterType?: string;
-//   filterOptions?: string;
-//   tooltipContent: string;
-//   sourceAddress?: ValueOrRef<string>;
-//   // health check data
-//   healthCheckSubtitle?: string;
-//   numberType?: NumberTypeSelect;
-//   alertFrequency?: AlertFrequency;
-//   checkRatios?: CheckRatio[];
-// }>;
-
 export type CustomToggleTypeItem = Readonly<{
   filterOptions: string;
   selectedUIType: 'TOGGLE';
