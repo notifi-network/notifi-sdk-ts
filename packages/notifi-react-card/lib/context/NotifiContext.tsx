@@ -75,7 +75,8 @@ type WalletParams =
   | BinanceParams
   | AptosParams
   | AcalaParams
-  | NearParams;
+  | NearParams
+  | AvalancheParams;
 
 export type NotifiParams = Readonly<{
   alertConfigurations?: Record<string, AlertConfiguration | null>;
