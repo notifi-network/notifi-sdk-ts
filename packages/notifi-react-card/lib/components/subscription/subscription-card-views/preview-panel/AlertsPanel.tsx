@@ -6,6 +6,11 @@ import {
   EventTypeBroadcastRowProps,
 } from '../../EventTypeBroadcastRow';
 import {
+  EventTypeCustomHealthCheckRow,
+  EventTypeCustomHealthCheckRowProps,
+} from '../../EventTypeCustomHealthCheckRow';
+import { EventTypeCustomToggleRow } from '../../EventTypeCustomToggleRow';
+import {
   EventTypeDirectPushRow,
   EventTypeDirectPushRowProps,
 } from '../../EventTypeDirectPushRow';
@@ -31,6 +36,7 @@ export type AlertsPanelProps = Readonly<{
   inputDisabled: boolean;
   classNames?: Readonly<{
     EventTypeBroadcastRow?: EventTypeBroadcastRowProps['classNames'];
+    EventTypeCustomHealthCheckRow?: EventTypeCustomHealthCheckRowProps['classNames'];
     EventTypeDirectPushRow?: EventTypeDirectPushRowProps['classNames'];
     EventTypeHealthCheckRow?: EventTypeHealthCheckRowProps['classNames'];
     EventTypeLabelRow?: EventTypeLabelRowProps['classNames'];
@@ -59,6 +65,25 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
                 inputs={inputs}
               />
             );
+          case 'custom': {
+            return eventType.selectedUIType === 'HEALTH_CHECK' ? (
+              <EventTypeCustomHealthCheckRow
+                key={eventType.name}
+                classNames={classNames?.EventTypeCustomHealthCheckRow}
+                disabled={inputDisabled}
+                config={eventType}
+                inputs={inputs}
+              />
+            ) : (
+              <EventTypeCustomToggleRow
+                disabled={inputDisabled}
+                config={eventType}
+                classNames={classNames?.EventTypeCustomHealthCheckRow}
+                inputs={inputs}
+              />
+            );
+          }
+
           case 'directPush':
             return (
               <EventTypeDirectPushRow

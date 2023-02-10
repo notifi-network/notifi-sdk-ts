@@ -91,7 +91,7 @@ export const hedgeProtocolConfiguration = ({
   };
 };
 
-export const tradingPairContiguration = ({
+export const tradingPairConfiguration = ({
   tradingPair,
   above,
   price,

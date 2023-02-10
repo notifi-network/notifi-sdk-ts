@@ -340,7 +340,9 @@ input:-webkit-autofill {
 .EventTypeLabelRow__container,
 .EventTypeBroadcastRow__container,
 .EventTypeDirectPushRow__container,
+.EventTypeCustomHealthCheckRow__container,
 .EventTypeHealthCheckRow__container,
+.EventTypeCustomToggleRow__container,
 .BrowserAlertToggle__container {
   display: flex;
   flex-direction: row;
@@ -348,7 +350,10 @@ input:-webkit-autofill {
 
 .EventTypeBroadcastRow__label,
 .EventTypeDirectPushRow__label,
+.EventTypeCustomToggleRow_label,
 .EventTypeHealthCheckRow__label,
+.EventTypeCustomHealthCheckRow__label,
+.EventTypeCustomToggleRow__label,
 .BrowserAlertToggle__label {
   display: flex;
   flex-direction: row;
@@ -1186,7 +1191,7 @@ input:-webkit-autofill {
 .EventTypeHealthCheckRow__buttonContainer {
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: start;
 }
 
 .EventTypeTradingPairsRow__container {
