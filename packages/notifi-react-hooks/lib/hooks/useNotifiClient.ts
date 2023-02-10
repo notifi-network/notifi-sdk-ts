@@ -15,6 +15,8 @@ import {
   ClientUpdateAlertInput,
   CompleteLoginViaTransactionInput,
   CompleteLoginViaTransactionResult,
+  ConnectWalletInput,
+  ConnectedWallet,
   CreateSourceInput,
   GetConversationMessagesFullInput,
   GetNotificationHistoryInput,
@@ -748,6 +750,30 @@ const useNotifiClient = (
   );
 
   /**
+   * Connect a Wallet
+   *
+   * @remarks
+   * Use this to associate another wallet to this Notifi account
+   *
+   * @param {ConnectWalletInput} input - Input params for connecting a wallet
+   * @returns {ConnectedWallet} The resulting final data.
+   */
+  const connectWallet = useCallback(
+    async (input: ConnectWalletInput): Promise<ConnectedWallet> => {
+      const result = await service.connectWallet(input);
+
+      if (internalData !== null) {
+        const newList = [...internalData.connectedWallets];
+        newList.push(result);
+        setInternalData({ ...internalData, connectedWallets: newList });
+      }
+
+      return result;
+    },
+    [service, internalData],
+  );
+
+  /**
    * Create an Alert
    *
    * @remarks
@@ -1382,6 +1408,7 @@ const useNotifiClient = (
     beginLoginViaTransaction,
     broadcastMessage,
     completeLoginViaTransaction,
+    connectWallet,
     logIn,
     logOut,
     createAlert,

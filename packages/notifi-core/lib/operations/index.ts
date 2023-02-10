@@ -1,6 +1,7 @@
 export * from './BeginLogInByTransaction';
 export * from './CompleteLogInByTransaction';
 export * from './BroadcastMessage';
+export * from './ConnectWallet';
 export * from './CreateAlert';
 export * from './CreateSource';
 export * from './CreateSupportConversation';

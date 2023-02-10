@@ -17,4 +17,5 @@ export * from './TelegramTarget';
 export * from './TenantConfig';
 export * from './UserTopic';
 export * from './User';
+export * from './WalletBlockchain';
 export * from './WebhookTarget';

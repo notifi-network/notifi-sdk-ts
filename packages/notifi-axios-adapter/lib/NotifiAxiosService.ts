@@ -4,6 +4,7 @@ import axios from 'axios';
 import beginLogInByTransactionImpl from './mutations/beginLogInByTransaction';
 import broadcastMessageImpl from './mutations/broadcastMessageImpl';
 import completeLogInByTransactionImpl from './mutations/completeLogInByTransaction';
+import connectWalletImpl from './mutations/connectWalletImpl';
 import createAlertImpl from './mutations/createAlertImpl';
 import createEmailTargetImpl from './mutations/createEmailTargetImpl';
 import createSmsTargetImpl from './mutations/createSmsTargetImpl';
@@ -46,6 +47,7 @@ export class NotifiAxiosService implements NotifiService {
   beginLogInByTransaction: NotifiService['beginLogInByTransaction'];
   broadcastMessage: NotifiService['broadcastMessage'];
   completeLogInByTransaction: NotifiService['completeLogInByTransaction'];
+  connectWallet: NotifiService['connectWallet'];
   createAlert: NotifiService['createAlert'];
   createEmailTarget: NotifiService['createEmailTarget'];
   createSmsTarget: NotifiService['createSmsTarget'];
@@ -107,6 +109,7 @@ export class NotifiAxiosService implements NotifiService {
       null,
       a,
     );
+    this.connectWallet = connectWalletImpl.bind(null, a);
     this.createAlert = createAlertImpl.bind(null, a);
     this.createEmailTarget = createEmailTargetImpl.bind(null, a);
     this.createSmsTarget = createSmsTargetImpl.bind(null, a);

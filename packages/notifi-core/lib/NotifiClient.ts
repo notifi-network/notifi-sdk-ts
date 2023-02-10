@@ -19,6 +19,7 @@ import {
 } from './models/ConversationMessages';
 import { SupportConversation } from './models/SupportConversation';
 import {
+  ConnectWalletInput,
   CreateSourceInput,
   CreateWebhookTargetInput,
   FindTenantConfigInput,
@@ -294,6 +295,7 @@ export type NotifiClient = Readonly<{
   fetchData: () => Promise<ClientData>;
   logIn: (signer: SignMessageParams) => Promise<User>;
   logOut: () => Promise<void>;
+  connectWallet: (input: ConnectWalletInput) => Promise<ConnectedWallet>;
   createAlert: (input: ClientCreateAlertInput) => Promise<Alert>;
   createSource: (input: CreateSourceInput) => Promise<Source>;
   createSupportConversation: () => Promise<SupportConversation>;

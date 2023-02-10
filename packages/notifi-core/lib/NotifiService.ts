@@ -3,6 +3,7 @@ import * as Operations from './operations';
 export type NotifiService = Operations.BroadcastMessageService &
   Operations.BeginLogInByTransactionService &
   Operations.CompleteLogInByTransactionService &
+  Operations.ConnectWalletService &
   Operations.CreateAlertService &
   Operations.CreateEmailTargetService &
   Operations.CreateSmsTargetService &
