@@ -33,7 +33,7 @@ mutation connectWallet(
     accountId: $accountId
     connectWalletConflictResolutionTechnique: $connectWalletConflictResolutionTechnique
   }, signature: $signature) {
-    ...userFragment
+    ...connectedWalletFragment
   }
 }
 `.trim();
