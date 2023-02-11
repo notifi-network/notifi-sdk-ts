@@ -1,12 +1,12 @@
 import React from 'react';
 
 import './App.css';
-import { NotifiCard } from './NotifiCard/NotifiCard';
+import { MultiWalletTest } from './MultiWalletTest';
 
 function App() {
   return (
     <div className="App">
-      <NotifiCard />
+      <MultiWalletTest />
     </div>
   );
 }

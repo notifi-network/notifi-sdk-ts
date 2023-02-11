@@ -65,6 +65,33 @@ const getWalletInjection = async (
   }
 };
 
+export const AcalaConnectButton: React.FC = () => {
+  const { account, connected, connectWallet, disconnectWallet } =
+    useAcalaWallet();
+
+  if (account !== null && connected) {
+    return (
+      <button
+        onClick={() => {
+          disconnectWallet();
+        }}
+      >
+        {account}: Disconnect
+      </button>
+    );
+  } else {
+    return (
+      <button
+        onClick={async () => {
+          await connectWallet('PolkadotJs');
+        }}
+      >
+        Connect Acala
+      </button>
+    );
+  }
+};
+
 export const AcalaWalletContext = React.createContext<AcalaWalletContextProps>(
   {} as AcalaWalletContextProps,
 );
@@ -218,6 +245,7 @@ export const AcalaWalletContextProvider: FC = ({ children }) => {
 
   return (
     <AcalaWalletContext.Provider value={values}>
+      <AcalaConnectButton />
       {children}
     </AcalaWalletContext.Provider>
   );
