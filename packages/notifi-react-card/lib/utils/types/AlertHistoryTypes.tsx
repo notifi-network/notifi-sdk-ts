@@ -9,6 +9,7 @@ enum WalletBlockchain {
   ACALA = 'ACALA',
   APTOS = 'APTOS',
   ARBITRUM = 'ARBITRUM',
+  AVALANCHE = 'AVALANCHE',
   BINANCE = 'BINANCE',
   ETHEREUM = 'ETHEREUM',
   NEAR = 'NEAR',

@@ -60,15 +60,23 @@ export type NearParams = Readonly<{
   signMessage: Uint8SignMessageFunction;
 }>;
 
+export type AvalancheParams = Readonly<{
+  walletBlockchain: 'AVALANCHE';
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
 type WalletParams =
   | SolanaParams
   | EthereumParams
   | PolygonParams
+  | AvalancheParams
   | ArbitrumParams
   | BinanceParams
   | AptosParams
   | AcalaParams
-  | NearParams;
+  | NearParams
+  | AvalancheParams;
 
 export type NotifiParams = Readonly<{
   alertConfigurations?: Record<string, AlertConfiguration | null>;
