@@ -21,7 +21,7 @@ export const ConnectWalletRow: React.FC<ConnectWalletRowProps> = ({
         it.address === accountId &&
         it.walletBlockchain === signMessageParams.walletBlockchain,
     );
-  }, []);
+  }, [connectedWallets, accountId, signMessageParams.walletBlockchain]);
 
   if (isConnected) {
     return <div>{walletPublicKey} is connected</div>;
