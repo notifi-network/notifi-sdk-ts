@@ -23,10 +23,6 @@ export const ConnectWalletRow: React.FC<ConnectWalletRowProps> = ({
     );
   }, [connectedWallets, accountId, signMessageParams.walletBlockchain]);
 
-  if (isConnected) {
-    return <div>{walletPublicKey} is connected</div>;
-  }
-
   const connectWallet = useCallback(async () => {
     await client.connectWallet({
       signMessageParams,
@@ -36,6 +32,9 @@ export const ConnectWalletRow: React.FC<ConnectWalletRowProps> = ({
     });
   }, [client, signMessageParams, accountId, walletPublicKey]);
 
+  if (isConnected) {
+    return <div>{walletPublicKey} is connected</div>;
+  }
   return (
     <div>
       {walletPublicKey}{' '}
