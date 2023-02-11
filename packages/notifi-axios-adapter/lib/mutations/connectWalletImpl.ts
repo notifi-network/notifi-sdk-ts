@@ -22,9 +22,9 @@ mutation connectWallet(
   $walletPublicKey: String!
   $timestamp: Long!
   $signature: String!
-  $walletBlockchain: WalletBlockchain
+  $walletBlockchain: WalletBlockchain!
   $accountId: String
-  connectWalletConflictResolutionTechnique: ConnectWalletConflictResolutionTechnique
+  $connectWalletConflictResolutionTechnique: ConnectWalletConflictResolutionTechnique
 ) {
   connectWallet(connectWalletInput: {
     walletPublicKey: $walletPublicKey
