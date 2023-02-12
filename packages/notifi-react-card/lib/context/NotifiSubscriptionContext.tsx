@@ -12,6 +12,9 @@ import { NotifiParams } from './NotifiContext';
 export type NotifiSubscriptionData = Readonly<{
   alerts: Readonly<Record<string, Alert | undefined>>;
   connectedWallets: ReadonlyArray<ConnectedWallet>;
+  setConnectedWallets: React.Dispatch<
+    React.SetStateAction<ReadonlyArray<ConnectedWallet>>
+  >;
   email: string;
   params: NotifiParams;
   phoneNumber: string;
@@ -23,9 +26,6 @@ export type NotifiSubscriptionData = Readonly<{
   intercomCardView: IntercomCardView;
   setIntercomCardView: React.Dispatch<React.SetStateAction<IntercomCardView>>;
   setAlerts: (alerts: Record<string, Alert | undefined>) => void;
-  setConnectedWallets: (
-    connectedWallets: ReadonlyArray<ConnectedWallet>,
-  ) => void;
   setEmail: (email: string) => void;
   setPhoneNumber: (phoneNumber: string) => void;
   setTelegramId: (telegramId: string) => void;

@@ -4,7 +4,7 @@ import {
 } from '@notifi-network/notifi-core';
 import React, { useCallback, useMemo } from 'react';
 
-import { useNotifiClientContext } from '../../context';
+import { useNotifiSubscribe } from '../../hooks';
 
 export type ConnectWalletRowProps = WalletWithSignParams &
   Readonly<{
@@ -23,7 +23,9 @@ export const ConnectWalletRow: React.FC<ConnectWalletRowProps> = ({
   connectedWallets,
   ...walletParams
 }: ConnectWalletRowProps) => {
-  const { client } = useNotifiClientContext();
+  const { subscribeWallet } = useNotifiSubscribe({
+    targetGroupName: 'Default',
+  });
 
   const isConnected = useMemo(() => {
     const key = 'accountAddress';
@@ -38,11 +40,11 @@ export const ConnectWalletRow: React.FC<ConnectWalletRowProps> = ({
   }, [connectedWallets, walletParams]);
 
   const connectWallet = useCallback(async () => {
-    await client.connectWallet({
+    await subscribeWallet({
       walletParams,
       connectWalletConflictResolutionTechnique: 'FAIL',
     });
-  }, [client, walletParams]);
+  }, [subscribeWallet, walletParams]);
 
   if (isConnected) {
     return <div>{walletParams.walletPublicKey} is connected</div>;
