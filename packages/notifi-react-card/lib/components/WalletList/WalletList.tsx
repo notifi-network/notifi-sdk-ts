@@ -1,8 +1,10 @@
-import { ConnectedWallet } from '@notifi-network/notifi-core';
+import {
+  ConnectedWallet,
+  WalletWithSignParams,
+} from '@notifi-network/notifi-core';
 import React from 'react';
 
 import {
-  OwnedWalletParams,
   useNotifiClientContext,
   useNotifiSubscriptionContext,
 } from '../../context';
@@ -10,7 +12,7 @@ import { ConnectWalletRow } from './ConnectWalletRow';
 
 export type WalletListInternalProps = Readonly<{
   connectedWallets: ReadonlyArray<ConnectedWallet>;
-  ownedWallets: ReadonlyArray<OwnedWalletParams>;
+  ownedWallets: ReadonlyArray<WalletWithSignParams>;
 }>;
 
 export const WalletListInternal: React.FC<WalletListInternalProps> = ({

@@ -251,23 +251,12 @@ export type SignMessageParams =
       signMessage: Uint8SignMessageFunction;
     }>
   | Readonly<{
-      walletBlockchain: 'ETHEREUM';
-      signMessage: Uint8SignMessageFunction;
-    }>
-  | Readonly<{
-      walletBlockchain: 'POLYGON';
-      signMessage: Uint8SignMessageFunction;
-    }>
-  | Readonly<{
-      walletBlockchain: 'ARBITRUM';
-      signMessage: Uint8SignMessageFunction;
-    }>
-  | Readonly<{
-      walletBlockchain: 'AVALANCHE';
-      signMessage: Uint8SignMessageFunction;
-    }>
-  | Readonly<{
-      walletBlockchain: 'BINANCE';
+      walletBlockchain:
+        | 'ETHEREUM'
+        | 'POLYGON'
+        | 'ARBITRUM'
+        | 'AVALANCHE'
+        | 'BINANCE';
       signMessage: Uint8SignMessageFunction;
     }>
   | Readonly<{
@@ -283,10 +272,73 @@ export type SignMessageParams =
       signMessage: Uint8SignMessageFunction;
     }>;
 
+export type WalletParams =
+  | Readonly<{
+      walletBlockchain: 'SOLANA';
+      walletPublicKey: string;
+    }>
+  | Readonly<{
+      walletBlockchain:
+        | 'ETHEREUM'
+        | 'POLYGON'
+        | 'ARBITRUM'
+        | 'AVALANCHE'
+        | 'BINANCE';
+      walletPublicKey: string;
+    }>
+  | Readonly<{
+      walletBlockchain: 'APTOS';
+      accountAddress: string;
+      walletPublicKey: string;
+    }>
+  | Readonly<{
+      walletBlockchain: 'ACALA';
+      accountAddress: string;
+      walletPublicKey: string;
+    }>
+  | Readonly<{
+      walletBlockchain: 'NEAR';
+      accountAddress: string;
+      walletPublicKey: string;
+    }>;
+
+export type WalletWithSignParams =
+  | Readonly<{
+      walletBlockchain: 'SOLANA';
+      walletPublicKey: string;
+      signMessage: Uint8SignMessageFunction;
+    }>
+  | Readonly<{
+      walletBlockchain:
+        | 'ETHEREUM'
+        | 'POLYGON'
+        | 'ARBITRUM'
+        | 'AVALANCHE'
+        | 'BINANCE';
+      walletPublicKey: string;
+      signMessage: Uint8SignMessageFunction;
+    }>
+  | Readonly<{
+      walletBlockchain: 'APTOS';
+      accountAddress: string;
+      walletPublicKey: string;
+      signMessage: AptosSignMessageFunction;
+    }>
+  | Readonly<{
+      walletBlockchain: 'ACALA';
+      accountAddress: string;
+      walletPublicKey: string;
+      signMessage: AcalaSignMessageFunction;
+    }>
+  | Readonly<{
+      walletBlockchain: 'NEAR';
+      accountAddress: string;
+      walletPublicKey: string;
+      signMessage: Uint8SignMessageFunction;
+    }>;
+
 export type ConnectWalletParams = Readonly<{
-  signMessageParams: SignMessageParams;
-  walletPublicKey: string;
-  accountId: string;
+  walletParams: WalletWithSignParams;
   connectWalletConflictResolutionTechnique: ConnectWalletInput['connectWalletConflictResolutionTechnique'];
 }>;
 

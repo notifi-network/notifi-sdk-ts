@@ -15,12 +15,17 @@ export const MultiWalletTest: React.FC = () => {
   const adapter = wallet?.adapter;
   const publicKey = adapter?.publicKey?.toBase58() ?? null;
 
-  const { account: acalaAccount } = useAcalaWallet();
+  const {
+    account: acalaAccount,
+    requestSignature,
+    polkadotPublicKey,
+  } = useAcalaWallet();
 
   if (
     publicKey === null ||
     signMessage === undefined ||
-    acalaAccount === null
+    acalaAccount === null ||
+    polkadotPublicKey === null
   ) {
     // publicKey is required
     return null;
@@ -39,28 +44,20 @@ export const MultiWalletTest: React.FC = () => {
         multiWallet={{
           ownedWallets: [
             {
-              signMessageParams: {
-                walletBlockchain: 'SOLANA',
-                signMessage: signMessage,
-              },
+              walletBlockchain: 'SOLANA',
+              signMessage,
               walletPublicKey: publicKey,
-              accountId: publicKey,
             },
             {
-              signMessageParams: {
-                walletBlockchain: 'SOLANA',
-                signMessage: signMessage,
-              },
+              walletBlockchain: 'SOLANA',
+              signMessage,
               walletPublicKey: publicKey,
-              accountId: publicKey,
             },
             {
-              signMessageParams: {
-                walletBlockchain: 'SOLANA',
-                signMessage: signMessage,
-              },
-              walletPublicKey: acalaAccount, // Should fail to sign
-              accountId: acalaAccount,
+              walletBlockchain: 'ACALA',
+              signMessage: requestSignature,
+              walletPublicKey: polkadotPublicKey,
+              accountAddress: acalaAccount,
             },
           ],
         }}

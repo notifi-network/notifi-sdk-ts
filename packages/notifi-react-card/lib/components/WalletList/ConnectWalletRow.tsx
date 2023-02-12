@@ -1,43 +1,55 @@
-import { ConnectedWallet } from '@notifi-network/notifi-core';
+import {
+  ConnectedWallet,
+  WalletWithSignParams,
+} from '@notifi-network/notifi-core';
 import React, { useCallback, useMemo } from 'react';
 
-import { OwnedWalletParams, useNotifiClientContext } from '../../context';
+import { useNotifiClientContext } from '../../context';
 
-export type ConnectWalletRowProps = OwnedWalletParams &
+export type ConnectWalletRowProps = WalletWithSignParams &
   Readonly<{
     connectedWallets: ReadonlyArray<ConnectedWallet>;
   }>;
 
+const hasKey = <T,>(obj: T, prop: PropertyKey): prop is keyof T => {
+  return (
+    typeof obj === 'object' &&
+    obj !== null &&
+    Object.prototype.hasOwnProperty.call(obj, prop)
+  );
+};
+
 export const ConnectWalletRow: React.FC<ConnectWalletRowProps> = ({
   connectedWallets,
-  signMessageParams,
-  walletPublicKey,
-  accountId,
+  ...walletParams
 }: ConnectWalletRowProps) => {
   const { client } = useNotifiClientContext();
+
   const isConnected = useMemo(() => {
+    const key = 'accountAddress';
+    const address = hasKey(walletParams, key)
+      ? walletParams[key]
+      : walletParams.walletPublicKey;
     return connectedWallets.some(
       (it) =>
-        it.address === accountId &&
-        it.walletBlockchain === signMessageParams.walletBlockchain,
+        it.address === address &&
+        it.walletBlockchain === walletParams.walletBlockchain,
     );
-  }, [connectedWallets, accountId, signMessageParams.walletBlockchain]);
+  }, [connectedWallets, walletParams]);
 
   const connectWallet = useCallback(async () => {
     await client.connectWallet({
-      signMessageParams,
-      accountId,
-      walletPublicKey,
+      walletParams,
       connectWalletConflictResolutionTechnique: 'FAIL',
     });
-  }, [client, signMessageParams, accountId, walletPublicKey]);
+  }, [client, walletParams]);
 
   if (isConnected) {
-    return <div>{walletPublicKey} is connected</div>;
+    return <div>{walletParams.walletPublicKey} is connected</div>;
   }
   return (
     <div>
-      {walletPublicKey}{' '}
+      {walletParams.walletPublicKey}{' '}
       <button
         onClick={() => {
           connectWallet();

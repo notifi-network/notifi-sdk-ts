@@ -15,7 +15,6 @@ import {
   ClientUpdateAlertInput,
   CompleteLoginViaTransactionInput,
   CompleteLoginViaTransactionResult,
-  ConnectWalletInput,
   ConnectWalletParams,
   ConnectedWallet,
   CreateSourceInput,
@@ -30,6 +29,7 @@ import {
   TenantConfig,
   User,
   UserTopic,
+  WalletParams,
 } from '@notifi-network/notifi-core';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
@@ -48,47 +48,6 @@ import packFilterOptions from '../utils/packFilterOptions';
 import storage from '../utils/storage';
 import useNotifiConfig, { BlockchainEnvironment } from './useNotifiConfig';
 import useNotifiService from './useNotifiService';
-
-export type WalletParams =
-  | Readonly<{
-      walletBlockchain: 'SOLANA';
-      walletPublicKey: string;
-    }>
-  | Readonly<{
-      walletBlockchain: 'ETHEREUM';
-      walletPublicKey: string;
-    }>
-  | Readonly<{
-      walletBlockchain: 'POLYGON';
-      walletPublicKey: string;
-    }>
-  | Readonly<{
-      walletBlockchain: 'ARBITRUM';
-      walletPublicKey: string;
-    }>
-  | Readonly<{
-      walletBlockchain: 'AVALANCHE';
-      walletPublicKey: string;
-    }>
-  | Readonly<{
-      walletBlockchain: 'BINANCE';
-      walletPublicKey: string;
-    }>
-  | Readonly<{
-      walletBlockchain: 'APTOS';
-      accountAddress: string;
-      walletPublicKey: string;
-    }>
-  | Readonly<{
-      walletBlockchain: 'ACALA';
-      accountAddress: string;
-      walletPublicKey: string;
-    }>
-  | Readonly<{
-      walletBlockchain: 'NEAR';
-      accountAddress: string;
-      walletPublicKey: string;
-    }>;
 
 /**
  * Config options for Notifi SDK
@@ -761,29 +720,33 @@ const useNotifiClient = (
    */
   const connectWallet = useCallback(
     async ({
-      accountId,
-      walletPublicKey,
-      signMessageParams,
+      walletParams,
       connectWalletConflictResolutionTechnique,
     }: ConnectWalletParams): Promise<ConnectedWallet> => {
       const timestamp = Math.round(Date.now() / 1000);
+      const { walletBlockchain, walletPublicKey } = walletParams;
 
       setLoading(true);
       try {
         const signature = await signMessage({
-          params: config,
+          params: walletParams,
           dappAddress,
           timestamp,
-          signer: signMessageParams,
+          signer: walletParams,
         });
 
         const result = await service.connectWallet({
+          walletBlockchain,
           walletPublicKey,
-          accountId,
+          accountId:
+            walletBlockchain === 'APTOS' ||
+            walletBlockchain === 'ACALA' ||
+            walletBlockchain === 'NEAR'
+              ? walletParams.accountAddress
+              : undefined,
           signature,
           timestamp,
           connectWalletConflictResolutionTechnique,
-          walletBlockchain: signMessageParams.walletBlockchain,
         });
 
         if (internalData !== null) {

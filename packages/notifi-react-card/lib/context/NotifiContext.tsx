@@ -1,3 +1,4 @@
+import { WalletWithSignParams } from '@notifi-network/notifi-core';
 import {
   AcalaSignMessageFunction,
   AptosSignMessageFunction,
@@ -67,13 +68,8 @@ export type AvalancheParams = Readonly<{
   signMessage: Uint8SignMessageFunction;
 }>;
 
-export type OwnedWalletParams = Readonly<{
-  signMessageParams: SignMessageParams;
-  walletPublicKey: string;
-  accountId: string;
-}>;
 export type MultiWalletParams = Readonly<{
-  ownedWallets: ReadonlyArray<OwnedWalletParams>;
+  ownedWallets: ReadonlyArray<WalletWithSignParams>;
 }>;
 
 type WalletParams =

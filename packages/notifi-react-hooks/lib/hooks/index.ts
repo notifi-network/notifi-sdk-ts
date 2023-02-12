@@ -19,9 +19,10 @@ import {
   TargetType,
   Uint8SignMessageFunction,
   User,
+  WalletParams,
 } from '@notifi-network/notifi-core';
 
-import useNotifiClient, { WalletParams } from './useNotifiClient';
+import useNotifiClient from './useNotifiClient';
 import useNotifiConfig from './useNotifiConfig';
 import { BlockchainEnvironment } from './useNotifiConfig';
 
