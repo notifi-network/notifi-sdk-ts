@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import { useNotifiSubscriptionContext } from '../../context';
 import { CardConfigItemV1, useNotifiSubscribe } from '../../hooks';
 import { DeepPartialReadonly } from '../../utils';
+import NotifiAlertBox from '../NotifiAlertBox';
 import {
   NotifiInputFieldsText,
   NotifiInputSeparators,
@@ -99,15 +100,23 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
       break;
     case 'edit':
       view = (
-        <EditCardView
-          buttonText={buttonText}
-          data={data}
-          classNames={classNames?.EditCard}
-          inputDisabled={inputDisabled}
-          inputTextFields={inputLabels}
-          inputSeparators={inputSeparators}
-          allowedCountryCodes={allowedCountryCodes}
-        />
+        <>
+          <NotifiAlertBox>
+            <div>
+              <h2>Alert History</h2>
+              <p>Powered by Notifi</p>
+            </div>
+          </NotifiAlertBox>
+          <EditCardView
+            buttonText={buttonText}
+            data={data}
+            classNames={classNames?.EditCard}
+            inputDisabled={inputDisabled}
+            inputTextFields={inputLabels}
+            inputSeparators={inputSeparators}
+            allowedCountryCodes={allowedCountryCodes}
+          />
+        </>
       );
       break;
     case 'history':
