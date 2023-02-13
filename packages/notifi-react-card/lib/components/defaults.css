@@ -39,7 +39,7 @@
   --notifi-card-background: #000;
   --notifi-intro-color: #b6b8d5;
   --notifi-input-background: #1c1c33;
-  --notifi-input-border: rgba(229, 228, 250, 0.1);
+  --notifi-input-border: rgba(229, 228, 250, 0.15);
   --notifi-button-color: #6e42ca;
   --notifi-button-disabled-color: #80829d;
   --notifi-button-text-color: #fff;
@@ -71,6 +71,8 @@ input:-webkit-autofill {
 }
 .NotifiInputContainer {
   flex-grow: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .NotifiInputHeading {
@@ -78,12 +80,39 @@ input:-webkit-autofill {
   font-weight: 700;
   font-size: 16px;
   line-height: 24px;
+  margin-top: 24px !important;
   margin-bottom: 16px !important;
-  margin-top: 0;
 }
 
 .NotifiSubscriptionCard__container *:not(:last-child) {
   margin-bottom: 10px;
+}
+
+.NotifiVerifyContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
+}
+
+.NotifiVerifyContainer ul {
+  padding-left: 0;
+  margin: 0;
+}
+
+.NotifiVerifyItem {
+  padding: 16px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0 !important;
+  margin-top: 0 !important;
+  border-bottom: 1px solid var(--notifi-input-border);
+}
+
+.NotifiVerifyPublicKey,
+.NotifiVerifyItem {
+  margin: 0 !important;
 }
 
 .NotifiIntercomCard__container {
@@ -130,7 +159,6 @@ input:-webkit-autofill {
   padding: 10px 0;
   border-top: 1px solid var(--notifi-input-border);
   border-bottom: 1px solid var(--notifi-input-border);
-  margin-bottom: 24px !important;
 }
 
 .NotifiAlert__btn--left,
@@ -161,6 +189,8 @@ input:-webkit-autofill {
 
 .NotifiAlert__content > p {
   text-align: center;
+  max-width: 147px;
+  margin: 0 auto;
 }
 .NotifiAlert__content p {
   margin: 0;
@@ -456,7 +486,7 @@ input:-webkit-autofill {
 .EventTypeUnsupportedRow__container {
   display: none;
 }
-
+.NotifiCardButton__button,
 .NotifiSubscribeButton__button {
   background-color: var(--notifi-button-color);
   border: none;
@@ -469,9 +499,9 @@ input:-webkit-autofill {
   font-weight: 600;
   padding: 14px;
   border-radius: 104px;
-  margin-top: 43px;
+  margin-top: auto;
 }
-
+.NotifiCardButton__button:disabled,
 .NotifiSubscribeButton__button:disabled,
 .NotifiStartChatButton__button:disabled,
 .NotifiIntercomSendMessageSection__button:disabled {

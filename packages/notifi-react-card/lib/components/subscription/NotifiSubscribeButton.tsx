@@ -56,7 +56,7 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
     }
 
     if (success === true) {
-      setCardView({ state: 'preview' });
+      setCardView({ state: 'verify' });
     }
   }, [client, eventTypes, subscribe, updateTargetGroups, setCardView]);
 

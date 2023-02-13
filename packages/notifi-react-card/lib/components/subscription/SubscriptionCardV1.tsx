@@ -25,6 +25,7 @@ import {
   PreviewCard,
   PreviewCardProps,
 } from './subscription-card-views/PreviewCard';
+import VerifyWalletView from './subscription-card-views/VerifyWalletView';
 
 export type SubscriptionCardV1Props = Readonly<{
   buttonText?: string;
@@ -116,6 +117,19 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
             inputSeparators={inputSeparators}
             allowedCountryCodes={allowedCountryCodes}
           />
+        </>
+      );
+      break;
+    case 'verify':
+      view = (
+        <>
+          <NotifiAlertBox
+            leftIconName="back"
+            onBtnLeftClick={() => setCardView({ state: 'edit' })}
+          >
+            <p>Verify your wallets to receive balance alerts</p>
+          </NotifiAlertBox>
+          <VerifyWalletView buttonText={buttonText} />
         </>
       );
       break;
