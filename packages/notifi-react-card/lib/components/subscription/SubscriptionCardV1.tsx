@@ -91,12 +91,20 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
       break;
     case 'preview':
       view = (
-        <PreviewCard
-          data={data}
-          inputs={inputs}
-          inputDisabled={inputDisabled}
-          classNames={classNames?.PreviewCard}
-        />
+        <>
+          <NotifiAlertBox
+            leftIconName="back"
+            onBtnLeftClick={() => setCardView({ state: 'verify' })}
+          >
+            <p>Manage Alerts</p>
+          </NotifiAlertBox>
+          <PreviewCard
+            data={data}
+            inputs={inputs}
+            inputDisabled={inputDisabled}
+            classNames={classNames?.PreviewCard}
+          />
+        </>
       );
       break;
     case 'edit':

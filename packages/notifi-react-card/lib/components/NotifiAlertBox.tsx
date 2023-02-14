@@ -1,7 +1,6 @@
 import clsx from 'clsx';
 import React from 'react';
 
-import { useNotifiSubscriptionContext } from '../context';
 import type { DeepPartialReadonly } from '../utils';
 import AlertActionIcon from './AlertBox/AlertActionIcon';
 
@@ -28,9 +27,6 @@ const NotifiAlertBox: React.FC<React.PropsWithChildren<NotifiActionProps>> = ({
   leftIconName,
   rightIconName = 'close',
 }) => {
-  const { cardView } = useNotifiSubscriptionContext();
-  console.log(cardView);
-
   return (
     <div className={clsx('NotifiAlert__container', classNames?.container)}>
       <div

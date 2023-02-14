@@ -58,7 +58,6 @@ export const ConnectWalletRow: React.FC<ConnectWalletRowProps> = ({
     return (
       <div className="NotifiVerifyItem">
         <p className="NotifiVerifyPublicKey">{shortenedAddress}</p>
-        <p></p>
       </div>
     );
   }
@@ -66,6 +65,7 @@ export const ConnectWalletRow: React.FC<ConnectWalletRowProps> = ({
     <div className="NotifiVerifyItem">
       <p className="NotifiVerifyPublicKey">{shortenedAddress}</p>
       <button
+        className="NotifiVerifyButton"
         onClick={() => {
           connectWallet();
         }}

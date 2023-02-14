@@ -1,8 +1,6 @@
 import clsx from 'clsx';
-import React, { useCallback } from 'react';
+import React from 'react';
 
-import { BackArrow } from '../../../assets/backArrow';
-import { useNotifiSubscriptionContext } from '../../../context';
 import { CardConfigItemV1 } from '../../../hooks';
 import { DeepPartialReadonly } from '../../../utils';
 import { AlertsPanel, AlertsPanelProps } from './preview-panel/AlertsPanel';
@@ -30,11 +28,6 @@ export const PreviewCard: React.FC<PreviewCardProps> = ({
   inputDisabled,
   inputs = {},
 }) => {
-  const { setCardView } = useNotifiSubscriptionContext();
-
-  const handlePreviewClick = useCallback(() => {
-    setCardView({ state: 'history' });
-  }, [setCardView]);
   return (
     <div
       className={clsx(
@@ -42,25 +35,9 @@ export const PreviewCard: React.FC<PreviewCardProps> = ({
         classNames?.NotifiPreviewCardContainer,
       )}
     >
-      <div
-        className={clsx(
-          'NotifiPreviewCard__backArrowContainer',
-          classNames?.backArrowContainer,
-        )}
-        onClick={() => handlePreviewClick()}
-      >
-        <BackArrow />
-      </div>
-
       <UserInfoPanel
         classNames={classNames?.UserInfoPanel}
         contactInfo={data.contactInfo}
-      />
-      <div
-        className={clsx(
-          'NotifiPreviewCardSeparator',
-          classNames?.NotifiPreviewCardSeparator,
-        )}
       />
       <AlertsPanel
         classNames={classNames?.AlertsPanel}

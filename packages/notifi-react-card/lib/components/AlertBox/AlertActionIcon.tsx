@@ -16,14 +16,14 @@ const AlertActionIcon: React.FC<AlertActionIconProps> = ({
       view = (
         <svg
           className={className}
-          width="16"
-          height="16"
-          viewBox="0 0 16 16"
-          fill="none"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="currentColor"
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
-            d="M8 1L0.999996 8M0.999996 8L8 15M0.999996 8L15 8"
+            d="M12 5L5 12M5 12L12 19M5 12L19 12"
             stroke="currentColor"
             stroke-width="2"
             stroke-linecap="round"
@@ -35,15 +35,16 @@ const AlertActionIcon: React.FC<AlertActionIconProps> = ({
     case 'close':
       view = (
         <svg
+          className={className}
           width="24"
           height="24"
           viewBox="0 0 24 24"
-          fill="none"
+          fill="currentColor"
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
             d="M15.59 7L12 10.59L8.41 7L7 8.41L10.59 12L7 15.59L8.41 17L12 13.41L15.59 17L17 15.59L13.41 12L17 8.41L15.59 7Z"
-            fill="white"
+            fill="currentColor"
           />
         </svg>
       );

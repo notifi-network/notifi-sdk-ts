@@ -24,28 +24,28 @@
 }
 
 .notifi__dark {
-  --notifi-card-secondary-background: #080123;
-  --notifi-placeholder-color: #e5e4fa;
-  --notifi-focus-color: #e5e4fa;
+  --notifi-card-secondary-background: rgb(68, 68, 68);
+  --notifi-placeholder-color: #b6b8d5;
+  --notifi-focus-color: #fff;
   --notifi-toggle-handle: #fff;
-  --notifi-toggle-inactive: #3e3e52;
-  --notifi-toggle-active: #6e42ca;
-  --notifi-tooltip-background: #2d2d4e;
+  --notifi-toggle-inactive: rgba(255, 255, 255, 0.1);
+  --notifi-toggle-active: rgba(255, 255, 255, 0.4);
+  --notifi-tooltip-background: rgba(255, 255, 255, 0.6);
   --notifi-alert-color: rgb(213, 25, 25);
-  --notifi-link-color: #946bec;
-  --notifi-checkmark-color: #039581;
-  --notifi-font-color: #e5e4fa;
-  --notifi-secondary-font-color: #fff;
-  --notifi-card-background: #000;
+  --notifi-link-color: hsl(240, 100%, 85%);
+  --notifi-checkmark-color: #ea7e68;
+  --notifi-font-color: #fff;
+  --notifi-secondary-font-color: #b6b8d5;
+  --notifi-card-background: #373842;
   --notifi-intro-color: #b6b8d5;
-  --notifi-input-background: #1c1c33;
-  --notifi-input-border: rgba(229, 228, 250, 0.15);
-  --notifi-button-color: #6e42ca;
+  --notifi-input-background: #474858;
+  --notifi-input-border: #606060;
+  --notifi-button-color: #678afc;
   --notifi-button-disabled-color: #80829d;
   --notifi-button-text-color: #fff;
   --notifi-incoming-message: #474858;
   --notifi-outgoing-message: #678afc;
-  --notifi-settings-icon-color: #d4c4ed;
+  --notifi-settings-icon-color: #fff;
 }
 
 input:autofill,
@@ -187,13 +187,13 @@ input:-webkit-autofill {
   margin-bottom: 0 !important;
 }
 
+.NotifiAlert__content p {
+  margin: 0;
+}
 .NotifiAlert__content > p {
   text-align: center;
   max-width: 147px;
-  margin: 0 auto;
-}
-.NotifiAlert__content p {
-  margin: 0;
+  margin: 0 auto !important;
 }
 
 .NotifiAlert__content h2 {
@@ -373,7 +373,7 @@ input:-webkit-autofill {
 }
 
 .NotifiToggle__container {
-  --notifi-toggle-size: 18px;
+  --notifi-toggle-size: 22px;
   --notifi-toggle-padding: 3px;
   --notifi-toggle-container: calc(
     var(--notifi-toggle-size) + 2 * var(--notifi-toggle-padding)
@@ -462,6 +462,7 @@ input:-webkit-autofill {
   font-size: 16px;
   line-height: 20px;
   text-align: left;
+  color: var(--notifi-font-color);
 }
 
 .EventTypeHealthCheckRow__container,
@@ -683,21 +684,24 @@ input:-webkit-autofill {
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  padding: 16px 24px 16px 24px;
+  padding: 0 16px;
   border-radius: 5px;
-  background-color: var(--notifi-card-secondary-background);
 }
 
 .NotifiPreviewCard__editButton {
   display: flex;
-  padding: 10px 20px 10px 20px;
-  background-color: var(--notifi-button-color);
-  border-radius: 10px;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 16px 20px;
+  background-color: transparent;
+  font-weight: 600;
   border: none;
   font-size: 16px;
   line-height: 20px;
   cursor: pointer;
-  color: var(--notifi-button-text-color);
+  color: var(--notifi-link-color);
+  gap: 4px;
 }
 
 .NotifiUserInfoPanel__emailConfirmation,
@@ -705,15 +709,21 @@ input:-webkit-autofill {
   flex-shrink: 0;
   margin-left: 8px;
 }
-
+.NotifiVerifyButton,
+.NotifiUserInfoPanel__myWalleConfirmation,
 .NotifiUserInfoPanel__emailConfirmationLabel,
 .NotifiUserInfoPanel__telegramConfirmationLabel {
   cursor: pointer;
   font-size: 14px;
   color: var(--notifi-link-color);
-  text-decoration: underline;
+  font-weight: 600;
+  line-height: 18px;
+  background-color: transparent;
+  border: 0;
+  box-shadow: 0;
+  outline: none;
 }
-
+.NotifiUserInfoPanel__myWallet,
 .NotifiUserInfoPanel__email,
 .NotifiUserInfoPanel__telegram,
 .NotifiUserInfoPanel__sms {
@@ -723,13 +733,20 @@ input:-webkit-autofill {
   text-align: left;
   align-items: baseline;
   overflow-wrap: anywhere;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--notifi-input-border);
+  margin-bottom: 0 !important;
 }
-
+.NotifiUserInfoPanel__myWalleLabel,
 .NotifiUserInfoPanel__emailLabel,
 .NotifiUserInfoPanel__smsLabel,
 .NotifiUserInfoPanel__smsLabel,
 .NotifiUserInfoPanel__telegramLabel {
   margin-bottom: 0 !important;
+  font-size: 15px;
+  line-height: 18px;
+  color: var(--notifi-font-color);
 }
 
 .NotifiTooltip__container .NotifiTooltip__infoIcon {
@@ -739,7 +756,7 @@ input:-webkit-autofill {
   fill: var(--notifi-font-color);
 }
 
-.NotifiTooltip__infoIcon:hover + .NotifiTooltip {
+.NotifiTooltip__infoIcon:hover + .NotifiTooltip__body {
   display: block;
 }
 
@@ -749,16 +766,17 @@ input:-webkit-autofill {
 
 .NotifiTooltip__body {
   width: 100%;
-  min-width: 140px;
+  min-width: 180px;
   display: none;
   position: absolute;
-  left: 30px;
-  top: 2px;
+  left: -70px;
+  top: -55px;
   font-size: 12px;
   z-index: 1;
 }
 
 .NotifiTooltip__arrow {
+  display: none;
   position: absolute;
   width: 0;
   height: 0;
@@ -773,11 +791,11 @@ input:-webkit-autofill {
 }
 
 .NotifiTooltip__label {
-  padding: 3px 10px;
+  padding: 16px;
   color: #000;
   text-align: left;
   background-color: var(--notifi-tooltip-background);
-  border-radius: 3px;
+  border-radius: 8px;
 }
 .NotifiAlertHistory__settingsIcon {
   position: absolute;

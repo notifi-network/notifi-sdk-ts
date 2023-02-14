@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import { PenIcon } from 'notifi-react-card/lib/assets/PenIcon';
 import React, { useCallback } from 'react';
 
 import { useNotifiSubscriptionContext } from '../../../../context';
@@ -20,6 +21,7 @@ export type UserInfoPanelProps = {
     telegram?: UserInfoSection;
     sms?: UserInfoSection;
     EditButton: string;
+    myWallet?: UserInfoSection;
   }>;
   contactInfo: CardConfigItemV1['contactInfo'];
   confirmationLabels?: {
@@ -46,7 +48,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
   });
 
   const handleEditClick = useCallback(() => {
-    setCardView({ state: 'edit' });
+    setCardView({ state: 'verify' });
   }, [setCardView, phoneNumber, email, telegramId]);
 
   const handleResendEmailVerificationClick = useCallback(() => {
@@ -148,6 +150,29 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
           ) : null}
         </div>
       ) : null}
+      <div
+        className={clsx(
+          'NotifiUserInfoPanel__myWallet',
+          classNames?.myWallet?.container,
+        )}
+      >
+        <label
+          className={clsx(
+            'NotifiUserInfoPanel__myWalleLabel',
+            classNames?.myWallet?.label,
+          )}
+        >
+          My wallets
+        </label>
+        <button
+          className={clsx(
+            'NotifiUserInfoPanel__myWalleConfirmation',
+            classNames?.myWallet?.confirmationLink,
+          )}
+        >
+          Edit
+        </button>
+      </div>
       <button
         className={clsx(
           'NotifiPreviewCard__editButton',
@@ -155,6 +180,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
         )}
         onClick={handleEditClick}
       >
+        <PenIcon />
         Edit
       </button>
     </div>
