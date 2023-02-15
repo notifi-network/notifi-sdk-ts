@@ -34,12 +34,14 @@ export const customThresholdConfiguration = ({
   filterType,
   thresholdDirection,
   sourceType,
+  sourceAddress,
 }: Readonly<{
   alertFrequency: FilterOptions['alertFrequency'];
   percentage: number;
   filterType: string;
   thresholdDirection: FilterOptions['thresholdDirection'];
   sourceType: CreateSourceInput['type'];
+  sourceAddress: string;
 }>): AlertConfiguration => {
   return {
     sourceType,
@@ -48,6 +50,9 @@ export const customThresholdConfiguration = ({
       alertFrequency,
       threshold: percentage,
       thresholdDirection,
+    },
+    createSource: {
+      address: sourceAddress,
     },
   };
 };

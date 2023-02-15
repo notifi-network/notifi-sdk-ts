@@ -1,7 +1,4 @@
-import {
-  AlertFrequency,
-  ThresholdDirection,
-} from '@notifi-network/notifi-core';
+import { ThresholdDirection } from '@notifi-network/notifi-core';
 import clsx from 'clsx';
 import React, {
   useCallback,
@@ -13,14 +10,11 @@ import React, {
 
 import { useNotifiSubscriptionContext } from '../../context';
 import { CustomTopicTypeItem, useNotifiSubscribe } from '../../hooks';
-import {
-  DeepPartialReadonly,
-  customThresholdConfiguration,
-  healthThresholdConfiguration,
-} from '../../utils';
+import { DeepPartialReadonly, customThresholdConfiguration } from '../../utils';
 import type { NotifiToggleProps } from './NotifiToggle';
 import { NotifiToggle } from './NotifiToggle';
 import { NotifiTooltip, NotifiTooltipProps } from './NotifiTooltip';
+import { resolveStringRef } from './resolveRef';
 
 export type EventTypeCustomHealthCheckRowProps = Readonly<{
   classNames?: DeepPartialReadonly<{
@@ -47,7 +41,12 @@ const getParsedInputNumber = (input: string): number | null => {
 
 export const EventTypeCustomHealthCheckRow: React.FC<
   EventTypeCustomHealthCheckRowProps
-> = ({ classNames, config, disabled }: EventTypeCustomHealthCheckRowProps) => {
+> = ({
+  classNames,
+  config,
+  disabled,
+  inputs,
+}: EventTypeCustomHealthCheckRowProps) => {
   const { alerts, loading } = useNotifiSubscriptionContext();
   const { instantSubscribe } = useNotifiSubscribe({
     targetGroupName: 'Default',
@@ -131,6 +130,11 @@ export const EventTypeCustomHealthCheckRow: React.FC<
             sourceType: config.sourceType,
             filterType: config.filterType,
             alertFrequency: config.alertFrequency,
+            sourceAddress: resolveStringRef(
+              alertName,
+              config.sourceAddress,
+              inputs,
+            ),
             thresholdDirection: thresholdDirection,
             percentage: ratioNumber / 100,
           }),
@@ -159,12 +163,19 @@ export const EventTypeCustomHealthCheckRow: React.FC<
     setErrorMessage('');
     if (value) {
       instantSubscribe({
-        alertConfiguration: healthThresholdConfiguration({
+        alertConfiguration: customThresholdConfiguration({
+          sourceType: config.sourceType,
+          filterType: config.filterType,
           alertFrequency: config.alertFrequency,
+          sourceAddress: resolveStringRef(
+            alertName,
+            config.sourceAddress,
+            inputs,
+          ),
+          thresholdDirection: thresholdDirection,
           percentage: value,
-          thresholdDirection,
         }),
-        alertName: alertName,
+        alertName,
       })
         .then(() => {
           setSelectedIndex(index);
@@ -183,12 +194,19 @@ export const EventTypeCustomHealthCheckRow: React.FC<
     setErrorMessage('');
     if (!enabled && initialRatio !== null) {
       instantSubscribe({
-        alertConfiguration: healthThresholdConfiguration({
-          alertFrequency: config.alertFrequency ?? ('SINGLE' as AlertFrequency),
+        alertConfiguration: customThresholdConfiguration({
+          sourceType: config.sourceType,
+          filterType: config.filterType,
+          alertFrequency: config.alertFrequency,
+          sourceAddress: resolveStringRef(
+            alertName,
+            config.sourceAddress,
+            inputs,
+          ),
+          thresholdDirection: thresholdDirection,
           percentage: initialRatio,
-          thresholdDirection,
         }),
-        alertName: alertName,
+        alertName,
       }).catch(() => setErrorMessage(UNABLE_TO_SUBSCRIBE));
     } else {
       instantSubscribe({
@@ -223,13 +241,7 @@ export const EventTypeCustomHealthCheckRow: React.FC<
           checked={enabled}
           classNames={classNames?.toggle}
           disabled={disabled}
-          setChecked={
-            config.selectedUIType === 'HEALTH_CHECK'
-              ? handleHealthCheckSubscription
-              : () => {
-                  // to do
-                }
-          }
+          setChecked={handleHealthCheckSubscription}
         />
       </div>
       {enabled && config.checkRatios?.length ? (
