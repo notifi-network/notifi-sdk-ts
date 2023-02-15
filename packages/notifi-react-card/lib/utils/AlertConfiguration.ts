@@ -28,6 +28,30 @@ export const chatConfiguration = (): AlertConfiguration => {
   };
 };
 
+export const customThresholdConfiguration = ({
+  alertFrequency,
+  percentage,
+  filterType,
+  thresholdDirection,
+  sourceType,
+}: Readonly<{
+  alertFrequency: FilterOptions['alertFrequency'];
+  percentage: number;
+  filterType: string;
+  thresholdDirection: FilterOptions['thresholdDirection'];
+  sourceType: CreateSourceInput['type'];
+}>): AlertConfiguration => {
+  return {
+    sourceType,
+    filterType,
+    filterOptions: {
+      alertFrequency,
+      threshold: percentage,
+      thresholdDirection,
+    },
+  };
+};
+
 export const broadcastMessageConfiguration = ({
   topicName,
 }: Readonly<{

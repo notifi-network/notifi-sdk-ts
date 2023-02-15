@@ -68,9 +68,6 @@ export type NumberTypeSelect = 'percentage' | 'integer';
 export type CustomToggleTypeItem = Readonly<{
   filterOptions: FilterOptions;
   selectedUIType: 'TOGGLE';
-  filterType: string;
-  sourceAddress: ValueOrRef<string>;
-  sourceType: CreateSourceInput['type'];
 }>;
 
 export type CustomHealthCheckItem = Readonly<{
@@ -90,6 +87,9 @@ export type CustomTypeBase = {
   type: 'custom';
   name: string;
   tooltipContent: string;
+  sourceType: CreateSourceInput['type'];
+  filterType: string;
+  sourceAddress: ValueOrRef<string>;
 };
 
 export type EventTypeItem =

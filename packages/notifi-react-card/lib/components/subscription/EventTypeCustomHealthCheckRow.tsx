@@ -13,7 +13,11 @@ import React, {
 
 import { useNotifiSubscriptionContext } from '../../context';
 import { CustomTopicTypeItem, useNotifiSubscribe } from '../../hooks';
-import { DeepPartialReadonly, healthThresholdConfiguration } from '../../utils';
+import {
+  DeepPartialReadonly,
+  customThresholdConfiguration,
+  healthThresholdConfiguration,
+} from '../../utils';
 import type { NotifiToggleProps } from './NotifiToggle';
 import { NotifiToggle } from './NotifiToggle';
 import { NotifiTooltip, NotifiTooltipProps } from './NotifiTooltip';
@@ -121,13 +125,16 @@ export const EventTypeCustomHealthCheckRow: React.FC<
         const checkRatios = config.checkRatios;
 
         const thresholdDirection = checkRatios[0].type ?? 'below';
+
         instantSubscribe({
-          alertConfiguration: healthThresholdConfiguration({
-            alertFrequency: config?.alertFrequency ?? 'HOURLY',
-            percentage: ratioNumber / 100,
+          alertConfiguration: customThresholdConfiguration({
+            sourceType: config.sourceType,
+            filterType: config.filterType,
+            alertFrequency: config.alertFrequency,
             thresholdDirection: thresholdDirection,
+            percentage: ratioNumber / 100,
           }),
-          alertName: alertName,
+          alertName,
         })
           .then(() => setSelectedIndex(3))
           .catch(() => setErrorMessage(UNABLE_TO_SUBSCRIBE));

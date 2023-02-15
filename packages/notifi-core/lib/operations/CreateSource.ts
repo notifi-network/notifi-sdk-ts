@@ -36,7 +36,8 @@ export type CreateSourceInput = Readonly<{
     | 'BONFIDA_NAME_AUCTIONING'
     | 'TOPAZ'
     | 'SOLANA_SNOWFLAKE'
-    | 'NOTIFI_CHAT';
+    | 'NOTIFI_CHAT'
+    | 'BENQI';
 }>;
 
 export type CreateSourceResult = Source;

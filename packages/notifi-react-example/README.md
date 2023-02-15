@@ -21,7 +21,7 @@ export const useYourHook = () => {
 
 Run the lerna build command to see your sdk changes reflected in the example app
 
-```
+```zsh
 npx lerna run build
 ```
 
