@@ -3,7 +3,6 @@ import { DeepPartialReadonly } from 'notifi-react-card/lib/utils';
 import React from 'react';
 
 import { CardConfigItemV1 } from '../../../hooks';
-import { WalletList } from '../../WalletList';
 import {
   NotifiSubscribeButton,
   NotifiSubscribeButtonProps,
@@ -12,7 +11,6 @@ import {
   NotifiInputFieldsText,
   NotifiInputSeparators,
 } from '../NotifiSubscriptionCard';
-import { AlertListPreview } from './AlertListPreview';
 import { InputFields, InputFieldsProps } from './InputFields';
 
 export type EditCardViewProps = Readonly<{
@@ -23,6 +21,7 @@ export type EditCardViewProps = Readonly<{
     NotifiInputContainer?: string;
     InputFields?: DeepPartialReadonly<InputFieldsProps['classNames']>;
     NotifiSubscribeButton?: NotifiSubscribeButtonProps['classNames'];
+    NotifiInputHeading?: string;
   }>;
   inputSeparators?: NotifiInputSeparators;
   inputTextFields?: NotifiInputFieldsText;
@@ -42,9 +41,11 @@ export const EditCardView: React.FC<EditCardViewProps> = ({
     <div
       className={clsx('NotifiInputContainer', classNames?.NotifiInputContainer)}
     >
-      <WalletList />
-
-      <AlertListPreview eventTypes={data.eventTypes} />
+      <h4
+        className={clsx('NotifiInputHeading', classNames?.NotifiInputHeading)}
+      >
+        Get transaction and web3 activity alerts
+      </h4>
 
       <InputFields
         data={data}

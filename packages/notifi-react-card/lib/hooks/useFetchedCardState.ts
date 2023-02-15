@@ -12,11 +12,15 @@ export type EditInfoViewState = Readonly<{
 export type ExpiredTokenViewState = Readonly<{
   state: 'expired';
 }>;
+export type VerifyWalletViewState = Readonly<{
+  state: 'verify';
+}>;
 
 export type FetchedCardViewState =
   | PreviewViewState
   | AlertHistoryViewState
   | EditInfoViewState
+  | VerifyWalletViewState
   | ExpiredTokenViewState;
 
 export const useFetchedCardState = () => {

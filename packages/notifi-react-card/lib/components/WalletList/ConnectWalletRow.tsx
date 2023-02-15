@@ -2,6 +2,7 @@ import {
   ConnectedWallet,
   WalletWithSignParams,
 } from '@notifi-network/notifi-core';
+import { addressEllipsis } from 'notifi-react-card/lib/utils/stringUtils';
 import React, { useCallback, useMemo } from 'react';
 
 import { useNotifiSubscribe } from '../../hooks';
@@ -39,6 +40,13 @@ export const ConnectWalletRow: React.FC<ConnectWalletRowProps> = ({
     );
   }, [connectedWallets, walletParams]);
 
+  const shortenedAddress = useMemo(() => {
+    if (walletParams === null || walletParams.walletPublicKey === null) {
+      return null;
+    }
+    return addressEllipsis(walletParams.walletPublicKey);
+  }, [walletParams]);
+
   const connectWallet = useCallback(async () => {
     await subscribeWallet({
       walletParams,
@@ -47,12 +55,17 @@ export const ConnectWalletRow: React.FC<ConnectWalletRowProps> = ({
   }, [subscribeWallet, walletParams]);
 
   if (isConnected) {
-    return <div>{walletParams.walletPublicKey} is connected</div>;
+    return (
+      <div className="NotifiVerifyItem">
+        <p className="NotifiVerifyPublicKey">{shortenedAddress}</p>
+      </div>
+    );
   }
   return (
-    <div>
-      {walletParams.walletPublicKey}{' '}
+    <div className="NotifiVerifyItem">
+      <p className="NotifiVerifyPublicKey">{shortenedAddress}</p>
       <button
+        className="NotifiVerifyButton"
         onClick={() => {
           connectWallet();
         }}

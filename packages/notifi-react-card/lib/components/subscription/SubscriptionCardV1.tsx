@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import { useNotifiSubscriptionContext } from '../../context';
 import { CardConfigItemV1, useNotifiSubscribe } from '../../hooks';
 import { DeepPartialReadonly } from '../../utils';
+import NotifiAlertBox from '../NotifiAlertBox';
 import {
   NotifiInputFieldsText,
   NotifiInputSeparators,
@@ -24,6 +25,7 @@ import {
   PreviewCard,
   PreviewCardProps,
 } from './subscription-card-views/PreviewCard';
+import VerifyWalletView from './subscription-card-views/VerifyWalletView';
 
 export type SubscriptionCardV1Props = Readonly<{
   buttonText?: string;
@@ -89,25 +91,54 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
       break;
     case 'preview':
       view = (
-        <PreviewCard
-          data={data}
-          inputs={inputs}
-          inputDisabled={inputDisabled}
-          classNames={classNames?.PreviewCard}
-        />
+        <>
+          <NotifiAlertBox
+            leftIconName="back"
+            onBtnLeftClick={() => setCardView({ state: 'verify' })}
+          >
+            <p>Manage Alerts</p>
+          </NotifiAlertBox>
+          <PreviewCard
+            data={data}
+            inputs={inputs}
+            inputDisabled={inputDisabled}
+            classNames={classNames?.PreviewCard}
+          />
+        </>
       );
       break;
     case 'edit':
       view = (
-        <EditCardView
-          buttonText={buttonText}
-          data={data}
-          classNames={classNames?.EditCard}
-          inputDisabled={inputDisabled}
-          inputTextFields={inputLabels}
-          inputSeparators={inputSeparators}
-          allowedCountryCodes={allowedCountryCodes}
-        />
+        <>
+          <NotifiAlertBox>
+            <div>
+              <h2>Alert History</h2>
+              <p>Powered by Notifi</p>
+            </div>
+          </NotifiAlertBox>
+          <EditCardView
+            buttonText={buttonText}
+            data={data}
+            classNames={classNames?.EditCard}
+            inputDisabled={inputDisabled}
+            inputTextFields={inputLabels}
+            inputSeparators={inputSeparators}
+            allowedCountryCodes={allowedCountryCodes}
+          />
+        </>
+      );
+      break;
+    case 'verify':
+      view = (
+        <>
+          <NotifiAlertBox
+            leftIconName="back"
+            onBtnLeftClick={() => setCardView({ state: 'edit' })}
+          >
+            <p>Verify your wallets to receive balance alerts</p>
+          </NotifiAlertBox>
+          <VerifyWalletView buttonText={buttonText} />
+        </>
       );
       break;
     case 'history':
