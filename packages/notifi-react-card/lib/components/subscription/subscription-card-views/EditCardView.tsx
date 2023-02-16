@@ -15,9 +15,10 @@ import { AlertListPreview } from './AlertListPreview';
 import { InputFields, InputFieldsProps } from './InputFields';
 
 export type EditCardViewProps = Readonly<{
-  buttonText?: string;
+  buttonText: string;
   data: CardConfigItemV1;
   inputDisabled: boolean;
+  showPreview?: boolean;
   classNames?: Readonly<{
     NotifiInputContainer?: string;
     InputFields?: DeepPartialReadonly<InputFieldsProps['classNames']>;
@@ -33,6 +34,7 @@ export const EditCardView: React.FC<EditCardViewProps> = ({
   allowedCountryCodes,
   buttonText,
   classNames,
+  showPreview,
   data,
   inputDisabled,
   inputSeparators,
@@ -42,7 +44,7 @@ export const EditCardView: React.FC<EditCardViewProps> = ({
     <div
       className={clsx('NotifiInputContainer', classNames?.NotifiInputContainer)}
     >
-      <AlertListPreview eventTypes={data.eventTypes} />
+      {showPreview ? <AlertListPreview eventTypes={data.eventTypes} /> : null}
 
       <InputFields
         data={data}

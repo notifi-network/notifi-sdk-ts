@@ -6,7 +6,7 @@ export type NotifiCardButtonProps = Readonly<{
     button?: string;
     label?: string;
   }>;
-  buttonText?: string;
+  buttonText: string;
   disabled?: boolean;
   onClick?: () => void;
 }>;
@@ -17,8 +17,6 @@ const NotifiCardButton: React.FC<NotifiCardButtonProps> = ({
   disabled,
   onClick,
 }) => {
-  const buttonLabel = buttonText ?? 'Next';
-
   return (
     <button
       className={clsx('NotifiCardButton__button', classNames?.button)}
@@ -26,7 +24,7 @@ const NotifiCardButton: React.FC<NotifiCardButtonProps> = ({
       onClick={onClick}
     >
       <span className={clsx('NotifiCardButtonn__label', classNames?.label)}>
-        {buttonLabel}
+        {buttonText}
       </span>
     </button>
   );

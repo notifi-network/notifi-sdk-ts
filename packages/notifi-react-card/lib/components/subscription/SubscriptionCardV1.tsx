@@ -28,7 +28,6 @@ import {
 import VerifyWalletView from './subscription-card-views/VerifyWalletView';
 
 export type SubscriptionCardV1Props = Readonly<{
-  buttonText?: string;
   classNames?: {
     PreviewCard?: DeepPartialReadonly<PreviewCardProps['classNames']>;
     HistoryCard?: DeepPartialReadonly<AlertHistoryViewProps['classNames']>;
@@ -46,7 +45,6 @@ export type SubscriptionCardV1Props = Readonly<{
 }>;
 
 export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
-  buttonText,
   classNames,
   data,
   inputDisabled,
@@ -81,7 +79,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
     } else if (isTokenExpired) {
       setCardView({ state: 'expired' });
     } else {
-      setCardView({ state: 'edit' });
+      setCardView({ state: 'signup' });
     }
   }, [email, phoneNumber, telegramId, setCardView, cardView, isInitialized]);
 
@@ -110,38 +108,53 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
       );
       break;
     case 'edit':
+    case 'signup':
       view = (
         <>
           <NotifiAlertBox
-            leftIcon={{
-              name: 'back',
-              onClick: () => setCardView({ state: 'history' }),
-            }}
+            leftIcon={
+              cardView.state === 'signup'
+                ? undefined
+                : {
+                    name: 'back',
+                    onClick: () => setCardView({ state: 'history' }),
+                  }
+            }
           ></NotifiAlertBox>
           <EditCardView
-            buttonText={buttonText}
+            buttonText={cardView.state === 'signup' ? 'Next' : 'Update'}
             data={data}
             classNames={classNames?.EditCard}
             inputDisabled={inputDisabled}
             inputTextFields={inputLabels}
             inputSeparators={inputSeparators}
             allowedCountryCodes={allowedCountryCodes}
+            showPreview={cardView.state === 'signup'}
           />
         </>
       );
       break;
+    case 'verifyonboarding':
     case 'verify':
       view = (
         <>
           <NotifiAlertBox
             leftIcon={{
               name: 'back',
-              onClick: () => setCardView({ state: 'edit' }),
+              onClick: () =>
+                setCardView({
+                  state:
+                    cardView.state === 'verifyonboarding' ? 'signup' : 'edit',
+                }),
             }}
           >
             <h2>Verify Wallets</h2>
           </NotifiAlertBox>
-          <VerifyWalletView buttonText={buttonText} />
+          <VerifyWalletView
+            buttonText={
+              cardView.state === 'verifyonboarding' ? 'Next' : 'Confirm'
+            }
+          />
         </>
       );
       break;

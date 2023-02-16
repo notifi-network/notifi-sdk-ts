@@ -13,7 +13,7 @@ export type VerifyWalletViewProps = Readonly<{
     NotifiInputHeading?: string;
     NotifiCardButtonProps?: NotifiCardButtonProps['classNames'];
   }>;
-  buttonText?: string;
+  buttonText: string;
 }>;
 
 const VerifyWalletView: React.FC<VerifyWalletViewProps> = ({
