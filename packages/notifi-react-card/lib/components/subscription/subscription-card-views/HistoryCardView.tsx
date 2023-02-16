@@ -43,8 +43,6 @@ export const AlertCard = ({
 }: Readonly<{
   notification: NotificationHistoryEntry;
   handleAlertEntrySelection: () => void;
-  healthCheckIcon?: JSX.Element;
-  broadcastIcon?: JSX.Element;
 }>): React.ReactElement => {
   const detail = notification.detail;
 
