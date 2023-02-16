@@ -694,7 +694,7 @@ input:-webkit-autofill {
   margin-left: 8px;
 }
 .NotifiVerifyButton,
-.NotifiUserInfoPanel__myWalleConfirmation,
+.NotifiUserInfoPanel__myWalletConfirmation,
 .NotifiUserInfoPanel__emailConfirmationLabel,
 .NotifiUserInfoPanel__telegramConfirmationLabel {
   cursor: pointer;
@@ -717,12 +717,8 @@ input:-webkit-autofill {
   text-align: left;
   align-items: baseline;
   overflow-wrap: anywhere;
-  padding-top: 16px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--notifi-input-border);
-  margin-bottom: 0 !important;
 }
-.NotifiUserInfoPanel__myWalleLabel,
+.NotifiUserInfoPanel__myWalletLabel,
 .NotifiUserInfoPanel__emailLabel,
 .NotifiUserInfoPanel__smsLabel,
 .NotifiUserInfoPanel__smsLabel,

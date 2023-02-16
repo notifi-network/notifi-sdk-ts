@@ -120,7 +120,13 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
                     onClick: () => setCardView({ state: 'history' }),
                   }
             }
-          ></NotifiAlertBox>
+          >
+            {cardView.state === 'signup' ? (
+              <h2>Get Notified</h2>
+            ) : (
+              <h2>Update Settings</h2>
+            )}
+          </NotifiAlertBox>
           <EditCardView
             buttonText={cardView.state === 'signup' ? 'Next' : 'Update'}
             data={data}
@@ -144,7 +150,9 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
               onClick: () =>
                 setCardView({
                   state:
-                    cardView.state === 'verifyonboarding' ? 'signup' : 'edit',
+                    cardView.state === 'verifyonboarding'
+                      ? 'signup'
+                      : 'preview',
                 }),
             }}
           >

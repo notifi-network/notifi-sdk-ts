@@ -2,7 +2,10 @@ import clsx from 'clsx';
 import { PenIcon } from 'notifi-react-card/lib/assets/PenIcon';
 import React, { useCallback } from 'react';
 
-import { useNotifiSubscriptionContext } from '../../../../context';
+import {
+  useNotifiClientContext,
+  useNotifiSubscriptionContext,
+} from '../../../../context';
 import { CardConfigItemV1, useNotifiSubscribe } from '../../../../hooks';
 import { DeepPartialReadonly } from '../../../../utils';
 
@@ -43,12 +46,16 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
     telegramConfirmationUrl,
   } = useNotifiSubscriptionContext();
 
+  const {
+    params: { multiWallet },
+  } = useNotifiClientContext();
+
   const { resendEmailVerificationLink } = useNotifiSubscribe({
     targetGroupName: 'Default',
   });
 
   const handleEditClick = useCallback(() => {
-    setCardView({ state: 'verify' });
+    setCardView({ state: 'edit' });
   }, [setCardView, phoneNumber, email, telegramId]);
 
   const handleResendEmailVerificationClick = useCallback(() => {
@@ -150,29 +157,34 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
           ) : null}
         </div>
       ) : null}
-      <div
-        className={clsx(
-          'NotifiUserInfoPanel__myWallet',
-          classNames?.myWallet?.container,
-        )}
-      >
-        <label
+      {multiWallet !== undefined && multiWallet.ownedWallets.length > 0 ? (
+        <div
           className={clsx(
-            'NotifiUserInfoPanel__myWalleLabel',
-            classNames?.myWallet?.label,
+            'NotifiUserInfoPanel__myWallet',
+            classNames?.myWallet?.container,
           )}
         >
-          My wallets
-        </label>
-        <button
-          className={clsx(
-            'NotifiUserInfoPanel__myWalleConfirmation',
-            classNames?.myWallet?.confirmationLink,
-          )}
-        >
-          Edit
-        </button>
-      </div>
+          <label
+            className={clsx(
+              'NotifiUserInfoPanel__myWalletLabel',
+              classNames?.myWallet?.label,
+            )}
+          >
+            My wallets
+          </label>
+          <button
+            className={clsx(
+              'NotifiUserInfoPanel__myWalletConfirmation',
+              classNames?.myWallet?.confirmationLink,
+            )}
+            onClick={() => {
+              setCardView({ state: 'verify' });
+            }}
+          >
+            Edit
+          </button>
+        </div>
+      ) : null}
       <button
         className={clsx(
           'NotifiPreviewCard__editButton',
