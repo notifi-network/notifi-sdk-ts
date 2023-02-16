@@ -11,6 +11,7 @@ import {
   NotifiInputFieldsText,
   NotifiInputSeparators,
 } from '../NotifiSubscriptionCard';
+import { AlertListPreview } from './AlertListPreview';
 import { InputFields, InputFieldsProps } from './InputFields';
 
 export type EditCardViewProps = Readonly<{
@@ -41,11 +42,7 @@ export const EditCardView: React.FC<EditCardViewProps> = ({
     <div
       className={clsx('NotifiInputContainer', classNames?.NotifiInputContainer)}
     >
-      <h4
-        className={clsx('NotifiInputHeading', classNames?.NotifiInputHeading)}
-      >
-        Get transaction and web3 activity alerts
-      </h4>
+      <AlertListPreview eventTypes={data.eventTypes} />
 
       <InputFields
         data={data}

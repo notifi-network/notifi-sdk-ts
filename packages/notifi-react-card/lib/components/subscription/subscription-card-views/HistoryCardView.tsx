@@ -154,19 +154,6 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
 
   return (
     <>
-      <div className={clsx('NotifiAlertHistory__header', classNames?.header)}>
-        <span className={clsx('NotifiAlertHistory__label', classNames?.title)}>
-          {alertHistoryTitle}
-        </span>
-
-        <Settings
-          onClick={handleBackClick}
-          className={clsx(
-            'NotifiAlertHistory__settingsIcon',
-            classNames?.manageAlertLink,
-          )}
-        />
-      </div>
       <div
         className={clsx(
           'NotifiAlertHistory__dividerLine',

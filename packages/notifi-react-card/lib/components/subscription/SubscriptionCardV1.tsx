@@ -93,10 +93,12 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
       view = (
         <>
           <NotifiAlertBox
-            leftIconName="back"
-            onBtnLeftClick={() => setCardView({ state: 'verify' })}
+            leftIcon={{
+              name: 'back',
+              onClick: () => setCardView({ state: 'history' }),
+            }}
           >
-            <p>Manage Alerts</p>
+            <h2>Manage Alerts</h2>
           </NotifiAlertBox>
           <PreviewCard
             data={data}
@@ -110,12 +112,12 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
     case 'edit':
       view = (
         <>
-          <NotifiAlertBox>
-            <div>
-              <h2>Alert History</h2>
-              <p>Powered by Notifi</p>
-            </div>
-          </NotifiAlertBox>
+          <NotifiAlertBox
+            leftIcon={{
+              name: 'back',
+              onClick: () => setCardView({ state: 'history' }),
+            }}
+          ></NotifiAlertBox>
           <EditCardView
             buttonText={buttonText}
             data={data}
@@ -132,17 +134,33 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
       view = (
         <>
           <NotifiAlertBox
-            leftIconName="back"
-            onBtnLeftClick={() => setCardView({ state: 'edit' })}
+            leftIcon={{
+              name: 'back',
+              onClick: () => setCardView({ state: 'edit' }),
+            }}
           >
-            <p>Verify your wallets to receive balance alerts</p>
+            <h2>Verify Wallets</h2>
           </NotifiAlertBox>
           <VerifyWalletView buttonText={buttonText} />
         </>
       );
       break;
     case 'history':
-      view = <AlertHistoryView />;
+      view = (
+        <>
+          <NotifiAlertBox
+            rightIcon={{
+              name: 'settings',
+              onClick: () => setCardView({ state: 'preview' }),
+            }}
+          >
+            <div>
+              <h2>Alert History</h2>
+            </div>
+          </NotifiAlertBox>
+          <AlertHistoryView />
+        </>
+      );
       break;
   }
   return <>{view}</>;

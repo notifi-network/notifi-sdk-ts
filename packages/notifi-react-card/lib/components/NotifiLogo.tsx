@@ -1,13 +1,11 @@
 import React from 'react';
 
-interface Props {
-  className?: string;
-}
+export type Props = React.SVGProps<SVGSVGElement>;
 
-export const NotifiLogo: React.FC<Props> = ({ className }) => {
+export const NotifiLogo: React.FC<Props> = (props: Props) => {
   return (
     <svg
-      className={className}
+      {...props}
       width="39"
       height="9"
       viewBox="0 0 39 9"
