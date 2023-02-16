@@ -66,7 +66,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
     <div
       className={clsx('NotifiUserInfoPanelContainer', classNames?.container)}
     >
-      {contactInfo.email.active ? (
+      {contactInfo.email.active && email ? (
         <div
           className={clsx(
             'NotifiUserInfoPanel__email',
@@ -79,7 +79,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
               classNames?.email?.label,
             )}
           >
-            {email ?? 'email'}
+            {email}
           </label>
           {emailIdThatNeedsConfirmation !== '' ? (
             <a
@@ -103,7 +103,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
           ) : null}
         </div>
       ) : null}
-      {contactInfo.sms.active ? (
+      {contactInfo.sms.active && phoneNumber ? (
         <div
           className={clsx(
             'NotifiUserInfoPanel__sms',
@@ -116,11 +116,11 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
               classNames?.sms?.label,
             )}
           >
-            {phoneNumber ?? 'sms'}
+            {phoneNumber}
           </label>
         </div>
       ) : null}
-      {contactInfo.telegram.active ? (
+      {contactInfo.telegram.active && telegramId ? (
         <div
           className={clsx(
             'NotifiUserInfoPanel__telegram',
@@ -133,7 +133,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
               classNames?.telegram?.label,
             )}
           >
-            {telegramId ?? 'telegram'}
+            {telegramId}
           </label>
           {telegramConfirmationUrl ? (
             <a
