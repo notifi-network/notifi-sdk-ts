@@ -4,22 +4,17 @@ import {
   NotificationHistoryEntry,
 } from '@notifi-network/notifi-core';
 import clsx from 'clsx';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { ListRange, Virtuoso } from 'react-virtuoso';
 
 import { NotificationEmptyBellIcon } from '../../../assets/NotificationEmptyBellIcon';
-import { Settings } from '../../../assets/Settings';
-import {
-  useNotifiClientContext,
-  useNotifiSubscriptionContext,
-} from '../../../context';
+import { useNotifiClientContext } from '../../../context';
 import { MESSAGES_PER_PAGE } from '../../../utils/constants';
 import { AlertDetailsCard } from '../../AlertHistory/AlertDetailsCard';
 import { BroadcastMessageChangedRenderer } from '../../AlertHistory/BroadcastMessageChangedRenderer';
 import { HealthValueOverThresholdEventRenderer } from '../../AlertHistory/HealthValueOverThresholdEventRenderer';
 
 export type AlertHistoryViewProps = Readonly<{
-  alertHistoryTitle?: string;
   noAlertDescription?: string;
   notificationListHeight?: string;
   classNames?: Readonly<{
@@ -76,21 +71,13 @@ export const AlertCard = ({
 };
 
 export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
-  alertHistoryTitle,
   classNames,
   noAlertDescription,
   notificationListHeight,
 }) => {
-  alertHistoryTitle = alertHistoryTitle ? alertHistoryTitle : 'Alert History';
   noAlertDescription = noAlertDescription
     ? noAlertDescription
     : 'You haven’t received any notifications yet';
-
-  const { setCardView } = useNotifiSubscriptionContext();
-
-  const handleBackClick = () => {
-    setCardView({ state: 'preview' });
-  };
 
   const [selectedAlertEntry, setAlertEntry] = useState<
     NotificationHistoryEntry | undefined
@@ -110,25 +97,29 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
 
   const { client } = useNotifiClientContext();
 
-  async function getNotificationHistory({
-    first,
-    after,
-  }: GetNotificationHistoryInput) {
-    const notificationHistory = await client
-      .getNotificationHistory({
-        first,
-        after,
-      })
-      .then((result) => {
-        setAlertHistoryData(result);
-        if (result.nodes) setAllNodes(allNodes.concat(result.nodes));
-        setEndCursor(result.pageInfo.endCursor);
-        setHasNextPage(result.pageInfo.hasNextPage);
-      });
-    return notificationHistory;
-  }
+  const getNotificationHistory = useCallback(
+    async ({ first, after }: GetNotificationHistoryInput) => {
+      const notificationHistory = await client
+        .getNotificationHistory({
+          first,
+          after,
+        })
+        .then((result) => {
+          setAlertHistoryData(result);
+          if (result.nodes) setAllNodes(allNodes.concat(result.nodes));
+          setEndCursor(result.pageInfo.endCursor);
+          setHasNextPage(result.pageInfo.hasNextPage);
+        });
+      return notificationHistory;
+    },
+    [client, setAlertHistoryData, setAllNodes, setEndCursor, setHasNextPage],
+  );
 
   useEffect(() => {
+    if (!client.isInitialized || !client.isAuthenticated) {
+      return;
+    }
+
     if (!alertHistoryData) {
       getNotificationHistory({
         first: MESSAGES_PER_PAGE,
@@ -150,7 +141,7 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
         after: endCursor,
       });
     }
-  }, [currentIndex, visibleRange, hasNextPage, endCursor]);
+  }, [client, currentIndex, visibleRange, hasNextPage, endCursor]);
 
   return (
     <>

@@ -175,9 +175,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
               onClick: () => setCardView({ state: 'preview' }),
             }}
           >
-            <div>
-              <h2>Alert History</h2>
-            </div>
+            <h2>Alert History</h2>
           </NotifiAlertBox>
           <AlertHistoryView />
         </>

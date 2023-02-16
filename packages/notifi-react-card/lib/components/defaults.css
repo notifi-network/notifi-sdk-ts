@@ -156,7 +156,7 @@ input:-webkit-autofill {
 .NotifiAlertBox__container {
   display: flex;
   align-items: center;
-  padding: 10px 0;
+  padding: 0;
 }
 
 .NotifiAlertBox__btn--left,
@@ -174,7 +174,9 @@ input:-webkit-autofill {
 .NotifiAlertBox__btn--spacer {
   width: 24px;
   height: 24px;
+  padding: 10px;
   visibility: hidden;
+  margin-bottom: 0 !important;
 }
 
 .NotifiAlertBox__content {
@@ -194,8 +196,7 @@ input:-webkit-autofill {
   font-weight: 700;
   font-size: 15px;
   line-height: 18px;
-  margin-bottom: 4px !important;
-  margin-top: 0 !important;
+  margin: 0 auto !important;
 }
 
 .NotifiAlertBox__iconSvg {
