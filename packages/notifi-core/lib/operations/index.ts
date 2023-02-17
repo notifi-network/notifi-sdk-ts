@@ -1,6 +1,7 @@
 export * from './BeginLogInByTransaction';
 export * from './CompleteLogInByTransaction';
 export * from './BroadcastMessage';
+export * from './ConnectWallet';
 export * from './CreateAlert';
 export * from './CreateSource';
 export * from './CreateSupportConversation';
@@ -16,6 +17,7 @@ export * from './DeleteTargetGroup';
 export * from './FindTenantConfig';
 export * from './GetAlerts';
 export * from './GetConfigurationForDapp';
+export * from './GetConnectedWallets';
 export * from './GetConversationMessages';
 export * from './GetEmailTargets';
 export * from './GetFilters';

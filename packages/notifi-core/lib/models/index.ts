@@ -1,6 +1,7 @@
 export * from './Alert';
 export * from './Authorization';
 export * from './ClientConfiguration';
+export * from './ConnectedWallet';
 export * from './ConversationMessages';
 export * from './EmailTarget';
 export * from './Filter';
@@ -16,4 +17,5 @@ export * from './TelegramTarget';
 export * from './TenantConfig';
 export * from './UserTopic';
 export * from './User';
+export * from './WalletBlockchain';
 export * from './WebhookTarget';

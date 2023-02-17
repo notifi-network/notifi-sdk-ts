@@ -1,13 +1,11 @@
 import React from 'react';
 
-export type Props = Readonly<{
-  className?: string;
-}>;
+export type Props = React.SVGProps<SVGSVGElement>;
 
-export const BackArrow: React.FC<Props> = ({ className }: Props) => {
+export const BackArrow: React.FC<Props> = (props: Props) => {
   return (
     <svg
-      className={className}
+      {...props}
       xmlns="http://www.w3.org/2000/svg"
       fill="inherit"
       viewBox="0 0 24 24"

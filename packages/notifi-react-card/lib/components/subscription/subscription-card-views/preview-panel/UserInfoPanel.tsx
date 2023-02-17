@@ -1,7 +1,11 @@
 import clsx from 'clsx';
+import { PenIcon } from 'notifi-react-card/lib/assets/PenIcon';
 import React, { useCallback } from 'react';
 
-import { useNotifiSubscriptionContext } from '../../../../context';
+import {
+  useNotifiClientContext,
+  useNotifiSubscriptionContext,
+} from '../../../../context';
 import { CardConfigItemV1, useNotifiSubscribe } from '../../../../hooks';
 import { DeepPartialReadonly } from '../../../../utils';
 
@@ -20,6 +24,7 @@ export type UserInfoPanelProps = {
     telegram?: UserInfoSection;
     sms?: UserInfoSection;
     EditButton: string;
+    myWallet?: UserInfoSection;
   }>;
   contactInfo: CardConfigItemV1['contactInfo'];
   confirmationLabels?: {
@@ -41,6 +46,10 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
     telegramConfirmationUrl,
   } = useNotifiSubscriptionContext();
 
+  const {
+    params: { multiWallet },
+  } = useNotifiClientContext();
+
   const { resendEmailVerificationLink } = useNotifiSubscribe({
     targetGroupName: 'Default',
   });
@@ -57,7 +66,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
     <div
       className={clsx('NotifiUserInfoPanelContainer', classNames?.container)}
     >
-      {contactInfo.email.active ? (
+      {contactInfo.email.active && email ? (
         <div
           className={clsx(
             'NotifiUserInfoPanel__email',
@@ -70,7 +79,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
               classNames?.email?.label,
             )}
           >
-            {email ?? 'email'}
+            {email}
           </label>
           {emailIdThatNeedsConfirmation !== '' ? (
             <a
@@ -94,7 +103,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
           ) : null}
         </div>
       ) : null}
-      {contactInfo.sms.active ? (
+      {contactInfo.sms.active && phoneNumber ? (
         <div
           className={clsx(
             'NotifiUserInfoPanel__sms',
@@ -107,11 +116,11 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
               classNames?.sms?.label,
             )}
           >
-            {phoneNumber ?? 'sms'}
+            {phoneNumber}
           </label>
         </div>
       ) : null}
-      {contactInfo.telegram.active ? (
+      {contactInfo.telegram.active && telegramId ? (
         <div
           className={clsx(
             'NotifiUserInfoPanel__telegram',
@@ -124,7 +133,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
               classNames?.telegram?.label,
             )}
           >
-            {telegramId ?? 'telegram'}
+            {telegramId}
           </label>
           {telegramConfirmationUrl ? (
             <a
@@ -148,6 +157,34 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
           ) : null}
         </div>
       ) : null}
+      {multiWallet !== undefined && multiWallet.ownedWallets.length > 0 ? (
+        <div
+          className={clsx(
+            'NotifiUserInfoPanel__myWallet',
+            classNames?.myWallet?.container,
+          )}
+        >
+          <label
+            className={clsx(
+              'NotifiUserInfoPanel__myWalletLabel',
+              classNames?.myWallet?.label,
+            )}
+          >
+            My wallets
+          </label>
+          <button
+            className={clsx(
+              'NotifiUserInfoPanel__myWalletConfirmation',
+              classNames?.myWallet?.confirmationLink,
+            )}
+            onClick={() => {
+              setCardView({ state: 'verify' });
+            }}
+          >
+            Edit
+          </button>
+        </div>
+      ) : null}
       <button
         className={clsx(
           'NotifiPreviewCard__editButton',
@@ -155,6 +192,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
         )}
         onClick={handleEditClick}
       >
+        <PenIcon />
         Edit
       </button>
     </div>

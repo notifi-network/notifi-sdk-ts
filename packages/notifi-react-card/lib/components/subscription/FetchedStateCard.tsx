@@ -10,7 +10,6 @@ import type { SubscriptionCardV1Props } from './SubscriptionCardV1';
 import { SubscriptionCardV1 } from './SubscriptionCardV1';
 
 export type FetchedStateCardProps = Readonly<{
-  buttonText?: string;
   classNames?: Readonly<{
     SubscriptionCardV1?: SubscriptionCardV1Props['classNames'];
   }>;
@@ -22,7 +21,6 @@ export type FetchedStateCardProps = Readonly<{
 }>;
 
 export const FetchedStateCard: React.FC<FetchedStateCardProps> = ({
-  buttonText,
   inputDisabled,
   classNames,
   card,
@@ -35,7 +33,6 @@ export const FetchedStateCard: React.FC<FetchedStateCardProps> = ({
     case 'v1':
       contents = (
         <SubscriptionCardV1
-          buttonText={buttonText}
           classNames={classNames?.SubscriptionCardV1}
           data={card.data}
           inputs={inputs}

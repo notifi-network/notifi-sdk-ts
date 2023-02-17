@@ -32,7 +32,7 @@
   --notifi-toggle-active: rgba(255, 255, 255, 0.4);
   --notifi-tooltip-background: rgba(255, 255, 255, 0.6);
   --notifi-alert-color: rgb(213, 25, 25);
-  --notifi-link-color: #b3b3ff;
+  --notifi-link-color: hsl(240, 100%, 85%);
   --notifi-checkmark-color: #ea7e68;
   --notifi-font-color: #fff;
   --notifi-secondary-font-color: #b6b8d5;
@@ -71,10 +71,48 @@ input:-webkit-autofill {
 }
 .NotifiInputContainer {
   flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.NotifiInputHeading {
+  color: var(--notifi-font-color);
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 24px;
+  margin-top: 24px !important;
+  margin-bottom: 16px !important;
 }
 
 .NotifiSubscriptionCard__container *:not(:last-child) {
   margin-bottom: 10px;
+}
+
+.NotifiVerifyContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
+}
+
+.NotifiVerifyContainer ul {
+  padding-left: 0;
+  margin: 0;
+}
+
+.NotifiVerifyItem {
+  padding: 16px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0 !important;
+  margin-top: 0 !important;
+  border-bottom: 1px solid var(--notifi-input-border);
+}
+
+.NotifiVerifyPublicKey,
+.NotifiVerifyItem {
+  margin: 0 !important;
 }
 
 .NotifiIntercomCard__container {
@@ -98,8 +136,8 @@ input:-webkit-autofill {
 }
 
 .NotifiFooter__logoSvg {
-  width: 61px;
-  height: 14px;
+  width: 39px;
+  height: 9px;
   padding-top: 2px;
   margin-left: 4px;
 }
@@ -113,6 +151,57 @@ input:-webkit-autofill {
   text-decoration: underline;
   font-size: 12px;
   line-height: 14px;
+}
+
+.NotifiAlertBox__container {
+  display: flex;
+  align-items: center;
+  padding: 0;
+}
+
+.NotifiAlertBox__btn--left,
+.NotifiAlertBox__btn--right {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  cursor: pointer;
+  margin-bottom: 0 !important;
+}
+
+.NotifiAlertBox__btn--spacer {
+  width: 24px;
+  height: 24px;
+  padding: 10px;
+  visibility: hidden;
+  margin-bottom: 0 !important;
+}
+
+.NotifiAlertBox__content {
+  flex: 1;
+  display: flex;
+  margin-left: 8px;
+  margin-right: 8px;
+  color: var(--notifi-secondary-font-color);
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 18px;
+  margin-bottom: 0 !important;
+}
+
+.NotifiAlertBox__content h2 {
+  color: var(--notifi-font-color);
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 18px;
+  margin: 0 auto !important;
+}
+
+.NotifiAlertBox__iconSvg {
+  width: 24px;
+  height: 24px;
 }
 
 .NotifiAlertHistory__label {
@@ -151,15 +240,6 @@ input:-webkit-autofill {
 .NotifiAlertHistory__dividerLine {
   border-top: 2px solid var(--notifi-font-color);
   border-radius: 5px;
-}
-
-.NotifiAlertHistory__header {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  padding-bottom: 10px;
-  position: relative;
 }
 
 .NotifiAlertHistory__notificationDate {
@@ -216,10 +296,11 @@ input:-webkit-autofill {
   display: flex;
   flex-direction: row;
   background-color: var(--notifi-input-background);
-  border-radius: 5px;
-  padding: 10px;
+  border: 1.5px solid var(--notifi-input-border);
+  border-radius: 8px;
+  padding: 15px 16px;
   align-items: center;
-  max-height: 22px;
+  max-height: 18px;
   box-sizing: content-box;
 }
 
@@ -246,12 +327,13 @@ input:-webkit-autofill {
 .NotifiSmsInput__input,
 .NotifiTelegramInput__input {
   flex-grow: 1;
-  font-size: 16px;
-  line-height: 20px;
+  font-size: 15px;
+  line-height: 18px;
   background: none;
   outline: none;
   border: none;
   color: var(--notifi-font-color);
+  font-weight: 500;
 }
 
 .NotifiEmailInput__input::placeholder,
@@ -276,7 +358,7 @@ input:-webkit-autofill {
 }
 
 .NotifiToggle__container {
-  --notifi-toggle-size: 18px;
+  --notifi-toggle-size: 22px;
   --notifi-toggle-padding: 3px;
   --notifi-toggle-container: calc(
     var(--notifi-toggle-size) + 2 * var(--notifi-toggle-padding)
@@ -291,8 +373,11 @@ input:-webkit-autofill {
 .NotifiSmsInput__label,
 .NotifiTelegramInput__label {
   display: flex;
-  margin-bottom: 5px !important;
-  color: var(--notifi-secondary-font-color);
+  margin-bottom: 12px !important;
+  color: var(--notifi-font-color);
+  opacity: 0.5;
+  font-size: 15px;
+  line-height: 18px;
 }
 
 .NotifiToggle__input {
@@ -362,6 +447,7 @@ input:-webkit-autofill {
   font-size: 16px;
   line-height: 20px;
   text-align: left;
+  color: var(--notifi-font-color);
 }
 
 .EventTypeHealthCheckRow__container,
@@ -386,20 +472,22 @@ input:-webkit-autofill {
 .EventTypeUnsupportedRow__container {
   display: none;
 }
-
+.NotifiCardButton__button,
 .NotifiSubscribeButton__button {
-  padding: 10px;
   background-color: var(--notifi-button-color);
-  border-radius: 5px;
   border: none;
-  font-size: 16px;
-  line-height: 20px;
   cursor: pointer;
   color: var(--notifi-button-text-color);
   width: 100%;
   display: block;
+  font-size: 17px;
+  line-height: 22px;
+  font-weight: 600;
+  padding: 14px;
+  border-radius: 104px;
+  margin-top: auto;
 }
-
+.NotifiCardButton__button:disabled,
 .NotifiSubscribeButton__button:disabled,
 .NotifiStartChatButton__button:disabled,
 .NotifiIntercomSendMessageSection__button:disabled {
@@ -581,21 +669,24 @@ input:-webkit-autofill {
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  padding: 16px 24px 16px 24px;
+  padding: 0 16px;
   border-radius: 5px;
-  background-color: var(--notifi-card-secondary-background);
 }
 
 .NotifiPreviewCard__editButton {
   display: flex;
-  padding: 10px 20px 10px 20px;
-  background-color: var(--notifi-button-color);
-  border-radius: 10px;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 16px 20px;
+  background-color: transparent;
+  font-weight: 600;
   border: none;
   font-size: 16px;
   line-height: 20px;
   cursor: pointer;
-  color: var(--notifi-button-text-color);
+  color: var(--notifi-link-color);
+  gap: 4px;
 }
 
 .NotifiUserInfoPanel__emailConfirmation,
@@ -603,15 +694,21 @@ input:-webkit-autofill {
   flex-shrink: 0;
   margin-left: 8px;
 }
-
+.NotifiVerifyButton,
+.NotifiUserInfoPanel__myWalletConfirmation,
 .NotifiUserInfoPanel__emailConfirmationLabel,
 .NotifiUserInfoPanel__telegramConfirmationLabel {
   cursor: pointer;
   font-size: 14px;
   color: var(--notifi-link-color);
-  text-decoration: underline;
+  font-weight: 600;
+  line-height: 18px;
+  background-color: transparent;
+  border: 0;
+  box-shadow: 0;
+  outline: none;
 }
-
+.NotifiUserInfoPanel__myWallet,
 .NotifiUserInfoPanel__email,
 .NotifiUserInfoPanel__telegram,
 .NotifiUserInfoPanel__sms {
@@ -622,12 +719,15 @@ input:-webkit-autofill {
   align-items: baseline;
   overflow-wrap: anywhere;
 }
-
+.NotifiUserInfoPanel__myWalletLabel,
 .NotifiUserInfoPanel__emailLabel,
 .NotifiUserInfoPanel__smsLabel,
 .NotifiUserInfoPanel__smsLabel,
 .NotifiUserInfoPanel__telegramLabel {
   margin-bottom: 0 !important;
+  font-size: 15px;
+  line-height: 18px;
+  color: var(--notifi-font-color);
 }
 
 .NotifiTooltip__container .NotifiTooltip__infoIcon {
@@ -637,7 +737,7 @@ input:-webkit-autofill {
   fill: var(--notifi-font-color);
 }
 
-.NotifiTooltip__infoIcon:hover + .NotifiTooltip {
+.NotifiTooltip__infoIcon:hover + .NotifiTooltip__body {
   display: block;
 }
 
@@ -647,16 +747,17 @@ input:-webkit-autofill {
 
 .NotifiTooltip__body {
   width: 100%;
-  min-width: 140px;
+  min-width: 180px;
   display: none;
   position: absolute;
-  left: 30px;
-  top: 2px;
+  left: -70px;
+  top: -55px;
   font-size: 12px;
   z-index: 1;
 }
 
 .NotifiTooltip__arrow {
+  display: none;
   position: absolute;
   width: 0;
   height: 0;
@@ -671,11 +772,11 @@ input:-webkit-autofill {
 }
 
 .NotifiTooltip__label {
-  padding: 3px 10px;
+  padding: 16px;
   color: #000;
   text-align: left;
   background-color: var(--notifi-tooltip-background);
-  border-radius: 3px;
+  border-radius: 8px;
 }
 .NotifiAlertHistory__settingsIcon {
   position: absolute;

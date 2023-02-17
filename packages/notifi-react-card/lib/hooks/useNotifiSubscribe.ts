@@ -1,6 +1,7 @@
 import type {
   Alert,
   ClientData,
+  ConnectWalletParams,
   Filter,
   Source,
 } from '@notifi-network/notifi-core';
@@ -46,6 +47,7 @@ export const useNotifiSubscribe: ({
   subscribe: (
     alertConfigs: Record<string, AlertConfiguration>,
   ) => Promise<SubscriptionData>;
+  subscribeWallet: (walletParams: ConnectWalletParams) => Promise<void>;
   instantSubscribe: (
     subscribeData: InstantSubscribe,
   ) => Promise<SubscriptionData>;
@@ -70,6 +72,7 @@ export const useNotifiSubscribe: ({
   const {
     params,
     setAlerts,
+    setConnectedWallets,
     setEmail,
     setIsSmsConfirmed,
     setLoading,
@@ -105,6 +108,7 @@ export const useNotifiSubscribe: ({
       });
 
       setAlerts(alerts);
+      setConnectedWallets(newData?.connectedWallets ?? []);
       const emailTarget = targetGroup?.emailTargets[0] ?? null;
       const emailToSet = emailTarget?.emailAddress ?? '';
 
@@ -549,7 +553,24 @@ export const useNotifiSubscribe: ({
       logIn,
       setLoading,
       subscribe,
+      render,
     ],
+  );
+
+  const subscribeWallet = useCallback(
+    async (params: ConnectWalletParams) => {
+      setLoading(true);
+
+      if (!client.isAuthenticated) {
+        await logIn();
+      }
+
+      await client.connectWallet(params);
+      const newData = await client.fetchData();
+      setConnectedWallets(newData.connectedWallets);
+      setLoading(false);
+    },
+    [client, logIn, setLoading, setConnectedWallets],
   );
 
   return {
@@ -561,5 +582,6 @@ export const useNotifiSubscribe: ({
     logIn,
     subscribe,
     updateTargetGroups,
+    subscribeWallet,
   };
 };

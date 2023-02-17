@@ -15,6 +15,8 @@ import {
   ClientUpdateAlertInput,
   CompleteLoginViaTransactionInput,
   CompleteLoginViaTransactionResult,
+  ConnectWalletParams,
+  ConnectedWallet,
   CreateSourceInput,
   GetConversationMessagesFullInput,
   GetNotificationHistoryInput,
@@ -27,6 +29,7 @@ import {
   TenantConfig,
   User,
   UserTopic,
+  WalletParams,
 } from '@notifi-network/notifi-core';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
@@ -45,47 +48,6 @@ import packFilterOptions from '../utils/packFilterOptions';
 import storage from '../utils/storage';
 import useNotifiConfig, { BlockchainEnvironment } from './useNotifiConfig';
 import useNotifiService from './useNotifiService';
-
-export type WalletParams =
-  | Readonly<{
-      walletBlockchain: 'SOLANA';
-      walletPublicKey: string;
-    }>
-  | Readonly<{
-      walletBlockchain: 'ETHEREUM';
-      walletPublicKey: string;
-    }>
-  | Readonly<{
-      walletBlockchain: 'POLYGON';
-      walletPublicKey: string;
-    }>
-  | Readonly<{
-      walletBlockchain: 'ARBITRUM';
-      walletPublicKey: string;
-    }>
-  | Readonly<{
-      walletBlockchain: 'AVALANCHE';
-      walletPublicKey: string;
-    }>
-  | Readonly<{
-      walletBlockchain: 'BINANCE';
-      walletPublicKey: string;
-    }>
-  | Readonly<{
-      walletBlockchain: 'APTOS';
-      accountAddress: string;
-      walletPublicKey: string;
-    }>
-  | Readonly<{
-      walletBlockchain: 'ACALA';
-      accountAddress: string;
-      walletPublicKey: string;
-    }>
-  | Readonly<{
-      walletBlockchain: 'NEAR';
-      accountAddress: string;
-      walletPublicKey: string;
-    }>;
 
 /**
  * Config options for Notifi SDK
@@ -119,6 +81,7 @@ const projectData = (internalData: InternalData | null): ClientData | null => {
 
   const {
     alerts,
+    connectedWallets,
     emailTargets,
     filters,
     smsTargets,
@@ -129,6 +92,7 @@ const projectData = (internalData: InternalData | null): ClientData | null => {
 
   return {
     alerts,
+    connectedWallets,
     emailTargets,
     filters,
     smsTargets,
@@ -743,6 +707,68 @@ const useNotifiClient = (
       }
     },
     [service],
+  );
+
+  /**
+   * Connect a Wallet
+   *
+   * @remarks
+   * Use this to associate another wallet to this Notifi account
+   *
+   * @param {ConnectWalletInput} input - Input params for connecting a wallet
+   * @returns {ConnectedWallet} The resulting final data.
+   */
+  const connectWallet = useCallback(
+    async ({
+      walletParams,
+      connectWalletConflictResolutionTechnique,
+    }: ConnectWalletParams): Promise<ConnectedWallet> => {
+      const timestamp = Math.round(Date.now() / 1000);
+      const { walletBlockchain, walletPublicKey } = walletParams;
+
+      setLoading(true);
+      try {
+        const signature = await signMessage({
+          params: walletParams,
+          dappAddress,
+          timestamp,
+          signer: walletParams,
+        });
+
+        const result = await service.connectWallet({
+          walletBlockchain,
+          walletPublicKey,
+          accountId:
+            walletBlockchain === 'APTOS' ||
+            walletBlockchain === 'ACALA' ||
+            walletBlockchain === 'NEAR'
+              ? walletParams.accountAddress
+              : undefined,
+          signature,
+          timestamp,
+          connectWalletConflictResolutionTechnique,
+        });
+
+        if (internalData !== null) {
+          const newList = [...internalData.connectedWallets];
+          newList.push(result);
+          setInternalData({ ...internalData, connectedWallets: newList });
+        }
+
+        return result;
+      } catch (e: unknown) {
+        setIsAuthenticated(false);
+        if (e instanceof Error) {
+          setError(e);
+        } else {
+          setError(new NotifiClientError(e));
+        }
+        throw e;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [service, internalData],
   );
 
   /**
@@ -1380,6 +1406,7 @@ const useNotifiClient = (
     beginLoginViaTransaction,
     broadcastMessage,
     completeLoginViaTransaction,
+    connectWallet,
     logIn,
     logOut,
     createAlert,

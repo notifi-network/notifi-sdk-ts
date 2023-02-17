@@ -1,8 +1,10 @@
 import {
   Alert,
+  ConnectedWallet,
   EmailTarget,
   Filter,
   GetAlertsService,
+  GetConnectedWalletsService,
   GetEmailTargetsService,
   GetSmsTargetsService,
   GetSourceGroupsService,
@@ -21,6 +23,7 @@ import {
 
 export type InternalData = {
   alerts: Alert[];
+  connectedWallets: ConnectedWallet[];
   filters: Filter[];
   sources: Source[];
   sourceGroups: SourceGroup[];
@@ -42,6 +45,7 @@ export type TimeProvider = Readonly<{
 }>;
 
 type Service = GetAlertsService &
+  GetConnectedWalletsService &
   GetSourcesService &
   GetSourceGroupsService &
   GetTargetGroupsService &
@@ -54,6 +58,7 @@ type Service = GetAlertsService &
 const doFetchData = async (service: Service): Promise<InternalData> => {
   const [
     alerts,
+    connectedWallets,
     sources,
     sourceGroups,
     targetGroups,
@@ -63,6 +68,7 @@ const doFetchData = async (service: Service): Promise<InternalData> => {
     webhookTargets,
   ] = await Promise.all([
     service.getAlerts(),
+    service.getConnectedWallets(),
     service.getSources(),
     service.getSourceGroups(),
     service.getTargetGroups(),
@@ -85,6 +91,7 @@ const doFetchData = async (service: Service): Promise<InternalData> => {
 
   return {
     alerts: [...alerts],
+    connectedWallets: [...connectedWallets],
     filters,
     sources: [...sources],
     sourceGroups: [...sourceGroups],

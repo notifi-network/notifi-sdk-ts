@@ -14,7 +14,7 @@ export type NotifiSubscribeButtonProps = Readonly<{
     button?: string;
     label?: string;
   }>;
-  buttonText?: string;
+  buttonText: string;
   data: CardConfigItemV1;
 }>;
 
@@ -30,7 +30,7 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
 
   const { client } = useNotifiClientContext();
 
-  const { loading, setCardView } = useNotifiSubscriptionContext();
+  const { cardView, loading, setCardView } = useNotifiSubscriptionContext();
 
   const { formErrorMessages, formState } = useNotifiForm();
 
@@ -56,13 +56,14 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
     }
 
     if (success === true) {
-      setCardView({ state: 'preview' });
+      setCardView({
+        state: cardView.state === 'signup' ? 'verifyonboarding' : 'preview',
+      });
     }
   }, [client, eventTypes, subscribe, updateTargetGroups, setCardView]);
 
   const hasErrors = emailErrorMessage !== '' || smsErrorMessage !== '';
 
-  const buttonLabel = buttonText ?? 'Next';
   return (
     <button
       className={clsx('NotifiSubscribeButton__button', classNames?.button)}
@@ -75,7 +76,7 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
       onClick={onClick}
     >
       <span className={clsx('NotifiSubscribeButton__label', classNames?.label)}>
-        {buttonLabel}
+        {buttonText}
       </span>
     </button>
   );

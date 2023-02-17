@@ -1,6 +1,7 @@
 import {
   Alert,
   ClientConfiguration,
+  ConnectedWallet,
   EmailTarget,
   Filter,
   NotificationHistory,
@@ -18,6 +19,7 @@ import {
 } from './models/ConversationMessages';
 import { SupportConversation } from './models/SupportConversation';
 import {
+  ConnectWalletInput,
   CreateSourceInput,
   CreateWebhookTargetInput,
   FindTenantConfigInput,
@@ -28,6 +30,7 @@ import { GetConversationMessagesFullInput } from './operations/getConversationMe
 
 export type ClientData = Readonly<{
   alerts: ReadonlyArray<Alert>;
+  connectedWallets: ReadonlyArray<ConnectedWallet>;
   emailTargets: ReadonlyArray<EmailTarget>;
   filters: ReadonlyArray<Filter>;
   smsTargets: ReadonlyArray<SmsTarget>;
@@ -248,23 +251,12 @@ export type SignMessageParams =
       signMessage: Uint8SignMessageFunction;
     }>
   | Readonly<{
-      walletBlockchain: 'ETHEREUM';
-      signMessage: Uint8SignMessageFunction;
-    }>
-  | Readonly<{
-      walletBlockchain: 'POLYGON';
-      signMessage: Uint8SignMessageFunction;
-    }>
-  | Readonly<{
-      walletBlockchain: 'ARBITRUM';
-      signMessage: Uint8SignMessageFunction;
-    }>
-  | Readonly<{
-      walletBlockchain: 'AVALANCHE';
-      signMessage: Uint8SignMessageFunction;
-    }>
-  | Readonly<{
-      walletBlockchain: 'BINANCE';
+      walletBlockchain:
+        | 'ETHEREUM'
+        | 'POLYGON'
+        | 'ARBITRUM'
+        | 'AVALANCHE'
+        | 'BINANCE';
       signMessage: Uint8SignMessageFunction;
     }>
   | Readonly<{
@@ -280,6 +272,76 @@ export type SignMessageParams =
       signMessage: Uint8SignMessageFunction;
     }>;
 
+export type WalletParams =
+  | Readonly<{
+      walletBlockchain: 'SOLANA';
+      walletPublicKey: string;
+    }>
+  | Readonly<{
+      walletBlockchain:
+        | 'ETHEREUM'
+        | 'POLYGON'
+        | 'ARBITRUM'
+        | 'AVALANCHE'
+        | 'BINANCE';
+      walletPublicKey: string;
+    }>
+  | Readonly<{
+      walletBlockchain: 'APTOS';
+      accountAddress: string;
+      walletPublicKey: string;
+    }>
+  | Readonly<{
+      walletBlockchain: 'ACALA';
+      accountAddress: string;
+      walletPublicKey: string;
+    }>
+  | Readonly<{
+      walletBlockchain: 'NEAR';
+      accountAddress: string;
+      walletPublicKey: string;
+    }>;
+
+export type WalletWithSignParams =
+  | Readonly<{
+      walletBlockchain: 'SOLANA';
+      walletPublicKey: string;
+      signMessage: Uint8SignMessageFunction;
+    }>
+  | Readonly<{
+      walletBlockchain:
+        | 'ETHEREUM'
+        | 'POLYGON'
+        | 'ARBITRUM'
+        | 'AVALANCHE'
+        | 'BINANCE';
+      walletPublicKey: string;
+      signMessage: Uint8SignMessageFunction;
+    }>
+  | Readonly<{
+      walletBlockchain: 'APTOS';
+      accountAddress: string;
+      walletPublicKey: string;
+      signMessage: AptosSignMessageFunction;
+    }>
+  | Readonly<{
+      walletBlockchain: 'ACALA';
+      accountAddress: string;
+      walletPublicKey: string;
+      signMessage: AcalaSignMessageFunction;
+    }>
+  | Readonly<{
+      walletBlockchain: 'NEAR';
+      accountAddress: string;
+      walletPublicKey: string;
+      signMessage: Uint8SignMessageFunction;
+    }>;
+
+export type ConnectWalletParams = Readonly<{
+  walletParams: WalletWithSignParams;
+  connectWalletConflictResolutionTechnique: ConnectWalletInput['connectWalletConflictResolutionTechnique'];
+}>;
+
 export type NotifiClient = Readonly<{
   beginLoginViaTransaction: () => Promise<BeginLoginViaTransactionResult>;
   broadcastMessage: (
@@ -292,6 +354,7 @@ export type NotifiClient = Readonly<{
   fetchData: () => Promise<ClientData>;
   logIn: (signer: SignMessageParams) => Promise<User>;
   logOut: () => Promise<void>;
+  connectWallet: (input: ConnectWalletParams) => Promise<ConnectedWallet>;
   createAlert: (input: ClientCreateAlertInput) => Promise<Alert>;
   createSource: (input: CreateSourceInput) => Promise<Source>;
   createSupportConversation: () => Promise<SupportConversation>;

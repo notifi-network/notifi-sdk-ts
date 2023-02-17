@@ -11,7 +11,6 @@ import { NotifiSubscriptionCardProps } from './NotifiSubscriptionCard';
 export const NotifiSubscriptionCardContainer: React.FC<
   React.PropsWithChildren<NotifiSubscriptionCardProps>
 > = ({
-  buttonText,
   classNames,
   cardId,
   darkMode,
@@ -47,7 +46,6 @@ export const NotifiSubscriptionCardContainer: React.FC<
     case 'fetched':
       contents = (
         <FetchedStateCard
-          buttonText={buttonText}
           classNames={classNames?.FetchedStateCard}
           card={card}
           inputs={inputs}

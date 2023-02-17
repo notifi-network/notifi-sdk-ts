@@ -35,19 +35,16 @@ export const NotifiCard: React.FC = () => {
 
   const inputSeparators: NotifiInputSeparators = {
     smsSeparator: {
-      content: 'OR',
+      content: '',
     },
     emailSeparator: {
-      content: 'OR',
-    },
-    telegramSeparator: {
-      content: 'OR',
+      content: '',
     },
   };
 
   const intercomInputSeparators: NotifiInputSeparators = {
     emailSeparator: {
-      content: 'OR',
+      content: '',
     },
   };
 

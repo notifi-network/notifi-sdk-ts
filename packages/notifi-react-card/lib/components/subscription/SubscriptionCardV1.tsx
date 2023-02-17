@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import { useNotifiSubscriptionContext } from '../../context';
 import { CardConfigItemV1, useNotifiSubscribe } from '../../hooks';
 import { DeepPartialReadonly } from '../../utils';
+import NotifiAlertBox from '../NotifiAlertBox';
 import {
   NotifiInputFieldsText,
   NotifiInputSeparators,
@@ -24,9 +25,9 @@ import {
   PreviewCard,
   PreviewCardProps,
 } from './subscription-card-views/PreviewCard';
+import VerifyWalletView from './subscription-card-views/VerifyWalletView';
 
 export type SubscriptionCardV1Props = Readonly<{
-  buttonText?: string;
   classNames?: {
     PreviewCard?: DeepPartialReadonly<PreviewCardProps['classNames']>;
     HistoryCard?: DeepPartialReadonly<AlertHistoryViewProps['classNames']>;
@@ -44,7 +45,6 @@ export type SubscriptionCardV1Props = Readonly<{
 }>;
 
 export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
-  buttonText,
   classNames,
   data,
   inputDisabled,
@@ -79,7 +79,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
     } else if (isTokenExpired) {
       setCardView({ state: 'expired' });
     } else {
-      setCardView({ state: 'edit' });
+      setCardView({ state: 'signup' });
     }
   }, [email, phoneNumber, telegramId, setCardView, cardView, isInitialized]);
 
@@ -89,29 +89,97 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
       break;
     case 'preview':
       view = (
-        <PreviewCard
-          data={data}
-          inputs={inputs}
-          inputDisabled={inputDisabled}
-          classNames={classNames?.PreviewCard}
-        />
+        <>
+          <NotifiAlertBox
+            leftIcon={{
+              name: 'back',
+              onClick: () => setCardView({ state: 'history' }),
+            }}
+          >
+            <h2>Manage Alerts</h2>
+          </NotifiAlertBox>
+          <PreviewCard
+            data={data}
+            inputs={inputs}
+            inputDisabled={inputDisabled}
+            classNames={classNames?.PreviewCard}
+          />
+        </>
       );
       break;
     case 'edit':
+    case 'signup':
       view = (
-        <EditCardView
-          buttonText={buttonText}
-          data={data}
-          classNames={classNames?.EditCard}
-          inputDisabled={inputDisabled}
-          inputTextFields={inputLabels}
-          inputSeparators={inputSeparators}
-          allowedCountryCodes={allowedCountryCodes}
-        />
+        <>
+          <NotifiAlertBox
+            leftIcon={
+              cardView.state === 'signup'
+                ? undefined
+                : {
+                    name: 'back',
+                    onClick: () => setCardView({ state: 'history' }),
+                  }
+            }
+          >
+            {cardView.state === 'signup' ? (
+              <h2>Get Notified</h2>
+            ) : (
+              <h2>Update Settings</h2>
+            )}
+          </NotifiAlertBox>
+          <EditCardView
+            buttonText={cardView.state === 'signup' ? 'Next' : 'Update'}
+            data={data}
+            classNames={classNames?.EditCard}
+            inputDisabled={inputDisabled}
+            inputTextFields={inputLabels}
+            inputSeparators={inputSeparators}
+            allowedCountryCodes={allowedCountryCodes}
+            showPreview={cardView.state === 'signup'}
+          />
+        </>
+      );
+      break;
+    case 'verifyonboarding':
+    case 'verify':
+      view = (
+        <>
+          <NotifiAlertBox
+            leftIcon={{
+              name: 'back',
+              onClick: () =>
+                setCardView({
+                  state:
+                    cardView.state === 'verifyonboarding'
+                      ? 'signup'
+                      : 'preview',
+                }),
+            }}
+          >
+            <h2>Verify Wallets</h2>
+          </NotifiAlertBox>
+          <VerifyWalletView
+            buttonText={
+              cardView.state === 'verifyonboarding' ? 'Next' : 'Confirm'
+            }
+          />
+        </>
       );
       break;
     case 'history':
-      view = <AlertHistoryView />;
+      view = (
+        <>
+          <NotifiAlertBox
+            rightIcon={{
+              name: 'settings',
+              onClick: () => setCardView({ state: 'preview' }),
+            }}
+          >
+            <h2>Alert History</h2>
+          </NotifiAlertBox>
+          <AlertHistoryView />
+        </>
+      );
       break;
   }
   return <>{view}</>;

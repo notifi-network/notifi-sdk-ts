@@ -1,20 +1,11 @@
-import { Operation, User } from '../models';
+import { Operation, User, WalletBlockchain } from '../models';
 
 export type LogInFromDappInput = Readonly<{
   walletPublicKey: string;
   dappAddress: string;
   timestamp: number;
   signature: string;
-  walletBlockchain:
-    | 'SOLANA'
-    | 'ETHEREUM'
-    | 'AVALANCHE'
-    | 'APTOS'
-    | 'ACALA'
-    | 'POLYGON'
-    | 'ARBITRUM'
-    | 'BINANCE'
-    | 'NEAR';
+  walletBlockchain: WalletBlockchain;
   accountId?: string;
 }>;
 

@@ -1,0 +1,14 @@
+/**
+ * Object describing a ConnectedWallet
+ *
+ * @remarks
+ * Object describing a ConnectedWallet
+ *
+ * @property {string | null} address - the address associated with the wallet
+ * @property {string} walletBlockchain - the blockchain associated with the wallet
+ *
+ */
+export type ConnectedWallet = Readonly<{
+  address: string | null;
+  walletBlockchain: string;
+}>;
