@@ -1,13 +1,11 @@
 import React from 'react';
 
-export type Props = Readonly<{
-  className?: string;
-}>;
+export type Props = React.SVGProps<SVGSVGElement>;
 
-export const PenIcon: React.FC<Props> = ({ className }: Props) => {
+export const PenIcon: React.FC<Props> = (props: Props) => {
   return (
     <svg
-      className={className}
+      {...props}
       width="24"
       height="24"
       viewBox="0 0 24 24"
