@@ -28,7 +28,10 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
     targetGroupName: 'Default',
   });
 
-  const { client } = useNotifiClientContext();
+  const {
+    client,
+    params: { multiWallet },
+  } = useNotifiClientContext();
 
   const { cardView, loading, setCardView } = useNotifiSubscriptionContext();
 
@@ -38,6 +41,8 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
 
   const { email: emailErrorMessage, phoneNumber: smsErrorMessage } =
     formErrorMessages;
+
+  const isMultiWallet = (multiWallet?.ownedWallets?.length ?? 0) > 0;
 
   const onClick = useCallback(async () => {
     const { data: notifiClientData } = client;
@@ -57,10 +62,20 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
 
     if (success === true) {
       setCardView({
-        state: cardView.state === 'signup' ? 'verifyonboarding' : 'preview',
+        state:
+          isMultiWallet && cardView.state === 'signup'
+            ? 'verifyonboarding'
+            : 'preview',
       });
     }
-  }, [client, eventTypes, subscribe, updateTargetGroups, setCardView]);
+  }, [
+    isMultiWallet,
+    client,
+    eventTypes,
+    subscribe,
+    updateTargetGroups,
+    setCardView,
+  ]);
 
   const hasErrors = emailErrorMessage !== '' || smsErrorMessage !== '';
 
