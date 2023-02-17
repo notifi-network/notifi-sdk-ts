@@ -21,7 +21,6 @@ export type FetchedCardViewState =
 
 export const useFetchedCardState = () => {
   const [cardView, setCardView] = useState<FetchedCardViewState>({
-    // state: 'edit',
     state: 'history',
   });
 
