@@ -1,16 +1,28 @@
 import React from 'react';
 
-import { AlertNotificationRow } from './AlertNotificationRow';
+import { ChatAlertIcon } from '../../assets/ChatAlertIcon';
+import {
+  AlertNotificationRow,
+  AlertNotificationViewProps,
+} from './AlertNotificationRow';
 
 export type ChatMessageReceivedRendererProps = Readonly<{
   senderName: string;
   messageBody: string;
   createdDate: string;
+  handleAlertEntrySelection: () => void;
+  classNames?: AlertNotificationViewProps['classNames'];
 }>;
 
-export const NftCollectionReportRenderer: React.FC<
+export const ChatMessageReceivedRenderer: React.FC<
   ChatMessageReceivedRendererProps
-> = ({ senderName, messageBody, createdDate }) => {
+> = ({
+  senderName,
+  messageBody,
+  createdDate,
+  handleAlertEntrySelection,
+  classNames,
+}) => {
   const getTitle = () => {
     return `New Message from ${senderName}`;
   };
@@ -20,10 +32,13 @@ export const NftCollectionReportRenderer: React.FC<
   };
   return (
     <AlertNotificationRow
+      classNames={classNames}
+      handleAlertEntrySelection={handleAlertEntrySelection}
       notificationTitle={getTitle()}
       notificationSubject={getTitle()}
       notificationDate={createdDate}
       notificationMessage={getMessage()}
+      notificationImage={<ChatAlertIcon width={17} height={17} />}
     />
   );
 };

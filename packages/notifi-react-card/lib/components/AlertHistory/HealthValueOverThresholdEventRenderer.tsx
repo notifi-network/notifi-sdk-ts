@@ -1,7 +1,10 @@
 import React from 'react';
 
 import { RatioCheckIcon } from '../../assets/RatioCheckIcon';
-import { AlertNotificationRow } from './AlertNotificationRow';
+import {
+  AlertNotificationRow,
+  AlertNotificationViewProps,
+} from './AlertNotificationRow';
 
 type HealthValueOverThresholdEventRendererProps = Readonly<{
   createdDate: string;
@@ -10,6 +13,7 @@ type HealthValueOverThresholdEventRendererProps = Readonly<{
   notificationTitle: string;
   handleAlertEntrySelection: () => void;
   value: string;
+  classNames?: AlertNotificationViewProps['classNames'];
 }>;
 
 export const HealthValueOverThresholdEventRenderer: React.FC<
@@ -21,6 +25,7 @@ export const HealthValueOverThresholdEventRenderer: React.FC<
   notificationTitle,
   value,
   handleAlertEntrySelection,
+  classNames,
 }) => {
   let thresholdDirection = '';
   if (parseFloat(value) > parseFloat(threshold)) {
@@ -36,6 +41,7 @@ export const HealthValueOverThresholdEventRenderer: React.FC<
       notificationSubject={`${name} ${thresholdDirection} ${threshold}`}
       notificationDate={createdDate}
       notificationMessage={undefined}
+      classNames={classNames}
     />
   );
 };

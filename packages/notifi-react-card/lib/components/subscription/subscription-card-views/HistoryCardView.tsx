@@ -4,41 +4,56 @@ import {
   NotificationHistoryEntry,
 } from '@notifi-network/notifi-core';
 import clsx from 'clsx';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ListRange, Virtuoso } from 'react-virtuoso';
 
 import { NotificationEmptyBellIcon } from '../../../assets/NotificationEmptyBellIcon';
 import { useNotifiClientContext } from '../../../context';
+import { DeepPartialReadonly } from '../../../utils';
 import { MESSAGES_PER_PAGE } from '../../../utils/constants';
-import { AlertDetailsCard } from '../../AlertHistory/AlertDetailsCard';
+import {
+  AlertDetailsCard,
+  AlertDetailsProps,
+} from '../../AlertHistory/AlertDetailsCard';
+import { AlertNotificationViewProps } from '../../AlertHistory/AlertNotificationRow';
 import { BroadcastMessageChangedRenderer } from '../../AlertHistory/BroadcastMessageChangedRenderer';
+import { ChatMessageReceivedRenderer } from '../../AlertHistory/ChatMessageReceivedRenderer';
+import { GenericDetailRenderer } from '../../AlertHistory/GenericDetailRenderer';
 import { HealthValueOverThresholdEventRenderer } from '../../AlertHistory/HealthValueOverThresholdEventRenderer';
 
 export type AlertHistoryViewProps = Readonly<{
   noAlertDescription?: string;
-  notificationListHeight?: string;
-  classNames?: Readonly<{
-    title?: string;
-    header?: string;
-    dividerLine?: string;
-    manageAlertLink?: string;
-    noAlertDescription?: string;
-    notificationDate?: string;
-    notificationSubject?: string;
-    notificationMessage?: string;
-    notificationImage?: string;
-    notificationList?: string;
-    emptyAlertsBellIcon?: string;
+  classNames?: DeepPartialReadonly<{
+    title: string;
+    header: string;
+    dividerLine: string;
+    manageAlertLink: string;
+    noAlertDescription: string;
+    notificationDate: string;
+    notificationSubject: string;
+    notificationMessage: string;
+    notificationImage: string;
+    notificationList: string;
+    emptyAlertsBellIcon: string;
+    virtuoso: string;
+    AlertDetailsCard: AlertDetailsProps['classNames'];
+    AlertCard: AlertNotificationViewProps['classNames'];
   }>;
 }>;
 
-export const AlertCard = ({
+export const AlertCard: React.FC<{
+  notification: NotificationHistoryEntry;
+  handleAlertEntrySelection: () => void;
+  classNames?: AlertNotificationViewProps['classNames'];
+}> = ({
   notification,
   handleAlertEntrySelection,
+  classNames,
 }: Readonly<{
   notification: NotificationHistoryEntry;
   handleAlertEntrySelection: () => void;
-}>): React.ReactElement => {
+  classNames?: AlertNotificationViewProps['classNames'];
+}>) => {
   const detail = notification.detail;
 
   switch (detail?.__typename) {
@@ -50,6 +65,7 @@ export const AlertCard = ({
           createdDate={notification.createdDate}
           message={detail.message ?? ''}
           subject={detail.subject ?? ''}
+          classNames={classNames}
         />
       );
     case 'HealthValueOverThresholdEventDetails':
@@ -61,17 +77,37 @@ export const AlertCard = ({
           threshold={detail.threshold ?? ''}
           name={detail.name ?? ''}
           value={detail.value ?? ''}
+          classNames={classNames}
         />
       );
-    default:
+    case 'GenericEventDetails':
+      return (
+        <GenericDetailRenderer
+          handleAlertEntrySelection={handleAlertEntrySelection}
+          notificationTitle={detail.sourceName}
+          createdDate={notification.createdDate}
+          subject={detail.notificationTypeName}
+          message={detail.genericMessage}
+          classNames={classNames}
+        />
+      );
+    case 'ChatMessageReceivedEventDetails':
+      return (
+        <ChatMessageReceivedRenderer
+          handleAlertEntrySelection={handleAlertEntrySelection}
+          senderName={detail.senderName}
+          messageBody={detail.messageBody}
+          createdDate={notification.createdDate}
+          classNames={classNames}
+        />
+      );
   }
-  return <></>;
+  return null;
 };
 
 export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
   classNames,
   noAlertDescription,
-  notificationListHeight,
 }) => {
   noAlertDescription = noAlertDescription
     ? noAlertDescription
@@ -83,34 +119,36 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
 
   const [endCursor, setEndCursor] = useState<string | undefined>();
   const [hasNextPage, setHasNextPage] = useState<boolean | null>(null);
-  const [currentIndex, setCurrentIndex] = useState<number | null>();
-  const [visibleRange, setVisibleRange] = useState<ListRange>();
-  const [isScrolling, setIsScrolling] = useState<boolean | null>();
+  const isQuerying = useRef<boolean>(false);
+  const fetched = useRef<boolean>(false);
+
   const [allNodes, setAllNodes] = useState<
     ReadonlyArray<NotificationHistoryEntry>
   >([]);
-
-  const [alertHistoryData, setAlertHistoryData] =
-    useState<GetNotificationHistoryResult>();
 
   const { client } = useNotifiClientContext();
 
   const getNotificationHistory = useCallback(
     async ({ first, after }: GetNotificationHistoryInput) => {
-      const notificationHistory = await client
-        .getNotificationHistory({
-          first,
-          after,
-        })
-        .then((result) => {
-          setAlertHistoryData(result);
-          if (result.nodes) setAllNodes(allNodes.concat(result.nodes));
-          setEndCursor(result.pageInfo.endCursor);
-          setHasNextPage(result.pageInfo.hasNextPage);
-        });
-      return notificationHistory;
+      if (isQuerying.current) {
+        return;
+      }
+      isQuerying.current = true;
+      const result = await client.getNotificationHistory({
+        first,
+        after,
+      });
+
+      const nodes = result.nodes ?? [];
+      setAllNodes((existing) => existing.concat(nodes));
+
+      setEndCursor(result.pageInfo.endCursor);
+      setHasNextPage(result.pageInfo.hasNextPage);
+
+      isQuerying.current = false;
+      return result;
     },
-    [client, setAlertHistoryData, setAllNodes, setEndCursor, setHasNextPage],
+    [client, setAllNodes, setEndCursor, setHasNextPage],
   );
 
   useEffect(() => {
@@ -118,28 +156,13 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
       return;
     }
 
-    if (!alertHistoryData) {
+    if (!fetched.current) {
+      fetched.current = true;
       getNotificationHistory({
         first: MESSAGES_PER_PAGE,
       });
     }
-
-    const isRequestNextPage =
-      currentIndex &&
-      visibleRange &&
-      currentIndex === visibleRange?.endIndex &&
-      currentIndex > 0 &&
-      hasNextPage &&
-      endCursor &&
-      isScrolling;
-
-    if (isRequestNextPage) {
-      getNotificationHistory({
-        first: MESSAGES_PER_PAGE,
-        after: endCursor,
-      });
-    }
-  }, [client, currentIndex, visibleRange, hasNextPage, endCursor]);
+  }, [client]);
 
   return (
     <>
@@ -151,26 +174,30 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
       />
       {selectedAlertEntry !== undefined ? (
         <AlertDetailsCard
+          classNames={classNames?.AlertDetailsCard}
           notificationEntry={selectedAlertEntry}
           handleClose={() => setAlertEntry(undefined)}
         />
       ) : null}
-      {alertHistoryData?.nodes && alertHistoryData.nodes.length > 0 ? (
+      {allNodes.length > 0 ? (
         <Virtuoso
-          style={{
-            height: notificationListHeight || '400px',
-            marginBottom: '25px',
-            overflowX: 'hidden',
+          className={clsx('NotifiAlertHistory__virtuoso', classNames?.virtuoso)}
+          style={{ flex: 1 }}
+          endReached={() => {
+            if (hasNextPage && endCursor) {
+              getNotificationHistory({
+                first: MESSAGES_PER_PAGE,
+                after: endCursor,
+              });
+            }
           }}
-          isScrolling={setIsScrolling}
-          rangeChanged={setVisibleRange}
           data={allNodes.filter(
             (notification) => notification.detail != undefined,
           )}
-          itemContent={(index, notification) => {
-            setCurrentIndex(index);
+          itemContent={(_index, notification) => {
             return (
               <AlertCard
+                classNames={classNames?.AlertCard}
                 handleAlertEntrySelection={() => setAlertEntry(notification)}
                 key={notification.id}
                 notification={notification}
