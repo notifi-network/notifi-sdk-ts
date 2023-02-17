@@ -290,6 +290,7 @@ export const useNotifiSubscribe: ({
         };
 
         const config = configurations[name];
+
         if (config === undefined || config === null) {
           await deleteThisAlert();
         } else {
@@ -511,7 +512,6 @@ export const useNotifiSubscribe: ({
         } else {
           // Call serially because of limitations
           await deleteThisAlert();
-
           const alert = await client.createAlert({
             emailAddress: finalEmail,
             filterId: filter.id,

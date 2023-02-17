@@ -3,10 +3,15 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useNotifiSubscriptionContext } from '../../context';
 import { CustomTopicTypeItem, useNotifiSubscribe } from '../../hooks';
-import { AlertConfiguration, DeepPartialReadonly } from '../../utils';
+import {
+  AlertConfiguration,
+  DeepPartialReadonly,
+  customToggleConfiguration,
+} from '../../utils';
 import type { NotifiToggleProps } from './NotifiToggle';
 import { NotifiToggle } from './NotifiToggle';
 import { NotifiTooltip, NotifiTooltipProps } from './NotifiTooltip';
+import { resolveStringRef } from './resolveRef';
 
 export type EventTypeCustomToggleRowProps = Readonly<{
   classNames?: DeepPartialReadonly<{
@@ -22,7 +27,12 @@ export type EventTypeCustomToggleRowProps = Readonly<{
 
 export const EventTypeCustomToggleRow: React.FC<
   EventTypeCustomToggleRowProps
-> = ({ classNames, disabled, config }: EventTypeCustomToggleRowProps) => {
+> = ({
+  classNames,
+  disabled,
+  config,
+  inputs,
+}: EventTypeCustomToggleRowProps) => {
   const { alerts, loading } = useNotifiSubscriptionContext();
 
   const { instantSubscribe } = useNotifiSubscribe({
@@ -41,10 +51,7 @@ export const EventTypeCustomToggleRow: React.FC<
       sourceType: config.sourceType,
       filterType: config.filterType,
       createSource: {
-        address:
-          config.sourceAddress.type === 'value'
-            ? config.sourceAddress.value
-            : '',
+        address: resolveStringRef(alertName, config.sourceAddress, inputs),
       },
       filterOptions: config.filterOptions ?? {},
     };
@@ -67,7 +74,16 @@ export const EventTypeCustomToggleRow: React.FC<
 
     if (!enabled) {
       instantSubscribe({
-        alertConfiguration: alertConfiguration,
+        alertConfiguration: customToggleConfiguration({
+          sourceType: config.sourceType,
+          filterType: config.filterType,
+          filterOptions: config.filterOptions,
+          sourceAddress: resolveStringRef(
+            alertName,
+            config.sourceAddress,
+            inputs,
+          ),
+        }),
         alertName: alertName,
       });
     } else {
