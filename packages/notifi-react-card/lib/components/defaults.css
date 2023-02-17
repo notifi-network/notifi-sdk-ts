@@ -739,6 +739,7 @@ input:-webkit-autofill {
 
 .NotifiTooltip__infoIcon:hover + .NotifiTooltip__body {
   display: block;
+  pointer-events: none;
 }
 
 .NotifiTooltip__container {
