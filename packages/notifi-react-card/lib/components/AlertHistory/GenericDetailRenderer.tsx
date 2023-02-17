@@ -6,7 +6,7 @@ import {
   AlertNotificationViewProps,
 } from './AlertNotificationRow';
 
-type BroadcastMessageChangedRendererProps = Readonly<{
+type GenericDetailRendererProps = Readonly<{
   createdDate: string;
   message: string | undefined;
   subject: string | undefined;
@@ -15,9 +15,7 @@ type BroadcastMessageChangedRendererProps = Readonly<{
   classNames?: AlertNotificationViewProps['classNames'];
 }>;
 
-export const BroadcastMessageChangedRenderer: React.FC<
-  BroadcastMessageChangedRendererProps
-> = ({
+export const GenericDetailRenderer: React.FC<GenericDetailRendererProps> = ({
   message,
   subject,
   createdDate,

@@ -1471,3 +1471,8 @@ input:-webkit-autofill {
   color: var(--notifi-secondary-font-color);
   background-color: var(--notifi-button-disabled-color);
 }
+
+.NotifiAlertHistory__virtuoso {
+  margin-bottom: 25px;
+  overflow-x: hidden;
+}
