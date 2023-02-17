@@ -3,11 +3,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useNotifiSubscriptionContext } from '../../context';
 import { CustomTopicTypeItem, useNotifiSubscribe } from '../../hooks';
-import {
-  AlertConfiguration,
-  DeepPartialReadonly,
-  customToggleConfiguration,
-} from '../../utils';
+import { DeepPartialReadonly, customToggleConfiguration } from '../../utils';
 import type { NotifiToggleProps } from './NotifiToggle';
 import { NotifiToggle } from './NotifiToggle';
 import { NotifiTooltip, NotifiTooltipProps } from './NotifiTooltip';
@@ -46,16 +42,6 @@ export const EventTypeCustomToggleRow: React.FC<
     return null;
   }
 
-  const alertConfiguration = useMemo<AlertConfiguration>(() => {
-    return {
-      sourceType: config.sourceType,
-      filterType: config.filterType,
-      createSource: {
-        address: resolveStringRef(alertName, config.sourceAddress, inputs),
-      },
-      filterOptions: config.filterOptions ?? {},
-    };
-  }, [alertName, config]);
   const tooltipContent = config.tooltipContent;
 
   useEffect(() => {
@@ -92,7 +78,7 @@ export const EventTypeCustomToggleRow: React.FC<
         alertName: alertName,
       });
     }
-  }, [enabled, instantSubscribe, alertConfiguration, alertName]);
+  }, [enabled, instantSubscribe, alertName]);
 
   return (
     <div

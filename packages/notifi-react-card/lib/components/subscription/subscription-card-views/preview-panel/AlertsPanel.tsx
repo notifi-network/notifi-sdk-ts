@@ -35,6 +35,7 @@ export type AlertsPanelProps = Readonly<{
   data: CardConfigItemV1;
   inputDisabled: boolean;
   classNames?: Readonly<{
+    EventTypeContainer?: string;
     EventTypeBroadcastRow?: EventTypeBroadcastRowProps['classNames'];
     EventTypeCustomHealthCheckRow?: EventTypeCustomHealthCheckRowProps['classNames'];
     EventTypeDirectPushRow?: EventTypeDirectPushRowProps['classNames'];
@@ -52,7 +53,7 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
   inputs,
 }) => {
   return (
-    <div>
+    <div className="NotifiEventTypeContainer">
       {data.eventTypes?.map((eventType) => {
         switch (eventType.type) {
           case 'broadcast':
