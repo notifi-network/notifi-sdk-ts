@@ -3,10 +3,11 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useNotifiSubscriptionContext } from '../../context';
 import { CustomTopicTypeItem, useNotifiSubscribe } from '../../hooks';
-import { AlertConfiguration, DeepPartialReadonly } from '../../utils';
+import { DeepPartialReadonly, customToggleConfiguration } from '../../utils';
 import type { NotifiToggleProps } from './NotifiToggle';
 import { NotifiToggle } from './NotifiToggle';
 import { NotifiTooltip, NotifiTooltipProps } from './NotifiTooltip';
+import { resolveStringRef } from './resolveRef';
 
 export type EventTypeCustomToggleRowProps = Readonly<{
   classNames?: DeepPartialReadonly<{
@@ -22,7 +23,12 @@ export type EventTypeCustomToggleRowProps = Readonly<{
 
 export const EventTypeCustomToggleRow: React.FC<
   EventTypeCustomToggleRowProps
-> = ({ classNames, disabled, config }: EventTypeCustomToggleRowProps) => {
+> = ({
+  classNames,
+  disabled,
+  config,
+  inputs,
+}: EventTypeCustomToggleRowProps) => {
   const { alerts, loading } = useNotifiSubscriptionContext();
 
   const { instantSubscribe } = useNotifiSubscribe({
@@ -36,19 +42,6 @@ export const EventTypeCustomToggleRow: React.FC<
     return null;
   }
 
-  const alertConfiguration = useMemo<AlertConfiguration>(() => {
-    return {
-      sourceType: config.sourceType,
-      filterType: config.filterType,
-      createSource: {
-        address:
-          config.sourceAddress.type === 'value'
-            ? config.sourceAddress.value
-            : '',
-      },
-      filterOptions: config.filterOptions ?? {},
-    };
-  }, [alertName, config]);
   const tooltipContent = config.tooltipContent;
 
   useEffect(() => {
@@ -67,7 +60,16 @@ export const EventTypeCustomToggleRow: React.FC<
 
     if (!enabled) {
       instantSubscribe({
-        alertConfiguration: alertConfiguration,
+        alertConfiguration: customToggleConfiguration({
+          sourceType: config.sourceType,
+          filterType: config.filterType,
+          filterOptions: config.filterOptions,
+          sourceAddress: resolveStringRef(
+            alertName,
+            config.sourceAddress,
+            inputs,
+          ),
+        }),
         alertName: alertName,
       });
     } else {
@@ -76,7 +78,7 @@ export const EventTypeCustomToggleRow: React.FC<
         alertName: alertName,
       });
     }
-  }, [enabled, instantSubscribe, alertConfiguration, alertName]);
+  }, [enabled, instantSubscribe, alertName]);
 
   return (
     <div

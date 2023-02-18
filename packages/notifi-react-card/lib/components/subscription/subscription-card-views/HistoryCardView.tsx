@@ -1,11 +1,10 @@
 import {
   GetNotificationHistoryInput,
-  GetNotificationHistoryResult,
   NotificationHistoryEntry,
 } from '@notifi-network/notifi-core';
 import clsx from 'clsx';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { ListRange, Virtuoso } from 'react-virtuoso';
+import { Virtuoso } from 'react-virtuoso';
 
 import { NotificationEmptyBellIcon } from '../../../assets/NotificationEmptyBellIcon';
 import { useNotifiClientContext } from '../../../context';

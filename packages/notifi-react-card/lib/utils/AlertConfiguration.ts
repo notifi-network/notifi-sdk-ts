@@ -57,6 +57,27 @@ export const customThresholdConfiguration = ({
   };
 };
 
+export const customToggleConfiguration = ({
+  filterType,
+  filterOptions,
+  sourceType,
+  sourceAddress,
+}: Readonly<{
+  filterType: string;
+  filterOptions: FilterOptions;
+  sourceType: CreateSourceInput['type'];
+  sourceAddress: string;
+}>): AlertConfiguration => {
+  return {
+    sourceType,
+    filterType,
+    filterOptions,
+    createSource: {
+      address: sourceAddress,
+    },
+  };
+};
+
 export const broadcastMessageConfiguration = ({
   topicName,
 }: Readonly<{
