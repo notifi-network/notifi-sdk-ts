@@ -17,6 +17,7 @@ export const NotifiSubscriptionCardContainer: React.FC<
   inputLabels,
   inputs = {},
   inputSeparators,
+  disclosureCopy,
   children,
 }: React.PropsWithChildren<NotifiSubscriptionCardProps>) => {
   const { isInitialized } = useNotifiSubscribe({ targetGroupName: 'Default' });
@@ -67,7 +68,10 @@ export const NotifiSubscriptionCardContainer: React.FC<
     >
       {children}
       {contents}
-      <NotifiFooter classNames={classNames?.NotifiFooter} />
+      <NotifiFooter
+        classNames={classNames?.NotifiFooter}
+        copy={{ disclosure: disclosureCopy }}
+      />
     </div>
   );
 };

@@ -127,12 +127,21 @@ input:-webkit-autofill {
 
 .NotifiFooter__container {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   font-size: 12px;
   line-height: 14px;
   justify-content: center;
   align-items: center;
   margin-bottom: 24px;
+}
+
+.NotifiFooter__poweredByContainer {
+  display: flex;
+  flex-direction: row;
+  font-size: 12px;
+  line-height: 14px;
+  justify-content: center;
+  align-items: center;
 }
 
 .NotifiFooter__logoSvg {
