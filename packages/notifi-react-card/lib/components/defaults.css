@@ -147,8 +147,10 @@ input:-webkit-autofill {
 .NotifiFooter__logoSvg {
   width: 39px;
   height: 9px;
+  position: relative;
   padding-top: 2px;
   margin-left: 4px;
+  top: -2px;
 }
 
 .NotifiFooter__spacer {
@@ -1488,4 +1490,8 @@ input:-webkit-autofill {
 .NotifiAlertHistory__virtuoso {
   margin-bottom: 25px;
   overflow-x: hidden;
+}
+
+.notifiLogo-letters {
+  fill: var(--notifi-font-color);
 }
