@@ -3,6 +3,10 @@ import React from 'react';
 
 import { useNotifiSubscriptionContext } from '../context';
 import type { DeepPartialReadonly } from '../utils';
+import {
+  NotifiDisclosureStatement,
+  NotifiDisclosureStatementProps,
+} from './NotifiDisclosureStatement';
 import { NotifiLogo } from './NotifiLogo';
 
 export type NotifiFooterProps = Readonly<{
@@ -12,10 +16,12 @@ export type NotifiFooterProps = Readonly<{
     logoSvg: string;
     link: string;
     spacer: string;
+    disclosure: NotifiDisclosureStatementProps['classNames'];
   }>;
   copy?: DeepPartialReadonly<{
     poweredBy: string;
     learnMore: string;
+    disclosure: string;
   }>;
 }>;
 
@@ -29,15 +35,28 @@ export const NotifiFooter: React.FC<NotifiFooterProps> = ({
 
   return hideFooter ? null : (
     <div className={clsx('NotifiFooter__container', classNames?.container)}>
-      <span
-        style={{ marginBottom: 0 }}
-        className={clsx('NotifiFooter__poweredBy', classNames?.poweredBy)}
+      {copy?.disclosure ? (
+        <NotifiDisclosureStatement
+          disclosureCopy={copy?.disclosure}
+          classNames={classNames?.disclosure}
+        />
+      ) : null}
+      <div
+        className={clsx(
+          'NotifiFooter__poweredByContainer',
+          classNames?.container,
+        )}
       >
-        {copy?.poweredBy ?? 'Powered by'}
-      </span>
-      <NotifiLogo
-        className={clsx('NotifiFooter__logoSvg', classNames?.logoSvg)}
-      />
+        <span
+          style={{ marginBottom: 0 }}
+          className={clsx('NotifiFooter__poweredBy', classNames?.poweredBy)}
+        >
+          {copy?.poweredBy ?? 'Powered by'}
+        </span>
+        <NotifiLogo
+          className={clsx('NotifiFooter__logoSvg', classNames?.logoSvg)}
+        />
+      </div>
     </div>
   );
 };
