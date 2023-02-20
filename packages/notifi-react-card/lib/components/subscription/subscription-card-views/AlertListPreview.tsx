@@ -29,6 +29,10 @@ export const AlertListPreview: React.FC<AlertListProps> = ({
   description,
 }) => {
   const alertNames = eventTypes.map((eventType) => {
+    // skip showing alert previews for labels
+    if (eventType.type === 'label') {
+      return;
+    }
     return (
       <div className="NotifiAlertList__listItem">
         <Checkmark
