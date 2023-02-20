@@ -162,6 +162,10 @@ input:-webkit-autofill {
   line-height: 14px;
 }
 
+.NotifiDisclosure__hyperlink {
+  color: var(--notifi-link-color);
+}
+
 .NotifiAlertBox__container {
   display: flex;
   align-items: center;

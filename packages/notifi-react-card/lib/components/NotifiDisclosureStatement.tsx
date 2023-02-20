@@ -7,6 +7,7 @@ export type NotifiDisclosureStatementProps = Readonly<{
   classNames?: DeepPartialReadonly<{
     container: string;
     label: string;
+    hyperlink: string;
   }>;
   disclosureCopy: string;
 }>;
@@ -16,8 +17,15 @@ export const NotifiDisclosureStatement: React.FC<
   return (
     <div className={clsx('NotifiDisclosure__container', classNames?.container)}>
       <label className={clsx('NotifiDisclosure__label', classNames?.label)}>
-        {disclosureCopy}
+        {disclosureCopy}{' '}
       </label>
+      <a
+        className={clsx('NotifiDisclosure__hyperlink', classNames?.hyperlink)}
+        href="https://notifi.network/faqs"
+        target="_blank"
+      >
+        Learn more
+      </a>
     </div>
   );
 };
