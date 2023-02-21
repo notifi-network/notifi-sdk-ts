@@ -61,6 +61,13 @@ export type TradingPairEventTypeItem = Readonly<{
   tooltipContent?: string;
   tradingPairs: ValueOrRef<ReadonlyArray<string>>;
 }>;
+
+export type WalletBalanceEventTypeItem = Readonly<{
+  type: 'walletBalance';
+  name: string;
+  tooltipContent?: string;
+}>;
+
 export type USER_INTERFACE_TYPE = 'TOGGLE' | 'HEALTH_CHECK';
 
 export type NumberTypeSelect = 'percentage' | 'integer';
@@ -98,6 +105,7 @@ export type EventTypeItem =
   | HealthCheckEventTypeItem
   | LabelEventTypeItem
   | TradingPairEventTypeItem
+  | WalletBalanceEventTypeItem
   | CustomTopicTypeItem;
 
 export type EventTypeConfig = ReadonlyArray<EventTypeItem>;

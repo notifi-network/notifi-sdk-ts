@@ -792,6 +792,7 @@ const useNotifiClient = (
         sourceId,
         groupName = 'default',
         targetGroupName,
+        sourceIds: sourceIdsInput,
       } = input;
 
       setLoading(true);
@@ -815,7 +816,16 @@ const useNotifiClient = (
           );
         }
 
-        const sourceToUse = newData.sources.find((s) => s.id === sourceId);
+        let sourceIds: ReadonlyArray<string> = [];
+        let sourceToUse: Source | undefined = undefined;
+        if (sourceId === '' && sourceIdsInput !== undefined) {
+          sourceToUse = newData.sources.find((s) => s.id === sourceIdsInput[0]);
+          sourceIds = sourceIdsInput;
+        } else {
+          sourceToUse = newData.sources.find((s) => s.id === sourceId);
+          sourceIds = [sourceId];
+        }
+
         if (sourceToUse === undefined) {
           throw new Error(`Invalid source id ${sourceId}`);
         }
@@ -832,7 +842,7 @@ const useNotifiClient = (
           newData.sourceGroups,
           {
             name,
-            sourceIds: [sourceId],
+            sourceIds,
           },
         );
         const targetGroup = await ensureTargetGroupImpl(

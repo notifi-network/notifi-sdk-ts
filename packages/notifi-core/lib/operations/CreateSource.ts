@@ -37,7 +37,13 @@ export type CreateSourceInput = Readonly<{
     | 'TOPAZ'
     | 'SOLANA_SNOWFLAKE'
     | 'NOTIFI_CHAT'
-    | 'BENQI';
+    | 'BENQI'
+    | 'APTOS_WALLET'
+    | 'ACALA_WALLET'
+    | 'POLYGON_WALLET'
+    | 'ARBITRUM_WALLET'
+    | 'BINANCE_WALLET'
+    | 'AVALANCHE_WALLET';
 }>;
 
 export type CreateSourceResult = Source;

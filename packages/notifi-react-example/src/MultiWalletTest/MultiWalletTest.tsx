@@ -49,11 +49,6 @@ export const MultiWalletTest: React.FC = () => {
               walletPublicKey: publicKey,
             },
             {
-              walletBlockchain: 'SOLANA',
-              signMessage,
-              walletPublicKey: publicKey,
-            },
-            {
               walletBlockchain: 'ACALA',
               signMessage: requestSignature,
               walletPublicKey: polkadotPublicKey,
@@ -64,7 +59,7 @@ export const MultiWalletTest: React.FC = () => {
       >
         <NotifiSubscriptionCard
           darkMode
-          cardId="7f35dd52d252453f9c89dc087fc05f13"
+          cardId="dc08714b8b014ee79aec3ea650e34091"
         />
       </NotifiContext>
     </div>

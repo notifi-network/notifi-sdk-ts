@@ -428,6 +428,7 @@ input:-webkit-autofill {
 .EventTypeCustomHealthCheckRow__container,
 .EventTypeHealthCheckRow__container,
 .EventTypeCustomToggleRow__container,
+.EventTypeWalletBalanceRow__container,
 .BrowserAlertToggle__container {
   display: flex;
   flex-direction: row;
@@ -439,6 +440,7 @@ input:-webkit-autofill {
 .EventTypeHealthCheckRow__label,
 .EventTypeCustomHealthCheckRow__label,
 .EventTypeCustomToggleRow__label,
+.EventTypeWalletBalanceRow__label,
 .BrowserAlertToggle__label {
   display: flex;
   flex-direction: row;
