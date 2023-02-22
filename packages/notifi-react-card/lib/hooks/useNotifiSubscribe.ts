@@ -493,7 +493,6 @@ export const useNotifiSubscribe: ({
       finalPhoneNumber = formPhoneNumber;
     }
 
-    console.log('finalTelegram', finalTelegramId);
     await client.ensureTargetGroup({
       emailAddress: finalEmail,
       name: targetGroupName,

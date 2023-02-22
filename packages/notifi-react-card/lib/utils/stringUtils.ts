@@ -23,5 +23,8 @@ export function prefixCharacter(value: string, character: string) {
 }
 
 export function prefixTelegramWithSymbol(telegramId: string) {
+  if (telegramId.startsWith('@')) {
+    return telegramId;
+  }
   return prefixCharacter(telegramId, '@');
 }
