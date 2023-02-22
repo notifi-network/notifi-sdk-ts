@@ -15,6 +15,10 @@ import { useCallback, useEffect, useRef } from 'react';
 
 import { useNotifiSubscriptionContext } from '../context';
 import { useNotifiClientContext } from '../context/NotifiClientContext';
+import {
+  formatTelegramForSubscription,
+  prefixTelegramWithSymbol,
+} from '../utils/stringUtils';
 import { useNotifiForm } from './../context/NotifiFormContext';
 import { AlertConfiguration } from './../utils/AlertConfiguration';
 
@@ -136,8 +140,13 @@ export const useNotifiSubscribe: ({
       const telegramTarget = targetGroup?.telegramTargets[0];
       const telegramId = telegramTarget?.telegramId;
 
+      const telegramIdWithSymbolAdded =
+        telegramId !== '' && telegramId?.length
+          ? prefixTelegramWithSymbol(telegramId)
+          : null;
+
       setFormTelegram(telegramId ?? '');
-      setTelegramId(telegramId ?? '');
+      setTelegramId(telegramIdWithSymbolAdded ?? '');
 
       setTelegramConfirmationUrl(telegramTarget?.confirmationUrl ?? undefined);
 
@@ -404,7 +413,10 @@ export const useNotifiSubscribe: ({
       const names = Object.keys(configurations);
 
       const finalEmail = formEmail === '' ? null : formEmail;
-      const finalTelegramId = formTelegram === '' ? null : formTelegram;
+      const finalTelegramId =
+        formTelegram === ''
+          ? null
+          : formatTelegramForSubscription(formTelegram);
 
       let finalPhoneNumber = null;
       if (isValidPhoneNumber(formPhoneNumber)) {
@@ -472,12 +484,15 @@ export const useNotifiSubscribe: ({
   const updateTargetGroups = useCallback(async () => {
     const finalEmail = formEmail === '' ? null : formEmail;
 
-    const finalTelegramId = formTelegram === '' ? null : formTelegram;
+    const finalTelegramId =
+      formTelegram === '' ? null : formatTelegramForSubscription(formTelegram);
+
     let finalPhoneNumber = null;
 
     if (isValidPhoneNumber(formPhoneNumber)) {
       finalPhoneNumber = formPhoneNumber;
     }
+
     await client.ensureTargetGroup({
       emailAddress: finalEmail,
       name: targetGroupName,
@@ -496,7 +511,10 @@ export const useNotifiSubscribe: ({
     async (alertData: InstantSubscribe) => {
       const finalEmail = formEmail === '' ? null : formEmail;
 
-      const finalTelegramId = formTelegram === '' ? null : formTelegram;
+      const finalTelegramId =
+        formTelegram === ''
+          ? null
+          : formatTelegramForSubscription(formTelegram);
       let finalPhoneNumber = null;
       if (isValidPhoneNumber(formPhoneNumber)) {
         finalPhoneNumber = formPhoneNumber;
