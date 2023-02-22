@@ -10,3 +10,18 @@ export function addressEllipsis(
 
   return str.slice(0, index) + '...' + str.slice(str.length - index);
 }
+
+export function formatTelegramForSubscription(telegramId: string) {
+  if (telegramId.startsWith('@')) {
+    return telegramId.slice(1);
+  }
+  return telegramId;
+}
+
+export function prefixCharacter(value: string, character: string) {
+  return character + value;
+}
+
+export function prefixTelegramWithSymbol(telegramId: string) {
+  return prefixCharacter(telegramId, '@');
+}
