@@ -30,6 +30,10 @@ import {
   EventTypeUnsupportedRow,
   EventTypeUnsupportedRowProps,
 } from '../../EventTypeUnsupportedRow';
+import {
+  EventTypeWalletBalanceRow,
+  EventTypeWalletBalanceRowProps,
+} from '../../EventTypeWalletBalanceRow';
 
 export type AlertsPanelProps = Readonly<{
   data: CardConfigItemV1;
@@ -43,6 +47,7 @@ export type AlertsPanelProps = Readonly<{
     EventTypeLabelRow?: EventTypeLabelRowProps['classNames'];
     EventTypeTradingPairsRow?: EventTypeTradingPairsRowProps['classNames'];
     EventTypeUnsupportedRow?: EventTypeUnsupportedRowProps['classNames'];
+    EventTypeWalletBalanceRow?: EventTypeWalletBalanceRowProps['classNames'];
   }>;
   inputs: Record<string, unknown>;
 }>;
@@ -117,6 +122,16 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
               <EventTypeTradingPairsRow
                 key={eventType.name}
                 classNames={classNames?.EventTypeTradingPairsRow}
+                config={eventType}
+                inputs={inputs}
+              />
+            );
+          case 'walletBalance':
+            return (
+              <EventTypeWalletBalanceRow
+                key={eventType.name}
+                classNames={classNames?.EventTypeWalletBalanceRow}
+                disabled={inputDisabled}
                 config={eventType}
                 inputs={inputs}
               />

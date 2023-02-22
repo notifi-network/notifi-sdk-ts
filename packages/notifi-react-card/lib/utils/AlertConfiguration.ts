@@ -1,12 +1,15 @@
 import type {
+  ConnectedWallet,
   CreateSourceInput,
   FilterOptions,
 } from '@notifi-network/notifi-core';
 
 import { resolveStringRef } from '../components/subscription/resolveRef';
 import { EventTypeConfig } from './../hooks/SubscriptionCardConfig';
+import { walletToSource } from './walletUtils';
 
-export type AlertConfiguration = Readonly<{
+export type SingleSourceAlertConfiguration = Readonly<{
+  type: 'single';
   sourceType: CreateSourceInput['type'];
   createSource?: Readonly<{
     address: string;
@@ -15,8 +18,20 @@ export type AlertConfiguration = Readonly<{
   filterOptions: FilterOptions | null;
 }>;
 
+export type MultipleSourceAlertConfiguration = Readonly<{
+  type: 'multiple';
+  sources: ReadonlyArray<CreateSourceInput>;
+  filterType: string;
+  filterOptions: FilterOptions | null;
+}>;
+
+export type AlertConfiguration =
+  | SingleSourceAlertConfiguration
+  | MultipleSourceAlertConfiguration;
+
 export const chatConfiguration = (): AlertConfiguration => {
   return {
+    type: 'single',
     filterType: 'NOTIFI_CHAT_MESSAGES',
     filterOptions: {
       alertFrequency: 'THREE_MINUTES',
@@ -44,6 +59,7 @@ export const customThresholdConfiguration = ({
   sourceAddress: string;
 }>): AlertConfiguration => {
   return {
+    type: 'single',
     sourceType,
     filterType,
     filterOptions: {
@@ -69,6 +85,7 @@ export const customToggleConfiguration = ({
   sourceAddress: string;
 }>): AlertConfiguration => {
   return {
+    type: 'single',
     sourceType,
     filterType,
     filterOptions,
@@ -84,6 +101,7 @@ export const broadcastMessageConfiguration = ({
   topicName: string;
 }>): AlertConfiguration => {
   return {
+    type: 'single',
     filterType: 'BROADCAST_MESSAGES',
     filterOptions: {},
     sourceType: 'BROADCAST',
@@ -100,6 +118,7 @@ export const directMessageConfiguration = (
 ): AlertConfiguration => {
   const type = params?.type;
   return {
+    type: 'single',
     sourceType: 'DIRECT_PUSH',
     filterType: 'DIRECT_TENANT_MESSAGES',
     filterOptions: type === undefined ? null : { directMessageType: type },
@@ -116,6 +135,7 @@ export const healthThresholdConfiguration = ({
   thresholdDirection: FilterOptions['thresholdDirection'];
 }>): AlertConfiguration => {
   return {
+    type: 'single',
     sourceType: 'DIRECT_PUSH',
     filterType: 'VALUE_THRESHOLD',
     filterOptions: {
@@ -132,6 +152,7 @@ export const hedgeProtocolConfiguration = ({
   walletAddress: string;
 }>): AlertConfiguration => {
   return {
+    type: 'single',
     filterType: 'LIQUIDATIONS',
     filterOptions: {},
     sourceType: 'HEDGE_PROTOCOL',
@@ -151,6 +172,7 @@ export const tradingPairConfiguration = ({
   price: number;
 }>): AlertConfiguration => {
   return {
+    type: 'single',
     sourceType: 'DIRECT_PUSH',
     filterType: 'DIRECT_TENANT_MESSAGES',
     filterOptions: {
@@ -165,6 +187,19 @@ export const tradingPairConfiguration = ({
         ],
       },
     },
+  };
+};
+
+export const walletBalanceConfiguration = ({
+  connectedWallets,
+}: Readonly<{
+  connectedWallets: ReadonlyArray<ConnectedWallet>;
+}>): AlertConfiguration => {
+  return {
+    type: 'multiple',
+    filterType: 'BALANCE',
+    filterOptions: null,
+    sources: connectedWallets.map(walletToSource),
   };
 };
 

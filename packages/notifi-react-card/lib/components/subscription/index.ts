@@ -1,9 +1,14 @@
 import '../defaults.css';
 
 export * from './EventTypeBroadcastRow';
+export * from './EventTypeCustomHealthCheckRow';
+export * from './EventTypeCustomToggleRow';
 export * from './EventTypeDirectPushRow';
+export * from './EventTypeHealthCheckRow';
 export * from './EventTypeLabelRow';
+export * from './EventTypeTradingPairsRow';
 export * from './EventTypeUnsupportedRow';
+export * from './EventTypeWalletBalanceRow';
 export * from './FetchedStateCard';
 export * from './NotifiSubscribeButton';
 export * from './NotifiSubscriptionCard';

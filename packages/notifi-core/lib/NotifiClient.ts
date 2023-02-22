@@ -141,6 +141,7 @@ export type ClientCreateAlertInput = Readonly<{
   groupName?: string;
   targetGroupName?: string;
   webhook?: ClientCreateWebhookParams;
+  sourceIds?: ReadonlyArray<string>;
 }>;
 
 export type ClientCreateWebhookParams = Omit<CreateWebhookTargetInput, 'name'>;
