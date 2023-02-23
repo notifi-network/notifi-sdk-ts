@@ -179,11 +179,17 @@ import {
 } from '@notifi-network/notifi-react-card';
 import '@notifi-network/notifi-react-card/dist/index.css';
 import { useEthers } from '@usedapp/core';
-import React from 'react';
+import React, { useMemo } from 'react';
+import { providers } from 'ethers';
 
 export const Notifi: React.FC = () => {
   const { account, library } = useEthers();
-  const signer = library?.getSigner();
+  const signer = useMemo(() => {
+    if (library instanceof providers.JsonRpcProvider) {
+      return library.getSigner();
+    }
+    return undefined;
+  }, [library]);
 
   if (account === undefined || signer === undefined) {
     // account is required
