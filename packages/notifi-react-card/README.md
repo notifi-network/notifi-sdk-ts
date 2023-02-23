@@ -162,8 +162,10 @@ export const NotifiCard: React.FC = () => {
 <summary>Integrate Card Component</summary>
 
 Note: All EVM chains use Ethers. If using a supported EVM-chain, be sure to update the `NotifiContext` params accordingly.
+
 Note: Last tested with =>
     "@usedapp/core": "^1.2.5"
+  
     "ethers": "^5.7.2"
     
 ```tsx
