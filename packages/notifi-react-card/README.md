@@ -49,7 +49,7 @@ We have design recommendations on how to best present the UI to your dapp users.
 
 ## Tutorial Video
 
-Here is a [link](https://www.youtube.com/watch?v=LIKu-clf9bg) covering how to setup the React Card config.
+Here is a [link](https://www.youtube.com/watch?v=Nk2F_bd4ftw) covering how to setup the React Card config.
 
 The video covers the following:
 
