@@ -122,7 +122,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
                 ? undefined
                 : {
                     name: 'back',
-                    onClick: () => setCardView({ state: 'history' }),
+                    onClick: () => setCardView({ state: 'preview' }),
                   }
             }
           >
