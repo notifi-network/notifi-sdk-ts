@@ -54,7 +54,13 @@ export const EventTypeCustomHealthCheckRow: React.FC<
   const [enabled, setEnabled] = useState(false);
   // This indicates which box to select
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [initialSelectedIndex, setInitialSelectedIndex] = useState<
+    number | null
+  >(null);
   const [initialRatio, setInitialRatio] = useState<number | null>(null);
+  const [isNotificationLoading, setIsNotificationLoading] =
+    useState<boolean>(false);
+
   const [customValue, setCustomValue] = useState<string>('');
   const customInputRef = useRef<HTMLInputElement>(null);
   const thresholdDirection: ThresholdDirection = 'below';
@@ -91,12 +97,13 @@ export const EventTypeCustomHealthCheckRow: React.FC<
         ratios.forEach((ratio, index) => {
           if (ratio.ratio === alertRatioValue && customValue === '') {
             setSelectedIndex(index);
+            setInitialSelectedIndex(index);
           }
         });
         setInitialRatio(alertRatioValue);
         if (!checkRatios.includes(alertRatioValue) && customValue === '') {
           setSelectedIndex(3);
-          setCustomValue(alertRatioValue + '%');
+          setCustomValue(alertRatioValue.toString());
         }
       }
     } else {
@@ -112,6 +119,7 @@ export const EventTypeCustomHealthCheckRow: React.FC<
     }
 
     setErrorMessage('');
+    setIsNotificationLoading(true);
     if (customInputRef.current) {
       customInputRef.current.placeholder = 'Custom';
 
@@ -136,14 +144,22 @@ export const EventTypeCustomHealthCheckRow: React.FC<
               inputs,
             ),
             thresholdDirection: thresholdDirection,
-            percentage: ratioNumber / 100,
+            threshold:
+              config.numberType === 'percentage'
+                ? ratioNumber / 100
+                : ratioNumber,
           }),
           alertName,
         })
           .then(() => setSelectedIndex(3))
-          .catch(() => setErrorMessage(UNABLE_TO_SUBSCRIBE));
+          .catch(() => setErrorMessage(UNABLE_TO_SUBSCRIBE))
+          .finally(() => {
+            setIsNotificationLoading(false);
+          });
       } else {
         setErrorMessage(INVALID_NUMBER);
+        setSelectedIndex(initialSelectedIndex);
+        setIsNotificationLoading(false);
       }
     }
   };
@@ -160,6 +176,8 @@ export const EventTypeCustomHealthCheckRow: React.FC<
     if (loading) {
       return;
     }
+    setIsNotificationLoading(true);
+
     setErrorMessage('');
     if (value) {
       instantSubscribe({
@@ -173,7 +191,7 @@ export const EventTypeCustomHealthCheckRow: React.FC<
             inputs,
           ),
           thresholdDirection: thresholdDirection,
-          percentage: value,
+          threshold: value,
         }),
         alertName,
       })
@@ -181,9 +199,13 @@ export const EventTypeCustomHealthCheckRow: React.FC<
           setSelectedIndex(index);
           setCustomValue('');
         })
-        .catch(() => setErrorMessage(UNABLE_TO_SUBSCRIBE));
+        .catch(() => setErrorMessage(UNABLE_TO_SUBSCRIBE))
+        .finally(() => {
+          setIsNotificationLoading(false);
+        });
     } else {
       setErrorMessage(INVALID_NUMBER);
+      setIsNotificationLoading(false);
     }
   };
 
@@ -204,7 +226,7 @@ export const EventTypeCustomHealthCheckRow: React.FC<
             inputs,
           ),
           thresholdDirection: thresholdDirection,
-          percentage: initialRatio,
+          threshold: initialRatio,
         }),
         alertName,
       }).catch(() => setErrorMessage(UNABLE_TO_SUBSCRIBE));
@@ -240,7 +262,7 @@ export const EventTypeCustomHealthCheckRow: React.FC<
         <NotifiToggle
           checked={enabled}
           classNames={classNames?.toggle}
-          disabled={disabled}
+          disabled={disabled || isNotificationLoading}
           setChecked={handleHealthCheckSubscription}
         />
       </div>
@@ -281,6 +303,13 @@ export const EventTypeCustomHealthCheckRow: React.FC<
                     classNames?.button,
                   )}
                   onClick={() => {
+                    if (
+                      isNotificationLoading === true ||
+                      selectedIndex === index
+                    ) {
+                      return;
+                    }
+
                     handleRatioButtonNewSubscription(value.ratio, index);
                   }}
                 >
@@ -288,6 +317,7 @@ export const EventTypeCustomHealthCheckRow: React.FC<
                 </div>
               );
             })}
+
             <input
               ref={customInputRef}
               onKeyUp={(e) => handleKeypressUp(e)}
@@ -299,6 +329,7 @@ export const EventTypeCustomHealthCheckRow: React.FC<
                 setErrorMessage('');
                 setSelectedIndex(null);
               }}
+              type="number"
               onBlur={handleCustomRatioButtonNewSubscription}
               value={customValue}
               placeholder="Custom"

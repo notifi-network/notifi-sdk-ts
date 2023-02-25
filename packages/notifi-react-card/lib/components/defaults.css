@@ -55,6 +55,12 @@ input:-webkit-autofill {
   -webkit-text-fill-color: var(--notifi-font-color);
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 .NotifiSubscriptionCard__container,
 .NotifiIntercomCard__Container {
   color: var(--notifi-font-color);
