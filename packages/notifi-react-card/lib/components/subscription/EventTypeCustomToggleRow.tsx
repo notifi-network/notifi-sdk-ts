@@ -105,6 +105,13 @@ export const EventTypeCustomToggleRow: React.FC<
         alertConfiguration: null,
         alertName: alertName,
       })
+        .then((res) => {
+          // We update optimistically so we need to check if the alert exists.
+          const responseHasAlert = res.alerts[alertName] !== undefined;
+          if (enabled !== responseHasAlert) {
+            setEnabled(responseHasAlert);
+          }
+        })
         .catch(() => {
           setEnabled(true);
         })
