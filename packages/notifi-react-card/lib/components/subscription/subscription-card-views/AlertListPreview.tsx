@@ -34,7 +34,7 @@ export const AlertListPreview: React.FC<AlertListProps> = ({
       return;
     }
     return (
-      <div className="NotifiAlertList__listItem">
+      <div className="NotifiAlertList__listItem" key={eventType.name}>
         <Checkmark
           className={clsx(
             'NotifiAlertListContainer__checkmarkIcon',

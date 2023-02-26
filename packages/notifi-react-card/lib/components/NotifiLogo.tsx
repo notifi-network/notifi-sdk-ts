@@ -18,8 +18,8 @@ export const NotifiLogo: React.FC<Props> = (props: Props) => {
         rel="noopener noreferrer"
       >
         <path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
+          fillRule="evenodd"
+          clipRule="evenodd"
           d="M7.92661 5.02549C7.68505 5.09427 7.43002 5.1311 7.16639 5.1311C5.63641 5.1311 4.39611 3.8908 4.39611 2.36082C4.39611 2.0878 4.43561 1.824 4.50919 1.57483H1.63872C1.19751 1.57483 0.839844 1.9325 0.839844 2.3737V7.86272C0.839844 8.30393 1.19751 8.66159 1.63872 8.66159H7.12774C7.56894 8.66159 7.92661 8.30393 7.92661 7.86272V5.02549Z"
           fill="white"
           className="notifiLogo-letters"
@@ -54,8 +54,8 @@ export const NotifiLogo: React.FC<Props> = (props: Props) => {
           className="notifiLogo-letters"
         />
         <path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
+          fillRule="evenodd"
+          clipRule="evenodd"
           d="M31.1573 0C30.8066 0 30.6804 0.192486 30.6804 0.466236V1.46139H31.6535C31.9914 1.46139 32.1418 1.34309 32.1418 1.00946V0.466236C32.1418 0.15399 31.9358 0 31.6193 0H31.1573Z"
           fill="black"
           className="notifiLogo-letters"
@@ -69,8 +69,8 @@ export const NotifiLogo: React.FC<Props> = (props: Props) => {
             y2="3.93709"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="#FE7970" />
-            <stop offset="1" stop-color="#FEB776" />
+            <stop stopColor="#FE7970" />
+            <stop offset="1" stopColor="#FEB776" />
           </linearGradient>
         </defs>
       </a>

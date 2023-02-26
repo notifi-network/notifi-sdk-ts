@@ -26,6 +26,7 @@ export const AlertDetailsCard: React.FC<AlertDetailsProps> = ({
       return {};
     }
 
+    // TODO: Deduplicate with HistoryCardView
     switch (typename) {
       case 'BroadcastMessageEventDetails': {
         return {
@@ -43,6 +44,18 @@ export const AlertDetailsCard: React.FC<AlertDetailsProps> = ({
               <div>{`threshold: ${detail.threshold}`}</div>
             </>
           ),
+        };
+      }
+      case 'GenericEventDetails': {
+        return {
+          topContent: detail.notificationTypeName,
+          bottomContent: detail.genericMessage,
+        };
+      }
+      case 'ChatMessageReceivedEventDetails': {
+        return {
+          topContent: `New Message from ${detail.senderName}`,
+          bottomContent: detail.messageBody,
         };
       }
     }

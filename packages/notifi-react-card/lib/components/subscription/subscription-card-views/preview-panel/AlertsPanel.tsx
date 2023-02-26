@@ -82,6 +82,7 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
               />
             ) : (
               <EventTypeCustomToggleRow
+                key={eventType.name}
                 disabled={inputDisabled}
                 config={eventType}
                 classNames={classNames?.EventTypeCustomHealthCheckRow}
