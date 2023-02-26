@@ -72,13 +72,14 @@ export const EventTypeCustomHealthCheckRow: React.FC<
   const tooltipContent = config.tooltipContent;
 
   const UNABLE_TO_SUBSCRIBE = 'Unable to subscribe, please try again';
+  const UNABLE_TO_UNSUBSCRIBE = 'Unable to unsubscribe, please try again';
   const INVALID_NUMBER = 'Please enter a valid number';
 
   if (config.selectedUIType !== 'HEALTH_CHECK') {
     return null;
   }
   useEffect(() => {
-    if (loading) {
+    if (loading || isNotificationLoading) {
       return;
     }
 
@@ -103,7 +104,11 @@ export const EventTypeCustomHealthCheckRow: React.FC<
         setInitialRatio(alertRatioValue);
         if (!checkRatios.includes(alertRatioValue) && customValue === '') {
           setSelectedIndex(3);
-          setCustomValue(alertRatioValue.toString());
+          setCustomValue(
+            config.numberType === 'percentage'
+              ? alertRatioValue + '%'
+              : alertRatioValue.toString(),
+          );
         }
       }
     } else {
@@ -111,10 +116,10 @@ export const EventTypeCustomHealthCheckRow: React.FC<
       setSelectedIndex(ratios.length - 1);
       setInitialRatio(ratios[ratios.length - 1]?.ratio);
     }
-  }, [alertName, alerts, loading]);
+  }, [alertName, alerts, loading, enabled, setEnabled, isNotificationLoading]);
 
   const handleCustomRatioButtonNewSubscription = () => {
-    if (loading) {
+    if (loading || isNotificationLoading) {
       return;
     }
 
@@ -152,7 +157,7 @@ export const EventTypeCustomHealthCheckRow: React.FC<
           alertName,
         })
           .then(() => setSelectedIndex(3))
-          .catch(() => setErrorMessage(UNABLE_TO_SUBSCRIBE))
+          .catch(() => setErrorMessage(UNABLE_TO_UNSUBSCRIBE))
           .finally(() => {
             setIsNotificationLoading(false);
           });
@@ -173,7 +178,7 @@ export const EventTypeCustomHealthCheckRow: React.FC<
     }
   };
   const handleRatioButtonNewSubscription = (value: number, index: number) => {
-    if (loading) {
+    if (loading || isNotificationLoading) {
       return;
     }
     setIsNotificationLoading(true);
@@ -210,11 +215,14 @@ export const EventTypeCustomHealthCheckRow: React.FC<
   };
 
   const handleHealthCheckSubscription = useCallback(() => {
-    if (loading) {
+    if (loading || isNotificationLoading) {
       return;
     }
+    setIsNotificationLoading(true);
     setErrorMessage('');
     if (!enabled && initialRatio !== null) {
+      setEnabled(true);
+
       instantSubscribe({
         alertConfiguration: customThresholdConfiguration({
           sourceType: config.sourceType,
@@ -229,16 +237,37 @@ export const EventTypeCustomHealthCheckRow: React.FC<
           threshold: initialRatio,
         }),
         alertName,
-      }).catch(() => setErrorMessage(UNABLE_TO_SUBSCRIBE));
+      })
+        .then((res) => {
+          // We update optimistically so we need to check if the alert exists.
+          const responseHasAlert = res.alerts[alertName] !== undefined;
+          if (enabled !== responseHasAlert) {
+            setEnabled(responseHasAlert);
+          }
+        })
+        .catch(() => {
+          setErrorMessage(UNABLE_TO_SUBSCRIBE);
+          setEnabled(false);
+        })
+        .finally(() => {
+          setIsNotificationLoading(false);
+        });
     } else {
+      setEnabled(false);
       instantSubscribe({
         alertConfiguration: null,
         alertName: alertName,
       })
         .then(() => setCustomValue(''))
-        .catch(() => setErrorMessage(UNABLE_TO_SUBSCRIBE));
+        .catch(() => {
+          setErrorMessage(UNABLE_TO_SUBSCRIBE);
+          setEnabled(true);
+        })
+        .finally(() => {
+          setIsNotificationLoading(false);
+        });
     }
-  }, [initialRatio, enabled]);
+  }, [initialRatio, enabled, isNotificationLoading, setIsNotificationLoading]);
 
   return (
     <div>
@@ -300,6 +329,7 @@ export const EventTypeCustomHealthCheckRow: React.FC<
                         ? ' EventTypeHealthCheckRow__buttonSelected'
                         : undefined
                     }`,
+                    isNotificationLoading ? 'buttonDisabled' : undefined,
                     classNames?.button,
                   )}
                   onClick={() => {
@@ -329,6 +359,7 @@ export const EventTypeCustomHealthCheckRow: React.FC<
                 setErrorMessage('');
                 setSelectedIndex(null);
               }}
+              disabled={isNotificationLoading}
               type="number"
               onBlur={handleCustomRatioButtonNewSubscription}
               value={customValue}

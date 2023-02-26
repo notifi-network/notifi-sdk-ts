@@ -1503,3 +1503,7 @@ input::-webkit-inner-spin-button {
 .notifiLogo-letters {
   fill: var(--notifi-font-color);
 }
+
+.buttonDisabled {
+  pointer-events: none;
+}
