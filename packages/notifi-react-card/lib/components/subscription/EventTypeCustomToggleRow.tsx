@@ -88,8 +88,9 @@ export const EventTypeCustomToggleRow: React.FC<
         .then((res) => {
           // We update optimistically so we need to check if the alert exists.
           const responseHasAlert = res.alerts[alertName] !== undefined;
-          if (enabled !== responseHasAlert) {
-            setEnabled(responseHasAlert);
+
+          if (responseHasAlert !== true) {
+            setEnabled(false);
           }
         })
         .catch(() => {
@@ -108,8 +109,8 @@ export const EventTypeCustomToggleRow: React.FC<
         .then((res) => {
           // We update optimistically so we need to check if the alert exists.
           const responseHasAlert = res.alerts[alertName] !== undefined;
-          if (enabled !== responseHasAlert) {
-            setEnabled(responseHasAlert);
+          if (responseHasAlert !== false) {
+            setEnabled(true);
           }
         })
         .catch(() => {
@@ -121,9 +122,11 @@ export const EventTypeCustomToggleRow: React.FC<
     }
   }, [
     enabled,
+    alerts,
     instantSubscribe,
     alertName,
     isNotificationLoading,
+    setEnabled,
     setIsNotificationLoading,
   ]);
 

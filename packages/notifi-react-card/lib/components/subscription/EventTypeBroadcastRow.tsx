@@ -80,8 +80,8 @@ export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
         .then((res) => {
           // We update optimistically so we need to check if the alert exists.
           const responseHasAlert = res.alerts[alertName] !== undefined;
-          if (enabled !== responseHasAlert) {
-            setEnabled(responseHasAlert);
+          if (responseHasAlert !== true) {
+            setEnabled(false);
           }
         })
         .catch(() => {
@@ -99,8 +99,8 @@ export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
         .then((res) => {
           // We update optimistically so we need to check if the alert exists.
           const responseHasAlert = res.alerts[alertName] !== undefined;
-          if (enabled !== responseHasAlert) {
-            setEnabled(responseHasAlert);
+          if (responseHasAlert !== false) {
+            setEnabled(true);
           }
         })
         .catch(() => {
