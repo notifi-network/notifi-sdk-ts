@@ -1,5 +1,11 @@
 import clsx from 'clsx';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { useNotifiSubscriptionContext } from '../../context';
 import { CustomTopicTypeItem, useNotifiSubscribe } from '../../hooks';
@@ -35,6 +41,8 @@ export const EventTypeCustomToggleRow: React.FC<
     targetGroupName: 'Default',
   });
   const [enabled, setEnabled] = useState(false);
+  const [isNotificationLoading, setIsNotificationLoading] =
+    useState<boolean>(false);
 
   const alertName = useMemo<string>(() => config.name, [config]);
 
@@ -43,22 +51,27 @@ export const EventTypeCustomToggleRow: React.FC<
   }
 
   const tooltipContent = config.tooltipContent;
+  const didFetch = useRef(false);
 
   useEffect(() => {
-    if (loading) {
+    if (didFetch.current) {
       return;
     }
 
     const hasAlert = alerts[alertName] !== undefined;
     setEnabled(hasAlert);
-  }, [alertName, alerts, loading]);
+    didFetch.current = true;
+  }, [alertName, alerts]);
 
   const handleNewSubscription = useCallback(() => {
-    if (loading) {
+    if (loading || isNotificationLoading) {
       return;
     }
 
     if (!enabled) {
+      setEnabled(true);
+      setIsNotificationLoading(true);
+
       instantSubscribe({
         alertConfiguration: customToggleConfiguration({
           sourceType: config.sourceType,
@@ -71,14 +84,51 @@ export const EventTypeCustomToggleRow: React.FC<
           ),
         }),
         alertName: alertName,
-      });
+      })
+        .then((res) => {
+          // We update optimistically so we need to check if the alert exists.
+          const responseHasAlert = res.alerts[alertName] !== undefined;
+
+          if (responseHasAlert !== true) {
+            setEnabled(false);
+          }
+        })
+        .catch(() => {
+          setEnabled(false);
+        })
+        .finally(() => {
+          setIsNotificationLoading(false);
+        });
     } else {
+      setEnabled(false);
+
       instantSubscribe({
         alertConfiguration: null,
         alertName: alertName,
-      });
+      })
+        .then((res) => {
+          // We update optimistically so we need to check if the alert exists.
+          const responseHasAlert = res.alerts[alertName] !== undefined;
+          if (responseHasAlert !== false) {
+            setEnabled(true);
+          }
+        })
+        .catch(() => {
+          setEnabled(true);
+        })
+        .finally(() => {
+          setIsNotificationLoading(false);
+        });
     }
-  }, [enabled, instantSubscribe, alertName]);
+  }, [
+    enabled,
+    alerts,
+    instantSubscribe,
+    alertName,
+    isNotificationLoading,
+    setEnabled,
+    setIsNotificationLoading,
+  ]);
 
   return (
     <div
@@ -100,7 +150,7 @@ export const EventTypeCustomToggleRow: React.FC<
       </div>
       <NotifiToggle
         classNames={classNames?.toggle}
-        disabled={disabled}
+        disabled={disabled || isNotificationLoading}
         checked={enabled}
         setChecked={handleNewSubscription}
       />

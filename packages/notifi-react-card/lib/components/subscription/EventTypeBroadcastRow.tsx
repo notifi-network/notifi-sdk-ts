@@ -1,5 +1,11 @@
 import clsx from 'clsx';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { useNotifiSubscriptionContext } from '../../context';
 import { BroadcastEventTypeItem, useNotifiSubscribe } from '../../hooks';
@@ -36,6 +42,8 @@ export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
     targetGroupName: 'Default',
   });
   const [enabled, setEnabled] = useState(false);
+  const [isNotificationLoading, setIsNotificationLoading] =
+    useState<boolean>(false);
 
   const alertName = useMemo<string>(() => config.name, [config]);
   const alertConfiguration = useMemo<AlertConfiguration>(() => {
@@ -46,30 +54,71 @@ export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
   }, [alertName, config, inputs]);
   const tooltipContent = config.tooltipContent;
 
+  const didFetch = useRef(false);
+
   useEffect(() => {
-    if (loading) {
+    if (didFetch.current) {
       return;
     }
+
     const hasAlert = alerts[alertName] !== undefined;
     setEnabled(hasAlert);
-  }, [alertName, alerts, loading]);
+    didFetch.current = true;
+  }, [alertName, alerts]);
 
   const handleNewSubscription = useCallback(() => {
-    if (loading) {
+    if (loading || isNotificationLoading) {
       return;
     }
+
     if (!enabled) {
+      setEnabled(true);
       instantSubscribe({
         alertConfiguration: alertConfiguration,
         alertName: alertName,
-      });
+      })
+        .then((res) => {
+          // We update optimistically so we need to check if the alert exists.
+          const responseHasAlert = res.alerts[alertName] !== undefined;
+          if (responseHasAlert !== true) {
+            setEnabled(false);
+          }
+        })
+        .catch(() => {
+          setEnabled(false);
+        })
+        .finally(() => {
+          setIsNotificationLoading(false);
+        });
     } else {
+      setEnabled(false);
       instantSubscribe({
         alertConfiguration: null,
         alertName: alertName,
-      });
+      })
+        .then((res) => {
+          // We update optimistically so we need to check if the alert exists.
+          const responseHasAlert = res.alerts[alertName] !== undefined;
+          if (responseHasAlert !== false) {
+            setEnabled(true);
+          }
+        })
+        .catch(() => {
+          setEnabled(false);
+        })
+        .finally(() => {
+          setIsNotificationLoading(false);
+        });
     }
-  }, [loading, enabled, instantSubscribe, alertConfiguration, alertName]);
+  }, [
+    loading,
+    enabled,
+    instantSubscribe,
+    alertConfiguration,
+    alertName,
+    isNotificationLoading,
+    setIsNotificationLoading,
+  ]);
 
   return (
     <div
@@ -90,7 +139,7 @@ export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
       <NotifiToggle
         checked={enabled}
         classNames={classNames?.toggle}
-        disabled={disabled}
+        disabled={disabled || isNotificationLoading}
         setChecked={handleNewSubscription}
       />
     </div>

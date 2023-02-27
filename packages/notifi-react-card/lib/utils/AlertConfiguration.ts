@@ -45,14 +45,14 @@ export const chatConfiguration = (): AlertConfiguration => {
 
 export const customThresholdConfiguration = ({
   alertFrequency,
-  percentage,
+  threshold,
   filterType,
   thresholdDirection,
   sourceType,
   sourceAddress,
 }: Readonly<{
   alertFrequency: FilterOptions['alertFrequency'];
-  percentage: number;
+  threshold: number;
   filterType: string;
   thresholdDirection: FilterOptions['thresholdDirection'];
   sourceType: CreateSourceInput['type'];
@@ -64,7 +64,7 @@ export const customThresholdConfiguration = ({
     filterType,
     filterOptions: {
       alertFrequency,
-      threshold: percentage,
+      threshold,
       thresholdDirection,
     },
     createSource: {
