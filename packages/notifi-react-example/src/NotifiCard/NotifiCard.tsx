@@ -61,7 +61,7 @@ export const NotifiCard: React.FC = () => {
       >
         <NotifiSubscriptionCard
           darkMode
-          inputs={{ userWallet: '0xbC04dF9bc041f0aefdBC7DccBf7dA86717Caa1Ae' }}
+          inputs={{ userWallet: publicKey }}
           inputLabels={inputLabels}
           inputSeparators={inputSeparators}
           cardId="b469c6029e3f40aaab49ddd78fe7f228"
