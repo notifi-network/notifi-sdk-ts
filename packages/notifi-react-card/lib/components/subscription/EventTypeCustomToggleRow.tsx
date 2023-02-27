@@ -61,7 +61,7 @@ export const EventTypeCustomToggleRow: React.FC<
     const hasAlert = alerts[alertName] !== undefined;
     setEnabled(hasAlert);
     didFetch.current = true;
-  }, [alertName, alerts, loading]);
+  }, [alertName, alerts]);
 
   const handleNewSubscription = useCallback(() => {
     if (loading || isNotificationLoading) {

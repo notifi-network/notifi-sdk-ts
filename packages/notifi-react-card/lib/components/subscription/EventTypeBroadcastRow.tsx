@@ -64,7 +64,7 @@ export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
     const hasAlert = alerts[alertName] !== undefined;
     setEnabled(hasAlert);
     didFetch.current = true;
-  }, [alertName, alerts, loading]);
+  }, [alertName, alerts]);
 
   const handleNewSubscription = useCallback(() => {
     if (loading || isNotificationLoading) {
