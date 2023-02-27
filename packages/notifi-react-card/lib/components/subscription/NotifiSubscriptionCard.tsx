@@ -54,6 +54,8 @@ export type NotifiSubscriptionCardProps = Readonly<{
     NotifiSubscribeButton?: NotifiSubscribeButtonProps['classNames'];
     NotifiFooter?: NotifiFooterProps['classNames'];
   }>;
+  loadingSpinnerSize?: string;
+  loadingRingColor?: string;
   disclosureCopy?: string;
   buttonText?: string;
   inputLabels?: NotifiInputFieldsText;

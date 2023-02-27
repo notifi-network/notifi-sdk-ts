@@ -2,14 +2,14 @@ import React from 'react';
 
 interface SpinnerProps {
   size?: string;
-  color?: string;
+  ringColor?: string;
 }
 
-const Spinner: React.FC<SpinnerProps> = ({ size, color }) => {
+const Spinner: React.FC<SpinnerProps> = ({ size, ringColor }) => {
   return (
     <div
       className="NotifiSpinner"
-      style={{ height: size, width: size, borderTopColor: color }}
+      style={{ height: size, width: size, borderTopColor: ringColor }}
     />
   );
 };

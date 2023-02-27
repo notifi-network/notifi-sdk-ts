@@ -6,6 +6,8 @@ import Spinner from './Spinner';
 
 export type LoadingStateCardProps = Readonly<{
   card: LoadingState;
+  spinnerSize?: string;
+  ringColor?: string;
   classNames?: Readonly<{
     container?: string;
     label?: string;
@@ -14,6 +16,8 @@ export type LoadingStateCardProps = Readonly<{
 
 export const LoadingStateCard: React.FC<LoadingStateCardProps> = ({
   classNames,
+  spinnerSize,
+  ringColor,
 }) => {
   return (
     <div
@@ -27,7 +31,7 @@ export const LoadingStateCard: React.FC<LoadingStateCardProps> = ({
       >
         Loading...
       </label>
-      <Spinner size="60px" />
+      <Spinner size={spinnerSize} ringColor={ringColor} />
     </div>
   );
 };

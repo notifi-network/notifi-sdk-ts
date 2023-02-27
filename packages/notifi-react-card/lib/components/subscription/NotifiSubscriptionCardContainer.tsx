@@ -19,6 +19,8 @@ export const NotifiSubscriptionCardContainer: React.FC<
   inputSeparators,
   disclosureCopy,
   children,
+  loadingRingColor,
+  loadingSpinnerSize,
 }: React.PropsWithChildren<NotifiSubscriptionCardProps>) => {
   const { isInitialized } = useNotifiSubscribe({ targetGroupName: 'Default' });
   const { loading } = useNotifiSubscriptionContext();
@@ -34,6 +36,8 @@ export const NotifiSubscriptionCardContainer: React.FC<
     case 'loading':
       contents = (
         <LoadingStateCard
+          spinnerSize={loadingSpinnerSize}
+          ringColor={loadingRingColor}
           classNames={classNames?.LoadingStateCard}
           card={card}
         />
