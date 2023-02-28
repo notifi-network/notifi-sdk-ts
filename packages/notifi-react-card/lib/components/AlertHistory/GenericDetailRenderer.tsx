@@ -2,7 +2,6 @@ import { EventCheckmarkIcon } from 'notifi-react-card/lib/assets/EventCheckmarkI
 import React from 'react';
 
 import { AnnouncementIcon } from '../../assets/AnnouncementIcon';
-import { Checkmark } from '../../assets/Checkmark';
 import { ClockIcon } from '../../assets/ClockIcon';
 import { DownArrowIcon } from '../../assets/DownArrowIcon';
 import { RatioCheckIcon } from '../../assets/RatioCheckIcon';
@@ -54,19 +53,19 @@ const GenericDetailIcon: React.FC<GenericDetailIconProps> = ({
 }: GenericDetailIconProps) => {
   switch (icon) {
     case 'UP_ARROW':
-      return <UpArrowIcon className="GenericDetailIcon" />;
+      return <UpArrowIcon className="GenericDetailIcon--UpArrow" />;
     case 'DOWN_ARROW':
-      return <DownArrowIcon className="GenericDetailIcon" />;
+      return <DownArrowIcon className="GenericDetailIcon--DownArrow" />;
     case 'PERCENT':
-      return <RatioCheckIcon className="GenericDetailIcon" />;
+      return <RatioCheckIcon className="GenericDetailIcon--Percent" />;
     case 'CLOCK':
-      return <ClockIcon className="GenericDetailIcon" />;
+      return <ClockIcon className="GenericDetailIcon--Clock" />;
     case 'CHECKMARK':
-      return <EventCheckmarkIcon className="GenericDetailIcon" />;
+      return <EventCheckmarkIcon className="GenericDetailIcon--Checkmark" />;
     case 'STAR':
-      return <StarIcon className="GenericDetailIcon" />;
+      return <StarIcon className="GenericDetailIcon--Star" />;
     default:
     case 'MEGAPHONE':
-      return <AnnouncementIcon className="GenericDetailIcon" />;
+      return <AnnouncementIcon className="GenericDetailIcon--Megaphone" />;
   }
 };
