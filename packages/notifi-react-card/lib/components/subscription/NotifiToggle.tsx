@@ -35,7 +35,13 @@ export const NotifiToggle: React.FC<NotifiToggleProps> = ({
           setChecked(e.target.checked);
         }}
       />
-      <span className={clsx('NotifiToggle__slider', classNames?.slider)}></span>
+      <span
+        className={clsx(
+          'NotifiToggle__slider',
+          classNames?.slider,
+          disabled ? 'NotifiToggleSlider--disabled' : undefined,
+        )}
+      ></span>
     </label>
   );
 };

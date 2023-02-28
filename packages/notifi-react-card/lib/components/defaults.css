@@ -440,6 +440,10 @@ input::-webkit-inner-spin-button {
   transform: translateX(var(--notifi-toggle-size));
 }
 
+.NotifiToggleSlider--disabled {
+  cursor: progress;
+}
+
 .NotifiIntercomToggle__input:checked + .NotifiToggle__slider {
   background-color: #1448f3;
 }
