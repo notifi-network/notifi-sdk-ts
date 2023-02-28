@@ -101,6 +101,7 @@ export const EventTypeCustomToggleRow: React.FC<
         });
     } else {
       setEnabled(false);
+      setIsNotificationLoading(true);
 
       instantSubscribe({
         alertConfiguration: null,
