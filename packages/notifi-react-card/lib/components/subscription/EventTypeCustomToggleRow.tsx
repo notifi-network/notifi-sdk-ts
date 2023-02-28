@@ -67,10 +67,10 @@ export const EventTypeCustomToggleRow: React.FC<
     if (loading || isNotificationLoading) {
       return;
     }
+    setIsNotificationLoading(true);
 
     if (!enabled) {
       setEnabled(true);
-      setIsNotificationLoading(true);
 
       instantSubscribe({
         alertConfiguration: customToggleConfiguration({
@@ -101,7 +101,6 @@ export const EventTypeCustomToggleRow: React.FC<
         });
     } else {
       setEnabled(false);
-      setIsNotificationLoading(true);
 
       instantSubscribe({
         alertConfiguration: null,
