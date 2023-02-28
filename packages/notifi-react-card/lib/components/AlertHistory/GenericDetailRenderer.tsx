@@ -1,3 +1,4 @@
+import { EventCheckmarkIcon } from 'notifi-react-card/lib/assets/EventCheckmarkIcon';
 import React from 'react';
 
 import { AnnouncementIcon } from '../../assets/AnnouncementIcon';
@@ -61,7 +62,7 @@ const GenericDetailIcon: React.FC<GenericDetailIconProps> = ({
     case 'CLOCK':
       return <ClockIcon className="GenericDetailIcon" />;
     case 'CHECKMARK':
-      return <Checkmark className="GenericDetailIcon" />;
+      return <EventCheckmarkIcon className="GenericDetailIcon" />;
     case 'STAR':
       return <StarIcon className="GenericDetailIcon" />;
     default:
