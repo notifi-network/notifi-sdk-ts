@@ -70,6 +70,7 @@ export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
     if (loading || isNotificationLoading) {
       return;
     }
+    setIsNotificationLoading(true);
 
     if (!enabled) {
       setEnabled(true);
