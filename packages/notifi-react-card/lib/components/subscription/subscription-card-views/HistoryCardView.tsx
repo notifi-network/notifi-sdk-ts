@@ -87,6 +87,7 @@ export const AlertCard: React.FC<{
           createdDate={notification.createdDate}
           subject={detail.notificationTypeName}
           message={detail.genericMessage}
+          icon={detail.icon}
           classNames={classNames}
         />
       );

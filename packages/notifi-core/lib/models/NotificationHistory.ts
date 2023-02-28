@@ -105,6 +105,7 @@ export type GenericEventDetails = {
   notificationTypeName: string;
   genericMessage: string;
   action?: GenericEventAction;
+  icon: string;
 };
 
 export type GenericEventAction = {

@@ -106,6 +106,7 @@ fragment NotificationHistoryEntry on NotificationHistoryEntry {
         name
         url
       }
+      icon
     }
   }
 }`.trim();
