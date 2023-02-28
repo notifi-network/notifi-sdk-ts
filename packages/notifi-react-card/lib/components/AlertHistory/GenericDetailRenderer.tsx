@@ -53,19 +53,19 @@ const GenericDetailIcon: React.FC<GenericDetailIconProps> = ({
 }: GenericDetailIconProps) => {
   switch (icon) {
     case 'UP_ARROW':
-      return <UpArrowIcon />;
+      return <UpArrowIcon className="GenericDetailIcon" />;
     case 'DOWN_ARROW':
-      return <DownArrowIcon />;
+      return <DownArrowIcon className="GenericDetailIcon" />;
     case 'PERCENT':
-      return <RatioCheckIcon />;
+      return <RatioCheckIcon className="GenericDetailIcon" />;
     case 'CLOCK':
-      return <ClockIcon />;
+      return <ClockIcon className="GenericDetailIcon" />;
     case 'CHECKMARK':
-      return <Checkmark />;
+      return <Checkmark className="GenericDetailIcon" />;
     case 'STAR':
-      return <StarIcon />;
+      return <StarIcon className="GenericDetailIcon" />;
     default:
     case 'MEGAPHONE':
-      return <AnnouncementIcon />;
+      return <AnnouncementIcon className="GenericDetailIcon" />;
   }
 };
