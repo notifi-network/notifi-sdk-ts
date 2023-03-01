@@ -1,11 +1,11 @@
 {
   "name": "@notifi-network/notifi-react-example",
-  "version": "0.57.3",
+  "version": "0.57.4",
   "private": true,
   "dependencies": {
     "@ethersproject/bytes": "^5.7.0",
     "@manahippo/aptos-wallet-adapter": "^1.0.2",
-    "@notifi-network/notifi-react-card": "^0.57.3",
+    "@notifi-network/notifi-react-card": "^0.57.4",
     "@polkadot/extension-dapp": "^0.44.8",
     "@polkadot/extension-inject": "^0.44.8",
     "@polkadot/types": "^9.13.6",
