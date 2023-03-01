@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { PenIcon } from 'notifi-react-card/lib/assets/PenIcon';
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import {
   useNotifiClientContext,
@@ -37,6 +37,9 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
   contactInfo,
   confirmationLabels,
 }) => {
+  const [isEmailConfirmationSent, setIsEmailConfirmationSent] =
+    useState<boolean>(false);
+
   const {
     phoneNumber,
     email,
@@ -59,7 +62,9 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
   }, [setCardView, phoneNumber, email, telegramId]);
 
   const handleResendEmailVerificationClick = useCallback(() => {
+    setIsEmailConfirmationSent(true);
     resendEmailVerificationLink();
+    setTimeout(() => setIsEmailConfirmationSent(false), 3000);
   }, []);
 
   return (
@@ -97,7 +102,9 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
                   classNames?.email?.confirmationLabel,
                 )}
               >
-                {confirmationLabels?.email ?? 'Resend Link'}
+                {confirmationLabels?.email ?? isEmailConfirmationSent
+                  ? 'Email sent!'
+                  : 'Resend Link'}
               </label>
             </a>
           ) : null}
