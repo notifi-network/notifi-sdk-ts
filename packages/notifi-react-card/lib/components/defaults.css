@@ -21,6 +21,7 @@
   --notifi-incoming-message: #f5f6fb;
   --notifi-outgoing-message: #e5ebff;
   --notifi-settings-icon-color: #262949;
+  --notifi-confirmation-color: #22af3c;
 }
 
 .notifi__dark {
@@ -46,6 +47,7 @@
   --notifi-incoming-message: #474858;
   --notifi-outgoing-message: #678afc;
   --notifi-settings-icon-color: #fff;
+  --notifi-confirmation-color: #45c95e;
 }
 
 input:autofill,
@@ -1543,4 +1545,8 @@ input::-webkit-inner-spin-button {
   align-items: center;
   justify-content: start;
   gap: 20px;
+}
+
+.NotifiUserInfoPanel__emailConfirmationSent {
+  color: var(--notifi-confirmation-color);
 }

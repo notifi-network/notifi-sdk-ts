@@ -100,6 +100,10 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
                 className={clsx(
                   'NotifiUserInfoPanel__emailConfirmationLabel',
                   classNames?.email?.confirmationLabel,
+                  {
+                    NotifiUserInfoPanel__emailConfirmationSent:
+                      isEmailConfirmationSent,
+                  },
                 )}
               >
                 {confirmationLabels?.email ?? isEmailConfirmationSent
