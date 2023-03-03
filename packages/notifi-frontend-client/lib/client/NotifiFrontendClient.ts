@@ -1,5 +1,6 @@
 import { Types } from '@notifi-network/notifi-graphql';
 import { NotifiService } from '@notifi-network/notifi-graphql';
+import { FetchDataQuery } from 'notifi-graphql/lib/gql/generated';
 
 import type { NotifiFrontendConfiguration } from '../configuration';
 import type { CardConfigItemV1, EventTypeItem } from '../models';
@@ -560,5 +561,45 @@ export class NotifiFrontendClient {
       throw new Error(`Unknown error requesting verification`);
     }
     return id;
+  }
+
+  async fetchData(): Promise<Required<FetchDataQuery>> {
+    const {
+      __typename,
+      alert,
+      emailTarget,
+      filter,
+      smsTarget,
+      source,
+      sourceGroup,
+      targetGroup,
+      telegramTarget,
+    } = await this._service.fetchData({});
+
+    if (
+      __typename === undefined ||
+      alert === undefined ||
+      emailTarget === undefined ||
+      filter === undefined ||
+      smsTarget === undefined ||
+      source === undefined ||
+      sourceGroup === undefined ||
+      targetGroup === undefined ||
+      telegramTarget == undefined
+    ) {
+      throw new Error(`Unknown error during fetchData`);
+    }
+
+    return {
+      __typename,
+      alert,
+      emailTarget,
+      filter,
+      smsTarget,
+      source,
+      sourceGroup,
+      targetGroup,
+      telegramTarget,
+    };
   }
 }

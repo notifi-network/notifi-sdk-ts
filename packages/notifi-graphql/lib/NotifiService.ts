@@ -26,6 +26,7 @@ export class NotifiService
     Operations.DeleteSourceGroupService,
     Operations.DeleteTargetGroupService,
     Operations.DeleteWebhookTargetService,
+    Operations.FetchDataService,
     Operations.FindTenantConfigService,
     Operations.GetAlertsService,
     Operations.GetConfigurationForDappService,
@@ -212,6 +213,13 @@ export class NotifiService
   ): Promise<Generated.DeleteWebhookTargetMutation> {
     const headers = this._requestHeaders();
     return this._typedClient.deleteWebhookTarget(variables, headers);
+  }
+
+  async fetchData(
+    variables: Generated.FetchDataQueryVariables,
+  ): Promise<Generated.FetchDataQuery> {
+    const headers = this._requestHeaders();
+    return this._typedClient.fetchData(variables, headers);
   }
 
   async findTenantConfig(

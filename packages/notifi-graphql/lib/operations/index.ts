@@ -18,6 +18,7 @@ export * from './DeleteUserAlert';
 export * from './DeleteSourceGroup';
 export * from './DeleteTargetGroup';
 export * from './DeleteWebhookTarget';
+export * from './FetchData';
 export * from './FindTenantConfig';
 export * from './GetAlertsService';
 export * from './GetConfigurationForDapp';
