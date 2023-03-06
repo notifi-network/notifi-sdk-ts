@@ -3,8 +3,9 @@ import {
   NotifiSubscriptionCard,
 } from '@notifi-network/notifi-react-card';
 import '@notifi-network/notifi-react-card/dist/index.css';
+import { MemoProgramHardwareLoginPlugin } from '@notifi-network/notifi-solana-hw-login';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { useAcalaWallet } from '../AcalaWalletContextProvider';
 import './MultiWalletTest.css';
@@ -20,6 +21,14 @@ export const MultiWalletTest: React.FC = () => {
     requestSignature,
     polkadotPublicKey,
   } = useAcalaWallet();
+
+  const hwLoginPlugin = useMemo(() => {
+    return new MemoProgramHardwareLoginPlugin({
+      walletPublicKey: publicKey ?? '',
+      connection,
+      sendTransaction,
+    });
+  }, [publicKey, connection, sendTransaction]);
 
   if (
     publicKey === null ||
@@ -38,8 +47,7 @@ export const MultiWalletTest: React.FC = () => {
         walletBlockchain="SOLANA"
         env="Development"
         walletPublicKey={publicKey}
-        connection={connection}
-        sendTransaction={sendTransaction}
+        hardwareLoginPlugin={hwLoginPlugin}
         signMessage={signMessage}
         multiWallet={{
           ownedWallets: [

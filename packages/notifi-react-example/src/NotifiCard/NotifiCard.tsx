@@ -6,8 +6,9 @@ import {
   NotifiSubscriptionCard,
 } from '@notifi-network/notifi-react-card';
 import '@notifi-network/notifi-react-card/dist/index.css';
+import { MemoProgramHardwareLoginPlugin } from '@notifi-network/notifi-solana-hw-login';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import './NotifiCard.css';
 
@@ -16,6 +17,14 @@ export const NotifiCard: React.FC = () => {
   const { wallet, sendTransaction, signMessage } = useWallet();
   const adapter = wallet?.adapter;
   const publicKey = adapter?.publicKey?.toBase58() ?? null;
+
+  const hwLoginPlugin = useMemo(() => {
+    return new MemoProgramHardwareLoginPlugin({
+      walletPublicKey: publicKey ?? '',
+      connection,
+      sendTransaction,
+    });
+  }, [publicKey, connection, sendTransaction]);
 
   if (publicKey === null || signMessage === undefined) {
     // publicKey is required
@@ -55,8 +64,7 @@ export const NotifiCard: React.FC = () => {
         walletBlockchain="SOLANA"
         env="Development"
         walletPublicKey={publicKey}
-        connection={connection}
-        sendTransaction={sendTransaction}
+        hardwareLoginPlugin={hwLoginPlugin}
         signMessage={signMessage}
       >
         <NotifiSubscriptionCard

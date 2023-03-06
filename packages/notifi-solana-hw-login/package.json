@@ -1,0 +1,43 @@
+{
+  "name": "@notifi-network/notifi-solana-hw-login",
+  "version": "0.57.4",
+  "description": "Plugin for Solana Hardware Login support",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "npm run clean && npm run compile",
+    "compile": "tsup lib/index.ts --format cjs,esm --dts --clean",
+    "clean": "rimraf ./dist",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepublishOnly": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/notifi-network/notifi-sdk-ts.git"
+  },
+  "author": "juni-notifi <hyungjoon.kim@notifi.network>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/notifi-network/notifi-sdk-ts/issues"
+  },
+  "homepage": "https://github.com/notifi-network/notifi-sdk-ts#readme",
+  "dependencies": {
+    "@notifi-network/notifi-react-card": "^0.57.4"
+  },
+  "peerDependencies": {
+    "@solana/wallet-adapter-react": "^0.15.30",
+    "@solana/web3.js": "^1.73.3"
+  },
+  "gitHead": "be5adc9316ca9f254e358698fb04e6245f2ee79a"
+}
