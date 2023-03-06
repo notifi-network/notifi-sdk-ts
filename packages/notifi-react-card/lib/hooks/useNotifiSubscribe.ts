@@ -5,11 +5,6 @@ import type {
   CreateSourceInput,
   Source,
 } from '@notifi-network/notifi-core';
-import {
-  PublicKey,
-  Transaction,
-  TransactionInstruction,
-} from '@solana/web3.js';
 import { isValidPhoneNumber } from 'libphonenumber-js';
 import { useCallback, useEffect, useRef } from 'react';
 
@@ -185,41 +180,13 @@ export const useNotifiSubscribe: ({
         throw new Error('Unsupported wallet blockchain');
       }
 
-      const { connection, sendTransaction } = params;
+      const plugin = params.hardwareLoginPlugin;
 
       // Obtain nonce from Notifi
       const { logValue } = await client.beginLoginViaTransaction();
 
       // Commit a transaction with the Memo program
-      const publicKey = new PublicKey(walletPublicKey);
-      const latestBlockHash = await connection.getLatestBlockhash();
-      const txn = new Transaction();
-      txn.recentBlockhash = latestBlockHash.blockhash;
-      txn.feePayer = publicKey;
-      txn.add(
-        new TransactionInstruction({
-          data: Buffer.from(logValue, 'utf-8'),
-          keys: [
-            {
-              isSigner: true,
-              isWritable: false,
-              pubkey: publicKey,
-            },
-          ],
-          programId: new PublicKey(
-            'MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr',
-          ),
-        }),
-      );
-
-      // Send transaction and wait for it to confirm
-      const blockHashAgain = await connection.getLatestBlockhash();
-      const signature = await sendTransaction(txn, connection);
-      await connection.confirmTransaction({
-        blockhash: blockHashAgain.blockhash,
-        lastValidBlockHeight: blockHashAgain.lastValidBlockHeight,
-        signature,
-      });
+      const signature = await plugin.sendMessage(logValue);
 
       // Inform Notifi of the signature so that we can complete login
       await client.completeLoginViaTransaction({

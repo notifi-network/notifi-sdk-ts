@@ -43,6 +43,7 @@
     "packages/notifi-node-sample",
     "packages/notifi-react-card",
     "packages/notifi-react-hooks",
-    "packages/notifi-react-example"
+    "packages/notifi-react-example",
+    "packages/notifi-solana-hw-login"
   ]
 }

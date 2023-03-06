@@ -3,13 +3,11 @@ import {
   AcalaSignMessageFunction,
   AptosSignMessageFunction,
   NotifiEnvironment,
-  SignMessageParams,
   Uint8SignMessageFunction,
 } from '@notifi-network/notifi-react-hooks';
-import type { WalletContextState } from '@solana/wallet-adapter-react';
-import type { Connection } from '@solana/web3.js';
 import React from 'react';
 
+import { HardwareLoginPlugin } from '../plugins';
 import { AlertConfiguration } from '../utils';
 import { NotifiClientContextProvider } from './NotifiClientContext';
 
@@ -17,8 +15,7 @@ export type SolanaParams = Readonly<{
   walletBlockchain: 'SOLANA';
   walletPublicKey: string;
   signMessage: Uint8SignMessageFunction;
-  connection: Connection;
-  sendTransaction: WalletContextState['sendTransaction'];
+  hardwareLoginPlugin: HardwareLoginPlugin;
 }>;
 export type EthereumParams = Readonly<{
   walletBlockchain: 'ETHEREUM';

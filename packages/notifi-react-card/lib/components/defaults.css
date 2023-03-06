@@ -450,6 +450,21 @@ input::-webkit-inner-spin-button {
   background-color: #1448f3;
 }
 
+.NotifiHwWalletToggle__container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding-top: 10px;
+}
+.NotifiHwWalletToggle__label {
+  font-size: 16px;
+  line-height: 20px;
+  color: var(--notifi-font-color);
+  margin-bottom: 0px !important;
+}
+
 .EventTypeLabelRow__container,
 .EventTypeBroadcastRow__container,
 .EventTypeDirectPushRow__container,
