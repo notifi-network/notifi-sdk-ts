@@ -32,7 +32,7 @@ export type NotifiSubscriptionData = Readonly<{
   setTelegramConfirmationUrl: (
     telegramConfirmationUrl: string | undefined,
   ) => void;
-  setUseHardwareWallet: (hardwareWallet: boolean) => void;
+  setUseHardwareWallet: React.Dispatch<React.SetStateAction<boolean>>;
   loading: boolean;
   setLoading: (loading: boolean) => void;
   isSmsConfirmed: boolean | null;

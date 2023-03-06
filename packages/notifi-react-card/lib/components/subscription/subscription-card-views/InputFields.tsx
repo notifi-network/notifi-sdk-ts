@@ -2,11 +2,16 @@ import clsx from 'clsx';
 import React from 'react';
 
 import { NotifiInputFieldsText, NotifiInputSeparators } from '..';
+import { useNotifiClientContext } from '../../../context';
 import { CardConfigItemV1 } from '../../../hooks';
 import {
   NotifiEmailInput,
   NotifiEmailInputProps,
 } from '../../NotifiEmailInput';
+import {
+  NotifiHwWalletToggle,
+  NotifiHwWalletToggleProps,
+} from '../../NotifiHwWalletToggle';
 import { NotifiSmsInput, NotifiSmsInputProps } from '../../NotifiSmsInput';
 import {
   NotifiTelegramInput,
@@ -23,6 +28,7 @@ export type InputFieldsProps = {
     NotifiEmailInput?: NotifiEmailInputProps['classNames'];
     NotifiSmsInput?: NotifiSmsInputProps['classNames'];
     NotifiTelegramInput?: NotifiTelegramInputProps['classNames'];
+    NotifiHwWalletToggle?: NotifiHwWalletToggleProps['classNames'];
   }>;
 };
 export const InputFields: React.FC<InputFieldsProps> = ({
@@ -33,6 +39,8 @@ export const InputFields: React.FC<InputFieldsProps> = ({
   allowedCountryCodes,
   inputDisabled,
 }) => {
+  const { params } = useNotifiClientContext();
+
   return (
     <>
       {data.contactInfo.email.active ? (
@@ -116,6 +124,12 @@ export const InputFields: React.FC<InputFieldsProps> = ({
             {inputSeparators?.telegramSeparator?.content}
           </div>
         </div>
+      ) : null}
+      {params.walletBlockchain === 'SOLANA' ? (
+        <NotifiHwWalletToggle
+          disabled={inputDisabled}
+          classNames={classNames?.NotifiHwWalletToggle}
+        />
       ) : null}
     </>
   );
