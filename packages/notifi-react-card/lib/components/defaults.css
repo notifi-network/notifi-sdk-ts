@@ -68,6 +68,7 @@ input::-webkit-inner-spin-button {
   color: var(--notifi-font-color);
   display: flex;
   flex-direction: column;
+  font-family: Helvetica, sans-serif;
   background-color: var(--notifi-card-background);
   border-radius: 5px;
   padding: 20px 20px 5px 20px;
@@ -77,6 +78,7 @@ input::-webkit-inner-spin-button {
 .NotifiPreviewCard__container {
   flex-grow: 1;
 }
+
 .NotifiInputContainer {
   flex-grow: 1;
   display: flex;
@@ -153,8 +155,8 @@ input::-webkit-inner-spin-button {
 }
 
 .NotifiFooter__logoSvg {
-  width: 39px;
-  height: 9px;
+  width: 62px;
+  height: 15px;
   position: relative;
   padding-top: 2px;
   margin-left: 4px;
@@ -189,7 +191,6 @@ input::-webkit-inner-spin-button {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10px;
   cursor: pointer;
   margin-bottom: 0 !important;
 }
@@ -294,6 +295,7 @@ input::-webkit-inner-spin-button {
 .NotifiAlertHistory_noAlertDescription {
   font-size: 14px;
   line-height: 14px;
+  font-family: inherit;
   color: var(--notifi-secondary-font-color);
   text-align: center;
 }
@@ -338,6 +340,7 @@ input::-webkit-inner-spin-button {
 .NotifiTelegramInput__container:focus-within {
   box-shadow: inset 0px 0px 0px 3px var(--notifi-focus-color);
 }
+
 .NotifiEmailInput__errorMessage,
 .NotifiSmsInput__errorMessage,
 .NotifiTelegramInput__errorMessage {
@@ -458,6 +461,7 @@ input::-webkit-inner-spin-button {
   gap: 10px;
   padding-top: 10px;
 }
+
 .NotifiHwWalletToggle__label {
   font-size: 16px;
   line-height: 20px;
@@ -517,6 +521,7 @@ input::-webkit-inner-spin-button {
 .EventTypeUnsupportedRow__container {
   display: none;
 }
+
 .NotifiCardButton__button,
 .NotifiSubscribeButton__button {
   background-color: var(--notifi-button-color);
@@ -532,6 +537,7 @@ input::-webkit-inner-spin-button {
   border-radius: 104px;
   margin-top: auto;
 }
+
 .NotifiCardButton__button:disabled,
 .NotifiSubscribeButton__button:disabled,
 .NotifiStartChatButton__button:disabled,
@@ -564,6 +570,7 @@ input::-webkit-inner-spin-button {
   outline: none;
   box-shadow: 0px 0px 0px 1px var(--notifi-focus-color);
 }
+
 .NotifiSmsInput__dropdownSelected {
   display: flex;
   align-items: center;
@@ -645,6 +652,7 @@ input::-webkit-inner-spin-button {
   transition: 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
   cursor: pointer;
 }
+
 .NotifiSmsInput__dropdownOption-selected,
 .NotifiSmsInput__dropdownOption:hover {
   background-color: rgba(234, 126, 104, 0.08);
@@ -739,6 +747,7 @@ input::-webkit-inner-spin-button {
   flex-shrink: 0;
   margin-left: 8px;
 }
+
 .NotifiVerifyButton,
 .NotifiUserInfoPanel__myWalletConfirmation,
 .NotifiUserInfoPanel__emailConfirmationLabel,
@@ -753,6 +762,7 @@ input::-webkit-inner-spin-button {
   box-shadow: 0;
   outline: none;
 }
+
 .NotifiUserInfoPanel__myWallet,
 .NotifiUserInfoPanel__email,
 .NotifiUserInfoPanel__telegram,
@@ -764,6 +774,7 @@ input::-webkit-inner-spin-button {
   align-items: baseline;
   overflow-wrap: anywhere;
 }
+
 .NotifiUserInfoPanel__myWalletLabel,
 .NotifiUserInfoPanel__emailLabel,
 .NotifiUserInfoPanel__smsLabel,
@@ -823,6 +834,7 @@ input::-webkit-inner-spin-button {
   background-color: var(--notifi-tooltip-background);
   border-radius: 8px;
 }
+
 .NotifiAlertHistory__settingsIcon {
   position: absolute;
   right: 0px;
@@ -833,6 +845,7 @@ input::-webkit-inner-spin-button {
   fill: var(notifi-settings-icon-color);
   cursor: pointer;
 }
+
 .NotifiAlertHistory__emptyAlertsBellIcon path {
   fill: var(--notifi-button-color);
   cursor: pointer;
@@ -897,6 +910,7 @@ input::-webkit-inner-spin-button {
   justify-content: space-between;
   margin-top: 26px;
 }
+
 .NotifiAlertDetails__topContent {
   text-align: start;
   font-weight: 700;
@@ -904,6 +918,7 @@ input::-webkit-inner-spin-button {
   max-width: 275px;
   overflow-wrap: break-word;
 }
+
 .NotifiAlertDetails__bottomContent {
   text-align: start;
   font-size: 14px;
@@ -921,11 +936,13 @@ input::-webkit-inner-spin-button {
   justify-content: center;
   align-items: center;
 }
+
 .NotifiAlertListPreview__descriptionText {
   font-size: 13px;
   font-weight: 500;
   padding-bottom: 8px;
 }
+
 .NotifiAlertListPreview__headerText {
   margin-bottom: 12px;
   font-weight: 500;
@@ -1432,6 +1449,7 @@ input::-webkit-inner-spin-button {
   background-color: var(--notifi-tooltip-background);
   cursor: pointer;
 }
+
 .TradingPairSettingsRow__radioSelected {
   color: var(--notifi-button-text);
   background-color: var(--notifi-button-color);
@@ -1546,6 +1564,7 @@ input::-webkit-inner-spin-button {
     -webkit-transform: rotate(360deg);
   }
 }
+
 @-webkit-keyframes spin {
   to {
     -webkit-transform: rotate(360deg);
