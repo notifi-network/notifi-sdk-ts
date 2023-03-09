@@ -18,6 +18,7 @@ export type FetchedStateCardProps = Readonly<{
   inputs: Record<string, unknown>;
   inputLabels?: NotifiInputFieldsText;
   inputSeparators?: NotifiInputSeparators;
+  onClose?: () => void;
 }>;
 
 export const FetchedStateCard: React.FC<FetchedStateCardProps> = ({
@@ -27,6 +28,7 @@ export const FetchedStateCard: React.FC<FetchedStateCardProps> = ({
   inputs,
   inputLabels,
   inputSeparators,
+  onClose,
 }) => {
   let contents: React.ReactNode = <SubscriptionCardUnsupported />;
   switch (card.data.version) {
@@ -39,6 +41,7 @@ export const FetchedStateCard: React.FC<FetchedStateCardProps> = ({
           inputDisabled={inputDisabled}
           inputLabels={inputLabels}
           inputSeparators={inputSeparators}
+          onClose={onClose}
         />
       );
   }

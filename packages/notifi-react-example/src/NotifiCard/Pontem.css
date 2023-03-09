@@ -1,0 +1,52 @@
+.App .notifi__dark {
+  --notifi-card-secondary-background: #080123;
+  --notifi-placeholder-color: #e5e4fa;
+  --notifi-focus-color: #e5e4fa;
+  --notifi-toggle-handle: #fff;
+  --notifi-toggle-inactive: #3e3e52;
+  --notifi-toggle-active: #6e42ca;
+  --notifi-tooltip-background: #2d2d4e;
+  --notifi-alert-color: rgb(213, 25, 25);
+  --notifi-link-color: #946bec;
+  --notifi-checkmark-color: #039581;
+  --notifi-font-color: #e5e4fa;
+  --notifi-secondary-font-color: #fff;
+  --notifi-card-background: #000;
+  --notifi-intro-color: #b6b8d5;
+  --notifi-input-background: #1c1c33;
+  --notifi-input-border: rgba(229, 228, 250, 0.15);
+  --notifi-button-color: #6e42ca;
+  --notifi-button-disabled-color: #80829d;
+  --notifi-button-text-color: #fff;
+  --notifi-incoming-message: #474858;
+  --notifi-outgoing-message: #678afc;
+  --notifi-settings-icon-color: #d4c4ed;
+}
+
+a {
+  text-decoration: none;
+}
+
+.NotifiPreviewCard__editButton svg path {
+  stroke: var(--notifi-link-color);
+}
+
+.NotifiTooltip__label {
+  color: #fff;
+}
+
+.NotifiUserInfoPanel__myWallet,
+.NotifiUserInfoPanel__email,
+.NotifiUserInfoPanel__telegram,
+.NotifiUserInfoPanel__sms {
+  padding-top: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--notifi-input-border);
+  margin-bottom: 0 !important;
+}
+
+.NotifiAlertBox__btn--left,
+.NotifiAlertBox__btn--right {
+  background: var(--notifi-input-background);
+  border-radius: 8px;
+}

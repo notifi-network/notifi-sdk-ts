@@ -12,6 +12,8 @@ import React, { useMemo } from 'react';
 
 import './NotifiCard.css';
 
+// import './Pontem.css';
+
 export const NotifiCard: React.FC = () => {
   const { connection } = useConnection();
   const { wallet, sendTransaction, signMessage } = useWallet();
@@ -73,6 +75,7 @@ export const NotifiCard: React.FC = () => {
           inputLabels={inputLabels}
           inputSeparators={inputSeparators}
           cardId="b469c6029e3f40aaab49ddd78fe7f228"
+          onClose={() => alert('nope you must stay')}
         />
         <NotifiIntercomCard
           darkMode

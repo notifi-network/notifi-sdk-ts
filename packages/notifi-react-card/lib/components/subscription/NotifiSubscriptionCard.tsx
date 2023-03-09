@@ -63,6 +63,7 @@ export type NotifiSubscriptionCardProps = Readonly<{
   cardId: string;
   inputs?: Record<string, unknown>;
   inputSeparators?: NotifiInputSeparators;
+  onClose?: () => void;
 }>;
 
 export const NotifiSubscriptionCard: React.FC<

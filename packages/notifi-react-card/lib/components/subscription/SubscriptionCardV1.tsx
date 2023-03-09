@@ -1,9 +1,12 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 
 import { useNotifiSubscriptionContext } from '../../context';
 import { CardConfigItemV1, useNotifiSubscribe } from '../../hooks';
 import { DeepPartialReadonly } from '../../utils';
-import NotifiAlertBox, { NotifiAlertBoxProps } from '../NotifiAlertBox';
+import NotifiAlertBox, {
+  NotifiAlertBoxButtonProps,
+  NotifiAlertBoxProps,
+} from '../NotifiAlertBox';
 import {
   NotifiInputFieldsText,
   NotifiInputSeparators,
@@ -45,6 +48,7 @@ export type SubscriptionCardV1Props = Readonly<{
   inputs: Record<string, unknown>;
   inputLabels?: NotifiInputFieldsText;
   inputSeparators?: NotifiInputSeparators;
+  onClose?: () => void;
 }>;
 
 export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
@@ -54,6 +58,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
   inputs,
   inputLabels,
   inputSeparators,
+  onClose,
 }) => {
   const allowedCountryCodes = [...data.contactInfo.sms.supportedCountryCodes];
   const { cardView, email, phoneNumber, telegramId, setCardView } =
@@ -86,9 +91,30 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
     }
   }, [email, phoneNumber, telegramId, setCardView, cardView, isInitialized]);
 
+  const rightIcon: NotifiAlertBoxButtonProps | undefined = useMemo(() => {
+    if (onClose === undefined) {
+      return undefined;
+    }
+
+    return {
+      name: 'close',
+      onClick: onClose,
+    };
+  }, [onClose]);
+
   switch (cardView.state) {
     case 'expired':
-      view = <ExpiredTokenView classNames={classNames?.ExpiredTokenView} />;
+      view = (
+        <>
+          <NotifiAlertBox
+            classNames={classNames?.NotifiAlertBox}
+            rightIcon={rightIcon}
+          >
+            <h2>Manage Alerts</h2>
+          </NotifiAlertBox>
+          <ExpiredTokenView classNames={classNames?.ExpiredTokenView} />
+        </>
+      );
       break;
     case 'preview':
       view = (
@@ -99,6 +125,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
               name: 'back',
               onClick: () => setCardView({ state: 'history' }),
             }}
+            rightIcon={rightIcon}
           >
             <h2>Manage Alerts</h2>
           </NotifiAlertBox>
@@ -125,6 +152,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
                     onClick: () => setCardView({ state: 'preview' }),
                   }
             }
+            rightIcon={rightIcon}
           >
             {cardView.state === 'signup' ? (
               <h2>Get Notified</h2>
@@ -161,6 +189,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
                       : 'preview',
                 }),
             }}
+            rightIcon={rightIcon}
           >
             <h2>Verify Wallets</h2>
           </NotifiAlertBox>
@@ -178,10 +207,11 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
         <>
           <NotifiAlertBox
             classNames={classNames?.NotifiAlertBox}
-            rightIcon={{
+            leftIcon={{
               name: 'settings',
               onClick: () => setCardView({ state: 'preview' }),
             }}
+            rightIcon={rightIcon}
           >
             <h2>Alert History</h2>
           </NotifiAlertBox>
