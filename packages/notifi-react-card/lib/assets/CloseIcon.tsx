@@ -9,11 +9,12 @@ export const CloseIcon: React.FC<Props> = (props: Props) => {
       width="24"
       height="24"
       viewBox="0 0 24 24"
-      fill="currentColor"
+      fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
-        d="M15.59 7L12 10.59L8.41 7L7 8.41L10.59 12L7 15.59L8.41 17L12 13.41L15.59 17L17 15.59L13.41 12L17 8.41L15.59 7Z"
+        fillRule="evenodd"
+        d="M6.71751 5.28249L5.3033 6.6967L10.6066 12L5.3033 17.3033L6.71751 18.7175L12.0208 13.4142L17.3241 18.7175L18.7383 17.3033L13.435 12L18.7383 6.6967L17.3241 5.28249L12.0208 10.5858L6.71751 5.28249Z"
         fill="currentColor"
       />
     </svg>

@@ -5,19 +5,17 @@ export type Props = React.SVGProps<SVGSVGElement>;
 export const ClockIcon: React.FC<Props> = (props: Props) => {
   return (
     <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      fill="currentColor"
-      height="12px"
-      width="12px"
-      version="1.1"
-      id="clock_icon"
-      viewBox="0 0 12 12"
       {...props}
     >
       <path
         fillRule="evenodd"
         clipRule="evenodd"
-        d="M6 12C9.31371 12 12 9.31371 12 6C12 2.68629 9.31371 0 6 0C2.68629 0 0 2.68629 0 6C0 9.31371 2.68629 12 6 12ZM5.25 2V6.5V6.81066L5.46967 7.03033L7.96967 9.53033L9.03033 8.46967L6.75 6.18934V2H5.25Z"
+        d="M12 18C15.3137 18 18 15.3137 18 12C18 8.68629 15.3137 6 12 6C8.68629 6 6 8.68629 6 12C6 15.3137 8.68629 18 12 18ZM12.75 8C12.75 7.58579 12.4142 7.25 12 7.25C11.5858 7.25 11.25 7.58579 11.25 8V12.5V12.8107L11.4697 13.0303L13.9697 15.5303C14.2626 15.8232 14.7374 15.8232 15.0303 15.5303C15.3232 15.2374 15.3232 14.7626 15.0303 14.4697L12.75 12.1893V8Z"
         fill="currentColor"
       />
     </svg>

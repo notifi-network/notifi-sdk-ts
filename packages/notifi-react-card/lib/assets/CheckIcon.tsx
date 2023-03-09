@@ -2,19 +2,21 @@ import React from 'react';
 
 export type Props = React.SVGProps<SVGSVGElement>;
 
-export const SettingIcon: React.FC<Props> = (props: Props) => {
+export const CheckIcon: React.FC<Props> = (props: Props) => {
   return (
     <svg
+      {...props}
       width="24"
       height="24"
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      {...props}
     >
       <path
-        d="M3 17V19H9V17H3ZM3 5V7H13V5H3ZM13 21V19H21V17H13V15H11V21H13ZM7 9V11H3V13H7V15H9V9H7ZM21 13V11H11V13H21ZM15 9H17V7H21V5H17V3H15V9Z"
-        fill="currentColor"
+        d="M6 12.5L9.84 16L18 8"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
       />
     </svg>
   );
