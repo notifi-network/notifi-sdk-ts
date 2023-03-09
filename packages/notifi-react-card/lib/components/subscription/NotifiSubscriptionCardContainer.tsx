@@ -21,6 +21,7 @@ export const NotifiSubscriptionCardContainer: React.FC<
   children,
   loadingRingColor,
   loadingSpinnerSize,
+  onClose,
 }: React.PropsWithChildren<NotifiSubscriptionCardProps>) => {
   const { isInitialized } = useNotifiSubscribe({ targetGroupName: 'Default' });
   const { loading } = useNotifiSubscriptionContext();
@@ -40,12 +41,17 @@ export const NotifiSubscriptionCardContainer: React.FC<
           ringColor={loadingRingColor}
           classNames={classNames?.LoadingStateCard}
           card={card}
+          onClose={onClose}
         />
       );
       break;
     case 'error':
       contents = (
-        <ErrorStateCard classNames={classNames?.ErrorStateCard} card={card} />
+        <ErrorStateCard
+          classNames={classNames?.ErrorStateCard}
+          card={card}
+          onClose={onClose}
+        />
       );
       break;
     case 'fetched':
@@ -57,6 +63,7 @@ export const NotifiSubscriptionCardContainer: React.FC<
           inputDisabled={inputDisabled}
           inputLabels={inputLabels}
           inputSeparators={inputSeparators}
+          onClose={onClose}
         />
       );
       break;
