@@ -2,7 +2,7 @@ import React from 'react';
 
 export type Props = React.SVGProps<SVGSVGElement>;
 
-export const SettingIcon: React.FC<Props> = (props: Props) => {
+export const DaoIcon: React.FC<Props> = (props: Props) => {
   return (
     <svg
       width="24"
@@ -13,7 +13,9 @@ export const SettingIcon: React.FC<Props> = (props: Props) => {
       {...props}
     >
       <path
-        d="M3 17V19H9V17H3ZM3 5V7H13V5H3ZM13 21V19H21V17H13V15H11V21H13ZM7 9V11H3V13H7V15H9V9H7ZM21 13V11H11V13H21ZM15 9H17V7H21V5H17V3H15V9Z"
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M17.0623 7.92265L12.0002 5L6.93799 7.92265L12.0002 10.8453L17.0623 7.92265ZM12.0002 12L5.93799 8.5V15.5L12.0002 19L18.0623 15.5V8.5L12.0002 12Z"
         fill="currentColor"
       />
     </svg>

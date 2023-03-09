@@ -10,6 +10,7 @@ import { NotificationEmptyBellIcon } from '../../../assets/NotificationEmptyBell
 import { useNotifiClientContext } from '../../../context';
 import { DeepPartialReadonly } from '../../../utils';
 import { MESSAGES_PER_PAGE } from '../../../utils/constants';
+import { AccountBalanceChangedRenderer } from '../../AlertHistory/AccountBalanceChangedRenderer';
 import {
   AlertDetailsCard,
   AlertDetailsProps,
@@ -99,6 +100,19 @@ export const AlertCard: React.FC<{
           messageBody={detail.messageBody}
           createdDate={notification.createdDate}
           classNames={classNames}
+        />
+      );
+    case 'AccountBalanceChangedEventDetails':
+      return (
+        <AccountBalanceChangedRenderer
+          classNames={classNames}
+          createdDate={notification.createdDate}
+          handleAlertEntrySelection={handleAlertEntrySelection}
+          direction={detail.direction}
+          previousValue={detail.previousValue}
+          newValue={detail.newValue}
+          tokenSymbol={detail.tokenSymbol}
+          walletAddress={notification.sourceAddress ?? ''}
         />
       );
   }

@@ -1,15 +1,13 @@
 import React from 'react';
 
+import { BackArrowIcon } from '../../assets/BackArrowIcon';
 import { CloseIcon } from '../../assets/CloseIcon';
 import { SettingIcon } from '../../assets/SettingIcon';
-import { BackArrow } from '../../assets/backArrow';
-import { NotifiLogo } from '../NotifiLogo';
 
 const icons = {
-  back: BackArrow,
+  back: BackArrowIcon,
   close: CloseIcon,
   settings: SettingIcon,
-  logo: NotifiLogo,
 } as const;
 
 export type AlertActionIconProps = Readonly<{

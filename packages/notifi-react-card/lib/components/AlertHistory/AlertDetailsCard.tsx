@@ -2,15 +2,18 @@ import { NotificationHistoryEntry } from '@notifi-network/notifi-core';
 import clsx from 'clsx';
 import React, { useMemo } from 'react';
 
-import { BackArrow } from '../../assets/backArrow';
-import { formatAlertDetailsTimestamp } from '../../utils/AlertHistoryUtils';
+import { BackArrowIcon } from '../../assets/BackArrowIcon';
+import {
+  formatAlertDetailsTimestamp,
+  formatAmount,
+} from '../../utils/AlertHistoryUtils';
 
 export type AlertDetailsProps = Readonly<{
   notificationEntry: NotificationHistoryEntry;
   handleClose: () => void;
   classNames?: Readonly<{
     detailsContainer?: string;
-    backArrow?: string;
+    BackArrowIcon?: string;
   }>;
 }>;
 export const AlertDetailsCard: React.FC<AlertDetailsProps> = ({
@@ -58,6 +61,18 @@ export const AlertDetailsCard: React.FC<AlertDetailsProps> = ({
           bottomContent: detail.messageBody,
         };
       }
+      case 'AccountBalanceChangedEventDetails': {
+        const changeAmount = `${formatAmount(
+          Math.abs(detail.previousValue - detail.newValue),
+        )}`;
+        return {
+          topContent:
+            detail.direction === 'INCOMING'
+              ? `Incoming Transaction: ${changeAmount}  ${detail.tokenSymbol}`
+              : `Outgoing Transaction: ${changeAmount}  ${detail.tokenSymbol}`,
+          bottomContent: `Wallet ${notificationEntry.sourceAddress} account balance changed by ${changeAmount} ${detail.tokenSymbol}`,
+        };
+      }
     }
 
     return {};
@@ -70,10 +85,13 @@ export const AlertDetailsCard: React.FC<AlertDetailsProps> = ({
       )}
     >
       <div
-        className={clsx('NotifiAlertDetails__backArrow', classNames?.backArrow)}
+        className={clsx(
+          'NotifiAlertDetails__backArrow',
+          classNames?.BackArrowIcon,
+        )}
         onClick={handleClose}
       >
-        <BackArrow />
+        <BackArrowIcon />
       </div>
       <div className="NotifiAlertDetails__dialogHeader">
         <span className="NotifiAlertDetails__headerLabel">

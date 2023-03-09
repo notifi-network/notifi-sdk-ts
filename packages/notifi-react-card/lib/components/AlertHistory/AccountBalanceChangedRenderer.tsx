@@ -1,7 +1,11 @@
 import React from 'react';
 
+import { SwapIcon } from '../../assets/SwapIcon';
 import { formatAmount } from '../../utils/AlertHistoryUtils';
-import { AlertNotificationRow } from './AlertNotificationRow';
+import {
+  AlertNotificationRow,
+  AlertNotificationViewProps,
+} from './AlertNotificationRow';
 
 export type AccountBalanceChangedRendererProps = Readonly<{
   direction: string;
@@ -10,11 +14,15 @@ export type AccountBalanceChangedRendererProps = Readonly<{
   tokenSymbol: string;
   createdDate: string;
   walletAddress: string;
+  handleAlertEntrySelection: () => void;
+  classNames?: AlertNotificationViewProps['classNames'];
 }>;
 
 export const AccountBalanceChangedRenderer: React.FC<
   AccountBalanceChangedRendererProps
 > = ({
+  classNames,
+  handleAlertEntrySelection,
   direction,
   previousValue,
   newValue,
@@ -31,12 +39,15 @@ export const AccountBalanceChangedRenderer: React.FC<
   };
 
   const getMessage = () => {
-    return `Wallet ID: ${walletAddress} account balance changed by ${changeAmount} ${tokenSymbol}`;
+    return `Wallet ${walletAddress} account balance changed by ${changeAmount} ${tokenSymbol}`;
   };
 
   direction;
   return (
     <AlertNotificationRow
+      classNames={classNames}
+      handleAlertEntrySelection={handleAlertEntrySelection}
+      notificationImage={<SwapIcon />}
       notificationTitle={getTitle()}
       notificationSubject={getTitle()}
       notificationDate={createdDate}

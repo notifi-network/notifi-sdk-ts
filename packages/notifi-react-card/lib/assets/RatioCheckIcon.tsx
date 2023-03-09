@@ -1,20 +1,28 @@
 import React from 'react';
 
-export type Props = Readonly<{
-  className?: string;
-}>;
+export type Props = React.SVGProps<SVGSVGElement>;
 
-export const RatioCheckIcon: React.FC<Props> = ({ className }: Props) => {
+export const RatioCheckIcon: React.FC<Props> = (props: Props) => {
   return (
     <svg
-      className={className}
-      width="14"
-      height="12"
-      viewBox="0 0 14 12"
-      fill="currentColor"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      {...props}
     >
-      <path d="M0.5376 2.9616C0.5376 4.5872 1.728 5.816 3.2896 5.816C4.8384 5.816 6.0416 4.5872 6.0416 2.9616C6.0416 1.3616 4.8384 0.12 3.2896 0.12C1.728 0.12 0.5376 1.3616 0.5376 2.9616ZM5.952 11L9.9712 0.12H8.1536L4.1344 11H5.952ZM3.2896 1.7584C3.9296 1.7584 4.416 2.2832 4.416 2.9616C4.416 3.6528 3.9296 4.1648 3.2896 4.1648C2.6624 4.1648 2.1504 3.6528 2.1504 2.9616C2.1504 2.2832 2.6624 1.7584 3.2896 1.7584ZM8.1024 8.2224C8.1024 9.848 9.2928 11.0768 10.8544 11.0768C12.4032 11.0768 13.6064 9.848 13.6064 8.2224C13.6064 6.6224 12.4032 5.3808 10.8544 5.3808C9.2928 5.3808 8.1024 6.6224 8.1024 8.2224ZM10.8544 7.0192C11.4944 7.0192 11.9808 7.544 11.9808 8.2224C11.9808 8.9136 11.4944 9.4256 10.8544 9.4256C10.2272 9.4256 9.7152 8.9136 9.7152 8.2224C9.7152 7.544 10.2272 7.0192 10.8544 7.0192Z" />
+      <circle cx="8" cy="9" r="1.75" stroke="currentFill" strokeWidth="1.5" />
+      <circle cx="16" cy="14" r="1.75" stroke="currentFill" strokeWidth="1.5" />
+      <line
+        x1="9.22548"
+        y1="16.4982"
+        x2="14.8394"
+        y2="6.77452"
+        stroke="currentFill"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
     </svg>
   );
 };

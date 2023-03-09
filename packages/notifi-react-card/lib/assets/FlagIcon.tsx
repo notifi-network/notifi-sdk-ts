@@ -2,7 +2,7 @@ import React from 'react';
 
 export type Props = React.SVGProps<SVGSVGElement>;
 
-export const SettingIcon: React.FC<Props> = (props: Props) => {
+export const FlagIcon: React.FC<Props> = (props: Props) => {
   return (
     <svg
       width="24"
@@ -13,7 +13,7 @@ export const SettingIcon: React.FC<Props> = (props: Props) => {
       {...props}
     >
       <path
-        d="M3 17V19H9V17H3ZM3 5V7H13V5H3ZM13 21V19H21V17H13V15H11V21H13ZM7 9V11H3V13H7V15H9V9H7ZM21 13V11H11V13H21ZM15 9H17V7H21V5H17V3H15V9Z"
+        d="M14.1882 7.52941L13.8824 6H7V19H8.52941V13.6471H12.8118L13.1176 15.1765H18.4706V7.52941H14.1882Z"
         fill="currentColor"
       />
     </svg>

@@ -3,7 +3,7 @@ import { CardConfigItemV1 } from 'notifi-react-card/lib/hooks';
 import { DeepPartialReadonly } from 'notifi-react-card/lib/utils';
 import React from 'react';
 
-import { Checkmark } from '../../../assets/Checkmark';
+import { CheckIcon } from '../../../assets/CheckIcon';
 
 export type AlertListProps = Readonly<{
   alertList?: DeepPartialReadonly<{
@@ -35,7 +35,7 @@ export const AlertListPreview: React.FC<AlertListProps> = ({
     }
     return (
       <div className="NotifiAlertList__listItem" key={eventType.name}>
-        <Checkmark
+        <CheckIcon
           className={clsx(
             'NotifiAlertListContainer__checkmarkIcon',
             classNames?.checkmarkIcon,

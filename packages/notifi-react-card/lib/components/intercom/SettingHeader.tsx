@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import React from 'react';
 
-import { IntercomBackArrow } from '../../assets/IntercomBackArrow';
+import { BackArrowIcon } from '../../assets/BackArrowIcon';
 import { useNotifiSubscriptionContext } from '../../context';
 
 export type SettingHeaderProps = Readonly<{
@@ -25,7 +25,7 @@ export const SettingHeader: React.FC<SettingHeaderProps> = ({ classNames }) => {
           onClick={handleClick}
           className={'NotifiIntercomSettingHeader__backArrow'}
         >
-          <IntercomBackArrow />
+          <BackArrowIcon />
         </div>
         <div
           className={clsx('NotifiIntercomHeader__content', classNames?.content)}
