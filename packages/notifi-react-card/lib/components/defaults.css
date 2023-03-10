@@ -943,13 +943,6 @@ input::-webkit-inner-spin-button {
   text-align: center;
 }
 
-.NotifiAlertListPreview__headerText {
-  margin-bottom: 12px;
-  font-weight: 500;
-  font-size: 16px;
-  text-align: center;
-}
-
 .NotifiAlertListContainer__checkmarkIcon {
   margin-bottom: 0px !important;
   height: 15px;

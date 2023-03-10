@@ -12,14 +12,12 @@ export type AlertListPreviewProps = Readonly<{
   }>;
   eventTypes: CardConfigItemV1['eventTypes'];
   copy?: DeepPartialReadonly<{
-    headerText: string;
     description: string;
   }>;
   classNames?: DeepPartialReadonly<{
     checkmarkIcon: string;
     container: string;
     description: string;
-    headerText: string;
     eventListItem: string;
   }>;
 }>;
@@ -62,14 +60,6 @@ export const AlertListPreview: React.FC<AlertListPreviewProps> = ({
         classNames?.container,
       )}
     >
-      <label
-        className={clsx(
-          'NotifiAlertListPreview__headerText',
-          classNames?.headerText,
-        )}
-      >
-        {copy?.headerText ?? 'Get Notifications'}
-      </label>
       <label
         className={clsx(
           'NotifiAlertListPreview__descriptionText',

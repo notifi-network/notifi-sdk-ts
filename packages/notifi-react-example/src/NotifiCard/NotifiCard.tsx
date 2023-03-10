@@ -82,7 +82,6 @@ export const NotifiCard: React.FC = () => {
                 signUpHeader: 'Please sign up',
                 EditCard: {
                   AlertListPreview: {
-                    headerText: 'This is a custom header text',
                     description:
                       'Get your alerts here!!! you can subscribe to any of the following:',
                   },
