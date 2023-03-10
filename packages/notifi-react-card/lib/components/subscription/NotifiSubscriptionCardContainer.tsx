@@ -12,6 +12,7 @@ export const NotifiSubscriptionCardContainer: React.FC<
   React.PropsWithChildren<NotifiSubscriptionCardProps>
 > = ({
   classNames,
+  copy,
   cardId,
   darkMode,
   inputLabels,
@@ -58,6 +59,7 @@ export const NotifiSubscriptionCardContainer: React.FC<
       contents = (
         <FetchedStateCard
           classNames={classNames?.FetchedStateCard}
+          copy={copy?.FetchedStateCard}
           card={card}
           inputs={inputs}
           inputDisabled={inputDisabled}

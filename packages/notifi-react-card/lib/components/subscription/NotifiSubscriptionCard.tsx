@@ -46,6 +46,9 @@ export type NotifiInputFieldsText = {
 };
 
 export type NotifiSubscriptionCardProps = Readonly<{
+  copy?: Readonly<{
+    FetchedStateCard?: FetchedStateCardProps['copy'];
+  }>;
   classNames?: Readonly<{
     container?: string;
     ErrorStateCard?: ErrorStateCardProps['classNames'];

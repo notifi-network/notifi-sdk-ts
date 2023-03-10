@@ -5,14 +5,16 @@ import React from 'react';
 
 import { CheckIcon } from '../../../assets/CheckIcon';
 
-export type AlertListProps = Readonly<{
+export type AlertListPreviewProps = Readonly<{
   alertList?: DeepPartialReadonly<{
     container: string;
     listItem: string;
   }>;
   eventTypes: CardConfigItemV1['eventTypes'];
-  headerText?: string;
-  description?: string;
+  copy?: DeepPartialReadonly<{
+    headerText: string;
+    description: string;
+  }>;
   classNames?: DeepPartialReadonly<{
     checkmarkIcon: string;
     container: string;
@@ -22,12 +24,11 @@ export type AlertListProps = Readonly<{
   }>;
 }>;
 
-export const AlertListPreview: React.FC<AlertListProps> = ({
+export const AlertListPreview: React.FC<AlertListPreviewProps> = ({
   eventTypes,
-  headerText,
+  copy,
   classNames,
-  description,
-}) => {
+}: AlertListPreviewProps) => {
   const alertNames = eventTypes.map((eventType) => {
     // skip showing alert previews for labels
     if (eventType.type === 'label') {
@@ -67,7 +68,7 @@ export const AlertListPreview: React.FC<AlertListProps> = ({
           classNames?.headerText,
         )}
       >
-        {headerText ? headerText : 'Get Notifications'}
+        {copy?.headerText ?? 'Get Notifications'}
       </label>
       <label
         className={clsx(
@@ -75,7 +76,7 @@ export const AlertListPreview: React.FC<AlertListProps> = ({
           classNames?.description,
         )}
       >
-        {description ? description : 'Subscribe to any of these alerts'}
+        {copy?.description ?? 'Subscribe to any of these alerts'}
       </label>
       <div className={clsx('NotifiAlertLisPreview__checkmarkContainer')}>
         {alertNames}

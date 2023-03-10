@@ -941,12 +941,14 @@ input::-webkit-inner-spin-button {
   font-size: 13px;
   font-weight: 500;
   padding-bottom: 8px;
+  text-align: center;
 }
 
 .NotifiAlertListPreview__headerText {
   margin-bottom: 12px;
   font-weight: 500;
   font-size: 16px;
+  text-align: center;
 }
 
 .NotifiAlertListContainer__checkmarkIcon {

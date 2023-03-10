@@ -76,6 +76,19 @@ export const NotifiCard: React.FC = () => {
           inputSeparators={inputSeparators}
           cardId="b469c6029e3f40aaab49ddd78fe7f228"
           onClose={() => alert('nope you must stay')}
+          copy={{
+            FetchedStateCard: {
+              SubscriptionCardV1: {
+                EditCard: {
+                  AlertListPreview: {
+                    headerText: 'This is a custom header text',
+                    description:
+                      'Get your alerts here!!! you can subscribe to any of the following:',
+                  },
+                },
+              },
+            },
+          }}
         />
         <NotifiIntercomCard
           darkMode

@@ -11,7 +11,6 @@ import {
   NotifiInputFieldsText,
   NotifiInputSeparators,
 } from './NotifiSubscriptionCard';
-import { AlertListProps } from './subscription-card-views/AlertListPreview';
 import {
   EditCardView,
   EditCardViewProps,
@@ -33,12 +32,14 @@ import VerifyWalletView, {
 } from './subscription-card-views/VerifyWalletView';
 
 export type SubscriptionCardV1Props = Readonly<{
+  copy?: DeepPartialReadonly<{
+    EditCard: EditCardViewProps['copy'];
+  }>;
   classNames?: DeepPartialReadonly<{
     AlertHistoryView: AlertHistoryViewProps['classNames'];
     PreviewCard: PreviewCardProps['classNames'];
     HistoryCard?: AlertHistoryViewProps['classNames'];
     EditCard: EditCardViewProps['classNames'];
-    AlertList: AlertListProps['classNames'];
     ExpiredTokenView: ExpiredTokenViewCardProps['classNames'];
     VerifyWalletView: VerifyWalletViewProps['classNames'];
     NotifiAlertBox: NotifiAlertBoxProps['classNames'];
@@ -53,6 +54,7 @@ export type SubscriptionCardV1Props = Readonly<{
 
 export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
   classNames,
+  copy,
   data,
   inputDisabled,
   inputs,
@@ -163,6 +165,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
           <EditCardView
             buttonText={cardView.state === 'signup' ? 'Next' : 'Update'}
             data={data}
+            copy={copy?.EditCard}
             classNames={classNames?.EditCard}
             inputDisabled={inputDisabled}
             inputTextFields={inputLabels}
