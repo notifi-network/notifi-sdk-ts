@@ -5,7 +5,7 @@
   --notifi-toggle-handle: #fff;
   --notifi-toggle-inactive: rgba(0, 0, 0, 0.2);
   --notifi-toggle-active: rgba(0, 0, 0, 0.6);
-  --notifi-tooltip-background: rgba(255, 255, 255, 0.9);
+  --notifi-tooltip-background: rgba(214, 214, 214, 0.9);
   --notifi-alert-color: rgb(252 0 0);
   --notifi-link-color: #0000ee;
   --notifi-checkmark-color: #22af3c;
@@ -806,11 +806,11 @@ input::-webkit-inner-spin-button {
   display: block;
   width: var(--notifi-tooltip-arrow-size);
   height: var(--notifi-tooltip-arrow-size);
-  transform: rotate(45deg);
+  transform: translate(-50%) rotate(45deg);
   background-color: var(--notifi-tooltip-background);
   position: absolute;
   top: calc(100% - var(--notifi-tooltip-arrow-offset));
-  left: calc(50% - var(--notifi-tooltip-arrow-offset));
+  left: 50%;
 }
 
 .NotifiTooltip__container:hover > .NotifiTooltip__body {
