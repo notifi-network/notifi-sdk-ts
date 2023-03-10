@@ -43,7 +43,8 @@ export type CreateSourceInput = Readonly<{
     | 'POLYGON_WALLET'
     | 'ARBITRUM_WALLET'
     | 'BINANCE_WALLET'
-    | 'AVALANCHE_WALLET';
+    | 'AVALANCHE_WALLET'
+    | 'COIN_PRICE_CHANGES';
 }>;
 
 export type CreateSourceResult = Source;

@@ -6,6 +6,7 @@ export * from './EventTypeCustomToggleRow';
 export * from './EventTypeDirectPushRow';
 export * from './EventTypeHealthCheckRow';
 export * from './EventTypeLabelRow';
+export * from './EventTypePriceChangeRow';
 export * from './EventTypeTradingPairsRow';
 export * from './EventTypeUnsupportedRow';
 export * from './EventTypeWalletBalanceRow';

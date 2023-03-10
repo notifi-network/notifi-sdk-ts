@@ -68,6 +68,16 @@ export type WalletBalanceEventTypeItem = Readonly<{
   tooltipContent?: string;
 }>;
 
+export type PriceChangeDataSource = 'coingecko';
+
+export type PriceChangeEventTypeItem = Readonly<{
+  type: 'priceChange';
+  name: string;
+  tokenIds: ReadonlyArray<string>;
+  dataSource: PriceChangeDataSource;
+  tooltipContent: string;
+}>;
+
 export type USER_INTERFACE_TYPE = 'TOGGLE' | 'HEALTH_CHECK';
 
 export type NumberTypeSelect = 'percentage' | 'integer';
@@ -106,6 +116,7 @@ export type EventTypeItem =
   | LabelEventTypeItem
   | TradingPairEventTypeItem
   | WalletBalanceEventTypeItem
+  | PriceChangeEventTypeItem
   | CustomTopicTypeItem;
 
 export type EventTypeConfig = ReadonlyArray<EventTypeItem>;

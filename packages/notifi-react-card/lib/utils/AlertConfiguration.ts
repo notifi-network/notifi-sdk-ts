@@ -203,6 +203,25 @@ export const walletBalanceConfiguration = ({
   };
 };
 
+export const priceChangeConfiguration = ({
+  tokenIds,
+}: Readonly<{
+  tokenIds: ReadonlyArray<string>;
+}>): AlertConfiguration => {
+  return {
+    type: 'multiple',
+    filterType: 'COIN_PRICE_CHANGE_EVENTS',
+    filterOptions: null,
+    sources: tokenIds.map((tokenId) => {
+      return {
+        name: tokenId,
+        type: 'COIN_PRICE_CHANGES',
+        blockchainAddress: tokenId,
+      };
+    }),
+  };
+};
+
 export const createConfigurations = (
   eventTypes: EventTypeConfig,
 ): Record<string, AlertConfiguration> => {
