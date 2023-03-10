@@ -475,12 +475,14 @@ input::-webkit-inner-spin-button {
 .EventTypeHealthCheckRow__container,
 .EventTypeCustomToggleRow__container,
 .EventTypeWalletBalanceRow__container,
+.EventTypePriceChangeRow__container,
 .BrowserAlertToggle__container {
   display: flex;
   flex-direction: row;
 }
 
 .EventTypeBroadcastRow__label,
+.EventTypePriceChangeRow__label,
 .EventTypeDirectPushRow__label,
 .EventTypeCustomToggleRow_label,
 .EventTypeHealthCheckRow__label,

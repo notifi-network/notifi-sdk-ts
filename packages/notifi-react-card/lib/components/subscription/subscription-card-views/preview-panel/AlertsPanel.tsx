@@ -23,6 +23,10 @@ import {
   EventTypeLabelRowProps,
 } from '../../EventTypeLabelRow';
 import {
+  EventTypePriceChangeRow,
+  EventTypePriceChangeRowProps,
+} from '../../EventTypePriceChangeRow';
+import {
   EventTypeTradingPairsRow,
   EventTypeTradingPairsRowProps,
 } from '../../EventTypeTradingPairsRow';
@@ -45,6 +49,7 @@ export type AlertsPanelProps = Readonly<{
     EventTypeDirectPushRow?: EventTypeDirectPushRowProps['classNames'];
     EventTypeHealthCheckRow?: EventTypeHealthCheckRowProps['classNames'];
     EventTypeLabelRow?: EventTypeLabelRowProps['classNames'];
+    EventTypePriceChangeRow?: EventTypePriceChangeRowProps['classNames'];
     EventTypeTradingPairsRow?: EventTypeTradingPairsRowProps['classNames'];
     EventTypeUnsupportedRow?: EventTypeUnsupportedRowProps['classNames'];
     EventTypeWalletBalanceRow?: EventTypeWalletBalanceRowProps['classNames'];
@@ -132,6 +137,16 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
               <EventTypeWalletBalanceRow
                 key={eventType.name}
                 classNames={classNames?.EventTypeWalletBalanceRow}
+                disabled={inputDisabled}
+                config={eventType}
+                inputs={inputs}
+              />
+            );
+          case 'priceChange':
+            return (
+              <EventTypePriceChangeRow
+                key={eventType.name}
+                classNames={classNames?.EventTypePriceChangeRow}
                 disabled={inputDisabled}
                 config={eventType}
                 inputs={inputs}
