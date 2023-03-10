@@ -12,6 +12,7 @@ export const NotifiSubscriptionCardContainer: React.FC<
   React.PropsWithChildren<NotifiSubscriptionCardProps>
 > = ({
   classNames,
+  copy,
   cardId,
   darkMode,
   inputLabels,
@@ -37,6 +38,7 @@ export const NotifiSubscriptionCardContainer: React.FC<
     case 'loading':
       contents = (
         <LoadingStateCard
+          copy={copy?.LoadingStateCard}
           spinnerSize={loadingSpinnerSize}
           ringColor={loadingRingColor}
           classNames={classNames?.LoadingStateCard}
@@ -48,6 +50,7 @@ export const NotifiSubscriptionCardContainer: React.FC<
     case 'error':
       contents = (
         <ErrorStateCard
+          copy={copy?.ErrorStateCard}
           classNames={classNames?.ErrorStateCard}
           card={card}
           onClose={onClose}
@@ -58,6 +61,7 @@ export const NotifiSubscriptionCardContainer: React.FC<
       contents = (
         <FetchedStateCard
           classNames={classNames?.FetchedStateCard}
+          copy={copy?.FetchedStateCard}
           card={card}
           inputs={inputs}
           inputDisabled={inputDisabled}

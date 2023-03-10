@@ -198,7 +198,6 @@ input::-webkit-inner-spin-button {
 .NotifiAlertBox__btn--spacer {
   width: 24px;
   height: 24px;
-  padding: 10px;
   visibility: hidden;
   margin-bottom: 0 !important;
 }
@@ -941,12 +940,7 @@ input::-webkit-inner-spin-button {
   font-size: 13px;
   font-weight: 500;
   padding-bottom: 8px;
-}
-
-.NotifiAlertListPreview__headerText {
-  margin-bottom: 12px;
-  font-weight: 500;
-  font-size: 16px;
+  text-align: center;
 }
 
 .NotifiAlertListContainer__checkmarkIcon {

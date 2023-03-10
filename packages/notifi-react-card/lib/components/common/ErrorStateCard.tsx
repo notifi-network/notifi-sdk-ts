@@ -2,10 +2,14 @@ import clsx from 'clsx';
 import React from 'react';
 
 import { ErrorState } from '../../hooks';
+import { DeepPartialReadonly } from '../../utils';
 import NotifiAlertBox, { NotifiAlertBoxProps } from '../NotifiAlertBox';
 
 export type ErrorStateCardProps = Readonly<{
   card: ErrorState;
+  copy?: DeepPartialReadonly<{
+    header: string;
+  }>;
   classNames?: Readonly<{
     NotifiAlertBox?: NotifiAlertBoxProps['classNames'];
     label?: string;
@@ -16,6 +20,7 @@ export type ErrorStateCardProps = Readonly<{
 
 export const ErrorStateCard: React.FC<ErrorStateCardProps> = ({
   card,
+  copy,
   classNames,
   onClose,
 }) => {
@@ -32,7 +37,7 @@ export const ErrorStateCard: React.FC<ErrorStateCardProps> = ({
               }
         }
       >
-        <h2>Something went wrong</h2>
+        <h2>{copy?.header ?? 'Something went wrong'}</h2>
       </NotifiAlertBox>
       <div
         className={clsx(
