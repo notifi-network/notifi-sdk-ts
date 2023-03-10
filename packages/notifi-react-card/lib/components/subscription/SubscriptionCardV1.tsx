@@ -34,6 +34,12 @@ import VerifyWalletView, {
 export type SubscriptionCardV1Props = Readonly<{
   copy?: DeepPartialReadonly<{
     EditCard: EditCardViewProps['copy'];
+    expiredHeader: string;
+    manageAlertsHeader: string;
+    signUpHeader: string;
+    editHeader: string;
+    verifyWalletsHeader: string;
+    historyHeader: string;
   }>;
   classNames?: DeepPartialReadonly<{
     AlertHistoryView: AlertHistoryViewProps['classNames'];
@@ -112,7 +118,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
             classNames={classNames?.NotifiAlertBox}
             rightIcon={rightIcon}
           >
-            <h2>Manage Alerts</h2>
+            <h2>{copy?.expiredHeader ?? 'Welcome back'}</h2>
           </NotifiAlertBox>
           <ExpiredTokenView classNames={classNames?.ExpiredTokenView} />
         </>
@@ -129,7 +135,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
             }}
             rightIcon={rightIcon}
           >
-            <h2>Manage Alerts</h2>
+            <h2>{copy?.manageAlertsHeader ?? 'Manage Alerts'}</h2>
           </NotifiAlertBox>
           <PreviewCard
             data={data}
@@ -157,9 +163,9 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
             rightIcon={rightIcon}
           >
             {cardView.state === 'signup' ? (
-              <h2>Get Notified</h2>
+              <h2>{copy?.signUpHeader ?? 'Get Notified'}</h2>
             ) : (
-              <h2>Update Settings</h2>
+              <h2>{copy?.editHeader ?? 'Update Settings'}</h2>
             )}
           </NotifiAlertBox>
           <EditCardView
@@ -194,7 +200,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
             }}
             rightIcon={rightIcon}
           >
-            <h2>Verify Wallets</h2>
+            <h2>{copy?.verifyWalletsHeader ?? 'Verify Wallets'}</h2>
           </NotifiAlertBox>
           <VerifyWalletView
             classNames={classNames?.VerifyWalletView}
@@ -216,7 +222,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
             }}
             rightIcon={rightIcon}
           >
-            <h2>Alert History</h2>
+            <h2>{copy?.historyHeader ?? 'Alert History'}</h2>
           </NotifiAlertBox>
           <AlertHistoryView classNames={classNames?.AlertHistoryView} />
         </>

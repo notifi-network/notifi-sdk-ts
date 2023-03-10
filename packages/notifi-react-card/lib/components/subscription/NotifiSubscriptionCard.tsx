@@ -5,6 +5,7 @@ import {
   NotifiSubscriptionContextProvider,
   useNotifiClientContext,
 } from '../../context';
+import { DeepPartialReadonly } from '../../utils';
 import type { NotifiFooterProps } from '../NotifiFooter';
 import type { LoadingStateCardProps } from '../common';
 import type { ErrorStateCardProps } from '../common/ErrorStateCard';
@@ -46,8 +47,10 @@ export type NotifiInputFieldsText = {
 };
 
 export type NotifiSubscriptionCardProps = Readonly<{
-  copy?: Readonly<{
-    FetchedStateCard?: FetchedStateCardProps['copy'];
+  copy?: DeepPartialReadonly<{
+    ErrorStateCard: ErrorStateCardProps['copy'];
+    FetchedStateCard: FetchedStateCardProps['copy'];
+    LoadingStateCard: LoadingStateCardProps['copy'];
   }>;
   classNames?: Readonly<{
     container?: string;
@@ -60,7 +63,6 @@ export type NotifiSubscriptionCardProps = Readonly<{
   loadingSpinnerSize?: string;
   loadingRingColor?: string;
   disclosureCopy?: string;
-  buttonText?: string;
   inputLabels?: NotifiInputFieldsText;
   darkMode?: boolean;
   cardId: string;

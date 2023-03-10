@@ -38,6 +38,7 @@ export const NotifiSubscriptionCardContainer: React.FC<
     case 'loading':
       contents = (
         <LoadingStateCard
+          copy={copy?.LoadingStateCard}
           spinnerSize={loadingSpinnerSize}
           ringColor={loadingRingColor}
           classNames={classNames?.LoadingStateCard}
@@ -49,6 +50,7 @@ export const NotifiSubscriptionCardContainer: React.FC<
     case 'error':
       contents = (
         <ErrorStateCard
+          copy={copy?.ErrorStateCard}
           classNames={classNames?.ErrorStateCard}
           card={card}
           onClose={onClose}

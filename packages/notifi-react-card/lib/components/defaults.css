@@ -198,7 +198,6 @@ input::-webkit-inner-spin-button {
 .NotifiAlertBox__btn--spacer {
   width: 24px;
   height: 24px;
-  padding: 10px;
   visibility: hidden;
   margin-bottom: 0 !important;
 }

@@ -79,6 +79,7 @@ export const NotifiCard: React.FC = () => {
           copy={{
             FetchedStateCard: {
               SubscriptionCardV1: {
+                signUpHeader: 'Please sign up',
                 EditCard: {
                   AlertListPreview: {
                     headerText: 'This is a custom header text',
