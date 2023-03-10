@@ -31,7 +31,7 @@
   --notifi-toggle-handle: #fff;
   --notifi-toggle-inactive: rgba(255, 255, 255, 0.1);
   --notifi-toggle-active: rgba(255, 255, 255, 0.4);
-  --notifi-tooltip-background: rgba(255, 255, 255, 0.6);
+  --notifi-tooltip-background: rgba(0, 0, 0, 0.9);
   --notifi-alert-color: rgb(213, 25, 25);
   --notifi-link-color: hsl(240, 100%, 85%);
   --notifi-checkmark-color: #ea7e68;
@@ -785,50 +785,48 @@ input::-webkit-inner-spin-button {
   color: var(--notifi-font-color);
 }
 
-.NotifiTooltip__container .NotifiTooltip__infoIcon {
-  margin-left: 5px;
-  margin-bottom: 0;
-  vertical-align: middle;
+.NotifiTooltip__infoIcon {
+  margin-left: 10px;
+  margin-bottom: 0 !important;
   fill: var(--notifi-font-color);
 }
 
-.NotifiTooltip__infoIcon:hover + .NotifiTooltip__body {
-  display: block;
-}
-
-.NotifiTooltip__container {
-  position: relative;
-}
-
 .NotifiTooltip__body {
-  width: 100%;
-  min-width: 180px;
-  display: none;
+  width: 180px;
+  visibility: hidden;
   position: absolute;
   left: -70px;
-  top: -55px;
+  bottom: calc(100% + var(--notifi-tooltip-arrow-offset));
   font-size: 12px;
   z-index: 1;
 }
 
-.NotifiTooltip__arrow {
-  display: none;
+.NotifiTooltip__body::before {
+  content: '';
+  display: block;
+  width: var(--notifi-tooltip-arrow-size);
+  height: var(--notifi-tooltip-arrow-size);
+  transform: rotate(45deg);
+  background-color: var(--notifi-tooltip-background);
   position: absolute;
-  width: 0;
-  height: 0;
-  border-color: transparent;
-  border-right-color: transparent;
-  border-style: solid;
-  top: 10px;
-  left: -5px;
-  margin-top: -5px;
-  border-width: 5px 5px 5px 0;
-  border-right-color: var(--notifi-tooltip-background);
+  top: calc(100% - var(--notifi-tooltip-arrow-offset));
+  left: calc(50% - var(--notifi-tooltip-arrow-offset));
+}
+
+.NotifiTooltip__container:hover > .NotifiTooltip__body {
+  visibility: visible;
+}
+
+.NotifiTooltip__container {
+  margin-bottom: 0 !important;
+  position: relative;
+  --notifi-tooltip-arrow-size: 10px;
+  --notifi-tooltip-arrow-offset: 7px;
 }
 
 .NotifiTooltip__label {
   padding: 16px;
-  color: #000;
+  color: var(--notifi-font-color);
   text-align: left;
   background-color: var(--notifi-tooltip-background);
   border-radius: 8px;
