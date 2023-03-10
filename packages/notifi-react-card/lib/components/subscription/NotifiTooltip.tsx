@@ -6,7 +6,6 @@ export type NotifiTooltipProps = Readonly<{
     container?: string;
     icon?: string;
     tooltip?: string;
-    tooltipArrow?: string;
     tooltipLabel?: string;
   }>;
   content: string;
@@ -32,9 +31,6 @@ export const NotifiTooltip: React.FC<NotifiTooltipProps> = ({
         />
       </svg>
       <div className={clsx('NotifiTooltip__body', classNames?.tooltip)}>
-        <div
-          className={clsx('NotifiTooltip__arrow', classNames?.tooltipArrow)}
-        />
         <div className={clsx('NotifiTooltip__label', classNames?.tooltipLabel)}>
           {content}
         </div>
