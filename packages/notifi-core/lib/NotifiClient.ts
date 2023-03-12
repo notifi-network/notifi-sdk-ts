@@ -7,6 +7,7 @@ import {
   NotificationHistory,
   SmsTarget,
   Source,
+  SourceGroup,
   TargetGroup,
   TelegramTarget,
   TenantConfig,
@@ -142,6 +143,7 @@ export type ClientCreateAlertInput = Readonly<{
   targetGroupName?: string;
   webhook?: ClientCreateWebhookParams;
   sourceIds?: ReadonlyArray<string>;
+  sourceGroupName?: string;
 }>;
 
 export type ClientCreateWebhookParams = Omit<CreateWebhookTargetInput, 'name'>;
@@ -205,6 +207,17 @@ export type ClientEnsureTargetGroupInput = Readonly<{
   phoneNumber: string | null;
   telegramId: string | null;
   webhook?: ClientCreateWebhookParams;
+}>;
+
+/**
+ * Input params for creating or updating a SourceGroup by name
+ *
+ * @property name - The name of the SourceGroup
+ * @property sources - The Sources to be set on the SourceGroup
+ */
+export type ClientEnsureSourceGroupInput = Readonly<{
+  name: string;
+  sources: ReadonlyArray<CreateSourceInput>;
 }>;
 
 /**
@@ -375,6 +388,9 @@ export type NotifiClient = Readonly<{
   ensureTargetGroup: (
     input: ClientEnsureTargetGroupInput,
   ) => Promise<TargetGroup>;
+  ensureSourceGroup: (
+    input: ClientEnsureSourceGroupInput,
+  ) => Promise<SourceGroup>;
   sendConversationMessages: (
     input: SendConversationMessageInput,
   ) => Promise<ConversationMessagesEntry>;

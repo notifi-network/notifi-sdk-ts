@@ -9,6 +9,7 @@ import {
   ClientCreateMetaplexAuctionSourceInput,
   ClientData,
   ClientDeleteAlertInput,
+  ClientEnsureSourceGroupInput,
   ClientEnsureTargetGroupInput,
   ClientFetchSubscriptionCardInput,
   ClientSendVerificationEmailInput,
@@ -24,6 +25,7 @@ import {
   SendConversationMessageInput,
   SignMessageParams,
   Source,
+  SourceGroup,
   TargetGroup,
   TargetType,
   TenantConfig,
@@ -37,7 +39,7 @@ import ensureSource, {
   ensureBonfidaAuctionSource,
   ensureMetaplexAuctionSource,
 } from '../utils/ensureSource';
-import ensureSourceGroup from '../utils/ensureSourceGroup';
+import ensureSourceGroupImpl from '../utils/ensureSourceGroup';
 import ensureTargetGroupImpl from '../utils/ensureTargetGroup';
 import ensureTargetIds from '../utils/ensureTargetIds';
 import fetchDataImpl, {
@@ -633,6 +635,61 @@ const useNotifiClient = (
     [service],
   );
 
+  const ensureSourceGroup = useCallback(
+    async (input: ClientEnsureSourceGroupInput): Promise<SourceGroup> => {
+      setLoading(true);
+
+      try {
+        const newData = await fetchDataImpl(
+          service,
+          Date,
+          fetchDataRef.current,
+        );
+
+        let sourceIdsPromise = Promise.resolve<Array<string>>([]);
+        input.sources.forEach((sourceInput) => {
+          sourceIdsPromise = sourceIdsPromise.then(async (results) => {
+            const newSource = await ensureSource(
+              service,
+              newData.sources,
+              sourceInput,
+            );
+
+            if (newSource.id === null) {
+              throw new Error('Failed to create source');
+            }
+
+            return [...results, newSource.id];
+          });
+        });
+
+        const sourceIds = await sourceIdsPromise;
+
+        const sourceGroup = await ensureSourceGroupImpl(
+          service,
+          newData.sourceGroups,
+          {
+            name: input.name,
+            sourceIds,
+          },
+        );
+
+        setInternalData(newData);
+        return sourceGroup;
+      } catch (e: unknown) {
+        if (e instanceof Error) {
+          setError(e);
+        } else {
+          setError(new NotifiClientError(e));
+        }
+        throw e;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [service],
+  );
+
   /**
    * Update an Alert
    *
@@ -793,6 +850,7 @@ const useNotifiClient = (
         groupName = 'default',
         targetGroupName,
         sourceIds: sourceIdsInput,
+        sourceGroupName,
       } = input;
 
       setLoading(true);
@@ -837,11 +895,11 @@ const useNotifiClient = (
           throw new Error(`Invalid filter id ${filterId}`);
         }
 
-        const sourceGroup = await ensureSourceGroup(
+        const sourceGroup = await ensureSourceGroupImpl(
           service,
           newData.sourceGroups,
           {
-            name,
+            name: sourceGroupName ?? name,
             sourceIds,
           },
         );
@@ -1423,6 +1481,7 @@ const useNotifiClient = (
     createBonfidaAuctionSource,
     createMetaplexAuctionSource,
     createSource,
+    ensureSourceGroup,
     deleteAlert,
     fetchData,
     fetchSubscriptionCard,

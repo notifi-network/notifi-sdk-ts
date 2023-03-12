@@ -14,6 +14,7 @@ import {
   formatTelegramForSubscription,
   prefixTelegramWithSymbol,
 } from '../utils/stringUtils';
+import { walletToSource } from '../utils/walletUtils';
 import { useNotifiForm } from './../context/NotifiFormContext';
 import { AlertConfiguration } from './../utils/AlertConfiguration';
 
@@ -271,6 +272,7 @@ export const useNotifiSubscribe: ({
           filterOptions,
           filterType,
           sources: sourcesInput,
+          sourceGroupName,
         } = alertConfiguration;
         const sources = await Promise.all(sourcesInput.map(ensureSource));
         const filter = sources
@@ -300,6 +302,7 @@ export const useNotifiSubscribe: ({
             targetGroupName,
             telegramId: finalTelegramId,
             sourceIds,
+            sourceGroupName,
           });
 
           return alert;
@@ -310,6 +313,7 @@ export const useNotifiSubscribe: ({
           filterOptions,
           filterType,
           sourceType,
+          sourceGroupName,
         } = alertConfiguration;
 
         let source: Source | undefined;
@@ -362,6 +366,7 @@ export const useNotifiSubscribe: ({
             sourceId: source.id,
             targetGroupName,
             telegramId: finalTelegramId,
+            sourceGroupName,
           });
 
           return alert;
@@ -537,8 +542,17 @@ export const useNotifiSubscribe: ({
       }
 
       await client.connectWallet(params);
+
       const newData = await client.fetchData();
-      setConnectedWallets(newData.connectedWallets);
+
+      await client.ensureSourceGroup({
+        name: 'User Wallets',
+        sources: newData.connectedWallets.map(walletToSource),
+      });
+
+      const finalData = await client.fetchData();
+      render(finalData);
+
       setLoading(false);
     },
     [client, logIn, setLoading, setConnectedWallets],
