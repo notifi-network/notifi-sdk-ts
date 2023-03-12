@@ -103,7 +103,7 @@ export const ConnectWalletRow: React.FC<ConnectWalletRowProps> = ({
     <div className="ConnectWalletRow__container">
       <div className="ConnectWalletRow__topRow">
         <p className="ConnectWalletRow__publicKey">{shortenedAddress}</p>
-        {isConnected ? null : (
+        {isConnected || isConnectedElsewhere ? null : (
           <button
             disabled={isLoading || isConnectedElsewhere}
             className="ConnectWalletRow__button"
@@ -113,9 +113,12 @@ export const ConnectWalletRow: React.FC<ConnectWalletRowProps> = ({
               });
             }}
           >
-            Connect
+            Verify
           </button>
         )}
+        {isConnected ? (
+          <p className="ConnectWalletRow__verified">Verified</p>
+        ) : null}
       </div>
       {isConnectedElsewhere ? (
         <>
@@ -134,7 +137,7 @@ export const ConnectWalletRow: React.FC<ConnectWalletRowProps> = ({
                 });
               }}
             >
-              Connect anyway
+              Verify anyway
             </button>
           </div>
         </>

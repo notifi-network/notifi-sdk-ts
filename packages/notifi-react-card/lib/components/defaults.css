@@ -143,6 +143,7 @@ input::-webkit-inner-spin-button {
   justify-content: flex-end;
 }
 
+.ConnectWalletRow__verified,
 .ConnectWalletRow__publicKey,
 .ConnectWalletRow__container,
 .ConnectWalletRow__bottomRow {
@@ -771,6 +772,12 @@ input::-webkit-inner-spin-button {
 .NotifiUserInfoPanel__telegramConfirmation {
   flex-shrink: 0;
   margin-left: 8px;
+}
+
+.ConnectWalletRow__verified {
+  display: block;
+  font-size: 14px;
+  color: var(--notifi-secondary-font-color);
 }
 
 .ConnectWalletRow__button,
