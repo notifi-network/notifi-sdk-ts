@@ -532,14 +532,17 @@ export const useNotifiSubscribe: ({
     async (params: ConnectWalletParams) => {
       setLoading(true);
 
-      if (!client.isAuthenticated) {
-        await logIn();
-      }
+      try {
+        if (!client.isAuthenticated) {
+          await logIn();
+        }
 
-      await client.connectWallet(params);
-      const newData = await client.fetchData();
-      setConnectedWallets(newData.connectedWallets);
-      setLoading(false);
+        await client.connectWallet(params);
+        const newData = await client.fetchData();
+        setConnectedWallets(newData.connectedWallets);
+      } finally {
+        setLoading(false);
+      }
     },
     [client, logIn, setLoading, setConnectedWallets],
   );
