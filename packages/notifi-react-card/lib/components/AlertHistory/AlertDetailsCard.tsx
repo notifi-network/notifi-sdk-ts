@@ -2,15 +2,14 @@ import { NotificationHistoryEntry } from '@notifi-network/notifi-core';
 import clsx from 'clsx';
 import React, { useMemo } from 'react';
 
-import { BackArrowIcon } from '../../assets/BackArrowIcon';
 import {
   formatAlertDetailsTimestamp,
   formatAmount,
 } from '../../utils/AlertHistoryUtils';
+import NotifiAlertBox from '../NotifiAlertBox';
 
 export type AlertDetailsProps = Readonly<{
   notificationEntry: NotificationHistoryEntry;
-  handleClose: () => void;
   classNames?: Readonly<{
     detailsContainer?: string;
     BackArrowIcon?: string;
@@ -18,7 +17,6 @@ export type AlertDetailsProps = Readonly<{
 }>;
 export const AlertDetailsCard: React.FC<AlertDetailsProps> = ({
   notificationEntry,
-  handleClose,
   classNames,
 }) => {
   const timestamp = notificationEntry.createdDate;
@@ -84,31 +82,12 @@ export const AlertDetailsCard: React.FC<AlertDetailsProps> = ({
         classNames?.detailsContainer,
       )}
     >
-      <div
-        className={clsx(
-          'NotifiAlertDetails__backArrow',
-          classNames?.BackArrowIcon,
-        )}
-        onClick={handleClose}
-      >
-        <BackArrowIcon />
-      </div>
-      <div className="NotifiAlertDetails__dialogHeader">
-        <span className="NotifiAlertDetails__headerLabel">
-          <label className="NotifiAlertDetails__headerContent">
-            Alert Details
-          </label>
-        </span>
-      </div>
-      <div className={clsx('NotifiAlertDetails__dividerLine')} />
-      <div className={clsx('NotifiAlertDetails__contentContainer')}>
-        <div className={clsx('NotifiAlertDetails__topContentContainer')}>
-          <div className={clsx('NotifiAlertDetails__topContent')}>
-            {content.topContent}
-          </div>
-          <div className={clsx('NotifiAlertDetails__timestamp')}>
-            {formatAlertDetailsTimestamp(timestamp)}
-          </div>
+      <div className={clsx('NotifiAlertDetails__topContentContainer')}>
+        <div className={clsx('NotifiAlertDetails__topContent')}>
+          {content.topContent}
+        </div>
+        <div className={clsx('NotifiAlertDetails__timestamp')}>
+          {formatAlertDetailsTimestamp(timestamp)}
         </div>
       </div>
       <div className={clsx('NotifiAlertDetails__bottomContent')}>
