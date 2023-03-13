@@ -6,7 +6,6 @@ import {
   formatAlertDetailsTimestamp,
   formatAmount,
 } from '../../utils/AlertHistoryUtils';
-import NotifiAlertBox from '../NotifiAlertBox';
 
 export type AlertDetailsProps = Readonly<{
   notificationEntry: NotificationHistoryEntry;
