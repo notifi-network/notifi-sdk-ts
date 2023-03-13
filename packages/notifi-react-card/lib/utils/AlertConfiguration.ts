@@ -16,6 +16,7 @@ export type SingleSourceAlertConfiguration = Readonly<{
   }>;
   filterType: string;
   filterOptions: FilterOptions | null;
+  sourceGroupName?: string;
 }>;
 
 export type MultipleSourceAlertConfiguration = Readonly<{
@@ -23,6 +24,7 @@ export type MultipleSourceAlertConfiguration = Readonly<{
   sources: ReadonlyArray<CreateSourceInput>;
   filterType: string;
   filterOptions: FilterOptions | null;
+  sourceGroupName?: string;
 }>;
 
 export type AlertConfiguration =
@@ -200,6 +202,7 @@ export const walletBalanceConfiguration = ({
     filterType: 'BALANCE',
     filterOptions: null,
     sources: connectedWallets.map(walletToSource),
+    sourceGroupName: 'User Wallets',
   };
 };
 
