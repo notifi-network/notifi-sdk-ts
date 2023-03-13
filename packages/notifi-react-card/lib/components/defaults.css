@@ -110,18 +110,43 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
-.NotifiVerifyItem {
+.ConnectWalletRow__container {
   padding: 16px 0;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: stretch;
   margin-bottom: 0 !important;
   margin-top: 0 !important;
   border-bottom: 1px solid var(--notifi-input-border);
 }
 
-.NotifiVerifyPublicKey,
-.NotifiVerifyItem {
+.ConnectWalletRow__topRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ConnectWalletRow__messageRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  color: var(--notifi-secondary-font-color);
+  text-align: justify;
+  line-height: 1.25em;
+}
+
+.ConnectWalletRow__bottomRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.ConnectWalletRow__verified,
+.ConnectWalletRow__publicKey,
+.ConnectWalletRow__container,
+.ConnectWalletRow__bottomRow {
   margin: 0 !important;
 }
 
@@ -749,7 +774,14 @@ input::-webkit-inner-spin-button {
   margin-left: 8px;
 }
 
-.NotifiVerifyButton,
+.ConnectWalletRow__verified {
+  display: block;
+  font-size: 14px;
+  color: var(--notifi-secondary-font-color);
+}
+
+.ConnectWalletRow__button,
+.ConnectWalletRow__connectAnywayButton,
 .NotifiUserInfoPanel__myWalletConfirmation,
 .NotifiUserInfoPanel__emailConfirmationLabel,
 .NotifiUserInfoPanel__telegramConfirmationLabel {
@@ -762,6 +794,12 @@ input::-webkit-inner-spin-button {
   border: 0;
   box-shadow: 0;
   outline: none;
+}
+
+.ConnectWalletRow__connectAnywayButton:disabled,
+.ConnectWalletRow__button:disabled {
+  cursor: default;
+  color: var(--notifi-secondary-font-color);
 }
 
 .NotifiUserInfoPanel__myWallet,

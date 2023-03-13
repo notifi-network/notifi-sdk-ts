@@ -814,7 +814,6 @@ const useNotifiClient = (
 
         return result;
       } catch (e: unknown) {
-        setIsAuthenticated(false);
         if (e instanceof Error) {
           setError(e);
         } else {

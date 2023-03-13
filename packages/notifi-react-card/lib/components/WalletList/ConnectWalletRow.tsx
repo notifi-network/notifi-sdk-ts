@@ -2,8 +2,9 @@ import {
   ConnectedWallet,
   WalletWithSignParams,
 } from '@notifi-network/notifi-core';
+import { GqlError } from '@notifi-network/notifi-react-hooks';
 import { addressEllipsis } from 'notifi-react-card/lib/utils/stringUtils';
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
 import { useNotifiSubscribe } from '../../hooks';
 
@@ -12,11 +13,26 @@ export type ConnectWalletRowProps = WalletWithSignParams &
     connectedWallets: ReadonlyArray<ConnectedWallet>;
   }>;
 
-const hasKey = <T,>(obj: T, prop: PropertyKey): prop is keyof T => {
-  return (
-    typeof obj === 'object' &&
-    obj !== null &&
-    Object.prototype.hasOwnProperty.call(obj, prop)
+const hasKey = <K extends string>(
+  obj: object,
+  key: K,
+): obj is object & { [k in K]: unknown } => {
+  return typeof obj === 'object' && obj !== null && key in obj;
+};
+
+const findError = <C extends string>(
+  errors: ReadonlyArray<unknown>,
+  code: C,
+): unknown | undefined => {
+  return errors.find(
+    (err) =>
+      typeof err === 'object' &&
+      err !== null &&
+      hasKey(err, 'extensions') &&
+      typeof err.extensions === 'object' &&
+      err.extensions !== null &&
+      hasKey(err.extensions, 'code') &&
+      code === err.extensions.code,
   );
 };
 
@@ -47,31 +63,85 @@ export const ConnectWalletRow: React.FC<ConnectWalletRowProps> = ({
     return addressEllipsis(walletParams.walletPublicKey);
   }, [walletParams]);
 
-  const connectWallet = useCallback(async () => {
-    await subscribeWallet({
-      walletParams,
-      connectWalletConflictResolutionTechnique: 'FAIL',
-    });
-  }, [subscribeWallet, walletParams]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isConnectedElsewhere, setIsConnectedElsewhere] = useState(false);
 
-  if (isConnected) {
-    return (
-      <div className="NotifiVerifyItem">
-        <p className="NotifiVerifyPublicKey">{shortenedAddress}</p>
-      </div>
-    );
-  }
+  const connectWallet = useCallback(
+    async (technique: 'FAIL' | 'DISCONNECT_AND_CLOSE_OLD_ACCOUNT') => {
+      setIsLoading(true);
+      try {
+        await subscribeWallet({
+          walletParams,
+          connectWalletConflictResolutionTechnique: technique,
+        });
+        setIsConnectedElsewhere(false);
+      } catch (e: unknown) {
+        if (e instanceof GqlError) {
+          const alreadyConnectedError =
+            findError(
+              e.errors,
+              'ERROR_WALLETCONNECT_ALREADY_CONNECTED_TO_ANOTHER_ACCOUNT_AND_LAST',
+            ) ??
+            findError(
+              e.errors,
+              'ERROR_WALLETCONNECT_ALREADY_CONNECTED_TO_ANOTHER_ACCOUNT',
+            );
+          if (alreadyConnectedError !== undefined) {
+            setIsConnectedElsewhere(true);
+          }
+        }
+
+        throw e;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [subscribeWallet, walletParams],
+  );
+
   return (
-    <div className="NotifiVerifyItem">
-      <p className="NotifiVerifyPublicKey">{shortenedAddress}</p>
-      <button
-        className="NotifiVerifyButton"
-        onClick={() => {
-          connectWallet();
-        }}
-      >
-        Connect
-      </button>
+    <div className="ConnectWalletRow__container">
+      <div className="ConnectWalletRow__topRow">
+        <p className="ConnectWalletRow__publicKey">{shortenedAddress}</p>
+        {isConnected || isConnectedElsewhere ? null : (
+          <button
+            disabled={isLoading || isConnectedElsewhere}
+            className="ConnectWalletRow__button"
+            onClick={() => {
+              connectWallet('FAIL').catch((e) => {
+                console.log('Error connecting wallet', e);
+              });
+            }}
+          >
+            Verify
+          </button>
+        )}
+        {isConnected ? (
+          <p className="ConnectWalletRow__verified">Verified</p>
+        ) : null}
+      </div>
+      {isConnectedElsewhere ? (
+        <>
+          <div className="ConnectWalletRow__messageRow">
+            This wallet is already connected to another Notifi Hub account. If
+            you continue, this wallet can only be used to access this account.
+            You will lose access to the subscriptions in your other account.
+          </div>
+          <div className="ConnectWalletRow__bottomRow">
+            <button
+              disabled={isLoading}
+              className="ConnectWalletRow__connectAnywayButton"
+              onClick={() => {
+                connectWallet('DISCONNECT_AND_CLOSE_OLD_ACCOUNT').catch((e) => {
+                  console.log('Error connecting wallet', e);
+                });
+              }}
+            >
+              Verify anyway
+            </button>
+          </div>
+        </>
+      ) : null}
     </div>
   );
 };
