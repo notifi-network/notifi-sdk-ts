@@ -1,8 +1,14 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import { NotificationHistoryEntry } from '@notifi-network/notifi-core';
+import clsx from 'clsx';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 import { useNotifiSubscriptionContext } from '../../context';
 import { CardConfigItemV1, useNotifiSubscribe } from '../../hooks';
 import { DeepPartialReadonly } from '../../utils';
+import {
+  AlertDetailsCard,
+  AlertDetailsProps,
+} from '../AlertHistory/AlertDetailsCard';
 import NotifiAlertBox, {
   NotifiAlertBoxButtonProps,
   NotifiAlertBoxProps,
@@ -40,9 +46,12 @@ export type SubscriptionCardV1Props = Readonly<{
     editHeader: string;
     verifyWalletsHeader: string;
     historyHeader: string;
+    detailHeader: string;
   }>;
   classNames?: DeepPartialReadonly<{
+    alertContainer: string;
     AlertHistoryView: AlertHistoryViewProps['classNames'];
+    AlertDetailsCard: AlertDetailsProps['classNames'];
     PreviewCard: PreviewCardProps['classNames'];
     HistoryCard?: AlertHistoryViewProps['classNames'];
     EditCard: EditCardViewProps['classNames'];
@@ -75,6 +84,10 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
   const { isInitialized, isTokenExpired } = useNotifiSubscribe({
     targetGroupName: 'Default',
   });
+
+  const [selectedAlertEntry, setAlertEntry] = useState<
+    NotificationHistoryEntry | undefined
+  >(undefined);
 
   let view = null;
 
@@ -216,15 +229,43 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
         <>
           <NotifiAlertBox
             classNames={classNames?.NotifiAlertBox}
-            leftIcon={{
-              name: 'settings',
-              onClick: () => setCardView({ state: 'preview' }),
-            }}
+            leftIcon={
+              selectedAlertEntry === undefined
+                ? {
+                    name: 'settings',
+                    onClick: () => setCardView({ state: 'preview' }),
+                  }
+                : {
+                    name: 'back',
+                    onClick: () => setAlertEntry(undefined),
+                  }
+            }
             rightIcon={rightIcon}
           >
-            <h2>{copy?.historyHeader ?? 'Alert History'}</h2>
+            <h2>
+              {selectedAlertEntry === undefined
+                ? copy?.historyHeader ?? 'Alert History'
+                : copy?.detailHeader ?? 'Alert Details'}
+            </h2>
           </NotifiAlertBox>
-          <AlertHistoryView classNames={classNames?.AlertHistoryView} />
+          <div
+            className={clsx(
+              'NotifiSubscriptionCardV1__alertContainer',
+              classNames?.alertContainer,
+            )}
+          >
+            {selectedAlertEntry === undefined ? null : (
+              <AlertDetailsCard
+                notificationEntry={selectedAlertEntry}
+                classNames={classNames?.AlertDetailsCard}
+              />
+            )}
+            <AlertHistoryView
+              classNames={classNames?.AlertHistoryView}
+              isHidden={selectedAlertEntry !== undefined}
+              setAlertEntry={setAlertEntry}
+            />
+          </div>
         </>
       );
       break;

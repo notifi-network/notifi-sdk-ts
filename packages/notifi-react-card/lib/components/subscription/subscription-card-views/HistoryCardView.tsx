@@ -11,10 +11,6 @@ import { useNotifiClientContext } from '../../../context';
 import { DeepPartialReadonly } from '../../../utils';
 import { MESSAGES_PER_PAGE } from '../../../utils/constants';
 import { AccountBalanceChangedRenderer } from '../../AlertHistory/AccountBalanceChangedRenderer';
-import {
-  AlertDetailsCard,
-  AlertDetailsProps,
-} from '../../AlertHistory/AlertDetailsCard';
 import { AlertNotificationViewProps } from '../../AlertHistory/AlertNotificationRow';
 import { BroadcastMessageChangedRenderer } from '../../AlertHistory/BroadcastMessageChangedRenderer';
 import { ChatMessageReceivedRenderer } from '../../AlertHistory/ChatMessageReceivedRenderer';
@@ -23,6 +19,7 @@ import { HealthValueOverThresholdEventRenderer } from '../../AlertHistory/Health
 
 export type AlertHistoryViewProps = Readonly<{
   noAlertDescription?: string;
+  isHidden: boolean;
   classNames?: DeepPartialReadonly<{
     title: string;
     header: string;
@@ -35,10 +32,13 @@ export type AlertHistoryViewProps = Readonly<{
     notificationImage: string;
     notificationList: string;
     emptyAlertsBellIcon: string;
+    historyContainer: string;
     virtuoso: string;
-    AlertDetailsCard: AlertDetailsProps['classNames'];
     AlertCard: AlertNotificationViewProps['classNames'];
   }>;
+  setAlertEntry: React.Dispatch<
+    React.SetStateAction<NotificationHistoryEntry | undefined>
+  >;
 }>;
 
 export const AlertCard: React.FC<{
@@ -121,15 +121,13 @@ export const AlertCard: React.FC<{
 
 export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
   classNames,
+  isHidden,
   noAlertDescription,
+  setAlertEntry,
 }) => {
   noAlertDescription = noAlertDescription
     ? noAlertDescription
     : 'You haven’t received any notifications yet';
-
-  const [selectedAlertEntry, setAlertEntry] = useState<
-    NotificationHistoryEntry | undefined
-  >(undefined);
 
   const [endCursor, setEndCursor] = useState<string | undefined>();
   const [hasNextPage, setHasNextPage] = useState<boolean | null>(null);
@@ -179,20 +177,19 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
   }, [client]);
 
   return (
-    <>
+    <div
+      className={clsx(
+        'NotifiAlertHistory__container',
+        classNames?.historyContainer,
+        { 'NotifiAlertHistory__container--hidden': isHidden },
+      )}
+    >
       <div
         className={clsx(
           'NotifiAlertHistory__dividerLine',
           classNames?.dividerLine,
         )}
       />
-      {selectedAlertEntry !== undefined ? (
-        <AlertDetailsCard
-          classNames={classNames?.AlertDetailsCard}
-          notificationEntry={selectedAlertEntry}
-          handleClose={() => setAlertEntry(undefined)}
-        />
-      ) : null}
       {allNodes.length > 0 ? (
         <Virtuoso
           className={clsx('NotifiAlertHistory__virtuoso', classNames?.virtuoso)}
@@ -237,6 +234,6 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
           </span>
         </div>
       )}
-    </>
+    </div>
   );
 };
