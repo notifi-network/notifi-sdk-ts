@@ -5,6 +5,7 @@ import type {
 } from '@notifi-network/notifi-core';
 
 import { resolveStringRef } from '../components/subscription/resolveRef';
+import { NotifiSubscriptionData } from '../context';
 import { EventTypeConfig } from './../hooks/SubscriptionCardConfig';
 import { walletToSource } from './walletUtils';
 
@@ -227,6 +228,8 @@ export const priceChangeConfiguration = ({
 
 export const createConfigurations = (
   eventTypes: EventTypeConfig,
+  inputs: Record<string, unknown>,
+  connectedWallets: NotifiSubscriptionData['connectedWallets'],
 ): Record<string, AlertConfiguration> => {
   const configs: Record<string, AlertConfiguration> = {};
   eventTypes.forEach((eventType) => {
@@ -243,6 +246,44 @@ export const createConfigurations = (
         });
         break;
       }
+      case 'custom': {
+        switch (eventType.selectedUIType) {
+          case 'HEALTH_CHECK': {
+            const thresholdDirection = eventType.checkRatios[0].type ?? 'below';
+            const ratioNumber = eventType.checkRatios[1].ratio;
+            configs[eventType.name] = customThresholdConfiguration({
+              sourceType: eventType.sourceType,
+              filterType: eventType.filterType,
+              alertFrequency: eventType.alertFrequency,
+              sourceAddress: resolveStringRef(
+                eventType.name,
+                eventType.sourceAddress,
+                inputs,
+              ),
+              thresholdDirection: thresholdDirection,
+              threshold:
+                eventType.numberType === 'percentage'
+                  ? ratioNumber / 100
+                  : ratioNumber,
+            });
+            break;
+          }
+          case 'TOGGLE': {
+            configs[eventType.name] = customToggleConfiguration({
+              sourceType: eventType.sourceType,
+              filterType: eventType.filterType,
+              filterOptions: eventType.filterOptions,
+              sourceAddress: resolveStringRef(
+                eventType.name,
+                eventType.sourceAddress,
+                inputs,
+              ),
+            });
+            break;
+          }
+        }
+        break;
+      }
       case 'directPush': {
         const pushId = resolveStringRef(
           eventType.name,
@@ -254,6 +295,18 @@ export const createConfigurations = (
           type: pushId,
         });
 
+        break;
+      }
+      case 'walletBalance': {
+        configs[eventType.name] = walletBalanceConfiguration({
+          connectedWallets,
+        });
+        break;
+      }
+      case 'priceChange': {
+        configs[eventType.name] = priceChangeConfiguration({
+          tokenIds: eventType.tokenIds,
+        });
         break;
       }
     }

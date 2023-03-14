@@ -16,12 +16,14 @@ export type NotifiSubscribeButtonProps = Readonly<{
   }>;
   buttonText: string;
   data: CardConfigItemV1;
+  inputs: Record<string, unknown>;
 }>;
 
 export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
   buttonText,
   classNames,
   data,
+  inputs,
 }) => {
   const eventTypes = data.eventTypes;
   const { isInitialized, subscribe, updateTargetGroups } = useNotifiSubscribe({
@@ -33,7 +35,8 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
     params: { multiWallet },
   } = useNotifiClientContext();
 
-  const { cardView, loading, setCardView } = useNotifiSubscriptionContext();
+  const { cardView, connectedWallets, loading, setCardView } =
+    useNotifiSubscriptionContext();
 
   const { formErrorMessages, formState } = useNotifiForm();
 
@@ -52,7 +55,11 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
 
     let success = false;
     if (isFirstTimeUser) {
-      const alertConfigs = createConfigurations(eventTypes);
+      const alertConfigs = createConfigurations(
+        eventTypes,
+        inputs,
+        connectedWallets,
+      );
       const result = await subscribe(alertConfigs);
       success = !!result;
     } else {
@@ -61,11 +68,13 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
     }
 
     if (success === true) {
+      const nextState = !isMultiWallet
+        ? 'preview'
+        : cardView.state === 'signup'
+        ? 'verifyonboarding'
+        : 'verify';
       setCardView({
-        state:
-          isMultiWallet && cardView.state === 'signup'
-            ? 'verifyonboarding'
-            : 'preview',
+        state: nextState,
       });
     }
   }, [
