@@ -137,6 +137,7 @@ const signMessage = async ({
     case 'ARBITRUM':
     case 'POLYGON':
     case 'BINANCE':
+    case 'OPTIMISM':
     case 'AVALANCHE':
     case 'ETHEREUM': {
       if (signer.walletBlockchain !== params.walletBlockchain) {

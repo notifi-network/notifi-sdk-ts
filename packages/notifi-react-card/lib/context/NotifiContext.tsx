@@ -52,6 +52,14 @@ export type AcalaParams = Readonly<{
   signMessage: AcalaSignMessageFunction;
 }>;
 
+export type OptimismParams = Readonly<{
+  walletBlockchain: 'OPTIMISM';
+  accountAddress: string;
+  walletPublicKey: string;
+  signMessage: AcalaSignMessageFunction;
+}>;
+
+
 export type NearParams = Readonly<{
   walletBlockchain: 'NEAR';
   accountAddress: string;
@@ -79,7 +87,8 @@ type WalletParams =
   | AptosParams
   | AcalaParams
   | NearParams
-  | AvalancheParams;
+  | AvalancheParams
+  | OptimismParams;
 
 export type NotifiParams = Readonly<{
   alertConfigurations?: Record<string, AlertConfiguration | null>;
