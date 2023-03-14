@@ -54,9 +54,8 @@ export type AcalaParams = Readonly<{
 
 export type OptimismParams = Readonly<{
   walletBlockchain: 'OPTIMISM';
-  accountAddress: string;
   walletPublicKey: string;
-  signMessage: AcalaSignMessageFunction;
+  signMessage: Uint8SignMessageFunction;
 }>;
 
 
