@@ -191,6 +191,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
             inputSeparators={inputSeparators}
             allowedCountryCodes={allowedCountryCodes}
             showPreview={cardView.state === 'signup'}
+            inputs={inputs}
           />
         </>
       );

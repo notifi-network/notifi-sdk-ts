@@ -32,6 +32,7 @@ export type EditCardViewProps = Readonly<{
   inputSeparators?: NotifiInputSeparators;
   inputTextFields?: NotifiInputFieldsText;
   allowedCountryCodes: string[];
+  inputs: Record<string, unknown>;
 }>;
 
 export const EditCardView: React.FC<EditCardViewProps> = ({
@@ -44,6 +45,7 @@ export const EditCardView: React.FC<EditCardViewProps> = ({
   inputDisabled,
   inputSeparators,
   inputTextFields,
+  inputs,
 }) => {
   return (
     <div
@@ -68,6 +70,7 @@ export const EditCardView: React.FC<EditCardViewProps> = ({
         buttonText={buttonText}
         data={data}
         classNames={classNames?.NotifiSubscribeButton}
+        inputs={inputs}
       />
     </div>
   );
