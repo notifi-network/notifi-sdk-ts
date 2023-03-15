@@ -47,11 +47,3 @@ export const walletToSource = (wallet: ConnectedWallet): CreateSourceInput => {
     type: sourceType,
   };
 };
-
-export const topicToSource = (topic: string): CreateSourceInput => {
-  return {
-    name: topic,
-    blockchainAddress: topic,
-    type: 'XMTP',
-  };
-};

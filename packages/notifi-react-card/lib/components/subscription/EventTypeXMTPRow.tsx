@@ -126,8 +126,8 @@ export const EventTypeXMTPRow: React.FC<EventTypeXMPTRowProps> = ({
   ]);
 
   return (
-    <div className={clsx('EventTypeXMTPner', classNames?.container)}>
-      <div className={clsx('EventTypeXMTPbel', classNames?.label)}>
+    <div className={clsx('EventTypeXMTPRow__container', classNames?.container)}>
+      <div className={clsx('EventTypeXMTPRow__label', classNames?.label)}>
         {config.name}
         {tooltipContent !== undefined && tooltipContent.length > 0 ? (
           <NotifiTooltip

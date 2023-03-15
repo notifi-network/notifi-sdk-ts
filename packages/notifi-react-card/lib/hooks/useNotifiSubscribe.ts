@@ -533,33 +533,6 @@ export const useNotifiSubscribe: ({
     ],
   );
 
-  // const subscribeXMTPTopics = useCallback(
-  //   async (params: ConnectWalletParams) => {
-  //     setLoading(true);
-
-  //     try {
-  //       if (!client.isAuthenticated) {
-  //         await logIn();
-  //       }
-
-  //       await client.connectWallet(params);
-
-  //       const newData = await client.fetchData();
-
-  //       await client.ensureSourceGroup({
-  //         name: 'User Wallets',
-  //         sources: newData.connectedWallets.map(walletToSource),
-  //       });
-
-  //       const finalData = await client.fetchData();
-  //       render(finalData);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   },
-  //   [client, logIn, setLoading, setConnectedWallets],
-  // );
-
   const subscribeWallet = useCallback(
     async (params: ConnectWalletParams) => {
       setLoading(true);
@@ -597,6 +570,5 @@ export const useNotifiSubscribe: ({
     subscribe,
     updateTargetGroups,
     subscribeWallet,
-    // subscribeXMTPTopics,
   };
 };

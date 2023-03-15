@@ -7,7 +7,7 @@ import type {
 import { resolveStringRef } from '../components/subscription/resolveRef';
 import { NotifiSubscriptionData } from '../context';
 import { EventTypeConfig } from './../hooks/SubscriptionCardConfig';
-import { topicToSource, walletToSource } from './walletUtils';
+import { walletToSource } from './walletUtils';
 
 export type SingleSourceAlertConfiguration = Readonly<{
   type: 'single';
@@ -102,6 +102,14 @@ export type XMTPTopic = Readonly<{
   address: string | null;
   walletBlockchain: string;
 }>;
+
+const topicToSource = (topic: string): CreateSourceInput => {
+  return {
+    name: topic,
+    blockchainAddress: topic,
+    type: 'XMTP',
+  };
+};
 
 export const XMTPToggleConfiguration = ({
   XMTPTopics,
