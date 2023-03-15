@@ -98,6 +98,32 @@ export const customToggleConfiguration = ({
   };
 };
 
+export type XMTPTopic = Readonly<{
+  address: string | null;
+  walletBlockchain: string;
+}>;
+
+const topicToSource = (topic: string): CreateSourceInput => {
+  return {
+    name: topic,
+    blockchainAddress: topic,
+    type: 'XMTP',
+  };
+};
+
+export const XMTPToggleConfiguration = ({
+  XMTPTopics,
+}: Readonly<{
+  XMTPTopics: ReadonlyArray<string>;
+}>): AlertConfiguration => {
+  return {
+    type: 'multiple',
+    filterType: 'WEB3_CHAT_MESSAGES',
+    filterOptions: {},
+    sources: XMTPTopics.map(topicToSource),
+  };
+};
+
 export const broadcastMessageConfiguration = ({
   topicName,
 }: Readonly<{

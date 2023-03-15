@@ -109,6 +109,15 @@ export type CustomTypeBase = {
   sourceAddress: ValueOrRef<string>;
 };
 
+export type XMTPTopicTypeItem = {
+  type: 'XMTP';
+  name: string;
+  tooltipContent: string;
+  sourceType?: CreateSourceInput['type'];
+  filterType: string;
+  XMTPTopics: ValueOrRef<ReadonlyArray<string>>;
+};
+
 export type EventTypeItem =
   | DirectPushEventTypeItem
   | BroadcastEventTypeItem
@@ -117,7 +126,8 @@ export type EventTypeItem =
   | TradingPairEventTypeItem
   | WalletBalanceEventTypeItem
   | PriceChangeEventTypeItem
-  | CustomTopicTypeItem;
+  | CustomTopicTypeItem
+  | XMTPTopicTypeItem;
 
 export type EventTypeConfig = ReadonlyArray<EventTypeItem>;
 export type InputType =

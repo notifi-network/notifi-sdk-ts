@@ -38,6 +38,10 @@ import {
   EventTypeWalletBalanceRow,
   EventTypeWalletBalanceRowProps,
 } from '../../EventTypeWalletBalanceRow';
+import {
+  EventTypeXMPTRowProps,
+  EventTypeXMTPRow,
+} from '../../EventTypeXMTPRow';
 
 export type AlertsPanelProps = Readonly<{
   data: CardConfigItemV1;
@@ -53,6 +57,7 @@ export type AlertsPanelProps = Readonly<{
     EventTypeTradingPairsRow?: EventTypeTradingPairsRowProps['classNames'];
     EventTypeUnsupportedRow?: EventTypeUnsupportedRowProps['classNames'];
     EventTypeWalletBalanceRow?: EventTypeWalletBalanceRowProps['classNames'];
+    EventTypeXMTPRow?: EventTypeXMPTRowProps['classNames'];
   }>;
   inputs: Record<string, unknown>;
 }>;
@@ -95,12 +100,22 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
               />
             );
           }
-
           case 'directPush':
             return (
               <EventTypeDirectPushRow
                 key={eventType.name}
                 classNames={classNames?.EventTypeDirectPushRow}
+                disabled={inputDisabled}
+                config={eventType}
+                inputs={inputs}
+              />
+            );
+
+          case 'XMTP':
+            return (
+              <EventTypeXMTPRow
+                key={eventType.name}
+                classNames={classNames?.EventTypeXMTPRow}
                 disabled={inputDisabled}
                 config={eventType}
                 inputs={inputs}
