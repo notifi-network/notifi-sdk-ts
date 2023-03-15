@@ -41,14 +41,16 @@ export const NotifiFooter: React.FC<NotifiFooterProps> = ({
           classNames={classNames?.disclosure}
         />
       ) : null}
-      <div
+      <a
+        href="https://notifi.network/faqs"
+        target="_blank"
+        rel="noopener noreferrer"
         className={clsx(
           'NotifiFooter__poweredByContainer',
           classNames?.container,
         )}
       >
         <span
-          style={{ marginBottom: 0 }}
           className={clsx('NotifiFooter__poweredBy', classNames?.poweredBy)}
         >
           {copy?.poweredBy ?? 'Powered by'}
@@ -56,7 +58,7 @@ export const NotifiFooter: React.FC<NotifiFooterProps> = ({
         <NotifiLogo
           className={clsx('NotifiFooter__logoSvg', classNames?.logoSvg)}
         />
-      </div>
+      </a>
     </div>
   );
 };

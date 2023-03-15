@@ -174,16 +174,23 @@ input::-webkit-inner-spin-button {
   line-height: 14px;
   justify-content: center;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: 12px;
+  margin-top: 12px;
 }
 
 .NotifiFooter__poweredByContainer {
   display: flex;
   flex-direction: row;
-  font-size: 12px;
-  line-height: 14px;
   justify-content: center;
   align-items: center;
+}
+
+.NotifiFooter__poweredBy {
+  font-size: 12px;
+  line-height: 14px;
+  text-decoration: none;
+  color: var(--notifi-font-color);
+  margin-bottom: 0 !important;
 }
 
 .NotifiFooter__logoSvg {
