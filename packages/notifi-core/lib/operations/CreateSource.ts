@@ -44,7 +44,8 @@ export type CreateSourceInput = Readonly<{
     | 'ARBITRUM_WALLET'
     | 'BINANCE_WALLET'
     | 'AVALANCHE_WALLET'
-    | 'COIN_PRICE_CHANGES';
+    | 'COIN_PRICE_CHANGES'
+    | 'XMTP';
 }>;
 
 export type CreateSourceResult = Source;
