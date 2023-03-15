@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { isValidPhoneNumber } from 'libphonenumber-js';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { SmsIcon } from '../assets/SmsIcon';
 import { DialCode, countryMap } from '../constants/countryData';
@@ -116,20 +116,6 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
     }
   }, [phoneValues.baseNumber, setPhoneNumber, phoneNumber]);
 
-  const countryCodes = useMemo(() => {
-    return allowedCountryCodes.map((code) => {
-      const countryData = countryMap[code as DialCode];
-      return (
-        <NotifiSmsDropdownOption
-          key={code}
-          countryData={countryData}
-          phoneValues={phoneValues}
-          onSelected={(dialCode) => handleSelected(dialCode)}
-        />
-      );
-    });
-  }, [allowedCountryCodes, classNames, phoneValues.dialCode]);
-
   const validateSmsInput = useCallback(() => {
     if (phoneNumber === '') {
       return;
@@ -170,6 +156,10 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
               intercomSmsDropdownSelectStyle,
               classNames?.dropdownSelectField,
             )}
+            tabIndex={0}
+            onBlur={() => {
+              setShowOption(false);
+            }}
           >
             <div
               className="NotifiSmsInput__dropdownSelected"
@@ -200,7 +190,17 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
             </div>
             {isShowOption && (
               <ul className="NotifiSmsInput__dropdownOptionList">
-                {countryCodes}
+                {allowedCountryCodes.map((code) => {
+                  const countryData = countryMap[code as DialCode];
+                  return (
+                    <NotifiSmsDropdownOption
+                      key={code}
+                      countryData={countryData}
+                      phoneValues={phoneValues}
+                      onSelected={(dialCode) => handleSelected(dialCode)}
+                    />
+                  );
+                })}
               </ul>
             )}
           </div>
