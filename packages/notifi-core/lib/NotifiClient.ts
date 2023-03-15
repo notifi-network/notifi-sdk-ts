@@ -316,7 +316,7 @@ export type WalletParams =
       walletPublicKey: string;
     }>;
 
-export type WalletWithSignParams =
+export type WalletWithSignMessage =
   | Readonly<{
       walletBlockchain: 'SOLANA';
       walletPublicKey: string;
@@ -350,6 +350,11 @@ export type WalletWithSignParams =
       walletPublicKey: string;
       signMessage: Uint8SignMessageFunction;
     }>;
+
+export type WalletWithSignParams = Readonly<{
+  displayName?: string;
+}> &
+  WalletWithSignMessage;
 
 export type ConnectWalletParams = Readonly<{
   walletParams: WalletWithSignParams;

@@ -61,6 +61,7 @@ export const MultiWalletTest: React.FC = () => {
               signMessage: requestSignature,
               walletPublicKey: polkadotPublicKey,
               accountAddress: acalaAccount,
+              displayName: 'My Acala wallet',
             },
           ],
         }}
