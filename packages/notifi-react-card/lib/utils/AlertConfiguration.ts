@@ -110,7 +110,7 @@ export const XMTPToggleConfiguration = ({
 }>): AlertConfiguration => {
   return {
     type: 'multiple',
-    filterType: 'XMTP_FILTER_TYPE',
+    filterType: 'WEB3_CHAT_MESSAGES',
     filterOptions: {},
     sources: XMTPTopics.map(topicToSource),
   };
