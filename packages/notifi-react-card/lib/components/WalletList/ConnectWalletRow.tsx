@@ -38,6 +38,7 @@ const findError = <C extends string>(
 
 export const ConnectWalletRow: React.FC<ConnectWalletRowProps> = ({
   connectedWallets,
+  displayName,
   ...walletParams
 }: ConnectWalletRowProps) => {
   const { subscribeWallet } = useNotifiSubscribe({
@@ -102,7 +103,9 @@ export const ConnectWalletRow: React.FC<ConnectWalletRowProps> = ({
   return (
     <div className="ConnectWalletRow__container">
       <div className="ConnectWalletRow__topRow">
-        <p className="ConnectWalletRow__publicKey">{shortenedAddress}</p>
+        <p className="ConnectWalletRow__publicKey">
+          {displayName ?? shortenedAddress}
+        </p>
         {isConnected || isConnectedElsewhere ? null : (
           <button
             disabled={isLoading || isConnectedElsewhere}
