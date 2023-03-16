@@ -1,8 +1,14 @@
 import { NotificationHistoryEntry } from '@notifi-network/notifi-core';
 import clsx from 'clsx';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
-import { useNotifiSubscriptionContext } from '../../context';
+import { useNotifiForm, useNotifiSubscriptionContext } from '../../context';
 import { CardConfigItemV1, useNotifiSubscribe } from '../../hooks';
 import { DeepPartialReadonly } from '../../utils';
 import {
@@ -81,6 +87,15 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
   const { cardView, email, phoneNumber, telegramId, setCardView } =
     useNotifiSubscriptionContext();
 
+  const {
+    setEmail,
+    setTelegram,
+    setPhoneNumber,
+    setEmailErrorMessage,
+    setTelegramErrorMessage,
+    setPhoneNumberErrorMessage,
+  } = useNotifiForm();
+
   const { isInitialized, isTokenExpired } = useNotifiSubscribe({
     targetGroupName: 'Default',
   });
@@ -92,6 +107,16 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
   let view = null;
 
   const firstLoad = useRef(false);
+
+  const resetFormState = useCallback(() => {
+    setEmail(email);
+    setPhoneNumber(phoneNumber);
+    setTelegram(telegramId);
+    setEmailErrorMessage('');
+    setTelegramErrorMessage('');
+    setPhoneNumberErrorMessage('');
+  }, [email, phoneNumber, telegramId]);
+
   useEffect(() => {
     if (firstLoad.current || !isInitialized) {
       return;
@@ -170,7 +195,10 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
                 ? undefined
                 : {
                     name: 'back',
-                    onClick: () => setCardView({ state: 'preview' }),
+                    onClick: () => {
+                      resetFormState();
+                      setCardView({ state: 'preview' });
+                    },
                   }
             }
             rightIcon={rightIcon}
