@@ -3,6 +3,7 @@ import {
   NotificationHistoryEntry,
 } from '@notifi-network/notifi-core';
 import clsx from 'clsx';
+import { useNotificationHistory } from 'notifi-react-card/lib/hooks/useNotificationHistory';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 
@@ -10,16 +11,10 @@ import { NotificationEmptyBellIcon } from '../../../assets/NotificationEmptyBell
 import { useNotifiClientContext } from '../../../context';
 import { DeepPartialReadonly } from '../../../utils';
 import { MESSAGES_PER_PAGE } from '../../../utils/constants';
-import { AccountBalanceChangedRenderer } from '../../AlertHistory/AccountBalanceChangedRenderer';
-import { AlertIcon } from '../../AlertHistory/AlertIcon';
 import {
   AlertNotificationRow,
   AlertNotificationViewProps,
 } from '../../AlertHistory/AlertNotificationRow';
-import { BroadcastMessageChangedRenderer } from '../../AlertHistory/BroadcastMessageChangedRenderer';
-import { ChatMessageReceivedRenderer } from '../../AlertHistory/ChatMessageReceivedRenderer';
-import { GenericDetailRenderer } from '../../AlertHistory/GenericDetailRenderer';
-import { HealthValueOverThresholdEventRenderer } from '../../AlertHistory/HealthValueOverThresholdEventRenderer';
 
 export type AlertHistoryViewProps = Readonly<{
   noAlertDescription?: string;
@@ -45,112 +40,8 @@ export type AlertHistoryViewProps = Readonly<{
   >;
 }>;
 
-export const AlertCard: React.FC<{
-  notification: NotificationHistoryEntry;
-  handleAlertEntrySelection: () => void;
-  classNames?: AlertNotificationViewProps['classNames'];
-}> = ({
-  notification,
-  handleAlertEntrySelection,
-  classNames,
-}: Readonly<{
-  notification: NotificationHistoryEntry;
-  handleAlertEntrySelection: () => void;
-  classNames?: AlertNotificationViewProps['classNames'];
-}>) => {
-  const detail = notification.detail;
-
-  switch (detail?.__typename) {
-    case 'BroadcastMessageEventDetails':
-      return (
-        <BroadcastMessageChangedRenderer
-          handleAlertEntrySelection={handleAlertEntrySelection}
-          notificationTitle={'Announcement'}
-          createdDate={notification.createdDate}
-          message={detail.message ?? ''}
-          subject={detail.subject ?? ''}
-          classNames={classNames}
-        />
-      );
-    case 'HealthValueOverThresholdEventDetails':
-      return (
-        <HealthValueOverThresholdEventRenderer
-          handleAlertEntrySelection={handleAlertEntrySelection}
-          notificationTitle={'Health Check'}
-          createdDate={notification.createdDate}
-          threshold={detail.threshold ?? ''}
-          name={detail.name ?? ''}
-          value={detail.value ?? ''}
-          classNames={classNames}
-        />
-      );
-    case 'GenericEventDetails':
-      return (
-        <GenericDetailRenderer
-          handleAlertEntrySelection={handleAlertEntrySelection}
-          notificationTitle={detail.sourceName}
-          createdDate={notification.createdDate}
-          subject={detail.notificationTypeName}
-          message={detail.genericMessage}
-          icon={detail.icon}
-          classNames={classNames}
-        />
-      );
-    case 'ChatMessageReceivedEventDetails':
-      return (
-        <ChatMessageReceivedRenderer
-          handleAlertEntrySelection={handleAlertEntrySelection}
-          senderName={detail.senderName}
-          messageBody={detail.messageBody}
-          createdDate={notification.createdDate}
-          classNames={classNames}
-        />
-      );
-    case 'AccountBalanceChangedEventDetails':
-      return (
-        <AccountBalanceChangedRenderer
-          classNames={classNames}
-          createdDate={notification.createdDate}
-          handleAlertEntrySelection={handleAlertEntrySelection}
-          direction={detail.direction}
-          previousValue={detail.previousValue}
-          newValue={detail.newValue}
-          tokenSymbol={detail.tokenSymbol}
-          walletAddress={notification.sourceAddress ?? ''}
-        />
-      );
-    default:
-      // It should never come here because exception should be filtered out before. https://virtuoso.dev/troubleshooting/
-      return (
-        <AlertNotificationRow
-          handleAlertEntrySelection={handleAlertEntrySelection}
-          notificationTitle={'Unsupported notification'}
-          notificationImage={<AlertIcon icon={'INFO'} />}
-          notificationSubject={'Alert not supported yet'}
-          notificationDate={notification.createdDate}
-          notificationMessage={'Alert not supported yet'}
-          classNames={classNames}
-        />
-      );
-  }
-};
-
-// TODO: need to sync `supportedEntryDetailTypes` with switch statement in `AlertCard`.
-const validateSupportedDetailType = (
-  entry?: NotificationHistoryEntry,
-): boolean => {
-  const supportedEntryDetailTypes = [
-    'BroadcastMessageEventDetails',
-    'HealthValueOverThresholdEventDetails',
-    'GenericEventDetails',
-    'ChatMessageReceivedEventDetails',
-    'AccountBalanceChangedEventDetails',
-  ];
-  if (supportedEntryDetailTypes.includes(entry?.detail?.__typename ?? ''))
-    return true;
-  return false;
-};
-
+const { getAlertNotificationViewBaseProps, validateIsSupported } =
+  useNotificationHistory();
 export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
   classNames,
   isHidden,
@@ -207,7 +98,6 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
       });
     }
   }, [client]);
-
   return (
     <div
       className={clsx(
@@ -234,14 +124,13 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
               });
             }
           }}
-          data={allNodes.filter(validateSupportedDetailType)}
+          data={allNodes.filter(validateIsSupported)}
           itemContent={(_index, notification) => {
             return (
-              <AlertCard
-                classNames={classNames?.AlertCard}
+              <AlertNotificationRow
+                {...getAlertNotificationViewBaseProps(notification)}
                 handleAlertEntrySelection={() => setAlertEntry(notification)}
-                key={notification.id}
-                notification={notification}
+                classNames={classNames?.AlertCard}
               />
             );
           }}
