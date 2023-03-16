@@ -37,6 +37,13 @@ type useNotifiSubscribeProps = Readonly<{
   targetGroupName?: string;
 }>;
 
+const hasKey = <K extends string>(
+  obj: object,
+  key: K,
+): obj is object & { [k in K]: unknown } => {
+  return typeof obj === 'object' && obj !== null && key in obj;
+};
+
 export const useNotifiSubscribe: ({
   targetGroupName,
 }: useNotifiSubscribeProps) => Readonly<{
@@ -160,6 +167,29 @@ export const useNotifiSubscribe: ({
     [setAlerts, setEmail, setPhoneNumber, setTelegramId],
   );
 
+  const copyAuths = useCallback(
+    async (data: ClientData) => {
+      if (params.multiWallet !== undefined) {
+        params.multiWallet.ownedWallets.forEach((wallet) => {
+          const key = 'accountAddress';
+          const address = hasKey(wallet, key)
+            ? wallet[key]
+            : wallet.walletPublicKey;
+          if (
+            data.connectedWallets.find(
+              (cw) =>
+                cw.address === address &&
+                cw.walletBlockchain === wallet.walletBlockchain,
+            ) !== undefined
+          ) {
+            client.copyAuthorization(wallet.walletPublicKey).catch(console.log);
+          }
+        });
+      }
+    },
+    [client, params],
+  );
+
   // Initial fetch
   const didFetch = useRef(false);
   useEffect(() => {
@@ -168,6 +198,7 @@ export const useNotifiSubscribe: ({
       client
         .fetchData()
         .then((data) => {
+          copyAuths(data);
           render(data);
         })
         .catch((_e) => {
@@ -210,6 +241,7 @@ export const useNotifiSubscribe: ({
     }
 
     const newData = await client.fetchData();
+    copyAuths(newData);
     const results = render(newData);
     setLoading(false);
     return results;
@@ -558,6 +590,7 @@ export const useNotifiSubscribe: ({
         });
 
         const finalData = await client.fetchData();
+        copyAuths(finalData);
         render(finalData);
       } finally {
         setLoading(false);

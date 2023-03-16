@@ -221,6 +221,7 @@ const useNotifiClient = (
     isInitialized: boolean;
     isTokenExpired: boolean;
     expiry: string | null;
+    copyAuthorization: (publicKey: string) => Promise<void>;
   }> => {
   const { env, dappAddress, walletPublicKey, walletBlockchain } = config;
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
@@ -1469,6 +1470,23 @@ const useNotifiClient = (
     }
   }, [setLoading, setError, service]);
 
+  const copyAuthorization = useCallback(
+    async (publicKey: string) => {
+      const [auth, roles] = await Promise.all([getAuthorization(), getRoles()]);
+      const otherStorage = storage({
+        walletPublicKey: publicKey,
+        jwtPrefix: notifiConfig.storagePrefix,
+        dappAddress,
+      });
+
+      await Promise.all([
+        otherStorage.setAuthorization(auth),
+        otherStorage.setRoles(roles),
+      ]);
+    },
+    [storage, notifiConfig, dappAddress],
+  );
+
   const client: NotifiClient = {
     beginLoginViaTransaction,
     broadcastMessage,
@@ -1503,6 +1521,7 @@ const useNotifiClient = (
     isAuthenticated,
     isInitialized,
     loading,
+    copyAuthorization,
     ...client,
   };
 };
