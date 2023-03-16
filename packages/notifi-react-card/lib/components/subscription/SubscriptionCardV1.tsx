@@ -246,6 +246,8 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
           </NotifiAlertBox>
           <VerifyWalletView
             classNames={classNames?.VerifyWalletView}
+            data={data}
+            inputs={inputs}
             buttonText={
               cardView.state === 'verifyonboarding' ? 'Next' : 'Confirm'
             }

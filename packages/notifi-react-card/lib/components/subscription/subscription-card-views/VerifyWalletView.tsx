@@ -1,7 +1,12 @@
 import clsx from 'clsx';
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 
-import { useNotifiSubscriptionContext } from '../../../context';
+import {
+  useNotifiClientContext,
+  useNotifiSubscriptionContext,
+} from '../../../context';
+import { CardConfigItemV1, useNotifiSubscribe } from '../../../hooks';
+import { createConfigurations } from '../../../utils';
 import { WalletList } from '../../WalletList';
 import NotifiCardButton, {
   NotifiCardButtonProps,
@@ -14,17 +19,48 @@ export type VerifyWalletViewProps = Readonly<{
     NotifiCardButtonProps?: NotifiCardButtonProps['classNames'];
   }>;
   buttonText: string;
+  data: CardConfigItemV1;
+  inputs: Record<string, unknown>;
 }>;
 
 const VerifyWalletView: React.FC<VerifyWalletViewProps> = ({
   classNames,
   buttonText,
+  data,
+  inputs,
 }) => {
-  const { setCardView } = useNotifiSubscriptionContext();
+  const { cardView, setCardView, loading, setLoading, connectedWallets } =
+    useNotifiSubscriptionContext();
+  const { subscribe, updateWallets } = useNotifiSubscribe({
+    targetGroupName: 'Default',
+  });
 
-  const onClick = () => {
+  const onClick = useCallback(async () => {
+    if (cardView.state === 'verifyonboarding') {
+      setLoading(true);
+
+      try {
+        const alertConfigs = createConfigurations(
+          data.eventTypes,
+          inputs,
+          connectedWallets,
+        );
+
+        await subscribe(alertConfigs);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      setLoading(true);
+
+      try {
+        await updateWallets();
+      } finally {
+        setLoading(false);
+      }
+    }
     setCardView({ state: 'preview' });
-  };
+  }, [setLoading, data, inputs, connectedWallets, subscribe]);
 
   return (
     <div
@@ -34,7 +70,11 @@ const VerifyWalletView: React.FC<VerifyWalletViewProps> = ({
       )}
     >
       <WalletList />
-      <NotifiCardButton buttonText={buttonText} onClick={onClick} />
+      <NotifiCardButton
+        buttonText={buttonText}
+        disabled={loading}
+        onClick={onClick}
+      />
     </div>
   );
 };

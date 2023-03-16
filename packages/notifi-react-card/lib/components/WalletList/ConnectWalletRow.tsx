@@ -11,6 +11,7 @@ import { useNotifiSubscribe } from '../../hooks';
 export type ConnectWalletRowProps = WalletWithSignParams &
   Readonly<{
     connectedWallets: ReadonlyArray<ConnectedWallet>;
+    disabled: boolean;
   }>;
 
 const hasKey = <K extends string>(
@@ -39,6 +40,7 @@ const findError = <C extends string>(
 export const ConnectWalletRow: React.FC<ConnectWalletRowProps> = ({
   connectedWallets,
   displayName,
+  disabled,
   ...walletParams
 }: ConnectWalletRowProps) => {
   const { subscribeWallet } = useNotifiSubscribe({
@@ -108,7 +110,7 @@ export const ConnectWalletRow: React.FC<ConnectWalletRowProps> = ({
         </p>
         {isConnected || isConnectedElsewhere ? null : (
           <button
-            disabled={isLoading || isConnectedElsewhere}
+            disabled={disabled || isLoading || isConnectedElsewhere}
             className="ConnectWalletRow__button"
             onClick={() => {
               connectWallet('FAIL').catch((e) => {
@@ -132,7 +134,7 @@ export const ConnectWalletRow: React.FC<ConnectWalletRowProps> = ({
           </div>
           <div className="ConnectWalletRow__bottomRow">
             <button
-              disabled={isLoading}
+              disabled={disabled || isLoading}
               className="ConnectWalletRow__connectAnywayButton"
               onClick={() => {
                 connectWallet('DISCONNECT_AND_CLOSE_OLD_ACCOUNT').catch((e) => {
