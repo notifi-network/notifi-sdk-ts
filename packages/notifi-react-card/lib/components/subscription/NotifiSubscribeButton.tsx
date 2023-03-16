@@ -54,7 +54,7 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
     const isFirstTimeUser = targetGroupLength === 0;
 
     let success = false;
-    if (isFirstTimeUser) {
+    if (isFirstTimeUser && !isMultiWallet) {
       const alertConfigs = createConfigurations(
         eventTypes,
         inputs,

@@ -48,6 +48,7 @@ export const useNotifiSubscribe: ({
     alertConfigs: Record<string, AlertConfiguration>,
   ) => Promise<SubscriptionData>;
   subscribeWallet: (walletParams: ConnectWalletParams) => Promise<void>;
+  updateWallets: () => Promise<void>;
   instantSubscribe: (
     subscribeData: InstantSubscribe,
   ) => Promise<SubscriptionData>;
@@ -465,6 +466,11 @@ export const useNotifiSubscribe: ({
       finalPhoneNumber = formPhoneNumber;
     }
 
+    setLoading(true);
+    if (!client.isAuthenticated) {
+      await logIn();
+    }
+
     await client.ensureTargetGroup({
       emailAddress: finalEmail,
       name: targetGroupName,
@@ -560,6 +566,28 @@ export const useNotifiSubscribe: ({
     [client, logIn, setLoading, setConnectedWallets],
   );
 
+  const updateWallets = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      if (!client.isAuthenticated) {
+        await logIn();
+      }
+
+      const newData = await client.fetchData();
+
+      await client.ensureSourceGroup({
+        name: 'User Wallets',
+        sources: newData.connectedWallets.map(walletToSource),
+      });
+
+      const finalData = await client.fetchData();
+      render(finalData);
+    } finally {
+      setLoading(false);
+    }
+  }, [client, logIn, setLoading, render]);
+
   return {
     resendEmailVerificationLink,
     instantSubscribe,
@@ -570,5 +598,6 @@ export const useNotifiSubscribe: ({
     subscribe,
     updateTargetGroups,
     subscribeWallet,
+    updateWallets,
   };
 };
