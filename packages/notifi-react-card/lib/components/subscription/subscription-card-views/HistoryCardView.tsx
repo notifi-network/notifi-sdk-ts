@@ -127,12 +127,28 @@ export const AlertCard: React.FC<{
           notificationTitle={'Unsupported notification'}
           notificationImage={<AlertIcon icon={'INFO'} />}
           notificationSubject={'Alert not supported yet'}
-          notificationDate={''}
-          notificationMessage={''}
+          notificationDate={notification.createdDate}
+          notificationMessage={'Alert not supported yet'}
           classNames={classNames}
         />
       );
   }
+};
+
+// TODO: need to sync `supportedEntryDetailTypes` with switch statement in `AlertCard`.
+const validateSupportedDetailType = (
+  entry?: NotificationHistoryEntry,
+): boolean => {
+  const supportedEntryDetailTypes = [
+    'BroadcastMessageEventDetails',
+    'HealthValueOverThresholdEventDetails',
+    'GenericEventDetails',
+    'ChatMessageReceivedEventDetails',
+    'AccountBalanceChangedEventDetails',
+  ];
+  if (supportedEntryDetailTypes.includes(entry?.detail?.__typename ?? ''))
+    return true;
+  return false;
 };
 
 export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
@@ -191,22 +207,6 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
       });
     }
   }, [client]);
-
-  const validateSupportedDetailType = useCallback(
-    (entry?: NotificationHistoryEntry): boolean => {
-      const supportedEntryDetailTypes = [
-        'BroadcastMessageEventDetails',
-        'HealthValueOverThresholdEventDetails',
-        'GenericEventDetails',
-        'ChatMessageReceivedEventDetails',
-        'AccountBalanceChangedEventDetails',
-      ];
-      if (supportedEntryDetailTypes.includes(entry?.detail?.__typename ?? ''))
-        return true;
-      return false;
-    },
-    [],
-  );
 
   return (
     <div
