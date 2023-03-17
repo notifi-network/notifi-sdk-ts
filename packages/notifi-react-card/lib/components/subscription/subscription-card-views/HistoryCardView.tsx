@@ -11,7 +11,11 @@ import { useNotifiClientContext } from '../../../context';
 import { DeepPartialReadonly } from '../../../utils';
 import { MESSAGES_PER_PAGE } from '../../../utils/constants';
 import { AccountBalanceChangedRenderer } from '../../AlertHistory/AccountBalanceChangedRenderer';
-import { AlertNotificationViewProps } from '../../AlertHistory/AlertNotificationRow';
+import { AlertIcon } from '../../AlertHistory/AlertIcon';
+import {
+  AlertNotificationRow,
+  AlertNotificationViewProps,
+} from '../../AlertHistory/AlertNotificationRow';
 import { BroadcastMessageChangedRenderer } from '../../AlertHistory/BroadcastMessageChangedRenderer';
 import { ChatMessageReceivedRenderer } from '../../AlertHistory/ChatMessageReceivedRenderer';
 import { GenericDetailRenderer } from '../../AlertHistory/GenericDetailRenderer';
@@ -115,8 +119,36 @@ export const AlertCard: React.FC<{
           walletAddress={notification.sourceAddress ?? ''}
         />
       );
+    default:
+      // It should never come here because exception should be filtered out before. https://virtuoso.dev/troubleshooting/
+      return (
+        <AlertNotificationRow
+          handleAlertEntrySelection={handleAlertEntrySelection}
+          notificationTitle={'Unsupported notification'}
+          notificationImage={<AlertIcon icon={'INFO'} />}
+          notificationSubject={'Alert not supported yet'}
+          notificationDate={notification.createdDate}
+          notificationMessage={'Alert not supported yet'}
+          classNames={classNames}
+        />
+      );
   }
-  return null;
+};
+
+// TODO: need to sync `supportedEntryDetailTypes` with switch statement in `AlertCard`.
+const validateSupportedDetailType = (
+  entry?: NotificationHistoryEntry,
+): boolean => {
+  const supportedEntryDetailTypes = [
+    'BroadcastMessageEventDetails',
+    'HealthValueOverThresholdEventDetails',
+    'GenericEventDetails',
+    'ChatMessageReceivedEventDetails',
+    'AccountBalanceChangedEventDetails',
+  ];
+  if (supportedEntryDetailTypes.includes(entry?.detail?.__typename ?? ''))
+    return true;
+  return false;
 };
 
 export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
@@ -202,9 +234,7 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
               });
             }
           }}
-          data={allNodes.filter(
-            (notification) => notification.detail != undefined,
-          )}
+          data={allNodes.filter(validateSupportedDetailType)}
           itemContent={(_index, notification) => {
             return (
               <AlertCard
