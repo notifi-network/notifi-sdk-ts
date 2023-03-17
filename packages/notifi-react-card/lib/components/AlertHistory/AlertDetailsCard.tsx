@@ -1,7 +1,7 @@
 import { NotificationHistoryEntry } from '@notifi-network/notifi-core';
 import clsx from 'clsx';
 import { useNotificationHistory } from 'notifi-react-card/lib/hooks/useNotificationHistory';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { formatAlertDetailsTimestamp } from '../../utils/AlertHistoryUtils';
 
@@ -17,6 +17,10 @@ export const AlertDetailsCard: React.FC<AlertDetailsProps> = ({
   classNames,
 }) => {
   const { getAlertDetailsContents } = useNotificationHistory();
+  const detailsContents = useMemo(
+    () => getAlertDetailsContents(notificationEntry),
+    [notificationEntry],
+  );
   return (
     <div
       className={clsx(
@@ -26,15 +30,15 @@ export const AlertDetailsCard: React.FC<AlertDetailsProps> = ({
     >
       <div className={clsx('NotifiAlertDetails__topContentContainer')}>
         <div className={clsx('NotifiAlertDetails__topContent')}>
-          {getAlertDetailsContents(notificationEntry).topContent}
+          {detailsContents.topContent}
         </div>
         <div className={clsx('NotifiAlertDetails__timestamp')}>
           {formatAlertDetailsTimestamp(notificationEntry.createdDate)}
         </div>
       </div>
       <div className={clsx('NotifiAlertDetails__bottomContent')}>
-        <div>{getAlertDetailsContents(notificationEntry).bottomContent}</div>
-        <div>{getAlertDetailsContents(notificationEntry).otherContent}</div>
+        <div>{detailsContents.bottomContent}</div>
+        <div>{detailsContents.otherContent}</div>
       </div>
     </div>
   );
