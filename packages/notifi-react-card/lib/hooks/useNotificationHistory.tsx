@@ -17,14 +17,26 @@ import { AlertNotificationViewProps } from '../components/AlertHistory/AlertNoti
 import { formatAmount } from '../utils/AlertHistoryUtils';
 
 export const useNotificationHistory = () => {
+  type AlertDetailsContents = {
+    topContent: string;
+    bottomContent: string;
+    otherContent?: string;
+  };
   type SupportedEventDetailPropsMap = Map<
     string,
-    (notification: NotificationHistoryEntry) => AlertNotificationViewProps
+    {
+      getViewProps: (
+        notification: NotificationHistoryEntry,
+      ) => AlertNotificationViewProps;
+      getAlertDetailsContents: (
+        notification: NotificationHistoryEntry,
+      ) => AlertDetailsContents;
+    }
   >;
+
   const supportedEventDetails: SupportedEventDetailPropsMap = new Map();
-  supportedEventDetails.set(
-    'BroadcastMessageEventDetails',
-    (notification: NotificationHistoryEntry) => {
+  supportedEventDetails.set('BroadcastMessageEventDetails', {
+    getViewProps: (notification: NotificationHistoryEntry) => {
       const detail = notification.detail as BroadcastMessageEventDetails;
       return {
         notificationTitle: 'Announcement',
@@ -34,10 +46,16 @@ export const useNotificationHistory = () => {
         notificationMessage: detail.message ?? '',
       };
     },
-  );
-  supportedEventDetails.set(
-    'HealthValueOverThresholdEventDetails',
-    (notification: NotificationHistoryEntry) => {
+    getAlertDetailsContents: (notification: NotificationHistoryEntry) => {
+      const detail = notification.detail as BroadcastMessageEventDetails;
+      return {
+        topContent: detail.subject ?? '',
+        bottomContent: detail.message ?? '',
+      };
+    },
+  });
+  supportedEventDetails.set('HealthValueOverThresholdEventDetails', {
+    getViewProps: (notification: NotificationHistoryEntry) => {
       const detail =
         notification.detail as HealthValueOverThresholdEventDetails;
       const threshold = detail.threshold ?? '';
@@ -57,20 +75,37 @@ export const useNotificationHistory = () => {
         notificationMessage: undefined,
       };
     },
-  );
-  supportedEventDetails.set('GenericEventDetails', (notification) => {
-    const detail = notification.detail as GenericEventDetails;
-    return {
-      notificationTitle: detail.sourceName,
-      notificationImage: <AlertIcon icon={detail.icon} />,
-      notificationSubject: detail.notificationTypeName,
-      notificationDate: notification.createdDate,
-      notificationMessage: detail.genericMessage,
-    };
+    getAlertDetailsContents: (notification: NotificationHistoryEntry) => {
+      const detail =
+        notification.detail as HealthValueOverThresholdEventDetails;
+      return {
+        topContent: detail.name,
+        bottomContent: `value: ${detail.value}`,
+        otherContent: `threshold: ${detail.threshold}`,
+      };
+    },
   });
-  supportedEventDetails.set(
-    'ChatMessageReceivedEventDetails',
-    (notification) => {
+  supportedEventDetails.set('GenericEventDetails', {
+    getViewProps: (notification) => {
+      const detail = notification.detail as GenericEventDetails;
+      return {
+        notificationTitle: detail.sourceName,
+        notificationImage: <AlertIcon icon={detail.icon} />,
+        notificationSubject: detail.notificationTypeName,
+        notificationDate: notification.createdDate,
+        notificationMessage: detail.genericMessage,
+      };
+    },
+    getAlertDetailsContents: (notification: NotificationHistoryEntry) => {
+      const detail = notification.detail as GenericEventDetails;
+      return {
+        topContent: detail.notificationTypeName,
+        bottomContent: detail.genericMessage,
+      };
+    },
+  });
+  supportedEventDetails.set('ChatMessageReceivedEventDetails', {
+    getViewProps: (notification) => {
       const detail = notification.detail as ChatMessageReceivedEventDetails;
       return {
         notificationTitle: `New Message from ${detail.senderName}`,
@@ -80,10 +115,16 @@ export const useNotificationHistory = () => {
         notificationImage: <ChatAlertIcon width={17} height={17} />,
       };
     },
-  );
-  supportedEventDetails.set(
-    'AccountBalanceChangedEventDetails',
-    (notification) => {
+    getAlertDetailsContents: (notification: NotificationHistoryEntry) => {
+      const detail = notification.detail as ChatMessageReceivedEventDetails;
+      return {
+        topContent: `New Message from ${detail.senderName}`,
+        bottomContent: detail.messageBody,
+      };
+    },
+  });
+  supportedEventDetails.set('AccountBalanceChangedEventDetails', {
+    getViewProps: (notification) => {
       const detail = notification.detail as AccountBalanceChangedEventDetails;
       const changeAmount = formatAmount(
         Math.abs(detail.previousValue - detail.newValue),
@@ -102,7 +143,21 @@ export const useNotificationHistory = () => {
         notificationMessage: `Wallet ${walletAddress} account balance changed by ${changeAmount} ${detail.tokenSymbol}`,
       };
     },
-  );
+    getAlertDetailsContents: (notification: NotificationHistoryEntry) => {
+      const detail = notification.detail as AccountBalanceChangedEventDetails;
+      const changeAmount = `${formatAmount(
+        Math.abs(detail.previousValue - detail.newValue),
+      )}`;
+      const topContent =
+        detail.direction === 'INCOMING'
+          ? `Incoming Transaction: ${changeAmount}  ${detail.tokenSymbol}`
+          : `Outgoing Transaction: ${changeAmount}  ${detail.tokenSymbol}`;
+      return {
+        topContent,
+        bottomContent: `Wallet ${notification.sourceAddress} account balance changed by ${changeAmount} ${detail.tokenSymbol}`,
+      };
+    },
+  });
 
   const validateIsSupported = (entry?: NotificationHistoryEntry): boolean => {
     if (supportedEventDetails.get(entry?.detail?.__typename ?? '')) return true;
@@ -114,7 +169,7 @@ export const useNotificationHistory = () => {
   ): AlertNotificationViewProps => {
     const genProps = supportedEventDetails.get(
       notification.detail?.__typename ?? '',
-    );
+    )?.getViewProps;
     return !!notification.detail && !!genProps
       ? genProps(notification)
       : // It should never come here because exception should be filtered out before. https://virtuoso.dev/troubleshooting/
@@ -127,7 +182,23 @@ export const useNotificationHistory = () => {
         };
   };
 
+  const getAlertDetailsContents = (
+    notification: NotificationHistoryEntry,
+  ): AlertDetailsContents => {
+    const getContents = supportedEventDetails.get(
+      notification.detail?.__typename ?? '',
+    )?.getAlertDetailsContents;
+    return !!notification && !!getContents
+      ? getContents(notification)
+      : // It should never come here because exception should be filtered out before. https://virtuoso.dev/troubleshooting/
+        {
+          topContent: 'Unsupported notification',
+          bottomContent: 'Alert not supported yet',
+        };
+  };
+
   return {
+    getAlertDetailsContents,
     getAlertNotificationViewBaseProps,
     validateIsSupported,
   };
