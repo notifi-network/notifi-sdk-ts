@@ -14,7 +14,7 @@ import { RatioCheckIcon } from '../assets/RatioCheckIcon';
 import { SwapIcon } from '../assets/SwapIcon';
 import { AlertIcon } from '../components/AlertHistory/AlertIcon';
 import { AlertNotificationViewProps } from '../components/AlertHistory/AlertNotificationRow';
-import { formatAmount } from '../utils/AlertHistoryUtils';
+import { formatAmount } from './AlertHistoryUtils';
 
 type AlertDetailsContents = {
   topContent: string;
