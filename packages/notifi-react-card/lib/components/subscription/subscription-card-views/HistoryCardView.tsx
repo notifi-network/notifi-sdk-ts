@@ -3,13 +3,16 @@ import {
   NotificationHistoryEntry,
 } from '@notifi-network/notifi-core';
 import clsx from 'clsx';
-import { useNotificationHistory } from 'notifi-react-card/lib/hooks/useNotificationHistory';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 
 import { NotificationEmptyBellIcon } from '../../../assets/NotificationEmptyBellIcon';
 import { useNotifiClientContext } from '../../../context';
-import { DeepPartialReadonly } from '../../../utils';
+import {
+  DeepPartialReadonly,
+  getAlertNotificationViewBaseProps,
+  validateIsSupported,
+} from '../../../utils';
 import { MESSAGES_PER_PAGE } from '../../../utils/constants';
 import {
   AlertNotificationRow,
@@ -40,8 +43,6 @@ export type AlertHistoryViewProps = Readonly<{
   >;
 }>;
 
-const { getAlertNotificationViewBaseProps, validateIsSupported } =
-  useNotificationHistory();
 export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
   classNames,
   isHidden,

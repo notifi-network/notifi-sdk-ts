@@ -1,6 +1,6 @@
 import { NotificationHistoryEntry } from '@notifi-network/notifi-core';
 import clsx from 'clsx';
-import { useNotificationHistory } from 'notifi-react-card/lib/hooks/useNotificationHistory';
+import { getAlertDetailsContents } from 'notifi-react-card/lib/utils';
 import React, { useMemo } from 'react';
 
 import { formatAlertDetailsTimestamp } from '../../utils/AlertHistoryUtils';
@@ -16,7 +16,6 @@ export const AlertDetailsCard: React.FC<AlertDetailsProps> = ({
   notificationEntry,
   classNames,
 }) => {
-  const { getAlertDetailsContents } = useNotificationHistory();
   const detailsContents = useMemo(
     () => getAlertDetailsContents(notificationEntry),
     [notificationEntry],
