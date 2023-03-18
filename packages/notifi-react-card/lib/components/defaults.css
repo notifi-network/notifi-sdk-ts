@@ -24,6 +24,10 @@
   --notifi-confirmation-color: #22af3c;
 }
 
+a {
+  text-decoration: none;
+}
+
 .notifi__dark {
   --notifi-card-secondary-background: rgb(68, 68, 68);
   --notifi-placeholder-color: #b6b8d5;
@@ -192,7 +196,6 @@ input::-webkit-inner-spin-button {
 .NotifiFooter__poweredBy {
   font-size: 12px;
   line-height: 14px;
-  text-decoration: none;
   color: var(--notifi-font-color);
   margin-bottom: 0 !important;
 }
@@ -212,7 +215,6 @@ input::-webkit-inner-spin-button {
 
 .NotifiFooter__link a {
   color: var(--notifi-font-color);
-  text-decoration: underline;
   font-size: 12px;
   line-height: 14px;
 }
