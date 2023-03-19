@@ -33,7 +33,7 @@ a {
   --notifi-placeholder-color: #b6b8d5;
   --notifi-focus-color: #fff;
   --notifi-toggle-handle: #fff;
-  --notifi-toggle-inactive: rgba(255, 255, 255, 0.1);
+  --notifi-toggle-inactive: #b6b8d5;
   --notifi-toggle-active: linear-gradient(
     207.53deg,
     #fe7970 11.91%,
