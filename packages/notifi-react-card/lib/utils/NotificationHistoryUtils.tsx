@@ -175,7 +175,7 @@ const getAlertNotificationViewBaseProps = (
   )?.getViewProps;
   return !!notification.detail && !!genProps
     ? genProps(notification)
-    : // It should never come here because exception should be filtered out before. https://virtuoso.dev/troubleshooting/
+    : // It should never come here: exception should be filtered out before. https://virtuoso.dev/troubleshooting
       {
         notificationTitle: 'Unsupported notification',
         notificationImage: <AlertIcon icon={'INFO'} />,
@@ -193,7 +193,7 @@ const getAlertDetailsContents = (
   )?.getAlertDetailsContents;
   return !!notification && !!getContents
     ? getContents(notification)
-    : // It should never come here because exception should be filtered out before. https://virtuoso.dev/troubleshooting/
+    : // It should never come here: exception should be filtered out before. https://virtuoso.dev/troubleshooting
       {
         topContent: 'Unsupported notification',
         bottomContent: 'Alert not supported yet',
