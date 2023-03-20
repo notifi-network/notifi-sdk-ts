@@ -172,6 +172,11 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
       ? data.titles.editView
       : copy?.editHeader ?? 'Update Settings';
   };
+  const verifyOnboardingHeader = () => {
+    return useCustomTitles && data.titles.verifyOnboardingView !== ''
+      ? data.titles.verifyOnboardingView
+      : copy?.verifyWalletsHeader ?? 'Verify Wallets';
+  };
 
   const historyView = () => {
     return selectedAlertEntry === undefined
@@ -275,7 +280,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
             }}
             rightIcon={rightIcon}
           >
-            <h2>{copy?.verifyWalletsHeader ?? 'Verify Wallets'}</h2>
+            <h2>{verifyOnboardingHeader()}</h2>
           </NotifiAlertBox>
           <VerifyWalletView
             classNames={classNames?.VerifyWalletView}
