@@ -179,7 +179,7 @@ export type CardConfigItemV1 = Readonly<{
   eventTypes: EventTypeConfig;
   inputs: InputsConfig;
   contactInfo: ContactInfoConfig;
-  titles: TitleSubtitleConfig;
+  titles?: TitleSubtitleConfig;
 }>;
 
 export type TitleSubtitleConfigInactive = Readonly<{ active: false }>;

@@ -148,41 +148,41 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
     };
   }, [onClose]);
 
-  const useCustomTitles = data.titles.active === true;
+  const useCustomTitles = data?.titles?.active === true;
 
   const expiredHeader = () => {
-    return useCustomTitles && data.titles.expiredView !== ''
-      ? data.titles.expiredView
+    return useCustomTitles && data?.titles.expiredView !== ''
+      ? data?.titles.expiredView
       : copy?.expiredHeader ?? 'Welcome Back';
   };
 
   const previewHeader = () => {
-    return useCustomTitles && data.titles.previewView !== ''
-      ? data.titles.previewView
+    return useCustomTitles && data?.titles.previewView !== ''
+      ? data?.titles.previewView
       : copy?.manageAlertsHeader ?? 'Manage Alerts';
   };
 
   const signUpHeader = () => {
-    return useCustomTitles && data.titles.signupView !== ''
-      ? data.titles.signupView
+    return useCustomTitles && data?.titles.signupView !== ''
+      ? data?.titles.signupView
       : copy?.signUpHeader ?? 'Get Notified';
   };
   const editHeader = () => {
-    return useCustomTitles && data.titles.editView !== ''
-      ? data.titles.editView
+    return useCustomTitles && data?.titles.editView !== ''
+      ? data?.titles.editView
       : copy?.editHeader ?? 'Update Settings';
   };
   const verifyOnboardingHeader = () => {
-    console.log('data', data.titles);
-    return useCustomTitles && data.titles.verifyWalletsView !== ''
-      ? data.titles.verifyWalletsView
+    console.log('data', data?.titles);
+    return useCustomTitles && data?.titles.verifyWalletsView !== ''
+      ? data?.titles.verifyWalletsView
       : copy?.verifyWalletsHeader ?? 'Verify Wallets';
   };
 
   const historyView = () => {
     return selectedAlertEntry === undefined
-      ? useCustomTitles && data.titles.alertDetailsView !== ''
-        ? data.titles.alertDetailsView
+      ? useCustomTitles && data?.titles.alertDetailsView !== ''
+        ? data?.titles.alertDetailsView
         : copy?.historyHeader ?? 'Alert History'
       : copy?.detailHeader ?? 'Alert Details';
   };
