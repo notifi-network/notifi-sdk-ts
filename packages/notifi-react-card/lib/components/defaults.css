@@ -324,9 +324,12 @@ input::-webkit-inner-spin-button {
   overflow: hidden;
   color: var(--notifi-font-color);
   font-weight: bold;
-  text-overflow: ellipsis;
-  width: 50%;
-  white-space: nowrap;
+  width: 100%;
+  white-space: pre-line;
+  word-wrap: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 .NotifiAlertHistory__notificationImage {
@@ -348,9 +351,12 @@ input::-webkit-inner-spin-button {
   font-size: 12px;
   line-height: 14px;
   color: var(--notifi-font-color);
-  text-overflow: ellipsis;
-  display: block;
   overflow: hidden;
+  white-space: pre-line;
+  word-wrap: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 .NotifiAlertHistory__manageAlertLink {
