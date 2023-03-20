@@ -173,8 +173,9 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
       : copy?.editHeader ?? 'Update Settings';
   };
   const verifyOnboardingHeader = () => {
-    return useCustomTitles && data.titles.verifyOnboardingView !== ''
-      ? data.titles.verifyOnboardingView
+    console.log('data', data.titles);
+    return useCustomTitles && data.titles.verifyWalletsView !== ''
+      ? data.titles.verifyWalletsView
       : copy?.verifyWalletsHeader ?? 'Verify Wallets';
   };
 

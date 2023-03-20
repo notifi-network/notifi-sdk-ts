@@ -192,7 +192,7 @@ export type TitleSubtitleConfigActive = Readonly<{
   signupView: string;
   expiredView: string;
   alertDetailsView: string;
-  verifyOnboardingView: string;
+  verifyWalletsView: string;
 }>;
 
 export type TitleSubtitleConfig =
