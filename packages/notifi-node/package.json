@@ -30,7 +30,7 @@
     "@notifi-network/notifi-core": "^0.59.4",
     "@notifi-network/notifi-graphql": "^0.59.4",
     "graphql": "^16.6.0",
-    "graphql-request": "^5.1.0",
+    "graphql-request": "5.1.0",
     "subscriptions-transport-ws": "^0.11.0",
     "ws": "^8.11.0"
   },

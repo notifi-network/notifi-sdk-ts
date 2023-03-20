@@ -2,7 +2,14 @@ import { InjectedExtension } from '@polkadot/extension-inject/types';
 import { SignerResult } from '@polkadot/types/types';
 import { u8aToHex } from '@polkadot/util';
 import { decodeAddress, encodeAddress } from '@polkadot/util-crypto';
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  FC,
+  PropsWithChildren,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 export type AcalaWalletName = 'PolkadotJs' | 'SubWallet' | 'Talisman';
 
@@ -96,7 +103,9 @@ export const AcalaWalletContext = React.createContext<AcalaWalletContextProps>(
   {} as AcalaWalletContextProps,
 );
 
-export const AcalaWalletContextProvider: FC = ({ children }) => {
+export const AcalaWalletContextProvider: FC<PropsWithChildren<{}>> = ({
+  children,
+}: PropsWithChildren<{}>) => {
   const [account, setAccount] = useState<string | null>(null);
   const [connected, setConnected] = useState<boolean>(false);
   const [acalaAddress, setAcalaAddress] = useState<string | null>(null);
