@@ -19,17 +19,13 @@ export const NftAuctionChangedRenderer: React.FC<
   newBidValue,
   newBidSymbol,
 }) => {
-  const getTitle = () => {
-    return auctionTitle;
-  };
-
   const getMessage = () => {
     return `New bid with value ${newBidValue} ${newBidSymbol} placed on auction ${auctionDetails}`;
   };
   return (
     <AlertNotificationRow
-      notificationTitle={getTitle()}
-      notificationSubject={getTitle()}
+      notificationTitle={auctionTitle}
+      notificationSubject={auctionTitle}
       notificationDate={createdDate}
       notificationMessage={getMessage()}
     />

@@ -74,7 +74,7 @@ export const NotifiCard: React.FC = () => {
           inputs={{ userWallet: publicKey }}
           inputLabels={inputLabels}
           inputSeparators={inputSeparators}
-          cardId="b469c6029e3f40aaab49ddd78fe7f228"
+          cardId="d8859ea72ff4449fa8f7f293ebd333c9"
           onClose={() => alert('nope you must stay')}
           copy={{
             FetchedStateCard: {

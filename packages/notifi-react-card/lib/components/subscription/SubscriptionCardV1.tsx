@@ -148,6 +148,39 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
     };
   }, [onClose]);
 
+  const useCustomTitles = data.titles.active === true;
+
+  const expiredHeader = () => {
+    return useCustomTitles && data.titles.expiredView !== ''
+      ? data.titles.expiredView
+      : copy?.expiredHeader ?? 'Welcome Back';
+  };
+
+  const previewHeader = () => {
+    return useCustomTitles && data.titles.previewView !== ''
+      ? data.titles.previewView
+      : copy?.manageAlertsHeader ?? 'Manage Alerts';
+  };
+
+  const signUpHeader = () => {
+    return useCustomTitles && data.titles.signupView !== ''
+      ? data.titles.signupView
+      : copy?.signUpHeader ?? 'Get Notified';
+  };
+  const editHeader = () => {
+    return useCustomTitles && data.titles.editView !== ''
+      ? data.titles.editView
+      : copy?.editHeader ?? 'Update Settings';
+  };
+
+  const historyView = () => {
+    return selectedAlertEntry === undefined
+      ? useCustomTitles && data.titles.alertDetailsView !== ''
+        ? data.titles.alertDetailsView
+        : copy?.historyHeader ?? 'Alert History'
+      : copy?.detailHeader ?? 'Alert Details';
+  };
+
   switch (cardView.state) {
     case 'expired':
       view = (
@@ -156,7 +189,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
             classNames={classNames?.NotifiAlertBox}
             rightIcon={rightIcon}
           >
-            <h2>{copy?.expiredHeader ?? 'Welcome back'}</h2>
+            <h2>{expiredHeader()}</h2>
           </NotifiAlertBox>
           <ExpiredTokenView classNames={classNames?.ExpiredTokenView} />
         </>
@@ -173,7 +206,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
             }}
             rightIcon={rightIcon}
           >
-            <h2>{copy?.manageAlertsHeader ?? 'Manage Alerts'}</h2>
+            <h2>{previewHeader()}</h2>
           </NotifiAlertBox>
           <PreviewCard
             data={data}
@@ -204,9 +237,9 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
             rightIcon={rightIcon}
           >
             {cardView.state === 'signup' ? (
-              <h2>{copy?.signUpHeader ?? 'Get Notified'}</h2>
+              <h2>{signUpHeader()}</h2>
             ) : (
-              <h2>{copy?.editHeader ?? 'Update Settings'}</h2>
+              <h2>{editHeader()}</h2>
             )}
           </NotifiAlertBox>
           <EditCardView
@@ -273,11 +306,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
             }
             rightIcon={rightIcon}
           >
-            <h2>
-              {selectedAlertEntry === undefined
-                ? copy?.historyHeader ?? 'Alert History'
-                : copy?.detailHeader ?? 'Alert Details'}
-            </h2>
+            <h2>{historyView()}</h2>
           </NotifiAlertBox>
           <div
             className={clsx(
