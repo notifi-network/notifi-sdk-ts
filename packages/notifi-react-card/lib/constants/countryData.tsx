@@ -7,7 +7,7 @@ export const countryMap = {
   '+1': {
     dialCode: '+1',
     flag: '🇺🇸',
-    name: 'United States',
+    name: 'United States/Canada',
   },
   '+61': {
     dialCode: '+61',
@@ -29,11 +29,6 @@ export const countryMap = {
     flag: '🇧🇷',
     name: 'Brazil',
   },
-  // CA: {
-  //   dialCode: '+1',
-  //   flag: '🇨🇦',
-  //   name: 'Canada',
-  // },
   '+45': {
     dialCode: '+45',
     flag: '🇩🇰',
