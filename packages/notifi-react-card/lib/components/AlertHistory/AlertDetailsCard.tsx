@@ -1,11 +1,9 @@
 import { NotificationHistoryEntry } from '@notifi-network/notifi-core';
 import clsx from 'clsx';
+import { getAlertDetailsContents } from 'notifi-react-card/lib/utils';
 import React, { useMemo } from 'react';
 
-import {
-  formatAlertDetailsTimestamp,
-  formatAmount,
-} from '../../utils/AlertHistoryUtils';
+import { formatAlertDetailsTimestamp } from '../../utils/AlertHistoryUtils';
 
 export type AlertDetailsProps = Readonly<{
   notificationEntry: NotificationHistoryEntry;
@@ -18,62 +16,10 @@ export const AlertDetailsCard: React.FC<AlertDetailsProps> = ({
   notificationEntry,
   classNames,
 }) => {
-  const timestamp = notificationEntry.createdDate;
-  const content = useMemo(() => {
-    const detail = notificationEntry?.detail;
-    const typename = detail?.__typename;
-    if (detail === undefined || typename === undefined) {
-      return {};
-    }
-
-    // TODO: Deduplicate with HistoryCardView
-    switch (typename) {
-      case 'BroadcastMessageEventDetails': {
-        return {
-          topContent: detail.subject,
-          bottomContent: detail.message,
-        };
-      }
-      case 'HealthValueOverThresholdEventDetails': {
-        return {
-          topContent: detail.name,
-          bottomContent: (
-            <>
-              <div>{`value: ${detail.value}`}</div>
-              &nbsp;
-              <div>{`threshold: ${detail.threshold}`}</div>
-            </>
-          ),
-        };
-      }
-      case 'GenericEventDetails': {
-        return {
-          topContent: detail.notificationTypeName,
-          bottomContent: detail.genericMessage,
-        };
-      }
-      case 'ChatMessageReceivedEventDetails': {
-        return {
-          topContent: `New Message from ${detail.senderName}`,
-          bottomContent: detail.messageBody,
-        };
-      }
-      case 'AccountBalanceChangedEventDetails': {
-        const changeAmount = `${formatAmount(
-          Math.abs(detail.previousValue - detail.newValue),
-        )}`;
-        return {
-          topContent:
-            detail.direction === 'INCOMING'
-              ? `Incoming Transaction: ${changeAmount}  ${detail.tokenSymbol}`
-              : `Outgoing Transaction: ${changeAmount}  ${detail.tokenSymbol}`,
-          bottomContent: `Wallet ${notificationEntry.sourceAddress} account balance changed by ${changeAmount} ${detail.tokenSymbol}`,
-        };
-      }
-    }
-
-    return {};
-  }, []);
+  const detailsContents = useMemo(
+    () => getAlertDetailsContents(notificationEntry),
+    [notificationEntry],
+  );
   return (
     <div
       className={clsx(
@@ -83,14 +29,15 @@ export const AlertDetailsCard: React.FC<AlertDetailsProps> = ({
     >
       <div className={clsx('NotifiAlertDetails__topContentContainer')}>
         <div className={clsx('NotifiAlertDetails__topContent')}>
-          {content.topContent}
+          {detailsContents.topContent}
         </div>
         <div className={clsx('NotifiAlertDetails__timestamp')}>
-          {formatAlertDetailsTimestamp(timestamp)}
+          {formatAlertDetailsTimestamp(notificationEntry.createdDate)}
         </div>
       </div>
       <div className={clsx('NotifiAlertDetails__bottomContent')}>
-        {content.bottomContent}
+        <div>{detailsContents.bottomContent}</div>
+        <div>{detailsContents.otherContent}</div>
       </div>
     </div>
   );
