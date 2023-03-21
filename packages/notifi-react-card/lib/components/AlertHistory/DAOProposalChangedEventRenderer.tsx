@@ -11,17 +11,13 @@ export type DAOProposalChangedEventRendererProps = Readonly<{
 export const DAOProposalChangedEventRenderer: React.FC<
   DAOProposalChangedEventRendererProps
 > = ({ proposalTitle, description, createdDate }) => {
-  const getTitle = () => {
-    return proposalTitle;
-  };
-
   const getMessage = () => {
     return description;
   };
   return (
     <AlertNotificationRow
-      notificationTitle={getTitle()}
-      notificationSubject={getTitle()}
+      notificationTitle={proposalTitle}
+      notificationSubject={proposalTitle}
       notificationDate={createdDate}
       notificationMessage={getMessage()}
     />

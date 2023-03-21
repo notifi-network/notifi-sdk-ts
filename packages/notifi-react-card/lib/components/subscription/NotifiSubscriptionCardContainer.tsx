@@ -32,6 +32,7 @@ export const NotifiSubscriptionCardContainer: React.FC<
     id: cardId,
     type: 'SUBSCRIPTION_CARD',
   });
+
   let contents: React.ReactNode = null;
 
   switch (card.state) {

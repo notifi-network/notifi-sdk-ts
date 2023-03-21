@@ -179,4 +179,22 @@ export type CardConfigItemV1 = Readonly<{
   eventTypes: EventTypeConfig;
   inputs: InputsConfig;
   contactInfo: ContactInfoConfig;
+  titles?: TitleSubtitleConfig;
 }>;
+
+export type TitleSubtitleConfigInactive = Readonly<{ active: false }>;
+
+export type TitleSubtitleConfigActive = Readonly<{
+  active: true;
+  editView: string;
+  previewView: string;
+  historyView: string;
+  signupView: string;
+  expiredView: string;
+  alertDetailsView: string;
+  verifyWalletsView: string;
+}>;
+
+export type TitleSubtitleConfig =
+  | TitleSubtitleConfigActive
+  | TitleSubtitleConfigInactive;
