@@ -140,7 +140,7 @@ supportedEventDetails.set('AccountBalanceChangedEventDetails', {
     const walletAddress = notification.sourceAddress ?? '';
     return {
       notificationImage: <SwapIcon />,
-      notificationTitle: getTitle(),
+      notificationTitle: 'Wallet Balance Change',
       notificationSubject: getTitle(),
       notificationDate: notification.createdDate,
       notificationMessage: `Wallet ${walletAddress} account balance changed by ${changeAmount} ${detail.tokenSymbol}`,
