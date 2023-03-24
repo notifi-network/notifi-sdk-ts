@@ -51,10 +51,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
   } = useNotifiSubscriptionContext();
 
   // Case undefined --> under demoPreview card (No params to init client)
-  const clientContext = useNotifiClientContext() as
-    | ReturnType<typeof useNotifiClientContext>
-    | undefined;
-
+  const { params } = useNotifiClientContext();
   const { resendEmailVerificationLink } = useNotifiSubscribe({
     targetGroupName: 'Default',
   });
@@ -170,8 +167,8 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
           ) : null}
         </div>
       ) : null}
-      {clientContext?.params?.multiWallet !== undefined &&
-      clientContext?.params?.multiWallet.ownedWallets.length > 0 ? (
+      {params.multiWallet !== undefined &&
+      params.multiWallet.ownedWallets.length > 0 ? (
         <div
           className={clsx(
             'NotifiUserInfoPanel__myWallet',
