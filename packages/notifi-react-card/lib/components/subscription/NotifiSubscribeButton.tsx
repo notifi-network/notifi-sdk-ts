@@ -26,17 +26,17 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
   inputs,
 }) => {
   const eventTypes = data.eventTypes;
-  const { isInitialized, subscribe, updateTargetGroups } = useNotifiSubscribe({
-    targetGroupName: 'Default',
-  });
 
-  const {
-    client,
-    params: { multiWallet },
-  } = useNotifiClientContext();
-
-  const { cardView, connectedWallets, loading, setCardView } =
+  const { cardView, connectedWallets, loading, setCardView, demoPreview } =
     useNotifiSubscriptionContext();
+
+  const clientContext = demoPreview ? null : useNotifiClientContext();
+
+  const subscribe = demoPreview
+    ? null
+    : useNotifiSubscribe({
+        targetGroupName: 'Default',
+      });
 
   const { formErrorMessages, formState } = useNotifiForm();
 
@@ -45,10 +45,12 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
   const { email: emailErrorMessage, phoneNumber: smsErrorMessage } =
     formErrorMessages;
 
-  const isMultiWallet = (multiWallet?.ownedWallets?.length ?? 0) > 0;
+  const isMultiWallet =
+    (clientContext?.params.multiWallet?.ownedWallets?.length ?? 0) > 0;
 
   const onClick = useCallback(async () => {
-    const { data: notifiClientData } = client;
+    if (!subscribe || !clientContext) return;
+    const { data: notifiClientData } = clientContext.client;
     const targetGroupLength = notifiClientData?.targetGroups?.length ?? 0;
 
     const isFirstTimeUser = targetGroupLength === 0;
@@ -60,10 +62,10 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
         inputs,
         connectedWallets,
       );
-      const result = await subscribe(alertConfigs);
+      const result = await subscribe.subscribe(alertConfigs);
       success = !!result;
     } else {
-      const result = await updateTargetGroups();
+      const result = await subscribe.updateTargetGroups();
       success = !!result;
     }
 
@@ -79,10 +81,10 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
     }
   }, [
     isMultiWallet,
-    client,
+    clientContext?.client,
     eventTypes,
-    subscribe,
-    updateTargetGroups,
+    subscribe?.subscribe,
+    subscribe?.updateTargetGroups,
     setCardView,
   ]);
 
@@ -92,7 +94,7 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
     <button
       className={clsx('NotifiSubscribeButton__button', classNames?.button)}
       disabled={
-        !isInitialized ||
+        !subscribe?.isInitialized ||
         loading ||
         hasErrors ||
         (!email && !phoneNumber && !telegramId)

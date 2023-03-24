@@ -29,13 +29,16 @@ export type EventTypeWalletBalanceRowProps = Readonly<{
 export const EventTypeWalletBalanceRow: React.FC<
   EventTypeWalletBalanceRowProps
 > = ({ classNames, disabled, config }: EventTypeWalletBalanceRowProps) => {
-  const { alerts, loading, connectedWallets } = useNotifiSubscriptionContext();
+  const { alerts, loading, connectedWallets, demoPreview } =
+    useNotifiSubscriptionContext();
   const [isNotificationLoading, setIsNotificationLoading] =
     useState<boolean>(false);
+  const subscribe = demoPreview
+    ? null
+    : useNotifiSubscribe({
+        targetGroupName: 'Default',
+      });
 
-  const { instantSubscribe } = useNotifiSubscribe({
-    targetGroupName: 'Default',
-  });
   const [enabled, setEnabled] = useState(false);
 
   const alertName = useMemo<string>(() => config.name, [config]);
@@ -53,14 +56,14 @@ export const EventTypeWalletBalanceRow: React.FC<
   }, [alertName, alerts]);
 
   const handleNewSubscription = useCallback(() => {
-    if (loading || isNotificationLoading) {
+    if (loading || isNotificationLoading || !subscribe) {
       return;
     }
 
     if (!enabled) {
       setEnabled(true);
 
-      instantSubscribe({
+      subscribe.instantSubscribe({
         alertConfiguration: walletBalanceConfiguration({
           connectedWallets,
         }),
@@ -68,10 +71,11 @@ export const EventTypeWalletBalanceRow: React.FC<
       });
     } else {
       setEnabled(false);
-      instantSubscribe({
-        alertConfiguration: null,
-        alertName: alertName,
-      })
+      subscribe
+        .instantSubscribe({
+          alertConfiguration: null,
+          alertName: alertName,
+        })
         .then((res) => {
           // We update optimistically so we need to check if the alert exists.
           const responseHasAlert = res.alerts[alertName] !== undefined;
@@ -89,7 +93,7 @@ export const EventTypeWalletBalanceRow: React.FC<
     }
   }, [
     enabled,
-    instantSubscribe,
+    subscribe?.instantSubscribe,
     alertName,
     setIsNotificationLoading,
     isNotificationLoading,

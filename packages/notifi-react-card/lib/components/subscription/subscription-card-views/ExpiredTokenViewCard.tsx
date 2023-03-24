@@ -16,11 +16,16 @@ export type ExpiredTokenViewCardProps = {
 export const ExpiredTokenView: React.FC<ExpiredTokenViewCardProps> = ({
   classNames,
 }) => {
-  const { logIn } = useNotifiSubscribe({ targetGroupName: 'Default' });
+  const { demoPreview } = useNotifiSubscriptionContext();
+  const subscribe = demoPreview
+    ? null
+    : useNotifiSubscribe({ targetGroupName: 'Default' });
+
   const { setCardView } = useNotifiSubscriptionContext();
   const handleClick = async () => {
+    if (!subscribe) return;
     let success = false;
-    const result = await logIn();
+    const result = await subscribe.logIn();
     success = !!result;
 
     if (success === true) {

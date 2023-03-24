@@ -47,10 +47,12 @@ export const EventTypeCustomHealthCheckRow: React.FC<
   disabled,
   inputs,
 }: EventTypeCustomHealthCheckRowProps) => {
-  const { alerts, loading } = useNotifiSubscriptionContext();
-  const { instantSubscribe } = useNotifiSubscribe({
-    targetGroupName: 'Default',
-  });
+  const { alerts, loading, demoPreview } = useNotifiSubscriptionContext();
+  const subscribe = demoPreview
+    ? null
+    : useNotifiSubscribe({
+        targetGroupName: 'Default',
+      });
   const [enabled, setEnabled] = useState(false);
   // This indicates which box to select
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
@@ -119,7 +121,7 @@ export const EventTypeCustomHealthCheckRow: React.FC<
   }, [alertName, alerts, loading, enabled, setEnabled, isNotificationLoading]);
 
   const handleCustomRatioButtonNewSubscription = () => {
-    if (loading || isNotificationLoading) {
+    if (loading || isNotificationLoading || !subscribe) {
       return;
     }
 
@@ -138,24 +140,25 @@ export const EventTypeCustomHealthCheckRow: React.FC<
 
         const thresholdDirection = checkRatios[0].type ?? 'below';
 
-        instantSubscribe({
-          alertConfiguration: customThresholdConfiguration({
-            sourceType: config.sourceType,
-            filterType: config.filterType,
-            alertFrequency: config.alertFrequency,
-            sourceAddress: resolveStringRef(
-              alertName,
-              config.sourceAddress,
-              inputs,
-            ),
-            thresholdDirection: thresholdDirection,
-            threshold:
-              config.numberType === 'percentage'
-                ? ratioNumber / 100
-                : ratioNumber,
-          }),
-          alertName,
-        })
+        subscribe
+          .instantSubscribe({
+            alertConfiguration: customThresholdConfiguration({
+              sourceType: config.sourceType,
+              filterType: config.filterType,
+              alertFrequency: config.alertFrequency,
+              sourceAddress: resolveStringRef(
+                alertName,
+                config.sourceAddress,
+                inputs,
+              ),
+              thresholdDirection: thresholdDirection,
+              threshold:
+                config.numberType === 'percentage'
+                  ? ratioNumber / 100
+                  : ratioNumber,
+            }),
+            alertName,
+          })
           .then(() => setSelectedIndex(3))
           .catch(() => setErrorMessage(UNABLE_TO_UNSUBSCRIBE))
           .finally(() => {
@@ -178,28 +181,29 @@ export const EventTypeCustomHealthCheckRow: React.FC<
     }
   };
   const handleRatioButtonNewSubscription = (value: number, index: number) => {
-    if (loading || isNotificationLoading) {
+    if (loading || isNotificationLoading || !subscribe) {
       return;
     }
     setIsNotificationLoading(true);
 
     setErrorMessage('');
     if (value) {
-      instantSubscribe({
-        alertConfiguration: customThresholdConfiguration({
-          sourceType: config.sourceType,
-          filterType: config.filterType,
-          alertFrequency: config.alertFrequency,
-          sourceAddress: resolveStringRef(
-            alertName,
-            config.sourceAddress,
-            inputs,
-          ),
-          thresholdDirection: thresholdDirection,
-          threshold: value,
-        }),
-        alertName,
-      })
+      subscribe
+        .instantSubscribe({
+          alertConfiguration: customThresholdConfiguration({
+            sourceType: config.sourceType,
+            filterType: config.filterType,
+            alertFrequency: config.alertFrequency,
+            sourceAddress: resolveStringRef(
+              alertName,
+              config.sourceAddress,
+              inputs,
+            ),
+            thresholdDirection: thresholdDirection,
+            threshold: value,
+          }),
+          alertName,
+        })
         .then(() => {
           setSelectedIndex(index);
           setCustomValue('');
@@ -215,7 +219,7 @@ export const EventTypeCustomHealthCheckRow: React.FC<
   };
 
   const handleHealthCheckSubscription = useCallback(() => {
-    if (loading || isNotificationLoading) {
+    if (loading || isNotificationLoading || !subscribe) {
       return;
     }
     setIsNotificationLoading(true);
@@ -223,21 +227,22 @@ export const EventTypeCustomHealthCheckRow: React.FC<
     if (!enabled && initialRatio !== null) {
       setEnabled(true);
 
-      instantSubscribe({
-        alertConfiguration: customThresholdConfiguration({
-          sourceType: config.sourceType,
-          filterType: config.filterType,
-          alertFrequency: config.alertFrequency,
-          sourceAddress: resolveStringRef(
-            alertName,
-            config.sourceAddress,
-            inputs,
-          ),
-          thresholdDirection: thresholdDirection,
-          threshold: initialRatio,
-        }),
-        alertName,
-      })
+      subscribe
+        .instantSubscribe({
+          alertConfiguration: customThresholdConfiguration({
+            sourceType: config.sourceType,
+            filterType: config.filterType,
+            alertFrequency: config.alertFrequency,
+            sourceAddress: resolveStringRef(
+              alertName,
+              config.sourceAddress,
+              inputs,
+            ),
+            thresholdDirection: thresholdDirection,
+            threshold: initialRatio,
+          }),
+          alertName,
+        })
         .then((res) => {
           // We update optimistically so we need to check if the alert exists.
           const responseHasAlert = res.alerts[alertName] !== undefined;
@@ -254,10 +259,11 @@ export const EventTypeCustomHealthCheckRow: React.FC<
         });
     } else {
       setEnabled(false);
-      instantSubscribe({
-        alertConfiguration: null,
-        alertName: alertName,
-      })
+      subscribe
+        .instantSubscribe({
+          alertConfiguration: null,
+          alertName: alertName,
+        })
         .then((res) => {
           setCustomValue('');
           const responseHasAlert = res.alerts[alertName] !== undefined;

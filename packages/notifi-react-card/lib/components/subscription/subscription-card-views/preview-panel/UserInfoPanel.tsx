@@ -76,7 +76,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
     <div
       className={clsx('NotifiUserInfoPanelContainer', classNames?.container)}
     >
-      {contactInfo.email.active && email ? (
+      {(contactInfo.email.active && email) || demoPreview ? (
         <div
           className={clsx(
             'NotifiUserInfoPanel__email',
@@ -89,7 +89,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
               classNames?.email?.label,
             )}
           >
-            {email}
+            {demoPreview ? 'notifi@notifi.network' : email}
           </label>
           {emailErrorMessage?.type === 'recoverableError' ? (
             <DestinationErrorMessage
@@ -110,7 +110,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
           ) : null}
         </div>
       ) : null}
-      {contactInfo.sms.active && phoneNumber ? (
+      {(contactInfo.sms.active && phoneNumber) || demoPreview ? (
         <div
           className={clsx(
             'NotifiUserInfoPanel__sms',
@@ -123,7 +123,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
               classNames?.sms?.label,
             )}
           >
-            {phoneNumber}
+            {demoPreview ? '+10123456789' : phoneNumber}
           </label>
 
           {phoneNumberErrorMessage?.type !== undefined ? (
@@ -139,7 +139,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
           ) : null}
         </div>
       ) : null}
-      {contactInfo.telegram.active && telegramId ? (
+      {(contactInfo.telegram.active && telegramId) || demoPreview ? (
         <div
           className={clsx(
             'NotifiUserInfoPanel__telegram',
@@ -152,7 +152,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
               classNames?.telegram?.label,
             )}
           >
-            {telegramId}
+            {demoPreview ? '@notifi.netowrk' : telegramId}
           </label>
           {telegramErrorMessage?.type === 'recoverableError' ? (
             <DestinationErrorMessage
@@ -178,7 +178,8 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
           ) : null}
         </div>
       ) : null}
-      {multiWallet !== undefined && multiWallet.ownedWallets.length > 0 ? (
+      {clientContext?.params.multiWallet !== undefined &&
+      clientContext?.params.multiWallet.ownedWallets.length > 0 ? (
         <div
           className={clsx(
             'NotifiUserInfoPanel__myWallet',

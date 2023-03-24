@@ -2,7 +2,11 @@ import type { Alert, ConnectedWallet } from '@notifi-network/notifi-core';
 import { PropsWithChildren } from 'react';
 import React, { createContext, useContext, useState } from 'react';
 
-import { FetchedCardViewState, useFetchedCardState } from '../hooks';
+import {
+  CardConfigItemV1,
+  FetchedCardViewState,
+  useFetchedCardState,
+} from '../hooks';
 import {
   IntercomCardView,
   useIntercomCardState,
@@ -15,6 +19,11 @@ import {
 } from './constants';
 
 export type DestinationErrorMessages = DestinationErrors;
+
+export type DemoPreview = {
+  view: FetchedCardViewState['state'];
+  data: CardConfigItemV1;
+};
 
 export type NotifiSubscriptionData = Readonly<{
   alerts: Readonly<Record<string, Alert | undefined>>;
@@ -53,6 +62,8 @@ export type NotifiSubscriptionData = Readonly<{
   setPhoneNumberErrorMessage: (value: DestinationError) => void;
   setTelegramErrorMessage: (value: DestinationError) => void;
   resetErrorMessageState: () => void;
+  demoPreview: DemoPreview | null;
+  setDemoPreview: React.Dispatch<React.SetStateAction<DemoPreview | null>>;
 }>;
 
 const NotifiSubscriptionContext = createContext<NotifiSubscriptionData>(
@@ -120,6 +131,10 @@ export const NotifiSubscriptionContextProvider: React.FC<
       phoneNumber: undefined,
     });
   };
+  const [demoPreview, setDemoPreview] = useState<DemoPreview | null>({
+    view: 'expired',
+    data: JSON.parse(defaultDemoConfigV1),
+  });
 
   const value = {
     alerts,
@@ -154,6 +169,8 @@ export const NotifiSubscriptionContextProvider: React.FC<
     setTelegramErrorMessage,
     setPhoneNumberErrorMessage,
     resetErrorMessageState,
+    demoPreview,
+    setDemoPreview,
   };
 
   return (
@@ -168,3 +185,18 @@ export const useNotifiSubscriptionContext: () => NotifiSubscriptionData =
     const data = useContext(NotifiSubscriptionContext);
     return data;
   };
+
+const defaultDemoConfigV1 = `
+  {
+    "version": "v1",
+    "id": "notofi.network.id",
+    "name": "notofi.network.name",
+    "eventTypes": [],
+    "inputs": [],
+    "contactInfo": {
+      "email": {
+        "active": true
+      }
+    }
+  }
+  `;

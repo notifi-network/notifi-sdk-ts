@@ -84,7 +84,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
   onClose,
 }) => {
   const allowedCountryCodes = [...data.contactInfo.sms.supportedCountryCodes];
-  const { cardView, email, phoneNumber, telegramId, setCardView } =
+  const { cardView, email, phoneNumber, telegramId, setCardView, demoPreview } =
     useNotifiSubscriptionContext();
 
   const {
@@ -96,9 +96,11 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
     setPhoneNumberErrorMessage,
   } = useNotifiForm();
 
-  const { isInitialized, isTokenExpired } = useNotifiSubscribe({
-    targetGroupName: 'Default',
-  });
+  const subscribe = demoPreview
+    ? null
+    : useNotifiSubscribe({
+        targetGroupName: 'Default',
+      });
 
   const [selectedAlertEntry, setAlertEntry] = useState<
     NotificationHistoryEntry | undefined
@@ -118,7 +120,10 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
   }, [email, phoneNumber, telegramId]);
 
   useEffect(() => {
-    if (firstLoad.current || !isInitialized) {
+    if (demoPreview) {
+      return setCardView({ state: demoPreview.view });
+    }
+    if (firstLoad.current || !subscribe?.isInitialized) {
       return;
     }
 
@@ -130,12 +135,19 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
       (telegramId !== '' && telegramId !== undefined)
     ) {
       setCardView({ state: 'history' });
-    } else if (isTokenExpired) {
+    } else if (subscribe.isTokenExpired) {
       setCardView({ state: 'expired' });
     } else {
       setCardView({ state: 'signup' });
     }
-  }, [email, phoneNumber, telegramId, setCardView, cardView, isInitialized]);
+  }, [
+    email,
+    phoneNumber,
+    telegramId,
+    setCardView,
+    cardView.state,
+    subscribe?.isInitialized,
+  ]);
 
   const rightIcon: NotifiAlertBoxButtonProps | undefined = useMemo(() => {
     if (onClose === undefined) {
@@ -334,6 +346,8 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
         </>
       );
       break;
+    default:
+      view = <div>Not supported view</div>;
   }
   return <>{view}</>;
 };

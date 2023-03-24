@@ -6,6 +6,7 @@ import { GqlError } from '@notifi-network/notifi-react-hooks';
 import { addressEllipsis } from 'notifi-react-card/lib/utils/stringUtils';
 import React, { useCallback, useMemo, useState } from 'react';
 
+import { useNotifiSubscriptionContext } from '../../context';
 import { useNotifiSubscribe } from '../../hooks';
 
 export type ConnectWalletRowProps = WalletWithSignParams &
@@ -43,9 +44,12 @@ export const ConnectWalletRow: React.FC<ConnectWalletRowProps> = ({
   disabled,
   ...walletParams
 }: ConnectWalletRowProps) => {
-  const { subscribeWallet } = useNotifiSubscribe({
-    targetGroupName: 'Default',
-  });
+  const { demoPreview } = useNotifiSubscriptionContext();
+  const subscribe = demoPreview
+    ? null
+    : useNotifiSubscribe({
+        targetGroupName: 'Default',
+      });
 
   const isConnected = useMemo(() => {
     const key = 'accountAddress';
@@ -73,7 +77,7 @@ export const ConnectWalletRow: React.FC<ConnectWalletRowProps> = ({
     async (technique: 'FAIL' | 'DISCONNECT_AND_CLOSE_OLD_ACCOUNT') => {
       setIsLoading(true);
       try {
-        await subscribeWallet({
+        await subscribe?.subscribeWallet({
           walletParams,
           connectWalletConflictResolutionTechnique: technique,
         });
@@ -99,7 +103,7 @@ export const ConnectWalletRow: React.FC<ConnectWalletRowProps> = ({
         setIsLoading(false);
       }
     },
-    [subscribeWallet, walletParams],
+    [subscribe?.subscribeWallet, walletParams],
   );
 
   return (
@@ -125,7 +129,7 @@ export const ConnectWalletRow: React.FC<ConnectWalletRowProps> = ({
           <p className="ConnectWalletRow__verified">Verified</p>
         ) : null}
       </div>
-      {isConnectedElsewhere ? (
+      {isConnectedElsewhere || demoPreview ? (
         <>
           <div className="ConnectWalletRow__messageRow">
             This wallet is already connected to another Notifi Hub account. If

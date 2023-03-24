@@ -33,10 +33,12 @@ export type EventTypePriceChangeRowProps = Readonly<{
 export const EventTypePriceChangeRow: React.FC<
   EventTypePriceChangeRowProps
 > = ({ classNames, disabled, config }: EventTypePriceChangeRowProps) => {
-  const { alerts, loading } = useNotifiSubscriptionContext();
-  const { instantSubscribe } = useNotifiSubscribe({
-    targetGroupName: 'Default',
-  });
+  const { alerts, loading, demoPreview } = useNotifiSubscriptionContext();
+  const subscribe = demoPreview
+    ? null
+    : useNotifiSubscribe({
+        targetGroupName: 'Default',
+      });
   const [enabled, setEnabled] = useState(false);
   const [isNotificationLoading, setIsNotificationLoading] =
     useState<boolean>(false);
@@ -62,17 +64,18 @@ export const EventTypePriceChangeRow: React.FC<
   }, [alertName, alerts]);
 
   const handleNewSubscription = useCallback(() => {
-    if (loading || isNotificationLoading) {
+    if (loading || isNotificationLoading || !subscribe) {
       return;
     }
     setIsNotificationLoading(true);
 
     if (!enabled) {
       setEnabled(true);
-      instantSubscribe({
-        alertConfiguration: alertConfiguration,
-        alertName: alertName,
-      })
+      subscribe
+        .instantSubscribe({
+          alertConfiguration: alertConfiguration,
+          alertName: alertName,
+        })
         .then((res) => {
           // We update optimistically so we need to check if the alert exists.
           const responseHasAlert = res.alerts[alertName] !== undefined;
@@ -88,10 +91,11 @@ export const EventTypePriceChangeRow: React.FC<
         });
     } else {
       setEnabled(false);
-      instantSubscribe({
-        alertConfiguration: null,
-        alertName: alertName,
-      })
+      subscribe
+        .instantSubscribe({
+          alertConfiguration: null,
+          alertName: alertName,
+        })
         .then((res) => {
           // We update optimistically so we need to check if the alert exists.
           const responseHasAlert = res.alerts[alertName] !== undefined;
@@ -109,7 +113,7 @@ export const EventTypePriceChangeRow: React.FC<
   }, [
     loading,
     enabled,
-    instantSubscribe,
+    subscribe?.instantSubscribe,
     alertConfiguration,
     alertName,
     isNotificationLoading,

@@ -1,8 +1,13 @@
 import clsx from 'clsx';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { useNotifiSubscriptionContext } from '../../context';
-import { useNotifiSubscribe, useSubscriptionCard } from '../../hooks';
+import {
+  FetchedState,
+  SubscriptionCardState,
+  useNotifiSubscribe,
+  useSubscriptionCard,
+} from '../../hooks';
 import { NotifiFooter } from '../NotifiFooter';
 import { ErrorStateCard, LoadingStateCard } from '../common';
 import { FetchedStateCard } from './FetchedStateCard';
@@ -23,15 +28,25 @@ export const NotifiSubscriptionCardContainer: React.FC<
   loadingRingColor,
   loadingSpinnerSize,
   onClose,
+  demoByJSONConfig,
 }: React.PropsWithChildren<NotifiSubscriptionCardProps>) => {
-  const { isInitialized } = useNotifiSubscribe({ targetGroupName: 'Default' });
-  const { loading } = useNotifiSubscriptionContext();
-  const inputDisabled = loading || !isInitialized;
+  const subscribe = demoByJSONConfig
+    ? null
+    : useNotifiSubscribe({ targetGroupName: 'Default' });
+  const { loading, setDemoPreview } = useNotifiSubscriptionContext();
 
-  const card = useSubscriptionCard({
-    id: cardId,
-    type: 'SUBSCRIPTION_CARD',
-  });
+  useEffect(() => {
+    demoByJSONConfig ? setDemoPreview(demoByJSONConfig) : setDemoPreview(null);
+  }, [demoByJSONConfig]);
+
+  const inputDisabled = loading || !subscribe?.isInitialized;
+
+  const card: SubscriptionCardState = demoByJSONConfig
+    ? ({ state: 'fetched', data: demoByJSONConfig.data } as FetchedState)
+    : useSubscriptionCard({
+        id: cardId,
+        type: 'SUBSCRIPTION_CARD',
+      });
 
   let contents: React.ReactNode = null;
 
