@@ -27,16 +27,16 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
 }) => {
   const eventTypes = data.eventTypes;
 
-  const { cardView, connectedWallets, loading, setCardView, demoPreview } =
+  const { cardView, connectedWallets, loading, setCardView } =
     useNotifiSubscriptionContext();
 
-  const clientContext = demoPreview ? null : useNotifiClientContext();
+  const clientContext = useNotifiClientContext() as
+    | ReturnType<typeof useNotifiClientContext>
+    | undefined;
 
-  const subscribe = demoPreview
-    ? null
-    : useNotifiSubscribe({
-        targetGroupName: 'Default',
-      });
+  const { subscribe, updateTargetGroups, isInitialized } = useNotifiSubscribe({
+    targetGroupName: 'Default',
+  });
 
   const { formErrorMessages, formState } = useNotifiForm();
 
@@ -46,7 +46,7 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
     formErrorMessages;
 
   const isMultiWallet =
-    (clientContext?.params.multiWallet?.ownedWallets?.length ?? 0) > 0;
+    (clientContext?.params?.multiWallet?.ownedWallets?.length ?? 0) > 0;
 
   const onClick = useCallback(async () => {
     if (!subscribe || !clientContext) return;
@@ -62,10 +62,10 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
         inputs,
         connectedWallets,
       );
-      const result = await subscribe.subscribe(alertConfigs);
+      const result = await subscribe(alertConfigs);
       success = !!result;
     } else {
-      const result = await subscribe.updateTargetGroups();
+      const result = await updateTargetGroups();
       success = !!result;
     }
 
@@ -83,8 +83,8 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
     isMultiWallet,
     clientContext?.client,
     eventTypes,
-    subscribe?.subscribe,
-    subscribe?.updateTargetGroups,
+    subscribe,
+    updateTargetGroups,
     setCardView,
   ]);
 
@@ -94,7 +94,7 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
     <button
       className={clsx('NotifiSubscribeButton__button', classNames?.button)}
       disabled={
-        !subscribe?.isInitialized ||
+        !isInitialized ||
         loading ||
         hasErrors ||
         (!email && !phoneNumber && !telegramId)
