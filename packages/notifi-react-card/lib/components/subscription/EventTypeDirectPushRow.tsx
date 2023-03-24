@@ -31,11 +31,13 @@ export const EventTypeDirectPushRow: React.FC<EventTypeDirectPushRowProps> = ({
   config,
   inputs,
 }: EventTypeDirectPushRowProps) => {
-  const { alerts, loading } = useNotifiSubscriptionContext();
+  const { alerts, loading, demoPreview } = useNotifiSubscriptionContext();
 
-  const { instantSubscribe } = useNotifiSubscribe({
-    targetGroupName: 'Default',
-  });
+  const subscribe = demoPreview
+    ? null
+    : useNotifiSubscribe({
+        targetGroupName: 'Default',
+      });
   const [enabled, setEnabled] = useState(false);
 
   const alertName = useMemo<string>(() => config.name, [config]);
@@ -56,21 +58,22 @@ export const EventTypeDirectPushRow: React.FC<EventTypeDirectPushRowProps> = ({
   }, [alertName, alerts, loading]);
 
   const handleNewSubscription = useCallback(() => {
+    if (!subscribe) return;
     if (loading) {
       return;
     }
     if (!enabled) {
-      instantSubscribe({
+      subscribe.instantSubscribe({
         alertConfiguration: alertConfiguration,
         alertName: alertName,
       });
     } else {
-      instantSubscribe({
+      subscribe.instantSubscribe({
         alertConfiguration: null,
         alertName: alertName,
       });
     }
-  }, [enabled, instantSubscribe, alertConfiguration, alertName]);
+  }, [enabled, subscribe?.instantSubscribe, alertConfiguration, alertName]);
 
   return (
     <div

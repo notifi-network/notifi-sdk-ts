@@ -7,7 +7,10 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 
 import { NotificationEmptyBellIcon } from '../../../assets/NotificationEmptyBellIcon';
-import { useNotifiClientContext } from '../../../context';
+import {
+  useNotifiClientContext,
+  useNotifiSubscriptionContext,
+} from '../../../context';
 import {
   DeepPartialReadonly,
   getAlertNotificationViewBaseProps,
@@ -61,16 +64,17 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
   const [allNodes, setAllNodes] = useState<
     ReadonlyArray<NotificationHistoryEntry>
   >([]);
-
-  const { client } = useNotifiClientContext();
+  const { demoPreview } = useNotifiSubscriptionContext();
+  // const { client } = useNotifiClientContext();
+  const clientContext = demoPreview ? null : useNotifiClientContext();
 
   const getNotificationHistory = useCallback(
     async ({ first, after }: GetNotificationHistoryInput) => {
-      if (isQuerying.current) {
+      if (isQuerying.current || !clientContext) {
         return;
       }
       isQuerying.current = true;
-      const result = await client.getNotificationHistory({
+      const result = await clientContext.client.getNotificationHistory({
         first,
         after,
       });
@@ -84,11 +88,14 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
       isQuerying.current = false;
       return result;
     },
-    [client, setAllNodes, setEndCursor, setHasNextPage],
+    [clientContext?.client, setAllNodes, setEndCursor, setHasNextPage],
   );
 
   useEffect(() => {
-    if (!client.isInitialized || !client.isAuthenticated) {
+    if (
+      !clientContext?.client.isInitialized ||
+      !clientContext?.client.isAuthenticated
+    ) {
       return;
     }
 
@@ -98,7 +105,8 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
         first: MESSAGES_PER_PAGE,
       });
     }
-  }, [client]);
+  }, [clientContext?.client]);
+
   return (
     <div
       className={clsx(
