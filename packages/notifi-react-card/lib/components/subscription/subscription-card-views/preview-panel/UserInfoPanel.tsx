@@ -8,13 +8,14 @@ import {
 } from '../../../../context';
 import { CardConfigItemV1, useNotifiSubscribe } from '../../../../hooks';
 import { DeepPartialReadonly } from '../../../../utils';
-import { NotifiTooltip } from '../../NotifiTooltip';
+import { DestinationErrorMessage } from './DestinationErrorMessage';
 
 export type UserInfoSection = {
   container: string;
   label: string;
   confirmationLink: string;
   confirmationLabel: string;
+  errorMessageContainer: string;
   errorMessage: string;
   tooltipContent: string;
 };
@@ -133,26 +134,28 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
           >
             {phoneNumber}
           </label>
-          {destinationErrorMessages.phoneNumber.message !== '' ? (
-            <label
-              className={clsx(
-                'NotifiUserInfoPanel__smsErrorMessageLabel',
+
+          <DestinationErrorMessage
+            classNames={{
+              errorMessage: clsx(
                 classNames?.sms?.errorMessage,
-                {
-                  NotifiUserInfoPanel__smsErrorMessage:
-                    destinationErrorMessages.phoneNumber.message !== '',
-                },
-              )}
-            >
-              {destinationErrorMessages.phoneNumber.message}
-            </label>
-          ) : null}
-          {destinationErrorMessages.phoneNumber.tooltipContent !== undefined &&
-          destinationErrorMessages.phoneNumber.tooltipContent.length > 0 ? (
-            <NotifiTooltip
-              content={destinationErrorMessages.phoneNumber.tooltipContent}
-            />
-          ) : null}
+                'destinationError__smsErrorMessage',
+              ),
+              errorMessageContainer: clsx(
+                classNames?.sms?.errorMessage,
+                classNames?.sms?.errorMessageContainer,
+                'destinationError__smsErrorMessageContainer',
+              ),
+              tooltipContent: clsx(
+                classNames?.sms?.tooltipContent,
+                'destinationError__smsToolTipContent',
+              ),
+            }}
+            errorMessage={destinationErrorMessages.phoneNumber.message}
+            tooltipContent={
+              destinationErrorMessages.phoneNumber.tooltipContent ?? ''
+            }
+          />
         </div>
       ) : null}
       {contactInfo.telegram.active && telegramId ? (

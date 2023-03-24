@@ -102,7 +102,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
     useState<DestinationErrorMessages>({
       email: { message: '' },
       telegram: { message: '' },
-      phoneNumber: { message: 'test Message', tooltipContent: 'hey there' },
+      phoneNumber: { message: 'test message', tooltipContent: 'test tooltip' },
     });
 
   const handleErrorMessage = ({ field, value }: EditFormType) => {
