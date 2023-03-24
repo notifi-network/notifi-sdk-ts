@@ -122,12 +122,9 @@ export const TradingPairAlertRow: React.FC<TradingPairAlertRowProps> = ({
   classNames,
   alertName,
 }: TradingPairAlertRowProps) => {
-  const { demoPreview } = useNotifiSubscriptionContext();
-  const subscribe = demoPreview
-    ? null
-    : useNotifiSubscribe({
-        targetGroupName: 'Default',
-      });
+  const { instantSubscribe } = useNotifiSubscribe({
+    targetGroupName: 'Default',
+  });
 
   const { name, description } = useMemo(() => {
     // const alertName = `${config.name}:;:${now}:;:${selectedPair}:;:${
@@ -169,7 +166,7 @@ export const TradingPairAlertRow: React.FC<TradingPairAlertRowProps> = ({
           classNames?.deleteIcon,
         )}
         onClick={() => {
-          subscribe?.instantSubscribe({
+          instantSubscribe({
             alertConfiguration: null,
             alertName,
           });
@@ -215,12 +212,9 @@ export const TradingPairSettingsRow: React.FC<TradingPairSettingsRowProps> = ({
   );
   const [above, setAbove] = useState<boolean>(true);
   const [price, setPrice] = useState<number>(0.0);
-  const { demoPreview } = useNotifiSubscriptionContext();
-  const subscribe = demoPreview
-    ? null
-    : useNotifiSubscribe({
-        targetGroupName: 'Default',
-      });
+  const { instantSubscribe } = useNotifiSubscribe({
+    targetGroupName: 'Default',
+  });
 
   return (
     <div
@@ -334,7 +328,7 @@ export const TradingPairSettingsRow: React.FC<TradingPairSettingsRowProps> = ({
               above ? 'above' : 'below'
             }:;:${price}`;
 
-            await subscribe?.instantSubscribe({
+            await instantSubscribe({
               alertName,
               alertConfiguration,
             });

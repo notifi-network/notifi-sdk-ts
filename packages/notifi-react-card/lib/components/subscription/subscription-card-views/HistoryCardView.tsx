@@ -7,10 +7,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 
 import { NotificationEmptyBellIcon } from '../../../assets/NotificationEmptyBellIcon';
-import {
-  useNotifiClientContext,
-  useNotifiSubscriptionContext,
-} from '../../../context';
+import { useNotifiClientContext } from '../../../context';
 import {
   DeepPartialReadonly,
   getAlertNotificationViewBaseProps,
@@ -64,9 +61,11 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
   const [allNodes, setAllNodes] = useState<
     ReadonlyArray<NotificationHistoryEntry>
   >([]);
-  const { demoPreview } = useNotifiSubscriptionContext();
-  // const { client } = useNotifiClientContext();
-  const clientContext = demoPreview ? null : useNotifiClientContext();
+
+  // Case undefined --> under demoPreview card (No params to init client)
+  const clientContext = useNotifiClientContext() as
+    | ReturnType<typeof useNotifiClientContext>
+    | undefined;
 
   const getNotificationHistory = useCallback(
     async ({ first, after }: GetNotificationHistoryInput) => {
@@ -93,8 +92,8 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
 
   useEffect(() => {
     if (
-      !clientContext?.client.isInitialized ||
-      !clientContext?.client.isAuthenticated
+      !clientContext?.client?.isInitialized ||
+      !clientContext?.client?.isAuthenticated
     ) {
       return;
     }

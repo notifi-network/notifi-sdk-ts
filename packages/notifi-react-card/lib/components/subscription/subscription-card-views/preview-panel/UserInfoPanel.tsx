@@ -50,13 +50,14 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
     demoPreview,
   } = useNotifiSubscriptionContext();
 
-  const clientContext = demoPreview ? null : useNotifiClientContext();
+  // Case undefined --> under demoPreview card (No params to init client)
+  const clientContext = useNotifiClientContext() as
+    | ReturnType<typeof useNotifiClientContext>
+    | undefined;
 
-  const subscribe = demoPreview
-    ? null
-    : useNotifiSubscribe({
-        targetGroupName: 'Default',
-      });
+  const { resendEmailVerificationLink } = useNotifiSubscribe({
+    targetGroupName: 'Default',
+  });
 
   const handleEditClick = useCallback(() => {
     setCardView({ state: 'edit' });
@@ -64,7 +65,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
 
   const handleResendEmailVerificationClick = useCallback(() => {
     setIsEmailConfirmationSent(true);
-    subscribe?.resendEmailVerificationLink();
+    resendEmailVerificationLink();
     setTimeout(() => setIsEmailConfirmationSent(false), 3000);
   }, []);
 
@@ -85,7 +86,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
               classNames?.email?.label,
             )}
           >
-            {demoPreview ? 'notifi@notifi.network' : email}
+            {email}
           </label>
           {emailIdThatNeedsConfirmation !== '' ? (
             <a
@@ -128,7 +129,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
               classNames?.sms?.label,
             )}
           >
-            {demoPreview ? '+10123456789' : phoneNumber}
+            {phoneNumber}
           </label>
         </div>
       ) : null}
@@ -145,7 +146,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
               classNames?.telegram?.label,
             )}
           >
-            {demoPreview ? '@notifi.netowrk' : telegramId}
+            {telegramId}
           </label>
           {telegramConfirmationUrl ? (
             <a
@@ -169,8 +170,8 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
           ) : null}
         </div>
       ) : null}
-      {clientContext?.params.multiWallet !== undefined &&
-      clientContext?.params.multiWallet.ownedWallets.length > 0 ? (
+      {clientContext?.params?.multiWallet !== undefined &&
+      clientContext?.params?.multiWallet.ownedWallets.length > 0 ? (
         <div
           className={clsx(
             'NotifiUserInfoPanel__myWallet',

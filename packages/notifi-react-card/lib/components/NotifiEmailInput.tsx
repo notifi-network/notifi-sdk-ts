@@ -33,7 +33,7 @@ export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
   intercomEmailInputContainerStyle,
   intercomView,
 }: NotifiEmailInputProps) => {
-  const { emailIdThatNeedsConfirmation, intercomCardView, demoPreview } =
+  const { emailIdThatNeedsConfirmation, intercomCardView } =
     useNotifiSubscriptionContext();
 
   const {
@@ -48,11 +48,9 @@ export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
 
   const { email: emailErrorMessage } = formErrorMessages;
 
-  const subscribe = demoPreview
-    ? null
-    : useNotifiSubscribe({
-        targetGroupName: 'Intercom',
-      });
+  const { resendEmailVerificationLink } = useNotifiSubscribe({
+    targetGroupName: 'Intercom',
+  });
 
   const validateEmail = () => {
     if (email === '') {
@@ -70,7 +68,7 @@ export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
   };
 
   const handleClick = () => {
-    subscribe?.resendEmailVerificationLink();
+    resendEmailVerificationLink();
   };
 
   return (

@@ -37,13 +37,11 @@ export const EventTypeXMTPRow: React.FC<EventTypeXMPTRowProps> = ({
   config,
   inputs,
 }: EventTypeXMPTRowProps) => {
-  const { alerts, loading, demoPreview } = useNotifiSubscriptionContext();
+  const { alerts, loading } = useNotifiSubscriptionContext();
 
-  const subscribe = demoPreview
-    ? null
-    : useNotifiSubscribe({
-        targetGroupName: 'Default',
-      });
+  const { instantSubscribe } = useNotifiSubscribe({
+    targetGroupName: 'Default',
+  });
   const alertName = useMemo<string>(() => config.name, [config]);
 
   const alertConfiguration = useMemo<AlertConfiguration>(() => {
@@ -70,7 +68,7 @@ export const EventTypeXMTPRow: React.FC<EventTypeXMPTRowProps> = ({
   }, [alertName, alerts]);
 
   const handleNewSubscription = useCallback(() => {
-    if (loading || isNotificationLoading || !subscribe) {
+    if (loading || isNotificationLoading) {
       return;
     }
     setIsNotificationLoading(true);
@@ -78,11 +76,10 @@ export const EventTypeXMTPRow: React.FC<EventTypeXMPTRowProps> = ({
     if (!enabled) {
       setEnabled(true);
 
-      subscribe
-        .instantSubscribe({
-          alertConfiguration: alertConfiguration,
-          alertName: alertName,
-        })
+      instantSubscribe({
+        alertConfiguration: alertConfiguration,
+        alertName: alertName,
+      })
         .then((res) => {
           // We update optimistically so we need to check if the alert exists.
           const responseHasAlert = res.alerts[alertName] !== undefined;
@@ -100,11 +97,10 @@ export const EventTypeXMTPRow: React.FC<EventTypeXMPTRowProps> = ({
     } else {
       setEnabled(false);
 
-      subscribe
-        .instantSubscribe({
-          alertConfiguration: null,
-          alertName: alertName,
-        })
+      instantSubscribe({
+        alertConfiguration: null,
+        alertName: alertName,
+      })
         .then((res) => {
           // We update optimistically so we need to check if the alert exists.
           const responseHasAlert = res.alerts[alertName] !== undefined;
@@ -122,7 +118,7 @@ export const EventTypeXMTPRow: React.FC<EventTypeXMPTRowProps> = ({
   }, [
     enabled,
     alerts,
-    subscribe?.instantSubscribe,
+    instantSubscribe,
     alertName,
     isNotificationLoading,
     setEnabled,

@@ -29,15 +29,12 @@ export type EventTypeWalletBalanceRowProps = Readonly<{
 export const EventTypeWalletBalanceRow: React.FC<
   EventTypeWalletBalanceRowProps
 > = ({ classNames, disabled, config }: EventTypeWalletBalanceRowProps) => {
-  const { alerts, loading, connectedWallets, demoPreview } =
-    useNotifiSubscriptionContext();
+  const { alerts, loading, connectedWallets } = useNotifiSubscriptionContext();
   const [isNotificationLoading, setIsNotificationLoading] =
     useState<boolean>(false);
-  const subscribe = demoPreview
-    ? null
-    : useNotifiSubscribe({
-        targetGroupName: 'Default',
-      });
+  const { instantSubscribe } = useNotifiSubscribe({
+    targetGroupName: 'Default',
+  });
 
   const [enabled, setEnabled] = useState(false);
 
@@ -56,14 +53,14 @@ export const EventTypeWalletBalanceRow: React.FC<
   }, [alertName, alerts]);
 
   const handleNewSubscription = useCallback(() => {
-    if (loading || isNotificationLoading || !subscribe) {
+    if (loading || isNotificationLoading) {
       return;
     }
 
     if (!enabled) {
       setEnabled(true);
 
-      subscribe.instantSubscribe({
+      instantSubscribe({
         alertConfiguration: walletBalanceConfiguration({
           connectedWallets,
         }),
@@ -71,11 +68,10 @@ export const EventTypeWalletBalanceRow: React.FC<
       });
     } else {
       setEnabled(false);
-      subscribe
-        .instantSubscribe({
-          alertConfiguration: null,
-          alertName: alertName,
-        })
+      instantSubscribe({
+        alertConfiguration: null,
+        alertName: alertName,
+      })
         .then((res) => {
           // We update optimistically so we need to check if the alert exists.
           const responseHasAlert = res.alerts[alertName] !== undefined;
@@ -93,7 +89,7 @@ export const EventTypeWalletBalanceRow: React.FC<
     }
   }, [
     enabled,
-    subscribe?.instantSubscribe,
+    instantSubscribe,
     alertName,
     setIsNotificationLoading,
     isNotificationLoading,
