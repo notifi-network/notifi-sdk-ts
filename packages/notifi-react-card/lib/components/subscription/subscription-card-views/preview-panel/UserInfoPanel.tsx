@@ -8,6 +8,7 @@ import {
 } from '../../../../context';
 import { CardConfigItemV1, useNotifiSubscribe } from '../../../../hooks';
 import { DeepPartialReadonly } from '../../../../utils';
+import { NotifiTooltip } from '../../NotifiTooltip';
 
 export type UserInfoSection = {
   container: string;
@@ -15,6 +16,7 @@ export type UserInfoSection = {
   confirmationLink: string;
   confirmationLabel: string;
   errorMessage: string;
+  tooltipContent: string;
 };
 
 export type UserInfoPanelProps = {
@@ -131,19 +133,25 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
           >
             {phoneNumber}
           </label>
-          {destinationErrorMessages.phoneNumber !== '' ? (
+          {destinationErrorMessages.phoneNumber.message !== '' ? (
             <label
               className={clsx(
                 'NotifiUserInfoPanel__smsErrorMessageLabel',
                 classNames?.sms?.errorMessage,
                 {
                   NotifiUserInfoPanel__smsErrorMessage:
-                    destinationErrorMessages.phoneNumber !== '',
+                    destinationErrorMessages.phoneNumber.message !== '',
                 },
               )}
             >
-              {destinationErrorMessages.phoneNumber}
+              {destinationErrorMessages.phoneNumber.message}
             </label>
+          ) : null}
+          {destinationErrorMessages.phoneNumber.tooltipContent !== undefined &&
+          destinationErrorMessages.phoneNumber.tooltipContent.length > 0 ? (
+            <NotifiTooltip
+              content={destinationErrorMessages.phoneNumber.tooltipContent}
+            />
           ) : null}
         </div>
       ) : null}

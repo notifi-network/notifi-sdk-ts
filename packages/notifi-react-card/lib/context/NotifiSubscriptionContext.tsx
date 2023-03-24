@@ -8,7 +8,18 @@ import {
   useIntercomCardState,
 } from '../hooks/useIntercomCardState';
 import { NotifiParams } from './NotifiContext';
-import { DestinationInputs, EditFormType } from './constants';
+import { EditFormType } from './constants';
+
+export type DestinationErrorData = {
+  message: string;
+  tooltipContent?: string;
+};
+
+type DestinationInputs = {
+  email: DestinationErrorData;
+  phoneNumber: DestinationErrorData;
+  telegram: DestinationErrorData;
+};
 
 export type DestinationErrorMessages = DestinationInputs;
 
@@ -89,9 +100,9 @@ export const NotifiSubscriptionContextProvider: React.FC<
 
   const [destinationErrorMessages, setDestinationErrorMessages] =
     useState<DestinationErrorMessages>({
-      email: '',
-      telegram: '',
-      phoneNumber: '',
+      email: { message: '' },
+      telegram: { message: '' },
+      phoneNumber: { message: 'test Message', tooltipContent: 'hey there' },
     });
 
   const handleErrorMessage = ({ field, value }: EditFormType) => {
@@ -114,7 +125,11 @@ export const NotifiSubscriptionContextProvider: React.FC<
   };
 
   const resetErrorMessageState = () => {
-    setDestinationErrorMessages({ email: '', telegram: '', phoneNumber: '' });
+    setDestinationErrorMessages({
+      email: { message: '' },
+      telegram: { message: '' },
+      phoneNumber: { message: '' },
+    });
   };
   const value = {
     alerts,
