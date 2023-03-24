@@ -125,7 +125,6 @@ export const InputFields: React.FC<InputFieldsProps> = ({
           </div>
         </div>
       ) : null}
-      {/* TODO: param could be undefined when it comes to demoPreview. But now type not check */}
       {params?.walletBlockchain === 'SOLANA' ? (
         <NotifiHwWalletToggle
           disabled={inputDisabled}

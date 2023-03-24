@@ -63,9 +63,7 @@ export const useNotifiSubscribe: ({
   resendEmailVerificationLink: (emailId: string) => Promise<string>;
 }> = ({ targetGroupName = 'Default' }: useNotifiSubscribeProps) => {
   const { demoPreview } = useNotifiSubscriptionContext();
-  // const { client: c } = useNotifiClientContext();
-  // const client = c as ReturnType<typeof useNotifiClient> | undefined;
-  // Case undefined --> under demoPreview card (No params to init client)
+
   const clientContext = useNotifiClientContext() as
     | ReturnType<typeof useNotifiClientContext>
     | undefined;
@@ -700,7 +698,7 @@ export const useNotifiSubscribe: ({
     instantSubscribe,
     isAuthenticated: clientContext?.client?.isAuthenticated ?? false,
     isInitialized: clientContext?.client?.isInitialized ?? false,
-    isTokenExpired: clientContext?.client?.isTokenExpired ?? false, // TODO: depends on demoPreview
+    isTokenExpired: clientContext?.client?.isTokenExpired ?? false,
     logIn,
     subscribe,
     updateTargetGroups,
