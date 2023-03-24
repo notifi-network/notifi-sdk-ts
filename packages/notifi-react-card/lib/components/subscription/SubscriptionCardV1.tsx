@@ -121,7 +121,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
     if (demoPreview) {
       return setCardView({ state: demoPreview.view });
     }
-    if (firstLoad.current || isInitialized) {
+    if (firstLoad.current || !isInitialized) {
       return;
     }
 

@@ -49,9 +49,11 @@ export const WalletListInternal: React.FC<WalletListInternalProps> = ({
   );
 };
 export const WalletList: React.FC = () => {
-  const { params } = useNotifiClientContext();
+  const {
+    params: { multiWallet },
+  } = useNotifiClientContext();
   const { connectedWallets, loading } = useNotifiSubscriptionContext();
-  const owned = params.multiWallet?.ownedWallets;
+  const owned = multiWallet?.ownedWallets;
 
   return (
     <WalletListInternal
