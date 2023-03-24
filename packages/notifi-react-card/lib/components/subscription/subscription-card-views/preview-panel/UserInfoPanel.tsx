@@ -178,8 +178,8 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
           ) : null}
         </div>
       ) : null}
-      {clientContext?.params?.multiWallet !== undefined &&
-      clientContext?.params?.multiWallet.ownedWallets.length > 0 ? (
+      {params.multiWallet !== undefined &&
+      params.multiWallet.ownedWallets.length > 0 ? (
         <div
           className={clsx(
             'NotifiUserInfoPanel__myWallet',

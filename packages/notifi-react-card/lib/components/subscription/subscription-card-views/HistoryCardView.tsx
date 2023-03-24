@@ -62,18 +62,15 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
     ReadonlyArray<NotificationHistoryEntry>
   >([]);
 
-  // Case undefined --> under demoPreview card (No params to init client)
-  const clientContext = useNotifiClientContext() as
-    | ReturnType<typeof useNotifiClientContext>
-    | undefined;
+  const { client } = useNotifiClientContext();
 
   const getNotificationHistory = useCallback(
     async ({ first, after }: GetNotificationHistoryInput) => {
-      if (isQuerying.current || !clientContext) {
+      if (isQuerying.current) {
         return;
       }
       isQuerying.current = true;
-      const result = await clientContext.client.getNotificationHistory({
+      const result = await client.getNotificationHistory({
         first,
         after,
       });
@@ -87,14 +84,11 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
       isQuerying.current = false;
       return result;
     },
-    [clientContext?.client, setAllNodes, setEndCursor, setHasNextPage],
+    [client, setAllNodes, setEndCursor, setHasNextPage],
   );
 
   useEffect(() => {
-    if (
-      !clientContext?.client?.isInitialized ||
-      !clientContext?.client?.isAuthenticated
-    ) {
+    if (!client.isInitialized || !client.isAuthenticated) {
       return;
     }
 
@@ -104,8 +98,7 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
         first: MESSAGES_PER_PAGE,
       });
     }
-  }, [clientContext?.client]);
-
+  }, [client]);
   return (
     <div
       className={clsx(
