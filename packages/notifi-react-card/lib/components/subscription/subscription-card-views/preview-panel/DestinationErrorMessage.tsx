@@ -10,7 +10,7 @@ type Props = {
     errorMessage?: string;
   };
   errorMessage: string;
-  tooltipContent: string;
+  tooltipContent?: string;
 };
 
 export const DestinationErrorMessage: React.FC<Props> = ({

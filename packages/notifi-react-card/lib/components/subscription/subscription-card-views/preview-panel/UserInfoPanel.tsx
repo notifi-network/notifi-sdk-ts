@@ -152,9 +152,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
               ),
             }}
             errorMessage={destinationErrorMessages.phoneNumber.message}
-            tooltipContent={
-              destinationErrorMessages.phoneNumber.tooltipContent ?? ''
-            }
+            tooltipContent={destinationErrorMessages.phoneNumber.tooltipContent}
           />
         </div>
       ) : null}
