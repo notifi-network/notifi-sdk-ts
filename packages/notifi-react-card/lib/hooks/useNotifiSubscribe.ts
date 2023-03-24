@@ -88,8 +88,10 @@ export const useNotifiSubscribe: ({
     setTelegramConfirmationUrl,
     setTelegramId,
     emailIdThatNeedsConfirmation,
+    setPhoneNumberErrorMessage,
     setEmailIdThatNeedsConfirmation,
     useHardwareWallet,
+    resetErrorMessageState,
   } = useNotifiSubscriptionContext();
 
   const { keepSubscriptionData = true, walletPublicKey } = params;
@@ -137,6 +139,10 @@ export const useNotifiSubscribe: ({
       const phoneNumberToSet = phoneNumber ?? '';
 
       setIsSmsConfirmed(isPhoneNumberConfirmed);
+
+      if (!isPhoneNumberConfirmed) {
+        setPhoneNumberErrorMessage('Invalid number');
+      }
 
       setFormPhoneNumber(phoneNumberToSet);
       setPhoneNumber(phoneNumberToSet);
@@ -487,6 +493,8 @@ export const useNotifiSubscribe: ({
   );
 
   const updateTargetGroups = useCallback(async () => {
+    resetErrorMessageState();
+
     const finalEmail = formEmail === '' ? null : formEmail;
 
     const finalTelegramId =

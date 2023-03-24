@@ -14,6 +14,7 @@ export type UserInfoSection = {
   label: string;
   confirmationLink: string;
   confirmationLabel: string;
+  errorMessage: string;
 };
 
 export type UserInfoPanelProps = {
@@ -47,6 +48,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
     setCardView,
     emailIdThatNeedsConfirmation,
     telegramConfirmationUrl,
+    destinationErrorMessages,
   } = useNotifiSubscriptionContext();
 
   const {
@@ -129,6 +131,20 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
           >
             {phoneNumber}
           </label>
+          {destinationErrorMessages.phoneNumber !== '' ? (
+            <label
+              className={clsx(
+                'NotifiUserInfoPanel__smsErrorMessageLabel',
+                classNames?.sms?.errorMessage,
+                {
+                  NotifiUserInfoPanel__smsErrorMessage:
+                    destinationErrorMessages.phoneNumber !== '',
+                },
+              )}
+            >
+              {destinationErrorMessages.phoneNumber}
+            </label>
+          ) : null}
         </div>
       ) : null}
       {contactInfo.telegram.active && telegramId ? (

@@ -34,11 +34,9 @@ a {
   --notifi-focus-color: #fff;
   --notifi-toggle-handle: #fff;
   --notifi-toggle-inactive: #b6b8d5;
-  --notifi-toggle-active: linear-gradient(
-    207.53deg,
-    #fe7970 11.91%,
-    #feb776 88.99%
-  );
+  --notifi-toggle-active: linear-gradient(207.53deg,
+      #fe7970 11.91%,
+      #feb776 88.99%);
   --notifi-tooltip-background: rgba(60, 60, 60, 1);
   --notifi-alert-color: rgb(213, 25, 25);
   --notifi-link-color: hsl(240, 100%, 85%);
@@ -437,9 +435,7 @@ input::-webkit-inner-spin-button {
 .NotifiToggle__container {
   --notifi-toggle-size: 22px;
   --notifi-toggle-padding: 3px;
-  --notifi-toggle-container: calc(
-    var(--notifi-toggle-size) + 2 * var(--notifi-toggle-padding)
-  );
+  --notifi-toggle-container: calc(var(--notifi-toggle-size) + 2 * var(--notifi-toggle-padding));
   position: relative;
   display: inline-block;
   width: calc(var(--notifi-toggle-container) + var(--notifi-toggle-size));
@@ -487,11 +483,11 @@ input::-webkit-inner-spin-button {
   transition: 0.2s;
 }
 
-.NotifiToggle__input:checked + .NotifiToggle__slider {
+.NotifiToggle__input:checked+.NotifiToggle__slider {
   background: var(--notifi-toggle-active);
 }
 
-.NotifiToggle__input:checked + .NotifiToggle__slider:before {
+.NotifiToggle__input:checked+.NotifiToggle__slider:before {
   transform: translateX(var(--notifi-toggle-size));
 }
 
@@ -499,7 +495,7 @@ input::-webkit-inner-spin-button {
   cursor: progress;
 }
 
-.NotifiIntercomToggle__input:checked + .NotifiToggle__slider {
+.NotifiIntercomToggle__input:checked+.NotifiToggle__slider {
   background-color: #1448f3;
 }
 
@@ -881,7 +877,7 @@ input::-webkit-inner-spin-button {
   left: 50%;
 }
 
-.NotifiTooltip__container:hover > .NotifiTooltip__body {
+.NotifiTooltip__container:hover>.NotifiTooltip__body {
   visibility: visible;
 }
 
@@ -1386,15 +1382,15 @@ input::-webkit-inner-spin-button {
   flex-direction: column;
 }
 
-.EventTypeTradingPairsRow__container > * {
+.EventTypeTradingPairsRow__container>* {
   margin-bottom: 0 !important;
 }
 
-.EventTypeTradingPairsRow__container > *:not(:first-child) {
+.EventTypeTradingPairsRow__container>*:not(:first-child) {
   padding-top: 10px;
 }
 
-.EventTypeTradingPairsRow__container > *:not(:last-child) {
+.EventTypeTradingPairsRow__container>*:not(:last-child) {
   padding-bottom: 10px;
   border-bottom: 1px var(--notifi-font-color) solid;
 }
@@ -1617,4 +1613,10 @@ input::-webkit-inner-spin-button {
 
 .NotifiUserInfoPanel__emailConfirmationSent {
   color: var(--notifi-confirmation-color);
+}
+
+.NotifiUserInfoPanel__smsErrorMessageLabel {
+  font-size: 14px;
+  color: var(--notifi-button-disabled-color);
+  font-weight: 600;
 }

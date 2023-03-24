@@ -8,6 +8,9 @@ import {
   useIntercomCardState,
 } from '../hooks/useIntercomCardState';
 import { NotifiParams } from './NotifiContext';
+import { DestinationInputs, EditFormType } from './constants';
+
+export type DestinationErrorMessages = DestinationInputs;
 
 export type NotifiSubscriptionData = Readonly<{
   alerts: Readonly<Record<string, Alert | undefined>>;
@@ -15,6 +18,7 @@ export type NotifiSubscriptionData = Readonly<{
   setConnectedWallets: React.Dispatch<
     React.SetStateAction<ReadonlyArray<ConnectedWallet>>
   >;
+  destinationErrorMessages: DestinationErrorMessages;
   email: string;
   params: NotifiParams;
   phoneNumber: string;
@@ -45,6 +49,10 @@ export type NotifiSubscriptionData = Readonly<{
   setConversationId: (conversationId: string) => void;
   userId: string;
   setUserId: (userId: string) => void;
+  setEmailErrorMessage: (value: string) => void;
+  setPhoneNumberErrorMessage: (value: string) => void;
+  setTelegramErrorMessage: (value: string) => void;
+  resetErrorMessageState: () => void;
 }>;
 
 const NotifiSubscriptionContext = createContext<NotifiSubscriptionData>(
@@ -79,6 +87,35 @@ export const NotifiSubscriptionContextProvider: React.FC<
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [telegramId, setTelegramId] = useState<string>('');
 
+  const [destinationErrorMessages, setDestinationErrorMessages] =
+    useState<DestinationErrorMessages>({
+      email: '',
+      telegram: '',
+      phoneNumber: '',
+    });
+
+  const handleErrorMessage = ({ field, value }: EditFormType) => {
+    setDestinationErrorMessages((destinationErrorMessages) => ({
+      ...destinationErrorMessages,
+      [field]: value,
+    }));
+  };
+
+  const setEmailErrorMessage = (value: string) => {
+    handleErrorMessage({ field: 'email', value });
+  };
+
+  const setTelegramErrorMessage = (value: string) => {
+    handleErrorMessage({ field: 'telegram', value });
+  };
+
+  const setPhoneNumberErrorMessage = (value: string) => {
+    handleErrorMessage({ field: 'phoneNumber', value });
+  };
+
+  const resetErrorMessageState = () => {
+    setDestinationErrorMessages({ email: '', telegram: '', phoneNumber: '' });
+  };
   const value = {
     alerts,
     connectedWallets,
@@ -94,6 +131,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
     setEmailIdThatNeedsConfirmation,
     setIsSmsConfirmed,
     useHardwareWallet,
+    destinationErrorMessages,
     setAlerts,
     setConnectedWallets,
     setCardView,
@@ -111,6 +149,10 @@ export const NotifiSubscriptionContextProvider: React.FC<
     setConversationId,
     userId,
     setUserId,
+    setEmailErrorMessage,
+    setTelegramErrorMessage,
+    setPhoneNumberErrorMessage,
+    resetErrorMessageState,
   };
 
   return (
