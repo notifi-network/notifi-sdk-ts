@@ -46,7 +46,7 @@ export const useSubscriptionCard = (
     }
     setState({ state: 'loading' });
     client
-      ?.fetchSubscriptionCard(input)
+      .fetchSubscriptionCard(input)
       .then((result) => {
         const value = result.dataJson;
         if (value === null) {

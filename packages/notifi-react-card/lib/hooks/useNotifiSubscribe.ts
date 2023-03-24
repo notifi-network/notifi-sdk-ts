@@ -619,7 +619,7 @@ export const useNotifiSubscribe: ({
     setLoading(true);
     if (demoPreview) return;
     try {
-      if (client.isAuthenticated) {
+      if (!client.isAuthenticated) {
         await logIn();
       }
 
