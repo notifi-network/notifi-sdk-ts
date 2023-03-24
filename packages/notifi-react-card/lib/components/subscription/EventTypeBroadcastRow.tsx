@@ -37,12 +37,10 @@ export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
   disabled,
   inputs,
 }: EventTypeBroadcastRowProps) => {
-  const { alerts, loading, demoPreview } = useNotifiSubscriptionContext();
-  const subscribe = demoPreview
-    ? null
-    : useNotifiSubscribe({
-        targetGroupName: 'Default',
-      });
+  const { alerts, loading } = useNotifiSubscriptionContext();
+  const { instantSubscribe } = useNotifiSubscribe({
+    targetGroupName: 'Default',
+  });
 
   const [enabled, setEnabled] = useState(false);
   const [isNotificationLoading, setIsNotificationLoading] =
@@ -70,7 +68,6 @@ export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
   }, [alertName, alerts]);
 
   const handleNewSubscription = useCallback(() => {
-    if (!subscribe) return;
     if (loading || isNotificationLoading) {
       return;
     }
@@ -78,11 +75,10 @@ export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
 
     if (!enabled) {
       setEnabled(true);
-      subscribe
-        .instantSubscribe({
-          alertConfiguration: alertConfiguration,
-          alertName: alertName,
-        })
+      instantSubscribe({
+        alertConfiguration: alertConfiguration,
+        alertName: alertName,
+      })
         .then((res) => {
           // We update optimistically so we need to check if the alert exists.
           const responseHasAlert = res.alerts[alertName] !== undefined;
@@ -98,11 +94,10 @@ export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
         });
     } else {
       setEnabled(false);
-      subscribe
-        .instantSubscribe({
-          alertConfiguration: null,
-          alertName: alertName,
-        })
+      instantSubscribe({
+        alertConfiguration: null,
+        alertName: alertName,
+      })
         .then((res) => {
           // We update optimistically so we need to check if the alert exists.
           const responseHasAlert = res.alerts[alertName] !== undefined;
@@ -120,7 +115,7 @@ export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
   }, [
     loading,
     enabled,
-    subscribe?.instantSubscribe,
+    instantSubscribe,
     alertConfiguration,
     alertName,
     isNotificationLoading,

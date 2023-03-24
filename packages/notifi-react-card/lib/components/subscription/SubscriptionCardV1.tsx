@@ -96,11 +96,9 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
     setPhoneNumberErrorMessage,
   } = useNotifiForm();
 
-  const subscribe = demoPreview
-    ? null
-    : useNotifiSubscribe({
-        targetGroupName: 'Default',
-      });
+  const { isInitialized, isTokenExpired } = useNotifiSubscribe({
+    targetGroupName: 'Default',
+  });
 
   const [selectedAlertEntry, setAlertEntry] = useState<
     NotificationHistoryEntry | undefined
@@ -123,7 +121,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
     if (demoPreview) {
       return setCardView({ state: demoPreview.view });
     }
-    if (firstLoad.current || !subscribe?.isInitialized) {
+    if (firstLoad.current || isInitialized) {
       return;
     }
 
@@ -135,7 +133,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
       (telegramId !== '' && telegramId !== undefined)
     ) {
       setCardView({ state: 'history' });
-    } else if (subscribe.isTokenExpired) {
+    } else if (isTokenExpired) {
       setCardView({ state: 'expired' });
     } else {
       setCardView({ state: 'signup' });
@@ -146,7 +144,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
     telegramId,
     setCardView,
     cardView.state,
-    subscribe?.isInitialized,
+    isInitialized,
   ]);
 
   const rightIcon: NotifiAlertBoxButtonProps | undefined = useMemo(() => {

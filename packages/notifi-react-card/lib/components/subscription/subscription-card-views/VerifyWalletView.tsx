@@ -29,23 +29,14 @@ const VerifyWalletView: React.FC<VerifyWalletViewProps> = ({
   data,
   inputs,
 }) => {
-  const {
-    cardView,
-    setCardView,
-    loading,
-    setLoading,
-    connectedWallets,
-    demoPreview,
-  } = useNotifiSubscriptionContext();
+  const { cardView, setCardView, loading, setLoading, connectedWallets } =
+    useNotifiSubscriptionContext();
 
-  const subscribe = demoPreview
-    ? null
-    : useNotifiSubscribe({
-        targetGroupName: 'Default',
-      });
+  const { updateWallets, subscribe } = useNotifiSubscribe({
+    targetGroupName: 'Default',
+  });
 
   const onClick = useCallback(async () => {
-    if (!subscribe) return;
     if (cardView.state === 'verifyonboarding') {
       setLoading(true);
 
@@ -56,7 +47,7 @@ const VerifyWalletView: React.FC<VerifyWalletViewProps> = ({
           connectedWallets,
         );
 
-        await subscribe.subscribe(alertConfigs);
+        await subscribe(alertConfigs);
       } finally {
         setLoading(false);
       }
@@ -64,13 +55,13 @@ const VerifyWalletView: React.FC<VerifyWalletViewProps> = ({
       setLoading(true);
 
       try {
-        await subscribe.updateWallets();
+        await updateWallets();
       } finally {
         setLoading(false);
       }
     }
     setCardView({ state: 'preview' });
-  }, [setLoading, data, inputs, connectedWallets, subscribe?.subscribe]);
+  }, [setLoading, data, inputs, connectedWallets, subscribe]);
 
   return (
     <div

@@ -48,12 +48,10 @@ export const EventTypeHealthCheckRow: React.FC<
   EventTypeHealthCheckRowProps
 > = ({ classNames, config, disabled }: EventTypeHealthCheckRowProps) => {
   const customInputRef = useRef<HTMLInputElement>(null);
-  const { alerts, loading, demoPreview } = useNotifiSubscriptionContext();
-  const subscribe = demoPreview
-    ? null
-    : useNotifiSubscribe({
-        targetGroupName: 'Default',
-      });
+  const { alerts, loading } = useNotifiSubscriptionContext();
+  const { instantSubscribe } = useNotifiSubscribe({
+    targetGroupName: 'Default',
+  });
   const [enabled, setEnabled] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [initialRatio, setInitialRatio] = useState<number | null>(null);
@@ -111,47 +109,43 @@ export const EventTypeHealthCheckRow: React.FC<
   ]);
 
   const handleToggleNewSubscription = useCallback(() => {
-    if (loading || !subscribe) {
+    if (loading) {
       return;
     }
     setErrorMessage('');
     if (!enabled && initialRatio !== null) {
-      subscribe
-        .instantSubscribe({
-          alertConfiguration: healthThresholdConfiguration({
-            alertFrequency: config.alertFrequency,
-            percentage: initialRatio,
-            thresholdDirection,
-          }),
-          alertName: alertName,
-        })
-        .catch(() => setErrorMessage(UNABLE_TO_SUBSCRIBE));
+      instantSubscribe({
+        alertConfiguration: healthThresholdConfiguration({
+          alertFrequency: config.alertFrequency,
+          percentage: initialRatio,
+          thresholdDirection,
+        }),
+        alertName: alertName,
+      }).catch(() => setErrorMessage(UNABLE_TO_SUBSCRIBE));
     } else {
-      subscribe
-        .instantSubscribe({
-          alertConfiguration: null,
-          alertName: alertName,
-        })
+      instantSubscribe({
+        alertConfiguration: null,
+        alertName: alertName,
+      })
         .then(() => setCustomValue(''))
         .catch(() => setErrorMessage(UNABLE_TO_SUBSCRIBE));
     }
   }, [initialRatio, enabled, isValueType]);
 
   const handleRatioButtonNewSubscription = (value: number, index: number) => {
-    if (loading || !subscribe) {
+    if (loading) {
       return;
     }
     setErrorMessage('');
     if (value) {
-      subscribe
-        .instantSubscribe({
-          alertConfiguration: healthThresholdConfiguration({
-            alertFrequency: config.alertFrequency,
-            percentage: value,
-            thresholdDirection,
-          }),
-          alertName: alertName,
-        })
+      instantSubscribe({
+        alertConfiguration: healthThresholdConfiguration({
+          alertFrequency: config.alertFrequency,
+          percentage: value,
+          thresholdDirection,
+        }),
+        alertName: alertName,
+      })
         .then(() => {
           setSelectedIndex(index);
           setCustomValue('');
@@ -163,7 +157,7 @@ export const EventTypeHealthCheckRow: React.FC<
   };
 
   const handleCustomRatioButtonNewSubscription = () => {
-    if (loading || !subscribe) {
+    if (loading) {
       return;
     }
     setErrorMessage('');
@@ -176,15 +170,14 @@ export const EventTypeHealthCheckRow: React.FC<
         ratioNumber <= 100 &&
         customValue
       ) {
-        subscribe
-          .instantSubscribe({
-            alertConfiguration: healthThresholdConfiguration({
-              alertFrequency: config.alertFrequency,
-              percentage: ratioNumber / 100,
-              thresholdDirection,
-            }),
-            alertName: alertName,
-          })
+        instantSubscribe({
+          alertConfiguration: healthThresholdConfiguration({
+            alertFrequency: config.alertFrequency,
+            percentage: ratioNumber / 100,
+            thresholdDirection,
+          }),
+          alertName: alertName,
+        })
           .then(() => setSelectedIndex(3))
           .catch(() => setErrorMessage(UNABLE_TO_SUBSCRIBE));
       } else {

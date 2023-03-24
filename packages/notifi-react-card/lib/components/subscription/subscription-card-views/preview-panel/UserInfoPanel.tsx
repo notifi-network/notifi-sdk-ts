@@ -89,7 +89,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
               classNames?.email?.label,
             )}
           >
-            {demoPreview ? 'notifi@notifi.network' : email}
+            {email}
           </label>
           {emailErrorMessage?.type === 'recoverableError' ? (
             <DestinationErrorMessage
@@ -123,7 +123,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
               classNames?.sms?.label,
             )}
           >
-            {demoPreview ? '+10123456789' : phoneNumber}
+            {phoneNumber}
           </label>
 
           {phoneNumberErrorMessage?.type !== undefined ? (
@@ -152,7 +152,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
               classNames?.telegram?.label,
             )}
           >
-            {demoPreview ? '@notifi.netowrk' : telegramId}
+            {telegramId}
           </label>
           {telegramErrorMessage?.type === 'recoverableError' ? (
             <DestinationErrorMessage
@@ -178,8 +178,8 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
           ) : null}
         </div>
       ) : null}
-      {clientContext?.params.multiWallet !== undefined &&
-      clientContext?.params.multiWallet.ownedWallets.length > 0 ? (
+      {clientContext?.params?.multiWallet !== undefined &&
+      clientContext?.params?.multiWallet.ownedWallets.length > 0 ? (
         <div
           className={clsx(
             'NotifiUserInfoPanel__myWallet',

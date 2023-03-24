@@ -8,7 +8,7 @@ import type {
 import { isValidPhoneNumber } from 'libphonenumber-js';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { useNotifiSubscriptionContext } from '../context';
+import { defaultDemoConfigV1, useNotifiSubscriptionContext } from '../context';
 import { useNotifiClientContext } from '../context/NotifiClientContext';
 import {
   formatTelegramForSubscription,
@@ -62,7 +62,13 @@ export const useNotifiSubscribe: ({
   updateTargetGroups: () => Promise<SubscriptionData>;
   resendEmailVerificationLink: (emailId: string) => Promise<string>;
 }> = ({ targetGroupName = 'Default' }: useNotifiSubscribeProps) => {
-  const { client } = useNotifiClientContext();
+  const { demoPreview } = useNotifiSubscriptionContext();
+  // const { client: c } = useNotifiClientContext();
+  // const client = c as ReturnType<typeof useNotifiClient> | undefined;
+  // Case undefined --> under demoPreview card (No params to init client)
+  const clientContext = useNotifiClientContext() as
+    | ReturnType<typeof useNotifiClientContext>
+    | undefined;
 
   const {
     formState,
@@ -203,7 +209,7 @@ export const useNotifiSubscribe: ({
 
   const copyAuths = useCallback(
     async (data: ClientData) => {
-      if (params.multiWallet !== undefined) {
+      if (params.multiWallet !== undefined && clientContext?.client) {
         params.multiWallet.ownedWallets.forEach((wallet) => {
           const key = 'accountAddress';
           const address = hasKey(wallet, key)
@@ -216,20 +222,22 @@ export const useNotifiSubscribe: ({
                 cw.walletBlockchain === wallet.walletBlockchain,
             ) !== undefined
           ) {
-            client.copyAuthorization(wallet.walletPublicKey).catch(console.log);
+            clientContext?.client
+              .copyAuthorization(wallet.walletPublicKey)
+              .catch(console.log);
           }
         });
       }
     },
-    [client, params],
+    [clientContext?.client, params],
   );
 
   // Initial fetch
   const didFetch = useRef(false);
   useEffect(() => {
-    if (client.isAuthenticated && !didFetch.current) {
+    if (clientContext?.client?.isAuthenticated && !didFetch.current) {
       didFetch.current = true;
-      client
+      clientContext?.client
         .fetchData()
         .then((data) => {
           copyAuths(data);
@@ -238,11 +246,19 @@ export const useNotifiSubscribe: ({
         .catch((_e) => {
           /* Intentionally empty */
         });
+    } else if (demoPreview) {
+      // Mockup info for demo preview card
+      setEmail(defaultDemoConfigV1.name);
+      setPhoneNumber('+101234567890');
+      setTelegramId(defaultDemoConfigV1.id!);
     }
-  }, [client.isAuthenticated]);
+  }, [clientContext?.client?.isAuthenticated]);
 
   const logInViaHardwareWallet =
     useCallback(async (): Promise<SubscriptionData> => {
+      if (!clientContext?.client) {
+        return dummySubscribeData;
+      }
       if (params.walletBlockchain !== 'SOLANA') {
         throw new Error('Unsupported wallet blockchain');
       }
@@ -250,39 +266,41 @@ export const useNotifiSubscribe: ({
       const plugin = params.hardwareLoginPlugin;
 
       // Obtain nonce from Notifi
-      const { logValue } = await client.beginLoginViaTransaction();
+      const { logValue } =
+        await clientContext.client.beginLoginViaTransaction();
 
       // Commit a transaction with the Memo program
       const signature = await plugin.sendMessage(logValue);
 
       // Inform Notifi of the signature so that we can complete login
-      await client.completeLoginViaTransaction({
+      await clientContext?.client.completeLoginViaTransaction({
         transactionSignature: signature,
       });
 
-      const newData = await client.fetchData();
+      const newData = await clientContext?.client.fetchData();
       return render(newData);
-    }, [walletPublicKey, client, params, render]);
+    }, [walletPublicKey, clientContext?.client, params, render]);
 
   const logIn = useCallback(async (): Promise<SubscriptionData> => {
+    if (!clientContext?.client) return dummySubscribeData;
     setLoading(true);
-    if (!client.isAuthenticated) {
+    if (!clientContext?.client.isAuthenticated) {
       if (useHardwareWallet) {
         await logInViaHardwareWallet();
       } else {
-        await client.logIn(params);
+        await clientContext?.client.logIn(params);
       }
     }
 
-    const newData = await client.fetchData();
+    const newData = await clientContext?.client.fetchData();
     copyAuths(newData);
     const results = render(newData);
     setLoading(false);
     return results;
   }, [
-    client.isAuthenticated,
-    client.logIn,
-    client.fetchData,
+    clientContext?.client?.isAuthenticated,
+    clientContext?.client?.logIn,
+    clientContext?.client?.fetchData,
     params,
     useHardwareWallet,
     logInViaHardwareWallet,
@@ -300,6 +318,7 @@ export const useNotifiSubscribe: ({
         finalTelegramId: string | null;
       }>,
     ): Promise<Alert | null> => {
+      if (!clientContext?.client) return null;
       const { alertName, alertConfiguration } = alertParams;
       const { finalEmail, finalPhoneNumber, finalTelegramId } = contacts;
       const existingAlert = data.alerts.find(
@@ -308,7 +327,7 @@ export const useNotifiSubscribe: ({
 
       const deleteThisAlert = async () => {
         if (existingAlert !== undefined && existingAlert.id !== null) {
-          await client.deleteAlert({
+          await clientContext?.client.deleteAlert({
             alertId: existingAlert.id,
             keepSourceGroup: keepSubscriptionData,
             keepTargetGroup: keepSubscriptionData,
@@ -328,7 +347,7 @@ export const useNotifiSubscribe: ({
           return existing;
         }
 
-        const created = await client.createSource(params);
+        const created = await clientContext?.client.createSource(params);
         return created;
       };
       if (alertConfiguration === null) {
@@ -358,7 +377,7 @@ export const useNotifiSubscribe: ({
 
           // Call serially because of limitations
           await deleteThisAlert();
-          const alert = await client.createAlert({
+          const alert = await clientContext?.client.createAlert({
             emailAddress: finalEmail,
             filterId: filter.id,
             filterOptions: filterOptions ?? undefined,
@@ -412,7 +431,7 @@ export const useNotifiSubscribe: ({
           existingAlert.id !== null &&
           existingAlert.filterOptions === JSON.stringify(filterOptions)
         ) {
-          const alert = await client.updateAlert({
+          const alert = await clientContext?.client.updateAlert({
             alertId: existingAlert.id,
             emailAddress: finalEmail,
             phoneNumber: finalPhoneNumber,
@@ -423,7 +442,7 @@ export const useNotifiSubscribe: ({
         } else {
           // Call serially because of limitations
           await deleteThisAlert();
-          const alert = await client.createAlert({
+          const alert = await clientContext?.client.createAlert({
             emailAddress: finalEmail,
             filterId: filter.id,
             filterOptions: filterOptions ?? undefined,
@@ -447,6 +466,7 @@ export const useNotifiSubscribe: ({
     async (
       alertConfigs: Record<string, AlertConfiguration>,
     ): Promise<SubscriptionData> => {
+      if (!clientContext?.client) return dummySubscribeData;
       const configurations = { ...alertConfigs };
 
       const names = Object.keys(configurations);
@@ -464,10 +484,10 @@ export const useNotifiSubscribe: ({
 
       setLoading(true);
 
-      if (!client.isAuthenticated) {
+      if (!clientContext?.client.isAuthenticated) {
         await logIn();
       }
-      const data = await client.fetchData();
+      const data = await clientContext?.client.fetchData();
 
       //
       // Yes, we're ignoring the server side values and just using whatever the client typed in
@@ -503,7 +523,7 @@ export const useNotifiSubscribe: ({
         keepSubscriptionData
       ) {
         // We didn't create or update any alert, manually update the targets
-        await client.ensureTargetGroup({
+        await clientContext?.client.ensureTargetGroup({
           emailAddress: finalEmail,
           name: targetGroupName,
           phoneNumber: finalPhoneNumber,
@@ -511,18 +531,26 @@ export const useNotifiSubscribe: ({
         });
       }
 
-      const newData = await client.fetchData();
+      const newData = await clientContext?.client.fetchData();
 
       const results = render(newData);
       setLoading(false);
       return results;
     },
-    [client, formEmail, formPhoneNumber, formTelegram, logIn, setLoading],
+    [
+      clientContext?.client,
+      formEmail,
+      formPhoneNumber,
+      formTelegram,
+      logIn,
+      setLoading,
+    ],
   );
 
   const updateTargetGroups = useCallback(async () => {
     resetErrorMessageState();
 
+    if (!clientContext?.client) return dummySubscribeData;
     const finalEmail = formEmail === '' ? null : formEmail;
 
     const finalTelegramId =
@@ -535,26 +563,34 @@ export const useNotifiSubscribe: ({
     }
 
     setLoading(true);
-    if (!client.isAuthenticated) {
+    if (!clientContext?.client.isAuthenticated) {
       await logIn();
     }
 
-    await client.ensureTargetGroup({
+    await clientContext?.client.ensureTargetGroup({
       emailAddress: finalEmail,
       name: targetGroupName,
       phoneNumber: finalPhoneNumber,
       telegramId: finalTelegramId,
     });
 
-    const newData = await client.fetchData();
+    const newData = await clientContext?.client.fetchData();
 
     const results = render(newData);
     setLoading(false);
     return results;
-  }, [client, formEmail, formPhoneNumber, formTelegram, render, setLoading]);
+  }, [
+    clientContext?.client,
+    formEmail,
+    formPhoneNumber,
+    formTelegram,
+    render,
+    setLoading,
+  ]);
 
   const instantSubscribe = useCallback(
     async (alertData: InstantSubscribe) => {
+      if (!clientContext?.client) return dummySubscribeData;
       const finalEmail = formEmail === '' ? null : formEmail;
 
       const finalTelegramId =
@@ -568,7 +604,7 @@ export const useNotifiSubscribe: ({
       setLoading(true);
 
       await logIn();
-      const data = await client.fetchData();
+      const data = await clientContext?.client.fetchData();
       //
       // Yes, we're ignoring the server side values and just using whatever the client typed in
       // We should eventually always start from a logged in state from client having called
@@ -583,20 +619,20 @@ export const useNotifiSubscribe: ({
 
       if (alert === null && keepSubscriptionData) {
         // We didn't create or update any alert, manually update the targets
-        await client.ensureTargetGroup({
+        await clientContext?.client.ensureTargetGroup({
           emailAddress: finalEmail,
           name: targetGroupName,
           phoneNumber: finalPhoneNumber,
           telegramId: finalTelegramId,
         });
       }
-      const newData = await client.fetchData();
+      const newData = await clientContext?.client.fetchData();
       const results = render(newData);
       setLoading(false);
       return results;
     },
     [
-      client,
+      clientContext?.client,
       formEmail,
       formPhoneNumber,
       formTelegram,
@@ -609,65 +645,76 @@ export const useNotifiSubscribe: ({
 
   const subscribeWallet = useCallback(
     async (params: ConnectWalletParams) => {
+      if (!clientContext?.client) return;
       setLoading(true);
 
       try {
-        if (!client.isAuthenticated) {
+        if (!clientContext?.client.isAuthenticated) {
           await logIn();
         }
 
-        await client.connectWallet(params);
+        await clientContext?.client.connectWallet(params);
 
-        const newData = await client.fetchData();
+        const newData = await clientContext?.client.fetchData();
 
-        await client.ensureSourceGroup({
+        await clientContext?.client.ensureSourceGroup({
           name: 'User Wallets',
           sources: newData.connectedWallets.map(walletToSource),
         });
 
-        const finalData = await client.fetchData();
+        const finalData = await clientContext?.client.fetchData();
         copyAuths(finalData);
         render(finalData);
       } finally {
         setLoading(false);
       }
     },
-    [client, logIn, setLoading, setConnectedWallets],
+    [clientContext?.client, logIn, setLoading, setConnectedWallets],
   );
 
   const updateWallets = useCallback(async () => {
     setLoading(true);
-
+    if (!clientContext?.client) return;
     try {
-      if (!client.isAuthenticated) {
+      if (!clientContext?.client.isAuthenticated) {
         await logIn();
       }
 
-      const newData = await client.fetchData();
+      const newData = await clientContext?.client.fetchData();
 
-      await client.ensureSourceGroup({
+      await clientContext?.client.ensureSourceGroup({
         name: 'User Wallets',
         sources: newData.connectedWallets.map(walletToSource),
       });
 
-      const finalData = await client.fetchData();
+      const finalData = await clientContext?.client.fetchData();
       render(finalData);
     } finally {
       setLoading(false);
     }
-  }, [client, logIn, setLoading, render]);
+  }, [clientContext?.client, logIn, setLoading, render]);
 
   return {
     isEmailConfirmationSent,
     resendEmailVerificationLink,
     instantSubscribe,
-    isAuthenticated: client.isAuthenticated,
-    isInitialized: client.isInitialized,
-    isTokenExpired: client.isTokenExpired,
+    isAuthenticated: clientContext?.client?.isAuthenticated ?? false,
+    isInitialized: clientContext?.client?.isInitialized ?? false,
+    isTokenExpired: clientContext?.client?.isTokenExpired ?? false, // TODO: depends on demoPreview
     logIn,
     subscribe,
     updateTargetGroups,
     subscribeWallet,
     updateWallets,
   };
+};
+
+const dummySubscribeData: SubscriptionData = {
+  alerts: { dummy: {} as unknown as Alert },
+  email: null,
+  phoneNumber: null,
+  telegramId: null,
+  telegramConfirmationUrl: null,
+  isPhoneNumberConfirmed: null,
+  emailIdThatNeedsConfirmation: '',
 };

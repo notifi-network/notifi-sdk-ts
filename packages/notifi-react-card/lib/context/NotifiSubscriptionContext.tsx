@@ -5,6 +5,7 @@ import React, { createContext, useContext, useState } from 'react';
 import {
   CardConfigItemV1,
   FetchedCardViewState,
+  WebhookContactInfo,
   useFetchedCardState,
 } from '../hooks';
 import {
@@ -133,7 +134,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
   };
   const [demoPreview, setDemoPreview] = useState<DemoPreview | null>({
     view: 'expired',
-    data: JSON.parse(defaultDemoConfigV1),
+    data: defaultDemoConfigV1,
   });
 
   const value = {
@@ -186,17 +187,23 @@ export const useNotifiSubscriptionContext: () => NotifiSubscriptionData =
     return data;
   };
 
-const defaultDemoConfigV1 = `
-  {
-    "version": "v1",
-    "id": "notofi.network.id",
-    "name": "notofi.network.name",
-    "eventTypes": [],
-    "inputs": [],
-    "contactInfo": {
-      "email": {
-        "active": true
-      }
-    }
-  }
-  `;
+export const defaultDemoConfigV1: CardConfigItemV1 = {
+  version: 'v1',
+  id: '@notifi.network', // Shown as dummy telegram id
+  name: 'notofi@notifi.network', // Shown as dummy email field
+  eventTypes: [],
+  inputs: [],
+  contactInfo: {
+    sms: {
+      active: true,
+      supportedCountryCodes: ['+1', '+886'],
+    },
+    email: {
+      active: true,
+    },
+    telegram: {
+      active: true,
+    },
+    webhook: '' as unknown as WebhookContactInfo,
+  },
+};
