@@ -101,7 +101,7 @@ export const useNotifiSubscribe: ({
       targetId: emailIdThatNeedsConfirmation,
     });
 
-    return resend ?? '';
+    return resend;
   }, [emailIdThatNeedsConfirmation, client.sendEmailTargetVerification]);
 
   const render = useCallback(
@@ -241,7 +241,7 @@ export const useNotifiSubscribe: ({
     }, [walletPublicKey, client, params, render]);
 
   const logIn = useCallback(async (): Promise<SubscriptionData> => {
-    if (!client) return dummySubscribeData;
+    if (demoPreview) return dummySubscribeData;
     setLoading(true);
     if (!client.isAuthenticated) {
       if (useHardwareWallet) {
@@ -443,7 +443,7 @@ export const useNotifiSubscribe: ({
 
       setLoading(true);
 
-      if (client.isAuthenticated) {
+      if (!client.isAuthenticated) {
         await logIn();
       }
       const data = await client.fetchData();
@@ -513,7 +513,7 @@ export const useNotifiSubscribe: ({
     }
 
     setLoading(true);
-    if (client.isAuthenticated) {
+    if (!client.isAuthenticated) {
       await logIn();
     }
 
@@ -588,11 +588,11 @@ export const useNotifiSubscribe: ({
 
   const subscribeWallet = useCallback(
     async (params: ConnectWalletParams) => {
-      if (!client) return;
+      if (demoPreview) return;
       setLoading(true);
 
       try {
-        if (client.isAuthenticated) {
+        if (!client.isAuthenticated) {
           await logIn();
         }
 

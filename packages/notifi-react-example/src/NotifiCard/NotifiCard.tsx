@@ -60,12 +60,12 @@ export const NotifiCard: React.FC = () => {
   };
 
   return (
+    /**
+     * Test dappAdresses/ subscription cardId / Intercom cardId:
+     * junitest.xyz / b07f0267df1343db9d14757c653ec092 / 1045f61752b148eabab0403c08cd60b2
+     */
     <div className="container">
       <NotifiContext
-        /**
-         * Test dappAdresses/ subscription cardId / Intercom cardId:
-         * junitest.xyz / b07f0267df1343db9d14757c653ec092 / 1045f61752b148eabab0403c08cd60b2
-         */
         dappAddress="junitest.xyz"
         walletBlockchain="SOLANA"
         env="Development"
@@ -103,36 +103,40 @@ export const NotifiCard: React.FC = () => {
           cardId="1045f61752b148eabab0403c08cd60b2"
         />
       </NotifiContext>
-      Dummy Demo NotifiSubscriptionCard: Preview page
-      <NotifiSubscriptionCard
-        darkMode
-        cardId=""
-        demoByJSONConfig={{ view: 'preview', data: JSON.parse(data) }}
-      />
-      Dummy Demo NotifiSubscriptionCard: History page
-      <NotifiSubscriptionCard
-        darkMode
-        cardId=""
-        demoByJSONConfig={{ view: 'history', data: JSON.parse(data) }}
-      />
-      Dummy Demo NotifiSubscriptionCard: History page
-      <NotifiSubscriptionCard
-        darkMode
-        cardId=""
-        demoByJSONConfig={{ view: 'edit', data: JSON.parse(data) }}
-      />
-      Dummy Demo NotifiSubscriptionCard: Expired page
-      <NotifiSubscriptionCard
-        darkMode
-        cardId=""
-        demoByJSONConfig={{ view: 'expired', data: JSON.parse(data) }}
-      />
-      Dummy Demo NotifiSubscriptionCard: Verify page
-      <NotifiSubscriptionCard
-        darkMode
-        cardId=""
-        demoByJSONConfig={{ view: 'verify', data: JSON.parse(data) }}
-      />
+
+      <NotifiContext
+        dappAddress=""
+        env="Development"
+        walletBlockchain="SOLANA"
+        walletPublicKey="string"
+        signMessage={async (msg: Uint8Array) => msg}
+        hardwareLoginPlugin={{ sendMessage: async (msg: string) => msg }}
+      >
+        Dummy Demo NotifiSubscriptionCard: Preview page
+        <NotifiSubscriptionCard
+          darkMode
+          cardId=""
+          demoByJSONConfig={{ view: 'preview', data: JSON.parse(data) }}
+        />
+        Dummy Demo NotifiSubscriptionCard: History page
+        <NotifiSubscriptionCard
+          darkMode
+          cardId=""
+          demoByJSONConfig={{ view: 'edit', data: JSON.parse(data) }}
+        />
+        Dummy Demo NotifiSubscriptionCard: Expired page
+        <NotifiSubscriptionCard
+          darkMode
+          cardId=""
+          demoByJSONConfig={{ view: 'expired', data: JSON.parse(data) }}
+        />
+        Dummy Demo NotifiSubscriptionCard: Verify page
+        <NotifiSubscriptionCard
+          darkMode
+          cardId=""
+          demoByJSONConfig={{ view: 'verify', data: JSON.parse(data) }}
+        />
+      </NotifiContext>
     </div>
   );
 };

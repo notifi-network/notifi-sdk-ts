@@ -49,9 +49,10 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
     telegramConfirmationUrl,
     demoPreview,
   } = useNotifiSubscriptionContext();
+  const {
+    params: { multiWallet },
+  } = useNotifiClientContext();
 
-  // Case undefined --> under demoPreview card (No params to init client)
-  const { params } = useNotifiClientContext();
   const { resendEmailVerificationLink } = useNotifiSubscribe({
     targetGroupName: 'Default',
   });
@@ -167,8 +168,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
           ) : null}
         </div>
       ) : null}
-      {params.multiWallet !== undefined &&
-      params.multiWallet.ownedWallets.length > 0 ? (
+      {multiWallet !== undefined && multiWallet.ownedWallets.length > 0 ? (
         <div
           className={clsx(
             'NotifiUserInfoPanel__myWallet',
