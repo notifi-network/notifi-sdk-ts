@@ -45,11 +45,9 @@ export const ConnectWalletRow: React.FC<ConnectWalletRowProps> = ({
   ...walletParams
 }: ConnectWalletRowProps) => {
   const { demoPreview } = useNotifiSubscriptionContext();
-  const subscribe = demoPreview
-    ? null
-    : useNotifiSubscribe({
-        targetGroupName: 'Default',
-      });
+  const { subscribeWallet } = useNotifiSubscribe({
+    targetGroupName: 'Default',
+  });
 
   const isConnected = useMemo(() => {
     const key = 'accountAddress';
@@ -77,7 +75,7 @@ export const ConnectWalletRow: React.FC<ConnectWalletRowProps> = ({
     async (technique: 'FAIL' | 'DISCONNECT_AND_CLOSE_OLD_ACCOUNT') => {
       setIsLoading(true);
       try {
-        await subscribe?.subscribeWallet({
+        await subscribeWallet({
           walletParams,
           connectWalletConflictResolutionTechnique: technique,
         });
@@ -103,7 +101,7 @@ export const ConnectWalletRow: React.FC<ConnectWalletRowProps> = ({
         setIsLoading(false);
       }
     },
-    [subscribe?.subscribeWallet, walletParams],
+    [subscribeWallet, walletParams],
   );
 
   return (
