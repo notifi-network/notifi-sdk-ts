@@ -65,9 +65,8 @@ export const NotifiCard: React.FC = () => {
         /**
          * Test dappAdresses/ subscription cardId / Intercom cardId:
          * junitest.xyz / b07f0267df1343db9d14757c653ec092 / 1045f61752b148eabab0403c08cd60b2
-         * colorfullife / 51fd3e3da1104f15abe4e1f8df46747e / NA
          */
-        dappAddress="colorfullife"
+        dappAddress="junitest.xyz"
         walletBlockchain="SOLANA"
         env="Development"
         walletPublicKey={publicKey}
