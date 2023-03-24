@@ -41,7 +41,6 @@ export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
   const { instantSubscribe } = useNotifiSubscribe({
     targetGroupName: 'Default',
   });
-
   const [enabled, setEnabled] = useState(false);
   const [isNotificationLoading, setIsNotificationLoading] =
     useState<boolean>(false);

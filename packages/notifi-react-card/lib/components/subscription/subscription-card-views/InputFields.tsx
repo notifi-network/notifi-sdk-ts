@@ -125,7 +125,7 @@ export const InputFields: React.FC<InputFieldsProps> = ({
           </div>
         </div>
       ) : null}
-      {params?.walletBlockchain === 'SOLANA' ? (
+      {params.walletBlockchain === 'SOLANA' ? (
         <NotifiHwWalletToggle
           disabled={inputDisabled}
           classNames={classNames?.NotifiHwWalletToggle}

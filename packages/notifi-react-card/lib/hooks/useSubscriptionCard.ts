@@ -34,7 +34,7 @@ export const useSubscriptionCard = (
     state: 'loading',
   });
 
-  const clientContext = useNotifiClientContext();
+  const { client } = useNotifiClientContext();
 
   useEffect(() => {
     if (demoPreview) {
@@ -45,7 +45,7 @@ export const useSubscriptionCard = (
       return;
     }
     setState({ state: 'loading' });
-    clientContext?.client
+    client
       ?.fetchSubscriptionCard(input)
       .then((result) => {
         const value = result.dataJson;

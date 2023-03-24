@@ -51,6 +51,9 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
     setCardView,
     destinationErrorMessages,
   } = useNotifiSubscriptionContext();
+  const {
+    params: { multiWallet },
+  } = useNotifiClientContext();
 
   const {
     params: { multiWallet },
@@ -178,8 +181,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
           ) : null}
         </div>
       ) : null}
-      {params.multiWallet !== undefined &&
-      params.multiWallet.ownedWallets.length > 0 ? (
+      {multiWallet !== undefined && multiWallet.ownedWallets.length > 0 ? (
         <div
           className={clsx(
             'NotifiUserInfoPanel__myWallet',
