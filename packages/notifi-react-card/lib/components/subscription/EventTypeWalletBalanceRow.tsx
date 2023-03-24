@@ -32,10 +32,10 @@ export const EventTypeWalletBalanceRow: React.FC<
   const { alerts, loading, connectedWallets } = useNotifiSubscriptionContext();
   const [isNotificationLoading, setIsNotificationLoading] =
     useState<boolean>(false);
+
   const { instantSubscribe } = useNotifiSubscribe({
     targetGroupName: 'Default',
   });
-
   const [enabled, setEnabled] = useState(false);
 
   const alertName = useMemo<string>(() => config.name, [config]);

@@ -31,8 +31,7 @@ const VerifyWalletView: React.FC<VerifyWalletViewProps> = ({
 }) => {
   const { cardView, setCardView, loading, setLoading, connectedWallets } =
     useNotifiSubscriptionContext();
-
-  const { updateWallets, subscribe } = useNotifiSubscribe({
+  const { subscribe, updateWallets } = useNotifiSubscribe({
     targetGroupName: 'Default',
   });
 
