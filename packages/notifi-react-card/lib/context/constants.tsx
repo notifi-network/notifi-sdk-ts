@@ -1,9 +1,4 @@
-export type DestinationInputs = {
-  email: string;
-  phoneNumber: string;
-  telegram: string;
-};
-
+export type DestinationInputs = Record<FormField, string>;
 export type FormField = 'email' | 'phoneNumber' | 'telegram';
 
 export type EditFormType = {

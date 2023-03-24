@@ -92,30 +92,23 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
             {email}
           </label>
           {emailIdThatNeedsConfirmation !== '' ? (
-            <a
-              target="_blank"
-              rel="noopener noreferrer"
+            <DestinationErrorMessage
+              classNames={{
+                errorMessage: clsx(classNames?.email?.errorMessage, {
+                  DestinationError__emailConfirmationSent:
+                    isEmailConfirmationSent,
+                }),
+                errorMessageContainer: classNames?.email?.errorMessageContainer,
+                tooltipContent: classNames?.email?.tooltipContent,
+              }}
               onClick={handleResendEmailVerificationClick}
-              className={clsx(
-                'NotifiUserInfoPanel__emailConfirmation',
-                classNames?.email?.confirmationLink,
-              )}
-            >
-              <label
-                className={clsx(
-                  'NotifiUserInfoPanel__emailConfirmationLabel',
-                  classNames?.email?.confirmationLabel,
-                  {
-                    NotifiUserInfoPanel__emailConfirmationSent:
-                      isEmailConfirmationSent,
-                  },
-                )}
-              >
-                {confirmationLabels?.email ?? isEmailConfirmationSent
+              errorMessage={
+                confirmationLabels?.email ?? isEmailConfirmationSent
                   ? 'Email sent!'
-                  : 'Resend Link'}
-              </label>
-            </a>
+                  : 'Resend Link'
+              }
+              tooltipContent={destinationErrorMessages?.phoneNumber?.tooltip}
+            />
           ) : null}
         </div>
       ) : null}
@@ -135,25 +128,17 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
             {phoneNumber}
           </label>
 
-          <DestinationErrorMessage
-            classNames={{
-              errorMessage: clsx(
-                classNames?.sms?.errorMessage,
-                'destinationError__smsErrorMessage',
-              ),
-              errorMessageContainer: clsx(
-                classNames?.sms?.errorMessage,
-                classNames?.sms?.errorMessageContainer,
-                'destinationError__smsErrorMessageContainer',
-              ),
-              tooltipContent: clsx(
-                classNames?.sms?.tooltipContent,
-                'destinationError__smsToolTipContent',
-              ),
-            }}
-            errorMessage={destinationErrorMessages.phoneNumber.message}
-            tooltipContent={destinationErrorMessages.phoneNumber.tooltipContent}
-          />
+          {destinationErrorMessages.phoneNumber ? (
+            <DestinationErrorMessage
+              classNames={{
+                errorMessage: classNames?.sms?.errorMessage,
+                errorMessageContainer: classNames?.sms?.errorMessageContainer,
+                tooltipContent: classNames?.sms?.tooltipContent,
+              }}
+              errorMessage={destinationErrorMessages?.phoneNumber?.message}
+              tooltipContent={destinationErrorMessages?.phoneNumber?.tooltip}
+            />
+          ) : null}
         </div>
       ) : null}
       {contactInfo.telegram.active && telegramId ? (
@@ -172,24 +157,22 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
             {telegramId}
           </label>
           {telegramConfirmationUrl ? (
-            <a
-              target="_blank"
-              rel="noopener noreferrer"
-              href={telegramConfirmationUrl}
-              className={clsx(
-                'NotifiUserInfoPanel__telegramConfirmation',
-                classNames?.telegram?.confirmationLink,
-              )}
-            >
-              <label
-                className={clsx(
-                  'NotifiUserInfoPanel__telegramConfirmationLabel',
-                  classNames?.telegram?.confirmationLabel,
-                )}
-              >
-                {confirmationLabels?.telegram ?? 'Verify Id'}
-              </label>
-            </a>
+            <DestinationErrorMessage
+              classNames={{
+                errorMessage: clsx(
+                  classNames?.telegram?.errorMessage,
+                  classNames?.telegram?.confirmationLink,
+                ),
+                errorMessageContainer:
+                  classNames?.telegram?.errorMessageContainer,
+                tooltipContent: classNames?.telegram?.tooltipContent,
+              }}
+              onClick={() => {
+                window.open(telegramConfirmationUrl, '_blank');
+              }}
+              errorMessage={confirmationLabels?.telegram ?? 'Verify Id'}
+              tooltipContent={destinationErrorMessages?.phoneNumber?.tooltip}
+            />
           ) : null}
         </div>
       ) : null}

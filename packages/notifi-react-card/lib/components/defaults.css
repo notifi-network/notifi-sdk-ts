@@ -808,7 +808,8 @@ input::-webkit-inner-spin-button {
 .ConnectWalletRow__connectAnywayButton,
 .NotifiUserInfoPanel__myWalletConfirmation,
 .NotifiUserInfoPanel__emailConfirmationLabel,
-.NotifiUserInfoPanel__telegramConfirmationLabel {
+.NotifiUserInfoPanel__telegramConfirmationLabel,
+.DestinationErrorMessage__confirmationLinkLabel {
   cursor: pointer;
   font-size: 14px;
   color: var(--notifi-checkmark-color);
@@ -1611,28 +1612,29 @@ input::-webkit-inner-spin-button {
   gap: 20px;
 }
 
-.NotifiUserInfoPanel__emailConfirmationSent {
+.NotifiUserInfoPanel__emailConfirmationSent,
+.DestinationError__emailConfirmationSent {
   color: var(--notifi-confirmation-color);
 }
 
-.NotifiUserInfoPanel__ErrorMessageLabel {
+.DestinationErrorMessage__ErrorMessageLabel {
   font-size: 14px;
   color: var(--notifi-button-disabled-color);
   font-weight: 600;
 }
 
-.NotifiUserInfoPanel__ErrorMessageContainer {
+.DestinationErrorMessage__ErrorMessageContainer {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
 }
 
-.NotifiUserInfoPanel__ErrorMessageLabel {
+.DestinationErrorMessage__ErrorMessageLabel {
   margin-bottom: 0 !important;
 }
 
-.UserInfoPanel__tooltipIcon {
+.DestinationErrorMessage__tooltipIcon {
   margin-left: 4px;
   fill: var(--notifi-button-disabled-color);
   height: 15px;

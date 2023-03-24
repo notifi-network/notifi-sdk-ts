@@ -11,38 +11,56 @@ type Props = {
   };
   errorMessage: string;
   tooltipContent?: string;
+  onClick?: () => void;
 };
 
 export const DestinationErrorMessage: React.FC<Props> = ({
   classNames,
   tooltipContent,
   errorMessage,
+  onClick,
 }) => {
   return (
     <div
       className={clsx(
-        'NotifiUserInfoPanel__ErrorMessageContainer',
+        'DestinationErrorMessage__ErrorMessageContainer',
         classNames?.errorMessageContainer,
       )}
     >
-      {errorMessage !== '' ? (
+      {onClick !== undefined ? (
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => onClick()}
+          className={clsx('DestinationErrorMessage__emailConfirmationLink')}
+        >
+          <label
+            className={clsx(
+              'DestinationErrorMessage__confirmationLinkLabel',
+              classNames?.errorMessage,
+            )}
+          >
+            {errorMessage}
+          </label>
+        </a>
+      ) : (
         <label
           className={clsx(
-            'NotifiUserInfoPanel__ErrorMessageLabel',
+            'DestinationErrorMessage__ErrorMessageLabel',
             classNames?.errorMessage,
             {
-              NotifiUserInfoPanel__errorMessage: errorMessage !== '',
+              DestinationErrorMessage__errorMessage: errorMessage !== '',
             },
           )}
         >
           {errorMessage}
         </label>
-      ) : null}
+      )}
       {tooltipContent !== undefined && tooltipContent.length > 0 ? (
         <NotifiTooltip
           classNames={{
             icon: clsx(
-              'UserInfoPanel__tooltipIcon',
+              'DestinationErrorMessage__tooltipIcon',
               classNames?.tooltipContent,
             ),
           }}
