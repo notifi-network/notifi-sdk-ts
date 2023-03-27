@@ -39,7 +39,7 @@ export type NotifiDemoPreviewContextData = Readonly<{
 }>;
 
 const NotifiDemoPreviewContext = createContext<NotifiDemoPreviewContextData>(
-  {} as unknown as NotifiDemoPreviewContextData, // Intentially empty in default, use NotifiSubscriptionContextProvider
+  {} as unknown as NotifiDemoPreviewContextData, // Intentionally empty in default
 );
 
 export const NotifiDemoPreviewContextProvider: React.FC<NotifiParams> = ({

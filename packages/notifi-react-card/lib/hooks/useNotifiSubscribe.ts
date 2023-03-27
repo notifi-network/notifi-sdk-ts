@@ -233,6 +233,12 @@ export const useNotifiSubscribe: ({
   // Initial fetch
   const didFetch = useRef(false);
   useEffect(() => {
+    if (demoPreview) {
+      // Mockup info for demo preview card
+      setEmail(defaultDemoConfigV1.name);
+      setPhoneNumber('+101234567890');
+      setTelegramId(defaultDemoConfigV1.id!);
+    }
     if (client.isAuthenticated && !didFetch.current) {
       didFetch.current = true;
       client
@@ -244,18 +250,13 @@ export const useNotifiSubscribe: ({
         .catch((_e) => {
           /* Intentionally empty */
         });
-    } else if (demoPreview) {
-      // Mockup info for demo preview card
-      setEmail(defaultDemoConfigV1.name);
-      setPhoneNumber('+101234567890');
-      setTelegramId(defaultDemoConfigV1.id!);
     }
   }, [client.isAuthenticated]);
 
   const logInViaHardwareWallet =
     useCallback(async (): Promise<SubscriptionData> => {
       if (demoPreview) {
-        return dummySubscribeData;
+        throw new Error('Preview card does not support method call');
       }
       if (params.walletBlockchain !== 'SOLANA') {
         throw new Error('Unsupported wallet blockchain');
@@ -279,7 +280,8 @@ export const useNotifiSubscribe: ({
     }, [walletPublicKey, client, params, render]);
 
   const logIn = useCallback(async (): Promise<SubscriptionData> => {
-    if (demoPreview) return dummySubscribeData;
+    if (demoPreview)
+      throw new Error('Preview card does not support method call');
     setLoading(true);
     if (!client.isAuthenticated) {
       if (useHardwareWallet) {
@@ -315,7 +317,7 @@ export const useNotifiSubscribe: ({
         finalTelegramId: string | null;
       }>,
     ): Promise<Alert | null> => {
-      if (demoPreview) return null;
+      if (demoPreview) throw Error('Preview card does not support method call');
       const { alertName, alertConfiguration } = alertParams;
       const { finalEmail, finalPhoneNumber, finalTelegramId } = contacts;
       const existingAlert = data.alerts.find(
@@ -463,7 +465,8 @@ export const useNotifiSubscribe: ({
     async (
       alertConfigs: Record<string, AlertConfiguration>,
     ): Promise<SubscriptionData> => {
-      if (demoPreview) return dummySubscribeData;
+      if (demoPreview)
+        throw new Error('Preview card does not support method call');
       const configurations = { ...alertConfigs };
 
       const names = Object.keys(configurations);
@@ -540,8 +543,8 @@ export const useNotifiSubscribe: ({
   const updateTargetGroups = useCallback(async () => {
     resetErrorMessageState();
 
-    if (!clientContext?.client) return dummySubscribeData;
-    if (demoPreview) return dummySubscribeData;
+    if (demoPreview)
+      throw new Error('Preview card does not support method call');
     const finalEmail = formEmail === '' ? null : formEmail;
 
     const finalTelegramId =
@@ -574,7 +577,8 @@ export const useNotifiSubscribe: ({
 
   const instantSubscribe = useCallback(
     async (alertData: InstantSubscribe) => {
-      if (demoPreview) return dummySubscribeData;
+      if (demoPreview)
+        throw new Error('Preview card does not support method call');
       const finalEmail = formEmail === '' ? null : formEmail;
 
       const finalTelegramId =
@@ -629,7 +633,8 @@ export const useNotifiSubscribe: ({
 
   const subscribeWallet = useCallback(
     async (params: ConnectWalletParams) => {
-      if (demoPreview) return;
+      if (demoPreview)
+        throw new Error('Preview card does not support method call');
       setLoading(true);
 
       try {
@@ -658,7 +663,8 @@ export const useNotifiSubscribe: ({
 
   const updateWallets = useCallback(async () => {
     setLoading(true);
-    if (demoPreview) return;
+    if (demoPreview)
+      throw new Error('Preview card does not support method call');
     try {
       if (!client.isAuthenticated) {
         await logIn();
@@ -682,23 +688,13 @@ export const useNotifiSubscribe: ({
     isEmailConfirmationSent,
     resendEmailVerificationLink,
     instantSubscribe,
-    isAuthenticated: client?.isAuthenticated ?? false,
-    isInitialized: client?.isInitialized ?? false,
-    isTokenExpired: client?.isTokenExpired ?? false,
+    isAuthenticated: client.isAuthenticated,
+    isInitialized: client.isInitialized,
+    isTokenExpired: client.isTokenExpired,
     logIn,
     subscribe,
     updateTargetGroups,
     subscribeWallet,
     updateWallets,
   };
-};
-
-const dummySubscribeData: SubscriptionData = {
-  alerts: { dummy: {} as unknown as Alert },
-  email: null,
-  phoneNumber: null,
-  telegramId: null,
-  telegramConfirmationUrl: null,
-  isPhoneNumberConfirmed: null,
-  emailIdThatNeedsConfirmation: '',
 };

@@ -26,7 +26,6 @@ export const NotifiSubscriptionCardContainer: React.FC<
 }: React.PropsWithChildren<NotifiSubscriptionCardProps>) => {
   const { isInitialized } = useNotifiSubscribe({ targetGroupName: 'Default' });
   const { loading } = useNotifiSubscriptionContext();
-
   const inputDisabled = loading || !isInitialized;
 
   const card = useSubscriptionCard({
