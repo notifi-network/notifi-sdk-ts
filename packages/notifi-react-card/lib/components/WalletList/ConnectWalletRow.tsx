@@ -6,7 +6,6 @@ import { GqlError } from '@notifi-network/notifi-react-hooks';
 import { addressEllipsis } from 'notifi-react-card/lib/utils/stringUtils';
 import React, { useCallback, useMemo, useState } from 'react';
 
-import { useNotifiDemoPreviewContext } from '../../context';
 import { useNotifiSubscribe } from '../../hooks';
 
 export type ConnectWalletRowProps = WalletWithSignParams &
@@ -44,7 +43,6 @@ export const ConnectWalletRow: React.FC<ConnectWalletRowProps> = ({
   disabled,
   ...walletParams
 }: ConnectWalletRowProps) => {
-  const { demoPreview } = useNotifiDemoPreviewContext();
   const { subscribeWallet } = useNotifiSubscribe({
     targetGroupName: 'Default',
   });
@@ -127,7 +125,7 @@ export const ConnectWalletRow: React.FC<ConnectWalletRowProps> = ({
           <p className="ConnectWalletRow__verified">Verified</p>
         ) : null}
       </div>
-      {isConnectedElsewhere || demoPreview ? (
+      {isConnectedElsewhere ? (
         <>
           <div className="ConnectWalletRow__messageRow">
             This wallet is already connected to another Notifi Hub account. If
