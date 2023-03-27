@@ -6,7 +6,7 @@ import {
   useNotifiClientContext,
   useNotifiSubscriptionContext,
 } from '../../../../context';
-import { CardConfigItemV1, useNotifiSubscribe } from '../../../../hooks';
+import { CardConfigItemV1 } from '../../../../hooks';
 import { DeepPartialReadonly } from '../../../../utils';
 import { DestinationErrorMessage } from './DestinationErrorMessage';
 
@@ -49,7 +49,6 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
     email,
     telegramId,
     setCardView,
-    emailIdThatNeedsConfirmation,
     destinationErrorMessages,
   } = useNotifiSubscriptionContext();
 
@@ -57,21 +56,19 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
     params: { multiWallet },
   } = useNotifiClientContext();
 
-  const { resendEmailVerificationLink } = useNotifiSubscribe({
-    targetGroupName: 'Default',
-  });
-
   const handleEditClick = useCallback(() => {
     setCardView({ state: 'edit' });
   }, [setCardView, phoneNumber, email, telegramId]);
 
+  const { telegram: telegramErrorMessages, email: emailErrorMessage } =
+    destinationErrorMessages;
+
   const handleResendEmailVerificationClick = useCallback(() => {
+    if (emailErrorMessage?.type !== 'recoverableError') return;
     setIsEmailConfirmationSent(true);
-    resendEmailVerificationLink();
+    emailErrorMessage.onClick();
     setTimeout(() => setIsEmailConfirmationSent(false), 3000);
   }, []);
-
-  const { telegram: telegramErrorMessages } = destinationErrorMessages;
   return (
     <div
       className={clsx('NotifiUserInfoPanelContainer', classNames?.container)}
@@ -91,7 +88,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
           >
             {email}
           </label>
-          {emailIdThatNeedsConfirmation !== '' ? (
+          {emailErrorMessage?.type === 'recoverableError' ? (
             <DestinationErrorMessage
               classNames={{
                 errorMessage: clsx(classNames?.email?.errorMessage, {
@@ -101,13 +98,11 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
                 errorMessageContainer: classNames?.email?.errorMessageContainer,
                 tooltipContent: classNames?.email?.tooltipContent,
               }}
-              onClick={handleResendEmailVerificationClick}
+              onClick={() => handleResendEmailVerificationClick()}
               errorMessage={
-                confirmationLabels?.email ?? isEmailConfirmationSent
-                  ? 'Email sent!'
-                  : 'Resend Link'
+                isEmailConfirmationSent ? 'Sent' : emailErrorMessage.message
               }
-              tooltipContent={destinationErrorMessages?.phoneNumber?.tooltip}
+              tooltipContent={emailErrorMessage?.tooltip}
             />
           ) : null}
         </div>
@@ -156,7 +151,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
           >
             {telegramId}
           </label>
-          {destinationErrorMessages?.telegram?.type === 'recoverableError' ? (
+          {telegramErrorMessages?.type === 'recoverableError' ? (
             <DestinationErrorMessage
               classNames={{
                 errorMessage: clsx(
@@ -168,8 +163,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
                 tooltipContent: classNames?.telegram?.tooltipContent,
               }}
               onClick={() => {
-                telegramErrorMessages?.type === 'recoverableError' &&
-                  telegramErrorMessages?.onClick();
+                telegramErrorMessages?.onClick();
               }}
               errorMessage={
                 telegramErrorMessages?.message ??

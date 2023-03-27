@@ -68,7 +68,7 @@ export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
   };
 
   const handleClick = () => {
-    resendEmailVerificationLink();
+    resendEmailVerificationLink(emailIdThatNeedsConfirmation);
   };
 
   return (

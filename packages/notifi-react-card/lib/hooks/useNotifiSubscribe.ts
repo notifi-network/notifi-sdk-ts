@@ -6,7 +6,7 @@ import type {
   Source,
 } from '@notifi-network/notifi-core';
 import { isValidPhoneNumber } from 'libphonenumber-js';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useNotifiSubscriptionContext } from '../context';
 import { useNotifiClientContext } from '../context/NotifiClientContext';
@@ -48,6 +48,7 @@ export const useNotifiSubscribe: ({
   targetGroupName,
 }: useNotifiSubscribeProps) => Readonly<{
   isAuthenticated: boolean;
+  isEmailConfirmationSent: boolean;
   isInitialized: boolean;
   isTokenExpired: boolean;
   logIn: () => Promise<SubscriptionData>;
@@ -60,7 +61,7 @@ export const useNotifiSubscribe: ({
     subscribeData: InstantSubscribe,
   ) => Promise<SubscriptionData>;
   updateTargetGroups: () => Promise<SubscriptionData>;
-  resendEmailVerificationLink: () => Promise<string>;
+  resendEmailVerificationLink: (emailId: string) => Promise<string>;
 }> = ({ targetGroupName = 'Default' }: useNotifiSubscribeProps) => {
   const { client } = useNotifiClientContext();
 
@@ -91,17 +92,24 @@ export const useNotifiSubscribe: ({
     useHardwareWallet,
     resetErrorMessageState,
     setTelegramErrorMessage,
+    setEmailErrorMessage,
   } = useNotifiSubscriptionContext();
 
   const { keepSubscriptionData = true, walletPublicKey } = params;
 
-  const resendEmailVerificationLink = useCallback(async () => {
-    const resend = await client.sendEmailTargetVerification({
-      targetId: emailIdThatNeedsConfirmation,
-    });
+  const [isEmailConfirmationSent, setIsEmailConfirmationSent] =
+    useState<boolean>(false);
 
-    return resend;
-  }, [emailIdThatNeedsConfirmation, client.sendEmailTargetVerification]);
+  const resendEmailVerificationLink = useCallback(
+    async (emailId: string) => {
+      const resend = await client.sendEmailTargetVerification({
+        targetId: emailId,
+      });
+
+      return resend;
+    },
+    [emailIdThatNeedsConfirmation, client.sendEmailTargetVerification],
+  );
 
   const render = useCallback(
     (newData: ClientData | null): SubscriptionData => {
@@ -123,8 +131,17 @@ export const useNotifiSubscribe: ({
 
       if (emailTarget !== null && emailTarget?.isConfirmed === false) {
         setEmailIdThatNeedsConfirmation(emailTarget.id ?? '');
+
+        setEmailErrorMessage({
+          type: 'recoverableError',
+          onClick: () => {
+            resendEmailVerificationLink(emailTarget.id ?? '');
+          },
+          message: isEmailConfirmationSent ? 'Email sent!' : 'Resend Link',
+        });
       } else {
         setEmailIdThatNeedsConfirmation('');
+        setEmailErrorMessage(undefined);
       }
 
       setFormEmail(emailToSet);
@@ -179,7 +196,13 @@ export const useNotifiSubscribe: ({
         telegramId: telegramTarget?.telegramId ?? null,
       };
     },
-    [setAlerts, setEmail, setPhoneNumber, setTelegramId],
+    [
+      setAlerts,
+      setEmail,
+      setPhoneNumber,
+      setTelegramId,
+      setIsEmailConfirmationSent,
+    ],
   );
 
   const copyAuths = useCallback(
@@ -639,6 +662,7 @@ export const useNotifiSubscribe: ({
   }, [client, logIn, setLoading, render]);
 
   return {
+    isEmailConfirmationSent,
     resendEmailVerificationLink,
     instantSubscribe,
     isAuthenticated: client.isAuthenticated,
