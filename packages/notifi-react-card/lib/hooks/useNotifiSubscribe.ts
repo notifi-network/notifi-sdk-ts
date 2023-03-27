@@ -25,7 +25,6 @@ export type SubscriptionData = Readonly<{
   telegramId: string | null;
   telegramConfirmationUrl: string | null;
   isPhoneNumberConfirmed: boolean | null;
-  emailIdThatNeedsConfirmation: string;
 }>;
 
 export type InstantSubscribe = Readonly<{
@@ -86,9 +85,7 @@ export const useNotifiSubscribe: ({
     setLoading,
     setPhoneNumber,
     setTelegramId,
-    emailIdThatNeedsConfirmation,
     setPhoneNumberErrorMessage,
-    setEmailIdThatNeedsConfirmation,
     useHardwareWallet,
     resetErrorMessageState,
     setTelegramErrorMessage,
@@ -108,7 +105,7 @@ export const useNotifiSubscribe: ({
 
       return resend;
     },
-    [emailIdThatNeedsConfirmation, client.sendEmailTargetVerification],
+    [client.sendEmailTargetVerification],
   );
 
   const render = useCallback(
@@ -130,17 +127,14 @@ export const useNotifiSubscribe: ({
       const emailToSet = emailTarget?.emailAddress ?? '';
 
       if (emailTarget !== null && emailTarget?.isConfirmed === false) {
-        setEmailIdThatNeedsConfirmation(emailTarget.id ?? '');
-
         setEmailErrorMessage({
           type: 'recoverableError',
           onClick: () => {
             resendEmailVerificationLink(emailTarget.id ?? '');
           },
-          message: isEmailConfirmationSent ? 'Email sent!' : 'Resend Link',
+          message: 'Resend Link',
         });
       } else {
-        setEmailIdThatNeedsConfirmation('');
         setEmailErrorMessage(undefined);
       }
 
@@ -174,23 +168,25 @@ export const useNotifiSubscribe: ({
 
       setFormTelegram(telegramId ?? '');
       setTelegramId(telegramIdWithSymbolAdded ?? '');
-      setTelegramErrorMessage({
-        type: 'recoverableError',
-        onClick: () => {
-          if (!telegramTarget?.confirmationUrl) {
-            return;
-          }
 
-          window.open(telegramTarget?.confirmationUrl);
-        },
-        message: 'Verify Id',
-      });
+      if (telegramTarget?.isConfirmed === false) {
+        setTelegramErrorMessage({
+          type: 'recoverableError',
+          onClick: () => {
+            if (!telegramTarget?.confirmationUrl) {
+              return;
+            }
+
+            window.open(telegramTarget?.confirmationUrl);
+          },
+          message: 'Verify Id',
+        });
+      }
 
       return {
         alerts,
         email: emailTarget?.emailAddress ?? null,
         isPhoneNumberConfirmed,
-        emailIdThatNeedsConfirmation,
         phoneNumber,
         telegramConfirmationUrl: telegramTarget?.confirmationUrl ?? null,
         telegramId: telegramTarget?.telegramId ?? null,

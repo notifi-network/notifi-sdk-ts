@@ -60,8 +60,11 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
     setCardView({ state: 'edit' });
   }, [setCardView, phoneNumber, email, telegramId]);
 
-  const { telegram: telegramErrorMessages, email: emailErrorMessage } =
-    destinationErrorMessages;
+  const {
+    telegram: telegramErrorMessage,
+    email: emailErrorMessage,
+    phoneNumber: phoneNumberErrorMessage,
+  } = destinationErrorMessages;
 
   const handleResendEmailVerificationClick = useCallback(() => {
     if (emailErrorMessage?.type !== 'recoverableError') return;
@@ -123,15 +126,15 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
             {phoneNumber}
           </label>
 
-          {destinationErrorMessages.phoneNumber ? (
+          {phoneNumberErrorMessage?.type !== undefined ? (
             <DestinationErrorMessage
               classNames={{
                 errorMessage: classNames?.sms?.errorMessage,
                 errorMessageContainer: classNames?.sms?.errorMessageContainer,
                 tooltipContent: classNames?.sms?.tooltipContent,
               }}
-              errorMessage={destinationErrorMessages?.phoneNumber?.message}
-              tooltipContent={destinationErrorMessages?.phoneNumber?.tooltip}
+              errorMessage={phoneNumberErrorMessage?.message}
+              tooltipContent={phoneNumberErrorMessage?.tooltip}
             />
           ) : null}
         </div>
@@ -151,7 +154,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
           >
             {telegramId}
           </label>
-          {telegramErrorMessages?.type === 'recoverableError' ? (
+          {telegramErrorMessage?.type === 'recoverableError' ? (
             <DestinationErrorMessage
               classNames={{
                 errorMessage: clsx(
@@ -163,10 +166,10 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
                 tooltipContent: classNames?.telegram?.tooltipContent,
               }}
               onClick={() => {
-                telegramErrorMessages?.onClick();
+                telegramErrorMessage?.onClick();
               }}
               errorMessage={
-                telegramErrorMessages?.message ??
+                telegramErrorMessage?.message ??
                 confirmationLabels?.telegram ??
                 ''
               }
