@@ -82,16 +82,15 @@ export const useNotifiSubscribe: ({
     setAlerts,
     setConnectedWallets,
     setEmail,
-    setIsSmsConfirmed,
     setLoading,
     setPhoneNumber,
-    setTelegramConfirmationUrl,
     setTelegramId,
     emailIdThatNeedsConfirmation,
     setPhoneNumberErrorMessage,
     setEmailIdThatNeedsConfirmation,
     useHardwareWallet,
     resetErrorMessageState,
+    setTelegramErrorMessage,
   } = useNotifiSubscriptionContext();
 
   const { keepSubscriptionData = true, walletPublicKey } = params;
@@ -138,10 +137,11 @@ export const useNotifiSubscribe: ({
 
       const phoneNumberToSet = phoneNumber ?? '';
 
-      setIsSmsConfirmed(isPhoneNumberConfirmed);
-
       if (!isPhoneNumberConfirmed) {
-        setPhoneNumberErrorMessage('Invalid number');
+        setPhoneNumberErrorMessage({
+          type: 'unrecoverableError',
+          message: 'Invalid Number',
+        });
       }
 
       setFormPhoneNumber(phoneNumberToSet);
@@ -157,8 +157,17 @@ export const useNotifiSubscribe: ({
 
       setFormTelegram(telegramId ?? '');
       setTelegramId(telegramIdWithSymbolAdded ?? '');
+      setTelegramErrorMessage({
+        type: 'recoverableError',
+        onClick: () => {
+          if (!telegramTarget?.confirmationUrl) {
+            return;
+          }
 
-      setTelegramConfirmationUrl(telegramTarget?.confirmationUrl ?? undefined);
+          window.open(telegramTarget?.confirmationUrl);
+        },
+        message: 'Verify Id',
+      });
 
       return {
         alerts,

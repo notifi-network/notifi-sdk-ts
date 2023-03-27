@@ -8,23 +8,11 @@ import {
   useIntercomCardState,
 } from '../hooks/useIntercomCardState';
 import { NotifiParams } from './NotifiContext';
-import { EditFormType, FormField } from './constants';
-
-type RecoverableError = Readonly<{
-  type: 'recoverableError';
-  message: string;
-  onClick: () => void;
-  tooltip?: string;
-}>;
-
-type UnrecoverableError = Readonly<{
-  type: 'unrecoverableError';
-  message: string;
-  tooltip?: string;
-}>;
-
-type DestinationError = UnrecoverableError | RecoverableError | undefined;
-type DestinationErrors = Record<FormField, DestinationError>;
+import {
+  DestinationError,
+  DestinationErrorMessageField,
+  DestinationErrors,
+} from './constants';
 
 export type DestinationErrorMessages = DestinationErrors;
 
@@ -52,8 +40,6 @@ export type NotifiSubscriptionData = Readonly<{
   setUseHardwareWallet: React.Dispatch<React.SetStateAction<boolean>>;
   loading: boolean;
   setLoading: (loading: boolean) => void;
-  isSmsConfirmed: boolean | null;
-  setIsSmsConfirmed: (isConfirmed: boolean | null) => void;
   hasChatAlert: boolean;
   setHasChatAlert: (hasChatAlert: boolean) => void;
   conversationId: string;
@@ -62,12 +48,12 @@ export type NotifiSubscriptionData = Readonly<{
   setUserId: (userId: string) => void;
   emailIdThatNeedsConfirmation: string;
   setEmailIdThatNeedsConfirmation: (emailId: string) => void;
-  setEmailErrorMessage: (value: string) => void;
+  setEmailErrorMessage: (value: DestinationError) => void;
   setTelegramConfirmationUrl: (
     telegramConfirmationUrl: string | undefined,
   ) => void;
-  setPhoneNumberErrorMessage: (value: string) => void;
-  setTelegramErrorMessage: (value: string) => void;
+  setPhoneNumberErrorMessage: (value: DestinationError) => void;
+  setTelegramErrorMessage: (value: DestinationError) => void;
   resetErrorMessageState: () => void;
 }>;
 
@@ -87,7 +73,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
 
   const [emailIdThatNeedsConfirmation, setEmailIdThatNeedsConfirmation] =
     useState<string>('');
-  const [isSmsConfirmed, setIsSmsConfirmed] = useState<boolean | null>(null);
+
   const [telegramConfirmationUrl, setTelegramConfirmationUrl] = useState<
     string | undefined
   >(undefined);
@@ -106,26 +92,29 @@ export const NotifiSubscriptionContextProvider: React.FC<
   const [destinationErrorMessages, setDestinationErrorMessages] =
     useState<DestinationErrorMessages>({
       email: undefined,
-      telegram: { type: 'unrecoverableError', message: 'tsadfasdf' },
+      telegram: undefined,
       phoneNumber: undefined,
     });
 
-  const handleErrorMessage = ({ field, value }: EditFormType) => {
+  const handleErrorMessage = ({
+    field,
+    value,
+  }: DestinationErrorMessageField) => {
     setDestinationErrorMessages((destinationErrorMessages) => ({
       ...destinationErrorMessages,
       [field]: value,
     }));
   };
 
-  const setEmailErrorMessage = (value: string) => {
+  const setEmailErrorMessage = (value: DestinationError) => {
     handleErrorMessage({ field: 'email', value });
   };
 
-  const setTelegramErrorMessage = (value: string) => {
+  const setTelegramErrorMessage = (value: DestinationError) => {
     handleErrorMessage({ field: 'telegram', value });
   };
 
-  const setPhoneNumberErrorMessage = (value: string) => {
+  const setPhoneNumberErrorMessage = (value: DestinationError) => {
     handleErrorMessage({ field: 'phoneNumber', value });
   };
 
@@ -148,9 +137,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
     cardView,
     telegramConfirmationUrl,
     emailIdThatNeedsConfirmation,
-    isSmsConfirmed,
     setEmailIdThatNeedsConfirmation,
-    setIsSmsConfirmed,
     useHardwareWallet,
     destinationErrorMessages,
     setAlerts,

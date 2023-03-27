@@ -50,7 +50,6 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
     telegramId,
     setCardView,
     emailIdThatNeedsConfirmation,
-    telegramConfirmationUrl,
     destinationErrorMessages,
   } = useNotifiSubscriptionContext();
 
@@ -72,6 +71,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
     setTimeout(() => setIsEmailConfirmationSent(false), 3000);
   }, []);
 
+  const { telegram: telegramErrorMessages } = destinationErrorMessages;
   return (
     <div
       className={clsx('NotifiUserInfoPanelContainer', classNames?.container)}
@@ -156,7 +156,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
           >
             {telegramId}
           </label>
-          {telegramConfirmationUrl ? (
+          {destinationErrorMessages?.telegram?.type === 'recoverableError' ? (
             <DestinationErrorMessage
               classNames={{
                 errorMessage: clsx(
@@ -168,9 +168,14 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
                 tooltipContent: classNames?.telegram?.tooltipContent,
               }}
               onClick={() => {
-                window.open(telegramConfirmationUrl, '_blank');
+                telegramErrorMessages?.type === 'recoverableError' &&
+                  telegramErrorMessages?.onClick();
               }}
-              errorMessage={confirmationLabels?.telegram ?? 'Verify Id'}
+              errorMessage={
+                telegramErrorMessages?.message ??
+                confirmationLabels?.telegram ??
+                ''
+              }
               tooltipContent={destinationErrorMessages?.phoneNumber?.tooltip}
             />
           ) : null}
