@@ -6,7 +6,7 @@ import { GqlError } from '@notifi-network/notifi-react-hooks';
 import { addressEllipsis } from 'notifi-react-card/lib/utils/stringUtils';
 import React, { useCallback, useMemo, useState } from 'react';
 
-import { useNotifiSubscriptionContext } from '../../context';
+import { useNotifiDemoPreviewContext } from '../../context';
 import { useNotifiSubscribe } from '../../hooks';
 
 export type ConnectWalletRowProps = WalletWithSignParams &
@@ -44,7 +44,7 @@ export const ConnectWalletRow: React.FC<ConnectWalletRowProps> = ({
   disabled,
   ...walletParams
 }: ConnectWalletRowProps) => {
-  const { demoPreview } = useNotifiSubscriptionContext();
+  const { demoPreview } = useNotifiDemoPreviewContext();
   const { subscribeWallet } = useNotifiSubscribe({
     targetGroupName: 'Default',
   });

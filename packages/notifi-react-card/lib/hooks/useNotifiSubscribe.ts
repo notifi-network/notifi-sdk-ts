@@ -8,7 +8,11 @@ import type {
 import { isValidPhoneNumber } from 'libphonenumber-js';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { defaultDemoConfigV1, useNotifiSubscriptionContext } from '../context';
+import {
+  defaultDemoConfigV1,
+  useNotifiDemoPreviewContext,
+  useNotifiSubscriptionContext,
+} from '../context';
 import { useNotifiClientContext } from '../context/NotifiClientContext';
 import {
   formatTelegramForSubscription,
@@ -62,7 +66,7 @@ export const useNotifiSubscribe: ({
   updateTargetGroups: () => Promise<SubscriptionData>;
   resendEmailVerificationLink: (emailId: string) => Promise<string>;
 }> = ({ targetGroupName = 'Default' }: useNotifiSubscribeProps) => {
-  const { demoPreview } = useNotifiSubscriptionContext();
+  const { demoPreview } = useNotifiDemoPreviewContext();
 
   const { client } = useNotifiClientContext();
 

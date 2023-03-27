@@ -2,12 +2,7 @@ import type { Alert, ConnectedWallet } from '@notifi-network/notifi-core';
 import { PropsWithChildren } from 'react';
 import React, { createContext, useContext, useState } from 'react';
 
-import {
-  CardConfigItemV1,
-  FetchedCardViewState,
-  WebhookContactInfo,
-  useFetchedCardState,
-} from '../hooks';
+import { FetchedCardViewState, useFetchedCardState } from '../hooks';
 import {
   IntercomCardView,
   useIntercomCardState,
@@ -186,24 +181,3 @@ export const useNotifiSubscriptionContext: () => NotifiSubscriptionData =
     const data = useContext(NotifiSubscriptionContext);
     return data;
   };
-
-export const defaultDemoConfigV1: CardConfigItemV1 = {
-  version: 'v1',
-  id: '@notifi.network', // Shown as dummy telegram id
-  name: 'notofi@notifi.network', // Shown as dummy email field
-  eventTypes: [],
-  inputs: [],
-  contactInfo: {
-    sms: {
-      active: true,
-      supportedCountryCodes: ['+1', '+886'],
-    },
-    email: {
-      active: true,
-    },
-    telegram: {
-      active: true,
-    },
-    webhook: {} as unknown as WebhookContactInfo,
-  },
-};

@@ -1,7 +1,6 @@
 import React from 'react';
 
 import {
-  DemoPreview,
   NotifiFormProvider,
   NotifiSubscriptionContextProvider,
   useNotifiClientContext,
@@ -70,7 +69,6 @@ export type NotifiSubscriptionCardProps = Readonly<{
   inputs?: Record<string, unknown>;
   inputSeparators?: NotifiInputSeparators;
   onClose?: () => void;
-  demoByJSONConfig?: DemoPreview;
 }>;
 
 export const NotifiSubscriptionCard: React.FC<

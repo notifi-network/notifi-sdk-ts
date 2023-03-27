@@ -6,6 +6,7 @@ import React from 'react';
 
 import {
   useNotifiClientContext,
+  useNotifiDemoPreviewContext,
   useNotifiSubscriptionContext,
 } from '../../context';
 import { ConnectWalletRow } from './ConnectWalletRow';
@@ -21,7 +22,7 @@ export const WalletListInternal: React.FC<WalletListInternalProps> = ({
   ownedWallets,
   disabled,
 }: WalletListInternalProps) => {
-  const { demoPreview } = useNotifiSubscriptionContext();
+  const { demoPreview } = useNotifiDemoPreviewContext();
   return (
     <ul>
       {!demoPreview ? (

@@ -2,9 +2,8 @@ import { ClientFetchSubscriptionCardInput } from '@notifi-network/notifi-core';
 import { useEffect, useState } from 'react';
 
 import {
-  DemoPreview,
-  defaultDemoConfigV1,
   useNotifiClientContext,
+  useNotifiDemoPreviewContext,
 } from '../context';
 import { CardConfigItemV1 } from './SubscriptionCardConfig';
 
@@ -28,22 +27,14 @@ export type SubscriptionCardState = LoadingState | FetchedState | ErrorState;
 
 export const useSubscriptionCard = (
   input: ClientFetchSubscriptionCardInput,
-  demoPreview?: DemoPreview,
 ): SubscriptionCardState => {
   const [state, setState] = useState<SubscriptionCardState>({
     state: 'loading',
   });
-
+  const { demoPreview } = useNotifiDemoPreviewContext();
   const { client } = useNotifiClientContext();
 
   useEffect(() => {
-    if (demoPreview) {
-      setState({
-        state: 'fetched',
-        data: demoPreview?.data ?? defaultDemoConfigV1,
-      });
-      return;
-    }
     setState({ state: 'loading' });
     client
       .fetchSubscriptionCard(input)
@@ -72,6 +63,15 @@ export const useSubscriptionCard = (
         });
       });
   }, [input.id, input.type]);
+
+  useEffect(() => {
+    if (demoPreview && state.state === 'error') {
+      setState(() => ({
+        state: 'fetched',
+        data: demoPreview.data,
+      }));
+    }
+  }, [state]);
 
   return state;
 };

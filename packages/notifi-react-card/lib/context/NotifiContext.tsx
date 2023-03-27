@@ -10,6 +10,10 @@ import React from 'react';
 import { HardwareLoginPlugin } from '../plugins';
 import { AlertConfiguration } from '../utils';
 import { NotifiClientContextProvider } from './NotifiClientContext';
+import {
+  DemoPreview,
+  NotifiDemoPreviewContextProvider,
+} from './NotifiDemoPreviewContext';
 
 export type SolanaParams = Readonly<{
   walletBlockchain: 'SOLANA';
@@ -87,6 +91,7 @@ export type NotifiParams = Readonly<{
   env: NotifiEnvironment;
   keepSubscriptionData?: boolean;
   multiWallet?: MultiWalletParams;
+  demoPreview?: DemoPreview;
 }> &
   WalletParams;
 
@@ -96,7 +101,9 @@ export const NotifiContext: React.FC<React.PropsWithChildren<NotifiParams>> = ({
 }: React.PropsWithChildren<NotifiParams>) => {
   return (
     <NotifiClientContextProvider {...params}>
-      {children}
+      <NotifiDemoPreviewContextProvider {...params}>
+        {children}
+      </NotifiDemoPreviewContextProvider>
     </NotifiClientContextProvider>
   );
 };

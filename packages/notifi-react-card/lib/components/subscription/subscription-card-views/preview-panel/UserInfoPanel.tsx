@@ -4,6 +4,7 @@ import React, { useCallback, useState } from 'react';
 
 import {
   useNotifiClientContext,
+  useNotifiDemoPreviewContext,
   useNotifiSubscriptionContext,
 } from '../../../../context';
 import { CardConfigItemV1 } from '../../../../hooks';
@@ -51,6 +52,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
     setCardView,
     destinationErrorMessages,
   } = useNotifiSubscriptionContext();
+  const { demoPreview } = useNotifiDemoPreviewContext();
   const {
     params: { multiWallet },
   } = useNotifiClientContext();

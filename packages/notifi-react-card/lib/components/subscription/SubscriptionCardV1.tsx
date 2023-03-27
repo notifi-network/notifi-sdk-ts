@@ -8,7 +8,11 @@ import React, {
   useState,
 } from 'react';
 
-import { useNotifiForm, useNotifiSubscriptionContext } from '../../context';
+import {
+  useNotifiDemoPreviewContext,
+  useNotifiForm,
+  useNotifiSubscriptionContext,
+} from '../../context';
 import { CardConfigItemV1, useNotifiSubscribe } from '../../hooks';
 import { DeepPartialReadonly } from '../../utils';
 import {
@@ -84,8 +88,9 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
   onClose,
 }) => {
   const allowedCountryCodes = [...data.contactInfo.sms.supportedCountryCodes];
-  const { cardView, email, phoneNumber, telegramId, setCardView, demoPreview } =
+  const { cardView, email, phoneNumber, telegramId, setCardView } =
     useNotifiSubscriptionContext();
+  const { demoPreview } = useNotifiDemoPreviewContext();
 
   const {
     setEmail,
