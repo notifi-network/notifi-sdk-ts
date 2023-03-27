@@ -111,31 +111,62 @@ export const NotifiCard: React.FC = () => {
         walletPublicKey="string"
         signMessage={async (msg: Uint8Array) => msg}
         hardwareLoginPlugin={{ sendMessage: async (msg: string) => msg }}
+        demoPreview={{ view: 'preview', data: JSON.parse(data) }}
       >
         Dummy Demo NotifiSubscriptionCard: Preview page
-        <NotifiSubscriptionCard
-          darkMode
-          cardId=""
-          demoByJSONConfig={{ view: 'preview', data: JSON.parse(data) }}
-        />
+        <NotifiSubscriptionCard darkMode cardId="" />
+      </NotifiContext>
+
+      <NotifiContext
+        dappAddress=""
+        env="Development"
+        walletBlockchain="SOLANA"
+        walletPublicKey="string"
+        signMessage={async (msg: Uint8Array) => msg}
+        hardwareLoginPlugin={{ sendMessage: async (msg: string) => msg }}
+        demoPreview={{ view: 'edit', data: JSON.parse(data) }}
+      >
+        Dummy Demo NotifiSubscriptionCard: Edit page
+        <NotifiSubscriptionCard darkMode cardId="" />
+      </NotifiContext>
+
+      <NotifiContext
+        dappAddress=""
+        env="Development"
+        walletBlockchain="SOLANA"
+        walletPublicKey="string"
+        signMessage={async (msg: Uint8Array) => msg}
+        hardwareLoginPlugin={{ sendMessage: async (msg: string) => msg }}
+        demoPreview={{ view: 'history', data: JSON.parse(data) }}
+      >
         Dummy Demo NotifiSubscriptionCard: History page
-        <NotifiSubscriptionCard
-          darkMode
-          cardId=""
-          demoByJSONConfig={{ view: 'edit', data: JSON.parse(data) }}
-        />
+        <NotifiSubscriptionCard darkMode cardId="" />
+      </NotifiContext>
+
+      <NotifiContext
+        dappAddress=""
+        env="Development"
+        walletBlockchain="SOLANA"
+        walletPublicKey="string"
+        signMessage={async (msg: Uint8Array) => msg}
+        hardwareLoginPlugin={{ sendMessage: async (msg: string) => msg }}
+        demoPreview={{ view: 'expired', data: JSON.parse(data) }}
+      >
         Dummy Demo NotifiSubscriptionCard: Expired page
-        <NotifiSubscriptionCard
-          darkMode
-          cardId=""
-          demoByJSONConfig={{ view: 'expired', data: JSON.parse(data) }}
-        />
+        <NotifiSubscriptionCard darkMode cardId="" />
+      </NotifiContext>
+
+      <NotifiContext
+        dappAddress=""
+        env="Development"
+        walletBlockchain="SOLANA"
+        walletPublicKey="string"
+        signMessage={async (msg: Uint8Array) => msg}
+        hardwareLoginPlugin={{ sendMessage: async (msg: string) => msg }}
+        demoPreview={{ view: 'verify', data: JSON.parse(data) }}
+      >
         Dummy Demo NotifiSubscriptionCard: Verify page
-        <NotifiSubscriptionCard
-          darkMode
-          cardId=""
-          demoByJSONConfig={{ view: 'verify', data: JSON.parse(data) }}
-        />
+        <NotifiSubscriptionCard darkMode cardId="" />
       </NotifiContext>
     </div>
   );

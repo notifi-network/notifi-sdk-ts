@@ -4,6 +4,7 @@ import React, { useCallback, useState } from 'react';
 
 import {
   useNotifiClientContext,
+  useNotifiDemoPreviewContext,
   useNotifiSubscriptionContext,
 } from '../../../../context';
 import { CardConfigItemV1, useNotifiSubscribe } from '../../../../hooks';
@@ -47,8 +48,8 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
     setCardView,
     emailIdThatNeedsConfirmation,
     telegramConfirmationUrl,
-    demoPreview,
   } = useNotifiSubscriptionContext();
+  const { demoPreview } = useNotifiDemoPreviewContext();
   const {
     params: { multiWallet },
   } = useNotifiClientContext();

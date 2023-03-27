@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import { useNotifiSubscriptionContext } from '../../context';
 import { useNotifiSubscribe, useSubscriptionCard } from '../../hooks';
@@ -23,24 +23,16 @@ export const NotifiSubscriptionCardContainer: React.FC<
   loadingRingColor,
   loadingSpinnerSize,
   onClose,
-  demoByJSONConfig,
 }: React.PropsWithChildren<NotifiSubscriptionCardProps>) => {
   const { isInitialized } = useNotifiSubscribe({ targetGroupName: 'Default' });
-  const { loading, setDemoPreview } = useNotifiSubscriptionContext();
-
-  useEffect(() => {
-    demoByJSONConfig ? setDemoPreview(demoByJSONConfig) : setDemoPreview(null);
-  }, [demoByJSONConfig]);
+  const { loading } = useNotifiSubscriptionContext();
 
   const inputDisabled = loading || !isInitialized;
 
-  const card = useSubscriptionCard(
-    {
-      id: cardId,
-      type: 'SUBSCRIPTION_CARD',
-    },
-    demoByJSONConfig,
-  );
+  const card = useSubscriptionCard({
+    id: cardId,
+    type: 'SUBSCRIPTION_CARD',
+  });
 
   let contents: React.ReactNode = null;
 
