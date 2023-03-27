@@ -6,7 +6,6 @@ import React from 'react';
 
 import {
   useNotifiClientContext,
-  useNotifiDemoPreviewContext,
   useNotifiSubscriptionContext,
 } from '../../context';
 import { ConnectWalletRow } from './ConnectWalletRow';
@@ -22,30 +21,18 @@ export const WalletListInternal: React.FC<WalletListInternalProps> = ({
   ownedWallets,
   disabled,
 }: WalletListInternalProps) => {
-  const { demoPreview } = useNotifiDemoPreviewContext();
   return (
     <ul>
-      {!demoPreview ? (
-        ownedWallets.map((wallet) => {
-          return (
-            <ConnectWalletRow
-              key={wallet.walletPublicKey}
-              {...wallet}
-              connectedWallets={connectedWallets}
-              disabled={disabled}
-            />
-          );
-        })
-      ) : (
-        <ConnectWalletRow
-          key="Demo view"
-          walletBlockchain="SOLANA"
-          walletPublicKey="0x0notifi"
-          signMessage={async (msg) => msg}
-          connectedWallets={connectedWallets}
-          disabled={disabled}
-        />
-      )}
+      {ownedWallets.map((wallet) => {
+        return (
+          <ConnectWalletRow
+            key={wallet.walletPublicKey}
+            {...wallet}
+            connectedWallets={connectedWallets}
+            disabled={disabled}
+          />
+        );
+      })}
     </ul>
   );
 };
@@ -55,10 +42,13 @@ export const WalletList: React.FC = () => {
   } = useNotifiClientContext();
   const { connectedWallets, loading } = useNotifiSubscriptionContext();
   const owned = multiWallet?.ownedWallets;
+  if (owned === undefined || owned.length === 0) {
+    return null;
+  }
 
   return (
     <WalletListInternal
-      ownedWallets={owned ?? []}
+      ownedWallets={owned}
       connectedWallets={connectedWallets}
       disabled={loading}
     />

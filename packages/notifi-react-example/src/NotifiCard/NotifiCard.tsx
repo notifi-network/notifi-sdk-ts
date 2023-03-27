@@ -155,19 +155,6 @@ export const NotifiCard: React.FC = () => {
         Dummy Demo NotifiSubscriptionCard: Expired page
         <NotifiSubscriptionCard darkMode cardId="" />
       </NotifiContext>
-
-      <NotifiContext
-        dappAddress=""
-        env="Development"
-        walletBlockchain="SOLANA"
-        walletPublicKey="string"
-        signMessage={async (msg: Uint8Array) => msg}
-        hardwareLoginPlugin={{ sendMessage: async (msg: string) => msg }}
-        demoPreview={{ view: 'verify', data: JSON.parse(data) }}
-      >
-        Dummy Demo NotifiSubscriptionCard: Verify page
-        <NotifiSubscriptionCard darkMode cardId="" />
-      </NotifiContext>
     </div>
   );
 };

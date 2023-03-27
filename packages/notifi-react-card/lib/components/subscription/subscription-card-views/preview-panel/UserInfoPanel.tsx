@@ -4,7 +4,6 @@ import React, { useCallback, useState } from 'react';
 
 import {
   useNotifiClientContext,
-  useNotifiDemoPreviewContext,
   useNotifiSubscriptionContext,
 } from '../../../../context';
 import { CardConfigItemV1 } from '../../../../hooks';
@@ -52,7 +51,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
     setCardView,
     destinationErrorMessages,
   } = useNotifiSubscriptionContext();
-  const { demoPreview } = useNotifiDemoPreviewContext();
+
   const {
     params: { multiWallet },
   } = useNotifiClientContext();
@@ -81,7 +80,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
     <div
       className={clsx('NotifiUserInfoPanelContainer', classNames?.container)}
     >
-      {(contactInfo.email.active && email) || demoPreview ? (
+      {contactInfo.email.active && email ? (
         <div
           className={clsx(
             'NotifiUserInfoPanel__email',
@@ -115,7 +114,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
           ) : null}
         </div>
       ) : null}
-      {(contactInfo.sms.active && phoneNumber) || demoPreview ? (
+      {contactInfo.sms.active && phoneNumber ? (
         <div
           className={clsx(
             'NotifiUserInfoPanel__sms',
@@ -144,7 +143,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
           ) : null}
         </div>
       ) : null}
-      {(contactInfo.telegram.active && telegramId) || demoPreview ? (
+      {contactInfo.telegram.active && telegramId ? (
         <div
           className={clsx(
             'NotifiUserInfoPanel__telegram',
