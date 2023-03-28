@@ -3,7 +3,6 @@ import React from 'react';
 
 import { EmailIcon } from '../assets/EmailIcon';
 import { useNotifiForm, useNotifiSubscriptionContext } from '../context';
-import { useNotifiSubscribe } from '../hooks';
 import type { DeepPartialReadonly } from '../utils';
 
 export type NotifiEmailInputProps = Readonly<{
@@ -33,7 +32,7 @@ export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
   intercomEmailInputContainerStyle,
   intercomView,
 }: NotifiEmailInputProps) => {
-  const { emailIdThatNeedsConfirmation, intercomCardView } =
+  const { intercomCardView, destinationErrorMessages } =
     useNotifiSubscriptionContext();
 
   const {
@@ -48,9 +47,8 @@ export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
 
   const { email: emailErrorMessage } = formErrorMessages;
 
-  const { resendEmailVerificationLink } = useNotifiSubscribe({
-    targetGroupName: 'Intercom',
-  });
+  const { email: emailErrorMessageFromSubscriptionContext } =
+    destinationErrorMessages;
 
   const validateEmail = () => {
     if (email === '') {
@@ -68,14 +66,17 @@ export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
   };
 
   const handleClick = () => {
-    resendEmailVerificationLink();
+    if (emailErrorMessageFromSubscriptionContext?.type !== 'recoverableError')
+      return;
+    emailErrorMessageFromSubscriptionContext.onClick();
   };
 
   return (
     <>
       {intercomView ? (
         intercomCardView.state === 'settingView' &&
-        emailIdThatNeedsConfirmation != '' ? (
+        emailErrorMessageFromSubscriptionContext?.type ===
+          'recoverableError' ? (
           <div
             onClick={handleClick}
             className={clsx(

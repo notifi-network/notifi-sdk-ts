@@ -6,7 +6,7 @@ import type {
   Source,
 } from '@notifi-network/notifi-core';
 import { isValidPhoneNumber } from 'libphonenumber-js';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useNotifiSubscriptionContext } from '../context';
 import { useNotifiClientContext } from '../context/NotifiClientContext';
@@ -25,7 +25,6 @@ export type SubscriptionData = Readonly<{
   telegramId: string | null;
   telegramConfirmationUrl: string | null;
   isPhoneNumberConfirmed: boolean | null;
-  emailIdThatNeedsConfirmation: string;
 }>;
 
 export type InstantSubscribe = Readonly<{
@@ -48,6 +47,7 @@ export const useNotifiSubscribe: ({
   targetGroupName,
 }: useNotifiSubscribeProps) => Readonly<{
   isAuthenticated: boolean;
+  isEmailConfirmationSent: boolean;
   isInitialized: boolean;
   isTokenExpired: boolean;
   logIn: () => Promise<SubscriptionData>;
@@ -60,7 +60,7 @@ export const useNotifiSubscribe: ({
     subscribeData: InstantSubscribe,
   ) => Promise<SubscriptionData>;
   updateTargetGroups: () => Promise<SubscriptionData>;
-  resendEmailVerificationLink: () => Promise<string>;
+  resendEmailVerificationLink: (emailId: string) => Promise<string>;
 }> = ({ targetGroupName = 'Default' }: useNotifiSubscribeProps) => {
   const { client } = useNotifiClientContext();
 
@@ -82,25 +82,31 @@ export const useNotifiSubscribe: ({
     setAlerts,
     setConnectedWallets,
     setEmail,
-    setIsSmsConfirmed,
     setLoading,
     setPhoneNumber,
-    setTelegramConfirmationUrl,
     setTelegramId,
-    emailIdThatNeedsConfirmation,
-    setEmailIdThatNeedsConfirmation,
+    setPhoneNumberErrorMessage,
     useHardwareWallet,
+    resetErrorMessageState,
+    setTelegramErrorMessage,
+    setEmailErrorMessage,
   } = useNotifiSubscriptionContext();
 
   const { keepSubscriptionData = true, walletPublicKey } = params;
 
-  const resendEmailVerificationLink = useCallback(async () => {
-    const resend = await client.sendEmailTargetVerification({
-      targetId: emailIdThatNeedsConfirmation,
-    });
+  const [isEmailConfirmationSent, setIsEmailConfirmationSent] =
+    useState<boolean>(false);
 
-    return resend;
-  }, [emailIdThatNeedsConfirmation, client.sendEmailTargetVerification]);
+  const resendEmailVerificationLink = useCallback(
+    async (emailId: string) => {
+      const resend = await client.sendEmailTargetVerification({
+        targetId: emailId,
+      });
+
+      return resend;
+    },
+    [client.sendEmailTargetVerification],
+  );
 
   const render = useCallback(
     (newData: ClientData | null): SubscriptionData => {
@@ -121,9 +127,15 @@ export const useNotifiSubscribe: ({
       const emailToSet = emailTarget?.emailAddress ?? '';
 
       if (emailTarget !== null && emailTarget?.isConfirmed === false) {
-        setEmailIdThatNeedsConfirmation(emailTarget.id ?? '');
+        setEmailErrorMessage({
+          type: 'recoverableError',
+          onClick: () => {
+            resendEmailVerificationLink(emailTarget.id ?? '');
+          },
+          message: 'Resend Link',
+        });
       } else {
-        setEmailIdThatNeedsConfirmation('');
+        setEmailErrorMessage(undefined);
       }
 
       setFormEmail(emailToSet);
@@ -136,7 +148,12 @@ export const useNotifiSubscribe: ({
 
       const phoneNumberToSet = phoneNumber ?? '';
 
-      setIsSmsConfirmed(isPhoneNumberConfirmed);
+      if (!isPhoneNumberConfirmed) {
+        setPhoneNumberErrorMessage({
+          type: 'unrecoverableError',
+          message: 'Invalid Number',
+        });
+      }
 
       setFormPhoneNumber(phoneNumberToSet);
       setPhoneNumber(phoneNumberToSet);
@@ -152,19 +169,36 @@ export const useNotifiSubscribe: ({
       setFormTelegram(telegramId ?? '');
       setTelegramId(telegramIdWithSymbolAdded ?? '');
 
-      setTelegramConfirmationUrl(telegramTarget?.confirmationUrl ?? undefined);
+      if (telegramTarget?.isConfirmed === false) {
+        setTelegramErrorMessage({
+          type: 'recoverableError',
+          onClick: () => {
+            if (!telegramTarget?.confirmationUrl) {
+              return;
+            }
+
+            window.open(telegramTarget?.confirmationUrl);
+          },
+          message: 'Verify Id',
+        });
+      }
 
       return {
         alerts,
         email: emailTarget?.emailAddress ?? null,
         isPhoneNumberConfirmed,
-        emailIdThatNeedsConfirmation,
         phoneNumber,
         telegramConfirmationUrl: telegramTarget?.confirmationUrl ?? null,
         telegramId: telegramTarget?.telegramId ?? null,
       };
     },
-    [setAlerts, setEmail, setPhoneNumber, setTelegramId],
+    [
+      setAlerts,
+      setEmail,
+      setPhoneNumber,
+      setTelegramId,
+      setIsEmailConfirmationSent,
+    ],
   );
 
   const copyAuths = useCallback(
@@ -487,6 +521,8 @@ export const useNotifiSubscribe: ({
   );
 
   const updateTargetGroups = useCallback(async () => {
+    resetErrorMessageState();
+
     const finalEmail = formEmail === '' ? null : formEmail;
 
     const finalTelegramId =
@@ -622,6 +658,7 @@ export const useNotifiSubscribe: ({
   }, [client, logIn, setLoading, render]);
 
   return {
+    isEmailConfirmationSent,
     resendEmailVerificationLink,
     instantSubscribe,
     isAuthenticated: client.isAuthenticated,

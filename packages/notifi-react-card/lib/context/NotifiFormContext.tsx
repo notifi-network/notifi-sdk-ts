@@ -1,15 +1,16 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, {
+  PropsWithChildren,
+  createContext,
+  useContext,
+  useState,
+} from 'react';
 
-export type FormInputs = {
-  email: string;
-  phoneNumber: string;
-  telegram: string;
-};
+import { DestinationInputs, EditFormType } from '.';
 
-export type FormErrorMessages = FormInputs;
+export type FormErrorMessages = DestinationInputs;
 
 export type NotifiFormData = Readonly<{
-  formState: FormInputs;
+  formState: DestinationInputs;
   formErrorMessages: FormErrorMessages;
   hasChanges: boolean;
   setHasChanges: (value: boolean) => void;
@@ -24,18 +25,13 @@ export type NotifiFormData = Readonly<{
   setTelegramErrorMessage: (value: string) => void;
 }>;
 
-export type FormField = 'email' | 'phoneNumber' | 'telegram';
-
-export type EditFormType = {
-  field: FormField;
-  value: string;
-};
-
 const NotifiFormContext = createContext<NotifiFormData>({} as NotifiFormData);
 
-export const NotifiFormProvider: React.FC = ({ children }) => {
+export const NotifiFormProvider: React.FC<PropsWithChildren> = ({
+  children,
+}) => {
   const [hasChanges, setHasChanges] = useState<boolean>(false);
-  const [formState, setFormInput] = useState<FormInputs>({
+  const [formState, setFormInput] = useState<DestinationInputs>({
     email: '',
     phoneNumber: '',
     telegram: '',

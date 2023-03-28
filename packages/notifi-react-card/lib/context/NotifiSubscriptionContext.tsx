@@ -8,6 +8,13 @@ import {
   useIntercomCardState,
 } from '../hooks/useIntercomCardState';
 import { NotifiParams } from './NotifiContext';
+import {
+  DestinationError,
+  DestinationErrorMessageField,
+  DestinationErrors,
+} from './constants';
+
+export type DestinationErrorMessages = DestinationErrors;
 
 export type NotifiSubscriptionData = Readonly<{
   alerts: Readonly<Record<string, Alert | undefined>>;
@@ -15,6 +22,7 @@ export type NotifiSubscriptionData = Readonly<{
   setConnectedWallets: React.Dispatch<
     React.SetStateAction<ReadonlyArray<ConnectedWallet>>
   >;
+  destinationErrorMessages: DestinationErrorMessages;
   email: string;
   params: NotifiParams;
   phoneNumber: string;
@@ -29,22 +37,22 @@ export type NotifiSubscriptionData = Readonly<{
   setEmail: (email: string) => void;
   setPhoneNumber: (phoneNumber: string) => void;
   setTelegramId: (telegramId: string) => void;
-  setTelegramConfirmationUrl: (
-    telegramConfirmationUrl: string | undefined,
-  ) => void;
   setUseHardwareWallet: React.Dispatch<React.SetStateAction<boolean>>;
   loading: boolean;
   setLoading: (loading: boolean) => void;
-  isSmsConfirmed: boolean | null;
-  setIsSmsConfirmed: (isConfirmed: boolean | null) => void;
-  emailIdThatNeedsConfirmation: string;
-  setEmailIdThatNeedsConfirmation: (emailId: string) => void;
   hasChatAlert: boolean;
   setHasChatAlert: (hasChatAlert: boolean) => void;
   conversationId: string;
   setConversationId: (conversationId: string) => void;
   userId: string;
   setUserId: (userId: string) => void;
+  setEmailErrorMessage: (value: DestinationError) => void;
+  setTelegramConfirmationUrl: (
+    telegramConfirmationUrl: string | undefined,
+  ) => void;
+  setPhoneNumberErrorMessage: (value: DestinationError) => void;
+  setTelegramErrorMessage: (value: DestinationError) => void;
+  resetErrorMessageState: () => void;
 }>;
 
 const NotifiSubscriptionContext = createContext<NotifiSubscriptionData>(
@@ -61,9 +69,6 @@ export const NotifiSubscriptionContextProvider: React.FC<
   const { cardView, setCardView } = useFetchedCardState();
   const { intercomCardView, setIntercomCardView } = useIntercomCardState();
 
-  const [emailIdThatNeedsConfirmation, setEmailIdThatNeedsConfirmation] =
-    useState<string>('');
-  const [isSmsConfirmed, setIsSmsConfirmed] = useState<boolean | null>(null);
   const [telegramConfirmationUrl, setTelegramConfirmationUrl] = useState<
     string | undefined
   >(undefined);
@@ -79,6 +84,43 @@ export const NotifiSubscriptionContextProvider: React.FC<
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [telegramId, setTelegramId] = useState<string>('');
 
+  const [destinationErrorMessages, setDestinationErrorMessages] =
+    useState<DestinationErrorMessages>({
+      email: undefined,
+      telegram: undefined,
+      phoneNumber: undefined,
+    });
+
+  const handleErrorMessage = ({
+    field,
+    value,
+  }: DestinationErrorMessageField) => {
+    setDestinationErrorMessages((destinationErrorMessages) => ({
+      ...destinationErrorMessages,
+      [field]: value,
+    }));
+  };
+
+  const setEmailErrorMessage = (value: DestinationError) => {
+    handleErrorMessage({ field: 'email', value });
+  };
+
+  const setTelegramErrorMessage = (value: DestinationError) => {
+    handleErrorMessage({ field: 'telegram', value });
+  };
+
+  const setPhoneNumberErrorMessage = (value: DestinationError) => {
+    handleErrorMessage({ field: 'phoneNumber', value });
+  };
+
+  const resetErrorMessageState = () => {
+    setDestinationErrorMessages({
+      email: undefined,
+      telegram: undefined,
+      phoneNumber: undefined,
+    });
+  };
+
   const value = {
     alerts,
     connectedWallets,
@@ -89,11 +131,8 @@ export const NotifiSubscriptionContextProvider: React.FC<
     telegramId,
     cardView,
     telegramConfirmationUrl,
-    emailIdThatNeedsConfirmation,
-    isSmsConfirmed,
-    setEmailIdThatNeedsConfirmation,
-    setIsSmsConfirmed,
     useHardwareWallet,
+    destinationErrorMessages,
     setAlerts,
     setConnectedWallets,
     setCardView,
@@ -111,6 +150,10 @@ export const NotifiSubscriptionContextProvider: React.FC<
     setConversationId,
     userId,
     setUserId,
+    setEmailErrorMessage,
+    setTelegramErrorMessage,
+    setPhoneNumberErrorMessage,
+    resetErrorMessageState,
   };
 
   return (

@@ -6,14 +6,18 @@ import {
   useNotifiClientContext,
   useNotifiSubscriptionContext,
 } from '../../../../context';
-import { CardConfigItemV1, useNotifiSubscribe } from '../../../../hooks';
+import { CardConfigItemV1 } from '../../../../hooks';
 import { DeepPartialReadonly } from '../../../../utils';
+import { DestinationErrorMessage } from './DestinationErrorMessage';
 
 export type UserInfoSection = {
   container: string;
   label: string;
   confirmationLink: string;
   confirmationLabel: string;
+  errorMessageContainer: string;
+  errorMessage: string;
+  tooltipContent: string;
 };
 
 export type UserInfoPanelProps = {
@@ -45,28 +49,29 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
     email,
     telegramId,
     setCardView,
-    emailIdThatNeedsConfirmation,
-    telegramConfirmationUrl,
+    destinationErrorMessages,
   } = useNotifiSubscriptionContext();
 
   const {
     params: { multiWallet },
   } = useNotifiClientContext();
 
-  const { resendEmailVerificationLink } = useNotifiSubscribe({
-    targetGroupName: 'Default',
-  });
-
   const handleEditClick = useCallback(() => {
     setCardView({ state: 'edit' });
   }, [setCardView, phoneNumber, email, telegramId]);
 
+  const {
+    telegram: telegramErrorMessage,
+    email: emailErrorMessage,
+    phoneNumber: phoneNumberErrorMessage,
+  } = destinationErrorMessages;
+
   const handleResendEmailVerificationClick = useCallback(() => {
+    if (emailErrorMessage?.type !== 'recoverableError') return;
     setIsEmailConfirmationSent(true);
-    resendEmailVerificationLink();
+    emailErrorMessage.onClick();
     setTimeout(() => setIsEmailConfirmationSent(false), 3000);
   }, []);
-
   return (
     <div
       className={clsx('NotifiUserInfoPanelContainer', classNames?.container)}
@@ -86,31 +91,22 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
           >
             {email}
           </label>
-          {emailIdThatNeedsConfirmation !== '' ? (
-            <a
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={handleResendEmailVerificationClick}
-              className={clsx(
-                'NotifiUserInfoPanel__emailConfirmation',
-                classNames?.email?.confirmationLink,
-              )}
-            >
-              <label
-                className={clsx(
-                  'NotifiUserInfoPanel__emailConfirmationLabel',
-                  classNames?.email?.confirmationLabel,
-                  {
-                    NotifiUserInfoPanel__emailConfirmationSent:
-                      isEmailConfirmationSent,
-                  },
-                )}
-              >
-                {confirmationLabels?.email ?? isEmailConfirmationSent
-                  ? 'Email sent!'
-                  : 'Resend Link'}
-              </label>
-            </a>
+          {emailErrorMessage?.type === 'recoverableError' ? (
+            <DestinationErrorMessage
+              classNames={{
+                errorMessage: clsx(classNames?.email?.errorMessage, {
+                  DestinationError__emailConfirmationSent:
+                    isEmailConfirmationSent,
+                }),
+                errorMessageContainer: classNames?.email?.errorMessageContainer,
+                tooltipContent: classNames?.email?.tooltipContent,
+              }}
+              onClick={() => handleResendEmailVerificationClick()}
+              errorMessage={
+                isEmailConfirmationSent ? 'Sent' : emailErrorMessage.message
+              }
+              tooltipContent={emailErrorMessage?.tooltip}
+            />
           ) : null}
         </div>
       ) : null}
@@ -129,6 +125,18 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
           >
             {phoneNumber}
           </label>
+
+          {phoneNumberErrorMessage?.type !== undefined ? (
+            <DestinationErrorMessage
+              classNames={{
+                errorMessage: classNames?.sms?.errorMessage,
+                errorMessageContainer: classNames?.sms?.errorMessageContainer,
+                tooltipContent: classNames?.sms?.tooltipContent,
+              }}
+              errorMessage={phoneNumberErrorMessage?.message}
+              tooltipContent={phoneNumberErrorMessage?.tooltip}
+            />
+          ) : null}
         </div>
       ) : null}
       {contactInfo.telegram.active && telegramId ? (
@@ -146,25 +154,27 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
           >
             {telegramId}
           </label>
-          {telegramConfirmationUrl ? (
-            <a
-              target="_blank"
-              rel="noopener noreferrer"
-              href={telegramConfirmationUrl}
-              className={clsx(
-                'NotifiUserInfoPanel__telegramConfirmation',
-                classNames?.telegram?.confirmationLink,
-              )}
-            >
-              <label
-                className={clsx(
-                  'NotifiUserInfoPanel__telegramConfirmationLabel',
-                  classNames?.telegram?.confirmationLabel,
-                )}
-              >
-                {confirmationLabels?.telegram ?? 'Verify Id'}
-              </label>
-            </a>
+          {telegramErrorMessage?.type === 'recoverableError' ? (
+            <DestinationErrorMessage
+              classNames={{
+                errorMessage: clsx(
+                  classNames?.telegram?.errorMessage,
+                  classNames?.telegram?.confirmationLink,
+                ),
+                errorMessageContainer:
+                  classNames?.telegram?.errorMessageContainer,
+                tooltipContent: classNames?.telegram?.tooltipContent,
+              }}
+              onClick={() => {
+                telegramErrorMessage?.onClick();
+              }}
+              errorMessage={
+                telegramErrorMessage?.message ??
+                confirmationLabels?.telegram ??
+                ''
+              }
+              tooltipContent={destinationErrorMessages?.phoneNumber?.tooltip}
+            />
           ) : null}
         </div>
       ) : null}
