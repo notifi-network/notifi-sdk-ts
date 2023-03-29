@@ -1,11 +1,10 @@
-import React, { createContext, useContext, useEffect } from 'react';
+import React, { createContext, useContext, useMemo } from 'react';
 
 import {
   CardConfigItemV1,
   FetchedCardViewState,
   WebhookContactInfo,
 } from '../hooks';
-import { NotifiParams } from './NotifiContext';
 
 export type DemoPreview = {
   view: FetchedCardViewState['state'];
@@ -34,25 +33,22 @@ export const defaultDemoConfigV1: CardConfigItemV1 = {
 };
 
 export type NotifiDemoPreviewContextData = Readonly<{
-  demoPreview?: DemoPreview;
-  setDemoPreview: React.Dispatch<React.SetStateAction<DemoPreview | undefined>>;
+  demoPreview: DemoPreview;
 }>;
 
 const NotifiDemoPreviewContext = createContext<NotifiDemoPreviewContextData>(
   {} as unknown as NotifiDemoPreviewContextData, // Intentionally empty in default
 );
 
-export const NotifiDemoPreviewContextProvider: React.FC<NotifiParams> = ({
+export const NotifiDemoPreviewContextProvider: React.FC<DemoPreview> = ({
   children,
-  ...params
+  view,
+  data,
 }) => {
-  const [demoPreview, setDemoPreview] = React.useState<DemoPreview>();
-  useEffect(() => {
-    setDemoPreview(params.demoPreview);
-  }, [params.demoPreview]);
+  const demoPreview = useMemo(() => ({ view, data }), [view, data]);
 
   return (
-    <NotifiDemoPreviewContext.Provider value={{ demoPreview, setDemoPreview }}>
+    <NotifiDemoPreviewContext.Provider value={{ demoPreview }}>
       {children}
     </NotifiDemoPreviewContext.Provider>
   );
