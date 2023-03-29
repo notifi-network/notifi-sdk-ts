@@ -16,11 +16,6 @@ import {
 
 export type DestinationErrorMessages = DestinationErrors;
 
-export type DemoPreview = {
-  view: FetchedCardViewState['state'];
-  data: CardConfigItemV1;
-};
-
 export type NotifiSubscriptionData = Readonly<{
   alerts: Readonly<Record<string, Alert | undefined>>;
   connectedWallets: ReadonlyArray<ConnectedWallet>;
@@ -58,8 +53,6 @@ export type NotifiSubscriptionData = Readonly<{
   setPhoneNumberErrorMessage: (value: DestinationError) => void;
   setTelegramErrorMessage: (value: DestinationError) => void;
   resetErrorMessageState: () => void;
-  demoPreview: DemoPreview | null;
-  setDemoPreview: React.Dispatch<React.SetStateAction<DemoPreview | null>>;
 }>;
 
 const NotifiSubscriptionContext = createContext<NotifiSubscriptionData>(
@@ -127,10 +120,6 @@ export const NotifiSubscriptionContextProvider: React.FC<
       phoneNumber: undefined,
     });
   };
-  const [demoPreview, setDemoPreview] = useState<DemoPreview | null>({
-    view: 'expired',
-    data: defaultDemoConfigV1,
-  });
 
   const value = {
     alerts,
@@ -165,8 +154,6 @@ export const NotifiSubscriptionContextProvider: React.FC<
     setTelegramErrorMessage,
     setPhoneNumberErrorMessage,
     resetErrorMessageState,
-    demoPreview,
-    setDemoPreview,
   };
 
   return (

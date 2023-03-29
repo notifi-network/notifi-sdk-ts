@@ -56,10 +56,6 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
     params: { multiWallet },
   } = useNotifiClientContext();
 
-  const {
-    params: { multiWallet },
-  } = useNotifiClientContext();
-
   const handleEditClick = useCallback(() => {
     setCardView({ state: 'edit' });
   }, [setCardView, phoneNumber, email, telegramId]);
