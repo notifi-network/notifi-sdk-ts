@@ -29,6 +29,7 @@ export type NotifiSubscriptionData = Readonly<{
   telegramId: string;
   telegramConfirmationUrl?: string;
   useHardwareWallet: boolean;
+  useDiscord: boolean;
   cardView: FetchedCardViewState;
   setCardView: React.Dispatch<React.SetStateAction<FetchedCardViewState>>;
   intercomCardView: IntercomCardView;
@@ -38,6 +39,7 @@ export type NotifiSubscriptionData = Readonly<{
   setPhoneNumber: (phoneNumber: string) => void;
   setTelegramId: (telegramId: string) => void;
   setUseHardwareWallet: React.Dispatch<React.SetStateAction<boolean>>;
+  setUseDiscord: React.Dispatch<React.SetStateAction<boolean>>;
   loading: boolean;
   setLoading: (loading: boolean) => void;
   hasChatAlert: boolean;
@@ -78,6 +80,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
     ReadonlyArray<ConnectedWallet>
   >([]);
   const [useHardwareWallet, setUseHardwareWallet] = useState<boolean>(false);
+  const [useDiscord, setUseDiscord] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
 
   const [email, setEmail] = useState<string>('');
@@ -154,6 +157,8 @@ export const NotifiSubscriptionContextProvider: React.FC<
     setTelegramErrorMessage,
     setPhoneNumberErrorMessage,
     resetErrorMessageState,
+    useDiscord,
+    setUseDiscord,
   };
 
   return (

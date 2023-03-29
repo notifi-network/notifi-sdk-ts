@@ -147,6 +147,7 @@ export type ContactInfo = Readonly<{
   active: boolean;
 }>;
 export type EmailContactInfo = ContactInfo;
+export type DiscordContactInfo = ContactInfo;
 
 export type CountryCode = string;
 
@@ -170,6 +171,7 @@ export type ContactInfoConfig = Readonly<{
   sms: SmsContactInfo;
   telegram: TelegramContactInfo;
   webhook: WebhookContactInfo;
+  discord: DiscordContactInfo;
 }>;
 
 export type CardConfigItemV1 = Readonly<{

@@ -5,6 +5,10 @@ import { NotifiInputFieldsText, NotifiInputSeparators } from '..';
 import { useNotifiClientContext } from '../../../context';
 import { CardConfigItemV1 } from '../../../hooks';
 import {
+  NotifiDiscordToggle,
+  NotifiDiscordToggleProps,
+} from '../../NotifiDiscordToggle';
+import {
   NotifiEmailInput,
   NotifiEmailInputProps,
 } from '../../NotifiEmailInput';
@@ -29,6 +33,7 @@ export type InputFieldsProps = {
     NotifiSmsInput?: NotifiSmsInputProps['classNames'];
     NotifiTelegramInput?: NotifiTelegramInputProps['classNames'];
     NotifiHwWalletToggle?: NotifiHwWalletToggleProps['classNames'];
+    NotifiDiscordToggle?: NotifiDiscordToggleProps['classNames'];
   }>;
 };
 export const InputFields: React.FC<InputFieldsProps> = ({
@@ -129,6 +134,13 @@ export const InputFields: React.FC<InputFieldsProps> = ({
         <NotifiHwWalletToggle
           disabled={inputDisabled}
           classNames={classNames?.NotifiHwWalletToggle}
+        />
+      ) : null}
+
+      {data.contactInfo?.discord?.active ? (
+        <NotifiDiscordToggle
+          disabled={inputDisabled}
+          classNames={classNames?.NotifiDiscordToggle}
         />
       ) : null}
     </>

@@ -33,6 +33,9 @@ export const defaultDemoConfigV1: CardConfigItemV1 = {
     telegram: {
       active: true,
     },
+    discord: {
+      active: false,
+    },
     webhook: {} as unknown as WebhookContactInfo,
   },
 };

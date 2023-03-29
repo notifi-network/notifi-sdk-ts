@@ -499,16 +499,18 @@ input::-webkit-inner-spin-button {
   background-color: #1448f3;
 }
 
-.NotifiHwWalletToggle__container {
+.NotifiHwWalletToggle__container,
+.NotifiDiscordToggle__container {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   gap: 10px;
   padding-top: 10px;
 }
 
-.NotifiHwWalletToggle__label {
+.NotifiHwWalletToggle__label,
+.NotifiDiscordToggle__label {
   font-size: 16px;
   line-height: 20px;
   color: var(--notifi-font-color);
