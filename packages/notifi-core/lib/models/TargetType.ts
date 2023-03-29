@@ -1,1 +1,1 @@
-export type TargetType = 'SMS' | 'EMAIL' | 'TELEGRAM';
+export type TargetType = 'SMS' | 'EMAIL' | 'TELEGRAM' | 'DISCORD';

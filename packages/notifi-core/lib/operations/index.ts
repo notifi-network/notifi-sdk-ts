@@ -20,6 +20,7 @@ export * from './GetConfigurationForDapp';
 export * from './GetConnectedWallets';
 export * from './GetConversationMessages';
 export * from './GetEmailTargets';
+export * from './GetDiscordTargets';
 export * from './GetFilters';
 export * from './GetNotificationHistory';
 export * from './GetSmsTargets';

@@ -1,4 +1,8 @@
 import {
+  discordTargetFragment,
+  discordTargetFragmentDependencies,
+} from './discordTargetFragment';
+import {
   emailTargetFragment,
   emailTargetFragmentDependencies,
 } from './emailTargetFragment';
@@ -24,6 +28,9 @@ fragment targetGroupFragment on TargetGroup {
   telegramTargets {
     ...telegramTargetFragment
   }
+  discordTargets {
+    ...discordTargetFragment
+  }
 }
 `.trim();
 
@@ -31,7 +38,9 @@ export const targetGroupFragmentDependencies = [
   ...emailTargetFragmentDependencies,
   ...smsTargetFragmentDependencies,
   ...telegramTargetFragmentDependencies,
+  ...discordTargetFragmentDependencies,
   emailTargetFragment,
   smsTargetFragment,
   telegramTargetFragment,
+  discordTargetFragment,
 ];
