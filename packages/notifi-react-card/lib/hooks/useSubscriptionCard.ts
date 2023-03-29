@@ -57,21 +57,19 @@ export const useSubscriptionCard = (
         });
       })
       .catch((error: unknown) => {
-        setState({
-          state: 'error',
-          reason: error,
-        });
+        if (demoPreview) {
+          setState(() => ({
+            state: 'fetched',
+            data: demoPreview.data,
+          }));
+        } else {
+          setState({
+            state: 'error',
+            reason: error,
+          });
+        }
       });
   }, [input.id, input.type]);
-
-  useEffect(() => {
-    if (demoPreview && state.state === 'error') {
-      setState(() => ({
-        state: 'fetched',
-        data: demoPreview.data,
-      }));
-    }
-  }, [state]);
 
   return state;
 };
