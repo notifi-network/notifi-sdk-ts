@@ -1,7 +1,10 @@
 import { ClientFetchSubscriptionCardInput } from '@notifi-network/notifi-core';
 import { useEffect, useState } from 'react';
 
-import { useNotifiClientContext } from '../context';
+import {
+  useNotifiClientContext,
+  useNotifiDemoPreviewContext,
+} from '../context';
 import { CardConfigItemV1 } from './SubscriptionCardConfig';
 
 export type LoadingState = Readonly<{
@@ -28,7 +31,7 @@ export const useSubscriptionCard = (
   const [state, setState] = useState<SubscriptionCardState>({
     state: 'loading',
   });
-
+  const { demoPreview } = useNotifiDemoPreviewContext();
   const { client } = useNotifiClientContext();
 
   useEffect(() => {
@@ -54,10 +57,17 @@ export const useSubscriptionCard = (
         });
       })
       .catch((error: unknown) => {
-        setState({
-          state: 'error',
-          reason: error,
-        });
+        if (demoPreview) {
+          setState(() => ({
+            state: 'fetched',
+            data: demoPreview.data,
+          }));
+        } else {
+          setState({
+            state: 'error',
+            reason: error,
+          });
+        }
       });
   }, [input.id, input.type]);
 

@@ -27,9 +27,7 @@ export type NotifiFormData = Readonly<{
 
 const NotifiFormContext = createContext<NotifiFormData>({} as NotifiFormData);
 
-export const NotifiFormProvider: React.FC<PropsWithChildren> = ({
-  children,
-}) => {
+export const NotifiFormProvider: React.FC = ({ children }) => {
   const [hasChanges, setHasChanges] = useState<boolean>(false);
   const [formState, setFormInput] = useState<DestinationInputs>({
     email: '',

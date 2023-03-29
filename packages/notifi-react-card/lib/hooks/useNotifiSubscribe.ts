@@ -8,7 +8,11 @@ import type {
 import { isValidPhoneNumber } from 'libphonenumber-js';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { useNotifiSubscriptionContext } from '../context';
+import {
+  defaultDemoConfigV1,
+  useNotifiDemoPreviewContext,
+  useNotifiSubscriptionContext,
+} from '../context';
 import { useNotifiClientContext } from '../context/NotifiClientContext';
 import {
   formatTelegramForSubscription,
@@ -62,6 +66,8 @@ export const useNotifiSubscribe: ({
   updateTargetGroups: () => Promise<SubscriptionData>;
   resendEmailVerificationLink: (emailId: string) => Promise<string>;
 }> = ({ targetGroupName = 'Default' }: useNotifiSubscribeProps) => {
+  const { demoPreview } = useNotifiDemoPreviewContext();
+
   const { client } = useNotifiClientContext();
 
   const {
@@ -227,6 +233,12 @@ export const useNotifiSubscribe: ({
   // Initial fetch
   const didFetch = useRef(false);
   useEffect(() => {
+    if (demoPreview) {
+      // Mockup info for demo preview card
+      setEmail(defaultDemoConfigV1.name);
+      setPhoneNumber('+101234567890');
+      setTelegramId(defaultDemoConfigV1.id!);
+    }
     if (client.isAuthenticated && !didFetch.current) {
       didFetch.current = true;
       client
@@ -243,6 +255,9 @@ export const useNotifiSubscribe: ({
 
   const logInViaHardwareWallet =
     useCallback(async (): Promise<SubscriptionData> => {
+      if (demoPreview) {
+        throw new Error('Preview card does not support method call');
+      }
       if (params.walletBlockchain !== 'SOLANA') {
         throw new Error('Unsupported wallet blockchain');
       }
@@ -265,6 +280,8 @@ export const useNotifiSubscribe: ({
     }, [walletPublicKey, client, params, render]);
 
   const logIn = useCallback(async (): Promise<SubscriptionData> => {
+    if (demoPreview)
+      throw new Error('Preview card does not support method call');
     setLoading(true);
     if (!client.isAuthenticated) {
       if (useHardwareWallet) {
@@ -300,6 +317,7 @@ export const useNotifiSubscribe: ({
         finalTelegramId: string | null;
       }>,
     ): Promise<Alert | null> => {
+      if (demoPreview) throw Error('Preview card does not support method call');
       const { alertName, alertConfiguration } = alertParams;
       const { finalEmail, finalPhoneNumber, finalTelegramId } = contacts;
       const existingAlert = data.alerts.find(
@@ -447,6 +465,8 @@ export const useNotifiSubscribe: ({
     async (
       alertConfigs: Record<string, AlertConfiguration>,
     ): Promise<SubscriptionData> => {
+      if (demoPreview)
+        throw new Error('Preview card does not support method call');
       const configurations = { ...alertConfigs };
 
       const names = Object.keys(configurations);
@@ -523,6 +543,8 @@ export const useNotifiSubscribe: ({
   const updateTargetGroups = useCallback(async () => {
     resetErrorMessageState();
 
+    if (demoPreview)
+      throw new Error('Preview card does not support method call');
     const finalEmail = formEmail === '' ? null : formEmail;
 
     const finalTelegramId =
@@ -555,6 +577,8 @@ export const useNotifiSubscribe: ({
 
   const instantSubscribe = useCallback(
     async (alertData: InstantSubscribe) => {
+      if (demoPreview)
+        throw new Error('Preview card does not support method call');
       const finalEmail = formEmail === '' ? null : formEmail;
 
       const finalTelegramId =
@@ -609,6 +633,8 @@ export const useNotifiSubscribe: ({
 
   const subscribeWallet = useCallback(
     async (params: ConnectWalletParams) => {
+      if (demoPreview)
+        throw new Error('Preview card does not support method call');
       setLoading(true);
 
       try {
@@ -637,7 +663,8 @@ export const useNotifiSubscribe: ({
 
   const updateWallets = useCallback(async () => {
     setLoading(true);
-
+    if (demoPreview)
+      throw new Error('Preview card does not support method call');
     try {
       if (!client.isAuthenticated) {
         await logIn();

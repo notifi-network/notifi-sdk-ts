@@ -8,7 +8,11 @@ import React, {
   useState,
 } from 'react';
 
-import { useNotifiForm, useNotifiSubscriptionContext } from '../../context';
+import {
+  useNotifiDemoPreviewContext,
+  useNotifiForm,
+  useNotifiSubscriptionContext,
+} from '../../context';
 import { CardConfigItemV1, useNotifiSubscribe } from '../../hooks';
 import { DeepPartialReadonly } from '../../utils';
 import {
@@ -86,6 +90,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
   const allowedCountryCodes = [...data.contactInfo.sms.supportedCountryCodes];
   const { cardView, email, phoneNumber, telegramId, setCardView } =
     useNotifiSubscriptionContext();
+  const { demoPreview } = useNotifiDemoPreviewContext();
 
   const {
     setEmail,
@@ -118,6 +123,9 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
   }, [email, phoneNumber, telegramId]);
 
   useEffect(() => {
+    if (demoPreview) {
+      return setCardView({ state: demoPreview.view });
+    }
     if (firstLoad.current || !isInitialized) {
       return;
     }
@@ -135,7 +143,14 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
     } else {
       setCardView({ state: 'signup' });
     }
-  }, [email, phoneNumber, telegramId, setCardView, cardView, isInitialized]);
+  }, [
+    email,
+    phoneNumber,
+    telegramId,
+    setCardView,
+    cardView.state,
+    isInitialized,
+  ]);
 
   const rightIcon: NotifiAlertBoxButtonProps | undefined = useMemo(() => {
     if (onClose === undefined) {
@@ -334,6 +349,8 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
         </>
       );
       break;
+    default:
+      view = <div>Not supported view</div>;
   }
   return <>{view}</>;
 };
