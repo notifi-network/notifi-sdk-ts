@@ -1,4 +1,9 @@
-import React, { createContext, useContext, useMemo } from 'react';
+import React, {
+  PropsWithChildren,
+  createContext,
+  useContext,
+  useMemo,
+} from 'react';
 
 import {
   CardConfigItemV1,
@@ -40,11 +45,9 @@ const NotifiDemoPreviewContext = createContext<NotifiDemoPreviewContextData>(
   {} as unknown as NotifiDemoPreviewContextData, // Intentionally empty in default
 );
 
-export const NotifiDemoPreviewContextProvider: React.FC<DemoPreview> = ({
-  children,
-  view,
-  data,
-}) => {
+export const NotifiDemoPreviewContextProvider: React.FC<
+  PropsWithChildren<DemoPreview>
+> = ({ children, view, data }) => {
   const demoPreview = useMemo(() => ({ view, data }), [view, data]);
 
   return (
