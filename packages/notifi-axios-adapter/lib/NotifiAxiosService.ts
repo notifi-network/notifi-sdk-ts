@@ -6,6 +6,7 @@ import broadcastMessageImpl from './mutations/broadcastMessageImpl';
 import completeLogInByTransactionImpl from './mutations/completeLogInByTransaction';
 import connectWalletImpl from './mutations/connectWalletImpl';
 import createAlertImpl from './mutations/createAlertImpl';
+import createDiscordTargetImpl from './mutations/createDiscordTargetImpl';
 import createEmailTargetImpl from './mutations/createEmailTargetImpl';
 import createSmsTargetImpl from './mutations/createSmsTargetImpl';
 import createSourceGroupImpl from './mutations/createSourceGroupImpl';
@@ -28,6 +29,8 @@ import getAlertsImpl from './queries/getAlertsImpl';
 import getConfigurationForDappImpl from './queries/getConfigurationForDappImpl';
 import getConnectedWalletsImpl from './queries/getConnectedWalletsImpl';
 import getConversationMessagesImpl from './queries/getConversationMessagesImpl';
+import getDiscordTargetsImpl from './queries/getDiscordTargetsImpl';
+import getDiscordVerificationLinkImpl from './queries/getDiscordVerificationLinkImpl';
 import getEmailTargetsImpl from './queries/getEmailTargetsImpl';
 import getFiltersImpl from './queries/getFiltersImpl';
 import getNotificationHistoryImpl from './queries/getNotificationHistoryImpl';
@@ -73,6 +76,9 @@ export class NotifiAxiosService implements NotifiService {
   getSources: NotifiService['getSources'];
   getTargetGroups: NotifiService['getTargetGroups'];
   getTelegramTargets: NotifiService['getTelegramTargets'];
+  createDiscordTarget: NotifiService['createDiscordTarget'];
+  getDiscordTargets: NotifiService['getDiscordTargets'];
+  getDiscordVerificationLink: NotifiService['getDiscordVerificationLink'];
   getTopics: NotifiService['getTopics'];
   getWebhookTargets: NotifiService['getWebhookTargets'];
   logInFromDapp: NotifiService['logInFromDapp'];
@@ -115,6 +121,7 @@ export class NotifiAxiosService implements NotifiService {
     this.createSmsTarget = createSmsTargetImpl.bind(null, a);
     this.createTargetGroup = createTargetGroupImpl.bind(null, a);
     this.createTelegramTarget = createTelegramTargetImpl.bind(null, a);
+    this.createDiscordTarget = createDiscordTargetImpl.bind(null, a);
     this.createSource = createSourceImpl.bind(null, a);
     this.createSourceGroup = createSourceGroupImpl.bind(null, a);
     this.createSupportConversation = createSupportConversationImpl.bind(
@@ -138,6 +145,7 @@ export class NotifiAxiosService implements NotifiService {
     this.getSources = getSourcesImpl.bind(null, a);
     this.getTargetGroups = getTargetGroupsImpl.bind(null, a);
     this.getTelegramTargets = getTelegramTargetsImpl.bind(null, a);
+    this.getDiscordTargets = getDiscordTargetsImpl.bind(null, a);
     this.getTopics = getTopicsImpl.bind(null, a);
     this.getWebhookTargets = getWebhookTargetsImpl.bind(null, a);
     this.logInFromDapp = logInFromDappImpl.bind(null, a);
@@ -147,6 +155,10 @@ export class NotifiAxiosService implements NotifiService {
     this.sendConversationMessages = sendConversationMessagesImpl.bind(null, a);
     this.updateSourceGroup = updateSourceGroupImpl.bind(null, a);
     this.updateTargetGroup = updateTargetGroupImpl.bind(null, a);
+    this.getDiscordVerificationLink = getDiscordVerificationLinkImpl.bind(
+      null,
+      a,
+    );
   }
 
   setJwt = (jwt: string | null) => {

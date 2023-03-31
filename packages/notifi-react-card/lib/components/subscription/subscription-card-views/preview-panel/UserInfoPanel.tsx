@@ -26,6 +26,7 @@ export type UserInfoPanelProps = {
     container: string;
     email?: UserInfoSection;
     telegram?: UserInfoSection;
+    discord?: UserInfoSection;
     sms?: UserInfoSection;
     EditButton: string;
     myWallet?: UserInfoSection;
@@ -64,6 +65,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
     telegram: telegramErrorMessage,
     email: emailErrorMessage,
     phoneNumber: phoneNumberErrorMessage,
+    discord: discordErrrorMessage,
   } = destinationErrorMessages;
 
   const handleResendEmailVerificationClick = useCallback(() => {
@@ -170,6 +172,45 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
               }}
               errorMessage={
                 telegramErrorMessage?.message ??
+                confirmationLabels?.telegram ??
+                ''
+              }
+              tooltipContent={destinationErrorMessages?.phoneNumber?.tooltip}
+            />
+          ) : null}
+        </div>
+      ) : null}
+      {contactInfo?.discord?.active ? (
+        <div
+          className={clsx(
+            'NotifiUserInfoPanel__discord',
+            classNames?.discord?.container,
+          )}
+        >
+          <label
+            className={clsx(
+              'NotifiUserInfoPanel__discordLabel',
+              classNames?.discord?.label,
+            )}
+          >
+            Discord
+          </label>
+          {discordErrrorMessage?.type === 'recoverableError' ? (
+            <DestinationErrorMessage
+              classNames={{
+                errorMessage: clsx(
+                  classNames?.discord?.errorMessage,
+                  classNames?.discord?.confirmationLink,
+                ),
+                errorMessageContainer:
+                  classNames?.discord?.errorMessageContainer,
+                tooltipContent: classNames?.discord?.tooltipContent,
+              }}
+              onClick={() => {
+                discordErrrorMessage?.onClick();
+              }}
+              errorMessage={
+                discordErrrorMessage?.message ??
                 confirmationLabels?.telegram ??
                 ''
               }

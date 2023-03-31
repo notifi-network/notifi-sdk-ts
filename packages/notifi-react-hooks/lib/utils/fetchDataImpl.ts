@@ -1,10 +1,12 @@
 import {
   Alert,
   ConnectedWallet,
+  DiscordTarget,
   EmailTarget,
   Filter,
   GetAlertsService,
   GetConnectedWalletsService,
+  GetDiscordTargetsService,
   GetEmailTargetsService,
   GetSmsTargetsService,
   GetSourceGroupsService,
@@ -32,6 +34,7 @@ export type InternalData = {
   smsTargets: SmsTarget[];
   telegramTargets: TelegramTarget[];
   webhookTargets: WebhookTarget[];
+  discordTargets: DiscordTarget[];
 };
 
 export type FetchDataState = {
@@ -50,6 +53,7 @@ type Service = GetAlertsService &
   GetSourceGroupsService &
   GetTargetGroupsService &
   GetEmailTargetsService &
+  GetDiscordTargetsService &
   GetSmsTargetsService &
   GetTelegramTargetsService &
   GetTopicsService &
@@ -66,6 +70,7 @@ const doFetchData = async (service: Service): Promise<InternalData> => {
     smsTargets,
     telegramTargets,
     webhookTargets,
+    discordTargets,
   ] = await Promise.all([
     service.getAlerts(),
     service.getConnectedWallets(),
@@ -76,6 +81,7 @@ const doFetchData = async (service: Service): Promise<InternalData> => {
     service.getSmsTargets(),
     service.getTelegramTargets(),
     service.getWebhookTargets(),
+    service.getDiscordTargets(),
   ]);
 
   const filterIds = new Set<string | null>();
@@ -89,11 +95,13 @@ const doFetchData = async (service: Service): Promise<InternalData> => {
     });
   });
 
+  console.log('discordTargets from fetchData', discordTargets);
   return {
     alerts: [...alerts],
     connectedWallets: [...connectedWallets],
     filters,
     sources: [...sources],
+    discordTargets: [...discordTargets],
     sourceGroups: [...sourceGroups],
     targetGroups: [...targetGroups],
     emailTargets: [...emailTargets],

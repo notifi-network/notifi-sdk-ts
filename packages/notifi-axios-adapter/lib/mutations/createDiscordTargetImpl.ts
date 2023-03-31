@@ -3,8 +3,8 @@ import {
   makeRequest,
 } from '@notifi-network/notifi-axios-utils';
 import {
-  CreateEmailTargetInput,
-  CreateEmailTargetResult,
+  CreateDiscordTargetInput,
+  CreateDiscordTargetResult,
 } from '@notifi-network/notifi-core';
 
 import {
@@ -34,8 +34,8 @@ mutation createDiscordTarget(
 `.trim();
 
 const createDiscordTargetImpl = makeRequest<
-  CreateEmailTargetInput,
-  CreateEmailTargetResult
+  CreateDiscordTargetInput,
+  CreateDiscordTargetResult
 >(collectDependencies(...DEPENDENCIES, MUTATION), 'createDiscordTarget');
 
 export default createDiscordTargetImpl;

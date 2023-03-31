@@ -1,5 +1,5 @@
-export type DestinationInputs = Record<FormField, string>;
-export type FormField = 'email' | 'phoneNumber' | 'telegram';
+export type DestinationInputs = Record<Partial<FormField>, string>;
+export type FormField = 'email' | 'phoneNumber' | 'telegram' | 'discord';
 
 export type DestinationErrorMessageField = {
   field: FormField;

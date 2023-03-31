@@ -90,6 +90,7 @@ const projectData = (internalData: InternalData | null): ClientData | null => {
     sources,
     targetGroups,
     telegramTargets,
+    discordTargets,
   } = internalData;
 
   return {
@@ -101,6 +102,7 @@ const projectData = (internalData: InternalData | null): ClientData | null => {
     sources,
     targetGroups,
     telegramTargets,
+    discordTargets,
   };
 };
 
@@ -341,6 +343,8 @@ const useNotifiClient = (
       }
 
       const newData = await fetchDataImpl(service, Date, fetchDataRef.current);
+
+      console.log('newData', newData);
       setInternalData(newData);
       setLoading(false);
     };
@@ -606,6 +610,7 @@ const useNotifiClient = (
           smsTargetIds,
           telegramTargetIds,
           webhookTargetIds,
+          discordTargetIds,
         } = await ensureTargetIds(service, newData, input);
 
         const targetGroup = await ensureTargetGroupImpl(
@@ -617,6 +622,7 @@ const useNotifiClient = (
             smsTargetIds,
             telegramTargetIds,
             webhookTargetIds,
+            discordTargetIds,
           },
         );
 
@@ -714,11 +720,13 @@ const useNotifiClient = (
           Date,
           fetchDataRef.current,
         );
+
         const {
           emailTargetIds,
           smsTargetIds,
           telegramTargetIds,
           webhookTargetIds,
+          discordTargetIds,
         } = await ensureTargetIds(service, newData, input);
 
         const existingAlert = newData.alerts.find((a) => a.id === alertId);
@@ -739,6 +747,7 @@ const useNotifiClient = (
             smsTargetIds,
             telegramTargetIds,
             webhookTargetIds,
+            discordTargetIds,
           },
         );
 
@@ -865,6 +874,7 @@ const useNotifiClient = (
           smsTargetIds,
           telegramTargetIds,
           webhookTargetIds,
+          discordTargetIds,
         } = await ensureTargetIds(service, newData, input);
 
         const existingAlert = newData.alerts.find((a) => a.name === name);
@@ -912,6 +922,7 @@ const useNotifiClient = (
             smsTargetIds,
             telegramTargetIds,
             webhookTargetIds,
+            discordTargetIds,
           },
         );
 
@@ -1487,6 +1498,16 @@ const useNotifiClient = (
     [storage, notifiConfig, dappAddress],
   );
 
+  const getDiscordVerificationLink = useCallback(
+    async (discordTargetId: string) => {
+      console.log('discordTargetId', discordTargetId);
+      const result = service.getDiscordVerificationLink({
+        discordId: discordTargetId,
+      });
+      return result;
+    },
+    [],
+  );
   const client: NotifiClient = {
     beginLoginViaTransaction,
     broadcastMessage,
@@ -1511,6 +1532,7 @@ const useNotifiClient = (
     sendConversationMessages,
     sendEmailTargetVerification,
     createSupportConversation,
+    getDiscordVerificationLink,
   };
 
   return {

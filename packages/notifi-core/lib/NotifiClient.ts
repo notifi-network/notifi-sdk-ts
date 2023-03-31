@@ -2,6 +2,7 @@ import {
   Alert,
   ClientConfiguration,
   ConnectedWallet,
+  DiscordTarget,
   EmailTarget,
   Filter,
   NotificationHistory,
@@ -24,6 +25,7 @@ import {
   CreateSourceInput,
   CreateWebhookTargetInput,
   FindTenantConfigInput,
+  GetDiscordVerificationLinkResult,
   GetNotificationHistoryInput,
   SendConversationMessageInput,
 } from './operations';
@@ -38,6 +40,7 @@ export type ClientData = Readonly<{
   sources: ReadonlyArray<Source>;
   targetGroups: ReadonlyArray<TargetGroup>;
   telegramTargets: ReadonlyArray<TelegramTarget>;
+  discordTargets: ReadonlyArray<DiscordTarget>;
 }>;
 
 export type AlertFrequency =
@@ -113,6 +116,7 @@ export type ClientUpdateAlertInput = Readonly<{
   phoneNumber: string | null;
   telegramId: string | null;
   webhook?: ClientCreateWebhookParams;
+  discordId: string | null;
 }>;
 
 /**
@@ -127,6 +131,7 @@ export type ClientUpdateAlertInput = Readonly<{
  * @property emailAddress - The emailAddress to be used
  * @property phoneNumber - The phone number to be used
  * @property telegramId - The Telegram account username to be used
+ * @property discordId - The the discord id to be used
  * <br>
  * <br>
  * See [Alert Creation Guide]{@link https://notifi-network.github.io/notifi-sdk-ts/} for more information on creating Alerts
@@ -144,6 +149,7 @@ export type ClientCreateAlertInput = Readonly<{
   webhook?: ClientCreateWebhookParams;
   sourceIds?: ReadonlyArray<string>;
   sourceGroupName?: string;
+  discordId: string | null;
 }>;
 
 export type ClientCreateWebhookParams = Omit<CreateWebhookTargetInput, 'name'>;
@@ -207,6 +213,7 @@ export type ClientEnsureTargetGroupInput = Readonly<{
   phoneNumber: string | null;
   telegramId: string | null;
   webhook?: ClientCreateWebhookParams;
+  discordId: string | null;
 }>;
 
 /**
@@ -408,4 +415,7 @@ export type NotifiClient = Readonly<{
   getConversationMessages: (
     input: GetConversationMessagesFullInput,
   ) => Promise<ConversationMessages>;
+  getDiscordVerificationLink: (
+    input: string,
+  ) => Promise<GetDiscordVerificationLinkResult>;
 }>;

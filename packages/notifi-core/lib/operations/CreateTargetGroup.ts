@@ -6,6 +6,7 @@ export type CreateTargetGroupInput = Readonly<{
   smsTargetIds: string[];
   telegramTargetIds: string[];
   webhookTargetIds: string[];
+  discordTargetIds: string[];
 }>;
 
 export type CreateTargetGroupResult = TargetGroup;

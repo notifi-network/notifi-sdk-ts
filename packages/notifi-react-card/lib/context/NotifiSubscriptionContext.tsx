@@ -36,6 +36,8 @@ export type NotifiSubscriptionData = Readonly<{
   setIntercomCardView: React.Dispatch<React.SetStateAction<IntercomCardView>>;
   setAlerts: (alerts: Record<string, Alert | undefined>) => void;
   setEmail: (email: string) => void;
+  discordId: string;
+  setDiscordId: (discord: string) => void;
   setPhoneNumber: (phoneNumber: string) => void;
   setTelegramId: (telegramId: string) => void;
   setUseHardwareWallet: React.Dispatch<React.SetStateAction<boolean>>;
@@ -53,6 +55,7 @@ export type NotifiSubscriptionData = Readonly<{
     telegramConfirmationUrl: string | undefined,
   ) => void;
   setPhoneNumberErrorMessage: (value: DestinationError) => void;
+  setDiscordErrorMessage: (value: DestinationError) => void;
   setTelegramErrorMessage: (value: DestinationError) => void;
   resetErrorMessageState: () => void;
 }>;
@@ -86,12 +89,14 @@ export const NotifiSubscriptionContextProvider: React.FC<
   const [email, setEmail] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [telegramId, setTelegramId] = useState<string>('');
+  const [discordId, setDiscordId] = useState<string>('');
 
   const [destinationErrorMessages, setDestinationErrorMessages] =
     useState<DestinationErrorMessages>({
       email: undefined,
       telegram: undefined,
       phoneNumber: undefined,
+      discord: undefined,
     });
 
   const handleErrorMessage = ({
@@ -115,12 +120,16 @@ export const NotifiSubscriptionContextProvider: React.FC<
   const setPhoneNumberErrorMessage = (value: DestinationError) => {
     handleErrorMessage({ field: 'phoneNumber', value });
   };
+  const setDiscordErrorMessage = (value: DestinationError) => {
+    handleErrorMessage({ field: 'discord', value });
+  };
 
   const resetErrorMessageState = () => {
     setDestinationErrorMessages({
       email: undefined,
       telegram: undefined,
       phoneNumber: undefined,
+      discord: undefined,
     });
   };
 
@@ -157,8 +166,11 @@ export const NotifiSubscriptionContextProvider: React.FC<
     setTelegramErrorMessage,
     setPhoneNumberErrorMessage,
     resetErrorMessageState,
+    setDiscordErrorMessage,
     useDiscord,
     setUseDiscord,
+    discordId,
+    setDiscordId,
   };
 
   return (

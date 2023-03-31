@@ -832,7 +832,8 @@ input::-webkit-inner-spin-button {
 .NotifiUserInfoPanel__myWallet,
 .NotifiUserInfoPanel__email,
 .NotifiUserInfoPanel__telegram,
-.NotifiUserInfoPanel__sms {
+.NotifiUserInfoPanel__sms,
+.NotifiUserInfoPanel__discord {
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -845,7 +846,8 @@ input::-webkit-inner-spin-button {
 .NotifiUserInfoPanel__emailLabel,
 .NotifiUserInfoPanel__smsLabel,
 .NotifiUserInfoPanel__smsLabel,
-.NotifiUserInfoPanel__telegramLabel {
+.NotifiUserInfoPanel__telegramLabel,
+.otifiUserInfoPanel__discordLabel {
   margin-bottom: 0 !important;
   font-size: 15px;
   line-height: 18px;

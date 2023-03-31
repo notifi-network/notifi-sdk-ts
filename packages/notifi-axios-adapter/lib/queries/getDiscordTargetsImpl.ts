@@ -24,7 +24,7 @@ query getDiscordTargets {
 
 const getDiscordTargetsImpl = makeParameterLessRequest<GetDiscordTargetsResult>(
   collectDependencies(...DEPENDENCIES, MUTATION),
-  'smsTarget',
+  'discordTarget',
 );
 
 export default getDiscordTargetsImpl;
