@@ -95,7 +95,6 @@ const doFetchData = async (service: Service): Promise<InternalData> => {
     });
   });
 
-  console.log('discordTargets from fetchData', discordTargets);
   return {
     alerts: [...alerts],
     connectedWallets: [...connectedWallets],

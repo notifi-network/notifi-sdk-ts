@@ -344,7 +344,6 @@ const useNotifiClient = (
 
       const newData = await fetchDataImpl(service, Date, fetchDataRef.current);
 
-      console.log('newData', newData);
       setInternalData(newData);
       setLoading(false);
     };
@@ -612,7 +611,6 @@ const useNotifiClient = (
           webhookTargetIds,
           discordTargetIds,
         } = await ensureTargetIds(service, newData, input);
-        console.log('ensure target ids', discordTargetIds);
 
         const targetGroup = await ensureTargetGroupImpl(
           service,

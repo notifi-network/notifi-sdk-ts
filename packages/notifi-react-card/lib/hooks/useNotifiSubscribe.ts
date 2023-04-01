@@ -220,10 +220,11 @@ export const useNotifiSubscribe: ({
         if (discordTarget?.isConfirmed === false) {
           client
             .getDiscordTargetVerificationLink(discordId)
-            .then((discordUrl) => {
+            .then((discordURL) => {
+              const updatedDiscordURLWithId = `${discordURL}state=${discordId}`;
               setDiscordErrorMessage({
                 type: 'recoverableError',
-                onClick: () => window.open(discordUrl, '_blank'),
+                onClick: () => window.open(updatedDiscordURLWithId, '_blank'),
                 message: 'Enable Bot',
               });
             })
@@ -236,6 +237,8 @@ export const useNotifiSubscribe: ({
 
         setUseDiscord(true);
         setDiscordId(discordId);
+      } else {
+        setUseDiscord(false);
       }
 
       return {
@@ -620,11 +623,6 @@ export const useNotifiSubscribe: ({
 
     const finalDiscordId =
       useDiscord === true ? discordIdFromSubscriptionContext : null;
-
-    console.log(
-      'discordIdfromSubscriptionConext',
-      discordIdFromSubscriptionContext,
-    );
 
     if (isValidPhoneNumber(formPhoneNumber)) {
       finalPhoneNumber = formPhoneNumber;
