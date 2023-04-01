@@ -23,9 +23,6 @@ export type NotifiFormData = Readonly<{
 
   setTelegram: (value: string) => void;
   setTelegramErrorMessage: (value: string) => void;
-
-  setDiscord: (value: string) => void;
-  setDiscordErrorMessage: (value: string) => void;
 }>;
 
 const NotifiFormContext = createContext<NotifiFormData>({} as NotifiFormData);
@@ -87,13 +84,6 @@ export const NotifiFormProvider: React.FC<PropsWithChildren> = ({
   const setPhoneNumberErrorMessage = (value: string) => {
     handleErrorMessage({ field: 'phoneNumber', value });
   };
-  const setDiscord = (value: string) => {
-    handleFormInput({ field: 'discord', value });
-  };
-
-  const setDiscordErrorMessage = (value: string) => {
-    handleErrorMessage({ field: 'discord', value });
-  };
 
   const value = {
     formState,
@@ -106,8 +96,6 @@ export const NotifiFormProvider: React.FC<PropsWithChildren> = ({
     setTelegramErrorMessage,
     setPhoneNumber,
     setPhoneNumberErrorMessage,
-    setDiscord,
-    setDiscordErrorMessage,
   };
 
   return (
