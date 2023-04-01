@@ -111,6 +111,30 @@ export const ensureTelegram = ensureTarget(
   (value) => value.toLowerCase(),
 );
 
+export const ensureDiscord = ensureTarget(
+  async (service: Operations.CreateDiscordTargetService, value: string) => {
+    const mutation = await service.createDiscordTarget({
+      name: value.toLowerCase(),
+      value: value.toLowerCase(),
+    });
+
+    const result = mutation.createDiscordTarget;
+    if (result === undefined) {
+      throw new Error('Failed to create discordTarget');
+    }
+
+    return result;
+  },
+
+  async (service: Operations.GetDiscordTargetsService) => {
+    const query = await service.getDiscordTargets({});
+    return query.discordTarget;
+  },
+  (arg: Types.DiscordTargetFragmentFragment | undefined) =>
+    arg?.discordAccountId?.toLowerCase(),
+  (value) => value.toLowerCase(),
+);
+
 export type EnsureWebhookParams = Omit<
   Types.CreateWebhookTargetMutationVariables,
   'name'

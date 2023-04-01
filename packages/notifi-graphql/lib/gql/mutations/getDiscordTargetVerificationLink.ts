@@ -1,7 +1,7 @@
 import { gql } from 'graphql-request';
 
 export const GetDiscordTargetVerificationLink = gql`
-  query DiscordTargetVerificationLink(
+  query discordTargetVerificationLink(
     $discordTargetVerificationLinkInput: DiscordTargetVerificationLinkInput!
   ) {
     discordTargetVerificationLink(

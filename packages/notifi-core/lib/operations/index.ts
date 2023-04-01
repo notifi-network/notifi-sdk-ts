@@ -37,4 +37,4 @@ export * from './SendConversationMessages';
 export * from './UpdateSourceGroup';
 export * from './UpdateTargetGroup';
 export * from './CreateDiscordTarget';
-export * from './GetDiscordVerificationLink';
+export * from './GetDiscordTargetVerificationLink';

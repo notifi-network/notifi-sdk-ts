@@ -1,5 +1,6 @@
 import { gql } from 'graphql-request';
 
+import { DiscordTargetFragment } from './DiscordTargetFragment.gql';
 import { EmailTargetFragment } from './EmailTargetFragment.gql';
 import { SmsTargetFragment } from './SmsTargetFragment.gql';
 import { TelegramTargetFragment } from './TelegramTargetFragment.gql';
@@ -21,10 +22,14 @@ export const TargetGroupFragment = gql`
     webhookTargets {
       ...WebhookTargetFragment
     }
+    discordTargets {
+      ...DiscordTargetFragment
+    }
   }
 
   ${EmailTargetFragment}
   ${SmsTargetFragment}
   ${TelegramTargetFragment}
   ${WebhookTargetFragment}
+  ${DiscordTargetFragment}
 `;

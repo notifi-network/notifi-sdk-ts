@@ -399,6 +399,7 @@ class NotifiClient {
       smsTargetIds: [],
       telegramTargetIds: [],
       webhookTargetIds: [webhook.id],
+      discordTargetIds: [],
     });
 
     const updated = updateResult.updateTargetGroup;

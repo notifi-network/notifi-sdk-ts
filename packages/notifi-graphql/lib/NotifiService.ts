@@ -49,7 +49,9 @@ export class NotifiService
     Operations.SendEmailTargetVerificationRequestService,
     Operations.SendMessageService,
     Operations.UpdateSourceGroupService,
-    Operations.UpdateTargetGroupService
+    Operations.UpdateTargetGroupService,
+    Operations.CreateDiscordTargetService,
+    Operations.GetDiscordTargetsService
 {
   private _jwt: string | undefined;
   private _typedClient: ReturnType<typeof getSdk>;
@@ -121,6 +123,12 @@ export class NotifiService
   ): Promise<Generated.CreateEmailTargetMutation> {
     const headers = this._requestHeaders();
     return this._typedClient.createEmailTarget(variables, headers);
+  }
+  async createDiscordTarget(
+    variables: Generated.CreateDiscordTargetMutationVariables,
+  ): Promise<Generated.CreateDiscordTargetMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.createDiscordTarget(variables, headers);
   }
 
   async createSmsTarget(
@@ -240,6 +248,12 @@ export class NotifiService
   ): Promise<Generated.GetEmailTargetsQuery> {
     const headers = this._requestHeaders();
     return this._typedClient.getEmailTargets(variables, headers);
+  }
+  async getDiscordTargets(
+    variables: Generated.GetDiscordTargetsQueryVariables,
+  ): Promise<Generated.GetDiscordTargetsQuery> {
+    const headers = this._requestHeaders();
+    return this._typedClient.getDiscordTargets(variables, headers);
   }
 
   async getFilters(

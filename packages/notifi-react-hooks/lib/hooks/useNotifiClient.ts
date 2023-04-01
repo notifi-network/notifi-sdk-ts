@@ -612,6 +612,7 @@ const useNotifiClient = (
           webhookTargetIds,
           discordTargetIds,
         } = await ensureTargetIds(service, newData, input);
+        console.log('ensure target ids', discordTargetIds);
 
         const targetGroup = await ensureTargetGroupImpl(
           service,
@@ -1498,15 +1499,16 @@ const useNotifiClient = (
     [storage, notifiConfig, dappAddress],
   );
 
-  const getDiscordVerificationLink = useCallback(
+  const getDiscordTargetVerificationLink = useCallback(
     async (discordTargetId: string) => {
-      console.log('discordTargetId', discordTargetId);
-      const result = service.getDiscordVerificationLink({
-        discordId: discordTargetId,
+      const result = await service.getDiscordTargetVerificationLink({
+        discordTargetVerificationLinkInput: {
+          discordTargetId,
+        },
       });
       return result;
     },
-    [],
+    [service],
   );
   const client: NotifiClient = {
     beginLoginViaTransaction,
@@ -1532,7 +1534,7 @@ const useNotifiClient = (
     sendConversationMessages,
     sendEmailTargetVerification,
     createSupportConversation,
-    getDiscordVerificationLink,
+    getDiscordTargetVerificationLink,
   };
 
   return {

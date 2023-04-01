@@ -25,7 +25,7 @@ import {
   CreateSourceInput,
   CreateWebhookTargetInput,
   FindTenantConfigInput,
-  GetDiscordVerificationLinkResult,
+  GetDiscordTargetVerificationLinkResult,
   GetNotificationHistoryInput,
   SendConversationMessageInput,
 } from './operations';
@@ -415,7 +415,7 @@ export type NotifiClient = Readonly<{
   getConversationMessages: (
     input: GetConversationMessagesFullInput,
   ) => Promise<ConversationMessages>;
-  getDiscordVerificationLink: (
+  getDiscordTargetVerificationLink: (
     input: string,
-  ) => Promise<GetDiscordVerificationLinkResult>;
+  ) => Promise<GetDiscordTargetVerificationLinkResult>;
 }>;

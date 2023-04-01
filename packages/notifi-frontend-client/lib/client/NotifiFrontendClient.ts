@@ -8,6 +8,7 @@ import { notNullOrEmpty, packFilterOptions } from '../utils';
 import { areIdsEqual } from '../utils/areIdsEqual';
 import { ensureSourceAndFilters } from './ensureSource';
 import {
+  ensureDiscord,
   ensureEmail,
   ensureSms,
   ensureTelegram,
@@ -314,12 +315,14 @@ export class NotifiFrontendClient {
     phoneNumber,
     telegramId,
     webhook,
+    discordId,
   }: Readonly<{
     name: string;
     emailAddress?: string;
     phoneNumber?: string;
     telegramId?: string;
     webhook?: EnsureWebhookParams;
+    discordId?: string;
   }>): Promise<Types.TargetGroupFragmentFragment> {
     const [
       targetGroupsQuery,
@@ -327,12 +330,14 @@ export class NotifiFrontendClient {
       smsTargetId,
       telegramTargetId,
       webhookTargetId,
+      discordTargetId,
     ] = await Promise.all([
       this._service.getTargetGroups({}),
       ensureEmail(this._service, emailAddress),
       ensureSms(this._service, phoneNumber),
       ensureTelegram(this._service, telegramId),
       ensureWebhook(this._service, webhook),
+      ensureDiscord(this._service, discordId),
     ]);
 
     const emailTargetIds = emailTargetId === undefined ? [] : [emailTargetId];
@@ -341,6 +346,8 @@ export class NotifiFrontendClient {
       telegramTargetId === undefined ? [] : [telegramTargetId];
     const webhookTargetIds =
       webhookTargetId === undefined ? [] : [webhookTargetId];
+    const discordTargetIds =
+      discordTargetId === undefined ? [] : [discordTargetId];
 
     const existing = targetGroupsQuery.targetGroup?.find(
       (it) => it?.name === name,
@@ -352,6 +359,7 @@ export class NotifiFrontendClient {
         smsTargetIds,
         telegramTargetIds,
         webhookTargetIds,
+        discordTargetIds,
       });
     }
 
@@ -376,18 +384,21 @@ export class NotifiFrontendClient {
     smsTargetIds,
     telegramTargetIds,
     webhookTargetIds,
+    discordTargetIds,
   }: Readonly<{
     existing: Types.TargetGroupFragmentFragment;
     emailTargetIds: Array<string>;
     smsTargetIds: Array<string>;
     telegramTargetIds: Array<string>;
     webhookTargetIds: Array<string>;
+    discordTargetIds: Array<string>;
   }>): Promise<Types.TargetGroupFragmentFragment> {
     if (
       areIdsEqual(emailTargetIds, existing.emailTargets ?? []) &&
       areIdsEqual(smsTargetIds, existing.smsTargets ?? []) &&
       areIdsEqual(telegramTargetIds, existing.telegramTargets ?? []) &&
-      areIdsEqual(webhookTargetIds, existing.webhookTargets ?? [])
+      areIdsEqual(webhookTargetIds, existing.webhookTargets ?? []) &&
+      areIdsEqual(discordTargetIds, existing.discordTargets ?? [])
     ) {
       return existing;
     }
@@ -399,6 +410,7 @@ export class NotifiFrontendClient {
       smsTargetIds,
       telegramTargetIds,
       webhookTargetIds,
+      discordTargetIds,
     });
 
     const updated = updateMutation.updateTargetGroup;

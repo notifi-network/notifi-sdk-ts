@@ -24,6 +24,6 @@ export type TargetGroup = Readonly<{
   name: string | null;
   smsTargets: ReadonlyArray<SmsTarget>;
   telegramTargets: ReadonlyArray<TelegramTarget>;
-  discordTargets: ReadonlyArray<DiscordTarget>;
   webHookTargets: ReadonlyArray<WebhookTarget>;
+  discordTargets: ReadonlyArray<DiscordTarget>;
 }>;
