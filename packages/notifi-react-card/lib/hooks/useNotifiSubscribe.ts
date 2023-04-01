@@ -3,11 +3,11 @@ import type {
   ClientData,
   ConnectWalletParams,
   CreateSourceInput,
-  DiscordTarget,
   Source,
 } from '@notifi-network/notifi-core';
 import { isValidPhoneNumber } from 'libphonenumber-js';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { v4 as uuid } from 'uuid';
 
 import {
   defaultDemoConfigV1,
@@ -30,6 +30,7 @@ export type SubscriptionData = Readonly<{
   telegramId: string | null;
   telegramConfirmationUrl: string | null;
   isPhoneNumberConfirmed: boolean | null;
+  discordId: string | null;
 }>;
 
 export type InstantSubscribe = Readonly<{
@@ -97,8 +98,11 @@ export const useNotifiSubscribe: ({
     resetErrorMessageState,
     setTelegramErrorMessage,
     setEmailErrorMessage,
+    setDiscordErrorMessage,
     setUseDiscord,
+    useDiscord,
     setDiscordId,
+    discordId: discordIdFromSubscriptionContext,
   } = useNotifiSubscriptionContext();
 
   const { keepSubscriptionData = true, walletPublicKey } = params;
@@ -117,14 +121,17 @@ export const useNotifiSubscribe: ({
     [client.sendEmailTargetVerification],
   );
 
-  const getFirstDiscordTargetFromData = (
+  const getFirstDiscordTargetFromId = (
     newData: ClientData | null,
-  ): DiscordTarget | undefined => {
-    const discordTargets = newData?.discordTargets;
+  ): string | undefined => {
+    const firstDiscordTarget = newData?.discordTargets[0];
 
-    if (discordTargets?.length) {
-      return discordTargets[0];
+    if (firstDiscordTarget?.id) {
+      setDiscordId(firstDiscordTarget?.id);
+      return firstDiscordTarget?.id;
     }
+
+    return uuid();
   };
 
   const render = useCallback(
@@ -202,22 +209,33 @@ export const useNotifiSubscribe: ({
         });
       }
 
-      const discordTarget = getFirstDiscordTargetFromData(newData);
+      const discordTarget = targetGroup?.discordTargets[0];
 
-      console.log('discord Target', discordTarget);
+      if (!discordTarget) {
+        getFirstDiscordTargetFromId(newData);
+      }
 
       const discordId = discordTarget?.id;
-      if (discordId !== null) {
+      if (discordId) {
         if (discordTarget?.isConfirmed === false) {
-          console.log('discord target', discordTarget);
-          const discordVerificationURL = client
-            .getDiscordVerificationLink(discordId ?? '')
-            .then((res) => console.log(res));
-          console.log('discordVerificationURL', discordVerificationURL);
+          client
+            .getDiscordTargetVerificationLink(discordId)
+            .then((discordUrl) => {
+              setDiscordErrorMessage({
+                type: 'recoverableError',
+                onClick: () => window.open(discordUrl, '_blank'),
+                message: 'Enable Bot',
+              });
+            })
+            .catch(() => {
+              throw new Error(
+                'Failed to retrieve discord target verification link',
+              );
+            });
         }
 
         setUseDiscord(true);
-        // if discord is not confirmed, query for mutation with the discord target id
+        setDiscordId(discordId);
       }
 
       return {
@@ -227,6 +245,7 @@ export const useNotifiSubscribe: ({
         phoneNumber,
         telegramConfirmationUrl: telegramTarget?.confirmationUrl ?? null,
         telegramId: telegramTarget?.telegramId ?? null,
+        discordId: discordTarget?.id ?? null,
       };
     },
     [
@@ -348,11 +367,13 @@ export const useNotifiSubscribe: ({
         finalEmail: string | null;
         finalPhoneNumber: string | null;
         finalTelegramId: string | null;
+        finalDiscordId: string | null;
       }>,
     ): Promise<Alert | null> => {
       if (demoPreview) throw Error('Preview card does not support method call');
       const { alertName, alertConfiguration } = alertParams;
-      const { finalEmail, finalPhoneNumber, finalTelegramId } = contacts;
+      const { finalEmail, finalPhoneNumber, finalTelegramId, finalDiscordId } =
+        contacts;
       const existingAlert = data.alerts.find(
         (alert) => alert.name === alertName,
       );
@@ -420,8 +441,7 @@ export const useNotifiSubscribe: ({
             targetGroupName,
             telegramId: finalTelegramId,
             sourceIds,
-            // TODO: update Discord
-            discordId: 'Need to update',
+            discordId: finalDiscordId,
             sourceGroupName,
           });
 
@@ -471,7 +491,7 @@ export const useNotifiSubscribe: ({
             phoneNumber: finalPhoneNumber,
             telegramId: finalTelegramId,
             // TODO: update Discord
-            discordId: 'Need to update',
+            discordId: finalDiscordId,
           });
 
           return alert;
@@ -490,7 +510,7 @@ export const useNotifiSubscribe: ({
             telegramId: finalTelegramId,
             sourceGroupName,
             // TODO: update Discord
-            discordId: 'from create alert',
+            discordId: finalDiscordId,
           });
 
           return alert;
@@ -521,6 +541,8 @@ export const useNotifiSubscribe: ({
         finalPhoneNumber = formPhoneNumber;
       }
 
+      const finalDiscordId = discordIdFromSubscriptionContext;
+
       setLoading(true);
 
       if (!client.isAuthenticated) {
@@ -550,6 +572,7 @@ export const useNotifiSubscribe: ({
             finalEmail,
             finalPhoneNumber,
             finalTelegramId,
+            finalDiscordId,
           },
         );
         if (alert !== null) {
@@ -568,7 +591,7 @@ export const useNotifiSubscribe: ({
           phoneNumber: finalPhoneNumber,
           telegramId: finalTelegramId,
           // TODO: update Discord
-          discordId: 'Need to update',
+          discordId: finalDiscordId,
         });
       }
 
@@ -594,7 +617,14 @@ export const useNotifiSubscribe: ({
       formTelegram === '' ? null : formatTelegramForSubscription(formTelegram);
 
     let finalPhoneNumber = null;
-    const finalDiscordId = 'from Update TargetGroup';
+
+    const finalDiscordId =
+      useDiscord === true ? discordIdFromSubscriptionContext : null;
+
+    console.log(
+      'discordIdfromSubscriptionConext',
+      discordIdFromSubscriptionContext,
+    );
 
     if (isValidPhoneNumber(formPhoneNumber)) {
       finalPhoneNumber = formPhoneNumber;
@@ -610,7 +640,6 @@ export const useNotifiSubscribe: ({
       name: targetGroupName,
       phoneNumber: finalPhoneNumber,
       telegramId: finalTelegramId,
-      // TODO: update Discord
       discordId: finalDiscordId,
     });
 
@@ -619,7 +648,15 @@ export const useNotifiSubscribe: ({
     const results = render(newData);
     setLoading(false);
     return results;
-  }, [client, formEmail, formPhoneNumber, formTelegram, render, setLoading]);
+  }, [
+    client,
+    formEmail,
+    formPhoneNumber,
+    formTelegram,
+    render,
+    setLoading,
+    useDiscord,
+  ]);
 
   const instantSubscribe = useCallback(
     async (alertData: InstantSubscribe) => {
@@ -635,6 +672,9 @@ export const useNotifiSubscribe: ({
       if (isValidPhoneNumber(formPhoneNumber)) {
         finalPhoneNumber = formPhoneNumber;
       }
+
+      const finalDiscordId =
+        useDiscord === true ? discordIdFromSubscriptionContext : null;
       setLoading(true);
 
       await logIn();
@@ -649,6 +689,7 @@ export const useNotifiSubscribe: ({
         finalEmail,
         finalPhoneNumber,
         finalTelegramId,
+        finalDiscordId,
       });
 
       if (alert === null && keepSubscriptionData) {
@@ -658,8 +699,7 @@ export const useNotifiSubscribe: ({
           name: targetGroupName,
           phoneNumber: finalPhoneNumber,
           telegramId: finalTelegramId,
-          // TODO: update Discord
-          discordId: 'Need to update',
+          discordId: discordIdFromSubscriptionContext,
         });
       }
       const newData = await client.fetchData();

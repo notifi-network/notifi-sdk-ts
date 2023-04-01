@@ -51,6 +51,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
     telegramId,
     setCardView,
     destinationErrorMessages,
+    useDiscord,
   } = useNotifiSubscriptionContext();
 
   const {
@@ -180,7 +181,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
           ) : null}
         </div>
       ) : null}
-      {contactInfo?.discord?.active ? (
+      {contactInfo?.discord?.active && useDiscord ? (
         <div
           className={clsx(
             'NotifiUserInfoPanel__discord',
