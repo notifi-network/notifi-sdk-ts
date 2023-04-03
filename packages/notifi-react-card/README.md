@@ -10,6 +10,7 @@ We currently support the following blockchains:
 - Polygon
 - Arbitrum
 - Binance
+- Optimism
 - Aptos
 - Acala
 
@@ -237,6 +238,7 @@ export const Notifi: React.FC = () => {
       //If Polygon, use "POLYGON"
       //If Arbitrum, use "ARBITRUM"
       //If Binance, use "BINANCE"
+      //If Optimism, use OPTIMISM
     >
       <NotifiSubscriptionCard
         cardId="<YOUR OWN CARD ID HERE>"

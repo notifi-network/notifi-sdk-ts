@@ -23,6 +23,8 @@ export const walletToSourceType = (
       return 'POLYGON_WALLET';
     case 'SOLANA':
       return 'SOLANA_WALLET';
+    case 'OPTIMISM':
+      return 'OPTIMISM_WALLET';
     default:
       throw new Error('Unsupported walletType');
   }

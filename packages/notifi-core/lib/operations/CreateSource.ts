@@ -43,6 +43,7 @@ export type CreateSourceInput = Readonly<{
     | 'POLYGON_WALLET'
     | 'ARBITRUM_WALLET'
     | 'BINANCE_WALLET'
+    | 'OPTIMISM_WALLET'
     | 'AVALANCHE_WALLET'
     | 'COIN_PRICE_CHANGES'
     | 'XMTP';

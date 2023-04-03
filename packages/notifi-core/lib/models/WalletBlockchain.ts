@@ -7,4 +7,6 @@ export type WalletBlockchain =
   | 'POLYGON'
   | 'ARBITRUM'
   | 'BINANCE'
-  | 'NEAR';
+  | 'NEAR'
+  | 'OPTIMISM';
+

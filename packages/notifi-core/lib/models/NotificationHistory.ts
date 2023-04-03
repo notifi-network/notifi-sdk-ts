@@ -55,6 +55,7 @@ enum WalletBlockchain {
   OFF_CHAIN = 'OFF_CHAIN',
   POLYGON = 'POLYGON',
   SOLANA = 'SOLANA',
+  OPTIMISM = 'OPTIMISM',
 }
 
 export type AccountBalanceChangedEventDetails = {

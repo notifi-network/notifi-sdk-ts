@@ -277,7 +277,8 @@ export type SignMessageParams =
         | 'POLYGON'
         | 'ARBITRUM'
         | 'AVALANCHE'
-        | 'BINANCE';
+        | 'BINANCE'
+        | 'OPTIMISM';
       signMessage: Uint8SignMessageFunction;
     }>
   | Readonly<{
@@ -304,7 +305,9 @@ export type WalletParams =
         | 'POLYGON'
         | 'ARBITRUM'
         | 'AVALANCHE'
-        | 'BINANCE';
+        | 'BINANCE'
+        | 'OPTIMISM';
+
       walletPublicKey: string;
     }>
   | Readonly<{
@@ -335,7 +338,9 @@ export type WalletWithSignMessage =
         | 'POLYGON'
         | 'ARBITRUM'
         | 'AVALANCHE'
-        | 'BINANCE';
+        | 'BINANCE'
+        | 'OPTIMISM';
+
       walletPublicKey: string;
       signMessage: Uint8SignMessageFunction;
     }>
