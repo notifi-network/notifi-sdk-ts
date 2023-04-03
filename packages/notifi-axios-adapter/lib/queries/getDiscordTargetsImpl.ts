@@ -14,7 +14,7 @@ const DEPENDENCIES = [
   discordTargetFragment,
 ];
 
-const MUTATION = `
+const QUERY = `
 query getDiscordTargets {
   discordTarget {
     ...discordTargetFragment
@@ -23,7 +23,7 @@ query getDiscordTargets {
 `.trim();
 
 const getDiscordTargetsImpl = makeParameterLessRequest<GetDiscordTargetsResult>(
-  collectDependencies(...DEPENDENCIES, MUTATION),
+  collectDependencies(...DEPENDENCIES, QUERY),
   'discordTarget',
 );
 

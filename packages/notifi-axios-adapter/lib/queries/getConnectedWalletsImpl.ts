@@ -14,7 +14,7 @@ const DEPENDENCIES = [
   connectedWalletFragment,
 ];
 
-const MUTATION = `
+const QUERY = `
 query getConnectedWallets {
   connectedWallet {
     ...connectedWalletFragment
@@ -24,7 +24,7 @@ query getConnectedWallets {
 
 const getConnectedWalletsImpl =
   makeParameterLessRequest<GetConnectedWalletsResult>(
-    collectDependencies(...DEPENDENCIES, MUTATION),
+    collectDependencies(...DEPENDENCIES, QUERY),
     'connectedWallet',
   );
 

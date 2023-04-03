@@ -14,7 +14,7 @@ const DEPENDENCIES = [
   telegramTargetFragment,
 ];
 
-const MUTATION = `
+const QUERY = `
 query getTelegramTargets {
   telegramTarget {
     ...telegramTargetFragment
@@ -24,7 +24,7 @@ query getTelegramTargets {
 
 const getTelegramTargetsImpl =
   makeParameterLessRequest<GetTelegramTargetsResult>(
-    collectDependencies(...DEPENDENCIES, MUTATION),
+    collectDependencies(...DEPENDENCIES, QUERY),
     'telegramTarget',
   );
 
