@@ -14,7 +14,7 @@ const DEPENDENCIES = [
   webhookTargetFragment,
 ];
 
-const MUTATION = `
+const QUERY = `
 query getWebhookTargets {
   webhookTarget {
     ...webhookTargetFragment
@@ -23,7 +23,7 @@ query getWebhookTargets {
 `.trim();
 
 const getWebhookTargetsImpl = makeParameterLessRequest<GetWebhookTargetsResult>(
-  collectDependencies(...DEPENDENCIES, MUTATION),
+  collectDependencies(...DEPENDENCIES, QUERY),
   'webhookTarget',
 );
 

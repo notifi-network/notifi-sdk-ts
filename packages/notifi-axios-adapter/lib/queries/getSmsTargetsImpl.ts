@@ -8,7 +8,7 @@ import { smsTargetFragment, smsTargetFragmentDependencies } from '../fragments';
 
 const DEPENDENCIES = [...smsTargetFragmentDependencies, smsTargetFragment];
 
-const MUTATION = `
+const QUERY = `
 query getSmsTargets {
   smsTarget {
     ...smsTargetFragment
@@ -17,7 +17,7 @@ query getSmsTargets {
 `.trim();
 
 const getSmsTargetsImpl = makeParameterLessRequest<GetSmsTargetsResult>(
-  collectDependencies(...DEPENDENCIES, MUTATION),
+  collectDependencies(...DEPENDENCIES, QUERY),
   'smsTarget',
 );
 

@@ -11,7 +11,7 @@ import {
 
 const DEPENDENCIES = [...sourceFragmentDependencies, sourceFragment];
 
-const MUTATION = `
+const QUERY = `
 query getSources {
   source {
     ...sourceFragment
@@ -20,7 +20,7 @@ query getSources {
 `.trim();
 
 const getSourcesImpl = makeParameterLessRequest<GetSourcesResult>(
-  collectDependencies(...DEPENDENCIES, MUTATION),
+  collectDependencies(...DEPENDENCIES, QUERY),
   'source',
 );
 

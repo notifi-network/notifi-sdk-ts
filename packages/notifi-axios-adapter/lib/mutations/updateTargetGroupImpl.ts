@@ -21,6 +21,7 @@ mutation updateTargetGroup(
   $emailTargetIds: [String!]!
   $smsTargetIds: [String!]!
   $telegramTargetIds: [String!]!
+  $discordTargetIds: [String!]!
 ) {
   updateTargetGroup: createTargetGroup(targetGroupInput: {
     id: $id
@@ -28,6 +29,7 @@ mutation updateTargetGroup(
     emailTargetIds: $emailTargetIds
     smsTargetIds: $smsTargetIds
     telegramTargetIds: $telegramTargetIds
+    discordTargetIds: $discordTargetIds
   }) {
     ...targetGroupFragment
   }

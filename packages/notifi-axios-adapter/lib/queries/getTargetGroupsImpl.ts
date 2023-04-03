@@ -11,7 +11,7 @@ import {
 
 const DEPENDENCIES = [...targetGroupFragmentDependencies, targetGroupFragment];
 
-const MUTATION = `
+const QUERY = `
 query getTargetGroups {
   targetGroup {
     ...targetGroupFragment
@@ -20,7 +20,7 @@ query getTargetGroups {
 `.trim();
 
 const getTargetGroupsImpl = makeParameterLessRequest<GetTargetGroupsResult>(
-  collectDependencies(...DEPENDENCIES, MUTATION),
+  collectDependencies(...DEPENDENCIES, QUERY),
   'targetGroup',
 );
 

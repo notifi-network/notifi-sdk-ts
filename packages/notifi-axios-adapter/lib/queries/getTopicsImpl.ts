@@ -9,7 +9,7 @@ import { userTopicFragment, userTopicFragmentDependencies } from '../fragments';
 
 const DEPENDENCIES = [...userTopicFragmentDependencies, userTopicFragment];
 
-const MUTATION = `
+const QUERY = `
 query getTopics {
   topics {
     nodes {
@@ -25,7 +25,7 @@ type Connection<T> = Readonly<{
 }>;
 
 const getTopicsConnection = makeParameterLessRequest<Connection<UserTopic>>(
-  collectDependencies(...DEPENDENCIES, MUTATION),
+  collectDependencies(...DEPENDENCIES, QUERY),
   'topics',
 );
 

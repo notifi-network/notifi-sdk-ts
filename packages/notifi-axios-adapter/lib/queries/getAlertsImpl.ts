@@ -8,7 +8,7 @@ import { alertFragment, alertFragmentDependencies } from '../fragments';
 
 const DEPENDENCIES = [...alertFragmentDependencies, alertFragment];
 
-const MUTATION = `
+const QUERY = `
 query getAlerts {
   alert {
     ...alertFragment
@@ -17,7 +17,7 @@ query getAlerts {
 `.trim();
 
 const getAlertsImpl = makeParameterLessRequest<GetAlertsResult>(
-  collectDependencies(...DEPENDENCIES, MUTATION),
+  collectDependencies(...DEPENDENCIES, QUERY),
   'alert',
 );
 

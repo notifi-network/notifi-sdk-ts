@@ -1,9 +1,11 @@
 import {
   ClientCreateWebhookParams,
+  CreateDiscordTargetService,
   CreateEmailTargetService,
   CreateSmsTargetService,
   CreateTelegramTargetService,
   CreateWebhookTargetService,
+  DiscordTarget,
   EmailTarget,
   SmsTarget,
   TelegramTarget,
@@ -104,6 +106,15 @@ const ensureWebhook = async (
   return created.id;
 };
 
-export { ensureEmail, ensureSms, ensureTelegram, ensureWebhook };
+const ensureDiscord = ensureTarget(
+  async (service: CreateDiscordTargetService, value: string) =>
+    await service.createDiscordTarget({
+      name: value,
+      value,
+    }),
+  (arg: DiscordTarget) => arg.id,
+);
+
+export { ensureEmail, ensureSms, ensureTelegram, ensureWebhook, ensureDiscord };
 
 export default ensureTarget;

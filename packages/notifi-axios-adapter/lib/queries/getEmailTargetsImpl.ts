@@ -11,7 +11,7 @@ import {
 
 const DEPENDENCIES = [...emailTargetFragmentDependencies, emailTargetFragment];
 
-const MUTATION = `
+const QUERY = `
 query getEmailTargets {
   emailTarget {
     ...emailTargetFragment
@@ -20,7 +20,7 @@ query getEmailTargets {
 `.trim();
 
 const getEmailTargetsImpl = makeParameterLessRequest<GetEmailTargetsResult>(
-  collectDependencies(...DEPENDENCIES, MUTATION),
+  collectDependencies(...DEPENDENCIES, QUERY),
   'emailTarget',
 );
 

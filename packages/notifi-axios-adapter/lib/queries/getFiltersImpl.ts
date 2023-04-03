@@ -8,7 +8,7 @@ import { filterFragment, filterFragmentDependencies } from '../fragments';
 
 const DEPENDENCIES = [...filterFragmentDependencies, filterFragment];
 
-const MUTATION = `
+const QUERY = `
 query getFilters {
   filter {
     ...filterFragment
@@ -17,7 +17,7 @@ query getFilters {
 `.trim();
 
 const getFiltersImpl = makeParameterLessRequest<GetFiltersResult>(
-  collectDependencies(...DEPENDENCIES, MUTATION),
+  collectDependencies(...DEPENDENCIES, QUERY),
   'filter',
 );
 

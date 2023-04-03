@@ -6,6 +6,7 @@ export type UpdateTargetGroupInput = Readonly<{
   emailTargetIds: string[];
   smsTargetIds: string[];
   telegramTargetIds: string[];
+  discordTargetIds: string[];
 }>;
 
 export type UpdateTargetGroupResult = TargetGroup;

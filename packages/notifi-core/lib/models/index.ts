@@ -18,4 +18,5 @@ export * from './TenantConfig';
 export * from './UserTopic';
 export * from './User';
 export * from './WalletBlockchain';
+export * from './DiscordTarget';
 export * from './WebhookTarget';

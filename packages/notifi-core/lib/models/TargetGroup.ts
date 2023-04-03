@@ -1,3 +1,4 @@
+import { DiscordTarget } from './DiscordTarget';
 import { EmailTarget } from './EmailTarget';
 import { SmsTarget } from './SmsTarget';
 import { TelegramTarget } from './TelegramTarget';
@@ -14,6 +15,7 @@ import { WebhookTarget } from './WebhookTarget';
  * @property {EmailTarget[] | null} emailTargets - Array of emailTargets
  * @property {SmsTarget[] | null} smsTargets - Array of smsTargets
  * @property {TelegramTarget[] | null} telegramTargets - Array of telegramTargets
+ * @property {DiscordTarget[] | null} discordTargets - Array of discordTargets
  *
  */
 export type TargetGroup = Readonly<{
@@ -23,4 +25,5 @@ export type TargetGroup = Readonly<{
   smsTargets: ReadonlyArray<SmsTarget>;
   telegramTargets: ReadonlyArray<TelegramTarget>;
   webHookTargets: ReadonlyArray<WebhookTarget>;
+  discordTargets: ReadonlyArray<DiscordTarget>;
 }>;
