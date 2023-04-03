@@ -221,10 +221,9 @@ export const useNotifiSubscribe: ({
           client
             .getDiscordTargetVerificationLink(discordId)
             .then((discordURL) => {
-              const updatedDiscordURLWithId = `${discordURL}state=${discordId}`;
               setDiscordErrorMessage({
                 type: 'recoverableError',
-                onClick: () => window.open(updatedDiscordURLWithId, '_blank'),
+                onClick: () => window.open(discordURL, '_blank'),
                 message: 'Enable Bot',
               });
             })
