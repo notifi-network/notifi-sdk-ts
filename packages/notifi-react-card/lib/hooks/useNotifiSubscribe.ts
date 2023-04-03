@@ -290,9 +290,10 @@ export const useNotifiSubscribe: ({
       // Mockup info for demo preview card
       setEmail(defaultDemoConfigV1.name);
       setPhoneNumber('+101234567890');
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      setTelegramId(defaultDemoConfigV1.id!);
+      setTelegramId(defaultDemoConfigV1.id ?? 'testTelegramId');
+      setUseDiscord(true);
     }
+
     if (client.isAuthenticated && !didFetch.current) {
       didFetch.current = true;
       client
@@ -493,7 +494,6 @@ export const useNotifiSubscribe: ({
             emailAddress: finalEmail,
             phoneNumber: finalPhoneNumber,
             telegramId: finalTelegramId,
-            // TODO: update Discord
             discordId: finalDiscordId,
           });
 
@@ -512,7 +512,6 @@ export const useNotifiSubscribe: ({
             targetGroupName,
             telegramId: finalTelegramId,
             sourceGroupName,
-            // TODO: update Discord
             discordId: finalDiscordId,
           });
 
