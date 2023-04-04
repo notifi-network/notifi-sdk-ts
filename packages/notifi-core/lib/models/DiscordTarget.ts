@@ -17,4 +17,5 @@ export type DiscordTarget = Readonly<{
   id: string | null;
   isConfirmed: boolean;
   name: string | null;
+  username: string | null;
 }>;

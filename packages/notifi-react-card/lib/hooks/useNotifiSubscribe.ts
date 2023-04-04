@@ -102,6 +102,7 @@ export const useNotifiSubscribe: ({
     setUseDiscord,
     useDiscord,
     setDiscordId,
+    setDiscordTargetData,
     discordId: discordIdFromSubscriptionContext,
   } = useNotifiSubscriptionContext();
 
@@ -130,6 +131,14 @@ export const useNotifiSubscribe: ({
 
     if (confirmedDiscordTarget?.id) {
       setDiscordId(confirmedDiscordTarget?.id);
+
+      console.log('hit within here', confirmedDiscordTarget);
+      setDiscordTargetData({
+        discriminator: confirmedDiscordTarget?.discriminator ?? '',
+        id: confirmedDiscordTarget?.id ?? '',
+        username: confirmedDiscordTarget?.username ?? '',
+        isConfirmed: true,
+      });
       return confirmedDiscordTarget?.id;
     }
 
@@ -137,6 +146,10 @@ export const useNotifiSubscribe: ({
 
     if (firstDiscordTarget?.id) {
       setDiscordId(firstDiscordTarget?.id);
+      setDiscordTargetData({
+        id: confirmedDiscordTarget?.id ?? '',
+        isConfirmed: false,
+      });
       return firstDiscordTarget?.id;
     }
 
@@ -245,6 +258,14 @@ export const useNotifiSubscribe: ({
 
         setUseDiscord(true);
         setDiscordId(discordId);
+        if (discordTarget.isConfirmed === true) {
+          setDiscordTargetData({
+            discriminator: discordTarget?.discriminator ?? '',
+            id: discordTarget?.id ?? '',
+            username: discordTarget?.username ?? '',
+            isConfirmed: true,
+          });
+        }
       } else {
         setUseDiscord(false);
       }
@@ -265,6 +286,9 @@ export const useNotifiSubscribe: ({
       setPhoneNumber,
       setTelegramId,
       setIsEmailConfirmationSent,
+      setDiscordTargetData,
+      setDiscordId,
+      getFirstDiscordTargetFromId,
     ],
   );
 

@@ -25,11 +25,11 @@ import {
   CreateSourceInput,
   CreateWebhookTargetInput,
   FindTenantConfigInput,
+  GetConversationMessagesFullInput,
   GetDiscordTargetVerificationLinkResult,
   GetNotificationHistoryInput,
   SendConversationMessageInput,
 } from './operations';
-import { GetConversationMessagesFullInput } from './operations/getConversationMessages';
 
 export type ClientData = Readonly<{
   alerts: ReadonlyArray<Alert>;
