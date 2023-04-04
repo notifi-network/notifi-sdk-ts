@@ -254,7 +254,6 @@ export const AcalaWalletContextProvider: FC<PropsWithChildren<{}>> = ({
 
   return (
     <AcalaWalletContext.Provider value={values}>
-      <AcalaConnectButton />
       {children}
     </AcalaWalletContext.Provider>
   );

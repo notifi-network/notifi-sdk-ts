@@ -19,7 +19,7 @@ export const WalletConnectCard = () => {
   return (
     <>
       <div>
-        <h1>WalletConnect Example</h1>
+        <h1>Notifi Card: WalletConnect</h1>
         <button onClick={() => (isConnected ? disconnect() : connect())}>
           {isConnected ? `Disconnect: ${address}` : 'Connect Wallet'}
         </button>
@@ -27,7 +27,7 @@ export const WalletConnectCard = () => {
           <NotifiContext
             dappAddress="testimpl"
             env="Production"
-            signMessage={async (message) => {
+            signMessage={async (message: Uint8Array) => {
               const result = await signMessageAsync({ message });
               return arrayify(result);
             }}

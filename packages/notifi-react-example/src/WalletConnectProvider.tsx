@@ -21,9 +21,5 @@ export const WalletConnectProvider: FC<PropsWithChildren> = ({ children }) => {
     connectors: [connector],
     provider: provider,
   });
-  return (
-    <>
-      <WagmiConfig client={client}>{children}</WagmiConfig>
-    </>
-  );
+  return <WagmiConfig client={client}>{children}</WagmiConfig>;
 };
