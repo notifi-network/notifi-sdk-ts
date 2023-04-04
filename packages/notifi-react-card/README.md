@@ -614,7 +614,7 @@ import { infuraProvider } from 'wagmi/providers/infura';
 export const connector = new WalletConnectConnector({
   chains: [mainnet],
   options: {
-    projectId: '<YOUR WALLETCONNECTOR PROJECT ID HERE>', // Get Project ID at https://cloud.walletconnect.com/
+    projectId: '<YOUR WALLETCONNECT PROJECT ID HERE>', // Get Project ID at https://cloud.walletconnect.com/
   },
 });
 
@@ -632,7 +632,7 @@ export const WalletConnectProvider: FC<PropsWithChildren> = ({ children }) => {
 };
 ```
 
-Wrap the React </App> by <WalletConnectProvider />
+Wrap the React </App> with <WalletConnectProvider />
 
 ```tsx
 ...
