@@ -124,6 +124,15 @@ export const useNotifiSubscribe: ({
   const getFirstDiscordTargetFromId = (
     newData: ClientData | null,
   ): string | undefined => {
+    const confirmedDiscordTarget = newData?.discordTargets.find(
+      (discordTarget) => discordTarget.isConfirmed === true,
+    );
+
+    if (confirmedDiscordTarget?.id) {
+      setDiscordId(confirmedDiscordTarget?.id);
+      return confirmedDiscordTarget?.id;
+    }
+
     const firstDiscordTarget = newData?.discordTargets[0];
 
     if (firstDiscordTarget?.id) {
