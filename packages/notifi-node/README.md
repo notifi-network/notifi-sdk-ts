@@ -120,7 +120,6 @@ class App {
           value: 'Some Special Announcement',
         },
       ],
-      targetTemplates: [],
     });
   }
 }
