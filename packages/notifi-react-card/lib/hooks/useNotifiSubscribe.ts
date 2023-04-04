@@ -101,9 +101,8 @@ export const useNotifiSubscribe: ({
     setDiscordErrorMessage,
     setUseDiscord,
     useDiscord,
-    setDiscordId,
     setDiscordTargetData,
-    discordId: discordIdFromSubscriptionContext,
+    discordTargetData: discordTargetDatafromSubscriptionContext,
   } = useNotifiSubscriptionContext();
 
   const { keepSubscriptionData = true, walletPublicKey } = params;
@@ -130,9 +129,6 @@ export const useNotifiSubscribe: ({
     );
 
     if (confirmedDiscordTarget?.id) {
-      setDiscordId(confirmedDiscordTarget?.id);
-
-      console.log('hit within here', confirmedDiscordTarget);
       setDiscordTargetData({
         discriminator: confirmedDiscordTarget?.discriminator ?? '',
         id: confirmedDiscordTarget?.id ?? '',
@@ -145,7 +141,6 @@ export const useNotifiSubscribe: ({
     const firstDiscordTarget = newData?.discordTargets[0];
 
     if (firstDiscordTarget?.id) {
-      setDiscordId(firstDiscordTarget?.id);
       setDiscordTargetData({
         id: confirmedDiscordTarget?.id ?? '',
         isConfirmed: false,
@@ -257,7 +252,6 @@ export const useNotifiSubscribe: ({
         }
 
         setUseDiscord(true);
-        setDiscordId(discordId);
         if (discordTarget.isConfirmed === true) {
           setDiscordTargetData({
             discriminator: discordTarget?.discriminator ?? '',
@@ -287,7 +281,6 @@ export const useNotifiSubscribe: ({
       setTelegramId,
       setIsEmailConfirmationSent,
       setDiscordTargetData,
-      setDiscordId,
       getFirstDiscordTargetFromId,
     ],
   );
@@ -575,7 +568,7 @@ export const useNotifiSubscribe: ({
         finalPhoneNumber = formPhoneNumber;
       }
 
-      const finalDiscordId = discordIdFromSubscriptionContext;
+      const finalDiscordId = discordTargetDatafromSubscriptionContext.id;
 
       setLoading(true);
 
@@ -653,7 +646,7 @@ export const useNotifiSubscribe: ({
     let finalPhoneNumber = null;
 
     const finalDiscordId =
-      useDiscord === true ? discordIdFromSubscriptionContext : null;
+      useDiscord === true ? discordTargetDatafromSubscriptionContext.id : null;
 
     if (isValidPhoneNumber(formPhoneNumber)) {
       finalPhoneNumber = formPhoneNumber;
@@ -703,7 +696,9 @@ export const useNotifiSubscribe: ({
       }
 
       const finalDiscordId =
-        useDiscord === true ? discordIdFromSubscriptionContext : null;
+        useDiscord === true
+          ? discordTargetDatafromSubscriptionContext.id
+          : null;
       setLoading(true);
 
       await logIn();
@@ -728,7 +723,7 @@ export const useNotifiSubscribe: ({
           name: targetGroupName,
           phoneNumber: finalPhoneNumber,
           telegramId: finalTelegramId,
-          discordId: discordIdFromSubscriptionContext,
+          discordId: discordTargetDatafromSubscriptionContext.id,
         });
       }
       const newData = await client.fetchData();

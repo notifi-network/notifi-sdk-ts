@@ -50,8 +50,6 @@ export type NotifiSubscriptionData = Readonly<{
   setIntercomCardView: React.Dispatch<React.SetStateAction<IntercomCardView>>;
   setAlerts: (alerts: Record<string, Alert | undefined>) => void;
   setEmail: (email: string) => void;
-  discordId: string;
-  setDiscordId: (discord: string) => void;
   setPhoneNumber: (phoneNumber: string) => void;
   setTelegramId: (telegramId: string) => void;
   setUseHardwareWallet: React.Dispatch<React.SetStateAction<boolean>>;
@@ -108,7 +106,6 @@ export const NotifiSubscriptionContextProvider: React.FC<
   const [email, setEmail] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [telegramId, setTelegramId] = useState<string>('');
-  const [discordId, setDiscordId] = useState<string>('');
 
   const [discordTargetData, setDiscordTargetData] =
     useState<DisplayDiscordTarget>({
@@ -194,8 +191,6 @@ export const NotifiSubscriptionContextProvider: React.FC<
     setDiscordErrorMessage,
     useDiscord,
     setUseDiscord,
-    discordId,
-    setDiscordId,
     discordTargetData,
     setDiscordTargetData,
   };

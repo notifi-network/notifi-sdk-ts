@@ -55,7 +55,6 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
     discordTargetData,
   } = useNotifiSubscriptionContext();
 
-  console.log('discordTargetData', discordTargetData);
   const {
     params: { multiWallet },
   } = useNotifiClientContext();
