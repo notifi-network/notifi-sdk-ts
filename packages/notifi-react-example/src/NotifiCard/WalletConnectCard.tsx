@@ -17,32 +17,30 @@ export const WalletConnectCard = () => {
 
   const { signMessageAsync } = useSignMessage();
   return (
-    <>
-      <div>
-        <h1>Notifi Card: WalletConnect</h1>
-        <button onClick={() => (isConnected ? disconnect() : connect())}>
-          {isConnected ? `Disconnect: ${address}` : 'Connect Wallet'}
-        </button>
-        {isConnected ? (
-          <NotifiContext
-            dappAddress="testimpl"
-            env="Production"
-            signMessage={async (message: Uint8Array) => {
-              const result = await signMessageAsync({ message });
-              return arrayify(result);
-            }}
-            walletPublicKey={address ?? ''}
-            walletBlockchain="ETHEREUM"
-          >
-            <div style={{ width: '400px' }}>
-              <NotifiSubscriptionCard
-                cardId="7fa9505a96064ed6b91ba2d14a9732de"
-                darkMode //optional
-              />
-            </div>
-          </NotifiContext>
-        ) : null}
-      </div>
-    </>
+    <div>
+      <h1>Notifi Card: WalletConnect</h1>
+      <button onClick={() => (isConnected ? disconnect() : connect())}>
+        {isConnected ? `Disconnect: ${address}` : 'Connect Wallet'}
+      </button>
+      {isConnected ? (
+        <NotifiContext
+          dappAddress="testimpl"
+          env="Production"
+          signMessage={async (message: Uint8Array) => {
+            const result = await signMessageAsync({ message });
+            return arrayify(result);
+          }}
+          walletPublicKey={address ?? ''}
+          walletBlockchain="ETHEREUM"
+        >
+          <div style={{ width: '400px' }}>
+            <NotifiSubscriptionCard
+              cardId="7fa9505a96064ed6b91ba2d14a9732de"
+              darkMode //optional
+            />
+          </div>
+        </NotifiContext>
+      ) : null}
+    </div>
   );
 };
