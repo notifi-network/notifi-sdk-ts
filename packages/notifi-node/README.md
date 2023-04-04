@@ -85,7 +85,7 @@ const result = await client.sendDirectPush(token, {
 
 ### Sending a Broadcast Alert to a user
 
-```
+```ts
 import * as dotenv from 'dotenv';
 import { NotifiClient, NotifiEnvironment, createGraphQLClient, createNotifiService } from '@notifi-network/notifi-node';
 
