@@ -17,7 +17,7 @@ import {
   createNotifiService,
 } from '@notifi-network/notifi-node';
 
-const env: NotifiEnvironment = 'Production'; // Or 'Development'
+const env: NotifiEnvironment = 'Development'; // Or 'Production'
 const gqlClient = createGraphQLClient(env);
 const notifiService = createNotifiService(gqlClient);
 const client = new NotifiClient(notifiService);
