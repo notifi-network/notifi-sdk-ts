@@ -101,8 +101,8 @@ export const useNotifiSubscribe: ({
     setDiscordErrorMessage,
     setUseDiscord,
     useDiscord,
-    setDiscordId,
-    discordId: discordIdFromSubscriptionContext,
+    setDiscordTargetData,
+    discordTargetData: discordTargetDatafromSubscriptionContext,
   } = useNotifiSubscriptionContext();
 
   const { keepSubscriptionData = true, walletPublicKey } = params;
@@ -121,17 +121,37 @@ export const useNotifiSubscribe: ({
     [client.sendEmailTargetVerification],
   );
 
-  const getFirstDiscordTargetFromId = (
+  const handleMissingDiscordTarget = (
     newData: ClientData | null,
   ): string | undefined => {
+    // NOTE: in the situation where handle missing discord target is called, we check for a two things:
+    // 1 - a confirmed discord target
+    // 2 - any existing discord target
+    // if they're missing, we then need to create a new discord target that can be later updated when confirming the target.
+    const confirmedDiscordTarget = newData?.discordTargets.find(
+      (discordTarget) => discordTarget.isConfirmed === true,
+    );
+
+    if (confirmedDiscordTarget) {
+      setDiscordTargetData(confirmedDiscordTarget);
+      return;
+    }
+
     const firstDiscordTarget = newData?.discordTargets[0];
 
     if (firstDiscordTarget?.id) {
-      setDiscordId(firstDiscordTarget?.id);
-      return firstDiscordTarget?.id;
+      setDiscordTargetData(firstDiscordTarget);
+      return;
     }
 
-    return uuid();
+    setDiscordTargetData({
+      id: uuid(),
+      discordAccountId: null,
+      discriminator: null,
+      isConfirmed: false,
+      username: null,
+      name: null,
+    });
   };
 
   const render = useCallback(
@@ -205,15 +225,11 @@ export const useNotifiSubscribe: ({
 
             window.open(telegramTarget?.confirmationUrl);
           },
-          message: 'Verify Id',
+          message: 'Verify ID',
         });
       }
 
       const discordTarget = targetGroup?.discordTargets[0];
-
-      if (!discordTarget) {
-        getFirstDiscordTargetFromId(newData);
-      }
 
       const discordId = discordTarget?.id;
       if (discordId) {
@@ -235,8 +251,9 @@ export const useNotifiSubscribe: ({
         }
 
         setUseDiscord(true);
-        setDiscordId(discordId);
+        setDiscordTargetData(discordTarget);
       } else {
+        handleMissingDiscordTarget(newData);
         setUseDiscord(false);
       }
 
@@ -256,6 +273,8 @@ export const useNotifiSubscribe: ({
       setPhoneNumber,
       setTelegramId,
       setIsEmailConfirmationSent,
+      setDiscordTargetData,
+      handleMissingDiscordTarget,
     ],
   );
 
@@ -542,7 +561,8 @@ export const useNotifiSubscribe: ({
         finalPhoneNumber = formPhoneNumber;
       }
 
-      const finalDiscordId = discordIdFromSubscriptionContext;
+      const finalDiscordId =
+        discordTargetDatafromSubscriptionContext?.id ?? null;
 
       setLoading(true);
 
@@ -620,7 +640,9 @@ export const useNotifiSubscribe: ({
     let finalPhoneNumber = null;
 
     const finalDiscordId =
-      useDiscord === true ? discordIdFromSubscriptionContext : null;
+      useDiscord === false || !discordTargetDatafromSubscriptionContext?.id
+        ? null
+        : discordTargetDatafromSubscriptionContext?.id;
 
     if (isValidPhoneNumber(formPhoneNumber)) {
       finalPhoneNumber = formPhoneNumber;
@@ -670,7 +692,10 @@ export const useNotifiSubscribe: ({
       }
 
       const finalDiscordId =
-        useDiscord === true ? discordIdFromSubscriptionContext : null;
+        useDiscord === false || !discordTargetDatafromSubscriptionContext?.id
+          ? null
+          : discordTargetDatafromSubscriptionContext?.id;
+
       setLoading(true);
 
       await logIn();
@@ -695,7 +720,7 @@ export const useNotifiSubscribe: ({
           name: targetGroupName,
           phoneNumber: finalPhoneNumber,
           telegramId: finalTelegramId,
-          discordId: discordIdFromSubscriptionContext,
+          discordId: finalDiscordId,
         });
       }
       const newData = await client.fetchData();

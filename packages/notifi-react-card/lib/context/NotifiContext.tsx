@@ -58,7 +58,6 @@ export type OptimismParams = Readonly<{
   signMessage: Uint8SignMessageFunction;
 }>;
 
-
 export type NearParams = Readonly<{
   walletBlockchain: 'NEAR';
   accountAddress: string;

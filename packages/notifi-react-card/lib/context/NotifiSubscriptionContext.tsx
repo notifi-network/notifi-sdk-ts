@@ -1,4 +1,8 @@
-import type { Alert, ConnectedWallet } from '@notifi-network/notifi-core';
+import type {
+  Alert,
+  ConnectedWallet,
+  DiscordTarget,
+} from '@notifi-network/notifi-core';
 import { PropsWithChildren } from 'react';
 import React, { createContext, useContext, useState } from 'react';
 
@@ -36,8 +40,6 @@ export type NotifiSubscriptionData = Readonly<{
   setIntercomCardView: React.Dispatch<React.SetStateAction<IntercomCardView>>;
   setAlerts: (alerts: Record<string, Alert | undefined>) => void;
   setEmail: (email: string) => void;
-  discordId: string;
-  setDiscordId: (discord: string) => void;
   setPhoneNumber: (phoneNumber: string) => void;
   setTelegramId: (telegramId: string) => void;
   setUseHardwareWallet: React.Dispatch<React.SetStateAction<boolean>>;
@@ -58,6 +60,11 @@ export type NotifiSubscriptionData = Readonly<{
   setDiscordErrorMessage: (value: DestinationError) => void;
   setTelegramErrorMessage: (value: DestinationError) => void;
   resetErrorMessageState: () => void;
+
+  discordTargetData: DiscordTarget | undefined;
+  setDiscordTargetData: React.Dispatch<
+    React.SetStateAction<DiscordTarget | undefined>
+  >;
 }>;
 
 const NotifiSubscriptionContext = createContext<NotifiSubscriptionData>(
@@ -89,7 +96,10 @@ export const NotifiSubscriptionContextProvider: React.FC<
   const [email, setEmail] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [telegramId, setTelegramId] = useState<string>('');
-  const [discordId, setDiscordId] = useState<string>('');
+
+  const [discordTargetData, setDiscordTargetData] = useState<
+    DiscordTarget | undefined
+  >(undefined);
 
   const [destinationErrorMessages, setDestinationErrorMessages] =
     useState<DestinationErrorMessages>({
@@ -169,8 +179,8 @@ export const NotifiSubscriptionContextProvider: React.FC<
     setDiscordErrorMessage,
     useDiscord,
     setUseDiscord,
-    discordId,
-    setDiscordId,
+    discordTargetData,
+    setDiscordTargetData,
   };
 
   return (

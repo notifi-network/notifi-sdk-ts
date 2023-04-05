@@ -52,6 +52,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
     setCardView,
     destinationErrorMessages,
     useDiscord,
+    discordTargetData,
   } = useNotifiSubscriptionContext();
 
   const {
@@ -75,6 +76,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
     emailErrorMessage.onClick();
     setTimeout(() => setIsEmailConfirmationSent(false), 3000);
   }, []);
+
   return (
     <div
       className={clsx('NotifiUserInfoPanelContainer', classNames?.container)}
@@ -194,7 +196,9 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
               classNames?.discord?.label,
             )}
           >
-            Discord
+            {discordTargetData?.isConfirmed === true
+              ? `${discordTargetData?.username}#${discordTargetData?.discriminator}`
+              : 'Discord'}
           </label>
           {discordErrrorMessage?.type === 'recoverableError' ? (
             <DestinationErrorMessage
