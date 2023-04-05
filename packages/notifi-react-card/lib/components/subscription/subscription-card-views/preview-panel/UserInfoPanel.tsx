@@ -197,7 +197,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
             )}
           >
             {discordTargetData?.isConfirmed === true
-              ? `${discordTargetData.username}#${discordTargetData.discriminator}`
+              ? `${discordTargetData?.username}#${discordTargetData?.discriminator}`
               : 'Discord'}
           </label>
           {discordErrrorMessage?.type === 'recoverableError' ? (

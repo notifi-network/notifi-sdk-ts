@@ -61,8 +61,10 @@ export type NotifiSubscriptionData = Readonly<{
   setTelegramErrorMessage: (value: DestinationError) => void;
   resetErrorMessageState: () => void;
 
-  discordTargetData: DiscordTarget;
-  setDiscordTargetData: React.Dispatch<React.SetStateAction<DiscordTarget>>;
+  discordTargetData: DiscordTarget | undefined;
+  setDiscordTargetData: React.Dispatch<
+    React.SetStateAction<DiscordTarget | undefined>
+  >;
 }>;
 
 const NotifiSubscriptionContext = createContext<NotifiSubscriptionData>(
@@ -95,14 +97,9 @@ export const NotifiSubscriptionContextProvider: React.FC<
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [telegramId, setTelegramId] = useState<string>('');
 
-  const [discordTargetData, setDiscordTargetData] = useState<DiscordTarget>({
-    isConfirmed: false,
-    discriminator: null,
-    username: null,
-    discordAccountId: null,
-    id: '',
-    name: null,
-  });
+  const [discordTargetData, setDiscordTargetData] = useState<
+    DiscordTarget | undefined
+  >(undefined);
 
   const [destinationErrorMessages, setDestinationErrorMessages] =
     useState<DestinationErrorMessages>({
