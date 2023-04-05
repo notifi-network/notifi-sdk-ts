@@ -7,7 +7,6 @@ import type {
 } from '@notifi-network/notifi-core';
 import { isValidPhoneNumber } from 'libphonenumber-js';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { v4 as uuid } from 'uuid';
 
 import {
   defaultDemoConfigV1,
@@ -121,34 +120,24 @@ export const useNotifiSubscribe: ({
     [client.sendEmailTargetVerification],
   );
 
-  const getFirstDiscordTargetFromId = (
+  const handleMissingDiscordTarget = (
     newData: ClientData | null,
   ): string | undefined => {
     const confirmedDiscordTarget = newData?.discordTargets.find(
       (discordTarget) => discordTarget.isConfirmed === true,
     );
 
-    if (confirmedDiscordTarget?.id) {
-      setDiscordTargetData({
-        discriminator: confirmedDiscordTarget?.discriminator ?? '',
-        id: confirmedDiscordTarget?.id ?? '',
-        username: confirmedDiscordTarget?.username ?? '',
-        isConfirmed: true,
-      });
-      return confirmedDiscordTarget?.id;
+    if (confirmedDiscordTarget) {
+      setDiscordTargetData(confirmedDiscordTarget);
+      return;
     }
 
     const firstDiscordTarget = newData?.discordTargets[0];
 
     if (firstDiscordTarget?.id) {
-      setDiscordTargetData({
-        id: confirmedDiscordTarget?.id ?? '',
-        isConfirmed: false,
-      });
-      return firstDiscordTarget?.id;
+      setDiscordTargetData(firstDiscordTarget);
+      return;
     }
-
-    return uuid();
   };
 
   const render = useCallback(
@@ -228,10 +217,6 @@ export const useNotifiSubscribe: ({
 
       const discordTarget = targetGroup?.discordTargets[0];
 
-      if (!discordTarget) {
-        getFirstDiscordTargetFromId(newData);
-      }
-
       const discordId = discordTarget?.id;
       if (discordId) {
         if (discordTarget?.isConfirmed === false) {
@@ -252,15 +237,9 @@ export const useNotifiSubscribe: ({
         }
 
         setUseDiscord(true);
-        if (discordTarget.isConfirmed === true) {
-          setDiscordTargetData({
-            discriminator: discordTarget?.discriminator ?? '',
-            id: discordTarget?.id ?? '',
-            username: discordTarget?.username ?? '',
-            isConfirmed: true,
-          });
-        }
+        setDiscordTargetData(discordTarget);
       } else {
+        handleMissingDiscordTarget(newData);
         setUseDiscord(false);
       }
 
@@ -281,7 +260,7 @@ export const useNotifiSubscribe: ({
       setTelegramId,
       setIsEmailConfirmationSent,
       setDiscordTargetData,
-      getFirstDiscordTargetFromId,
+      handleMissingDiscordTarget,
     ],
   );
 
