@@ -135,15 +135,22 @@ supportedEventDetails.set('AccountBalanceChangedEventDetails', {
     const getTitle = () => {
       return detail.direction === 'INCOMING'
         ? `Incoming Transaction: ${changeAmount} ${detail.tokenSymbol}`
-        : `Outgoing Transaction: ${changeAmount} ${detail.tokenSymbol}`;
+        : `Outgoing Transaction: -${changeAmount} ${detail.tokenSymbol}`;
     };
+
+    const getMessage = () => {
+      return detail.direction === 'INCOMING'
+        ? `Wallet ${walletAddress} account balance changed by ${changeAmount} ${detail.tokenSymbol}`
+        : `Wallet ${walletAddress} account balance changed by -${changeAmount} ${detail.tokenSymbol}`
+    }
+
     const walletAddress = notification.sourceAddress ?? '';
     return {
       notificationImage: <SwapIcon />,
       notificationTitle: 'Wallet Balance Change',
       notificationSubject: getTitle(),
       notificationDate: notification.createdDate,
-      notificationMessage: `Wallet ${walletAddress} account balance changed by ${changeAmount} ${detail.tokenSymbol}`,
+      notificationMessage: getMessage(),
     };
   },
   getAlertDetailsContents: (notification: NotificationHistoryEntry) => {
@@ -151,13 +158,21 @@ supportedEventDetails.set('AccountBalanceChangedEventDetails', {
     const changeAmount = `${formatAmount(
       Math.abs(detail.previousValue - detail.newValue),
     )}`;
+
     const topContent =
       detail.direction === 'INCOMING'
         ? `Incoming Transaction: ${changeAmount}  ${detail.tokenSymbol}`
-        : `Outgoing Transaction: ${changeAmount}  ${detail.tokenSymbol}`;
+        : `Outgoing Transaction: -${changeAmount}  ${detail.tokenSymbol}`;
+
+    const getBottomContent = () => {
+      return detail.direction === 'INCOMING'
+        ? `Wallet ${notification.sourceAddress} account balance changed by ${changeAmount} ${detail.tokenSymbol}`
+        : `Wallet ${notification.sourceAddress} account balance changed by -${changeAmount} ${detail.tokenSymbol}`
+    }
+
     return {
       topContent,
-      bottomContent: `Wallet ${notification.sourceAddress} account balance changed by ${changeAmount} ${detail.tokenSymbol}`,
+      bottomContent: getBottomContent(),
     };
   },
 });
@@ -176,13 +191,13 @@ const getAlertNotificationViewBaseProps = (
   return !!notification.detail && !!genProps
     ? genProps(notification)
     : // It should never come here: exception should be filtered out before. https://virtuoso.dev/troubleshooting
-      {
-        notificationTitle: 'Unsupported notification',
-        notificationImage: <AlertIcon icon={'INFO'} />,
-        notificationSubject: 'Alert not supported yet',
-        notificationDate: notification.createdDate,
-        notificationMessage: 'Unsupported notification',
-      };
+    {
+      notificationTitle: 'Unsupported notification',
+      notificationImage: <AlertIcon icon={'INFO'} />,
+      notificationSubject: 'Alert not supported yet',
+      notificationDate: notification.createdDate,
+      notificationMessage: 'Unsupported notification',
+    };
 };
 
 const getAlertDetailsContents = (
@@ -194,10 +209,10 @@ const getAlertDetailsContents = (
   return !!notification && !!getContents
     ? getContents(notification)
     : // It should never come here: exception should be filtered out before. https://virtuoso.dev/troubleshooting
-      {
-        topContent: 'Unsupported notification',
-        bottomContent: 'Alert not supported yet',
-      };
+    {
+      topContent: 'Unsupported notification',
+      bottomContent: 'Alert not supported yet',
+    };
 };
 
 export {
