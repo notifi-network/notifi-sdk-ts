@@ -121,37 +121,23 @@ export const useNotifiSubscribe: ({
     [client.sendEmailTargetVerification],
   );
 
-  const handleMissingDiscordTarget = (
-    newData: ClientData | null,
-  ): string | undefined => {
-    // NOTE: in the situation where handle missing discord target is called, we check for a two things:
-    // 1 - a confirmed discord target
-    // 2 - any existing discord target
-    // if they're missing, we then need to create a new discord target that can be later updated when confirming the target.
-    const confirmedDiscordTarget = newData?.discordTargets.find(
-      (discordTarget) => discordTarget.isConfirmed === true,
+  const handleMissingDiscordTarget = (newData: ClientData | null): void => {
+    // Check for a confirmed discord target, and if none exists, use the first discord target.
+    const target =
+      newData?.discordTargets.find((target) => target.isConfirmed) ||
+      newData?.discordTargets[0];
+
+    // If there is a target, set the discord target data to it, otherwise create a new target.
+    setDiscordTargetData(
+      target || {
+        id: uuid(),
+        discordAccountId: null,
+        discriminator: null,
+        isConfirmed: false,
+        username: null,
+        name: null,
+      },
     );
-
-    if (confirmedDiscordTarget) {
-      setDiscordTargetData(confirmedDiscordTarget);
-      return;
-    }
-
-    const firstDiscordTarget = newData?.discordTargets[0];
-
-    if (firstDiscordTarget?.id) {
-      setDiscordTargetData(firstDiscordTarget);
-      return;
-    }
-
-    setDiscordTargetData({
-      id: uuid(),
-      discordAccountId: null,
-      discriminator: null,
-      isConfirmed: false,
-      username: null,
-      name: null,
-    });
   };
 
   const render = useCallback(
@@ -233,7 +219,7 @@ export const useNotifiSubscribe: ({
 
       const discordId = discordTarget?.id;
       if (discordId) {
-        if (discordTarget?.isConfirmed === false) {
+        if (!discordTarget?.isConfirmed) {
           client
             .getDiscordTargetVerificationLink(discordId)
             .then((discordURL) => {
@@ -245,11 +231,10 @@ export const useNotifiSubscribe: ({
             })
             .catch(() => {
               throw new Error(
-                'Failed to retrieve discord target verification link',
+                'Failed to retrieve discord target verification link.',
               );
             });
         }
-
         setUseDiscord(true);
         setDiscordTargetData(discordTarget);
       } else {
@@ -562,7 +547,7 @@ export const useNotifiSubscribe: ({
       }
 
       const finalDiscordId =
-        discordTargetDatafromSubscriptionContext?.id ?? null;
+        discordTargetDatafromSubscriptionContext?.id ?? uuid();
 
       setLoading(true);
 
