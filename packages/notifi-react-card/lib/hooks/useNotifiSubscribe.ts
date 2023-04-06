@@ -3,6 +3,7 @@ import type {
   ClientData,
   ConnectWalletParams,
   CreateSourceInput,
+  DiscordTarget,
   Source,
 } from '@notifi-network/notifi-core';
 import { isValidPhoneNumber } from 'libphonenumber-js';
@@ -121,11 +122,12 @@ export const useNotifiSubscribe: ({
     [client.sendEmailTargetVerification],
   );
 
-  const handleMissingDiscordTarget = (newData: ClientData | null): void => {
+  const handleMissingDiscordTarget = (
+    discordTargets: ReadonlyArray<DiscordTarget>,
+  ): void => {
     // Check for a confirmed discord target, and if none exists, use the first discord target.
     const target =
-      newData?.discordTargets.find((target) => target.isConfirmed) ||
-      newData?.discordTargets[0];
+      discordTargets?.find((target) => target.isConfirmed) || discordTargets[0];
 
     // If there is a target, set the discord target data to it, otherwise create a new target.
     setDiscordTargetData(
@@ -238,7 +240,7 @@ export const useNotifiSubscribe: ({
         setUseDiscord(true);
         setDiscordTargetData(discordTarget);
       } else {
-        handleMissingDiscordTarget(newData);
+        handleMissingDiscordTarget(newData?.discordTargets ?? []);
         setUseDiscord(false);
       }
 
@@ -437,6 +439,7 @@ export const useNotifiSubscribe: ({
 
           // Call serially because of limitations
           await deleteThisAlert();
+
           const alert = await client.createAlert({
             emailAddress: finalEmail,
             filterId: filter.id,
@@ -503,6 +506,7 @@ export const useNotifiSubscribe: ({
           return alert;
         } else {
           // Call serially because of limitations
+
           await deleteThisAlert();
           const alert = await client.createAlert({
             emailAddress: finalEmail,
@@ -529,8 +533,9 @@ export const useNotifiSubscribe: ({
     async (
       alertConfigs: Record<string, AlertConfiguration>,
     ): Promise<SubscriptionData> => {
-      if (demoPreview)
+      if (demoPreview) {
         throw new Error('Preview card does not support method call');
+      }
       const configurations = { ...alertConfigs };
 
       const names = Object.keys(configurations);
@@ -546,8 +551,8 @@ export const useNotifiSubscribe: ({
         finalPhoneNumber = formPhoneNumber;
       }
 
-      const finalDiscordId =
-        discordTargetDatafromSubscriptionContext?.id ?? uuid();
+      // if useDiscord is true, we create a random id for the discord target creation
+      const finalDiscordId = useDiscord ? uuid() : null;
 
       setLoading(true);
 
@@ -581,6 +586,7 @@ export const useNotifiSubscribe: ({
             finalDiscordId,
           },
         );
+
         if (alert !== null) {
           newResults[name] = alert;
         }
@@ -596,7 +602,6 @@ export const useNotifiSubscribe: ({
           name: targetGroupName,
           phoneNumber: finalPhoneNumber,
           telegramId: finalTelegramId,
-          // TODO: update Discord
           discordId: finalDiscordId,
         });
       }

@@ -142,7 +142,8 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
       (email !== '' && email !== undefined) ||
       (phoneNumber !== '' && phoneNumber !== undefined) ||
       (telegramId !== '' && telegramId !== undefined) ||
-      discordTargetData?.id !== ''
+      (discordTargetData?.id !== '' &&
+        discordTargetData?.discordAccountId !== undefined)
     ) {
       setCardView({ state: 'history' });
     } else if (isTokenExpired) {
