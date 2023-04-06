@@ -150,6 +150,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
     setCardView,
     cardView.state,
     isInitialized,
+    demoPreview,
   ]);
 
   const rightIcon: NotifiAlertBoxButtonProps | undefined = useMemo(() => {

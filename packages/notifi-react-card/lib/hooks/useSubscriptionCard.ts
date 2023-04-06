@@ -69,7 +69,7 @@ export const useSubscriptionCard = (
           });
         }
       });
-  }, [input.id, input.type]);
+  }, [input.id, input.type, demoPreview]);
 
   return state;
 };
