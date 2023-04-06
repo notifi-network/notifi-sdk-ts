@@ -592,3 +592,103 @@ export const Notifi: React.FC = () => {
 ```
 
 </details>
+
+### WalletConnect (Cross-chain wallet adaptor)
+
+<details>
+<summary>Integrate Card Component</summary>
+
+Note:
+
+- Ethers.js & wagmi are used. Be sure these two are installed as dependencies.
+- `NotifiContext` params needs to be updated accordingly.
+
+Create a WallectConnectProvider by WagmiConfig
+
+```tsx
+import { FC, PropsWithChildren } from 'react';
+import { WagmiConfig, configureChains, createClient, mainnet } from 'wagmi';
+import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
+import { infuraProvider } from 'wagmi/providers/infura';
+
+export const connector = new WalletConnectConnector({
+  chains: [mainnet],
+  options: {
+    projectId: '<YOUR WALLETCONNECT PROJECT ID HERE>', // Get Project ID at https://cloud.walletconnect.com/
+  },
+});
+
+export const WalletConnectProvider: FC<PropsWithChildren> = ({ children }) => {
+  const { provider } = configureChains(
+    [mainnet],
+    [infuraProvider({ apiKey: '<YOUR INFURA API KEY HERE>' })], // Get Infura apiKey at https://www.infura.io/
+  );
+  const client = createClient({
+    autoConnect: true,
+    connectors: [connector],
+    provider: provider,
+  });
+  return <WagmiConfig client={client}>{children}</WagmiConfig>;
+};
+```
+
+Wrap the React </App> with <WalletConnectProvider />
+
+```tsx
+...
+const container = document.getElementById('root');
+if (container != null) {
+  const root = ReactDOMClient.createRoot(container);
+  root.render(
+    <React.StrictMode>
+      ...
+        <WalletConnectProvider>
+            <App />
+        </WalletConnectProvider>
+      ...
+    </React.StrictMode>,
+  );
+}
+```
+
+Place the NotifiSubscriptionCard by passing in corresponding NotifiContext properties
+
+```tsx
+import { connector } from '<PATH TO WalletConnectorProvider.tsx>';
+import {
+  NotifiContext,
+  NotifiSubscriptionCard,
+} from '@notifi-network/notifi-react-card';
+import { arrayify } from 'ethers/lib/utils.js';
+import { useAccount, useConnect, useDisconnect, useSignMessage } from 'wagmi';
+
+export const WalletConnectCard = () => {
+  const { address, isConnected } = useAccount();
+
+  const { connect } = useConnect({
+    connector: connector,
+  });
+  const { disconnect } = useDisconnect();
+
+  const { signMessageAsync } = useSignMessage();
+  return (
+    <NotifiContext
+      dappAddress="<YOUR OWN DAPP ADDRESS HERE>"
+      env="Development" // or "Production"
+      signMessage={async (message) => {
+        const result = await signMessageAsync({ message });
+        return arrayify(result);
+      }}
+      walletPublicKey={address ?? ''}
+      walletBlockchain="ETHEREUM"
+    >
+      <NotifiSubscriptionCard
+        cardId="<YOUR OWN CARD ID HERE>"
+        darkMode //optional
+      />
+    </NotifiContext>
+  );
+};
+```
+
+</details>

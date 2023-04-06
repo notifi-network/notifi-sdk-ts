@@ -2,38 +2,42 @@
 
 ## 🙋🏻‍♀️ Introduction
 
-This example app is a ReactJS test site that can consume other Notifi packages such as `notifi-react-hooks`.
+This example is aim to demonstrate the Dapp integration with notifi SDK (notifi-react-card) across multi supported blockchains.
 
-With this example project, a developer making changes in the SDK (e.g. `notifi-react-hooks`) should be able to immediately see changes while running the test site after running the build command
+## Supported blockchains (Wallet)
 
-The following is an example of modifying `notifi-react-hooks` and updating the test app.
+- EVM compatible chains (WalletConnect): 'ETHEREUM', 'POLYGON', 'ARBITRUM', 'AVALANCHE', 'BINANCE', 'OPTIMISM'
+- Solana (Phantom)
+- Polkadot (Acala)
+- Aptos
+- Near
+- More supported chains coming soon ...
 
-## 📥 For SDK Development
+## 📥 How to get started
 
-### Make some changes in the SDK
+1. Clone the notifi-sdk-ts mono-repo
 
-```jsx
-// hooks/useYourHook.ts
-export const useYourHook = () => {
-  return 'This is a new hook!';
-};
+```bash
+# By ssh
+git clone git@github.com:notifi-network/notifi-sdk-ts.git
+# By https
+git clone https://github.com/notifi-network/notifi-sdk-ts.git
+
+cd notifi-sdk-ts
 ```
 
-Run the lerna build command to see your sdk changes reflected in the example app
+2. Install dependencies and build
 
-```zsh
-npx lerna run build
+```bash
+npm install
+npm run build
 ```
 
-### Hook up the SDK
+3. Run react app
 
-Load the Notifi React Hooks SDK into your component.
-
-```tsx
-import { useYourHook } from '@notifi-network/notifi-react-hooks';
+```bash
+npx lerna --scope=@notifi-network/notifi-react-example run start
 ```
 
-```tsx
-const message = useYourHook();
-console.log(message); // 'This is a new hook!'
-```
+Then the demo dapp will be available on localhost port 3000. Access it through the following url:
+`http://localhost:3000`
