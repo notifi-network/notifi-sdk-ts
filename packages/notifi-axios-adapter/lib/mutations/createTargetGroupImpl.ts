@@ -20,12 +20,14 @@ mutation createTargetGroup(
   $emailTargetIds: [String!]!
   $smsTargetIds: [String!]!
   $telegramTargetIds: [String!]!
+  $discordTargetIds: [String!]!
 ) {
   createTargetGroup(targetGroupInput: {
     name: $name
     emailTargetIds: $emailTargetIds
     smsTargetIds: $smsTargetIds
     telegramTargetIds: $telegramTargetIds
+    discordTargetIds: $discordTargetIds
   }) {
     ...targetGroupFragment
   }

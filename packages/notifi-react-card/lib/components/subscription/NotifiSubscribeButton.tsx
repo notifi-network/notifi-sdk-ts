@@ -35,7 +35,7 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
     params: { multiWallet },
   } = useNotifiClientContext();
 
-  const { cardView, connectedWallets, loading, setCardView } =
+  const { cardView, connectedWallets, loading, setCardView, useDiscord } =
     useNotifiSubscriptionContext();
 
   const { formErrorMessages, formState } = useNotifiForm();
@@ -60,6 +60,7 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
         inputs,
         connectedWallets,
       );
+
       const result = await subscribe(alertConfigs);
       success = !!result;
     } else {
@@ -95,7 +96,7 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
         !isInitialized ||
         loading ||
         hasErrors ||
-        (!email && !phoneNumber && !telegramId)
+        (!email && !phoneNumber && !telegramId && useDiscord === false)
       }
       onClick={onClick}
     >
