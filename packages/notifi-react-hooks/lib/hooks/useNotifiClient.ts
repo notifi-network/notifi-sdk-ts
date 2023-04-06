@@ -40,6 +40,7 @@ import ensureSource, {
   ensureMetaplexAuctionSource,
 } from '../utils/ensureSource';
 import ensureSourceGroupImpl from '../utils/ensureSourceGroup';
+import { ensureDiscord } from '../utils/ensureTarget';
 import ensureTargetGroupImpl from '../utils/ensureTargetGroup';
 import ensureTargetIds from '../utils/ensureTargetIds';
 import fetchDataImpl, {
@@ -582,6 +583,29 @@ const useNotifiClient = (
       clientRandomUuid,
       walletPublicKey,
     ],
+  );
+
+  // when calling ensureDiscordTarget, a discord id should be returned
+  const createDiscordTarget = useCallback(
+    async (input: string): Promise<string | null> => {
+      setLoading(true);
+      const newData = await fetchDataImpl(service, Date, fetchDataRef.current);
+
+      const existingDiscordTargets = newData.discordTargets;
+      try {
+        return await ensureDiscord(service, existingDiscordTargets, input);
+      } catch (e: unknown) {
+        if (e instanceof Error) {
+          setError(e);
+        } else {
+          setError(new NotifiClientError(e));
+        }
+        throw e;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [],
   );
 
   /**
@@ -1534,6 +1558,7 @@ const useNotifiClient = (
     sendEmailTargetVerification,
     createSupportConversation,
     getDiscordTargetVerificationLink,
+    createDiscordTarget,
   };
 
   return {

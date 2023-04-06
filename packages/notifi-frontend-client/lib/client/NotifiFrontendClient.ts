@@ -369,6 +369,7 @@ export class NotifiFrontendClient {
       smsTargetIds,
       telegramTargetIds,
       webhookTargetIds,
+      discordTargetIds,
     });
 
     if (createMutation.createTargetGroup === undefined) {

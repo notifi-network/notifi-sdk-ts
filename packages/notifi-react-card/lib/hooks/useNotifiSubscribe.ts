@@ -3,6 +3,7 @@ import type {
   ClientData,
   ConnectWalletParams,
   CreateSourceInput,
+  DiscordTarget,
   Source,
 } from '@notifi-network/notifi-core';
 import { isValidPhoneNumber } from 'libphonenumber-js';
@@ -122,36 +123,23 @@ export const useNotifiSubscribe: ({
   );
 
   const handleMissingDiscordTarget = (
-    newData: ClientData | null,
-  ): string | undefined => {
-    // NOTE: in the situation where handle missing discord target is called, we check for a two things:
-    // 1 - a confirmed discord target
-    // 2 - any existing discord target
-    // if they're missing, we then need to create a new discord target that can be later updated when confirming the target.
-    const confirmedDiscordTarget = newData?.discordTargets.find(
-      (discordTarget) => discordTarget.isConfirmed === true,
+    discordTargets: ReadonlyArray<DiscordTarget>,
+  ): void => {
+    // Check for a confirmed discord target, and if none exists, use the first discord target.
+    const target =
+      discordTargets?.find((target) => target.isConfirmed) || discordTargets[0];
+
+    // If there is a target, set the discord target data to it, otherwise create a new target.
+    setDiscordTargetData(
+      target || {
+        id: uuid(),
+        discordAccountId: null,
+        discriminator: null,
+        isConfirmed: false,
+        username: null,
+        name: null,
+      },
     );
-
-    if (confirmedDiscordTarget) {
-      setDiscordTargetData(confirmedDiscordTarget);
-      return;
-    }
-
-    const firstDiscordTarget = newData?.discordTargets[0];
-
-    if (firstDiscordTarget?.id) {
-      setDiscordTargetData(firstDiscordTarget);
-      return;
-    }
-
-    setDiscordTargetData({
-      id: uuid(),
-      discordAccountId: null,
-      discriminator: null,
-      isConfirmed: false,
-      username: null,
-      name: null,
-    });
   };
 
   const render = useCallback(
@@ -233,7 +221,7 @@ export const useNotifiSubscribe: ({
 
       const discordId = discordTarget?.id;
       if (discordId) {
-        if (discordTarget?.isConfirmed === false) {
+        if (!discordTarget?.isConfirmed) {
           client
             .getDiscordTargetVerificationLink(discordId)
             .then((discordURL) => {
@@ -245,15 +233,14 @@ export const useNotifiSubscribe: ({
             })
             .catch(() => {
               throw new Error(
-                'Failed to retrieve discord target verification link',
+                'Failed to retrieve discord target verification link.',
               );
             });
         }
-
         setUseDiscord(true);
         setDiscordTargetData(discordTarget);
       } else {
-        handleMissingDiscordTarget(newData);
+        handleMissingDiscordTarget(newData?.discordTargets ?? []);
         setUseDiscord(false);
       }
 
@@ -452,6 +439,7 @@ export const useNotifiSubscribe: ({
 
           // Call serially because of limitations
           await deleteThisAlert();
+
           const alert = await client.createAlert({
             emailAddress: finalEmail,
             filterId: filter.id,
@@ -518,6 +506,7 @@ export const useNotifiSubscribe: ({
           return alert;
         } else {
           // Call serially because of limitations
+
           await deleteThisAlert();
           const alert = await client.createAlert({
             emailAddress: finalEmail,
@@ -544,8 +533,9 @@ export const useNotifiSubscribe: ({
     async (
       alertConfigs: Record<string, AlertConfiguration>,
     ): Promise<SubscriptionData> => {
-      if (demoPreview)
+      if (demoPreview) {
         throw new Error('Preview card does not support method call');
+      }
       const configurations = { ...alertConfigs };
 
       const names = Object.keys(configurations);
@@ -561,8 +551,7 @@ export const useNotifiSubscribe: ({
         finalPhoneNumber = formPhoneNumber;
       }
 
-      const finalDiscordId =
-        discordTargetDatafromSubscriptionContext?.id ?? null;
+      // if useDiscord is true, we create a random id for the discord target creation
 
       setLoading(true);
 
@@ -576,6 +565,12 @@ export const useNotifiSubscribe: ({
       // We should eventually always start from a logged in state from client having called
       // "refresh" or "fetchData" to obtain existing settings first
       //
+
+      let finalDiscordId = null;
+
+      if (useDiscord === true) {
+        finalDiscordId = await client.createDiscordTarget('Default');
+      }
 
       const newResults: Record<string, Alert> = {};
       for (let i = 0; i < names.length; ++i) {
@@ -596,6 +591,7 @@ export const useNotifiSubscribe: ({
             finalDiscordId,
           },
         );
+
         if (alert !== null) {
           newResults[name] = alert;
         }
@@ -611,7 +607,6 @@ export const useNotifiSubscribe: ({
           name: targetGroupName,
           phoneNumber: finalPhoneNumber,
           telegramId: finalTelegramId,
-          // TODO: update Discord
           discordId: finalDiscordId,
         });
       }

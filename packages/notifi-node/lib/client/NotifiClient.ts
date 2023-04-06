@@ -356,6 +356,7 @@ class NotifiClient {
       smsTargetIds: [],
       telegramTargetIds: [],
       webhookTargetIds: [webhookTarget.id],
+      discordTargetIds: [],
     });
     if (createResult.createTargetGroup === undefined) {
       throw new Error('Failed to create TargetGroup');

@@ -88,8 +88,14 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
   onClose,
 }) => {
   const allowedCountryCodes = [...data.contactInfo.sms.supportedCountryCodes];
-  const { cardView, email, phoneNumber, telegramId, setCardView } =
-    useNotifiSubscriptionContext();
+  const {
+    cardView,
+    email,
+    phoneNumber,
+    telegramId,
+    setCardView,
+    discordTargetData,
+  } = useNotifiSubscriptionContext();
   const { demoPreview } = useNotifiDemoPreviewContext();
 
   const {
@@ -135,7 +141,9 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
     if (
       (email !== '' && email !== undefined) ||
       (phoneNumber !== '' && phoneNumber !== undefined) ||
-      (telegramId !== '' && telegramId !== undefined)
+      (telegramId !== '' && telegramId !== undefined) ||
+      (discordTargetData?.id !== '' &&
+        discordTargetData?.discordAccountId !== undefined)
     ) {
       setCardView({ state: 'history' });
     } else if (isTokenExpired) {
