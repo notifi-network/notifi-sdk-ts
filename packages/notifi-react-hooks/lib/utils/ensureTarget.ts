@@ -109,6 +109,7 @@ const ensureWebhook = async (
 const ensureDiscord = ensureTarget(
   async (service: CreateDiscordTargetService, value: string) =>
     await service.createDiscordTarget({
+      name: value,
       value,
     }),
   (arg: DiscordTarget) => arg.id,

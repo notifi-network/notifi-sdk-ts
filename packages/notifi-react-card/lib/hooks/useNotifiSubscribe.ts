@@ -552,7 +552,6 @@ export const useNotifiSubscribe: ({
       }
 
       // if useDiscord is true, we create a random id for the discord target creation
-      const finalDiscordId = useDiscord ? uuid() : null;
 
       setLoading(true);
 
@@ -566,6 +565,12 @@ export const useNotifiSubscribe: ({
       // We should eventually always start from a logged in state from client having called
       // "refresh" or "fetchData" to obtain existing settings first
       //
+
+      let finalDiscordId = null;
+
+      if (useDiscord === true) {
+        finalDiscordId = await client.createDiscordTarget('Default');
+      }
 
       const newResults: Record<string, Alert> = {};
       for (let i = 0; i < names.length; ++i) {

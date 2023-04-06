@@ -423,4 +423,5 @@ export type NotifiClient = Readonly<{
   getDiscordTargetVerificationLink: (
     input: string,
   ) => Promise<GetDiscordTargetVerificationLinkResult>;
+  createDiscordTarget: (input: string) => Promise<string | null>;
 }>;

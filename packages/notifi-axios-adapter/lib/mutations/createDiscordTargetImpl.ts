@@ -19,10 +19,12 @@ const DEPENDENCIES = [
 
 const MUTATION = `
 mutation createDiscordTarget(
+  $name: String!
   $value: String!
 ) {
   createDiscordTarget(
     createTargetInput: {
+      name: $name
       value: $value
     }
   ) {

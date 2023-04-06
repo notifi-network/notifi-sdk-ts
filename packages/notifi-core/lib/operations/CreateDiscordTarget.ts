@@ -8,6 +8,7 @@ import { DiscordTarget, Operation } from '../models';
  */
 
 export type CreateDiscordTargetInput = Readonly<{
+  name: string;
   value: string;
 }>;
 

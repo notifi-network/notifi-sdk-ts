@@ -114,6 +114,7 @@ export const ensureTelegram = ensureTarget(
 export const ensureDiscord = ensureTarget(
   async (service: Operations.CreateDiscordTargetService, value: string) => {
     const mutation = await service.createDiscordTarget({
+      name: value.toLowerCase(),
       value: value.toLowerCase(),
     });
 

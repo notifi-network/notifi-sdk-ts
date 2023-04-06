@@ -3,8 +3,8 @@ import { gql } from 'graphql-request';
 import { DiscordTargetFragment } from '../fragments/DiscordTargetFragment.gql';
 
 export const CreateDiscordTarget = gql`
-  mutation createDiscordTarget($value: String!) {
-    createDiscordTarget(createTargetInput: { value: $value }) {
+  mutation createDiscordTarget($name: String!, $value: String!) {
+    createDiscordTarget(createTargetInput: { name: $name, value: $value }) {
       ...DiscordTargetFragment
     }
   }
