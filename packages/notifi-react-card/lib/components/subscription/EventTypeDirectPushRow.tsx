@@ -38,9 +38,18 @@ export const EventTypeDirectPushRow: React.FC<EventTypeDirectPushRowProps> = ({
   });
   const [enabled, setEnabled] = useState(false);
 
-  const alertName = useMemo<string>(() => config.name, [config]);
+  const pushId = useMemo(
+    () => resolveStringRef(config.name, config.directPushId, inputs),
+    [config, inputs],
+  );
+  const alertName = useMemo<string>(() => {
+    if (config.directPushId.type === 'value') {
+      return config.name;
+    }
+
+    return `${config.name}:${pushId}`;
+  }, [config, pushId]);
   const alertConfiguration = useMemo<AlertConfiguration>(() => {
-    const pushId = resolveStringRef(alertName, config.directPushId, inputs);
     return directMessageConfiguration({
       type: pushId,
     });

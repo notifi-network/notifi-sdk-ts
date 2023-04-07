@@ -45,9 +45,19 @@ export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
   const [isNotificationLoading, setIsNotificationLoading] =
     useState<boolean>(false);
 
-  const alertName = useMemo<string>(() => config.name, [config]);
+  const broadcastId = useMemo(
+    () => resolveStringRef(config.name, config.broadcastId, inputs),
+    [config, inputs],
+  );
+
+  const alertName = useMemo<string>(() => {
+    if (config.broadcastId.type === 'value') {
+      return config.name;
+    }
+    return `${config.name}:${broadcastId}`;
+  }, [config, broadcastId]);
+
   const alertConfiguration = useMemo<AlertConfiguration>(() => {
-    const broadcastId = resolveStringRef(alertName, config.broadcastId, inputs);
     return broadcastMessageConfiguration({
       topicName: broadcastId,
     });
@@ -95,7 +105,7 @@ export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
       setEnabled(false);
       instantSubscribe({
         alertConfiguration: null,
-        alertName: alertName,
+        alertName,
       })
         .then((res) => {
           // We update optimistically so we need to check if the alert exists.
