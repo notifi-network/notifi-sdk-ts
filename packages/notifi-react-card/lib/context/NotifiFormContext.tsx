@@ -27,7 +27,7 @@ export type NotifiFormData = Readonly<{
 
 const NotifiFormContext = createContext<NotifiFormData>({} as NotifiFormData);
 
-export const NotifiFormProvider: React.FC<PropsWithChildren> = ({
+export const NotifiFormProvider: React.FC<PropsWithChildren<unknown>> = ({
   children,
 }) => {
   const [hasChanges, setHasChanges] = useState<boolean>(false);
