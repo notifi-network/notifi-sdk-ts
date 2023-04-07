@@ -899,6 +899,8 @@ input::-webkit-inner-spin-button {
   text-align: left;
   background-color: var(--notifi-tooltip-background);
   border-radius: 8px;
+  white-space: pre-line;
+  line-height: 15px;
 }
 
 .NotifiAlertHistory__settingsIcon {

@@ -186,7 +186,7 @@ export const useNotifiSubscribe: ({
         setPhoneNumberErrorMessage({
           type: 'unrecoverableError',
           message: 'Messages stopped',
-          tooltip: `Please text 'start' to the following number: ${client.reenableSmsPhoneNumber}`,
+          tooltip: `Please text 'start' to the following number:\n${client.reenableSmsPhoneNumber}`,
         });
       }
 
