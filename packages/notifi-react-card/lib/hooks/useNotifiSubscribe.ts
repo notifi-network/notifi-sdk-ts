@@ -185,7 +185,10 @@ export const useNotifiSubscribe: ({
       if (!isPhoneNumberConfirmed) {
         setPhoneNumberErrorMessage({
           type: 'unrecoverableError',
-          message: 'Invalid Number',
+          message: 'Messages stopped',
+          tooltip: `Please text 'start' to the following number:\n${
+            params.env === 'Production' ? '+1 206 222 3465' : '+1 253 880 1477 '
+          }`,
         });
       }
 
@@ -260,8 +263,6 @@ export const useNotifiSubscribe: ({
       setPhoneNumber,
       setTelegramId,
       setIsEmailConfirmationSent,
-      setDiscordTargetData,
-      handleMissingDiscordTarget,
     ],
   );
 

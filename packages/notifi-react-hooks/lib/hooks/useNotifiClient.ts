@@ -247,6 +247,7 @@ const useNotifiClient = (
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [expiry, setExpiry] = useState<string | null>(null);
   const [isTokenExpired, setisTokenExpired] = useState<boolean>(false);
+
   const clientRandomUuid = useRef<string | null>(null);
 
   const fetchDataRef = useRef<FetchDataState>({});
