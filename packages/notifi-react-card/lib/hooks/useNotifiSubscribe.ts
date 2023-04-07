@@ -185,7 +185,8 @@ export const useNotifiSubscribe: ({
       if (!isPhoneNumberConfirmed) {
         setPhoneNumberErrorMessage({
           type: 'unrecoverableError',
-          message: 'Invalid Number',
+          message: 'Messages stopped',
+          tooltip: `Please text 'start' to the following number: ${client.reenableSmsPhoneNumber}`,
         });
       }
 
@@ -260,8 +261,6 @@ export const useNotifiSubscribe: ({
       setPhoneNumber,
       setTelegramId,
       setIsEmailConfirmationSent,
-      setDiscordTargetData,
-      handleMissingDiscordTarget,
     ],
   );
 
