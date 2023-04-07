@@ -186,7 +186,9 @@ export const useNotifiSubscribe: ({
         setPhoneNumberErrorMessage({
           type: 'unrecoverableError',
           message: 'Messages stopped',
-          tooltip: `Please text 'start' to the following number:\n${client.reenableSmsPhoneNumber}`,
+          tooltip: `Please text 'start' to the following number:\n${
+            params.env === 'Production' ? '+1 206 222 3465' : '+1 253 880 1477 '
+          }`,
         });
       }
 

@@ -225,7 +225,6 @@ const useNotifiClient = (
     isInitialized: boolean;
     isTokenExpired: boolean;
     expiry: string | null;
-    reenableSmsPhoneNumber: string;
     copyAuthorization: (publicKey: string) => Promise<void>;
   }> => {
   const { env, dappAddress, walletPublicKey, walletBlockchain } = config;
@@ -248,9 +247,6 @@ const useNotifiClient = (
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [expiry, setExpiry] = useState<string | null>(null);
   const [isTokenExpired, setisTokenExpired] = useState<boolean>(false);
-
-  const reenableSmsPhoneNumber =
-    env === 'Production' ? '+1 206 222 3465' : '+1 253 880 1477 ';
 
   const clientRandomUuid = useRef<string | null>(null);
 
@@ -1573,7 +1569,6 @@ const useNotifiClient = (
     isTokenExpired,
     isAuthenticated,
     isInitialized,
-    reenableSmsPhoneNumber,
     loading,
     copyAuthorization,
     ...client,
