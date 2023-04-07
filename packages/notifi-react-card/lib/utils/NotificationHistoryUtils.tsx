@@ -132,25 +132,22 @@ supportedEventDetails.set('AccountBalanceChangedEventDetails', {
     const changeAmount = formatAmount(
       Math.abs(detail.previousValue - detail.newValue),
     );
+
     const getTitle = () => {
       return detail.direction === 'INCOMING'
         ? `Incoming Transaction: ${changeAmount} ${detail.tokenSymbol}`
         : `Outgoing Transaction: -${changeAmount} ${detail.tokenSymbol}`;
     };
 
-    const getMessage = () => {
-      return detail.direction === 'INCOMING'
-        ? `Wallet ${walletAddress} account balance changed by ${changeAmount} ${detail.tokenSymbol}`
-        : `Wallet ${walletAddress} account balance changed by -${changeAmount} ${detail.tokenSymbol}`
-    }
-
     const walletAddress = notification.sourceAddress ?? '';
+    const direction = detail.direction === 'INCOMING' ? '' : '-';
+    const message = `Wallet ${walletAddress} account balance changed by ${direction}${changeAmount} ${detail.tokenSymbol}`;
     return {
       notificationImage: <SwapIcon />,
       notificationTitle: 'Wallet Balance Change',
       notificationSubject: getTitle(),
       notificationDate: notification.createdDate,
-      notificationMessage: getMessage(),
+      notificationMessage: message,
     };
   },
   getAlertDetailsContents: (notification: NotificationHistoryEntry) => {
@@ -164,15 +161,11 @@ supportedEventDetails.set('AccountBalanceChangedEventDetails', {
         ? `Incoming Transaction: ${changeAmount}  ${detail.tokenSymbol}`
         : `Outgoing Transaction: -${changeAmount}  ${detail.tokenSymbol}`;
 
-    const getBottomContent = () => {
-      return detail.direction === 'INCOMING'
-        ? `Wallet ${notification.sourceAddress} account balance changed by ${changeAmount} ${detail.tokenSymbol}`
-        : `Wallet ${notification.sourceAddress} account balance changed by -${changeAmount} ${detail.tokenSymbol}`
-    }
-
+    const direction = detail.direction === 'INCOMING' ? '' : '-';
+    const bottomContent = `Wallet ${notification.sourceAddress} account balance changed by ${direction}${changeAmount} ${detail.tokenSymbol}`;
     return {
       topContent,
-      bottomContent: getBottomContent(),
+      bottomContent: bottomContent,
     };
   },
 });
