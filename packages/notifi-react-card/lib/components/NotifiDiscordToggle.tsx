@@ -25,7 +25,7 @@ export const NotifiDiscordToggle: React.FC<NotifiDiscordToggleProps> = ({
       className={clsx('NotifiDiscordToggle__container', classNames?.container)}
     >
       <div className={clsx('NotifiDiscordToggle__label', classNames?.label)}>
-        Discord
+        Discord DM Bot
       </div>
       <NotifiToggle
         classNames={classNames?.toggle}
