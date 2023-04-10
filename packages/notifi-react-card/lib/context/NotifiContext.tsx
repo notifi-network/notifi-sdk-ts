@@ -71,6 +71,13 @@ export type AvalancheParams = Readonly<{
   signMessage: Uint8SignMessageFunction;
 }>;
 
+export type SuiParams = Readonly<{
+  walletBlockchain: 'SUI';
+  accountAddress: string;
+  walletPublicKey: string; // The same as accountAddress
+  signMessage: Uint8SignMessageFunction;
+}>;
+
 export type MultiWalletParams = Readonly<{
   ownedWallets: ReadonlyArray<WalletWithSignParams>;
 }>;
@@ -86,7 +93,8 @@ type WalletParams =
   | AcalaParams
   | NearParams
   | AvalancheParams
-  | OptimismParams;
+  | OptimismParams
+  | SuiParams;
 
 export type NotifiParams = Readonly<{
   alertConfigurations?: Record<string, AlertConfiguration | null>;

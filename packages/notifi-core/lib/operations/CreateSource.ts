@@ -46,7 +46,8 @@ export type CreateSourceInput = Readonly<{
     | 'OPTIMISM_WALLET'
     | 'AVALANCHE_WALLET'
     | 'COIN_PRICE_CHANGES'
-    | 'XMTP';
+    | 'XMTP'
+    | 'SUI_WALLET';
 }>;
 
 export type CreateSourceResult = Source;

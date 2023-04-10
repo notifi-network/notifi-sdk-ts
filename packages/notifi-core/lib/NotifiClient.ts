@@ -292,6 +292,10 @@ export type SignMessageParams =
   | Readonly<{
       walletBlockchain: 'NEAR';
       signMessage: Uint8SignMessageFunction;
+    }>
+  | Readonly<{
+      walletBlockchain: 'SUI';
+      signMessage: Uint8SignMessageFunction;
     }>;
 
 export type WalletParams =
@@ -322,6 +326,11 @@ export type WalletParams =
     }>
   | Readonly<{
       walletBlockchain: 'NEAR';
+      accountAddress: string;
+      walletPublicKey: string;
+    }>
+  | Readonly<{
+      walletBlockchain: 'SUI';
       accountAddress: string;
       walletPublicKey: string;
     }>;
@@ -358,6 +367,12 @@ export type WalletWithSignMessage =
     }>
   | Readonly<{
       walletBlockchain: 'NEAR';
+      accountAddress: string;
+      walletPublicKey: string;
+      signMessage: Uint8SignMessageFunction;
+    }>
+  | Readonly<{
+      walletBlockchain: 'SUI';
       accountAddress: string;
       walletPublicKey: string;
       signMessage: Uint8SignMessageFunction;
