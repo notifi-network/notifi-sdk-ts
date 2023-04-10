@@ -25,6 +25,8 @@ export const walletToSourceType = (
       return 'SOLANA_WALLET';
     case 'OPTIMISM':
       return 'OPTIMISM_WALLET';
+    case 'SUI':
+      return 'SUI_WALLET';
     default:
       throw new Error('Unsupported walletType');
   }

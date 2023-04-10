@@ -8,5 +8,5 @@ export type WalletBlockchain =
   | 'ARBITRUM'
   | 'BINANCE'
   | 'NEAR'
-  | 'OPTIMISM';
-
+  | 'OPTIMISM'
+  | 'SUI';

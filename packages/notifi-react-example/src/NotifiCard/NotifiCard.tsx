@@ -2,12 +2,14 @@ import '@notifi-network/notifi-react-card/dist/index.css';
 import React from 'react';
 
 import { AcalaWalletContextProvider } from '../AcalaWalletContextProvider';
+import { EthosWalletProvider } from '../EthosWalletProvider';
 import { SolanaWalletProvider } from '../SolanaWalletProvider';
 import { WalletConnectProvider } from '../WalletConnectProvider';
 import { DemoPrviewCard } from './DemoPreviewCard';
 import './NotifiCard.css';
 import { PolkadotCard } from './PolkadotCard';
 import { SolanaCard } from './SolanaCard';
+import { SuiNotifiCard } from './SuiNotifiCard';
 import { WalletConnectCard } from './WalletConnectCard';
 
 enum ESupportedViews {
@@ -15,6 +17,7 @@ enum ESupportedViews {
   Solana = 'solana',
   WalletConnect = 'walletConnect',
   Polkadot = 'pokadot',
+  Sui = 'sui',
 }
 
 export const NotifiCard: React.FC = () => {
@@ -35,6 +38,9 @@ export const NotifiCard: React.FC = () => {
       case ESupportedViews.Polkadot:
         setView(<PolkadotCard />);
         break;
+      case ESupportedViews.Sui:
+        setView(<SuiNotifiCard />);
+        break;
       default:
         throw new Error('Unsupported view');
     }
@@ -46,10 +52,13 @@ export const NotifiCard: React.FC = () => {
         <option value={ESupportedViews.Solana}>Solana</option>
         <option value={ESupportedViews.WalletConnect}>WalletConnect</option>
         <option value={ESupportedViews.Polkadot}>Polkadot</option>
+        <option value={ESupportedViews.Sui}>Sui</option>
       </select>
       <WalletConnectProvider>
         <SolanaWalletProvider>
-          <AcalaWalletContextProvider>{view}</AcalaWalletContextProvider>
+          <EthosWalletProvider>
+            <AcalaWalletContextProvider>{view}</AcalaWalletContextProvider>
+          </EthosWalletProvider>
         </SolanaWalletProvider>
       </WalletConnectProvider>
     </div>

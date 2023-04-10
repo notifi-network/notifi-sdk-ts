@@ -200,6 +200,18 @@ const signMessage = async ({
       const signature = Buffer.from(signedBuffer).toString('base64');
       return signature;
     }
+    case 'SUI': {
+      if (signer.walletBlockchain !== 'SUI') {
+        throw new Error('Signer and config have different walletBlockchain');
+      }
+      const { walletPublicKey } = params;
+      const messageBuffer = new TextEncoder().encode(
+        `${SIGNING_MESSAGE}${walletPublicKey}${dappAddress}${timestamp.toString()}`,
+      );
+      const signedBuffer = await signer.signMessage(messageBuffer);
+      const signature = signedBuffer.toString();
+      return signature;
+    }
   }
 };
 
@@ -438,7 +450,8 @@ const useNotifiClient = (
           accountId:
             walletBlockchain === 'APTOS' ||
             walletBlockchain === 'ACALA' ||
-            walletBlockchain === 'NEAR'
+            walletBlockchain === 'NEAR' ||
+            walletBlockchain === 'SUI'
               ? config.accountAddress
               : undefined,
           walletPublicKey,
@@ -833,7 +846,8 @@ const useNotifiClient = (
           accountId:
             walletBlockchain === 'APTOS' ||
             walletBlockchain === 'ACALA' ||
-            walletBlockchain === 'NEAR'
+            walletBlockchain === 'NEAR' ||
+            walletBlockchain === 'SUI'
               ? walletParams.accountAddress
               : undefined,
           signature,
