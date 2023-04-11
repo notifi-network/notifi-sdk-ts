@@ -1,7 +1,10 @@
 import { Types } from '@notifi-network/notifi-graphql';
 import { NotifiService } from '@notifi-network/notifi-graphql';
 
-import type { NotifiFrontendConfiguration } from '../configuration';
+import type {
+  NotifiEvmConfiguration,
+  NotifiFrontendConfiguration,
+} from '../configuration';
 import type { CardConfigItemV1, EventTypeItem } from '../models';
 import type { Authorization, NotifiStorage, Roles } from '../storage';
 import { notNullOrEmpty, packFilterOptions } from '../utils';
@@ -16,7 +19,7 @@ import {
 } from './ensureTarget';
 
 // TODO: Clean up blockchain-specific dependencies out of this package
-export type SolanaSignMessageFunction = (
+export type Uint8SignMessageFunction = (
   message: Uint8Array,
 ) => Promise<Uint8Array>;
 export type AptosSignMessageFunction = (
@@ -42,11 +45,13 @@ type FindSubscriptionCardParams = Omit<Types.FindTenantConfigInput, 'tenant'>;
 // modify the string literal, which then causes authentication to fail due to different strings
 export const SIGNING_MESSAGE = `Sign in with Notifi \n\n    No password needed or gas is needed. \n\n    Clicking “Approve” only means you have proved this wallet is owned by you! \n\n    This request will not trigger any transaction or cost any gas fees. \n\n    Use of our website and service is subject to our terms of service and privacy policy. \n \n 'Nonce:' `;
 
+type EvmBlockchains = NotifiEvmConfiguration['walletBlockchain'];
+
 // TODO: Dedupe from react-hooks
 export type SignMessageParams =
   | Readonly<{
-      walletBlockchain: 'SOLANA';
-      signMessage: SolanaSignMessageFunction;
+      walletBlockchain: 'SOLANA' | EvmBlockchains;
+      signMessage: Uint8SignMessageFunction;
     }>
   | Readonly<{
       walletBlockchain: 'APTOS';
@@ -151,6 +156,12 @@ export class NotifiFrontendClient {
 
     let loginResult: Types.UserFragmentFragment | undefined = undefined;
     switch (walletBlockchain) {
+      case 'ETHEREUM':
+      case 'POLYGON':
+      case 'ARBITRUM':
+      case 'AVALANCHE':
+      case 'BINANCE':
+      case 'OPTIMISM':
       case 'SOLANA': {
         const result = await this._service.logInFromDapp({
           walletBlockchain,
@@ -192,8 +203,17 @@ export class NotifiFrontendClient {
     timestamp: number;
   }>): Promise<string> {
     switch (signMessageParams.walletBlockchain) {
+      case 'ETHEREUM':
+      case 'POLYGON':
+      case 'ARBITRUM':
+      case 'AVALANCHE':
+      case 'BINANCE':
+      case 'OPTIMISM':
       case 'SOLANA': {
-        if (this._configuration.walletBlockchain !== 'SOLANA') {
+        if (
+          this._configuration.walletBlockchain !==
+          signMessageParams.walletBlockchain
+        ) {
           throw new Error(
             'Sign message params and configuration must have the same blockchain',
           );

@@ -3,7 +3,8 @@ export type AlertFrequency =
   | 'SINGLE'
   | 'QUARTER_HOUR'
   | 'HOURLY'
-  | 'DAILY';
+  | 'DAILY'
+  | 'THREE_MINUTES';
 
 export type ValueItemConfig = Readonly<{
   key: string;
@@ -11,13 +12,17 @@ export type ValueItemConfig = Readonly<{
   value: string;
 }>;
 
+export type ThresholdDirection = 'above' | 'below';
+
 export type FilterOptions = Partial<{
   alertFrequency: AlertFrequency;
   directMessageType: string;
   threshold: number;
   delayProcessingUntil: string;
+  thresholdDirection: ThresholdDirection;
   values: Readonly<
     | { and: ReadonlyArray<ValueItemConfig> }
     | { or: ReadonlyArray<ValueItemConfig> }
   >;
+  tradingPair: string;
 }>;

@@ -35,3 +35,9 @@ export const resolveStringRef = createRefResolver(
     return typeof item === 'string';
   },
 );
+
+export const resolveNumberRef = createRefResolver(
+  (item: unknown): item is number => {
+    return typeof item === 'number' && !Number.isNaN(item);
+  },
+);

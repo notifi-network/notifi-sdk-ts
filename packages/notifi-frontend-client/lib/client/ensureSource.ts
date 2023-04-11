@@ -1,15 +1,15 @@
 import type { Operations, Types } from '@notifi-network/notifi-graphql';
-import { SourceFragmentFragment } from 'notifi-graphql/lib/gql/generated';
 
 import {
   BroadcastEventTypeItem,
+  CustomTopicTypeItem,
   DirectPushEventTypeItem,
   EventTypeItem,
   FilterOptions,
   PriceChangeEventTypeItem,
 } from '../models';
 import { areIdsEqual } from '../utils/areIdsEqual';
-import { resolveStringRef } from '../utils/resolveRef';
+import { resolveNumberRef, resolveStringRef } from '../utils/resolveRef';
 
 const ensureDirectPushSource = async (
   service: Operations.GetSourcesService & Operations.CreateSourceService,
@@ -108,6 +108,44 @@ const ensurePriceChangeSources = async (
   return results;
 };
 
+const ensureCustomSources = async (
+  service: Operations.GetSourcesService & Operations.CreateSourceService,
+  eventType: CustomTopicTypeItem,
+  inputs: Record<string, unknown>,
+): Promise<Types.SourceFragmentFragment> => {
+  const sourcesQuery = await service.getSources({});
+  const sources = sourcesQuery.source;
+  if (sources === undefined) {
+    throw new Error('Failed to fetch sources');
+  }
+
+  const address = resolveStringRef(
+    eventType.name,
+    eventType.sourceAddress,
+    inputs,
+  );
+  const existing = sources.find(
+    (it) =>
+      it?.type === eventType.sourceType && it.blockchainAddress === address,
+  );
+
+  if (existing !== undefined) {
+    return existing;
+  }
+
+  const createMutation = await service.createSource({
+    type: 'BROADCAST',
+    blockchainAddress: address,
+  });
+
+  const result = createMutation.createSource;
+  if (result === undefined) {
+    throw new Error('Failed to create source');
+  }
+
+  return result;
+};
+
 const ensureSources = async (
   service: Operations.GetSourcesService & Operations.CreateSourceService,
   eventType: EventTypeItem,
@@ -129,6 +167,10 @@ const ensureSources = async (
         inputs,
       );
       return sources;
+    }
+    case 'custom': {
+      const source = await ensureCustomSources(service, eventType, inputs);
+      return [source];
     }
     case 'label': {
       throw new Error('Unsupported event type');
@@ -186,7 +228,7 @@ type GetFilterResults = Readonly<{
 }>;
 
 const getDirectPushFilter = (
-  source: SourceFragmentFragment,
+  source: Types.SourceFragmentFragment,
   eventType: DirectPushEventTypeItem,
   inputs: Record<string, unknown>,
 ): GetFilterResults => {
@@ -209,7 +251,7 @@ const getDirectPushFilter = (
 };
 
 const getBroadcastFilter = (
-  source: SourceFragmentFragment,
+  source: Types.SourceFragmentFragment,
   _eventType: BroadcastEventTypeItem,
   _inputs: Record<string, unknown>,
 ): GetFilterResults => {
@@ -227,7 +269,7 @@ const getBroadcastFilter = (
 };
 
 const getPriceChangeFilter = (
-  sources: ReadonlyArray<SourceFragmentFragment>,
+  sources: ReadonlyArray<Types.SourceFragmentFragment>,
   _eventType: PriceChangeEventTypeItem,
   _inputs: Record<string, unknown>,
 ): GetFilterResults => {
@@ -241,6 +283,52 @@ const getPriceChangeFilter = (
   return {
     filter,
     filterOptions: {},
+  };
+};
+
+const getCustomFilterOptions = (
+  eventType: CustomTopicTypeItem,
+  inputs: Record<string, unknown>,
+): FilterOptions => {
+  switch (eventType.selectedUIType) {
+    case 'TOGGLE':
+      return eventType.filterOptions;
+    case 'HEALTH_CHECK': {
+      // Use synthetic ref values to get from input
+      const healthRatioKey = `${eventType.name}__healthRatio`;
+      const healthRatio = resolveNumberRef(
+        healthRatioKey,
+        { type: 'ref', ref: healthRatioKey },
+        inputs,
+      );
+
+      return {
+        alertFrequency: eventType.alertFrequency,
+        threshold:
+          eventType.numberType === 'percentage'
+            ? healthRatio / 100
+            : healthRatio,
+        thresholdDirection: eventType.checkRatios[0]?.type ?? 'below',
+      };
+    }
+  }
+};
+
+const getCustomFilter = (
+  source: Types.SourceFragmentFragment,
+  eventType: CustomTopicTypeItem,
+  inputs: Record<string, unknown>,
+): GetFilterResults => {
+  const filter = source.applicableFilters?.find(
+    (it) => it?.filterType === eventType.filterType,
+  );
+  if (filter === undefined) {
+    throw new Error('Failed to retrieve filter');
+  }
+
+  return {
+    filter,
+    filterOptions: getCustomFilterOptions(eventType, inputs),
   };
 };
 
@@ -294,6 +382,18 @@ export const ensureSourceAndFilters = async (
     case 'priceChange': {
       const { filter, filterOptions } = getPriceChangeFilter(
         sources,
+        eventType,
+        inputs,
+      );
+      return {
+        sourceGroup,
+        filter,
+        filterOptions,
+      };
+    }
+    case 'custom': {
+      const { filter, filterOptions } = getCustomFilter(
+        sources[0],
         eventType,
         inputs,
       );
