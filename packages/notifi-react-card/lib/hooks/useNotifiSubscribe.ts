@@ -225,17 +225,18 @@ export const useNotifiSubscribe: ({
       const discordTarget = targetGroup?.discordTargets[0];
 
       const discordId = discordTarget?.id;
+
       if (discordId) {
-        if (!discordTarget?.isConfirmed) {
+        const { isConfirmed, userStatus, verificationLink } = discordTarget;
+
+        if (!isConfirmed) {
           setDiscordErrorMessage({
             type: 'recoverableError',
-            onClick: () =>
-              window.open(discordTarget.verificationLink, '_blank'),
+            onClick: () => window.open(verificationLink, '_blank'),
             message: 'Enable Bot',
           });
         } else if (
-          discordTarget?.userStatus ===
-          DiscordTargetStatus.DISCORD_SERVER_NOT_JOINED
+          userStatus === DiscordTargetStatus.DISCORD_SERVER_NOT_JOINED
         ) {
           setDiscordErrorMessage({
             type: 'recoverableError',
