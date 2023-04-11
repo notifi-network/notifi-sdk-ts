@@ -65,6 +65,13 @@ export type NearParams = Readonly<{
   signMessage: Uint8SignMessageFunction;
 }>;
 
+export type InjectiveParams = Readonly<{
+  walletBlockchain: 'INJECTIVE';
+  accountAddress: string;
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
 export type AvalancheParams = Readonly<{
   walletBlockchain: 'AVALANCHE';
   walletPublicKey: string;
@@ -94,6 +101,7 @@ type WalletParams =
   | NearParams
   | AvalancheParams
   | OptimismParams
+  | InjectiveParams
   | SuiParams;
 
 export type NotifiParams = Readonly<{
