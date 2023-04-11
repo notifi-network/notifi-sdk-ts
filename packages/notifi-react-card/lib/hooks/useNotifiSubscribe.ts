@@ -1,9 +1,10 @@
-import type {
+import {
   Alert,
   ClientData,
   ConnectWalletParams,
   CreateSourceInput,
   DiscordTarget,
+  DiscordTargetStatus,
   Source,
 } from '@notifi-network/notifi-core';
 import { isValidPhoneNumber } from 'libphonenumber-js';
@@ -16,6 +17,7 @@ import {
   useNotifiSubscriptionContext,
 } from '../context';
 import { useNotifiClientContext } from '../context/NotifiClientContext';
+import { DISCORD_INVITE_URL } from '../utils/constants';
 import {
   formatTelegramForSubscription,
   prefixTelegramWithSymbol,
@@ -225,20 +227,21 @@ export const useNotifiSubscribe: ({
       const discordId = discordTarget?.id;
       if (discordId) {
         if (!discordTarget?.isConfirmed) {
-          client
-            .getDiscordTargetVerificationLink(discordId)
-            .then((discordURL) => {
-              setDiscordErrorMessage({
-                type: 'recoverableError',
-                onClick: () => window.open(discordURL, '_blank'),
-                message: 'Enable Bot',
-              });
-            })
-            .catch(() => {
-              throw new Error(
-                'Failed to retrieve discord target verification link.',
-              );
-            });
+          setDiscordErrorMessage({
+            type: 'recoverableError',
+            onClick: () =>
+              window.open(discordTarget.verificationLink, '_blank'),
+            message: 'Enable Bot',
+          });
+        } else if (
+          discordTarget?.userStatus ===
+          DiscordTargetStatus.DISCORD_SERVER_NOT_JOINED
+        ) {
+          setDiscordErrorMessage({
+            type: 'recoverableError',
+            onClick: () => window.open(DISCORD_INVITE_URL, '_blank'),
+            message: 'Join Server',
+          });
         }
         setUseDiscord(true);
         setDiscordTargetData(discordTarget);

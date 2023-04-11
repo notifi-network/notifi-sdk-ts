@@ -8,5 +8,7 @@ export const DiscordTargetFragment = gql`
     isConfirmed
     username
     name
+    userStatus
+    verificationLink
   }
 `;

@@ -1537,17 +1537,6 @@ const useNotifiClient = (
     [storage, notifiConfig, dappAddress],
   );
 
-  const getDiscordTargetVerificationLink = useCallback(
-    async (discordTargetId: string) => {
-      const result = await service.getDiscordTargetVerificationLink({
-        discordTargetVerificationLinkInput: {
-          discordTargetId,
-        },
-      });
-      return result;
-    },
-    [service],
-  );
   const client: NotifiClient = {
     beginLoginViaTransaction,
     broadcastMessage,
@@ -1572,7 +1561,6 @@ const useNotifiClient = (
     sendConversationMessages,
     sendEmailTargetVerification,
     createSupportConversation,
-    getDiscordTargetVerificationLink,
     createDiscordTarget,
   };
 
