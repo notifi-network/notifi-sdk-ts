@@ -22,6 +22,12 @@ export const createInMemoryStorageDriver = (
 ): StorageDriver => {
   let keyPrefix = `${getEnvPrefix(config.env)}:${config.tenantId}`;
   switch (config.walletBlockchain) {
+    case 'ETHEREUM':
+    case 'POLYGON':
+    case 'ARBITRUM':
+    case 'AVALANCHE':
+    case 'BINANCE':
+    case 'OPTIMISM':
     case 'SOLANA': {
       keyPrefix += `:${config.walletPublicKey}`;
       break;
