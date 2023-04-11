@@ -1,4 +1,7 @@
 // TODO: Import from library rather than copy / paste
+import { Types as Gql } from '@notifi-network/notifi-graphql';
+
+import { AlertFrequency, FilterOptions } from './FilterOptions';
 
 export type ValueOrRef<ValueType> =
   | Readonly<{
@@ -40,11 +43,51 @@ export type PriceChangeEventTypeItem = Readonly<{
   tooltipContent: string;
 }>;
 
+export type CustomTypeBase = {
+  type: 'custom';
+  name: string;
+  tooltipContent: string;
+  sourceType: Gql.SourceType;
+  filterType: string;
+  sourceAddress: ValueOrRef<string>;
+};
+
+export type CustomToggleTypeItem = Readonly<{
+  filterOptions: FilterOptions;
+  selectedUIType: 'TOGGLE';
+}>;
+
+export type NumberTypeSelect = 'percentage' | 'integer';
+
+export type CustomHealthCheckItem = Readonly<{
+  selectedUIType: 'HEALTH_CHECK';
+  healthCheckSubtitle: string;
+  numberType: NumberTypeSelect;
+  alertFrequency: AlertFrequency;
+  checkRatios: CheckRatio[];
+}>;
+
+type RatiosBelow = Readonly<{
+  type: 'below';
+  ratio: number;
+}>;
+
+type RatiosAbove = Readonly<{
+  type: 'above';
+  ratio: number;
+}>;
+
+export type CheckRatio = RatiosBelow | RatiosAbove;
+
+export type CustomTopicTypeItem = CustomTypeBase &
+  (CustomToggleTypeItem | CustomHealthCheckItem);
+
 export type EventTypeItem =
   | DirectPushEventTypeItem
   | BroadcastEventTypeItem
   | LabelEventTypeItem
-  | PriceChangeEventTypeItem;
+  | PriceChangeEventTypeItem
+  | CustomTopicTypeItem;
 
 export type EventTypeConfig = ReadonlyArray<EventTypeItem>;
 export type InputType =
