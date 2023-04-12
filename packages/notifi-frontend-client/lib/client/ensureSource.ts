@@ -134,7 +134,7 @@ const ensureCustomSources = async (
   }
 
   const createMutation = await service.createSource({
-    type: 'BROADCAST',
+    type: eventType.sourceType,
     blockchainAddress: address,
   });
 
