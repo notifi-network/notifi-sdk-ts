@@ -277,6 +277,7 @@ export type SignMessageParams =
         | 'ARBITRUM'
         | 'AVALANCHE'
         | 'BINANCE'
+        | 'INJECTIVE'
         | 'OPTIMISM';
       signMessage: Uint8SignMessageFunction;
     }>
@@ -330,6 +331,11 @@ export type WalletParams =
     }>
   | Readonly<{
       walletBlockchain: 'SUI';
+      accountAddress: string;
+      walletPublicKey: string;
+    }>
+  | Readonly<{
+      walletBlockchain: 'INJECTIVE';
       accountAddress: string;
       walletPublicKey: string;
     }>;

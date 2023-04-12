@@ -9,4 +9,5 @@ export type WalletBlockchain =
   | 'BINANCE'
   | 'NEAR'
   | 'OPTIMISM'
+  | 'INJECTIVE'
   | 'SUI';

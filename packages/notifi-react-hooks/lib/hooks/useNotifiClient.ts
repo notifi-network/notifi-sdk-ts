@@ -123,8 +123,9 @@ const signMessage = async ({
   timestamp: number;
 }>): Promise<string> => {
   switch (params.walletBlockchain) {
+    case 'INJECTIVE':
     case 'SOLANA': {
-      if (signer.walletBlockchain !== 'SOLANA') {
+      if (signer.walletBlockchain !== params.walletBlockchain) {
         throw new Error('Signer and config have different walletBlockchain');
       }
 
@@ -451,7 +452,8 @@ const useNotifiClient = (
             walletBlockchain === 'APTOS' ||
             walletBlockchain === 'ACALA' ||
             walletBlockchain === 'NEAR' ||
-            walletBlockchain === 'SUI'
+            walletBlockchain === 'SUI' ||
+            walletBlockchain === 'INJECTIVE'
               ? config.accountAddress
               : undefined,
           walletPublicKey,
