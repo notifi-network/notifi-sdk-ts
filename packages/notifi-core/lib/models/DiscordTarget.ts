@@ -11,6 +11,13 @@
  * @property {boolean} isConfirmed - Is discord confirmed? After adding a discord account, it must be confirmed
  *
  */
+
+export enum DiscordTargetStatus {
+  UNVERIFIED = 'UNVERIFIED',
+  DISCORD_SERVER_NOT_JOINED = 'DISCORD_SERVER_NOT_JOINED',
+  COMPLETE = 'COMPLETE',
+}
+
 export type DiscordTarget = Readonly<{
   discordAccountId: string | null;
   discriminator: string | null;
@@ -18,4 +25,6 @@ export type DiscordTarget = Readonly<{
   isConfirmed: boolean;
   name: string | null;
   username: string | null;
+  userStatus: DiscordTargetStatus;
+  verificationLink: string;
 }>;

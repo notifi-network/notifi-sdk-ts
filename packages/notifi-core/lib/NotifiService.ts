@@ -39,7 +39,6 @@ export type NotifiService = Operations.BroadcastMessageService &
   Operations.UpdateTargetGroupService &
   Operations.CreateDiscordTargetService &
   Operations.GetDiscordTargetsService &
-  Operations.GetDiscordTargetVerificationLinkService &
   Readonly<{
     setJwt: (jwt: string | null) => void;
   }>;

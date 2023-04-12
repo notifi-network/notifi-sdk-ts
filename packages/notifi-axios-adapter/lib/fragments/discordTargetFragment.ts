@@ -6,6 +6,8 @@ fragment discordTargetFragment on DiscordTarget {
   isConfirmed
   username
   name
+  userStatus
+  verificationLink
 }
 `.trim();
 

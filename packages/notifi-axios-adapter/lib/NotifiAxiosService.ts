@@ -29,7 +29,6 @@ import getAlertsImpl from './queries/getAlertsImpl';
 import getConfigurationForDappImpl from './queries/getConfigurationForDappImpl';
 import getConnectedWalletsImpl from './queries/getConnectedWalletsImpl';
 import getConversationMessagesImpl from './queries/getConversationMessagesImpl';
-import getDiscordTargetVerificationLinkImpl from './queries/getDiscordTargetVerificationLinkImpl';
 import getDiscordTargetsImpl from './queries/getDiscordTargetsImpl';
 import getEmailTargetsImpl from './queries/getEmailTargetsImpl';
 import getFiltersImpl from './queries/getFiltersImpl';
@@ -78,7 +77,6 @@ export class NotifiAxiosService implements NotifiService {
   getTelegramTargets: NotifiService['getTelegramTargets'];
   createDiscordTarget: NotifiService['createDiscordTarget'];
   getDiscordTargets: NotifiService['getDiscordTargets'];
-  getDiscordTargetVerificationLink: NotifiService['getDiscordTargetVerificationLink'];
   getTopics: NotifiService['getTopics'];
   getWebhookTargets: NotifiService['getWebhookTargets'];
   logInFromDapp: NotifiService['logInFromDapp'];
@@ -155,8 +153,6 @@ export class NotifiAxiosService implements NotifiService {
     this.sendConversationMessages = sendConversationMessagesImpl.bind(null, a);
     this.updateSourceGroup = updateSourceGroupImpl.bind(null, a);
     this.updateTargetGroup = updateTargetGroupImpl.bind(null, a);
-    this.getDiscordTargetVerificationLink =
-      getDiscordTargetVerificationLinkImpl.bind(null, a);
   }
 
   setJwt = (jwt: string | null) => {
