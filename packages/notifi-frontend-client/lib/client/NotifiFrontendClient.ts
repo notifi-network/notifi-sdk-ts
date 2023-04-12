@@ -208,7 +208,24 @@ export class NotifiFrontendClient {
       case 'ARBITRUM':
       case 'AVALANCHE':
       case 'BINANCE':
-      case 'OPTIMISM':
+      case 'OPTIMISM': {
+        if (
+          this._configuration.walletBlockchain !==
+          signMessageParams.walletBlockchain
+        ) {
+          throw new Error(
+            'Sign message params and configuration must have the same blockchain',
+          );
+        }
+        const { walletPublicKey, tenantId } = this._configuration;
+        const messageBuffer = new TextEncoder().encode(
+          `${SIGNING_MESSAGE}${walletPublicKey}${tenantId}${timestamp.toString()}`,
+        );
+
+        const signedBuffer = await signMessageParams.signMessage(messageBuffer);
+        const signature = Buffer.from(signedBuffer).toString('hex');
+        return signature;
+      }
       case 'SOLANA': {
         if (
           this._configuration.walletBlockchain !==
