@@ -108,6 +108,38 @@ const ensurePriceChangeSources = async (
   return results;
 };
 
+const normalizeSourceAddress = (
+  sourceType: Types.SourceType,
+  blockchainAddress: string,
+): string => {
+  switch (sourceType) {
+    case 'ETHEREUM_WALLET':
+    case 'POLYGON_WALLET':
+    case 'ARBITRUM_WALLET':
+    case 'BINANCE_WALLET':
+    case 'OPTIMISM_WALLET':
+    case 'AVALANCHE_WALLET':
+    case 'BENQI':
+    case 'DELTA_PRIME':
+    case 'DELTA_PRIME_LENDING_RATES':
+    case 'APTOS_WALLET':
+      return normalizeHexString(blockchainAddress);
+    default:
+      return blockchainAddress;
+  }
+};
+
+const normalizeHexString = (input: string): string => {
+  let result = input;
+  if (input !== '') {
+    result = input.toLowerCase();
+    if (!result.startsWith('0x')) {
+      result = '0x' + result;
+    }
+  }
+  return result;
+};
+
 const ensureCustomSources = async (
   service: Operations.GetSourcesService & Operations.CreateSourceService,
   eventType: CustomTopicTypeItem,
@@ -124,9 +156,11 @@ const ensureCustomSources = async (
     eventType.sourceAddress,
     inputs,
   );
+  const sourceAddress = normalizeSourceAddress(eventType.sourceType, address);
   const existing = sources.find(
     (it) =>
-      it?.type === eventType.sourceType && it.blockchainAddress === address,
+      it?.type === eventType.sourceType &&
+      it.blockchainAddress === sourceAddress,
   );
 
   if (existing !== undefined) {
@@ -134,8 +168,8 @@ const ensureCustomSources = async (
   }
 
   const createMutation = await service.createSource({
-    type: 'BROADCAST',
-    blockchainAddress: address,
+    type: eventType.sourceType,
+    blockchainAddress: sourceAddress,
   });
 
   const result = createMutation.createSource;
