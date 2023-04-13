@@ -9,7 +9,6 @@ import {
 } from '@notifi-network/notifi-core';
 import { isValidPhoneNumber } from 'libphonenumber-js';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { v4 as uuid } from 'uuid';
 
 import {
   defaultDemoConfigV1,
@@ -134,7 +133,7 @@ export const useNotifiSubscribe: ({
     // If there is a target, set the discord target data to it, otherwise create a new target.
     setDiscordTargetData(
       target || {
-        id: uuid(),
+        id: 'Default',
         discordAccountId: null,
         discriminator: null,
         isConfirmed: false,
