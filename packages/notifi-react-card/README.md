@@ -14,6 +14,7 @@ We currently support the following blockchains:
 - Aptos
 - Acala
 - Injective
+- Sui
 
 # Getting Started
 
@@ -541,6 +542,8 @@ export const KeplrCard: React.FC = () => {
 };
 ```
 
+</details>
+
 ### NEAR
 
 <details>
@@ -756,6 +759,129 @@ export const WalletConnectCard = () => {
         darkMode //optional
       />
     </NotifiContext>
+  );
+};
+```
+
+</details>
+
+### Sui
+
+<details>
+<summary>Integrate Card Component</summary>
+
+> [`ethos-connect`](https://www.npmjs.com/package/ethos-connect) are used as Sui wallet adaptor. Be sure it is installed as dependencies.
+
+```bash
+npm install ethos-connect # For npm
+yarn add ethos-connect # For yarn
+```
+
+1. Create a EthosWalletProvider component
+
+```tsx
+// EthosWalletProvider.tsx
+import { EthosConnectProvider } from 'ethos-connect';
+import { PropsWithChildren } from 'react';
+
+export const EthosWalletProvider: React.FC<PropsWithChildren> = ({
+  children,
+}) => {
+  return (
+    <EthosConnectProvider
+      ethosConfiguration={{
+        hideEmailSignIn: true, // defaults to false
+      }}
+    >
+      {children}
+    </EthosConnectProvider>
+  );
+};
+```
+
+2. Wrap the React </App> with <EthosWalletProvider />
+
+```tsx
+import { EthosWalletProvider } from '<PATH TO EthosWalletProvider.tsx>';
+<EthosWalletProvider></App> <EthosWalletProvider />
+```
+
+3. Place the NotifiSubscriptionCard by passing in corresponding NotifiContext properties
+
+```tsx
+import { Uint8SignMessageFunction } from '@notifi-network/notifi-core';
+import {
+  NotifiContext,
+  NotifiInputFieldsText,
+  NotifiInputSeparators,
+  NotifiSubscriptionCard,
+} from '@notifi-network/notifi-react-card';
+import { EthosConnectStatus, SignInButton, ethos } from 'ethos-connect';
+import React from 'react';
+
+export const SuiNotifiCard: React.FC = () => {
+  const { status, wallet } = ethos.useWallet();
+
+  const signMessage: Uint8SignMessageFunction = async (message: Uint8Array) => {
+    if (!wallet) {
+      throw new Error('Wallet not connected');
+    }
+
+    const signature = await wallet.signMessage({
+      message,
+    });
+
+    const signatureBuffer = Buffer.from(signature.signature);
+    return signatureBuffer;
+  };
+
+  const inputLabels: NotifiInputFieldsText = {
+    label: {
+      email: 'Email',
+      sms: 'Text Message',
+      telegram: 'Telegram',
+    },
+    placeholderText: {
+      email: 'Email',
+    },
+  };
+
+  const inputSeparators: NotifiInputSeparators = {
+    smsSeparator: {
+      content: '',
+    },
+    emailSeparator: {
+      content: '',
+    },
+  };
+
+  return (
+    <div className="container">
+      <h1>Notifi Card: Sui</h1>
+      {status === EthosConnectStatus.Connected && wallet ? (
+        <NotifiContext
+          dappAddress="< YOUR OWN DAPP ADDRESS HERE >"
+          walletBlockchain="SUI"
+          env="Development"
+          accountAddress={wallet.address}
+          walletPublicKey={wallet.address}
+          signMessage={signMessage}
+        >
+          Connected SUI Wallet: <br /> {wallet?.address}
+          <button onClick={wallet.disconnect}> DISCONNECT</button>
+          <NotifiSubscriptionCard
+            darkMode
+            inputs={{ userWallet: wallet.address }}
+            inputLabels={inputLabels}
+            inputSeparators={inputSeparators}
+            cardId="< YOUR OWN CARD ID HERE >"
+            onClose={() => alert('nope you must stay')}
+          />
+        </NotifiContext>
+      ) : (
+        <SignInButton>CONNECT SUI WALLET</SignInButton>
+      )}
+    </div>
   );
 };
 ```
