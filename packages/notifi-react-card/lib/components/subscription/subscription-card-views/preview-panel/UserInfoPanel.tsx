@@ -178,7 +178,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
                 confirmationLabels?.telegram ??
                 ''
               }
-              tooltipContent={destinationErrorMessages?.phoneNumber?.tooltip}
+              tooltipContent={destinationErrorMessages?.telegram?.tooltip}
             />
           ) : null}
         </div>
