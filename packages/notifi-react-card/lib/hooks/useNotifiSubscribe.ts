@@ -130,17 +130,7 @@ export const useNotifiSubscribe: ({
     const target =
       discordTargets?.find((target) => target.isConfirmed) || discordTargets[0];
 
-    // If there is a target, set the discord target data to it, otherwise create a new target.
-    setDiscordTargetData(
-      target || {
-        id: 'Default',
-        discordAccountId: null,
-        discriminator: null,
-        isConfirmed: false,
-        username: null,
-        name: null,
-      },
-    );
+    setDiscordTargetData(target || undefined);
   };
 
   const render = useCallback(
@@ -638,10 +628,12 @@ export const useNotifiSubscribe: ({
 
     let finalPhoneNumber = null;
 
-    const finalDiscordId =
-      useDiscord === false || !discordTargetDatafromSubscriptionContext?.id
-        ? null
-        : discordTargetDatafromSubscriptionContext?.id;
+    let finalDiscordId = null;
+
+    if (useDiscord === true) {
+      finalDiscordId =
+        discordTargetDatafromSubscriptionContext?.id ?? 'Default';
+    }
 
     if (isValidPhoneNumber(formPhoneNumber)) {
       finalPhoneNumber = formPhoneNumber;
