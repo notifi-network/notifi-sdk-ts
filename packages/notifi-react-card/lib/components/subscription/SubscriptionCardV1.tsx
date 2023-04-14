@@ -23,6 +23,7 @@ import NotifiAlertBox, {
   NotifiAlertBoxButtonProps,
   NotifiAlertBoxProps,
 } from '../NotifiAlertBox';
+import { ErrorStateCard } from '../common';
 import {
   NotifiInputFieldsText,
   NotifiInputSeparators,
@@ -68,6 +69,7 @@ export type SubscriptionCardV1Props = Readonly<{
     ExpiredTokenView: ExpiredTokenViewCardProps['classNames'];
     VerifyWalletView: VerifyWalletViewProps['classNames'];
     NotifiAlertBox: NotifiAlertBoxProps['classNames'];
+    ErrorStateCard: string;
   }>;
   inputDisabled: boolean;
   data: CardConfigItemV1;
@@ -129,8 +131,14 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
   }, [email, phoneNumber, telegramId]);
 
   useEffect(() => {
-    if (demoPreview) {
+    if (demoPreview && demoPreview.view !== 'error') {
       return setCardView({ state: demoPreview.view });
+    }
+    if (demoPreview && demoPreview.view === 'error') {
+      return setCardView({
+        state: demoPreview.view,
+        reason: 'test example reason',
+      });
     }
     if (firstLoad.current || !isInitialized) {
       return;
@@ -191,11 +199,13 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
       ? data?.titles.signupView
       : copy?.signUpHeader ?? 'Get Notified';
   };
+
   const editHeader = () => {
     return useCustomTitles && data?.titles.editView !== ''
       ? data?.titles.editView
       : copy?.editHeader ?? 'Update Settings';
   };
+
   const verifyOnboardingHeader = () => {
     return useCustomTitles && data?.titles.verifyWalletsView !== ''
       ? data?.titles.verifyWalletsView
@@ -357,6 +367,9 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
           </div>
         </>
       );
+      break;
+    case 'error':
+      view = <ErrorStateCard reason={cardView.reason as string} />;
       break;
     default:
       view = <div>Not supported view</div>;

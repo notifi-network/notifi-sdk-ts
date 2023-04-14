@@ -53,30 +53,35 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
 
     const isFirstTimeUser = targetGroupLength === 0;
 
-    let success = false;
-    if (isFirstTimeUser && !isMultiWallet) {
-      const alertConfigs = createConfigurations(
-        eventTypes,
-        inputs,
-        connectedWallets,
-      );
+    try {
+      let success = false;
 
-      const result = await subscribe(alertConfigs);
-      success = !!result;
-    } else {
-      const result = await updateTargetGroups();
-      success = !!result;
-    }
+      if (isFirstTimeUser && !isMultiWallet) {
+        const alertConfigs = createConfigurations(
+          eventTypes,
+          inputs,
+          connectedWallets,
+        );
 
-    if (success === true) {
-      const nextState = !isMultiWallet
-        ? 'preview'
-        : cardView.state === 'signup'
-        ? 'verifyonboarding'
-        : 'verify';
-      setCardView({
-        state: nextState,
-      });
+        const result = await subscribe(alertConfigs);
+        success = !!result;
+      } else {
+        const result = await updateTargetGroups();
+        success = !!result;
+      }
+
+      if (success === true) {
+        const nextState = !isMultiWallet
+          ? 'preview'
+          : cardView.state === 'signup'
+          ? 'verifyonboarding'
+          : 'verify';
+        setCardView({
+          state: nextState,
+        });
+      }
+    } catch (e) {
+      setCardView({ state: 'error', reason: e });
     }
   }, [
     isMultiWallet,

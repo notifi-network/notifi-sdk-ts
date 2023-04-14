@@ -6,6 +6,7 @@ import {
   useNotifiDemoPreviewContext,
 } from '../context';
 import { CardConfigItemV1 } from './SubscriptionCardConfig';
+import { ErrorViewState } from './useFetchedCardState';
 
 export type LoadingState = Readonly<{
   state: 'loading';
@@ -18,12 +19,10 @@ export type FetchedState = Readonly<{
   data: Data;
 }>;
 
-export type ErrorState = Readonly<{
-  state: 'error';
-  reason: unknown;
-}>;
-
-export type SubscriptionCardState = LoadingState | FetchedState | ErrorState;
+export type SubscriptionCardState =
+  | LoadingState
+  | FetchedState
+  | ErrorViewState;
 
 export const useSubscriptionCard = (
   input: ClientFetchSubscriptionCardInput,

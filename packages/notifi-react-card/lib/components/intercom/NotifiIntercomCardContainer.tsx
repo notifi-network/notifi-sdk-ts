@@ -31,7 +31,10 @@ export const NotifiIntercomCardContainer: React.FC<
       break;
     case 'error':
       contents = (
-        <ErrorStateCard classNames={classNames?.ErrorStateCard} card={card} />
+        <ErrorStateCard
+          classNames={classNames?.ErrorStateCard}
+          reason={card.reason as string}
+        />
       );
       break;
     case 'fetched':
