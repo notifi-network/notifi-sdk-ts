@@ -22,6 +22,11 @@ export type VerifyOnboardingViewState = Readonly<{
   state: 'verifyonboarding';
 }>;
 
+export type ErrorViewState = Readonly<{
+  state: 'error';
+  reason: unknown;
+}>;
+
 export type FetchedCardViewState =
   | PreviewViewState
   | AlertHistoryViewState
@@ -29,7 +34,8 @@ export type FetchedCardViewState =
   | VerifyWalletViewState
   | ExpiredTokenViewState
   | SignUpViewState
-  | VerifyOnboardingViewState;
+  | VerifyOnboardingViewState
+  | ErrorViewState;
 
 export const useFetchedCardState = () => {
   const [cardView, setCardView] = useState<FetchedCardViewState>({

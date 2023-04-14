@@ -982,7 +982,8 @@ input::-webkit-inner-spin-button {
 }
 
 .NotifiAlertListContainer__checkmarkIcon path {
-  fill: var(--notifi-checkmark-color);
+  stroke: var(--notifi-checkmark-color);
+  stroke-width: 5px;
 }
 
 .NotifiAlertList__listItem {
@@ -1647,4 +1648,14 @@ input::-webkit-inner-spin-button {
   display: flex;
   width: 15px;
   margin-bottom: 4px;
+}
+
+.ErrorStateCard__errorMessage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  top: -80px;
+  flex-grow: 1;
+  padding: 0 20px;
 }

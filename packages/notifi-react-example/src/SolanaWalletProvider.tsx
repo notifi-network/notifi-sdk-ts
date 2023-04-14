@@ -4,9 +4,7 @@ import {
   WalletProvider,
 } from '@solana/wallet-adapter-react';
 import {
-  WalletDisconnectButton,
   WalletModalProvider,
-  WalletMultiButton,
 } from '@solana/wallet-adapter-react-ui';
 import {
   PhantomWalletAdapter,
