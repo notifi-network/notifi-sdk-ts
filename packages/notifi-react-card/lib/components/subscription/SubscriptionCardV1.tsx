@@ -131,8 +131,14 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
   }, [email, phoneNumber, telegramId]);
 
   useEffect(() => {
-    if (demoPreview) {
-      return setCardView({ state: 'preview' });
+    if (demoPreview && demoPreview.view !== 'error') {
+      return setCardView({ state: demoPreview.view });
+    }
+    if (demoPreview && demoPreview.view === 'error') {
+      return setCardView({
+        state: demoPreview.view,
+        reason: 'test example reason',
+      });
     }
     if (firstLoad.current || !isInitialized) {
       return;
