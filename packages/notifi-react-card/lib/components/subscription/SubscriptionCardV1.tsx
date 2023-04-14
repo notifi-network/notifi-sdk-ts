@@ -369,9 +369,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
       );
       break;
     case 'error':
-      view = (
-        <ErrorStateCard card={{ state: 'error', reason: cardView.reason }} />
-      );
+      view = <ErrorStateCard reason={cardView.reason as string} />;
       break;
     default:
       view = <div>Not supported view</div>;
