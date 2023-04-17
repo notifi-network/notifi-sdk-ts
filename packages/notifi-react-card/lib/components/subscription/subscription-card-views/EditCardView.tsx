@@ -2,7 +2,9 @@ import clsx from 'clsx';
 import { DeepPartialReadonly } from 'notifi-react-card/lib/utils';
 import React from 'react';
 
+import { useNotifiSubscriptionContext } from '../../../context/NotifiSubscriptionContext';
 import { CardConfigItemV1 } from '../../../hooks';
+import Spinner from '../../common/Spinner';
 import {
   NotifiSubscribeButton,
   NotifiSubscribeButtonProps,
@@ -47,6 +49,8 @@ export const EditCardView: React.FC<EditCardViewProps> = ({
   inputTextFields,
   inputs,
 }) => {
+  const { loading } = useNotifiSubscriptionContext();
+
   return (
     <div
       className={clsx('NotifiInputContainer', classNames?.NotifiInputContainer)}
@@ -58,14 +62,19 @@ export const EditCardView: React.FC<EditCardViewProps> = ({
           eventTypes={data.eventTypes}
         />
       ) : null}
-
-      <InputFields
-        data={data}
-        allowedCountryCodes={allowedCountryCodes}
-        inputDisabled={inputDisabled}
-        inputSeparators={inputSeparators}
-        inputTextFields={inputTextFields}
-      />
+      {loading ? (
+        <div className="NotifiInputContainer__LoadingSpinner">
+          <Spinner size="100px" />
+        </div>
+      ) : (
+        <InputFields
+          data={data}
+          allowedCountryCodes={allowedCountryCodes}
+          inputDisabled={inputDisabled}
+          inputSeparators={inputSeparators}
+          inputTextFields={inputTextFields}
+        />
+      )}
       <NotifiSubscribeButton
         buttonText={buttonText}
         data={data}
