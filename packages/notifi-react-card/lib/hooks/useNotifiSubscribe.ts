@@ -336,7 +336,6 @@ export const useNotifiSubscribe: ({
   const logIn = useCallback(async (): Promise<SubscriptionData> => {
     if (demoPreview)
       throw new Error('Preview card does not support method call');
-    setLoading(true);
     if (!client.isAuthenticated) {
       if (useHardwareWallet) {
         await logInViaHardwareWallet();
@@ -349,7 +348,6 @@ export const useNotifiSubscribe: ({
 
     copyAuths(newData);
     const results = render(newData);
-    setLoading(false);
     return results;
   }, [
     client.isAuthenticated,
@@ -544,8 +542,6 @@ export const useNotifiSubscribe: ({
       if (isValidPhoneNumber(formPhoneNumber)) {
         finalPhoneNumber = formPhoneNumber;
       }
-
-      // if useDiscord is true, we create a random id for the discord target creation
 
       setLoading(true);
 

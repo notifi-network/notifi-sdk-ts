@@ -1659,3 +1659,11 @@ input::-webkit-inner-spin-button {
   flex-grow: 1;
   padding: 0 20px;
 }
+
+
+.NotifiInputContainer__LoadingSpinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+}

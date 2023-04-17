@@ -106,7 +106,7 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
       onClick={onClick}
     >
       <span className={clsx('NotifiSubscribeButton__label', classNames?.label)}>
-        {buttonText}
+        {loading ? 'Loading' : buttonText}
       </span>
     </button>
   );
