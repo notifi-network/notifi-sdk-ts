@@ -19,7 +19,7 @@ export type DemoPreview = {
 export const defaultDemoConfigV1: CardConfigItemV1 = {
   version: 'v1',
   id: '@notifi.network', // Shown as dummy telegram id
-  name: 'notofi@notifi.network', // Shown as dummy email field
+  name: 'notifi@notifi.network', // Shown as dummy email field
   eventTypes: [],
   inputs: [],
   contactInfo: {
