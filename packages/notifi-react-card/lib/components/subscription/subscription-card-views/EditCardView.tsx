@@ -64,7 +64,7 @@ export const EditCardView: React.FC<EditCardViewProps> = ({
       ) : null}
       {loading ? (
         <div className="NotifiInputContainer__LoadingSpinner">
-          <Spinner size="100px" />
+          <Spinner size="70px" />
         </div>
       ) : (
         <InputFields
