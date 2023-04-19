@@ -21,18 +21,6 @@ export const DemoPrviewCard = () => {
           <NotifiSubscriptionCard darkMode cardId="" />
         </NotifiContext>
       </NotifiDemoPreviewContextProvider>
-      <NotifiDemoPreviewContextProvider view="error" data={JSON.parse(data)}>
-        <NotifiContext
-          dappAddress=""
-          env="Development"
-          walletBlockchain="SOLANA"
-          walletPublicKey="string"
-          signMessage={async (msg: Uint8Array) => msg}
-          hardwareLoginPlugin={{ sendMessage: async (msg: string) => msg }}
-        >
-          <NotifiSubscriptionCard darkMode cardId="" />
-        </NotifiContext>
-      </NotifiDemoPreviewContextProvider>
       Dummy Demo NotifiSubscriptionCard: Edit page
       <NotifiDemoPreviewContextProvider view="edit" data={JSON.parse(data)}>
         <NotifiContext
