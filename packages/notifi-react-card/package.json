@@ -6,6 +6,7 @@
   "homepage": "https://github.com/notifi-network/notifi-sdk-ts#readme",
   "license": "MIT",
   "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "files": [
     "dist"
@@ -20,7 +21,7 @@
   "scripts": {
     "build": "npm run clean && npm run compile",
     "clean": "rimraf ./dist",
-    "compile": "tsup lib/index.ts --format cjs,esm --dts --clean --external react",
+    "compile": "tsup lib/index.ts --sourcemap --format cjs,esm --dts --clean --external react",
     "format": "prettier --config .prettierrc **/*.ts --write",
     "lint": "eslint ."
   },
