@@ -223,7 +223,7 @@ export class NotifiFrontendClient {
         );
 
         const signedBuffer = await signMessageParams.signMessage(messageBuffer);
-        const signature = '0x' + Buffer.from(signedBuffer).toString('hex');
+        const signature = normalizeHexString(Buffer.from(signedBuffer).toString('hex'));
         return signature;
       }
       case 'SOLANA': {
