@@ -4,6 +4,7 @@ import {
   NotifiInputSeparators,
   NotifiIntercomCard,
   NotifiSubscriptionCard,
+  NotifiBellIcon
 } from '@notifi-network/notifi-react-card';
 import '@notifi-network/notifi-react-card/dist/index.css';
 import { MemoProgramHardwareLoginPlugin } from '@notifi-network/notifi-solana-hw-login';
@@ -98,6 +99,33 @@ export const SolanaCard: React.FC = () => {
             inputSeparators={intercomInputSeparators}
             cardId="1045f61752b148eabab0403c08cd60b2"
           />
+
+          <NotifiBellIcon
+            bellColor='black'
+            >
+ <NotifiSubscriptionCard
+            darkMode
+            inputs={{ userWallet: publicKey }}
+            inputLabels={inputLabels}
+            inputSeparators={inputSeparators}
+            cardId="d8859ea72ff4449fa8f7f293ebd333c9"
+            onClose={() => alert('nope you must stay')}
+            copy={{
+              FetchedStateCard: {
+                SubscriptionCardV1: {
+                  signUpHeader: 'Please sign up',
+                  EditCard: {
+                    AlertListPreview: {
+                      description:
+                        'Get your alerts here!!! you can subscribe to any of the following:',
+                    },
+                  },
+                },
+              },
+            }}
+          />
+
+            </NotifiBellIcon>
         </NotifiContext>
       ) : (
         <WalletMultiButton />

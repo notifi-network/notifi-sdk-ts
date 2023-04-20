@@ -20,5 +20,6 @@ export * from './NotifiTooltip';
 export * from './resolveRef';
 export * from './SubscriptionCardUnsupported';
 export * from './SubscriptionCardV1';
+export * from './NotifiBellIcon';
 
 export * from './subscription-card-views';

@@ -1667,3 +1667,13 @@ input::-webkit-inner-spin-button {
   align-items: center;
   flex-grow: 1;
 }
+
+.NotifiBellIcon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-bottom: 0 !important;
+}
