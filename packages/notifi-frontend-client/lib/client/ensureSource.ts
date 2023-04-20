@@ -129,7 +129,7 @@ const normalizeSourceAddress = (
   }
 };
 
-const normalizeHexString = (input: string): string => {
+export const normalizeHexString = (input: string): string => {
   let result = input;
   if (input !== '') {
     result = input.toLowerCase();

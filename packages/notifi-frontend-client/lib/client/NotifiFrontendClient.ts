@@ -9,7 +9,7 @@ import type { CardConfigItemV1, EventTypeItem } from '../models';
 import type { Authorization, NotifiStorage, Roles } from '../storage';
 import { notNullOrEmpty, packFilterOptions } from '../utils';
 import { areIdsEqual } from '../utils/areIdsEqual';
-import { ensureSourceAndFilters } from './ensureSource';
+import { ensureSourceAndFilters, normalizeHexString } from './ensureSource';
 import {
   ensureDiscord,
   ensureEmail,
@@ -223,7 +223,9 @@ export class NotifiFrontendClient {
         );
 
         const signedBuffer = await signMessageParams.signMessage(messageBuffer);
-        const signature = normalizeHexString(Buffer.from(signedBuffer).toString('hex'));
+        const signature = normalizeHexString(
+          Buffer.from(signedBuffer).toString('hex'),
+        );
         return signature;
       }
       case 'SOLANA': {
