@@ -5,7 +5,7 @@ import {
 import { arrayify } from 'ethers/lib/utils.js';
 import { useAccount, useConnect, useDisconnect, useSignMessage } from 'wagmi';
 
-import { connector } from '../WalletConnectProvider';
+import { connector } from '../walletProviders/WalletConnectProvider';
 
 export const WalletConnectCard = () => {
   const { address, isConnected } = useAccount();

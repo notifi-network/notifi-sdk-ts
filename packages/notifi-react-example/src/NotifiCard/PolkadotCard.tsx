@@ -1,4 +1,4 @@
-import { AcalaConnectButton } from '../AcalaWalletContextProvider';
+import { AcalaConnectButton } from '../walletProviders/AcalaWalletContextProvider';
 
 export const PolkadotCard = () => {
   return (
