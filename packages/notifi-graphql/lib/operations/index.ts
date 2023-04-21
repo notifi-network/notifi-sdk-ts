@@ -44,3 +44,4 @@ export * from './SendEmailTargetVerificationRequest';
 export * from './UpdateSourceGroup';
 export * from './UpdateTargetGroup';
 export * from './GetDiscordTargets';
+export * from './ConnectWallet';

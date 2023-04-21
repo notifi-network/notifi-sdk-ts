@@ -11,6 +11,7 @@ export class NotifiService
     Operations.BeginLogInByTransactionService,
     Operations.BroadcastMessageService,
     Operations.CompleteLogInByTransactionService,
+    Operations.ConnectWalletService,
     Operations.CreateAlertService,
     Operations.CreateDirectPushAlertService,
     Operations.CreateEmailTargetService,
@@ -102,6 +103,13 @@ export class NotifiService
       this._jwt = token;
     }
     return result;
+  }
+
+  async connectWallet(
+    variables: Generated.ConnectWalletMutationVariables,
+  ): Promise<Generated.ConnectWalletMutation> {
+    const headers = this._requestHeaders();
+    return await this._typedClient.connectWallet(variables, headers);
   }
 
   async createAlert(
