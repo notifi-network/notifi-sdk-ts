@@ -8,17 +8,15 @@ import { WalletConnectProvider } from './WalletConnectProvider';
 
 const WalletProviders: FC<PropsWithChildren> = ({ children }) => {
   return (
-    <>
-      <AcalaWalletContextProvider>
-        <EthosWalletProvider>
-          <KeplrWalletProvider>
-            <SolanaWalletProvider>
-              <WalletConnectProvider>{children}</WalletConnectProvider>
-            </SolanaWalletProvider>
-          </KeplrWalletProvider>
-        </EthosWalletProvider>
-      </AcalaWalletContextProvider>
-    </>
+    <AcalaWalletContextProvider>
+      <EthosWalletProvider>
+        <KeplrWalletProvider>
+          <SolanaWalletProvider>
+            <WalletConnectProvider>{children}</WalletConnectProvider>
+          </SolanaWalletProvider>
+        </KeplrWalletProvider>
+      </EthosWalletProvider>
+    </AcalaWalletContextProvider>
   );
 };
 
