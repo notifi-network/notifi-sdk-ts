@@ -1,11 +1,6 @@
 import '@notifi-network/notifi-react-card/dist/index.css';
 import React from 'react';
 
-import { AcalaWalletContextProvider } from '../AcalaWalletContextProvider';
-import { EthosWalletProvider } from '../EthosWalletProvider';
-import { KeplrWalletProvider } from '../KeplrWalletProvider';
-import { SolanaWalletProvider } from '../SolanaWalletProvider';
-import { WalletConnectProvider } from '../WalletConnectProvider';
 import { DemoPrviewCard } from './DemoPreviewCard';
 import { KeplrCard } from './KeplrCard';
 import './NotifiCard.css';
@@ -54,15 +49,7 @@ export const NotifiCard: React.FC = () => {
           </option>
         ))}
       </select>
-      <WalletConnectProvider>
-        <SolanaWalletProvider>
-          <EthosWalletProvider>
-            <AcalaWalletContextProvider>
-              <KeplrWalletProvider>{view}</KeplrWalletProvider>
-            </AcalaWalletContextProvider>
-          </EthosWalletProvider>
-        </SolanaWalletProvider>
-      </WalletConnectProvider>
+      {view}
     </div>
   );
 };

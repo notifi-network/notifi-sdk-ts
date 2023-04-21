@@ -5,7 +5,7 @@ import {
 import '@notifi-network/notifi-react-card/dist/index.css';
 import React, { useMemo } from 'react';
 
-import { useKeplrContext } from '../KeplrWalletProvider';
+import { useKeplrContext } from '../walletProviders/KeplrWalletProvider';
 import './NotifiCard.css';
 
 export const KeplrConnectButton: React.FC = () => {

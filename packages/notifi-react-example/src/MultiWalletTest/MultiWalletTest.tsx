@@ -7,7 +7,7 @@ import { MemoProgramHardwareLoginPlugin } from '@notifi-network/notifi-solana-hw
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import React, { useMemo } from 'react';
 
-import { useAcalaWallet } from '../AcalaWalletContextProvider';
+import { useAcalaWallet } from '../walletProviders/AcalaWalletContextProvider';
 import './MultiWalletTest.css';
 
 export const MultiWalletTest: React.FC = () => {
