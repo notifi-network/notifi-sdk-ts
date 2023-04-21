@@ -1,6 +1,6 @@
 import clsx from 'clsx';
-import React from 'react';
-import { PropsWithChildren, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { PropsWithChildren } from 'react';
 
 import { BellIcon } from '../../assets/BellIcon';
 
@@ -19,10 +19,29 @@ export const NotifiBellIcon: React.FC<
   PropsWithChildren<NotifiBellIconProps>
 > = ({ children, svgProps, bellColor, classNames, containerStyles }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const bellIconRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        bellIconRef.current &&
+        !bellIconRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
 
   return (
     <div style={{ position: 'relative' }}>
       <div
+        ref={bellIconRef}
         className={clsx('NotifiBellIcon', classNames?.NotifiBellIcon)}
         onClick={() => setIsOpen(!isOpen)}
       >
