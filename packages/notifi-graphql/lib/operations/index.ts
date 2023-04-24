@@ -45,3 +45,4 @@ export * from './UpdateSourceGroup';
 export * from './UpdateTargetGroup';
 export * from './GetDiscordTargets';
 export * from './ConnectWallet';
+export * from './GetConnectedWallets';

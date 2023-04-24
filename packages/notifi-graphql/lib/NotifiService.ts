@@ -30,6 +30,7 @@ export class NotifiService
     Operations.FindTenantConfigService,
     Operations.GetAlertsService,
     Operations.GetConfigurationForDappService,
+    Operations.GetConnectedWalletsService,
     Operations.GetEmailTargetsService,
     Operations.GetFiltersService,
     Operations.GetNotificationHistoryService,
@@ -249,6 +250,13 @@ export class NotifiService
   ): Promise<Generated.GetConfigurationForDappQuery> {
     const headers = this._requestHeaders();
     return this._typedClient.getConfigurationForDapp(variables, headers);
+  }
+
+  async getConnectedWallets(
+    variables: Generated.GetConnectedWalletsQueryVariables,
+  ): Promise<Generated.GetConnectedWalletsQuery> {
+    const headers = this._requestHeaders();
+    return this._typedClient.getConnectedWallets(variables, headers);
   }
 
   async getEmailTargets(
