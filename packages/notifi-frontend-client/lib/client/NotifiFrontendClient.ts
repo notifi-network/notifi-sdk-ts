@@ -1,3 +1,7 @@
+import {
+  ConnectWalletParams,
+  SignMessageParams,
+} from '@notifi-network/notifi-core';
 import { Types } from '@notifi-network/notifi-graphql';
 import { NotifiService } from '@notifi-network/notifi-graphql';
 
@@ -45,19 +49,6 @@ type FindSubscriptionCardParams = Omit<Types.FindTenantConfigInput, 'tenant'>;
 // modify the string literal, which then causes authentication to fail due to different strings
 export const SIGNING_MESSAGE = `Sign in with Notifi \n\n    No password needed or gas is needed. \n\n    Clicking “Approve” only means you have proved this wallet is owned by you! \n\n    This request will not trigger any transaction or cost any gas fees. \n\n    Use of our website and service is subject to our terms of service and privacy policy. \n \n 'Nonce:' `;
 
-type EvmBlockchains = NotifiEvmConfiguration['walletBlockchain'];
-
-// TODO: Dedupe from react-hooks
-export type SignMessageParams =
-  | Readonly<{
-      walletBlockchain: 'SOLANA' | EvmBlockchains;
-      signMessage: Uint8SignMessageFunction;
-    }>
-  | Readonly<{
-      walletBlockchain: 'APTOS';
-      signMessage: AptosSignMessageFunction;
-    }>;
-
 export type SupportedCardConfigType = CardConfigItemV1;
 
 export type UserState = Readonly<
@@ -83,6 +74,11 @@ export class NotifiFrontendClient {
   ) {}
 
   private _clientRandomUuid: string | null = null;
+  private _userState: UserState | null = null;
+
+  get userState(): UserState | null {
+    return this._userState;
+  }
 
   async initialize(): Promise<UserState> {
     const [storedAuthorization, roles] = await Promise.all([
@@ -124,11 +120,13 @@ export class NotifiFrontendClient {
     }
 
     this._service.setJwt(authorization.token);
-    return {
+    const userState: UserState = {
       status: 'authenticated',
       authorization,
       roles: roles ?? [],
     };
+    this._userState = userState;
+    return userState;
   }
 
   async logOut(): Promise<UserState> {
@@ -258,6 +256,9 @@ export class NotifiFrontendClient {
         );
         return signature;
       }
+      default:
+        // Need implementation for other blockchains
+        return 'Chain not yet supported';
     }
   }
 
@@ -612,5 +613,49 @@ export class NotifiFrontendClient {
       throw new Error(`Unknown error requesting verification`);
     }
     return id;
+  }
+
+  async subscribeWallet(
+    params: ConnectWalletParams,
+  ): Promise<Types.ConnectWalletMutation> {
+    const { walletBlockchain, signMessage, walletPublicKey } =
+      params.walletParams;
+    const signMessageParams = {
+      walletBlockchain,
+      signMessage,
+    } as SignMessageParams;
+
+    try {
+      if (this._userState && this._userState.status === 'authenticated') {
+        await this.logIn(signMessageParams);
+      }
+      const timestamp = Math.round(Date.now() / 1000);
+      const signature = await this._signMessage({
+        signMessageParams,
+        timestamp,
+      });
+      const connectedWallet = await this._service.connectWallet({
+        walletBlockchain,
+        walletPublicKey,
+        accountId:
+          walletBlockchain === 'APTOS' ||
+          walletBlockchain === 'ACALA' ||
+          walletBlockchain === 'NEAR' ||
+          walletBlockchain === 'SUI'
+            ? params.walletParams.accountAddress
+            : undefined,
+        signature,
+        timestamp,
+        connectWalletConflictResolutionTechnique:
+          params.connectWalletConflictResolutionTechnique,
+      });
+      return connectedWallet;
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        throw new Error(e.message);
+      } else {
+        throw new Error('NotifiClient encountered an error');
+      }
+    }
   }
 }
