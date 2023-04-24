@@ -18,6 +18,7 @@ export class NotifiService
     Operations.CreateSmsTargetService,
     Operations.CreateSourceService,
     Operations.CreateSourceGroupService,
+    Operations.CreateSupportConversationService,
     Operations.CreateTargetGroupService,
     Operations.CreateTelegramTargetService,
     Operations.CreateTenantUserService,
@@ -30,6 +31,7 @@ export class NotifiService
     Operations.FindTenantConfigService,
     Operations.GetAlertsService,
     Operations.GetConfigurationForDappService,
+    Operations.GetConversationMessagesService,
     Operations.GetConnectedWalletsService,
     Operations.GetEmailTargetsService,
     Operations.GetFiltersService,
@@ -48,6 +50,7 @@ export class NotifiService
     Operations.LogInFromServiceService,
     Operations.RefreshAuthorizationService,
     Operations.RemoveSourceFromSourceGroupService,
+    Operations.SendConversationMessageService,
     Operations.SendEmailTargetVerificationRequestService,
     Operations.SendMessageService,
     Operations.UpdateSourceGroupService,
@@ -161,6 +164,13 @@ export class NotifiService
     return this._typedClient.createSourceGroup(variables, headers);
   }
 
+  async createSupportConversation(
+    variables: Generated.CreateSupportConversationMutationVariables,
+  ): Promise<Generated.CreateSupportConversationMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.createSupportConversation(variables, headers);
+  }
+
   async createTargetGroup(
     variables: Generated.CreateTargetGroupMutationVariables,
   ): Promise<Generated.CreateTargetGroupMutation> {
@@ -257,6 +267,13 @@ export class NotifiService
   ): Promise<Generated.GetConnectedWalletsQuery> {
     const headers = this._requestHeaders();
     return this._typedClient.getConnectedWallets(variables, headers);
+  }
+
+  async getConversationMessages(
+    variables: Generated.GetConversationMessagesQueryVariables,
+  ): Promise<Generated.GetConversationMessagesQuery> {
+    const headers = this._requestHeaders();
+    return this._typedClient.getConversationMessages(variables, headers);
   }
 
   async getEmailTargets(
@@ -400,6 +417,13 @@ export class NotifiService
   ): Promise<Generated.RemoveSourceFromSourceGroupMutation> {
     const headers = this._requestHeaders();
     return this._typedClient.removeSourceFromSourceGroup(variables, headers);
+  }
+
+  async sendConversationMessages(
+    variables: Generated.SendConversationMessageMutationVariables,
+  ): Promise<Generated.SendConversationMessageMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.sendConversationMessage(variables, headers);
   }
 
   async sendEmailTargetVerificationRequest(
