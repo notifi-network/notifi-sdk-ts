@@ -1,5 +1,5 @@
 import {
-  Roles,
+  FrontendClientData,
   UserState,
   newSolanaClient,
   newSolanaConfig,
@@ -21,33 +21,37 @@ const FrontendClient: FC = () => {
     );
     return newSolanaClient(config);
   }, [publicKey]);
-  const [userState, setUserState] = useState<UserState>();
+  const [userState, setUserState] = useState<UserState | null>(null);
+  const [clientData, setClientData] = useState<FrontendClientData>();
 
   const initClient = async () => {
     const newUserState = await client.initialize();
     setUserState(newUserState);
   };
+
   const login = async () => {
     if (signMessage) {
-      const { authorization, roles } = await client.logIn({
+      await client.logIn({
         walletBlockchain: 'SOLANA',
         signMessage,
       });
-      setUserState({
-        status: 'authenticated',
-        authorization: {
-          token: authorization?.token ?? '',
-          expiry: authorization?.expiry ?? '',
-        },
-        roles: roles?.filter((r) => r) as Roles,
-      });
+      setUserState(client.userState);
     }
   };
+
   const logOut = async () => {
     await client.logOut();
     const newUserState = await client.initialize();
     setUserState(newUserState);
   };
+
+  const fetchData = async () => {
+    if (userState && userState.status === 'authenticated') {
+      const data = await client.fetchData();
+      setClientData(data);
+    }
+  };
+
   return (
     <>
       {connected ? (
@@ -61,9 +65,24 @@ const FrontendClient: FC = () => {
             <button onClick={login}>login</button>
           ) : null}
           {!!userState && userState.status === 'authenticated' ? (
-            <button onClick={logOut}>logout</button>
+            <>
+              <button onClick={fetchData}>fetch client data</button>
+              <button onClick={logOut}>logout</button>
+            </>
           ) : null}
           <h2>User State: {userState?.status}</h2>
+          {!!clientData && userState?.status === 'authenticated' && (
+            <>
+              <h2>Client Data: The logged in user has</h2>
+              {Object.keys(clientData).map((key, id) => {
+                return (
+                  <div key={id}>
+                    {clientData[key as keyof FrontendClientData].length} {key}
+                  </div>
+                );
+              })}
+            </>
+          )}
         </div>
       ) : (
         <WalletMultiButton />
