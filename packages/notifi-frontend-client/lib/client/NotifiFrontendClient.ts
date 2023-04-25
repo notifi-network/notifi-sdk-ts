@@ -625,37 +625,50 @@ export class NotifiFrontendClient {
       signMessage,
     } as SignMessageParams;
 
-    try {
-      if (this._userState && this._userState.status === 'authenticated') {
-        await this.logIn(signMessageParams);
-      }
-      const timestamp = Math.round(Date.now() / 1000);
-      const signature = await this._signMessage({
-        signMessageParams,
-        timestamp,
-      });
-      const connectedWallet = await this._service.connectWallet({
-        walletBlockchain,
-        walletPublicKey,
-        accountId:
-          walletBlockchain === 'APTOS' ||
-          walletBlockchain === 'ACALA' ||
-          walletBlockchain === 'NEAR' ||
-          walletBlockchain === 'SUI'
-            ? params.walletParams.accountAddress
-            : undefined,
-        signature,
-        timestamp,
-        connectWalletConflictResolutionTechnique:
-          params.connectWalletConflictResolutionTechnique,
-      });
-      return connectedWallet;
-    } catch (e: unknown) {
-      if (e instanceof Error) {
-        throw new Error(e.message);
-      } else {
-        throw new Error('NotifiClient encountered an error');
-      }
+    if (this._userState && this._userState.status === 'authenticated') {
+      await this.logIn(signMessageParams);
     }
+    const timestamp = Math.round(Date.now() / 1000);
+    const signature = await this._signMessage({
+      signMessageParams,
+      timestamp,
+    });
+    const connectedWallet = await this._service.connectWallet({
+      walletBlockchain,
+      walletPublicKey,
+      accountId:
+        walletBlockchain === 'APTOS' ||
+        walletBlockchain === 'ACALA' ||
+        walletBlockchain === 'NEAR' ||
+        walletBlockchain === 'SUI'
+          ? params.walletParams.accountAddress
+          : undefined,
+      signature,
+      timestamp,
+      connectWalletConflictResolutionTechnique:
+        params.connectWalletConflictResolutionTechnique,
+    });
+    return connectedWallet;
+  }
+
+  async getConversationMessages(
+    input: Types.GetConversationMessagesQueryVariables,
+  ): Promise<Types.GetConversationMessagesQuery> {
+    const query = await this._service.getConversationMessages(input);
+    return query;
+  }
+
+  async sendConversationMessages(
+    input: Types.SendConversationMessageMutationVariables,
+  ): Promise<Types.SendConversationMessageMutation> {
+    const mutation = await this._service.sendConversationMessages(input);
+    return mutation;
+  }
+
+  async createSupportConversation(
+    input: Types.CreateSupportConversationMutationVariables,
+  ): Promise<Types.CreateSupportConversationMutation> {
+    const mutation = await this._service.createSupportConversation(input);
+    return mutation;
   }
 }
