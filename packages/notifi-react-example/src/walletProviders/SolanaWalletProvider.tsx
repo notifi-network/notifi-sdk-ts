@@ -7,7 +7,6 @@ import {
   WalletModalProvider,
 } from '@solana/wallet-adapter-react-ui';
 import {
-  PhantomWalletAdapter,
   SolflareWalletAdapter,
 } from '@solana/wallet-adapter-wallets';
 import { clusterApiUrl } from '@solana/web3.js';
@@ -35,7 +34,6 @@ export const SolanaWalletProvider: FC<PropsWithChildren<{}>> = ({
        * will be compiled into your application, and only the dependencies of wallets that
        * your users connect to will be loaded.
        */
-      new PhantomWalletAdapter({ network }),
       new SolflareWalletAdapter({ network }),
     ],
     [network],
