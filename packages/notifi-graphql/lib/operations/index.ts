@@ -49,3 +49,4 @@ export * from './GetConnectedWallets';
 export * from './GetConversationMessages';
 export * from './SendConversationMessages';
 export * from './CreateSupportConversation';
+export * from './FetchData';
