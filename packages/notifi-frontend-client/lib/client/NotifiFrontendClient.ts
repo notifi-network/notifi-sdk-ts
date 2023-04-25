@@ -22,76 +22,6 @@ import {
   ensureWebhook,
 } from './ensureTarget';
 
-export type Alert = NonNullable<
-  NonNullable<Types.GetAlertsQuery['alert']> extends Array<infer T> ? T : never
->;
-
-export type ConnectedWallet = NonNullable<
-  NonNullable<Types.GetConnectedWalletsQuery['connectedWallet']> extends Array<
-    infer T
-  >
-    ? T
-    : never
->;
-
-export type EmailTarget = NonNullable<
-  NonNullable<Types.GetEmailTargetsQuery['emailTarget']> extends Array<infer T>
-    ? T
-    : never
->;
-
-export type Filter = NonNullable<
-  NonNullable<Types.GetFiltersQuery['filter']> extends Array<infer T>
-    ? T
-    : never
->;
-
-export type SmsTarget = NonNullable<
-  NonNullable<Types.GetSmsTargetsQuery['smsTarget']> extends Array<infer T>
-    ? T
-    : never
->;
-
-export type Source = NonNullable<
-  NonNullable<Types.GetSourcesQuery['source']> extends Array<infer T>
-    ? T
-    : never
->;
-
-export type TargetGroup = NonNullable<
-  NonNullable<Types.GetTargetGroupsQuery['targetGroup']> extends Array<infer T>
-    ? T
-    : never
->;
-
-export type TelegramTarget = NonNullable<
-  NonNullable<Types.GetTelegramTargetsQuery['telegramTarget']> extends Array<
-    infer T
-  >
-    ? T
-    : never
->;
-
-export type DiscordTarget = NonNullable<
-  NonNullable<Types.GetDiscordTargetsQuery['discordTarget']> extends Array<
-    infer T
-  >
-    ? T
-    : never
->;
-
-export type FrontendClientData = {
-  alerts: ReadonlyArray<Alert>;
-  connectedWallets: ReadonlyArray<ConnectedWallet>;
-  emailTargets: ReadonlyArray<EmailTarget>;
-  filters: ReadonlyArray<Filter>;
-  smsTargets: ReadonlyArray<SmsTarget>;
-  sources: ReadonlyArray<Source>;
-  targetGroups: ReadonlyArray<TargetGroup>;
-  telegramTargets: ReadonlyArray<TelegramTarget>;
-  discordTargets: ReadonlyArray<DiscordTarget>;
-};
-
 // TODO: Clean up blockchain-specific dependencies out of this package
 export type Uint8SignMessageFunction = (
   message: Uint8Array,
@@ -350,63 +280,8 @@ export class NotifiFrontendClient {
     await Promise.all([saveAuthorizationPromise, saveRolesPromise]);
   }
 
-  async fetchData(): Promise<FrontendClientData> {
-    const [
-      rawAlerts,
-      rawConnectedWallets,
-      rawSources,
-      rawTargetGroups,
-      rawEmailTargets,
-      rawSmsTargets,
-      rawTelegramTargets,
-      rawDiscordTargets,
-      rawFilters,
-    ] = await Promise.all([
-      this._service.getAlerts({}),
-      this._service.getConnectedWallets({}),
-      this._service.getSources({}),
-      this._service.getTargetGroups({}),
-      this._service.getEmailTargets({}),
-      this._service.getSmsTargets({}),
-      this._service.getTelegramTargets({}),
-      this._service.getDiscordTargets({}),
-      this._service.getFilters({}),
-    ]);
-
-    const validateType = <T>(item: unknown): item is T => !!item;
-
-    return {
-      alerts: rawAlerts.alert
-        ? rawAlerts.alert.filter(validateType<Alert>)
-        : [],
-      connectedWallets: rawConnectedWallets.connectedWallet
-        ? rawConnectedWallets.connectedWallet.filter(
-            validateType<ConnectedWallet>,
-          )
-        : [],
-      emailTargets: rawEmailTargets.emailTarget
-        ? rawEmailTargets.emailTarget.filter(validateType<EmailTarget>)
-        : [],
-      filters: rawFilters.filter
-        ? rawFilters.filter.filter(validateType<Filter>)
-        : [],
-      smsTargets: rawSmsTargets.smsTarget
-        ? rawSmsTargets.smsTarget.filter(validateType<SmsTarget>)
-        : [],
-      sources: rawSources.source
-        ? rawSources.source.filter(validateType<Source>)
-        : [],
-      targetGroups: rawTargetGroups.targetGroup
-        ? rawTargetGroups.targetGroup.filter(validateType<TargetGroup>)
-        : [],
-
-      telegramTargets: rawTelegramTargets.telegramTarget
-        ? rawTelegramTargets.telegramTarget.filter(validateType<TelegramTarget>)
-        : [],
-      discordTargets: rawDiscordTargets.discordTarget
-        ? rawDiscordTargets.discordTarget.filter(validateType<DiscordTarget>)
-        : [],
-    };
+  async fetchData(): Promise<Types.FetchDataQuery> {
+    return this._service.fetchData({});
   }
 
   async beginLoginViaTransaction({

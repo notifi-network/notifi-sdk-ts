@@ -1,9 +1,9 @@
 import {
-  FrontendClientData,
   UserState,
   newSolanaClient,
   newSolanaConfig,
 } from '@notifi-network/notifi-frontend-client';
+import { Types } from '@notifi-network/notifi-graphql';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { FC, useMemo, useState } from 'react';
@@ -22,7 +22,7 @@ const FrontendClient: FC = () => {
     return newSolanaClient(config);
   }, [publicKey]);
   const [userState, setUserState] = useState<UserState | null>(null);
-  const [clientData, setClientData] = useState<FrontendClientData>();
+  const [clientData, setClientData] = useState<Types.FetchDataQuery>();
 
   const initClient = async () => {
     const newUserState = await client.initialize();
@@ -77,7 +77,8 @@ const FrontendClient: FC = () => {
               {Object.keys(clientData).map((key, id) => {
                 return (
                   <div key={id}>
-                    {clientData[key as keyof FrontendClientData].length} {key}
+                    {clientData[key as keyof Types.FetchDataQuery]?.length}{' '}
+                    {key}
                   </div>
                 );
               })}
