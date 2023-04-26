@@ -41,3 +41,12 @@ export const resolveNumberRef = createRefResolver(
     return typeof item === 'number' && !Number.isNaN(item);
   },
 );
+
+export const resolveStringArrayRef = createRefResolver(
+  (item: unknown): item is ReadonlyArray<string> => {
+    return (
+      Array.isArray(item) &&
+      item.every((element) => typeof element === 'string')
+    );
+  },
+);

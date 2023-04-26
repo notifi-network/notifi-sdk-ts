@@ -33,6 +33,13 @@ export type LabelEventTypeItem = Readonly<{
   tooltipContent?: string;
 }>;
 
+export type TradingPairEventTypeItem = Readonly<{
+  type: 'tradingPair';
+  name: string;
+  tooltipContent?: string;
+  tradingPairs: ValueOrRef<ReadonlyArray<string>>;
+}>;
+
 export type PriceChangeDataSource = 'coingecko';
 
 export type PriceChangeEventTypeItem = Readonly<{
@@ -85,6 +92,7 @@ export type CustomTopicTypeItem = CustomTypeBase &
 export type EventTypeItem =
   | DirectPushEventTypeItem
   | BroadcastEventTypeItem
+  | TradingPairEventTypeItem
   | LabelEventTypeItem
   | PriceChangeEventTypeItem
   | CustomTopicTypeItem;
