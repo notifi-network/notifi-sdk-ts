@@ -9,7 +9,11 @@ import type {
   NotifiEvmConfiguration,
   NotifiFrontendConfiguration,
 } from '../configuration';
-import type { CardConfigItemV1, EventTypeItem } from '../models';
+import type {
+  CardConfigItemV1,
+  EventTypeItem,
+  WalletBalanceEventTypeItem,
+} from '../models';
 import type { Authorization, NotifiStorage, Roles } from '../storage';
 import { notNullOrEmpty, packFilterOptions } from '../utils';
 import { areIdsEqual } from '../utils/areIdsEqual';
@@ -546,6 +550,19 @@ export class NotifiFrontendClient {
     if (result === undefined) {
       throw new Error('Failed to delete alert');
     }
+  }
+
+  async updateWallets() {
+    const walletEventTypeItem: WalletBalanceEventTypeItem = {
+      name: 'User Wallets',
+      type: 'walletBalance',
+    };
+    const result = await ensureSourceAndFilters(
+      this._service,
+      walletEventTypeItem,
+      {},
+    );
+    return result;
   }
 
   async getNotificationHistory(

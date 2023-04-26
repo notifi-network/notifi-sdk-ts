@@ -8,6 +8,7 @@ import {
   FilterOptions,
   PriceChangeEventTypeItem,
   TradingPairEventTypeItem,
+  WalletBalanceEventTypeItem,
 } from '../models';
 import { areIdsEqual } from '../utils/areIdsEqual';
 import {
@@ -129,6 +130,81 @@ const ensurePriceChangeSources = async (
   return results;
 };
 
+const ensureWalletBalanceSources = async (
+  service: Operations.GetSourcesService &
+    Operations.CreateSourceService &
+    Operations.GetConnectedWalletsService,
+  _eventType: WalletBalanceEventTypeItem,
+  _inputs: Record<string, unknown>,
+): Promise<Array<Types.SourceFragmentFragment>> => {
+  const connectedWalletsQuery = await service.getConnectedWallets({});
+  const connectedWallets = connectedWalletsQuery.connectedWallet;
+  if (!connectedWallets) {
+    throw new Error('Failed to fetch connected wallets');
+  }
+  const connectedWalletSources = connectedWallets.map((it) => {
+    const sourceType = ((wallet?: Types.WalletBlockchain): Types.SourceType => {
+      switch (wallet) {
+        case 'ACALA':
+          return 'ACALA_WALLET';
+        case 'APTOS':
+          return 'APTOS_WALLET';
+        case 'ARBITRUM':
+          return 'ARBITRUM_WALLET';
+        case 'AVALANCHE':
+          return 'AVALANCHE_WALLET';
+        case 'BINANCE':
+          return 'BINANCE_WALLET';
+        case 'ETHEREUM':
+          return 'ETHEREUM_WALLET';
+        case 'POLYGON':
+          return 'POLYGON_WALLET';
+        case 'SOLANA':
+          return 'SOLANA_WALLET';
+        case 'OPTIMISM':
+          return 'OPTIMISM_WALLET';
+        case 'SUI':
+          return 'SUI_WALLET';
+        default:
+          throw new Error('Unsupported walletType');
+      }
+    })(it?.walletBlockchain);
+
+    const sourceAddress = it?.address ?? '';
+    return {
+      name: `${sourceType} ${sourceAddress}`,
+      blockchainAddress: sourceAddress,
+      type: sourceType,
+    };
+  });
+
+  const sourcesQuery = await service.getSources({});
+  const sources = sourcesQuery.source;
+  if (sources === undefined) {
+    throw new Error('Failed to fetch sources');
+  }
+
+  const promises = connectedWalletSources.map(async (connectedWalletSource) => {
+    const found = sources.find(
+      (source) => source?.name === connectedWalletSource.name,
+    );
+    if (found) {
+      return found;
+    }
+    const { createSource: newSource } = await service.createSource(
+      connectedWalletSource,
+    );
+    if (!newSource) {
+      throw new Error(`Failed to create ${connectedWalletSource.type} source`);
+    }
+    return newSource;
+  });
+
+  const ensuredSources = await Promise.all(promises);
+
+  return ensuredSources;
+};
+
 const normalizeSourceAddress = (
   sourceType: Types.SourceType,
   blockchainAddress: string,
@@ -202,7 +278,9 @@ const ensureCustomSources = async (
 };
 
 const ensureSources = async (
-  service: Operations.GetSourcesService & Operations.CreateSourceService,
+  service: Operations.GetSourcesService &
+    Operations.CreateSourceService &
+    Operations.GetConnectedWalletsService,
   eventType: EventTypeItem,
   inputs: Record<string, unknown>,
 ): Promise<ReadonlyArray<Types.SourceFragmentFragment>> => {
@@ -221,6 +299,14 @@ const ensureSources = async (
     }
     case 'priceChange': {
       const sources = await ensurePriceChangeSources(
+        service,
+        eventType,
+        inputs,
+      );
+      return sources;
+    }
+    case 'walletBalance': {
+      const sources = await ensureWalletBalanceSources(
         service,
         eventType,
         inputs,
@@ -383,6 +469,23 @@ const getPriceChangeFilter = (
   };
 };
 
+const getWalletBalanceSourceFilter = (
+  source: Types.SourceFragmentFragment,
+  _eventType: WalletBalanceEventTypeItem,
+  _inputs: Record<string, unknown>,
+): GetFilterResults => {
+  const filter = source.applicableFilters?.find(
+    (it) => it?.filterType === 'BALANCE',
+  );
+  if (filter === undefined) {
+    throw new Error('Failed to retrieve filter: wallet balance');
+  }
+  return {
+    filter,
+    filterOptions: {},
+  };
+};
+
 const getCustomFilterOptions = (
   eventType: CustomTopicTypeItem,
   inputs: Record<string, unknown>,
@@ -451,7 +554,8 @@ export const ensureSourceAndFilters = async (
     Operations.GetSourcesService &
     Operations.GetSourceGroupsService &
     Operations.CreateSourceGroupService &
-    Operations.UpdateSourceGroupService,
+    Operations.UpdateSourceGroupService &
+    Operations.GetConnectedWalletsService,
   eventType: EventTypeItem,
   inputs: Record<string, unknown>,
 ): Promise<
@@ -535,6 +639,18 @@ export const ensureSourceAndFilters = async (
     }
     case 'label': {
       throw new Error('Unsupported event type');
+    }
+    case 'walletBalance': {
+      const { filter, filterOptions } = getWalletBalanceSourceFilter(
+        sources[0],
+        eventType,
+        inputs,
+      );
+      return {
+        sourceGroup,
+        filter,
+        filterOptions,
+      };
     }
   }
 };
