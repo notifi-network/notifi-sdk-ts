@@ -95,6 +95,15 @@ export type CheckRatio = RatiosBelow | RatiosAbove;
 export type CustomTopicTypeItem = CustomTypeBase &
   (CustomToggleTypeItem | CustomHealthCheckItem);
 
+export type XMTPTopicTypeItem = {
+  type: 'XMTP';
+  name: string;
+  tooltipContent: string;
+  sourceType?: Gql.SourceType;
+  filterType: string;
+  XMTPTopics: ValueOrRef<ReadonlyArray<string>>;
+};
+
 export type EventTypeItem =
   | DirectPushEventTypeItem
   | BroadcastEventTypeItem
@@ -102,7 +111,8 @@ export type EventTypeItem =
   | LabelEventTypeItem
   | PriceChangeEventTypeItem
   | CustomTopicTypeItem
-  | WalletBalanceEventTypeItem;
+  | WalletBalanceEventTypeItem
+  | XMTPTopicTypeItem;
 
 export type EventTypeConfig = ReadonlyArray<EventTypeItem>;
 export type InputType =
