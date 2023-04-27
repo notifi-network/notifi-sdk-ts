@@ -39,6 +39,7 @@ export const createLocalForageStorageDriver = (
       break;
     }
     case 'SUI':
+    case 'ACALA':
     case 'APTOS': {
       keyPrefix += `:${config.accountAddress}:${config.authenticationKey}`;
       break;

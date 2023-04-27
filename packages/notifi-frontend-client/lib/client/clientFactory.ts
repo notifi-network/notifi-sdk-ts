@@ -2,6 +2,7 @@ import { NotifiService } from '@notifi-network/notifi-graphql';
 import { GraphQLClient } from 'graphql-request';
 
 import {
+  NotifiAcalaConfiguration,
   NotifiAptosConfiguration,
   NotifiEvmConfiguration,
   NotifiFrontendConfiguration,
@@ -24,6 +25,12 @@ export const newNotifiService = (config: NotifiFrontendConfiguration) => {
   const url = envUrl(config.env);
   const client = new GraphQLClient(url);
   return new NotifiService(client);
+};
+
+export const newAcalaClient = (config: NotifiAcalaConfiguration) => {
+  const service = newNotifiService(config);
+  const storage = newNotifiStorage(config);
+  return new NotifiFrontendClient(config, service, storage);
 };
 
 export const newAptosClient = (config: NotifiAptosConfiguration) => {
