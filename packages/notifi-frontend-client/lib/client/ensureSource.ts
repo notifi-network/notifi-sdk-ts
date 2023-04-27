@@ -9,6 +9,7 @@ import {
   PriceChangeEventTypeItem,
   TradingPairEventTypeItem,
   WalletBalanceEventTypeItem,
+  XMTPTopicTypeItem,
 } from '../models';
 import { areIdsEqual } from '../utils/areIdsEqual';
 import {
@@ -277,6 +278,45 @@ const ensureCustomSources = async (
   return result;
 };
 
+const ensureXMTPSources = async (
+  service: Operations.GetSourcesService & Operations.CreateSourceService,
+  eventType: XMTPTopicTypeItem,
+  inputs: Record<string, unknown>,
+): Promise<Array<Types.SourceFragmentFragment>> => {
+  const sourcesQuery = await service.getSources({});
+  const sources = sourcesQuery.source;
+  if (sources === undefined) {
+    throw new Error('Failed to fetch sources');
+  }
+  const XMTPTopics = resolveStringArrayRef(
+    eventType.name,
+    eventType.XMTPTopics,
+    inputs,
+  );
+  const XMTPTopicSources = XMTPTopics.map((topic) => ({
+    name: topic,
+    blockchainAddress: topic,
+    type: 'XMTP' as Types.SourceType,
+  }));
+
+  const promises = XMTPTopicSources.map(async (source) => {
+    const found = sources.find(
+      (it) => it?.type === 'XMTP' && it.name === source.name,
+    );
+    if (found) {
+      return found;
+    }
+    const { createSource: newSource } = await service.createSource(source);
+    if (!newSource) {
+      throw new Error('Failed to create XMTP source');
+    }
+    return newSource;
+  });
+
+  const ensuredSources = await Promise.all(promises);
+  return ensuredSources;
+};
+
 const ensureSources = async (
   service: Operations.GetSourcesService &
     Operations.CreateSourceService &
@@ -316,6 +356,10 @@ const ensureSources = async (
     case 'custom': {
       const source = await ensureCustomSources(service, eventType, inputs);
       return [source];
+    }
+    case 'XMTP': {
+      const sources = await ensureXMTPSources(service, eventType, inputs);
+      return sources;
     }
     case 'label': {
       throw new Error('Unsupported event type');
@@ -549,6 +593,23 @@ const TradingPairInputsValidator = (
   return true;
 };
 
+const getXMTPFilter = (
+  source: Types.SourceFragmentFragment,
+  _eventType: XMTPTopicTypeItem,
+  _inputs: Record<string, unknown>,
+): GetFilterResults => {
+  const filter = source.applicableFilters?.find(
+    (it) => it?.filterType === 'WEB3_CHAT_MESSAGES',
+  );
+  if (filter === undefined) {
+    throw new Error('Failed to retrieve filter: XMTP');
+  }
+  return {
+    filter,
+    filterOptions: {},
+  };
+};
+
 export const ensureSourceAndFilters = async (
   service: Operations.CreateSourceService &
     Operations.GetSourcesService &
@@ -627,6 +688,18 @@ export const ensureSourceAndFilters = async (
     }
     case 'custom': {
       const { filter, filterOptions } = getCustomFilter(
+        sources[0],
+        eventType,
+        inputs,
+      );
+      return {
+        sourceGroup,
+        filter,
+        filterOptions,
+      };
+    }
+    case 'XMTP': {
+      const { filter, filterOptions } = getXMTPFilter(
         sources[0],
         eventType,
         inputs,
