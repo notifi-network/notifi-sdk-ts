@@ -7,9 +7,14 @@ import {
   EventTypeItem,
   FilterOptions,
   PriceChangeEventTypeItem,
+  TradingPairEventTypeItem,
 } from '../models';
 import { areIdsEqual } from '../utils/areIdsEqual';
-import { resolveNumberRef, resolveStringRef } from '../utils/resolveRef';
+import {
+  resolveNumberRef,
+  resolveStringArrayRef,
+  resolveStringRef,
+} from '../utils/resolveRef';
 
 const ensureDirectPushSource = async (
   service: Operations.GetSourcesService & Operations.CreateSourceService,
@@ -64,6 +69,22 @@ const ensureBroadcastSource = async (
   }
 
   return result;
+};
+
+const ensureTradingPairSource = async (
+  service: Operations.GetSourcesService & Operations.CreateSourceService,
+  _eventType: TradingPairEventTypeItem,
+  _inputs: Record<string, unknown>,
+): Promise<Types.SourceFragmentFragment> => {
+  const sourcesQuery = await service.getSources({});
+  const sources = sourcesQuery.source;
+  const source = sources?.find((it) => it?.type === 'DIRECT_PUSH');
+
+  if (source === undefined) {
+    throw new Error('Failed to identify trading pair source (=directPush)');
+  }
+
+  return source;
 };
 
 const ensurePriceChangeSources = async (
@@ -194,6 +215,10 @@ const ensureSources = async (
       const source = await ensureBroadcastSource(service, eventType, inputs);
       return [source];
     }
+    case 'tradingPair': {
+      const source = await ensureTradingPairSource(service, eventType, inputs);
+      return [source];
+    }
     case 'priceChange': {
       const sources = await ensurePriceChangeSources(
         service,
@@ -302,6 +327,44 @@ const getBroadcastFilter = (
   };
 };
 
+const getTradingPairFilter = (
+  source: Types.SourceFragmentFragment,
+  eventType: TradingPairEventTypeItem,
+  inputs: TradingPairInputs,
+): GetFilterResults => {
+  const filter = source.applicableFilters?.find(
+    (it) => it?.filterType === 'DIRECT_TENANT_MESSAGES',
+  );
+  if (filter === undefined) {
+    throw new Error('Failed to retrieve TradingPair filter (=directMessage)');
+  }
+  const tradingPairs = resolveStringArrayRef(
+    eventType.name,
+    eventType.tradingPairs,
+    inputs,
+  );
+
+  if (tradingPairs.length === 0) {
+    throw new Error('Failed to retrieve TradingPairs');
+  }
+
+  return {
+    filter,
+    filterOptions: {
+      tradingPair: tradingPairs.length > 0 ? tradingPairs[0] : undefined,
+      values: {
+        and: [
+          {
+            key: 'spotPrice',
+            op: inputs.direction === 'below' ? 'lt' : 'gt',
+            value: inputs.value.toFixed(8),
+          },
+        ],
+      },
+    },
+  };
+};
+
 const getPriceChangeFilter = (
   sources: ReadonlyArray<Types.SourceFragmentFragment>,
   _eventType: PriceChangeEventTypeItem,
@@ -366,6 +429,23 @@ const getCustomFilter = (
   };
 };
 
+type TradingPairInputs = {
+  direction: 'below' | 'above';
+  value: number;
+};
+
+const TradingPairInputsValidator = (
+  inputs: Record<string, unknown>,
+): inputs is TradingPairInputs => {
+  if (
+    typeof inputs.direction !== 'string' ||
+    typeof inputs.value !== 'number'
+  ) {
+    return false;
+  }
+  return true;
+};
+
 export const ensureSourceAndFilters = async (
   service: Operations.CreateSourceService &
     Operations.GetSourcesService &
@@ -403,6 +483,22 @@ export const ensureSourceAndFilters = async (
     }
     case 'broadcast': {
       const { filter, filterOptions } = getBroadcastFilter(
+        sources[0],
+        eventType,
+        inputs,
+      );
+      return {
+        sourceGroup,
+        filter,
+        filterOptions,
+      };
+    }
+
+    case 'tradingPair': {
+      if (!TradingPairInputsValidator(inputs)) {
+        throw new Error('Invalid tradingPair inputs');
+      }
+      const { filter, filterOptions } = getTradingPairFilter(
         sources[0],
         eventType,
         inputs,
