@@ -6,6 +6,7 @@ import {
   NotifiAptosConfiguration,
   NotifiEvmConfiguration,
   NotifiFrontendConfiguration,
+  NotifiNearConfiguration,
   NotifiSolanaConfiguration,
   NotifiSuiConfiguration,
   envUrl,
@@ -34,6 +35,12 @@ export const newAcalaClient = (config: NotifiAcalaConfiguration) => {
 };
 
 export const newAptosClient = (config: NotifiAptosConfiguration) => {
+  const service = newNotifiService(config);
+  const storage = newNotifiStorage(config);
+  return new NotifiFrontendClient(config, service, storage);
+};
+
+export const newNearClient = (config: NotifiNearConfiguration) => {
   const service = newNotifiService(config);
   const storage = newNotifiStorage(config);
   return new NotifiFrontendClient(config, service, storage);
