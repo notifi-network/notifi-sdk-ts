@@ -6,6 +6,7 @@ import {
   NotifiAptosConfiguration,
   NotifiEvmConfiguration,
   NotifiFrontendConfiguration,
+  NotifiInjectiveConfiguration,
   NotifiNearConfiguration,
   NotifiSolanaConfiguration,
   NotifiSuiConfiguration,
@@ -41,6 +42,12 @@ export const newAptosClient = (config: NotifiAptosConfiguration) => {
 };
 
 export const newNearClient = (config: NotifiNearConfiguration) => {
+  const service = newNotifiService(config);
+  const storage = newNotifiStorage(config);
+  return new NotifiFrontendClient(config, service, storage);
+};
+
+export const newInjectiveClient = (config: NotifiInjectiveConfiguration) => {
   const service = newNotifiService(config);
   const storage = newNotifiStorage(config);
   return new NotifiFrontendClient(config, service, storage);
