@@ -280,6 +280,10 @@ export class NotifiFrontendClient {
     await Promise.all([saveAuthorizationPromise, saveRolesPromise]);
   }
 
+  async fetchData(): Promise<Types.FetchDataQuery> {
+    return this._service.fetchData({});
+  }
+
   async beginLoginViaTransaction({
     walletBlockchain,
     walletAddress,
