@@ -50,6 +50,12 @@ export type PriceChangeEventTypeItem = Readonly<{
   tooltipContent: string;
 }>;
 
+export type WalletBalanceEventTypeItem = Readonly<{
+  type: 'walletBalance';
+  name: string;
+  tooltipContent?: string;
+}>;
+
 export type CustomTypeBase = {
   type: 'custom';
   name: string;
@@ -95,7 +101,8 @@ export type EventTypeItem =
   | TradingPairEventTypeItem
   | LabelEventTypeItem
   | PriceChangeEventTypeItem
-  | CustomTopicTypeItem;
+  | CustomTopicTypeItem
+  | WalletBalanceEventTypeItem;
 
 export type EventTypeConfig = ReadonlyArray<EventTypeItem>;
 export type InputType =
