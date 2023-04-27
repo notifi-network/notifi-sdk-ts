@@ -38,6 +38,7 @@ export const createLocalForageStorageDriver = (
       keyPrefix += `:${config.walletPublicKey}`;
       break;
     }
+    case 'SUI':
     case 'APTOS': {
       keyPrefix += `:${config.accountAddress}:${config.authenticationKey}`;
       break;

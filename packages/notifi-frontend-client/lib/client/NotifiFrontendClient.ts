@@ -175,6 +175,7 @@ export class NotifiFrontendClient {
         loginResult = result.logInFromDapp;
         break;
       }
+      case 'SUI':
       case 'APTOS': {
         const result = await this._service.logInFromDapp({
           walletBlockchain,
@@ -258,6 +259,20 @@ export class NotifiFrontendClient {
           SIGNING_MESSAGE,
           timestamp,
         );
+        return signature;
+      }
+      case 'SUI': {
+        if (this._configuration.walletBlockchain !== 'SUI') {
+          throw new Error(
+            'Sign message params and configuration must have the same blockchain',
+          );
+        }
+        const { accountAddress, tenantId } = this._configuration;
+        const messageBuffer = new TextEncoder().encode(
+          `${SIGNING_MESSAGE}${accountAddress}${tenantId}${timestamp.toString()}`,
+        );
+        const signedBuffer = await signMessageParams.signMessage(messageBuffer);
+        const signature = signedBuffer.toString();
         return signature;
       }
       default:

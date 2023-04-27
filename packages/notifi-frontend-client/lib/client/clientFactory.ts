@@ -6,6 +6,7 @@ import {
   NotifiEvmConfiguration,
   NotifiFrontendConfiguration,
   NotifiSolanaConfiguration,
+  NotifiSuiConfiguration,
   envUrl,
 } from '../configuration';
 import {
@@ -38,6 +39,12 @@ export const newSolanaClient = (config: NotifiSolanaConfiguration) => {
 };
 
 export const newEvmClient = (config: NotifiEvmConfiguration) => {
+  const service = newNotifiService(config);
+  const storage = newNotifiStorage(config);
+  return new NotifiFrontendClient(config, service, storage);
+};
+
+export const newSuiClient = (config: NotifiSuiConfiguration) => {
   const service = newNotifiService(config);
   const storage = newNotifiStorage(config);
   return new NotifiFrontendClient(config, service, storage);
