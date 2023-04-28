@@ -33,46 +33,71 @@ export type NotifiFrontendConfiguration =
   | NotifiConfigWithPublicKey
   | NotifiConfigWithPublicKeyAndAddress;
 
-export type FrontendClientConfigFactory = (args: {
+export type ConfigFactoryInput =
+  | ConfigFactoryInputPublicKeyAndAddress
+  | ConfigFactoryInputPublicKey;
+
+export type ConfigFactoryInputPublicKeyAndAddress = {
   account: Readonly<{
-    address?: string;
+    address: string;
     publicKey: string;
   }>;
   tenantId: string;
   env: NotifiEnvironment;
-  walletBlockchain: NotifiFrontendConfiguration['walletBlockchain'];
-}) => NotifiFrontendConfiguration;
+  walletBlockchain: NotifiConfigWithPublicKeyAndAddress['walletBlockchain'];
+};
 
-export const newFrontendConfig: FrontendClientConfigFactory = (args) => {
-  switch (args.walletBlockchain) {
-    // Chains with only publicKey in account argument
-    case 'ETHEREUM':
-    case 'POLYGON':
-    case 'ARBITRUM':
-    case 'AVALANCHE':
-    case 'BINANCE':
-    case 'OPTIMISM':
-    case 'SOLANA':
-      return {
-        tenantId: args.tenantId,
-        env: args.env,
-        walletBlockchain: args.walletBlockchain,
-        walletPublicKey: args.account.publicKey,
-      };
-    // Chains with publicKey and address in account arguments
-    case 'SUI':
-    case 'NEAR':
-    case 'INJECTIVE':
-    case 'APTOS':
-    case 'ACALA':
-      return {
-        tenantId: args.tenantId,
-        env: args.env,
-        walletBlockchain: args.walletBlockchain,
-        authenticationKey: args.account.publicKey,
-        accountAddress: args.account.publicKey,
-      };
-  }
+export type ConfigFactoryInputPublicKey = {
+  account: Readonly<{
+    publicKey: string;
+  }>;
+  tenantId: string;
+  env: NotifiEnvironment;
+  walletBlockchain: NotifiConfigWithPublicKey['walletBlockchain'];
+};
+
+export type FrontendClientConfigFactory<T extends NotifiFrontendConfiguration> =
+  (
+    args: T extends NotifiConfigWithPublicKeyAndAddress
+      ? ConfigFactoryInputPublicKeyAndAddress
+      : ConfigFactoryInputPublicKey,
+  ) => NotifiFrontendConfiguration;
+
+const configFactoryPublicKey: FrontendClientConfigFactory<
+  NotifiConfigWithPublicKey
+> = (args) => {
+  return {
+    tenantId: args.tenantId,
+    env: args.env,
+    walletBlockchain: args.walletBlockchain,
+    walletPublicKey: args.account.publicKey,
+  };
+};
+
+const configFactoryPublicKeyAndAddress: FrontendClientConfigFactory<
+  NotifiConfigWithPublicKeyAndAddress
+> = (args) => {
+  return {
+    tenantId: args.tenantId,
+    env: args.env,
+    walletBlockchain: args.walletBlockchain,
+    authenticationKey: args.account.publicKey,
+    accountAddress: args.account.address,
+  };
+};
+
+const validateConfigInput = (
+  config: ConfigFactoryInput,
+): config is ConfigFactoryInputPublicKeyAndAddress => {
+  return 'address' in config.account;
+};
+
+export const newFrontendConfig = (
+  config: ConfigFactoryInput,
+): NotifiFrontendConfiguration => {
+  return validateConfigInput(config)
+    ? configFactoryPublicKeyAndAddress(config)
+    : configFactoryPublicKey(config);
 };
 
 export const envUrl = (env: NotifiEnvironment): string => {
