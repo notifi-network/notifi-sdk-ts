@@ -6,7 +6,8 @@ import { Types } from '@notifi-network/notifi-graphql';
 import { NotifiService } from '@notifi-network/notifi-graphql';
 
 import type {
-  NotifiEvmConfiguration,
+  NotifiConfigWithPublicKey,
+  NotifiConfigWithPublicKeyAndAddress,
   NotifiFrontendConfiguration,
 } from '../configuration';
 import type {
@@ -213,6 +214,14 @@ export class NotifiFrontendClient {
     signMessageParams: SignMessageParams;
     timestamp: number;
   }>): Promise<string> {
+    if (
+      this._configuration.walletBlockchain !==
+      signMessageParams.walletBlockchain
+    ) {
+      throw new Error(
+        'Sign message params and configuration must have the same blockchain',
+      );
+    }
     switch (signMessageParams.walletBlockchain) {
       case 'ETHEREUM':
       case 'POLYGON':
@@ -220,15 +229,8 @@ export class NotifiFrontendClient {
       case 'AVALANCHE':
       case 'BINANCE':
       case 'OPTIMISM': {
-        if (
-          this._configuration.walletBlockchain !==
-          signMessageParams.walletBlockchain
-        ) {
-          throw new Error(
-            'Sign message params and configuration must have the same blockchain',
-          );
-        }
-        const { walletPublicKey, tenantId } = this._configuration;
+        const { walletPublicKey, tenantId } = this
+          ._configuration as NotifiConfigWithPublicKey;
         const messageBuffer = new TextEncoder().encode(
           `${SIGNING_MESSAGE}${walletPublicKey}${tenantId}${timestamp.toString()}`,
         );
@@ -240,15 +242,8 @@ export class NotifiFrontendClient {
         return signature;
       }
       case 'INJECTIVE': {
-        if (
-          this._configuration.walletBlockchain !==
-          signMessageParams.walletBlockchain
-        ) {
-          throw new Error(
-            'Sign message params and configuration must have the same blockchain',
-          );
-        }
-        const { authenticationKey, tenantId } = this._configuration;
+        const { authenticationKey, tenantId } = this
+          ._configuration as NotifiConfigWithPublicKeyAndAddress;
         const messageBuffer = new TextEncoder().encode(
           `${SIGNING_MESSAGE}${authenticationKey}${tenantId}${timestamp.toString()}`,
         );
@@ -258,15 +253,8 @@ export class NotifiFrontendClient {
         return signature;
       }
       case 'SOLANA': {
-        if (
-          this._configuration.walletBlockchain !==
-          signMessageParams.walletBlockchain
-        ) {
-          throw new Error(
-            'Sign message params and configuration must have the same blockchain',
-          );
-        }
-        const { walletPublicKey, tenantId } = this._configuration;
+        const { walletPublicKey, tenantId } = this
+          ._configuration as NotifiConfigWithPublicKey;
         const messageBuffer = new TextEncoder().encode(
           `${SIGNING_MESSAGE}${walletPublicKey}${tenantId}${timestamp.toString()}`,
         );
@@ -276,13 +264,8 @@ export class NotifiFrontendClient {
         return signature;
       }
       case 'ACALA': {
-        if (this._configuration.walletBlockchain !== 'ACALA') {
-          throw new Error(
-            'Sign message params and configuration must have the same blockchain',
-          );
-        }
-
-        const { accountAddress, tenantId } = this._configuration;
+        const { accountAddress, tenantId } = this
+          ._configuration as NotifiConfigWithPublicKeyAndAddress;
 
         const message = `${SIGNING_MESSAGE}${accountAddress}${tenantId}${timestamp.toString()}`;
         const signedBuffer = await signMessageParams.signMessage(
@@ -292,11 +275,6 @@ export class NotifiFrontendClient {
         return signedBuffer;
       }
       case 'APTOS': {
-        if (this._configuration.walletBlockchain !== 'APTOS') {
-          throw new Error(
-            'Sign message params and configuration must have the same blockchain',
-          );
-        }
         const signature = await signMessageParams.signMessage(
           SIGNING_MESSAGE,
           timestamp,
@@ -304,12 +282,8 @@ export class NotifiFrontendClient {
         return signature;
       }
       case 'SUI': {
-        if (this._configuration.walletBlockchain !== 'SUI') {
-          throw new Error(
-            'Sign message params and configuration must have the same blockchain',
-          );
-        }
-        const { accountAddress, tenantId } = this._configuration;
+        const { accountAddress, tenantId } = this
+          ._configuration as NotifiConfigWithPublicKeyAndAddress;
         const messageBuffer = new TextEncoder().encode(
           `${SIGNING_MESSAGE}${accountAddress}${tenantId}${timestamp.toString()}`,
         );
@@ -318,14 +292,8 @@ export class NotifiFrontendClient {
         return signature;
       }
       case 'NEAR': {
-        if (this._configuration.walletBlockchain !== 'NEAR') {
-          throw new Error(
-            'Sign message params and configuration must have the same blockchain',
-          );
-        }
-
-        const { authenticationKey, accountAddress, tenantId } =
-          this._configuration;
+        const { authenticationKey, accountAddress, tenantId } = this
+          ._configuration as NotifiConfigWithPublicKeyAndAddress;
 
         const message = `${
           `ed25519:` + authenticationKey

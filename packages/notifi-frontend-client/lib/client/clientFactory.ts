@@ -1,17 +1,7 @@
 import { NotifiService } from '@notifi-network/notifi-graphql';
 import { GraphQLClient } from 'graphql-request';
 
-import {
-  NotifiAcalaConfiguration,
-  NotifiAptosConfiguration,
-  NotifiEvmConfiguration,
-  NotifiFrontendConfiguration,
-  NotifiInjectiveConfiguration,
-  NotifiNearConfiguration,
-  NotifiSolanaConfiguration,
-  NotifiSuiConfiguration,
-  envUrl,
-} from '../configuration';
+import { NotifiFrontendConfiguration, envUrl } from '../configuration';
 import {
   NotifiFrontendStorage,
   createLocalForageStorageDriver,
@@ -29,43 +19,7 @@ export const newNotifiService = (config: NotifiFrontendConfiguration) => {
   return new NotifiService(client);
 };
 
-export const newAcalaClient = (config: NotifiAcalaConfiguration) => {
-  const service = newNotifiService(config);
-  const storage = newNotifiStorage(config);
-  return new NotifiFrontendClient(config, service, storage);
-};
-
-export const newAptosClient = (config: NotifiAptosConfiguration) => {
-  const service = newNotifiService(config);
-  const storage = newNotifiStorage(config);
-  return new NotifiFrontendClient(config, service, storage);
-};
-
-export const newNearClient = (config: NotifiNearConfiguration) => {
-  const service = newNotifiService(config);
-  const storage = newNotifiStorage(config);
-  return new NotifiFrontendClient(config, service, storage);
-};
-
-export const newInjectiveClient = (config: NotifiInjectiveConfiguration) => {
-  const service = newNotifiService(config);
-  const storage = newNotifiStorage(config);
-  return new NotifiFrontendClient(config, service, storage);
-};
-
-export const newSolanaClient = (config: NotifiSolanaConfiguration) => {
-  const service = newNotifiService(config);
-  const storage = newNotifiStorage(config);
-  return new NotifiFrontendClient(config, service, storage);
-};
-
-export const newEvmClient = (config: NotifiEvmConfiguration) => {
-  const service = newNotifiService(config);
-  const storage = newNotifiStorage(config);
-  return new NotifiFrontendClient(config, service, storage);
-};
-
-export const newSuiClient = (config: NotifiSuiConfiguration) => {
+export const newFrontendClient = (config: NotifiFrontendConfiguration) => {
   const service = newNotifiService(config);
   const storage = newNotifiStorage(config);
   return new NotifiFrontendClient(config, service, storage);

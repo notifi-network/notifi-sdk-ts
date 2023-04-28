@@ -1,8 +1,8 @@
 import {
   AcalaSignMessageFunction,
   UserState,
-  newAcalaClient,
-  newAcalaConfig,
+  newFrontendClient,
+  newFrontendConfig,
 } from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
 import { FC, useMemo, useState } from 'react';
@@ -29,15 +29,16 @@ export const PolkadotFrontendClient: FC = () => {
 
   const client = useMemo(() => {
     if (acalaAddress && polkadotPublicKey) {
-      const config = newAcalaConfig(
-        {
+      const config = newFrontendConfig({
+        account: {
           address: acalaAddress,
           publicKey: polkadotPublicKey,
         },
-        'junitest.xyz',
-        'Development',
-      );
-      return newAcalaClient(config);
+        tenantId: 'junitest.xyz',
+        env: 'Development',
+        walletBlockchain: 'ACALA',
+      });
+      return newFrontendClient(config);
     }
   }, [acalaAddress, polkadotPublicKey]);
   const [userState, setUserState] = useState<UserState | null>(null);

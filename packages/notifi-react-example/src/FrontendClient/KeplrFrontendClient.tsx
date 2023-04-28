@@ -1,8 +1,8 @@
 import {
   Uint8SignMessageFunction,
   UserState,
-  newInjectiveClient,
-  newInjectiveConfig,
+  newFrontendClient,
+  newFrontendConfig,
 } from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
 import { FC, useMemo, useState } from 'react';
@@ -33,15 +33,16 @@ export const KeplrFrontendClient: FC = () => {
 
   const client = useMemo(() => {
     if (key && keyBase64) {
-      const config = newInjectiveConfig(
-        {
+      const config = newFrontendConfig({
+        account: {
           address: key.bech32Address,
           publicKey: keyBase64,
         },
-        'junitest.xyz',
-        'Development',
-      );
-      return newInjectiveClient(config);
+        tenantId: 'junitest.xyz',
+        env: 'Development',
+        walletBlockchain: 'INJECTIVE',
+      });
+      return newFrontendClient(config);
     }
   }, [key, keyBase64]);
   const [userState, setUserState] = useState<UserState | null>(null);

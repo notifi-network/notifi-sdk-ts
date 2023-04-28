@@ -9,178 +9,70 @@ export type NotifiEnvironmentConfiguration = Readonly<{
   tenantId: string;
 }>;
 
-export type NotifiAptosConfiguration = Readonly<{
-  walletBlockchain: 'APTOS';
-  authenticationKey: string;
-  accountAddress: string;
-}> &
-  NotifiEnvironmentConfiguration;
-
-export type NotifiFrontendConfiguration =
-  | NotifiSolanaConfiguration
-  | NotifiAptosConfiguration
-  | NotifiEvmConfiguration
-  | NotifiSuiConfiguration
-  | NotifiAcalaConfiguration
-  | NotifiNearConfiguration
-  | NotifiInjectiveConfiguration;
-
-export type NotifiAcalaConfiguration = Readonly<{
-  walletBlockchain: 'ACALA';
-  authenticationKey: string;
-  accountAddress: string;
-}> &
-  NotifiEnvironmentConfiguration;
-
-export const newAcalaConfig = (
-  account: Readonly<{
-    address: string;
-    publicKey: string;
-  }>,
-  tenantId: string,
-  env: NotifiEnvironment | undefined = 'Development',
-): NotifiAcalaConfiguration => {
-  return {
-    tenantId,
-    env,
-    walletBlockchain: 'ACALA',
-    authenticationKey: account.publicKey,
-    accountAddress: account.address,
-  };
-};
-
-export const newAptosConfig = (
-  account: Readonly<{
-    address: string;
-    publicKey: string;
-  }>,
-  tenantId: string,
-  env: NotifiEnvironment | undefined = 'Development',
-): NotifiAptosConfiguration => {
-  return {
-    tenantId,
-    env,
-    walletBlockchain: 'APTOS',
-    authenticationKey: account.publicKey,
-    accountAddress: account.address,
-  };
-};
-
-export type NotifiNearConfiguration = Readonly<{
-  walletBlockchain: 'NEAR';
-  authenticationKey: string;
-  accountAddress: string;
-}> &
-  NotifiEnvironmentConfiguration;
-
-export const newNearConfig = (
-  account: Readonly<{
-    address: string;
-    publicKey: string;
-  }>,
-  tenantId: string,
-  env: NotifiEnvironment | undefined = 'Development',
-): NotifiNearConfiguration => {
-  return {
-    tenantId,
-    env,
-    walletBlockchain: 'NEAR',
-    authenticationKey: account.publicKey,
-    accountAddress: account.address,
-  };
-};
-
-export type NotifiInjectiveConfiguration = Readonly<{
-  walletBlockchain: 'INJECTIVE';
-  authenticationKey: string;
-  accountAddress: string;
-}> &
-  NotifiEnvironmentConfiguration;
-
-export const newInjectiveConfig = (
-  account: Readonly<{
-    address: string;
-    publicKey: string;
-  }>,
-  tenantId: string,
-  env: NotifiEnvironment | undefined = 'Development',
-): NotifiInjectiveConfiguration => {
-  return {
-    tenantId,
-    env,
-    walletBlockchain: 'INJECTIVE',
-    authenticationKey: account.publicKey,
-    accountAddress: account.address,
-  };
-};
-
-export type NotifiSolanaConfiguration = Readonly<{
-  walletBlockchain: 'SOLANA';
-  walletPublicKey: string;
-}> &
-  NotifiEnvironmentConfiguration;
-
-export const newSolanaConfig = (
-  walletPublicKey: string,
-  tenantId: string,
-  env: NotifiEnvironment | undefined = 'Development',
-): NotifiSolanaConfiguration => {
-  return {
-    tenantId,
-    env,
-    walletBlockchain: 'SOLANA',
-    walletPublicKey: walletPublicKey,
-  };
-};
-
-export type NotifiSuiConfiguration = Readonly<{
-  walletBlockchain: 'SUI';
-  authenticationKey: string;
-  accountAddress: string;
-}> &
-  NotifiEnvironmentConfiguration;
-
-export const newSuiConfig = (
-  account: Readonly<{
-    address: string;
-    publicKey: string; // The same as accountAddress
-  }>,
-  tenantId: string,
-  env: NotifiEnvironment | undefined = 'Development',
-): NotifiSuiConfiguration => {
-  return {
-    tenantId,
-    env,
-    walletBlockchain: 'SUI',
-    authenticationKey: account.publicKey,
-    accountAddress: account.address,
-  };
-};
-
-export type NotifiEvmConfiguration = Readonly<{
+export type NotifiConfigWithPublicKey = Readonly<{
   walletBlockchain:
     | 'ETHEREUM'
     | 'POLYGON'
     | 'ARBITRUM'
     | 'AVALANCHE'
     | 'BINANCE'
-    | 'OPTIMISM';
+    | 'OPTIMISM'
+    | 'SOLANA';
   walletPublicKey: string;
 }> &
   NotifiEnvironmentConfiguration;
 
-export const newEvmConfig = (
-  walletBlockchain: NotifiEvmConfiguration['walletBlockchain'],
-  walletPublicKey: string,
-  tenantId: string,
-  env: NotifiEnvironment | undefined = 'Development',
-): NotifiEvmConfiguration => {
-  return {
-    tenantId,
-    env,
-    walletBlockchain,
-    walletPublicKey: walletPublicKey,
-  };
+export type NotifiConfigWithPublicKeyAndAddress = Readonly<{
+  walletBlockchain: 'SUI' | 'NEAR' | 'INJECTIVE' | 'APTOS' | 'ACALA';
+  authenticationKey: string;
+  accountAddress: string;
+}> &
+  NotifiEnvironmentConfiguration;
+
+export type NotifiFrontendConfiguration =
+  | NotifiConfigWithPublicKey
+  | NotifiConfigWithPublicKeyAndAddress;
+
+export type FrontendClientConfigFactory = (args: {
+  account: Readonly<{
+    address?: string;
+    publicKey: string;
+  }>;
+  tenantId: string;
+  env: NotifiEnvironment;
+  walletBlockchain: NotifiFrontendConfiguration['walletBlockchain'];
+}) => NotifiFrontendConfiguration;
+
+export const newFrontendConfig: FrontendClientConfigFactory = (args) => {
+  switch (args.walletBlockchain) {
+    // Chains with only publicKey in account argument
+    case 'ETHEREUM':
+    case 'POLYGON':
+    case 'ARBITRUM':
+    case 'AVALANCHE':
+    case 'BINANCE':
+    case 'OPTIMISM':
+    case 'SOLANA':
+      return {
+        tenantId: args.tenantId,
+        env: args.env,
+        walletBlockchain: args.walletBlockchain,
+        walletPublicKey: args.account.publicKey,
+      };
+    // Chains with publicKey and address in account arguments
+    case 'SUI':
+    case 'NEAR':
+    case 'INJECTIVE':
+    case 'APTOS':
+    case 'ACALA':
+      return {
+        tenantId: args.tenantId,
+        env: args.env,
+        walletBlockchain: args.walletBlockchain,
+        authenticationKey: args.account.publicKey,
+        accountAddress: args.account.publicKey,
+      };
+  }
 };
 
 export const envUrl = (env: NotifiEnvironment): string => {

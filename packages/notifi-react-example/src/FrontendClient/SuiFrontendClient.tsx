@@ -1,8 +1,8 @@
 import { Uint8SignMessageFunction } from '@notifi-network/notifi-core';
 import {
   UserState,
-  newSuiClient,
-  newSuiConfig,
+  newFrontendClient,
+  newFrontendConfig,
 } from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
 import { SignInButton, ethos } from 'ethos-connect';
@@ -27,15 +27,16 @@ export const SuiFrontendClient: FC = () => {
 
   const client = useMemo(() => {
     if (wallet && wallet.currentAccount) {
-      const config = newSuiConfig(
-        {
+      const config = newFrontendConfig({
+        account: {
           address: wallet?.currentAccount.address,
           publicKey: wallet?.currentAccount.address,
         },
-        'junitest.xyz',
-        'Development',
-      );
-      return newSuiClient(config);
+        tenantId: 'junitest.xyz',
+        env: 'Development',
+        walletBlockchain: 'SUI',
+      });
+      return newFrontendClient(config);
     }
   }, [wallet?.currentAccount?.address]);
   const [userState, setUserState] = useState<UserState | null>(null);

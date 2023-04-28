@@ -1,8 +1,8 @@
 import { Uint8SignMessageFunction } from '@notifi-network/notifi-core';
 import {
   UserState,
-  newEvmClient,
-  newEvmConfig,
+  newFrontendClient,
+  newFrontendConfig,
 } from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
 import { arrayify } from 'ethers/lib/utils.js';
@@ -23,13 +23,13 @@ export const WalletConnectFrontendClient: FC = () => {
 
   const client = useMemo(() => {
     if (address && isConnected) {
-      const config = newEvmConfig(
-        'ETHEREUM',
-        address,
-        'junitest.xyz',
-        'Development',
-      );
-      return newEvmClient(config);
+      const config = newFrontendConfig({
+        walletBlockchain: 'ETHEREUM',
+        account: { publicKey: address },
+        tenantId: 'junitest.xyz',
+        env: 'Development',
+      });
+      return newFrontendClient(config);
     }
   }, [address, isConnected]);
 

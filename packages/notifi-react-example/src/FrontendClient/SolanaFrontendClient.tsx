@@ -1,7 +1,7 @@
 import {
   UserState,
-  newSolanaClient,
-  newSolanaConfig,
+  newFrontendClient,
+  newFrontendConfig,
 } from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
 import { useWallet } from '@solana/wallet-adapter-react';
@@ -15,8 +15,16 @@ export const SolanaFrontendClient: FC = () => {
 
   const client = useMemo(() => {
     if (publicKey) {
-      const config = newSolanaConfig(publicKey, 'junitest.xyz', 'Development');
-      return newSolanaClient(config);
+      const config = newFrontendConfig({
+        account: {
+          publicKey,
+        },
+        tenantId: 'junitest.xyz',
+        env: 'Development',
+        walletBlockchain: 'SOLANA',
+      });
+      // const config = newFrontendConfig({}, 'junitest.xyz', 'Development');
+      return newFrontendClient(config);
     }
   }, [publicKey]);
   const [userState, setUserState] = useState<UserState | null>(null);
