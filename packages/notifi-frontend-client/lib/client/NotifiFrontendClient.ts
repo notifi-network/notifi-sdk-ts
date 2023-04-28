@@ -183,6 +183,7 @@ export class NotifiFrontendClient {
       case 'SUI':
       case 'ACALA':
       case 'NEAR':
+      case 'INJECTIVE':
       case 'APTOS': {
         const result = await this._service.logInFromDapp({
           walletBlockchain,
@@ -236,6 +237,24 @@ export class NotifiFrontendClient {
         const signature = normalizeHexString(
           Buffer.from(signedBuffer).toString('hex'),
         );
+        return signature;
+      }
+      case 'INJECTIVE': {
+        if (
+          this._configuration.walletBlockchain !==
+          signMessageParams.walletBlockchain
+        ) {
+          throw new Error(
+            'Sign message params and configuration must have the same blockchain',
+          );
+        }
+        const { authenticationKey, tenantId } = this._configuration;
+        const messageBuffer = new TextEncoder().encode(
+          `${SIGNING_MESSAGE}${authenticationKey}${tenantId}${timestamp.toString()}`,
+        );
+
+        const signedBuffer = await signMessageParams.signMessage(messageBuffer);
+        const signature = Buffer.from(signedBuffer).toString('base64');
         return signature;
       }
       case 'SOLANA': {

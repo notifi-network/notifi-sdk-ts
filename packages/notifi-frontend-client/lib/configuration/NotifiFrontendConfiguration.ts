@@ -22,7 +22,8 @@ export type NotifiFrontendConfiguration =
   | NotifiEvmConfiguration
   | NotifiSuiConfiguration
   | NotifiAcalaConfiguration
-  | NotifiNearConfiguration;
+  | NotifiNearConfiguration
+  | NotifiInjectiveConfiguration;
 
 export type NotifiAcalaConfiguration = Readonly<{
   walletBlockchain: 'ACALA';
@@ -84,6 +85,30 @@ export const newNearConfig = (
     tenantId,
     env,
     walletBlockchain: 'NEAR',
+    authenticationKey: account.publicKey,
+    accountAddress: account.address,
+  };
+};
+
+export type NotifiInjectiveConfiguration = Readonly<{
+  walletBlockchain: 'INJECTIVE';
+  authenticationKey: string;
+  accountAddress: string;
+}> &
+  NotifiEnvironmentConfiguration;
+
+export const newInjectiveConfig = (
+  account: Readonly<{
+    address: string;
+    publicKey: string;
+  }>,
+  tenantId: string,
+  env: NotifiEnvironment | undefined = 'Development',
+): NotifiInjectiveConfiguration => {
+  return {
+    tenantId,
+    env,
+    walletBlockchain: 'INJECTIVE',
     authenticationKey: account.publicKey,
     accountAddress: account.address,
   };
