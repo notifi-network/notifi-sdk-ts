@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, Route, Routes } from 'react-router-dom';
 
 import './App.css';
-import FrontendClient from './FrontendClient/FrontendClient';
+import FrontendClient from './FrontendClient';
 import { NotifiCard } from './NotifiCard/NotifiCard';
 import WalletProviders from './walletProviders';
 

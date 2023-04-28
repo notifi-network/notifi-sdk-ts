@@ -1,51 +1,82 @@
 import {
+  AcalaSignMessageFunction,
   UserState,
-  newSolanaClient,
-  newSolanaConfig,
+  newFrontendClient,
+  newFrontendConfig,
 } from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
-import { useWallet } from '@solana/wallet-adapter-react';
-import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { FC, useMemo, useState } from 'react';
 
-const FrontendClient: FC = () => {
-  const { wallet, signMessage, connected } = useWallet();
-  const adapter = wallet?.adapter;
-  const publicKey = adapter?.publicKey?.toBase58() ?? null;
+import {
+  AcalaConnectButton,
+  useAcalaWallet,
+} from '../walletProviders/AcalaWalletContextProvider';
+
+export const PolkadotFrontendClient: FC = () => {
+  const { acalaAddress, connected, requestSignature, polkadotPublicKey } =
+    useAcalaWallet();
+
+  const signMessage: AcalaSignMessageFunction = async (
+    _: string,
+    message: string,
+  ) => {
+    if (!connected) {
+      throw new Error('Wallet not connected');
+    }
+    const signature = await requestSignature(acalaAddress!, message);
+    return signature;
+  };
 
   const client = useMemo(() => {
-    const config = newSolanaConfig(
-      publicKey ?? '',
-      'junitest.xyz',
-      'Development',
-    );
-    return newSolanaClient(config);
-  }, [publicKey]);
+    if (acalaAddress && polkadotPublicKey) {
+      const config = newFrontendConfig({
+        account: {
+          address: acalaAddress,
+          publicKey: polkadotPublicKey,
+        },
+        tenantId: 'junitest.xyz',
+        env: 'Development',
+        walletBlockchain: 'ACALA',
+      });
+      return newFrontendClient(config);
+    }
+  }, [acalaAddress, polkadotPublicKey]);
   const [userState, setUserState] = useState<UserState | null>(null);
   const [clientData, setClientData] = useState<Types.FetchDataQuery>();
 
   const initClient = async () => {
+    if (!client) {
+      throw new Error('Client not initialized');
+    }
     const newUserState = await client.initialize();
     setUserState(newUserState);
   };
 
   const login = async () => {
-    if (signMessage) {
-      await client.logIn({
-        walletBlockchain: 'SOLANA',
-        signMessage,
-      });
-      setUserState(client.userState);
+    if (!client) {
+      throw new Error('Client not initialized');
     }
+    await client.logIn({
+      walletBlockchain: 'ACALA',
+      signMessage,
+    });
+
+    setUserState(client.userState);
   };
 
   const logOut = async () => {
+    if (!client) {
+      throw new Error('Client not initialized');
+    }
     await client.logOut();
     const newUserState = await client.initialize();
     setUserState(newUserState);
   };
 
   const fetchData = async () => {
+    if (!client) {
+      throw new Error('Client not initialized');
+    }
     if (userState && userState.status === 'authenticated') {
       const data = await client.fetchData();
       setClientData(data);
@@ -56,7 +87,7 @@ const FrontendClient: FC = () => {
     <>
       {connected ? (
         <div>
-          <h1>Frontend Client Example</h1>
+          <h1>Frontend Client Example: DOT (Acala)</h1>
           {!!!userState && (
             <button onClick={initClient}>initialize FrontendClient</button>
           )}
@@ -86,10 +117,8 @@ const FrontendClient: FC = () => {
           )}
         </div>
       ) : (
-        <WalletMultiButton />
+        <AcalaConnectButton />
       )}
     </>
   );
 };
-
-export default FrontendClient;
