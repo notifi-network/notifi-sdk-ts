@@ -19,7 +19,8 @@ export type NotifiAptosConfiguration = Readonly<{
 export type NotifiFrontendConfiguration =
   | NotifiSolanaConfiguration
   | NotifiAptosConfiguration
-  | NotifiEvmConfiguration;
+  | NotifiEvmConfiguration
+  | NotifiSuiConfiguration;
 
 export const newAptosConfig = (
   account: Readonly<{
@@ -54,6 +55,30 @@ export const newSolanaConfig = (
     env,
     walletBlockchain: 'SOLANA',
     walletPublicKey: walletPublicKey,
+  };
+};
+
+export type NotifiSuiConfiguration = Readonly<{
+  walletBlockchain: 'SUI';
+  authenticationKey: string;
+  accountAddress: string;
+}> &
+  NotifiEnvironmentConfiguration;
+
+export const newSuiConfig = (
+  account: Readonly<{
+    address: string;
+    publicKey: string; // The same as accountAddress
+  }>,
+  tenantId: string,
+  env: NotifiEnvironment | undefined = 'Development',
+): NotifiSuiConfiguration => {
+  return {
+    tenantId,
+    env,
+    walletBlockchain: 'SUI',
+    authenticationKey: account.publicKey,
+    accountAddress: account.address,
   };
 };
 
