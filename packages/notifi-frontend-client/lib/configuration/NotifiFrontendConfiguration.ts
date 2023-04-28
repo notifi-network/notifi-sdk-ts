@@ -21,7 +21,8 @@ export type NotifiFrontendConfiguration =
   | NotifiAptosConfiguration
   | NotifiEvmConfiguration
   | NotifiSuiConfiguration
-  | NotifiAcalaConfiguration;
+  | NotifiAcalaConfiguration
+  | NotifiNearConfiguration;
 
 export type NotifiAcalaConfiguration = Readonly<{
   walletBlockchain: 'ACALA';
@@ -59,6 +60,30 @@ export const newAptosConfig = (
     tenantId,
     env,
     walletBlockchain: 'APTOS',
+    authenticationKey: account.publicKey,
+    accountAddress: account.address,
+  };
+};
+
+export type NotifiNearConfiguration = Readonly<{
+  walletBlockchain: 'NEAR';
+  authenticationKey: string;
+  accountAddress: string;
+}> &
+  NotifiEnvironmentConfiguration;
+
+export const newNearConfig = (
+  account: Readonly<{
+    address: string;
+    publicKey: string;
+  }>,
+  tenantId: string,
+  env: NotifiEnvironment | undefined = 'Development',
+): NotifiNearConfiguration => {
+  return {
+    tenantId,
+    env,
+    walletBlockchain: 'NEAR',
     authenticationKey: account.publicKey,
     accountAddress: account.address,
   };

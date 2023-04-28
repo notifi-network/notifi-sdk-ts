@@ -182,6 +182,7 @@ export class NotifiFrontendClient {
       }
       case 'SUI':
       case 'ACALA':
+      case 'NEAR':
       case 'APTOS': {
         const result = await this._service.logInFromDapp({
           walletBlockchain,
@@ -295,6 +296,30 @@ export class NotifiFrontendClient {
         );
         const signedBuffer = await signMessageParams.signMessage(messageBuffer);
         const signature = signedBuffer.toString();
+        return signature;
+      }
+      case 'NEAR': {
+        if (this._configuration.walletBlockchain !== 'NEAR') {
+          throw new Error(
+            'Sign message params and configuration must have the same blockchain',
+          );
+        }
+
+        const { authenticationKey, accountAddress, tenantId } =
+          this._configuration;
+
+        const message = `${
+          `ed25519:` + authenticationKey
+        }${tenantId}${accountAddress}${timestamp.toString()}`;
+        const textAsBuffer = new TextEncoder().encode(message);
+        const hashBuffer = await window.crypto.subtle.digest(
+          'SHA-256',
+          textAsBuffer,
+        );
+        const messageBuffer = new Uint8Array(hashBuffer);
+
+        const signedBuffer = await signMessageParams.signMessage(messageBuffer);
+        const signature = Buffer.from(signedBuffer).toString('base64');
         return signature;
       }
       default:
