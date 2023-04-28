@@ -20,7 +20,32 @@ export type NotifiFrontendConfiguration =
   | NotifiSolanaConfiguration
   | NotifiAptosConfiguration
   | NotifiEvmConfiguration
-  | NotifiSuiConfiguration;
+  | NotifiSuiConfiguration
+  | NotifiAcalaConfiguration;
+
+export type NotifiAcalaConfiguration = Readonly<{
+  walletBlockchain: 'ACALA';
+  authenticationKey: string;
+  accountAddress: string;
+}> &
+  NotifiEnvironmentConfiguration;
+
+export const newAcalaConfig = (
+  account: Readonly<{
+    address: string;
+    publicKey: string;
+  }>,
+  tenantId: string,
+  env: NotifiEnvironment | undefined = 'Development',
+): NotifiAcalaConfiguration => {
+  return {
+    tenantId,
+    env,
+    walletBlockchain: 'ACALA',
+    authenticationKey: account.publicKey,
+    accountAddress: account.address,
+  };
+};
 
 export const newAptosConfig = (
   account: Readonly<{

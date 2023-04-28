@@ -34,6 +34,11 @@ export type AptosSignMessageFunction = (
   message: string,
   nonce: number,
 ) => Promise<string>;
+type hexString = `0x${string}`;
+export type AcalaSignMessageFunction = (
+  acalaAddress: string,
+  message: string,
+) => Promise<hexString>;
 
 type BeginLoginProps = Omit<Types.BeginLogInByTransactionInput, 'dappAddress'>;
 
@@ -176,6 +181,7 @@ export class NotifiFrontendClient {
         break;
       }
       case 'SUI':
+      case 'ACALA':
       case 'APTOS': {
         const result = await this._service.logInFromDapp({
           walletBlockchain,
@@ -248,6 +254,22 @@ export class NotifiFrontendClient {
         const signedBuffer = await signMessageParams.signMessage(messageBuffer);
         const signature = Buffer.from(signedBuffer).toString('base64');
         return signature;
+      }
+      case 'ACALA': {
+        if (this._configuration.walletBlockchain !== 'ACALA') {
+          throw new Error(
+            'Sign message params and configuration must have the same blockchain',
+          );
+        }
+
+        const { accountAddress, tenantId } = this._configuration;
+
+        const message = `${SIGNING_MESSAGE}${accountAddress}${tenantId}${timestamp.toString()}`;
+        const signedBuffer = await signMessageParams.signMessage(
+          accountAddress,
+          message,
+        );
+        return signedBuffer;
       }
       case 'APTOS': {
         if (this._configuration.walletBlockchain !== 'APTOS') {

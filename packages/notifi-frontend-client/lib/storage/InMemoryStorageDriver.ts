@@ -33,6 +33,7 @@ export const createInMemoryStorageDriver = (
       break;
     }
     case 'SUI':
+    case 'ACALA':
     case 'APTOS': {
       keyPrefix += `:${config.accountAddress}:${config.authenticationKey}`;
       break;
