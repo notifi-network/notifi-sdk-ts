@@ -29,7 +29,7 @@ a {
 }
 
 .notifi__dark {
-  --notifi-card-secondary-background: rgb(68, 68, 68);
+  --notifi-card-secondary-background: rgb(115, 74, 74);
   --notifi-placeholder-color: #b6b8d5;
   --notifi-focus-color: #fff;
   --notifi-toggle-handle: #fff;
@@ -776,7 +776,7 @@ input::-webkit-inner-spin-button {
   align-items: flex-start;
   padding: 16px 16px 0px 16px;
   border-radius: 5px;
-  background-color: #232323;
+  background-color: var(--notifi-card-secondary-background);
 }
 
 .NotifiPreviewCard__editButton {

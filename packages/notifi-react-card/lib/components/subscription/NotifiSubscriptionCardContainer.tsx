@@ -53,7 +53,7 @@ export const NotifiSubscriptionCardContainer: React.FC<
         <ErrorStateCard
           copy={copy?.ErrorStateCard}
           classNames={classNames?.ErrorStateCard}
-          reason={card.reason as string}
+          reason={card.reason}
           onClose={onClose}
         />
       );
