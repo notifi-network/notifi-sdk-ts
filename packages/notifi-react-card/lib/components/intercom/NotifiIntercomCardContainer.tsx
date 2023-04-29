@@ -33,7 +33,7 @@ export const NotifiIntercomCardContainer: React.FC<
       contents = (
         <ErrorStateCard
           classNames={classNames?.ErrorStateCard}
-          reason={card.reason as string}
+          reason={card.reason}
         />
       );
       break;

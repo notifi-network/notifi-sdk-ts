@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import { getErrorMessageKey } from 'notifi-react-card/lib/utils/errorUtils';
 import React from 'react';
 
 import { DeepPartialReadonly } from '../../utils';
@@ -8,7 +9,7 @@ export type ErrorStateCardProps = Readonly<{
   copy?: DeepPartialReadonly<{
     header: string;
   }>;
-  reason: string;
+  reason: unknown;
   classNames?: Readonly<{
     NotifiAlertBox?: NotifiAlertBoxProps['classNames'];
     label?: string;
@@ -23,6 +24,8 @@ export const ErrorStateCard: React.FC<ErrorStateCardProps> = ({
   onClose,
   reason,
 }) => {
+  const message = getErrorMessageKey(reason);
+
   return (
     <>
       <NotifiAlertBox
@@ -44,7 +47,7 @@ export const ErrorStateCard: React.FC<ErrorStateCardProps> = ({
           classNames?.errorMessage,
         )}
       >
-        {reason}
+        {message}
       </div>
     </>
   );
