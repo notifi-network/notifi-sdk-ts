@@ -1,8 +1,11 @@
 import clsx from 'clsx';
-import React from 'react';
+import React, { useMemo } from 'react';
 
-import { useNotifiSubscriptionContext } from '../../context';
-import { useNotifiSubscribe, useSubscriptionCard } from '../../hooks';
+import {
+  useNotifiClientContext,
+  useNotifiSubscriptionContext,
+} from '../../context';
+import { useSubscriptionCard } from '../../hooks';
 import { NotifiFooter } from '../NotifiFooter';
 import { ErrorStateCard, LoadingStateCard } from '../common';
 import { FetchedStateCard } from './FetchedStateCard';
@@ -24,9 +27,14 @@ export const NotifiSubscriptionCardContainer: React.FC<
   loadingSpinnerSize,
   onClose,
 }: React.PropsWithChildren<NotifiSubscriptionCardProps>) => {
-  const { isInitialized } = useNotifiSubscribe({ targetGroupName: 'Default' });
+  const { frontendClient } = useNotifiClientContext();
+  const isFrontendClientInitialized = useMemo(
+    () => !!frontendClient.userState,
+    [frontendClient.userState?.status],
+  );
+
   const { loading } = useNotifiSubscriptionContext();
-  const inputDisabled = loading || !isInitialized;
+  const inputDisabled = loading || !isFrontendClientInitialized;
 
   const card = useSubscriptionCard({
     id: cardId,
