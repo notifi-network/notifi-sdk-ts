@@ -8,12 +8,14 @@ import {
   FilterOptions,
   HealthCheckEventTypeItem,
   PriceChangeEventTypeItem,
+  ThresholdDirection,
   TradingPairEventTypeItem,
   WalletBalanceEventTypeItem,
   XMTPTopicTypeItem,
 } from '../models';
 import { areIdsEqual } from '../utils/areIdsEqual';
 import {
+  resolveCheckRatioArrayRef,
   resolveNumberRef,
   resolveStringArrayRef,
   resolveStringRef,
@@ -631,17 +633,28 @@ const getXMTPFilter = (
   };
 };
 
-type HealthCheckInputs = {
-  percentage: number;
+type HealthCheckEventInputsWithIndex = {
+  index: number; // The index of CheckRatio list
+  [key: string]: unknown; // The rest of inputs
 };
+
+type HealthCheckEventInputsWithCustomPercentage = {
+  thresholdDirection: ThresholdDirection; // The direction of threshold
+  customPercentage: number; // The percentage value of custom health check
+  [key: string]: unknown; // The rest of inputs
+};
+
+type HealthCheckInputs =
+  | HealthCheckEventInputsWithIndex
+  | HealthCheckEventInputsWithCustomPercentage;
 
 const healthCheckInputsValidator = (
   inputs: Record<string, unknown>,
 ): inputs is HealthCheckInputs => {
-  if (typeof inputs.percentage !== 'number') {
-    return false;
+  if ('index' in inputs || 'customPercentage' in inputs) {
+    return true;
   }
-  return true;
+  return false;
 };
 
 const getHealthCheckFilter = (
@@ -655,15 +668,38 @@ const getHealthCheckFilter = (
   if (filter === undefined) {
     throw new Error('Failed to retrieve filter: healthCheck');
   }
-  const thresholdDirection =
-    eventType.checkRatios.type === 'value'
-      ? eventType.checkRatios.value[0].type
-      : 'below';
+
+  const checkRatios = resolveCheckRatioArrayRef(
+    eventType.name,
+    eventType.checkRatios,
+    inputs,
+  );
+
+  let threshold = 0;
+  let thresholdDirection: ThresholdDirection = 'below';
+
+  const checkInputsCategory = (
+    inputs: HealthCheckInputs,
+  ): inputs is HealthCheckEventInputsWithIndex => {
+    if ('index' in inputs) {
+      return true;
+    }
+    return false;
+  };
+
+  if (checkInputsCategory(inputs)) {
+    threshold = checkRatios[inputs.index].ratio;
+    thresholdDirection = checkRatios[inputs.index].type;
+  } else {
+    threshold = inputs.customPercentage;
+    thresholdDirection = inputs.thresholdDirection;
+  }
+
   return {
     filter,
     filterOptions: {
       alertFrequency: eventType.alertFrequency,
-      threshold: inputs.percentage,
+      threshold,
       thresholdDirection,
     },
   };

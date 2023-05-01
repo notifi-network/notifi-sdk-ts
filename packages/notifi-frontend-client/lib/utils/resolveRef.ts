@@ -1,4 +1,4 @@
-import { ValueOrRef } from '../models';
+import { CheckRatio, ValueOrRef } from '../models';
 
 type Validator<T> = (item: unknown) => item is T;
 type ResolveFunc<T> = (
@@ -47,6 +47,21 @@ export const resolveStringArrayRef = createRefResolver(
     return (
       Array.isArray(item) &&
       item.every((element) => typeof element === 'string')
+    );
+  },
+);
+
+export const resolveCheckRatioArrayRef = createRefResolver(
+  (item: unknown): item is ReadonlyArray<CheckRatio> => {
+    return (
+      Array.isArray(item) &&
+      item.every(
+        (element) =>
+          typeof element === 'object' &&
+          typeof element.type === 'string' &&
+          typeof element.ratio === 'number' &&
+          !Number.isNaN(element.ratio),
+      )
     );
   },
 );
