@@ -3,6 +3,7 @@ import localforage from 'localforage';
 import {
   NotifiEnvironment,
   NotifiFrontendConfiguration,
+  checkIsConfigWithPublicKeyAndAddress,
 } from '../configuration/NotifiFrontendConfiguration';
 import { StorageDriver } from './NotifiFrontendStorage';
 
@@ -27,25 +28,11 @@ export const createLocalForageStorageDriver = (
   config: NotifiFrontendConfiguration,
 ): StorageDriver => {
   let keyPrefix = `${getEnvPrefix(config.env)}:${config.tenantId}`;
-  switch (config.walletBlockchain) {
-    case 'ETHEREUM':
-    case 'POLYGON':
-    case 'ARBITRUM':
-    case 'AVALANCHE':
-    case 'BINANCE':
-    case 'OPTIMISM':
-    case 'SOLANA': {
-      keyPrefix += `:${config.walletPublicKey}`;
-      break;
-    }
-    case 'SUI':
-    case 'ACALA':
-    case 'NEAR':
-    case 'INJECTIVE':
-    case 'APTOS': {
-      keyPrefix += `:${config.accountAddress}:${config.authenticationKey}`;
-      break;
-    }
+
+  if (checkIsConfigWithPublicKeyAndAddress(config)) {
+    keyPrefix += `:${config.accountAddress}:${config.authenticationKey}`;
+  } else {
+    keyPrefix += `:${config.walletPublicKey}`;
   }
 
   const storageDriver: StorageDriver = {

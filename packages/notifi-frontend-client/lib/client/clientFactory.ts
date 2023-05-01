@@ -4,12 +4,16 @@ import { GraphQLClient } from 'graphql-request';
 import { NotifiFrontendConfiguration, envUrl } from '../configuration';
 import {
   NotifiFrontendStorage,
+  createInMemoryStorageDriver,
   createLocalForageStorageDriver,
 } from '../storage';
 import { NotifiFrontendClient } from './NotifiFrontendClient';
 
 export const newNotifiStorage = (config: NotifiFrontendConfiguration) => {
-  const driver = createLocalForageStorageDriver(config);
+  const driver =
+    config.storageOption === 'LocalForage'
+      ? createLocalForageStorageDriver(config)
+      : createInMemoryStorageDriver(config);
   return new NotifiFrontendStorage(driver);
 };
 
