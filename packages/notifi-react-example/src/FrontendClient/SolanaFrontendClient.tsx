@@ -15,7 +15,7 @@ export const SolanaFrontendClient: FC = () => {
 
   const client = useMemo(() => {
     if (publicKey) {
-      const config = newFrontendConfig({
+      return newFrontendClient({
         account: {
           publicKey,
         },
@@ -23,8 +23,6 @@ export const SolanaFrontendClient: FC = () => {
         env: 'Development',
         walletBlockchain: 'SOLANA',
       });
-      // const config = newFrontendConfig({}, 'junitest.xyz', 'Development');
-      return newFrontendClient(config);
     }
   }, [publicKey]);
   const [userState, setUserState] = useState<UserState | null>(null);

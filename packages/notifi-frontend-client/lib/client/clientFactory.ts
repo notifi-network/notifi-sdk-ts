@@ -1,7 +1,12 @@
 import { NotifiService } from '@notifi-network/notifi-graphql';
 import { GraphQLClient } from 'graphql-request';
 
-import { NotifiFrontendConfiguration, envUrl } from '../configuration';
+import {
+  ConfigFactoryInput,
+  NotifiFrontendConfiguration,
+  envUrl,
+  newFrontendConfig,
+} from '../configuration';
 import {
   NotifiFrontendStorage,
   createLocalForageStorageDriver,
@@ -19,7 +24,8 @@ export const newNotifiService = (config: NotifiFrontendConfiguration) => {
   return new NotifiService(client);
 };
 
-export const newFrontendClient = (config: NotifiFrontendConfiguration) => {
+export const newFrontendClient = (args: ConfigFactoryInput) => {
+  const config = newFrontendConfig(args);
   const service = newNotifiService(config);
   const storage = newNotifiStorage(config);
   return new NotifiFrontendClient(config, service, storage);

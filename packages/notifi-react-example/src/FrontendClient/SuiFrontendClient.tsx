@@ -27,7 +27,7 @@ export const SuiFrontendClient: FC = () => {
 
   const client = useMemo(() => {
     if (wallet && wallet.currentAccount) {
-      const config = newFrontendConfig({
+      return newFrontendClient({
         account: {
           address: wallet?.currentAccount.address,
           publicKey: wallet?.currentAccount.address,
@@ -36,7 +36,6 @@ export const SuiFrontendClient: FC = () => {
         env: 'Development',
         walletBlockchain: 'SUI',
       });
-      return newFrontendClient(config);
     }
   }, [wallet?.currentAccount?.address]);
   const [userState, setUserState] = useState<UserState | null>(null);
