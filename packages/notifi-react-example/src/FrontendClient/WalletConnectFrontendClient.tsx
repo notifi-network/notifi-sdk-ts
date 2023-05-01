@@ -23,13 +23,12 @@ export const WalletConnectFrontendClient: FC = () => {
 
   const client = useMemo(() => {
     if (address && isConnected) {
-      const config = newFrontendConfig({
+      return newFrontendClient({
         walletBlockchain: 'ETHEREUM',
         account: { publicKey: address },
         tenantId: 'junitest.xyz',
         env: 'Development',
       });
-      return newFrontendClient(config);
     }
   }, [address, isConnected]);
 

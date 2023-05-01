@@ -33,7 +33,7 @@ export const KeplrFrontendClient: FC = () => {
 
   const client = useMemo(() => {
     if (key && keyBase64) {
-      const config = newFrontendConfig({
+      return newFrontendClient({
         account: {
           address: key.bech32Address,
           publicKey: keyBase64,
@@ -42,7 +42,6 @@ export const KeplrFrontendClient: FC = () => {
         env: 'Development',
         walletBlockchain: 'INJECTIVE',
       });
-      return newFrontendClient(config);
     }
   }, [key, keyBase64]);
   const [userState, setUserState] = useState<UserState | null>(null);

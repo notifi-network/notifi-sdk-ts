@@ -29,7 +29,7 @@ export const PolkadotFrontendClient: FC = () => {
 
   const client = useMemo(() => {
     if (acalaAddress && polkadotPublicKey) {
-      const config = newFrontendConfig({
+      return newFrontendClient({
         account: {
           address: acalaAddress,
           publicKey: polkadotPublicKey,
@@ -38,7 +38,6 @@ export const PolkadotFrontendClient: FC = () => {
         env: 'Development',
         walletBlockchain: 'ACALA',
       });
-      return newFrontendClient(config);
     }
   }, [acalaAddress, polkadotPublicKey]);
   const [userState, setUserState] = useState<UserState | null>(null);
