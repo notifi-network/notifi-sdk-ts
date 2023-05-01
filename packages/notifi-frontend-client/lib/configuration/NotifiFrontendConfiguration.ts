@@ -7,7 +7,9 @@ export type NotifiEnvironment =
 export type NotifiEnvironmentConfiguration = Readonly<{
   env: NotifiEnvironment;
   tenantId: string;
-  storageOption: 'LocalForage' | 'InMemory';
+  storageOption?: Readonly<{
+    driverType?: 'LocalForage' | 'InMemory';
+  }>;
 }>;
 
 export type NotifiConfigWithPublicKey = Readonly<{
@@ -80,7 +82,7 @@ const configFactoryPublicKey: FrontendClientConfigFactory<
     env: args.env,
     walletBlockchain: args.walletBlockchain,
     walletPublicKey: args.account.publicKey,
-    storageOption: args.storageOption ?? 'LocalForage',
+    storageOption: args.storageOption,
   };
 };
 
@@ -93,7 +95,7 @@ const configFactoryPublicKeyAndAddress: FrontendClientConfigFactory<
     walletBlockchain: args.walletBlockchain,
     authenticationKey: args.account.publicKey,
     accountAddress: args.account.address,
-    storageOption: args.storageOption ?? 'LocalForage',
+    storageOption: args.storageOption,
   };
 };
 
