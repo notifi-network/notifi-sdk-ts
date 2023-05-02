@@ -3,7 +3,6 @@ import {
   ConnectedWallet,
   DiscordTarget,
   EmailTarget,
-  Filter,
   GetAlertsService,
   GetConnectedWalletsService,
   GetDiscordTargetsService,
@@ -16,18 +15,18 @@ import {
   GetTopicsService,
   GetWebhookTargetsService,
   SmsTarget,
-  Source,
   SourceGroup,
   TargetGroup,
   TelegramTarget,
   WebhookTarget,
 } from '@notifi-network/notifi-core';
+import { Types } from '@notifi-network/notifi-graphql';
 
 export type InternalData = {
   alerts: Alert[];
   connectedWallets: ConnectedWallet[];
-  filters: Filter[];
-  sources: Source[];
+  filters: Types.Filter[];
+  sources: Types.Source[];
   sourceGroups: SourceGroup[];
   targetGroups: TargetGroup[];
   emailTargets: EmailTarget[];
@@ -85,12 +84,12 @@ const doFetchData = async (service: Service): Promise<InternalData> => {
   ]);
 
   const filterIds = new Set<string | null>();
-  const filters: Filter[] = [];
+  const filters: Types.Filter[] = [];
   sources.forEach((source) => {
-    source.applicableFilters.forEach((filter) => {
-      if (!filterIds.has(filter.id)) {
-        filters.push(filter);
-        filterIds.add(filter.id);
+    source.applicableFilters?.forEach((filter) => {
+      if (!filterIds.has(filter?.id ?? '')) {
+        filters.push(filter!); // ensured by `has`
+        filterIds.add(filter!.id); // ensured by `has`
       }
     });
   });

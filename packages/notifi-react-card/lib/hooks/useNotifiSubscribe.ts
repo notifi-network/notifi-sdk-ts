@@ -2,11 +2,10 @@ import {
   Alert,
   ClientData,
   ConnectWalletParams,
-  CreateSourceInput,
   DiscordTarget,
   DiscordTargetStatus,
-  Source,
 } from '@notifi-network/notifi-core';
+import { Types } from '@notifi-network/notifi-graphql';
 import { isValidPhoneNumber } from 'libphonenumber-js';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -141,14 +140,14 @@ export const useNotifiSubscribe: ({
 
       const alerts: Record<string, Alert> = {};
       newData?.alerts.forEach((alert) => {
-        if (alert.name !== null) {
+        if (alert?.name) {
           alerts[alert.name] = alert;
         }
       });
 
       setAlerts(alerts);
       setConnectedWallets(newData?.connectedWallets ?? []);
-      const emailTarget = targetGroup?.emailTargets[0] ?? null;
+      const emailTarget = targetGroup?.emailTargets?.[0] ?? null;
       const emailToSet = emailTarget?.emailAddress ?? '';
 
       if (emailTarget !== null && emailTarget?.isConfirmed === false) {
@@ -166,10 +165,10 @@ export const useNotifiSubscribe: ({
       setFormEmail(emailToSet);
       setEmail(emailToSet);
 
-      const phoneNumber = targetGroup?.smsTargets[0]?.phoneNumber ?? null;
+      const phoneNumber = targetGroup?.smsTargets?.[0]?.phoneNumber ?? null;
 
       const isPhoneNumberConfirmed =
-        targetGroup?.smsTargets[0]?.isConfirmed ?? null;
+        targetGroup?.smsTargets?.[0]?.isConfirmed ?? null;
 
       const phoneNumberToSet = phoneNumber ?? '';
 
@@ -186,7 +185,7 @@ export const useNotifiSubscribe: ({
       setFormPhoneNumber(phoneNumberToSet);
       setPhoneNumber(phoneNumberToSet);
 
-      const telegramTarget = targetGroup?.telegramTargets[0];
+      const telegramTarget = targetGroup?.telegramTargets?.[0];
       const telegramId = telegramTarget?.telegramId;
 
       const telegramIdWithSymbolAdded =
@@ -211,7 +210,7 @@ export const useNotifiSubscribe: ({
         });
       }
 
-      const discordTarget = targetGroup?.discordTargets[0];
+      const discordTarget = targetGroup?.discordTargets?.[0];
 
       const discordId = discordTarget?.id;
 
@@ -376,7 +375,7 @@ export const useNotifiSubscribe: ({
       const { finalEmail, finalPhoneNumber, finalTelegramId, finalDiscordId } =
         contacts;
       const existingAlert = data.alerts.find(
-        (alert) => alert.name === alertName,
+        (alert) => alert?.name === alertName,
       );
 
       const deleteThisAlert = async () => {
@@ -390,8 +389,8 @@ export const useNotifiSubscribe: ({
       };
 
       const ensureSource = async (
-        params: CreateSourceInput,
-      ): Promise<Source> => {
+        params: Types.CreateSourceInput,
+      ): Promise<Types.Source> => {
         const existing = data.sources.find(
           (s) =>
             s.type === params.type &&
@@ -417,7 +416,7 @@ export const useNotifiSubscribe: ({
         const sources = await Promise.all(sourcesInput.map(ensureSource));
         const filter = sources
           .flatMap((s) => s.applicableFilters)
-          .find((f) => f.filterType === filterType);
+          .find((f) => f?.filterType === filterType);
         if (filter === undefined || filter.id === null) {
           await deleteThisAlert();
           return null;
@@ -458,7 +457,7 @@ export const useNotifiSubscribe: ({
           sourceGroupName,
         } = alertConfiguration;
 
-        let source: Source | undefined;
+        let source: Types.Maybe<Types.Source>;
 
         if (createSourceParam !== undefined) {
           source = await ensureSource({
@@ -470,8 +469,8 @@ export const useNotifiSubscribe: ({
           source = data.sources.find((s) => s.type === sourceType);
         }
 
-        const filter = source?.applicableFilters.find(
-          (f) => f.filterType === filterType,
+        const filter = source?.applicableFilters?.find(
+          (f) => f?.filterType === filterType,
         );
 
         if (

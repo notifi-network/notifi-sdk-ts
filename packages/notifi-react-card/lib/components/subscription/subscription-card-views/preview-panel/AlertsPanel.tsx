@@ -1,6 +1,6 @@
+import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import React from 'react';
 
-import { CardConfigItemV1 } from '../../../../hooks';
 import {
   EventTypeBroadcastRow,
   EventTypeBroadcastRowProps,

@@ -1,9 +1,9 @@
+import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import { DeepPartialReadonly } from 'notifi-react-card/lib/utils';
 import React from 'react';
 
 import { useNotifiSubscriptionContext } from '../../../context/NotifiSubscriptionContext';
-import { CardConfigItemV1 } from '../../../hooks';
 import Spinner from '../../common/Spinner';
 import {
   NotifiSubscribeButton,

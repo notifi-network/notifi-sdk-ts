@@ -1,3 +1,4 @@
+import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import React, {
   PropsWithChildren,
   createContext,
@@ -5,11 +6,7 @@ import React, {
   useMemo,
 } from 'react';
 
-import {
-  CardConfigItemV1,
-  FetchedCardViewState,
-  WebhookContactInfo,
-} from '../hooks';
+import { FetchedCardViewState, WebhookContactInfo } from '../hooks';
 
 export type DemoPreview = {
   view: FetchedCardViewState['state'];

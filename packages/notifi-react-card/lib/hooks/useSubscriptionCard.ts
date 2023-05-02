@@ -1,11 +1,11 @@
 import { ClientFetchSubscriptionCardInput } from '@notifi-network/notifi-core';
+import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import { useEffect, useState } from 'react';
 
 import {
   useNotifiClientContext,
   useNotifiDemoPreviewContext,
 } from '../context';
-import { CardConfigItemV1 } from './SubscriptionCardConfig';
 import { ErrorViewState } from './useFetchedCardState';
 
 export type LoadingState = Readonly<{

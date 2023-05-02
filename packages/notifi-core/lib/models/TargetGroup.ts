@@ -1,8 +1,4 @@
-import { DiscordTarget } from './DiscordTarget';
-import { EmailTarget } from './EmailTarget';
-import { SmsTarget } from './SmsTarget';
-import { TelegramTarget } from './TelegramTarget';
-import { WebhookTarget } from './WebhookTarget';
+import { Types } from '@notifi-network/notifi-graphql';
 
 /**
  * Object describing a TargetGroup
@@ -18,12 +14,4 @@ import { WebhookTarget } from './WebhookTarget';
  * @property {DiscordTarget[] | null} discordTargets - Array of discordTargets
  *
  */
-export type TargetGroup = Readonly<{
-  emailTargets: ReadonlyArray<EmailTarget>;
-  id: string | null;
-  name: string | null;
-  smsTargets: ReadonlyArray<SmsTarget>;
-  telegramTargets: ReadonlyArray<TelegramTarget>;
-  webHookTargets: ReadonlyArray<WebhookTarget>;
-  discordTargets: ReadonlyArray<DiscordTarget>;
-}>;
+export type TargetGroup = Types.TargetGroup;

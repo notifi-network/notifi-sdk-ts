@@ -1,6 +1,8 @@
-import { ParameterLessOperation, Source } from '../models';
+import { Types } from '@notifi-network/notifi-graphql';
 
-export type GetSourcesResult = ReadonlyArray<Source>;
+import { ParameterLessOperation } from '../models';
+
+export type GetSourcesResult = ReadonlyArray<Types.Source>;
 
 export type GetSourcesService = Readonly<{
   getSources: ParameterLessOperation<GetSourcesResult>;

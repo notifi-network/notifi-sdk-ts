@@ -141,6 +141,7 @@ export type ContactInfo = Readonly<{
   active: boolean;
 }>;
 export type EmailContactInfo = ContactInfo;
+export type DiscordContactInfo = ContactInfo;
 
 export type CountryCode = string;
 
@@ -164,6 +165,7 @@ export type ContactInfoConfig = Readonly<{
   sms: SmsContactInfo;
   telegram: TelegramContactInfo;
   webhook: WebhookContactInfo;
+  discord: DiscordContactInfo;
 }>;
 
 export type CardConfigItemV1 = Readonly<{
@@ -173,4 +175,22 @@ export type CardConfigItemV1 = Readonly<{
   eventTypes: EventTypeConfig;
   inputs: InputsConfig;
   contactInfo: ContactInfoConfig;
+  titles?: TitleSubtitleConfig;
 }>;
+
+export type TitleSubtitleConfigInactive = Readonly<{ active: false }>;
+
+export type TitleSubtitleConfigActive = Readonly<{
+  active: true;
+  editView: string;
+  previewView: string;
+  historyView: string;
+  signupView: string;
+  expiredView: string;
+  alertDetailsView: string;
+  verifyWalletsView: string;
+}>;
+
+export type TitleSubtitleConfig =
+  | TitleSubtitleConfigActive
+  | TitleSubtitleConfigInactive;
