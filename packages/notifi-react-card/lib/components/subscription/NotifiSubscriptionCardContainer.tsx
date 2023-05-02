@@ -5,7 +5,7 @@ import {
   useNotifiClientContext,
   useNotifiSubscriptionContext,
 } from '../../context';
-import { useSubscriptionCard } from '../../hooks';
+import { useNotifiSubscribe, useSubscriptionCard } from '../../hooks';
 import { NotifiFooter } from '../NotifiFooter';
 import { ErrorStateCard, LoadingStateCard } from '../common';
 import { FetchedStateCard } from './FetchedStateCard';
@@ -27,14 +27,18 @@ export const NotifiSubscriptionCardContainer: React.FC<
   loadingSpinnerSize,
   onClose,
 }: React.PropsWithChildren<NotifiSubscriptionCardProps>) => {
-  const { frontendClient } = useNotifiClientContext();
-  const isFrontendClientInitialized = useMemo(
-    () => !!frontendClient.userState,
-    [frontendClient.userState?.status],
-  );
+  const { isInitialized } = useNotifiSubscribe({ targetGroupName: 'Default' });
+  const {
+    canary: { isActive: canaryIsActive, frontendClient },
+  } = useNotifiClientContext();
+
+  const isClientInitialized = useMemo(() => {
+    return canaryIsActive ? !!frontendClient.userState : isInitialized;
+  }, [frontendClient.userState?.status, isInitialized, canaryIsActive]);
 
   const { loading } = useNotifiSubscriptionContext();
-  const inputDisabled = loading || !isFrontendClientInitialized;
+
+  const inputDisabled = loading || !isClientInitialized;
 
   const card = useSubscriptionCard({
     id: cardId,

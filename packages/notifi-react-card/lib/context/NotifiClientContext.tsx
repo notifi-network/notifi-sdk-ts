@@ -11,7 +11,10 @@ import { NotifiParams } from './NotifiContext';
 
 export type NotifiClientContextData = Readonly<{
   client: ReturnType<typeof useNotifiClient>;
-  frontendClient: NotifiFrontendClient;
+  canary: {
+    isActive: boolean;
+    frontendClient: NotifiFrontendClient;
+  };
   params: NotifiParams;
 }>;
 
@@ -64,10 +67,16 @@ export const NotifiClientContextProvider: React.FC<NotifiParams> = ({
     if (!frontendClient.userState) {
       frontendClient.initialize();
     }
-  }, [frontendClient.userState?.status]);
+  }, [frontendClient]);
 
   return (
-    <NotifiClientContext.Provider value={{ client, params, frontendClient }}>
+    <NotifiClientContext.Provider
+      value={{
+        client,
+        params,
+        canary: { isActive: params.enableCanary ?? false, frontendClient },
+      }}
+    >
       {children}
     </NotifiClientContext.Provider>
   );
