@@ -121,16 +121,15 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
                 inputs={inputs}
               />
             );
-          // TODO: Enable after MVP-2558 is merged
-          // case 'healthCheck':
-          //   return (
-          //     <EventTypeHealthCheckRow
-          //       key={eventType.name}
-          //       classNames={classNames?.EventTypeHealthCheckRow}
-          //       disabled={inputDisabled}
-          //       config={eventType}
-          //     />
-          //   );
+          case 'healthCheck':
+            return (
+              <EventTypeHealthCheckRow
+                key={eventType.name}
+                classNames={classNames?.EventTypeHealthCheckRow}
+                disabled={inputDisabled}
+                config={eventType}
+              />
+            );
           case 'label':
             return (
               <EventTypeLabelRow
