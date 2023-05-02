@@ -1,7 +1,10 @@
 import clsx from 'clsx';
-import React from 'react';
+import React, { useMemo } from 'react';
 
-import { useNotifiSubscriptionContext } from '../../context';
+import {
+  useNotifiClientContext,
+  useNotifiSubscriptionContext,
+} from '../../context';
 import { useNotifiSubscribe, useSubscriptionCard } from '../../hooks';
 import { NotifiFooter } from '../NotifiFooter';
 import { ErrorStateCard, LoadingStateCard } from '../common';
@@ -25,8 +28,17 @@ export const NotifiSubscriptionCardContainer: React.FC<
   onClose,
 }: React.PropsWithChildren<NotifiSubscriptionCardProps>) => {
   const { isInitialized } = useNotifiSubscribe({ targetGroupName: 'Default' });
+  const {
+    canary: { isActive: canaryIsActive, frontendClient },
+  } = useNotifiClientContext();
+
+  const isClientInitialized = useMemo(() => {
+    return canaryIsActive ? !!frontendClient.userState : isInitialized;
+  }, [frontendClient.userState?.status, isInitialized, canaryIsActive]);
+
   const { loading } = useNotifiSubscriptionContext();
-  const inputDisabled = loading || !isInitialized;
+
+  const inputDisabled = loading || !isClientInitialized;
 
   const card = useSubscriptionCard({
     id: cardId,
