@@ -7,6 +7,9 @@ export type NotifiEnvironment =
 export type NotifiEnvironmentConfiguration = Readonly<{
   env: NotifiEnvironment;
   tenantId: string;
+  storageOption?: Readonly<{
+    driverType?: 'LocalForage' | 'InMemory';
+  }>;
 }>;
 
 export type NotifiConfigWithPublicKey = Readonly<{
@@ -37,6 +40,12 @@ export type ConfigFactoryInput =
   | ConfigFactoryInputPublicKeyAndAddress
   | ConfigFactoryInputPublicKey;
 
+export const checkIsConfigWithPublicKeyAndAddress = (
+  config: NotifiFrontendConfiguration,
+): config is NotifiConfigWithPublicKeyAndAddress => {
+  return 'accountAddress' in config;
+};
+
 export type ConfigFactoryInputPublicKeyAndAddress = {
   account: Readonly<{
     address: string;
@@ -45,6 +54,7 @@ export type ConfigFactoryInputPublicKeyAndAddress = {
   tenantId: string;
   env: NotifiEnvironment;
   walletBlockchain: NotifiConfigWithPublicKeyAndAddress['walletBlockchain'];
+  storageOption?: NotifiEnvironmentConfiguration['storageOption'];
 };
 
 export type ConfigFactoryInputPublicKey = {
@@ -54,6 +64,7 @@ export type ConfigFactoryInputPublicKey = {
   tenantId: string;
   env: NotifiEnvironment;
   walletBlockchain: NotifiConfigWithPublicKey['walletBlockchain'];
+  storageOption?: NotifiEnvironmentConfiguration['storageOption'];
 };
 
 export type FrontendClientConfigFactory<T extends NotifiFrontendConfiguration> =
@@ -71,6 +82,7 @@ const configFactoryPublicKey: FrontendClientConfigFactory<
     env: args.env,
     walletBlockchain: args.walletBlockchain,
     walletPublicKey: args.account.publicKey,
+    storageOption: args.storageOption,
   };
 };
 
@@ -83,6 +95,7 @@ const configFactoryPublicKeyAndAddress: FrontendClientConfigFactory<
     walletBlockchain: args.walletBlockchain,
     authenticationKey: args.account.publicKey,
     accountAddress: args.account.address,
+    storageOption: args.storageOption,
   };
 };
 
