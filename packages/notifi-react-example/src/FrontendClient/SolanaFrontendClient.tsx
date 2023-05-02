@@ -1,7 +1,6 @@
 import {
   UserState,
   newFrontendClient,
-  newFrontendConfig,
 } from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
 import { useWallet } from '@solana/wallet-adapter-react';

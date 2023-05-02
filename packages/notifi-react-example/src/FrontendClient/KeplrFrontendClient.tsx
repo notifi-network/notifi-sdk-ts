@@ -2,7 +2,6 @@ import {
   Uint8SignMessageFunction,
   UserState,
   newFrontendClient,
-  newFrontendConfig,
 } from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
 import { FC, useMemo, useState } from 'react';
