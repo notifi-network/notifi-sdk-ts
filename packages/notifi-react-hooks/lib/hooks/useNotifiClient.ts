@@ -773,7 +773,7 @@ const useNotifiClient = (
           throw new Error(`Unable to find alert ${alertId}`);
         }
         const name = existingAlert.name;
-        if (name === null) {
+        if (!name) {
           throw new Error(`Invalid Alert ${alertId}`);
         }
 

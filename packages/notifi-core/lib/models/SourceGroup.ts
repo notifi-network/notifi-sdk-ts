@@ -1,4 +1,4 @@
-import { Source } from './Source';
+import { Types } from '@notifi-network/notifi-graphql';
 
 /**
  * Object describing a SourceGroup
@@ -11,8 +11,9 @@ import { Source } from './Source';
  * @property {Source[]} sources - The Sources associated with the SourceGroup
  *
  */
-export type SourceGroup = Readonly<{
-  id: string | null;
-  name: string | null;
-  sources: ReadonlyArray<Source>;
-}>;
+
+// Infer the fetched Alter type (Reason: the underlying type of targetGroup element not matching Types.TargetGroup)
+export type SourceGroup = Omit<
+  Types.SourceGroup,
+  'createdDate' | 'updatedDate'
+>;

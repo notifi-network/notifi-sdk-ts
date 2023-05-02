@@ -140,14 +140,14 @@ export const useNotifiSubscribe: ({
 
       const alerts: Record<string, Alert> = {};
       newData?.alerts.forEach((alert) => {
-        if (alert.name !== null) {
+        if (alert?.name) {
           alerts[alert.name] = alert;
         }
       });
 
       setAlerts(alerts);
       setConnectedWallets(newData?.connectedWallets ?? []);
-      const emailTarget = targetGroup?.emailTargets[0] ?? null;
+      const emailTarget = targetGroup?.emailTargets?.[0] ?? null;
       const emailToSet = emailTarget?.emailAddress ?? '';
 
       if (emailTarget !== null && emailTarget?.isConfirmed === false) {
@@ -165,10 +165,10 @@ export const useNotifiSubscribe: ({
       setFormEmail(emailToSet);
       setEmail(emailToSet);
 
-      const phoneNumber = targetGroup?.smsTargets[0]?.phoneNumber ?? null;
+      const phoneNumber = targetGroup?.smsTargets?.[0]?.phoneNumber ?? null;
 
       const isPhoneNumberConfirmed =
-        targetGroup?.smsTargets[0]?.isConfirmed ?? null;
+        targetGroup?.smsTargets?.[0]?.isConfirmed ?? null;
 
       const phoneNumberToSet = phoneNumber ?? '';
 
@@ -185,7 +185,7 @@ export const useNotifiSubscribe: ({
       setFormPhoneNumber(phoneNumberToSet);
       setPhoneNumber(phoneNumberToSet);
 
-      const telegramTarget = targetGroup?.telegramTargets[0];
+      const telegramTarget = targetGroup?.telegramTargets?.[0];
       const telegramId = telegramTarget?.telegramId;
 
       const telegramIdWithSymbolAdded =
@@ -210,7 +210,7 @@ export const useNotifiSubscribe: ({
         });
       }
 
-      const discordTarget = targetGroup?.discordTargets[0];
+      const discordTarget = targetGroup?.discordTargets?.[0];
 
       const discordId = discordTarget?.id;
 
@@ -375,7 +375,7 @@ export const useNotifiSubscribe: ({
       const { finalEmail, finalPhoneNumber, finalTelegramId, finalDiscordId } =
         contacts;
       const existingAlert = data.alerts.find(
-        (alert) => alert.name === alertName,
+        (alert) => alert?.name === alertName,
       );
 
       const deleteThisAlert = async () => {
