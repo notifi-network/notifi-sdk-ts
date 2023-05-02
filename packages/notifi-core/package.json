@@ -27,6 +27,9 @@
   "bugs": {
     "url": "https://github.com/notifi-network/notifi-sdk-ts/issues"
   },
+  "dependencies": {
+    "@notifi-network/notifi-graphql": "^0.64.0"
+  },
   "devDependencies": {
     "rimraf": "^3.0.2"
   },

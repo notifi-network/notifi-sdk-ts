@@ -18,13 +18,11 @@ import {
   CompleteLoginViaTransactionResult,
   ConnectWalletParams,
   ConnectedWallet,
-  CreateSourceInput,
   GetConversationMessagesFullInput,
   GetNotificationHistoryInput,
   NotifiClient,
   SendConversationMessageInput,
   SignMessageParams,
-  Source,
   SourceGroup,
   TargetGroup,
   TargetType,
@@ -33,6 +31,7 @@ import {
   UserTopic,
   WalletParams,
 } from '@notifi-network/notifi-core';
+import { Types } from '@notifi-network/notifi-graphql';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import ensureSource, {
@@ -926,7 +925,7 @@ const useNotifiClient = (
         }
 
         let sourceIds: ReadonlyArray<string> = [];
-        let sourceToUse: Source | undefined = undefined;
+        let sourceToUse: Types.Maybe<Types.Source>;
         if (sourceId === '' && sourceIdsInput !== undefined) {
           sourceToUse = newData.sources.find((s) => s.id === sourceIdsInput[0]);
           sourceIds = sourceIdsInput;
@@ -939,8 +938,8 @@ const useNotifiClient = (
           throw new Error(`Invalid source id ${sourceId}`);
         }
 
-        const existingFilter = sourceToUse.applicableFilters.find(
-          (f) => f.id === filterId,
+        const existingFilter = sourceToUse.applicableFilters?.find(
+          (f) => f?.id === filterId,
         );
         if (existingFilter === undefined) {
           throw new Error(`Invalid filter id ${filterId}`);
@@ -1105,7 +1104,7 @@ const useNotifiClient = (
    * See [Alert Creation Guide]{@link https://docs.notifi.network} for more information on creating Alerts
    */
   const createSource = useCallback(
-    async (input: CreateSourceInput): Promise<Source> => {
+    async (input: Types.CreateSourceInput): Promise<Types.Source> => {
       setLoading(true);
       try {
         const newData = await fetchDataImpl(
@@ -1115,12 +1114,12 @@ const useNotifiClient = (
         );
         const source = await ensureSource(service, newData.sources, input);
 
-        source.applicableFilters.forEach((applicableFilter) => {
+        source.applicableFilters?.forEach((applicableFilter) => {
           const existing = newData.filters.find(
-            (existingFilter) => applicableFilter.id === existingFilter.id,
+            (existingFilter) => applicableFilter?.id === existingFilter?.id,
           );
           if (existing !== undefined) {
-            newData.filters.push(applicableFilter);
+            newData.filters.push(applicableFilter!);
           }
         });
 
@@ -1153,7 +1152,9 @@ const useNotifiClient = (
    * See [Alert Creation Guide]{@link https://docs.notifi.network} for more information on creating Alerts
    */
   const createBonfidaAuctionSource = useCallback(
-    async (input: ClientCreateBonfidaAuctionSourceInput): Promise<Source> => {
+    async (
+      input: ClientCreateBonfidaAuctionSourceInput,
+    ): Promise<Types.Source> => {
       setLoading(true);
       try {
         const newData = await fetchDataImpl(
@@ -1195,7 +1196,9 @@ const useNotifiClient = (
    * See [Alert Creation Guide]{@link https://docs.notifi.network} for more information on creating Alerts
    */
   const createMetaplexAuctionSource = useCallback(
-    async (input: ClientCreateMetaplexAuctionSourceInput): Promise<Source> => {
+    async (
+      input: ClientCreateMetaplexAuctionSourceInput,
+    ): Promise<Types.Source> => {
       setLoading(true);
       try {
         const newData = await fetchDataImpl(

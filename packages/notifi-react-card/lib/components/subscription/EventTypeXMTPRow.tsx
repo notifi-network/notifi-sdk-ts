@@ -1,3 +1,4 @@
+import { XMTPTopicTypeItem } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import React, {
   useCallback,
@@ -8,7 +9,7 @@ import React, {
 } from 'react';
 
 import { useNotifiSubscriptionContext } from '../../context';
-import { XMTPTopicTypeItem, useNotifiSubscribe } from '../../hooks';
+import { useNotifiSubscribe } from '../../hooks';
 import {
   AlertConfiguration,
   DeepPartialReadonly,

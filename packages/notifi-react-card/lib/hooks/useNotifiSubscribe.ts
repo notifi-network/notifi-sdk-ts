@@ -2,11 +2,10 @@ import {
   Alert,
   ClientData,
   ConnectWalletParams,
-  CreateSourceInput,
   DiscordTarget,
   DiscordTargetStatus,
-  Source,
 } from '@notifi-network/notifi-core';
+import { Types } from '@notifi-network/notifi-graphql';
 import { isValidPhoneNumber } from 'libphonenumber-js';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -390,8 +389,8 @@ export const useNotifiSubscribe: ({
       };
 
       const ensureSource = async (
-        params: CreateSourceInput,
-      ): Promise<Source> => {
+        params: Types.CreateSourceInput,
+      ): Promise<Types.Source> => {
         const existing = data.sources.find(
           (s) =>
             s.type === params.type &&
@@ -417,7 +416,7 @@ export const useNotifiSubscribe: ({
         const sources = await Promise.all(sourcesInput.map(ensureSource));
         const filter = sources
           .flatMap((s) => s.applicableFilters)
-          .find((f) => f.filterType === filterType);
+          .find((f) => f?.filterType === filterType);
         if (filter === undefined || filter.id === null) {
           await deleteThisAlert();
           return null;
@@ -458,7 +457,7 @@ export const useNotifiSubscribe: ({
           sourceGroupName,
         } = alertConfiguration;
 
-        let source: Source | undefined;
+        let source: Types.Maybe<Types.Source>;
 
         if (createSourceParam !== undefined) {
           source = await ensureSource({
@@ -470,8 +469,8 @@ export const useNotifiSubscribe: ({
           source = data.sources.find((s) => s.type === sourceType);
         }
 
-        const filter = source?.applicableFilters.find(
-          (f) => f.filterType === filterType,
+        const filter = source?.applicableFilters?.find(
+          (f) => f?.filterType === filterType,
         );
 
         if (

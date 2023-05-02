@@ -1,4 +1,5 @@
 import { NotificationHistoryEntry } from '@notifi-network/notifi-core';
+import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import React, {
   useCallback,
@@ -13,7 +14,7 @@ import {
   useNotifiForm,
   useNotifiSubscriptionContext,
 } from '../../context';
-import { CardConfigItemV1, useNotifiSubscribe } from '../../hooks';
+import { useNotifiSubscribe } from '../../hooks';
 import { DeepPartialReadonly } from '../../utils';
 import {
   AlertDetailsCard,

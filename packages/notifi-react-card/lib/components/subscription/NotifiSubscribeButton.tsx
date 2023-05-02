@@ -1,3 +1,4 @@
+import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import React, { useCallback } from 'react';
 
@@ -6,7 +7,7 @@ import {
   useNotifiForm,
   useNotifiSubscriptionContext,
 } from '../../context';
-import { CardConfigItemV1, useNotifiSubscribe } from '../../hooks';
+import { useNotifiSubscribe } from '../../hooks';
 import { createConfigurations } from '../../utils';
 
 export type NotifiSubscribeButtonProps = Readonly<{

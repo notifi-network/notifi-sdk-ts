@@ -1,17 +1,18 @@
 import type {
   ConnectedWallet,
-  CreateSourceInput,
   FilterOptions,
 } from '@notifi-network/notifi-core';
+import { EventTypeConfig } from '@notifi-network/notifi-frontend-client';
+import type { Types } from '@notifi-network/notifi-graphql';
 
 import { resolveStringRef } from '../components/subscription/resolveRef';
 import { NotifiSubscriptionData } from '../context';
-import { EventTypeConfig } from './../hooks/SubscriptionCardConfig';
+// import { EventTypeConfig } from './../hooks/SubscriptionCardConfig';
 import { walletToSource } from './walletUtils';
 
 export type SingleSourceAlertConfiguration = Readonly<{
   type: 'single';
-  sourceType: CreateSourceInput['type'];
+  sourceType: Types.CreateSourceInput['type'];
   createSource?: Readonly<{
     address: string;
   }>;
@@ -22,7 +23,7 @@ export type SingleSourceAlertConfiguration = Readonly<{
 
 export type MultipleSourceAlertConfiguration = Readonly<{
   type: 'multiple';
-  sources: ReadonlyArray<CreateSourceInput>;
+  sources: ReadonlyArray<Types.CreateSourceInput>;
   filterType: string;
   filterOptions: FilterOptions | null;
   sourceGroupName?: string;
@@ -58,7 +59,7 @@ export const customThresholdConfiguration = ({
   threshold: number;
   filterType: string;
   thresholdDirection: FilterOptions['thresholdDirection'];
-  sourceType: CreateSourceInput['type'];
+  sourceType: Types.CreateSourceInput['type'];
   sourceAddress: string;
 }>): AlertConfiguration => {
   return {
@@ -84,7 +85,7 @@ export const customToggleConfiguration = ({
 }: Readonly<{
   filterType: string;
   filterOptions: FilterOptions;
-  sourceType: CreateSourceInput['type'];
+  sourceType: Types.CreateSourceInput['type'];
   sourceAddress: string;
 }>): AlertConfiguration => {
   return {
@@ -103,7 +104,7 @@ export type XMTPTopic = Readonly<{
   walletBlockchain: string;
 }>;
 
-const topicToSource = (topic: string): CreateSourceInput => {
+const topicToSource = (topic: string): Types.CreateSourceInput => {
   return {
     name: topic,
     blockchainAddress: topic,

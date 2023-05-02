@@ -1,6 +1,6 @@
+import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import React from 'react';
 
-import { CardConfigItemV1 } from '../../../../hooks';
 import {
   EventTypeBroadcastRow,
   EventTypeBroadcastRowProps,
@@ -121,15 +121,16 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
                 inputs={inputs}
               />
             );
-          case 'healthCheck':
-            return (
-              <EventTypeHealthCheckRow
-                key={eventType.name}
-                classNames={classNames?.EventTypeHealthCheckRow}
-                disabled={inputDisabled}
-                config={eventType}
-              />
-            );
+          // TODO: Enable after MVP-2558 is merged
+          // case 'healthCheck':
+          //   return (
+          //     <EventTypeHealthCheckRow
+          //       key={eventType.name}
+          //       classNames={classNames?.EventTypeHealthCheckRow}
+          //       disabled={inputDisabled}
+          //       config={eventType}
+          //     />
+          //   );
           case 'label':
             return (
               <EventTypeLabelRow
