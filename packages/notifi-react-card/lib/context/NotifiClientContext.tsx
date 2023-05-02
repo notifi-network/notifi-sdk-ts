@@ -2,7 +2,6 @@ import {
   ConfigFactoryInput,
   NotifiFrontendClient,
   newFrontendClient,
-  newFrontendConfig,
 } from '@notifi-network/notifi-frontend-client';
 import { useNotifiClient } from '@notifi-network/notifi-react-hooks';
 import React, { createContext, useContext, useEffect, useMemo } from 'react';
@@ -53,8 +52,7 @@ export const NotifiClientContextProvider: React.FC<NotifiParams> = ({
 
   const frontendClient = useMemo(() => {
     const configInput = getFrontendConfigInput(params);
-    const config = newFrontendConfig(configInput);
-    return newFrontendClient(config);
+    return newFrontendClient(configInput);
   }, [
     params.dappAddress,
     params.env,
