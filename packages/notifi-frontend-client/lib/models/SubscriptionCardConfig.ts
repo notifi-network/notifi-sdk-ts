@@ -27,6 +27,14 @@ export type BroadcastEventTypeItem = Readonly<{
   tooltipContent?: string;
 }>;
 
+export type HealthCheckEventTypeItem = Readonly<{
+  type: 'healthCheck';
+  name: string;
+  checkRatios: ValueOrRef<CheckRatio[]>;
+  alertFrequency: AlertFrequency;
+  tooltipContent?: string;
+}>;
+
 export type LabelEventTypeItem = Readonly<{
   type: 'label';
   name: string;
@@ -107,6 +115,7 @@ export type XMTPTopicTypeItem = {
 export type EventTypeItem =
   | DirectPushEventTypeItem
   | BroadcastEventTypeItem
+  | HealthCheckEventTypeItem
   | TradingPairEventTypeItem
   | LabelEventTypeItem
   | PriceChangeEventTypeItem
