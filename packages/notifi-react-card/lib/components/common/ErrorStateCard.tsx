@@ -47,7 +47,7 @@ export const ErrorStateCard: React.FC<ErrorStateCardProps> = ({
           classNames?.errorMessage,
         )}
       >
-        {message}
+        {message ?? 'Something went wrong'}
       </div>
     </>
   );
