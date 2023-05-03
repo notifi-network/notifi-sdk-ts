@@ -2,7 +2,6 @@ import { Uint8SignMessageFunction } from '@notifi-network/notifi-core';
 import {
   UserState,
   newFrontendClient,
-  newFrontendConfig,
 } from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
 import { arrayify } from 'ethers/lib/utils.js';

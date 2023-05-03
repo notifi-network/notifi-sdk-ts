@@ -1,10 +1,9 @@
 import type {
   ClientCreateBonfidaAuctionSourceInput,
   ClientCreateMetaplexAuctionSourceInput,
-  CreateSourceInput,
   CreateSourceService,
-  Source,
 } from '@notifi-network/notifi-core';
+import { Types } from '@notifi-network/notifi-graphql';
 
 export type CreateFunc<Service, T> = (
   service: Service,
@@ -15,9 +14,9 @@ export type ValueTransformFunc = (value: string) => string;
 
 const ensureSource = async (
   service: CreateSourceService,
-  existing: Source[],
-  input: CreateSourceInput,
-): Promise<Source> => {
+  existing: Types.Source[],
+  input: Types.CreateSourceInput,
+): Promise<Types.Source> => {
   const found = existing.find((it) => input.name === it.name);
   if (found !== undefined) {
     return found;
@@ -31,9 +30,9 @@ const ensureSource = async (
 
 const ensureBonfidaAuctionSource = async (
   service: CreateSourceService,
-  existing: Source[],
+  existing: Types.Source[],
   input: ClientCreateBonfidaAuctionSourceInput,
-): Promise<Source> => {
+): Promise<Types.Source> => {
   const { auctionAddressBase58, auctionName } = input;
   const underlyingAddress = `${auctionName}:;:${auctionAddressBase58}`;
 
@@ -46,9 +45,9 @@ const ensureBonfidaAuctionSource = async (
 
 const ensureMetaplexAuctionSource = async (
   service: CreateSourceService,
-  existing: Source[],
+  existing: Types.Source[],
   input: ClientCreateMetaplexAuctionSourceInput,
-): Promise<Source> => {
+): Promise<Types.Source> => {
   const { auctionAddressBase58, auctionWebUrl } = input;
   const underlyingAddress = `${auctionWebUrl}:;:${auctionAddressBase58}`;
 

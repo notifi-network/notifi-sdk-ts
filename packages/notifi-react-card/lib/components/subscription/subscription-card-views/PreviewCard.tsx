@@ -1,7 +1,7 @@
+import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import React from 'react';
 
-import { CardConfigItemV1 } from '../../../hooks';
 import { DeepPartialReadonly } from '../../../utils';
 import { AlertsPanel, AlertsPanelProps } from './preview-panel/AlertsPanel';
 import {

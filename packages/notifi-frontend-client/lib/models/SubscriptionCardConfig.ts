@@ -27,6 +27,14 @@ export type BroadcastEventTypeItem = Readonly<{
   tooltipContent?: string;
 }>;
 
+export type HealthCheckEventTypeItem = Readonly<{
+  type: 'healthCheck';
+  name: string;
+  checkRatios: ValueOrRef<CheckRatio[]>;
+  alertFrequency: AlertFrequency;
+  tooltipContent?: string;
+}>;
+
 export type LabelEventTypeItem = Readonly<{
   type: 'label';
   name: string;
@@ -107,6 +115,7 @@ export type XMTPTopicTypeItem = {
 export type EventTypeItem =
   | DirectPushEventTypeItem
   | BroadcastEventTypeItem
+  | HealthCheckEventTypeItem
   | TradingPairEventTypeItem
   | LabelEventTypeItem
   | PriceChangeEventTypeItem
@@ -132,6 +141,7 @@ export type ContactInfo = Readonly<{
   active: boolean;
 }>;
 export type EmailContactInfo = ContactInfo;
+export type DiscordContactInfo = ContactInfo;
 
 export type CountryCode = string;
 
@@ -155,6 +165,7 @@ export type ContactInfoConfig = Readonly<{
   sms: SmsContactInfo;
   telegram: TelegramContactInfo;
   webhook: WebhookContactInfo;
+  discord: DiscordContactInfo;
 }>;
 
 export type CardConfigItemV1 = Readonly<{
@@ -164,4 +175,22 @@ export type CardConfigItemV1 = Readonly<{
   eventTypes: EventTypeConfig;
   inputs: InputsConfig;
   contactInfo: ContactInfoConfig;
+  titles?: TitleSubtitleConfig;
 }>;
+
+export type TitleSubtitleConfigInactive = Readonly<{ active: false }>;
+
+export type TitleSubtitleConfigActive = Readonly<{
+  active: true;
+  editView: string;
+  previewView: string;
+  historyView: string;
+  signupView: string;
+  expiredView: string;
+  alertDetailsView: string;
+  verifyWalletsView: string;
+}>;
+
+export type TitleSubtitleConfig =
+  | TitleSubtitleConfigActive
+  | TitleSubtitleConfigInactive;

@@ -1,3 +1,4 @@
+import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import React, { useCallback, useState } from 'react';
 
@@ -5,7 +6,7 @@ import {
   useNotifiClientContext,
   useNotifiSubscriptionContext,
 } from '../../../context';
-import { CardConfigItemV1, useNotifiSubscribe } from '../../../hooks';
+import { useNotifiSubscribe } from '../../../hooks';
 import { createConfigurations } from '../../../utils';
 import { WalletList } from '../../WalletList';
 import NotifiCardButton, {

@@ -99,16 +99,16 @@ export const IntercomCard: React.FC<
       if (!alert) continue;
       const { targetGroup } = alert;
 
-      const confirmedEmailTarget = targetGroup.emailTargets.find(
-        (email) => email.isConfirmed === true,
+      const confirmedEmailTarget = targetGroup.emailTargets?.find(
+        (email) => email?.isConfirmed === true,
       );
 
       if (confirmedEmailTarget?.emailAddress) {
         setFormEmail(confirmedEmailTarget.emailAddress);
       }
 
-      const confirmedTelegramTarget = targetGroup.telegramTargets.find(
-        (telegram) => telegram.isConfirmed === true,
+      const confirmedTelegramTarget = targetGroup.telegramTargets?.find(
+        (telegram) => telegram?.isConfirmed === true,
       );
 
       if (confirmedTelegramTarget?.telegramId) {
@@ -119,13 +119,13 @@ export const IntercomCard: React.FC<
         break;
       }
 
-      const unconfirmedEmailTarget = targetGroup.emailTargets.find(
-        (email) => email.isConfirmed === false,
+      const unconfirmedEmailTarget = targetGroup.emailTargets?.find(
+        (email) => email?.isConfirmed === false,
       );
 
       setFormEmail(unconfirmedEmailTarget?.emailAddress ?? '');
-      const unconfirmedTelegramTarget = targetGroup.telegramTargets.find(
-        (telegram) => telegram.isConfirmed === false,
+      const unconfirmedTelegramTarget = targetGroup.telegramTargets?.find(
+        (telegram) => telegram?.isConfirmed === false,
       );
 
       setFormTelegram(unconfirmedTelegramTarget?.telegramId ?? '');

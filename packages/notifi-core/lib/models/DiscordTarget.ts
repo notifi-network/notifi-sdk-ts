@@ -11,6 +11,7 @@
  * @property {boolean} isConfirmed - Is discord confirmed? After adding a discord account, it must be confirmed
  *
  */
+import { Types } from '@notifi-network/notifi-graphql';
 
 export enum DiscordTargetStatus {
   UNVERIFIED = 'UNVERIFIED',
@@ -18,13 +19,7 @@ export enum DiscordTargetStatus {
   COMPLETE = 'COMPLETE',
 }
 
-export type DiscordTarget = Readonly<{
-  discordAccountId: string | null;
-  discriminator: string | null;
-  id: string | null;
-  isConfirmed: boolean;
-  name: string | null;
-  username: string | null;
-  userStatus: DiscordTargetStatus;
-  verificationLink: string;
-}>;
+export type DiscordTarget = Omit<
+  Types.DiscordTarget,
+  'createdDate' | 'updatedDate'
+>;

@@ -9,12 +9,16 @@ import {
 } from '../configuration';
 import {
   NotifiFrontendStorage,
+  createInMemoryStorageDriver,
   createLocalForageStorageDriver,
 } from '../storage';
 import { NotifiFrontendClient } from './NotifiFrontendClient';
 
 export const newNotifiStorage = (config: NotifiFrontendConfiguration) => {
-  const driver = createLocalForageStorageDriver(config);
+  const driver =
+    config.storageOption?.driverType === 'InMemory'
+      ? createInMemoryStorageDriver(config)
+      : createLocalForageStorageDriver(config);
   return new NotifiFrontendStorage(driver);
 };
 

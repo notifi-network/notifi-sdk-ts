@@ -1,9 +1,9 @@
+import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import React from 'react';
 
 import { NotifiInputFieldsText, NotifiInputSeparators } from '..';
 import { useNotifiClientContext } from '../../../context';
-import { CardConfigItemV1 } from '../../../hooks';
 import {
   NotifiDiscordToggle,
   NotifiDiscordToggleProps,

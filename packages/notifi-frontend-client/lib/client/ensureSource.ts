@@ -6,13 +6,16 @@ import {
   DirectPushEventTypeItem,
   EventTypeItem,
   FilterOptions,
+  HealthCheckEventTypeItem,
   PriceChangeEventTypeItem,
+  ThresholdDirection,
   TradingPairEventTypeItem,
   WalletBalanceEventTypeItem,
   XMTPTopicTypeItem,
 } from '../models';
 import { areIdsEqual } from '../utils/areIdsEqual';
 import {
+  resolveCheckRatioArrayRef,
   resolveNumberRef,
   resolveStringArrayRef,
   resolveStringRef,
@@ -317,6 +320,22 @@ const ensureXMTPSources = async (
   return ensuredSources;
 };
 
+const ensureHealthCheckSources = async (
+  service: Operations.GetSourcesService & Operations.CreateSourceService,
+  _eventType: HealthCheckEventTypeItem,
+  _inputs: Record<string, unknown>,
+): Promise<Types.SourceFragmentFragment> => {
+  const sourcesQuery = await service.getSources({});
+  const sources = sourcesQuery.source;
+  const source = sources?.find((it) => it?.type === 'DIRECT_PUSH');
+
+  if (source === undefined) {
+    throw new Error('Failed to identify Health Check source (=directPush)');
+  }
+
+  return source;
+};
+
 const ensureSources = async (
   service: Operations.GetSourcesService &
     Operations.CreateSourceService &
@@ -360,6 +379,10 @@ const ensureSources = async (
     case 'XMTP': {
       const sources = await ensureXMTPSources(service, eventType, inputs);
       return sources;
+    }
+    case 'healthCheck': {
+      const source = await ensureHealthCheckSources(service, eventType, inputs);
+      return [source];
     }
     case 'label': {
       throw new Error('Unsupported event type');
@@ -610,6 +633,78 @@ const getXMTPFilter = (
   };
 };
 
+type HealthCheckEventInputsWithIndex = {
+  index: number; // The index of CheckRatio list
+  [key: string]: unknown; // The rest of inputs
+};
+
+type HealthCheckEventInputsWithCustomPercentage = {
+  thresholdDirection: ThresholdDirection; // The direction of threshold
+  customPercentage: number; // The percentage value of custom health check
+  [key: string]: unknown; // The rest of inputs
+};
+
+type HealthCheckInputs =
+  | HealthCheckEventInputsWithIndex
+  | HealthCheckEventInputsWithCustomPercentage;
+
+const healthCheckInputsValidator = (
+  inputs: Record<string, unknown>,
+): inputs is HealthCheckInputs => {
+  if ('index' in inputs || 'customPercentage' in inputs) {
+    return true;
+  }
+  return false;
+};
+
+const getHealthCheckFilter = (
+  source: Types.SourceFragmentFragment,
+  eventType: HealthCheckEventTypeItem,
+  inputs: HealthCheckInputs,
+): GetFilterResults => {
+  const filter = source.applicableFilters?.find(
+    (it) => it?.filterType === 'VALUE_THRESHOLD',
+  );
+  if (filter === undefined) {
+    throw new Error('Failed to retrieve filter: healthCheck');
+  }
+
+  const checkRatios = resolveCheckRatioArrayRef(
+    eventType.name,
+    eventType.checkRatios,
+    inputs,
+  );
+
+  let threshold = 0;
+  let thresholdDirection: ThresholdDirection = 'below';
+
+  const checkInputsCategory = (
+    inputs: HealthCheckInputs,
+  ): inputs is HealthCheckEventInputsWithIndex => {
+    if ('index' in inputs) {
+      return true;
+    }
+    return false;
+  };
+
+  if (checkInputsCategory(inputs)) {
+    threshold = checkRatios[inputs.index].ratio;
+    thresholdDirection = checkRatios[inputs.index].type;
+  } else {
+    threshold = inputs.customPercentage;
+    thresholdDirection = inputs.thresholdDirection;
+  }
+
+  return {
+    filter,
+    filterOptions: {
+      alertFrequency: eventType.alertFrequency,
+      threshold,
+      thresholdDirection,
+    },
+  };
+};
+
 export const ensureSourceAndFilters = async (
   service: Operations.CreateSourceService &
     Operations.GetSourcesService &
@@ -700,6 +795,21 @@ export const ensureSourceAndFilters = async (
     }
     case 'XMTP': {
       const { filter, filterOptions } = getXMTPFilter(
+        sources[0],
+        eventType,
+        inputs,
+      );
+      return {
+        sourceGroup,
+        filter,
+        filterOptions,
+      };
+    }
+    case 'healthCheck': {
+      if (!healthCheckInputsValidator(inputs)) {
+        throw new Error('Invalid healthCheck inputs');
+      }
+      const { filter, filterOptions } = getHealthCheckFilter(
         sources[0],
         eventType,
         inputs,

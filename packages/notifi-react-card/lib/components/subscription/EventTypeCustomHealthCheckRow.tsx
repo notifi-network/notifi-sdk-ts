@@ -1,4 +1,5 @@
 import { ThresholdDirection } from '@notifi-network/notifi-core';
+import { CustomTopicTypeItem } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import React, {
   useCallback,
@@ -9,7 +10,7 @@ import React, {
 } from 'react';
 
 import { useNotifiSubscriptionContext } from '../../context';
-import { CustomTopicTypeItem, useNotifiSubscribe } from '../../hooks';
+import { useNotifiSubscribe } from '../../hooks';
 import { DeepPartialReadonly, customThresholdConfiguration } from '../../utils';
 import type { NotifiToggleProps } from './NotifiToggle';
 import { NotifiToggle } from './NotifiToggle';

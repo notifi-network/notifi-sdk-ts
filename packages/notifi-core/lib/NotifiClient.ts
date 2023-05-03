@@ -1,13 +1,13 @@
+import { Types } from '@notifi-network/notifi-graphql';
+
 import {
   Alert,
   ClientConfiguration,
   ConnectedWallet,
   DiscordTarget,
   EmailTarget,
-  Filter,
   NotificationHistory,
   SmsTarget,
-  Source,
   SourceGroup,
   TargetGroup,
   TelegramTarget,
@@ -34,9 +34,9 @@ export type ClientData = Readonly<{
   alerts: ReadonlyArray<Alert>;
   connectedWallets: ReadonlyArray<ConnectedWallet>;
   emailTargets: ReadonlyArray<EmailTarget>;
-  filters: ReadonlyArray<Filter>;
+  filters: ReadonlyArray<Types.Filter>;
   smsTargets: ReadonlyArray<SmsTarget>;
-  sources: ReadonlyArray<Source>;
+  sources: ReadonlyArray<Types.Source>;
   targetGroups: ReadonlyArray<TargetGroup>;
   telegramTargets: ReadonlyArray<TelegramTarget>;
   discordTargets: ReadonlyArray<DiscordTarget>;
@@ -407,14 +407,14 @@ export type NotifiClient = Readonly<{
   logOut: () => Promise<void>;
   connectWallet: (input: ConnectWalletParams) => Promise<ConnectedWallet>;
   createAlert: (input: ClientCreateAlertInput) => Promise<Alert>;
-  createSource: (input: CreateSourceInput) => Promise<Source>;
+  createSource: (input: Types.CreateSourceInput) => Promise<Types.Source>;
   createSupportConversation: () => Promise<SupportConversation>;
   createMetaplexAuctionSource: (
     input: ClientCreateMetaplexAuctionSourceInput,
-  ) => Promise<Source>;
+  ) => Promise<Types.Source>;
   createBonfidaAuctionSource: (
     input: ClientCreateBonfidaAuctionSourceInput,
-  ) => Promise<Source>;
+  ) => Promise<Types.Source>;
   deleteAlert: (input: ClientDeleteAlertInput) => Promise<string>;
   getConfiguration: () => Promise<ClientConfiguration>;
   getNotificationHistory: (

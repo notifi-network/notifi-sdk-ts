@@ -1,6 +1,4 @@
-import { Filter } from './Filter';
-import { SourceGroup } from './SourceGroup';
-import { TargetGroup } from './TargetGroup';
+import { Types } from '@notifi-network/notifi-graphql';
 
 /**
  * Object describing an Alert
@@ -17,12 +15,10 @@ import { TargetGroup } from './TargetGroup';
  * @property {string | null} groupName - The group associated with this alert
  *
  */
-export type Alert = Readonly<{
-  id: string | null;
-  name: string | null;
-  filter: Filter;
-  filterOptions: string | null;
-  sourceGroup: SourceGroup;
-  targetGroup: TargetGroup;
-  groupName: string | null;
-}>;
+
+// Infer the fetched Alter type (Reason: the underlying type of target element ans sourceGroup not matching Gql types)
+export type Alert = NonNullable<Types.FetchDataQuery['alert']> extends Array<
+  infer U
+>
+  ? NonNullable<U>
+  : never;
