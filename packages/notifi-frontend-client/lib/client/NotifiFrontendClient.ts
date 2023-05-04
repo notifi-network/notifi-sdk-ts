@@ -16,6 +16,9 @@ import type {
   WalletBalanceEventTypeItem,
 } from '../models';
 import type { Authorization, NotifiStorage, Roles } from '../storage';
+import { createInMemoryStorageDriver } from '../storage';
+import { createLocalForageStorageDriver } from '../storage';
+import { NotifiFrontendStorage } from '../storage';
 import { notNullOrEmpty, packFilterOptions } from '../utils';
 import { areIdsEqual } from '../utils/areIdsEqual';
 import { ensureSourceAndFilters, normalizeHexString } from './ensureSource';
@@ -675,6 +678,21 @@ export class NotifiFrontendClient {
     return card;
   }
 
+  async copyAuthorization(config: NotifiFrontendConfiguration) {
+    const auth = await this._storage.getAuthorization();
+    const roles = await this._storage.getRoles();
+
+    const driver =
+      config.storageOption?.driverType === 'InMemory'
+        ? createInMemoryStorageDriver(config)
+        : createLocalForageStorageDriver(config);
+    const otherStorage = new NotifiFrontendStorage(driver);
+
+    await Promise.all([
+      otherStorage.setAuthorization(auth),
+      otherStorage.setRoles(roles),
+    ]);
+  }
   async sendEmailTargetVerification({
     targetId,
   }: Readonly<{ targetId: string }>): Promise<string> {

@@ -1,17 +1,33 @@
-import type {
+import {
   Alert,
   ConnectedWallet,
   DiscordTarget,
+  DiscordTargetStatus,
 } from '@notifi-network/notifi-core';
+import { Types } from '@notifi-network/notifi-graphql';
 import { PropsWithChildren } from 'react';
-import React, { createContext, useContext, useState } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 
-import { FetchedCardViewState, useFetchedCardState } from '../hooks';
+import {
+  FetchedCardViewState,
+  SubscriptionData,
+  useFetchedCardState,
+} from '../hooks';
 import {
   IntercomCardView,
   useIntercomCardState,
 } from '../hooks/useIntercomCardState';
+import { DISCORD_INVITE_URL } from '../utils/constants';
+import { prefixTelegramWithSymbol } from '../utils/stringUtils';
+import { useNotifiClientContext } from './NotifiClientContext';
 import { NotifiParams } from './NotifiContext';
+import { useNotifiForm } from './NotifiFormContext';
 import {
   DestinationError,
   DestinationErrorMessageField,
@@ -71,9 +87,19 @@ const NotifiSubscriptionContext = createContext<NotifiSubscriptionData>(
   {} as unknown as NotifiSubscriptionData, // Intentially empty in default, use NotifiSubscriptionContextProvider
 );
 
+const hasKey = <K extends string>(
+  obj: object,
+  key: K,
+): obj is object & { [k in K]: unknown } => {
+  return typeof obj === 'object' && obj !== null && key in obj;
+};
+
 export const NotifiSubscriptionContextProvider: React.FC<
   PropsWithChildren<NotifiParams>
 > = ({ children, ...params }) => {
+  const {
+    canary: { isActive: isCanaryActive, frontendClient },
+  } = useNotifiClientContext();
   const [conversationId, setConversationId] = useState<string>('');
   const [userId, setUserId] = useState<string>('');
 
@@ -142,6 +168,187 @@ export const NotifiSubscriptionContextProvider: React.FC<
       discord: undefined,
     });
   };
+
+  const {
+    setEmail: setFormEmail,
+    setTelegram: setFormTelegram,
+    setPhoneNumber: setFormPhoneNumber,
+  } = useNotifiForm();
+
+  const didFetch = React.useRef(false);
+
+  useEffect(() => {
+    // Initial fetch data
+    if (
+      !didFetch.current &&
+      frontendClient.userState?.status === 'authenticated' &&
+      isCanaryActive
+    ) {
+      frontendClient
+        .fetchData()
+        .then((data) => {
+          render(data);
+          copyAuths(data);
+        })
+        .catch((_e) => {
+          /* Intentionally empty */
+        })
+        .finally(() => {
+          didFetch.current = true;
+        });
+    }
+  }, [frontendClient.userState]);
+
+  const copyAuths = useCallback(
+    async (data: Types.FetchDataQuery) => {
+      if (params.multiWallet !== undefined) {
+        params.multiWallet.ownedWallets.forEach((wallet) => {
+          const key = 'accountAddress';
+          const address = hasKey(wallet, key)
+            ? wallet[key]
+            : wallet.walletPublicKey;
+          if (
+            data.connectedWallet?.find(
+              (cw) =>
+                cw?.address === address &&
+                cw?.walletBlockchain === wallet.walletBlockchain,
+            ) !== undefined
+          ) {
+            frontendClient
+              .copyAuthorization({
+                walletBlockchain: 'SOLANA',
+                walletPublicKey: wallet.walletPublicKey,
+                env: params.env,
+                tenantId: params.dappAddress,
+                storageOption: { driverType: 'LocalForage' },
+              })
+              .catch(console.log);
+          }
+        });
+      }
+    },
+    [frontendClient, params],
+  );
+
+  const render = useCallback(
+    (newData: Types.FetchDataQuery): SubscriptionData => {
+      const targetGroup = newData.targetGroup?.find(
+        (tg) => tg?.name === 'Default',
+      );
+      const alerts: Record<string, Alert> = {};
+      newData.alert?.forEach((alert) => {
+        if (alert?.name) {
+          alerts[alert.name] = alert;
+        }
+      });
+      setAlerts(alerts);
+
+      setConnectedWallets(newData.connectedWallet ?? []);
+      const emailTarget = targetGroup?.emailTargets?.[0] ?? null;
+      const emailToSet = emailTarget?.emailAddress ?? '';
+
+      if (!!emailTarget && !emailTarget.isConfirmed) {
+        setEmailErrorMessage({
+          type: 'recoverableError',
+          onClick: () =>
+            frontendClient.sendEmailTargetVerification({
+              targetId: emailTarget.id,
+            }),
+          message: 'Resend Link',
+        });
+      } else {
+        setEmailErrorMessage(undefined);
+      }
+      setEmail(emailToSet);
+      setFormEmail(emailToSet);
+
+      const phoneNumber = targetGroup?.smsTargets?.[0]?.phoneNumber ?? null;
+      const isPhoneNumberConfirmed =
+        targetGroup?.smsTargets?.[0]?.isConfirmed ?? false;
+      const phoneNumberToSet = phoneNumber ?? '';
+
+      if (!isPhoneNumberConfirmed) {
+        setPhoneNumberErrorMessage({
+          type: 'unrecoverableError',
+          message: 'Messages stopped',
+          tooltip: `Please text 'start' to the following number:\n${
+            params.env === 'Production' ? '+1 206 222 3465' : '+1 253 880 1477 '
+          }`,
+        });
+      }
+
+      setFormPhoneNumber(phoneNumberToSet || '');
+      setPhoneNumber(phoneNumberToSet || '');
+
+      const telegramTarget = targetGroup?.telegramTargets?.[0] ?? null;
+      const telegramId = telegramTarget?.telegramId;
+
+      const telegramIdWithSymbolAdded =
+        telegramId !== '' && telegramId?.length
+          ? prefixTelegramWithSymbol(telegramId)
+          : null;
+
+      setFormTelegram(telegramId ?? '');
+      setTelegramId(telegramIdWithSymbolAdded ?? '');
+
+      if (!telegramTarget?.isConfirmed) {
+        setTelegramErrorMessage({
+          type: 'recoverableError',
+          onClick: () => {
+            if (!telegramTarget?.confirmationUrl) {
+              return;
+            }
+
+            window.open(telegramTarget?.confirmationUrl);
+          },
+          message: 'Verify ID',
+        });
+      }
+
+      const discordTarget = targetGroup?.discordTargets?.[0];
+
+      const discordId = discordTarget?.id;
+
+      if (discordId) {
+        const { isConfirmed, userStatus, verificationLink } = discordTarget;
+
+        if (!isConfirmed) {
+          setDiscordErrorMessage({
+            type: 'recoverableError',
+            onClick: () => window.open(verificationLink, '_blank'),
+            message: 'Enable Bot',
+          });
+        } else if (
+          userStatus === DiscordTargetStatus.DISCORD_SERVER_NOT_JOINED
+        ) {
+          setDiscordErrorMessage({
+            type: 'recoverableError',
+            onClick: () => window.open(DISCORD_INVITE_URL, '_blank'),
+            message: 'Join Server',
+          });
+        }
+        setUseDiscord(true);
+        setDiscordTargetData(discordTarget);
+      } else {
+        const targets = newData?.discordTarget;
+        const target =
+          targets?.find((target) => target.isConfirmed) || targets?.[0];
+        setDiscordTargetData(target);
+        setUseDiscord(false);
+      }
+
+      return {
+        alerts,
+        email: emailTarget?.emailAddress ?? null,
+        isPhoneNumberConfirmed,
+        phoneNumber,
+        telegramConfirmationUrl: telegramTarget?.confirmationUrl ?? null,
+        telegramId: telegramTarget?.telegramId ?? null,
+        discordId: discordTarget?.id ?? null,
+      };
+    },
+    [setAlerts, setEmail, setPhoneNumber, setTelegramId],
+  );
 
   const value = {
     alerts,

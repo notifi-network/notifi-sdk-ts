@@ -269,8 +269,8 @@ export const useNotifiSubscribe: ({
           if (
             data.connectedWallets.find(
               (cw) =>
-                cw.address === address &&
-                cw.walletBlockchain === wallet.walletBlockchain,
+                cw?.address === address &&
+                cw?.walletBlockchain === wallet.walletBlockchain,
             ) !== undefined
           ) {
             client.copyAuthorization(wallet.walletPublicKey).catch(console.log);
@@ -292,7 +292,7 @@ export const useNotifiSubscribe: ({
       setUseDiscord(true);
     }
 
-    if (client.isAuthenticated && !didFetch.current) {
+    if (client.isAuthenticated && !didFetch.current && !params.enableCanary) {
       didFetch.current = true;
       client
         .fetchData()

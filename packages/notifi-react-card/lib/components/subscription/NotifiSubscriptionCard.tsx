@@ -77,10 +77,10 @@ export const NotifiSubscriptionCard: React.FC<
   const { params } = useNotifiClientContext();
 
   return (
-    <NotifiSubscriptionContextProvider {...params}>
-      <NotifiFormProvider>
+    <NotifiFormProvider>
+      <NotifiSubscriptionContextProvider {...params}>
         <NotifiSubscriptionCardContainer {...props} />
-      </NotifiFormProvider>
-    </NotifiSubscriptionContextProvider>
+      </NotifiSubscriptionContextProvider>
+    </NotifiFormProvider>
   );
 };

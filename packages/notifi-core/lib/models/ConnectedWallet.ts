@@ -1,3 +1,5 @@
+import { Types } from '@notifi-network/notifi-graphql';
+
 /**
  * Object describing a ConnectedWallet
  *
@@ -8,7 +10,9 @@
  * @property {string} walletBlockchain - the blockchain associated with the wallet
  *
  */
-export type ConnectedWallet = Readonly<{
-  address: string | null;
-  walletBlockchain: string;
-}>;
+export type ConnectedWallet =
+  Types.FetchDataQuery['connectedWallet'] extends infer R
+    ? R extends Array<infer V>
+      ? V
+      : never
+    : never;
