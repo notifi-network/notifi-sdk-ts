@@ -9,28 +9,15 @@
  * @property {string} filterType - Type of the filter
  *
  */
+import { Types } from '@notifi-network/notifi-graphql';
 
 export type NotificationHistory = Readonly<{
-  nodes?: Array<NotificationHistoryEntry> | undefined;
+  nodes: Array<Types.NotificationHistoryEntryFragmentFragment> | undefined;
   pageInfo: {
     hasNextPage: boolean;
     endCursor?: string | undefined;
   };
 }>;
-
-enum AccountBalanceChangeDirection {
-  INCOMING = 'INCOMING',
-  OUTGOING = 'OUTGOING',
-}
-
-enum NftCollectionsReportType {
-  HOT = 'HOT',
-  MOST_TRADED = 'MOST_TRADED',
-}
-
-enum WalletsActivityReportType {
-  MOST_ACTIVE = 'MOST_ACTIVE',
-}
 
 export type Target = {
   type: TargetType;
@@ -44,129 +31,65 @@ enum TargetType {
   WEBHOOK = 'WEBHOOK',
 }
 
-enum WalletBlockchain {
-  ACALA = 'ACALA',
-  APTOS = 'APTOS',
-  ARBITRUM = 'ARBITRUM',
-  AVALANCHE = 'AVALANCHE',
-  BINANCE = 'BINANCE',
-  ETHEREUM = 'ETHEREUM',
-  NEAR = 'NEAR',
-  OFF_CHAIN = 'OFF_CHAIN',
-  POLYGON = 'POLYGON',
-  SOLANA = 'SOLANA',
-  OPTIMISM = 'OPTIMISM',
-}
+export type AccountBalanceChangedEventDetails = Extract<
+  Types.NotificationHistoryEntryFragmentFragment['detail'],
+  { __typename: 'AccountBalanceChangedEventDetails' }
+>;
 
-export type AccountBalanceChangedEventDetails = {
-  __typename: 'AccountBalanceChangedEventDetails';
-  walletBlockchain: WalletBlockchain;
-  direction: AccountBalanceChangeDirection;
-  newValue: number;
-  previousValue: number;
-  tokenSymbol: string;
-  isWhaleWatch: boolean;
-};
+export type BroadcastMessageEventDetails = Extract<
+  Types.NotificationHistoryEntryFragmentFragment['detail'],
+  { __typename: 'BroadcastMessageEventDetails' }
+>;
 
-export type BroadcastMessageEventDetails = {
-  __typename: 'BroadcastMessageEventDetails';
-  subject?: string;
-  message?: string;
-  messageType: string;
-};
+export type ChatMessageReceivedEventDetails = Extract<
+  Types.NotificationHistoryEntryFragmentFragment['detail'],
+  { __typename: 'ChatMessageReceivedEventDetails' }
+>;
 
-export type ChatMessageReceivedEventDetails = {
-  __typename: 'ChatMessageReceivedEventDetails';
-  messageBody: string;
-  senderName: string;
-  conversationId: string;
-  messageId: string;
-  senderId: string;
-  senderBlockchain: WalletBlockchain;
-};
+export type DAOProposalChangedEventDetails = Extract<
+  Types.NotificationHistoryEntryFragmentFragment['detail'],
+  { __typename: 'DAOProposalChangedEventDetails' }
+>;
 
-export type DAOProposalChangedEventDetails = {
-  __typename: 'DAOProposalChangedEventDetails';
-  tenantName: string;
-  description: string;
-  state?: string;
-  daoUrl?: string;
-  proposalUrl?: string;
-  proposalTitle?: string;
-};
+export type DirectTenantMessageEventDetails = Extract<
+  Types.NotificationHistoryEntryFragmentFragment['detail'],
+  { __typename: 'DirectTenantMessageEventDetails' }
+>;
 
-export type DirectTenantMessageEventDetails = {
-  __typename: 'DirectTenantMessageEventDetails';
-  tenantName: string;
-};
+export type GenericEventDetails = Extract<
+  Types.NotificationHistoryEntryFragmentFragment['detail'],
+  { __typename: 'GenericEventDetails' }
+>;
 
-export type GenericEventDetails = {
-  __typename: 'GenericEventDetails';
-  sourceName: string;
-  notificationTypeName: string;
-  genericMessage: string;
-  action?: GenericEventAction;
-  icon: string;
-};
+export type HealthValueOverThresholdEventDetails = Extract<
+  Types.NotificationHistoryEntryFragmentFragment['detail'],
+  { __typename: 'HealthValueOverThresholdEventDetails' }
+>;
 
-export type GenericEventAction = {
-  __typename?: 'GenericEventAction';
-  name: string;
-  url: string;
-};
+export type NftAuctionChangedEventDetails = Extract<
+  Types.NotificationHistoryEntryFragmentFragment['detail'],
+  { __typename: 'NftAuctionChangedEventDetails' }
+>;
 
-export type HealthValueOverThresholdEventDetails = {
-  __typename: 'HealthValueOverThresholdEventDetails';
-  name: string;
-  value: string;
-  threshold: string;
-  url: string;
-};
+export type NftCollectionsReportEventDetails = Extract<
+  Types.NotificationHistoryEntryFragmentFragment['detail'],
+  { __typename: 'NftCollectionsReportEventDetails' }
+>;
 
-export type NftAuctionChangedEventDetails = {
-  __typename: 'NftAuctionChangedEventDetails';
-  auctionUrl?: string;
-  walletBlockchain: WalletBlockchain;
-  highBidAmount: number;
-  highBidSymbol?: string;
-  imageUrl?: string;
-  auctionTitle: string;
-};
+export type NftCollectionStats = Extract<
+  Types.NotificationHistoryEntryFragmentFragment['detail'],
+  { __typename: 'NftCollectionStats' }
+>;
 
-export type NftCollectionsReportEventDetails = {
-  __typename: 'NftCollectionsReportEventDetails';
-  type: NftCollectionsReportType;
-  providerName: string;
-  sourceLink: string;
-  collections: NftCollectionStats[];
-};
+export type WalletsActivityReportEventDetails = Extract<
+  Types.NotificationHistoryEntryFragmentFragment['detail'],
+  { __typename: 'WalletsActivityReportEventDetails' }
+>;
 
-export type NftCollectionStats = {
-  __typename?: 'NftCollectionStats';
-  collectionId: string;
-  name: string;
-  imgUrl?: string;
-  volume1Day?: string;
-  volume1DayChange?: string;
-};
-
-export type WalletsActivityReportEventDetails = {
-  __typename: 'WalletsActivityReportEventDetails';
-  providerName: string;
-  sourceLink: string;
-  walletActivityType: WalletsActivityReportType;
-  wallets: WalletsActivityReportWallet[];
-};
-
-export type WalletsActivityReportWallet = {
-  __typename?: 'WalletsActivityReportWallet';
-  address: string;
-  volume1Day: string;
-  maxPurchase1Day?: string;
-  maxPurchaseName?: string;
-  maxPurchaseImgUrl?: string | undefined;
-  maxPurchaseTokenAddress?: string | undefined;
-};
+export type WalletsActivityReportWallet = Extract<
+  Types.NotificationHistoryEntryFragmentFragment['detail'],
+  { __typename: 'WalletsActivityReportWallet' }
+>;
 
 export type EntryDetailType =
   | AccountBalanceChangedEventDetails
@@ -180,14 +103,7 @@ export type EntryDetailType =
   | NftCollectionsReportEventDetails
   | WalletsActivityReportEventDetails;
 
-export type NotificationHistoryEntry = Readonly<{
-  __typename?: 'NotificationHistoryEntry';
-  id: string;
-  createdDate: string;
-  eventId: string;
-  read: boolean;
-  sourceAddress?: string;
-  transactionSignature?: string;
-  targets: Target[];
-  detail?: EntryDetailType;
-}>;
+export type NotificationHistoryEntry = Extract<
+  Types.NotificationHistoryEntryFragmentFragment['detail'],
+  { __typename: 'NotificationHistoryEntry' }
+>;

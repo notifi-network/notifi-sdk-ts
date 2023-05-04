@@ -1,4 +1,4 @@
-import { NotificationHistoryEntry } from '@notifi-network/notifi-core';
+import { Types } from '@notifi-network/notifi-graphql';
 import clsx from 'clsx';
 import { getAlertDetailsContents } from 'notifi-react-card/lib/utils';
 import React, { useMemo } from 'react';
@@ -6,7 +6,7 @@ import React, { useMemo } from 'react';
 import { formatAlertDetailsTimestamp } from '../../utils/AlertHistoryUtils';
 
 export type AlertDetailsProps = Readonly<{
-  notificationEntry: NotificationHistoryEntry;
+  notificationEntry: Types.NotificationHistoryEntryFragmentFragment;
   classNames?: Readonly<{
     detailsContainer?: string;
     BackArrowIcon?: string;

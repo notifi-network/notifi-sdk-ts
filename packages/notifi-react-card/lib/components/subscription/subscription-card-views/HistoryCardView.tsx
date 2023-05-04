@@ -1,7 +1,5 @@
-import {
-  GetNotificationHistoryInput,
-  NotificationHistoryEntry,
-} from '@notifi-network/notifi-core';
+import { GetNotificationHistoryInput } from '@notifi-network/notifi-core';
+import { Types } from '@notifi-network/notifi-graphql';
 import clsx from 'clsx';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
@@ -39,7 +37,9 @@ export type AlertHistoryViewProps = Readonly<{
     AlertCard: AlertNotificationViewProps['classNames'];
   }>;
   setAlertEntry: React.Dispatch<
-    React.SetStateAction<NotificationHistoryEntry | undefined>
+    React.SetStateAction<
+      Types.NotificationHistoryEntryFragmentFragment | undefined
+    >
   >;
 }>;
 
@@ -59,7 +59,7 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
   const fetched = useRef<boolean>(false);
 
   const [allNodes, setAllNodes] = useState<
-    ReadonlyArray<NotificationHistoryEntry>
+    ReadonlyArray<Types.NotificationHistoryEntryFragmentFragment>
   >([]);
 
   const { client } = useNotifiClientContext();
