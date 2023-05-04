@@ -4,8 +4,8 @@ import {
   ChatMessageReceivedEventDetails,
   GenericEventDetails,
   HealthValueOverThresholdEventDetails,
-  NotificationHistoryEntry,
 } from '@notifi-network/notifi-core';
+import { Types } from '@notifi-network/notifi-graphql';
 import React from 'react';
 
 import { AnnouncementIcon } from '../assets/AnnouncementIcon';
@@ -26,10 +26,10 @@ type SupportedEventDetailPropsMap = Map<
   string,
   {
     getViewProps: (
-      notification: NotificationHistoryEntry,
+      notification: Types.NotificationHistoryEntryFragmentFragment,
     ) => AlertNotificationViewProps;
     getAlertDetailsContents: (
-      notification: NotificationHistoryEntry,
+      notification: Types.NotificationHistoryEntryFragmentFragment,
     ) => AlertDetailsContents;
   }
 >;
@@ -37,7 +37,9 @@ type SupportedEventDetailPropsMap = Map<
 const supportedEventDetails: SupportedEventDetailPropsMap = new Map();
 
 supportedEventDetails.set('BroadcastMessageEventDetails', {
-  getViewProps: (notification: NotificationHistoryEntry) => {
+  getViewProps: (
+    notification: Types.NotificationHistoryEntryFragmentFragment,
+  ) => {
     const detail = notification.detail as BroadcastMessageEventDetails;
     return {
       notificationTitle: 'Announcement',
@@ -47,7 +49,9 @@ supportedEventDetails.set('BroadcastMessageEventDetails', {
       notificationMessage: detail.message ?? '',
     };
   },
-  getAlertDetailsContents: (notification: NotificationHistoryEntry) => {
+  getAlertDetailsContents: (
+    notification: Types.NotificationHistoryEntryFragmentFragment,
+  ) => {
     const detail = notification.detail as BroadcastMessageEventDetails;
     return {
       topContent: detail.subject ?? '',
@@ -57,7 +61,9 @@ supportedEventDetails.set('BroadcastMessageEventDetails', {
 });
 
 supportedEventDetails.set('HealthValueOverThresholdEventDetails', {
-  getViewProps: (notification: NotificationHistoryEntry) => {
+  getViewProps: (
+    notification: Types.NotificationHistoryEntryFragmentFragment,
+  ) => {
     const detail = notification.detail as HealthValueOverThresholdEventDetails;
     const threshold = detail.threshold ?? '';
     const name = detail.name ?? '';
@@ -76,7 +82,9 @@ supportedEventDetails.set('HealthValueOverThresholdEventDetails', {
       notificationMessage: undefined,
     };
   },
-  getAlertDetailsContents: (notification: NotificationHistoryEntry) => {
+  getAlertDetailsContents: (
+    notification: Types.NotificationHistoryEntryFragmentFragment,
+  ) => {
     const detail = notification.detail as HealthValueOverThresholdEventDetails;
     return {
       topContent: detail.name,
@@ -97,7 +105,9 @@ supportedEventDetails.set('GenericEventDetails', {
       notificationMessage: detail.genericMessage,
     };
   },
-  getAlertDetailsContents: (notification: NotificationHistoryEntry) => {
+  getAlertDetailsContents: (
+    notification: Types.NotificationHistoryEntryFragmentFragment,
+  ) => {
     const detail = notification.detail as GenericEventDetails;
     return {
       topContent: detail.notificationTypeName,
@@ -117,7 +127,9 @@ supportedEventDetails.set('ChatMessageReceivedEventDetails', {
       notificationImage: <ChatAlertIcon width={17} height={17} />,
     };
   },
-  getAlertDetailsContents: (notification: NotificationHistoryEntry) => {
+  getAlertDetailsContents: (
+    notification: Types.NotificationHistoryEntryFragmentFragment,
+  ) => {
     const detail = notification.detail as ChatMessageReceivedEventDetails;
     return {
       topContent: `New Message from ${detail.senderName}`,
@@ -150,7 +162,9 @@ supportedEventDetails.set('AccountBalanceChangedEventDetails', {
       notificationMessage: message,
     };
   },
-  getAlertDetailsContents: (notification: NotificationHistoryEntry) => {
+  getAlertDetailsContents: (
+    notification: Types.NotificationHistoryEntryFragmentFragment,
+  ) => {
     const detail = notification.detail as AccountBalanceChangedEventDetails;
     const changeAmount = `${formatAmount(
       Math.abs(detail.previousValue - detail.newValue),
@@ -170,13 +184,15 @@ supportedEventDetails.set('AccountBalanceChangedEventDetails', {
   },
 });
 
-const validateIsSupported = (entry?: NotificationHistoryEntry): boolean => {
+const validateIsSupported = (
+  entry?: Types.NotificationHistoryEntryFragmentFragment,
+): boolean => {
   if (supportedEventDetails.get(entry?.detail?.__typename ?? '')) return true;
   return false;
 };
 
 const getAlertNotificationViewBaseProps = (
-  notification: NotificationHistoryEntry,
+  notification: Types.NotificationHistoryEntryFragmentFragment,
 ): AlertNotificationViewProps => {
   const genProps = supportedEventDetails.get(
     notification.detail?.__typename ?? '',
@@ -184,17 +200,17 @@ const getAlertNotificationViewBaseProps = (
   return !!notification.detail && !!genProps
     ? genProps(notification)
     : // It should never come here: exception should be filtered out before. https://virtuoso.dev/troubleshooting
-    {
-      notificationTitle: 'Unsupported notification',
-      notificationImage: <AlertIcon icon={'INFO'} />,
-      notificationSubject: 'Alert not supported yet',
-      notificationDate: notification.createdDate,
-      notificationMessage: 'Unsupported notification',
-    };
+      {
+        notificationTitle: 'Unsupported notification',
+        notificationImage: <AlertIcon icon={'INFO'} />,
+        notificationSubject: 'Alert not supported yet',
+        notificationDate: notification.createdDate,
+        notificationMessage: 'Unsupported notification',
+      };
 };
 
 const getAlertDetailsContents = (
-  notification: NotificationHistoryEntry,
+  notification: Types.NotificationHistoryEntryFragmentFragment,
 ): AlertDetailsContents => {
   const getContents = supportedEventDetails.get(
     notification.detail?.__typename ?? '',
@@ -202,10 +218,10 @@ const getAlertDetailsContents = (
   return !!notification && !!getContents
     ? getContents(notification)
     : // It should never come here: exception should be filtered out before. https://virtuoso.dev/troubleshooting
-    {
-      topContent: 'Unsupported notification',
-      bottomContent: 'Alert not supported yet',
-    };
+      {
+        topContent: 'Unsupported notification',
+        bottomContent: 'Alert not supported yet',
+      };
 };
 
 export {

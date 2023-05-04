@@ -1,5 +1,5 @@
-import { NotificationHistoryEntry } from '@notifi-network/notifi-core';
 import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
+import { Types } from '@notifi-network/notifi-graphql';
 import clsx from 'clsx';
 import React, {
   useCallback,
@@ -115,7 +115,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
   });
 
   const [selectedAlertEntry, setAlertEntry] = useState<
-    NotificationHistoryEntry | undefined
+    Types.NotificationHistoryEntryFragmentFragment | undefined
   >(undefined);
 
   let view = null;
