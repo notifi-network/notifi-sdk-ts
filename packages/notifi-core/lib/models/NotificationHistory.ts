@@ -19,20 +19,6 @@ export type NotificationHistory = Readonly<{
   };
 }>;
 
-enum AccountBalanceChangeDirection {
-  INCOMING = 'INCOMING',
-  OUTGOING = 'OUTGOING',
-}
-
-enum NftCollectionsReportType {
-  HOT = 'HOT',
-  MOST_TRADED = 'MOST_TRADED',
-}
-
-enum WalletsActivityReportType {
-  MOST_ACTIVE = 'MOST_ACTIVE',
-}
-
 export type Target = {
   type: TargetType;
   name?: string;
@@ -45,29 +31,10 @@ enum TargetType {
   WEBHOOK = 'WEBHOOK',
 }
 
-enum WalletBlockchain {
-  ACALA = 'ACALA',
-  APTOS = 'APTOS',
-  ARBITRUM = 'ARBITRUM',
-  AVALANCHE = 'AVALANCHE',
-  BINANCE = 'BINANCE',
-  ETHEREUM = 'ETHEREUM',
-  NEAR = 'NEAR',
-  OFF_CHAIN = 'OFF_CHAIN',
-  POLYGON = 'POLYGON',
-  SOLANA = 'SOLANA',
-  OPTIMISM = 'OPTIMISM',
-}
-
-export type AccountBalanceChangedEventDetails = {
-  __typename: 'AccountBalanceChangedEventDetails';
-  walletBlockchain: WalletBlockchain;
-  direction: AccountBalanceChangeDirection;
-  newValue: number;
-  previousValue: number;
-  tokenSymbol: string;
-  isWhaleWatch: boolean;
-};
+export type AccountBalanceChangedEventDetails = Extract<
+  Types.NotificationHistoryEntryFragmentFragment['detail'],
+  { __typename: 'AccountBalanceChangedEventDetails' }
+>;
 
 export type BroadcastMessageEventDetails = Extract<
   Types.NotificationHistoryEntryFragmentFragment['detail'],
@@ -93,14 +60,6 @@ export type GenericEventDetails = Extract<
   Types.NotificationHistoryEntryFragmentFragment['detail'],
   { __typename: 'GenericEventDetails' }
 >;
-
-// With Fallback because it is not queried in gql fragments
-export type GenericEventAction = Extract<
-  Types.NotificationHistoryEntryFragmentFragment['detail'],
-  { __typename: 'GenericEventAction' }
-> extends never
-  ? Types.GenericEventAction
-  : never;
 
 export type HealthValueOverThresholdEventDetails = Extract<
   Types.NotificationHistoryEntryFragmentFragment['detail'],
