@@ -1,13 +1,11 @@
+import { IntercomCardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import { useNotifiClientContext } from 'notifi-react-card/lib/context';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { useNotifiForm, useNotifiSubscriptionContext } from '../../context/';
 import { useNotifiSubscribe } from '../../hooks';
-import {
-  IntercomCardConfigItemV1,
-  LabelType,
-} from '../../hooks/IntercomCardConfig';
+import { LabelType } from '../../hooks/IntercomCardConfig';
 import { chatConfiguration } from '../../utils/AlertConfiguration';
 import {
   NotifiInputFieldsText,

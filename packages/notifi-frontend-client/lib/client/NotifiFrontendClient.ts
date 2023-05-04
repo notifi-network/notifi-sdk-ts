@@ -15,6 +15,7 @@ import type {
   EventTypeItem,
   WalletBalanceEventTypeItem,
 } from '../models';
+import { IntercomCardConfigItemV1 } from '../models/IntercomCardConfig';
 import type { Authorization, NotifiStorage, Roles } from '../storage';
 import { notNullOrEmpty, packFilterOptions } from '../utils';
 import { areIdsEqual } from '../utils/areIdsEqual';
@@ -40,6 +41,8 @@ export type AcalaSignMessageFunction = (
   acalaAddress: string,
   message: string,
 ) => Promise<hexString>;
+
+export type CardConfigType = CardConfigItemV1 | IntercomCardConfigItemV1;
 
 type BeginLoginProps = Omit<Types.BeginLogInByTransactionInput, 'dappAddress'>;
 
@@ -642,7 +645,7 @@ export class NotifiFrontendClient {
 
   async fetchSubscriptionCard(
     variables: FindSubscriptionCardParams,
-  ): Promise<SupportedCardConfigType> {
+  ): Promise<CardConfigType> {
     const query = await this._service.findTenantConfig({
       input: {
         ...variables,
@@ -660,11 +663,14 @@ export class NotifiFrontendClient {
     }
 
     const obj = JSON.parse(value);
-    let card: SupportedCardConfigType | undefined = undefined;
+    let card: CardConfigType | undefined = undefined;
     switch (obj.version) {
       case 'v1': {
         card = obj as CardConfigItemV1;
         break;
+      }
+      case 'IntercomV1': {
+        card = obj as IntercomCardConfigItemV1;
       }
     }
 

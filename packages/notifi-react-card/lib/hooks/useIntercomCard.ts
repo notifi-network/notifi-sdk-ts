@@ -1,7 +1,7 @@
+import { IntercomCardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import { useEffect, useState } from 'react';
 
 import { useNotifiClientContext } from '../context';
-import { IntercomCardConfigItemV1 } from './IntercomCardConfig';
 
 export type Data = IntercomCardConfigItemV1;
 
@@ -26,27 +26,32 @@ export const useIntercomCard = (cardId: string): IntercomCardState => {
     state: 'loading',
   });
 
-  const { client } = useNotifiClientContext();
+  const {
+    client,
+    canary: { isActive: isCanaryEnabled, frontendClient },
+  } = useNotifiClientContext();
 
   useEffect(() => {
     setState({ state: 'loading' });
-    client
+    let card: IntercomCardConfigItemV1 | undefined;
+    (isCanaryEnabled ? frontendClient : client)
       .fetchSubscriptionCard({
         type: 'INTERCOM_CARD',
         id: cardId,
       })
       .then((result) => {
-        const value = result.dataJson;
-        if (value === null) {
-          return Promise.reject(new Error('Failed to fetch data'));
+        if ('dataJson' in result) {
+          if (!result.dataJson) {
+            return Promise.reject(new Error('Failed to fetch data'));
+          }
+          card = JSON.parse(result.dataJson);
+        } else if ('version' in result) {
+          card = result as IntercomCardConfigItemV1;
         }
 
-        const obj = JSON.parse(value);
-        if (obj.version !== 'IntercomV1') {
+        if (card?.version !== 'IntercomV1') {
           return Promise.reject(new Error('Unsupported config format'));
         }
-
-        const card = obj as IntercomCardConfigItemV1;
 
         setState({
           state: 'fetched',
