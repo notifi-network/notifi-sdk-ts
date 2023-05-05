@@ -1,4 +1,9 @@
+import { EventTypeItem } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
+import {
+  subscribeAlertByFrontendClient,
+  unsubscribeAlertByFrontendClient,
+} from 'notifi-react-card/lib/utils/frontendClient';
 import React, {
   useCallback,
   useEffect,
@@ -7,8 +12,15 @@ import React, {
   useState,
 } from 'react';
 
-import { useNotifiSubscriptionContext } from '../../context';
-import { BroadcastEventTypeItem, useNotifiSubscribe } from '../../hooks';
+import {
+  useNotifiClientContext,
+  useNotifiSubscriptionContext,
+} from '../../context';
+import {
+  BroadcastEventTypeItem,
+  SubscriptionData,
+  useNotifiSubscribe,
+} from '../../hooks';
 import {
   AlertConfiguration,
   DeepPartialReadonly,
@@ -41,6 +53,10 @@ export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
   const { instantSubscribe } = useNotifiSubscribe({
     targetGroupName: 'Default',
   });
+  const {
+    canary: { isActive: isCanaryActive, frontendClient },
+  } = useNotifiClientContext();
+
   const [enabled, setEnabled] = useState(false);
   const [isNotificationLoading, setIsNotificationLoading] =
     useState<boolean>(false);
@@ -62,6 +78,45 @@ export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
       topicName: broadcastId,
     });
   }, [alertName, config, inputs]);
+
+  const subscribeAlert = useCallback(
+    async (
+      alertDetail: Readonly<{
+        eventType: EventTypeItem;
+        inputs: Record<string, unknown>;
+      }>,
+    ): Promise<SubscriptionData> => {
+      if (isCanaryActive) {
+        return subscribeAlertByFrontendClient(frontendClient, alertDetail);
+      } else {
+        return instantSubscribe({
+          alertName: alertDetail.eventType.name,
+          alertConfiguration: alertConfiguration,
+        });
+      }
+    },
+    [isCanaryActive, frontendClient, alertConfiguration],
+  );
+
+  const unSubscribeAlert = useCallback(
+    async (
+      alertDetail: Readonly<{
+        eventType: EventTypeItem;
+        inputs: Record<string, unknown>;
+      }>,
+    ) => {
+      if (isCanaryActive) {
+        return unsubscribeAlertByFrontendClient(frontendClient, alertDetail);
+      } else {
+        return instantSubscribe({
+          alertName: alertDetail.eventType.name,
+          alertConfiguration: null,
+        });
+      }
+    },
+    [isCanaryActive, frontendClient, alertConfiguration],
+  );
+
   const tooltipContent = config.tooltipContent;
 
   const didFetch = useRef(false);
@@ -84,9 +139,9 @@ export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
 
     if (!enabled) {
       setEnabled(true);
-      instantSubscribe({
-        alertConfiguration: alertConfiguration,
-        alertName: alertName,
+      subscribeAlert({
+        eventType: config,
+        inputs,
       })
         .then((res) => {
           // We update optimistically so we need to check if the alert exists.
@@ -103,16 +158,19 @@ export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
         });
     } else {
       setEnabled(false);
-      instantSubscribe({
-        alertConfiguration: null,
-        alertName,
+      unSubscribeAlert({
+        eventType: config,
+        inputs,
       })
         .then((res) => {
           // We update optimistically so we need to check if the alert exists.
-          const responseHasAlert = res.alerts[alertName] !== undefined;
-          if (responseHasAlert !== false) {
-            setEnabled(true);
+          if (res) {
+            const responseHasAlert = res.alerts[alertName] !== undefined;
+            if (responseHasAlert !== false) {
+              setEnabled(true);
+            }
           }
+          // Else, ensured by frontendClient
         })
         .catch(() => {
           setEnabled(false);
