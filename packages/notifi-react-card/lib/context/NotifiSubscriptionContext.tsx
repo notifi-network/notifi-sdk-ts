@@ -81,6 +81,7 @@ export type NotifiSubscriptionData = Readonly<{
   setDiscordTargetData: React.Dispatch<
     React.SetStateAction<DiscordTarget | undefined>
   >;
+  render: (newData: Types.FetchDataQuery) => SubscriptionData;
 }>;
 
 const NotifiSubscriptionContext = createContext<NotifiSubscriptionData>(
@@ -388,6 +389,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
     setUseDiscord,
     discordTargetData,
     setDiscordTargetData,
+    render,
   };
 
   return (

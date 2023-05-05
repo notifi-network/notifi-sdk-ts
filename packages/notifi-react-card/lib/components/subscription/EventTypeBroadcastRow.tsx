@@ -49,7 +49,7 @@ export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
   disabled,
   inputs,
 }: EventTypeBroadcastRowProps) => {
-  const { alerts, loading } = useNotifiSubscriptionContext();
+  const { alerts, loading, render } = useNotifiSubscriptionContext();
   const { instantSubscribe } = useNotifiSubscribe({
     targetGroupName: 'Default',
   });
@@ -149,6 +149,7 @@ export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
           if (responseHasAlert !== true) {
             setEnabled(false);
           }
+          isCanaryActive && frontendClient.fetchData().then(render);
         })
         .catch(() => {
           setEnabled(false);
@@ -171,6 +172,7 @@ export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
             }
           }
           // Else, ensured by frontendClient
+          isCanaryActive && frontendClient.fetchData().then(render);
         })
         .catch(() => {
           setEnabled(false);
