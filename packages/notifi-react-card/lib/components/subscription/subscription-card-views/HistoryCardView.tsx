@@ -1,7 +1,13 @@
 import { GetNotificationHistoryInput } from '@notifi-network/notifi-core';
 import { Types } from '@notifi-network/notifi-graphql';
 import clsx from 'clsx';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { Virtuoso } from 'react-virtuoso';
 
 import { NotificationEmptyBellIcon } from '../../../assets/NotificationEmptyBellIcon';
@@ -62,7 +68,21 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
     ReadonlyArray<Types.NotificationHistoryEntryFragmentFragment>
   >([]);
 
-  const { client } = useNotifiClientContext();
+  const {
+    client,
+    canary: { isActive: isCanaryActive, frontendClient },
+  } = useNotifiClientContext();
+
+  const { isClientInitialized, isClientAuthenticated } = useMemo(() => {
+    return {
+      isClientInitialized: isCanaryActive
+        ? !!frontendClient.userState
+        : client.isInitialized,
+      isClientAuthenticated: isCanaryActive
+        ? frontendClient.userState?.status === 'authenticated'
+        : client.isAuthenticated,
+    };
+  }, [isCanaryActive, client, frontendClient]);
 
   const getNotificationHistory = useCallback(
     async ({ first, after }: GetNotificationHistoryInput) => {
@@ -70,7 +90,10 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
         return;
       }
       isQuerying.current = true;
-      const result = await client.getNotificationHistory({
+      const result = await (isCanaryActive
+        ? frontendClient
+        : client
+      ).getNotificationHistory({
         first,
         after,
       });
@@ -84,11 +107,18 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
       isQuerying.current = false;
       return result;
     },
-    [client, setAllNodes, setEndCursor, setHasNextPage],
+    [
+      client,
+      frontendClient,
+      isCanaryActive,
+      setAllNodes,
+      setEndCursor,
+      setHasNextPage,
+    ],
   );
 
   useEffect(() => {
-    if (!client.isInitialized || !client.isAuthenticated) {
+    if (!isClientInitialized || !isClientAuthenticated) {
       return;
     }
 
@@ -98,7 +128,7 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
         first: MESSAGES_PER_PAGE,
       });
     }
-  }, [client]);
+  }, [client, frontendClient, isCanaryActive]);
   return (
     <div
       className={clsx(
