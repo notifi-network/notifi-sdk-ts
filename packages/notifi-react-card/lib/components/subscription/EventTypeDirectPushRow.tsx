@@ -1,8 +1,20 @@
+import { EventTypeItem } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
+import {
+  subscribeAlertByFrontendClient,
+  unsubscribeAlertByFrontendClient,
+} from 'notifi-react-card/lib/utils/frontendClient';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { useNotifiSubscriptionContext } from '../../context';
-import { DirectPushEventTypeItem, useNotifiSubscribe } from '../../hooks';
+import {
+  useNotifiClientContext,
+  useNotifiSubscriptionContext,
+} from '../../context';
+import {
+  DirectPushEventTypeItem,
+  SubscriptionData,
+  useNotifiSubscribe,
+} from '../../hooks';
 import {
   AlertConfiguration,
   DeepPartialReadonly,
@@ -31,11 +43,15 @@ export const EventTypeDirectPushRow: React.FC<EventTypeDirectPushRowProps> = ({
   config,
   inputs,
 }: EventTypeDirectPushRowProps) => {
-  const { alerts, loading } = useNotifiSubscriptionContext();
+  const { alerts, loading, setLoading, render } =
+    useNotifiSubscriptionContext();
 
   const { instantSubscribe } = useNotifiSubscribe({
     targetGroupName: 'Default',
   });
+  const {
+    canary: { isActive: isCanaryActive, frontendClient },
+  } = useNotifiClientContext();
   const [enabled, setEnabled] = useState(false);
 
   const pushId = useMemo(
@@ -56,28 +72,79 @@ export const EventTypeDirectPushRow: React.FC<EventTypeDirectPushRowProps> = ({
   }, [alertName, config, inputs]);
   const tooltipContent = config.tooltipContent;
 
+  const subscribeAlert = useCallback(
+    async (
+      alertDetail: Readonly<{
+        eventType: EventTypeItem;
+        inputs: Record<string, unknown>;
+      }>,
+    ): Promise<SubscriptionData> => {
+      if (isCanaryActive) {
+        return subscribeAlertByFrontendClient(frontendClient, alertDetail);
+      } else {
+        return instantSubscribe({
+          alertName: alertDetail.eventType.name,
+          alertConfiguration: alertConfiguration,
+        });
+      }
+    },
+    [isCanaryActive, frontendClient, alertConfiguration],
+  );
+
+  const unSubscribeAlert = useCallback(
+    async (
+      alertDetail: Readonly<{
+        eventType: EventTypeItem;
+        inputs: Record<string, unknown>;
+      }>,
+    ) => {
+      if (isCanaryActive) {
+        return unsubscribeAlertByFrontendClient(frontendClient, alertDetail);
+      } else {
+        return instantSubscribe({
+          alertName: alertDetail.eventType.name,
+          alertConfiguration: null,
+        });
+      }
+    },
+    [isCanaryActive, frontendClient, alertConfiguration],
+  );
+
   useEffect(() => {
     if (loading) {
       return;
     }
     const hasAlert = alerts[alertName] !== undefined;
     setEnabled(hasAlert);
-  }, [alertName, alerts, loading]);
+  }, [alertName, alerts]);
 
   const handleNewSubscription = useCallback(() => {
     if (loading) {
       return;
     }
+    setLoading(true);
     if (!enabled) {
-      instantSubscribe({
-        alertConfiguration: alertConfiguration,
-        alertName: alertName,
-      });
+      subscribeAlert({
+        eventType: config,
+        inputs,
+      })
+        .then(() => {
+          setEnabled(true);
+          isCanaryActive && frontendClient.fetchData().then(render);
+        })
+        .catch(() => setEnabled(false))
+        .finally(() => setLoading(false));
     } else {
-      instantSubscribe({
-        alertConfiguration: null,
-        alertName: alertName,
-      });
+      unSubscribeAlert({
+        eventType: config,
+        inputs,
+      })
+        .then(() => {
+          setEnabled(false);
+          isCanaryActive && frontendClient.fetchData().then(render);
+        })
+        .catch(() => setEnabled(true))
+        .finally(() => setLoading(false));
     }
   }, [enabled, instantSubscribe, alertConfiguration, alertName]);
 

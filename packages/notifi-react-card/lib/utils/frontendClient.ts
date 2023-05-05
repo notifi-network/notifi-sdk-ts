@@ -3,6 +3,7 @@ import {
   EventTypeItem,
   NotifiFrontendClient,
 } from '@notifi-network/notifi-frontend-client';
+import { Types } from '@notifi-network/notifi-graphql';
 
 import { SubscriptionData } from '../hooks';
 
@@ -53,9 +54,18 @@ export const unsubscribeAlertByFrontendClient = async (
   }>,
 ): Promise<void> => {
   const alerts = await frontendClient.getAlerts();
-  const existing = alerts.find(
-    (alert) => alert.name === alertDetail.eventType.name,
-  );
+  let existing: Types.AlertFragmentFragment | undefined;
+  switch (alertDetail.eventType.type) {
+    case 'directPush':
+      existing = alerts.find(
+        (alert) => alert.filter.filterType === 'DIRECT_TENANT_MESSAGES',
+      );
+      break;
+    default:
+      existing = alerts.find(
+        (alert) => alert.name === alertDetail.eventType.name,
+      );
+  }
   if (!existing || !existing?.id) throw new Error('Alert not found');
   await frontendClient.deleteAlert({ id: existing.id });
 };
