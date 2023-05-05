@@ -62,6 +62,7 @@ export const NotifiClientContextProvider: React.FC<NotifiParams> = ({
 
   useEffect(() => {
     // Init frontend client
+    if (!params.enableCanary) return;
     if (!frontendClient.userState) {
       frontendClient.initialize();
     }
