@@ -10,6 +10,7 @@ import React, {
 } from 'react';
 
 import {
+  useNotifiClientContext,
   useNotifiDemoPreviewContext,
   useNotifiForm,
   useNotifiSubscriptionContext,
@@ -114,13 +115,33 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
     targetGroupName: 'Default',
   });
 
+  const {
+    canary: { isActive: canaryIsActive, frontendClient },
+  } = useNotifiClientContext();
+
+  const { isClientInitialized, isClientTokenExpired } = useMemo(() => {
+    let isClientInitialized = false;
+    let isClientTokenExpired = false;
+    if (canaryIsActive) {
+      isClientInitialized = !!frontendClient.userState;
+      isClientTokenExpired = frontendClient.userState?.status === 'expired';
+    } else {
+      isClientInitialized = isInitialized;
+      isClientTokenExpired = isTokenExpired;
+    }
+    return { isClientInitialized, isClientTokenExpired };
+  }, [
+    frontendClient.userState?.status,
+    isTokenExpired,
+    isInitialized,
+    canaryIsActive,
+  ]);
+
   const [selectedAlertEntry, setAlertEntry] = useState<
     Types.NotificationHistoryEntryFragmentFragment | undefined
   >(undefined);
 
   let view = null;
-
-  const firstLoad = useRef(false);
 
   const resetFormState = useCallback(() => {
     setEmail(email);
@@ -141,11 +162,10 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
         reason: 'test example reason',
       });
     }
-    if (firstLoad.current || !isInitialized) {
+
+    if (!isClientInitialized) {
       return;
     }
-
-    firstLoad.current = true;
 
     if (
       (email !== '' && email !== undefined) ||
@@ -155,20 +175,12 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
         discordTargetData?.discordAccountId !== undefined)
     ) {
       setCardView({ state: 'history' });
-    } else if (isTokenExpired) {
+    } else if (isClientTokenExpired) {
       setCardView({ state: 'expired' });
     } else {
       setCardView({ state: 'signup' });
     }
-  }, [
-    email,
-    phoneNumber,
-    telegramId,
-    setCardView,
-    cardView.state,
-    isInitialized,
-    demoPreview,
-  ]);
+  }, [email, phoneNumber, telegramId, isClientInitialized, demoPreview]);
 
   const rightIcon: NotifiAlertBoxButtonProps | undefined = useMemo(() => {
     if (onClose === undefined) {
