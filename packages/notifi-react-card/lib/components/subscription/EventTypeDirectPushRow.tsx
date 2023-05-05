@@ -43,7 +43,8 @@ export const EventTypeDirectPushRow: React.FC<EventTypeDirectPushRowProps> = ({
   config,
   inputs,
 }: EventTypeDirectPushRowProps) => {
-  const { alerts, loading, setLoading } = useNotifiSubscriptionContext();
+  const { alerts, loading, setLoading, render } =
+    useNotifiSubscriptionContext();
 
   const { instantSubscribe } = useNotifiSubscribe({
     targetGroupName: 'Default',
@@ -127,22 +128,22 @@ export const EventTypeDirectPushRow: React.FC<EventTypeDirectPushRowProps> = ({
         eventType: config,
         inputs,
       })
-        .then(() => setEnabled(true))
-        .catch(() => {
-          setEnabled(false);
-          // TODO: Implement Rerender (blocked by MVP-2585)
+        .then(() => {
+          setEnabled(true);
+          isCanaryActive && frontendClient.fetchData().then(render);
         })
+        .catch(() => setEnabled(false))
         .finally(() => setLoading(false));
     } else {
       unSubscribeAlert({
         eventType: config,
         inputs,
       })
-        .then(() => setEnabled(false))
-        .catch(() => {
-          setEnabled(true);
-          // TODO: Implement Rerender (blocked by MVP-2585)
+        .then(() => {
+          setEnabled(false);
+          isCanaryActive && frontendClient.fetchData().then(render);
         })
+        .catch(() => setEnabled(true))
         .finally(() => setLoading(false));
     }
   }, [enabled, instantSubscribe, alertConfiguration, alertName]);
