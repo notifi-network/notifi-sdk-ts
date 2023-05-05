@@ -122,9 +122,9 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
   const { isClientInitialized, isClientTokenExpired } = useMemo(() => {
     let isClientInitialized = false;
     let isClientTokenExpired = false;
-    if (canaryIsActive && frontendClient.userState) {
-      isClientInitialized = true;
-      isClientTokenExpired = frontendClient.userState.status === 'expired';
+    if (canaryIsActive) {
+      isClientInitialized = !!frontendClient.userState;
+      isClientTokenExpired = frontendClient.userState?.status === 'expired';
     } else {
       isClientInitialized = isInitialized;
       isClientTokenExpired = isTokenExpired;
