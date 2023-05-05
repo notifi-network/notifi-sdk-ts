@@ -1,7 +1,7 @@
+import { IntercomCardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import React from 'react';
 
-import { IntercomCardConfigItemV1 } from '../../hooks/IntercomCardConfig';
 import { NotifiEmailInput, NotifiEmailInputProps } from '../NotifiEmailInput';
 import { NotifiSmsInput, NotifiSmsInputProps } from '../NotifiSmsInput';
 import {
