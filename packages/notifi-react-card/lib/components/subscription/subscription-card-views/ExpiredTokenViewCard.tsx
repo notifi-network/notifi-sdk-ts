@@ -1,5 +1,9 @@
+import { SignMessageParams } from '@notifi-network/notifi-core';
 import clsx from 'clsx';
-import { useNotifiSubscriptionContext } from 'notifi-react-card/lib/context';
+import {
+  useNotifiClientContext,
+  useNotifiSubscriptionContext,
+} from 'notifi-react-card/lib/context';
 import { useNotifiSubscribe } from 'notifi-react-card/lib/hooks';
 import React from 'react';
 
@@ -17,10 +21,22 @@ export const ExpiredTokenView: React.FC<ExpiredTokenViewCardProps> = ({
   classNames,
 }) => {
   const { logIn } = useNotifiSubscribe({ targetGroupName: 'Default' });
+  const {
+    canary: { isActive: isCanaryActive, frontendClient },
+    params,
+  } = useNotifiClientContext();
+
   const { setCardView } = useNotifiSubscriptionContext();
+
   const handleClick = async () => {
     let success = false;
-    const result = await logIn();
+    const result = isCanaryActive
+      ? await frontendClient.logIn({
+          walletBlockchain: params.walletBlockchain,
+          signMessage: params.signMessage,
+        } as SignMessageParams)
+      : await logIn();
+
     success = !!result;
 
     if (success === true) {
