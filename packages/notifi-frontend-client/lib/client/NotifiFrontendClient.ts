@@ -16,7 +16,7 @@ import type {
   WalletBalanceEventTypeItem,
 } from '../models';
 import type { Authorization, NotifiStorage, Roles } from '../storage';
-import { createInMemoryStorageDriver } from '../storage';
+import { createInMemoryStorageDriver, createLocalForageStorageDriver, NotifiFrontendStorage } from '../storage';
 import { createLocalForageStorageDriver } from '../storage';
 import { NotifiFrontendStorage } from '../storage';
 import { notNullOrEmpty, packFilterOptions } from '../utils';
