@@ -16,7 +16,11 @@ import type {
   WalletBalanceEventTypeItem,
 } from '../models';
 import type { Authorization, NotifiStorage, Roles } from '../storage';
-import { createInMemoryStorageDriver, createLocalForageStorageDriver, NotifiFrontendStorage } from '../storage';
+import {
+  NotifiFrontendStorage,
+  createInMemoryStorageDriver,
+  createLocalForageStorageDriver,
+} from '../storage';
 import { notNullOrEmpty, packFilterOptions } from '../utils';
 import { areIdsEqual } from '../utils/areIdsEqual';
 import { ensureSourceAndFilters, normalizeHexString } from './ensureSource';
