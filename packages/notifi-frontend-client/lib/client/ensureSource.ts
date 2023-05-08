@@ -671,18 +671,18 @@ const getXMTPFilter = (
   };
 };
 
-type HealthCheckEventInputsWithIndex = {
+export type HealthCheckEventInputsWithIndex = {
   index: number; // The index of CheckRatio list
   [key: string]: unknown; // The rest of inputs
 };
 
-type HealthCheckEventInputsWithCustomPercentage = {
+export type HealthCheckEventInputsWithCustomPercentage = {
   thresholdDirection: ThresholdDirection; // The direction of threshold
   customPercentage: number; // The percentage value of custom health check
   [key: string]: unknown; // The rest of inputs
 };
 
-type HealthCheckInputs =
+export type HealthCheckInputs =
   | HealthCheckEventInputsWithIndex
   | HealthCheckEventInputsWithCustomPercentage;
 

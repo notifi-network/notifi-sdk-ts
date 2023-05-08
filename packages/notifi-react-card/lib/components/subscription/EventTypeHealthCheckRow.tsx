@@ -1,5 +1,15 @@
 import { ThresholdDirection } from '@notifi-network/notifi-core';
+import {
+  EventTypeItem,
+  HealthCheckEventInputsWithCustomPercentage,
+  HealthCheckEventInputsWithIndex,
+  HealthCheckInputs,
+} from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
+import {
+  subscribeAlertByFrontendClient,
+  unsubscribeAlertByFrontendClient,
+} from 'notifi-react-card/lib/utils/frontendClient';
 import React, {
   useCallback,
   useEffect,
@@ -8,10 +18,14 @@ import React, {
   useState,
 } from 'react';
 
-import { useNotifiSubscriptionContext } from '../../context';
+import {
+  useNotifiClientContext,
+  useNotifiSubscriptionContext,
+} from '../../context';
 import {
   CheckRatio,
   HealthCheckEventTypeItem,
+  SubscriptionData,
   useNotifiSubscribe,
 } from '../../hooks';
 import { DeepPartialReadonly, healthThresholdConfiguration } from '../../utils';
@@ -44,14 +58,26 @@ export type EventTypeHealthCheckRowProps = Readonly<{
   config: HealthCheckEventTypeItem;
 }>;
 
+const inputsValidator = (
+  inputs: HealthCheckInputs,
+): inputs is HealthCheckEventInputsWithIndex => {
+  return 'index' in inputs;
+};
+
 export const EventTypeHealthCheckRow: React.FC<
   EventTypeHealthCheckRowProps
 > = ({ classNames, config, disabled }: EventTypeHealthCheckRowProps) => {
   const customInputRef = useRef<HTMLInputElement>(null);
-  const { alerts, loading } = useNotifiSubscriptionContext();
+  const { alerts, loading, setLoading, render } =
+    useNotifiSubscriptionContext();
   const { instantSubscribe } = useNotifiSubscribe({
     targetGroupName: 'Default',
   });
+
+  const {
+    canary: { isActive: isCanaryActive, frontendClient },
+  } = useNotifiClientContext();
+
   const [enabled, setEnabled] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [initialRatio, setInitialRatio] = useState<number | null>(null);
@@ -108,27 +134,85 @@ export const EventTypeHealthCheckRow: React.FC<
     setSelectedIndex,
   ]);
 
+  const subscribeAlert = useCallback(
+    async (
+      alertDetail: Readonly<{
+        eventType: EventTypeItem;
+        inputs:
+          | HealthCheckEventInputsWithIndex
+          | HealthCheckEventInputsWithCustomPercentage;
+      }>,
+    ): Promise<SubscriptionData> => {
+      if (isCanaryActive) {
+        return subscribeAlertByFrontendClient(frontendClient, alertDetail);
+      } else {
+        return instantSubscribe({
+          alertConfiguration: healthThresholdConfiguration({
+            alertFrequency: config.alertFrequency,
+            percentage: inputsValidator(alertDetail.inputs)
+              ? (alertDetail.inputs as HealthCheckEventInputsWithIndex).index
+              : (
+                  alertDetail.inputs as HealthCheckEventInputsWithCustomPercentage
+                ).customPercentage,
+            thresholdDirection: inputsValidator(alertDetail.inputs)
+              ? thresholdDirection
+              : alertDetail.inputs.thresholdDirection,
+          }),
+          alertName: alertName,
+        });
+      }
+    },
+    [isCanaryActive, frontendClient, config],
+  );
+
+  const unSubscribeAlert = useCallback(
+    async (
+      alertDetail: Readonly<{
+        eventType: EventTypeItem;
+        inputs: Record<string, unknown>;
+      }>,
+    ) => {
+      if (isCanaryActive) {
+        return unsubscribeAlertByFrontendClient(frontendClient, alertDetail);
+      } else {
+        return instantSubscribe({
+          alertName: alertDetail.eventType.name,
+          alertConfiguration: null,
+        });
+      }
+    },
+    [isCanaryActive, frontendClient],
+  );
+
   const handleToggleNewSubscription = useCallback(() => {
     if (loading) {
       return;
     }
+    setLoading(true);
     setErrorMessage('');
     if (!enabled && initialRatio !== null) {
-      instantSubscribe({
-        alertConfiguration: healthThresholdConfiguration({
-          alertFrequency: config.alertFrequency,
-          percentage: initialRatio,
-          thresholdDirection,
-        }),
-        alertName: alertName,
-      }).catch(() => setErrorMessage(UNABLE_TO_SUBSCRIBE));
-    } else {
-      instantSubscribe({
-        alertConfiguration: null,
-        alertName: alertName,
+      subscribeAlert({
+        eventType: config,
+        inputs: {
+          index: 0,
+        },
       })
-        .then(() => setCustomValue(''))
-        .catch(() => setErrorMessage(UNABLE_TO_SUBSCRIBE));
+        .then(() => {
+          isCanaryActive && frontendClient.fetchData().then(render);
+        })
+        .catch(() => setErrorMessage(UNABLE_TO_SUBSCRIBE))
+        .finally(() => setLoading(false));
+    } else {
+      unSubscribeAlert({
+        eventType: config,
+        inputs: {},
+      })
+        .then(() => {
+          setCustomValue('');
+          isCanaryActive && frontendClient.fetchData().then(render);
+        })
+        .catch(() => setErrorMessage(UNABLE_TO_SUBSCRIBE))
+        .finally(() => setLoading(false));
     }
   }, [initialRatio, enabled, isValueType]);
 
@@ -138,17 +222,16 @@ export const EventTypeHealthCheckRow: React.FC<
     }
     setErrorMessage('');
     if (value) {
-      instantSubscribe({
-        alertConfiguration: healthThresholdConfiguration({
-          alertFrequency: config.alertFrequency,
-          percentage: value,
-          thresholdDirection,
-        }),
-        alertName: alertName,
+      subscribeAlert({
+        eventType: config,
+        inputs: {
+          index: index,
+        },
       })
         .then(() => {
           setSelectedIndex(index);
           setCustomValue('');
+          isCanaryActive && frontendClient.fetchData().then(render);
         })
         .catch(() => setErrorMessage(UNABLE_TO_SUBSCRIBE));
     } else {
@@ -170,15 +253,17 @@ export const EventTypeHealthCheckRow: React.FC<
         ratioNumber <= 100 &&
         customValue
       ) {
-        instantSubscribe({
-          alertConfiguration: healthThresholdConfiguration({
-            alertFrequency: config.alertFrequency,
-            percentage: ratioNumber / 100,
+        subscribeAlert({
+          eventType: config,
+          inputs: {
+            customPercentage: ratioNumber / 100,
             thresholdDirection,
-          }),
-          alertName: alertName,
+          },
         })
-          .then(() => setSelectedIndex(3))
+          .then(() => {
+            setSelectedIndex(3);
+            isCanaryActive && frontendClient.fetchData().then(render);
+          })
           .catch(() => setErrorMessage(UNABLE_TO_SUBSCRIBE));
       } else {
         setErrorMessage(INVALID_NUMBER);
