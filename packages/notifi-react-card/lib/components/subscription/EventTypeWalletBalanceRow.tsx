@@ -1,4 +1,8 @@
 import clsx from 'clsx';
+import {
+  subscribeAlertByFrontendClient,
+  unsubscribeAlertByFrontendClient,
+} from 'notifi-react-card/lib/utils/frontendClient';
 import React, {
   useCallback,
   useEffect,
@@ -7,8 +11,16 @@ import React, {
   useState,
 } from 'react';
 
-import { useNotifiSubscriptionContext } from '../../context';
-import { WalletBalanceEventTypeItem, useNotifiSubscribe } from '../../hooks';
+import {
+  useNotifiClientContext,
+  useNotifiSubscriptionContext,
+} from '../../context';
+import {
+  EventTypeItem,
+  SubscriptionData,
+  WalletBalanceEventTypeItem,
+  useNotifiSubscribe,
+} from '../../hooks';
 import { DeepPartialReadonly, walletBalanceConfiguration } from '../../utils';
 import type { NotifiToggleProps } from './NotifiToggle';
 import { NotifiToggle } from './NotifiToggle';
@@ -29,13 +41,19 @@ export type EventTypeWalletBalanceRowProps = Readonly<{
 export const EventTypeWalletBalanceRow: React.FC<
   EventTypeWalletBalanceRowProps
 > = ({ classNames, disabled, config }: EventTypeWalletBalanceRowProps) => {
-  const { alerts, loading, connectedWallets } = useNotifiSubscriptionContext();
+  const { alerts, loading, connectedWallets, render } =
+    useNotifiSubscriptionContext();
   const [isNotificationLoading, setIsNotificationLoading] =
     useState<boolean>(false);
 
   const { instantSubscribe } = useNotifiSubscribe({
     targetGroupName: 'Default',
   });
+
+  const {
+    canary: { isActive: isCanaryActive, frontendClient },
+  } = useNotifiClientContext();
+
   const [enabled, setEnabled] = useState(false);
 
   const alertName = useMemo<string>(() => config.name, [config]);
@@ -52,6 +70,45 @@ export const EventTypeWalletBalanceRow: React.FC<
     didFetch.current = true;
   }, [alertName, alerts]);
 
+  const subscribeAlert = useCallback(
+    async (
+      alertDetail: Readonly<{
+        eventType: EventTypeItem;
+        inputs: Record<string, unknown>;
+      }>,
+    ): Promise<SubscriptionData> => {
+      if (isCanaryActive) {
+        return subscribeAlertByFrontendClient(frontendClient, alertDetail);
+      } else {
+        return instantSubscribe({
+          alertConfiguration: walletBalanceConfiguration({
+            connectedWallets,
+          }),
+          alertName: alertName,
+        });
+      }
+    },
+    [isCanaryActive, frontendClient, config],
+  );
+  const unSubscribeAlert = useCallback(
+    async (
+      alertDetail: Readonly<{
+        eventType: EventTypeItem;
+        inputs: Record<string, unknown>;
+      }>,
+    ) => {
+      if (isCanaryActive) {
+        return unsubscribeAlertByFrontendClient(frontendClient, alertDetail);
+      } else {
+        return instantSubscribe({
+          alertName: alertDetail.eventType.name,
+          alertConfiguration: null,
+        });
+      }
+    },
+    [isCanaryActive, frontendClient],
+  );
+
   const handleNewSubscription = useCallback(() => {
     if (loading || isNotificationLoading) {
       return;
@@ -60,25 +117,27 @@ export const EventTypeWalletBalanceRow: React.FC<
     if (!enabled) {
       setEnabled(true);
 
-      instantSubscribe({
-        alertConfiguration: walletBalanceConfiguration({
-          connectedWallets,
-        }),
-        alertName: alertName,
+      subscribeAlert({
+        eventType: config,
+        inputs: {},
       });
     } else {
       setEnabled(false);
-      instantSubscribe({
-        alertConfiguration: null,
-        alertName: alertName,
+      unSubscribeAlert({
+        eventType: config,
+        inputs: {},
       })
         .then((res) => {
           // We update optimistically so we need to check if the alert exists.
-          const responseHasAlert = res.alerts[alertName] !== undefined;
+          if (res) {
+            const responseHasAlert = res.alerts[alertName] !== undefined;
 
-          if (responseHasAlert !== true) {
-            setEnabled(false);
+            if (responseHasAlert !== true) {
+              setEnabled(false);
+            }
           }
+          // Else, ensured by frontendClient
+          isCanaryActive && frontendClient.fetchData().then(render);
         })
         .catch(() => {
           setEnabled(false);
