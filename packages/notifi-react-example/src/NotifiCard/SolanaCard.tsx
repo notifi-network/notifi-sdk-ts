@@ -72,10 +72,9 @@ export const SolanaCard: React.FC = () => {
           NotifiSubscriptionCard
           <NotifiSubscriptionCard
             darkMode
-            inputs={{ userWallet: publicKey }}
             inputLabels={inputLabels}
             inputSeparators={inputSeparators}
-            cardId="d8859ea72ff4449fa8f7f293ebd333c9"
+            cardId="7f8cf1f9c1074c07a67b63e3bcdf7c3c"
             onClose={() => alert('nope you must stay')}
             copy={{
               FetchedStateCard: {

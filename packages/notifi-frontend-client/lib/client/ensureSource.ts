@@ -51,7 +51,7 @@ const ensureFusionToggleSource = async (
   );
 
   if (source === undefined) {
-    throw new Error('Failed to identify direct push source');
+    throw new Error('Failed to identify fusion source');
   }
 
   return source;
