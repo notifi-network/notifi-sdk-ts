@@ -599,21 +599,29 @@ const getCustomFilterOptions = (
     case 'TOGGLE':
       return eventType.filterOptions;
     case 'HEALTH_CHECK': {
-      // Use synthetic ref values to get from input
+      // Use synthetic ref values to get from input (ratio)
       const healthRatioKey = `${eventType.name}__healthRatio`;
-      const healthRatio = resolveNumberRef(
-        healthRatioKey,
-        { type: 'ref', ref: healthRatioKey },
-        inputs,
-      );
-
+      const healthRatio =
+        resolveNumberRef(
+          healthRatioKey,
+          { type: 'ref', ref: healthRatioKey },
+          inputs,
+        ) ?? eventType.checkRatios[0].ratio; // Fallback to 1st checkRatios
+      // Use synthetic ref values to get from input (direction)
+      const thresholdDirectionKey = `${eventType.name}__healthThresholdDirection`;
+      const thresholdDirection =
+        resolveStringRef(
+          thresholdDirectionKey,
+          { type: 'ref', ref: thresholdDirectionKey },
+          inputs,
+        ) ?? eventType.checkRatios[0].ratio; // Fallback to 1st checkRatios
       return {
         alertFrequency: eventType.alertFrequency,
         threshold:
           eventType.numberType === 'percentage'
             ? healthRatio / 100
             : healthRatio,
-        thresholdDirection: eventType.checkRatios[0]?.type ?? 'below',
+        thresholdDirection: thresholdDirection === 'below' ? 'below' : 'above',
       };
     }
   }
