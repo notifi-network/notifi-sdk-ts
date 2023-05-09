@@ -15,6 +15,10 @@ import {
   EventTypeDirectPushRowProps,
 } from '../../EventTypeDirectPushRow';
 import {
+  EventTypeFusionRowProps,
+  EventTypeFusionToggleRow,
+} from '../../EventTypeFusionToggleRow';
+import {
   EventTypeHealthCheckRow,
   EventTypeHealthCheckRowProps,
 } from '../../EventTypeHealthCheckRow';
@@ -58,6 +62,7 @@ export type AlertsPanelProps = Readonly<{
     EventTypeUnsupportedRow?: EventTypeUnsupportedRowProps['classNames'];
     EventTypeWalletBalanceRow?: EventTypeWalletBalanceRowProps['classNames'];
     EventTypeXMTPRow?: EventTypeXMPTRowProps['classNames'];
+    EventTypeFusionToggleRow?: EventTypeFusionRowProps['classNames'];
   }>;
   inputs: Record<string, unknown>;
 }>;
@@ -152,6 +157,16 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
               <EventTypeWalletBalanceRow
                 key={eventType.name}
                 classNames={classNames?.EventTypeWalletBalanceRow}
+                disabled={inputDisabled}
+                config={eventType}
+                inputs={inputs}
+              />
+            );
+          case 'fusionToggle':
+            return (
+              <EventTypeFusionToggleRow
+                key={eventType.name}
+                classNames={classNames?.EventTypeFusionToggleRow}
                 disabled={inputDisabled}
                 config={eventType}
                 inputs={inputs}

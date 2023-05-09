@@ -464,6 +464,7 @@ export const useNotifiSubscribe: ({
             name: createSourceParam.address,
             blockchainAddress: createSourceParam.address,
             type: sourceType,
+            fusionEventTypeId: createSourceParam?.fusionEventTypeId,
           });
         } else {
           source = data.sources.find((s) => s.type === sourceType);

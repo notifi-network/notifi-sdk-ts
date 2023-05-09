@@ -7,7 +7,6 @@ import type { Types } from '@notifi-network/notifi-graphql';
 
 import { resolveStringRef } from '../components/subscription/resolveRef';
 import { NotifiSubscriptionData } from '../context';
-// import { EventTypeConfig } from './../hooks/SubscriptionCardConfig';
 import { walletToSource } from './walletUtils';
 
 export type SingleSourceAlertConfiguration = Readonly<{
@@ -15,6 +14,7 @@ export type SingleSourceAlertConfiguration = Readonly<{
   sourceType: Types.CreateSourceInput['type'];
   createSource?: Readonly<{
     address: string;
+    fusionEventTypeId?: string;
   }>;
   filterType: string;
   filterOptions: FilterOptions | null;
@@ -137,6 +137,24 @@ export const broadcastMessageConfiguration = ({
     sourceType: 'BROADCAST',
     createSource: {
       address: topicName,
+    },
+  };
+};
+export const fusionToggleConfiguration = ({
+  fusionId,
+  fusionSourceAddress,
+}: Readonly<{
+  fusionId: string;
+  fusionSourceAddress: string;
+}>): AlertConfiguration => {
+  return {
+    type: 'single',
+    filterType: 'FUSION_SOURCE',
+    filterOptions: {},
+    sourceType: 'FUSION_SOURCE',
+    createSource: {
+      address: fusionSourceAddress,
+      fusionEventTypeId: fusionId,
     },
   };
 };
