@@ -7,12 +7,14 @@ export const CreateSource = gql`
     $name: String
     $blockchainAddress: String!
     $type: SourceType!
+    $fusionEventTypeId: String
   ) {
     createSource(
       createSourceInput: {
         name: $name
         blockchainAddress: $blockchainAddress
         type: $type
+        fusionEventTypeId: $fusionEventTypeId
       }
     ) {
       ...SourceFragment

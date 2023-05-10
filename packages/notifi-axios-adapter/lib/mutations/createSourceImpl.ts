@@ -16,12 +16,14 @@ mutation createSource(
   $name: String!
   $blockchainAddress: String!
   $type: SourceType!
+  $fusionEventTypeId: String
 ) {
   createSource(
     createSourceInput: {
       name: $name
       blockchainAddress: $blockchainAddress
       type: $type
+      fusionEventTypeId: $fusionEventTypeId
     }
   ) {
     ...sourceFragment

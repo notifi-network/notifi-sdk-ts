@@ -1,13 +1,7 @@
 import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
 import clsx from 'clsx';
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
   useNotifiClientContext,

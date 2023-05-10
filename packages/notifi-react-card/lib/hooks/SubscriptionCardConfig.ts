@@ -28,6 +28,13 @@ export type BroadcastEventTypeItem = Readonly<{
   broadcastId: ValueOrRef<string>;
   tooltipContent?: string;
 }>;
+export type FusionToggleEventTypeItem = Readonly<{
+  type: 'fusionToggle';
+  name: string;
+  fusionEventId: ValueOrRef<string>;
+  sourceAddress: ValueOrRef<string>;
+  tooltipContent?: string;
+}>;
 
 export type HealthCheckEventTypeItem = Readonly<{
   type: 'healthCheck';

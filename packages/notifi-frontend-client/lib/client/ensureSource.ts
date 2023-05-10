@@ -6,6 +6,7 @@ import {
   DirectPushEventTypeItem,
   EventTypeItem,
   FilterOptions,
+  FusionToggleEventTypeItem,
   HealthCheckEventTypeItem,
   PriceChangeEventTypeItem,
   ThresholdDirection,
@@ -34,6 +35,23 @@ const ensureDirectPushSource = async (
 
   if (source === undefined) {
     throw new Error('Failed to identify direct push source');
+  }
+
+  return source;
+};
+const ensureFusionToggleSource = async (
+  service: Operations.GetSourcesService & Operations.CreateSourceService,
+  _eventType: FusionToggleEventTypeItem,
+  _inputs: Record<string, unknown>,
+): Promise<Types.SourceFragmentFragment> => {
+  const sourcesQuery = await service.getSources({});
+  const sources = sourcesQuery.source;
+  const source = sources?.find(
+    (it) => it !== undefined && it.type === 'FUSION_SOURCE',
+  );
+
+  if (source === undefined) {
+    throw new Error('Failed to identify fusion source');
   }
 
   return source;
@@ -384,6 +402,10 @@ const ensureSources = async (
       const source = await ensureHealthCheckSources(service, eventType, inputs);
       return [source];
     }
+    case 'fusionToggle': {
+      const source = await ensureFusionToggleSource(service, eventType, inputs);
+      return [source];
+    }
     case 'label': {
       throw new Error('Unsupported event type');
     }
@@ -546,6 +568,22 @@ const getWalletBalanceSourceFilter = (
   );
   if (filter === undefined) {
     throw new Error('Failed to retrieve filter: wallet balance');
+  }
+  return {
+    filter,
+    filterOptions: {},
+  };
+};
+const getFusionSourceFilter = (
+  source: Types.SourceFragmentFragment,
+  _eventType: FusionToggleEventTypeItem,
+  _inputs: Record<string, unknown>,
+): GetFilterResults => {
+  const filter = source.applicableFilters?.find(
+    (it) => it?.filterType === 'FUSION_SOURCE',
+  );
+  if (filter === undefined) {
+    throw new Error('Failed to retrieve fusion source filter');
   }
   return {
     filter,
@@ -825,6 +863,18 @@ export const ensureSourceAndFilters = async (
     }
     case 'walletBalance': {
       const { filter, filterOptions } = getWalletBalanceSourceFilter(
+        sources[0],
+        eventType,
+        inputs,
+      );
+      return {
+        sourceGroup,
+        filter,
+        filterOptions,
+      };
+    }
+    case 'fusionToggle': {
+      const { filter, filterOptions } = getFusionSourceFilter(
         sources[0],
         eventType,
         inputs,

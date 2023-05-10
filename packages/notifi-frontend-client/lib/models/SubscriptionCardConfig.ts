@@ -20,6 +20,14 @@ export type DirectPushEventTypeItem = Readonly<{
   tooltipContent?: string;
 }>;
 
+export type FusionToggleEventTypeItem = Readonly<{
+  type: 'fusionToggle';
+  name: string;
+  fusionEventId: ValueOrRef<string>;
+  sourceAddress: ValueOrRef<string>;
+  tooltipContent?: string;
+}>;
+
 export type BroadcastEventTypeItem = Readonly<{
   type: 'broadcast';
   name: string;
@@ -120,6 +128,7 @@ export type EventTypeItem =
   | LabelEventTypeItem
   | PriceChangeEventTypeItem
   | CustomTopicTypeItem
+  | FusionToggleEventTypeItem
   | WalletBalanceEventTypeItem
   | XMTPTopicTypeItem;
 

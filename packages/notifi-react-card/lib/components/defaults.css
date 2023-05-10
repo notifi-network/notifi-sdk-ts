@@ -525,6 +525,7 @@ input::-webkit-inner-spin-button {
 .EventTypeCustomToggleRow__container,
 .EventTypeWalletBalanceRow__container,
 .EventTypePriceChangeRow__container,
+.EventTypeFusionToggleRow__container,
 .EventTypeXMTPRow__container,
 .BrowserAlertToggle__container {
   display: flex;
@@ -536,6 +537,7 @@ input::-webkit-inner-spin-button {
 .EventTypeDirectPushRow__label,
 .EventTypeCustomToggleRow_label,
 .EventTypeHealthCheckRow__label,
+.EventTypeFusionToggleRow__label,
 .EventTypeCustomHealthCheckRow__label,
 .EventTypeCustomToggleRow__label,
 .EventTypeWalletBalanceRow__label,

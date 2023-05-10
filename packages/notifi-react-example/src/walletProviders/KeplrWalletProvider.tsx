@@ -1,7 +1,5 @@
-import type { StdSignDoc } from '@cosmjs/launchpad';
 import type {
   Keplr,
-  KeplrSignOptions,
   Window as KeplrWindow,
   Key,
 } from '@keplr-wallet/types';
