@@ -40,7 +40,12 @@ export type EventTypeWalletBalanceRowProps = Readonly<{
 
 export const EventTypeWalletBalanceRow: React.FC<
   EventTypeWalletBalanceRowProps
-> = ({ classNames, disabled, config }: EventTypeWalletBalanceRowProps) => {
+> = ({
+  classNames,
+  disabled,
+  config,
+  inputs,
+}: EventTypeWalletBalanceRowProps) => {
   const { alerts, loading, connectedWallets, render } =
     useNotifiSubscriptionContext();
   const [isNotificationLoading, setIsNotificationLoading] =
@@ -119,13 +124,13 @@ export const EventTypeWalletBalanceRow: React.FC<
 
       subscribeAlert({
         eventType: config,
-        inputs: {},
+        inputs,
       });
     } else {
       setEnabled(false);
       unSubscribeAlert({
         eventType: config,
-        inputs: {},
+        inputs,
       })
         .then((res) => {
           // We update optimistically so we need to check if the alert exists.
