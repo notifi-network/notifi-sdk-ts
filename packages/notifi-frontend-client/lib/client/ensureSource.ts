@@ -686,10 +686,19 @@ export type HealthCheckInputs =
   | HealthCheckEventInputsWithIndex
   | HealthCheckEventInputsWithCustomPercentage;
 
+const checkInputsIsWithIndex = (
+  inputs: Record<string, unknown>,
+): inputs is HealthCheckEventInputsWithIndex => {
+  if ('index' in inputs) {
+    return true;
+  }
+  return false;
+};
+
 const getHealthCheckFilter = (
   source: Types.SourceFragmentFragment,
   eventType: HealthCheckEventTypeItem,
-  inputs: HealthCheckInputs | Record<string, unknown>,
+  inputs: Record<string, unknown>,
 ): GetFilterResults => {
   const filter = source.applicableFilters?.find(
     (it) => it?.filterType === 'VALUE_THRESHOLD',
@@ -708,19 +717,10 @@ const getHealthCheckFilter = (
   let threshold = checkRatios[0].ratio;
   let thresholdDirection = checkRatios[0].type;
 
-  const checkInputsIsWithIndex = (
-    inputs: Record<string, unknown>,
-  ): inputs is HealthCheckEventInputsWithIndex => {
-    if ('index' in inputs) {
-      return true;
-    }
-    return false;
-  };
-
   const checkInputsIsWithCustomPercentage = (
     inputs: Record<string, unknown>,
   ): inputs is HealthCheckEventInputsWithCustomPercentage => {
-    if ('customPercentage' in inputs) {
+    if ('customPercentage' in inputs && 'thresholdDirection' in inputs) {
       return true;
     }
     return false;
