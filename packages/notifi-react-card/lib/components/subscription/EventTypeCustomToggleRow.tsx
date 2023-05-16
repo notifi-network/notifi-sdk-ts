@@ -3,10 +3,6 @@ import {
   EventTypeItem,
 } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
-import {
-  subscribeAlertByFrontendClient,
-  unsubscribeAlertByFrontendClient,
-} from 'notifi-react-card/lib/utils/frontendClient';
 import React, {
   useCallback,
   useEffect,
@@ -20,7 +16,12 @@ import {
   useNotifiSubscriptionContext,
 } from '../../context';
 import { SubscriptionData, useNotifiSubscribe } from '../../hooks';
-import { DeepPartialReadonly, customToggleConfiguration } from '../../utils';
+import {
+  DeepPartialReadonly,
+  customToggleConfiguration,
+  subscribeAlertByFrontendClient,
+  unsubscribeAlertByFrontendClient,
+} from '../../utils';
 import type { NotifiToggleProps } from './NotifiToggle';
 import { NotifiToggle } from './NotifiToggle';
 import { NotifiTooltip, NotifiTooltipProps } from './NotifiTooltip';
