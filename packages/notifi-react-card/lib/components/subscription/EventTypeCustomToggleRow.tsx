@@ -1,4 +1,7 @@
-import { CustomTopicTypeItem } from '@notifi-network/notifi-frontend-client';
+import {
+  CustomTopicTypeItem,
+  EventTypeItem,
+} from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import React, {
   useCallback,
@@ -8,9 +11,17 @@ import React, {
   useState,
 } from 'react';
 
-import { useNotifiSubscriptionContext } from '../../context';
-import { useNotifiSubscribe } from '../../hooks';
-import { DeepPartialReadonly, customToggleConfiguration } from '../../utils';
+import {
+  useNotifiClientContext,
+  useNotifiSubscriptionContext,
+} from '../../context';
+import { SubscriptionData, useNotifiSubscribe } from '../../hooks';
+import {
+  DeepPartialReadonly,
+  customToggleConfiguration,
+  subscribeAlertByFrontendClient,
+  unsubscribeAlertByFrontendClient,
+} from '../../utils';
 import type { NotifiToggleProps } from './NotifiToggle';
 import { NotifiToggle } from './NotifiToggle';
 import { NotifiTooltip, NotifiTooltipProps } from './NotifiTooltip';
@@ -36,11 +47,16 @@ export const EventTypeCustomToggleRow: React.FC<
   config,
   inputs,
 }: EventTypeCustomToggleRowProps) => {
-  const { alerts, loading } = useNotifiSubscriptionContext();
+  const { alerts, loading, render } = useNotifiSubscriptionContext();
 
   const { instantSubscribe } = useNotifiSubscribe({
     targetGroupName: 'Default',
   });
+
+  const {
+    canary: { isActive: isCanaryActive, frontendClient },
+  } = useNotifiClientContext();
+
   const [enabled, setEnabled] = useState(false);
   const [isNotificationLoading, setIsNotificationLoading] =
     useState<boolean>(false);
@@ -64,6 +80,53 @@ export const EventTypeCustomToggleRow: React.FC<
     didFetch.current = true;
   }, [alertName, alerts]);
 
+  const subscribeAlert = useCallback(
+    async (
+      alertDetail: Readonly<{
+        eventType: EventTypeItem;
+        inputs: Record<string, unknown>;
+      }>,
+    ): Promise<SubscriptionData> => {
+      if (isCanaryActive) {
+        return subscribeAlertByFrontendClient(frontendClient, alertDetail);
+      } else {
+        return instantSubscribe({
+          alertConfiguration: customToggleConfiguration({
+            sourceType: config.sourceType,
+            filterType: config.filterType,
+            filterOptions: config.filterOptions,
+            sourceAddress: resolveStringRef(
+              alertName,
+              config.sourceAddress,
+              inputs,
+            ),
+          }),
+          alertName: alertName,
+        });
+      }
+    },
+    [isCanaryActive, frontendClient, config],
+  );
+
+  const unSubscribeAlert = useCallback(
+    async (
+      alertDetail: Readonly<{
+        eventType: EventTypeItem;
+        inputs: Record<string, unknown>;
+      }>,
+    ) => {
+      if (isCanaryActive) {
+        return unsubscribeAlertByFrontendClient(frontendClient, alertDetail);
+      } else {
+        return instantSubscribe({
+          alertName: alertDetail.eventType.name,
+          alertConfiguration: null,
+        });
+      }
+    },
+    [isCanaryActive, frontendClient],
+  );
+
   const handleNewSubscription = useCallback(() => {
     if (loading || isNotificationLoading) {
       return;
@@ -72,19 +135,9 @@ export const EventTypeCustomToggleRow: React.FC<
 
     if (!enabled) {
       setEnabled(true);
-
-      instantSubscribe({
-        alertConfiguration: customToggleConfiguration({
-          sourceType: config.sourceType,
-          filterType: config.filterType,
-          filterOptions: config.filterOptions,
-          sourceAddress: resolveStringRef(
-            alertName,
-            config.sourceAddress,
-            inputs,
-          ),
-        }),
-        alertName: alertName,
+      subscribeAlert({
+        eventType: config,
+        inputs: inputs,
       })
         .then((res) => {
           // We update optimistically so we need to check if the alert exists.
@@ -93,6 +146,7 @@ export const EventTypeCustomToggleRow: React.FC<
           if (responseHasAlert !== true) {
             setEnabled(false);
           }
+          isCanaryActive && frontendClient.fetchData().then(render);
         })
         .catch(() => {
           setEnabled(false);
@@ -103,16 +157,20 @@ export const EventTypeCustomToggleRow: React.FC<
     } else {
       setEnabled(false);
 
-      instantSubscribe({
-        alertConfiguration: null,
-        alertName: alertName,
+      unSubscribeAlert({
+        eventType: config,
+        inputs: inputs,
       })
         .then((res) => {
           // We update optimistically so we need to check if the alert exists.
-          const responseHasAlert = res.alerts[alertName] !== undefined;
-          if (responseHasAlert !== false) {
-            setEnabled(true);
+          if (res) {
+            const responseHasAlert = res.alerts[alertName] !== undefined;
+            if (responseHasAlert !== false) {
+              setEnabled(true);
+            }
           }
+          // Else, ensured by frontendClient
+          isCanaryActive && frontendClient.fetchData().then(render);
         })
         .catch(() => {
           setEnabled(true);
