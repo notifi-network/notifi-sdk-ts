@@ -146,6 +146,9 @@ export const EventTypeCustomHealthCheckRow: React.FC<
       if (isCanaryActive) {
         alertDetail.inputs[`${alertDetail.eventType.name}__healthRatio`] =
           ratioNumber;
+        alertDetail.inputs[
+          `${alertDetail.eventType.name}__healthThresholdDirection`
+        ] = thresholdDirection;
         return subscribeAlertByFrontendClient(frontendClient, alertDetail);
       } else {
         return instantSubscribe({
