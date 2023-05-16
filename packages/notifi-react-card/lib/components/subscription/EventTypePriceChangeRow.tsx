@@ -1,9 +1,5 @@
 import { EventTypeItem } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
-import {
-  subscribeAlertByFrontendClient,
-  unsubscribeAlertByFrontendClient,
-} from 'notifi-react-card/lib/utils/frontendClient';
 import React, {
   useCallback,
   useEffect,
@@ -25,6 +21,8 @@ import {
   AlertConfiguration,
   DeepPartialReadonly,
   priceChangeConfiguration,
+  subscribeAlertByFrontendClient,
+  unsubscribeAlertByFrontendClient,
 } from '../../utils';
 import type { NotifiToggleProps } from './NotifiToggle';
 import { NotifiToggle } from './NotifiToggle';
@@ -130,7 +128,7 @@ export const EventTypePriceChangeRow: React.FC<
       setEnabled(true);
       subscribeAlert({
         eventType: config,
-        inputs: {},
+        inputs,
       })
         .then((res) => {
           // We update optimistically so we need to check if the alert exists.
