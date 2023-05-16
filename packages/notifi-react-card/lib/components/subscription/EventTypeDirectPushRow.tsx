@@ -1,9 +1,5 @@
 import { EventTypeItem } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
-import {
-  subscribeAlertByFrontendClient,
-  unsubscribeAlertByFrontendClient,
-} from 'notifi-react-card/lib/utils/frontendClient';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
@@ -19,6 +15,8 @@ import {
   AlertConfiguration,
   DeepPartialReadonly,
   directMessageConfiguration,
+  subscribeAlertByFrontendClient,
+  unsubscribeAlertByFrontendClient,
 } from '../../utils';
 import type { NotifiToggleProps } from './NotifiToggle';
 import { NotifiToggle } from './NotifiToggle';

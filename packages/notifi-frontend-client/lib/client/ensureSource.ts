@@ -671,25 +671,25 @@ const getXMTPFilter = (
   };
 };
 
-type HealthCheckEventInputsWithIndex = {
+export type HealthCheckEventInputsWithIndex = {
   index: number; // The index of CheckRatio list
   [key: string]: unknown; // The rest of inputs
 };
 
-type HealthCheckEventInputsWithCustomPercentage = {
+export type HealthCheckEventInputsWithCustomPercentage = {
   thresholdDirection: ThresholdDirection; // The direction of threshold
   customPercentage: number; // The percentage value of custom health check
   [key: string]: unknown; // The rest of inputs
 };
 
-type HealthCheckInputs =
+export type HealthCheckInputs =
   | HealthCheckEventInputsWithIndex
   | HealthCheckEventInputsWithCustomPercentage;
 
-const healthCheckInputsValidator = (
+const checkInputsIsWithIndex = (
   inputs: Record<string, unknown>,
-): inputs is HealthCheckInputs => {
-  if ('index' in inputs || 'customPercentage' in inputs) {
+): inputs is HealthCheckEventInputsWithIndex => {
+  if ('index' in inputs) {
     return true;
   }
   return false;
@@ -698,7 +698,7 @@ const healthCheckInputsValidator = (
 const getHealthCheckFilter = (
   source: Types.SourceFragmentFragment,
   eventType: HealthCheckEventTypeItem,
-  inputs: HealthCheckInputs,
+  inputs: Record<string, unknown>,
 ): GetFilterResults => {
   const filter = source.applicableFilters?.find(
     (it) => it?.filterType === 'VALUE_THRESHOLD',
@@ -713,22 +713,23 @@ const getHealthCheckFilter = (
     inputs,
   );
 
-  let threshold = 0;
-  let thresholdDirection: ThresholdDirection = 'below';
+  // Default: checkRatios[0]
+  let threshold = checkRatios[0].ratio;
+  let thresholdDirection = checkRatios[0].type;
 
-  const checkInputsCategory = (
-    inputs: HealthCheckInputs,
-  ): inputs is HealthCheckEventInputsWithIndex => {
-    if ('index' in inputs) {
+  const checkInputsIsWithCustomPercentage = (
+    inputs: Record<string, unknown>,
+  ): inputs is HealthCheckEventInputsWithCustomPercentage => {
+    if ('customPercentage' in inputs && 'thresholdDirection' in inputs) {
       return true;
     }
     return false;
   };
 
-  if (checkInputsCategory(inputs)) {
+  if (checkInputsIsWithIndex(inputs)) {
     threshold = checkRatios[inputs.index].ratio;
     thresholdDirection = checkRatios[inputs.index].type;
-  } else {
+  } else if (checkInputsIsWithCustomPercentage(inputs)) {
     threshold = inputs.customPercentage;
     thresholdDirection = inputs.thresholdDirection;
   }
@@ -844,9 +845,6 @@ export const ensureSourceAndFilters = async (
       };
     }
     case 'healthCheck': {
-      if (!healthCheckInputsValidator(inputs)) {
-        throw new Error('Invalid healthCheck inputs');
-      }
       const { filter, filterOptions } = getHealthCheckFilter(
         sources[0],
         eventType,
