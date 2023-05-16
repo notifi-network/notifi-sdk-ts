@@ -6,10 +6,6 @@ import {
   HealthCheckInputs,
 } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
-import {
-  subscribeAlertByFrontendClient,
-  unsubscribeAlertByFrontendClient,
-} from 'notifi-react-card/lib/utils/frontendClient';
 import React, {
   useCallback,
   useEffect,
@@ -28,7 +24,12 @@ import {
   SubscriptionData,
   useNotifiSubscribe,
 } from '../../hooks';
-import { DeepPartialReadonly, healthThresholdConfiguration } from '../../utils';
+import {
+  DeepPartialReadonly,
+  healthThresholdConfiguration,
+  subscribeAlertByFrontendClient,
+  unsubscribeAlertByFrontendClient,
+} from '../../utils';
 import type { NotifiToggleProps } from './NotifiToggle';
 import { NotifiToggle } from './NotifiToggle';
 import { NotifiTooltip, NotifiTooltipProps } from './NotifiTooltip';
