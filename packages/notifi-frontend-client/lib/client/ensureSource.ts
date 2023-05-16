@@ -615,13 +615,18 @@ const getCustomFilterOptions = (
           { type: 'ref', ref: thresholdDirectionKey },
           inputs,
         ) ?? eventType.checkRatios[0].ratio; // Fallback to 1st checkRatios
+
+      if (!healthRatio || !thresholdDirection) {
+        throw new Error('Failed to retrieve health ratio or direction');
+      }
+
       return {
         alertFrequency: eventType.alertFrequency,
         threshold:
           eventType.numberType === 'percentage'
             ? healthRatio / 100
             : healthRatio,
-        thresholdDirection: thresholdDirection === 'below' ? 'below' : 'above',
+        thresholdDirection: thresholdDirection === 'above' ? 'above' : 'below',
       };
     }
   }
