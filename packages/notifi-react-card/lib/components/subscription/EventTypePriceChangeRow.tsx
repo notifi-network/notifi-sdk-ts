@@ -44,7 +44,12 @@ export type EventTypePriceChangeRowProps = Readonly<{
 
 export const EventTypePriceChangeRow: React.FC<
   EventTypePriceChangeRowProps
-> = ({ classNames, disabled, config }: EventTypePriceChangeRowProps) => {
+> = ({
+  classNames,
+  disabled,
+  config,
+  inputs,
+}: EventTypePriceChangeRowProps) => {
   const { alerts, loading, render } = useNotifiSubscriptionContext();
   const { instantSubscribe } = useNotifiSubscribe({
     targetGroupName: 'Default',
@@ -145,7 +150,7 @@ export const EventTypePriceChangeRow: React.FC<
       setEnabled(false);
       unSubscribeAlert({
         eventType: config,
-        inputs: {},
+        inputs,
       })
         .then((res) => {
           // We update optimistically so we need to check if the alert exists.
