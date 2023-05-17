@@ -1,10 +1,32 @@
+import {
+  EventTypeItem,
+  TradingPairInputs,
+} from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { DeleteIcon } from '../../assets/DeleteIcon';
-import { useNotifiSubscriptionContext } from '../../context';
-import { TradingPairEventTypeItem, useNotifiSubscribe } from '../../hooks';
-import { DeepPartialReadonly, tradingPairConfiguration } from '../../utils';
+import {
+  useNotifiClientContext,
+  useNotifiSubscriptionContext,
+} from '../../context';
+import {
+  SubscriptionData,
+  TradingPairEventTypeItem,
+  useNotifiSubscribe,
+} from '../../hooks';
+import {
+  DeepPartialReadonly,
+  subscribeAlertByFrontendClient,
+  tradingPairConfiguration,
+  unsubscribeAlertByFrontendClient,
+} from '../../utils';
 import { NotifiTooltip, NotifiTooltipProps } from './NotifiTooltip';
 import { resolveStringArrayRef } from './resolveRef';
 
@@ -78,6 +100,7 @@ export const EventTypeTradingPairsRow: React.FC<
             key={alertName}
             classNames={classNames?.tradingPairAlertRow}
             alertName={alertName}
+            inputs={inputs}
           />
         );
       })}
@@ -116,15 +139,23 @@ export type TradingPairAlertRowProps = Readonly<{
     deleteIcon: string;
   }>;
   alertName: string;
+  inputs: Record<string, unknown>;
 }>;
 
 export const TradingPairAlertRow: React.FC<TradingPairAlertRowProps> = ({
   classNames,
   alertName,
+  inputs,
 }: TradingPairAlertRowProps) => {
+  const { render } = useNotifiSubscriptionContext();
+
   const { instantSubscribe } = useNotifiSubscribe({
     targetGroupName: 'Default',
   });
+
+  const {
+    canary: { isActive: isCanaryActive, frontendClient },
+  } = useNotifiClientContext();
 
   const { name, description } = useMemo(() => {
     // const alertName = `${config.name}:;:${now}:;:${selectedPair}:;:${
@@ -137,6 +168,25 @@ export const TradingPairAlertRow: React.FC<TradingPairAlertRowProps> = ({
       description,
     };
   }, [alertName]);
+
+  const unSubscribeAlert = useCallback(
+    async (
+      alertDetail: Readonly<{
+        eventType: EventTypeItem;
+        inputs: Record<string, unknown>;
+      }>,
+    ) => {
+      if (isCanaryActive) {
+        return unsubscribeAlertByFrontendClient(frontendClient, alertDetail);
+      } else {
+        return instantSubscribe({
+          alertName: alertDetail.eventType.name,
+          alertConfiguration: null,
+        });
+      }
+    },
+    [isCanaryActive, frontendClient],
+  );
 
   return (
     <div
@@ -166,9 +216,13 @@ export const TradingPairAlertRow: React.FC<TradingPairAlertRowProps> = ({
           classNames?.deleteIcon,
         )}
         onClick={() => {
-          instantSubscribe({
-            alertConfiguration: null,
-            alertName,
+          unSubscribeAlert({
+            eventType: {
+              name: alertName,
+            } as EventTypeItem, // We only need alertName to unsubscribe
+            inputs,
+          }).then(() => {
+            isCanaryActive && frontendClient.fetchData().then(render);
           });
         }}
       >
@@ -215,6 +269,47 @@ export const TradingPairSettingsRow: React.FC<TradingPairSettingsRowProps> = ({
   const { instantSubscribe } = useNotifiSubscribe({
     targetGroupName: 'Default',
   });
+  const { render } = useNotifiSubscriptionContext();
+
+  const {
+    canary: { isActive: isCanaryActive, frontendClient },
+  } = useNotifiClientContext();
+
+  const alertConfiguration = useMemo(() => {
+    return selectedPair
+      ? tradingPairConfiguration({
+          tradingPair: selectedPair,
+          above,
+          price,
+        })
+      : undefined;
+  }, [selectedPair, above, price]);
+
+  const alertName = useMemo(() => {
+    const now = new Date().toISOString();
+
+    return `${config.name}:;:${now}:;:${selectedPair}:;:${
+      above ? 'above' : 'below'
+    }:;:${price}`;
+  }, [config, selectedPair, above, price]);
+
+  const subscribeAlert = async (
+    alertDetail: Readonly<{
+      eventType: EventTypeItem;
+      inputs: TradingPairInputs;
+    }>,
+  ): Promise<SubscriptionData> => {
+    if (isCanaryActive) {
+      return subscribeAlertByFrontendClient(frontendClient, alertDetail);
+    }
+    if (!alertConfiguration)
+      throw new Error('alertConfiguration is undefinded');
+
+    return instantSubscribe({
+      alertName,
+      alertConfiguration,
+    });
+  };
 
   return (
     <div
@@ -316,23 +411,16 @@ export const TradingPairSettingsRow: React.FC<TradingPairSettingsRowProps> = ({
         disabled={selectedPair === undefined}
         onClick={async () => {
           if (selectedPair !== undefined) {
-            const alertConfiguration = tradingPairConfiguration({
-              tradingPair: selectedPair,
-              above,
-              price,
+            await subscribeAlert({
+              eventType: { ...config, name: alertName },
+              inputs: {
+                price,
+                direction: above ? 'above' : 'below',
+                pair: selectedPair,
+                ...inputs,
+              },
             });
-
-            const now = new Date().toISOString();
-
-            const alertName = `${config.name}:;:${now}:;:${selectedPair}:;:${
-              above ? 'above' : 'below'
-            }:;:${price}`;
-
-            await instantSubscribe({
-              alertName,
-              alertConfiguration,
-            });
-
+            frontendClient.fetchData().then(render);
             setSelectedPair(undefined);
             setAbove(true);
             setPrice(0.0);
