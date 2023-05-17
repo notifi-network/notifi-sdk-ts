@@ -1,6 +1,12 @@
-import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
+import { SignMessageParams } from '@notifi-network/notifi-core';
+import {
+  CardConfigItemV1,
+  EventTypeConfig,
+} from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
-import React, { useCallback } from 'react';
+import { isValidPhoneNumber } from 'libphonenumber-js';
+import { formatTelegramForSubscription } from 'notifi-react-card/lib/utils/stringUtils';
+import React, { useCallback, useMemo } from 'react';
 
 import {
   useNotifiClientContext,
@@ -8,7 +14,10 @@ import {
   useNotifiSubscriptionContext,
 } from '../../context';
 import { useNotifiSubscribe } from '../../hooks';
-import { createConfigurations } from '../../utils';
+import {
+  createConfigurations,
+  subscribeAlertsByFrontendClient,
+} from '../../utils';
 
 export type NotifiSubscribeButtonProps = Readonly<{
   classNames?: Readonly<{
@@ -34,10 +43,19 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
   const {
     client,
     params: { multiWallet },
+    canary: { isActive: isCanaryActive, frontendClient },
   } = useNotifiClientContext();
 
-  const { cardView, connectedWallets, loading, setCardView, useDiscord } =
-    useNotifiSubscriptionContext();
+  const {
+    cardView,
+    connectedWallets,
+    loading,
+    setCardView,
+    useDiscord,
+    params,
+    render,
+    setLoading,
+  } = useNotifiSubscriptionContext();
 
   const { formErrorMessages, formState } = useNotifiForm();
 
@@ -48,27 +66,79 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
 
   const isMultiWallet = (multiWallet?.ownedWallets?.length ?? 0) > 0;
 
-  const onClick = useCallback(async () => {
-    const { data: notifiClientData } = client;
-    const targetGroupLength = notifiClientData?.targetGroups?.length ?? 0;
+  const targetGroup = useMemo(
+    () => ({
+      name: 'Default',
+      emailAddress: email === '' ? undefined : email,
+      phoneNumber: isValidPhoneNumber(phoneNumber) ? phoneNumber : undefined,
+      telegramId:
+        telegramId === ''
+          ? undefined
+          : formatTelegramForSubscription(telegramId),
+      discordId: useDiscord ? 'Default' : undefined,
+    }),
+    [email, phoneNumber, telegramId, useDiscord],
+  );
 
-    const isFirstTimeUser = targetGroupLength === 0;
-
-    try {
-      let success = false;
-
-      if (isFirstTimeUser && !isMultiWallet) {
-        const alertConfigs = createConfigurations(
+  const subscribeAlerts = useCallback(
+    async (eventTypes: EventTypeConfig, inputs: Record<string, unknown>) => {
+      if (isCanaryActive) {
+        await renewTargetGroups();
+        return subscribeAlertsByFrontendClient(
+          frontendClient,
           eventTypes,
           inputs,
-          connectedWallets,
         );
+      }
+      return subscribe(
+        createConfigurations(eventTypes, inputs, connectedWallets),
+      );
+    },
+    [
+      isCanaryActive,
+      frontendClient,
+      email,
+      phoneNumber,
+      telegramId,
+      useDiscord,
+    ],
+  );
 
-        const result = await subscribe(alertConfigs);
+  const renewTargetGroups = useCallback(async () => {
+    if (isCanaryActive) {
+      return frontendClient.ensureTargetGroup(targetGroup);
+    }
+    return updateTargetGroups();
+  }, [email, phoneNumber, useDiscord, telegramId, frontendClient]);
+
+  const onClick = useCallback(async () => {
+    let isFirstTimeUser = (client.data?.targetGroups?.length ?? 0) === 0;
+    if (
+      isCanaryActive &&
+      frontendClient.userState?.status !== 'authenticated'
+    ) {
+      await frontendClient.logIn({
+        walletBlockchain: params.walletBlockchain,
+        signMessage: params.signMessage,
+      } as SignMessageParams);
+      const data = await frontendClient.fetchData();
+      isFirstTimeUser = (data.targetGroup?.length ?? 0) === 0;
+    }
+
+    setLoading(true);
+    try {
+      let success = false;
+      if (isFirstTimeUser && !isMultiWallet) {
+        const result = await subscribeAlerts(eventTypes, inputs);
         success = !!result;
       } else {
-        const result = await updateTargetGroups();
+        const result = await renewTargetGroups();
         success = !!result;
+      }
+
+      if (isCanaryActive && success) {
+        const newData = await frontendClient.fetchData();
+        render(newData);
       }
 
       if (success === true) {
@@ -84,6 +154,7 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
     } catch (e) {
       setCardView({ state: 'error', reason: e });
     }
+    setLoading(false);
   }, [
     isMultiWallet,
     client,
