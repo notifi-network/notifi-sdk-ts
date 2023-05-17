@@ -120,6 +120,14 @@ export type XMTPTopicTypeItem = {
   XMTPTopics: ValueOrRef<ReadonlyArray<string>>;
 };
 
+export type CreateSupportConversationEventTypeItem = {
+  type: 'createSupportConversation';
+  name: string;
+  sourceType: Gql.SourceType;
+  filterType: string;
+  alertFrequency: AlertFrequency;
+};
+
 export type EventTypeItem =
   | DirectPushEventTypeItem
   | BroadcastEventTypeItem
@@ -130,7 +138,8 @@ export type EventTypeItem =
   | CustomTopicTypeItem
   | FusionToggleEventTypeItem
   | WalletBalanceEventTypeItem
-  | XMTPTopicTypeItem;
+  | XMTPTopicTypeItem
+  | CreateSupportConversationEventTypeItem;
 
 export type EventTypeConfig = ReadonlyArray<EventTypeItem>;
 export type InputType =

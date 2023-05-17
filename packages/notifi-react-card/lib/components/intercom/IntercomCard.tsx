@@ -1,10 +1,15 @@
-import { IntercomCardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
+import {
+  EventTypeItem,
+  IntercomCardConfigItemV1,
+} from '@notifi-network/notifi-frontend-client';
+import { Types } from '@notifi-network/notifi-graphql';
 import clsx from 'clsx';
 import { useNotifiClientContext } from 'notifi-react-card/lib/context';
-import React, { useCallback, useEffect, useState } from 'react';
+import { subscribeAlertByFrontendClient } from 'notifi-react-card/lib/utils';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useNotifiForm, useNotifiSubscriptionContext } from '../../context/';
-import { useNotifiSubscribe } from '../../hooks';
+import { SubscriptionData, useNotifiSubscribe } from '../../hooks';
 import { LabelType } from '../../hooks/IntercomCardConfig';
 import { chatConfiguration } from '../../utils/AlertConfiguration';
 import {
@@ -58,11 +63,46 @@ export const IntercomCard: React.FC<
       targetGroupName: 'Intercom',
     });
 
+  const {
+    client,
+    canary: { isActive: isCanaryActive, frontendClient },
+  } = useNotifiClientContext();
+
+  const { isClientInitialized, isClientAuthenticated } = useMemo(() => {
+    return {
+      isClientInitialized: isCanaryActive
+        ? !!frontendClient.userState
+        : isInitialized,
+      isClientAuthenticated: isCanaryActive
+        ? frontendClient.userState?.status === 'authenticated'
+        : isAuthenticated,
+    };
+  }, [isCanaryActive, client, frontendClient]);
+
+  const subscribeAlert = useCallback(
+    async (
+      alertDetail: Readonly<{
+        eventType: EventTypeItem;
+        inputs: Record<string, unknown>;
+      }>,
+    ): Promise<SubscriptionData> => {
+      if (isCanaryActive) {
+        return subscribeAlertByFrontendClient(frontendClient, alertDetail);
+      } else {
+        return instantSubscribe({
+          alertConfiguration: chatConfiguration(),
+          alertName: alertName,
+        });
+      }
+    },
+    [isCanaryActive, frontendClient],
+  );
+
   useEffect(() => {
-    if (isAuthenticated && isInitialized && hasChanges === false) {
+    if (isClientAuthenticated && isClientInitialized && hasChanges === false) {
       checkForExistingTargetGroups();
     }
-  }, [instantSubscribe, isAuthenticated, isInitialized]);
+  }, [instantSubscribe, isClientAuthenticated, isClientInitialized]);
 
   const {
     alerts,
@@ -90,7 +130,39 @@ export const IntercomCard: React.FC<
     telegram: telegramErrorMessage,
   } = formErrorMessages;
 
-  const { client } = useNotifiClientContext();
+  const createSupportConversation = useCallback(() => {
+    if (isCanaryActive) {
+      return frontendClient
+        .createSupportConversation(
+          inputs as Types.CreateSupportConversationMutationVariables,
+        )
+        .then((result) => {
+          result.createSupportConversation.participants?.forEach(
+            (participant) => {
+              if (participant?.conversationParticipantType === 'MEMBER') {
+                setUserId(participant.profile.id);
+              }
+            },
+          );
+          setConversationId(result.createSupportConversation.id);
+          setIntercomCardView({
+            state: 'chatWindowView',
+          });
+        });
+    }
+
+    return client.createSupportConversation().then((result) => {
+      result.participants.forEach((participant) => {
+        if (participant.conversationParticipantType === 'MEMBER') {
+          setUserId(participant.profile.id);
+        }
+      });
+      setConversationId(result.id);
+      setIntercomCardView({
+        state: 'chatWindowView',
+      });
+    });
+  }, [inputs]);
 
   const checkForExistingTargetGroups = useCallback((): void => {
     for (const alert of Object.values(alerts)) {
@@ -136,7 +208,11 @@ export const IntercomCard: React.FC<
 
   const alertName = 'NOTIFI_CHAT_MESSAGES';
   useEffect(() => {
-    if (loading || !isInitialized || intercomCardView.state === 'settingView') {
+    if (
+      loading ||
+      !isClientInitialized ||
+      intercomCardView.state === 'settingView'
+    ) {
       return;
     }
 
@@ -144,23 +220,13 @@ export const IntercomCard: React.FC<
 
     setHasChatAlert(hasAlert);
     if (hasAlert) {
-      client.createSupportConversation().then((result) => {
-        result.participants.forEach((participant) => {
-          if (participant.conversationParticipantType === 'MEMBER') {
-            setUserId(participant.profile.id);
-          }
-        });
-        setConversationId(result.id);
-        setIntercomCardView({
-          state: 'chatWindowView',
-        });
-      });
+      createSupportConversation();
     } else {
       setIntercomCardView({
         state: 'startChatView',
       });
     }
-  }, [alerts, loading, isInitialized]);
+  }, [alerts, loading, isClientInitialized]);
 
   const hasErrors =
     emailErrorMessage !== '' ||
@@ -193,9 +259,15 @@ export const IntercomCard: React.FC<
       return;
     }
     try {
-      await instantSubscribe({
-        alertConfiguration: chatConfiguration(),
-        alertName: alertName,
+      await subscribeAlert({
+        eventType: {
+          type: 'createSupportConversation',
+          name: alertName,
+          sourceType: 'NOTIFI_CHAT',
+          filterType: 'NOTIFI_CHAT_MESSAGES',
+          alertFrequency: 'THREE_MINUTES',
+        },
+        inputs,
       });
       const result = await client.createSupportConversation();
       setConversationId(result.id);

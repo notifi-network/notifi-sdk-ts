@@ -2,6 +2,7 @@ import type { Operations, Types } from '@notifi-network/notifi-graphql';
 
 import {
   BroadcastEventTypeItem,
+  CreateSupportConversationEventTypeItem,
   CustomTopicTypeItem,
   DirectPushEventTypeItem,
   EventTypeItem,
@@ -354,6 +355,30 @@ const ensureHealthCheckSources = async (
   return source;
 };
 
+const ensureCreateSupportConversationSources = async (
+  service: Operations.GetSourcesService & Operations.CreateSourceService,
+  eventType: CreateSupportConversationEventTypeItem,
+  _inputs: Record<string, unknown>,
+): Promise<Types.SourceFragmentFragment> => {
+  const sourcesQuery = await service.getSources({});
+  const sources = sourcesQuery.source;
+  const source = sources?.find((it) => it?.type === 'NOTIFI_CHAT');
+  if (source) {
+    return source;
+  }
+  const createMutation = await service.createSource({
+    type: eventType.sourceType,
+    blockchainAddress: '*',
+  });
+
+  const newSource = createMutation.createSource;
+  if (newSource === undefined) {
+    throw new Error('Failed to create source');
+  }
+
+  return newSource;
+};
+
 const ensureSources = async (
   service: Operations.GetSourcesService &
     Operations.CreateSourceService &
@@ -404,6 +429,14 @@ const ensureSources = async (
     }
     case 'fusionToggle': {
       const source = await ensureFusionToggleSource(service, eventType, inputs);
+      return [source];
+    }
+    case 'createSupportConversation': {
+      const source = await ensureCreateSupportConversationSources(
+        service,
+        eventType,
+        inputs,
+      );
       return [source];
     }
     case 'label': {
@@ -684,6 +717,25 @@ const getXMTPFilter = (
   };
 };
 
+const getCreateSupportConversationFilter = (
+  source: Types.SourceFragmentFragment,
+  eventType: CreateSupportConversationEventTypeItem,
+  _inputs: Record<string, unknown>,
+): GetFilterResults => {
+  const filter = source.applicableFilters?.find(
+    (it) => it?.filterType === 'NOTIFI_CHAT_MESSAGES',
+  );
+  if (filter === undefined) {
+    throw new Error('Failed to retrieve filter: CreateSupportConversation');
+  }
+  return {
+    filter,
+    filterOptions: {
+      alertFrequency: eventType.alertFrequency,
+    },
+  };
+};
+
 export type HealthCheckEventInputsWithIndex = {
   index: number; // The index of CheckRatio list
   [key: string]: unknown; // The rest of inputs
@@ -886,6 +938,18 @@ export const ensureSourceAndFilters = async (
     }
     case 'fusionToggle': {
       const { filter, filterOptions } = getFusionSourceFilter(
+        sources[0],
+        eventType,
+        inputs,
+      );
+      return {
+        sourceGroup,
+        filter,
+        filterOptions,
+      };
+    }
+    case 'createSupportConversation': {
+      const { filter, filterOptions } = getCreateSupportConversationFilter(
         sources[0],
         eventType,
         inputs,
