@@ -1,4 +1,7 @@
-import { XMTPTopicTypeItem } from '@notifi-network/notifi-frontend-client';
+import {
+  EventTypeItem,
+  XMTPTopicTypeItem,
+} from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import React, {
   useCallback,
@@ -8,12 +11,17 @@ import React, {
   useState,
 } from 'react';
 
-import { useNotifiSubscriptionContext } from '../../context';
-import { useNotifiSubscribe } from '../../hooks';
+import {
+  useNotifiClientContext,
+  useNotifiSubscriptionContext,
+} from '../../context';
+import { SubscriptionData, useNotifiSubscribe } from '../../hooks';
 import {
   AlertConfiguration,
   DeepPartialReadonly,
   XMTPToggleConfiguration,
+  subscribeAlertByFrontendClient,
+  unsubscribeAlertByFrontendClient,
 } from '../../utils';
 import type { NotifiToggleProps } from './NotifiToggle';
 import { NotifiToggle } from './NotifiToggle';
@@ -38,11 +46,16 @@ export const EventTypeXMTPRow: React.FC<EventTypeXMPTRowProps> = ({
   config,
   inputs,
 }: EventTypeXMPTRowProps) => {
-  const { alerts, loading } = useNotifiSubscriptionContext();
+  const { alerts, loading, render } = useNotifiSubscriptionContext();
 
   const { instantSubscribe } = useNotifiSubscribe({
     targetGroupName: 'Default',
   });
+
+  const {
+    canary: { isActive: isCanaryActive, frontendClient },
+  } = useNotifiClientContext();
+
   const alertName = useMemo<string>(() => config.name, [config]);
 
   const alertConfiguration = useMemo<AlertConfiguration>(() => {
@@ -68,6 +81,44 @@ export const EventTypeXMTPRow: React.FC<EventTypeXMPTRowProps> = ({
     didFetch.current = true;
   }, [alertName, alerts]);
 
+  const subscribeAlert = useCallback(
+    async (
+      alertDetail: Readonly<{
+        eventType: EventTypeItem;
+        inputs: Record<string, unknown>;
+      }>,
+    ): Promise<SubscriptionData> => {
+      if (isCanaryActive) {
+        return subscribeAlertByFrontendClient(frontendClient, alertDetail);
+      } else {
+        return instantSubscribe({
+          alertConfiguration: alertConfiguration,
+          alertName: alertName,
+        });
+      }
+    },
+    [isCanaryActive, frontendClient],
+  );
+
+  const unSubscribeAlert = useCallback(
+    async (
+      alertDetail: Readonly<{
+        eventType: EventTypeItem;
+        inputs: Record<string, unknown>;
+      }>,
+    ) => {
+      if (isCanaryActive) {
+        return unsubscribeAlertByFrontendClient(frontendClient, alertDetail);
+      } else {
+        return instantSubscribe({
+          alertName: alertDetail.eventType.name,
+          alertConfiguration: null,
+        });
+      }
+    },
+    [isCanaryActive, frontendClient],
+  );
+
   const handleNewSubscription = useCallback(() => {
     if (loading || isNotificationLoading) {
       return;
@@ -77,9 +128,9 @@ export const EventTypeXMTPRow: React.FC<EventTypeXMPTRowProps> = ({
     if (!enabled) {
       setEnabled(true);
 
-      instantSubscribe({
-        alertConfiguration: alertConfiguration,
-        alertName: alertName,
+      subscribeAlert({
+        eventType: config,
+        inputs,
       })
         .then((res) => {
           // We update optimistically so we need to check if the alert exists.
@@ -88,8 +139,10 @@ export const EventTypeXMTPRow: React.FC<EventTypeXMPTRowProps> = ({
           if (responseHasAlert !== true) {
             setEnabled(false);
           }
+          isCanaryActive && frontendClient.fetchData().then(render);
         })
-        .catch(() => {
+        .catch((e) => {
+          console.log('Failed to subscribeAlert', e);
           setEnabled(false);
         })
         .finally(() => {
@@ -98,16 +151,20 @@ export const EventTypeXMTPRow: React.FC<EventTypeXMPTRowProps> = ({
     } else {
       setEnabled(false);
 
-      instantSubscribe({
-        alertConfiguration: null,
-        alertName: alertName,
+      unSubscribeAlert({
+        eventType: config,
+        inputs: inputs,
       })
         .then((res) => {
-          // We update optimistically so we need to check if the alert exists.
-          const responseHasAlert = res.alerts[alertName] !== undefined;
-          if (responseHasAlert !== false) {
-            setEnabled(true);
+          if (res) {
+            // We update optimistically so we need to check if the alert exists.
+            const responseHasAlert = res.alerts[alertName] !== undefined;
+            if (responseHasAlert !== false) {
+              setEnabled(true);
+            }
           }
+          // Else, ensured by frontendClient
+          isCanaryActive && frontendClient.fetchData().then(render);
         })
         .catch(() => {
           setEnabled(true);
