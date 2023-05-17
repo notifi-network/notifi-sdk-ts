@@ -106,6 +106,7 @@ type WalletParams =
 
 export type NotifiParams = Readonly<{
   alertConfigurations?: Record<string, AlertConfiguration | null>;
+  contextId?: string;
   dappAddress: string;
   env: NotifiEnvironment;
   keepSubscriptionData?: boolean;

@@ -76,6 +76,11 @@ export const NotifiSubscriptionCard: React.FC<
 > = (props: React.PropsWithChildren<NotifiSubscriptionCardProps>) => {
   const { params } = useNotifiClientContext();
 
+  // NOTE: This allows the card to be used with contexts outside of the card
+  if (params?.contextId) {
+    return <NotifiSubscriptionCardContainer {...props} />;
+  }
+
   return (
     <NotifiFormProvider>
       <NotifiSubscriptionContextProvider {...params}>
