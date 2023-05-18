@@ -1,5 +1,4 @@
 import { ConversationMessagesEntry } from '@notifi-network/notifi-core';
-import { Participant } from 'notifi-core/lib/models/ConversationMessages';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ListRange } from 'react-virtuoso';
 
@@ -9,15 +8,7 @@ import {
   sortByDate,
 } from '../utils/datetimeUtils';
 
-export type ChatMessage = Readonly<{
-  id: string;
-  message: string;
-  userId: string;
-  createdDate: string;
-  updatedDate: string;
-  conversationId: string;
-  conversationParticipant: Participant;
-}>;
+export type ChatMessage = ConversationMessagesEntry;
 
 type MessageDirection = 'INCOMING' | 'OUTGOING';
 

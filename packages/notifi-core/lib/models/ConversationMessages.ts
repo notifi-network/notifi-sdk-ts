@@ -1,3 +1,5 @@
+import { Types } from '@notifi-network/notifi-graphql';
+
 export type ConversationMessages = Readonly<{
   nodes?: Array<ConversationMessagesEntry> | undefined;
   pageInfo: {
@@ -6,16 +8,9 @@ export type ConversationMessages = Readonly<{
   };
 }>;
 
-export type ConversationMessagesEntry = Readonly<{
-  __typename?: 'ConversationMessage';
-  conversationParticipant: Participant;
-  id: string;
-  message: string;
-  userId: string;
-  createdDate: string;
-  updatedDate: string;
-  conversationId: string;
-}>;
+export type ConversationMessagesEntry = NonNullable<
+  NonNullable<Types.ConversationMessageFragment>
+>;
 
 export type Participant = Readonly<{
   __typename?: 'Participant';

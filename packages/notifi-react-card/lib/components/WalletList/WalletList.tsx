@@ -1,7 +1,5 @@
-import {
-  ConnectedWallet,
-  WalletWithSignParams,
-} from '@notifi-network/notifi-core';
+import { WalletWithSignParams } from '@notifi-network/notifi-core';
+import { Types } from '@notifi-network/notifi-graphql';
 import React from 'react';
 
 import {
@@ -11,7 +9,7 @@ import {
 import { ConnectWalletRow } from './ConnectWalletRow';
 
 export type WalletListInternalProps = Readonly<{
-  connectedWallets: ReadonlyArray<ConnectedWallet>;
+  connectedWallets: ReadonlyArray<Types.ConnectedWallet>;
   ownedWallets: ReadonlyArray<WalletWithSignParams>;
   disabled: boolean;
 }>;
@@ -49,7 +47,9 @@ export const WalletList: React.FC = () => {
   return (
     <WalletListInternal
       ownedWallets={owned}
-      connectedWallets={connectedWallets}
+      connectedWallets={connectedWallets.filter(
+        (wallet): wallet is Types.ConnectedWallet => !!wallet,
+      )}
       disabled={loading}
     />
   );

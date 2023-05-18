@@ -1,3 +1,5 @@
+import { Types } from '@notifi-network/notifi-graphql';
+
 /**
  * Target object for SMS/phone numbers
  *
@@ -10,9 +12,8 @@
  * @property {boolean} isConfirmed - Is confirmed? After adding it will be auto-confirmed. Users can opt-out with STOP codes
  *
  */
-export type SmsTarget = Readonly<{
-  id: string | null;
-  isConfirmed: boolean;
-  name: string | null;
-  phoneNumber: string | null;
-}>;
+export type SmsTarget = Types.FetchDataQuery['smsTarget'] extends infer R
+  ? R extends Array<infer V>
+    ? NonNullable<V>
+    : never
+  : never;

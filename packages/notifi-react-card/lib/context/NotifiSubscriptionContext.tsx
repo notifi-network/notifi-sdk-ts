@@ -250,7 +250,11 @@ export const NotifiSubscriptionContextProvider: React.FC<
       });
       setAlerts(alerts);
 
-      setConnectedWallets(newData.connectedWallet ?? []);
+      setConnectedWallets(
+        newData.connectedWallet?.filter(
+          (wallet): wallet is Types.ConnectedWallet => !!wallet,
+        ) ?? [],
+      );
       const emailTarget = targetGroup?.emailTargets?.[0] ?? null;
       const emailToSet = emailTarget?.emailAddress ?? '';
 
