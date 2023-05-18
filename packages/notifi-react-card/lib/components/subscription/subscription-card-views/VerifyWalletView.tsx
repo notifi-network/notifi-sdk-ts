@@ -1,13 +1,22 @@
-import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
+import {
+  CardConfigItemV1,
+  EventTypeConfig,
+} from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
-import React, { useCallback, useState } from 'react';
+import { isValidPhoneNumber } from 'libphonenumber-js';
+import { formatTelegramForSubscription } from 'notifi-react-card/lib/utils/stringUtils';
+import React, { useCallback, useMemo } from 'react';
 
 import {
   useNotifiClientContext,
+  useNotifiForm,
   useNotifiSubscriptionContext,
 } from '../../../context';
 import { useNotifiSubscribe } from '../../../hooks';
-import { createConfigurations } from '../../../utils';
+import {
+  createConfigurations,
+  subscribeAlertsByFrontendClient,
+} from '../../../utils';
 import { WalletList } from '../../WalletList';
 import NotifiCardButton, {
   NotifiCardButtonProps,
@@ -30,24 +39,77 @@ const VerifyWalletView: React.FC<VerifyWalletViewProps> = ({
   data,
   inputs,
 }) => {
-  const { cardView, setCardView, loading, setLoading, connectedWallets } =
-    useNotifiSubscriptionContext();
+  const {
+    cardView,
+    setCardView,
+    loading,
+    setLoading,
+    connectedWallets,
+    useDiscord,
+  } = useNotifiSubscriptionContext();
+
+  const {
+    formState: { phoneNumber, telegram: telegramId, email },
+  } = useNotifiForm();
+
   const { subscribe, updateWallets } = useNotifiSubscribe({
     targetGroupName: 'Default',
   });
+  const {
+    canary: { isActive: isCanaryActive, frontendClient },
+  } = useNotifiClientContext();
+
+  const targetGroup = useMemo(
+    () => ({
+      name: 'Default',
+      emailAddress: email === '' ? undefined : email,
+      phoneNumber: isValidPhoneNumber(phoneNumber) ? phoneNumber : undefined,
+      telegramId:
+        telegramId === ''
+          ? undefined
+          : formatTelegramForSubscription(telegramId),
+      discordId: useDiscord ? 'Default' : undefined,
+    }),
+    [email, phoneNumber, telegramId, useDiscord],
+  );
+
+  const subscribeAlerts = useCallback(
+    async (eventTypes: EventTypeConfig, inputs: Record<string, unknown>) => {
+      if (isCanaryActive) {
+        await frontendClient.ensureTargetGroup(targetGroup);
+        return subscribeAlertsByFrontendClient(
+          frontendClient,
+          eventTypes,
+          inputs,
+        );
+      }
+      return subscribe(
+        createConfigurations(data.eventTypes, inputs, connectedWallets),
+      );
+    },
+    [
+      isCanaryActive,
+      frontendClient,
+      email,
+      phoneNumber,
+      telegramId,
+      useDiscord,
+      subscribe,
+    ],
+  );
+  const renewWallets = useCallback(async () => {
+    if (isCanaryActive) {
+      return frontendClient.updateWallets();
+    }
+    return updateWallets();
+  }, [isCanaryActive, frontendClient, updateWallets]);
 
   const onClick = useCallback(async () => {
     if (cardView.state === 'verifyonboarding') {
       setLoading(true);
 
       try {
-        const alertConfigs = createConfigurations(
-          data.eventTypes,
-          inputs,
-          connectedWallets,
-        );
-
-        await subscribe(alertConfigs);
+        await subscribeAlerts(data.eventTypes, inputs);
       } finally {
         setLoading(false);
       }
@@ -55,13 +117,13 @@ const VerifyWalletView: React.FC<VerifyWalletViewProps> = ({
       setLoading(true);
 
       try {
-        await updateWallets();
+        await renewWallets();
       } finally {
         setLoading(false);
       }
     }
     setCardView({ state: 'preview' });
-  }, [setLoading, data, inputs, connectedWallets, subscribe]);
+  }, [setLoading, data, inputs, connectedWallets, subscribe, renewWallets]);
 
   return (
     <div
