@@ -105,7 +105,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
   } = useNotifiClientContext();
 
   const contextId = useMemo(() => {
-    return uuid();
+    return new Date();
   }, []);
 
   const [conversationId, setConversationId] = useState<string>('');
