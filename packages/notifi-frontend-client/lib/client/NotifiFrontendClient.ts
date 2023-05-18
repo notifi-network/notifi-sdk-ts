@@ -1,7 +1,3 @@
-import {
-  ConnectWalletParams,
-  SignMessageParams,
-} from '@notifi-network/notifi-core';
 import { Types } from '@notifi-network/notifi-graphql';
 import { NotifiService } from '@notifi-network/notifi-graphql';
 
@@ -11,6 +7,7 @@ import type {
   NotifiFrontendConfiguration,
 } from '../configuration';
 import type {
+  AlertFrequency,
   CardConfigItemV1,
   EventTypeItem,
   WalletBalanceEventTypeItem,
@@ -32,6 +29,92 @@ import {
   ensureTelegram,
   ensureWebhook,
 } from './ensureTarget';
+
+export type SignMessageParams =
+  | Readonly<{
+      walletBlockchain: 'SOLANA';
+      signMessage: Uint8SignMessageFunction;
+    }>
+  | Readonly<{
+      walletBlockchain:
+        | 'ETHEREUM'
+        | 'POLYGON'
+        | 'ARBITRUM'
+        | 'AVALANCHE'
+        | 'BINANCE'
+        | 'INJECTIVE'
+        | 'OPTIMISM';
+      signMessage: Uint8SignMessageFunction;
+    }>
+  | Readonly<{
+      walletBlockchain: 'APTOS';
+      signMessage: AptosSignMessageFunction;
+    }>
+  | Readonly<{
+      walletBlockchain: 'ACALA';
+      signMessage: AcalaSignMessageFunction;
+    }>
+  | Readonly<{
+      walletBlockchain: 'NEAR';
+      signMessage: Uint8SignMessageFunction;
+    }>
+  | Readonly<{
+      walletBlockchain: 'SUI';
+      signMessage: Uint8SignMessageFunction;
+    }>;
+
+export type WalletWithSignParams = Readonly<{
+  displayName?: string;
+}> &
+  WalletWithSignMessage;
+
+export type WalletWithSignMessage =
+  | Readonly<{
+      walletBlockchain: 'SOLANA';
+      walletPublicKey: string;
+      signMessage: Uint8SignMessageFunction;
+    }>
+  | Readonly<{
+      walletBlockchain:
+        | 'ETHEREUM'
+        | 'POLYGON'
+        | 'ARBITRUM'
+        | 'AVALANCHE'
+        | 'BINANCE'
+        | 'OPTIMISM';
+
+      walletPublicKey: string;
+      signMessage: Uint8SignMessageFunction;
+    }>
+  | Readonly<{
+      walletBlockchain: 'APTOS';
+      accountAddress: string;
+      walletPublicKey: string;
+      signMessage: AptosSignMessageFunction;
+    }>
+  | Readonly<{
+      walletBlockchain: 'ACALA';
+      accountAddress: string;
+      walletPublicKey: string;
+      signMessage: AcalaSignMessageFunction;
+    }>
+  | Readonly<{
+      walletBlockchain: 'NEAR';
+      accountAddress: string;
+      walletPublicKey: string;
+      signMessage: Uint8SignMessageFunction;
+    }>
+  | Readonly<{
+      walletBlockchain: 'SUI';
+      accountAddress: string;
+      walletPublicKey: string;
+      signMessage: Uint8SignMessageFunction;
+    }>;
+
+export type ConnectWalletParams = Readonly<{
+  walletParams: WalletWithSignParams;
+  connectWalletConflictResolutionTechnique: Types.ConnectWalletInput['connectWalletConflictResolutionTechnique'];
+}>;
 
 // TODO: Clean up blockchain-specific dependencies out of this package
 export type Uint8SignMessageFunction = (
