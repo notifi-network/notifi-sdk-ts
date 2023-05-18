@@ -13,7 +13,6 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { v4 as uuid } from 'uuid';
 
 import {
   FetchedCardViewState,
@@ -105,7 +104,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
   } = useNotifiClientContext();
 
   const contextId = useMemo(() => {
-    return new Date();
+    return new Date().toISOString();
   }, []);
 
   const [conversationId, setConversationId] = useState<string>('');
