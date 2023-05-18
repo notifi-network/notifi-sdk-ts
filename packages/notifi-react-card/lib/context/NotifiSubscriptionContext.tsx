@@ -13,6 +13,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
+import { v4 as uuid } from 'uuid';
 
 import {
   FetchedCardViewState,
@@ -50,6 +51,7 @@ export type NotifiSubscriptionData = Readonly<{
   telegramConfirmationUrl?: string;
   useHardwareWallet: boolean;
   useDiscord: boolean;
+  contextId: string;
   cardView: FetchedCardViewState;
   setCardView: React.Dispatch<React.SetStateAction<FetchedCardViewState>>;
   intercomCardView: IntercomCardView;
@@ -94,6 +96,7 @@ const hasKey = <K extends string>(
 ): obj is object & { [k in K]: unknown } => {
   return typeof obj === 'object' && obj !== null && key in obj;
 };
+const contextId = uuid();
 
 export const NotifiSubscriptionContextProvider: React.FC<
   PropsWithChildren<NotifiParams>
@@ -101,6 +104,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
   const {
     canary: { isActive: isCanaryActive, frontendClient },
   } = useNotifiClientContext();
+
   const [conversationId, setConversationId] = useState<string>('');
   const [userId, setUserId] = useState<string>('');
 
@@ -358,6 +362,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
     loading,
     params,
     phoneNumber,
+    contextId,
     telegramId,
     cardView,
     telegramConfirmationUrl,

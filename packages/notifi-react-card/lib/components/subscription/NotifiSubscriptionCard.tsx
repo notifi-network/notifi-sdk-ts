@@ -4,6 +4,7 @@ import {
   NotifiFormProvider,
   NotifiSubscriptionContextProvider,
   useNotifiClientContext,
+  useNotifiSubscriptionContext,
 } from '../../context';
 import { DeepPartialReadonly } from '../../utils';
 import type { NotifiFooterProps } from '../NotifiFooter';
@@ -75,9 +76,10 @@ export const NotifiSubscriptionCard: React.FC<
   React.PropsWithChildren<NotifiSubscriptionCardProps>
 > = (props: React.PropsWithChildren<NotifiSubscriptionCardProps>) => {
   const { params } = useNotifiClientContext();
-
-  // NOTE: This allows the card to be used with contexts outside of the card
-  if (params?.contextId) {
+  const { contextId } = useNotifiSubscriptionContext();
+  // NOTE: This allows the card to be used with contexts outside of the card.
+  // The context already exists at this point
+  if (contextId) {
     return <NotifiSubscriptionCardContainer {...props} />;
   }
 
