@@ -5,7 +5,7 @@ import {
   DiscordTargetStatus,
 } from '@notifi-network/notifi-core';
 import { Types } from '@notifi-network/notifi-graphql';
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useMemo } from 'react';
 import React, {
   createContext,
   useCallback,
@@ -13,6 +13,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
+import { v4 as uuid } from 'uuid';
 
 import {
   FetchedCardViewState,
@@ -50,6 +51,7 @@ export type NotifiSubscriptionData = Readonly<{
   telegramConfirmationUrl?: string;
   useHardwareWallet: boolean;
   useDiscord: boolean;
+  contextId: string;
   cardView: FetchedCardViewState;
   setCardView: React.Dispatch<React.SetStateAction<FetchedCardViewState>>;
   intercomCardView: IntercomCardView;
@@ -101,6 +103,11 @@ export const NotifiSubscriptionContextProvider: React.FC<
   const {
     canary: { isActive: isCanaryActive, frontendClient },
   } = useNotifiClientContext();
+
+  const contextId = useMemo(() => {
+    return uuid();
+  }, []);
+
   const [conversationId, setConversationId] = useState<string>('');
   const [userId, setUserId] = useState<string>('');
 
@@ -358,6 +365,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
     loading,
     params,
     phoneNumber,
+    contextId,
     telegramId,
     cardView,
     telegramConfirmationUrl,
