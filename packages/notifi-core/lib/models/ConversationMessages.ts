@@ -8,9 +8,8 @@ export type ConversationMessages = Readonly<{
   };
 }>;
 
-export type ConversationMessagesEntry = NonNullable<
-  NonNullable<Types.ConversationMessageFragment>
->;
+export type ConversationMessagesEntry =
+  NonNullable<Types.ConversationMessageFragment>;
 
 export type Participant = Readonly<{
   __typename?: 'Participant';
