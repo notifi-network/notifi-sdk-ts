@@ -5,7 +5,7 @@ import {
   DiscordTargetStatus,
 } from '@notifi-network/notifi-core';
 import { Types } from '@notifi-network/notifi-graphql';
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useMemo } from 'react';
 import React, {
   createContext,
   useCallback,
@@ -96,7 +96,6 @@ const hasKey = <K extends string>(
 ): obj is object & { [k in K]: unknown } => {
   return typeof obj === 'object' && obj !== null && key in obj;
 };
-const contextId = uuid();
 
 export const NotifiSubscriptionContextProvider: React.FC<
   PropsWithChildren<NotifiParams>
@@ -104,6 +103,10 @@ export const NotifiSubscriptionContextProvider: React.FC<
   const {
     canary: { isActive: isCanaryActive, frontendClient },
   } = useNotifiClientContext();
+
+  const contextId = useMemo(() => {
+    return uuid();
+  }, []);
 
   const [conversationId, setConversationId] = useState<string>('');
   const [userId, setUserId] = useState<string>('');
