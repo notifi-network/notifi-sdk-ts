@@ -46,7 +46,7 @@ export const EventTypeWalletBalanceRow: React.FC<
   config,
   inputs,
 }: EventTypeWalletBalanceRowProps) => {
-  const { alerts, loading, connectedWallets, render } =
+  const { alerts, loading, connectedWallets, render, setLoading } =
     useNotifiSubscriptionContext();
   const [isNotificationLoading, setIsNotificationLoading] =
     useState<boolean>(false);
@@ -118,14 +118,21 @@ export const EventTypeWalletBalanceRow: React.FC<
     if (loading || isNotificationLoading) {
       return;
     }
+    setLoading(true);
 
     if (!enabled) {
-      setEnabled(true);
-
       subscribeAlert({
         eventType: config,
         inputs,
-      });
+      })
+        .then(() => {
+          isCanaryActive && frontendClient.fetchData().then(render);
+          setEnabled(true);
+        })
+        .catch(() => {
+          setEnabled(false);
+        })
+        .finally(() => setLoading(false));
     } else {
       setEnabled(false);
       unSubscribeAlert({
@@ -145,10 +152,11 @@ export const EventTypeWalletBalanceRow: React.FC<
           isCanaryActive && frontendClient.fetchData().then(render);
         })
         .catch(() => {
-          setEnabled(false);
+          setEnabled(true);
         })
         .finally(() => {
           setIsNotificationLoading(false);
+          setLoading(false);
         });
     }
   }, [
