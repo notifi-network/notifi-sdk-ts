@@ -502,10 +502,29 @@ const getBroadcastFilter = (
   };
 };
 
+export type TradingPairInputs = {
+  pair: string;
+  direction: 'below' | 'above';
+  price: number;
+};
+
+const tradingPairInputsValidator = (
+  inputs: Record<string, unknown>,
+): inputs is TradingPairInputs => {
+  if (
+    typeof inputs.direction !== 'string' ||
+    typeof inputs.price !== 'number' ||
+    typeof inputs.pair !== 'string'
+  ) {
+    return false;
+  }
+  return true;
+};
+
 const getTradingPairFilter = (
   source: Types.SourceFragmentFragment,
   eventType: TradingPairEventTypeItem,
-  inputs: TradingPairInputs,
+  inputs: Record<string, unknown>,
 ): GetFilterResults => {
   const filter = source.applicableFilters?.find(
     (it) => it?.filterType === 'DIRECT_TENANT_MESSAGES',
@@ -518,21 +537,26 @@ const getTradingPairFilter = (
     eventType.tradingPairs,
     inputs,
   );
+  if (tradingPairs.length === 0) throw new Error('No trading pairs found');
 
-  if (tradingPairs.length === 0) {
-    throw new Error('Failed to retrieve TradingPairs');
-  }
+  const tradingPair = tradingPairInputsValidator(inputs)
+    ? inputs.pair
+    : tradingPairs[0];
+
+  const value = tradingPairInputsValidator(inputs)
+    ? inputs.price.toFixed(8)
+    : '1.00000000';
 
   return {
     filter,
     filterOptions: {
-      tradingPair: tradingPairs.length > 0 ? tradingPairs[0] : undefined,
+      tradingPair,
       values: {
         and: [
           {
             key: 'spotPrice',
-            op: inputs.direction === 'below' ? 'lt' : 'gt',
-            value: inputs.value.toFixed(8),
+            op: inputs.direction === 'above' ? 'gt' : 'lt',
+            value,
           },
         ],
       },
@@ -648,23 +672,6 @@ const getCustomFilter = (
     filter,
     filterOptions: getCustomFilterOptions(eventType, inputs),
   };
-};
-
-type TradingPairInputs = {
-  direction: 'below' | 'above';
-  value: number;
-};
-
-const TradingPairInputsValidator = (
-  inputs: Record<string, unknown>,
-): inputs is TradingPairInputs => {
-  if (
-    typeof inputs.direction !== 'string' ||
-    typeof inputs.value !== 'number'
-  ) {
-    return false;
-  }
-  return true;
 };
 
 const getXMTPFilter = (
@@ -807,7 +814,7 @@ export const ensureSourceAndFilters = async (
     }
 
     case 'tradingPair': {
-      if (!TradingPairInputsValidator(inputs)) {
+      if (!tradingPairInputsValidator(inputs)) {
         throw new Error('Invalid tradingPair inputs');
       }
       const { filter, filterOptions } = getTradingPairFilter(
