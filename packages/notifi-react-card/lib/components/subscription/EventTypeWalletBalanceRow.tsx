@@ -86,9 +86,7 @@ export const EventTypeWalletBalanceRow: React.FC<
         return subscribeAlertByFrontendClient(frontendClient, alertDetail);
       } else {
         return instantSubscribe({
-          alertConfiguration: walletBalanceConfiguration({
-            connectedWallets,
-          }),
+          alertConfiguration: walletBalanceConfiguration({ connectedWallets }),
           alertName: alertName,
         });
       }

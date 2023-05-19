@@ -1,4 +1,4 @@
-import { ThresholdDirection } from '@notifi-network/notifi-core';
+import { ThresholdDirection } from '@notifi-network/notifi-frontend-client';
 import {
   EventTypeItem,
   HealthCheckEventInputsWithCustomPercentage,

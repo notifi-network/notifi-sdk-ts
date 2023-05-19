@@ -1,4 +1,3 @@
-import { Alert } from '@notifi-network/notifi-core';
 import {
   EventTypeConfig,
   EventTypeItem,
@@ -27,7 +26,7 @@ export const subscribeAlertByFrontendClient = async (
     name: updatedTgs[0]?.name ?? '',
   };
 
-  const alerts: Record<string, Alert> = {};
+  const alerts: Record<string, Types.AlertFragmentFragment> = {};
 
   updatedData.alert?.forEach((alert) => {
     if (alert && alert.name) {
@@ -97,7 +96,7 @@ export const subscribeAlertsByFrontendClient = async (
     name: updatedTgs[0]?.name ?? '',
   };
 
-  const alerts: Record<string, Alert> = {};
+  const alerts: Record<string, Types.AlertFragmentFragment> = {};
 
   updatedData.alert?.forEach((alert) => {
     if (alert && alert.name) {
