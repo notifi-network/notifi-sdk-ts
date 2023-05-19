@@ -18,7 +18,7 @@ export const MessageList: React.FC<MessageListProps> = ({
   feed,
 }) => {
   const isIncoming = feed.direction === 'INCOMING';
-  const participantProfile = feed.messages[0].conversationParticipant.profile;
+  const participantProfile = feed.messages[0].conversationParticipant?.profile;
   return (
     <div
       className={clsx(
@@ -35,7 +35,7 @@ export const MessageList: React.FC<MessageListProps> = ({
         >
           <img
             src={
-              participantProfile.avatarDataType === 'URL'
+              participantProfile?.avatarDataType === 'URL'
                 ? participantProfile.avatarData
                 : ''
             }

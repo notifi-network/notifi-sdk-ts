@@ -111,11 +111,11 @@ export type CompleteLoginViaTransactionResult = Readonly<User>;
  */
 export type ClientUpdateAlertInput = Readonly<{
   alertId: string;
-  emailAddress: string | null;
-  phoneNumber: string | null;
-  telegramId: string | null;
+  emailAddress: string | undefined;
+  phoneNumber: string | undefined;
+  telegramId: string | undefined;
   webhook?: ClientCreateWebhookParams;
-  discordId: string | null;
+  discordId: string | undefined;
 }>;
 
 /**
@@ -140,15 +140,15 @@ export type ClientCreateAlertInput = Readonly<{
   sourceId: string;
   filterId: string;
   filterOptions?: Readonly<FilterOptions>;
-  emailAddress: string | null;
-  phoneNumber: string | null;
-  telegramId: string | null;
+  emailAddress: string | undefined;
+  phoneNumber: string | undefined;
+  telegramId: string | undefined;
   groupName?: string;
   targetGroupName?: string;
   webhook?: ClientCreateWebhookParams;
   sourceIds?: ReadonlyArray<string>;
   sourceGroupName?: string;
-  discordId: string | null;
+  discordId: string | undefined;
 }>;
 
 export type ClientCreateWebhookParams = Omit<CreateWebhookTargetInput, 'name'>;
@@ -208,11 +208,11 @@ export type ClientDeleteAlertInput = Readonly<{
  */
 export type ClientEnsureTargetGroupInput = Readonly<{
   name: string;
-  emailAddress: string | null;
-  phoneNumber: string | null;
-  telegramId: string | null;
+  emailAddress: string | undefined;
+  phoneNumber: string | undefined;
+  telegramId: string | undefined;
   webhook?: ClientCreateWebhookParams;
-  discordId: string | null;
+  discordId: string | undefined;
 }>;
 
 /**
@@ -440,5 +440,5 @@ export type NotifiClient = Readonly<{
   getConversationMessages: (
     input: GetConversationMessagesFullInput,
   ) => Promise<ConversationMessages>;
-  createDiscordTarget: (input: string) => Promise<string | null>;
+  createDiscordTarget: (input: string) => Promise<string | undefined>;
 }>;

@@ -1,3 +1,5 @@
+import { Types } from '@notifi-network/notifi-graphql';
+
 /**
  * Target object for email addresses
  *
@@ -10,9 +12,8 @@
  * @property {boolean} isConfirmed - Is email address confirmed? After adding an email address, it must be confirmed
  *
  */
-export type EmailTarget = Readonly<{
-  emailAddress: string | null;
-  id: string | null;
-  isConfirmed: boolean;
-  name: string | null;
-}>;
+export type EmailTarget = Types.FetchDataQuery['emailTarget'] extends infer R
+  ? R extends Array<infer V>
+    ? NonNullable<V>
+    : never
+  : never;

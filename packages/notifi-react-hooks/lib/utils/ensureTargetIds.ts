@@ -36,11 +36,11 @@ const ensureTargetIds = async (
     CreateDiscordTargetService,
   existing: ExistingData,
   input: Readonly<{
-    emailAddress: string | null;
-    phoneNumber: string | null;
-    telegramId: string | null;
+    emailAddress: string | undefined;
+    phoneNumber: string | undefined;
+    telegramId: string | undefined;
     webhook?: ClientCreateWebhookParams;
-    discordId: string | null;
+    discordId: string | undefined;
   }>,
 ) => {
   const { emailAddress, phoneNumber, telegramId, webhook, discordId } = input;

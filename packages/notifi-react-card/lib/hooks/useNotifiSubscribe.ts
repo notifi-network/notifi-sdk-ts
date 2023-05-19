@@ -364,10 +364,10 @@ export const useNotifiSubscribe: ({
       alertParams: InstantSubscribe,
       data: ClientData,
       contacts: Readonly<{
-        finalEmail: string | null;
-        finalPhoneNumber: string | null;
-        finalTelegramId: string | null;
-        finalDiscordId: string | null;
+        finalEmail: string | undefined;
+        finalPhoneNumber: string | undefined;
+        finalTelegramId: string | undefined;
+        finalDiscordId: string | undefined;
       }>,
     ): Promise<Alert | null> => {
       if (demoPreview) throw Error('Preview card does not support method call');
@@ -532,13 +532,13 @@ export const useNotifiSubscribe: ({
 
       const names = Object.keys(configurations);
 
-      const finalEmail = formEmail === '' ? null : formEmail;
+      const finalEmail = formEmail === '' ? undefined : formEmail;
       const finalTelegramId =
         formTelegram === ''
-          ? null
+          ? undefined
           : formatTelegramForSubscription(formTelegram);
 
-      let finalPhoneNumber = null;
+      let finalPhoneNumber = undefined;
       if (isValidPhoneNumber(formPhoneNumber)) {
         finalPhoneNumber = formPhoneNumber;
       }
@@ -556,7 +556,7 @@ export const useNotifiSubscribe: ({
       // "refresh" or "fetchData" to obtain existing settings first
       //
 
-      let finalDiscordId = null;
+      let finalDiscordId = undefined;
 
       if (useDiscord === true) {
         finalDiscordId = await client.createDiscordTarget('Default');
@@ -617,14 +617,16 @@ export const useNotifiSubscribe: ({
       throw new Error('Preview card does not support method call');
     }
 
-    const finalEmail = formEmail === '' ? null : formEmail;
+    const finalEmail = formEmail === '' ? undefined : formEmail;
 
     const finalTelegramId =
-      formTelegram === '' ? null : formatTelegramForSubscription(formTelegram);
+      formTelegram === ''
+        ? undefined
+        : formatTelegramForSubscription(formTelegram);
 
-    let finalPhoneNumber = null;
+    let finalPhoneNumber = undefined;
 
-    let finalDiscordId = null;
+    let finalDiscordId = undefined;
 
     if (useDiscord === true) {
       finalDiscordId =
@@ -667,20 +669,20 @@ export const useNotifiSubscribe: ({
     async (alertData: InstantSubscribe) => {
       if (demoPreview)
         throw new Error('Preview card does not support method call');
-      const finalEmail = formEmail === '' ? null : formEmail;
+      const finalEmail = formEmail === '' ? undefined : formEmail;
 
       const finalTelegramId =
         formTelegram === ''
-          ? null
+          ? undefined
           : formatTelegramForSubscription(formTelegram);
-      let finalPhoneNumber = null;
+      let finalPhoneNumber = undefined;
       if (isValidPhoneNumber(formPhoneNumber)) {
         finalPhoneNumber = formPhoneNumber;
       }
 
       const finalDiscordId =
         useDiscord === false || !discordTargetDatafromSubscriptionContext?.id
-          ? null
+          ? undefined
           : discordTargetDatafromSubscriptionContext?.id;
 
       setLoading(true);

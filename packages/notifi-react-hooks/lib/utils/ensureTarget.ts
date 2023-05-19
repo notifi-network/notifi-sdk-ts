@@ -16,21 +16,21 @@ export type CreateFunc<Service, T> = (
   service: Service,
   value: string,
 ) => Promise<T>;
-export type IdentifyFunc<T> = (arg: T) => string | null;
+export type IdentifyFunc<T> = (arg: T) => string | undefined;
 export type ValueTransformFunc = (value: string) => string;
 
-const ensureTarget = <Service, T extends Readonly<{ id: string | null }>>(
+const ensureTarget = <Service, T extends Readonly<{ id: string | undefined }>>(
   create: CreateFunc<Service, T>,
   identify: IdentifyFunc<T>,
   valueTransform?: ValueTransformFunc,
 ): ((
   service: Service,
   existing: Array<T> | undefined,
-  value: string | null,
-) => Promise<string | null>) => {
+  value: string | undefined,
+) => Promise<string | undefined>) => {
   return async (service, existing, value) => {
-    if (value === null) {
-      return null;
+    if (value === undefined) {
+      return undefined;
     }
 
     const transformedValue =
@@ -54,7 +54,7 @@ const ensureEmail = ensureTarget(
       name: value.toLowerCase(),
       value: value.toLowerCase(),
     }),
-  (arg: EmailTarget) => arg.emailAddress?.toLowerCase() ?? null,
+  (arg: EmailTarget) => arg.emailAddress?.toLowerCase() ?? undefined,
   (value: string) => value.toLowerCase(),
 );
 

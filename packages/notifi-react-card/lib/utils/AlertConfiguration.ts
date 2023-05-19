@@ -1,7 +1,4 @@
-import type {
-  ConnectedWallet,
-  FilterOptions,
-} from '@notifi-network/notifi-core';
+import type { FilterOptions } from '@notifi-network/notifi-core';
 import { EventTypeConfig } from '@notifi-network/notifi-frontend-client';
 import type { Types } from '@notifi-network/notifi-graphql';
 
@@ -241,13 +238,15 @@ export const tradingPairConfiguration = ({
 export const walletBalanceConfiguration = ({
   connectedWallets,
 }: Readonly<{
-  connectedWallets: ReadonlyArray<ConnectedWallet>;
+  connectedWallets: ReadonlyArray<Types.ConnectedWallet>;
 }>): AlertConfiguration => {
   return {
     type: 'multiple',
     filterType: 'BALANCE',
     filterOptions: null,
-    sources: connectedWallets.map(walletToSource),
+    sources: connectedWallets
+      .filter((wallet): wallet is Types.ConnectedWallet => !!wallet)
+      .map(walletToSource),
     sourceGroupName: 'User Wallets',
   };
 };
@@ -344,7 +343,9 @@ export const createConfigurations = (
       }
       case 'walletBalance': {
         configs[eventType.name] = walletBalanceConfiguration({
-          connectedWallets,
+          connectedWallets: connectedWallets.filter(
+            (wallet): wallet is Types.ConnectedWallet => !!wallet,
+          ),
         });
         break;
       }

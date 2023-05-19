@@ -16,7 +16,7 @@ import ensureTarget, {
 describe('ensureTarget', () => {
   const createSpy = jest.fn();
 
-  type TestTarget = Readonly<{ id: string | null }>;
+  type TestTarget = Readonly<{ id: string | undefined }>;
   const service = {};
   const ensureTestTarget = ensureTarget(createSpy, (it) => it.id);
 
@@ -25,7 +25,7 @@ describe('ensureTarget', () => {
   });
 
   it('returns null when the value is null', async () => {
-    const result = await ensureTestTarget(service, [], null);
+    const result = await ensureTestTarget(service, [], undefined);
     expect(result).toBeNull();
     expect(createSpy).not.toHaveBeenCalled();
   });
@@ -135,11 +135,11 @@ describe('ensureEmail', () => {
   const nullItem = {
     id: null,
     emailAddress: null,
-  } as EmailTarget;
+  } as unknown as EmailTarget;
 
   let existing = [existingItem, nullItem];
 
-  const subject = async (value: string | null) =>
+  const subject = async (value: string | undefined) =>
     ensureEmail(service, existing, value);
 
   beforeEach(() => {
@@ -224,7 +224,7 @@ describe('ensureSms', () => {
   } as SmsTarget;
   let existing = [existingItem];
 
-  const subject = async (value: string | null) =>
+  const subject = async (value: string | undefined) =>
     ensureSms(service, existing, value);
 
   beforeEach(() => {
@@ -292,13 +292,13 @@ describe('ensureTelegram', () => {
   } as TelegramTarget;
 
   const nullItem = {
-    id: null,
-    telegramId: null,
-  } as TelegramTarget;
+    id: undefined,
+    telegramId: undefined,
+  } as unknown as TelegramTarget;
 
   let existing = [existingItem, nullItem];
 
-  const subject = async (value: string | null) =>
+  const subject = async (value: string | undefined) =>
     ensureTelegram(service, existing, value);
 
   beforeEach(() => {

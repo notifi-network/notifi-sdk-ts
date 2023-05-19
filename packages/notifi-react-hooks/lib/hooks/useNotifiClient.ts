@@ -602,7 +602,7 @@ const useNotifiClient = (
 
   // when calling ensureDiscordTarget, a discord id should be returned
   const createDiscordTarget = useCallback(
-    async (input: string): Promise<string | null> => {
+    async (input: string): Promise<string | undefined> => {
       setLoading(true);
       const newData = await fetchDataImpl(service, Date, fetchDataRef.current);
 
@@ -657,11 +657,17 @@ const useNotifiClient = (
           newData.targetGroups,
           {
             name: input.name,
-            emailTargetIds,
-            smsTargetIds,
-            telegramTargetIds,
-            webhookTargetIds,
-            discordTargetIds,
+            emailTargetIds: emailTargetIds.filter((id): id is string => !!id),
+            smsTargetIds: smsTargetIds.filter((id): id is string => !!id),
+            telegramTargetIds: telegramTargetIds.filter(
+              (id): id is string => !!id,
+            ),
+            webhookTargetIds: webhookTargetIds.filter(
+              (id): id is string => !!id,
+            ),
+            discordTargetIds: discordTargetIds.filter(
+              (id): id is string => !!id,
+            ),
           },
         );
 
@@ -782,11 +788,17 @@ const useNotifiClient = (
           newData.targetGroups,
           {
             name: existingAlert.targetGroup.name ?? name,
-            emailTargetIds,
-            smsTargetIds,
-            telegramTargetIds,
-            webhookTargetIds,
-            discordTargetIds,
+            emailTargetIds: emailTargetIds.filter((id): id is string => !!id),
+            smsTargetIds: smsTargetIds.filter((id): id is string => !!id),
+            telegramTargetIds: telegramTargetIds.filter(
+              (id): id is string => !!id,
+            ),
+            webhookTargetIds: webhookTargetIds.filter(
+              (id): id is string => !!id,
+            ),
+            discordTargetIds: discordTargetIds.filter(
+              (id): id is string => !!id,
+            ),
           },
         );
 
@@ -958,11 +970,17 @@ const useNotifiClient = (
           newData.targetGroups,
           {
             name: targetGroupName ?? name,
-            emailTargetIds,
-            smsTargetIds,
-            telegramTargetIds,
-            webhookTargetIds,
-            discordTargetIds,
+            emailTargetIds: emailTargetIds.filter((id): id is string => !!id),
+            smsTargetIds: smsTargetIds.filter((id): id is string => !!id),
+            telegramTargetIds: telegramTargetIds.filter(
+              (id): id is string => !!id,
+            ),
+            webhookTargetIds: webhookTargetIds.filter(
+              (id): id is string => !!id,
+            ),
+            discordTargetIds: discordTargetIds.filter(
+              (id): id is string => !!id,
+            ),
           },
         );
 

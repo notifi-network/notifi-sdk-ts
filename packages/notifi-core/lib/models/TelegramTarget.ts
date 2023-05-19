@@ -1,3 +1,5 @@
+import { Types } from '@notifi-network/notifi-graphql';
+
 /**
  * Target object for Telegram accounts
  *
@@ -11,10 +13,9 @@
  * @property {string | null} confirmationUrl - If not confirmed, use this URL to allow the user to start the Telegram bot
  *
  */
-export type TelegramTarget = Readonly<{
-  id: string | null;
-  isConfirmed: boolean;
-  name: string | null;
-  telegramId: string | null;
-  confirmationUrl: string | null;
-}>;
+export type TelegramTarget =
+  Types.FetchDataQuery['telegramTarget'] extends infer R
+    ? R extends Array<infer V>
+      ? NonNullable<V>
+      : never
+    : never;

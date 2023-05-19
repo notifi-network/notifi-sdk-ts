@@ -13,6 +13,6 @@ import { Types } from '@notifi-network/notifi-graphql';
 export type ConnectedWallet =
   Types.FetchDataQuery['connectedWallet'] extends infer R
     ? R extends Array<infer V>
-      ? V
+      ? NonNullable<V>
       : never
     : never;
