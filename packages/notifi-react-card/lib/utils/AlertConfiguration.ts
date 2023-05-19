@@ -238,14 +238,16 @@ export const tradingPairConfiguration = ({
 export const walletBalanceConfiguration = ({
   connectedWallets,
 }: Readonly<{
-  connectedWallets: ReadonlyArray<Types.ConnectedWallet>;
+  connectedWallets: ReadonlyArray<Types.ConnectedWalletFragmentFragment>;
 }>): AlertConfiguration => {
   return {
     type: 'multiple',
     filterType: 'BALANCE',
     filterOptions: null,
     sources: connectedWallets
-      .filter((wallet): wallet is Types.ConnectedWallet => !!wallet)
+      .filter(
+        (wallet): wallet is Types.ConnectedWalletFragmentFragment => !!wallet,
+      )
       .map(walletToSource),
     sourceGroupName: 'User Wallets',
   };
@@ -344,7 +346,8 @@ export const createConfigurations = (
       case 'walletBalance': {
         configs[eventType.name] = walletBalanceConfiguration({
           connectedWallets: connectedWallets.filter(
-            (wallet): wallet is Types.ConnectedWallet => !!wallet,
+            (wallet): wallet is Types.ConnectedWalletFragmentFragment =>
+              !!wallet,
           ),
         });
         break;

@@ -4,13 +4,9 @@ import {
   Alert,
   ClientConfiguration,
   ConnectedWallet,
-  DiscordTarget,
-  EmailTarget,
   NotificationHistory,
-  SmsTarget,
   SourceGroup,
   TargetGroup,
-  TelegramTarget,
   TenantConfig,
   User,
   UserTopic,
@@ -32,14 +28,14 @@ import {
 
 export type ClientData = Readonly<{
   alerts: ReadonlyArray<Alert>;
-  connectedWallets: ReadonlyArray<ConnectedWallet>;
-  emailTargets: ReadonlyArray<EmailTarget>;
-  filters: ReadonlyArray<Types.Filter>;
-  smsTargets: ReadonlyArray<SmsTarget>;
-  sources: ReadonlyArray<Types.Source>;
-  targetGroups: ReadonlyArray<TargetGroup>;
-  telegramTargets: ReadonlyArray<TelegramTarget>;
-  discordTargets: ReadonlyArray<DiscordTarget>;
+  connectedWallets: ReadonlyArray<Types.ConnectedWalletFragmentFragment>;
+  emailTargets: ReadonlyArray<Types.EmailTargetFragmentFragment>;
+  filters: ReadonlyArray<Types.FilterFragmentFragment>;
+  smsTargets: ReadonlyArray<Types.SmsTargetFragmentFragment>;
+  sources: ReadonlyArray<Types.SourceFragmentFragment>;
+  targetGroups: ReadonlyArray<Types.TargetGroupFragmentFragment>;
+  telegramTargets: ReadonlyArray<Types.TelegramTargetFragmentFragment>;
+  discordTargets: ReadonlyArray<Types.DiscordTargetFragmentFragment>;
 }>;
 
 export type AlertFrequency =
@@ -407,14 +403,16 @@ export type NotifiClient = Readonly<{
   logOut: () => Promise<void>;
   connectWallet: (input: ConnectWalletParams) => Promise<ConnectedWallet>;
   createAlert: (input: ClientCreateAlertInput) => Promise<Alert>;
-  createSource: (input: Types.CreateSourceInput) => Promise<Types.Source>;
+  createSource: (
+    input: Types.CreateSourceInput,
+  ) => Promise<Types.SourceFragmentFragment>;
   createSupportConversation: () => Promise<SupportConversation>;
   createMetaplexAuctionSource: (
     input: ClientCreateMetaplexAuctionSourceInput,
-  ) => Promise<Types.Source>;
+  ) => Promise<Types.SourceFragmentFragment>;
   createBonfidaAuctionSource: (
     input: ClientCreateBonfidaAuctionSourceInput,
-  ) => Promise<Types.Source>;
+  ) => Promise<Types.SourceFragmentFragment>;
   deleteAlert: (input: ClientDeleteAlertInput) => Promise<string>;
   getConfiguration: () => Promise<ClientConfiguration>;
   getNotificationHistory: (

@@ -19,7 +19,4 @@ export enum DiscordTargetStatus {
   COMPLETE = 'COMPLETE',
 }
 
-export type DiscordTarget = Omit<
-  Types.DiscordTarget,
-  'createdDate' | 'updatedDate'
->;
+export type DiscordTarget = Types.DiscordTargetFragmentFragment;

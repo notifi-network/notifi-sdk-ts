@@ -390,7 +390,7 @@ export const useNotifiSubscribe: ({
 
       const ensureSource = async (
         params: Types.CreateSourceInput,
-      ): Promise<Types.Source> => {
+      ): Promise<Types.SourceFragmentFragment> => {
         const existing = data.sources.find(
           (s) =>
             s.type === params.type &&
@@ -457,7 +457,7 @@ export const useNotifiSubscribe: ({
           sourceGroupName,
         } = alertConfiguration;
 
-        let source: Types.Maybe<Types.Source>;
+        let source: Types.Maybe<Types.SourceFragmentFragment>;
 
         if (createSourceParam !== undefined) {
           source = await ensureSource({

@@ -12,8 +12,4 @@ import { Types } from '@notifi-network/notifi-graphql';
  * @property {boolean} isConfirmed - Is confirmed? After adding it will be auto-confirmed. Users can opt-out with STOP codes
  *
  */
-export type SmsTarget = Types.FetchDataQuery['smsTarget'] extends infer R
-  ? R extends Array<infer V>
-    ? NonNullable<V>
-    : never
-  : never;
+export type SmsTarget = Types.SmsTargetFragmentFragment;

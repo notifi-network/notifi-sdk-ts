@@ -17,8 +17,4 @@ import { Types } from '@notifi-network/notifi-graphql';
  */
 
 // Infer the fetched Alter type (Reason: the underlying type of target element ans sourceGroup not matching Gql types)
-export type Alert = NonNullable<Types.FetchDataQuery['alert']> extends Array<
-  infer U
->
-  ? NonNullable<U>
-  : never;
+export type Alert = Types.AlertFragmentFragment;

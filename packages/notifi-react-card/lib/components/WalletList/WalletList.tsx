@@ -9,7 +9,7 @@ import {
 import { ConnectWalletRow } from './ConnectWalletRow';
 
 export type WalletListInternalProps = Readonly<{
-  connectedWallets: ReadonlyArray<Types.ConnectedWallet>;
+  connectedWallets: ReadonlyArray<Types.ConnectedWalletFragmentFragment>;
   ownedWallets: ReadonlyArray<WalletWithSignParams>;
   disabled: boolean;
 }>;
@@ -48,7 +48,7 @@ export const WalletList: React.FC = () => {
     <WalletListInternal
       ownedWallets={owned}
       connectedWallets={connectedWallets.filter(
-        (wallet): wallet is Types.ConnectedWallet => !!wallet,
+        (wallet): wallet is Types.ConnectedWalletFragmentFragment => !!wallet,
       )}
       disabled={loading}
     />

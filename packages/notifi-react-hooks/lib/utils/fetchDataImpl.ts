@@ -25,8 +25,8 @@ import { Types } from '@notifi-network/notifi-graphql';
 export type InternalData = {
   alerts: Alert[];
   connectedWallets: ConnectedWallet[];
-  filters: Types.Filter[];
-  sources: Types.Source[];
+  filters: Types.FilterFragmentFragment[];
+  sources: Types.SourceFragmentFragment[];
   sourceGroups: SourceGroup[];
   targetGroups: TargetGroup[];
   emailTargets: EmailTarget[];
@@ -84,7 +84,7 @@ const doFetchData = async (service: Service): Promise<InternalData> => {
   ]);
 
   const filterIds = new Set<string | null>();
-  const filters: Types.Filter[] = [];
+  const filters: Types.FilterFragmentFragment[] = [];
   sources.forEach((source) => {
     source.applicableFilters?.forEach((filter) => {
       if (!filterIds.has(filter?.id ?? '')) {
