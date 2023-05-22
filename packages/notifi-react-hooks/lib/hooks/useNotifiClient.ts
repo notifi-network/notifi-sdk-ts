@@ -284,29 +284,40 @@ const useNotifiClient = (
    * <br>
    * See [Alert Creation Guide]{@link https://docs.notifi.network} for more information on creating Alerts
    */
-  const fetchData = useCallback(async () => {
-    try {
-      setLoading(true);
-      const newData = await fetchDataImpl(service, Date, fetchDataRef.current);
-      setInternalData(newData);
+  const fetchData = useCallback(
+    async (forceFetch?: boolean) => {
+      try {
+        if (forceFetch === true) {
+          fetchDataRef.current = {};
+        }
 
-      const clientData = projectData(newData);
-      if (clientData === null) {
-        throw new Error('Unknown error');
-      }
+        setLoading(true);
+        const newData = await fetchDataImpl(
+          service,
+          Date,
+          fetchDataRef.current,
+        );
+        setInternalData(newData);
 
-      return clientData;
-    } catch (e: unknown) {
-      if (e instanceof Error) {
-        setError(e);
-      } else {
-        setError(new NotifiClientError(e));
+        const clientData = projectData(newData);
+        if (clientData === null) {
+          throw new Error('Unknown error');
+        }
+
+        return clientData;
+      } catch (e: unknown) {
+        if (e instanceof Error) {
+          setError(e);
+        } else {
+          setError(new NotifiClientError(e));
+        }
+        throw e;
+      } finally {
+        setLoading(false);
       }
-      throw e;
-    } finally {
-      setLoading(false);
-    }
-  }, [service]);
+    },
+    [service],
+  );
 
   useEffect(() => {
     // Initial load

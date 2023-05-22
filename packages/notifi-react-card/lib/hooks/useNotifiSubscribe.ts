@@ -334,7 +334,7 @@ export const useNotifiSubscribe: ({
     }, [walletPublicKey, client, params, render]);
 
   const reload = useCallback(async (): Promise<SubscriptionData> => {
-    const newData = await client.fetchData();
+    const newData = await client.fetchData(true);
     copyAuths(newData);
     const results = render(newData);
     return results;
