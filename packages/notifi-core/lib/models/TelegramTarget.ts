@@ -13,9 +13,4 @@ import { Types } from '@notifi-network/notifi-graphql';
  * @property {string | null} confirmationUrl - If not confirmed, use this URL to allow the user to start the Telegram bot
  *
  */
-export type TelegramTarget =
-  Types.FetchDataQuery['telegramTarget'] extends infer R
-    ? R extends Array<infer V>
-      ? NonNullable<V>
-      : never
-    : never;
+export type TelegramTarget = Types.TelegramTargetFragmentFragment;

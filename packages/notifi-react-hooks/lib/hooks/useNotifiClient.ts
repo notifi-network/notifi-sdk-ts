@@ -937,7 +937,7 @@ const useNotifiClient = (
         }
 
         let sourceIds: ReadonlyArray<string> = [];
-        let sourceToUse: Types.Maybe<Types.Source>;
+        let sourceToUse: Types.Maybe<Types.SourceFragmentFragment>;
         if (sourceId === '' && sourceIdsInput !== undefined) {
           sourceToUse = newData.sources.find((s) => s.id === sourceIdsInput[0]);
           sourceIds = sourceIdsInput;
@@ -1122,7 +1122,9 @@ const useNotifiClient = (
    * See [Alert Creation Guide]{@link https://docs.notifi.network} for more information on creating Alerts
    */
   const createSource = useCallback(
-    async (input: Types.CreateSourceInput): Promise<Types.Source> => {
+    async (
+      input: Types.CreateSourceInput,
+    ): Promise<Types.SourceFragmentFragment> => {
       setLoading(true);
       try {
         const newData = await fetchDataImpl(
@@ -1172,7 +1174,7 @@ const useNotifiClient = (
   const createBonfidaAuctionSource = useCallback(
     async (
       input: ClientCreateBonfidaAuctionSourceInput,
-    ): Promise<Types.Source> => {
+    ): Promise<Types.SourceFragmentFragment> => {
       setLoading(true);
       try {
         const newData = await fetchDataImpl(
@@ -1216,7 +1218,7 @@ const useNotifiClient = (
   const createMetaplexAuctionSource = useCallback(
     async (
       input: ClientCreateMetaplexAuctionSourceInput,
-    ): Promise<Types.Source> => {
+    ): Promise<Types.SourceFragmentFragment> => {
       setLoading(true);
       try {
         const newData = await fetchDataImpl(

@@ -13,7 +13,4 @@ import { Types } from '@notifi-network/notifi-graphql';
  */
 
 // Infer the fetched Alter type (Reason: the underlying type of targetGroup element not matching Types.TargetGroup)
-export type SourceGroup = Omit<
-  Types.SourceGroup,
-  'createdDate' | 'updatedDate'
->;
+export type SourceGroup = Types.SourceGroupFragmentFragment;

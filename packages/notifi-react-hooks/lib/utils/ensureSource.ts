@@ -14,9 +14,9 @@ export type ValueTransformFunc = (value: string) => string;
 
 const ensureSource = async (
   service: CreateSourceService,
-  existing: Types.Source[],
+  existing: Types.SourceFragmentFragment[],
   input: Types.CreateSourceInput,
-): Promise<Types.Source> => {
+): Promise<Types.SourceFragmentFragment> => {
   const found = existing.find((it) => input.name === it.name);
   if (found !== undefined) {
     return found;
@@ -30,9 +30,9 @@ const ensureSource = async (
 
 const ensureBonfidaAuctionSource = async (
   service: CreateSourceService,
-  existing: Types.Source[],
+  existing: Types.SourceFragmentFragment[],
   input: ClientCreateBonfidaAuctionSourceInput,
-): Promise<Types.Source> => {
+): Promise<Types.SourceFragmentFragment> => {
   const { auctionAddressBase58, auctionName } = input;
   const underlyingAddress = `${auctionName}:;:${auctionAddressBase58}`;
 
@@ -45,9 +45,9 @@ const ensureBonfidaAuctionSource = async (
 
 const ensureMetaplexAuctionSource = async (
   service: CreateSourceService,
-  existing: Types.Source[],
+  existing: Types.SourceFragmentFragment[],
   input: ClientCreateMetaplexAuctionSourceInput,
-): Promise<Types.Source> => {
+): Promise<Types.SourceFragmentFragment> => {
   const { auctionAddressBase58, auctionWebUrl } = input;
   const underlyingAddress = `${auctionWebUrl}:;:${auctionAddressBase58}`;
 

@@ -14,4 +14,4 @@ import { Types } from '@notifi-network/notifi-graphql';
  * @property {DiscordTarget[] | null} discordTargets - Array of discordTargets
  *
  */
-export type TargetGroup = Types.TargetGroup;
+export type TargetGroup = Types.TargetGroupFragmentFragment;

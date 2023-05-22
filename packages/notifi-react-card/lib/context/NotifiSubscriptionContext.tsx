@@ -252,7 +252,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
 
       setConnectedWallets(
         newData.connectedWallet?.filter(
-          (wallet): wallet is Types.ConnectedWallet => !!wallet,
+          (wallet): wallet is Types.ConnectedWalletFragmentFragment => !!wallet,
         ) ?? [],
       );
       const emailTarget = targetGroup?.emailTargets?.[0] ?? null;

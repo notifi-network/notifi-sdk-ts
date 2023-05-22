@@ -10,9 +10,4 @@ import { Types } from '@notifi-network/notifi-graphql';
  * @property {string} walletBlockchain - the blockchain associated with the wallet
  *
  */
-export type ConnectedWallet =
-  Types.FetchDataQuery['connectedWallet'] extends infer R
-    ? R extends Array<infer V>
-      ? NonNullable<V>
-      : never
-    : never;
+export type ConnectedWallet = Types.ConnectedWalletFragmentFragment;

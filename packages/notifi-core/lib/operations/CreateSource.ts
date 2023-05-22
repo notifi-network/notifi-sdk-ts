@@ -19,7 +19,7 @@ import { Operation } from '../models';
 // TODO: Finally will be deprecated and replaced with automatically generated types
 export type CreateSourceInput = Types.CreateSourceInput;
 
-export type CreateSourceResult = Types.Source;
+export type CreateSourceResult = Types.SourceFragmentFragment;
 
 export type CreateSourceService = Readonly<{
   createSource: Operation<Types.CreateSourceInput, CreateSourceResult>;
