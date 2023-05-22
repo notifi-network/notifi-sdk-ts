@@ -358,6 +358,21 @@ export const createConfigurations = (
         });
         break;
       }
+
+      case 'fusionToggle': {
+        configs[eventType.name] = fusionToggleConfiguration({
+          fusionId: resolveStringRef(
+            eventType.name,
+            eventType.fusionEventId,
+            inputs,
+          ),
+          fusionSourceAddress: resolveStringRef(
+            eventType.name,
+            eventType.sourceAddress,
+            inputs,
+          ),
+        });
+      }
     }
   });
 
