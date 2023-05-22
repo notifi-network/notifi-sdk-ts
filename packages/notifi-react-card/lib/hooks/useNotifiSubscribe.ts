@@ -68,6 +68,7 @@ export const useNotifiSubscribe: ({
   ) => Promise<SubscriptionData>;
   updateTargetGroups: () => Promise<SubscriptionData>;
   resendEmailVerificationLink: (emailId: string) => Promise<string>;
+  reload: () => Promise<SubscriptionData>;
 }> = ({ targetGroupName = 'Default' }: useNotifiSubscribeProps) => {
   const { demoPreview } = useNotifiDemoPreviewContext();
 
@@ -332,6 +333,13 @@ export const useNotifiSubscribe: ({
       return render(newData);
     }, [walletPublicKey, client, params, render]);
 
+  const reload = useCallback(async (): Promise<SubscriptionData> => {
+    const newData = await client.fetchData();
+    copyAuths(newData);
+    const results = render(newData);
+    return results;
+  }, [client.fetchData, copyAuths, render]);
+
   const logIn = useCallback(async (): Promise<SubscriptionData> => {
     if (demoPreview)
       throw new Error('Preview card does not support method call');
@@ -357,6 +365,7 @@ export const useNotifiSubscribe: ({
     logInViaHardwareWallet,
     render,
     setLoading,
+    copyAuths,
   ]);
 
   const updateAlertInternal = useCallback(
@@ -794,5 +803,6 @@ export const useNotifiSubscribe: ({
     updateTargetGroups,
     subscribeWallet,
     updateWallets,
+    reload,
   };
 };
