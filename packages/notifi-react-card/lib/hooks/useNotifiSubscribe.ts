@@ -694,36 +694,40 @@ export const useNotifiSubscribe: ({
           ? undefined
           : discordTargetDatafromSubscriptionContext?.id;
 
-      setLoading(true);
+      try {
+        setLoading(true);
+        await logIn();
+        const data = await client.fetchData();
+        //
+        // Yes, we're ignoring the server side values and just using whatever the client typed in
+        // We should eventually always start from a logged in state from client having called
+        // "refresh" or "fetchData" to obtain existing settings first
+        //
 
-      await logIn();
-      const data = await client.fetchData();
-      //
-      // Yes, we're ignoring the server side values and just using whatever the client typed in
-      // We should eventually always start from a logged in state from client having called
-      // "refresh" or "fetchData" to obtain existing settings first
-      //
-
-      const alert = await updateAlertInternal(alertData, data, {
-        finalEmail,
-        finalPhoneNumber,
-        finalTelegramId,
-        finalDiscordId,
-      });
-
-      if (alert === null && keepSubscriptionData) {
-        // We didn't create or update any alert, manually update the targets
-        await client.ensureTargetGroup({
-          emailAddress: finalEmail,
-          name: targetGroupName,
-          phoneNumber: finalPhoneNumber,
-          telegramId: finalTelegramId,
-          discordId: finalDiscordId,
+        const alert = await updateAlertInternal(alertData, data, {
+          finalEmail,
+          finalPhoneNumber,
+          finalTelegramId,
+          finalDiscordId,
         });
+
+        if (alert === null && keepSubscriptionData) {
+          // We didn't create or update any alert, manually update the targets
+          await client.ensureTargetGroup({
+            emailAddress: finalEmail,
+            name: targetGroupName,
+            phoneNumber: finalPhoneNumber,
+            telegramId: finalTelegramId,
+            discordId: finalDiscordId,
+          });
+        }
+      } catch (e) {
+        throw new Error('Something went wrong');
+      } finally {
+        setLoading(false);
       }
       const newData = await client.fetchData();
       const results = render(newData);
-      setLoading(false);
       return results;
     },
     [
