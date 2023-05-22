@@ -398,7 +398,7 @@ export type NotifiClient = Readonly<{
   completeLoginViaTransaction: (
     input: CompleteLoginViaTransactionInput,
   ) => Promise<CompleteLoginViaTransactionResult>;
-  fetchData: () => Promise<ClientData>;
+  fetchData: (forceFetch?: boolean) => Promise<ClientData>;
   logIn: (signer: SignMessageParams) => Promise<User>;
   logOut: () => Promise<void>;
   connectWallet: (input: ConnectWalletParams) => Promise<ConnectedWallet>;
