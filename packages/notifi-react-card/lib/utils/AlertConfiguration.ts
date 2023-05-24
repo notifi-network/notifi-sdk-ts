@@ -10,7 +10,7 @@ export type SingleSourceAlertConfiguration = Readonly<{
   type: 'single';
   sourceType: Types.CreateSourceInput['type'];
   createSource?: Readonly<{
-    address: string;
+    blockchainAddress: string;
     fusionEventTypeId?: string;
   }>;
   filterType: string;
@@ -39,7 +39,7 @@ export const chatConfiguration = (): AlertConfiguration => {
     },
     sourceType: 'NOTIFI_CHAT',
     createSource: {
-      address: '*',
+      blockchainAddress: '*',
     },
   };
 };
@@ -69,7 +69,7 @@ export const customThresholdConfiguration = ({
       thresholdDirection,
     },
     createSource: {
-      address: sourceAddress,
+      blockchainAddress: sourceAddress,
     },
   };
 };
@@ -91,7 +91,7 @@ export const customToggleConfiguration = ({
     filterType,
     filterOptions,
     createSource: {
-      address: sourceAddress,
+      blockchainAddress: sourceAddress,
     },
   };
 };
@@ -150,7 +150,7 @@ export const fusionToggleConfiguration = ({
     filterOptions: {},
     sourceType: 'FUSION_SOURCE',
     createSource: {
-      address: fusionSourceAddress,
+      blockchainAddress: fusionSourceAddress,
       fusionEventTypeId: fusionId,
     },
   };
@@ -202,7 +202,7 @@ export const hedgeProtocolConfiguration = ({
     filterOptions: {},
     sourceType: 'HEDGE_PROTOCOL',
     createSource: {
-      address: walletAddress,
+      blockchainAddress: walletAddress,
     },
   };
 };
