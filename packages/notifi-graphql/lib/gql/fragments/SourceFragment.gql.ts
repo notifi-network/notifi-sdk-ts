@@ -8,6 +8,7 @@ export const SourceFragment = gql`
     name
     type
     blockchainAddress
+    fusionEventTypeId
     applicableFilters {
       ...FilterFragment
     }

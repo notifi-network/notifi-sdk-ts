@@ -403,7 +403,8 @@ export const useNotifiSubscribe: ({
         const existing = data.sources.find(
           (s) =>
             s.type === params.type &&
-            s.blockchainAddress === params.blockchainAddress,
+            s.blockchainAddress === params.blockchainAddress &&
+            s.fusionEventTypeId === params.fusionEventTypeId,
         );
         if (existing !== undefined) {
           return existing;
@@ -469,11 +470,15 @@ export const useNotifiSubscribe: ({
         let source: Types.Maybe<Types.SourceFragmentFragment>;
 
         if (createSourceParam !== undefined) {
+          const eventTypeId = createSourceParam.fusionEventTypeId;
+          const address = createSourceParam.address;
+          const name =
+            eventTypeId !== undefined ? `${eventTypeId}:;:${address}` : address;
           source = await ensureSource({
-            name: createSourceParam.address,
-            blockchainAddress: createSourceParam.address,
+            name,
+            blockchainAddress: address,
             type: sourceType,
-            fusionEventTypeId: createSourceParam?.fusionEventTypeId,
+            fusionEventTypeId: eventTypeId,
           });
         } else {
           source = data.sources.find((s) => s.type === sourceType);
