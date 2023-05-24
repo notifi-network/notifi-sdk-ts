@@ -6,6 +6,7 @@ fragment sourceFragment on Source {
   name
   type
   blockchainAddress
+  fusionEventTypeId
   applicableFilters {
     ...filterFragment
   }

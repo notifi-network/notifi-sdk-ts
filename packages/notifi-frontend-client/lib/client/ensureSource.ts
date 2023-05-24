@@ -42,17 +42,45 @@ const ensureDirectPushSource = async (
 };
 const ensureFusionToggleSource = async (
   service: Operations.GetSourcesService & Operations.CreateSourceService,
-  _eventType: FusionToggleEventTypeItem,
-  _inputs: Record<string, unknown>,
+  eventType: FusionToggleEventTypeItem,
+  inputs: Record<string, unknown>,
 ): Promise<Types.SourceFragmentFragment> => {
-  const sourcesQuery = await service.getSources({});
-  const sources = sourcesQuery.source;
-  const source = sources?.find(
-    (it) => it !== undefined && it.type === 'FUSION_SOURCE',
+  const address = resolveStringRef(
+    eventType.name,
+    eventType.sourceAddress,
+    inputs,
   );
 
+  const eventTypeId = resolveStringRef(
+    eventType.name,
+    eventType.fusionEventId,
+    inputs,
+  );
+
+  const sourcesQuery = await service.getSources({});
+  const sources = sourcesQuery.source;
+  const existing = sources?.find(
+    (it) =>
+      it !== undefined &&
+      it.type === 'FUSION_SOURCE' &&
+      it.blockchainAddress === address &&
+      it.fusionEventTypeId === eventTypeId,
+  );
+
+  if (existing !== undefined) {
+    return existing;
+  }
+
+  const createMutation = await service.createSource({
+    type: 'FUSION_SOURCE',
+    blockchainAddress: address,
+    fusionEventTypeId: eventTypeId,
+  });
+
+  const source = createMutation.createSource;
+
   if (source === undefined) {
-    throw new Error('Failed to identify fusion source');
+    throw new Error('Failed to create source');
   }
 
   return source;
