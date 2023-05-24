@@ -10,6 +10,7 @@ export type SingleSourceAlertConfiguration = Readonly<{
   type: 'single';
   sourceType: Types.CreateSourceInput['type'];
   createSource?: Readonly<{
+    name?: string;
     blockchainAddress: string;
     fusionEventTypeId?: string;
   }>;
@@ -133,7 +134,7 @@ export const broadcastMessageConfiguration = ({
     filterOptions: {},
     sourceType: 'BROADCAST',
     createSource: {
-      address: topicName,
+      blockchainAddress: topicName,
     },
   };
 };

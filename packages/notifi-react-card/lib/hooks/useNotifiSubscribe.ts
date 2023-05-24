@@ -470,8 +470,9 @@ export const useNotifiSubscribe: ({
 
         if (createSourceParam !== undefined) {
           source = await ensureSource({
-            name: createSourceParam.address,
-            blockchainAddress: createSourceParam.address,
+            name:
+              createSourceParam?.name ?? createSourceParam.blockchainAddress,
+            blockchainAddress: createSourceParam.blockchainAddress,
             type: sourceType,
             fusionEventTypeId: createSourceParam?.fusionEventTypeId,
           });
