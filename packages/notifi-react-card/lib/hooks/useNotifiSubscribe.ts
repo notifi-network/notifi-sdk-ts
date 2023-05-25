@@ -435,7 +435,8 @@ export const useNotifiSubscribe: ({
         } else {
           const sourceIds: string[] = [];
           const existingSourceGroup = data.sourceGroups.find(
-            (sourceGroup) => sourceGroup?.name === sourceGroupName,
+            (sourceGroup) =>
+              sourceGroup?.name === (sourceGroupName ?? alertName),
           );
 
           if (maintainSourceGroup && existingSourceGroup) {
@@ -532,7 +533,8 @@ export const useNotifiSubscribe: ({
           const sourceIds: string[] = [];
 
           const existingSourceGroup = data.sourceGroups.find(
-            (sourceGroup) => sourceGroup?.name === sourceGroupName,
+            (sourceGroup) =>
+              sourceGroup?.name === (sourceGroupName ?? alertName),
           );
 
           if (maintainSourceGroup && existingSourceGroup) {
