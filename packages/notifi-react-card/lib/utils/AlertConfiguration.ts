@@ -16,6 +16,7 @@ export type SingleSourceAlertConfiguration = Readonly<{
   filterType: string;
   filterOptions: FilterOptions | null;
   sourceGroupName?: string;
+  maintainSourceGroup?: boolean;
 }>;
 
 export type MultipleSourceAlertConfiguration = Readonly<{
@@ -24,6 +25,7 @@ export type MultipleSourceAlertConfiguration = Readonly<{
   filterType: string;
   filterOptions: FilterOptions | null;
   sourceGroupName?: string;
+  maintainSourceGroup?: boolean;
 }>;
 
 export type AlertConfiguration =
@@ -140,12 +142,15 @@ export const broadcastMessageConfiguration = ({
 export const fusionToggleConfiguration = ({
   fusionId,
   fusionSourceAddress,
+  maintainSourceGroup,
 }: Readonly<{
   fusionId: string;
   fusionSourceAddress: string;
+  maintainSourceGroup?: boolean;
 }>): AlertConfiguration => {
   return {
     type: 'single',
+    maintainSourceGroup,
     filterType: 'FUSION_SOURCE',
     filterOptions: {},
     sourceType: 'FUSION_SOURCE',
@@ -361,6 +366,7 @@ export const createConfigurations = (
 
       case 'fusionToggle': {
         configs[eventType.name] = fusionToggleConfiguration({
+          maintainSourceGroup: eventType.maintainSourceGroup,
           fusionId: resolveStringRef(
             eventType.name,
             eventType.fusionEventId,

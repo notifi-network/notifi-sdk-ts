@@ -422,7 +422,9 @@ export const useNotifiSubscribe: ({
           filterType,
           sources: sourcesInput,
           sourceGroupName,
+          maintainSourceGroup,
         } = alertConfiguration;
+
         const sources = await Promise.all(sourcesInput.map(ensureSource));
         const filter = sources
           .flatMap((s) => s.applicableFilters)
@@ -432,11 +434,25 @@ export const useNotifiSubscribe: ({
           return null;
         } else {
           const sourceIds: string[] = [];
-          sources.forEach((s) => {
-            if (s.id !== null) {
-              sourceIds.push(s.id);
-            }
-          });
+          const existingSourceGroup = data.sourceGroups.find(
+            (sourceGroup) =>
+              sourceGroup?.name === (sourceGroupName ?? alertName),
+          );
+
+          if (maintainSourceGroup && existingSourceGroup) {
+            existingSourceGroup.sources?.forEach((s) => {
+              const id = s?.id;
+              if (id !== null && id !== undefined) {
+                sourceIds.push(id);
+              }
+            });
+          } else {
+            sources.forEach((s) => {
+              if (s.id !== null) {
+                sourceIds.push(s.id);
+              }
+            });
+          }
 
           // Call serially because of limitations
           await deleteThisAlert();
@@ -465,6 +481,7 @@ export const useNotifiSubscribe: ({
           filterType,
           sourceType,
           sourceGroupName,
+          maintainSourceGroup,
         } = alertConfiguration;
 
         let source: Types.Maybe<Types.SourceFragmentFragment>;
@@ -513,6 +530,23 @@ export const useNotifiSubscribe: ({
         } else {
           // Call serially because of limitations
 
+          const sourceIds: string[] = [];
+
+          const existingSourceGroup = data.sourceGroups.find(
+            (sourceGroup) =>
+              sourceGroup?.name === (sourceGroupName ?? alertName),
+          );
+
+          if (maintainSourceGroup && existingSourceGroup) {
+            existingSourceGroup.sources?.forEach((s) => {
+              const id = s?.id;
+              if (id !== null && id !== undefined) {
+                sourceIds.push(id);
+              }
+            });
+          } else {
+            sourceIds.push(source.id);
+          }
           await deleteThisAlert();
           const alert = await client.createAlert({
             emailAddress: finalEmail,
@@ -521,7 +555,8 @@ export const useNotifiSubscribe: ({
             groupName: 'managed',
             name: alertName,
             phoneNumber: finalPhoneNumber,
-            sourceId: source.id,
+            sourceId: '',
+            sourceIds,
             targetGroupName,
             telegramId: finalTelegramId,
             sourceGroupName,
@@ -703,6 +738,7 @@ export const useNotifiSubscribe: ({
         setLoading(true);
         await logIn();
         const data = await client.fetchData();
+
         //
         // Yes, we're ignoring the server side values and just using whatever the client typed in
         // We should eventually always start from a logged in state from client having called

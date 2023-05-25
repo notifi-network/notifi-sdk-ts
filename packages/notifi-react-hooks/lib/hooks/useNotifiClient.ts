@@ -89,6 +89,7 @@ const projectData = (internalData: InternalData | null): ClientData | null => {
     smsTargets,
     sources,
     targetGroups,
+    sourceGroups,
     telegramTargets,
     discordTargets,
   } = internalData;
@@ -99,6 +100,7 @@ const projectData = (internalData: InternalData | null): ClientData | null => {
     emailTargets,
     filters,
     smsTargets,
+    sourceGroups,
     sources,
     targetGroups,
     telegramTargets,

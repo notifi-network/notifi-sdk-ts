@@ -26,6 +26,7 @@ export type FusionToggleEventTypeItem = Readonly<{
   fusionEventId: ValueOrRef<string>;
   sourceAddress: ValueOrRef<string>;
   tooltipContent?: string;
+  maintainSourceGroup?: boolean;
 }>;
 
 export type BroadcastEventTypeItem = Readonly<{
