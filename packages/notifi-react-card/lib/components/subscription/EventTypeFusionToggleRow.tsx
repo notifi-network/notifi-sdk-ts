@@ -78,6 +78,7 @@ export const EventTypeFusionToggleRow: React.FC<EventTypeFusionRowProps> = ({
 
   const alertConfiguration = useMemo<AlertConfiguration>(() => {
     return fusionToggleConfiguration({
+      maintainSourceGroup: config?.maintainSourceGroup,
       fusionId: fusionEventId,
       fusionSourceAddress,
     });

@@ -7,6 +7,7 @@ import { EmailTargetFragment } from '../fragments/EmailTargetFragment.gql';
 import { FilterFragment } from '../fragments/FilterFragment.gql';
 import { SmsTargetFragment } from '../fragments/SmsTargetFragment.gql';
 import { SourceFragment } from '../fragments/SourceFragment.gql';
+import { SourceGroupFragment } from '../fragments/SourceGroupFragment.gql';
 import { TargetGroupFragment } from '../fragments/TargetGroupFragment.gql';
 import { TelegramTargetFragment } from '../fragments/TelegramTargetFragment.gql';
 
@@ -14,6 +15,9 @@ export const fetchData = gql`
   query fetchData {
     alert {
       ...AlertFragment
+    }
+    sourceGroup {
+      ...SourceGroupFragment
     }
     connectedWallet {
       ...ConnectedWalletFragment
@@ -40,6 +44,7 @@ export const fetchData = gql`
       ...FilterFragment
     }
   }
+  ${SourceGroupFragment}
   ${AlertFragment}
   ${ConnectedWalletFragment}
   ${SourceFragment}

@@ -33,6 +33,7 @@ export type ClientData = Readonly<{
   filters: ReadonlyArray<Types.FilterFragmentFragment>;
   smsTargets: ReadonlyArray<Types.SmsTargetFragmentFragment>;
   sources: ReadonlyArray<Types.SourceFragmentFragment>;
+  sourceGroups: ReadonlyArray<Types.SourceGroupFragmentFragment>;
   targetGroups: ReadonlyArray<Types.TargetGroupFragmentFragment>;
   telegramTargets: ReadonlyArray<Types.TelegramTargetFragmentFragment>;
   discordTargets: ReadonlyArray<Types.DiscordTargetFragmentFragment>;
