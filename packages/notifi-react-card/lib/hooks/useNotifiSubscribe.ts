@@ -739,8 +739,6 @@ export const useNotifiSubscribe: ({
         await logIn();
         const data = await client.fetchData();
 
-        console.log('data', data.sourceGroups);
-
         //
         // Yes, we're ignoring the server side values and just using whatever the client typed in
         // We should eventually always start from a logged in state from client having called
