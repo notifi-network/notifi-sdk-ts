@@ -212,6 +212,7 @@ export type CardConfigItemV1 = Readonly<{
   eventTypes: EventTypeConfig;
   inputs: InputsConfig;
   contactInfo: ContactInfoConfig;
+  isContactInfoRequired?: boolean;
   titles?: TitleSubtitleConfig;
 }>;
 

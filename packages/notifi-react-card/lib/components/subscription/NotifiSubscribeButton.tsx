@@ -1,6 +1,7 @@
 import { SignMessageParams } from '@notifi-network/notifi-core';
 import {
   CardConfigItemV1,
+  ContactInfoConfig,
   EventTypeConfig,
 } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
@@ -165,16 +166,16 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
   ]);
 
   const hasErrors = emailErrorMessage !== '' || smsErrorMessage !== '';
+  const isInputFieldsValid = useMemo(() => {
+    return data.isContactInfoRequired
+      ? email || phoneNumber || telegramId || useDiscord
+      : true;
+  }, [email, phoneNumber, telegramId, useDiscord, data.isContactInfoRequired]);
 
   return (
     <button
       className={clsx('NotifiSubscribeButton__button', classNames?.button)}
-      disabled={
-        !isInitialized ||
-        loading ||
-        hasErrors ||
-        (!email && !phoneNumber && !telegramId && useDiscord === false)
-      }
+      disabled={!isInitialized || loading || hasErrors || !isInputFieldsValid}
       onClick={onClick}
     >
       <span className={clsx('NotifiSubscribeButton__label', classNames?.label)}>
