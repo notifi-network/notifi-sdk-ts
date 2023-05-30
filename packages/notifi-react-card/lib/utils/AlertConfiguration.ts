@@ -111,19 +111,6 @@ const topicToSource = (topic: string): Types.CreateSourceInput => {
   };
 };
 
-export const XMTPToggleConfiguration = ({
-  XMTPTopics,
-}: Readonly<{
-  XMTPTopics: ReadonlyArray<string>;
-}>): AlertConfiguration => {
-  return {
-    type: 'multiple',
-    filterType: 'WEB3_CHAT_MESSAGES',
-    filterOptions: {},
-    sources: XMTPTopics.map(topicToSource),
-  };
-};
-
 export const broadcastMessageConfiguration = ({
   topicName,
 }: Readonly<{
@@ -139,6 +126,45 @@ export const broadcastMessageConfiguration = ({
     },
   };
 };
+
+export const XMTPToggleConfiguration = ({
+  XMTPTopics,
+}: Readonly<{
+  XMTPTopics: ReadonlyArray<string>;
+}>): AlertConfiguration => {
+  return {
+    type: 'multiple',
+    filterType: 'WEB3_CHAT_MESSAGES',
+    filterOptions: {},
+    sources: XMTPTopics.map(topicToSource),
+  };
+};
+
+export const multiplefusionToggleConfiguration = ({
+  fusionIds,
+  fusionSourceAddress,
+  maintainSourceGroup,
+}: Readonly<{
+  fusionIds: ReadonlyArray<string>;
+
+  fusionSourceAddress: string;
+  maintainSourceGroup?: boolean;
+}>): AlertConfiguration => {
+  return {
+    type: 'multiple',
+    maintainSourceGroup,
+    filterType: 'FUSION_SOURCE',
+    filterOptions: {},
+    sources: fusionIds.map((fusionId) => {
+      return {
+        fusionEventTypeId: fusionId,
+        blockchainAddress: fusionSourceAddress,
+        type: 'FUSION_SOURCE',
+      };
+    }),
+  };
+};
+
 export const fusionToggleConfiguration = ({
   fusionId,
   fusionSourceAddress,
