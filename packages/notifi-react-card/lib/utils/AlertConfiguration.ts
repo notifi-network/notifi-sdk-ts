@@ -139,6 +139,7 @@ export const broadcastMessageConfiguration = ({
     },
   };
 };
+
 export const fusionToggleConfiguration = ({
   fusionId,
   fusionSourceAddress,

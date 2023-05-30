@@ -1,7 +1,13 @@
 import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
 import clsx from 'clsx';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import {
   useNotifiClientContext,
@@ -113,6 +119,8 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
     canary: { isActive: canaryIsActive, frontendClient },
   } = useNotifiClientContext();
 
+  const firstLoad = useRef(false);
+
   const { isClientInitialized, isClientTokenExpired } = useMemo(() => {
     let isClientInitialized = false;
     let isClientTokenExpired = false;
@@ -157,9 +165,11 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
       });
     }
 
-    if (!isClientInitialized) {
+    if (!isClientInitialized || firstLoad.current) {
       return;
     }
+
+    firstLoad.current = true;
 
     if (
       (email !== '' && email !== undefined) ||
