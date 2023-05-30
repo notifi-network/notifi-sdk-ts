@@ -34,9 +34,11 @@ a {
   --notifi-focus-color: #fff;
   --notifi-toggle-handle: #fff;
   --notifi-toggle-inactive: #b6b8d5;
-  --notifi-toggle-active: linear-gradient(207.53deg,
-      #fe7970 11.91%,
-      #feb776 88.99%);
+  --notifi-toggle-active: linear-gradient(
+    207.53deg,
+    #fe7970 11.91%,
+    #feb776 88.99%
+  );
   --notifi-tooltip-background: rgba(60, 60, 60, 1);
   --notifi-alert-color: rgb(213, 25, 25);
   --notifi-link-color: hsl(240, 100%, 85%);
@@ -54,6 +56,8 @@ a {
   --notifi-outgoing-message: #678afc;
   --notifi-settings-icon-color: #fff;
   --notifi-confirmation-color: #45c95e;
+  --notifi-banner-background: #222222;
+  --notifi-banner-icon-color: #262949;
 }
 
 input:autofill,
@@ -287,7 +291,8 @@ input::-webkit-inner-spin-button {
   margin: 10px 0;
 }
 
-.NotifiAlertHistory__content {
+.NotifiAlertHistory__content,
+.SignupBanner__Content {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
@@ -316,7 +321,8 @@ input::-webkit-inner-spin-button {
   padding-right: 25px;
 }
 
-.NotifiAlertHistory__notificationTitle {
+.NotifiAlertHistory__notificationTitle,
+.SignupBanner__Title {
   font-size: 14px;
   line-height: 14px;
   overflow: hidden;
@@ -345,7 +351,8 @@ input::-webkit-inner-spin-button {
   text-align: center;
 }
 
-.NotifiAlertHistory__notificationSubject {
+.NotifiAlertHistory__notificationSubject,
+.SignupBanner__Subject {
   font-size: 12px;
   line-height: 14px;
   color: var(--notifi-font-color);
@@ -435,7 +442,9 @@ input::-webkit-inner-spin-button {
 .NotifiToggle__container {
   --notifi-toggle-size: 22px;
   --notifi-toggle-padding: 3px;
-  --notifi-toggle-container: calc(var(--notifi-toggle-size) + 2 * var(--notifi-toggle-padding));
+  --notifi-toggle-container: calc(
+    var(--notifi-toggle-size) + 2 * var(--notifi-toggle-padding)
+  );
   position: relative;
   display: inline-block;
   width: calc(var(--notifi-toggle-container) + var(--notifi-toggle-size));
@@ -483,11 +492,11 @@ input::-webkit-inner-spin-button {
   transition: 0.2s;
 }
 
-.NotifiToggle__input:checked+.NotifiToggle__slider {
+.NotifiToggle__input:checked + .NotifiToggle__slider {
   background: var(--notifi-toggle-active);
 }
 
-.NotifiToggle__input:checked+.NotifiToggle__slider:before {
+.NotifiToggle__input:checked + .NotifiToggle__slider:before {
   transform: translateX(var(--notifi-toggle-size));
 }
 
@@ -495,7 +504,7 @@ input::-webkit-inner-spin-button {
   cursor: progress;
 }
 
-.NotifiIntercomToggle__input:checked+.NotifiToggle__slider {
+.NotifiIntercomToggle__input:checked + .NotifiToggle__slider {
   background-color: #1448f3;
 }
 
@@ -884,7 +893,7 @@ input::-webkit-inner-spin-button {
   left: 50%;
 }
 
-.NotifiTooltip__container:hover>.NotifiTooltip__body {
+.NotifiTooltip__container:hover > .NotifiTooltip__body {
   visibility: visible;
 }
 
@@ -1392,15 +1401,15 @@ input::-webkit-inner-spin-button {
   flex-direction: column;
 }
 
-.EventTypeTradingPairsRow__container>* {
+.EventTypeTradingPairsRow__container > * {
   margin-bottom: 0 !important;
 }
 
-.EventTypeTradingPairsRow__container>*:not(:first-child) {
+.EventTypeTradingPairsRow__container > *:not(:first-child) {
   padding-top: 10px;
 }
 
-.EventTypeTradingPairsRow__container>*:not(:last-child) {
+.EventTypeTradingPairsRow__container > *:not(:last-child) {
   padding-bottom: 10px;
   border-bottom: 1px var(--notifi-font-color) solid;
 }
@@ -1662,10 +1671,46 @@ input::-webkit-inner-spin-button {
   padding: 0 20px;
 }
 
-
 .NotifiInputContainer__LoadingSpinner {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-grow: 1;
+}
+
+.SignupBanner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--notifi-banner-background);
+}
+
+.SignupBanner__Column {
+  flex-direction: column;
+  padding: 14px 0 20px 0;
+}
+
+.SignupBanner__Label {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0 0 10px;
+}
+
+.SignupBanner__Image {
+  width: 24px;
+  height: 24px;
+  color: var(--notifi-banner-icon-color);
+  background-color: var(--notifi-settings-icon-color);
+  margin-right: 10px;
+  border-radius: 50px;
+  overflow: hidden;
+  border: 2px solid var(--notifi-checkmark-color);
+}
+
+.SignupBanner__Button {
+  width: 72px;
+  height: 29px;
+  border-radius: 4.04px;
+  margin-right: 10px;
+  cursor: pointer;
 }

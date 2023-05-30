@@ -1,3 +1,4 @@
+import { BellIcon } from 'notifi-react-card/lib/assets/BellIcon';
 import React from 'react';
 
 import { AnnouncementIcon } from '../../assets/AnnouncementIcon';
@@ -32,6 +33,7 @@ const icons: Record<string, React.FC<React.SVGProps<SVGSVGElement>>> = {
   SWAP: SwapIcon,
   URGENT: UrgentIcon,
   WATCH: WatchIcon,
+  BELL: BellIcon,
 };
 
 export type Props = React.SVGProps<SVGSVGElement> & Readonly<{ icon: string }>;

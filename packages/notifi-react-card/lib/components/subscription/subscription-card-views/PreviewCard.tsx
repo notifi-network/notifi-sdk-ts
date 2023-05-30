@@ -1,8 +1,10 @@
 import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
-import React from 'react';
+import { useNotifiSubscriptionContext } from 'notifi-react-card/lib/context';
+import React, { useMemo } from 'react';
 
 import { DeepPartialReadonly } from '../../../utils';
+import { SignupBanner, SignupBannerProps } from '../../SignupBanner';
 import { AlertsPanel, AlertsPanelProps } from './preview-panel/AlertsPanel';
 import {
   UserInfoPanel,
@@ -16,6 +18,7 @@ export type PreviewCardProps = Readonly<{
     AlertsPanel?: DeepPartialReadonly<AlertsPanelProps['classNames']>;
     backArrowContainer?: string;
     UserInfoPanel?: DeepPartialReadonly<UserInfoPanelProps['classNames']>;
+    signupBanner?: SignupBannerProps['classNames']; // TODO: Move up one level (for MVP-2733), Blocker: MVP-2716
   };
   data: CardConfigItemV1;
   inputDisabled: boolean;
@@ -28,6 +31,25 @@ export const PreviewCard: React.FC<PreviewCardProps> = ({
   inputDisabled,
   inputs = {},
 }) => {
+  const { useDiscord, email, phoneNumber, telegramId, discordTargetData } =
+    useNotifiSubscriptionContext();
+
+  const isTargetsExist = useMemo(() => {
+    return (
+      !!email ||
+      !!phoneNumber ||
+      !!telegramId ||
+      (useDiscord &&
+        !!discordTargetData?.id &&
+        !!discordTargetData?.discordAccountId)
+    );
+  }, [
+    email,
+    phoneNumber,
+    telegramId,
+    discordTargetData?.id,
+    discordTargetData?.discordAccountId,
+  ]);
   return (
     <div
       className={clsx(
@@ -35,10 +57,14 @@ export const PreviewCard: React.FC<PreviewCardProps> = ({
         classNames?.NotifiPreviewCardContainer,
       )}
     >
-      <UserInfoPanel
-        classNames={classNames?.UserInfoPanel}
-        contactInfo={data.contactInfo}
-      />
+      {!isTargetsExist ? (
+        <SignupBanner data={data} classNames={classNames?.signupBanner} /> //TODO: Move up one level (for MVP-2733), Blocker: MVP-2716
+      ) : (
+        <UserInfoPanel
+          classNames={classNames?.UserInfoPanel}
+          contactInfo={data.contactInfo}
+        />
+      )}
       <AlertsPanel
         classNames={classNames?.AlertsPanel}
         data={data}
