@@ -178,7 +178,6 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
       (discordTargetData?.id !== '' &&
         discordTargetData?.discordAccountId !== undefined)
     ) {
-      console.log('history');
       setCardView({ state: 'history' });
     } else if (isClientTokenExpired) {
       setCardView({ state: 'expired' });

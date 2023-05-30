@@ -141,7 +141,6 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
         render(newData);
       }
 
-      console.log('success', success);
       if (success === true) {
         const nextState = !isMultiWallet
           ? 'preview'

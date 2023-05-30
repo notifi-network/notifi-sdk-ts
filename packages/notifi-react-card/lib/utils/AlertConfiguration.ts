@@ -111,22 +111,6 @@ const topicToSource = (topic: string): Types.CreateSourceInput => {
   };
 };
 
-export const broadcastMessageConfiguration = ({
-  topicName,
-}: Readonly<{
-  topicName: string;
-}>): AlertConfiguration => {
-  return {
-    type: 'single',
-    filterType: 'BROADCAST_MESSAGES',
-    filterOptions: {},
-    sourceType: 'BROADCAST',
-    createSource: {
-      address: topicName,
-    },
-  };
-};
-
 export const XMTPToggleConfiguration = ({
   XMTPTopics,
 }: Readonly<{
@@ -140,28 +124,19 @@ export const XMTPToggleConfiguration = ({
   };
 };
 
-export const multiplefusionToggleConfiguration = ({
-  fusionIds,
-  fusionSourceAddress,
-  maintainSourceGroup,
+export const broadcastMessageConfiguration = ({
+  topicName,
 }: Readonly<{
-  fusionIds: ReadonlyArray<string>;
-
-  fusionSourceAddress: string;
-  maintainSourceGroup?: boolean;
+  topicName: string;
 }>): AlertConfiguration => {
   return {
-    type: 'multiple',
-    maintainSourceGroup,
-    filterType: 'FUSION_SOURCE',
+    type: 'single',
+    filterType: 'BROADCAST_MESSAGES',
     filterOptions: {},
-    sources: fusionIds.map((fusionId) => {
-      return {
-        fusionEventTypeId: fusionId,
-        blockchainAddress: fusionSourceAddress,
-        type: 'FUSION_SOURCE',
-      };
-    }),
+    sourceType: 'BROADCAST',
+    createSource: {
+      address: topicName,
+    },
   };
 };
 
