@@ -162,6 +162,34 @@ export const fusionToggleConfiguration = ({
   };
 };
 
+type FusionToggleConfiguration = {
+  fusionId: string;
+  fusionSourceAddress: string;
+  maintainSourceGroup?: boolean;
+  alertFrequency: FilterOptions['alertFrequency'];
+  threshold: number;
+  thresholdDirection: FilterOptions['thresholdDirection'];
+};
+export const fusionHealthCheckConfiguration = (
+  props: FusionToggleConfiguration,
+): AlertConfiguration => {
+  return {
+    type: 'single',
+    maintainSourceGroup: props.maintainSourceGroup,
+    filterType: 'FUSION_SOURCE',
+    filterOptions: {
+      alertFrequency: props.alertFrequency,
+      threshold: props.threshold,
+      thresholdDirection: props.thresholdDirection,
+    },
+    sourceType: 'FUSION_SOURCE',
+    createSource: {
+      address: props.fusionSourceAddress,
+      fusionEventTypeId: props.fusionId,
+    },
+  };
+};
+
 export const directMessageConfiguration = (
   params?: Readonly<{
     type?: string;

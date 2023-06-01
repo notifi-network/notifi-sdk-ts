@@ -20,14 +20,31 @@ export type DirectPushEventTypeItem = Readonly<{
   tooltipContent?: string;
 }>;
 
-export type FusionToggleEventTypeItem = Readonly<{
-  type: 'fusionToggle';
+export type FusionTypeBase = {
   name: string;
   fusionEventId: ValueOrRef<string>;
   sourceAddress: ValueOrRef<string>;
   tooltipContent?: string;
   maintainSourceGroup?: boolean;
-}>;
+};
+
+export type FusionToggleEventTypeItem = FusionTypeBase &
+  Readonly<{
+    type: 'fusionToggle';
+  }>;
+
+export type FusionHealthCheckEventTypeItem = FusionTypeBase &
+  Readonly<{
+    type: 'fusionHealthCheck';
+    healthCheckSubtitle: string;
+    numberType: NumberTypeSelect;
+    alertFrequency: AlertFrequency;
+    checkRatios: CheckRatio[];
+  }>;
+
+export type FusionEventTypeItem =
+  | FusionToggleEventTypeItem
+  | FusionHealthCheckEventTypeItem;
 
 export type BroadcastEventTypeItem = Readonly<{
   type: 'broadcast';
@@ -137,7 +154,7 @@ export type EventTypeItem =
   | LabelEventTypeItem
   | PriceChangeEventTypeItem
   | CustomTopicTypeItem
-  | FusionToggleEventTypeItem
+  | FusionEventTypeItem
   | WalletBalanceEventTypeItem
   | XMTPTopicTypeItem
   | CreateSupportConversationEventTypeItem;
