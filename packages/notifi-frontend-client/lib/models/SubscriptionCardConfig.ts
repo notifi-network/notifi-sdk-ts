@@ -22,6 +22,7 @@ export type DirectPushEventTypeItem = Readonly<{
 
 export type FusionTypeBase = {
   name: string;
+  type: 'fusion';
   fusionEventId: ValueOrRef<string>;
   sourceAddress: ValueOrRef<string>;
   tooltipContent?: string;
@@ -30,12 +31,12 @@ export type FusionTypeBase = {
 
 export type FusionToggleEventTypeItem = FusionTypeBase &
   Readonly<{
-    type: 'fusionToggle';
+    selectedUIType: 'TOGGLE';
   }>;
 
 export type FusionHealthCheckEventTypeItem = FusionTypeBase &
   Readonly<{
-    type: 'fusionHealthCheck';
+    selectedUIType: 'HEALTH_CHECK';
     healthCheckSubtitle: string;
     numberType: NumberTypeSelect;
     alertFrequency: AlertFrequency;

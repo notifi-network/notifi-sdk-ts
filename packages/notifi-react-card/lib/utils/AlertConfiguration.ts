@@ -393,20 +393,44 @@ export const createConfigurations = (
         break;
       }
 
-      case 'fusionToggle': {
-        configs[eventType.name] = fusionToggleConfiguration({
-          maintainSourceGroup: eventType.maintainSourceGroup,
-          fusionId: resolveStringRef(
-            eventType.name,
-            eventType.fusionEventId,
-            inputs,
-          ),
-          fusionSourceAddress: resolveStringRef(
-            eventType.name,
-            eventType.sourceAddress,
-            inputs,
-          ),
-        });
+      case 'fusion': {
+        switch (eventType.selectedUIType) {
+          case 'TOGGLE':
+            configs[eventType.name] = fusionToggleConfiguration({
+              maintainSourceGroup: eventType.maintainSourceGroup,
+              fusionId: resolveStringRef(
+                eventType.name,
+                eventType.fusionEventId,
+                inputs,
+              ),
+              fusionSourceAddress: resolveStringRef(
+                eventType.name,
+                eventType.sourceAddress,
+                inputs,
+              ),
+            });
+            break;
+          case 'HEALTH_CHECK':
+            configs[eventType.name] = fusionHealthCheckConfiguration({
+              maintainSourceGroup: eventType.maintainSourceGroup,
+              fusionId: resolveStringRef(
+                eventType.name,
+                eventType.fusionEventId,
+                inputs,
+              ),
+              fusionSourceAddress: resolveStringRef(
+                eventType.name,
+                eventType.sourceAddress,
+                inputs,
+              ),
+              alertFrequency: eventType.alertFrequency,
+              thresholdDirection: eventType.checkRatios[0].type ?? 'below',
+              threshold:
+                eventType.numberType === 'percentage'
+                  ? eventType.checkRatios[1].ratio / 100
+                  : eventType.checkRatios[1].ratio,
+            });
+        }
       }
     }
   });

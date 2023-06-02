@@ -1,4 +1,7 @@
-import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
+import {
+  CardConfigItemV1,
+  FusionHealthCheckEventTypeItem,
+} from '@notifi-network/notifi-frontend-client';
 import React from 'react';
 
 import {
@@ -167,23 +170,21 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
                 inputs={inputs}
               />
             );
-          case 'fusionToggle':
-            return (
-              <EventTypeFusionToggleRow
-                key={eventType.name}
-                classNames={classNames?.EventTypeFusionToggleRow}
-                disabled={inputDisabled}
-                config={eventType}
-                inputs={inputs}
-              />
-            );
-          case 'fusionHealthCheck':
-            return (
+          case 'fusion':
+            return eventType.selectedUIType === 'HEALTH_CHECK' ? (
               <EventTypeFusionHealthCheckRow
                 key={eventType.name}
                 disabled={inputDisabled}
                 config={eventType}
                 classNames={classNames?.EventTypeFusionHealthCheckRow}
+                inputs={inputs}
+              />
+            ) : (
+              <EventTypeFusionToggleRow
+                key={eventType.name}
+                classNames={classNames?.EventTypeFusionToggleRow}
+                disabled={inputDisabled}
+                config={eventType}
                 inputs={inputs}
               />
             );

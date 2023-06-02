@@ -455,8 +455,7 @@ const ensureSources = async (
       const source = await ensureHealthCheckSources(service, eventType, inputs);
       return [source];
     }
-    case 'fusionHealthCheck':
-    case 'fusionToggle': {
+    case 'fusion': {
       const source = await ensureFusionSource(service, eventType, inputs);
       return [source];
     }
@@ -673,7 +672,7 @@ const getFusionSourceFilter = (
   }
 
   let filterOptions: FilterOptions = {}; // Default {} if eventType.type = fusionToggle
-  if (eventType.type === 'fusionHealthCheck') {
+  if (eventType.selectedUIType === 'HEALTH_CHECK') {
     // Use synthetic ref values to get from input (ratio)
     const healthRatioKey = `${eventType.name}__healthRatio`;
     const healthRatio =
@@ -1004,8 +1003,7 @@ export const ensureSourceAndFilters = async (
         filterOptions,
       };
     }
-    case 'fusionHealthCheck':
-    case 'fusionToggle': {
+    case 'fusion': {
       const { filter, filterOptions } = getFusionSourceFilter(
         sources[0],
         eventType,
