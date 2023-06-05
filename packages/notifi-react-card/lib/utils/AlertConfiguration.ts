@@ -162,6 +162,34 @@ export const fusionToggleConfiguration = ({
   };
 };
 
+type FusionToggleConfiguration = {
+  fusionId: string;
+  fusionSourceAddress: string;
+  maintainSourceGroup?: boolean;
+  alertFrequency: FilterOptions['alertFrequency'];
+  threshold: number;
+  thresholdDirection: FilterOptions['thresholdDirection'];
+};
+export const fusionHealthCheckConfiguration = (
+  props: FusionToggleConfiguration,
+): AlertConfiguration => {
+  return {
+    type: 'single',
+    maintainSourceGroup: props.maintainSourceGroup,
+    filterType: 'FUSION_SOURCE',
+    filterOptions: {
+      alertFrequency: props.alertFrequency,
+      threshold: props.threshold,
+      thresholdDirection: props.thresholdDirection,
+    },
+    sourceType: 'FUSION_SOURCE',
+    createSource: {
+      address: props.fusionSourceAddress,
+      fusionEventTypeId: props.fusionId,
+    },
+  };
+};
+
 export const directMessageConfiguration = (
   params?: Readonly<{
     type?: string;
@@ -365,20 +393,44 @@ export const createConfigurations = (
         break;
       }
 
-      case 'fusionToggle': {
-        configs[eventType.name] = fusionToggleConfiguration({
-          maintainSourceGroup: eventType.maintainSourceGroup,
-          fusionId: resolveStringRef(
-            eventType.name,
-            eventType.fusionEventId,
-            inputs,
-          ),
-          fusionSourceAddress: resolveStringRef(
-            eventType.name,
-            eventType.sourceAddress,
-            inputs,
-          ),
-        });
+      case 'fusion': {
+        switch (eventType.selectedUIType) {
+          case 'TOGGLE':
+            configs[eventType.name] = fusionToggleConfiguration({
+              maintainSourceGroup: eventType.maintainSourceGroup,
+              fusionId: resolveStringRef(
+                eventType.name,
+                eventType.fusionEventId,
+                inputs,
+              ),
+              fusionSourceAddress: resolveStringRef(
+                eventType.name,
+                eventType.sourceAddress,
+                inputs,
+              ),
+            });
+            break;
+          case 'HEALTH_CHECK':
+            configs[eventType.name] = fusionHealthCheckConfiguration({
+              maintainSourceGroup: eventType.maintainSourceGroup,
+              fusionId: resolveStringRef(
+                eventType.name,
+                eventType.fusionEventId,
+                inputs,
+              ),
+              fusionSourceAddress: resolveStringRef(
+                eventType.name,
+                eventType.sourceAddress,
+                inputs,
+              ),
+              alertFrequency: eventType.alertFrequency,
+              thresholdDirection: eventType.checkRatios[0].type ?? 'below',
+              threshold:
+                eventType.numberType === 'percentage'
+                  ? eventType.checkRatios[1].ratio / 100
+                  : eventType.checkRatios[1].ratio,
+            });
+        }
       }
     }
   });

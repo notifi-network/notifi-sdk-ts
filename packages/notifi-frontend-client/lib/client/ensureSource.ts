@@ -7,7 +7,7 @@ import {
   DirectPushEventTypeItem,
   EventTypeItem,
   FilterOptions,
-  FusionToggleEventTypeItem,
+  FusionEventTypeItem,
   HealthCheckEventTypeItem,
   PriceChangeEventTypeItem,
   ThresholdDirection,
@@ -40,9 +40,10 @@ const ensureDirectPushSource = async (
 
   return source;
 };
-const ensureFusionToggleSource = async (
+
+const ensureFusionSource = async (
   service: Operations.GetSourcesService & Operations.CreateSourceService,
-  eventType: FusionToggleEventTypeItem,
+  eventType: FusionEventTypeItem,
   inputs: Record<string, unknown>,
 ): Promise<Types.SourceFragmentFragment> => {
   const address = resolveStringRef(
@@ -66,7 +67,6 @@ const ensureFusionToggleSource = async (
       it.blockchainAddress === address &&
       it.fusionEventTypeId === eventTypeId,
   );
-
   if (existing !== undefined) {
     return existing;
   }
@@ -455,8 +455,8 @@ const ensureSources = async (
       const source = await ensureHealthCheckSources(service, eventType, inputs);
       return [source];
     }
-    case 'fusionToggle': {
-      const source = await ensureFusionToggleSource(service, eventType, inputs);
+    case 'fusion': {
+      const source = await ensureFusionSource(service, eventType, inputs);
       return [source];
     }
     case 'createSupportConversation': {
@@ -661,8 +661,8 @@ const getWalletBalanceSourceFilter = (
 };
 const getFusionSourceFilter = (
   source: Types.SourceFragmentFragment,
-  _eventType: FusionToggleEventTypeItem,
-  _inputs: Record<string, unknown>,
+  eventType: FusionEventTypeItem,
+  inputs: Record<string, unknown>,
 ): GetFilterResults => {
   const filter = source.applicableFilters?.find(
     (it) => it?.filterType === 'FUSION_SOURCE',
@@ -670,9 +670,49 @@ const getFusionSourceFilter = (
   if (filter === undefined) {
     throw new Error('Failed to retrieve fusion source filter');
   }
+
+  let filterOptions: FilterOptions = {}; // Default {} if eventType.type = fusionToggle
+  if (eventType.selectedUIType === 'HEALTH_CHECK') {
+    // Use synthetic ref values to get from input (ratio)
+    const healthRatioKey = `${eventType.name}__healthRatio`;
+    if (!inputs[healthRatioKey]) {
+      // Set default value if not provided
+      inputs[`${eventType.name}__healthRatio`] = eventType.checkRatios[1].ratio;
+    }
+    const healthRatio = resolveNumberRef(
+      healthRatioKey,
+      { type: 'ref', ref: healthRatioKey },
+      inputs,
+    );
+    // Use synthetic ref values to get from input (direction)
+    const thresholdDirectionKey = `${eventType.name}__healthThresholdDirection`;
+    if (!inputs[thresholdDirectionKey]) {
+      // Set default value if not provided
+      inputs[thresholdDirectionKey] =
+        eventType.checkRatios[0].type === 'above' ? 'above' : 'below';
+    }
+    const thresholdDirection =
+      resolveStringRef(
+        thresholdDirectionKey,
+        { type: 'ref', ref: thresholdDirectionKey },
+        inputs,
+      ) ?? eventType.checkRatios[0].ratio;
+
+    if (!healthRatio || !thresholdDirection) {
+      throw new Error('Failed to retrieve health ratio or direction');
+    }
+
+    filterOptions = {
+      alertFrequency: eventType.alertFrequency,
+      threshold:
+        eventType.numberType === 'percentage' ? healthRatio / 100 : healthRatio,
+      thresholdDirection: thresholdDirection === 'above' ? 'above' : 'below',
+    };
+  }
+
   return {
     filter,
-    filterOptions: {},
+    filterOptions,
   };
 };
 
@@ -971,7 +1011,7 @@ export const ensureSourceAndFilters = async (
         filterOptions,
       };
     }
-    case 'fusionToggle': {
+    case 'fusion': {
       const { filter, filterOptions } = getFusionSourceFilter(
         sources[0],
         eventType,

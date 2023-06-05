@@ -1,4 +1,7 @@
-import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
+import {
+  CardConfigItemV1,
+  FusionHealthCheckEventTypeItem,
+} from '@notifi-network/notifi-frontend-client';
 import React from 'react';
 
 import {
@@ -14,6 +17,10 @@ import {
   EventTypeDirectPushRow,
   EventTypeDirectPushRowProps,
 } from '../../EventTypeDirectPushRow';
+import {
+  EventTypeFusionHealthCheckRow,
+  EventTypeFusionHealthCheckRowProps,
+} from '../../EventTypeFusionHealthCheckRow';
 import {
   EventTypeFusionRowProps,
   EventTypeFusionToggleRow,
@@ -63,6 +70,7 @@ export type AlertsPanelProps = Readonly<{
     EventTypeWalletBalanceRow?: EventTypeWalletBalanceRowProps['classNames'];
     EventTypeXMTPRow?: EventTypeXMPTRowProps['classNames'];
     EventTypeFusionToggleRow?: EventTypeFusionRowProps['classNames'];
+    EventTypeFusionHealthCheckRow?: EventTypeFusionHealthCheckRowProps['classNames'];
   }>;
   inputs: Record<string, unknown>;
 }>;
@@ -162,8 +170,16 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
                 inputs={inputs}
               />
             );
-          case 'fusionToggle':
-            return (
+          case 'fusion':
+            return eventType.selectedUIType === 'HEALTH_CHECK' ? (
+              <EventTypeFusionHealthCheckRow
+                key={eventType.name}
+                disabled={inputDisabled}
+                config={eventType}
+                classNames={classNames?.EventTypeFusionHealthCheckRow}
+                inputs={inputs}
+              />
+            ) : (
               <EventTypeFusionToggleRow
                 key={eventType.name}
                 classNames={classNames?.EventTypeFusionToggleRow}

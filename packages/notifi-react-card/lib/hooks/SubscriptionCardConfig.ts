@@ -28,14 +28,33 @@ export type BroadcastEventTypeItem = Readonly<{
   broadcastId: ValueOrRef<string>;
   tooltipContent?: string;
 }>;
-export type FusionToggleEventTypeItem = Readonly<{
-  type: 'fusionToggle';
+
+export type FusionTypeBase = {
   name: string;
+  type: 'fusion';
   fusionEventId: ValueOrRef<string>;
   sourceAddress: ValueOrRef<string>;
   tooltipContent?: string;
   maintainSourceGroup?: boolean;
-}>;
+};
+
+export type FusionToggleEventTypeItem = FusionTypeBase &
+  Readonly<{
+    selectedUIType: 'TOGGLE';
+  }>;
+
+export type FusionHealthCheckEventTypeItem = FusionTypeBase &
+  Readonly<{
+    selectedUIType: 'HEALTH_CHECK';
+    healthCheckSubtitle: string;
+    numberType: NumberTypeSelect;
+    alertFrequency: AlertFrequency;
+    checkRatios: CheckRatio[];
+  }>;
+
+export type FusionEventTypeItem =
+  | FusionToggleEventTypeItem
+  | FusionHealthCheckEventTypeItem;
 
 export type HealthCheckEventTypeItem = Readonly<{
   type: 'healthCheck';
