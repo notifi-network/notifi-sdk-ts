@@ -100,11 +100,6 @@ export const EventTypeFusionHealthCheckRow: React.FC<
   const INVALID_NUMBER = 'Please enter a valid number';
 
   useEffect(() => {
-    console.log('Filter', alerts[alertName]?.filterOptions);
-    console.log('Custom Value', customValue);
-  }, [alerts[alertName]?.filterOptions]);
-
-  useEffect(() => {
     if (loading || isNotificationLoading) {
       return;
     }
@@ -131,10 +126,8 @@ export const EventTypeFusionHealthCheckRow: React.FC<
           }
         });
         setInitialRatio(alertRatioValue);
-        console.log('Out', checkRatios, alertRatioValue, customValue);
         if (!checkRatios.includes(alertRatioValue) && customValue === '') {
           setSelectedIndex(3);
-          console.log('in', checkRatios, alertRatioValue);
           setCustomValue(
             config.numberType === 'percentage'
               ? alertRatioValue + '%'
@@ -226,7 +219,6 @@ export const EventTypeFusionHealthCheckRow: React.FC<
         ratioNumber <= 100 &&
         customValue
       ) {
-        console.log('handleCustomRatioButtonT', customInputRef.current);
         subscribeAlert({ eventType: config, inputs }, ratioNumber)
           .then(() => {
             setSelectedIndex(3);
@@ -237,7 +229,6 @@ export const EventTypeFusionHealthCheckRow: React.FC<
             setIsNotificationLoading(false);
           });
       } else {
-        console.log('handleCustomRatioButtonF', customInputRef.current);
         setErrorMessage(INVALID_NUMBER);
         setSelectedIndex(initialSelectedIndex);
         setIsNotificationLoading(false);
@@ -265,7 +256,6 @@ export const EventTypeFusionHealthCheckRow: React.FC<
         .then(() => {
           isCanaryActive && frontendClient.fetchData().then(render);
           setSelectedIndex(index);
-          console.log('new Subscription by default btn');
           setCustomValue('');
         })
         .catch(() => setErrorMessage(UNABLE_TO_SUBSCRIBE))
@@ -273,7 +263,6 @@ export const EventTypeFusionHealthCheckRow: React.FC<
           setIsNotificationLoading(false);
         });
     } else {
-      console.log('handleRatioButtonNew', value, index);
       setErrorMessage(INVALID_NUMBER);
       setIsNotificationLoading(false);
     }
@@ -307,7 +296,6 @@ export const EventTypeFusionHealthCheckRow: React.FC<
     } else {
       unSubscribeAlert({ eventType: config, inputs })
         .then((res) => {
-          console.log("start setCurrentValue('')in handleHealthCheckSub");
           setCustomValue('');
           if (res) {
             const responseHasAlert = res.alerts[alertName] !== undefined;
@@ -419,10 +407,7 @@ export const EventTypeFusionHealthCheckRow: React.FC<
                 setSelectedIndex(null);
               }}
               disabled={isNotificationLoading}
-              onBlur={() => {
-                console.log('onBlur');
-                handleCustomRatioButtonNewSubscription();
-              }}
+              onBlur={handleCustomRatioButtonNewSubscription}
               value={customValue}
               placeholder="Custom"
               className={clsx(
@@ -436,7 +421,6 @@ export const EventTypeFusionHealthCheckRow: React.FC<
                 classNames?.button,
               )}
               onChange={(e) => {
-                console.log('start setCurrentValue(e.target.value)in onChange');
                 setCustomValue(e.target.value ?? '');
               }}
             />

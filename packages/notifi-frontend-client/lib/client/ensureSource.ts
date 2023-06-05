@@ -675,14 +675,22 @@ const getFusionSourceFilter = (
   if (eventType.selectedUIType === 'HEALTH_CHECK') {
     // Use synthetic ref values to get from input (ratio)
     const healthRatioKey = `${eventType.name}__healthRatio`;
-    const healthRatio =
-      resolveNumberRef(
-        healthRatioKey,
-        { type: 'ref', ref: healthRatioKey },
-        inputs,
-      ) ?? eventType.checkRatios[0].ratio;
+    if (!inputs[healthRatioKey]) {
+      // Set default value if not provided
+      inputs[`${eventType.name}__healthRatio`] = eventType.checkRatios[1].ratio;
+    }
+    const healthRatio = resolveNumberRef(
+      healthRatioKey,
+      { type: 'ref', ref: healthRatioKey },
+      inputs,
+    );
     // Use synthetic ref values to get from input (direction)
     const thresholdDirectionKey = `${eventType.name}__healthThresholdDirection`;
+    if (!inputs[thresholdDirectionKey]) {
+      // Set default value if not provided
+      inputs[thresholdDirectionKey] =
+        eventType.checkRatios[0].type === 'above' ? 'above' : 'below';
+    }
     const thresholdDirection =
       resolveStringRef(
         thresholdDirectionKey,

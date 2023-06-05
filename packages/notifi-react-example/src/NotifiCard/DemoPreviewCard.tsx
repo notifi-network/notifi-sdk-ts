@@ -70,15 +70,7 @@ const data = `
   "id": "51fd3e3da1104f15abe4e1f8df46747e",
   "name": "DemoSolana",
   "eventTypes": [
-    {
-      "name": "Test msg",
-      "type": "broadcast",
-      "broadcastId": {
-        "type": "value",
-        "value": "colorfullife__test"
-      },
-      "tooltipContent": "This is a test"
-    },
+    
     {
       "name": "announce",
       "type": "broadcast",
@@ -107,13 +99,47 @@ const data = `
       }
     },
     {
-      "name": "test#2",
-      "type": "broadcast",
-      "broadcastId": {
+      "type": "fusion",
+      "name": "Fusion Toggle",
+      "tooltipContent": "This is Fusion Toggle alerts",
+      "selectedUIType": "TOGGLE",
+      "fusionEventId": {
         "type": "value",
-        "value": "colorfullife__test#2"
+        "value": "fusionEventId"
       },
-      "tooltipContent": "test#2"
+      "sourceAddress": {
+        "type": "value",
+        "value": "fusionSourceAddress"
+      },
+      "useCustomIcon": false
+    },
+    {
+      "name": "Fusion Health Alerts",
+      "selectedUIType": "HEALTH_CHECK",
+      "type": "fusion",
+      "tooltipContent": "This is Fusion Health alerts",
+      "fusionEventId": {
+        "type": "value",
+        "value": "fusionEventId"
+      },
+      "sourceAddress": {
+        "type": "value",
+        "value": "fusionSourceAddress"
+      },
+      "useCustomIcon": false,
+      "healthCheckSubtitle": "Fusion Health Alerts Subtitle",
+      "numberType": "percentage",
+      "alertFrequency": "SINGLE",
+      "checkRatios": [
+        {
+          "type": "below",
+          "ratio": 5
+        },
+        {
+          "type": "below",
+          "ratio": 10
+        }
+      ]
     },
     {
       "name": "customTest",
