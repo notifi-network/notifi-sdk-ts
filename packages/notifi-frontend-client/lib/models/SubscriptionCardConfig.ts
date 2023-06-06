@@ -22,7 +22,7 @@ export type DirectPushEventTypeItem = Readonly<{
 
 export type FusionTypeBase = {
   name: string;
-  type: 'fusion';
+  type: 'fusion' | 'fusionToggle'; // fusionToggle is deprecated (use fusion with selectedUIType: 'TOGGLE' instead)
   fusionEventId: ValueOrRef<string>;
   sourceAddress: ValueOrRef<string>;
   tooltipContent?: string;
