@@ -275,6 +275,7 @@ export const EventTypeFusionHealthCheckRow: React.FC<
     setIsNotificationLoading(true);
     setErrorMessage('');
     if (!enabled && initialRatio !== null) {
+      setEnabled(true);
       subscribeAlert({ eventType: config, inputs }, initialRatio)
         .then((res) => {
           // We update optimistically so we need to check if the alert exists.
@@ -294,6 +295,7 @@ export const EventTypeFusionHealthCheckRow: React.FC<
           setIsNotificationLoading(false);
         });
     } else {
+      setEnabled(false);
       unSubscribeAlert({ eventType: config, inputs })
         .then((res) => {
           setCustomValue('');
