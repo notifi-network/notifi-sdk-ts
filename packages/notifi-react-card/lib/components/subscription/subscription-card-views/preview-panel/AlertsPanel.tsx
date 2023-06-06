@@ -1,7 +1,4 @@
-import {
-  CardConfigItemV1,
-  FusionHealthCheckEventTypeItem,
-} from '@notifi-network/notifi-frontend-client';
+import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import React from 'react';
 
 import {
@@ -170,6 +167,7 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
                 inputs={inputs}
               />
             );
+          case 'fusionToggle': // fusionToggle is deprecated (use fusion with selectedUIType===TOGGLE instead )
           case 'fusion':
             return eventType.selectedUIType === 'HEALTH_CHECK' ? (
               <EventTypeFusionHealthCheckRow

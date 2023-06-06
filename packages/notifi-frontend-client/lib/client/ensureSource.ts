@@ -455,6 +455,7 @@ const ensureSources = async (
       const source = await ensureHealthCheckSources(service, eventType, inputs);
       return [source];
     }
+    case 'fusionToggle':
     case 'fusion': {
       const source = await ensureFusionSource(service, eventType, inputs);
       return [source];
@@ -1011,6 +1012,7 @@ export const ensureSourceAndFilters = async (
         filterOptions,
       };
     }
+    case 'fusionToggle':
     case 'fusion': {
       const { filter, filterOptions } = getFusionSourceFilter(
         sources[0],

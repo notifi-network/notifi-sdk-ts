@@ -392,7 +392,21 @@ export const createConfigurations = (
         });
         break;
       }
-
+      case 'fusionToggle': // fusionToggle is deprecated (use 'fusion' type with 'selectedUIType = TOGGLE' instead )
+        configs[eventType.name] = fusionToggleConfiguration({
+          maintainSourceGroup: eventType.maintainSourceGroup,
+          fusionId: resolveStringRef(
+            eventType.name,
+            eventType.fusionEventId,
+            inputs,
+          ),
+          fusionSourceAddress: resolveStringRef(
+            eventType.name,
+            eventType.sourceAddress,
+            inputs,
+          ),
+        });
+        break;
       case 'fusion': {
         switch (eventType.selectedUIType) {
           case 'TOGGLE':
