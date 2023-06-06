@@ -3,7 +3,6 @@
   "version": "0.73.1",
   "description": "The GraphQL API for Notifi",
   "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
