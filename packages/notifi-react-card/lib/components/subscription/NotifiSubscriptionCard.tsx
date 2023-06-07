@@ -1,18 +1,20 @@
-import React from 'react';
+import clsx from 'clsx';
+import {
+  useNotifiSubscribe,
+  useSubscriptionCard,
+} from 'notifi-react-card/lib/hooks';
+import React, { useMemo } from 'react';
 
 import {
-  NotifiFormProvider,
-  NotifiSubscriptionContextProvider,
   useNotifiClientContext,
   useNotifiSubscriptionContext,
 } from '../../context';
 import { DeepPartialReadonly } from '../../utils';
-import type { NotifiFooterProps } from '../NotifiFooter';
-import type { LoadingStateCardProps } from '../common';
-import type { ErrorStateCardProps } from '../common/ErrorStateCard';
-import type { FetchedStateCardProps } from './FetchedStateCard';
+import { NotifiFooter, NotifiFooterProps } from '../NotifiFooter';
+import { LoadingStateCard, LoadingStateCardProps } from '../common';
+import { ErrorStateCard, ErrorStateCardProps } from '../common/ErrorStateCard';
+import { FetchedStateCard, FetchedStateCardProps } from './FetchedStateCard';
 import type { NotifiSubscribeButtonProps } from './NotifiSubscribeButton';
-import { NotifiSubscriptionCardContainer } from './NotifiSubscriptionCardContainer';
 
 export type NotifiInputSeparators = {
   emailSeparator?: {
@@ -74,20 +76,93 @@ export type NotifiSubscriptionCardProps = Readonly<{
 
 export const NotifiSubscriptionCard: React.FC<
   React.PropsWithChildren<NotifiSubscriptionCardProps>
-> = (props: React.PropsWithChildren<NotifiSubscriptionCardProps>) => {
-  const { params } = useNotifiClientContext();
-  const { contextId } = useNotifiSubscriptionContext();
-  // NOTE: This allows the card to be used with contexts outside of the card.
-  // The context already exists at this point
-  if (contextId) {
-    return <NotifiSubscriptionCardContainer {...props} />;
+> = ({
+  classNames,
+  copy,
+  cardId,
+  darkMode,
+  inputLabels,
+  inputs = {},
+  inputSeparators,
+  disclosureCopy,
+  children,
+  loadingRingColor,
+  loadingSpinnerSize,
+  onClose,
+}) => {
+  const { isInitialized } = useNotifiSubscribe({ targetGroupName: 'Default' });
+  const {
+    canary: { isActive: canaryIsActive, frontendClient },
+  } = useNotifiClientContext();
+
+  const isClientInitialized = useMemo(() => {
+    return canaryIsActive ? !!frontendClient.userState : isInitialized;
+  }, [frontendClient.userState?.status, isInitialized, canaryIsActive]);
+
+  const { loading } = useNotifiSubscriptionContext();
+
+  const inputDisabled = loading || !isClientInitialized;
+
+  const card = useSubscriptionCard({
+    id: cardId,
+    type: 'SUBSCRIPTION_CARD',
+  });
+
+  let contents: React.ReactNode = null;
+
+  switch (card.state) {
+    case 'loading':
+      contents = (
+        <LoadingStateCard
+          copy={copy?.LoadingStateCard}
+          spinnerSize={loadingSpinnerSize}
+          ringColor={loadingRingColor}
+          classNames={classNames?.LoadingStateCard}
+          card={card}
+          onClose={onClose}
+        />
+      );
+      break;
+    case 'error':
+      contents = (
+        <ErrorStateCard
+          copy={copy?.ErrorStateCard}
+          classNames={classNames?.ErrorStateCard}
+          reason={card.reason}
+          onClose={onClose}
+        />
+      );
+      break;
+    case 'fetched':
+      contents = (
+        <FetchedStateCard
+          classNames={classNames?.FetchedStateCard}
+          copy={copy?.FetchedStateCard}
+          card={card}
+          inputs={inputs}
+          inputDisabled={inputDisabled}
+          inputLabels={inputLabels}
+          inputSeparators={inputSeparators}
+          onClose={onClose}
+        />
+      );
+      break;
   }
 
   return (
-    <NotifiFormProvider>
-      <NotifiSubscriptionContextProvider {...params}>
-        <NotifiSubscriptionCardContainer {...props} />
-      </NotifiSubscriptionContextProvider>
-    </NotifiFormProvider>
+    <div
+      className={clsx(
+        darkMode ? 'notifi__dark' : 'notifi__light',
+        'NotifiSubscriptionCard__container',
+        classNames?.container,
+      )}
+    >
+      {children}
+      {contents}
+      <NotifiFooter
+        classNames={classNames?.NotifiFooter}
+        copy={{ disclosure: disclosureCopy }}
+      />
+    </div>
   );
 };

@@ -13,7 +13,6 @@ export * from './EventTypeWalletBalanceRow';
 export * from './FetchedStateCard';
 export * from './NotifiSubscribeButton';
 export * from './NotifiSubscriptionCard';
-export * from './NotifiSubscriptionCardContainer';
 export * from './subscription-card-views';
 export * from './NotifiToggle';
 export * from './NotifiTooltip';

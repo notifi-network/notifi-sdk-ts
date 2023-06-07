@@ -1,6 +1,7 @@
 import '@notifi-network/notifi-react-card/dist/index.css';
 import React from 'react';
 
+import { SolanaNotifiContextWrapper } from '../NotifiContextWrapper';
 import { DemoPrviewCard } from './DemoPreviewCard';
 import { KeplrCard } from './KeplrCard';
 import './NotifiCard.css';
@@ -20,7 +21,11 @@ enum ESupportedViews {
 
 const supportedViews: Record<ESupportedViews, React.ReactNode> = {
   [ESupportedViews.DemoPreview]: <DemoPrviewCard />,
-  [ESupportedViews.Solana]: <SolanaCard />,
+  [ESupportedViews.Solana]: (
+    <SolanaNotifiContextWrapper>
+      <SolanaCard />
+    </SolanaNotifiContextWrapper>
+  ),
   [ESupportedViews.WalletConnect]: <WalletConnectCard />,
   [ESupportedViews.Polkadot]: <PolkadotCard />,
   [ESupportedViews.Sui]: <SuiNotifiCard />,
