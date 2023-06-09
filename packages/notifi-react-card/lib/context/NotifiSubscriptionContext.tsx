@@ -50,6 +50,9 @@ export type NotifiSubscriptionData = Readonly<{
   telegramConfirmationUrl?: string;
   useHardwareWallet: boolean;
   useDiscord: boolean;
+  /**
+   * @deprecated Now this context can be consumed as long as the component is wrapped in NotifiContext
+   */
   contextId: string;
   cardView: FetchedCardViewState;
   setCardView: React.Dispatch<React.SetStateAction<FetchedCardViewState>>;
