@@ -2,6 +2,7 @@ import '@notifi-network/notifi-react-card/dist/index.css';
 import React from 'react';
 
 import {
+  PolkadotNotifiContextWrapper,
   SolanaNotifiContextWrapper,
   WalletConnectNotifiContextWrapper,
 } from '../NotifiContextWrapper';
@@ -35,6 +36,12 @@ const supportedViews: Record<ESupportedViews, React.ReactNode> = {
     </WalletConnectNotifiContextWrapper>
   ),
   [ESupportedViews.Polkadot]: <PolkadotCard />,
+  [ESupportedViews.WalletConnect]: <WalletConnectCard />,
+  [ESupportedViews.Polkadot]: (
+    <PolkadotNotifiContextWrapper>
+      <PolkadotCard />
+    </PolkadotNotifiContextWrapper>
+  ),
   [ESupportedViews.Sui]: <SuiNotifiCard />,
   [ESupportedViews.Keplr]: <KeplrCard />,
 };
