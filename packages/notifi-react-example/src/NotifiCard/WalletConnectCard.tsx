@@ -1,46 +1,36 @@
 import {
-  NotifiContext,
   NotifiSubscriptionCard,
+  useNotifiClientContext,
+  useNotifiSubscriptionContext,
 } from '@notifi-network/notifi-react-card';
-import { arrayify } from 'ethers/lib/utils.js';
-import { useAccount, useConnect, useDisconnect, useSignMessage } from 'wagmi';
-
-import { connector } from '../walletProviders/WalletConnectProvider';
 
 export const WalletConnectCard = () => {
-  const { address, isConnected } = useAccount();
-
-  const { connect } = useConnect({
-    connector: connector,
-  });
-  const { disconnect } = useDisconnect();
-
-  const { signMessageAsync } = useSignMessage();
+  const { alerts } = useNotifiSubscriptionContext();
+  const { client } = useNotifiClientContext();
   return (
     <div>
       <h1>Notifi Card: WalletConnect</h1>
-      <button onClick={() => (isConnected ? disconnect() : connect())}>
-        {isConnected ? `Disconnect: ${address}` : 'Connect Wallet'}
-      </button>
-      {isConnected ? (
-        <NotifiContext
-          dappAddress="testimpl"
-          env="Production"
-          signMessage={async (message: Uint8Array) => {
-            const result = await signMessageAsync({ message });
-            return arrayify(result);
-          }}
-          walletPublicKey={address ?? ''}
-          walletBlockchain="ETHEREUM"
-        >
-          <div style={{ width: '400px' }}>
-            <NotifiSubscriptionCard
-              cardId="7fa9505a96064ed6b91ba2d14a9732de"
-              darkMode //optional
-            />
-          </div>
-        </NotifiContext>
-      ) : null}
+      <h3>Subscribing Alert(s)</h3>
+      {client.isInitialized && client.isAuthenticated ? (
+        <div>
+          <ul>
+            {Object.keys(alerts).length > 0 &&
+              Object.keys(alerts).map((alert) => (
+                <li key={alerts[alert]?.id}>
+                  <div>{alerts[alert]?.name}</div>
+                </li>
+              ))}
+          </ul>
+        </div>
+      ) : (
+        <div>Not yet register Notification</div>
+      )}
+      <div style={{ width: '400px' }}>
+        <NotifiSubscriptionCard
+          cardId="7fa9505a96064ed6b91ba2d14a9732de"
+          darkMode //optional
+        />
+      </div>
     </div>
   );
 };
