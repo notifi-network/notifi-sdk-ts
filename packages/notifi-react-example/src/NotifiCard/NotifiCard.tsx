@@ -5,6 +5,7 @@ import {
   KeplrNotifiContextWrapper,
   PolkadotNotifiContextWrapper,
   SolanaNotifiContextWrapper,
+  SuiNotifiContextWrapper,
   WalletConnectNotifiContextWrapper,
 } from '../NotifiContextWrapper';
 import { DemoPrviewCard } from './DemoPreviewCard';
@@ -41,7 +42,11 @@ const supportedViews: Record<ESupportedViews, React.ReactNode> = {
       <PolkadotCard />
     </PolkadotNotifiContextWrapper>
   ),
-  [ESupportedViews.Sui]: <SuiNotifiCard />,
+  [ESupportedViews.Sui]: (
+    <SuiNotifiContextWrapper>
+      <SuiNotifiCard />
+    </SuiNotifiContextWrapper>
+  ),
   [ESupportedViews.Keplr]: (
     <KeplrNotifiContextWrapper>
       <KeplrCard />
