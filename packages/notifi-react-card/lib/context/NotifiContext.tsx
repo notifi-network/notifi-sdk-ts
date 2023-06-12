@@ -87,6 +87,12 @@ export type SuiParams = Readonly<{
   signMessage: Uint8SignMessageFunction;
 }>;
 
+export type EvmosParams = Readonly<{
+  walletBlockchain: 'EVMOS';
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
 export type MultiWalletParams = Readonly<{
   ownedWallets: ReadonlyArray<WalletWithSignParams>;
 }>;
@@ -104,7 +110,8 @@ type WalletParams =
   | AvalancheParams
   | OptimismParams
   | InjectiveParams
-  | SuiParams;
+  | SuiParams
+  | EvmosParams;
 
 export type NotifiParams = Readonly<{
   alertConfigurations?: Record<string, AlertConfiguration | null>;

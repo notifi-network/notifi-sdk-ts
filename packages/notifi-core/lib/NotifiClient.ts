@@ -275,7 +275,8 @@ export type SignMessageParams =
         | 'AVALANCHE'
         | 'BINANCE'
         | 'INJECTIVE'
-        | 'OPTIMISM';
+        | 'OPTIMISM'
+        | 'EVMOS';
       signMessage: Uint8SignMessageFunction;
     }>
   | Readonly<{
@@ -307,7 +308,8 @@ export type WalletParams =
         | 'ARBITRUM'
         | 'AVALANCHE'
         | 'BINANCE'
-        | 'OPTIMISM';
+        | 'OPTIMISM'
+        | 'EVMOS';
 
       walletPublicKey: string;
     }>
@@ -350,7 +352,8 @@ export type WalletWithSignMessage =
         | 'ARBITRUM'
         | 'AVALANCHE'
         | 'BINANCE'
-        | 'OPTIMISM';
+        | 'OPTIMISM'
+        | 'EVMOS';
 
       walletPublicKey: string;
       signMessage: Uint8SignMessageFunction;

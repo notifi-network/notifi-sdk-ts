@@ -7,7 +7,6 @@ import type {
   NotifiFrontendConfiguration,
 } from '../configuration';
 import type {
-  AlertFrequency,
   CardConfigItemV1,
   EventTypeItem,
   WalletBalanceEventTypeItem,
@@ -43,6 +42,7 @@ export type SignMessageParams =
         | 'AVALANCHE'
         | 'BINANCE'
         | 'INJECTIVE'
+        | 'EVMOS'
         | 'OPTIMISM';
       signMessage: Uint8SignMessageFunction;
     }>
@@ -81,7 +81,8 @@ export type WalletWithSignMessage =
         | 'ARBITRUM'
         | 'AVALANCHE'
         | 'BINANCE'
-        | 'OPTIMISM';
+        | 'OPTIMISM'
+        | 'EVMOS';
 
       walletPublicKey: string;
       signMessage: Uint8SignMessageFunction;
@@ -265,6 +266,7 @@ export class NotifiFrontendClient {
       case 'AVALANCHE':
       case 'BINANCE':
       case 'OPTIMISM':
+      case 'EVMOS':
       case 'SOLANA': {
         const result = await this._service.logInFromDapp({
           walletBlockchain,
@@ -323,6 +325,7 @@ export class NotifiFrontendClient {
       case 'ARBITRUM':
       case 'AVALANCHE':
       case 'BINANCE':
+      case 'EVMOS':
       case 'OPTIMISM': {
         const { walletPublicKey, tenantId } = this
           ._configuration as NotifiConfigWithPublicKey;

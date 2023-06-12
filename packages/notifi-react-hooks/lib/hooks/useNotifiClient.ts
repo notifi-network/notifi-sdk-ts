@@ -144,6 +144,7 @@ const signMessage = async ({
     case 'BINANCE':
     case 'OPTIMISM':
     case 'AVALANCHE':
+    case 'EVMOS':
     case 'ETHEREUM': {
       if (signer.walletBlockchain !== params.walletBlockchain) {
         throw new Error('Signer and config have different walletBlockchain');

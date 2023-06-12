@@ -20,6 +20,7 @@ export type NotifiConfigWithPublicKey = Readonly<{
     | 'AVALANCHE'
     | 'BINANCE'
     | 'OPTIMISM'
+    | 'EVMOS'
     | 'SOLANA';
   walletPublicKey: string;
 }> &

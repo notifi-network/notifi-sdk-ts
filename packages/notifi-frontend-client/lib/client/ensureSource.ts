@@ -216,6 +216,8 @@ const ensureWalletBalanceSources = async (
           return 'OPTIMISM_WALLET';
         case 'SUI':
           return 'SUI_WALLET';
+        case 'EVMOS':
+          return 'EVMOS_WALLET';
         default:
           throw new Error('Unsupported walletType');
       }
