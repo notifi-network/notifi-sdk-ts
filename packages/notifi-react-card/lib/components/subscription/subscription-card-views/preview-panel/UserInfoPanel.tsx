@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { PenIcon } from 'notifi-react-card/lib/assets/PenIcon';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
 import {
   useNotifiClientContext,
@@ -76,6 +76,12 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
     emailErrorMessage.onClick();
     setTimeout(() => setIsEmailConfirmationSent(false), 3000);
   }, []);
+
+  const discordUserName = useMemo(() => {
+    const { username, discriminator } = discordTargetData || {};
+
+    return discriminator === '0' ? username : `${username}#${discriminator}`;
+  }, [discordTargetData]);
 
   return (
     <div
@@ -197,7 +203,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
             )}
           >
             {discordTargetData?.isConfirmed === true
-              ? `${discordTargetData?.username}#${discordTargetData?.discriminator}`
+              ? discordUserName
               : 'Discord'}
           </label>
           {discordErrrorMessage?.type === 'recoverableError' ? (
