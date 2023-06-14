@@ -1,6 +1,7 @@
 import {
-  NotifiContext,
   NotifiSubscriptionCard,
+  useNotifiClientContext,
+  useNotifiSubscriptionContext,
 } from '@notifi-network/notifi-react-card';
 import '@notifi-network/notifi-react-card/dist/index.css';
 import React, { useMemo } from 'react';
@@ -18,7 +19,9 @@ export const KeplrConnectButton: React.FC = () => {
 };
 
 export const KeplrCard: React.FC = () => {
-  const { key, signArbitrary } = useKeplrContext();
+  const { alerts } = useNotifiSubscriptionContext();
+  const { client } = useNotifiClientContext();
+  const { key } = useKeplrContext();
   const keyBase64 = useMemo(
     () =>
       key !== undefined
@@ -30,30 +33,29 @@ export const KeplrCard: React.FC = () => {
   return (
     <div className="container">
       <h1>Notifi Card: Injective (Keplr)</h1>
+      <h3>Subscribing Alert(s)</h3>
+      {client.isInitialized && client.isAuthenticated ? (
+        <div>
+          <ul>
+            {Object.keys(alerts).length > 0 &&
+              Object.keys(alerts).map((alert) => (
+                <li key={alerts[alert]?.id}>
+                  <div>{alerts[alert]?.name}</div>
+                </li>
+              ))}
+          </ul>
+        </div>
+      ) : (
+        <div>Not yet register Notification</div>
+      )}
+      <h3>Display NotifiSubscriptionCard</h3>
       <KeplrConnectButton />
       {key !== undefined && keyBase64 !== undefined ? (
-        <NotifiContext
-          dappAddress="junitest.xyz"
-          walletBlockchain="INJECTIVE"
-          env="Development"
-          walletPublicKey={keyBase64}
-          accountAddress={key.bech32Address}
-          signMessage={async (message: Uint8Array): Promise<Uint8Array> => {
-            const result = await signArbitrary(
-              'injective-1',
-              key.bech32Address,
-              message,
-            );
-            return Buffer.from(result.signature, 'base64');
-          }}
-        >
-          NotifiSubscriptionCard
-          <NotifiSubscriptionCard
-            darkMode
-            inputs={{ userWallet: key.bech32Address }}
-            cardId="d8859ea72ff4449fa8f7f293ebd333c9"
-          />
-        </NotifiContext>
+        <NotifiSubscriptionCard
+          darkMode
+          inputs={{ userWallet: key.bech32Address }}
+          cardId="d8859ea72ff4449fa8f7f293ebd333c9"
+        />
       ) : null}
     </div>
   );
