@@ -3,6 +3,7 @@ import React from 'react';
 
 import {
   KeplrNotifiContextWrapper,
+  MetamaskNotifiContextWrapper,
   PolkadotNotifiContextWrapper,
   SolanaNotifiContextWrapper,
   SuiNotifiContextWrapper,
@@ -10,6 +11,7 @@ import {
 } from '../NotifiContextWrapper';
 import { DemoPrviewCard } from './DemoPreviewCard';
 import { KeplrCard } from './KeplrCard';
+import { MetamaskCard } from './MetamaskCard';
 import './NotifiCard.css';
 import { PolkadotCard } from './PolkadotCard';
 import { SolanaCard } from './SolanaCard';
@@ -23,6 +25,7 @@ enum ESupportedViews {
   Polkadot = 'Polkadot',
   Sui = 'Sui',
   Keplr = 'keplr',
+  Metamask = 'Metamask',
 }
 
 const supportedViews: Record<ESupportedViews, React.ReactNode> = {
@@ -51,6 +54,11 @@ const supportedViews: Record<ESupportedViews, React.ReactNode> = {
     <KeplrNotifiContextWrapper>
       <KeplrCard />
     </KeplrNotifiContextWrapper>
+  ),
+  [ESupportedViews.Metamask]: (
+    <MetamaskNotifiContextWrapper>
+      <MetamaskCard />
+    </MetamaskNotifiContextWrapper>
   ),
 };
 
