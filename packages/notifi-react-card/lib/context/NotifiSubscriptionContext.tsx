@@ -317,6 +317,8 @@ export const NotifiSubscriptionContextProvider: React.FC<
           },
           message: 'Verify ID',
         });
+      } else {
+        setTelegramErrorMessage(undefined);
       }
 
       const discordTarget = targetGroup?.discordTargets?.[0];

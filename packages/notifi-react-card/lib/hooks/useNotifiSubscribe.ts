@@ -209,6 +209,8 @@ export const useNotifiSubscribe: ({
           },
           message: 'Verify ID',
         });
+      } else {
+        setTelegramErrorMessage(undefined);
       }
 
       const discordTarget = targetGroup?.discordTargets?.[0];
