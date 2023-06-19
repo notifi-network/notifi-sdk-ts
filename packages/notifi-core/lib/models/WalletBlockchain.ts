@@ -1,7 +1,6 @@
 export type WalletBlockchain =
   | 'SOLANA'
   | 'ETHEREUM'
-  | 'OFF_CHAIN'
   | 'AVALANCHE'
   | 'APTOS'
   | 'ACALA'
@@ -11,6 +10,4 @@ export type WalletBlockchain =
   | 'NEAR'
   | 'OPTIMISM'
   | 'INJECTIVE'
-  | 'SUI'
-  | 'OSMOSIS'
-  | 'EVMOS';
+  | 'SUI';

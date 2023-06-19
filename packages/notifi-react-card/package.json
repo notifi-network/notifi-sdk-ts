@@ -1,6 +1,6 @@
 {
   "name": "@notifi-network/notifi-react-card",
-  "version": "0.73.3",
+  "version": "0.73.2",
   "description": "A React component for signing up for Notifi notifications",
   "author": "juni-notifi <hyungjoon.kim@notifi.network>",
   "homepage": "https://github.com/notifi-network/notifi-sdk-ts#readme",
@@ -44,7 +44,7 @@
     "react-virtuoso": "^3.1.1"
   },
   "devDependencies": {
-    "@notifi-network/notifi-core": "^0.73.3"
+    "@notifi-network/notifi-core": "^0.73.2"
   },
   "tsup": {
     "noExternal": [
