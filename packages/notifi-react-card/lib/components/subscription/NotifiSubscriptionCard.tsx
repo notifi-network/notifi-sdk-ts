@@ -90,7 +90,9 @@ export const NotifiSubscriptionCard: React.FC<
   loadingSpinnerSize,
   onClose,
 }) => {
-  const { isInitialized } = useNotifiSubscribe({ targetGroupName: 'Default' });
+  const { isInitialized, reload, isAuthenticated } = useNotifiSubscribe({
+    targetGroupName: 'Default',
+  });
   const {
     canary: { isActive: canaryIsActive, frontendClient },
   } = useNotifiClientContext();
@@ -99,7 +101,7 @@ export const NotifiSubscriptionCard: React.FC<
     return canaryIsActive ? !!frontendClient.userState : isInitialized;
   }, [frontendClient.userState?.status, isInitialized, canaryIsActive]);
 
-  const { loading } = useNotifiSubscriptionContext();
+  const { loading, render } = useNotifiSubscriptionContext();
 
   const inputDisabled = loading || !isClientInitialized;
 
@@ -109,6 +111,16 @@ export const NotifiSubscriptionCard: React.FC<
   });
 
   let contents: React.ReactNode = null;
+
+  window.onfocus = () => {
+    // Ensure target is up-to-date after user returns to tab from 3rd party verification site
+    if (!isClientInitialized || !isAuthenticated) return;
+
+    if (canaryIsActive) {
+      return frontendClient.fetchData().then(render);
+    }
+    reload();
+  };
 
   switch (card.state) {
     case 'loading':
