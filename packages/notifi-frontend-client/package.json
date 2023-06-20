@@ -1,6 +1,6 @@
 {
   "name": "@notifi-network/notifi-frontend-client",
-  "version": "0.73.3",
+  "version": "0.73.4",
   "description": "The frontend client for Notifi",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
