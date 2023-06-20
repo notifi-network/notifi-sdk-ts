@@ -3,7 +3,7 @@ import {
   useNotifiSubscribe,
   useSubscriptionCard,
 } from 'notifi-react-card/lib/hooks';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 
 import {
   useNotifiClientContext,
@@ -112,15 +112,23 @@ export const NotifiSubscriptionCard: React.FC<
 
   let contents: React.ReactNode = null;
 
-  window.onfocus = () => {
-    // Ensure target is up-to-date after user returns to tab from 3rd party verification site
-    if (!isClientInitialized || !isAuthenticated) return;
+  useEffect(() => {
+    const handler = () => {
+      // Ensure target is up-to-date after user returns to tab from 3rd party verification site
+      if (!isClientInitialized || !isAuthenticated) {
+        return;
+      }
+      if (canaryIsActive) {
+        return frontendClient.fetchData().then(render);
+      }
+      reload();
+    };
 
-    if (canaryIsActive) {
-      return frontendClient.fetchData().then(render);
-    }
-    reload();
-  };
+    window.addEventListener('focus', handler);
+    return () => {
+      window.removeEventListener('focus', handler);
+    };
+  }, [isClientInitialized, isAuthenticated, canaryIsActive, frontendClient]);
 
   switch (card.state) {
     case 'loading':
