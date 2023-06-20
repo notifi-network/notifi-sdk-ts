@@ -1,6 +1,6 @@
 {
   "name": "@notifi-network/notifi-solana-hw-login",
-  "version": "0.73.2",
+  "version": "0.73.3",
   "description": "Plugin for Solana Hardware Login support",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -32,7 +32,7 @@
   },
   "homepage": "https://github.com/notifi-network/notifi-sdk-ts#readme",
   "dependencies": {
-    "@notifi-network/notifi-react-card": "^0.73.2"
+    "@notifi-network/notifi-react-card": "^0.73.3"
   },
   "peerDependencies": {
     "@solana/wallet-adapter-react": "^0.15.30",
