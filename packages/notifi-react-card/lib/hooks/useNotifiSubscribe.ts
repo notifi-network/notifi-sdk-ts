@@ -608,7 +608,12 @@ export const useNotifiSubscribe: ({
       let finalDiscordId = undefined;
 
       if (useDiscord === true) {
-        finalDiscordId = await client.createDiscordTarget('Default');
+        try {
+          finalDiscordId = await client.createDiscordTarget('Default');
+        } catch (e) {
+          // catch the case that the 'Default' discord already created
+          finalDiscordId = data.discordTargets[0].id;
+        }
       }
 
       const newResults: Record<string, Alert> = {};
