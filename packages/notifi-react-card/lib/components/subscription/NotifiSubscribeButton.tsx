@@ -5,6 +5,7 @@ import {
 } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import { isValidPhoneNumber } from 'libphonenumber-js';
+import { TargetGroupFragmentFragment } from 'notifi-graphql/lib/gql/generated';
 import { formatTelegramForSubscription } from 'notifi-react-card/lib/utils/stringUtils';
 import React, { useCallback, useMemo } from 'react';
 
@@ -106,7 +107,16 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
 
   const renewTargetGroups = useCallback(async () => {
     if (isCanaryActive) {
-      return frontendClient.ensureTargetGroup(targetGroup);
+      let result = {} as TargetGroupFragmentFragment;
+      try {
+        result = await frontendClient.ensureTargetGroup(targetGroup);
+      } catch (e) {
+        // catch the case that the 'Default' discord already created
+        const data = await frontendClient.fetchData();
+        if (!data.targetGroup?.[0]) throw e;
+        result = data.targetGroup[0];
+      }
+      return result;
     }
     return updateTargetGroups();
   }, [email, phoneNumber, useDiscord, telegramId, frontendClient]);

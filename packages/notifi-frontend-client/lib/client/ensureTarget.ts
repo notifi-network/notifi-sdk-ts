@@ -114,8 +114,8 @@ export const ensureTelegram = ensureTarget(
 export const ensureDiscord = ensureTarget(
   async (service: Operations.CreateDiscordTargetService, value: string) => {
     const mutation = await service.createDiscordTarget({
-      name: value.toLowerCase(),
-      value: value.toLowerCase(),
+      name: value,
+      value,
     });
 
     const result = mutation.createDiscordTarget;
@@ -132,7 +132,6 @@ export const ensureDiscord = ensureTarget(
   },
   (arg: Types.DiscordTargetFragmentFragment | undefined) =>
     arg?.discordAccountId?.toLowerCase(),
-  (value) => value.toLowerCase(),
 );
 
 export type EnsureWebhookParams = Omit<
