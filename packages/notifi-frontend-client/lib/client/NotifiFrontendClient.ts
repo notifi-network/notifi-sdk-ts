@@ -854,4 +854,12 @@ export class NotifiFrontendClient {
     const mutation = await this._service.createSupportConversation(input);
     return mutation;
   }
+
+  async createDiscordTarget(input: string) {
+    const mutation = await this._service.createDiscordTarget({
+      name: input,
+      value: input,
+    });
+    return mutation.createDiscordTarget;
+  }
 }
