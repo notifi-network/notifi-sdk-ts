@@ -26,7 +26,13 @@ export type NotifiConfigWithPublicKey = Readonly<{
   NotifiEnvironmentConfiguration;
 
 export type NotifiConfigWithPublicKeyAndAddress = Readonly<{
-  walletBlockchain: 'SUI' | 'NEAR' | 'INJECTIVE' | 'APTOS' | 'ACALA';
+  walletBlockchain:
+    | 'SUI'
+    | 'NEAR'
+    | 'INJECTIVE'
+    | 'APTOS'
+    | 'ACALA'
+    | 'OSMOSIS';
   authenticationKey: string;
   accountAddress: string;
 }> &
