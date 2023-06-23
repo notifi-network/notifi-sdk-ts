@@ -125,6 +125,7 @@ const signMessage = async ({
 }>): Promise<string> => {
   switch (params.walletBlockchain) {
     case 'INJECTIVE':
+    case 'OSMOSIS':
     case 'SOLANA': {
       if (signer.walletBlockchain !== params.walletBlockchain) {
         throw new Error('Signer and config have different walletBlockchain');
@@ -465,7 +466,8 @@ const useNotifiClient = (
             walletBlockchain === 'ACALA' ||
             walletBlockchain === 'NEAR' ||
             walletBlockchain === 'SUI' ||
-            walletBlockchain === 'INJECTIVE'
+            walletBlockchain === 'INJECTIVE' ||
+            walletBlockchain === 'OSMOSIS'
               ? config.accountAddress
               : undefined,
           walletPublicKey,

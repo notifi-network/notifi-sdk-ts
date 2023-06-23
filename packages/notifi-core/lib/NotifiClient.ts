@@ -275,6 +275,7 @@ export type SignMessageParams =
         | 'AVALANCHE'
         | 'BINANCE'
         | 'INJECTIVE'
+        | 'OSMOSIS'
         | 'OPTIMISM';
       signMessage: Uint8SignMessageFunction;
     }>
@@ -333,6 +334,11 @@ export type WalletParams =
     }>
   | Readonly<{
       walletBlockchain: 'INJECTIVE';
+      accountAddress: string;
+      walletPublicKey: string;
+    }>
+  | Readonly<{
+      walletBlockchain: 'OSMOSIS';
       accountAddress: string;
       walletPublicKey: string;
     }>;

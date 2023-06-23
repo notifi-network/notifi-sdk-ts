@@ -74,6 +74,13 @@ export type InjectiveParams = Readonly<{
   signMessage: Uint8SignMessageFunction;
 }>;
 
+export type OsmosisParams = Readonly<{
+  walletBlockchain: 'OSMOSIS';
+  accountAddress: string;
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
 export type AvalancheParams = Readonly<{
   walletBlockchain: 'AVALANCHE';
   walletPublicKey: string;
@@ -104,6 +111,7 @@ type WalletParams =
   | AvalancheParams
   | OptimismParams
   | InjectiveParams
+  | OsmosisParams
   | SuiParams;
 
 export type NotifiParams = Readonly<{

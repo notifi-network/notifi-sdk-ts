@@ -10,4 +10,5 @@ export type WalletBlockchain =
   | 'NEAR'
   | 'OPTIMISM'
   | 'INJECTIVE'
+  | 'OSMOSIS'
   | 'SUI';

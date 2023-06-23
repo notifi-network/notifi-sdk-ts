@@ -7,7 +7,6 @@ import type {
   NotifiFrontendConfiguration,
 } from '../configuration';
 import type {
-  AlertFrequency,
   CardConfigItemV1,
   EventTypeItem,
   WalletBalanceEventTypeItem,
@@ -43,6 +42,7 @@ export type SignMessageParams =
         | 'AVALANCHE'
         | 'BINANCE'
         | 'INJECTIVE'
+        | 'OSMOSIS'
         | 'OPTIMISM';
       signMessage: Uint8SignMessageFunction;
     }>
@@ -280,6 +280,7 @@ export class NotifiFrontendClient {
       case 'ACALA':
       case 'NEAR':
       case 'INJECTIVE':
+      case 'OSMOSIS':
       case 'APTOS': {
         const result = await this._service.logInFromDapp({
           walletBlockchain,
