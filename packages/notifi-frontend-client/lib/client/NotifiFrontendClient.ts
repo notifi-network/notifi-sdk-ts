@@ -337,6 +337,7 @@ export class NotifiFrontendClient {
         );
         return signature;
       }
+      case 'OSMOSIS':
       case 'INJECTIVE': {
         const { authenticationKey, tenantId } = this
           ._configuration as NotifiConfigWithPublicKeyAndAddress;
