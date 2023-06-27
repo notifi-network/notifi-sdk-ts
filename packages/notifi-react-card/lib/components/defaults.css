@@ -81,7 +81,7 @@ input::-webkit-inner-spin-button {
   font-family: Helvetica, sans-serif;
   background-color: var(--notifi-card-background);
   border-radius: 5px;
-  padding: 20px 20px 5px 20px;
+  padding: 20px 0px 5px 0px;
   min-height: 510px;
 }
 
@@ -89,10 +89,25 @@ input::-webkit-inner-spin-button {
   flex-grow: 1;
 }
 
+.NotifiPreviewCard__dividerLine {
+  border-top: 1px solid var(--notifi-font-color);
+  opacity: 0.2;
+  margin: 20px 16px;
+}
+
+.NotifiPreviewCard__title {
+  line-height: 133.187%;
+  letter-spacing: 0.12px;
+  padding: 0 20px;
+  opacity: 0.6;
+  margin-bottom: 17.5px !important;
+}
+
 .NotifiInputContainer {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
+  margin: 0px 20px;
 }
 
 .NotifiInputHeading {
@@ -228,7 +243,7 @@ input::-webkit-inner-spin-button {
 .NotifiAlertBox__container {
   display: flex;
   align-items: center;
-  padding: 0;
+  padding: 0px 20px;
 }
 
 .NotifiAlertBox__btn--left,
@@ -309,8 +324,10 @@ input::-webkit-inner-spin-button {
 }
 
 .NotifiAlertHistory__dividerLine {
-  border-top: 2px solid var(--notifi-font-color);
+  border-top: 1px solid var(--notifi-font-color);
   border-radius: 5px;
+  opacity: 0.2;
+  margin-bottom: 0 !important;
 }
 
 .NotifiAlertHistory__notificationDate {
@@ -524,6 +541,10 @@ input::-webkit-inner-spin-button {
   line-height: 20px;
   color: var(--notifi-font-color);
   margin-bottom: 0px !important;
+}
+
+.NotifiEventTypeContainer {
+  padding: 0 20px;
 }
 
 .EventTypeLabelRow__container,
@@ -788,6 +809,7 @@ input::-webkit-inner-spin-button {
   padding: 16px 16px 0px 16px;
   border-radius: 5px;
   background-color: var(--notifi-card-secondary-background);
+  margin: 0px 20px;
 }
 
 .NotifiPreviewCard__editButton {
@@ -1688,6 +1710,8 @@ input::-webkit-inner-spin-button {
 .SignupBanner__Column {
   flex-direction: column;
   padding: 14px 0 20px 0;
+  margin: 0px 20px;
+  border-radius: 4px;
 }
 
 .SignupBanner__Label {
@@ -1713,4 +1737,5 @@ input::-webkit-inner-spin-button {
   border-radius: 4.04px;
   margin-right: 10px;
   cursor: pointer;
+  border: none;
 }

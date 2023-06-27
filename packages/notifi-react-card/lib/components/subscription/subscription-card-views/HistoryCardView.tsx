@@ -165,15 +165,16 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
         { 'NotifiAlertHistory__container--hidden': isHidden },
       )}
     >
-      {!isTargetsExist && (
-        <SignupBanner data={data} classNames={classNames?.signupBanner} /> // TODO: Move up one level (for MVP-2733), Blocker: MVP-2716
-      )}
       <div
         className={clsx(
           'NotifiAlertHistory__dividerLine',
           classNames?.dividerLine,
         )}
       />
+      {!isTargetsExist && (
+        <SignupBanner data={data} classNames={classNames?.signupBanner} /> // TODO: Move up one level (for MVP-2733), Blocker: MVP-2716
+      )}
+
       {allNodes.length > 0 ? (
         <Virtuoso
           className={clsx('NotifiAlertHistory__virtuoso', classNames?.virtuoso)}

@@ -18,6 +18,8 @@ export type PreviewCardProps = Readonly<{
     AlertsPanel?: DeepPartialReadonly<AlertsPanelProps['classNames']>;
     backArrowContainer?: string;
     UserInfoPanel?: DeepPartialReadonly<UserInfoPanelProps['classNames']>;
+    NotifiPreviewCardTitle?: string;
+    NotifiPreviewCardDividerLine?: string;
     signupBanner?: SignupBannerProps['classNames']; // TODO: Move up one level (for MVP-2733), Blocker: MVP-2716
   };
   data: CardConfigItemV1;
@@ -65,6 +67,22 @@ export const PreviewCard: React.FC<PreviewCardProps> = ({
           contactInfo={data.contactInfo}
         />
       )}
+
+      <div
+        className={clsx(
+          'NotifiPreviewCard__dividerLine',
+          classNames?.NotifiPreviewCardDividerLine,
+        )}
+      />
+
+      <div
+        className={clsx(
+          'NotifiPreviewCard__title',
+          classNames?.NotifiPreviewCardTitle,
+        )}
+      >
+        Select the alerts you want to receive:
+      </div>
       <AlertsPanel
         classNames={classNames?.AlertsPanel}
         data={data}
