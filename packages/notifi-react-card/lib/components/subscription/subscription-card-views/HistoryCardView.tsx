@@ -1,4 +1,5 @@
 import { GetNotificationHistoryInput } from '@notifi-network/notifi-core';
+import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
 import clsx from 'clsx';
 import React, {
@@ -11,7 +12,10 @@ import React, {
 import { Virtuoso } from 'react-virtuoso';
 
 import { NotificationEmptyBellIcon } from '../../../assets/NotificationEmptyBellIcon';
-import { useNotifiClientContext } from '../../../context';
+import {
+  useNotifiClientContext,
+  useNotifiSubscriptionContext,
+} from '../../../context';
 import {
   DeepPartialReadonly,
   getAlertNotificationViewBaseProps,
@@ -22,10 +26,12 @@ import {
   AlertNotificationRow,
   AlertNotificationViewProps,
 } from '../../AlertHistory/AlertNotificationRow';
+import { SignupBanner, SignupBannerProps } from '../../SignupBanner';
 
 export type AlertHistoryViewProps = Readonly<{
   noAlertDescription?: string;
   isHidden: boolean;
+  data: CardConfigItemV1;
   classNames?: DeepPartialReadonly<{
     title: string;
     header: string;
@@ -41,6 +47,7 @@ export type AlertHistoryViewProps = Readonly<{
     historyContainer: string;
     virtuoso: string;
     AlertCard: AlertNotificationViewProps['classNames'];
+    signupBanner: SignupBannerProps['classNames']; // TODO: Move up one level (for MVP-2733), Blocker: MVP-2716
   }>;
   setAlertEntry: React.Dispatch<
     React.SetStateAction<
@@ -51,6 +58,7 @@ export type AlertHistoryViewProps = Readonly<{
 
 export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
   classNames,
+  data,
   isHidden,
   noAlertDescription,
   setAlertEntry,
@@ -73,6 +81,9 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
     canary: { isActive: isCanaryActive, frontendClient },
   } = useNotifiClientContext();
 
+  const { email, phoneNumber, telegramId, discordTargetData, useDiscord } =
+    useNotifiSubscriptionContext();
+
   const { isClientInitialized, isClientAuthenticated } = useMemo(() => {
     return {
       isClientInitialized: isCanaryActive
@@ -83,6 +94,23 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
         : client.isAuthenticated,
     };
   }, [isCanaryActive, client, frontendClient]);
+
+  const isTargetsExist = useMemo(() => {
+    return (
+      !!email ||
+      !!phoneNumber ||
+      !!telegramId ||
+      (useDiscord &&
+        !!discordTargetData?.id &&
+        !!discordTargetData?.discordAccountId)
+    );
+  }, [
+    email,
+    phoneNumber,
+    telegramId,
+    discordTargetData?.id,
+    discordTargetData?.discordAccountId,
+  ]);
 
   const getNotificationHistory = useCallback(
     async ({ first, after }: GetNotificationHistoryInput) => {
@@ -143,6 +171,10 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
           classNames?.dividerLine,
         )}
       />
+      {!isTargetsExist && (
+        <SignupBanner data={data} classNames={classNames?.signupBanner} /> // TODO: Move up one level (for MVP-2733), Blocker: MVP-2716
+      )}
+
       {allNodes.length > 0 ? (
         <Virtuoso
           className={clsx('NotifiAlertHistory__virtuoso', classNames?.virtuoso)}

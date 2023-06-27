@@ -405,6 +405,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
               classNames={classNames?.AlertHistoryView}
               isHidden={selectedAlertEntry !== undefined}
               setAlertEntry={setAlertEntry}
+              data={data}
             />
           </div>
         </>
