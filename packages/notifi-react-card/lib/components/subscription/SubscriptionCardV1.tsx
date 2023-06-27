@@ -111,9 +111,11 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
     setPhoneNumberErrorMessage,
   } = useNotifiForm();
 
-  const { isInitialized, isTokenExpired } = useNotifiSubscribe({
-    targetGroupName: 'Default',
-  });
+  const { isInitialized, isTokenExpired, isAuthenticated } = useNotifiSubscribe(
+    {
+      targetGroupName: 'Default',
+    },
+  );
 
   const {
     canary: { isActive: canaryIsActive, frontendClient },
@@ -121,23 +123,52 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
 
   const firstLoad = useRef(false);
 
-  const { isClientInitialized, isClientTokenExpired } = useMemo(() => {
-    let isClientInitialized = false;
-    let isClientTokenExpired = false;
-    if (canaryIsActive) {
-      isClientInitialized = !!frontendClient.userState;
-      isClientTokenExpired = frontendClient.userState?.status === 'expired';
-    } else {
-      isClientInitialized = isInitialized;
-      isClientTokenExpired = isTokenExpired;
-    }
-    return { isClientInitialized, isClientTokenExpired };
+  const { isClientInitialized, isClientTokenExpired, isClientAuthenticated } =
+    useMemo(() => {
+      let isClientInitialized = false;
+      let isClientTokenExpired = false;
+      let isClientAuthenticated = false;
+      if (canaryIsActive) {
+        isClientInitialized = !!frontendClient.userState;
+        isClientTokenExpired = frontendClient.userState?.status === 'expired';
+        isClientAuthenticated =
+          frontendClient.userState?.status === 'authenticated';
+      } else {
+        isClientInitialized = isInitialized;
+        isClientTokenExpired = isTokenExpired;
+        isClientAuthenticated = isAuthenticated;
+      }
+      return {
+        isClientInitialized,
+        isClientTokenExpired,
+        isClientAuthenticated,
+      };
+    }, [
+      frontendClient.userState?.status,
+      isTokenExpired,
+      isInitialized,
+      isAuthenticated,
+      canaryIsActive,
+    ]);
+
+  const isTargetsExist = useMemo(() => {
+    return (
+      !!email ||
+      !!phoneNumber ||
+      !!telegramId ||
+      (!!discordTargetData?.id && !!discordTargetData?.discordAccountId)
+    );
   }, [
-    frontendClient.userState?.status,
-    isTokenExpired,
-    isInitialized,
-    canaryIsActive,
+    email,
+    phoneNumber,
+    telegramId,
+    discordTargetData?.id,
+    discordTargetData?.discordAccountId,
   ]);
+
+  const isTargetsValid = useMemo(() => {
+    return data.isContactInfoRequired ? isTargetsExist : isClientAuthenticated;
+  }, [isTargetsExist, data.isContactInfoRequired, isClientAuthenticated]);
 
   const [selectedAlertEntry, setAlertEntry] = useState<
     Types.NotificationHistoryEntryFragmentFragment | undefined
@@ -171,13 +202,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
 
     firstLoad.current = true;
 
-    if (
-      (email !== '' && email !== undefined) ||
-      (phoneNumber !== '' && phoneNumber !== undefined) ||
-      (telegramId !== '' && telegramId !== undefined) ||
-      (discordTargetData?.id !== '' &&
-        discordTargetData?.discordAccountId !== undefined)
-    ) {
+    if (isTargetsValid) {
       setCardView({ state: 'history' });
     } else if (isClientTokenExpired) {
       setCardView({ state: 'expired' });
