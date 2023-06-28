@@ -317,6 +317,8 @@ export const NotifiSubscriptionContextProvider: React.FC<
           },
           message: 'Verify ID',
         });
+      } else {
+        setTelegramErrorMessage(undefined);
       }
 
       const discordTarget = targetGroup?.discordTargets?.[0];
@@ -340,6 +342,8 @@ export const NotifiSubscriptionContextProvider: React.FC<
             onClick: () => window.open(DISCORD_INVITE_URL, '_blank'),
             message: 'Join Server',
           });
+        } else {
+          setDiscordErrorMessage(undefined);
         }
         setUseDiscord(true);
         setDiscordTargetData(discordTarget);
