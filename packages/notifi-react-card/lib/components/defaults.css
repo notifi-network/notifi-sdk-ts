@@ -22,6 +22,7 @@
   --notifi-outgoing-message: #e5ebff;
   --notifi-settings-icon-color: #262949;
   --notifi-confirmation-color: #22af3c;
+  --notifi-divider-line: rgba(255, 255, 255, 0.2);
 }
 
 a {
@@ -58,6 +59,7 @@ a {
   --notifi-confirmation-color: #45c95e;
   --notifi-banner-background: #222222;
   --notifi-banner-icon-color: #262949;
+  --notifi-divider-line: rgba(255, 255, 255, 0.2);
 }
 
 input:autofill,
@@ -90,8 +92,7 @@ input::-webkit-inner-spin-button {
 }
 
 .NotifiPreviewCard__dividerLine {
-  border-top: 1px solid var(--notifi-font-color);
-  opacity: 0.2;
+  border-top: 1px solid var(--notifi-divider-line);
   margin: 20px 16px;
 }
 
@@ -107,7 +108,7 @@ input::-webkit-inner-spin-button {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  margin: 0px 20px;
+  margin: 10px 20px;
 }
 
 .NotifiInputHeading {
@@ -128,6 +129,7 @@ input::-webkit-inner-spin-button {
   position: relative;
   flex-direction: column;
   flex-grow: 1;
+  margin-bottom: 0px !important;
 }
 
 .NotifiVerifyContainer {
@@ -199,8 +201,7 @@ input::-webkit-inner-spin-button {
   line-height: 14px;
   justify-content: center;
   align-items: center;
-  margin-bottom: 12px;
-  margin-top: 12px;
+  padding: 12px 0px;
 }
 
 .NotifiFooter__poweredByContainer {
@@ -300,10 +301,10 @@ input::-webkit-inner-spin-button {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding: 10px 0 0 10px;
+  padding: 10px 0 0 0px;
   flex-grow: 1;
   overflow: hidden;
-  margin: 10px 0;
+  border-bottom: 1px solid var(--notifi-divider-line);
 }
 
 .NotifiAlertHistory__content,
@@ -323,10 +324,9 @@ input::-webkit-inner-spin-button {
   border-radius: 16px;
 }
 
-.NotifiAlertHistory__dividerLine {
-  border-top: 1px solid var(--notifi-font-color);
+.DividerLine {
+  border-top: 1px solid var(--notifi-divider-line);
   border-radius: 5px;
-  opacity: 0.2;
   margin-bottom: 0 !important;
 }
 
@@ -966,6 +966,7 @@ input::-webkit-inner-spin-button {
   flex-direction: column;
   justify-content: flex-start;
   align-items: stretch;
+  margin: 0px 20px;
 }
 
 .NotifiAlertDetails__topContentContainer {
@@ -1600,6 +1601,7 @@ input::-webkit-inner-spin-button {
   flex-direction: column;
   flex-grow: 1;
   visibility: visible;
+  margin: 0px 20px;
 }
 
 .NotifiAlertHistory__container.NotifiAlertHistory__container--hidden {
@@ -1607,7 +1609,6 @@ input::-webkit-inner-spin-button {
 }
 
 .NotifiAlertHistory__virtuoso {
-  margin-bottom: 25px;
   overflow-x: hidden;
 }
 

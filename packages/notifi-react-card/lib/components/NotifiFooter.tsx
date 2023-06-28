@@ -1,7 +1,6 @@
 import clsx from 'clsx';
 import React from 'react';
 
-import { useNotifiSubscriptionContext } from '../context';
 import type { DeepPartialReadonly } from '../utils';
 import {
   NotifiDisclosureStatement,
@@ -29,11 +28,7 @@ export const NotifiFooter: React.FC<NotifiFooterProps> = ({
   classNames,
   copy,
 }: NotifiFooterProps) => {
-  const { cardView } = useNotifiSubscriptionContext();
-
-  const hideFooter = cardView.state === 'history';
-
-  return hideFooter ? null : (
+  return (
     <div className={clsx('NotifiFooter__container', classNames?.container)}>
       {copy?.disclosure ? (
         <NotifiDisclosureStatement
@@ -42,7 +37,7 @@ export const NotifiFooter: React.FC<NotifiFooterProps> = ({
         />
       ) : null}
       <a
-        href="https://notifi.network/faqs"
+        href="https://notifi.network"
         target="_blank"
         rel="noopener noreferrer"
         className={clsx(

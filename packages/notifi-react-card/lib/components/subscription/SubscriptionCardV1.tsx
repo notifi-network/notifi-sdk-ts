@@ -25,6 +25,7 @@ import NotifiAlertBox, {
   NotifiAlertBoxButtonProps,
   NotifiAlertBoxProps,
 } from '../NotifiAlertBox';
+import { SignupBanner, SignupBannerProps } from '../SignupBanner';
 import { ErrorStateCard } from '../common';
 import {
   NotifiInputFieldsText,
@@ -72,6 +73,8 @@ export type SubscriptionCardV1Props = Readonly<{
     VerifyWalletView: VerifyWalletViewProps['classNames'];
     NotifiAlertBox: NotifiAlertBoxProps['classNames'];
     ErrorStateCard: string;
+    signupBanner: SignupBannerProps['classNames'];
+    dividerLine: string;
   }>;
   inputDisabled: boolean;
   data: CardConfigItemV1;
@@ -272,6 +275,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
           >
             <h2>{expiredHeader()}</h2>
           </NotifiAlertBox>
+          <div className={clsx('DividerLine', classNames?.dividerLine)} />
           <ExpiredTokenView classNames={classNames?.ExpiredTokenView} />
         </>
       );
@@ -289,6 +293,9 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
           >
             <h2>{previewHeader()}</h2>
           </NotifiAlertBox>
+          {!isTargetsExist ? (
+            <SignupBanner data={data} classNames={classNames?.signupBanner} />
+          ) : null}
           <PreviewCard
             data={data}
             inputs={inputs}
@@ -323,6 +330,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
               <h2>{editHeader()}</h2>
             )}
           </NotifiAlertBox>
+          <div className={clsx('DividerLine', classNames?.dividerLine)} />
           <EditCardView
             buttonText={cardView.state === 'signup' ? 'Next' : 'Update'}
             data={data}
@@ -358,6 +366,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
           >
             <h2>{verifyOnboardingHeader()}</h2>
           </NotifiAlertBox>
+          <div className={clsx('DividerLine', classNames?.dividerLine)} />
           <VerifyWalletView
             classNames={classNames?.VerifyWalletView}
             data={data}
@@ -395,6 +404,10 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
               classNames?.alertContainer,
             )}
           >
+            <div className={clsx('DividerLine', classNames?.dividerLine)} />
+            {!isTargetsExist ? (
+              <SignupBanner data={data} classNames={classNames?.signupBanner} />
+            ) : null}
             {selectedAlertEntry === undefined ? null : (
               <AlertDetailsCard
                 notificationEntry={selectedAlertEntry}
