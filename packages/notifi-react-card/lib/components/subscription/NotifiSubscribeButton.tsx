@@ -30,6 +30,14 @@ export type NotifiSubscribeButtonProps = Readonly<{
   inputs: Record<string, unknown>;
 }>;
 
+type TargetGroupData = {
+  name: string;
+  emailAddress?: string;
+  phoneNumber?: string;
+  telegramId?: string;
+  discordId?: string;
+};
+
 export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
   buttonText,
   classNames,
@@ -53,6 +61,7 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
     loading,
     setCardView,
     useDiscord,
+    discordTargetData,
     params,
     render,
     setLoading,
@@ -67,7 +76,7 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
 
   const isMultiWallet = (multiWallet?.ownedWallets?.length ?? 0) > 0;
 
-  const targetGroup = useMemo(
+  const targetGroup: TargetGroupData = useMemo(
     () => ({
       name: 'Default',
       emailAddress: email === '' ? undefined : email,
@@ -76,7 +85,7 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
         telegramId === ''
           ? undefined
           : formatTelegramForSubscription(telegramId),
-      discordId: useDiscord ? 'Default' : undefined,
+      discordId: useDiscord ? discordTargetData?.id : undefined,
     }),
     [email, phoneNumber, telegramId, useDiscord],
   );
@@ -84,7 +93,19 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
   const subscribeAlerts = useCallback(
     async (eventTypes: EventTypeConfig, inputs: Record<string, unknown>) => {
       if (isCanaryActive) {
-        await renewTargetGroups();
+        const data = await frontendClient.fetchData();
+        let discordTarget = data.targetGroup?.[0]?.discordTargets?.find(
+          (target) => target?.name === 'Default',
+        );
+        if (useDiscord && !discordTarget) {
+          discordTarget = await frontendClient.createDiscordTarget('Default');
+        }
+
+        await renewTargetGroups({
+          ...targetGroup,
+          discordId: discordTarget?.id,
+        });
+
         return subscribeAlertsByFrontendClient(
           frontendClient,
           eventTypes,
@@ -105,12 +126,15 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
     ],
   );
 
-  const renewTargetGroups = useCallback(async () => {
-    if (isCanaryActive) {
-      return frontendClient.ensureTargetGroup(targetGroup);
-    }
-    return updateTargetGroups();
-  }, [email, phoneNumber, useDiscord, telegramId, frontendClient]);
+  const renewTargetGroups = useCallback(
+    async (targetGroup: TargetGroupData) => {
+      if (isCanaryActive) {
+        return frontendClient.ensureTargetGroup(targetGroup);
+      }
+      return updateTargetGroups();
+    },
+    [email, phoneNumber, useDiscord, telegramId, frontendClient],
+  );
 
   const onClick = useCallback(async () => {
     let isFirstTimeUser = (client.data?.targetGroups?.length ?? 0) === 0;
@@ -133,7 +157,7 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
         const result = await subscribeAlerts(eventTypes, inputs);
         success = !!result;
       } else {
-        const result = await renewTargetGroups();
+        const result = await renewTargetGroups(targetGroup);
         success = !!result;
       }
 
