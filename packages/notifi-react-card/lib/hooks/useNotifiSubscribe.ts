@@ -605,10 +605,18 @@ export const useNotifiSubscribe: ({
       // "refresh" or "fetchData" to obtain existing settings first
       //
 
-      let finalDiscordId = undefined;
+      const existingDiscordTarget = data.discordTargets.find(
+        (target) => target.name === 'Default',
+      );
+
+      let finalDiscordId: string | undefined = undefined;
 
       if (useDiscord === true) {
-        finalDiscordId = await client.createDiscordTarget('Default');
+        if (existingDiscordTarget !== undefined) {
+          finalDiscordId = existingDiscordTarget.id;
+        } else {
+          finalDiscordId = await client.createDiscordTarget('Default');
+        }
       }
 
       const newResults: Record<string, Alert> = {};
