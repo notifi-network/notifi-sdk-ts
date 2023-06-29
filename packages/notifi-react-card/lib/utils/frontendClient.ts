@@ -55,18 +55,9 @@ export const unsubscribeAlertByFrontendClient = async (
   }>,
 ): Promise<void> => {
   const alerts = await frontendClient.getAlerts();
-  let existing: Types.AlertFragmentFragment | undefined;
-  switch (alertDetail.eventType.type) {
-    case 'directPush':
-      existing = alerts.find(
-        (alert) => alert.filter.filterType === 'DIRECT_TENANT_MESSAGES',
-      );
-      break;
-    default:
-      existing = alerts.find(
-        (alert) => alert.name === alertDetail.eventType.name,
-      );
-  }
+  const existing = alerts.find(
+    (alert) => alert.name === alertDetail.eventType.name,
+  );
   if (!existing || !existing?.id) throw new Error('Alert not found');
   await frontendClient.deleteAlert({ id: existing.id });
 };
