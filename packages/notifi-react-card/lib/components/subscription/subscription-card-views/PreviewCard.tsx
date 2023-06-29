@@ -4,7 +4,6 @@ import { useNotifiSubscriptionContext } from 'notifi-react-card/lib/context';
 import React, { useMemo } from 'react';
 
 import { DeepPartialReadonly } from '../../../utils';
-import { SignupBanner, SignupBannerProps } from '../../SignupBanner';
 import { AlertsPanel, AlertsPanelProps } from './preview-panel/AlertsPanel';
 import {
   UserInfoPanel,
@@ -20,7 +19,6 @@ export type PreviewCardProps = Readonly<{
     UserInfoPanel?: DeepPartialReadonly<UserInfoPanelProps['classNames']>;
     NotifiPreviewCardTitle?: string;
     NotifiPreviewCardDividerLine?: string;
-    signupBanner?: SignupBannerProps['classNames']; // TODO: Move up one level (for MVP-2733), Blocker: MVP-2716
   };
   data: CardConfigItemV1;
   inputDisabled: boolean;
@@ -59,14 +57,12 @@ export const PreviewCard: React.FC<PreviewCardProps> = ({
         classNames?.NotifiPreviewCardContainer,
       )}
     >
-      {!isTargetsExist ? (
-        <SignupBanner data={data} classNames={classNames?.signupBanner} /> //TODO: Move up one level (for MVP-2733), Blocker: MVP-2716
-      ) : (
+      {isTargetsExist ? (
         <UserInfoPanel
           classNames={classNames?.UserInfoPanel}
           contactInfo={data.contactInfo}
         />
-      )}
+      ) : null}
 
       <div
         className={clsx(

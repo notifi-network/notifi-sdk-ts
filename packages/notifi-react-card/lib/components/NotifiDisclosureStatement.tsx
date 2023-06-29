@@ -21,7 +21,7 @@ export const NotifiDisclosureStatement: React.FC<
       </label>
       <a
         className={clsx('NotifiDisclosure__hyperlink', classNames?.hyperlink)}
-        href="https://notifi.network/faqs"
+        href="https://notifi.network"
         target="_blank"
       >
         Learn more
