@@ -632,9 +632,11 @@ export class NotifiFrontendClient {
   async ensureAlert({
     eventType,
     inputs,
+    targetGroupName = 'Default',
   }: Readonly<{
     eventType: EventTypeItem;
     inputs: Record<string, unknown>;
+    targetGroupName?: string;
   }>): Promise<Types.AlertFragmentFragment> {
     const [alertsQuery, targetGroupsQuery, sourceAndFilters] =
       await Promise.all([
@@ -644,10 +646,10 @@ export class NotifiFrontendClient {
       ]);
 
     const targetGroup = targetGroupsQuery.targetGroup?.find(
-      (it) => it?.name === 'Default',
+      (it) => it?.name === targetGroupName,
     );
     if (targetGroup === undefined) {
-      throw new Error('Default target group does not exist');
+      throw new Error('Target group does not exist');
     }
 
     const { sourceGroup, filter, filterOptions } = sourceAndFilters;
