@@ -258,11 +258,13 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
   };
 
   const historyView = () => {
-    return selectedAlertEntry === undefined
-      ? useCustomTitles && data?.titles.alertDetailsView !== ''
-        ? data?.titles.alertDetailsView
-        : copy?.historyHeader ?? 'Alert History'
-      : copy?.detailHeader ?? 'Alert Details';
+    if (!useCustomTitles) {
+      return selectedAlertEntry ? 'Alert Details' : 'Alert History';
+    }
+
+    return selectedAlertEntry
+      ? data?.titles.alertDetailsView || 'Alert Details'
+      : data?.titles.historyView || 'Alert History';
   };
 
   switch (cardView.state) {
