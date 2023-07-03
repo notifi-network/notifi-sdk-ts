@@ -18,13 +18,13 @@ We currently support the following blockchains:
 
 # Getting Started
 
-Head over to https://admin.dev.notifi.network and create a new developer/tenant account if you haven't already.
+## Register for a Notifi tenant
 
-With a developer login, you can generate the cardId to use in the examples below.
+Head over [Notifi Admin Panel(AP)](https://admin.dev.notifi.network) to create a new developer account(tenant) and [set up](https://youtu.be/fxgl97NgpvY) the first notifi card.
 
-&nbsp;
+Remember the credential `dappAddress` (or `tenantId`) and `cardId` for the [up-coming steps](#embedding-the-card-component).
 
-# Installation
+## SDK (`notifi-react-card`) Installation
 
 **npm**
 
@@ -42,43 +42,13 @@ yarn add --dev @notifi-network/notifi-core
 
 Import the following CSS file into your component to get baseline styling:
 
-```
-import '@notifi-network/notifi-react-card/dist/index.css';
-```
+## Styling the Card Component
 
-## Design Guidelines
+1. Adopting notifi default card css by `import '@notifi-network/notifi-react-card/dist/index.css';` globally in dapp (ex `index.tsx` or `App.tsx`)
 
-We have design recommendations on how to best present the UI to your dapp users. Check them out here: [Figma](https://www.figma.com/file/ieF0Ynuc3WI608RCt7wKSf/Notifi-Template?node-id=0%3A1&t=v8zeo6UovJAOb9vR-0).
+2. In order to customize card style, you can create a new global .css file (ex `NotifiCard.css`) to override the [default style](https://github.com/notifi-network/notifi-sdk-ts/blob/main/packages/notifi-react-card/lib/components/defaults.css) with its corresponding class name.
 
-## Tutorial Video
-
-Here is a [link](https://www.youtube.com/watch?v=Nk2F_bd4ftw) covering how to setup the React Card config.
-
-The video covers the following:
-
-- Configuring the card in our developer tool
-- Adding Event Types
-- Installing the react package into your project
-- Updating the default values to match your dapp
-
-#### Example tips
-
-- Embed the bell icon by the wallet login section.
-  ie. ![here](https://i.imgur.com/f2rnrpk.png)
-
-  &nbsp;
-
-- There should be a state for the bell icon when connected/not connected.
-  ie. ![example of not connected state](https://i.imgur.com/V9yEeCj.png)
-  ie. If not connected, the bell icon should be hidden.
-
-- Make sure that there is enough contrast between color selections.
-
-- Styling should be consistent with your current UI.
-
-&nbsp;
-
-# Code Examples
+## Embedding the Card Component
 
 Please see below for code examples on the component configuration. Click on the dropdown button to check out the code snippet.
 
@@ -887,3 +857,14 @@ export const SuiNotifiCard: React.FC = () => {
 ```
 
 </details>
+
+# Tutorial Video and example
+
+Check out the [tutorial video](https://youtu.be/fxgl97NgpvY) for a step-by-step guide on how to integrate the Notifi Card into your dapp. It covers:
+
+- Configure the card in [Notifi Admin Panel(AP)](https://admin.dev.notifi.network)
+- Set up Event Types
+- Install the SDK (`notifi-react-card`) and required dependencies
+- Configure the credentials (`dappAddress`, `cardId`) in SDK to get the card working
+
+For more integration examples, clone [`notifi-react-example`](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-react-example) repo and try it out.
