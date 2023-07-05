@@ -144,16 +144,18 @@ export const fusionToggleConfiguration = ({
   fusionId,
   fusionSourceAddress,
   maintainSourceGroup,
+  alertFrequency,
 }: Readonly<{
   fusionId: string;
   fusionSourceAddress: string;
   maintainSourceGroup?: boolean;
+  alertFrequency: FilterOptions['alertFrequency'] | undefined;
 }>): AlertConfiguration => {
   return {
     type: 'single',
     maintainSourceGroup,
     filterType: 'FUSION_SOURCE',
-    filterOptions: {},
+    filterOptions: alertFrequency === undefined ? {} : { alertFrequency },
     sourceType: 'FUSION_SOURCE',
     createSource: {
       address: fusionSourceAddress,
@@ -405,6 +407,7 @@ export const createConfigurations = (
             eventType.sourceAddress,
             inputs,
           ),
+          alertFrequency: eventType.alertFrequency,
         });
         break;
       case 'fusion': {
@@ -422,6 +425,7 @@ export const createConfigurations = (
                 eventType.sourceAddress,
                 inputs,
               ),
+              alertFrequency: eventType.alertFrequency,
             });
             break;
           case 'HEALTH_CHECK':

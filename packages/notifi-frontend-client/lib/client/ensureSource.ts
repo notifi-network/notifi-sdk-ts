@@ -672,8 +672,14 @@ const getFusionSourceFilter = (
     throw new Error('Failed to retrieve fusion source filter');
   }
 
-  let filterOptions: FilterOptions = {}; // Default {} if eventType.type = fusionToggle
-  if (eventType.selectedUIType === 'HEALTH_CHECK') {
+  let filterOptions: FilterOptions = {}; // Default {}
+  if (eventType.selectedUIType === 'TOGGLE') {
+    if (eventType.alertFrequency !== undefined) {
+      filterOptions = {
+        alertFrequency: eventType.alertFrequency,
+      };
+    }
+  } else if (eventType.selectedUIType === 'HEALTH_CHECK') {
     // Use synthetic ref values to get from input (ratio)
     const healthRatioKey = `${eventType.name}__healthRatio`;
     if (!inputs[healthRatioKey]) {
