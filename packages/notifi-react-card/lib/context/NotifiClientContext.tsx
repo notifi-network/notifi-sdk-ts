@@ -52,21 +52,15 @@ export const NotifiClientContextProvider: React.FC<NotifiParams> = ({
 
   const frontendClient = useMemo(() => {
     const configInput = getFrontendConfigInput(params);
-    return newFrontendClient(configInput);
+    const frontendClient = newFrontendClient(configInput);
+    frontendClient.initialize();
+    return frontendClient;
   }, [
     params.dappAddress,
     params.env,
     params.walletBlockchain,
     params.walletPublicKey,
   ]);
-
-  useEffect(() => {
-    // Init frontend client
-    if (!params.enableCanary) return;
-    if (!frontendClient.userState) {
-      frontendClient.initialize();
-    }
-  }, [frontendClient]);
 
   return (
     <NotifiClientContext.Provider
