@@ -168,11 +168,6 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
     discordTargetData?.id,
     discordTargetData?.discordAccountId,
   ]);
-
-  const isTargetsValid = useMemo(() => {
-    return data.isContactInfoRequired ? isTargetsExist : isClientAuthenticated;
-  }, [isTargetsExist, data.isContactInfoRequired, isClientAuthenticated]);
-
   const [selectedAlertEntry, setAlertEntry] = useState<
     Types.NotificationHistoryEntryFragmentFragment | undefined
   >(undefined);
@@ -189,30 +184,30 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
   }, [email, phoneNumber, telegramId]);
 
   useEffect(() => {
-    if (demoPreview && demoPreview.view !== 'error') {
-      return setCardView({ state: demoPreview.view });
-    }
-    if (demoPreview && demoPreview.view === 'error') {
-      return setCardView({
-        state: demoPreview.view,
-        reason: 'test example reason',
-      });
-    }
+    setCardView((prev) => {
+      if (demoPreview) {
+        return {
+          state: demoPreview.view,
+          reason:
+            demoPreview.view === 'error' ? 'test example reason' : undefined,
+        };
+      }
 
-    if (!isClientInitialized || firstLoad.current) {
-      return;
-    }
+      if (!isClientAuthenticated) {
+        return { state: 'signup' };
+      }
 
-    firstLoad.current = true;
+      if (isClientTokenExpired) {
+        return { state: 'expired' };
+      }
 
-    if (isTargetsValid) {
-      setCardView({ state: 'history' });
-    } else if (isClientTokenExpired) {
-      setCardView({ state: 'expired' });
-    } else {
-      setCardView({ state: 'signup' });
-    }
-  }, [email, phoneNumber, telegramId, isClientInitialized, demoPreview]);
+      if (prev.state === 'signup') {
+        return { state: 'preview' };
+      }
+
+      return { state: 'history' };
+    });
+  }, []);
 
   const rightIcon: NotifiAlertBoxButtonProps | undefined = useMemo(() => {
     if (onClose === undefined) {
