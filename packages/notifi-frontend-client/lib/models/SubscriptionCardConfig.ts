@@ -32,6 +32,7 @@ export type FusionTypeBase = {
 export type FusionToggleEventTypeItem = FusionTypeBase &
   Readonly<{
     selectedUIType: 'TOGGLE';
+    alertFrequency?: AlertFrequency;
   }>;
 
 export type FusionHealthCheckEventTypeItem = FusionTypeBase &
