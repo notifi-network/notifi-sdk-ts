@@ -59,7 +59,7 @@ export const useNotifiSubscribe: ({
   isTokenExpired: boolean;
   logIn: () => Promise<SubscriptionData>;
   subscribe: (
-    alertConfigs: Record<string, AlertConfiguration>,
+    alertConfigs: Record<string, AlertConfiguration | null>,
   ) => Promise<SubscriptionData>;
   subscribeWallet: (walletParams: ConnectWalletParams) => Promise<void>;
   updateWallets: () => Promise<void>;
@@ -576,7 +576,7 @@ export const useNotifiSubscribe: ({
 
   const subscribe = useCallback(
     async (
-      alertConfigs: Record<string, AlertConfiguration>,
+      alertConfigs: Record<string, AlertConfiguration | null>,
     ): Promise<SubscriptionData> => {
       if (demoPreview) {
         throw new Error('Preview card does not support method call');
