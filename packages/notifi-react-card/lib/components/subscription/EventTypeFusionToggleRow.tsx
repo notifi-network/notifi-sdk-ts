@@ -1,4 +1,7 @@
-import { EventTypeItem } from '@notifi-network/notifi-frontend-client';
+import {
+  EventTypeItem,
+  FusionToggleEventTypeItem,
+} from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import React, {
   useCallback,
@@ -12,11 +15,7 @@ import {
   useNotifiClientContext,
   useNotifiSubscriptionContext,
 } from '../../context';
-import {
-  FusionToggleEventTypeItem,
-  SubscriptionData,
-  useNotifiSubscribe,
-} from '../../hooks';
+import { SubscriptionData, useNotifiSubscribe } from '../../hooks';
 import {
   AlertConfiguration,
   DeepPartialReadonly,
@@ -81,6 +80,7 @@ export const EventTypeFusionToggleRow: React.FC<EventTypeFusionRowProps> = ({
       maintainSourceGroup: config?.maintainSourceGroup,
       fusionId: fusionEventId,
       fusionSourceAddress,
+      alertFrequency: config?.alertFrequency,
     });
   }, [alertName, config, inputs]);
 
