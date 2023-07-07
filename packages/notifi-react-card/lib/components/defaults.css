@@ -1722,14 +1722,9 @@ input::-webkit-inner-spin-button {
 }
 
 .SignupBanner__Image {
-  width: 24px;
-  height: 24px;
-  color: var(--notifi-banner-icon-color);
-  background-color: var(--notifi-settings-icon-color);
-  margin-right: 10px;
-  border-radius: 50px;
-  overflow: hidden;
-  border: 2px solid var(--notifi-checkmark-color);
+  margin: 0px 8px 0px 12px;
+  display: flex;
+  justify-content: center;
 }
 
 .SignupBanner__Button {
