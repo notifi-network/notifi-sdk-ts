@@ -46,6 +46,11 @@ export type AptosParams = Readonly<{
   walletPublicKey: string;
   signMessage: AptosSignMessageFunction;
 }>;
+export type ZksyncParams = Readonly<{
+  walletBlockchain: 'ZKSYNC';
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
 
 export type AcalaParams = Readonly<{
   walletBlockchain: 'ACALA';
@@ -112,7 +117,9 @@ type WalletParams =
   | OptimismParams
   | InjectiveParams
   | OsmosisParams
-  | SuiParams;
+  | SuiParams
+  | ZksyncParams;
+
 
 export type NotifiParams = Readonly<{
   alertConfigurations?: Record<string, AlertConfiguration | null>;

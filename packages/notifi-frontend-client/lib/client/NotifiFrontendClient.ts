@@ -43,7 +43,8 @@ export type SignMessageParams =
         | 'BINANCE'
         | 'INJECTIVE'
         | 'OSMOSIS'
-        | 'OPTIMISM';
+        | 'OPTIMISM'
+        | 'ZKSYNC';
       signMessage: Uint8SignMessageFunction;
     }>
   | Readonly<{
@@ -81,7 +82,8 @@ export type WalletWithSignMessage =
         | 'ARBITRUM'
         | 'AVALANCHE'
         | 'BINANCE'
-        | 'OPTIMISM';
+        | 'OPTIMISM'
+        | 'ZKSYNC';
 
       walletPublicKey: string;
       signMessage: Uint8SignMessageFunction;
@@ -281,6 +283,7 @@ export class NotifiFrontendClient {
       case 'NEAR':
       case 'INJECTIVE':
       case 'OSMOSIS':
+      case 'ZKSYNC':
       case 'APTOS': {
         const result = await this._service.logInFromDapp({
           walletBlockchain,
@@ -338,6 +341,7 @@ export class NotifiFrontendClient {
         return signature;
       }
       case 'OSMOSIS':
+      case 'ZKSYNC':
       case 'INJECTIVE': {
         const { authenticationKey, tenantId } = this
           ._configuration as NotifiConfigWithPublicKeyAndAddress;

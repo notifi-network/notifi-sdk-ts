@@ -216,6 +216,8 @@ const ensureWalletBalanceSources = async (
           return 'OPTIMISM_WALLET';
         case 'SUI':
           return 'SUI_WALLET';
+        case 'ZKSYNC':
+          return 'ZKSYNC_WALLET';
         default:
           throw new Error('Unsupported walletType');
       }
@@ -267,6 +269,7 @@ const normalizeSourceAddress = (
     case 'BINANCE_WALLET':
     case 'OPTIMISM_WALLET':
     case 'AVALANCHE_WALLET':
+    case 'ZKSYNC_WALLET':
     case 'BENQI':
     case 'DELTA_PRIME':
     case 'DELTA_PRIME_LENDING_RATES':
