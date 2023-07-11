@@ -36,6 +36,7 @@ export type FusionTypeBase = {
   sourceAddress: ValueOrRef<string>;
   tooltipContent?: string;
   maintainSourceGroup?: boolean;
+  alertFrequency?: AlertFrequency;
 };
 
 export type FusionToggleEventTypeItem = FusionTypeBase &
@@ -48,7 +49,6 @@ export type FusionHealthCheckEventTypeItem = FusionTypeBase &
     selectedUIType: 'HEALTH_CHECK';
     healthCheckSubtitle: string;
     numberType: NumberTypeSelect;
-    alertFrequency: AlertFrequency;
     checkRatios: CheckRatio[];
   }>;
 
