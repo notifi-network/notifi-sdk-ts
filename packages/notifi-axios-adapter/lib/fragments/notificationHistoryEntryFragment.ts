@@ -102,6 +102,7 @@ fragment NotificationHistoryEntry on NotificationHistoryEntry {
       sourceName
       notificationTypeName
       genericMessage: message
+      eventDetailsJson
       action {
         name
         url
