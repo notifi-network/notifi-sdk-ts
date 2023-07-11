@@ -20,7 +20,8 @@ export type NotifiConfigWithPublicKey = Readonly<{
     | 'AVALANCHE'
     | 'BINANCE'
     | 'OPTIMISM'
-    | 'SOLANA';
+    | 'SOLANA'
+    | 'ZKSYNC';
   walletPublicKey: string;
 }> &
   NotifiEnvironmentConfiguration;

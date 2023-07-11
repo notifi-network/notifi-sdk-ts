@@ -27,6 +27,8 @@ export const walletToSourceType = (
       return 'OPTIMISM_WALLET';
     case 'SUI':
       return 'SUI_WALLET';
+    case 'ZKSYNC':
+      return 'ZKSYNC_WALLET';
     default:
       throw new Error('Unsupported walletType');
   }
