@@ -666,6 +666,7 @@ const useNotifiClient = (
           telegramTargetIds,
           webhookTargetIds,
           discordTargetIds,
+          web3TargetIds,
         } = await ensureTargetIds(service, newData, input);
 
         const targetGroup = await ensureTargetGroupImpl(
@@ -684,6 +685,7 @@ const useNotifiClient = (
             discordTargetIds: discordTargetIds.filter(
               (id): id is string => !!id,
             ),
+            web3TargetIds: web3TargetIds.filter((id): id is string => !!id),
           },
         );
 
@@ -788,6 +790,7 @@ const useNotifiClient = (
           telegramTargetIds,
           webhookTargetIds,
           discordTargetIds,
+          web3TargetIds,
         } = await ensureTargetIds(service, newData, input);
 
         const existingAlert = newData.alerts.find((a) => a.id === alertId);
@@ -815,6 +818,7 @@ const useNotifiClient = (
             discordTargetIds: discordTargetIds.filter(
               (id): id is string => !!id,
             ),
+            web3TargetIds: web3TargetIds.filter((id): id is string => !!id),
           },
         );
 
@@ -943,6 +947,7 @@ const useNotifiClient = (
           telegramTargetIds,
           webhookTargetIds,
           discordTargetIds,
+          web3TargetIds,
         } = await ensureTargetIds(service, newData, input);
 
         const existingAlert = newData.alerts.find((a) => a.name === name);
@@ -997,6 +1002,7 @@ const useNotifiClient = (
             discordTargetIds: discordTargetIds.filter(
               (id): id is string => !!id,
             ),
+            web3TargetIds: web3TargetIds.filter((id): id is string => !!id),
           },
         );
 

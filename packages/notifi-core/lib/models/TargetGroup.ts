@@ -12,6 +12,7 @@ import { Types } from '@notifi-network/notifi-graphql';
  * @property {SmsTarget[] | null} smsTargets - Array of smsTargets
  * @property {TelegramTarget[] | null} telegramTargets - Array of telegramTargets
  * @property {DiscordTarget[] | null} discordTargets - Array of discordTargets
+ * @property {Web3Target[] | null} web3Targets - Array of web3Targets
  *
  */
 export type TargetGroup = Types.TargetGroupFragmentFragment;

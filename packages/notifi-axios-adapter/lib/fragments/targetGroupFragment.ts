@@ -14,6 +14,10 @@ import {
   telegramTargetFragment,
   telegramTargetFragmentDependencies,
 } from './telegramTargetFragment';
+import {
+  web3TargetFragment,
+  web3TargetFragmentDependencies,
+} from './web3TargetFragment';
 
 export const targetGroupFragment = `
 fragment targetGroupFragment on TargetGroup {
@@ -28,6 +32,9 @@ fragment targetGroupFragment on TargetGroup {
   telegramTargets {
     ...telegramTargetFragment
   }
+  web3Targets {
+    ...web3TargetFragment
+  }
   discordTargets {
     ...discordTargetFragment
   }
@@ -39,6 +46,8 @@ export const targetGroupFragmentDependencies = [
   ...smsTargetFragmentDependencies,
   ...telegramTargetFragmentDependencies,
   ...discordTargetFragmentDependencies,
+  ...web3TargetFragmentDependencies,
+  web3TargetFragment,
   emailTargetFragment,
   smsTargetFragment,
   telegramTargetFragment,

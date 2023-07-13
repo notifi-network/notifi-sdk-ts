@@ -21,6 +21,7 @@ mutation createTargetGroup(
   $smsTargetIds: [String!]!
   $telegramTargetIds: [String!]!
   $discordTargetIds: [String!]!
+  $web3TargetIds: [String!]!
 ) {
   createTargetGroup(targetGroupInput: {
     name: $name
@@ -28,6 +29,7 @@ mutation createTargetGroup(
     smsTargetIds: $smsTargetIds
     telegramTargetIds: $telegramTargetIds
     discordTargetIds: $discordTargetIds
+    web3TargetIds: $web3TargetIds
   }) {
     ...targetGroupFragment
   }

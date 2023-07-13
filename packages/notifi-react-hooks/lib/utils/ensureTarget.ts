@@ -9,6 +9,7 @@ import {
   EmailTarget,
   SmsTarget,
   TelegramTarget,
+  Web3Target,
   WebhookTarget,
 } from '@notifi-network/notifi-core';
 
@@ -114,7 +115,22 @@ const ensureDiscord = ensureTarget(
     }),
   (arg: DiscordTarget) => arg.id,
 );
+const ensureWeb3 = ensureTarget(
+  async (service: CreateWeb3TargetService, value: string) =>
+    await service.createWeb3Target({
+      name: value,
+      value,
+    }),
+  (arg: Web3Target) => arg.id,
+);
 
-export { ensureEmail, ensureSms, ensureTelegram, ensureWebhook, ensureDiscord };
+export {
+  ensureEmail,
+  ensureSms,
+  ensureTelegram,
+  ensureWebhook,
+  ensureDiscord,
+  ensureWeb3,
+};
 
 export default ensureTarget;

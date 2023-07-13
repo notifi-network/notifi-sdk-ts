@@ -5,6 +5,7 @@ export type CreateTargetGroupInput = Readonly<{
   emailTargetIds: string[];
   smsTargetIds: string[];
   telegramTargetIds: string[];
+  web3TargetIds: string[];
   webhookTargetIds: string[];
   discordTargetIds: string[];
 }>;

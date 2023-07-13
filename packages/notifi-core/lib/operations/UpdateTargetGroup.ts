@@ -7,6 +7,7 @@ export type UpdateTargetGroupInput = Readonly<{
   smsTargetIds: string[];
   telegramTargetIds: string[];
   discordTargetIds: string[];
+  web3TargetIds: string[];
 }>;
 
 export type UpdateTargetGroupResult = TargetGroup;

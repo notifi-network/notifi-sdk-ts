@@ -9,6 +9,7 @@ import {
   EmailTarget,
   SmsTarget,
   TelegramTarget,
+  Web3Target,
   WebhookTarget,
 } from '@notifi-network/notifi-core';
 
@@ -26,6 +27,7 @@ export type ExistingData = Readonly<{
   telegramTargets?: TelegramTarget[];
   webhookTargets?: WebhookTarget[];
   discordTargets?: DiscordTarget[];
+  web3Targets?: Web3Target[];
 }>;
 
 const ensureTargetIds = async (
@@ -33,7 +35,8 @@ const ensureTargetIds = async (
     CreateSmsTargetService &
     CreateTelegramTargetService &
     CreateWebhookTargetService &
-    CreateDiscordTargetService,
+    CreateDiscordTargetService &
+    CreateWeb3TargetService,
   existing: ExistingData,
   input: Readonly<{
     emailAddress: string | undefined;
@@ -41,6 +44,7 @@ const ensureTargetIds = async (
     telegramId: string | undefined;
     webhook?: ClientCreateWebhookParams;
     discordId: string | undefined;
+    web3TargetId: string | undefined;
   }>,
 ) => {
   const { emailAddress, phoneNumber, telegramId, webhook, discordId } = input;
@@ -51,12 +55,14 @@ const ensureTargetIds = async (
     telegramTargetId,
     webhookTargetId,
     discordTargetId,
+    web3TargetId,
   ] = await Promise.all([
     ensureEmail(service, existing.emailTargets, emailAddress),
     ensureSms(service, existing.smsTargets, phoneNumber),
     ensureTelegram(service, existing.telegramTargets, telegramId),
     ensureWebhook(service, existing.webhookTargets, webhook),
     ensureDiscord(service, existing.discordTargets, discordId),
+    ensureWeb3(service, existing.web3Targets, web3TargetId),
   ]);
 
   const emailTargetIds = [];
@@ -83,6 +89,10 @@ const ensureTargetIds = async (
   if (discordTargetId !== null) {
     discordTargetIds.push(discordTargetId);
   }
+  const web3TargetIds = [];
+  if (web3TargetId !== null) {
+    web3TargetId.push(discordTargetId);
+  }
 
   return {
     emailTargetIds,
@@ -90,6 +100,7 @@ const ensureTargetIds = async (
     telegramTargetIds,
     webhookTargetIds,
     discordTargetIds,
+    web3TargetIds,
   };
 };
 
