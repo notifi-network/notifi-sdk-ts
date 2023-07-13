@@ -1415,7 +1415,7 @@ input::-webkit-inner-spin-button {
 .EventTypeHealthCheckRow__buttonContainer {
   display: flex;
   flex-direction: row;
-  justify-content: start;
+  justify-content: flex-start;
 }
 
 .EventTypeTradingPairsRow__container {
@@ -1649,7 +1649,7 @@ input::-webkit-inner-spin-button {
   flex: 1;
   flex-direction: column;
   align-items: center;
-  justify-content: start;
+  justify-content: flex-start;
   gap: 20px;
 }
 
