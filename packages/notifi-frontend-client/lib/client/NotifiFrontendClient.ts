@@ -267,6 +267,7 @@ export class NotifiFrontendClient {
       case 'AVALANCHE':
       case 'BINANCE':
       case 'OPTIMISM':
+      case 'ZKSYNC':
       case 'SOLANA': {
         const result = await this._service.logInFromDapp({
           walletBlockchain,
@@ -283,7 +284,6 @@ export class NotifiFrontendClient {
       case 'NEAR':
       case 'INJECTIVE':
       case 'OSMOSIS':
-      case 'ZKSYNC':
       case 'APTOS': {
         const result = await this._service.logInFromDapp({
           walletBlockchain,
