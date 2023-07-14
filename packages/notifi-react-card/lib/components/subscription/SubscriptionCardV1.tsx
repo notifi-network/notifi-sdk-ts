@@ -281,6 +281,8 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
           >
             <h2>{previewHeader()}</h2>
           </NotifiAlertBox>
+          <div className={clsx('DividerLine', classNames?.dividerLine)} />
+
           {!isTargetsExist ? (
             <SignupBanner data={data} classNames={classNames?.signupBanner} />
           ) : null}
