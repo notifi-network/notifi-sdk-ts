@@ -1154,8 +1154,8 @@ const useNotifiClient = (
           const existing = newData.filters.find(
             (existingFilter) => applicableFilter?.id === existingFilter?.id,
           );
-          if (existing !== undefined) {
-            newData.filters.push(applicableFilter!);
+          if (applicableFilter && existing !== undefined) {
+            newData.filters.push(applicableFilter);
           }
         });
 
