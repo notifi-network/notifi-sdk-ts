@@ -32,7 +32,7 @@ export const MetamaskCard = () => {
           )}
           <div style={{ width: '400px' }}>
             <NotifiSubscriptionCard
-              cardId="d0fd50cfb6e64f49ac28c53a1c4bf5a7"
+              cardId="d8859ea72ff4449fa8f7f293ebd333c9"
               darkMode //optional
               inputs={{ userWallet: address }}
             />

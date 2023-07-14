@@ -22,7 +22,7 @@ export const MetamaskNotifiContextWrapper: React.FC<PropsWithChildren> = ({
       </button>
       {isConnected ? (
         <NotifiContext
-          dappAddress="tashi"
+          dappAddress="junitest.xyz"
           env="Development"
           signMessage={async (message: Uint8Array) => {
             const result = await signMessageAsync({ message });
