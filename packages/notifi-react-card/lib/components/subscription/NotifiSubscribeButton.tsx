@@ -1,7 +1,6 @@
 import { SignMessageParams } from '@notifi-network/notifi-core';
 import {
   CardConfigItemV1,
-  ContactInfoConfig,
   EventTypeConfig,
 } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';

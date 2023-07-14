@@ -87,9 +87,9 @@ const doFetchData = async (service: Service): Promise<InternalData> => {
   const filters: Types.FilterFragmentFragment[] = [];
   sources.forEach((source) => {
     source.applicableFilters?.forEach((filter) => {
-      if (!filterIds.has(filter?.id ?? '')) {
-        filters.push(filter!); // ensured by `has`
-        filterIds.add(filter!.id); // ensured by `has`
+      if (filter && !filterIds.has(filter?.id ?? '')) {
+        filters.push(filter);
+        filterIds.add(filter.id);
       }
     });
   });

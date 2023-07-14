@@ -52,7 +52,6 @@ export type AlertHistoryViewProps = Readonly<{
 
 export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
   classNames,
-  data,
   isHidden,
   noAlertDescription,
   setAlertEntry,

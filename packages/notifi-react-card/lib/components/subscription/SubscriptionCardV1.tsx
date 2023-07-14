@@ -1,13 +1,7 @@
 import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
 import clsx from 'clsx';
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
   useNotifiClientContext,
@@ -124,35 +118,32 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
     canary: { isActive: canaryIsActive, frontendClient },
   } = useNotifiClientContext();
 
-  const firstLoad = useRef(false);
-
-  const { isClientInitialized, isClientTokenExpired, isClientAuthenticated } =
-    useMemo(() => {
-      let isClientInitialized = false;
-      let isClientTokenExpired = false;
-      let isClientAuthenticated = false;
-      if (canaryIsActive) {
-        isClientInitialized = !!frontendClient.userState;
-        isClientTokenExpired = frontendClient.userState?.status === 'expired';
-        isClientAuthenticated =
-          frontendClient.userState?.status === 'authenticated';
-      } else {
-        isClientInitialized = isInitialized;
-        isClientTokenExpired = isTokenExpired;
-        isClientAuthenticated = isAuthenticated;
-      }
-      return {
-        isClientInitialized,
-        isClientTokenExpired,
-        isClientAuthenticated,
-      };
-    }, [
-      frontendClient.userState?.status,
-      isTokenExpired,
-      isInitialized,
-      isAuthenticated,
-      canaryIsActive,
-    ]);
+  const { isClientTokenExpired, isClientAuthenticated } = useMemo(() => {
+    let isClientInitialized = false;
+    let isClientTokenExpired = false;
+    let isClientAuthenticated = false;
+    if (canaryIsActive) {
+      isClientInitialized = !!frontendClient.userState;
+      isClientTokenExpired = frontendClient.userState?.status === 'expired';
+      isClientAuthenticated =
+        frontendClient.userState?.status === 'authenticated';
+    } else {
+      isClientInitialized = isInitialized;
+      isClientTokenExpired = isTokenExpired;
+      isClientAuthenticated = isAuthenticated;
+    }
+    return {
+      isClientInitialized,
+      isClientTokenExpired,
+      isClientAuthenticated,
+    };
+  }, [
+    frontendClient.userState?.status,
+    isTokenExpired,
+    isInitialized,
+    isAuthenticated,
+    canaryIsActive,
+  ]);
 
   const isTargetsExist = useMemo(() => {
     return (

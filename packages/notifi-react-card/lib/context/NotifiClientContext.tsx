@@ -4,7 +4,7 @@ import {
   newFrontendClient,
 } from '@notifi-network/notifi-frontend-client';
 import { useNotifiClient } from '@notifi-network/notifi-react-hooks';
-import React, { createContext, useContext, useEffect, useMemo } from 'react';
+import React, { createContext, useContext, useMemo } from 'react';
 
 import { NotifiParams } from './NotifiContext';
 

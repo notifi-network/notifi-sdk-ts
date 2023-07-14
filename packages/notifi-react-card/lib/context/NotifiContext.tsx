@@ -120,7 +120,6 @@ type WalletParams =
   | SuiParams
   | ZksyncParams;
 
-
 export type NotifiParams = Readonly<{
   alertConfigurations?: Record<string, AlertConfiguration | null>;
   dappAddress: string;

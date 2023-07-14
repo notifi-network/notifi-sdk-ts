@@ -4,7 +4,6 @@ import {
   EventTypeItem,
   NotifiFrontendClient,
 } from '@notifi-network/notifi-frontend-client';
-import { Types } from '@notifi-network/notifi-graphql';
 
 import { SubscriptionData } from '../hooks';
 
