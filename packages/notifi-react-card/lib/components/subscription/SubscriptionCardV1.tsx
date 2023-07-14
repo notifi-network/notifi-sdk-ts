@@ -263,7 +263,9 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
           >
             <h2>{expiredHeader()}</h2>
           </NotifiAlertBox>
-          <div className={clsx('DividerLine', classNames?.dividerLine)} />
+          <div
+            className={clsx('DividerLine expired', classNames?.dividerLine)}
+          />
           <ExpiredTokenView classNames={classNames?.ExpiredTokenView} />
         </>
       );
@@ -281,7 +283,9 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
           >
             <h2>{previewHeader()}</h2>
           </NotifiAlertBox>
-          <div className={clsx('DividerLine', classNames?.dividerLine)} />
+          <div
+            className={clsx('DividerLine preview', classNames?.dividerLine)}
+          />
 
           {!isTargetsExist ? (
             <SignupBanner data={data} classNames={classNames?.signupBanner} />
@@ -320,7 +324,9 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
               <h2>{editHeader()}</h2>
             )}
           </NotifiAlertBox>
-          <div className={clsx('DividerLine', classNames?.dividerLine)} />
+          <div
+            className={clsx('DividerLine signup', classNames?.dividerLine)}
+          />
           <EditCardView
             buttonText={cardView.state === 'signup' ? 'Next' : 'Update'}
             data={data}
@@ -356,7 +362,9 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
           >
             <h2>{verifyOnboardingHeader()}</h2>
           </NotifiAlertBox>
-          <div className={clsx('DividerLine', classNames?.dividerLine)} />
+          <div
+            className={clsx('DividerLine verify', classNames?.dividerLine)}
+          />
           <VerifyWalletView
             classNames={classNames?.VerifyWalletView}
             data={data}
@@ -394,7 +402,9 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
               classNames?.alertContainer,
             )}
           >
-            <div className={clsx('DividerLine', classNames?.dividerLine)} />
+            <div
+              className={clsx('DividerLine history', classNames?.dividerLine)}
+            />
             {!isTargetsExist ? (
               <SignupBanner data={data} classNames={classNames?.signupBanner} />
             ) : null}
