@@ -5,9 +5,9 @@ import {
 import clsx from 'clsx';
 import React, { useMemo } from 'react';
 
+import { CircleBellIcon } from '../assets/CircleBellIcon';
 import { useNotifiSubscriptionContext } from '../context';
 import { DeepPartialReadonly } from '../utils';
-import { AlertIcon } from './AlertHistory/AlertIcon';
 
 export type SignupBannerProps = Readonly<{
   data: CardConfigItemV1;
@@ -59,7 +59,7 @@ export const SignupBanner: React.FC<SignupBannerProps> = ({
                 : 'SignupBanner__Image',
             )}
           >
-            <AlertIcon icon={'BELL'} />
+            <CircleBellIcon />
           </div>
           <div
             className={clsx(
