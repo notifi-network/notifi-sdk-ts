@@ -146,12 +146,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
   ]);
 
   const isTargetsExist = useMemo(() => {
-    return (
-      !!email ||
-      !!phoneNumber ||
-      !!telegramId ||
-      (!!discordTargetData?.id && !!discordTargetData?.discordAccountId)
-    );
+    return !!email || !!phoneNumber || !!telegramId || !!discordTargetData?.id;
   }, [
     email,
     phoneNumber,
