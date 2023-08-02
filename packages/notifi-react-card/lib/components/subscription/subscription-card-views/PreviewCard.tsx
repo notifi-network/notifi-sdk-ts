@@ -39,9 +39,7 @@ export const PreviewCard: React.FC<PreviewCardProps> = ({
       !!email ||
       !!phoneNumber ||
       !!telegramId ||
-      (useDiscord &&
-        !!discordTargetData?.id &&
-        !!discordTargetData?.discordAccountId)
+      (useDiscord && !!discordTargetData?.id)
     );
   }, [
     email,
