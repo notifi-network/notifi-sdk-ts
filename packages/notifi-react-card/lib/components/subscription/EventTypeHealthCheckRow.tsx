@@ -151,10 +151,8 @@ export const EventTypeHealthCheckRow: React.FC<
           alertConfiguration: healthThresholdConfiguration({
             alertFrequency: config.alertFrequency,
             percentage: inputsValidator(alertDetail.inputs)
-              ? (alertDetail.inputs as HealthCheckEventInputsWithIndex).index
-              : (
-                  alertDetail.inputs as HealthCheckEventInputsWithCustomPercentage
-                ).customPercentage,
+              ? ratios[alertDetail.inputs.index].ratio
+              : alertDetail.inputs.customPercentage,
             thresholdDirection: inputsValidator(alertDetail.inputs)
               ? thresholdDirection
               : alertDetail.inputs.thresholdDirection,
