@@ -30,7 +30,7 @@ a {
 }
 
 .notifi__dark {
-  --notifi-card-secondary-background: rgb(115, 74, 74);
+  --notifi-card-secondary-background: rgba(30, 30, 30, 0.9);
   --notifi-placeholder-color: #b6b8d5;
   --notifi-focus-color: #fff;
   --notifi-toggle-handle: #fff;
@@ -328,6 +328,10 @@ input::-webkit-inner-spin-button {
   border-top: 1px solid var(--notifi-divider-line);
   border-radius: 5px;
   margin-bottom: 0 !important;
+}
+
+.DividerLine.preview {
+  display: none;
 }
 
 .NotifiAlertHistory__notificationDate {
@@ -948,7 +952,7 @@ input::-webkit-inner-spin-button {
 }
 
 .NotifiAlertHistory__emptyAlertsBellIcon path {
-  fill: var(--notifi-button-color);
+  fill: var(--notifi-settings-icon-color);
   cursor: pointer;
 }
 
@@ -1003,10 +1007,12 @@ input::-webkit-inner-spin-button {
 }
 
 .NotifiAlertListPreview__descriptionText {
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 400;
   padding-bottom: 8px;
   text-align: center;
+  line-height: 133.187%;
+  opacity: 0.7;
 }
 
 .NotifiAlertListContainer__checkmarkIcon {
