@@ -196,12 +196,14 @@ export type WebhookContactInfo = ContactInfo &
     url: ValueOrRef<string>;
     headers: ValueOrRef<WebhookHeaders>;
   }>;
+export type XMTPContactInfo = ContactInfo;
 
 export type ContactInfoConfig = Readonly<{
   email: EmailContactInfo;
   sms: SmsContactInfo;
   telegram: TelegramContactInfo;
   webhook: WebhookContactInfo;
+  xmtp: XMTPContactInfo;
   discord: DiscordContactInfo;
 }>;
 
