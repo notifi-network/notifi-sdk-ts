@@ -113,17 +113,29 @@ export const EventTypeCustomHealthCheckRow: React.FC<
       setEnabled(true);
       if (alertRatioValue) {
         ratios.forEach((ratio, index) => {
-          if (ratio.ratio === alertRatioValue && customValue === '') {
+          if (
+            (config.numberType === 'percentage'
+              ? ratio.ratio / 100
+              : ratio.ratio) === alertRatioValue &&
+            customValue === ''
+          ) {
             setSelectedIndex(index);
             setInitialSelectedIndex(index);
           }
         });
         setInitialRatio(alertRatioValue);
-        if (!checkRatios.includes(alertRatioValue) && customValue === '') {
+        if (
+          !checkRatios.includes(
+            config.numberType === 'percentage'
+              ? alertRatioValue * 100
+              : alertRatioValue,
+          ) &&
+          customValue === ''
+        ) {
           setSelectedIndex(3);
           setCustomValue(
             config.numberType === 'percentage'
-              ? alertRatioValue + '%'
+              ? alertRatioValue * 100 + '%'
               : alertRatioValue.toString(),
           );
         }
@@ -199,28 +211,32 @@ export const EventTypeCustomHealthCheckRow: React.FC<
       return;
     }
 
+    const regex = new RegExp(
+      config.numberType === 'percentage' ? /^[0-9.%]+$/ : /^[0-9.]+$/,
+    );
+    if (!customInputRef.current || !regex.test(customInputRef.current.value)) {
+      return setErrorMessage(INVALID_NUMBER);
+    }
+
     setErrorMessage('');
     setIsNotificationLoading(true);
-    if (customInputRef.current) {
-      customInputRef.current.placeholder = 'Custom';
+    customInputRef.current.placeholder = 'Custom';
+    const ratioNumber =
+      config.numberType === 'percentage'
+        ? getParsedInputNumber(customInputRef.current.value)
+        : parseFloat(customInputRef.current.value);
 
-      const ratioNumber =
-        config.numberType === 'percentage'
-          ? getParsedInputNumber(customInputRef.current.value)
-          : parseFloat(customInputRef.current.value);
-
-      if (ratioNumber && customValue) {
-        subscribeAlert({ eventType: config, inputs }, ratioNumber)
-          .then(() => setSelectedIndex(3))
-          .catch(() => setErrorMessage(UNABLE_TO_UNSUBSCRIBE))
-          .finally(() => {
-            setIsNotificationLoading(false);
-          });
-      } else {
-        setErrorMessage(INVALID_NUMBER);
-        setSelectedIndex(initialSelectedIndex);
-        setIsNotificationLoading(false);
-      }
+    if (ratioNumber && customValue) {
+      subscribeAlert({ eventType: config, inputs }, ratioNumber)
+        .then(() => setSelectedIndex(3))
+        .catch(() => setErrorMessage(UNABLE_TO_UNSUBSCRIBE))
+        .finally(() => {
+          setIsNotificationLoading(false);
+        });
+    } else {
+      setErrorMessage(INVALID_NUMBER);
+      setSelectedIndex(initialSelectedIndex);
+      setIsNotificationLoading(false);
     }
   };
 
@@ -393,7 +409,6 @@ export const EventTypeCustomHealthCheckRow: React.FC<
                 setSelectedIndex(null);
               }}
               disabled={isNotificationLoading}
-              type="number"
               onBlur={handleCustomRatioButtonNewSubscription}
               value={customValue}
               placeholder="Custom"
