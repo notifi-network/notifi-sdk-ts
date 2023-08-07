@@ -66,7 +66,8 @@ export const SolanaCard: React.FC = () => {
         darkMode
         inputLabels={inputLabels}
         inputSeparators={inputSeparators}
-        cardId="7f8cf1f9c1074c07a67b63e3bcdf7c3c"
+        cardId="51fd3e3da1104f15abe4e1f8df46747e"
+        inputs={{ xmtpInputTest: [''], userWallet: 'test' }}
         onClose={() => alert('nope you must stay')}
         copy={{
           FetchedStateCard: {
@@ -75,7 +76,7 @@ export const SolanaCard: React.FC = () => {
               EditCard: {
                 AlertListPreview: {
                   description:
-                    'Get your alerts here!!! you can subscribe to any of the following:',
+                    'See your activity and gain access to alerts. Push notifications are also available and optional.',
                 },
               },
             },

@@ -30,6 +30,7 @@
     "clean": "rimraf ./dist",
     "compile": "tsup lib/index.ts --sourcemap --format cjs,esm --dts --clean --external react",
     "format": "prettier --config .prettierrc **/*.ts --write",
+    "watch": "tsup lib/index.ts --watch --sourcemap --format cjs,esm --dts --clean --external react",
     "lint": "eslint ."
   },
   "bugs": {
