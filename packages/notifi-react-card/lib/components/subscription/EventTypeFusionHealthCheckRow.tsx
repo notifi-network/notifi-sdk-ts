@@ -99,6 +99,11 @@ export const EventTypeFusionHealthCheckRow: React.FC<
   const UNABLE_TO_UNSUBSCRIBE = 'Unable to unsubscribe, please try again';
   const INVALID_NUMBER = 'Please enter a valid number';
 
+  const handleSuffixPercentage = (value: string) => {
+    value = value.replace('%', '');
+    setCustomValue(value + '%');
+  };
+
   useEffect(() => {
     if (loading || isNotificationLoading) {
       return;
@@ -202,37 +207,37 @@ export const EventTypeFusionHealthCheckRow: React.FC<
       return;
     }
 
+    const regex = new RegExp(
+      config.numberType === 'percentage' ? /^[0-9.%]+$/ : /^[0-9.]+$/,
+    );
+    if (!customInputRef.current || !regex.test(customInputRef.current.value)) {
+      return setErrorMessage(INVALID_NUMBER);
+    }
+
     setErrorMessage('');
     setIsNotificationLoading(true);
 
-    if (customInputRef.current) {
-      customInputRef.current.placeholder = 'Custom';
+    customInputRef.current.placeholder = 'Custom';
 
-      const ratioNumber =
-        config.numberType === 'percentage'
-          ? getParsedInputNumber(customInputRef.current.value)
-          : parseFloat(customInputRef.current.value);
+    const ratioNumber =
+      config.numberType === 'percentage'
+        ? getParsedInputNumber(customInputRef.current.value)
+        : parseFloat(customInputRef.current.value);
 
-      if (
-        ratioNumber &&
-        ratioNumber >= 0 &&
-        ratioNumber <= 100 &&
-        customValue
-      ) {
-        subscribeAlert({ eventType: config, inputs }, ratioNumber)
-          .then(() => {
-            setSelectedIndex(3);
-            isCanaryActive && frontendClient.fetchData().then(render);
-          })
-          .catch(() => setErrorMessage(UNABLE_TO_UNSUBSCRIBE))
-          .finally(() => {
-            setIsNotificationLoading(false);
-          });
-      } else {
-        setErrorMessage(INVALID_NUMBER);
-        setSelectedIndex(initialSelectedIndex);
-        setIsNotificationLoading(false);
-      }
+    if (ratioNumber && ratioNumber >= 0 && ratioNumber <= 100 && customValue) {
+      subscribeAlert({ eventType: config, inputs }, ratioNumber)
+        .then(() => {
+          setSelectedIndex(3);
+          isCanaryActive && frontendClient.fetchData().then(render);
+        })
+        .catch(() => setErrorMessage(UNABLE_TO_UNSUBSCRIBE))
+        .finally(() => {
+          setIsNotificationLoading(false);
+        });
+    } else {
+      setErrorMessage(INVALID_NUMBER);
+      setSelectedIndex(initialSelectedIndex);
+      setIsNotificationLoading(false);
     }
   };
 
@@ -284,7 +289,6 @@ export const EventTypeFusionHealthCheckRow: React.FC<
             setEnabled(false);
           }
           isCanaryActive && frontendClient.fetchData().then(render);
-          // setCustomValue('');
         })
         .catch((e) => {
           setErrorMessage(UNABLE_TO_SUBSCRIBE);
@@ -423,7 +427,11 @@ export const EventTypeFusionHealthCheckRow: React.FC<
                 classNames?.button,
               )}
               onChange={(e) => {
-                setCustomValue(e.target.value ?? '');
+                if (config.numberType === 'percentage') {
+                  handleSuffixPercentage(e.target.value);
+                } else {
+                  setCustomValue(e.target.value ?? '');
+                }
               }}
             />
           </div>

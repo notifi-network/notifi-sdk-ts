@@ -75,6 +75,11 @@ export const EventTypeHealthCheckRow: React.FC<
     targetGroupName: 'Default',
   });
 
+  const handleSuffixPercentage = (value: string) => {
+    value = value.replace('%', '');
+    setCustomValue(value + '%');
+  };
+
   const {
     canary: { isActive: isCanaryActive, frontendClient },
   } = useNotifiClientContext();
@@ -365,7 +370,7 @@ export const EventTypeHealthCheckRow: React.FC<
                 classNames?.button,
               )}
               onChange={(e) => {
-                setCustomValue(e.target.value ?? '');
+                handleSuffixPercentage(e.target.value ?? '');
               }}
             />
           </div>
