@@ -520,7 +520,9 @@ export const useNotifiSubscribe: ({
           filter.id === null
         ) {
           await deleteThisAlert();
-          return null;
+          throw new Error(
+            `No applicableFilters filter for source: ${JSON.stringify(source)}`,
+          );
         } else if (
           existingAlert !== undefined &&
           existingAlert.id !== null &&
