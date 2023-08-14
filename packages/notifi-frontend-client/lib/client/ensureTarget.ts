@@ -130,7 +130,7 @@ export const ensureDiscord = ensureTarget(
     const query = await service.getDiscordTargets({});
     return query.discordTarget;
   },
-  (arg: Types.DiscordTargetFragmentFragment | undefined) => arg?.id,
+  (arg: Types.DiscordTargetFragmentFragment | undefined) => arg?.name,
   (value) => value,
 );
 

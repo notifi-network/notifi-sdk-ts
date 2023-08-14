@@ -112,7 +112,7 @@ const ensureDiscord = ensureTarget(
       name: value,
       value,
     }),
-  (arg: DiscordTarget) => arg.id,
+  (arg: DiscordTarget) => arg.name,
 );
 
 export { ensureEmail, ensureSms, ensureTelegram, ensureWebhook, ensureDiscord };
