@@ -435,7 +435,11 @@ export const useNotifiSubscribe: ({
           .find((f) => f?.filterType === filterType);
         if (filter === undefined || filter.id === null) {
           await deleteThisAlert();
-          return null;
+          throw new Error(
+            `No applicableFilters filter for sources: ${JSON.stringify(
+              sources,
+            )}`,
+          );
         } else {
           const sourceIds: string[] = [];
           const existingSourceGroup = data.sourceGroups.find(
@@ -516,7 +520,9 @@ export const useNotifiSubscribe: ({
           filter.id === null
         ) {
           await deleteThisAlert();
-          return null;
+          throw new Error(
+            `No applicableFilters filter for source: ${JSON.stringify(source)}`,
+          );
         } else if (
           existingAlert !== undefined &&
           existingAlert.id !== null &&
@@ -629,19 +635,24 @@ export const useNotifiSubscribe: ({
 
         const config = configurations[name];
 
-        const alert = await updateAlertInternal(
-          {
-            alertName: name,
-            alertConfiguration: config,
-          },
-          data,
-          {
-            finalEmail,
-            finalPhoneNumber,
-            finalTelegramId,
-            finalDiscordId,
-          },
-        );
+        let alert = null;
+        try {
+          alert = await updateAlertInternal(
+            {
+              alertName: name,
+              alertConfiguration: config,
+            },
+            data,
+            {
+              finalEmail,
+              finalPhoneNumber,
+              finalTelegramId,
+              finalDiscordId,
+            },
+          );
+        } catch (e) {
+          console.log(`Error updating alert ${name}: ${e}`);
+        }
 
         if (alert !== null) {
           newResults[name] = alert;
@@ -775,7 +786,7 @@ export const useNotifiSubscribe: ({
           });
         }
       } catch (e) {
-        throw new Error('Something went wrong');
+        throw new Error(`Something went wrong: ${e}`);
       } finally {
         setLoading(false);
       }
