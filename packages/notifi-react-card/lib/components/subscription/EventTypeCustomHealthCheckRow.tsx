@@ -64,6 +64,11 @@ export const EventTypeCustomHealthCheckRow: React.FC<
     targetGroupName: 'Default',
   });
 
+  const handleSuffixPercentage = (value: string) => {
+    value = value.replace('%', '');
+    setCustomValue(value + '%');
+  };
+
   const {
     canary: { isActive: isCanaryActive, frontendClient },
   } = useNotifiClientContext();
@@ -108,7 +113,10 @@ export const EventTypeCustomHealthCheckRow: React.FC<
     if (alert) {
       let alertRatioValue: number | null = null;
       if (alert.filterOptions) {
-        alertRatioValue = JSON.parse(alert.filterOptions).threshold;
+        alertRatioValue =
+          config.numberType === 'percentage'
+            ? JSON.parse(alert.filterOptions).threshold * 100
+            : JSON.parse(alert.filterOptions).threshold;
       }
       setEnabled(true);
       if (alertRatioValue) {
@@ -199,28 +207,36 @@ export const EventTypeCustomHealthCheckRow: React.FC<
       return;
     }
 
+    const regex = new RegExp(
+      config.numberType === 'percentage' ? /^[0-9.%]+$/ : /^[0-9.]+$/,
+    );
+    if (!customInputRef.current || !regex.test(customInputRef.current.value)) {
+      return setErrorMessage(INVALID_NUMBER);
+    }
+
     setErrorMessage('');
     setIsNotificationLoading(true);
-    if (customInputRef.current) {
-      customInputRef.current.placeholder = 'Custom';
 
-      const ratioNumber =
-        config.numberType === 'percentage'
-          ? getParsedInputNumber(customInputRef.current.value)
-          : parseFloat(customInputRef.current.value);
+    customInputRef.current.placeholder = 'Custom';
+    const ratioNumber =
+      config.numberType === 'percentage'
+        ? getParsedInputNumber(customInputRef.current.value)
+        : parseFloat(customInputRef.current.value);
 
-      if (ratioNumber && customValue) {
-        subscribeAlert({ eventType: config, inputs }, ratioNumber)
-          .then(() => setSelectedIndex(3))
-          .catch(() => setErrorMessage(UNABLE_TO_UNSUBSCRIBE))
-          .finally(() => {
-            setIsNotificationLoading(false);
-          });
-      } else {
-        setErrorMessage(INVALID_NUMBER);
-        setSelectedIndex(initialSelectedIndex);
-        setIsNotificationLoading(false);
-      }
+    if (ratioNumber && customValue) {
+      subscribeAlert({ eventType: config, inputs }, ratioNumber)
+        .then(() => {
+          setSelectedIndex(3);
+          isCanaryActive && frontendClient.fetchData().then(render);
+        })
+        .catch(() => setErrorMessage(UNABLE_TO_UNSUBSCRIBE))
+        .finally(() => {
+          setIsNotificationLoading(false);
+        });
+    } else {
+      setErrorMessage(INVALID_NUMBER);
+      setSelectedIndex(initialSelectedIndex);
+      setIsNotificationLoading(false);
     }
   };
 
@@ -263,6 +279,7 @@ export const EventTypeCustomHealthCheckRow: React.FC<
     setIsNotificationLoading(true);
     setErrorMessage('');
     if (!enabled && initialRatio !== null) {
+      setEnabled(true);
       subscribeAlert({ eventType: config, inputs }, initialRatio)
         .then((res) => {
           // We update optimistically so we need to check if the alert exists.
@@ -272,14 +289,16 @@ export const EventTypeCustomHealthCheckRow: React.FC<
           }
           isCanaryActive && frontendClient.fetchData().then(render);
         })
-        .catch(() => {
+        .catch((e) => {
           setErrorMessage(UNABLE_TO_SUBSCRIBE);
           setEnabled(false);
+          throw e;
         })
         .finally(() => {
           setIsNotificationLoading(false);
         });
     } else {
+      setEnabled(false);
       unSubscribeAlert({ eventType: config, inputs })
         .then((res) => {
           setCustomValue('');
@@ -292,9 +311,10 @@ export const EventTypeCustomHealthCheckRow: React.FC<
           // Else, ensured by frontendClient
           isCanaryActive && frontendClient.fetchData().then(render);
         })
-        .catch(() => {
+        .catch((e) => {
           setErrorMessage(UNABLE_TO_SUBSCRIBE);
           setEnabled(true);
+          throw e;
         })
         .finally(() => {
           setIsNotificationLoading(false);
@@ -393,7 +413,6 @@ export const EventTypeCustomHealthCheckRow: React.FC<
                 setSelectedIndex(null);
               }}
               disabled={isNotificationLoading}
-              type="number"
               onBlur={handleCustomRatioButtonNewSubscription}
               value={customValue}
               placeholder="Custom"
@@ -408,7 +427,11 @@ export const EventTypeCustomHealthCheckRow: React.FC<
                 classNames?.button,
               )}
               onChange={(e) => {
-                setCustomValue(e.target.value ?? '');
+                if (config.numberType === 'percentage') {
+                  handleSuffixPercentage(e.target.value);
+                } else {
+                  setCustomValue(e.target.value ?? '');
+                }
               }}
             />
           </div>
