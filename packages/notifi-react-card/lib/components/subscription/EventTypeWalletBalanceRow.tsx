@@ -55,9 +55,7 @@ export const EventTypeWalletBalanceRow: React.FC<
     targetGroupName: 'Default',
   });
 
-  const {
-    canary: { isActive: isCanaryActive, frontendClient },
-  } = useNotifiClientContext();
+  const { isUsingFrontendClient, frontendClient } = useNotifiClientContext();
 
   const [enabled, setEnabled] = useState(false);
 
@@ -82,7 +80,7 @@ export const EventTypeWalletBalanceRow: React.FC<
         inputs: Record<string, unknown>;
       }>,
     ): Promise<SubscriptionData> => {
-      if (isCanaryActive) {
+      if (isUsingFrontendClient) {
         return subscribeAlertByFrontendClient(frontendClient, alertDetail);
       } else {
         return instantSubscribe({
@@ -91,7 +89,7 @@ export const EventTypeWalletBalanceRow: React.FC<
         });
       }
     },
-    [isCanaryActive, frontendClient, config],
+    [isUsingFrontendClient, frontendClient, config],
   );
   const unSubscribeAlert = useCallback(
     async (
@@ -100,7 +98,7 @@ export const EventTypeWalletBalanceRow: React.FC<
         inputs: Record<string, unknown>;
       }>,
     ) => {
-      if (isCanaryActive) {
+      if (isUsingFrontendClient) {
         return unsubscribeAlertByFrontendClient(frontendClient, alertDetail);
       } else {
         return instantSubscribe({
@@ -109,7 +107,7 @@ export const EventTypeWalletBalanceRow: React.FC<
         });
       }
     },
-    [isCanaryActive, frontendClient],
+    [isUsingFrontendClient, frontendClient],
   );
 
   const handleNewSubscription = useCallback(() => {
@@ -124,7 +122,7 @@ export const EventTypeWalletBalanceRow: React.FC<
         inputs,
       })
         .then(() => {
-          isCanaryActive && frontendClient.fetchData().then(render);
+          isUsingFrontendClient && frontendClient.fetchData().then(render);
           setEnabled(true);
         })
         .catch(() => {
@@ -147,7 +145,7 @@ export const EventTypeWalletBalanceRow: React.FC<
             }
           }
           // Else, ensured by frontendClient
-          isCanaryActive && frontendClient.fetchData().then(render);
+          isUsingFrontendClient && frontendClient.fetchData().then(render);
         })
         .catch(() => {
           setEnabled(true);

@@ -52,9 +52,7 @@ export const EventTypeXMTPRow: React.FC<EventTypeXMPTRowProps> = ({
     targetGroupName: 'Default',
   });
 
-  const {
-    canary: { isActive: isCanaryActive, frontendClient },
-  } = useNotifiClientContext();
+  const { isUsingFrontendClient, frontendClient } = useNotifiClientContext();
 
   const alertName = useMemo<string>(() => config.name, [config]);
 
@@ -88,7 +86,7 @@ export const EventTypeXMTPRow: React.FC<EventTypeXMPTRowProps> = ({
         inputs: Record<string, unknown>;
       }>,
     ): Promise<SubscriptionData> => {
-      if (isCanaryActive) {
+      if (isUsingFrontendClient) {
         return subscribeAlertByFrontendClient(frontendClient, alertDetail);
       } else {
         return instantSubscribe({
@@ -97,7 +95,7 @@ export const EventTypeXMTPRow: React.FC<EventTypeXMPTRowProps> = ({
         });
       }
     },
-    [isCanaryActive, frontendClient],
+    [isUsingFrontendClient, frontendClient],
   );
 
   const unSubscribeAlert = useCallback(
@@ -107,7 +105,7 @@ export const EventTypeXMTPRow: React.FC<EventTypeXMPTRowProps> = ({
         inputs: Record<string, unknown>;
       }>,
     ) => {
-      if (isCanaryActive) {
+      if (isUsingFrontendClient) {
         return unsubscribeAlertByFrontendClient(frontendClient, alertDetail);
       } else {
         return instantSubscribe({
@@ -116,7 +114,7 @@ export const EventTypeXMTPRow: React.FC<EventTypeXMPTRowProps> = ({
         });
       }
     },
-    [isCanaryActive, frontendClient],
+    [isUsingFrontendClient, frontendClient],
   );
 
   const handleNewSubscription = useCallback(() => {
@@ -139,7 +137,7 @@ export const EventTypeXMTPRow: React.FC<EventTypeXMPTRowProps> = ({
           if (responseHasAlert !== true) {
             setEnabled(false);
           }
-          isCanaryActive && frontendClient.fetchData().then(render);
+          isUsingFrontendClient && frontendClient.fetchData().then(render);
         })
         .catch((e) => {
           console.log('Failed to subscribeAlert', e);
@@ -164,7 +162,7 @@ export const EventTypeXMTPRow: React.FC<EventTypeXMPTRowProps> = ({
             }
           }
           // Else, ensured by frontendClient
-          isCanaryActive && frontendClient.fetchData().then(render);
+          isUsingFrontendClient && frontendClient.fetchData().then(render);
         })
         .catch(() => {
           setEnabled(true);

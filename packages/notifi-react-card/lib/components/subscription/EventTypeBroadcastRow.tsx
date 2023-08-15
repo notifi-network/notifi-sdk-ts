@@ -51,9 +51,7 @@ export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
   const { instantSubscribe } = useNotifiSubscribe({
     targetGroupName: 'Default',
   });
-  const {
-    canary: { isActive: isCanaryActive, frontendClient },
-  } = useNotifiClientContext();
+  const { isUsingFrontendClient, frontendClient } = useNotifiClientContext();
 
   const [enabled, setEnabled] = useState(false);
   const [isNotificationLoading, setIsNotificationLoading] =
@@ -84,7 +82,7 @@ export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
         inputs: Record<string, unknown>;
       }>,
     ): Promise<SubscriptionData> => {
-      if (isCanaryActive) {
+      if (isUsingFrontendClient) {
         return subscribeAlertByFrontendClient(frontendClient, alertDetail);
       } else {
         return instantSubscribe({
@@ -93,7 +91,7 @@ export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
         });
       }
     },
-    [isCanaryActive, frontendClient, alertConfiguration],
+    [isUsingFrontendClient, frontendClient, alertConfiguration],
   );
 
   const unSubscribeAlert = useCallback(
@@ -103,7 +101,7 @@ export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
         inputs: Record<string, unknown>;
       }>,
     ) => {
-      if (isCanaryActive) {
+      if (isUsingFrontendClient) {
         return unsubscribeAlertByFrontendClient(frontendClient, alertDetail);
       } else {
         return instantSubscribe({
@@ -112,7 +110,7 @@ export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
         });
       }
     },
-    [isCanaryActive, frontendClient, alertConfiguration],
+    [isUsingFrontendClient, frontendClient, alertConfiguration],
   );
 
   const tooltipContent = config.tooltipContent;
@@ -147,7 +145,7 @@ export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
           if (responseHasAlert !== true) {
             setEnabled(false);
           }
-          isCanaryActive && frontendClient.fetchData().then(render);
+          isUsingFrontendClient && frontendClient.fetchData().then(render);
         })
         .catch(() => {
           setEnabled(false);
@@ -170,7 +168,7 @@ export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
             }
           }
           // Else, ensured by frontendClient
-          isCanaryActive && frontendClient.fetchData().then(render);
+          isUsingFrontendClient && frontendClient.fetchData().then(render);
         })
         .catch(() => {
           setEnabled(false);

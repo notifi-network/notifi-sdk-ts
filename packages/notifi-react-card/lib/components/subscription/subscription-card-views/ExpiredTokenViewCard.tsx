@@ -21,16 +21,14 @@ export const ExpiredTokenView: React.FC<ExpiredTokenViewCardProps> = ({
   classNames,
 }) => {
   const { logIn } = useNotifiSubscribe({ targetGroupName: 'Default' });
-  const {
-    canary: { isActive: isCanaryActive, frontendClient },
-    params,
-  } = useNotifiClientContext();
+  const { frontendClient, isUsingFrontendClient, params } =
+    useNotifiClientContext();
 
   const { setCardView } = useNotifiSubscriptionContext();
 
   const handleClick = async () => {
     let success = false;
-    const result = isCanaryActive
+    const result = isUsingFrontendClient
       ? await frontendClient.logIn({
           walletBlockchain: params.walletBlockchain,
           signMessage: params.signMessage,

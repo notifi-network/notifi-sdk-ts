@@ -47,9 +47,7 @@ export const EventTypeDirectPushRow: React.FC<EventTypeDirectPushRowProps> = ({
   const { instantSubscribe } = useNotifiSubscribe({
     targetGroupName: 'Default',
   });
-  const {
-    canary: { isActive: isCanaryActive, frontendClient },
-  } = useNotifiClientContext();
+  const { isUsingFrontendClient, frontendClient } = useNotifiClientContext();
   const [enabled, setEnabled] = useState(false);
 
   const pushId = useMemo(
@@ -77,7 +75,7 @@ export const EventTypeDirectPushRow: React.FC<EventTypeDirectPushRowProps> = ({
         inputs: Record<string, unknown>;
       }>,
     ): Promise<SubscriptionData> => {
-      if (isCanaryActive) {
+      if (isUsingFrontendClient) {
         return subscribeAlertByFrontendClient(frontendClient, alertDetail);
       } else {
         return instantSubscribe({
@@ -86,7 +84,7 @@ export const EventTypeDirectPushRow: React.FC<EventTypeDirectPushRowProps> = ({
         });
       }
     },
-    [isCanaryActive, frontendClient, alertConfiguration],
+    [isUsingFrontendClient, frontendClient, alertConfiguration],
   );
 
   const unSubscribeAlert = useCallback(
@@ -96,7 +94,7 @@ export const EventTypeDirectPushRow: React.FC<EventTypeDirectPushRowProps> = ({
         inputs: Record<string, unknown>;
       }>,
     ) => {
-      if (isCanaryActive) {
+      if (isUsingFrontendClient) {
         return unsubscribeAlertByFrontendClient(frontendClient, alertDetail);
       } else {
         return instantSubscribe({
@@ -105,7 +103,7 @@ export const EventTypeDirectPushRow: React.FC<EventTypeDirectPushRowProps> = ({
         });
       }
     },
-    [isCanaryActive, frontendClient, alertConfiguration],
+    [isUsingFrontendClient, frontendClient, alertConfiguration],
   );
 
   useEffect(() => {
@@ -128,7 +126,7 @@ export const EventTypeDirectPushRow: React.FC<EventTypeDirectPushRowProps> = ({
       })
         .then(() => {
           setEnabled(true);
-          isCanaryActive && frontendClient.fetchData().then(render);
+          isUsingFrontendClient && frontendClient.fetchData().then(render);
         })
         .catch(() => setEnabled(false))
         .finally(() => setLoading(false));
@@ -139,7 +137,7 @@ export const EventTypeDirectPushRow: React.FC<EventTypeDirectPushRowProps> = ({
       })
         .then(() => {
           setEnabled(false);
-          isCanaryActive && frontendClient.fetchData().then(render);
+          isUsingFrontendClient && frontendClient.fetchData().then(render);
         })
         .catch(() => setEnabled(true))
         .finally(() => setLoading(false));

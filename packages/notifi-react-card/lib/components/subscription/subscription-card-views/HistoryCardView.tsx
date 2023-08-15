@@ -68,21 +68,19 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
     ReadonlyArray<Types.NotificationHistoryEntryFragmentFragment>
   >([]);
 
-  const {
-    client,
-    canary: { isActive: isCanaryActive, frontendClient },
-  } = useNotifiClientContext();
+  const { client, isUsingFrontendClient, frontendClient } =
+    useNotifiClientContext();
 
   const { isClientInitialized, isClientAuthenticated } = useMemo(() => {
     return {
-      isClientInitialized: isCanaryActive
+      isClientInitialized: isUsingFrontendClient
         ? !!frontendClient.userState
         : client.isInitialized,
-      isClientAuthenticated: isCanaryActive
+      isClientAuthenticated: isUsingFrontendClient
         ? frontendClient.userState?.status === 'authenticated'
         : client.isAuthenticated,
     };
-  }, [isCanaryActive, client, frontendClient]);
+  }, [isUsingFrontendClient, client, frontendClient]);
 
   const getNotificationHistory = useCallback(
     async ({ first, after }: Types.GetNotificationHistoryQueryVariables) => {
@@ -90,7 +88,7 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
         return;
       }
       isQuerying.current = true;
-      const result = await (isCanaryActive
+      const result = await (isUsingFrontendClient
         ? frontendClient
         : client
       ).getNotificationHistory({
@@ -110,7 +108,7 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
     [
       client,
       frontendClient,
-      isCanaryActive,
+      isUsingFrontendClient,
       setAllNodes,
       setEndCursor,
       setHasNextPage,
@@ -128,7 +126,7 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
         first: MESSAGES_PER_PAGE,
       });
     }
-  }, [client, frontendClient, isCanaryActive]);
+  }, [client, frontendClient, isUsingFrontendClient]);
   return (
     <div
       className={clsx(

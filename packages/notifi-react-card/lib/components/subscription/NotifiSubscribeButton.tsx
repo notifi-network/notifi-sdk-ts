@@ -51,7 +51,8 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
   const {
     client,
     params: { multiWallet },
-    canary: { isActive: isCanaryActive, frontendClient },
+    isUsingFrontendClient,
+    frontendClient,
   } = useNotifiClientContext();
 
   const {
@@ -91,7 +92,7 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
 
   const subscribeAlerts = useCallback(
     async (eventTypes: EventTypeConfig, inputs: Record<string, unknown>) => {
-      if (isCanaryActive) {
+      if (isUsingFrontendClient) {
         const data = await frontendClient.fetchData();
         let discordTarget = data.targetGroup?.[0]?.discordTargets?.find(
           (target) => target?.name === 'Default',
@@ -116,7 +117,7 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
       );
     },
     [
-      isCanaryActive,
+      isUsingFrontendClient,
       frontendClient,
       email,
       phoneNumber,
@@ -127,7 +128,7 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
 
   const renewTargetGroups = useCallback(
     async (targetGroup: TargetGroupData) => {
-      if (isCanaryActive) {
+      if (isUsingFrontendClient) {
         return frontendClient.ensureTargetGroup(targetGroup);
       }
       return updateTargetGroups();
@@ -138,7 +139,7 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
   const onClick = useCallback(async () => {
     let isFirstTimeUser = (client.data?.targetGroups?.length ?? 0) === 0;
     if (
-      isCanaryActive &&
+      isUsingFrontendClient &&
       frontendClient.userState?.status !== 'authenticated'
     ) {
       await frontendClient.logIn({
@@ -160,7 +161,7 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
         success = !!result;
       }
 
-      if (isCanaryActive && success) {
+      if (isUsingFrontendClient && success) {
         const newData = await frontendClient.fetchData();
         render(newData);
       }

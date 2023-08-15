@@ -63,21 +63,19 @@ export const IntercomCard: React.FC<
       targetGroupName: 'Intercom',
     });
 
-  const {
-    client,
-    canary: { isActive: isCanaryActive, frontendClient },
-  } = useNotifiClientContext();
+  const { client, isUsingFrontendClient, frontendClient } =
+    useNotifiClientContext();
 
   const { isClientInitialized, isClientAuthenticated } = useMemo(() => {
     return {
-      isClientInitialized: isCanaryActive
+      isClientInitialized: isUsingFrontendClient
         ? !!frontendClient.userState
         : isInitialized,
-      isClientAuthenticated: isCanaryActive
+      isClientAuthenticated: isUsingFrontendClient
         ? frontendClient.userState?.status === 'authenticated'
         : isAuthenticated,
     };
-  }, [isCanaryActive, client, frontendClient]);
+  }, [isUsingFrontendClient, client, frontendClient]);
 
   const subscribeAlert = useCallback(
     async (
@@ -86,7 +84,7 @@ export const IntercomCard: React.FC<
         inputs: Record<string, unknown>;
       }>,
     ): Promise<SubscriptionData> => {
-      if (isCanaryActive) {
+      if (isUsingFrontendClient) {
         return subscribeAlertByFrontendClient(frontendClient, alertDetail);
       } else {
         return instantSubscribe({
@@ -95,7 +93,7 @@ export const IntercomCard: React.FC<
         });
       }
     },
-    [isCanaryActive, frontendClient],
+    [isUsingFrontendClient, frontendClient],
   );
 
   useEffect(() => {
@@ -131,7 +129,7 @@ export const IntercomCard: React.FC<
   } = formErrorMessages;
 
   const createSupportConversation = useCallback(() => {
-    if (isCanaryActive) {
+    if (isUsingFrontendClient) {
       return frontendClient
         .createSupportConversation(
           inputs as Types.CreateSupportConversationMutationVariables,

@@ -98,9 +98,7 @@ const hasKey = <K extends string>(
 export const NotifiSubscriptionContextProvider: React.FC<
   PropsWithChildren<NotifiParams>
 > = ({ children, ...params }) => {
-  const {
-    canary: { isActive: isCanaryActive, frontendClient },
-  } = useNotifiClientContext();
+  const { frontendClient, isUsingFrontendClient } = useNotifiClientContext();
 
   const contextId = useMemo(() => {
     return new Date().toISOString();
@@ -190,7 +188,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
     if (
       !didFetch.current &&
       frontendClient.userState?.status === 'authenticated' &&
-      isCanaryActive
+      isUsingFrontendClient
     ) {
       frontendClient
         .fetchData()

@@ -305,7 +305,11 @@ export const useNotifiSubscribe: ({
       setUseDiscord(true);
     }
 
-    if (client.isAuthenticated && !didFetch.current && !params.enableCanary) {
+    if (
+      client.isAuthenticated &&
+      !didFetch.current &&
+      !params.isUsingFrontendClient
+    ) {
       didFetch.current = true;
       client
         .fetchData()
