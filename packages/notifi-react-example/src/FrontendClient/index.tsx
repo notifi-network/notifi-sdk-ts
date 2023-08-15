@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { useEvmWallet } from '../walletProviders/EvmWalletProvider';
+import { InjectiveMetamaskFrontendClient } from './InjectiveMetamaskFrontendClient';
 import { KeplrFrontendClient } from './KeplrFrontendClient';
 import { PolkadotFrontendClient } from './PolkadotFrontendClient';
 import { SolanaFrontendClient } from './SolanaFrontendClient';
@@ -12,6 +14,7 @@ enum ESupportedViews {
   Sui = 'Sui',
   Polkadot = 'Polkadot',
   Keplr = 'keplr',
+  InjectiveMetamask = 'InjectiveMetamask',
 }
 
 const supportedViews: Record<ESupportedViews, React.ReactNode> = {
@@ -20,12 +23,14 @@ const supportedViews: Record<ESupportedViews, React.ReactNode> = {
   [ESupportedViews.Sui]: <SuiFrontendClient />,
   [ESupportedViews.Polkadot]: <PolkadotFrontendClient />,
   [ESupportedViews.Keplr]: <KeplrFrontendClient />,
+  [ESupportedViews.InjectiveMetamask]: <InjectiveMetamaskFrontendClient />,
 };
 
 const FrontendClient: React.FC = () => {
   const [view, setView] = React.useState<React.ReactNode>(
     <SolanaFrontendClient />,
   );
+  const { setWalletAdapter } = useEvmWallet();
 
   const handleViewChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selected = event.target.value as ESupportedViews;
@@ -35,6 +40,13 @@ const FrontendClient: React.FC = () => {
     }
 
     setView(v);
+    switch (selected) {
+      case ESupportedViews.WalletConnect:
+        setWalletAdapter('walletconnect');
+        break;
+      default:
+        setWalletAdapter('metamask');
+    }
   };
 
   return (

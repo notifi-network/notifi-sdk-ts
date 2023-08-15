@@ -2,9 +2,9 @@ import { FC, PropsWithChildren } from 'react';
 
 import { AcalaWalletContextProvider } from './AcalaWalletContextProvider';
 import { EthosWalletProvider } from './EthosWalletProvider';
+import { EvmWalletProvider } from './EvmWalletProvider';
 import { KeplrWalletProvider } from './KeplrWalletProvider';
 import { SolanaWalletProvider } from './SolanaWalletProvider';
-import { WalletConnectProvider } from './WalletConnectProvider';
 
 const WalletProviders: FC<PropsWithChildren> = ({ children }) => {
   return (
@@ -12,7 +12,7 @@ const WalletProviders: FC<PropsWithChildren> = ({ children }) => {
       <EthosWalletProvider>
         <KeplrWalletProvider>
           <SolanaWalletProvider>
-            <WalletConnectProvider>{children}</WalletConnectProvider>
+            <EvmWalletProvider>{children}</EvmWalletProvider>
           </SolanaWalletProvider>
         </KeplrWalletProvider>
       </EthosWalletProvider>

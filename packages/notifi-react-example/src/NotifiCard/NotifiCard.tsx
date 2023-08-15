@@ -9,6 +9,7 @@ import {
   SuiNotifiContextWrapper,
   WalletConnectNotifiContextWrapper,
 } from '../NotifiContextWrapper';
+import { useEvmWallet } from '../walletProviders/EvmWalletProvider';
 import { DemoPrviewCard } from './DemoPreviewCard';
 import { KeplrCard } from './KeplrCard';
 import { MetamaskCard } from './MetamaskCard';
@@ -64,15 +65,22 @@ const supportedViews: Record<ESupportedViews, React.ReactNode> = {
 
 export const NotifiCard: React.FC = () => {
   const [view, setView] = React.useState<React.ReactNode>(<DemoPrviewCard />);
-
+  const { setWalletAdapter } = useEvmWallet();
   const handleViewChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selected = event.target.value as ESupportedViews;
     const v = supportedViews[selected];
     if (v === undefined) {
       throw new Error('Unsupported type');
     }
-
     setView(v);
+
+    switch (selected) {
+      case ESupportedViews.WalletConnect:
+        setWalletAdapter('walletconnect');
+        break;
+      default:
+        setWalletAdapter('metamask');
+    }
   };
 
   return (

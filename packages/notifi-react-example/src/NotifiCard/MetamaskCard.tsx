@@ -9,7 +9,6 @@ export const MetamaskCard = () => {
   const { alerts } = useNotifiSubscriptionContext();
   const { client } = useNotifiClientContext();
   const { address } = useAccount();
-  console.log(address);
   return (
     <>
       {address && (
