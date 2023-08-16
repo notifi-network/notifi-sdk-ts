@@ -36,7 +36,11 @@ export const AlertDetailsCard: React.FC<AlertDetailsProps> = ({
         </div>
       </div>
       <div className={clsx('NotifiAlertDetails__bottomContent')}>
-        <div>{detailsContents.bottomContent}</div>
+        <div>
+          {detailsContents.bottomContent.split('\n').map((i, key) => {
+            return <div key={key}>{i}</div>;
+          })}
+        </div>
         <div>{detailsContents.otherContent}</div>
       </div>
     </div>
