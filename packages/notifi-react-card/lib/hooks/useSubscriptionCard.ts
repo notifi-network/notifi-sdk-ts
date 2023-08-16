@@ -1,5 +1,5 @@
-import { ClientFetchSubscriptionCardInput } from '@notifi-network/notifi-core';
 import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
+import { Types } from '@notifi-network/notifi-graphql';
 import { useEffect, useState } from 'react';
 
 import {
@@ -7,6 +7,11 @@ import {
   useNotifiDemoPreviewContext,
 } from '../context';
 import { ErrorViewState } from './useFetchedCardState';
+
+type ClientFetchSubscriptionCardInput = Omit<
+  Types.FindTenantConfigInput,
+  'tenant'
+>;
 
 export type LoadingState = Readonly<{
   state: 'loading';
@@ -47,8 +52,8 @@ export const useSubscriptionCard = (
             return Promise.reject(new Error('Failed to fetch data'));
           }
           card = JSON.parse(result.dataJson);
-        } else if ('version' in result) {
-          card = result as CardConfigItemV1; // TODO: Remove type casting after (MVP-2557)
+        } else if ('version' in result && result.version !== 'IntercomV1') {
+          card = result;
         }
 
         if (card?.version !== 'v1') {

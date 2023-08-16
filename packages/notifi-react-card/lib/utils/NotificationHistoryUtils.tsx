@@ -1,10 +1,3 @@
-import {
-  AccountBalanceChangedEventDetails,
-  BroadcastMessageEventDetails,
-  ChatMessageReceivedEventDetails,
-  GenericEventDetails,
-  HealthValueOverThresholdEventDetails,
-} from '@notifi-network/notifi-core';
 import { Types } from '@notifi-network/notifi-graphql';
 import React from 'react';
 
@@ -15,6 +8,31 @@ import { SwapIcon } from '../assets/SwapIcon';
 import { AlertIcon } from '../components/AlertHistory/AlertIcon';
 import { AlertNotificationViewProps } from '../components/AlertHistory/AlertNotificationRow';
 import { formatAmount } from './AlertHistoryUtils';
+
+type AccountBalanceChangedEventDetails = Extract<
+  Types.NotificationHistoryEntryFragmentFragment['detail'],
+  { __typename: 'AccountBalanceChangedEventDetails' }
+>;
+
+type BroadcastMessageEventDetails = Extract<
+  Types.NotificationHistoryEntryFragmentFragment['detail'],
+  { __typename: 'BroadcastMessageEventDetails' }
+>;
+
+type ChatMessageReceivedEventDetails = Extract<
+  Types.NotificationHistoryEntryFragmentFragment['detail'],
+  { __typename: 'ChatMessageReceivedEventDetails' }
+>;
+
+type HealthValueOverThresholdEventDetails = Extract<
+  Types.NotificationHistoryEntryFragmentFragment['detail'],
+  { __typename: 'HealthValueOverThresholdEventDetails' }
+>;
+
+type GenericEventDetails = Extract<
+  Types.NotificationHistoryEntryFragmentFragment['detail'],
+  { __typename: 'GenericEventDetails' }
+>;
 
 type AlertDetailsContents = {
   topContent: string;

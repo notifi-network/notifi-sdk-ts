@@ -1,7 +1,5 @@
-import {
-  ConnectedWallet,
-  WalletWithSignParams,
-} from '@notifi-network/notifi-core';
+import { WalletWithSignParams } from '@notifi-network/notifi-frontend-client';
+import { Types } from '@notifi-network/notifi-graphql';
 import { GqlError } from '@notifi-network/notifi-react-hooks';
 import { addressEllipsis } from 'notifi-react-card/lib/utils/stringUtils';
 import React, { useCallback, useMemo, useState } from 'react';
@@ -10,7 +8,7 @@ import { useNotifiSubscribe } from '../../hooks';
 
 export type ConnectWalletRowProps = WalletWithSignParams &
   Readonly<{
-    connectedWallets: ReadonlyArray<ConnectedWallet>;
+    connectedWallets: ReadonlyArray<Types.ConnectedWalletFragmentFragment>;
     disabled: boolean;
   }>;
 

@@ -1,7 +1,7 @@
+import { Types } from '@notifi-network/notifi-graphql';
 import clsx from 'clsx';
 import React from 'react';
 
-import { ChatMessage } from '../../hooks/useIntercomChat';
 import { formatHourTimestamp } from '../../utils/datetimeUtils';
 
 export type MessageGroupProps = Readonly<{
@@ -12,7 +12,7 @@ export type MessageGroupProps = Readonly<{
     timeStamp: string;
     sender: string;
   }>;
-  messages: ChatMessage[];
+  messages: Types.ConversationMessageFragment[];
   direction: string;
 }>;
 export const MessageGroup: React.FC<MessageGroupProps> = ({

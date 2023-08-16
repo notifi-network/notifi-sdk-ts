@@ -1,10 +1,4 @@
-import {
-  Alert,
-  ClientData,
-  ConnectWalletParams,
-  DiscordTarget,
-  DiscordTargetStatus,
-} from '@notifi-network/notifi-core';
+import { ConnectWalletParams } from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
 import { isValidPhoneNumber } from 'libphonenumber-js';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -24,8 +18,21 @@ import { walletToSource } from '../utils/walletUtils';
 import { useNotifiForm } from './../context/NotifiFormContext';
 import { AlertConfiguration } from './../utils/AlertConfiguration';
 
+export type ClientData = Readonly<{
+  alerts: ReadonlyArray<Types.AlertFragmentFragment>;
+  connectedWallets: ReadonlyArray<Types.ConnectedWallet>;
+  emailTargets: ReadonlyArray<Types.EmailTargetFragmentFragment>;
+  filters: ReadonlyArray<Types.FilterFragmentFragment>;
+  smsTargets: ReadonlyArray<Types.SmsTargetFragmentFragment>;
+  sources: ReadonlyArray<Types.SourceFragmentFragment>;
+  targetGroups: ReadonlyArray<Types.TargetGroupFragmentFragment>;
+  telegramTargets: ReadonlyArray<Types.TelegramTargetFragmentFragment>;
+  sourceGroups: ReadonlyArray<Types.SourceGroupFragmentFragment>;
+  discordTargets: ReadonlyArray<Types.DiscordTargetFragmentFragment>;
+}>;
+
 export type SubscriptionData = Readonly<{
-  alerts: Readonly<Record<string, Alert>>;
+  alerts: Readonly<Record<string, Types.AlertFragmentFragment>>;
   email: string | null;
   phoneNumber: string | null;
   telegramId: string | null;
@@ -124,7 +131,7 @@ export const useNotifiSubscribe: ({
   );
 
   const handleMissingDiscordTarget = (
-    discordTargets: ReadonlyArray<DiscordTarget>,
+    discordTargets: ReadonlyArray<Types.DiscordTargetFragmentFragment>,
   ): void => {
     // Check for a confirmed discord target, and if none exists, use the first discord target.
     const target =
@@ -139,7 +146,7 @@ export const useNotifiSubscribe: ({
         (tg) => tg.name === targetGroupName,
       );
 
-      const alerts: Record<string, Alert> = {};
+      const alerts: Record<string, Types.AlertFragmentFragment> = {};
       newData?.alerts.forEach((alert) => {
         if (alert?.name) {
           alerts[alert.name] = alert;
@@ -226,9 +233,7 @@ export const useNotifiSubscribe: ({
             onClick: () => window.open(verificationLink, '_blank'),
             message: 'Enable Bot',
           });
-        } else if (
-          userStatus === DiscordTargetStatus.DISCORD_SERVER_NOT_JOINED
-        ) {
+        } else if (userStatus === 'DISCORD_SERVER_NOT_JOINED') {
           setDiscordErrorMessage({
             type: 'recoverableError',
             onClick: () => window.open(DISCORD_INVITE_URL, '_blank'),
@@ -382,7 +387,7 @@ export const useNotifiSubscribe: ({
         finalTelegramId: string | undefined;
         finalDiscordId: string | undefined;
       }>,
-    ): Promise<Alert | null> => {
+    ): Promise<Types.AlertFragmentFragment | null> => {
       if (demoPreview) throw Error('Preview card does not support method call');
       const { alertName, alertConfiguration } = alertParams;
       const { finalEmail, finalPhoneNumber, finalTelegramId, finalDiscordId } =
@@ -629,7 +634,7 @@ export const useNotifiSubscribe: ({
         }
       }
 
-      const newResults: Record<string, Alert> = {};
+      const newResults: Record<string, Types.AlertFragmentFragment> = {};
       for (let i = 0; i < names.length; ++i) {
         const name = names[i];
 

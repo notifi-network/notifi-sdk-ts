@@ -1,4 +1,4 @@
-import { ConversationMessagesEntry } from '@notifi-network/notifi-core';
+import { Types } from '@notifi-network/notifi-graphql';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ListRange } from 'react-virtuoso';
 
@@ -8,14 +8,12 @@ import {
   sortByDate,
 } from '../utils/datetimeUtils';
 
-export type ChatMessage = ConversationMessagesEntry;
-
 type MessageDirection = 'INCOMING' | 'OUTGOING';
 
 type MessagesBlockFeedEntry = Readonly<{
   type: 'MESSAGES_BLOCK';
   direction: MessageDirection;
-  messages: ChatMessage[];
+  messages: Types.ConversationMessageFragment[];
 }>;
 
 export type FeedEntry = {
@@ -35,9 +33,9 @@ export const useIntercomChat = ({
   conversationId,
   userId,
 }: UseIntercomChatProps) => {
-  const [chatMessages, setChatMessages] = useState<ConversationMessagesEntry[]>(
-    [],
-  );
+  const [chatMessages, setChatMessages] = useState<
+    Types.ConversationMessageFragment[]
+  >([]);
   const [endCursor, setEndCursor] = useState<string | undefined>();
   const [hasNextPage, setHasNextPage] = useState<boolean | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -121,9 +119,9 @@ export const useIntercomChat = ({
 
   const conversation = useMemo(() => {
     //put the conversation into message group
-    const messageGroups: ChatMessage[][] = [];
+    const messageGroups: Types.ConversationMessageFragment[][] = [];
 
-    let messages: ChatMessage[] = [];
+    let messages: Types.ConversationMessageFragment[] = [];
 
     chatMessages?.forEach((message, index) => {
       const nextMessage = chatMessages[index + 1];

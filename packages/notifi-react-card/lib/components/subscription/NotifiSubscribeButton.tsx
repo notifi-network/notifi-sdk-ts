@@ -1,4 +1,4 @@
-import { SignMessageParams } from '@notifi-network/notifi-core';
+import { SignMessageParams } from '@notifi-network/notifi-frontend-client';
 import {
   CardConfigItemV1,
   EventTypeConfig,

@@ -1,4 +1,3 @@
-import { GetNotificationHistoryInput } from '@notifi-network/notifi-core';
 import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
 import clsx from 'clsx';
@@ -86,7 +85,7 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
   }, [isCanaryActive, client, frontendClient]);
 
   const getNotificationHistory = useCallback(
-    async ({ first, after }: GetNotificationHistoryInput) => {
+    async ({ first, after }: Types.GetNotificationHistoryQueryVariables) => {
       if (isQuerying.current) {
         return;
       }

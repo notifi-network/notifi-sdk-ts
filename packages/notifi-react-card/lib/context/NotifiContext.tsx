@@ -1,4 +1,4 @@
-import { WalletWithSignParams } from '@notifi-network/notifi-core';
+import { WalletWithSignParams } from '@notifi-network/notifi-frontend-client';
 import {
   AcalaSignMessageFunction,
   AptosSignMessageFunction,
