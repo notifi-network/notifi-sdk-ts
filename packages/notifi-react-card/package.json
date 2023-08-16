@@ -36,15 +36,15 @@
     "url": "https://github.com/notifi-network/notifi-sdk-ts/issues"
   },
   "dependencies": {
-    "@notifi-network/notifi-frontend-client": "^0.78.0",
-    "@notifi-network/notifi-react-hooks": "^0.78.0",
+    "@notifi-network/notifi-frontend-client": "*",
+    "@notifi-network/notifi-react-hooks": "*",
     "clsx": "^1.2.1",
     "date-fns": "^2.29.3",
     "libphonenumber-js": "^1.10.13",
     "react-virtuoso": "^3.1.1"
   },
   "devDependencies": {
-    "@notifi-network/notifi-core": "^0.78.0"
+    "@notifi-network/notifi-core": "*"
   },
   "tsup": {
     "noExternal": [

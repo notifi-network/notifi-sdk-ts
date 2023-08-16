@@ -32,7 +32,7 @@
   },
   "homepage": "https://github.com/notifi-network/notifi-sdk-ts#readme",
   "dependencies": {
-    "@notifi-network/notifi-react-card": "^0.78.0"
+    "@notifi-network/notifi-react-card": "*"
   },
   "peerDependencies": {
     "@solana/wallet-adapter-react": "^0.15.30",

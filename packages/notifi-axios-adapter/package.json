@@ -28,10 +28,10 @@
     "url": "https://github.com/notifi-network/notifi-sdk-ts/issues"
   },
   "dependencies": {
-    "@notifi-network/notifi-axios-utils": "^0.78.0"
+    "@notifi-network/notifi-axios-utils": "*"
   },
   "devDependencies": {
-    "@notifi-network/notifi-core": "^0.78.0"
+    "@notifi-network/notifi-core": "*"
   },
   "peerDependencies": {
     "axios": "^0.26.0"

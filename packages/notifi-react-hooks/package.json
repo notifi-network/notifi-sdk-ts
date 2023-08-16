@@ -31,9 +31,9 @@
     "typedoc-plugin-missing-exports": "^0.22.6"
   },
   "dependencies": {
-    "@notifi-network/notifi-axios-adapter": "^0.78.0",
-    "@notifi-network/notifi-axios-utils": "^0.78.0",
-    "@notifi-network/notifi-core": "^0.78.0",
+    "@notifi-network/notifi-axios-adapter": "*",
+    "@notifi-network/notifi-axios-utils": "*",
+    "@notifi-network/notifi-core": "*",
     "axios": "^0.26.0",
     "localforage": "^1.10.0",
     "typescript": "^4.5.5"

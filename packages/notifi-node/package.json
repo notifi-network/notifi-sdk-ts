@@ -26,9 +26,9 @@
     "url": "https://github.com/notifi-network/notifi-sdk-ts/issues"
   },
   "dependencies": {
-    "@notifi-network/notifi-axios-utils": "^0.78.0",
-    "@notifi-network/notifi-core": "^0.78.0",
-    "@notifi-network/notifi-graphql": "^0.78.0",
+    "@notifi-network/notifi-axios-utils": "*",
+    "@notifi-network/notifi-core": "*",
+    "@notifi-network/notifi-graphql": "*",
     "graphql": "^16.6.0",
     "graphql-request": "5.1.0",
     "subscriptions-transport-ws": "^0.11.0",

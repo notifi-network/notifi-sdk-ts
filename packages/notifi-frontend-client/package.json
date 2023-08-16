@@ -32,7 +32,7 @@
   },
   "homepage": "https://github.com/notifi-network/notifi-sdk-ts#readme",
   "dependencies": {
-    "@notifi-network/notifi-graphql": "^0.78.0",
+    "@notifi-network/notifi-graphql": "*",
     "graphql-request": "5.1.0",
     "localforage": "^1.10.0"
   },

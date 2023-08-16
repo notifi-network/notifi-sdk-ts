@@ -14,7 +14,7 @@
     "dev": "nodemon lib/index.ts"
   },
   "dependencies": {
-    "@notifi-network/notifi-node": "^0.78.0",
+    "@notifi-network/notifi-node": "*",
     "express": "^4.17.3",
     "morgan": "^1.10.0",
     "morgan-json": "^1.1.0"
