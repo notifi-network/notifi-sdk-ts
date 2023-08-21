@@ -105,7 +105,7 @@ export type CustomToggleTypeItem = Readonly<{
   selectedUIType: 'TOGGLE';
 }>;
 
-export type NumberTypeSelect = 'percentage' | 'integer';
+export type NumberTypeSelect = 'percentage' | 'integer' | 'price';
 
 export type CustomHealthCheckItem = Readonly<{
   selectedUIType: 'HEALTH_CHECK';
