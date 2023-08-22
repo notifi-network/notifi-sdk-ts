@@ -44,9 +44,16 @@ export type EventTypeCustomHealthCheckRowProps = Readonly<{
   inputs: Record<string, unknown>;
 }>;
 
-const getParsedInputNumber = (input: string): number | null => {
+const getParsedPercentage = (input: string): number | null => {
   if (input.indexOf('%') === input.length - 1) {
     return parseFloat(input.slice(0, -1)) ?? null;
+  }
+  return null;
+};
+
+const getParsedPrice = (input: string): number | null => {
+  if (input.indexOf('$') === 0) {
+    return parseFloat(input.slice(1)) ?? null;
   }
   return null;
 };
@@ -69,6 +76,11 @@ export const EventTypeCustomHealthCheckRow: React.FC<
     setCustomValue(value + '%');
   };
 
+  const handlePrefixDollar = (value: string) => {
+    value = value.replace('$', '');
+    setCustomValue('$' + value);
+  };
+
   const {
     canary: { isActive: isCanaryActive, frontendClient },
   } = useNotifiClientContext();
@@ -76,10 +88,6 @@ export const EventTypeCustomHealthCheckRow: React.FC<
   const [enabled, setEnabled] = useState(false);
   // This indicates which box to select
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-  const [initialSelectedIndex, setInitialSelectedIndex] = useState<
-    number | null
-  >(null);
-  const [initialRatio, setInitialRatio] = useState<number | null>(null);
   const [isNotificationLoading, setIsNotificationLoading] =
     useState<boolean>(false);
 
@@ -100,46 +108,58 @@ export const EventTypeCustomHealthCheckRow: React.FC<
   if (config.selectedUIType !== 'HEALTH_CHECK') {
     return null;
   }
+
+  const subscribingRatioValue = useMemo(() => {
+    const alert = alerts[alertName];
+    if (!alert || !alert.filterOptions) return null;
+    let alertRatioValue: number | null = null;
+    switch (config.numberType) {
+      case 'percentage':
+        alertRatioValue = JSON.parse(alert.filterOptions).threshold * 100;
+        break;
+      default: // 'integer' | 'price'
+        alertRatioValue = JSON.parse(alert.filterOptions).threshold;
+    }
+    return alertRatioValue;
+  }, [alerts]);
+
+  const defaultRatios = useMemo(() => {
+    const ratios = config.checkRatios ?? [];
+    return ratios.map((ratio) => ratio.ratio);
+  }, [config]);
+
   useEffect(() => {
     if (loading || isNotificationLoading) {
       return;
     }
 
-    const ratios = config.checkRatios ?? [];
-    const checkRatios = ratios.map((ratio) => ratio.ratio);
-
-    const alert = alerts[alertName];
-
-    if (alert) {
-      let alertRatioValue: number | null = null;
-      if (alert.filterOptions) {
-        alertRatioValue =
-          config.numberType === 'percentage'
-            ? JSON.parse(alert.filterOptions).threshold * 100
-            : JSON.parse(alert.filterOptions).threshold;
-      }
-      setEnabled(true);
-      if (alertRatioValue) {
-        ratios.forEach((ratio, index) => {
-          if (ratio.ratio === alertRatioValue && customValue === '') {
-            setSelectedIndex(index);
-            setInitialSelectedIndex(index);
-          }
-        });
-        setInitialRatio(alertRatioValue);
-        if (!checkRatios.includes(alertRatioValue) && customValue === '') {
-          setSelectedIndex(3);
-          setCustomValue(
-            config.numberType === 'percentage'
-              ? alertRatioValue + '%'
-              : alertRatioValue.toString(),
-          );
-        }
-      }
-    } else {
+    if (!subscribingRatioValue) {
       setEnabled(false);
-      setSelectedIndex(ratios.length - 1);
-      setInitialRatio(ratios[ratios.length - 1]?.ratio);
+      setSelectedIndex(defaultRatios.length - 1);
+      return;
+    }
+    setEnabled(true);
+
+    const selectedRatioIndex = defaultRatios.findIndex(
+      (ratio) => ratio === subscribingRatioValue,
+    );
+
+    if (selectedRatioIndex !== -1 && customValue === '') {
+      setSelectedIndex(selectedRatioIndex);
+    }
+
+    if (!defaultRatios.includes(subscribingRatioValue) && customValue === '') {
+      setSelectedIndex(3);
+      setCustomValue(() => {
+        switch (config.numberType) {
+          case 'percentage':
+            return subscribingRatioValue + '%';
+          case 'price':
+            return '$' + subscribingRatioValue;
+          default: // 'integer'
+            return subscribingRatioValue.toString();
+        }
+      });
     }
   }, [alertName, alerts, loading, enabled, setEnabled, isNotificationLoading]);
 
@@ -207,9 +227,16 @@ export const EventTypeCustomHealthCheckRow: React.FC<
       return;
     }
 
-    const regex = new RegExp(
-      config.numberType === 'percentage' ? /^[0-9.%]+$/ : /^[0-9.]+$/,
-    );
+    let regex = new RegExp(/^[0-9.]+$/);
+    switch (config.numberType) {
+      case 'percentage':
+        regex = new RegExp(/^[0-9.%]+$/);
+        break;
+      case 'price':
+        regex = new RegExp(/^[0-9.$]+$/);
+        break;
+    }
+
     if (!customInputRef.current || !regex.test(customInputRef.current.value)) {
       return setErrorMessage(INVALID_NUMBER);
     }
@@ -218,10 +245,17 @@ export const EventTypeCustomHealthCheckRow: React.FC<
     setIsNotificationLoading(true);
 
     customInputRef.current.placeholder = 'Custom';
-    const ratioNumber =
-      config.numberType === 'percentage'
-        ? getParsedInputNumber(customInputRef.current.value)
-        : parseFloat(customInputRef.current.value);
+    let ratioNumber = null;
+    switch (config.numberType) {
+      case 'percentage':
+        ratioNumber = getParsedPercentage(customInputRef.current.value);
+        break;
+      case 'price':
+        ratioNumber = getParsedPrice(customInputRef.current.value);
+        break;
+      default: // 'integer'
+        ratioNumber = parseFloat(customInputRef.current.value);
+    }
 
     if (ratioNumber && customValue) {
       subscribeAlert({ eventType: config, inputs }, ratioNumber)
@@ -235,7 +269,7 @@ export const EventTypeCustomHealthCheckRow: React.FC<
         });
     } else {
       setErrorMessage(INVALID_NUMBER);
-      setSelectedIndex(initialSelectedIndex);
+      setSelectedIndex(defaultRatios[defaultRatios.length - 1]);
       setIsNotificationLoading(false);
     }
   };
@@ -278,9 +312,12 @@ export const EventTypeCustomHealthCheckRow: React.FC<
     }
     setIsNotificationLoading(true);
     setErrorMessage('');
-    if (!enabled && initialRatio !== null) {
+    if (!enabled && !subscribingRatioValue) {
       setEnabled(true);
-      subscribeAlert({ eventType: config, inputs }, initialRatio)
+      subscribeAlert(
+        { eventType: config, inputs },
+        defaultRatios[defaultRatios.length - 1],
+      )
         .then((res) => {
           // We update optimistically so we need to check if the alert exists.
           const responseHasAlert = res.alerts[alertName] !== undefined;
@@ -320,7 +357,12 @@ export const EventTypeCustomHealthCheckRow: React.FC<
           setIsNotificationLoading(false);
         });
     }
-  }, [initialRatio, enabled, isNotificationLoading, setIsNotificationLoading]);
+  }, [
+    subscribingRatioValue,
+    enabled,
+    isNotificationLoading,
+    setIsNotificationLoading,
+  ]);
 
   return (
     <div>
@@ -369,9 +411,17 @@ export const EventTypeCustomHealthCheckRow: React.FC<
             {config.checkRatios.map((value, index) => {
               const numberType = config.numberType;
 
-              const percentage = value.ratio + '%';
-              const valueToShow =
-                numberType === 'percentage' ? percentage : value.ratio;
+              let valueToShow = null;
+              switch (numberType) {
+                case 'percentage':
+                  valueToShow = value.ratio + '%';
+                  break;
+                case 'price':
+                  valueToShow = '$' + value.ratio;
+                  break;
+                default: // 'integer'
+                  valueToShow = value.ratio;
+              }
               return (
                 <div
                   key={index}
@@ -429,6 +479,8 @@ export const EventTypeCustomHealthCheckRow: React.FC<
               onChange={(e) => {
                 if (config.numberType === 'percentage') {
                   handleSuffixPercentage(e.target.value);
+                } else if (config.numberType === 'price') {
+                  handlePrefixDollar(e.target.value);
                 } else {
                   setCustomValue(e.target.value ?? '');
                 }
