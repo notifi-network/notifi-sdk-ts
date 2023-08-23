@@ -378,7 +378,7 @@ input::-webkit-inner-spin-button {
   line-height: 14px;
   color: var(--notifi-font-color);
   overflow: hidden;
-  white-space: pre-line;
+  white-space: pre-wrap;
   word-wrap: break-word;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -985,13 +985,20 @@ input::-webkit-inner-spin-button {
   text-align: start;
   font-weight: 700;
   font-size: 16px;
-  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .NotifiAlertDetails__bottomContent {
   text-align: start;
   font-size: 14px;
   overflow-wrap: break-word;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 
 .NotifiAlertDetails__timestamp {
