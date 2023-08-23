@@ -276,6 +276,7 @@ export type SignMessageParams =
         | 'BINANCE'
         | 'INJECTIVE'
         | 'OSMOSIS'
+        | 'NIBIRU'
         | 'OPTIMISM'
         | 'ZKSYNC';
       signMessage: Uint8SignMessageFunction;
@@ -340,6 +341,11 @@ export type WalletParams =
     }>
   | Readonly<{
       walletBlockchain: 'OSMOSIS';
+      accountAddress: string;
+      walletPublicKey: string;
+    }>
+  | Readonly<{
+      walletBlockchain: 'NIBIRU';
       accountAddress: string;
       walletPublicKey: string;
     }>;

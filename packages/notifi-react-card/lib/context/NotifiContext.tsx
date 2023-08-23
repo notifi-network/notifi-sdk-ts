@@ -86,6 +86,13 @@ export type OsmosisParams = Readonly<{
   signMessage: Uint8SignMessageFunction;
 }>;
 
+export type NibiruParams = Readonly<{
+  walletBlockchain: 'NIBIRU';
+  accountAddress: string;
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
 export type AvalancheParams = Readonly<{
   walletBlockchain: 'AVALANCHE';
   walletPublicKey: string;
@@ -117,6 +124,7 @@ type WalletParams =
   | OptimismParams
   | InjectiveParams
   | OsmosisParams
+  | NibiruParams
   | SuiParams
   | ZksyncParams;
 
