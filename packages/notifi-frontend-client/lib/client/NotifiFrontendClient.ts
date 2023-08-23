@@ -43,6 +43,7 @@ export type SignMessageParams =
         | 'BINANCE'
         | 'INJECTIVE'
         | 'OSMOSIS'
+        | 'NIBIRU'
         | 'OPTIMISM'
         | 'ZKSYNC';
       signMessage: Uint8SignMessageFunction;
@@ -284,6 +285,7 @@ export class NotifiFrontendClient {
       case 'NEAR':
       case 'INJECTIVE':
       case 'OSMOSIS':
+      case 'NIBIRU':
       case 'APTOS': {
         const result = await this._service.logInFromDapp({
           walletBlockchain,

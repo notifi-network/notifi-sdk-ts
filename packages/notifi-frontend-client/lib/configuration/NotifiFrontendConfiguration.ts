@@ -33,7 +33,8 @@ export type NotifiConfigWithPublicKeyAndAddress = Readonly<{
     | 'INJECTIVE'
     | 'APTOS'
     | 'ACALA'
-    | 'OSMOSIS';
+    | 'OSMOSIS'
+    | 'NIBIRU';
   authenticationKey: string;
   accountAddress: string;
 }> &
