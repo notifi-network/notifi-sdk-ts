@@ -433,6 +433,9 @@ export type NotifiClient = Readonly<{
     input: GetNotificationHistoryInput,
   ) => Promise<NotificationHistory>;
   getTopics: () => Promise<ReadonlyArray<UserTopic>>;
+  getUnreadNotificationHistoryCount: () => Promise<
+    Types.GetUnreadNotificationHistoryCountQuery['unreadNotificationHistoryCount']
+  >;
   updateAlert: (input: ClientUpdateAlertInput) => Promise<Alert>;
   ensureTargetGroup: (
     input: ClientEnsureTargetGroupInput,

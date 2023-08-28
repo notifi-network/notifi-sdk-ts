@@ -39,6 +39,7 @@ import getSourcesImpl from './queries/getSourcesImpl';
 import getTargetGroupsImpl from './queries/getTargetGroupsImpl';
 import getTelegramTargetsImpl from './queries/getTelegramTargetsImpl';
 import getTopicsImpl from './queries/getTopicsImpl';
+import getUnreadNotificationHistoryCountImpl from './queries/getUnreadNotificationHistoryCountImpl';
 import getWebhookTargetsImpl from './queries/getWebhookTargetsImpl';
 
 export type NotifiAxiosServiceConfig = Readonly<{
@@ -78,6 +79,7 @@ export class NotifiAxiosService implements NotifiService {
   createDiscordTarget: NotifiService['createDiscordTarget'];
   getDiscordTargets: NotifiService['getDiscordTargets'];
   getTopics: NotifiService['getTopics'];
+  getUnreadNotificationHistoryCount: NotifiService['getUnreadNotificationHistoryCount'];
   getWebhookTargets: NotifiService['getWebhookTargets'];
   logInFromDapp: NotifiService['logInFromDapp'];
   refreshAuthorization: NotifiService['refreshAuthorization'];
@@ -145,6 +147,8 @@ export class NotifiAxiosService implements NotifiService {
     this.getTelegramTargets = getTelegramTargetsImpl.bind(null, a);
     this.getDiscordTargets = getDiscordTargetsImpl.bind(null, a);
     this.getTopics = getTopicsImpl.bind(null, a);
+    this.getUnreadNotificationHistoryCount =
+      getUnreadNotificationHistoryCountImpl.bind(null, a);
     this.getWebhookTargets = getWebhookTargetsImpl.bind(null, a);
     this.logInFromDapp = logInFromDappImpl.bind(null, a);
     this.refreshAuthorization = refreshAuthorizationImpl.bind(null, a);
