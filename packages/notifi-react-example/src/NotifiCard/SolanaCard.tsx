@@ -3,8 +3,6 @@ import {
   NotifiInputSeparators,
   NotifiIntercomCard,
   NotifiSubscriptionCard,
-} from '@notifi-network/notifi-react-card';
-import {
   useNotifiClientContext,
   useNotifiSubscriptionContext,
 } from '@notifi-network/notifi-react-card';
@@ -57,6 +55,14 @@ export const SolanaCard: React.FC = () => {
                 </li>
               ))}
           </ul>
+          <h3>Retrieve unread history message count</h3>
+          <button
+            onClick={() =>
+              client.getUnreadNotificationHistoryCount().then(console.log)
+            }
+          >
+            getUnreadNotificationHistoryCount
+          </button>
         </div>
       ) : (
         <div>Not yet register Notification</div>
