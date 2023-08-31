@@ -58,10 +58,26 @@ export const SolanaCard: React.FC = () => {
           <h3>Retrieve unread history message count</h3>
           <button
             onClick={() =>
-              client.getUnreadNotificationHistoryCount().then(console.log)
+              client
+                .getUnreadNotificationHistoryCount()
+                .then((res) => alert(JSON.stringify(res)))
             }
           >
             getUnreadNotificationHistoryCount
+          </button>
+          <h3>Notification history</h3>
+          <button
+            onClick={() =>
+              client.getFusionNotificationHistory({ first: 10 }).then((res) => {
+                alert(
+                  JSON.stringify(res).slice(0, 100) +
+                    '...\nCHECK CONSOLE FOR FULL RESPONSE',
+                );
+                console.log(res);
+              })
+            }
+          >
+            fetch first 10 notification histories
           </button>
         </div>
       ) : (

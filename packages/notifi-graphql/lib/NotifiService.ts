@@ -36,6 +36,7 @@ export class NotifiService
     Operations.GetConnectedWalletsService,
     Operations.GetEmailTargetsService,
     Operations.GetFiltersService,
+    Operations.GetFusionNotificationHistoryService,
     Operations.GetNotificationHistoryService,
     Operations.GetSmsTargetsService,
     Operations.GetSourceConnectionService,
@@ -305,6 +306,16 @@ export class NotifiService
     return this._typedClient.getFilters(variables, headers);
   }
 
+  async getFusionNotificationHistory(
+    variables: Generated.GetFusionNotificationHistoryQueryVariables,
+  ): Promise<Generated.GetFusionNotificationHistoryQuery> {
+    const headers = this._requestHeaders();
+    return this._typedClient.getFusionNotificationHistory(variables, headers);
+  }
+
+  /**
+   * @deprecated Use getFusionNotificationHistory instead
+   */
   async getNotificationHistory(
     variables: Generated.GetNotificationHistoryQueryVariables,
   ): Promise<Generated.GetNotificationHistoryQuery> {

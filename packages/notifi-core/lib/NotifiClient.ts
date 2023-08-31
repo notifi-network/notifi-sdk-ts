@@ -22,6 +22,7 @@ import {
   CreateWebhookTargetInput,
   FindTenantConfigInput,
   GetConversationMessagesFullInput,
+  GetFusionNotificationHistoryInput,
   GetNotificationHistoryInput,
   SendConversationMessageInput,
 } from './operations';
@@ -429,6 +430,11 @@ export type NotifiClient = Readonly<{
   ) => Promise<Types.SourceFragmentFragment>;
   deleteAlert: (input: ClientDeleteAlertInput) => Promise<string>;
   getConfiguration: () => Promise<ClientConfiguration>;
+  getFusionNotificationHistory: (
+    input: GetFusionNotificationHistoryInput,
+  ) => Promise<
+    Types.GetFusionNotificationHistoryQuery['fusionNotificationHistory']
+  >;
   getNotificationHistory: (
     input: GetNotificationHistoryInput,
   ) => Promise<NotificationHistory>;

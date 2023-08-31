@@ -723,6 +723,10 @@ export class NotifiFrontendClient {
     return result;
   }
 
+  /**
+   *@deprecated
+   *@description Use getFusionNotificationHistory instead
+   */
   async getNotificationHistory(
     variables: Types.GetNotificationHistoryQueryVariables,
   ): Promise<
@@ -750,6 +754,23 @@ export class NotifiFrontendClient {
       throw new Error('Failed to fetch unread notification history count');
     }
     return result;
+  }
+
+  async getFusionNotificationHistory(
+    variables: Types.GetFusionNotificationHistoryQueryVariables,
+  ): Promise<
+    Readonly<
+      Types.GetFusionNotificationHistoryQuery['fusionNotificationHistory']
+    >
+  > {
+    const query = await this._service.getFusionNotificationHistory(variables);
+    const nodes = query.fusionNotificationHistory?.nodes;
+    const pageInfo = query.fusionNotificationHistory?.pageInfo;
+    if (nodes === undefined || pageInfo === undefined) {
+      throw new Error('Failed to fetch notification history');
+    }
+
+    return { pageInfo, nodes };
   }
 
   async fetchSubscriptionCard(
