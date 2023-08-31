@@ -57,7 +57,8 @@ export class NotifiService
     Operations.UpdateSourceGroupService,
     Operations.UpdateTargetGroupService,
     Operations.CreateDiscordTargetService,
-    Operations.GetDiscordTargetsService
+    Operations.GetDiscordTargetsService,
+    Operations.GetUnreadNotificationHistoryCountService
 {
   private _jwt: string | undefined;
   private _typedClient: ReturnType<typeof getSdk>;
@@ -372,6 +373,16 @@ export class NotifiService
   ): Promise<Generated.GetTopicsQuery> {
     const headers = this._requestHeaders();
     return this._typedClient.getTopics(variables, headers);
+  }
+
+  async getUnreadNotificationHistoryCount(
+    variables: Generated.GetUnreadNotificationHistoryCountQueryVariables,
+  ): Promise<Generated.GetUnreadNotificationHistoryCountQuery> {
+    const headers = this._requestHeaders();
+    return this._typedClient.getUnreadNotificationHistoryCount(
+      variables,
+      headers,
+    );
   }
 
   async getWebhookTargets(

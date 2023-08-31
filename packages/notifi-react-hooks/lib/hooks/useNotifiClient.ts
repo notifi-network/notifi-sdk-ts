@@ -1509,6 +1509,22 @@ const useNotifiClient = (
     [setLoading, setError, service],
   );
 
+  const getUnreadNotificationHistoryCount = useCallback(async () => {
+    try {
+      const result = await service.getUnreadNotificationHistoryCount();
+      return result;
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        setError(e);
+      } else {
+        setError(new NotifiClientError(e));
+      }
+      throw e;
+    } finally {
+      setLoading(false);
+    }
+  }, [setLoading, setError, service]);
+
   const getConversationMessages = useCallback(
     async (input: GetConversationMessagesFullInput) => {
       try {
@@ -1605,6 +1621,7 @@ const useNotifiClient = (
     sendEmailTargetVerification,
     createSupportConversation,
     createDiscordTarget,
+    getUnreadNotificationHistoryCount,
   };
 
   return {

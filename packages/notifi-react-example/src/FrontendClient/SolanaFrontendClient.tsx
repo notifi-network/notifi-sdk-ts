@@ -77,6 +77,13 @@ export const SolanaFrontendClient: FC = () => {
           {!!userState && userState.status === 'authenticated' ? (
             <>
               <button onClick={fetchData}>fetch client data</button>
+              <button
+                onClick={() =>
+                  client?.getUnreadNotificationHistoryCount().then(console.log)
+                }
+              >
+                fetch unread notification history count
+              </button>
               <button onClick={logOut}>logout</button>
             </>
           ) : null}

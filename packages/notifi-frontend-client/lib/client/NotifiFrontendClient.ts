@@ -741,6 +741,17 @@ export class NotifiFrontendClient {
     return { pageInfo, nodes };
   }
 
+  async getUnreadNotificationHistoryCount(): Promise<
+    Types.GetUnreadNotificationHistoryCountQuery['unreadNotificationHistoryCount']
+  > {
+    const query = await this._service.getUnreadNotificationHistoryCount({});
+    const result = query.unreadNotificationHistoryCount;
+    if (!result) {
+      throw new Error('Failed to fetch unread notification history count');
+    }
+    return result;
+  }
+
   async fetchSubscriptionCard(
     variables: FindSubscriptionCardParams,
   ): Promise<CardConfigType> {
