@@ -19,3 +19,4 @@ export * from './userFragment';
 export * from './userTopicFragment';
 export * from './webhookTargetFragment';
 export * from './discordTargetFragment';
+export * from './fusionNotificationHistoryEntryFragment';

@@ -32,6 +32,7 @@ import getConversationMessagesImpl from './queries/getConversationMessagesImpl';
 import getDiscordTargetsImpl from './queries/getDiscordTargetsImpl';
 import getEmailTargetsImpl from './queries/getEmailTargetsImpl';
 import getFiltersImpl from './queries/getFiltersImpl';
+import getFusionNotificationHistoryImpl from './queries/getFusionNotificationHistoryImpl';
 import getNotificationHistoryImpl from './queries/getNotificationHistoryImpl';
 import getSmsTargetsImpl from './queries/getSmsTargetsImpl';
 import getSourceGroupsImpl from './queries/getSourceGroupsImpl';
@@ -68,6 +69,7 @@ export class NotifiAxiosService implements NotifiService {
   getConfigurationForDapp: NotifiService['getConfigurationForDapp'];
   getConnectedWallets: NotifiService['getConnectedWallets'];
   getConversationMessages: NotifiService['getConversationMessages'];
+  getFusionNotificationHistory: NotifiService['getFusionNotificationHistory'];
   getNotificationHistory: NotifiService['getNotificationHistory'];
   getEmailTargets: NotifiService['getEmailTargets'];
   getFilters: NotifiService['getFilters'];
@@ -139,6 +141,10 @@ export class NotifiAxiosService implements NotifiService {
     this.getConversationMessages = getConversationMessagesImpl.bind(null, a);
     this.getEmailTargets = getEmailTargetsImpl.bind(null, a);
     this.getFilters = getFiltersImpl.bind(null, a);
+    this.getFusionNotificationHistory = getFusionNotificationHistoryImpl.bind(
+      null,
+      a,
+    );
     this.getNotificationHistory = getNotificationHistoryImpl.bind(null, a);
     this.getSmsTargets = getSmsTargetsImpl.bind(null, a);
     this.getSourceGroups = getSourceGroupsImpl.bind(null, a);

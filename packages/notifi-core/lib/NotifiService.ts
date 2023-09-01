@@ -23,6 +23,7 @@ export type NotifiService = Operations.BroadcastMessageService &
   Operations.GetConversationMessagesService &
   Operations.GetEmailTargetsService &
   Operations.GetFiltersService &
+  Operations.GetFusionNotificationHistoryService &
   Operations.GetNotificationHistoryService &
   Operations.GetSmsTargetsService &
   Operations.GetSourcesService &

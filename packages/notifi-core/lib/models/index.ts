@@ -20,3 +20,4 @@ export * from './User';
 export * from './WalletBlockchain';
 export * from './DiscordTarget';
 export * from './WebhookTarget';
+export * from './FusionNotificationHistory';

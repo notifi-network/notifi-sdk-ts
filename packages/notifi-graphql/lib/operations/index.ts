@@ -51,3 +51,4 @@ export * from './SendConversationMessages';
 export * from './CreateSupportConversation';
 export * from './FetchData';
 export * from './GetUnreadNotificationHistoryCount';
+export * from './GetFusionNotificationHistory';

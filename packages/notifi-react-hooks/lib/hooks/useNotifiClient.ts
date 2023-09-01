@@ -19,6 +19,7 @@ import {
   ConnectWalletParams,
   ConnectedWallet,
   GetConversationMessagesFullInput,
+  GetFusionNotificationHistoryInput,
   GetNotificationHistoryInput,
   NotifiClient,
   SendConversationMessageInput,
@@ -1490,6 +1491,25 @@ const useNotifiClient = (
     [setError, setLoading, service, dappAddress],
   );
 
+  const getFusionNotificationHistory = useCallback(
+    async (input: GetFusionNotificationHistoryInput) => {
+      try {
+        const result = await service.getFusionNotificationHistory(input);
+        return result;
+      } catch (e: unknown) {
+        if (e instanceof Error) {
+          setError(e);
+        } else {
+          setError(new NotifiClientError(e));
+        }
+        throw e;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [setLoading, setError, service],
+  );
+
   const getNotificationHistory = useCallback(
     async (input: GetNotificationHistoryInput) => {
       try {
@@ -1613,6 +1633,7 @@ const useNotifiClient = (
     fetchSubscriptionCard,
     getConfiguration,
     getConversationMessages,
+    getFusionNotificationHistory,
     getNotificationHistory,
     getTopics,
     updateAlert,
