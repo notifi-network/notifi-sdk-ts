@@ -883,7 +883,10 @@ input::-webkit-inner-spin-button {
   overflow-wrap: anywhere;
 }
 
-.NotifiUserInfoPanel__email {
+.NotifiUserInfoPanel__email,
+.NotifiUserInfoPanel__telegram,
+.NotifiUserInfoPanel__sms,
+.NotifiUserInfoPanel__discord {
   gap: 8px;
 }
 
