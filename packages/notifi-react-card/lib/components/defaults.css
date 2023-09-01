@@ -860,6 +860,10 @@ input::-webkit-inner-spin-button {
   outline: none;
 }
 
+.DestinationErrorMessage__confirmationLinkLabel {
+  white-space: nowrap;
+}
+
 .ConnectWalletRow__connectAnywayButton:disabled,
 .ConnectWalletRow__button:disabled {
   cursor: default;
@@ -877,6 +881,13 @@ input::-webkit-inner-spin-button {
   text-align: left;
   align-items: baseline;
   overflow-wrap: anywhere;
+}
+
+.NotifiUserInfoPanel__email,
+.NotifiUserInfoPanel__telegram,
+.NotifiUserInfoPanel__sms,
+.NotifiUserInfoPanel__discord {
+  gap: 8px;
 }
 
 .NotifiUserInfoPanel__myWalletLabel,
