@@ -19,6 +19,7 @@ import deleteAlertImpl from './mutations/deleteAlertImpl';
 import deleteSourceGroupImpl from './mutations/deleteSourceGroupImpl';
 import deleteTargetGroupImpl from './mutations/deleteTargetGroupImpl';
 import logInFromDappImpl from './mutations/logInFromDappImpl';
+import markFusionNotificationHistoryAsRead from './mutations/markFusionNotificationHistoryAsRead';
 import refreshAuthorizationImpl from './mutations/refreshAuthorizationImpl';
 import sendConversationMessagesImpl from './mutations/sendConversationMessagesImpl';
 import sendEmailTargetVerificationRequestImpl from './mutations/sendEmailTargetVerificationRequestImpl';
@@ -89,6 +90,7 @@ export class NotifiAxiosService implements NotifiService {
   sendEmailTargetVerificationRequest: NotifiService['sendEmailTargetVerificationRequest'];
   updateSourceGroup: NotifiService['updateSourceGroup'];
   updateTargetGroup: NotifiService['updateTargetGroup'];
+  markFusionNotificationHistoryAsRead: NotifiService['markFusionNotificationHistoryAsRead'];
 
   private jwt: string | null = null;
 
@@ -163,6 +165,8 @@ export class NotifiAxiosService implements NotifiService {
     this.sendConversationMessages = sendConversationMessagesImpl.bind(null, a);
     this.updateSourceGroup = updateSourceGroupImpl.bind(null, a);
     this.updateTargetGroup = updateTargetGroupImpl.bind(null, a);
+    this.markFusionNotificationHistoryAsRead =
+      markFusionNotificationHistoryAsRead.bind(null, a);
   }
 
   setJwt = (jwt: string | null) => {

@@ -462,4 +462,9 @@ export type NotifiClient = Readonly<{
     input: GetConversationMessagesFullInput,
   ) => Promise<ConversationMessages>;
   createDiscordTarget: (input: string) => Promise<string | undefined>;
+  markFusionNotificationHistoryAsRead: (
+    input: Types.MarkFusionNotificationHistoryAsReadMutationVariables,
+  ) => Promise<
+    Types.MarkFusionNotificationHistoryAsReadMutation['markFusionNotificationHistoryAsRead']
+  >;
 }>;

@@ -39,3 +39,4 @@ export * from './UpdateTargetGroup';
 export * from './CreateDiscordTarget';
 export * from './GetUnreadNotificationHistoryCount';
 export * from './GetFusionNotificationHistory';
+export * from './MarkFusionNotificationHistoryAsRead';

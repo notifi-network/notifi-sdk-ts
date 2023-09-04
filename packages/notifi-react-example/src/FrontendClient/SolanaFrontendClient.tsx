@@ -76,7 +76,9 @@ export const SolanaFrontendClient: FC = () => {
           ) : null}
           {!!userState && userState.status === 'authenticated' ? (
             <>
+              <h3>Data </h3>
               <button onClick={fetchData}>fetch client data</button>
+              <h3>Notification history</h3>
               <button
                 onClick={() =>
                   client
@@ -84,7 +86,7 @@ export const SolanaFrontendClient: FC = () => {
                     .then((res) => alert(JSON.stringify(res)))
                 }
               >
-                fetch unread notification history count
+                1. fetch unread notification history count
               </button>
               <button
                 onClick={() =>
@@ -99,8 +101,31 @@ export const SolanaFrontendClient: FC = () => {
                     })
                 }
               >
-                fetch first 10 notification histories
+                2. fetch first 10 notification histories
               </button>
+              <button
+                onClick={async () => {
+                  const newestHistory = (
+                    await client?.getFusionNotificationHistory({ first: 1 })
+                  )?.nodes?.[0];
+                  if (!newestHistory) {
+                    return;
+                  }
+
+                  client
+                    ?.markFusionNotificationHistoryAsRead({
+                      ids: [],
+                      beforeId: newestHistory.id,
+                    })
+                    .then(() =>
+                      alert('marked all notification history as read'),
+                    )
+                    .catch((err) => alert(err));
+                }}
+              >
+                3. mark all notification history as read
+              </button>
+              <h3>Auth</h3>
               <button onClick={logOut}>logout</button>
             </>
           ) : null}
