@@ -99,6 +99,27 @@ export const SolanaCard: React.FC = () => {
           >
             3. mark all notification history as read
           </button>
+          <button
+            onClick={async () => {
+              const newestHistory = (
+                await client?.getFusionNotificationHistory({ first: 1 })
+              )?.nodes?.[0];
+              if (!newestHistory) {
+                return;
+              }
+
+              client
+                ?.markFusionNotificationHistoryAsRead({
+                  ids: [newestHistory.id],
+                })
+                .then(() =>
+                  alert('marked the newest notification history as read'),
+                )
+                .catch((err) => alert(err));
+            }}
+          >
+            4. mark newest notification history as read
+          </button>
         </div>
       ) : (
         <div>Not yet register Notification</div>
