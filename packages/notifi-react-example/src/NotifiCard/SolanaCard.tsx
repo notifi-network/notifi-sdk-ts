@@ -55,7 +55,7 @@ export const SolanaCard: React.FC = () => {
                 </li>
               ))}
           </ul>
-          <h3>Retrieve unread history message count</h3>
+          <h3>Notification history</h3>
           <button
             onClick={() =>
               client
@@ -63,9 +63,9 @@ export const SolanaCard: React.FC = () => {
                 .then((res) => alert(JSON.stringify(res)))
             }
           >
-            getUnreadNotificationHistoryCount
+            1. fetch unread notification history count
           </button>
-          <h3>Notification history</h3>
+
           <button
             onClick={() =>
               client.getFusionNotificationHistory({ first: 10 }).then((res) => {
@@ -77,7 +77,48 @@ export const SolanaCard: React.FC = () => {
               })
             }
           >
-            fetch first 10 notification histories
+            2. fetch first 10 notification histories
+          </button>
+          <button
+            onClick={async () => {
+              const newestHistory = (
+                await client?.getFusionNotificationHistory({ first: 1 })
+              )?.nodes?.[0];
+              if (!newestHistory) {
+                return;
+              }
+
+              client
+                ?.markFusionNotificationHistoryAsRead({
+                  ids: [],
+                  beforeId: newestHistory.id,
+                })
+                .then(() => alert('marked all notification history as read'))
+                .catch((err) => alert(err));
+            }}
+          >
+            3. mark all notification history as read
+          </button>
+          <button
+            onClick={async () => {
+              const newestHistory = (
+                await client?.getFusionNotificationHistory({ first: 1 })
+              )?.nodes?.[0];
+              if (!newestHistory) {
+                return;
+              }
+
+              client
+                ?.markFusionNotificationHistoryAsRead({
+                  ids: [newestHistory.id],
+                })
+                .then(() =>
+                  alert('marked the newest notification history as read'),
+                )
+                .catch((err) => alert(err));
+            }}
+          >
+            4. mark newest notification history as read
           </button>
         </div>
       ) : (

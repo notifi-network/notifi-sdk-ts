@@ -41,6 +41,7 @@ export type NotifiService = Operations.BroadcastMessageService &
   Operations.CreateDiscordTargetService &
   Operations.GetDiscordTargetsService &
   Operations.GetUnreadNotificationHistoryCountService &
+  Operations.MarkFusionNotificationHistoryAsReadService &
   Readonly<{
     setJwt: (jwt: string | null) => void;
   }>;

@@ -59,7 +59,8 @@ export class NotifiService
     Operations.UpdateTargetGroupService,
     Operations.CreateDiscordTargetService,
     Operations.GetDiscordTargetsService,
-    Operations.GetUnreadNotificationHistoryCountService
+    Operations.GetUnreadNotificationHistoryCountService,
+    Operations.MarkFusionNotificationHistoryAsReadService
 {
   private _jwt: string | undefined;
   private _typedClient: ReturnType<typeof getSdk>;
@@ -425,6 +426,16 @@ export class NotifiService
       this._jwt = token;
     }
     return result;
+  }
+
+  async markFusionNotificationHistoryAsRead(
+    variables: Generated.MarkFusionNotificationHistoryAsReadMutationVariables,
+  ): Promise<Generated.MarkFusionNotificationHistoryAsReadMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.markFusionNotificationHistoryAsRead(
+      variables,
+      headers,
+    );
   }
 
   async refreshAuthorization(
