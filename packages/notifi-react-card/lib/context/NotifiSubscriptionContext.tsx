@@ -321,7 +321,9 @@ export const NotifiSubscriptionContextProvider: React.FC<
         setTelegramErrorMessage(undefined);
       }
 
-      const discordTarget = targetGroup?.discordTargets?.[0];
+      const discordTarget = targetGroup?.discordTargets?.find(
+        (it) => it?.name === 'Default',
+      );
 
       const discordId = discordTarget?.id;
 

@@ -126,11 +126,12 @@ export const useNotifiSubscribe: ({
   const handleMissingDiscordTarget = (
     discordTargets: ReadonlyArray<DiscordTarget>,
   ): void => {
-    // Check for a confirmed discord target, and if none exists, use the first discord target.
+    // Check for the default, and if none exists, use the first discord target.
     const target =
-      discordTargets?.find((target) => target.isConfirmed) || discordTargets[0];
+      discordTargets?.find((target) => target.name === 'Default') ||
+      discordTargets?.[0];
 
-    setDiscordTargetData(target || undefined);
+    setDiscordTargetData(target);
   };
 
   const render = useCallback(
@@ -213,7 +214,9 @@ export const useNotifiSubscribe: ({
         setTelegramErrorMessage(undefined);
       }
 
-      const discordTarget = targetGroup?.discordTargets?.[0];
+      const discordTarget = targetGroup?.discordTargets?.find(
+        (it) => it?.name === 'Default',
+      );
 
       const discordId = discordTarget?.id;
 
@@ -385,8 +388,7 @@ export const useNotifiSubscribe: ({
     ): Promise<Alert | null> => {
       if (demoPreview) throw Error('Preview card does not support method call');
       const { alertName, alertConfiguration } = alertParams;
-      const { finalEmail, finalPhoneNumber, finalTelegramId, finalDiscordId } =
-        contacts;
+      const { finalEmail, finalPhoneNumber, finalTelegramId } = contacts;
       const existingAlert = data.alerts.find(
         (alert) => alert?.name === alertName,
       );
@@ -476,7 +478,7 @@ export const useNotifiSubscribe: ({
             targetGroupName,
             telegramId: finalTelegramId,
             sourceIds,
-            discordId: finalDiscordId,
+            includeDiscord: useDiscord,
             sourceGroupName,
           });
 
@@ -533,7 +535,7 @@ export const useNotifiSubscribe: ({
             emailAddress: finalEmail,
             phoneNumber: finalPhoneNumber,
             telegramId: finalTelegramId,
-            discordId: finalDiscordId,
+            includeDiscord: useDiscord,
           });
 
           return alert;
@@ -570,7 +572,7 @@ export const useNotifiSubscribe: ({
             targetGroupName,
             telegramId: finalTelegramId,
             sourceGroupName,
-            discordId: finalDiscordId,
+            includeDiscord: useDiscord,
           });
 
           return alert;
@@ -669,7 +671,7 @@ export const useNotifiSubscribe: ({
           name: targetGroupName,
           phoneNumber: finalPhoneNumber,
           telegramId: finalTelegramId,
-          discordId: finalDiscordId,
+          includeDiscord: useDiscord,
         });
       }
 
@@ -719,7 +721,7 @@ export const useNotifiSubscribe: ({
       name: targetGroupName,
       phoneNumber: finalPhoneNumber,
       telegramId: finalTelegramId,
-      discordId: finalDiscordId,
+      includeDiscord: useDiscord,
     });
 
     const newData = await client.fetchData();
@@ -782,7 +784,7 @@ export const useNotifiSubscribe: ({
             name: targetGroupName,
             phoneNumber: finalPhoneNumber,
             telegramId: finalTelegramId,
-            discordId: finalDiscordId,
+            includeDiscord: useDiscord,
           });
         }
       } catch (e) {
