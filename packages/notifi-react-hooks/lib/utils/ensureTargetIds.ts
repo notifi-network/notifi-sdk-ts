@@ -40,10 +40,11 @@ const ensureTargetIds = async (
     phoneNumber: string | undefined;
     telegramId: string | undefined;
     webhook?: ClientCreateWebhookParams;
-    discordId: string | undefined;
+    includeDiscord: boolean;
   }>,
 ) => {
-  const { emailAddress, phoneNumber, telegramId, webhook, discordId } = input;
+  const { emailAddress, phoneNumber, telegramId, webhook, includeDiscord } =
+    input;
 
   const [
     emailTargetId,
@@ -56,7 +57,9 @@ const ensureTargetIds = async (
     ensureSms(service, existing.smsTargets, phoneNumber),
     ensureTelegram(service, existing.telegramTargets, telegramId),
     ensureWebhook(service, existing.webhookTargets, webhook),
-    ensureDiscord(service, existing.discordTargets, discordId),
+    includeDiscord
+      ? ensureDiscord(service, existing.discordTargets, 'Default')
+      : Promise.resolve(null),
   ]);
 
   const emailTargetIds = [];

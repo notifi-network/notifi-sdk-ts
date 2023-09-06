@@ -113,7 +113,7 @@ export type ClientUpdateAlertInput = Readonly<{
   phoneNumber: string | undefined;
   telegramId: string | undefined;
   webhook?: ClientCreateWebhookParams;
-  discordId: string | undefined;
+  includeDiscord: boolean;
 }>;
 
 /**
@@ -146,7 +146,7 @@ export type ClientCreateAlertInput = Readonly<{
   webhook?: ClientCreateWebhookParams;
   sourceIds?: ReadonlyArray<string>;
   sourceGroupName?: string;
-  discordId: string | undefined;
+  includeDiscord: boolean;
 }>;
 
 export type ClientCreateWebhookParams = Omit<CreateWebhookTargetInput, 'name'>;
@@ -210,7 +210,7 @@ export type ClientEnsureTargetGroupInput = Readonly<{
   phoneNumber: string | undefined;
   telegramId: string | undefined;
   webhook?: ClientCreateWebhookParams;
-  discordId: string | undefined;
+  includeDiscord: boolean;
 }>;
 
 /**
