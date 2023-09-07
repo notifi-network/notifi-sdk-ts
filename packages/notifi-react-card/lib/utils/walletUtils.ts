@@ -1,12 +1,9 @@
-import {
-  ConnectedWallet,
-  CreateSourceInput,
-} from '@notifi-network/notifi-core';
+import { Types } from '@notifi-network/notifi-graphql';
 
 export const walletToSourceType = (
-  wallet: ConnectedWallet,
-): CreateSourceInput['type'] => {
-  switch (wallet.walletBlockchain) {
+  wallet: Types.ConnectedWallet,
+): Types.CreateSourceInput['type'] => {
+  switch (wallet?.walletBlockchain) {
     case 'ACALA':
       return 'ACALA_WALLET';
     case 'APTOS':
@@ -35,15 +32,17 @@ export const walletToSourceType = (
 };
 
 export const walletToSourceAddress = (
-  wallet: ConnectedWallet,
-): CreateSourceInput['blockchainAddress'] => {
-  if (wallet.address === null) {
+  wallet: Types.ConnectedWalletFragmentFragment,
+): Types.CreateSourceInput['blockchainAddress'] => {
+  if (wallet?.address === null) {
     throw new Error('Invalid connected wallet');
   }
-  return wallet.address;
+  return wallet?.address;
 };
 
-export const walletToSource = (wallet: ConnectedWallet): CreateSourceInput => {
+export const walletToSource = (
+  wallet: Types.ConnectedWalletFragmentFragment,
+): Types.CreateSourceInput => {
   const sourceAddress = walletToSourceAddress(wallet);
   const sourceType = walletToSourceType(wallet);
 

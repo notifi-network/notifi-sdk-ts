@@ -1,9 +1,9 @@
 // TODO: Import from library rather than copy / paste
 import {
   AlertFrequency,
-  CreateSourceInput,
   FilterOptions,
-} from '@notifi-network/notifi-core';
+} from '@notifi-network/notifi-frontend-client';
+import { Types } from '@notifi-network/notifi-graphql';
 
 export type ValueOrRef<ValueType> =
   | Readonly<{
@@ -131,7 +131,7 @@ export type CustomTypeBase = {
   type: 'custom';
   name: string;
   tooltipContent: string;
-  sourceType: CreateSourceInput['type'];
+  sourceType: Types.CreateSourceInput['type'];
   filterType: string;
   sourceAddress: ValueOrRef<string>;
 };
@@ -140,7 +140,7 @@ export type XMTPTopicTypeItem = {
   type: 'XMTP';
   name: string;
   tooltipContent: string;
-  sourceType?: CreateSourceInput['type'];
+  sourceType?: Types.CreateSourceInput['type'];
   filterType: string;
   XMTPTopics: ValueOrRef<ReadonlyArray<string>>;
 };

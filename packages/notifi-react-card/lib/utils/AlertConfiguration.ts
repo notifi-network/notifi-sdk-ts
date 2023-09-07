@@ -1,5 +1,7 @@
-import type { FilterOptions } from '@notifi-network/notifi-core';
-import { EventTypeConfig } from '@notifi-network/notifi-frontend-client';
+import {
+  EventTypeConfig,
+  FilterOptions,
+} from '@notifi-network/notifi-frontend-client';
 import type { Types } from '@notifi-network/notifi-graphql';
 
 import { resolveStringRef } from '../components/subscription/resolveRef';

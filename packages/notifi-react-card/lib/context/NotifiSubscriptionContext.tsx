@@ -1,9 +1,3 @@
-import {
-  Alert,
-  ConnectedWallet,
-  DiscordTarget,
-  DiscordTargetStatus,
-} from '@notifi-network/notifi-core';
 import { Types } from '@notifi-network/notifi-graphql';
 import { PropsWithChildren, useMemo } from 'react';
 import React, {
@@ -37,10 +31,10 @@ import {
 export type DestinationErrorMessages = DestinationErrors;
 
 export type NotifiSubscriptionData = Readonly<{
-  alerts: Readonly<Record<string, Alert | undefined>>;
-  connectedWallets: ReadonlyArray<ConnectedWallet>;
+  alerts: Readonly<Record<string, Types.AlertFragmentFragment | undefined>>;
+  connectedWallets: ReadonlyArray<Types.ConnectedWalletFragmentFragment>;
   setConnectedWallets: React.Dispatch<
-    React.SetStateAction<ReadonlyArray<ConnectedWallet>>
+    React.SetStateAction<ReadonlyArray<Types.ConnectedWalletFragmentFragment>>
   >;
   destinationErrorMessages: DestinationErrorMessages;
   email: string;
@@ -58,7 +52,9 @@ export type NotifiSubscriptionData = Readonly<{
   setCardView: React.Dispatch<React.SetStateAction<FetchedCardViewState>>;
   intercomCardView: IntercomCardView;
   setIntercomCardView: React.Dispatch<React.SetStateAction<IntercomCardView>>;
-  setAlerts: (alerts: Record<string, Alert | undefined>) => void;
+  setAlerts: (
+    alerts: Record<string, Types.AlertFragmentFragment | undefined>,
+  ) => void;
   setEmail: (email: string) => void;
   setPhoneNumber: (phoneNumber: string) => void;
   setTelegramId: (telegramId: string) => void;
@@ -81,9 +77,9 @@ export type NotifiSubscriptionData = Readonly<{
   setTelegramErrorMessage: (value: DestinationError) => void;
   resetErrorMessageState: () => void;
 
-  discordTargetData: DiscordTarget | undefined;
+  discordTargetData: Types.DiscordTargetFragmentFragment | undefined;
   setDiscordTargetData: React.Dispatch<
-    React.SetStateAction<DiscordTarget | undefined>
+    React.SetStateAction<Types.DiscordTargetFragmentFragment | undefined>
   >;
   render: (newData: Types.FetchDataQuery) => SubscriptionData;
 }>;
@@ -121,9 +117,11 @@ export const NotifiSubscriptionContextProvider: React.FC<
     string | undefined
   >(undefined);
 
-  const [alerts, setAlerts] = useState<Record<string, Alert | undefined>>({});
+  const [alerts, setAlerts] = useState<
+    Record<string, Types.AlertFragmentFragment | undefined>
+  >({});
   const [connectedWallets, setConnectedWallets] = useState<
-    ReadonlyArray<ConnectedWallet>
+    ReadonlyArray<Types.ConnectedWalletFragmentFragment>
   >([]);
   const [useHardwareWallet, setUseHardwareWallet] = useState<boolean>(false);
   const [useDiscord, setUseDiscord] = useState<boolean>(false);
@@ -134,7 +132,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
   const [telegramId, setTelegramId] = useState<string>('');
 
   const [discordTargetData, setDiscordTargetData] = useState<
-    DiscordTarget | undefined
+    Types.DiscordTargetFragmentFragment | undefined
   >(undefined);
 
   const [destinationErrorMessages, setDestinationErrorMessages] =
@@ -245,7 +243,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
       const targetGroup = newData.targetGroup?.find(
         (tg) => tg?.name === 'Default',
       );
-      const alerts: Record<string, Alert> = {};
+      const alerts: Record<string, Types.AlertFragmentFragment> = {};
       newData.alert?.forEach((alert) => {
         if (alert?.name) {
           alerts[alert.name] = alert;
@@ -336,9 +334,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
             onClick: () => window.open(verificationLink, '_blank'),
             message: 'Enable Bot',
           });
-        } else if (
-          userStatus === DiscordTargetStatus.DISCORD_SERVER_NOT_JOINED
-        ) {
+        } else if (userStatus === 'DISCORD_SERVER_NOT_JOINED') {
           setDiscordErrorMessage({
             type: 'recoverableError',
             onClick: () => window.open(DISCORD_INVITE_URL, '_blank'),
