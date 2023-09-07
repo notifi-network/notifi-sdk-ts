@@ -134,7 +134,7 @@ export type NotifiParams = Readonly<{
   env: NotifiEnvironment;
   keepSubscriptionData?: boolean;
   multiWallet?: MultiWalletParams;
-  enableCanary?: boolean;
+  isUsingFrontendClient?: boolean; // default is true
 }> &
   WalletParams;
 

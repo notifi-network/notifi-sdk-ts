@@ -153,9 +153,7 @@ export const TradingPairAlertRow: React.FC<TradingPairAlertRowProps> = ({
     targetGroupName: 'Default',
   });
 
-  const {
-    canary: { isActive: isCanaryActive, frontendClient },
-  } = useNotifiClientContext();
+  const { isUsingFrontendClient, frontendClient } = useNotifiClientContext();
 
   const { name, description } = useMemo(() => {
     // const alertName = `${config.name}:;:${now}:;:${selectedPair}:;:${
@@ -176,7 +174,7 @@ export const TradingPairAlertRow: React.FC<TradingPairAlertRowProps> = ({
         inputs: Record<string, unknown>;
       }>,
     ) => {
-      if (isCanaryActive) {
+      if (isUsingFrontendClient) {
         return unsubscribeAlertByFrontendClient(frontendClient, alertDetail);
       } else {
         return instantSubscribe({
@@ -185,7 +183,7 @@ export const TradingPairAlertRow: React.FC<TradingPairAlertRowProps> = ({
         });
       }
     },
-    [isCanaryActive, frontendClient],
+    [isUsingFrontendClient, frontendClient],
   );
 
   return (
@@ -222,7 +220,7 @@ export const TradingPairAlertRow: React.FC<TradingPairAlertRowProps> = ({
             } as EventTypeItem, // We only need alertName to unsubscribe
             inputs,
           }).then(() => {
-            isCanaryActive && frontendClient.fetchData().then(render);
+            isUsingFrontendClient && frontendClient.fetchData().then(render);
           });
         }}
       >
@@ -271,9 +269,7 @@ export const TradingPairSettingsRow: React.FC<TradingPairSettingsRowProps> = ({
   });
   const { render } = useNotifiSubscriptionContext();
 
-  const {
-    canary: { isActive: isCanaryActive, frontendClient },
-  } = useNotifiClientContext();
+  const { isUsingFrontendClient, frontendClient } = useNotifiClientContext();
 
   const alertConfiguration = useMemo(() => {
     return selectedPair
@@ -299,7 +295,7 @@ export const TradingPairSettingsRow: React.FC<TradingPairSettingsRowProps> = ({
       inputs: TradingPairInputs;
     }>,
   ): Promise<SubscriptionData> => {
-    if (isCanaryActive) {
+    if (isUsingFrontendClient) {
       return subscribeAlertByFrontendClient(frontendClient, alertDetail);
     }
     if (!alertConfiguration)

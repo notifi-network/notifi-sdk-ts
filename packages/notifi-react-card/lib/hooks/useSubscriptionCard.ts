@@ -36,15 +36,13 @@ export const useSubscriptionCard = (
     state: 'loading',
   });
   const { demoPreview } = useNotifiDemoPreviewContext();
-  const {
-    client,
-    canary: { isActive: isCanaryEnabled, frontendClient },
-  } = useNotifiClientContext();
+  const { client, isUsingFrontendClient, frontendClient } =
+    useNotifiClientContext();
 
   useEffect(() => {
     setState({ state: 'loading' });
     let card: CardConfigItemV1 | undefined;
-    (isCanaryEnabled ? frontendClient : client)
+    (isUsingFrontendClient ? frontendClient : client)
       .fetchSubscriptionCard(input)
       .then((result) => {
         if ('dataJson' in result) {
@@ -78,7 +76,7 @@ export const useSubscriptionCard = (
           });
         }
       });
-  }, [input.id, input.type, demoPreview, isCanaryEnabled]);
+  }, [input.id, input.type, demoPreview, isUsingFrontendClient]);
 
   return state;
 };

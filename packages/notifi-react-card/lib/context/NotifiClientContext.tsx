@@ -10,10 +10,8 @@ import { NotifiParams } from './NotifiContext';
 
 export type NotifiClientContextData = Readonly<{
   client: ReturnType<typeof useNotifiClient>;
-  canary: {
-    isActive: boolean;
-    frontendClient: NotifiFrontendClient;
-  };
+  frontendClient: NotifiFrontendClient;
+  isUsingFrontendClient: boolean;
   params: NotifiParams;
 }>;
 
@@ -67,7 +65,8 @@ export const NotifiClientContextProvider: React.FC<NotifiParams> = ({
       value={{
         client,
         params,
-        canary: { isActive: params.enableCanary ?? false, frontendClient },
+        isUsingFrontendClient: params.isUsingFrontendClient ?? true,
+        frontendClient,
       }}
     >
       {children}

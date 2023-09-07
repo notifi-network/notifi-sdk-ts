@@ -53,9 +53,7 @@ export const EventTypePriceChangeRow: React.FC<
     targetGroupName: 'Default',
   });
 
-  const {
-    canary: { isActive: isCanaryActive, frontendClient },
-  } = useNotifiClientContext();
+  const { isUsingFrontendClient, frontendClient } = useNotifiClientContext();
 
   const [enabled, setEnabled] = useState(false);
   const [isNotificationLoading, setIsNotificationLoading] =
@@ -88,7 +86,7 @@ export const EventTypePriceChangeRow: React.FC<
         inputs: Record<string, unknown>;
       }>,
     ): Promise<SubscriptionData> => {
-      if (isCanaryActive) {
+      if (isUsingFrontendClient) {
         return subscribeAlertByFrontendClient(frontendClient, alertDetail);
       } else {
         return instantSubscribe({
@@ -97,7 +95,7 @@ export const EventTypePriceChangeRow: React.FC<
         });
       }
     },
-    [isCanaryActive, frontendClient, config],
+    [isUsingFrontendClient, frontendClient, config],
   );
   const unSubscribeAlert = useCallback(
     async (
@@ -106,7 +104,7 @@ export const EventTypePriceChangeRow: React.FC<
         inputs: Record<string, unknown>;
       }>,
     ) => {
-      if (isCanaryActive) {
+      if (isUsingFrontendClient) {
         return unsubscribeAlertByFrontendClient(frontendClient, alertDetail);
       } else {
         return instantSubscribe({
@@ -115,7 +113,7 @@ export const EventTypePriceChangeRow: React.FC<
         });
       }
     },
-    [isCanaryActive, frontendClient],
+    [isUsingFrontendClient, frontendClient],
   );
 
   const handleNewSubscription = useCallback(() => {
@@ -136,7 +134,7 @@ export const EventTypePriceChangeRow: React.FC<
           if (responseHasAlert !== true) {
             setEnabled(false);
           }
-          isCanaryActive && frontendClient.fetchData().then(render);
+          isUsingFrontendClient && frontendClient.fetchData().then(render);
         })
         .catch(() => {
           setEnabled(false);
@@ -159,7 +157,7 @@ export const EventTypePriceChangeRow: React.FC<
             }
           }
           // Else, ensured by frontendClient
-          isCanaryActive && frontendClient.fetchData().then(render);
+          isUsingFrontendClient && frontendClient.fetchData().then(render);
         })
         .catch(() => {
           setEnabled(false);

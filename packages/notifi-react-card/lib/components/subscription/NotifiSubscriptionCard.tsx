@@ -93,13 +93,11 @@ export const NotifiSubscriptionCard: React.FC<
   const { isInitialized, reload, isAuthenticated } = useNotifiSubscribe({
     targetGroupName: 'Default',
   });
-  const {
-    canary: { isActive: canaryIsActive, frontendClient },
-  } = useNotifiClientContext();
+  const { isUsingFrontendClient, frontendClient } = useNotifiClientContext();
 
   const isClientInitialized = useMemo(() => {
-    return canaryIsActive ? !!frontendClient.userState : isInitialized;
-  }, [frontendClient.userState?.status, isInitialized, canaryIsActive]);
+    return isUsingFrontendClient ? !!frontendClient.userState : isInitialized;
+  }, [frontendClient.userState?.status, isInitialized, isUsingFrontendClient]);
 
   const { loading, render } = useNotifiSubscriptionContext();
 
@@ -118,7 +116,7 @@ export const NotifiSubscriptionCard: React.FC<
       if (!isClientInitialized || !isAuthenticated) {
         return;
       }
-      if (canaryIsActive) {
+      if (isUsingFrontendClient) {
         return frontendClient.fetchData().then(render);
       }
       reload();
@@ -128,7 +126,12 @@ export const NotifiSubscriptionCard: React.FC<
     return () => {
       window.removeEventListener('focus', handler);
     };
-  }, [isClientInitialized, isAuthenticated, canaryIsActive, frontendClient]);
+  }, [
+    isClientInitialized,
+    isAuthenticated,
+    isUsingFrontendClient,
+    frontendClient,
+  ]);
 
   switch (card.state) {
     case 'loading':

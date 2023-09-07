@@ -55,9 +55,7 @@ const VerifyWalletView: React.FC<VerifyWalletViewProps> = ({
   const { subscribe, updateWallets } = useNotifiSubscribe({
     targetGroupName: 'Default',
   });
-  const {
-    canary: { isActive: isCanaryActive, frontendClient },
-  } = useNotifiClientContext();
+  const { isUsingFrontendClient, frontendClient } = useNotifiClientContext();
 
   const targetGroup = useMemo(
     () => ({
@@ -75,7 +73,7 @@ const VerifyWalletView: React.FC<VerifyWalletViewProps> = ({
 
   const subscribeAlerts = useCallback(
     async (eventTypes: EventTypeConfig, inputs: Record<string, unknown>) => {
-      if (isCanaryActive) {
+      if (isUsingFrontendClient) {
         await frontendClient.ensureTargetGroup(targetGroup);
         return subscribeAlertsByFrontendClient(
           frontendClient,
@@ -88,7 +86,7 @@ const VerifyWalletView: React.FC<VerifyWalletViewProps> = ({
       );
     },
     [
-      isCanaryActive,
+      isUsingFrontendClient,
       frontendClient,
       email,
       phoneNumber,
@@ -98,11 +96,11 @@ const VerifyWalletView: React.FC<VerifyWalletViewProps> = ({
     ],
   );
   const renewWallets = useCallback(async () => {
-    if (isCanaryActive) {
+    if (isUsingFrontendClient) {
       return frontendClient.updateWallets();
     }
     return updateWallets();
-  }, [isCanaryActive, frontendClient, updateWallets]);
+  }, [isUsingFrontendClient, frontendClient, updateWallets]);
 
   const onClick = useCallback(async () => {
     if (cardView.state === 'verifyonboarding') {

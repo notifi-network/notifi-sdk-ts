@@ -26,15 +26,13 @@ export const useIntercomCard = (cardId: string): IntercomCardState => {
     state: 'loading',
   });
 
-  const {
-    client,
-    canary: { isActive: isCanaryEnabled, frontendClient },
-  } = useNotifiClientContext();
+  const { client, isUsingFrontendClient, frontendClient } =
+    useNotifiClientContext();
 
   useEffect(() => {
     setState({ state: 'loading' });
     let card: IntercomCardConfigItemV1 | undefined;
-    (isCanaryEnabled ? frontendClient : client)
+    (isUsingFrontendClient ? frontendClient : client)
       .fetchSubscriptionCard({
         type: 'INTERCOM_CARD',
         id: cardId,

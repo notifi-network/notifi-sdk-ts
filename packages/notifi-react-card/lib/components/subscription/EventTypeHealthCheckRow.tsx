@@ -80,9 +80,7 @@ export const EventTypeHealthCheckRow: React.FC<
     setCustomValue(value + '%');
   };
 
-  const {
-    canary: { isActive: isCanaryActive, frontendClient },
-  } = useNotifiClientContext();
+  const { isUsingFrontendClient, frontendClient } = useNotifiClientContext();
 
   const [enabled, setEnabled] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
@@ -149,7 +147,7 @@ export const EventTypeHealthCheckRow: React.FC<
           | HealthCheckEventInputsWithCustomPercentage;
       }>,
     ): Promise<SubscriptionData> => {
-      if (isCanaryActive) {
+      if (isUsingFrontendClient) {
         return subscribeAlertByFrontendClient(frontendClient, alertDetail);
       } else {
         return instantSubscribe({
@@ -166,7 +164,7 @@ export const EventTypeHealthCheckRow: React.FC<
         });
       }
     },
-    [isCanaryActive, frontendClient, config],
+    [isUsingFrontendClient, frontendClient, config],
   );
 
   const unSubscribeAlert = useCallback(
@@ -176,7 +174,7 @@ export const EventTypeHealthCheckRow: React.FC<
         inputs: Record<string, unknown>;
       }>,
     ) => {
-      if (isCanaryActive) {
+      if (isUsingFrontendClient) {
         return unsubscribeAlertByFrontendClient(frontendClient, alertDetail);
       } else {
         return instantSubscribe({
@@ -185,7 +183,7 @@ export const EventTypeHealthCheckRow: React.FC<
         });
       }
     },
-    [isCanaryActive, frontendClient],
+    [isUsingFrontendClient, frontendClient],
   );
 
   const handleToggleNewSubscription = useCallback(() => {
@@ -202,7 +200,7 @@ export const EventTypeHealthCheckRow: React.FC<
         },
       })
         .then(() => {
-          isCanaryActive && frontendClient.fetchData().then(render);
+          isUsingFrontendClient && frontendClient.fetchData().then(render);
         })
         .catch(() => setErrorMessage(UNABLE_TO_SUBSCRIBE))
         .finally(() => setLoading(false));
@@ -213,7 +211,7 @@ export const EventTypeHealthCheckRow: React.FC<
       })
         .then(() => {
           setCustomValue('');
-          isCanaryActive && frontendClient.fetchData().then(render);
+          isUsingFrontendClient && frontendClient.fetchData().then(render);
         })
         .catch(() => setErrorMessage(UNABLE_TO_SUBSCRIBE))
         .finally(() => setLoading(false));
@@ -235,7 +233,7 @@ export const EventTypeHealthCheckRow: React.FC<
         .then(() => {
           setSelectedIndex(index);
           setCustomValue('');
-          isCanaryActive && frontendClient.fetchData().then(render);
+          isUsingFrontendClient && frontendClient.fetchData().then(render);
         })
         .catch(() => setErrorMessage(UNABLE_TO_SUBSCRIBE));
     } else {
@@ -266,7 +264,7 @@ export const EventTypeHealthCheckRow: React.FC<
         })
           .then(() => {
             setSelectedIndex(3);
-            isCanaryActive && frontendClient.fetchData().then(render);
+            isUsingFrontendClient && frontendClient.fetchData().then(render);
           })
           .catch(() => setErrorMessage(UNABLE_TO_SUBSCRIBE));
       } else {
