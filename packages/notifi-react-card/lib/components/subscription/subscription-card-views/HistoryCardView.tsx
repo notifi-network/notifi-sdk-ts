@@ -14,6 +14,7 @@ import { NotificationEmptyBellIcon } from '../../../assets/NotificationEmptyBell
 import { useNotifiClientContext } from '../../../context';
 import {
   DeepPartialReadonly,
+  concatHistoryNodes,
   getAlertNotificationViewBaseProps,
   validateIsSupported,
 } from '../../../utils';
@@ -22,6 +23,10 @@ import {
   AlertNotificationRow,
   AlertNotificationViewProps,
 } from '../../AlertHistory/AlertNotificationRow';
+
+export type NotificationHistoryEntry =
+  | Types.FusionNotificationHistoryEntryFragmentFragment
+  | Types.NotificationHistoryEntryFragmentFragment;
 
 export type AlertHistoryViewProps = Readonly<{
   noAlertDescription?: string;
@@ -43,9 +48,7 @@ export type AlertHistoryViewProps = Readonly<{
     AlertCard: AlertNotificationViewProps['classNames'];
   }>;
   setAlertEntry: React.Dispatch<
-    React.SetStateAction<
-      Types.NotificationHistoryEntryFragmentFragment | undefined
-    >
+    React.SetStateAction<NotificationHistoryEntry | undefined>
   >;
 }>;
 
@@ -60,17 +63,14 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
     : 'You haven’t received any notifications yet';
 
   const [endCursor, setEndCursor] = useState<string | undefined>();
-  const [hasNextPage, setHasNextPage] = useState<boolean | null>(null);
+  const [hasNextPage, setHasNextPage] = useState<boolean>();
   const isQuerying = useRef<boolean>(false);
   const fetched = useRef<boolean>(false);
-
-  const [allNodes, setAllNodes] = useState<
-    ReadonlyArray<Types.NotificationHistoryEntryFragmentFragment>
-  >([]);
 
   const { client, isUsingFrontendClient, frontendClient } =
     useNotifiClientContext();
 
+  const [allNodes, setAllNodes] = useState<NotificationHistoryEntry[]>([]);
   const { isClientInitialized, isClientAuthenticated } = useMemo(() => {
     return {
       isClientInitialized: isUsingFrontendClient
@@ -88,19 +88,22 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
         return;
       }
       isQuerying.current = true;
-      const result = await (isUsingFrontendClient
-        ? frontendClient
-        : client
-      ).getNotificationHistory({
-        first,
-        after,
-      });
 
-      const nodes = result.nodes ?? [];
-      setAllNodes((existing) => existing.concat(nodes));
+      const result = isUsingFrontendClient
+        ? await frontendClient.getFusionNotificationHistory({
+            first,
+            after,
+          })
+        : await client.getNotificationHistory({
+            first,
+            after,
+          });
 
-      setEndCursor(result.pageInfo.endCursor);
-      setHasNextPage(result.pageInfo.hasNextPage);
+      const nodes: NotificationHistoryEntry[] = result?.nodes ?? [];
+      setAllNodes((existing) => concatHistoryNodes(existing, nodes));
+
+      setEndCursor(result?.pageInfo.endCursor);
+      setHasNextPage(result?.pageInfo.hasNextPage);
 
       isQuerying.current = false;
       return result;

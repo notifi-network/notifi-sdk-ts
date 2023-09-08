@@ -7,6 +7,7 @@ import { RatioCheckIcon } from '../assets/RatioCheckIcon';
 import { SwapIcon } from '../assets/SwapIcon';
 import { AlertIcon } from '../components/AlertHistory/AlertIcon';
 import { AlertNotificationViewProps } from '../components/AlertHistory/AlertNotificationRow';
+import { NotificationHistoryEntry } from '../components/subscription';
 import { formatAmount } from './AlertHistoryUtils';
 
 type AccountBalanceChangedEventDetails = Extract<
@@ -44,10 +45,10 @@ type SupportedEventDetailPropsMap = Map<
   string,
   {
     getViewProps: (
-      notification: Types.NotificationHistoryEntryFragmentFragment,
+      notification: NotificationHistoryEntry,
     ) => AlertNotificationViewProps;
     getAlertDetailsContents: (
-      notification: Types.NotificationHistoryEntryFragmentFragment,
+      notification: NotificationHistoryEntry,
     ) => AlertDetailsContents;
   }
 >;
@@ -55,9 +56,7 @@ type SupportedEventDetailPropsMap = Map<
 const supportedEventDetails: SupportedEventDetailPropsMap = new Map();
 
 supportedEventDetails.set('BroadcastMessageEventDetails', {
-  getViewProps: (
-    notification: Types.NotificationHistoryEntryFragmentFragment,
-  ) => {
+  getViewProps: (notification: NotificationHistoryEntry) => {
     const detail = notification.detail as BroadcastMessageEventDetails;
     return {
       notificationTitle: 'Announcement',
@@ -67,9 +66,7 @@ supportedEventDetails.set('BroadcastMessageEventDetails', {
       notificationMessage: detail.message ?? '',
     };
   },
-  getAlertDetailsContents: (
-    notification: Types.NotificationHistoryEntryFragmentFragment,
-  ) => {
+  getAlertDetailsContents: (notification: NotificationHistoryEntry) => {
     const detail = notification.detail as BroadcastMessageEventDetails;
     return {
       topContent: detail.subject ?? '',
@@ -79,9 +76,7 @@ supportedEventDetails.set('BroadcastMessageEventDetails', {
 });
 
 supportedEventDetails.set('HealthValueOverThresholdEventDetails', {
-  getViewProps: (
-    notification: Types.NotificationHistoryEntryFragmentFragment,
-  ) => {
+  getViewProps: (notification: NotificationHistoryEntry) => {
     const detail = notification.detail as HealthValueOverThresholdEventDetails;
     const threshold = detail.threshold ?? '';
     const name = detail.name ?? '';
@@ -100,9 +95,7 @@ supportedEventDetails.set('HealthValueOverThresholdEventDetails', {
       notificationMessage: undefined,
     };
   },
-  getAlertDetailsContents: (
-    notification: Types.NotificationHistoryEntryFragmentFragment,
-  ) => {
+  getAlertDetailsContents: (notification: NotificationHistoryEntry) => {
     const detail = notification.detail as HealthValueOverThresholdEventDetails;
     return {
       topContent: detail.name,
@@ -123,9 +116,7 @@ supportedEventDetails.set('GenericEventDetails', {
       notificationMessage: detail.genericMessage,
     };
   },
-  getAlertDetailsContents: (
-    notification: Types.NotificationHistoryEntryFragmentFragment,
-  ) => {
+  getAlertDetailsContents: (notification: NotificationHistoryEntry) => {
     const detail = notification.detail as GenericEventDetails;
     return {
       topContent: detail.notificationTypeName,
@@ -145,9 +136,7 @@ supportedEventDetails.set('ChatMessageReceivedEventDetails', {
       notificationImage: <ChatAlertIcon width={17} height={17} />,
     };
   },
-  getAlertDetailsContents: (
-    notification: Types.NotificationHistoryEntryFragmentFragment,
-  ) => {
+  getAlertDetailsContents: (notification: NotificationHistoryEntry) => {
     const detail = notification.detail as ChatMessageReceivedEventDetails;
     return {
       topContent: `New Message from ${detail.senderName}`,
@@ -169,9 +158,9 @@ supportedEventDetails.set('AccountBalanceChangedEventDetails', {
         : `Outgoing Transaction: -${changeAmount} ${detail.tokenSymbol}`;
     };
 
-    const walletAddress = notification.sourceAddress ?? '';
+    const walletBlockchain = detail.walletBlockchain;
     const direction = detail.direction === 'INCOMING' ? '' : '-';
-    const message = `Wallet ${walletAddress} account balance changed by ${direction}${changeAmount} ${detail.tokenSymbol}`;
+    const message = `${walletBlockchain} Wallet account balance changed by ${direction}${changeAmount} ${detail.tokenSymbol}`;
     return {
       notificationImage: <SwapIcon />,
       notificationTitle: 'Wallet Balance Change',
@@ -180,9 +169,7 @@ supportedEventDetails.set('AccountBalanceChangedEventDetails', {
       notificationMessage: message,
     };
   },
-  getAlertDetailsContents: (
-    notification: Types.NotificationHistoryEntryFragmentFragment,
-  ) => {
+  getAlertDetailsContents: (notification: NotificationHistoryEntry) => {
     const detail = notification.detail as AccountBalanceChangedEventDetails;
     const changeAmount = `${formatAmount(
       Math.abs(detail.previousValue - detail.newValue),
@@ -194,7 +181,7 @@ supportedEventDetails.set('AccountBalanceChangedEventDetails', {
         : `Outgoing Transaction: -${changeAmount}  ${detail.tokenSymbol}`;
 
     const direction = detail.direction === 'INCOMING' ? '' : '-';
-    const bottomContent = `Wallet ${notification.sourceAddress} account balance changed by ${direction}${changeAmount} ${detail.tokenSymbol}`;
+    const bottomContent = ` ${detail.walletBlockchain} wallet account balance changed by ${direction}${changeAmount} ${detail.tokenSymbol}`;
     return {
       topContent,
       bottomContent: bottomContent,
@@ -202,15 +189,13 @@ supportedEventDetails.set('AccountBalanceChangedEventDetails', {
   },
 });
 
-const validateIsSupported = (
-  entry?: Types.NotificationHistoryEntryFragmentFragment,
-): boolean => {
+const validateIsSupported = (entry?: NotificationHistoryEntry): boolean => {
   if (supportedEventDetails.get(entry?.detail?.__typename ?? '')) return true;
   return false;
 };
 
 const getAlertNotificationViewBaseProps = (
-  notification: Types.NotificationHistoryEntryFragmentFragment,
+  notification: NotificationHistoryEntry,
 ): AlertNotificationViewProps => {
   const genProps = supportedEventDetails.get(
     notification.detail?.__typename ?? '',
@@ -228,7 +213,7 @@ const getAlertNotificationViewBaseProps = (
 };
 
 const getAlertDetailsContents = (
-  notification: Types.NotificationHistoryEntryFragmentFragment,
+  notification: NotificationHistoryEntry,
 ): AlertDetailsContents => {
   const getContents = supportedEventDetails.get(
     notification.detail?.__typename ?? '',
@@ -242,8 +227,29 @@ const getAlertDetailsContents = (
       };
 };
 
+const concatHistoryNodes = (
+  nodes: NotificationHistoryEntry[],
+  nodesToConcat: NotificationHistoryEntry[],
+) => {
+  switch (nodes[0]?.__typename) {
+    case 'FusionNotificationHistoryEntry':
+      if (nodesToConcat[0]?.__typename !== 'FusionNotificationHistoryEntry') {
+        throw new Error('Type mismatch: FusionNotificationHistoryEntry');
+      }
+      return [...nodes, ...nodesToConcat];
+    case 'NotificationHistoryEntry':
+      if (nodesToConcat[0]?.__typename !== 'NotificationHistoryEntry') {
+        throw new Error('Type mismatch: NotificationHistoryEntry');
+      }
+      return [...nodes, ...nodesToConcat];
+    default:
+      throw new Error('Invalid type: NotificationHistoryEntry');
+  }
+};
+
 export {
   getAlertDetailsContents,
   getAlertNotificationViewBaseProps,
   validateIsSupported,
+  concatHistoryNodes,
 };

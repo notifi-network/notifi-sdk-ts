@@ -1,5 +1,4 @@
 import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
-import { Types } from '@notifi-network/notifi-graphql';
 import clsx from 'clsx';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
@@ -36,6 +35,7 @@ import {
 import {
   AlertHistoryView,
   AlertHistoryViewProps,
+  NotificationHistoryEntry,
 } from './subscription-card-views/HistoryCardView';
 import {
   PreviewCard,
@@ -153,7 +153,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
     discordTargetData?.discordAccountId,
   ]);
   const [selectedAlertEntry, setAlertEntry] = useState<
-    Types.NotificationHistoryEntryFragmentFragment | undefined
+    NotificationHistoryEntry | undefined
   >(undefined);
 
   let view = null;
