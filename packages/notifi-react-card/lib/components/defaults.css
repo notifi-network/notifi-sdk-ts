@@ -572,6 +572,7 @@ input::-webkit-inner-spin-button {
 .EventTypeCustomToggleRow_label,
 .EventTypeHealthCheckRow__label,
 .EventTypeFusionToggleRow__label,
+.EventTypeFusionMultiThreshholdRow__label,
 .EventTypeCustomHealthCheckRow__label,
 .EventTypeCustomToggleRow__label,
 .EventTypeWalletBalanceRow__label,
@@ -587,11 +588,14 @@ input::-webkit-inner-spin-button {
   color: var(--notifi-font-color);
 }
 
+.EventTypeFusionMultiThreshholdRow__container,
+.EventTypeFusionMultiThreshholdRow__label,
 .EventTypeHealthCheckRow__container,
 .EventTypeHealthCheckRow__label {
   margin-bottom: 0 !important;
 }
 
+.EventTypeFusionMultiThreshholdRow__content,
 .EventTypeHealthCheckRow__content {
   font-size: 14px;
   color: var(--notifi-secondary-font-color);
@@ -1615,6 +1619,187 @@ input::-webkit-inner-spin-button {
 }
 
 .TradingPairSettingsRow__saveButton:disabled {
+  cursor: default;
+  color: var(--notifi-secondary-font-color);
+  background-color: var(--notifi-button-disabled-color);
+}
+
+.EventTypeFusionMultiThreshholdRow__container {
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+}
+
+.EventTypeFusionMultiThreshholdRow__container > * {
+  margin-bottom: 0 !important;
+}
+
+.EventTypeFusionMultiThreshholdRow__container > *:not(:first-child) {
+  padding-top: 10px;
+}
+.EventTypeFusionMultiThreshholdRow__container > :last-child {
+  padding-bottom: 10px;
+}
+
+.EventTypeFusionMultiThreshholdRow__container > *:not(:last-child):not(:first-child) {
+  padding-bottom: 10px;
+  border-bottom: 1px var(--notifi-font-color) solid;
+}
+
+.EventTypeFusionMultiThreshholdRow__addThreshhold {
+  display: inline-block;
+  align-self: flex-start;
+  cursor: pointer;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--notifi-link-color);
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.EventTypeFusionMultiThreshholdRow__addThreshhold:disabled {
+  cursor: default;
+  color: var(--notifi-secondary-font-color);
+}
+
+.EventTypeFusionMultiThreshholdRow__addThreshhold::before {
+  content: '+ ';
+}
+
+.FusionMultiThreshholdSettingsRow__container {
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+  padding: 10px 0;
+}
+
+.FusionMultiThreshholdSettingsRow__dropdownContainer {
+  background-color: var(--notifi-input-background);
+  display: flex;
+  align-items: center;
+  border: 1px var(--notifi-input-border) solid;
+  border-radius: 5px;
+}
+
+.FusionMultiThreshholdSettingsRow__dropdownContainer::after {
+  content: '';
+  width: 1em;
+  height: 1em;
+  margin-right: 10px;
+  background-color: var(--notifi-font-color);
+  clip-path: polygon(90% 30%, 10% 30%, 50% 70%);
+}
+
+.FusionMultiThreshholdSettingsRow__dropdown {
+  box-sizing: border-box;
+  appearance: none;
+  background-color: transparent;
+  border: none;
+  padding: 10px 20px;
+  margin: 0;
+  width: 100%;
+  color: inherit;
+  cursor: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  outline: none;
+}
+
+.FusionMultiThreshholdSettingsRow__radioButton {
+  font-size: 16px;
+  line-height: 20px;
+  padding: 10px 30px;
+  margin-right: 10px;
+  margin-bottom: 0 !important;
+  border-radius: 5px;
+  border: none;
+  color: #000;
+  background-color: var(--notifi-tooltip-background);
+  cursor: pointer;
+}
+
+.FusionMultiThreshholdSettingsRow__radioSelected {
+  color: var(--notifi-button-text);
+  background-color: var(--notifi-button-color);
+}
+
+.FusionMultiThreshholdAlertRow__container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.FusionMultiThreshholdAlertRow__textContainer {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  align-items: stretch;
+  margin-right: 10px;
+  margin-bottom: 0 !important;
+}
+
+.FusionMultiThreshholdAlertRow__name {
+  display: block;
+  font-size: 16px;
+  line-height: 20px;
+  color: var(--notifi-font-color);
+}
+
+.FusionMultiThreshholdAlertRow__description {
+  display: block;
+  font-size: 14px;
+  line-height: 18px;
+  color: var(--notifi-secondary-font-color);
+}
+
+.FusionMultiThreshholdAlertRow__deleteIcon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  fill: var(--notifi-font-color);
+  cursor: pointer;
+}
+
+.FusionMultiThreshholdSettingsRow__threshholdInputContainer {
+  background-color: var(--notifi-input-background);
+  display: flex;
+  align-items: center;
+  border: 1px var(--notifi-input-border) solid;
+  border-radius: 5px;
+}
+
+.FusionMultiThreshholdSettingsRow__threshholdInput {
+  box-sizing: border-box;
+  appearance: none;
+  background-color: transparent;
+  border: none;
+  padding: 10px 20px;
+  margin: 0;
+  width: 100%;
+  color: inherit;
+  cursor: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  outline: none;
+}
+
+.FusionMultiThreshholdSettingsRow__saveButton {
+  font-size: 16px;
+  line-height: 20px;
+  padding: 5px 20px;
+  align-self: flex-start;
+  border-radius: 5px;
+  border: none;
+  color: var(--notifi-button-text);
+  background-color: var(--notifi-button-color);
+  cursor: pointer;
+}
+
+.FusionMultiThreshholdSettingsRow__saveButton:disabled {
   cursor: default;
   color: var(--notifi-secondary-font-color);
   background-color: var(--notifi-button-disabled-color);

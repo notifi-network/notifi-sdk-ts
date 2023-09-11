@@ -89,6 +89,19 @@ export type TradingPairEventTypeItem = Readonly<{
   tradingPairs: ValueOrRef<ReadonlyArray<string>>;
 }>;
 
+export type FusionMultiThreshholdEventTypeItem = Readonly<{
+  type: 'fusionMultiThreshhold';
+  name: string;
+  tooltipContent?: string;
+  numberType: NumberTypeSelect;
+  subtitle?: string;
+  addThreshholdTitle?: string;
+  fusionEventId: ValueOrRef<string>;
+  sourceAddress: ValueOrRef<string>;
+  maintainSourceGroup?: boolean;
+  alertFrequency?: AlertFrequency;
+}>;
+
 export type WalletBalanceEventTypeItem = Readonly<{
   type: 'walletBalance';
   name: string;
@@ -107,7 +120,7 @@ export type PriceChangeEventTypeItem = Readonly<{
 
 export type USER_INTERFACE_TYPE = 'TOGGLE' | 'HEALTH_CHECK';
 
-export type NumberTypeSelect = 'percentage' | 'integer';
+export type NumberTypeSelect = 'percentage' | 'integer' | 'price';
 
 export type CustomToggleTypeItem = Readonly<{
   filterOptions: FilterOptions;
@@ -151,6 +164,7 @@ export type EventTypeItem =
   | HealthCheckEventTypeItem
   | LabelEventTypeItem
   | TradingPairEventTypeItem
+  | FusionMultiThreshholdEventTypeItem
   | WalletBalanceEventTypeItem
   | PriceChangeEventTypeItem
   | CustomTopicTypeItem

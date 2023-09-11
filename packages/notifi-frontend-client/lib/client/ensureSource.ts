@@ -474,6 +474,9 @@ const ensureSources = async (
     case 'label': {
       throw new Error('Unsupported event type');
     }
+    case 'fusionMultiThreshhold': {
+      throw new Error('Unsupported event type');
+    }
   }
 };
 
@@ -1007,6 +1010,9 @@ export const ensureSourceAndFilters = async (
       };
     }
     case 'label': {
+      throw new Error('Unsupported event type');
+    }
+    case 'fusionMultiThreshhold': {
       throw new Error('Unsupported event type');
     }
     case 'walletBalance': {

@@ -75,6 +75,19 @@ export type TradingPairEventTypeItem = Readonly<{
   tradingPairs: ValueOrRef<ReadonlyArray<string>>;
 }>;
 
+export type FusionMultiThreshholdEventTypeItem = Readonly<{
+  type: 'fusionMultiThreshhold';
+  name: string;
+  tooltipContent?: string;
+  numberType: NumberTypeSelect;
+  subtitle?: string;
+  addThreshholdTitle?: string;
+  fusionEventId: ValueOrRef<string>;
+  sourceAddress: ValueOrRef<string>;
+  maintainSourceGroup?: boolean;
+  alertFrequency?: AlertFrequency;
+}>;
+
 export type PriceChangeDataSource = 'coingecko';
 
 export type PriceChangeEventTypeItem = Readonly<{
@@ -152,6 +165,7 @@ export type EventTypeItem =
   | BroadcastEventTypeItem
   | HealthCheckEventTypeItem
   | TradingPairEventTypeItem
+  | FusionMultiThreshholdEventTypeItem
   | LabelEventTypeItem
   | PriceChangeEventTypeItem
   | CustomTopicTypeItem
