@@ -234,12 +234,12 @@ const concatHistoryNodes = (
   switch (nodes[0]?.__typename) {
     case 'FusionNotificationHistoryEntry':
       if (nodesToConcat[0]?.__typename !== 'FusionNotificationHistoryEntry') {
-        throw new Error('Type mismatch: FusionNotificationHistoryEntry');
+        return nodes;
       }
       return [...nodes, ...nodesToConcat];
     case 'NotificationHistoryEntry':
       if (nodesToConcat[0]?.__typename !== 'NotificationHistoryEntry') {
-        throw new Error('Type mismatch: NotificationHistoryEntry');
+        return nodes;
       }
       return [...nodes, ...nodesToConcat];
     default:

@@ -93,6 +93,7 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
         ? await frontendClient.getFusionNotificationHistory({
             first,
             after,
+            includeHidden: false,
           })
         : await client.getNotificationHistory({
             first,
