@@ -19,9 +19,9 @@ import {
   EventTypeFusionHealthCheckRowProps,
 } from '../../EventTypeFusionHealthCheckRow';
 import {
-  EventTypeFusionMultiThreshholdRow,
-  EventTypeFusionMultiThreshholdRowProps,
-} from '../../EventTypeFusionMultiThreshholdRow';
+  EventTypeFusionMultiThresholdRow,
+  EventTypeFusionMultiThresholdRowProps,
+} from '../../EventTypeFusionMultiThresholdRow';
 import {
   EventTypeFusionRowProps,
   EventTypeFusionToggleRow,
@@ -67,7 +67,7 @@ export type AlertsPanelProps = Readonly<{
     EventTypeLabelRow?: EventTypeLabelRowProps['classNames'];
     EventTypePriceChangeRow?: EventTypePriceChangeRowProps['classNames'];
     EventTypeTradingPairsRow?: EventTypeTradingPairsRowProps['classNames'];
-    EventTypeFusionMultiThreshholdRow?: EventTypeFusionMultiThreshholdRowProps['classNames'];
+    EventTypeFusionMultiThresholdRow?: EventTypeFusionMultiThresholdRowProps['classNames'];
     EventTypeUnsupportedRow?: EventTypeUnsupportedRowProps['classNames'];
     EventTypeWalletBalanceRow?: EventTypeWalletBalanceRowProps['classNames'];
     EventTypeXMTPRow?: EventTypeXMPTRowProps['classNames'];
@@ -162,11 +162,11 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
                 inputs={inputs}
               />
             );
-          case 'fusionMultiThreshhold':
+          case 'fusionMultiThreshold':
             return (
-              <EventTypeFusionMultiThreshholdRow
+              <EventTypeFusionMultiThresholdRow
                 key={eventType.name}
-                classNames={classNames?.EventTypeFusionMultiThreshholdRow}
+                classNames={classNames?.EventTypeFusionMultiThresholdRow}
                 config={eventType}
                 inputs={inputs}
               />

@@ -572,7 +572,7 @@ input::-webkit-inner-spin-button {
 .EventTypeCustomToggleRow_label,
 .EventTypeHealthCheckRow__label,
 .EventTypeFusionToggleRow__label,
-.EventTypeFusionMultiThreshholdRow__label,
+.EventTypeFusionMultiThresholdRow__label,
 .EventTypeCustomHealthCheckRow__label,
 .EventTypeCustomToggleRow__label,
 .EventTypeWalletBalanceRow__label,
@@ -588,14 +588,14 @@ input::-webkit-inner-spin-button {
   color: var(--notifi-font-color);
 }
 
-.EventTypeFusionMultiThreshholdRow__container,
-.EventTypeFusionMultiThreshholdRow__label,
+.EventTypeFusionMultiThresholdRow__container,
+.EventTypeFusionMultiThresholdRow__label,
 .EventTypeHealthCheckRow__container,
 .EventTypeHealthCheckRow__label {
   margin-bottom: 0 !important;
 }
 
-.EventTypeFusionMultiThreshholdRow__content,
+.EventTypeFusionMultiThresholdRow__content,
 .EventTypeHealthCheckRow__content {
   font-size: 14px;
   color: var(--notifi-secondary-font-color);
@@ -1624,29 +1624,30 @@ input::-webkit-inner-spin-button {
   background-color: var(--notifi-button-disabled-color);
 }
 
-.EventTypeFusionMultiThreshholdRow__container {
+.EventTypeFusionMultiThresholdRow__container {
   display: flex;
   align-items: stretch;
   flex-direction: column;
 }
 
-.EventTypeFusionMultiThreshholdRow__container > * {
+.EventTypeFusionMultiThresholdRow__container > * {
   margin-bottom: 0 !important;
 }
 
-.EventTypeFusionMultiThreshholdRow__container > *:not(:first-child) {
+.EventTypeFusionMultiThresholdRow__container > *:not(:first-child) {
   padding-top: 10px;
 }
-.EventTypeFusionMultiThreshholdRow__container > :last-child {
+.EventTypeFusionMultiThresholdRow__container > :last-child {
   padding-bottom: 10px;
 }
 
-.EventTypeFusionMultiThreshholdRow__container > *:not(:last-child):not(:first-child) {
+.EventTypeFusionMultiThresholdRow__container
+  > *:not(:last-child):not(:first-child) {
   padding-bottom: 10px;
   border-bottom: 1px var(--notifi-font-color) solid;
 }
 
-.EventTypeFusionMultiThreshholdRow__addThreshhold {
+.EventTypeFusionMultiThresholdRow__addThreshold {
   display: inline-block;
   align-self: flex-start;
   cursor: pointer;
@@ -1658,23 +1659,23 @@ input::-webkit-inner-spin-button {
   line-height: 20px;
 }
 
-.EventTypeFusionMultiThreshholdRow__addThreshhold:disabled {
+.EventTypeFusionMultiThresholdRow__addThreshold:disabled {
   cursor: default;
   color: var(--notifi-secondary-font-color);
 }
 
-.EventTypeFusionMultiThreshholdRow__addThreshhold::before {
+.EventTypeFusionMultiThresholdRow__addThreshold::before {
   content: '+ ';
 }
 
-.FusionMultiThreshholdSettingsRow__container {
+.FusionMultiThresholdSettingsRow__container {
   display: flex;
   align-items: stretch;
   flex-direction: column;
   padding: 10px 0;
 }
 
-.FusionMultiThreshholdSettingsRow__dropdownContainer {
+.FusionMultiThresholdSettingsRow__dropdownContainer {
   background-color: var(--notifi-input-background);
   display: flex;
   align-items: center;
@@ -1682,7 +1683,7 @@ input::-webkit-inner-spin-button {
   border-radius: 5px;
 }
 
-.FusionMultiThreshholdSettingsRow__dropdownContainer::after {
+.FusionMultiThresholdSettingsRow__dropdownContainer::after {
   content: '';
   width: 1em;
   height: 1em;
@@ -1691,7 +1692,7 @@ input::-webkit-inner-spin-button {
   clip-path: polygon(90% 30%, 10% 30%, 50% 70%);
 }
 
-.FusionMultiThreshholdSettingsRow__dropdown {
+.FusionMultiThresholdSettingsRow__dropdown {
   box-sizing: border-box;
   appearance: none;
   background-color: transparent;
@@ -1707,7 +1708,7 @@ input::-webkit-inner-spin-button {
   outline: none;
 }
 
-.FusionMultiThreshholdSettingsRow__radioButton {
+.FusionMultiThresholdSettingsRow__radioButton {
   font-size: 16px;
   line-height: 20px;
   padding: 10px 30px;
@@ -1720,19 +1721,19 @@ input::-webkit-inner-spin-button {
   cursor: pointer;
 }
 
-.FusionMultiThreshholdSettingsRow__radioSelected {
+.FusionMultiThresholdSettingsRow__radioSelected {
   color: var(--notifi-button-text);
   background-color: var(--notifi-button-color);
 }
 
-.FusionMultiThreshholdAlertRow__container {
+.FusionMultiThresholdAlertRow__container {
   display: flex;
   flex-direction: row;
   align-items: center;
   padding: 10px 0;
 }
 
-.FusionMultiThreshholdAlertRow__textContainer {
+.FusionMultiThresholdAlertRow__textContainer {
   display: flex;
   flex-grow: 1;
   flex-direction: column;
@@ -1741,21 +1742,21 @@ input::-webkit-inner-spin-button {
   margin-bottom: 0 !important;
 }
 
-.FusionMultiThreshholdAlertRow__name {
+.FusionMultiThresholdAlertRow__name {
   display: block;
   font-size: 16px;
   line-height: 20px;
   color: var(--notifi-font-color);
 }
 
-.FusionMultiThreshholdAlertRow__description {
+.FusionMultiThresholdAlertRow__description {
   display: block;
   font-size: 14px;
   line-height: 18px;
   color: var(--notifi-secondary-font-color);
 }
 
-.FusionMultiThreshholdAlertRow__deleteIcon {
+.FusionMultiThresholdAlertRow__deleteIcon {
   width: 24px;
   height: 24px;
   flex-shrink: 0;
@@ -1763,7 +1764,7 @@ input::-webkit-inner-spin-button {
   cursor: pointer;
 }
 
-.FusionMultiThreshholdSettingsRow__threshholdInputContainer {
+.FusionMultiThresholdSettingsRow__thresholdInputContainer {
   background-color: var(--notifi-input-background);
   display: flex;
   align-items: center;
@@ -1771,7 +1772,7 @@ input::-webkit-inner-spin-button {
   border-radius: 5px;
 }
 
-.FusionMultiThreshholdSettingsRow__threshholdInput {
+.FusionMultiThresholdSettingsRow__thresholdInput {
   box-sizing: border-box;
   appearance: none;
   background-color: transparent;
@@ -1787,7 +1788,7 @@ input::-webkit-inner-spin-button {
   outline: none;
 }
 
-.FusionMultiThreshholdSettingsRow__saveButton {
+.FusionMultiThresholdSettingsRow__saveButton {
   font-size: 16px;
   line-height: 20px;
   padding: 5px 20px;
@@ -1799,7 +1800,7 @@ input::-webkit-inner-spin-button {
   cursor: pointer;
 }
 
-.FusionMultiThreshholdSettingsRow__saveButton:disabled {
+.FusionMultiThresholdSettingsRow__saveButton:disabled {
   cursor: default;
   color: var(--notifi-secondary-font-color);
   background-color: var(--notifi-button-disabled-color);

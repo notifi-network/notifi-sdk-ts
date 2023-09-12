@@ -89,13 +89,13 @@ export type TradingPairEventTypeItem = Readonly<{
   tradingPairs: ValueOrRef<ReadonlyArray<string>>;
 }>;
 
-export type FusionMultiThreshholdEventTypeItem = Readonly<{
-  type: 'fusionMultiThreshhold';
+export type FusionMultiThresholdEventTypeItem = Readonly<{
+  type: 'fusionMultiThreshold';
   name: string;
   tooltipContent?: string;
   numberType: NumberTypeSelect;
   subtitle?: string;
-  addThreshholdTitle?: string;
+  addThresholdTitle?: string;
   fusionEventId: ValueOrRef<string>;
   sourceAddress: ValueOrRef<string>;
   maintainSourceGroup?: boolean;
@@ -164,7 +164,7 @@ export type EventTypeItem =
   | HealthCheckEventTypeItem
   | LabelEventTypeItem
   | TradingPairEventTypeItem
-  | FusionMultiThreshholdEventTypeItem
+  | FusionMultiThresholdEventTypeItem
   | WalletBalanceEventTypeItem
   | PriceChangeEventTypeItem
   | CustomTopicTypeItem

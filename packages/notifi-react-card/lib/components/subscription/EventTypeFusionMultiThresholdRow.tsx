@@ -17,7 +17,7 @@ import {
   useNotifiSubscriptionContext,
 } from '../../context';
 import {
-  FusionMultiThreshholdEventTypeItem,
+  FusionMultiThresholdEventTypeItem,
   SubscriptionData,
   useNotifiSubscribe,
 } from '../../hooks';
@@ -30,31 +30,27 @@ import {
 import { NotifiTooltip, NotifiTooltipProps } from './NotifiTooltip';
 import { resolveStringRef } from './resolveRef';
 
-export type EventTypeFusionMultiThreshholdRowProps = Readonly<{
+export type EventTypeFusionMultiThresholdRowProps = Readonly<{
   classNames?: DeepPartialReadonly<{
     container: string;
     content: string;
     label: string;
-    addThreshhold: string;
+    addThreshold: string;
     tooltip: NotifiTooltipProps['classNames'];
-    fusionMultiThreshholdAlertRow: FusionMultiThreshholdAlertRowProps['classNames'];
-    fusionMultiThreshholdSettingsRow: FusionMultiThreshholdSettingsRowProps['classNames'];
+    fusionMultiThresholdAlertRow: FusionMultiThresholdAlertRowProps['classNames'];
+    fusionMultiThresholdSettingsRow: FusionMultiThresholdSettingsRowProps['classNames'];
   }>;
-  config: FusionMultiThreshholdEventTypeItem;
+  config: FusionMultiThresholdEventTypeItem;
   inputs: Record<string, unknown>;
 }>;
 
-export const EventTypeFusionMultiThreshholdRow: React.FC<
-  EventTypeFusionMultiThreshholdRowProps
-> = ({
-  classNames,
-  config,
-  inputs,
-}: EventTypeFusionMultiThreshholdRowProps) => {
+export const EventTypeFusionMultiThresholdRow: React.FC<
+  EventTypeFusionMultiThresholdRowProps
+> = ({ classNames, config, inputs }: EventTypeFusionMultiThresholdRowProps) => {
   const { name, tooltipContent } = config;
   const { alerts } = useNotifiSubscriptionContext();
 
-  const fusionMultiThreshholdAlertNames = useMemo(() => {
+  const fusionMultiThresholdAlertNames = useMemo(() => {
     if (alerts === undefined) {
       return [];
     }
@@ -77,20 +73,20 @@ export const EventTypeFusionMultiThreshholdRow: React.FC<
   useEffect(() => {
     if (!hasSetInput.current && alerts !== undefined) {
       hasSetInput.current = true;
-      setShowInput(fusionMultiThreshholdAlertNames.length === 0);
+      setShowInput(fusionMultiThresholdAlertNames.length === 0);
     }
-  }, [alerts, fusionMultiThreshholdAlertNames]);
+  }, [alerts, fusionMultiThresholdAlertNames]);
 
   return (
     <div
       className={clsx(
-        'EventTypeFusionMultiThreshholdRow__container',
+        'EventTypeFusionMultiThresholdRow__container',
         classNames?.container,
       )}
     >
       <div
         className={clsx(
-          'EventTypeFusionMultiThreshholdRow__label',
+          'EventTypeFusionMultiThresholdRow__label',
           classNames?.label,
         )}
       >
@@ -104,7 +100,7 @@ export const EventTypeFusionMultiThreshholdRow: React.FC<
       </div>
       <div
         className={clsx(
-          'EventTypeFusionMultiThreshholdRow__content',
+          'EventTypeFusionMultiThresholdRow__content',
           classNames?.content,
         )}
       >
@@ -112,19 +108,19 @@ export const EventTypeFusionMultiThreshholdRow: React.FC<
           ? config.subtitle
           : `Alert me when my margin ratio is:`}
       </div>
-      {fusionMultiThreshholdAlertNames.map((alertName) => {
+      {fusionMultiThresholdAlertNames.map((alertName) => {
         return (
-          <FusionMultiThreshholdAlertRow
+          <FusionMultiThresholdAlertRow
             key={alertName}
-            classNames={classNames?.fusionMultiThreshholdAlertRow}
+            classNames={classNames?.fusionMultiThresholdAlertRow}
             alertName={alertName}
             inputs={inputs}
           />
         );
       })}
       {showInput ? (
-        <FusionMultiThreshholdSettingsRow
-          classNames={classNames?.fusionMultiThreshholdSettingsRow}
+        <FusionMultiThresholdSettingsRow
+          classNames={classNames?.fusionMultiThresholdSettingsRow}
           config={config}
           inputs={inputs}
           onSave={() => {
@@ -134,21 +130,21 @@ export const EventTypeFusionMultiThreshholdRow: React.FC<
       ) : null}
       <button
         className={clsx(
-          'EventTypeFusionMultiThreshholdRow__addThreshhold',
-          classNames?.addThreshhold,
+          'EventTypeFusionMultiThresholdRow__addThreshold',
+          classNames?.addThreshold,
         )}
         disabled={showInput}
         onClick={() => {
           setShowInput(true);
         }}
       >
-        {config.addThreshholdTitle ? config.addThreshholdTitle : 'Add alert'}
+        {config.addThresholdTitle ? config.addThresholdTitle : 'Add alert'}
       </button>
     </div>
   );
 };
 
-export type FusionMultiThreshholdAlertRowProps = Readonly<{
+export type FusionMultiThresholdAlertRowProps = Readonly<{
   classNames?: DeepPartialReadonly<{
     container: string;
     textContainer: string;
@@ -160,9 +156,9 @@ export type FusionMultiThreshholdAlertRowProps = Readonly<{
   inputs: Record<string, unknown>;
 }>;
 
-export const FusionMultiThreshholdAlertRow: React.FC<
-  FusionMultiThreshholdAlertRowProps
-> = ({ classNames, alertName, inputs }: FusionMultiThreshholdAlertRowProps) => {
+export const FusionMultiThresholdAlertRow: React.FC<
+  FusionMultiThresholdAlertRowProps
+> = ({ classNames, alertName, inputs }: FusionMultiThresholdAlertRowProps) => {
   const { render } = useNotifiSubscriptionContext();
 
   const { instantSubscribe } = useNotifiSubscribe({
@@ -172,8 +168,8 @@ export const FusionMultiThreshholdAlertRow: React.FC<
   const { isUsingFrontendClient, frontendClient } = useNotifiClientContext();
 
   const name = useMemo(() => {
-    const [, , above, threshhold] = alertName.split(':;:');
-    return above + ' ' + threshhold;
+    const [, , above, threshold] = alertName.split(':;:');
+    return above + ' ' + threshold;
   }, [alertName]);
 
   const unSubscribeAlert = useCallback(
@@ -198,19 +194,19 @@ export const FusionMultiThreshholdAlertRow: React.FC<
   return (
     <div
       className={clsx(
-        'FusionMultiThreshholdAlertRow__container',
+        'FusionMultiThresholdAlertRow__container',
         classNames?.container,
       )}
     >
       <div
         className={clsx(
-          'FusionMultiThreshholdAlertRow__textContainer',
+          'FusionMultiThresholdAlertRow__textContainer',
           classNames?.textContainer,
         )}
       >
         <span
           className={clsx(
-            'FusionMultiThreshholdAlertRow__name',
+            'FusionMultiThresholdAlertRow__name',
             classNames?.name,
           )}
         >
@@ -219,7 +215,7 @@ export const FusionMultiThreshholdAlertRow: React.FC<
       </div>
       <div
         className={clsx(
-          'FusionMultiThreshholdAlertRow__deleteIcon',
+          'FusionMultiThresholdAlertRow__deleteIcon',
           classNames?.deleteIcon,
         )}
         onClick={() => {
@@ -238,32 +234,32 @@ export const FusionMultiThreshholdAlertRow: React.FC<
     </div>
   );
 };
-export type FusionMultiThreshholdSettingsRowProps = Readonly<{
+export type FusionMultiThresholdSettingsRowProps = Readonly<{
   classNames?: DeepPartialReadonly<{
     buttonContainer: string;
     radioButton: string;
     container: string;
     label: string;
     option: string;
-    threshholdInput: string;
-    threshholdInputContainer: string;
+    thresholdInput: string;
+    thresholdInputContainer: string;
     saveButton: string;
   }>;
-  config: FusionMultiThreshholdEventTypeItem;
+  config: FusionMultiThresholdEventTypeItem;
   inputs: Record<string, unknown>;
   onSave: () => void;
 }>;
 
-export const FusionMultiThreshholdSettingsRow: React.FC<
-  FusionMultiThreshholdSettingsRowProps
+export const FusionMultiThresholdSettingsRow: React.FC<
+  FusionMultiThresholdSettingsRowProps
 > = ({
   classNames,
   config,
   inputs,
   onSave,
-}: FusionMultiThreshholdSettingsRowProps) => {
+}: FusionMultiThresholdSettingsRowProps) => {
   const [above, setAbove] = useState<boolean>(true);
-  const [threshhold, setThreshhold] = useState<number>(0.0);
+  const [threshold, setThreshold] = useState<number>(0.0);
   const { instantSubscribe } = useNotifiSubscribe({
     targetGroupName: 'Default',
   });
@@ -289,27 +285,27 @@ export const FusionMultiThreshholdSettingsRow: React.FC<
       alertFrequency: config.alertFrequency,
       thresholdDirection: above ? 'above' : 'below',
       threshold:
-        config.numberType === 'percentage' ? threshhold / 100 : threshhold,
+        config.numberType === 'percentage' ? threshold / 100 : threshold,
     });
-  }, [above, threshhold]);
+  }, [above, threshold]);
 
   const alertName = useMemo(() => {
     const now = new Date().toISOString();
 
     return `${config.name}:;:${now}:;:${
       above ? 'Above' : 'Below'
-    }:;:${threshhold.toFixed(2)}${
+    }:;:${threshold.toFixed(2)}${
       config.numberType === 'percentage' ? '%' : ''
     }`;
-  }, [config, above, threshhold]);
+  }, [config, above, threshold]);
 
   const subscribeAlert = useCallback(
     async (
       alertDetail: Readonly<{
-        eventType: FusionMultiThreshholdEventTypeItem;
+        eventType: FusionMultiThresholdEventTypeItem;
         inputs: Record<string, unknown>;
       }>,
-      threshhold: number,
+      threshold: number,
     ): Promise<SubscriptionData> => {
       if (isUsingFrontendClient) {
         const fusionEventType: FusionEventTypeItem = {
@@ -322,10 +318,10 @@ export const FusionMultiThreshholdSettingsRow: React.FC<
           selectedUIType: 'HEALTH_CHECK',
           numberType: alertDetail.eventType.numberType,
           healthCheckSubtitle: '',
-          checkRatios: [{ type: above ? 'above' : 'below', ratio: threshhold }],
+          checkRatios: [{ type: above ? 'above' : 'below', ratio: threshold }],
         };
         alertDetail.inputs[`${alertDetail.eventType.name}__healthRatio`] =
-          threshhold;
+          threshold;
         alertDetail.inputs[
           `${alertDetail.eventType.name}__healthThresholdDirection`
         ] = above ? 'above' : 'below';
@@ -348,21 +344,21 @@ export const FusionMultiThreshholdSettingsRow: React.FC<
   return (
     <div
       className={clsx(
-        'FusionMultiThreshholdSettingsRow__container',
+        'FusionMultiThresholdSettingsRow__container',
         classNames?.container,
       )}
     >
       <div
         className={clsx(
-          'FusionMultiThreshholdSettingsRow__buttonContainer',
+          'FusionMultiThresholdSettingsRow__buttonContainer',
           classNames?.buttonContainer,
         )}
       >
         <button
           className={clsx(
-            'FusionMultiThreshholdSettingsRow__radioButton',
+            'FusionMultiThresholdSettingsRow__radioButton',
             classNames?.radioButton,
-            { FusionMultiThreshholdSettingsRow__radioSelected: above },
+            { FusionMultiThresholdSettingsRow__radioSelected: above },
           )}
           onClick={() => setAbove(true)}
         >
@@ -370,9 +366,9 @@ export const FusionMultiThreshholdSettingsRow: React.FC<
         </button>
         <button
           className={clsx(
-            'FusionMultiThreshholdSettingsRow__radioButton',
+            'FusionMultiThresholdSettingsRow__radioButton',
             classNames?.radioButton,
-            { FusionMultiThreshholdSettingsRow__radioSelected: !above },
+            { FusionMultiThresholdSettingsRow__radioSelected: !above },
           )}
           onClick={() => setAbove(false)}
         >
@@ -381,41 +377,41 @@ export const FusionMultiThreshholdSettingsRow: React.FC<
       </div>
       <div
         className={clsx(
-          'FusionMultiThreshholdSettingsRow__threshholdInputContainer',
-          classNames?.threshholdInputContainer,
+          'FusionMultiThresholdSettingsRow__thresholdInputContainer',
+          classNames?.thresholdInputContainer,
         )}
       >
         <input
           className={clsx(
-            'FusionMultiThreshholdSettingsRow__threshholdInput',
-            classNames?.threshholdInput,
+            'FusionMultiThresholdSettingsRow__thresholdInput',
+            classNames?.thresholdInput,
           )}
-          name="notifi-fusionmultithreshhold-threshhold"
+          name="notifi-fusionmultithreshold-threshold"
           type="number"
           inputMode="decimal"
-          value={threshhold}
+          value={threshold}
           onChange={(e) => {
-            setThreshhold(e.target.valueAsNumber);
+            setThreshold(e.target.valueAsNumber);
           }}
         />
       </div>
       <button
         className={clsx(
-          'FusionMultiThreshholdSettingsRow__saveButton',
+          'FusionMultiThresholdSettingsRow__saveButton',
           classNames?.saveButton,
         )}
-        disabled={threshhold === undefined}
+        disabled={threshold === undefined}
         onClick={async () => {
           await subscribeAlert(
             {
               eventType: { ...config, name: alertName },
               inputs: inputs,
             },
-            threshhold,
+            threshold,
           );
           frontendClient.fetchData().then(render);
           setAbove(true);
-          setThreshhold(0.0);
+          setThreshold(0.0);
           onSave();
         }}
       >

@@ -8,7 +8,7 @@ export * from './EventTypeHealthCheckRow';
 export * from './EventTypeLabelRow';
 export * from './EventTypePriceChangeRow';
 export * from './EventTypeTradingPairsRow';
-export * from './EventTypeFusionMultiThreshholdRow';
+export * from './EventTypeFusionMultiThresholdRow';
 export * from './EventTypeUnsupportedRow';
 export * from './EventTypeWalletBalanceRow';
 export * from './FetchedStateCard';
