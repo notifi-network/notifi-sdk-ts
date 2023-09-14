@@ -1,65 +1,69 @@
-import { Uint8SignMessageFunction } from '@notifi-network/notifi-core';
 import {
+  Uint8SignMessageFunction,
   UserState,
   newFrontendClient,
 } from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
+import converter from 'bech32-converting';
 import { arrayify } from 'ethers/lib/utils.js';
 import { FC, useMemo, useState } from 'react';
-import { useAccount, useConnect, useDisconnect, useSignMessage } from 'wagmi';
+import { useAccount, useConnect, useSignMessage } from 'wagmi';
+import { InjectedConnector } from 'wagmi/connectors/injected';
 
-import { connector } from '../walletProviders/EvmWalletProvider';
-
-export const WalletConnectFrontendClient: FC = () => {
-  const [userState, setUserState] = useState<UserState | null>(null);
-  const [clientData, setClientData] = useState<Types.FetchDataQuery>();
-  const { address, isConnected } = useAccount();
-  const { connect } = useConnect({
-    connector: connector,
-  });
+export const InjectiveMetamaskFrontendClient: FC = () => {
+  const { address: ethAddress, isConnected } = useAccount();
   const { signMessageAsync } = useSignMessage();
-  const { disconnect } = useDisconnect();
+  const { connect } = useConnect({
+    connector: new InjectedConnector(),
+  });
 
-  const client = useMemo(() => {
-    if (address && isConnected) {
-      return newFrontendClient({
-        walletBlockchain: 'ETHEREUM',
-        account: { publicKey: address },
-        tenantId: 'junitest.xyz',
-        env: 'Development',
-      });
+  const injAddress = useMemo(() => {
+    if (ethAddress) {
+      return converter('inj').toBech32(ethAddress);
     }
-  }, [address, isConnected]);
+  }, [ethAddress]);
 
   const signMessage: Uint8SignMessageFunction = async (message: Uint8Array) => {
-    if (!isConnected) {
-      throw new Error('Wallet not connected');
-    }
-
-    const signature = await signMessageAsync({
-      message,
-    });
-
-    const signatureBuffer = arrayify(signature);
-    return signatureBuffer;
+    const result = await signMessageAsync({ message });
+    return arrayify(result);
   };
+
+  const client = useMemo(() => {
+    if (injAddress && ethAddress) {
+      return newFrontendClient({
+        account: {
+          address: injAddress,
+          publicKey: ethAddress,
+        },
+        tenantId: 'junitest.xyz',
+        env: 'Development',
+        walletBlockchain: 'INJECTIVE',
+      });
+    }
+  }, [injAddress, ethAddress]);
+  const [userState, setUserState] = useState<UserState | null>(null);
+  const [clientData, setClientData] = useState<Types.FetchDataQuery>();
 
   const initClient = async () => {
     if (!client) {
       throw new Error('Client not initialized');
     }
     const newUserState = await client.initialize();
-    setUserState(newUserState);
+    newUserState && setUserState(newUserState);
   };
 
   const login = async () => {
-    if (!address || !isConnected || !client) {
-      throw new Error('Client or wallet not initialized');
+    if (!client) {
+      throw new Error('Client not initialized');
     }
-    await client.logIn({
-      walletBlockchain: 'ETHEREUM',
-      signMessage,
-    });
+    try {
+      await client?.logIn({
+        walletBlockchain: 'INJECTIVE',
+        signMessage,
+      });
+    } catch (e) {
+      console.log(e);
+    }
     setUserState(client.userState);
   };
 
@@ -73,20 +77,20 @@ export const WalletConnectFrontendClient: FC = () => {
   };
 
   const fetchData = async () => {
-    if (!client) {
-      throw new Error('Client not initialized');
+    if (!userState || userState.status !== 'authenticated' || !client) {
+      throw new Error('Client not initialized or not logged in');
     }
-    if (userState && userState.status === 'authenticated') {
-      const data = await client.fetchData();
-      setClientData(data);
-    }
+    const data = await client.fetchData();
+    setClientData(data);
   };
 
   return (
     <>
-      {isConnected && !!address ? (
+      {injAddress && ethAddress ? (
         <div>
-          <h1>Frontend Client Example: WalletConnect</h1>
+          <h4>Injected Address: {injAddress}</h4>
+          <h4>Ethereum Address: {ethAddress}</h4>
+          <h1>Frontend Client Example: Injective EVM (Metamask)</h1>
           {!!!userState && (
             <button onClick={initClient}>initialize FrontendClient</button>
           )}
@@ -116,8 +120,8 @@ export const WalletConnectFrontendClient: FC = () => {
           )}
         </div>
       ) : (
-        <button onClick={() => (isConnected ? disconnect() : connect())}>
-          {isConnected ? `Disconnect: ${address}` : 'Connect Wallet'}
+        <button onClick={() => connect()} disabled={isConnected}>
+          'Connect'
         </button>
       )}
     </>

@@ -3,7 +3,7 @@ import { arrayify } from 'ethers/lib/utils.js';
 import { PropsWithChildren } from 'react';
 import { useAccount, useConnect, useDisconnect, useSignMessage } from 'wagmi';
 
-import { connector } from '../walletProviders/WalletConnectProvider';
+import { connector } from '../walletProviders/EvmWalletProvider';
 
 export const WalletConnectNotifiContextWrapper: React.FC<PropsWithChildren> = ({
   children,
