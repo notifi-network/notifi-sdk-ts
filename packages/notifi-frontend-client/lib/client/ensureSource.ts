@@ -676,13 +676,13 @@ const getFusionSourceFilter = (
   }
 
   let filterOptions: FilterOptions = {}; // Default {}
-  if (eventType.selectedUIType === 'TOGGLE') {
+  if (eventType.selectedUIType === 'TOGGLE'  || eventType.selectedUIType === 'MULTI_THRESHOLD') {
     if (eventType.alertFrequency !== undefined) {
       filterOptions = {
         alertFrequency: eventType.alertFrequency,
       };
     }
-  } else if (eventType.selectedUIType === 'HEALTH_CHECK' || eventType.selectedUIType === 'MULTI_THRESHOLD') {
+  } else if (eventType.selectedUIType === 'HEALTH_CHECK') {
     // Use synthetic ref values to get from input (ratio)
     const healthRatioKey = `${eventType.name}__healthRatio`;
     if (!inputs[healthRatioKey]) {
