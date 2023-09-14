@@ -43,9 +43,18 @@ export type FusionHealthCheckEventTypeItem = FusionTypeBase &
     checkRatios: CheckRatio[];
   }>;
 
+export type FusionMultiThreshholdEventTypeItem = FusionTypeBase & 
+  Readonly<{
+    selectedUIType: 'MULTI_THRESHOLD';
+    numberType: NumberTypeSelect;
+    subtitle?: string;
+    addThreshholdTitle?: string;
+  }>;
+
 export type FusionEventTypeItem =
   | FusionToggleEventTypeItem
-  | FusionHealthCheckEventTypeItem;
+  | FusionHealthCheckEventTypeItem
+  | FusionMultiThreshholdEventTypeItem;
 
 export type BroadcastEventTypeItem = Readonly<{
   type: 'broadcast';
@@ -73,19 +82,6 @@ export type TradingPairEventTypeItem = Readonly<{
   name: string;
   tooltipContent?: string;
   tradingPairs: ValueOrRef<ReadonlyArray<string>>;
-}>;
-
-export type FusionMultiThresholdEventTypeItem = Readonly<{
-  type: 'fusionMultiThreshold';
-  name: string;
-  tooltipContent?: string;
-  numberType: NumberTypeSelect;
-  subtitle?: string;
-  addThresholdTitle?: string;
-  fusionEventId: ValueOrRef<string>;
-  sourceAddress: ValueOrRef<string>;
-  maintainSourceGroup?: boolean;
-  alertFrequency?: AlertFrequency;
 }>;
 
 export type PriceChangeDataSource = 'coingecko';
@@ -165,7 +161,6 @@ export type EventTypeItem =
   | BroadcastEventTypeItem
   | HealthCheckEventTypeItem
   | TradingPairEventTypeItem
-  | FusionMultiThresholdEventTypeItem
   | LabelEventTypeItem
   | PriceChangeEventTypeItem
   | CustomTopicTypeItem
