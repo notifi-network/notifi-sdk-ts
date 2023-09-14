@@ -682,7 +682,7 @@ const getFusionSourceFilter = (
         alertFrequency: eventType.alertFrequency,
       };
     }
-  } else if (eventType.selectedUIType === 'HEALTH_CHECK') {
+  } else if (eventType.selectedUIType === 'HEALTH_CHECK' || eventType.selectedUIType === 'MULTI_THRESHOLD') {
     // Use synthetic ref values to get from input (ratio)
     const healthRatioKey = `${eventType.name}__healthRatio`;
     if (!inputs[healthRatioKey]) {

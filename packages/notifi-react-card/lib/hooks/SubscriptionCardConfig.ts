@@ -52,9 +52,18 @@ export type FusionHealthCheckEventTypeItem = FusionTypeBase &
     checkRatios: CheckRatio[];
   }>;
 
+export type FusionMultiThresholdEventTypeItem = FusionTypeBase &
+  Readonly<{
+    selectedUIType: 'MULTI_THRESHOLD';
+    numberType: NumberTypeSelect;
+    subtitle?: string;
+    addThresholdTitle?: string;
+}>;
+
 export type FusionEventTypeItem =
   | FusionToggleEventTypeItem
-  | FusionHealthCheckEventTypeItem;
+  | FusionHealthCheckEventTypeItem
+  | FusionMultiThresholdEventTypeItem;
 
 export type HealthCheckEventTypeItem = Readonly<{
   type: 'healthCheck';
@@ -105,9 +114,9 @@ export type PriceChangeEventTypeItem = Readonly<{
   tooltipContent: string;
 }>;
 
-export type USER_INTERFACE_TYPE = 'TOGGLE' | 'HEALTH_CHECK';
+export type USER_INTERFACE_TYPE = 'TOGGLE' | 'HEALTH_CHECK' | 'MULTI_THRESHOLD';
 
-export type NumberTypeSelect = 'percentage' | 'integer';
+export type NumberTypeSelect = 'percentage' | 'integer' | 'price';
 
 export type CustomToggleTypeItem = Readonly<{
   filterOptions: FilterOptions;

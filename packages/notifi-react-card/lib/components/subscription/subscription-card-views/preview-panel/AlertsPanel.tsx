@@ -19,6 +19,10 @@ import {
   EventTypeFusionHealthCheckRowProps,
 } from '../../EventTypeFusionHealthCheckRow';
 import {
+  EventTypeFusionMultiThresholdRow,
+  EventTypeFusionMultiThresholdRowProps,
+} from '../../EventTypeFusionMultiThresholdRow';
+import {
   EventTypeFusionRowProps,
   EventTypeFusionToggleRow,
 } from '../../EventTypeFusionToggleRow';
@@ -63,6 +67,7 @@ export type AlertsPanelProps = Readonly<{
     EventTypeLabelRow?: EventTypeLabelRowProps['classNames'];
     EventTypePriceChangeRow?: EventTypePriceChangeRowProps['classNames'];
     EventTypeTradingPairsRow?: EventTypeTradingPairsRowProps['classNames'];
+    EventTypeFusionMultiThresholdRow?: EventTypeFusionMultiThresholdRowProps['classNames'];
     EventTypeUnsupportedRow?: EventTypeUnsupportedRowProps['classNames'];
     EventTypeWalletBalanceRow?: EventTypeWalletBalanceRowProps['classNames'];
     EventTypeXMTPRow?: EventTypeXMPTRowProps['classNames'];
@@ -169,23 +174,37 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
             );
           case 'fusionToggle': // fusionToggle is deprecated (use fusion with selectedUIType===TOGGLE instead )
           case 'fusion':
-            return eventType.selectedUIType === 'HEALTH_CHECK' ? (
-              <EventTypeFusionHealthCheckRow
-                key={eventType.name}
-                disabled={inputDisabled}
-                config={eventType}
-                classNames={classNames?.EventTypeFusionHealthCheckRow}
-                inputs={inputs}
-              />
-            ) : (
-              <EventTypeFusionToggleRow
-                key={eventType.name}
-                classNames={classNames?.EventTypeFusionToggleRow}
-                disabled={inputDisabled}
-                config={eventType}
-                inputs={inputs}
-              />
-            );
+            switch (eventType.selectedUIType) {
+              case 'HEALTH_CHECK':
+                return (
+                  <EventTypeFusionHealthCheckRow
+                    key={eventType.name}
+                    disabled={inputDisabled}
+                    config={eventType}
+                    classNames={classNames?.EventTypeFusionHealthCheckRow}
+                    inputs={inputs}
+                  />
+                );
+              case 'TOGGLE':
+                return (
+                  <EventTypeFusionToggleRow
+                    key={eventType.name}
+                    classNames={classNames?.EventTypeFusionToggleRow}
+                    disabled={inputDisabled}
+                    config={eventType}
+                    inputs={inputs}
+                  />
+                );
+              case 'MULTI_THRESHOLD':
+                return (
+                  <EventTypeFusionMultiThresholdRow
+                    key={eventType.name}
+                    classNames={classNames?.EventTypeFusionMultiThresholdRow}
+                    config={eventType}
+                    inputs={inputs}
+                  />
+                );
+            }
           case 'priceChange':
             return (
               <EventTypePriceChangeRow

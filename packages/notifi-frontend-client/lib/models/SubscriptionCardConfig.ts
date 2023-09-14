@@ -43,9 +43,18 @@ export type FusionHealthCheckEventTypeItem = FusionTypeBase &
     checkRatios: CheckRatio[];
   }>;
 
+export type FusionMultiThreshholdEventTypeItem = FusionTypeBase & 
+  Readonly<{
+    selectedUIType: 'MULTI_THRESHOLD';
+    numberType: NumberTypeSelect;
+    subtitle?: string;
+    addThreshholdTitle?: string;
+  }>;
+
 export type FusionEventTypeItem =
   | FusionToggleEventTypeItem
-  | FusionHealthCheckEventTypeItem;
+  | FusionHealthCheckEventTypeItem
+  | FusionMultiThreshholdEventTypeItem;
 
 export type BroadcastEventTypeItem = Readonly<{
   type: 'broadcast';
