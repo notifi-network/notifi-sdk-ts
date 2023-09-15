@@ -11,8 +11,9 @@ import { fusionNotificationHistoryEntryFragment } from '../fragments/fusionNotif
 
 const DEPENDENCIES = [fusionNotificationHistoryEntryFragment];
 
-const QUERY = `query getFusionNotificationHistory($after: String, $first: Int) {
-  fusionNotificationHistory(after: $after, first: $first) {
+const QUERY =
+  `query getFusionNotificationHistory($after: String, $first: Int, $includeHidden: Boolean) {
+  fusionNotificationHistory(after: $after, first: $first, includeHidden: $includeHidden) {
     nodes {
       ...FusionNotificationHistoryEntry
     }
