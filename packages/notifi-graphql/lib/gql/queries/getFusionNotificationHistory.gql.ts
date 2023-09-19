@@ -4,8 +4,16 @@ import { FusionNotificationHistoryEntryFragment } from '../fragments/FusionNotif
 import { PageInfoFragment } from '../fragments/PageInfoFragment.gql';
 
 export const GetFusionNotificationHistory = gql`
-  query getFusionNotificationHistory($after: String, $first: Int) {
-    fusionNotificationHistory(after: $after, first: $first) {
+  query getFusionNotificationHistory(
+    $after: String
+    $first: Int
+    $includeHidden: Boolean
+  ) {
+    fusionNotificationHistory(
+      after: $after
+      first: $first
+      includeHidden: $includeHidden
+    ) {
       nodes {
         ...FusionNotificationHistoryEntryFragment
       }

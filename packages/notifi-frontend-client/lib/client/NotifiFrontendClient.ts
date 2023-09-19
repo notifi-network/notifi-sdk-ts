@@ -905,10 +905,9 @@ export class NotifiFrontendClient {
     return mutation.createDiscordTarget;
   }
 
-  async markFusionNotificationHistoryAsRead(input: {
-    ids: string[];
-    beforeId?: string;
-  }): Promise<Types.MarkFusionNotificationHistoryAsReadMutation> {
+  async markFusionNotificationHistoryAsRead(
+    input: Types.MarkFusionNotificationHistoryAsReadMutationVariables,
+  ): Promise<Types.MarkFusionNotificationHistoryAsReadMutation> {
     const mutation = await this._service.markFusionNotificationHistoryAsRead(
       input,
     );

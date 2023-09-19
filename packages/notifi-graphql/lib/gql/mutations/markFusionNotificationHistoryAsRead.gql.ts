@@ -4,9 +4,10 @@ export const MarkFusionNotificationHistoryAsRead = gql`
   mutation markFusionNotificationHistoryAsRead(
     $ids: [String!]!
     $beforeId: String
+    $readState: NotificationHistoryReadState
   ) {
     markFusionNotificationHistoryAsRead(
-      input: { ids: $ids, beforeId: $beforeId }
+      input: { ids: $ids, beforeId: $beforeId, readState: $readState }
     )
   }
 `;

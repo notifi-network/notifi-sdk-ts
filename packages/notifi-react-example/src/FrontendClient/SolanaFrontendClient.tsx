@@ -146,6 +146,47 @@ export const SolanaFrontendClient: FC = () => {
               >
                 4. mark newest notification history as read
               </button>
+              <button
+                onClick={async () => {
+                  const newestHistory = (
+                    await client?.getFusionNotificationHistory({
+                      first: 1,
+                      includeHidden: false,
+                    })
+                  )?.nodes?.[0];
+                  if (!newestHistory) {
+                    return alert('no notification in the tray');
+                  }
+
+                  client
+                    ?.markFusionNotificationHistoryAsRead({
+                      ids: [newestHistory.id],
+                      readState: 'HIDDEN',
+                      /**
+                       * @description - If intend to hide all notification at the same time, use below instead
+                       * ids: [],
+                       * beforeId: newestHistory.id,
+                       * readState: 'HIDDEN',
+                       */
+                    })
+                    .then(async () => {
+                      const updatedNewest = (
+                        await client?.getFusionNotificationHistory({
+                          first: 1,
+                          includeHidden: false,
+                        })
+                      )?.nodes?.[0];
+                      alert(
+                        `notification history (ID:${newestHistory.id}) created at ${newestHistory.createdDate} is hidden, 
+                    now the newest unhidden notification history (ID: ${updatedNewest?.id}) is created at ${updatedNewest?.createdDate}}`,
+                      );
+                      console.log(updatedNewest);
+                    })
+                    .catch((err) => alert(err));
+                }}
+              >
+                5. Hide newest notification
+              </button>
               <h3>Auth</h3>
               <button onClick={logOut}>logout</button>
             </>
