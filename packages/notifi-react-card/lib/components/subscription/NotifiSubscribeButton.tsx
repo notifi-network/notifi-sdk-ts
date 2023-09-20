@@ -155,7 +155,7 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
       let success = false;
       if (isFirstTimeUser && !isMultiWallet) {
         const subEvents = eventTypes.filter((event) => {
-          return event.optOutAtSignup ? true : false;
+          return event.optOutAtSignup ? false : true;
         });
         const result = await subscribeAlerts(subEvents, inputs);
         success = !!result;
