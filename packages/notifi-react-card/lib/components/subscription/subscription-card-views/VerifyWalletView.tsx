@@ -107,7 +107,10 @@ const VerifyWalletView: React.FC<VerifyWalletViewProps> = ({
       setLoading(true);
 
       try {
-        await subscribeAlerts(data.eventTypes, inputs);
+        const subEvents = data.eventTypes.filter((event) => {
+          return event.optOutAtSignup ? true : false;
+        });
+        await subscribeAlerts(subEvents, inputs);
       } finally {
         setLoading(false);
       }
