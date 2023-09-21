@@ -243,7 +243,7 @@ const concatHistoryNodes = (
       }
       return [...nodes, ...nodesToConcat];
     default:
-      throw new Error('Invalid type: NotificationHistoryEntry');
+      return nodesToConcat;
   }
 };
 
