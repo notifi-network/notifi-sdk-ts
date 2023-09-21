@@ -18,6 +18,7 @@ export type DirectPushEventTypeItem = Readonly<{
   name: string;
   directPushId: ValueOrRef<string>;
   tooltipContent?: string;
+  optOutAtSignup?: boolean;
 }>;
 
 export type FusionTypeBase = {
@@ -28,6 +29,7 @@ export type FusionTypeBase = {
   tooltipContent?: string;
   maintainSourceGroup?: boolean;
   alertFrequency?: AlertFrequency;
+  optOutAtSignup?: boolean;
 };
 
 export type FusionToggleEventTypeItem = FusionTypeBase &
@@ -61,6 +63,7 @@ export type BroadcastEventTypeItem = Readonly<{
   name: string;
   broadcastId: ValueOrRef<string>;
   tooltipContent?: string;
+  optOutAtSignup?: boolean;
 }>;
 
 export type HealthCheckEventTypeItem = Readonly<{
@@ -69,12 +72,14 @@ export type HealthCheckEventTypeItem = Readonly<{
   checkRatios: ValueOrRef<CheckRatio[]>;
   alertFrequency: AlertFrequency;
   tooltipContent?: string;
+  optOutAtSignup?: boolean;
 }>;
 
 export type LabelEventTypeItem = Readonly<{
   type: 'label';
   name: string;
   tooltipContent?: string;
+  optOutAtSignup?: boolean;
 }>;
 
 export type TradingPairEventTypeItem = Readonly<{
@@ -82,6 +87,7 @@ export type TradingPairEventTypeItem = Readonly<{
   name: string;
   tooltipContent?: string;
   tradingPairs: ValueOrRef<ReadonlyArray<string>>;
+  optOutAtSignup?: boolean;
 }>;
 
 export type PriceChangeDataSource = 'coingecko';
@@ -92,12 +98,14 @@ export type PriceChangeEventTypeItem = Readonly<{
   tokenIds: ReadonlyArray<string>;
   dataSource: PriceChangeDataSource;
   tooltipContent: string;
+  optOutAtSignup?: boolean;
 }>;
 
 export type WalletBalanceEventTypeItem = Readonly<{
   type: 'walletBalance';
   name: string;
   tooltipContent?: string;
+  optOutAtSignup?: boolean;
 }>;
 
 export type CustomTypeBase = {
@@ -107,11 +115,13 @@ export type CustomTypeBase = {
   sourceType: Gql.SourceType;
   filterType: string;
   sourceAddress: ValueOrRef<string>;
+  optOutAtSignup?: boolean;
 };
 
 export type CustomToggleTypeItem = Readonly<{
   filterOptions: FilterOptions;
   selectedUIType: 'TOGGLE';
+  optOutAtSignup?: boolean;
 }>;
 
 export type NumberTypeSelect = 'percentage' | 'integer' | 'price';
@@ -122,6 +132,7 @@ export type CustomHealthCheckItem = Readonly<{
   numberType: NumberTypeSelect;
   alertFrequency: AlertFrequency;
   checkRatios: CheckRatio[];
+  optOutAtSignup?: boolean;
 }>;
 
 type RatiosBelow = Readonly<{
@@ -146,6 +157,7 @@ export type XMTPTopicTypeItem = {
   sourceType?: Gql.SourceType;
   filterType: string;
   XMTPTopics: ValueOrRef<ReadonlyArray<string>>;
+  optOutAtSignup?: boolean;
 };
 
 export type CreateSupportConversationEventTypeItem = {
@@ -154,6 +166,7 @@ export type CreateSupportConversationEventTypeItem = {
   sourceType: Gql.SourceType;
   filterType: string;
   alertFrequency: AlertFrequency;
+  optOutAtSignup?: boolean;
 };
 
 export type EventTypeItem =
