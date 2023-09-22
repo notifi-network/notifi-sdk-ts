@@ -1,20 +1,21 @@
 import {
   NotifiInputFieldsText,
   NotifiInputSeparators,
-  NotifiIntercomCard,
   NotifiSubscriptionCard,
   useNotifiClientContext,
   useNotifiSubscriptionContext,
 } from '@notifi-network/notifi-react-card';
 import '@notifi-network/notifi-react-card/dist/index.css';
+import { type } from 'os';
 import React from 'react';
 
+import { BellButton } from './BellButton';
 import './NotifiCard.css';
 
 export const SolanaCard: React.FC = () => {
+  const [isCardOpen, setIsCardOpen] = React.useState(false);
   const { alerts } = useNotifiSubscriptionContext();
   const { client } = useNotifiClientContext();
-
   const inputLabels: NotifiInputFieldsText = {
     label: {
       email: 'Email',
@@ -68,13 +69,18 @@ export const SolanaCard: React.FC = () => {
 
           <button
             onClick={() =>
-              client.getFusionNotificationHistory({ first: 10 }).then((res) => {
-                alert(
-                  JSON.stringify(res).slice(0, 100) +
-                    '...\nCHECK CONSOLE FOR FULL RESPONSE',
-                );
-                console.log(res);
-              })
+              client
+                .getFusionNotificationHistory({
+                  first: 10,
+                  includeHidden: false,
+                })
+                .then((res) => {
+                  alert(
+                    JSON.stringify(res).slice(0, 100) +
+                      '...\nCHECK CONSOLE FOR FULL RESPONSE',
+                  );
+                  console.log(res);
+                })
             }
           >
             2. fetch first 10 notification histories
@@ -82,7 +88,10 @@ export const SolanaCard: React.FC = () => {
           <button
             onClick={async () => {
               const newestHistory = (
-                await client?.getFusionNotificationHistory({ first: 1 })
+                await client?.getFusionNotificationHistory({
+                  first: 1,
+                  includeHidden: false,
+                })
               )?.nodes?.[0];
               if (!newestHistory) {
                 return;
@@ -102,7 +111,10 @@ export const SolanaCard: React.FC = () => {
           <button
             onClick={async () => {
               const newestHistory = (
-                await client?.getFusionNotificationHistory({ first: 1 })
+                await client?.getFusionNotificationHistory({
+                  first: 1,
+                  includeHidden: false,
+                })
               )?.nodes?.[0];
               if (!newestHistory) {
                 return;
@@ -166,33 +178,37 @@ export const SolanaCard: React.FC = () => {
         <div>Not yet register Notification</div>
       )}
       <h3>Display NotifiSubscriptionCard</h3>
-      <NotifiSubscriptionCard
-        darkMode
-        inputLabels={inputLabels}
-        inputSeparators={inputSeparators}
-        cardId="7f8cf1f9c1074c07a67b63e3bcdf7c3c"
-        onClose={() => alert('nope you must stay')}
-        copy={{
-          FetchedStateCard: {
-            SubscriptionCardV1: {
-              signUpHeader: 'Please sign up',
-              EditCard: {
-                AlertListPreview: {
-                  description:
-                    'Get your alerts here!!! you can subscribe to any of the following:',
+
+      <BellButton setIsCardOpen={setIsCardOpen} />
+      {isCardOpen ? (
+        <NotifiSubscriptionCard
+          darkMode
+          inputLabels={inputLabels}
+          inputSeparators={inputSeparators}
+          cardId="51fd3e3da1104f15abe4e1f8df46747e"
+          onClose={() => setIsCardOpen(false)}
+          copy={{
+            FetchedStateCard: {
+              SubscriptionCardV1: {
+                signUpHeader: 'Please sign up',
+                EditCard: {
+                  AlertListPreview: {
+                    description:
+                      'Get your alerts here!!! you can subscribe to any of the following:',
+                  },
                 },
               },
             },
-          },
-        }}
-      />
+          }}
+        />
+      ) : null}
       <h2>NotifiIntercomCard</h2>
-      <NotifiIntercomCard
+      {/* <NotifiIntercomCard
         darkMode
         inputLabels={inputLabels}
         inputSeparators={intercomInputSeparators}
         cardId="1045f61752b148eabab0403c08cd60b2"
-      />
+      /> */}
     </div>
   );
 };

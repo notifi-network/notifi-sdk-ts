@@ -1,5 +1,5 @@
 import '@notifi-network/notifi-react-card/dist/index.css';
-import React from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
   KeplrNotifiContextWrapper,
@@ -92,7 +92,15 @@ export const NotifiCard: React.FC = () => {
           </option>
         ))}
       </select>
+
       {view}
+
+      {/* {selectedViews === ESupportedViews.Solana && (
+        <SolanaNotifiContextWrapper>
+          <BellButton setIsCardOpen={setIsCardOpen} />
+          {isCardOpen && <SolanaCard setIsCardOpen={setIsCardOpen} />}
+        </SolanaNotifiContextWrapper>
+      )} */}
     </div>
   );
 };
