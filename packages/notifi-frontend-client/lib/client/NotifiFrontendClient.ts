@@ -433,6 +433,15 @@ export class NotifiFrontendClient {
         ? this._storage.setRoles(roles.filter(notNullOrEmpty))
         : Promise.resolve();
 
+    if (authorization && roles) {
+      const userState: UserState = {
+        status: 'authenticated',
+        authorization,
+        roles: roles.filter((role): role is string => !!role),
+      };
+      this._userState = userState;
+    }
+
     await Promise.all([saveAuthorizationPromise, saveRolesPromise]);
   }
 
