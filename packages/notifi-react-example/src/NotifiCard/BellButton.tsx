@@ -7,7 +7,6 @@ type BellButtonProps = {
   setIsCardOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-// TODO: Move the CSS
 export const BellButton: FC<BellButtonProps> = ({ setIsCardOpen }) => {
   const { hasUnreadNotification, unreadNotificationCount } = useUnreadState();
   return (

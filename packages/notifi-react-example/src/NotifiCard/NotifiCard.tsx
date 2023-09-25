@@ -94,13 +94,6 @@ export const NotifiCard: React.FC = () => {
       </select>
 
       {view}
-
-      {/* {selectedViews === ESupportedViews.Solana && (
-        <SolanaNotifiContextWrapper>
-          <BellButton setIsCardOpen={setIsCardOpen} />
-          {isCardOpen && <SolanaCard setIsCardOpen={setIsCardOpen} />}
-        </SolanaNotifiContextWrapper>
-      )} */}
     </div>
   );
 };

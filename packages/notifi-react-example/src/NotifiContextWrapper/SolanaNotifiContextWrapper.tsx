@@ -27,7 +27,7 @@ export const SolanaNotifiContextWrapper: React.FC<PropsWithChildren> = ({
     <div className="container">
       {publicKey && signMessage ? (
         <NotifiContext
-          dappAddress="colorfullife"
+          dappAddress="junitest.xyz"
           walletBlockchain="SOLANA"
           env="Development"
           walletPublicKey={publicKey}
