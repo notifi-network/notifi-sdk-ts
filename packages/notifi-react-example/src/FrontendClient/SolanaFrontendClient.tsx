@@ -88,10 +88,14 @@ export const SolanaFrontendClient: FC = () => {
               >
                 1. fetch unread notification history count
               </button>
+
               <button
                 onClick={() =>
                   client
-                    ?.getFusionNotificationHistory({ first: 10 })
+                    ?.getFusionNotificationHistory({
+                      first: 10,
+                      includeHidden: false,
+                    })
                     .then((res) => {
                       alert(
                         JSON.stringify(res).slice(0, 100) +
@@ -106,7 +110,10 @@ export const SolanaFrontendClient: FC = () => {
               <button
                 onClick={async () => {
                   const newestHistory = (
-                    await client?.getFusionNotificationHistory({ first: 1 })
+                    await client?.getFusionNotificationHistory({
+                      first: 1,
+                      includeHidden: false,
+                    })
                   )?.nodes?.[0];
                   if (!newestHistory) {
                     return;
@@ -128,7 +135,10 @@ export const SolanaFrontendClient: FC = () => {
               <button
                 onClick={async () => {
                   const newestHistory = (
-                    await client?.getFusionNotificationHistory({ first: 1 })
+                    await client?.getFusionNotificationHistory({
+                      first: 1,
+                      includeHidden: false,
+                    })
                   )?.nodes?.[0];
                   if (!newestHistory) {
                     return;

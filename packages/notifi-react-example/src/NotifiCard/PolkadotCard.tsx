@@ -3,13 +3,16 @@ import {
   useNotifiClientContext,
   useNotifiSubscriptionContext,
 } from '@notifi-network/notifi-react-card';
+import { useState } from 'react';
 
 import {
   AcalaConnectButton,
   useAcalaWallet,
 } from '../walletProviders/AcalaWalletContextProvider';
+import { BellButton } from './BellButton';
 
 export const PolkadotCard = () => {
+  const [isCardOpen, setIsCardOpen] = useState(false);
   const { alerts } = useNotifiSubscriptionContext();
   const { client } = useNotifiClientContext();
   const { acalaAddress, connected } = useAcalaWallet();
@@ -41,24 +44,14 @@ export const PolkadotCard = () => {
         <div>Not yet register Notification</div>
       )}
       <h3>Display NotifiSubscriptionCard</h3>
-      <NotifiSubscriptionCard
-        darkMode
-        cardId="d8859ea72ff4449fa8f7f293ebd333c9"
-        onClose={() => alert('nope you must stay')}
-        copy={{
-          FetchedStateCard: {
-            SubscriptionCardV1: {
-              signUpHeader: 'Please sign up',
-              EditCard: {
-                AlertListPreview: {
-                  description:
-                    'Get your alerts here!!! you can subscribe to any of the following:',
-                },
-              },
-            },
-          },
-        }}
-      />
+      <BellButton setIsCardOpen={setIsCardOpen} />
+      {isCardOpen ? (
+        <NotifiSubscriptionCard
+          darkMode
+          cardId="d8859ea72ff4449fa8f7f293ebd333c9"
+          onClose={() => setIsCardOpen(false)}
+        />
+      ) : null}
     </div>
   );
 };

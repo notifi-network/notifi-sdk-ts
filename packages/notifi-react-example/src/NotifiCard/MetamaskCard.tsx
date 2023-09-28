@@ -3,9 +3,13 @@ import {
   useNotifiClientContext,
   useNotifiSubscriptionContext,
 } from '@notifi-network/notifi-react-card';
+import { useState } from 'react';
 import { useAccount } from 'wagmi';
 
+import { BellButton } from './BellButton';
+
 export const MetamaskCard = () => {
+  const [isCardOpen, setIsCardOpen] = useState(false);
   const { alerts } = useNotifiSubscriptionContext();
   const { client } = useNotifiClientContext();
   const { address } = useAccount();
@@ -29,13 +33,15 @@ export const MetamaskCard = () => {
           ) : (
             <div>Not yet register Notification</div>
           )}
-          <div style={{ width: '400px' }}>
+          <BellButton setIsCardOpen={setIsCardOpen} />
+          {isCardOpen ? (
             <NotifiSubscriptionCard
-              cardId="d8859ea72ff4449fa8f7f293ebd333c9"
-              darkMode //optional
+              darkMode
               inputs={{ userWallet: address }}
+              cardId="d8859ea72ff4449fa8f7f293ebd333c9"
+              onClose={() => setIsCardOpen(false)}
             />
-          </div>
+          ) : null}
         </div>
       )}
     </>

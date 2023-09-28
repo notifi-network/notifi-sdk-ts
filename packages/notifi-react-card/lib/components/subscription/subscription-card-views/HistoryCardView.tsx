@@ -131,6 +131,18 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
       });
     }
   }, [client, frontendClient, isUsingFrontendClient]);
+
+  useEffect(() => {
+    if (isUsingFrontendClient && allNodes.length > 0) {
+      frontendClient
+        .markFusionNotificationHistoryAsRead({
+          ids: [],
+          beforeId: allNodes[0].id,
+        })
+        .catch((e) => console.log('Failed to mark as read', e));
+    }
+  }, [allNodes]);
+
   return (
     <div
       className={clsx(

@@ -9,12 +9,13 @@ import {
 import '@notifi-network/notifi-react-card/dist/index.css';
 import React from 'react';
 
+import { BellButton } from './BellButton';
 import './NotifiCard.css';
 
 export const SolanaCard: React.FC = () => {
+  const [isCardOpen, setIsCardOpen] = React.useState(false);
   const { alerts } = useNotifiSubscriptionContext();
   const { client } = useNotifiClientContext();
-
   const inputLabels: NotifiInputFieldsText = {
     label: {
       email: 'Email',
@@ -55,137 +56,35 @@ export const SolanaCard: React.FC = () => {
                 </li>
               ))}
           </ul>
-          <h3>Notification history</h3>
-          <button
-            onClick={() =>
-              client
-                .getUnreadNotificationHistoryCount()
-                .then((res) => alert(JSON.stringify(res)))
-            }
-          >
-            1. fetch unread notification history count
-          </button>
-
-          <button
-            onClick={() =>
-              client.getFusionNotificationHistory({ first: 10 }).then((res) => {
-                alert(
-                  JSON.stringify(res).slice(0, 100) +
-                    '...\nCHECK CONSOLE FOR FULL RESPONSE',
-                );
-                console.log(res);
-              })
-            }
-          >
-            2. fetch first 10 notification histories
-          </button>
-          <button
-            onClick={async () => {
-              const newestHistory = (
-                await client?.getFusionNotificationHistory({ first: 1 })
-              )?.nodes?.[0];
-              if (!newestHistory) {
-                return;
-              }
-
-              client
-                ?.markFusionNotificationHistoryAsRead({
-                  ids: [],
-                  beforeId: newestHistory.id,
-                })
-                .then(() => alert('marked all notification history as read'))
-                .catch((err) => alert(err));
-            }}
-          >
-            3. mark all notification history as read
-          </button>
-          <button
-            onClick={async () => {
-              const newestHistory = (
-                await client?.getFusionNotificationHistory({ first: 1 })
-              )?.nodes?.[0];
-              if (!newestHistory) {
-                return;
-              }
-
-              client
-                ?.markFusionNotificationHistoryAsRead({
-                  ids: [newestHistory.id],
-                })
-                .then(() =>
-                  alert('marked the newest notification history as read'),
-                )
-                .catch((err) => alert(err));
-            }}
-          >
-            4. mark newest notification history as read
-          </button>
-          <button
-            onClick={async () => {
-              const newestHistory = (
-                await client?.getFusionNotificationHistory({
-                  first: 1,
-                  includeHidden: false,
-                })
-              )?.nodes?.[0];
-              if (!newestHistory) {
-                return alert('no notification in the tray');
-              }
-
-              client
-                ?.markFusionNotificationHistoryAsRead({
-                  ids: [newestHistory.id],
-                  readState: 'HIDDEN',
-                  /**
-                   * @description - If intend to hide all notification at the same time, use below instead
-                   * ids: [],
-                   * beforeId: newestHistory.id,
-                   * readState: 'HIDDEN',
-                   */
-                })
-                .then(async () => {
-                  const updatedNewest = (
-                    await client?.getFusionNotificationHistory({
-                      first: 1,
-                      includeHidden: false,
-                    })
-                  )?.nodes?.[0];
-                  alert(
-                    `notification history (ID:${newestHistory.id}) created at ${newestHistory.createdDate} is hidden, 
-                    now the newest unhidden notification history (ID: ${updatedNewest?.id}) is created at ${updatedNewest?.createdDate}}`,
-                  );
-                  console.log(updatedNewest);
-                })
-                .catch((err) => alert(err));
-            }}
-          >
-            5. Hide newest notification
-          </button>
         </div>
       ) : (
         <div>Not yet register Notification</div>
       )}
       <h3>Display NotifiSubscriptionCard</h3>
-      <NotifiSubscriptionCard
-        darkMode
-        inputLabels={inputLabels}
-        inputSeparators={inputSeparators}
-        cardId="7f8cf1f9c1074c07a67b63e3bcdf7c3c"
-        onClose={() => alert('nope you must stay')}
-        copy={{
-          FetchedStateCard: {
-            SubscriptionCardV1: {
-              signUpHeader: 'Please sign up',
-              EditCard: {
-                AlertListPreview: {
-                  description:
-                    'Get your alerts here!!! you can subscribe to any of the following:',
+
+      <BellButton setIsCardOpen={setIsCardOpen} />
+      {isCardOpen ? (
+        <NotifiSubscriptionCard
+          darkMode
+          inputLabels={inputLabels}
+          inputSeparators={inputSeparators}
+          cardId="7f8cf1f9c1074c07a67b63e3bcdf7c3c"
+          onClose={() => setIsCardOpen(false)}
+          copy={{
+            FetchedStateCard: {
+              SubscriptionCardV1: {
+                signUpHeader: 'Please sign up',
+                EditCard: {
+                  AlertListPreview: {
+                    description:
+                      'Get your alerts here!!! you can subscribe to any of the following:',
+                  },
                 },
               },
             },
-          },
-        }}
-      />
+          }}
+        />
+      ) : null}
       <h2>NotifiIntercomCard</h2>
       <NotifiIntercomCard
         darkMode

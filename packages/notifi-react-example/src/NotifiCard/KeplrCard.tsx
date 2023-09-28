@@ -4,9 +4,10 @@ import {
   useNotifiSubscriptionContext,
 } from '@notifi-network/notifi-react-card';
 import '@notifi-network/notifi-react-card/dist/index.css';
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import { useKeplrContext } from '../walletProviders/KeplrWalletProvider';
+import { BellButton } from './BellButton';
 import './NotifiCard.css';
 
 export const KeplrConnectButton: React.FC = () => {
@@ -19,6 +20,7 @@ export const KeplrConnectButton: React.FC = () => {
 };
 
 export const KeplrCard: React.FC = () => {
+  const [isCardOpen, setIsCardOpen] = useState(false);
   const { alerts } = useNotifiSubscriptionContext();
   const { client } = useNotifiClientContext();
   const { key } = useKeplrContext();
@@ -49,12 +51,13 @@ export const KeplrCard: React.FC = () => {
         <div>Not yet register Notification</div>
       )}
       <h3>Display NotifiSubscriptionCard</h3>
-      <KeplrConnectButton />
-      {key !== undefined && keyBase64 !== undefined ? (
+      <BellButton setIsCardOpen={setIsCardOpen} />
+      {isCardOpen ? (
         <NotifiSubscriptionCard
           darkMode
-          inputs={{ userWallet: key.bech32Address }}
+          inputs={{ userWallet: key?.bech32Address }}
           cardId="d8859ea72ff4449fa8f7f293ebd333c9"
+          onClose={() => setIsCardOpen(false)}
         />
       ) : null}
     </div>
