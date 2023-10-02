@@ -807,7 +807,7 @@ const useNotifiClient = (
           service,
           newData.targetGroups,
           {
-            name: existingAlert.targetGroup.name ?? name,
+            name: existingAlert.targetGroup.name ?? 'Default',
             emailTargetIds: emailTargetIds.filter((id): id is string => !!id),
             smsTargetIds: smsTargetIds.filter((id): id is string => !!id),
             telegramTargetIds: telegramTargetIds.filter(
@@ -989,7 +989,7 @@ const useNotifiClient = (
           service,
           newData.targetGroups,
           {
-            name: targetGroupName ?? name,
+            name: targetGroupName ?? 'Default',
             emailTargetIds: emailTargetIds.filter((id): id is string => !!id),
             smsTargetIds: smsTargetIds.filter((id): id is string => !!id),
             telegramTargetIds: telegramTargetIds.filter(
