@@ -48,6 +48,7 @@ import VerifyWalletView, {
 export type SubscriptionCardV1Props = Readonly<{
   copy?: DeepPartialReadonly<{
     EditCard: EditCardViewProps['copy'];
+    AlertHistory: AlertHistoryViewProps['copy'];
     expiredHeader: string;
     manageAlertsHeader: string;
     signUpHeader: string;
@@ -409,6 +410,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
             )}
             <AlertHistoryView
               classNames={classNames?.AlertHistoryView}
+              copy={copy?.AlertHistory}
               isHidden={selectedAlertEntry !== undefined}
               setAlertEntry={setAlertEntry}
               data={data}
