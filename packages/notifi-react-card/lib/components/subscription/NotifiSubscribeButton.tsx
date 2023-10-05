@@ -85,7 +85,7 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
         telegramId === ''
           ? undefined
           : formatTelegramForSubscription(telegramId),
-      discordId: useDiscord ? discordTargetData?.id : undefined,
+      discordId: useDiscord ? 'Default' : undefined,
     }),
     [email, phoneNumber, telegramId, useDiscord],
   );

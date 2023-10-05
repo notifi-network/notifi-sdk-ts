@@ -1,5 +1,6 @@
 import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
+import { useIsTargetsExist } from 'notifi-react-card/lib/hooks/useIsTargetsExist';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
@@ -89,14 +90,8 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
   onClose,
 }) => {
   const allowedCountryCodes = [...data.contactInfo.sms.supportedCountryCodes];
-  const {
-    cardView,
-    email,
-    phoneNumber,
-    telegramId,
-    setCardView,
-    discordTargetData,
-  } = useNotifiSubscriptionContext();
+  const { cardView, email, phoneNumber, telegramId, setCardView } =
+    useNotifiSubscriptionContext();
   const { demoPreview } = useNotifiDemoPreviewContext();
 
   const {
@@ -143,15 +138,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
     isUsingFrontendClient,
   ]);
 
-  const isTargetsExist = useMemo(() => {
-    return !!email || !!phoneNumber || !!telegramId || !!discordTargetData?.id;
-  }, [
-    email,
-    phoneNumber,
-    telegramId,
-    discordTargetData?.id,
-    discordTargetData?.discordAccountId,
-  ]);
+  const isTargetsExist = useIsTargetsExist();
   const [selectedAlertEntry, setAlertEntry] = useState<
     NotificationHistoryEntry | undefined
   >(undefined);
