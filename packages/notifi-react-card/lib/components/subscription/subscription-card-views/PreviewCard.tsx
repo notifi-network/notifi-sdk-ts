@@ -1,6 +1,7 @@
 import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import { useNotifiSubscriptionContext } from 'notifi-react-card/lib/context';
+import { useIsTargetsExist } from 'notifi-react-card/lib/hooks/useIsTargetsExist';
 import React, { useMemo } from 'react';
 
 import { DeepPartialReadonly } from '../../../utils';
@@ -31,23 +32,7 @@ export const PreviewCard: React.FC<PreviewCardProps> = ({
   inputDisabled,
   inputs = {},
 }) => {
-  const { useDiscord, email, phoneNumber, telegramId, discordTargetData } =
-    useNotifiSubscriptionContext();
-
-  const isTargetsExist = useMemo(() => {
-    return (
-      !!email ||
-      !!phoneNumber ||
-      !!telegramId ||
-      (useDiscord && !!discordTargetData?.id)
-    );
-  }, [
-    email,
-    phoneNumber,
-    telegramId,
-    discordTargetData?.id,
-    discordTargetData?.discordAccountId,
-  ]);
+  const isTargetsExist = useIsTargetsExist();
   return (
     <div
       className={clsx(

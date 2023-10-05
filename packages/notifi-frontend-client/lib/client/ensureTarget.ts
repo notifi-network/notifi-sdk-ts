@@ -131,7 +131,7 @@ export const ensureDiscord = ensureTarget(
     return query.discordTarget;
   },
   (arg: Types.DiscordTargetFragmentFragment | undefined) => arg?.name,
-  (value) => value,
+  () => 'Default',
 );
 
 export type EnsureWebhookParams = Omit<

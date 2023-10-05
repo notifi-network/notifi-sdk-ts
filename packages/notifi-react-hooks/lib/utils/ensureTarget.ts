@@ -113,6 +113,7 @@ const ensureDiscord = ensureTarget(
       value,
     }),
   (arg: DiscordTarget) => arg.name,
+  () => 'Default',
 );
 
 export { ensureEmail, ensureSms, ensureTelegram, ensureWebhook, ensureDiscord };
