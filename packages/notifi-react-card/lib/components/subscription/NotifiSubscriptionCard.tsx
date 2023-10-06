@@ -95,9 +95,21 @@ export const NotifiSubscriptionCard: React.FC<
   });
   const { isUsingFrontendClient, frontendClient } = useNotifiClientContext();
 
-  const isClientInitialized = useMemo(() => {
-    return isUsingFrontendClient ? !!frontendClient.userState : isInitialized;
-  }, [frontendClient.userState?.status, isInitialized, isUsingFrontendClient]);
+  const { isClientInitialized, isClientAuthenticated } = useMemo(() => {
+    return {
+      isClientInitialized: isUsingFrontendClient
+        ? !!frontendClient.userState
+        : isInitialized,
+      isClientAuthenticated: isUsingFrontendClient
+        ? frontendClient.userState?.status === 'authenticated'
+        : isAuthenticated,
+    };
+  }, [
+    isUsingFrontendClient,
+    isInitialized,
+    frontendClient.userState?.status,
+    isAuthenticated,
+  ]);
 
   const { loading, render } = useNotifiSubscriptionContext();
 
@@ -113,7 +125,7 @@ export const NotifiSubscriptionCard: React.FC<
   useEffect(() => {
     const handler = () => {
       // Ensure target is up-to-date after user returns to tab from 3rd party verification site
-      if (!isClientInitialized || !isAuthenticated) {
+      if (!isClientInitialized || !isClientAuthenticated) {
         return;
       }
       if (isUsingFrontendClient) {
@@ -129,6 +141,7 @@ export const NotifiSubscriptionCard: React.FC<
   }, [
     isClientInitialized,
     isAuthenticated,
+    isClientAuthenticated,
     isUsingFrontendClient,
     frontendClient,
   ]);
