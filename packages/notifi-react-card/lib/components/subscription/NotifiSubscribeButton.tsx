@@ -5,7 +5,6 @@ import {
 } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import { isValidPhoneNumber } from 'libphonenumber-js';
-import { formatTelegramForSubscription } from 'notifi-react-card/lib/utils/stringUtils';
 import React, { useCallback, useMemo } from 'react';
 
 import {
@@ -14,10 +13,12 @@ import {
   useNotifiSubscriptionContext,
 } from '../../context';
 import { useNotifiSubscribe } from '../../hooks';
+import { useFrontendClientLogin } from '../../hooks/useFrontendClientLogin';
 import {
   createConfigurations,
   subscribeAlertsByFrontendClient,
 } from '../../utils';
+import { formatTelegramForSubscription } from '../../utils/stringUtils';
 
 export type NotifiSubscribeButtonProps = Readonly<{
   classNames?: Readonly<{
@@ -47,6 +48,8 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
   const { isInitialized, subscribe, updateTargetGroups } = useNotifiSubscribe({
     targetGroupName: 'Default',
   });
+  const { useHardwareWallet } = useNotifiSubscriptionContext();
+  const frontendClientLogin = useFrontendClientLogin();
 
   const {
     client,
@@ -61,8 +64,6 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
     loading,
     setCardView,
     useDiscord,
-    discordTargetData,
-    params,
     render,
     setLoading,
   } = useNotifiSubscriptionContext();
@@ -142,10 +143,7 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
       isUsingFrontendClient &&
       frontendClient.userState?.status !== 'authenticated'
     ) {
-      await frontendClient.logIn({
-        walletBlockchain: params.walletBlockchain,
-        signMessage: params.signMessage,
-      } as SignMessageParams);
+      await frontendClientLogin();
       const data = await frontendClient.fetchData();
       isFirstTimeUser = (data.targetGroup?.length ?? 0) === 0;
     }
@@ -185,8 +183,11 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
     setLoading(false);
   }, [
     isMultiWallet,
+    frontendClient,
+    isUsingFrontendClient,
     client,
     eventTypes,
+    frontendClientLogin,
     subscribe,
     updateTargetGroups,
     setCardView,
