@@ -4,8 +4,10 @@ import {
   useNotifiClientContext,
   useNotifiSubscriptionContext,
 } from 'notifi-react-card/lib/context';
-import { useNotifiSubscribe } from 'notifi-react-card/lib/hooks';
 import React from 'react';
+
+import { useNotifiSubscribe } from '../../../hooks';
+import { useFrontendClientLogin } from '../../../hooks/useFrontendClientLogin';
 
 export type ExpiredTokenViewCardProps = {
   classNames?: {
@@ -21,18 +23,16 @@ export const ExpiredTokenView: React.FC<ExpiredTokenViewCardProps> = ({
   classNames,
 }) => {
   const { logIn } = useNotifiSubscribe({ targetGroupName: 'Default' });
-  const { frontendClient, isUsingFrontendClient, params } =
-    useNotifiClientContext();
+  const { isUsingFrontendClient } = useNotifiClientContext();
 
   const { setCardView } = useNotifiSubscriptionContext();
+
+  const frontendClientLogin = useFrontendClientLogin();
 
   const handleClick = async () => {
     let success = false;
     const result = isUsingFrontendClient
-      ? await frontendClient.logIn({
-          walletBlockchain: params.walletBlockchain,
-          signMessage: params.signMessage,
-        } as SignMessageParams)
+      ? await frontendClientLogin()
       : await logIn();
 
     success = !!result;
