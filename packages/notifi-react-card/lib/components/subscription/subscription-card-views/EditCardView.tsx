@@ -67,17 +67,14 @@ export const EditCardView: React.FC<EditCardViewProps> = ({
           <Spinner size="70px" />
         </div>
       ) : (
-        <>
-          {showPreview && !data.isContactInfoRequired ? null : (
-            <InputFields
-              data={data}
-              allowedCountryCodes={allowedCountryCodes}
-              inputDisabled={inputDisabled}
-              inputSeparators={inputSeparators}
-              inputTextFields={inputTextFields}
-            />
-          )}
-        </>
+        <InputFields
+          hideContactInputs={showPreview && !data.isContactInfoRequired}
+          data={data}
+          allowedCountryCodes={allowedCountryCodes}
+          inputDisabled={inputDisabled}
+          inputSeparators={inputSeparators}
+          inputTextFields={inputTextFields}
+        />
       )}
       <NotifiSubscribeButton
         buttonText={buttonText}

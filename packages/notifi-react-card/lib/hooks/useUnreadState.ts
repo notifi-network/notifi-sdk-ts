@@ -29,11 +29,6 @@ export const useUnreadState = () => {
     };
   }, [frontendClient.userState?.status]);
 
-  useEffect(
-    () => console.log({ isClientAuthenticated }),
-    [isClientAuthenticated],
-  );
-
   useEffect(() => {
     if (!walletPublicKey || !isClientAuthenticated) return;
 
