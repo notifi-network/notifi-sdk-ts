@@ -75,6 +75,38 @@ class NotifiClient {
     }
   };
 
+  publishFusionMessage: (
+    jwt: string,
+    params: Readonly<{
+      eventTypeId: string;
+      variables: object;
+      specificWallets?: ReadonlyArray<
+        Readonly<{
+          walletPublicKey: string;
+          walletBlockchain: WalletBlockchain;
+        }>
+      >;
+    }>,
+  ) => Promise<void> = async (
+    jwt,
+    { eventTypeId, variables, specificWallets },
+  ) => {
+    this.service.setJwt(jwt);
+    await this.service.publishFusionMessage({
+      eventTypeId,
+      variablesJson: JSON.stringify(variables),
+      specificWallets:
+        specificWallets === undefined || specificWallets.length === 0
+          ? undefined
+          : specificWallets.map(({ walletPublicKey, walletBlockchain }) => {
+              return {
+                key: walletPublicKey,
+                value: walletBlockchain,
+              };
+            }),
+    });
+  };
+
   sendDirectPush: (
     jwt: string,
     params: Readonly<{

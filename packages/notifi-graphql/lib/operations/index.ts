@@ -37,6 +37,7 @@ export * from './GetTopics';
 export * from './GetWebhookTargets';
 export * from './LogInFromDappService';
 export * from './LogInFromServiceService';
+export * from './PublishFusionMessage';
 export * from './RefreshAuthorization';
 export * from './RemoveSourceFromSourceGroup';
 export * from './SendMessageService';
