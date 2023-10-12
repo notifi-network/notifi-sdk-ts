@@ -50,6 +50,7 @@ export class NotifiService
     Operations.GetWebhookTargetsService,
     Operations.LogInFromDappService,
     Operations.LogInFromServiceService,
+    Operations.PublishFusionMessageService,
     Operations.RefreshAuthorizationService,
     Operations.RemoveSourceFromSourceGroupService,
     Operations.SendConversationMessageService,
@@ -436,6 +437,13 @@ export class NotifiService
       variables,
       headers,
     );
+  }
+
+  async publishFusionMessage(
+    variables: Generated.PublishFusionMessageMutationVariables,
+  ): Promise<Generated.PublishFusionMessageMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.publishFusionMessage(variables, headers);
   }
 
   async refreshAuthorization(
