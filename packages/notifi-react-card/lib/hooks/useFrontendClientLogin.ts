@@ -35,7 +35,7 @@ export const useFrontendClientLogin = () => {
       const result = await frontendClient.logIn(params);
       return result;
     }
-  }, []);
+  }, [useHardwareWallet, frontendClient, params]);
 
   return logIn;
 };
