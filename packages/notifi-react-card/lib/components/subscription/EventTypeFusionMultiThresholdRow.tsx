@@ -306,6 +306,7 @@ export const FusionMultiThresholdSettingsRow: React.FC<
         inputs: Record<string, unknown>;
       }>,
       threshold: number,
+      above: boolean,
     ): Promise<SubscriptionData> => {
       if (isUsingFrontendClient) {
         const fusionEventType: FusionEventTypeItem = {
@@ -408,6 +409,7 @@ export const FusionMultiThresholdSettingsRow: React.FC<
               inputs: inputs,
             },
             threshold,
+            above,
           );
           frontendClient.fetchData().then(render);
           setAbove(true);
