@@ -22,12 +22,7 @@ export const NotifiIntercomCardContainer: React.FC<
 
   switch (card.state) {
     case 'loading':
-      contents = (
-        <LoadingStateCard
-          classNames={classNames?.LoadingStateCard}
-          card={card}
-        />
-      );
+      contents = <LoadingStateCard classNames={classNames?.LoadingStateCard} />;
       break;
     case 'error':
       contents = (

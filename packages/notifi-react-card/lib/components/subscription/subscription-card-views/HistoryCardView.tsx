@@ -23,6 +23,7 @@ import {
   AlertNotificationRow,
   AlertNotificationViewProps,
 } from '../../AlertHistory/AlertNotificationRow';
+import { LoadingStateCard, LoadingStateCardProps } from '../../common';
 
 export type NotificationHistoryEntry =
   | Types.FusionNotificationHistoryEntryFragmentFragment
@@ -32,6 +33,12 @@ export type AlertHistoryViewProps = Readonly<{
   noAlertDescription?: string;
   isHidden: boolean;
   data: CardConfigItemV1;
+  copy?: {
+    loadingHeader?: string;
+    loadingContent?: string;
+    loadingSpinnerSize?: string;
+    loadingRingColor?: string;
+  };
   classNames?: DeepPartialReadonly<{
     title: string;
     header: string;
@@ -46,6 +53,7 @@ export type AlertHistoryViewProps = Readonly<{
     historyContainer: string;
     virtuoso: string;
     AlertCard: AlertNotificationViewProps['classNames'];
+    LoadingStateCard: LoadingStateCardProps['classNames'];
   }>;
   setAlertEntry: React.Dispatch<
     React.SetStateAction<NotificationHistoryEntry | undefined>
@@ -57,6 +65,7 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
   isHidden,
   noAlertDescription,
   setAlertEntry,
+  copy,
 }) => {
   noAlertDescription = noAlertDescription
     ? noAlertDescription
@@ -64,7 +73,7 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
 
   const [endCursor, setEndCursor] = useState<string | undefined>();
   const [hasNextPage, setHasNextPage] = useState<boolean>();
-  const isQuerying = useRef<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const fetched = useRef<boolean>(false);
 
   const { client, isUsingFrontendClient, frontendClient } =
@@ -84,10 +93,10 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
 
   const getNotificationHistory = useCallback(
     async ({ first, after }: Types.GetNotificationHistoryQueryVariables) => {
-      if (isQuerying.current) {
+      if (isLoading) {
         return;
       }
-      isQuerying.current = true;
+      setIsLoading(true);
 
       const result = isUsingFrontendClient
         ? await frontendClient.getFusionNotificationHistory({
@@ -106,7 +115,7 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
       setEndCursor(result?.pageInfo.endCursor);
       setHasNextPage(result?.pageInfo.hasNextPage);
 
-      isQuerying.current = false;
+      setIsLoading(false);
       return result;
     },
     [
@@ -142,6 +151,20 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
         .catch((e) => console.log('Failed to mark as read', e));
     }
   }, [allNodes]);
+
+  if (isLoading) {
+    return (
+      <LoadingStateCard
+        copy={{
+          header: copy?.loadingHeader ?? '',
+          content: copy?.loadingContent,
+        }}
+        spinnerSize={copy?.loadingSpinnerSize}
+        ringColor={copy?.loadingRingColor}
+        classNames={classNames?.LoadingStateCard}
+      />
+    );
+  }
 
   return (
     <div

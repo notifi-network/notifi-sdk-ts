@@ -1,13 +1,11 @@
 import clsx from 'clsx';
 import React from 'react';
 
-import { LoadingState } from '../../hooks';
 import { DeepPartialReadonly } from '../../utils';
 import NotifiAlertBox, { NotifiAlertBoxProps } from '../NotifiAlertBox';
 import Spinner from './Spinner';
 
 export type LoadingStateCardProps = Readonly<{
-  card: LoadingState;
   spinnerSize?: string;
   ringColor?: string;
   copy?: DeepPartialReadonly<{

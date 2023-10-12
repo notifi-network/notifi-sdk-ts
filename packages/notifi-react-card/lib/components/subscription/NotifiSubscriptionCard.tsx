@@ -154,7 +154,6 @@ export const NotifiSubscriptionCard: React.FC<
           spinnerSize={loadingSpinnerSize}
           ringColor={loadingRingColor}
           classNames={classNames?.LoadingStateCard}
-          card={card}
           onClose={onClose}
         />
       );
