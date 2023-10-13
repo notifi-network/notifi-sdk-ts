@@ -338,7 +338,7 @@ export const FusionMultiThresholdSettingsRow: React.FC<
         alertConfiguration,
       });
     },
-    [isUsingFrontendClient, frontendClient],
+    [isUsingFrontendClient, frontendClient, above, alertConfiguration],
   );
 
   return (
