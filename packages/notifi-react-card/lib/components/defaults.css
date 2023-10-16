@@ -23,6 +23,10 @@
   --notifi-settings-icon-color: #262949;
   --notifi-confirmation-color: #22af3c;
   --notifi-divider-line: rgba(255, 255, 255, 0.2);
+  /* SDK3.0 color props*/
+  --notifi-cta-icon-color: #80829d;
+  --notifi-cta-background: #f5f6fb;
+  --notifi-tab-background: #fff;
 }
 
 a {
@@ -60,6 +64,11 @@ a {
   --notifi-banner-background: #222222;
   --notifi-banner-icon-color: #262949;
   --notifi-divider-line: rgba(255, 255, 255, 0.2);
+  /* SDK3.0 color props*/
+  --notifi-cta-icon-color: #80829d;
+  --notifi-cta-background: #1c1c23;
+  --notifi-inner-overlay-background: rgb(182, 184, 213);
+  --notifi-tab-background: #323240;
 }
 
 input:autofill,
@@ -85,6 +94,7 @@ input::-webkit-inner-spin-button {
   border-radius: 5px;
   padding: 20px 0px 5px 0px;
   min-height: 510px;
+  position: relative;
 }
 
 .NotifiPreviewCard__container {
@@ -549,6 +559,8 @@ input::-webkit-inner-spin-button {
 
 .NotifiEventTypeContainer {
   padding: 0 20px;
+  height: 100%;
+  overflow: scroll;
 }
 
 .EventTypeLabelRow__container,
@@ -1944,4 +1956,86 @@ input::-webkit-inner-spin-button {
   margin-right: 10px;
   cursor: pointer;
   border: none;
+}
+
+.configAlertModal__container {
+  position: absolute;
+  z-index: 1;
+  background-color: var(--notifi-card-background);
+  width: 95%;
+  height: 95%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.configAlertModal__overlay {
+  position: absolute;
+  opacity: 0.6;
+  z-index: 1;
+  background-color: var(--notifi-inner-overlay-background);
+  width: 100%;
+  height: 100%;
+  top: 0;
+}
+
+.configAlertModal__ctaIcon {
+  width: 20px;
+  height: 20px;
+  color: var(--notifi-cta-icon-color);
+  background-color: var(--notifi-cta-background);
+  border-radius: 50%;
+}
+
+.configAlertModal__headerContainer,
+.configAlertModal__footerContainer {
+  background-color: var(--notifi-tab-background);
+  width: 100%;
+  height: 56px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 13px !important;
+}
+
+.configAlertModal__backIcon {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  cursor: pointer;
+}
+.configAlertModal__closeIcon {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  cursor: pointer;
+}
+
+.configAlertModal__headerTitle {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0 !important;
+  font-weight: 800;
+}
+
+.configAlertModal__footerContainer {
+  margin-bottom: 0px !important;
+  justify-content: center;
+  align-items: center;
+  /* padding: 12px; */
+  display: flex;
+  height: 69px;
+}
+
+.configAlertModal__footerContainer button {
+  height: 65%; /* (12+12)/69 */
+  flex-grow: 1;
+  margin: 0px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
 }
