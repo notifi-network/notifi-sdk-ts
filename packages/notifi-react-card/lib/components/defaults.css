@@ -1,3 +1,11 @@
+:root {
+  --notifi-color-grey1: #1c1c23;
+  --notifi-color-grey2: #323240;
+  --notifi-color-grey3: #80829d;
+  --notifi-color-white: #fff;
+  --notifi-color-eggshell: #f5f6fb;
+}
+
 .notifi__light {
   --notifi-card-secondary-background: rgb(214, 214, 214);
   --notifi-placeholder-color: rgb(33 33 33 / 50%);
@@ -24,9 +32,10 @@
   --notifi-confirmation-color: #22af3c;
   --notifi-divider-line: rgba(255, 255, 255, 0.2);
   /* SDK3.0 color props*/
-  --notifi-cta-icon-color: #80829d;
-  --notifi-cta-background: #f5f6fb;
-  --notifi-tab-background: #fff;
+  --notifi-cta-icon-color: var(--notifi-color-grey3);
+  --notifi-cta-background: var(--notifi-color-eggshell);
+  --notifi-inner-overlay-background: var(--notifi-color-eggshell);
+  --notifi-tab-background: var(--notifi-color-white);
 }
 
 a {
@@ -65,10 +74,10 @@ a {
   --notifi-banner-icon-color: #262949;
   --notifi-divider-line: rgba(255, 255, 255, 0.2);
   /* SDK3.0 color props*/
-  --notifi-cta-icon-color: #80829d;
-  --notifi-cta-background: #1c1c23;
-  --notifi-inner-overlay-background: rgb(182, 184, 213);
-  --notifi-tab-background: #323240;
+  --notifi-cta-icon-color: var(--notifi-color-grey3);
+  --notifi-cta-background: var(--notifi-color-grey1);
+  --notifi-inner-overlay-background: var(--notifi-color-eggshell);
+  --notifi-tab-background: var(--notifi-color-grey2);
 }
 
 input:autofill,
@@ -1976,7 +1985,7 @@ input::-webkit-inner-spin-button {
 
 .configAlertModal__overlay {
   position: absolute;
-  opacity: 0.6;
+  opacity: 0.4;
   z-index: 1;
   background-color: var(--notifi-inner-overlay-background);
   width: 100%;
@@ -2026,7 +2035,6 @@ input::-webkit-inner-spin-button {
   margin-bottom: 0px !important;
   justify-content: center;
   align-items: center;
-  /* padding: 12px; */
   display: flex;
   height: 69px;
 }
@@ -2038,4 +2046,5 @@ input::-webkit-inner-spin-button {
   border-radius: 6px;
   border: none;
   cursor: pointer;
+  font-weight: 700;
 }

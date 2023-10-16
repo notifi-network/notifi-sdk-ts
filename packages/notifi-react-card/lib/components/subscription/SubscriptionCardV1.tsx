@@ -167,14 +167,11 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
       }
 
       if (!isClientAuthenticated) {
-        console.log('1');
-        // TODO: check wether destination is required
         if (data.isContactInfoRequired) {
           setFtuConfigStep(FtuConfigStep.Destination);
         } else {
           setFtuConfigStep(FtuConfigStep.Alert);
         }
-        // setIsFirstTimeUser(true);
         return { state: 'signup' };
       }
 
@@ -238,7 +235,6 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
       ? data?.titles.alertDetailsView || 'Alert Details'
       : data?.titles.historyView || 'Alert History';
   };
-  console.log('cardView.state', cardView.state);
   switch (cardView.state) {
     case 'expired':
       view = (
@@ -365,17 +361,6 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
     case 'history':
       view = (
         <>
-          {/* {JSON.stringify(isFirstTimeUser)} */}
-          {/* {isFirstTimeUser ? (
-            <button onClick={() => setIsFirstTimeUser(false)}>
-              First time user
-            </button>
-          ) : null} */}
-          {ftuConfigStep === FtuConfigStep.Destination ? (
-            <button onClick={() => setFtuConfigStep(FtuConfigStep.Alert)}>
-              Destination
-            </button>
-          ) : null}
           {ftuConfigStep === FtuConfigStep.Alert ? (
             <ConfigAlertModal
               setFtuConfigStep={setFtuConfigStep}
@@ -384,13 +369,6 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
               inputs={inputs}
             />
           ) : null}
-          {/* <ConfigAlertModal
-            setFtuConfigStep={setFtuConfigStep}
-            data={data}
-            inputDisabled={inputDisabled}
-            inputs={inputs}
-          /> */}
-          {/* {JSON.stringify(isFirstTimeUser)} */}
           <NotifiAlertBox
             classNames={classNames?.NotifiAlertBox}
             leftIcon={
@@ -443,13 +421,5 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
     default:
       view = <div>Not supported view</div>;
   }
-  return (
-    <>
-      <div>
-        {/* {cardView.state} {email} {phoneNumber} {telegramId}{' '} */}
-        {JSON.stringify(discordTargetData)}
-      </div>
-      {view}
-    </>
-  );
+  return <>{view}</>;
 };
