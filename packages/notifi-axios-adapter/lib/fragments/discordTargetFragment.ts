@@ -8,6 +8,7 @@ fragment discordTargetFragment on DiscordTarget {
   name
   userStatus
   verificationLink
+  discordServerInviteLink
 }
 `.trim();
 
