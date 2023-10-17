@@ -104,37 +104,27 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
     setPhoneNumberErrorMessage,
   } = useNotifiForm();
 
-  const { isInitialized, isTokenExpired, isAuthenticated } = useNotifiSubscribe(
-    {
-      targetGroupName: 'Default',
-    },
-  );
+  const { isAuthenticated, isTokenExpired } = useNotifiSubscribe({
+    targetGroupName: 'Default',
+  });
 
   const { isUsingFrontendClient, frontendClient } = useNotifiClientContext();
 
   const { isClientTokenExpired, isClientAuthenticated } = useMemo(() => {
-    let isClientInitialized = false;
     let isClientTokenExpired = false;
     let isClientAuthenticated = false;
     if (isUsingFrontendClient) {
-      isClientInitialized = !!frontendClient.userState;
       isClientTokenExpired = frontendClient.userState?.status === 'expired';
       isClientAuthenticated =
         frontendClient.userState?.status === 'authenticated';
     } else {
-      isClientInitialized = isInitialized;
       isClientTokenExpired = isTokenExpired;
       isClientAuthenticated = isAuthenticated;
     }
-    return {
-      isClientInitialized,
-      isClientTokenExpired,
-      isClientAuthenticated,
-    };
+    return { isClientTokenExpired, isClientAuthenticated };
   }, [
     frontendClient.userState?.status,
     isTokenExpired,
-    isInitialized,
     isAuthenticated,
     isUsingFrontendClient,
   ]);
@@ -156,7 +146,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
   }, [email, phoneNumber, telegramId]);
 
   useEffect(() => {
-    setCardView((prev) => {
+    setCardView(() => {
       if (demoPreview) {
         return {
           state: demoPreview.view,
@@ -171,10 +161,6 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
 
       if (isClientTokenExpired) {
         return { state: 'expired' };
-      }
-
-      if (prev.state === 'signup') {
-        return { state: 'preview' };
       }
 
       return { state: 'history' };
