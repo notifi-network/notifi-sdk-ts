@@ -17,7 +17,6 @@ import {
   IntercomCardView,
   useIntercomCardState,
 } from '../hooks/useIntercomCardState';
-import { DISCORD_INVITE_URL } from '../utils/constants';
 import { prefixTelegramWithSymbol } from '../utils/stringUtils';
 import { useNotifiClientContext } from './NotifiClientContext';
 import { NotifiParams } from './NotifiContext';
@@ -324,7 +323,12 @@ export const NotifiSubscriptionContextProvider: React.FC<
       const discordId = discordTarget?.id;
 
       if (discordId) {
-        const { isConfirmed, userStatus, verificationLink } = discordTarget;
+        const {
+          isConfirmed,
+          userStatus,
+          verificationLink,
+          discordServerInviteLink,
+        } = discordTarget;
 
         if (!isConfirmed) {
           setDiscordErrorMessage({
@@ -335,7 +339,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
         } else if (userStatus === 'DISCORD_SERVER_NOT_JOINED') {
           setDiscordErrorMessage({
             type: 'recoverableError',
-            onClick: () => window.open(DISCORD_INVITE_URL, '_blank'),
+            onClick: () => window.open(discordServerInviteLink, '_blank'),
             message: 'Join Server',
           });
         } else {

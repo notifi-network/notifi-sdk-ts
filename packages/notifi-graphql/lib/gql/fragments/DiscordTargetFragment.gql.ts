@@ -10,5 +10,6 @@ export const DiscordTargetFragment = gql`
     name
     userStatus
     verificationLink
+    discordServerInviteLink
   }
 `;
