@@ -14,7 +14,7 @@ import { BellButton } from './BellButton';
 export const PolkadotCard = () => {
   const [isCardOpen, setIsCardOpen] = useState(false);
   const { alerts } = useNotifiSubscriptionContext();
-  const { client } = useNotifiClientContext();
+  const { client, isUsingFrontendClient } = useNotifiClientContext();
   const { acalaAddress, connected } = useAcalaWallet();
 
   if (!connected || !acalaAddress) {
@@ -44,8 +44,10 @@ export const PolkadotCard = () => {
         <div>Not yet register Notification</div>
       )}
       <h3>Display NotifiSubscriptionCard</h3>
-      <BellButton setIsCardOpen={setIsCardOpen} />
-      {isCardOpen ? (
+      {isUsingFrontendClient ? (
+        <BellButton setIsCardOpen={setIsCardOpen} />
+      ) : null}
+      {isCardOpen || !isUsingFrontendClient ? (
         <NotifiSubscriptionCard
           darkMode
           cardId="d8859ea72ff4449fa8f7f293ebd333c9"

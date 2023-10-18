@@ -10,7 +10,7 @@ import { BellButton } from './BellButton';
 export const SuiNotifiCard: React.FC = () => {
   const [isCardOpen, setIsCardOpen] = useState(false);
   const { alerts } = useNotifiSubscriptionContext();
-  const { client } = useNotifiClientContext();
+  const { client, isUsingFrontendClient } = useNotifiClientContext();
 
   return (
     <div className="container">
@@ -31,8 +31,10 @@ export const SuiNotifiCard: React.FC = () => {
         <div>Not yet register Notification</div>
       )}
       <h3>Display NotifiSubscriptionCard</h3>
-      <BellButton setIsCardOpen={setIsCardOpen} />
-      {isCardOpen ? (
+      {isUsingFrontendClient ? (
+        <BellButton setIsCardOpen={setIsCardOpen} />
+      ) : null}
+      {isCardOpen || !isUsingFrontendClient ? (
         <NotifiSubscriptionCard
           darkMode
           cardId="d8859ea72ff4449fa8f7f293ebd333c9"

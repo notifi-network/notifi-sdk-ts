@@ -10,7 +10,7 @@ import { BellButton } from './BellButton';
 export const WalletConnectCard = () => {
   const [isCardOpen, setIsCardOpen] = useState(false);
   const { alerts } = useNotifiSubscriptionContext();
-  const { client } = useNotifiClientContext();
+  const { client, isUsingFrontendClient } = useNotifiClientContext();
   return (
     <div>
       <h1>Notifi Card: WalletConnect</h1>
@@ -29,8 +29,10 @@ export const WalletConnectCard = () => {
       ) : (
         <div>Not yet register Notification</div>
       )}
-      <BellButton setIsCardOpen={setIsCardOpen} />
-      {isCardOpen ? (
+      {isUsingFrontendClient ? (
+        <BellButton setIsCardOpen={setIsCardOpen} />
+      ) : null}
+      {isCardOpen || !isUsingFrontendClient ? (
         <NotifiSubscriptionCard
           darkMode
           cardId="7fa9505a96064ed6b91ba2d14a9732de"

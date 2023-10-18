@@ -11,7 +11,7 @@ import { BellButton } from './BellButton';
 export const MetamaskCard = () => {
   const [isCardOpen, setIsCardOpen] = useState(false);
   const { alerts } = useNotifiSubscriptionContext();
-  const { client } = useNotifiClientContext();
+  const { client, isUsingFrontendClient } = useNotifiClientContext();
   const { address } = useAccount();
   return (
     <>
@@ -33,8 +33,10 @@ export const MetamaskCard = () => {
           ) : (
             <div>Not yet register Notification</div>
           )}
-          <BellButton setIsCardOpen={setIsCardOpen} />
-          {isCardOpen ? (
+          {isUsingFrontendClient ? (
+            <BellButton setIsCardOpen={setIsCardOpen} />
+          ) : null}
+          {isCardOpen || !isUsingFrontendClient ? (
             <NotifiSubscriptionCard
               darkMode
               inputs={{ userWallet: address }}
