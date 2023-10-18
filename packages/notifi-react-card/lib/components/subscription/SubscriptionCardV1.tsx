@@ -15,7 +15,7 @@ import {
   AlertDetailsCard,
   AlertDetailsProps,
 } from '../AlertHistory/AlertDetailsCard';
-import { ConfigAlertModal } from '../ConfigAlertModal';
+import { ConfigAlertModal, ConfigAlertModalProps } from '../ConfigAlertModal';
 import NotifiAlertBox, {
   NotifiAlertBoxButtonProps,
   NotifiAlertBoxProps,
@@ -71,6 +71,7 @@ export type SubscriptionCardV1Props = Readonly<{
     NotifiAlertBox: NotifiAlertBoxProps['classNames'];
     ErrorStateCard: string;
     signupBanner: SignupBannerProps['classNames'];
+    ConfigAlertModal: ConfigAlertModalProps['classNames'];
     dividerLine: string;
   }>;
   inputDisabled: boolean;
@@ -363,6 +364,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
         <>
           {ftuConfigStep === FtuConfigStep.Alert ? (
             <ConfigAlertModal
+              classNames={classNames?.ConfigAlertModal}
               setFtuConfigStep={setFtuConfigStep}
               data={data}
               inputDisabled={inputDisabled}

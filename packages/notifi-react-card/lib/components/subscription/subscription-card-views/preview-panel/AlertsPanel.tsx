@@ -1,4 +1,5 @@
 import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
+import clsx from 'clsx';
 import React from 'react';
 
 import {
@@ -83,7 +84,12 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
   inputs,
 }) => {
   return (
-    <div className="NotifiEventTypeContainer">
+    <div
+      className={clsx(
+        'NotifiEventTypeContainer',
+        classNames?.EventTypeContainer,
+      )}
+    >
       {data.eventTypes?.map((eventType) => {
         switch (eventType.type) {
           case 'broadcast':
@@ -204,6 +210,8 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
                     inputs={inputs}
                   />
                 );
+              default:
+                throw new Error(`Unknown fusion UI type`);
             }
           case 'priceChange':
             return (

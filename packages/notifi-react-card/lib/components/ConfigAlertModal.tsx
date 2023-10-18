@@ -5,7 +5,7 @@ import React from 'react';
 import AlertActionIcon from './AlertBox/AlertActionIcon';
 import { AlertsPanel, AlertsPanelProps, FtuConfigStep } from './subscription';
 
-type ConfigAlertModalProps = Readonly<{
+export type ConfigAlertModalProps = Readonly<{
   classNames?: {
     container?: string;
     overlay?: string;
@@ -82,7 +82,55 @@ export const ConfigAlertModal: React.FC<ConfigAlertModalProps> = ({
           </div>
         </div>
         <AlertsPanel
-          classNames={classNames?.alertsPanel}
+          classNames={
+            classNames?.alertsPanel ?? {
+              EventTypeContainer: 'configAlertModal__EventTypeContainer',
+              EventTypeBroadcastRow: {
+                container: 'configAlertModal__EventTypeBroadcastRow',
+              },
+              EventTypeCustomHealthCheckRow: {
+                container: 'configAlertModal__EventTypeCustomHealthCheckRow',
+                content:
+                  'configAlertModal__EventTypeCustomHealthCheckRow__Subtitle',
+                buttonContainer:
+                  'configAlertModal__EventTypeCustomHealthCheckRow__ButtonContainer',
+              },
+              EventTypeDirectPushRow: {
+                container: 'configAlertModal__EventTypeDirectPushRow',
+              },
+              EventTypeHealthCheckRow: {
+                container: 'configAlertModal__EventTypeHealthCheckRow',
+                content: 'configAlertModal__EventTypeHealthCheckRow__Subtitle',
+                buttonContainer:
+                  'configAlertModal__EventTypeHealthCheckRow__ButtonContainer',
+              },
+              EventTypePriceChangeRow: {
+                container: 'configAlertModal__EventTypePriceChangeRow',
+              },
+              EventTypeTradingPairsRow: {
+                container: 'configAlertModal__EventTypeTradingPairsRow',
+              },
+              EventTypeFusionMultiThresholdRow: {
+                container: 'configAlertModal__EventTypeFusionMultiThresholdRow',
+              },
+              EventTypeWalletBalanceRow: {
+                container: 'configAlertModal__EventTypeWalletBalanceRow',
+              },
+              EventTypeXMTPRow: {
+                container: 'configAlertModal__EventTypeXMTPRow',
+              },
+              EventTypeFusionToggleRow: {
+                container: 'configAlertModal__EventTypeFusionToggleRow',
+              },
+              EventTypeFusionHealthCheckRow: {
+                container: 'configAlertModal__EventTypeFusionHealthCheckRow',
+                content:
+                  'configAlertModal__EventTypeFusionHealthCheckRow__Subtitle',
+                buttonContainer:
+                  'configAlertModal__EventTypeFusionHealthCheckRow__ButtonContainer',
+              },
+            }
+          }
           data={data}
           inputDisabled={inputDisabled}
           inputs={inputs}

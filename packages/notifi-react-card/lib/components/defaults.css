@@ -2048,3 +2048,50 @@ input::-webkit-inner-spin-button {
   cursor: pointer;
   font-weight: 700;
 }
+
+/* AlertPanel css overridden in ConfigAlertModal */
+/* TODO: need to be deprecated after SDK3.0 AlertPanel default style is updated (refactor) */
+.configAlertModal__EventTypeContainer {
+  padding: 0px 24px;
+}
+
+.configAlertModal__EventTypeTradingPairsRow,
+.configAlertModal__EventTypeFusionMultiThresholdRow,
+.configAlertModal__EventTypeFusionToggleRow,
+.configAlertModal__EventTypeXMTPRow,
+.configAlertModal__EventTypeWalletBalanceRow,
+.configAlertModal__EventTypeTradingPairsRow,
+.configAlertModal__EventTypePriceChangeRow,
+.configAlertModal__EventTypeDirectPushRow,
+.configAlertModal__EventTypeBroadcastRow {
+  background-color: var(--notifi-tab-background);
+  padding: 16px 12px;
+  border-radius: 6px;
+  margin-bottom: 10px !important;
+}
+
+.configAlertModal__EventTypeFusionHealthCheckRow,
+.configAlertModal__EventTypeHealthCheckRow,
+.configAlertModal__EventTypeCustomHealthCheckRow {
+  background-color: var(--notifi-tab-background);
+  padding: 16px 12px;
+  border-radius: 6px;
+  margin-bottom: 0px !important;
+}
+.configAlertModal__EventTypeFusionHealthCheckRow__Subtitle,
+.configAlertModal__EventTypeHealthCheckRow__Subtitle,
+.configAlertModal__EventTypeCustomHealthCheckRow__Subtitle {
+  background-color: var(--notifi-tab-background);
+  padding: 0px 12px;
+  margin-bottom: 0px !important;
+  margin-top: -6px;
+}
+.configAlertModal__EventTypeHealthCheckRow__ButtonContainer,
+.configAlertModal__EventTypeFusionHealthCheckRow__ButtonContainer,
+.configAlertModal__EventTypeCustomHealthCheckRow__ButtonContainer {
+  background-color: var(--notifi-tab-background);
+  padding: 8px 12px 0px 12px;
+  border-radius: 0px 0px 6px 6px;
+}
+
+/* TODO ending line */
