@@ -249,7 +249,6 @@ export const useNotifiSubscribe: ({
         } else {
           setDiscordErrorMessage(undefined);
         }
-        setUseDiscord(true);
         setDiscordTargetData(discordTarget);
       } else {
         handleMissingDiscordTarget(newData?.discordTargets ?? []);

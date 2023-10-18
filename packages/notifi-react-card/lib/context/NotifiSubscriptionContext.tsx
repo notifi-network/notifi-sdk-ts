@@ -345,7 +345,6 @@ export const NotifiSubscriptionContextProvider: React.FC<
         } else {
           setDiscordErrorMessage(undefined);
         }
-        setUseDiscord(true);
         setDiscordTargetData(discordTarget);
       } else {
         const targets = newData?.discordTarget;
