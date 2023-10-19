@@ -204,7 +204,7 @@ export const EventTypeFusionToggleRow: React.FC<EventTypeFusionRowProps> = ({
       <div
         className={clsx('EventTypeFusionToggleRow__label', classNames?.label)}
       >
-        {config.name}
+        {config.displayNameOverride ?? config.name}
         {tooltipContent !== undefined && tooltipContent.length > 0 ? (
           <NotifiTooltip
             classNames={classNames?.tooltip}
