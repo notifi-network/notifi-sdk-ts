@@ -50,6 +50,7 @@ export const ConfigAlertModal: React.FC<ConfigAlertModalProps> = ({
                 'configAlertModal__backIcon',
                 classNames?.backIcon,
               )}
+              onClick={() => setFtuConfigStep(FtuConfigStep.Destination)}
             >
               <AlertActionIcon
                 name="back"
