@@ -40,8 +40,15 @@ export const useSubscriptionCard = (
     useNotifiClientContext();
 
   useEffect(() => {
-    setState({ state: 'loading' });
+    if (demoPreview) {
+      return setState(() => ({
+        state: 'fetched',
+        data: demoPreview.data,
+      }));
+    }
+
     let card: CardConfigItemV1 | undefined;
+    setState({ state: 'loading' });
     (isUsingFrontendClient ? frontendClient : client)
       .fetchSubscriptionCard(input)
       .then((result) => {
@@ -64,17 +71,10 @@ export const useSubscriptionCard = (
         });
       })
       .catch((error: unknown) => {
-        if (demoPreview) {
-          setState(() => ({
-            state: 'fetched',
-            data: demoPreview.data,
-          }));
-        } else {
-          setState({
-            state: 'error',
-            reason: error,
-          });
-        }
+        setState({
+          state: 'error',
+          reason: error,
+        });
       });
   }, [input.id, input.type, demoPreview, isUsingFrontendClient]);
 

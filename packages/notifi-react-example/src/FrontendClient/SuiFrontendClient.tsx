@@ -16,7 +16,7 @@ export const SuiFrontendClient: FC = () => {
       throw new Error('Wallet not connected');
     }
 
-    const signature = await wallet.signMessage({
+    const signature = await wallet.signPersonalMessage({
       message,
     });
 
@@ -49,7 +49,7 @@ export const SuiFrontendClient: FC = () => {
   };
 
   const login = async () => {
-    if (!client || !wallet?.signMessage || !wallet?.currentAccount) {
+    if (!client || !wallet?.signPersonalMessage || !wallet?.currentAccount) {
       throw new Error('Client or wallet not initialized');
     }
     await client.logIn({
