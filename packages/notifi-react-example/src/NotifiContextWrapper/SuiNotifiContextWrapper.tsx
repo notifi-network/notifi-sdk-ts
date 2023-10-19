@@ -13,7 +13,7 @@ export const SuiNotifiContextWrapper: React.FC<PropsWithChildren> = ({
       throw new Error('Wallet not connected');
     }
 
-    const signature = await wallet.signMessage({
+    const signature = await wallet.signPersonalMessage({
       message,
     });
 
