@@ -1,4 +1,3 @@
-import { SignMessageParams } from '@notifi-network/notifi-frontend-client';
 import {
   CardConfigItemV1,
   EventTypeConfig,
@@ -48,7 +47,6 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
   const { isInitialized, subscribe, updateTargetGroups } = useNotifiSubscribe({
     targetGroupName: 'Default',
   });
-  const { useHardwareWallet } = useNotifiSubscriptionContext();
   const frontendClientLogin = useFrontendClientLogin();
 
   const {
@@ -91,21 +89,20 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
     [email, phoneNumber, telegramId, useDiscord],
   );
 
+  const renewTargetGroups = useCallback(
+    async (targetGroup: TargetGroupData) => {
+      if (isUsingFrontendClient) {
+        return frontendClient.ensureTargetGroup(targetGroup);
+      }
+      return updateTargetGroups();
+    },
+    [updateTargetGroups, frontendClient, isUsingFrontendClient],
+  );
+
   const subscribeAlerts = useCallback(
     async (eventTypes: EventTypeConfig, inputs: Record<string, unknown>) => {
       if (isUsingFrontendClient) {
-        const data = await frontendClient.fetchData();
-        let discordTarget = data.targetGroup?.[0]?.discordTargets?.find(
-          (target) => target?.name === 'Default',
-        );
-        if (useDiscord && !discordTarget) {
-          discordTarget = await frontendClient.createDiscordTarget('Default');
-        }
-
-        await renewTargetGroups({
-          ...targetGroup,
-          discordId: discordTarget?.id,
-        });
+        await renewTargetGroups(targetGroup);
 
         return subscribeAlertsByFrontendClient(
           frontendClient,
@@ -118,23 +115,15 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
       );
     },
     [
+      targetGroup,
       isUsingFrontendClient,
       frontendClient,
-      email,
-      phoneNumber,
-      telegramId,
-      useDiscord,
+      connectedWallets,
+      renewTargetGroups,
+      subscribeAlertsByFrontendClient,
+      subscribe,
+      createConfigurations,
     ],
-  );
-
-  const renewTargetGroups = useCallback(
-    async (targetGroup: TargetGroupData) => {
-      if (isUsingFrontendClient) {
-        return frontendClient.ensureTargetGroup(targetGroup);
-      }
-      return updateTargetGroups();
-    },
-    [email, phoneNumber, useDiscord, telegramId, frontendClient],
   );
 
   const onClick = useCallback(async () => {

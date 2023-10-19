@@ -713,13 +713,6 @@ export const useNotifiSubscribe: ({
 
     let finalPhoneNumber = undefined;
 
-    let finalDiscordId = undefined;
-
-    if (useDiscord === true) {
-      finalDiscordId =
-        discordTargetDatafromSubscriptionContext?.id ?? 'Default';
-    }
-
     if (isValidPhoneNumber(formPhoneNumber)) {
       finalPhoneNumber = formPhoneNumber;
     }
