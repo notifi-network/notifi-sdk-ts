@@ -89,6 +89,16 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
     [email, phoneNumber, telegramId, useDiscord],
   );
 
+  const renewTargetGroups = useCallback(
+    async (targetGroup: TargetGroupData) => {
+      if (isUsingFrontendClient) {
+        return frontendClient.ensureTargetGroup(targetGroup);
+      }
+      return updateTargetGroups();
+    },
+    [updateTargetGroups, frontendClient, isUsingFrontendClient],
+  );
+
   const subscribeAlerts = useCallback(
     async (eventTypes: EventTypeConfig, inputs: Record<string, unknown>) => {
       if (isUsingFrontendClient) {
@@ -104,23 +114,15 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
         createConfigurations(eventTypes, inputs, connectedWallets),
       );
     },
-    [targetGroup, isUsingFrontendClient, frontendClient, connectedWallets],
-  );
-
-  const renewTargetGroups = useCallback(
-    async (targetGroup: TargetGroupData) => {
-      if (isUsingFrontendClient) {
-        return frontendClient.ensureTargetGroup(targetGroup);
-      }
-      return updateTargetGroups();
-    },
     [
-      email,
-      phoneNumber,
-      useDiscord,
-      telegramId,
-      frontendClient,
+      targetGroup,
       isUsingFrontendClient,
+      frontendClient,
+      connectedWallets,
+      renewTargetGroups,
+      subscribeAlertsByFrontendClient,
+      subscribe,
+      createConfigurations,
     ],
   );
 
