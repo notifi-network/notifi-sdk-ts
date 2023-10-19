@@ -37,6 +37,8 @@ export type FusionTypeBase = {
   tooltipContent?: string;
   maintainSourceGroup?: boolean;
   alertFrequency?: AlertFrequency;
+  optOutAtSignup?: boolean;
+  displayNameOverride?: string;
 };
 
 export type FusionToggleEventTypeItem = FusionTypeBase &
@@ -58,7 +60,7 @@ export type FusionMultiThresholdEventTypeItem = FusionTypeBase &
     numberType: NumberTypeSelect;
     subtitle?: string;
     addThresholdTitle?: string;
-}>;
+  }>;
 
 export type FusionEventTypeItem =
   | FusionToggleEventTypeItem

@@ -30,6 +30,7 @@ export type FusionTypeBase = {
   maintainSourceGroup?: boolean;
   alertFrequency?: AlertFrequency;
   optOutAtSignup?: boolean;
+  displayNameOverride?: string;
 };
 
 export type FusionToggleEventTypeItem = FusionTypeBase &
@@ -45,7 +46,7 @@ export type FusionHealthCheckEventTypeItem = FusionTypeBase &
     checkRatios: CheckRatio[];
   }>;
 
-export type FusionMultiThreshholdEventTypeItem = FusionTypeBase & 
+export type FusionMultiThreshholdEventTypeItem = FusionTypeBase &
   Readonly<{
     selectedUIType: 'MULTI_THRESHOLD';
     numberType: NumberTypeSelect;

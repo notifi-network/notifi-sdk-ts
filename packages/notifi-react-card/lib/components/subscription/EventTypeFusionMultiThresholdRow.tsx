@@ -47,7 +47,7 @@ export type EventTypeFusionMultiThresholdRowProps = Readonly<{
 export const EventTypeFusionMultiThresholdRow: React.FC<
   EventTypeFusionMultiThresholdRowProps
 > = ({ classNames, config, inputs }: EventTypeFusionMultiThresholdRowProps) => {
-  const { name, tooltipContent } = config;
+  const { displayNameOverride, name, tooltipContent } = config;
   const { alerts } = useNotifiSubscriptionContext();
 
   const fusionMultiThresholdAlertNames = useMemo(() => {
@@ -90,7 +90,7 @@ export const EventTypeFusionMultiThresholdRow: React.FC<
           classNames?.label,
         )}
       >
-        {name}
+        {displayNameOverride ?? name}
         {tooltipContent !== undefined && tooltipContent.length > 0 ? (
           <NotifiTooltip
             classNames={classNames?.tooltip}

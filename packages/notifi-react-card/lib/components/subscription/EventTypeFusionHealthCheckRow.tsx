@@ -371,7 +371,7 @@ export const EventTypeFusionHealthCheckRow: React.FC<
         <div
           className={clsx('EventTypeHealthCheckRow__label', classNames?.label)}
         >
-          {config.name}
+          {config.displayNameOverride ?? config.name}
           {tooltipContent !== undefined && tooltipContent.length > 0 ? (
             <NotifiTooltip
               classNames={classNames?.tooltip}
