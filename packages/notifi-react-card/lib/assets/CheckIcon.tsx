@@ -1,11 +1,13 @@
 import React from 'react';
 
-export type Props = React.SVGProps<SVGSVGElement>;
+export type Props = Readonly<{
+  className?: string;
+}>;
 
-export const CheckIcon: React.FC<Props> = (props: Props) => {
+export const CheckIcon: React.FC<Props> = ({ className }) => {
   return (
     <svg
-      {...props}
+      className={className}
       width="24"
       height="24"
       viewBox="0 0 24 24"
