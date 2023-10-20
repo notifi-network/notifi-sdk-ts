@@ -15,7 +15,7 @@ import './NotifiCard.css';
 export const SolanaCard: React.FC = () => {
   const [isCardOpen, setIsCardOpen] = React.useState(false);
   const { alerts } = useNotifiSubscriptionContext();
-  const { client } = useNotifiClientContext();
+  const { client, isUsingFrontendClient } = useNotifiClientContext();
   const inputLabels: NotifiInputFieldsText = {
     label: {
       email: 'Email',
@@ -62,8 +62,10 @@ export const SolanaCard: React.FC = () => {
       )}
       <h3>Display NotifiSubscriptionCard</h3>
 
-      <BellButton setIsCardOpen={setIsCardOpen} />
-      {isCardOpen ? (
+      {isUsingFrontendClient ? (
+        <BellButton setIsCardOpen={setIsCardOpen} />
+      ) : null}
+      {isCardOpen || !isUsingFrontendClient ? (
         <NotifiSubscriptionCard
           darkMode
           inputLabels={inputLabels}

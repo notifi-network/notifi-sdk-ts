@@ -22,7 +22,7 @@ export const KeplrConnectButton: React.FC = () => {
 export const KeplrCard: React.FC = () => {
   const [isCardOpen, setIsCardOpen] = useState(false);
   const { alerts } = useNotifiSubscriptionContext();
-  const { client } = useNotifiClientContext();
+  const { client, isUsingFrontendClient } = useNotifiClientContext();
   const { key } = useKeplrContext();
   const keyBase64 = useMemo(
     () =>
@@ -51,8 +51,10 @@ export const KeplrCard: React.FC = () => {
         <div>Not yet register Notification</div>
       )}
       <h3>Display NotifiSubscriptionCard</h3>
-      <BellButton setIsCardOpen={setIsCardOpen} />
-      {isCardOpen ? (
+      {isUsingFrontendClient ? (
+        <BellButton setIsCardOpen={setIsCardOpen} />
+      ) : null}
+      {isCardOpen || !isUsingFrontendClient ? (
         <NotifiSubscriptionCard
           darkMode
           inputs={{ userWallet: key?.bech32Address }}
