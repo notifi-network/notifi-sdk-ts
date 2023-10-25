@@ -9,7 +9,9 @@ import {
   SuiNotifiContextWrapper,
   WalletConnectNotifiContextWrapper,
 } from '../NotifiContextWrapper';
+import { AptosNotifiContextWrapper } from '../NotifiContextWrapper/AptosNotifiContextWrapper';
 import { useEvmWallet } from '../walletProviders/EvmWalletProvider';
+import { AptosCard } from './AptosCard';
 import { DemoPrviewCard } from './DemoPreviewCard';
 import { KeplrCard } from './KeplrCard';
 import { MetamaskCard } from './MetamaskCard';
@@ -27,6 +29,7 @@ enum ESupportedViews {
   Sui = 'Sui',
   Keplr = 'keplr',
   Metamask = 'Metamask',
+  Aptos = 'Aptos',
 }
 
 const supportedViews: Record<ESupportedViews, React.ReactNode> = {
@@ -60,6 +63,11 @@ const supportedViews: Record<ESupportedViews, React.ReactNode> = {
     <MetamaskNotifiContextWrapper>
       <MetamaskCard />
     </MetamaskNotifiContextWrapper>
+  ),
+  [ESupportedViews.Aptos]: (
+    <AptosNotifiContextWrapper>
+      <AptosCard />
+    </AptosNotifiContextWrapper>
   ),
 };
 
