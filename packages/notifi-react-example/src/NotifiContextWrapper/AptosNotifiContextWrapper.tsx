@@ -11,6 +11,7 @@ export const AptosNotifiContextWrapper: React.FC<PropsWithChildren> = ({
     account,
     connected,
     wallets,
+    disconnect,
     signMessage: aptosSignMessage,
   } = useWallet();
 
@@ -27,22 +28,39 @@ export const AptosNotifiContextWrapper: React.FC<PropsWithChildren> = ({
       nonce: timestamp.toString(),
     });
     if (!signMessageResponse) throw new Error('Sign message failed');
+
+    /** DEBUG LOG */
     console.log(signMessageResponse);
+
     // Make sure signMessageResponse.signature is a string
     if (typeof signMessageResponse.signature !== 'string')
-      throw new Error('Can only sign one message at a time');
+      throw new Error(
+        `this wallet's signMessage does not follow the official interface of SignMessageResponse`,
+      );
     return signMessageResponse.signature;
   };
 
   return (
     <div>
-      <button
-        onClick={() => connect(wallets[0]!.name)}
-        disabled={!wallets[0].name}
-      >
-        {connected ? `${account?.address}` : 'Connect Wallet'}
-      </button>
-      {JSON.stringify(account?.publicKey)}
+      {!connected ? (
+        <>
+          <button
+            onClick={() => connect(wallets[0]!.name)}
+            disabled={!wallets[0].name}
+          >
+            {`Connect Wallet ${wallets[0]!.name}`}
+          </button>
+          <button
+            onClick={() => connect(wallets[1]!.name)}
+            disabled={!wallets[1].name}
+          >
+            {`Connect Wallet ${wallets[1]?.name}`}
+          </button>
+        </>
+      ) : (
+        <button onClick={disconnect}>disconnect {account?.address}</button>
+      )}
+
       {connected ? (
         <NotifiContext
           dappAddress="junitest.xyz"
