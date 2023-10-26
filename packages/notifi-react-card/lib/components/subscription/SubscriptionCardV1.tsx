@@ -15,6 +15,7 @@ import {
   AlertDetailsCard,
   AlertDetailsProps,
 } from '../AlertHistory/AlertDetailsCard';
+import { ConfigAlertModal, ConfigAlertModalProps } from '../ConfigAlertModal';
 import NotifiAlertBox, {
   NotifiAlertBoxButtonProps,
   NotifiAlertBoxProps,
@@ -70,6 +71,7 @@ export type SubscriptionCardV1Props = Readonly<{
     NotifiAlertBox: NotifiAlertBoxProps['classNames'];
     ErrorStateCard: string;
     signupBanner: SignupBannerProps['classNames'];
+    ConfigAlertModal: ConfigAlertModalProps['classNames'];
     dividerLine: string;
   }>;
   inputDisabled: boolean;
@@ -79,6 +81,12 @@ export type SubscriptionCardV1Props = Readonly<{
   inputSeparators?: NotifiInputSeparators;
   onClose?: () => void;
 }>;
+
+export enum FtuConfigStep {
+  Destination = 'destination',
+  Alert = 'alert',
+  Done = 'done',
+}
 
 export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
   classNames,
@@ -107,6 +115,10 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
   const { isAuthenticated, isTokenExpired } = useNotifiSubscribe({
     targetGroupName: 'Default',
   });
+
+  const [ftuConfigStep, setFtuConfigStep] = useState<FtuConfigStep>(
+    FtuConfigStep.Done,
+  );
 
   const { isUsingFrontendClient, frontendClient } = useNotifiClientContext();
 
@@ -156,6 +168,11 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
       }
 
       if (!isClientAuthenticated) {
+        if (data.isContactInfoRequired) {
+          setFtuConfigStep(FtuConfigStep.Destination);
+        } else {
+          setFtuConfigStep(FtuConfigStep.Alert);
+        }
         return { state: 'signup' };
       }
 
@@ -219,7 +236,6 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
       ? data?.titles.alertDetailsView || 'Alert Details'
       : data?.titles.historyView || 'Alert History';
   };
-
   switch (cardView.state) {
     case 'expired':
       view = (
@@ -346,6 +362,15 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
     case 'history':
       view = (
         <>
+          {ftuConfigStep === FtuConfigStep.Alert ? (
+            <ConfigAlertModal
+              classNames={classNames?.ConfigAlertModal}
+              setFtuConfigStep={setFtuConfigStep}
+              data={data}
+              inputDisabled={inputDisabled}
+              inputs={inputs}
+            />
+          ) : null}
           <NotifiAlertBox
             classNames={classNames?.NotifiAlertBox}
             leftIcon={

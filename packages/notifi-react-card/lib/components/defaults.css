@@ -1,3 +1,11 @@
+:root {
+  --notifi-color-grey1: #1c1c23;
+  --notifi-color-grey2: #323240;
+  --notifi-color-grey3: #80829d;
+  --notifi-color-white: #fff;
+  --notifi-color-eggshell: #f5f6fb;
+}
+
 .notifi__light {
   --notifi-card-secondary-background: rgb(214, 214, 214);
   --notifi-placeholder-color: rgb(33 33 33 / 50%);
@@ -23,6 +31,11 @@
   --notifi-settings-icon-color: #262949;
   --notifi-confirmation-color: #22af3c;
   --notifi-divider-line: rgba(255, 255, 255, 0.2);
+  /* SDK3.0 color props*/
+  --notifi-cta-icon-color: var(--notifi-color-grey3);
+  --notifi-cta-background: var(--notifi-color-eggshell);
+  --notifi-inner-overlay-background: var(--notifi-color-eggshell);
+  --notifi-tab-background: var(--notifi-color-white);
 }
 
 a {
@@ -60,6 +73,11 @@ a {
   --notifi-banner-background: #222222;
   --notifi-banner-icon-color: #262949;
   --notifi-divider-line: rgba(255, 255, 255, 0.2);
+  /* SDK3.0 color props*/
+  --notifi-cta-icon-color: var(--notifi-color-grey3);
+  --notifi-cta-background: var(--notifi-color-grey1);
+  --notifi-inner-overlay-background: var(--notifi-color-eggshell);
+  --notifi-tab-background: var(--notifi-color-grey2);
 }
 
 input:autofill,
@@ -85,6 +103,7 @@ input::-webkit-inner-spin-button {
   border-radius: 5px;
   padding: 20px 0px 5px 0px;
   min-height: 510px;
+  position: relative;
 }
 
 .NotifiPreviewCard__container {
@@ -549,6 +568,8 @@ input::-webkit-inner-spin-button {
 
 .NotifiEventTypeContainer {
   padding: 0 20px;
+  height: 100%;
+  overflow: scroll;
 }
 
 .EventTypeLabelRow__container,
@@ -1945,3 +1966,132 @@ input::-webkit-inner-spin-button {
   cursor: pointer;
   border: none;
 }
+
+.configAlertModal__container {
+  position: absolute;
+  z-index: 1;
+  background-color: var(--notifi-card-background);
+  width: 95%;
+  height: 95%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.configAlertModal__overlay {
+  position: absolute;
+  opacity: 0.4;
+  z-index: 1;
+  background-color: var(--notifi-inner-overlay-background);
+  width: 100%;
+  height: 100%;
+  top: 0;
+}
+
+.configAlertModal__ctaIcon {
+  width: 20px;
+  height: 20px;
+  color: var(--notifi-cta-icon-color);
+  background-color: var(--notifi-cta-background);
+  border-radius: 50%;
+}
+
+.configAlertModal__headerContainer,
+.configAlertModal__footerContainer {
+  background-color: var(--notifi-tab-background);
+  width: 100%;
+  height: 56px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 13px !important;
+}
+
+.configAlertModal__backIcon {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  cursor: pointer;
+}
+.configAlertModal__closeIcon {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  cursor: pointer;
+}
+
+.configAlertModal__headerTitle {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0 !important;
+  font-weight: 800;
+}
+
+.configAlertModal__footerContainer {
+  margin-bottom: 0px !important;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  height: 69px;
+}
+
+.configAlertModal__footerContainer button {
+  height: 65%; /* (12+12)/69 */
+  flex-grow: 1;
+  margin: 0px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+/* AlertPanel css overridden in ConfigAlertModal */
+/* TODO: need to be deprecated after SDK3.0 AlertPanel default style is updated (refactor) */
+.configAlertModal__EventTypeContainer {
+  padding: 0px 24px;
+}
+
+.configAlertModal__EventTypeTradingPairsRow,
+.configAlertModal__EventTypeFusionMultiThresholdRow,
+.configAlertModal__EventTypeFusionToggleRow,
+.configAlertModal__EventTypeXMTPRow,
+.configAlertModal__EventTypeWalletBalanceRow,
+.configAlertModal__EventTypeTradingPairsRow,
+.configAlertModal__EventTypePriceChangeRow,
+.configAlertModal__EventTypeDirectPushRow,
+.configAlertModal__EventTypeBroadcastRow {
+  background-color: var(--notifi-tab-background);
+  padding: 16px 12px;
+  border-radius: 6px;
+  margin-bottom: 10px !important;
+}
+
+.configAlertModal__EventTypeFusionHealthCheckRow,
+.configAlertModal__EventTypeHealthCheckRow,
+.configAlertModal__EventTypeCustomHealthCheckRow {
+  background-color: var(--notifi-tab-background);
+  padding: 16px 12px;
+  border-radius: 6px;
+  margin-bottom: 0px !important;
+}
+.configAlertModal__EventTypeFusionHealthCheckRow__Subtitle,
+.configAlertModal__EventTypeHealthCheckRow__Subtitle,
+.configAlertModal__EventTypeCustomHealthCheckRow__Subtitle {
+  background-color: var(--notifi-tab-background);
+  padding: 0px 12px;
+  margin-bottom: 0px !important;
+  margin-top: -6px;
+}
+.configAlertModal__EventTypeHealthCheckRow__ButtonContainer,
+.configAlertModal__EventTypeFusionHealthCheckRow__ButtonContainer,
+.configAlertModal__EventTypeCustomHealthCheckRow__ButtonContainer {
+  background-color: var(--notifi-tab-background);
+  padding: 8px 12px 0px 12px;
+  border-radius: 0px 0px 6px 6px;
+}
+
+/* TODO ending line */

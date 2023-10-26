@@ -158,7 +158,7 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
 
       if (success === true) {
         const nextState = !isMultiWallet
-          ? 'preview'
+          ? 'history'
           : cardView.state === 'signup'
           ? 'verifyonboarding'
           : 'verify';
