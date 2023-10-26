@@ -75,7 +75,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
     setIsEmailConfirmationSent(true);
     emailErrorMessage.onClick();
     setTimeout(() => setIsEmailConfirmationSent(false), 3000);
-  }, []);
+  }, [emailErrorMessage]);
 
   const discordUserName = useMemo(() => {
     const { username, discriminator } = discordTargetData || {};

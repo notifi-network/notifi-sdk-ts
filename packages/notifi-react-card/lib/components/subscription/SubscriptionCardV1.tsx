@@ -16,6 +16,10 @@ import {
   AlertDetailsProps,
 } from '../AlertHistory/AlertDetailsCard';
 import { ConfigAlertModal, ConfigAlertModalProps } from '../ConfigAlertModal';
+import {
+  ConfigDestinationModal,
+  ConfigDestinationModalProps,
+} from '../ConfigDestinationModal';
 import NotifiAlertBox, {
   NotifiAlertBoxButtonProps,
   NotifiAlertBoxProps,
@@ -70,6 +74,7 @@ export type SubscriptionCardV1Props = Readonly<{
     VerifyWalletView: VerifyWalletViewProps['classNames'];
     NotifiAlertBox: NotifiAlertBoxProps['classNames'];
     ErrorStateCard: string;
+    ConfigDestinationModal: ConfigDestinationModalProps['classNames'];
     signupBanner: SignupBannerProps['classNames'];
     ConfigAlertModal: ConfigAlertModalProps['classNames'];
     dividerLine: string;
@@ -369,6 +374,13 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
               data={data}
               inputDisabled={inputDisabled}
               inputs={inputs}
+            />
+          ) : null}
+          {ftuConfigStep === FtuConfigStep.Destination ? (
+            <ConfigDestinationModal
+              classNames={classNames?.ConfigDestinationModal}
+              setFtuConfigStep={setFtuConfigStep}
+              contactInfo={data.contactInfo}
             />
           ) : null}
           <NotifiAlertBox
