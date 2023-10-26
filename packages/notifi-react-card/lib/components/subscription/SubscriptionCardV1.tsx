@@ -1,6 +1,6 @@
 import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
-import { useIsTargetsExist } from 'notifi-react-card/lib/hooks/useIsTargetsExist';
+import { useDestinationState } from 'notifi-react-card/lib/hooks/useDestinationState';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
@@ -25,6 +25,7 @@ import NotifiAlertBox, {
   NotifiAlertBoxProps,
 } from '../NotifiAlertBox';
 import { SignupBanner, SignupBannerProps } from '../SignupBanner';
+import { VerifyBanner, VerifyBannerProps } from '../VerifyBanner';
 import { ErrorStateCard } from '../common';
 import {
   NotifiInputFieldsText,
@@ -78,6 +79,7 @@ export type SubscriptionCardV1Props = Readonly<{
     signupBanner: SignupBannerProps['classNames'];
     ConfigAlertModal: ConfigAlertModalProps['classNames'];
     dividerLine: string;
+    verifyBanner: VerifyBannerProps['classNames'];
   }>;
   inputDisabled: boolean;
   data: CardConfigItemV1;
@@ -146,7 +148,8 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
     isUsingFrontendClient,
   ]);
 
-  const isTargetsExist = useIsTargetsExist();
+  const { unverifiedDestinations, isTargetsExist } = useDestinationState();
+
   const [selectedAlertEntry, setAlertEntry] = useState<
     NotificationHistoryEntry | undefined
   >(undefined);
@@ -409,9 +412,18 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
             <div
               className={clsx('DividerLine history', classNames?.dividerLine)}
             />
+
+            {/* TODO: Consolidate banners (when it grows) */}
+            {unverifiedDestinations.length > 0 ? (
+              <VerifyBanner
+                classNames={classNames?.verifyBanner}
+                unVerifiedDestinations={unverifiedDestinations}
+              />
+            ) : null}
             {!isTargetsExist ? (
               <SignupBanner data={data} classNames={classNames?.signupBanner} />
             ) : null}
+
             {selectedAlertEntry === undefined ? null : (
               <AlertDetailsCard
                 notificationEntry={selectedAlertEntry}

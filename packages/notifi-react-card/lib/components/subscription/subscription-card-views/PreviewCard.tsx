@@ -1,8 +1,7 @@
 import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
-import { useNotifiSubscriptionContext } from 'notifi-react-card/lib/context';
-import { useIsTargetsExist } from 'notifi-react-card/lib/hooks/useIsTargetsExist';
-import React, { useMemo } from 'react';
+import { useDestinationState } from 'notifi-react-card/lib/hooks/useDestinationState';
+import React from 'react';
 
 import { DeepPartialReadonly } from '../../../utils';
 import { AlertsPanel, AlertsPanelProps } from './preview-panel/AlertsPanel';
@@ -32,7 +31,7 @@ export const PreviewCard: React.FC<PreviewCardProps> = ({
   inputDisabled,
   inputs = {},
 }) => {
-  const isTargetsExist = useIsTargetsExist();
+  const { isTargetsExist } = useDestinationState();
   return (
     <div
       className={clsx(

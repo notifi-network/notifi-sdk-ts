@@ -7,6 +7,8 @@
   --notifi-color-seaglass-dark: #828ae3;
   --notifi-color-green1: #318c1a;
   --notifi-color-green2: #dff8d9;
+  --notifi-color-dark: #1b1b22;
+  --notifi-color-blue1: #e8ebf5;
 }
 
 .notifi__light {
@@ -33,6 +35,7 @@
   --notifi-outgoing-message: #e5ebff;
   --notifi-settings-icon-color: #262949;
   --notifi-confirmation-color: #22af3c;
+  --notifi-banner-background: var(--notifi-color-blue1);
   --notifi-divider-line: rgba(255, 255, 255, 0.2);
   /* SDK3.0 color props*/
   --notifi-cta-icon-color: var(--notifi-color-grey3);
@@ -44,6 +47,9 @@
   --notifi-secondary-button-font-color1: var(--notifi-color-seaglass-dark);
   --notifi-secondary-button-font-color2: var(--notifi-color-white);
   --notifi-secondary-button-font-color3: var(--notifi-color-green1);
+  --notifi-verifyBanner-icon-bg: var(--notifi-color-grey2);
+  --notifi-verifyBanner-icon: var(--notifi-color-white);
+  --notifi-banner-button: var(--notifi-color-white);
 }
 
 a {
@@ -91,6 +97,9 @@ a {
   --notifi-secondary-button-font-color1: var(--notifi-color-seaglass-dark);
   --notifi-secondary-button-font-color2: var(--notifi-color-white);
   --notifi-secondary-button-font-color3: var(--notifi-color-green1);
+  --notifi-verifyBanner-icon-bg: var(--notifi-color-white);
+  --notifi-verifyBanner-icon: var(--notifi-color-dark);
+  --notifi-banner-button: var(--notifi-color-white);
 }
 
 input:autofill,
@@ -1944,12 +1953,13 @@ input::-webkit-inner-spin-button {
   align-items: center;
   flex-grow: 1;
 }
-
+.verifyBanner__container,
 .SignupBanner {
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: var(--notifi-banner-background);
+  padding: 10px 20px;
 }
 
 .SignupBanner__Column {
@@ -1957,20 +1967,25 @@ input::-webkit-inner-spin-button {
   padding: 14px 0 20px 0;
   margin: 0px 20px;
   border-radius: 4px;
+  gap: 10px;
 }
-
+.verifyBanner__label,
 .SignupBanner__Label {
   display: flex;
   justify-content: space-between;
-  padding: 10px 0 0 10px;
+  padding: 0px 0 0 10px;
+  margin-bottom: 0px !important;
 }
-
+.verifyBanner__imageContainer,
 .SignupBanner__Image {
-  margin: 0px 8px 0px 12px;
+  margin-right: 13px;
   display: flex;
   justify-content: center;
+  align-items: center;
+  margin-bottom: 0px !important;
 }
 
+.verifyBanner__button,
 .SignupBanner__Button {
   width: 72px;
   height: 29px;
@@ -1978,6 +1993,23 @@ input::-webkit-inner-spin-button {
   margin-right: 10px;
   cursor: pointer;
   border: none;
+  background-color: var(--notifi-banner-button);
+  font-weight: 700;
+}
+
+.verifyBanner__subject {
+  display: flex;
+  align-items: center;
+  padding-right: 10px;
+  font-weight: 700;
+}
+
+.verifyBanner__image {
+  background-color: var(--notifi-verifyBanner-icon-bg);
+  border-radius: 50%;
+  color: var(--notifi-verifyBanner-icon);
+  width: 11px;
+  height: 11px;
 }
 
 .configAlertModal__container,

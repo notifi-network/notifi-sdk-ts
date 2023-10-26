@@ -276,7 +276,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
         targetGroup?.smsTargets?.[0]?.isConfirmed ?? false;
       const phoneNumberToSet = phoneNumber ?? '';
 
-      if (!isPhoneNumberConfirmed) {
+      if (!!phoneNumber && !isPhoneNumberConfirmed) {
         setPhoneNumberErrorMessage({
           type: 'unrecoverableError',
           message: 'Messages stopped',
@@ -300,7 +300,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
       setFormTelegram(telegramId ?? '');
       setTelegramId(telegramIdWithSymbolAdded ?? '');
 
-      if (!telegramTarget?.isConfirmed) {
+      if (!!telegramTarget && !telegramTarget?.isConfirmed) {
         setTelegramErrorMessage({
           type: 'recoverableError',
           onClick: () => {
@@ -320,38 +320,34 @@ export const NotifiSubscriptionContextProvider: React.FC<
         (it) => it?.name === 'Default',
       );
 
-      const discordId = discordTarget?.id;
-
-      if (discordId) {
-        const {
-          isConfirmed,
-          userStatus,
-          verificationLink,
-          discordServerInviteLink,
-        } = discordTarget;
-
-        if (!isConfirmed) {
-          setDiscordErrorMessage({
-            type: 'recoverableError',
-            onClick: () => window.open(verificationLink, '_blank'),
-            message: 'Enable Bot',
-          });
-        } else if (userStatus === 'DISCORD_SERVER_NOT_JOINED') {
-          setDiscordErrorMessage({
-            type: 'recoverableError',
-            onClick: () => window.open(discordServerInviteLink, '_blank'),
-            message: 'Join Server',
-          });
-        } else {
-          setDiscordErrorMessage(undefined);
+      if (!!discordTarget && !discordTarget.isConfirmed) {
+        setDiscordErrorMessage({
+          type: 'recoverableError',
+          onClick: () => window.open(discordTarget.verificationLink, '_blank'),
+          message: 'Enable Bot',
+        });
+        setUseDiscord(true);
+        setDiscordTargetData(discordTarget);
+      } else if (!!discordTarget && discordTarget.isConfirmed) {
+        switch (discordTarget.userStatus) {
+          case 'DISCORD_SERVER_NOT_JOINED':
+            setDiscordErrorMessage({
+              type: 'recoverableError',
+              onClick: () =>
+                window.open(discordTarget.discordServerInviteLink, '_blank'),
+              message: 'Join Server',
+            });
+            break;
+          case 'COMPLETE':
+            setDiscordErrorMessage(undefined);
+            break;
+          default: // UNVERIFIED: Should never get in this state
+            throw new Error('Discord target in unexpected state');
         }
         setUseDiscord(true);
         setDiscordTargetData(discordTarget);
       } else {
-        const targets = newData?.discordTarget;
-        const target =
-          targets?.find((target) => target.isConfirmed) || targets?.[0];
-        setDiscordTargetData(target);
+        setDiscordTargetData(undefined);
         setUseDiscord(false);
       }
 
