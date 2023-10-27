@@ -191,6 +191,7 @@ export const NotifiSubscriptionCard: React.FC<
         'NotifiSubscriptionCard__container',
         classNames?.container,
       )}
+      data-cy="notifiSubscriptionCardContainer"
     >
       {children}
       {contents}
