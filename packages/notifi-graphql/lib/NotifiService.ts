@@ -1,6 +1,7 @@
 import { GraphQLClient } from 'graphql-request';
 import { v4 as uuid } from 'uuid';
 
+import { version } from '../package.json';
 import * as Generated from './gql/generated';
 import { getSdk } from './gql/generated';
 import type * as Operations from './operations';
@@ -508,7 +509,10 @@ export class NotifiService
 
   private _requestHeaders(): HeadersInit {
     const requestId = uuid();
-    const headers: HeadersInit = { 'X-Request-Id': requestId };
+    const headers: HeadersInit = {
+      'X-Request-Id': requestId,
+      'X-Notifi-Client-Version': version,
+    };
 
     if (this._jwt !== undefined) {
       headers['Authorization'] = `Bearer ${this._jwt}`;
