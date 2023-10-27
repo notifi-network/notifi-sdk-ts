@@ -34,6 +34,7 @@ export const PreviewCard: React.FC<PreviewCardProps> = ({
   const { isTargetsExist } = useDestinationState();
   return (
     <div
+      data-cy="previewCard"
       className={clsx(
         'NotifiPreviewCard__container',
         classNames?.NotifiPreviewCardContainer,

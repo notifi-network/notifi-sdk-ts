@@ -36,6 +36,7 @@ export const ConfigAlertModal: React.FC<ConfigAlertModalProps> = ({
         className={clsx('configAlertModal__overlay', classNames?.overlay)}
       ></div>
       <div
+        data-cy="configAlertModal"
         className={clsx('configAlertModal__container', classNames?.container)}
       >
         <div
@@ -142,7 +143,10 @@ export const ConfigAlertModal: React.FC<ConfigAlertModalProps> = ({
             classNames?.footerContainer,
           )}
         >
-          <button onClick={() => setFtuConfigStep(FtuConfigStep.Done)}>
+          <button
+            data-cy="configAlertModalDoneButton"
+            onClick={() => setFtuConfigStep(FtuConfigStep.Done)}
+          >
             Done
           </button>
         </div>
