@@ -47,7 +47,7 @@ export const AlertListPreview: React.FC<AlertListPreviewProps> = ({
           )}
           key={eventType.name}
         >
-          {eventType.name}
+          {eventType.type === 'fusion' ? (eventType.displayNameOverride ?? eventType.name) : eventType.name}
         </label>
       </div>
     );
