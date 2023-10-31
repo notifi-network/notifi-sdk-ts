@@ -41,10 +41,13 @@
     "clsx": "^1.2.1",
     "date-fns": "^2.29.3",
     "libphonenumber-js": "^1.10.13",
-    "react-virtuoso": "^3.1.1"
+    "react-virtuoso": "^3.1.1",
+    "dompurify": "^3.0.5"
   },
   "devDependencies": {
-    "@notifi-network/notifi-core": "^0.86.2"
+    "@notifi-network/notifi-core": "^0.86.2",
+    "@types/marked": "^5.0.1",
+    "@types/dompurify": "^3.0.3"
   },
   "tsup": {
     "noExternal": [

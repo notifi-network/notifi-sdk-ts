@@ -18,6 +18,7 @@ fragment FusionNotificationHistoryEntry on FusionNotificationHistoryEntry {
       messageType: type
       subject
       message
+      messageHtml
     }
     ... on DirectTenantMessageEventDetails {
       tenantName
