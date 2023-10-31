@@ -1057,6 +1057,11 @@ input::-webkit-inner-spin-button {
   overflow-wrap: break-word;
   white-space: pre-wrap;
   word-wrap: break-word;
+  line-height: 1rem;
+}
+
+.NotifiAlertDetails__bottomContent * {
+  margin: 0 !important;
 }
 
 .NotifiAlertDetails__timestamp {

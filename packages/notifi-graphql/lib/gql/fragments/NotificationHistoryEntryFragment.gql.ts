@@ -27,6 +27,7 @@ export const NotificationHistoryEntryFragment = gql`
         messageType: type
         subject
         message
+        messageHtml
       }
       ... on DirectTenantMessageEventDetails {
         tenantName

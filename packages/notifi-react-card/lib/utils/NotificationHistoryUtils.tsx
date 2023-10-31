@@ -16,7 +16,8 @@ type AccountBalanceChangedEventDetails = Extract<
 >;
 
 type BroadcastMessageEventDetails = Extract<
-  Types.NotificationHistoryEntryFragmentFragment['detail'],
+  | Types.NotificationHistoryEntryFragmentFragment['detail']
+  | Types.FusionNotificationHistoryEntryFragmentFragment['detail'],
   { __typename: 'BroadcastMessageEventDetails' }
 >;
 
@@ -38,6 +39,7 @@ type GenericEventDetails = Extract<
 type AlertDetailsContents = {
   topContent: string;
   bottomContent: string;
+  bottomContentHtml?: string;
   otherContent?: string;
 };
 
@@ -71,6 +73,7 @@ supportedEventDetails.set('BroadcastMessageEventDetails', {
     return {
       topContent: detail.subject ?? '',
       bottomContent: detail.message ?? '',
+      bottomContentHtml: detail.messageHtml ?? '',
     };
   },
 });

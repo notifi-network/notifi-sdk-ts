@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import * as DOMPurify from 'dompurify';
 import { getAlertDetailsContents } from 'notifi-react-card/lib/utils';
 import React, { useMemo } from 'react';
 
@@ -16,10 +17,18 @@ export const AlertDetailsCard: React.FC<AlertDetailsProps> = ({
   notificationEntry,
   classNames,
 }) => {
-  const detailsContents = useMemo(
-    () => getAlertDetailsContents(notificationEntry),
-    [notificationEntry],
-  );
+  const { bottomContent, otherContent, topContent, bottomContentHtml } =
+    useMemo(
+      () => getAlertDetailsContents(notificationEntry),
+      [notificationEntry],
+    );
+
+  const sanitizedBottomContentHtml = useMemo(() => {
+    const sanitizedBottomContentHtml =
+      bottomContentHtml && DOMPurify.sanitize(bottomContentHtml);
+    return sanitizedBottomContentHtml;
+  }, [bottomContentHtml]);
+
   return (
     <div
       className={clsx(
@@ -29,15 +38,22 @@ export const AlertDetailsCard: React.FC<AlertDetailsProps> = ({
     >
       <div className={clsx('NotifiAlertDetails__topContentContainer')}>
         <div className={clsx('NotifiAlertDetails__topContent')}>
-          {detailsContents.topContent}
+          {topContent}
         </div>
         <div className={clsx('NotifiAlertDetails__timestamp')}>
           {formatAlertDetailsTimestamp(notificationEntry.createdDate)}
         </div>
       </div>
       <div className={clsx('NotifiAlertDetails__bottomContent')}>
-        <div>{detailsContents.bottomContent}</div>
-        <div>{detailsContents.otherContent}</div>
+        {sanitizedBottomContentHtml ? (
+          // If `messageHtml` exists just use it, otherwise use `message` (which is plain text)
+          <div
+            dangerouslySetInnerHTML={{ __html: sanitizedBottomContentHtml }}
+          />
+        ) : (
+          <div>{bottomContent}</div>
+        )}
+        <div>{otherContent}</div>
       </div>
     </div>
   );

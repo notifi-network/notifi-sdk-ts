@@ -38,6 +38,7 @@ fragment NotificationHistoryEntry on NotificationHistoryEntry {
       messageType: type
       subject
       message
+      messageHtml
     }
     ... on DirectTenantMessageEventDetails {
       tenantName

@@ -20,6 +20,7 @@ export const FusionNotificationHistoryEntryFragment = gql`
         messageType: type
         subject
         message
+        messageHtml
       }
       ... on DirectTenantMessageEventDetails {
         tenantName
