@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import * as DOMPurify from 'dompurify';
+import { marked } from 'marked';
 import { getAlertDetailsContents } from 'notifi-react-card/lib/utils';
 import React, { useMemo } from 'react';
 
@@ -23,11 +24,19 @@ export const AlertDetailsCard: React.FC<AlertDetailsProps> = ({
       [notificationEntry],
     );
 
-  const sanitizedBottomContentHtml = useMemo(() => {
-    const sanitizedBottomContentHtml =
-      bottomContentHtml && DOMPurify.sanitize(bottomContentHtml);
-    return sanitizedBottomContentHtml;
-  }, [bottomContentHtml]);
+  const { sanitizedMarkdownBottomContent, sanitizedBottomContentHtml } =
+    useMemo(() => {
+      let sanitizedMarkdownBottomContent = bottomContent;
+      try {
+        const parsedMarkdown = marked.parse(bottomContent);
+        sanitizedMarkdownBottomContent = DOMPurify.sanitize(parsedMarkdown);
+      } catch (e) {
+        console.error('Error parsing markdown: ', e);
+      }
+      const sanitizedBottomContentHtml =
+        bottomContentHtml && DOMPurify.sanitize(bottomContentHtml);
+      return { sanitizedMarkdownBottomContent, sanitizedBottomContentHtml };
+    }, [bottomContent, bottomContentHtml]);
 
   return (
     <div
@@ -51,7 +60,9 @@ export const AlertDetailsCard: React.FC<AlertDetailsProps> = ({
             dangerouslySetInnerHTML={{ __html: sanitizedBottomContentHtml }}
           />
         ) : (
-          <div>{bottomContent}</div>
+          <div
+            dangerouslySetInnerHTML={{ __html: sanitizedMarkdownBottomContent }}
+          />
         )}
         <div>{otherContent}</div>
       </div>
