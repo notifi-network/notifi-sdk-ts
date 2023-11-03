@@ -1,44 +1,7 @@
 /// <reference types="cypress" />
-// ***********************************************
-// This example commands.ts shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
-//
-// declare global {
-//   namespace Cypress {
-//     interface Chainable {
-//       login(email: string, password: string): Chainable<void>
-//       drag(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       dismiss(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       visit(originalFn: CommandOriginalFn, url: string, options: Partial<VisitOptions>): Chainable<Element>
-//     }
-//   }
-// }
 import { arrayify } from '@ethersproject/bytes';
 import {
   ConfigFactoryInput,
-  NotifiFrontendClient,
   envUrl,
   newFrontendClient,
 } from '@notifi-network/notifi-frontend-client';
@@ -60,6 +23,7 @@ declare global {
         fixtureName?: string,
       ): void;
       mountNotifiSubscriptionCard(): void;
+      overrideFetchDataTargetGroupWithFixture(fixtureName: string): void;
     }
   }
 }
@@ -121,6 +85,23 @@ const overrideTenantConfigWithFixture = (
   });
 };
 
+const overrideFetchDataTargetGroupWithFixture = (fixtureName: string) => {
+  cy.fixture(fixtureName).then((targetGroup) => {
+    const env = Cypress.env('ENV');
+    cy.intercept('POST', envUrl(env), (req) => {
+      aliasQuery(req, 'fetchData');
+      if (hasOperationName(req, 'fetchData')) {
+        req.reply((res) => {
+          res.body.data = {
+            ...res.body.data,
+            targetGroup: [targetGroup],
+          };
+        });
+      }
+    });
+  });
+};
+
 const emptyDefaultTargetGroup = async () => {
   const dappAddress = Cypress.env('DAPP_ADDRESS');
   const env = Cypress.env('ENV');
@@ -176,4 +157,8 @@ Cypress.Commands.add(
 Cypress.Commands.add(
   'mountNotifiSubscriptionCard',
   mountNotifiSubscriptionCard,
+);
+Cypress.Commands.add(
+  'overrideFetchDataTargetGroupWithFixture',
+  overrideFetchDataTargetGroupWithFixture,
 );

@@ -95,6 +95,7 @@ export const NotifiTelegramInput: React.FC<NotifiTelegramInputProps> = ({
       >
         <TelegramIcon className={'NotifiInput__icon'} />
         <input
+          data-cy="notifiTelegramInput"
           onBlur={validateTelegram}
           className={clsx(
             'NotifiTelegramInput__input',
