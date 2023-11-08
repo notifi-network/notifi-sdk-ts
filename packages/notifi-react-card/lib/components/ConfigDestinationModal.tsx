@@ -75,7 +75,7 @@ export const ConfigDestinationModal: React.FC<ConfigDestinationModalProps> = ({
   }, [emailErrorMessage]);
 
   return (
-    <>
+    <div data-cy="configDestinationModal">
       <div
         className={clsx('configDestinationModal__overlay', classNames?.overlay)}
       ></div>
@@ -246,23 +246,29 @@ export const ConfigDestinationModal: React.FC<ConfigDestinationModalProps> = ({
                   >
                     {telegramId}
                   </div>
-                  <DestinationErrorMessage
-                    classNames={{
-                      errorMessage: clsx(
-                        'configDestinationModal__verifyButtonMessage',
-                        classNames?.verifyButtonMessage,
-                      ),
-                      errorMessageContainer: clsx(
-                        'configDestinationModal__verifyButtonContainer',
-                        classNames?.verifyButtonContainer,
-                      ),
-                    }}
+                  <div
+                    data-cy="configDestinationModalConfirmTelegramButton"
                     onClick={() => {
                       telegramErrorMessage?.onClick();
                     }}
-                    errorMessage={telegramErrorMessage?.message ?? ''}
-                    tooltipContent={destinationErrorMessages?.telegram?.tooltip}
-                  />
+                  >
+                    <DestinationErrorMessage
+                      classNames={{
+                        errorMessage: clsx(
+                          'configDestinationModal__verifyButtonMessage',
+                          classNames?.verifyButtonMessage,
+                        ),
+                        errorMessageContainer: clsx(
+                          'configDestinationModal__verifyButtonContainer',
+                          classNames?.verifyButtonContainer,
+                        ),
+                      }}
+                      errorMessage={telegramErrorMessage?.message ?? ''}
+                      tooltipContent={
+                        destinationErrorMessages?.telegram?.tooltip
+                      }
+                    />
+                  </div>
                 </>
               ) : (
                 <VerifiedButton className={classNames?.verifiedButton} />
@@ -320,6 +326,7 @@ export const ConfigDestinationModal: React.FC<ConfigDestinationModalProps> = ({
           ) : null}
         </div>
         <div
+          data-cy="configDestinationModalNextButton"
           className={clsx(
             'configDestinationModal__footerContainer',
             classNames?.footerContainer,
@@ -330,7 +337,7 @@ export const ConfigDestinationModal: React.FC<ConfigDestinationModalProps> = ({
           </button>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
@@ -339,7 +346,10 @@ type VerifiedButtonProps = Readonly<{
 }>;
 const VerifiedButton: React.FC<VerifiedButtonProps> = ({ className }) => {
   return (
-    <div className={clsx('configDestinationModal__verifiedButton', className)}>
+    <div
+      data-cy="configDestinationModalVerifyLabel"
+      className={clsx('configDestinationModal__verifiedButton', className)}
+    >
       <div>Verified</div>
     </div>
   );

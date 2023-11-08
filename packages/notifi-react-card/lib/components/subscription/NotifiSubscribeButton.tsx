@@ -191,6 +191,7 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
 
   return (
     <button
+      data-cy="notifiSubscribeButton"
       className={clsx('NotifiSubscribeButton__button', classNames?.button)}
       disabled={!isInitialized || loading || hasErrors || !isInputFieldsValid}
       onClick={onClick}

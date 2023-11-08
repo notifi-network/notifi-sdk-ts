@@ -89,6 +89,7 @@ export const SignupBanner: React.FC<SignupBannerProps> = ({
           </div>
         </div>
         <button
+          data-cy="signupBannerButton"
           className={clsx(
             classNames?.bannerButton
               ? classNames.bannerButton

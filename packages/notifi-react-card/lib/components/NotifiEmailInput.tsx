@@ -101,6 +101,7 @@ export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
       >
         <EmailIcon className={'NotifiInput__icon'} />
         <input
+          data-cy="notifiEmailInput"
           onBlur={validateEmail}
           className={clsx(
             'NotifiEmailInput__input',

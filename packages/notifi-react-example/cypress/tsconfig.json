@@ -1,0 +1,6 @@
+{
+  "compilerOptions": {
+    "types": ["cypress"],
+    "jsx": "react-jsx"
+  }
+}

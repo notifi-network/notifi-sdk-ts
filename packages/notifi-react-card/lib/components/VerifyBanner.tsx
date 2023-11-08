@@ -57,6 +57,7 @@ export const VerifyBanner: React.FC<VerifyBannerProps> = ({
         </div>
       </div>
       <button
+        data-cy="verifyBannerButton"
         className={clsx(
           classNames?.bannerButton
             ? classNames.bannerButton
