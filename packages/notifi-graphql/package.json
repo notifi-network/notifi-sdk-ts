@@ -16,7 +16,7 @@
   },
   "scripts": {
     "build": "npm run clean && npm run compile",
-    "compile": "graphql-codegen  && sed -i '' 's|graphql-request/dist/types|graphql-request/build/esm/types|g' ./lib/gql/generated.ts && tsup lib/index.ts --format cjs,esm --dts --clean",
+    "compile": "graphql-codegen  && tsup lib/index.ts --format cjs,esm --dts --clean",
     "clean": "rimraf ./dist && rimraf ./lib/gql/generated.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepublishOnly": "npm run build"
