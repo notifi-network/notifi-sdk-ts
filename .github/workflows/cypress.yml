@@ -7,12 +7,34 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.1.0
+        uses: actions/checkout@v4
 
-      - name: Cypress test
+      - name: Cypress run
         uses: cypress-io/github-action@v6
         with:
           browser: chrome
           component: true
+          record: true
           build: npm run build
-          command: npm run test
+          command: npx lerna --scope=@notifi-network/notifi-react-example run cypress:ci
+        env:
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+
+      # - name: Cypress build
+      #   uses: cypress-io/github-action@v6
+      #   with:
+      #     build: npm run build
+
+      # - name: Cypress info
+      #   run: npx cypress info
+
+      # - name: Cypress run
+      #   uses: cypress-io/github-action@v6
+      #   with:
+      #     install: false
+      #     working-directory: packages/notifi-react-example/
+      #     record: true
+      #     component: true
+      #     browser: chrome
+      #   env:
+      #     CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
