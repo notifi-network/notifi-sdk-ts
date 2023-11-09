@@ -1,6 +1,14 @@
 name: Cypress Component Test
 
-on: [pull_request]
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+  push:
+    branches:
+      - main
 
 jobs:
   cypress-run:
