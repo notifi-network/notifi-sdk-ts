@@ -15,4 +15,4 @@ generates:
       - typescript-operations
       - typescript-graphql-request
     hooks: # WORKAROUND: Use Hooks to fix Type error: Cannot find module 'graphql-request/dist/types.dom (https://github.com/dotansimha/graphql-code-generator/issues/9046#issuecomment-1465246282). Ref: https://the-guild.dev/graphql/codegen/docs/config-reference/lifecycle-hooks#how-to-use
-      afterOneFileWrite: "sed -i '' 's|graphql-request/dist/types|graphql-request/build/esm/types|g' || 'ls'"
+      afterOneFileWrite: "sed -i '' 's|graphql-request/dist/types|graphql-request/build/esm/types|g' || 'prettier'"

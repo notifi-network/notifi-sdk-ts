@@ -19,22 +19,3 @@ jobs:
           command: npx lerna --scope=@notifi-network/notifi-react-example run cypress:ci
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-
-      # - name: Cypress build
-      #   uses: cypress-io/github-action@v6
-      #   with:
-      #     build: npm run build
-
-      # - name: Cypress info
-      #   run: npx cypress info
-
-      # - name: Cypress run
-      #   uses: cypress-io/github-action@v6
-      #   with:
-      #     install: false
-      #     working-directory: packages/notifi-react-example/
-      #     record: true
-      #     component: true
-      #     browser: chrome
-      #   env:
-      #     CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
