@@ -88,10 +88,10 @@ describe('Sign-up', () => {
       .should('exist')
       .click();
     cy.get('[data-cy="configAlertModal"').should('exist');
-    // ... the rest of the test is the same as the previous test
+    // ... the rest of the test is the same as the "W/O destination" test
   });
 
-  it('W/ destination - Case#1', () => {
+  it('W/ destination - Case#2', () => {
     // destination NOT confirmed process
     cy.overrideTenantConfigWithFixture({ isContactInfoRequired: true });
     cy.mountNotifiSubscriptionCard();
@@ -124,6 +124,6 @@ describe('Sign-up', () => {
       .should('exist')
       .click();
     cy.get('[data-cy="configAlertModal"').should('exist');
-    // ... the rest of the test is the same as the previous test
+    // ... the rest of the test is the same as the "W/O destination" test
   });
 });

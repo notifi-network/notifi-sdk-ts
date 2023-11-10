@@ -43,10 +43,10 @@
   },
   "scripts": {
     "start": "BROWSER=none react-app-rewired start",
-    "build": "react-app-rewired build",
     "test": "cypress run --component --spec 'cypress/component/NotifiSubscriptionCard.cy.tsx' --browser chrome",
     "eject": "react-app-rewired eject",
-    "cypress:open": "cypress open"
+    "cypress:open": "cypress open",
+    "cypress:ci": "cypress run --component --group notifi-e2e --spec 'cypress/component/NotifiSubscriptionCard.cy.tsx' --browser chrome --record"
   },
   "eslintConfig": {
     "extends": [
