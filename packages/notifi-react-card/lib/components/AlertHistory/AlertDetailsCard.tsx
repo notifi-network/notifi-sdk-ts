@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { sanitize } from 'dompurify';
+import DOMPurify from 'dompurify';
 import { getAlertDetailsContents } from 'notifi-react-card/lib/utils';
 import React, { useMemo } from 'react';
 
@@ -25,7 +25,7 @@ export const AlertDetailsCard: React.FC<AlertDetailsProps> = ({
 
   const sanitizedBottomContentHtml = useMemo(() => {
     const sanitizedBottomContentHtml =
-      bottomContentHtml && sanitize(bottomContentHtml);
+      bottomContentHtml && DOMPurify.sanitize(bottomContentHtml);
     return sanitizedBottomContentHtml;
   }, [bottomContentHtml]);
 
