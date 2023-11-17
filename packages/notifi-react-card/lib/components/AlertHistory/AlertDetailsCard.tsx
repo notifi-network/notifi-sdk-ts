@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import * as DOMPurify from 'dompurify';
+import DOMPurify from 'dompurify';
 import { getAlertDetailsContents } from 'notifi-react-card/lib/utils';
 import React, { useMemo } from 'react';
 
