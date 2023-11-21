@@ -56,6 +56,7 @@ In this scenario, Notifi can monitor the blockchain and detect important events 
 - [React.js](https://reactjs.org/)
 - [Vue.js](https://vuejs.org/)
 - [Lerna.js](https://lerna.js.org/)
+- [Cypress](https://www.cypress.io/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -105,6 +106,62 @@ npx lerna publish --canary
 [license-url]: https://github.com/notifi-network/notifi-sdk-ts/blob/main/LICENSE.txt
 [scenario-push-diagram]: images/push_diagram.svg
 [scenario-monitor-diagram]: images/monitor_diagram.svg
+
+## E2E Test
+
+The E2E test is particularly for `@notifi-network/notifi-react-card` since it provides a React component (UI/UX) to let developers integrate with notifi's BE more easily.
+
+To ensure all the components are working as expected, we use `cypress` [component test](https://docs.cypress.io/guides/component-testing/overview) to implement the E2E (end-to-end) test.
+
+Run the command below to start the cypress test runner [heedlessly](https://docs.cypress.io/guides/guides/command-line#cypress-run-headed).
+
+```bash
+npm run test
+# or
+# npx lerna --scope=@notifi-network/notifi-react-example run test
+```
+
+If you would like to contribute, feel free to create a new test case in `packages/notifi-react-example/cypress/component/NotifiSubscriptionCard.cy.tsx`, to ensure the implemented new features are working as expected. These test cases will also be included in the CI/CD pipeline when the PR is created & merged.
+
+There is the example format of the test case below.
+
+```typescript
+// ...
+describe('New feature', () => {
+  it('Flow#1', () => {
+    // ... implement the test content for the new feature flow#1
+  });
+
+  it('Flow#2', () => {
+    // ... implement the test content for the new feature flow#2
+  });
+});
+```
+
+<details>
+  <summary>Notes</summary>
+
+1. It might be useful to run cypress `headed mode` while developing new test script.
+
+```bash
+npx lerna --scope=@notifi-network/notifi-react-example run cypress:open
+```
+
+2. Learn more about cypress from [official documentation](https://docs.cypress.io/guides/end-to-end-testing/writing-your-first-end-to-end-test)
+
+</details>
+
+> We use the exclusive notifi tenant for e2e test, see the details below.
+>
+> - tenantId (dappAddress): `notifie2e`
+> - cardId: `718f2bb0fd80401887643764017cc780`
+>
+> For normal test scenario, we are able to simply manipulate card data through cypress `intercept` and `fixture` function.
+> Feel free to contact us in case that the feature test requires a new react-card.
+
+More detail for repository maintainer, check the Doc [here](https://notifi.atlassian.net/l/cp/dNM0ZL07).
+
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Regenerate docs
 
