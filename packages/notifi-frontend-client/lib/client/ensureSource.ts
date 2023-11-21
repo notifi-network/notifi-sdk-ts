@@ -11,6 +11,7 @@ import {
   HealthCheckEventTypeItem,
   PriceChangeEventTypeItem,
   ThresholdDirection,
+  TopicTypeItem,
   TradingPairEventTypeItem,
   WalletBalanceEventTypeItem,
   XMTPTopicTypeItem,
@@ -43,7 +44,7 @@ const ensureDirectPushSource = async (
 
 const ensureFusionSource = async (
   service: Operations.GetSourcesService & Operations.CreateSourceService,
-  eventType: FusionEventTypeItem,
+  eventType: FusionEventTypeItem | TopicTypeItem,
   inputs: Record<string, unknown>,
 ): Promise<Types.SourceFragmentFragment> => {
   const address = resolveStringRef(
@@ -414,7 +415,7 @@ const ensureSources = async (
   service: Operations.GetSourcesService &
     Operations.CreateSourceService &
     Operations.GetConnectedWalletsService,
-  eventType: EventTypeItem,
+  eventType: EventTypeItem | TopicTypeItem,
   inputs: Record<string, unknown>,
 ): Promise<ReadonlyArray<Types.SourceFragmentFragment>> => {
   switch (eventType.type) {
@@ -665,7 +666,7 @@ const getWalletBalanceSourceFilter = (
 };
 const getFusionSourceFilter = (
   source: Types.SourceFragmentFragment,
-  eventType: FusionEventTypeItem,
+  eventType: FusionEventTypeItem | TopicTypeItem,
   inputs: Record<string, unknown>,
 ): GetFilterResults => {
   const filter = source.applicableFilters?.find(
@@ -676,7 +677,10 @@ const getFusionSourceFilter = (
   }
 
   let filterOptions: FilterOptions = {}; // Default {}
-  if (eventType.selectedUIType === 'TOGGLE'  || eventType.selectedUIType === 'MULTI_THRESHOLD') {
+  if (
+    eventType.selectedUIType === 'TOGGLE' ||
+    eventType.selectedUIType === 'MULTI_THRESHOLD'
+  ) {
     if (eventType.alertFrequency !== undefined) {
       filterOptions = {
         alertFrequency: eventType.alertFrequency,
@@ -901,7 +905,7 @@ export const ensureSourceAndFilters = async (
     Operations.CreateSourceGroupService &
     Operations.UpdateSourceGroupService &
     Operations.GetConnectedWalletsService,
-  eventType: EventTypeItem,
+  eventType: EventTypeItem | TopicTypeItem,
   inputs: Record<string, unknown>,
 ): Promise<
   Readonly<{

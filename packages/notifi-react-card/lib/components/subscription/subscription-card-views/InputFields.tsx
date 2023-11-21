@@ -1,4 +1,4 @@
-import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
+import { CardConfigItem } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import React from 'react';
 
@@ -23,7 +23,7 @@ import {
 } from '../../NotifiTelegramInput';
 
 export type InputFieldsProps = {
-  data: CardConfigItemV1;
+  data: CardConfigItem;
   inputSeparators?: NotifiInputSeparators;
   inputTextFields?: NotifiInputFieldsText;
   allowedCountryCodes: string[];

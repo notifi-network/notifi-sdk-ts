@@ -1,4 +1,4 @@
-import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
+import { CardConfigItem } from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
 import { useEffect, useState } from 'react';
 
@@ -17,7 +17,7 @@ export type LoadingState = Readonly<{
   state: 'loading';
 }>;
 
-export type Data = CardConfigItemV1;
+export type Data = CardConfigItem;
 
 export type FetchedState = Readonly<{
   state: 'fetched';
@@ -47,7 +47,7 @@ export const useSubscriptionCard = (
       }));
     }
 
-    let card: CardConfigItemV1 | undefined;
+    let card: CardConfigItem | undefined;
     setState({ state: 'loading' });
     (isUsingFrontendClient ? frontendClient : client)
       .fetchSubscriptionCard(input)
@@ -61,8 +61,8 @@ export const useSubscriptionCard = (
           card = result;
         }
 
-        if (card?.version !== 'v1') {
-          return Promise.reject(new Error('Unsupported config format'));
+        if (!card?.version) {
+          return Promise.reject(new Error('Failed to fetch data'));
         }
 
         setState({

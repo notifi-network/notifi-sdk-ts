@@ -7,8 +7,10 @@ import type {
   NotifiFrontendConfiguration,
 } from '../configuration';
 import type {
+  CardConfigItem,
   CardConfigItemV1,
   EventTypeItem,
+  TopicTypeItem,
   WalletBalanceEventTypeItem,
 } from '../models';
 import { IntercomCardConfigItemV1 } from '../models/IntercomCardConfig';
@@ -153,7 +155,7 @@ type FindSubscriptionCardParams = Omit<Types.FindTenantConfigInput, 'tenant'>;
 // modify the string literal, which then causes authentication to fail due to different strings
 export const SIGNING_MESSAGE = `Sign in with Notifi \n\n    No password needed or gas is needed. \n\n    Clicking “Approve” only means you have proved this wallet is owned by you! \n\n    This request will not trigger any transaction or cost any gas fees. \n\n    Use of our website and service is subject to our terms of service and privacy policy. \n \n 'Nonce:' `;
 
-export type SupportedCardConfigType = CardConfigItemV1;
+export type SupportedCardConfigType = CardConfigItem;
 
 export type UserState = Readonly<
   | {
@@ -649,7 +651,7 @@ export class NotifiFrontendClient {
     inputs,
     targetGroupName = 'Default',
   }: Readonly<{
-    eventType: EventTypeItem;
+    eventType: EventTypeItem | TopicTypeItem;
     inputs: Record<string, unknown>;
     targetGroupName?: string;
   }>): Promise<Types.AlertFragmentFragment> {

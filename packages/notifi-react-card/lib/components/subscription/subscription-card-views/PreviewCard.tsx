@@ -1,9 +1,10 @@
-import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
+import { CardConfigItem } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import { useDestinationState } from 'notifi-react-card/lib/hooks/useDestinationState';
 import React from 'react';
 
 import { DeepPartialReadonly } from '../../../utils';
+import { TopicsPanel } from '../v2/TopicsPanel';
 import { AlertsPanel, AlertsPanelProps } from './preview-panel/AlertsPanel';
 import {
   UserInfoPanel,
@@ -11,6 +12,7 @@ import {
 } from './preview-panel/UserInfoPanel';
 
 export type PreviewCardProps = Readonly<{
+  // TODO: MVP-3655
   classNames?: {
     NotifiPreviewCardSeparator?: string;
     NotifiPreviewCardContainer?: string;
@@ -20,7 +22,7 @@ export type PreviewCardProps = Readonly<{
     NotifiPreviewCardTitle?: string;
     NotifiPreviewCardDividerLine?: string;
   };
-  data: CardConfigItemV1;
+  data: CardConfigItem;
   inputDisabled: boolean;
   inputs: Record<string, unknown>;
 }>;
@@ -62,12 +64,22 @@ export const PreviewCard: React.FC<PreviewCardProps> = ({
       >
         Select the alerts you want to receive:
       </div>
-      <AlertsPanel
-        classNames={classNames?.AlertsPanel}
-        data={data}
-        inputDisabled={inputDisabled}
-        inputs={inputs}
-      />
+      {data.version === 'v1' ? (
+        <AlertsPanel
+          classNames={classNames?.AlertsPanel}
+          data={data}
+          inputDisabled={inputDisabled}
+          inputs={inputs}
+        />
+      ) : null}
+      {data.version === 'v2' ? (
+        <TopicsPanel // topics for v2 equivalent to alerts for v1
+          classNames={classNames?.AlertsPanel} // TODO: MVP-3655
+          data={data}
+          inputDisabled={inputDisabled}
+          inputs={inputs}
+        />
+      ) : null}
     </div>
   );
 };

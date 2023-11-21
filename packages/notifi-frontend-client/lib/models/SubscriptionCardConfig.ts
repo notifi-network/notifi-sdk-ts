@@ -228,11 +228,19 @@ export type ContactInfoConfig = Readonly<{
   discord: DiscordContactInfo;
 }>;
 
-export type CardConfigItemV1 = Readonly<{
-  version: 'v1';
+export type CardConfigItem = CardConfigItemV1 | CardConfigItemV2;
+
+export type CardConfigItemV2 = Readonly<
+  { version: 'v2'; topicTypes: TopicTypeItem[] } & CardConfigBase
+>;
+
+export type CardConfigItemV1 = Readonly<
+  { version: 'v1'; eventTypes: EventTypeConfig } & CardConfigBase
+>;
+
+export type CardConfigBase = Readonly<{
   id: string | null;
   name: string;
-  eventTypes: EventTypeConfig;
   inputs: InputsConfig;
   contactInfo: ContactInfoConfig;
   isContactInfoRequired?: boolean;
@@ -255,3 +263,40 @@ export type TitleSubtitleConfigActive = Readonly<{
 export type TitleSubtitleConfig =
   | TitleSubtitleConfigActive
   | TitleSubtitleConfigInactive;
+
+// SDK3.0 (SubscriptionCardV2)
+// Rename EventTypeItem to TopicTypeItem for the naming convention (AP V2)
+export type TopicTypeItem = TopicTypeItemBase & FrontendUIType;
+
+type TopicTypeItemBase = {
+  name: string;
+  type: 'fusion'; // This is for backward compatibility to differentiate from legacy type.
+  fusionEventId: ValueOrRef<string>;
+  sourceAddress: ValueOrRef<string>;
+  tooltipContent?: string;
+  maintainSourceGroup?: boolean;
+  alertFrequency?: AlertFrequency;
+  optOutAtSignup?: boolean;
+  displayNameOverride?: string;
+};
+
+// To differentiate fusion UI type, use `selectedUIType`.
+type FrontendUIType = Toggle | HealthCheck | MultiThreshold;
+
+type Toggle = Readonly<{
+  selectedUIType: 'TOGGLE';
+}>;
+
+type HealthCheck = Readonly<{
+  selectedUIType: 'HEALTH_CHECK';
+  healthCheckSubtitle: string;
+  numberType: NumberTypeSelect;
+  checkRatios: CheckRatio[];
+}>;
+
+type MultiThreshold = Readonly<{
+  selectedUIType: 'MULTI_THRESHOLD';
+  numberType: NumberTypeSelect;
+  subtitle?: string;
+  addThreshholdTitle?: string;
+}>;

@@ -1,5 +1,5 @@
 import {
-  CardConfigItemV1,
+  CardConfigItem,
   ContactInfoConfig,
 } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
@@ -10,7 +10,7 @@ import { useNotifiSubscriptionContext } from '../context';
 import { DeepPartialReadonly } from '../utils';
 
 export type SignupBannerProps = Readonly<{
-  data: CardConfigItemV1;
+  data: CardConfigItem;
   classNames?: DeepPartialReadonly<{
     banner: string;
     bannerImage: string;

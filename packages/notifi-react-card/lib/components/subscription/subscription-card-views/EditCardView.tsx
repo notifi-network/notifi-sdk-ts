@@ -1,4 +1,4 @@
-import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
+import { CardConfigItem } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import { DeepPartialReadonly } from 'notifi-react-card/lib/utils';
 import React from 'react';
@@ -13,12 +13,14 @@ import {
   NotifiInputFieldsText,
   NotifiInputSeparators,
 } from '../NotifiSubscriptionCard';
+import { NotifiSubscribeButtonV2 } from '../v2/NotifiSubscribeButtonV2';
+import { TopicListPreview } from '../v2/TopicListPreview';
 import { AlertListPreview, AlertListPreviewProps } from './AlertListPreview';
 import { InputFields, InputFieldsProps } from './InputFields';
 
 export type EditCardViewProps = Readonly<{
   buttonText: string;
-  data: CardConfigItemV1;
+  data: CardConfigItem;
   inputDisabled: boolean;
   showPreview?: boolean;
   copy?: Readonly<{
@@ -55,11 +57,19 @@ export const EditCardView: React.FC<EditCardViewProps> = ({
     <div
       className={clsx('NotifiInputContainer', classNames?.NotifiInputContainer)}
     >
-      {showPreview ? (
+      {/* TODO: Refactor */}
+      {showPreview && data.version === 'v1' ? (
         <AlertListPreview
           copy={copy?.AlertListPreview}
           classNames={classNames?.AlertListPreview}
           eventTypes={data.eventTypes}
+        />
+      ) : null}
+      {showPreview && data.version === 'v2' ? (
+        <TopicListPreview
+          copy={copy?.AlertListPreview}
+          classNames={classNames?.AlertListPreview}
+          eventTypes={data.topicTypes}
         />
       ) : null}
       {loading ? (
@@ -76,12 +86,22 @@ export const EditCardView: React.FC<EditCardViewProps> = ({
           inputTextFields={inputTextFields}
         />
       )}
-      <NotifiSubscribeButton
-        buttonText={buttonText}
-        data={data}
-        classNames={classNames?.NotifiSubscribeButton}
-        inputs={inputs}
-      />
+      {data.version === 'v1' ? (
+        <NotifiSubscribeButton
+          buttonText={buttonText}
+          data={data}
+          classNames={classNames?.NotifiSubscribeButton}
+          inputs={inputs}
+        />
+      ) : null}
+      {data.version === 'v2' ? (
+        <NotifiSubscribeButtonV2
+          buttonText={buttonText}
+          data={data}
+          classNames={classNames?.NotifiSubscribeButton}
+          inputs={inputs}
+        />
+      ) : null}
     </div>
   );
 };

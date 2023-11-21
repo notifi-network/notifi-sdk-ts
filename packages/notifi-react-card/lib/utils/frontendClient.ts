@@ -2,6 +2,7 @@ import {
   EventTypeConfig,
   EventTypeItem,
   NotifiFrontendClient,
+  TopicTypeItem,
 } from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
 
@@ -63,7 +64,7 @@ export const unsubscribeAlertByFrontendClient = async (
 
 export const subscribeAlertsByFrontendClient = async (
   frontendClient: NotifiFrontendClient,
-  eventTypes: EventTypeConfig,
+  eventTypes: EventTypeConfig | TopicTypeItem[],
   inputs: Record<string, unknown>,
 ): Promise<SubscriptionData> => {
   for (const eventType of eventTypes) {
