@@ -18,5 +18,14 @@ export const TenantUserAlertFragment = gql`
     sourceGroup {
       ...SourceGroupFragment
     }
+    targetGroup {
+      hasVerifiedFcm
+      hasVerifiedSms
+      hasVerifiedWeb3
+      hasVerifiedEmails
+      hasVerifiedWebhook
+      hasVerifiedDiscord
+      hasVerifiedTelegram
+    }
   }
 `;
