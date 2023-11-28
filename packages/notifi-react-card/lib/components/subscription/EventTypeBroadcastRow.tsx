@@ -1,4 +1,7 @@
-import { EventTypeItem } from '@notifi-network/notifi-frontend-client';
+import {
+  BroadcastEventTypeItem,
+  EventTypeItem,
+} from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import React, {
   useCallback,
@@ -12,11 +15,7 @@ import {
   useNotifiClientContext,
   useNotifiSubscriptionContext,
 } from '../../context';
-import {
-  BroadcastEventTypeItem,
-  SubscriptionData,
-  useNotifiSubscribe,
-} from '../../hooks';
+import { SubscriptionData, useNotifiSubscribe } from '../../hooks';
 import {
   AlertConfiguration,
   DeepPartialReadonly,
@@ -195,7 +194,7 @@ export const EventTypeBroadcastRow: React.FC<EventTypeBroadcastRowProps> = ({
       )}
     >
       <div className={clsx('EventTypeBroadcastRow__label', classNames?.label)}>
-        {config.name}
+        {config.displayNameOverride ?? config.name}
         {tooltipContent !== undefined && tooltipContent.length > 0 ? (
           <NotifiTooltip
             classNames={classNames?.tooltip}
