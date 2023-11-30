@@ -31,6 +31,8 @@ export const NotificationHistoryEntryFragment = gql`
       }
       ... on DirectTenantMessageEventDetails {
         tenantName
+        targetTemplatesJson
+        templateVariablesJson
       }
       ... on NftCollectionsReportEventDetails {
         type
