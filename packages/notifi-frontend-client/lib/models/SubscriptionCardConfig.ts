@@ -65,6 +65,7 @@ export type BroadcastEventTypeItem = Readonly<{
   broadcastId: ValueOrRef<string>;
   tooltipContent?: string;
   optOutAtSignup?: boolean;
+  displayNameOverride?: string;
 }>;
 
 export type HealthCheckEventTypeItem = Readonly<{
