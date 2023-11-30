@@ -92,6 +92,7 @@ export const NotificationHistoryEntryFragment = gql`
         sourceName
         notificationTypeName
         genericMessage: message
+        genericMessageHtml: messageHtml
         eventDetailsJson
         action {
           name

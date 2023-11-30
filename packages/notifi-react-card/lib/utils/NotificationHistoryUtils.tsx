@@ -124,6 +124,7 @@ supportedEventDetails.set('GenericEventDetails', {
     return {
       topContent: detail.notificationTypeName,
       bottomContent: detail.genericMessage,
+      bottomContentHtml: detail.genericMessageHtml ?? '',
     };
   },
 });
