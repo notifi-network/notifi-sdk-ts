@@ -44,7 +44,13 @@ export type FusionHealthCheckEventTypeItem = FusionTypeBase &
     healthCheckSubtitle: string;
     numberType: NumberTypeSelect;
     checkRatios: CheckRatio[];
+    validInputRange?: ValidInputRange;
   }>;
+
+export type ValidInputRange = {
+  max: number;
+  min: number;
+};
 
 export type FusionMultiThreshholdEventTypeItem = FusionTypeBase &
   Readonly<{
