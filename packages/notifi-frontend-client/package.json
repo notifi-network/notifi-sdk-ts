@@ -1,6 +1,6 @@
 {
   "name": "@notifi-network/notifi-frontend-client",
-  "version": "0.87.1",
+  "version": "0.88.0",
   "description": "The frontend client for Notifi",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -32,7 +32,7 @@
   },
   "homepage": "https://github.com/notifi-network/notifi-sdk-ts#readme",
   "dependencies": {
-    "@notifi-network/notifi-graphql": "^0.87.1",
+    "@notifi-network/notifi-graphql": "^0.88.0",
     "graphql-request": "^6.0.0",
     "localforage": "^1.10.0"
   },
