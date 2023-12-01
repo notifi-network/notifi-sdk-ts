@@ -765,6 +765,15 @@ export class NotifiFrontendClient {
     return result;
   }
 
+  async getUserSettings(): Promise<Types.GetUserSettingsQuery['userSettings']> {
+    const query = await this._service.getUserSettings({});
+    const result = query.userSettings;
+    if (!result) {
+      throw new Error('Failed to fetch user settings');
+    }
+    return result;
+  }
+
   async getFusionNotificationHistory(
     variables: Types.GetFusionNotificationHistoryQueryVariables,
   ): Promise<
@@ -920,6 +929,12 @@ export class NotifiFrontendClient {
     const mutation = await this._service.markFusionNotificationHistoryAsRead(
       input,
     );
+    return mutation;
+  }
+  async updateUserSettings(
+    input: Types.UpdateUserSettingsMutationVariables,
+  ): Promise<Types.UpdateUserSettingsMutation> {
+    const mutation = await this._service.updateUserSettings(input);
     return mutation;
   }
 }

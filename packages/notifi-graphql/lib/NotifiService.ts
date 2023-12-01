@@ -62,7 +62,9 @@ export class NotifiService
     Operations.CreateDiscordTargetService,
     Operations.GetDiscordTargetsService,
     Operations.GetUnreadNotificationHistoryCountService,
-    Operations.MarkFusionNotificationHistoryAsReadService
+    Operations.MarkFusionNotificationHistoryAsReadService,
+    Operations.UpdateUserSettingsService,
+    Operations.GetUserSettingsService
 {
   private _jwt: string | undefined;
   private _typedClient: ReturnType<typeof getSdk>;
@@ -399,6 +401,13 @@ export class NotifiService
     );
   }
 
+  async getUserSettings(
+    variables: Generated.GetUserSettingsQueryVariables,
+  ): Promise<Generated.GetUserSettingsQuery> {
+    const headers = this._requestHeaders();
+    return this._typedClient.getUserSettings(variables, headers);
+  }
+
   async getWebhookTargets(
     variables: Generated.GetWebhookTargetsQueryVariables,
   ): Promise<Generated.GetWebhookTargetsQuery> {
@@ -438,6 +447,13 @@ export class NotifiService
       variables,
       headers,
     );
+  }
+
+  async updateUserSettings(
+    variables: Generated.UpdateUserSettingsMutationVariables,
+  ): Promise<Generated.UpdateUserSettingsMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.updateUserSettings(variables, headers);
   }
 
   async publishFusionMessage(

@@ -54,3 +54,5 @@ export * from './FetchData';
 export * from './GetUnreadNotificationHistoryCount';
 export * from './GetFusionNotificationHistory';
 export * from './MarkFusionNotificationHistoryAsRead';
+export * from './GetUserSettings';
+export * from './UpdateUserSettings';
