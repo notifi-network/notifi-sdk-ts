@@ -61,6 +61,25 @@ export const SolanaFrontendClient: FC = () => {
     const data = await client.fetchData();
     setClientData(data);
   };
+  const fetchUserSettings = async () => {
+    if (!userState || userState.status !== 'authenticated' || !client) {
+      throw new Error('Client not initialized or user not authenticated');
+    }
+    const data = await client.getUserSettings();
+    alert(`UserSettings: ${JSON.stringify(data)} `);
+    console.log(data);
+  };
+
+  // Example of updating user settings (FTU stage) hardcoded to 0
+  const updateUserSettings = async () => {
+    if (!userState || userState.status !== 'authenticated' || !client) {
+      throw new Error('Client not initialized or user not authenticated');
+    }
+    const userSettingsBeforeUpdate = await client.getUserSettings();
+    await client.updateUserSettings({ input: { ftuStage: 0 } });
+    const userSettingsAfterUpdate = await client.getUserSettings();
+    console.log({ userSettingsBeforeUpdate, userSettingsAfterUpdate });
+  };
 
   return (
     <>
@@ -196,6 +215,14 @@ export const SolanaFrontendClient: FC = () => {
                 }}
               >
                 5. Hide newest notification
+              </button>
+              <br />
+              <button onClick={fetchUserSettings}>
+                6. Fetch User settings
+              </button>
+              <br />
+              <button onClick={updateUserSettings}>
+                7. Update User settings
               </button>
               <h3>Auth</h3>
               <button onClick={logOut}>logout</button>
