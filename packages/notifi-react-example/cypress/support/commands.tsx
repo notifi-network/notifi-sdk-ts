@@ -24,6 +24,7 @@ declare global {
       ): void;
       mountNotifiSubscriptionCard(): void;
       overrideFetchDataTargetGroupWithFixture(fixtureName: string): void;
+      overrideUserSettingsWithFixture(fixtureName: string): void;
     }
   }
 }
@@ -102,6 +103,23 @@ const overrideFetchDataTargetGroupWithFixture = (fixtureName: string) => {
   });
 };
 
+const overrideUserSettingsWithFixture = (fixtureName: string) => {
+  cy.fixture(fixtureName).then((userSettings) => {
+    const env = Cypress.env('ENV');
+    cy.intercept('POST', envUrl(env), (req) => {
+      aliasQuery(req, 'getUserSettings');
+      if (hasOperationName(req, 'getUserSettings')) {
+        req.reply((res) => {
+          res.body.data = {
+            ...res.body.data,
+            userSettings,
+          };
+        });
+      }
+    });
+  });
+};
+
 const emptyDefaultTargetGroup = async () => {
   const dappAddress = Cypress.env('DAPP_ADDRESS');
   const env = Cypress.env('ENV');
@@ -161,4 +179,8 @@ Cypress.Commands.add(
 Cypress.Commands.add(
   'overrideFetchDataTargetGroupWithFixture',
   overrideFetchDataTargetGroupWithFixture,
+);
+Cypress.Commands.add(
+  'overrideUserSettingsWithFixture',
+  overrideUserSettingsWithFixture,
 );

@@ -4,6 +4,7 @@ import { useDestinationState } from 'notifi-react-card/lib/hooks/useDestinationS
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
+  FtuStage,
   useNotifiClientContext,
   useNotifiDemoPreviewContext,
   useNotifiForm,
@@ -26,7 +27,7 @@ import NotifiAlertBox, {
 } from '../NotifiAlertBox';
 import { SignupBanner, SignupBannerProps } from '../SignupBanner';
 import { VerifyBanner, VerifyBannerProps } from '../VerifyBanner';
-import { ErrorStateCard } from '../common';
+import { ErrorStateCard, LoadingStateCard } from '../common';
 import {
   NotifiInputFieldsText,
   NotifiInputSeparators,
@@ -89,12 +90,6 @@ export type SubscriptionCardV1Props = Readonly<{
   onClose?: () => void;
 }>;
 
-export enum FtuConfigStep {
-  Destination = 'destination',
-  Alert = 'alert',
-  Done = 'done',
-}
-
 export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
   classNames,
   copy,
@@ -106,8 +101,18 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
   onClose,
 }) => {
   const allowedCountryCodes = [...data.contactInfo.sms.supportedCountryCodes];
-  const { cardView, email, phoneNumber, telegramId, setCardView } =
-    useNotifiSubscriptionContext();
+  const {
+    cardView,
+    email,
+    phoneNumber,
+    telegramId,
+    setCardView,
+    ftuStage,
+    syncFtuStage,
+    updateFtuStage,
+    loading,
+    setLoading,
+  } = useNotifiSubscriptionContext();
   const { demoPreview } = useNotifiDemoPreviewContext();
 
   const {
@@ -122,10 +127,6 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
   const { isAuthenticated, isTokenExpired } = useNotifiSubscribe({
     targetGroupName: 'Default',
   });
-
-  const [ftuConfigStep, setFtuConfigStep] = useState<FtuConfigStep>(
-    FtuConfigStep.Done,
-  );
 
   const { isUsingFrontendClient, frontendClient } = useNotifiClientContext();
 
@@ -176,13 +177,14 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
       }
 
       if (!isClientAuthenticated) {
-        if (data.isContactInfoRequired) {
-          setFtuConfigStep(FtuConfigStep.Destination);
-        } else {
-          setFtuConfigStep(FtuConfigStep.Alert);
-        }
         return { state: 'signup' };
       }
+      setLoading(true);
+      syncFtuStage(data.isContactInfoRequired)
+        .catch((e) => {
+          console.log(`Failed to syncFtuStage: ${e}`);
+        })
+        .finally(() => setLoading(false));
 
       if (isClientTokenExpired) {
         return { state: 'expired' };
@@ -370,19 +372,19 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
     case 'history':
       view = (
         <>
-          {ftuConfigStep === FtuConfigStep.Alert ? (
+          {ftuStage === FtuStage.Alerts ? (
             <ConfigAlertModal
               classNames={classNames?.ConfigAlertModal}
-              setFtuConfigStep={setFtuConfigStep}
+              updateFtuStage={updateFtuStage}
               data={data}
               inputDisabled={inputDisabled}
               inputs={inputs}
             />
           ) : null}
-          {ftuConfigStep === FtuConfigStep.Destination ? (
+          {ftuStage === FtuStage.Destination ? (
             <ConfigDestinationModal
               classNames={classNames?.ConfigDestinationModal}
-              setFtuConfigStep={setFtuConfigStep}
+              updateFtuStage={updateFtuStage}
               contactInfo={data.contactInfo}
             />
           ) : null}
@@ -447,5 +449,5 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
     default:
       view = <div>Not supported view</div>;
   }
-  return <>{view}</>;
+  return <> {loading ? <LoadingStateCard /> : view}</>;
 };

@@ -6,8 +6,7 @@ import { DiscordIcon } from '../assets/DiscordIcon';
 import { EmailIcon } from '../assets/EmailIcon';
 import { SmsIcon } from '../assets/SmsIcon';
 import { TelegramIcon } from '../assets/TelegramIcon';
-import { useNotifiSubscriptionContext } from '../context';
-import { FtuConfigStep } from './subscription';
+import { FtuStage, useNotifiSubscriptionContext } from '../context';
 import { DestinationErrorMessage } from './subscription/subscription-card-views/preview-panel/DestinationErrorMessage';
 
 export type ConfigDestinationModalProps = Readonly<{
@@ -38,13 +37,13 @@ export type ConfigDestinationModalProps = Readonly<{
     verifyButtonMessage?: string;
     verifyButtonContainer?: string;
   };
-  setFtuConfigStep: (step: FtuConfigStep) => void;
+  updateFtuStage: (step: FtuStage) => void;
   contactInfo: CardConfigItemV1['contactInfo'];
 }>;
 
 export const ConfigDestinationModal: React.FC<ConfigDestinationModalProps> = ({
   classNames,
-  setFtuConfigStep,
+  updateFtuStage,
   contactInfo,
 }) => {
   const {
@@ -332,7 +331,11 @@ export const ConfigDestinationModal: React.FC<ConfigDestinationModalProps> = ({
             classNames?.footerContainer,
           )}
         >
-          <button onClick={() => setFtuConfigStep(FtuConfigStep.Alert)}>
+          <button
+            onClick={() => {
+              updateFtuStage(FtuStage.Alerts);
+            }}
+          >
             Next
           </button>
         </div>
