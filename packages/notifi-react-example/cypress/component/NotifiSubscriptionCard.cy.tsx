@@ -58,7 +58,7 @@ describe('Sign-up', () => {
       .wait('@gqlFetchDataQuery')
       .wait('@gqlFetchDataQuery');
 
-    cy.get('[data-cy="configAlertModalDoneButton"').should('not.exist');
+    cy.get('[data-cy="configAlertModalDoneButton"').should('exist').click();
     cy.get('[data-cy="verifyBannerButton"').should('exist').click();
     cy.get('[data-cy="previewCard"').should('exist');
   });

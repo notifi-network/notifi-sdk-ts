@@ -158,11 +158,7 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
       }
 
       if (success === true) {
-        syncFtuStage(data.isContactInfoRequired)
-          .catch((e) => {
-            console.log(`Failed to syncFtuStage: ${e}`);
-          })
-          .finally(() => setLoading(false));
+        await syncFtuStage(data.isContactInfoRequired);
         const nextState = !isMultiWallet
           ? 'history'
           : cardView.state === 'signup'
