@@ -101,7 +101,7 @@ export const EventTypeFusionHealthCheckRow: React.FC<
   const UNABLE_TO_UNSUBSCRIBE = 'Unable to unsubscribe, please try again';
   const INVALID_NUMBER = 'Please enter a valid number';
   const INVALID_RANGE = (validInputRange: ValidInputRange) => {
-    return `Please enter a valid number (${validInputRange.min} - ${validInputRange.max})`;
+    return `Please enter a number between ${validInputRange.min} and ${validInputRange.max}`;
   };
 
   const handleSuffixPercentage = (value: string) => {
@@ -279,7 +279,7 @@ export const EventTypeFusionHealthCheckRow: React.FC<
     setIsNotificationLoading(true);
 
     customInputRef.current.placeholder = 'Custom';
-    if (inputNumber && inputNumber >= 0 && customValue) {
+    if (inputNumber && customValue) {
       subscribeAlert({ eventType: config, inputs }, inputNumber)
         .then(() => {
           setSelectedIndex(3);
