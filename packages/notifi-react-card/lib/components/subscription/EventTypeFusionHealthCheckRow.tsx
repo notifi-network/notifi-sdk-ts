@@ -2,6 +2,7 @@ import {
   EventTypeItem,
   FusionHealthCheckEventTypeItem,
   ThresholdDirection,
+  ValidInputRange,
 } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import React, {
@@ -99,6 +100,9 @@ export const EventTypeFusionHealthCheckRow: React.FC<
   const UNABLE_TO_SUBSCRIBE = 'Unable to subscribe, please try again';
   const UNABLE_TO_UNSUBSCRIBE = 'Unable to unsubscribe, please try again';
   const INVALID_NUMBER = 'Please enter a valid number';
+  const INVALID_RANGE = (validInputRange: ValidInputRange) => {
+    return `Please enter a number between ${validInputRange.min} and ${validInputRange.max}`;
+  };
 
   const handleSuffixPercentage = (value: string) => {
     value = value.replace('%', '');
@@ -163,6 +167,29 @@ export const EventTypeFusionHealthCheckRow: React.FC<
     }
   }, [loading, enabled, setEnabled, defaultRatios, subscribingRatioValue]);
 
+  const validateInput = useCallback(
+    (inputValue: string, regex: RegExp, inputNumber: number | null) => {
+      if (!regex.test(inputValue)) {
+        return { isInputValid: false, inputInvalidWarning: INVALID_NUMBER };
+      }
+      if (!inputNumber) {
+        return { isInputValid: false, inputInvalidWarning: INVALID_NUMBER };
+      }
+      if (
+        config.validInputRange &&
+        (inputNumber > config.validInputRange.max ||
+          inputNumber < config.validInputRange.min)
+      ) {
+        return {
+          isInputValid: false,
+          inputInvalidWarning: INVALID_RANGE(config.validInputRange),
+        };
+      }
+      return { isInputValid: true, inputInvalidWarning: '' };
+    },
+    [config],
+  );
+
   const subscribeAlert = useCallback(
     async (
       alertDetail: Readonly<{
@@ -219,42 +246,41 @@ export const EventTypeFusionHealthCheckRow: React.FC<
   );
 
   const handleCustomRatioButtonNewSubscription = () => {
-    if (loading || isNotificationLoading) {
+    if (loading || isNotificationLoading || !customInputRef.current) {
       return;
     }
-
+    const inputValue = customInputRef.current.value;
     let regex = new RegExp(/^[0-9.]+$/);
+    let inputNumber = null;
     switch (config.numberType) {
       case 'percentage':
         regex = new RegExp(/^[0-9.%]+$/);
+        inputNumber = getParsedPercentage(inputValue);
         break;
       case 'price':
         regex = new RegExp(/^[0-9.$]+$/);
+        inputNumber = getParsedPrice(inputValue);
         break;
+      default: // 'integer'
+        inputNumber = parseFloat(inputValue);
     }
 
-    if (!customInputRef.current || !regex.test(customInputRef.current.value)) {
-      return setErrorMessage(INVALID_NUMBER);
+    const { isInputValid, inputInvalidWarning } = validateInput(
+      inputValue,
+      regex,
+      inputNumber,
+    );
+
+    if (!isInputValid) {
+      return setErrorMessage(inputInvalidWarning);
     }
 
     setErrorMessage('');
     setIsNotificationLoading(true);
 
     customInputRef.current.placeholder = 'Custom';
-    let ratioNumber = null;
-    switch (config.numberType) {
-      case 'percentage':
-        ratioNumber = getParsedPercentage(customInputRef.current.value);
-        break;
-      case 'price':
-        ratioNumber = getParsedPrice(customInputRef.current.value);
-        break;
-      default: // 'integer'
-        ratioNumber = parseFloat(customInputRef.current.value);
-    }
-
-    if (ratioNumber && ratioNumber >= 0 && customValue) {
-      subscribeAlert({ eventType: config, inputs }, ratioNumber)
+    if (inputNumber && customValue) {
+      subscribeAlert({ eventType: config, inputs }, inputNumber)
         .then(() => {
           setSelectedIndex(3);
           isUsingFrontendClient && frontendClient.fetchData().then(render);
