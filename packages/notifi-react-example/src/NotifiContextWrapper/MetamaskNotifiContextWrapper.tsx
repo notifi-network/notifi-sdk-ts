@@ -1,8 +1,8 @@
 import { WalletBlockchain } from '@notifi-network/notifi-core';
-import { newFrontendClient } from '@notifi-network/notifi-frontend-client';
+import { Uint8SignMessageFunction } from '@notifi-network/notifi-frontend-client';
 import { NotifiContext } from '@notifi-network/notifi-react-card';
 import { arrayify } from 'ethers/lib/utils.js';
-import { PropsWithChildren, useEffect, useMemo } from 'react';
+import { PropsWithChildren, useMemo } from 'react';
 import {
   useAccount,
   useConnect,
@@ -49,8 +49,7 @@ export const MetamaskNotifiContextWrapper: React.FC<PropsWithChildren> = ({
 
   const { switchNetwork } = useSwitchNetwork();
 
-  const walletBlockchain: WalletBlockchain | undefined = useMemo(() => {
-    if (!chain?.id) return;
+  const walletBlockchain: WalletBlockchain = useMemo(() => {
     switch (chain?.id) {
       case SupportedEvmChains.ETHEREUM:
         return 'ETHEREUM';
@@ -67,36 +66,14 @@ export const MetamaskNotifiContextWrapper: React.FC<PropsWithChildren> = ({
       case SupportedEvmChains.ZKSYNC:
         return 'ZKSYNC';
       default:
-        throw new Error('Unsupported network');
+        return 'ETHEREUM';
     }
   }, [chain]);
 
-  const signMessage = async (message: Uint8Array) => {
+  const signMessage: Uint8SignMessageFunction = async (message: Uint8Array) => {
     const result = await signMessageAsync({ message });
     return arrayify(result);
   };
-
-  useEffect(() => {
-    // Re-login on chain switch to get the updated BE state
-    if (!walletBlockchain || !address) return;
-    const configInput = {
-      account: {
-        publicKey: address,
-      },
-      tenantId,
-      walletBlockchain,
-      env,
-    };
-    // @ts-ignore (ignore the non-evm chain types), use switch case to handle all chains for real
-    const frontendClient = newFrontendClient(configInput);
-    frontendClient.initialize().then((userState) => {
-      if (userState?.status !== 'authenticated' || !chain?.id) return;
-      frontendClient.logIn({
-        walletBlockchain,
-        signMessage,
-      });
-    });
-  }, [walletBlockchain]);
 
   if (!chain?.network) {
     return (
@@ -126,13 +103,12 @@ export const MetamaskNotifiContextWrapper: React.FC<PropsWithChildren> = ({
       </button>
 
       {isConnected && chain?.network ? (
-        // @ts-ignore (ignore the non-evm chain types), use switch case to handle all chains for real
         <NotifiContext
           dappAddress={tenantId}
           env={env}
           signMessage={signMessage}
           walletPublicKey={address ?? ''}
-          walletBlockchain={walletBlockchain as WalletBlockchain}
+          walletBlockchain={walletBlockchain}
         >
           {children}
         </NotifiContext>
