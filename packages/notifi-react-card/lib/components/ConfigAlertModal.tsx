@@ -2,8 +2,9 @@ import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import React from 'react';
 
+import { FtuStage } from '../context';
 import AlertActionIcon from './AlertBox/AlertActionIcon';
-import { AlertsPanel, AlertsPanelProps, FtuConfigStep } from './subscription';
+import { AlertsPanel, AlertsPanelProps } from './subscription';
 
 export type ConfigAlertModalProps = Readonly<{
   classNames?: {
@@ -13,11 +14,10 @@ export type ConfigAlertModalProps = Readonly<{
     headerContainer?: string;
     backIcon?: string;
     headerTitle?: string;
-    closeIcon?: string;
     footerContainer?: string;
     ctaIcon?: string;
   };
-  setFtuConfigStep: (step: FtuConfigStep) => void;
+  updateFtuStage: (step: FtuStage) => void;
   data: CardConfigItemV1;
   inputDisabled: boolean;
   inputs: Record<string, unknown>;
@@ -25,7 +25,7 @@ export type ConfigAlertModalProps = Readonly<{
 
 export const ConfigAlertModal: React.FC<ConfigAlertModalProps> = ({
   classNames,
-  setFtuConfigStep,
+  updateFtuStage,
   data,
   inputDisabled,
   inputs,
@@ -51,7 +51,9 @@ export const ConfigAlertModal: React.FC<ConfigAlertModalProps> = ({
                 'configAlertModal__backIcon',
                 classNames?.backIcon,
               )}
-              onClick={() => setFtuConfigStep(FtuConfigStep.Destination)}
+              onClick={() => {
+                updateFtuStage(FtuStage.Destination);
+              }}
             >
               <AlertActionIcon
                 name="back"
@@ -69,18 +71,6 @@ export const ConfigAlertModal: React.FC<ConfigAlertModalProps> = ({
             )}
           >
             <div>Select alerts</div>
-          </div>
-          <div
-            className={clsx(
-              'configAlertModal__closeIcon',
-              classNames?.closeIcon,
-            )}
-            onClick={() => setFtuConfigStep(FtuConfigStep.Done)}
-          >
-            <AlertActionIcon
-              name="close"
-              className={clsx('configAlertModal__ctaIcon', classNames?.ctaIcon)}
-            />
           </div>
         </div>
         <AlertsPanel
@@ -145,7 +135,9 @@ export const ConfigAlertModal: React.FC<ConfigAlertModalProps> = ({
         >
           <button
             data-cy="configAlertModalDoneButton"
-            onClick={() => setFtuConfigStep(FtuConfigStep.Done)}
+            onClick={() => {
+              updateFtuStage(FtuStage.Done);
+            }}
           >
             Done
           </button>

@@ -29,6 +29,12 @@ import {
 
 export type DestinationErrorMessages = DestinationErrors;
 
+export enum FtuStage {
+  Destination = 3,
+  Alerts = 2,
+  Done = 1,
+}
+
 export type NotifiSubscriptionData = Readonly<{
   alerts: Readonly<Record<string, Types.AlertFragmentFragment | undefined>>;
   connectedWallets: ReadonlyArray<Types.ConnectedWalletFragmentFragment>;
@@ -80,6 +86,9 @@ export type NotifiSubscriptionData = Readonly<{
   setDiscordTargetData: React.Dispatch<
     React.SetStateAction<Types.DiscordTargetFragmentFragment | undefined>
   >;
+  ftuStage: FtuStage;
+  syncFtuStage: (isContactInfoRequired?: boolean) => Promise<void>;
+  updateFtuStage: (ftuConfigStep: FtuStage) => Promise<void>;
   render: (newData: Types.FetchDataQuery) => SubscriptionData;
 }>;
 
@@ -127,6 +136,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
   const [email, setEmail] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [telegramId, setTelegramId] = useState<string>('');
+  const [ftuStage, setFtuStage] = useState<FtuStage>(FtuStage.Done);
 
   const [discordTargetData, setDiscordTargetData] = useState<
     Types.DiscordTargetFragmentFragment | undefined
@@ -173,6 +183,30 @@ export const NotifiSubscriptionContextProvider: React.FC<
       discord: undefined,
     });
   };
+
+  const syncFtuStage = useCallback(
+    async (isContactInfoRequired?: boolean) => {
+      const userSettings = await frontendClient.getUserSettings();
+      if (!userSettings?.ftuStage) {
+        if (isContactInfoRequired) {
+          return await updateFtuStage(FtuStage.Destination);
+        }
+        return await updateFtuStage(FtuStage.Alerts);
+      }
+      setFtuStage(userSettings.ftuStage);
+    },
+    [frontendClient?.userState?.status],
+  );
+
+  const updateFtuStage = useCallback(
+    async (ftuConfigStep: FtuStage) => {
+      await frontendClient.updateUserSettings({
+        input: { ftuStage: ftuConfigStep },
+      });
+      setFtuStage(ftuConfigStep);
+    },
+    [frontendClient?.userState?.status],
+  );
 
   const {
     setEmail: setFormEmail,
@@ -404,6 +438,9 @@ export const NotifiSubscriptionContextProvider: React.FC<
     discordTargetData,
     setDiscordTargetData,
     render,
+    ftuStage,
+    syncFtuStage,
+    updateFtuStage,
   };
 
   return (

@@ -64,6 +64,7 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
     useDiscord,
     render,
     setLoading,
+    syncFtuStage,
   } = useNotifiSubscriptionContext();
 
   const { formErrorMessages, formState } = useNotifiForm();
@@ -157,6 +158,7 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
       }
 
       if (success === true) {
+        await syncFtuStage(data.isContactInfoRequired);
         const nextState = !isMultiWallet
           ? 'history'
           : cardView.state === 'signup'

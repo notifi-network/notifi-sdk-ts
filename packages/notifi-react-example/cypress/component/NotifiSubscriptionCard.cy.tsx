@@ -16,12 +16,14 @@ describe('Sign-up', () => {
       aliasQuery(req, 'findTenantConfig');
       aliasMutation(req, 'updateTargetGroup');
       aliasQuery(req, 'fetchData');
+      aliasQuery(req, 'getUserSettings');
     });
   });
 
   it('W/O destination', () => {
     cy.overrideTenantConfigWithFixture({ isContactInfoRequired: false });
     cy.mountNotifiSubscriptionCard();
+    cy.overrideUserSettingsWithFixture('userSettingsFtuNull.json');
 
     cy.wait('@gqlFindTenantConfigQuery').then(({ response }) => {
       expect(response.statusCode).to.equal(200);
@@ -37,7 +39,8 @@ describe('Sign-up', () => {
     cy.get('[data-cy="notifiSubscribeButton"').click();
     cy.wait('@gqlLogInFromDappQuery')
       .wait('@gqlFetchDataQuery')
-      .wait('@gqlFetchDataQuery');
+      .wait('@gqlFetchDataQuery')
+      .wait('@gqlGetUserSettingsQuery');
 
     cy.get('[data-cy="configAlertModal"').should('exist');
     cy.get('[data-cy="configAlertModalDoneButton"').should('exist').click();
@@ -55,7 +58,7 @@ describe('Sign-up', () => {
       .wait('@gqlFetchDataQuery')
       .wait('@gqlFetchDataQuery');
 
-    cy.get('[data-cy="configAlertModalDoneButton"').should('not.exist');
+    cy.get('[data-cy="configAlertModalDoneButton"').should('exist').click();
     cy.get('[data-cy="verifyBannerButton"').should('exist').click();
     cy.get('[data-cy="previewCard"').should('exist');
   });
@@ -65,6 +68,7 @@ describe('Sign-up', () => {
     cy.overrideTenantConfigWithFixture({ isContactInfoRequired: true });
     cy.mountNotifiSubscriptionCard();
     cy.overrideFetchDataTargetGroupWithFixture('confirmedTargetGroup.json');
+    cy.overrideUserSettingsWithFixture('userSettingsFtuNull.json');
 
     cy.wait('@gqlFindTenantConfigQuery').then(({ response }) => {
       expect(response.statusCode).to.equal(200);
@@ -81,7 +85,8 @@ describe('Sign-up', () => {
       .wait('@gqlUpdateTargetGroupMutation')
       .wait('@gqlFetchDataQuery')
       .wait('@gqlFetchDataQuery')
-      .wait('@gqlFetchDataQuery');
+      .wait('@gqlFetchDataQuery')
+      .wait('@gqlGetUserSettingsQuery');
 
     cy.get('[data-cy="configDestinationModalVerifyLabel"').should('exist');
     cy.get('[data-cy="configDestinationModalNextButton"')
@@ -96,6 +101,7 @@ describe('Sign-up', () => {
     cy.overrideTenantConfigWithFixture({ isContactInfoRequired: true });
     cy.mountNotifiSubscriptionCard();
     cy.overrideFetchDataTargetGroupWithFixture('notConfirmedTargetGroup.json');
+    cy.overrideUserSettingsWithFixture('userSettingsFtuNull.json');
 
     cy.wait('@gqlFindTenantConfigQuery').then(({ response }) => {
       expect(response.statusCode).to.equal(200);
@@ -115,7 +121,8 @@ describe('Sign-up', () => {
       .wait('@gqlUpdateTargetGroupMutation')
       .wait('@gqlFetchDataQuery')
       .wait('@gqlFetchDataQuery')
-      .wait('@gqlFetchDataQuery');
+      .wait('@gqlFetchDataQuery')
+      .wait('@gqlGetUserSettingsQuery');
 
     cy.get('[data-cy="configDestinationModalConfirmTelegramButton"').should(
       'exist',
@@ -125,5 +132,40 @@ describe('Sign-up', () => {
       .click();
     cy.get('[data-cy="configAlertModal"').should('exist');
     // ... the rest of the test is the same as the "W/O destination" test
+  });
+});
+
+describe('Ftu stage persistence', () => {
+  beforeEach(() => {
+    cy.wait(2000); // Wait for previous test's requests to finish
+  });
+  it('Case#1: FTU stage AlertsModal persisted', () => {
+    // AlertModal is persisted if FTU process is not completed
+    cy.overrideTenantConfigWithFixture({ isContactInfoRequired: false });
+    cy.mountNotifiSubscriptionCard();
+    cy.overrideUserSettingsWithFixture('userSettingsFtuAlerts.json');
+
+    cy.wait('@gqlFindTenantConfigQuery').then(({ response }) => {
+      expect(response.statusCode).to.equal(200);
+      const tenantConfig = response.body.data.findTenantConfig;
+      expect(tenantConfig.type).to.equal('SUBSCRIPTION_CARD');
+    });
+
+    cy.get('[data-cy="configAlertModal"').should('exist');
+  });
+  it('Case#2: FTU stage DestinationModal persisted', () => {
+    // DestinationModal is persisted if FTU process is not completed
+    cy.overrideTenantConfigWithFixture({ isContactInfoRequired: true });
+    cy.mountNotifiSubscriptionCard();
+    cy.overrideFetchDataTargetGroupWithFixture('notConfirmedTargetGroup.json');
+    cy.overrideUserSettingsWithFixture('userSettingsFtuDestinations.json');
+
+    cy.wait('@gqlFindTenantConfigQuery').then(({ response }) => {
+      expect(response.statusCode).to.equal(200);
+      const tenantConfig = response.body.data.findTenantConfig;
+      expect(tenantConfig.type).to.equal('SUBSCRIPTION_CARD');
+    });
+
+    cy.get('[data-cy="configDestinationModalNextButton"').should('exist');
   });
 });
