@@ -1862,10 +1862,6 @@ input::-webkit-inner-spin-button {
   margin: 0px 20px;
 }
 
-.NotifiAlertHistory__container.NotifiAlertHistory__container--hidden {
-  visibility: hidden;
-}
-
 .NotifiAlertHistory__virtuoso {
   overflow-x: hidden;
 }

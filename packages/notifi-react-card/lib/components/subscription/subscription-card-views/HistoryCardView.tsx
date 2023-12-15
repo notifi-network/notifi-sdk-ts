@@ -1,6 +1,7 @@
 import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
 import clsx from 'clsx';
+import { useDestinationState } from 'notifi-react-card/lib/hooks/useDestinationState';
 import React, {
   useCallback,
   useEffect,
@@ -11,7 +12,10 @@ import React, {
 import { Virtuoso } from 'react-virtuoso';
 
 import { NotificationEmptyBellIcon } from '../../../assets/NotificationEmptyBellIcon';
-import { useNotifiClientContext } from '../../../context';
+import {
+  useNotifiClientContext,
+  useNotifiSubscriptionContext,
+} from '../../../context';
 import {
   DeepPartialReadonly,
   concatHistoryNodes,
@@ -23,6 +27,12 @@ import {
   AlertNotificationRow,
   AlertNotificationViewProps,
 } from '../../AlertHistory/AlertNotificationRow';
+import NotifiAlertBox, {
+  NotifiAlertBoxButtonProps,
+  NotifiAlertBoxProps,
+} from '../../NotifiAlertBox';
+import { SignupBanner, SignupBannerProps } from '../../SignupBanner';
+import { VerifyBanner, VerifyBannerProps } from '../../VerifyBanner';
 import { LoadingStateCard, LoadingStateCardProps } from '../../common';
 
 export type NotificationHistoryEntry =
@@ -31,7 +41,6 @@ export type NotificationHistoryEntry =
 
 export type AlertHistoryViewProps = Readonly<{
   noAlertDescription?: string;
-  isHidden: boolean;
   data: CardConfigItemV1;
   copy?: {
     loadingHeader?: string;
@@ -40,32 +49,39 @@ export type AlertHistoryViewProps = Readonly<{
     loadingRingColor?: string;
   };
   classNames?: DeepPartialReadonly<{
-    title: string;
-    header: string;
-    manageAlertLink: string;
-    noAlertDescription: string;
-    notificationDate: string;
-    notificationSubject: string;
-    notificationMessage: string;
-    notificationImage: string;
-    notificationList: string;
-    emptyAlertsBellIcon: string;
-    historyContainer: string;
-    virtuoso: string;
-    AlertCard: AlertNotificationViewProps['classNames'];
-    LoadingStateCard: LoadingStateCardProps['classNames'];
+    title?: string;
+    header?: string;
+    NotifiAlertBox?: NotifiAlertBoxProps['classNames'];
+    dividerLine?: string;
+    manageAlertLink?: string;
+    noAlertDescription?: string;
+    notificationDate?: string;
+    notificationSubject?: string;
+    notificationMessage?: string;
+    notificationImage?: string;
+    notificationList?: string;
+    emptyAlertsBellIcon?: string;
+    historyContainer?: string;
+    virtuoso?: string;
+    AlertCard?: AlertNotificationViewProps['classNames'];
+    LoadingStateCard?: LoadingStateCardProps['classNames'];
+    verifyBanner?: VerifyBannerProps['classNames'];
+    signupBanner?: SignupBannerProps['classNames'];
+    alertContainer?: string;
   }>;
   setAlertEntry: React.Dispatch<
     React.SetStateAction<NotificationHistoryEntry | undefined>
   >;
+  headerRightIcon?: NotifiAlertBoxButtonProps;
 }>;
 
 export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
   classNames,
-  isHidden,
   noAlertDescription,
   setAlertEntry,
   copy,
+  data,
+  headerRightIcon,
 }) => {
   noAlertDescription = noAlertDescription
     ? noAlertDescription
@@ -78,6 +94,10 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
 
   const { client, isUsingFrontendClient, frontendClient } =
     useNotifiClientContext();
+
+  const { setCardView } = useNotifiSubscriptionContext();
+
+  const { unverifiedDestinations, isTargetsExist } = useDestinationState();
 
   const [allNodes, setAllNodes] = useState<NotificationHistoryEntry[]>([]);
   const { isClientInitialized, isClientAuthenticated } = useMemo(() => {
@@ -152,69 +172,109 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
     }
   }, [allNodes]);
 
-  if (isLoading) {
-    return (
-      <LoadingStateCard
-        copy={{
-          header: copy?.loadingHeader ?? '',
-          content: copy?.loadingContent,
-        }}
-        spinnerSize={copy?.loadingSpinnerSize}
-        ringColor={copy?.loadingRingColor}
-        classNames={classNames?.LoadingStateCard}
-      />
-    );
-  }
-
   return (
-    <div
-      className={clsx(
-        'NotifiAlertHistory__container',
-        classNames?.historyContainer,
-        { 'NotifiAlertHistory__container--hidden': isHidden },
-      )}
-    >
-      {allNodes.length > 0 ? (
-        <Virtuoso
-          className={clsx('NotifiAlertHistory__virtuoso', classNames?.virtuoso)}
-          style={{ flex: 1 }}
-          endReached={() => {
-            if (hasNextPage && endCursor) {
-              getNotificationHistory({
-                first: MESSAGES_PER_PAGE,
-                after: endCursor,
-              });
-            }
-          }}
-          data={allNodes.filter(validateIsSupported)}
-          itemContent={(_index, notification) => {
-            return (
-              <AlertNotificationRow
-                {...getAlertNotificationViewBaseProps(notification)}
-                handleAlertEntrySelection={() => setAlertEntry(notification)}
-                classNames={classNames?.AlertCard}
-              />
-            );
-          }}
-        />
-      ) : (
-        <div className="NotifiAlertHistory__noAlertContainer">
-          <NotificationEmptyBellIcon
-            className={clsx(
-              'NotifiAlertHistory__emptyAlertsBellIcon',
-              classNames?.emptyAlertsBellIcon,
-            )}
+    <>
+      <NotifiAlertBox
+        classNames={classNames?.NotifiAlertBox}
+        leftIcon={{
+          name: 'settings',
+          onClick: () => setCardView({ state: 'preview' }),
+        }}
+        rightIcon={headerRightIcon}
+      >
+        <h2>
+          {(data?.titles?.active && data?.titles.historyView) ||
+            'Alert History'}
+        </h2>
+      </NotifiAlertBox>
+
+      <div
+        className={clsx(
+          'NotifiSubscriptionCardV1__alertContainer',
+          classNames?.alertContainer,
+        )}
+      >
+        <div className={clsx('DividerLine history', classNames?.dividerLine)} />
+
+        {unverifiedDestinations.length > 0 ? (
+          <VerifyBanner
+            classNames={classNames?.verifyBanner}
+            unVerifiedDestinations={unverifiedDestinations}
           />
-          <span
-            className={clsx(
-              'NotifiAlertHistory_noAlertDescription',
-              classNames?.noAlertDescription,
-            )}
-          >
-            {noAlertDescription}
-          </span>
+        ) : null}
+        {!isTargetsExist ? (
+          <SignupBanner data={data} classNames={classNames?.signupBanner} />
+        ) : null}
+
+        <div
+          className={clsx(
+            'NotifiAlertHistory__container',
+            classNames?.historyContainer,
+          )}
+        >
+          {allNodes.length > 0 && !isLoading ? (
+            <Virtuoso
+              className={clsx(
+                'NotifiAlertHistory__virtuoso',
+                classNames?.virtuoso,
+              )}
+              style={{ flex: 1 }}
+              endReached={() => {
+                if (hasNextPage && endCursor) {
+                  getNotificationHistory({
+                    first: MESSAGES_PER_PAGE,
+                    after: endCursor,
+                  });
+                }
+              }}
+              data={allNodes.filter(validateIsSupported)}
+              itemContent={(_index, notification) => {
+                return (
+                  <AlertNotificationRow
+                    {...getAlertNotificationViewBaseProps(notification)}
+                    handleAlertEntrySelection={() => {
+                      setAlertEntry(notification);
+                      setCardView({ state: 'historyDetail' });
+                    }}
+                    classNames={classNames?.AlertCard}
+                  />
+                );
+              }}
+            />
+          ) : null}
+
+          {allNodes.length === 0 && !isLoading ? (
+            <div className="NotifiAlertHistory__noAlertContainer">
+              <NotificationEmptyBellIcon
+                className={clsx(
+                  'NotifiAlertHistory__emptyAlertsBellIcon',
+                  classNames?.emptyAlertsBellIcon,
+                )}
+              />
+              <span
+                className={clsx(
+                  'NotifiAlertHistory_noAlertDescription',
+                  classNames?.noAlertDescription,
+                )}
+              >
+                {noAlertDescription}
+              </span>
+            </div>
+          ) : null}
+
+          {isLoading ? (
+            <LoadingStateCard
+              copy={{
+                header: copy?.loadingHeader ?? '',
+                content: copy?.loadingContent,
+              }}
+              spinnerSize={copy?.loadingSpinnerSize}
+              ringColor={copy?.loadingRingColor}
+              classNames={classNames?.LoadingStateCard}
+            />
+          ) : null}
         </div>
-      )}
-    </div>
+      </div>
+    </>
   );
 };
