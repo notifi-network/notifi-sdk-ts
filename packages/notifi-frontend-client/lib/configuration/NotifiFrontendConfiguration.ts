@@ -21,7 +21,8 @@ export type NotifiConfigWithPublicKey = Readonly<{
     | 'BINANCE'
     | 'OPTIMISM'
     | 'SOLANA'
-    | 'ZKSYNC';
+    | 'ZKSYNC'
+    | 'BASE';
   walletPublicKey: string;
 }> &
   NotifiEnvironmentConfiguration;

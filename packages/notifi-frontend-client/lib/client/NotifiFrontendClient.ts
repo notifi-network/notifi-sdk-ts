@@ -45,7 +45,8 @@ export type SignMessageParams =
         | 'OSMOSIS'
         | 'NIBIRU'
         | 'OPTIMISM'
-        | 'ZKSYNC';
+        | 'ZKSYNC'
+        | 'BASE';
       signMessage: Uint8SignMessageFunction;
     }>
   | Readonly<{
@@ -84,7 +85,8 @@ export type WalletWithSignMessage =
         | 'AVALANCHE'
         | 'BINANCE'
         | 'OPTIMISM'
-        | 'ZKSYNC';
+        | 'ZKSYNC'
+        | 'BASE';
 
       walletPublicKey: string;
       signMessage: Uint8SignMessageFunction;
@@ -262,6 +264,7 @@ export class NotifiFrontendClient {
 
     let loginResult: Types.UserFragmentFragment | undefined = undefined;
     switch (walletBlockchain) {
+      case 'BASE':
       case 'ETHEREUM':
       case 'POLYGON':
       case 'ARBITRUM':

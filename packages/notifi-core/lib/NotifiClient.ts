@@ -279,7 +279,8 @@ export type SignMessageParams =
         | 'OSMOSIS'
         | 'NIBIRU'
         | 'OPTIMISM'
-        | 'ZKSYNC';
+        | 'ZKSYNC'
+        | 'BASE';
       signMessage: Uint8SignMessageFunction;
     }>
   | Readonly<{
@@ -312,7 +313,8 @@ export type WalletParams =
         | 'AVALANCHE'
         | 'BINANCE'
         | 'OPTIMISM'
-        | 'ZKSYNC';
+        | 'ZKSYNC'
+        | 'BASE';
       walletPublicKey: string;
     }>
   | Readonly<{
@@ -365,7 +367,8 @@ export type WalletWithSignMessage =
         | 'AVALANCHE'
         | 'BINANCE'
         | 'OPTIMISM'
-        | 'ZKSYNC';
+        | 'ZKSYNC'
+        | 'BASE';
       walletPublicKey: string;
       signMessage: Uint8SignMessageFunction;
     }>

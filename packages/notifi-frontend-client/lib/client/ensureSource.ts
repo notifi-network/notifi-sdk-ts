@@ -208,6 +208,8 @@ const ensureWalletBalanceSources = async (
           return 'BINANCE_WALLET';
         case 'ETHEREUM':
           return 'ETHEREUM_WALLET';
+        case 'BASE':
+          return 'ETHEREUM_WALLET';
         case 'POLYGON':
           return 'POLYGON_WALLET';
         case 'SOLANA':
@@ -676,7 +678,10 @@ const getFusionSourceFilter = (
   }
 
   let filterOptions: FilterOptions = {}; // Default {}
-  if (eventType.selectedUIType === 'TOGGLE'  || eventType.selectedUIType === 'MULTI_THRESHOLD') {
+  if (
+    eventType.selectedUIType === 'TOGGLE' ||
+    eventType.selectedUIType === 'MULTI_THRESHOLD'
+  ) {
     if (eventType.alertFrequency !== undefined) {
       filterOptions = {
         alertFrequency: eventType.alertFrequency,
