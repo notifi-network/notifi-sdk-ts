@@ -33,7 +33,8 @@ import NotifiAlertBox, {
 } from '../../NotifiAlertBox';
 import { SignupBanner, SignupBannerProps } from '../../SignupBanner';
 import { VerifyBanner, VerifyBannerProps } from '../../VerifyBanner';
-import { LoadingStateCard, LoadingStateCardProps } from '../../common';
+import { LoadingStateCardProps } from '../../common';
+import Spinner from '../../common/Spinner';
 
 export type NotificationHistoryEntry =
   | Types.FusionNotificationHistoryEntryFragmentFragment
@@ -43,7 +44,13 @@ export type AlertHistoryViewProps = Readonly<{
   noAlertDescription?: string;
   data: CardConfigItemV1;
   copy?: {
+    /**
+     * @deprecated No longer have loading header when loading history
+     */
     loadingHeader?: string;
+    /**
+     * @deprecated No longer have loading content when loading history
+     */
     loadingContent?: string;
     loadingSpinnerSize?: string;
     loadingRingColor?: string;
@@ -64,7 +71,11 @@ export type AlertHistoryViewProps = Readonly<{
     historyContainer?: string;
     virtuoso?: string;
     AlertCard?: AlertNotificationViewProps['classNames'];
+    /**
+     * @deprecated Use `loadingSpinner` instead
+     */
     LoadingStateCard?: LoadingStateCardProps['classNames'];
+    loadingSpinner?: string;
     verifyBanner?: VerifyBannerProps['classNames'];
     signupBanner?: SignupBannerProps['classNames'];
     alertContainer?: string;
@@ -263,15 +274,17 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
           ) : null}
 
           {isLoading ? (
-            <LoadingStateCard
-              copy={{
-                header: copy?.loadingHeader ?? '',
-                content: copy?.loadingContent,
-              }}
-              spinnerSize={copy?.loadingSpinnerSize}
-              ringColor={copy?.loadingRingColor}
-              classNames={classNames?.LoadingStateCard}
-            />
+            <div
+              className={clsx(
+                'NotifiAlertHistory__loading',
+                classNames?.loadingSpinner,
+              )}
+            >
+              <Spinner
+                size={copy?.loadingSpinnerSize}
+                ringColor={copy?.loadingRingColor}
+              />
+            </div>
           ) : null}
         </div>
       </div>
