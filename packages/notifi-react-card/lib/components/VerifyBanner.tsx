@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import React, { useMemo } from 'react';
 
 import { CheckIcon } from '../assets/CheckIcon';
-import { useNotifiSubscriptionContext } from '../context';
+import { FormField, useNotifiSubscriptionContext } from '../context';
 import { DeepPartialReadonly } from '../utils';
 
 export type VerifyBannerProps = Readonly<{
@@ -16,7 +16,7 @@ export type VerifyBannerProps = Readonly<{
     bannerSubject?: string;
     bannerButton?: string;
   }>;
-  unVerifiedDestinations: ReadonlyArray<string>;
+  unVerifiedDestinations: ReadonlyArray<FormField>;
 }>;
 
 export const VerifyBanner: React.FC<VerifyBannerProps> = ({
@@ -26,9 +26,23 @@ export const VerifyBanner: React.FC<VerifyBannerProps> = ({
   const { setCardView } = useNotifiSubscriptionContext();
 
   const unVerifiedDestinationsString = useMemo(() => {
-    return unVerifiedDestinations.length > 1
-      ? unVerifiedDestinations.join(' and ')
-      : unVerifiedDestinations[0];
+    const convertedUnVerifiedDestinations = unVerifiedDestinations.map(
+      (target) => {
+        switch (target) {
+          case 'telegram':
+            return 'Telegram ID';
+          case 'discord':
+            return 'Discord';
+          case 'phoneNumber':
+            return 'Phone Number';
+          default:
+            return target;
+        }
+      },
+    );
+    return convertedUnVerifiedDestinations.length > 1
+      ? convertedUnVerifiedDestinations.join(' and ')
+      : convertedUnVerifiedDestinations[0];
   }, [unVerifiedDestinations]);
 
   const onClick = () => {
