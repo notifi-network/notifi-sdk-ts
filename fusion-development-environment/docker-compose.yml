@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  localfusion:
+    image: notifinetwork/localfusion:latest
+    container_name: localfusion
+    ports:
+      - "50051:50051"
+      - "50052:50052"
+      - "50053:50053"
+      
+  fusion-development:
+    image: notifinetwork/fusiondev:latest
+    container_name: fusion-development
+    volumes:
+      - "$HOME/.notifi/fusion-development/fusion-sources:/home/notifi-dev/dev-environment/dev-parsers"
+      - "$HOME/.notifi:/home/.notifi"
+    environment:
+      - NOTIFI_INIT_TOKEN=${NOTIFI_INIT_TOKEN:-}
+      - NOTIFI_AUTH_TOKEN=${NOTIFI_AUTH_TOKEN:-}
+      - FUSION_SOURCE_ID=${FUSION_SOURCE_ID:-}
+      - HOST_USER_ID=${HOST_USER_ID}
+      - HOST_GROUP_ID=${HOST_GROUP_ID}
+      - HOME_DIRECTORY_OVERRIDE=/home
+    ports:
+      - "9229:9229"
+    stdin_open: true  # Equivalent to -i in docker run
+    tty: true         # Equivalent to -t in docker run
+    entrypoint: /bin/bash -c "if entrypoint; then bash; else exit 1; fi"
