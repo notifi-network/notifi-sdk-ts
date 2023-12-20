@@ -26,7 +26,6 @@ import NotifiAlertBox, {
   NotifiAlertBoxProps,
 } from '../NotifiAlertBox';
 import { SignupBanner, SignupBannerProps } from '../SignupBanner';
-import { VerifyBanner, VerifyBannerProps } from '../VerifyBanner';
 import { ErrorStateCard, LoadingStateCard } from '../common';
 import {
   NotifiInputFieldsText,
@@ -66,7 +65,6 @@ export type SubscriptionCardV1Props = Readonly<{
     detailHeader: string;
   }>;
   classNames?: DeepPartialReadonly<{
-    alertContainer: string;
     AlertHistoryView: AlertHistoryViewProps['classNames'];
     AlertDetailsCard: AlertDetailsProps['classNames'];
     PreviewCard: PreviewCardProps['classNames'];
@@ -74,13 +72,15 @@ export type SubscriptionCardV1Props = Readonly<{
     EditCard: EditCardViewProps['classNames'];
     ExpiredTokenView: ExpiredTokenViewCardProps['classNames'];
     VerifyWalletView: VerifyWalletViewProps['classNames'];
+    // TODO: deprecate after all refactor ( /* Deprecated: use NotifiAlertBox in each cardView */)
     NotifiAlertBox: NotifiAlertBoxProps['classNames'];
     ErrorStateCard: string;
     ConfigDestinationModal: ConfigDestinationModalProps['classNames'];
+    // TODO: deprecate after all refactor ( /* Deprecated: use NotifiAlertBox in each cardView */)
     signupBanner: SignupBannerProps['classNames'];
     ConfigAlertModal: ConfigAlertModalProps['classNames'];
+    // TODO: deprecate after all refactor ( /* Deprecated: use NotifiAlertBox in each cardView */)
     dividerLine: string;
-    verifyBanner: VerifyBannerProps['classNames'];
   }>;
   inputDisabled: boolean;
   data: CardConfigItemV1;
@@ -149,7 +149,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
     isUsingFrontendClient,
   ]);
 
-  const { unverifiedDestinations, isTargetsExist } = useDestinationState();
+  const { isTargetsExist } = useDestinationState();
 
   const [selectedAlertEntry, setAlertEntry] = useState<
     NotificationHistoryEntry | undefined
@@ -237,15 +237,6 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
       : copy?.verifyWalletsHeader ?? 'Verify Wallets';
   };
 
-  const historyView = () => {
-    if (!useCustomTitles) {
-      return selectedAlertEntry ? 'Alert Details' : 'Alert History';
-    }
-
-    return selectedAlertEntry
-      ? data?.titles.alertDetailsView || 'Alert Details'
-      : data?.titles.historyView || 'Alert History';
-  };
   switch (cardView.state) {
     case 'expired':
       view = (
@@ -371,76 +362,29 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
       break;
     case 'history':
       view = (
-        <>
-          {ftuStage === FtuStage.Alerts ? (
-            <ConfigAlertModal
-              classNames={classNames?.ConfigAlertModal}
-              updateFtuStage={updateFtuStage}
-              data={data}
-              inputDisabled={inputDisabled}
-              inputs={inputs}
-            />
-          ) : null}
-          {ftuStage === FtuStage.Destination ? (
-            <ConfigDestinationModal
-              classNames={classNames?.ConfigDestinationModal}
-              updateFtuStage={updateFtuStage}
-              contactInfo={data.contactInfo}
-            />
-          ) : null}
-          <NotifiAlertBox
-            classNames={classNames?.NotifiAlertBox}
-            leftIcon={
-              selectedAlertEntry === undefined
-                ? {
-                    name: 'settings',
-                    onClick: () => setCardView({ state: 'preview' }),
-                  }
-                : {
-                    name: 'back',
-                    onClick: () => setAlertEntry(undefined),
-                  }
-            }
-            rightIcon={rightIcon}
-          >
-            <h2>{historyView()}</h2>
-          </NotifiAlertBox>
-          <div
-            className={clsx(
-              'NotifiSubscriptionCardV1__alertContainer',
-              classNames?.alertContainer,
-            )}
-          >
-            <div
-              className={clsx('DividerLine history', classNames?.dividerLine)}
-            />
+        <AlertHistoryView
+          classNames={classNames?.AlertHistoryView}
+          copy={copy?.AlertHistory}
+          setAlertEntry={setAlertEntry}
+          data={data}
+          headerRightIcon={rightIcon}
+        />
+      );
+      break;
 
-            {/* TODO: Consolidate banners (when it grows) */}
-            {unverifiedDestinations.length > 0 ? (
-              <VerifyBanner
-                classNames={classNames?.verifyBanner}
-                unVerifiedDestinations={unverifiedDestinations}
-              />
-            ) : null}
-            {!isTargetsExist ? (
-              <SignupBanner data={data} classNames={classNames?.signupBanner} />
-            ) : null}
-
-            {selectedAlertEntry === undefined ? null : (
-              <AlertDetailsCard
-                notificationEntry={selectedAlertEntry}
-                classNames={classNames?.AlertDetailsCard}
-              />
-            )}
-            <AlertHistoryView
-              classNames={classNames?.AlertHistoryView}
-              copy={copy?.AlertHistory}
-              isHidden={selectedAlertEntry !== undefined}
-              setAlertEntry={setAlertEntry}
-              data={data}
-            />
-          </div>
-        </>
+    case 'historyDetail':
+      view = selectedAlertEntry ? (
+        <AlertDetailsCard
+          headerTitle={
+            (data?.titles?.active && data?.titles.alertDetailsView) ||
+            'Alert Details'
+          }
+          notificationEntry={selectedAlertEntry}
+          classNames={classNames?.AlertDetailsCard}
+          headerRightIcon={rightIcon}
+        />
+      ) : (
+        setCardView({ state: 'history' })
       );
       break;
     case 'error':
@@ -449,5 +393,30 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
     default:
       view = <div>Not supported view</div>;
   }
-  return <> {loading ? <LoadingStateCard /> : view}</>;
+
+  if (loading) {
+    return <LoadingStateCard />;
+  }
+
+  return (
+    <>
+      {ftuStage === FtuStage.Alerts ? (
+        <ConfigAlertModal
+          classNames={classNames?.ConfigAlertModal}
+          updateFtuStage={updateFtuStage}
+          data={data}
+          inputDisabled={inputDisabled}
+          inputs={inputs}
+        />
+      ) : null}
+      {ftuStage === FtuStage.Destination ? (
+        <ConfigDestinationModal
+          classNames={classNames?.ConfigDestinationModal}
+          updateFtuStage={updateFtuStage}
+          contactInfo={data.contactInfo}
+        />
+      ) : null}
+      {view}
+    </>
+  );
 };

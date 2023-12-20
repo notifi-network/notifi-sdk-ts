@@ -6,6 +6,11 @@ export type PreviewViewState = Readonly<{
 export type AlertHistoryViewState = Readonly<{
   state: 'history';
 }>;
+
+export type HistoryDetailState = Readonly<{
+  state: 'historyDetail';
+}>;
+
 export type EditInfoViewState = Readonly<{
   state: 'edit';
 }>;
@@ -35,7 +40,8 @@ export type FetchedCardViewState =
   | ExpiredTokenViewState
   | SignUpViewState
   | VerifyOnboardingViewState
-  | ErrorViewState;
+  | ErrorViewState
+  | HistoryDetailState;
 
 export const useFetchedCardState = () => {
   const [cardView, setCardView] = useState<FetchedCardViewState>({
