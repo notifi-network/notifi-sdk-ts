@@ -1,6 +1,5 @@
 import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
-import { useDestinationState } from 'notifi-react-card/lib/hooks/useDestinationState';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
@@ -25,7 +24,6 @@ import NotifiAlertBox, {
   NotifiAlertBoxButtonProps,
   NotifiAlertBoxProps,
 } from '../NotifiAlertBox';
-import { SignupBanner, SignupBannerProps } from '../SignupBanner';
 import { ErrorStateCard, LoadingStateCard } from '../common';
 import {
   NotifiInputFieldsText,
@@ -76,8 +74,6 @@ export type SubscriptionCardV1Props = Readonly<{
     NotifiAlertBox: NotifiAlertBoxProps['classNames'];
     ErrorStateCard: string;
     ConfigDestinationModal: ConfigDestinationModalProps['classNames'];
-    // TODO: deprecate after all refactor ( /* Deprecated: use NotifiAlertBox in each cardView */)
-    signupBanner: SignupBannerProps['classNames'];
     ConfigAlertModal: ConfigAlertModalProps['classNames'];
     // TODO: deprecate after all refactor ( /* Deprecated: use NotifiAlertBox in each cardView */)
     dividerLine: string;
@@ -149,8 +145,6 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
     isUsingFrontendClient,
   ]);
 
-  const { isTargetsExist } = useDestinationState();
-
   const [selectedAlertEntry, setAlertEntry] = useState<
     NotificationHistoryEntry | undefined
   >(undefined);
@@ -213,12 +207,6 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
       : copy?.expiredHeader ?? 'Welcome Back';
   };
 
-  const previewHeader = () => {
-    return useCustomTitles && data?.titles.previewView !== ''
-      ? data?.titles.previewView
-      : copy?.manageAlertsHeader ?? 'Manage Alerts';
-  };
-
   const signUpHeader = () => {
     return useCustomTitles && data?.titles.signupView !== ''
       ? data?.titles.signupView
@@ -256,31 +244,13 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
       break;
     case 'preview':
       view = (
-        <>
-          <NotifiAlertBox
-            classNames={classNames?.NotifiAlertBox}
-            leftIcon={{
-              name: 'back',
-              onClick: () => setCardView({ state: 'history' }),
-            }}
-            rightIcon={rightIcon}
-          >
-            <h2>{previewHeader()}</h2>
-          </NotifiAlertBox>
-          <div
-            className={clsx('DividerLine preview', classNames?.dividerLine)}
-          />
-
-          {!isTargetsExist ? (
-            <SignupBanner data={data} classNames={classNames?.signupBanner} />
-          ) : null}
-          <PreviewCard
-            data={data}
-            inputs={inputs}
-            inputDisabled={inputDisabled}
-            classNames={classNames?.PreviewCard}
-          />
-        </>
+        <PreviewCard
+          data={data}
+          inputs={inputs}
+          inputDisabled={inputDisabled}
+          classNames={classNames?.PreviewCard}
+          headerRightIcon={rightIcon}
+        />
       );
       break;
     case 'edit':
