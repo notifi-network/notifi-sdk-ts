@@ -56,6 +56,8 @@ export type SubscriptionCardV1Props = Readonly<{
     AlertHistory: AlertHistoryViewProps['copy'];
     PreviewCard: PreviewCardProps['copy'];
     expiredHeader: string;
+    ExpiredTokenView: ExpiredTokenViewCardProps['copy'];
+    manageAlertsHeader: string;
     signUpHeader: string;
     editHeader: string;
     verifyWalletsHeader: string;
@@ -201,12 +203,6 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
 
   const useCustomTitles = data?.titles?.active === true;
 
-  const expiredHeader = () => {
-    return useCustomTitles && data?.titles.expiredView !== ''
-      ? data?.titles.expiredView
-      : copy?.expiredHeader ?? 'Welcome Back';
-  };
-
   const signUpHeader = () => {
     return useCustomTitles && data?.titles.signupView !== ''
       ? data?.titles.signupView
@@ -229,16 +225,15 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
     case 'expired':
       view = (
         <>
-          <NotifiAlertBox
-            classNames={classNames?.NotifiAlertBox}
-            rightIcon={rightIcon}
-          >
-            <h2>{expiredHeader()}</h2>
-          </NotifiAlertBox>
-          <div
-            className={clsx('DividerLine expired', classNames?.dividerLine)}
+          <ExpiredTokenView
+            classNames={classNames?.ExpiredTokenView}
+            headerRightIcon={rightIcon}
+            headerTitle={
+              (data?.titles?.active && data?.titles.expiredView) ||
+              'Welcome Back'
+            }
+            copy={copy?.ExpiredTokenView}
           />
-          <ExpiredTokenView classNames={classNames?.ExpiredTokenView} />
         </>
       );
       break;
