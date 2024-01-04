@@ -58,21 +58,31 @@ export const NotifiClientContextProvider: React.FC<NotifiParams> = ({
     params.walletPublicKey,
   ]);
 
+  const isClientInitialized = useMemo(() => {
+    return params.isUsingFrontendClient
+      ? !!frontendClient.userState
+      : client.isInitialized;
+  }, [params.isUsingFrontendClient, client, frontendClient]);
+
   useEffect(() => {
     frontendClient.initialize();
   }, [frontendClient]);
 
   return (
-    <NotifiClientContext.Provider
-      value={{
-        client,
-        params,
-        isUsingFrontendClient: params.isUsingFrontendClient ?? true,
-        frontendClient,
-      }}
-    >
-      {children}
-    </NotifiClientContext.Provider>
+    <>
+      {isClientInitialized ? (
+        <NotifiClientContext.Provider
+          value={{
+            client,
+            params,
+            isUsingFrontendClient: params.isUsingFrontendClient ?? true,
+            frontendClient,
+          }}
+        >
+          {children}
+        </NotifiClientContext.Provider>
+      ) : null}
+    </>
   );
 };
 
