@@ -1,12 +1,11 @@
 import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import {
   FtuStage,
   useNotifiClientContext,
   useNotifiDemoPreviewContext,
-  useNotifiForm,
   useNotifiSubscriptionContext,
 } from '../../context';
 import { useNotifiSubscribe } from '../../hooks';
@@ -57,9 +56,6 @@ export type SubscriptionCardV1Props = Readonly<{
     PreviewCard: PreviewCardProps['copy'];
     expiredHeader: string;
     ExpiredTokenView: ExpiredTokenViewCardProps['copy'];
-    manageAlertsHeader: string;
-    signUpHeader: string;
-    editHeader: string;
     verifyWalletsHeader: string;
     historyHeader: string;
     detailHeader: string;
@@ -101,9 +97,6 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
   const allowedCountryCodes = [...data.contactInfo.sms.supportedCountryCodes];
   const {
     cardView,
-    email,
-    phoneNumber,
-    telegramId,
     setCardView,
     ftuStage,
     syncFtuStage,
@@ -112,15 +105,6 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
     setLoading,
   } = useNotifiSubscriptionContext();
   const { demoPreview } = useNotifiDemoPreviewContext();
-
-  const {
-    setEmail,
-    setTelegram,
-    setPhoneNumber,
-    setEmailErrorMessage,
-    setTelegramErrorMessage,
-    setPhoneNumberErrorMessage,
-  } = useNotifiForm();
 
   const { isAuthenticated, isTokenExpired } = useNotifiSubscribe({
     targetGroupName: 'Default',
@@ -152,15 +136,6 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
   >(undefined);
 
   let view = null;
-
-  const resetFormState = useCallback(() => {
-    setEmail(email);
-    setPhoneNumber(phoneNumber);
-    setTelegram(telegramId);
-    setEmailErrorMessage('');
-    setTelegramErrorMessage('');
-    setPhoneNumberErrorMessage('');
-  }, [email, phoneNumber, telegramId]);
 
   useEffect(() => {
     setCardView(() => {
@@ -203,18 +178,6 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
 
   const useCustomTitles = data?.titles?.active === true;
 
-  const signUpHeader = () => {
-    return useCustomTitles && data?.titles.signupView !== ''
-      ? data?.titles.signupView
-      : copy?.signUpHeader ?? 'Get Notified';
-  };
-
-  const editHeader = () => {
-    return useCustomTitles && data?.titles.editView !== ''
-      ? data?.titles.editView
-      : copy?.editHeader ?? 'Update Settings';
-  };
-
   const verifyOnboardingHeader = () => {
     return useCustomTitles && data?.titles.verifyWalletsView !== ''
       ? data?.titles.verifyWalletsView
@@ -252,44 +215,19 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
     case 'edit':
     case 'signup':
       view = (
-        <>
-          <NotifiAlertBox
-            classNames={classNames?.NotifiAlertBox}
-            leftIcon={
-              cardView.state === 'signup'
-                ? undefined
-                : {
-                    name: 'back',
-                    onClick: () => {
-                      resetFormState();
-                      setCardView({ state: 'preview' });
-                    },
-                  }
-            }
-            rightIcon={rightIcon}
-          >
-            {cardView.state === 'signup' ? (
-              <h2>{signUpHeader()}</h2>
-            ) : (
-              <h2>{editHeader()}</h2>
-            )}
-          </NotifiAlertBox>
-          <div
-            className={clsx('DividerLine signup', classNames?.dividerLine)}
-          />
-          <EditCardView
-            buttonText={cardView.state === 'signup' ? 'Next' : 'Update'}
-            data={data}
-            copy={copy?.EditCard}
-            classNames={classNames?.EditCard}
-            inputDisabled={inputDisabled}
-            inputTextFields={inputLabels}
-            inputSeparators={inputSeparators}
-            allowedCountryCodes={allowedCountryCodes}
-            showPreview={cardView.state === 'signup'}
-            inputs={inputs}
-          />
-        </>
+        <EditCardView
+          data={data}
+          copy={copy?.EditCard}
+          classNames={classNames?.EditCard}
+          inputDisabled={inputDisabled}
+          inputTextFields={inputLabels}
+          inputSeparators={inputSeparators}
+          allowedCountryCodes={allowedCountryCodes}
+          showPreview={cardView.state === 'signup'}
+          inputs={inputs}
+          headerRightIcon={rightIcon}
+          viewState={cardView.state}
+        />
       );
       break;
     case 'verifyonboarding':
