@@ -17,6 +17,10 @@ import {
   createConfigurations,
   subscribeAlertsByFrontendClient,
 } from '../../../utils';
+import NotifiAlertBox, {
+  NotifiAlertBoxButtonProps,
+  NotifiAlertBoxProps,
+} from '../../NotifiAlertBox';
 import { WalletList } from '../../WalletList';
 import NotifiCardButton, {
   NotifiCardButtonProps,
@@ -27,17 +31,21 @@ export type VerifyWalletViewProps = Readonly<{
     NotifiVerifyContainer?: string;
     NotifiInputHeading?: string;
     NotifiCardButtonProps?: NotifiCardButtonProps['classNames'];
+    NotifiAlertBox?: NotifiAlertBoxProps['classNames'];
+    dividerLine?: string;
   }>;
-  buttonText: string;
   data: CardConfigItemV1;
   inputs: Record<string, unknown>;
+  headerRightIcon?: NotifiAlertBoxButtonProps;
+  viewState: 'verifyonboarding' | 'verify';
 }>;
 
 const VerifyWalletView: React.FC<VerifyWalletViewProps> = ({
   classNames,
-  buttonText,
   data,
   inputs,
+  headerRightIcon,
+  viewState,
 }) => {
   const {
     cardView,
@@ -127,19 +135,39 @@ const VerifyWalletView: React.FC<VerifyWalletViewProps> = ({
   }, [setLoading, data, inputs, connectedWallets, subscribe, renewWallets]);
 
   return (
-    <div
-      className={clsx(
-        'NotifiVerifyContainer',
-        classNames?.NotifiVerifyContainer,
-      )}
-    >
-      <WalletList />
-      <NotifiCardButton
-        buttonText={buttonText}
-        disabled={loading}
-        onClick={onClick}
-      />
-    </div>
+    <>
+      <NotifiAlertBox
+        classNames={classNames?.NotifiAlertBox}
+        leftIcon={{
+          name: 'back',
+          onClick: () =>
+            setCardView({
+              state:
+                cardView.state === 'verifyonboarding' ? 'signup' : 'preview',
+            }),
+        }}
+        rightIcon={headerRightIcon}
+      >
+        <h2>
+          {(data.titles?.active && data.titles.verifyWalletsView) ||
+            'Verify Wallets'}
+        </h2>
+      </NotifiAlertBox>
+      <div className={clsx('DividerLine verify', classNames?.dividerLine)} />
+      <div
+        className={clsx(
+          'NotifiVerifyContainer',
+          classNames?.NotifiVerifyContainer,
+        )}
+      >
+        <WalletList />
+        <NotifiCardButton
+          buttonText={viewState === 'verifyonboarding' ? 'Next' : 'Confirm'}
+          disabled={loading}
+          onClick={onClick}
+        />
+      </div>
+    </>
   );
 };
 
