@@ -11,6 +11,8 @@ import { useAccount, useConnect, useSignMessage } from 'wagmi';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 
 export const InjectiveMetamaskFrontendClient: FC = () => {
+  const tenantId = process.env.REACT_APP_TENANT_ID;
+  const env = process.env.REACT_APP_ENV;
   const { address: ethAddress, isConnected } = useAccount();
   const { signMessageAsync } = useSignMessage();
   const { connect } = useConnect({
@@ -35,8 +37,8 @@ export const InjectiveMetamaskFrontendClient: FC = () => {
           address: injAddress,
           publicKey: ethAddress,
         },
-        tenantId: 'junitest.xyz',
-        env: 'Development',
+        tenantId,
+        env,
         walletBlockchain: 'INJECTIVE',
       });
     }

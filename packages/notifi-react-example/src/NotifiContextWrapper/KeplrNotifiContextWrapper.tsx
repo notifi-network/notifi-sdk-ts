@@ -13,6 +13,9 @@ export const KeplrConnectButton: React.FC = () => {
   );
 };
 
+const tenantId = process.env.REACT_APP_TENANT_ID;
+const env = process.env.REACT_APP_ENV;
+
 export const KeplrNotifiContextWrapper: React.FC<PropsWithChildren> = ({
   children,
 }) => {
@@ -31,9 +34,9 @@ export const KeplrNotifiContextWrapper: React.FC<PropsWithChildren> = ({
       <KeplrConnectButton />
       {key !== undefined && keyBase64 !== undefined ? (
         <NotifiContext
-          dappAddress="junitest.xyz"
+          dappAddress={tenantId}
           walletBlockchain="INJECTIVE"
-          env="Development"
+          env={env}
           walletPublicKey={keyBase64}
           accountAddress={key.bech32Address}
           signMessage={async (message: Uint8Array): Promise<Uint8Array> => {

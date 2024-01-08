@@ -11,6 +11,8 @@ import { useAccount, useConnect, useDisconnect, useSignMessage } from 'wagmi';
 import { connector } from '../walletProviders/EvmWalletProvider';
 
 export const WalletConnectFrontendClient: FC = () => {
+  const tenantId = process.env.REACT_APP_TENANT_ID;
+  const env = process.env.REACT_APP_ENV;
   const [userState, setUserState] = useState<UserState | null>(null);
   const [clientData, setClientData] = useState<Types.FetchDataQuery>();
   const { address, isConnected } = useAccount();
@@ -25,8 +27,8 @@ export const WalletConnectFrontendClient: FC = () => {
       return newFrontendClient({
         walletBlockchain: 'ETHEREUM',
         account: { publicKey: address },
-        tenantId: 'junitest.xyz',
-        env: 'Development',
+        tenantId,
+        env,
       });
     }
   }, [address, isConnected]);

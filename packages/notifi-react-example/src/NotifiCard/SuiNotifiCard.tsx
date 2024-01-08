@@ -12,6 +12,8 @@ export const SuiNotifiCard: React.FC = () => {
   const { alerts } = useNotifiSubscriptionContext();
   const { client, isUsingFrontendClient } = useNotifiClientContext();
 
+  const suiSubscriptionCardId = process.env.REACT_APP_SUI_SUBSCRIPTION_CARD_ID;
+
   return (
     <div className="container">
       <h1>Notifi Card: Sui</h1>
@@ -37,7 +39,7 @@ export const SuiNotifiCard: React.FC = () => {
       {isCardOpen || !isUsingFrontendClient ? (
         <NotifiSubscriptionCard
           darkMode
-          cardId="d8859ea72ff4449fa8f7f293ebd333c9"
+          cardId={suiSubscriptionCardId}
           onClose={() => setIsCardOpen(false)}
         />
       ) : null}

@@ -8,6 +8,8 @@ import { SignInButton, ethos } from 'ethos-connect';
 import { FC, useMemo, useState } from 'react';
 
 export const SuiFrontendClient: FC = () => {
+  const tenantId = process.env.REACT_APP_TENANT_ID;
+  const env = process.env.REACT_APP_ENV;
   const { status, wallet } = ethos.useWallet();
   const connected = status === 'connected';
 
@@ -31,8 +33,8 @@ export const SuiFrontendClient: FC = () => {
           address: wallet?.currentAccount.address,
           publicKey: wallet?.currentAccount.address,
         },
-        tenantId: 'junitest.xyz',
-        env: 'Development',
+        tenantId,
+        env,
         walletBlockchain: 'SUI',
       });
     }

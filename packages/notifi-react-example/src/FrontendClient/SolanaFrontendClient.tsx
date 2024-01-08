@@ -12,14 +12,17 @@ export const SolanaFrontendClient: FC = () => {
   const adapter = wallet?.adapter;
   const publicKey = adapter?.publicKey?.toBase58() ?? null;
 
+  const tenantId = process.env.REACT_APP_TENANT_ID;
+  const env = process.env.REACT_APP_ENV;
+
   const client = useMemo(() => {
     if (publicKey) {
       return newFrontendClient({
         account: {
           publicKey,
         },
-        tenantId: 'junitest.xyz',
-        env: 'Development',
+        tenantId,
+        env,
         walletBlockchain: 'SOLANA',
       });
     }

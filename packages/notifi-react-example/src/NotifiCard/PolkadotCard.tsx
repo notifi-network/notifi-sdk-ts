@@ -12,6 +12,8 @@ import {
 import { BellButton } from './BellButton';
 
 export const PolkadotCard = () => {
+  const polkadotSubscriptionCardId =
+    process.env.REACT_APP_POLKADOT_SUBSCRIPTION_CARD_ID;
   const [isCardOpen, setIsCardOpen] = useState(false);
   const { alerts } = useNotifiSubscriptionContext();
   const { client, isUsingFrontendClient } = useNotifiClientContext();
@@ -50,7 +52,7 @@ export const PolkadotCard = () => {
       {isCardOpen || !isUsingFrontendClient ? (
         <NotifiSubscriptionCard
           darkMode
-          cardId="d8859ea72ff4449fa8f7f293ebd333c9"
+          cardId={polkadotSubscriptionCardId}
           onClose={() => setIsCardOpen(false)}
         />
       ) : null}

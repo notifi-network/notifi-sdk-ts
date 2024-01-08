@@ -16,6 +16,11 @@ export const SolanaCard: React.FC = () => {
   const [isCardOpen, setIsCardOpen] = React.useState(false);
   const { alerts } = useNotifiSubscriptionContext();
   const { client, isUsingFrontendClient } = useNotifiClientContext();
+
+  const solanaSubscriptionCardId =
+    process.env.REACT_APP_SOLANA_SUBSCRIPTION_CARD_ID;
+  const solanaIntercomCardId = process.env.REACT_APP_SOLANA_INTERCOM_CARD_ID;
+
   const inputLabels: NotifiInputFieldsText = {
     label: {
       email: 'Email',
@@ -70,7 +75,7 @@ export const SolanaCard: React.FC = () => {
           darkMode
           inputLabels={inputLabels}
           inputSeparators={inputSeparators}
-          cardId="7f8cf1f9c1074c07a67b63e3bcdf7c3c"
+          cardId={solanaSubscriptionCardId}
           onClose={() => setIsCardOpen(false)}
           copy={{
             FetchedStateCard: {
@@ -92,7 +97,7 @@ export const SolanaCard: React.FC = () => {
         darkMode
         inputLabels={inputLabels}
         inputSeparators={intercomInputSeparators}
-        cardId="1045f61752b148eabab0403c08cd60b2"
+        cardId={solanaIntercomCardId}
       />
     </div>
   );

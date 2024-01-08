@@ -12,6 +12,8 @@ import {
 } from '../walletProviders/AcalaWalletContextProvider';
 
 export const PolkadotFrontendClient: FC = () => {
+  const tenantId = process.env.REACT_APP_TENANT_ID;
+  const env = process.env.REACT_APP_ENV;
   const { acalaAddress, connected, requestSignature, polkadotPublicKey } =
     useAcalaWallet();
 
@@ -33,8 +35,8 @@ export const PolkadotFrontendClient: FC = () => {
           address: acalaAddress,
           publicKey: polkadotPublicKey,
         },
-        tenantId: 'junitest.xyz',
-        env: 'Development',
+        tenantId,
+        env,
         walletBlockchain: 'ACALA',
       });
     }

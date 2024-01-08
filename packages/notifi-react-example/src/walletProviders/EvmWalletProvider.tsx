@@ -49,7 +49,7 @@ export const EvmWalletProvider: FC<PropsWithChildren> = ({ children }) => {
 
   const { provider } = configureChains(
     [mainnet],
-    [infuraProvider({ apiKey: '9c9ff698105d4f6b9b2b93eddc0dff72' })],
+    [infuraProvider({ apiKey: process.env.REACT_APP_INFURA_API_KEY })],
   );
   const walletConnectClient = createClient({
     autoConnect: true,

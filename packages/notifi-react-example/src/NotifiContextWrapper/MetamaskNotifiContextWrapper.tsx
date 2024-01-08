@@ -32,12 +32,11 @@ const supportedEvmChains = [
   SupportedEvmChains.ZKSYNC,
 ];
 
-const tenantId = 'junitest.xyz';
-const env = 'Development';
-
 export const MetamaskNotifiContextWrapper: React.FC<PropsWithChildren> = ({
   children,
 }) => {
+  const tenantId = process.env.REACT_APP_TENANT_ID;
+  const env = process.env.REACT_APP_ENV;
   const { address, isConnected } = useAccount();
 
   const { connect } = useConnect({
