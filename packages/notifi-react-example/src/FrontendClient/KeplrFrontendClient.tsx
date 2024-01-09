@@ -18,6 +18,9 @@ export const KeplrFrontendClient: FC = () => {
     [key],
   );
 
+  const tenantId = process.env.REACT_APP_TENANT_ID;
+  const env = process.env.REACT_APP_ENV;
+
   const signMessage: Uint8SignMessageFunction = async (message) => {
     if (!key) {
       throw new Error('Key not initialized');
@@ -37,8 +40,8 @@ export const KeplrFrontendClient: FC = () => {
           address: key.bech32Address,
           publicKey: keyBase64,
         },
-        tenantId: 'junitest.xyz',
-        env: 'Development',
+        tenantId,
+        env,
         walletBlockchain: 'INJECTIVE',
       });
     }

@@ -9,6 +9,7 @@ import { useAccount } from 'wagmi';
 import { BellButton } from './BellButton';
 
 export const MetamaskCard = () => {
+  const evmSubscriptionCardId = process.env.REACT_APP_EVM_SUBSCRIPTION_CARD_ID;
   const [isCardOpen, setIsCardOpen] = useState(false);
   const { alerts } = useNotifiSubscriptionContext();
   const { client, isUsingFrontendClient } = useNotifiClientContext();
@@ -40,7 +41,7 @@ export const MetamaskCard = () => {
             <NotifiSubscriptionCard
               darkMode
               inputs={{ userWallet: address }}
-              cardId="d8859ea72ff4449fa8f7f293ebd333c9"
+              cardId={evmSubscriptionCardId}
               onClose={() => setIsCardOpen(false)}
             />
           ) : null}

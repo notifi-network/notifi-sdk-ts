@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { BellButton } from './BellButton';
 
 export const WalletConnectCard = () => {
+  const evmSubscriptionCardId = process.env.REACT_APP_EVM_SUBSCRIPTION_CARD_ID;
   const [isCardOpen, setIsCardOpen] = useState(false);
   const { alerts } = useNotifiSubscriptionContext();
   const { client, isUsingFrontendClient } = useNotifiClientContext();
@@ -35,7 +36,7 @@ export const WalletConnectCard = () => {
       {isCardOpen || !isUsingFrontendClient ? (
         <NotifiSubscriptionCard
           darkMode
-          cardId="7fa9505a96064ed6b91ba2d14a9732de"
+          cardId={evmSubscriptionCardId}
           onClose={() => setIsCardOpen(false)}
         />
       ) : null}

@@ -12,6 +12,9 @@ export const PolkadotNotifiContextWrapper: React.FC<PropsWithChildren> = ({
   const { requestSignature, acalaAddress, connected, polkadotPublicKey } =
     useAcalaWallet();
 
+  const tenantId = process.env.REACT_APP_TENANT_ID;
+  const env = process.env.REACT_APP_ENV;
+
   if (!connected || !acalaAddress) {
     return (
       <div>
@@ -25,11 +28,11 @@ export const PolkadotNotifiContextWrapper: React.FC<PropsWithChildren> = ({
       <AcalaConnectButton />
 
       <NotifiContext
-        dappAddress="junitest.xyz"
+        dappAddress={tenantId}
         walletBlockchain="ACALA"
         accountAddress={acalaAddress}
         walletPublicKey={polkadotPublicKey!}
-        env="Development"
+        env={env}
         signMessage={(accountAddress, message) => {
           console.log({ accountAddress, acalaAddress, message });
           return requestSignature(acalaAddress, message);

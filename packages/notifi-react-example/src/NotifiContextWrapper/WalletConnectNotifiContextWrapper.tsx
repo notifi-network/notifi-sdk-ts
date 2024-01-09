@@ -8,6 +8,8 @@ import { connector } from '../walletProviders/EvmWalletProvider';
 export const WalletConnectNotifiContextWrapper: React.FC<PropsWithChildren> = ({
   children,
 }) => {
+  const tenantId = process.env.REACT_APP_TENANT_ID;
+  const env = process.env.REACT_APP_ENV;
   const { disconnect } = useDisconnect();
   const { signMessageAsync } = useSignMessage();
   const { address, isConnected } = useAccount();
@@ -22,8 +24,8 @@ export const WalletConnectNotifiContextWrapper: React.FC<PropsWithChildren> = ({
       </button>
       {isConnected ? (
         <NotifiContext
-          dappAddress="testimpl"
-          env="Production"
+          dappAddress={tenantId}
+          env={env}
           signMessage={async (message: Uint8Array) => {
             const result = await signMessageAsync({ message });
             return arrayify(result);

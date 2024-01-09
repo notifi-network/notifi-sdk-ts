@@ -32,6 +32,9 @@ export const KeplrCard: React.FC = () => {
     [key],
   );
 
+  const injectiveSubscriptionCardId =
+    process.env.REACT_APP_INJECTIVE_SUBSCRIPTION_CARD_ID;
+
   return (
     <div className="container">
       <h1>Notifi Card: Injective (Keplr)</h1>
@@ -58,7 +61,7 @@ export const KeplrCard: React.FC = () => {
         <NotifiSubscriptionCard
           darkMode
           inputs={{ userWallet: key?.bech32Address }}
-          cardId="d8859ea72ff4449fa8f7f293ebd333c9"
+          cardId={injectiveSubscriptionCardId}
           onClose={() => setIsCardOpen(false)}
         />
       ) : null}

@@ -11,6 +11,8 @@ import React, { PropsWithChildren, useMemo } from 'react';
 export const SolanaNotifiContextWrapper: React.FC<PropsWithChildren> = ({
   children,
 }) => {
+  const tenantId = process.env.REACT_APP_TENANT_ID;
+  const env = process.env.REACT_APP_ENV;
   const { connection } = useConnection();
   const { wallet, sendTransaction, signMessage } = useWallet();
   const adapter = wallet?.adapter;
@@ -27,9 +29,9 @@ export const SolanaNotifiContextWrapper: React.FC<PropsWithChildren> = ({
     <div className="container">
       {publicKey && signMessage ? (
         <NotifiContext
-          dappAddress="junitest.xyz"
+          dappAddress={tenantId}
           walletBlockchain="SOLANA"
-          env="Development"
+          env={env}
           walletPublicKey={publicKey}
           hardwareLoginPlugin={hwLoginPlugin}
           signMessage={signMessage}
