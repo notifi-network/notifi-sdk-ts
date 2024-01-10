@@ -391,10 +391,19 @@ app.post('/sendDirectPush', authorizeMiddleware, (req, res) => {
     walletBlockchain,
     walletPublicKey,
     message,
+    type,
+    template,
   }: Readonly<{
     walletBlockchain?: string;
     walletPublicKey?: string;
     message?: string;
+    type?: string; // This is directPushId
+    template?: {
+      emailTemplate?: string;
+      smsTemplate?: string;
+      telegramTemplate?: string;
+      variables: Record<string, string>;
+    };
   }> = req.body ?? {};
 
   if (walletPublicKey === undefined) {
@@ -413,9 +422,9 @@ app.post('/sendDirectPush', authorizeMiddleware, (req, res) => {
     });
   }
 
-  if (message === undefined) {
+  if (message === undefined && template === undefined) {
     return res.status(400).json({
-      message: 'message is required',
+      message: 'Either message or template is required',
     });
   }
 
@@ -427,6 +436,8 @@ app.post('/sendDirectPush', authorizeMiddleware, (req, res) => {
       walletPublicKey,
       walletBlockchain,
       message,
+      type,
+      template,
     })
     .then(() => {
       return res.status(200).json({ message: 'success' });
