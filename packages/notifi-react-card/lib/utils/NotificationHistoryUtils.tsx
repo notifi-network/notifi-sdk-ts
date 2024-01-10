@@ -69,7 +69,7 @@ supportedEventDetails.set('DirectTenantMessageEventDetails', {
       detail.templateVariablesJson || '',
     );
     return {
-      notificationTitle: 'Announcement',
+      notificationTitle: templateVariablesJson.title ?? 'Announcement',
       notificationImage: <AnnouncementIcon />,
       notificationSubject: templateVariablesJson.subject ?? '',
       notificationDate: notification.createdDate,
