@@ -15,6 +15,11 @@ type AccountBalanceChangedEventDetails = Extract<
   { __typename: 'AccountBalanceChangedEventDetails' }
 >;
 
+type DirectTenantMessageEventDetails = Extract<
+  Types.NotificationHistoryEntryFragmentFragment['detail'],
+  { __typename: 'DirectTenantMessageEventDetails' }
+>;
+
 type BroadcastMessageEventDetails = Extract<
   | Types.NotificationHistoryEntryFragmentFragment['detail']
   | Types.FusionNotificationHistoryEntryFragmentFragment['detail'],
@@ -56,6 +61,32 @@ type SupportedEventDetailPropsMap = Map<
 >;
 
 const supportedEventDetails: SupportedEventDetailPropsMap = new Map();
+
+supportedEventDetails.set('DirectTenantMessageEventDetails', {
+  getViewProps: (notification: NotificationHistoryEntry) => {
+    const detail = notification.detail as DirectTenantMessageEventDetails;
+    const templateVariablesJson: Record<string, string> = JSON.parse(
+      detail.templateVariablesJson || '',
+    );
+    return {
+      notificationTitle: 'Announcement',
+      notificationImage: <AnnouncementIcon />,
+      notificationSubject: templateVariablesJson.subject ?? '',
+      notificationDate: notification.createdDate,
+      notificationMessage: templateVariablesJson.message ?? '',
+    };
+  },
+  getAlertDetailsContents: (notification: NotificationHistoryEntry) => {
+    const detail = notification.detail as DirectTenantMessageEventDetails;
+    const templateVariablesJson: Record<string, string> = JSON.parse(
+      detail.templateVariablesJson || '',
+    );
+    return {
+      topContent: templateVariablesJson.subject ?? '',
+      bottomContent: templateVariablesJson.message ?? '',
+    };
+  },
+});
 
 supportedEventDetails.set('BroadcastMessageEventDetails', {
   getViewProps: (notification: NotificationHistoryEntry) => {
