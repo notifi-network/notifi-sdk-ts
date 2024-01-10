@@ -80,7 +80,6 @@ export const SolanaCard: React.FC = () => {
           copy={{
             FetchedStateCard: {
               SubscriptionCardV1: {
-                signUpHeader: 'Please sign up',
                 EditCard: {
                   AlertListPreview: {
                     description:
