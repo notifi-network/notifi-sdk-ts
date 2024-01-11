@@ -68,21 +68,19 @@ export const NotifiClientContextProvider: React.FC<NotifiParams> = ({
     frontendClient.initialize();
   }, [frontendClient]);
 
+  if (!isClientInitialized) return null;
+
   return (
-    <>
-      {isClientInitialized ? (
-        <NotifiClientContext.Provider
-          value={{
-            client,
-            params,
-            isUsingFrontendClient: params.isUsingFrontendClient ?? true,
-            frontendClient,
-          }}
-        >
-          {children}
-        </NotifiClientContext.Provider>
-      ) : null}
-    </>
+    <NotifiClientContext.Provider
+      value={{
+        client,
+        params,
+        isUsingFrontendClient: params.isUsingFrontendClient ?? true,
+        frontendClient,
+      }}
+    >
+      {children}
+    </NotifiClientContext.Provider>
   );
 };
 
