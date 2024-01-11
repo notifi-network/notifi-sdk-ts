@@ -19,7 +19,9 @@ import {
   ConfigDestinationModalProps,
 } from '../ConfigDestinationModal';
 import { NotifiAlertBoxButtonProps } from '../NotifiAlertBox';
+import { NotifiFooter, NotifiFooterProps } from '../NotifiFooter';
 import { ErrorStateCard, LoadingStateCard } from '../common';
+import { NotifiNavBar, NotifiNavBarProps } from './NotifiNavbar';
 import {
   NotifiInputFieldsText,
   NotifiInputSeparators,
@@ -47,16 +49,17 @@ import VerifyWalletView, {
 
 export type SubscriptionCardV1Props = Readonly<{
   copy?: DeepPartialReadonly<{
-    EditCard: EditCardViewProps['copy'];
-    AlertHistory: AlertHistoryViewProps['copy'];
-    PreviewCard: PreviewCardProps['copy'];
-    expiredHeader: string;
-    ExpiredTokenView: ExpiredTokenViewCardProps['copy'];
-    verifyWalletsHeader: string;
-    historyHeader: string;
-    detailHeader: string;
-    signUpHeader: string;
-    editHeader: string;
+    EditCard?: EditCardViewProps['copy'];
+    AlertHistory?: AlertHistoryViewProps['copy'];
+    PreviewCard?: PreviewCardProps['copy'];
+    expiredHeader?: string;
+    ExpiredTokenView?: ExpiredTokenViewCardProps['copy'];
+    verifyWalletsHeader?: string;
+    historyHeader?: string;
+    detailHeader?: string;
+    signUpHeader?: string;
+    editHeader?: string;
+    disclosure?: string;
   }>;
   classNames?: DeepPartialReadonly<{
     AlertHistoryView: AlertHistoryViewProps['classNames'];
@@ -68,6 +71,8 @@ export type SubscriptionCardV1Props = Readonly<{
     VerifyWalletView: VerifyWalletViewProps['classNames'];
     ErrorStateCard: string;
     ConfigDestinationModal: ConfigDestinationModalProps['classNames'];
+    NotifiFooter: NotifiFooterProps['classNames'];
+    NavBar: NotifiNavBarProps['classNames'];
     ConfigAlertModal: ConfigAlertModalProps['classNames'];
   }>;
   inputDisabled: boolean;
@@ -128,6 +133,32 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
   const [selectedAlertEntry, setAlertEntry] = useState<
     NotificationHistoryEntry | undefined
   >(undefined);
+  enum BottomSection {
+    NotifiFooter = 'NotifiFooter',
+    NotifiNavBar = 'NotifiNavBar',
+  }
+
+  const rightIcon: NotifiAlertBoxButtonProps | undefined = useMemo(() => {
+    if (onClose === undefined) {
+      return undefined;
+    }
+
+    return {
+      name: 'close',
+      onClick: onClose,
+    };
+  }, [onClose]);
+
+  const bottomSection = useMemo(() => {
+    if (
+      cardView.state === 'expired' ||
+      cardView.state === 'signup' ||
+      cardView.state === 'error'
+    ) {
+      return BottomSection.NotifiFooter;
+    }
+    return BottomSection.NotifiNavBar;
+  }, [cardView.state]);
 
   useEffect(() => {
     setCardView(() => {
@@ -156,17 +187,6 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
       return { state: 'history' };
     });
   }, []);
-
-  const rightIcon: NotifiAlertBoxButtonProps | undefined = useMemo(() => {
-    if (onClose === undefined) {
-      return undefined;
-    }
-
-    return {
-      name: 'close',
-      onClick: onClose,
-    };
-  }, [onClose]);
 
   let view = null;
   switch (cardView.state) {
@@ -282,6 +302,15 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
         />
       ) : null}
       {view}
+      {bottomSection === BottomSection.NotifiNavBar ? (
+        <NotifiNavBar classNames={classNames?.NavBar} />
+      ) : null}
+      {bottomSection === BottomSection.NotifiFooter ? (
+        <NotifiFooter
+          classNames={classNames?.NotifiFooter}
+          copy={{ disclosure: copy?.disclosure }}
+        />
+      ) : null}
     </>
   );
 };

@@ -1,13 +1,18 @@
 :root {
+  /* SDK3.0 global colors */
   --notifi-color-grey1: #1c1c23;
   --notifi-color-grey2: #323240;
   --notifi-color-grey3: #80829d;
+  --notifi-color-grey4: #434354;
+  --notifi-color-grey5: #b6b8d5;
   --notifi-color-white: #fff;
+  --notifi-color-bright: #f4f5fa;
   --notifi-color-eggshell: #f5f6fb;
   --notifi-color-seaglass-dark: #828ae3;
   --notifi-color-green1: #318c1a;
   --notifi-color-green2: #dff8d9;
   --notifi-color-dark: #1b1b22;
+  --notifi-color-midnight: #262949;
   --notifi-color-blue1: #e8ebf5;
 }
 
@@ -22,7 +27,7 @@
   --notifi-alert-color: rgb(252 0 0);
   --notifi-link-color: #0000ee;
   --notifi-checkmark-color: #22af3c;
-  --notifi-card-background: #fff;
+  --notifi-card-background: var(--notifi-color-bright);
   --notifi-font-color: #262949;
   --notifi-secondary-font-color: #80829d;
   --notifi-intro-color: #262949;
@@ -50,6 +55,9 @@
   --notifi-verifyBanner-icon-bg: var(--notifi-color-grey2);
   --notifi-verifyBanner-icon: var(--notifi-color-white);
   --notifi-banner-button: var(--notifi-color-white);
+  --notifi-banner-button-text: var(--notifi-color-midnight);
+  --notifi-history-item-background: var(--notifi-color-white);
+  --notifi-history-item-icon: var(--notifi-color-grey5);
 }
 
 a {
@@ -73,7 +81,7 @@ a {
   --notifi-checkmark-color: #ea7e68;
   --notifi-font-color: #fff;
   --notifi-secondary-font-color: #b6b8d5;
-  --notifi-card-background: #000000;
+  --notifi-card-background: var(--notifi-color-dark);
   --notifi-intro-color: #b6b8d5;
   --notifi-input-background: #474858;
   --notifi-input-border: #606060;
@@ -84,7 +92,7 @@ a {
   --notifi-outgoing-message: #678afc;
   --notifi-settings-icon-color: #fff;
   --notifi-confirmation-color: #45c95e;
-  --notifi-banner-background: #222222;
+  --notifi-banner-background: var(--notifi-color-grey4);
   --notifi-banner-icon-color: #262949;
   --notifi-divider-line: rgba(255, 255, 255, 0.2);
   /* SDK3.0 color props*/
@@ -99,7 +107,10 @@ a {
   --notifi-secondary-button-font-color3: var(--notifi-color-green1);
   --notifi-verifyBanner-icon-bg: var(--notifi-color-white);
   --notifi-verifyBanner-icon: var(--notifi-color-dark);
-  --notifi-banner-button: var(--notifi-color-white);
+  --notifi-banner-button: var(--notifi-color-seaglass-dark);
+  --notifi-banner-button-text: var(--notifi-color-white);
+  --notifi-history-item-background: var(--notifi-color-grey2);
+  --notifi-history-item-icon: var(--notifi-color-grey5);
 }
 
 input:autofill,
@@ -123,7 +134,7 @@ input::-webkit-inner-spin-button {
   font-family: Helvetica, sans-serif;
   background-color: var(--notifi-card-background);
   border-radius: 5px;
-  padding: 20px 0px 5px 0px;
+  /* padding: 20px 0px 5px 0px; */
   min-height: 510px;
   position: relative;
 }
@@ -285,7 +296,10 @@ input::-webkit-inner-spin-button {
 .NotifiAlertBox__container {
   display: flex;
   align-items: center;
-  padding: 0px 20px;
+  padding: 20px 20px;
+  background-color: var(--notifi-tab-background);
+  border-radius: 5px 5px 0 0;
+  margin-bottom: 0 !important;
 }
 
 .NotifiAlertBox__btn--left,
@@ -342,10 +356,13 @@ input::-webkit-inner-spin-button {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding: 10px 0 0 0px;
+  padding: 10px 15px 0 15px;
   flex-grow: 1;
   overflow: hidden;
-  border-bottom: 1px solid var(--notifi-divider-line);
+  background-color: var(--notifi-history-item-background);
+  border-radius: 6px;
+  margin-bottom: 0 !important;
+  margin-top: 8px;
 }
 
 .NotifiAlertHistory__content,
@@ -361,8 +378,8 @@ input::-webkit-inner-spin-button {
 
 .NotifiAlertHistory__notificationRow:hover {
   cursor: pointer;
+  /* TODO: Hover color TBD */
   background-color: var(--notifi-card-secondary-background);
-  border-radius: 16px;
 }
 
 .DividerLine {
@@ -380,7 +397,6 @@ input::-webkit-inner-spin-button {
   line-height: 12px;
   color: var(--notifi-font-color);
   opacity: 60%;
-  padding-right: 25px;
 }
 
 .NotifiAlertHistory__notificationTitle,
@@ -402,7 +418,7 @@ input::-webkit-inner-spin-button {
   width: 18px;
   height: 18px;
   padding-right: 10px;
-  color: var(--notifi-settings-icon-color);
+  color: var(--notifi-history-item-icon);
 }
 
 .NotifiAlertHistory_noAlertDescription {
@@ -411,6 +427,7 @@ input::-webkit-inner-spin-button {
   font-family: inherit;
   color: var(--notifi-secondary-font-color);
   text-align: center;
+  line-height: 1.5;
 }
 
 .NotifiAlertHistory__notificationSubject,
@@ -1015,11 +1032,12 @@ input::-webkit-inner-spin-button {
 }
 
 .NotifiAlertHistory__noAlertContainer {
-  padding-top: 67px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  margin: auto;
+  padding: 0 47px;
 }
 
 /* ALERT DETAILS CARD */
@@ -1029,6 +1047,7 @@ input::-webkit-inner-spin-button {
   justify-content: flex-start;
   align-items: stretch;
   margin: 0px 20px;
+  flex-grow: 1;
 }
 
 .NotifiAlertDetails__topContentContainer {
@@ -1859,7 +1878,7 @@ input::-webkit-inner-spin-button {
   flex-direction: column;
   flex-grow: 1;
   visibility: visible;
-  margin: 0px 20px;
+  margin: 0px 16px;
 }
 
 .NotifiAlertHistory__loading {
@@ -1970,7 +1989,9 @@ input::-webkit-inner-spin-button {
   justify-content: space-between;
   align-items: center;
   background-color: var(--notifi-banner-background);
-  padding: 10px 20px;
+  padding: 10px 15px 10px 15px;
+  margin: 8px 16px 0px 16px !important;
+  border-radius: 6px;
 }
 
 .SignupBanner__Column {
@@ -1984,11 +2005,10 @@ input::-webkit-inner-spin-button {
 .SignupBanner__Label {
   display: flex;
   justify-content: space-between;
-  padding: 0px 0 0 10px;
   margin-bottom: 0px !important;
 }
 .verifyBanner__imageContainer,
-.SignupBanner__Image {
+.SignupBanner__ImageContainer {
   margin-right: 13px;
   display: flex;
   justify-content: center;
@@ -2001,11 +2021,11 @@ input::-webkit-inner-spin-button {
   width: 72px;
   height: 29px;
   border-radius: 4.04px;
-  margin-right: 10px;
   cursor: pointer;
   border: none;
   background-color: var(--notifi-banner-button);
   font-weight: 700;
+  color: var(--notifi-banner-button-text);
 }
 
 .verifyBanner__subject {
@@ -2021,6 +2041,15 @@ input::-webkit-inner-spin-button {
   color: var(--notifi-verifyBanner-icon);
   width: 11px;
   height: 11px;
+  margin-left: 5px;
+}
+
+.SignupBanner__PreviewImage {
+  color: var(--notifi-color-seaglass-dark);
+}
+
+.SignupBanner__HistoryImage {
+  margin-right: -10px;
 }
 
 .configAlertModal__container,
@@ -2259,4 +2288,20 @@ input::-webkit-inner-spin-button {
   border-radius: 0px 0px 6px 6px;
 }
 
-/* TODO ending line */
+.navbar__container {
+  display: flex;
+  background-color: var(--notifi-tab-background);
+  padding: 16px 0px;
+  border-radius: 0 0 8px 8px;
+  border-top: 1px solid var(--notifi-divider-line);
+}
+
+.navbar__container > * {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.NotifiNavBar__icon {
+  cursor: pointer;
+}

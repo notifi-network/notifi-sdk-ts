@@ -1,10 +1,12 @@
 import clsx from 'clsx';
 import DOMPurify from 'dompurify';
 import { useNotifiSubscriptionContext } from 'notifi-react-card/lib/context';
-import { getAlertDetailsContents } from 'notifi-react-card/lib/utils';
+import {
+  formatAlertDetailsTimestamp,
+  getAlertDetailsContents,
+} from 'notifi-react-card/lib/utils';
 import React, { useMemo } from 'react';
 
-import { formatAlertDetailsTimestamp } from '../../utils/AlertHistoryUtils';
 import NotifiAlertBox, {
   NotifiAlertBoxButtonProps,
   NotifiAlertBoxProps,

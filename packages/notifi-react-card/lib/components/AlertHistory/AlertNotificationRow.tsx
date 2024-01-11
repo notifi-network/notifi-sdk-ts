@@ -1,7 +1,6 @@
 import clsx from 'clsx';
+import { formatTimestamp } from 'notifi-react-card/lib/utils';
 import React from 'react';
-
-import { formatTimestamp } from '../.././utils/AlertHistoryUtils';
 
 export type AlertNotificationViewProps = Readonly<{
   notificationTitle: string | undefined;
