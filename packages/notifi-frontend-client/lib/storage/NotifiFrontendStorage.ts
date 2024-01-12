@@ -17,7 +17,8 @@ export type HasStorageType<Key extends string> = Readonly<{
 }>;
 
 export type StorageType<Key extends string, T> = GetStorageType<Key, T> &
-  SetStorageType<Key, T>;
+  SetStorageType<Key, T> &
+  HasStorageType<Key>;
 
 export type Authorization = Readonly<{
   token: string;
