@@ -1,5 +1,8 @@
 import { WalletBlockchain } from '@notifi-network/notifi-core';
-import { Uint8SignMessageFunction } from '@notifi-network/notifi-frontend-client';
+import {
+  NotifiEnvironment,
+  Uint8SignMessageFunction,
+} from '@notifi-network/notifi-frontend-client';
 import { NotifiContext } from '@notifi-network/notifi-react-card';
 import { arrayify } from 'ethers/lib/utils.js';
 import { PropsWithChildren, useMemo } from 'react';
@@ -35,8 +38,8 @@ const supportedEvmChains = [
 export const MetamaskNotifiContextWrapper: React.FC<PropsWithChildren> = ({
   children,
 }) => {
-  const tenantId = process.env.REACT_APP_TENANT_ID;
-  const env = process.env.REACT_APP_ENV;
+  const tenantId = process.env.REACT_APP_TENANT_ID!;
+  const env = process.env.REACT_APP_ENV! as NotifiEnvironment;
   const { address, isConnected } = useAccount();
 
   const { connect } = useConnect({

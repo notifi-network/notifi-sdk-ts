@@ -18,8 +18,8 @@ export const SolanaCard: React.FC = () => {
   const { client, isUsingFrontendClient } = useNotifiClientContext();
 
   const solanaSubscriptionCardId =
-    process.env.REACT_APP_SOLANA_SUBSCRIPTION_CARD_ID;
-  const solanaIntercomCardId = process.env.REACT_APP_SOLANA_INTERCOM_CARD_ID;
+    process.env.REACT_APP_SOLANA_SUBSCRIPTION_CARD_ID!;
+  const solanaIntercomCardId = process.env.REACT_APP_SOLANA_INTERCOM_CARD_ID!;
 
   const inputLabels: NotifiInputFieldsText = {
     label: {

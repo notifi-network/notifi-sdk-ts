@@ -1,5 +1,6 @@
 import {
   AcalaSignMessageFunction,
+  NotifiEnvironment,
   UserState,
   newFrontendClient,
 } from '@notifi-network/notifi-frontend-client';
@@ -12,8 +13,8 @@ import {
 } from '../walletProviders/AcalaWalletContextProvider';
 
 export const PolkadotFrontendClient: FC = () => {
-  const tenantId = process.env.REACT_APP_TENANT_ID;
-  const env = process.env.REACT_APP_ENV;
+  const tenantId = process.env.REACT_APP_TENANT_ID!;
+  const env = process.env.REACT_APP_ENV! as NotifiEnvironment;
   const { acalaAddress, connected, requestSignature, polkadotPublicKey } =
     useAcalaWallet();
 

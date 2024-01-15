@@ -9,7 +9,7 @@ import { useAccount } from 'wagmi';
 import { BellButton } from './BellButton';
 
 export const MetamaskCard = () => {
-  const evmSubscriptionCardId = process.env.REACT_APP_EVM_SUBSCRIPTION_CARD_ID;
+  const evmSubscriptionCardId = process.env.REACT_APP_EVM_SUBSCRIPTION_CARD_ID!;
   const [isCardOpen, setIsCardOpen] = useState(false);
   const { alerts } = useNotifiSubscriptionContext();
   const { client, isUsingFrontendClient } = useNotifiClientContext();

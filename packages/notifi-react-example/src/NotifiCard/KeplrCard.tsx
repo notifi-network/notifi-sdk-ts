@@ -33,7 +33,7 @@ export const KeplrCard: React.FC = () => {
   );
 
   const injectiveSubscriptionCardId =
-    process.env.REACT_APP_INJECTIVE_SUBSCRIPTION_CARD_ID;
+    process.env.REACT_APP_INJECTIVE_SUBSCRIPTION_CARD_ID!;
 
   return (
     <div className="container">

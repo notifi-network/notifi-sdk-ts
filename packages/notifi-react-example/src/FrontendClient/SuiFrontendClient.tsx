@@ -1,5 +1,6 @@
 import { Uint8SignMessageFunction } from '@notifi-network/notifi-core';
 import {
+  NotifiEnvironment,
   UserState,
   newFrontendClient,
 } from '@notifi-network/notifi-frontend-client';
@@ -8,8 +9,8 @@ import { SignInButton, ethos } from 'ethos-connect';
 import { FC, useMemo, useState } from 'react';
 
 export const SuiFrontendClient: FC = () => {
-  const tenantId = process.env.REACT_APP_TENANT_ID;
-  const env = process.env.REACT_APP_ENV;
+  const tenantId = process.env.REACT_APP_TENANT_ID!;
+  const env = process.env.REACT_APP_ENV! as NotifiEnvironment;
   const { status, wallet } = ethos.useWallet();
   const connected = status === 'connected';
 

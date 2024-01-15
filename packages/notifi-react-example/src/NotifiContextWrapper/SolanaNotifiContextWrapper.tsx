@@ -1,3 +1,4 @@
+import { NotifiEnvironment } from '@notifi-network/notifi-frontend-client';
 import { NotifiContext } from '@notifi-network/notifi-react-card';
 import '@notifi-network/notifi-react-card/dist/index.css';
 import { MemoProgramHardwareLoginPlugin } from '@notifi-network/notifi-solana-hw-login';
@@ -11,8 +12,8 @@ import React, { PropsWithChildren, useMemo } from 'react';
 export const SolanaNotifiContextWrapper: React.FC<PropsWithChildren> = ({
   children,
 }) => {
-  const tenantId = process.env.REACT_APP_TENANT_ID;
-  const env = process.env.REACT_APP_ENV;
+  const tenantId = process.env.REACT_APP_TENANT_ID!;
+  const env = process.env.REACT_APP_ENV! as NotifiEnvironment;
   const { connection } = useConnection();
   const { wallet, sendTransaction, signMessage } = useWallet();
   const adapter = wallet?.adapter;

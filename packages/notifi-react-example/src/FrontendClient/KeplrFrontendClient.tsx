@@ -1,4 +1,5 @@
 import {
+  NotifiEnvironment,
   Uint8SignMessageFunction,
   UserState,
   newFrontendClient,
@@ -18,8 +19,8 @@ export const KeplrFrontendClient: FC = () => {
     [key],
   );
 
-  const tenantId = process.env.REACT_APP_TENANT_ID;
-  const env = process.env.REACT_APP_ENV;
+  const tenantId = process.env.REACT_APP_TENANT_ID!;
+  const env = process.env.REACT_APP_ENV! as NotifiEnvironment;
 
   const signMessage: Uint8SignMessageFunction = async (message) => {
     if (!key) {

@@ -1,4 +1,5 @@
 import {
+  NotifiEnvironment,
   Uint8SignMessageFunction,
   UserState,
   newFrontendClient,
@@ -11,8 +12,8 @@ import { useAccount, useConnect, useSignMessage } from 'wagmi';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 
 export const InjectiveMetamaskFrontendClient: FC = () => {
-  const tenantId = process.env.REACT_APP_TENANT_ID;
-  const env = process.env.REACT_APP_ENV;
+  const tenantId = process.env.REACT_APP_TENANT_ID!;
+  const env = process.env.REACT_APP_ENV! as NotifiEnvironment;
   const { address: ethAddress, isConnected } = useAccount();
   const { signMessageAsync } = useSignMessage();
   const { connect } = useConnect({
