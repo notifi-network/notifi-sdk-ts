@@ -1,4 +1,5 @@
 import {
+  NotifiEnvironment,
   UserState,
   newFrontendClient,
 } from '@notifi-network/notifi-frontend-client';
@@ -12,8 +13,8 @@ export const SolanaFrontendClient: FC = () => {
   const adapter = wallet?.adapter;
   const publicKey = adapter?.publicKey?.toBase58() ?? null;
 
-  const tenantId = process.env.REACT_APP_TENANT_ID;
-  const env = process.env.REACT_APP_ENV;
+  const tenantId = process.env.REACT_APP_TENANT_ID!;
+  const env = process.env.REACT_APP_ENV! as NotifiEnvironment;
 
   const client = useMemo(() => {
     if (publicKey) {

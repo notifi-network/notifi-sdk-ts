@@ -1,3 +1,4 @@
+import { NotifiEnvironment } from '@notifi-network/notifi-frontend-client';
 import { NotifiContext } from '@notifi-network/notifi-react-card';
 import '@notifi-network/notifi-react-card/dist/index.css';
 import React, { PropsWithChildren, useMemo } from 'react';
@@ -13,8 +14,8 @@ export const KeplrConnectButton: React.FC = () => {
   );
 };
 
-const tenantId = process.env.REACT_APP_TENANT_ID;
-const env = process.env.REACT_APP_ENV;
+const tenantId = process.env.REACT_APP_TENANT_ID!;
+const env = process.env.REACT_APP_ENV! as NotifiEnvironment;
 
 export const KeplrNotifiContextWrapper: React.FC<PropsWithChildren> = ({
   children,

@@ -1,3 +1,4 @@
+import { NotifiEnvironment } from '@notifi-network/notifi-frontend-client';
 import { NotifiContext } from '@notifi-network/notifi-react-card';
 import { arrayify } from 'ethers/lib/utils.js';
 import { PropsWithChildren } from 'react';
@@ -8,8 +9,8 @@ import { connector } from '../walletProviders/EvmWalletProvider';
 export const WalletConnectNotifiContextWrapper: React.FC<PropsWithChildren> = ({
   children,
 }) => {
-  const tenantId = process.env.REACT_APP_TENANT_ID;
-  const env = process.env.REACT_APP_ENV;
+  const tenantId = process.env.REACT_APP_TENANT_ID!;
+  const env = process.env.REACT_APP_ENV! as NotifiEnvironment;
   const { disconnect } = useDisconnect();
   const { signMessageAsync } = useSignMessage();
   const { address, isConnected } = useAccount();

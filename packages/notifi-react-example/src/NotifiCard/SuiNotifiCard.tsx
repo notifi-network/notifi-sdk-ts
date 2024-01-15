@@ -12,7 +12,7 @@ export const SuiNotifiCard: React.FC = () => {
   const { alerts } = useNotifiSubscriptionContext();
   const { client, isUsingFrontendClient } = useNotifiClientContext();
 
-  const suiSubscriptionCardId = process.env.REACT_APP_SUI_SUBSCRIPTION_CARD_ID;
+  const suiSubscriptionCardId = process.env.REACT_APP_SUI_SUBSCRIPTION_CARD_ID!;
 
   return (
     <div className="container">

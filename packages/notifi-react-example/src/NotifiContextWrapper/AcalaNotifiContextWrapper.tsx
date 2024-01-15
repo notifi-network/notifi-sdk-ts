@@ -1,3 +1,4 @@
+import { NotifiEnvironment } from '@notifi-network/notifi-frontend-client';
 import { NotifiContext } from '@notifi-network/notifi-react-card';
 import { PropsWithChildren } from 'react';
 
@@ -12,8 +13,8 @@ export const PolkadotNotifiContextWrapper: React.FC<PropsWithChildren> = ({
   const { requestSignature, acalaAddress, connected, polkadotPublicKey } =
     useAcalaWallet();
 
-  const tenantId = process.env.REACT_APP_TENANT_ID;
-  const env = process.env.REACT_APP_ENV;
+  const tenantId = process.env.REACT_APP_TENANT_ID!;
+  const env = process.env.REACT_APP_ENV! as NotifiEnvironment;
 
   if (!connected || !acalaAddress) {
     return (

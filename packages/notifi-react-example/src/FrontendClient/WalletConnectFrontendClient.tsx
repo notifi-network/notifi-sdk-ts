@@ -1,5 +1,6 @@
 import { Uint8SignMessageFunction } from '@notifi-network/notifi-core';
 import {
+  NotifiEnvironment,
   UserState,
   newFrontendClient,
 } from '@notifi-network/notifi-frontend-client';
@@ -11,8 +12,8 @@ import { useAccount, useConnect, useDisconnect, useSignMessage } from 'wagmi';
 import { connector } from '../walletProviders/EvmWalletProvider';
 
 export const WalletConnectFrontendClient: FC = () => {
-  const tenantId = process.env.REACT_APP_TENANT_ID;
-  const env = process.env.REACT_APP_ENV;
+  const tenantId = process.env.REACT_APP_TENANT_ID!;
+  const env = process.env.REACT_APP_ENV! as NotifiEnvironment;
   const [userState, setUserState] = useState<UserState | null>(null);
   const [clientData, setClientData] = useState<Types.FetchDataQuery>();
   const { address, isConnected } = useAccount();

@@ -13,7 +13,7 @@ import { BellButton } from './BellButton';
 
 export const PolkadotCard = () => {
   const polkadotSubscriptionCardId =
-    process.env.REACT_APP_POLKADOT_SUBSCRIPTION_CARD_ID;
+    process.env.REACT_APP_POLKADOT_SUBSCRIPTION_CARD_ID!;
   const [isCardOpen, setIsCardOpen] = useState(false);
   const { alerts } = useNotifiSubscriptionContext();
   const { client, isUsingFrontendClient } = useNotifiClientContext();
