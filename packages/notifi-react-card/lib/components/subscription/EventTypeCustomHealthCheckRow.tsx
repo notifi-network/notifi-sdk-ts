@@ -174,7 +174,7 @@ export const EventTypeCustomHealthCheckRow: React.FC<
           ratioNumber;
         alertDetail.inputs[
           `${alertDetail.eventType.name}__healthThresholdDirection`
-        ] = thresholdDirection;
+        ] = config.checkRatios[0].type ?? thresholdDirection;
         return subscribeAlertByFrontendClient(frontendClient, alertDetail);
       } else {
         return instantSubscribe({
