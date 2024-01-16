@@ -10,7 +10,6 @@ import {
   useNotifiSubscriptionContext,
 } from '../../context';
 import { DeepPartialReadonly } from '../../utils';
-import { NotifiFooter, NotifiFooterProps } from '../NotifiFooter';
 import { LoadingStateCard, LoadingStateCardProps } from '../common';
 import { ErrorStateCard, ErrorStateCardProps } from '../common/ErrorStateCard';
 import { FetchedStateCard, FetchedStateCardProps } from './FetchedStateCard';
@@ -61,11 +60,9 @@ export type NotifiSubscriptionCardProps = Readonly<{
     FetchedStateCard?: FetchedStateCardProps['classNames'];
     LoadingStateCard?: LoadingStateCardProps['classNames'];
     NotifiSubscribeButton?: NotifiSubscribeButtonProps['classNames'];
-    NotifiFooter?: NotifiFooterProps['classNames'];
   }>;
   loadingSpinnerSize?: string;
   loadingRingColor?: string;
-  disclosureCopy?: string;
   inputLabels?: NotifiInputFieldsText;
   darkMode?: boolean;
   cardId: string;
@@ -84,7 +81,6 @@ export const NotifiSubscriptionCard: React.FC<
   inputLabels,
   inputs = {},
   inputSeparators,
-  disclosureCopy,
   children,
   loadingRingColor,
   loadingSpinnerSize,
@@ -195,10 +191,6 @@ export const NotifiSubscriptionCard: React.FC<
     >
       {children}
       {contents}
-      <NotifiFooter
-        classNames={classNames?.NotifiFooter}
-        copy={{ disclosure: disclosureCopy }}
-      />
     </div>
   );
 };

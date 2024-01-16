@@ -17,7 +17,7 @@ export const CircleBellIcon: React.FC<Props> = (props: Props) => {
         cy="10.5"
         r="9.5"
         fill="white"
-        stroke="url(#paint0_linear_1316_3580)"
+        stroke="currentColor"
         strokeWidth="2"
       />
       <path

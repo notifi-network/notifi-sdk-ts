@@ -40,9 +40,10 @@ export type NotificationHistoryEntry =
   | Types.NotificationHistoryEntryFragmentFragment;
 
 export type AlertHistoryViewProps = Readonly<{
-  noAlertDescription?: string;
   data: CardConfigItemV1;
   copy?: {
+    noAlertTitle?: string;
+    noAlertDescription?: string;
     loadingSpinnerSize?: string;
     loadingRingColor?: string;
   };
@@ -52,6 +53,7 @@ export type AlertHistoryViewProps = Readonly<{
     NotifiAlertBox?: NotifiAlertBoxProps['classNames'];
     dividerLine?: string;
     manageAlertLink?: string;
+    noAlertTitle?: string;
     noAlertDescription?: string;
     notificationDate?: string;
     notificationSubject?: string;
@@ -75,16 +77,11 @@ export type AlertHistoryViewProps = Readonly<{
 
 export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
   classNames,
-  noAlertDescription,
   setAlertEntry,
   copy,
   data,
   headerRightIcon,
 }) => {
-  noAlertDescription = noAlertDescription
-    ? noAlertDescription
-    : 'You haven’t received any notifications yet';
-
   const [endCursor, setEndCursor] = useState<string | undefined>();
   const [hasNextPage, setHasNextPage] = useState<boolean>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -174,10 +171,6 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
     <>
       <NotifiAlertBox
         classNames={classNames?.NotifiAlertBox}
-        leftIcon={{
-          name: 'settings',
-          onClick: () => setCardView({ state: 'preview' }),
-        }}
         rightIcon={headerRightIcon}
       >
         <h2>
@@ -249,13 +242,22 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
                   classNames?.emptyAlertsBellIcon,
                 )}
               />
+              <div
+                className={clsx(
+                  'NotifiAlertHistory_noAlertTitle',
+                  classNames?.noAlertTitle,
+                )}
+              >
+                {copy?.noAlertTitle ?? 'Inbox empty'}
+              </div>
               <span
                 className={clsx(
                   'NotifiAlertHistory_noAlertDescription',
                   classNames?.noAlertDescription,
                 )}
               >
-                {noAlertDescription}
+                {copy?.noAlertDescription ??
+                  'You haven’t received any notifications yet. You can manage your destinations and alerts under settings.'}
               </span>
             </div>
           ) : null}

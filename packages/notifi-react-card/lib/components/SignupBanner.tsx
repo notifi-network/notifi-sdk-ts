@@ -8,17 +8,20 @@ import React, { useMemo } from 'react';
 import { CircleBellIcon } from '../assets/CircleBellIcon';
 import { useNotifiSubscriptionContext } from '../context';
 import { DeepPartialReadonly } from '../utils';
+import { AlertIcon } from './AlertHistory/AlertIcon';
 
 export type SignupBannerProps = Readonly<{
   data: CardConfigItemV1;
   classNames?: DeepPartialReadonly<{
-    banner: string;
-    bannerImage: string;
-    bannerLabel: string;
-    bannerContent: string;
-    bannerTitle: string;
-    bannerSubject: string;
-    bannerButton: string;
+    banner?: string;
+    bannerImageContainer?: string;
+    bannerHistoryImage?: string;
+    bannerPreviewImage?: string;
+    bannerLabel?: string;
+    bannerContent?: string;
+    bannerTitle?: string;
+    bannerSubject?: string;
+    bannerButton?: string;
   }>;
 }>;
 
@@ -54,12 +57,26 @@ export const SignupBanner: React.FC<SignupBannerProps> = ({
         <div className={clsx('SignupBanner__Label', classNames?.bannerLabel)}>
           <div
             className={clsx(
-              classNames?.bannerImage
-                ? classNames?.bannerImage
-                : 'SignupBanner__Image',
+              'SignupBanner__ImageContainer',
+              classNames?.bannerImageContainer,
             )}
           >
-            <CircleBellIcon />
+            {cardView.state === 'preview' ? (
+              <CircleBellIcon
+                className={clsx(
+                  'SignupBanner__PreviewImage',
+                  classNames?.bannerPreviewImage,
+                )}
+              />
+            ) : (
+              <AlertIcon
+                icon="BELL"
+                className={clsx(
+                  'SignupBanner__HistoryImage',
+                  classNames?.bannerHistoryImage,
+                )}
+              />
+            )}
           </div>
           <div
             className={clsx(

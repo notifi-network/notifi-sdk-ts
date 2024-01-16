@@ -1,4 +1,5 @@
 import { Types } from '@notifi-network/notifi-graphql';
+import { format, parseISO } from 'date-fns';
 import React from 'react';
 
 import { AnnouncementIcon } from '../assets/AnnouncementIcon';
@@ -8,7 +9,6 @@ import { SwapIcon } from '../assets/SwapIcon';
 import { AlertIcon } from '../components/AlertHistory/AlertIcon';
 import { AlertNotificationViewProps } from '../components/AlertHistory/AlertNotificationRow';
 import { NotificationHistoryEntry } from '../components/subscription';
-import { formatAmount } from './AlertHistoryUtils';
 
 type AccountBalanceChangedEventDetails = Extract<
   Types.NotificationHistoryEntryFragmentFragment['detail'],
@@ -223,12 +223,14 @@ supportedEventDetails.set('AccountBalanceChangedEventDetails', {
   },
 });
 
-const validateIsSupported = (entry?: NotificationHistoryEntry): boolean => {
+export const validateIsSupported = (
+  entry?: NotificationHistoryEntry,
+): boolean => {
   if (supportedEventDetails.get(entry?.detail?.__typename ?? '')) return true;
   return false;
 };
 
-const getAlertNotificationViewBaseProps = (
+export const getAlertNotificationViewBaseProps = (
   notification: NotificationHistoryEntry,
 ): AlertNotificationViewProps => {
   const genProps = supportedEventDetails.get(
@@ -246,7 +248,7 @@ const getAlertNotificationViewBaseProps = (
       };
 };
 
-const getAlertDetailsContents = (
+export const getAlertDetailsContents = (
   notification: NotificationHistoryEntry,
 ): AlertDetailsContents => {
   const getContents = supportedEventDetails.get(
@@ -261,7 +263,7 @@ const getAlertDetailsContents = (
       };
 };
 
-const concatHistoryNodes = (
+export const concatHistoryNodes = (
   nodes: NotificationHistoryEntry[],
   nodesToConcat: NotificationHistoryEntry[],
 ) => {
@@ -281,9 +283,20 @@ const concatHistoryNodes = (
   }
 };
 
-export {
-  getAlertDetailsContents,
-  getAlertNotificationViewBaseProps,
-  validateIsSupported,
-  concatHistoryNodes,
+export const formatAlertDetailsTimestamp = (date: string) => {
+  try {
+    const parsedDate = parseISO(date);
+
+    const month = parsedDate.toLocaleString('default', { month: 'short' });
+    const clockTime = format(parsedDate, 'HH:mm');
+    const dateTime = format(parsedDate, 'dd');
+    const finalDate = `${month} ${dateTime} at ${clockTime} `;
+
+    return finalDate;
+  } catch {
+    return '-';
+  }
 };
+
+const formatAmount = (amount: number): string =>
+  parseFloat(amount.toFixed(9)).toString();
