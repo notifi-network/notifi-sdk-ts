@@ -77,6 +77,7 @@ export const useNotifiSubscribe: ({
   reload: () => Promise<SubscriptionData>;
 }> = ({ targetGroupName = 'Default' }: useNotifiSubscribeProps) => {
   const { demoPreview } = useNotifiDemoPreviewContext();
+  const { isUsingFrontendClient } = useNotifiClientContext();
 
   const { client } = useNotifiClientContext();
 
@@ -309,11 +310,7 @@ export const useNotifiSubscribe: ({
       setUseDiscord(true);
     }
 
-    if (
-      client.isAuthenticated &&
-      !didFetch.current &&
-      !params.isUsingFrontendClient
-    ) {
+    if (client.isAuthenticated && !didFetch.current && !isUsingFrontendClient) {
       didFetch.current = true;
       client
         .fetchData()
