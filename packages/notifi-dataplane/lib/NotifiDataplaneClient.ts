@@ -1,15 +1,15 @@
-import { EnvironmentConfig, NotifiEnvironment, notifiConfigs } from "@notifi-network/notifi-axios-utils";
 import { FusionMessage } from "./types/FusionMessage";
 import { PublishFusionMessageResponse } from "./types/PublishFusionMessageResponse";
 
-export class NotifiDataplaneService {
-  private _config: EnvironmentConfig;
-  constructor(env: NotifiEnvironment) {
-    this._config = notifiConfigs(env);
+export class NotifiDataplaneClient {
+  private _dpapiUrl: string;
+  constructor(dpapiUrl: string) {
+    this._dpapiUrl = dpapiUrl;
   }
 
-  async publishFusionMessage(jwt: string, messages: FusionMessage[]): Promise<PublishFusionMessageResponse> {
-    const url = this._config.dpapiUrl + "/FusionIngest/";
+  async publishFusionMessage(jwt: string, messages: Readonly<FusionMessage[]>): Promise<PublishFusionMessageResponse> {
+    const url = this._dpapiUrl + "/FusionIngest/";
+    const body = JSON.stringify({ data: messages });
     const response = await fetch(url, {
       "headers": new Headers([
         ["Accept", "*/*"],
@@ -19,7 +19,7 @@ export class NotifiDataplaneService {
         ["Content-Type", "application/json"],
         ["Pragma", "no-cache"],
       ]),
-      "body": JSON.stringify({ data: messages }),
+      "body": body,
       "method": "POST",
       "mode": "cors",
       "credentials": "include"
@@ -28,6 +28,7 @@ export class NotifiDataplaneService {
     if (!response.ok) {
       throw new Error("Error in response :" + await response.text());
     }
-    return await response.json();
+    const result = await response.json();
+    return result;
   }
 }

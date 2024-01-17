@@ -1,5 +1,4 @@
 import { Types as Gql, NotifiService } from '@notifi-network/notifi-graphql';
-import { NotifiDataplaneService } from '@notifi-network/notifi-dataplane';
 
 import type {
   Authorization,
@@ -15,7 +14,7 @@ import {
 } from '../types';
 
 class NotifiClient {
-  constructor(private service: NotifiService, private dataplaneService: NotifiDataplaneService) { }
+  constructor(private service: NotifiService) { }
 
   logIn: (
     input: Gql.LogInFromServiceMutationVariables['input'],
@@ -92,9 +91,10 @@ class NotifiClient {
     jwt,
     { eventTypeId, variables, specificWallets },
   ) => {
-      await this.dataplaneService.publishFusionMessage(jwt, [{
+      this.service.setJwt(jwt);
+      await this.service.publishFusionMessage([{
         eventTypeId,
-        variablesJson: JSON.stringify(variables),
+        variablesJson: variables,
         specificWallets,
       }]);
     };

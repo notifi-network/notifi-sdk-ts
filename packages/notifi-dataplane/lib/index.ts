@@ -1,1 +1,1 @@
-export { NotifiDataplaneService } from './NotifiDataplaneService';
+export { NotifiDataplaneClient } from './NotifiDataplaneClient';
