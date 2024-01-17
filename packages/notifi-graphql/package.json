@@ -1,6 +1,6 @@
 {
   "name": "@notifi-network/notifi-graphql",
-  "version": "0.90.0",
+  "version": "0.89.4",
   "description": "The GraphQL API for Notifi",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -34,7 +34,7 @@
   "dependencies": {
     "graphql": "^16.6.0",
     "graphql-request": "^6.0.0",
-    "@notifi-network/notifi-dataplane": "^0.90.0",
+    "@notifi-network/notifi-dataplane": "^0.89.4",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
