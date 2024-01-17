@@ -38,6 +38,7 @@
     "packages/notifi-axios-adapter",
     "packages/notifi-axios-utils",
     "packages/notifi-core",
+    "packages/notifi-dataplane",
     "packages/notifi-frontend-client",
     "packages/notifi-graphql",
     "packages/notifi-node",
