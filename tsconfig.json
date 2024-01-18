@@ -3,13 +3,30 @@
   "compilerOptions": {
     "baseUrl": "./packages",
     "paths": {
-      "@notifi-network/notifi-axios-adapter": ["notifi-axios-adapter/lib"],
-      "@notifi-network/notifi-axios-utils": ["notifi-axios-utils/lib"],
-      "@notifi-network/notifi-core": ["notifi-core/lib"],
-      "@notifi-network/notifi-frontend-client": ["notifi-frontend-client/lib"],
-      "@notifi-network/notifi-graphql": ["notifi-graphql/lib"],
-      "@notifi-network/notifi-node": ["notifi-node/lib"],
-      "@notifi-network/notifi-react-hooks": ["notifi-react-hooks/lib"]
+      "@notifi-network/notifi-axios-adapter": [
+        "notifi-axios-adapter/lib"
+      ],
+      "@notifi-network/notifi-axios-utils": [
+        "notifi-axios-utils/lib"
+      ],
+      "@notifi-network/notifi-core": [
+        "notifi-core/lib"
+      ],
+      "@notifi-network/notifi-dataplane": [
+        "notifi-dataplane/lib"
+      ],
+      "@notifi-network/notifi-frontend-client": [
+        "notifi-frontend-client/lib"
+      ],
+      "@notifi-network/notifi-graphql": [
+        "notifi-graphql/lib"
+      ],
+      "@notifi-network/notifi-node": [
+        "notifi-node/lib"
+      ],
+      "@notifi-network/notifi-react-hooks": [
+        "notifi-react-hooks/lib"
+      ]
     }
   }
 }

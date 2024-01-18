@@ -14,7 +14,7 @@ import {
 } from '../types';
 
 class NotifiClient {
-  constructor(private service: NotifiService) {}
+  constructor(private service: NotifiService) { }
 
   logIn: (
     input: Gql.LogInFromServiceMutationVariables['input'],
@@ -39,21 +39,21 @@ class NotifiClient {
     jwt,
     { key, walletPublicKey, walletBlockchain, ...payload },
   ) => {
-    const message = newSimpleHealthThresholdMessage(payload);
-    const input = {
-      walletPublicKey,
-      walletBlockchain,
-      messageKey: key,
-      messageType: message.type,
-      message: JSON.stringify(message.payload),
-    };
+      const message = newSimpleHealthThresholdMessage(payload);
+      const input = {
+        walletPublicKey,
+        walletBlockchain,
+        messageKey: key,
+        messageType: message.type,
+        message: JSON.stringify(message.payload),
+      };
 
-    this.service.setJwt(jwt);
-    const result = await this.service.sendMessage({ input });
-    if (!result.sendMessage) {
-      throw new Error('Send message failed');
-    }
-  };
+      this.service.setJwt(jwt);
+      const result = await this.service.sendMessage({ input });
+      if (!result.sendMessage) {
+        throw new Error('Send message failed');
+      }
+    };
 
   sendBroadcastMessage: (
     jwt: string,
@@ -91,21 +91,13 @@ class NotifiClient {
     jwt,
     { eventTypeId, variables, specificWallets },
   ) => {
-    this.service.setJwt(jwt);
-    await this.service.publishFusionMessage({
-      eventTypeId,
-      variablesJson: JSON.stringify(variables),
-      specificWallets:
-        specificWallets === undefined || specificWallets.length === 0
-          ? undefined
-          : specificWallets.map(({ walletPublicKey, walletBlockchain }) => {
-              return {
-                key: walletPublicKey,
-                value: walletBlockchain,
-              };
-            }),
-    });
-  };
+      this.service.setJwt(jwt);
+      await this.service.publishFusionMessage([{
+        eventTypeId,
+        variablesJson: variables,
+        specificWallets,
+      }]);
+    };
 
   sendDirectPush: (
     jwt: string,
@@ -126,41 +118,41 @@ class NotifiClient {
     jwt,
     { key, walletPublicKey, walletBlockchain, message, template, type },
   ) => {
-    let directMessage;
-    if (message !== undefined) {
-      directMessage = newDirectTenantMessage({ message, type });
-    } else if (template !== undefined) {
-      directMessage = newDirectTenantMessage({
-        message: '',
-        type,
-        targetTemplates: {
-          SMS: template.smsTemplate ?? undefined,
-          Email: template.emailTemplate ?? undefined,
-          Telegram: template.telegramTemplate ?? undefined,
-        },
-        templateVariables: template.variables,
+      let directMessage;
+      if (message !== undefined) {
+        directMessage = newDirectTenantMessage({ message, type });
+      } else if (template !== undefined) {
+        directMessage = newDirectTenantMessage({
+          message: '',
+          type,
+          targetTemplates: {
+            SMS: template.smsTemplate ?? undefined,
+            Email: template.emailTemplate ?? undefined,
+            Telegram: template.telegramTemplate ?? undefined,
+          },
+          templateVariables: template.variables,
+        });
+      } else {
+        throw new Error('One of message or template must be set');
+      }
+
+      const input = {
+        walletPublicKey,
+        walletBlockchain,
+        messageKey: key,
+        messageType: directMessage.type,
+        message: JSON.stringify(directMessage.payload),
+      };
+
+      this.service.setJwt(jwt);
+      const result = await this.service.sendMessage({
+        input,
       });
-    } else {
-      throw new Error('One of message or template must be set');
-    }
 
-    const input = {
-      walletPublicKey,
-      walletBlockchain,
-      messageKey: key,
-      messageType: directMessage.type,
-      message: JSON.stringify(directMessage.payload),
+      if (!result.sendMessage) {
+        throw new Error('Send message failed');
+      }
     };
-
-    this.service.setJwt(jwt);
-    const result = await this.service.sendMessage({
-      input,
-    });
-
-    if (!result.sendMessage) {
-      throw new Error('Send message failed');
-    }
-  };
 
   deleteUserAlert: (
     jwt: string,
@@ -372,30 +364,30 @@ class NotifiClient {
     name,
     webhookTarget,
   ) => {
-    const getResult = await this.service.getTargetGroups({});
-    if (getResult.targetGroup === undefined) {
-      throw new Error('Failed to get TargetGroups');
-    }
+      const getResult = await this.service.getTargetGroups({});
+      if (getResult.targetGroup === undefined) {
+        throw new Error('Failed to get TargetGroups');
+      }
 
-    const existing = getResult.targetGroup.find((tg) => tg?.name === name);
-    if (existing !== undefined) {
-      return this.updateTargetGroup(existing, webhookTarget);
-    }
+      const existing = getResult.targetGroup.find((tg) => tg?.name === name);
+      if (existing !== undefined) {
+        return this.updateTargetGroup(existing, webhookTarget);
+      }
 
-    const createResult = await this.service.createTargetGroup({
-      name,
-      emailTargetIds: [],
-      smsTargetIds: [],
-      telegramTargetIds: [],
-      webhookTargetIds: [webhookTarget.id],
-      discordTargetIds: [],
-    });
-    if (createResult.createTargetGroup === undefined) {
-      throw new Error('Failed to create TargetGroup');
-    }
+      const createResult = await this.service.createTargetGroup({
+        name,
+        emailTargetIds: [],
+        smsTargetIds: [],
+        telegramTargetIds: [],
+        webhookTargetIds: [webhookTarget.id],
+        discordTargetIds: [],
+      });
+      if (createResult.createTargetGroup === undefined) {
+        throw new Error('Failed to create TargetGroup');
+      }
 
-    return createResult.createTargetGroup;
-  };
+      return createResult.createTargetGroup;
+    };
 
   getSourceConnection: (
     jwt: string,
@@ -425,23 +417,23 @@ class NotifiClient {
     targetGroup,
     webhook,
   ) => {
-    const updateResult = await this.service.updateTargetGroup({
-      id: targetGroup.id,
-      name: targetGroup.name ?? targetGroup.id,
-      emailTargetIds: [],
-      smsTargetIds: [],
-      telegramTargetIds: [],
-      webhookTargetIds: [webhook.id],
-      discordTargetIds: [],
-    });
+      const updateResult = await this.service.updateTargetGroup({
+        id: targetGroup.id,
+        name: targetGroup.name ?? targetGroup.id,
+        emailTargetIds: [],
+        smsTargetIds: [],
+        telegramTargetIds: [],
+        webhookTargetIds: [webhook.id],
+        discordTargetIds: [],
+      });
 
-    const updated = updateResult.updateTargetGroup;
-    if (updated === undefined) {
-      throw new Error('Failed to update targetGroup');
-    }
+      const updated = updateResult.updateTargetGroup;
+      if (updated === undefined) {
+        throw new Error('Failed to update targetGroup');
+      }
 
-    return updated;
-  };
+      return updated;
+    };
 
   createOrUpdateWebhook: (
     params: Gql.CreateWebhookTargetMutationVariables,

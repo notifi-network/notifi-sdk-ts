@@ -28,6 +28,7 @@
   "dependencies": {
     "@notifi-network/notifi-axios-utils": "^0.89.4",
     "@notifi-network/notifi-core": "^0.89.4",
+    "@notifi-network/notifi-dataplane": "^0.89.4",
     "@notifi-network/notifi-graphql": "^0.89.4",
     "graphql": "^16.6.0",
     "graphql-request": "^6.0.0",
