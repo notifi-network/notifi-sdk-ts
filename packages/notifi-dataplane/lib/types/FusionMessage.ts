@@ -1,4 +1,3 @@
-import { WalletBlockchain } from "@notifi-network/notifi-core";
 
 export interface FusionMessage {
   eventTypeId: string,
@@ -6,7 +5,22 @@ export interface FusionMessage {
   specificWallets?: ReadonlyArray<
     Readonly<{
       walletPublicKey: string;
-      walletBlockchain: WalletBlockchain;
+      // NOTE: Blockchain duplicated here because there would be a circular reference otherwise
+      walletBlockchain: | 'SOLANA'
+      | 'ETHEREUM'
+      | 'AVALANCHE'
+      | 'APTOS'
+      | 'ACALA'
+      | 'POLYGON'
+      | 'ARBITRUM'
+      | 'BINANCE'
+      | 'NEAR'
+      | 'OPTIMISM'
+      | 'INJECTIVE'
+      | 'OSMOSIS'
+      | 'NIBIRU'
+      | 'SUI'
+      | 'ZKSYNC';
     }>
   >,
 }
