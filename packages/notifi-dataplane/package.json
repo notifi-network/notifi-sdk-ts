@@ -1,6 +1,6 @@
 {
   "name": "@notifi-network/notifi-dataplane",
-  "version": "0.89.4",
+  "version": "0.90.0",
   "description": "The Dataplane API for Notifi",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -31,7 +31,5 @@
     "url": "https://github.com/notifi-network/notifi-sdk-ts/issues"
   },
   "homepage": "https://github.com/notifi-network/notifi-sdk-ts#readme",
-  "dependencies": {},
-  "devDependencies": {},
   "gitHead": "be5adc9316ca9f254e358698fb04e6245f2ee79a"
 }
