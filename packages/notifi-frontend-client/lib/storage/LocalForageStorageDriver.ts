@@ -27,7 +27,9 @@ const getEnvPrefix = (env: NotifiEnvironment): string => {
 export const createLocalForageStorageDriver = (
   config: NotifiFrontendConfiguration,
 ): StorageDriver => {
-  let keyPrefix = `${getEnvPrefix(config.env)}:${config.tenantId}`;
+  let keyPrefix = `${getEnvPrefix(config.env)}:${config.tenantId}:${
+    config.walletBlockchain
+  }`;
 
   if (checkIsConfigWithPublicKeyAndAddress(config)) {
     keyPrefix += `:${config.accountAddress}:${config.authenticationKey}`;
