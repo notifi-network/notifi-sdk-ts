@@ -14,7 +14,6 @@ import { NotificationEmptyBellIcon } from '../../../assets/NotificationEmptyBell
 import { useNotifiClientContext } from '../../../context';
 import {
   DeepPartialReadonly,
-  concatHistoryNodes,
   getAlertNotificationViewBaseProps,
   validateIsSupported,
 } from '../../../utils';
@@ -96,7 +95,6 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
       if (isLoading) {
         return;
       }
-      setIsLoading(true);
 
       const result = isUsingFrontendClient
         ? await frontendClient.getFusionNotificationHistory({
@@ -110,7 +108,7 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
           });
 
       const nodes: NotificationHistoryEntry[] = result?.nodes ?? [];
-      setAllNodes((existing) => concatHistoryNodes(existing, nodes));
+      setAllNodes((existing) => existing.concat(nodes));
 
       setEndCursor(result?.pageInfo.endCursor);
       setHasNextPage(result?.pageInfo.hasNextPage);
@@ -135,9 +133,10 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
 
     if (!fetched.current) {
       fetched.current = true;
+      setIsLoading(true);
       getNotificationHistory({
         first: MESSAGES_PER_PAGE,
-      });
+      }).finally(() => setIsLoading(false));
     }
   }, [client, frontendClient, isUsingFrontendClient]);
 
