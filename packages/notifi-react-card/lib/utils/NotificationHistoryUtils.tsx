@@ -66,7 +66,7 @@ supportedEventDetails.set('DirectTenantMessageEventDetails', {
   getViewProps: (notification: NotificationHistoryEntry) => {
     const detail = notification.detail as DirectTenantMessageEventDetails;
     const templateVariablesJson: Record<string, string> = JSON.parse(
-      detail.templateVariablesJson || '',
+      detail.templateVariablesJson || '{}',
     );
     return {
       notificationTitle: templateVariablesJson.title ?? 'Announcement',
@@ -79,7 +79,7 @@ supportedEventDetails.set('DirectTenantMessageEventDetails', {
   getAlertDetailsContents: (notification: NotificationHistoryEntry) => {
     const detail = notification.detail as DirectTenantMessageEventDetails;
     const templateVariablesJson: Record<string, string> = JSON.parse(
-      detail.templateVariablesJson || '',
+      detail.templateVariablesJson || '{}',
     );
     return {
       topContent: templateVariablesJson.subject ?? '',
@@ -261,29 +261,8 @@ const getAlertDetailsContents = (
       };
 };
 
-const concatHistoryNodes = (
-  nodes: NotificationHistoryEntry[],
-  nodesToConcat: NotificationHistoryEntry[],
-) => {
-  switch (nodes[0]?.__typename) {
-    case 'FusionNotificationHistoryEntry':
-      if (nodesToConcat[0]?.__typename !== 'FusionNotificationHistoryEntry') {
-        return nodes;
-      }
-      return [...nodes, ...nodesToConcat];
-    case 'NotificationHistoryEntry':
-      if (nodesToConcat[0]?.__typename !== 'NotificationHistoryEntry') {
-        return nodes;
-      }
-      return [...nodes, ...nodesToConcat];
-    default:
-      return nodesToConcat;
-  }
-};
-
 export {
   getAlertDetailsContents,
   getAlertNotificationViewBaseProps,
   validateIsSupported,
-  concatHistoryNodes,
 };
