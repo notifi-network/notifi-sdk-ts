@@ -66,7 +66,7 @@ supportedEventDetails.set('DirectTenantMessageEventDetails', {
   getViewProps: (notification: NotificationHistoryEntry) => {
     const detail = notification.detail as DirectTenantMessageEventDetails;
     const templateVariablesJson: Record<string, string> = JSON.parse(
-      detail.templateVariablesJson || '',
+      detail.templateVariablesJson || '{}',
     );
     return {
       notificationTitle: templateVariablesJson.title ?? 'Announcement',
@@ -79,7 +79,7 @@ supportedEventDetails.set('DirectTenantMessageEventDetails', {
   getAlertDetailsContents: (notification: NotificationHistoryEntry) => {
     const detail = notification.detail as DirectTenantMessageEventDetails;
     const templateVariablesJson: Record<string, string> = JSON.parse(
-      detail.templateVariablesJson || '',
+      detail.templateVariablesJson || '{}',
     );
     return {
       topContent: templateVariablesJson.subject ?? '',
