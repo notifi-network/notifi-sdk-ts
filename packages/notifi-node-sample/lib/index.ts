@@ -1,7 +1,9 @@
 import { GqlError } from '@notifi-network/notifi-axios-utils';
+import { FusionMessage } from '@notifi-network/notifi-dataplane';
 import {
   NotifiClient,
   NotifiEnvironment,
+  createDataplaneClient,
   createGraphQLClient,
   createNotifiService,
 } from '@notifi-network/notifi-node';
@@ -57,7 +59,8 @@ const notifiServiceMiddleware = (
   }> = req.body ?? {};
   const notifiEnv = parseEnv(body.env);
   const graphqlClient = createGraphQLClient(notifiEnv);
-  const notifiService = createNotifiService(graphqlClient);
+  const dpapiClient = createDataplaneClient(notifiEnv);
+  const notifiService = createNotifiService(graphqlClient, dpapiClient);
   res.locals.notifiService = notifiService;
   next();
 };
@@ -377,6 +380,37 @@ app.post('/createDirectPushAlert', authorizeMiddleware, (req, res) => {
       if (e instanceof GqlError) {
         message = `${e.message}: ${e.getErrorMessages().join(', ')}`;
       } else if (e instanceof Error) {
+        message = e.message;
+      }
+
+      return res.status(500).json({ message });
+    });
+});
+
+app.post('/publishFusionMessage', authorizeMiddleware, (req, res) => {
+  const jwt: string = res.locals.jwt;
+
+  const {
+    variables,
+  }: Readonly<{
+    variables?: Readonly<FusionMessage[]>;
+  }> = req.body ?? {};
+
+  if (!variables) {
+    return res.status(400).json({
+      message: 'messages is required',
+    });
+  }
+
+  const client = new NotifiClient(res.locals.notifiService);
+  return client
+    .publishFusionMessage(jwt, variables)
+    .then((result) => {
+      return res.status(200).json({ result });
+    })
+    .catch((e: unknown) => {
+      let message = 'Unknown server error';
+      if (e instanceof Error) {
         message = e.message;
       }
 

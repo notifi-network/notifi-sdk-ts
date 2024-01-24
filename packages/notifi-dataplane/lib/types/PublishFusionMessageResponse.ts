@@ -1,3 +1,3 @@
 export interface PublishFusionMessageResponse {
-  indexToResultIdMap: Record<string, string>
+  indexToResultIdMap: Record<string, string>;
 }
