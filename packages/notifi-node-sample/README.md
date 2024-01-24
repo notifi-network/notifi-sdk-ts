@@ -119,3 +119,46 @@ If the request is successful, we can get a response body like this:
 ```
 
 - Demo video: https://github.com/notifi-network/notifi-sdk-ts/assets/127958634/ba25c59b-2c82-4ee2-8c63-ad43fd85ae31
+
+### Send a fusion Broadcast Message (AP v2) using http post.
+
+- endpoint: `/publishFusionMessage`
+- method: `POST`
+
+- request body:
+
+```json
+{
+  "variables": [
+    {
+      "eventTypeId": "71cc71b9c5de4a838e8c8bf46d25fb2c",
+      "variablesJson": {
+        "Platform": {
+          "message__markdown": "[link text](https://bots.ondiscord.xyz)",
+          "message": "gets overriden by message__markdown",
+          "subject": "dpush test"
+        },
+        "Email": {
+          "message": "gets overriden by message__markdown",
+          "message__markdown": "[link text](https://bots.ondiscord.xyz)",
+          "subject": "dpush test"
+        }
+      }
+    }
+  ]
+}
+```
+
+If the request is successful, we can get a response body like this:
+
+```json
+{
+  "result": {
+    "indexToResultIdMap": {
+      "0": "c1665c4b-5389-400e-b026-bd93471a0d00"
+    }
+  }
+}
+```
+
+- Demo video: https://github.com/notifi-network/notifi-sdk-ts/pull/454
