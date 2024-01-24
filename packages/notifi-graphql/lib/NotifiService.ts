@@ -1,77 +1,81 @@
-import { GraphQLClient } from 'graphql-request';
 import { NotifiDataplaneClient } from '@notifi-network/notifi-dataplane';
+import { GraphQLClient } from 'graphql-request';
+import { FusionMessage } from 'notifi-dataplane/lib/types/FusionMessage';
+import { PublishFusionMessageResponse } from 'notifi-dataplane/lib/types/PublishFusionMessageResponse';
 import { v4 as uuid } from 'uuid';
 
 import { version } from '../package.json';
 import * as Generated from './gql/generated';
 import { getSdk } from './gql/generated';
 import type * as Operations from './operations';
-import { FusionMessage } from 'notifi-dataplane/lib/types/FusionMessage';
-import { PublishFusionMessageResponse } from 'notifi-dataplane/lib/types/PublishFusionMessageResponse';
 
 export class NotifiService
   implements
-  Operations.AddSourceToSourceGroupService,
-  Operations.BeginLogInByTransactionService,
-  Operations.BroadcastMessageService,
-  Operations.CompleteLogInByTransactionService,
-  Operations.ConnectWalletService,
-  Operations.CreateAlertService,
-  Operations.CreateDirectPushAlertService,
-  Operations.CreateEmailTargetService,
-  Operations.CreateSmsTargetService,
-  Operations.CreateSourceService,
-  Operations.CreateSourceGroupService,
-  Operations.CreateSupportConversationService,
-  Operations.CreateTargetGroupService,
-  Operations.CreateTelegramTargetService,
-  Operations.CreateTenantUserService,
-  Operations.CreateWebhookTargetService,
-  Operations.DeleteAlertService,
-  Operations.DeleteUserAlertService,
-  Operations.DeleteSourceGroupService,
-  Operations.DeleteTargetGroupService,
-  Operations.DeleteWebhookTargetService,
-  Operations.FetchDataService,
-  Operations.FindTenantConfigService,
-  Operations.GetAlertsService,
-  Operations.GetConfigurationForDappService,
-  Operations.GetConversationMessagesService,
-  Operations.GetConnectedWalletsService,
-  Operations.GetEmailTargetsService,
-  Operations.GetFiltersService,
-  Operations.GetFusionNotificationHistoryService,
-  Operations.GetNotificationHistoryService,
-  Operations.GetSmsTargetsService,
-  Operations.GetSourceConnectionService,
-  Operations.GetSourceGroupsService,
-  Operations.GetSourcesService,
-  Operations.GetTargetGroupsService,
-  Operations.GetTelegramTargetsService,
-  Operations.GetTenantConnectedWalletsService,
-  Operations.GetTenantUserService,
-  Operations.GetTopicsService,
-  Operations.GetWebhookTargetsService,
-  Operations.LogInFromDappService,
-  Operations.LogInFromServiceService,
-  Operations.RefreshAuthorizationService,
-  Operations.RemoveSourceFromSourceGroupService,
-  Operations.SendConversationMessageService,
-  Operations.SendEmailTargetVerificationRequestService,
-  Operations.SendMessageService,
-  Operations.UpdateSourceGroupService,
-  Operations.UpdateTargetGroupService,
-  Operations.CreateDiscordTargetService,
-  Operations.GetDiscordTargetsService,
-  Operations.GetUnreadNotificationHistoryCountService,
-  Operations.MarkFusionNotificationHistoryAsReadService,
-  Operations.UpdateUserSettingsService,
-  Operations.GetUserSettingsService {
+    Operations.AddSourceToSourceGroupService,
+    Operations.BeginLogInByTransactionService,
+    Operations.BroadcastMessageService,
+    Operations.CompleteLogInByTransactionService,
+    Operations.ConnectWalletService,
+    Operations.CreateAlertService,
+    Operations.CreateDirectPushAlertService,
+    Operations.CreateEmailTargetService,
+    Operations.CreateSmsTargetService,
+    Operations.CreateSourceService,
+    Operations.CreateSourceGroupService,
+    Operations.CreateSupportConversationService,
+    Operations.CreateTargetGroupService,
+    Operations.CreateTelegramTargetService,
+    Operations.CreateTenantUserService,
+    Operations.CreateWebhookTargetService,
+    Operations.DeleteAlertService,
+    Operations.DeleteUserAlertService,
+    Operations.DeleteSourceGroupService,
+    Operations.DeleteTargetGroupService,
+    Operations.DeleteWebhookTargetService,
+    Operations.FetchDataService,
+    Operations.FindTenantConfigService,
+    Operations.GetAlertsService,
+    Operations.GetConfigurationForDappService,
+    Operations.GetConversationMessagesService,
+    Operations.GetConnectedWalletsService,
+    Operations.GetEmailTargetsService,
+    Operations.GetFiltersService,
+    Operations.GetFusionNotificationHistoryService,
+    Operations.GetNotificationHistoryService,
+    Operations.GetSmsTargetsService,
+    Operations.GetSourceConnectionService,
+    Operations.GetSourceGroupsService,
+    Operations.GetSourcesService,
+    Operations.GetTargetGroupsService,
+    Operations.GetTelegramTargetsService,
+    Operations.GetTenantConnectedWalletsService,
+    Operations.GetTenantUserService,
+    Operations.GetTopicsService,
+    Operations.GetWebhookTargetsService,
+    Operations.LogInFromDappService,
+    Operations.LogInFromServiceService,
+    Operations.RefreshAuthorizationService,
+    Operations.RemoveSourceFromSourceGroupService,
+    Operations.SendConversationMessageService,
+    Operations.SendEmailTargetVerificationRequestService,
+    Operations.SendMessageService,
+    Operations.UpdateSourceGroupService,
+    Operations.UpdateTargetGroupService,
+    Operations.CreateDiscordTargetService,
+    Operations.GetDiscordTargetsService,
+    Operations.GetUnreadNotificationHistoryCountService,
+    Operations.MarkFusionNotificationHistoryAsReadService,
+    Operations.UpdateUserSettingsService,
+    Operations.GetUserSettingsService
+{
   private _jwt: string | undefined;
   private _typedClient: ReturnType<typeof getSdk>;
   private _dataplaneClient?: NotifiDataplaneClient;
 
-  constructor(graphQLClient: GraphQLClient, dataplaneClient?: NotifiDataplaneClient) {
+  constructor(
+    graphQLClient: GraphQLClient,
+    dataplaneClient?: NotifiDataplaneClient,
+  ) {
     this._typedClient = getSdk(graphQLClient);
     this._dataplaneClient = dataplaneClient;
   }
@@ -462,10 +466,17 @@ export class NotifiService
   async publishFusionMessage(
     variables: Readonly<FusionMessage[]>,
   ): Promise<Readonly<PublishFusionMessageResponse>> {
+    console.log('3.', { dpClient: this._dataplaneClient });
     if (!this._dataplaneClient) {
-      throw new Error("The publishFusionMessage API cannot be called if NotifiService was not initialized with a NotifiDataplaneClient");
+      throw new Error(
+        'The publishFusionMessage API cannot be called if NotifiService was not initialized with a NotifiDataplaneClient',
+      );
     }
-    return this._dataplaneClient.publishFusionMessage(this._jwt!, variables);
+
+    if (!this._jwt)
+      throw new Error('NotifiService is not authenticated (Missing JWT token)');
+    console.log('4.', { variables });
+    return this._dataplaneClient.publishFusionMessage(this._jwt, variables);
   }
 
   async refreshAuthorization(

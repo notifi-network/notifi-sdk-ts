@@ -87,6 +87,7 @@ export const FusionNotificationHistoryEntryFragment = gql`
         sourceName
         notificationTypeName
         genericMessage: message
+        genericMessageHtml: messageHtml
         eventDetailsJson
         action {
           name

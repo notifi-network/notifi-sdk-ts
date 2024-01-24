@@ -11,17 +11,30 @@ export const createGraphQLClient = (env: NotifiEnvironment): GraphQLClient => {
   return instance;
 };
 
-export const createDataplaneClient = (env: NotifiEnvironment): NotifiDataplaneClient => {
+export const createDataplaneClient = (
+  env: NotifiEnvironment,
+): NotifiDataplaneClient => {
   const { dpapiUrl } = notifiConfigs(env);
   return new NotifiDataplaneClient(dpapiUrl);
-}
+};
 
 export function createNotifiService(env: NotifiEnvironment): NotifiService;
-export function createNotifiService(gqlClient: GraphQLClient, dataplaneClient?: NotifiDataplaneClient): NotifiService;
-export function createNotifiService(gqlClientOrEnv: GraphQLClient | NotifiEnvironment, dataplaneClient?: NotifiDataplaneClient): NotifiService {
+export function createNotifiService(
+  gqlClient: GraphQLClient,
+  dataplaneClient?: NotifiDataplaneClient,
+): NotifiService;
+export function createNotifiService(
+  gqlClientOrEnv: GraphQLClient | NotifiEnvironment,
+  dataplaneClient?: NotifiDataplaneClient,
+): NotifiService {
   if (gqlClientOrEnv instanceof GraphQLClient) {
+    console.log('1', dataplaneClient);
     return new NotifiService(gqlClientOrEnv, dataplaneClient);
   } else {
-    return new NotifiService(createGraphQLClient(gqlClientOrEnv), createDataplaneClient(gqlClientOrEnv));
+    console.log('2');
+    return new NotifiService(
+      createGraphQLClient(gqlClientOrEnv),
+      createDataplaneClient(gqlClientOrEnv),
+    );
   }
-};
+}
