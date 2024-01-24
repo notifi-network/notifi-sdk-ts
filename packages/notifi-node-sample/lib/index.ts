@@ -403,7 +403,6 @@ app.post('/publishFusionMessage', authorizeMiddleware, (req, res) => {
   }
 
   const client = new NotifiClient(res.locals.notifiService);
-  console.log('variables', JSON.parse(JSON.stringify(variables)));
   return client
     .publishFusionMessage(jwt, variables)
     .then((result) => {

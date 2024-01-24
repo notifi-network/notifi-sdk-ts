@@ -80,7 +80,6 @@ class NotifiClient {
     jwt: string,
     params: Readonly<FusionMessage[]>,
   ) => Promise<void> = async (jwt, params) => {
-    console.log('2.', { params });
     this.service.setJwt(jwt);
     await this.service.publishFusionMessage(params);
   };

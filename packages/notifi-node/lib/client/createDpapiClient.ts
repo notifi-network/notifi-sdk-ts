@@ -41,7 +41,6 @@ export class DpapiClient {
       mode: 'cors',
       credentials: 'include',
     });
-    // TODO: What does the error format look like?
     if (!response.ok) {
       throw new Error('Error in response :' + (await response.text()));
     }

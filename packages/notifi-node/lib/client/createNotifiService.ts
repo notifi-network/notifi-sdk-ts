@@ -28,10 +28,8 @@ export function createNotifiService(
   dataplaneClient?: NotifiDataplaneClient,
 ): NotifiService {
   if (gqlClientOrEnv instanceof GraphQLClient) {
-    console.log('1', dataplaneClient);
     return new NotifiService(gqlClientOrEnv, dataplaneClient);
   } else {
-    console.log('2');
     return new NotifiService(
       createGraphQLClient(gqlClientOrEnv),
       createDataplaneClient(gqlClientOrEnv),

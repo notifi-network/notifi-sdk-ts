@@ -466,7 +466,6 @@ export class NotifiService
   async publishFusionMessage(
     variables: Readonly<FusionMessage[]>,
   ): Promise<Readonly<PublishFusionMessageResponse>> {
-    console.log('3.', { dpClient: this._dataplaneClient });
     if (!this._dataplaneClient) {
       throw new Error(
         'The publishFusionMessage API cannot be called if NotifiService was not initialized with a NotifiDataplaneClient',
@@ -475,7 +474,6 @@ export class NotifiService
 
     if (!this._jwt)
       throw new Error('NotifiService is not authenticated (Missing JWT token)');
-    console.log('4.', { variables });
     return this._dataplaneClient.publishFusionMessage(this._jwt, variables);
   }
 

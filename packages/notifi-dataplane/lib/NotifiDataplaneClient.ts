@@ -27,9 +27,7 @@ export class NotifiDataplaneClient {
       mode: 'cors',
       credentials: 'include',
     });
-    // TODO: What does the error format look like?
     if (!response.ok) {
-      console.log('5.', response);
       throw new Error(`ERROR: ${response.status} - ${response.statusText}`);
     }
     const result = await response.json();
