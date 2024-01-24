@@ -1,4 +1,7 @@
-import { FusionMessage } from '@notifi-network/notifi-dataplane';
+import {
+  FusionMessage,
+  PublishFusionMessageResponse,
+} from '@notifi-network/notifi-dataplane';
 import { Types as Gql, NotifiService } from '@notifi-network/notifi-graphql';
 
 import type {
@@ -79,9 +82,9 @@ class NotifiClient {
   publishFusionMessage: (
     jwt: string,
     params: Readonly<FusionMessage[]>,
-  ) => Promise<void> = async (jwt, params) => {
+  ) => Promise<PublishFusionMessageResponse> = async (jwt, params) => {
     this.service.setJwt(jwt);
-    await this.service.publishFusionMessage(params);
+    return await this.service.publishFusionMessage(params);
   };
 
   sendDirectPush: (
