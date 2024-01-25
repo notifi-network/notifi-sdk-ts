@@ -1,5 +1,6 @@
 import {
   FusionMessage,
+  NotifiDataplaneClient,
   PublishFusionMessageResponse,
 } from '@notifi-network/notifi-dataplane';
 import { Types as Gql, NotifiService } from '@notifi-network/notifi-graphql';
@@ -18,7 +19,10 @@ import {
 } from '../types';
 
 class NotifiClient {
-  constructor(private service: NotifiService) {}
+  constructor(
+    private service: NotifiService,
+    private dpapiService?: NotifiDataplaneClient,
+  ) {}
 
   logIn: (
     input: Gql.LogInFromServiceMutationVariables['input'],
@@ -84,7 +88,12 @@ class NotifiClient {
     params: Readonly<FusionMessage[]>,
   ) => Promise<PublishFusionMessageResponse> = async (jwt, params) => {
     this.service.setJwt(jwt);
-    return await this.service.publishFusionMessage(params);
+    if (!this.dpapiService) {
+      throw new Error(
+        'Error: Data plane service not available, make sure dpapiService is provided in constructor',
+      );
+    }
+    return await this.dpapiService.publishFusionMessage(jwt, params);
   };
 
   sendDirectPush: (
