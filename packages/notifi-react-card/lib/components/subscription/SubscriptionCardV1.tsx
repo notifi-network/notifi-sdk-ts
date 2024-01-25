@@ -175,6 +175,9 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
             demoPreview.view === 'error' ? 'test example reason' : undefined,
         };
       }
+      if (isClientTokenExpired) {
+        return { state: 'expired' };
+      }
 
       if (!isClientAuthenticated) {
         return { state: 'signup' };
@@ -185,10 +188,6 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
           console.log(`Failed to syncFtuStage: ${e}`);
         })
         .finally(() => setLoading(false));
-
-      if (isClientTokenExpired) {
-        return { state: 'expired' };
-      }
 
       return { state: 'history' };
     });
