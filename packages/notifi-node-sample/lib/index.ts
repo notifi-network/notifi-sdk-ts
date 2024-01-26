@@ -412,6 +412,10 @@ app.post('/publishFusionMessage', authorizeMiddleware, (req, res) => {
   const {
     variables,
   }: Readonly<{
+    /**
+     * @param FusionMessage.variablesJson - Variables for template rendering. For instance, `fromAddress` can be displayed with `{{ eventData.fromAddress }}`.
+     * FusionMessage's generic type parameter defines the type of variablesJson. Defaults to CommunityManagerJsonPayload for Community Manager post templates if not provided.
+     */
     variables?: Readonly<FusionMessage[]>;
   }> = req.body ?? {};
 

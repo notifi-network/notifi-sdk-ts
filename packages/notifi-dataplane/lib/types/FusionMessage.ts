@@ -1,8 +1,9 @@
 import { Types } from 'notifi-graphql/dist';
 
-export interface FusionMessage {
+// If payload type undefined, fallback to default CommunityManagerJsonPayload
+export interface FusionMessage<T extends object = CommunityManagerJsonPayload> {
   eventTypeId: string;
-  variablesJson: object | VariablesJsonPayload;
+  variablesJson: VariablesJsonPayload<T>;
   specificWallets?: ReadonlyArray<
     Readonly<{
       walletPublicKey: string;
@@ -11,11 +12,14 @@ export interface FusionMessage {
   >;
 }
 
-export type OptionalTargetType = 'Sms' | 'Telegram' | 'Discord' | 'Email';
+export type VariablesJsonPayload<T extends object> =
+  T extends CommunityManagerJsonPayload ? CommunityManagerJsonPayload : object;
 
-export type VariablesJsonPayload = { Platform: TargetVariables } & {
+export type CommunityManagerJsonPayload = { Platform: TargetVariables } & {
   [key in OptionalTargetType]?: TargetVariables;
 };
+
+export type OptionalTargetType = 'Sms' | 'Telegram' | 'Discord' | 'Email';
 
 /**
  * @param message - only plain text is supported.
