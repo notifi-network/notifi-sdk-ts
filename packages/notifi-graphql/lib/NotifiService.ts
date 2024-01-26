@@ -70,14 +70,9 @@ export class NotifiService
 {
   private _jwt: string | undefined;
   private _typedClient: ReturnType<typeof getSdk>;
-  private _dataplaneClient?: NotifiDataplaneClient;
 
-  constructor(
-    graphQLClient: GraphQLClient,
-    dataplaneClient?: NotifiDataplaneClient,
-  ) {
+  constructor(graphQLClient: GraphQLClient) {
     this._typedClient = getSdk(graphQLClient);
-    this._dataplaneClient = dataplaneClient;
   }
 
   setJwt(jwt: string | undefined) {
@@ -461,20 +456,6 @@ export class NotifiService
   ): Promise<Generated.UpdateUserSettingsMutation> {
     const headers = this._requestHeaders();
     return this._typedClient.updateUserSettings(variables, headers);
-  }
-
-  async publishFusionMessage(
-    variables: Readonly<FusionMessage[]>,
-  ): Promise<Readonly<PublishFusionMessageResponse>> {
-    if (!this._dataplaneClient) {
-      throw new Error(
-        'The publishFusionMessage API cannot be called if NotifiService was not initialized with a NotifiDataplaneClient',
-      );
-    }
-
-    if (!this._jwt)
-      throw new Error('NotifiService is not authenticated (Missing JWT token)');
-    return this._dataplaneClient.publishFusionMessage(this._jwt, variables);
   }
 
   async refreshAuthorization(

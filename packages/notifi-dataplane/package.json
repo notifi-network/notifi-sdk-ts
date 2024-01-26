@@ -21,6 +21,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepublishOnly": "npm run build"
   },
+  "dependencies": {
+    "@notifi-network/notifi-graphql": "0.90.2"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/notifi-network/notifi-sdk-ts.git"

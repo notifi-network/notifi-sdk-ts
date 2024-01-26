@@ -60,8 +60,9 @@ const notifiServiceMiddleware = (
   const notifiEnv = parseEnv(body.env);
   const graphqlClient = createGraphQLClient(notifiEnv);
   const dpapiClient = createDataplaneClient(notifiEnv);
-  const notifiService = createNotifiService(graphqlClient, dpapiClient);
+  const notifiService = createNotifiService(graphqlClient);
   res.locals.notifiService = notifiService;
+  res.locals.dpapiClient = dpapiClient;
   next();
 };
 
@@ -87,7 +88,10 @@ app.post('/login', (req, res) => {
     });
   }
 
-  const client = new NotifiClient(res.locals.notifiService);
+  const client = new NotifiClient(
+    res.locals.notifiService,
+    res.locals.dpapiClient,
+  );
 
   return client
     .logIn({ sid, secret })
@@ -171,7 +175,10 @@ app.post('/sendSimpleHealthThreshold', authorizeMiddleware, (req, res) => {
     });
   }
 
-  const client = new NotifiClient(res.locals.notifiService);
+  const client = new NotifiClient(
+    res.locals.notifiService,
+    res.locals.dpapiClient,
+  );
 
   return client
     .sendSimpleHealthThreshold(jwt, {
@@ -210,7 +217,10 @@ app.post('/deleteUserAlert', authorizeMiddleware, (req, res) => {
     });
   }
 
-  const client = new NotifiClient(res.locals.notifiService);
+  const client = new NotifiClient(
+    res.locals.notifiService,
+    res.locals.dpapiClient,
+  );
 
   return client
     .deleteUserAlert(jwt, {
@@ -258,7 +268,10 @@ app.post('/createTenantUser', authorizeMiddleware, (req, res) => {
     });
   }
 
-  const client = new NotifiClient(res.locals.notifiService);
+  const client = new NotifiClient(
+    res.locals.notifiService,
+    res.locals.dpapiClient,
+  );
 
   return client
     .createTenantUser(jwt, {
@@ -311,7 +324,10 @@ app.post('/broadcastMessage', authorizeMiddleware, (req, res) => {
     });
   }
 
-  const client = new NotifiClient(res.locals.notifiService);
+  const client = new NotifiClient(
+    res.locals.notifiService,
+    res.locals.dpapiClient,
+  );
 
   return client
     .sendBroadcastMessage(jwt, {
@@ -365,7 +381,10 @@ app.post('/createDirectPushAlert', authorizeMiddleware, (req, res) => {
     });
   }
 
-  const client = new NotifiClient(res.locals.notifiService);
+  const client = new NotifiClient(
+    res.locals.notifiService,
+    res.locals.dpapiClient,
+  );
 
   return client
     .createDirectPushAlert(jwt, {
@@ -402,7 +421,10 @@ app.post('/publishFusionMessage', authorizeMiddleware, (req, res) => {
     });
   }
 
-  const client = new NotifiClient(res.locals.notifiService);
+  const client = new NotifiClient(
+    res.locals.notifiService,
+    res.locals.dpapiClient,
+  );
   return client
     .publishFusionMessage(jwt, variables)
     .then((result) => {
@@ -462,7 +484,10 @@ app.post('/sendDirectPush', authorizeMiddleware, (req, res) => {
     });
   }
 
-  const client = new NotifiClient(res.locals.notifiService);
+  const client = new NotifiClient(
+    res.locals.notifiService,
+    res.locals.dpapiClient,
+  );
 
   return client
     .sendDirectPush(jwt, {
@@ -522,7 +547,10 @@ app.post('/addSourceToSourceGroup', authorizeMiddleware, (req, res) => {
     });
   }
 
-  const client = new NotifiClient(res.locals.notifiService);
+  const client = new NotifiClient(
+    res.locals.notifiService,
+    res.locals.dpapiClient,
+  );
 
   return client
     .addSourceToSourceGroup(jwt, {
@@ -581,7 +609,10 @@ app.post('/removeSourceFromSourceGroup', authorizeMiddleware, (req, res) => {
     });
   }
 
-  const client = new NotifiClient(res.locals.notifiService);
+  const client = new NotifiClient(
+    res.locals.notifiService,
+    res.locals.dpapiClient,
+  );
 
   return client
     .removeSourceFromSourceGroup(jwt, {

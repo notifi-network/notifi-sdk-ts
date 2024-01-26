@@ -18,21 +18,8 @@ export const createDataplaneClient = (
   return new NotifiDataplaneClient(dpapiUrl);
 };
 
-export function createNotifiService(env: NotifiEnvironment): NotifiService;
-export function createNotifiService(
+export const createNotifiService = (
   gqlClient: GraphQLClient,
-  dataplaneClient?: NotifiDataplaneClient,
-): NotifiService;
-export function createNotifiService(
-  gqlClientOrEnv: GraphQLClient | NotifiEnvironment,
-  dataplaneClient?: NotifiDataplaneClient,
-): NotifiService {
-  if (gqlClientOrEnv instanceof GraphQLClient) {
-    return new NotifiService(gqlClientOrEnv, dataplaneClient);
-  } else {
-    return new NotifiService(
-      createGraphQLClient(gqlClientOrEnv),
-      createDataplaneClient(gqlClientOrEnv),
-    );
-  }
-}
+): NotifiService => {
+  return new NotifiService(gqlClient);
+};
