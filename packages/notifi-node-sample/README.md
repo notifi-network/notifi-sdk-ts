@@ -149,6 +149,11 @@ If the request is successful, we can get a response body like this:
 }
 ```
 
+> NOTE:
+> The `variablesJson` could vary depending on situations.
+> For Community Manager posts: Follow the type `VariablesJsonPayload`
+> For OffChain parser, it could be any shape of json object associated with the template
+
 If the request is successful, we can get a response body like this:
 
 ```json
