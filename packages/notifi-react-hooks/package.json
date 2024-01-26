@@ -1,6 +1,6 @@
 {
   "name": "@notifi-network/notifi-react-hooks",
-  "version": "0.90.2",
+  "version": "0.90.3",
   "description": "React hooks provided as a convenience wrapper around notifi.network platform functionality",
   "author": "juni-notifi <hyungjoon.kim@notifi.network>",
   "homepage": "https://github.com/notifi-network/notifi-sdk-ts#readme",
@@ -31,9 +31,9 @@
     "typedoc-plugin-missing-exports": "^0.22.6"
   },
   "dependencies": {
-    "@notifi-network/notifi-axios-adapter": "^0.90.2",
-    "@notifi-network/notifi-axios-utils": "^0.90.2",
-    "@notifi-network/notifi-core": "^0.90.2",
+    "@notifi-network/notifi-axios-adapter": "^0.90.3",
+    "@notifi-network/notifi-axios-utils": "^0.90.3",
+    "@notifi-network/notifi-core": "^0.90.3",
     "axios": "^0.26.0",
     "localforage": "^1.10.0",
     "typescript": "^4.5.5"
