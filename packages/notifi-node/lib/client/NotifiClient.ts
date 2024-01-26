@@ -83,9 +83,9 @@ class NotifiClient {
     }
   };
 
-  publishFusionMessage: <T>(
+  publishFusionMessage: (
     jwt: string,
-    params: Readonly<FusionMessage<T>[]>,
+    params: Readonly<FusionMessage[]>,
   ) => Promise<PublishFusionMessageResponse> = async (jwt, params) => {
     this.service.setJwt(jwt);
     if (!this.dpapiService) {
