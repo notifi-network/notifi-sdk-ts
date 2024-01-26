@@ -1,6 +1,10 @@
 import { Types } from 'notifi-graphql/dist';
 
-export interface FusionMessage {
+export type FusionMessage<T> = T extends infer CommunityFusionMessage
+  ? CommunityFusionMessage
+  : object;
+
+export interface CommunityFusionMessage {
   eventTypeId: string;
   variablesJson: VariablesJsonPayload;
   specificWallets?: ReadonlyArray<

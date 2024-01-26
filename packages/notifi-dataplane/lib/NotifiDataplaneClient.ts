@@ -7,9 +7,9 @@ export class NotifiDataplaneClient {
     this._dpapiUrl = dpapiUrl;
   }
 
-  async publishFusionMessage(
+  async publishFusionMessage<T>(
     jwt: string,
-    messages: Readonly<FusionMessage[]>,
+    messages: Readonly<FusionMessage<T>[]>,
   ): Promise<PublishFusionMessageResponse> {
     const url = this._dpapiUrl + '/FusionIngest/';
     const body = JSON.stringify({ data: messages });

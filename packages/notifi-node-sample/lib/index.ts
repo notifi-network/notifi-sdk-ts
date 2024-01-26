@@ -1,5 +1,8 @@
 import { GqlError } from '@notifi-network/notifi-axios-utils';
-import { FusionMessage } from '@notifi-network/notifi-dataplane';
+import {
+  CommunityFusionMessage,
+  FusionMessage,
+} from '@notifi-network/notifi-dataplane';
 import {
   NotifiClient,
   NotifiEnvironment,
@@ -412,7 +415,7 @@ app.post('/publishFusionMessage', authorizeMiddleware, (req, res) => {
   const {
     variables,
   }: Readonly<{
-    variables?: Readonly<FusionMessage[]>;
+    variables?: Readonly<FusionMessage<CommunityFusionMessage | object>[]>;
   }> = req.body ?? {};
 
   if (!variables) {
