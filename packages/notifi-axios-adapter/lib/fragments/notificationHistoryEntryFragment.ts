@@ -13,6 +13,7 @@ export enum NotificationTypeName {
 
 export const notificationHistoryEntryFragment = `
 fragment NotificationHistoryEntry on NotificationHistoryEntry {
+  __typename
   id
   createdDate
   eventId
