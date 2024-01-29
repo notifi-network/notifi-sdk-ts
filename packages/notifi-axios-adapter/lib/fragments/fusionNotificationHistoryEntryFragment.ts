@@ -1,5 +1,6 @@
 export const fusionNotificationHistoryEntryFragment = `
 fragment FusionNotificationHistoryEntry on FusionNotificationHistoryEntry {
+  __typename
   id
   createdDate
   read

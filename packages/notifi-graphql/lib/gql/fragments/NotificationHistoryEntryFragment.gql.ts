@@ -2,6 +2,7 @@ import { gql } from 'graphql-request';
 
 export const NotificationHistoryEntryFragment = gql`
   fragment NotificationHistoryEntryFragment on NotificationHistoryEntry {
+    __typename
     id
     createdDate
     eventId
