@@ -1,3 +1,4 @@
+import { KeplrWalletProvider } from '@/context/wallet/KeplrWalletProvider';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 
@@ -111,7 +112,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${rota.variable} font-rota`}>{children}</body>
+      <body className={`${rota.variable} font-rota`}>
+        <KeplrWalletProvider>{children}</KeplrWalletProvider>
+      </body>
     </html>
   );
 }
