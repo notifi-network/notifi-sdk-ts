@@ -1,0 +1,52 @@
+import { Icon } from '@/assets/Icon';
+import { useNotifiTargetContext } from '@/context/NotifiTargetContext';
+import {
+  useNotifiForm,
+  useNotifiSubscriptionContext,
+} from '@notifi-network/notifi-react-card';
+import React from 'react';
+
+import { Toggle } from './Toggle';
+
+export type InputFieldDiscordProps = Readonly<{
+  disabled: boolean;
+  isEditable?: boolean;
+}>;
+
+export const InputFieldDiscord: React.FC<InputFieldDiscordProps> = ({
+  disabled,
+  isEditable,
+}) => {
+  const { formErrorMessages } = useNotifiForm();
+
+  const { email: emailErrorMessage, telegram: telegramErrorMessage } =
+    formErrorMessages;
+  const { useDiscord, setUseDiscord } = useNotifiSubscriptionContext();
+  const { updateTarget } = useNotifiTargetContext();
+
+  return (
+    <div className="bg-notifi-card-bg rounded-md w-full sm:w-112 h-18 flex flex-row items-center mb-2 gap-3 sm:gap-0">
+      <div className="bg-white rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
+        <Icon
+          id="discord-icon"
+          width="17px"
+          height="13px"
+          className="text-notifi-button-primary-blueish-bg"
+        />
+        <div className="font-medium text-xs mt-2">Discord</div>
+      </div>
+      <div className="flex flex-row items-center justify-between w-2/3 sm:w-90 mr-4">
+        <div className="text-sm sm:ml-6 ">Discord Bot DM Alerts</div>
+        <Toggle
+          disabled={
+            disabled || telegramErrorMessage !== '' || emailErrorMessage !== ''
+          }
+          checked={useDiscord}
+          onChange={() => {
+            isEditable ? updateTarget('discord') : setUseDiscord(!useDiscord);
+          }}
+        />
+      </div>
+    </div>
+  );
+};

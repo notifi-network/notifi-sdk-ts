@@ -53,5 +53,8 @@ export * from './GetFusionNotificationHistory';
 export * from './MarkFusionNotificationHistoryAsRead';
 export * from './GetUserSettings';
 export * from './UpdateUserSettings';
+export * from './GetSlackChannelTargets';
+export * from './CreateSlackChannelTarget';
+export * from './CreateFusionAlerts';
 export * from './BeginLogInWithWeb3';
 export * from './CompleteLogInWithWeb3';

@@ -43,6 +43,7 @@ export const subscribeAlertByFrontendClient = async (
     telegramConfirmationUrl:
       updatedTg.telegramTargets?.[0]?.confirmationUrl ?? '',
     discordId: updatedTg.discordTargets?.[0]?.id ?? '',
+    slackId: updatedTg.slackChannelTargets?.[0]?.id ?? '',
   };
 };
 
@@ -104,5 +105,6 @@ export const subscribeAlertsByFrontendClient = async (
     telegramConfirmationUrl:
       updatedTg.telegramTargets?.[0]?.confirmationUrl ?? '',
     discordId: updatedTg.discordTargets?.[0]?.id ?? '',
+    slackId: updatedTg.slackChannelTargets?.[0]?.id ?? '',
   };
 };
