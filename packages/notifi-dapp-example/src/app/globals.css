@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Notifi global color */
+    --notifi-grey0: 245 246 251;
+    --notifi-white: 255 255 255;
+    --notifi-blueish0: 225 235 248;
+    --notifi-blueish1: 198 233 245;
+  }
+}
+
+/* Dark mode color variables controlled by NotifiContext */
+.notifi-dapp[dark-mode='true'] {
+  --notifi-bgimg-left: var(--notifi-white);
+  --notifi-bgimg-middle: var(--notifi-blueish0);
+  --notifi-bgimg-right: var(--notifi-blueish1);
+  --notifi-page-bg: var(--notifi-grey0);
+}
+
+/* Light mode color variables controlled by NotifiContext */
+.notifi-dapp[dark-mode='false'] {
+  --notifi-bgimg-left: var(--notifi-white);
+  --notifi-bgimg-middle: var(--notifi-blueish0);
+  --notifi-bgimg-right: var(--notifi-blueish1);
+  --notifi-page-bg: var(--notifi-grey0);
+}
+
+/* Light mode color variables controlled by system preferences */
+/* @media (prefers-color-scheme: dark) {
+  :root {
+    --notifi-bgimg-left: var(--notifi-white);
+    --notifi-bgimg-middle: var(--notifi-blueish0);
+    --notifi-bgimg-right: var(--notifi-blueish1);
+    --notifi-page-bg: var(--notifi-grey0);
+  }
+} */
+
+/* Template (TODO: reference for now, need remove) */
+/* :root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+  --color-bkg: 255 115 179;
+} */
+
+/* @media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}  */
+
+/* body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+*/
