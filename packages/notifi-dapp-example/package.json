@@ -42,7 +42,8 @@
     "@cosmos-kit/keplr": "^2.6.8",
     "@cosmos-kit/react": "^2.10.8",
     "@interchain-ui/react": "^1.21.4",
-    "@notifi-network/notifi-react-card": "^0.90.4"
+    "@notifi-network/notifi-react-card": "^0.90.4",
+    "@notifi-network/notifi-frontend-client": "^0.90.4"
   },
   "bugs": {
     "url": "https://github.com/notifi-network/notifi-sdk-ts/issues"
