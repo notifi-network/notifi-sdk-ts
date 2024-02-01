@@ -38,6 +38,7 @@
     "packages/notifi-axios-adapter",
     "packages/notifi-axios-utils",
     "packages/notifi-core",
+    "packages/notifi-dapp-example",
     "packages/notifi-dataplane",
     "packages/notifi-frontend-client",
     "packages/notifi-graphql",
@@ -46,7 +47,6 @@
     "packages/notifi-react-card",
     "packages/notifi-react-hooks",
     "packages/notifi-react-example",
-    "packages/notifi-solana-hw-login",
-    "packages/notifi-dapp-example"
+    "packages/notifi-solana-hw-login"
   ]
 }

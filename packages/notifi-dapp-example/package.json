@@ -1,6 +1,7 @@
 {
   "name": "@notifi-network/notifi-dapp-example",
-  "version": "0.90.1",
+  "version": "0.90.4",
+  "private": true,
   "description": "A notifi dapp empowered by notifi.network",
   "author": "eric-notifi <eric.lee@notifi.network>",
   "homepage": "https://github.com/notifi-network/notifi-sdk-ts",
@@ -22,7 +23,7 @@
   "scripts": {
     "test": "node ./__tests__/@notifi-network/notifi-dapp-example.test.js",
     "dev": "next dev",
-    "build": "next build",
+    "build:next": "next build",
     "start": "next start",
     "lint": "next lint"
   },

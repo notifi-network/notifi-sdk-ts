@@ -5,7 +5,7 @@ import { useChain } from '@cosmos-kit/react';
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 
-export default function NotifiLayout({
+export default function NotifiSingupLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -19,10 +19,6 @@ export default function NotifiLayout({
     }
   }, [isWalletConnected]);
   return (
-    <section>
-      <NotifiSubscriptionCardProvider>
-        {children}
-      </NotifiSubscriptionCardProvider>
-    </section>
+    <NotifiSubscriptionCardProvider>{children}</NotifiSubscriptionCardProvider>
   );
 }

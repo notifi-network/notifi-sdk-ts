@@ -113,7 +113,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${rota.variable} font-rota notifi-dapp`}
+        className={`${rota.variable} font-rota notifi-dapp bg-notifi-page-bg`}
         dark-mode="false"
         // NOTE: Not support dark/light mode yet. TODO: consider adding a theme wrapper
       >

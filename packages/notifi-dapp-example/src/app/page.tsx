@@ -26,11 +26,15 @@ export default function Home() {
 
   if (loading || !wallet) {
     // TODO: Need loading design
-    return <div>loading</div>;
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center">
+        loading
+      </div>
+    );
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24 bg-notifi-page-bg">
+    <main className="flex min-h-screen flex-col items-center justify-center">
       <div className="text-lg">Injective Keplr wallet connect</div>
       {!isWalletConnected ? (
         <button
