@@ -1,4 +1,5 @@
-import { KeplrWalletProvider } from '@/context/wallet/KeplrWalletProvider';
+import { CosmosWalletProvider } from '@/context/wallet/CosmosWalletProvider';
+import '@interchain-ui/react/styles';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 
@@ -104,16 +105,19 @@ export const metadata: Metadata = {
   title: 'Notifi Dapp Example',
   description: 'Notifi Dapp Example',
 };
-
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
     <html lang="en">
-      <body className={`${rota.variable} font-rota`}>
-        <KeplrWalletProvider>{children}</KeplrWalletProvider>
+      <body
+        className={`${rota.variable} font-rota notifi-dapp`}
+        dark-mode="false"
+        // NOTE: Not support dark/light mode yet. TODO: consider adding a theme wrapper
+      >
+        <CosmosWalletProvider>{children}</CosmosWalletProvider>
       </body>
     </html>
   );
