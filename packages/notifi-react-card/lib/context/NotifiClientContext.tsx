@@ -4,7 +4,14 @@ import {
   newFrontendClient,
 } from '@notifi-network/notifi-frontend-client';
 import { useNotifiClient } from '@notifi-network/notifi-react-hooks';
-import React, { createContext, useContext, useEffect, useMemo } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 import { NotifiParams } from './NotifiContext';
 
@@ -13,7 +20,15 @@ export type NotifiClientContextData = Readonly<{
   frontendClient: NotifiFrontendClient;
   isUsingFrontendClient: boolean;
   params: NotifiParams;
+  frontendClientStatus: FrontendClientStatus;
+  updateFrontendClientStatus: () => void;
 }>;
+
+export type FrontendClientStatus = {
+  isExpired: boolean;
+  isInitialized: boolean;
+  isAuthenticated: boolean;
+};
 
 const NotifiClientContext = createContext<NotifiClientContextData>(
   {} as unknown as NotifiClientContextData, // Intentially empty in default, use NotifiSubscriptionContextProvider
@@ -46,6 +61,12 @@ export const NotifiClientContextProvider: React.FC<NotifiParams> = ({
   children,
   ...params
 }: React.PropsWithChildren<NotifiParams>) => {
+  const [frontendClientStatus, setFrontendClientStatus] =
+    useState<FrontendClientStatus>({
+      isExpired: false,
+      isInitialized: false,
+      isAuthenticated: false,
+    });
   const client = useNotifiClient(params);
   const frontendClient = useMemo(() => {
     const configInput = getFrontendConfigInput(params);
@@ -58,6 +79,14 @@ export const NotifiClientContextProvider: React.FC<NotifiParams> = ({
     params.walletPublicKey,
   ]);
 
+  const updateFrontendClientStatus = useCallback(() => {
+    setFrontendClientStatus({
+      isExpired: frontendClient.userState?.status === 'expired',
+      isInitialized: !!frontendClient,
+      isAuthenticated: frontendClient.userState?.status === 'authenticated',
+    });
+  }, [frontendClient]);
+
   const isClientInitialized = useMemo(() => {
     return params.isUsingFrontendClient
       ? !!frontendClient.userState
@@ -65,7 +94,7 @@ export const NotifiClientContextProvider: React.FC<NotifiParams> = ({
   }, [params.isUsingFrontendClient, client, frontendClient]);
 
   useEffect(() => {
-    frontendClient.initialize();
+    frontendClient.initialize().then(() => updateFrontendClientStatus());
   }, [frontendClient]);
 
   if (!isClientInitialized) return null;
@@ -77,6 +106,8 @@ export const NotifiClientContextProvider: React.FC<NotifiParams> = ({
         params,
         isUsingFrontendClient: params.isUsingFrontendClient ?? true,
         frontendClient,
+        frontendClientStatus,
+        updateFrontendClientStatus,
       }}
     >
       {children}

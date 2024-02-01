@@ -7,7 +7,8 @@ import {
 } from '../context';
 
 export const useFrontendClientLogin = () => {
-  const { params, frontendClient } = useNotifiClientContext();
+  const { params, frontendClient, updateFrontendClientStatus } =
+    useNotifiClientContext();
 
   const { useHardwareWallet } = useNotifiSubscriptionContext();
 
@@ -30,9 +31,11 @@ export const useFrontendClientLogin = () => {
       if (logInResult?.completeLogInByTransaction === undefined) {
         throw new Error('Log in failed');
       }
+      updateFrontendClientStatus();
       return logInResult.completeLogInByTransaction;
     } else {
       const result = await frontendClient.logIn(params);
+      updateFrontendClientStatus();
       return result;
     }
   }, [useHardwareWallet, frontendClient, params]);
