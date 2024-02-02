@@ -16,11 +16,12 @@ const config: Config = {
     fontFamily: {
       rota: ['var(--font-rota)'],
     },
-    colors: {
-      // TODO: Temp bg color. TBD
-      'notifi-page-bg': 'rgb(var(--notifi-page-bg))',
-    },
+
     extend: {
+      colors: {
+        // TODO: Temp bg color. TBD
+        'notifi-page-bg': 'rgb(var(--notifi-page-bg))',
+      },
       backgroundImage: {
         'gradient-notifi': `linear-gradient(107deg, rgb(var(--notifi-bgimg-left)) 1.37%, rgb(var(--notifi-bgimg-middle)) 47.55%, rgb(var(--notifi-bgimg-right)) 103.36%)`,
       },
