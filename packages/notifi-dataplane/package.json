@@ -1,6 +1,6 @@
 {
   "name": "@notifi-network/notifi-dataplane",
-  "version": "0.90.6",
+  "version": "0.90.7",
   "description": "The Dataplane API for Notifi",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -22,7 +22,7 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "@notifi-network/notifi-graphql": "^0.90.6"
+    "@notifi-network/notifi-graphql": "^0.90.7"
   },
   "repository": {
     "type": "git",
