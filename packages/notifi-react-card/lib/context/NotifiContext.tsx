@@ -40,6 +40,12 @@ export type BinanceParams = Readonly<{
   signMessage: Uint8SignMessageFunction;
 }>;
 
+export type BaseParams = Readonly<{
+  walletBlockchain: 'BASE';
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
 export type AptosParams = Readonly<{
   walletBlockchain: 'APTOS';
   accountAddress: string;
@@ -116,6 +122,7 @@ type WalletParams =
   | PolygonParams
   | AvalancheParams
   | ArbitrumParams
+  | BaseParams
   | BinanceParams
   | AptosParams
   | AcalaParams
