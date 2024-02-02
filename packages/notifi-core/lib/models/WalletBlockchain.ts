@@ -13,4 +13,5 @@ export type WalletBlockchain =
   | 'OSMOSIS'
   | 'NIBIRU'
   | 'SUI'
-  | 'ZKSYNC';
+  | 'ZKSYNC'
+  | 'BASE';

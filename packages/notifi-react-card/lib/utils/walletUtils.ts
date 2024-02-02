@@ -16,6 +16,8 @@ export const walletToSourceType = (
       return 'BINANCE_WALLET';
     case 'ETHEREUM':
       return 'ETHEREUM_WALLET';
+    case 'BASE':
+      return 'ETHEREUM_WALLET';
     case 'POLYGON':
       return 'POLYGON_WALLET';
     case 'SOLANA':

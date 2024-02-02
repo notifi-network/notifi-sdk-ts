@@ -11,4 +11,5 @@ export type WalletBlockchain =
   | 'OPTIMISM'
   | 'INJECTIVE'
   | 'SUI'
-  | 'ZKSYNC';
+  | 'ZKSYNC'
+  | 'BASE';
