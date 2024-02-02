@@ -33,13 +33,16 @@
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",
     "postcss": "^8",
-    "tailwindcss": "^3.3.0",
-    "@notifi-network/notifi-react-card": "^0.90.4"
+    "tailwindcss": "^3.3.0"
   },
   "dependencies": {
     "react": "^18",
     "react-dom": "^18",
-    "next": "14.1.0"
+    "next": "14.1.0",
+    "@cosmos-kit/keplr": "^2.6.8",
+    "@cosmos-kit/react": "^2.10.8",
+    "@interchain-ui/react": "^1.21.4",
+    "@notifi-network/notifi-react-card": "^0.90.4"
   },
   "bugs": {
     "url": "https://github.com/notifi-network/notifi-sdk-ts/issues"
