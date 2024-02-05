@@ -7,10 +7,7 @@ export default function NotifiExpiryLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const routeAvailable = useNotifiRouter();
-  if (!routeAvailable) {
-    console.log('Notifi route not available');
-    return null;
-  }
+  useNotifiRouter();
+
   return <div>{children}</div>;
 }

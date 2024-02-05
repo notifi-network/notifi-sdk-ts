@@ -106,7 +106,7 @@ export const metadata: Metadata = {
   title: 'Notifi Dapp Example',
   description: 'Notifi Dapp Example',
 };
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
