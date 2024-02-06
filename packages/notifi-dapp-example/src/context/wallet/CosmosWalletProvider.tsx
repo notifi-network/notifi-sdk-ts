@@ -5,7 +5,7 @@ import { wallets as keplr } from '@cosmos-kit/keplr';
 import { ChainProvider, useModalTheme } from '@cosmos-kit/react';
 import { FC, PropsWithChildren } from 'react';
 
-export const KeplrWalletProvider: FC<PropsWithChildren> = ({ children }) => {
+export const CosmosWalletProvider: FC<PropsWithChildren> = ({ children }) => {
   const { modalTheme } = useModalTheme();
   modalTheme;
   return (

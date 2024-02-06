@@ -16,7 +16,6 @@ const config: Config = {
     fontFamily: {
       rota: ['var(--font-rota)'],
     },
-
     extend: {
       colors: {
         // TODO: Temp bg color. TBD
