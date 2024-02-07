@@ -9,6 +9,8 @@
     --notifi-white: 255 255 255;
     --notifi-blueish0: 225 235 248;
     --notifi-blueish1: 198 233 245;
+    --notifi-blueish2: 0 194 253;
+    --notifi-coral: 234 126 104;
   }
 }
 
@@ -18,6 +20,9 @@
   --notifi-bgimg-middle: var(--notifi-blueish0);
   --notifi-bgimg-right: var(--notifi-blueish1);
   --notifi-page-bg: var(--notifi-grey0);
+  --notifi-button-primary-bg: var(--notifi-coral);
+  --notifi-button-primary-text: var(--notifi-white);
+  --notifi-label-connect-wallet-text: var(--notifi-blueish2);
 }
 
 /* Light mode color variables controlled by NotifiContext */
@@ -26,6 +31,9 @@
   --notifi-bgimg-middle: var(--notifi-blueish0);
   --notifi-bgimg-right: var(--notifi-blueish1);
   --notifi-page-bg: var(--notifi-grey0);
+  --notifi-button-primary-bg: var(--notifi-coral);
+  --notifi-button-primary-text: var(--notifi-white);
+  --notifi-label-connect-wallet-text: var(--notifi-blueish2);
 }
 
 /* Light mode color variables controlled by system preferences */

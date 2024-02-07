@@ -1,3 +1,4 @@
+import { GlobalStateContextProvider } from '@/context/GlobalStateContext';
 import { CosmosWalletProvider } from '@/context/wallet/CosmosWalletProvider';
 import '@interchain-ui/react/styles';
 import type { Metadata } from 'next';
@@ -117,7 +118,9 @@ export default async function RootLayout({
         dark-mode="false"
         // NOTE: Not support dark/light mode yet. TODO: consider adding a theme wrapper
       >
-        <CosmosWalletProvider>{children}</CosmosWalletProvider>
+        <GlobalStateContextProvider>
+          <CosmosWalletProvider>{children}</CosmosWalletProvider>
+        </GlobalStateContextProvider>
       </body>
     </html>
   );
