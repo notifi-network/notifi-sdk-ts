@@ -1,18 +1,30 @@
 'use client';
 
 import { AssetList, Chain } from '@chain-registry/types';
-import { wallets as keplr } from '@cosmos-kit/keplr';
-import { ChainProvider, useModalTheme } from '@cosmos-kit/react';
+import { wallets } from '@cosmos-kit/keplr';
+import { ChainProvider } from '@cosmos-kit/react';
 import { FC, PropsWithChildren } from 'react';
 
+type KeplrWallet = (typeof wallets)[number];
+
+// TODO: strong type instead of boolean (not sure where can get KeplrExtensionWallet type from)
+const validateIsBrowserWallet = (wallet: KeplrWallet): boolean => {
+  // NOTE: Only support extension wallet
+  return !('WCClient' in wallet);
+};
+
 export const CosmosWalletProvider: FC<PropsWithChildren> = ({ children }) => {
-  const { modalTheme } = useModalTheme();
-  modalTheme;
+  // NOTE: Customize modal theme (If needed)
+  // const { modalTheme } = useModalTheme();
+  // modalTheme;
+
+  const keplrExtensionWallets = wallets.filter(validateIsBrowserWallet);
+
   return (
     <ChainProvider
       chains={[injChain]}
       assetLists={[assetList]}
-      wallets={[...keplr]}
+      wallets={keplrExtensionWallets}
     >
       {children}
     </ChainProvider>

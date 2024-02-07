@@ -1,5 +1,6 @@
 'use client';
 
+import { NotifiCardContextProvider } from '@/context/notifi/NotifiCardContext';
 import { NotifiSubscriptionCardProvider } from '@/context/notifi/NotifiSubscriptionCardProvider';
 import { useChain } from '@cosmos-kit/react';
 import { useRouter } from 'next/navigation';
@@ -19,6 +20,8 @@ export default function NotifiSingupLayout({
     }
   }, [isWalletConnected]);
   return (
-    <NotifiSubscriptionCardProvider>{children}</NotifiSubscriptionCardProvider>
+    <NotifiSubscriptionCardProvider>
+      <NotifiCardContextProvider>{children}</NotifiCardContextProvider>
+    </NotifiSubscriptionCardProvider>
   );
 }

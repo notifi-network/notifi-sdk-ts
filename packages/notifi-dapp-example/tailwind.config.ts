@@ -18,8 +18,14 @@ const config: Config = {
     },
     extend: {
       colors: {
-        // TODO: Temp bg color. TBD
-        'notifi-page-bg': 'rgb(var(--notifi-page-bg))',
+        notifi: {
+          // TODO: Temp bg color. TBD
+          'page-bg': 'rgb(var(--notifi-page-bg))',
+          'button-primary-bg': 'rgb(var(--notifi-button-primary-bg))',
+          'button-primary-text': 'rgb(var(--notifi-button-primary-text))',
+          'label-connect-wallet-text':
+            'rgb(var(--notifi-label-connect-wallet-text))',
+        },
       },
       backgroundImage: {
         'gradient-notifi': `linear-gradient(107deg, rgb(var(--notifi-bgimg-left)) 1.37%, rgb(var(--notifi-bgimg-middle)) 47.55%, rgb(var(--notifi-bgimg-right)) 103.36%)`,
