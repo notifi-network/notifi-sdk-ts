@@ -1,17 +1,17 @@
 'use client';
 
 import { AlertSubscription } from '@/components/AlertSubscription';
-import { DashboardSideBar } from '@/components/DashBoardSideBar';
+import { DashboardSideBar } from '@/components/DashboardSideBar';
 import { HistoryDetail } from '@/components/HistoryDetail';
 import { HistoryList } from '@/components/HistoryList';
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
 import { WalletAccount } from '@cosmos-kit/core';
 import { useWalletClient } from '@cosmos-kit/react';
+import { Types } from '@notifi-network/notifi-graphql';
 import { useEffect, useState } from 'react';
 
 export type CardView =
   | 'history'
-  | 'historyDetail'
   | 'destination'
   | 'alertSubscription';
 
@@ -19,9 +19,11 @@ export default function NotifiDashboard() {
   const { client } = useWalletClient();
   const [cardView, setCardView] = useState<CardView>('history');
   const [account, setAccount] = useState<WalletAccount | null>(null);
+  const [historyDetailEntry, setHistoryDetailEntry] =
+    useState<Types.FusionNotificationHistoryEntryFragmentFragment | null>(null);
   const { setIsGlobalLoading } = useGlobalStateContext();
 
-  // TODO: Move to hook
+  // TODO: Move to hook if any other component needs account
   useEffect(() => {
     if (client) {
       setIsGlobalLoading(true);
@@ -51,12 +53,20 @@ export default function NotifiDashboard() {
         <div className="flex-none h-32 w-full bg-green-200 ">
           Dummy Verify button Area
         </div>
-        <div className="grow bg-white rounded-3xl mb-10 mt-3 mr-10">
+        <div className="grow bg-white rounded-3xl mb-10 mt-3 mr-10 min-h-0 overflow-scroll">
           {cardView === 'history' ? (
-            <HistoryList setCardView={setCardView} />
-          ) : null}
-          {cardView === 'historyDetail' ? (
-            <HistoryDetail setCardView={setCardView} />
+            <>
+              <HistoryList
+                setHistoryDetailEntry={setHistoryDetailEntry}
+                historyDetailEntry={historyDetailEntry}
+              />
+              {historyDetailEntry ? (
+                <HistoryDetail
+                  setHistoryDetailEntry={setHistoryDetailEntry}
+                  historyDetailEntry={historyDetailEntry}
+                />
+              ) : null}
+            </>
           ) : null}
           {cardView === 'destination' ? <div>Dummy Destination</div> : null}
           {cardView === 'alertSubscription' ? <AlertSubscription /> : null}
