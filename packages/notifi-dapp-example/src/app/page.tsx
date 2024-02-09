@@ -1,32 +1,25 @@
 'use client';
 
-import { useGlobalStateContext } from '@/context/GlobalStateContext';
+import { useRouterAsync } from '@/hooks/useRouterAsync';
 import { useChain, useWalletClient } from '@cosmos-kit/react';
 import '@interchain-ui/react/styles';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 export default function Home() {
+  const { connect, isWalletConnecting } = useChain('injective');
+  const { isLoadingRouter, handleRoute } = useRouterAsync();
   const { client } = useWalletClient();
-  const { setIsGlobalLoading, isGlobalLoading } = useGlobalStateContext();
-  const { connect, wallet, isWalletConnecting } = useChain('injective');
-  const router = useRouter();
 
   useEffect(() => {
-    if (wallet && client) {
-      setIsGlobalLoading(true);
-      client
-        ?.getAccount?.('injective-1')
-        .then((account) => {
-          if (account) {
-            return router.push('/notifi');
-          }
-        })
-        .finally(() => setIsGlobalLoading(false));
-      return;
+    if (client) {
+      client?.getAccount?.('injective-1').then((account) => {
+        if (account) {
+          handleRoute('/notifi');
+        }
+      });
     }
-  }, [wallet]);
+  }, [client]);
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
@@ -59,10 +52,11 @@ export default function Home() {
           Injective ecosystem alerts
         </div>
         <button
-          className="rounded bg-notifi-button-primary-bg text-notifi-button-primary-text w-72 h-11"
+          className="rounded bg-notifi-button-primary-bg text-notifi-button-primary-text w-72 h-11 cursor-pointer"
           onClick={() => connect?.()}
         >
-          {isWalletConnecting || isGlobalLoading ? (
+          {/* TODO: Disable button when loading */}
+          {isWalletConnecting || isLoadingRouter ? (
             <div className="m-auto h-5 w-5 animate-spin rounded-full  border-2 border-white border-b-transparent border-l-transparent"></div>
           ) : (
             <div>Connect Wallet To Start</div>
