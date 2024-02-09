@@ -7,10 +7,6 @@ export default function NotifiDashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const routeAvailable = useNotifiRouter();
-  if (!routeAvailable) {
-    console.log('Notifi route not available');
-    return null;
-  }
+  useNotifiRouter();
   return <section>{children}</section>;
 }
