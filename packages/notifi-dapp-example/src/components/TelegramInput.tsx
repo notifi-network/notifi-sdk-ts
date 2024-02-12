@@ -30,11 +30,7 @@ export const TelegramInput: React.FC<TelegramInputProps> = ({
         </div>
         <div className="flex flex-row items-center justify-between w-90 mr-4">
           <text className="font-semibold text-sm ml-6">Telegram Alerts</text>
-          <Toggle
-            disabled={disabled}
-            checked={useTelegram}
-            setChecked={setUseTelegram}
-          />
+          <Toggle disabled={disabled} checked={useTelegram} />
         </div>
       </div>
     </>
