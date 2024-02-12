@@ -19,7 +19,7 @@ export const TelegramInput: React.FC<TelegramInputProps> = ({
   return (
     <>
       <div className="bg-notifi-card-bg rounded-md w-112 h-18 flex flex-row items-center justify-between mb-2">
-        <div className="bg-white rounded-md w-18 h-18 shadow-card text-notifi-dusk flex flex-col items-center justify-center">
+        <div className="bg-white rounded-md w-18 h-18 shadow-card text-notifi-destination-card-text flex flex-col items-center justify-center">
           <Image
             src="/logos/telegram-icon.svg"
             alt="telegran-icon"

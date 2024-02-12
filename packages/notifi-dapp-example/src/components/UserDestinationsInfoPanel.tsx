@@ -67,7 +67,7 @@ export const UserDestinationsInfoPanel: React.FC<
     <div>
       {contactInfo.email.active && email ? (
         <div className="bg-notifi-card-bg rounded-md w-112 h-18 flex flex-row items-center justify-between mb-2">
-          <div className="bg-white rounded-md w-18 h-18 shadow-card text-notifi-dusk flex flex-col items-center justify-center">
+          <div className="bg-white rounded-md w-18 h-18 shadow-card text-notifi-destination-card-text flex flex-col items-center justify-center">
             <Image
               src="/logos/email-icon.svg"
               alt="email-icon"
@@ -93,7 +93,7 @@ export const UserDestinationsInfoPanel: React.FC<
         </div>
       ) : null}
       <div className="bg-notifi-card-bg rounded-md w-112 h-18 flex flex-row items-center justify-between mb-2">
-        <div className="bg-white rounded-md w-18 h-18 shadow-card text-notifi-dusk flex flex-col items-center justify-center">
+        <div className="bg-white rounded-md w-18 h-18 shadow-card text-notifi-destination-card-text flex flex-col items-center justify-center">
           <Image
             src="/logos/slack-icon.svg"
             alt="slack-icon"
@@ -123,7 +123,7 @@ export const UserDestinationsInfoPanel: React.FC<
       </div>
       {contactInfo?.discord?.active && useDiscord ? (
         <div className="bg-notifi-card-bg rounded-md w-112 h-18 flex flex-row items-center justify-between mb-2">
-          <div className="bg-white rounded-md w-18 h-18 shadow-card text-notifi-dusk flex flex-col items-center justify-center">
+          <div className="bg-white rounded-md w-18 h-18 shadow-card text-notifi-destination-card-text flex flex-col items-center justify-center">
             <Image
               src="/logos/discord-icon.svg"
               alt="discord-icon"
@@ -164,7 +164,7 @@ export const UserDestinationsInfoPanel: React.FC<
       ) : null}
       {contactInfo.telegram.active && telegramId ? (
         <div className="bg-notifi-card-bg rounded-md w-112 h-18 flex flex-row items-center justify-between mb-2">
-          <div className="bg-white rounded-md w-18 h-18 shadow-card text-notifi-dusk flex flex-col items-center justify-center">
+          <div className="bg-white rounded-md w-18 h-18 shadow-card text-notifi-destination-card-text flex flex-col items-center justify-center">
             <Image
               src="/logos/telegram-icon.svg"
               alt="telegran-icon"

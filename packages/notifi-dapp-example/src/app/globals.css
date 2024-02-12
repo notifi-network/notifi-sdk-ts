@@ -13,6 +13,10 @@
     --notifi-blueish3: 0 133 250;
     --notifi-light-blue: 247 251 255;
     --notifi-coral: 234 126 104;
+    --notifi-green: 7, 168, 37;
+    --notifi-heather: 182, 184, 213;
+    --notifi-cyan: 0, 203, 253;
+    --notifi-dusk: 128, 130, 157;
   }
 }
 
@@ -27,6 +31,10 @@
   --notifi-button-primary-text: var(--notifi-white);
   --notifi-label-connect-wallet-text: var(--notifi-blueish2);
   --notifi-card-bg: var(--notifi-light-blue);
+  --notifi-success: var(--notifi-green);
+  --notifi-toggle-off-bg: var(--notifi-heather);
+  --notifi-toggle-on-bg: var(--notifi-cyan);
+  --notifi-destination-card-text: var(--notifi-dusk);
 }
 
 /* Light mode color variables controlled by NotifiContext */
@@ -40,6 +48,10 @@
   --notifi-button-primary-text: var(--notifi-white);
   --notifi-label-connect-wallet-text: var(--notifi-blueish2);
   --notifi-card-bg: var(--notifi-light-blue);
+  --notifi-success: var(--notifi-green);
+  --notifi-toggle-off-bg: var(--notifi-heather);
+  --notifi-toggle-on-bg: var(--notifi-cyan);
+  --notifi-destination-card-text: var(--notifi-dusk);
 }
 
 /* Light mode color variables controlled by system preferences */
