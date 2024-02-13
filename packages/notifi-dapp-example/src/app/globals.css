@@ -5,7 +5,7 @@
 @layer base {
   :root {
     /* Notifi global color */
-    --notifi-grey0: 245 246 251;
+    --notifi-grey0: 245 246 241;
     --notifi-white: 255 255 255;
     --notifi-blueish0: 225 235 248;
     --notifi-blueish1: 198 233 245;
@@ -35,6 +35,9 @@
   --notifi-toggle-off-bg: var(--notifi-heather);
   --notifi-toggle-on-bg: var(--notifi-cyan);
   --notifi-destination-card-text: var(--notifi-dusk);
+  --notifi-icon-unselected: var(--notifi-heather);
+  --notifi-icon-selected: var(--notifi-blueish2);
+  --notifi-tab-unselected-text: var(--notifi-dusk);
 }
 
 /* Light mode color variables controlled by NotifiContext */
@@ -52,6 +55,9 @@
   --notifi-toggle-off-bg: var(--notifi-heather);
   --notifi-toggle-on-bg: var(--notifi-cyan);
   --notifi-destination-card-text: var(--notifi-dusk);
+  --notifi-icon-unselected: var(--notifi-heather);
+  --notifi-icon-selected: var(--notifi-blueish2);
+  --notifi-tab-unselected-text: var(--notifi-dusk);
 }
 
 /* Light mode color variables controlled by system preferences */
