@@ -46,6 +46,9 @@ const config: Config = {
           'toggle-on-bg': 'rgb(var(--notifi-toggle-on-bg))',
           'toggle-off-bg': 'rgb(var(--notifi-toggle-off-bg))',
           success: 'rgb(var(--notifi-success))',
+          'icon-selected': 'rgb(var(--notifi-icon-selected))',
+          'icon-unselected': 'rgb(var(--notifi-icon-unselected))',
+          'tab-unselected-text': 'rgb(var(--notifi-tab-unselected-text))',
         },
       },
       backgroundImage: {
