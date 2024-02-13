@@ -89,7 +89,7 @@ const targetGroup = client.ensureTargetGroup({
 
 Then, use the `ensureAlert()` to create the first alert when your user tends to subscribe an alert.
 
-This example shows how to create (user subscribe) a Broadcast message alert.
+**Scenario#1**: This example shows how to create (user subscribe) a Broadcast message alert.
 
 ```ts
 // Given that you have one Broadcast Topic in Notifi Admin Panel.
@@ -105,6 +105,27 @@ const subscribeAlert = () => {
   });
 }
 
+```
+
+The `inputs` object is not required for a broadcast message alert, but it might be required for some cases if the topic requires some additional information.
+
+**Scenario#2**: The following example shows how to subscribe a fusion health check alert with additional information (`inputs`).
+
+```ts
+const name = `Health check Alerts: ${thresholdDirection} ${threshold}`;
+const eventType = {
+  ...
+  name,
+  ...
+};
+const result = client.ensureAlert({
+  eventType,
+  inputs: {
+    ...
+    [`${name}__healthRatio`]: healthRatio,
+    [`${name}__healthThresholdDirection`]: thresholdDirection,
+  },
+});
 ```
 
 ## 🔃 Updating the Alert
