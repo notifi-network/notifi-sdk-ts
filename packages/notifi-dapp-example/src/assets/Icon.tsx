@@ -3,7 +3,12 @@ import { FunctionComponent, SVGAttributes } from 'react';
 // eslint-disable-line no-restricted-imports
 
 // TODO: Create auto generated types for all the icons in the sprite.svg
-export type SpriteIconId = 'warning';
+export type SpriteIconId =
+  | 'warning'
+  | 'bell'
+  | 'destinations'
+  | 'config'
+  | 'user-protrait';
 
 /**
  * It takes an icon id and returns an svg element with the corresponding icon defined in /public/icons/sprite.svg.

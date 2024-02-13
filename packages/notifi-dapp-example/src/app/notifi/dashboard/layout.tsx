@@ -8,5 +8,6 @@ export default function NotifiDashboardLayout({
   children: React.ReactNode;
 }) {
   useNotifiRouter();
-  return <section>{children}</section>;
+
+  return <div>{children}</div>;
 }
