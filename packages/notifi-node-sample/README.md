@@ -151,8 +151,7 @@ If the request is successful, we can get a response body like this:
 
 > NOTE:
 > The `variablesJson` parameter is the set of variables that will be used when rendering your templates.
-> If you have a variable `fromAddress` in there, for example, you can display it in the template with the expression `{{ eventData.fromAddress }}`
-> The type `CommunityManagerJsonPayload` defines what this object should look like for the templates that Community Manager posts use.
+> If you have a variable `fromAddress`, for example, you can display it in the template with the expression `{{ eventData.fromAddress }}`
 
 If the request is successful, we can get a response body like this:
 
