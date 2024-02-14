@@ -1,3 +1,5 @@
+import { Types } from '@notifi-network/notifi-graphql';
+
 export type NotifiEnvironment =
   | 'Production'
   | 'Staging'
@@ -12,30 +14,32 @@ export type NotifiEnvironmentConfiguration = Readonly<{
   }>;
 }>;
 
+type WalletBlockchainWithPublicKey = Extract<
+  Types.WalletBlockchain,
+  | 'ETHEREUM'
+  | 'POLYGON'
+  | 'ARBITRUM'
+  | 'AVALANCHE'
+  | 'BINANCE'
+  | 'OPTIMISM'
+  | 'SOLANA'
+  | 'ZKSYNC'
+  | 'BASE'
+>;
+
+type WalletBlockchainWithPublicKeyAndAddress = Exclude<
+  Types.WalletBlockchain,
+  WalletBlockchainWithPublicKey | 'OFF_CHAIN' | 'EVMOS'
+>;
+
 export type NotifiConfigWithPublicKey = Readonly<{
-  walletBlockchain:
-    | 'ETHEREUM'
-    | 'POLYGON'
-    | 'ARBITRUM'
-    | 'AVALANCHE'
-    | 'BINANCE'
-    | 'OPTIMISM'
-    | 'SOLANA'
-    | 'ZKSYNC'
-    | 'BASE';
+  walletBlockchain: WalletBlockchainWithPublicKey;
   walletPublicKey: string;
 }> &
   NotifiEnvironmentConfiguration;
 
 export type NotifiConfigWithPublicKeyAndAddress = Readonly<{
-  walletBlockchain:
-    | 'SUI'
-    | 'NEAR'
-    | 'INJECTIVE'
-    | 'APTOS'
-    | 'ACALA'
-    | 'OSMOSIS'
-    | 'NIBIRU';
+  walletBlockchain: WalletBlockchainWithPublicKeyAndAddress;
   authenticationKey: string;
   accountAddress: string;
 }> &
@@ -83,14 +87,35 @@ export type FrontendClientConfigFactory<T extends NotifiFrontendConfiguration> =
       : ConfigFactoryInputPublicKey,
   ) => NotifiFrontendConfiguration;
 
+const evmChains = [
+  'ETHEREUM',
+  'POLYGON',
+  'ARBITRUM',
+  'AVALANCHE',
+  'BINANCE',
+  'OPTIMISM',
+  'BASE',
+  'ZKSYNC',
+] as const;
+
+type EVMChains = Extract<Types.WalletBlockchain, (typeof evmChains)[number]>;
+
+const isEvmChain = (chain: Types.WalletBlockchain): chain is EVMChains => {
+  return !!evmChains.find((c) => c === chain);
+};
+
 const configFactoryPublicKey: FrontendClientConfigFactory<
   NotifiConfigWithPublicKey
 > = (args) => {
+  let walletPublicKey = args.account.publicKey;
+  if (isEvmChain(args.walletBlockchain)) {
+    walletPublicKey = walletPublicKey.toLowerCase();
+  }
   return {
     tenantId: args.tenantId,
     env: args.env,
     walletBlockchain: args.walletBlockchain,
-    walletPublicKey: args.account.publicKey,
+    walletPublicKey,
     storageOption: args.storageOption,
   };
 };
