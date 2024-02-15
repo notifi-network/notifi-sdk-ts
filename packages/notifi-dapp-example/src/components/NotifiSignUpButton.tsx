@@ -5,12 +5,10 @@ import {
   EventTypeConfig,
 } from '@notifi-network/notifi-frontend-client';
 import {
-  createConfigurations,
   subscribeAlertsByFrontendClient,
   useFrontendClientLogin,
   useNotifiClientContext,
   useNotifiForm,
-  useNotifiSubscribe,
   useNotifiSubscriptionContext,
 } from '@notifi-network/notifi-react-card';
 import { isValidPhoneNumber } from 'libphonenumber-js';
@@ -38,24 +36,18 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
   data,
 }) => {
   const eventTypes = data.eventTypes;
-  const { isInitialized, subscribe, updateTargetGroups } = useNotifiSubscribe({
-    targetGroupName: 'Default',
-  });
+
   const frontendClientLogin = useFrontendClientLogin();
 
   const router = useRouter();
 
-  const { frontendClient } = useNotifiClientContext();
-
   const {
-    connectedWallets,
-    loading,
-    setCardView,
-    useDiscord,
-    render,
-    setLoading,
-    syncFtuStage,
-  } = useNotifiSubscriptionContext();
+    frontendClientStatus: { isInitialized, isAuthenticated },
+    frontendClient,
+  } = useNotifiClientContext();
+
+  const { loading, setCardView, useDiscord, render, setLoading, syncFtuStage } =
+    useNotifiSubscriptionContext();
 
   const { setIsGlobalLoading } = useGlobalStateContext();
 
@@ -80,30 +72,34 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
     [email, phoneNumber, telegramId, useDiscord],
   );
 
-  const renewTargetGroups = useCallback(async () => {
-    return updateTargetGroups();
-  }, [updateTargetGroups]);
+  const renewTargetGroups = useCallback(
+    async (targetGroup: TargetGroupData) => {
+      return frontendClient.ensureTargetGroup(targetGroup);
+    },
+    [frontendClient],
+  );
 
   const subscribeAlerts = useCallback(
     async (eventTypes: EventTypeConfig, inputs: Record<string, unknown>) => {
-      return subscribe(
-        createConfigurations(eventTypes, inputs, connectedWallets),
+      await renewTargetGroups(targetGroup);
+
+      return subscribeAlertsByFrontendClient(
+        frontendClient,
+        eventTypes,
+        inputs,
       );
     },
     [
-      targetGroup,
-      frontendClient,
-      connectedWallets,
       renewTargetGroups,
       subscribeAlertsByFrontendClient,
-      subscribe,
-      createConfigurations,
+      frontendClient,
+      targetGroup,
     ],
   );
 
   const onClick = useCallback(async () => {
     let isFirstTimeUser = false;
-    if (frontendClient.userState?.status !== 'authenticated') {
+    if (isAuthenticated) {
       await frontendClientLogin();
       const data = await frontendClient.fetchData();
       isFirstTimeUser = (data.targetGroup?.length ?? 0) === 0;
@@ -119,7 +115,7 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
         const result = await subscribeAlerts(subEvents, inputs);
         success = !!result;
       } else {
-        const result = await renewTargetGroups();
+        const result = await renewTargetGroups(targetGroup);
         success = !!result;
       }
 
@@ -134,14 +130,7 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
     }
     setIsGlobalLoading(false);
     setLoading(false);
-  }, [
-    frontendClient,
-    eventTypes,
-    frontendClientLogin,
-    subscribe,
-    updateTargetGroups,
-    setCardView,
-  ]);
+  }, [frontendClient, eventTypes, frontendClientLogin, setCardView]);
 
   const hasErrors = emailErrorMessage !== '' || smsErrorMessage !== '';
   const isInputFieldsValid = useMemo(() => {

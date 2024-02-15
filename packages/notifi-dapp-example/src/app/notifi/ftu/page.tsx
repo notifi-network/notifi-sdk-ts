@@ -29,7 +29,6 @@ export default function NotifiFTU() {
     <>
       {ftuStage === FtuStage.Destination ? (
         <>
-          {' '}
           <ConfigDestinationModal contactInfo={cardConfig.contactInfo} />
         </>
       ) : null}
