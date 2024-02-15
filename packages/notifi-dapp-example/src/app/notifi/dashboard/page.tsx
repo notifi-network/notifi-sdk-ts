@@ -50,8 +50,11 @@ export default function NotifiDashboard() {
         setCardView={setCardView}
       />
       <div className=" flex flex-col grow h-screen">
-        {unverifiedDestinations.length > 0 ? (
-          <VerifyBanner unVerifiedDestinations={unverifiedDestinations} />
+        {unverifiedDestinations.length > 0 && cardView === 'history' ? (
+          <VerifyBanner
+            unVerifiedDestinations={unverifiedDestinations}
+            setCardView={setCardView}
+          />
         ) : null}
         <div className="grow bg-white rounded-3xl mb-10 mt-3 mr-10">
           {cardView === 'history' ? (

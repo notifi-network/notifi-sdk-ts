@@ -1,13 +1,16 @@
+import { CardView } from '@/app/notifi/dashboard/page';
 import { Icon } from '@/assets/Icon';
 import { FormField } from '@notifi-network/notifi-react-card';
 import React, { useMemo } from 'react';
 
 export type VerifyBannerProps = Readonly<{
   unVerifiedDestinations: ReadonlyArray<FormField>;
+  setCardView: (cardView: CardView) => void;
 }>;
 
 export const VerifyBanner: React.FC<VerifyBannerProps> = ({
   unVerifiedDestinations,
+  setCardView,
 }: VerifyBannerProps) => {
   const unVerifiedDestinationsString = useMemo(() => {
     const convertedUnVerifiedDestinations = unVerifiedDestinations.map(
@@ -39,7 +42,10 @@ export const VerifyBanner: React.FC<VerifyBannerProps> = ({
           />
           <div>Verify your {unVerifiedDestinationsString}</div>
         </div>
-        <button className="mr-3 w-18 h-8 bg-notifi-button-primary-blueish-bg rounded-md text-sm font-bold text-white">
+        <button
+          onClick={() => setCardView('destination')}
+          className="mr-3 w-18 h-8 bg-notifi-button-primary-blueish-bg rounded-md text-sm font-bold text-white"
+        >
           Verify
         </button>
       </div>
