@@ -1,4 +1,5 @@
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
+import { useRouterAsync } from '@/hooks/useRouterAsync';
 import { formatTelegramForSubscription } from '@/utils/stringUtils';
 import {
   CardConfigItemV1,
@@ -12,7 +13,6 @@ import {
   useNotifiSubscriptionContext,
 } from '@notifi-network/notifi-react-card';
 import { isValidPhoneNumber } from 'libphonenumber-js';
-import { useRouter } from 'next/navigation';
 import React, { useCallback, useMemo } from 'react';
 
 export type NotifiSignUpButtonProps = Readonly<{
@@ -39,17 +39,17 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
 
   const frontendClientLogin = useFrontendClientLogin();
 
-  const router = useRouter();
+  const { handleRoute } = useRouterAsync();
 
   const {
     frontendClientStatus: { isInitialized, isAuthenticated },
     frontendClient,
   } = useNotifiClientContext();
 
-  const { loading, setCardView, useDiscord, render, setLoading, syncFtuStage } =
+  const { loading, useDiscord, render, setLoading, syncFtuStage } =
     useNotifiSubscriptionContext();
 
-  const { setIsGlobalLoading } = useGlobalStateContext();
+  const { setIsGlobalLoading, setGlobalError } = useGlobalStateContext();
 
   const { formErrorMessages, formState } = useNotifiForm();
 
@@ -89,12 +89,7 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
         inputs,
       );
     },
-    [
-      renewTargetGroups,
-      subscribeAlertsByFrontendClient,
-      frontendClient,
-      targetGroup,
-    ],
+    [frontendClient, targetGroup],
   );
 
   const onClick = useCallback(async () => {
@@ -123,14 +118,14 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
         const newData = await frontendClient.fetchData();
         render(newData);
         await syncFtuStage(data.isContactInfoRequired);
-        router.push('/notifi/ftu');
+        handleRoute('/notifi/ftu');
       }
-    } catch (e) {
-      setCardView({ state: 'error', reason: e });
+    } catch (e: unknown) {
+      setGlobalError((e as Error).message);
     }
     setIsGlobalLoading(false);
     setLoading(false);
-  }, [frontendClient, eventTypes, frontendClientLogin, setCardView]);
+  }, [frontendClient, eventTypes, frontendClientLogin, setGlobalError]);
 
   const hasErrors = emailErrorMessage !== '' || smsErrorMessage !== '';
   const isInputFieldsValid = useMemo(() => {

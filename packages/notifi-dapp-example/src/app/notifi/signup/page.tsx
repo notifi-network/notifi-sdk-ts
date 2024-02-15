@@ -24,7 +24,6 @@ export default function NotifiSignup() {
           </p>
         </div>
         <div className="flex flex-col items-center justify-center">
-          {' '}
           <p className="text-sm opacity-50 font-semibold my-4">
             Select a minimum of one destination
           </p>
