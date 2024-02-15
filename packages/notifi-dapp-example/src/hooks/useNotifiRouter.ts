@@ -21,21 +21,29 @@ export const useNotifiRouter = () => {
 
   const { cardConfig } = useNotifiCardContext();
   useEffect(() => {
-    syncFtuStage(cardConfig.isContactInfoRequired);
-  }, []);
+    if (frontendClientStatus.isAuthenticated) {
+      syncFtuStage(cardConfig.isContactInfoRequired);
+    }
+  }, [
+    frontendClientStatus.isAuthenticated,
+    cardConfig.isContactInfoRequired,
+    syncFtuStage,
+    setIsGlobalLoading,
+  ]);
 
   useEffect(() => {
     if (frontendClientStatus.isExpired) {
       handleRoute('/notifi/expiry');
       return;
     }
-    if (frontendClientStatus.isAuthenticated && ftuStage === FtuStage.Done) {
-      handleRoute('/notifi/dashboard');
-      return;
-    }
     if (frontendClientStatus.isAuthenticated) {
-      handleRoute('/notifi/ftu');
-      return;
+      if (ftuStage === FtuStage.Done) {
+        handleRoute('/notifi/dashboard');
+        return;
+      } else {
+        handleRoute('/notifi/ftu');
+        return;
+      }
     }
     handleRoute('/notifi/signup');
     return;

@@ -76,7 +76,7 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
     async (targetGroup: TargetGroupData) => {
       return frontendClient.ensureTargetGroup(targetGroup);
     },
-    [frontendClient],
+    [frontendClient, targetGroup],
   );
 
   const subscribeAlerts = useCallback(
@@ -91,10 +91,9 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
     },
     [frontendClient, targetGroup],
   );
-
   const onClick = useCallback(async () => {
     let isFirstTimeUser = false;
-    if (isAuthenticated) {
+    if (!isAuthenticated) {
       await frontendClientLogin();
       const data = await frontendClient.fetchData();
       isFirstTimeUser = (data.targetGroup?.length ?? 0) === 0;
@@ -121,11 +120,18 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
         handleRoute('/notifi/ftu');
       }
     } catch (e: unknown) {
-      setGlobalError((e as Error).message);
+      setGlobalError('ERROR: Failed to signup, check console for more details');
+      console.error('Failed to singup', (e as Error).message);
     }
     setIsGlobalLoading(false);
     setLoading(false);
-  }, [frontendClient, eventTypes, frontendClientLogin, setGlobalError]);
+  }, [
+    frontendClient,
+    eventTypes,
+    frontendClientLogin,
+    setGlobalError,
+    targetGroup,
+  ]);
 
   const hasErrors = emailErrorMessage !== '' || smsErrorMessage !== '';
   const isInputFieldsValid = useMemo(() => {
