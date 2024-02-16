@@ -13,15 +13,11 @@ import {
   useState,
 } from 'react';
 
-type IsInitialized = 'notInitialize' | 'initialized' | 'initializing';
-
 export type GlobalStateContextType = {
   isGlobalLoading: boolean;
   setIsGlobalLoading: Dispatch<SetStateAction<boolean>>;
   globalError: null | string;
   setGlobalError: Dispatch<SetStateAction<string | null>>;
-  isInitialized: IsInitialized;
-  seIisInitialized: Dispatch<SetStateAction<IsInitialized>>;
 };
 
 const GlobalStateContext = createContext<GlobalStateContextType>({
@@ -29,8 +25,6 @@ const GlobalStateContext = createContext<GlobalStateContextType>({
   setIsGlobalLoading: () => undefined,
   globalError: null,
   setGlobalError: () => undefined,
-  isInitialized: 'notInitialize',
-  seIisInitialized: () => undefined,
 });
 
 export const GlobalStateContextProvider: FC<PropsWithChildren> = ({
@@ -38,8 +32,6 @@ export const GlobalStateContextProvider: FC<PropsWithChildren> = ({
 }) => {
   const [isGlobalLoading, setIsGlobalLoading] = useState(false);
   const [globalError, setGlobalError] = useState<string | null>(null);
-  const [isInitialized, seIisInitialized] =
-    useState<IsInitialized>('notInitialize');
 
   useEffect(() => {
     if (globalError) {
@@ -56,8 +48,6 @@ export const GlobalStateContextProvider: FC<PropsWithChildren> = ({
         setIsGlobalLoading,
         globalError,
         setGlobalError,
-        isInitialized,
-        seIisInitialized,
       }}
     >
       {isGlobalLoading ? (
