@@ -20,12 +20,10 @@ export const DiscordInput: React.FC<DiscordInputProps> = ({ disabled }) => {
           height="13px"
           className="text-notifi-toggle-on-bg"
         />
-        <text className="font-bold text-xs mt-2">Discord</text>
+        <div className="font-bold text-xs mt-2">Discord</div>
       </div>
       <div className="flex flex-row items-center justify-between w-90 mr-4">
-        <text className="font-semibold text-sm ml-6">
-          Discord Bot DM Alerts
-        </text>
+        <div className="font-semibold text-sm ml-6">Discord Bot DM Alerts</div>
         <Toggle disabled={disabled} checked={useDiscord} />
       </div>
     </div>

@@ -58,9 +58,9 @@ export const UserDestinationsInfoPanel: React.FC<
   }, [discordTargetData]);
 
   const VerifiedText = (
-    <text className="font-semibold text-sm text-notifi-success ml-6">
+    <div className="font-semibold text-sm text-notifi-success ml-6">
       Verified
-    </text>
+    </div>
   );
 
   return (
@@ -74,10 +74,10 @@ export const UserDestinationsInfoPanel: React.FC<
               width={15}
               height={12}
             />
-            <text className="font-bold text-xs mt-2">Email</text>
+            <div className="font-bold text-xs mt-2">Email</div>
           </div>
           <div className="flex flex-col items-start justify-between w-90 mr-4">
-            <text className="font-semibold text-sm ml-6">{email}</text>
+            <div className="font-semibold text-sm ml-6">{email}</div>
             {emailErrorMessage?.type === 'recoverableError' ? (
               <DestinationErrorMessage
                 onClick={() => handleResendEmailVerificationClick()}
@@ -98,12 +98,10 @@ export const UserDestinationsInfoPanel: React.FC<
             width={16}
             height={16}
           />
-          <text className="font-bold text-xs mt-2">Slack</text>
+          <div className="font-bold text-xs mt-2">Slack</div>
         </div>
         <div className="flex flex-col items-start justify-between w-90 mr-4">
-          <text className="font-semibold text-sm ml-6">
-            testSlack@gmail.com
-          </text>
+          <div className="font-semibold text-sm ml-6">testSlack@gmail.com</div>
           {/* todo: update when implement slack flow */}
           {emailErrorMessage?.type === 'recoverableError' ? (
             <DestinationErrorMessage
@@ -129,14 +127,14 @@ export const UserDestinationsInfoPanel: React.FC<
               width={17}
               height={13}
             />
-            <text className="font-bold text-xs mt-2">Discord</text>
+            <div className="font-bold text-xs mt-2">Discord</div>
           </div>
 
           {discordErrrorMessage?.type === 'recoverableError' ? (
             <div className="flex flex-row items-center justify-between w-90 mr-4">
-              <text className="font-semibold text-sm ml-6">
+              <div className="font-semibold text-sm ml-6">
                 Discord Bot DM Alerts
-              </text>
+              </div>
               <DestinationErrorMessage
                 isButton={true}
                 buttonCopy="Enable Bot"
@@ -153,11 +151,11 @@ export const UserDestinationsInfoPanel: React.FC<
             </div>
           ) : (
             <div className="flex flex-col items-start justify-between w-90 mr-4">
-              <text className="font-semibold text-sm ml-6">
+              <div className="font-semibold text-sm ml-6">
                 {discordTargetData?.isConfirmed === true
                   ? discordUserName
                   : 'Discord'}
-              </text>
+              </div>
               {VerifiedText}
             </div>
           )}
@@ -172,14 +170,12 @@ export const UserDestinationsInfoPanel: React.FC<
               width={16}
               height={16}
             />
-            <text className="font-bold text-xs mt-2">Telegram</text>
+            <div className="font-bold text-xs mt-2">Telegram</div>
           </div>
 
           {telegramErrorMessage?.type === 'recoverableError' ? (
             <div className="flex flex-row items-center justify-between w-90 mr-4">
-              <text className="font-semibold text-sm ml-6">
-                Telegram Alerts
-              </text>
+              <div className="font-semibold text-sm ml-6">Telegram Alerts</div>
               <DestinationErrorMessage
                 isButton={true}
                 buttonCopy="Verify ID"
@@ -196,7 +192,7 @@ export const UserDestinationsInfoPanel: React.FC<
             </div>
           ) : (
             <div className="flex flex-col items-start justify-between w-90 mr-4">
-              <text className="font-semibold text-sm ml-6">{telegramId}</text>
+              <div className="font-semibold text-sm ml-6">{telegramId}</div>
               {VerifiedText}
             </div>
           )}

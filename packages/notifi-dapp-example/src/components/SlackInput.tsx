@@ -49,7 +49,7 @@ export const SlackInput: React.FC<SlackInputProps> = ({
             height="16px"
             className="text-notifi-toggle-on-bg"
           />
-          <text className="font-bold text-xs mt-2">Slack</text>
+          <div className="font-bold text-xs mt-2">Slack</div>
         </div>
         <input
           className="border border-grey-300 rounded-md w-86 h-11 mr-4 text-sm pl-3"

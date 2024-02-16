@@ -26,10 +26,10 @@ export const TelegramInput: React.FC<TelegramInputProps> = ({
             height="14px"
             className="text-notifi-toggle-on-bg"
           />
-          <text className="font-bold text-xs mt-2">Telegram</text>
+          <div className="font-bold text-xs mt-2">Telegram</div>
         </div>
         <div className="flex flex-row items-center justify-between w-90 mr-4">
-          <text className="font-semibold text-sm ml-6">Telegram Alerts</text>
+          <div className="font-semibold text-sm ml-6">Telegram Alerts</div>
           <Toggle disabled={disabled} checked={useTelegram} />
         </div>
       </div>
