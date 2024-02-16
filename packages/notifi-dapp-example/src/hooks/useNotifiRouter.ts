@@ -15,23 +15,30 @@ export const useNotifiRouter = () => {
     return frontendClientStatus.isInitialized;
   }, [frontendClientStatus]);
   const { handleRoute, isLoadingRouter } = useRouterAsync();
-  const { setIsGlobalLoading } = useGlobalStateContext();
+  const { setIsGlobalLoading, seIisInitialized, isInitialized } =
+    useGlobalStateContext();
 
   const { ftuStage, syncFtuStage } = useNotifiSubscriptionContext();
 
   const { cardConfig } = useNotifiCardContext();
   useEffect(() => {
+    seIisInitialized('initializing');
     if (frontendClientStatus.isAuthenticated) {
-      syncFtuStage(cardConfig.isContactInfoRequired);
+      syncFtuStage(cardConfig.isContactInfoRequired).finally(() => {
+        seIisInitialized('initialized');
+      });
     }
+    seIisInitialized('initialized');
   }, [
     frontendClientStatus.isAuthenticated,
     cardConfig.isContactInfoRequired,
     syncFtuStage,
-    setIsGlobalLoading,
   ]);
 
   useEffect(() => {
+    if (isInitialized !== 'initialized') {
+      return;
+    }
     if (frontendClientStatus.isExpired) {
       handleRoute('/notifi/expiry');
       return;
@@ -47,7 +54,7 @@ export const useNotifiRouter = () => {
     }
     handleRoute('/notifi/signup');
     return;
-  }, [frontendClientStatus]);
+  }, [frontendClientStatus, syncFtuStage, ftuStage, isInitialized]);
 
   useEffect(() => {
     if (isLoadingRouter || !routeAvailable) {
