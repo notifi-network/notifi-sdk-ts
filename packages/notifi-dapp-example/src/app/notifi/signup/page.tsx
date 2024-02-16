@@ -3,16 +3,9 @@
 import { InputFields } from '@/components/InputFields';
 import { NotifiSignUpButton } from '@/components/NotifiSignUpButton';
 import { useNotifiCardContext } from '@/context/notifi/NotifiCardContext';
-import { useNotifiClientContext } from '@notifi-network/notifi-react-card';
 
 export default function NotifiSignup() {
-  const {
-    frontendClientStatus: { isInitialized },
-  } = useNotifiClientContext();
-
   const { cardConfig } = useNotifiCardContext();
-
-  if (!isInitialized) return null;
 
   return (
     <div className="h-4/6 w-4/6 bg-notifi-container-bg rounded-2xl flex flex-col items-center justify-between mb-8 shadow-container">
