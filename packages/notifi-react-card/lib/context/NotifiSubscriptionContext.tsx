@@ -86,7 +86,7 @@ export type NotifiSubscriptionData = Readonly<{
   setDiscordTargetData: React.Dispatch<
     React.SetStateAction<Types.DiscordTargetFragmentFragment | undefined>
   >;
-  ftuStage: FtuStage;
+  ftuStage: FtuStage | null;
   syncFtuStage: (isContactInfoRequired?: boolean) => Promise<void>;
   updateFtuStage: (ftuConfigStep: FtuStage) => Promise<void>;
   render: (newData: Types.FetchDataQuery) => SubscriptionData;
@@ -136,7 +136,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
   const [email, setEmail] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [telegramId, setTelegramId] = useState<string>('');
-  const [ftuStage, setFtuStage] = useState<FtuStage>(FtuStage.Done);
+  const [ftuStage, setFtuStage] = useState<FtuStage | null>(null);
 
   const [discordTargetData, setDiscordTargetData] = useState<
     Types.DiscordTargetFragmentFragment | undefined
