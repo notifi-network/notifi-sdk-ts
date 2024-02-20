@@ -25,6 +25,14 @@ type WalletBlockchainWithPublicKey = Extract<
   | 'SOLANA'
   | 'ZKSYNC'
   | 'BASE'
+  | 'INJECTIVE'
+  | 'BLAST'
+  | 'CELO'
+  | 'MANTLE'
+  | 'LINEA'
+  | 'SCROLL'
+  | 'MANTA'
+  | 'MONAD'
 >;
 
 type WalletBlockchainWithPublicKeyAndAddress = Exclude<
@@ -95,6 +103,14 @@ const evmChains = [
   'BINANCE',
   'OPTIMISM',
   'BASE',
+  'INJECTIVE',
+  'BLAST',
+  'CELO',
+  'MANTLE',
+  'LINEA',
+  'SCROLL',
+  'MANTA',
+  'MONAD',
   'ZKSYNC',
 ] as const;
 

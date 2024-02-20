@@ -31,40 +31,48 @@ import {
 
 export type SignMessageParams =
   | Readonly<{
-      walletBlockchain: 'SOLANA';
-      signMessage: Uint8SignMessageFunction;
-    }>
+    walletBlockchain: 'SOLANA';
+    signMessage: Uint8SignMessageFunction;
+  }>
   | Readonly<{
-      walletBlockchain:
-        | 'ETHEREUM'
-        | 'POLYGON'
-        | 'ARBITRUM'
-        | 'AVALANCHE'
-        | 'BINANCE'
-        | 'INJECTIVE'
-        | 'OSMOSIS'
-        | 'NIBIRU'
-        | 'OPTIMISM'
-        | 'ZKSYNC'
-        | 'BASE';
-      signMessage: Uint8SignMessageFunction;
-    }>
+    walletBlockchain:
+    | 'ETHEREUM'
+    | 'POLYGON'
+    | 'ARBITRUM'
+    | 'AVALANCHE'
+    | 'BINANCE'
+    | 'INJECTIVE'
+    | 'OSMOSIS'
+    | 'NIBIRU'
+    | 'OPTIMISM'
+    | 'ZKSYNC'
+    | 'INJECTIVE'
+    | 'BASE'
+    | 'BLAST'
+    | 'CELO'
+    | 'MANTLE'
+    | 'LINEA'
+    | 'SCROLL'
+    | 'MANTA'
+    | 'MONAD';
+    signMessage: Uint8SignMessageFunction;
+  }>
   | Readonly<{
-      walletBlockchain: 'APTOS';
-      signMessage: AptosSignMessageFunction;
-    }>
+    walletBlockchain: 'APTOS';
+    signMessage: AptosSignMessageFunction;
+  }>
   | Readonly<{
-      walletBlockchain: 'ACALA';
-      signMessage: AcalaSignMessageFunction;
-    }>
+    walletBlockchain: 'ACALA';
+    signMessage: AcalaSignMessageFunction;
+  }>
   | Readonly<{
-      walletBlockchain: 'NEAR';
-      signMessage: Uint8SignMessageFunction;
-    }>
+    walletBlockchain: 'NEAR';
+    signMessage: Uint8SignMessageFunction;
+  }>
   | Readonly<{
-      walletBlockchain: 'SUI';
-      signMessage: Uint8SignMessageFunction;
-    }>;
+    walletBlockchain: 'SUI';
+    signMessage: Uint8SignMessageFunction;
+  }>;
 
 export type WalletWithSignParams = Readonly<{
   displayName?: string;
@@ -73,48 +81,56 @@ export type WalletWithSignParams = Readonly<{
 
 export type WalletWithSignMessage =
   | Readonly<{
-      walletBlockchain: 'SOLANA';
-      walletPublicKey: string;
-      signMessage: Uint8SignMessageFunction;
-    }>
+    walletBlockchain: 'SOLANA';
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>
   | Readonly<{
-      walletBlockchain:
-        | 'ETHEREUM'
-        | 'POLYGON'
-        | 'ARBITRUM'
-        | 'AVALANCHE'
-        | 'BINANCE'
-        | 'OPTIMISM'
-        | 'ZKSYNC'
-        | 'BASE';
+    walletBlockchain:
+    | 'ETHEREUM'
+    | 'POLYGON'
+    | 'ARBITRUM'
+    | 'AVALANCHE'
+    | 'BINANCE'
+    | 'OPTIMISM'
+    | 'ZKSYNC'
+    | 'BASE'
+    | 'INJECTIVE'
+    | 'BLAST'
+    | 'CELO'
+    | 'MANTLE'
+    | 'LINEA'
+    | 'SCROLL'
+    | 'MANTA'
+    | 'MONAD';
 
-      walletPublicKey: string;
-      signMessage: Uint8SignMessageFunction;
-    }>
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>
   | Readonly<{
-      walletBlockchain: 'APTOS';
-      accountAddress: string;
-      walletPublicKey: string;
-      signMessage: AptosSignMessageFunction;
-    }>
+    walletBlockchain: 'APTOS';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: AptosSignMessageFunction;
+  }>
   | Readonly<{
-      walletBlockchain: 'ACALA';
-      accountAddress: string;
-      walletPublicKey: string;
-      signMessage: AcalaSignMessageFunction;
-    }>
+    walletBlockchain: 'ACALA';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: AcalaSignMessageFunction;
+  }>
   | Readonly<{
-      walletBlockchain: 'NEAR';
-      accountAddress: string;
-      walletPublicKey: string;
-      signMessage: Uint8SignMessageFunction;
-    }>
+    walletBlockchain: 'NEAR';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>
   | Readonly<{
-      walletBlockchain: 'SUI';
-      accountAddress: string;
-      walletPublicKey: string;
-      signMessage: Uint8SignMessageFunction;
-    }>;
+    walletBlockchain: 'SUI';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>;
 
 export type ConnectWalletParams = Readonly<{
   walletParams: WalletWithSignParams;
@@ -159,17 +175,17 @@ export type SupportedCardConfigType = CardConfigItemV1;
 
 export type UserState = Readonly<
   | {
-      status: 'loggedOut';
-    }
+    status: 'loggedOut';
+  }
   | {
-      status: 'authenticated';
-      authorization: Authorization;
-      roles: Roles;
-    }
+    status: 'authenticated';
+    authorization: Authorization;
+    roles: Roles;
+  }
   | {
-      status: 'expired';
-      authorization: Authorization;
-    }
+    status: 'expired';
+    authorization: Authorization;
+  }
 >;
 
 export class NotifiFrontendClient {
@@ -177,7 +193,7 @@ export class NotifiFrontendClient {
     private _configuration: NotifiFrontendConfiguration,
     private _service: NotifiService,
     private _storage: NotifiStorage,
-  ) {}
+  ) { }
 
   private _clientRandomUuid: string | null = null;
   private _userState: UserState | null = null;
@@ -264,6 +280,14 @@ export class NotifiFrontendClient {
 
     let loginResult: Types.UserFragmentFragment | undefined = undefined;
     switch (walletBlockchain) {
+      case 'INJECTIVE':
+      case 'BLAST':
+      case 'CELO':
+      case 'MANTLE':
+      case 'LINEA':
+      case 'SCROLL':
+      case 'MANTA':
+      case 'MONAD':
       case 'BASE':
       case 'ETHEREUM':
       case 'POLYGON':
@@ -286,7 +310,6 @@ export class NotifiFrontendClient {
       case 'SUI':
       case 'ACALA':
       case 'NEAR':
-      case 'INJECTIVE':
       case 'OSMOSIS':
       case 'NIBIRU':
       case 'APTOS': {
@@ -332,6 +355,15 @@ export class NotifiFrontendClient {
       case 'ARBITRUM':
       case 'AVALANCHE':
       case 'BINANCE':
+      case 'BASE':
+      case 'INJECTIVE':
+      case 'BLAST':
+      case 'CELO':
+      case 'MANTLE':
+      case 'LINEA':
+      case 'SCROLL':
+      case 'MANTA':
+      case 'MONAD':
       case 'OPTIMISM': {
         const { walletPublicKey, tenantId } = this
           ._configuration as NotifiConfigWithPublicKey;
@@ -347,17 +379,6 @@ export class NotifiFrontendClient {
       }
       case 'OSMOSIS':
       case 'ZKSYNC':
-      case 'INJECTIVE': {
-        const { authenticationKey, tenantId } = this
-          ._configuration as NotifiConfigWithPublicKeyAndAddress;
-        const messageBuffer = new TextEncoder().encode(
-          `${SIGNING_MESSAGE}${authenticationKey}${tenantId}${timestamp.toString()}`,
-        );
-
-        const signedBuffer = await signMessageParams.signMessage(messageBuffer);
-        const signature = Buffer.from(signedBuffer).toString('base64');
-        return signature;
-      }
       case 'SOLANA': {
         const { walletPublicKey, tenantId } = this
           ._configuration as NotifiConfigWithPublicKey;
@@ -401,9 +422,8 @@ export class NotifiFrontendClient {
         const { authenticationKey, accountAddress, tenantId } = this
           ._configuration as NotifiConfigWithPublicKeyAndAddress;
 
-        const message = `${
-          `ed25519:` + authenticationKey
-        }${tenantId}${accountAddress}${timestamp.toString()}`;
+        const message = `${`ed25519:` + authenticationKey
+          }${tenantId}${accountAddress}${timestamp.toString()}`;
         const textAsBuffer = new TextEncoder().encode(message);
         const hashBuffer = await window.crypto.subtle.digest(
           'SHA-256',
@@ -884,9 +904,9 @@ export class NotifiFrontendClient {
       walletPublicKey,
       accountId:
         walletBlockchain === 'APTOS' ||
-        walletBlockchain === 'ACALA' ||
-        walletBlockchain === 'NEAR' ||
-        walletBlockchain === 'SUI'
+          walletBlockchain === 'ACALA' ||
+          walletBlockchain === 'NEAR' ||
+          walletBlockchain === 'SUI'
           ? params.walletParams.accountAddress
           : undefined,
       signature,

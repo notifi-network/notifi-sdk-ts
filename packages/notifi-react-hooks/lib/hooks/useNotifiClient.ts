@@ -126,7 +126,6 @@ const signMessage = async ({
   timestamp: number;
 }>): Promise<string> => {
   switch (params.walletBlockchain) {
-    case 'INJECTIVE':
     case 'OSMOSIS':
     case 'NIBIRU':
     case 'SOLANA': {
@@ -150,7 +149,15 @@ const signMessage = async ({
     case 'AVALANCHE':
     case 'ZKSYNC':
     case 'BASE':
-    case 'ETHEREUM': {
+    case 'BLAST':
+    case 'CELO':
+    case 'MANTLE':
+    case 'LINEA':
+    case 'SCROLL':
+    case 'MANTA':
+    case 'MONAD':
+    case 'ETHEREUM':
+    case 'INJECTIVE': {
       if (signer.walletBlockchain !== params.walletBlockchain) {
         throw new Error('Signer and config have different walletBlockchain');
       }
@@ -194,9 +201,8 @@ const signMessage = async ({
 
       const { walletPublicKey, accountAddress } = params;
 
-      const message = `${
-        `ed25519:` + walletPublicKey
-      }${dappAddress}${accountAddress}${timestamp.toString()}`;
+      const message = `${`ed25519:` + walletPublicKey
+        }${dappAddress}${accountAddress}${timestamp.toString()}`;
       const textAsBuffer = new TextEncoder().encode(message);
       const hashBuffer = await window.crypto.subtle.digest(
         'SHA-256',
@@ -468,12 +474,12 @@ const useNotifiClient = (
         const result = await service.logInFromDapp({
           accountId:
             walletBlockchain === 'APTOS' ||
-            walletBlockchain === 'ACALA' ||
-            walletBlockchain === 'NEAR' ||
-            walletBlockchain === 'SUI' ||
-            walletBlockchain === 'INJECTIVE' ||
-            walletBlockchain === 'OSMOSIS' ||
-            walletBlockchain === 'NIBIRU'
+              walletBlockchain === 'ACALA' ||
+              walletBlockchain === 'NEAR' ||
+              walletBlockchain === 'SUI' ||
+              walletBlockchain === 'INJECTIVE' ||
+              walletBlockchain === 'OSMOSIS' ||
+              walletBlockchain === 'NIBIRU'
               ? config.accountAddress
               : undefined,
           walletPublicKey,
@@ -879,9 +885,9 @@ const useNotifiClient = (
           walletPublicKey,
           accountId:
             walletBlockchain === 'APTOS' ||
-            walletBlockchain === 'ACALA' ||
-            walletBlockchain === 'NEAR' ||
-            walletBlockchain === 'SUI'
+              walletBlockchain === 'ACALA' ||
+              walletBlockchain === 'NEAR' ||
+              walletBlockchain === 'SUI'
               ? walletParams.accountAddress
               : undefined,
           signature,

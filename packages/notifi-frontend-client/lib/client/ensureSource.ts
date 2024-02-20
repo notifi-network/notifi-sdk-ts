@@ -210,6 +210,22 @@ const ensureWalletBalanceSources = async (
           return 'ETHEREUM_WALLET';
         case 'BASE':
           return 'ETHEREUM_WALLET';
+        case 'BLAST':
+          return 'BLAST_WALLET';
+        case 'CELO':
+          return 'CELO_WALLET';
+        case 'INJECTIVE':
+          return 'INJECTIVE_WALLET';
+        case 'MANTLE':
+          return 'MANTLE_WALLET';
+        case 'LINEA':
+          return 'LINEA_WALLET';
+        case 'MONAD':
+          return 'MONAD_WALLET';
+        case 'MANTA':
+          return 'MANTA_WALLET';
+        case 'SCROLL':
+          return 'SCROLL_WALLET';
         case 'POLYGON':
           return 'POLYGON_WALLET';
         case 'SOLANA':
