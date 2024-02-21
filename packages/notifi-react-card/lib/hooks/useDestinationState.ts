@@ -1,7 +1,6 @@
-import { FormField } from 'notifi-react-card/dist';
 import { useMemo } from 'react';
 
-import { useNotifiSubscriptionContext } from '../context';
+import { FormField, useNotifiSubscriptionContext } from '../context';
 import { objectKeys } from '../utils';
 
 export const useDestinationState = () => {
