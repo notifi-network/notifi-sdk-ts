@@ -43,15 +43,15 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
       <div
         onClick={() => setCardView('history')}
         className={`flex px-4 ${
-          cardView === 'history' || cardView === 'historyDetail'
+          cardView === 'history'
             ? 'bg-white '
             : 'text-notifi-tab-unselected-text'
-        }  w-64 py-4 rounded-lg mb-2`}
+        }  w-64 py-4 rounded-lg mb-2 cursor-pointer`}
       >
         <Icon
           id={'bell'}
           className={`${
-            cardView === 'history' || cardView === 'historyDetail'
+            cardView === 'history'
               ? 'text-notifi-icon-selected'
               : 'text-notifi-icon-unselected'
           }`}
@@ -60,7 +60,7 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
       </div>
       <div
         onClick={() => setCardView('destination')}
-        className={`flex px-4  w-64 py-4 rounded-lg mb-2 ${
+        className={`flex px-4  w-64 py-4 rounded-lg mb-2 cursor-pointer ${
           cardView === 'destination'
             ? 'bg-white'
             : 'text-notifi-tab-unselected-text'
@@ -78,7 +78,7 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
       </div>
       <div
         onClick={() => setCardView('alertSubscription')}
-        className={`flex px-4 w-64 py-4 rounded-lg mb-2 ${
+        className={`flex px-4 w-64 py-4 rounded-lg mb-2 cursor-pointer ${
           cardView === 'alertSubscription'
             ? 'bg-white '
             : 'text-notifi-tab-unselected-text'
