@@ -1,5 +1,10 @@
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
-import { useNotifiClientContext } from '@notifi-network/notifi-react-card';
+import { useNotifiCardContext } from '@/context/notifi/NotifiCardContext';
+import {
+  FtuStage,
+  useNotifiClientContext,
+  useNotifiSubscriptionContext,
+} from '@notifi-network/notifi-react-card';
 import { useEffect, useMemo } from 'react';
 
 import { useRouterAsync } from './useRouterAsync';
@@ -12,15 +17,33 @@ export const useNotifiRouter = () => {
   const { handleRoute, isLoadingRouter } = useRouterAsync();
   const { setIsGlobalLoading } = useGlobalStateContext();
 
+  const { ftuStage, syncFtuStage } = useNotifiSubscriptionContext();
+
+  const { cardConfig } = useNotifiCardContext();
+  useEffect(() => {
+    if (frontendClientStatus.isAuthenticated) {
+      syncFtuStage(cardConfig.isContactInfoRequired);
+    }
+  }, [
+    frontendClientStatus.isAuthenticated,
+    cardConfig.isContactInfoRequired,
+    syncFtuStage,
+    setIsGlobalLoading,
+  ]);
+
   useEffect(() => {
     if (frontendClientStatus.isExpired) {
       handleRoute('/notifi/expiry');
       return;
     }
-    // TODO: FTU page route
     if (frontendClientStatus.isAuthenticated) {
-      handleRoute('/notifi/dashboard');
-      return;
+      if (ftuStage === FtuStage.Done) {
+        handleRoute('/notifi/dashboard');
+        return;
+      } else {
+        handleRoute('/notifi/ftu');
+        return;
+      }
     }
     handleRoute('/notifi/signup');
     return;
