@@ -1,5 +1,5 @@
+import { Icon } from '@/assets/Icon';
 import { useNotifiSubscriptionContext } from '@notifi-network/notifi-react-card';
-import Image from 'next/image';
 import React from 'react';
 
 import { Toggle } from './Toggle';
@@ -20,11 +20,11 @@ export const TelegramInput: React.FC<TelegramInputProps> = ({
     <>
       <div className="bg-notifi-card-bg rounded-md w-112 h-18 flex flex-row items-center justify-between mb-2">
         <div className="bg-white rounded-md w-18 h-18 shadow-card text-notifi-destination-card-text flex flex-col items-center justify-center">
-          <Image
-            src="/logos/telegram-icon.svg"
-            alt="telegran-icon"
-            width={16}
-            height={16}
+          <Icon
+            id="telegram-icon"
+            width="16px"
+            height="14px"
+            className="text-notifi-toggle-on-bg"
           />
           <text className="font-bold text-xs mt-2">Telegram</text>
         </div>

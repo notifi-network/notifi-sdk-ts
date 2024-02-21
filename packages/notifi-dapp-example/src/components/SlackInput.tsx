@@ -1,8 +1,8 @@
+import { Icon } from '@/assets/Icon';
 import {
   DeepPartialReadonly,
   useNotifiForm,
 } from '@notifi-network/notifi-react-card';
-import Image from 'next/image';
 import React from 'react';
 
 // import { EmailIcon } from '../assets/EmailIcon';
@@ -43,11 +43,11 @@ export const SlackInput: React.FC<SlackInputProps> = ({
     <>
       <div className="bg-notifi-card-bg rounded-md w-112 h-18 flex flex-row items-center justify-between mb-2">
         <div className="bg-white rounded-md w-18 h-18 shadow-card text-notifi-destination-card-text flex flex-col items-center justify-center">
-          <Image
-            src="/logos/slack-icon.svg"
-            alt="slack-icon"
-            width={16}
-            height={16}
+          <Icon
+            id="slack-icon"
+            width="16px"
+            height="16px"
+            className="text-notifi-toggle-on-bg"
           />
           <text className="font-bold text-xs mt-2">Slack</text>
         </div>

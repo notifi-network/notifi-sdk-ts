@@ -77,9 +77,7 @@ export const UserDestinationsInfoPanel: React.FC<
             <text className="font-bold text-xs mt-2">Email</text>
           </div>
           <div className="flex flex-col items-start justify-between w-90 mr-4">
-            <text className="font-semibold text-sm ml-6">
-              testEmail@gmail.com
-            </text>
+            <text className="font-semibold text-sm ml-6">{email}</text>
             {emailErrorMessage?.type === 'recoverableError' ? (
               <DestinationErrorMessage
                 onClick={() => handleResendEmailVerificationClick()}
@@ -106,6 +104,7 @@ export const UserDestinationsInfoPanel: React.FC<
           <text className="font-semibold text-sm ml-6">
             testSlack@gmail.com
           </text>
+          {/* todo: update when implement slack flow */}
           {emailErrorMessage?.type === 'recoverableError' ? (
             <DestinationErrorMessage
               onClick={() => handleResendEmailVerificationClick()}
@@ -155,7 +154,9 @@ export const UserDestinationsInfoPanel: React.FC<
           ) : (
             <div className="flex flex-col items-start justify-between w-90 mr-4">
               <text className="font-semibold text-sm ml-6">
-                Discord Bot DM Alerts
+                {discordTargetData?.isConfirmed === true
+                  ? discordUserName
+                  : 'Discord'}
               </text>
               {VerifiedText}
             </div>
@@ -195,9 +196,7 @@ export const UserDestinationsInfoPanel: React.FC<
             </div>
           ) : (
             <div className="flex flex-col items-start justify-between w-90 mr-4">
-              <text className="font-semibold text-sm ml-6">
-                Telegram Alerts
-              </text>
+              <text className="font-semibold text-sm ml-6">{telegramId}</text>
               {VerifiedText}
             </div>
           )}

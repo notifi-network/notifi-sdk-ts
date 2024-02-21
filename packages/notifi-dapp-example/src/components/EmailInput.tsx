@@ -1,8 +1,8 @@
+import { Icon } from '@/assets/Icon';
 import {
   DeepPartialReadonly,
   useNotifiForm,
 } from '@notifi-network/notifi-react-card';
-import Image from 'next/image';
 import React from 'react';
 
 // import { EmailIcon } from '../assets/EmailIcon';
@@ -51,11 +51,17 @@ export const EmailInput: React.FC<EmailInputProps> = ({
     <>
       <div className="bg-notifi-card-bg rounded-md w-112 h-18 flex flex-row items-center justify-between mb-2">
         <div className="bg-white rounded-md w-18 h-18 shadow-card text-notifi-destination-card-text flex flex-col items-center justify-center">
-          <Image
+          {/* <Image
             src="/logos/email-icon.svg"
             alt="email-icon"
             width={15}
             height={12}
+          /> */}
+          <Icon
+            id="email-icon"
+            width="15px"
+            height="12px"
+            className="text-notifi-toggle-on-bg"
           />
           <text className="font-bold text-xs mt-2">Email</text>
         </div>

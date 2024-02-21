@@ -12,7 +12,11 @@ export type SpriteIconId =
   | 'config'
   | 'user-protrait'
   | 'loading'
-  | 'left-arrow';
+  | 'left-arrow'
+  | 'email-icon'
+  | 'slack-icon'
+  | 'telegram-icon'
+  | 'discord-icon';
 
 /**
  * It takes an icon id and returns an svg element with the corresponding icon defined in /public/icons/sprite.svg.
