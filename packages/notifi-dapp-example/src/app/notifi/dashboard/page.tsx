@@ -9,6 +9,7 @@ import { useGlobalStateContext } from '@/context/GlobalStateContext';
 import { WalletAccount } from '@cosmos-kit/core';
 import { useWalletClient } from '@cosmos-kit/react';
 import { Types } from '@notifi-network/notifi-graphql';
+import { useDestinationState } from '@notifi-network/notifi-react-card';
 import { useEffect, useState } from 'react';
 
 export type CardView = 'history' | 'destination' | 'alertSubscription';
@@ -20,6 +21,7 @@ export default function NotifiDashboard() {
   const [historyDetailEntry, setHistoryDetailEntry] =
     useState<Types.FusionNotificationHistoryEntryFragmentFragment | null>(null);
   const { setIsGlobalLoading } = useGlobalStateContext();
+  const { unverifiedDestinations } = useDestinationState();
 
   // TODO: Move to hook if any other component needs account
   useEffect(() => {
@@ -48,7 +50,9 @@ export default function NotifiDashboard() {
         setCardView={setCardView}
       />
       <div className=" flex flex-col grow h-screen">
-        <VerifyBanner />
+        {unverifiedDestinations.length > 0 ? (
+          <VerifyBanner unVerifiedDestinations={unverifiedDestinations} />
+        ) : null}
         <div className="grow bg-white rounded-3xl mb-10 mt-3 mr-10">
           {cardView === 'history' ? (
             <>
