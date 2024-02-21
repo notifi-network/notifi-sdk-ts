@@ -1,7 +1,7 @@
 'use client';
 
 import { Icon } from '@/assets/Icon';
-import { LoadingGlobal } from '@/components/LoadingGlobal';
+import { LoadingSpinner } from '@/components/LoadingSpinner';
 import {
   Dispatch,
   FC,
@@ -50,9 +50,13 @@ export const GlobalStateContextProvider: FC<PropsWithChildren> = ({
         setGlobalError,
       }}
     >
-      {isGlobalLoading ? <LoadingGlobal /> : null}
+      {isGlobalLoading ? (
+        <div className="fixed h-screen w-screen bg-opacity-80 bg-white">
+          <LoadingSpinner />
+        </div>
+      ) : null}
       {globalError ? (
-        <div className="w-[29rem] h-16 border rounded-lg absolute top-10 ml-auto left-2/4 translate-x-[-50%] shadow-md flex items-center justify-center">
+        <div className="w-[29rem] bg-white h-16 border rounded-lg absolute top-10 ml-auto left-2/4 translate-x-[-50%] shadow-md flex items-center justify-center">
           <Icon id="warning" className="text-notifi-button-primary-bg mr-5" />
           <div>{globalError}</div>
         </div>
