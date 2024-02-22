@@ -1,6 +1,6 @@
 'use client';
 
-import { Icon } from '@/assets/Icon';
+import { Icon, SpriteIconId } from '@/assets/Icon';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import {
   Dispatch,
@@ -16,23 +16,51 @@ import {
 export type GlobalStateContextType = {
   isGlobalLoading: boolean;
   setIsGlobalLoading: Dispatch<SetStateAction<boolean>>;
+  /* deprecated: use globalInfoModal instead */
   globalError: null | string;
+  /* deprecated: use setGlobalInfoModal instead */
   setGlobalError: Dispatch<SetStateAction<string | null>>;
+  popGlobalInfoModal: (globalInfoModal: GlobalInfoModal) => void;
 };
 
 const GlobalStateContext = createContext<GlobalStateContextType>({
   isGlobalLoading: false,
   setIsGlobalLoading: () => undefined,
+  /* deprecated: use globalInfoModal instead */
   globalError: null,
+  /* deprecated: use setGlobalInfoModal instead */
   setGlobalError: () => undefined,
+  popGlobalInfoModal: () => undefined,
 });
+
+export type GlobalInfoModal = {
+  message: string;
+  iconOrEmoji: SpriteIcon | Emoji;
+  timeout: number /* in milliseconds */;
+};
+
+type SpriteIcon = { type: 'icon'; id: SpriteIconId };
+type Emoji = { type: 'emoji'; content: string };
 
 export const GlobalStateContextProvider: FC<PropsWithChildren> = ({
   children,
 }) => {
   const [isGlobalLoading, setIsGlobalLoading] = useState(false);
-  const [globalError, setGlobalError] = useState<string | null>(null);
 
+  const [globalError, setGlobalError] = useState<string | null>(null);
+  const [globalInfoModal, setGlobalInfoModal] =
+    useState<GlobalInfoModal | null>(null);
+
+  const popGlobalInfoModal = (modalData: Partial<GlobalInfoModal>) => {
+    setGlobalInfoModal(() => {
+      return {
+        message: modalData.message || 'WARNING: Something went wrong',
+        iconOrEmoji: modalData.iconOrEmoji || { type: 'icon', id: 'warning' },
+        timeout: modalData.timeout || 5000,
+      };
+    });
+  };
+  // TODO: Deprecated: migrate to globalInfoModal
   useEffect(() => {
     if (globalError) {
       setTimeout(() => {
@@ -41,24 +69,50 @@ export const GlobalStateContextProvider: FC<PropsWithChildren> = ({
     }
   }, [globalError]);
 
+  useEffect(() => {
+    if (globalInfoModal) {
+      setTimeout(() => {
+        setGlobalInfoModal(null);
+      }, globalInfoModal.timeout);
+    }
+  }, [globalInfoModal]);
+
   return (
     <GlobalStateContext.Provider
       value={{
         isGlobalLoading,
         setIsGlobalLoading,
+        /* deprecated: use globalInfoModal instead */
         globalError,
+        /* deprecated: use setGlobalInfoModal instead */
         setGlobalError,
+        popGlobalInfoModal,
       }}
     >
       {isGlobalLoading ? (
-        <div className="fixed h-screen w-screen bg-opacity-80 bg-white">
+        <div className="fixed h-screen w-screen bg-opacity-80 bg-white z-50">
           <LoadingSpinner />
         </div>
       ) : null}
+      {/* TODO: Deprecated: migrate to globalInfoModal */}
       {globalError ? (
         <div className="max-w-148 bg-white h-16 border rounded-lg absolute top-10 ml-auto left-2/4 translate-x-[-50%] shadow-md flex items-center justify-center z-10 px-12">
           <Icon id="warning" className="text-notifi-button-primary-bg mr-5" />
           <div>{globalError}</div>
+        </div>
+      ) : null}
+
+      {globalInfoModal ? (
+        <div className="max-w-148 bg-white h-16 border rounded-lg absolute top-10 ml-auto left-2/4 translate-x-[-50%] shadow-md flex items-center justify-center z-10 px-12">
+          {globalInfoModal.iconOrEmoji.type === 'icon' ? (
+            <Icon
+              id={globalInfoModal.iconOrEmoji.id}
+              className="text-notifi-button-primary-bg mr-5"
+            />
+          ) : (
+            <div className="mr-5">{globalInfoModal.iconOrEmoji.content}</div>
+          )}
+          <div>{globalInfoModal.message}</div>
         </div>
       ) : null}
       {children}

@@ -13,16 +13,18 @@ import { useEffect } from 'react';
 export default function NotifiExpiry() {
   const { frontendClientStatus } = useNotifiClientContext();
   const { isLoadingRouter, handleRoute } = useRouterAsync();
-  const { setGlobalError } = useGlobalStateContext();
+  const { popGlobalInfoModal } = useGlobalStateContext();
   const login = useFrontendClientLogin();
   useEffect(() => {
     if (!frontendClientStatus.isExpired) {
       handleRoute('/notifi');
     }
-    // TODO: rewrite global error which allows passing a timeout and emoji icon (design TBD)
-    setGlobalError(
-      'It’s been a while. Connect to Notifi to load your notification details.',
-    );
+    popGlobalInfoModal({
+      message:
+        'It’s been a while. Connect to Notifi to load your notification details.',
+      iconOrEmoji: { type: 'emoji', content: '👋' },
+      timeout: 20000,
+    });
   }, [frontendClientStatus]);
 
   return (
