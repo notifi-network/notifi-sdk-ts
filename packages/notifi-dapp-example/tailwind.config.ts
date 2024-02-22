@@ -58,6 +58,23 @@ const config: Config = {
       backgroundImage: {
         'gradient-notifi': `linear-gradient(107deg, rgb(var(--notifi-bgimg-left)) 1.37%, rgb(var(--notifi-bgimg-middle)) 47.55%, rgb(var(--notifi-bgimg-right)) 103.36%)`,
         'gradient-injective': `linear-gradient(180deg, #E4F7FC 0%, #F5F9FD 49.67%, #EFEFFD 100%)`,
+        /* TODO: Radial background MVP-4112, example below:
+          <div className="max-w-96 flex items-center p-3 rounded-lg border border-gray-300 gap-3">
+            <div className="w-8 h-8 flex justify-center items-center bg-white border border-gray-300 rounded-lg bg-radial-gradient-red">
+              <Icon id="bell-red" className="text-white" />
+            </div>
+            <div className="">
+              <div className="font-medium text-xs">Breaking Changes</div>
+              <div className="text-xs font-normal">
+                We’re excited to announce the launch that you’ve all been
+                waiting for and...
+              </div>
+          </div>
+        */
+        'radial-gradient-red':
+          'radial-gradient(rgba(249, 201, 221, 1), white);',
+        'radial-gradient-orange':
+          'radial-gradient(rgba(255, 175, 56, 1), white);',
       },
     },
   },

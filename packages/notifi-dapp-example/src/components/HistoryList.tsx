@@ -5,6 +5,7 @@ import { useNotifiCardContext } from '@/context/notifi/NotifiCardContext';
 import { validateEventDetails } from '@/utils/notificationHistory';
 import { Types } from '@notifi-network/notifi-graphql';
 import { useNotifiClientContext } from '@notifi-network/notifi-react-card';
+import Image from 'next/image';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 
 import { HistoryListRow } from './HistoryListRow';
@@ -113,6 +114,16 @@ export const HistoryList: React.FC<HistoryListProps> = ({
         </div>
       )}
       <div className="m-auto mt-4 mb-6 text-lg font-extrabold">Alert Inbox</div>
+      {nodes.length === 0 && !isLoading ? (
+        <div className="m-auto">
+          <Image
+            src={'/logos/empty-inbox.svg'}
+            width={404}
+            height={317}
+            alt="empty-inbox"
+          />
+        </div>
+      ) : null}
       {nodes.map((node) => (
         <HistoryListRow
           key={node.id}
