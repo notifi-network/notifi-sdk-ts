@@ -13,6 +13,7 @@ export type SpriteIconId =
   | 'user-protrait'
   | 'loading'
   | 'left-arrow'
+  | 'right-arrow'
   | 'email-icon'
   | 'slack-icon'
   | 'telegram-icon'

@@ -35,8 +35,7 @@ const config: Config = {
       },
       colors: {
         notifi: {
-          // TODO: Temp bg color. TBD
-          'page-bg': 'rgb(var(--notifi-page-bg))',
+          'primary-text': 'rgb(var(--notifi-primary-text))',
           'button-primary-bg': 'rgb(var(--notifi-button-primary-bg))',
           'button-primary-blueish-bg':
             'rgb(var(--notifi-button-primary-blueish-bg))',
@@ -58,6 +57,7 @@ const config: Config = {
       },
       backgroundImage: {
         'gradient-notifi': `linear-gradient(107deg, rgb(var(--notifi-bgimg-left)) 1.37%, rgb(var(--notifi-bgimg-middle)) 47.55%, rgb(var(--notifi-bgimg-right)) 103.36%)`,
+        'gradient-injective': `linear-gradient(180deg, #E4F7FC 0%, #F5F9FD 49.67%, #EFEFFD 100%)`,
       },
     },
   },
