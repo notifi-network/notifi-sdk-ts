@@ -1,8 +1,8 @@
+import { Icon } from '@/assets/Icon';
 import {
   CardConfigItemV1,
   useNotifiSubscriptionContext,
 } from '@notifi-network/notifi-react-card';
-import Image from 'next/image';
 import React, { useCallback, useMemo, useState } from 'react';
 
 import { DestinationErrorMessage } from './DestinationErrorMessage';
@@ -68,11 +68,11 @@ export const UserDestinationsInfoPanel: React.FC<
       {contactInfo.email.active && email ? (
         <div className="bg-notifi-card-bg rounded-md w-112 h-18 flex flex-row items-center justify-between mb-2">
           <div className="bg-white rounded-md w-18 h-18 shadow-card text-notifi-destination-card-text flex flex-col items-center justify-center">
-            <Image
-              src="/logos/email-icon.svg"
-              alt="email-icon"
-              width={15}
-              height={12}
+            <Icon
+              id="email-icon"
+              width="15px"
+              height="12px"
+              className="text-notifi-toggle-on-bg"
             />
             <div className="font-bold text-xs mt-2">Email</div>
           </div>
@@ -92,11 +92,11 @@ export const UserDestinationsInfoPanel: React.FC<
       ) : null}
       <div className="bg-notifi-card-bg rounded-md w-112 h-18 flex flex-row items-center justify-between mb-2">
         <div className="bg-white rounded-md w-18 h-18 shadow-card text-notifi-destination-card-text flex flex-col items-center justify-center">
-          <Image
-            src="/logos/slack-icon.svg"
-            alt="slack-icon"
-            width={16}
-            height={16}
+          <Icon
+            id="slack-icon"
+            width="16px"
+            height="16px"
+            className="text-notifi-toggle-on-bg"
           />
           <div className="font-bold text-xs mt-2">Slack</div>
         </div>
@@ -121,11 +121,11 @@ export const UserDestinationsInfoPanel: React.FC<
       {contactInfo?.discord?.active && useDiscord ? (
         <div className="bg-notifi-card-bg rounded-md w-112 h-18 flex flex-row items-center justify-between mb-2">
           <div className="bg-white rounded-md w-18 h-18 shadow-card text-notifi-destination-card-text flex flex-col items-center justify-center">
-            <Image
-              src="/logos/discord-icon.svg"
-              alt="discord-icon"
-              width={17}
-              height={13}
+            <Icon
+              id="discord-icon"
+              width="17px"
+              height="13px"
+              className="text-notifi-toggle-on-bg"
             />
             <div className="font-bold text-xs mt-2">Discord</div>
           </div>
@@ -164,11 +164,11 @@ export const UserDestinationsInfoPanel: React.FC<
       {contactInfo.telegram.active && telegramId ? (
         <div className="bg-notifi-card-bg rounded-md w-112 h-18 flex flex-row items-center justify-between mb-2">
           <div className="bg-white rounded-md w-18 h-18 shadow-card text-notifi-destination-card-text flex flex-col items-center justify-center">
-            <Image
-              src="/logos/telegram-icon.svg"
-              alt="telegran-icon"
-              width={16}
-              height={16}
+            <Icon
+              id="telegram-icon"
+              width="16px"
+              height="14px"
+              className="text-notifi-toggle-on-bg"
             />
             <div className="font-bold text-xs mt-2">Telegram</div>
           </div>
