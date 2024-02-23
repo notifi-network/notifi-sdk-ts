@@ -15,6 +15,7 @@ import { useGlobalStateContext } from '../GlobalStateContext';
 
 export type NotifiCardContextType = {
   cardConfig: CardConfigItemV1;
+  inputs: Record<string, unknown>;
 };
 
 const NotifiCardContext = createContext<NotifiCardContextType>(
@@ -24,12 +25,16 @@ const NotifiCardContext = createContext<NotifiCardContextType>(
 const notifiSubscriptionCardId =
   process.env.NEXT_PUBLIC_NOTIFI_SUBSCRIPTION_CARD_ID!;
 
-export const NotifiCardContextProvider: FC<PropsWithChildren> = ({
-  children,
-}) => {
+type NotifiCardProps = {
+  inputs?: Record<string, unknown>;
+};
+
+export const NotifiCardContextProvider: FC<
+  PropsWithChildren<NotifiCardProps>
+> = ({ inputs = {}, children }) => {
   const { frontendClient } = useNotifiClientContext();
   const [cardConfig, setCardConfig] = useState<CardConfigItemV1 | null>(null);
-  const { setIsGlobalLoading } = useGlobalStateContext();
+  const { setIsGlobalLoading, setGlobalError } = useGlobalStateContext();
 
   useEffect(() => {
     setIsGlobalLoading(true);
@@ -44,9 +49,38 @@ export const NotifiCardContextProvider: FC<PropsWithChildren> = ({
         }
       })
       .catch((e) => {
-        console.log('TODO: global error state');
+        setGlobalError(
+          'ERROR: Failed to fetch Card Config, see console for more details.',
+        );
+        console.log(e);
       })
       .finally(() => setIsGlobalLoading(false));
+
+    // TODO: Also fetch fusion events (When `User` role is allowed to fetch fusion events)
+    // const [fusionEvents, setFusionEvents] =
+    //   useState<Types.GetFusionEventsQuery['fusionEvents']>();
+    // const cardConfigPromise = frontendClient.fetchSubscriptionCard({
+    //   id: notifiSubscriptionCardId,
+    //   type: 'SUBSCRIPTION_CARD',
+    // });
+
+    // const fusionEventsPromise = frontendClient.getFusionEvents({});
+
+    // Promise.all([cardConfigPromise, fusionEventsPromise])
+    //   .then(([cardConfig, fusionEvents]) => {
+    //     console.log({ cardConfig, fusionEvents });
+    //     if ('version' in cardConfig && cardConfig.version !== 'IntercomV1') {
+    //       setCardConfig(cardConfig);
+    //     }
+    //     setFusionEvents(fusionEvents);
+    //   })
+    //   .catch((e) => {
+    //     setGlobalError(
+    //       'ERROR: Failed to fetch Card Config or Fusion Events, see console for more details.',
+    //     );
+    //     console.log(e);
+    //   })
+    //   .finally(() => setIsGlobalLoading(false));
   }, [frontendClient]);
 
   if (!cardConfig) {
@@ -54,7 +88,7 @@ export const NotifiCardContextProvider: FC<PropsWithChildren> = ({
   }
 
   return (
-    <NotifiCardContext.Provider value={{ cardConfig }}>
+    <NotifiCardContext.Provider value={{ cardConfig, inputs }}>
       {children}
     </NotifiCardContext.Provider>
   );

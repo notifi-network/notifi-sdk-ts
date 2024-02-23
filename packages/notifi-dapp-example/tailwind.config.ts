@@ -23,6 +23,9 @@ const config: Config = {
         18: '70px',
         90: '360px',
       },
+      maxWidth: {
+        148: '37rem' /* 592px */,
+      },
       height: {
         18: '70px',
       },
@@ -49,6 +52,8 @@ const config: Config = {
           'icon-selected': 'rgb(var(--notifi-icon-selected))',
           'icon-unselected': 'rgb(var(--notifi-icon-unselected))',
           'tab-unselected-text': 'rgb(var(--notifi-tab-unselected-text))',
+          'alert-subscription-block-bg':
+            'rgb(var(--notifi-alert-subscription-block-bg))',
         },
       },
       backgroundImage: {
