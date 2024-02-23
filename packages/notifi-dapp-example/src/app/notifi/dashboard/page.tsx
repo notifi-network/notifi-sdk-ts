@@ -4,16 +4,15 @@ import { AlertSubscription } from '@/components/AlertSubscription';
 import { DashboardSideBar } from '@/components/DashboardSideBar';
 import { HistoryDetail } from '@/components/HistoryDetail';
 import { HistoryList } from '@/components/HistoryList';
+import { VerifyBanner } from '@/components/VerifyBanner';
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
 import { WalletAccount } from '@cosmos-kit/core';
 import { useWalletClient } from '@cosmos-kit/react';
 import { Types } from '@notifi-network/notifi-graphql';
+import { useDestinationState } from '@notifi-network/notifi-react-card';
 import { useEffect, useState } from 'react';
 
-export type CardView =
-  | 'history'
-  | 'destination'
-  | 'alertSubscription';
+export type CardView = 'history' | 'destination' | 'alertSubscription';
 
 export default function NotifiDashboard() {
   const { client } = useWalletClient();
@@ -22,6 +21,7 @@ export default function NotifiDashboard() {
   const [historyDetailEntry, setHistoryDetailEntry] =
     useState<Types.FusionNotificationHistoryEntryFragmentFragment | null>(null);
   const { setIsGlobalLoading } = useGlobalStateContext();
+  const { unverifiedDestinations } = useDestinationState();
 
   // TODO: Move to hook if any other component needs account
   useEffect(() => {
@@ -50,10 +50,13 @@ export default function NotifiDashboard() {
         setCardView={setCardView}
       />
       <div className=" flex flex-col grow h-screen">
-        <div className="flex-none h-32 w-full bg-green-200 ">
-          Dummy Verify button Area
-        </div>
-        <div className="grow bg-white rounded-3xl mb-10 mt-3 mr-10 min-h-0 overflow-scroll">
+        {unverifiedDestinations.length > 0 && cardView === 'history' ? (
+          <VerifyBanner
+            unVerifiedDestinations={unverifiedDestinations}
+            setCardView={setCardView}
+          />
+        ) : null}
+        <div className="grow bg-white rounded-3xl mb-10 mt-3 mr-10">
           {cardView === 'history' ? (
             <>
               <HistoryList
