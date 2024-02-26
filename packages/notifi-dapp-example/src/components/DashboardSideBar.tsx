@@ -3,8 +3,6 @@
 import { CardView } from '@/app/notifi/dashboard/page';
 import { Icon } from '@/assets/Icon';
 import { WalletAccount } from '@cosmos-kit/core';
-// import { useChain } from '@cosmos-kit/react';
-// import localforage from 'localforage';
 import Image from 'next/image';
 import { Dispatch, FC, SetStateAction } from 'react';
 

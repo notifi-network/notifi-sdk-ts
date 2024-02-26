@@ -1,4 +1,4 @@
-import { Icon, SpriteIconId } from '@/assets/Icon';
+import { Icon } from '@/assets/Icon';
 import { useNotifiHistory } from '@/hooks/useNotifiHistory';
 import {
   ParsedNotificationHistory,
@@ -12,6 +12,7 @@ type HistoryListRowProps = {
   setHistoryDetailEntry: Dispatch<
     SetStateAction<Types.FusionNotificationHistoryEntryFragmentFragment | null>
   >;
+  setUnreadCount: Dispatch<SetStateAction<number | null>>;
 };
 
 // TODO: Rename and move to utils
@@ -65,8 +66,8 @@ const iconStyles: IconStyles = {
     iconBackground: 'bg-notifi-percent',
   },
   STAR: {
-    iconColor: 'text-orange-500',
-    iconBackground: 'bg-gradient-to-tl from-orange-300/50 to-orange-100/50',
+    iconColor: 'text-white',
+    iconBackground: 'bg-radial-gradient-orange',
   },
   SWAP: {
     iconColor: 'text-notifi-label-swap',
@@ -89,6 +90,7 @@ const iconStyles: IconStyles = {
 export const HistoryListRow: React.FC<HistoryListRowProps> = ({
   historyDetailEntry,
   setHistoryDetailEntry,
+  setUnreadCount,
 }) => {
   const [parsedNotificationHistory, setParsedNotificationHistory] =
     useState<ParsedNotificationHistory | null>(
@@ -99,14 +101,16 @@ export const HistoryListRow: React.FC<HistoryListRowProps> = ({
 
   const clickHistoryRow = () => {
     if (!historyDetailEntry?.id) return;
+    setHistoryDetailEntry(historyDetailEntry);
+    if (parsedNotificationHistory?.read) return;
     markNotifiHistoryAsRead([historyDetailEntry.id]);
+    setUnreadCount((prev) => (prev ? prev - 1 : prev));
     setParsedNotificationHistory((existing) => {
       if (existing) {
         return { ...existing, read: true };
       }
       return null;
     });
-    setHistoryDetailEntry(historyDetailEntry);
   };
 
   if (
@@ -120,13 +124,17 @@ export const HistoryListRow: React.FC<HistoryListRowProps> = ({
 
   return (
     <div
-      className={`${
-        !parsedNotificationHistory.read
-          ? 'border-l-4 border-notifi-label-connect-wallet-text'
-          : 'bg-slate-300  bg-opacity-20'
-      } flex w-4/5 m-auto px-4 py-3 bg-white shadow-xl rounded-r-lg mb-2 cursor-pointer box-content`}
+      className={`
+      p-6 line-clamp-1 flex relative border-b border-gray-200 cursor-pointer`}
       onClick={clickHistoryRow}
     >
+      <div
+        className={`${
+          !parsedNotificationHistory.read ? '' : 'hidden'
+        } size-3 bg-blue-200 rounded-3xl flex justify-center items-center absolute top-3 left-3`}
+      >
+        <div className="bg-blue-600 size-1 rounded-3xl"></div>
+      </div>
       <div
         className={`h-6 w-6 rounded-md ${iconStyles[icon].iconBackground} mr-3 my-auto`}
       >

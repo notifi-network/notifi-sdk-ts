@@ -30,6 +30,7 @@ type NotifiCardProps = {
 };
 
 export const NotifiCardContextProvider: FC<
+  // TODO: Rename context to NotifiTenantConfigProvider
   PropsWithChildren<NotifiCardProps>
 > = ({ inputs = {}, children }) => {
   const { frontendClient } = useNotifiClientContext();
