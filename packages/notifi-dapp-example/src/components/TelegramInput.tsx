@@ -1,15 +1,8 @@
 import { Icon } from '@/assets/Icon';
-import { useGlobalStateContext } from '@/context/GlobalStateContext';
 import { useNotifiCardContext } from '@/context/notifi/NotifiCardContext';
-import { TargetGroupData, useNotifiTargets } from '@/hooks/useNotifiTargets';
-import { formatTelegramForSubscription } from '@/utils/stringUtils';
-import {
-  useNotifiClientContext,
-  useNotifiForm,
-  useNotifiSubscriptionContext,
-} from '@notifi-network/notifi-react-card';
-import { isValidPhoneNumber } from 'libphonenumber-js';
-import React, { useCallback, useMemo } from 'react';
+import { useNotifiTargets } from '@/hooks/useNotifiTargets';
+import { useNotifiForm } from '@notifi-network/notifi-react-card';
+import React, { useMemo } from 'react';
 
 export type TelegramInputProps = Readonly<{
   disabled: boolean;
@@ -32,26 +25,10 @@ export const TelegramInput: React.FC<TelegramInputProps> = ({
 
   const { cardConfig } = useNotifiCardContext();
 
-  const { setIsGlobalLoading, setGlobalError } = useGlobalStateContext();
-
   const { telegram: telegramErrorMessage } = formErrorMessages;
-  const { frontendClient } = useNotifiClientContext();
-  const { renewTargetGroups } = useNotifiTargets();
+  const { updateTarget } = useNotifiTargets('telegram');
 
-  const { phoneNumber, telegram, email } = formState;
-  const { useDiscord, render } = useNotifiSubscriptionContext();
-
-  const targetGroup: TargetGroupData = useMemo(
-    () => ({
-      name: 'Default',
-      emailAddress: email === '' ? undefined : email,
-      phoneNumber: isValidPhoneNumber(phoneNumber) ? phoneNumber : undefined,
-      telegramId:
-        telegram === '' ? undefined : formatTelegramForSubscription(telegram),
-      discordId: useDiscord ? 'Default' : undefined,
-    }),
-    [email, phoneNumber, telegram, useDiscord],
-  );
+  const { telegram } = formState;
 
   const validateTelegram = () => {
     if (telegram === '') {
@@ -67,25 +44,6 @@ export const TelegramInput: React.FC<TelegramInputProps> = ({
       setTelegramErrorMessage('The telegram is invalid. Please try again.');
     }
   };
-
-  const updateTarget = useCallback(async () => {
-    setIsGlobalLoading(true);
-    try {
-      let success = false;
-      const result = await renewTargetGroups(targetGroup);
-      success = !!result;
-
-      if (success) {
-        const newData = await frontendClient.fetchData();
-        render(newData);
-        setHasTelegramChanges(false);
-      }
-    } catch (e: unknown) {
-      setGlobalError('ERROR: Failed to save, check console for more details');
-      console.error('Failed to singup', (e as Error).message);
-    }
-    setIsGlobalLoading(false);
-  }, [frontendClient, setGlobalError, targetGroup]);
 
   const hasErrors = telegramErrorMessage !== '';
   const isInputFieldsValid = useMemo(() => {

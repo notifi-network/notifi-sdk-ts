@@ -16,28 +16,35 @@ export const DestinationErrorMessage: React.FC<Props> = ({
   isButton = false,
   buttonCopy,
 }) => {
+  if (!onClick) {
+    return (
+      <>
+        <label>{errorMessage}</label>
+        {tooltipContent !== undefined && tooltipContent.length > 0 ? (
+          <NotifiTooltip content={tooltipContent} />
+        ) : null}
+      </>
+    );
+  }
+
   return (
     <div>
-      {onClick !== undefined ? (
-        isButton ? (
-          <button
-            onClick={() => onClick()}
-            className="rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-20 h-7 text-sm font-bold disabled:opacity-50 disabled:hover:bg-notifi-button-primary-blueish-bg hover:bg-notifi-button-hover-bg"
-          >
-            {buttonCopy}
-          </button>
-        ) : (
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => onClick()}
-            className="text-sm font-bold text-notifi-button-primary-blueish-bg ml-6 underline cursor-pointer"
-          >
-            <label className="cursor-pointer">{errorMessage}</label>
-          </a>
-        )
+      {isButton ? (
+        <button
+          onClick={() => onClick()}
+          className="rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-20 h-7 text-sm font-bold disabled:opacity-50 disabled:hover:bg-notifi-button-primary-blueish-bg hover:bg-notifi-button-hover-bg"
+        >
+          {buttonCopy}
+        </button>
       ) : (
-        <label>{errorMessage}</label>
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => onClick()}
+          className="text-sm font-bold text-notifi-button-primary-blueish-bg ml-6 underline cursor-pointer"
+        >
+          <label className="cursor-pointer">{errorMessage}</label>
+        </a>
       )}
       {tooltipContent !== undefined && tooltipContent.length > 0 ? (
         <NotifiTooltip content={tooltipContent} />
