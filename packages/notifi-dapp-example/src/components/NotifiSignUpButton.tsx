@@ -137,15 +137,6 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
 
   return (
     <>
-      {/* {isEdit ? (
-        <button
-          className="rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-16 h-7 mb-6 text-sm font-bold absolute top-2.5 right-6 disabled:opacity-50 disabled:hover:bg-notifi-button-primary-blueish-bg hover:bg-notifi-button-hover-bg"
-          disabled={isSaveButtonDisabled()}
-          onClick={onClick}
-        >
-          <span>{buttonText}</span>
-        </button>
-      ) : ( */}
       <button
         className="rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-72 h-11 mb-6 text-sm font-bold disabled:hover:bg-notifi-button-primary-blueish-bg hover:bg-notifi-button-hover-bg"
         disabled={!isInitialized || loading || hasErrors || !isInputFieldsValid}
@@ -153,7 +144,6 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
       >
         <span>{loading ? 'Loading' : buttonText}</span>
       </button>
-      {/* )} */}
     </>
   );
 };
