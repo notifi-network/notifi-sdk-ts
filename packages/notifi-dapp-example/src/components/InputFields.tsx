@@ -17,19 +17,17 @@ export const InputFields: React.FC<InputFieldsProps> = ({
   isEdit,
 }) => {
   return (
-    <>
-      <div className="flex flex-col justify-center items-center">
-        {contactInfo.email.active ? (
-          <EmailInput disabled={inputDisabled} isEdit={isEdit} />
-        ) : null}
-        {contactInfo.telegram.active ? (
-          <TelegramInput disabled={inputDisabled} isEdit={isEdit} />
-        ) : null}
-        <SlackInput disabled={inputDisabled} />
-        {contactInfo?.discord?.active ? (
-          <DiscordInput disabled={inputDisabled} />
-        ) : null}
-      </div>
-    </>
+    <div className="flex flex-col justify-center items-center">
+      {contactInfo.email.active ? (
+        <EmailInput disabled={inputDisabled} isEdit={isEdit} />
+      ) : null}
+      {contactInfo.telegram.active ? (
+        <TelegramInput disabled={inputDisabled} isEdit={isEdit} />
+      ) : null}
+      <SlackInput disabled={inputDisabled} />
+      {contactInfo?.discord?.active ? (
+        <DiscordInput disabled={inputDisabled} />
+      ) : null}
+    </div>
   );
 };
