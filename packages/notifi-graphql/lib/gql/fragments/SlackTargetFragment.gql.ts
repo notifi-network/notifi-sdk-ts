@@ -25,8 +25,17 @@ export const CreateSlackChannelTargetResponseFragment = gql`
 `;
 
 export const GetSlackChannelTargetsResponseFragment = gql`
-  fragment GetSlackChannelTargetsResponseFragment on GetSlackChannelTargetsResponse {
-    slackChannelTargets {
+  fragment GetSlackChannelTargetsResponseFragment on SlackChannelTargetsConnection {
+    edges {
+      cursor
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+    nodes {
       id
       name
       slackChannelName

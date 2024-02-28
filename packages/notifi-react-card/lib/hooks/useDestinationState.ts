@@ -6,10 +6,12 @@ import { objectKeys } from '../utils';
 export const useDestinationState = () => {
   const {
     useDiscord,
+    useSlack,
     email,
     phoneNumber,
     telegramId,
     discordTargetData,
+    slackTargetData,
     destinationErrorMessages,
   } = useNotifiSubscriptionContext();
 
@@ -18,9 +20,18 @@ export const useDestinationState = () => {
       !!email ||
       !!phoneNumber ||
       !!telegramId ||
-      (useDiscord && !!discordTargetData?.id)
+      (useDiscord && !!discordTargetData?.id) ||
+      (useSlack && !!slackTargetData?.id)
     );
-  }, [email, phoneNumber, telegramId, discordTargetData, useDiscord]);
+  }, [
+    email,
+    phoneNumber,
+    telegramId,
+    discordTargetData,
+    useDiscord,
+    useSlack,
+    slackTargetData,
+  ]);
 
   const unverifiedDestinations = useMemo(() => {
     const {
@@ -28,12 +39,17 @@ export const useDestinationState = () => {
       phoneNumber: phoneNumberError,
       telegram: telegramError,
       discord: discordError,
+      slack: slackError,
     } = destinationErrorMessages;
 
     const unConfirmedTargets = {
       email: emailError?.type === 'recoverableError',
       phoneNumber: phoneNumberError?.type == 'recoverableError',
       telegram: telegramError?.type === 'recoverableError',
+      slack:
+        useSlack &&
+        slackError?.type === 'recoverableError' &&
+        slackError.message === 'Enable Bot',
       discord:
         useDiscord &&
         discordError?.type === 'recoverableError' &&
