@@ -27,16 +27,16 @@ export const AlertSubscription: React.FC<AlertSubscriptionRowProps> = ({
           <AlertSubscriptionBlock labelWithSubTopics={uncategorizedTopics} />
         ) : null}
 
-        {categorizedTopics.map((labelWithSubTopics) => {
+        {categorizedTopics.map((labelWithSubTopics, id) => {
           return (
-            <>
+            <div key={id}>
               {labelWithSubTopics.subTopics.length > 0 ? (
                 <AlertSubscriptionBlock
                   key={labelWithSubTopics.name}
                   labelWithSubTopics={labelWithSubTopics}
                 />
               ) : null}
-            </>
+            </div>
           );
         })}
         {/* NOTE: below are invisible placeholder to make the layout consistent */}

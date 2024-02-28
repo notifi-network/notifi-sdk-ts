@@ -23,10 +23,10 @@
 
 /* Dark mode color variables controlled by NotifiContext */
 .notifi-dapp[dark-mode='true'] {
+  --notifi-primary-text: var(--notifi-brand);
   --notifi-bgimg-left: var(--notifi-white);
   --notifi-bgimg-middle: var(--notifi-blueish0);
   --notifi-bgimg-right: var(--notifi-blueish1);
-  --notifi-page-bg: var(--notifi-gray0);
   --notifi-button-primary-bg: var(--notifi-coral);
   --notifi-button-primary-blueish-bg: var(--notifi-brand);
   --notifi-button-primary-text: var(--notifi-white);
@@ -44,10 +44,10 @@
 
 /* Light mode color variables controlled by NotifiContext */
 .notifi-dapp[dark-mode='false'] {
+  --notifi-primary-text: var(--notifi-brand);
   --notifi-bgimg-left: var(--notifi-white);
   --notifi-bgimg-middle: var(--notifi-blueish0);
   --notifi-bgimg-right: var(--notifi-blueish1);
-  --notifi-page-bg: var(--notifi-gray0);
   --notifi-button-primary-bg: var(--notifi-coral);
   --notifi-button-primary-blueish-bg: var(--notifi-brand);
   --notifi-button-primary-text: var(--notifi-white);

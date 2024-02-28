@@ -1,5 +1,8 @@
 'use client';
 
+import { DummyAlertsModal } from '@/components/DummyAlertsModal';
+import { EcosystemHero } from '@/components/EcosystemHero';
+import { PoweredByNotifi } from '@/components/PoweredByNotifi';
 import { useRouterAsync } from '@/hooks/useRouterAsync';
 import { useChain, useWalletClient } from '@cosmos-kit/react';
 import '@interchain-ui/react/styles';
@@ -23,46 +26,29 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
-      <div className="flex flex-col items-center">
-        <div className="flex justify-between items-center">
+      <div className="fixed top-8 left-8 right-8 flex justify-between">
+        <div className="left-8 flex items-center">
           <Image
             src="/logos/injective.png"
-            width={250}
-            height={115}
+            width={115}
+            height={24}
             alt="Injective"
           />
-          <div className="mx-4 h-14 border-l border-grey-700"></div>
-          <div className="flex w-40 justify-between">
-            <Image
-              src="/logos/notifi.svg"
-              width={38}
-              height={38}
-              alt="Injective"
-            />
-            <Image
-              src="/logos/notifi-text.svg"
-              width={105}
-              height={38}
-              alt="Injective"
-            />
+          <div className="mx-4 h-4 border-l-2 border-grey-700"></div>
+          <div className="text-gray-400 text-xs tracking-wider">
+            INJECTIVE ECOSYSTEM ALERTS
           </div>
         </div>
-
-        <div className="text-4xl font-extrabold mb-7 text-notifi-label-connect-wallet-text">
-          Injective ecosystem alerts
+        <div className=" p-2 bg-white rounded-lg h-7">
+          <PoweredByNotifi />
         </div>
-        <button
-          className="rounded bg-notifi-button-primary-bg text-notifi-button-primary-text w-72 h-11 cursor-pointer"
-          onClick={() => connect?.()}
-        >
-          {/* TODO: Disable button when loading */}
-          {isWalletConnecting || isLoadingRouter ? (
-            <div className="m-auto h-5 w-5 animate-spin rounded-full  border-2 border-white border-b-transparent border-l-transparent"></div>
-          ) : (
-            <div>Connect Wallet To Start</div>
-          )}
-        </button>
       </div>
+      <EcosystemHero
+        isLoading={isWalletConnecting || isLoadingRouter}
+        cta={connect}
+        ctaButtonText="Connect Wallet To Start"
+      />
+      <DummyAlertsModal />
     </main>
   );
 }

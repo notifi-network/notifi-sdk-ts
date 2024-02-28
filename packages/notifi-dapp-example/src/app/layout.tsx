@@ -114,7 +114,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${rota.variable} font-rota notifi-dapp bg-notifi-page-bg`}
+        className={`${rota.variable} font-rota notifi-dapp bg-gradient-injective`}
         dark-mode="false"
         // NOTE: Not support dark/light mode yet. TODO: consider adding a theme wrapper
       >

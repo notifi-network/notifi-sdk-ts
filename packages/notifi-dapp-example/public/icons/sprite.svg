@@ -181,13 +181,17 @@
   </symbol>
   <symbol id="left-arrow" viewBox="0 0 24 24">
     <g clip-path="url(#clip0_1725_2096)">
-      <path d="M20 11H7.83L13.42 5.41L12 4L4 12L12 20L13.41 18.59L7.83 13H20V11Z" fill="#80829D"/>
+      <path d="M20 11H7.83L13.42 5.41L12 4L4 12L12 20L13.41 18.59L7.83 13H20V11Z" fill="currentColor"/>
     </g>
     <defs>
       <clipPath id="clip0_1725_2096">
         <rect width="24" height="24" fill="white"/>
       </clipPath>
     </defs>
+  </symbol>
+  <symbol id="right-arrow" viewBox="0 0 13 13" fill="none">
+    <path d="M1.14739 6.4246L9.83957 6.43066" stroke="currentColor" stroke-width="1.8" stroke-miterlimit="10"/>
+    <path d="M5.5 0.92627L11 6.42627L5.5 11.9263" stroke="currentColor" stroke-width="1.8" stroke-miterlimit="10"/>
   </symbol>
   <symbol
     id="email-icon"
