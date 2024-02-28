@@ -7,7 +7,7 @@ import {
   useNotifiSubscriptionContext,
 } from '@notifi-network/notifi-react-card';
 import { isValidPhoneNumber } from 'libphonenumber-js';
-import { use, useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
 export type TargetGroupData = {
   name: string;

@@ -1,3 +1,4 @@
+import { LoadingSpinner } from '@/components/LoadingSpinner';
 import {
   CardConfigItemV1,
   FtuStage,
@@ -14,6 +15,7 @@ export const ConfigDestinationModal: React.FC<ConfigDestinationModalProps> = ({
   contactInfo,
 }) => {
   const { updateFtuStage } = useNotifiSubscriptionContext();
+  const { loading } = useNotifiSubscriptionContext();
 
   return (
     <div className="h-4/6 w-4/6 bg-notifi-container-bg rounded-2xl flex flex-col items-center justify-between mb-8 shadow-container">
@@ -25,11 +27,16 @@ export const ConfigDestinationModal: React.FC<ConfigDestinationModalProps> = ({
           </p>
         </div>
         <div className="flex flex-col items-center justify-center">
-          {' '}
           <p className="text-sm opacity-50 font-semibold my-4">
             Select a minimum of one destination
           </p>
-          <DestinationPanel contactInfo={contactInfo} />
+          {loading ? (
+            <div className="fixed h-screen w-screen bg-opacity-80 bg-white">
+              <LoadingSpinner />
+            </div>
+          ) : (
+            <DestinationPanel contactInfo={contactInfo} />
+          )}
         </div>
       </div>
       <button

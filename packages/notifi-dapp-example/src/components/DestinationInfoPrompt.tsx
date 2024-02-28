@@ -14,11 +14,7 @@ export const DestinationInfoPrompt: React.FC<Props> = ({
   buttonCopy,
 }) => {
   if (!onClick) {
-    return (
-      <>
-        <label>{infoPromptMessage}</label>
-      </>
-    );
+    return <label>{infoPromptMessage}</label>;
   }
 
   return (
