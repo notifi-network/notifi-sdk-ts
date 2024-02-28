@@ -62,3 +62,33 @@ const formatTimestamp = (timestamp: string) => {
       : 'MM/dd',
   );
 };
+
+export type HistoryRowIconStyle = {
+  [key in Types.GenericEventIconHint]?: {
+    iconColor: string;
+    iconBackground: string;
+  };
+};
+
+export const iconStyles: HistoryRowIconStyle = {
+  CLOCK: {
+    // Radial orange
+    iconColor: 'text-white',
+    iconBackground: 'bg-radial-gradient-orange',
+  },
+  DAO: {
+    // People group blue
+    iconColor: 'text-white',
+    iconBackground: 'bg-radial-gradient-blue',
+  },
+  INFO: {
+    // Green lightbulb
+    iconColor: 'text-white',
+    iconBackground: 'bg-radial-gradient-green',
+  },
+  URGENT: {
+    // Red bell
+    iconColor: 'text-white',
+    iconBackground: 'bg-radial-gradient-red',
+  },
+};

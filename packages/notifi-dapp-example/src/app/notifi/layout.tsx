@@ -1,7 +1,7 @@
 'use client';
 
 import { NotifiCardContextProvider } from '@/context/notifi/NotifiCardContext';
-import { NotifiSubscriptionCardProvider } from '@/context/notifi/NotifiSubscriptionCardProvider';
+import { NotifiContextProvider } from '@/context/notifi/NotifiContext';
 import { useChain } from '@cosmos-kit/react';
 import { NotifiFormProvider } from '@notifi-network/notifi-react-card';
 import { useRouter } from 'next/navigation';
@@ -21,10 +21,10 @@ export default function NotifiSingupLayout({
     }
   }, [isWalletConnected]);
   return (
-    <NotifiSubscriptionCardProvider>
+    <NotifiContextProvider>
       <NotifiCardContextProvider>
         <NotifiFormProvider>{children}</NotifiFormProvider>
       </NotifiCardContextProvider>
-    </NotifiSubscriptionCardProvider>
+    </NotifiContextProvider>
   );
 }

@@ -19,12 +19,9 @@ export type SpriteIconId =
   | 'telegram-icon'
   | 'discord-icon'
   | 'check'
+  | 'info'
   | 'edit-icon'
-  | 'close-icon'
-  // TODO: Radial background MVP-4112
-  | 'lightbulb-orange'
-  | 'email-close'
-  | 'bell-red';
+  | 'close-icon';
 
 /**
  * It takes an icon id and returns an svg element with the corresponding icon defined in /public/icons/sprite.svg.
@@ -32,17 +29,13 @@ export type SpriteIconId =
 export const Icon: FunctionComponent<
   SVGAttributes<HTMLOrSVGElement> & {
     id: SpriteIconId;
-    // label?: string;
     className?: string;
   }
 > = (props) => {
-  const { id, /*label,*/ ...rest } = props;
+  const { id, ...rest } = props;
   return (
-    <>
-      <svg width="24" height="24" {...rest}>
-        <use href={`/icons/sprite.svg#${id}`} />
-      </svg>
-      {/* {label && <span className="sr-only">{label}</span>} */}
-    </>
+    <svg width="24" height="24" {...rest}>
+      <use href={`/icons/sprite.svg#${id}`} />
+    </svg>
   );
 };

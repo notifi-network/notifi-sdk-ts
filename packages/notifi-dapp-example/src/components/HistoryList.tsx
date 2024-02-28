@@ -2,7 +2,7 @@
 
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
 import { useNotifiCardContext } from '@/context/notifi/NotifiCardContext';
-import { validateEventDetails } from '@/utils/notificationHistory';
+import { validateEventDetails } from '@/utils/notifiHistoryUtils';
 import { Types } from '@notifi-network/notifi-graphql';
 import { useNotifiClientContext } from '@notifi-network/notifi-react-card';
 import Image from 'next/image';
@@ -110,7 +110,7 @@ export const HistoryList: React.FC<HistoryListProps> = ({
       className={`
         ${historyDetailEntry ? 'hidden' : ''} 
         ${isLoading ? 'h-full' : ''}
-        flex flex-col relative
+        flex flex-col relative grow min-h-0 
       `}
     >
       {nodes.length > 0 ? (
@@ -139,14 +139,16 @@ export const HistoryList: React.FC<HistoryListProps> = ({
           />
         </div>
       ) : null}
-      {nodes.map((node) => (
-        <HistoryListRow
-          key={node.id}
-          historyDetailEntry={node}
-          setHistoryDetailEntry={setHistoryDetailEntry}
-          setUnreadCount={setUnreadCount}
-        />
-      ))}
+      <div className="min-h-0 overflow-scroll grow">
+        {nodes.map((node) => (
+          <HistoryListRow
+            key={node.id}
+            historyDetailEntry={node}
+            setHistoryDetailEntry={setHistoryDetailEntry}
+            setUnreadCount={setUnreadCount}
+          />
+        ))}
+      </div>
       <div
         className={`m-auto mt-4 text-lg font-semibold cursor-pointer ${
           !cursorInfo.hasNextPage ? 'hidden' : ''

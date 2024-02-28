@@ -1,7 +1,7 @@
 'use client';
 
 import { Icon } from '@/assets/Icon';
-import { parseNotificationHistory } from '@/utils/notificationHistory';
+import { parseNotificationHistory } from '@/utils/notifiHistoryUtils';
 import { Types } from '@notifi-network/notifi-graphql';
 import DOMPurify from 'dompurify';
 import { Dispatch, SetStateAction, useMemo } from 'react';

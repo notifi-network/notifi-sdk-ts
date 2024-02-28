@@ -2,14 +2,12 @@
 
 import { AlertSubscription } from '@/components/AlertSubscription';
 import { DashboardDestinations } from '@/components/DashboardDestinations';
+import { DashboardHistory } from '@/components/DashboardHistory';
 import { DashboardSideBar } from '@/components/DashboardSideBar';
-import { HistoryDetail } from '@/components/HistoryDetail';
-import { HistoryList } from '@/components/HistoryList';
 import { VerifyBanner } from '@/components/VerifyBanner';
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
 import { WalletAccount } from '@cosmos-kit/core';
 import { useWalletClient } from '@cosmos-kit/react';
-import { Types } from '@notifi-network/notifi-graphql';
 import { useDestinationState } from '@notifi-network/notifi-react-card';
 import { useEffect, useState } from 'react';
 
@@ -19,8 +17,6 @@ export default function NotifiDashboard() {
   const { client } = useWalletClient();
   const [cardView, setCardView] = useState<CardView>('history');
   const [account, setAccount] = useState<WalletAccount | null>(null);
-  const [historyDetailEntry, setHistoryDetailEntry] =
-    useState<Types.FusionNotificationHistoryEntryFragmentFragment | null>(null);
   const { setIsGlobalLoading } = useGlobalStateContext();
   const { unverifiedDestinations } = useDestinationState();
 
@@ -54,21 +50,9 @@ export default function NotifiDashboard() {
         {unverifiedDestinations.length > 0 && cardView === 'history' ? (
           <VerifyBanner setCardView={setCardView} />
         ) : null}
-        <div className="grow bg-white rounded-3xl mb-10 mt-3 mr-10">
-          {cardView === 'history' ? (
-            <>
-              <HistoryList
-                setHistoryDetailEntry={setHistoryDetailEntry}
-                historyDetailEntry={historyDetailEntry}
-              />
-              {historyDetailEntry ? (
-                <HistoryDetail
-                  setHistoryDetailEntry={setHistoryDetailEntry}
-                  historyDetailEntry={historyDetailEntry}
-                />
-              ) : null}
-            </>
-          ) : null}
+        {/* IMPORTANT: Do not remove `min-h-0` , This is to fix the inner card height */}
+        <div className="flex flex-col grow bg-white rounded-3xl mb-10 mt-3 mr-10 min-h-0 ">
+          {cardView === 'history' ? <DashboardHistory /> : null}
           {cardView === 'destination' ? <DashboardDestinations /> : null}
           {cardView === 'alertSubscription' ? <AlertSubscription /> : null}
         </div>
