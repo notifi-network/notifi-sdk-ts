@@ -1,17 +1,14 @@
-import { NotifiTooltip } from '@notifi-network/notifi-react-card';
 import React from 'react';
 
 type Props = {
-  errorMessage: string;
-  tooltipContent?: string;
+  infoPromptMessage: string;
   onClick?: () => void;
   isButton?: boolean;
   buttonCopy?: string;
 };
 
-export const DestinationErrorMessage: React.FC<Props> = ({
-  tooltipContent,
-  errorMessage,
+export const DestinationInfoPrompt: React.FC<Props> = ({
+  infoPromptMessage,
   onClick,
   isButton = false,
   buttonCopy,
@@ -19,10 +16,7 @@ export const DestinationErrorMessage: React.FC<Props> = ({
   if (!onClick) {
     return (
       <>
-        <label>{errorMessage}</label>
-        {tooltipContent !== undefined && tooltipContent.length > 0 ? (
-          <NotifiTooltip content={tooltipContent} />
-        ) : null}
+        <label>{infoPromptMessage}</label>
       </>
     );
   }
@@ -43,12 +37,9 @@ export const DestinationErrorMessage: React.FC<Props> = ({
           onClick={() => onClick()}
           className="text-sm font-bold text-notifi-button-primary-blueish-bg ml-6 underline cursor-pointer"
         >
-          <label className="cursor-pointer">{errorMessage}</label>
+          <label className="cursor-pointer">{infoPromptMessage}</label>
         </a>
       )}
-      {tooltipContent !== undefined && tooltipContent.length > 0 ? (
-        <NotifiTooltip content={tooltipContent} />
-      ) : null}
     </div>
   );
 };

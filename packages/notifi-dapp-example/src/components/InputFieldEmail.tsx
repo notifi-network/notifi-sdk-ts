@@ -6,21 +6,21 @@ import {
 } from '@notifi-network/notifi-react-card';
 import React from 'react';
 
-export type EmailInputProps = Readonly<{
+export type InputFieldEmailProps = Readonly<{
   copy?: DeepPartialReadonly<{
     placeholder: string;
     label: string;
   }>;
   disabled: boolean;
   hasChatAlert?: boolean;
-  isEdit?: boolean;
+  isEditable?: boolean;
 }>;
 
-export const EmailInput: React.FC<EmailInputProps> = ({
+export const InputFieldEmail: React.FC<InputFieldEmailProps> = ({
   copy,
   disabled,
-  isEdit,
-}: EmailInputProps) => {
+  isEditable,
+}: InputFieldEmailProps) => {
   const {
     formState,
     formErrorMessages,
@@ -89,7 +89,7 @@ export const EmailInput: React.FC<EmailInputProps> = ({
             </p>
           </div>
         ) : null}
-        {isEdit && hasEmailChanges ? (
+        {isEditable && hasEmailChanges ? (
           <button
             className="rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-16 h-7 mb-6 text-sm font-bold absolute top-2.5 right-6 disabled:opacity-50 disabled:hover:bg-notifi-button-primary-blueish-bg hover:bg-notifi-button-hover-bg"
             disabled={telegramErrorMessage !== '' || emailErrorMessage !== ''}

@@ -5,7 +5,7 @@ import {
 } from '@notifi-network/notifi-react-card';
 import React, { useCallback, useMemo, useState } from 'react';
 
-import { DestinationErrorMessage } from './DestinationErrorMessage';
+import { DestinationInfoPrompt } from './DestinationInfoPrompt';
 
 export type UserInfoSection = {
   container: string;
@@ -17,16 +17,17 @@ export type UserInfoSection = {
   tooltipContent: string;
 };
 
-export type UserDestinationsInfoPanelProps = {
+export type DestinationPanelProps = {
   contactInfo: CardConfigItemV1['contactInfo'];
   confirmationLabels?: {
     email?: string;
     telegram?: string;
   };
 };
-export const UserDestinationsInfoPanel: React.FC<
-  UserDestinationsInfoPanelProps
-> = ({ contactInfo, confirmationLabels }) => {
+export const DestinationPanel: React.FC<DestinationPanelProps> = ({
+  contactInfo,
+  confirmationLabels,
+}) => {
   const [isEmailConfirmationSent, setIsEmailConfirmationSent] =
     useState<boolean>(false);
 
@@ -79,10 +80,13 @@ export const UserDestinationsInfoPanel: React.FC<
           <div className="flex flex-col items-start justify-between w-90 mr-4">
             <div className="font-semibold text-sm ml-6">{email}</div>
             {emailErrorMessage?.type === 'recoverableError' ? (
-              <DestinationErrorMessage
+              <DestinationInfoPrompt
                 onClick={() => handleResendEmailVerificationClick()}
-                errorMessage={'Resend verification email'}
-                tooltipContent={emailErrorMessage?.tooltip}
+                infoPromptMessage={
+                  isEmailConfirmationSent
+                    ? 'Verification email sent'
+                    : 'Resend verification email'
+                }
               />
             ) : (
               VerifiedText
@@ -105,18 +109,17 @@ export const UserDestinationsInfoPanel: React.FC<
           {telegramErrorMessage?.type === 'recoverableError' ? (
             <div className="flex flex-row items-center justify-between w-90 mr-4">
               <div className="font-semibold text-sm ml-6">{telegramId}</div>
-              <DestinationErrorMessage
+              <DestinationInfoPrompt
                 isButton={true}
                 buttonCopy="Verify ID"
                 onClick={() => {
                   telegramErrorMessage?.onClick();
                 }}
-                errorMessage={
+                infoPromptMessage={
                   telegramErrorMessage?.message ??
                   confirmationLabels?.telegram ??
                   ''
                 }
-                tooltipContent={destinationErrorMessages?.telegram?.tooltip}
               />
             </div>
           ) : (
@@ -140,7 +143,7 @@ export const UserDestinationsInfoPanel: React.FC<
         <div className="flex flex-col items-start justify-between w-90 mr-4">
           <div className="font-semibold text-sm ml-6">testSlack@gmail.com</div>
           {/* todo: update when implement slack flow */}
-          {emailErrorMessage?.type === 'recoverableError' ? (
+          {/* {emailErrorMessage?.type === 'recoverableError' ? (
             <DestinationErrorMessage
               onClick={() => handleResendEmailVerificationClick()}
               errorMessage={
@@ -152,7 +155,7 @@ export const UserDestinationsInfoPanel: React.FC<
             />
           ) : (
             VerifiedText
-          )}
+          )} */}
         </div>
       </div>
       {contactInfo?.discord?.active && useDiscord ? (
@@ -172,18 +175,17 @@ export const UserDestinationsInfoPanel: React.FC<
               <div className="font-semibold text-sm ml-6">
                 Discord Bot DM Alerts
               </div>
-              <DestinationErrorMessage
+              <DestinationInfoPrompt
                 isButton={true}
                 buttonCopy="Enable Bot"
                 onClick={() => {
                   discordErrrorMessage?.onClick();
                 }}
-                errorMessage={
+                infoPromptMessage={
                   discordErrrorMessage?.message ??
                   confirmationLabels?.telegram ??
                   ''
                 }
-                tooltipContent={destinationErrorMessages?.discord?.tooltip}
               />
             </div>
           ) : (

@@ -3,16 +3,16 @@ import { useNotifiTargets } from '@/hooks/useNotifiTargets';
 import { useNotifiForm } from '@notifi-network/notifi-react-card';
 import React from 'react';
 
-export type TelegramInputProps = Readonly<{
+export type InputFieldTelegramProps = Readonly<{
   disabled: boolean;
   hasChatAlert?: boolean;
-  isEdit?: boolean;
+  isEditable?: boolean;
 }>;
 
-export const TelegramInput: React.FC<TelegramInputProps> = ({
+export const InputFieldTelegram: React.FC<InputFieldTelegramProps> = ({
   disabled,
-  isEdit,
-}: TelegramInputProps) => {
+  isEditable,
+}: InputFieldTelegramProps) => {
   const {
     formState,
     formErrorMessages,
@@ -82,7 +82,7 @@ export const TelegramInput: React.FC<TelegramInputProps> = ({
               </p>
             </div>
           ) : null}
-          {isEdit && hasTelegramChanges ? (
+          {isEditable && hasTelegramChanges ? (
             <button
               className="rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-16 h-7 mb-6 text-sm font-bold absolute top-2.5 right-6 disabled:opacity-50 disabled:hover:bg-notifi-button-primary-blueish-bg hover:bg-notifi-button-hover-bg"
               disabled={telegramErrorMessage !== '' || emailErrorMessage !== ''}

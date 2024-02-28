@@ -4,11 +4,11 @@ import React from 'react';
 
 import { InputFields } from './InputFields';
 
-export type EditDestinationsModalProps = {
+export type DestinationsEditModalProps = {
   contactInfo: CardConfigItemV1['contactInfo'];
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
-export const EditDestinationsModal: React.FC<EditDestinationsModalProps> = ({
+export const DestinationsEditModal: React.FC<DestinationsEditModalProps> = ({
   contactInfo,
   setOpen,
 }) => {
@@ -33,7 +33,7 @@ export const EditDestinationsModal: React.FC<EditDestinationsModalProps> = ({
             <InputFields
               contactInfo={contactInfo}
               inputDisabled={false}
-              isEdit={true}
+              isEditable={true}
             />
           </div>
         </div>

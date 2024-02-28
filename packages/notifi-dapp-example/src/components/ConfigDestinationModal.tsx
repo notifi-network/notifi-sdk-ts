@@ -5,7 +5,7 @@ import {
 } from '@notifi-network/notifi-react-card';
 import React from 'react';
 
-import { UserDestinationsInfoPanel } from './UserDestinationsInfoPanel';
+import { DestinationPanel } from './DestinationPanel';
 
 export type ConfigDestinationModalProps = {
   contactInfo: CardConfigItemV1['contactInfo'];
@@ -29,7 +29,7 @@ export const ConfigDestinationModal: React.FC<ConfigDestinationModalProps> = ({
           <p className="text-sm opacity-50 font-semibold my-4">
             Select a minimum of one destination
           </p>
-          <UserDestinationsInfoPanel contactInfo={contactInfo} />
+          <DestinationPanel contactInfo={contactInfo} />
         </div>
       </div>
       <button

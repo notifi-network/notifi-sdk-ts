@@ -6,8 +6,8 @@ import {
 } from '@notifi-network/notifi-react-card';
 import React, { useCallback, useState } from 'react';
 
-import { EditDestinationsModal } from './EditDestinationsModal';
-import { UserDestinationsInfoPanel } from './UserDestinationsInfoPanel';
+import { DestinationPanel } from './DestinationPanel';
+import { DestinationsEditModal } from './DestinationsEditModal';
 
 export const DashboardDestinations = () => {
   const [open, setOpen] = useState(false);
@@ -45,7 +45,7 @@ export const DashboardDestinations = () => {
   return (
     <>
       {open ? (
-        <EditDestinationsModal
+        <DestinationsEditModal
           contactInfo={cardConfig.contactInfo}
           setOpen={setOpen}
         />
@@ -61,7 +61,7 @@ export const DashboardDestinations = () => {
             <span className="mt-0.5">Edit</span>
           </button>
         </div>
-        <UserDestinationsInfoPanel contactInfo={cardConfig.contactInfo} />
+        <DestinationPanel contactInfo={cardConfig.contactInfo} />
       </div>
     </>
   );

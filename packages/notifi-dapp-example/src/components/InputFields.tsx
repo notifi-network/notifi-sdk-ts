@@ -1,32 +1,32 @@
 import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import React from 'react';
 
-import { DiscordInput } from './DiscordInput';
-import { EmailInput } from './EmailInput';
-import { SlackInput } from './SlackInput';
-import { TelegramInput } from './TelegramInput';
+import { InputFieldDiscord } from './InputFieldDiscord';
+import { InputFieldEmail } from './InputFieldEmail';
+import { InputFieldSlack } from './InputFieldSlack';
+import { InputFieldTelegram } from './InputFieldTelegram';
 
 export type InputFieldsProps = {
   contactInfo: CardConfigItemV1['contactInfo'];
   inputDisabled: boolean;
-  isEdit?: boolean;
+  isEditable?: boolean;
 };
 export const InputFields: React.FC<InputFieldsProps> = ({
   contactInfo,
   inputDisabled,
-  isEdit,
+  isEditable,
 }) => {
   return (
     <div className="flex flex-col justify-center items-center">
       {contactInfo.email.active ? (
-        <EmailInput disabled={inputDisabled} isEdit={isEdit} />
+        <InputFieldEmail disabled={inputDisabled} isEditable={isEditable} />
       ) : null}
       {contactInfo.telegram.active ? (
-        <TelegramInput disabled={inputDisabled} isEdit={isEdit} />
+        <InputFieldTelegram disabled={inputDisabled} isEditable={isEditable} />
       ) : null}
-      <SlackInput disabled={inputDisabled} />
+      <InputFieldSlack disabled={inputDisabled} />
       {contactInfo?.discord?.active ? (
-        <DiscordInput disabled={inputDisabled} isEdit={isEdit} />
+        <InputFieldDiscord disabled={inputDisabled} isEditable={isEditable} />
       ) : null}
     </div>
   );

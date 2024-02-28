@@ -8,14 +8,14 @@ import React from 'react';
 
 import { Toggle } from './Toggle';
 
-export type DiscordInputProps = Readonly<{
+export type InputFieldDiscordProps = Readonly<{
   disabled: boolean;
-  isEdit?: boolean;
+  isEditable?: boolean;
 }>;
 
-export const DiscordInput: React.FC<DiscordInputProps> = ({
+export const InputFieldDiscord: React.FC<InputFieldDiscordProps> = ({
   disabled,
-  isEdit,
+  isEditable,
 }) => {
   const { formErrorMessages } = useNotifiForm();
 
@@ -43,7 +43,7 @@ export const DiscordInput: React.FC<DiscordInputProps> = ({
           }
           checked={useDiscord}
           onChange={() => {
-            isEdit ? updateTarget() : setUseDiscord(!useDiscord);
+            isEditable ? updateTarget() : setUseDiscord(!useDiscord);
           }}
         />
       </div>
