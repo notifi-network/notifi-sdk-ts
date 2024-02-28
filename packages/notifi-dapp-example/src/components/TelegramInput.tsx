@@ -1,8 +1,7 @@
 import { Icon } from '@/assets/Icon';
-import { useNotifiCardContext } from '@/context/notifi/NotifiCardContext';
 import { useNotifiTargets } from '@/hooks/useNotifiTargets';
 import { useNotifiForm } from '@notifi-network/notifi-react-card';
-import React, { useMemo } from 'react';
+import React from 'react';
 
 export type TelegramInputProps = Readonly<{
   disabled: boolean;
@@ -23,9 +22,8 @@ export const TelegramInput: React.FC<TelegramInputProps> = ({
     hasTelegramChanges,
   } = useNotifiForm();
 
-  const { cardConfig } = useNotifiCardContext();
-
-  const { telegram: telegramErrorMessage } = formErrorMessages;
+  const { telegram: telegramErrorMessage, email: emailErrorMessage } =
+    formErrorMessages;
   const { updateTarget } = useNotifiTargets('telegram');
 
   const { telegram } = formState;
@@ -46,9 +44,6 @@ export const TelegramInput: React.FC<TelegramInputProps> = ({
   };
 
   const hasErrors = telegramErrorMessage !== '';
-  const isInputFieldsValid = useMemo(() => {
-    return cardConfig.isContactInfoRequired ? telegram : true;
-  }, [telegram, cardConfig.isContactInfoRequired]);
 
   return (
     <>
@@ -90,12 +85,7 @@ export const TelegramInput: React.FC<TelegramInputProps> = ({
           {isEdit && hasTelegramChanges ? (
             <button
               className="rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-16 h-7 mb-6 text-sm font-bold absolute top-2.5 right-6 disabled:opacity-50 disabled:hover:bg-notifi-button-primary-blueish-bg hover:bg-notifi-button-hover-bg"
-              disabled={
-                telegramErrorMessage !== '' ||
-                !telegram ||
-                hasErrors ||
-                !isInputFieldsValid
-              }
+              disabled={telegramErrorMessage !== '' || emailErrorMessage !== ''}
               onClick={updateTarget}
             >
               <span>save</span>

@@ -54,10 +54,10 @@ export const useNotifiTargets = (target?: Target) => {
   const afterEditDestination = () => {
     switch (target) {
       case 'email':
-        setHasEmailChanges(true);
+        setHasEmailChanges(false);
         break;
       case 'telegram':
-        setHasTelegramChanges(true);
+        setHasTelegramChanges(false);
         break;
       default:
         break;

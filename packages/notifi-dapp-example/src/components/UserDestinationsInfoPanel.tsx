@@ -104,7 +104,7 @@ export const UserDestinationsInfoPanel: React.FC<
 
           {telegramErrorMessage?.type === 'recoverableError' ? (
             <div className="flex flex-row items-center justify-between w-90 mr-4">
-              <div className="font-semibold text-sm ml-6">Telegram Alerts</div>
+              <div className="font-semibold text-sm ml-6">{telegramId}</div>
               <DestinationErrorMessage
                 isButton={true}
                 buttonCopy="Verify ID"

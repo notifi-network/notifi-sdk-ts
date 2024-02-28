@@ -1,11 +1,10 @@
 import { Icon } from '@/assets/Icon';
-import { useNotifiCardContext } from '@/context/notifi/NotifiCardContext';
 import { useNotifiTargets } from '@/hooks/useNotifiTargets';
 import {
   DeepPartialReadonly,
   useNotifiForm,
 } from '@notifi-network/notifi-react-card';
-import React, { useMemo } from 'react';
+import React from 'react';
 
 export type EmailInputProps = Readonly<{
   copy?: DeepPartialReadonly<{
@@ -31,9 +30,8 @@ export const EmailInput: React.FC<EmailInputProps> = ({
     hasEmailChanges,
   } = useNotifiForm();
 
-  const { cardConfig } = useNotifiCardContext();
-
-  const { email: emailErrorMessage } = formErrorMessages;
+  const { email: emailErrorMessage, telegram: telegramErrorMessage } =
+    formErrorMessages;
   const { updateTarget } = useNotifiTargets('email');
 
   const { email } = formState;
@@ -54,9 +52,6 @@ export const EmailInput: React.FC<EmailInputProps> = ({
   };
 
   const hasErrors = emailErrorMessage !== '';
-  const isInputFieldsValid = useMemo(() => {
-    return cardConfig.isContactInfoRequired ? email : true;
-  }, [email, cardConfig.isContactInfoRequired]);
 
   return (
     <div className="bg-notifi-card-bg rounded-md w-112 h-18 flex flex-row items-center justify-between mb-2">
@@ -71,7 +66,7 @@ export const EmailInput: React.FC<EmailInputProps> = ({
       </div>
       <div className="relative">
         <input
-          className={`border rounded-md w-86 h-11 mr-4 text-sm pl-3 focus:outline-none index-10 ${
+          className={`border rounded-md w-86 h-11 mr-4 text-sm pl-3 focus:outline-none ${
             hasErrors ? 'border-notifi-error' : 'border-gray-300'
           } flex ${hasErrors ? 'pt-3' : 'pt-0'}`}
           data-cy="notifiEmailInput"
@@ -97,12 +92,7 @@ export const EmailInput: React.FC<EmailInputProps> = ({
         {isEdit && hasEmailChanges ? (
           <button
             className="rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-16 h-7 mb-6 text-sm font-bold absolute top-2.5 right-6 disabled:opacity-50 disabled:hover:bg-notifi-button-primary-blueish-bg hover:bg-notifi-button-hover-bg"
-            disabled={
-              emailErrorMessage !== '' ||
-              !email ||
-              hasErrors ||
-              !isInputFieldsValid
-            }
+            disabled={telegramErrorMessage !== '' || emailErrorMessage !== ''}
             onClick={updateTarget}
           >
             <span>save</span>
