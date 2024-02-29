@@ -81,6 +81,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
             <div className="font-semibold text-sm ml-6">{email}</div>
             {emailErrorMessage?.type === 'recoverableError' ? (
               <DestinationInfoPrompt
+                isSent={isEmailConfirmationSent}
                 onClick={() => handleResendEmailVerificationClick()}
                 infoPromptMessage={
                   isEmailConfirmationSent

@@ -10,11 +10,11 @@ export const ConfigAlertModal = () => {
   const { updateFtuStage } = useNotifiSubscriptionContext();
 
   return (
-    <div className="h-4/6 w-4/6 bg-notifi-container-bg rounded-2xl flex flex-col items-center justify-between mb-8 shadow-container">
+    <div className="h-4/6 w-4/6 bg-notifi-container-bg rounded-2xl flex flex-col items-center justify-between mb-8">
       <div>
         <div className="flex flex-col items-center justify-center">
-          <p className="font-semibold text-xs opacity-50 mt-2.5">Step 3 of 3</p>
-          <p className="text-2xl mt-6">How do you want to be notified?</p>
+          <p className="font-semibold text-xs opacity-50 mt-2.5">STEP 3 OF 3</p>
+          <p className="text-2xl mt-6">Select alerts you want to receive</p>
         </div>
       </div>
 

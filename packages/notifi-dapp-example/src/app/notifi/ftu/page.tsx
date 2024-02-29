@@ -2,8 +2,6 @@
 
 import { ConfigAlertModal } from '@/components/ConfigAlertModal';
 import { ConfigDestinationModal } from '@/components/ConfigDestinationModal';
-import { DappIcon } from '@/components/DappIcon';
-import { PoweredByNotifi } from '@/components/PoweredByNotifi';
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
 import { useNotifiCardContext } from '@/context/notifi/NotifiCardContext';
 import { useRouterAsync } from '@/hooks/useRouterAsync';
@@ -44,17 +42,12 @@ export default function NotifiFTU() {
     return null;
   }
   return (
-    <div className="w-full h-screen flex flex-col items-center justify-start bg-notifi-page-bg">
-      <DappIcon />
-      <div className="text-blue-500 font-bold text-lg mb-8">
-        Injective ecosystem alerts
-      </div>
+    <>
       {ftuStage === FtuStage.Destination ? (
         <ConfigDestinationModal contactInfo={cardConfig.contactInfo} />
       ) : null}
 
       {ftuStage === FtuStage.Alerts ? <ConfigAlertModal /> : null}
-      <PoweredByNotifi />
-    </div>
+    </>
   );
 }
