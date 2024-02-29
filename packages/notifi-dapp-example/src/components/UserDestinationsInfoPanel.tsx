@@ -90,6 +90,43 @@ export const UserDestinationsInfoPanel: React.FC<
           </div>
         </div>
       ) : null}
+      {contactInfo.telegram.active && telegramId ? (
+        <div className="bg-notifi-card-bg rounded-md w-112 h-18 flex flex-row items-center justify-between mb-2">
+          <div className="bg-white rounded-md w-18 h-18 shadow-card text-notifi-destination-card-text flex flex-col items-center justify-center">
+            <Icon
+              id="telegram-icon"
+              width="16px"
+              height="14px"
+              className="text-notifi-toggle-on-bg"
+            />
+            <div className="font-bold text-xs mt-2">Telegram</div>
+          </div>
+
+          {telegramErrorMessage?.type === 'recoverableError' ? (
+            <div className="flex flex-row items-center justify-between w-90 mr-4">
+              <div className="font-semibold text-sm ml-6">Telegram Alerts</div>
+              <DestinationErrorMessage
+                isButton={true}
+                buttonCopy="Verify ID"
+                onClick={() => {
+                  telegramErrorMessage?.onClick();
+                }}
+                errorMessage={
+                  telegramErrorMessage?.message ??
+                  confirmationLabels?.telegram ??
+                  ''
+                }
+                tooltipContent={destinationErrorMessages?.telegram?.tooltip}
+              />
+            </div>
+          ) : (
+            <div className="flex flex-col items-start justify-between w-90 mr-4">
+              <div className="font-semibold text-sm ml-6">{telegramId}</div>
+              {VerifiedText}
+            </div>
+          )}
+        </div>
+      ) : null}
       <div className="bg-notifi-card-bg rounded-md w-112 h-18 flex flex-row items-center justify-between mb-2">
         <div className="bg-white rounded-md w-18 h-18 shadow-card text-notifi-destination-card-text flex flex-col items-center justify-center">
           <Icon
@@ -156,43 +193,6 @@ export const UserDestinationsInfoPanel: React.FC<
                   ? discordUserName
                   : 'Discord'}
               </div>
-              {VerifiedText}
-            </div>
-          )}
-        </div>
-      ) : null}
-      {contactInfo.telegram.active && telegramId ? (
-        <div className="bg-notifi-card-bg rounded-md w-112 h-18 flex flex-row items-center justify-between mb-2">
-          <div className="bg-white rounded-md w-18 h-18 shadow-card text-notifi-destination-card-text flex flex-col items-center justify-center">
-            <Icon
-              id="telegram-icon"
-              width="16px"
-              height="14px"
-              className="text-notifi-toggle-on-bg"
-            />
-            <div className="font-bold text-xs mt-2">Telegram</div>
-          </div>
-
-          {telegramErrorMessage?.type === 'recoverableError' ? (
-            <div className="flex flex-row items-center justify-between w-90 mr-4">
-              <div className="font-semibold text-sm ml-6">Telegram Alerts</div>
-              <DestinationErrorMessage
-                isButton={true}
-                buttonCopy="Verify ID"
-                onClick={() => {
-                  telegramErrorMessage?.onClick();
-                }}
-                errorMessage={
-                  telegramErrorMessage?.message ??
-                  confirmationLabels?.telegram ??
-                  ''
-                }
-                tooltipContent={destinationErrorMessages?.telegram?.tooltip}
-              />
-            </div>
-          ) : (
-            <div className="flex flex-col items-start justify-between w-90 mr-4">
-              <div className="font-semibold text-sm ml-6">{telegramId}</div>
               {VerifiedText}
             </div>
           )}

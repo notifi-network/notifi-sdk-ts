@@ -1,10 +1,6 @@
 import { Icon } from '@/assets/Icon';
-import { useNotifiSubscriptionContext } from '@notifi-network/notifi-react-card';
+import { useNotifiForm } from '@notifi-network/notifi-react-card';
 import React from 'react';
-
-import { Toggle } from './Toggle';
-
-// import { TelegramIcon } from '../assets/TelegramIcon';
 
 export type TelegramInputProps = Readonly<{
   disabled: boolean;
@@ -14,7 +10,32 @@ export type TelegramInputProps = Readonly<{
 export const TelegramInput: React.FC<TelegramInputProps> = ({
   disabled,
 }: TelegramInputProps) => {
-  const { useTelegram, setUseTelegram } = useNotifiSubscriptionContext();
+  const {
+    formState,
+    formErrorMessages,
+    setTelegram,
+    setTelegramErrorMessage,
+    setHasChanges,
+  } = useNotifiForm();
+
+  const { telegram } = formState;
+
+  const { telegram: telegramErrorMessage } = formErrorMessages;
+
+  const validateTelegram = () => {
+    if (telegram === '') {
+      return;
+    }
+
+    const TelegramRegex =
+      /^@?(?=\w{5,32}\b)[a-zA-Z0-9]+(?:[a-zA-Z0-9_ ]+[a-zA-Z0-9])*$/;
+
+    if (TelegramRegex.test(telegram)) {
+      setTelegramErrorMessage('');
+    } else {
+      setTelegramErrorMessage('The telegram is invalid. Please try again.');
+    }
+  };
 
   return (
     <>
@@ -29,10 +50,24 @@ export const TelegramInput: React.FC<TelegramInputProps> = ({
           <div className="font-bold text-xs mt-2">Telegram</div>
         </div>
         <div className="flex flex-row items-center justify-between w-90 mr-4">
-          <div className="font-semibold text-sm ml-6">Telegram Alerts</div>
-          <Toggle disabled={disabled} checked={useTelegram} />
+          <input
+            data-cy="notifiTelegramInput"
+            onBlur={validateTelegram}
+            className="border border-grey-300 rounded-md w-86 h-11 mr-4 text-sm pl-3"
+            disabled={disabled}
+            name="notifi-telegram"
+            type="text"
+            value={telegram}
+            onFocus={() => setTelegramErrorMessage('')}
+            onChange={(e) => {
+              setHasChanges(true);
+              setTelegram(e.target.value ?? '');
+            }}
+            placeholder="Enter your telegram ID"
+          />
         </div>
       </div>
+      <label>{telegramErrorMessage}</label>
     </>
   );
 };

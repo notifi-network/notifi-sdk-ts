@@ -7,6 +7,7 @@
     /* Notifi global color */
     --notifi-gray0: 245 246 241;
     --notifi-gray1: 247 251 255;
+    --notifi-gray2: 102 109 128;
     --notifi-white: 255 255 255;
     --notifi-blueish0: 225 235 248;
     --notifi-blueish1: 198 233 245;
@@ -40,6 +41,7 @@
   --notifi-icon-selected: var(--notifi-blueish2);
   --notifi-tab-unselected-text: var(--notifi-dusk);
   --notifi-alert-subscription-block-bg: var(--notifi-gray1);
+  --notifi-text-light: var(--notifi-gray2);
 }
 
 /* Light mode color variables controlled by NotifiContext */
@@ -61,6 +63,7 @@
   --notifi-icon-selected: var(--notifi-blueish2);
   --notifi-tab-unselected-text: var(--notifi-dusk);
   --notifi-alert-subscription-block-bg: var(--notifi-gray1);
+  --notifi-text-light: var(--notifi-gray2);
 }
 
 /* Light mode color variables controlled by system preferences */

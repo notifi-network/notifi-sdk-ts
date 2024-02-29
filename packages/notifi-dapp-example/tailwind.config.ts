@@ -53,6 +53,7 @@ const config: Config = {
           'tab-unselected-text': 'rgb(var(--notifi-tab-unselected-text))',
           'alert-subscription-block-bg':
             'rgb(var(--notifi-alert-subscription-block-bg))',
+          'text-light': 'rgb(var(--notifi-text-light))',
         },
       },
       backgroundImage: {
