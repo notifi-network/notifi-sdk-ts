@@ -1,4 +1,5 @@
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
+import { TargetGroupData, useNotifiTargets } from '@/hooks/useNotifiTargets';
 import { useRouterAsync } from '@/hooks/useRouterAsync';
 import { formatTelegramForSubscription } from '@/utils/stringUtils';
 import {
@@ -20,14 +21,6 @@ export type NotifiSignUpButtonProps = Readonly<{
   data: CardConfigItemV1;
 }>;
 
-type TargetGroupData = {
-  name: string;
-  emailAddress?: string;
-  phoneNumber?: string;
-  telegramId?: string;
-  discordId?: string;
-};
-
 //todo implement in card context
 const inputs = {};
 
@@ -38,6 +31,8 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
   const eventTypes = data.eventTypes;
 
   const frontendClientLogin = useFrontendClientLogin();
+
+  const { renewTargetGroups } = useNotifiTargets();
 
   const { handleRoute } = useRouterAsync();
 
@@ -55,8 +50,11 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
 
   const { phoneNumber, telegram: telegramId, email } = formState;
 
-  const { email: emailErrorMessage, phoneNumber: smsErrorMessage } =
-    formErrorMessages;
+  const {
+    email: emailErrorMessage,
+    phoneNumber: smsErrorMessage,
+    telegram: telegramErrorMessage,
+  } = formErrorMessages;
 
   const targetGroup: TargetGroupData = useMemo(
     () => ({
@@ -72,13 +70,7 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
     [email, phoneNumber, telegramId, useDiscord],
   );
 
-  const renewTargetGroups = useCallback(
-    async (targetGroup: TargetGroupData) => {
-      return frontendClient.ensureTargetGroup(targetGroup);
-    },
-    [frontendClient, targetGroup],
-  );
-
+  // TODO: migrate to useSubscribeAlert
   const subscribeAlerts = useCallback(
     async (eventTypes: EventTypeConfig, inputs: Record<string, unknown>) => {
       await renewTargetGroups(targetGroup);
@@ -133,7 +125,10 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
     targetGroup,
   ]);
 
-  const hasErrors = emailErrorMessage !== '' || smsErrorMessage !== '';
+  const hasErrors =
+    emailErrorMessage !== '' ||
+    smsErrorMessage !== '' ||
+    telegramErrorMessage !== '';
   const isInputFieldsValid = useMemo(() => {
     return data.isContactInfoRequired
       ? email || phoneNumber || telegramId || useDiscord
@@ -142,7 +137,7 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
 
   return (
     <button
-      className="rounded bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-72 h-11 mb-6 text-sm font-bold"
+      className="rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-72 h-11 mb-6 text-sm font-bold disabled:hover:bg-notifi-button-primary-blueish-bg hover:bg-notifi-button-hover-bg"
       disabled={!isInitialized || loading || hasErrors || !isInputFieldsValid}
       onClick={onClick}
     >

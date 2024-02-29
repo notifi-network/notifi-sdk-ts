@@ -1,6 +1,7 @@
 'use client';
 
 import { AlertSubscription } from '@/components/AlertSubscription';
+import { DashboardDestinations } from '@/components/DashboardDestinations';
 import { DashboardSideBar } from '@/components/DashboardSideBar';
 import { HistoryDetail } from '@/components/HistoryDetail';
 import { HistoryList } from '@/components/HistoryList';
@@ -51,10 +52,7 @@ export default function NotifiDashboard() {
       />
       <div className=" flex flex-col grow h-screen">
         {unverifiedDestinations.length > 0 && cardView === 'history' ? (
-          <VerifyBanner
-            unVerifiedDestinations={unverifiedDestinations}
-            setCardView={setCardView}
-          />
+          <VerifyBanner setCardView={setCardView} />
         ) : null}
         <div className="grow bg-white rounded-3xl mb-10 mt-3 mr-10">
           {cardView === 'history' ? (
@@ -71,7 +69,7 @@ export default function NotifiDashboard() {
               ) : null}
             </>
           ) : null}
-          {cardView === 'destination' ? <div>Dummy Destination</div> : null}
+          {cardView === 'destination' ? <DashboardDestinations /> : null}
           {cardView === 'alertSubscription' ? <AlertSubscription /> : null}
         </div>
       </div>

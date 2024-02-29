@@ -1,4 +1,5 @@
-import { LabelWithSubTopicsEventTypeItem } from './AlertSubscription';
+import { LabelWithSubTopicsEventTypeItem } from '@/hooks/useNotifiTopics';
+
 import { AlertSubscriptionRow } from './AlertSubscriptionRow';
 
 type AlertSubscriptionRowProps = {

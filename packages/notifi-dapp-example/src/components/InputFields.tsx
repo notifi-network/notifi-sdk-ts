@@ -1,50 +1,33 @@
 import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import React from 'react';
 
-import { DiscordInput } from './DiscordInput';
-import { EmailInput } from './EmailInput';
-import { SlackInput } from './SlackInput';
-// import {
-//   NotifiHwWalletToggle,
-//   NotifiHwWalletToggleProps,
-// } from '../../NotifiHwWalletToggle';
-// import { NotifiSmsInput, NotifiSmsInputProps } from '../../NotifiSmsInput';
-import { TelegramInput } from './TelegramInput';
+import { InputFieldDiscord } from './InputFieldDiscord';
+import { InputFieldEmail } from './InputFieldEmail';
+import { InputFieldSlack } from './InputFieldSlack';
+import { InputFieldTelegram } from './InputFieldTelegram';
 
 export type InputFieldsProps = {
-  data: CardConfigItemV1;
-  allowedCountryCodes?: string[];
+  contactInfo: CardConfigItemV1['contactInfo'];
   inputDisabled: boolean;
-  hideContactInputs?: boolean;
+  isEditable?: boolean;
 };
 export const InputFields: React.FC<InputFieldsProps> = ({
-  data,
-  // allowedCountryCodes,
+  contactInfo,
   inputDisabled,
-  hideContactInputs,
+  isEditable,
 }) => {
   return (
-    <>
-      {!hideContactInputs ? (
-        <div className="flex flex-col justify-center items-center">
-          {data.contactInfo.email.active ? (
-            <EmailInput disabled={inputDisabled} />
-          ) : null}
-          <SlackInput disabled={inputDisabled} />
-          {data.contactInfo?.discord?.active ? (
-            <DiscordInput disabled={inputDisabled} />
-          ) : null}
-          {data.contactInfo.telegram.active ? (
-            <TelegramInput disabled={inputDisabled} />
-          ) : null}
-        </div>
+    <div className="flex flex-col justify-center items-center">
+      {contactInfo.email.active ? (
+        <InputFieldEmail disabled={inputDisabled} isEditable={isEditable} />
       ) : null}
-      {/* {params.walletBlockchain === 'SOLANA' ? (
-        <NotifiHwWalletToggle
-          disabled={inputDisabled}
-          classNames={classNames?.NotifiHwWalletToggle}
-        />
-      ) : null} */}
-    </>
+      {contactInfo.telegram.active ? (
+        <InputFieldTelegram disabled={inputDisabled} isEditable={isEditable} />
+      ) : null}
+      <InputFieldSlack disabled={inputDisabled} />
+      {contactInfo?.discord?.active ? (
+        <InputFieldDiscord disabled={inputDisabled} isEditable={isEditable} />
+      ) : null}
+    </div>
   );
 };

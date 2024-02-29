@@ -7,17 +7,21 @@
     /* Notifi global color */
     --notifi-gray0: 245 246 241;
     --notifi-gray1: 247 251 255;
+    --notifi-gray2: 102 109 128;
     --notifi-white: 255 255 255;
     --notifi-blueish0: 225 235 248;
     --notifi-blueish1: 198 233 245;
     --notifi-blueish2: 0 194 253;
-    --notifi-brand: 0 133 250;
+    --notifi-brand: 48 64 247;
+    --notifi-blueish4: 82 96 255;
     --notifi-light-blue: 247 251 255;
     --notifi-coral: 234 126 104;
-    --notifi-green: 7, 168, 37;
+    --notifi-green: 16 165 111;
+    --notifi-red: 227 78 78;
     --notifi-heather: 182, 184, 213;
-    --notifi-cyan: 0, 203, 253;
+    --notifi-cyan: 52 63 245;
     --notifi-dusk: 128, 130, 157;
+    --backgroundpressed-100:223, 225, 231;
   }
 }
 
@@ -29,10 +33,12 @@
   --notifi-bgimg-right: var(--notifi-blueish1);
   --notifi-button-primary-bg: var(--notifi-coral);
   --notifi-button-primary-blueish-bg: var(--notifi-brand);
+  --notifi-button-hover-bg: var(--notifi-blueish4);
   --notifi-button-primary-text: var(--notifi-white);
   --notifi-label-connect-wallet-text: var(--notifi-blueish2);
   --notifi-card-bg: var(--notifi-light-blue);
   --notifi-success: var(--notifi-green);
+  --notifi-error: var(--notifi-red);
   --notifi-toggle-off-bg: var(--notifi-heather);
   --notifi-toggle-on-bg: var(--notifi-cyan);
   --notifi-destination-card-text: var(--notifi-dusk);
@@ -40,6 +46,8 @@
   --notifi-icon-selected: var(--notifi-blueish2);
   --notifi-tab-unselected-text: var(--notifi-dusk);
   --notifi-alert-subscription-block-bg: var(--notifi-gray1);
+  --notifi-text-light: var(--notifi-gray2);
+  --notifi-toggle-off-dot-bg:var(--backgroundpressed-100);
 }
 
 /* Light mode color variables controlled by NotifiContext */
@@ -50,10 +58,12 @@
   --notifi-bgimg-right: var(--notifi-blueish1);
   --notifi-button-primary-bg: var(--notifi-coral);
   --notifi-button-primary-blueish-bg: var(--notifi-brand);
+  --notifi-button-hover-bg: var(--notifi-blueish4);
   --notifi-button-primary-text: var(--notifi-white);
   --notifi-label-connect-wallet-text: var(--notifi-blueish2);
   --notifi-card-bg: var(--notifi-light-blue);
   --notifi-success: var(--notifi-green);
+  --notifi-error: var(--notifi-red);
   --notifi-toggle-off-bg: var(--notifi-heather);
   --notifi-toggle-on-bg: var(--notifi-cyan);
   --notifi-destination-card-text: var(--notifi-dusk);
@@ -61,6 +71,8 @@
   --notifi-icon-selected: var(--notifi-blueish2);
   --notifi-tab-unselected-text: var(--notifi-dusk);
   --notifi-alert-subscription-block-bg: var(--notifi-gray1);
+  --notifi-text-light: var(--notifi-gray2);
+  --notifi-toggle-off-dot-bg:var(--backgroundpressed-100);
 }
 
 /* Light mode color variables controlled by system preferences */

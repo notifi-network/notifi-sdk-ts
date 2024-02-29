@@ -82,7 +82,9 @@ export const NotifiTelegramInput: React.FC<NotifiTelegramInputProps> = ({
           </div>
         ) : null
       ) : (
-        <label className={clsx('NotifiTelegramInput__label', classNames?.label)}>
+        <label
+          className={clsx('NotifiTelegramInput__label', classNames?.label)}
+        >
           {copy?.label}
         </label>
       )}

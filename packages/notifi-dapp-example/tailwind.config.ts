@@ -40,6 +40,7 @@ const config: Config = {
           'button-primary-blueish-bg':
             'rgb(var(--notifi-button-primary-blueish-bg))',
           'button-primary-text': 'rgb(var(--notifi-button-primary-text))',
+          'button-hover-bg': 'rgb(var(--notifi-button-hover-bg))',
           'label-connect-wallet-text':
             'rgb(var(--notifi-label-connect-wallet-text))',
           'container-bg': 'rgb(var( --notifi-bgimg-left))',
@@ -48,11 +49,14 @@ const config: Config = {
           'toggle-on-bg': 'rgb(var(--notifi-toggle-on-bg))',
           'toggle-off-bg': 'rgb(var(--notifi-toggle-off-bg))',
           success: 'rgb(var(--notifi-success))',
+          error: 'rgb(var(--notifi-error))',
           'icon-selected': 'rgb(var(--notifi-icon-selected))',
           'icon-unselected': 'rgb(var(--notifi-icon-unselected))',
           'tab-unselected-text': 'rgb(var(--notifi-tab-unselected-text))',
           'alert-subscription-block-bg':
             'rgb(var(--notifi-alert-subscription-block-bg))',
+          'text-light': 'rgb(var(--notifi-text-light))',
+          'toggle-off-dot-bg': 'rgb(var(--notifi-toggle-off-dot-bg))',
         },
       },
       backgroundImage: {

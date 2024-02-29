@@ -19,6 +19,8 @@ export type SpriteIconId =
   | 'telegram-icon'
   | 'discord-icon'
   | 'check'
+  | 'edit-icon'
+  | 'close-icon'
   // TODO: Radial background MVP-4112
   | 'lightbulb-orange'
   | 'email-close'

@@ -7,7 +7,7 @@ import React from 'react';
 
 // import { EmailIcon } from '../assets/EmailIcon';
 
-export type SlackInputProps = Readonly<{
+export type InputFieldSlackProps = Readonly<{
   copy?: DeepPartialReadonly<{
     placeholder: string;
     label: string;
@@ -15,10 +15,10 @@ export type SlackInputProps = Readonly<{
   disabled: boolean;
 }>;
 
-export const SlackInput: React.FC<SlackInputProps> = ({
+export const InputFieldSlack: React.FC<InputFieldSlackProps> = ({
   copy,
   disabled,
-}: SlackInputProps) => {
+}: InputFieldSlackProps) => {
   const { setEmail, setEmailErrorMessage } = useNotifiForm();
 
   // const { slack } = formState;
@@ -47,7 +47,7 @@ export const SlackInput: React.FC<SlackInputProps> = ({
             id="slack-icon"
             width="16px"
             height="16px"
-            className="text-notifi-toggle-on-bg"
+            className="text-notifi-button-primary-blueish-bg"
           />
           <div className="font-bold text-xs mt-2">Slack</div>
         </div>
