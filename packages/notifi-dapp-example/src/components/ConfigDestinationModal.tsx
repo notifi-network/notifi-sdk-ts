@@ -31,7 +31,7 @@ export const ConfigDestinationModal: React.FC<ConfigDestinationModalProps> = ({
             Select a minimum of one destination
           </p>
           {loading ? (
-            <div className="fixed h-screen w-screen bg-opacity-80 bg-white">
+            <div>
               <LoadingSpinner />
             </div>
           ) : (

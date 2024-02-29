@@ -130,7 +130,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
           )}
         </div>
       ) : null}
-      <div className="bg-notifi-card-bg rounded-md w-112 h-18 flex flex-row items-center justify-between mb-2">
+      {/* <div className="bg-notifi-card-bg rounded-md w-112 h-18 flex flex-row items-center justify-between mb-2">
         <div className="bg-white rounded-md w-18 h-18 shadow-card text-notifi-destination-card-text flex flex-col items-center justify-center">
           <Icon
             id="slack-icon"
@@ -141,9 +141,9 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
           <div className="font-bold text-xs mt-2">Slack</div>
         </div>
         <div className="flex flex-col items-start justify-between w-90 mr-4">
-          <div className="font-semibold text-sm ml-6">testSlack@gmail.com</div>
-          {/* todo: update when implement slack flow */}
-          {/* {emailErrorMessage?.type === 'recoverableError' ? (
+          <div className="font-semibold text-sm ml-6">testSlack@gmail.com</div> */}
+      {/* todo: update when implement slack flow */}
+      {/* {emailErrorMessage?.type === 'recoverableError' ? (
             <DestinationErrorMessage
               onClick={() => handleResendEmailVerificationClick()}
               errorMessage={
@@ -156,8 +156,8 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
           ) : (
             VerifiedText
           )} */}
-        </div>
-      </div>
+      {/* </div>
+      </div> */}
       {contactInfo?.discord?.active && useDiscord ? (
         <div className="bg-notifi-card-bg rounded-md w-112 h-18 flex flex-row items-center justify-between mb-2">
           <div className="bg-white rounded-md w-18 h-18 shadow-card text-notifi-destination-card-text flex flex-col items-center justify-center">
