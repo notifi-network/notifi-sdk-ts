@@ -21,8 +21,7 @@ export default function NotifiSignup() {
             Select a minimum of one destination
           </p>
           <InputFields
-            // hideContactInputs={showPreview && !data.isContactInfoRequired}
-            data={cardConfig}
+            contactInfo={cardConfig.contactInfo}
             inputDisabled={false}
           />
         </div>

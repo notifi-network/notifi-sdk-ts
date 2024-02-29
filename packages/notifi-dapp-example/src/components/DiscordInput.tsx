@@ -9,7 +9,7 @@ export type DiscordInputProps = Readonly<{
 }>;
 
 export const DiscordInput: React.FC<DiscordInputProps> = ({ disabled }) => {
-  const { useDiscord } = useNotifiSubscriptionContext();
+  const { useDiscord, setUseDiscord } = useNotifiSubscriptionContext();
 
   return (
     <div className="bg-notifi-card-bg rounded-md w-112 h-18 flex flex-row items-center justify-between mb-2">
@@ -24,7 +24,11 @@ export const DiscordInput: React.FC<DiscordInputProps> = ({ disabled }) => {
       </div>
       <div className="flex flex-row items-center justify-between w-90 mr-4">
         <div className="font-semibold text-sm ml-6">Discord Bot DM Alerts</div>
-        <Toggle disabled={disabled} checked={useDiscord} />
+        <Toggle
+          disabled={disabled}
+          checked={useDiscord}
+          onChange={() => setUseDiscord(!useDiscord)}
+        />
       </div>
     </div>
   );

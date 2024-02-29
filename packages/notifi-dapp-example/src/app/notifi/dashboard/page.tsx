@@ -1,8 +1,8 @@
 'use client';
 
 import { AlertSubscription } from '@/components/AlertSubscription';
+import { DashboardDestinations } from '@/components/DashboardDestinations';
 import { DashboardSideBar } from '@/components/DashboardSideBar';
-import { EditDestination } from '@/components/EditDestination';
 import { HistoryDetail } from '@/components/HistoryDetail';
 import { HistoryList } from '@/components/HistoryList';
 import { VerifyBanner } from '@/components/VerifyBanner';
@@ -72,7 +72,7 @@ export default function NotifiDashboard() {
               ) : null}
             </>
           ) : null}
-          {cardView === 'destination' ? <EditDestination /> : null}
+          {cardView === 'destination' ? <DashboardDestinations /> : null}
           {cardView === 'alertSubscription' ? <AlertSubscription /> : null}
         </div>
       </div>

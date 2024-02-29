@@ -15,9 +15,13 @@ import {
 import { isValidPhoneNumber } from 'libphonenumber-js';
 import React, { useCallback, useMemo } from 'react';
 
+type Target = 'email' | 'slack' | 'telegram' | 'discord';
+
 export type NotifiSignUpButtonProps = Readonly<{
   buttonText: string;
   data: CardConfigItemV1;
+  isEdit?: boolean;
+  target?: Target;
 }>;
 
 type TargetGroupData = {
@@ -34,6 +38,8 @@ const inputs = {};
 export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
   buttonText,
   data,
+  isEdit,
+  target,
 }) => {
   const eventTypes = data.eventTypes;
 
@@ -51,12 +57,33 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
 
   const { setIsGlobalLoading, setGlobalError } = useGlobalStateContext();
 
-  const { formErrorMessages, formState } = useNotifiForm();
+  const {
+    formErrorMessages,
+    formState,
+    setHasEmailChanges,
+    setHasTelegramChanges,
+  } = useNotifiForm();
 
   const { phoneNumber, telegram: telegramId, email } = formState;
 
-  const { email: emailErrorMessage, phoneNumber: smsErrorMessage } =
-    formErrorMessages;
+  const {
+    email: emailErrorMessage,
+    phoneNumber: smsErrorMessage,
+    telegram: telegramErrorMessage,
+  } = formErrorMessages;
+
+  const afterEditDestination = () => {
+    switch (target) {
+      case 'email':
+        setHasEmailChanges(true);
+        break;
+      case 'telegram':
+        setHasTelegramChanges(true);
+        break;
+      default:
+        break;
+    }
+  };
 
   const targetGroup: TargetGroupData = useMemo(
     () => ({
@@ -109,6 +136,7 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
         const result = await subscribeAlerts(subEvents, inputs);
         success = !!result;
       } else {
+        console.log('targetGroup', targetGroup);
         const result = await renewTargetGroups(targetGroup);
         success = !!result;
       }
@@ -117,7 +145,7 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
         const newData = await frontendClient.fetchData();
         render(newData);
         await syncFtuStage(data.isContactInfoRequired);
-        handleRoute('/notifi/ftu');
+        isEdit ? afterEditDestination() : handleRoute('/notifi/ftu');
       }
     } catch (e: unknown) {
       setGlobalError('ERROR: Failed to signup, check console for more details');
@@ -140,13 +168,42 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
       : true;
   }, [email, phoneNumber, telegramId, useDiscord, data.isContactInfoRequired]);
 
+  const isSaveButtonDisabled = () => {
+    switch (target) {
+      case 'email':
+        return !isInitialized || loading || emailErrorMessage !== '' || !email;
+      case 'telegram':
+        return (
+          !isInitialized ||
+          loading ||
+          telegramErrorMessage !== '' ||
+          !telegramId
+        );
+      default:
+        return !isInitialized || loading || hasErrors || !isInputFieldsValid;
+    }
+  };
   return (
-    <button
-      className="rounded bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-72 h-11 mb-6 text-sm font-bold"
-      disabled={!isInitialized || loading || hasErrors || !isInputFieldsValid}
-      onClick={onClick}
-    >
-      <span>{loading ? 'Loading' : buttonText}</span>
-    </button>
+    <>
+      {isEdit ? (
+        <button
+          className="rounded bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-16 h-7 mb-6 text-sm font-bold absolute top-2.5 right-6 disabled:opacity-50 disabled:hover:bg-notifi-button-primary-blueish-bg hover:bg-notifi-button-hover-bg"
+          disabled={isSaveButtonDisabled()}
+          onClick={onClick}
+        >
+          <span>{buttonText}</span>
+        </button>
+      ) : (
+        <button
+          className="rounded bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-72 h-11 mb-6 text-sm font-bold"
+          disabled={
+            !isInitialized || loading || hasErrors || !isInputFieldsValid
+          }
+          onClick={onClick}
+        >
+          <span>{loading ? 'Loading' : buttonText}</span>
+        </button>
+      )}
+    </>
   );
 };

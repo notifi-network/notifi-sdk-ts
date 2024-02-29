@@ -40,6 +40,7 @@ const config: Config = {
           'button-primary-blueish-bg':
             'rgb(var(--notifi-button-primary-blueish-bg))',
           'button-primary-text': 'rgb(var(--notifi-button-primary-text))',
+          'button-hover-bg': 'rgb(var(--notifi-button-hover-bg))',
           'label-connect-wallet-text':
             'rgb(var(--notifi-label-connect-wallet-text))',
           'container-bg': 'rgb(var( --notifi-bgimg-left))',

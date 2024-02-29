@@ -13,6 +13,8 @@
     --notifi-blueish1: 198 233 245;
     --notifi-blueish2: 0 194 253;
     --notifi-brand: 0 133 250;
+    --notifi-blueish3: 0 133 250;
+    --notifi-blueish4: 82 96 255;
     --notifi-light-blue: 247 251 255;
     --notifi-coral: 234 126 104;
     --notifi-green: 7, 168, 37;
@@ -30,6 +32,8 @@
   --notifi-bgimg-right: var(--notifi-blueish1);
   --notifi-button-primary-bg: var(--notifi-coral);
   --notifi-button-primary-blueish-bg: var(--notifi-brand);
+  --notifi-button-primary-blueish-bg: var(--notifi-blueish3);
+  --notifi-button-hover-bg: var(--notifi-blueish4);
   --notifi-button-primary-text: var(--notifi-white);
   --notifi-label-connect-wallet-text: var(--notifi-blueish2);
   --notifi-card-bg: var(--notifi-light-blue);
@@ -52,6 +56,8 @@
   --notifi-bgimg-right: var(--notifi-blueish1);
   --notifi-button-primary-bg: var(--notifi-coral);
   --notifi-button-primary-blueish-bg: var(--notifi-brand);
+  --notifi-button-primary-blueish-bg: var(--notifi-blueish3);
+  --notifi-button-hover-bg: var(--notifi-blueish4);
   --notifi-button-primary-text: var(--notifi-white);
   --notifi-label-connect-wallet-text: var(--notifi-blueish2);
   --notifi-card-bg: var(--notifi-light-blue);

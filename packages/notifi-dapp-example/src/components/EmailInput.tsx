@@ -1,11 +1,12 @@
 import { Icon } from '@/assets/Icon';
+import { useNotifiCardContext } from '@/context/notifi/NotifiCardContext';
 import {
   DeepPartialReadonly,
   useNotifiForm,
 } from '@notifi-network/notifi-react-card';
 import React from 'react';
 
-// import { EmailIcon } from '../assets/EmailIcon';
+import { NotifiSignUpButton } from './NotifiSignUpButton';
 
 export type EmailInputProps = Readonly<{
   copy?: DeepPartialReadonly<{
@@ -14,23 +15,29 @@ export type EmailInputProps = Readonly<{
   }>;
   disabled: boolean;
   hasChatAlert?: boolean;
+  isEdit?: boolean;
 }>;
 
 export const EmailInput: React.FC<EmailInputProps> = ({
   copy,
   disabled,
+  isEdit,
 }: EmailInputProps) => {
   const {
     formState,
     formErrorMessages,
     setEmail,
     setEmailErrorMessage,
-    setHasChanges,
+    setHasEmailChanges,
+    hasEmailChanges,
   } = useNotifiForm();
+
+  const { cardConfig } = useNotifiCardContext();
 
   const { email } = formState;
 
   const { email: emailErrorMessage } = formErrorMessages;
+  console.log('hasEmailChanges', hasEmailChanges);
 
   const validateEmail = () => {
     if (email === '') {
@@ -47,16 +54,12 @@ export const EmailInput: React.FC<EmailInputProps> = ({
     }
   };
 
+  console.log('email', email);
+
   return (
     <>
       <div className="bg-notifi-card-bg rounded-md w-112 h-18 flex flex-row items-center justify-between mb-2">
         <div className="bg-white rounded-md w-18 h-18 shadow-card text-notifi-destination-card-text flex flex-col items-center justify-center">
-          {/* <Image
-            src="/logos/email-icon.svg"
-            alt="email-icon"
-            width={15}
-            height={12}
-          /> */}
           <Icon
             id="email-icon"
             width="15px"
@@ -65,21 +68,31 @@ export const EmailInput: React.FC<EmailInputProps> = ({
           />
           <div className="font-bold text-xs mt-2">Email</div>
         </div>
-        <input
-          className="border border-grey-300 rounded-md w-86 h-11 mr-4 text-sm pl-3"
-          data-cy="notifiEmailInput"
-          onBlur={validateEmail}
-          disabled={disabled}
-          name="notifi-email"
-          type="email"
-          value={email}
-          onFocus={() => setEmailErrorMessage('')}
-          onChange={(e) => {
-            setHasChanges(true);
-            setEmail(e.target.value ?? '');
-          }}
-          placeholder={copy?.placeholder ?? 'Enter your email address'}
-        />
+        <div className="relative">
+          <input
+            className="border border-grey-300 rounded-md w-86 h-11 mr-4 text-sm pl-3 focus:outline-none"
+            data-cy="notifiEmailInput"
+            onBlur={validateEmail}
+            disabled={disabled}
+            name="notifi-email"
+            type="email"
+            value={email}
+            onFocus={() => setEmailErrorMessage('')}
+            onChange={(e) => {
+              setHasEmailChanges(true);
+              setEmail(e.target.value ?? '');
+            }}
+            placeholder={copy?.placeholder ?? 'Enter your email address'}
+          />
+          {isEdit && hasEmailChanges ? (
+            <NotifiSignUpButton
+              buttonText="Save"
+              data={cardConfig}
+              isEdit={true}
+              target="email"
+            />
+          ) : null}
+        </div>
       </div>
       <label>{emailErrorMessage}</label>
     </>
