@@ -3,8 +3,6 @@
 import { CardView } from '@/app/notifi/dashboard/page';
 import { Icon } from '@/assets/Icon';
 import { WalletAccount } from '@cosmos-kit/core';
-// import { useChain } from '@cosmos-kit/react';
-import localforage from 'localforage';
 import Image from 'next/image';
 import { Dispatch, FC, SetStateAction } from 'react';
 
@@ -19,6 +17,7 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
   cardView,
   setCardView,
 }) => {
+  // TODO: remove (for utility only)
   // const { disconnect, isWalletConnected } = useChain('injective');
   return (
     <div className="grow-0 w-80 h-screen px-7">
@@ -29,27 +28,16 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
         alt="Injective"
         className="m-auto"
       />
-      <div className="flex items-center w-28 m-auto px-1 bg-white mb-14">
-        <Icon
-          id="user-protrait"
-          width={10}
-          height={10}
-          className="text-notifi-icon-selected opacity-20 mr-2"
-        />
-        <div>
-          {account?.address.slice(0, 6)} ... {account?.address.slice(-6)}
-        </div>
-      </div>
       <div
         onClick={() => setCardView('history')}
         className={`flex px-4 ${
           cardView === 'history'
-            ? 'bg-white '
+            ? 'bg-white shadow-md'
             : 'text-notifi-tab-unselected-text'
-        }  w-64 py-4 rounded-lg mb-2 cursor-pointer`}
+        }  w-64 py-3 rounded-lg mb-2 cursor-pointer`}
       >
         <Icon
-          id={'bell'}
+          id={'inbox'}
           className={`${
             cardView === 'history'
               ? 'text-notifi-icon-selected'
@@ -60,9 +48,9 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
       </div>
       <div
         onClick={() => setCardView('destination')}
-        className={`flex px-4  w-64 py-4 rounded-lg mb-2 cursor-pointer ${
+        className={`flex px-4  w-64 py-3 rounded-lg mb-2 cursor-pointer ${
           cardView === 'destination'
-            ? 'bg-white'
+            ? 'bg-white shadow-md'
             : 'text-notifi-tab-unselected-text'
         }`}
       >
@@ -78,9 +66,9 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
       </div>
       <div
         onClick={() => setCardView('alertSubscription')}
-        className={`flex px-4 w-64 py-4 rounded-lg mb-2 cursor-pointer ${
+        className={`flex px-4 w-64 py-3 rounded-lg mb-2 cursor-pointer ${
           cardView === 'alertSubscription'
-            ? 'bg-white '
+            ? 'bg-white shadow-md'
             : 'text-notifi-tab-unselected-text'
         }`}
       >
@@ -93,6 +81,17 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
           }`}
         />
         <div className="ml-5">Alert Subscription</div>
+      </div>
+
+      <div className="w-full border-dashed border border-gray-300 my-6"></div>
+
+      <div
+        className={`flex px-4 text-notifi-tab-unselected-text w-64 py-4 rounded-lg mb-2`}
+      >
+        <Icon id={'user-protrait'} className={`text-notifi-icon-unselected`} />
+        <div className="ml-5">
+          {account?.address.slice(0, 6)} ... {account?.address.slice(-6)}
+        </div>
       </div>
       {/* TODO: utility for div (need remove) */}
       {/* <button

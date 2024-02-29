@@ -5,6 +5,7 @@ import { useNotifiCardContext } from '@/context/notifi/NotifiCardContext';
 import { validateEventDetails } from '@/utils/notificationHistory';
 import { Types } from '@notifi-network/notifi-graphql';
 import { useNotifiClientContext } from '@notifi-network/notifi-react-card';
+import Image from 'next/image';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 
 import { HistoryListRow } from './HistoryListRow';
@@ -34,6 +35,7 @@ export const HistoryList: React.FC<HistoryListProps> = ({
   const [nodes, setNodes] = useState<
     Types.FusionNotificationHistoryEntryFragmentFragment[]
   >([]);
+  const [unreadCount, setUnreadCount] = useState<number | null>(null);
   const [cursorInfo, setCursorInfo] = useState<CursorInfo>({
     hasNextPage: false,
     endCursor: undefined,
@@ -45,6 +47,7 @@ export const HistoryList: React.FC<HistoryListProps> = ({
     cardConfig?.eventTypes?.map((event) => event.name) ?? [],
   );
 
+  // TODO: move to useNotifiHistory hook
   const getNotificationHistory = (initialLoad?: boolean) => {
     if (!initialLoad && !cursorInfo.hasNextPage) {
       setGlobalError('No more notification history to fetch');
@@ -89,6 +92,9 @@ export const HistoryList: React.FC<HistoryListProps> = ({
 
   useEffect(() => {
     getNotificationHistory(true);
+    frontendClient.getUnreadNotificationHistoryCount().then(({ count }) => {
+      setUnreadCount(count);
+    });
   }, [frontendClient]);
 
   // useEffect(() => {
@@ -104,20 +110,41 @@ export const HistoryList: React.FC<HistoryListProps> = ({
       className={`
         ${historyDetailEntry ? 'hidden' : ''} 
         ${isLoading ? 'h-full' : ''}
-        flex flex-col gap-2 relative
+        flex flex-col relative
       `}
     >
+      {nodes.length > 0 ? (
+        <div className={`p-6  border-b border-gray-200`}>
+          <div className="m-auto mt-4 font-medium text-base ">Inbox</div>
+          {unreadCount ? (
+            <div className="m-auto text-sm">
+              {unreadCount} unread message{unreadCount > 1 ? 's' : ''}
+            </div>
+          ) : null}
+        </div>
+      ) : null}
+
       {isLoading && (
         <div className="m-auto absolute top-0 left-0 right-0 bottom-0 bg-black bg-opacity-5">
           <LoadingSpinner />
         </div>
       )}
-      <div className="m-auto mt-4 mb-6 text-lg font-extrabold">Alert Inbox</div>
+      {nodes.length === 0 && !isLoading ? (
+        <div className="flex justify-center mt-24">
+          <Image
+            src={'/logos/empty-inbox.svg'}
+            width={404}
+            height={317}
+            alt="empty-inbox"
+          />
+        </div>
+      ) : null}
       {nodes.map((node) => (
         <HistoryListRow
           key={node.id}
           historyDetailEntry={node}
           setHistoryDetailEntry={setHistoryDetailEntry}
+          setUnreadCount={setUnreadCount}
         />
       ))}
       <div

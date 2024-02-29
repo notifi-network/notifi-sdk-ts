@@ -7,7 +7,7 @@ import { FunctionComponent, SVGAttributes } from 'react';
 export type SpriteIconId =
   | Types.GenericEventIconHint
   | 'warning'
-  | 'bell'
+  | 'inbox'
   | 'destinations'
   | 'config'
   | 'user-protrait'
@@ -18,7 +18,11 @@ export type SpriteIconId =
   | 'slack-icon'
   | 'telegram-icon'
   | 'discord-icon'
-  | 'check';
+  | 'check'
+  // TODO: Radial background MVP-4112
+  | 'lightbulb-orange'
+  | 'email-close'
+  | 'bell-red';
 
 /**
  * It takes an icon id and returns an svg element with the corresponding icon defined in /public/icons/sprite.svg.

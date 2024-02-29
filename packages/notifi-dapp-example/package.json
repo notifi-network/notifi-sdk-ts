@@ -1,6 +1,6 @@
 {
   "name": "@notifi-network/notifi-dapp-example",
-  "version": "0.90.7",
+  "version": "0.90.8",
   "private": true,
   "description": "A notifi dapp empowered by notifi.network",
   "author": "eric-notifi <eric.lee@notifi.network>",
@@ -43,9 +43,9 @@
     "@cosmos-kit/keplr": "^2.6.8",
     "@cosmos-kit/react": "^2.10.8",
     "@interchain-ui/react": "^1.21.4",
-    "@notifi-network/notifi-react-card": "^0.90.7",
-    "@notifi-network/notifi-frontend-client": "^0.90.7",
-    "@notifi-network/notifi-graphql": "0.90.7",
+    "@notifi-network/notifi-react-card": "^0.90.8",
+    "@notifi-network/notifi-frontend-client": "^0.90.8",
+    "@notifi-network/notifi-graphql": "^0.90.8",
     "date-fns": "^3.3.1",
     "dompurify": "^3.0.8"
   },

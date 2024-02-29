@@ -13,7 +13,7 @@ const env = process.env.NEXT_PUBLIC_ENV! as NotifiEnvironment;
 export const NotifiSubscriptionCardProvider: React.FC<PropsWithChildren> = ({
   children,
 }) => {
-  // const { key, signArbitrary } = useKeplrContext();
+  // TODO: Rename context to NotifiContextProvider
   const { client, status } = useWalletClient();
 
   const [account, setAccount] = useState<WalletAccount | null>(null);
