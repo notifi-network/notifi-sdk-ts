@@ -40,7 +40,7 @@ export default function NotifiDashboard() {
   if (!account) return null;
 
   return (
-    <div className="min-h-screen flex  items-center ">
+    <div className="min-h-screen flex items-center ">
       <DashboardSideBar
         account={account}
         cardView={cardView}

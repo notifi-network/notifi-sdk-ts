@@ -6,6 +6,8 @@ import { WalletAccount } from '@cosmos-kit/core';
 import Image from 'next/image';
 import { Dispatch, FC, SetStateAction } from 'react';
 
+import { PoweredByNotifi } from './PoweredByNotifi';
+
 export type DashboardSideBarProps = {
   account: WalletAccount;
   cardView: string;
@@ -21,76 +23,86 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
   // const { disconnect, isWalletConnected } = useChain('injective');
   return (
     <div className="grow-0 w-80 h-screen px-7">
-      <Image
-        src="/logos/injective.png"
-        width={250}
-        height={115}
-        alt="Injective"
-        className="m-auto"
-      />
-      <div
-        onClick={() => setCardView('history')}
-        className={`flex px-4 ${
-          cardView === 'history'
-            ? 'bg-white shadow-md'
-            : 'text-notifi-tab-unselected-text'
-        }  w-64 py-3 rounded-lg mb-2 cursor-pointer`}
-      >
-        <Icon
-          id={'inbox'}
-          className={`${
-            cardView === 'history'
-              ? 'text-notifi-icon-selected'
-              : 'text-notifi-icon-unselected'
-          }`}
-        />
-        <div className="ml-5">Inbox</div>
-      </div>
-      <div
-        onClick={() => setCardView('destination')}
-        className={`flex px-4  w-64 py-3 rounded-lg mb-2 cursor-pointer ${
-          cardView === 'destination'
-            ? 'bg-white shadow-md'
-            : 'text-notifi-tab-unselected-text'
-        }`}
-      >
-        <Icon
-          id={'destinations'}
-          className={`${
-            cardView === 'destination'
-              ? 'text-notifi-icon-selected'
-              : 'text-notifi-icon-unselected'
-          }`}
-        />
-        <div className="ml-5">Destination</div>
-      </div>
-      <div
-        onClick={() => setCardView('alertSubscription')}
-        className={`flex px-4 w-64 py-3 rounded-lg mb-2 cursor-pointer ${
-          cardView === 'alertSubscription'
-            ? 'bg-white shadow-md'
-            : 'text-notifi-tab-unselected-text'
-        }`}
-      >
-        <Icon
-          id={'config'}
-          className={`${
-            cardView === 'alertSubscription'
-              ? 'text-notifi-icon-selected'
-              : 'text-notifi-icon-unselected'
-          }`}
-        />
-        <div className="ml-5">Alert Subscription</div>
-      </div>
+      <div className="flex flex-col justify-between items-start h-full pb-6">
+        <div>
+          <Image
+            src="/logos/injective.png"
+            width={250}
+            height={115}
+            alt="Injective"
+            className="m-auto"
+          />
+          <div
+            onClick={() => setCardView('history')}
+            className={`flex px-4 ${
+              cardView === 'history'
+                ? 'bg-white shadow-md'
+                : 'text-notifi-tab-unselected-text'
+            }  w-64 py-3 rounded-lg mb-2 cursor-pointer`}
+          >
+            <Icon
+              id={'inbox'}
+              className={`${
+                cardView === 'history'
+                  ? 'text-notifi-icon-selected'
+                  : 'text-notifi-icon-unselected'
+              }`}
+            />
+            <div className="ml-5">Inbox</div>
+          </div>
+          <div
+            onClick={() => setCardView('destination')}
+            className={`flex px-4  w-64 py-3 rounded-lg mb-2 cursor-pointer ${
+              cardView === 'destination'
+                ? 'bg-white shadow-md'
+                : 'text-notifi-tab-unselected-text'
+            }`}
+          >
+            <Icon
+              id={'destinations'}
+              className={`${
+                cardView === 'destination'
+                  ? 'text-notifi-icon-selected'
+                  : 'text-notifi-icon-unselected'
+              }`}
+            />
+            <div className="ml-5">Destinations</div>
+          </div>
+          <div
+            onClick={() => setCardView('alertSubscription')}
+            className={`flex px-4 w-64 py-3 rounded-lg mb-2 cursor-pointer ${
+              cardView === 'alertSubscription'
+                ? 'bg-white shadow-md'
+                : 'text-notifi-tab-unselected-text'
+            }`}
+          >
+            <Icon
+              id={'config'}
+              className={`${
+                cardView === 'alertSubscription'
+                  ? 'text-notifi-icon-selected'
+                  : 'text-notifi-icon-unselected'
+              }`}
+            />
+            <div className="ml-5">Alert Subscription</div>
+          </div>
 
-      <div className="w-full border-dashed border border-gray-300 my-6"></div>
+          <div className="w-full border-dashed border border-gray-300 my-6"></div>
 
-      <div
-        className={`flex px-4 text-notifi-tab-unselected-text w-64 py-4 rounded-lg mb-2`}
-      >
-        <Icon id={'user-protrait'} className={`text-notifi-icon-unselected`} />
-        <div className="ml-5">
-          {account?.address.slice(0, 6)} ... {account?.address.slice(-6)}
+          <div
+            className={`flex px-4 text-notifi-tab-unselected-text w-64 py-4 rounded-lg mb-2`}
+          >
+            <Icon
+              id={'user-protrait'}
+              className={`text-notifi-icon-unselected`}
+            />
+            <div className="ml-5">
+              {account?.address.slice(0, 6)} ... {account?.address.slice(-6)}
+            </div>
+          </div>
+        </div>
+        <div className=" p-2 bg-white rounded-lg h-7 bg-opacity-40">
+          <PoweredByNotifi width={127} height={16} />
         </div>
       </div>
       {/* TODO: utility for div (need remove) */}
