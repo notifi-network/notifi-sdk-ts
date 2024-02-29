@@ -13,18 +13,13 @@ export const InputFieldTelegram: React.FC<InputFieldTelegramProps> = ({
   disabled,
   isEditable,
 }: InputFieldTelegramProps) => {
-  const {
-    formState,
-    formErrorMessages,
-    setTelegram,
-    setTelegramErrorMessage,
-    setHasTelegramChanges,
-    hasTelegramChanges,
-  } = useNotifiForm();
+  const { formState, formErrorMessages, setTelegram, setTelegramErrorMessage } =
+    useNotifiForm();
 
   const { telegram: telegramErrorMessage, email: emailErrorMessage } =
     formErrorMessages;
-  const { updateTarget } = useNotifiTargets('telegram');
+  const { updateTarget, setHasTelegramChanges, hasTelegramChanges } =
+    useNotifiTargets('telegram');
 
   const { telegram } = formState;
 

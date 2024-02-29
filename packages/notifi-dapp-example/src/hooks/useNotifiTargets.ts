@@ -7,7 +7,7 @@ import {
   useNotifiSubscriptionContext,
 } from '@notifi-network/notifi-react-card';
 import { isValidPhoneNumber } from 'libphonenumber-js';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 export type TargetGroupData = {
   name: string;
@@ -20,8 +20,7 @@ export type TargetGroupData = {
 type Target = 'email' | 'phoneNumber' | 'telegram' | 'discord';
 
 export const useNotifiTargets = (target?: Target) => {
-  const { formState, setHasEmailChanges, setHasTelegramChanges } =
-    useNotifiForm();
+  const { formState } = useNotifiForm();
   const { frontendClient } = useNotifiClientContext();
   const { unverifiedDestinations } = useDestinationState();
 
@@ -29,6 +28,9 @@ export const useNotifiTargets = (target?: Target) => {
 
   const { phoneNumber, telegram: telegramId, email } = formState;
   const { useDiscord, render, setUseDiscord } = useNotifiSubscriptionContext();
+
+  const [hasEmailChanges, setHasEmailChanges] = useState<boolean>(false);
+  const [hasTelegramChanges, setHasTelegramChanges] = useState<boolean>(false);
 
   const targetGroup: TargetGroupData = useMemo(
     () => ({
@@ -111,5 +113,9 @@ export const useNotifiTargets = (target?: Target) => {
     updateTarget,
     renewTargetGroups,
     unVerifiedDestinationsString,
+    hasEmailChanges,
+    setHasEmailChanges,
+    hasTelegramChanges,
+    setHasTelegramChanges,
   };
 };

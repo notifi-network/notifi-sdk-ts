@@ -21,18 +21,13 @@ export const InputFieldEmail: React.FC<InputFieldEmailProps> = ({
   disabled,
   isEditable,
 }: InputFieldEmailProps) => {
-  const {
-    formState,
-    formErrorMessages,
-    setEmail,
-    setEmailErrorMessage,
-    setHasEmailChanges,
-    hasEmailChanges,
-  } = useNotifiForm();
+  const { formState, formErrorMessages, setEmail, setEmailErrorMessage } =
+    useNotifiForm();
 
   const { email: emailErrorMessage, telegram: telegramErrorMessage } =
     formErrorMessages;
-  const { updateTarget } = useNotifiTargets('email');
+  const { updateTarget, setHasEmailChanges, hasEmailChanges } =
+    useNotifiTargets('email');
 
   const { email } = formState;
 

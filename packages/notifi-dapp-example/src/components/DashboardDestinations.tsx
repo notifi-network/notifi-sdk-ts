@@ -1,5 +1,6 @@
 import { Icon } from '@/assets/Icon';
 import { useNotifiCardContext } from '@/context/notifi/NotifiCardContext';
+import { useNotifiTargets } from '@/hooks/useNotifiTargets';
 import {
   useNotifiForm,
   useNotifiSubscriptionContext,
@@ -14,6 +15,7 @@ export const DashboardDestinations = () => {
   const { cardConfig } = useNotifiCardContext();
 
   const { email, phoneNumber, telegramId } = useNotifiSubscriptionContext();
+  const { setHasEmailChanges, setHasTelegramChanges } = useNotifiTargets();
 
   const {
     setEmail,
@@ -22,8 +24,6 @@ export const DashboardDestinations = () => {
     setEmailErrorMessage,
     setTelegramErrorMessage,
     setPhoneNumberErrorMessage,
-    setHasEmailChanges,
-    setHasTelegramChanges,
   } = useNotifiForm();
 
   const resetFormState = useCallback(() => {
