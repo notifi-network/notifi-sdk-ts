@@ -14,10 +14,6 @@ export type NotifiFormData = Readonly<{
   formErrorMessages: FormErrorMessages;
   hasChanges: boolean;
   setHasChanges: (value: boolean) => void;
-  hasEmailChanges: boolean;
-  setHasEmailChanges: (value: boolean) => void;
-  hasTelegramChanges: boolean;
-  setHasTelegramChanges: (value: boolean) => void;
 
   setEmail: (value: string) => void;
   setEmailErrorMessage: (value: string) => void;
@@ -35,8 +31,6 @@ export const NotifiFormProvider: React.FC<PropsWithChildren<unknown>> = ({
   children,
 }) => {
   const [hasChanges, setHasChanges] = useState<boolean>(false);
-  const [hasEmailChanges, setHasEmailChanges] = useState<boolean>(false);
-  const [hasTelegramChanges, setHasTelegramChanges] = useState<boolean>(false);
   const [formState, setFormInput] = useState<DestinationInputs>({
     email: '',
     phoneNumber: '',
@@ -96,10 +90,6 @@ export const NotifiFormProvider: React.FC<PropsWithChildren<unknown>> = ({
     formErrorMessages,
     hasChanges,
     setHasChanges,
-    hasEmailChanges,
-    setHasEmailChanges,
-    hasTelegramChanges,
-    setHasTelegramChanges,
     setEmail,
     setEmailErrorMessage,
     setTelegram,
