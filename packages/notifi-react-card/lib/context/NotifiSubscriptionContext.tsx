@@ -413,19 +413,12 @@ export const NotifiSubscriptionContextProvider: React.FC<
         switch (slackTarget.verificationStatus) {
           case 'UNVERIFIED':
           case 'MISSING_PERMISSIONS':
-            setSlackErrorMessage({
-              type: 'recoverableError',
-              onClick: () =>
-                window.open(slackTarget.verificationLink, '_blank'),
-              message: 'Enable Bot',
-            });
-            break;
           case 'MISSING_CHANNEL':
             setSlackErrorMessage({
               type: 'recoverableError',
               onClick: () =>
                 window.open(slackTarget.verificationLink, '_blank'),
-              message: 'Select Channel',
+              message: 'Enable Bot',
             });
             break;
           case 'VERIFIED':

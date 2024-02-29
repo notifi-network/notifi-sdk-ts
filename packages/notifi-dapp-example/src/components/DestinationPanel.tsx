@@ -161,11 +161,11 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
           ) : (
             <div className="flex flex-col items-start justify-between w-90 mr-4">
               <div className="font-semibold text-sm ml-6">
-                {slackTargetData?.verificationStatus === 'VERIFIED'
-                  ? slackTargetData?.slackChannelName ?? ''
-                  : 'Slack'}
+                {slackTargetData?.slackChannelName ?? 'Slack'}
               </div>
-              {VerifiedText}
+              {slackTargetData?.verificationStatus === 'VERIFIED'
+                ? VerifiedText
+                : null}
             </div>
           )}
         </div>
