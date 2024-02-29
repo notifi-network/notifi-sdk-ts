@@ -47,7 +47,7 @@ export const SlackInput: React.FC<SlackInputProps> = ({
             id="slack-icon"
             width="16px"
             height="16px"
-            className="text-notifi-toggle-on-bg"
+            className="text-notifi-button-primary-blueish-bg"
           />
           <div className="font-bold text-xs mt-2">Slack</div>
         </div>

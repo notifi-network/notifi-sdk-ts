@@ -33,7 +33,7 @@ export const ConfigDestinationModal: React.FC<ConfigDestinationModalProps> = ({
         </div>
       </div>
       <button
-        className="rounded bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-72 h-11 mb-6 text-sm font-bold"
+        className="rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-72 h-11 mb-6 text-sm font-bold disabled:hover:bg-notifi-button-primary-blueish-bg hover:bg-notifi-button-hover-bg"
         onClick={() => {
           updateFtuStage(FtuStage.Alerts);
         }}

@@ -26,8 +26,10 @@ export const Toggle: React.FC<ToggleProps> = ({
         onChange={onChange}
       />
       {/* <div className="relative"> */}
-      <div className="w-9 h-5 rounded-full peer bg-notifi-toggle-off-bg peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:right-0.5 after:start-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-notifi-toggle-on-bg relative"></div>
-      <div className="absolute flex items-center justify-center w-1 h-1 transition bg-black rounded-full left-1 top-1 peer-checked:translate-x-full peer-checked:bg-primary"></div>
+      <div className="w-7 h-4 rounded-full peer bg-notifi-toggle-off-bg peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:absolute after:top-0.5 after:right-0.5 after:start-[2px] after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-notifi-toggle-on-bg relative"></div>
+      {/* <div className="absolute flex items-center justify-center w-1 h-1 transition bg-black rounded-full left-1 top-1 peer-checked:translate-x-full peer-checked:bg-primary"></div> */}
+      {/* <div className="absolute w-[12px] h-[12px] top-1px left-[20px] bg-backgroundwhite rounded-[56px] border-r [border-right-style:solid] border-b [border-bottom-style:solid] border-l [border-left-style:solid] border-borderwhite shadow-toggle-shadow-toggle-active" /> */}
+      <div className="absolute w-[4px] h-[4px] top-[8px] left-[6px] peer-checked:top-[8px] peer-checked:start-[18px] bg-notifi-toggle-off-dot-bg peer-checked:bg-notifi-toggle-on-bg rounded-[56px] shadow-regular-shadow-small" />
       {/* <span className="hidden active"> */}
       {/* <svg
             width="11"

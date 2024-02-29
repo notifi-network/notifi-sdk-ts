@@ -1,4 +1,5 @@
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
+import { TargetGroupData, useNotifiTargets } from '@/hooks/useNotifiTargets';
 import { useRouterAsync } from '@/hooks/useRouterAsync';
 import { formatTelegramForSubscription } from '@/utils/stringUtils';
 import {
@@ -15,22 +16,10 @@ import {
 import { isValidPhoneNumber } from 'libphonenumber-js';
 import React, { useCallback, useMemo } from 'react';
 
-type Target = 'email' | 'slack' | 'telegram' | 'discord';
-
 export type NotifiSignUpButtonProps = Readonly<{
   buttonText: string;
   data: CardConfigItemV1;
-  isEdit?: boolean;
-  target?: Target;
 }>;
-
-type TargetGroupData = {
-  name: string;
-  emailAddress?: string;
-  phoneNumber?: string;
-  telegramId?: string;
-  discordId?: string;
-};
 
 //todo implement in card context
 const inputs = {};
@@ -38,12 +27,12 @@ const inputs = {};
 export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
   buttonText,
   data,
-  isEdit,
-  target,
 }) => {
   const eventTypes = data.eventTypes;
 
   const frontendClientLogin = useFrontendClientLogin();
+
+  const { renewTargetGroups } = useNotifiTargets();
 
   const { handleRoute } = useRouterAsync();
 
@@ -57,12 +46,7 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
 
   const { setIsGlobalLoading, setGlobalError } = useGlobalStateContext();
 
-  const {
-    formErrorMessages,
-    formState,
-    setHasEmailChanges,
-    setHasTelegramChanges,
-  } = useNotifiForm();
+  const { formErrorMessages, formState } = useNotifiForm();
 
   const { phoneNumber, telegram: telegramId, email } = formState;
 
@@ -71,19 +55,6 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
     phoneNumber: smsErrorMessage,
     telegram: telegramErrorMessage,
   } = formErrorMessages;
-
-  const afterEditDestination = () => {
-    switch (target) {
-      case 'email':
-        setHasEmailChanges(true);
-        break;
-      case 'telegram':
-        setHasTelegramChanges(true);
-        break;
-      default:
-        break;
-    }
-  };
 
   const targetGroup: TargetGroupData = useMemo(
     () => ({
@@ -99,13 +70,7 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
     [email, phoneNumber, telegramId, useDiscord],
   );
 
-  const renewTargetGroups = useCallback(
-    async (targetGroup: TargetGroupData) => {
-      return frontendClient.ensureTargetGroup(targetGroup);
-    },
-    [frontendClient, targetGroup],
-  );
-
+  // TODO: migrate to useSubscribeAlert
   const subscribeAlerts = useCallback(
     async (eventTypes: EventTypeConfig, inputs: Record<string, unknown>) => {
       await renewTargetGroups(targetGroup);
@@ -136,7 +101,6 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
         const result = await subscribeAlerts(subEvents, inputs);
         success = !!result;
       } else {
-        console.log('targetGroup', targetGroup);
         const result = await renewTargetGroups(targetGroup);
         success = !!result;
       }
@@ -145,7 +109,7 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
         const newData = await frontendClient.fetchData();
         render(newData);
         await syncFtuStage(data.isContactInfoRequired);
-        isEdit ? afterEditDestination() : handleRoute('/notifi/ftu');
+        handleRoute('/notifi/ftu');
       }
     } catch (e: unknown) {
       setGlobalError('ERROR: Failed to signup, check console for more details');
@@ -161,49 +125,35 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
     targetGroup,
   ]);
 
-  const hasErrors = emailErrorMessage !== '' || smsErrorMessage !== '';
+  const hasErrors =
+    emailErrorMessage !== '' ||
+    smsErrorMessage !== '' ||
+    telegramErrorMessage !== '';
   const isInputFieldsValid = useMemo(() => {
     return data.isContactInfoRequired
       ? email || phoneNumber || telegramId || useDiscord
       : true;
   }, [email, phoneNumber, telegramId, useDiscord, data.isContactInfoRequired]);
 
-  const isSaveButtonDisabled = () => {
-    switch (target) {
-      case 'email':
-        return !isInitialized || loading || emailErrorMessage !== '' || !email;
-      case 'telegram':
-        return (
-          !isInitialized ||
-          loading ||
-          telegramErrorMessage !== '' ||
-          !telegramId
-        );
-      default:
-        return !isInitialized || loading || hasErrors || !isInputFieldsValid;
-    }
-  };
   return (
     <>
-      {isEdit ? (
+      {/* {isEdit ? (
         <button
-          className="rounded bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-16 h-7 mb-6 text-sm font-bold absolute top-2.5 right-6 disabled:opacity-50 disabled:hover:bg-notifi-button-primary-blueish-bg hover:bg-notifi-button-hover-bg"
+          className="rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-16 h-7 mb-6 text-sm font-bold absolute top-2.5 right-6 disabled:opacity-50 disabled:hover:bg-notifi-button-primary-blueish-bg hover:bg-notifi-button-hover-bg"
           disabled={isSaveButtonDisabled()}
           onClick={onClick}
         >
           <span>{buttonText}</span>
         </button>
-      ) : (
-        <button
-          className="rounded bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-72 h-11 mb-6 text-sm font-bold"
-          disabled={
-            !isInitialized || loading || hasErrors || !isInputFieldsValid
-          }
-          onClick={onClick}
-        >
-          <span>{loading ? 'Loading' : buttonText}</span>
-        </button>
-      )}
+      ) : ( */}
+      <button
+        className="rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-72 h-11 mb-6 text-sm font-bold disabled:hover:bg-notifi-button-primary-blueish-bg hover:bg-notifi-button-hover-bg"
+        disabled={!isInitialized || loading || hasErrors || !isInputFieldsValid}
+        onClick={onClick}
+      >
+        <span>{loading ? 'Loading' : buttonText}</span>
+      </button>
+      {/* )} */}
     </>
   );
 };

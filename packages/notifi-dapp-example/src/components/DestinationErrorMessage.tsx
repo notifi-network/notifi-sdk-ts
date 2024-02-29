@@ -1,5 +1,4 @@
 import { NotifiTooltip } from '@notifi-network/notifi-react-card';
-import clsx from 'clsx';
 import React from 'react';
 
 type Props = {
@@ -21,7 +20,10 @@ export const DestinationErrorMessage: React.FC<Props> = ({
     <div>
       {onClick !== undefined ? (
         isButton ? (
-          <button className="rounded bg-black text-notifi-button-primary-text w-20 h-7 text-sm font-bold">
+          <button
+            onClick={() => onClick()}
+            className="rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-20 h-7 text-sm font-bold disabled:opacity-50 disabled:hover:bg-notifi-button-primary-blueish-bg hover:bg-notifi-button-hover-bg"
+          >
             {buttonCopy}
           </button>
         ) : (
@@ -29,9 +31,9 @@ export const DestinationErrorMessage: React.FC<Props> = ({
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => onClick()}
-            className="text-sm font-bold text-blue-500 ml-6 underline"
+            className="text-sm font-bold text-notifi-button-primary-blueish-bg ml-6 underline cursor-pointer"
           >
-            <label>{errorMessage}</label>
+            <label className="cursor-pointer">{errorMessage}</label>
           </a>
         )
       ) : (

@@ -22,6 +22,8 @@ export const DashboardDestinations = () => {
     setEmailErrorMessage,
     setTelegramErrorMessage,
     setPhoneNumberErrorMessage,
+    setHasEmailChanges,
+    setHasTelegramChanges,
   } = useNotifiForm();
 
   const resetFormState = useCallback(() => {
@@ -31,6 +33,8 @@ export const DashboardDestinations = () => {
     setEmailErrorMessage('');
     setTelegramErrorMessage('');
     setPhoneNumberErrorMessage('');
+    setHasEmailChanges(false);
+    setHasTelegramChanges(false);
   }, [email, phoneNumber, telegramId]);
 
   const handleClick = () => {
@@ -53,7 +57,7 @@ export const DashboardDestinations = () => {
             className="rounded-lg text-notifi-text-light w-16 h-8 text-sm border border-solid border-gray-300 flex items-center justify-center flex-row"
             onClick={handleClick}
           >
-            <Icon id="edit-icon" className="w-5 mr-1" />
+            <Icon id="edit-icon" className="text-notifi-text-light w-5 mr-1" />
             <span className="mt-0.5">Edit</span>
           </button>
         </div>
