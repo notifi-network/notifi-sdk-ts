@@ -25,7 +25,6 @@ type WalletBlockchainWithPublicKey = Extract<
   | 'SOLANA'
   | 'ZKSYNC'
   | 'BASE'
-  | 'INJECTIVE'
   | 'BLAST'
   | 'CELO'
   | 'MANTLE'
@@ -103,7 +102,6 @@ const evmChains = [
   'BINANCE',
   'OPTIMISM',
   'BASE',
-  'INJECTIVE',
   'BLAST',
   'CELO',
   'MANTLE',

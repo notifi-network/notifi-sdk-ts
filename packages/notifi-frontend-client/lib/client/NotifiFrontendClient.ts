@@ -41,7 +41,6 @@ export type SignMessageParams =
     | 'ARBITRUM'
     | 'AVALANCHE'
     | 'BINANCE'
-    | 'INJECTIVE'
     | 'OSMOSIS'
     | 'NIBIRU'
     | 'OPTIMISM'
@@ -280,7 +279,6 @@ export class NotifiFrontendClient {
 
     let loginResult: Types.UserFragmentFragment | undefined = undefined;
     switch (walletBlockchain) {
-      case 'INJECTIVE':
       case 'BLAST':
       case 'CELO':
       case 'MANTLE':
@@ -310,6 +308,7 @@ export class NotifiFrontendClient {
       case 'SUI':
       case 'ACALA':
       case 'NEAR':
+      case 'INJECTIVE':
       case 'OSMOSIS':
       case 'NIBIRU':
       case 'APTOS': {
@@ -356,7 +355,6 @@ export class NotifiFrontendClient {
       case 'AVALANCHE':
       case 'BINANCE':
       case 'BASE':
-      case 'INJECTIVE':
       case 'BLAST':
       case 'CELO':
       case 'MANTLE':
@@ -377,6 +375,7 @@ export class NotifiFrontendClient {
         );
         return signature;
       }
+      case 'INJECTIVE':
       case 'OSMOSIS':
       case 'ZKSYNC':
       case 'SOLANA': {

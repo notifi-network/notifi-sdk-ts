@@ -126,6 +126,7 @@ const signMessage = async ({
   timestamp: number;
 }>): Promise<string> => {
   switch (params.walletBlockchain) {
+    case 'INJECTIVE':
     case 'OSMOSIS':
     case 'NIBIRU':
     case 'SOLANA': {
@@ -157,20 +158,20 @@ const signMessage = async ({
     case 'MANTA':
     case 'MONAD':
     case 'ETHEREUM':
-    case 'INJECTIVE': {
-      if (signer.walletBlockchain !== params.walletBlockchain) {
-        throw new Error('Signer and config have different walletBlockchain');
+      {
+        if (signer.walletBlockchain !== params.walletBlockchain) {
+          throw new Error('Signer and config have different walletBlockchain');
+        }
+
+        const { walletPublicKey } = params;
+        const messageBuffer = new TextEncoder().encode(
+          `${SIGNING_MESSAGE}${walletPublicKey}${dappAddress}${timestamp.toString()}`,
+        );
+
+        const signedBuffer = await signer.signMessage(messageBuffer);
+        const signature = Buffer.from(signedBuffer).toString('hex');
+        return signature;
       }
-
-      const { walletPublicKey } = params;
-      const messageBuffer = new TextEncoder().encode(
-        `${SIGNING_MESSAGE}${walletPublicKey}${dappAddress}${timestamp.toString()}`,
-      );
-
-      const signedBuffer = await signer.signMessage(messageBuffer);
-      const signature = Buffer.from(signedBuffer).toString('hex');
-      return signature;
-    }
     case 'APTOS': {
       if (signer.walletBlockchain !== 'APTOS') {
         throw new Error('Signer and config have different walletBlockchain');
