@@ -214,8 +214,6 @@ const ensureWalletBalanceSources = async (
           return 'BLAST_WALLET';
         case 'CELO':
           return 'CELO_WALLET';
-        case 'INJECTIVE':
-          return 'INJECTIVE_WALLET';
         case 'MANTLE':
           return 'MANTLE_WALLET';
         case 'LINEA':
