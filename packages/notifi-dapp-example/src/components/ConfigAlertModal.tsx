@@ -14,7 +14,9 @@ export const ConfigAlertModal = () => {
       <div>
         <div className="flex flex-col items-center justify-center">
           <p className="font-semibold text-xs opacity-50 mt-2.5">STEP 3 OF 3</p>
-          <p className="text-2xl mt-6">Select alerts you want to receive</p>
+          <p className="font-medium text-lg mt-6">
+            Select alerts you want to receive
+          </p>
         </div>
       </div>
 

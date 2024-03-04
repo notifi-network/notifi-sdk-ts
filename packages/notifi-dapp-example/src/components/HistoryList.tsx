@@ -61,7 +61,7 @@ export const HistoryList: React.FC<HistoryListProps> = ({
         </div>
       )}
       {nodes.length === 0 && !isLoading ? (
-        <div className="flex justify-center mt-24">
+        <div className="flex justify-center h-[88vh]">
           <Image
             src={'/logos/empty-inbox.svg'}
             width={404}

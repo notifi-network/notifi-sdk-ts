@@ -13,9 +13,6 @@ const config: Config = {
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
-    // fontFamily: {
-    //   rota: ['var(--font-rota)'],
-    // },
     extend: {
       width: {
         86: '343px',

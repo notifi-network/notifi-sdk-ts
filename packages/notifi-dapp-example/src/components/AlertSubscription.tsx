@@ -18,7 +18,11 @@ export const AlertSubscription: React.FC<AlertSubscriptionRowProps> = ({
   );
 
   return (
-    <div className="flex flex-col items-center 2xl:px-[15.75rem] xl:px-[10rem] h-[94vh]">
+    <div
+      className={`flex flex-col items-center 2xl:px-[15.75rem] xl:px-[10rem] ${
+        title ? 'h-[94vh]' : ''
+      }`}
+    >
       {title ? (
         <div className="mt-8 mb-6 font-medium text-lg">{title}</div>
       ) : null}
