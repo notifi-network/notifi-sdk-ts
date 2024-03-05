@@ -83,7 +83,7 @@ export const InputFieldTelegram: React.FC<InputFieldTelegramProps> = ({
               disabled={telegramErrorMessage !== '' || emailErrorMessage !== ''}
               onClick={updateTarget}
             >
-              <span>save</span>
+              <span>Save</span>
             </button>
           ) : null}
         </div>

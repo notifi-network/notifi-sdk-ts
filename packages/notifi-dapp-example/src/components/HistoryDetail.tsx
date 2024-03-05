@@ -27,12 +27,14 @@ export const HistoryDetail: React.FC<HistoryDetailProps> = ({
   );
 
   return (
-    <div className="p-6 h-[88vh]">
-      <Icon
-        className="cursor-pointer text-gray-500 mb-4"
-        onClick={() => setHistoryDetailEntry(null)}
-        id="left-arrow"
-      />
+    <div className="p-6">
+      <div className="hover:bg-notifi-back-button-hover-bg focus:bg-notifi-back-button-focus-bg h-6 w-6 rounded-2xl">
+        <Icon
+          className="cursor-pointer text-gray-500 mb-4"
+          onClick={() => setHistoryDetailEntry(null)}
+          id="left-arrow"
+        />
+      </div>
       <div className="px-9 flex">
         <div className="grow flex flex-col gap-3">
           <div>

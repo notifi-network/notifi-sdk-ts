@@ -90,7 +90,7 @@ export const InputFieldEmail: React.FC<InputFieldEmailProps> = ({
             disabled={telegramErrorMessage !== '' || emailErrorMessage !== ''}
             onClick={updateTarget}
           >
-            <span>save</span>
+            <span>Save</span>
           </button>
         ) : null}
       </div>

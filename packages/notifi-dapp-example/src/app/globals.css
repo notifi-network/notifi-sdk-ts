@@ -23,6 +23,8 @@
     --notifi-cyan: 52 63 245;
     --notifi-dusk: 128, 130, 157;
     --backgroundpressed-100: 223, 225, 231;
+    --notifi-light-purple: 241 242 245;
+    --notifi-purple: 211 219 251;
   }
 }
 
@@ -50,6 +52,8 @@
   --notifi-text-light: var(--notifi-gray2);
   --notifi-text-medium: var(--notifi-gray3);
   --notifi-toggle-off-dot-bg:var(--backgroundpressed-100);
+  --notifi-back-button-hover-bg: var(--notifi-light-purple);
+  --notifi-back-button-focus-bg: var(--notifi-purple);
 }
 
 /* Light mode color variables controlled by NotifiContext */
@@ -76,6 +80,8 @@
   --notifi-text-light: var(--notifi-gray2);
   --notifi-text-medium: var(--notifi-gray3);
   --notifi-toggle-off-dot-bg:var(--backgroundpressed-100);
+  --notifi-back-button-hover-bg: var(--notifi-light-purple);
+  --notifi-back-button-focus-bg: var(--notifi-purple);
 }
 
 /* Light mode color variables controlled by system preferences */

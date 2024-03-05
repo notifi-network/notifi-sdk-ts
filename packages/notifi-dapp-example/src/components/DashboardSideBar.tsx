@@ -36,9 +36,9 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
             onClick={() => setCardView('history')}
             className={`flex px-4 ${
               cardView === 'history'
-                ? 'bg-white shadow-md'
+                ? 'bg-white shadow-card'
                 : 'text-notifi-tab-unselected-text'
-            }  w-64 py-3 rounded-lg mb-2 cursor-pointer`}
+            }  w-64 py-3 rounded-[12px] mb-2 cursor-pointer`}
           >
             <Icon
               id={'inbox'}
@@ -52,9 +52,9 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
           </div>
           <div
             onClick={() => setCardView('destination')}
-            className={`flex px-4  w-64 py-3 rounded-lg mb-2 cursor-pointer ${
+            className={`flex px-4  w-64 py-3 rounded-[12px] mb-2 cursor-pointer ${
               cardView === 'destination'
-                ? 'bg-white shadow-md'
+                ? 'bg-white shadow-card'
                 : 'text-notifi-tab-unselected-text'
             }`}
           >
@@ -70,9 +70,9 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
           </div>
           <div
             onClick={() => setCardView('alertSubscription')}
-            className={`flex px-4 w-64 py-3 rounded-lg mb-2 cursor-pointer ${
+            className={`flex px-4 w-64 py-3 rounded-[12px] mb-2 cursor-pointer ${
               cardView === 'alertSubscription'
-                ? 'bg-white shadow-md'
+                ? 'bg-white shadow-card'
                 : 'text-notifi-tab-unselected-text'
             }`}
           >
@@ -90,7 +90,7 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
           <div className="w-full border-dashed border border-gray-300 my-6"></div>
 
           <div
-            className={`flex px-4 text-notifi-tab-unselected-text w-64 py-4 rounded-lg mb-2`}
+            className={`flex px-4 text-notifi-tab-unselected-text w-64 py-4 rounded-[12px] mb-2`}
           >
             <Icon
               id={'user-protrait'}
