@@ -25,7 +25,7 @@ export const AlertSubscriptionRow: React.FC<AlertSubscriptionRowProps> = ({
 
         <div className=" group">
           {eventType.tooltipContent ? (
-            <Icon id="INFO" className="text-black opacity-30 " />
+            <Icon id="info" className="text-black opacity-30 " />
           ) : null}
 
           <div className="absolute hidden group-hover:block text-xs max-w-48 bg-white px-2 py-1 rounded z-10 border border-gray-200 top-1/2 right-1 ">

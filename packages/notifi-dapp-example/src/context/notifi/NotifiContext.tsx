@@ -9,8 +9,9 @@ import React, { PropsWithChildren, useEffect, useMemo, useState } from 'react';
 
 const tenantId = process.env.NEXT_PUBLIC_TENANT_ID!;
 const env = process.env.NEXT_PUBLIC_ENV! as NotifiEnvironment;
+const walletBlockchain = process.env.NEXT_PUBLIC_CHAIN! as any; // ref:  NotifiParams['walletBlockchain']
 
-export const NotifiSubscriptionCardProvider: React.FC<PropsWithChildren> = ({
+export const NotifiContextProvider: React.FC<PropsWithChildren> = ({
   children,
 }) => {
   // TODO: Rename context to NotifiContextProvider
@@ -36,7 +37,7 @@ export const NotifiSubscriptionCardProvider: React.FC<PropsWithChildren> = ({
   return (
     <NotifiContext
       dappAddress={tenantId}
-      walletBlockchain="INJECTIVE"
+      walletBlockchain={walletBlockchain}
       env={env}
       walletPublicKey={base64Pubkey}
       accountAddress={account.address}
