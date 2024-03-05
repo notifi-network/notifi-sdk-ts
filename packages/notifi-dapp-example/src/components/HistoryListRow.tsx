@@ -53,10 +53,9 @@ export const HistoryListRow: React.FC<HistoryListRowProps> = ({
 
   return (
     <div
-      className={`
-      p-6 line-clamp-1 flex relative border-b border-gray-200 cursor-pointer ${
+      className={`p-6 line-clamp-1 flex relative border-b border-gray-200 cursor-pointer ${
         !parsedNotificationHistory.read ? '' : 'bg-gray-50'
-      }`}
+      } hover:notifi-shadow-card hover:bg-gray-100`}
       onClick={clickHistoryRow}
     >
       <div
