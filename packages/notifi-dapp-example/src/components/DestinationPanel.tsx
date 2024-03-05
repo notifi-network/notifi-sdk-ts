@@ -131,6 +131,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
           )}
         </div>
       ) : null}
+      {/* hide until slack is ready */}
       {/* <div className="bg-notifi-card-bg rounded-md w-112 h-18 flex flex-row items-center justify-between mb-2">
         <div className="bg-white rounded-md w-18 h-18 shadow-card text-notifi-destination-card-text flex flex-col items-center justify-center">
           <Icon
@@ -176,7 +177,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
               <div className="text-sm ml-6">Discord Bot DM Alerts</div>
               <DestinationInfoPrompt
                 isButton={true}
-                buttonCopy="Enable Bot"
+                buttonCopy={discordErrrorMessage.message ?? ''}
                 onClick={() => {
                   discordErrrorMessage?.onClick();
                 }}

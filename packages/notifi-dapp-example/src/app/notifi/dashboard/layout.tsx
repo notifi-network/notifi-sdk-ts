@@ -4,12 +4,11 @@ import { useGlobalStateContext } from '@/context/GlobalStateContext';
 import { useNotifiCardContext } from '@/context/notifi/NotifiCardContext';
 import { useNotifiRouter } from '@/hooks/useNotifiRouter';
 import { useRouterAsync } from '@/hooks/useRouterAsync';
-import { useNotifiClientContext } from '@notifi-network/notifi-react-card';
 import {
   FtuStage,
   useNotifiSubscriptionContext,
 } from '@notifi-network/notifi-react-card';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 
 export default function NotifiDashboardLayout({
   children,
@@ -36,33 +35,6 @@ export default function NotifiDashboardLayout({
   if (ftuStage !== FtuStage.Done) {
     return null;
   }
-
-  const { frontendClient } = useNotifiClientContext();
-
-  const { isClientInitialized, isClientAuthenticated } = useMemo(() => {
-    return {
-      isClientInitialized: !!frontendClient?.userState,
-      isClientAuthenticated:
-        frontendClient?.userState?.status === 'authenticated',
-    };
-  }, [frontendClient?.userState?.status]);
-
-  const { render } = useNotifiSubscriptionContext();
-
-  useEffect(() => {
-    const handler = () => {
-      // Ensure target is up-to-date after user returns to tab from 3rd party verification site
-      if (!isClientInitialized || !isClientAuthenticated) {
-        return;
-      }
-      return frontendClient.fetchData().then(render);
-    };
-
-    window.addEventListener('focus', handler);
-    return () => {
-      window.removeEventListener('focus', handler);
-    };
-  }, [isClientInitialized, isClientAuthenticated, frontendClient]);
 
   return <div>{children}</div>;
 }

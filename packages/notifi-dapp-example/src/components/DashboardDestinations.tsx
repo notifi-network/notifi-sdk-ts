@@ -1,5 +1,6 @@
 import { Icon } from '@/assets/Icon';
 import { useNotifiCardContext } from '@/context/notifi/NotifiCardContext';
+import { useNotifiTargetListener } from '@/hooks/useNotifiTargetListener';
 import { useNotifiTargets } from '@/hooks/useNotifiTargets';
 import {
   useNotifiForm,
@@ -11,6 +12,7 @@ import { DestinationPanel } from './DestinationPanel';
 import { DestinationsEditModal } from './DestinationsEditModal';
 
 export const DashboardDestinations = () => {
+  useNotifiTargetListener();
   const [open, setOpen] = useState(false);
   const { cardConfig } = useNotifiCardContext();
 
