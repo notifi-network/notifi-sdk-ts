@@ -24,7 +24,8 @@ export const InputFields: React.FC<InputFieldsProps> = ({
       {contactInfo.telegram.active ? (
         <InputFieldTelegram disabled={inputDisabled} isEditable={isEditable} />
       ) : null}
-      <InputFieldSlack disabled={inputDisabled} />
+      {/* hide until slack is ready */}
+      {/* <InputFieldSlack disabled={inputDisabled} /> */}
       {contactInfo?.discord?.active ? (
         <InputFieldDiscord disabled={inputDisabled} isEditable={isEditable} />
       ) : null}
