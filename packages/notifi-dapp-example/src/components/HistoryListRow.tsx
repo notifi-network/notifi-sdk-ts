@@ -66,19 +66,25 @@ export const HistoryListRow: React.FC<HistoryListRowProps> = ({
         <div className="bg-blue-600 size-1 rounded-3xl"></div>
       </div>
       <div
-        className={`h-6 w-6 rounded-md ${
+        className={`h-10 w-10 rounded-[12px] ${
           iconStyles[icon]?.iconBackground ?? ''
-        } mr-3 my-auto border border-gray-200/50`}
+        } mr-3 ml-1 my-auto border border-gray-200/50`}
       >
         <Icon
-          className={`mr-1 ${iconStyles[icon]?.iconColor ?? ''}`}
+          className={`m-2 ${iconStyles[icon]?.iconColor ?? ''}`}
           id={icon}
         />
       </div>
 
-      <div className="grow">
-        <div>{parsedNotificationHistory.topic}</div>
-        <div className="text-gray-500 text-xs">
+      <div className="grow text-sm">
+        <div
+          className={`${
+            !parsedNotificationHistory.read ? 'font-semibold' : ''
+          }`}
+        >
+          {parsedNotificationHistory.topic}
+        </div>
+        <div className="text-gray-500 text-sm">
           {parsedNotificationHistory.subject}
         </div>
       </div>
