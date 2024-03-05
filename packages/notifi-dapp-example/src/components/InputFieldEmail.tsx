@@ -57,7 +57,7 @@ export const InputFieldEmail: React.FC<InputFieldEmailProps> = ({
           height="12px"
           className="text-notifi-button-primary-blueish-bg"
         />
-        <div className="font-bold text-xs mt-2">Email</div>
+        <div className="font-medium text-xs mt-2">Email</div>
       </div>
       <div className="relative">
         <input

@@ -33,7 +33,7 @@ export const DestinationInfoPrompt: React.FC<Props> = ({
           target="_blank"
           rel="noopener noreferrer"
           onClick={() => onClick()}
-          className={`text-sm font-bold ${
+          className={`text-sm font-semibold ${
             isSent
               ? 'text-notifi-text-light'
               : 'text-notifi-button-primary-blueish-bg'

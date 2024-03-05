@@ -50,7 +50,7 @@ export const DashboardDestinations = () => {
           setOpen={setOpen}
         />
       ) : null}
-      <div className="flex flex-col items-center justify-center mt-9">
+      <div className="flex flex-col items-center justify-start mt-9 h-[90vh]">
         <div className="flex flex-row items-center justify-between w-112 mb-6">
           <p className="text-xl">Destinations</p>
           <button

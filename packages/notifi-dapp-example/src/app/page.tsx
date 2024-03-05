@@ -6,8 +6,11 @@ import { PoweredByNotifi } from '@/components/PoweredByNotifi';
 import { useRouterAsync } from '@/hooks/useRouterAsync';
 import { useChain, useWalletClient } from '@cosmos-kit/react';
 import '@interchain-ui/react/styles';
+import { Inter } from 'next/font/google';
 import Image from 'next/image';
 import { useEffect } from 'react';
+
+const inter = Inter({ subsets: ['latin'] });
 
 export default function Home() {
   const { connect, isWalletConnecting } = useChain('injective');
@@ -25,7 +28,7 @@ export default function Home() {
   }, [client]);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center">
+    <main className="flex min-h-screen flex-col items-center justify-center inter.className">
       <div className="fixed top-8 left-8 right-8 flex justify-between">
         <div className="left-8 flex items-center">
           <Image

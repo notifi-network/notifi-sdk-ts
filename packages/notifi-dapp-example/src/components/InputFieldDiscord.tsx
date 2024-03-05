@@ -33,10 +33,10 @@ export const InputFieldDiscord: React.FC<InputFieldDiscordProps> = ({
           height="13px"
           className="text-notifi-button-primary-blueish-bg"
         />
-        <div className="font-bold text-xs mt-2">Discord</div>
+        <div className="font-medium text-xs mt-2">Discord</div>
       </div>
       <div className="flex flex-row items-center justify-between w-90 mr-4">
-        <div className="font-semibold text-sm ml-6">Discord Bot DM Alerts</div>
+        <div className="text-sm ml-6">Discord Bot DM Alerts</div>
         <Toggle
           disabled={
             disabled || telegramErrorMessage !== '' || emailErrorMessage !== ''

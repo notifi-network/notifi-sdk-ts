@@ -13,9 +13,9 @@ const config: Config = {
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
-    fontFamily: {
-      rota: ['var(--font-rota)'],
-    },
+    // fontFamily: {
+    //   rota: ['var(--font-rota)'],
+    // },
     extend: {
       width: {
         86: '343px',
@@ -56,6 +56,7 @@ const config: Config = {
           'alert-subscription-block-bg':
             'rgb(var(--notifi-alert-subscription-block-bg))',
           'text-light': 'rgb(var(--notifi-text-light))',
+          'text-medium': 'rgb(var(--notifi-text-medium))',
           'toggle-off-dot-bg': 'rgb(var(--notifi-toggle-off-dot-bg))',
         },
       },

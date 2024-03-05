@@ -27,10 +27,10 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
         <div>
           <Image
             src="/logos/injective.png"
-            width={250}
-            height={115}
+            width={167}
+            height={35}
             alt="Injective"
-            className="m-auto"
+            className="mb-6 mt-3"
           />
           <div
             onClick={() => setCardView('history')}

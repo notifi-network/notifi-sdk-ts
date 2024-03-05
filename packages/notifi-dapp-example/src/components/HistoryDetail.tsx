@@ -27,21 +27,21 @@ export const HistoryDetail: React.FC<HistoryDetailProps> = ({
   );
 
   return (
-    <div className="p-6">
+    <div className="p-6 h-[88vh]">
       <Icon
-        className="cursor-pointer text-gray-500"
+        className="cursor-pointer text-gray-500 mb-4"
         onClick={() => setHistoryDetailEntry(null)}
         id="left-arrow"
       />
       <div className="px-9 flex">
         <div className="grow flex flex-col gap-3">
           <div>
-            <div className="font-bold text-xl">{topic}</div>
-            <div className="font-semibold text-gray-500">{timestamp}</div>
+            <div className="font-medium text-xl">{topic}</div>
+            <div className="font-medium text-gray-500">{timestamp}</div>
           </div>
 
           <div
-            className="font-medium text-base"
+            className="font-medium text-base max-w-[675px]"
             dangerouslySetInnerHTML={{ __html: sanitizedMessage }}
           />
         </div>

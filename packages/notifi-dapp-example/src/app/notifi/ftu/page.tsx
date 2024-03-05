@@ -2,6 +2,7 @@
 
 import { ConfigAlertModal } from '@/components/ConfigAlertModal';
 import { ConfigDestinationModal } from '@/components/ConfigDestinationModal';
+import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
 import { useNotifiCardContext } from '@/context/notifi/NotifiCardContext';
 import { useRouterAsync } from '@/hooks/useRouterAsync';
@@ -39,7 +40,11 @@ export default function NotifiFTU() {
   }, [ftuStage]);
 
   if (ftuStage !== FtuStage.Destination && ftuStage !== FtuStage.Alerts) {
-    return null;
+    return (
+      <div>
+        <LoadingSpinner />
+      </div>
+    );
   }
   return (
     <>

@@ -41,7 +41,7 @@ export const HistoryList: React.FC<HistoryListProps> = ({
       className={`
         ${historyDetailEntry ? 'hidden' : ''} 
         ${isLoading ? 'h-full' : ''}
-        flex flex-col relative grow min-h-0 
+        flex flex-col relative h-max-full overflow-y-auto
       `}
     >
       {nodes.length > 0 ? (
