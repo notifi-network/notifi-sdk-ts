@@ -152,7 +152,7 @@ export const envUrl = (env: NotifiEnvironment): string => {
     case 'Development':
       return 'https://api.dev.notifi.network/gql';
     case 'Local':
-      return 'https://localhost:5001/gql';
+      return 'http://localhost:5001/gql';
     case 'Production':
       return 'https://api.notifi.network/gql';
     case 'Staging':
