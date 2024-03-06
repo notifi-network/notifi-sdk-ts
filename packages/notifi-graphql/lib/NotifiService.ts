@@ -421,6 +421,7 @@ export class NotifiService
     variables: Generated.LogInFromDappMutationVariables,
   ): Promise<Generated.LogInFromDappMutation> {
     const headers = this._requestHeaders();
+    console.log('logInFromDapp', variables, headers);
     const result = await this._typedClient.logInFromDapp(variables, headers);
     const token = result.logInFromDapp?.authorization?.token;
     if (token !== undefined) {
