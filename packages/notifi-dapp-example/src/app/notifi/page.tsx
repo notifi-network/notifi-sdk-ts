@@ -1,14 +1,18 @@
 'use client';
 
-import { useWallets } from '@/context/wallet/NotifiWalletProvider';
+// import { useWallets } from '@/context/wallet/NotifiWalletProvider';
 import { useNotifiRouter } from '@/hooks/useNotifiRouter';
+import {
+  ConfigFactoryInput,
+  newFrontendClient,
+} from '@notifi-network/notifi-frontend-client';
 import { useNotifiClientContext } from '@notifi-network/notifi-react-card';
+import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import { getBytes } from 'ethers';
 
 export default function NotifiHome() {
   // useNotifiRouter();
   const { selectWallet, selectedWallet, wallets } = useWallets();
-  const { frontendClient } = useNotifiClientContext();
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center">
@@ -31,6 +35,20 @@ export default function NotifiHome() {
       </div>
       <div
         onClick={() => {
+          if (!selectedWallet) return;
+          const config: ConfigFactoryInput = {
+            account: {
+              address: wallets[selectedWallet].walletKeys?.bech32 ?? '',
+              publicKey:
+                selectedWallet === 'metamask'
+                  ? wallets[selectedWallet].walletKeys?.hex ?? ''
+                  : wallets[selectedWallet].walletKeys?.base64 ?? '',
+            },
+            tenantId: '11xwv3eucnwz5rfvfnqq',
+            walletBlockchain: 'INJECTIVE',
+            env: 'Development',
+          };
+          const frontendClient = newFrontendClient(config);
           frontendClient.logIn({
             walletBlockchain: 'INJECTIVE',
             signMessage: async (message) => {

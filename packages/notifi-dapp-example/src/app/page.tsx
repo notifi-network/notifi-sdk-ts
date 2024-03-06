@@ -3,10 +3,11 @@
 import { DummyAlertsModal } from '@/components/DummyAlertsModal';
 import { EcosystemHero } from '@/components/EcosystemHero';
 import { PoweredByNotifi } from '@/components/PoweredByNotifi';
-import { useWallets } from '@/context/wallet/NotifiWalletProvider';
+// import { useWallets } from '@/context/wallet/NotifiWalletProvider';
 import { useRouterAsync } from '@/hooks/useRouterAsync';
 import { useChain, useWalletClient } from '@cosmos-kit/react';
 import '@interchain-ui/react/styles';
+import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import { Inter } from 'next/font/google';
 import Image from 'next/image';
 import { useEffect } from 'react';
