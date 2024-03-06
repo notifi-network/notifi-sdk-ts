@@ -1,5 +1,6 @@
 import { GlobalStateContextProvider } from '@/context/GlobalStateContext';
 import { CosmosWalletProvider } from '@/context/wallet/CosmosWalletProvider';
+import NotifiWalletProvider from '@/context/wallet/NotifiWalletProvider';
 import '@interchain-ui/react/styles';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
@@ -119,7 +120,9 @@ export default function RootLayout({
         // NOTE: Not support dark/light mode yet. TODO: consider adding a theme wrapper
       >
         <GlobalStateContextProvider>
-          <CosmosWalletProvider>{children}</CosmosWalletProvider>
+          <NotifiWalletProvider>
+            <CosmosWalletProvider>{children}</CosmosWalletProvider>
+          </NotifiWalletProvider>
         </GlobalStateContextProvider>
       </body>
     </html>
