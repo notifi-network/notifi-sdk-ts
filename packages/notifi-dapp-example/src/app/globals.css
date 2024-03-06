@@ -8,6 +8,7 @@
     --notifi-gray0: 245 246 241;
     --notifi-gray1: 247 251 255;
     --notifi-gray2: 102 109 128;
+    --notifi-gray3: 54 57 74;
     --notifi-white: 255 255 255;
     --notifi-blueish0: 225 235 248;
     --notifi-blueish1: 198 233 245;
@@ -21,7 +22,9 @@
     --notifi-heather: 182, 184, 213;
     --notifi-cyan: 52 63 245;
     --notifi-dusk: 128, 130, 157;
-    --backgroundpressed-100:223, 225, 231;
+    --backgroundpressed-100: 223, 225, 231;
+    --notifi-light-purple: 241 242 245;
+    --notifi-purple: 211 219 251;
   }
 }
 
@@ -42,12 +45,15 @@
   --notifi-toggle-off-bg: var(--notifi-heather);
   --notifi-toggle-on-bg: var(--notifi-cyan);
   --notifi-destination-card-text: var(--notifi-dusk);
-  --notifi-icon-unselected: var(--notifi-heather);
-  --notifi-icon-selected: var(--notifi-blueish2);
+  --notifi-icon-unselected: var(--notifi-gray2);
+  --notifi-icon-selected: var(--notifi-gray3);
   --notifi-tab-unselected-text: var(--notifi-dusk);
   --notifi-alert-subscription-block-bg: var(--notifi-gray1);
   --notifi-text-light: var(--notifi-gray2);
+  --notifi-text-medium: var(--notifi-gray3);
   --notifi-toggle-off-dot-bg:var(--backgroundpressed-100);
+  --notifi-back-button-hover-bg: var(--notifi-light-purple);
+  --notifi-back-button-focus-bg: var(--notifi-purple);
 }
 
 /* Light mode color variables controlled by NotifiContext */
@@ -67,12 +73,15 @@
   --notifi-toggle-off-bg: var(--notifi-heather);
   --notifi-toggle-on-bg: var(--notifi-cyan);
   --notifi-destination-card-text: var(--notifi-dusk);
-  --notifi-icon-unselected: var(--notifi-heather);
-  --notifi-icon-selected: var(--notifi-blueish2);
+  --notifi-icon-unselected: var(--notifi-gray2);
+  --notifi-icon-selected: var(--notifi-gray3);
   --notifi-tab-unselected-text: var(--notifi-dusk);
   --notifi-alert-subscription-block-bg: var(--notifi-gray1);
   --notifi-text-light: var(--notifi-gray2);
+  --notifi-text-medium: var(--notifi-gray3);
   --notifi-toggle-off-dot-bg:var(--backgroundpressed-100);
+  --notifi-back-button-hover-bg: var(--notifi-light-purple);
+  --notifi-back-button-focus-bg: var(--notifi-purple);
 }
 
 /* Light mode color variables controlled by system preferences */

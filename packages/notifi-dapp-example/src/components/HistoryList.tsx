@@ -41,12 +41,12 @@ export const HistoryList: React.FC<HistoryListProps> = ({
       className={`
         ${historyDetailEntry ? 'hidden' : ''} 
         ${isLoading ? 'h-full' : ''}
-        flex flex-col relative grow min-h-0 
+        flex flex-col relative h-max-full overflow-y-auto
       `}
     >
       {nodes.length > 0 ? (
         <div className={`p-6  border-b border-gray-200`}>
-          <div className="m-auto mt-4 font-medium text-base ">Inbox</div>
+          <div className="m-auto font-medium text-base ">Inbox</div>
           {unreadCount ? (
             <div className="m-auto text-sm">
               {unreadCount} unread message{unreadCount > 1 ? 's' : ''}
@@ -61,7 +61,7 @@ export const HistoryList: React.FC<HistoryListProps> = ({
         </div>
       )}
       {nodes.length === 0 && !isLoading ? (
-        <div className="flex justify-center mt-24">
+        <div className="flex justify-center h-[88vh] items-start pt-24">
           <Image
             src={'/logos/empty-inbox.svg'}
             width={404}

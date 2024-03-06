@@ -5,6 +5,7 @@ type Props = {
   onClick?: () => void;
   isButton?: boolean;
   buttonCopy?: string;
+  isSent?: boolean;
 };
 
 export const DestinationInfoPrompt: React.FC<Props> = ({
@@ -12,6 +13,7 @@ export const DestinationInfoPrompt: React.FC<Props> = ({
   onClick,
   isButton = false,
   buttonCopy,
+  isSent,
 }) => {
   if (!onClick) {
     return <label>{infoPromptMessage}</label>;
@@ -22,7 +24,7 @@ export const DestinationInfoPrompt: React.FC<Props> = ({
       {isButton ? (
         <button
           onClick={() => onClick()}
-          className="rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-20 h-7 text-sm font-bold disabled:opacity-50 disabled:hover:bg-notifi-button-primary-blueish-bg hover:bg-notifi-button-hover-bg"
+          className="rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-24 h-8 text-sm font-bold disabled:opacity-50 disabled:hover:bg-notifi-button-primary-blueish-bg hover:bg-notifi-button-hover-bg"
         >
           {buttonCopy}
         </button>
@@ -31,7 +33,11 @@ export const DestinationInfoPrompt: React.FC<Props> = ({
           target="_blank"
           rel="noopener noreferrer"
           onClick={() => onClick()}
-          className="text-sm font-bold text-notifi-button-primary-blueish-bg ml-6 underline cursor-pointer"
+          className={`text-sm font-semibold ${
+            isSent
+              ? 'text-notifi-text-light'
+              : 'text-notifi-button-primary-blueish-bg'
+          } ml-6 cursor-pointer`}
         >
           <label className="cursor-pointer">{infoPromptMessage}</label>
         </a>

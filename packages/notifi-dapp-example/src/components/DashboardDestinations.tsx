@@ -1,5 +1,6 @@
 import { Icon } from '@/assets/Icon';
 import { useNotifiCardContext } from '@/context/notifi/NotifiCardContext';
+import { useNotifiTargetListener } from '@/hooks/useNotifiTargetListener';
 import { useNotifiTargets } from '@/hooks/useNotifiTargets';
 import {
   useNotifiForm,
@@ -11,6 +12,7 @@ import { DestinationPanel } from './DestinationPanel';
 import { DestinationsEditModal } from './DestinationsEditModal';
 
 export const DashboardDestinations = () => {
+  useNotifiTargetListener();
   const [open, setOpen] = useState(false);
   const { cardConfig } = useNotifiCardContext();
 
@@ -50,7 +52,7 @@ export const DashboardDestinations = () => {
           setOpen={setOpen}
         />
       ) : null}
-      <div className="flex flex-col items-center justify-center mt-9">
+      <div className="flex flex-col items-center justify-start mt-9 h-[90vh]">
         <div className="flex flex-row items-center justify-between w-112 mb-6">
           <p className="text-xl">Destinations</p>
           <button

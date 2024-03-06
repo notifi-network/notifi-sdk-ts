@@ -75,12 +75,13 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
               height="12px"
               className="text-notifi-toggle-on-bg"
             />
-            <div className="font-bold text-xs mt-2">Email</div>
+            <div className="font-medium text-xs mt-2">Email</div>
           </div>
           <div className="flex flex-col items-start justify-between w-90 mr-4">
-            <div className="font-semibold text-sm ml-6">{email}</div>
+            <div className="text-sm ml-6">{email}</div>
             {emailErrorMessage?.type === 'recoverableError' ? (
               <DestinationInfoPrompt
+                isSent={isEmailConfirmationSent}
                 onClick={() => handleResendEmailVerificationClick()}
                 infoPromptMessage={
                   isEmailConfirmationSent
@@ -103,12 +104,12 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
               height="14px"
               className="text-notifi-toggle-on-bg"
             />
-            <div className="font-bold text-xs mt-2">Telegram</div>
+            <div className="font-medium text-xs mt-2">Telegram</div>
           </div>
 
           {telegramErrorMessage?.type === 'recoverableError' ? (
             <div className="flex flex-row items-center justify-between w-90 mr-4">
-              <div className="font-semibold text-sm ml-6">{telegramId}</div>
+              <div className="text-sm ml-6">{telegramId}</div>
               <DestinationInfoPrompt
                 isButton={true}
                 buttonCopy="Verify ID"
@@ -130,6 +131,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
           )}
         </div>
       ) : null}
+      {/* hide until slack is ready */}
       {/* <div className="bg-notifi-card-bg rounded-md w-112 h-18 flex flex-row items-center justify-between mb-2">
         <div className="bg-white rounded-md w-18 h-18 shadow-card text-notifi-destination-card-text flex flex-col items-center justify-center">
           <Icon
@@ -138,10 +140,10 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
             height="16px"
             className="text-notifi-toggle-on-bg"
           />
-          <div className="font-bold text-xs mt-2">Slack</div>
+          <div className="font-medium text-xs mt-2">Slack</div>
         </div>
         <div className="flex flex-col items-start justify-between w-90 mr-4">
-          <div className="font-semibold text-sm ml-6">testSlack@gmail.com</div> */}
+          <div className="text-sm ml-6">testSlack@gmail.com</div> */}
       {/* todo: update when implement slack flow */}
       {/* {emailErrorMessage?.type === 'recoverableError' ? (
             <DestinationErrorMessage
@@ -167,17 +169,15 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
               height="13px"
               className="text-notifi-toggle-on-bg"
             />
-            <div className="font-bold text-xs mt-2">Discord</div>
+            <div className="font-medium text-xs mt-2">Discord</div>
           </div>
 
           {discordErrrorMessage?.type === 'recoverableError' ? (
             <div className="flex flex-row items-center justify-between w-90 mr-4">
-              <div className="font-semibold text-sm ml-6">
-                Discord Bot DM Alerts
-              </div>
+              <div className="text-sm ml-6">Discord Bot DM Alerts</div>
               <DestinationInfoPrompt
                 isButton={true}
-                buttonCopy="Enable Bot"
+                buttonCopy={discordErrrorMessage.message ?? ''}
                 onClick={() => {
                   discordErrrorMessage?.onClick();
                 }}

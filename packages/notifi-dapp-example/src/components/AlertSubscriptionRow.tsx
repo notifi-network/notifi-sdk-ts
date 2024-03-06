@@ -20,7 +20,7 @@ export const AlertSubscriptionRow: React.FC<AlertSubscriptionRowProps> = ({
 
   return (
     <div className="flex justify-between p-3 bg-white  rounded border border-gray-200">
-      <div className="flex">
+      <div className="flex text-sm font-medium">
         <label>{eventType.name}</label>
 
         <div className=" group">

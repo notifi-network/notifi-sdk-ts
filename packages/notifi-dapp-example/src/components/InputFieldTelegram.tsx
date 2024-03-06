@@ -50,7 +50,7 @@ export const InputFieldTelegram: React.FC<InputFieldTelegramProps> = ({
             height="14px"
             className="text-notifi-button-primary-blueish-bg"
           />
-          <div className="font-bold text-xs mt-2">Telegram</div>
+          <div className="font-medium text-xs mt-2">Telegram</div>
         </div>
         <div className="relative">
           <input
@@ -83,7 +83,7 @@ export const InputFieldTelegram: React.FC<InputFieldTelegramProps> = ({
               disabled={telegramErrorMessage !== '' || emailErrorMessage !== ''}
               onClick={updateTarget}
             >
-              <span>save</span>
+              <span>Save</span>
             </button>
           ) : null}
         </div>

@@ -40,21 +40,25 @@ export default function NotifiDashboard() {
   if (!account) return null;
 
   return (
-    <div className="min-h-screen flex  items-center ">
+    <div className="min-h-screen flex items-start flex-row">
       <DashboardSideBar
         account={account}
         cardView={cardView}
         setCardView={setCardView}
       />
-      <div className=" flex flex-col grow h-screen">
+      <div className=" flex flex-col grow h-screen ">
         {unverifiedDestinations.length > 0 && cardView === 'history' ? (
           <VerifyBanner setCardView={setCardView} />
         ) : null}
         {/* IMPORTANT: Do not remove `min-h-0` , This is to fix the inner card height */}
-        <div className="flex flex-col grow bg-white rounded-3xl mb-10 mt-3 mr-10 min-h-0 ">
+        <div className="flex flex-col grow bg-white rounded-3xl mb-10 mt-3 mr-10 min-h-0 shadow-card">
           {cardView === 'history' ? <DashboardHistory /> : null}
           {cardView === 'destination' ? <DashboardDestinations /> : null}
-          {cardView === 'alertSubscription' ? <AlertSubscription /> : null}
+          {cardView === 'alertSubscription' ? (
+            <AlertSubscription
+              title={'Manage the alerts you want to receive'}
+            />
+          ) : null}
         </div>
       </div>
     </div>
