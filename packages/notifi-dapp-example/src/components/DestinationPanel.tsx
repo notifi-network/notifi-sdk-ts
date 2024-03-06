@@ -68,7 +68,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
     <div>
       {contactInfo.email.active && email ? (
         <div className="bg-notifi-card-bg rounded-md w-112 h-18 flex flex-row items-center justify-between mb-2">
-          <div className="bg-white rounded-md w-18 h-18 shadow-card text-notifi-destination-card-text flex flex-col items-center justify-center">
+          <div className="bg-white rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
             <Icon
               id="email-icon"
               width="15px"
@@ -97,7 +97,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
       ) : null}
       {contactInfo.telegram.active && telegramId ? (
         <div className="bg-notifi-card-bg rounded-md w-112 h-18 flex flex-row items-center justify-between mb-2">
-          <div className="bg-white rounded-md w-18 h-18 shadow-card text-notifi-destination-card-text flex flex-col items-center justify-center">
+          <div className="bg-white rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
             <Icon
               id="telegram-icon"
               width="16px"
@@ -133,7 +133,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
       ) : null}
       {/* hide until slack is ready */}
       {/* <div className="bg-notifi-card-bg rounded-md w-112 h-18 flex flex-row items-center justify-between mb-2">
-        <div className="bg-white rounded-md w-18 h-18 shadow-card text-notifi-destination-card-text flex flex-col items-center justify-center">
+        <div className="bg-white rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
           <Icon
             id="slack-icon"
             width="16px"
@@ -162,7 +162,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
       </div> */}
       {contactInfo?.discord?.active && useDiscord ? (
         <div className="bg-notifi-card-bg rounded-md w-112 h-18 flex flex-row items-center justify-between mb-2">
-          <div className="bg-white rounded-md w-18 h-18 shadow-card text-notifi-destination-card-text flex flex-col items-center justify-center">
+          <div className="bg-white rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
             <Icon
               id="discord-icon"
               width="17px"

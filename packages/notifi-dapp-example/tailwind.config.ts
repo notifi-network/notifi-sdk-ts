@@ -14,6 +14,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Inter'],
+      },
       width: {
         86: '343px',
         112: '445px',
@@ -28,6 +31,7 @@ const config: Config = {
       },
       boxShadow: {
         container: '0px 10px 40px 0px #0000000D',
+        destinationCard: '0px 2px 6px 0px #0000001A',
         card: '0px 2px 0px 0px rgba(219, 235, 242, 1)',
       },
       colors: {
