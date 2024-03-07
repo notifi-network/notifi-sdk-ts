@@ -14,9 +14,6 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      fontFamily: {
-        sans: ['Inter'],
-      },
       width: {
         86: '343px',
         112: '445px',

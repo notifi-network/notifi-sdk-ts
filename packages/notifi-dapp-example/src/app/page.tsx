@@ -25,7 +25,7 @@ export default function Home() {
   }, [client]);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center font-sans">
+    <main className="flex min-h-screen flex-col items-center justify-center">
       <div className="fixed top-8 left-8 right-8 flex justify-between">
         <div className="left-8 flex items-center">
           <Image
