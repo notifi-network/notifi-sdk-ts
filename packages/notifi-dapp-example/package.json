@@ -34,7 +34,8 @@
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",
     "postcss": "^8",
-    "tailwindcss": "^3.3.0"
+    "tailwindcss": "^3.3.0",
+    "bech32-converting": "^1.0.9"
   },
   "dependencies": {
     "react": "^18",
@@ -47,7 +48,8 @@
     "@notifi-network/notifi-frontend-client": "^0.90.8",
     "@notifi-network/notifi-graphql": "^0.90.8",
     "date-fns": "^3.3.1",
-    "dompurify": "^3.0.8"
+    "dompurify": "^3.0.8",
+    "ethers": "^6.11.1"
   },
   "bugs": {
     "url": "https://github.com/notifi-network/notifi-sdk-ts/issues"

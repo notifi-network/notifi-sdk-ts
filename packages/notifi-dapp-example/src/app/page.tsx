@@ -3,6 +3,7 @@
 import { DummyAlertsModal } from '@/components/DummyAlertsModal';
 import { EcosystemHero } from '@/components/EcosystemHero';
 import { PoweredByNotifi } from '@/components/PoweredByNotifi';
+import { useWallets } from '@/context/wallet/NotifiWalletProvider';
 import { useRouterAsync } from '@/hooks/useRouterAsync';
 import { useChain, useWalletClient } from '@cosmos-kit/react';
 import '@interchain-ui/react/styles';
@@ -13,6 +14,7 @@ export default function Home() {
   const { connect, isWalletConnecting } = useChain('injective');
   const { isLoadingRouter, handleRoute } = useRouterAsync();
   const { client } = useWalletClient();
+  const { selectWallet, selectedWallet, wallets } = useWallets();
 
   useEffect(() => {
     if (client) {
@@ -26,6 +28,22 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col justify-start items-center md:items-center md:justify-center">
+      <div>{selectedWallet && JSON.stringify(wallets[selectedWallet])}</div>
+      <div
+        onClick={() =>
+          selectWallet(selectedWallet === 'keplr' ? 'metamask' : 'keplr')
+        }
+      >
+        selected wallet: {selectedWallet}, switch
+      </div>
+      <div
+        onClick={() => {
+          if (!selectedWallet) return;
+          wallets[selectedWallet].connect();
+        }}
+      >
+        connect
+      </div>
       <div className="md:fixed md:top-8 md:left-8 md:right-8 m-3 md:m-0 flex justify-between">
         <div className="left-8 flex items-center">
           <Image
