@@ -26,7 +26,7 @@ export const AlertSubscription: React.FC<AlertSubscriptionRowProps> = ({
       {title ? (
         <div className="mt-8 mb-6 font-medium text-lg">{title}</div>
       ) : null}
-      <div className="flex flex-wrap gap-4 justify-center">
+      <div className="flex flex-wrap gap-4 justify-center overflow-scroll">
         {uncategorizedTopics.subTopics.length > 0 ? (
           <AlertSubscriptionBlock labelWithSubTopics={uncategorizedTopics} />
         ) : null}
