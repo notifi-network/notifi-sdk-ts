@@ -256,6 +256,10 @@ export type AptosSignMessageFunction = (
   nonce: number,
 ) => Promise<string>;
 
+export type XionSignMessageFunction = (
+  message: Uint8Array,
+) => Promise<string>;
+
 type hexString = `0x${string}`;
 
 export type AcalaSignMessageFunction = (
@@ -289,6 +293,11 @@ export type SignMessageParams =
     | 'MANTA'
     | 'MONAD';
     signMessage: Uint8SignMessageFunction;
+  }>
+  | Readonly<{
+    walletBlockchain: 'XION';
+    message: string;
+    signMessage: XionSignMessageFunction;
   }>
   | Readonly<{
     walletBlockchain: 'APTOS';
@@ -335,6 +344,13 @@ export type WalletParams =
     walletBlockchain: 'APTOS';
     accountAddress: string;
     walletPublicKey: string;
+  }>
+  | Readonly<{
+    walletBlockchain: 'XION';
+    walletPublicKey: string;
+    signingAddress: string;
+    signingPubkey: string;
+    signMessage: XionSignMessageFunction;
   }>
   | Readonly<{
     walletBlockchain: 'ACALA';
@@ -398,6 +414,13 @@ export type WalletWithSignMessage =
     accountAddress: string;
     walletPublicKey: string;
     signMessage: AptosSignMessageFunction;
+  }>
+  | Readonly<{
+    walletBlockchain: 'XION';
+    walletPublicKey: string;
+    signingAddress: string;
+    signingPubkey: string;
+    signMessage: XionSignMessageFunction;
   }>
   | Readonly<{
     walletBlockchain: 'ACALA';

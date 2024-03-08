@@ -21,4 +21,5 @@ export type WalletBlockchain =
   | 'LINEA'
   | 'SCROLL'
   | 'MANTA'
-  | 'MONAD';
+  | 'MONAD'
+  | 'XION'

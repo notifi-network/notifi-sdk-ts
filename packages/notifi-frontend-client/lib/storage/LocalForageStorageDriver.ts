@@ -3,6 +3,7 @@ import localforage from 'localforage';
 import {
   NotifiEnvironment,
   NotifiFrontendConfiguration,
+  checkIsConfigWithDelegate,
   checkIsConfigWithPublicKeyAndAddress,
 } from '../configuration/NotifiFrontendConfiguration';
 import { StorageDriver } from './NotifiFrontendStorage';
@@ -27,12 +28,13 @@ const getEnvPrefix = (env: NotifiEnvironment): string => {
 export const createLocalForageStorageDriver = (
   config: NotifiFrontendConfiguration,
 ): StorageDriver => {
-  let keyPrefix = `${getEnvPrefix(config.env)}:${config.tenantId}:${
-    config.walletBlockchain
-  }`;
+  let keyPrefix = `${getEnvPrefix(config.env)}:${config.tenantId}:${config.walletBlockchain
+    }`;
 
   if (checkIsConfigWithPublicKeyAndAddress(config)) {
     keyPrefix += `:${config.accountAddress}:${config.authenticationKey}`;
+  } else if (checkIsConfigWithDelegate(config)) {
+    keyPrefix += `:${config.delegatorAddress}`;
   } else {
     keyPrefix += `:${config.walletPublicKey}`;
   }

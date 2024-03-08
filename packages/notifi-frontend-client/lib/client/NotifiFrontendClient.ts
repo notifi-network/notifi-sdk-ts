@@ -1,10 +1,12 @@
 import { Types } from '@notifi-network/notifi-graphql';
 import { NotifiService } from '@notifi-network/notifi-graphql';
 
-import type {
-  NotifiConfigWithPublicKey,
-  NotifiConfigWithPublicKeyAndAddress,
-  NotifiFrontendConfiguration,
+import {
+  checkIsConfigWithDelegate,
+  checkIsConfigWithPublicKeyAndAddress,
+  type NotifiConfigWithPublicKey,
+  type NotifiConfigWithPublicKeyAndAddress,
+  type NotifiFrontendConfiguration,
 } from '../configuration';
 import type {
   CardConfigItemV1,
@@ -61,6 +63,11 @@ export type SignMessageParams =
     signMessage: AptosSignMessageFunction;
   }>
   | Readonly<{
+    walletBlockchain: 'XION';
+    message: string;
+    signMessage: XionSignMessageFunction;
+  }>
+  | Readonly<{
     walletBlockchain: 'ACALA';
     signMessage: AcalaSignMessageFunction;
   }>
@@ -102,7 +109,6 @@ export type WalletWithSignMessage =
     | 'SCROLL'
     | 'MANTA'
     | 'MONAD';
-
     walletPublicKey: string;
     signMessage: Uint8SignMessageFunction;
   }>
@@ -111,6 +117,13 @@ export type WalletWithSignMessage =
     accountAddress: string;
     walletPublicKey: string;
     signMessage: AptosSignMessageFunction;
+  }>
+  | Readonly<{
+    walletBlockchain: 'XION';
+    walletPublicKey: string;
+    signingAddress: string;
+    signingPubkey: string;
+    signMessage: XionSignMessageFunction;
   }>
   | Readonly<{
     walletBlockchain: 'ACALA';
@@ -137,6 +150,10 @@ export type ConnectWalletParams = Readonly<{
 }>;
 
 // TODO: Clean up blockchain-specific dependencies out of this package
+export type XionSignMessageFunction = (
+  message: Uint8Array,
+) => Promise<string>;
+
 export type Uint8SignMessageFunction = (
   message: Uint8Array,
 ) => Promise<Uint8Array>;
@@ -154,10 +171,14 @@ export type CardConfigType = CardConfigItemV1 | IntercomCardConfigItemV1;
 
 type BeginLoginProps = Omit<Types.BeginLogInByTransactionInput, 'dappAddress'>;
 
+type BeginLoginWithWeb3Props = Omit<Types.BeginLogInWithWeb3Input, 'dappAddress' | 'blockchainType'>;
+
 type CompleteLoginProps = Omit<
   Types.CompleteLogInByTransactionInput,
   'dappAddress' | 'randomUuid'
 >;
+
+type CompleteLoginWithWeb3Props = Types.CompleteLogInWithWeb3Input
 
 type EnsureWebhookParams = Omit<
   Types.CreateWebhookTargetMutationVariables,
@@ -266,6 +287,74 @@ export class NotifiFrontendClient {
     };
   }
 
+  private async logInWithWeb3(
+    signMessageParams: {
+      walletBlockchain: 'XION';
+      signMessage: XionSignMessageFunction;
+    },
+  ): Promise<Types.UserFragmentFragment> {
+    let user: Types.UserFragmentFragment | undefined = undefined;
+
+    if (this._configuration.walletBlockchain !== 'XION' || signMessageParams.walletBlockchain !== 'XION') {
+      throw new Error('Wallet blockchain must be XION for loginWithWeb3')
+    }
+    if (checkIsConfigWithDelegate(this._configuration)) {
+      const { delegatedAddress, delegatedPublicKey, delegatorAddress } = this._configuration;
+      const { nonce } = await this.beginLogInWithWeb3({
+        authAddress: delegatorAddress,
+        authType: 'COSMOS_AUTHZ_GRANT',
+      })
+
+      const message = `${SIGNING_MESSAGE}${nonce}}`;
+      const params = { walletBlockchain: 'XION', message, signMessage: signMessageParams.signMessage } as const
+      const signature = await this._signMessage({
+        signMessageParams: params,
+        timestamp: Math.round(Date.now() / 1000),
+      });
+
+      const { completeLogInWithWeb3 } = await this.completeLogInWithWeb3({
+        nonce,
+        signature,
+        signedMessage: message,
+        signingAddress: delegatedAddress,
+        signingPubkey: delegatedPublicKey
+      })
+      user = completeLogInWithWeb3.user
+
+    }
+    else if (checkIsConfigWithPublicKeyAndAddress(this._configuration)) {
+      const { authenticationKey, accountAddress } = this._configuration;
+      const { nonce } = await this.beginLogInWithWeb3({
+        authAddress: accountAddress,
+        authType: 'COSMOS_ADR36',
+      })
+
+      const message = `${SIGNING_MESSAGE}${nonce}}`;
+      const params = { walletBlockchain: 'XION', message, signMessage: signMessageParams.signMessage } as const
+      const signature = await this._signMessage({
+        signMessageParams: params,
+        timestamp: Math.round(Date.now() / 1000),
+      });
+
+      const { completeLogInWithWeb3 } = await this.completeLogInWithWeb3({
+        nonce,
+        signature,
+        signedMessage: message,
+        signingAddress: accountAddress,
+        signingPubkey: authenticationKey
+      })
+      user = completeLogInWithWeb3.user
+    }
+
+    if (user === undefined) {
+      return Promise.reject('Failed to login');
+    }
+
+    await this._handleLogInResult(user)
+    return user
+
+  }
+
   async logIn(
     signMessageParams: SignMessageParams,
   ): Promise<Types.UserFragmentFragment> {
@@ -276,6 +365,10 @@ export class NotifiFrontendClient {
     });
 
     const { tenantId, walletBlockchain } = this._configuration;
+
+    if (walletBlockchain === 'XION' && signMessageParams.walletBlockchain === 'XION') {
+      return this.logInWithWeb3(signMessageParams)
+    }
 
     let loginResult: Types.UserFragmentFragment | undefined = undefined;
     switch (walletBlockchain) {
@@ -373,6 +466,7 @@ export class NotifiFrontendClient {
         const signature = normalizeHexString(
           Buffer.from(signedBuffer).toString('hex'),
         );
+
         return signature;
       }
       case 'INJECTIVE':
@@ -388,6 +482,17 @@ export class NotifiFrontendClient {
         const signedBuffer = await signMessageParams.signMessage(messageBuffer);
         const signature = Buffer.from(signedBuffer).toString('base64');
         return signature;
+      }
+      case 'XION': {
+        //TODO: fetch nonce using gql here
+        const { message } = signMessageParams
+        const messageBuffer = new TextEncoder().encode(
+          message
+        );
+
+        const signedBuffer = await signMessageParams.signMessage(messageBuffer);
+        const signature = Buffer.from(signedBuffer).toString('base64');
+        return signature
       }
       case 'ACALA': {
         const { accountAddress, tenantId } = this
@@ -528,6 +633,37 @@ export class NotifiFrontendClient {
     });
 
     await this._handleLogInResult(result.completeLogInByTransaction);
+
+    return result;
+  }
+
+  async beginLogInWithWeb3({
+    authType,
+    authAddress,
+    walletPubkey
+
+  }: BeginLoginWithWeb3Props): Promise<Types.BeginLogInWithWeb3Response> {
+    const { tenantId } = this._configuration;
+    const result = await this._service.beginLogInWithWeb3({
+      dappAddress: tenantId,
+      authAddress,
+      blockchainType: this._configuration.walletBlockchain,
+      authType,
+      walletPubkey
+    });
+
+    if (!result.beginLogInWithWeb3.beginLogInWithWeb3Response) {
+      throw new Error('Failed to begin login process');
+    }
+
+    return result.beginLogInWithWeb3.beginLogInWithWeb3Response
+  }
+
+  async completeLogInWithWeb3(input: CompleteLoginWithWeb3Props): Promise<Types.CompleteLogInWithWeb3Mutation> {
+    const result = await this._service.completeLogInWithWeb3({
+      signingPubkey: '',
+      ...input,
+    });
 
     return result;
   }
