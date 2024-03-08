@@ -20,7 +20,7 @@ export const ConfigAlertModal = () => {
         </div>
       </div>
 
-      <div className="flex-grow min-h-0 overflow-scroll my-6">
+      <div className="flex-grow min-h-0 overflow-y-scroll h-[28rem] my-6">
         <AlertSubscription />
       </div>
 
