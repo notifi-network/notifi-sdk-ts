@@ -67,6 +67,7 @@ export const HistoryList: React.FC<HistoryListProps> = ({
             width={404}
             height={317}
             alt="empty-inbox"
+            unoptimized={true}
           />
         </div>
       ) : null}

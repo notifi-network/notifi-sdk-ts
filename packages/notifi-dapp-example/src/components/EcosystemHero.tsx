@@ -19,6 +19,7 @@ export const EcosystemHero: React.FC<EcosystemHeroProps> = ({
           width={95}
           height={15}
           alt="Injective"
+          unoptimized={true}
         />
         <div className="text-gray-400">x</div>
         <div className="flex w-16 justify-between">
@@ -27,12 +28,14 @@ export const EcosystemHero: React.FC<EcosystemHeroProps> = ({
             width={15}
             height={15}
             alt="Injective"
+            unoptimized={true}
           />
           <Image
             src="/logos/notifi-text.svg"
             width={40}
             height={15}
             alt="Injective"
+            unoptimized={true}
           />
         </div>
       </div>

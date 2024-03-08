@@ -31,6 +31,7 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
             height={35}
             alt="Injective"
             className="mb-6 mt-3"
+            unoptimized={true}
           />
           <div
             onClick={() => setCardView('history')}

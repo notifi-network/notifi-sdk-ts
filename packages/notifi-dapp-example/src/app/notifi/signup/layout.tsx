@@ -26,6 +26,7 @@ export default function NotifiSignup({
             width={115}
             height={24}
             alt="Injective"
+            unoptimized={true}
           />
           <div className="mx-4 h-4 border-l-2 border-grey-700"></div>
           <div className="text-gray-400 text-xs tracking-wider">

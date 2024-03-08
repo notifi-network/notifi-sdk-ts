@@ -8,6 +8,7 @@ export const DappIcon = () => {
       width={250}
       height={115}
       alt="Injective"
+      unoptimized={true}
     />
   );
 };

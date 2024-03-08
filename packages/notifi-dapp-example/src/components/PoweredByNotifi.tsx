@@ -17,6 +17,7 @@ export const PoweredByNotifi: React.FC<PoweredByNotifiProps> = ({
       width={width ? width : 96}
       height={height ? height : 13}
       alt="Injective"
+      unoptimized={true}
     />
   );
 };

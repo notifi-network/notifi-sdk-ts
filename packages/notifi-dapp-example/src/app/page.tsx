@@ -32,6 +32,7 @@ export default function Home() {
             src="/logos/injective.png"
             width={115}
             height={24}
+            unoptimized={true}
             alt="Injective"
           />
           <div className="mx-4 h-4 border-l-2 border-grey-700"></div>
