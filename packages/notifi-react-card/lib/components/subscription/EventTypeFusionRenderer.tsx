@@ -76,8 +76,6 @@ export const EventTypeFusionRenderer: React.FC<FusionRendererProps> = ({
         numberType: parsedMetadata.filter[0].userInputParams[0].kind,
         checkRatios: CheckRatio[],
         alertFrequency: 'DAILY'
-
-
       }
    
     

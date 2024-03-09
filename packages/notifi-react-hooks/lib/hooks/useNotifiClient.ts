@@ -1472,6 +1472,7 @@ const useNotifiClient = (
   const fetchSubscriptionCard = useCallback(
     async (input: ClientFetchSubscriptionCardInput): Promise<TenantConfig> => {
       setLoading(true);
+
       try {
         const tenantConfig = await service.findTenantConfig({
           tenant: dappAddress,
