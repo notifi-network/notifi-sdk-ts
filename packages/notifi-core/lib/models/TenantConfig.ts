@@ -1,4 +1,4 @@
-import { FusionEventDescriptor } from './FusionEventDescriptor';
+import { Types } from '@notifi-network/notifi-graphql';
 
 /**
  * Config object for a tenant
@@ -15,5 +15,5 @@ export type TenantConfig = Readonly<{
   id: string | null;
   type: string;
   dataJson: string | null;
-  fusionEvent: Array<FusionEventDescriptor>;
+  fusionEvent: Array<Types.FusionEventDescriptor>;
 }>;

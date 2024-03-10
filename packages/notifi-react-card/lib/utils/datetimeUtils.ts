@@ -56,3 +56,28 @@ export const isToday = (date: Date) => {
     date.getFullYear() == today.getFullYear()
   );
 };
+
+export const minutesConvertToFrequency = (minutes: number) => {
+  switch (minutes) {
+    case -1:
+      return 'ALWAYS';
+    case 0:
+      return 'SINGLE';
+    case 1:
+      return 'ONE_MINUTE';
+    case 3:
+      return 'THREE_MINUTES';
+    case 5:
+      return 'FIVE_MINUTES';
+    case 15:
+      return 'QUARTER_HOUR';
+    case 60:
+      return 'HOURLY';
+    case 1440:
+      return 'DAILY';
+    case 10080:
+      return 'WEEKLY';
+    default:
+      return 'ALWAYS';
+  }
+};

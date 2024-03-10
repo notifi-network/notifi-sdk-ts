@@ -1,45 +1,44 @@
 import { FusionMultiThreshholdEventTypeItem } from 'notifi-frontend-client/lib/models';
 import {
+  EventTypeBroadcastRowProps,
+  EventTypeConfig,
+  EventTypeCustomHealthCheckRowProps,
+  EventTypeDirectPushRowProps,
+  EventTypeFusionMultiThresholdRowProps,
+  EventTypeHealthCheckRowProps,
+  EventTypeItem,
+  EventTypeLabelRowProps,
+  EventTypePriceChangeRowProps,
+  EventTypeTradingPairsRowProps,
+  EventTypeUnsupportedRowProps,
+  EventTypeWalletBalanceRowProps,
   FusionHealthCheckEventTypeItem,
   FusionToggleEventTypeItem,
 } from 'notifi-react-card/lib';
 import { useNotifiSubscriptionContext } from 'notifi-react-card/lib/context';
 import React from 'react';
 
-import { EventTypeFusionHealthCheckRow } from './EventTypeFusionHealthCheckRow';
-import { EventTypeFusionToggleRow } from './EventTypeFusionToggleRow';
-
-type Filter = {
-  name: string;
-  type?: string; // Assuming type is optional
-  description: string;
-  userInputParams?: {
-    kind: string;
-    name: string;
-    options: number[];
-    description: string;
-    allowCustomInput: boolean;
-  }[];
-  executionPriority?: number; // Assuming executionPriority is optional
-  requiredParserVariables?: {
-    variableName: string;
-    variableType: string;
-    variableDescription: string;
-  }[];
-};
+import { EventTypeFusionHealthCheckRow, EventTypeFusionHealthCheckRowProps } from './EventTypeFusionHealthCheckRow';
+import { EventTypeFusionRowProps, EventTypeFusionToggleRow } from './EventTypeFusionToggleRow';
+import { EventTypeXMPTRowProps } from './EventTypeXMTPRow';
+import { minutesConvertToFrequency } from 'notifi-react-card/lib/utils/datetimeUtils';
 
 export interface FusionRendererProps {
-  classNames: any;
-  disabled: any;
+
+  disabled: boolean;
   config:
-    | FusionToggleEventTypeItem
-    | FusionHealthCheckEventTypeItem
-    | FusionMultiThreshholdEventTypeItem;
-  inputs: any;
+  FusionToggleEventTypeItem | FusionHealthCheckEventTypeItem | FusionMultiThreshholdEventTypeItem;
+  inputs:  Record<string, unknown>;
 }
 
+const classNames: {
+  EventTypeFusionToggleRow: EventTypeFusionRowProps['classNames'],
+  EventTypeFusionHealthCheckRow: EventTypeFusionHealthCheckRowProps['classNames'],
+  EventTypeFusionMultiThresholdRowProps: EventTypeFusionMultiThresholdRowProps['classNames']
+};
+
+
 export const EventTypeFusionRenderer: React.FC<FusionRendererProps> = ({
-  classNames,
   disabled,
   config,
   inputs,
@@ -51,20 +50,28 @@ export const EventTypeFusionRenderer: React.FC<FusionRendererProps> = ({
   );
 
   const metadataString = filteredFusionEvents[0]?.metadata;
-  const parsedMetadata = JSON.parse(metadataString ?? '{"filter":[]}');
 
-  if (parsedMetadata.filter.length === 0) {
+  if (metadataString === undefined) {
+    console.log('Metadata is undefined, cannot render Fusion Event Toggle')
+    return null
+  }
+
+  if (filteredFusionEvents[0]?.metadata === '{"filter":[]}'){
     return (
       <EventTypeFusionToggleRow
         key={config.name}
-        classNames={classNames?.EventTypeFusionToggleRow}
+        classNames={classNames.EventTypeFusionToggleRow}
         disabled={disabled}
-        config={config as FusionToggleEventTypeItem}
+        config={config}
         inputs={inputs}
       />
     );
-  } else {
 
+  }
+
+  else {
+
+    const parsedMetadata = JSON.parse(metadataString);
 
       const newMetadata: FusionHealthCheckEventTypeItem = {
         name: config.name,
@@ -75,17 +82,15 @@ export const EventTypeFusionRenderer: React.FC<FusionRendererProps> = ({
         healthCheckSubtitle: parsedMetadata.filter[0].description,
         numberType: parsedMetadata.filter[0].userInputParams[0].kind,
         checkRatios: CheckRatio[],
-        alertFrequency: 'DAILY'
+        alertFrequency: minutesConvertToFrequency(parsedMetadata.filter[1].minimumDurationBetweenTriggersInMinutes)
       }
-   
-    
 
     return (
       <EventTypeFusionHealthCheckRow
         key={config.name}
         disabled={disabled}
-        config={config as FusionHealthCheckEventTypeItem}
-        classNames={classNames?.EventTypeFusionHealthCheckRow}
+        config={config }
+        classNames={classNames.EventTypeFusionHealthCheckRow}
         inputs={inputs}
       />
     );

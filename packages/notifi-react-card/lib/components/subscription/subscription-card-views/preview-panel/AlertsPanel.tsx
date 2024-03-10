@@ -181,47 +181,15 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
             );
           case 'fusionToggle': // fusionToggle is deprecated (use fusion with selectedUIType===TOGGLE instead )
           case 'fusion':
-            switch (eventType) {
-              // case 'HEALTH_CHECK':
-              //   return (
-              //     <EventTypeFusionHealthCheckRow
-              //       key={eventType.name}
-              //       disabled={inputDisabled}
-              //       config={eventType}
-              //       classNames={classNames?.EventTypeFusionHealthCheckRow}
-              //       inputs={inputs}
-              //     />
-              //   );
-              // case 'TOGGLE':
-              //   return (
-              //     <EventTypeFusionToggleRow
-              //       key={eventType.name}
-              //       classNames={classNames?.EventTypeFusionToggleRow}
-              //       disabled={inputDisabled}
-              //       config={eventType}
-              //       inputs={inputs}
-              //     />
-              //   );
-              // case 'MULTI_THRESHOLD':
-              //   return (
-              //     <EventTypeFusionMultiThresholdRow
-              //       key={eventType.name}
-              //       classNames={classNames?.EventTypeFusionMultiThresholdRow}
-              //       config={eventType}
-              //       inputs={inputs}
-              //     />
-              //   );
-              default:
-                return (
-                  <EventTypeFusionRenderer
-                    key={eventType.name}
-                    disabled={inputDisabled}
-                    config={eventType}
-                    classNames={classNames}
-                    inputs={inputs}
-                  />
-                );
-            }
+            return (
+              <EventTypeFusionRenderer
+                key={eventType.name}
+                disabled={inputDisabled}
+                config={eventType}
+                inputs={inputs}
+              />
+            );
+
           case 'priceChange':
             return (
               <EventTypePriceChangeRow
