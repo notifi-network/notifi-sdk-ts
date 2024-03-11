@@ -2,20 +2,19 @@
 
 import { CardView } from '@/app/notifi/dashboard/page';
 import { Icon } from '@/assets/Icon';
-import { WalletAccount } from '@cosmos-kit/core';
 import Image from 'next/image';
 import { Dispatch, FC, SetStateAction } from 'react';
 
 import { PoweredByNotifi } from './PoweredByNotifi';
 
 export type DashboardSideBarProps = {
-  account: WalletAccount;
+  accountAddress: string;
   cardView: string;
   setCardView: Dispatch<SetStateAction<CardView>>;
 };
 
 export const DashboardSideBar: FC<DashboardSideBarProps> = ({
-  account,
+  accountAddress,
   cardView,
   setCardView,
 }) => {
@@ -98,7 +97,7 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
               className={`text-notifi-icon-unselected`}
             />
             <div className="ml-5">
-              {account?.address.slice(0, 6)} ... {account?.address.slice(-6)}
+              {accountAddress.slice(0, 6)} ... {accountAddress.slice(-6)}
             </div>
           </div>
         </div>
