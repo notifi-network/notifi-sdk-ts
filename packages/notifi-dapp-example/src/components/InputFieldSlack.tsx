@@ -36,7 +36,7 @@ export const InputFieldSlack: React.FC<InputFieldSlackProps> = ({
           <div className="font-medium text-xs mt-2">Slack</div>
         </div>
         <div className="flex flex-row items-center justify-between w-90 mr-4">
-          <div className="font-semibold text-sm ml-6">Slack</div>
+          <div className="text-sm ml-6">Slack</div>
           <Toggle
             disabled={
               disabled ||

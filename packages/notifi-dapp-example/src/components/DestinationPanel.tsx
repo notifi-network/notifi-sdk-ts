@@ -136,7 +136,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
       ) : null}
       {useSlack ? (
         <div className="bg-notifi-card-bg rounded-md w-112 h-18 flex flex-row items-center justify-between mb-2">
-          <div className="bg-white rounded-md w-18 h-18 shadow-card text-notifi-destination-card-text flex flex-col items-center justify-center">
+          <div className="bg-white rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
             <Icon
               id="slack-icon"
               width="16px"
@@ -148,7 +148,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
 
           {slackErrrorMessage?.type === 'recoverableError' ? (
             <div className="flex flex-row items-center justify-between w-90 mr-4">
-              <div className="font-semibold text-sm ml-6">Slack</div>
+              <div className="text-sm ml-6 font-medium">Slack</div>
               <DestinationInfoPrompt
                 isButton={true}
                 buttonCopy="Enable Bot"
@@ -160,7 +160,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
             </div>
           ) : (
             <div className="flex flex-col items-start justify-between w-90 mr-4">
-              <div className="font-semibold text-sm ml-6">
+              <div className="text-sm ml-6">
                 {slackTargetData?.slackChannelName ?? 'Slack'}
               </div>
               {slackTargetData?.verificationStatus === 'VERIFIED'
