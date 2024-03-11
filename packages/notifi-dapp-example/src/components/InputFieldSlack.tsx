@@ -21,7 +21,8 @@ export const InputFieldSlack: React.FC<InputFieldSlackProps> = ({
   const { email: emailErrorMessage, telegram: telegramErrorMessage } =
     formErrorMessages;
   const { updateTarget } = useNotifiTargets('slack');
-  const { useSlack, setUseSlack } = useNotifiSubscriptionContext();
+  const { useSlack, setUseSlack, slackTargetData } =
+    useNotifiSubscriptionContext();
 
   return (
     <>
@@ -36,7 +37,23 @@ export const InputFieldSlack: React.FC<InputFieldSlackProps> = ({
           <div className="font-medium text-xs mt-2">Slack</div>
         </div>
         <div className="flex flex-row items-center justify-between w-90 mr-4">
-          <div className="text-sm ml-6">Slack</div>
+          <div className="flex flex-col items-start">
+            <div className="text-sm ml-6">
+              {' '}
+              {slackTargetData?.slackChannelName ?? 'Slack'}
+            </div>
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => {
+                window.open(slackTargetData?.verificationLink, '_blank');
+              }}
+              className="text-xs font-semibold 
+text-notifi-button-primary-blueish-bg ml-6 mt-1"
+            >
+              <label className="cursor-pointer">Change Workspace/Channel</label>
+            </a>
+          </div>
           <Toggle
             disabled={
               disabled ||
