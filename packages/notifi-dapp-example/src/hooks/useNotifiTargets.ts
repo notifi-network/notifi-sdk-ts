@@ -15,6 +15,7 @@ export type TargetGroupData = {
   phoneNumber?: string;
   telegramId?: string;
   discordId?: string;
+  slackId?: string;
 };
 
 type Target = 'email' | 'phoneNumber' | 'telegram' | 'discord' | 'slack';
@@ -27,7 +28,8 @@ export const useNotifiTargets = (target?: Target) => {
   const { setIsGlobalLoading, setGlobalError } = useGlobalStateContext();
 
   const { phoneNumber, telegram: telegramId, email } = formState;
-  const { useDiscord, render, setUseDiscord } = useNotifiSubscriptionContext();
+  const { useDiscord, render, setUseDiscord, useSlack, setUseSlack } =
+    useNotifiSubscriptionContext();
 
   const [hasEmailChanges, setHasEmailChanges] = useState<boolean>(false);
   const [hasTelegramChanges, setHasTelegramChanges] = useState<boolean>(false);
