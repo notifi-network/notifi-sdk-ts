@@ -1,23 +1,31 @@
+'use client';
+
 import { GlobalStateContextProvider } from '@/context/GlobalStateContext';
 import { CosmosWalletProvider } from '@/context/wallet/CosmosWalletProvider';
-import NotifiWalletProvider from '@/context/wallet/NotifiWalletProvider';
+// import NotifiWalletProvider from '@/context/wallet/NotifiWalletProvider';
 import '@interchain-ui/react/styles';
-import type { Metadata } from 'next';
+import {
+  NotifiWalletProvider,
+  NotifiWalletsContext,
+} from '@notifi-network/notifi-wallet-provider';
+// import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
 
-export const metadata: Metadata = {
-  title: 'Notifi Dapp Example',
-  description: 'Notifi Dapp Example',
-};
+// const metadata: Metadata = {
+//   title: 'Notifi Dapp Example',
+//   description: 'Notifi Dapp Example',
+// };
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // console.log('TT', TT);
   return (
     <html lang="en">
       <head>
@@ -30,7 +38,9 @@ export default function RootLayout({
       >
         <GlobalStateContextProvider>
           <NotifiWalletProvider>
+            {/* <NotifiWalletsContext> */}
             <CosmosWalletProvider>{children}</CosmosWalletProvider>
+            {/* </NotifiWalletsContext> */}
           </NotifiWalletProvider>
         </GlobalStateContextProvider>
       </body>
