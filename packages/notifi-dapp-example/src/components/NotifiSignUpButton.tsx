@@ -21,7 +21,6 @@ export type NotifiSignUpButtonProps = Readonly<{
   data: CardConfigItemV1;
 }>;
 
-//todo implement in card context
 const inputs = {};
 
 export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
