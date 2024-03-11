@@ -101,7 +101,6 @@ export type WalletWithSignMessage =
     | 'OPTIMISM'
     | 'ZKSYNC'
     | 'BASE'
-    | 'INJECTIVE'
     | 'BLAST'
     | 'CELO'
     | 'MANTLE'
@@ -143,7 +142,13 @@ export type WalletWithSignMessage =
     accountAddress: string;
     walletPublicKey: string;
     signMessage: Uint8SignMessageFunction;
-  }>;
+  }>
+  | Readonly<{
+    walletBlockchain: 'INJECTIVE';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>
 
 export type ConnectWalletParams = Readonly<{
   walletParams: WalletWithSignParams;
