@@ -126,6 +126,8 @@ const signMessage = async ({
   timestamp: number;
 }>): Promise<string> => {
   switch (params.walletBlockchain) {
+    case 'XION':
+      throw new Error('XION not supported with react-hooks, please migrate to Notifi Client.');
     case 'INJECTIVE':
     case 'OSMOSIS':
     case 'NIBIRU':

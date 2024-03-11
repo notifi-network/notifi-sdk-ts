@@ -123,6 +123,7 @@ export type WalletWithSignMessage =
     walletPublicKey: string;
     signingAddress: string;
     signingPubkey: string;
+    message: string;
     signMessage: XionSignMessageFunction;
   }>
   | Readonly<{
@@ -469,9 +470,21 @@ export class NotifiFrontendClient {
 
         return signature;
       }
-      case 'INJECTIVE':
       case 'OSMOSIS':
       case 'ZKSYNC':
+      case 'INJECTIVE':
+        {
+          const { authenticationKey, tenantId } = this
+            ._configuration as NotifiConfigWithPublicKeyAndAddress;
+          const messageBuffer = new TextEncoder().encode(
+            `${SIGNING_MESSAGE}${authenticationKey}${tenantId}${timestamp.toString()}`,
+          );
+
+          const signedBuffer = await signMessageParams.signMessage(messageBuffer);
+          const signature = Buffer.from(signedBuffer).toString('base64');
+          return signature;
+
+        }
       case 'SOLANA': {
         const { walletPublicKey, tenantId } = this
           ._configuration as NotifiConfigWithPublicKey;
@@ -484,7 +497,6 @@ export class NotifiFrontendClient {
         return signature;
       }
       case 'XION': {
-        //TODO: fetch nonce using gql here
         const { message } = signMessageParams
         const messageBuffer = new TextEncoder().encode(
           message

@@ -420,6 +420,7 @@ export type WalletWithSignMessage =
     walletPublicKey: string;
     signingAddress: string;
     signingPubkey: string;
+    message: string;
     signMessage: XionSignMessageFunction;
   }>
   | Readonly<{
