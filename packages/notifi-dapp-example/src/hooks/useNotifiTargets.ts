@@ -17,7 +17,7 @@ export type TargetGroupData = {
   discordId?: string;
 };
 
-type Target = 'email' | 'phoneNumber' | 'telegram' | 'discord';
+type Target = 'email' | 'phoneNumber' | 'telegram' | 'discord' | 'slack';
 
 export const useNotifiTargets = (target?: Target) => {
   const { formState } = useNotifiForm();
@@ -74,6 +74,12 @@ export const useNotifiTargets = (target?: Target) => {
         setUseDiscord(!useDiscord);
         targetGroup.discordId = !useDiscord ? 'Default' : undefined;
       }
+
+      if (target === 'slack') {
+        setUseSlack(!useSlack);
+        targetGroup.slackId = !useSlack ? 'Default' : undefined;
+      }
+
       const result = await renewTargetGroups(targetGroup);
       success = !!result;
 
@@ -87,7 +93,7 @@ export const useNotifiTargets = (target?: Target) => {
       console.error('Failed to singup', (e as Error).message);
     }
     setIsGlobalLoading(false);
-  }, [frontendClient, setGlobalError, targetGroup, useDiscord]);
+  }, [frontendClient, setGlobalError, targetGroup, useDiscord, useSlack]);
 
   const unVerifiedDestinationsString = useMemo(() => {
     const convertedUnVerifiedDestinations = unverifiedDestinations.map(

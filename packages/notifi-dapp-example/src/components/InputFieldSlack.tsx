@@ -1,16 +1,26 @@
 import { Icon } from '@/assets/Icon';
-import { useNotifiSubscriptionContext } from '@notifi-network/notifi-react-card';
+import { useNotifiTargets } from '@/hooks/useNotifiTargets';
+import {
+  useNotifiForm,
+  useNotifiSubscriptionContext,
+} from '@notifi-network/notifi-react-card';
 import React from 'react';
 
 import { Toggle } from './Toggle';
 
-export type SlackInputProps = Readonly<{
+export type InputFieldSlackProps = Readonly<{
   disabled: boolean;
+  isEditable?: boolean;
 }>;
 
-export const SlackInput: React.FC<SlackInputProps> = ({
+export const InputFieldSlack: React.FC<InputFieldSlackProps> = ({
   disabled,
-}: SlackInputProps) => {
+  isEditable,
+}: InputFieldSlackProps) => {
+  const { formErrorMessages } = useNotifiForm();
+  const { email: emailErrorMessage, telegram: telegramErrorMessage } =
+    formErrorMessages;
+  const { updateTarget } = useNotifiTargets('slack');
   const { useSlack, setUseSlack } = useNotifiSubscriptionContext();
 
   return (
@@ -28,9 +38,15 @@ export const SlackInput: React.FC<SlackInputProps> = ({
         <div className="flex flex-row items-center justify-between w-90 mr-4">
           <div className="font-semibold text-sm ml-6">Slack</div>
           <Toggle
-            disabled={disabled}
+            disabled={
+              disabled ||
+              telegramErrorMessage !== '' ||
+              emailErrorMessage !== ''
+            }
             checked={useSlack}
-            handleChange={(v) => setUseSlack(v)}
+            onChange={() => {
+              isEditable ? updateTarget() : setUseSlack(!useSlack);
+            }}
           />
         </div>
       </div>

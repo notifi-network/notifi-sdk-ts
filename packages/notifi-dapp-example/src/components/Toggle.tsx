@@ -4,14 +4,12 @@ export type ToggleProps = Readonly<{
   disabled: boolean;
   checked: boolean;
   onChange?: () => void;
-  handleChange?: (val: boolean) => void;
 }>;
 
 export const Toggle: React.FC<ToggleProps> = ({
   disabled,
   checked,
   onChange,
-  handleChange,
 }: ToggleProps) => {
   return (
     <label
@@ -25,8 +23,7 @@ export const Toggle: React.FC<ToggleProps> = ({
         className="sr-only peer"
         checked={checked}
         disabled={disabled}
-        onChange={(e) => {
-          handleChange?.(e.target.checked);
+        onChange={() => {
           onChange?.();
         }}
       />

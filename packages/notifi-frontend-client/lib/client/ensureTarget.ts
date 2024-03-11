@@ -153,7 +153,7 @@ export const ensureSlack = ensureTarget(
   },
 
   async (service: Operations.GetSlackChannelTargetsService) => {
-    const query = await service.getSlackChannelTargets({ ids: [''] });
+    const query = await service.getSlackChannelTargets({});
     return query.slackChannelTargets?.nodes;
   },
   (arg: Types.SlackChannelTargetFragmentFragment | undefined) => arg?.name,
