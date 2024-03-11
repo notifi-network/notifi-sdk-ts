@@ -49,6 +49,7 @@ export type NotifiSubscriptionData = Readonly<{
   telegramConfirmationUrl?: string;
   useHardwareWallet: boolean;
   useDiscord: boolean;
+  useSlack: boolean;
   /**
    * @deprecated Now this context can be consumed as long as the component is wrapped in NotifiContext
    */
@@ -65,6 +66,7 @@ export type NotifiSubscriptionData = Readonly<{
   setTelegramId: (telegramId: string) => void;
   setUseHardwareWallet: React.Dispatch<React.SetStateAction<boolean>>;
   setUseDiscord: React.Dispatch<React.SetStateAction<boolean>>;
+  setUseSlack: React.Dispatch<React.SetStateAction<boolean>>;
   loading: boolean;
   setLoading: (loading: boolean) => void;
   hasChatAlert: boolean;
@@ -131,6 +133,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
   >([]);
   const [useHardwareWallet, setUseHardwareWallet] = useState<boolean>(false);
   const [useDiscord, setUseDiscord] = useState<boolean>(false);
+  const [useSlack, setUseSlack] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
 
   const [email, setEmail] = useState<string>('');
@@ -434,7 +437,9 @@ export const NotifiSubscriptionContextProvider: React.FC<
     resetErrorMessageState,
     setDiscordErrorMessage,
     useDiscord,
+    useSlack,
     setUseDiscord,
+    setUseSlack,
     discordTargetData,
     setDiscordTargetData,
     render,

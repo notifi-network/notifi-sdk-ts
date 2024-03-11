@@ -1,43 +1,17 @@
 import { Icon } from '@/assets/Icon';
-import {
-  DeepPartialReadonly,
-  useNotifiForm,
-} from '@notifi-network/notifi-react-card';
+import { useNotifiSubscriptionContext } from '@notifi-network/notifi-react-card';
 import React from 'react';
 
-// import { EmailIcon } from '../assets/EmailIcon';
+import { Toggle } from './Toggle';
 
-export type InputFieldSlackProps = Readonly<{
-  copy?: DeepPartialReadonly<{
-    placeholder: string;
-    label: string;
-  }>;
+export type SlackInputProps = Readonly<{
   disabled: boolean;
 }>;
 
-export const InputFieldSlack: React.FC<InputFieldSlackProps> = ({
-  copy,
+export const SlackInput: React.FC<SlackInputProps> = ({
   disabled,
-}: InputFieldSlackProps) => {
-  const { setEmail, setEmailErrorMessage } = useNotifiForm();
-
-  // const { slack } = formState;
-
-  // const { slack: slackErrorMessage } = formErrorMessages;
-
-  const validateSlack = () => {
-    // if (slack === '') {
-    //   return;
-    // }
-    // const emailRegex = new RegExp(
-    //   '^[a-zA-Z0-9._:$!%-+]+@[a-zA-Z0-9.-]+.[a-zA-Z]$',
-    // );
-    // if (emailRegex.test(slack)) {
-    //   setEmailErrorMessage('');
-    // } else {
-    //   setEmailErrorMessage('The email is invalid. Please try again.');
-    // }
-  };
+}: SlackInputProps) => {
+  const { useSlack, setUseSlack } = useNotifiSubscriptionContext();
 
   return (
     <>
@@ -51,20 +25,14 @@ export const InputFieldSlack: React.FC<InputFieldSlackProps> = ({
           />
           <div className="font-medium text-xs mt-2">Slack</div>
         </div>
-        <input
-          className="border border-grey-300 rounded-md w-86 h-11 mr-4 text-sm pl-3"
-          data-cy="notifiEmailInput"
-          onBlur={validateSlack}
-          disabled={disabled}
-          name="notifi-email"
-          type="email"
-          value={''}
-          onFocus={() => setEmailErrorMessage('')}
-          onChange={(e) => {
-            setEmail(e.target.value ?? '');
-          }}
-          placeholder={copy?.placeholder ?? 'Enter your Slack email address'}
-        />
+        <div className="flex flex-row items-center justify-between w-90 mr-4">
+          <div className="font-semibold text-sm ml-6">Slack</div>
+          <Toggle
+            disabled={disabled}
+            checked={useSlack}
+            handleChange={(v) => setUseSlack(v)}
+          />
+        </div>
       </div>
     </>
   );

@@ -41,7 +41,7 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
     frontendClient,
   } = useNotifiClientContext();
 
-  const { loading, useDiscord, render, setLoading, syncFtuStage } =
+  const { loading, useDiscord, render, setLoading, syncFtuStage, useSlack } =
     useNotifiSubscriptionContext();
 
   const { setIsGlobalLoading, setGlobalError } = useGlobalStateContext();
@@ -66,8 +66,9 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
           ? undefined
           : formatTelegramForSubscription(telegramId),
       discordId: useDiscord ? 'Default' : undefined,
+      slackId: useSlack ? 'Default' : undefined,
     }),
-    [email, phoneNumber, telegramId, useDiscord],
+    [email, phoneNumber, telegramId, useDiscord, useSlack],
   );
 
   // TODO: migrate to useSubscribeAlert
@@ -83,6 +84,7 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
     },
     [frontendClient, targetGroup],
   );
+
   const onClick = useCallback(async () => {
     let isFirstTimeUser = false;
     if (!isAuthenticated) {
@@ -131,9 +133,16 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
     telegramErrorMessage !== '';
   const isInputFieldsValid = useMemo(() => {
     return data.isContactInfoRequired
-      ? email || phoneNumber || telegramId || useDiscord
+      ? email || phoneNumber || telegramId || useDiscord || useSlack
       : true;
-  }, [email, phoneNumber, telegramId, useDiscord, data.isContactInfoRequired]);
+  }, [
+    email,
+    phoneNumber,
+    telegramId,
+    useDiscord,
+    data.isContactInfoRequired,
+    useSlack,
+  ]);
 
   return (
     <button
