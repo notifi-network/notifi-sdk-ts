@@ -28,8 +28,14 @@ export const useNotifiTargets = (target?: Target) => {
   const { setIsGlobalLoading, setGlobalError } = useGlobalStateContext();
 
   const { phoneNumber, telegram: telegramId, email } = formState;
-  const { useDiscord, render, setUseDiscord, useSlack, setUseSlack } =
-    useNotifiSubscriptionContext();
+  const {
+    useDiscord,
+    render,
+    setUseDiscord,
+    useSlack,
+    setUseSlack,
+    slackTargetData,
+  } = useNotifiSubscriptionContext();
 
   const [hasEmailChanges, setHasEmailChanges] = useState<boolean>(false);
   const [hasTelegramChanges, setHasTelegramChanges] = useState<boolean>(false);
@@ -44,6 +50,7 @@ export const useNotifiTargets = (target?: Target) => {
           ? undefined
           : formatTelegramForSubscription(telegramId),
       discordId: useDiscord ? 'Default' : undefined,
+      slackId: slackTargetData ? slackTargetData.id : undefined,
     }),
     [email, phoneNumber, telegramId, useDiscord],
   );

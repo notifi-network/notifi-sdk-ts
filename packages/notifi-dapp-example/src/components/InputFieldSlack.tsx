@@ -42,17 +42,21 @@ export const InputFieldSlack: React.FC<InputFieldSlackProps> = ({
               {' '}
               {slackTargetData?.slackChannelName ?? 'Slack'}
             </div>
-            <a
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => {
-                window.open(slackTargetData?.verificationLink, '_blank');
-              }}
-              className="text-xs font-semibold 
+            {slackTargetData?.slackChannelName ? (
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => {
+                  window.open(slackTargetData?.verificationLink, '_blank');
+                }}
+                className="text-xs font-semibold 
 text-notifi-button-primary-blueish-bg ml-6 mt-1"
-            >
-              <label className="cursor-pointer">Change Workspace/Channel</label>
-            </a>
+              >
+                <label className="cursor-pointer">
+                  Change Workspace/Channel
+                </label>
+              </a>
+            ) : null}
           </div>
           <Toggle
             disabled={
