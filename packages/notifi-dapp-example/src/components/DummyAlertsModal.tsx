@@ -2,7 +2,6 @@ import { Icon } from '@/assets/Icon';
 
 const dummyAlerts = [
   'Developer Alerts',
-  'General Alerts',
   'Node Operator Alerts',
   'Market Updates',
   'Trader Alerts',

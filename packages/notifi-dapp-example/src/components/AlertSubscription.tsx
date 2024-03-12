@@ -18,15 +18,11 @@ export const AlertSubscription: React.FC<AlertSubscriptionRowProps> = ({
   );
 
   return (
-    <div
-      className={`flex flex-col items-center 2xl:px-[15.75rem] xl:px-[10rem] ${
-        title ? 'h-[94vh]' : ''
-      }`}
-    >
+    <div className="flex flex-col items-center 2xl:px-[15.75rem] xl:px-[10rem] min-h-0 grow h-full">
       {title ? (
         <div className="mt-8 mb-6 font-medium text-lg">{title}</div>
       ) : null}
-      <div className="flex flex-wrap gap-4 justify-center overflow-scroll">
+      <div className="flex flex-wrap gap-4 justify-center w-72 md:w-[37rem]">
         {uncategorizedTopics.subTopics.length > 0 ? (
           <AlertSubscriptionBlock labelWithSubTopics={uncategorizedTopics} />
         ) : null}
