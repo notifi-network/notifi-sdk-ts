@@ -41,8 +41,8 @@ export const EcosystemHero: React.FC<EcosystemHeroProps> = ({
       </div>
 
       <div className="text-5xl font-semibold">
-        Injective Ecosystem{' '}
-        <span className="text-notifi-primary-text">alerts</span>
+        Injective
+        <span className="text-notifi-primary-text">notifications</span>
       </div>
 
       <div className="text-gray-500 ">
