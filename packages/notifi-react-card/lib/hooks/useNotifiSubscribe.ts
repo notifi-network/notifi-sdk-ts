@@ -38,6 +38,7 @@ export type SubscriptionData = Readonly<{
   telegramConfirmationUrl: string | null;
   isPhoneNumberConfirmed: boolean | null;
   discordId: string | null;
+  slackId: string | null;
 }>;
 
 export type InstantSubscribe = Readonly<{
@@ -265,6 +266,7 @@ export const useNotifiSubscribe: ({
         telegramConfirmationUrl: telegramTarget?.confirmationUrl ?? null,
         telegramId: telegramTarget?.telegramId ?? null,
         discordId: discordTarget?.id ?? null,
+        slackId: null,
       };
     },
     [

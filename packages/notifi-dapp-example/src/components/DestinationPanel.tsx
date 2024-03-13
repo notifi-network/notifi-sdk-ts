@@ -37,12 +37,15 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
     destinationErrorMessages,
     useDiscord,
     discordTargetData,
+    useSlack,
+    slackTargetData,
   } = useNotifiSubscriptionContext();
 
   const {
     telegram: telegramErrorMessage,
     email: emailErrorMessage,
     discord: discordErrrorMessage,
+    slack: slackErrrorMessage,
   } = destinationErrorMessages;
 
   const handleResendEmailVerificationClick = useCallback(() => {
@@ -131,35 +134,43 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
           )}
         </div>
       ) : null}
-      {/* hide until slack is ready */}
-      {/* <div className="bg-notifi-card-bg rounded-md w-112 h-18 flex flex-row items-center justify-between mb-2">
-        <div className="bg-white rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
-          <Icon
-            id="slack-icon"
-            width="16px"
-            height="16px"
-            className="text-notifi-toggle-on-bg"
-          />
-          <div className="font-medium text-xs mt-2">Slack</div>
-        </div>
-        <div className="flex flex-col items-start justify-between w-90 mr-4">
-          <div className="text-sm ml-6">testSlack@gmail.com</div> */}
-      {/* todo: update when implement slack flow */}
-      {/* {emailErrorMessage?.type === 'recoverableError' ? (
-            <DestinationErrorMessage
-              onClick={() => handleResendEmailVerificationClick()}
-              errorMessage={
-                isEmailConfirmationSent
-                  ? 'Resend verification email'
-                  : emailErrorMessage.message
-              }
-              tooltipContent={emailErrorMessage?.tooltip}
+      {useSlack ? (
+        <div className="bg-notifi-card-bg rounded-md w-112 h-18 flex flex-row items-center justify-between mb-2">
+          <div className="bg-white rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
+            <Icon
+              id="slack-icon"
+              width="16px"
+              height="16px"
+              className="text-notifi-toggle-on-bg"
             />
+            <div className="font-bold text-xs mt-2">Slack</div>
+          </div>
+
+          {slackErrrorMessage?.type === 'recoverableError' ? (
+            <div className="flex flex-row items-center justify-between w-90 mr-4">
+              <div className="text-sm ml-6 font-medium">Slack</div>
+              <DestinationInfoPrompt
+                isButton={true}
+                buttonCopy="Enable Bot"
+                onClick={() => {
+                  slackErrrorMessage?.onClick();
+                }}
+                infoPromptMessage={slackErrrorMessage?.message ?? ''}
+              />
+            </div>
           ) : (
-            VerifiedText
-          )} */}
-      {/* </div>
-      </div> */}
+            <div className="flex flex-col items-start justify-between w-90 mr-4">
+              <div className="text-sm ml-6">
+                {slackTargetData?.slackChannelName ?? 'Slack'}
+              </div>
+              {slackTargetData?.verificationStatus === 'VERIFIED'
+                ? VerifiedText
+                : null}
+            </div>
+          )}
+        </div>
+      ) : null}
+
       {contactInfo?.discord?.active && useDiscord ? (
         <div className="bg-notifi-card-bg rounded-md w-112 h-18 flex flex-row items-center justify-between mb-2">
           <div className="bg-white rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">

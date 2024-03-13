@@ -56,3 +56,5 @@ export * from './GetFusionNotificationHistory';
 export * from './MarkFusionNotificationHistoryAsRead';
 export * from './GetUserSettings';
 export * from './UpdateUserSettings';
+export * from './GetSlackChannelTargets';
+export * from './CreateSlackChannelTarget';

@@ -15,9 +15,10 @@ export type TargetGroupData = {
   phoneNumber?: string;
   telegramId?: string;
   discordId?: string;
+  slackId?: string;
 };
 
-type Target = 'email' | 'phoneNumber' | 'telegram' | 'discord';
+type Target = 'email' | 'phoneNumber' | 'telegram' | 'discord' | 'slack';
 
 export const useNotifiTargets = (target?: Target) => {
   const { formState } = useNotifiForm();
@@ -27,7 +28,14 @@ export const useNotifiTargets = (target?: Target) => {
   const { setIsGlobalLoading, setGlobalError } = useGlobalStateContext();
 
   const { phoneNumber, telegram: telegramId, email } = formState;
-  const { useDiscord, render, setUseDiscord } = useNotifiSubscriptionContext();
+  const {
+    useDiscord,
+    render,
+    setUseDiscord,
+    useSlack,
+    setUseSlack,
+    slackTargetData,
+  } = useNotifiSubscriptionContext();
 
   const [hasEmailChanges, setHasEmailChanges] = useState<boolean>(false);
   const [hasTelegramChanges, setHasTelegramChanges] = useState<boolean>(false);
@@ -42,6 +50,7 @@ export const useNotifiTargets = (target?: Target) => {
           ? undefined
           : formatTelegramForSubscription(telegramId),
       discordId: useDiscord ? 'Default' : undefined,
+      slackId: slackTargetData ? slackTargetData.id : undefined,
     }),
     [email, phoneNumber, telegramId, useDiscord],
   );
@@ -74,6 +83,12 @@ export const useNotifiTargets = (target?: Target) => {
         setUseDiscord(!useDiscord);
         targetGroup.discordId = !useDiscord ? 'Default' : undefined;
       }
+
+      if (target === 'slack') {
+        setUseSlack(!useSlack);
+        targetGroup.slackId = !useSlack ? 'Default' : undefined;
+      }
+
       const result = await renewTargetGroups(targetGroup);
       success = !!result;
 
@@ -87,7 +102,7 @@ export const useNotifiTargets = (target?: Target) => {
       console.error('Failed to singup', (e as Error).message);
     }
     setIsGlobalLoading(false);
-  }, [frontendClient, setGlobalError, targetGroup, useDiscord]);
+  }, [frontendClient, setGlobalError, targetGroup, useDiscord, useSlack]);
 
   const unVerifiedDestinationsString = useMemo(() => {
     const convertedUnVerifiedDestinations = unverifiedDestinations.map(

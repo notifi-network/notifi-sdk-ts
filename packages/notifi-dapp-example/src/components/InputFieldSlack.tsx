@@ -1,43 +1,28 @@
 import { Icon } from '@/assets/Icon';
+import { useNotifiTargets } from '@/hooks/useNotifiTargets';
 import {
-  DeepPartialReadonly,
   useNotifiForm,
+  useNotifiSubscriptionContext,
 } from '@notifi-network/notifi-react-card';
 import React from 'react';
 
-// import { EmailIcon } from '../assets/EmailIcon';
+import { Toggle } from './Toggle';
 
 export type InputFieldSlackProps = Readonly<{
-  copy?: DeepPartialReadonly<{
-    placeholder: string;
-    label: string;
-  }>;
   disabled: boolean;
+  isEditable?: boolean;
 }>;
 
 export const InputFieldSlack: React.FC<InputFieldSlackProps> = ({
-  copy,
   disabled,
+  isEditable,
 }: InputFieldSlackProps) => {
-  const { setEmail, setEmailErrorMessage } = useNotifiForm();
-
-  // const { slack } = formState;
-
-  // const { slack: slackErrorMessage } = formErrorMessages;
-
-  const validateSlack = () => {
-    // if (slack === '') {
-    //   return;
-    // }
-    // const emailRegex = new RegExp(
-    //   '^[a-zA-Z0-9._:$!%-+]+@[a-zA-Z0-9.-]+.[a-zA-Z]$',
-    // );
-    // if (emailRegex.test(slack)) {
-    //   setEmailErrorMessage('');
-    // } else {
-    //   setEmailErrorMessage('The email is invalid. Please try again.');
-    // }
-  };
+  const { formErrorMessages } = useNotifiForm();
+  const { email: emailErrorMessage, telegram: telegramErrorMessage } =
+    formErrorMessages;
+  const { updateTarget } = useNotifiTargets('slack');
+  const { useSlack, setUseSlack, slackTargetData } =
+    useNotifiSubscriptionContext();
 
   return (
     <>
@@ -51,20 +36,40 @@ export const InputFieldSlack: React.FC<InputFieldSlackProps> = ({
           />
           <div className="font-medium text-xs mt-2">Slack</div>
         </div>
-        <input
-          className="border border-grey-300 rounded-md w-86 h-11 mr-4 text-sm pl-3"
-          data-cy="notifiEmailInput"
-          onBlur={validateSlack}
-          disabled={disabled}
-          name="notifi-email"
-          type="email"
-          value={''}
-          onFocus={() => setEmailErrorMessage('')}
-          onChange={(e) => {
-            setEmail(e.target.value ?? '');
-          }}
-          placeholder={copy?.placeholder ?? 'Enter your Slack email address'}
-        />
+        <div className="flex flex-row items-center justify-between w-90 mr-4">
+          <div className="flex flex-col items-start">
+            <div className="text-sm ml-6">
+              {' '}
+              {slackTargetData?.slackChannelName ?? 'Slack'}
+            </div>
+            {slackTargetData?.slackChannelName ? (
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => {
+                  window.open(slackTargetData?.verificationLink, '_blank');
+                }}
+                className="text-xs font-semibold 
+text-notifi-button-primary-blueish-bg ml-6 mt-1"
+              >
+                <label className="cursor-pointer">
+                  Change Workspace/Channel
+                </label>
+              </a>
+            ) : null}
+          </div>
+          <Toggle
+            disabled={
+              disabled ||
+              telegramErrorMessage !== '' ||
+              emailErrorMessage !== ''
+            }
+            checked={useSlack}
+            onChange={() => {
+              isEditable ? updateTarget() : setUseSlack(!useSlack);
+            }}
+          />
+        </div>
       </div>
     </>
   );

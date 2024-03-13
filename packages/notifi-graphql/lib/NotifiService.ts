@@ -66,7 +66,9 @@ export class NotifiService
     Operations.GetUnreadNotificationHistoryCountService,
     Operations.MarkFusionNotificationHistoryAsReadService,
     Operations.UpdateUserSettingsService,
-    Operations.GetUserSettingsService
+    Operations.GetUserSettingsService,
+    Operations.GetSlackChannelTargetsService,
+    Operations.CreateSlackChannelTargetService
 {
   private _jwt: string | undefined;
   private _typedClient: ReturnType<typeof getSdk>;
@@ -151,6 +153,13 @@ export class NotifiService
   ): Promise<Generated.CreateDiscordTargetMutation> {
     const headers = this._requestHeaders();
     return this._typedClient.createDiscordTarget(variables, headers);
+  }
+
+  async createSlackChannelTarget(
+    variables: Generated.CreateSlackChannelTargetMutationVariables,
+  ): Promise<Generated.CreateSlackChannelTargetMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.createSlackChannelTarget(variables, headers);
   }
 
   async createSmsTarget(
@@ -304,6 +313,13 @@ export class NotifiService
   ): Promise<Generated.GetDiscordTargetsQuery> {
     const headers = this._requestHeaders();
     return this._typedClient.getDiscordTargets(variables, headers);
+  }
+
+  async getSlackChannelTargets(
+    variables: Generated.GetSlackChannelTargetsQueryVariables,
+  ): Promise<Generated.GetSlackChannelTargetsQuery> {
+    const headers = this._requestHeaders();
+    return this._typedClient.getSlackChannelTargets(variables, headers);
   }
 
   async getFilters(
