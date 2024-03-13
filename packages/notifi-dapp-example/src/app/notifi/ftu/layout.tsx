@@ -20,7 +20,7 @@ export default function NotifiFTU({ children }: { children: React.ReactNode }) {
           />
           <div className="mx-4 h-4 border-l-2 border-grey-700"></div>
           <div className="text-gray-400 text-xs tracking-wider">
-            INJECTIVE ECOSYSTEM ALERTS
+            INJECTIVE NOTIFICATIONS
           </div>
         </div>
         <div className=" p-2 bg-white rounded-lg h-7 mr-8">
