@@ -47,7 +47,7 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
                 cardView === 'history'
                   ? 'text-notifi-icon-selected'
                   : 'text-notifi-icon-unselected'
-              } mt-[2px]`}
+              } mt-[0.125rem]`}
             />
             <div className="ml-5">Inbox</div>
           </div>
@@ -65,7 +65,7 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
                 cardView === 'destination'
                   ? 'text-notifi-icon-selected'
                   : 'text-notifi-icon-unselected'
-              } mt-[2px]`}
+              } mt-[0.125rem]`}
             />
             <div className="ml-5">Destinations</div>
           </div>
@@ -83,7 +83,7 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
                 cardView === 'alertSubscription'
                   ? 'text-notifi-icon-selected'
                   : 'text-notifi-icon-unselected'
-              } mt-[2px]`}
+              } mt-[0.125rem]`}
             />
             <div className="ml-5">Alert Subscription</div>
           </div>

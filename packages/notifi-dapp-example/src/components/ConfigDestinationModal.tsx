@@ -20,7 +20,7 @@ export const ConfigDestinationModal: React.FC<ConfigDestinationModalProps> = ({
   const { loading } = useNotifiSubscriptionContext();
 
   return (
-    <div className="h-4/6 w-4/6 bg-notifi-container-bg rounded-2xl flex flex-col items-center justify-between mb-8">
+    <div className="min-h-[500px] w-4/6 bg-notifi-container-bg rounded-2xl flex flex-col items-center justify-between mt-[1rem] mb-8">
       <div>
         <div className="flex flex-col items-center justify-center">
           <p className="font-semibold text-xs opacity-50 mt-2.5">STEP 2 of 3</p>

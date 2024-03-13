@@ -8,7 +8,7 @@ export default function NotifiFTU({ children }: { children: React.ReactNode }) {
   useNotifiRouter();
 
   return (
-    <div className="w-full flex flex-col items-center justify-center bg-notifi-page-bg">
+    <div className="w-full min-h-screen flex flex-col items-center justify-start bg-notifi-page-bg">
       <div className="w-full mt-8 flex flex-row justify-between">
         <div className="ml-8 flex items-center">
           <Image
