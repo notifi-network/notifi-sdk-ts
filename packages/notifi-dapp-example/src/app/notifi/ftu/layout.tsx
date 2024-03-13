@@ -8,9 +8,9 @@ export default function NotifiFTU({ children }: { children: React.ReactNode }) {
   useNotifiRouter();
 
   return (
-    <div className="w-full h-screen flex flex-col items-center justify-center bg-notifi-page-bg">
-      <div className="fixed top-8 left-8 right-8 flex justify-between">
-        <div className="left-8 flex items-center">
+    <div className="w-full min-h-screen flex flex-col items-center justify-start bg-notifi-page-bg">
+      <div className="w-full mt-8 flex flex-row justify-between">
+        <div className="ml-8 flex items-center">
           <Image
             src="/logos/injective.png"
             width={115}
@@ -23,7 +23,7 @@ export default function NotifiFTU({ children }: { children: React.ReactNode }) {
             INJECTIVE ECOSYSTEM ALERTS
           </div>
         </div>
-        <div className=" p-2 bg-white rounded-lg h-7">
+        <div className=" p-2 bg-white rounded-lg h-7 mr-8">
           <PoweredByNotifi />
         </div>
       </div>
