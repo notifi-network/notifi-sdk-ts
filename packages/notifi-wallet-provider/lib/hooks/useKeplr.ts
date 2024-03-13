@@ -1,7 +1,7 @@
 import type { Keplr, StdSignature } from '@keplr-wallet/types';
 import { useCallback, useEffect, useState } from 'react';
 
-import { KeplrWalletKeys } from '../types';
+import { KeplrWalletKeys, Wallets } from '../types';
 import {
   cleanWalletsInLocalStorage,
   setWalletKeysToLocalStorage,
@@ -10,6 +10,7 @@ import {
 export const useKeplr = (
   loadingHandler: React.Dispatch<React.SetStateAction<boolean>>,
   errorHandler: (e: Error, durationInMs?: number) => void,
+  selectWallet: (wallet: keyof Wallets | null) => void,
 ) => {
   const [walletKeysKeplr, setWalletKeysKeplr] =
     useState<KeplrWalletKeys | null>(null);
@@ -63,6 +64,7 @@ export const useKeplr = (
         bech32: key.bech32Address,
         base64: Buffer.from(key.pubKey).toString('base64'),
       };
+      selectWallet('keplr');
       setWalletKeysKeplr(walletKeys);
       setWalletKeysToLocalStorage('keplr', walletKeys);
       loadingHandler(false);
@@ -81,6 +83,7 @@ export const useKeplr = (
     window.keplr.disable();
     setWalletKeysKeplr(null);
     cleanWalletsInLocalStorage();
+    selectWallet(null);
   };
 
   const signArbitraryKeplr = useCallback(

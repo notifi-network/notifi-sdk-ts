@@ -2,6 +2,7 @@
 
 import { CardView } from '@/app/notifi/dashboard/page';
 import { Icon } from '@/assets/Icon';
+import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import Image from 'next/image';
 import { Dispatch, FC, SetStateAction } from 'react';
 
@@ -18,8 +19,8 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
   cardView,
   setCardView,
 }) => {
-  // TODO: remove (for utility only)
-  // const { disconnect, isWalletConnected } = useChain('injective');
+  const { wallets, selectedWallet } = useWallets();
+
   return (
     <div className="grow-0 w-80 h-screen px-7">
       <div className="flex flex-col justify-between items-start h-full pb-6">
@@ -89,15 +90,27 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
 
           <div className="w-full border-dashed border border-gray-300 my-6"></div>
 
-          <div
-            className={`flex px-4 text-notifi-tab-unselected-text w-64 py-4 rounded-[12px] mb-2`}
-          >
-            <Icon
-              id={'user-protrait'}
-              className={`text-notifi-icon-unselected`}
-            />
-            <div className="ml-5">
-              {accountAddress.slice(0, 6)} ... {accountAddress.slice(-6)}
+          <div className="rounded-[0.75rem] shadow-card overflow-hidden">
+            <div
+              className={`flex px-4 text-notifi-tab-unselected-text w-64 py-2 bg-white border border-transparent border-b-gray-500/20`}
+            >
+              <Icon
+                id={'user-protrait'}
+                className={`text-notifi-icon-unselected`}
+              />
+              <div className="ml-5 cursor-default">
+                {accountAddress.slice(0, 6)} ... {accountAddress.slice(-6)}
+              </div>
+            </div>
+            <div
+              className={`flex px-4 text-notifi-tab-unselected-text w-64 py-2 bg-white`}
+              onClick={() => {
+                if (!selectedWallet) return;
+                wallets[selectedWallet].disconnect();
+              }}
+            >
+              <Icon id={'leave'} className={`text-notifi-icon-unselected`} />
+              <div className="ml-5 cursor-pointer">disconnect</div>
             </div>
           </div>
         </div>
@@ -136,18 +149,6 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
       >
         set
       </button> */}
-      {/* {isWalletConnected ? (
-          // NOTE: This hidden button is just FYI in case disconnect is needed during development
-          <button
-            className="bg-red-100 p-5 rounded hidden"
-            onClick={() => {
-              if (!disconnect) return console.log('no disconnect');
-              disconnect();
-            }}
-          >
-            disconnect wallet
-          </button>
-        ) : null} */}
     </div>
   );
 };

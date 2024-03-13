@@ -36,7 +36,7 @@ export const NotifiWalletProvider: React.FC<PropsWithChildren> = ({
   const [selectedWallet, setSelectedWallet] = useState<keyof Wallets | null>(
     null,
   );
-  const selectWallet = (wallet: keyof Wallets) => {
+  const selectWallet = (wallet: keyof Wallets | null) => {
     setSelectedWallet(wallet);
   };
 
@@ -50,9 +50,9 @@ export const NotifiWalletProvider: React.FC<PropsWithChildren> = ({
     }, durationInMs ?? 5000);
   };
 
-  const metamask = useMetamask(setIsLoading, throwError);
+  const metamask = useMetamask(setIsLoading, throwError, selectWallet);
 
-  const keplr = useKeplr(setIsLoading, throwError);
+  const keplr = useKeplr(setIsLoading, throwError, selectWallet);
 
   const wallets: Wallets = {
     metamask: new MetamaskWallet(

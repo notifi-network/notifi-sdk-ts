@@ -1,7 +1,7 @@
 import converter from 'bech32-converting';
 import { useCallback, useEffect, useState } from 'react';
 
-import { Ethereum, MetamaskWalletKeys } from '../types';
+import { Ethereum, MetamaskWalletKeys, Wallets } from '../types';
 import {
   cleanWalletsInLocalStorage,
   setWalletKeysToLocalStorage,
@@ -10,6 +10,7 @@ import {
 export const useMetamask = (
   loadingHandler: React.Dispatch<React.SetStateAction<boolean>>,
   errorHandler: (e: Error, durationInMs?: number) => void,
+  selectWallet: (wallet: keyof Wallets | null) => void,
 ) => {
   const [walletKeysMetamask, setWalletKeysMetamask] =
     useState<MetamaskWalletKeys | null>(null);
@@ -36,7 +37,7 @@ export const useMetamask = (
         .request({ method: 'eth_accounts' })
         .then((accounts: string[]) => {
           const walletKeys = {
-            bech32: converter('inj').toBech32(accounts[0]),
+            bech32: converter('inj').toBech32(accounts[0]), // TODO: dynamic cosmos chain addr conversion
             hex: accounts[0],
           };
           setWalletKeysMetamask(walletKeys);
@@ -82,6 +83,7 @@ export const useMetamask = (
       bech32: converter('inj').toBech32(accounts[0]),
       hex: accounts[0],
     };
+    selectWallet('metamask');
     setWalletKeysMetamask(walletKeys);
     setWalletKeysToLocalStorage('metamask', walletKeys);
     loadingHandler(false);
@@ -92,6 +94,7 @@ export const useMetamask = (
   const disconnectMetamask = () => {
     setWalletKeysMetamask(null);
     cleanWalletsInLocalStorage();
+    selectWallet(null);
   };
 
   const signArbitraryMetamask = useCallback(

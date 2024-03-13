@@ -29,7 +29,6 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
           onClick={() => setIsOpenWalletsModal(false)}
         />
         <div className="flex grow gap-6 px-5 justify-center items-center">
-          {/* <div className="flex grow gap-6 px-5 justify-center items-center "> */}
           {objectKeys(wallets)
             .filter((wallet) => wallets[wallet].isInstalled)
             .map((wallet) => {
