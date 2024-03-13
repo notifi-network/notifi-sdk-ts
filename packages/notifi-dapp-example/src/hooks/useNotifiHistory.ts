@@ -1,5 +1,5 @@
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
-import { useNotifiCardContext } from '@/context/notifi/NotifiCardContext';
+import { useNotifiTenantConfig } from '@/context/NotifiTenantConfigContext';
 import { validateEventDetails } from '@/utils/notifiHistoryUtils';
 import { Types } from '@notifi-network/notifi-graphql';
 import { useNotifiClientContext } from '@notifi-network/notifi-react-card';
@@ -27,7 +27,7 @@ export const useNotifiHistory = (autoFetchHistoryAndUnreadCount?: boolean) => {
   const [nodes, setNodes] = useState<
     Types.FusionNotificationHistoryEntryFragmentFragment[]
   >([]);
-  const { cardConfig } = useNotifiCardContext();
+  const { cardConfig } = useNotifiTenantConfig();
   const historyLoaded = useRef<boolean>(false);
 
   const cardEventTypeNames = new Set(

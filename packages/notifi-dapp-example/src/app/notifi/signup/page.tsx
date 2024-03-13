@@ -2,10 +2,10 @@
 
 import { InputFields } from '@/components/InputFields';
 import { NotifiSignUpButton } from '@/components/NotifiSignUpButton';
-import { useNotifiCardContext } from '@/context/notifi/NotifiCardContext';
+import { useNotifiTenantConfig } from '@/context/NotifiTenantConfigContext';
 
 export default function NotifiSignup() {
-  const { cardConfig } = useNotifiCardContext();
+  const { cardConfig } = useNotifiTenantConfig();
 
   return (
     <div className="w-full md:h-4/6 sm:w-4/6 bg-notifi-container-bg rounded-2xl flex flex-col items-center justify-between mb-8 px-4">

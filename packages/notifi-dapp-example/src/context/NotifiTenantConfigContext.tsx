@@ -11,27 +11,27 @@ import {
   useState,
 } from 'react';
 
-import { useGlobalStateContext } from '../GlobalStateContext';
+import { useGlobalStateContext } from './GlobalStateContext';
 
-export type NotifiCardContextType = {
+export type NotifiTenantConfigContextType = {
   cardConfig: CardConfigItemV1;
   inputs: Record<string, unknown>;
 };
 
-const NotifiCardContext = createContext<NotifiCardContextType>(
-  {} as NotifiCardContextType,
+const NotifiTenantConfigContext = createContext<NotifiTenantConfigContextType>(
+  {} as NotifiTenantConfigContextType,
 );
 
 const notifiSubscriptionCardId =
   process.env.NEXT_PUBLIC_NOTIFI_SUBSCRIPTION_CARD_ID!;
 
-type NotifiCardProps = {
+type NotifiTenantConfigProps = {
   inputs?: Record<string, unknown>;
 };
 
-export const NotifiCardContextProvider: FC<
+export const NotifiTenantConfigContextProvider: FC<
   // TODO: Rename context to NotifiTenantConfigProvider
-  PropsWithChildren<NotifiCardProps>
+  PropsWithChildren<NotifiTenantConfigProps>
 > = ({ inputs = {}, children }) => {
   const { frontendClient } = useNotifiClientContext();
   const [cardConfig, setCardConfig] = useState<CardConfigItemV1 | null>(null);
@@ -89,10 +89,11 @@ export const NotifiCardContextProvider: FC<
   }
 
   return (
-    <NotifiCardContext.Provider value={{ cardConfig, inputs }}>
+    <NotifiTenantConfigContext.Provider value={{ cardConfig, inputs }}>
       {children}
-    </NotifiCardContext.Provider>
+    </NotifiTenantConfigContext.Provider>
   );
 };
 
-export const useNotifiCardContext = () => useContext(NotifiCardContext);
+export const useNotifiTenantConfig = () =>
+  useContext(NotifiTenantConfigContext);

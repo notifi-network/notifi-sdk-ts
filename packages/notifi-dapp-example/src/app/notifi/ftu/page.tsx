@@ -4,7 +4,7 @@ import { ConfigAlertModal } from '@/components/ConfigAlertModal';
 import { ConfigDestinationModal } from '@/components/ConfigDestinationModal';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
-import { useNotifiCardContext } from '@/context/notifi/NotifiCardContext';
+import { useNotifiTenantConfig } from '@/context/NotifiTenantConfigContext';
 import { useRouterAsync } from '@/hooks/useRouterAsync';
 import {
   FtuStage,
@@ -24,7 +24,7 @@ export default function NotifiFTU() {
   const { handleRoute } = useRouterAsync();
   const { setIsGlobalLoading } = useGlobalStateContext();
 
-  const { cardConfig } = useNotifiCardContext();
+  const { cardConfig } = useNotifiTenantConfig();
 
   useEffect(() => {
     setIsGlobalLoading(true);
