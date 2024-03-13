@@ -34,16 +34,12 @@
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",
     "postcss": "^8",
-    "tailwindcss": "^3.3.0",
-    "bech32-converting": "^1.0.9"
+    "tailwindcss": "^3.3.0"
   },
   "dependencies": {
     "react": "^18",
     "react-dom": "^18",
     "next": "14.1.0",
-    "@cosmos-kit/keplr": "^2.6.8",
-    "@cosmos-kit/react": "^2.10.8",
-    "@interchain-ui/react": "^1.21.4",
     "@notifi-network/notifi-react-card": "^0.90.8",
     "@notifi-network/notifi-frontend-client": "^0.90.8",
     "@notifi-network/notifi-graphql": "^0.90.8",
