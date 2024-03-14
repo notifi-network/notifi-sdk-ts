@@ -5,44 +5,24 @@ import { DashboardDestinations } from '@/components/DashboardDestinations';
 import { DashboardHistory } from '@/components/DashboardHistory';
 import { DashboardSideBar } from '@/components/DashboardSideBar';
 import { VerifyBanner } from '@/components/VerifyBanner';
-import { useGlobalStateContext } from '@/context/GlobalStateContext';
-import { WalletAccount } from '@cosmos-kit/core';
-import { useWalletClient } from '@cosmos-kit/react';
 import { useDestinationState } from '@notifi-network/notifi-react-card';
-import { useEffect, useState } from 'react';
+import { useWallets } from '@notifi-network/notifi-wallet-provider';
+import { useState } from 'react';
 
 export type CardView = 'history' | 'destination' | 'alertSubscription';
 
 export default function NotifiDashboard() {
-  const { client } = useWalletClient();
   const [cardView, setCardView] = useState<CardView>('history');
-  const [account, setAccount] = useState<WalletAccount | null>(null);
-  const { setIsGlobalLoading } = useGlobalStateContext();
   const { unverifiedDestinations } = useDestinationState();
+  const { selectedWallet, wallets } = useWallets();
 
-  // TODO: Move to hook if any other component needs account
-  useEffect(() => {
-    if (client) {
-      setIsGlobalLoading(true);
-      client
-        ?.getAccount?.('injective-1')
-        .then((account) => {
-          if (account) {
-            setAccount(account);
-          }
-        })
-        .finally(() => setIsGlobalLoading(false));
-      return;
-    }
-    setAccount(null);
-  }, [client]);
-
-  if (!account) return null;
-
+  if (!selectedWallet || !wallets[selectedWallet].walletKeys) return null;
+  const accountAddress = wallets[selectedWallet].walletKeys?.bech32;
+  if (!accountAddress) return;
   return (
     <div className="min-h-screen flex items-start flex-row">
       <DashboardSideBar
-        account={account}
+        accountAddress={accountAddress}
         cardView={cardView}
         setCardView={setCardView}
       />

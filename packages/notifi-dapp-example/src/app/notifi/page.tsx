@@ -11,11 +11,12 @@ import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import { getBytes } from 'ethers';
 
 export default function NotifiHome() {
-  // useNotifiRouter();
+  useNotifiRouter();
   const { selectWallet, selectedWallet, wallets } = useWallets();
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center">
+    <div className="flex min-h-screen flex-col items-center justify-center hidden">
+      {/* TODO: Clean up before merge (Test only) */}
       Dummy empty landing page
       <div>{selectedWallet && JSON.stringify(wallets[selectedWallet])}</div>
       <div
