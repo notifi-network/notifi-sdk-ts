@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import {
   useNotifiClientContext,
   useNotifiDemoPreviewContext,
+  useNotifiSubscriptionContext,
 } from '../context';
 import { ErrorViewState } from './useFetchedCardState';
 
@@ -38,7 +39,7 @@ export const useSubscriptionCard = (
   const { demoPreview } = useNotifiDemoPreviewContext();
   const { client, isUsingFrontendClient, frontendClient } =
     useNotifiClientContext();
-
+  const { setFusionEventDescriptors } = useNotifiSubscriptionContext();
   useEffect(() => {
     if (demoPreview) {
       return setState(() => ({
@@ -56,7 +57,9 @@ export const useSubscriptionCard = (
           if (!result.dataJson) {
             return Promise.reject(new Error('Failed to fetch data'));
           }
-          card = JSON.parse(result.dataJson);
+          const jsonResponseCardConfig = JSON.parse(result.dataJson);
+          setFusionEventDescriptors(result.fusionEvent);
+          card = jsonResponseCardConfig;
         } else if ('version' in result && result.version !== 'IntercomV1') {
           card = result;
         }

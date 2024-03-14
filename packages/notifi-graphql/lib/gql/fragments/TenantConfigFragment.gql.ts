@@ -5,5 +5,10 @@ export const TenantConfigFragment = gql`
     id
     type
     dataJson
+    fusionEvents {
+      id
+      metadata
+      name
+    }
   }
 `;
