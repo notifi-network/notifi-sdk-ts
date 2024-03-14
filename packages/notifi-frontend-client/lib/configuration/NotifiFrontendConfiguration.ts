@@ -34,7 +34,7 @@ type WalletBlockchainWithPublicKey = Extract<
   | 'MONAD'
 >;
 
-type WalletBlockchainWithDelegate = 'XION'
+type WalletBlockchainWithDelegate = 'XION';
 
 type WalletBlockchainWithPublicKeyAndAddress = Exclude<
   Types.WalletBlockchain,
@@ -82,7 +82,7 @@ export const checkIsConfigWithDelegate = (
   config: NotifiFrontendConfiguration,
 ): config is NotifiConfigWithDelegate => {
   return 'delegatedAddress' in config;
-}
+};
 
 export type ConfigFactoryInputDelegated = {
   account: Readonly<{
@@ -196,7 +196,7 @@ export const envUrl = (env: NotifiEnvironment): string => {
     case 'Development':
       return 'https://api.dev.notifi.network/gql';
     case 'Local':
-      return 'https://localhost:5001/gql';
+      return 'http://localhost:5001/gql';
     case 'Production':
       return 'https://api.notifi.network/gql';
     case 'Staging':
