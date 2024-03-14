@@ -1,16 +1,19 @@
 import type { Keplr, StdSignature } from '@keplr-wallet/types';
 import { useCallback, useEffect, useState } from 'react';
 
-import { PickKeys, WalletKeys } from '../types';
+import { KeplrWalletKeys, Wallets } from '../types';
+import {
+  cleanWalletsInLocalStorage,
+  setWalletKeysToLocalStorage,
+} from '../utils/localStorageUtils';
 
 export const useKeplr = (
   loadingHandler: React.Dispatch<React.SetStateAction<boolean>>,
   errorHandler: (e: Error, durationInMs?: number) => void,
+  selectWallet: (wallet: keyof Wallets | null) => void,
 ) => {
-  const [walletKeysKeplr, setWalletKeysKeplr] = useState<PickKeys<
-    WalletKeys,
-    'base64' | 'bech32'
-  > | null>(null);
+  const [walletKeysKeplr, setWalletKeysKeplr] =
+    useState<KeplrWalletKeys | null>(null);
 
   const [isKeplrInstalled, setIsKeplrInstalled] = useState<boolean>(false);
 
@@ -48,7 +51,7 @@ export const useKeplr = (
 
   const connectKeplr = async (
     chainId?: string,
-  ): Promise<PickKeys<WalletKeys, 'bech32' | 'base64'> | null> => {
+  ): Promise<KeplrWalletKeys | null> => {
     if (!window.keplr) {
       errorHandler(new Error('Wait for initialization'));
       return null;
@@ -61,7 +64,9 @@ export const useKeplr = (
         bech32: key.bech32Address,
         base64: Buffer.from(key.pubKey).toString('base64'),
       };
+      selectWallet('keplr');
       setWalletKeysKeplr(walletKeys);
+      setWalletKeysToLocalStorage('keplr', walletKeys);
       loadingHandler(false);
       return walletKeys;
     } catch (e) {
@@ -72,23 +77,13 @@ export const useKeplr = (
     }
     loadingHandler(false);
     return null;
+  };
 
-    // TODO: local storage
-    // const storageWallet: NotifiWalletStorage = {
-    //   walletName: 'keplr',
-    //   walletKeys: walletKeys,
-    //   isConnected: true,
-    // };
-    // localStorage.setItem('NotifiWalletStorage', JSON.stringify(storageWallet));
-    // NOTE: example of using injective sdk with keplr
-    // const walletStrategy = new WalletStrategy({
-    //   chainId: ChainId.Mainnet,
-    // });
-    // console.log('try keplr connect with injective sdk');
-    // walletStrategy.setWallet(Wallet.Keplr);
-    // const address = await walletStrategy.getAddresses();
-    // const sig = await walletStrategy.signArbitrary(walletKeys.bech32, 'test');
-    // console.log({ sig });
+  const disconnectKeplr = () => {
+    window.keplr.disable();
+    setWalletKeysKeplr(null);
+    cleanWalletsInLocalStorage();
+    selectWallet(null);
   };
 
   const signArbitraryKeplr = useCallback(
@@ -123,6 +118,7 @@ export const useKeplr = (
     walletKeysKeplr,
     connectKeplr,
     signArbitraryKeplr,
+    disconnectKeplr,
   };
 };
 

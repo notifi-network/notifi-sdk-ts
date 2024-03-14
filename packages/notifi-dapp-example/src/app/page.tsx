@@ -6,7 +6,6 @@ import { PoweredByNotifi } from '@/components/PoweredByNotifi';
 import { WalletSelectModal } from '@/components/WalletSelectModal';
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
 import { useRouterAsync } from '@/hooks/useRouterAsync';
-import { useChain, useWalletClient } from '@cosmos-kit/react';
 import '@interchain-ui/react/styles';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import Image from 'next/image';
