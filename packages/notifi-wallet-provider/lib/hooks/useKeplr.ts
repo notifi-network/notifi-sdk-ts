@@ -17,6 +17,15 @@ export const useKeplr = (
 
   const [isKeplrInstalled, setIsKeplrInstalled] = useState<boolean>(false);
 
+  const handleKeplrNotExists = (location: string) => {
+    cleanWalletsInLocalStorage();
+    errorHandler(
+      new Error(
+        `ERROR - ${location}: window.keplr not initialized or not installed`,
+      ),
+    );
+  };
+
   useEffect(() => {
     loadingHandler(true);
     getKeplrFromWindow()
@@ -34,8 +43,10 @@ export const useKeplr = (
 
     const handleAccountChange = () => {
       console.log('Keplr account changed');
-      if (!window.keplr) return;
+      if (!window.keplr) return handleKeplrNotExists('handleAccountChange');
+
       window.keplr.getKey('injective-1').then((key) => {
+        // TODO: dynamic cosmos chain id
         const walletKeys = {
           bech32: key.bech32Address,
           base64: Buffer.from(key.pubKey).toString('base64'),
@@ -50,10 +61,11 @@ export const useKeplr = (
   }, []);
 
   const connectKeplr = async (
+    // TODO: dynamic cosmos chain id (Rather than passing in the chainId to the function, it should be provided by the context provider level)
     chainId?: string,
   ): Promise<KeplrWalletKeys | null> => {
     if (!window.keplr) {
-      errorHandler(new Error('Wait for initialization'));
+      handleKeplrNotExists('connectKeplr');
       return null;
     }
     loadingHandler(true);
@@ -80,6 +92,7 @@ export const useKeplr = (
   };
 
   const disconnectKeplr = () => {
+    if (!window.keplr) return handleKeplrNotExists('disconnectKeplr');
     window.keplr.disable();
     setWalletKeysKeplr(null);
     cleanWalletsInLocalStorage();
@@ -92,7 +105,7 @@ export const useKeplr = (
       chainId?: string,
     ): Promise<StdSignature | undefined> => {
       if (!window.keplr || !walletKeysKeplr) {
-        errorHandler(new Error('Keplr not initialized or not connected'));
+        handleKeplrNotExists('signArbitraryKeplr');
         return;
       }
       loadingHandler(true);

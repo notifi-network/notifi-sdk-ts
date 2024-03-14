@@ -17,6 +17,15 @@ export const useMetamask = (
   const [isMetamaskInstalled, setIsMetamaskInstalled] =
     useState<boolean>(false);
 
+  const handleMetamaskNotExists = (location: string) => {
+    cleanWalletsInLocalStorage();
+    errorHandler(
+      new Error(
+        `ERROR - ${location}: window.ethereum not initialized or not installed`,
+      ),
+    );
+  };
+
   useEffect(() => {
     loadingHandler(true);
     getWalletFromWindow()
@@ -29,10 +38,10 @@ export const useMetamask = (
         setIsMetamaskInstalled(false);
       })
       .finally(() => loadingHandler(false));
-    const handleAccountChange = () => {
-      console.log('Metamask account changed');
 
-      if (!window.ethereum) return;
+    const handleAccountChange = () => {
+      errorHandler(new Error('Metamask account changed'));
+
       window.ethereum
         .request({ method: 'eth_accounts' })
         .then((accounts: string[]) => {
@@ -52,11 +61,10 @@ export const useMetamask = (
     timeoutInMiniSec?: number,
   ): Promise<MetamaskWalletKeys | null> => {
     if (!window.ethereum) {
-      errorHandler(new Error('Metamask not initialized'));
+      handleMetamaskNotExists('connectMetamask');
       return null;
     }
     loadingHandler(true);
-    console.log('resequsting accounts');
 
     const closeTimeout = () => {
       clearTimeout(timeout);
@@ -100,7 +108,7 @@ export const useMetamask = (
   const signArbitraryMetamask = useCallback(
     async (message: string): Promise<`0x${string}` | undefined> => {
       if (!window.ethereum || !walletKeysMetamask) {
-        errorHandler(new Error('Metamask not initialized or not connected'));
+        handleMetamaskNotExists('signArbitraryMetamask');
         return;
       }
       loadingHandler(true);
@@ -108,16 +116,18 @@ export const useMetamask = (
         const signature: Promise<`0x${string}`> = await window.ethereum.request(
           {
             method: 'personal_sign',
-            // A hex-encoded UTF-8 string to present to the user. See how to encode a string like this in the browser-string-hexer module.
-            // TODO: hex encode the message
             params: [
               Buffer.from(message).toString('hex'),
+              /** ⬆️
+               * hex-encoded UTF-8 string to present to the user. See how to encode a string like this in the browser-string-hexer module.
+               * @ref https://docs.metamask.io/wallet/reference/personal_sign/
+               */
               walletKeysMetamask?.hex,
             ],
           },
         );
-        // A hex-encoded 129-byte array starting with 0x.
         return signature;
+        // ⬆️ Note:A hex-encoded 129-byte array starting with 0x.
       } catch (e) {
         errorHandler(
           new Error('Metamask signArbitrary failed, check console for details'),
