@@ -18,7 +18,7 @@ export abstract class NotifiWallet {
   abstract isInstalled: boolean;
   abstract walletKeys: Partial<WalletKeys> | null;
   abstract signArbitrary?: KeplrSignMessage | MetamaskSignMessage;
-  abstract connect?: () => Promise<void>;
+  abstract connect?: () => Promise<Partial<WalletKeys> | null>;
 }
 export type WalletKeys = {
   bech32: string; // inj address (or other Cosmos chain ) ex. inj1...
@@ -34,7 +34,10 @@ export class MetamaskWallet implements NotifiWallet {
     public isInstalled: boolean,
     public walletKeys: PickKeys<WalletKeys, 'bech32' | 'hex'> | null,
     public signArbitrary: MetamaskSignMessage,
-    public connect: () => Promise<void>,
+    public connect: () => Promise<PickKeys<
+      WalletKeys,
+      'bech32' | 'hex'
+    > | null>,
   ) {}
 }
 export type KeplrSignMessage = (
@@ -45,7 +48,10 @@ export class KeplrWallet implements NotifiWallet {
     public isInstalled: boolean,
     public walletKeys: PickKeys<WalletKeys, 'bech32' | 'base64'> | null,
     public signArbitrary: KeplrSignMessage,
-    public connect: () => Promise<void>,
+    public connect: () => Promise<PickKeys<
+      WalletKeys,
+      'bech32' | 'base64'
+    > | null>,
   ) {}
 }
 export type Wallets = {

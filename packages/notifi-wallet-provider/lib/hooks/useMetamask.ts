@@ -45,10 +45,13 @@ export const useMetamask = (
     };
   }, []);
 
-  const connectMetamask = async () => {
+  const connectMetamask = async (): Promise<PickKeys<
+    WalletKeys,
+    'bech32' | 'hex'
+  > | null> => {
     if (!window.ethereum) {
       errorHandler(new Error('Metamask not initialized'));
-      return;
+      return null;
     }
     loadingHandler(true);
     try {
@@ -60,6 +63,8 @@ export const useMetamask = (
         hex: accounts[0],
       };
       setWalletKeysMetamask(walletKeys);
+      loadingHandler(false);
+      return walletKeys;
     } catch (e) {
       errorHandler(
         new Error('Metamask connection failed, check console for details'),
@@ -67,6 +72,7 @@ export const useMetamask = (
       console.error(e);
     }
     loadingHandler(false);
+    return null;
 
     // TODO: local storage
     // const storageWallet: NotifiWalletStorage = {

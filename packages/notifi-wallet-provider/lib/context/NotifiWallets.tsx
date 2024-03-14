@@ -9,7 +9,7 @@ type WalletContextType = {
   selectWallet: (wallet: keyof Wallets) => void;
   wallets: Wallets;
   error: Error | null;
-  loading: boolean;
+  isLoading: boolean;
 };
 const WalletContext = createContext<WalletContextType>({
   selectedWallet: null,
@@ -17,11 +17,11 @@ const WalletContext = createContext<WalletContextType>({
     console.log('Not implemented');
   },
   wallets: {
-    metamask: {} as any, // TODO: handle type
-    keplr: {} as any, // TODO: handle type
+    metamask: {} as any, // intentionally empty initial object
+    keplr: {} as any, // intentionally empty initial object
   },
   error: null,
-  loading: false,
+  isLoading: false,
 });
 
 export const NotifiWalletProvider: React.FC<PropsWithChildren> = ({
@@ -35,7 +35,7 @@ export const NotifiWalletProvider: React.FC<PropsWithChildren> = ({
   };
 
   const [error, setError] = useState<Error | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const throwError = (e: Error, durationInMs?: number) => {
     setError(e);
@@ -49,14 +49,14 @@ export const NotifiWalletProvider: React.FC<PropsWithChildren> = ({
     isMetamaskInstalled,
     connectMetamask,
     signArbitraryMetamask,
-  } = useMetamask(setLoading, throwError);
+  } = useMetamask(setIsLoading, throwError);
 
   const {
     isKeplrInstalled,
     walletKeysKeplr,
     connectKeplr,
     signArbitraryKeplr,
-  } = useKeplr(setLoading, throwError);
+  } = useKeplr(setIsLoading, throwError);
 
   return (
     <WalletContext.Provider
@@ -78,7 +78,7 @@ export const NotifiWalletProvider: React.FC<PropsWithChildren> = ({
           ),
         },
         error,
-        loading,
+        isLoading,
       }}
     >
       {children}
