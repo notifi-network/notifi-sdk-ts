@@ -62,7 +62,7 @@ export const EventTypeFusionRenderer: React.FC<FusionRendererProps> = ({
         key={config.name}
         classNames={classNames.EventTypeFusionToggleRow}
         disabled={disabled}
-        config={config}
+        config={config as FusionToggleEventTypeItem}
         inputs={inputs}
       />
     );
@@ -82,14 +82,14 @@ export const EventTypeFusionRenderer: React.FC<FusionRendererProps> = ({
         healthCheckSubtitle: parsedMetadata.filter[0].description,
         numberType: parsedMetadata.filter[0].userInputParams[0].kind,
         checkRatios: CheckRatio[],
-        alertFrequency: minutesConvertToFrequency(parsedMetadata.filter[1].minimumDurationBetweenTriggersInMinutes)
+        alertFrequency: minutesConvertToFrequency(parsedMetadata.filter[1].minimumDurationBetweenTriggersInMinutes) ?? 'ALWAYS',
       }
 
     return (
       <EventTypeFusionHealthCheckRow
         key={config.name}
         disabled={disabled}
-        config={config }
+        config={config as FusionHealthCheckEventTypeItem }
         classNames={classNames.EventTypeFusionHealthCheckRow}
         inputs={inputs}
       />
