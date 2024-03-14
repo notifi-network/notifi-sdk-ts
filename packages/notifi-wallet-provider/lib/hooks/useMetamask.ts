@@ -1,16 +1,19 @@
 import converter from 'bech32-converting';
 import { useCallback, useEffect, useState } from 'react';
 
-import { Ethereum, PickKeys, WalletKeys } from '../types';
+import { Ethereum, MetamaskWalletKeys, Wallets } from '../types';
+import {
+  cleanWalletsInLocalStorage,
+  setWalletKeysToLocalStorage,
+} from '../utils/localStorageUtils';
 
 export const useMetamask = (
   loadingHandler: React.Dispatch<React.SetStateAction<boolean>>,
   errorHandler: (e: Error, durationInMs?: number) => void,
+  selectWallet: (wallet: keyof Wallets | null) => void,
 ) => {
-  const [walletKeysMetamask, setWalletKeysMetamask] = useState<PickKeys<
-    WalletKeys,
-    'hex' | 'bech32'
-  > | null>(null);
+  const [walletKeysMetamask, setWalletKeysMetamask] =
+    useState<MetamaskWalletKeys | null>(null);
   const [isMetamaskInstalled, setIsMetamaskInstalled] =
     useState<boolean>(false);
 
@@ -34,7 +37,7 @@ export const useMetamask = (
         .request({ method: 'eth_accounts' })
         .then((accounts: string[]) => {
           const walletKeys = {
-            bech32: converter('inj').toBech32(accounts[0]),
+            bech32: converter('inj').toBech32(accounts[0]), // TODO: dynamic cosmos chain addr conversion
             hex: accounts[0],
           };
           setWalletKeysMetamask(walletKeys);
@@ -45,44 +48,55 @@ export const useMetamask = (
     };
   }, []);
 
-  const connectMetamask = async (): Promise<PickKeys<
-    WalletKeys,
-    'bech32' | 'hex'
-  > | null> => {
+  const connectMetamask = async (
+    timeoutInMiniSec?: number,
+  ): Promise<MetamaskWalletKeys | null> => {
     if (!window.ethereum) {
       errorHandler(new Error('Metamask not initialized'));
       return null;
     }
     loadingHandler(true);
-    try {
-      const accounts = await window.ethereum.request({
-        method: 'eth_requestAccounts',
-      });
-      const walletKeys = {
-        bech32: converter('inj').toBech32(accounts[0]),
-        hex: accounts[0],
-      };
-      setWalletKeysMetamask(walletKeys);
-      loadingHandler(false);
-      return walletKeys;
-    } catch (e) {
-      errorHandler(
-        new Error('Metamask connection failed, check console for details'),
-      );
-      console.error(e);
-    }
-    loadingHandler(false);
-    return null;
+    console.log('resequsting accounts');
 
-    // TODO: local storage
-    // const storageWallet: NotifiWalletStorage = {
-    //   walletName: 'metamask',
-    //   walletKeys: walletKeys,
-    //   isConnected: true,
-    // };
-    // localStorage.setItem('NotifiWalletStorage', JSON.stringify(storageWallet));
+    const closeTimeout = () => {
+      clearTimeout(timeout);
+    };
+
+    const timeout = setTimeout(() => {
+      console.log('timeout');
+      disconnectMetamask();
+      loadingHandler(false);
+      window.ethereum.removeListener('connect', closeTimeout);
+    }, timeoutInMiniSec ?? 5000);
+
+    // NOTE: connect event listener if needed
+    // window.ethereum.on('connect', () => {
+    //   console.log('connected');
+    //   window.ethereum.removeListener('connect', closeTimeout);
+    // });
+
+    const accounts = await window.ethereum.request({
+      // NOTE: window.ethereum.request's error is not catchable, instead use timeout
+      method: 'eth_requestAccounts',
+    });
+    const walletKeys = {
+      bech32: converter('inj').toBech32(accounts[0]),
+      hex: accounts[0],
+    };
+    selectWallet('metamask');
+    setWalletKeysMetamask(walletKeys);
+    setWalletKeysToLocalStorage('metamask', walletKeys);
+    loadingHandler(false);
+    clearTimeout(timeout);
+    return walletKeys;
   };
-  // impl signArbitrary method
+
+  const disconnectMetamask = () => {
+    setWalletKeysMetamask(null);
+    cleanWalletsInLocalStorage();
+    selectWallet(null);
+  };
+
   const signArbitraryMetamask = useCallback(
     async (message: string): Promise<`0x${string}` | undefined> => {
       if (!window.ethereum || !walletKeysMetamask) {
@@ -120,6 +134,7 @@ export const useMetamask = (
     isMetamaskInstalled,
     connectMetamask,
     signArbitraryMetamask,
+    disconnectMetamask,
   };
 };
 

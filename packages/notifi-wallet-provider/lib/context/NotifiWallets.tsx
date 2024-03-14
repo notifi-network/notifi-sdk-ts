@@ -1,8 +1,14 @@
-import React, { PropsWithChildren, createContext, useState } from 'react';
+import React, {
+  PropsWithChildren,
+  createContext,
+  useEffect,
+  useState,
+} from 'react';
 
 import { useKeplr } from '../hooks/useKeplr';
 import { useMetamask } from '../hooks/useMetamask';
 import { KeplrWallet, MetamaskWallet, Wallets } from '../types';
+import { getWalletsFromLocalStorage } from '../utils/localStorageUtils';
 
 type WalletContextType = {
   selectedWallet: keyof Wallets | null;
@@ -27,10 +33,10 @@ const WalletContext = createContext<WalletContextType>({
 export const NotifiWalletProvider: React.FC<PropsWithChildren> = ({
   children,
 }) => {
-  const [selectedWallet, setSelectedWallet] = useState<
-    'metamask' | 'keplr' | null
-  >(null);
-  const selectWallet = (wallet: 'metamask' | 'keplr') => {
+  const [selectedWallet, setSelectedWallet] = useState<keyof Wallets | null>(
+    null,
+  );
+  const selectWallet = (wallet: keyof Wallets | null) => {
     setSelectedWallet(wallet);
   };
 
@@ -44,39 +50,44 @@ export const NotifiWalletProvider: React.FC<PropsWithChildren> = ({
     }, durationInMs ?? 5000);
   };
 
-  const {
-    walletKeysMetamask,
-    isMetamaskInstalled,
-    connectMetamask,
-    signArbitraryMetamask,
-  } = useMetamask(setIsLoading, throwError);
+  const metamask = useMetamask(setIsLoading, throwError, selectWallet);
 
-  const {
-    isKeplrInstalled,
-    walletKeysKeplr,
-    connectKeplr,
-    signArbitraryKeplr,
-  } = useKeplr(setIsLoading, throwError);
+  const keplr = useKeplr(setIsLoading, throwError, selectWallet);
+
+  const wallets: Wallets = {
+    metamask: new MetamaskWallet(
+      metamask.isMetamaskInstalled,
+      metamask.walletKeysMetamask,
+      metamask.signArbitraryMetamask,
+      metamask.connectMetamask,
+      metamask.disconnectMetamask,
+    ),
+    keplr: new KeplrWallet(
+      keplr.isKeplrInstalled,
+      keplr.walletKeysKeplr,
+      keplr.signArbitraryKeplr,
+      keplr.connectKeplr,
+      keplr.disconnectKeplr,
+    ),
+  };
+
+  useEffect(() => {
+    const storageWallet = getWalletsFromLocalStorage();
+    if (storageWallet) {
+      const walletName = storageWallet.walletName;
+      console.log('connecting wallet', wallets[storageWallet.walletName]);
+      wallets[storageWallet.walletName]
+        .connect()
+        .then(() => selectWallet(walletName));
+    }
+  }, []);
 
   return (
     <WalletContext.Provider
       value={{
         selectedWallet,
         selectWallet,
-        wallets: {
-          metamask: new MetamaskWallet(
-            isMetamaskInstalled,
-            walletKeysMetamask,
-            signArbitraryMetamask,
-            connectMetamask,
-          ),
-          keplr: new KeplrWallet(
-            isKeplrInstalled,
-            walletKeysKeplr,
-            signArbitraryKeplr,
-            connectKeplr,
-          ),
-        },
+        wallets,
         error,
         isLoading,
       }}
