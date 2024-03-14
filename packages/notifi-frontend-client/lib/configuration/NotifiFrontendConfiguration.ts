@@ -25,7 +25,16 @@ type WalletBlockchainWithPublicKey = Extract<
   | 'SOLANA'
   | 'ZKSYNC'
   | 'BASE'
+  | 'BLAST'
+  | 'CELO'
+  | 'MANTLE'
+  | 'LINEA'
+  | 'SCROLL'
+  | 'MANTA'
+  | 'MONAD'
 >;
+
+type WalletBlockchainWithDelegate = 'XION'
 
 type WalletBlockchainWithPublicKeyAndAddress = Exclude<
   Types.WalletBlockchain,
@@ -45,18 +54,46 @@ export type NotifiConfigWithPublicKeyAndAddress = Readonly<{
 }> &
   NotifiEnvironmentConfiguration;
 
+export type NotifiConfigWithDelegate = Readonly<{
+  walletBlockchain: WalletBlockchainWithDelegate;
+  delegatedAddress: string;
+  delegatedPublicKey: string;
+  delegatorAddress: string;
+}> &
+  NotifiEnvironmentConfiguration;
+
 export type NotifiFrontendConfiguration =
   | NotifiConfigWithPublicKey
-  | NotifiConfigWithPublicKeyAndAddress;
+  | NotifiConfigWithPublicKeyAndAddress
+  | NotifiConfigWithDelegate;
 
 export type ConfigFactoryInput =
   | ConfigFactoryInputPublicKeyAndAddress
-  | ConfigFactoryInputPublicKey;
+  | ConfigFactoryInputPublicKey
+  | ConfigFactoryInputDelegated;
 
 export const checkIsConfigWithPublicKeyAndAddress = (
   config: NotifiFrontendConfiguration,
 ): config is NotifiConfigWithPublicKeyAndAddress => {
   return 'accountAddress' in config;
+};
+
+export const checkIsConfigWithDelegate = (
+  config: NotifiFrontendConfiguration,
+): config is NotifiConfigWithDelegate => {
+  return 'delegatedAddress' in config;
+}
+
+export type ConfigFactoryInputDelegated = {
+  account: Readonly<{
+    address: string;
+    publicKey: string;
+    delegatorAddress: string;
+  }>;
+  tenantId: string;
+  env: NotifiEnvironment;
+  walletBlockchain: NotifiConfigWithPublicKeyAndAddress['walletBlockchain'];
+  storageOption?: NotifiEnvironmentConfiguration['storageOption'];
 };
 
 export type ConfigFactoryInputPublicKeyAndAddress = {
@@ -95,6 +132,13 @@ const evmChains = [
   'BINANCE',
   'OPTIMISM',
   'BASE',
+  'BLAST',
+  'CELO',
+  'MANTLE',
+  'LINEA',
+  'SCROLL',
+  'MANTA',
+  'MONAD',
   'ZKSYNC',
 ] as const;
 

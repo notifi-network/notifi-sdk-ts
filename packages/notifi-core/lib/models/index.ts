@@ -21,3 +21,4 @@ export * from './WalletBlockchain';
 export * from './DiscordTarget';
 export * from './WebhookTarget';
 export * from './FusionNotificationHistory';
+export * from './Web3AuthType';

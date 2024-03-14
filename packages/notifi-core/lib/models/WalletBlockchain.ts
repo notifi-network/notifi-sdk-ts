@@ -14,4 +14,12 @@ export type WalletBlockchain =
   | 'NIBIRU'
   | 'SUI'
   | 'ZKSYNC'
-  | 'BASE';
+  | 'BASE'
+  | 'BLAST'
+  | 'CELO'
+  | 'MANTLE'
+  | 'LINEA'
+  | 'SCROLL'
+  | 'MANTA'
+  | 'MONAD'
+  | 'XION'

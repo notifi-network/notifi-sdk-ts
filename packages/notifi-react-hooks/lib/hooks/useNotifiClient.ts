@@ -126,6 +126,8 @@ const signMessage = async ({
   timestamp: number;
 }>): Promise<string> => {
   switch (params.walletBlockchain) {
+    case 'XION':
+      throw new Error('XION not supported with react-hooks, please migrate to Notifi Client.');
     case 'INJECTIVE':
     case 'OSMOSIS':
     case 'NIBIRU':
@@ -150,20 +152,28 @@ const signMessage = async ({
     case 'AVALANCHE':
     case 'ZKSYNC':
     case 'BASE':
-    case 'ETHEREUM': {
-      if (signer.walletBlockchain !== params.walletBlockchain) {
-        throw new Error('Signer and config have different walletBlockchain');
+    case 'BLAST':
+    case 'CELO':
+    case 'MANTLE':
+    case 'LINEA':
+    case 'SCROLL':
+    case 'MANTA':
+    case 'MONAD':
+    case 'ETHEREUM':
+      {
+        if (signer.walletBlockchain !== params.walletBlockchain) {
+          throw new Error('Signer and config have different walletBlockchain');
+        }
+
+        const { walletPublicKey } = params;
+        const messageBuffer = new TextEncoder().encode(
+          `${SIGNING_MESSAGE}${walletPublicKey}${dappAddress}${timestamp.toString()}`,
+        );
+
+        const signedBuffer = await signer.signMessage(messageBuffer);
+        const signature = Buffer.from(signedBuffer).toString('hex');
+        return signature;
       }
-
-      const { walletPublicKey } = params;
-      const messageBuffer = new TextEncoder().encode(
-        `${SIGNING_MESSAGE}${walletPublicKey}${dappAddress}${timestamp.toString()}`,
-      );
-
-      const signedBuffer = await signer.signMessage(messageBuffer);
-      const signature = Buffer.from(signedBuffer).toString('hex');
-      return signature;
-    }
     case 'APTOS': {
       if (signer.walletBlockchain !== 'APTOS') {
         throw new Error('Signer and config have different walletBlockchain');
@@ -194,9 +204,8 @@ const signMessage = async ({
 
       const { walletPublicKey, accountAddress } = params;
 
-      const message = `${
-        `ed25519:` + walletPublicKey
-      }${dappAddress}${accountAddress}${timestamp.toString()}`;
+      const message = `${`ed25519:` + walletPublicKey
+        }${dappAddress}${accountAddress}${timestamp.toString()}`;
       const textAsBuffer = new TextEncoder().encode(message);
       const hashBuffer = await window.crypto.subtle.digest(
         'SHA-256',
@@ -468,12 +477,12 @@ const useNotifiClient = (
         const result = await service.logInFromDapp({
           accountId:
             walletBlockchain === 'APTOS' ||
-            walletBlockchain === 'ACALA' ||
-            walletBlockchain === 'NEAR' ||
-            walletBlockchain === 'SUI' ||
-            walletBlockchain === 'INJECTIVE' ||
-            walletBlockchain === 'OSMOSIS' ||
-            walletBlockchain === 'NIBIRU'
+              walletBlockchain === 'ACALA' ||
+              walletBlockchain === 'NEAR' ||
+              walletBlockchain === 'SUI' ||
+              walletBlockchain === 'INJECTIVE' ||
+              walletBlockchain === 'OSMOSIS' ||
+              walletBlockchain === 'NIBIRU'
               ? config.accountAddress
               : undefined,
           walletPublicKey,
@@ -879,9 +888,9 @@ const useNotifiClient = (
           walletPublicKey,
           accountId:
             walletBlockchain === 'APTOS' ||
-            walletBlockchain === 'ACALA' ||
-            walletBlockchain === 'NEAR' ||
-            walletBlockchain === 'SUI'
+              walletBlockchain === 'ACALA' ||
+              walletBlockchain === 'NEAR' ||
+              walletBlockchain === 'SUI'
               ? walletParams.accountAddress
               : undefined,
           signature,

@@ -256,6 +256,10 @@ export type AptosSignMessageFunction = (
   nonce: number,
 ) => Promise<string>;
 
+export type XionSignMessageFunction = (
+  message: Uint8Array,
+) => Promise<string>;
+
 type hexString = `0x${string}`;
 
 export type AcalaSignMessageFunction = (
@@ -265,137 +269,184 @@ export type AcalaSignMessageFunction = (
 
 export type SignMessageParams =
   | Readonly<{
-      walletBlockchain: 'SOLANA';
-      signMessage: Uint8SignMessageFunction;
-    }>
+    walletBlockchain: 'SOLANA';
+    signMessage: Uint8SignMessageFunction;
+  }>
   | Readonly<{
-      walletBlockchain:
-        | 'ETHEREUM'
-        | 'POLYGON'
-        | 'ARBITRUM'
-        | 'AVALANCHE'
-        | 'BINANCE'
-        | 'INJECTIVE'
-        | 'OSMOSIS'
-        | 'NIBIRU'
-        | 'OPTIMISM'
-        | 'ZKSYNC'
-        | 'BASE';
-      signMessage: Uint8SignMessageFunction;
-    }>
+    walletBlockchain:
+    | 'ETHEREUM'
+    | 'POLYGON'
+    | 'ARBITRUM'
+    | 'AVALANCHE'
+    | 'BINANCE'
+    | 'INJECTIVE'
+    | 'OSMOSIS'
+    | 'NIBIRU'
+    | 'OPTIMISM'
+    | 'ZKSYNC'
+    | 'BASE'
+    | 'BLAST'
+    | 'CELO'
+    | 'MANTLE'
+    | 'LINEA'
+    | 'SCROLL'
+    | 'MANTA'
+    | 'MONAD';
+    signMessage: Uint8SignMessageFunction;
+  }>
   | Readonly<{
-      walletBlockchain: 'APTOS';
-      signMessage: AptosSignMessageFunction;
-    }>
+    walletBlockchain: 'XION';
+    message: string;
+    signMessage: XionSignMessageFunction;
+  }>
   | Readonly<{
-      walletBlockchain: 'ACALA';
-      signMessage: AcalaSignMessageFunction;
-    }>
+    walletBlockchain: 'APTOS';
+    signMessage: AptosSignMessageFunction;
+  }>
   | Readonly<{
-      walletBlockchain: 'NEAR';
-      signMessage: Uint8SignMessageFunction;
-    }>
+    walletBlockchain: 'ACALA';
+    signMessage: AcalaSignMessageFunction;
+  }>
   | Readonly<{
-      walletBlockchain: 'SUI';
-      signMessage: Uint8SignMessageFunction;
-    }>;
+    walletBlockchain: 'NEAR';
+    signMessage: Uint8SignMessageFunction;
+  }>
+  | Readonly<{
+    walletBlockchain: 'SUI';
+    signMessage: Uint8SignMessageFunction;
+  }>;
 
 export type WalletParams =
   | Readonly<{
-      walletBlockchain: 'SOLANA';
-      walletPublicKey: string;
-    }>
+    walletBlockchain: 'SOLANA';
+    walletPublicKey: string;
+  }>
   | Readonly<{
-      walletBlockchain:
-        | 'ETHEREUM'
-        | 'POLYGON'
-        | 'ARBITRUM'
-        | 'AVALANCHE'
-        | 'BINANCE'
-        | 'OPTIMISM'
-        | 'ZKSYNC'
-        | 'BASE';
-      walletPublicKey: string;
-    }>
+    walletBlockchain:
+    | 'ETHEREUM'
+    | 'POLYGON'
+    | 'ARBITRUM'
+    | 'AVALANCHE'
+    | 'BINANCE'
+    | 'OPTIMISM'
+    | 'ZKSYNC'
+    | 'BASE'
+    | 'BLAST'
+    | 'CELO'
+    | 'MANTLE'
+    | 'LINEA'
+    | 'SCROLL'
+    | 'MANTA'
+    | 'MONAD';
+    walletPublicKey: string;
+  }>
   | Readonly<{
-      walletBlockchain: 'APTOS';
-      accountAddress: string;
-      walletPublicKey: string;
-    }>
+    walletBlockchain: 'APTOS';
+    accountAddress: string;
+    walletPublicKey: string;
+  }>
   | Readonly<{
-      walletBlockchain: 'ACALA';
-      accountAddress: string;
-      walletPublicKey: string;
-    }>
+    walletBlockchain: 'XION';
+    walletPublicKey: string;
+    signingAddress: string;
+    signingPubkey: string;
+    signMessage: XionSignMessageFunction;
+  }>
   | Readonly<{
-      walletBlockchain: 'NEAR';
-      accountAddress: string;
-      walletPublicKey: string;
-    }>
+    walletBlockchain: 'ACALA';
+    accountAddress: string;
+    walletPublicKey: string;
+  }>
   | Readonly<{
-      walletBlockchain: 'SUI';
-      accountAddress: string;
-      walletPublicKey: string;
-    }>
+    walletBlockchain: 'NEAR';
+    accountAddress: string;
+    walletPublicKey: string;
+  }>
   | Readonly<{
-      walletBlockchain: 'INJECTIVE';
-      accountAddress: string;
-      walletPublicKey: string;
-    }>
+    walletBlockchain: 'SUI';
+    accountAddress: string;
+    walletPublicKey: string;
+  }>
   | Readonly<{
-      walletBlockchain: 'OSMOSIS';
-      accountAddress: string;
-      walletPublicKey: string;
-    }>
+    walletBlockchain: 'INJECTIVE';
+    accountAddress: string;
+    walletPublicKey: string;
+  }>
   | Readonly<{
-      walletBlockchain: 'NIBIRU';
-      accountAddress: string;
-      walletPublicKey: string;
-    }>;
+    walletBlockchain: 'OSMOSIS';
+    accountAddress: string;
+    walletPublicKey: string;
+  }>
+  | Readonly<{
+    walletBlockchain: 'NIBIRU';
+    accountAddress: string;
+    walletPublicKey: string;
+  }>;
 
 export type WalletWithSignMessage =
   | Readonly<{
-      walletBlockchain: 'SOLANA';
-      walletPublicKey: string;
-      signMessage: Uint8SignMessageFunction;
-    }>
+    walletBlockchain: 'SOLANA';
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>
   | Readonly<{
-      walletBlockchain:
-        | 'ETHEREUM'
-        | 'POLYGON'
-        | 'ARBITRUM'
-        | 'AVALANCHE'
-        | 'BINANCE'
-        | 'OPTIMISM'
-        | 'ZKSYNC'
-        | 'BASE';
-      walletPublicKey: string;
-      signMessage: Uint8SignMessageFunction;
-    }>
+    walletBlockchain:
+    | 'ETHEREUM'
+    | 'POLYGON'
+    | 'ARBITRUM'
+    | 'AVALANCHE'
+    | 'BINANCE'
+    | 'OPTIMISM'
+    | 'ZKSYNC'
+    | 'BASE'
+    | 'BLAST'
+    | 'CELO'
+    | 'MANTLE'
+    | 'LINEA'
+    | 'SCROLL'
+    | 'MANTA'
+    | 'MONAD';
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>
   | Readonly<{
-      walletBlockchain: 'APTOS';
-      accountAddress: string;
-      walletPublicKey: string;
-      signMessage: AptosSignMessageFunction;
-    }>
+    walletBlockchain: 'APTOS';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: AptosSignMessageFunction;
+  }>
   | Readonly<{
-      walletBlockchain: 'ACALA';
-      accountAddress: string;
-      walletPublicKey: string;
-      signMessage: AcalaSignMessageFunction;
-    }>
+    walletBlockchain: 'XION';
+    walletPublicKey: string;
+    signingAddress: string;
+    signingPubkey: string;
+    message: string;
+    signMessage: XionSignMessageFunction;
+  }>
   | Readonly<{
-      walletBlockchain: 'NEAR';
-      accountAddress: string;
-      walletPublicKey: string;
-      signMessage: Uint8SignMessageFunction;
-    }>
+    walletBlockchain: 'ACALA';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: AcalaSignMessageFunction;
+  }>
   | Readonly<{
-      walletBlockchain: 'SUI';
-      accountAddress: string;
-      walletPublicKey: string;
-      signMessage: Uint8SignMessageFunction;
-    }>;
+    walletBlockchain: 'NEAR';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>
+  | Readonly<{
+    walletBlockchain: 'SUI';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>
+  | Readonly<{
+    walletBlockchain: 'INJECTIVE';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>
 
 export type WalletWithSignParams = Readonly<{
   displayName?: string;

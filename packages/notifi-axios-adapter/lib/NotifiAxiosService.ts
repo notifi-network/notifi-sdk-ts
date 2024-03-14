@@ -91,7 +91,6 @@ export class NotifiAxiosService implements NotifiService {
   updateSourceGroup: NotifiService['updateSourceGroup'];
   updateTargetGroup: NotifiService['updateTargetGroup'];
   markFusionNotificationHistoryAsRead: NotifiService['markFusionNotificationHistoryAsRead'];
-
   private jwt: string | null = null;
 
   constructor(c: NotifiAxiosServiceConfig) {

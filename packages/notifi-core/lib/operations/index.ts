@@ -40,3 +40,5 @@ export * from './CreateDiscordTarget';
 export * from './GetUnreadNotificationHistoryCount';
 export * from './GetFusionNotificationHistory';
 export * from './MarkFusionNotificationHistoryAsRead';
+export * from './BeginLogInWithWeb3';
+export * from './CompleteLogInWithWeb3';

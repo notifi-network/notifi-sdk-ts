@@ -12,4 +12,11 @@ export type WalletBlockchain =
   | 'INJECTIVE'
   | 'SUI'
   | 'ZKSYNC'
-  | 'BASE';
+  | 'BASE'
+  | 'BLAST'
+  | 'CELO'
+  | 'MANTLE'
+  | 'LINEA'
+  | 'SCROLL'
+  | 'MANTA'
+  | 'MONAD';
