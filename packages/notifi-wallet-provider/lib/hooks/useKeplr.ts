@@ -45,10 +45,13 @@ export const useKeplr = (
       window.removeEventListener('keplr_keystorechange', handleAccountChange);
     };
   }, []);
-  const connectKeplr = async (chainId?: string) => {
+
+  const connectKeplr = async (
+    chainId?: string,
+  ): Promise<PickKeys<WalletKeys, 'bech32' | 'base64'> | null> => {
     if (!window.keplr) {
       errorHandler(new Error('Wait for initialization'));
-      return;
+      return null;
     }
     loadingHandler(true);
     try {
@@ -59,6 +62,8 @@ export const useKeplr = (
         base64: Buffer.from(key.pubKey).toString('base64'),
       };
       setWalletKeysKeplr(walletKeys);
+      loadingHandler(false);
+      return walletKeys;
     } catch (e) {
       errorHandler(
         new Error('Keplr connection failed, check console for details'),
@@ -66,6 +71,7 @@ export const useKeplr = (
       console.error(e);
     }
     loadingHandler(false);
+    return null;
 
     // TODO: local storage
     // const storageWallet: NotifiWalletStorage = {

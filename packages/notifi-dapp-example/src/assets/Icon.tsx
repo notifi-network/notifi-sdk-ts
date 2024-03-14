@@ -22,7 +22,8 @@ export type SpriteIconId =
   | 'info'
   | 'edit-icon'
   | 'close-icon'
-  | 'btn-nav';
+  | 'btn-nav'
+  | 'leave';
 
 /**
  * It takes an icon id and returns an svg element with the corresponding icon defined in /public/icons/sprite.svg.
