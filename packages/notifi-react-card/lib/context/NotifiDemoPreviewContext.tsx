@@ -35,6 +35,7 @@ export const defaultDemoConfigV1: CardConfigItemV1 = {
     },
     webhook: {} as unknown as WebhookContactInfo,
   },
+  fusionEvents: null,
 };
 
 export type NotifiDemoPreviewContextData = Readonly<{

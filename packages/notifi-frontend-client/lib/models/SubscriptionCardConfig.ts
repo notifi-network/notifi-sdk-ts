@@ -244,6 +244,7 @@ export type CardConfigItemV1 = Readonly<{
   contactInfo: ContactInfoConfig;
   isContactInfoRequired?: boolean;
   titles?: TitleSubtitleConfig;
+  fusionEvents: Gql.FusionEventDescriptor[] | null;
 }>;
 
 export type TitleSubtitleConfigInactive = Readonly<{ active: false }>;

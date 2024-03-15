@@ -15,5 +15,5 @@ export type TenantConfig = Readonly<{
   id: string | null;
   type: string;
   dataJson: string | null;
-  fusionEvent: Array<Types.FusionEventDescriptor>;
+  fusionEvents: Array<Types.FusionEventDescriptor>;
 }>;

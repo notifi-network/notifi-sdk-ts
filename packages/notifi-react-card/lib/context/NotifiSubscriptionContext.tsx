@@ -91,9 +91,9 @@ export type NotifiSubscriptionData = Readonly<{
   updateFtuStage: (ftuConfigStep: FtuStage) => Promise<void>;
   render: (newData: Types.FetchDataQuery) => SubscriptionData;
 
-  fusionEventDescriptors: Types.FusionEventDescriptor[];
+  fusionEventDescriptors: Types.FusionEventDescriptor[] | null;
   setFusionEventDescriptors: React.Dispatch<
-    React.SetStateAction<Types.FusionEventDescriptor[]>
+    React.SetStateAction<Types.FusionEventDescriptor[] | null>
   >;
 }>;
 
@@ -144,8 +144,8 @@ export const NotifiSubscriptionContextProvider: React.FC<
   const [ftuStage, setFtuStage] = useState<FtuStage | null>(null);
 
   const [fusionEventDescriptors, setFusionEventDescriptors] = useState<
-    Types.FusionEventDescriptor[]
-  >([]);
+    Types.FusionEventDescriptor[] | null
+  >(null);
 
   const [discordTargetData, setDiscordTargetData] = useState<
     Types.DiscordTargetFragmentFragment | undefined

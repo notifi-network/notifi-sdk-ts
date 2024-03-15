@@ -47,7 +47,6 @@ export const useSubscriptionCard = (
         data: demoPreview.data,
       }));
     }
-
     let card: CardConfigItemV1 | undefined;
     setState({ state: 'loading' });
     (isUsingFrontendClient ? frontendClient : client)
@@ -57,8 +56,10 @@ export const useSubscriptionCard = (
           if (!result.dataJson) {
             return Promise.reject(new Error('Failed to fetch data'));
           }
+
           const jsonResponseCardConfig = JSON.parse(result.dataJson);
-          setFusionEventDescriptors(result.fusionEvent);
+
+          setFusionEventDescriptors(result.fusionEvents);
           card = jsonResponseCardConfig;
         } else if ('version' in result && result.version !== 'IntercomV1') {
           card = result;
