@@ -32,13 +32,14 @@ type WalletBlockchainWithPublicKey = Extract<
   | 'SCROLL'
   | 'MANTA'
   | 'MONAD'
+  | 'BERACHAIN'
 >;
 
 type WalletBlockchainWithDelegate = 'XION'
 
 type WalletBlockchainWithPublicKeyAndAddress = Exclude<
   Types.WalletBlockchain,
-  WalletBlockchainWithPublicKey | 'OFF_CHAIN' | 'EVMOS'
+  WalletBlockchainWithPublicKey | 'OFF_CHAIN' | 'EVMOS' | WalletBlockchainWithDelegate
 >;
 
 export type NotifiConfigWithPublicKey = Readonly<{
@@ -140,6 +141,7 @@ const evmChains = [
   'MANTA',
   'MONAD',
   'ZKSYNC',
+  'BERACHAIN',
 ] as const;
 
 type EVMChains = Extract<Types.WalletBlockchain, (typeof evmChains)[number]>;

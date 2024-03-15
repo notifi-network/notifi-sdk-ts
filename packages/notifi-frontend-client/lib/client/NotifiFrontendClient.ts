@@ -44,6 +44,10 @@ export type SignMessageParams =
     | 'AVALANCHE'
     | 'BINANCE'
     | 'OSMOSIS'
+    | 'ELYS'
+    | 'NEUTRON'
+    | 'ARCHWAY'
+    | 'BERACHAIN'
     | 'NIBIRU'
     | 'OPTIMISM'
     | 'ZKSYNC'
@@ -107,7 +111,8 @@ export type WalletWithSignMessage =
     | 'LINEA'
     | 'SCROLL'
     | 'MANTA'
-    | 'MONAD';
+    | 'MONAD'
+    | 'BERACHAIN'
     walletPublicKey: string;
     signMessage: Uint8SignMessageFunction;
   }>
@@ -145,6 +150,24 @@ export type WalletWithSignMessage =
   }>
   | Readonly<{
     walletBlockchain: 'INJECTIVE';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>
+  | Readonly<{
+    walletBlockchain: 'ELYS';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>
+  | Readonly<{
+    walletBlockchain: 'NEUTRON';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>
+  | Readonly<{
+    walletBlockchain: 'ARCHWAY';
     accountAddress: string;
     walletPublicKey: string;
     signMessage: Uint8SignMessageFunction;
@@ -379,6 +402,7 @@ export class NotifiFrontendClient {
     let loginResult: Types.UserFragmentFragment | undefined = undefined;
     switch (walletBlockchain) {
       case 'BLAST':
+      case 'BERACHAIN':
       case 'CELO':
       case 'MANTLE':
       case 'LINEA':
@@ -409,6 +433,9 @@ export class NotifiFrontendClient {
       case 'NEAR':
       case 'INJECTIVE':
       case 'OSMOSIS':
+      case 'ELYS':
+      case 'ARCHWAY':
+      case 'NEUTRON':
       case 'NIBIRU':
       case 'APTOS': {
         const result = await this._service.logInFromDapp({
@@ -449,6 +476,7 @@ export class NotifiFrontendClient {
     }
     switch (signMessageParams.walletBlockchain) {
       case 'ETHEREUM':
+      case 'BERACHAIN':
       case 'POLYGON':
       case 'ARBITRUM':
       case 'AVALANCHE':
@@ -477,6 +505,10 @@ export class NotifiFrontendClient {
       }
       case 'OSMOSIS':
       case 'ZKSYNC':
+      case 'ELYS':
+      case 'NEUTRON':
+      case 'NIBIRU':
+      case 'ARCHWAY':
       case 'INJECTIVE':
         {
           const { authenticationKey, tenantId } = this

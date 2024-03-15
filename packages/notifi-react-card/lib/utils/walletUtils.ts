@@ -42,6 +42,16 @@ export const walletToSourceType = (
       return 'SUI_WALLET';
     case 'ZKSYNC':
       return 'ZKSYNC_WALLET';
+    case 'ARCHWAY':
+      return 'ARCHWAY_WALLET';
+    case 'ELYS':
+      return 'ELYS_WALLET';
+    case 'NEUTRON':
+      return 'NEUTRON_WALLET';
+    case 'BERACHAIN':
+      return 'BERACHAIN_WALLET';
+    case 'XION':
+      return 'XION_WALLET';
     default:
       throw new Error('Unsupported walletType');
   }
