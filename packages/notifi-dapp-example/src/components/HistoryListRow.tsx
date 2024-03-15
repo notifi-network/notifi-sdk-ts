@@ -23,7 +23,9 @@ export const HistoryListRow: React.FC<HistoryListRowProps> = ({
 }) => {
   const [parsedNotificationHistory, setParsedNotificationHistory] =
     useState<ParsedNotificationHistory | null>(
-      historyDetailEntry ? parseNotificationHistory(historyDetailEntry) : null,
+      historyDetailEntry
+        ? parseNotificationHistory(historyDetailEntry, false)
+        : null,
     );
 
   const { markNotifiHistoryAsRead } = useNotifiHistory();
@@ -50,7 +52,7 @@ export const HistoryListRow: React.FC<HistoryListRowProps> = ({
   }
 
   const icon = parsedNotificationHistory.icon as Types.GenericEventIconHint;
-
+  console.log('parsedNotificationHistory', parsedNotificationHistory);
   return (
     <div
       className={`p-6 line-clamp-1 flex relative border-b border-gray-200 cursor-pointer ${

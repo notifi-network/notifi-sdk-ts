@@ -18,8 +18,10 @@ export const HistoryDetail: React.FC<HistoryDetailProps> = ({
 }) => {
   if (!historyDetailEntry) return null;
 
-  const { timestamp, topic, message } =
-    parseNotificationHistory(historyDetailEntry);
+  const { timestamp, topic, message } = parseNotificationHistory(
+    historyDetailEntry,
+    true,
+  );
 
   const sanitizedMessage = useMemo(
     () => DOMPurify.sanitize(message),

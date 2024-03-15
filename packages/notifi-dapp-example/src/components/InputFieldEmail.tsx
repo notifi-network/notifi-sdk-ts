@@ -49,7 +49,7 @@ export const InputFieldEmail: React.FC<InputFieldEmailProps> = ({
   const hasErrors = emailErrorMessage !== '';
 
   return (
-    <div className="bg-notifi-card-bg rounded-md w-112 h-18 flex flex-row items-center justify-between mb-2">
+    <div className="bg-notifi-card-bg rounded-md w-full sm:w-112 h-18 flex flex-row items-center mb-2 gap-2 sm:gap-4">
       <div className="bg-white rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
         <Icon
           id="email-icon"
@@ -59,9 +59,9 @@ export const InputFieldEmail: React.FC<InputFieldEmailProps> = ({
         />
         <div className="font-medium text-xs mt-2">Email</div>
       </div>
-      <div className="relative">
+      <div className="relative w-3/4">
         <input
-          className={`border rounded-md w-86 h-11 mr-4 text-sm pl-3 focus:outline-none ${
+          className={`border rounded-md w-full sm:w-86 h-11 mr-4 text-sm pl-3 focus:outline-none ${
             hasErrors ? 'border-notifi-error' : 'border-gray-300'
           } flex ${hasErrors ? 'pt-3' : 'pt-0'}`}
           data-cy="notifiEmailInput"
@@ -86,7 +86,7 @@ export const InputFieldEmail: React.FC<InputFieldEmailProps> = ({
         ) : null}
         {isEditable && hasEmailChanges ? (
           <button
-            className="rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-16 h-7 mb-6 text-sm font-bold absolute top-2.5 right-6 disabled:opacity-50 disabled:hover:bg-notifi-button-primary-blueish-bg hover:bg-notifi-button-hover-bg"
+            className="rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-16 h-7 mb-6 text-sm font-bold absolute top-2.5 right-1 disabled:opacity-50 disabled:hover:bg-notifi-button-primary-blueish-bg hover:bg-notifi-button-hover-bg"
             disabled={telegramErrorMessage !== '' || emailErrorMessage !== ''}
             onClick={updateTarget}
           >

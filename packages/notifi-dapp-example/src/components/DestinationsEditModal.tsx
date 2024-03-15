@@ -13,10 +13,10 @@ export const DestinationsEditModal: React.FC<DestinationsEditModalProps> = ({
   setOpen,
 }) => {
   return (
-    <div className="fixed inset-0 flex items-center justify-center ">
-      <div className="fixed inset-0 bg-black bg-opacity-20 z-0"> </div>
-      <div className="h-4/6 w-4/6 bg-notifi-container-bg rounded-2xl flex flex-col items-center justify-between mb-8 shadow-container relative">
-        <div>
+    <div className="fixed inset-0 flex items-center justify-center z-50">
+      <div className="fixed inset-0 bg-black bg-opacity-20 z-50"> </div>
+      <div className="h-3/4 md:h-4/6 w-full md:w-4/6 bg-notifi-container-bg z-50 rounded-2xl flex flex-col items-center justify-between mb-8 shadow-container relative px-4">
+        <div className="w-full">
           <div
             className="cursor-pointer absolute top-8 right-8"
             onClick={() => setOpen(false)}
@@ -24,7 +24,7 @@ export const DestinationsEditModal: React.FC<DestinationsEditModalProps> = ({
             <Icon id="close-icon" className="text-notifi-text-light" />
           </div>
           <div className="flex flex-col items-center justify-center">
-            <p className="text-xl mt-12">Edit Destinations</p>
+            <p className="text-2xl mt-12">Edit Destinations</p>
           </div>
           <div className="flex flex-col items-center justify-center">
             <p className="text-sm opacity-50 font-semibold my-4">

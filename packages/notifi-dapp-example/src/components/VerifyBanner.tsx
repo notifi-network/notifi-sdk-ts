@@ -13,7 +13,7 @@ export const VerifyBanner: React.FC<VerifyBannerProps> = ({
   const { unVerifiedDestinationsString } = useNotifiTargets();
 
   return (
-    <div className="flex flex-row justify-between items-center py-2 bg-white mt-6 rounded-[14px] mr-10 shadow-card">
+    <div className="flex flex-row justify-between items-center py-2 bg-white mt-4 md:mt-6 rounded-[14px] mx-4 md:mx-0 md:mr-10 shadow-card">
       <div className="flex flex-row items-center justify-center ml-3 text-sm font-medium">
         <Icon
           id="check"
