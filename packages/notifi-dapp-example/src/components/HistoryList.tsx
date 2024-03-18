@@ -56,8 +56,19 @@ export const HistoryList: React.FC<HistoryListProps> = ({
       ) : null}
 
       {isLoading && (
-        <div className="m-auto absolute top-0 left-0 right-0 bottom-0 bg-black bg-opacity-5">
-          <LoadingSpinner />
+        <div className="mt-8 ml-20 bg-white rounded-3xl">
+          <div>
+            <div className="w-[6rem] h-[0.875rem] rounded-xl bg-black opacity-5 mb-2"></div>
+            <div className="w-[20rem] h-[0.875rem] rounded-xl bg-black opacity-5 mb-10"></div>
+          </div>
+          <div>
+            <div className="w-[6rem] h-[0.875rem] rounded-xl bg-black opacity-5 mb-2"></div>
+            <div className="w-[20rem] h-[0.875rem] rounded-xl bg-black opacity-5 mb-10"></div>
+          </div>
+          <div>
+            <div className="w-[6rem] h-[0.875rem] rounded-xl bg-black opacity-5 mb-2"></div>
+            <div className="w-[20rem] h-[0.875rem] rounded-xl bg-black opacity-5 mb-10"></div>
+          </div>
         </div>
       )}
       {nodes.length === 0 && !isLoading ? (
