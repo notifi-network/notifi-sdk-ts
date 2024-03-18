@@ -238,6 +238,8 @@ const ensureWalletBalanceSources = async (
           return 'ARCHWAY_WALLET';
         case 'ELYS':
           return 'ELYS_WALLET';
+        case 'AXELAR':
+          return 'AXELAR_WALLET';
         case 'NEUTRON':
           return 'NEUTRON_WALLET';
         case 'BERACHAIN':

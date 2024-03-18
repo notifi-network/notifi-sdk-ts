@@ -284,6 +284,7 @@ export type SignMessageParams =
     | 'ELYS'
     | 'NEUTRON'
     | 'ARCHWAY'
+    | 'AXELAR'
     | 'BERACHAIN'
     | 'NIBIRU'
     | 'OPTIMISM'
@@ -402,6 +403,11 @@ export type WalletParams =
     accountAddress: string;
     walletPublicKey: string;
   }>
+  | Readonly<{
+    walletBlockchain: 'AXELAR';
+    accountAddress: string;
+    walletPublicKey: string;
+  }>
 
 
 export type WalletWithSignMessage =
@@ -483,6 +489,12 @@ export type WalletWithSignMessage =
   }>
   | Readonly<{
     walletBlockchain: 'ARCHWAY';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>
+  | Readonly<{
+    walletBlockchain: 'AXELAR';
     accountAddress: string;
     walletPublicKey: string;
     signMessage: Uint8SignMessageFunction;

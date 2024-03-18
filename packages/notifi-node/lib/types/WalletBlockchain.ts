@@ -4,6 +4,7 @@ export type WalletBlockchain =
   | 'ARBITRUM'
   | 'ARCHWAY'
   | 'AVALANCHE'
+  | 'AXELAR'
   | 'BASE'
   | 'BERACHAIN'
   | 'BINANCE'

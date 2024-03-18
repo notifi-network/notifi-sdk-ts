@@ -50,6 +50,8 @@ export const walletToSourceType = (
       return 'NEUTRON_WALLET';
     case 'BERACHAIN':
       return 'BERACHAIN_WALLET';
+    case 'AXELAR':
+      return 'AXELAR_WALLET';
     case 'XION':
       return 'XION_WALLET';
     default:

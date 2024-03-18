@@ -47,6 +47,7 @@ export type SignMessageParams =
     | 'ELYS'
     | 'NEUTRON'
     | 'ARCHWAY'
+    | 'AXELAR'
     | 'BERACHAIN'
     | 'NIBIRU'
     | 'OPTIMISM'
@@ -168,6 +169,12 @@ export type WalletWithSignMessage =
   }>
   | Readonly<{
     walletBlockchain: 'ARCHWAY';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>
+  | Readonly<{
+    walletBlockchain: 'AXELAR';
     accountAddress: string;
     walletPublicKey: string;
     signMessage: Uint8SignMessageFunction;
@@ -435,6 +442,7 @@ export class NotifiFrontendClient {
       case 'OSMOSIS':
       case 'ELYS':
       case 'ARCHWAY':
+      case 'AXELAR':
       case 'NEUTRON':
       case 'NIBIRU':
       case 'APTOS': {
@@ -509,6 +517,7 @@ export class NotifiFrontendClient {
       case 'NEUTRON':
       case 'NIBIRU':
       case 'ARCHWAY':
+      case 'AXELAR':
       case 'INJECTIVE':
         {
           const { authenticationKey, tenantId } = this

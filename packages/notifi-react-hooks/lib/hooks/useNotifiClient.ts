@@ -134,6 +134,7 @@ const signMessage = async ({
     case 'ARCHWAY':
     case 'ELYS':
     case 'NEUTRON':
+    case 'AXELAR':
     case 'SOLANA': {
       if (signer.walletBlockchain !== params.walletBlockchain) {
         throw new Error('Signer and config have different walletBlockchain');
