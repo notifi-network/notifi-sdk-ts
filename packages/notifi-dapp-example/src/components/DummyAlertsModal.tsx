@@ -9,9 +9,9 @@ const dummyAlerts = [
 
 export const DummyAlertsModal: React.FC = () => {
   return (
-    <div className="flex flex-col gap-4 bg-white/50 p-10 max-w-[33.37rem] rounded-3xl mt-2">
+    <div className="flex flex-col gap-4 bg-white/50 p-10 w-11/12 md:max-w-[33.37rem] rounded-3xl mt-2">
       <div className="font-medium">Which alerts can I sign up for?</div>
-      <div className="w-[28.37rem] flex flex-wrap ">
+      <div className="md:w-[28.37rem] flex flex-col md:flex-row flex-wrap ">
         {dummyAlerts.map((alert) => (
           <div key={alert} className="w-52 flex items-center">
             <Icon

@@ -12,36 +12,19 @@ export const EcosystemHero: React.FC<EcosystemHeroProps> = ({
   ctaButtonText,
 }) => {
   return (
-    <div className="flex flex-col gap-4 bg-white p-10 max-w-[33.37rem] rounded-3xl">
+    <div className="flex flex-col gap-4 bg-white px-10 py-6 md:p-10 w-11/12 md:max-w-[33.37rem] rounded-3xl">
       <div className="flex items-center w-48 gap-3">
         <Image
-          src="/logos/injective.png"
-          width={95}
-          height={15}
+          src="/logos/injective-notifi-logo.png"
+          width={195}
+          height={44}
           alt="Injective"
           unoptimized={true}
         />
-        <div className="text-gray-400">x</div>
-        <div className="flex w-16 justify-between">
-          <Image
-            src="/logos/notifi.svg"
-            width={15}
-            height={15}
-            alt="Injective"
-            unoptimized={true}
-          />
-          <Image
-            src="/logos/notifi-text.svg"
-            width={40}
-            height={15}
-            alt="Injective"
-            unoptimized={true}
-          />
-        </div>
       </div>
 
-      <div className="text-5xl font-semibold">
-        Injective
+      <div className="md:text-5xl text-3xl font-semibold">
+        Injective{' '}
         <span className="text-notifi-primary-text">notifications</span>
       </div>
 

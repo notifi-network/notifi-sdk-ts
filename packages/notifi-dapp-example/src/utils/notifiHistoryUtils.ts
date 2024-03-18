@@ -1,5 +1,5 @@
 import { Types } from '@notifi-network/notifi-graphql';
-import { format, isToday, isWithinInterval, subDays } from 'date-fns';
+import { format, isToday, isWithinInterval, parseISO, subDays } from 'date-fns';
 
 export type ParsedNotificationHistory = {
   timestamp: string;
@@ -15,6 +15,23 @@ export type ValidEventDetail = Extract<
   { __typename: 'GenericEventDetails' }
 >;
 
+export const isDateInThisWeek = (date: string) => {
+  const passedInDate = new Date(date);
+  const todayObj = new Date();
+  const todayDate = todayObj.getDate();
+
+  const firstDayOfWeek = new Date(todayObj.setDate(todayDate - 6));
+
+  return passedInDate >= firstDayOfWeek;
+};
+
+export const getDayName = (date: string) => {
+  const weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][
+    new Date(date).getDay()
+  ];
+  return weekday;
+};
+
 export const validateEventDetails = (
   details: object,
 ): details is ValidEventDetail => {
@@ -25,6 +42,7 @@ export const validateEventDetails = (
 
 export const parseNotificationHistory = (
   history: Types.FusionNotificationHistoryEntryFragmentFragment,
+  historyViewType: 'list' | 'detail',
 ): ParsedNotificationHistory => {
   const eventDetails = history.detail;
   if (!eventDetails || eventDetails.__typename !== 'GenericEventDetails') {
@@ -40,7 +58,10 @@ export const parseNotificationHistory = (
   }
 
   return {
-    timestamp: formatTimestamp(history.createdDate),
+    timestamp:
+      historyViewType === 'detail'
+        ? formatTimestampInHistoryDetail(history.createdDate)
+        : formatTimestampInHistoryRow(history.createdDate),
     topic: eventDetails.sourceName,
     subject: eventDetails.notificationTypeName,
     message: eventDetails.genericMessageHtml ?? eventDetails.genericMessage,
@@ -49,7 +70,7 @@ export const parseNotificationHistory = (
   };
 };
 
-const formatTimestamp = (timestamp: string) => {
+const formatTimestampInHistoryRow = (timestamp: string) => {
   const dateObject = new Date(timestamp);
   const now = new Date();
   const sevenDaysAgo = subDays(now, 7);
@@ -61,6 +82,24 @@ const formatTimestamp = (timestamp: string) => {
       ? 'eeee'
       : 'MM/dd',
   );
+};
+
+const formatTimestampInHistoryDetail = (date: string): string => {
+  try {
+    const parsedDate = parseISO(date);
+
+    const month = parsedDate.toLocaleString('default', { month: 'short' });
+    const clockTime = format(parsedDate, 'HH:mm b');
+    const dateTime = format(parsedDate, 'dd');
+    const finalDate = `${month} ${dateTime}`;
+
+    if (isToday(parsedDate)) {
+      return clockTime;
+    }
+    return getDayName(date) + ', ' + finalDate + ', ' + clockTime;
+  } catch {
+    return '-';
+  }
 };
 
 export type HistoryRowIconStyle = {

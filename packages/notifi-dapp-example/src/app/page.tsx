@@ -25,8 +25,8 @@ export default function Home() {
   }, [client]);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center">
-      <div className="fixed top-8 left-8 right-8 flex justify-between">
+    <main className="flex min-h-screen flex-col justify-start items-center md:items-center md:justify-center">
+      <div className="md:fixed md:top-8 md:left-8 md:right-8 m-3 md:m-0 flex justify-between">
         <div className="left-8 flex items-center">
           <Image
             src="/logos/injective.png"
@@ -36,11 +36,11 @@ export default function Home() {
             alt="Injective"
           />
           <div className="mx-4 h-4 border-l-2 border-grey-700"></div>
-          <div className="text-gray-400 text-xs tracking-wider">
+          <div className="text-gray-400 text-xs tracking-wider w-full">
             INJECTIVE NOTIFICATIONS
           </div>
         </div>
-        <div className=" p-2 bg-white rounded-lg h-7">
+        <div className="p-2 bg-white rounded-lg h-7 hidden md:block">
           <PoweredByNotifi />
         </div>
       </div>
@@ -50,6 +50,9 @@ export default function Home() {
         ctaButtonText="Connect Wallet To Start"
       />
       <DummyAlertsModal />
+      <div className="p-2 bg-white rounded-lg h-7 block md:hidden w-[110px] mt-12">
+        <PoweredByNotifi />
+      </div>
     </main>
   );
 }

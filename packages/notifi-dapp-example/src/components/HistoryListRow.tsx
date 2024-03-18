@@ -23,7 +23,9 @@ export const HistoryListRow: React.FC<HistoryListRowProps> = ({
 }) => {
   const [parsedNotificationHistory, setParsedNotificationHistory] =
     useState<ParsedNotificationHistory | null>(
-      historyDetailEntry ? parseNotificationHistory(historyDetailEntry) : null,
+      historyDetailEntry
+        ? parseNotificationHistory(historyDetailEntry, 'list')
+        : null,
     );
 
   const { markNotifiHistoryAsRead } = useNotifiHistory();

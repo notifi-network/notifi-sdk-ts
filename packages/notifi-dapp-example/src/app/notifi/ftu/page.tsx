@@ -40,7 +40,7 @@ export default function NotifiFTU() {
   }, [ftuStage]);
 
   if (ftuStage !== FtuStage.Destination && ftuStage !== FtuStage.Alerts) {
-    return <LoadingSpinner />;
+    return null;
   }
   return (
     <>

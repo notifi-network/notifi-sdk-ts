@@ -17,7 +17,7 @@ export const InputFields: React.FC<InputFieldsProps> = ({
   isEditable,
 }) => {
   return (
-    <div className="flex flex-col justify-center items-center">
+    <div className="flex flex-col justify-center items-center w-full">
       {contactInfo.email.active ? (
         <InputFieldEmail disabled={inputDisabled} isEditable={isEditable} />
       ) : null}

@@ -68,9 +68,9 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
   );
 
   return (
-    <div>
+    <div className="w-full flex flex-col justify-center items-center">
       {contactInfo.email.active && email ? (
-        <div className="bg-notifi-card-bg rounded-md w-112 h-18 flex flex-row items-center justify-between mb-2">
+        <div className="bg-notifi-card-bg rounded-md w-full sm:w-112 h-18 flex flex-row items-center justify-between mb-2">
           <div className="bg-white rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
             <Icon
               id="email-icon"
@@ -80,7 +80,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
             />
             <div className="font-medium text-xs mt-2">Email</div>
           </div>
-          <div className="flex flex-col items-start justify-between w-90 mr-4">
+          <div className="flex flex-col items-start justify-between w-3/4 sm:w-90 mr-4">
             <div className="text-sm ml-6">{email}</div>
             {emailErrorMessage?.type === 'recoverableError' ? (
               <DestinationInfoPrompt
@@ -99,7 +99,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
         </div>
       ) : null}
       {contactInfo.telegram.active && telegramId ? (
-        <div className="bg-notifi-card-bg rounded-md w-112 h-18 flex flex-row items-center justify-between mb-2">
+        <div className="bg-notifi-card-bg rounded-md w-full sm:w-112 h-18 flex flex-row items-center justify-between mb-2">
           <div className="bg-white rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
             <Icon
               id="telegram-icon"
@@ -111,7 +111,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
           </div>
 
           {telegramErrorMessage?.type === 'recoverableError' ? (
-            <div className="flex flex-row items-center justify-between w-90 mr-4">
+            <div className="flex flex-row items-center justify-between w-3/4 sm:w-90 mr-4">
               <div className="text-sm ml-6">{telegramId}</div>
               <DestinationInfoPrompt
                 isButton={true}
@@ -127,15 +127,15 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
               />
             </div>
           ) : (
-            <div className="flex flex-col items-start justify-between w-90 mr-4">
-              <div className="font-semibold text-sm ml-6">{telegramId}</div>
+            <div className="flex flex-col items-start justify-between w-3/4 sm:w-90 mr-4">
+              <div className="text-sm ml-6">{telegramId}</div>
               {VerifiedText}
             </div>
           )}
         </div>
       ) : null}
       {useSlack ? (
-        <div className="bg-notifi-card-bg rounded-md w-112 h-18 flex flex-row items-center justify-between mb-2">
+        <div className="bg-notifi-card-bg rounded-md w-full sm:w-112 h-18 flex flex-row items-center justify-between mb-2">
           <div className="bg-white rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
             <Icon
               id="slack-icon"
@@ -143,12 +143,12 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
               height="16px"
               className="text-notifi-toggle-on-bg"
             />
-            <div className="font-bold text-xs mt-2">Slack</div>
+            <div className="font-medium text-xs mt-2">Slack</div>
           </div>
 
           {slackErrrorMessage?.type === 'recoverableError' ? (
-            <div className="flex flex-row items-center justify-between w-90 mr-4">
-              <div className="text-sm ml-6 font-medium">Slack</div>
+            <div className="flex flex-row items-center justify-between w-3/4 sm:w-90 mr-4">
+              <div className="text-sm ml-6">Slack</div>
               <DestinationInfoPrompt
                 isButton={true}
                 buttonCopy="Enable Bot"
@@ -159,7 +159,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
               />
             </div>
           ) : (
-            <div className="flex flex-col items-start justify-between w-90 mr-4">
+            <div className="flex flex-col items-start justify-between w-3/4 sm:w-90 mr-4">
               <div className="text-sm ml-6">
                 {slackTargetData?.slackChannelName ?? 'Slack'}
               </div>
@@ -172,7 +172,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
       ) : null}
 
       {contactInfo?.discord?.active && useDiscord ? (
-        <div className="bg-notifi-card-bg rounded-md w-112 h-18 flex flex-row items-center justify-between mb-2">
+        <div className="bg-notifi-card-bg rounded-md w-full sm:w-112 h-18 flex flex-row items-center justify-between mb-2">
           <div className="bg-white rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
             <Icon
               id="discord-icon"
@@ -184,7 +184,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
           </div>
 
           {discordErrrorMessage?.type === 'recoverableError' ? (
-            <div className="flex flex-row items-center justify-between w-90 mr-4">
+            <div className="flex flex-row items-center justify-between w-3/4 sm:w-90 mr-4">
               <div className="text-sm ml-6">Discord Bot DM Alerts</div>
               <DestinationInfoPrompt
                 isButton={true}
@@ -200,8 +200,8 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
               />
             </div>
           ) : (
-            <div className="flex flex-col items-start justify-between w-90 mr-4">
-              <div className="font-semibold text-sm ml-6">
+            <div className="flex flex-col items-start justify-between w-3/4 sm:w-90 mr-4">
+              <div className="text-sm ml-6">
                 {discordTargetData?.isConfirmed === true
                   ? discordUserName
                   : 'Discord'}

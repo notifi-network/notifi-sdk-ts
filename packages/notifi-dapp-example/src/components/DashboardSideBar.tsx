@@ -12,29 +12,45 @@ export type DashboardSideBarProps = {
   account: WalletAccount;
   cardView: string;
   setCardView: Dispatch<SetStateAction<CardView>>;
+  setIsOpen?: Dispatch<SetStateAction<boolean>>;
 };
 
 export const DashboardSideBar: FC<DashboardSideBarProps> = ({
   account,
   cardView,
   setCardView,
+  setIsOpen,
 }) => {
   // TODO: remove (for utility only)
   // const { disconnect, isWalletConnected } = useChain('injective');
   return (
-    <div className="grow-0 w-80 h-screen px-7">
-      <div className="flex flex-col justify-between items-start h-full pb-6">
-        <div>
+    <div
+      className={`fixed md:relative grow-0 md:w-80 w-screen h-screen px-7 z-[5] ${
+        setIsOpen ? 'md:hidden block bg-gradient-injective' : 'md:block hidden'
+      }`}
+    >
+      <div className="flex flex-col justify-between items-center md:items-start h-full pb-6">
+        <div className="flex flex-col items-center md:items-start">
+          {setIsOpen ? (
+            <Icon
+              id="close-icon"
+              className="text-notifi-text-light top-6 left-4 cursor-pointer fixed"
+              onClick={() => setIsOpen(false)}
+            />
+          ) : null}
           <Image
             src="/logos/injective.png"
-            width={167}
-            height={35}
+            width={setIsOpen ? 115 : 167}
+            height={setIsOpen ? 24 : 35}
             alt="Injective"
             className="mb-6 mt-3"
             unoptimized={true}
           />
           <div
-            onClick={() => setCardView('history')}
+            onClick={() => {
+              setCardView('history');
+              setIsOpen?.(false);
+            }}
             className={`flex px-4 ${
               cardView === 'history'
                 ? 'bg-white shadow-card'
@@ -52,7 +68,10 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
             <div className="ml-5">Inbox</div>
           </div>
           <div
-            onClick={() => setCardView('destination')}
+            onClick={() => {
+              setCardView('destination');
+              setIsOpen?.(false);
+            }}
             className={`flex px-4  w-64 py-3 rounded-[12px] mb-2 cursor-pointer ${
               cardView === 'destination'
                 ? 'bg-white shadow-card'
@@ -70,7 +89,10 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
             <div className="ml-5">Destinations</div>
           </div>
           <div
-            onClick={() => setCardView('alertSubscription')}
+            onClick={() => {
+              setCardView('alertSubscription');
+              setIsOpen?.(false);
+            }}
             className={`flex px-4 w-64 py-3 rounded-[12px] mb-2 cursor-pointer ${
               cardView === 'alertSubscription'
                 ? 'bg-white shadow-card'
