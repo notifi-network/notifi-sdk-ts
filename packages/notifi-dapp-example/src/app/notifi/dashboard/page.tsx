@@ -21,7 +21,7 @@ export default function NotifiDashboard() {
   const [account, setAccount] = useState<WalletAccount | null>(null);
   const { setIsGlobalLoading } = useGlobalStateContext();
   const { unverifiedDestinations } = useDestinationState();
-  const [isSideNavOpen, setIsSideNavOpen] = useState<boolean>(false);
+  const [isSideBarOpen, setIsSideBarOpen] = useState<boolean>(false);
 
   // TODO: Move to hook if any other component needs account
   useEffect(() => {
@@ -49,16 +49,14 @@ export default function NotifiDashboard() {
         account={account}
         cardView={cardView}
         setCardView={setCardView}
-        className="md:block hidden"
       />
       {/* mobile sidebar */}
-      {isSideNavOpen ? (
+      {isSideBarOpen ? (
         <DashboardSideBar
           account={account}
           cardView={cardView}
           setCardView={setCardView}
-          setIsSideNavOpen={setIsSideNavOpen}
-          className="md:hidden block bg-gradient-injective"
+          setIsOpen={setIsSideBarOpen}
         />
       ) : null}
       <div className="flex flex-col grow h-screen">
@@ -66,7 +64,7 @@ export default function NotifiDashboard() {
           <Icon
             id="btn-nav"
             className="top-6 left-4 cursor-pointer fixed"
-            onClick={() => setIsSideNavOpen(true)}
+            onClick={() => setIsSideBarOpen(true)}
           />
           <Image
             className="mt-3"

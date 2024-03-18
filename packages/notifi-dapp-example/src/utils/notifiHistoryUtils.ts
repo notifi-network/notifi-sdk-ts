@@ -42,7 +42,7 @@ export const validateEventDetails = (
 
 export const parseNotificationHistory = (
   history: Types.FusionNotificationHistoryEntryFragmentFragment,
-  isDetail: boolean,
+  historyViewType: 'list' | 'detail',
 ): ParsedNotificationHistory => {
   const eventDetails = history.detail;
   if (!eventDetails || eventDetails.__typename !== 'GenericEventDetails') {
@@ -58,9 +58,10 @@ export const parseNotificationHistory = (
   }
 
   return {
-    timestamp: isDetail
-      ? formatTimestampInHistoryDetail(history.createdDate)
-      : formatTimestampInHistoryRow(history.createdDate),
+    timestamp:
+      historyViewType === 'detail'
+        ? formatTimestampInHistoryDetail(history.createdDate)
+        : formatTimestampInHistoryRow(history.createdDate),
     topic: eventDetails.sourceName,
     subject: eventDetails.notificationTypeName,
     message: eventDetails.genericMessageHtml ?? eventDetails.genericMessage,

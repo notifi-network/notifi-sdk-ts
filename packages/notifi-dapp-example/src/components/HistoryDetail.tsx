@@ -12,6 +12,7 @@ type HistoryDetailProps = {
     SetStateAction<Types.FusionNotificationHistoryEntryFragmentFragment | null>
   >;
 };
+
 export const HistoryDetail: React.FC<HistoryDetailProps> = ({
   setHistoryDetailEntry,
   historyDetailEntry,
@@ -20,7 +21,7 @@ export const HistoryDetail: React.FC<HistoryDetailProps> = ({
 
   const { timestamp, topic, message } = parseNotificationHistory(
     historyDetailEntry,
-    true,
+    'detail',
   );
 
   const sanitizedMessage = useMemo(

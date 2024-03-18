@@ -14,7 +14,7 @@ export const AlertSubscriptionBlock: React.FC<AlertSubscriptionRowProps> = ({
       <div className=" bg-white text-center py-3 font-medium border border-b-gray-200 rounded-md text-lg">
         {labelWithSubTopics.name}
       </div>
-      <div className="px-3 py-2 flex flex-col gap-1 md:max-h-[228px] overflow-scroll ">
+      <div className="px-3 py-2 flex flex-col gap-1 md:max-h-[14.3rem] overflow-scroll ">
         {labelWithSubTopics.subTopics.map((eventType) => {
           return (
             <div key={eventType.name}>
