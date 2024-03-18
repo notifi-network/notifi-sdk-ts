@@ -28,6 +28,18 @@
   }
 }
 
+@layer components {
+  /*
+  * First alertSubscriptionRow's tooltip content is under the icon
+  */
+  .first-alert-row {
+    display: block;
+  }
+  .first-alert-row div:nth-child(1) div:nth-child(1) div:last-child {
+    top: 0;
+  }
+}
+
 /* Dark mode color variables controlled by NotifiContext */
 .notifi-dapp[dark-mode='true'] {
   --notifi-primary-text: var(--notifi-brand);
@@ -51,7 +63,7 @@
   --notifi-alert-subscription-block-bg: var(--notifi-gray1);
   --notifi-text-light: var(--notifi-gray2);
   --notifi-text-medium: var(--notifi-gray3);
-  --notifi-toggle-off-dot-bg:var(--backgroundpressed-100);
+  --notifi-toggle-off-dot-bg: var(--backgroundpressed-100);
   --notifi-back-button-hover-bg: var(--notifi-light-purple);
   --notifi-back-button-focus-bg: var(--notifi-purple);
 }
@@ -79,7 +91,7 @@
   --notifi-alert-subscription-block-bg: var(--notifi-gray1);
   --notifi-text-light: var(--notifi-gray2);
   --notifi-text-medium: var(--notifi-gray3);
-  --notifi-toggle-off-dot-bg:var(--backgroundpressed-100);
+  --notifi-toggle-off-dot-bg: var(--backgroundpressed-100);
   --notifi-back-button-hover-bg: var(--notifi-light-purple);
   --notifi-back-button-focus-bg: var(--notifi-purple);
 }

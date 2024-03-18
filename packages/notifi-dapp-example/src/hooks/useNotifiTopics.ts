@@ -1,5 +1,5 @@
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
-import { useNotifiCardContext } from '@/context/notifi/NotifiCardContext';
+import { useNotifiTenantConfig } from '@/context/NotifiTenantConfigContext';
 import {
   EventTypeItem,
   FusionToggleEventTypeItem,
@@ -25,7 +25,7 @@ type ValidTypeItem = FusionToggleEventTypeItem | LabelEventTypeItem;
  */
 
 export const useNotifiTopics = () => {
-  const { inputs } = useNotifiCardContext();
+  const { inputs } = useNotifiTenantConfig();
   const { frontendClient } = useNotifiClientContext();
   const { render, alerts } = useNotifiSubscriptionContext();
   const [isLoading, setIsLoading] = useState(false);

@@ -1,7 +1,7 @@
 'use client';
 
-import { NotifiCardContextProvider } from '@/context/notifi/NotifiCardContext';
-import { NotifiContextProvider } from '@/context/notifi/NotifiContext';
+import { NotifiContextProvider } from '@/context/NotifiContext';
+import { NotifiTenantConfigContextProvider } from '@/context/NotifiTenantConfigContext';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
@@ -22,7 +22,9 @@ export default function NotifiSingupLayout({
   }, [selectedWallet]);
   return (
     <NotifiContextProvider>
-      <NotifiCardContextProvider>{children}</NotifiCardContextProvider>
+      <NotifiTenantConfigContextProvider>
+        {children}
+      </NotifiTenantConfigContextProvider>
     </NotifiContextProvider>
   );
 }

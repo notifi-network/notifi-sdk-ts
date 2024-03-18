@@ -1,5 +1,5 @@
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
-import { useNotifiCardContext } from '@/context/notifi/NotifiCardContext';
+import { useNotifiTenantConfig } from '@/context/NotifiTenantConfigContext';
 import {
   FtuStage,
   useNotifiClientContext,
@@ -19,7 +19,7 @@ export const useNotifiRouter = () => {
 
   const { ftuStage, syncFtuStage } = useNotifiSubscriptionContext();
 
-  const { cardConfig } = useNotifiCardContext();
+  const { cardConfig } = useNotifiTenantConfig();
   useEffect(() => {
     if (frontendClientStatus.isAuthenticated) {
       syncFtuStage(cardConfig.isContactInfoRequired);

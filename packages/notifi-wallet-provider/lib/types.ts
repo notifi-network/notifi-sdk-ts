@@ -9,15 +9,20 @@ declare global {
   }
 }
 
+/**
+ * @param bech32 cosmos hub chains address ex. Injective for inj1...
+ * @param base64 base64 formatted address in base64 format
+ * @param hex eth hex address starting with 0x
+ */
 export type WalletKeysBase = {
-  bech32: string; // inj address (or other Cosmos chain ) ex. inj1...
-  base64: string; // inj address (or other Cosmos chain ) in base64 format
-  hex: string; // eth address
+  bech32: string;
+  base64: string;
+  hex: string;
 };
+
 export type MetamaskWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'hex'>;
 export type KeplrWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'base64'>;
 
-// TODO: refactor a new type WalletKeys
 export type WalletKeys = MetamaskWalletKeys | KeplrWalletKeys;
 
 export abstract class NotifiWallet {
@@ -28,7 +33,6 @@ export abstract class NotifiWallet {
   abstract disconnect?: () => void;
 }
 
-// TODO: for localStorage (Not yet impl)
 export type NotifiWalletStorage = {
   walletName: keyof Wallets;
   walletKeys: WalletKeys;

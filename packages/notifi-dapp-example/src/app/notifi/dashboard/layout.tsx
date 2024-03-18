@@ -1,7 +1,7 @@
 'use client';
 
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
-import { useNotifiCardContext } from '@/context/notifi/NotifiCardContext';
+import { useNotifiTenantConfig } from '@/context/NotifiTenantConfigContext';
 import { useNotifiRouter } from '@/hooks/useNotifiRouter';
 import { useRouterAsync } from '@/hooks/useRouterAsync';
 import {
@@ -18,7 +18,7 @@ export default function NotifiDashboardLayout({
   const { ftuStage, syncFtuStage } = useNotifiSubscriptionContext();
   const { setIsGlobalLoading } = useGlobalStateContext();
   const { handleRoute } = useRouterAsync();
-  const { cardConfig } = useNotifiCardContext();
+  const { cardConfig } = useNotifiTenantConfig();
   useNotifiRouter();
 
   useEffect(() => {

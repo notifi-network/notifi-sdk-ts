@@ -1,5 +1,5 @@
 import { Icon } from '@/assets/Icon';
-import { useNotifiCardContext } from '@/context/notifi/NotifiCardContext';
+import { useNotifiTenantConfig } from '@/context/NotifiTenantConfigContext';
 import { useNotifiTargetListener } from '@/hooks/useNotifiTargetListener';
 import { useNotifiTargets } from '@/hooks/useNotifiTargets';
 import {
@@ -14,7 +14,7 @@ import { DestinationsEditModal } from './DestinationsEditModal';
 export const DashboardDestinations = () => {
   useNotifiTargetListener();
   const [open, setOpen] = useState(false);
-  const { cardConfig } = useNotifiCardContext();
+  const { cardConfig } = useNotifiTenantConfig();
 
   const { email, phoneNumber, telegramId } = useNotifiSubscriptionContext();
   const { setHasEmailChanges, setHasTelegramChanges } = useNotifiTargets();

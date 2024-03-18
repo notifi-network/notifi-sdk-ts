@@ -11,7 +11,7 @@ type WalletSelectModalProps = {
 export const WalletSelectModal: FC<WalletSelectModalProps> = ({
   setIsOpenWalletsModal,
 }) => {
-  const { wallets, selectWallet } = useWallets();
+  const { wallets } = useWallets();
 
   return (
     <>
@@ -37,7 +37,7 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
                   key={wallet}
                   className="bg-white size-32 flex items-center justify-center flex-col gap-3 rounded-lg border border-gray-600/10 cursor-pointer"
                   onClick={() => {
-                    wallets[wallet].connect().then(() => selectWallet(wallet));
+                    wallets[wallet].connect();
                     setIsOpenWalletsModal(false);
                     /** No need to handle loading and error case, use `const {isLoading, error} = useWallets()  */
                   }}
