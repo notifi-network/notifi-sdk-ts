@@ -29,7 +29,8 @@ export const MobilePromptModal: React.FC<MobilePromptModalProps> = ({
   };
 
   const openKeplr = () => {
-    window.location.href = 'https://apps.apple.com/ru/app/keplr-wallet';
+    window.location.href =
+      'https://apps.apple.com/ru/app/keplr-wallet/id1567851089';
   };
 
   return (
