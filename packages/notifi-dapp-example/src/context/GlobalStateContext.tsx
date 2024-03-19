@@ -96,14 +96,14 @@ export const GlobalStateContextProvider: FC<PropsWithChildren> = ({
       ) : null}
       {/* TODO: Deprecated: migrate to globalInfoModal */}
       {globalError ? (
-        <div className="max-w-148 bg-white h-16 border rounded-lg absolute top-10 ml-auto left-2/4 translate-x-[-50%] shadow-md flex items-center justify-center z-10 px-12">
+        <div className="max-w-148 bg-white sm:h-16 border rounded-lg absolute top-10 ml-auto left-2/4 translate-x-[-50%] shadow-md flex items-center justify-center z-10 sm:px-12 px-2 py-1 md:py-0">
           <Icon id="warning" className="text-notifi-button-primary-bg mr-5" />
           <div>{globalError}</div>
         </div>
       ) : null}
 
       {globalInfoModal ? (
-        <div className="max-w-148 bg-white h-16 border rounded-lg absolute top-10 ml-auto left-2/4 translate-x-[-50%] shadow-md flex items-center justify-center z-10 px-12">
+        <div className="max-w-148 bg-white sm:h-16 border rounded-lg absolute top-10 ml-auto left-2/4 translate-x-[-50%] shadow-md flex items-center justify-center z-10 sm:px-12 px-2 py-1 md:py-0">
           {globalInfoModal.iconOrEmoji.type === 'icon' ? (
             <Icon
               id={globalInfoModal.iconOrEmoji.id}
