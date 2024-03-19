@@ -36,6 +36,7 @@ export const MobilePromptModal: React.FC<MobilePromptModalProps> = ({
   return (
     <>
       {isClient ? (
+        // only show this modal in mobile view
         <div className="fixed inset-0 top-[4rem] flex z-50 sm:hidden">
           <div className="fixed inset-0 bg-black bg-opacity-20 z-50"> </div>
           <div className="h-full w-full md:w-4/6 bg-notifi-container-bg z-50 rounded-2xl flex flex-col items-center justify-between mb-8 shadow-container relative px-4">
@@ -61,7 +62,7 @@ export const MobilePromptModal: React.FC<MobilePromptModalProps> = ({
                     onClick={() => handleCopy('injective.notifi.network')}
                   />
                 </div>
-                {window.ethereum || (!window?.ethereum && !window.keplr) ? (
+                {window.ethereum || (!window.ethereum && !window.keplr) ? (
                   <div
                     onClick={openMetamask}
                     className="border rounded-2xl h-24 w-80 mt-6 text-md font-medium flex items-center justify-start pl-4 cursor-pointer"
