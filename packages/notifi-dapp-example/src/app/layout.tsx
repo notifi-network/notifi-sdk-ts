@@ -1,3 +1,5 @@
+'use client';
+
 import { GlobalStateContextProvider } from '@/context/GlobalStateContext';
 import { NotifiWalletsWrapper } from '@/context/NotifiWalletsWrapper';
 import type { Metadata } from 'next';
@@ -17,6 +19,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // console.log('TT', TT);
   return (
     <html lang="en">
       <head>
