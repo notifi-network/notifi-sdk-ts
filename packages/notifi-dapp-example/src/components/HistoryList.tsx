@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { Dispatch, SetStateAction } from 'react';
 
 import { HistoryListRow } from './HistoryListRow';
+import { LoadingSkeloton } from './LoadingSkeloton';
 import { LoadingSpinner } from './LoadingSpinner';
 
 type HistoryListProps = {
@@ -56,8 +57,10 @@ export const HistoryList: React.FC<HistoryListProps> = ({
       ) : null}
 
       {isLoading && (
-        <div className="m-auto absolute top-0 left-0 right-0 bottom-0 bg-black bg-opacity-5">
-          <LoadingSpinner />
+        <div className="mt-8 ml-20 bg-white rounded-3xl">
+          <LoadingSkeloton />
+          <LoadingSkeloton />
+          <LoadingSkeloton />
         </div>
       )}
       {nodes.length === 0 && !isLoading ? (

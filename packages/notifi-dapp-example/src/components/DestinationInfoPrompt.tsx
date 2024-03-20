@@ -24,7 +24,7 @@ export const DestinationInfoPrompt: React.FC<Props> = ({
       {isButton ? (
         <button
           onClick={() => onClick()}
-          className="rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-24 h-8 text-sm font-bold disabled:opacity-50 disabled:hover:bg-notifi-button-primary-blueish-bg hover:bg-notifi-button-hover-bg"
+          className="rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-24 h-8 text-sm font-medium disabled:opacity-50 disabled:hover:bg-notifi-button-primary-blueish-bg hover:bg-notifi-button-hover-bg"
         >
           {buttonCopy}
         </button>

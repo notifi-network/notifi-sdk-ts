@@ -2,6 +2,7 @@
 
 import { DummyAlertsModal } from '@/components/DummyAlertsModal';
 import { EcosystemHero } from '@/components/EcosystemHero';
+import { MobilePromptModal } from '@/components/MobilePromptModal';
 import { PoweredByNotifi } from '@/components/PoweredByNotifi';
 import { WalletSelectModal } from '@/components/WalletSelectModal';
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
@@ -15,6 +16,7 @@ export default function Home() {
   const { popGlobalInfoModal } = useGlobalStateContext();
   const { selectedWallet, wallets, error, isLoading } = useWallets();
   const [isOpenWalletsModal, setIsOpenWalletsModal] = useState(false);
+  const [isOpenMobilePromptModal, setIsOpenMobilePromptModal] = useState(false);
 
   useEffect(() => {
     if (selectedWallet && wallets[selectedWallet].walletKeys) {
@@ -52,9 +54,13 @@ export default function Home() {
           <PoweredByNotifi />
         </div>
       </div>
+
       <EcosystemHero
         isLoading={isLoading || isLoadingRouter}
-        cta={() => setIsOpenWalletsModal(true)}
+        cta={() => {
+          setIsOpenWalletsModal(true);
+          setIsOpenMobilePromptModal(true);
+        }}
         ctaButtonText="Connect Wallet To Start"
       />
       <DummyAlertsModal />
@@ -63,6 +69,12 @@ export default function Home() {
       </div>
       {isOpenWalletsModal ? (
         <WalletSelectModal setIsOpenWalletsModal={setIsOpenWalletsModal} />
+      ) : null}
+      {/* show this modal if there is no metamask and keplr extension detected */}
+      {isOpenMobilePromptModal && !window.ethereum && !window.keplr ? (
+        <MobilePromptModal
+          setIsOpenMobilePromptModal={setIsOpenMobilePromptModal}
+        />
       ) : null}
     </main>
   );
