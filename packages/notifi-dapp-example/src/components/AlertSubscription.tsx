@@ -1,6 +1,6 @@
 'use client';
 
-import { useNotifiCardContext } from '@/context/notifi/NotifiCardContext';
+import { useNotifiTenantConfig } from '@/context/NotifiTenantConfigContext';
 import { categorizeTopics } from '@/hooks/useNotifiTopics';
 
 import { AlertSubscriptionBlock } from './AlertSubscriptionBlock';
@@ -12,7 +12,7 @@ export type AlertSubscriptionRowProps = {
 export const AlertSubscription: React.FC<AlertSubscriptionRowProps> = ({
   title,
 }) => {
-  const { cardConfig } = useNotifiCardContext();
+  const { cardConfig } = useNotifiTenantConfig();
   const { categorizedTopics, uncategorizedTopics } = categorizeTopics(
     cardConfig.eventTypes,
   );

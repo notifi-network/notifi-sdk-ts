@@ -1,6 +1,5 @@
 import { GlobalStateContextProvider } from '@/context/GlobalStateContext';
-import { CosmosWalletProvider } from '@/context/wallet/CosmosWalletProvider';
-import '@interchain-ui/react/styles';
+import { NotifiWalletsWrapper } from '@/context/NotifiWalletsWrapper';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 
@@ -9,9 +8,10 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Notifi Dapp Example',
-  description: 'Notifi Dapp Example',
+  title: 'Inbox',
+  description: 'Injective x Notifi Inbox',
 };
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -28,7 +28,7 @@ export default function RootLayout({
         // NOTE: Not support dark/light mode yet. TODO: consider adding a theme wrapper
       >
         <GlobalStateContextProvider>
-          <CosmosWalletProvider>{children}</CosmosWalletProvider>
+          <NotifiWalletsWrapper>{children}</NotifiWalletsWrapper>
         </GlobalStateContextProvider>
       </body>
     </html>

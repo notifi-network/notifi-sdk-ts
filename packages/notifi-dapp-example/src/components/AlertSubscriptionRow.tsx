@@ -23,14 +23,15 @@ export const AlertSubscriptionRow: React.FC<AlertSubscriptionRowProps> = ({
       <div className="flex text-sm font-medium">
         <label>{eventType.name}</label>
 
-        <div className=" group">
+        <div className="group">
           {eventType.tooltipContent ? (
-            <Icon id="info" className="text-black opacity-30 " />
+            <div className="relative">
+              <Icon id="info" className="text-black opacity-30 " />
+              <div className="hidden group-hover:block absolute text-sm font-medium max-w-48 bg-white p-4 rounded z-10 border border-gray-200 w-44 h-20 overflow-y-scroll top-[-5rem] right-[-4rem]">
+                <div>{eventType.tooltipContent}</div>
+              </div>
+            </div>
           ) : null}
-
-          <div className="absolute hidden group-hover:block text-xs max-w-48 bg-white px-2 py-1 rounded z-10 border border-gray-200 top-1/2 right-1 ">
-            {eventType.tooltipContent}
-          </div>
         </div>
       </div>
 

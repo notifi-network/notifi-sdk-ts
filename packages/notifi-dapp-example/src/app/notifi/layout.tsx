@@ -1,8 +1,8 @@
 'use client';
 
-import { NotifiCardContextProvider } from '@/context/notifi/NotifiCardContext';
-import { NotifiContextProvider } from '@/context/notifi/NotifiContext';
-import { useChain } from '@cosmos-kit/react';
+import { NotifiContextProvider } from '@/context/NotifiContext';
+import { NotifiTenantConfigContextProvider } from '@/context/NotifiTenantConfigContext';
+import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 
@@ -11,17 +11,20 @@ export default function NotifiSingupLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { isWalletConnected } = useChain('injective');
+  const { wallets, selectedWallet } = useWallets();
 
   const router = useRouter();
+
   useEffect(() => {
-    if (!isWalletConnected) {
+    if (!selectedWallet || !wallets[selectedWallet].walletKeys) {
       router.push('/');
     }
-  }, [isWalletConnected]);
+  }, [selectedWallet]);
   return (
     <NotifiContextProvider>
-      <NotifiCardContextProvider>{children}</NotifiCardContextProvider>
+      <NotifiTenantConfigContextProvider>
+        {children}
+      </NotifiTenantConfigContextProvider>
     </NotifiContextProvider>
   );
 }
