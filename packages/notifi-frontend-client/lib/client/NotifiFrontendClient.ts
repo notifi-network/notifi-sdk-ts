@@ -170,7 +170,7 @@ export type AcalaSignMessageFunction = (
   message: string,
 ) => Promise<hexString>;
 
-export type CardConfigType = CardConfigItemV1 /*| IntercomCardConfigItemV1*/;
+export type CardConfigType = CardConfigItemV1;
 
 type BeginLoginProps = Omit<Types.BeginLogInByTransactionInput, 'dappAddress'>;
 

@@ -649,8 +649,7 @@ input::-webkit-inner-spin-button {
 }
 
 .NotifiCardButton__button:disabled,
-.NotifiSubscribeButton__button:disabled,
-.NotifiStartChatButton__button:disabled {
+.NotifiSubscribeButton__button:disabled {
   cursor: default;
   color: #ffffff;
   background-color: var(--notifi-button-disabled-color);
@@ -1079,24 +1078,6 @@ input::-webkit-inner-spin-button {
   font-weight: 600;
   font-size: 14px;
   margin-left: 14px;
-}
-
-.NotifiStartChatButton__button {
-  height: 49px;
-  width: 266px;
-  background-color: var(--notifi-button-color);
-  border-radius: 16px;
-  border: 0;
-  margin: 28px 48px 28px 48px;
-  cursor: pointer;
-}
-
-.NotifiStartChatButton__label {
-  color: #ffffff;
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 19px;
-  text-align: center;
 }
 
 .NotifiSupportNotificationOption__container {

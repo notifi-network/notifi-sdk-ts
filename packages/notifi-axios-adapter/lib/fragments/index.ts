@@ -4,7 +4,6 @@ export * from './beginLogInByTransactionFragment';
 export * from './clientConfigurationFragment';
 export * from './completeLogInByTransactionFragment';
 export * from './connectedWalletFragment';
-export * from './convMessagePageInfoFragment';
 export * from './emailTargetFragment';
 export * from './filterFragment';
 export * from './notificationHistoryEntryFragment';

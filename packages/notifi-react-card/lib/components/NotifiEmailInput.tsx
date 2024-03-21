@@ -18,7 +18,6 @@ export type NotifiEmailInputProps = Readonly<{
     label: string;
   }>;
   disabled: boolean;
-  hasChatAlert?: boolean;
 }>;
 
 export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({

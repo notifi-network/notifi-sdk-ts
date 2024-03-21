@@ -61,8 +61,6 @@ export type NotifiSubscriptionData = Readonly<{
   setUseDiscord: React.Dispatch<React.SetStateAction<boolean>>;
   loading: boolean;
   setLoading: (loading: boolean) => void;
-  hasChatAlert: boolean;
-  setHasChatAlert: (hasChatAlert: boolean) => void;
   userId: string;
   setUserId: (userId: string) => void;
   setEmailErrorMessage: (value: DestinationError) => void;
@@ -105,8 +103,6 @@ export const NotifiSubscriptionContextProvider: React.FC<
   }, []);
 
   const [userId, setUserId] = useState<string>('');
-
-  const [hasChatAlert, setHasChatAlert] = useState<boolean>(false);
   const { cardView, setCardView } = useFetchedCardState();
 
   const [telegramConfirmationUrl, setTelegramConfirmationUrl] = useState<
@@ -410,8 +406,6 @@ export const NotifiSubscriptionContextProvider: React.FC<
     setTelegramId,
     setTelegramConfirmationUrl,
     setUseHardwareWallet,
-    hasChatAlert,
-    setHasChatAlert,
     userId,
     setUserId,
     setEmailErrorMessage,

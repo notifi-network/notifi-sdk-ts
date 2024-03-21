@@ -18,7 +18,6 @@ export type NotifiTelegramInputProps = Readonly<{
     label: string;
   }>;
   disabled: boolean;
-  hasChatAlert?: boolean;
 }>;
 
 export const NotifiTelegramInput: React.FC<NotifiTelegramInputProps> = ({
