@@ -34,20 +34,6 @@ export type AlertConfiguration =
   | SingleSourceAlertConfiguration
   | MultipleSourceAlertConfiguration;
 
-export const chatConfiguration = (): AlertConfiguration => {
-  return {
-    type: 'single',
-    filterType: 'NOTIFI_CHAT_MESSAGES',
-    filterOptions: {
-      alertFrequency: 'THREE_MINUTES',
-    },
-    sourceType: 'NOTIFI_CHAT',
-    createSource: {
-      address: '*',
-    },
-  };
-};
-
 export const customThresholdConfiguration = ({
   alertFrequency,
   threshold,

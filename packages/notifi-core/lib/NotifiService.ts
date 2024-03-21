@@ -9,7 +9,6 @@ export type NotifiService = Operations.BroadcastMessageService &
   Operations.CreateSmsTargetService &
   Operations.CreateSourceService &
   Operations.CreateSourceGroupService &
-  Operations.CreateSupportConversationService &
   Operations.CreateTargetGroupService &
   Operations.CreateTelegramTargetService &
   Operations.CreateWebhookTargetService &
@@ -20,7 +19,6 @@ export type NotifiService = Operations.BroadcastMessageService &
   Operations.GetAlertsService &
   Operations.GetConfigurationForDappService &
   Operations.GetConnectedWalletsService &
-  Operations.GetConversationMessagesService &
   Operations.GetEmailTargetsService &
   Operations.GetFiltersService &
   Operations.GetFusionNotificationHistoryService &
@@ -34,7 +32,6 @@ export type NotifiService = Operations.BroadcastMessageService &
   Operations.GetWebhookTargetsService &
   Operations.LogInFromDappService &
   Operations.RefreshAuthorizationService &
-  Operations.SendConversationMessagesService &
   Operations.SendEmailTargetVerificationRequestService &
   Operations.UpdateSourceGroupService &
   Operations.UpdateTargetGroupService &

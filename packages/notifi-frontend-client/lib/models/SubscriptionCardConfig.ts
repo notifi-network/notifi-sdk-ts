@@ -168,15 +168,6 @@ export type XMTPTopicTypeItem = {
   optOutAtSignup?: boolean;
 };
 
-export type CreateSupportConversationEventTypeItem = {
-  type: 'createSupportConversation';
-  name: string;
-  sourceType: Gql.SourceType;
-  filterType: string;
-  alertFrequency: AlertFrequency;
-  optOutAtSignup?: boolean;
-};
-
 export type EventTypeItem =
   | DirectPushEventTypeItem
   | BroadcastEventTypeItem
@@ -187,8 +178,7 @@ export type EventTypeItem =
   | CustomTopicTypeItem
   | FusionEventTypeItem
   | WalletBalanceEventTypeItem
-  | XMTPTopicTypeItem
-  | CreateSupportConversationEventTypeItem;
+  | XMTPTopicTypeItem;
 
 export type EventTypeConfig = ReadonlyArray<EventTypeItem>;
 export type InputType =

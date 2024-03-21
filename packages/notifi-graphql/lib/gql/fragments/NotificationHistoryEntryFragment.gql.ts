@@ -47,15 +47,6 @@ export const NotificationHistoryEntryFragment = gql`
           volume1DayChange
         }
       }
-      ... on ChatMessageReceivedEventDetails {
-        senderName
-        conversationId
-        messageId
-        senderId
-        senderBlockchain
-        senderName
-        messageBody
-      }
       ... on DAOProposalChangedEventDetails {
         tenantName
         proposalTitle: title

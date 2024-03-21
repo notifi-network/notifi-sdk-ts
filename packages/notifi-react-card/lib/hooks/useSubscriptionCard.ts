@@ -57,7 +57,7 @@ export const useSubscriptionCard = (
             return Promise.reject(new Error('Failed to fetch data'));
           }
           card = JSON.parse(result.dataJson);
-        } else if ('version' in result && result.version !== 'IntercomV1') {
+        } else if ('version' in result) {
           card = result;
         }
 

@@ -25,11 +25,6 @@ export type NotifiSmsInputProps = Readonly<{
   }>;
   disabled: boolean;
   allowedCountryCodes: string[];
-  intercomSmsInputStyle?: string;
-  intercomSmsDropdownContainerStyle?: string;
-  intercomSmsDropdownSelectStyle?: string;
-  intercomSmsInputContainerStyle?: string;
-  intercomView?: boolean;
 }>;
 
 export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
@@ -37,11 +32,6 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
   classNames,
   copy,
   disabled,
-  intercomSmsDropdownContainerStyle,
-  intercomSmsDropdownSelectStyle,
-  intercomSmsInputContainerStyle,
-  intercomSmsInputStyle,
-  intercomView,
 }: NotifiSmsInputProps) => {
   const {
     formErrorMessages,
@@ -130,30 +120,20 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
 
   return (
     <>
-      {intercomView ? null : (
-        <label className={clsx('NotifiSmsInput__label', classNames?.label)}>
-          {copy?.label}
-        </label>
-      )}
-      <div
-        className={clsx(
-          'NotifiSmsInput__container',
-          intercomSmsInputContainerStyle,
-          classNames?.container,
-        )}
-      >
+      <label className={clsx('NotifiSmsInput__label', classNames?.label)}>
+        {copy?.label}
+      </label>
+      <div className={clsx('NotifiSmsInput__container', classNames?.container)}>
         <SmsIcon className={'NotifiInput__icon'} />
         <div
           className={clsx(
             'NotifiSmsInput__dropdownContainer',
-            intercomSmsDropdownContainerStyle,
             classNames?.dropdownContainer,
           )}
         >
           <div
             className={clsx(
               'NotifiSmsInput__dropdownSelect',
-              intercomSmsDropdownSelectStyle,
               classNames?.dropdownSelectField,
             )}
             tabIndex={0}
@@ -206,11 +186,7 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
           </div>
         </div>
         <input
-          className={clsx(
-            'NotifiSmsInput__input',
-            intercomSmsInputStyle,
-            classNames?.input,
-          )}
+          className={clsx('NotifiSmsInput__input', classNames?.input)}
           disabled={disabled}
           name="notifi-sms"
           onBlur={validateSmsInput}

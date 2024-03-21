@@ -8,64 +8,62 @@ import type * as Operations from './operations';
 
 export class NotifiService
   implements
-  Operations.AddSourceToSourceGroupService,
-  Operations.BeginLogInByTransactionService,
-  Operations.BroadcastMessageService,
-  Operations.CompleteLogInByTransactionService,
-  Operations.ConnectWalletService,
-  Operations.CreateAlertService,
-  Operations.CreateDirectPushAlertService,
-  Operations.CreateEmailTargetService,
-  Operations.CreateSmsTargetService,
-  Operations.CreateSourceService,
-  Operations.CreateSourceGroupService,
-  Operations.CreateSupportConversationService,
-  Operations.CreateTargetGroupService,
-  Operations.CreateTelegramTargetService,
-  Operations.CreateTenantUserService,
-  Operations.CreateWebhookTargetService,
-  Operations.DeleteAlertService,
-  Operations.DeleteUserAlertService,
-  Operations.DeleteSourceGroupService,
-  Operations.DeleteTargetGroupService,
-  Operations.DeleteWebhookTargetService,
-  Operations.FetchDataService,
-  Operations.FindTenantConfigService,
-  Operations.GetAlertsService,
-  Operations.GetConfigurationForDappService,
-  Operations.GetConversationMessagesService,
-  Operations.GetConnectedWalletsService,
-  Operations.GetEmailTargetsService,
-  Operations.GetFiltersService,
-  Operations.GetFusionNotificationHistoryService,
-  Operations.GetNotificationHistoryService,
-  Operations.GetSmsTargetsService,
-  Operations.GetSourceConnectionService,
-  Operations.GetSourceGroupsService,
-  Operations.GetSourcesService,
-  Operations.GetTargetGroupsService,
-  Operations.GetTelegramTargetsService,
-  Operations.GetTenantConnectedWalletsService,
-  Operations.GetTenantUserService,
-  Operations.GetTopicsService,
-  Operations.GetWebhookTargetsService,
-  Operations.LogInFromDappService,
-  Operations.LogInFromServiceService,
-  Operations.RefreshAuthorizationService,
-  Operations.RemoveSourceFromSourceGroupService,
-  Operations.SendConversationMessageService,
-  Operations.SendEmailTargetVerificationRequestService,
-  Operations.SendMessageService,
-  Operations.UpdateSourceGroupService,
-  Operations.UpdateTargetGroupService,
-  Operations.CreateDiscordTargetService,
-  Operations.GetDiscordTargetsService,
-  Operations.GetUnreadNotificationHistoryCountService,
-  Operations.MarkFusionNotificationHistoryAsReadService,
-  Operations.UpdateUserSettingsService,
-  Operations.GetUserSettingsService,
-  Operations.BeginLogInWithWeb3Service,
-  Operations.CompleteLogInWithWeb3Service {
+    Operations.AddSourceToSourceGroupService,
+    Operations.BeginLogInByTransactionService,
+    Operations.BroadcastMessageService,
+    Operations.CompleteLogInByTransactionService,
+    Operations.ConnectWalletService,
+    Operations.CreateAlertService,
+    Operations.CreateDirectPushAlertService,
+    Operations.CreateEmailTargetService,
+    Operations.CreateSmsTargetService,
+    Operations.CreateSourceService,
+    Operations.CreateSourceGroupService,
+    Operations.CreateTargetGroupService,
+    Operations.CreateTelegramTargetService,
+    Operations.CreateTenantUserService,
+    Operations.CreateWebhookTargetService,
+    Operations.DeleteAlertService,
+    Operations.DeleteUserAlertService,
+    Operations.DeleteSourceGroupService,
+    Operations.DeleteTargetGroupService,
+    Operations.DeleteWebhookTargetService,
+    Operations.FetchDataService,
+    Operations.FindTenantConfigService,
+    Operations.GetAlertsService,
+    Operations.GetConfigurationForDappService,
+    Operations.GetConnectedWalletsService,
+    Operations.GetEmailTargetsService,
+    Operations.GetFiltersService,
+    Operations.GetFusionNotificationHistoryService,
+    Operations.GetNotificationHistoryService,
+    Operations.GetSmsTargetsService,
+    Operations.GetSourceConnectionService,
+    Operations.GetSourceGroupsService,
+    Operations.GetSourcesService,
+    Operations.GetTargetGroupsService,
+    Operations.GetTelegramTargetsService,
+    Operations.GetTenantConnectedWalletsService,
+    Operations.GetTenantUserService,
+    Operations.GetTopicsService,
+    Operations.GetWebhookTargetsService,
+    Operations.LogInFromDappService,
+    Operations.LogInFromServiceService,
+    Operations.RefreshAuthorizationService,
+    Operations.RemoveSourceFromSourceGroupService,
+    Operations.SendEmailTargetVerificationRequestService,
+    Operations.SendMessageService,
+    Operations.UpdateSourceGroupService,
+    Operations.UpdateTargetGroupService,
+    Operations.CreateDiscordTargetService,
+    Operations.GetDiscordTargetsService,
+    Operations.GetUnreadNotificationHistoryCountService,
+    Operations.MarkFusionNotificationHistoryAsReadService,
+    Operations.UpdateUserSettingsService,
+    Operations.GetUserSettingsService,
+    Operations.BeginLogInWithWeb3Service,
+    Operations.CompleteLogInWithWeb3Service
+{
   private _jwt: string | undefined;
   private _typedClient: ReturnType<typeof getSdk>;
 
@@ -172,13 +170,6 @@ export class NotifiService
     return this._typedClient.createSourceGroup(variables, headers);
   }
 
-  async createSupportConversation(
-    variables: Generated.CreateSupportConversationMutationVariables,
-  ): Promise<Generated.CreateSupportConversationMutation> {
-    const headers = this._requestHeaders();
-    return this._typedClient.createSupportConversation(variables, headers);
-  }
-
   async createTargetGroup(
     variables: Generated.CreateTargetGroupMutationVariables,
   ): Promise<Generated.CreateTargetGroupMutation> {
@@ -282,13 +273,6 @@ export class NotifiService
   ): Promise<Generated.GetConnectedWalletsQuery> {
     const headers = this._requestHeaders();
     return this._typedClient.getConnectedWallets(variables, headers);
-  }
-
-  async getConversationMessages(
-    variables: Generated.GetConversationMessagesQueryVariables,
-  ): Promise<Generated.GetConversationMessagesQuery> {
-    const headers = this._requestHeaders();
-    return this._typedClient.getConversationMessages(variables, headers);
   }
 
   async getEmailTargets(
@@ -478,13 +462,6 @@ export class NotifiService
     return this._typedClient.removeSourceFromSourceGroup(variables, headers);
   }
 
-  async sendConversationMessages(
-    variables: Generated.SendConversationMessageMutationVariables,
-  ): Promise<Generated.SendConversationMessageMutation> {
-    const headers = this._requestHeaders();
-    return this._typedClient.sendConversationMessage(variables, headers);
-  }
-
   async sendEmailTargetVerificationRequest(
     variables: Generated.SendEmailTargetVerificationRequestMutationVariables,
   ): Promise<Generated.SendEmailTargetVerificationRequestMutation> {
@@ -516,7 +493,6 @@ export class NotifiService
     return this._typedClient.updateTargetGroup(variables, headers);
   }
 
-
   async beginLogInWithWeb3(
     variables: Generated.BeginLogInWithWeb3MutationVariables,
   ): Promise<Generated.BeginLogInWithWeb3Mutation> {
@@ -531,7 +507,6 @@ export class NotifiService
     return this._typedClient.completeLogInWithWeb3(variables, headers);
   }
 
-
   private _requestHeaders(): HeadersInit {
     const requestId = uuid();
     const headers: HeadersInit = {
@@ -545,5 +520,4 @@ export class NotifiService
 
     return headers;
   }
-
 }
