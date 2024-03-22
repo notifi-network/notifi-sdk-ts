@@ -19,7 +19,7 @@ export default function NotifiSignup({
 
   return (
     <div className="w-full h-screen flex flex-col justify-start items-center md:items-center md:justify-center bg-notifi-page-bg">
-      <div className="md:fixed md:top-8 md:left-8 md:right-8 m-3 md:m-0 flex justify-between">
+      <div className="md:fixed md:top-8 md:left-8 md:right-8 m-3 md:m-0 flex justify-between items-center">
         <div className="left-8 flex items-center">
           <Image
             src="/logos/injective.png"
