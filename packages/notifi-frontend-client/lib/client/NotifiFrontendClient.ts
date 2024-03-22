@@ -723,6 +723,30 @@ export class NotifiFrontendClient {
     return created;
   }
 
+  async ensureFusionAlerts(
+    input: Types.CreateFusionAlertsInput,
+  ): Promise<Types.CreateFusionAlertsMutation['createFusionAlerts']> {
+    const inputAlertsNames = new Set(input.alerts.map((alert) => alert.name));
+    const query = await this._service.getAlerts({});
+    const existingAlerts = new Set(query.alert);
+
+    const duplicateAlerts = [...existingAlerts].filter((alert) =>
+      inputAlertsNames.has(alert?.name),
+    );
+
+    const duplicateAlertsIds = duplicateAlerts
+      .map((alert) => alert?.id)
+      .filter((id): id is string => !!id); // TODO: n(^2) --> consider to move to BE when this grows huge
+
+    // Alerts are immutable, delete the existing instead
+    for (const id of duplicateAlertsIds) {
+      await this.deleteAlert({ id });
+    }
+
+    const mutation = await this._service.createFusionAlerts({ input });
+    return mutation.createFusionAlerts;
+  }
+
   async deleteAlert({
     id,
   }: Readonly<{
