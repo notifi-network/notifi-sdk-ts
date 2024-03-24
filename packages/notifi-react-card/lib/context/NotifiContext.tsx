@@ -46,6 +46,90 @@ export type BaseParams = Readonly<{
   signMessage: Uint8SignMessageFunction;
 }>;
 
+export type XionParams = Readonly<{
+  walletBlockchain: 'XION';
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
+export type ElysParams = Readonly<{
+  walletBlockchain: 'ELYS';
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
+export type NeutronParams = Readonly<{
+  walletBlockchain: 'NEUTRON';
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
+export type ArchwayParams = Readonly<{
+  walletBlockchain: 'ARCHWAY';
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
+export type AxelarParams = Readonly<{
+  walletBlockchain: 'AXELAR';
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
+export type BerachainParams = Readonly<{
+  walletBlockchain: 'BERACHAIN';
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
+export type BlastParams = Readonly<{
+  walletBlockchain: 'BLAST';
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
+export type CeloParams = Readonly<{
+  walletBlockchain: 'CELO';
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
+export type MantleParams = Readonly<{
+  walletBlockchain: 'MANTLE';
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
+export type LineaParams = Readonly<{
+  walletBlockchain: 'LINEA';
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
+export type ScrollParams = Readonly<{
+  walletBlockchain: 'SCROLL';
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
+export type MonadParams = Readonly<{
+  walletBlockchain: 'MONAD';
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
+export type MantaParams = Readonly<{
+  walletBlockchain: 'MANTA';
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
+export type EvmosParams = Readonly<{
+  walletBlockchain: 'EVMOS';
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
 export type AptosParams = Readonly<{
   walletBlockchain: 'APTOS';
   accountAddress: string;
@@ -133,7 +217,21 @@ type WalletParams =
   | OsmosisParams
   | NibiruParams
   | SuiParams
-  | ZksyncParams;
+  | ZksyncParams
+  | XionParams
+  | ElysParams
+  | NeutronParams
+  | ArchwayParams
+  | AxelarParams
+  | BerachainParams
+  | BlastParams
+  | CeloParams
+  | MantleParams
+  | LineaParams
+  | ScrollParams
+  | MonadParams
+  | MantaParams
+  | EvmosParams;
 
 export type NotifiParams = Readonly<{
   alertConfigurations?: Record<string, AlertConfiguration | null>;
