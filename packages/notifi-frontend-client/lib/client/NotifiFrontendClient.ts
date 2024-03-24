@@ -2,11 +2,11 @@ import { Types } from '@notifi-network/notifi-graphql';
 import { NotifiService } from '@notifi-network/notifi-graphql';
 
 import {
-  checkIsConfigWithDelegate,
-  checkIsConfigWithPublicKeyAndAddress,
   type NotifiConfigWithPublicKey,
   type NotifiConfigWithPublicKeyAndAddress,
   type NotifiFrontendConfiguration,
+  checkIsConfigWithDelegate,
+  checkIsConfigWithPublicKeyAndAddress,
 } from '../configuration';
 import type {
   CardConfigItemV1,
@@ -33,57 +33,57 @@ import {
 
 export type SignMessageParams =
   | Readonly<{
-    walletBlockchain: 'SOLANA';
-    signMessage: Uint8SignMessageFunction;
-  }>
+      walletBlockchain: 'SOLANA';
+      signMessage: Uint8SignMessageFunction;
+    }>
   | Readonly<{
-    walletBlockchain:
-    | 'ETHEREUM'
-    | 'POLYGON'
-    | 'ARBITRUM'
-    | 'AVALANCHE'
-    | 'BINANCE'
-    | 'OSMOSIS'
-    | 'ELYS'
-    | 'NEUTRON'
-    | 'ARCHWAY'
-    | 'AXELAR'
-    | 'BERACHAIN'
-    | 'NIBIRU'
-    | 'OPTIMISM'
-    | 'ZKSYNC'
-    | 'INJECTIVE'
-    | 'BASE'
-    | 'BLAST'
-    | 'CELO'
-    | 'MANTLE'
-    | 'LINEA'
-    | 'SCROLL'
-    | 'MANTA'
-    | 'MONAD';
-    signMessage: Uint8SignMessageFunction;
-  }>
+      walletBlockchain:
+        | 'ETHEREUM'
+        | 'POLYGON'
+        | 'ARBITRUM'
+        | 'AVALANCHE'
+        | 'BINANCE'
+        | 'OSMOSIS'
+        | 'ELYS'
+        | 'NEUTRON'
+        | 'ARCHWAY'
+        | 'AXELAR'
+        | 'BERACHAIN'
+        | 'NIBIRU'
+        | 'OPTIMISM'
+        | 'ZKSYNC'
+        | 'INJECTIVE'
+        | 'BASE'
+        | 'BLAST'
+        | 'CELO'
+        | 'MANTLE'
+        | 'LINEA'
+        | 'SCROLL'
+        | 'MANTA'
+        | 'MONAD';
+      signMessage: Uint8SignMessageFunction;
+    }>
   | Readonly<{
-    walletBlockchain: 'APTOS';
-    signMessage: AptosSignMessageFunction;
-  }>
+      walletBlockchain: 'APTOS';
+      signMessage: AptosSignMessageFunction;
+    }>
   | Readonly<{
-    walletBlockchain: 'XION';
-    message: string;
-    signMessage: XionSignMessageFunction;
-  }>
+      walletBlockchain: 'XION';
+      message: string;
+      signMessage: XionSignMessageFunction;
+    }>
   | Readonly<{
-    walletBlockchain: 'ACALA';
-    signMessage: AcalaSignMessageFunction;
-  }>
+      walletBlockchain: 'ACALA';
+      signMessage: AcalaSignMessageFunction;
+    }>
   | Readonly<{
-    walletBlockchain: 'NEAR';
-    signMessage: Uint8SignMessageFunction;
-  }>
+      walletBlockchain: 'NEAR';
+      signMessage: Uint8SignMessageFunction;
+    }>
   | Readonly<{
-    walletBlockchain: 'SUI';
-    signMessage: Uint8SignMessageFunction;
-  }>;
+      walletBlockchain: 'SUI';
+      signMessage: Uint8SignMessageFunction;
+    }>;
 
 export type WalletWithSignParams = Readonly<{
   displayName?: string;
@@ -92,93 +92,93 @@ export type WalletWithSignParams = Readonly<{
 
 export type WalletWithSignMessage =
   | Readonly<{
-    walletBlockchain: 'SOLANA';
-    walletPublicKey: string;
-    signMessage: Uint8SignMessageFunction;
-  }>
+      walletBlockchain: 'SOLANA';
+      walletPublicKey: string;
+      signMessage: Uint8SignMessageFunction;
+    }>
   | Readonly<{
-    walletBlockchain:
-    | 'ETHEREUM'
-    | 'POLYGON'
-    | 'ARBITRUM'
-    | 'AVALANCHE'
-    | 'BINANCE'
-    | 'OPTIMISM'
-    | 'ZKSYNC'
-    | 'BASE'
-    | 'BLAST'
-    | 'CELO'
-    | 'MANTLE'
-    | 'LINEA'
-    | 'SCROLL'
-    | 'MANTA'
-    | 'MONAD'
-    | 'BERACHAIN'
-    walletPublicKey: string;
-    signMessage: Uint8SignMessageFunction;
-  }>
+      walletBlockchain:
+        | 'ETHEREUM'
+        | 'POLYGON'
+        | 'ARBITRUM'
+        | 'AVALANCHE'
+        | 'BINANCE'
+        | 'OPTIMISM'
+        | 'ZKSYNC'
+        | 'BASE'
+        | 'BLAST'
+        | 'CELO'
+        | 'MANTLE'
+        | 'LINEA'
+        | 'SCROLL'
+        | 'MANTA'
+        | 'MONAD'
+        | 'BERACHAIN';
+      walletPublicKey: string;
+      signMessage: Uint8SignMessageFunction;
+    }>
   | Readonly<{
-    walletBlockchain: 'APTOS';
-    accountAddress: string;
-    walletPublicKey: string;
-    signMessage: AptosSignMessageFunction;
-  }>
+      walletBlockchain: 'APTOS';
+      accountAddress: string;
+      walletPublicKey: string;
+      signMessage: AptosSignMessageFunction;
+    }>
   | Readonly<{
-    walletBlockchain: 'XION';
-    walletPublicKey: string;
-    signingAddress: string;
-    signingPubkey: string;
-    message: string;
-    signMessage: XionSignMessageFunction;
-  }>
+      walletBlockchain: 'XION';
+      walletPublicKey: string;
+      signingAddress: string;
+      signingPubkey: string;
+      message: string;
+      signMessage: XionSignMessageFunction;
+    }>
   | Readonly<{
-    walletBlockchain: 'ACALA';
-    accountAddress: string;
-    walletPublicKey: string;
-    signMessage: AcalaSignMessageFunction;
-  }>
+      walletBlockchain: 'ACALA';
+      accountAddress: string;
+      walletPublicKey: string;
+      signMessage: AcalaSignMessageFunction;
+    }>
   | Readonly<{
-    walletBlockchain: 'NEAR';
-    accountAddress: string;
-    walletPublicKey: string;
-    signMessage: Uint8SignMessageFunction;
-  }>
+      walletBlockchain: 'NEAR';
+      accountAddress: string;
+      walletPublicKey: string;
+      signMessage: Uint8SignMessageFunction;
+    }>
   | Readonly<{
-    walletBlockchain: 'SUI';
-    accountAddress: string;
-    walletPublicKey: string;
-    signMessage: Uint8SignMessageFunction;
-  }>
+      walletBlockchain: 'SUI';
+      accountAddress: string;
+      walletPublicKey: string;
+      signMessage: Uint8SignMessageFunction;
+    }>
   | Readonly<{
-    walletBlockchain: 'INJECTIVE';
-    accountAddress: string;
-    walletPublicKey: string;
-    signMessage: Uint8SignMessageFunction;
-  }>
+      walletBlockchain: 'INJECTIVE';
+      accountAddress: string;
+      walletPublicKey: string;
+      signMessage: Uint8SignMessageFunction;
+    }>
   | Readonly<{
-    walletBlockchain: 'ELYS';
-    accountAddress: string;
-    walletPublicKey: string;
-    signMessage: Uint8SignMessageFunction;
-  }>
+      walletBlockchain: 'ELYS';
+      accountAddress: string;
+      walletPublicKey: string;
+      signMessage: Uint8SignMessageFunction;
+    }>
   | Readonly<{
-    walletBlockchain: 'NEUTRON';
-    accountAddress: string;
-    walletPublicKey: string;
-    signMessage: Uint8SignMessageFunction;
-  }>
+      walletBlockchain: 'NEUTRON';
+      accountAddress: string;
+      walletPublicKey: string;
+      signMessage: Uint8SignMessageFunction;
+    }>
   | Readonly<{
-    walletBlockchain: 'ARCHWAY';
-    accountAddress: string;
-    walletPublicKey: string;
-    signMessage: Uint8SignMessageFunction;
-  }>
+      walletBlockchain: 'ARCHWAY';
+      accountAddress: string;
+      walletPublicKey: string;
+      signMessage: Uint8SignMessageFunction;
+    }>
   | Readonly<{
-    walletBlockchain: 'AXELAR';
-    accountAddress: string;
-    walletPublicKey: string;
-    signMessage: Uint8SignMessageFunction;
-  }>
+      walletBlockchain: 'AXELAR';
+      accountAddress: string;
+      walletPublicKey: string;
+      signMessage: Uint8SignMessageFunction;
+    }>;
 
 export type ConnectWalletParams = Readonly<{
   walletParams: WalletWithSignParams;
@@ -186,9 +186,7 @@ export type ConnectWalletParams = Readonly<{
 }>;
 
 // TODO: Clean up blockchain-specific dependencies out of this package
-export type XionSignMessageFunction = (
-  message: Uint8Array,
-) => Promise<string>;
+export type XionSignMessageFunction = (message: Uint8Array) => Promise<string>;
 
 export type Uint8SignMessageFunction = (
   message: Uint8Array,
@@ -207,14 +205,17 @@ export type CardConfigType = CardConfigItemV1 | IntercomCardConfigItemV1;
 
 type BeginLoginProps = Omit<Types.BeginLogInByTransactionInput, 'dappAddress'>;
 
-type BeginLoginWithWeb3Props = Omit<Types.BeginLogInWithWeb3Input, 'dappAddress' | 'blockchainType'>;
+type BeginLoginWithWeb3Props = Omit<
+  Types.BeginLogInWithWeb3Input,
+  'dappAddress' | 'blockchainType'
+>;
 
 type CompleteLoginProps = Omit<
   Types.CompleteLogInByTransactionInput,
   'dappAddress' | 'randomUuid'
 >;
 
-type CompleteLoginWithWeb3Props = Types.CompleteLogInWithWeb3Input
+type CompleteLoginWithWeb3Props = Types.CompleteLogInWithWeb3Input;
 
 type EnsureWebhookParams = Omit<
   Types.CreateWebhookTargetMutationVariables,
@@ -231,17 +232,17 @@ export type SupportedCardConfigType = CardConfigItemV1;
 
 export type UserState = Readonly<
   | {
-    status: 'loggedOut';
-  }
+      status: 'loggedOut';
+    }
   | {
-    status: 'authenticated';
-    authorization: Authorization;
-    roles: Roles;
-  }
+      status: 'authenticated';
+      authorization: Authorization;
+      roles: Roles;
+    }
   | {
-    status: 'expired';
-    authorization: Authorization;
-  }
+      status: 'expired';
+      authorization: Authorization;
+    }
 >;
 
 export class NotifiFrontendClient {
@@ -249,7 +250,7 @@ export class NotifiFrontendClient {
     private _configuration: NotifiFrontendConfiguration,
     private _service: NotifiService,
     private _storage: NotifiStorage,
-  ) { }
+  ) {}
 
   private _clientRandomUuid: string | null = null;
   private _userState: UserState | null = null;
@@ -323,26 +324,32 @@ export class NotifiFrontendClient {
     };
   }
 
-  private async logInWithWeb3(
-    signMessageParams: {
-      walletBlockchain: 'XION';
-      signMessage: XionSignMessageFunction;
-    },
-  ): Promise<Types.UserFragmentFragment> {
+  private async logInWithWeb3(signMessageParams: {
+    walletBlockchain: 'XION';
+    signMessage: XionSignMessageFunction;
+  }): Promise<Types.UserFragmentFragment> {
     let user: Types.UserFragmentFragment | undefined = undefined;
 
-    if (this._configuration.walletBlockchain !== 'XION' || signMessageParams.walletBlockchain !== 'XION') {
-      throw new Error('Wallet blockchain must be XION for loginWithWeb3')
+    if (
+      this._configuration.walletBlockchain !== 'XION' ||
+      signMessageParams.walletBlockchain !== 'XION'
+    ) {
+      throw new Error('Wallet blockchain must be XION for loginWithWeb3');
     }
     if (checkIsConfigWithDelegate(this._configuration)) {
-      const { delegatedAddress, delegatedPublicKey, delegatorAddress } = this._configuration;
+      const { delegatedAddress, delegatedPublicKey, delegatorAddress } =
+        this._configuration;
       const { nonce } = await this.beginLogInWithWeb3({
         authAddress: delegatorAddress,
         authType: 'COSMOS_AUTHZ_GRANT',
-      })
+      });
 
       const message = `${SIGNING_MESSAGE}${nonce}}`;
-      const params = { walletBlockchain: 'XION', message, signMessage: signMessageParams.signMessage } as const
+      const params = {
+        walletBlockchain: 'XION',
+        message,
+        signMessage: signMessageParams.signMessage,
+      } as const;
       const signature = await this._signMessage({
         signMessageParams: params,
         timestamp: Math.round(Date.now() / 1000),
@@ -353,20 +360,22 @@ export class NotifiFrontendClient {
         signature,
         signedMessage: message,
         signingAddress: delegatedAddress,
-        signingPubkey: delegatedPublicKey
-      })
-      user = completeLogInWithWeb3.user
-
-    }
-    else if (checkIsConfigWithPublicKeyAndAddress(this._configuration)) {
+        signingPubkey: delegatedPublicKey,
+      });
+      user = completeLogInWithWeb3.user;
+    } else if (checkIsConfigWithPublicKeyAndAddress(this._configuration)) {
       const { authenticationKey, accountAddress } = this._configuration;
       const { nonce } = await this.beginLogInWithWeb3({
         authAddress: accountAddress,
         authType: 'COSMOS_ADR36',
-      })
+      });
 
       const message = `${SIGNING_MESSAGE}${nonce}}`;
-      const params = { walletBlockchain: 'XION', message, signMessage: signMessageParams.signMessage } as const
+      const params = {
+        walletBlockchain: 'XION',
+        message,
+        signMessage: signMessageParams.signMessage,
+      } as const;
       const signature = await this._signMessage({
         signMessageParams: params,
         timestamp: Math.round(Date.now() / 1000),
@@ -377,18 +386,17 @@ export class NotifiFrontendClient {
         signature,
         signedMessage: message,
         signingAddress: accountAddress,
-        signingPubkey: authenticationKey
-      })
-      user = completeLogInWithWeb3.user
+        signingPubkey: authenticationKey,
+      });
+      user = completeLogInWithWeb3.user;
     }
 
     if (user === undefined) {
       return Promise.reject('Failed to login');
     }
 
-    await this._handleLogInResult(user)
-    return user
-
+    await this._handleLogInResult(user);
+    return user;
   }
 
   async logIn(
@@ -402,8 +410,11 @@ export class NotifiFrontendClient {
 
     const { tenantId, walletBlockchain } = this._configuration;
 
-    if (walletBlockchain === 'XION' && signMessageParams.walletBlockchain === 'XION') {
-      return this.logInWithWeb3(signMessageParams)
+    if (
+      walletBlockchain === 'XION' &&
+      signMessageParams.walletBlockchain === 'XION'
+    ) {
+      return this.logInWithWeb3(signMessageParams);
     }
 
     let loginResult: Types.UserFragmentFragment | undefined = undefined;
@@ -518,19 +529,17 @@ export class NotifiFrontendClient {
       case 'NIBIRU':
       case 'ARCHWAY':
       case 'AXELAR':
-      case 'INJECTIVE':
-        {
-          const { authenticationKey, tenantId } = this
-            ._configuration as NotifiConfigWithPublicKeyAndAddress;
-          const messageBuffer = new TextEncoder().encode(
-            `${SIGNING_MESSAGE}${authenticationKey}${tenantId}${timestamp.toString()}`,
-          );
+      case 'INJECTIVE': {
+        const { authenticationKey, tenantId } = this
+          ._configuration as NotifiConfigWithPublicKeyAndAddress;
+        const messageBuffer = new TextEncoder().encode(
+          `${SIGNING_MESSAGE}${authenticationKey}${tenantId}${timestamp.toString()}`,
+        );
 
-          const signedBuffer = await signMessageParams.signMessage(messageBuffer);
-          const signature = Buffer.from(signedBuffer).toString('base64');
-          return signature;
-
-        }
+        const signedBuffer = await signMessageParams.signMessage(messageBuffer);
+        const signature = Buffer.from(signedBuffer).toString('base64');
+        return signature;
+      }
       case 'SOLANA': {
         const { walletPublicKey, tenantId } = this
           ._configuration as NotifiConfigWithPublicKey;
@@ -543,14 +552,12 @@ export class NotifiFrontendClient {
         return signature;
       }
       case 'XION': {
-        const { message } = signMessageParams
-        const messageBuffer = new TextEncoder().encode(
-          message
-        );
+        const { message } = signMessageParams;
+        const messageBuffer = new TextEncoder().encode(message);
 
         const signedBuffer = await signMessageParams.signMessage(messageBuffer);
         const signature = Buffer.from(signedBuffer).toString('base64');
-        return signature
+        return signature;
       }
       case 'ACALA': {
         const { accountAddress, tenantId } = this
@@ -584,8 +591,9 @@ export class NotifiFrontendClient {
         const { authenticationKey, accountAddress, tenantId } = this
           ._configuration as NotifiConfigWithPublicKeyAndAddress;
 
-        const message = `${`ed25519:` + authenticationKey
-          }${tenantId}${accountAddress}${timestamp.toString()}`;
+        const message = `${
+          `ed25519:` + authenticationKey
+        }${tenantId}${accountAddress}${timestamp.toString()}`;
         const textAsBuffer = new TextEncoder().encode(message);
         const hashBuffer = await window.crypto.subtle.digest(
           'SHA-256',
@@ -698,8 +706,7 @@ export class NotifiFrontendClient {
   async beginLogInWithWeb3({
     authType,
     authAddress,
-    walletPubkey
-
+    walletPubkey,
   }: BeginLoginWithWeb3Props): Promise<Types.BeginLogInWithWeb3Response> {
     const { tenantId } = this._configuration;
     const result = await this._service.beginLogInWithWeb3({
@@ -707,17 +714,19 @@ export class NotifiFrontendClient {
       authAddress,
       blockchainType: this._configuration.walletBlockchain,
       authType,
-      walletPubkey
+      walletPubkey,
     });
 
     if (!result.beginLogInWithWeb3.beginLogInWithWeb3Response) {
       throw new Error('Failed to begin login process');
     }
 
-    return result.beginLogInWithWeb3.beginLogInWithWeb3Response
+    return result.beginLogInWithWeb3.beginLogInWithWeb3Response;
   }
 
-  async completeLogInWithWeb3(input: CompleteLoginWithWeb3Props): Promise<Types.CompleteLogInWithWeb3Mutation> {
+  async completeLogInWithWeb3(
+    input: CompleteLoginWithWeb3Props,
+  ): Promise<Types.CompleteLogInWithWeb3Mutation> {
     const result = await this._service.completeLogInWithWeb3({
       signingPubkey: '',
       ...input,
@@ -1097,9 +1106,9 @@ export class NotifiFrontendClient {
       walletPublicKey,
       accountId:
         walletBlockchain === 'APTOS' ||
-          walletBlockchain === 'ACALA' ||
-          walletBlockchain === 'NEAR' ||
-          walletBlockchain === 'SUI'
+        walletBlockchain === 'ACALA' ||
+        walletBlockchain === 'NEAR' ||
+        walletBlockchain === 'SUI'
           ? params.walletParams.accountAddress
           : undefined,
       signature,

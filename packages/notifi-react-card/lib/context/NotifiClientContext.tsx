@@ -34,6 +34,7 @@ const NotifiClientContext = createContext<NotifiClientContextData>(
   {} as unknown as NotifiClientContextData, // Intentially empty in default, use NotifiSubscriptionContextProvider
 );
 
+//TODO: TO SUPPORT CONFIG FACTORY DELEGATE @JAMIE
 const getFrontendConfigInput = (params: NotifiParams): ConfigFactoryInput => {
   if ('accountAddress' in params) {
     return {

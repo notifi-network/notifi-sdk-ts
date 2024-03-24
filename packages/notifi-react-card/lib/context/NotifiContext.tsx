@@ -1,4 +1,7 @@
-import { WalletWithSignParams } from '@notifi-network/notifi-frontend-client';
+import {
+  WalletWithSignParams,
+  XionSignMessageFunction,
+} from '@notifi-network/notifi-frontend-client';
 import {
   AcalaSignMessageFunction,
   AptosSignMessageFunction,
@@ -42,90 +45,6 @@ export type BinanceParams = Readonly<{
 
 export type BaseParams = Readonly<{
   walletBlockchain: 'BASE';
-  walletPublicKey: string;
-  signMessage: Uint8SignMessageFunction;
-}>;
-
-export type XionParams = Readonly<{
-  walletBlockchain: 'XION';
-  walletPublicKey: string;
-  signMessage: Uint8SignMessageFunction;
-}>;
-
-export type ElysParams = Readonly<{
-  walletBlockchain: 'ELYS';
-  walletPublicKey: string;
-  signMessage: Uint8SignMessageFunction;
-}>;
-
-export type NeutronParams = Readonly<{
-  walletBlockchain: 'NEUTRON';
-  walletPublicKey: string;
-  signMessage: Uint8SignMessageFunction;
-}>;
-
-export type ArchwayParams = Readonly<{
-  walletBlockchain: 'ARCHWAY';
-  walletPublicKey: string;
-  signMessage: Uint8SignMessageFunction;
-}>;
-
-export type AxelarParams = Readonly<{
-  walletBlockchain: 'AXELAR';
-  walletPublicKey: string;
-  signMessage: Uint8SignMessageFunction;
-}>;
-
-export type BerachainParams = Readonly<{
-  walletBlockchain: 'BERACHAIN';
-  walletPublicKey: string;
-  signMessage: Uint8SignMessageFunction;
-}>;
-
-export type BlastParams = Readonly<{
-  walletBlockchain: 'BLAST';
-  walletPublicKey: string;
-  signMessage: Uint8SignMessageFunction;
-}>;
-
-export type CeloParams = Readonly<{
-  walletBlockchain: 'CELO';
-  walletPublicKey: string;
-  signMessage: Uint8SignMessageFunction;
-}>;
-
-export type MantleParams = Readonly<{
-  walletBlockchain: 'MANTLE';
-  walletPublicKey: string;
-  signMessage: Uint8SignMessageFunction;
-}>;
-
-export type LineaParams = Readonly<{
-  walletBlockchain: 'LINEA';
-  walletPublicKey: string;
-  signMessage: Uint8SignMessageFunction;
-}>;
-
-export type ScrollParams = Readonly<{
-  walletBlockchain: 'SCROLL';
-  walletPublicKey: string;
-  signMessage: Uint8SignMessageFunction;
-}>;
-
-export type MonadParams = Readonly<{
-  walletBlockchain: 'MONAD';
-  walletPublicKey: string;
-  signMessage: Uint8SignMessageFunction;
-}>;
-
-export type MantaParams = Readonly<{
-  walletBlockchain: 'MANTA';
-  walletPublicKey: string;
-  signMessage: Uint8SignMessageFunction;
-}>;
-
-export type EvmosParams = Readonly<{
-  walletBlockchain: 'EVMOS';
   walletPublicKey: string;
   signMessage: Uint8SignMessageFunction;
 }>;
@@ -196,6 +115,91 @@ export type SuiParams = Readonly<{
   signMessage: Uint8SignMessageFunction;
 }>;
 
+export type AxelarParams = Readonly<{
+  walletBlockchain: 'AXELAR';
+  accountAddress: string;
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
+export type ArchwayParams = Readonly<{
+  walletBlockchain: 'ARCHWAY';
+  accountAddress: string;
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
+export type NeutronParams = Readonly<{
+  walletBlockchain: 'NEUTRON';
+  accountAddress: string;
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
+export type ElysParams = Readonly<{
+  walletBlockchain: 'ELYS';
+  accountAddress: string;
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
+export type XionParams = Readonly<{
+  walletBlockchain: 'XION';
+  walletPublicKey: string;
+  signingAddress: string;
+  signingPubkey: string;
+  message: string;
+  signMessage: XionSignMessageFunction;
+}>;
+
+export type BlastParams = Readonly<{
+  walletBlockchain: 'BLAST';
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
+export type CeloParams = Readonly<{
+  walletBlockchain: 'CELO';
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
+export type MantleParams = Readonly<{
+  walletBlockchain: 'MANTLE';
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
+export type LineaParams = Readonly<{
+  walletBlockchain: 'LINEA';
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
+export type ScrollParams = Readonly<{
+  walletBlockchain: 'SCROLL';
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
+export type MantaParams = Readonly<{
+  walletBlockchain: 'MANTA';
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
+export type MonadParams = Readonly<{
+  walletBlockchain: 'MONAD';
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
+export type BerachainParams = Readonly<{
+  walletBlockchain: 'BERACHAIN';
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
 export type MultiWalletParams = Readonly<{
   ownedWallets: ReadonlyArray<WalletWithSignParams>;
 }>;
@@ -218,20 +222,19 @@ type WalletParams =
   | NibiruParams
   | SuiParams
   | ZksyncParams
-  | XionParams
-  | ElysParams
-  | NeutronParams
-  | ArchwayParams
   | AxelarParams
-  | BerachainParams
+  | ArchwayParams
+  | NeutronParams
+  | ElysParams
+  | XionParams
   | BlastParams
   | CeloParams
   | MantleParams
   | LineaParams
   | ScrollParams
-  | MonadParams
   | MantaParams
-  | EvmosParams;
+  | MonadParams
+  | BerachainParams;
 
 export type NotifiParams = Readonly<{
   alertConfigurations?: Record<string, AlertConfiguration | null>;
