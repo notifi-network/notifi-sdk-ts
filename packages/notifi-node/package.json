@@ -1,6 +1,6 @@
 {
   "name": "@notifi-network/notifi-node",
-  "version": "0.90.8",
+  "version": "0.90.9-alpha.7+a2ab95c",
   "description": "The node.js library for server-initiated pushes",
   "author": "juni-notifi <hyungjoon.kim@notifi.network>",
   "homepage": "https://github.com/notifi-network/notifi-sdk-ts#readme",
@@ -26,14 +26,14 @@
     "url": "https://github.com/notifi-network/notifi-sdk-ts/issues"
   },
   "dependencies": {
-    "@notifi-network/notifi-axios-utils": "^0.90.8",
-    "@notifi-network/notifi-core": "^0.90.8",
-    "@notifi-network/notifi-dataplane": "^0.90.8",
-    "@notifi-network/notifi-graphql": "^0.90.8",
+    "@notifi-network/notifi-axios-utils": "^0.90.9-alpha.7+a2ab95c",
+    "@notifi-network/notifi-core": "^0.90.9-alpha.7+a2ab95c",
+    "@notifi-network/notifi-dataplane": "^0.90.9-alpha.7+a2ab95c",
+    "@notifi-network/notifi-graphql": "^0.90.9-alpha.7+a2ab95c",
     "graphql": "^16.6.0",
     "graphql-request": "^6.0.0",
     "subscriptions-transport-ws": "^0.11.0",
     "ws": "^8.11.0"
   },
-  "gitHead": "be5adc9316ca9f254e358698fb04e6245f2ee79a"
+  "gitHead": "a2ab95c0b8966de18c463d8b87047c730878f7d0"
 }

@@ -1,6 +1,6 @@
 {
   "name": "@notifi-network/notifi-graphql",
-  "version": "0.90.8",
+  "version": "0.90.9-alpha.7+a2ab95c",
   "description": "The GraphQL API for Notifi",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -43,5 +43,5 @@
     "@graphql-codegen/typescript-operations": "^4.0.1",
     "@types/uuid": "^8.3.4"
   },
-  "gitHead": "be5adc9316ca9f254e358698fb04e6245f2ee79a"
+  "gitHead": "a2ab95c0b8966de18c463d8b87047c730878f7d0"
 }

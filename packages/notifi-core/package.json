@@ -1,6 +1,6 @@
 {
   "name": "@notifi-network/notifi-core",
-  "version": "0.90.8",
+  "version": "0.90.9-alpha.7+a2ab95c",
   "description": "The interfaces for the core functionality provided by the SDK",
   "author": "juni-notifi <hyungjoon.kim@notifi.network>",
   "homepage": "https://github.com/nimesh-irisio/notifi-sdk#readme",
@@ -28,10 +28,10 @@
     "url": "https://github.com/notifi-network/notifi-sdk-ts/issues"
   },
   "dependencies": {
-    "@notifi-network/notifi-graphql": "^0.90.8"
+    "@notifi-network/notifi-graphql": "^0.90.9-alpha.7+a2ab95c"
   },
   "devDependencies": {
     "rimraf": "^3.0.2"
   },
-  "gitHead": "be5adc9316ca9f254e358698fb04e6245f2ee79a"
+  "gitHead": "a2ab95c0b8966de18c463d8b87047c730878f7d0"
 }

@@ -1,6 +1,6 @@
 {
   "name": "@notifi-network/notifi-react-card",
-  "version": "0.90.8",
+  "version": "0.90.9-alpha.7+a2ab95c",
   "description": "A React component for signing up for Notifi notifications",
   "author": "juni-notifi <hyungjoon.kim@notifi.network>",
   "homepage": "https://github.com/notifi-network/notifi-sdk-ts#readme",
@@ -36,8 +36,8 @@
     "url": "https://github.com/notifi-network/notifi-sdk-ts/issues"
   },
   "dependencies": {
-    "@notifi-network/notifi-frontend-client": "^0.90.8",
-    "@notifi-network/notifi-react-hooks": "^0.90.8",
+    "@notifi-network/notifi-frontend-client": "^0.90.9-alpha.7+a2ab95c",
+    "@notifi-network/notifi-react-hooks": "^0.90.9-alpha.7+a2ab95c",
     "clsx": "^1.2.1",
     "date-fns": "^2.29.3",
     "dompurify": "^3.0.5",
@@ -45,7 +45,7 @@
     "react-virtuoso": "^3.1.1"
   },
   "devDependencies": {
-    "@notifi-network/notifi-core": "^0.90.8",
+    "@notifi-network/notifi-core": "^0.90.9-alpha.7+a2ab95c",
     "@types/dompurify": "^3.0.3",
     "@types/marked": "^5.0.1"
   },
@@ -54,5 +54,5 @@
       "libphonenumber-js"
     ]
   },
-  "gitHead": "be5adc9316ca9f254e358698fb04e6245f2ee79a"
+  "gitHead": "a2ab95c0b8966de18c463d8b87047c730878f7d0"
 }
