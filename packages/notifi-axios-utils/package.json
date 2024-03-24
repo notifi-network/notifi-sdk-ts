@@ -1,6 +1,6 @@
 {
   "name": "@notifi-network/notifi-axios-utils",
-  "version": "0.90.9-alpha.7+a2ab95c",
+  "version": "0.90.9-alpha.8+2b02f90",
   "description": "The axios utilities common to notifi libs",
   "author": "juni-notifi <hyungjoon.kim@notifi.network>",
   "homepage": "https://github.com/notifi-network/notifi-sdk-ts#readme",
@@ -28,5 +28,5 @@
   "peerDependencies": {
     "axios": "^0.26.1"
   },
-  "gitHead": "a2ab95c0b8966de18c463d8b87047c730878f7d0"
+  "gitHead": "2b02f90e5b01bf13a9ce842a603a7cb21b3d2881"
 }
