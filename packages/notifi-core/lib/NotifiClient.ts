@@ -281,6 +281,11 @@ export type SignMessageParams =
     | 'BINANCE'
     | 'INJECTIVE'
     | 'OSMOSIS'
+    | 'ELYS'
+    | 'NEUTRON'
+    | 'ARCHWAY'
+    | 'AXELAR'
+    | 'BERACHAIN'
     | 'NIBIRU'
     | 'OPTIMISM'
     | 'ZKSYNC'
@@ -337,7 +342,8 @@ export type WalletParams =
     | 'LINEA'
     | 'SCROLL'
     | 'MANTA'
-    | 'MONAD';
+    | 'MONAD'
+    | 'BERACHAIN'
     walletPublicKey: string;
   }>
   | Readonly<{
@@ -381,7 +387,28 @@ export type WalletParams =
     walletBlockchain: 'NIBIRU';
     accountAddress: string;
     walletPublicKey: string;
-  }>;
+  }>
+  | Readonly<{
+    walletBlockchain: 'ELYS';
+    accountAddress: string;
+    walletPublicKey: string;
+  }>
+  | Readonly<{
+    walletBlockchain: 'NEUTRON';
+    accountAddress: string;
+    walletPublicKey: string;
+  }>
+  | Readonly<{
+    walletBlockchain: 'ARCHWAY';
+    accountAddress: string;
+    walletPublicKey: string;
+  }>
+  | Readonly<{
+    walletBlockchain: 'AXELAR';
+    accountAddress: string;
+    walletPublicKey: string;
+  }>
+
 
 export type WalletWithSignMessage =
   | Readonly<{
@@ -405,7 +432,8 @@ export type WalletWithSignMessage =
     | 'LINEA'
     | 'SCROLL'
     | 'MANTA'
-    | 'MONAD';
+    | 'MONAD'
+    | 'BERACHAIN';
     walletPublicKey: string;
     signMessage: Uint8SignMessageFunction;
   }>
@@ -443,6 +471,30 @@ export type WalletWithSignMessage =
   }>
   | Readonly<{
     walletBlockchain: 'INJECTIVE';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>
+  | Readonly<{
+    walletBlockchain: 'ELYS';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>
+  | Readonly<{
+    walletBlockchain: 'NEUTRON';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>
+  | Readonly<{
+    walletBlockchain: 'ARCHWAY';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>
+  | Readonly<{
+    walletBlockchain: 'AXELAR';
     accountAddress: string;
     walletPublicKey: string;
     signMessage: Uint8SignMessageFunction;

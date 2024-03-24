@@ -11,7 +11,6 @@ import type {
   GetTenantUserResult,
   ManagedAlert,
   SimpleHealthThresholdMessagePayload,
-  WalletBlockchain,
 } from '../types';
 import {
   newDirectTenantMessage,
@@ -40,7 +39,7 @@ class NotifiClient {
     params: Readonly<{
       key: string;
       walletPublicKey: string;
-      walletBlockchain: WalletBlockchain;
+      walletBlockchain: Gql.WalletBlockchain;
     }> &
       SimpleHealthThresholdMessagePayload,
   ) => Promise<void> = async (
@@ -101,7 +100,7 @@ class NotifiClient {
     params: Readonly<{
       key: string;
       walletPublicKey: string;
-      walletBlockchain: WalletBlockchain;
+      walletBlockchain: Gql.WalletBlockchain;
       message?: string;
       type?: string;
       template?: {

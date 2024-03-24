@@ -32,13 +32,18 @@ type WalletBlockchainWithPublicKey = Extract<
   | 'SCROLL'
   | 'MANTA'
   | 'MONAD'
+  | 'BERACHAIN'
+  | 'XION' // Temporarily added this - Xion can be one or the other, or new config needs to be supported
 >;
 
-type WalletBlockchainWithDelegate = 'XION'
+type WalletBlockchainWithDelegate = 'XION';
 
 type WalletBlockchainWithPublicKeyAndAddress = Exclude<
   Types.WalletBlockchain,
-  WalletBlockchainWithPublicKey | 'OFF_CHAIN' | 'EVMOS'
+  | WalletBlockchainWithPublicKey
+  | 'OFF_CHAIN'
+  | 'EVMOS'
+  | WalletBlockchainWithDelegate
 >;
 
 export type NotifiConfigWithPublicKey = Readonly<{
@@ -82,7 +87,7 @@ export const checkIsConfigWithDelegate = (
   config: NotifiFrontendConfiguration,
 ): config is NotifiConfigWithDelegate => {
   return 'delegatedAddress' in config;
-}
+};
 
 export type ConfigFactoryInputDelegated = {
   account: Readonly<{
@@ -140,6 +145,7 @@ const evmChains = [
   'MANTA',
   'MONAD',
   'ZKSYNC',
+  'BERACHAIN',
 ] as const;
 
 type EVMChains = Extract<Types.WalletBlockchain, (typeof evmChains)[number]>;
