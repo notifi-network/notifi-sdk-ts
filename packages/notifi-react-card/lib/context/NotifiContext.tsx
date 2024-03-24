@@ -27,6 +27,13 @@ export type EthereumParams = Readonly<{
   walletPublicKey: string;
   signMessage: Uint8SignMessageFunction;
 }>;
+
+export type EvmosParams = Readonly<{
+  walletBlockchain: 'EVMOS';
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
 export type PolygonParams = Readonly<{
   walletBlockchain: 'POLYGON';
   walletPublicKey: string;
@@ -234,7 +241,8 @@ type WalletParams =
   | ScrollParams
   | MantaParams
   | MonadParams
-  | BerachainParams;
+  | BerachainParams
+  | EvmosParams;
 
 export type NotifiParams = Readonly<{
   alertConfigurations?: Record<string, AlertConfiguration | null>;
