@@ -50,9 +50,7 @@ export const NotifiTenantConfigContextProvider: FC<
         }
       })
       .catch((e) => {
-        setGlobalError(
-          'ERROR: Failed to fetch Card Config, see console for more details.',
-        );
+        setGlobalError('ERROR: Failed to fetch Card Config, please try again');
         console.log(e);
       })
       .finally(() => setIsGlobalLoading(false));

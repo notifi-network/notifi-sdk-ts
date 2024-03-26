@@ -98,7 +98,7 @@ export const useNotifiTargets = (target?: Target) => {
         afterEditDestination();
       }
     } catch (e: unknown) {
-      setGlobalError('ERROR: Failed to save, check console for more details');
+      setGlobalError('ERROR: Failed to save, please try again.');
       console.error('Failed to singup', (e as Error).message);
     }
     setIsGlobalLoading(false);
