@@ -68,7 +68,8 @@ export class NotifiService
     Operations.UpdateUserSettingsService,
     Operations.GetUserSettingsService,
     Operations.GetSlackChannelTargetsService,
-    Operations.CreateSlackChannelTargetService
+    Operations.CreateSlackChannelTargetService,
+    Operations.CreateFusionAlertsService
 {
   private _jwt: string | undefined;
   private _typedClient: ReturnType<typeof getSdk>;
@@ -133,6 +134,13 @@ export class NotifiService
   ): Promise<Generated.CreateAlertMutation> {
     const headers = this._requestHeaders();
     return this._typedClient.createAlert(variables, headers);
+  }
+
+  async createFusionAlerts(
+    variables: Generated.CreateFusionAlertsMutationVariables,
+  ): Promise<Generated.CreateFusionAlertsMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.createFusionAlerts(variables, headers);
   }
 
   async createDirectPushAlert(

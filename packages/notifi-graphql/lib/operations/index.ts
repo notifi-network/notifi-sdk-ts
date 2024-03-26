@@ -58,3 +58,4 @@ export * from './GetUserSettings';
 export * from './UpdateUserSettings';
 export * from './GetSlackChannelTargets';
 export * from './CreateSlackChannelTarget';
+export * from './CreateFusionAlerts';
