@@ -1,27 +1,20 @@
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
-import { TargetGroupData, useNotifiTargets } from '@/hooks/useNotifiTargets';
+import { useNotifiTargets } from '@/hooks/useNotifiTargets';
+import { useNotifiTopics, validateTopic } from '@/hooks/useNotifiTopics';
 import { useRouterAsync } from '@/hooks/useRouterAsync';
-import { formatTelegramForSubscription } from '@/utils/stringUtils';
+import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import {
-  CardConfigItemV1,
-  EventTypeConfig,
-} from '@notifi-network/notifi-frontend-client';
-import {
-  subscribeAlertsByFrontendClient,
   useFrontendClientLogin,
   useNotifiClientContext,
   useNotifiForm,
   useNotifiSubscriptionContext,
 } from '@notifi-network/notifi-react-card';
-import { isValidPhoneNumber } from 'libphonenumber-js';
 import React, { useCallback, useMemo } from 'react';
 
 export type NotifiSignUpButtonProps = Readonly<{
   buttonText: string;
   data: CardConfigItemV1;
 }>;
-
-const inputs = {};
 
 export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
   buttonText,
@@ -31,7 +24,7 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
 
   const frontendClientLogin = useFrontendClientLogin();
 
-  const { renewTargetGroups } = useNotifiTargets();
+  const { renewTargetGroups, targetGroup } = useNotifiTargets();
 
   const { handleRoute } = useRouterAsync();
 
@@ -48,41 +41,13 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
   const { formErrorMessages, formState } = useNotifiForm();
 
   const { phoneNumber, telegram: telegramId, email } = formState;
+  const { subscribeFusionAlerts } = useNotifiTopics();
 
   const {
     email: emailErrorMessage,
     phoneNumber: smsErrorMessage,
     telegram: telegramErrorMessage,
   } = formErrorMessages;
-
-  const targetGroup: TargetGroupData = useMemo(
-    () => ({
-      name: 'Default',
-      emailAddress: email === '' ? undefined : email,
-      phoneNumber: isValidPhoneNumber(phoneNumber) ? phoneNumber : undefined,
-      telegramId:
-        telegramId === ''
-          ? undefined
-          : formatTelegramForSubscription(telegramId),
-      discordId: useDiscord ? 'Default' : undefined,
-      slackId: useSlack ? 'Default' : undefined,
-    }),
-    [email, phoneNumber, telegramId, useDiscord, useSlack],
-  );
-
-  // TODO: migrate to useSubscribeAlert
-  const subscribeAlerts = useCallback(
-    async (eventTypes: EventTypeConfig, inputs: Record<string, unknown>) => {
-      await renewTargetGroups(targetGroup);
-
-      return subscribeAlertsByFrontendClient(
-        frontendClient,
-        eventTypes,
-        inputs,
-      );
-    },
-    [frontendClient, targetGroup],
-  );
 
   const onClick = useCallback(async () => {
     let isFirstTimeUser = false;
@@ -99,7 +64,9 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
         const subEvents = eventTypes.filter((event) => {
           return event.optOutAtSignup ? false : true;
         });
-        const result = await subscribeAlerts(subEvents, inputs);
+        const result = await subscribeFusionAlerts(
+          subEvents.filter(validateTopic),
+        );
         success = !!result;
       } else {
         const result = await renewTargetGroups(targetGroup);
@@ -116,6 +83,7 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
       setGlobalError('ERROR: Failed to signup, please try again.');
       console.error('Failed to singup', (e as Error).message);
     }
+    // TODO: No need the `loading` from subscriptionContext, that is for card.
     setIsGlobalLoading(false);
     setLoading(false);
   }, [
