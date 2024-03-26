@@ -40,10 +40,11 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
     frontendClient,
   } = useNotifiClientContext();
 
-  const { loading, useDiscord, render, setLoading, syncFtuStage, useSlack } =
+  const { useDiscord, render, syncFtuStage, useSlack } =
     useNotifiSubscriptionContext();
 
-  const { setIsGlobalLoading, setGlobalError } = useGlobalStateContext();
+  const { setIsGlobalLoading, setGlobalError, isGlobalLoading } =
+    useGlobalStateContext();
 
   const { formErrorMessages, formState } = useNotifiForm();
 
@@ -92,7 +93,6 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
       isFirstTimeUser = (data.targetGroup?.length ?? 0) === 0;
     }
     setIsGlobalLoading(true);
-    setLoading(true);
     try {
       let success = false;
       if (isFirstTimeUser) {
@@ -117,7 +117,6 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
       console.error('Failed to singup', (e as Error).message);
     }
     setIsGlobalLoading(false);
-    setLoading(false);
   }, [
     frontendClient,
     eventTypes,
@@ -146,10 +145,12 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
   return (
     <button
       className="rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-72 h-11 mb-6 text-sm font-bold disabled:opacity-50 disabled:hover:bg-notifi-button-primary-blueish-bg hover:bg-notifi-button-hover-bg"
-      disabled={!isInitialized || loading || hasErrors || !isInputFieldsValid}
+      disabled={
+        !isInitialized || isGlobalLoading || hasErrors || !isInputFieldsValid
+      }
       onClick={onClick}
     >
-      <span>{loading ? 'Loading' : buttonText}</span>
+      <span>{isGlobalLoading ? 'Loading' : buttonText}</span>
     </button>
   );
 };
