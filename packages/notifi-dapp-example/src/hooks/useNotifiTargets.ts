@@ -39,21 +39,15 @@ export const useNotifiTargets = (target?: Target) => {
 
   const [hasEmailChanges, setHasEmailChanges] = useState<boolean>(false);
   const [hasTelegramChanges, setHasTelegramChanges] = useState<boolean>(false);
-
-  const targetGroup: TargetGroupData = useMemo(
-    () => ({
-      name: 'Default',
-      emailAddress: email === '' ? undefined : email,
-      phoneNumber: isValidPhoneNumber(phoneNumber) ? phoneNumber : undefined,
-      telegramId:
-        telegramId === ''
-          ? undefined
-          : formatTelegramForSubscription(telegramId),
-      discordId: useDiscord ? 'Default' : undefined,
-      slackId: slackTargetData ? slackTargetData.id : undefined,
-    }),
-    [email, phoneNumber, telegramId, useDiscord],
-  );
+  const targetGroup: TargetGroupData = {
+    name: 'Default',
+    emailAddress: email === '' ? undefined : email,
+    phoneNumber: isValidPhoneNumber(phoneNumber) ? phoneNumber : undefined,
+    telegramId:
+      telegramId === '' ? undefined : formatTelegramForSubscription(telegramId),
+    discordId: useDiscord ? 'Default' : undefined,
+    slackId: slackTargetData ? slackTargetData.id : undefined,
+  };
 
   const renewTargetGroups = useCallback(
     async (targetGroup: TargetGroupData) => {
@@ -125,6 +119,7 @@ export const useNotifiTargets = (target?: Target) => {
   }, [unverifiedDestinations]);
 
   return {
+    targetGroup,
     updateTarget,
     renewTargetGroups,
     unVerifiedDestinationsString,

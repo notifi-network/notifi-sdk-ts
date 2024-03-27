@@ -2,14 +2,19 @@ import { useGlobalStateContext } from '@/context/GlobalStateContext';
 import { useNotifiTenantConfig } from '@/context/NotifiTenantConfigContext';
 import {
   EventTypeItem,
+  FusionEventTypeItem,
   FusionToggleEventTypeItem,
   LabelEventTypeItem,
 } from '@notifi-network/notifi-frontend-client';
+import { resolveStringRef } from '@notifi-network/notifi-frontend-client';
+import { Types } from '@notifi-network/notifi-graphql';
 import {
   useNotifiClientContext,
   useNotifiSubscriptionContext,
 } from '@notifi-network/notifi-react-card';
 import { useCallback, useState } from 'react';
+
+import { useNotifiTargets } from './useNotifiTargets';
 
 export type LabelWithSubTopicsEventTypeItem = LabelEventTypeItem & {
   subTopics: Array<FusionToggleEventTypeItem>;
@@ -30,6 +35,7 @@ export const useNotifiTopics = () => {
   const { render, alerts } = useNotifiSubscriptionContext();
   const [isLoading, setIsLoading] = useState(false);
   const { setGlobalError } = useGlobalStateContext();
+  const { renewTargetGroups, targetGroup } = useNotifiTargets();
 
   const subscribeAlert = useCallback(
     (topic: EventTypeItem) => {
@@ -67,6 +73,62 @@ export const useNotifiTopics = () => {
     [alerts, frontendClient],
   );
 
+  const subscribeFusionAlerts = useCallback(
+    async (
+      topics: FusionEventTypeItem[],
+    ): Promise<
+      Types.CreateFusionAlertsMutation['createFusionAlerts'] | undefined
+    > => {
+      setIsLoading(true);
+      try {
+        await renewTargetGroups(targetGroup);
+        const targetGroups = await frontendClient.getTargetGroups();
+        const targetGroupId = targetGroups.find(
+          (targetGroup) => targetGroup.name === 'Default',
+        )?.id;
+
+        if (!targetGroupId) {
+          throw new Error('Failed to ensureTargetGroups');
+        }
+
+        const alerts: Types.CreateFusionAlertInput[] = topics.map((topic) => {
+          const subscriptionValue = resolveStringRef(
+            topic.name,
+            topic.sourceAddress, // TODO: AP not yet able to set input reference
+            {}, // reference inputs associated with topic.sourceAddress if type is `ref`
+          );
+          const fusionEventId = resolveStringRef(
+            topic.name,
+            topic.fusionEventId, // TODO: AP not yet able to set input reference
+            {}, // reference inputs associated with topic.sourceAddress if type is `ref`
+          );
+
+          // TODO: Generate filterOptions (Now support toggle only)
+          const filterOptions = undefined; // TBD: Should it be optional?
+
+          return {
+            fusionEventId,
+            name: topic.name,
+            targetGroupId,
+            subscriptionValue,
+            filterOptions, // TODO: support filterOptions using new findTenantConfig method in which the fusionEventDescriptor is available
+          };
+        });
+        const result = await frontendClient.ensureFusionAlerts({ alerts });
+
+        frontendClient.fetchData().then(render);
+        return result;
+      } catch (e) {
+        setGlobalError(
+          'ERROR: Fail to subscribeFusionAlerts, please try again.',
+        );
+        console.log(e);
+      }
+      setIsLoading(false);
+    },
+    [frontendClient, targetGroup],
+  );
+
   const isAlertSubscribed = useCallback(
     (topicName: string) => {
       return Object.keys(alerts).includes(topicName);
@@ -77,6 +139,7 @@ export const useNotifiTopics = () => {
   return {
     isLoading,
     subscribeAlert,
+    subscribeFusionAlerts,
     unsubscribeAlert,
     isAlertSubscribed,
   };
@@ -123,4 +186,11 @@ export const categorizeTopics = (
     categorizedTopics: categorizedEventTypeItems,
     uncategorizedTopics: uncategorizedEventTypeItem,
   };
+};
+
+// Only support fusion event type
+export const validateTopic = (
+  topic: EventTypeItem,
+): topic is FusionEventTypeItem => {
+  return topic.type === 'fusion';
 };
