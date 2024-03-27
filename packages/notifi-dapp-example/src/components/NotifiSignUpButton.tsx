@@ -113,7 +113,7 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
         handleRoute('/notifi/ftu');
       }
     } catch (e: unknown) {
-      setGlobalError('ERROR: Failed to signup, check console for more details');
+      setGlobalError('ERROR: Failed to signup, please try again.');
       console.error('Failed to singup', (e as Error).message);
     }
     setIsGlobalLoading(false);

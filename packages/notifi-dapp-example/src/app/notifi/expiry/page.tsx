@@ -32,7 +32,7 @@ export default function NotifiExpiry() {
     <div className="min-h-screen flex flex-col items-center justify-center">
       <EcosystemHero
         isLoading={isLoadingRouter}
-        cta={login}
+        cta={() => login().then(() => popGlobalInfoModal(null))}
         ctaButtonText="Connect Wallet To Start"
       />
       <DummyAlertsModal />

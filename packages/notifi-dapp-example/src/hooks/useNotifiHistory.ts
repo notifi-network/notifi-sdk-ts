@@ -102,7 +102,7 @@ export const useNotifiHistory = (autoFetchHistoryAndUnreadCount?: boolean) => {
       .catch((e) => {
         popGlobalInfoModal({
           message:
-            'ERROR: Failed to fetch notification history, check console for more details',
+            'ERROR: Failed to fetch notification history, please try again.',
           iconOrEmoji: { type: 'icon', id: 'warning' },
           timeout: 5000,
         });

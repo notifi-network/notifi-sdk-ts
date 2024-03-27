@@ -40,9 +40,7 @@ export const useNotifiTopics = () => {
           frontendClient.fetchData().then(render);
         })
         .catch((e) => {
-          setGlobalError(
-            'ERROR: Fail to subscribe alert, see console for more details.',
-          );
+          setGlobalError('ERROR: Fail to subscribe alert, plase try again.');
           console.log(e);
         })
         .finally(() => setIsLoading(false));
@@ -61,9 +59,7 @@ export const useNotifiTopics = () => {
           frontendClient.fetchData().then(render);
         })
         .catch((e) => {
-          setGlobalError(
-            'ERROR: Fail to unsubscribe alert, see console for more details.',
-          );
+          setGlobalError('ERROR: Fail to unsubscribe alert, plase try again.');
           console.log(e);
         })
         .finally(() => setIsLoading(false));

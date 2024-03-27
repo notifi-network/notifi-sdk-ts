@@ -20,7 +20,7 @@ export type GlobalStateContextType = {
   globalError: null | string;
   /* deprecated: use setGlobalInfoModal instead */
   setGlobalError: Dispatch<SetStateAction<string | null>>;
-  popGlobalInfoModal: (globalInfoModal: GlobalInfoModal) => void;
+  popGlobalInfoModal: (globalInfoModal: GlobalInfoModal | null) => void;
 };
 
 const GlobalStateContext = createContext<GlobalStateContextType>({
@@ -51,8 +51,9 @@ export const GlobalStateContextProvider: FC<PropsWithChildren> = ({
   const [globalInfoModal, setGlobalInfoModal] =
     useState<GlobalInfoModal | null>(null);
 
-  const popGlobalInfoModal = (modalData: Partial<GlobalInfoModal>) => {
+  const popGlobalInfoModal = (modalData: Partial<GlobalInfoModal> | null) => {
     setGlobalInfoModal(() => {
+      if (!modalData) return null;
       return {
         message: modalData.message || 'WARNING: Something went wrong',
         iconOrEmoji: modalData.iconOrEmoji || { type: 'icon', id: 'warning' },
