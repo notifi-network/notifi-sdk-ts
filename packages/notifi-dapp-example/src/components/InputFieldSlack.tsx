@@ -1,5 +1,5 @@
 import { Icon } from '@/assets/Icon';
-import { useNotifiTargets } from '@/hooks/useNotifiTargets';
+import { useNotifiTargetContext } from '@/context/NotifiTargetContext';
 import {
   useNotifiForm,
   useNotifiSubscriptionContext,
@@ -20,7 +20,7 @@ export const InputFieldSlack: React.FC<InputFieldSlackProps> = ({
   const { formErrorMessages } = useNotifiForm();
   const { email: emailErrorMessage, telegram: telegramErrorMessage } =
     formErrorMessages;
-  const { updateTarget } = useNotifiTargets('slack');
+  const { updateTarget } = useNotifiTargetContext();
   const { useSlack, setUseSlack, slackTargetData } =
     useNotifiSubscriptionContext();
 
@@ -68,7 +68,7 @@ text-notifi-button-primary-blueish-bg md:ml-6 mt-1"
             }
             checked={useSlack}
             onChange={() => {
-              isEditable ? updateTarget() : setUseSlack(!useSlack);
+              isEditable ? updateTarget('slack') : setUseSlack(!useSlack);
             }}
           />
         </div>

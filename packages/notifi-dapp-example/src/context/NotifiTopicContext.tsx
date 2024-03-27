@@ -1,26 +1,43 @@
-import { useGlobalStateContext } from '@/context/GlobalStateContext';
-import { useNotifiTenantConfig } from '@/context/NotifiTenantConfigContext';
 import {
   EventTypeItem,
   FusionEventTypeItem,
   FusionToggleEventTypeItem,
   LabelEventTypeItem,
+  resolveStringRef,
 } from '@notifi-network/notifi-frontend-client';
-import { resolveStringRef } from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
 import {
   useNotifiClientContext,
   useNotifiSubscriptionContext,
 } from '@notifi-network/notifi-react-card';
-import { useCallback, useState } from 'react';
+import {
+  FC,
+  PropsWithChildren,
+  createContext,
+  useCallback,
+  useContext,
+  useState,
+} from 'react';
 
-import { useNotifiTargets } from './useNotifiTargets';
+import { useGlobalStateContext } from './GlobalStateContext';
+import { useNotifiTargetContext } from './NotifiTargetContext';
+import { useNotifiTenantConfig } from './NotifiTenantConfigContext';
 
-export type LabelWithSubTopicsEventTypeItem = LabelEventTypeItem & {
-  subTopics: Array<FusionToggleEventTypeItem>;
+export type NotifiTopicContextType = {
+  isLoading: boolean;
+  subscribeAlert: (topic: EventTypeItem) => void;
+  subscribeFusionAlerts: (
+    topics: FusionEventTypeItem[],
+  ) => Promise<
+    Types.CreateFusionAlertsMutation['createFusionAlerts'] | undefined
+  >;
+  unsubscribeAlert: (topicName: string) => void;
+  isAlertSubscribed: (topicName: string) => boolean;
 };
 
-type ValidTypeItem = FusionToggleEventTypeItem | LabelEventTypeItem;
+const NotifiTopicContext = createContext<NotifiTopicContextType>(
+  {} as NotifiTopicContextType, // intentionally empty as initial value
+);
 
 /**
  * @description Two important Notifi concepts: `Topic`(=EventTypeItem) and `Alert`.
@@ -29,13 +46,15 @@ type ValidTypeItem = FusionToggleEventTypeItem | LabelEventTypeItem;
  * Once a user subscribes to a `Topic`, he/she will has an `Alert` object.
  */
 
-export const useNotifiTopics = () => {
+export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
+  children,
+}) => {
   const { inputs } = useNotifiTenantConfig();
   const { frontendClient } = useNotifiClientContext();
   const { render, alerts } = useNotifiSubscriptionContext();
   const [isLoading, setIsLoading] = useState(false);
   const { setGlobalError } = useGlobalStateContext();
-  const { renewTargetGroups, targetGroup } = useNotifiTargets();
+  const { renewTargetGroups, targetGroup } = useNotifiTargetContext();
 
   const subscribeAlert = useCallback(
     (topic: EventTypeItem) => {
@@ -117,6 +136,7 @@ export const useNotifiTopics = () => {
         const result = await frontendClient.ensureFusionAlerts({ alerts });
 
         frontendClient.fetchData().then(render);
+        setIsLoading(false);
         return result;
       } catch (e) {
         setGlobalError(
@@ -135,15 +155,29 @@ export const useNotifiTopics = () => {
     },
     [alerts],
   );
-
-  return {
-    isLoading,
-    subscribeAlert,
-    subscribeFusionAlerts,
-    unsubscribeAlert,
-    isAlertSubscribed,
-  };
+  return (
+    <NotifiTopicContext.Provider
+      value={{
+        isLoading,
+        subscribeAlert,
+        subscribeFusionAlerts,
+        unsubscribeAlert,
+        isAlertSubscribed,
+      }}
+    >
+      {children}
+    </NotifiTopicContext.Provider>
+  );
 };
+
+export const useNotifiTopicContext = () => useContext(NotifiTopicContext);
+
+// Utilities
+export type LabelWithSubTopicsEventTypeItem = LabelEventTypeItem & {
+  subTopics: Array<FusionToggleEventTypeItem>;
+};
+
+type ValidTypeItem = FusionToggleEventTypeItem | LabelEventTypeItem;
 
 const validateEventType = (
   eventType: EventTypeItem,

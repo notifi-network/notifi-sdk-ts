@@ -1,6 +1,9 @@
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
-import { useNotifiTargets } from '@/hooks/useNotifiTargets';
-import { useNotifiTopics, validateTopic } from '@/hooks/useNotifiTopics';
+import { useNotifiTargetContext } from '@/context/NotifiTargetContext';
+import {
+  useNotifiTopicContext,
+  validateTopic,
+} from '@/context/NotifiTopicContext';
 import { useRouterAsync } from '@/hooks/useRouterAsync';
 import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import {
@@ -16,7 +19,7 @@ export type NotifiSignUpButtonProps = Readonly<{
   data: CardConfigItemV1;
 }>;
 
-export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
+export const SignUpButton: React.FC<NotifiSignUpButtonProps> = ({
   buttonText,
   data,
 }) => {
@@ -24,7 +27,7 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
 
   const frontendClientLogin = useFrontendClientLogin();
 
-  const { renewTargetGroups, targetGroup } = useNotifiTargets();
+  const { renewTargetGroups, targetGroup } = useNotifiTargetContext();
 
   const { handleRoute } = useRouterAsync();
 
@@ -33,15 +36,15 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
     frontendClient,
   } = useNotifiClientContext();
 
-  const { loading, useDiscord, render, setLoading, syncFtuStage, useSlack } =
+  const { loading, useDiscord, render, syncFtuStage, useSlack } =
     useNotifiSubscriptionContext();
 
-  const { setIsGlobalLoading, setGlobalError } = useGlobalStateContext();
+  const { setGlobalError } = useGlobalStateContext();
 
   const { formErrorMessages, formState } = useNotifiForm();
 
   const { phoneNumber, telegram: telegramId, email } = formState;
-  const { subscribeFusionAlerts } = useNotifiTopics();
+  const { subscribeFusionAlerts } = useNotifiTopicContext();
 
   const {
     email: emailErrorMessage,
@@ -56,8 +59,6 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
       const data = await frontendClient.fetchData();
       isFirstTimeUser = (data.targetGroup?.length ?? 0) === 0;
     }
-    setIsGlobalLoading(true);
-    setLoading(true);
     try {
       let success = false;
       if (isFirstTimeUser) {
@@ -83,9 +84,6 @@ export const NotifiSignUpButton: React.FC<NotifiSignUpButtonProps> = ({
       setGlobalError('ERROR: Failed to signup, please try again.');
       console.error('Failed to singup', (e as Error).message);
     }
-    // TODO: No need the `loading` from subscriptionContext, that is for card.
-    setIsGlobalLoading(false);
-    setLoading(false);
   }, [
     frontendClient,
     eventTypes,

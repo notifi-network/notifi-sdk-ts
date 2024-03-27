@@ -1,5 +1,5 @@
 import { Icon } from '@/assets/Icon';
-import { useNotifiTargets } from '@/hooks/useNotifiTargets';
+import { useNotifiTargetContext } from '@/context/NotifiTargetContext';
 import {
   useNotifiForm,
   useNotifiSubscriptionContext,
@@ -22,7 +22,7 @@ export const InputFieldDiscord: React.FC<InputFieldDiscordProps> = ({
   const { email: emailErrorMessage, telegram: telegramErrorMessage } =
     formErrorMessages;
   const { useDiscord, setUseDiscord } = useNotifiSubscriptionContext();
-  const { updateTarget } = useNotifiTargets('discord');
+  const { updateTarget } = useNotifiTargetContext();
 
   return (
     <div className="bg-notifi-card-bg rounded-md w-full sm:w-112 h-18 flex flex-row items-center mb-2 gap-3 sm:gap-0">
@@ -43,7 +43,7 @@ export const InputFieldDiscord: React.FC<InputFieldDiscordProps> = ({
           }
           checked={useDiscord}
           onChange={() => {
-            isEditable ? updateTarget() : setUseDiscord(!useDiscord);
+            isEditable ? updateTarget('discord') : setUseDiscord(!useDiscord);
           }}
         />
       </div>

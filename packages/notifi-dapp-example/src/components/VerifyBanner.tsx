@@ -1,6 +1,6 @@
 import { CardView } from '@/app/notifi/dashboard/page';
 import { Icon } from '@/assets/Icon';
-import { useNotifiTargets } from '@/hooks/useNotifiTargets';
+import { useNotifiTargetContext } from '@/context/NotifiTargetContext';
 import React from 'react';
 
 export type VerifyBannerProps = Readonly<{
@@ -10,7 +10,7 @@ export type VerifyBannerProps = Readonly<{
 export const VerifyBanner: React.FC<VerifyBannerProps> = ({
   setCardView,
 }: VerifyBannerProps) => {
-  const { unVerifiedDestinationsString } = useNotifiTargets();
+  const { unVerifiedDestinationsString } = useNotifiTargetContext();
 
   return (
     <div className="flex flex-row justify-between items-center py-2 bg-white mt-4 md:mt-6 rounded-[14px] mx-4 md:mx-0 md:mr-10 shadow-card">

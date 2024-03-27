@@ -1,5 +1,5 @@
 import { Icon } from '@/assets/Icon';
-import { useNotifiTargets } from '@/hooks/useNotifiTargets';
+import { useNotifiTargetContext } from '@/context/NotifiTargetContext';
 import {
   DeepPartialReadonly,
   useNotifiForm,
@@ -27,7 +27,7 @@ export const InputFieldEmail: React.FC<InputFieldEmailProps> = ({
   const { email: emailErrorMessage, telegram: telegramErrorMessage } =
     formErrorMessages;
   const { updateTarget, setHasEmailChanges, hasEmailChanges } =
-    useNotifiTargets('email');
+    useNotifiTargetContext();
 
   const { email } = formState;
 
@@ -88,7 +88,7 @@ export const InputFieldEmail: React.FC<InputFieldEmailProps> = ({
           <button
             className="rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-16 h-7 mb-6 text-sm font-medium absolute top-2.5 right-1 disabled:opacity-50 disabled:hover:bg-notifi-button-primary-blueish-bg hover:bg-notifi-button-hover-bg"
             disabled={telegramErrorMessage !== '' || emailErrorMessage !== ''}
-            onClick={updateTarget}
+            onClick={() => updateTarget('email')}
           >
             <span>Save</span>
           </button>

@@ -1,4 +1,4 @@
-import { LabelWithSubTopicsEventTypeItem } from '@/hooks/useNotifiTopics';
+import { LabelWithSubTopicsEventTypeItem } from '@/context/NotifiTopicContext';
 
 import { AlertSubscriptionRow } from './AlertSubscriptionRow';
 

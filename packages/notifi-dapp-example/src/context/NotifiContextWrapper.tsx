@@ -1,5 +1,3 @@
-'use client';
-
 import { NotifiEnvironment } from '@notifi-network/notifi-frontend-client';
 import { NotifiContext } from '@notifi-network/notifi-react-card';
 import '@notifi-network/notifi-react-card/dist/index.css';
@@ -7,11 +5,15 @@ import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import { getBytes } from 'ethers';
 import React, { PropsWithChildren } from 'react';
 
+import { NotifiTargetContextProvider } from './NotifiTargetContext';
+import { NotifiTenantConfigContextProvider } from './NotifiTenantConfigContext';
+import { NotifiTopicContextProvider } from './NotifiTopicContext';
+
 const tenantId = process.env.NEXT_PUBLIC_TENANT_ID!;
 const env = process.env.NEXT_PUBLIC_ENV! as NotifiEnvironment;
 const walletBlockchain = process.env.NEXT_PUBLIC_CHAIN! as any; // ref:  NotifiParams['walletBlockchain']
 
-export const NotifiContextProvider: React.FC<PropsWithChildren> = ({
+export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
   children,
 }) => {
   const { wallets, selectedWallet } = useWallets();
@@ -50,7 +52,6 @@ export const NotifiContextProvider: React.FC<PropsWithChildren> = ({
       };
       break;
   }
-
   return (
     <NotifiContext
       dappAddress={tenantId}
@@ -60,7 +61,13 @@ export const NotifiContextProvider: React.FC<PropsWithChildren> = ({
       accountAddress={accountAddress}
       signMessage={signMessage}
     >
-      {children}
+      <NotifiTargetContextProvider>
+        <NotifiTopicContextProvider>
+          <NotifiTenantConfigContextProvider>
+            {children}
+          </NotifiTenantConfigContextProvider>
+        </NotifiTopicContextProvider>
+      </NotifiTargetContextProvider>
     </NotifiContext>
   );
 };
