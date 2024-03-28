@@ -1,12 +1,12 @@
+import { useNotifiFrontendClientContext } from '@/context/NotifiFrontendClientContext';
 import { useNotifiTargetContext } from '@/context/NotifiTargetContext';
-import { useNotifiClientContext } from '@notifi-network/notifi-react-card';
 import { useEffect } from 'react';
 
 export const useNotifiTargetListener = () => {
   const {
     frontendClient,
     frontendClientStatus: { isInitialized, isAuthenticated },
-  } = useNotifiClientContext();
+  } = useNotifiFrontendClientContext();
 
   const { refreshTargetDocument } = useNotifiTargetContext();
 

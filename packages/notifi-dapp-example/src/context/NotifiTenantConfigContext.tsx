@@ -1,7 +1,6 @@
 'use client';
 
 import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
-import { useNotifiClientContext } from '@notifi-network/notifi-react-card';
 import {
   FC,
   PropsWithChildren,
@@ -13,6 +12,7 @@ import {
 } from 'react';
 
 import { useGlobalStateContext } from './GlobalStateContext';
+import { useNotifiFrontendClientContext } from './NotifiFrontendClientContext';
 
 export type NotifiTenantConfigContextType = {
   cardConfig: CardConfigItemV1;
@@ -42,7 +42,8 @@ export const NotifiTenantConfigContextProvider: FC<
   PropsWithChildren<NotifiTenantConfigProps>
 > = ({ inputs = {}, children }) => {
   const { setIsGlobalLoading, setGlobalError } = useGlobalStateContext();
-  const { frontendClient, frontendClientStatus } = useNotifiClientContext();
+  const { frontendClient, frontendClientStatus } =
+    useNotifiFrontendClientContext();
 
   const [cardConfig, setCardConfig] = useState<CardConfigItemV1 | null>(null);
   const [ftuStage, setFtuStage] = useState<FtuStage | null>(null);

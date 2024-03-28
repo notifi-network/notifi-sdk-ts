@@ -1,8 +1,8 @@
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
+import { useNotifiFrontendClientContext } from '@/context/NotifiFrontendClientContext';
 import { useNotifiTenantConfig } from '@/context/NotifiTenantConfigContext';
 import { validateEventDetails } from '@/utils/notifiHistoryUtils';
 import { Types } from '@notifi-network/notifi-graphql';
-import { useNotifiClientContext } from '@notifi-network/notifi-react-card';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 type CursorInfo = Readonly<{
@@ -18,7 +18,7 @@ const messagePerPage = 50;
 export const useNotifiHistory = (autoFetchHistoryAndUnreadCount?: boolean) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { popGlobalInfoModal } = useGlobalStateContext();
-  const { frontendClient } = useNotifiClientContext();
+  const { frontendClient } = useNotifiFrontendClientContext();
   const [cursorInfo, setCursorInfo] = useState<CursorInfo>({
     hasNextPage: false,
     endCursor: undefined,

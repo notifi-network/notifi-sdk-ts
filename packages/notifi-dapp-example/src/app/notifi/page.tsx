@@ -6,7 +6,6 @@ import {
   ConfigFactoryInput,
   newFrontendClient,
 } from '@notifi-network/notifi-frontend-client';
-import { useNotifiClientContext } from '@notifi-network/notifi-react-card';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import { getBytes } from 'ethers';
 

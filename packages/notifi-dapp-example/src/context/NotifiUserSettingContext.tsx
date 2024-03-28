@@ -1,4 +1,3 @@
-import { useNotifiClientContext } from '@notifi-network/notifi-react-card';
 import {
   FC,
   PropsWithChildren,
@@ -9,6 +8,7 @@ import {
   useState,
 } from 'react';
 
+import { useNotifiFrontendClientContext } from './NotifiFrontendClientContext';
 import { useNotifiTenantConfig } from './NotifiTenantConfigContext';
 
 export enum FtuStage {
@@ -29,7 +29,8 @@ const NotifiUserSettingContext = createContext<NotifiUserSettingContextType>(
 export const NotifiUserSettingContextProvider: FC<PropsWithChildren> = ({
   children,
 }) => {
-  const { frontendClientStatus, frontendClient } = useNotifiClientContext();
+  const { frontendClientStatus, frontendClient } =
+    useNotifiFrontendClientContext();
   const { cardConfig } = useNotifiTenantConfig();
 
   const [ftuStage, setFtuStage] = useState<FtuStage | null>(null);

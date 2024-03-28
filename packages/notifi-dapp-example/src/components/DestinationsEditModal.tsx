@@ -1,5 +1,5 @@
 import { Icon } from '@/assets/Icon';
-import { CardConfigItemV1 } from '@notifi-network/notifi-react-card';
+import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import React from 'react';
 
 import { InputFields } from './InputFields';

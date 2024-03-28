@@ -1,6 +1,6 @@
 import { Icon } from '@/assets/Icon';
 import { useNotifiTargetContext } from '@/context/NotifiTargetContext';
-import { DeepPartialReadonly } from '@notifi-network/notifi-react-card';
+import { DeepPartialReadonly } from '@/utils/typeUtils';
 import React from 'react';
 
 export type InputFieldEmailProps = Readonly<{
