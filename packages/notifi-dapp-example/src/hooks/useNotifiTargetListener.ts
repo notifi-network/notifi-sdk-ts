@@ -1,7 +1,5 @@
-import {
-  useNotifiClientContext,
-  useNotifiSubscriptionContext,
-} from '@notifi-network/notifi-react-card';
+import { useNotifiTargetContext } from '@/context/NotifiTargetContext';
+import { useNotifiClientContext } from '@notifi-network/notifi-react-card';
 import { useEffect } from 'react';
 
 export const useNotifiTargetListener = () => {
@@ -10,14 +8,14 @@ export const useNotifiTargetListener = () => {
     frontendClientStatus: { isInitialized, isAuthenticated },
   } = useNotifiClientContext();
 
-  const { render } = useNotifiSubscriptionContext();
+  const { refreshTargetDocument } = useNotifiTargetContext();
 
   useEffect(() => {
     const handler = () => {
       if (!isInitialized || !isAuthenticated) {
         return;
       }
-      return frontendClient.fetchData().then(render);
+      return frontendClient.fetchData().then(refreshTargetDocument);
     };
 
     window.addEventListener('focus', handler);

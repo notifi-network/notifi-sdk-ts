@@ -1,9 +1,5 @@
 import { Icon } from '@/assets/Icon';
 import { useNotifiTargetContext } from '@/context/NotifiTargetContext';
-import {
-  useNotifiForm,
-  useNotifiSubscriptionContext,
-} from '@notifi-network/notifi-react-card';
 import React from 'react';
 
 import { Toggle } from './Toggle';
@@ -17,12 +13,14 @@ export const InputFieldDiscord: React.FC<InputFieldDiscordProps> = ({
   disabled,
   isEditable,
 }) => {
-  const { formErrorMessages } = useNotifiForm();
-
-  const { email: emailErrorMessage, telegram: telegramErrorMessage } =
-    formErrorMessages;
-  const { useDiscord, setUseDiscord } = useNotifiSubscriptionContext();
-  const { updateTarget } = useNotifiTargetContext();
+  const {
+    updateTarget,
+    targetDocument: {
+      targetData,
+      targetInputForm: { email, telegram },
+    },
+    updateUseDiscord,
+  } = useNotifiTargetContext();
 
   return (
     <div className="bg-notifi-card-bg rounded-md w-full sm:w-112 h-18 flex flex-row items-center mb-2 gap-3 sm:gap-0">
@@ -38,12 +36,12 @@ export const InputFieldDiscord: React.FC<InputFieldDiscordProps> = ({
       <div className="flex flex-row items-center justify-between w-2/3 sm:w-90 mr-4">
         <div className="text-sm sm:ml-6 ">Discord Bot DM Alerts</div>
         <Toggle
-          disabled={
-            disabled || telegramErrorMessage !== '' || emailErrorMessage !== ''
-          }
-          checked={useDiscord}
+          disabled={disabled || !!telegram.error || !!email.error}
+          checked={targetData.discord.useDiscord}
           onChange={() => {
-            isEditable ? updateTarget('discord') : setUseDiscord(!useDiscord);
+            isEditable
+              ? updateTarget('discord')
+              : updateUseDiscord(!targetData.discord.useDiscord);
           }}
         />
       </div>
