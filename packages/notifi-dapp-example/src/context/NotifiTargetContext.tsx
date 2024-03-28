@@ -1,11 +1,8 @@
 'use client';
 
 import { formatTelegramForSubscription } from '@/utils/stringUtils';
+import { objectKeys } from '@/utils/typeUtils';
 import { Types } from '@notifi-network/notifi-graphql';
-import {
-  useDestinationState,
-  useNotifiClientContext,
-} from '@notifi-network/notifi-react-card';
 import { isValidPhoneNumber } from 'libphonenumber-js';
 import {
   Dispatch,
@@ -21,6 +18,7 @@ import {
 } from 'react';
 
 import { useGlobalStateContext } from './GlobalStateContext';
+import { useNotifiFrontendClientContext } from './NotifiFrontendClientContext';
 
 export type TargetGroupData = {
   name: string;
@@ -78,7 +76,7 @@ export type NotifiTargetContextType = {
   renewTargetGroups: (
     targetGroup: TargetGroupData,
   ) => Promise<Types.TargetGroupFragmentFragment>;
-  unVerifiedDestinationsString: string;
+  unVerifiedTargets: Target[];
   hasEmailChanges: boolean;
   setHasEmailChanges: Dispatch<SetStateAction<boolean>>;
   hasTelegramChanges: boolean;
@@ -101,8 +99,8 @@ const NotifiTargetContext = createContext<NotifiTargetContextType>(
 export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
   children,
 }) => {
-  const { frontendClient, frontendClientStatus } = useNotifiClientContext();
-  const { unverifiedDestinations } = useDestinationState();
+  const { frontendClient, frontendClientStatus } =
+    useNotifiFrontendClientContext();
 
   const { setGlobalError } = useGlobalStateContext();
   const [isLoading, setIsLoading] = useState(false);
@@ -227,26 +225,6 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
     ],
   );
 
-  const unVerifiedDestinationsString = useMemo(() => {
-    const convertedUnVerifiedDestinations = unverifiedDestinations.map(
-      (target) => {
-        switch (target) {
-          case 'telegram':
-            return 'Telegram ID';
-          case 'discord':
-            return 'Discord';
-          case 'phoneNumber':
-            return 'Phone Number';
-          default:
-            return target;
-        }
-      },
-    );
-    return convertedUnVerifiedDestinations.length > 1
-      ? convertedUnVerifiedDestinations.join(' and ')
-      : convertedUnVerifiedDestinations[0];
-  }, [unverifiedDestinations]);
-
   const updateTargetInfoPrompt = (
     type: Target,
     infoPrompt?: TargetInfoPrompt | null,
@@ -343,12 +321,10 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
 
   const refreshEmailTarget = useCallback(
     async (emailTarget?: Types.EmailTargetFragmentFragment) => {
-      // Update target data
       setTargetData((prev) => ({
         ...prev,
         email: emailTarget?.emailAddress ?? '',
       }));
-      // Update info prompts
       if (!!emailTarget && !emailTarget.isConfirmed) {
         updateTargetInfoPrompt('email', {
           type: 'cta',
@@ -367,12 +343,10 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
 
   const refreshSmsTarget = useCallback(
     async (smsTarget?: Types.SmsTargetFragmentFragment) => {
-      // Update target data
       setTargetData((prev) => ({
         ...prev,
         phoneNumber: smsTarget?.phoneNumber ?? '',
       }));
-      // Update info prompts
       if (!!smsTarget?.phoneNumber && !smsTarget?.isConfirmed) {
         updateTargetInfoPrompt('phoneNumber', {
           type: 'error',
@@ -488,6 +462,36 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
     [frontendClient],
   );
 
+  const unVerifiedTargets = useMemo(() => {
+    const {
+      email: emailInfoPrompt,
+      phoneNumber: phoneNumberInfoPrompt,
+      telegram: telegramInfoPrompt,
+      discord: discordInfoPrompt,
+    } = targetInfoPrompts;
+
+    const unConfirmedTargets = {
+      email: emailInfoPrompt?.infoPrompt.type === 'cta',
+      phoneNumber: phoneNumberInfoPrompt?.infoPrompt.type === 'cta',
+      telegram: telegramInfoPrompt?.infoPrompt.type === 'cta',
+      slack:
+        targetData.slack.useSlack &&
+        discordInfoPrompt?.infoPrompt.type === 'cta' &&
+        discordInfoPrompt?.infoPrompt.message === 'Enable Bot',
+      discord:
+        targetData.discord.useDiscord &&
+        discordInfoPrompt?.infoPrompt.type === 'cta' &&
+        discordInfoPrompt?.infoPrompt.message === 'Enable Bot',
+    };
+    return objectKeys(unConfirmedTargets)
+      .map((key) => {
+        if (unConfirmedTargets[key]) {
+          return key;
+        }
+      })
+      .filter((item): item is Target => !!item);
+  }, [targetInfoPrompts, targetData]);
+
   return (
     <NotifiTargetContext.Provider
       value={{
@@ -495,7 +499,7 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
         targetGroup,
         updateTarget,
         renewTargetGroups,
-        unVerifiedDestinationsString,
+        unVerifiedTargets,
         hasEmailChanges,
         setHasEmailChanges,
         hasTelegramChanges,

@@ -10,7 +10,20 @@ export type VerifyBannerProps = Readonly<{
 export const VerifyBanner: React.FC<VerifyBannerProps> = ({
   setCardView,
 }: VerifyBannerProps) => {
-  const { unVerifiedDestinationsString } = useNotifiTargetContext();
+  const { unVerifiedTargets } = useNotifiTargetContext();
+
+  const reformated = unVerifiedTargets.map((target) => {
+    switch (target) {
+      case 'telegram':
+        return 'Telegram ID';
+      case 'discord':
+        return 'Discord';
+      case 'phoneNumber':
+        return 'Phone Number';
+      default:
+        return target;
+    }
+  });
 
   return (
     <div className="flex flex-row justify-between items-center py-2 bg-white mt-4 md:mt-6 rounded-[14px] mx-4 md:mx-0 md:mr-10 shadow-card">
@@ -19,7 +32,7 @@ export const VerifyBanner: React.FC<VerifyBannerProps> = ({
           id="check"
           className="text-notifi-button-primary-blueish-bg mr-3 w-3 mb-0.5"
         />
-        <div>Verify your {unVerifiedDestinationsString}</div>
+        <div>Verify your {reformated}</div>
       </div>
       <button
         onClick={() => setCardView('destination')}

@@ -3,19 +3,19 @@
 import { ConfigAlertModal } from '@/components/ConfigAlertModal';
 import { ConfigDestinationModal } from '@/components/ConfigDestinationModal';
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
+import { useNotifiFrontendClientContext } from '@/context/NotifiFrontendClientContext';
 import {
   FtuStage,
   useNotifiTenantConfig,
 } from '@/context/NotifiTenantConfigContext';
 import { useNotifiUserSettingContext } from '@/context/NotifiUserSettingContext';
 import { useRouterAsync } from '@/hooks/useRouterAsync';
-import { useNotifiClientContext } from '@notifi-network/notifi-react-card';
 import { useEffect } from 'react';
 
 export default function NotifiFTU() {
   const {
     frontendClientStatus: { isInitialized },
-  } = useNotifiClientContext();
+  } = useNotifiFrontendClientContext();
 
   if (!isInitialized) return null;
 

@@ -1,6 +1,6 @@
 import { Icon } from '@/assets/Icon';
 import { useInjectiveWallets } from '@/context/InjectiveWalletContext';
-import { objectKeys } from '@notifi-network/notifi-react-card';
+import { objectKeys } from '@/utils/typeUtils';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import Image from 'next/image';
 import { Dispatch, FC, SetStateAction } from 'react';

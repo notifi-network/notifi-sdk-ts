@@ -6,7 +6,6 @@ import {
   resolveStringRef,
 } from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
-import { useNotifiClientContext } from '@notifi-network/notifi-react-card';
 import {
   FC,
   PropsWithChildren,
@@ -18,6 +17,7 @@ import {
 } from 'react';
 
 import { useGlobalStateContext } from './GlobalStateContext';
+import { useNotifiFrontendClientContext } from './NotifiFrontendClientContext';
 import { useNotifiTargetContext } from './NotifiTargetContext';
 import { useNotifiTenantConfig } from './NotifiTenantConfigContext';
 
@@ -48,7 +48,8 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
   children,
 }) => {
   const { inputs } = useNotifiTenantConfig();
-  const { frontendClient, frontendClientStatus } = useNotifiClientContext();
+  const { frontendClient, frontendClientStatus } =
+    useNotifiFrontendClientContext();
   const [isLoading, setIsLoading] = useState(false);
   const { setGlobalError } = useGlobalStateContext();
   const { renewTargetGroups, targetGroup } = useNotifiTargetContext();

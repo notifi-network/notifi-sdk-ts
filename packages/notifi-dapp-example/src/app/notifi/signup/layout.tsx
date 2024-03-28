@@ -1,8 +1,8 @@
 'use client';
 
 import { PoweredByNotifi } from '@/components/PoweredByNotifi';
+import { useNotifiFrontendClientContext } from '@/context/NotifiFrontendClientContext';
 import { useNotifiRouter } from '@/hooks/useNotifiRouter';
-import { useNotifiClientContext } from '@notifi-network/notifi-react-card';
 import Image from 'next/image';
 
 export default function NotifiSignup({
@@ -14,7 +14,7 @@ export default function NotifiSignup({
 
   const {
     frontendClientStatus: { isInitialized, isAuthenticated },
-  } = useNotifiClientContext();
+  } = useNotifiFrontendClientContext();
   if (!isInitialized || isAuthenticated) return null;
 
   return (

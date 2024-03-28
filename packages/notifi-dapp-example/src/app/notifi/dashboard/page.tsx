@@ -7,7 +7,7 @@ import { DashboardHistory } from '@/components/DashboardHistory';
 import { DashboardSideBar } from '@/components/DashboardSideBar';
 import { VerifyBanner } from '@/components/VerifyBanner';
 import { useInjectiveWallets } from '@/context/InjectiveWalletContext';
-import { useDestinationState } from '@notifi-network/notifi-react-card';
+import { useNotifiTargetContext } from '@/context/NotifiTargetContext';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import Image from 'next/image';
 import { useState } from 'react';
@@ -16,7 +16,7 @@ export type CardView = 'history' | 'destination' | 'alertSubscription';
 
 export default function NotifiDashboard() {
   const [cardView, setCardView] = useState<CardView>('history');
-  const { unverifiedDestinations } = useDestinationState();
+  const { unVerifiedTargets } = useNotifiTargetContext();
   const { selectedWallet, wallets } = useWallets();
   const {
     selectedWallet: selectiedInjectiveWallet,
@@ -73,10 +73,9 @@ export default function NotifiDashboard() {
             unoptimized={true}
           />
         </div>
-        {unverifiedDestinations.length > 0 && cardView === 'history' ? (
+        {unVerifiedTargets.length > 0 && cardView === 'history' ? (
           <VerifyBanner setCardView={setCardView} />
         ) : null}
-        {/* IMPORTANT: Do not remove `min-h-0` , This is to fix the inner card height */}
         <div
           className={`flex flex-col grow bg-white rounded-3xl md:mb-10 mt-3 md:mr-10 ${
             cardView === 'alertSubscription' ? '' : 'min-h-0'

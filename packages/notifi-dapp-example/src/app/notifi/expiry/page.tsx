@@ -3,18 +3,14 @@
 import { DummyAlertsModal } from '@/components/DummyAlertsModal';
 import { EcosystemHero } from '@/components/EcosystemHero';
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
+import { useNotifiFrontendClientContext } from '@/context/NotifiFrontendClientContext';
 import { useRouterAsync } from '@/hooks/useRouterAsync';
-import {
-  useFrontendClientLogin,
-  useNotifiClientContext,
-} from '@notifi-network/notifi-react-card';
 import { useEffect } from 'react';
 
 export default function NotifiExpiry() {
-  const { frontendClientStatus } = useNotifiClientContext();
   const { isLoadingRouter, handleRoute } = useRouterAsync();
   const { popGlobalInfoModal } = useGlobalStateContext();
-  const login = useFrontendClientLogin();
+  const { login, frontendClientStatus } = useNotifiFrontendClientContext();
   useEffect(() => {
     if (!frontendClientStatus.isExpired) {
       handleRoute('/notifi');
