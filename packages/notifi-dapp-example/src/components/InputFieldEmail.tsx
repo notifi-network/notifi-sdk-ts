@@ -1,9 +1,6 @@
 import { Icon } from '@/assets/Icon';
 import { useNotifiTargetContext } from '@/context/NotifiTargetContext';
-import {
-  DeepPartialReadonly,
-  useNotifiForm,
-} from '@notifi-network/notifi-react-card';
+import { DeepPartialReadonly } from '@/utils/typeUtils';
 import React from 'react';
 
 export type InputFieldEmailProps = Readonly<{
@@ -21,32 +18,35 @@ export const InputFieldEmail: React.FC<InputFieldEmailProps> = ({
   disabled,
   isEditable,
 }: InputFieldEmailProps) => {
-  const { formState, formErrorMessages, setEmail, setEmailErrorMessage } =
-    useNotifiForm();
-
-  const { email: emailErrorMessage, telegram: telegramErrorMessage } =
-    formErrorMessages;
-  const { updateTarget, setHasEmailChanges, hasEmailChanges } =
-    useNotifiTargetContext();
-
-  const { email } = formState;
+  const {
+    updateTarget,
+    setHasEmailChanges,
+    hasEmailChanges,
+    updateTargetForms,
+    targetDocument: {
+      targetInputForm: { email, telegram },
+    },
+  } = useNotifiTargetContext();
 
   const validateEmail = () => {
-    if (email === '') {
+    if (email.value === '') {
       return;
     }
-
     const emailRegex = new RegExp(
       '^[a-zA-Z0-9._:$!%-+]+@[a-zA-Z0-9.-]+.[a-zA-Z]$',
     );
-    if (emailRegex.test(email)) {
-      setEmailErrorMessage('');
+    if (emailRegex.test(email.value)) {
+      updateTargetForms('email', email.value);
     } else {
-      setEmailErrorMessage('The email is invalid. Please try again.');
+      updateTargetForms(
+        'email',
+        email.value,
+        'The email is invalid. Please try again.',
+      );
     }
   };
 
-  const hasErrors = emailErrorMessage !== '';
+  const hasErrors = !!email.error;
 
   return (
     <div className="bg-notifi-card-bg rounded-md w-full sm:w-112 h-18 flex flex-row items-center mb-2 gap-2 sm:gap-4">
@@ -67,27 +67,25 @@ export const InputFieldEmail: React.FC<InputFieldEmailProps> = ({
           data-cy="notifiEmailInput"
           onBlur={validateEmail}
           disabled={disabled}
-          onFocus={() => setEmailErrorMessage('')}
+          onFocus={() => updateTargetForms('email', email.value, '')}
           name="notifi-email"
           type="email"
-          value={email}
+          value={email.value}
           onChange={(e) => {
             setHasEmailChanges(true);
-            setEmail(e.target.value ?? '');
+            updateTargetForms('email', e.target.value);
           }}
           placeholder={copy?.placeholder ?? 'Enter your email address'}
         />
         {hasErrors ? (
           <div className="absolute top-[5px] left-[11px] flex flex-col items-start">
-            <p className="text-notifi-error text-xs block">
-              {emailErrorMessage}
-            </p>
+            <p className="text-notifi-error text-xs block">{email.error}</p>
           </div>
         ) : null}
         {isEditable && hasEmailChanges ? (
           <button
             className="rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-16 h-7 mb-6 text-sm font-medium absolute top-2.5 right-1 disabled:opacity-50 disabled:hover:bg-notifi-button-primary-blueish-bg hover:bg-notifi-button-hover-bg"
-            disabled={telegramErrorMessage !== '' || emailErrorMessage !== ''}
+            disabled={!!telegram.error || !!email.error}
             onClick={() => updateTarget('email')}
           >
             <span>Save</span>

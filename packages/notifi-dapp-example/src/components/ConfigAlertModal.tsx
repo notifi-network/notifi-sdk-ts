@@ -1,13 +1,15 @@
 import {
   FtuStage,
-  useNotifiSubscriptionContext,
-} from '@notifi-network/notifi-react-card';
+  useNotifiTenantConfig,
+} from '@/context/NotifiTenantConfigContext';
+import { useNotifiUserSettingContext } from '@/context/NotifiUserSettingContext';
 import React from 'react';
 
 import { AlertSubscription } from './AlertSubscription';
 
 export const ConfigAlertModal = () => {
-  const { updateFtuStage } = useNotifiSubscriptionContext();
+  // const { updateFtuStage } = useNotifiTenantConfig();
+  const { updateFtuStage } = useNotifiUserSettingContext();
 
   return (
     <div className="w-full sm:w-4/6 bg-notifi-container-bg rounded-2xl flex flex-col items-center justify-between mt-[1rem] mb-[2rem]">
