@@ -6,6 +6,7 @@ import {
   FC,
   PropsWithChildren,
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useState,
@@ -15,8 +16,16 @@ import { useGlobalStateContext } from './GlobalStateContext';
 
 export type NotifiTenantConfigContextType = {
   cardConfig: CardConfigItemV1;
-  inputs: Record<string, unknown>;
+  inputs: Record<string, unknown>; // TODO: deprecate for implement?
+  ftuStage: FtuStage | null;
+  updateFtuStage: (ftuConfigStep: FtuStage) => Promise<void>;
 };
+
+export enum FtuStage {
+  Destination = 3,
+  Alerts = 2,
+  Done = 1,
+}
 
 const NotifiTenantConfigContext = createContext<NotifiTenantConfigContextType>(
   {} as NotifiTenantConfigContextType,
@@ -30,14 +39,16 @@ type NotifiTenantConfigProps = {
 };
 
 export const NotifiTenantConfigContextProvider: FC<
-  // TODO: Rename context to NotifiTenantConfigProvider
   PropsWithChildren<NotifiTenantConfigProps>
 > = ({ inputs = {}, children }) => {
-  const { frontendClient } = useNotifiClientContext();
-  const [cardConfig, setCardConfig] = useState<CardConfigItemV1 | null>(null);
   const { setIsGlobalLoading, setGlobalError } = useGlobalStateContext();
+  const { frontendClient, frontendClientStatus } = useNotifiClientContext();
+
+  const [cardConfig, setCardConfig] = useState<CardConfigItemV1 | null>(null);
+  const [ftuStage, setFtuStage] = useState<FtuStage | null>(null);
 
   useEffect(() => {
+    if (!frontendClientStatus.isInitialized) return;
     setIsGlobalLoading(true);
     frontendClient
       .fetchSubscriptionCard({
@@ -46,6 +57,7 @@ export const NotifiTenantConfigContextProvider: FC<
       })
       .then((cardConfig) => {
         if ('version' in cardConfig && cardConfig.version !== 'IntercomV1') {
+          // 1. Update card config
           setCardConfig(cardConfig);
         }
       })
@@ -82,12 +94,37 @@ export const NotifiTenantConfigContextProvider: FC<
     //   .finally(() => setIsGlobalLoading(false));
   }, [frontendClient]);
 
+  useEffect(() => {
+    if (!frontendClientStatus.isAuthenticated) return;
+    frontendClient.getUserSettings().then((userSettings) => {
+      if (!userSettings?.ftuStage) {
+        if (cardConfig?.isContactInfoRequired) {
+          return updateFtuStage(FtuStage.Destination);
+        }
+        return updateFtuStage(FtuStage.Alerts);
+      }
+      setFtuStage(userSettings.ftuStage);
+    });
+  }, [frontendClientStatus.isAuthenticated]);
+
+  const updateFtuStage = useCallback(
+    async (ftuConfigStep: FtuStage) => {
+      await frontendClient.updateUserSettings({
+        input: { ftuStage: ftuConfigStep },
+      });
+      setFtuStage(ftuConfigStep);
+    },
+    [frontendClient?.userState?.status],
+  );
+
   if (!cardConfig) {
     return null;
   }
 
   return (
-    <NotifiTenantConfigContext.Provider value={{ cardConfig, inputs }}>
+    <NotifiTenantConfigContext.Provider
+      value={{ cardConfig, inputs, ftuStage, updateFtuStage }}
+    >
       {children}
     </NotifiTenantConfigContext.Provider>
   );

@@ -43,7 +43,7 @@ export const SignUpButton: React.FC<NotifiSignUpButtonProps> = ({
     frontendClient,
   } = useNotifiClientContext();
 
-  const { loading, syncFtuStage } = useNotifiSubscriptionContext();
+  const { loading } = useNotifiSubscriptionContext();
 
   const { setGlobalError } = useGlobalStateContext();
 
@@ -74,7 +74,6 @@ export const SignUpButton: React.FC<NotifiSignUpButtonProps> = ({
       if (success) {
         const newData = await frontendClient.fetchData();
         refreshTargetDocument(newData);
-        await syncFtuStage(data.isContactInfoRequired);
         handleRoute('/notifi/ftu');
       }
     } catch (e: unknown) {

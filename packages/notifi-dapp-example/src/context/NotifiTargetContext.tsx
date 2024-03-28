@@ -196,7 +196,6 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
         }
 
         if (target === 'slack') {
-          console.log('slack');
           setTargetData((prev) => ({
             ...prev,
             slack: { useSlack: !targetData.slack.useSlack },
@@ -205,7 +204,6 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
             ? 'Default'
             : undefined;
         }
-        console.log({ targetGroup });
         const result = await renewTargetGroups(targetGroup);
         success = !!result;
 

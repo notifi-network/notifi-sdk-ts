@@ -6,16 +6,14 @@ import {
   resolveStringRef,
 } from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
-import {
-  useNotifiClientContext,
-  useNotifiSubscriptionContext,
-} from '@notifi-network/notifi-react-card';
+import { useNotifiClientContext } from '@notifi-network/notifi-react-card';
 import {
   FC,
   PropsWithChildren,
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useState,
 } from 'react';
 
@@ -50,11 +48,18 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
   children,
 }) => {
   const { inputs } = useNotifiTenantConfig();
-  const { frontendClient } = useNotifiClientContext();
-  const { render, alerts } = useNotifiSubscriptionContext();
+  const { frontendClient, frontendClientStatus } = useNotifiClientContext();
   const [isLoading, setIsLoading] = useState(false);
   const { setGlobalError } = useGlobalStateContext();
   const { renewTargetGroups, targetGroup } = useNotifiTargetContext();
+  const [alerts, setAlerts] = useState<
+    Record<string, Types.AlertFragmentFragment>
+  >({});
+
+  useEffect(() => {
+    if (!frontendClientStatus.isAuthenticated) return;
+    frontendClient.fetchData().then(refreshAlerts);
+  }, [frontendClientStatus.isAuthenticated]);
 
   const subscribeAlert = useCallback(
     (topic: EventTypeItem) => {
@@ -62,7 +67,7 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
       frontendClient
         .ensureAlert({ eventType: topic, inputs })
         .then(() => {
-          frontendClient.fetchData().then(render);
+          frontendClient.fetchData().then(refreshAlerts);
         })
         .catch((e) => {
           setGlobalError('ERROR: Fail to subscribe alert, plase try again.');
@@ -81,7 +86,7 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
       frontendClient
         .deleteAlert({ id: alert.id })
         .then(() => {
-          frontendClient.fetchData().then(render);
+          frontendClient.fetchData().then(refreshAlerts);
         })
         .catch((e) => {
           setGlobalError('ERROR: Fail to unsubscribe alert, plase try again.');
@@ -135,7 +140,7 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
         });
         const result = await frontendClient.ensureFusionAlerts({ alerts });
 
-        frontendClient.fetchData().then(render);
+        frontendClient.fetchData().then(refreshAlerts);
         setIsLoading(false);
         return result;
       } catch (e) {
@@ -155,6 +160,17 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
     },
     [alerts],
   );
+
+  const refreshAlerts = (newData: Types.FetchDataQuery) => {
+    const alerts: Record<string, Types.AlertFragmentFragment> = {};
+    newData.alert?.forEach((alert) => {
+      if (alert?.name) {
+        alerts[alert.name] = alert;
+      }
+    });
+    setAlerts(alerts);
+  };
+
   return (
     <NotifiTopicContext.Provider
       value={{
