@@ -1,4 +1,6 @@
 import { LoadingSpinner } from '@/components/LoadingSpinner';
+import { useNotifiTargetContext } from '@/context/NotifiTargetContext';
+import { useNotifiTopicContext } from '@/context/NotifiTopicContext';
 import { useNotifiTargetListener } from '@/hooks/useNotifiTargetListener';
 import {
   CardConfigItemV1,
@@ -17,7 +19,8 @@ export const ConfigDestinationModal: React.FC<ConfigDestinationModalProps> = ({
 }) => {
   useNotifiTargetListener();
   const { updateFtuStage } = useNotifiSubscriptionContext();
-  const { loading } = useNotifiSubscriptionContext();
+  const { isLoading: isLoadingTargets } = useNotifiTargetContext();
+  const { isLoading: isLoadingTopics } = useNotifiTopicContext();
 
   return (
     <div className="w-full sm:min-h-[500px] sm:w-4/6 bg-notifi-container-bg rounded-2xl flex flex-col items-center justify-between mt-[1rem] mb-8 px-4">
@@ -29,7 +32,7 @@ export const ConfigDestinationModal: React.FC<ConfigDestinationModalProps> = ({
           </p>
         </div>
         <div className="flex flex-col items-center justify-center">
-          {loading ? (
+          {isLoadingTargets || isLoadingTopics ? (
             <div>
               <LoadingSpinner />
             </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useNotifiTenantConfig } from '@/context/NotifiTenantConfigContext';
-import { categorizeTopics } from '@/hooks/useNotifiTopics';
+import { categorizeTopics } from '@/context/NotifiTopicContext';
 
 import { AlertSubscriptionBlock } from './AlertSubscriptionBlock';
 

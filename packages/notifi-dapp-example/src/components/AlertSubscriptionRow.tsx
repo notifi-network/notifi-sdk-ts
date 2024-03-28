@@ -1,7 +1,7 @@
 'use client';
 
 import { Icon } from '@/assets/Icon';
-import { useNotifiTopics } from '@/hooks/useNotifiTopics';
+import { useNotifiTopicContext } from '@/context/NotifiTopicContext';
 import { FusionToggleEventTypeItem } from '@notifi-network/notifi-frontend-client';
 
 import { Toggle } from './Toggle';
@@ -16,7 +16,7 @@ export const AlertSubscriptionRow: React.FC<AlertSubscriptionRowProps> = ({
   eventType,
 }) => {
   const { isLoading, subscribeAlert, unsubscribeAlert, isAlertSubscribed } =
-    useNotifiTopics();
+    useNotifiTopicContext();
 
   return (
     <div className="flex justify-between p-3 bg-white  rounded border border-gray-200">

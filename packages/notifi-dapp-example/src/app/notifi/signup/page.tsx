@@ -1,7 +1,7 @@
 'use client';
 
 import { InputFields } from '@/components/InputFields';
-import { NotifiSignUpButton } from '@/components/NotifiSignUpButton';
+import { SignUpButton } from '@/components/SignUpButton';
 import { useNotifiTenantConfig } from '@/context/NotifiTenantConfigContext';
 
 export default function NotifiSignup() {
@@ -26,7 +26,7 @@ export default function NotifiSignup() {
           />
         </div>
       </div>
-      <NotifiSignUpButton data={cardConfig} buttonText="Next" />
+      <SignUpButton data={cardConfig} buttonText="Next" />
     </div>
   );
 }
