@@ -1,8 +1,6 @@
 import { Icon } from '@/assets/Icon';
-import {
-  CardConfigItemV1,
-  useNotifiSubscriptionContext,
-} from '@notifi-network/notifi-react-card';
+import { CtaInfo, useNotifiTargetContext } from '@/context/NotifiTargetContext';
+import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import React, { useCallback, useMemo, useState } from 'react';
 
 import { DestinationInfoPrompt } from './DestinationInfoPrompt';
@@ -32,34 +30,21 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
     useState<boolean>(false);
 
   const {
-    email,
-    telegramId,
-    destinationErrorMessages,
-    useDiscord,
-    discordTargetData,
-    useSlack,
-    slackTargetData,
-  } = useNotifiSubscriptionContext();
-
-  const {
-    telegram: telegramErrorMessage,
-    email: emailErrorMessage,
-    discord: discordErrrorMessage,
-    slack: slackErrrorMessage,
-  } = destinationErrorMessages;
+    targetDocument: { targetInfoPrompts, targetData },
+  } = useNotifiTargetContext();
 
   const handleResendEmailVerificationClick = useCallback(() => {
-    if (emailErrorMessage?.type !== 'recoverableError') return;
+    if (targetInfoPrompts.email?.infoPrompt.type !== 'cta') return;
     setIsEmailConfirmationSent(true);
-    emailErrorMessage.onClick();
+    targetInfoPrompts.email.infoPrompt.onClick();
     setTimeout(() => setIsEmailConfirmationSent(false), 3000);
-  }, [emailErrorMessage]);
+  }, [targetInfoPrompts.email]);
 
   const discordUserName = useMemo(() => {
-    const { username, discriminator } = discordTargetData || {};
+    const { username, discriminator } = targetData.discord.data || {};
 
     return discriminator === '0' ? username : `${username}#${discriminator}`;
-  }, [discordTargetData]);
+  }, [targetData.discord.data]);
 
   const VerifiedText = (
     <div className="font-semibold text-sm text-notifi-success ml-6">
@@ -69,7 +54,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
 
   return (
     <div className="w-full flex flex-col justify-center items-center">
-      {contactInfo.email.active && email ? (
+      {contactInfo.email.active && targetData.email ? (
         <div className="bg-notifi-card-bg rounded-md w-full sm:w-112 h-18 flex flex-row items-center justify-between mb-2">
           <div className="bg-white rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
             <Icon
@@ -81,8 +66,8 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
             <div className="font-medium text-xs mt-2">Email</div>
           </div>
           <div className="flex flex-col items-start justify-between w-3/4 sm:w-90 mr-4">
-            <div className="text-sm ml-6">{email}</div>
-            {emailErrorMessage?.type === 'recoverableError' ? (
+            <div className="text-sm ml-6">{targetData.email}</div>
+            {targetInfoPrompts.email?.infoPrompt.type === 'cta' ? (
               <DestinationInfoPrompt
                 isSent={isEmailConfirmationSent}
                 onClick={() => handleResendEmailVerificationClick()}
@@ -98,7 +83,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
           </div>
         </div>
       ) : null}
-      {contactInfo.telegram.active && telegramId ? (
+      {contactInfo.telegram.active && targetData.telegram ? (
         <div className="bg-notifi-card-bg rounded-md w-full sm:w-112 h-18 flex flex-row items-center justify-between mb-2">
           <div className="bg-white rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
             <Icon
@@ -110,17 +95,17 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
             <div className="font-medium text-xs mt-2">Telegram</div>
           </div>
 
-          {telegramErrorMessage?.type === 'recoverableError' ? (
+          {targetInfoPrompts.telegram?.infoPrompt.type === 'cta' ? (
             <div className="flex flex-row items-center justify-between w-3/4 sm:w-90 mr-4">
-              <div className="text-sm ml-6">{telegramId}</div>
+              <div className="text-sm ml-6">{targetData.telegram}</div>
               <DestinationInfoPrompt
                 isButton={true}
                 buttonCopy="Verify ID"
                 onClick={() => {
-                  telegramErrorMessage?.onClick();
+                  (targetInfoPrompts.telegram?.infoPrompt as CtaInfo).onClick(); // TODO: type
                 }}
                 infoPromptMessage={
-                  telegramErrorMessage?.message ??
+                  targetInfoPrompts.telegram?.infoPrompt.message ??
                   confirmationLabels?.telegram ??
                   ''
                 }
@@ -128,13 +113,14 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
             </div>
           ) : (
             <div className="flex flex-col items-start justify-between w-3/4 sm:w-90 mr-4">
-              <div className="text-sm ml-6">{telegramId}</div>
+              <div className="text-sm ml-6">{targetData.telegram}</div>
               {VerifiedText}
             </div>
           )}
         </div>
       ) : null}
-      {useSlack ? (
+      {targetData.slack.useSlack ? (
+        // {useSlack ? (
         <div className="bg-notifi-card-bg rounded-md w-full sm:w-112 h-18 flex flex-row items-center justify-between mb-2">
           <div className="bg-white rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
             <Icon
@@ -146,24 +132,26 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
             <div className="font-medium text-xs mt-2">Slack</div>
           </div>
 
-          {slackErrrorMessage?.type === 'recoverableError' ? (
+          {targetInfoPrompts.slack?.infoPrompt.type === 'cta' ? (
             <div className="flex flex-row items-center justify-between w-3/4 sm:w-90 mr-4">
               <div className="text-sm ml-6">Slack</div>
               <DestinationInfoPrompt
                 isButton={true}
                 buttonCopy="Enable Bot"
                 onClick={() => {
-                  slackErrrorMessage?.onClick();
+                  (targetInfoPrompts.slack?.infoPrompt as CtaInfo).onClick();
                 }}
-                infoPromptMessage={slackErrrorMessage?.message ?? ''}
+                infoPromptMessage={
+                  targetInfoPrompts.slack?.infoPrompt.message ?? ''
+                }
               />
             </div>
           ) : (
             <div className="flex flex-col items-start justify-between w-3/4 sm:w-90 mr-4">
               <div className="text-sm ml-6">
-                {slackTargetData?.slackChannelName ?? 'Slack'}
+                {targetData.slack.data?.slackChannelName ?? 'Slack'}
               </div>
-              {slackTargetData?.verificationStatus === 'VERIFIED'
+              {targetData.slack.data?.verificationStatus === 'VERIFIED'
                 ? VerifiedText
                 : null}
             </div>
@@ -171,7 +159,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
         </div>
       ) : null}
 
-      {contactInfo?.discord?.active && useDiscord ? (
+      {contactInfo?.discord?.active && targetData.discord.useDiscord ? (
         <div className="bg-notifi-card-bg rounded-md w-full sm:w-112 h-18 flex flex-row items-center justify-between mb-2">
           <div className="bg-white rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
             <Icon
@@ -183,17 +171,17 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
             <div className="font-medium text-xs mt-2">Discord</div>
           </div>
 
-          {discordErrrorMessage?.type === 'recoverableError' ? (
+          {targetInfoPrompts.discord?.infoPrompt.type === 'cta' ? (
             <div className="flex flex-row items-center justify-between w-3/4 sm:w-90 mr-4">
               <div className="text-sm ml-6">Discord Bot DM Alerts</div>
               <DestinationInfoPrompt
                 isButton={true}
-                buttonCopy={discordErrrorMessage.message ?? ''}
+                buttonCopy={targetInfoPrompts.discord?.infoPrompt.message ?? ''}
                 onClick={() => {
-                  discordErrrorMessage?.onClick();
+                  (targetInfoPrompts.discord?.infoPrompt as CtaInfo).onClick(); // TODO: type
                 }}
                 infoPromptMessage={
-                  discordErrrorMessage?.message ??
+                  targetInfoPrompts.discord?.infoPrompt.message ??
                   confirmationLabels?.telegram ??
                   ''
                 }
@@ -202,7 +190,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
           ) : (
             <div className="flex flex-col items-start justify-between w-3/4 sm:w-90 mr-4">
               <div className="text-sm ml-6">
-                {discordTargetData?.isConfirmed === true
+                {targetData.discord.data?.isConfirmed === true
                   ? discordUserName
                   : 'Discord'}
               </div>

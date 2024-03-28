@@ -9,7 +9,6 @@ import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import {
   useFrontendClientLogin,
   useNotifiClientContext,
-  useNotifiForm,
   useNotifiSubscriptionContext,
 } from '@notifi-network/notifi-react-card';
 import React, { useCallback, useMemo } from 'react';
@@ -27,7 +26,15 @@ export const SignUpButton: React.FC<NotifiSignUpButtonProps> = ({
 
   const frontendClientLogin = useFrontendClientLogin();
 
-  const { renewTargetGroups, targetGroup } = useNotifiTargetContext();
+  const {
+    renewTargetGroups,
+    targetGroup,
+    refreshTargetDocument,
+    targetDocument: {
+      targetData: { slack, discord },
+      targetInputForm: { email, phoneNumber, telegram },
+    },
+  } = useNotifiTargetContext();
 
   const { handleRoute } = useRouterAsync();
 
@@ -36,21 +43,11 @@ export const SignUpButton: React.FC<NotifiSignUpButtonProps> = ({
     frontendClient,
   } = useNotifiClientContext();
 
-  const { loading, useDiscord, render, syncFtuStage, useSlack } =
-    useNotifiSubscriptionContext();
+  const { loading, syncFtuStage } = useNotifiSubscriptionContext();
 
   const { setGlobalError } = useGlobalStateContext();
 
-  const { formErrorMessages, formState } = useNotifiForm();
-
-  const { phoneNumber, telegram: telegramId, email } = formState;
   const { subscribeFusionAlerts } = useNotifiTopicContext();
-
-  const {
-    email: emailErrorMessage,
-    phoneNumber: smsErrorMessage,
-    telegram: telegramErrorMessage,
-  } = formErrorMessages;
 
   const onClick = useCallback(async () => {
     let isFirstTimeUser = false;
@@ -76,7 +73,7 @@ export const SignUpButton: React.FC<NotifiSignUpButtonProps> = ({
 
       if (success) {
         const newData = await frontendClient.fetchData();
-        render(newData);
+        refreshTargetDocument(newData);
         await syncFtuStage(data.isContactInfoRequired);
         handleRoute('/notifi/ftu');
       }
@@ -92,21 +89,22 @@ export const SignUpButton: React.FC<NotifiSignUpButtonProps> = ({
     targetGroup,
   ]);
 
-  const hasErrors =
-    emailErrorMessage !== '' ||
-    smsErrorMessage !== '' ||
-    telegramErrorMessage !== '';
+  const hasErrors = !!email.error || !!phoneNumber.error || !!telegram.error;
   const isInputFieldsValid = useMemo(() => {
     return data.isContactInfoRequired
-      ? email || phoneNumber || telegramId || useDiscord || useSlack
+      ? !!email.value ||
+          !!phoneNumber.value ||
+          !!telegram.value ||
+          slack.useSlack ||
+          discord.useDiscord
       : true;
   }, [
     email,
     phoneNumber,
-    telegramId,
-    useDiscord,
+    telegram.value,
+    discord.useDiscord,
     data.isContactInfoRequired,
-    useSlack,
+    slack.useSlack,
   ]);
 
   return (
