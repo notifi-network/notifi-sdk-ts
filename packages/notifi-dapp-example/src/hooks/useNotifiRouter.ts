@@ -1,10 +1,9 @@
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
-import { useNotifiTenantConfig } from '@/context/NotifiTenantConfigContext';
 import {
-  FtuStage,
-  useNotifiClientContext,
-  useNotifiSubscriptionContext,
-} from '@notifi-network/notifi-react-card';
+  FtuStage, // useNotifiTenantConfig,
+} from '@/context/NotifiTenantConfigContext';
+import { useNotifiUserSettingContext } from '@/context/NotifiUserSettingContext';
+import { useNotifiClientContext } from '@notifi-network/notifi-react-card';
 import { useEffect, useMemo } from 'react';
 
 import { useRouterAsync } from './useRouterAsync';
@@ -16,19 +15,8 @@ export const useNotifiRouter = () => {
   }, [frontendClientStatus]);
   const { handleRoute, isLoadingRouter } = useRouterAsync();
   const { setIsGlobalLoading } = useGlobalStateContext();
-
-  const { ftuStage, syncFtuStage } = useNotifiSubscriptionContext();
-  const { cardConfig } = useNotifiTenantConfig();
-  useEffect(() => {
-    if (frontendClientStatus.isAuthenticated) {
-      syncFtuStage(cardConfig.isContactInfoRequired);
-    }
-  }, [
-    frontendClientStatus.isAuthenticated,
-    cardConfig.isContactInfoRequired,
-    syncFtuStage,
-    setIsGlobalLoading,
-  ]);
+  const { ftuStage } = useNotifiUserSettingContext();
+  // const { ftuStage } = useNotifiTenantConfig();
 
   useEffect(() => {
     if (frontendClientStatus.isExpired) {

@@ -9,6 +9,7 @@ import { useInjectiveWallets } from './InjectiveWalletContext';
 import { NotifiTargetContextProvider } from './NotifiTargetContext';
 import { NotifiTenantConfigContextProvider } from './NotifiTenantConfigContext';
 import { NotifiTopicContextProvider } from './NotifiTopicContext';
+import { NotifiUserSettingContextProvider } from './NotifiUserSettingContext';
 
 const tenantId = process.env.NEXT_PUBLIC_TENANT_ID!;
 const env = process.env.NEXT_PUBLIC_ENV! as NotifiEnvironment;
@@ -105,13 +106,15 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
       //the type error can be fixed when we remove injecive wallet and use only notifi wallet
       signMessage={signMessage}
     >
-      <NotifiTargetContextProvider>
-        <NotifiTopicContextProvider>
-          <NotifiTenantConfigContextProvider>
-            {children}
-          </NotifiTenantConfigContextProvider>
-        </NotifiTopicContextProvider>
-      </NotifiTargetContextProvider>
+      <NotifiTenantConfigContextProvider>
+        <NotifiTargetContextProvider>
+          <NotifiTopicContextProvider>
+            <NotifiUserSettingContextProvider>
+              {children}
+            </NotifiUserSettingContextProvider>
+          </NotifiTopicContextProvider>
+        </NotifiTargetContextProvider>
+      </NotifiTenantConfigContextProvider>
     </NotifiContext>
   );
 };

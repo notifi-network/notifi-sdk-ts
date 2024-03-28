@@ -1,12 +1,12 @@
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { useNotifiTargetContext } from '@/context/NotifiTargetContext';
-import { useNotifiTopicContext } from '@/context/NotifiTopicContext';
-import { useNotifiTargetListener } from '@/hooks/useNotifiTargetListener';
 import {
-  CardConfigItemV1,
-  FtuStage,
-  useNotifiSubscriptionContext,
-} from '@notifi-network/notifi-react-card';
+  FtuStage, // useNotifiTenantConfig,
+} from '@/context/NotifiTenantConfigContext';
+import { useNotifiTopicContext } from '@/context/NotifiTopicContext';
+import { useNotifiUserSettingContext } from '@/context/NotifiUserSettingContext';
+import { useNotifiTargetListener } from '@/hooks/useNotifiTargetListener';
+import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import React from 'react';
 
 import { DestinationPanel } from './DestinationPanel';
@@ -18,9 +18,10 @@ export const ConfigDestinationModal: React.FC<ConfigDestinationModalProps> = ({
   contactInfo,
 }) => {
   useNotifiTargetListener();
-  const { updateFtuStage } = useNotifiSubscriptionContext();
   const { isLoading: isLoadingTargets } = useNotifiTargetContext();
   const { isLoading: isLoadingTopics } = useNotifiTopicContext();
+  // const { updateFtuStage } = useNotifiTenantConfig();
+  const { updateFtuStage } = useNotifiUserSettingContext();
 
   return (
     <div className="w-full sm:min-h-[500px] sm:w-4/6 bg-notifi-container-bg rounded-2xl flex flex-col items-center justify-between mt-[1rem] mb-8 px-4">
