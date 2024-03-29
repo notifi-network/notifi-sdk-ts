@@ -25,13 +25,6 @@ export default function Home() {
     ...wallets,
     ...injectiveWallets,
   };
-  console.log('allWallets', allWallets);
-  console.log(
-    'asdfa',
-    !Object.values(allWallets)
-      .map((wallet) => wallet.isInstalled)
-      .includes(true),
-  );
 
   useEffect(() => {
     if (

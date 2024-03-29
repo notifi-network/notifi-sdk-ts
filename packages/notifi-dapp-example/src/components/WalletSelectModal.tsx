@@ -34,7 +34,7 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
         onClick={() => setIsOpenWalletsModal(false)}
       ></div>
       <div
-        className={`flex flex-col fixed w-90 h-72 md:w-[40rem] md:h-80 border border-gray-700/50 bg-white rounded-xl ${
+        className={`flex flex-col fixed w-90 min-h-72 md:min-w-[40rem] md:h-80 border border-gray-700/50 bg-white rounded-xl ${
           Object.values(allWallets)
             .map((wallet) => wallet.isInstalled)
             .includes(true)
@@ -50,7 +50,7 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
           className="absolute right-8 top-8 text-gray-500 cursor-pointer"
           onClick={() => setIsOpenWalletsModal(false)}
         />
-        <div className="flex grow gap-6 px-5 justify-center items-center">
+        <div className="flex grow gap-6 p-5 justify-center items-center flex-wrap">
           {objectKeys(wallets)
             .filter((wallet) => wallets[wallet].isInstalled)
             .map((wallet) => {

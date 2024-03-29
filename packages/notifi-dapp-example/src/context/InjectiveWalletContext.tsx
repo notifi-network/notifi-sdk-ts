@@ -72,7 +72,7 @@ export const InjectiveWalletProvider: React.FC<PropsWithChildren> = ({
       const accounts = await injectiveLeapWallet.getAddresses();
       const walletKeys = {
         bech32: accounts[0],
-        base64: Buffer.from(key).toString('base64'),
+        base64: key,
       };
       selectWallet('leap');
       setWalletKeysLeap(walletKeys);
@@ -149,8 +149,9 @@ export const InjectiveWalletProvider: React.FC<PropsWithChildren> = ({
       }
       setIsLoading(true);
       try {
+        const accounts = await injectivePhantomWallet.getAddresses();
         const result = await injectivePhantomWallet.signArbitrary(
-          walletKeysPhantom.bech32,
+          accounts[0],
           message,
         );
         return result;
@@ -225,7 +226,7 @@ export const InjectiveWalletProvider: React.FC<PropsWithChildren> = ({
       Object.keys(wallets).includes(selectedWallet)
     ) {
       const walletName = storageWallet.walletName;
-      (wallets as { [key: string]: any })[storageWallet.walletName]
+      wallets[storageWallet.walletName]
         .connect()
         .then(() => selectWallet(walletName));
     }

@@ -49,7 +49,7 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
       case 'metamask':
         walletPublicKey = wallets[selectedWallet].walletKeys?.hex ?? '';
         if (!walletPublicKey) throw new Error('ERROR: invalid walletPublicKey');
-        signMessage = async (message: Uint8Array) => {
+        signMessage = async (message: Uint8Array): Promise<Uint8Array> => {
           const messageString = Buffer.from(message).toString('utf8');
           const result = await wallets[selectedWallet].signArbitrary(
             messageString,
@@ -58,8 +58,6 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
           return getBytes(result);
         };
         break;
-      default:
-        return null;
     }
   }
   if (injectiveSelectedWallet) {
@@ -70,13 +68,11 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
         walletPublicKey =
           injectiveWallets[injectiveSelectedWallet].walletKeys?.base64 ?? '';
         if (!walletPublicKey) throw new Error('ERROR: invalid walletPublicKey');
-        signMessage = async (message: Uint8Array) => {
+        signMessage = async (message: Uint8Array): Promise<Uint8Array> => {
           const str = new TextDecoder().decode(message);
-          console.log('str', str);
           const result = await injectiveWallets[
             injectiveSelectedWallet
           ].signArbitrary(str);
-
           if (!result) throw new Error('ERROR: invalid signature');
           return Buffer.from(result, 'base64');
         };
@@ -85,7 +81,7 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
         walletPublicKey =
           injectiveWallets[injectiveSelectedWallet].walletKeys?.hex ?? '';
         if (!walletPublicKey) throw new Error('ERROR: invalid walletPublicKey');
-        signMessage = async (message: Uint8Array) => {
+        signMessage = async (message: Uint8Array): Promise<Uint8Array> => {
           const str = new TextDecoder().decode(message);
           const result = await injectiveWallets[
             injectiveSelectedWallet
@@ -95,8 +91,6 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
           return Buffer.from(result, 'base64');
         };
         break;
-      default:
-        return null;
     }
   }
   return (
@@ -106,6 +100,9 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
       env={env}
       walletPublicKey={walletPublicKey}
       accountAddress={accountAddress}
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      //the type error can be fixed when we remove injecive wallet and use only notifi wallet
       signMessage={signMessage}
     >
       <NotifiTargetContextProvider>
