@@ -1,8 +1,6 @@
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { useNotifiTargetContext } from '@/context/NotifiTargetContext';
-import {
-  FtuStage, // useNotifiTenantConfig,
-} from '@/context/NotifiTenantConfigContext';
+import { FtuStage } from '@/context/NotifiTenantConfigContext';
 import { useNotifiTopicContext } from '@/context/NotifiTopicContext';
 import { useNotifiUserSettingContext } from '@/context/NotifiUserSettingContext';
 import { useNotifiTargetListener } from '@/hooks/useNotifiTargetListener';
@@ -20,7 +18,6 @@ export const ConfigDestinationModal: React.FC<ConfigDestinationModalProps> = ({
   useNotifiTargetListener();
   const { isLoading: isLoadingTargets } = useNotifiTargetContext();
   const { isLoading: isLoadingTopics } = useNotifiTopicContext();
-  // const { updateFtuStage } = useNotifiTenantConfig();
   const { updateFtuStage } = useNotifiUserSettingContext();
 
   return (

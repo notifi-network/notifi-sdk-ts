@@ -50,6 +50,9 @@ export type TargetInfo = {
 
 export type TargetInfoPrompt = CtaInfo | ErrorInfo;
 
+export const isCtaInfo = (info: TargetInfoPrompt): info is CtaInfo =>
+  'onClick' in info;
+
 export type CtaInfo = {
   type: 'cta';
   message: string;

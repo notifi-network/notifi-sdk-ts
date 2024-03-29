@@ -1,14 +1,10 @@
-import {
-  FtuStage,
-  useNotifiTenantConfig,
-} from '@/context/NotifiTenantConfigContext';
+import { FtuStage } from '@/context/NotifiTenantConfigContext';
 import { useNotifiUserSettingContext } from '@/context/NotifiUserSettingContext';
 import React from 'react';
 
 import { AlertSubscription } from './AlertSubscription';
 
 export const ConfigAlertModal = () => {
-  // const { updateFtuStage } = useNotifiTenantConfig();
   const { updateFtuStage } = useNotifiUserSettingContext();
 
   return (

@@ -1,5 +1,9 @@
 import { Icon } from '@/assets/Icon';
-import { CtaInfo, useNotifiTargetContext } from '@/context/NotifiTargetContext';
+import {
+  CtaInfo,
+  isCtaInfo,
+  useNotifiTargetContext,
+} from '@/context/NotifiTargetContext';
 import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import React, { useCallback, useMemo, useState } from 'react';
 
@@ -102,7 +106,8 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
                 isButton={true}
                 buttonCopy="Verify ID"
                 onClick={() => {
-                  (targetInfoPrompts.telegram?.infoPrompt as CtaInfo).onClick(); // TODO: type
+                  const infoPrompt = targetInfoPrompts.telegram?.infoPrompt;
+                  if (infoPrompt && isCtaInfo(infoPrompt)) infoPrompt.onClick();
                 }}
                 infoPromptMessage={
                   targetInfoPrompts.telegram?.infoPrompt.message ??
@@ -120,7 +125,6 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
         </div>
       ) : null}
       {targetData.slack.useSlack ? (
-        // {useSlack ? (
         <div className="bg-notifi-card-bg rounded-md w-full sm:w-112 h-18 flex flex-row items-center justify-between mb-2">
           <div className="bg-white rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
             <Icon
@@ -178,7 +182,8 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
                 isButton={true}
                 buttonCopy={targetInfoPrompts.discord?.infoPrompt.message ?? ''}
                 onClick={() => {
-                  (targetInfoPrompts.discord?.infoPrompt as CtaInfo).onClick(); // TODO: type
+                  const infoPrompt = targetInfoPrompts.discord?.infoPrompt;
+                  if (infoPrompt && isCtaInfo(infoPrompt)) infoPrompt.onClick();
                 }}
                 infoPromptMessage={
                   targetInfoPrompts.discord?.infoPrompt.message ??

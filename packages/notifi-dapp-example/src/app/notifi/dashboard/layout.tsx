@@ -1,10 +1,7 @@
 'use client';
 
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
-import {
-  FtuStage,
-  useNotifiTenantConfig,
-} from '@/context/NotifiTenantConfigContext';
+import { FtuStage } from '@/context/NotifiTenantConfigContext';
 import { useNotifiUserSettingContext } from '@/context/NotifiUserSettingContext';
 import { useNotifiRouter } from '@/hooks/useNotifiRouter';
 import { useRouterAsync } from '@/hooks/useRouterAsync';
@@ -17,7 +14,6 @@ export default function NotifiDashboardLayout({
 }) {
   const { setIsGlobalLoading } = useGlobalStateContext();
   const { handleRoute } = useRouterAsync();
-  // const { ftuStage } = useNotifiTenantConfig();
   const { ftuStage } = useNotifiUserSettingContext();
   useNotifiRouter();
 
