@@ -14,7 +14,7 @@ export type WalletKeysBase = {
 };
 
 export type LeapWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'base64'>;
-export type PhantomWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'base64'>;
+export type PhantomWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'hex'>;
 
 export type WalletKeys = LeapWalletKeys | PhantomWalletKeys;
 
@@ -50,8 +50,8 @@ export class PhantomWallet implements NotifiWallet {
   constructor(
     public isInstalled: boolean,
     public walletKeys: PhantomWalletKeys | null,
-    public signArbitrary: LeapSignMessage,
-    public connect: () => Promise<LeapWalletKeys | null>,
+    public signArbitrary: PhantomSignMessage,
+    public connect: () => Promise<PhantomWalletKeys | null>,
     public disconnect: () => void,
   ) {}
 }

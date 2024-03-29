@@ -2,7 +2,6 @@ import {
   InjectiveWallets,
   LeapWalletKeys,
   NotifiWalletStorage,
-  PhantomSignMessage,
   PhantomWalletKeys,
 } from './types';
 

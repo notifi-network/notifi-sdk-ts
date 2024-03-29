@@ -102,7 +102,7 @@ export const InjectiveWalletProvider: React.FC<PropsWithChildren> = ({
       const accounts = await injectivePhantomWallet.getAddresses();
       const walletKeys = {
         bech32: converter('inj').toBech32(accounts[0]),
-        base64: Buffer.from(accounts[0]).toString('base64'),
+        hex: accounts[0],
       };
       selectWallet('phantom');
       setWalletKeysPhantom(walletKeys);
