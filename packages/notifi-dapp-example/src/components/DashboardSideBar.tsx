@@ -2,6 +2,7 @@
 
 import { CardView } from '@/app/notifi/dashboard/page';
 import { Icon } from '@/assets/Icon';
+import { useInjectiveWallets } from '@/context/InjectiveWalletContext';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import Image from 'next/image';
 import { Dispatch, FC, SetStateAction, useState } from 'react';
@@ -22,6 +23,8 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
   setIsOpen,
 }) => {
   const { wallets, selectedWallet } = useWallets();
+  const { wallets: injectiveWallets, selectedWallet: injectiveSelectedWallet } =
+    useInjectiveWallets();
   const [isWalletMenuOpen, setIsWalletMenuOpen] = useState<boolean>(false);
 
   return (
@@ -139,8 +142,13 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
               <div
                 className={`flex px-4 text-notifi-tab-unselected-text w-64 py-2 bg-white`}
                 onClick={() => {
-                  if (!selectedWallet) return;
-                  wallets[selectedWallet].disconnect();
+                  if (!selectedWallet && !injectiveSelectedWallet) return;
+                  if (selectedWallet) {
+                    wallets[selectedWallet].disconnect();
+                  }
+                  if (injectiveSelectedWallet) {
+                    injectiveWallets[injectiveSelectedWallet].disconnect();
+                  }
                 }}
               >
                 <Icon id={'leave'} className={`text-notifi-icon-unselected`} />

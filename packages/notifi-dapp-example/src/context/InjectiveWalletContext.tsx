@@ -167,14 +167,14 @@ export const InjectiveWalletProvider: React.FC<PropsWithChildren> = ({
   );
 
   const disconnectLeapWallet = useCallback(async () => {
-    injectiveLeapWallet.disconnect;
+    injectiveLeapWallet.disconnect();
     selectWallet(null);
     setWalletKeysLeap(null);
     cleanWalletsInLocalStorage();
   }, []);
 
   const disconnectPhantomWallet = useCallback(async () => {
-    injectivePhantomWallet.disconnect;
+    injectivePhantomWallet.disconnect();
     selectWallet(null);
     setWalletKeysLeap(null);
     cleanWalletsInLocalStorage();
@@ -196,7 +196,6 @@ export const InjectiveWalletProvider: React.FC<PropsWithChildren> = ({
     chainId: ChainId.Mainnet,
     ethereumOptions: {
       ethereumChainId: EthereumChainId.Mainnet,
-      // rpcUrl: alchemyRpcEndpoint
     },
     wallet: Wallet.Phantom,
   });
@@ -220,15 +219,13 @@ export const InjectiveWalletProvider: React.FC<PropsWithChildren> = ({
 
   useEffect(() => {
     const storageWallet = getWalletsFromLocalStorage();
-    if (
-      storageWallet &&
-      selectedWallet &&
-      Object.keys(wallets).includes(selectedWallet)
-    ) {
+    if (storageWallet) {
       const walletName = storageWallet.walletName;
-      wallets[storageWallet.walletName]
-        .connect()
-        .then(() => selectWallet(walletName));
+      if (Object.keys(wallets).includes(walletName)) {
+        wallets[storageWallet.walletName]
+          .connect()
+          .then(() => selectWallet(walletName));
+      }
     }
   }, []);
 

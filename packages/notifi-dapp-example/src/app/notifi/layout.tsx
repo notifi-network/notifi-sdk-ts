@@ -25,6 +25,6 @@ export default function NotifiSingupLayout({
     ) {
       router.push('/');
     }
-  }, [selectedWallet]);
+  }, [selectedWallet, injectiveWallets]);
   return <NotifiContextWrapper>{children}</NotifiContextWrapper>;
 }

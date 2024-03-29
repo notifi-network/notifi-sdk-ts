@@ -73,16 +73,13 @@ export const NotifiWalletProvider: React.FC<PropsWithChildren> = ({
 
   useEffect(() => {
     const storageWallet = getWalletsFromLocalStorage();
-    // adding selectedWallet && Object.keys(wallets).includes(selectedWallet) condition incase for the error here when select injective wallets, should remove the condition when we remove the injective wallets
-    if (
-      storageWallet &&
-      selectedWallet &&
-      Object.keys(wallets).includes(selectedWallet)
-    ) {
+    if (storageWallet) {
       const walletName = storageWallet.walletName;
-      wallets[storageWallet.walletName]
-        .connect()
-        .then(() => selectWallet(walletName));
+      if (Object.keys(wallets).includes(walletName)) {
+        wallets[storageWallet.walletName]
+          .connect()
+          .then(() => selectWallet(walletName));
+      }
     }
   }, []);
 
