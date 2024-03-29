@@ -73,7 +73,11 @@ export const NotifiWalletProvider: React.FC<PropsWithChildren> = ({
 
   useEffect(() => {
     const storageWallet = getWalletsFromLocalStorage();
-    if (storageWallet) {
+    if (
+      storageWallet &&
+      selectedWallet &&
+      Object.keys(wallets).includes(selectedWallet)
+    ) {
       const walletName = storageWallet.walletName;
       console.log('connecting wallet', wallets[storageWallet.walletName]);
       wallets[storageWallet.walletName]

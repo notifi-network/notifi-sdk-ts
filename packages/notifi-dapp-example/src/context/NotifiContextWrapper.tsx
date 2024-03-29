@@ -5,6 +5,7 @@ import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import { getBytes } from 'ethers';
 import React, { PropsWithChildren } from 'react';
 
+import { useInjectiveWallets } from './InjectiveWalletContext';
 import { NotifiTargetContextProvider } from './NotifiTargetContext';
 import { NotifiTenantConfigContextProvider } from './NotifiTenantConfigContext';
 import { NotifiTopicContextProvider } from './NotifiTopicContext';
@@ -17,40 +18,86 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
   children,
 }) => {
   const { wallets, selectedWallet } = useWallets();
+  const { wallets: injectiveWallets, selectedWallet: injectiveSelectedWallet } =
+    useInjectiveWallets();
 
   if (
-    !selectedWallet ||
-    !wallets[selectedWallet].walletKeys ||
-    !wallets[selectedWallet].signArbitrary
+    (!selectedWallet ||
+      !wallets[selectedWallet].walletKeys ||
+      !wallets[selectedWallet].signArbitrary) &&
+    (!injectiveSelectedWallet ||
+      !injectiveWallets[injectiveSelectedWallet].walletKeys ||
+      !injectiveWallets[injectiveSelectedWallet].signArbitrary)
   )
     return null;
-
-  const accountAddress = wallets[selectedWallet].walletKeys?.bech32;
-  let walletPublicKey: string | undefined = undefined;
+  let accountAddress = '';
+  let walletPublicKey = '';
   let signMessage;
-  switch (selectedWallet) {
-    case 'keplr':
-      walletPublicKey = wallets[selectedWallet].walletKeys?.base64;
-      if (!walletPublicKey) throw new Error('ERROR: invalid walletPublicKey');
-      signMessage = async (message: Uint8Array): Promise<Uint8Array> => {
-        const result = await wallets[selectedWallet].signArbitrary(message);
+  if (selectedWallet) {
+    accountAddress = wallets[selectedWallet].walletKeys?.bech32 ?? '';
+    switch (selectedWallet) {
+      case 'keplr':
+        walletPublicKey = wallets[selectedWallet].walletKeys?.base64 ?? '';
+        if (!walletPublicKey) throw new Error('ERROR: invalid walletPublicKey');
+        signMessage = async (message: Uint8Array): Promise<Uint8Array> => {
+          const result = await wallets[selectedWallet].signArbitrary(message);
 
-        if (!result) throw new Error('ERROR: invalid signature');
-        return Buffer.from(result.signature, 'base64');
-      };
-      break;
-    case 'metamask':
-      walletPublicKey = wallets[selectedWallet].walletKeys?.hex;
-      if (!walletPublicKey) throw new Error('ERROR: invalid walletPublicKey');
-      signMessage = async (message: Uint8Array) => {
-        const messageString = Buffer.from(message).toString('utf8');
-        const result = await wallets[selectedWallet].signArbitrary(
-          messageString,
-        );
-        if (!result) throw new Error('ERROR: invalid signature');
-        return getBytes(result);
-      };
-      break;
+          if (!result) throw new Error('ERROR: invalid signature');
+          return Buffer.from(result.signature, 'base64');
+        };
+        break;
+      case 'metamask':
+        walletPublicKey = wallets[selectedWallet].walletKeys?.hex ?? '';
+        if (!walletPublicKey) throw new Error('ERROR: invalid walletPublicKey');
+        signMessage = async (message: Uint8Array) => {
+          const messageString = Buffer.from(message).toString('utf8');
+          const result = await wallets[selectedWallet].signArbitrary(
+            messageString,
+          );
+          if (!result) throw new Error('ERROR: invalid signature');
+          return getBytes(result);
+        };
+        break;
+      default:
+        return null;
+    }
+  }
+  if (injectiveSelectedWallet) {
+    accountAddress =
+      injectiveWallets[injectiveSelectedWallet].walletKeys?.bech32 ?? '';
+    switch (injectiveSelectedWallet) {
+      case 'leap':
+        walletPublicKey =
+          injectiveWallets[injectiveSelectedWallet].walletKeys?.base64 ?? '';
+        if (!walletPublicKey) throw new Error('ERROR: invalid walletPublicKey');
+        signMessage = async (message: Uint8Array): Promise<Uint8Array> => {
+          const str = new TextDecoder().decode(message);
+          console.log('str', str);
+          const result = await injectiveWallets[
+            injectiveSelectedWallet
+          ].signArbitrary(str);
+
+          if (!result) throw new Error('ERROR: invalid signature');
+          return Buffer.from(result, 'base64');
+        };
+        break;
+      case 'phantom':
+        walletPublicKey =
+          injectiveWallets[injectiveSelectedWallet].walletKeys?.base64 ?? '';
+        if (!walletPublicKey) throw new Error('ERROR: invalid walletPublicKey');
+        signMessage = async (message: Uint8Array): Promise<Uint8Array> => {
+          const str = new TextDecoder().decode(message);
+          const result = await injectiveWallets[
+            injectiveSelectedWallet
+          ].signArbitrary(str);
+
+          if (!result) throw new Error('ERROR: invalid signature');
+          return Buffer.from(result, 'base64');
+        };
+        break;
+      default:
+        return null;
+    }
   }
   return (
     <NotifiContext

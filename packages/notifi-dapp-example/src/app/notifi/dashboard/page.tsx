@@ -9,7 +9,7 @@ import { VerifyBanner } from '@/components/VerifyBanner';
 import { useDestinationState } from '@notifi-network/notifi-react-card';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 export type CardView = 'history' | 'destination' | 'alertSubscription';
 

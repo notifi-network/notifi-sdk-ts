@@ -1,5 +1,6 @@
 'use client';
 
+import { useInjectiveWallets } from '@/context/InjectiveWalletContext';
 import { NotifiContextWrapper } from '@/context/NotifiContextWrapper';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import { useRouter } from 'next/navigation';
@@ -11,11 +12,17 @@ export default function NotifiSingupLayout({
   children: React.ReactNode;
 }) {
   const { wallets, selectedWallet } = useWallets();
+  const { selectedWallet: injectiveSelectedWallet, wallets: injectiveWallets } =
+    useInjectiveWallets();
 
   const router = useRouter();
 
   useEffect(() => {
-    if (!selectedWallet || !wallets[selectedWallet].walletKeys) {
+    if (
+      (!selectedWallet || !wallets[selectedWallet].walletKeys) &&
+      (!injectiveSelectedWallet ||
+        !injectiveWallets[injectiveSelectedWallet].walletKeys)
+    ) {
       router.push('/');
     }
   }, [selectedWallet]);
