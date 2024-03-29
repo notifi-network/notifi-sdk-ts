@@ -3,7 +3,7 @@
 import {
   cleanWalletsInLocalStorage,
   getWalletsFromLocalStorage,
-  setWalletKeysToLocalStorage,
+  setInjWalletKeysToLocalStorage,
 } from '@/utils/localStorageUtils';
 import {
   InjectiveWallets,
@@ -76,7 +76,7 @@ export const InjectiveWalletProvider: React.FC<PropsWithChildren> = ({
       };
       selectWallet('leap');
       setWalletKeysLeap(walletKeys);
-      setWalletKeysToLocalStorage('leap', walletKeys);
+      setInjWalletKeysToLocalStorage('leap', walletKeys);
       setIsLoading(false);
       return walletKeys;
     } catch (e) {
@@ -106,7 +106,7 @@ export const InjectiveWalletProvider: React.FC<PropsWithChildren> = ({
       };
       selectWallet('phantom');
       setWalletKeysPhantom(walletKeys);
-      setWalletKeysToLocalStorage('phantom', walletKeys);
+      setInjWalletKeysToLocalStorage('phantom', walletKeys);
       setIsLoading(false);
       return walletKeys;
     } catch (e) {

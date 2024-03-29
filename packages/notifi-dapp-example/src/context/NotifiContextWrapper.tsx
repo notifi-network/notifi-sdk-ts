@@ -22,12 +22,12 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
     useInjectiveWallets();
 
   if (
-    !selectedWallet ||
-    !wallets[selectedWallet].walletKeys ||
-    !wallets[selectedWallet].signArbitrary ||
-    !injectiveSelectedWallet ||
-    !injectiveWallets[injectiveSelectedWallet].walletKeys ||
-    !injectiveWallets[injectiveSelectedWallet].signArbitrary
+    (!selectedWallet ||
+      !wallets[selectedWallet].walletKeys ||
+      !wallets[selectedWallet].signArbitrary) &&
+    (!injectiveSelectedWallet ||
+      !injectiveWallets[injectiveSelectedWallet].walletKeys ||
+      !injectiveWallets[injectiveSelectedWallet].signArbitrary)
   )
     return null;
   let accountAddress = '';
@@ -70,7 +70,7 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
         walletPublicKey =
           injectiveWallets[injectiveSelectedWallet].walletKeys?.base64 ?? '';
         if (!walletPublicKey) throw new Error('ERROR: invalid walletPublicKey');
-        signMessage = async (message: Uint8Array): Promise<Uint8Array> => {
+        signMessage = async (message: Uint8Array) => {
           const str = new TextDecoder().decode(message);
           console.log('str', str);
           const result = await injectiveWallets[
@@ -85,7 +85,7 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
         walletPublicKey =
           injectiveWallets[injectiveSelectedWallet].walletKeys?.hex ?? '';
         if (!walletPublicKey) throw new Error('ERROR: invalid walletPublicKey');
-        signMessage = async (message: Uint8Array): Promise<Uint8Array> => {
+        signMessage = async (message: Uint8Array) => {
           const str = new TextDecoder().decode(message);
           const result = await injectiveWallets[
             injectiveSelectedWallet

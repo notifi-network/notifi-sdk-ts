@@ -21,6 +21,18 @@ export default function Home() {
   const [isOpenWalletsModal, setIsOpenWalletsModal] = useState(false);
   const [isOpenMobilePromptModal, setIsOpenMobilePromptModal] = useState(false);
 
+  const allWallets = {
+    ...wallets,
+    ...injectiveWallets,
+  };
+  console.log('allWallets', allWallets);
+  console.log(
+    'asdfa',
+    !Object.values(allWallets)
+      .map((wallet) => wallet.isInstalled)
+      .includes(true),
+  );
+
   useEffect(() => {
     if (
       (selectedWallet && wallets[selectedWallet].walletKeys) ||
@@ -79,10 +91,9 @@ export default function Home() {
       ) : null}
       {/* show this modal if there is no metamask and keplr extension detected */}
       {isOpenMobilePromptModal &&
-      !window.ethereum &&
-      !window.keplr &&
-      !window.leap &&
-      !window.solana ? (
+      !Object.values(allWallets)
+        .map((wallet) => wallet.isInstalled)
+        .includes(true) ? (
         <MobilePromptModal
           setIsOpenMobilePromptModal={setIsOpenMobilePromptModal}
         />

@@ -15,15 +15,19 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
   const { wallets } = useWallets();
   const { wallets: injectiveWallets } = useInjectiveWallets();
 
+  const allWallets = {
+    ...wallets,
+    ...injectiveWallets,
+  };
+
   return (
     <>
       {/* hide this modal when on mobile view and there is no metamask and keplr extension detected */}
       <div
         className={`fixed h-screen w-screen bg-gray-900/50 ${
-          !!window.keplr ||
-          !!window.ethereum ||
-          !!window.leap ||
-          !!window.solana
+          Object.values(allWallets)
+            .map((wallet) => wallet.isInstalled)
+            .includes(true)
             ? ''
             : 'hidden'
         } sm:block`}
@@ -31,10 +35,9 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
       ></div>
       <div
         className={`flex flex-col fixed w-90 h-72 md:w-[40rem] md:h-80 border border-gray-700/50 bg-white rounded-xl ${
-          !!window.keplr ||
-          !!window.ethereum ||
-          !!window.leap ||
-          !!window.solana
+          Object.values(allWallets)
+            .map((wallet) => wallet.isInstalled)
+            .includes(true)
             ? ''
             : 'hidden'
         } sm:flex`}

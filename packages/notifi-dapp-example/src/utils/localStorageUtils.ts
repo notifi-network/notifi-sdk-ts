@@ -6,8 +6,10 @@ import {
 } from './types';
 
 const localStorageKey = 'NotifiWalletStorage';
-
-export const setWalletKeysToLocalStorage = <T extends keyof InjectiveWallets>(
+// TODO: move to wallet-provider package
+export const setInjWalletKeysToLocalStorage = <
+  T extends keyof InjectiveWallets,
+>(
   wallet: T,
   walletKeys: LeapWalletKeys | PhantomWalletKeys,
 ) => {
