@@ -18,7 +18,6 @@ export const useNotifiRouter = () => {
   const { setIsGlobalLoading } = useGlobalStateContext();
 
   const { ftuStage, syncFtuStage } = useNotifiSubscriptionContext();
-
   const { cardConfig } = useNotifiTenantConfig();
   useEffect(() => {
     if (frontendClientStatus.isAuthenticated) {

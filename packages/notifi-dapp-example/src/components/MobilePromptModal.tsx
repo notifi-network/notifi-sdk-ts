@@ -1,4 +1,6 @@
 import { Icon } from '@/assets/Icon';
+import { useInjectiveWallets } from '@/context/InjectiveWalletContext';
+import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 
@@ -10,6 +12,13 @@ export const MobilePromptModal: React.FC<MobilePromptModalProps> = ({
   setIsOpenMobilePromptModal,
 }: MobilePromptModalProps) => {
   const [isClient, setIsClient] = useState(false);
+  const { wallets } = useWallets();
+  const { wallets: injectiveWallets } = useInjectiveWallets();
+
+  const allWallets = {
+    ...wallets,
+    ...injectiveWallets,
+  };
 
   useEffect(() => {
     setIsClient(true);
@@ -62,7 +71,10 @@ export const MobilePromptModal: React.FC<MobilePromptModalProps> = ({
                     onClick={() => handleCopy('injective.notifi.network')}
                   />
                 </div>
-                {window.ethereum || (!window.ethereum && !window.keplr) ? (
+                {window.ethereum ||
+                !Object.values(allWallets)
+                  .map((wallet) => wallet.isInstalled)
+                  .includes(true) ? (
                   <div
                     onClick={openMetamask}
                     className="border rounded-2xl h-24 w-80 mt-6 text-md font-medium flex items-center justify-start pl-4 cursor-pointer"
@@ -78,7 +90,10 @@ export const MobilePromptModal: React.FC<MobilePromptModalProps> = ({
                     Metamask
                   </div>
                 ) : null}
-                {window.keplr || (!window.ethereum && !window.keplr) ? (
+                {window.keplr ||
+                !Object.values(allWallets)
+                  .map((wallet) => wallet.isInstalled)
+                  .includes(true) ? (
                   <div
                     onClick={openKeplr}
                     className="border rounded-2xl h-24 w-80 mt-6 text-md font-medium flex items-center justify-start pl-4"

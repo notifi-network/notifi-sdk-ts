@@ -1,12 +1,10 @@
 'use client';
 
-// import { useWallets } from '@/context/wallet/NotifiWalletProvider';
 import { useNotifiRouter } from '@/hooks/useNotifiRouter';
 import {
   ConfigFactoryInput,
   newFrontendClient,
 } from '@notifi-network/notifi-frontend-client';
-import { useNotifiClientContext } from '@notifi-network/notifi-react-card';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import { getBytes } from 'ethers';
 

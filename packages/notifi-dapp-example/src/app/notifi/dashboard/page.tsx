@@ -6,10 +6,11 @@ import { DashboardDestinations } from '@/components/DashboardDestinations';
 import { DashboardHistory } from '@/components/DashboardHistory';
 import { DashboardSideBar } from '@/components/DashboardSideBar';
 import { VerifyBanner } from '@/components/VerifyBanner';
+import { useInjectiveWallets } from '@/context/InjectiveWalletContext';
 import { useDestinationState } from '@notifi-network/notifi-react-card';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 export type CardView = 'history' | 'destination' | 'alertSubscription';
 
@@ -17,10 +18,27 @@ export default function NotifiDashboard() {
   const [cardView, setCardView] = useState<CardView>('history');
   const { unverifiedDestinations } = useDestinationState();
   const { selectedWallet, wallets } = useWallets();
+  const {
+    selectedWallet: selectiedInjectiveWallet,
+    wallets: injectiveWallets,
+  } = useInjectiveWallets();
   const [isSideBarOpen, setIsSideBarOpen] = useState<boolean>(false);
 
-  if (!selectedWallet || !wallets[selectedWallet].walletKeys) return null;
-  const accountAddress = wallets[selectedWallet].walletKeys?.bech32;
+  if (
+    (!selectedWallet || !wallets[selectedWallet].walletKeys) &&
+    (!selectiedInjectiveWallet ||
+      !injectiveWallets[selectiedInjectiveWallet].walletKeys)
+  )
+    return null;
+
+  let accountAddress: string | undefined = '';
+  if (selectedWallet) {
+    accountAddress = wallets[selectedWallet].walletKeys?.bech32;
+  }
+  if (selectiedInjectiveWallet) {
+    accountAddress =
+      injectiveWallets[selectiedInjectiveWallet].walletKeys?.bech32;
+  }
   if (!accountAddress) return;
   return (
     <div className="min-h-screen flex items-start flex-row">
