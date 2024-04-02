@@ -1,7 +1,7 @@
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { useNotifiTargetContext } from '@/context/NotifiTargetContext';
-import { FtuStage } from '@/context/NotifiTenantConfigContext';
 import { useNotifiTopicContext } from '@/context/NotifiTopicContext';
+import { FtuStage } from '@/context/NotifiUserSettingContext';
 import { useNotifiUserSettingContext } from '@/context/NotifiUserSettingContext';
 import { useNotifiTargetListener } from '@/hooks/useNotifiTargetListener';
 import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';

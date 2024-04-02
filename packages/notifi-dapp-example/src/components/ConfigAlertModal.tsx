@@ -1,4 +1,4 @@
-import { FtuStage } from '@/context/NotifiTenantConfigContext';
+import { FtuStage } from '@/context/NotifiUserSettingContext';
 import { useNotifiUserSettingContext } from '@/context/NotifiUserSettingContext';
 import React from 'react';
 

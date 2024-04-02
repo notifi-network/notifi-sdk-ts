@@ -1,6 +1,6 @@
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
 import { useNotifiFrontendClientContext } from '@/context/NotifiFrontendClientContext';
-import { FtuStage } from '@/context/NotifiTenantConfigContext';
+import { FtuStage } from '@/context/NotifiUserSettingContext';
 import { useNotifiUserSettingContext } from '@/context/NotifiUserSettingContext';
 import { useEffect, useMemo } from 'react';
 

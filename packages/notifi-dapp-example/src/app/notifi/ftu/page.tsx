@@ -4,10 +4,8 @@ import { ConfigAlertModal } from '@/components/ConfigAlertModal';
 import { ConfigDestinationModal } from '@/components/ConfigDestinationModal';
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
 import { useNotifiFrontendClientContext } from '@/context/NotifiFrontendClientContext';
-import {
-  FtuStage,
-  useNotifiTenantConfig,
-} from '@/context/NotifiTenantConfigContext';
+import { useNotifiTenantConfig } from '@/context/NotifiTenantConfigContext';
+import { FtuStage } from '@/context/NotifiUserSettingContext';
 import { useNotifiUserSettingContext } from '@/context/NotifiUserSettingContext';
 import { useRouterAsync } from '@/hooks/useRouterAsync';
 import { useEffect } from 'react';
