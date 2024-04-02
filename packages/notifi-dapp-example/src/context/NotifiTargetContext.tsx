@@ -399,11 +399,6 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
           discord: { useDiscord: true, data: discordTarget },
         }));
       } else if (!!discordTarget && discordTarget.isConfirmed) {
-        setTargetData((prev) => ({
-          ...prev,
-          discord: { useDiscord: false, data: discordTarget },
-        }));
-        console.log(discordTarget);
         switch (discordTarget.userStatus) {
           case 'DISCORD_SERVER_NOT_JOINED':
             updateTargetInfoPrompt('discord', {
@@ -419,6 +414,10 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
           default: // UNVERIFIED: Should never get in this state
             throw new Error('Discord target in unexpected state');
         }
+        setTargetData((prev) => ({
+          ...prev,
+          discord: { useDiscord: true, data: discordTarget },
+        }));
       } else {
         setTargetData((prev) => ({
           ...prev,
@@ -434,10 +433,6 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
   const refreshSlackTarget = useCallback(
     async (slackTarget?: Types.SlackChannelTargetFragmentFragment) => {
       if (slackTarget) {
-        setTargetData((prev) => ({
-          ...prev,
-          slack: { useSlack: true, data: slackTarget },
-        }));
         switch (slackTarget.verificationStatus) {
           case 'UNVERIFIED':
           case 'MISSING_PERMISSIONS':
@@ -455,6 +450,10 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
           default:
             throw new Error('Slack target in unexpected state');
         }
+        setTargetData((prev) => ({
+          ...prev,
+          slack: { useSlack: true, data: slackTarget },
+        }));
       } else {
         setTargetData((prev) => ({
           ...prev,
