@@ -60,6 +60,7 @@ export type SignMessageParams =
         | 'LINEA'
         | 'SCROLL'
         | 'MANTA'
+        | 'EVMOS'
         | 'MONAD';
       signMessage: Uint8SignMessageFunction;
     }>
@@ -113,6 +114,7 @@ export type WalletWithSignMessage =
         | 'SCROLL'
         | 'MANTA'
         | 'MONAD'
+        | 'EVMOS'
         | 'BERACHAIN';
       walletPublicKey: string;
       signMessage: Uint8SignMessageFunction;
@@ -435,6 +437,7 @@ export class NotifiFrontendClient {
       case 'BINANCE':
       case 'OPTIMISM':
       case 'ZKSYNC':
+      case 'EVMOS':
       case 'SOLANA': {
         const result = await this._service.logInFromDapp({
           walletBlockchain,
@@ -508,6 +511,7 @@ export class NotifiFrontendClient {
       case 'SCROLL':
       case 'MANTA':
       case 'MONAD':
+      case 'EVMOS':
       case 'OPTIMISM': {
         const { walletPublicKey, tenantId } = this
           ._configuration as NotifiConfigWithPublicKey;
