@@ -296,7 +296,8 @@ export type SignMessageParams =
     | 'LINEA'
     | 'SCROLL'
     | 'MANTA'
-    | 'MONAD';
+    | 'MONAD'
+    | 'EVMOS';
     signMessage: Uint8SignMessageFunction;
   }>
   | Readonly<{
@@ -344,6 +345,7 @@ export type WalletParams =
     | 'MANTA'
     | 'MONAD'
     | 'BERACHAIN'
+    | 'EVMOS';
     walletPublicKey: string;
   }>
   | Readonly<{
@@ -356,6 +358,7 @@ export type WalletParams =
     walletPublicKey: string;
     signingAddress: string;
     signingPubkey: string;
+    message: string;
     signMessage: XionSignMessageFunction;
   }>
   | Readonly<{
@@ -433,7 +436,9 @@ export type WalletWithSignMessage =
     | 'SCROLL'
     | 'MANTA'
     | 'MONAD'
-    | 'BERACHAIN';
+    | 'BERACHAIN'
+    | 'EVMOS';
+
     walletPublicKey: string;
     signMessage: Uint8SignMessageFunction;
   }>

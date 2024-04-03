@@ -149,6 +149,7 @@ const signMessage = async ({
       const signature = Buffer.from(signedBuffer).toString('base64');
       return signature;
     }
+    case 'EVMOS':
     case 'ARBITRUM':
     case 'POLYGON':
     case 'BINANCE':

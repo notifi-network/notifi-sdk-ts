@@ -1,5 +1,6 @@
 import {
   ConfigFactoryInput,
+  ConfigFactoryInputDelegated,
   NotifiFrontendClient,
   newFrontendClient,
 } from '@notifi-network/notifi-frontend-client';
@@ -46,16 +47,27 @@ const getFrontendConfigInput = (params: NotifiParams): ConfigFactoryInput => {
       walletBlockchain: params.walletBlockchain,
       env: params.env,
     };
-  } else {
+  } else if ('signingAddress' in params) {
     return {
       account: {
-        publicKey: params.walletPublicKey,
+        address: params.signingAddress,
+        publicKey: params.signingPubkey,
+        delegatorAddress: params.walletPublicKey
       },
       tenantId: params.dappAddress,
       walletBlockchain: params.walletBlockchain,
       env: params.env,
-    };
+    }
   }
+  return {
+    account: {
+      publicKey: params.walletPublicKey,
+    },
+    tenantId: params.dappAddress,
+    walletBlockchain: params.walletBlockchain,
+    env: params.env,
+  }
+
 };
 
 export const NotifiClientContextProvider: React.FC<NotifiParams> = ({

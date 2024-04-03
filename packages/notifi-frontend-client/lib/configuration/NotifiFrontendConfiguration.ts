@@ -33,7 +33,9 @@ type WalletBlockchainWithPublicKey = Extract<
   | 'MANTA'
   | 'MONAD'
   | 'BERACHAIN'
-  | 'XION' // Temporarily added this - Xion can be one or the other, or new config needs to be supported
+  | 'EVMOS'
+
+
 >;
 
 type WalletBlockchainWithDelegate = 'XION';
@@ -42,7 +44,6 @@ type WalletBlockchainWithPublicKeyAndAddress = Exclude<
   Types.WalletBlockchain,
   | WalletBlockchainWithPublicKey
   | 'OFF_CHAIN'
-  | 'EVMOS'
   | WalletBlockchainWithDelegate
 >;
 
@@ -97,7 +98,7 @@ export type ConfigFactoryInputDelegated = {
   }>;
   tenantId: string;
   env: NotifiEnvironment;
-  walletBlockchain: NotifiConfigWithPublicKeyAndAddress['walletBlockchain'];
+  walletBlockchain: WalletBlockchainWithDelegate;
   storageOption?: NotifiEnvironmentConfiguration['storageOption'];
 };
 
@@ -126,7 +127,7 @@ export type FrontendClientConfigFactory<T extends NotifiFrontendConfiguration> =
   (
     args: T extends NotifiConfigWithPublicKeyAndAddress
       ? ConfigFactoryInputPublicKeyAndAddress
-      : ConfigFactoryInputPublicKey,
+      : T extends NotifiConfigWithDelegate ? ConfigFactoryInputDelegated : ConfigFactoryInputPublicKey,
   ) => NotifiFrontendConfiguration;
 
 const evmChains = [
@@ -183,18 +184,42 @@ const configFactoryPublicKeyAndAddress: FrontendClientConfigFactory<
   };
 };
 
-const validateConfigInput = (
+const configFactoryDelegated: FrontendClientConfigFactory<
+  NotifiConfigWithDelegate
+> = (args) => {
+  return {
+    tenantId: args.tenantId,
+    env: args.env,
+    walletBlockchain: args.walletBlockchain,
+    delegatedAddress: args.account.address,
+    delegatedPublicKey: args.account.publicKey,
+    delegatorAddress: args.account.delegatorAddress,
+    storageOption: args.storageOption,
+  };
+}
+
+const isWithPubkeyAndAddress = (
   config: ConfigFactoryInput,
 ): config is ConfigFactoryInputPublicKeyAndAddress => {
   return 'address' in config.account;
 };
 
+const isWithDelegate = (
+  config: ConfigFactoryInput,
+): config is ConfigFactoryInputDelegated => {
+  return 'delegatorAddress' in config.account;
+}
+
 export const newFrontendConfig = (
   config: ConfigFactoryInput,
 ): NotifiFrontendConfiguration => {
-  return validateConfigInput(config)
-    ? configFactoryPublicKeyAndAddress(config)
-    : configFactoryPublicKey(config);
+  if (isWithPubkeyAndAddress(config)) {
+    return configFactoryPublicKeyAndAddress(config);
+  } else if (isWithDelegate(config)) {
+    return configFactoryDelegated(config);
+  } else {
+    return configFactoryPublicKey(config);
+  }
 };
 
 export const envUrl = (env: NotifiEnvironment): string => {
