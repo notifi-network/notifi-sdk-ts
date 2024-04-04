@@ -2,7 +2,6 @@ import { Types } from '@notifi-network/notifi-graphql';
 import React from 'react';
 
 import { AnnouncementIcon } from '../assets/AnnouncementIcon';
-import { ChatAlertIcon } from '../assets/ChatAlertIcon';
 import { RatioCheckIcon } from '../assets/RatioCheckIcon';
 import { SwapIcon } from '../assets/SwapIcon';
 import { AlertIcon } from '../components/AlertHistory/AlertIcon';
@@ -24,11 +23,6 @@ type BroadcastMessageEventDetails = Extract<
   | Types.NotificationHistoryEntryFragmentFragment['detail']
   | Types.FusionNotificationHistoryEntryFragmentFragment['detail'],
   { __typename: 'BroadcastMessageEventDetails' }
->;
-
-type ChatMessageReceivedEventDetails = Extract<
-  Types.NotificationHistoryEntryFragmentFragment['detail'],
-  { __typename: 'ChatMessageReceivedEventDetails' }
 >;
 
 type HealthValueOverThresholdEventDetails = Extract<
@@ -156,26 +150,6 @@ supportedEventDetails.set('GenericEventDetails', {
       topContent: detail.notificationTypeName,
       bottomContent: detail.genericMessage,
       bottomContentHtml: detail.genericMessageHtml ?? '',
-    };
-  },
-});
-
-supportedEventDetails.set('ChatMessageReceivedEventDetails', {
-  getViewProps: (notification) => {
-    const detail = notification.detail as ChatMessageReceivedEventDetails;
-    return {
-      notificationTitle: `New Message from ${detail.senderName}`,
-      notificationSubject: `New Message from ${detail.senderName}`,
-      notificationDate: notification.createdDate,
-      notificationMessage: detail.messageBody,
-      notificationImage: <ChatAlertIcon width={17} height={17} />,
-    };
-  },
-  getAlertDetailsContents: (notification: NotificationHistoryEntry) => {
-    const detail = notification.detail as ChatMessageReceivedEventDetails;
-    return {
-      topContent: `New Message from ${detail.senderName}`,
-      bottomContent: detail.messageBody,
     };
   },
 });

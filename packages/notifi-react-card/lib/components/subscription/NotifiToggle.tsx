@@ -10,7 +10,6 @@ export type NotifiToggleProps = Readonly<{
   disabled: boolean;
   checked: boolean;
   setChecked: React.Dispatch<React.SetStateAction<boolean>>;
-  intercomToggleStyle?: string;
 }>;
 
 export const NotifiToggle: React.FC<NotifiToggleProps> = ({
@@ -18,16 +17,11 @@ export const NotifiToggle: React.FC<NotifiToggleProps> = ({
   disabled,
   checked,
   setChecked,
-  intercomToggleStyle,
 }: NotifiToggleProps) => {
   return (
     <label className={clsx('NotifiToggle__container', classNames?.container)}>
       <input
-        className={clsx(
-          'NotifiToggle__input',
-          intercomToggleStyle,
-          classNames?.input,
-        )}
+        className={clsx('NotifiToggle__input', classNames?.input)}
         disabled={disabled}
         type="checkbox"
         checked={checked}

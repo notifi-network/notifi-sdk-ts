@@ -1,7 +1,6 @@
 import {
   NotifiInputFieldsText,
   NotifiInputSeparators,
-  NotifiIntercomCard,
   NotifiSubscriptionCard,
   useNotifiClientContext,
   useNotifiSubscriptionContext,
@@ -19,7 +18,6 @@ export const SolanaCard: React.FC = () => {
 
   const solanaSubscriptionCardId =
     process.env.REACT_APP_SOLANA_SUBSCRIPTION_CARD_ID!;
-  const solanaIntercomCardId = process.env.REACT_APP_SOLANA_INTERCOM_CARD_ID!;
 
   const inputLabels: NotifiInputFieldsText = {
     label: {
@@ -36,12 +34,6 @@ export const SolanaCard: React.FC = () => {
     smsSeparator: {
       content: '',
     },
-    emailSeparator: {
-      content: '',
-    },
-  };
-
-  const intercomInputSeparators: NotifiInputSeparators = {
     emailSeparator: {
       content: '',
     },
@@ -92,13 +84,6 @@ export const SolanaCard: React.FC = () => {
           }}
         />
       ) : null}
-      <h2>NotifiIntercomCard</h2>
-      <NotifiIntercomCard
-        darkMode
-        inputLabels={inputLabels}
-        inputSeparators={intercomInputSeparators}
-        cardId={solanaIntercomCardId}
-      />
     </div>
   );
 };

@@ -13,10 +13,6 @@ import {
   SubscriptionData,
   useFetchedCardState,
 } from '../hooks';
-import {
-  IntercomCardView,
-  useIntercomCardState,
-} from '../hooks/useIntercomCardState';
 import { prefixTelegramWithSymbol } from '../utils/stringUtils';
 import { useNotifiClientContext } from './NotifiClientContext';
 import { NotifiParams } from './NotifiContext';
@@ -55,8 +51,6 @@ export type NotifiSubscriptionData = Readonly<{
   contextId: string;
   cardView: FetchedCardViewState;
   setCardView: React.Dispatch<React.SetStateAction<FetchedCardViewState>>;
-  intercomCardView: IntercomCardView;
-  setIntercomCardView: React.Dispatch<React.SetStateAction<IntercomCardView>>;
   setAlerts: (
     alerts: Record<string, Types.AlertFragmentFragment | undefined>,
   ) => void;
@@ -67,10 +61,6 @@ export type NotifiSubscriptionData = Readonly<{
   setUseDiscord: React.Dispatch<React.SetStateAction<boolean>>;
   loading: boolean;
   setLoading: (loading: boolean) => void;
-  hasChatAlert: boolean;
-  setHasChatAlert: (hasChatAlert: boolean) => void;
-  conversationId: string;
-  setConversationId: (conversationId: string) => void;
   userId: string;
   setUserId: (userId: string) => void;
   setEmailErrorMessage: (value: DestinationError) => void;
@@ -112,12 +102,8 @@ export const NotifiSubscriptionContextProvider: React.FC<
     return new Date().toISOString();
   }, []);
 
-  const [conversationId, setConversationId] = useState<string>('');
   const [userId, setUserId] = useState<string>('');
-
-  const [hasChatAlert, setHasChatAlert] = useState<boolean>(false);
   const { cardView, setCardView } = useFetchedCardState();
-  const { intercomCardView, setIntercomCardView } = useIntercomCardState();
 
   const [telegramConfirmationUrl, setTelegramConfirmationUrl] = useState<
     string | undefined
@@ -420,12 +406,6 @@ export const NotifiSubscriptionContextProvider: React.FC<
     setTelegramId,
     setTelegramConfirmationUrl,
     setUseHardwareWallet,
-    intercomCardView,
-    setIntercomCardView,
-    hasChatAlert,
-    setHasChatAlert,
-    conversationId,
-    setConversationId,
     userId,
     setUserId,
     setEmailErrorMessage,
