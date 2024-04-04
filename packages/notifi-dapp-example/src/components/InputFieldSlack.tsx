@@ -1,9 +1,5 @@
 import { Icon } from '@/assets/Icon';
 import { useNotifiTargetContext } from '@/context/NotifiTargetContext';
-import {
-  useNotifiForm,
-  useNotifiSubscriptionContext,
-} from '@notifi-network/notifi-react-card';
 import React from 'react';
 
 import { Toggle } from './Toggle';
@@ -17,12 +13,14 @@ export const InputFieldSlack: React.FC<InputFieldSlackProps> = ({
   disabled,
   isEditable,
 }: InputFieldSlackProps) => {
-  const { formErrorMessages } = useNotifiForm();
-  const { email: emailErrorMessage, telegram: telegramErrorMessage } =
-    formErrorMessages;
-  const { updateTarget } = useNotifiTargetContext();
-  const { useSlack, setUseSlack, slackTargetData } =
-    useNotifiSubscriptionContext();
+  const {
+    updateTarget,
+    targetDocument: {
+      targetData,
+      targetInputForm: { email, telegram },
+    },
+    updateUseSlack,
+  } = useNotifiTargetContext();
 
   return (
     <>
@@ -39,17 +37,19 @@ export const InputFieldSlack: React.FC<InputFieldSlackProps> = ({
         <div className="flex flex-row items-center justify-between w-2/3 sm:w-90 mr-4">
           <div className="flex flex-col items-start">
             <div className="text-sm sm:ml-6">
-              {' '}
-              {slackTargetData?.slackChannelName
-                ? slackTargetData?.slackChannelName
+              {targetData.slack.data?.slackChannelName
+                ? targetData.slack.data?.slackChannelName
                 : 'Slack'}
             </div>
-            {slackTargetData?.slackChannelName ? (
+            {targetData.slack.data?.slackChannelName ? (
               <a
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => {
-                  window.open(slackTargetData?.verificationLink, '_blank');
+                  window.open(
+                    targetData.slack.data?.verificationLink,
+                    '_blank',
+                  );
                 }}
                 className="text-xs font-semibold 
 text-notifi-button-primary-blueish-bg md:ml-6 mt-1"
@@ -61,14 +61,12 @@ text-notifi-button-primary-blueish-bg md:ml-6 mt-1"
             ) : null}
           </div>
           <Toggle
-            disabled={
-              disabled ||
-              telegramErrorMessage !== '' ||
-              emailErrorMessage !== ''
-            }
-            checked={useSlack}
+            disabled={disabled || !!telegram.error || !!email.error}
+            checked={targetData.slack.useSlack}
             onChange={() => {
-              isEditable ? updateTarget('slack') : setUseSlack(!useSlack);
+              isEditable
+                ? updateTarget('slack')
+                : updateUseSlack(!targetData.slack.useSlack);
             }}
           />
         </div>

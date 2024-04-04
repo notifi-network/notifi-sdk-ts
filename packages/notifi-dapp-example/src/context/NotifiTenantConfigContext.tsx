@@ -1,7 +1,6 @@
 'use client';
 
 import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
-import { useNotifiClientContext } from '@notifi-network/notifi-react-card';
 import {
   FC,
   PropsWithChildren,
@@ -12,10 +11,11 @@ import {
 } from 'react';
 
 import { useGlobalStateContext } from './GlobalStateContext';
+import { useNotifiFrontendClientContext } from './NotifiFrontendClientContext';
 
 export type NotifiTenantConfigContextType = {
   cardConfig: CardConfigItemV1;
-  inputs: Record<string, unknown>;
+  inputs: Record<string, unknown>; // TODO: deprecate for implement?
 };
 
 const NotifiTenantConfigContext = createContext<NotifiTenantConfigContextType>(
@@ -30,14 +30,16 @@ type NotifiTenantConfigProps = {
 };
 
 export const NotifiTenantConfigContextProvider: FC<
-  // TODO: Rename context to NotifiTenantConfigProvider
   PropsWithChildren<NotifiTenantConfigProps>
 > = ({ inputs = {}, children }) => {
-  const { frontendClient } = useNotifiClientContext();
-  const [cardConfig, setCardConfig] = useState<CardConfigItemV1 | null>(null);
   const { setIsGlobalLoading, setGlobalError } = useGlobalStateContext();
+  const { frontendClient, frontendClientStatus } =
+    useNotifiFrontendClientContext();
+
+  const [cardConfig, setCardConfig] = useState<CardConfigItemV1 | null>(null);
 
   useEffect(() => {
+    if (!frontendClientStatus.isInitialized) return;
     setIsGlobalLoading(true);
     frontendClient
       .fetchSubscriptionCard({

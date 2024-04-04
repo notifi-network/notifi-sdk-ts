@@ -40,7 +40,6 @@
     "@injectivelabs/wallet-ts": "^1.14.7",
     "@notifi-network/notifi-frontend-client": "^0.90.8",
     "@notifi-network/notifi-graphql": "^0.90.8",
-    "@notifi-network/notifi-react-card": "^0.90.8",
     "@notifi-network/notifi-wallet-provider": "^0.90.8",
     "date-fns": "^3.3.1",
     "dompurify": "^3.0.8",

@@ -1,6 +1,5 @@
 import { Icon } from '@/assets/Icon';
 import { useNotifiTargetContext } from '@/context/NotifiTargetContext';
-import { useNotifiForm } from '@notifi-network/notifi-react-card';
 import React from 'react';
 
 export type InputFieldTelegramProps = Readonly<{
@@ -13,32 +12,36 @@ export const InputFieldTelegram: React.FC<InputFieldTelegramProps> = ({
   disabled,
   isEditable,
 }: InputFieldTelegramProps) => {
-  const { formState, formErrorMessages, setTelegram, setTelegramErrorMessage } =
-    useNotifiForm();
-
-  const { telegram: telegramErrorMessage, email: emailErrorMessage } =
-    formErrorMessages;
-  const { updateTarget, setHasTelegramChanges, hasTelegramChanges } =
-    useNotifiTargetContext();
-
-  const { telegram } = formState;
+  const {
+    updateTarget,
+    setHasTelegramChanges,
+    hasTelegramChanges,
+    updateTargetForms,
+    targetDocument: {
+      targetInputForm: { email, telegram },
+    },
+  } = useNotifiTargetContext();
 
   const validateTelegram = () => {
-    if (telegram === '') {
+    if (telegram.value === '') {
       return;
     }
 
     const TelegramRegex =
       /^@?(?=\w{5,32}\b)[a-zA-Z0-9]+(?:[a-zA-Z0-9_ ]+[a-zA-Z0-9])*$/;
 
-    if (TelegramRegex.test(telegram)) {
-      setTelegramErrorMessage('');
+    if (TelegramRegex.test(telegram.value)) {
+      updateTargetForms('telegram', telegram.value);
     } else {
-      setTelegramErrorMessage('The telegram is invalid. Please try again.');
+      updateTargetForms(
+        'telegram',
+        telegram.value,
+        'The telegram is invalid. Please try again.',
+      );
     }
   };
 
-  const hasErrors = telegramErrorMessage !== '';
+  const hasErrors = !!telegram.error;
 
   return (
     <>
@@ -62,25 +65,25 @@ export const InputFieldTelegram: React.FC<InputFieldTelegramProps> = ({
             disabled={disabled}
             name="notifi-telegram"
             type="text"
-            value={telegram}
-            onFocus={() => setTelegramErrorMessage('')}
+            value={telegram.value}
+            onFocus={() => updateTargetForms('telegram', telegram.value, '')}
             onChange={(e) => {
               setHasTelegramChanges(true);
-              setTelegram(e.target.value ?? '');
+              updateTargetForms('telegram', e.target.value);
             }}
             placeholder="Enter your telegram ID"
           />
           {hasErrors ? (
             <div className="absolute top-[5px] left-[11px] flex flex-col items-start">
               <p className="text-notifi-error text-xs block">
-                {telegramErrorMessage}
+                {telegram.error}
               </p>
             </div>
           ) : null}
           {isEditable && hasTelegramChanges ? (
             <button
               className="rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-16 h-7 mb-6 text-sm font-medium absolute top-2.5 right-1 disabled:opacity-50 disabled:hover:bg-notifi-button-primary-blueish-bg hover:bg-notifi-button-hover-bg"
-              disabled={telegramErrorMessage !== '' || emailErrorMessage !== ''}
+              disabled={!!telegram.error || !!email.error}
               onClick={() => updateTarget('telegram')}
             >
               <span>Save</span>

@@ -1,13 +1,10 @@
 'use client';
 
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
-import { useNotifiTenantConfig } from '@/context/NotifiTenantConfigContext';
+import { FtuStage } from '@/context/NotifiUserSettingContext';
+import { useNotifiUserSettingContext } from '@/context/NotifiUserSettingContext';
 import { useNotifiRouter } from '@/hooks/useNotifiRouter';
 import { useRouterAsync } from '@/hooks/useRouterAsync';
-import {
-  FtuStage,
-  useNotifiSubscriptionContext,
-} from '@notifi-network/notifi-react-card';
 import { useEffect } from 'react';
 
 export default function NotifiDashboardLayout({
@@ -15,21 +12,18 @@ export default function NotifiDashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { ftuStage, syncFtuStage } = useNotifiSubscriptionContext();
   const { setIsGlobalLoading } = useGlobalStateContext();
   const { handleRoute } = useRouterAsync();
-  const { cardConfig } = useNotifiTenantConfig();
+  const { ftuStage } = useNotifiUserSettingContext();
   useNotifiRouter();
 
   useEffect(() => {
     setIsGlobalLoading(true);
-    syncFtuStage(cardConfig.isContactInfoRequired).finally(() => {
-      if (ftuStage !== FtuStage.Done) {
-        handleRoute('/notifi/ftu').finally(() => setIsGlobalLoading(false));
-        return;
-      }
-      setIsGlobalLoading(false);
-    });
+    if (ftuStage !== FtuStage.Done) {
+      handleRoute('/notifi/ftu').finally(() => setIsGlobalLoading(false));
+      return;
+    }
+    setIsGlobalLoading(false);
   }, [ftuStage]);
 
   if (ftuStage !== FtuStage.Done) {
