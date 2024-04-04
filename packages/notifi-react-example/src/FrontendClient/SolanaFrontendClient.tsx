@@ -228,6 +228,19 @@ export const SolanaFrontendClient: FC = () => {
               <button onClick={updateUserSettings}>
                 7. Update User settings
               </button>
+              <br />
+              <button
+                onClick={() =>
+                  client
+                    ?.fetchTenantConfig({
+                      id: process.env.REACT_APP_SOLANA_SUBSCRIPTION_CARD_ID!,
+                      type: 'SUBSCRIPTION_CARD',
+                    })
+                    .then(console.log)
+                }
+              >
+                8. fetch tenant config
+              </button>
               <h3>Auth</h3>
               <button onClick={logOut}>logout</button>
             </>
