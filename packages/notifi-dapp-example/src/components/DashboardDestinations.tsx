@@ -1,12 +1,7 @@
 import { Icon } from '@/assets/Icon';
-import { useNotifiTargetContext } from '@/context/NotifiTargetContext';
 import { useNotifiTenantConfig } from '@/context/NotifiTenantConfigContext';
 import { useNotifiTargetListener } from '@/hooks/useNotifiTargetListener';
-import {
-  useNotifiForm,
-  useNotifiSubscriptionContext,
-} from '@notifi-network/notifi-react-card';
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 
 import { DestinationPanel } from './DestinationPanel';
 import { DestinationsEditModal } from './DestinationsEditModal';
@@ -16,32 +11,7 @@ export const DashboardDestinations = () => {
   const [open, setOpen] = useState(false);
   const { cardConfig } = useNotifiTenantConfig();
 
-  const { email, phoneNumber, telegramId } = useNotifiSubscriptionContext();
-  const { setHasEmailChanges, setHasTelegramChanges } =
-    useNotifiTargetContext();
-
-  const {
-    setEmail,
-    setTelegram,
-    setPhoneNumber,
-    setEmailErrorMessage,
-    setTelegramErrorMessage,
-    setPhoneNumberErrorMessage,
-  } = useNotifiForm();
-
-  const resetFormState = useCallback(() => {
-    setEmail(email);
-    setPhoneNumber(phoneNumber);
-    setTelegram(telegramId);
-    setEmailErrorMessage('');
-    setTelegramErrorMessage('');
-    setPhoneNumberErrorMessage('');
-    setHasEmailChanges(false);
-    setHasTelegramChanges(false);
-  }, [email, phoneNumber, telegramId]);
-
   const handleClick = () => {
-    resetFormState();
     setOpen(true);
   };
 

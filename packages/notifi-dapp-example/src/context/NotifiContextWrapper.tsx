@@ -1,14 +1,14 @@
 import { NotifiEnvironment } from '@notifi-network/notifi-frontend-client';
-import { NotifiContext } from '@notifi-network/notifi-react-card';
-import '@notifi-network/notifi-react-card/dist/index.css';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import { getBytes } from 'ethers';
 import React, { PropsWithChildren } from 'react';
 
 import { useInjectiveWallets } from './InjectiveWalletContext';
+import { NotifiFrontendClientProvider } from './NotifiFrontendClientContext';
 import { NotifiTargetContextProvider } from './NotifiTargetContext';
 import { NotifiTenantConfigContextProvider } from './NotifiTenantConfigContext';
 import { NotifiTopicContextProvider } from './NotifiTopicContext';
+import { NotifiUserSettingContextProvider } from './NotifiUserSettingContext';
 
 const tenantId = process.env.NEXT_PUBLIC_TENANT_ID!;
 const env = process.env.NEXT_PUBLIC_ENV! as NotifiEnvironment;
@@ -93,25 +93,28 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
         break;
     }
   }
+
   return (
-    <NotifiContext
-      dappAddress={tenantId}
-      walletBlockchain={walletBlockchain}
+    <NotifiFrontendClientProvider
+      tenantId={tenantId}
       env={env}
-      walletPublicKey={walletPublicKey}
+      walletBlockchain={walletBlockchain}
       accountAddress={accountAddress}
+      walletPublicKey={walletPublicKey}
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       //the type error can be fixed when we remove injecive wallet and use only notifi wallet
       signMessage={signMessage}
     >
-      <NotifiTargetContextProvider>
-        <NotifiTopicContextProvider>
-          <NotifiTenantConfigContextProvider>
-            {children}
-          </NotifiTenantConfigContextProvider>
-        </NotifiTopicContextProvider>
-      </NotifiTargetContextProvider>
-    </NotifiContext>
+      <NotifiTenantConfigContextProvider>
+        <NotifiTargetContextProvider>
+          <NotifiTopicContextProvider>
+            <NotifiUserSettingContextProvider>
+              {children}
+            </NotifiUserSettingContextProvider>
+          </NotifiTopicContextProvider>
+        </NotifiTargetContextProvider>
+      </NotifiTenantConfigContextProvider>
+    </NotifiFrontendClientProvider>
   );
 };
