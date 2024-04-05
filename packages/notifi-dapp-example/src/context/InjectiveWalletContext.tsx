@@ -202,14 +202,14 @@ export const InjectiveWalletProvider: React.FC<PropsWithChildren> = ({
 
   const wallets: InjectiveWallets = {
     leap: new LeapWallet(
-      injectiveLeapWallet.strategies.leap ? true : false,
+      typeof window !== 'undefined' && window.leap ? true : false,
       walletKeysLeap,
       leapSignArbitrary,
       connectLeapWallet,
       disconnectLeapWallet,
     ),
     phantom: new PhantomWallet(
-      injectivePhantomWallet.strategies.phantom ? true : false,
+      typeof window !== 'undefined' && window.phantom ? true : false,
       walletKeysPhantom,
       phantomSignArbitrary,
       connectPhantomWallet,
