@@ -1,5 +1,6 @@
 import { Icon } from '@/assets/Icon';
 import { useInjectiveWallets } from '@/context/InjectiveWalletContext';
+import { objectKeys } from '@notifi-network/notifi-react-card';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
@@ -33,6 +34,19 @@ export const MobilePromptModal: React.FC<MobilePromptModalProps> = ({
     document.body.removeChild(input);
   };
 
+  const handleClick = (wallet: string) => {
+    switch (wallet) {
+      case 'ethereum':
+        return openMetamask;
+      case 'keplr':
+        return openKeplr;
+      case 'leap':
+        return openLeap;
+      case 'phantom':
+        return openPhantom;
+    }
+  };
+
   const openMetamask = () => {
     window.location.href = 'https://metamask.app.link';
   };
@@ -40,6 +54,15 @@ export const MobilePromptModal: React.FC<MobilePromptModalProps> = ({
   const openKeplr = () => {
     window.location.href =
       'https://apps.apple.com/ru/app/keplr-wallet/id1567851089';
+  };
+
+  const openLeap = () => {
+    window.location.href =
+      'https://leapcosmoswallet.page.link/HH4EAdKu6wMUYvLH9';
+  };
+
+  const openPhantom = () => {
+    window.location.href = 'https://phantom.app/ul/v1/connect';
   };
 
   return (
@@ -71,44 +94,32 @@ export const MobilePromptModal: React.FC<MobilePromptModalProps> = ({
                     onClick={() => handleCopy('injective.notifi.network')}
                   />
                 </div>
-                {window.ethereum ||
-                !Object.values(allWallets)
-                  .map((wallet) => wallet.isInstalled)
-                  .includes(true) ? (
-                  <div
-                    onClick={openMetamask}
-                    className="border rounded-2xl h-24 w-80 mt-6 text-md font-medium flex items-center justify-start pl-4 cursor-pointer"
-                  >
-                    <Image
-                      src="/logos/metamask.svg"
-                      width={72}
-                      height={72}
-                      alt="metamask"
-                      className="mr-3"
-                      unoptimized={true}
-                    />
-                    Metamask
-                  </div>
-                ) : null}
-                {window.keplr ||
-                !Object.values(allWallets)
-                  .map((wallet) => wallet.isInstalled)
-                  .includes(true) ? (
-                  <div
-                    onClick={openKeplr}
-                    className="border rounded-2xl h-24 w-80 mt-6 text-md font-medium flex items-center justify-start pl-4"
-                  >
-                    <Image
-                      src="/logos/keplr.svg"
-                      width={70}
-                      height={70}
-                      alt="keplr"
-                      className="mr-4"
-                      unoptimized={true}
-                    />
-                    Keplr
-                  </div>
-                ) : null}
+
+                {objectKeys(allWallets).map((wallet) => {
+                  return (
+                    <div key={wallet}>
+                      {window[wallet] ||
+                      !Object.values(allWallets)
+                        .map((wallet) => wallet.isInstalled)
+                        .includes(true) ? (
+                        <div
+                          onClick={handleClick(wallet)}
+                          className="border rounded-2xl h-24 w-80 mt-6 text-md font-medium flex items-center justify-start pl-4 cursor-pointer"
+                        >
+                          <Image
+                            src={`/logos/${wallet}.svg`}
+                            width={72}
+                            height={72}
+                            alt="metamask"
+                            className="mr-3"
+                            unoptimized={true}
+                          />
+                          {wallet}
+                        </div>
+                      ) : null}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
