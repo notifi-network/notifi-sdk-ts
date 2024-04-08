@@ -61,6 +61,9 @@ export class NotifiService
     Operations.MarkFusionNotificationHistoryAsReadService,
     Operations.UpdateUserSettingsService,
     Operations.GetUserSettingsService,
+    Operations.GetSlackChannelTargetsService,
+    Operations.CreateSlackChannelTargetService,
+    Operations.CreateFusionAlertsService,
     Operations.BeginLogInWithWeb3Service,
     Operations.CompleteLogInWithWeb3Service
 {
@@ -129,6 +132,13 @@ export class NotifiService
     return this._typedClient.createAlert(variables, headers);
   }
 
+  async createFusionAlerts(
+    variables: Generated.CreateFusionAlertsMutationVariables,
+  ): Promise<Generated.CreateFusionAlertsMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.createFusionAlerts(variables, headers);
+  }
+
   async createDirectPushAlert(
     variables: Generated.CreateDirectPushAlertMutationVariables,
   ): Promise<Generated.CreateDirectPushAlertMutation> {
@@ -147,6 +157,13 @@ export class NotifiService
   ): Promise<Generated.CreateDiscordTargetMutation> {
     const headers = this._requestHeaders();
     return this._typedClient.createDiscordTarget(variables, headers);
+  }
+
+  async createSlackChannelTarget(
+    variables: Generated.CreateSlackChannelTargetMutationVariables,
+  ): Promise<Generated.CreateSlackChannelTargetMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.createSlackChannelTarget(variables, headers);
   }
 
   async createSmsTarget(
@@ -286,6 +303,13 @@ export class NotifiService
   ): Promise<Generated.GetDiscordTargetsQuery> {
     const headers = this._requestHeaders();
     return this._typedClient.getDiscordTargets(variables, headers);
+  }
+
+  async getSlackChannelTargets(
+    variables: Generated.GetSlackChannelTargetsQueryVariables,
+  ): Promise<Generated.GetSlackChannelTargetsQuery> {
+    const headers = this._requestHeaders();
+    return this._typedClient.getSlackChannelTargets(variables, headers);
   }
 
   async getFilters(

@@ -1,0 +1,140 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Notifi global color */
+    --notifi-gray0: 245 246 241;
+    --notifi-gray1: 247 251 255;
+    --notifi-gray2: 102 109 128;
+    --notifi-gray3: 54 57 74;
+    --notifi-white: 255 255 255;
+    --notifi-blueish0: 225 235 248;
+    --notifi-blueish1: 198 233 245;
+    --notifi-blueish2: 0 194 253;
+    --notifi-brand: 48 64 247;
+    --notifi-blueish4: 82 96 255;
+    --notifi-light-blue: 247 251 255;
+    --notifi-coral: 234 126 104;
+    --notifi-green: 16 165 111;
+    --notifi-red: 227 78 78;
+    --notifi-heather: 182, 184, 213;
+    --notifi-cyan: 52 63 245;
+    --notifi-dusk: 128, 130, 157;
+    --backgroundpressed-100: 223, 225, 231;
+    --notifi-light-purple: 241 242 245;
+    --notifi-purple: 211 219 251;
+  }
+}
+
+@layer components {
+  /*
+  * First alertSubscriptionRow's tooltip content is under the icon
+  */
+  .first-alert-row {
+    display: block;
+  }
+  .first-alert-row div:nth-child(1) div:nth-child(1) div:last-child {
+    top: 0;
+  }
+}
+
+/* Dark mode color variables controlled by NotifiContext */
+.notifi-dapp[dark-mode='true'] {
+  --notifi-primary-text: var(--notifi-brand);
+  --notifi-bgimg-left: var(--notifi-white);
+  --notifi-bgimg-middle: var(--notifi-blueish0);
+  --notifi-bgimg-right: var(--notifi-blueish1);
+  --notifi-button-primary-bg: var(--notifi-coral);
+  --notifi-button-primary-blueish-bg: var(--notifi-brand);
+  --notifi-button-hover-bg: var(--notifi-blueish4);
+  --notifi-button-primary-text: var(--notifi-white);
+  --notifi-label-connect-wallet-text: var(--notifi-blueish2);
+  --notifi-card-bg: var(--notifi-light-blue);
+  --notifi-success: var(--notifi-green);
+  --notifi-error: var(--notifi-red);
+  --notifi-toggle-off-bg: var(--notifi-heather);
+  --notifi-toggle-on-bg: var(--notifi-cyan);
+  --notifi-destination-card-text: var(--notifi-dusk);
+  --notifi-icon-unselected: var(--notifi-gray2);
+  --notifi-icon-selected: var(--notifi-gray3);
+  --notifi-tab-unselected-text: var(--notifi-dusk);
+  --notifi-alert-subscription-block-bg: var(--notifi-gray1);
+  --notifi-text-light: var(--notifi-gray2);
+  --notifi-text-medium: var(--notifi-gray3);
+  --notifi-toggle-off-dot-bg: var(--backgroundpressed-100);
+  --notifi-back-button-hover-bg: var(--notifi-light-purple);
+  --notifi-back-button-focus-bg: var(--notifi-purple);
+}
+
+/* Light mode color variables controlled by NotifiContext */
+.notifi-dapp[dark-mode='false'] {
+  --notifi-primary-text: var(--notifi-brand);
+  --notifi-bgimg-left: var(--notifi-white);
+  --notifi-bgimg-middle: var(--notifi-blueish0);
+  --notifi-bgimg-right: var(--notifi-blueish1);
+  --notifi-button-primary-bg: var(--notifi-coral);
+  --notifi-button-primary-blueish-bg: var(--notifi-brand);
+  --notifi-button-hover-bg: var(--notifi-blueish4);
+  --notifi-button-primary-text: var(--notifi-white);
+  --notifi-label-connect-wallet-text: var(--notifi-blueish2);
+  --notifi-card-bg: var(--notifi-light-blue);
+  --notifi-success: var(--notifi-green);
+  --notifi-error: var(--notifi-red);
+  --notifi-toggle-off-bg: var(--notifi-heather);
+  --notifi-toggle-on-bg: var(--notifi-cyan);
+  --notifi-destination-card-text: var(--notifi-dusk);
+  --notifi-icon-unselected: var(--notifi-gray2);
+  --notifi-icon-selected: var(--notifi-gray3);
+  --notifi-tab-unselected-text: var(--notifi-dusk);
+  --notifi-alert-subscription-block-bg: var(--notifi-gray1);
+  --notifi-text-light: var(--notifi-gray2);
+  --notifi-text-medium: var(--notifi-gray3);
+  --notifi-toggle-off-dot-bg: var(--backgroundpressed-100);
+  --notifi-back-button-hover-bg: var(--notifi-light-purple);
+  --notifi-back-button-focus-bg: var(--notifi-purple);
+}
+
+/* Light mode color variables controlled by system preferences */
+/* @media (prefers-color-scheme: dark) {
+  :root {
+    --notifi-bgimg-left: var(--notifi-white);
+    --notifi-bgimg-middle: var(--notifi-blueish0);
+    --notifi-bgimg-right: var(--notifi-blueish1);
+    --notifi-page-bg: var(--notifi-gray0);
+  }
+} */
+
+/* Template (TODO: reference for now, need remove) */
+/* :root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+  --color-bkg: 255 115 179;
+} */
+
+/* @media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}  */
+
+/* body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+*/

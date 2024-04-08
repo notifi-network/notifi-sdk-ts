@@ -45,6 +45,7 @@ export type NotifiSubscriptionData = Readonly<{
   telegramConfirmationUrl?: string;
   useHardwareWallet: boolean;
   useDiscord: boolean;
+  useSlack: boolean;
   /**
    * @deprecated Now this context can be consumed as long as the component is wrapped in NotifiContext
    */
@@ -59,6 +60,7 @@ export type NotifiSubscriptionData = Readonly<{
   setTelegramId: (telegramId: string) => void;
   setUseHardwareWallet: React.Dispatch<React.SetStateAction<boolean>>;
   setUseDiscord: React.Dispatch<React.SetStateAction<boolean>>;
+  setUseSlack: React.Dispatch<React.SetStateAction<boolean>>;
   loading: boolean;
   setLoading: (loading: boolean) => void;
   userId: string;
@@ -69,6 +71,7 @@ export type NotifiSubscriptionData = Readonly<{
   ) => void;
   setPhoneNumberErrorMessage: (value: DestinationError) => void;
   setDiscordErrorMessage: (value: DestinationError) => void;
+  setSlackErrorMessage: (value: DestinationError) => void;
   setTelegramErrorMessage: (value: DestinationError) => void;
   resetErrorMessageState: () => void;
 
@@ -76,6 +79,12 @@ export type NotifiSubscriptionData = Readonly<{
   setDiscordTargetData: React.Dispatch<
     React.SetStateAction<Types.DiscordTargetFragmentFragment | undefined>
   >;
+
+  slackTargetData: Types.SlackChannelTargetFragmentFragment | undefined;
+  setSlackTargetData: React.Dispatch<
+    React.SetStateAction<Types.SlackChannelTargetFragmentFragment | undefined>
+  >;
+
   ftuStage: FtuStage | null;
   syncFtuStage: (isContactInfoRequired?: boolean) => Promise<void>;
   updateFtuStage: (ftuConfigStep: FtuStage) => Promise<void>;
@@ -117,6 +126,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
   >([]);
   const [useHardwareWallet, setUseHardwareWallet] = useState<boolean>(false);
   const [useDiscord, setUseDiscord] = useState<boolean>(false);
+  const [useSlack, setUseSlack] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
 
   const [email, setEmail] = useState<string>('');
@@ -128,12 +138,17 @@ export const NotifiSubscriptionContextProvider: React.FC<
     Types.DiscordTargetFragmentFragment | undefined
   >(undefined);
 
+  const [slackTargetData, setSlackTargetData] = useState<
+    Types.SlackChannelTargetFragmentFragment | undefined
+  >(undefined);
+
   const [destinationErrorMessages, setDestinationErrorMessages] =
     useState<DestinationErrorMessages>({
       email: undefined,
       telegram: undefined,
       phoneNumber: undefined,
       discord: undefined,
+      slack: undefined,
     });
 
   const handleErrorMessage = ({
@@ -161,12 +176,17 @@ export const NotifiSubscriptionContextProvider: React.FC<
     handleErrorMessage({ field: 'discord', value });
   };
 
+  const setSlackErrorMessage = (value: DestinationError) => {
+    handleErrorMessage({ field: 'slack', value });
+  };
+
   const resetErrorMessageState = () => {
     setDestinationErrorMessages({
       email: undefined,
       telegram: undefined,
       phoneNumber: undefined,
       discord: undefined,
+      slack: undefined,
     });
   };
 
@@ -371,6 +391,35 @@ export const NotifiSubscriptionContextProvider: React.FC<
         setUseDiscord(false);
       }
 
+      const slackTarget = targetGroup?.slackChannelTargets?.find(
+        (it) => it?.name === 'Default',
+      );
+
+      if (slackTarget) {
+        switch (slackTarget.verificationStatus) {
+          case 'UNVERIFIED':
+          case 'MISSING_PERMISSIONS':
+          case 'MISSING_CHANNEL':
+            setSlackErrorMessage({
+              type: 'recoverableError',
+              onClick: () =>
+                window.open(slackTarget.verificationLink, '_blank'),
+              message: 'Enable Bot',
+            });
+            break;
+          case 'VERIFIED':
+            setSlackErrorMessage(undefined);
+            break;
+          default:
+            throw new Error('Slack target in unexpected state');
+        }
+        setUseSlack(true);
+        setSlackTargetData(slackTarget);
+      } else {
+        setSlackTargetData(undefined);
+        setUseSlack(false);
+      }
+
       return {
         alerts,
         email: emailTarget?.emailAddress ?? null,
@@ -379,6 +428,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
         telegramConfirmationUrl: telegramTarget?.confirmationUrl ?? null,
         telegramId: telegramTarget?.telegramId ?? null,
         discordId: discordTarget?.id ?? null,
+        slackId: slackTarget?.id ?? null,
       };
     },
     [setAlerts, setEmail, setPhoneNumber, setTelegramId],
@@ -413,10 +463,15 @@ export const NotifiSubscriptionContextProvider: React.FC<
     setPhoneNumberErrorMessage,
     resetErrorMessageState,
     setDiscordErrorMessage,
+    setSlackErrorMessage,
     useDiscord,
+    useSlack,
     setUseDiscord,
+    setUseSlack,
     discordTargetData,
     setDiscordTargetData,
+    slackTargetData,
+    setSlackTargetData,
     render,
     ftuStage,
     syncFtuStage,
