@@ -47,7 +47,7 @@ export const InputFieldSlack: React.FC<InputFieldSlackProps> = ({
                 rel="noopener noreferrer"
                 onClick={() => {
                   window.open(
-                    targetData.slack.data?.verificationLink,
+                    targetData.slack.data?.webhookVerificationLink,
                     '_blank',
                   );
                 }}
