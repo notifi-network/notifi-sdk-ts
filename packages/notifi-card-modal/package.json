@@ -1,0 +1,60 @@
+{
+  "name": "notifi-card-modal",
+  "version": "0.90.8",
+  "description": "React components to access Notifi core services",
+  "keywords": [
+    "notifi",
+    "react",
+    "web3",
+    "blockchain",
+    "notification"
+  ],
+  "author": "eric-notifi <eric.lee@notifi.network>",
+  "homepage": "https://github.com/notifi-network/notifi-sdk-ts#readme",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./dist/index.css": "./dist/index.css"
+  },
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/notifi-network/notifi-sdk-ts.git"
+  },
+  "scripts": {
+    "build": "npm run clean && npm run compile",
+    "clean": "rimraf ./dist",
+    "compile": "tsup lib/index.ts --sourcemap --format cjs,esm --dts --clean --external react",
+    "format": "prettier --config .prettierrc **/*.ts --write",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@notifi-network/notifi-frontend-client": "^0.90.8",
+    "clsx": "^1.2.1",
+    "date-fns": "^2.29.3",
+    "dompurify": "^3.0.5",
+    "libphonenumber-js": "^1.10.13",
+    "react-virtuoso": "^3.1.1"
+  },
+  "devDependencies": {
+    "@notifi-network/notifi-core": "^0.90.8",
+    "@types/dompurify": "^3.0.3",
+    "@types/marked": "^5.0.1"
+  },
+  "tsup": {
+    "noExternal": [
+      "libphonenumber-js"
+    ]
+  }
+}
