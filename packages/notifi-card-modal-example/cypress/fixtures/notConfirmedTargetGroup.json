@@ -1,0 +1,24 @@
+{
+  "id": "e1ec26aae70543a6a7c255ca4fd9cdc4",
+  "name": "Default",
+  "discordTarget": [],
+  "emailTargets": [
+    {
+      "emailAddress": "tester@notifi.network",
+      "id": "e1ec26aae70543a6a7c255ca4fd9cdc4",
+      "isConfirmed": false,
+      "name": "tester@notifi.network"
+    }
+  ],
+  "smsTargets": [],
+  "telegramTargets": [
+    {
+      "id": "ffe4b5c357ba4c56a60028b98248e091",
+      "name": "tester",
+      "telegramId": "tester",
+      "isConfirmed": false,
+      "confirmationUrl": "https://t.me/ericnotifitest_bot?start=nxffa12zaify7eyozlvpl0pfhszv6hsx"
+    }
+  ],
+  "webhookTargets": []
+}
