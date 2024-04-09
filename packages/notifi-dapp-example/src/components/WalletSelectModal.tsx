@@ -1,5 +1,6 @@
 import { Icon } from '@/assets/Icon';
 import { useInjectiveWallets } from '@/context/InjectiveWalletContext';
+import { convertWalletName } from '@/utils/stringUtils';
 import { objectKeys } from '@/utils/typeUtils';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import Image from 'next/image';
@@ -71,7 +72,7 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
                     unoptimized={true}
                     alt={wallet}
                   />
-                  <div>{wallet}</div>
+                  <div>{convertWalletName(wallet)}</div>
                 </div>
               );
             })}
@@ -95,7 +96,7 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
                     unoptimized={true}
                     alt={wallet}
                   />
-                  <div>{wallet}</div>
+                  <div>{convertWalletName(wallet)}</div>
                 </div>
               );
             })}
