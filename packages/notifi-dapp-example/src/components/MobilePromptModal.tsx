@@ -1,5 +1,6 @@
 import { Icon } from '@/assets/Icon';
 import { useInjectiveWallets } from '@/context/InjectiveWalletContext';
+import { convertWalletName } from '@/utils/stringUtils';
 import { objectKeys } from '@notifi-network/notifi-react-card';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import Image from 'next/image';
@@ -98,8 +99,7 @@ export const MobilePromptModal: React.FC<MobilePromptModalProps> = ({
                 {objectKeys(allWallets).map((wallet) => {
                   return (
                     <div key={wallet}>
-                      {window[wallet] ||
-                      !Object.values(allWallets)
+                      {!Object.values(allWallets)
                         .map((wallet) => wallet.isInstalled)
                         .includes(true) ? (
                         <div
@@ -114,7 +114,7 @@ export const MobilePromptModal: React.FC<MobilePromptModalProps> = ({
                             className="mr-3"
                             unoptimized={true}
                           />
-                          {wallet}
+                          {convertWalletName(wallet)}
                         </div>
                       ) : null}
                     </div>
