@@ -58,3 +58,4 @@ export * from './GetUserSettings';
 export * from './UpdateUserSettings';
 export * from './BeginLogInWithWeb3';
 export * from './CompleteLogInWithWeb3';
+export * from './StateChangedService';

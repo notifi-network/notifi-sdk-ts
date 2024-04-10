@@ -65,7 +65,8 @@ export class NotifiService
   Operations.UpdateUserSettingsService,
   Operations.GetUserSettingsService,
   Operations.BeginLogInWithWeb3Service,
-  Operations.CompleteLogInWithWeb3Service {
+  Operations.CompleteLogInWithWeb3Service,
+  Operations.StateChangedService {
   private _jwt: string | undefined;
   private _typedClient: ReturnType<typeof getSdk>;
 
@@ -254,6 +255,13 @@ export class NotifiService
   ): Promise<Generated.FetchDataQuery> {
     const headers = this._requestHeaders();
     return this._typedClient.fetchData(variables, headers);
+  }
+
+  async stateChanged(
+    variables: Generated.StateChangedSubscriptionVariables,
+  ): Promise<Generated.StateChangedSubscription> {
+    const headers = this._requestHeaders();
+    return this._typedClient.stateChanged(variables, headers);
   }
 
   async findTenantConfig(

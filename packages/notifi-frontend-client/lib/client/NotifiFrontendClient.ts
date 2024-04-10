@@ -940,6 +940,17 @@ export class NotifiFrontendClient {
     return result;
   }
 
+  async stateChanged(): Promise<
+    Types.StateChangedSubscription['stateChanged']
+  > {
+    const query = await this._service.stateChanged({})
+    const result = query.stateChanged;
+    if (!result) {
+      throw new Error('Failed to state changes');
+    }
+    return result;
+  }
+
   async getUserSettings(): Promise<Types.GetUserSettingsQuery['userSettings']> {
     const query = await this._service.getUserSettings({});
     const result = query.userSettings;
