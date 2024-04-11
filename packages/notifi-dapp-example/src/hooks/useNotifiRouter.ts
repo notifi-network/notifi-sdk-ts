@@ -4,7 +4,7 @@ import { useNotifiFrontendClientContext } from '@/context/NotifiFrontendClientCo
 import { FtuStage } from '@/context/NotifiUserSettingContext';
 import { useNotifiUserSettingContext } from '@/context/NotifiUserSettingContext';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { useRouterAsync } from './useRouterAsync';
 
@@ -15,12 +15,9 @@ export const useNotifiRouter = () => {
     error: loginError,
     loading: isLoadingLogin,
   } = useNotifiFrontendClientContext();
-  const routeAvailable = useMemo(() => {
-    return frontendClientStatus.isInitialized;
-  }, [frontendClientStatus]);
   const { handleRoute, isLoadingRouter } = useRouterAsync();
   const { setIsGlobalLoading } = useGlobalStateContext();
-  const { ftuStage } = useNotifiUserSettingContext();
+  const { ftuStage, isLoading: isLoadingFtu } = useNotifiUserSettingContext();
   const { wallets, selectedWallet } = useWallets();
   const { wallets: injectiveWallets, selectedWallet: injectiveSelectedWallet } =
     useInjectiveWallets();
@@ -32,7 +29,7 @@ export const useNotifiRouter = () => {
       handleRoute('/notifi/expiry');
       return;
     }
-    if (frontendClientStatus.isAuthenticated) {
+    if (frontendClientStatus.isAuthenticated && !isLoadingFtu) {
       if (!ftuStage) {
         handleRoute('/notifi/signup');
         return;
@@ -45,12 +42,14 @@ export const useNotifiRouter = () => {
         return;
       }
     }
+  }, [frontendClientStatus, ftuStage, isLoadingFtu]);
 
-    if (isLoginStarted.current) return;
+  useEffect(() => {
+    if (isLoginStarted.current || frontendClientStatus.isAuthenticated) return;
     setIsGlobalLoading(true);
     isLoginStarted.current = true;
     login(); // NOTE: No need handle error & loading, use isLoading & error hook instead
-  }, [frontendClientStatus, ftuStage]);
+  }, []);
 
   useEffect(() => {
     if (loginError) {
@@ -64,9 +63,10 @@ export const useNotifiRouter = () => {
   }, [loginError]);
 
   useEffect(() => {
-    if (isLoadingRouter || !routeAvailable || isLoadingLogin) {
+    console.log({ isLoadingLogin });
+    if (isLoadingRouter || isLoadingLogin) {
       return setIsGlobalLoading(true);
     }
     setIsGlobalLoading(false);
-  }, [isLoadingRouter, routeAvailable, isLoadingLogin]);
+  }, [isLoadingRouter, isLoadingLogin]);
 };

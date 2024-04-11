@@ -26,7 +26,11 @@ export const SignUpButton: React.FC<NotifiSignUpButtonProps> = ({
   const eventTypes = data.eventTypes;
 
   const { login } = useNotifiFrontendClientContext();
-  const { ftuStage, updateFtuStage } = useNotifiUserSettingContext();
+  const {
+    ftuStage,
+    updateFtuStage,
+    isLoading: isLoadingFtu,
+  } = useNotifiUserSettingContext();
   const { cardConfig } = useNotifiTenantConfig();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -48,7 +52,8 @@ export const SignUpButton: React.FC<NotifiSignUpButtonProps> = ({
 
   const { setGlobalError, setIsGlobalLoading } = useGlobalStateContext();
 
-  const { subscribeFusionAlerts } = useNotifiTopicContext();
+  const { subscribeFusionAlerts, isLoading: isSubscribingAlerts } =
+    useNotifiTopicContext();
 
   const onClick = useCallback(async () => {
     if (!isAuthenticated) return;
@@ -67,9 +72,7 @@ export const SignUpButton: React.FC<NotifiSignUpButtonProps> = ({
         }
         const newData = await frontendClient.fetchData();
         refreshTargetDocument(newData);
-        handleRoute('/notifi/ftu').then(() => {
-          setIsGlobalLoading(false);
-        });
+        await handleRoute('/notifi/ftu');
       }
     } catch (e: unknown) {
       setGlobalError('ERROR: Failed to signup, please try again.');
@@ -80,11 +83,17 @@ export const SignUpButton: React.FC<NotifiSignUpButtonProps> = ({
   }, [frontendClient, eventTypes, login, setGlobalError, targetGroup]);
 
   useEffect(() => {
-    if (!isLoadingRouter && !isLoading) {
+    if (
+      !isLoadingRouter &&
+      !isLoading &&
+      !isLoadingFtu &&
+      !isSubscribingAlerts
+    ) {
       setIsGlobalLoading(false);
+      return;
     }
     setIsGlobalLoading(true);
-  }, [isLoadingRouter, isLoading]);
+  }, [isLoadingRouter, isLoading, isLoadingFtu, isSubscribingAlerts]);
 
   const hasErrors = !!email.error || !!phoneNumber.error || !!telegram.error;
   const isInputFieldsValid = useMemo(() => {

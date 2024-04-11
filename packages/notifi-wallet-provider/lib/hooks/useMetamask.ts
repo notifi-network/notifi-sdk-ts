@@ -54,6 +54,7 @@ export const useMetamask = (
     };
     return () => {
       window.ethereum?.removeListener('accountsChanged', handleAccountChange);
+      loadingHandler(false);
     };
   }, []);
 
