@@ -4,7 +4,7 @@ import { useNotifiFrontendClientContext } from '@/context/NotifiFrontendClientCo
 import { FtuStage } from '@/context/NotifiUserSettingContext';
 import { useNotifiUserSettingContext } from '@/context/NotifiUserSettingContext';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { useRouterAsync } from './useRouterAsync';
 
@@ -15,9 +15,6 @@ export const useNotifiRouter = () => {
     error: loginError,
     loading: isLoadingLogin,
   } = useNotifiFrontendClientContext();
-  const routeAvailable = useMemo(() => {
-    return frontendClientStatus.isInitialized;
-  }, [frontendClientStatus]);
   const { handleRoute, isLoadingRouter } = useRouterAsync();
   const { setIsGlobalLoading } = useGlobalStateContext();
   const { ftuStage } = useNotifiUserSettingContext();
@@ -64,9 +61,10 @@ export const useNotifiRouter = () => {
   }, [loginError]);
 
   useEffect(() => {
-    if (isLoadingRouter || !routeAvailable || isLoadingLogin) {
+    console.log({ isLoadingLogin });
+    if (isLoadingRouter || isLoadingLogin) {
       return setIsGlobalLoading(true);
     }
     setIsGlobalLoading(false);
-  }, [isLoadingRouter, routeAvailable, isLoadingLogin]);
+  }, [isLoadingRouter, isLoadingLogin]);
 };

@@ -142,15 +142,15 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
         const result = await frontendClient.ensureFusionAlerts({ alerts });
 
         frontendClient.fetchData().then(refreshAlerts);
-        setIsLoading(false);
         return result;
       } catch (e) {
         setGlobalError(
           'ERROR: Fail to subscribeFusionAlerts, please try again.',
         );
         console.log(e);
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     },
     [frontendClient, targetGroup],
   );

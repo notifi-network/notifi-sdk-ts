@@ -57,6 +57,7 @@ export const useKeplr = (
 
     return () => {
       window.removeEventListener('keplr_keystorechange', handleAccountChange);
+      loadingHandler(false);
     };
   }, []);
 
