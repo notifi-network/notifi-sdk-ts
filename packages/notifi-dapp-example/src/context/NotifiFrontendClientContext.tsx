@@ -14,8 +14,6 @@ import {
   useState,
 } from 'react';
 
-import { useGlobalStateContext } from './GlobalStateContext';
-
 export type FrontendClientStatus = {
   isExpired: boolean;
   isInitialized: boolean;
@@ -26,6 +24,7 @@ export type NotifiFrontendClientContextType = {
   frontendClient: NotifiFrontendClient;
   frontendClientStatus: FrontendClientStatus;
   loading: boolean;
+  error: Error | null;
   login: () => Promise<void>;
 };
 
@@ -42,10 +41,10 @@ export type NotifiFrontendClientProviderProps = {
 export const NotifiFrontendClientProvider: FC<
   PropsWithChildren<NotifiFrontendClientProviderProps>
 > = ({ children, tenantId, env, ...walletWithSignParams }) => {
-  const { setIsGlobalLoading, popGlobalInfoModal } = useGlobalStateContext();
   const [frontendClient, setFrontendClient] =
     useState<NotifiFrontendClient | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
   const [frontendClientStatus, setFrontendClientStatus] =
     useState<FrontendClientStatus>({
       isExpired: false,
@@ -61,7 +60,7 @@ export const NotifiFrontendClientProvider: FC<
     );
     const frontendClient = newFrontendClient(configInput);
 
-    setIsGlobalLoading(true);
+    setLoading(true);
     frontendClient
       .initialize()
       .then(() => {
@@ -71,17 +70,15 @@ export const NotifiFrontendClientProvider: FC<
           isAuthenticated: frontendClient.userState?.status === 'authenticated',
         });
         setFrontendClient(frontendClient);
-        popGlobalInfoModal(null);
+        setError(null);
       })
       .catch((error) => {
-        popGlobalInfoModal({
-          message: 'ERROR: Failed to initialize Notifi frontend client',
-          iconOrEmoji: { type: 'icon', id: 'warning' },
-          timeout: 5000,
-        });
-        console.log(error);
+        setError(
+          new Error('ERROR: Failed to initialize Notifi frontend client'),
+        );
+        console.error(error);
       })
-      .finally(() => setIsGlobalLoading(false));
+      .finally(() => setLoading(false));
   }, [walletWithSignParams.walletPublicKey]);
 
   const login = async () => {
@@ -96,13 +93,10 @@ export const NotifiFrontendClientProvider: FC<
         isInitialized: !!frontendClient,
         isAuthenticated: frontendClient.userState?.status === 'authenticated',
       });
+      setError(null);
     } catch (error) {
-      popGlobalInfoModal({
-        message: 'ERROR: Failed to login',
-        iconOrEmoji: { type: 'icon', id: 'warning' },
-        timeout: 5000,
-      });
-      console.log(error);
+      setError(new Error('ERROR: Failed to login'));
+      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -116,6 +110,7 @@ export const NotifiFrontendClientProvider: FC<
         frontendClient,
         frontendClientStatus,
         loading,
+        error,
         login,
       }}
     >
