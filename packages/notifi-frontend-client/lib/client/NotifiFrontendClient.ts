@@ -11,6 +11,8 @@ import {
 import type {
   CardConfigItemV1,
   EventTypeItem,
+  FusionEventTopic,
+  TenantConfig,
   WalletBalanceEventTypeItem,
 } from '../models';
 import type { Authorization, NotifiStorage, Roles } from '../storage';
@@ -1011,6 +1013,7 @@ export class NotifiFrontendClient {
     return { pageInfo, nodes };
   }
 
+  /**@deprecated for legacy infra, use fetchTenantConfig instead for new infra (fusionEvent)  */
   async fetchSubscriptionCard(
     variables: FindSubscriptionCardParams,
   ): Promise<CardConfigType> {
@@ -1047,6 +1050,55 @@ export class NotifiFrontendClient {
     }
 
     return card;
+  }
+
+  async fetchTenantConfig(
+    variables: FindSubscriptionCardParams,
+  ): Promise<TenantConfig> {
+    const query = await this._service.findTenantConfig({
+      input: {
+        ...variables,
+        tenant: this._configuration.tenantId,
+      },
+    });
+    const result = query.findTenantConfig;
+    if (result === undefined || !result.dataJson || !result.fusionEvents) {
+      throw new Error('Failed to find tenant config');
+    }
+
+    const tenantConfigJsonString = result.dataJson;
+    if (tenantConfigJsonString === undefined) {
+      throw new Error('Invalid config data');
+    }
+
+    const cardConfig = JSON.parse(tenantConfigJsonString) as CardConfigItemV1;
+    const fusionEventDescriptors = result.fusionEvents;
+
+    if (!cardConfig || cardConfig.version !== 'v1' || !fusionEventDescriptors)
+      throw new Error('Unsupported config format');
+
+    const fusionEventDescriptorMap = new Map<
+      string,
+      Types.FusionEventDescriptor
+    >(fusionEventDescriptors.map((item) => [item?.name ?? '', item ?? {}]));
+
+    fusionEventDescriptorMap.delete('');
+
+    const fusionEventTopics: FusionEventTopic[] = cardConfig.eventTypes
+      .map((eventType) => {
+        if (eventType.type === 'fusion') {
+          const fusionEventDescriptor = fusionEventDescriptorMap.get(
+            eventType.name,
+          );
+          return {
+            uiConfig: eventType,
+            fusionEventDescriptor,
+          };
+        }
+      })
+      .filter((item): item is FusionEventTopic => !!item);
+
+    return { cardConfig, fusionEventTopics };
   }
 
   async copyAuthorization(config: NotifiFrontendConfiguration) {

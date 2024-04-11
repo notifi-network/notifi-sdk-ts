@@ -1,6 +1,7 @@
 // TODO: Import from library rather than copy / paste
-import { Types as Gql } from '@notifi-network/notifi-graphql';
+import { Types as Gql, Types } from '@notifi-network/notifi-graphql';
 
+import { CardConfigType } from '../client';
 import { AlertFrequency, FilterOptions } from './FilterOptions';
 
 export type ValueOrRef<ValueType> =
@@ -252,3 +253,15 @@ export type TitleSubtitleConfigActive = Readonly<{
 export type TitleSubtitleConfig =
   | TitleSubtitleConfigActive
   | TitleSubtitleConfigInactive;
+
+export type FusionEventTopic = {
+  // The following from original fusionEventTypeItem (Legacy)
+  uiConfig: FusionEventTypeItem;
+  // The following is the respective fusionEventDescripter
+  fusionEventDescriptor: Types.FusionEventDescriptor;
+};
+
+export type TenantConfig = {
+  cardConfig: CardConfigType; // Legacy
+  fusionEventTopics: ReadonlyArray<FusionEventTopic>;
+};
