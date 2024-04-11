@@ -10,10 +10,11 @@ import {
   useState,
 } from 'react';
 
-import { useGlobalStateContext } from './GlobalStateContext';
 import { useNotifiFrontendClientContext } from './NotifiFrontendClientContext';
 
 export type NotifiTenantConfigContextType = {
+  isLoading: boolean;
+  error: Error | null;
   cardConfig: CardConfigItemV1;
   inputs: Record<string, unknown>; // TODO: deprecate for implement?
 };
@@ -32,15 +33,17 @@ type NotifiTenantConfigProps = {
 export const NotifiTenantConfigContextProvider: FC<
   PropsWithChildren<NotifiTenantConfigProps>
 > = ({ inputs = {}, children }) => {
-  const { setIsGlobalLoading, setGlobalError } = useGlobalStateContext();
   const { frontendClient, frontendClientStatus } =
     useNotifiFrontendClientContext();
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
   const [cardConfig, setCardConfig] = useState<CardConfigItemV1 | null>(null);
 
   useEffect(() => {
     if (!frontendClientStatus.isInitialized) return;
-    setIsGlobalLoading(true);
+    setIsLoading(true);
+
     frontendClient
       .fetchSubscriptionCard({
         id: notifiSubscriptionCardId,
@@ -50,12 +53,13 @@ export const NotifiTenantConfigContextProvider: FC<
         if ('version' in cardConfig && cardConfig.version !== 'IntercomV1') {
           setCardConfig(cardConfig);
         }
+        setError(null);
       })
       .catch((e) => {
-        setGlobalError('ERROR: Failed to fetch Card Config, please try again');
-        console.log(e);
+        setError(new Error('Failed to fetch Card Config, please try again'));
+        console.error(e);
       })
-      .finally(() => setIsGlobalLoading(false));
+      .finally(() => setIsLoading(false));
 
     // TODO: Also fetch fusion events (When `User` role is allowed to fetch fusion events)
     // const [fusionEvents, setFusionEvents] =
@@ -89,7 +93,9 @@ export const NotifiTenantConfigContextProvider: FC<
   }
 
   return (
-    <NotifiTenantConfigContext.Provider value={{ cardConfig, inputs }}>
+    <NotifiTenantConfigContext.Provider
+      value={{ cardConfig, inputs, isLoading, error }}
+    >
       {children}
     </NotifiTenantConfigContext.Provider>
   );
