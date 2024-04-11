@@ -136,7 +136,7 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
     frontendClient.fetchData().then((data) => {
       refreshTargetDocument(data);
     });
-  }, [frontendClient]);
+  }, [frontendClient, frontendClientStatus]);
 
   const [hasEmailChanges, setHasEmailChanges] = useState<boolean>(false);
   const [hasTelegramChanges, setHasTelegramChanges] = useState<boolean>(false);

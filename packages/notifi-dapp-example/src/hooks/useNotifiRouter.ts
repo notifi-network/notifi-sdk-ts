@@ -17,7 +17,7 @@ export const useNotifiRouter = () => {
   } = useNotifiFrontendClientContext();
   const { handleRoute, isLoadingRouter } = useRouterAsync();
   const { setIsGlobalLoading } = useGlobalStateContext();
-  const { ftuStage } = useNotifiUserSettingContext();
+  const { ftuStage, isLoading: isLoadingFtu } = useNotifiUserSettingContext();
   const { wallets, selectedWallet } = useWallets();
   const { wallets: injectiveWallets, selectedWallet: injectiveSelectedWallet } =
     useInjectiveWallets();
@@ -29,7 +29,7 @@ export const useNotifiRouter = () => {
       handleRoute('/notifi/expiry');
       return;
     }
-    if (frontendClientStatus.isAuthenticated) {
+    if (frontendClientStatus.isAuthenticated && !isLoadingFtu) {
       if (!ftuStage) {
         handleRoute('/notifi/signup');
         return;
@@ -42,12 +42,14 @@ export const useNotifiRouter = () => {
         return;
       }
     }
+  }, [frontendClientStatus, ftuStage, isLoadingFtu]);
 
-    if (isLoginStarted.current) return;
+  useEffect(() => {
+    if (isLoginStarted.current || frontendClientStatus.isAuthenticated) return;
     setIsGlobalLoading(true);
     isLoginStarted.current = true;
     login(); // NOTE: No need handle error & loading, use isLoading & error hook instead
-  }, [frontendClientStatus, ftuStage]);
+  }, []);
 
   useEffect(() => {
     if (loginError) {
