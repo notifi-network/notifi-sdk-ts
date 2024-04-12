@@ -19,15 +19,15 @@ export const AlertSubscriptionRow: React.FC<AlertSubscriptionRowProps> = ({
     useNotifiTopicContext();
 
   return (
-    <div className="flex justify-between p-3 bg-white  rounded border border-gray-200">
-      <div className="flex text-sm font-medium">
+    <div className="flex justify-between p-3 bg-notifi-destination-card-bg rounded border border-gray-200">
+      <div className="flex text-sm font-medium text-notifi-text">
         <label>{eventType.name}</label>
 
         <div className="group">
           {eventType.tooltipContent ? (
             <div className="relative">
-              <Icon id="info" className="text-black opacity-30 " />
-              <div className="hidden group-hover:block absolute text-sm font-medium max-w-48 bg-white p-4 rounded z-10 border border-gray-200 w-44 h-20 overflow-y-scroll top-[-5rem] right-[-4rem]">
+              <Icon id="info" className="text-notifi-text-light" />
+              <div className="hidden group-hover:block absolute text-sm font-medium max-w-48 bg-notifi-card-bg p-4 rounded-md z-10 border border-notifi-card-border w-44 h-20 overflow-y-scroll top-[-5rem] right-[-4rem]">
                 <div>{eventType.tooltipContent}</div>
               </div>
             </div>

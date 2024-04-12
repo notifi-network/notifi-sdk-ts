@@ -49,20 +49,22 @@ export const InputFieldEmail: React.FC<InputFieldEmailProps> = ({
   const hasErrors = !!email.error;
 
   return (
-    <div className="bg-notifi-card-bg rounded-md w-full sm:w-112 h-18 flex flex-row items-center mb-2 gap-2 sm:gap-4">
-      <div className="bg-white rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
+    <div className="bg-notifi-destination-card-bg rounded-md w-full sm:w-112 h-18 flex flex-row items-center mb-2 gap-2 sm:gap-4">
+      <div className="bg-notifi-destination-logo-card-bg rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
         <Icon
           id="email-icon"
           width="15px"
           height="12px"
-          className="text-notifi-button-primary-blueish-bg"
+          className="text-notifi-tenant-brand-bg"
         />
-        <div className="font-medium text-xs mt-2">Email</div>
+        <div className="font-medium text-xs mt-2 text-notifi-grey-text">
+          Email
+        </div>
       </div>
       <div className="relative w-3/4">
         <input
-          className={`border rounded-md w-full sm:w-86 h-11 mr-4 text-sm pl-3 focus:outline-none ${
-            hasErrors ? 'border-notifi-error' : 'border-gray-300'
+          className={`text-notifi-text border bg-notifi-card-bg rounded-md w-full sm:w-86 h-11 mr-4 text-sm pl-3 focus:border-notifi-input-border ${
+            hasErrors ? 'border-notifi-error' : 'border-none'
           } flex ${hasErrors ? 'pt-3' : 'pt-0'}`}
           data-cy="notifiEmailInput"
           onBlur={validateEmail}

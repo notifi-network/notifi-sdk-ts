@@ -35,7 +35,7 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
         onClick={() => setIsOpenWalletsModal(false)}
       ></div>
       <div
-        className={`flex flex-col fixed w-90 min-h-72 md:min-w-[40rem] md:h-80 border border-gray-700/50 bg-white rounded-xl ${
+        className={`flex flex-col fixed w-90 min-h-72 md:min-w-[40rem] md:h-80 border border-notifi-card-border bg-notifi-destination-card-bg rounded-xl ${
           Object.values(allWallets)
             .map((wallet) => wallet.isInstalled)
             .includes(true)
@@ -44,7 +44,9 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
         } sm:flex`}
       >
         <div className=" flex h-14 justify-center items-end">
-          <div className="font-medium text-xl">Select your wallet</div>
+          <div className="font-medium text-xl text-notifi-text">
+            Select your wallet
+          </div>
         </div>
         <Icon
           id="close-icon"
@@ -58,7 +60,7 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
               return (
                 <div
                   key={wallet}
-                  className="bg-white size-32 flex items-center justify-center flex-col gap-3 rounded-lg border border-gray-600/10 cursor-pointer"
+                  className="size-32 flex items-center justify-center flex-col gap-3 rounded-lg border border-notifi-card-border bg-notifi-destination-card-bg cursor-pointer pt-2 text-notifi-text"
                   onClick={() => {
                     wallets[wallet].connect();
                     setIsOpenWalletsModal(false);
@@ -82,7 +84,7 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
               return (
                 <div
                   key={wallet}
-                  className="bg-white size-32 flex items-center justify-center flex-col gap-3 rounded-lg border border-gray-600/10 cursor-pointer"
+                  className="size-32 flex items-center justify-center flex-col gap-3 rounded-lg border border-notifi-card-border bg-notifi-destination-card-bg cursor-pointer pt-2 text-notifi-text"
                   onClick={() => {
                     injectiveWallets[wallet].connect();
                     setIsOpenWalletsModal(false);
