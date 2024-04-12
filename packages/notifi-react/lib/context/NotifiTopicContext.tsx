@@ -18,7 +18,7 @@ import React, {
 } from 'react';
 
 import { useNotifiFrontendClientContext } from './NotifiFrontendClientContext';
-import { useNotifiTenantConfig } from './NotifiTenantConfigContext';
+import { useNotifiTenantConfigContext } from './NotifiTenantConfigContext';
 
 export type NotifiTopicContextType = {
   isLoading: boolean;
@@ -46,7 +46,7 @@ const NotifiTopicContext = createContext<NotifiTopicContextType>(
 export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
   children,
 }) => {
-  const { inputs } = useNotifiTenantConfig();
+  const { inputs } = useNotifiTenantConfigContext();
   const [error, setError] = useState<Error | null>(null);
   const { frontendClient, frontendClientStatus } =
     useNotifiFrontendClientContext();

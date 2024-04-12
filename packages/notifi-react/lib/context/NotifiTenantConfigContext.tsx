@@ -68,5 +68,5 @@ export const NotifiTenantConfigContextProvider: FC<
   );
 };
 
-export const useNotifiTenantConfig = () =>
+export const useNotifiTenantConfigContext = () =>
   useContext(NotifiTenantConfigContext);

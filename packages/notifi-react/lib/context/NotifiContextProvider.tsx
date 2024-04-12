@@ -1,7 +1,7 @@
 import React, { FC, PropsWithChildren } from 'react';
 
 import {
-  NotifiFrontendClientProvider,
+  NotifiFrontendClientContextProvider,
   NotifiFrontendClientProviderProps,
 } from './NotifiFrontendClientContext';
 import { NotifiHistoryContextProvider } from './NotifiHistoryContext';
@@ -12,15 +12,15 @@ import {
 } from './NotifiTenantConfigContext';
 import { NotifiTopicContextProvider } from './NotifiTopicContext';
 
-export type NotifiContextWrapperProps = NotifiFrontendClientProviderProps &
+export type NotifiContextProviderProps = NotifiFrontendClientProviderProps &
   NotifiTenantConfigProps;
 
-export const NotifiContextWrapper: FC<
-  PropsWithChildren<NotifiContextWrapperProps>
+export const NotifiContextProvider: FC<
+  PropsWithChildren<NotifiContextProviderProps>
 > = ({ children, ...params }) => {
   return (
-    <NotifiFrontendClientProvider {...params}>
-      <NotifiTenantConfigContextProvider {...params}>
+    <NotifiFrontendClientContextProvider {...params}>
+      <NotifiTenantConfigContextProvider cardId={params.cardId}>
         <NotifiTargetContextProvider>
           <NotifiTopicContextProvider>
             <NotifiHistoryContextProvider>
@@ -29,6 +29,6 @@ export const NotifiContextWrapper: FC<
           </NotifiTopicContextProvider>
         </NotifiTargetContextProvider>
       </NotifiTenantConfigContextProvider>
-    </NotifiFrontendClientProvider>
+    </NotifiFrontendClientContextProvider>
   );
 };

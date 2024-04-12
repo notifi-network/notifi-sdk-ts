@@ -38,7 +38,7 @@ export type NotifiFrontendClientProviderProps = {
   env: NotifiEnvironment;
 } & WalletWithSignParams;
 
-export const NotifiFrontendClientProvider: FC<
+export const NotifiFrontendClientContextProvider: FC<
   PropsWithChildren<NotifiFrontendClientProviderProps>
 > = ({ children, tenantId, env, ...walletWithSignParams }) => {
   const [isLoading, setIsLoading] = useState(false);

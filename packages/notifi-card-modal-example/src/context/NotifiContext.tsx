@@ -1,7 +1,7 @@
 'use client';
 
-import { NotifiContextWrapper } from '@notifi-network/notifi-card-modal';
 import { NotifiEnvironment } from '@notifi-network/notifi-frontend-client';
+import { NotifiContextProvider } from '@notifi-network/notifi-react';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import { getBytes } from 'ethers';
 import { PropsWithChildren } from 'react';
@@ -56,15 +56,15 @@ export const NotifiCardModalContextWrapper: React.FC<PropsWithChildren> = ({
   if (!signMessage) return <div>No available wallet to sign</div>;
 
   return (
-    <NotifiContextWrapper
+    <NotifiContextProvider
       tenantId={tenantId}
       env={env}
-      walletBlockchain="ETHEREUM"
+      walletBlockchain={walletBlockchain}
       walletPublicKey={walletPublicKey}
       signMessage={signMessage}
       cardId={cardId}
     >
       {children}
-    </NotifiContextWrapper>
+    </NotifiContextProvider>
   );
 };

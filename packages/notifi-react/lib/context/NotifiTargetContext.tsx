@@ -81,7 +81,7 @@ export type UpdateTargetInputs = <T extends 'form' | 'toggle'>(
   target: T extends 'form'
     ? Extract<Target, 'email' | 'phoneNumber' | 'telegram'>
     : Extract<Target, 'discord' | 'slack'>,
-  value: T extends 'form' ? string : boolean,
+  value: T extends 'form' ? { value: string; error?: string } : boolean,
 ) => void;
 
 export type NotifiTargetContextType = {
@@ -225,7 +225,7 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
       target: T extends 'form'
         ? Extract<Target, 'email' | 'phoneNumber' | 'telegram'>
         : Extract<Target, 'discord' | 'slack'>,
-      value: T extends 'form' ? string : boolean,
+      value: T extends 'form' ? { value: string; error?: string } : boolean,
     ) => {
       if (target in targetInputs) {
         setTargetInputs((prev) => ({
@@ -239,23 +239,20 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
 
   const renewTargetGroup = useCallback(() => {
     setIsLoading(true);
-    return (
-      frontendClient
-        .ensureTargetGroup(targetGroupToBeSaved)
-        // .ensureTargetGroup(targetGroupInput)
-        .then((_result) => {
-          frontendClient
-            .fetchData()
-            .then((data) => {
-              refreshTargetDocument(data);
-              setError(null);
-            })
-            .catch((e) => setError(e as Error))
-            .finally(() => setIsLoading(false));
-        })
-        .catch((e) => setError(e as Error))
-        .finally(() => setIsLoading(false))
-    );
+    return frontendClient
+      .ensureTargetGroup(targetGroupToBeSaved)
+      .then((_result) => {
+        frontendClient
+          .fetchData()
+          .then((data) => {
+            refreshTargetDocument(data);
+            setError(null);
+          })
+          .catch((e) => setError(e as Error))
+          .finally(() => setIsLoading(false));
+      })
+      .catch((e) => setError(e as Error))
+      .finally(() => setIsLoading(false));
   }, [frontendClient, targetGroupToBeSaved]);
 
   // NOTE: The followings are internal functions
