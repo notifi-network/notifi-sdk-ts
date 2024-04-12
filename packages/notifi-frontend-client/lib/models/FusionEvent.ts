@@ -10,13 +10,17 @@ export type FusionEventMetadata = {
 /**
  * @param name - `string` unique name
  */
-export type AlertFilter = {
+export type AlertFilter = AlertFilterBase | AlertFrequencyFilter;
+export type AlertFilterBase = {
   name: string;
   type: AlertFilterType;
   executionPriority: number;
-  minimumDurationBetweenTriggersInMinutes: number;
   userInputParams: UserInputParam<UiType>[];
   staticFilterParams?: Record<string, object | string | number>;
+};
+
+export type AlertFrequencyFilter = AlertFilterBase & {
+  minimumDurationBetweenTriggersInMinutes: number;
 };
 
 export type RequiredParserVariable = {
