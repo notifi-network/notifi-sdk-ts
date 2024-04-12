@@ -14,7 +14,7 @@ import React, {
 import { useNotifiFrontendClientContext } from './NotifiFrontendClientContext';
 
 export type NotifiTenantConfigContextType = {
-  cardConfig: CardConfigItemV1;
+  cardConfig: CardConfigItemV1 | null;
   fusionEventTopics: ReadonlyArray<FusionEventTopic>;
   inputs: Record<string, unknown>;
   isLoading: boolean;
@@ -42,7 +42,6 @@ export const NotifiTenantConfigContextProvider: FC<
   const [fusionEventTopics, setFusionEventTopics] = useState<
     ReadonlyArray<FusionEventTopic>
   >([]);
-
   useEffect(() => {
     if (!frontendClientStatus.isInitialized) return;
     setIsLoading(true);
@@ -58,21 +57,7 @@ export const NotifiTenantConfigContextProvider: FC<
         setError(e);
       })
       .finally(() => setIsLoading(false));
-  }, [frontendClient]);
-
-  if (!cardConfig) {
-    setError(new Error('ERROR: No card config found.'));
-    return null;
-  }
-
-  if (fusionEventTopics.length === 0) {
-    setError(
-      new Error(
-        'ERROR: No fusion event topics found, this tenant is deprecated.',
-      ),
-    );
-    return null;
-  }
+  }, [frontendClientStatus]);
 
   return (
     <NotifiTenantConfigContext.Provider
