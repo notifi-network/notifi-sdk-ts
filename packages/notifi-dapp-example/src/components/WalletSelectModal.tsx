@@ -1,5 +1,4 @@
 import { Icon } from '@/assets/Icon';
-import { useInjectiveWallets } from '@/context/InjectiveWalletContext';
 import { convertWalletName } from '@/utils/stringUtils';
 import { objectKeys } from '@/utils/typeUtils';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
@@ -14,11 +13,9 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
   setIsOpenWalletsModal,
 }) => {
   const { wallets } = useWallets();
-  const { wallets: injectiveWallets } = useInjectiveWallets();
 
   const allWallets = {
     ...wallets,
-    ...injectiveWallets,
   };
 
   return (
@@ -55,7 +52,9 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
         />
         <div className="flex grow gap-6 p-5 justify-center items-center flex-wrap">
           {objectKeys(wallets)
-            .filter((wallet) => wallets[wallet].isInstalled)
+            .filter(
+              (wallet) => wallets[wallet].isInstalled && wallet === 'metamask',
+            )
             .map((wallet) => {
               return (
                 <div
@@ -63,30 +62,6 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
                   className="size-32 flex items-center justify-center flex-col gap-3 rounded-lg border border-notifi-card-border bg-notifi-destination-card-bg cursor-pointer pt-2 text-notifi-text"
                   onClick={() => {
                     wallets[wallet].connect();
-                    setIsOpenWalletsModal(false);
-                    /** No need to handle loading and error case, use `const {isLoading, error} = useWallets()  */
-                  }}
-                >
-                  <Image
-                    src={`/logos/${wallet}.svg`}
-                    width={77}
-                    height={77}
-                    unoptimized={true}
-                    alt={wallet}
-                  />
-                  <div>{convertWalletName(wallet)}</div>
-                </div>
-              );
-            })}
-          {objectKeys(injectiveWallets)
-            .filter((wallet) => injectiveWallets[wallet].isInstalled)
-            .map((wallet) => {
-              return (
-                <div
-                  key={wallet}
-                  className="size-32 flex items-center justify-center flex-col gap-3 rounded-lg border border-notifi-card-border bg-notifi-destination-card-bg cursor-pointer pt-2 text-notifi-text"
-                  onClick={() => {
-                    injectiveWallets[wallet].connect();
                     setIsOpenWalletsModal(false);
                     /** No need to handle loading and error case, use `const {isLoading, error} = useWallets()  */
                   }}
