@@ -13,9 +13,9 @@ export default function NotifiSignup({
   useNotifiRouter();
 
   const {
-    frontendClientStatus: { isInitialized, isAuthenticated },
+    frontendClientStatus: { isInitialized },
   } = useNotifiFrontendClientContext();
-  if (!isInitialized || isAuthenticated) return null;
+  if (!isInitialized) return null;
 
   return (
     <div className="w-full h-screen flex flex-col justify-start items-center md:items-center md:justify-center bg-notifi-page-bg">

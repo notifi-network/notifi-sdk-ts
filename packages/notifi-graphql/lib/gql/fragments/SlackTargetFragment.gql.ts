@@ -7,6 +7,7 @@ export const SlackChannelTargetFragment = gql`
     slackChannelName
     slackWorkspaceName
     verificationLink
+    webhookVerificationLink
     verificationStatus
   }
 `;
@@ -19,6 +20,7 @@ export const CreateSlackChannelTargetResponseFragment = gql`
       slackChannelName
       slackWorkspaceName
       verificationLink
+      webhookVerificationLink
       verificationStatus
     }
   }
@@ -41,6 +43,7 @@ export const GetSlackChannelTargetsResponseFragment = gql`
       slackChannelName
       slackWorkspaceName
       verificationLink
+      webhookVerificationLink
       verificationStatus
     }
   }

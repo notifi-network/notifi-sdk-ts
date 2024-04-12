@@ -1,26 +1,39 @@
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
+import { useInjectiveWallets } from '@/context/InjectiveWalletContext';
 import { useNotifiFrontendClientContext } from '@/context/NotifiFrontendClientContext';
 import { FtuStage } from '@/context/NotifiUserSettingContext';
 import { useNotifiUserSettingContext } from '@/context/NotifiUserSettingContext';
-import { useEffect, useMemo } from 'react';
+import { useWallets } from '@notifi-network/notifi-wallet-provider';
+import { useEffect, useRef } from 'react';
 
 import { useRouterAsync } from './useRouterAsync';
 
 export const useNotifiRouter = () => {
-  const { frontendClientStatus } = useNotifiFrontendClientContext();
-  const routeAvailable = useMemo(() => {
-    return frontendClientStatus.isInitialized;
-  }, [frontendClientStatus]);
+  const {
+    frontendClientStatus,
+    login,
+    error: loginError,
+    loading: isLoadingLogin,
+  } = useNotifiFrontendClientContext();
   const { handleRoute, isLoadingRouter } = useRouterAsync();
   const { setIsGlobalLoading } = useGlobalStateContext();
-  const { ftuStage } = useNotifiUserSettingContext();
+  const { ftuStage, isLoading: isLoadingFtu } = useNotifiUserSettingContext();
+  const { wallets, selectedWallet } = useWallets();
+  const { wallets: injectiveWallets, selectedWallet: injectiveSelectedWallet } =
+    useInjectiveWallets();
+  const isLoginStarted = useRef(false);
 
   useEffect(() => {
+    if (!frontendClientStatus.isInitialized) return;
     if (frontendClientStatus.isExpired) {
       handleRoute('/notifi/expiry');
       return;
     }
-    if (frontendClientStatus.isAuthenticated) {
+    if (frontendClientStatus.isAuthenticated && !isLoadingFtu) {
+      if (!ftuStage) {
+        handleRoute('/notifi/signup');
+        return;
+      }
       if (ftuStage === FtuStage.Done) {
         handleRoute('/notifi/dashboard');
         return;
@@ -29,14 +42,31 @@ export const useNotifiRouter = () => {
         return;
       }
     }
-    handleRoute('/notifi/signup');
-    return;
-  }, [frontendClientStatus]);
+  }, [frontendClientStatus, ftuStage, isLoadingFtu]);
 
   useEffect(() => {
-    if (isLoadingRouter || !routeAvailable) {
+    if (isLoginStarted.current || frontendClientStatus.isAuthenticated) return;
+    setIsGlobalLoading(true);
+    isLoginStarted.current = true;
+    login(); // NOTE: No need handle error & loading, use isLoading & error hook instead
+  }, []);
+
+  useEffect(() => {
+    if (loginError) {
+      handleRoute('/');
+      if (selectedWallet) {
+        wallets[selectedWallet].disconnect();
+      } else if (injectiveSelectedWallet) {
+        injectiveWallets[injectiveSelectedWallet].disconnect();
+      }
+    }
+  }, [loginError]);
+
+  useEffect(() => {
+    console.log({ isLoadingLogin });
+    if (isLoadingRouter || isLoadingLogin) {
       return setIsGlobalLoading(true);
     }
     setIsGlobalLoading(false);
-  }, [isLoadingRouter, routeAvailable]);
+  }, [isLoadingRouter, isLoadingLogin]);
 };
