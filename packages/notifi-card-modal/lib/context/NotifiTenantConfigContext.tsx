@@ -25,7 +25,7 @@ const NotifiTenantConfigContext = createContext<NotifiTenantConfigContextType>(
   {} as NotifiTenantConfigContextType,
 );
 
-type NotifiTenantConfigProps = {
+export type NotifiTenantConfigProps = {
   inputs?: Record<string, unknown>;
   cardId: string;
 };
