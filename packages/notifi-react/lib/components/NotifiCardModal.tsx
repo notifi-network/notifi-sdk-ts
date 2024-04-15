@@ -8,7 +8,7 @@ import {
   useNotifiUserSettingContext,
 } from '../context';
 import { useGlobalStateContext } from '../context/GlobalStateContext';
-import { Connect } from './Connect';
+import { Connect, ConnectProps } from './Connect';
 import { ErrorGlobal, ErrorGlobalProps } from './ErrorGlobal';
 import { Ftu } from './Ftu';
 import { Inbox } from './Inbox';
@@ -54,9 +54,11 @@ export type NotifiCardModalProps = Readonly<{
     // LoadingStateCard: LoadingStateCardProps['copy'];
     ErrorGlobal: ErrorGlobalProps['copy'];
     LoadingGlobal: LoadingGlobalProps['copy'];
+    Connect: ConnectProps['copy'];
   }>;
   classNames?: Readonly<{
     container?: string;
+    Connect?: ConnectProps['classNames'];
     // ErrorStateCard?: ErrorStateCardProps['classNames'];
     // FetchedStateCard?: FetchedStateCardProps['classNames'];
     // LoadingStateCard?: LoadingStateCardProps['classNames'];
@@ -76,7 +78,7 @@ export type NotifiCardModalProps = Readonly<{
 
 type CardModalView = 'connect' | 'expiry' | 'ftu' | 'Inbox';
 
-export const NotifiCardModal: React.FC<NotifiCardModalProps> = (params) => {
+export const NotifiCardModal: React.FC<NotifiCardModalProps> = (props) => {
   const {
     frontendClientStatus,
     isLoading: isLoadingClient,
@@ -99,8 +101,8 @@ export const NotifiCardModal: React.FC<NotifiCardModalProps> = (params) => {
   } = useGlobalStateContext();
   const [error, setError] = useState<Error | null>(null);
 
-  if (params.onClose) {
-    setGlobalCtas({ onClose: params.onClose });
+  if (props.onClose) {
+    setGlobalCtas({ onClose: props.onClose });
   }
 
   useEffect(() => {
@@ -138,28 +140,43 @@ export const NotifiCardModal: React.FC<NotifiCardModalProps> = (params) => {
           'ERROR: Failed to load client or user settings, please try again',
         ),
       });
-      console.log({ clientError, userSettingError, error });
       return;
     }
     setGlobalError(null);
-  }, [clientError, userSettingError, error]);
+  }, [userSettingError, error]);
+
+  if (globalError || globalLoading.isLoading) {
+    return (
+      <div
+        className={clsx(
+          props.darkMode ? 'notifi-theme-dark' : 'notifi-theme-light',
+          'notifi-card-modal',
+          props.classNames?.container,
+        )}
+      >
+        {globalLoading.isLoading ? <LoadingGlobal /> : null}
+        {globalError ? <ErrorGlobal /> : null}
+      </div>
+    );
+  }
 
   return (
     <div
       className={clsx(
-        params.darkMode ? 'notifi-theme-dark' : 'notifi-theme-light',
+        props.darkMode ? 'notifi-theme-dark' : 'notifi-theme-light',
         'notifi-card-modal',
-        params.classNames?.container,
+        props.classNames?.container,
       )}
     >
-      <div>
-        {globalLoading.isLoading ? <LoadingGlobal /> : null}
-        {globalError ? <ErrorGlobal /> : null}
-        {CardModalView === 'connect' ? <Connect /> : null}
-        {CardModalView === 'expiry' ? <Connect /> : null}
-        {CardModalView === 'ftu' ? <Ftu /> : null}
-        {CardModalView === 'Inbox' ? <Inbox /> : null}
-      </div>
+      {CardModalView === 'connect' ? <Connect /> : null}
+      {CardModalView === 'expiry' ? (
+        <Connect
+          copy={props.copy?.Connect}
+          classNames={props.classNames?.Connect}
+        />
+      ) : null}
+      {CardModalView === 'ftu' ? <Ftu /> : null}
+      {CardModalView === 'Inbox' ? <Inbox /> : null}
     </div>
   );
 };

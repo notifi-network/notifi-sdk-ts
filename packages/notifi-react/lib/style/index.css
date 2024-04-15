@@ -1,4 +1,5 @@
 @import url('./notifi-card-modal.css');
+@import url('./connect.css');
 
 :root {
   /* Color variables */
@@ -19,9 +20,13 @@
 .notifi-theme-dark {
   --notifi-font-color: var(--notifi-color-white);
   --notifi-card-background: var(--notifi-color-dark);
+  --notifi-connect-button: var(--notifi-color-white);
+  --notifi-connect-button-text: var(--notifi-color-midnight);
 }
 
 .notifi-theme-light {
   --notifi-font-color: var(--notifi-color-midnight);
   --notifi-card-background: var(--notifi-color-cloud);
+  --notifi-connect-button: var(--notifi-color-midnight);
+  --notifi-connect-button-text: var(--notifi-color-white);
 }
