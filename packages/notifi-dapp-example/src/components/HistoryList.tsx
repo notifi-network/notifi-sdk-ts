@@ -7,7 +7,6 @@ import { Dispatch, SetStateAction } from 'react';
 
 import { HistoryListRow } from './HistoryListRow';
 import { LoadingSkeloton } from './LoadingSkeloton';
-import { LoadingSpinner } from './LoadingSpinner';
 
 type HistoryListProps = {
   setHistoryDetailEntry: Dispatch<
