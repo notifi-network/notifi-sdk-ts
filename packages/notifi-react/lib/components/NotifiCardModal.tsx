@@ -10,10 +10,12 @@ import {
 import { useGlobalStateContext } from '../context/GlobalStateContext';
 import { Connect, ConnectProps } from './Connect';
 import { ErrorGlobal, ErrorGlobalProps } from './ErrorGlobal';
+import { Expiry, ExpiryProps } from './Expiry';
 import { Ftu } from './Ftu';
 import { Inbox } from './Inbox';
 import { LoadingGlobal, LoadingGlobalProps } from './LoadingGlobal';
 
+// TODO: Deprecate this
 export type NotifiInputSeparators = {
   emailSeparator?: {
     classNames?: {
@@ -55,10 +57,12 @@ export type NotifiCardModalProps = Readonly<{
     ErrorGlobal: ErrorGlobalProps['copy'];
     LoadingGlobal: LoadingGlobalProps['copy'];
     Connect: ConnectProps['copy'];
+    Expiry: ExpiryProps['copy'];
   }>;
   classNames?: Readonly<{
     container?: string;
     Connect?: ConnectProps['classNames'];
+    Expiry?: ExpiryProps['classNames'];
     // ErrorStateCard?: ErrorStateCardProps['classNames'];
     // FetchedStateCard?: FetchedStateCardProps['classNames'];
     // LoadingStateCard?: LoadingStateCardProps['classNames'];
@@ -168,11 +172,16 @@ export const NotifiCardModal: React.FC<NotifiCardModalProps> = (props) => {
         props.classNames?.container,
       )}
     >
-      {CardModalView === 'connect' ? <Connect /> : null}
-      {CardModalView === 'expiry' ? (
+      {CardModalView === 'connect' ? (
         <Connect
           copy={props.copy?.Connect}
           classNames={props.classNames?.Connect}
+        />
+      ) : null}
+      {CardModalView === 'expiry' ? (
+        <Expiry
+          copy={props.copy?.Expiry}
+          classNames={props.classNames?.Expiry}
         />
       ) : null}
       {CardModalView === 'ftu' ? <Ftu /> : null}

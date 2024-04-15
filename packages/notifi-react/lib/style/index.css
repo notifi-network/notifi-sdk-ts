@@ -1,5 +1,6 @@
 @import url('./notifi-card-modal.css');
 @import url('./connect.css');
+@import url('./ftu.css');
 
 :root {
   /* Color variables */
@@ -8,11 +9,12 @@
   --notifi-color-grey3: #80829d;
   --notifi-color-white: #fff;
   --notifi-color-eggshell: #f5f6fb;
+  --notifi-color-seaglass: #9aa3ff;
+  --notifi-color-secondary-light: #5260f0;
   --notifi-color-seaglass-dark: #828ae3;
   --notifi-color-green1: #318c1a;
   --notifi-color-green2: #dff8d9;
   --notifi-color-dark: #1b1b22;
-  --notifi-color-blue1: #e8ebf5;
   --notifi-color-midnight: #262949;
   --notifi-color-cloud: #e8ebf5;
 }
@@ -22,6 +24,7 @@
   --notifi-card-background: var(--notifi-color-dark);
   --notifi-connect-button: var(--notifi-color-white);
   --notifi-connect-button-text: var(--notifi-color-midnight);
+  --notifi-ftu-alert-list: var(--notifi-color-seaglass);
 }
 
 .notifi-theme-light {
@@ -29,4 +32,5 @@
   --notifi-card-background: var(--notifi-color-cloud);
   --notifi-connect-button: var(--notifi-color-midnight);
   --notifi-connect-button-text: var(--notifi-color-white);
+  --notifi-ftu-alert-list: var(--notifi-color-secondary-light);
 }

@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import React from 'react';
 
-import { ConnectIcon } from '../assets/Icons';
+import { ConnectIcon, Icon } from '../assets/Icons';
 import { useNotifiFrontendClientContext } from '../context';
 import { defaultCopy } from '../utils/constants';
 
@@ -24,9 +24,13 @@ export const Connect: React.FC<ConnectProps> = (props) => {
   const { login } = useNotifiFrontendClientContext();
   return (
     <div className={clsx('notifi-connect', props.classNames?.container)}>
-      <ConnectIcon
+      <Icon
+        type="connect"
         className={clsx('notifi-connect-icon', props.classNames?.icon)}
       />
+      {/* <ConnectIcon
+        className={clsx('notifi-connect-icon', props.classNames?.icon)}
+      /> */}
       <div className={clsx('notifi-connect-title', props.classNames?.header)}>
         {props.copy?.title ? props.copy.title : defaultCopy.connect.title}
       </div>
