@@ -13,18 +13,22 @@ export type FusionEventMetadata = {
 /**
  * @param name - `string` unique name
  */
-export type AlertFilter = AlertFilterBase | AlertFrequencyFilter;
-export type AlertFilterBase = {
+export type Filter = AlertFilter | FrequencyFilter;
+export type FilterBase = {
   name: string;
-  type: AlertFilterType;
   executionPriority: number;
-  userInputParams: UserInputParam<UiType>[];
-  staticFilterParams?: Record<string, object | string | number>;
-  requiredParserVariables: Array<RequiredParserVariable>;
 };
 
-export type AlertFrequencyFilter = AlertFilterBase & {
+export type FrequencyFilter = FilterBase & {
   minimumDurationBetweenTriggersInMinutes: number;
+};
+
+export type AlertFilter = FilterBase & {
+  userInputParams: UserInputParam<UiType>[];
+  type: FilterType;
+  staticFilterParams?: Record<string, object | string | number>;
+  requiredParserVariables: Array<RequiredParserVariable>;
+  description: string;
 };
 
 export type RequiredParserVariable = {
@@ -33,7 +37,7 @@ export type RequiredParserVariable = {
   variableDescription: string;
 };
 
-export type ValueType = 'integer' | 'price' | 'percentage';
+export type ValueType = 'integer' | 'price' | 'percentage' | 'string';
 
 /**
  * @param UiType - `radio` or `button` (scalable). Define what component should be rendered in Card topic subscription view.
@@ -41,18 +45,19 @@ export type ValueType = 'integer' | 'price' | 'percentage';
  */
 export type UserInputParam<T extends UiType> = {
   name: string;
-  kind: T;
-  valueTypes?: ValueType;
+  kind: ValueType;
+  uiType: T;
+  description: string;
   options: (string | number)[];
   defaultValue: string | number;
   allowCustomInput?: boolean;
 };
 
 export type UiType = 'radio' | 'button';
-type AlertFilterType = 'alertFilter';
+export type FilterType = 'AlertFilter';
 
 export type FusionFilterOptions = {
-  input: Record<AlertFilter['name'], UserInputOptions>;
+  input: Record<Filter['name'], UserInputOptions>;
 };
 
 export type UserInputOptions = Record<
