@@ -30,6 +30,9 @@ import {
   ensureTelegram,
   ensureWebhook,
 } from './ensureTarget';
+import { Client } from 'graphql-ws';
+import { NotifiSubscriptionClient } from './NotifiSubscriptionClient';
+import { StateChangedNotifiService } from './StateChangedNotifiService';
 
 export type SignMessageParams =
   | Readonly<{
@@ -219,6 +222,7 @@ export class NotifiFrontendClient {
     private _configuration: NotifiFrontendConfiguration,
     private _service: NotifiService,
     private _storage: NotifiStorage,
+    private _wsUrl: string
   ) { }
 
   private _clientRandomUuid: string | null = null;
@@ -938,6 +942,11 @@ export class NotifiFrontendClient {
       throw new Error('Failed to fetch unread notification history count');
     }
     return result;
+  }
+
+  async subscribeNotificationHistoryStateChanged(onHistoryChanged: () => void): Promise<void> {
+    const token = await this._storage.getAuthorization();
+    StateChangedNotifiService(this._wsUrl, token?.token, onHistoryChanged);
   }
 
   async stateChanged(): Promise<

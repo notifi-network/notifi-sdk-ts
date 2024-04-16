@@ -5,6 +5,7 @@ import {
   ConfigFactoryInput,
   NotifiFrontendConfiguration,
   envUrl,
+  envWSGraphqlUrl,
   newFrontendConfig,
 } from '../configuration';
 import {
@@ -13,6 +14,7 @@ import {
   createLocalForageStorageDriver,
 } from '../storage';
 import { NotifiFrontendClient } from './NotifiFrontendClient';
+import { NotifiSubscriptionClient } from './NotifiSubscriptionClient';
 
 export const newNotifiStorage = (config: NotifiFrontendConfiguration) => {
   const driver =
@@ -32,5 +34,6 @@ export const newFrontendClient = (args: ConfigFactoryInput) => {
   const config = newFrontendConfig(args);
   const service = newNotifiService(config);
   const storage = newNotifiStorage(config);
-  return new NotifiFrontendClient(config, service, storage);
+  const wsurl = envWSGraphqlUrl(config.env);
+  return new NotifiFrontendClient(config, service, storage, wsurl);
 };
