@@ -1,10 +1,13 @@
+import { Types } from '@notifi-network/notifi-graphql';
+
 export type FusionEventMetadata = {
   uiConfigOverride?: {
     topicDisplayName?: string;
     historyDisplayName?: string;
+    icon?: Types.GenericEventIconHint;
+    customIconUrl?: string;
   };
   filters: Array<AlertFilter>;
-  requiredParserVariables: Array<RequiredParserVariable>;
 };
 
 /**
@@ -17,6 +20,7 @@ export type AlertFilterBase = {
   executionPriority: number;
   userInputParams: UserInputParam<UiType>[];
   staticFilterParams?: Record<string, object | string | number>;
+  requiredParserVariables: Array<RequiredParserVariable>;
 };
 
 export type AlertFrequencyFilter = AlertFilterBase & {
