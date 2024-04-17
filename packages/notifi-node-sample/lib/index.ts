@@ -36,7 +36,7 @@ app.get('/', (_req, res) => {
 
 const parseEnv = (envString: string | undefined): NotifiEnvironment => {
   const str = envString ?? process.env.NOTIFI_ENV;
-  let notifiEnv: NotifiEnvironment = 'Development';
+  let notifiEnv: NotifiEnvironment = 'Production';
   if (
     str === 'Production' ||
     str === 'Staging' ||
