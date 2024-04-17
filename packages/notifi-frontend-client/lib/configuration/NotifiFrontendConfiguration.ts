@@ -203,3 +203,16 @@ export const envUrl = (env: NotifiEnvironment): string => {
       return 'https://api.stg.notifi.network/gql';
   }
 };
+
+export const envWSGraphqlUrl = (env: NotifiEnvironment): string => {
+  switch (env) {
+    case 'Development':
+      return 'ws://api.dev.notifi.network/gql';
+    case 'Local':
+      return 'ws://localhost:5001/gql';
+    case 'Production':
+      return 'ws://api.notifi.network/gql';
+    case 'Staging':
+      return 'ws://api.stg.notifi.network/gql';
+  }
+};
