@@ -87,8 +87,7 @@ const result = await client.sendDirectPush(token, {
 import * as dotenv from 'dotenv';
 import { NotifiClient, NotifiEnvironment, createGraphQLClient, createNotifiService } from '@notifi-network/notifi-node';
 
-const env: NotifiEnvironment = 'Development';
-const gqlClient = createGraphQLClient(env);
+const gqlClient = createGraphQLClient();
 const notifiService = createNotifiService(gqlClient);
 const client = new NotifiClient(notifiService);
 

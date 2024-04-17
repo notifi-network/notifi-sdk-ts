@@ -6,7 +6,8 @@ import {
 } from '../configuration/NotifiFrontendConfiguration';
 import { StorageDriver } from './NotifiFrontendStorage';
 
-const getEnvPrefix = (env: NotifiEnvironment): string => {
+const getEnvPrefix = (env?: NotifiEnvironment): string => {
+  if (!env) env = 'Production';
   switch (env) {
     case 'Production':
       return 'notifi-jwt';
