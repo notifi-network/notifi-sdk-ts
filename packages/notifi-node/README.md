@@ -12,13 +12,11 @@ Please reach out to us for help on [Discord](https://discord.gg/nAqR3mk3rv)!
 ```ts
 import {
   NotifiClient,
-  NotifiEnvironment,
   createGraphQLClient,
   createNotifiService,
 } from '@notifi-network/notifi-node';
 
-const env: NotifiEnvironment = 'Development'; // Or 'Production'
-const gqlClient = createGraphQLClient(env);
+const gqlClient = createGraphQLClient();
 const notifiService = createNotifiService(gqlClient);
 const client = new NotifiClient(notifiService);
 ```

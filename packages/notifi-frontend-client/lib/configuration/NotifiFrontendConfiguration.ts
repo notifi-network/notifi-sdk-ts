@@ -7,7 +7,7 @@ export type NotifiEnvironment =
   | 'Local';
 
 export type NotifiEnvironmentConfiguration = Readonly<{
-  env: NotifiEnvironment;
+  env?: NotifiEnvironment;
   tenantId: string;
   storageOption?: Readonly<{
     driverType?: 'LocalForage' | 'InMemory';
@@ -34,7 +34,7 @@ type WalletBlockchainWithPublicKey = Extract<
   | 'MONAD'
 >;
 
-type WalletBlockchainWithDelegate = 'XION'
+type WalletBlockchainWithDelegate = 'XION';
 
 type WalletBlockchainWithPublicKeyAndAddress = Exclude<
   Types.WalletBlockchain,

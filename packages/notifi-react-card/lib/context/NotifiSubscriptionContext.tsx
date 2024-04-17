@@ -317,11 +317,12 @@ export const NotifiSubscriptionContextProvider: React.FC<
       const phoneNumberToSet = phoneNumber ?? '';
 
       if (!!phoneNumber && !isPhoneNumberConfirmed) {
+        const env = params.env || 'Production';
         setPhoneNumberErrorMessage({
           type: 'unrecoverableError',
           message: 'Messages stopped',
           tooltip: `Please text 'start' to the following number:\n${
-            params.env === 'Production' ? '+1 206 222 3465' : '+1 253 880 1477 '
+            env === 'Production' ? '+1 206 222 3465' : '+1 253 880 1477 '
           }`,
         });
       }
