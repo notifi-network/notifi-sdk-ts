@@ -32,25 +32,17 @@ export const useUnreadState = () => {
   useEffect(() => {
     if (!walletPublicKey || !isClientAuthenticated) return;
 
-    frontendClient
-      .getUnreadNotificationHistoryCount()
-      .then((res) => {
-        const unreadNotificationCount = res.count;
-        setUnreadNotificationCount(unreadNotificationCount);
-      })
-      .catch((_e) => {
-        /* Intentionally empty (Concurrent can only possibly happens here instead of inside interval) */
-      });
-    const interval = setInterval(() => {
-      if (!walletPublicKey || !isClientAuthenticated) return;
+    console.log("Called: useUnreadState.subscribeNotificationHistoryStateChanged");
+
+    frontendClient.subscribeNotificationHistoryStateChanged(() => {
+
+      console.log("CallBack: subscribeNotificationHistoryStateChanged");
 
       frontendClient.getUnreadNotificationHistoryCount().then((res) => {
         const unreadNotificationCount = res.count;
         setUnreadNotificationCount(unreadNotificationCount);
       });
-    }, Math.floor(Math.random() * 5000) + 5000); // a random interval between 5 and 10 seconds to avoid spamming the server
-
-    return () => clearInterval(interval);
+    });
   }, [isClientAuthenticated, walletPublicKey, isUsingFrontendClient]);
 
   return { hasUnreadNotification, unreadNotificationCount };

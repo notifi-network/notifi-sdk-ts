@@ -2,18 +2,19 @@ import { Types } from '@notifi-network/notifi-graphql';
 import { NotifiService } from '@notifi-network/notifi-graphql';
 
 import {
-  checkIsConfigWithDelegate,
-  checkIsConfigWithPublicKeyAndAddress,
   type NotifiConfigWithPublicKey,
   type NotifiConfigWithPublicKeyAndAddress,
   type NotifiFrontendConfiguration,
+  checkIsConfigWithDelegate,
+  checkIsConfigWithPublicKeyAndAddress,
 } from '../configuration';
 import type {
   CardConfigItemV1,
   EventTypeItem,
+  FusionEventTopic,
+  TenantConfig,
   WalletBalanceEventTypeItem,
 } from '../models';
-import { IntercomCardConfigItemV1 } from '../models/IntercomCardConfig';
 import type { Authorization, NotifiStorage, Roles } from '../storage';
 import {
   NotifiFrontendStorage,
@@ -26,6 +27,7 @@ import { ensureSourceAndFilters, normalizeHexString } from './ensureSource';
 import {
   ensureDiscord,
   ensureEmail,
+  ensureSlack,
   ensureSms,
   ensureTelegram,
   ensureWebhook,
@@ -151,7 +153,7 @@ export type WalletWithSignMessage =
     accountAddress: string;
     walletPublicKey: string;
     signMessage: Uint8SignMessageFunction;
-  }>
+  }>;
 
 export type ConnectWalletParams = Readonly<{
   walletParams: WalletWithSignParams;
@@ -159,9 +161,7 @@ export type ConnectWalletParams = Readonly<{
 }>;
 
 // TODO: Clean up blockchain-specific dependencies out of this package
-export type XionSignMessageFunction = (
-  message: Uint8Array,
-) => Promise<string>;
+export type XionSignMessageFunction = (message: Uint8Array) => Promise<string>;
 
 export type Uint8SignMessageFunction = (
   message: Uint8Array,
@@ -176,18 +176,21 @@ export type AcalaSignMessageFunction = (
   message: string,
 ) => Promise<hexString>;
 
-export type CardConfigType = CardConfigItemV1 | IntercomCardConfigItemV1;
+export type CardConfigType = CardConfigItemV1;
 
 type BeginLoginProps = Omit<Types.BeginLogInByTransactionInput, 'dappAddress'>;
 
-type BeginLoginWithWeb3Props = Omit<Types.BeginLogInWithWeb3Input, 'dappAddress' | 'blockchainType'>;
+type BeginLoginWithWeb3Props = Omit<
+  Types.BeginLogInWithWeb3Input,
+  'dappAddress' | 'blockchainType'
+>;
 
 type CompleteLoginProps = Omit<
   Types.CompleteLogInByTransactionInput,
   'dappAddress' | 'randomUuid'
 >;
 
-type CompleteLoginWithWeb3Props = Types.CompleteLogInWithWeb3Input
+type CompleteLoginWithWeb3Props = Types.CompleteLogInWithWeb3Input;
 
 type EnsureWebhookParams = Omit<
   Types.CreateWebhookTargetMutationVariables,
@@ -297,26 +300,32 @@ export class NotifiFrontendClient {
     };
   }
 
-  private async logInWithWeb3(
-    signMessageParams: {
-      walletBlockchain: 'XION';
-      signMessage: XionSignMessageFunction;
-    },
-  ): Promise<Types.UserFragmentFragment> {
+  private async logInWithWeb3(signMessageParams: {
+    walletBlockchain: 'XION';
+    signMessage: XionSignMessageFunction;
+  }): Promise<Types.UserFragmentFragment> {
     let user: Types.UserFragmentFragment | undefined = undefined;
 
-    if (this._configuration.walletBlockchain !== 'XION' || signMessageParams.walletBlockchain !== 'XION') {
-      throw new Error('Wallet blockchain must be XION for loginWithWeb3')
+    if (
+      this._configuration.walletBlockchain !== 'XION' ||
+      signMessageParams.walletBlockchain !== 'XION'
+    ) {
+      throw new Error('Wallet blockchain must be XION for loginWithWeb3');
     }
     if (checkIsConfigWithDelegate(this._configuration)) {
-      const { delegatedAddress, delegatedPublicKey, delegatorAddress } = this._configuration;
+      const { delegatedAddress, delegatedPublicKey, delegatorAddress } =
+        this._configuration;
       const { nonce } = await this.beginLogInWithWeb3({
         authAddress: delegatorAddress,
         authType: 'COSMOS_AUTHZ_GRANT',
-      })
+      });
 
       const message = `${SIGNING_MESSAGE}${nonce}}`;
-      const params = { walletBlockchain: 'XION', message, signMessage: signMessageParams.signMessage } as const
+      const params = {
+        walletBlockchain: 'XION',
+        message,
+        signMessage: signMessageParams.signMessage,
+      } as const;
       const signature = await this._signMessage({
         signMessageParams: params,
         timestamp: Math.round(Date.now() / 1000),
@@ -327,20 +336,22 @@ export class NotifiFrontendClient {
         signature,
         signedMessage: message,
         signingAddress: delegatedAddress,
-        signingPubkey: delegatedPublicKey
-      })
-      user = completeLogInWithWeb3.user
-
-    }
-    else if (checkIsConfigWithPublicKeyAndAddress(this._configuration)) {
+        signingPubkey: delegatedPublicKey,
+      });
+      user = completeLogInWithWeb3.user;
+    } else if (checkIsConfigWithPublicKeyAndAddress(this._configuration)) {
       const { authenticationKey, accountAddress } = this._configuration;
       const { nonce } = await this.beginLogInWithWeb3({
         authAddress: accountAddress,
         authType: 'COSMOS_ADR36',
-      })
+      });
 
       const message = `${SIGNING_MESSAGE}${nonce}}`;
-      const params = { walletBlockchain: 'XION', message, signMessage: signMessageParams.signMessage } as const
+      const params = {
+        walletBlockchain: 'XION',
+        message,
+        signMessage: signMessageParams.signMessage,
+      } as const;
       const signature = await this._signMessage({
         signMessageParams: params,
         timestamp: Math.round(Date.now() / 1000),
@@ -351,18 +362,17 @@ export class NotifiFrontendClient {
         signature,
         signedMessage: message,
         signingAddress: accountAddress,
-        signingPubkey: authenticationKey
-      })
-      user = completeLogInWithWeb3.user
+        signingPubkey: authenticationKey,
+      });
+      user = completeLogInWithWeb3.user;
     }
 
     if (user === undefined) {
       return Promise.reject('Failed to login');
     }
 
-    await this._handleLogInResult(user)
-    return user
-
+    await this._handleLogInResult(user);
+    return user;
   }
 
   async logIn(
@@ -376,8 +386,11 @@ export class NotifiFrontendClient {
 
     const { tenantId, walletBlockchain } = this._configuration;
 
-    if (walletBlockchain === 'XION' && signMessageParams.walletBlockchain === 'XION') {
-      return this.logInWithWeb3(signMessageParams)
+    if (
+      walletBlockchain === 'XION' &&
+      signMessageParams.walletBlockchain === 'XION'
+    ) {
+      return this.logInWithWeb3(signMessageParams);
     }
 
     let loginResult: Types.UserFragmentFragment | undefined = undefined;
@@ -481,19 +494,17 @@ export class NotifiFrontendClient {
       }
       case 'OSMOSIS':
       case 'ZKSYNC':
-      case 'INJECTIVE':
-        {
-          const { authenticationKey, tenantId } = this
-            ._configuration as NotifiConfigWithPublicKeyAndAddress;
-          const messageBuffer = new TextEncoder().encode(
-            `${SIGNING_MESSAGE}${authenticationKey}${tenantId}${timestamp.toString()}`,
-          );
+      case 'INJECTIVE': {
+        const { authenticationKey, tenantId } = this
+          ._configuration as NotifiConfigWithPublicKeyAndAddress;
+        const messageBuffer = new TextEncoder().encode(
+          `${SIGNING_MESSAGE}${authenticationKey}${tenantId}${timestamp.toString()}`,
+        );
 
-          const signedBuffer = await signMessageParams.signMessage(messageBuffer);
-          const signature = Buffer.from(signedBuffer).toString('base64');
-          return signature;
-
-        }
+        const signedBuffer = await signMessageParams.signMessage(messageBuffer);
+        const signature = Buffer.from(signedBuffer).toString('base64');
+        return signature;
+      }
       case 'SOLANA': {
         const { walletPublicKey, tenantId } = this
           ._configuration as NotifiConfigWithPublicKey;
@@ -506,14 +517,12 @@ export class NotifiFrontendClient {
         return signature;
       }
       case 'XION': {
-        const { message } = signMessageParams
-        const messageBuffer = new TextEncoder().encode(
-          message
-        );
+        const { message } = signMessageParams;
+        const messageBuffer = new TextEncoder().encode(message);
 
         const signedBuffer = await signMessageParams.signMessage(messageBuffer);
         const signature = Buffer.from(signedBuffer).toString('base64');
-        return signature
+        return signature;
       }
       case 'ACALA': {
         const { accountAddress, tenantId } = this
@@ -661,8 +670,7 @@ export class NotifiFrontendClient {
   async beginLogInWithWeb3({
     authType,
     authAddress,
-    walletPubkey
-
+    walletPubkey,
   }: BeginLoginWithWeb3Props): Promise<Types.BeginLogInWithWeb3Response> {
     const { tenantId } = this._configuration;
     const result = await this._service.beginLogInWithWeb3({
@@ -670,17 +678,19 @@ export class NotifiFrontendClient {
       authAddress,
       blockchainType: this._configuration.walletBlockchain,
       authType,
-      walletPubkey
+      walletPubkey,
     });
 
     if (!result.beginLogInWithWeb3.beginLogInWithWeb3Response) {
       throw new Error('Failed to begin login process');
     }
 
-    return result.beginLogInWithWeb3.beginLogInWithWeb3Response
+    return result.beginLogInWithWeb3.beginLogInWithWeb3Response;
   }
 
-  async completeLogInWithWeb3(input: CompleteLoginWithWeb3Props): Promise<Types.CompleteLogInWithWeb3Mutation> {
+  async completeLogInWithWeb3(
+    input: CompleteLoginWithWeb3Props,
+  ): Promise<Types.CompleteLogInWithWeb3Mutation> {
     const result = await this._service.completeLogInWithWeb3({
       signingPubkey: '',
       ...input,
@@ -704,6 +714,7 @@ export class NotifiFrontendClient {
     telegramId,
     webhook,
     discordId,
+    slackId,
   }: Readonly<{
     name: string;
     emailAddress?: string;
@@ -711,6 +722,7 @@ export class NotifiFrontendClient {
     telegramId?: string;
     webhook?: EnsureWebhookParams;
     discordId?: string;
+    slackId?: string;
   }>): Promise<Types.TargetGroupFragmentFragment> {
     const [
       targetGroupsQuery,
@@ -719,6 +731,7 @@ export class NotifiFrontendClient {
       telegramTargetId,
       webhookTargetId,
       discordTargetId,
+      slackTargetId,
     ] = await Promise.all([
       this._service.getTargetGroups({}),
       ensureEmail(this._service, emailAddress),
@@ -726,6 +739,7 @@ export class NotifiFrontendClient {
       ensureTelegram(this._service, telegramId),
       ensureWebhook(this._service, webhook),
       ensureDiscord(this._service, discordId),
+      ensureSlack(this._service, slackId),
     ]);
 
     const emailTargetIds = emailTargetId === undefined ? [] : [emailTargetId];
@@ -736,6 +750,8 @@ export class NotifiFrontendClient {
       webhookTargetId === undefined ? [] : [webhookTargetId];
     const discordTargetIds =
       discordTargetId === undefined ? [] : [discordTargetId];
+    const slackChannelTargetIds =
+      slackTargetId === undefined ? [] : [slackTargetId];
 
     const existing = targetGroupsQuery.targetGroup?.find(
       (it) => it?.name === name,
@@ -748,6 +764,7 @@ export class NotifiFrontendClient {
         telegramTargetIds,
         webhookTargetIds,
         discordTargetIds,
+        slackChannelTargetIds,
       });
     }
 
@@ -758,6 +775,7 @@ export class NotifiFrontendClient {
       telegramTargetIds,
       webhookTargetIds,
       discordTargetIds,
+      slackChannelTargetIds,
     });
 
     if (createMutation.createTargetGroup === undefined) {
@@ -774,6 +792,7 @@ export class NotifiFrontendClient {
     telegramTargetIds,
     webhookTargetIds,
     discordTargetIds,
+    slackChannelTargetIds,
   }: Readonly<{
     existing: Types.TargetGroupFragmentFragment;
     emailTargetIds: Array<string>;
@@ -781,13 +800,15 @@ export class NotifiFrontendClient {
     telegramTargetIds: Array<string>;
     webhookTargetIds: Array<string>;
     discordTargetIds: Array<string>;
+    slackChannelTargetIds: Array<string>;
   }>): Promise<Types.TargetGroupFragmentFragment> {
     if (
       areIdsEqual(emailTargetIds, existing.emailTargets ?? []) &&
       areIdsEqual(smsTargetIds, existing.smsTargets ?? []) &&
       areIdsEqual(telegramTargetIds, existing.telegramTargets ?? []) &&
       areIdsEqual(webhookTargetIds, existing.webhookTargets ?? []) &&
-      areIdsEqual(discordTargetIds, existing.discordTargets ?? [])
+      areIdsEqual(discordTargetIds, existing.discordTargets ?? []) &&
+      areIdsEqual(slackChannelTargetIds, existing.slackChannelTargets ?? [])
     ) {
       return existing;
     }
@@ -800,6 +821,7 @@ export class NotifiFrontendClient {
       telegramTargetIds,
       webhookTargetIds,
       discordTargetIds,
+      slackChannelTargetIds,
     });
 
     const updated = updateMutation.updateTargetGroup;
@@ -884,6 +906,30 @@ export class NotifiFrontendClient {
     }
 
     return created;
+  }
+
+  async ensureFusionAlerts(
+    input: Types.CreateFusionAlertsInput,
+  ): Promise<Types.CreateFusionAlertsMutation['createFusionAlerts']> {
+    const inputAlertsNames = new Set(input.alerts.map((alert) => alert.name));
+    const query = await this._service.getAlerts({});
+    const existingAlerts = new Set(query.alert);
+
+    const duplicateAlerts = [...existingAlerts].filter((alert) =>
+      inputAlertsNames.has(alert?.name),
+    );
+
+    const duplicateAlertsIds = duplicateAlerts
+      .map((alert) => alert?.id)
+      .filter((id): id is string => !!id); // TODO: n(^2) --> consider to move to BE when this grows huge
+
+    // Alerts are immutable, delete the existing instead
+    for (const id of duplicateAlertsIds) {
+      await this.deleteAlert({ id });
+    }
+
+    const mutation = await this._service.createFusionAlerts({ input });
+    return mutation.createFusionAlerts;
   }
 
   async deleteAlert({
@@ -975,6 +1021,7 @@ export class NotifiFrontendClient {
     return { pageInfo, nodes };
   }
 
+  /**@deprecated for legacy infra, use fetchTenantConfig instead for new infra (fusionEvent)  */
   async fetchSubscriptionCard(
     variables: FindSubscriptionCardParams,
   ): Promise<CardConfigType> {
@@ -1001,8 +1048,8 @@ export class NotifiFrontendClient {
         card = obj as CardConfigItemV1;
         break;
       }
-      case 'IntercomV1': {
-        card = obj as IntercomCardConfigItemV1;
+      default: {
+        throw new Error('Unsupported config version');
       }
     }
 
@@ -1011,6 +1058,55 @@ export class NotifiFrontendClient {
     }
 
     return card;
+  }
+
+  async fetchTenantConfig(
+    variables: FindSubscriptionCardParams,
+  ): Promise<TenantConfig> {
+    const query = await this._service.findTenantConfig({
+      input: {
+        ...variables,
+        tenant: this._configuration.tenantId,
+      },
+    });
+    const result = query.findTenantConfig;
+    if (result === undefined || !result.dataJson || !result.fusionEvents) {
+      throw new Error('Failed to find tenant config');
+    }
+
+    const tenantConfigJsonString = result.dataJson;
+    if (tenantConfigJsonString === undefined) {
+      throw new Error('Invalid config data');
+    }
+
+    const cardConfig = JSON.parse(tenantConfigJsonString) as CardConfigItemV1;
+    const fusionEventDescriptors = result.fusionEvents;
+
+    if (!cardConfig || cardConfig.version !== 'v1' || !fusionEventDescriptors)
+      throw new Error('Unsupported config format');
+
+    const fusionEventDescriptorMap = new Map<
+      string,
+      Types.FusionEventDescriptor
+    >(fusionEventDescriptors.map((item) => [item?.name ?? '', item ?? {}]));
+
+    fusionEventDescriptorMap.delete('');
+
+    const fusionEventTopics: FusionEventTopic[] = cardConfig.eventTypes
+      .map((eventType) => {
+        if (eventType.type === 'fusion') {
+          const fusionEventDescriptor = fusionEventDescriptorMap.get(
+            eventType.name,
+          );
+          return {
+            uiConfig: eventType,
+            fusionEventDescriptor,
+          };
+        }
+      })
+      .filter((item): item is FusionEventTopic => !!item);
+
+    return { cardConfig, fusionEventTopics };
   }
 
   async copyAuthorization(config: NotifiFrontendConfiguration) {
@@ -1076,27 +1172,6 @@ export class NotifiFrontendClient {
         params.connectWalletConflictResolutionTechnique,
     });
     return connectedWallet;
-  }
-
-  async getConversationMessages(
-    input: Types.GetConversationMessagesQueryVariables,
-  ): Promise<Types.GetConversationMessagesQuery> {
-    const query = await this._service.getConversationMessages(input);
-    return query;
-  }
-
-  async sendConversationMessages(
-    input: Types.SendConversationMessageMutationVariables,
-  ): Promise<Types.SendConversationMessageMutation> {
-    const mutation = await this._service.sendConversationMessages(input);
-    return mutation;
-  }
-
-  async createSupportConversation(
-    input: Types.CreateSupportConversationMutationVariables,
-  ): Promise<Types.CreateSupportConversationMutation> {
-    const mutation = await this._service.createSupportConversation(input);
-    return mutation;
   }
 
   async createDiscordTarget(input: string) {

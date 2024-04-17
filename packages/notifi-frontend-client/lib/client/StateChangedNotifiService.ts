@@ -31,6 +31,6 @@ export const StateChangedNotifiService = (wsUrl: string, token: string | undefin
     });
 
   const onClose = () => {
-    subscription.unsubscribe();
+    // subscription.unsubscribe();
   }
 }
