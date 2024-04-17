@@ -46,7 +46,7 @@ export type TargetInfo = {
   infoPrompt: TargetInfoPrompt;
 };
 
-export type TargetInfoPrompt = CtaInfo | ErrorInfo;
+export type TargetInfoPrompt = CtaInfo | MessageInfo;
 
 export const isCtaInfo = (info: TargetInfoPrompt): info is CtaInfo =>
   'onClick' in info;
@@ -57,8 +57,8 @@ export type CtaInfo = {
   onClick: () => void;
 };
 
-export type ErrorInfo = {
-  type: 'error';
+export type MessageInfo = {
+  type: 'error' | 'message';
   message: string;
 };
 
@@ -160,6 +160,15 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
     frontendClient.fetchData().then((data) => {
       refreshTargetDocument(data);
     });
+    //NOTE: target change listener when window is refocused
+    const handler = () => {
+      if (!frontendClientStatus.isAuthenticated) return;
+      return frontendClient.fetchData().then(refreshTargetDocument);
+    };
+    window.addEventListener('focus', handler);
+    return () => {
+      window.removeEventListener('focus', handler);
+    };
   }, [frontendClientStatus.isAuthenticated]);
 
   useEffect(() => {
@@ -332,17 +341,35 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
         ...prev,
         email: emailTarget?.emailAddress ?? '',
       }));
-      if (!!emailTarget && !emailTarget.isConfirmed) {
-        updateTargetInfoPrompt('email', {
-          type: 'cta',
-          message: 'Resend Link',
-          onClick: () =>
-            frontendClient.sendEmailTargetVerification({
-              targetId: emailTarget.id,
-            }),
-        });
+      if (emailTarget) {
+        switch (emailTarget.isConfirmed) {
+          case true:
+            updateTargetInfoPrompt('email', {
+              type: 'message',
+              message: 'Verified',
+            });
+            break;
+          case false:
+            updateTargetInfoPrompt('email', {
+              type: 'cta',
+              message: 'Resend Link',
+              onClick: () =>
+                frontendClient.sendEmailTargetVerification({
+                  targetId: emailTarget.id,
+                }),
+            });
+            break;
+          default:
+            updateTargetInfoPrompt('email', {
+              type: 'error',
+              message: 'ERROR: Unexpected email state',
+            });
+        }
       } else {
-        updateTargetInfoPrompt('email', null);
+        updateTargetInfoPrompt('email', {
+          type: 'message',
+          message: 'Verified',
+        });
       }
     },
     [frontendClient],
@@ -354,11 +381,26 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
         ...prev,
         phoneNumber: smsTarget?.phoneNumber ?? '',
       }));
-      if (!!smsTarget?.phoneNumber && !smsTarget?.isConfirmed) {
-        updateTargetInfoPrompt('phoneNumber', {
-          type: 'error',
-          message: 'Messages stopped',
-        });
+      if (smsTarget?.phoneNumber) {
+        switch (smsTarget.isConfirmed) {
+          case true:
+            updateTargetInfoPrompt('phoneNumber', {
+              type: 'message',
+              message: 'Verified',
+            });
+            break;
+          case false:
+            updateTargetInfoPrompt('phoneNumber', {
+              type: 'error',
+              message: 'Messages stopped',
+            });
+            break;
+          default:
+            updateTargetInfoPrompt('phoneNumber', {
+              type: 'error',
+              message: 'ERROR: Unexpected sms state',
+            });
+        }
       } else {
         updateTargetInfoPrompt('phoneNumber', null);
       }
@@ -372,17 +414,32 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
         ...prev,
         telegram: telegramTarget?.telegramId ?? '',
       }));
-      if (!!telegramTarget && !telegramTarget.isConfirmed) {
-        updateTargetInfoPrompt('telegram', {
-          type: 'cta',
-          message: 'Verify ID',
-          onClick: () => {
-            if (!telegramTarget?.confirmationUrl) {
-              return;
-            }
-            window.open(telegramTarget?.confirmationUrl);
-          },
-        });
+      if (telegramTarget) {
+        switch (telegramTarget.isConfirmed) {
+          case true:
+            updateTargetInfoPrompt('telegram', {
+              type: 'message',
+              message: 'Verified',
+            });
+            break;
+          case false:
+            updateTargetInfoPrompt('telegram', {
+              type: 'cta',
+              message: 'Verify ID',
+              onClick: () => {
+                if (!telegramTarget?.confirmationUrl) {
+                  return;
+                }
+                window.open(telegramTarget?.confirmationUrl);
+              },
+            });
+            break;
+          default:
+            updateTargetInfoPrompt('telegram', {
+              type: 'error',
+              message: 'ERROR: Unexpected telegram state',
+            });
+        }
       } else {
         updateTargetInfoPrompt('telegram', null);
       }
@@ -413,10 +470,16 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
             });
             break;
           case 'COMPLETE':
-            updateTargetInfoPrompt('discord', null);
+            updateTargetInfoPrompt('discord', {
+              type: 'message',
+              message: 'Verified',
+            });
             break;
-          default: // UNVERIFIED: Should never get in this state
-            throw new Error('Discord target in unexpected state');
+          default:
+            updateTargetInfoPrompt('discord', {
+              type: 'error',
+              message: 'ERROR: Unexpected discord state',
+            });
         }
         setTargetData((prev) => ({
           ...prev,
@@ -449,10 +512,16 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
             });
             break;
           case 'VERIFIED':
-            updateTargetInfoPrompt('slack', null);
+            updateTargetInfoPrompt('slack', {
+              type: 'message',
+              message: 'Verified',
+            });
             break;
           default:
-            throw new Error('Slack target in unexpected state');
+            updateTargetInfoPrompt('slack', {
+              type: 'error',
+              message: 'ERROR: Unexpected slack state',
+            });
         }
         setTargetData((prev) => ({
           ...prev,
