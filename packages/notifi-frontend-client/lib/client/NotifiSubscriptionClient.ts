@@ -17,14 +17,14 @@ export const NotifiSubscriptionClient = (url: string, jwt: string | undefined, c
     console.error('WebSocket error:', error);
   });
 
-  client.on('message', (data) => {
-    if (data.type == 'next') {
-      if (callback) {
-        callback();
-      }
-    }
-    console.log('Received data:', data);
-  });
+  // client.on('message', (data) => {
+  //   if (data.type == 'next') {
+  //     if (callback) {
+  //       callback();
+  //     }
+  //   }
+  //   console.log('Received data:', data);
+  // });
 
   return client;
 }

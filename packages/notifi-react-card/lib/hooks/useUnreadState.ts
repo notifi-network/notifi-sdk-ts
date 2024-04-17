@@ -32,12 +32,12 @@ export const useUnreadState = () => {
   useEffect(() => {
     if (!walletPublicKey || !isClientAuthenticated) return;
 
-    // frontendClient.stateChanged().then((res) => {
-    //   console.log(JSON.stringify(res));
-    // });
     console.log("Called: useUnreadState.subscribeNotificationHistoryStateChanged");
+
     frontendClient.subscribeNotificationHistoryStateChanged(() => {
+
       console.log("CallBack: subscribeNotificationHistoryStateChanged");
+
       frontendClient.getUnreadNotificationHistoryCount().then((res) => {
         const unreadNotificationCount = res.count;
         setUnreadNotificationCount(unreadNotificationCount);

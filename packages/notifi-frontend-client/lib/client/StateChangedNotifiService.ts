@@ -1,4 +1,3 @@
-import { Client } from 'graphql-ws';
 import { NotifiSubscriptionClient } from './NotifiSubscriptionClient';
 export const StateChangedNotifiService = (wsUrl: string, token: string | undefined, callback: () => void) => {
 
