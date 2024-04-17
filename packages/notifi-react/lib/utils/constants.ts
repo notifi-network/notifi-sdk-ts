@@ -15,4 +15,29 @@ export const defaultCopy = {
       'See your activity and gain access to alerts. Push notifications are also available and optional.',
     buttonText: 'Next',
   },
+  poweredByNotifi: 'Powered',
+  inputFields: {
+    email: 'Email address',
+    phoneNumber: 'Phone Number',
+    telegram: 'Telegram ID',
+  },
+  inputToggles: {
+    discord: 'Discord DM Bot',
+    slack: 'Slack',
+  },
+  ftu: {
+    headerTitles: {
+      ftuTargetEdit: 'How do you want to be notified?',
+      ftuAlertEdit: 'Select alerts',
+    },
+  },
+  ftuTargetEdit: {
+    description: 'Select a minimum of one destination',
+    headerTitle: 'How do you want to be notified?',
+    buttonText: 'Next',
+  },
+};
+
+export const validationRegex: Record<string, RegExp> = {
+  email: new RegExp('^[a-zA-Z0-9._:$!%-+]+@[a-zA-Z0-9.-]+.[a-zA-Z]$'),
 };

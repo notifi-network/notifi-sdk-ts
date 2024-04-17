@@ -11,34 +11,34 @@ import { useGlobalStateContext } from '../context/GlobalStateContext';
 import { Connect, ConnectProps } from './Connect';
 import { ErrorGlobal, ErrorGlobalProps } from './ErrorGlobal';
 import { Expiry, ExpiryProps } from './Expiry';
-import { Ftu } from './Ftu';
+import { Ftu, FtuProps } from './Ftu';
 import { Inbox } from './Inbox';
 import { LoadingGlobal, LoadingGlobalProps } from './LoadingGlobal';
 
 // TODO: Deprecate this
-export type NotifiInputSeparators = {
-  emailSeparator?: {
-    classNames?: {
-      container: string;
-      content: string;
-    };
-    content: string;
-  };
-  smsSeparator?: {
-    classNames?: {
-      container: string;
-      content: string;
-    };
-    content: string;
-  };
-  telegramSeparator?: {
-    classNames?: {
-      container: string;
-      content: string;
-    };
-    content: string;
-  };
-};
+// export type NotifiInputSeparators = {
+//   emailSeparator?: {
+//     classNames?: {
+//       container: string;
+//       content: string;
+//     };
+//     content: string;
+//   };
+//   smsSeparator?: {
+//     classNames?: {
+//       container: string;
+//       content: string;
+//     };
+//     content: string;
+//   };
+//   telegramSeparator?: {
+//     classNames?: {
+//       container: string;
+//       content: string;
+//     };
+//     content: string;
+//   };
+// };
 
 export type NotifiInputFieldsText = {
   label?: {
@@ -54,15 +54,17 @@ export type NotifiCardModalProps = Readonly<{
     // ErrorStateCard: ErrorStateCardProps['copy'];
     // FetchedStateCard: FetchedStateCardProps['copy'];
     // LoadingStateCard: LoadingStateCardProps['copy'];
-    ErrorGlobal: ErrorGlobalProps['copy'];
-    LoadingGlobal: LoadingGlobalProps['copy'];
-    Connect: ConnectProps['copy'];
-    Expiry: ExpiryProps['copy'];
+    ErrorGlobal?: ErrorGlobalProps['copy'];
+    LoadingGlobal?: LoadingGlobalProps['copy'];
+    Connect?: ConnectProps['copy'];
+    Expiry?: ExpiryProps['copy'];
+    Ftu?: FtuProps['copy'];
   }>;
   classNames?: Readonly<{
     container?: string;
     Connect?: ConnectProps['classNames'];
     Expiry?: ExpiryProps['classNames'];
+    Ftu?: FtuProps['classNames'];
     // ErrorStateCard?: ErrorStateCardProps['classNames'];
     // FetchedStateCard?: FetchedStateCardProps['classNames'];
     // LoadingStateCard?: LoadingStateCardProps['classNames'];
@@ -83,6 +85,7 @@ export type NotifiCardModalProps = Readonly<{
 type CardModalView = 'connect' | 'expiry' | 'ftu' | 'Inbox';
 
 export const NotifiCardModal: React.FC<NotifiCardModalProps> = (props) => {
+  console.log(props);
   const {
     frontendClientStatus,
     isLoading: isLoadingClient,
@@ -184,7 +187,9 @@ export const NotifiCardModal: React.FC<NotifiCardModalProps> = (props) => {
           classNames={props.classNames?.Expiry}
         />
       ) : null}
-      {CardModalView === 'ftu' ? <Ftu /> : null}
+      {CardModalView === 'ftu' ? (
+        <Ftu classNames={props.classNames?.Ftu} copy={props.copy?.Ftu} />
+      ) : null}
       {CardModalView === 'Inbox' ? <Inbox /> : null}
     </div>
   );

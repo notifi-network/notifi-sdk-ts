@@ -5,12 +5,23 @@
   flex-grow: 1;
 }
 
+.notifi-ftu-footer {
+  width: 100%;
+  display: flex;
+  height: 3rem;
+  justify-content: center;
+  align-items: center;
+}
+
+/* FtuAlertList styles */
 .notifi-ftu-alert-list {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   flex-grow: 1;
+  padding: 0 2rem;
+  overflow-y: scroll;
 }
 
 .notifi-ftu-alert-list-title {
@@ -39,6 +50,8 @@
 .notifi-ftu-alert-list-alert {
   font-size: 0.9rem;
   font-weight: 600;
+  display: flex;
+  align-items: center;
 }
 
 .notifi-ftu-alert-icon {
@@ -47,6 +60,7 @@
   height: 1.5rem;
   margin-right: 0.5rem;
   font-weight: 700;
+  stroke-width: 3;
 }
 
 .notifi-ftu-alert-list-button {
@@ -59,4 +73,37 @@
   font-weight: 700;
   cursor: pointer;
   width: 100%;
+}
+
+/* FtuTargetEdit styles */
+.notifi-ftu-target-edit {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.notifi-ftu-target-edit-description {
+  color: var(--notifi-ftu-target-edit-description);
+  text-align: center;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  margin-top: 1rem;
+}
+
+.notifi-ftu-target-edit-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.9rem 0;
+  font-weight: 700;
+  color: var(--notifi-ftu-target-edit-button-text);
+  background-color: var(--notifi-ftu-target-edit-button);
+  border-radius: 6px;
+  margin: 1rem 2rem;
+  cursor: pointer;
+}
+
+.notifi-ftu-target-edit-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }

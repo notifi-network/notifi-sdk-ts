@@ -1,6 +1,10 @@
 @import url('./notifi-card-modal.css');
 @import url('./connect.css');
 @import url('./ftu.css');
+@import url('./powered-by-notifi.css');
+@import url('./target-inputs.css');
+@import url('./toggle.css');
+@import url('./nav-header.css');
 
 :root {
   /* Color variables */
@@ -17,6 +21,9 @@
   --notifi-color-dark: #1b1b22;
   --notifi-color-midnight: #262949;
   --notifi-color-cloud: #e8ebf5;
+  --notifi-color-pink: #d5828b;
+  --notifi-color-dusk: #80829d;
+  --notifi-color-heather: #b6b8d5;
 }
 
 .notifi-theme-dark {
@@ -25,6 +32,14 @@
   --notifi-connect-button: var(--notifi-color-white);
   --notifi-connect-button-text: var(--notifi-color-midnight);
   --notifi-ftu-alert-list: var(--notifi-color-seaglass);
+  --notifi-ftu-target-edit-description: var(--notifi-color-heather);
+  --notifi-input-field-background: var(--notifi-color-grey2);
+  --notifi-toggle-inactive: var(--notifi-color-dusk);
+  --notifi-toggle-active: var(--notifi-color-seaglass-dark);
+  --notifi-toggle-handle: var(--notifi-color-white);
+  --notifi-nav-header-background: var(--notifi-color-grey2);
+  --notifi-ftu-target-edit-button-text: var(--notifi-color-midnight);
+  --notifi-ftu-target-edit-button: var(--notifi-color-white);
 }
 
 .notifi-theme-light {
@@ -33,4 +48,12 @@
   --notifi-connect-button: var(--notifi-color-midnight);
   --notifi-connect-button-text: var(--notifi-color-white);
   --notifi-ftu-alert-list: var(--notifi-color-secondary-light);
+  --notifi-ftu-target-edit-description: var(--notifi-color-dusk);
+  --notifi-input-field-background: var(--notifi-color-eggshell);
+  --notifi-toggle-inactive: var(--notifi-color-heather);
+  --notifi-toggle-active: var(--notifi-color-seaglass-dark);
+  --notifi-toggle-handle: var(--notifi-color-white);
+  --notifi-nav-header-background: var(--notifi-color-white);
+  --notifi-ftu-target-edit-button-text: var(--notifi-color-white);
+  --notifi-ftu-target-edit-button: var(--notifi-color-midnight);
 }

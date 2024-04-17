@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import React from 'react';
 
-import { Icon } from '../assets/Icons';
+import { Icon, IconType } from '../assets/Icons';
 import {
   FtuStage,
   useNotifiTenantConfigContext,
@@ -25,6 +25,7 @@ export type FtuAlertListProps = {
     alert?: string;
     buttonText?: string;
   };
+  iconType?: IconType;
 };
 
 export const FtuAlertList: React.FC<FtuAlertListProps> = (props) => {
@@ -67,8 +68,7 @@ export const FtuAlertList: React.FC<FtuAlertListProps> = (props) => {
               key={topic.uiConfig.name}
             >
               <Icon
-                type="check"
-                strokeWidth={2.5}
+                type={props.iconType ?? 'check'}
                 className={clsx(
                   'notifi-ftu-alert-icon',
                   props.classNames?.icon,
