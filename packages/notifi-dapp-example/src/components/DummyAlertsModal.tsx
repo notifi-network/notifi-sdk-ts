@@ -2,6 +2,7 @@ import { Icon } from '@/assets/Icon';
 
 const dummyAlerts = [
   'Developer Notifications',
+  'General Updates',
   'Node Operator Notifications',
   'Market Updates',
   'Trader Notifications',
@@ -13,7 +14,7 @@ export const DummyAlertsModal: React.FC = () => {
       <div className="font-medium">Which alerts can I sign up for?</div>
       <div className="md:w-[28.37rem] flex flex-col md:flex-row flex-wrap ">
         {dummyAlerts.map((alert) => (
-          <div key={alert} className="w-56 flex items-center">
+          <div key={alert} className="w-52 flex items-center mb-2">
             <Icon
               id="right-arrow"
               width={11}
