@@ -32,8 +32,6 @@ import {
   ensureTelegram,
   ensureWebhook,
 } from './ensureTarget';
-import { Client } from 'graphql-ws';
-import { NotifiSubscriptionClient } from './NotifiSubscriptionClient';
 import { StateChangedNotifiService } from './StateChangedNotifiService';
 
 export type SignMessageParams =
@@ -990,9 +988,9 @@ export class NotifiFrontendClient {
     return result;
   }
 
-  async subscribeNotificationHistoryStateChanged(onHistoryChanged: () => void): Promise<void> {
+  async subscribeNotificationHistoryStateChanged(userid: string, onHistoryChanged: () => void): Promise<void> {
     const token = await this._storage.getAuthorization();
-    StateChangedNotifiService(this._wsUrl, token?.token, onHistoryChanged);
+    StateChangedNotifiService(this._wsUrl, token?.token, userid, onHistoryChanged);
   }
 
   async getUserSettings(): Promise<Types.GetUserSettingsQuery['userSettings']> {

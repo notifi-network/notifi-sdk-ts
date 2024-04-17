@@ -1,9 +1,9 @@
 import { NotifiSubscriptionClient } from './NotifiSubscriptionClient';
-export const StateChangedNotifiService = (wsUrl: string, token: string | undefined, callback: () => void) => {
+export const StateChangedNotifiService = (wsUrl: string, token: string | undefined, userid: string, callback: () => void) => {
 
   const wsClient = NotifiSubscriptionClient(wsUrl, token, callback);
   const subscriptionQuery = `subscription {
-    stateChanged {
+    stateChanged (stateChangedType:"${userid}_StateChanged") {
       __typename
     }
   }`;
