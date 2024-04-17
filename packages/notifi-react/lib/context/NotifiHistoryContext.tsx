@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 
 import { useNotifiFrontendClientContext } from './NotifiFrontendClientContext';
-import { useNotifiTenantConfig } from './NotifiTenantConfigContext';
+import { useNotifiTenantConfigContext } from './NotifiTenantConfigContext';
 
 type CursorInfo = Readonly<{
   hasNextPage: boolean;
@@ -54,7 +54,7 @@ export const NotifiHistoryContextProvider: FC<PropsWithChildren> = ({
   });
   const [unreadCount, setUnreadCount] = useState<number | null>(null);
   const [historyItems, setHistoryItems] = useState<historyItem[]>([]);
-  const { cardConfig } = useNotifiTenantConfig();
+  const { cardConfig } = useNotifiTenantConfigContext();
   const cardEventTypeNames = new Set(
     cardConfig?.eventTypes?.map((event) => event.name) ?? [],
   );
@@ -217,6 +217,9 @@ export const NotifiHistoryContextProvider: FC<PropsWithChildren> = ({
     </NotifiHistoryContext.Provider>
   );
 };
+
+export const useNotifiHistoryContext = () =>
+  React.useContext(NotifiHistoryContext);
 
 // Utils
 

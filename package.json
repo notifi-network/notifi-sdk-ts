@@ -49,7 +49,7 @@
     "packages/notifi-react-example",
     "packages/notifi-solana-hw-login",
     "packages/notifi-wallet-provider",
-    "packages/notifi-card-modal",
+    "packages/notifi-react",
     "packages/notifi-card-modal-example"
   ]
 }

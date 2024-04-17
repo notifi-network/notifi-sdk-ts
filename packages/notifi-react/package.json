@@ -1,5 +1,5 @@
 {
-  "name": "@notifi-network/notifi-card-modal",
+  "name": "@notifi-network/notifi-react",
   "version": "0.90.8",
   "description": "React components to access Notifi core services",
   "keywords": [
