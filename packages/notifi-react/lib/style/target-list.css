@@ -1,0 +1,51 @@
+/* TargetList styles */
+
+.notifi-target-list {
+  padding-top: 0.8rem;
+  margin: 0 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border-radius: 6px;
+  overflow: scroll;
+}
+
+.notifi-target-list-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  align-items: center;
+  background-color: var(--notifi-notifi-target-list-item-bg);
+  padding: 1rem 0;
+}
+
+.notifi-target-list-item-target {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+/* TargetCta styles */
+
+.notifi-target-cta {
+}
+
+.notifi-target-cta-button {
+  background-color: var(--notifi-target-list-cat-button-bg);
+  color: var(--notifi-target-list-cat-button-text);
+  padding: 1rem 2rem;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.notifi-target-cta-link {
+  color: var(--notifi-target-list-cta-link-text);
+  cursor: pointer;
+}
+
+.notifi-target-cta-action-not-required {
+  background-color: var(--notifi-color-green2);
+  color: var(--notifi-color-green1);
+  padding: 1rem 2rem;
+  border-radius: 6px;
+}

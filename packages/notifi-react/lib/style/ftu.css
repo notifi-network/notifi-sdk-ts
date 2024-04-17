@@ -1,8 +1,15 @@
 .notifi-ftu {
   display: flex;
   flex-direction: column;
+  border-radius: 6px;
   width: 100%;
+  /* flex-grow: 1; */
+  height: 100%;
+  overflow: hidden;
+}
+.notifi-ftu-views {
   flex-grow: 1;
+  overflow: scroll;
 }
 
 .notifi-ftu-footer {
@@ -79,7 +86,7 @@
 .notifi-ftu-target-edit {
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
+  height: 100%;
 }
 
 .notifi-ftu-target-edit-description {
@@ -90,6 +97,7 @@
   margin-top: 1rem;
 }
 
+.notifi-ftu-target-list-button,
 .notifi-ftu-target-edit-button {
   display: flex;
   align-items: center;
@@ -106,4 +114,12 @@
 .notifi-ftu-target-edit-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+/* FtuTargetList styles */
+
+.notifi-ftu-target-list {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }

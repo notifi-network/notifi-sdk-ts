@@ -8,6 +8,7 @@ import {
 } from '../context';
 import { FtuAlertList, FtuAlertListProps } from './FtuAlertList';
 import { FtuTargetEdit, FtuTargetEditProps } from './FtuTargetEdit';
+import { FtuTargetList } from './FtuTargetList';
 import { PoweredByNotifi, PoweredByNotifiProps } from './PoweredByNotifi';
 
 export enum FtuView {
@@ -25,6 +26,7 @@ export type FtuProps = {
   classNames?: {
     container?: string;
     footer?: string;
+    ftuViews?: string;
     FtuAlertList?: FtuAlertListProps['classNames'];
     FtuTargetEdit?: FtuTargetEditProps['classNames'];
     PoweredByNotifi?: PoweredByNotifiProps['classNames'];
@@ -80,20 +82,24 @@ export const Ftu: React.FC<FtuProps> = (props) => {
 
   return (
     <div className={clsx('notifi-ftu', props.classNames?.container)}>
-      {ftuView === FtuView.AlertEdit ? (
-        <FtuAlertList
-          copy={props.copy?.FtuAlertList}
-          classNames={props.classNames?.FtuAlertList}
-        />
-      ) : null}
-      {ftuView === FtuView.TargetEdit ? (
-        <FtuTargetEdit
-          setFtuView={setFtuView}
-          copy={props.copy?.FtuTargetEdit}
-          classNames={props.classNames?.FtuTargetEdit}
-        />
-      ) : null}
-      {ftuView === FtuView.TargetList ? <div>FtuTargetList</div> : null}
+      <div className={clsx('notifi-ftu-views', props.classNames?.ftuViews)}>
+        {ftuView === FtuView.AlertEdit ? (
+          <FtuAlertList
+            copy={props.copy?.FtuAlertList}
+            classNames={props.classNames?.FtuAlertList}
+          />
+        ) : null}
+        {ftuView === FtuView.TargetEdit ? (
+          <FtuTargetEdit
+            setFtuView={setFtuView}
+            copy={props.copy?.FtuTargetEdit}
+            classNames={props.classNames?.FtuTargetEdit}
+          />
+        ) : null}
+        {ftuView === FtuView.TargetList ? (
+          <FtuTargetList setFtuView={setFtuView} />
+        ) : null}
+      </div>
       {ftuView === FtuView.AlertEdit ? <div>FtuAlertEdit</div> : null}
       <div className={clsx('notifi-ftu-footer', props.classNames?.footer)}>
         <PoweredByNotifi classNames={props.classNames?.PoweredByNotifi} />

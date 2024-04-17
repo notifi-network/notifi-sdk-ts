@@ -4,6 +4,7 @@
   flex-direction: column;
   gap: 1.5rem;
   padding: 0 2rem;
+  overflow: scroll;
 }
 .notifi-input-separator {
   display: flex;

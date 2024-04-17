@@ -1,8 +1,7 @@
 .notifi-nav-header {
-  height: 3.5rem;
   background-color: var(--notifi-nav-header-background);
   display: flex;
-  padding: 0 1rem;
+  padding: 1rem;
 }
 .notifi-nave-header-right-cta,
 .notifi-nav-header-left-cta {

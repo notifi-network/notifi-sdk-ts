@@ -111,7 +111,7 @@ export const TargetInputs: React.FC<TargetInputsProps> = (props) => {
       {cardConfig?.contactInfo.discord?.active ? (
         // TODO: impl disable
         <>
-          <TargetInputToggle targetType="slack" disabled={false} />
+          <TargetInputToggle targetType="discord" disabled={false} />
           {props.copy?.inputSeparators?.discord ? (
             <div
               className={clsx(
@@ -126,7 +126,7 @@ export const TargetInputs: React.FC<TargetInputsProps> = (props) => {
       ) : null}
       {cardConfig?.contactInfo.slack?.active ? (
         <>
-          <TargetInputToggle targetType="discord" disabled={false} />
+          <TargetInputToggle targetType="slack" disabled={false} />
           {props.copy?.inputSeparators?.slack ? (
             <div
               className={clsx(

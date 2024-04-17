@@ -36,6 +36,17 @@ export const defaultCopy = {
     headerTitle: 'How do you want to be notified?',
     buttonText: 'Next',
   },
+  ftuTargetList: {
+    headerTitle: 'Verify your destinations',
+    buttonText: 'Next',
+  },
+  targetList: {
+    email: 'Email',
+    phoneNumber: 'SMS',
+    telegram: 'Telegram',
+    discord: 'Discord',
+    slack: 'Slack',
+  },
 };
 
 export const validationRegex: Record<string, RegExp> = {
