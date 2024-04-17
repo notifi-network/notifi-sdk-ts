@@ -18,6 +18,7 @@ export const useUnreadState = () => {
   } = useNotifiSubscriptionContext();
 
   const [unreadNotificationCount, setUnreadNotificationCount] = useState(0);
+  const [isStateChangedSubscribed, setIsStateChangedSubscribed] = useState(false);
   const hasUnreadNotification = useMemo(
     () => (unreadNotificationCount > 0 ? true : false),
     [unreadNotificationCount],
@@ -30,9 +31,10 @@ export const useUnreadState = () => {
   }, [frontendClient.userState?.status]);
 
   useEffect(() => {
-    if (!walletPublicKey || !isClientAuthenticated) return;
+    if (!walletPublicKey || !isClientAuthenticated || isStateChangedSubscribed) return;
 
     console.log("Called: useUnreadState.subscribeNotificationHistoryStateChanged");
+    setIsStateChangedSubscribed(true);
 
     frontendClient.subscribeNotificationHistoryStateChanged(() => {
 
