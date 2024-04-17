@@ -1,5 +1,6 @@
 import React, { FC, PropsWithChildren } from 'react';
 
+import { GlobalStateContextProvider } from './GlobalStateContext';
 import {
   NotifiFrontendClientContextProvider,
   NotifiFrontendClientProviderProps,
@@ -11,6 +12,7 @@ import {
   NotifiTenantConfigProps,
 } from './NotifiTenantConfigContext';
 import { NotifiTopicContextProvider } from './NotifiTopicContext';
+import { NotifiUserSettingContextProvider } from './NotifiUserSettingContext';
 
 export type NotifiContextProviderProps = NotifiFrontendClientProviderProps &
   NotifiTenantConfigProps;
@@ -24,7 +26,11 @@ export const NotifiContextProvider: FC<
         <NotifiTargetContextProvider>
           <NotifiTopicContextProvider>
             <NotifiHistoryContextProvider>
-              {children}
+              <NotifiUserSettingContextProvider>
+                <GlobalStateContextProvider>
+                  {children}
+                </GlobalStateContextProvider>
+              </NotifiUserSettingContextProvider>
             </NotifiHistoryContextProvider>
           </NotifiTopicContextProvider>
         </NotifiTargetContextProvider>
