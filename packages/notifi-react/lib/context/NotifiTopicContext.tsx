@@ -1,9 +1,14 @@
 import {
+  AlertFilter,
   EventTypeItem,
+  Filter,
+  FusionEventMetadata,
   FusionEventTopic,
   FusionEventTypeItem,
+  FusionFilterOptions,
   FusionToggleEventTypeItem,
   LabelEventTypeItem,
+  UserInputOptions,
   resolveStringRef,
 } from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
@@ -23,8 +28,15 @@ import { useNotifiTenantConfigContext } from './NotifiTenantConfigContext';
 export type NotifiTopicContextType = {
   isLoading: boolean;
   error: Error | null;
-  // subscribeAlert: (topic: EventTypeItem) => void;
-  subscribeFusionAlerts: (
+  subscribeAlertsWithFilterOptions: (
+    topicWithFilterOptionsList: ReadonlyArray<{
+      topic: FusionEventTopic;
+      filterOptions: FusionFilterOptions;
+    }>,
+    targetGroupId: string,
+  ) => Promise<void>;
+  subscribeAlertsDefault: (
+    /* Subscribe in default value */
     topics: ReadonlyArray<FusionEventTopic>,
     targetGroupId: string,
   ) => Promise<void>;
@@ -72,8 +84,6 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
           setError(null);
         })
         .catch((e) => {
-          // setGlobalError('ERROR: Fail to unsubscribe alert, plase try again.');
-          // console.log(e);
           setError(e);
         })
         .finally(() => setIsLoading(false));
@@ -81,11 +91,39 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
     [alerts, frontendClient],
   );
 
-  const subscribeFusionAlerts = async (
+  const subscribeAlertsWithFilterOptions = async (
+    topicWithFilterOptionsList: ReadonlyArray<{
+      topic: FusionEventTopic;
+      filterOptions: FusionFilterOptions;
+    }>,
+    targetGroupId: string,
+  ) => {
+    const createAlertInputs: Types.CreateFusionAlertInput[] = [];
+    topicWithFilterOptionsList.forEach(({ topic, filterOptions }) => {
+      const fusionEventDescriptor = topic.fusionEventDescriptor;
+      const fusionEventMetadataJson = fusionEventDescriptor.metadata;
+      const fusionEventId = fusionEventDescriptor.id;
+      // TODO: validate if metadata & fitlerOptions are matched
+      if (!fusionEventMetadataJson || !fusionEventId) return;
+      const subscriptionValue = resolveStringRef(
+        topic.uiConfig.name,
+        topic.uiConfig.sourceAddress, // TODO: AP not yet able to set input reference
+        inputs,
+      );
+      createAlertInputs.push({
+        fusionEventId: fusionEventId,
+        name: topic.uiConfig.name,
+        targetGroupId,
+        subscriptionValue,
+        filterOptions: JSON.stringify(filterOptions),
+      });
+    });
+  };
+
+  const subscribeAlertsDefault = async (
     topics: ReadonlyArray<FusionEventTopic>,
     targetGroupId: string,
   ) => {
-    // const targetGroupId = targetDocument?.targetGroupId;
     const createAlertInputs: Types.CreateFusionAlertInput[] = [];
     topics.forEach((topic) => {
       const fusionEventDescriptor = topic.fusionEventDescriptor;
@@ -99,19 +137,21 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
         const filters = fusionEventMetadata.filters;
         const fusionFilterOptionsInput: FusionFilterOptions['input'] = {};
         const filterOptionsList: FusionFilterOptions[] = [];
-        filters.forEach((filter) => {
-          const userInputParams = filter.userInputParams;
-          const userInputOptions: UserInputOptions = {};
-          // O(n^2) to fix
-          userInputParams.forEach((userInput) => {
-            userInputOptions[userInput.name] = userInput.defaultValue;
+        if (filters && filters.length > 0) {
+          filters.filter(isAlertFilter).forEach((filter) => {
+            const userInputParams = filter.userInputParams;
+            const userInputOptions: UserInputOptions = {};
+            //TODO: O(n^2) to fix
+            userInputParams.forEach((userInput) => {
+              userInputOptions[userInput.name] = userInput.defaultValue;
+            });
+            fusionFilterOptionsInput[filter.name] = userInputOptions;
+            const filterOptions: FusionFilterOptions = {
+              input: fusionFilterOptionsInput,
+            };
+            filterOptionsList.push(filterOptions);
           });
-          fusionFilterOptionsInput[filter.name] = userInputOptions;
-          const filterOptions: FusionFilterOptions = {
-            input: fusionFilterOptionsInput,
-          };
-          filterOptionsList.push(filterOptions);
-        });
+        }
 
         const subscriptionValue = resolveStringRef(
           topic.uiConfig.name,
@@ -162,9 +202,10 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
       value={{
         isLoading,
         error,
-        subscribeFusionAlerts,
+        subscribeAlertsDefault,
         unsubscribeAlert,
         isAlertSubscribed,
+        subscribeAlertsWithFilterOptions,
       }}
     >
       {children}
@@ -224,6 +265,10 @@ export const categorizeTopics = (
   };
 };
 
+export const isAlertFilter = (filter: Filter): filter is AlertFilter => {
+  return 'userInputParams' in filter;
+};
+
 // TODO: REMOVE after MVP-4329 merged
 // Only support fusion event type
 export const validateTopic = (
@@ -231,57 +276,3 @@ export const validateTopic = (
 ): topic is FusionEventTypeItem => {
   return topic.type === 'fusion';
 };
-
-export type FusionEventMetadata = {
-  uiConfigOverride?: {
-    topicDisplayName?: string;
-    historyDisplayName?: string;
-  };
-  filters: Array<AlertFilter>;
-  requiredParserVariables: Array<RequiredParserVariable>;
-};
-
-/**
- * @param name - `string` unique name
- */
-export type AlertFilter = {
-  name: string;
-  type: AlertFilterType;
-  executionPriority: number;
-  minimumDurationBetweenTriggersInMinutes: number;
-  userInputParams: UserInputParam<UiType>[];
-  staticFilterParams?: Record<string, object | string | number>;
-};
-
-export type RequiredParserVariable = {
-  variableName: string;
-  variableType: ValueType;
-  variableDescription: string;
-};
-
-export type ValueType = 'integer' | 'price' | 'percentage';
-
-/**
- * @param UiType - `radio` or `button` (scalable). Define what component should be rendered in Card topic subscription view.
- * @param defaultValue - The value for default alert subscription
- */
-export type UserInputParam<T extends UiType> = {
-  name: string;
-  kind: T;
-  valueTypes?: ValueType;
-  options: (string | number)[];
-  defaultValue: string | number;
-  allowCustomInput?: boolean;
-};
-
-export type UiType = 'radio' | 'button';
-type AlertFilterType = 'alertFilter';
-
-export type FusionFilterOptions = {
-  input: Record<AlertFilter['name'], UserInputOptions>;
-};
-
-export type UserInputOptions = Record<
-  UserInputParam<UiType>['name'],
-  UserInputParam<UiType>['options'][number]
->;
