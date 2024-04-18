@@ -13,8 +13,7 @@ export const useUnreadState = () => {
       'Number badge is only available when frontendClient is enabled',
     );
 
-  const { userId,
-    params: { walletPublicKey },
+  const { params: { walletPublicKey },
   } = useNotifiSubscriptionContext();
 
   const [unreadNotificationCount, setUnreadNotificationCount] = useState(0);
