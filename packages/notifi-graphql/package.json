@@ -34,6 +34,7 @@
   "dependencies": {
     "graphql": "^16.6.0",
     "graphql-request": "^6.0.0",
+    "graphql-ws": "^5.16.0",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
