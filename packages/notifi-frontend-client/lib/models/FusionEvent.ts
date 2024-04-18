@@ -7,7 +7,7 @@ export type FusionEventMetadata = {
     icon?: Types.GenericEventIconHint;
     customIconUrl?: string;
   };
-  filters: Array<AlertFilter>;
+  filters: Array<Filter>;
 };
 
 /**
