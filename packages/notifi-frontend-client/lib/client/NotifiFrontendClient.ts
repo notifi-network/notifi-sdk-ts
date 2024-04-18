@@ -988,9 +988,9 @@ export class NotifiFrontendClient {
     return result;
   }
 
-  async subscribeNotificationHistoryStateChanged(userid: string, onHistoryChanged: () => void): Promise<void> {
+  async subscribeNotificationHistoryStateChanged(onHistoryChanged: () => void): Promise<void> {
     const token = await this._storage.getAuthorization();
-    StateChangedNotifiService(this._wsUrl, token?.token, userid, onHistoryChanged);
+    StateChangedNotifiService(this._wsUrl, token?.token, onHistoryChanged);
   }
 
   async getUserSettings(): Promise<Types.GetUserSettingsQuery['userSettings']> {

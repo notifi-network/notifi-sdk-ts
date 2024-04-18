@@ -1,9 +1,9 @@
 import { NotifiSubscriptionClient } from './NotifiSubscriptionClient';
-export const StateChangedNotifiService = (wsUrl: string, token: string | undefined, userid: string, callback: () => void) => {
+export const StateChangedNotifiService = (wsUrl: string, token: string | undefined, callback: () => void) => {
 
   const wsClient = NotifiSubscriptionClient(wsUrl, token, callback);
   const subscriptionQuery = `subscription {
-    stateChanged (stateChangedType:"${userid}_StateChanged") {
+    stateChanged {
       __typename
     }
   }`;
@@ -13,7 +13,6 @@ export const StateChangedNotifiService = (wsUrl: string, token: string | undefin
     extensions: {
       type: 'start'
     }
-
   },
     {
       next: (data) => {
@@ -28,9 +27,17 @@ export const StateChangedNotifiService = (wsUrl: string, token: string | undefin
       complete: () => {
         console.log('Subscription completed');
       },
-    });
+    })
 
   const onClose = () => {
-    // subscription.unsubscribe();
-  }
+    if (subscription) {
+      subscription();
+    }
+
+    if (wsClient) {
+      wsClient.terminate();
+    }
+
+    wsClient && wsClient.dispose();
+  };
 }

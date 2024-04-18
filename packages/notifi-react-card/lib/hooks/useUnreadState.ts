@@ -33,7 +33,7 @@ export const useUnreadState = () => {
   useEffect(() => {
     if (!walletPublicKey || !isClientAuthenticated || isStateChangedSubscribed) return;
 
-    console.log("Called: useUnreadState.subscribeNotificationHistoryStateChanged for user:" + userId);
+    console.log("Called: useUnreadState.subscribeNotificationHistoryStateChanged for user:");
     setIsStateChangedSubscribed(true);
 
     frontendClient.subscribeNotificationHistoryStateChanged(userId, () => {
