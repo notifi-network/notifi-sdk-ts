@@ -988,7 +988,6 @@ export class NotifiFrontendClient {
   }
 
   async subscribeNotificationHistoryStateChanged(onMessageReceived: (data: any) => void | undefined, onError?: (data: any) => void | undefined, onComplete?: () => void | undefined): Promise<void> {
-    const token = await this._storage.getAuthorization();
     this._service.subscribeNotificationHistoryStateChanged(onMessageReceived, onError, onComplete);
   }
 
