@@ -986,9 +986,13 @@ export class NotifiFrontendClient {
     return result;
   }
 
-  async subscribeNotificationHistoryStateChanged(onHistoryChanged: () => void): Promise<void> {
+  async subscribeNotificationHistoryStateChanged(onMessageReceived: (data: any) => void | undefined, onError?: (data: any) => void | undefined, onComplete?: () => void | undefined): Promise<void> {
     const token = await this._storage.getAuthorization();
-    this._service.subscribeNotificationHistoryStateChanged(onHistoryChanged);
+    this._service.subscribeNotificationHistoryStateChanged(onMessageReceived, onError, onComplete);
+  }
+
+  async wsDispose() {
+    this._service.wsDispose();
   }
 
   async getUserSettings(): Promise<Types.GetUserSettingsQuery['userSettings']> {

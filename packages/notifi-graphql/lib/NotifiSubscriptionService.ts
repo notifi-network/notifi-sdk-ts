@@ -1,18 +1,22 @@
 import { createClient, Client } from 'graphql-ws';
 export class NotifiSubscriptionService {
-  public wsClient: Client | undefined;
+  private wsClient: Client | undefined;
+  private retryCount = 0;
+  private jwt: string | undefined;
   constructor(private wsurl: string) {
   }
 
   disposeClient = () => {
     if (this.wsClient) {
+      this.jwt = undefined;
       this.wsClient.terminate();
       this.wsClient.dispose();
     }
   };
 
-  subscribe = (jwt: string | undefined, subscriptionQuery: string, actionOnMessageReceived: () => void | undefined) => {
-    this.initializeClientIfUndefined(jwt);
+  subscribe = (jwt: string | undefined, subscriptionQuery: string, onMessageReceived: (data: any) => void | undefined, onError?: (data: any) => void | undefined, onComplete?: () => void | undefined) => {
+    this.jwt = jwt;
+    this.initializeClientIfUndefined();
     this.wsClient?.subscribe({
       query: subscriptionQuery,
       extensions: {
@@ -21,55 +25,73 @@ export class NotifiSubscriptionService {
     },
       {
         next: (data) => {
-          if (actionOnMessageReceived) {
-            actionOnMessageReceived();
+          if (onMessageReceived) {
+            onMessageReceived(data);
           }
-          console.log("Subscription data recieved" + JSON.stringify(data));
         },
         error: (error) => {
-          console.error('Subscription error:', error);
+          if (onError) {
+            onError(error);
+          }
         },
         complete: () => {
-          console.log('Subscription completed');
+          if (onComplete) {
+            onComplete();
+          }
         },
       })
   }
 
-  private initializeClientIfUndefined = (jwt: string | undefined) => {
+  private initializeClientIfUndefined = () => {
     if (!this.wsClient) {
-      this.initializeClient(jwt);
+      this.initializeClient();
     }
   }
 
-  private initializeClient = (jwt: string | undefined) => {
+  private initializeClient = () => {
+    //transport
     this.wsClient = createClient({
       url: this.wsurl,
       connectionParams: {
-        Authorization: `Bearer ${jwt}`,
+        Authorization: `Bearer ${this.jwt}`,
       },
+      lazyCloseTimeout: 3000,
+      disablePong: true
     });
 
     this.wsClient.on('connected', () => {
-      console.log('WebSocket connection opened');
+      this.wsStatus = 'Connected';
     });
 
     this.wsClient.on('error', (error) => {
-      console.error('WebSocket error:', error);
+      this.wsStatus = 'Failed';
     });
 
-    this.wsClient.on('closed', (event) => {
+    this.wsClient.on('closed', () => {
+      
+    });
+  }
+
+  private handleOnError() {
+    this.wsClient?.terminate();
+    this.wsClient?.dispose();
+    this.initializeClient()
+  }
+
+  public onRetry() {
+    if (this.retryCount < 3) {
       setTimeout(() => {
-        // this.ensureWebsocketProviderSetup();
+        this.handleOnError();
+        this.retryCount++;
+        if (this.wsStatus !== 'Connected' && this.retryCount < 3) {
+          this.onRetry();
+        }
       }, 3000);
-    });
-
-    this.wsClient.on('message', (data) => {
-      if (data.type == 'next') {
-        console.log('Notification history has been changed: ', data);
-      } else {
-        console.log('Received data:', data);
+    } else {
+      if (this.retryCount >= 3 && this.wsStatus !== 'Connected') {
+        console.log('Not able to connect, please contact to admin...');
       }
-    });
+    }
   }
 }
 

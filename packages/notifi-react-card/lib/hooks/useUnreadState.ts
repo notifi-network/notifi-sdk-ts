@@ -13,8 +13,7 @@ export const useUnreadState = () => {
       'Number badge is only available when frontendClient is enabled',
     );
 
-  const { userId,
-    params: { walletPublicKey },
+  const { params: { walletPublicKey },
   } = useNotifiSubscriptionContext();
 
   const [unreadNotificationCount, setUnreadNotificationCount] = useState(0);
@@ -33,18 +32,16 @@ export const useUnreadState = () => {
   useEffect(() => {
     if (!walletPublicKey || !isClientAuthenticated || isStateChangedSubscribed) return;
 
-    console.log("Called: useUnreadState.subscribeNotificationHistoryStateChanged for user:");
     setIsStateChangedSubscribed(true);
-
-    frontendClient.subscribeNotificationHistoryStateChanged(() => {
-
-      console.log("CallBack: subscribeNotificationHistoryStateChanged");
-
+    frontendClient.subscribeNotificationHistoryStateChanged((data) => {
       frontendClient.getUnreadNotificationHistoryCount().then((res) => {
         const unreadNotificationCount = res.count;
         setUnreadNotificationCount(unreadNotificationCount);
       });
     });
+
+    return () => { frontendClient.wsDispose(); }
+
   }, [isClientAuthenticated, walletPublicKey, isUsingFrontendClient]);
 
   return { hasUnreadNotification, unreadNotificationCount };

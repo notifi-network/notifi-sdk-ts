@@ -409,8 +409,12 @@ export class NotifiService
     );
   }
 
-  async subscribeNotificationHistoryStateChanged(onHistoryChanged: () => void): Promise<void> {
-    this._notifiSubService.subscribe(this._jwt, SubscriptionQueries.StateChanged, onHistoryChanged);
+  async subscribeNotificationHistoryStateChanged(onMessageReceived: (data: any) => void | undefined, onError?: (data: any) => void | undefined, onComplete?: () => void | undefined): Promise<void> {
+    this._notifiSubService.subscribe(this._jwt, SubscriptionQueries.StateChanged, onMessageReceived, onError, onComplete);
+  }
+
+  async wsDispose() {
+    this._notifiSubService.disposeClient();
   }
 
   async getUserSettings(
