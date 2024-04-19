@@ -78,7 +78,7 @@ export default function NotifiDashboard() {
         ) : null}
         <div
           className={`flex flex-col grow bg-white rounded-3xl md:mb-10 mt-3 md:mr-10 ${
-            cardView === 'alertSubscription' ? '' : 'min-h-0'
+            cardView === 'alertSubscription' ? ' overflow-y-auto' : 'min-h-0'
           } shadow-card`}
         >
           {cardView === 'history' ? <DashboardHistory /> : null}

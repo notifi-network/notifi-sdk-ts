@@ -1,5 +1,6 @@
 // TODO: Import from library rather than copy / paste
 import { Types as Gql } from '@notifi-network/notifi-graphql';
+import { GenericEventIconHint } from 'notifi-graphql/lib/gql/generated';
 
 import { AlertFrequency, FilterOptions } from './FilterOptions';
 
@@ -88,6 +89,8 @@ export type LabelEventTypeItem = Readonly<{
   name: string;
   tooltipContent?: string;
   optOutAtSignup?: boolean;
+  icon?: GenericEventIconHint;
+  iconUrl?: string;
 }>;
 
 export type TradingPairEventTypeItem = Readonly<{
