@@ -111,7 +111,7 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
                   : 'text-notifi-icon-unselected'
               } mt-[0.125rem]`}
             />
-            <div className="ml-5">Alert Subscription</div>
+            <div className="ml-5">Alert Subscriptions</div>
           </div>
 
           <div className="w-full border-dashed border border-gray-300 my-6"></div>

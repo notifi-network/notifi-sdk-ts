@@ -77,10 +77,12 @@ const formatTimestampInHistoryRow = (timestamp: string) => {
   return format(
     new Date(timestamp),
     isToday(timestamp)
-      ? 'hh:mm b'
+      ? 'hh:mm:ss'
       : isWithinInterval(dateObject, { start: sevenDaysAgo, end: now })
       ? 'eeee'
-      : 'MM/dd',
+      : dateObject.getFullYear() <= now.getFullYear() - 1
+      ? 'MMM d yyyy'
+      : 'MMM d',
   );
 };
 
@@ -89,7 +91,7 @@ const formatTimestampInHistoryDetail = (date: string): string => {
     const parsedDate = parseISO(date);
 
     const month = parsedDate.toLocaleString('default', { month: 'short' });
-    const clockTime = format(parsedDate, 'HH:mm b');
+    const clockTime = format(parsedDate, 'HH:mm:ss');
     const dateTime = format(parsedDate, 'dd');
     const finalDate = `${month} ${dateTime}`;
 
