@@ -78,13 +78,6 @@ export const useCoinbase = (
       loadingHandler(false);
     }, timeoutInMiniSec ?? 5000);
 
-    const closeTimeout = () => {
-      clearTimeout(timeout);
-      coinbaseProvider.removeListener('connect', closeTimeout);
-    };
-
-    coinbaseProvider.on('connect', closeTimeout);
-
     // NOTE: coinbaseProvider.request's error is not catchable, instead use timeout
     const accounts = await coinbaseProvider.request({
       method: 'eth_requestAccounts',
@@ -97,7 +90,7 @@ export const useCoinbase = (
     setWalletKeysCoinbase(walletKeys);
     setWalletKeysToLocalStorage('coinbase', walletKeys);
     loadingHandler(false);
-    // clearTimeout(timeout);
+    clearTimeout(timeout);
     return walletKeys;
   };
 
