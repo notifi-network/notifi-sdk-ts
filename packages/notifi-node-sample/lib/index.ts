@@ -6,6 +6,7 @@ import {
   createDataplaneClient,
   createGraphQLClient,
   createNotifiService,
+  createNotifiSubscriptionService,
 } from '@notifi-network/notifi-node';
 import { randomUUID } from 'crypto';
 import type { NextFunction, Request, Response } from 'express';
@@ -60,7 +61,8 @@ const notifiServiceMiddleware = (
   const notifiEnv = parseEnv(body.env);
   const graphqlClient = createGraphQLClient(notifiEnv);
   const dpapiClient = createDataplaneClient(notifiEnv);
-  const notifiService = createNotifiService(graphqlClient);
+  const subService = createNotifiSubscriptionService(notifiEnv)
+  const notifiService = createNotifiService(graphqlClient, subService);
   res.locals.notifiService = notifiService;
   res.locals.dpapiClient = dpapiClient;
   next();
