@@ -11,6 +11,7 @@ type TargetListProps = {
     container?: string;
     targetListItem?: string;
     targetListItemTarget?: string;
+    icon?: string;
   };
   copy?: {
     email?: string;
@@ -25,6 +26,7 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
   const {
     targetDocument: { targetInfoPrompts, targetData },
   } = useNotifiTargetContext();
+  // TODO: extract to a separate component for each target
   return (
     <div className={clsx('notifi-target-list', props.classNames?.container)}>
       {targetData.email && targetInfoPrompts.email?.infoPrompt ? (
@@ -35,7 +37,13 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
           )}
         >
           <div className={'notifi-target-list-item-target'}>
-            <Icon type="email" />
+            <Icon
+              type="email"
+              className={clsx(
+                'notifi-target-list-icon',
+                props.classNames?.icon,
+              )}
+            />
             <label>{props.copy?.email ?? defaultCopy.targetList.email}</label>
           </div>
 
@@ -63,7 +71,13 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
               props.classNames?.targetListItemTarget,
             )}
           >
-            <Icon type="sms" />
+            <Icon
+              type="sms"
+              className={clsx(
+                'notifi-target-list-icon',
+                props.classNames?.icon,
+              )}
+            />
             <label>
               {props.copy?.sms ?? defaultCopy.targetList.phoneNumber}
             </label>
@@ -93,7 +107,13 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
               props.classNames?.targetListItemTarget,
             )}
           >
-            <Icon type="telegram" />
+            <Icon
+              type="telegram"
+              className={clsx(
+                'notifi-target-list-icon',
+                props.classNames?.icon,
+              )}
+            />
             <label>
               {props.copy?.telegram ?? defaultCopy.targetList.telegram}
             </label>
@@ -123,7 +143,13 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
               props.classNames?.targetListItemTarget,
             )}
           >
-            <Icon type="email" />
+            <Icon
+              type="discord"
+              className={clsx(
+                'notifi-target-list-icon',
+                props.classNames?.icon,
+              )}
+            />
             <label>
               {props.copy?.discord ?? defaultCopy.targetList.discord}
             </label>
@@ -148,7 +174,13 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
               props.classNames?.targetListItemTarget,
             )}
           >
-            <Icon type="email" />
+            <Icon
+              type="slack"
+              className={clsx(
+                'notifi-target-list-icon',
+                props.classNames?.icon,
+              )}
+            />
             <label>{props.copy?.slack ?? defaultCopy.targetList.slack}</label>
           </div>
           <TargetCta

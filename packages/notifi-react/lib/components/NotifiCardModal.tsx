@@ -15,31 +15,6 @@ import { Ftu, FtuProps } from './Ftu';
 import { Inbox } from './Inbox';
 import { LoadingGlobal, LoadingGlobalProps } from './LoadingGlobal';
 
-// TODO: Deprecate this
-// export type NotifiInputSeparators = {
-//   emailSeparator?: {
-//     classNames?: {
-//       container: string;
-//       content: string;
-//     };
-//     content: string;
-//   };
-//   smsSeparator?: {
-//     classNames?: {
-//       container: string;
-//       content: string;
-//     };
-//     content: string;
-//   };
-//   telegramSeparator?: {
-//     classNames?: {
-//       container: string;
-//       content: string;
-//     };
-//     content: string;
-//   };
-// };
-
 export type NotifiInputFieldsText = {
   label?: {
     email?: string;
@@ -51,9 +26,6 @@ export type NotifiInputFieldsText = {
 
 export type NotifiCardModalProps = Readonly<{
   copy?: DeepPartialReadonly<{
-    // ErrorStateCard: ErrorStateCardProps['copy'];
-    // FetchedStateCard: FetchedStateCardProps['copy'];
-    // LoadingStateCard: LoadingStateCardProps['copy'];
     ErrorGlobal?: ErrorGlobalProps['copy'];
     LoadingGlobal?: LoadingGlobalProps['copy'];
     Connect?: ConnectProps['copy'];
@@ -65,27 +37,14 @@ export type NotifiCardModalProps = Readonly<{
     Connect?: ConnectProps['classNames'];
     Expiry?: ExpiryProps['classNames'];
     Ftu?: FtuProps['classNames'];
-    // ErrorStateCard?: ErrorStateCardProps['classNames'];
-    // FetchedStateCard?: FetchedStateCardProps['classNames'];
-    // LoadingStateCard?: LoadingStateCardProps['classNames'];
-    // NotifiSubscribeButton?: NotifiSubscribeButtonProps['classNames'];
-    // NotifiFooter?: NotifiFooterProps['classNames'];
   }>;
-  // loadingSpinnerSize?: string;
-  // loadingRingColor?: string;
-  // disclosureCopy?: string;
-  // inputLabels?: NotifiInputFieldsText;
   darkMode?: boolean;
-  // cardId: string;
-  // inputs?: Record<string, unknown>;
-  // inputSeparators?: NotifiInputSeparators;
   onClose?: () => void;
 }>;
 
 type CardModalView = 'connect' | 'expiry' | 'ftu' | 'Inbox';
 
 export const NotifiCardModal: React.FC<NotifiCardModalProps> = (props) => {
-  console.log(props);
   const {
     frontendClientStatus,
     isLoading: isLoadingClient,

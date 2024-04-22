@@ -7,7 +7,6 @@
   flex-direction: column;
   gap: 0.5rem;
   border-radius: 6px;
-  overflow: scroll;
 }
 
 .notifi-target-list-item {
@@ -17,6 +16,7 @@
   align-items: center;
   background-color: var(--notifi-notifi-target-list-item-bg);
   padding: 1rem 0;
+  border-radius: 6px;
 }
 
 .notifi-target-list-item-target {
@@ -24,6 +24,11 @@
   gap: 0.5rem;
   align-items: center;
 }
+
+.notifi-target-list-icon {
+  color: var(--notifi-color-heather);
+}
+
 /* TargetCta styles */
 
 .notifi-target-cta {

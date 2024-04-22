@@ -6,6 +6,7 @@
 @import url('./toggle.css');
 @import url('./nav-header.css');
 @import url('./target-list.css');
+@import url('./topic-list.css');
 
 :root {
   /* Color variables */
@@ -39,11 +40,14 @@
   --notifi-toggle-active: var(--notifi-color-seaglass-dark);
   --notifi-toggle-handle: var(--notifi-color-white);
   --notifi-nav-header-background: var(--notifi-color-grey2);
-  --notifi-ftu-target-edit-button-text: var(--notifi-color-midnight);
-  --notifi-ftu-target-edit-button: var(--notifi-color-white);
+  --notifi-ftu-button-text: var(--notifi-color-midnight);
+  --notifi-ftu-button: var(--notifi-color-white);
   --notifi-target-list-cat-button-bg: var(--notifi-color-seaglass-dark);
   --notifi-target-list-cta-link-text: var(--notifi-color-seaglass-dark);
   --notifi-notifi-target-list-item-bg: var(--notifi-color-grey2);
+  --notifi-notifi-topic-list-row-bg: var(--notifi-color-grey2);
+  --notifi-topic-options-item-bg: var(--notifi-color-grey1);
+  --notifi-topic-option-radio-bg: var(--notifi-color-grey1);
 }
 
 .notifi-theme-light {
@@ -58,9 +62,12 @@
   --notifi-toggle-active: var(--notifi-color-seaglass-dark);
   --notifi-toggle-handle: var(--notifi-color-white);
   --notifi-nav-header-background: var(--notifi-color-white);
-  --notifi-ftu-target-edit-button-text: var(--notifi-color-white);
-  --notifi-ftu-target-edit-button: var(--notifi-color-midnight);
+  --notifi-ftu-button-text: var(--notifi-color-white);
+  --notifi-ftu-button: var(--notifi-color-midnight);
   --notifi-target-list-cat-button-bg: var(--notifi-color-secondary-light);
   --notifi-target-list-cta-link-text: var(--notifi-color-secondary-light);
   --notifi-notifi-target-list-item-bg: var(--notifi-color-white);
+  --notifi-notifi-topic-list-row-bg: var(--notifi-color-white);
+  --notifi-topic-options-item-bg: var(--notifi-color-eggshell);
+  --notifi-topic-option-radio-bg: var(--notifi-color-white);
 }

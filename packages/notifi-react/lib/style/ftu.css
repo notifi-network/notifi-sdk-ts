@@ -3,7 +3,6 @@
   flex-direction: column;
   border-radius: 6px;
   width: 100%;
-  /* flex-grow: 1; */
   height: 100%;
   overflow: hidden;
 }
@@ -96,7 +95,7 @@
   font-size: 0.9rem;
   margin-top: 1rem;
 }
-
+.notifi-ftu-alert-edit-button,
 .notifi-ftu-target-list-button,
 .notifi-ftu-target-edit-button {
   display: flex;
@@ -104,8 +103,8 @@
   justify-content: center;
   padding: 0.9rem 0;
   font-weight: 700;
-  color: var(--notifi-ftu-target-edit-button-text);
-  background-color: var(--notifi-ftu-target-edit-button);
+  color: var(--notifi-ftu-button-text);
+  background-color: var(--notifi-ftu-button);
   border-radius: 6px;
   margin: 1rem 2rem;
   cursor: pointer;
@@ -122,4 +121,22 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+}
+
+.notifi-ftu-target-list-main {
+  flex-grow: 1;
+  overflow: scroll;
+}
+
+/* FtuAlertEdit styles */
+
+.notifi-ftu-alert-edit {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.notifi-ftu-alert-edit-main {
+  flex-grow: 1;
+  overflow: scroll;
 }

@@ -19,8 +19,8 @@ export const Logo: React.FC<Props & { type: logoTypes }> = (
           fill="none"
         >
           <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
+            fillRule="evenodd"
+            clipRule="evenodd"
             d="M7.92661 5.02546C7.68505 5.09424 7.43002 5.13107 7.16639 5.13107C5.63641 5.13107 4.39611 3.89077 4.39611 2.36079C4.39611 2.08776 4.43561 1.82397 4.50919 1.5748H1.63872C1.19751 1.5748 0.839844 1.93247 0.839844 2.37367V7.86269C0.839844 8.3039 1.19751 8.66156 1.63872 8.66156H7.12774C7.56894 8.66156 7.92661 8.3039 7.92661 7.86269V5.02546Z"
             fill="currentColor"
           />
@@ -37,8 +37,8 @@ export const Logo: React.FC<Props & { type: logoTypes }> = (
               y2="3.93706"
               gradientUnits="userSpaceOnUse"
             >
-              <stop stop-color="#FE7970" />
-              <stop offset="1" stop-color="#FEB776" />
+              <stop stopColor="#FE7970" />
+              <stop offset="1" stopColor="#FEB776" />
             </linearGradient>
           </defs>
         </svg>
@@ -74,8 +74,8 @@ export const Logo: React.FC<Props & { type: logoTypes }> = (
             fill="currentColor"
           />
           <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
+            fillRule="evenodd"
+            clipRule="evenodd"
             d="M18.1574 -3.05176e-05C17.8067 -3.05176e-05 17.6805 0.192456 17.6805 0.466205V1.46136H18.6536C18.9915 1.46136 19.1419 1.34306 19.1419 1.00943V0.466205C19.1419 0.15396 18.9359 -3.05176e-05 18.6194 -3.05176e-05H18.1574Z"
             fill="currentColor"
           />

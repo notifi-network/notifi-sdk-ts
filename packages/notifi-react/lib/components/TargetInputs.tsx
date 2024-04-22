@@ -44,7 +44,6 @@ export type TargetInputsProps = {
 
 export const TargetInputs: React.FC<TargetInputsProps> = (props) => {
   const { cardConfig } = useNotifiTenantConfigContext();
-  console.log(props);
   return (
     <div className={clsx('notifi-target-inputs', props.classNames?.container)}>
       {cardConfig?.contactInfo.email?.active ? (

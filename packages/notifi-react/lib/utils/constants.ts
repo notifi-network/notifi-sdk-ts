@@ -40,12 +40,19 @@ export const defaultCopy = {
     headerTitle: 'Verify your destinations',
     buttonText: 'Next',
   },
+  ftuAlertEdit: {
+    headerTitle: 'Select alerts',
+    buttonText: 'Done',
+  },
   targetList: {
     email: 'Email',
     phoneNumber: 'SMS',
     telegram: 'Telegram',
     discord: 'Discord',
     slack: 'Slack',
+  },
+  topicOptions: {
+    customInputPlaceholder: 'Custom',
   },
 };
 

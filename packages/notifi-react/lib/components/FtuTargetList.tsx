@@ -6,9 +6,10 @@ import { FtuView } from './Ftu';
 import { NavHeader } from './NavHeader';
 import { TargetList } from './TargetList';
 
-type FtuTargetListProps = {
+export type FtuTargetListProps = {
   classNames?: {
     container?: string;
+    main?: string;
     button?: string;
   };
   copy?: {
@@ -31,7 +32,12 @@ export const FtuTargetList: React.FC<FtuTargetListProps> = (props) => {
       >
         {props.copy?.headerTitle ?? defaultCopy.ftuTargetList.headerTitle}
       </NavHeader>
-      <TargetList />
+      <div
+        className={clsx('notifi-ftu-target-list-main', props.classNames?.main)}
+      >
+        <TargetList />
+      </div>
+
       <button
         className={clsx(
           'notifi-ftu-target-list-button',

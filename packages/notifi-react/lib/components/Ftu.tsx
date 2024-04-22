@@ -6,9 +6,10 @@ import {
   useNotifiTargetContext,
   useNotifiUserSettingContext,
 } from '../context';
+import { FtuAlertEdit, FtuAlertEditProps } from './FtuAlertEdit';
 import { FtuAlertList, FtuAlertListProps } from './FtuAlertList';
 import { FtuTargetEdit, FtuTargetEditProps } from './FtuTargetEdit';
-import { FtuTargetList } from './FtuTargetList';
+import { FtuTargetList, FtuTargetListProps } from './FtuTargetList';
 import { PoweredByNotifi, PoweredByNotifiProps } from './PoweredByNotifi';
 
 export enum FtuView {
@@ -22,6 +23,8 @@ export type FtuProps = {
   copy?: {
     FtuAlertList?: FtuAlertListProps['copy'];
     FtuTargetEdit?: FtuTargetEditProps['copy'];
+    FtuTargetList?: FtuTargetListProps['copy'];
+    FtuAlertEdit?: FtuAlertEditProps['copy'];
   };
   classNames?: {
     container?: string;
@@ -29,12 +32,13 @@ export type FtuProps = {
     ftuViews?: string;
     FtuAlertList?: FtuAlertListProps['classNames'];
     FtuTargetEdit?: FtuTargetEditProps['classNames'];
+    FtuTargetList?: FtuTargetListProps['classNames'];
+    FtuAlertEdit?: FtuAlertEditProps['classNames'];
     PoweredByNotifi?: PoweredByNotifiProps['classNames'];
   };
 };
 
 export const Ftu: React.FC<FtuProps> = (props) => {
-  console.log({ props, ftu: 'FTUSTAGE' });
   // TODO: Move to hook
   const { ftuStage } = useNotifiUserSettingContext();
   const {
@@ -83,7 +87,7 @@ export const Ftu: React.FC<FtuProps> = (props) => {
   return (
     <div className={clsx('notifi-ftu', props.classNames?.container)}>
       <div className={clsx('notifi-ftu-views', props.classNames?.ftuViews)}>
-        {ftuView === FtuView.AlertEdit ? (
+        {ftuView === FtuView.AlertList ? (
           <FtuAlertList
             copy={props.copy?.FtuAlertList}
             classNames={props.classNames?.FtuAlertList}
@@ -97,10 +101,21 @@ export const Ftu: React.FC<FtuProps> = (props) => {
           />
         ) : null}
         {ftuView === FtuView.TargetList ? (
-          <FtuTargetList setFtuView={setFtuView} />
+          <FtuTargetList
+            copy={props.copy?.FtuTargetList}
+            classNames={props.classNames?.FtuTargetList}
+            setFtuView={setFtuView}
+          />
+        ) : null}
+        {ftuView === FtuView.AlertEdit ? (
+          <FtuAlertEdit
+            copy={props.copy?.FtuAlertEdit}
+            classNames={props.classNames?.FtuAlertEdit}
+            setFtuView={setFtuView}
+          />
         ) : null}
       </div>
-      {ftuView === FtuView.AlertEdit ? <div>FtuAlertEdit</div> : null}
+
       <div className={clsx('notifi-ftu-footer', props.classNames?.footer)}>
         <PoweredByNotifi classNames={props.classNames?.PoweredByNotifi} />
       </div>

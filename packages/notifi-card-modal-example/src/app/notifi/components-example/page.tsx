@@ -7,7 +7,6 @@ import {
 import '@notifi-network/notifi-react/dist/index.css';
 
 const NotifiComponentExample = () => {
-  console.log('NotifiComponentExample');
   const copy: NotifiCardModalProps['copy'] = {
     Ftu: {
       FtuTargetEdit: {
