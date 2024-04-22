@@ -1,4 +1,6 @@
+import { Icon } from '@/assets/Icon';
 import { LabelWithSubTopicsEventTypeItem } from '@/context/NotifiTopicContext';
+import { iconStyles } from '@/utils/notifiHistoryUtils';
 
 import { AlertSubscriptionRow } from './AlertSubscriptionRow';
 
@@ -10,11 +12,23 @@ export const AlertSubscriptionBlock: React.FC<AlertSubscriptionRowProps> = ({
   labelWithSubTopics,
 }) => {
   return (
-    <div className="w-72 rounded-lg bg-notifi-alert-subscription-block-bg/75 border border-gray-200 rounded-b-md relative">
-      <div className=" bg-white text-center py-3 font-medium border border-b-gray-200 rounded-md text-lg">
+    <div className="w-72 rounded-b-md relative">
+      <div className="text-center py-3 font-medium rounded-md text-lg flex flex-row items-center justify-start">
+        <div
+          className={`h-10 w-10 rounded-[12px] ${
+            iconStyles[labelWithSubTopics.icon]?.iconBackground ?? ''
+          } mx-5 my-auto border border-gray-200/50`}
+        >
+          <Icon
+            className={`m-2 ${
+              iconStyles[labelWithSubTopics.icon]?.iconColor ?? ''
+            }`}
+            id={labelWithSubTopics.icon}
+          />
+        </div>
         {labelWithSubTopics.name}
       </div>
-      <div className="px-3 py-2 flex flex-col gap-1 md:h-[15.2rem] overflow-scroll [&>*:nth-child(1)]:first-alert-row">
+      <div className="px-3 py-2 flex flex-col gap-1">
         {labelWithSubTopics.subTopics.map((eventType) => {
           return (
             <div key={eventType.name}>
