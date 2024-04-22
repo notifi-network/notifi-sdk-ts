@@ -5,9 +5,10 @@ import React, {
   useState,
 } from 'react';
 
+import { useCoinbase } from '../hooks/useCoinbase';
 import { useKeplr } from '../hooks/useKeplr';
 import { useMetamask } from '../hooks/useMetamask';
-import { KeplrWallet, MetamaskWallet, Wallets } from '../types';
+import { CoinbaseWallet, KeplrWallet, MetamaskWallet, Wallets } from '../types';
 import { getWalletsFromLocalStorage } from '../utils/localStorageUtils';
 
 type WalletContextType = {
@@ -25,6 +26,7 @@ const WalletContext = createContext<WalletContextType>({
   wallets: {
     metamask: {} as any, // intentionally empty initial object
     keplr: {} as any, // intentionally empty initial object
+    coinbase: {} as any, // intentionally empty initial object
   },
   error: null,
   isLoading: false,
@@ -51,8 +53,8 @@ export const NotifiWalletProvider: React.FC<PropsWithChildren> = ({
   };
 
   const metamask = useMetamask(setIsLoading, throwError, selectWallet);
-
   const keplr = useKeplr(setIsLoading, throwError, selectWallet);
+  const coinbase = useCoinbase(setIsLoading, throwError, selectWallet);
 
   const wallets: Wallets = {
     metamask: new MetamaskWallet(
@@ -68,6 +70,13 @@ export const NotifiWalletProvider: React.FC<PropsWithChildren> = ({
       keplr.signArbitraryKeplr,
       keplr.connectKeplr,
       keplr.disconnectKeplr,
+    ),
+    coinbase: new CoinbaseWallet(
+      coinbase.isCoinbaseInstalled,
+      coinbase.walletKeysCoinbase,
+      coinbase.signArbitraryCoinbase,
+      coinbase.connectCoinbase,
+      coinbase.disconnectCoinbase,
     ),
   };
 

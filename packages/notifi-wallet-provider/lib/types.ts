@@ -22,13 +22,17 @@ export type WalletKeysBase = {
 
 export type MetamaskWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'hex'>;
 export type KeplrWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'base64'>;
+export type CoinbaseWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'hex'>;
 
 export type WalletKeys = MetamaskWalletKeys | KeplrWalletKeys;
 
 export abstract class NotifiWallet {
   abstract isInstalled: boolean;
   abstract walletKeys: WalletKeys | null;
-  abstract signArbitrary?: KeplrSignMessage | MetamaskSignMessage;
+  abstract signArbitrary?:
+    | KeplrSignMessage
+    | MetamaskSignMessage
+    | coinbaseSignMessage;
   abstract connect?: () => Promise<Partial<WalletKeysBase> | null>;
   abstract disconnect?: () => void;
 }
@@ -43,6 +47,10 @@ export type MetamaskSignMessage = (
   message: string,
 ) => Promise<`0x${string}` | undefined>;
 
+export type coinbaseSignMessage = (
+  message: string,
+) => Promise<`0x${string}` | undefined>;
+
 export class MetamaskWallet implements NotifiWallet {
   constructor(
     public isInstalled: boolean,
@@ -52,6 +60,16 @@ export class MetamaskWallet implements NotifiWallet {
     public disconnect: () => void,
   ) {}
 }
+export class CoinbaseWallet implements NotifiWallet {
+  constructor(
+    public isInstalled: boolean,
+    public walletKeys: CoinbaseWalletKeys | null,
+    public signArbitrary: coinbaseSignMessage,
+    public connect: () => Promise<CoinbaseWalletKeys | null>,
+    public disconnect: () => void,
+  ) {}
+}
+
 export type KeplrSignMessage = (
   message: string | Uint8Array,
 ) => Promise<StdSignature | undefined>;
@@ -68,4 +86,5 @@ export class KeplrWallet implements NotifiWallet {
 export type Wallets = {
   metamask: MetamaskWallet;
   keplr: KeplrWallet;
+  coinbase: CoinbaseWallet;
 };

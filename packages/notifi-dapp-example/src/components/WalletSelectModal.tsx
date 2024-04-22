@@ -53,7 +53,7 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
         <div className="flex grow gap-6 p-5 justify-center items-center flex-wrap">
           {objectKeys(wallets)
             .filter(
-              (wallet) => wallets[wallet].isInstalled && wallet === 'metamask',
+              (wallet) => wallets[wallet].isInstalled && wallet !== 'keplr',
             )
             .map((wallet) => {
               return (

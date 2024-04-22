@@ -1,4 +1,6 @@
 import {
+  CoinbaseWalletKeys,
+  Ethereum,
   KeplrWalletKeys,
   MetamaskWalletKeys,
   NotifiWalletStorage,
@@ -11,6 +13,8 @@ export const setWalletKeysToLocalStorage = <T extends keyof Wallets>(
   wallet: T,
   walletKeys: T extends 'metamask'
     ? MetamaskWalletKeys
+    : T extends 'coinbase'
+    ? CoinbaseWalletKeys
     : T extends 'keplr'
     ? KeplrWalletKeys
     : never,
@@ -36,3 +40,19 @@ export const getWalletsFromLocalStorage = (): NotifiWalletStorage | null => {
   }
   return storageWallet;
 };
+
+export function getProvider(
+  walletType: 'isMetaMask' | 'isCoinbaseWallet',
+): Ethereum | undefined {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  return Array.isArray(window.ethereum?.providers)
+    ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      window.ethereum.providers.find((provider) => provider[walletType])
+    : // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    window.ethereum?.[walletType]
+    ? window.ethereum
+    : undefined;
+}

@@ -15,6 +15,8 @@ export function convertWalletName(walletName: string) {
       return 'Leap Wallet';
     case 'phantom':
       return 'Phantom';
+    case 'coinbase':
+      return 'Coinbase Wallet';
     default:
       return walletName;
   }
