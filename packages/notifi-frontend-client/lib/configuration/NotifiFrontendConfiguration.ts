@@ -191,16 +191,23 @@ export const newFrontendConfig = (
     : configFactoryPublicKey(config);
 };
 
-export const envUrl = (env?: NotifiEnvironment): string => {
+export const envUrl = (env?: NotifiEnvironment, endpointType?: 'websocket' | 'http'): string => {
   if (!env) env = 'Production';
+
+  let url = '';
   switch (env) {
     case 'Development':
-      return 'https://api.dev.notifi.network/gql';
+      url = '://api.dev.notifi.network/gql';
+      break;
     case 'Local':
-      return 'https://localhost:5001/gql';
+      url = '://localhost:5001/gql';
+      break;
     case 'Production':
-      return 'https://api.notifi.network/gql';
+      url = '://api.notifi.network/gql';
+      break;
     case 'Staging':
-      return 'https://api.stg.notifi.network/gql';
+      url = '://api.stg.notifi.network/gql';
   }
+
+  return `${endpointType === 'websocket' ? 'wss' : 'https'}${url}`;
 };

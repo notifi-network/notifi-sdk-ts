@@ -13,6 +13,7 @@ import {
   createLocalForageStorageDriver,
 } from '../storage';
 import { NotifiFrontendClient } from './NotifiFrontendClient';
+import { NotifiSubscriptionService } from 'notifi-graphql/lib/NotifiSubscriptionService';
 
 export const newNotifiStorage = (config: NotifiFrontendConfiguration) => {
   const driver =
@@ -23,9 +24,11 @@ export const newNotifiStorage = (config: NotifiFrontendConfiguration) => {
 };
 
 export const newNotifiService = (config: NotifiFrontendConfiguration) => {
-  const url = envUrl(config.env);
+  const url = envUrl(config.env, 'http');
+  const wsurl = envUrl(config.env, 'websocket');
   const client = new GraphQLClient(url);
-  return new NotifiService(client);
+  const subService = new NotifiSubscriptionService(wsurl);
+  return new NotifiService(client, subService);
 };
 
 export const newFrontendClient = (args: ConfigFactoryInput) => {
