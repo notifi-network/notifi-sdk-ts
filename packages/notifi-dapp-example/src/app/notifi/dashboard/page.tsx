@@ -41,7 +41,7 @@ export default function NotifiDashboard() {
   }
   if (!accountAddress) return;
   return (
-    <div className="min-h-screen flex items-start flex-row">
+    <div className="flex items-start flex-row min-h-screen">
       {/* desktop sidebar */}
       <DashboardSideBar
         accountAddress={accountAddress}
@@ -57,7 +57,11 @@ export default function NotifiDashboard() {
           setIsOpen={setIsSideBarOpen}
         />
       ) : null}
-      <div className="flex flex-col grow h-screen">
+      <div
+        className={`flex flex-col grow ${
+          cardView === 'alertSubscription' ? 'm-h-screen' : 'h-screen'
+        } md:ml-80`}
+      >
         <div className="md:hidden w-screen flex justify-center">
           <Icon
             id="btn-nav"
@@ -78,7 +82,7 @@ export default function NotifiDashboard() {
         ) : null}
         <div
           className={`flex flex-col grow bg-white rounded-3xl md:mb-10 mt-3 md:mr-10 ${
-            cardView === 'alertSubscription' ? ' overflow-y-auto' : 'min-h-0'
+            cardView === 'alertSubscription' ? '' : 'min-h-0'
           } shadow-card`}
         >
           {cardView === 'history' ? <DashboardHistory /> : null}

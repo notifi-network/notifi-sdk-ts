@@ -470,6 +470,7 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
       phoneNumber: phoneNumberInfoPrompt,
       telegram: telegramInfoPrompt,
       discord: discordInfoPrompt,
+      slack: slackInfoPrompt,
     } = targetInfoPrompts;
 
     const unConfirmedTargets = {
@@ -478,8 +479,8 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
       telegram: telegramInfoPrompt?.infoPrompt.type === 'cta',
       slack:
         targetData.slack.useSlack &&
-        discordInfoPrompt?.infoPrompt.type === 'cta' &&
-        discordInfoPrompt?.infoPrompt.message === 'Enable Bot',
+        slackInfoPrompt?.infoPrompt.type === 'cta' &&
+        slackInfoPrompt?.infoPrompt.message === 'Enable Bot',
       discord:
         targetData.discord.useDiscord &&
         discordInfoPrompt?.infoPrompt.type === 'cta' &&

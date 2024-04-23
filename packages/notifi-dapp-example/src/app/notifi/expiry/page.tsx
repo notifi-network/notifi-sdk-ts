@@ -16,12 +16,13 @@ export default function NotifiExpiry() {
       handleRoute('/notifi');
       return;
     }
-    popGlobalInfoModal({
-      message:
-        'It’s been a while. Connect to Notifi to load your notification details.',
-      iconOrEmoji: { type: 'emoji', content: '👋' },
-      timeout: 20000,
-    });
+    // comment this out as we decide to remove the reminder right now
+    // popGlobalInfoModal({
+    //   message:
+    //     'It’s been a while. Connect to Notifi to load your notification details.',
+    //   iconOrEmoji: { type: 'emoji', content: '👋' },
+    //   timeout: 20000,
+    // });
   }, [frontendClientStatus]);
 
   return (

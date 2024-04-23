@@ -25,7 +25,7 @@ export const DashboardDestinations = () => {
       ) : null}
       <div className="flex flex-col items-center justify-start mt-9 h-[90vh] px-4">
         <div className="flex flex-row items-center justify-between w-full sm:w-112 mb-6">
-          <p className="text-lg font-medium">Destinations</p>
+          <p className="text-lg font-regular">Destinations</p>
           <button
             className="rounded-lg text-notifi-text-light w-16 h-8 text-sm border border-solid border-gray-300 flex items-center justify-center flex-row"
             onClick={handleClick}
