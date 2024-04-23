@@ -472,7 +472,6 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
       discord: discordInfoPrompt,
       slack: slackInfoPrompt,
     } = targetInfoPrompts;
-    console.log('');
 
     const unConfirmedTargets = {
       email: emailInfoPrompt?.infoPrompt.type === 'cta',
