@@ -72,15 +72,21 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
           <div className="flex flex-col items-start justify-between w-3/4 sm:w-90 mr-4">
             <div className="text-sm ml-6">{targetData.email}</div>
             {targetInfoPrompts.email?.infoPrompt.type === 'cta' ? (
-              <DestinationInfoPrompt
-                isSent={isEmailConfirmationSent}
-                onClick={() => handleResendEmailVerificationClick()}
-                infoPromptMessage={
-                  isEmailConfirmationSent
-                    ? 'Verification email sent'
-                    : 'Resend verification email'
-                }
-              />
+              <div className="flex flex-col md:flex-row justify-center items-baseline">
+                <div className="text-sm ml-6 mr-1 text-notifi-text-light font-medium">
+                  We sent you an email.{' '}
+                </div>
+                <DestinationInfoPrompt
+                  type="email"
+                  isSent={isEmailConfirmationSent}
+                  onClick={() => handleResendEmailVerificationClick()}
+                  infoPromptMessage={
+                    isEmailConfirmationSent
+                      ? 'Verification email sent'
+                      : 'Resend verification email'
+                  }
+                />
+              </div>
             ) : (
               VerifiedText
             )}

@@ -29,7 +29,7 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
 
   return (
     <div
-      className={`fixed md:relative grow-0 md:w-80 w-screen h-screen px-7 z-[5] ${
+      className={`fixed grow-0 md:w-80 w-screen h-screen px-7 z-[5] ${
         setIsOpen ? 'md:hidden block bg-gradient-injective' : 'md:block hidden'
       }`}
     >

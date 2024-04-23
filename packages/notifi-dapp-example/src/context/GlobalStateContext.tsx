@@ -104,7 +104,7 @@ export const GlobalStateContextProvider: FC<PropsWithChildren> = ({
       ) : null}
 
       {globalInfoModal ? (
-        <div className="max-w-148 bg-notifi-alert-subscription-block-bg sm:h-16 rounded-lg absolute top-10 md:top-auto md:bottom-20 ml-auto left-2/4 md:left-auto md:right-[-80px] translate-x-[-50%] flex items-center justify-center z-10 sm:px-12 px-2 py-1 md:py-0">
+        <div className="max-w-148 bg-notifi-alert-subscription-block-bg sm:h-16 rounded-lg absolute top-10 ml-auto left-2/4 translate-x-[-50%] flex items-center justify-center z-10 sm:px-12 px-2 py-1 md:py-0">
           {globalInfoModal.iconOrEmoji.type === 'icon' ? (
             <Icon
               id={globalInfoModal.iconOrEmoji.id}

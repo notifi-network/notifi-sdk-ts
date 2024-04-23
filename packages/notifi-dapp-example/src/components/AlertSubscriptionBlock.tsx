@@ -13,7 +13,7 @@ export const AlertSubscriptionBlock: React.FC<AlertSubscriptionRowProps> = ({
 }) => {
   return (
     <div className="w-72 rounded-b-md relative">
-      <div className="text-center py-3 font-medium rounded-md text-lg flex flex-row items-center justify-start">
+      <div className="text-center py-3 font-regular rounded-md text-lg flex flex-row items-center justify-start">
         <div
           className={`h-10 w-10 rounded-[12px] ${
             iconStyles[labelWithSubTopics.icon ?? 'INFO']?.iconBackground ?? ''

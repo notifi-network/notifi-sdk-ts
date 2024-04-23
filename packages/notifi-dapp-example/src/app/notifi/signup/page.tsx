@@ -14,7 +14,7 @@ export default function NotifiSignup() {
   if (!frontendClientStatus.isAuthenticated || isLoadingFtu) return null;
 
   return (
-    <div className="w-full md:h-4/6 sm:w-4/6 bg-notifi-container-bg rounded-2xl flex flex-col items-center justify-between mb-8 px-4">
+    <div className="w-full sm:min-h-[550px] sm:w-4/6 bg-notifi-container-bg rounded-2xl flex flex-col items-center justify-between mb-8 px-4">
       <div className="w-full">
         <div className="flex flex-col items-center justify-center">
           <p className="font-semibold text-xs opacity-50 mt-2.5">STEP 1 OF 3</p>
