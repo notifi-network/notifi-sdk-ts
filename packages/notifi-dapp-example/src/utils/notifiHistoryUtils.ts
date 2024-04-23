@@ -91,7 +91,7 @@ const formatTimestampInHistoryDetail = (date: string): string => {
     const parsedDate = parseISO(date);
 
     const month = parsedDate.toLocaleString('default', { month: 'short' });
-    const clockTime = format(parsedDate, 'HH:mm:ss');
+    const clockTime = format(parsedDate, 'HH:mm');
     const dateTime = format(parsedDate, 'dd');
     const finalDate = `${month} ${dateTime}`;
 
