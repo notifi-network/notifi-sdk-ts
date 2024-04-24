@@ -24,8 +24,8 @@ export default function RootLayout({
         <link href="https://rsms.me/inter/inter.css" rel="stylesheet" />
       </head>
       <body
-        className={`${inter.className} notifi-dapp bg-gradient-injective`}
-        dark-mode="false"
+        className={`${inter.className} notifi-dapp bg-gradient-gmx`}
+        dark-mode="true"
         // NOTE: Not support dark/light mode yet. TODO: consider adding a theme wrapper
       >
         <GlobalStateContextProvider>

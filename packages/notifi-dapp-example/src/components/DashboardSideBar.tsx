@@ -30,7 +30,7 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
   return (
     <div
       className={`fixed md:relative grow-0 md:w-80 w-screen h-screen px-7 z-[5] ${
-        setIsOpen ? 'md:hidden block bg-gradient-injective' : 'md:block hidden'
+        setIsOpen ? 'md:hidden block bg-gradient-gmx' : 'md:block hidden'
       }`}
     >
       <div className="flex flex-col justify-between items-center md:items-start h-full pb-6">
@@ -43,11 +43,11 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
             />
           ) : null}
           <Image
-            src="/logos/injective.png"
-            width={setIsOpen ? 115 : 167}
-            height={setIsOpen ? 24 : 35}
-            alt="Injective"
-            className="mb-6 mt-3"
+            src="/logos/gmx-logo.png"
+            width={setIsOpen ? 115 : 103}
+            height={setIsOpen ? 24 : 26}
+            alt="gmx-logo"
+            className="my-10"
             unoptimized={true}
           />
           <div
@@ -57,7 +57,7 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
             }}
             className={`flex px-4 ${
               cardView === 'history'
-                ? 'bg-white shadow-card'
+                ? 'bg-gradient-side-nav-card text-notifi-text'
                 : 'text-notifi-tab-unselected-text'
             }  w-64 py-3 rounded-[12px] mb-2 cursor-pointer`}
           >
@@ -76,9 +76,9 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
               setCardView('destination');
               setIsOpen?.(false);
             }}
-            className={`flex px-4  w-64 py-3 rounded-[12px] mb-2 cursor-pointer ${
+            className={`flex px-4 w-64 py-3 rounded-[12px] mb-2 cursor-pointer ${
               cardView === 'destination'
-                ? 'bg-white shadow-card'
+                ? 'bg-gradient-side-nav-card text-notifi-text'
                 : 'text-notifi-tab-unselected-text'
             }`}
           >
@@ -99,7 +99,7 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
             }}
             className={`flex px-4 w-64 py-3 rounded-[12px] mb-2 cursor-pointer ${
               cardView === 'alertSubscription'
-                ? 'bg-white shadow-card'
+                ? 'bg-gradient-side-nav-card text-notifi-text'
                 : 'text-notifi-tab-unselected-text'
             }`}
           >
@@ -114,17 +114,13 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
             <div className="ml-5">Alert Subscription</div>
           </div>
 
-          <div className="w-full border-dashed border border-gray-300 my-6"></div>
+          <div className="w-full border border-gray-200 border-opacity-20 my-6"></div>
 
-          <div
-            className={`rounded-[0.75rem] overflow-hidden ${
-              isWalletMenuOpen ? 'shadow-card' : ''
-            }`}
-          >
+          <div className={`rounded-[0.75rem] overflow-hidden`}>
             <div
               className={`cursor-pointer flex px-4 text-notifi-tab-unselected-text w-64 py-2 ${
                 isWalletMenuOpen
-                  ? 'bg-white border border-transparent border-b-gray-500/20'
+                  ? 'bg-notifi-wallet-menu-card-bg border border-transparent'
                   : ''
               } 
               `}
@@ -140,7 +136,7 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
             </div>
             {isWalletMenuOpen ? (
               <div
-                className={`flex px-4 text-notifi-tab-unselected-text w-64 py-2 bg-white`}
+                className={`flex px-4 text-notifi-tab-unselected-text w-64 py-2 bg-notifi-wallet-menu-card-bg`}
                 onClick={() => {
                   if (!selectedWallet && !injectiveSelectedWallet) return;
                   if (selectedWallet) {
@@ -157,7 +153,7 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
             ) : null}
           </div>
         </div>
-        <div className=" p-2 bg-white rounded-lg h-7 bg-opacity-40">
+        <div className="py-1.5 px-3 bg-notifi-destination-card-bg rounded-lg h-7 bg-opacity-40">
           <PoweredByNotifi width={127} height={16} />
         </div>
       </div>

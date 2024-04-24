@@ -7,7 +7,6 @@ import { Dispatch, SetStateAction } from 'react';
 
 import { HistoryListRow } from './HistoryListRow';
 import { LoadingSkeloton } from './LoadingSkeloton';
-import { LoadingSpinner } from './LoadingSpinner';
 
 type HistoryListProps = {
   setHistoryDetailEntry: Dispatch<
@@ -46,10 +45,12 @@ export const HistoryList: React.FC<HistoryListProps> = ({
       `}
     >
       {nodes.length > 0 ? (
-        <div className={`p-6  border-b border-gray-200`}>
-          <div className="m-auto font-medium text-base ">Inbox</div>
+        <div className={`p-6 border-b border-gray-200 border-opacity-20`}>
+          <div className="m-auto font-medium text-base text-notifi-text">
+            Inbox
+          </div>
           {unreadCount ? (
-            <div className="m-auto text-sm">
+            <div className="m-auto text-sm text-notifi-text-light">
               {unreadCount} unread message{unreadCount > 1 ? 's' : ''}
             </div>
           ) : null}
@@ -57,21 +58,28 @@ export const HistoryList: React.FC<HistoryListProps> = ({
       ) : null}
 
       {isLoading && (
-        <div className="mt-8 ml-20 bg-white rounded-3xl">
+        <div className="mt-8 ml-20 bg-notifi-card rounded-3xl">
           <LoadingSkeloton />
           <LoadingSkeloton />
           <LoadingSkeloton />
         </div>
       )}
       {nodes.length === 0 && !isLoading ? (
-        <div className="flex justify-center h-[88vh] items-start pt-24">
+        <div className="flex flex-col justify-start h-[88vh] items-center pt-48 px-2">
           <Image
-            src={'/logos/empty-inbox.svg'}
-            width={404}
-            height={317}
+            src={'/logos/empty-inbox.png'}
+            width={33}
+            height={20}
             alt="empty-inbox"
             unoptimized={true}
           />
+          <div className="text-center text-notifi-text mt-2">
+            Your inbox is empty
+          </div>
+          <div className="text-center text-notifi-text-medium max-w-md">
+            You currently have no notifications. If anything comes up, you will
+            be informed here.
+          </div>
         </div>
       ) : null}
       <div className="min-h-0 overflow-y-scroll grow">

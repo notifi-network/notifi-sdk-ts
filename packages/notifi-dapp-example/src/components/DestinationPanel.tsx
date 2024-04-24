@@ -59,18 +59,22 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
   return (
     <div className="w-full flex flex-col justify-center items-center">
       {contactInfo.email.active && targetData.email ? (
-        <div className="bg-notifi-card-bg rounded-md w-full sm:w-112 h-18 flex flex-row items-center justify-between mb-2">
-          <div className="bg-white rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
+        <div className="bg-notifi-destination-card-bg rounded-md w-full sm:w-112 h-18 flex flex-row items-center justify-between mb-2">
+          <div className="bg-notifi-destination-logo-card-bg rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
             <Icon
               id="email-icon"
               width="15px"
               height="12px"
               className="text-notifi-toggle-on-bg"
             />
-            <div className="font-medium text-xs mt-2">Email</div>
+            <div className="font-medium text-xs mt-2 text-notifi-grey-text">
+              Email
+            </div>
           </div>
           <div className="flex flex-col items-start justify-between w-3/4 sm:w-90 mr-4">
-            <div className="text-sm ml-6">{targetData.email}</div>
+            <div className="text-sm ml-6 text-notifi-text">
+              {targetData.email}
+            </div>
             {targetInfoPrompts.email?.infoPrompt.type === 'cta' ? (
               <DestinationInfoPrompt
                 isSent={isEmailConfirmationSent}
@@ -88,20 +92,24 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
         </div>
       ) : null}
       {contactInfo.telegram.active && targetData.telegram ? (
-        <div className="bg-notifi-card-bg rounded-md w-full sm:w-112 h-18 flex flex-row items-center justify-between mb-2">
-          <div className="bg-white rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
+        <div className="bg-notifi-destination-card-bg rounded-md w-full sm:w-112 h-18 flex flex-row items-center justify-between mb-2">
+          <div className="bg-notifi-destination-logo-card-bg rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
             <Icon
               id="telegram-icon"
               width="16px"
               height="14px"
               className="text-notifi-toggle-on-bg"
             />
-            <div className="font-medium text-xs mt-2">Telegram</div>
+            <div className="font-medium text-xs mt-2 text-notifi-grey-text">
+              Telegram
+            </div>
           </div>
 
           {targetInfoPrompts.telegram?.infoPrompt.type === 'cta' ? (
             <div className="flex flex-row items-center justify-between w-3/4 sm:w-90 mr-4">
-              <div className="text-sm ml-6">{targetData.telegram}</div>
+              <div className="text-sm ml-6 text-notifi-text">
+                {targetData.telegram}
+              </div>
               <DestinationInfoPrompt
                 isButton={true}
                 buttonCopy="Verify ID"
@@ -125,20 +133,22 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
         </div>
       ) : null}
       {targetData.slack.useSlack ? (
-        <div className="bg-notifi-card-bg rounded-md w-full sm:w-112 h-18 flex flex-row items-center justify-between mb-2">
-          <div className="bg-white rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
+        <div className="bg-notifi-destination-card-bg rounded-md w-full sm:w-112 h-18 flex flex-row items-center justify-between mb-2">
+          <div className="bg-notifi-destination-logo-card-bg rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
             <Icon
               id="slack-icon"
               width="16px"
               height="16px"
               className="text-notifi-toggle-on-bg"
             />
-            <div className="font-medium text-xs mt-2">Slack</div>
+            <div className="font-medium text-xs mt-2 text-notifi-grey-text">
+              Slack
+            </div>
           </div>
 
           {targetInfoPrompts.slack?.infoPrompt.type === 'cta' ? (
             <div className="flex flex-row items-center justify-between w-3/4 sm:w-90 mr-4">
-              <div className="text-sm ml-6">Slack</div>
+              <div className="text-sm ml-6 text-notifi-text">Slack</div>
               <DestinationInfoPrompt
                 isButton={true}
                 buttonCopy="Enable Bot"
@@ -152,7 +162,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
             </div>
           ) : (
             <div className="flex flex-col items-start justify-between w-3/4 sm:w-90 mr-4">
-              <div className="text-sm ml-6">
+              <div className="text-sm ml-6 text-notifi-text">
                 {targetData.slack.data?.slackChannelName ?? 'Slack'}
               </div>
               {targetData.slack.data?.verificationStatus === 'VERIFIED'
@@ -164,20 +174,24 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
       ) : null}
 
       {contactInfo?.discord?.active && targetData.discord.useDiscord ? (
-        <div className="bg-notifi-card-bg rounded-md w-full sm:w-112 h-18 flex flex-row items-center justify-between mb-2">
-          <div className="bg-white rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
+        <div className="bg-notifi-destination-card-bg rounded-md w-full sm:w-112 h-18 flex flex-row items-center justify-between mb-2">
+          <div className="bg-notifi-destination-logo-card-bg rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
             <Icon
               id="discord-icon"
               width="17px"
               height="13px"
               className="text-notifi-toggle-on-bg"
             />
-            <div className="font-medium text-xs mt-2">Discord</div>
+            <div className="font-medium text-xs mt-2 text-notifi-grey-text">
+              Discord
+            </div>
           </div>
 
           {targetInfoPrompts.discord?.infoPrompt.type === 'cta' ? (
             <div className="flex flex-row items-center justify-between w-3/4 sm:w-90 mr-4">
-              <div className="text-sm ml-6">Discord Bot DM Alerts</div>
+              <div className="text-sm ml-6 text-notifi-text">
+                Discord Bot DM Alerts
+              </div>
               <DestinationInfoPrompt
                 isButton={true}
                 buttonCopy={targetInfoPrompts.discord?.infoPrompt.message ?? ''}
@@ -194,7 +208,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
             </div>
           ) : (
             <div className="flex flex-col items-start justify-between w-3/4 sm:w-90 mr-4">
-              <div className="text-sm ml-6">
+              <div className="text-sm ml-6 text-notifi-text">
                 {targetData.discord.data?.isConfirmed === true
                   ? discordUserName
                   : 'Discord'}
