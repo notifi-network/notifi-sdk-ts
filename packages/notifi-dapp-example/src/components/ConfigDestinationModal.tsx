@@ -21,11 +21,13 @@ export const ConfigDestinationModal: React.FC<ConfigDestinationModalProps> = ({
   const { updateFtuStage } = useNotifiUserSettingContext();
 
   return (
-    <div className="w-full sm:min-h-[500px] sm:w-4/6 bg-notifi-container-bg rounded-2xl flex flex-col items-center justify-between mt-[1rem] mb-8 px-4">
+    <div className="w-full sm:min-h-[500px] sm:w-4/6 bg-notifi-card-bg rounded-2xl flex flex-col items-center justify-between mt-[1rem] mb-8 px-4">
       <div className="w-full">
         <div className="flex flex-col items-center justify-center">
-          <p className="font-semibold text-xs opacity-50 mt-2.5">STEP 2 of 3</p>
-          <p className="font-medium text-lg sm:my-6 mt-2 mb-6">
+          <p className="font-semibold text-xs opacity-50 mt-2.5 text-notifi-text-medium">
+            STEP 2 of 3
+          </p>
+          <p className="font-medium text-lg sm:my-6 mt-2 mb-6 text-notifi-text">
             Verify your destinations
           </p>
         </div>
