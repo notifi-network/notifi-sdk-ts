@@ -139,6 +139,17 @@ const getFrontendConfigInput = (
       walletBlockchain: params.walletBlockchain,
       env,
     };
+  } else if ('signingPubkey' in params) {
+    return {
+      account: {
+        publicKey: params.walletPublicKey,
+        delegatorAddress: params.signingPubkey,
+        address: params.signingAddress,
+      },
+      tenantId,
+      walletBlockchain: params.walletBlockchain,
+      env,
+    };
   } else {
     return {
       account: {
