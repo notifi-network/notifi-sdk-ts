@@ -24,19 +24,21 @@ export const InputFieldSlack: React.FC<InputFieldSlackProps> = ({
 
   return (
     <>
-      <div className="bg-notifi-card-bg rounded-md w-full sm:w-112 h-18 flex flex-row items-center mb-2 gap-3 sm:gap-0">
-        <div className="bg-white rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
+      <div className="bg-notifi-destination-card-bg rounded-md w-full sm:w-112 h-18 flex flex-row items-center mb-2 gap-3 sm:gap-0">
+        <div className="bg-notifi-destination-logo-card-bg rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
           <Icon
             id="slack-icon"
             width="16px"
             height="16px"
-            className="text-notifi-button-primary-blueish-bg"
+            className="text-notifi-tenant-brand-bg"
           />
-          <div className="font-medium text-xs mt-2">Slack</div>
+          <div className="font-medium text-xs mt-2 text-notifi-grey-text">
+            Slack
+          </div>
         </div>
-        <div className="flex flex-row items-center justify-between w-2/3 sm:w-90 mr-4">
+        <div className="flex flex-row items-center justify-between w-2/3 sm:w-90 mr-4 ">
           <div className="flex flex-col items-start">
-            <div className="text-sm sm:ml-6">
+            <div className="text-sm sm:ml-6 text-notifi-text">
               {targetData.slack.data?.slackChannelName
                 ? targetData.slack.data?.slackChannelName
                 : 'Slack'}
@@ -54,7 +56,7 @@ export const InputFieldSlack: React.FC<InputFieldSlackProps> = ({
                 className="text-xs font-semibold 
 text-notifi-button-primary-blueish-bg md:ml-6 mt-1"
               >
-                <label className="cursor-pointer">
+                <label className="cursor-pointer text-notifi-toggle-on-bg">
                   Change Workspace/Channel
                 </label>
               </a>

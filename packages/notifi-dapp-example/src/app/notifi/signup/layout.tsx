@@ -22,18 +22,14 @@ export default function NotifiSignup({
       <div className="md:fixed md:top-8 md:left-8 md:right-8 m-3 md:m-0 flex justify-between items-center">
         <div className="left-8 flex items-center">
           <Image
-            src="/logos/injective.png"
+            src="/logos/gmx-logo.png"
             width={115}
             height={24}
-            alt="Injective"
             unoptimized={true}
+            alt="Injective"
           />
-          <div className="mx-4 h-4 border-l-2 border-grey-700"></div>
-          <div className="text-gray-400 text-xs tracking-wider">
-            INJECTIVE NOTIFICATIONS
-          </div>
         </div>
-        <div className="p-2 bg-white rounded-lg h-7 hidden md:block">
+        <div className="p-2 rounded-lg h-7 hidden md:block">
           <PoweredByNotifi />
         </div>
       </div>

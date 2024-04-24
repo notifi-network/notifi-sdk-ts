@@ -35,13 +35,15 @@ export const VerifyBanner: React.FC<VerifyBannerProps> = ({
   }, [unVerifiedTargets]);
 
   return (
-    <div className="flex flex-row justify-between items-center py-2 bg-white mt-4 md:mt-6 rounded-[14px] mx-4 md:mx-0 md:mr-10 shadow-card">
+    <div className="flex flex-row justify-between items-center py-2 bg-notifi-card-bg mt-4 md:mt-6 rounded-[14px] mx-4 md:mx-0 md:mr-10">
       <div className="flex flex-row items-center justify-center ml-3 text-sm font-medium">
         <Icon
           id="check"
           className="text-notifi-button-primary-blueish-bg mr-3 w-3 mb-0.5"
         />
-        <div>Verify your {unVerifiedDestinationsString}</div>
+        <div className="text-notifi-text">
+          Verify your {unVerifiedDestinationsString}
+        </div>
       </div>
       <button
         onClick={() => setCardView('destination')}

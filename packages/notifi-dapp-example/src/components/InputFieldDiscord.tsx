@@ -23,18 +23,22 @@ export const InputFieldDiscord: React.FC<InputFieldDiscordProps> = ({
   } = useNotifiTargetContext();
 
   return (
-    <div className="bg-notifi-card-bg rounded-md w-full sm:w-112 h-18 flex flex-row items-center mb-2 gap-3 sm:gap-0">
-      <div className="bg-white rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
+    <div className="bg-notifi-destination-card-bg rounded-md w-full sm:w-112 h-18 flex flex-row items-center mb-2 gap-3 sm:gap-0">
+      <div className="bg-notifi-destination-logo-card-bg rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
         <Icon
           id="discord-icon"
           width="17px"
           height="13px"
-          className="text-notifi-button-primary-blueish-bg"
+          className="text-notifi-tenant-brand-bg"
         />
-        <div className="font-medium text-xs mt-2">Discord</div>
+        <div className="font-medium text-xs mt-2 text-notifi-grey-text">
+          Discord
+        </div>
       </div>
       <div className="flex flex-row items-center justify-between w-2/3 sm:w-90 mr-4">
-        <div className="text-sm sm:ml-6 ">Discord Bot DM Alerts</div>
+        <div className="text-sm sm:ml-6 text-notifi-text">
+          Discord Bot DM Alerts
+        </div>
         <Toggle
           disabled={disabled || !!telegram.error || !!email.error}
           checked={targetData.discord.useDiscord}

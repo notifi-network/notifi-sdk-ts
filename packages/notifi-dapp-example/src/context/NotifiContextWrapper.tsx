@@ -99,8 +99,8 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
       tenantId={tenantId}
       env={env}
       walletBlockchain={walletBlockchain}
-      accountAddress={accountAddress}
       walletPublicKey={walletPublicKey}
+      // accountAddress={accountAddress}
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       //the type error can be fixed when we remove injecive wallet and use only notifi wallet
