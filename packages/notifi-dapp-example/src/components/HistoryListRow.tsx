@@ -55,23 +55,19 @@ export const HistoryListRow: React.FC<HistoryListRowProps> = ({
 
   return (
     <div
-      className={`p-6 line-clamp-1 flex relative border-b border-gray-200 cursor-pointer ${
-        !parsedNotificationHistory.read ? '' : 'bg-gray-50'
-      } hover:notifi-shadow-card hover:bg-gray-100`}
+      className={`mx-6 my-2 p-3 line-clamp-1 flex relative cursor-pointer bg-notifi-destination-card-bg rounded-lg ${
+        !parsedNotificationHistory.read
+          ? 'bg-notifi-destination-logo-card-bg'
+          : ''
+      }  hover:border hover:border-notifi-input-border`}
       onClick={clickHistoryRow}
     >
       <div
         className={`${
           !parsedNotificationHistory.read ? '' : 'hidden'
-        } size-3 bg-blue-200 rounded-3xl flex justify-center items-center absolute top-3 left-3`}
-      >
-        <div className="bg-blue-600 size-1 rounded-3xl"></div>
-      </div>
-      <div
-        className={`h-10 w-10 rounded-[12px] ${
-          iconStyles[icon]?.iconBackground ?? ''
-        } mr-3 ml-1 my-auto border border-gray-200/50`}
-      >
+        } h-18 w-1 bg-notifi-tenant-brand-bg rounded-3xl flex justify-center items-center absolute top-0 left-0 z-1`}
+      ></div>
+      <div className={`h-10 w-10 rounded-[12px] mr-3 ml-1`}>
         <Icon
           className={`m-2 ${iconStyles[icon]?.iconColor ?? ''}`}
           id={icon}
@@ -82,16 +78,16 @@ export const HistoryListRow: React.FC<HistoryListRowProps> = ({
         <div
           className={`${
             !parsedNotificationHistory.read ? 'font-semibold' : ''
-          }`}
+          } text-notifi-text`}
         >
           {parsedNotificationHistory.topic}
         </div>
-        <div className="text-gray-500 text-sm">
+        <div className="text-gray-500 text-sm text-notifi-text-medium">
           {parsedNotificationHistory.subject}
         </div>
       </div>
 
-      <div className="text-xs opacity-70">
+      <div className="text-xs opacity-70 text-notifi-text-light">
         {parsedNotificationHistory.timestamp}
       </div>
     </div>

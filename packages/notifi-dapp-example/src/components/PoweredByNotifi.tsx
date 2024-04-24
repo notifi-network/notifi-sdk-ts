@@ -13,7 +13,7 @@ export const PoweredByNotifi: React.FC<PoweredByNotifiProps> = ({
   // placeholder for now, will use image later
   return (
     <Image
-      src="/logos/powered-by-notifi.png"
+      src="/logos/powered-by-notifi-light.png"
       width={width ? width : 96}
       height={height ? height : 13}
       alt="Injective"

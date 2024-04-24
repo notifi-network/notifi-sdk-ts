@@ -31,7 +31,7 @@ export const HistoryDetail: React.FC<HistoryDetailProps> = ({
 
   return (
     <div className="p-6">
-      <div className="hover:bg-notifi-back-button-hover-bg focus:bg-notifi-back-button-focus-bg h-6 w-6 rounded-2xl">
+      <div className="hover:bg-notifi-tenant-brand-bg focus:bg-notifi-back-button-focus-bg h-6 w-6 rounded-2xl">
         <Icon
           className="cursor-pointer text-gray-500 mb-4"
           onClick={() => setHistoryDetailEntry(null)}
@@ -41,12 +41,14 @@ export const HistoryDetail: React.FC<HistoryDetailProps> = ({
       <div className="px-9 flex">
         <div className="grow flex flex-col gap-3">
           <div>
-            <div className="font-medium text-xl">{topic}</div>
-            <div className="font-medium text-gray-500">{timestamp}</div>
+            <div className="font-medium text-xl text-notifi-text">{topic}</div>
+            <div className="font-medium text-notifi-text-light">
+              {timestamp}
+            </div>
           </div>
 
           <div
-            className="font-medium text-base max-w-[675px]"
+            className="font-medium text-base max-w-[675px] text-notifi-text"
             dangerouslySetInnerHTML={{ __html: sanitizedMessage }}
           />
         </div>
