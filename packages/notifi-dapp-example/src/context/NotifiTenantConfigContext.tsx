@@ -50,7 +50,7 @@ export const NotifiTenantConfigContextProvider: FC<
         type: 'SUBSCRIPTION_CARD',
       })
       .then((cardConfig) => {
-        if ('version' in cardConfig && cardConfig.version !== 'IntercomV1') {
+        if ('version' in cardConfig) {
           setCardConfig(cardConfig);
         }
         setError(null);

@@ -34,6 +34,8 @@ const config: Config = {
       colors: {
         notifi: {
           'primary-text': 'rgb(var(--notifi-primary-text))',
+          text: 'rgb(var(--notifi-text))',
+          'grey-text': 'rgb(var(--notifi-grey-text))',
           'button-primary-bg': 'rgb(var(--notifi-button-primary-bg))',
           'button-primary-blueish-bg':
             'rgb(var(--notifi-button-primary-blueish-bg))',
@@ -42,7 +44,7 @@ const config: Config = {
           'label-connect-wallet-text':
             'rgb(var(--notifi-label-connect-wallet-text))',
           'container-bg': 'rgb(var( --notifi-bgimg-left))',
-          'card-bg': 'rgb(var(--notifi-card-bg))',
+          'destination-card-bg': 'rgb(var(--notifi-destination-card-bg))',
           'destination-card-text': 'rgb(var(--notifi-destination-card-text))',
           'toggle-on-bg': 'rgb(var(--notifi-toggle-on-bg))',
           'toggle-off-bg': 'rgb(var(--notifi-toggle-off-bg))',
@@ -58,11 +60,22 @@ const config: Config = {
           'toggle-off-dot-bg': 'rgb(var(--notifi-toggle-off-dot-bg))',
           'back-button-hover-bg': 'rgb(var(--notifi-back-button-hover-bg))',
           'back-button-focus-bg': 'rgb(var(--notifi-back-button-focus-bg))',
+          'tenant-brand-bg': 'rgb(var(--notifi-tenant-bg))',
+          'card-bg': 'rgb(var(--notifi-card-bg))',
+          'dummy-alert-card-bg': 'rgb(var(--notifi-dummy-alert-card-bg))',
+          bg: 'rgb(var(--notifi-bg))',
+          'card-border': 'rgb(var(--notifi-card-border))',
+          'input-border': 'rgb(var(--notifi-input-border))',
+          'destination-logo-card-bg':
+            'rgb(var(--notifi-destination-logo-card-bg))',
+          'wallet-menu-card-bg': 'rgb(var(--notifi-wallet-menu-card-bg))',
+          'loading-skeloton-bg': 'rgb(var(--notifi-loading-skeleton-bg))',
         },
       },
       backgroundImage: {
         'gradient-notifi': `linear-gradient(107deg, rgb(var(--notifi-bgimg-left)) 1.37%, rgb(var(--notifi-bgimg-middle)) 47.55%, rgb(var(--notifi-bgimg-right)) 103.36%)`,
-        'gradient-injective': `linear-gradient(180deg, #E4F7FC 0%, #F5F9FD 49.67%, #EFEFFD 100%)`,
+        'gradient-gmx': `linear-gradient(167.22deg, #181B3D 0.22%, #2A505B 83.23%);`,
+        'gradient-side-nav-card': `linear-gradient(90deg, #2C365C 0%, #184957 100%);`,
         'radial-gradient-red':
           'radial-gradient(rgba(249, 201, 221, 1), white 95%);',
         'radial-gradient-orange':

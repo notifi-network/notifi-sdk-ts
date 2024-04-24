@@ -61,25 +61,25 @@ export default function NotifiDashboard() {
         <div className="md:hidden w-screen flex justify-center">
           <Icon
             id="btn-nav"
-            className="top-6 left-4 cursor-pointer fixed"
+            className="top-6 left-4 cursor-pointer fixed text-notifi-text"
             onClick={() => setIsSideBarOpen(true)}
           />
           <Image
-            className="mt-3"
-            src="/logos/injective.png"
+            src="/logos/gmx-logo.png"
             width={115}
             height={24}
-            alt="Injective"
             unoptimized={true}
+            alt="gmx"
+            className="mt-10 mb-6"
           />
         </div>
         {unVerifiedTargets.length > 0 && cardView === 'history' ? (
           <VerifyBanner setCardView={setCardView} />
         ) : null}
         <div
-          className={`flex flex-col grow bg-white rounded-3xl md:mb-10 mt-3 md:mr-10 ${
+          className={`flex flex-col grow bg-notifi-card-bg rounded-3xl md:mb-10 mt-3 md:mr-10 ${
             cardView === 'alertSubscription' ? '' : 'min-h-0'
-          } shadow-card`}
+          }`}
         >
           {cardView === 'history' ? <DashboardHistory /> : null}
           {cardView === 'destination' ? <DashboardDestinations /> : null}
