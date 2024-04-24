@@ -34,9 +34,7 @@ export const DestinationInfoPrompt: React.FC<Props> = ({
           rel="noopener noreferrer"
           onClick={() => onClick()}
           className={`text-sm font-semibold ${
-            isSent
-              ? 'text-notifi-text-light'
-              : 'text-notifi-button-primary-blueish-bg'
+            isSent ? 'text-notifi-text-light' : 'text-notifi-toggle-on-bg'
           } ml-6 cursor-pointer`}
         >
           <label className="cursor-pointer">{infoPromptMessage}</label>
