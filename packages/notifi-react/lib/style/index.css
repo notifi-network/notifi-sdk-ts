@@ -1,0 +1,27 @@
+@import url('./notifi-card-modal.css');
+
+:root {
+  /* Color variables */
+  --notifi-color-grey1: #1c1c23;
+  --notifi-color-grey2: #323240;
+  --notifi-color-grey3: #80829d;
+  --notifi-color-white: #fff;
+  --notifi-color-eggshell: #f5f6fb;
+  --notifi-color-seaglass-dark: #828ae3;
+  --notifi-color-green1: #318c1a;
+  --notifi-color-green2: #dff8d9;
+  --notifi-color-dark: #1b1b22;
+  --notifi-color-blue1: #e8ebf5;
+  --notifi-color-midnight: #262949;
+  --notifi-color-cloud: #e8ebf5;
+}
+
+.notifi-theme-dark {
+  --notifi-font-color: var(--notifi-color-white);
+  --notifi-card-background: var(--notifi-color-dark);
+}
+
+.notifi-theme-light {
+  --notifi-font-color: var(--notifi-color-midnight);
+  --notifi-card-background: var(--notifi-color-cloud);
+}
