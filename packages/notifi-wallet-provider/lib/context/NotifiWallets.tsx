@@ -2,13 +2,24 @@ import React, {
   PropsWithChildren,
   createContext,
   useEffect,
+  useMemo,
   useState,
 } from 'react';
 
-import { useCoinbase } from '../hooks/useCoinbase';
 import { useKeplr } from '../hooks/useKeplr';
-import { useMetamask } from '../hooks/useMetamask';
-import { CoinbaseWallet, KeplrWallet, MetamaskWallet, Wallets } from '../types';
+import { useSyncInjectedProviders } from '../hooks/useSyncInjectedProviders';
+import { useWallet } from '../hooks/useWallet';
+import {
+  CoinbaseWallet,
+  Ethereum,
+  KeplrWallet,
+  MetamaskWallet,
+  OKXWallet,
+  RabbyWallet,
+  RainbowWallet,
+  Wallets,
+  ZerionWallet,
+} from '../types';
 import { getWalletsFromLocalStorage } from '../utils/localStorageUtils';
 
 type WalletContextType = {
@@ -27,10 +38,16 @@ const WalletContext = createContext<WalletContextType>({
     metamask: {} as any, // intentionally empty initial object
     keplr: {} as any, // intentionally empty initial object
     coinbase: {} as any, // intentionally empty initial object
+    rabby: {} as any, // intentionally empty initial object
+    rainbow: {} as any, // intentionally empty initial object
+    zerion: {} as any, // intentionally empty initial object
+    okx: {} as any, // intentionally empty initial object
   },
   error: null,
   isLoading: false,
 });
+
+let timer: number | NodeJS.Timeout;
 
 export const NotifiWalletProvider: React.FC<PropsWithChildren> = ({
   children,
@@ -46,23 +63,120 @@ export const NotifiWalletProvider: React.FC<PropsWithChildren> = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const throwError = (e: Error, durationInMs?: number) => {
+    clearTimeout(timer);
     setError(e);
-    setTimeout(() => {
+
+    timer = setTimeout(() => {
       setError(null);
     }, durationInMs ?? 5000);
   };
 
-  const metamask = useMetamask(setIsLoading, throwError, selectWallet);
+  const injectedProviders = useSyncInjectedProviders();
+
+  const getProviderByName = (name: string) =>
+    injectedProviders.find(
+      (v) =>
+        v.info.rdns.toLowerCase().includes(name) ||
+        v.info.name.toLowerCase().includes(name),
+    )?.provider as unknown as Ethereum;
+
+  const providerList = useMemo(() => {
+    const metamask = getProviderByName('metamask');
+    const coinbase = getProviderByName('coinbase');
+    const okx = getProviderByName('okx');
+    const rabby = getProviderByName('rabby');
+    const zerion = getProviderByName('zerion');
+    const rainbow = getProviderByName('rainbow');
+
+    return { metamask, coinbase, zerion, rabby, rainbow, okx };
+  }, [injectedProviders]);
+
   const keplr = useKeplr(setIsLoading, throwError, selectWallet);
-  const coinbase = useCoinbase(setIsLoading, throwError, selectWallet);
+  const metamask = useWallet(
+    setIsLoading,
+    throwError,
+    selectWallet,
+    'metamask',
+    providerList.metamask,
+  );
+  const coinbase = useWallet(
+    setIsLoading,
+    throwError,
+    selectWallet,
+    'coinbase',
+    providerList.coinbase,
+  );
+  const okx = useWallet(
+    setIsLoading,
+    throwError,
+    selectWallet,
+    'okx',
+    providerList.okx,
+  );
+  const zerion = useWallet(
+    setIsLoading,
+    throwError,
+    selectWallet,
+    'zerion',
+    providerList.zerion,
+  );
+  const rabby = useWallet(
+    setIsLoading,
+    throwError,
+    selectWallet,
+    'rabby',
+    providerList.rabby,
+  );
+  const rainbow = useWallet(
+    setIsLoading,
+    throwError,
+    selectWallet,
+    'rainbow',
+    providerList.rainbow,
+  );
 
   const wallets: Wallets = {
     metamask: new MetamaskWallet(
-      metamask.isMetamaskInstalled,
-      metamask.walletKeysMetamask,
-      metamask.signArbitraryMetamask,
-      metamask.connectMetamask,
-      metamask.disconnectMetamask,
+      metamask.isWalletInstalled,
+      metamask.walletKeys,
+      metamask.signArbitrary,
+      metamask.connectWallet,
+      metamask.disconnectWallet,
+    ),
+    coinbase: new CoinbaseWallet(
+      coinbase.isWalletInstalled,
+      coinbase.walletKeys,
+      coinbase.signArbitrary,
+      coinbase.connectWallet,
+      coinbase.disconnectWallet,
+    ),
+    rabby: new RabbyWallet(
+      rabby.isWalletInstalled,
+      rabby.walletKeys,
+      rabby.signArbitrary,
+      rabby.connectWallet,
+      rabby.disconnectWallet,
+    ),
+    zerion: new ZerionWallet(
+      zerion.isWalletInstalled,
+      zerion.walletKeys,
+      zerion.signArbitrary,
+      zerion.connectWallet,
+      zerion.disconnectWallet,
+    ),
+    rainbow: new RainbowWallet(
+      rainbow.isWalletInstalled,
+      rainbow.walletKeys,
+      rainbow.signArbitrary,
+      rainbow.connectWallet,
+      rainbow.disconnectWallet,
+    ),
+    okx: new OKXWallet(
+      okx.isWalletInstalled,
+      okx.walletKeys,
+      okx.signArbitrary,
+      okx.connectWallet,
+      okx.disconnectWallet,
     ),
     keplr: new KeplrWallet(
       keplr.isKeplrInstalled,
@@ -70,13 +184,6 @@ export const NotifiWalletProvider: React.FC<PropsWithChildren> = ({
       keplr.signArbitraryKeplr,
       keplr.connectKeplr,
       keplr.disconnectKeplr,
-    ),
-    coinbase: new CoinbaseWallet(
-      coinbase.isCoinbaseInstalled,
-      coinbase.walletKeysCoinbase,
-      coinbase.signArbitraryCoinbase,
-      coinbase.connectCoinbase,
-      coinbase.disconnectCoinbase,
     ),
   };
 
