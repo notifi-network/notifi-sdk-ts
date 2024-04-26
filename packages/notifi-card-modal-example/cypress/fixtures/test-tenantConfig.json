@@ -1,0 +1,125 @@
+{
+  "id": "notifie2edummytestcardfixture",
+  "name": "notifi e2e dummy test card fixture",
+  "inputs": [],
+  "titles": {
+    "active": true,
+    "editView": "E2E - Settings",
+    "signupView": "E2E - Notifications",
+    "expiredView": "E2E - Expired",
+    "historyView": "E2E - Notifications",
+    "previewView": "E2E - Notification Settings",
+    "alertDetailsView": "E2E - Alert Detail",
+    "verifyWalletsView": "E2E - Verify Wallets"
+  },
+  "version": "v1",
+  "eventTypes": [
+    {
+      "name": "announcements",
+      "type": "broadcast",
+      "broadcastId": {
+        "type": "value",
+        "value": "notifie2e__announcements"
+      },
+      "tooltipContent": ""
+    },
+    {
+      "name": "directPushTest",
+      "type": "directPush",
+      "directPushId": {
+        "type": "value",
+        "value": "notifie2e__directpushtest"
+      },
+      "useCustomIcon": false,
+      "tooltipContent": ""
+    },
+    {
+      "name": "fusionHealth",
+      "type": "fusion",
+      "numberType": "price",
+      "checkRatios": [
+        { "type": "below", "ratio": 1 },
+        { "type": "below", "ratio": 2 }
+      ],
+      "fusionEventId": {
+        "type": "value",
+        "value": "eca2d07c-76d1-4192-bd8c-b9a186f758bc"
+      },
+      "sourceAddress": {
+        "type": "value",
+        "value": "5UNsPiZPHCSvLWkbVDZrakfn1DsW1e2qPh8QvW6zbqjJ"
+      },
+      "useCustomIcon": false,
+      "alertFrequency": "SINGLE",
+      "selectedUIType": "HEALTH_CHECK",
+      "tooltipContent": "",
+      "healthCheckSubtitle": ""
+    },
+    {
+      "name": "customHealth",
+      "type": "custom",
+      "filterType": "BROADCAST_MESSAGES",
+      "numberType": "price",
+      "sourceType": "BROADCAST",
+      "checkRatios": [
+        { "type": "below", "ratio": 3 },
+        { "type": "below", "ratio": 4 }
+      ],
+      "filterOptions": {},
+      "sourceAddress": {
+        "type": "value",
+        "value": "5UNsPiZPHCSvLWkbVDZrakfn1DsW1e2qPh8QvW6zbqjJ"
+      },
+      "useCustomIcon": false,
+      "alertFrequency": "SINGLE",
+      "selectedUIType": "HEALTH_CHECK",
+      "tooltipContent": "",
+      "healthCheckSubtitle": "custom health check test"
+    },
+    {
+      "name": "fusionToggle",
+      "type": "fusion",
+      "fusionEventId": {
+        "type": "value",
+        "value": "eca2d07c-76d1-4192-bd8c-b9a186f758bc"
+      },
+      "sourceAddress": { "type": "value", "value": "Default value" },
+      "useCustomIcon": false,
+      "alertFrequency": "SINGLE",
+      "selectedUIType": "TOGGLE",
+      "tooltipContent": "Fusion toggle test"
+    },
+    {
+      "name": "priceChangeTest",
+      "type": "priceChange",
+      "tokenIds": ["bitcoin", "ethereum", "aptos"],
+      "dataSource": "coingecko",
+      "tooltipContent": "This is the test price change"
+    },
+    {
+      "name": "balanceChangeTest",
+      "type": "balanceChange",
+      "useCustomIcon": false,
+      "tooltipContent": "Test balance change",
+      "watchedWallets": {
+        "type": "value",
+        "value": [
+          {
+            "type": "Solana",
+            "address": "G9on1ddvCc8xqfk2zMceky2GeSfVfhU8JqGHxNEWB5u4"
+          }
+        ]
+      }
+    }
+  ],
+  "contactInfo": {
+    "sms": {
+      "active": true,
+      "supportedCountryCodes": ["+1"]
+    },
+    "email": { "active": true },
+    "discord": { "active": true },
+    "telegram": { "active": true }
+  },
+  "isContactInfoRequired": false
+}

@@ -35,7 +35,7 @@ export const NotifiFrontendClientContext =
 
 export type NotifiFrontendClientProviderProps = {
   tenantId: string;
-  env: NotifiEnvironment;
+  env?: NotifiEnvironment;
 } & WalletWithSignParams;
 
 export const NotifiFrontendClientProvider: FC<
@@ -126,7 +126,7 @@ export const useNotifiFrontendClientContext = () =>
 
 const getFrontendConfigInput = (
   tenantId: string,
-  env: NotifiEnvironment,
+  env?: NotifiEnvironment,
   params: WalletWithSignParams,
 ): ConfigFactoryInput => {
   if ('accountAddress' in params) {

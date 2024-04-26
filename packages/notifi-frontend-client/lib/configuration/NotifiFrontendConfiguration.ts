@@ -7,7 +7,7 @@ export type NotifiEnvironment =
   | 'Local';
 
 export type NotifiEnvironmentConfiguration = Readonly<{
-  env: NotifiEnvironment;
+  env?: NotifiEnvironment;
   tenantId: string;
   storageOption?: Readonly<{
     driverType?: 'LocalForage' | 'InMemory';
@@ -34,7 +34,7 @@ type WalletBlockchainWithPublicKey = Extract<
   | 'MONAD'
 >;
 
-type WalletBlockchainWithDelegate = 'XION'
+type WalletBlockchainWithDelegate = 'XION';
 
 type WalletBlockchainWithPublicKeyAndAddress = Exclude<
   Types.WalletBlockchain,
@@ -91,7 +91,7 @@ export type ConfigFactoryInputDelegated = {
     delegatorAddress: string;
   }>;
   tenantId: string;
-  env: NotifiEnvironment;
+  env?: NotifiEnvironment;
   walletBlockchain: NotifiConfigWithPublicKeyAndAddress['walletBlockchain'];
   storageOption?: NotifiEnvironmentConfiguration['storageOption'];
 };
@@ -102,7 +102,7 @@ export type ConfigFactoryInputPublicKeyAndAddress = {
     publicKey: string;
   }>;
   tenantId: string;
-  env: NotifiEnvironment;
+  env?: NotifiEnvironment;
   walletBlockchain: NotifiConfigWithPublicKeyAndAddress['walletBlockchain'];
   storageOption?: NotifiEnvironmentConfiguration['storageOption'];
 };
@@ -112,7 +112,7 @@ export type ConfigFactoryInputPublicKey = {
     publicKey: string;
   }>;
   tenantId: string;
-  env: NotifiEnvironment;
+  env?: NotifiEnvironment;
   walletBlockchain: NotifiConfigWithPublicKey['walletBlockchain'];
   storageOption?: NotifiEnvironmentConfiguration['storageOption'];
 };
@@ -191,15 +191,23 @@ export const newFrontendConfig = (
     : configFactoryPublicKey(config);
 };
 
-export const envUrl = (env: NotifiEnvironment): string => {
+export const envUrl = (env?: NotifiEnvironment, endpointType?: 'websocket' | 'http'): string => {
+  if (!env) env = 'Production';
+
+  let url = '';
   switch (env) {
     case 'Development':
-      return 'https://api.dev.notifi.network/gql';
+      url = '://api.dev.notifi.network/gql';
+      break;
     case 'Local':
-      return 'https://localhost:5001/gql';
+      url = '://localhost:5001/gql';
+      break;
     case 'Production':
-      return 'https://api.notifi.network/gql';
+      url = '://api.notifi.network/gql';
+      break;
     case 'Staging':
-      return 'https://api.stg.notifi.network/gql';
+      url = '://api.stg.notifi.network/gql';
   }
+
+  return `${endpointType === 'websocket' ? 'wss' : 'https'}${url}`;
 };
