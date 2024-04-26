@@ -2,11 +2,12 @@ import type { Keplr, StdSignature } from '@keplr-wallet/types';
 import { BrowserProvider, Eip1193Provider } from 'ethers';
 
 export type Ethereum = Eip1193Provider & BrowserProvider;
+export type BinanceChain = Ethereum & { requestAccounts: () => any };
 declare global {
   interface Window {
     keplr: Keplr;
     ethereum: Ethereum;
-    BinanceChain: Ethereum;
+    BinanceChain: BinanceChain;
   }
 }
 

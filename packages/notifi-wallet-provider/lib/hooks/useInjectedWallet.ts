@@ -1,18 +1,18 @@
 import converter from 'bech32-converting';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Ethereum, MetamaskWalletKeys, Wallets } from '../types';
 import {
   cleanWalletsInLocalStorage,
   setWalletKeysToLocalStorage,
 } from '../utils/localStorageUtils';
+import { useSyncInjectedProviders } from './useSyncInjectedProviders';
 
-export const useWallet = (
+export const useInjectedWallet = (
   loadingHandler: React.Dispatch<React.SetStateAction<boolean>>,
   errorHandler: (e: Error, durationInMs?: number) => void,
   selectWallet: (wallet: keyof Wallets | null) => void,
   walletName: keyof Wallets,
-  provider: Ethereum,
 ) => {
   const [walletKeys, setWalletKeys] = useState<MetamaskWalletKeys | null>(null);
   const [isWalletInstalled, setIsWalletInstalled] = useState<boolean>(false);
@@ -25,6 +25,18 @@ export const useWallet = (
       ),
     );
   };
+
+  const injectedProviders = useSyncInjectedProviders();
+
+  const provider = useMemo(
+    () =>
+      injectedProviders.find(
+        (v) =>
+          v.info?.rdns?.toLowerCase().includes(walletName.toLowerCase()) ||
+          v.info?.name?.toLowerCase().includes(walletName.toLowerCase()),
+      )?.provider as unknown as Ethereum,
+    [injectedProviders],
+  );
 
   useEffect(() => {
     setIsWalletInstalled(!!provider);
@@ -60,15 +72,13 @@ export const useWallet = (
       return null;
     }
 
-    let timer: undefined | NodeJS.Timeout = undefined;
+    loadingHandler(true);
+    const timer = setTimeout(() => {
+      disconnectWallet();
+      loadingHandler(false);
+    }, timeoutInMiniSec ?? 5000);
+
     try {
-      loadingHandler(true);
-
-      timer = setTimeout(() => {
-        disconnectWallet();
-        loadingHandler(false);
-      }, timeoutInMiniSec ?? 5000);
-
       const accounts = await provider.request?.({
         method: 'eth_requestAccounts',
       });
@@ -106,9 +116,12 @@ export const useWallet = (
         return;
       }
 
-      try {
-        loadingHandler(true);
+      loadingHandler(true);
+      const timer = setTimeout(() => {
+        loadingHandler(false);
+      }, 5000);
 
+      try {
         const signature: Promise<`0x${string}`> = await provider.request?.({
           method: 'personal_sign',
           params: [
@@ -132,6 +145,7 @@ export const useWallet = (
         console.error(e);
       } finally {
         loadingHandler(false);
+        clearTimeout(timer);
       }
     },
     [walletKeys?.hex],

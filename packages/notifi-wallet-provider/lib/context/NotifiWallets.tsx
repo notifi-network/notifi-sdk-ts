@@ -2,17 +2,15 @@ import React, {
   PropsWithChildren,
   createContext,
   useEffect,
-  useMemo,
   useState,
 } from 'react';
 
+import { useBinance } from '../hooks/useBinance';
+import { useInjectedWallet } from '../hooks/useInjectedWallet';
 import { useKeplr } from '../hooks/useKeplr';
-import { useSyncInjectedProviders } from '../hooks/useSyncInjectedProviders';
-import { useWallet } from '../hooks/useWallet';
 import {
   BinanceWallet,
   CoinbaseWallet,
-  Ethereum,
   KeplrWallet,
   MetamaskWallet,
   OKXWallet,
@@ -22,6 +20,8 @@ import {
   ZerionWallet,
 } from '../types';
 import { getWalletsFromLocalStorage } from '../utils/localStorageUtils';
+
+let timer: number | NodeJS.Timeout;
 
 type WalletContextType = {
   selectedWallet: keyof Wallets | null;
@@ -49,8 +49,6 @@ const WalletContext = createContext<WalletContextType>({
   isLoading: false,
 });
 
-let timer: number | NodeJS.Timeout;
-
 export const NotifiWalletProvider: React.FC<PropsWithChildren> = ({
   children,
 }) => {
@@ -73,75 +71,38 @@ export const NotifiWalletProvider: React.FC<PropsWithChildren> = ({
     }, durationInMs ?? 5000);
   };
 
-  const injectedProviders = useSyncInjectedProviders();
-
-  const getProviderByName = (name: string) =>
-    injectedProviders.find(
-      (v) =>
-        v.info?.rdns?.toLowerCase().includes(name.toLowerCase()) ||
-        v.info?.name?.toLowerCase().includes(name.toLowerCase()),
-    )?.provider as unknown as Ethereum;
-
-  const providerList = useMemo(() => {
-    const metamask = getProviderByName('metamask');
-    const coinbase = getProviderByName('coinbase');
-    const okx = getProviderByName('okx');
-    const rabby = getProviderByName('rabby');
-    const zerion = getProviderByName('zerion');
-    const rainbow = getProviderByName('rainbow');
-
-    return { metamask, coinbase, zerion, rabby, rainbow, okx };
-  }, [injectedProviders]);
-
+  const binance = useBinance(setIsLoading, throwError, selectWallet);
   const keplr = useKeplr(setIsLoading, throwError, selectWallet);
-  const metamask = useWallet(
+  const metamask = useInjectedWallet(
     setIsLoading,
     throwError,
     selectWallet,
     'metamask',
-    providerList.metamask,
   );
-  const coinbase = useWallet(
+  const coinbase = useInjectedWallet(
     setIsLoading,
     throwError,
     selectWallet,
     'coinbase',
-    providerList.coinbase,
   );
-  const okx = useWallet(
-    setIsLoading,
-    throwError,
-    selectWallet,
-    'okx',
-    providerList.okx,
-  );
-  const zerion = useWallet(
+  const okx = useInjectedWallet(setIsLoading, throwError, selectWallet, 'okx');
+  const zerion = useInjectedWallet(
     setIsLoading,
     throwError,
     selectWallet,
     'zerion',
-    providerList.zerion,
   );
-  const rabby = useWallet(
+  const rabby = useInjectedWallet(
     setIsLoading,
     throwError,
     selectWallet,
     'rabby',
-    providerList.rabby,
   );
-  const rainbow = useWallet(
+  const rainbow = useInjectedWallet(
     setIsLoading,
     throwError,
     selectWallet,
     'rainbow',
-    providerList.rainbow,
-  );
-  const binance = useWallet(
-    setIsLoading,
-    throwError,
-    selectWallet,
-    'binance',
-    window.BinanceChain,
   );
 
   const wallets: Wallets = {
