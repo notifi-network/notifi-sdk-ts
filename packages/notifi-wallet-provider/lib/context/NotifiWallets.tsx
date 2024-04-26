@@ -10,6 +10,7 @@ import { useKeplr } from '../hooks/useKeplr';
 import { useSyncInjectedProviders } from '../hooks/useSyncInjectedProviders';
 import { useWallet } from '../hooks/useWallet';
 import {
+  BinanceWallet,
   CoinbaseWallet,
   Ethereum,
   KeplrWallet,
@@ -42,6 +43,7 @@ const WalletContext = createContext<WalletContextType>({
     rainbow: {} as any, // intentionally empty initial object
     zerion: {} as any, // intentionally empty initial object
     okx: {} as any, // intentionally empty initial object
+    binance: {} as any, // intentionally empty initial object
   },
   error: null,
   isLoading: false,
@@ -134,6 +136,13 @@ export const NotifiWalletProvider: React.FC<PropsWithChildren> = ({
     'rainbow',
     providerList.rainbow,
   );
+  const binance = useWallet(
+    setIsLoading,
+    throwError,
+    selectWallet,
+    'binance',
+    window.BinanceChain,
+  );
 
   const wallets: Wallets = {
     metamask: new MetamaskWallet(
@@ -178,6 +187,13 @@ export const NotifiWalletProvider: React.FC<PropsWithChildren> = ({
       okx.connectWallet,
       okx.disconnectWallet,
     ),
+    binance: new BinanceWallet(
+      binance.isWalletInstalled,
+      binance.walletKeys,
+      binance.signArbitrary,
+      binance.connectWallet,
+      binance.disconnectWallet,
+    ),
     keplr: new KeplrWallet(
       keplr.isKeplrInstalled,
       keplr.walletKeysKeplr,
@@ -196,7 +212,7 @@ export const NotifiWalletProvider: React.FC<PropsWithChildren> = ({
         wallets[walletName].isInstalled &&
         !selectedWallet
       ) {
-        wallets[walletName].connect().then(() => selectWallet(walletName));
+        wallets[walletName].connect();
       }
     }
   }, [wallets]);

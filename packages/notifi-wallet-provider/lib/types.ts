@@ -6,6 +6,7 @@ declare global {
   interface Window {
     keplr: Keplr;
     ethereum: Ethereum;
+    BinanceChain: Ethereum;
   }
 }
 
@@ -57,6 +58,7 @@ export class RabbyWallet extends MetamaskWallet {}
 export class ZerionWallet extends MetamaskWallet {}
 export class OKXWallet extends MetamaskWallet {}
 export class RainbowWallet extends MetamaskWallet {}
+export class BinanceWallet extends MetamaskWallet {}
 
 export type KeplrSignMessage = (
   message: string | Uint8Array,
@@ -80,4 +82,5 @@ export type Wallets = {
   rainbow: RainbowWallet;
   zerion: ZerionWallet;
   okx: OKXWallet;
+  binance: BinanceWallet;
 };
