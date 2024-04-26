@@ -76,8 +76,8 @@ export const NotifiWalletProvider: React.FC<PropsWithChildren> = ({
   const getProviderByName = (name: string) =>
     injectedProviders.find(
       (v) =>
-        v.info.rdns.toLowerCase().includes(name) ||
-        v.info.name.toLowerCase().includes(name),
+        v.info?.rdns?.toLowerCase().includes(name.toLowerCase()) ||
+        v.info?.name?.toLowerCase().includes(name.toLowerCase()),
     )?.provider as unknown as Ethereum;
 
   const providerList = useMemo(() => {
@@ -191,13 +191,15 @@ export const NotifiWalletProvider: React.FC<PropsWithChildren> = ({
     const storageWallet = getWalletsFromLocalStorage();
     if (storageWallet) {
       const walletName = storageWallet.walletName;
-      if (Object.keys(wallets).includes(walletName)) {
-        wallets[storageWallet.walletName]
-          .connect()
-          .then(() => selectWallet(walletName));
+      if (
+        Object.keys(wallets).includes(walletName) &&
+        wallets[walletName].isInstalled &&
+        !selectedWallet
+      ) {
+        wallets[walletName].connect().then(() => selectWallet(walletName));
       }
     }
-  }, []);
+  }, [wallets]);
 
   return (
     <WalletContext.Provider
