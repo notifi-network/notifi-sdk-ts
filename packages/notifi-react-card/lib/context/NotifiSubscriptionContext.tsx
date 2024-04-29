@@ -50,6 +50,7 @@ export type NotifiSubscriptionData = Readonly<{
   useHardwareWallet: boolean;
   useDiscord: boolean;
   useSlack: boolean;
+  useWeb3: boolean;
   /**
    * @deprecated Now this context can be consumed as long as the component is wrapped in NotifiContext
    */
@@ -67,6 +68,7 @@ export type NotifiSubscriptionData = Readonly<{
   setUseHardwareWallet: React.Dispatch<React.SetStateAction<boolean>>;
   setUseDiscord: React.Dispatch<React.SetStateAction<boolean>>;
   setUseSlack: React.Dispatch<React.SetStateAction<boolean>>;
+  setUseWeb3: React.Dispatch<React.SetStateAction<boolean>>;
   loading: boolean;
   setLoading: (loading: boolean) => void;
   hasChatAlert: boolean;
@@ -89,6 +91,11 @@ export type NotifiSubscriptionData = Readonly<{
   setDiscordTargetData: React.Dispatch<
     React.SetStateAction<Types.DiscordTargetFragmentFragment | undefined>
   >;
+
+  web3TargetData: Types.Web3TargetFragmentFragment | undefined;
+  setWeb3TargetData: React.Dispatch<
+    React.SetStateAction<Types.Web3TargetFragmentFragment | undefined>
+  >
 
   slackTargetData: Types.SlackChannelTargetFragmentFragment | undefined;
   setSlackTargetData: React.Dispatch<
@@ -141,6 +148,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
   const [useHardwareWallet, setUseHardwareWallet] = useState<boolean>(false);
   const [useDiscord, setUseDiscord] = useState<boolean>(false);
   const [useSlack, setUseSlack] = useState<boolean>(false);
+  const [useWeb3, setUseWeb3] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
 
   const [email, setEmail] = useState<string>('');
@@ -150,6 +158,10 @@ export const NotifiSubscriptionContextProvider: React.FC<
 
   const [discordTargetData, setDiscordTargetData] = useState<
     Types.DiscordTargetFragmentFragment | undefined
+  >(undefined);
+
+  const [web3TargetData, setWeb3TargetData] = useState<
+    Types.Web3TargetFragmentFragment | undefined
   >(undefined);
 
   const [slackTargetData, setSlackTargetData] = useState<
@@ -163,6 +175,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
       phoneNumber: undefined,
       discord: undefined,
       slack: undefined,
+      web3: undefined,
     });
 
   const handleErrorMessage = ({
@@ -190,6 +203,10 @@ export const NotifiSubscriptionContextProvider: React.FC<
     handleErrorMessage({ field: 'discord', value });
   };
 
+  const setWeb3ErrorMessage = (value: DestinationError) => {
+    handleErrorMessage({ field: 'web3', value });
+  };
+
   const setSlackErrorMessage = (value: DestinationError) => {
     handleErrorMessage({ field: 'slack', value });
   };
@@ -201,6 +218,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
       phoneNumber: undefined,
       discord: undefined,
       slack: undefined,
+      web3: undefined,
     });
   };
 
@@ -334,9 +352,8 @@ export const NotifiSubscriptionContextProvider: React.FC<
         setPhoneNumberErrorMessage({
           type: 'unrecoverableError',
           message: 'Messages stopped',
-          tooltip: `Please text 'start' to the following number:\n${
-            params.env === 'Production' ? '+1 206 222 3465' : '+1 253 880 1477 '
-          }`,
+          tooltip: `Please text 'start' to the following number:\n${params.env === 'Production' ? '+1 206 222 3465' : '+1 253 880 1477 '
+            }`,
         });
       }
 
@@ -403,6 +420,26 @@ export const NotifiSubscriptionContextProvider: React.FC<
       } else {
         setDiscordTargetData(undefined);
         setUseDiscord(false);
+      }
+
+      const web3Target = targetGroup?.web3Targets?.find(
+        (it) => it?.name === 'Default',
+      );
+
+      if (!!web3Target && !web3Target.isConfirmed) {
+        setWeb3ErrorMessage({
+          type: 'recoverableError',
+          onClick: () => { return },
+          message: 'Enable XMTP',
+        });
+        setUseWeb3(true);
+        setWeb3TargetData(web3Target);
+      } else if (!!web3Target && web3Target.isConfirmed) {
+        setUseWeb3(true);
+        setWeb3TargetData(web3Target);
+      } else {
+        setWeb3TargetData(undefined);
+        setUseWeb3(false);
       }
 
       const slackTarget = targetGroup?.slackChannelTargets?.find(
@@ -488,6 +525,11 @@ export const NotifiSubscriptionContextProvider: React.FC<
     useSlack,
     setUseDiscord,
     setUseSlack,
+    useWeb3,
+    setUseWeb3,
+    web3TargetData,
+    setWeb3TargetData,
+    setWeb3ErrorMessage,
     discordTargetData,
     setDiscordTargetData,
     slackTargetData,

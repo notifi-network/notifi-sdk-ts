@@ -10,6 +10,7 @@ import { SourceFragment } from '../fragments/SourceFragment.gql';
 import { SourceGroupFragment } from '../fragments/SourceGroupFragment.gql';
 import { TargetGroupFragment } from '../fragments/TargetGroupFragment.gql';
 import { TelegramTargetFragment } from '../fragments/TelegramTargetFragment.gql';
+import { Web3TargetFragment } from '../fragments/Web3TargetFragment.gql';
 
 export const fetchData = gql`
   query fetchData {
@@ -43,6 +44,11 @@ export const fetchData = gql`
     filter {
       ...FilterFragment
     }
+    web3Targets {
+      nodes {
+        ...Web3TargetFragment
+      }
+    }
   }
   ${SourceGroupFragment}
   ${AlertFragment}
@@ -54,4 +60,5 @@ export const fetchData = gql`
   ${TelegramTargetFragment}
   ${DiscordTargetFragment}
   ${FilterFragment}
+  ${Web3TargetFragment}
 `;

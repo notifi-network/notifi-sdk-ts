@@ -99,10 +99,10 @@ export const SignUpButton: React.FC<NotifiSignUpButtonProps> = ({
   const isInputFieldsValid = useMemo(() => {
     return data.isContactInfoRequired
       ? !!email.value ||
-          !!phoneNumber.value ||
-          !!telegram.value ||
-          slack.useSlack ||
-          discord.useDiscord
+      !!phoneNumber.value ||
+      !!telegram.value ||
+      slack.useSlack ||
+      discord.useDiscord
       : true;
   }, [
     email,

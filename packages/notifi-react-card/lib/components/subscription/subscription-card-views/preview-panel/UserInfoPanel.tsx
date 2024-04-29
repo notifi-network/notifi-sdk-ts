@@ -30,6 +30,7 @@ export type UserInfoPanelProps = {
     sms?: UserInfoSection;
     EditButton: string;
     myWallet?: UserInfoSection;
+    web3?: UserInfoSection;
   }>;
   contactInfo: CardConfigItemV1['contactInfo'];
   confirmationLabels?: {
@@ -52,6 +53,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
     setCardView,
     destinationErrorMessages,
     useDiscord,
+    useWeb3,
     discordTargetData,
   } = useNotifiSubscriptionContext();
 
@@ -68,6 +70,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
     email: emailErrorMessage,
     phoneNumber: phoneNumberErrorMessage,
     discord: discordErrrorMessage,
+    web3: web3ErrorMessage,
   } = destinationErrorMessages;
 
   const handleResendEmailVerificationClick = useCallback(() => {
@@ -230,6 +233,44 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
           ) : null}
         </div>
       ) : null}
+      {useWeb3 ? (
+        <div
+          className={clsx(
+            'NotifiUserInfoPanel__discord',
+            classNames?.web3?.container,
+          )}
+        >
+          <label
+            className={clsx(
+              'NotifiUserInfoPanel__discordLabel',
+              classNames?.web3?.label,
+            )}
+          >
+            CBW
+          </label>
+          {web3ErrorMessage?.type === 'recoverableError' ? (
+            <DestinationErrorMessage
+              classNames={{
+                errorMessage: clsx(
+                  classNames?.web3?.errorMessage
+                ),
+                errorMessageContainer:
+                  classNames?.web3?.errorMessageContainer,
+                tooltipContent: classNames?.web3?.tooltipContent,
+              }}
+              onClick={() => {
+                web3ErrorMessage?.onClick();
+              }}
+              errorMessage={
+                web3ErrorMessage?.message ??
+                ''
+              }
+              tooltipContent={destinationErrorMessages?.web3?.tooltip}
+            />
+          ) : null}
+        </div>
+      ) : null}
+
       {multiWallet !== undefined && multiWallet.ownedWallets.length > 0 ? (
         <div
           className={clsx(

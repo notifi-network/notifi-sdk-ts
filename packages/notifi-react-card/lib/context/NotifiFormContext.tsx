@@ -37,6 +37,7 @@ export const NotifiFormProvider: React.FC<PropsWithChildren<unknown>> = ({
     telegram: '',
     discord: '',
     slack: '',
+    web3: '',
   });
 
   const [formErrorMessages, setInputErrorMessage] = useState<FormErrorMessages>(
@@ -46,6 +47,7 @@ export const NotifiFormProvider: React.FC<PropsWithChildren<unknown>> = ({
       phoneNumber: '',
       discord: '',
       slack: '',
+      web3: '',
     },
   );
 

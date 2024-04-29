@@ -94,7 +94,7 @@ export const SolanaFrontendClient: FC = () => {
             <button onClick={initClient}>initialize FrontendClient</button>
           )}
           {userState?.status === 'loggedOut' ||
-          userState?.status === 'expired' ? (
+            userState?.status === 'expired' ? (
             <button onClick={login}>login</button>
           ) : null}
           {!!userState && userState.status === 'authenticated' ? (
@@ -122,7 +122,7 @@ export const SolanaFrontendClient: FC = () => {
                     .then((res) => {
                       alert(
                         JSON.stringify(res).slice(0, 100) +
-                          '...\nCHECK CONSOLE FOR FULL RESPONSE',
+                        '...\nCHECK CONSOLE FOR FULL RESPONSE',
                       );
                       console.log(res);
                     })
@@ -239,7 +239,7 @@ export const SolanaFrontendClient: FC = () => {
               {Object.keys(clientData).map((key, id) => {
                 return (
                   <div key={id}>
-                    {clientData[key as keyof Types.FetchDataQuery]?.length}{' '}
+                    {clientData[key as keyof Types.FetchDataQuery]?.toString()}{' '}
                     {key}
                   </div>
                 );

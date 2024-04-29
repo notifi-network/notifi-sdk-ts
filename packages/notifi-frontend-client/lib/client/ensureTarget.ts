@@ -13,7 +13,7 @@ export type ValueTransformFunc = (value: string) => string;
 export const ensureTarget = <
   CreateService,
   GetService,
-  T extends Readonly<{ id: string }>,
+  T extends Readonly<{ id?: string }>,
 >(
   create: CreateFunc<CreateService, T>,
   fetch: FetchFunc<GetService, T>,
@@ -131,6 +131,30 @@ export const ensureDiscord = ensureTarget(
     return query.discordTarget;
   },
   (arg: Types.DiscordTargetFragmentFragment | undefined) => arg?.name,
+  () => 'Default',
+);
+
+export const ensureCbw = ensureTarget(
+  async (service: Operations.CreateWeb3TargetService, value: string) => {
+    const mutation = await service.createWeb3Target({
+      name: value,
+      accountId: "",
+      walletBlockchain: 'OFF_CHAIN',
+      web3TargetProtocol: 'XMTP'
+    });
+
+    const result = mutation.createWeb3Target;
+    if (result === undefined || result.id === undefined) {
+      throw new Error('Failed to create discordTarget');
+    }
+
+    return result;
+  },
+  async (service: Operations.GetWeb3TargetsService) => {
+    const query = await service.getWeb3Targets({});
+    return query.web3Targets?.nodes;
+  },
+  (arg: Types.Web3TargetFragmentFragment | any) => arg?.name,
   () => 'Default',
 );
 

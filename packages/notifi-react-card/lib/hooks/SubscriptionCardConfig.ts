@@ -7,13 +7,13 @@ import { Types } from '@notifi-network/notifi-graphql';
 
 export type ValueOrRef<ValueType> =
   | Readonly<{
-      type: 'ref';
-      ref: string | null;
-    }>
+    type: 'ref';
+    ref: string | null;
+  }>
   | Readonly<{
-      type: 'value';
-      value: ValueType;
-    }>;
+    type: 'value';
+    value: ValueType;
+  }>;
 
 export type DirectPushEventTypeItem = Readonly<{
   type: 'directPush';
@@ -192,6 +192,8 @@ export type ContactInfo = Readonly<{
 }>;
 export type EmailContactInfo = ContactInfo;
 export type DiscordContactInfo = ContactInfo;
+export type Web3ContactInfo = ContactInfo;
+
 
 export type CountryCode = string;
 
@@ -216,6 +218,7 @@ export type ContactInfoConfig = Readonly<{
   telegram: TelegramContactInfo;
   webhook: WebhookContactInfo;
   discord: DiscordContactInfo;
+  web3: Web3ContactInfo;
 }>;
 
 export type CardConfigItemV1 = Readonly<{

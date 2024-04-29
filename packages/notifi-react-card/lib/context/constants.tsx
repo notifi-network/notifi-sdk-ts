@@ -4,7 +4,8 @@ export type FormField =
   | 'phoneNumber'
   | 'telegram'
   | 'discord'
-  | 'slack';
+  | 'slack'
+  | 'web3';
 
 export type DestinationErrorMessageField = {
   field: FormField;

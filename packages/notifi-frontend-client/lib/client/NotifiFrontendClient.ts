@@ -28,44 +28,45 @@ import {
   ensureSms,
   ensureTelegram,
   ensureWebhook,
+  ensureCbw
 } from './ensureTarget';
 
 export type SignMessageParams =
   | Readonly<{
-      walletBlockchain: 'SOLANA';
-      signMessage: Uint8SignMessageFunction;
-    }>
+    walletBlockchain: 'SOLANA';
+    signMessage: Uint8SignMessageFunction;
+  }>
   | Readonly<{
-      walletBlockchain:
-        | 'ETHEREUM'
-        | 'POLYGON'
-        | 'ARBITRUM'
-        | 'AVALANCHE'
-        | 'BINANCE'
-        | 'INJECTIVE'
-        | 'OSMOSIS'
-        | 'NIBIRU'
-        | 'OPTIMISM'
-        | 'ZKSYNC'
-        | 'BASE';
-      signMessage: Uint8SignMessageFunction;
-    }>
+    walletBlockchain:
+    | 'ETHEREUM'
+    | 'POLYGON'
+    | 'ARBITRUM'
+    | 'AVALANCHE'
+    | 'BINANCE'
+    | 'INJECTIVE'
+    | 'OSMOSIS'
+    | 'NIBIRU'
+    | 'OPTIMISM'
+    | 'ZKSYNC'
+    | 'BASE';
+    signMessage: Uint8SignMessageFunction;
+  }>
   | Readonly<{
-      walletBlockchain: 'APTOS';
-      signMessage: AptosSignMessageFunction;
-    }>
+    walletBlockchain: 'APTOS';
+    signMessage: AptosSignMessageFunction;
+  }>
   | Readonly<{
-      walletBlockchain: 'ACALA';
-      signMessage: AcalaSignMessageFunction;
-    }>
+    walletBlockchain: 'ACALA';
+    signMessage: AcalaSignMessageFunction;
+  }>
   | Readonly<{
-      walletBlockchain: 'NEAR';
-      signMessage: Uint8SignMessageFunction;
-    }>
+    walletBlockchain: 'NEAR';
+    signMessage: Uint8SignMessageFunction;
+  }>
   | Readonly<{
-      walletBlockchain: 'SUI';
-      signMessage: Uint8SignMessageFunction;
-    }>;
+    walletBlockchain: 'SUI';
+    signMessage: Uint8SignMessageFunction;
+  }>;
 
 export type WalletWithSignParams = Readonly<{
   displayName?: string;
@@ -74,48 +75,48 @@ export type WalletWithSignParams = Readonly<{
 
 export type WalletWithSignMessage =
   | Readonly<{
-      walletBlockchain: 'SOLANA';
-      walletPublicKey: string;
-      signMessage: Uint8SignMessageFunction;
-    }>
+    walletBlockchain: 'SOLANA';
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>
   | Readonly<{
-      walletBlockchain:
-        | 'ETHEREUM'
-        | 'POLYGON'
-        | 'ARBITRUM'
-        | 'AVALANCHE'
-        | 'BINANCE'
-        | 'OPTIMISM'
-        | 'ZKSYNC'
-        | 'BASE';
+    walletBlockchain:
+    | 'ETHEREUM'
+    | 'POLYGON'
+    | 'ARBITRUM'
+    | 'AVALANCHE'
+    | 'BINANCE'
+    | 'OPTIMISM'
+    | 'ZKSYNC'
+    | 'BASE';
 
-      walletPublicKey: string;
-      signMessage: Uint8SignMessageFunction;
-    }>
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>
   | Readonly<{
-      walletBlockchain: 'APTOS';
-      accountAddress: string;
-      walletPublicKey: string;
-      signMessage: AptosSignMessageFunction;
-    }>
+    walletBlockchain: 'APTOS';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: AptosSignMessageFunction;
+  }>
   | Readonly<{
-      walletBlockchain: 'ACALA';
-      accountAddress: string;
-      walletPublicKey: string;
-      signMessage: AcalaSignMessageFunction;
-    }>
+    walletBlockchain: 'ACALA';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: AcalaSignMessageFunction;
+  }>
   | Readonly<{
-      walletBlockchain: 'NEAR';
-      accountAddress: string;
-      walletPublicKey: string;
-      signMessage: Uint8SignMessageFunction;
-    }>
+    walletBlockchain: 'NEAR';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>
   | Readonly<{
-      walletBlockchain: 'SUI';
-      accountAddress: string;
-      walletPublicKey: string;
-      signMessage: Uint8SignMessageFunction;
-    }>;
+    walletBlockchain: 'SUI';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>;
 
 export type ConnectWalletParams = Readonly<{
   walletParams: WalletWithSignParams;
@@ -160,17 +161,17 @@ export type SupportedCardConfigType = CardConfigItemV1;
 
 export type UserState = Readonly<
   | {
-      status: 'loggedOut';
-    }
+    status: 'loggedOut';
+  }
   | {
-      status: 'authenticated';
-      authorization: Authorization;
-      roles: Roles;
-    }
+    status: 'authenticated';
+    authorization: Authorization;
+    roles: Roles;
+  }
   | {
-      status: 'expired';
-      authorization: Authorization;
-    }
+    status: 'expired';
+    authorization: Authorization;
+  }
 >;
 
 export class NotifiFrontendClient {
@@ -178,7 +179,7 @@ export class NotifiFrontendClient {
     private _configuration: NotifiFrontendConfiguration,
     private _service: NotifiService,
     private _storage: NotifiStorage,
-  ) {}
+  ) { }
 
   private _clientRandomUuid: string | null = null;
   private _userState: UserState | null = null;
@@ -402,9 +403,8 @@ export class NotifiFrontendClient {
         const { authenticationKey, accountAddress, tenantId } = this
           ._configuration as NotifiConfigWithPublicKeyAndAddress;
 
-        const message = `${
-          `ed25519:` + authenticationKey
-        }${tenantId}${accountAddress}${timestamp.toString()}`;
+        const message = `${`ed25519:` + authenticationKey
+          }${tenantId}${accountAddress}${timestamp.toString()}`;
         const textAsBuffer = new TextEncoder().encode(message);
         const hashBuffer = await window.crypto.subtle.digest(
           'SHA-256',
@@ -529,6 +529,7 @@ export class NotifiFrontendClient {
     telegramId,
     webhook,
     discordId,
+    cbwId,
     slackId,
   }: Readonly<{
     name: string;
@@ -537,6 +538,7 @@ export class NotifiFrontendClient {
     telegramId?: string;
     webhook?: EnsureWebhookParams;
     discordId?: string;
+    cbwId?: string;
     slackId?: string;
   }>): Promise<Types.TargetGroupFragmentFragment> {
     const [
@@ -547,6 +549,7 @@ export class NotifiFrontendClient {
       webhookTargetId,
       discordTargetId,
       slackTargetId,
+      cbwTargetId,
     ] = await Promise.all([
       this._service.getTargetGroups({}),
       ensureEmail(this._service, emailAddress),
@@ -555,6 +558,7 @@ export class NotifiFrontendClient {
       ensureWebhook(this._service, webhook),
       ensureDiscord(this._service, discordId),
       ensureSlack(this._service, slackId),
+      ensureCbw(this._service, cbwId),
     ]);
 
     const emailTargetIds = emailTargetId === undefined ? [] : [emailTargetId];
@@ -567,6 +571,8 @@ export class NotifiFrontendClient {
       discordTargetId === undefined ? [] : [discordTargetId];
     const slackChannelTargetIds =
       slackTargetId === undefined ? [] : [slackTargetId];
+    const cbwTargetIds =
+      cbwTargetId === undefined ? [] : [cbwTargetId];
 
     const existing = targetGroupsQuery.targetGroup?.find(
       (it) => it?.name === name,
@@ -580,6 +586,7 @@ export class NotifiFrontendClient {
         webhookTargetIds,
         discordTargetIds,
         slackChannelTargetIds,
+        cbwTargetIds,
       });
     }
 
@@ -591,6 +598,7 @@ export class NotifiFrontendClient {
       webhookTargetIds,
       discordTargetIds,
       slackChannelTargetIds,
+      web3TargetIds: cbwTargetIds,
     });
 
     if (createMutation.createTargetGroup === undefined) {
@@ -608,6 +616,7 @@ export class NotifiFrontendClient {
     webhookTargetIds,
     discordTargetIds,
     slackChannelTargetIds,
+    cbwTargetIds,
   }: Readonly<{
     existing: Types.TargetGroupFragmentFragment;
     emailTargetIds: Array<string>;
@@ -616,6 +625,7 @@ export class NotifiFrontendClient {
     webhookTargetIds: Array<string>;
     discordTargetIds: Array<string>;
     slackChannelTargetIds: Array<string>;
+    cbwTargetIds: Array<string>;
   }>): Promise<Types.TargetGroupFragmentFragment> {
     if (
       areIdsEqual(emailTargetIds, existing.emailTargets ?? []) &&
@@ -623,7 +633,8 @@ export class NotifiFrontendClient {
       areIdsEqual(telegramTargetIds, existing.telegramTargets ?? []) &&
       areIdsEqual(webhookTargetIds, existing.webhookTargets ?? []) &&
       areIdsEqual(discordTargetIds, existing.discordTargets ?? []) &&
-      areIdsEqual(slackChannelTargetIds, existing.slackChannelTargets ?? [])
+      areIdsEqual(slackChannelTargetIds, existing.slackChannelTargets ?? []) &&
+      areIdsEqual(cbwTargetIds, existing.web3Targets ?? [])
     ) {
       return existing;
     }
@@ -637,6 +648,7 @@ export class NotifiFrontendClient {
       webhookTargetIds,
       discordTargetIds,
       slackChannelTargetIds,
+      web3TargetIds: cbwTargetIds,
     });
 
     const updated = updateMutation.updateTargetGroup;
@@ -921,9 +933,9 @@ export class NotifiFrontendClient {
       walletPublicKey,
       accountId:
         walletBlockchain === 'APTOS' ||
-        walletBlockchain === 'ACALA' ||
-        walletBlockchain === 'NEAR' ||
-        walletBlockchain === 'SUI'
+          walletBlockchain === 'ACALA' ||
+          walletBlockchain === 'NEAR' ||
+          walletBlockchain === 'SUI'
           ? params.walletParams.accountAddress
           : undefined,
       signature,

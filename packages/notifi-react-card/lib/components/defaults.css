@@ -62,11 +62,9 @@ a {
   --notifi-focus-color: #fff;
   --notifi-toggle-handle: #fff;
   --notifi-toggle-inactive: #b6b8d5;
-  --notifi-toggle-active: linear-gradient(
-    207.53deg,
-    #fe7970 11.91%,
-    #feb776 88.99%
-  );
+  --notifi-toggle-active: linear-gradient(207.53deg,
+      #fe7970 11.91%,
+      #feb776 88.99%);
   --notifi-tooltip-background: rgba(60, 60, 60, 1);
   --notifi-alert-color: rgb(213, 25, 25);
   --notifi-link-color: hsl(240, 100%, 85%);
@@ -504,9 +502,7 @@ input::-webkit-inner-spin-button {
 .NotifiToggle__container {
   --notifi-toggle-size: 22px;
   --notifi-toggle-padding: 3px;
-  --notifi-toggle-container: calc(
-    var(--notifi-toggle-size) + 2 * var(--notifi-toggle-padding)
-  );
+  --notifi-toggle-container: calc(var(--notifi-toggle-size) + 2 * var(--notifi-toggle-padding));
   position: relative;
   display: inline-block;
   width: calc(var(--notifi-toggle-container) + var(--notifi-toggle-size));
@@ -554,11 +550,11 @@ input::-webkit-inner-spin-button {
   transition: 0.2s;
 }
 
-.NotifiToggle__input:checked + .NotifiToggle__slider {
+.NotifiToggle__input:checked+.NotifiToggle__slider {
   background: var(--notifi-toggle-active);
 }
 
-.NotifiToggle__input:checked + .NotifiToggle__slider:before {
+.NotifiToggle__input:checked+.NotifiToggle__slider:before {
   transform: translateX(var(--notifi-toggle-size));
 }
 
@@ -566,7 +562,7 @@ input::-webkit-inner-spin-button {
   cursor: progress;
 }
 
-.NotifiIntercomToggle__input:checked + .NotifiToggle__slider {
+.NotifiIntercomToggle__input:checked+.NotifiToggle__slider {
   background-color: #1448f3;
 }
 
@@ -582,6 +578,22 @@ input::-webkit-inner-spin-button {
 
 .NotifiHwWalletToggle__label,
 .NotifiDiscordToggle__label {
+  font-size: 16px;
+  line-height: 20px;
+  color: var(--notifi-font-color);
+  margin-bottom: 0px !important;
+}
+
+.NotifiCbwToggle__container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-top: 10px;
+}
+
+.NotifiCbwToggle__label {
   font-size: 16px;
   line-height: 20px;
   color: var(--notifi-font-color);
@@ -977,7 +989,7 @@ input::-webkit-inner-spin-button {
   left: 50%;
 }
 
-.NotifiTooltip__container:hover > .NotifiTooltip__body {
+.NotifiTooltip__container:hover>.NotifiTooltip__body {
   visibility: visible;
 }
 
@@ -1500,15 +1512,15 @@ input::-webkit-inner-spin-button {
   flex-direction: column;
 }
 
-.EventTypeTradingPairsRow__container > * {
+.EventTypeTradingPairsRow__container>* {
   margin-bottom: 0 !important;
 }
 
-.EventTypeTradingPairsRow__container > *:not(:first-child) {
+.EventTypeTradingPairsRow__container>*:not(:first-child) {
   padding-top: 10px;
 }
 
-.EventTypeTradingPairsRow__container > *:not(:last-child) {
+.EventTypeTradingPairsRow__container>*:not(:last-child) {
   padding-bottom: 10px;
   border-bottom: 1px var(--notifi-font-color) solid;
 }
@@ -1678,19 +1690,19 @@ input::-webkit-inner-spin-button {
   flex-direction: column;
 }
 
-.EventTypeFusionMultiThresholdRow__container > * {
+.EventTypeFusionMultiThresholdRow__container>* {
   margin-bottom: 0 !important;
 }
 
-.EventTypeFusionMultiThresholdRow__container > *:not(:first-child) {
+.EventTypeFusionMultiThresholdRow__container>*:not(:first-child) {
   padding-top: 10px;
 }
-.EventTypeFusionMultiThresholdRow__container > :last-child {
+
+.EventTypeFusionMultiThresholdRow__container> :last-child {
   padding-bottom: 10px;
 }
 
-.EventTypeFusionMultiThresholdRow__container
-  > *:not(:last-child):not(:first-child) {
+.EventTypeFusionMultiThresholdRow__container>*:not(:last-child):not(:first-child) {
   padding-bottom: 10px;
   border-bottom: 1px var(--notifi-font-color) solid;
 }
@@ -1958,6 +1970,7 @@ input::-webkit-inner-spin-button {
   align-items: center;
   flex-grow: 1;
 }
+
 .verifyBanner__container,
 .SignupBanner {
   display: flex;
@@ -1974,6 +1987,7 @@ input::-webkit-inner-spin-button {
   border-radius: 4px;
   gap: 10px;
 }
+
 .verifyBanner__label,
 .SignupBanner__Label {
   display: flex;
@@ -1981,6 +1995,7 @@ input::-webkit-inner-spin-button {
   padding: 0px 0 0 10px;
   margin-bottom: 0px !important;
 }
+
 .verifyBanner__imageContainer,
 .SignupBanner__Image {
   margin-right: 13px;
@@ -2076,7 +2091,8 @@ input::-webkit-inner-spin-button {
 
 .configAlertModal__footerContainer button,
 .configDestinationModal__footerContainer button {
-  height: 65%; /* (12+12)/69 */
+  height: 65%;
+  /* (12+12)/69 */
   flex-grow: 1;
   margin: 0px 12px;
   border-radius: 6px;
@@ -2108,6 +2124,7 @@ input::-webkit-inner-spin-button {
   margin-bottom: 0px !important;
   padding: 16px;
 }
+
 .configDestination__smsLabel,
 .configDestinationModal__telegramLabel,
 .configDestinationModal__discordLabel,
@@ -2119,6 +2136,7 @@ input::-webkit-inner-spin-button {
   gap: 10px;
   font-weight: 800;
 }
+
 .configDestination__smsLabelIcon,
 .configDestinationModal__telegramLabelIcon,
 .configDestinationModal__discordLabelIcon,
@@ -2130,6 +2148,7 @@ input::-webkit-inner-spin-button {
   color: var(--notifi-secondary-font-color);
   font-size: 14px;
 }
+
 .configDestinationModal__telegramId,
 .configDestinationModal__phoneNumber,
 .configDestinationModal__emailAddress {
@@ -2150,6 +2169,7 @@ input::-webkit-inner-spin-button {
   width: 109px;
   height: 35px;
 }
+
 .configDestinationModal__verifiedButton {
   background-color: var(--notifi-secondary-button-bg2);
   color: var(--notifi-secondary-button-font-color3);
@@ -2201,6 +2221,7 @@ input::-webkit-inner-spin-button {
   left: 8px;
   cursor: pointer;
 }
+
 .configAlertModal__closeIcon {
   position: absolute;
   top: 8px;
@@ -2237,6 +2258,7 @@ input::-webkit-inner-spin-button {
   border-radius: 6px;
   margin-bottom: 0px !important;
 }
+
 .configAlertModal__EventTypeFusionHealthCheckRow__Subtitle,
 .configAlertModal__EventTypeHealthCheckRow__Subtitle,
 .configAlertModal__EventTypeCustomHealthCheckRow__Subtitle {
@@ -2245,6 +2267,7 @@ input::-webkit-inner-spin-button {
   margin-bottom: 0px !important;
   margin-top: -6px;
 }
+
 .configAlertModal__EventTypeHealthCheckRow__ButtonContainer,
 .configAlertModal__EventTypeFusionHealthCheckRow__ButtonContainer,
 .configAlertModal__EventTypeCustomHealthCheckRow__ButtonContainer {

@@ -35,6 +35,7 @@ type TargetGroupData = {
   phoneNumber?: string;
   telegramId?: string;
   discordId?: string;
+  cbwId?: string;
 };
 
 export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
@@ -62,6 +63,7 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
     loading,
     setCardView,
     useDiscord,
+    useWeb3,
     render,
     setLoading,
     syncFtuStage,
@@ -86,8 +88,9 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
           ? undefined
           : formatTelegramForSubscription(telegramId),
       discordId: useDiscord ? 'Default' : undefined,
+      cbwId: useWeb3 ? "Default" : undefined
     }),
-    [email, phoneNumber, telegramId, useDiscord],
+    [email, phoneNumber, telegramId, useDiscord, useWeb3],
   );
 
   const renewTargetGroups = useCallback(
@@ -162,8 +165,8 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
         const nextState = !isMultiWallet
           ? 'history'
           : cardView.state === 'signup'
-          ? 'verifyonboarding'
-          : 'verify';
+            ? 'verifyonboarding'
+            : 'verify';
         setCardView({
           state: nextState,
         });
@@ -187,9 +190,9 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
   const hasErrors = emailErrorMessage !== '' || smsErrorMessage !== '';
   const isInputFieldsValid = useMemo(() => {
     return data.isContactInfoRequired
-      ? email || phoneNumber || telegramId || useDiscord
+      ? email || phoneNumber || telegramId || useDiscord || useWeb3
       : true;
-  }, [email, phoneNumber, telegramId, useDiscord, data.isContactInfoRequired]);
+  }, [email, phoneNumber, telegramId, useDiscord, useWeb3, data.isContactInfoRequired]);
 
   return (
     <button

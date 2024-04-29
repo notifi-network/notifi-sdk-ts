@@ -90,7 +90,7 @@ export const SuiFrontendClient: FC = () => {
             <button onClick={initClient}>initialize FrontendClient</button>
           )}
           {userState?.status === 'loggedOut' ||
-          userState?.status === 'expired' ? (
+            userState?.status === 'expired' ? (
             <button onClick={login}>login</button>
           ) : null}
           {!!userState && userState.status === 'authenticated' ? (
@@ -106,7 +106,7 @@ export const SuiFrontendClient: FC = () => {
               {Object.keys(clientData).map((key, id) => {
                 return (
                   <div key={id}>
-                    {clientData[key as keyof Types.FetchDataQuery]?.length}{' '}
+                    {clientData[key as keyof Types.FetchDataQuery]?.toString()}{' '}
                     {key}
                   </div>
                 );

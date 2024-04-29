@@ -11,66 +11,67 @@ import type * as Operations from './operations';
 
 export class NotifiService
   implements
-    Operations.AddSourceToSourceGroupService,
-    Operations.BeginLogInByTransactionService,
-    Operations.BroadcastMessageService,
-    Operations.CompleteLogInByTransactionService,
-    Operations.ConnectWalletService,
-    Operations.CreateAlertService,
-    Operations.CreateDirectPushAlertService,
-    Operations.CreateEmailTargetService,
-    Operations.CreateSmsTargetService,
-    Operations.CreateSourceService,
-    Operations.CreateSourceGroupService,
-    Operations.CreateSupportConversationService,
-    Operations.CreateTargetGroupService,
-    Operations.CreateTelegramTargetService,
-    Operations.CreateTenantUserService,
-    Operations.CreateWebhookTargetService,
-    Operations.DeleteAlertService,
-    Operations.DeleteUserAlertService,
-    Operations.DeleteSourceGroupService,
-    Operations.DeleteTargetGroupService,
-    Operations.DeleteWebhookTargetService,
-    Operations.FetchDataService,
-    Operations.FindTenantConfigService,
-    Operations.GetAlertsService,
-    Operations.GetConfigurationForDappService,
-    Operations.GetConversationMessagesService,
-    Operations.GetConnectedWalletsService,
-    Operations.GetEmailTargetsService,
-    Operations.GetFiltersService,
-    Operations.GetFusionNotificationHistoryService,
-    Operations.GetNotificationHistoryService,
-    Operations.GetSmsTargetsService,
-    Operations.GetSourceConnectionService,
-    Operations.GetSourceGroupsService,
-    Operations.GetSourcesService,
-    Operations.GetTargetGroupsService,
-    Operations.GetTelegramTargetsService,
-    Operations.GetTenantConnectedWalletsService,
-    Operations.GetTenantUserService,
-    Operations.GetTopicsService,
-    Operations.GetWebhookTargetsService,
-    Operations.LogInFromDappService,
-    Operations.LogInFromServiceService,
-    Operations.RefreshAuthorizationService,
-    Operations.RemoveSourceFromSourceGroupService,
-    Operations.SendConversationMessageService,
-    Operations.SendEmailTargetVerificationRequestService,
-    Operations.SendMessageService,
-    Operations.UpdateSourceGroupService,
-    Operations.UpdateTargetGroupService,
-    Operations.CreateDiscordTargetService,
-    Operations.GetDiscordTargetsService,
-    Operations.GetUnreadNotificationHistoryCountService,
-    Operations.MarkFusionNotificationHistoryAsReadService,
-    Operations.UpdateUserSettingsService,
-    Operations.GetUserSettingsService,
-    Operations.GetSlackChannelTargetsService,
-    Operations.CreateSlackChannelTargetService,
-    Operations.CreateFusionAlertsService
-{
+  Operations.AddSourceToSourceGroupService,
+  Operations.BeginLogInByTransactionService,
+  Operations.BroadcastMessageService,
+  Operations.CompleteLogInByTransactionService,
+  Operations.ConnectWalletService,
+  Operations.CreateAlertService,
+  Operations.CreateDirectPushAlertService,
+  Operations.CreateEmailTargetService,
+  Operations.CreateSmsTargetService,
+  Operations.CreateSourceService,
+  Operations.CreateSourceGroupService,
+  Operations.CreateSupportConversationService,
+  Operations.CreateTargetGroupService,
+  Operations.CreateTelegramTargetService,
+  Operations.CreateTenantUserService,
+  Operations.CreateWebhookTargetService,
+  Operations.DeleteAlertService,
+  Operations.DeleteUserAlertService,
+  Operations.DeleteSourceGroupService,
+  Operations.DeleteTargetGroupService,
+  Operations.DeleteWebhookTargetService,
+  Operations.FetchDataService,
+  Operations.FindTenantConfigService,
+  Operations.GetAlertsService,
+  Operations.GetConfigurationForDappService,
+  Operations.GetConversationMessagesService,
+  Operations.GetConnectedWalletsService,
+  Operations.GetEmailTargetsService,
+  Operations.GetFiltersService,
+  Operations.GetFusionNotificationHistoryService,
+  Operations.GetNotificationHistoryService,
+  Operations.GetSmsTargetsService,
+  Operations.GetSourceConnectionService,
+  Operations.GetSourceGroupsService,
+  Operations.GetSourcesService,
+  Operations.GetTargetGroupsService,
+  Operations.GetTelegramTargetsService,
+  Operations.GetTenantConnectedWalletsService,
+  Operations.GetTenantUserService,
+  Operations.GetTopicsService,
+  Operations.GetWebhookTargetsService,
+  Operations.LogInFromDappService,
+  Operations.LogInFromServiceService,
+  Operations.RefreshAuthorizationService,
+  Operations.RemoveSourceFromSourceGroupService,
+  Operations.SendConversationMessageService,
+  Operations.SendEmailTargetVerificationRequestService,
+  Operations.SendMessageService,
+  Operations.UpdateSourceGroupService,
+  Operations.CreateDiscordTargetService,
+  Operations.GetDiscordTargetsService,
+  Operations.GetUnreadNotificationHistoryCountService,
+  Operations.MarkFusionNotificationHistoryAsReadService,
+  Operations.UpdateUserSettingsService,
+  Operations.GetUserSettingsService,
+  Operations.GetSlackChannelTargetsService,
+  Operations.CreateSlackChannelTargetService,
+  Operations.CreateFusionAlertsService,
+  Operations.CreateWeb3TargetService,
+  Operations.UpdateTargetGroupService,
+  Operations.GetWeb3TargetsService {
   private _jwt: string | undefined;
   private _typedClient: ReturnType<typeof getSdk>;
 
@@ -161,6 +162,13 @@ export class NotifiService
   ): Promise<Generated.CreateDiscordTargetMutation> {
     const headers = this._requestHeaders();
     return this._typedClient.createDiscordTarget(variables, headers);
+  }
+
+  async createWeb3Target(
+    variables: Generated.CreateWeb3TargetMutationVariables,
+  ): Promise<Generated.CreateWeb3TargetMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.createWeb3Target(variables, headers);
   }
 
   async createSlackChannelTarget(
@@ -321,6 +329,13 @@ export class NotifiService
   ): Promise<Generated.GetDiscordTargetsQuery> {
     const headers = this._requestHeaders();
     return this._typedClient.getDiscordTargets(variables, headers);
+  }
+
+  async getWeb3Targets(
+    variables: Generated.GetWeb3TargetsQueryVariables,
+  ): Promise<Generated.GetWeb3TargetsQuery> {
+    const headers = this._requestHeaders();
+    return this._typedClient.getWeb3Targets(variables, headers);
   }
 
   async getSlackChannelTargets(

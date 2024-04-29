@@ -46,6 +46,7 @@ const VerifyWalletView: React.FC<VerifyWalletViewProps> = ({
     setLoading,
     connectedWallets,
     useDiscord,
+    useWeb3,
   } = useNotifiSubscriptionContext();
 
   const {
@@ -67,8 +68,9 @@ const VerifyWalletView: React.FC<VerifyWalletViewProps> = ({
           ? undefined
           : formatTelegramForSubscription(telegramId),
       discordId: useDiscord ? 'Default' : undefined,
+      cbwId: useWeb3 ? 'Default' : undefined,
     }),
-    [email, phoneNumber, telegramId, useDiscord],
+    [email, phoneNumber, telegramId, useDiscord, useWeb3],
   );
 
   const subscribeAlerts = useCallback(

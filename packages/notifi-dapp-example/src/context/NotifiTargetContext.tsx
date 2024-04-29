@@ -27,6 +27,7 @@ export type TargetGroupData = {
   telegramId?: string;
   discordId?: string;
   slackId?: string;
+  web3Id?: string;
 };
 
 export type TargetDocument = {
@@ -36,7 +37,7 @@ export type TargetDocument = {
   targetData: TargetData;
 };
 
-type Target = 'email' | 'phoneNumber' | 'telegram' | 'discord' | 'slack';
+type Target = 'email' | 'phoneNumber' | 'telegram' | 'discord' | 'slack' | 'web3';
 
 type TargetInputForm = Record<
   Extract<Target, 'email' | 'phoneNumber' | 'telegram'>, // NOTE: only these 3 have their form input
@@ -70,6 +71,7 @@ export type TargetData = {
   telegram: string;
   discord: { useDiscord: boolean; data?: Types.DiscordTargetFragmentFragment };
   slack: { useSlack: boolean; data?: Types.SlackChannelTargetFragmentFragment };
+  web3: { useWeb3: boolean; data?: Types.Web3TargetFragmentFragment };
 };
 
 export type NotifiTargetContextType = {
@@ -93,6 +95,7 @@ export type NotifiTargetContextType = {
   ) => void;
   updateUseDiscord: (useDiscord: boolean) => void;
   updateUseSlack: (useSlack: boolean) => void;
+  updateUseWeb3: (useWeb3: boolean) => void;
 };
 
 const NotifiTargetContext = createContext<NotifiTargetContextType>(
@@ -119,6 +122,7 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
     telegram: '',
     discord: { useDiscord: false },
     slack: { useSlack: false },
+    web3: { useWeb3: false },
   });
   const [targetInfoPrompts, setTargetInfoPrompts] = useState<
     Partial<Record<Target, TargetInfo>>
@@ -129,6 +133,7 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
     telegram: undefined,
     discord: undefined,
     slack: undefined,
+    web3: undefined,
   });
 
   useEffect(() => {
@@ -156,6 +161,7 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
         : formatTelegramForSubscription(targetInputForm.telegram.value),
     discordId: targetData.discord.useDiscord ? 'Default' : undefined,
     slackId: targetData.slack.useSlack ? 'Default' : undefined,
+    web3Id: targetData.web3.useWeb3 ? 'Default' : undefined,
   };
 
   const renewTargetGroups = useCallback(
@@ -196,6 +202,16 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
             : undefined;
         }
 
+        if (target === 'web3') {
+          setTargetData((prev) => ({
+            ...prev,
+            web3: { useWeb3: !targetData.web3.useWeb3 },
+          }));
+          targetGroup.web3Id = !targetData.web3.useWeb3
+            ? 'Default'
+            : undefined;
+        }
+
         if (target === 'slack') {
           setTargetData((prev) => ({
             ...prev,
@@ -225,6 +241,7 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
       targetGroup,
       targetData.slack.useSlack,
       targetData.discord.useDiscord,
+      targetData.web3.useWeb3,
     ],
   );
 
@@ -259,6 +276,13 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
     setTargetData((prev) => ({
       ...prev,
       slack: { useSlack },
+    }));
+  };
+
+  const updateUseWeb3 = (useWeb3: boolean) => {
+    setTargetData((prev) => ({
+      ...prev,
+      web3: { useWeb3 },
     }));
   };
 
@@ -318,6 +342,11 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
         (it) => it?.name === 'Default',
       );
       refreshSlackTarget(slackTarget);
+
+      const web3Target = targetGroup?.web3Targets?.find(
+        (it) => it?.name === 'Default',
+      );
+      refreshWeb3Target(web3Target);
     },
     [frontendClient],
   );
@@ -430,6 +459,34 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
     [frontendClient],
   );
 
+  const refreshWeb3Target = useCallback(
+    async (web3Target?: Types.Web3TargetFragmentFragment) => {
+      if (!!web3Target && !web3Target.isConfirmed) {
+        updateTargetInfoPrompt('web3', {
+          type: 'cta',
+          message: 'Enable Bot',
+          onClick: () => 'test',
+        });
+        setTargetData((prev) => ({
+          ...prev,
+          web3: { useWeb3: true, data: web3Target },
+        }));
+      } else if (!!web3Target && web3Target.isConfirmed) {
+        updateTargetInfoPrompt('web3', null);
+        setTargetData((prev) => ({
+          ...prev,
+          web3: { useWeb3: true, data: web3Target },
+        }));
+      } else {
+        setTargetData((prev) => ({
+          ...prev,
+          web3: { useWeb3: false, data: web3Target },
+        }));
+      }
+    },
+    [frontendClient],
+  );
+
   const refreshSlackTarget = useCallback(
     async (slackTarget?: Types.SlackChannelTargetFragmentFragment) => {
       if (slackTarget) {
@@ -470,6 +527,7 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
       phoneNumber: phoneNumberInfoPrompt,
       telegram: telegramInfoPrompt,
       discord: discordInfoPrompt,
+      web3: web3InfoPrompt
     } = targetInfoPrompts;
 
     const unConfirmedTargets = {
@@ -484,6 +542,10 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
         targetData.discord.useDiscord &&
         discordInfoPrompt?.infoPrompt.type === 'cta' &&
         discordInfoPrompt?.infoPrompt.message === 'Enable Bot',
+      web3:
+        targetData.web3.useWeb3 &&
+        web3InfoPrompt?.infoPrompt.type === 'cta' &&
+        web3InfoPrompt?.infoPrompt.message === 'Enable Bot',
     };
     return objectKeys(unConfirmedTargets)
       .map((key) => {
@@ -516,6 +578,7 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
         updateTargetForms,
         updateUseDiscord,
         updateUseSlack,
+        updateUseWeb3,
       }}
     >
       {children}

@@ -8,6 +8,11 @@ import {
   NotifiDiscordToggle,
   NotifiDiscordToggleProps,
 } from '../../NotifiDiscordToggle';
+
+import {
+  NotifiCbwToggle,
+  NotifiCbwToggleProps,
+} from '../../NotifiCbwToggle';
 import {
   NotifiEmailInput,
   NotifiEmailInputProps,
@@ -35,6 +40,7 @@ export type InputFieldsProps = {
     NotifiTelegramInput?: NotifiTelegramInputProps['classNames'];
     NotifiHwWalletToggle?: NotifiHwWalletToggleProps['classNames'];
     NotifiDiscordToggle?: NotifiDiscordToggleProps['classNames'];
+    NotifiCbwToggle?: NotifiCbwToggleProps['classNames'];
   }>;
 };
 export const InputFields: React.FC<InputFieldsProps> = ({
@@ -141,6 +147,10 @@ export const InputFields: React.FC<InputFieldsProps> = ({
               classNames={classNames?.NotifiDiscordToggle}
             />
           ) : null}
+          <NotifiCbwToggle
+            disabled={inputDisabled}
+            classNames={classNames?.NotifiCbwToggle}
+          />
         </>
       ) : null}
       {params.walletBlockchain === 'SOLANA' ? (

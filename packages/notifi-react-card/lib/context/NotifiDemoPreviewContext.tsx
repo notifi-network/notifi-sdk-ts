@@ -34,6 +34,9 @@ export const defaultDemoConfigV1: CardConfigItemV1 = {
       active: false,
     },
     webhook: {} as unknown as WebhookContactInfo,
+    web3: {
+      active: false,
+    }
   },
 };
 

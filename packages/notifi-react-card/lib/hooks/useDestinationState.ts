@@ -7,11 +7,13 @@ export const useDestinationState = () => {
   const {
     useDiscord,
     useSlack,
+    useWeb3,
     email,
     phoneNumber,
     telegramId,
     discordTargetData,
     slackTargetData,
+    web3TargetData,
     destinationErrorMessages,
   } = useNotifiSubscriptionContext();
 
@@ -21,7 +23,8 @@ export const useDestinationState = () => {
       !!phoneNumber ||
       !!telegramId ||
       (useDiscord && !!discordTargetData?.id) ||
-      (useSlack && !!slackTargetData?.id)
+      (useSlack && !!slackTargetData?.id) ||
+      (useWeb3 && !!web3TargetData?.id)
     );
   }, [
     email,
@@ -40,6 +43,7 @@ export const useDestinationState = () => {
       telegram: telegramError,
       discord: discordError,
       slack: slackError,
+      web3: web3Error,
     } = destinationErrorMessages;
 
     const unConfirmedTargets = {
@@ -58,6 +62,10 @@ export const useDestinationState = () => {
          * discordError.message === 'Join Server' also counted as verified (discordError.message now either 'Join Server' or 'Enable Bot' as values).
          */
         discordError.message === 'Enable Bot',
+      web3:
+        useWeb3 &&
+        web3Error?.type === 'recoverableError' &&
+        web3Error.message === 'Enable Bot',
     };
     return objectKeys(unConfirmedTargets)
       .map((key) => {
