@@ -8,7 +8,7 @@ import React, {
 import { useBinance } from '../hooks/useBinance';
 import { useInjectedWallet } from '../hooks/useInjectedWallet';
 import { useKeplr } from '../hooks/useKeplr';
-import { useWalletConnect } from '../hooks/useWalletConnect';
+import { useWagmiWallet } from '../hooks/useWagmiWallet';
 import {
   BinanceWallet,
   CoinbaseWallet,
@@ -53,9 +53,7 @@ const WalletContext = createContext<WalletContextType>({
   isLoading: false,
 });
 
-const NotifiWalletProviderComponent: React.FC<PropsWithChildren> = ({
-  children,
-}) => {
+const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
   const [selectedWallet, setSelectedWallet] = useState<keyof Wallets | null>(
     null,
   );
@@ -75,24 +73,25 @@ const NotifiWalletProviderComponent: React.FC<PropsWithChildren> = ({
     }, durationInMs ?? 5000);
   };
 
+  const keplr = useKeplr(setIsLoading, throwError, selectWallet);
   const binance = useBinance(setIsLoading, throwError, selectWallet);
-  const walletConnect = useWalletConnect(
+  const walletConnect = useWagmiWallet(
     setIsLoading,
     throwError,
     selectWallet,
+    'walletconnect',
   );
-  const keplr = useKeplr(setIsLoading, throwError, selectWallet);
+  const coinbase = useWagmiWallet(
+    setIsLoading,
+    throwError,
+    selectWallet,
+    'coinbase',
+  );
   const metamask = useInjectedWallet(
     setIsLoading,
     throwError,
     selectWallet,
     'metamask',
-  );
-  const coinbase = useInjectedWallet(
-    setIsLoading,
-    throwError,
-    selectWallet,
-    'coinbase',
   );
   const okx = useInjectedWallet(setIsLoading, throwError, selectWallet, 'okx');
   const zerion = useInjectedWallet(
@@ -214,7 +213,7 @@ export const NotifiWalletProvider: React.FC<PropsWithChildren> = ({
 }) => {
   return (
     <NotifiWagmiProvider>
-      <NotifiWalletProviderComponent>{children}</NotifiWalletProviderComponent>
+      <NotifiWallet>{children}</NotifiWallet>
     </NotifiWagmiProvider>
   );
 };

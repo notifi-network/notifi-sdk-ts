@@ -28,9 +28,7 @@ export const useBinance = (
   };
 
   useEffect(() => {
-    geBinanceFromWindow()
-      .then((bnb) => setProvider(bnb))
-      .catch((e) => errorHandler(new Error(e)));
+    geBinanceFromWindow().then((bnb) => setProvider(bnb));
   }, []);
 
   useEffect(() => {
@@ -39,8 +37,6 @@ export const useBinance = (
     if (!provider) return;
 
     const handleAccountChange = () => {
-      errorHandler(new Error(`${walletName} account changed`));
-
       provider
         .requestAccounts()
         .then(

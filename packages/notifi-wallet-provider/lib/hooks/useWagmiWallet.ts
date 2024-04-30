@@ -8,20 +8,22 @@ import {
   setWalletKeysToLocalStorage,
 } from '../utils/localStorageUtils';
 
-const walletName: keyof Wallets = 'walletconnect';
-
-export const useWalletConnect = (
+export const useWagmiWallet = (
   loadingHandler: React.Dispatch<React.SetStateAction<boolean>>,
   errorHandler: (e: Error, durationInMs?: number) => void,
   selectWallet: (wallet: keyof Wallets | null) => void,
+  walletName: keyof Wallets,
 ) => {
   const [walletKeys, setWalletKeys] = useState<MetamaskWalletKeys | null>(null);
   const [isWalletInstalled, setIsWalletInstalled] = useState<boolean>(false);
 
   const { disconnect } = useDisconnect();
   const { signMessageAsync } = useSignMessage();
-  const { address, isConnected } = useAccount();
+  const { address, isConnected: isWalletConnected, connector } = useAccount();
   const { connect, connectors } = useConnect();
+
+  const isConnected =
+    isWalletConnected && connector?.name.toLowerCase().includes(walletName);
 
   const handleWalletNotExists = (location: string) => {
     cleanWalletsInLocalStorage();
@@ -33,14 +35,14 @@ export const useWalletConnect = (
   };
 
   useEffect(() => {
-    const walletConnectConnector = connectors.find((v) =>
-      v.name.toLowerCase()?.includes('walletconnect'),
+    const provider = connectors.find((v) =>
+      v.name.toLowerCase()?.includes(walletName),
     );
-    setIsWalletInstalled(!!walletConnectConnector);
+    setIsWalletInstalled(!!provider);
   }, [connectors]);
 
   useEffect(() => {
-    if (!isConnected || !address) return;
+    if (!isConnected || !address || !isWalletInstalled) return;
 
     const walletKeys = {
       bech32: converter('inj').toBech32(address),
@@ -48,13 +50,13 @@ export const useWalletConnect = (
     };
     setWalletKeys(walletKeys);
     selectWallet(walletName);
-    setWalletKeysToLocalStorage(walletName as keyof Wallets, walletKeys);
-  }, [address]);
+    setWalletKeysToLocalStorage(walletName, walletKeys);
+  }, [address, isWalletInstalled, isConnected]);
 
   const connectWallet = async (
     timeoutInMiniSec?: number,
   ): Promise<MetamaskWalletKeys | null> => {
-    if (isConnected) return null;
+    if (isWalletConnected) return null;
 
     loadingHandler(true);
     const timer = setTimeout(() => {
@@ -63,11 +65,12 @@ export const useWalletConnect = (
     }, timeoutInMiniSec ?? 5000);
 
     try {
-      const walletConnectConnector = connectors.find((v) =>
+      const provider = connectors.find((v) =>
         v.name.toLowerCase()?.includes(walletName),
       );
-      if (!walletConnectConnector) return null;
-      connect({ connector: walletConnectConnector });
+      if (!provider) return null;
+
+      connect({ connector: provider });
       return null;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {

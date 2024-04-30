@@ -44,8 +44,6 @@ export const useInjectedWallet = (
     if (!provider) return;
 
     const handleAccountChange = () => {
-      errorHandler(new Error(`${walletName} account changed`));
-
       provider
         .request?.({ method: 'eth_accounts' })
         .then((accounts: string[]) => {
