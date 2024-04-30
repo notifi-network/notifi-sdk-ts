@@ -92,6 +92,7 @@ export const useInjectedWallet = (
       setWalletKeys(walletKeys);
       setWalletKeysToLocalStorage(walletName, walletKeys);
       return walletKeys;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       console.error(e);
       disconnectWallet();

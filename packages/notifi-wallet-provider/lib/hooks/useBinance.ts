@@ -95,6 +95,7 @@ export const useBinance = (
       setWalletKeys(walletKeys);
       setWalletKeysToLocalStorage(walletName as keyof Wallets, walletKeys);
       return walletKeys;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       console.error(e);
       disconnectWallet();

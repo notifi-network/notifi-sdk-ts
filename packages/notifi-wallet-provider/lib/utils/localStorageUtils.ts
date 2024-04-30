@@ -41,15 +41,10 @@ export const getWalletsFromLocalStorage = (): NotifiWalletStorage | null => {
 export function getProvider(
   walletType: 'isMetaMask' | 'isCoinbaseWallet' | 'isRabby',
 ): Ethereum | undefined {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
   return Array.isArray(window.ethereum?.providers)
-    ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      window.ethereum.providers.find((provider) => provider[walletType])
-    : // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    window.ethereum?.[walletType]
+    ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      window.ethereum.providers.find((provider: any) => provider[walletType])
+    : window.ethereum?.[walletType]
     ? window.ethereum
     : undefined;
 }

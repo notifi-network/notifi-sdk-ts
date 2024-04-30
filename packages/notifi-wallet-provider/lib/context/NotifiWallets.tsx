@@ -8,6 +8,7 @@ import React, {
 import { useBinance } from '../hooks/useBinance';
 import { useInjectedWallet } from '../hooks/useInjectedWallet';
 import { useKeplr } from '../hooks/useKeplr';
+import { useWalletConnect } from '../hooks/useWalletConnect';
 import {
   BinanceWallet,
   CoinbaseWallet,
@@ -16,10 +17,12 @@ import {
   OKXWallet,
   RabbyWallet,
   RainbowWallet,
+  WalletConnectWallet,
   Wallets,
   ZerionWallet,
 } from '../types';
 import { getWalletsFromLocalStorage } from '../utils/localStorageUtils';
+import { NotifiWagmiProvider } from './WagmiProvider';
 
 let timer: number | NodeJS.Timeout;
 
@@ -36,20 +39,21 @@ const WalletContext = createContext<WalletContextType>({
     console.log('Not implemented');
   },
   wallets: {
-    metamask: {} as any, // intentionally empty initial object
-    keplr: {} as any, // intentionally empty initial object
-    coinbase: {} as any, // intentionally empty initial object
-    rabby: {} as any, // intentionally empty initial object
-    rainbow: {} as any, // intentionally empty initial object
-    zerion: {} as any, // intentionally empty initial object
-    okx: {} as any, // intentionally empty initial object
-    binance: {} as any, // intentionally empty initial object
+    metamask: {} as MetamaskWallet, // intentionally empty initial object
+    keplr: {} as KeplrWallet, // intentionally empty initial object
+    coinbase: {} as CoinbaseWallet, // intentionally empty initial object
+    rabby: {} as RabbyWallet, // intentionally empty initial object
+    rainbow: {} as RainbowWallet, // intentionally empty initial object
+    zerion: {} as ZerionWallet, // intentionally empty initial object
+    okx: {} as OKXWallet, // intentionally empty initial object
+    binance: {} as BinanceWallet, // intentionally empty initial object
+    walletConnect: {} as WalletConnectWallet, // intentionally empty initial object
   },
   error: null,
   isLoading: false,
 });
 
-export const NotifiWalletProvider: React.FC<PropsWithChildren> = ({
+const NotifiWalletProviderComponent: React.FC<PropsWithChildren> = ({
   children,
 }) => {
   const [selectedWallet, setSelectedWallet] = useState<keyof Wallets | null>(
@@ -72,6 +76,11 @@ export const NotifiWalletProvider: React.FC<PropsWithChildren> = ({
   };
 
   const binance = useBinance(setIsLoading, throwError, selectWallet);
+  const walletConnect = useWalletConnect(
+    setIsLoading,
+    throwError,
+    selectWallet,
+  );
   const keplr = useKeplr(setIsLoading, throwError, selectWallet);
   const metamask = useInjectedWallet(
     setIsLoading,
@@ -148,6 +157,13 @@ export const NotifiWalletProvider: React.FC<PropsWithChildren> = ({
       okx.connectWallet,
       okx.disconnectWallet,
     ),
+    walletConnect: new WalletConnectWallet(
+      walletConnect.isWalletInstalled,
+      walletConnect.walletKeys,
+      walletConnect.signArbitrary,
+      walletConnect.connectWallet,
+      walletConnect.disconnectWallet,
+    ),
     binance: new BinanceWallet(
       binance.isWalletInstalled,
       binance.walletKeys,
@@ -192,5 +208,16 @@ export const NotifiWalletProvider: React.FC<PropsWithChildren> = ({
     </WalletContext.Provider>
   );
 };
+
+export const NotifiWalletProvider: React.FC<PropsWithChildren> = ({
+  children,
+}) => {
+  return (
+    <NotifiWagmiProvider>
+      <NotifiWalletProviderComponent>{children}</NotifiWalletProviderComponent>
+    </NotifiWagmiProvider>
+  );
+};
+
 export const useWallets = () => React.useContext(WalletContext);
 export default NotifiWalletProvider;

@@ -2,11 +2,11 @@ import type { Keplr, StdSignature } from '@keplr-wallet/types';
 import { BrowserProvider, Eip1193Provider } from 'ethers';
 
 export type Ethereum = Eip1193Provider & BrowserProvider;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type BinanceChain = Ethereum & { requestAccounts: () => any };
 declare global {
   interface Window {
     keplr: Keplr;
-    ethereum: Ethereum;
     BinanceChain: BinanceChain;
   }
 }
@@ -60,6 +60,7 @@ export class ZerionWallet extends MetamaskWallet {}
 export class OKXWallet extends MetamaskWallet {}
 export class RainbowWallet extends MetamaskWallet {}
 export class BinanceWallet extends MetamaskWallet {}
+export class WalletConnectWallet extends MetamaskWallet {}
 
 export type KeplrSignMessage = (
   message: string | Uint8Array,
@@ -84,4 +85,5 @@ export type Wallets = {
   zerion: ZerionWallet;
   okx: OKXWallet;
   binance: BinanceWallet;
+  walletConnect: WalletConnectWallet;
 };
