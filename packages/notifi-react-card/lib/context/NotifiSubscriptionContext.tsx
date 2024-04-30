@@ -429,7 +429,12 @@ export const NotifiSubscriptionContextProvider: React.FC<
       if (!!web3Target && !web3Target.isConfirmed) {
         setWeb3ErrorMessage({
           type: 'recoverableError',
-          onClick: () => { return },
+          onClick: () => {
+            console.log(web3Target.id)
+            console.log(params.walletPublicKey);
+            frontendClient.verifyWeb3Target({ targetId: web3Target.id ?? '', walletAddress: params.walletPublicKey })
+            console.log('successfully verified web3 target')
+          },
           message: 'Enable XMTP',
         });
         setUseWeb3(true);

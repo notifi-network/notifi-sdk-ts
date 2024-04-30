@@ -71,7 +71,8 @@ export class NotifiService
   Operations.CreateFusionAlertsService,
   Operations.CreateWeb3TargetService,
   Operations.UpdateTargetGroupService,
-  Operations.GetWeb3TargetsService {
+  Operations.GetWeb3TargetsService,
+  Operations.VerifyWeb3TargetService {
   private _jwt: string | undefined;
   private _typedClient: ReturnType<typeof getSdk>;
 
@@ -169,6 +170,13 @@ export class NotifiService
   ): Promise<Generated.CreateWeb3TargetMutation> {
     const headers = this._requestHeaders();
     return this._typedClient.createWeb3Target(variables, headers);
+  }
+
+  async verifyWeb3Target(
+    variables: Generated.VerifyWeb3TargetMutationVariables,
+  ): Promise<Generated.VerifyWeb3TargetMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.verifyWeb3Target(variables, headers);
   }
 
   async createSlackChannelTarget(

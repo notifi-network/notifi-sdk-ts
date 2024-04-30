@@ -910,6 +910,14 @@ export class NotifiFrontendClient {
     return id;
   }
 
+  async verifyWeb3Target({
+    targetId,
+    walletAddress
+  }: Readonly<{ targetId: string, walletAddress: string }>): Promise<string> {
+    const web3Target = await this._service.verifyWeb3Target({ web3TargetId: targetId, accountId: walletAddress })
+    return web3Target.verifyWeb3Target.id ?? '';
+  }
+
   async subscribeWallet(
     params: ConnectWalletParams,
   ): Promise<Types.ConnectWalletMutation> {

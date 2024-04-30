@@ -61,3 +61,4 @@ export * from './GetSlackChannelTargets';
 export * from './CreateSlackChannelTarget';
 export * from './CreateFusionAlerts';
 export * from './GetWeb3Targets';
+export * from './VerifyWeb3Target';
