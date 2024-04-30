@@ -38,6 +38,7 @@
   "dependencies": {
     "@notifi-network/notifi-frontend-client": "^0.90.8",
     "@notifi-network/notifi-react-hooks": "^0.90.8",
+    "@xmtp/react-sdk": "^6.0.1",
     "clsx": "^1.2.1",
     "date-fns": "^2.29.3",
     "dompurify": "^3.0.5",

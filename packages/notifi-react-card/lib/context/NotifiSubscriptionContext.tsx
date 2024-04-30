@@ -1,4 +1,6 @@
+import "./polyfills";
 import { Types } from '@notifi-network/notifi-graphql';
+import { Client, useClient, useConsent, Signer, XMTPProvider } from "@xmtp/react-sdk";
 import { PropsWithChildren, useMemo } from 'react';
 import React, {
   createContext,
@@ -19,7 +21,7 @@ import {
 } from '../hooks/useIntercomCardState';
 import { prefixTelegramWithSymbol } from '../utils/stringUtils';
 import { useNotifiClientContext } from './NotifiClientContext';
-import { NotifiParams } from './NotifiContext';
+import { NotifiParams, EthereumParams } from './NotifiContext';
 import { useNotifiForm } from './NotifiFormContext';
 import {
   DestinationError,
@@ -28,6 +30,12 @@ import {
 } from './constants';
 
 export type DestinationErrorMessages = DestinationErrors;
+
+declare global {
+  interface Window {
+    CBWSubscribe: any;
+  }
+}
 
 export enum FtuStage {
   Destination = 3,
@@ -123,6 +131,9 @@ export const NotifiSubscriptionContextProvider: React.FC<
   PropsWithChildren<NotifiParams>
 > = ({ children, ...params }) => {
   const { frontendClient, isUsingFrontendClient } = useNotifiClientContext();
+
+  const { client, error, isLoading, initialize } = useClient();
+  const { allow, isAllowed } = useConsent();
 
   const contextId = useMemo(() => {
     return new Date().toISOString();
@@ -307,6 +318,89 @@ export const NotifiSubscriptionContextProvider: React.FC<
     [frontendClient, params],
   );
 
+  const [isSubscribed, setISubscribed] = useState<boolean>(false);
+  const [isCbwLoading, setIsCbwLoading] = useState<boolean>(true);
+
+  const normalizeHexString = (input: string): string => {
+    let result = input;
+    if (input !== '') {
+      result = input.toLowerCase();
+      if (!result.startsWith('0x')) {
+        result = '0x' + result;
+      }
+    }
+    return result;
+  };
+
+  const handleXmtp = useCallback(async () => {
+    console.log('xmtp')
+    var signer = {
+      getAddress: async (): Promise<string> => {
+        await new Promise((resolve, reject) => { });
+        return params.walletPublicKey;
+      },
+      signMessage: async (message: string): Promise<string> => {
+        const messageBuffer = new TextEncoder().encode(
+          message,
+        );
+        const signedBuffer = await (params as EthereumParams).signMessage(messageBuffer);
+        const signature = normalizeHexString(
+          Buffer.from(signedBuffer).toString('hex'),
+        );
+        return signature;
+      }
+    };
+
+    console.log('xmtp2')
+    const options: any = {
+      persistConversations: false,
+      env: "production",
+    };
+
+    console.log('xmtp3')
+    const keys = await Client.getKeys(signer, {
+      ...options,
+      skipContactPublishing: true,
+      persistConversations: false,
+    });
+
+    console.log('xmtp4')
+    await initialize({ keys, options, signer });
+  }, [initialize]);
+
+  const handleSubscribe = useCallback(() => {
+    if (window.CBWSubscribe) {
+      window.CBWSubscribe.toggleSubscription();
+    }
+  }, []);
+
+  useEffect(() => {
+    const script = document.createElement('script');
+
+    script.src = "https://broadcast.coinbase.com/subscribe-button.js";
+    script.async = true;
+
+    document.body.appendChild(script);
+
+    if (window.CBWSubscribe?.createSubscriptionUI) {
+      window.CBWSubscribe.createSubscriptionUI({
+        // Address user will be subscrizbing to.
+        partnerAddress: '0xb49bbE2c31CF4a0fB74b16812b8c6B6FeEE23524',
+        partnerName: 'Test Notification',
+        // Title for subscribe modal. See pictures below.
+        modalTitle: '[Title of the subscription modal that pops up after a user clicks subscribe]',
+        // Description title for the subscribe modal. See pictures below.
+        modalBody: '[Informative blurb telling visitors why the should subscribe]',
+        onSubscriptionChange: setISubscribed,
+        onLoading: setIsCbwLoading,
+      });
+    }
+
+    return () => {
+      document.body.removeChild(script);
+    }
+  }, []);
+
   const render = useCallback(
     (newData: Types.FetchDataQuery): SubscriptionData => {
       const targetGroup = newData.targetGroup?.find(
@@ -429,11 +523,20 @@ export const NotifiSubscriptionContextProvider: React.FC<
       if (!!web3Target && !web3Target.isConfirmed) {
         setWeb3ErrorMessage({
           type: 'recoverableError',
-          onClick: () => {
+          onClick: async () => {
             console.log(web3Target.id)
             console.log(params.walletPublicKey);
-            frontendClient.verifyWeb3Target({ targetId: web3Target.id ?? '', walletAddress: params.walletPublicKey })
-            console.log('successfully verified web3 target')
+
+            try {
+              handleSubscribe();
+              frontendClient.verifyWeb3Target({ targetId: web3Target.id ?? '', walletAddress: params.walletPublicKey })
+              console.log('successfully verified web3 target')
+            }
+            catch (e) {
+              console.error("failed to sign")
+              console.error(e)
+            }
+
           },
           message: 'Enable XMTP',
         });
@@ -546,9 +649,12 @@ export const NotifiSubscriptionContextProvider: React.FC<
   };
 
   return (
-    <NotifiSubscriptionContext.Provider value={value}>
-      {children}
-    </NotifiSubscriptionContext.Provider>
+    <XMTPProvider>
+
+      <NotifiSubscriptionContext.Provider value={value}>
+        {children}
+      </NotifiSubscriptionContext.Provider>
+    </XMTPProvider>
   );
 };
 
