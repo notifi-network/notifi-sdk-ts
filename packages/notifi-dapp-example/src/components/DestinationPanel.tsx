@@ -72,8 +72,8 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
           <div className="flex flex-col items-start justify-between w-3/4 sm:w-90 mr-4">
             <div className="text-sm ml-6">{targetData.email}</div>
             {targetInfoPrompts.email?.infoPrompt.type === 'cta' ? (
-              <div className="flex flex-col md:flex-row justify-center items-baseline">
-                <div className="text-sm ml-6 mr-1 text-notifi-text-light font-medium">
+              <div className="flex flex-col md:flex-row justify-center items-baseline ml-6">
+                <div className="text-sm mr-1 text-notifi-text-light font-medium">
                   We sent you an email.{' '}
                 </div>
                 <DestinationInfoPrompt
