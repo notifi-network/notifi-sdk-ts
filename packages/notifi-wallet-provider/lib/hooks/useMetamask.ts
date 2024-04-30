@@ -40,8 +40,6 @@ export const useMetamask = (
       .finally(() => loadingHandler(false));
 
     const handleAccountChange = () => {
-      errorHandler(new Error('Metamask account changed'));
-
       window.ethereum
         .request({ method: 'eth_accounts' })
         .then((accounts: string[]) => {
@@ -150,9 +148,6 @@ export const useMetamask = (
 };
 
 export const getWalletFromWindow = async (): Promise<Ethereum> => {
-  if (typeof window === 'undefined') {
-    throw new Error('Cannot get Metamask without a window');
-  }
   if (window.ethereum) {
     return window.ethereum;
   } else if (document.readyState === 'complete') {

@@ -1,8 +1,4 @@
-import type {
-  Keplr,
-  Window as KeplrWindow,
-  Key,
-} from '@keplr-wallet/types';
+import type { Keplr, Window as KeplrWindow, Key } from '@keplr-wallet/types';
 import React, {
   FC,
   PropsWithChildren,
@@ -14,10 +10,6 @@ import React, {
 } from 'react';
 
 const getKeplrFromWindow: () => Promise<Keplr> = () => {
-  if (typeof window === 'undefined') {
-    throw new Error('Cannot get keplr without a window');
-  }
-
   const win = window as KeplrWindow;
   const keplr = win.keplr;
   if (keplr !== undefined) {

@@ -42,7 +42,6 @@ export const useKeplr = (
       .finally(() => loadingHandler(false));
 
     const handleAccountChange = () => {
-      console.log('Keplr account changed');
       if (!window.keplr) return handleKeplrNotExists('handleAccountChange');
 
       window.keplr.getKey('injective-1').then((key) => {
@@ -137,11 +136,6 @@ export const useKeplr = (
 };
 
 const getKeplrFromWindow = async (): Promise<Keplr> => {
-  if (typeof window === 'undefined' || !window.keplr) {
-    throw new Error(
-      'Cannot get keplr without a window | Cannot get keplr from window',
-    );
-  }
   if (window.keplr) {
     return window.keplr;
   } else if (document.readyState === 'complete') {
