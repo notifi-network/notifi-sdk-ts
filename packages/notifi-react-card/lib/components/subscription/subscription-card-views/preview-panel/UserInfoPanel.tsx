@@ -246,7 +246,7 @@ export const UserInfoPanel: React.FC<UserInfoPanelProps> = ({
               classNames?.web3?.label,
             )}
           >
-            CBW
+            Wallet Alerts
           </label>
           {web3ErrorMessage?.type === 'recoverableError' ? (
             <DestinationErrorMessage

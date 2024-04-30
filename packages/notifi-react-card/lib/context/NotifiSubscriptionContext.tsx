@@ -538,7 +538,7 @@ export const NotifiSubscriptionContextProvider: React.FC<
             }
 
           },
-          message: 'Enable XMTP',
+          message: 'Sign Wallet',
         });
         setUseWeb3(true);
         setWeb3TargetData(web3Target);

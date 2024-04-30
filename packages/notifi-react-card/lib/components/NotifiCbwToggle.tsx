@@ -25,7 +25,7 @@ export const NotifiCbwToggle: React.FC<NotifiCbwToggleProps> = ({
       className={clsx('NotifiCbwToggle__container', classNames?.container)}
     >
       <div className={clsx('NotifiCbwToggle__label', classNames?.label)}>
-        CBW Notifications
+        Wallet Alerts
       </div>
       <NotifiToggle
         classNames={classNames?.toggle}
