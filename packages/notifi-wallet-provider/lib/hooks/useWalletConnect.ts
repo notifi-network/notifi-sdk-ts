@@ -8,7 +8,7 @@ import {
   setWalletKeysToLocalStorage,
 } from '../utils/localStorageUtils';
 
-const walletName: keyof Wallets = 'walletConnect';
+const walletName: keyof Wallets = 'walletconnect';
 
 export const useWalletConnect = (
   loadingHandler: React.Dispatch<React.SetStateAction<boolean>>,
@@ -64,7 +64,7 @@ export const useWalletConnect = (
 
     try {
       const walletConnectConnector = connectors.find((v) =>
-        v.name.toLowerCase()?.includes('walletconnect'),
+        v.name.toLowerCase()?.includes(walletName),
       );
       if (!walletConnectConnector) return null;
       connect({ connector: walletConnectConnector });

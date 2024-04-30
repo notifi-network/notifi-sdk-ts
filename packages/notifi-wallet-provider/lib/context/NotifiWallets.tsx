@@ -47,7 +47,7 @@ const WalletContext = createContext<WalletContextType>({
     zerion: {} as ZerionWallet, // intentionally empty initial object
     okx: {} as OKXWallet, // intentionally empty initial object
     binance: {} as BinanceWallet, // intentionally empty initial object
-    walletConnect: {} as WalletConnectWallet, // intentionally empty initial object
+    walletconnect: {} as WalletConnectWallet, // intentionally empty initial object
   },
   error: null,
   isLoading: false,
@@ -136,28 +136,7 @@ const NotifiWalletProviderComponent: React.FC<PropsWithChildren> = ({
       rabby.connectWallet,
       rabby.disconnectWallet,
     ),
-    zerion: new ZerionWallet(
-      zerion.isWalletInstalled,
-      zerion.walletKeys,
-      zerion.signArbitrary,
-      zerion.connectWallet,
-      zerion.disconnectWallet,
-    ),
-    rainbow: new RainbowWallet(
-      rainbow.isWalletInstalled,
-      rainbow.walletKeys,
-      rainbow.signArbitrary,
-      rainbow.connectWallet,
-      rainbow.disconnectWallet,
-    ),
-    okx: new OKXWallet(
-      okx.isWalletInstalled,
-      okx.walletKeys,
-      okx.signArbitrary,
-      okx.connectWallet,
-      okx.disconnectWallet,
-    ),
-    walletConnect: new WalletConnectWallet(
+    walletconnect: new WalletConnectWallet(
       walletConnect.isWalletInstalled,
       walletConnect.walletKeys,
       walletConnect.signArbitrary,
@@ -170,6 +149,27 @@ const NotifiWalletProviderComponent: React.FC<PropsWithChildren> = ({
       binance.signArbitrary,
       binance.connectWallet,
       binance.disconnectWallet,
+    ),
+    okx: new OKXWallet(
+      okx.isWalletInstalled,
+      okx.walletKeys,
+      okx.signArbitrary,
+      okx.connectWallet,
+      okx.disconnectWallet,
+    ),
+    rainbow: new RainbowWallet(
+      rainbow.isWalletInstalled,
+      rainbow.walletKeys,
+      rainbow.signArbitrary,
+      rainbow.connectWallet,
+      rainbow.disconnectWallet,
+    ),
+    zerion: new ZerionWallet(
+      zerion.isWalletInstalled,
+      zerion.walletKeys,
+      zerion.signArbitrary,
+      zerion.connectWallet,
+      zerion.disconnectWallet,
     ),
     keplr: new KeplrWallet(
       keplr.isKeplrInstalled,

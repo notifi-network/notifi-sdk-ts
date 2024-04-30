@@ -85,5 +85,5 @@ export type Wallets = {
   zerion: ZerionWallet;
   okx: OKXWallet;
   binance: BinanceWallet;
-  walletConnect: WalletConnectWallet;
+  walletconnect: WalletConnectWallet;
 };
