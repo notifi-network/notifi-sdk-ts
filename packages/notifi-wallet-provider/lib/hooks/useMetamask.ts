@@ -150,11 +150,9 @@ export const useMetamask = (
 export const getWalletFromWindow = async (): Promise<Ethereum> => {
   if (window.ethereum) {
     return window.ethereum;
-  } else if (document.readyState === 'complete') {
-    throw new Error('Please install the Metamask extension');
   }
 
-  return new Promise<Ethereum>((resolve, reject) => {
+  return new Promise<Ethereum>((resolve) => {
     const onDocumentStateChange = (event: Event) => {
       if (
         event.target &&
@@ -162,8 +160,6 @@ export const getWalletFromWindow = async (): Promise<Ethereum> => {
       ) {
         if (window.ethereum) {
           resolve(window.ethereum);
-        } else {
-          reject('Please install the Metamask extension');
         }
         document.removeEventListener('readystatechange', onDocumentStateChange);
       }
