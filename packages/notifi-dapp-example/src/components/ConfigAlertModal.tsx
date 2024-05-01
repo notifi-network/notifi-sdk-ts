@@ -10,7 +10,7 @@ export const ConfigAlertModal = () => {
   const { updateFtuStage } = useNotifiUserSettingContext();
 
   return (
-    <div className="w-full h-screen sm:w-4/6 bg-notifi-card-bg rounded-2xl flex flex-col items-center justify-between mt-[1rem] mb-[2rem]">
+    <div className="w-full h-full sm:w-4/6 bg-notifi-card-bg rounded-2xl flex flex-col items-center justify-between mt-[1rem] mb-[2rem]">
       <div>
         <div className="flex flex-col items-center justify-center">
           <p className="font-semibold text-xs opacity-50 mt-2.5 text-notifi-text-medium">
@@ -23,7 +23,7 @@ export const ConfigAlertModal = () => {
       </div>
 
       <div className="flex-grow min-h-0 my-6">
-        <AlertSubscription />
+        <AlertSubscription inFTU={true} />
       </div>
 
       <button

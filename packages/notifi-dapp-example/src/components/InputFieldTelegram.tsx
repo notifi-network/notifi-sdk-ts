@@ -17,7 +17,6 @@ export const InputFieldTelegram: React.FC<InputFieldTelegramProps> = ({
     updateTargetInputs,
     renewTargetGroup,
     targetDocument: {
-      targetData,
       targetInputs: { email, telegram },
     },
   } = useNotifiTargetContext();

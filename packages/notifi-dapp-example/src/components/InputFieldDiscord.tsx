@@ -17,8 +17,7 @@ export const InputFieldDiscord: React.FC<InputFieldDiscordProps> = ({
     updateTargetInputs,
     renewTargetGroup,
     targetDocument: {
-      targetData,
-      targetInputs: { email, telegram },
+      targetInputs: { email, telegram, discord },
     },
   } = useNotifiTargetContext();
 
@@ -41,11 +40,11 @@ export const InputFieldDiscord: React.FC<InputFieldDiscordProps> = ({
         </div>
         <Toggle
           disabled={disabled || !!telegram.error || !!email.error}
-          checked={targetData.discord.useDiscord}
+          checked={discord}
           onChange={() => {
             isEditable
               ? renewTargetGroup()
-              : updateTargetInputs('discord', !targetData.discord.useDiscord);
+              : updateTargetInputs('discord', !discord);
           }}
         />
       </div>
