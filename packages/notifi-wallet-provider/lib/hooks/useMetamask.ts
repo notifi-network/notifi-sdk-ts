@@ -4,7 +4,6 @@ import { useCallback, useEffect, useState } from 'react';
 import { Ethereum, MetamaskWalletKeys, Wallets } from '../types';
 import {
   cleanWalletsInLocalStorage,
-  getProvider,
   setWalletKeysToLocalStorage,
 } from '../utils/localStorageUtils';
 
@@ -43,8 +42,8 @@ export const useMetamask = (
     const handleAccountChange = () => {
       errorHandler(new Error('Metamask account changed'));
 
-      getProvider('isMetaMask')
-        ?.request({ method: 'eth_accounts' })
+      window.ethereum
+        .request({ method: 'eth_accounts' })
         .then((accounts: string[]) => {
           const walletKeys = {
             bech32: converter('inj').toBech32(accounts[0]), // TODO: dynamic cosmos chain addr conversion
@@ -54,10 +53,7 @@ export const useMetamask = (
         });
     };
     return () => {
-      getProvider('isMetaMask')?.removeListener(
-        'accountsChanged',
-        handleAccountChange,
-      );
+      window.ethereum?.removeListener('accountsChanged', handleAccountChange);
       loadingHandler(false);
     };
   }, []);
@@ -65,21 +61,31 @@ export const useMetamask = (
   const connectMetamask = async (
     timeoutInMiniSec?: number,
   ): Promise<MetamaskWalletKeys | null> => {
-    const metaMaskProvider = getProvider('isMetaMask');
-
-    if (!metaMaskProvider) {
+    if (!window.ethereum) {
       handleMetamaskNotExists('connectMetamask');
       return null;
     }
     loadingHandler(true);
 
+    const closeTimeout = () => {
+      clearTimeout(timeout);
+    };
+
     const timeout = setTimeout(() => {
+      console.log('timeout');
       disconnectMetamask();
       loadingHandler(false);
+      window.ethereum.removeListener('connect', closeTimeout);
     }, timeoutInMiniSec ?? 5000);
 
-    // NOTE: metaMaskProvider.request's error is not catchable, instead use timeout
-    const accounts = await metaMaskProvider.request({
+    // NOTE: connect event listener if needed
+    // window.ethereum.on('connect', () => {
+    //   console.log('connected');
+    //   window.ethereum.removeListener('connect', closeTimeout);
+    // });
+
+    const accounts = await window.ethereum.request({
+      // NOTE: window.ethereum.request's error is not catchable, instead use timeout
       method: 'eth_requestAccounts',
     });
     const walletKeys = {
@@ -102,16 +108,14 @@ export const useMetamask = (
 
   const signArbitraryMetamask = useCallback(
     async (message: string): Promise<`0x${string}` | undefined> => {
-      const metaMaskProvider = getProvider('isMetaMask');
-
-      if (!metaMaskProvider || !walletKeysMetamask) {
+      if (!window.ethereum || !walletKeysMetamask) {
         handleMetamaskNotExists('signArbitraryMetamask');
         return;
       }
       loadingHandler(true);
       try {
-        const signature: Promise<`0x${string}`> =
-          await metaMaskProvider.request({
+        const signature: Promise<`0x${string}`> = await window.ethereum.request(
+          {
             method: 'personal_sign',
             params: [
               Buffer.from(message).toString('hex'),
@@ -121,7 +125,8 @@ export const useMetamask = (
                */
               walletKeysMetamask?.hex,
             ],
-          });
+          },
+        );
         return signature;
         // ⬆️ Note:A hex-encoded 129-byte array starting with 0x.
       } catch (e) {
@@ -148,9 +153,8 @@ export const getWalletFromWindow = async (): Promise<Ethereum> => {
   if (typeof window === 'undefined') {
     throw new Error('Cannot get Metamask without a window');
   }
-  const metaMaskProvider = getProvider('isMetaMask');
-  if (metaMaskProvider) {
-    return metaMaskProvider;
+  if (window.ethereum) {
+    return window.ethereum;
   } else if (document.readyState === 'complete') {
     throw new Error('Please install the Metamask extension');
   }
@@ -161,9 +165,8 @@ export const getWalletFromWindow = async (): Promise<Ethereum> => {
         event.target &&
         (event.target as Document).readyState === 'complete'
       ) {
-        const metaMaskProvider = getProvider('isMetaMask');
-        if (metaMaskProvider) {
-          resolve(metaMaskProvider);
+        if (window.ethereum) {
+          resolve(window.ethereum);
         } else {
           reject('Please install the Metamask extension');
         }

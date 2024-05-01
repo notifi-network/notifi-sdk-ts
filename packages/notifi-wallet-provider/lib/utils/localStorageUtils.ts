@@ -1,5 +1,4 @@
 import {
-  Ethereum,
   KeplrWalletKeys,
   MetamaskWalletKeys,
   NotifiWalletStorage,
@@ -37,14 +36,3 @@ export const getWalletsFromLocalStorage = (): NotifiWalletStorage | null => {
   }
   return storageWallet;
 };
-
-export function getProvider(
-  walletType: 'isMetaMask' | 'isCoinbaseWallet' | 'isRabby',
-): Ethereum | undefined {
-  return Array.isArray(window.ethereum?.providers)
-    ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      window.ethereum.providers.find((provider: any) => provider[walletType])
-    : window.ethereum?.[walletType]
-    ? window.ethereum
-    : undefined;
-}
