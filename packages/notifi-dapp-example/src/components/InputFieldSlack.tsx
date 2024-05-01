@@ -18,7 +18,7 @@ export const InputFieldSlack: React.FC<InputFieldSlackProps> = ({
     renewTargetGroup,
     targetDocument: {
       targetData,
-      targetInputs: { email, telegram },
+      targetInputs: { email, telegram, slack },
     },
   } = useNotifiTargetContext();
 
@@ -64,11 +64,11 @@ text-notifi-button-primary-blueish-bg md:ml-6 mt-1"
           </div>
           <Toggle
             disabled={disabled || !!telegram.error || !!email.error}
-            checked={targetData.slack.useSlack}
+            checked={slack}
             onChange={() => {
               isEditable
                 ? renewTargetGroup()
-                : updateTargetInputs('slack', !targetData.slack.useSlack);
+                : updateTargetInputs('slack', !slack);
             }}
           />
         </div>
