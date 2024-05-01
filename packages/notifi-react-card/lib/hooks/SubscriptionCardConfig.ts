@@ -32,6 +32,8 @@ export type BroadcastEventTypeItem = Readonly<{
 export type FusionTypeBase = {
   name: string;
   type: 'fusion' | 'fusionToggle';
+  topicGroupName?: string;
+  index?: number;
   fusionEventId: ValueOrRef<string>;
   sourceAddress: ValueOrRef<string>;
   tooltipContent?: string;

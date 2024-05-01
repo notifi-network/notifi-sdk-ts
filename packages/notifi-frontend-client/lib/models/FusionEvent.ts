@@ -1,11 +1,14 @@
 import { Types } from '@notifi-network/notifi-graphql';
 
+import { ValueOrRef } from './SubscriptionCardConfig';
+
 export type FusionEventMetadata = {
   uiConfigOverride?: {
     topicDisplayName?: string;
     historyDisplayName?: string;
     icon?: Types.GenericEventIconHint;
     customIconUrl?: string;
+    subscriptionValueOrRef: ValueOrRef<string>;
   };
   filters: Array<Filter>;
 };
@@ -57,6 +60,7 @@ export type UiType = 'radio' | 'button';
 export type FilterType = 'AlertFilter';
 
 export type FusionFilterOptions = {
+  version: 1;
   input: Record<Filter['name'], UserInputOptions>;
 };
 

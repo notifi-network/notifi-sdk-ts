@@ -42,6 +42,7 @@ export type NotifiTopicContextType = {
   ) => Promise<void>;
   unsubscribeAlert: (topicName: string) => void;
   isAlertSubscribed: (topicName: string) => boolean;
+  getAlertFilterOptions: (topicName: string) => FusionFilterOptions | null;
 };
 
 const NotifiTopicContext = createContext<NotifiTopicContextType>(
@@ -91,6 +92,13 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
     [alerts, frontendClient],
   );
 
+  const isAlertSubscribed = useCallback(
+    (topicName: string) => {
+      return Object.keys(alerts).includes(topicName);
+    },
+    [alerts],
+  );
+
   const subscribeAlertsWithFilterOptions = async (
     topicWithFilterOptionsList: ReadonlyArray<{
       topic: FusionEventTopic;
@@ -118,6 +126,31 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
         filterOptions: JSON.stringify(filterOptions),
       });
     });
+
+    setIsLoading(true);
+    // Note: Alert object is immutable, so we need to delete the old one first
+    // TODO:  extract as private util function
+    for (const topicWithFilterOptions of topicWithFilterOptionsList) {
+      if (isAlertSubscribed(topicWithFilterOptions.topic.uiConfig.name)) {
+        const id = alerts[topicWithFilterOptions.topic.uiConfig.name].id;
+        try {
+          await frontendClient.deleteAlert({ id });
+        } catch (e) {
+          /* Intentionally left blank */
+        }
+      }
+    }
+
+    try {
+      await frontendClient.ensureFusionAlerts({ alerts: createAlertInputs });
+      const data = await frontendClient.fetchData();
+      refreshAlerts(data);
+      setError(null);
+    } catch (e) {
+      setError(e as Error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const subscribeAlertsDefault = async (
@@ -134,24 +167,26 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
         const fusionEventMetadata = JSON.parse(
           fusionEventMetadataJson,
         ) as FusionEventMetadata;
-        const filters = fusionEventMetadata.filters;
+        const filters = (fusionEventMetadata.filters as Filter[])?.filter(
+          isAlertFilter,
+        );
         const fusionFilterOptionsInput: FusionFilterOptions['input'] = {};
-        const filterOptionsList: FusionFilterOptions[] = [];
+
         if (filters && filters.length > 0) {
-          filters.filter(isAlertFilter).forEach((filter) => {
-            const userInputParams = filter.userInputParams;
-            const userInputOptions: UserInputOptions = {};
-            //TODO: O(n^2) to fix
-            userInputParams.forEach((userInput) => {
-              userInputOptions[userInput.name] = userInput.defaultValue;
-            });
-            fusionFilterOptionsInput[filter.name] = userInputOptions;
-            const filterOptions: FusionFilterOptions = {
-              input: fusionFilterOptionsInput,
-            };
-            filterOptionsList.push(filterOptions);
+          // NOTE: for now we only consider 1 to 1 relationship (1 filter for 1 topic)
+
+          const userInputParams = filters[0].userInputParams;
+          const userInputOptions: UserInputOptions = {};
+          //TODO: O(n^2) to fix
+          userInputParams.forEach((userInput) => {
+            userInputOptions[userInput.name] = userInput.defaultValue;
           });
+          fusionFilterOptionsInput[filters[0].name] = userInputOptions;
         }
+        const filterOptions: FusionFilterOptions = {
+          version: 1,
+          input: fusionFilterOptionsInput,
+        };
 
         const subscriptionValue = resolveStringRef(
           topic.uiConfig.name,
@@ -164,10 +199,11 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
           name: topic.uiConfig.name,
           targetGroupId,
           subscriptionValue,
-          filterOptions: JSON.stringify(filterOptionsList),
+          filterOptions: JSON.stringify(filterOptions),
         });
       }
     });
+
     try {
       await frontendClient.ensureFusionAlerts({ alerts: createAlertInputs });
       const data = await frontendClient.fetchData();
@@ -180,9 +216,16 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
     }
   };
 
-  const isAlertSubscribed = useCallback(
+  // TODO: TBD --> ensure the format of filterOptions in AlertFragmentFragment
+
+  const getAlertFilterOptions = useCallback(
     (topicName: string) => {
-      return Object.keys(alerts).includes(topicName);
+      const parsedFilterOptions = JSON.parse(
+        alerts[topicName]?.filterOptions ?? '{}',
+      );
+      return validateFilterOptions(parsedFilterOptions)
+        ? parsedFilterOptions
+        : null;
     },
     [alerts],
   );
@@ -206,6 +249,7 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
         unsubscribeAlert,
         isAlertSubscribed,
         subscribeAlertsWithFilterOptions,
+        getAlertFilterOptions,
       }}
     >
       {children}
@@ -275,4 +319,10 @@ export const validateTopic = (
   topic: EventTypeItem,
 ): topic is FusionEventTypeItem => {
   return topic.type === 'fusion';
+};
+
+const validateFilterOptions = (
+  filterOptions: any,
+): filterOptions is FusionFilterOptions => {
+  return 'version' in filterOptions && filterOptions.version === 1;
 };
