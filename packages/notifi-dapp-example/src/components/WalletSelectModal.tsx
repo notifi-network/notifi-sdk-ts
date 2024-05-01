@@ -22,7 +22,7 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
     <>
       {/* hide this modal when on mobile view and there is no metamask and keplr extension detected */}
       <div
-        className={`fixed h-screen w-screen bg-gray-900/50 ${
+        className={`fixed h-screen w-screen bg-black opacity-70 ${
           Object.values(allWallets)
             .map((wallet) => wallet.isInstalled)
             .includes(true)
@@ -32,7 +32,7 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
         onClick={() => setIsOpenWalletsModal(false)}
       ></div>
       <div
-        className={`flex flex-col fixed w-90 min-h-72 md:min-w-[40rem] md:h-80 border border-notifi-card-border bg-notifi-destination-card-bg rounded-xl ${
+        className={`flex flex-col fixed w-90 min-h-72 md:min-w-[681px] md:h-[452px] border border-notifi-card-border bg-notifi-destination-card-bg rounded-xl ${
           Object.values(allWallets)
             .map((wallet) => wallet.isInstalled)
             .includes(true)
@@ -40,17 +40,18 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
             : 'hidden'
         } sm:flex`}
       >
-        <div className=" flex h-14 justify-center items-end">
+        <div className="relative flex justify-center items-end mt-12">
           <div className="font-medium text-xl text-notifi-text">
             Select your wallet
           </div>
+          <Icon
+            id="close-icon"
+            className="absolute right-8 text-gray-500 cursor-pointer"
+            onClick={() => setIsOpenWalletsModal(false)}
+          />
         </div>
-        <Icon
-          id="close-icon"
-          className="absolute right-8 top-8 text-gray-500 cursor-pointer"
-          onClick={() => setIsOpenWalletsModal(false)}
-        />
-        <div className="flex grow gap-6 p-5 justify-center items-center flex-wrap">
+
+        <div className="flex gap-6 px-12 pt-10 justify-center items-center flex-wrap">
           {objectKeys(wallets)
             .filter(
               (wallet) => wallets[wallet].isInstalled && wallet !== 'keplr',
@@ -59,7 +60,7 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
               return (
                 <div
                   key={wallet}
-                  className="size-32 flex items-center justify-center flex-col gap-3 rounded-lg border border-notifi-card-border bg-notifi-destination-card-bg cursor-pointer pt-2 text-notifi-text"
+                  className="size-[126px] flex items-center justify-between gap-0.5 flex-col rounded-lg border border-notifi-card-border bg-notifi-destination-card-bg cursor-pointer py-3 px-4 text-notifi-text"
                   onClick={() => {
                     wallets[wallet].connect();
                     setIsOpenWalletsModal(false);
@@ -68,12 +69,12 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
                 >
                   <Image
                     src={`/logos/${wallet}.svg`}
-                    width={77}
-                    height={77}
+                    width={58}
+                    height={58}
                     unoptimized={true}
                     alt={wallet}
                   />
-                  <div>{convertWalletName(wallet)}</div>
+                  <div className="text-center">{convertWalletName(wallet)}</div>
                 </div>
               );
             })}
