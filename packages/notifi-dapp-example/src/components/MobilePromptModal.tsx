@@ -70,7 +70,7 @@ export const MobilePromptModal: React.FC<MobilePromptModalProps> = ({
     <>
       {isClient ? (
         // only show this modal in mobile view
-        <div className="fixed inset-0 top-[4rem] flex z-50 sm:hidden">
+        <div className="fixed inset-0 top-[4rem] flex z-50 sm:hidden overflow-y-scroll">
           <div className="fixed inset-0 bg-black bg-opacity-20 z-50"> </div>
           <div className="h-full w-full md:w-4/6 bg-notifi-container-bg z-50 rounded-2xl flex flex-col items-center justify-between mb-8 shadow-container relative px-4">
             <div className="w-full">
