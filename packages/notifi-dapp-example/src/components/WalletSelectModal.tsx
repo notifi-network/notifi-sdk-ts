@@ -13,31 +13,34 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
   setIsOpenWalletsModal,
 }) => {
   const { wallets } = useWallets();
+  const availableWallets = objectKeys(wallets);
+  const walletsSupportForGMX: typeof availableWallets = [
+    'binance',
+    'metamask',
+    'coinbase',
+    'okx',
+    'rabby',
+    'zerion',
+    'rainbow',
+    'walletconnect',
+  ];
 
-  const allWallets = {
-    ...wallets,
-  };
+  const isAnySupportedWalletAvailable = walletsSupportForGMX
+    .map((wallet) => wallets[wallet].isInstalled)
+    .includes(true);
 
   return (
     <>
       {/* hide this modal when on mobile view and there is no metamask and keplr extension detected */}
       <div
         className={`fixed h-screen w-screen bg-black opacity-70 ${
-          Object.values(allWallets)
-            .map((wallet) => wallet.isInstalled)
-            .includes(true)
-            ? ''
-            : 'hidden'
+          isAnySupportedWalletAvailable ? '' : 'hidden'
         } sm:block`}
         onClick={() => setIsOpenWalletsModal(false)}
       ></div>
       <div
         className={`flex flex-col fixed w-90 min-h-72 md:min-w-[681px] md:h-[452px] border border-notifi-card-border bg-notifi-destination-card-bg rounded-xl ${
-          Object.values(allWallets)
-            .map((wallet) => wallet.isInstalled)
-            .includes(true)
-            ? ''
-            : 'hidden'
+          isAnySupportedWalletAvailable ? '' : 'hidden'
         } sm:flex`}
       >
         <div className="relative flex justify-center items-end mt-12">
@@ -52,10 +55,8 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
         </div>
 
         <div className="flex gap-6 px-12 pt-10 justify-center items-center flex-wrap">
-          {objectKeys(wallets)
-            .filter(
-              (wallet) => wallets[wallet].isInstalled && wallet !== 'keplr',
-            )
+          {walletsSupportForGMX
+            .filter((wallet) => wallets[wallet].isInstalled)
             .map((wallet) => {
               return (
                 <div
