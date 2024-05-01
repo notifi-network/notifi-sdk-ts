@@ -1,10 +1,10 @@
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
-import { useNotifiTargetContext } from '@/context/NotifiTargetContext';
 import { useRouterAsync } from '@/hooks/useRouterAsync';
 import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import {
   FtuStage,
   useNotifiFrontendClientContext,
+  useNotifiTargetContext,
   useNotifiTenantConfigContext,
   useNotifiTopicContext,
   useNotifiUserSettingContext,
@@ -29,15 +29,15 @@ export const SignUpButton: React.FC<NotifiSignUpButtonProps> = ({
     updateFtuStage,
     isLoading: isLoadingFtu,
   } = useNotifiUserSettingContext();
-  const { cardConfig } = useNotifiTenantConfigContext();
+  const { cardConfig, fusionEventTopics } = useNotifiTenantConfigContext();
   const [isLoading, setIsLoading] = useState(false);
 
   const {
-    targetGroup,
+    renewTargetGroup,
     refreshTargetDocument,
     targetDocument: {
       targetData: { slack, discord },
-      targetInputForm: { email, phoneNumber, telegram },
+      targetInputs: { email, phoneNumber, telegram },
     },
   } = useNotifiTargetContext();
 
@@ -50,35 +50,44 @@ export const SignUpButton: React.FC<NotifiSignUpButtonProps> = ({
 
   const { setGlobalError, setIsGlobalLoading } = useGlobalStateContext();
 
-  const { subscribeFusionAlerts, isLoading: isSubscribingAlerts } =
+  const { subscribeAlertsDefault, isLoading: isSubscribingAlerts } =
     useNotifiTopicContext();
 
   const onClick = useCallback(async () => {
     if (!isAuthenticated) return;
     setIsLoading(true);
-    try {
-      if (!ftuStage) {
-        const subEvents = eventTypes.filter((event) => {
-          return event.optOutAtSignup ? false : true;
-        });
-        await subscribeFusionAlerts(subEvents.filter(validateTopic));
-
-        if (cardConfig?.isContactInfoRequired) {
-          await updateFtuStage(FtuStage.Destination);
-        } else {
-          await updateFtuStage(FtuStage.Alerts);
-        }
-        const newData = await frontendClient.fetchData();
-        refreshTargetDocument(newData);
-        await handleRoute('/notifi/ftu');
-      }
-    } catch (e: unknown) {
-      setGlobalError('ERROR: Failed to signup, please try again.');
-      console.error('Failed to singup', (e as Error).message);
-    } finally {
+    await renewTargetGroup();
+    const targetGroups = await frontendClient.getTargetGroups();
+    const targetGroupId = targetGroups.find(
+      (targetGroup) => targetGroup.name === 'Default',
+    )?.id;
+    if (!targetGroupId) {
+      setGlobalError('ERROR: Failed to get target group ID');
       setIsLoading(false);
+      return;
     }
-  }, [frontendClient, eventTypes, login, setGlobalError, targetGroup]);
+    fusionEventTopics.forEach(async (topic) => {
+      try {
+        if (!ftuStage) {
+          await subscribeAlertsDefault([topic], targetGroupId);
+
+          if (cardConfig?.isContactInfoRequired) {
+            await updateFtuStage(FtuStage.Destination);
+          } else {
+            await updateFtuStage(FtuStage.Alerts);
+          }
+          const newData = await frontendClient.fetchData();
+          refreshTargetDocument(newData);
+          await handleRoute('/notifi/ftu');
+        }
+      } catch (e: unknown) {
+        setGlobalError('ERROR: Failed to signup, please try again.');
+        console.error('Failed to singup', (e as Error).message);
+      } finally {
+        setIsLoading(false);
+      }
+    });
+  }, [frontendClient, eventTypes, login, setGlobalError]);
 
   useEffect(() => {
     if (

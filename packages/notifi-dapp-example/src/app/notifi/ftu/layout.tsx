@@ -10,7 +10,7 @@ export default function NotifiFTU({ children }: { children: React.ReactNode }) {
   return (
     <div className="w-full min-h-screen flex flex-col items-center justify-start md:items-center bg-notifi-page-bg">
       <div className="w-full md:mt-8 m-3 flex flex-row justify-between items-center">
-        <div className="left-8 flex items-center">
+        <div className="ml-8 flex items-center">
           <Image
             src="/logos/gmx-logo.png"
             width={115}
@@ -19,12 +19,12 @@ export default function NotifiFTU({ children }: { children: React.ReactNode }) {
             alt="Injective"
           />
         </div>
-        <div className="p-2 rounded-lg h-7 hidden md:block">
+        <div className="p-2 rounded-lg h-7 hidden md:block mr-8">
           <PoweredByNotifi />
         </div>
       </div>
       {children}
-      <div className="p-2 bg-white rounded-lg h-7 block md:hidden w-[110px] m-2">
+      <div className="p-2 rounded-lg h-7 block md:hidden w-[110px] m-2">
         <PoweredByNotifi />
       </div>
     </div>

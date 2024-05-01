@@ -10,10 +10,12 @@ import { AlertSubscriptionRow } from './AlertSubscriptionRow';
 
 export type AlertSubscriptionRowProps = {
   title?: string;
+  inFTU?: boolean;
 };
 
 export const AlertSubscription: React.FC<AlertSubscriptionRowProps> = ({
   title,
+  inFTU = false,
 }) => {
   const { cardConfig, fusionEventTopics } = useNotifiTenantConfigContext();
   if (!cardConfig) return null;
@@ -21,7 +23,11 @@ export const AlertSubscription: React.FC<AlertSubscriptionRowProps> = ({
   const { categorizedTopics } = categorizeTopics(cardConfig.eventTypes);
 
   return (
-    <div className="flex flex-col items-center 2xl:px-[15.75rem] xl:px-[10rem] md:min-h-[94vh] grow h-full">
+    <div
+      className={`flex flex-col items-center 2xl:px-[15.75rem] xl:px-[10rem] ${
+        inFTU ? '' : 'md:min-h-[94vh]'
+      } grow h-full`}
+    >
       {title ? (
         <div className="mt-8 mb-6 font-regular text-lg text-notifi-text">
           {title}
