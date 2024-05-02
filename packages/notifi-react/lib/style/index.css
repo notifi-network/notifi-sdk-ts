@@ -1,4 +1,12 @@
 @import url('./notifi-card-modal.css');
+@import url('./connect.css');
+@import url('./ftu.css');
+@import url('./powered-by-notifi.css');
+@import url('./target-inputs.css');
+@import url('./toggle.css');
+@import url('./nav-header.css');
+@import url('./target-list.css');
+@import url('./topic-list.css');
 
 :root {
   /* Color variables */
@@ -7,21 +15,59 @@
   --notifi-color-grey3: #80829d;
   --notifi-color-white: #fff;
   --notifi-color-eggshell: #f5f6fb;
+  --notifi-color-seaglass: #9aa3ff;
+  --notifi-color-secondary-light: #5260f0;
   --notifi-color-seaglass-dark: #828ae3;
   --notifi-color-green1: #318c1a;
   --notifi-color-green2: #dff8d9;
   --notifi-color-dark: #1b1b22;
-  --notifi-color-blue1: #e8ebf5;
   --notifi-color-midnight: #262949;
   --notifi-color-cloud: #e8ebf5;
+  --notifi-color-pink: #d5828b;
+  --notifi-color-dusk: #80829d;
+  --notifi-color-heather: #b6b8d5;
 }
 
 .notifi-theme-dark {
   --notifi-font-color: var(--notifi-color-white);
   --notifi-card-background: var(--notifi-color-dark);
+  --notifi-connect-button: var(--notifi-color-white);
+  --notifi-connect-button-text: var(--notifi-color-midnight);
+  --notifi-ftu-alert-list: var(--notifi-color-seaglass);
+  --notifi-ftu-target-edit-description: var(--notifi-color-heather);
+  --notifi-input-field-background: var(--notifi-color-grey2);
+  --notifi-toggle-inactive: var(--notifi-color-dusk);
+  --notifi-toggle-active: var(--notifi-color-seaglass-dark);
+  --notifi-toggle-handle: var(--notifi-color-white);
+  --notifi-nav-header-background: var(--notifi-color-grey2);
+  --notifi-ftu-button-text: var(--notifi-color-midnight);
+  --notifi-ftu-button: var(--notifi-color-white);
+  --notifi-target-list-cat-button-bg: var(--notifi-color-seaglass-dark);
+  --notifi-target-list-cta-link-text: var(--notifi-color-seaglass-dark);
+  --notifi-notifi-target-list-item-bg: var(--notifi-color-grey2);
+  --notifi-notifi-topic-list-row-bg: var(--notifi-color-grey2);
+  --notifi-topic-options-item-bg: var(--notifi-color-grey1);
+  --notifi-topic-option-radio-bg: var(--notifi-color-grey1);
 }
 
 .notifi-theme-light {
   --notifi-font-color: var(--notifi-color-midnight);
   --notifi-card-background: var(--notifi-color-cloud);
+  --notifi-connect-button: var(--notifi-color-midnight);
+  --notifi-connect-button-text: var(--notifi-color-white);
+  --notifi-ftu-alert-list: var(--notifi-color-secondary-light);
+  --notifi-ftu-target-edit-description: var(--notifi-color-dusk);
+  --notifi-input-field-background: var(--notifi-color-eggshell);
+  --notifi-toggle-inactive: var(--notifi-color-heather);
+  --notifi-toggle-active: var(--notifi-color-seaglass-dark);
+  --notifi-toggle-handle: var(--notifi-color-white);
+  --notifi-nav-header-background: var(--notifi-color-white);
+  --notifi-ftu-button-text: var(--notifi-color-white);
+  --notifi-ftu-button: var(--notifi-color-midnight);
+  --notifi-target-list-cat-button-bg: var(--notifi-color-secondary-light);
+  --notifi-target-list-cta-link-text: var(--notifi-color-secondary-light);
+  --notifi-notifi-target-list-item-bg: var(--notifi-color-white);
+  --notifi-notifi-topic-list-row-bg: var(--notifi-color-white);
+  --notifi-topic-options-item-bg: var(--notifi-color-eggshell);
+  --notifi-topic-option-radio-bg: var(--notifi-color-white);
 }

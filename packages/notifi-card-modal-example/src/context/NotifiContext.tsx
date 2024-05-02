@@ -27,6 +27,7 @@ export const NotifiCardModalContextWrapper: React.FC<PropsWithChildren> = ({
   if (selectedWallet) {
     // accountAddress = wallets[selectedWallet].walletKeys?.bech32 ?? '';
     switch (selectedWallet) {
+      // TODO: Other wallets
       // case 'keplr':
       //   walletPublicKey = wallets[selectedWallet].walletKeys?.base64 ?? '';
       //   if (!walletPublicKey) throw new Error('ERROR: invalid walletPublicKey');
@@ -51,7 +52,6 @@ export const NotifiCardModalContextWrapper: React.FC<PropsWithChildren> = ({
         break;
     }
   }
-  console.log({ signMessage });
 
   if (!signMessage) return <div>No available wallet to sign</div>;
 
