@@ -88,7 +88,7 @@ export type NotifiTargetContextType = {
   isLoading: boolean;
   error: Error | null;
   updateTargetInputs: UpdateTargetInputs;
-  renewTargetGroup: () => Promise<void>;
+  renewTargetGroup: (target?: Target) => Promise<void>;
   isChangingTargets: Record<Target, boolean>;
   targetDocument: TargetDocument;
   unVerifiedTargets: Target[];
@@ -247,23 +247,45 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
     [],
   );
 
-  const renewTargetGroup = useCallback(() => {
-    setIsLoading(true);
-    return frontendClient
-      .ensureTargetGroup(targetGroupToBeSaved)
-      .then((_result) => {
-        frontendClient
-          .fetchData()
-          .then((data) => {
-            refreshTargetDocument(data);
-            setError(null);
-          })
-          .catch((e) => setError(e as Error))
-          .finally(() => setIsLoading(false));
-      })
-      .catch((e) => setError(e as Error))
-      .finally(() => setIsLoading(false));
-  }, [frontendClient, targetGroupToBeSaved]);
+  const renewTargetGroup = useCallback(
+    (target?: Target) => {
+      setIsLoading(true);
+      if (target === 'discord') {
+        setTargetData((prev) => ({
+          ...prev,
+          discord: { useDiscord: !targetData.discord.useDiscord },
+        }));
+        targetGroupToBeSaved.discordId = !targetData.discord.useDiscord
+          ? 'Default'
+          : undefined;
+      }
+
+      if (target === 'slack') {
+        setTargetData((prev) => ({
+          ...prev,
+          slack: { useSlack: !targetData.slack.useSlack },
+        }));
+        targetGroupToBeSaved.slackId = !targetData.slack.useSlack
+          ? 'Default'
+          : undefined;
+      }
+      return frontendClient
+        .ensureTargetGroup(targetGroupToBeSaved)
+        .then((_result) => {
+          frontendClient
+            .fetchData()
+            .then((data) => {
+              refreshTargetDocument(data);
+              setError(null);
+            })
+            .catch((e) => setError(e as Error))
+            .finally(() => setIsLoading(false));
+        })
+        .catch((e) => setError(e as Error))
+        .finally(() => setIsLoading(false));
+    },
+    [frontendClient, targetGroupToBeSaved],
+  );
 
   // NOTE: The followings are internal functions
   const updateTargetInfoPrompt = useCallback(

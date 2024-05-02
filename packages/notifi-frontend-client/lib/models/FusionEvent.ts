@@ -6,6 +6,7 @@ export type FusionEventMetadata = {
     historyDisplayName?: string;
     icon?: Types.GenericEventIconHint;
     customIconUrl?: string;
+    isSubscriptionValueSelectable?: boolean;
   };
   filters: Array<Filter>;
 };
