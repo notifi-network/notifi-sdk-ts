@@ -92,6 +92,7 @@ export type NotifiTargetContextType = {
   isChangingTargets: Record<Target, boolean>;
   targetDocument: TargetDocument;
   unVerifiedTargets: Target[];
+  refreshTargetDocument: (newData: Types.FetchDataQuery) => void;
 };
 
 const NotifiTargetContext = createContext<NotifiTargetContextType>(
@@ -540,6 +541,7 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
   return (
     <NotifiTargetContext.Provider
       value={{
+        refreshTargetDocument,
         error,
         isLoading,
         renewTargetGroup,

@@ -1,4 +1,4 @@
-import { LabelWithSubTopicsEventTypeItem } from '@/context/NotifiTopicContext';
+import { LabelWithSubTopicsEventTypeItem } from '@notifi-network/notifi-react';
 
 import { AlertSubscriptionRow } from './AlertSubscriptionRow';
 
@@ -11,7 +11,7 @@ export const AlertSubscriptionBlock: React.FC<AlertSubscriptionRowProps> = ({
 }) => {
   return (
     <div className="w-72 rounded-lg bg-notifi-alert-subscription-block-bg/75 border border-gray-200 rounded-b-md relative">
-      <div className=" bg-white text-center py-3 font-medium border border-b-gray-200 rounded-md text-lg">
+      <div className=" bg-white text-center py-3 font-regular border border-b-gray-200 rounded-md text-lg">
         {labelWithSubTopics.name}
       </div>
       <div className="px-3 py-2 flex flex-col gap-1 md:h-[15.2rem] overflow-scroll [&>*:nth-child(1)]:first-alert-row">

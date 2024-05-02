@@ -42,6 +42,7 @@ export type NotifiTopicContextType = {
   ) => Promise<void>;
   unsubscribeAlert: (topicName: string) => void;
   isAlertSubscribed: (topicName: string) => boolean;
+  getAlertFilterOptions: (topicName: string) => [FusionFilterOptions] | null;
 };
 
 const NotifiTopicContext = createContext<NotifiTopicContextType>(
@@ -187,6 +188,16 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
     [alerts],
   );
 
+  const getAlertFilterOptions = useCallback(
+    (topicName: string) => {
+      const parsedFilterOptions = JSON.parse(
+        alerts[topicName]?.filterOptions ?? '{}',
+      );
+      return parsedFilterOptions;
+    },
+    [alerts],
+  );
+
   const refreshAlerts = (newData: Types.FetchDataQuery) => {
     const alerts: Record<string, Types.AlertFragmentFragment> = {};
     newData.alert?.forEach((alert) => {
@@ -206,6 +217,7 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
         unsubscribeAlert,
         isAlertSubscribed,
         subscribeAlertsWithFilterOptions,
+        getAlertFilterOptions,
       }}
     >
       {children}
@@ -275,4 +287,10 @@ export const validateTopic = (
   topic: EventTypeItem,
 ): topic is FusionEventTypeItem => {
   return topic.type === 'fusion';
+};
+
+const validateFilterOptions = (
+  filterOptions: any,
+): filterOptions is FusionFilterOptions => {
+  return 'version' in filterOptions && filterOptions.version === 1;
 };

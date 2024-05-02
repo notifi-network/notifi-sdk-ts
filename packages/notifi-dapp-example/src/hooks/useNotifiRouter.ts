@@ -1,8 +1,9 @@
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
-import { useInjectiveWallets } from '@/context/InjectiveWalletContext';
-import { useNotifiFrontendClientContext } from '@/context/NotifiFrontendClientContext';
-import { FtuStage } from '@/context/NotifiUserSettingContext';
-import { useNotifiUserSettingContext } from '@/context/NotifiUserSettingContext';
+import {
+  FtuStage,
+  useNotifiFrontendClientContext,
+  useNotifiUserSettingContext,
+} from '@notifi-network/notifi-react';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import { useEffect, useRef } from 'react';
 
@@ -13,15 +14,19 @@ export const useNotifiRouter = () => {
     frontendClientStatus,
     login,
     error: loginError,
-    loading: isLoadingLogin,
+    isLoading: isLoadingLogin,
   } = useNotifiFrontendClientContext();
   const { handleRoute, isLoadingRouter } = useRouterAsync();
   const { setIsGlobalLoading } = useGlobalStateContext();
   const { ftuStage, isLoading: isLoadingFtu } = useNotifiUserSettingContext();
   const { wallets, selectedWallet } = useWallets();
-  const { wallets: injectiveWallets, selectedWallet: injectiveSelectedWallet } =
-    useInjectiveWallets();
   const isLoginStarted = useRef(false);
+  console.log('isLoadingFtu', isLoadingFtu);
+  console.log(
+    'frontendClientStatus.isAuthenticated',
+    frontendClientStatus.isAuthenticated,
+  );
+  console.log('ftuStage', ftuStage);
 
   useEffect(() => {
     if (!frontendClientStatus.isInitialized) return;
@@ -56,8 +61,6 @@ export const useNotifiRouter = () => {
       handleRoute('/');
       if (selectedWallet) {
         wallets[selectedWallet].disconnect();
-      } else if (injectiveSelectedWallet) {
-        injectiveWallets[injectiveSelectedWallet].disconnect();
       }
     }
   }, [loginError]);
