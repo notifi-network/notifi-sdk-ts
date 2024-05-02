@@ -33,6 +33,9 @@ export const defaultDemoConfigV1: CardConfigItemV1 = {
     discord: {
       active: false,
     },
+    slack: {
+      active: false,
+    },
     webhook: {} as unknown as WebhookContactInfo,
   },
 };

@@ -11,7 +11,7 @@ export default function NotifiHome() {
         Notifi Context Example
       </button>
       <br />
-      <button onClick={() => router.push('/notifi/components')}>
+      <button onClick={() => router.push('/notifi/components-example')}>
         Notifi Component Example
       </button>
     </div>
