@@ -25,6 +25,8 @@ export type DirectPushEventTypeItem = Readonly<{
 export type FusionTypeBase = {
   name: string;
   type: 'fusion' | 'fusionToggle'; // fusionToggle is deprecated (use fusion with selectedUIType: 'TOGGLE' instead)
+  topicGroupName?: string;
+  index?: number;
   fusionEventId: ValueOrRef<string>;
   sourceAddress: ValueOrRef<string>;
   tooltipContent?: string;
