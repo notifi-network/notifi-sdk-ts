@@ -6,6 +6,7 @@ export type FusionEventMetadata = {
     historyDisplayName?: string;
     icon?: Types.GenericEventIconHint;
     customIconUrl?: string;
+    isSubscriptionValueInputable?: boolean;
   };
   filters: Array<Filter>;
 };
@@ -57,6 +58,7 @@ export type UiType = 'radio' | 'button';
 export type FilterType = 'AlertFilter';
 
 export type FusionFilterOptions = {
+  version: 1;
   input: Record<Filter['name'], UserInputOptions>;
 };
 

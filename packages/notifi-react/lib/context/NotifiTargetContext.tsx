@@ -30,11 +30,12 @@ export type TargetDocument = {
   targetData: TargetData;
 };
 
-type Target = 'email' | 'phoneNumber' | 'telegram' | 'discord' | 'slack';
+export type Target = 'email' | 'phoneNumber' | 'telegram' | 'discord' | 'slack';
 
+export type TargetInputFromValue = { value: string; error?: string };
 type TargetInputForm = Record<
   Extract<Target, 'email' | 'phoneNumber' | 'telegram'>, // NOTE: only these 3 have their form input
-  { value: string; error?: string }
+  TargetInputFromValue
 >;
 
 type TargetInputToggles = Record<Extract<Target, 'discord' | 'slack'>, boolean>;
@@ -81,7 +82,7 @@ export type UpdateTargetInputs = <T extends 'form' | 'toggle'>(
   target: T extends 'form'
     ? Extract<Target, 'email' | 'phoneNumber' | 'telegram'>
     : Extract<Target, 'discord' | 'slack'>,
-  value: T extends 'form' ? { value: string; error?: string } : boolean,
+  value: T extends 'form' ? TargetInputFromValue : boolean,
 ) => void;
 
 export type NotifiTargetContextType = {
@@ -234,7 +235,7 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
       target: T extends 'form'
         ? Extract<Target, 'email' | 'phoneNumber' | 'telegram'>
         : Extract<Target, 'discord' | 'slack'>,
-      value: T extends 'form' ? { value: string; error?: string } : boolean,
+      value: T extends 'form' ? TargetInputFromValue : boolean,
     ) => {
       if (target in targetInputs) {
         setTargetInputs((prev) => ({
