@@ -8,7 +8,6 @@ import {
   useNotifiTenantConfigContext,
   useNotifiTopicContext,
   useNotifiUserSettingContext,
-  validateTopic,
 } from '@notifi-network/notifi-react';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
