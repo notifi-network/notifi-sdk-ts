@@ -1,7 +1,6 @@
 import { Icon } from '@/assets/Icon';
 import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import {
-  CtaInfo,
   isCtaInfo,
   useNotifiTargetContext,
 } from '@notifi-network/notifi-react';
@@ -144,7 +143,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
           )}
         </div>
       ) : null}
-      {targetData.slack.useSlack ? (
+      {/* {targetData.slack.useSlack ? (
         <div className="bg-notifi-destination-card-bg rounded-md w-full sm:w-112 h-18 flex flex-row items-center justify-between mb-2">
           <div className="bg-notifi-destination-logo-card-bg rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
             <Icon
@@ -183,7 +182,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
             </div>
           )}
         </div>
-      ) : null}
+      ) : null} */}
 
       {contactInfo?.discord?.active && targetData.discord.useDiscord ? (
         <div className="bg-notifi-destination-card-bg rounded-md w-full sm:w-112 h-18 flex flex-row items-center justify-between mb-2">

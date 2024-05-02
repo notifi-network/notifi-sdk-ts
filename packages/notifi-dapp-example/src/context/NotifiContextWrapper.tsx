@@ -43,6 +43,7 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
       case 'zerion':
       case 'coinbase':
         walletPublicKey = wallets[selectedWallet].walletKeys?.hex ?? '';
+        console.log('walletPublicKey', walletPublicKey);
         if (!walletPublicKey) throw new Error('ERROR: invalid walletPublicKey');
         signMessage = async (message: Uint8Array): Promise<Uint8Array> => {
           const messageString = Buffer.from(message).toString('utf8');
