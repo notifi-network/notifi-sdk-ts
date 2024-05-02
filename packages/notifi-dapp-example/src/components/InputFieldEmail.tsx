@@ -23,11 +23,10 @@ export const InputFieldEmail: React.FC<InputFieldEmailProps> = ({
     isChangingTargets,
     renewTargetGroup,
     targetDocument: {
-      targetInputs: { email, telegram, slack },
+      targetInputs: { email, telegram },
     },
   } = useNotifiTargetContext();
 
-  console.log('targetInputs', email, telegram, slack);
   const validateEmail = () => {
     if (email.value === '') {
       return;

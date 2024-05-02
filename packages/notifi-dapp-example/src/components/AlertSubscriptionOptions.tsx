@@ -40,6 +40,8 @@ export const AlertSubscriptionOptions: React.FC<TopicOptionsProps> = (
     targetDocument: { targetGroupId },
   } = useNotifiTargetContext();
 
+  // TODO: Implement the following logic
+
   // const alertFilterOptions = getAlertFilterOptions(props.topic.uiConfig.name);
   // console.log('props.topic.uiConfig.name', alertFilterOptions);
 
@@ -100,26 +102,28 @@ export const AlertSubscriptionOptions: React.FC<TopicOptionsProps> = (
           return (
             <>
               {uiType === 'button' ? (
-                <button
-                  className={`w-18 h-12 bg-notifi-card-bg rounded-md mr-2 text-notifi-text-light`}
-                  // ${
-                  //   option === subscribedValue
-                  //     ? 'selected text-white border border-notifi-tenant-brand-bg'
-                  //     : ''
-                  // }
+                !option ? null : (
+                  <button
+                    className={`w-18 h-12 bg-notifi-card-bg rounded-md mr-2 text-notifi-text-light`}
+                    // ${
+                    //   option === subscribedValue
+                    //     ? 'selected text-white border border-notifi-tenant-brand-bg'
+                    //     : ''
+                    // }
 
-                  onClick={() => {
-                    if (isLoadingTopic) return;
-                    console.log('before');
-                    // renewFilterOptions(option);
-                  }}
-                >
-                  <div>
-                    {'prefix' in prefixAndSuffix && prefixAndSuffix.prefix}
-                    {option}
-                    {'suffix' in prefixAndSuffix && prefixAndSuffix.suffix}
-                  </div>
-                </button>
+                    onClick={() => {
+                      if (isLoadingTopic) return;
+                      console.log('before');
+                      // renewFilterOptions(option);
+                    }}
+                  >
+                    <div>
+                      {'prefix' in prefixAndSuffix && prefixAndSuffix.prefix}
+                      {option}
+                      {'suffix' in prefixAndSuffix && prefixAndSuffix.suffix}
+                    </div>
+                  </button>
+                )
               ) : (
                 <div>
                   <div className="inline-flex items-center mr-6">
@@ -158,9 +162,11 @@ export const AlertSubscriptionOptions: React.FC<TopicOptionsProps> = (
             </>
           );
         })}
-        {props.userInputParam.allowCustomInput ? (
-          <div className="text-notifi-text-light inline-block">
-            {'prefix' in prefixAndSuffix && prefixAndSuffix.prefix}
+        {props.userInputParam.allowCustomInput && uiType === 'button' ? (
+          <div className="text-notifi-text-light inline-block relative w-60">
+            {props.userInputParam.options[0]
+              ? 'prefix' in prefixAndSuffix && prefixAndSuffix.prefix
+              : null}
             <input
               disabled={isLoadingTopic}
               onChange={(evt) => setCustomInput(evt.target.value)}
@@ -168,15 +174,17 @@ export const AlertSubscriptionOptions: React.FC<TopicOptionsProps> = (
                 if (!evt.target.value) return;
                 // renewFilterOptions(evt.target.value);
               }}
-              // className={clsx(
-              //   'notifi-topic-options-custom-input',
-              //   props.classNames?.inputField,
-              //   customInput ? 'selected' : '',
-              // )}
               placeholder="Custom"
               value={customInput}
-              className="w-20 h-12 bg-notifi-card-bg rounded-md mr-2 text-notifi-text-light text-center"
+              className={` ${
+                props.userInputParam.options[0] ? 'w-20' : 'w-full'
+              } h-12 bg-notifi-card-bg rounded-md mr-2 text-notifi-text-light text-center mx-1`}
             />
+            {props.userInputParam.options[0] ? null : (
+              <div className="absolute right-0 bottom-3">
+                {'prefix' in prefixAndSuffix && prefixAndSuffix.prefix}
+              </div>
+            )}
             {'suffix' in prefixAndSuffix && prefixAndSuffix.suffix}
           </div>
         ) : null}
