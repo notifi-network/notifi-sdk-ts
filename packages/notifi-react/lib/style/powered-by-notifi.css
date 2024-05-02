@@ -1,0 +1,20 @@
+.powered-by-notifi {
+  display: flex;
+}
+
+.notifi-powered-by-notifi-content {
+  font-size: 0.6rem;
+  margin-right: 0.5rem;
+}
+
+.powered-by-notifi-logo {
+  width: 0.6rem;
+  height: 0.6rem;
+  margin-right: 0.5rem;
+}
+
+.powered-by-notifi-text {
+  font: 1rem;
+  width: 1.5rem;
+  height: 0.6rem;
+}
