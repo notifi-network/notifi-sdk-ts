@@ -2,7 +2,6 @@ import { Icon } from '@/assets/Icon';
 import { useNotifiHistory } from '@/hooks/useNotifiHistory';
 import {
   ParsedNotificationHistory,
-  iconStyles,
   parseNotificationHistory,
 } from '@/utils/notifiHistoryUtils';
 import { Types } from '@notifi-network/notifi-graphql';
