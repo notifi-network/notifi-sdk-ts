@@ -86,7 +86,14 @@ export const SignUpButton: React.FC<NotifiSignUpButtonProps> = ({
         setIsLoading(false);
       }
     });
-  }, [frontendClient, eventTypes, login, setGlobalError]);
+  }, [
+    frontendClient,
+    eventTypes,
+    login,
+    setGlobalError,
+    renewTargetGroup,
+    discord,
+  ]);
 
   useEffect(() => {
     if (
