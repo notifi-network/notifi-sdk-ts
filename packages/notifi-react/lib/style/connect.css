@@ -1,0 +1,59 @@
+.notifi-connect {
+  display: flex;
+  flex-direction: column;
+  border-radius: 6px;
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+}
+
+.notifi-connect-main {
+  flex-grow: 1;
+  overflow: scroll;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0 2rem;
+}
+
+.notifi-connect-icon {
+  margin-bottom: 1rem;
+  color: var(--notifi-color-grey3);
+}
+
+.notifi-connect-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  line-height: 133%;
+  text-align: center;
+}
+
+.notifi-connect-content {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  line-height: 133%;
+  text-align: center;
+}
+
+.notifi-connect-button {
+  background-color: var(--notifi-connect-button);
+  color: var(--notifi-connect-button-text);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0rem;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  width: 100%;
+}
+
+.notifi-connect-footer {
+  width: 100%;
+  display: flex;
+  height: 3rem;
+  justify-content: center;
+  align-items: center;
+}
