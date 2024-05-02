@@ -52,6 +52,8 @@ export const HistoryListRow: React.FC<HistoryListRowProps> = ({
   }
 
   const icon = parsedNotificationHistory.icon as Types.GenericEventIconHint;
+  // TODO: uncomment when we have customIconUrl exposed
+  // const customIconUrl = parsedNotificationHistory.customIconUrl ?? '';
 
   return (
     <div
@@ -67,11 +69,17 @@ export const HistoryListRow: React.FC<HistoryListRowProps> = ({
           !parsedNotificationHistory.read ? '' : 'hidden'
         } h-18 w-1 bg-notifi-tenant-brand-bg rounded-3xl flex justify-center items-center absolute top-0 left-0 z-1`}
       ></div>
-      <div className={`h-10 w-10 rounded-[12px] mr-3 ml-1`}>
-        <Icon
-          className={`m-2 ${iconStyles[icon]?.iconColor ?? ''}`}
-          id={icon}
-        />
+
+      <div className="flex flex-row items-center">
+        {/* {customIconUrl.length > 0 ? ( */}
+        {/* <>
+            <img src={customIconUrl} className="w-10 h-10 mr-3 ml-1" />
+          </>
+        ) : ( */}
+        <div className={`h-10 w-10 mr-3 ml-1`}>
+          <Icon className="m-2" id={icon} />
+        </div>
+        {/* )} */}
       </div>
 
       <div className="grow text-sm">

@@ -14,6 +14,7 @@ import { useMemo } from 'react';
 import React from 'react';
 
 import { AlertSubscriptionOptions } from './AlertSubscriptionOptions';
+import { SubscriptionValueInput } from './SubscriptionValueInput';
 import { Toggle } from './Toggle';
 
 type AlertSubscriptionRowProps = {
@@ -26,11 +27,6 @@ export const AlertSubscriptionRow: React.FC<AlertSubscriptionRowProps> = ({
   topic,
 }) => {
   const [isAddPairOpen, setIsAddPairOpen] = React.useState<boolean>(false);
-  const dummyList = [
-    'ETH / USDC - Chain',
-    'ETH / USDC - Chain',
-    'ETH / USDC - Chain',
-  ];
   const tradingPairAlertsList = [
     { 'ETH / USDC - Chain': 'Above 15928.00' },
     { 'ETH / USDC - Chain': 'Above 15928.00' },
@@ -61,6 +57,8 @@ export const AlertSubscriptionRow: React.FC<AlertSubscriptionRowProps> = ({
     parsedMetadata?.uiConfigOverride?.topicDisplayName !== ''
       ? parsedMetadata?.uiConfigOverride?.topicDisplayName
       : topic.uiConfig.name;
+  const isisSubscriptionValueSelectable =
+    parsedMetadata?.uiConfigOverride?.isSubscriptionValueSelectable ?? false;
   const description = useMemo(() => {
     const filters = (parsedMetadata?.filters as AlertFilter[]) ?? [];
     return filters[0]?.description ?? '';
@@ -69,6 +67,7 @@ export const AlertSubscriptionRow: React.FC<AlertSubscriptionRowProps> = ({
     const filters = (parsedMetadata?.filters as AlertFilter[]) ?? [];
     return filters[0]?.userInputParams ?? [];
   }, [topic]);
+  const reversedParams = [...userInputParams].reverse();
 
   return (
     <div className="flex flex-col p-2 px-4 bg-notifi-destination-card-bg rounded-md w-[359px]">
@@ -141,19 +140,7 @@ export const AlertSubscriptionRow: React.FC<AlertSubscriptionRowProps> = ({
 
       {/* show dropdown button for Trading Pair Price Alert */}
       {/* TODO: pass in a variable from AP to determine if the dropdown should be shown */}
-      {userInputParams.length > 1 ? (
-        <select className="ml-14 w-60 h-12 bg-notifi-card-bg rounded-md mb-3 text-notifi-text p-2 border-0 focus:border-0 focus-visible:border-0">
-          {dummyList.map((item) => (
-            <option
-              key={item}
-              value={item}
-              className="ml-14 w-60 h-12 bg-notifi-card-bg rounded-md mb-3 text-notifi-text p-2"
-            >
-              {item}
-            </option>
-          ))}
-        </select>
-      ) : null}
+      {isisSubscriptionValueSelectable ? <SubscriptionValueInput /> : null}
 
       {/* render radio button or button inputs if content with userInputParams length equals to 1 */}
       {userInputParams.length === 1 &&
@@ -176,7 +163,7 @@ export const AlertSubscriptionRow: React.FC<AlertSubscriptionRowProps> = ({
       {/* render radio button or button inputs if content with userInputParams length larger than 1, for GMX, it is the Trading Pair Price Alert */}
       {userInputParams.length > 1 && isAddPairOpen ? (
         <div>
-          {userInputParams.map((userInput, id) => {
+          {reversedParams.map((userInput, id) => {
             return (
               <AlertSubscriptionOptions
                 index={id}

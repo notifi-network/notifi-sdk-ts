@@ -67,7 +67,7 @@ text-notifi-button-primary-blueish-bg md:ml-6 mt-1"
             checked={slack}
             onChange={() => {
               isEditable
-                ? renewTargetGroup()
+                ? renewTargetGroup('slack')
                 : updateTargetInputs('slack', !slack);
             }}
           />

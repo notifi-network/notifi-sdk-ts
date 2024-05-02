@@ -51,7 +51,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
   }, [targetData.discord.data]);
 
   const VerifiedText = (
-    <div className="font-semibold text-sm text-notifi-success ml-6">
+    <div className="font-semibold text-sm text-notifi-success mx-6">
       Verified
     </div>
   );
@@ -71,7 +71,13 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
               Email
             </div>
           </div>
-          <div className="flex flex-col items-start justify-between w-3/4 sm:w-90 mr-4">
+          <div
+            className={`flex ${
+              targetInfoPrompts.email?.infoPrompt.type === 'cta'
+                ? 'flex-col'
+                : 'flex-row'
+            } items-start justify-between w-3/4 sm:w-90 mr-4`}
+          >
             <div className="text-sm ml-6 text-notifi-text">
               {targetData.email}
             </div>
@@ -131,7 +137,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
               />
             </div>
           ) : (
-            <div className="flex flex-col items-start justify-between w-3/4 sm:w-90 mr-4">
+            <div className="flex flex-row items-start justify-between w-3/4 sm:w-90 mr-4">
               <div className="text-sm ml-6">{targetData.telegram}</div>
               {VerifiedText}
             </div>
@@ -167,7 +173,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
               />
             </div>
           ) : (
-            <div className="flex flex-col items-start justify-between w-3/4 sm:w-90 mr-4">
+            <div className="flex flex-row items-start justify-between w-3/4 sm:w-90 mr-4">
               <div className="text-sm ml-6 text-notifi-text">
                 {targetData.slack.data?.slackChannelName ?? 'Slack'}
               </div>
@@ -213,7 +219,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
               />
             </div>
           ) : (
-            <div className="flex flex-col items-start justify-between w-3/4 sm:w-90 mr-4">
+            <div className="flex flex-row items-start justify-between w-3/4 sm:w-90 mr-4">
               <div className="text-sm ml-6 text-notifi-text">
                 {targetData.discord.data?.isConfirmed === true
                   ? discordUserName
