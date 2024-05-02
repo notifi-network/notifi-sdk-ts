@@ -1,11 +1,7 @@
 'use client';
 
-import {
-  categorizeTopics,
-  useNotifiTenantConfigContext,
-} from '@notifi-network/notifi-react';
+import { useNotifiTenantConfigContext } from '@notifi-network/notifi-react';
 
-import { AlertSubscriptionBlock } from './AlertSubscriptionBlock';
 import { AlertSubscriptionRow } from './AlertSubscriptionRow';
 
 export type AlertSubscriptionRowProps = {
@@ -20,7 +16,6 @@ export const AlertSubscription: React.FC<AlertSubscriptionRowProps> = ({
   const { cardConfig, fusionEventTopics } = useNotifiTenantConfigContext();
   if (!cardConfig) return null;
   console.log('fusionEventTopics', fusionEventTopics);
-  const { categorizedTopics } = categorizeTopics(cardConfig.eventTypes);
 
   return (
     <div
@@ -42,19 +37,6 @@ export const AlertSubscription: React.FC<AlertSubscriptionRowProps> = ({
         {/* {uncategorizedTopics.subTopics.length > 0 ? (
           <AlertSubscriptionBlock labelWithSubTopics={uncategorizedTopics} />
         ) : null} */}
-
-        {categorizedTopics.map((labelWithSubTopics, id) => {
-          return (
-            <div key={id}>
-              {labelWithSubTopics.subTopics.length > 0 ? (
-                <AlertSubscriptionBlock
-                  key={labelWithSubTopics.name}
-                  labelWithSubTopics={labelWithSubTopics}
-                />
-              ) : null}
-            </div>
-          );
-        })}
         {/* NOTE: below are invisible placeholder to make the layout consistent */}
         <div className="w-72 rounded-lg invisible h-0"></div>
         <div className="w-72 rounded-lg invisible h-0"></div>
