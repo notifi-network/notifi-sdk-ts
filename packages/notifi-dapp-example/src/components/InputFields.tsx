@@ -3,7 +3,6 @@ import React from 'react';
 
 import { InputFieldDiscord } from './InputFieldDiscord';
 import { InputFieldEmail } from './InputFieldEmail';
-import { InputFieldSlack } from './InputFieldSlack';
 import { InputFieldTelegram } from './InputFieldTelegram';
 
 export type InputFieldsProps = {
@@ -24,7 +23,7 @@ export const InputFields: React.FC<InputFieldsProps> = ({
       {contactInfo.telegram.active ? (
         <InputFieldTelegram disabled={inputDisabled} isEditable={isEditable} />
       ) : null}
-      <InputFieldSlack disabled={inputDisabled} isEditable={isEditable} />
+      {/* <InputFieldSlack disabled={inputDisabled} isEditable={isEditable} /> */}
       {contactInfo?.discord?.active ? (
         <InputFieldDiscord disabled={inputDisabled} isEditable={isEditable} />
       ) : null}

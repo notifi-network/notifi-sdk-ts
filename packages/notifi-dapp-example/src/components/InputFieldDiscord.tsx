@@ -43,7 +43,7 @@ export const InputFieldDiscord: React.FC<InputFieldDiscordProps> = ({
           checked={discord}
           onChange={() => {
             isEditable
-              ? renewTargetGroup('discord')
+              ? renewTargetGroup()
               : updateTargetInputs('discord', !discord);
           }}
         />
