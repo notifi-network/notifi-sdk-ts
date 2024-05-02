@@ -1,0 +1,95 @@
+/* TargetInputs styles */
+.notifi-target-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 0 2rem;
+  overflow: scroll;
+}
+.notifi-input-separator {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  overflow: hidden;
+  text-align: center;
+  justify-content: center;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.notifi-input-separator:before,
+.notifi-input-separator:after {
+  background-color: var(--notifi-color-grey3);
+  content: '';
+  display: inline-block;
+  height: 1px;
+  position: relative;
+  vertical-align: middle;
+  width: 45%;
+}
+
+/* TargetInputField styles */
+
+.notifi-target-input-field {
+  /* To be override */
+  position: relative;
+}
+
+.notifi-target-input-field-label {
+  display: flex;
+  margin-bottom: 0.8rem;
+  color: var(--notifi-font-color);
+  opacity: 0.5;
+  font-size: 1rem;
+  line-height: 1rem;
+}
+
+.notifi-target-input-field-input-container {
+  display: flex;
+  flex-direction: row;
+  background-color: var(--notifi-input-field-background);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  align-items: center;
+  max-height: 1rem;
+  box-sizing: content-box;
+}
+
+.notifi-target-input-field-icon {
+  margin-right: 0.8rem;
+  color: var(--notifi-color-grey3);
+}
+
+.notifi-target-input-field-input {
+  flex-grow: 1;
+  font-size: 1rem;
+  line-height: 1rem;
+  background: none;
+  outline: none;
+  border: none;
+  color: var(--notifi-font-color);
+  font-weight: 500;
+}
+
+.notifi-target-input-field-error-message {
+  color: var(--notifi-color-pink);
+  font-size: 0.7rem;
+  text-align: center;
+  position: absolute;
+  bottom: 0.1rem;
+  left: 1rem;
+}
+
+/* TargetInputToggle styles */
+.notifi-target-input-toggle-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding-top: 0.7rem;
+}
+
+.notifi-target-input-toggle-label {
+  font-size: 1rem;
+}
