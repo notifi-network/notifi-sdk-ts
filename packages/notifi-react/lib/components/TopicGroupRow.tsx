@@ -1,16 +1,12 @@
-import {
-  AlertFilter,
-  Filter,
-  FusionEventMetadata,
-  FusionEventTopic,
-  UiType,
-  UserInputParam,
-} from '@notifi-network/notifi-frontend-client';
+import { FusionEventTopic } from '@notifi-network/notifi-frontend-client';
+import clsx from 'clsx';
 import React from 'react';
 
 import { Icon } from '../assets/Icons';
 import { useNotifiTargetContext, useNotifiTopicContext } from '../context';
+import { getUserInputParams, isTopicGroupValid } from '../utils';
 import { Toggle } from './Toggle';
+import { TopicGroupOptions } from './TopicGroupOptions';
 
 export type TopicGroupRowProps = {
   topics: FusionEventTopic[];
@@ -34,11 +30,14 @@ export const TopicGroupRow: React.FC<TopicGroupRowProps> = (props) => {
   const benchmarkUserInputParams = getUserInputParams(benchmarkTopic);
 
   return (
-    <div>
-      <div>
-        <div>
+    <div className={clsx('notifi-topic-row')}>
+      <div className={clsx('notifi-topic-row-base')}>
+        <div className={clsx('notifi-topic-row-content')}>
           <div>{benchmarkTopic.uiConfig.topicGroupName}</div>
-          <Icon type="info" />
+          <Icon
+            type="info"
+            className={clsx('notifi-topic-list-tooltip-icon')}
+          />
           {/* TODO: impl tooltip  */}
         </div>
         <Toggle
@@ -67,104 +66,20 @@ export const TopicGroupRow: React.FC<TopicGroupRowProps> = (props) => {
       {benchmarkUserInputParams &&
       benchmarkUserInputParams.length > 0 &&
       isAlertSubscribed(benchmarkTopic.uiConfig.name) ? (
-        <div>
+        <div className={clsx('notifi-topic-row-user-inputs-row-container')}>
           {benchmarkUserInputParams.map((userInput, id) => {
             return (
               <div key={id}>
-                {JSON.stringify(userInput)} || {JSON.stringify(props.topics)}
+                <TopicGroupOptions
+                  key={id}
+                  topics={props.topics}
+                  userInputParam={userInput}
+                />
               </div>
-              // TODO: render new component TopicGroupOptions (next section) ex. <TopicGroupOptions key={id} userInputParam={userInput} topics={props.topics} />
             );
           })}
         </div>
       ) : null}
     </div>
   );
-};
-
-// Utils
-const isTopicGroupValid = (topics: FusionEventTopic[]): boolean => {
-  // Ensure all topics have the same userInputParams & options
-  const benchmarkTopic = topics[0];
-  const benchmarkTopicMetadata = JSON.parse(
-    benchmarkTopic.fusionEventDescriptor.metadata ?? '{}',
-  ) as FusionEventMetadata;
-  const benchmarkAlertFilter =
-    benchmarkTopicMetadata?.filters.find(isAlertFilter);
-  const benchmarkUserInputParams = benchmarkAlertFilter?.userInputParams;
-
-  if (!benchmarkAlertFilter) {
-    return false;
-  }
-
-  if (benchmarkUserInputParams && benchmarkUserInputParams.length > 0) {
-    const isGroupNameNotMatched = topics.find(
-      (topic) =>
-        topic.uiConfig.topicGroupName !==
-        benchmarkTopic.uiConfig.topicGroupName,
-    );
-    if (isGroupNameNotMatched) {
-      return false;
-    }
-
-    const userInputParamsList = topics.map((topic) => {
-      return getUserInputParams(topic);
-    });
-
-    for (let i = 1; i < userInputParamsList.length; i++) {
-      const userInputParams = userInputParamsList[i];
-      const userInputParamMap = new Map<string, UserInputParam<UiType>>(
-        userInputParams.map((userInputParam) => [
-          userInputParam.name,
-          userInputParam,
-        ]),
-      );
-
-      const benchmarkUserInputParamMap = new Map<
-        string,
-        UserInputParam<UiType>
-      >(
-        benchmarkUserInputParams.map((userInputParam) => [
-          userInputParam.name,
-          userInputParam,
-        ]),
-      );
-      // TODO: Fix O(n^2) complexity
-      for (const key of benchmarkUserInputParamMap.keys()) {
-        const benchmarkUserInputParam = benchmarkUserInputParamMap.get(key);
-        const userInputParam = userInputParamMap.get(key);
-        if (!userInputParam || !benchmarkUserInputParam) {
-          return false;
-        }
-
-        const benchmarkParamOptions = benchmarkUserInputParam.options.join('');
-        const userInputParamOptions = userInputParam.options.join('');
-        if (benchmarkParamOptions !== userInputParamOptions) {
-          return false;
-        }
-
-        if (
-          benchmarkUserInputParam.defaultValue !== userInputParam.defaultValue
-        ) {
-          return false;
-        }
-      }
-    }
-  }
-  return true;
-};
-
-// TODO: Migrate to NotifiTopicContext
-const isAlertFilter = (filter: Filter): filter is AlertFilter => {
-  return 'type' in filter && filter.type === 'AlertFilter';
-};
-// TODO: Migrate to NotifiTopicContext
-const getUserInputParams = (
-  topic: FusionEventTopic,
-): UserInputParam<UiType>[] => {
-  const parsedMetadata = JSON.parse(
-    topic.fusionEventDescriptor.metadata ?? '{}',
-  ) as FusionEventMetadata;
-  const filters = parsedMetadata?.filters?.filter(isAlertFilter) ?? [];
-  return filters[0]?.userInputParams ?? [];
 };

@@ -1,17 +1,10 @@
-import {
-  FusionEventMetadata,
-  FusionEventTopic,
-} from '@notifi-network/notifi-frontend-client';
+import { FusionEventTopic } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
-import { Filter } from 'notifi-frontend-client/dist';
 import React from 'react';
 
 import { Icon } from '../assets/Icons';
-import {
-  isAlertFilter,
-  useNotifiTargetContext,
-  useNotifiTopicContext,
-} from '../context';
+import { useNotifiTargetContext, useNotifiTopicContext } from '../context';
+import { getUserInputParams } from '../utils';
 import { Toggle } from './Toggle';
 import { TopicOptions } from './TopicOptions';
 
@@ -39,22 +32,11 @@ export const TopicRow: React.FC<TopicRowProps> = (props) => {
     targetDocument: { targetGroupId },
   } = useNotifiTargetContext();
 
-  const userInputParams = React.useMemo(() => {
-    const metadata = topic.fusionEventDescriptor.metadata;
-
-    // TODO: impl fusion metadata validator
-    const parsedMetadata: FusionEventMetadata | null = metadata
-      ? (JSON.parse(metadata) as FusionEventMetadata)
-      : null;
-
-    const filters = parsedMetadata?.filters?.filter(isAlertFilter) ?? [];
-    return filters[0]?.userInputParams ?? [];
-  }, [topic]);
+  const userInputParams = getUserInputParams(topic);
 
   return (
     <div
       className={clsx('notifi-topic-row', props.classNames?.baseRowContainer)}
-      key={topic.uiConfig.name}
     >
       <div className={clsx('notifi-topic-row-base', props.classNames?.content)}>
         <div
@@ -99,24 +81,6 @@ export const TopicRow: React.FC<TopicRowProps> = (props) => {
               <TopicOptions key={id} userInputParam={userInput} topic={topic} />
             );
           })}
-          {/* NOTE: below is for multi filter UI rendering (Not supported yet)
-        {filters?.length > 0 ? (
-        <div
-          className={clsx(
-            'notifi-topic-row-user-inputs',
-            props.classNames?.userInputsRowContainer,
-          )}
-        >
-          {filters.map((filter, id) => {
-            return (
-              <div key={id}>
-                <label>{filter.name}</label>
-                {JSON.stringify()}
-              </div>
-            );
-          })}
-        </div>
-      ) : null} */}
         </div>
       ) : null}
     </div>
