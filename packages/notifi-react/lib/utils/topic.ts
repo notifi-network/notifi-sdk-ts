@@ -174,8 +174,11 @@ export const isAlertFilter = (filter: Filter): filter is AlertFilter => {
 };
 
 export const isFusionFilterOptions = (
-  filterOptions: any,
+  filterOptions: unknown,
 ): filterOptions is FusionFilterOptions => {
+  if (typeof filterOptions !== 'object' || !filterOptions) {
+    return false;
+  }
   return 'version' in filterOptions && filterOptions.version === 1;
 };
 
