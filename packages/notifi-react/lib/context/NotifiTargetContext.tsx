@@ -99,7 +99,11 @@ export type NotifiTargetContextType = {
   isLoading: boolean;
   error: Error | null;
   updateTargetInputs: UpdateTargetInputs;
-  renewTargetGroup: () => Promise<void>;
+  renewTargetGroup: (arg?: TargetGroupInput) => Promise<void>;
+  renewToggleTargetGroup: (
+    target: Extract<Target, 'discord' | 'slack' | 'wallet'>,
+    value: boolean,
+  ) => Promise<void>;
   isChangingTargets: Record<Target, boolean>;
   targetDocument: TargetDocument;
   unVerifiedTargets: Target[];
@@ -272,25 +276,44 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
     },
     [],
   );
-  console.log('targetGroupToBeSaved', targetGroupToBeSaved);
-  const renewTargetGroup = useCallback(() => {
-    setIsLoading(true);
-    console.log('inside', targetGroupToBeSaved);
-    return frontendClient
-      .ensureTargetGroup(targetGroupToBeSaved)
-      .then((_result) => {
-        frontendClient
-          .fetchData()
-          .then((data) => {
-            refreshTargetDocument(data);
-            setError(null);
-          })
-          .catch((e) => setError(e as Error))
-          .finally(() => setIsLoading(false));
-      })
-      .catch((e) => setError(e as Error))
-      .finally(() => setIsLoading(false));
-  }, [frontendClient, targetGroupToBeSaved]);
+
+  const renewTargetGroup = useCallback(
+    (data?: TargetGroupInput) => {
+      setIsLoading(true);
+      data = data ?? targetGroupToBeSaved;
+      return frontendClient
+        .ensureTargetGroup(data)
+        .then((_result) => {
+          frontendClient
+            .fetchData()
+            .then((data) => {
+              refreshTargetDocument(data);
+              setError(null);
+            })
+            .catch((e) => setError(e as Error))
+            .finally(() => setIsLoading(false));
+        })
+        .catch((e) => setError(e as Error))
+        .finally(() => setIsLoading(false));
+    },
+    [frontendClient, targetGroupToBeSaved],
+  );
+
+  const renewToggleTargetGroup = useCallback(
+    async (
+      target: Extract<Target, 'discord' | 'slack' | 'wallet'>,
+      value: boolean,
+    ) => {
+      const expectedTarget = ['discord', 'slack', 'wallet'];
+      if (expectedTarget.includes(target)) {
+        await renewTargetGroup({
+          ...targetGroupToBeSaved,
+          [`${target}Id`]: value ? 'Default' : undefined,
+        });
+      }
+    },
+    [targetGroupToBeSaved],
+  );
 
   // NOTE: The followings are internal functions
   const updateTargetInfoPrompt = useCallback(
@@ -617,6 +640,7 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
         error,
         isLoading,
         renewTargetGroup,
+        renewToggleTargetGroup,
         unVerifiedTargets,
         isChangingTargets,
         targetDocument: {

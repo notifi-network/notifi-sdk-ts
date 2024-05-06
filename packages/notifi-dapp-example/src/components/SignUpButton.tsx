@@ -35,8 +35,7 @@ export const SignUpButton: React.FC<NotifiSignUpButtonProps> = ({
     renewTargetGroup,
     refreshTargetDocument,
     targetDocument: {
-      targetData: { slack, discord, wallet },
-      targetInputs: { email, phoneNumber, telegram },
+      targetInputs: { email, phoneNumber, telegram, slack, discord, wallet },
     },
   } = useNotifiTargetContext();
 
@@ -115,18 +114,18 @@ export const SignUpButton: React.FC<NotifiSignUpButtonProps> = ({
       ? !!email.value ||
           !!phoneNumber.value ||
           !!telegram.value ||
-          slack.useSlack ||
-          discord.useDiscord ||
-          wallet.useWallet
+          slack ||
+          discord ||
+          wallet
       : true;
   }, [
     email,
     phoneNumber,
     telegram.value,
-    discord.useDiscord,
+    discord,
     data.isContactInfoRequired,
-    slack.useSlack,
-    wallet.useWallet,
+    slack,
+    wallet,
   ]);
 
   return (

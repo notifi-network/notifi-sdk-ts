@@ -16,7 +16,7 @@ export const InputFieldWallet: React.FC<InputFieldWalletProps> = ({
 }: InputFieldWalletProps) => {
   const {
     updateTargetInputs,
-    renewTargetGroup,
+    renewToggleTargetGroup,
     targetDocument: {
       targetInputs: { email, telegram, wallet },
     },
@@ -42,9 +42,8 @@ export const InputFieldWallet: React.FC<InputFieldWalletProps> = ({
               disabled={disabled || !!telegram.error || !!email.error}
               checked={wallet}
               onChange={() => {
-                isEditable
-                  ? renewTargetGroup()
-                  : updateTargetInputs('wallet', !wallet);
+                updateTargetInputs('wallet', !wallet);
+                if (isEditable) renewToggleTargetGroup('wallet', !wallet);
               }}
             />
           ) : (
