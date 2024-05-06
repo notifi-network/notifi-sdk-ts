@@ -21,6 +21,7 @@ export type TargetGroupInput = {
   telegramId?: string;
   discordId?: string;
   slackId?: string;
+  walletId?: string;
 };
 
 export type TargetDocument = {
@@ -30,14 +31,23 @@ export type TargetDocument = {
   targetData: TargetData;
 };
 
-type Target = 'email' | 'phoneNumber' | 'telegram' | 'discord' | 'slack';
+type Target =
+  | 'email'
+  | 'phoneNumber'
+  | 'telegram'
+  | 'discord'
+  | 'slack'
+  | 'wallet';
 
 type TargetInputForm = Record<
   Extract<Target, 'email' | 'phoneNumber' | 'telegram'>, // NOTE: only these 3 have their form input
   { value: string; error?: string }
 >;
 
-type TargetInputToggles = Record<Extract<Target, 'discord' | 'slack'>, boolean>;
+type TargetInputToggles = Record<
+  Extract<Target, 'discord' | 'slack' | 'wallet'>,
+  boolean
+>;
 
 type TargetInputs = TargetInputForm & TargetInputToggles;
 
@@ -68,6 +78,7 @@ export type TargetData = {
   telegram: string;
   discord: { useDiscord: boolean; data?: Types.DiscordTargetFragmentFragment };
   slack: { useSlack: boolean; data?: Types.SlackChannelTargetFragmentFragment }; // TODO: Add back slack after merging
+  wallet: { useWallet: boolean; data?: Types.Web3TargetFragmentFragment };
 };
 
 const formatTelegramForSubscription = (telegramId: string) => {
@@ -80,7 +91,7 @@ const formatTelegramForSubscription = (telegramId: string) => {
 export type UpdateTargetInputs = <T extends 'form' | 'toggle'>(
   target: T extends 'form'
     ? Extract<Target, 'email' | 'phoneNumber' | 'telegram'>
-    : Extract<Target, 'discord' | 'slack'>,
+    : Extract<Target, 'discord' | 'slack' | 'wallet'>,
   value: T extends 'form' ? { value: string; error?: string } : boolean,
 ) => void;
 
@@ -114,6 +125,7 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
     telegram: { value: '', error: '' },
     discord: false,
     slack: false,
+    wallet: false,
   });
   const [isChangingTargets, setIsChangingTargets] = useState<
     Record<Target, boolean>
@@ -123,6 +135,7 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
     telegram: false,
     slack: false,
     discord: false,
+    wallet: false,
   });
   const [targetData, setTargetData] = useState<TargetData>({
     email: '',
@@ -130,6 +143,7 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
     telegram: '',
     discord: { useDiscord: false },
     slack: { useSlack: false },
+    wallet: { useWallet: false },
   });
   const [targetInfoPrompts, setTargetInfoPrompts] = useState<
     Partial<Record<Target, TargetInfo>>
@@ -139,6 +153,7 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
     telegram: undefined,
     discord: undefined,
     slack: undefined,
+    wallet: undefined,
   });
 
   const targetGroupToBeSaved: TargetGroupInput = {
@@ -154,6 +169,7 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
         : formatTelegramForSubscription(targetInputs.telegram.value),
     discordId: targetInputs.discord ? 'Default' : undefined,
     slackId: targetInputs.slack ? 'Default' : undefined,
+    walletId: targetInputs.wallet ? 'Default' : undefined,
   };
 
   useEffect(() => {
@@ -198,6 +214,11 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
     } else {
       setIsChangingTargets((prev) => ({ ...prev, slack: false }));
     }
+    if (targetData.wallet.useWallet !== targetInputs.wallet) {
+      setIsChangingTargets((prev) => ({ ...prev, wallet: true }));
+    } else {
+      setIsChangingTargets((prev) => ({ ...prev, wallet: false }));
+    }
   }, [targetInputs]);
 
   const unVerifiedTargets = useMemo(() => {
@@ -206,6 +227,7 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
       phoneNumber: phoneNumberInfoPrompt,
       telegram: telegramInfoPrompt,
       discord: discordInfoPrompt,
+      wallet: walletInfoPrompt,
     } = targetInfoPrompts;
 
     const unConfirmedTargets = {
@@ -216,6 +238,10 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
         targetData.slack.useSlack &&
         discordInfoPrompt?.infoPrompt.type === 'cta' &&
         discordInfoPrompt?.infoPrompt.message === 'Enable Bot',
+      wallet:
+        targetData.wallet.useWallet &&
+        walletInfoPrompt?.infoPrompt.type === 'cta' &&
+        walletInfoPrompt?.infoPrompt.message === 'Sign Wallet',
       discord:
         targetData.discord.useDiscord &&
         discordInfoPrompt?.infoPrompt.type === 'cta' &&
@@ -234,7 +260,7 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
     <T extends 'form' | 'toggle'>(
       target: T extends 'form'
         ? Extract<Target, 'email' | 'phoneNumber' | 'telegram'>
-        : Extract<Target, 'discord' | 'slack'>,
+        : Extract<Target, 'discord' | 'slack' | 'wallet'>,
       value: T extends 'form' ? { value: string; error?: string } : boolean,
     ) => {
       if (target in targetInputs) {
@@ -314,6 +340,7 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
       slack: !!targetGroup?.slackChannelTargets?.find(
         (it) => it?.name === 'Default',
       ),
+      wallet: !!targetGroup?.web3Targets?.find((it) => it?.name === 'Default'),
     }));
 
     // Update target data (TargetData) & info prompts (TargetInfoPrompt)
@@ -335,6 +362,11 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
       (it) => it?.name === 'Default',
     );
     refreshSlackTarget(slackTarget);
+
+    const web3Target = targetGroup?.web3Targets?.find(
+      (it) => it?.name === 'Default',
+    );
+    refreshWeb3Target(web3Target);
   }, []);
 
   const refreshEmailTarget = useCallback(
@@ -533,6 +565,45 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
         setTargetData((prev) => ({
           ...prev,
           slack: { useSlack: false },
+        }));
+      }
+    },
+    [],
+  );
+
+  const refreshWeb3Target = useCallback(
+    async (web3Target?: Types.Web3TargetFragmentFragment) => {
+      if (web3Target) {
+        switch (web3Target.isConfirmed) {
+          case false:
+            updateTargetInfoPrompt('wallet', {
+              type: 'cta',
+              message: 'Sign Wallet',
+              onClick: () => {
+                // TODO: XMTP signature and verifyWeb3Target
+              },
+            });
+            break;
+          case true:
+            updateTargetInfoPrompt('wallet', {
+              type: 'message',
+              message: 'Verified',
+            });
+            break;
+          default:
+            updateTargetInfoPrompt('wallet', {
+              type: 'error',
+              message: 'ERROR: Unexpected wallet state',
+            });
+        }
+        setTargetData((prev) => ({
+          ...prev,
+          wallet: { useWallet: true, data: web3Target },
+        }));
+      } else {
+        setTargetData((prev) => ({
+          ...prev,
+          wallet: { useWallet: false },
         }));
       }
     },

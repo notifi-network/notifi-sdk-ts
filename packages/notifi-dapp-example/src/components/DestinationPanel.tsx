@@ -229,6 +229,39 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
           )}
         </div>
       ) : null}
+
+      {targetData.wallet.useWallet ? (
+        <div className="bg-notifi-destination-card-bg rounded-md w-full sm:w-112 h-18 flex flex-row items-center justify-between mb-2">
+          <div className="bg-notifi-destination-logo-card-bg rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
+            <Icon id="wallet-icon" className="text-notifi-toggle-on-bg" />
+            <div className="font-medium text-xs mt-2 text-notifi-grey-text">
+              Wallet
+            </div>
+          </div>
+
+          {targetInfoPrompts.wallet?.infoPrompt.type === 'cta' ? (
+            <div className="flex flex-row items-center justify-between w-3/4 sm:w-90 mr-4">
+              <div className="text-sm ml-6 text-notifi-text">Wallet Alerts</div>
+              <DestinationInfoPrompt
+                isButton={true}
+                buttonCopy={targetInfoPrompts.wallet?.infoPrompt.message ?? ''}
+                onClick={() => {
+                  const infoPrompt = targetInfoPrompts.wallet?.infoPrompt;
+                  if (infoPrompt && isCtaInfo(infoPrompt)) infoPrompt.onClick();
+                }}
+                infoPromptMessage={
+                  targetInfoPrompts.wallet?.infoPrompt.message ?? ''
+                }
+              />
+            </div>
+          ) : (
+            <div className="flex flex-row items-start justify-between w-3/4 sm:w-90 mr-4">
+              <div className="text-sm ml-6 text-notifi-text">Wallet Alerts</div>
+              {targetData.wallet?.data?.isConfirmed ? VerifiedText : null}
+            </div>
+          )}
+        </div>
+      ) : null}
     </div>
   );
 };

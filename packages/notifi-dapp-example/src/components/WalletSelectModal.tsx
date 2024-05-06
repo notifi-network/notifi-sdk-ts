@@ -15,14 +15,14 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
   const { wallets } = useWallets();
   const availableWallets = objectKeys(wallets);
   const walletsSupportForGMX: typeof availableWallets = [
-    'binance',
     'metamask',
     'coinbase',
-    'okx',
     'rabby',
-    'zerion',
-    'rainbow',
     'walletconnect',
+    'binance',
+    'okx',
+    'rainbow',
+    'zerion',
   ];
 
   const isAnySupportedWalletAvailable = walletsSupportForGMX

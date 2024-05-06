@@ -18,6 +18,7 @@ export type SpriteIconId =
   | 'slack-icon'
   | 'telegram-icon'
   | 'discord-icon'
+  | 'wallet-icon'
   | 'check'
   | 'info'
   | 'edit-icon'
