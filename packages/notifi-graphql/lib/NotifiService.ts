@@ -2,75 +2,84 @@ import { GraphQLClient } from 'graphql-request';
 import { v4 as uuid } from 'uuid';
 
 import { version } from '../package.json';
+import {
+  NotifiSubscriptionService,
+  SubscriptionQueries,
+} from './NotifiSubscriptionService';
 import * as Generated from './gql/generated';
 import { getSdk } from './gql/generated';
 import type * as Operations from './operations';
-import { SubscriptionQueries, NotifiSubscriptionService } from './NotifiSubscriptionService';
 
 export class NotifiService
   implements
-  Operations.AddSourceToSourceGroupService,
-  Operations.BeginLogInByTransactionService,
-  Operations.BroadcastMessageService,
-  Operations.CompleteLogInByTransactionService,
-  Operations.ConnectWalletService,
-  Operations.CreateAlertService,
-  Operations.CreateDirectPushAlertService,
-  Operations.CreateEmailTargetService,
-  Operations.CreateSmsTargetService,
-  Operations.CreateSourceService,
-  Operations.CreateSourceGroupService,
-  Operations.CreateTargetGroupService,
-  Operations.CreateTelegramTargetService,
-  Operations.CreateTenantUserService,
-  Operations.CreateWebhookTargetService,
-  Operations.DeleteAlertService,
-  Operations.DeleteUserAlertService,
-  Operations.DeleteSourceGroupService,
-  Operations.DeleteTargetGroupService,
-  Operations.DeleteWebhookTargetService,
-  Operations.FetchDataService,
-  Operations.FindTenantConfigService,
-  Operations.GetAlertsService,
-  Operations.GetConfigurationForDappService,
-  Operations.GetConnectedWalletsService,
-  Operations.GetEmailTargetsService,
-  Operations.GetFiltersService,
-  Operations.GetFusionNotificationHistoryService,
-  Operations.GetNotificationHistoryService,
-  Operations.GetSmsTargetsService,
-  Operations.GetSourceConnectionService,
-  Operations.GetSourceGroupsService,
-  Operations.GetSourcesService,
-  Operations.GetTargetGroupsService,
-  Operations.GetTelegramTargetsService,
-  Operations.GetTenantConnectedWalletsService,
-  Operations.GetTenantUserService,
-  Operations.GetTopicsService,
-  Operations.GetWebhookTargetsService,
-  Operations.LogInFromDappService,
-  Operations.LogInFromServiceService,
-  Operations.RefreshAuthorizationService,
-  Operations.RemoveSourceFromSourceGroupService,
-  Operations.SendEmailTargetVerificationRequestService,
-  Operations.SendMessageService,
-  Operations.UpdateSourceGroupService,
-  Operations.UpdateTargetGroupService,
-  Operations.CreateDiscordTargetService,
-  Operations.GetDiscordTargetsService,
-  Operations.GetUnreadNotificationHistoryCountService,
-  Operations.MarkFusionNotificationHistoryAsReadService,
-  Operations.UpdateUserSettingsService,
-  Operations.GetUserSettingsService,
-  Operations.GetSlackChannelTargetsService,
-  Operations.CreateSlackChannelTargetService,
-  Operations.CreateFusionAlertsService,
-  Operations.BeginLogInWithWeb3Service,
-  Operations.CompleteLogInWithWeb3Service {
+    Operations.AddSourceToSourceGroupService,
+    Operations.BeginLogInByTransactionService,
+    Operations.BroadcastMessageService,
+    Operations.CompleteLogInByTransactionService,
+    Operations.ConnectWalletService,
+    Operations.CreateAlertService,
+    Operations.CreateDirectPushAlertService,
+    Operations.CreateEmailTargetService,
+    Operations.CreateSmsTargetService,
+    Operations.CreateSourceService,
+    Operations.CreateSourceGroupService,
+    Operations.CreateTargetGroupService,
+    Operations.CreateTelegramTargetService,
+    Operations.CreateTenantUserService,
+    Operations.CreateWebhookTargetService,
+    Operations.DeleteAlertService,
+    Operations.DeleteUserAlertService,
+    Operations.DeleteSourceGroupService,
+    Operations.DeleteTargetGroupService,
+    Operations.DeleteWebhookTargetService,
+    Operations.FetchDataService,
+    Operations.FindTenantConfigService,
+    Operations.GetAlertsService,
+    Operations.GetConfigurationForDappService,
+    Operations.GetConnectedWalletsService,
+    Operations.GetEmailTargetsService,
+    Operations.GetFiltersService,
+    Operations.GetFusionNotificationHistoryService,
+    Operations.GetNotificationHistoryService,
+    Operations.GetSmsTargetsService,
+    Operations.GetSourceConnectionService,
+    Operations.GetSourceGroupsService,
+    Operations.GetSourcesService,
+    Operations.GetTargetGroupsService,
+    Operations.GetTelegramTargetsService,
+    Operations.GetTenantConnectedWalletsService,
+    Operations.GetTenantUserService,
+    Operations.GetTopicsService,
+    Operations.GetWebhookTargetsService,
+    Operations.LogInFromDappService,
+    Operations.LogInFromServiceService,
+    Operations.RefreshAuthorizationService,
+    Operations.RemoveSourceFromSourceGroupService,
+    Operations.SendEmailTargetVerificationRequestService,
+    Operations.SendMessageService,
+    Operations.UpdateSourceGroupService,
+    Operations.UpdateTargetGroupService,
+    Operations.CreateDiscordTargetService,
+    Operations.GetDiscordTargetsService,
+    Operations.GetUnreadNotificationHistoryCountService,
+    Operations.MarkFusionNotificationHistoryAsReadService,
+    Operations.UpdateUserSettingsService,
+    Operations.GetUserSettingsService,
+    Operations.GetSlackChannelTargetsService,
+    Operations.CreateSlackChannelTargetService,
+    Operations.CreateFusionAlertsService,
+    Operations.BeginLogInWithWeb3Service,
+    Operations.CompleteLogInWithWeb3Service,
+    Operations.CreateWeb3TargetService,
+    Operations.GetWeb3TargetsService
+{
   private _jwt: string | undefined;
   private _typedClient: ReturnType<typeof getSdk>;
 
-  constructor(graphQLClient: GraphQLClient, private _notifiSubService: NotifiSubscriptionService) {
+  constructor(
+    graphQLClient: GraphQLClient,
+    private _notifiSubService: NotifiSubscriptionService,
+  ) {
     this._typedClient = getSdk(graphQLClient);
   }
 
@@ -164,6 +173,13 @@ export class NotifiService
   ): Promise<Generated.CreateSlackChannelTargetMutation> {
     const headers = this._requestHeaders();
     return this._typedClient.createSlackChannelTarget(variables, headers);
+  }
+
+  async createWeb3Target(
+    variables: Generated.CreateWeb3TargetMutationVariables,
+  ): Promise<Generated.CreateWeb3TargetMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.createWeb3Target(variables, headers);
   }
 
   async createSmsTarget(
@@ -312,6 +328,13 @@ export class NotifiService
     return this._typedClient.getSlackChannelTargets(variables, headers);
   }
 
+  async getWeb3Targets(
+    variables: Generated.GetWeb3TargetsQueryVariables,
+  ): Promise<Generated.GetWeb3TargetsQuery> {
+    const headers = this._requestHeaders();
+    return this._typedClient.getWeb3Targets(variables, headers);
+  }
+
   async getFilters(
     variables: Generated.GetFiltersQueryVariables,
   ): Promise<Generated.GetFiltersQuery> {
@@ -409,8 +432,18 @@ export class NotifiService
     );
   }
 
-  async subscribeNotificationHistoryStateChanged(onMessageReceived: (data: any) => void | undefined, onError?: (data: any) => void | undefined, onComplete?: () => void | undefined): Promise<void> {
-    this._notifiSubService.subscribe(this._jwt, SubscriptionQueries.StateChanged, onMessageReceived, onError, onComplete);
+  async subscribeNotificationHistoryStateChanged(
+    onMessageReceived: (data: any) => void | undefined,
+    onError?: (data: any) => void | undefined,
+    onComplete?: () => void | undefined,
+  ): Promise<void> {
+    this._notifiSubService.subscribe(
+      this._jwt,
+      SubscriptionQueries.StateChanged,
+      onMessageReceived,
+      onError,
+      onComplete,
+    );
   }
 
   async wsDispose() {
