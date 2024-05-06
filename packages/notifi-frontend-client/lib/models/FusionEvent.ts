@@ -58,6 +58,7 @@ export type UiType = 'radio' | 'button';
 export type FilterType = 'AlertFilter';
 
 export type FusionFilterOptions = {
+  version: 1;
   input: Record<Filter['name'], UserInputOptions>;
 };
 
