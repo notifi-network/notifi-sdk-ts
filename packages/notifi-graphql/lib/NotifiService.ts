@@ -5,6 +5,7 @@ import { version } from '../package.json';
 import * as Generated from './gql/generated';
 import { getSdk } from './gql/generated';
 import type * as Operations from './operations';
+import { SubscriptionQueries, NotifiSubscriptionService } from './NotifiSubscriptionService';
 
 export class NotifiService
   implements
@@ -19,7 +20,6 @@ export class NotifiService
   Operations.CreateSmsTargetService,
   Operations.CreateSourceService,
   Operations.CreateSourceGroupService,
-  Operations.CreateSupportConversationService,
   Operations.CreateTargetGroupService,
   Operations.CreateTelegramTargetService,
   Operations.CreateTenantUserService,
@@ -33,7 +33,6 @@ export class NotifiService
   Operations.FindTenantConfigService,
   Operations.GetAlertsService,
   Operations.GetConfigurationForDappService,
-  Operations.GetConversationMessagesService,
   Operations.GetConnectedWalletsService,
   Operations.GetEmailTargetsService,
   Operations.GetFiltersService,
@@ -53,7 +52,6 @@ export class NotifiService
   Operations.LogInFromServiceService,
   Operations.RefreshAuthorizationService,
   Operations.RemoveSourceFromSourceGroupService,
-  Operations.SendConversationMessageService,
   Operations.SendEmailTargetVerificationRequestService,
   Operations.SendMessageService,
   Operations.UpdateSourceGroupService,
@@ -64,12 +62,15 @@ export class NotifiService
   Operations.MarkFusionNotificationHistoryAsReadService,
   Operations.UpdateUserSettingsService,
   Operations.GetUserSettingsService,
+  Operations.GetSlackChannelTargetsService,
+  Operations.CreateSlackChannelTargetService,
+  Operations.CreateFusionAlertsService,
   Operations.BeginLogInWithWeb3Service,
   Operations.CompleteLogInWithWeb3Service {
   private _jwt: string | undefined;
   private _typedClient: ReturnType<typeof getSdk>;
 
-  constructor(graphQLClient: GraphQLClient) {
+  constructor(graphQLClient: GraphQLClient, private _notifiSubService: NotifiSubscriptionService) {
     this._typedClient = getSdk(graphQLClient);
   }
 
@@ -131,6 +132,13 @@ export class NotifiService
     return this._typedClient.createAlert(variables, headers);
   }
 
+  async createFusionAlerts(
+    variables: Generated.CreateFusionAlertsMutationVariables,
+  ): Promise<Generated.CreateFusionAlertsMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.createFusionAlerts(variables, headers);
+  }
+
   async createDirectPushAlert(
     variables: Generated.CreateDirectPushAlertMutationVariables,
   ): Promise<Generated.CreateDirectPushAlertMutation> {
@@ -149,6 +157,13 @@ export class NotifiService
   ): Promise<Generated.CreateDiscordTargetMutation> {
     const headers = this._requestHeaders();
     return this._typedClient.createDiscordTarget(variables, headers);
+  }
+
+  async createSlackChannelTarget(
+    variables: Generated.CreateSlackChannelTargetMutationVariables,
+  ): Promise<Generated.CreateSlackChannelTargetMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.createSlackChannelTarget(variables, headers);
   }
 
   async createSmsTarget(
@@ -170,13 +185,6 @@ export class NotifiService
   ): Promise<Generated.CreateSourceGroupMutation> {
     const headers = this._requestHeaders();
     return this._typedClient.createSourceGroup(variables, headers);
-  }
-
-  async createSupportConversation(
-    variables: Generated.CreateSupportConversationMutationVariables,
-  ): Promise<Generated.CreateSupportConversationMutation> {
-    const headers = this._requestHeaders();
-    return this._typedClient.createSupportConversation(variables, headers);
   }
 
   async createTargetGroup(
@@ -284,13 +292,6 @@ export class NotifiService
     return this._typedClient.getConnectedWallets(variables, headers);
   }
 
-  async getConversationMessages(
-    variables: Generated.GetConversationMessagesQueryVariables,
-  ): Promise<Generated.GetConversationMessagesQuery> {
-    const headers = this._requestHeaders();
-    return this._typedClient.getConversationMessages(variables, headers);
-  }
-
   async getEmailTargets(
     variables: Generated.GetEmailTargetsQueryVariables,
   ): Promise<Generated.GetEmailTargetsQuery> {
@@ -302,6 +303,13 @@ export class NotifiService
   ): Promise<Generated.GetDiscordTargetsQuery> {
     const headers = this._requestHeaders();
     return this._typedClient.getDiscordTargets(variables, headers);
+  }
+
+  async getSlackChannelTargets(
+    variables: Generated.GetSlackChannelTargetsQueryVariables,
+  ): Promise<Generated.GetSlackChannelTargetsQuery> {
+    const headers = this._requestHeaders();
+    return this._typedClient.getSlackChannelTargets(variables, headers);
   }
 
   async getFilters(
@@ -401,6 +409,14 @@ export class NotifiService
     );
   }
 
+  async subscribeNotificationHistoryStateChanged(onMessageReceived: (data: any) => void | undefined, onError?: (data: any) => void | undefined, onComplete?: () => void | undefined): Promise<void> {
+    this._notifiSubService.subscribe(this._jwt, SubscriptionQueries.StateChanged, onMessageReceived, onError, onComplete);
+  }
+
+  async wsDispose() {
+    this._notifiSubService.disposeClient();
+  }
+
   async getUserSettings(
     variables: Generated.GetUserSettingsQueryVariables,
   ): Promise<Generated.GetUserSettingsQuery> {
@@ -478,13 +494,6 @@ export class NotifiService
     return this._typedClient.removeSourceFromSourceGroup(variables, headers);
   }
 
-  async sendConversationMessages(
-    variables: Generated.SendConversationMessageMutationVariables,
-  ): Promise<Generated.SendConversationMessageMutation> {
-    const headers = this._requestHeaders();
-    return this._typedClient.sendConversationMessage(variables, headers);
-  }
-
   async sendEmailTargetVerificationRequest(
     variables: Generated.SendEmailTargetVerificationRequestMutationVariables,
   ): Promise<Generated.SendEmailTargetVerificationRequestMutation> {
@@ -516,7 +525,6 @@ export class NotifiService
     return this._typedClient.updateTargetGroup(variables, headers);
   }
 
-
   async beginLogInWithWeb3(
     variables: Generated.BeginLogInWithWeb3MutationVariables,
   ): Promise<Generated.BeginLogInWithWeb3Mutation> {
@@ -531,7 +539,6 @@ export class NotifiService
     return this._typedClient.completeLogInWithWeb3(variables, headers);
   }
 
-
   private _requestHeaders(): HeadersInit {
     const requestId = uuid();
     const headers: HeadersInit = {
@@ -545,5 +552,4 @@ export class NotifiService
 
     return headers;
   }
-
 }

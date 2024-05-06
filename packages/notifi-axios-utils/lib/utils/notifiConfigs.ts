@@ -38,7 +38,8 @@ export const NOTIFI_CONFIGS: Record<NotifiEnvironment, EnvironmentConfig> = {
   },
 };
 
-const notifiConfigs = (environment: NotifiEnvironment): EnvironmentConfig => {
+const notifiConfigs = (environment?: NotifiEnvironment): EnvironmentConfig => {
+  if (!environment) environment = 'Production';
   return NOTIFI_CONFIGS[environment];
 };
 

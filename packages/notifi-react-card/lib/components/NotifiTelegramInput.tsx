@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import React from 'react';
 
 import { TelegramIcon } from '../assets/TelegramIcon';
-import { useNotifiForm, useNotifiSubscriptionContext } from '../context';
+import { useNotifiForm } from '../context';
 import type { DeepPartialReadonly } from '../utils';
 
 export type NotifiTelegramInputProps = Readonly<{
@@ -18,23 +18,13 @@ export type NotifiTelegramInputProps = Readonly<{
     label: string;
   }>;
   disabled: boolean;
-  intercomTelegramInputStyle?: string;
-  intercomTelegramInputContainerStyle?: string;
-  intercomView?: boolean;
-  hasChatAlert?: boolean;
 }>;
 
 export const NotifiTelegramInput: React.FC<NotifiTelegramInputProps> = ({
   classNames,
   copy,
   disabled,
-  intercomTelegramInputStyle,
-  intercomTelegramInputContainerStyle,
-  intercomView,
 }: NotifiTelegramInputProps) => {
-  const { telegramConfirmationUrl, intercomCardView } =
-    useNotifiSubscriptionContext();
-
   const {
     formState,
     formErrorMessages,
@@ -62,34 +52,14 @@ export const NotifiTelegramInput: React.FC<NotifiTelegramInputProps> = ({
     }
   };
 
-  const handleClick = () => {
-    window.open(telegramConfirmationUrl, '_blank');
-  };
-
   return (
     <>
-      {intercomView ? (
-        intercomCardView.state === 'settingView' &&
-        telegramConfirmationUrl != null ? (
-          <div
-            onClick={handleClick}
-            className={clsx(
-              'NotifiTelegramVerification__button',
-              classNames?.button,
-            )}
-          >
-            Verify ID
-          </div>
-        ) : null
-      ) : (
-        <label className={clsx('NotifiTelegramInput__label', classNames?.label)}>
-          {copy?.label}
-        </label>
-      )}
+      <label className={clsx('NotifiTelegramInput__label', classNames?.label)}>
+        {copy?.label}
+      </label>
       <div
         className={clsx(
           'NotifiTelegramInput__container',
-          intercomTelegramInputContainerStyle,
           classNames?.container,
         )}
       >
@@ -97,11 +67,7 @@ export const NotifiTelegramInput: React.FC<NotifiTelegramInputProps> = ({
         <input
           data-cy="notifiTelegramInput"
           onBlur={validateTelegram}
-          className={clsx(
-            'NotifiTelegramInput__input',
-            intercomTelegramInputStyle,
-            classNames?.input,
-          )}
+          className={clsx('NotifiTelegramInput__input', classNames?.input)}
           disabled={disabled}
           name="notifi-telegram"
           type="text"

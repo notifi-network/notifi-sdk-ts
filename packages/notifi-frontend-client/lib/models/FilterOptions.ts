@@ -14,6 +14,7 @@ export type ValueItemConfig = Readonly<{
 
 export type ThresholdDirection = 'above' | 'below';
 
+/**@deprecated this is for AP v1 infra, use fusionFilterOptions instead for new infra */
 export type FilterOptions = Partial<{
   alertFrequency: AlertFrequency;
   directMessageType: string;

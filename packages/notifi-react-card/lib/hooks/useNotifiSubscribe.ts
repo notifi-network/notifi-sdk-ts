@@ -39,6 +39,7 @@ export type SubscriptionData = Readonly<{
   telegramConfirmationUrl: string | null;
   isPhoneNumberConfirmed: boolean | null;
   discordId: string | null;
+  slackId: string | null;
 }>;
 
 export type InstantSubscribe = Readonly<{
@@ -183,11 +184,13 @@ export const useNotifiSubscribe: ({
       const phoneNumberToSet = phoneNumber ?? '';
 
       if (!isPhoneNumberConfirmed) {
+        const env = params.env || 'Production';
         setPhoneNumberErrorMessage({
           type: 'unrecoverableError',
           message: 'Messages stopped',
-          tooltip: `Please text 'start' to the following number:\n${params.env === 'Production' ? '+1 206 222 3465' : '+1 253 880 1477 '
-            }`,
+          tooltip: `Please text 'start' to the following number:\n${
+            env === 'Production' ? '+1 206 222 3465' : '+1 253 880 1477 '
+          }`,
         });
       }
 
@@ -265,6 +268,7 @@ export const useNotifiSubscribe: ({
         telegramConfirmationUrl: telegramTarget?.confirmationUrl ?? null,
         telegramId: telegramTarget?.telegramId ?? null,
         discordId: discordTarget?.id ?? null,
+        slackId: null,
       };
     },
     [

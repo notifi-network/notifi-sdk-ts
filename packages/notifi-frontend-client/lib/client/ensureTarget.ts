@@ -134,6 +134,32 @@ export const ensureDiscord = ensureTarget(
   () => 'Default',
 );
 
+export const ensureSlack = ensureTarget(
+  async (
+    service: Operations.CreateSlackChannelTargetService,
+    value: string,
+  ) => {
+    const mutation = await service.createSlackChannelTarget({
+      name: value,
+      value,
+    });
+
+    const result = mutation.createSlackChannelTarget.slackChannelTarget;
+    if (result === undefined) {
+      throw new Error('Failed to create slackTarget');
+    }
+
+    return result;
+  },
+
+  async (service: Operations.GetSlackChannelTargetsService) => {
+    const query = await service.getSlackChannelTargets({});
+    return query.slackChannelTargets?.nodes;
+  },
+  (arg: Types.SlackChannelTargetFragmentFragment | undefined) => arg?.name,
+  () => 'Default',
+);
+
 export type EnsureWebhookParams = Omit<
   Types.CreateWebhookTargetMutationVariables,
   'name'

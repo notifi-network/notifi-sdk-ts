@@ -18,12 +18,10 @@ import {
   CompleteLoginViaTransactionResult,
   ConnectWalletParams,
   ConnectedWallet,
-  GetConversationMessagesFullInput,
   GetFusionNotificationHistoryInput,
   GetNotificationHistoryInput,
   MarkFusionNotificationHistoryAsReadInput,
   NotifiClient,
-  SendConversationMessageInput,
   SignMessageParams,
   SourceGroup,
   TargetGroup,
@@ -127,7 +125,9 @@ const signMessage = async ({
 }>): Promise<string> => {
   switch (params.walletBlockchain) {
     case 'XION':
-      throw new Error('XION not supported with react-hooks, please migrate to Notifi Client.');
+      throw new Error(
+        'XION not supported with react-hooks, please migrate to Notifi Client.',
+      );
     case 'INJECTIVE':
     case 'OSMOSIS':
     case 'NIBIRU':
@@ -171,15 +171,15 @@ const signMessage = async ({
           throw new Error('Signer and config have different walletBlockchain');
         }
 
-        const { walletPublicKey } = params;
-        const messageBuffer = new TextEncoder().encode(
-          `${SIGNING_MESSAGE}${walletPublicKey}${dappAddress}${timestamp.toString()}`,
-        );
+      const { walletPublicKey } = params;
+      const messageBuffer = new TextEncoder().encode(
+        `${SIGNING_MESSAGE}${walletPublicKey}${dappAddress}${timestamp.toString()}`,
+      );
 
-        const signedBuffer = await signer.signMessage(messageBuffer);
-        const signature = Buffer.from(signedBuffer).toString('hex');
-        return signature;
-      }
+      const signedBuffer = await signer.signMessage(messageBuffer);
+      const signature = Buffer.from(signedBuffer).toString('hex');
+      return signature;
+    }
     case 'APTOS': {
       if (signer.walletBlockchain !== 'APTOS') {
         throw new Error('Signer and config have different walletBlockchain');
@@ -210,8 +210,9 @@ const signMessage = async ({
 
       const { walletPublicKey, accountAddress } = params;
 
-      const message = `${`ed25519:` + walletPublicKey
-        }${dappAddress}${accountAddress}${timestamp.toString()}`;
+      const message = `${
+        `ed25519:` + walletPublicKey
+      }${dappAddress}${accountAddress}${timestamp.toString()}`;
       const textAsBuffer = new TextEncoder().encode(message);
       const hashBuffer = await window.crypto.subtle.digest(
         'SHA-256',
@@ -483,12 +484,12 @@ const useNotifiClient = (
         const result = await service.logInFromDapp({
           accountId:
             walletBlockchain === 'APTOS' ||
-              walletBlockchain === 'ACALA' ||
-              walletBlockchain === 'NEAR' ||
-              walletBlockchain === 'SUI' ||
-              walletBlockchain === 'INJECTIVE' ||
-              walletBlockchain === 'OSMOSIS' ||
-              walletBlockchain === 'NIBIRU'
+            walletBlockchain === 'ACALA' ||
+            walletBlockchain === 'NEAR' ||
+            walletBlockchain === 'SUI' ||
+            walletBlockchain === 'INJECTIVE' ||
+            walletBlockchain === 'OSMOSIS' ||
+            walletBlockchain === 'NIBIRU'
               ? config.accountAddress
               : undefined,
           walletPublicKey,
@@ -894,9 +895,9 @@ const useNotifiClient = (
           walletPublicKey,
           accountId:
             walletBlockchain === 'APTOS' ||
-              walletBlockchain === 'ACALA' ||
-              walletBlockchain === 'NEAR' ||
-              walletBlockchain === 'SUI'
+            walletBlockchain === 'ACALA' ||
+            walletBlockchain === 'NEAR' ||
+            walletBlockchain === 'SUI'
               ? walletParams.accountAddress
               : undefined,
           signature,
@@ -1562,60 +1563,6 @@ const useNotifiClient = (
     }
   }, [setLoading, setError, service]);
 
-  const getConversationMessages = useCallback(
-    async (input: GetConversationMessagesFullInput) => {
-      try {
-        const result = await service.getConversationMessages(input);
-        return result;
-      } catch (e: unknown) {
-        if (e instanceof Error) {
-          setError(e);
-        } else {
-          setError(new NotifiClientError(e));
-        }
-        throw e;
-      } finally {
-        setLoading(false);
-      }
-    },
-    [setLoading, setError, service],
-  );
-
-  const sendConversationMessages = useCallback(
-    async (input: SendConversationMessageInput) => {
-      try {
-        const result = await service.sendConversationMessages(input);
-        return result;
-      } catch (e: unknown) {
-        if (e instanceof Error) {
-          setError(e);
-        } else {
-          setError(new NotifiClientError(e));
-        }
-        throw e;
-      } finally {
-        setLoading(false);
-      }
-    },
-    [setLoading, setError, service],
-  );
-
-  const createSupportConversation = useCallback(async () => {
-    try {
-      const result = await service.createSupportConversation();
-      return result;
-    } catch (e: unknown) {
-      if (e instanceof Error) {
-        setError(e);
-      } else {
-        setError(new NotifiClientError(e));
-      }
-      throw e;
-    } finally {
-      setLoading(false);
-    }
-  }, [setLoading, setError, service]);
-
   const copyAuthorization = useCallback(
     async (publicKey: string) => {
       const [auth, roles] = await Promise.all([getAuthorization(), getRoles()]);
@@ -1668,15 +1615,12 @@ const useNotifiClient = (
     fetchData,
     fetchSubscriptionCard,
     getConfiguration,
-    getConversationMessages,
     getFusionNotificationHistory,
     getNotificationHistory,
     getTopics,
     updateAlert,
     ensureTargetGroup,
-    sendConversationMessages,
     sendEmailTargetVerification,
-    createSupportConversation,
     createDiscordTarget,
     getUnreadNotificationHistoryCount,
     markFusionNotificationHistoryAsRead,

@@ -13,11 +13,11 @@ export const useUnreadState = () => {
       'Number badge is only available when frontendClient is enabled',
     );
 
-  const {
-    params: { walletPublicKey },
+  const { params: { walletPublicKey },
   } = useNotifiSubscriptionContext();
 
   const [unreadNotificationCount, setUnreadNotificationCount] = useState(0);
+  const [isStateChangedSubscribed, setIsStateChangedSubscribed] = useState(false);
   const hasUnreadNotification = useMemo(
     () => (unreadNotificationCount > 0 ? true : false),
     [unreadNotificationCount],
@@ -30,27 +30,18 @@ export const useUnreadState = () => {
   }, [frontendClient.userState?.status]);
 
   useEffect(() => {
-    if (!walletPublicKey || !isClientAuthenticated) return;
+    if (!walletPublicKey || !isClientAuthenticated || isStateChangedSubscribed) return;
 
-    frontendClient
-      .getUnreadNotificationHistoryCount()
-      .then((res) => {
-        const unreadNotificationCount = res.count;
-        setUnreadNotificationCount(unreadNotificationCount);
-      })
-      .catch((_e) => {
-        /* Intentionally empty (Concurrent can only possibly happens here instead of inside interval) */
-      });
-    const interval = setInterval(() => {
-      if (!walletPublicKey || !isClientAuthenticated) return;
-
+    setIsStateChangedSubscribed(true);
+    frontendClient.subscribeNotificationHistoryStateChanged((data) => {
       frontendClient.getUnreadNotificationHistoryCount().then((res) => {
         const unreadNotificationCount = res.count;
         setUnreadNotificationCount(unreadNotificationCount);
       });
-    }, Math.floor(Math.random() * 5000) + 5000); // a random interval between 5 and 10 seconds to avoid spamming the server
+    });
 
-    return () => clearInterval(interval);
+    return () => { frontendClient.wsDispose(); }
+
   }, [isClientAuthenticated, walletPublicKey, isUsingFrontendClient]);
 
   return { hasUnreadNotification, unreadNotificationCount };

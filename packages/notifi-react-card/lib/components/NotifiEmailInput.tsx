@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import React from 'react';
 
 import { EmailIcon } from '../assets/EmailIcon';
-import { useNotifiForm, useNotifiSubscriptionContext } from '../context';
+import { useNotifiForm } from '../context';
 import type { DeepPartialReadonly } from '../utils';
 
 export type NotifiEmailInputProps = Readonly<{
@@ -18,23 +18,13 @@ export type NotifiEmailInputProps = Readonly<{
     label: string;
   }>;
   disabled: boolean;
-  intercomEmailInputStyle?: string;
-  intercomEmailInputContainerStyle?: string;
-  intercomView?: boolean;
-  hasChatAlert?: boolean;
 }>;
 
 export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
   classNames,
   copy,
   disabled,
-  intercomEmailInputStyle,
-  intercomEmailInputContainerStyle,
-  intercomView,
 }: NotifiEmailInputProps) => {
-  const { intercomCardView, destinationErrorMessages } =
-    useNotifiSubscriptionContext();
-
   const {
     formState,
     formErrorMessages,
@@ -46,9 +36,6 @@ export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
   const { email } = formState;
 
   const { email: emailErrorMessage } = formErrorMessages;
-
-  const { email: emailErrorMessageFromSubscriptionContext } =
-    destinationErrorMessages;
 
   const validateEmail = () => {
     if (email === '') {
@@ -65,49 +52,19 @@ export const NotifiEmailInput: React.FC<NotifiEmailInputProps> = ({
     }
   };
 
-  const handleClick = () => {
-    if (emailErrorMessageFromSubscriptionContext?.type !== 'recoverableError')
-      return;
-    emailErrorMessageFromSubscriptionContext.onClick();
-  };
-
   return (
     <>
-      {intercomView ? (
-        intercomCardView.state === 'settingView' &&
-        emailErrorMessageFromSubscriptionContext?.type ===
-          'recoverableError' ? (
-          <div
-            onClick={handleClick}
-            className={clsx(
-              'NotifiEmailVerification__button',
-              classNames?.button,
-            )}
-          >
-            Resend Verification
-          </div>
-        ) : null
-      ) : (
-        <label className={clsx('NotifiEmailInput__label', classNames?.label)}>
-          {copy?.label}
-        </label>
-      )}
+      <label className={clsx('NotifiEmailInput__label', classNames?.label)}>
+        {copy?.label}
+      </label>
       <div
-        className={clsx(
-          'NotifiEmailInput__container',
-          intercomEmailInputContainerStyle,
-          classNames?.container,
-        )}
+        className={clsx('NotifiEmailInput__container', classNames?.container)}
       >
         <EmailIcon className={'NotifiInput__icon'} />
         <input
           data-cy="notifiEmailInput"
           onBlur={validateEmail}
-          className={clsx(
-            'NotifiEmailInput__input',
-            intercomEmailInputStyle,
-            classNames?.input,
-          )}
+          className={clsx('NotifiEmailInput__input', classNames?.input)}
           disabled={disabled}
           name="notifi-email"
           type="email"

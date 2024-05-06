@@ -247,7 +247,7 @@ type WalletParams =
 export type NotifiParams = Readonly<{
   alertConfigurations?: Record<string, AlertConfiguration | null>;
   dappAddress: string;
-  env: NotifiEnvironment;
+  env?: NotifiEnvironment;
   keepSubscriptionData?: boolean;
   multiWallet?: MultiWalletParams;
   isUsingFrontendClient?: boolean; // default is true

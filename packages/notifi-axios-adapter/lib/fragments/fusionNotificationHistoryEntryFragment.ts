@@ -36,15 +36,6 @@ fragment FusionNotificationHistoryEntry on FusionNotificationHistoryEntry {
         volume1DayChange
       }
     }
-    ... on ChatMessageReceivedEventDetails {
-      senderName
-      conversationId
-      messageId
-      senderId
-      senderBlockchain
-      senderName
-      messageBody
-    }
     ... on DAOProposalChangedEventDetails {
       tenantName
       proposalTitle: title

@@ -2,6 +2,7 @@ import { gql } from 'graphql-request';
 
 import { DiscordTargetFragment } from './DiscordTargetFragment.gql';
 import { EmailTargetFragment } from './EmailTargetFragment.gql';
+import { SlackChannelTargetFragment } from './SlackTargetFragment.gql';
 import { SmsTargetFragment } from './SmsTargetFragment.gql';
 import { TelegramTargetFragment } from './TelegramTargetFragment.gql';
 import { WebhookTargetFragment } from './WebhookTargetFragment.gql';
@@ -25,6 +26,9 @@ export const TargetGroupFragment = gql`
     discordTargets {
       ...DiscordTargetFragment
     }
+    slackChannelTargets {
+      ...SlackChannelTargetFragment
+    }
   }
 
   ${EmailTargetFragment}
@@ -32,4 +36,5 @@ export const TargetGroupFragment = gql`
   ${TelegramTargetFragment}
   ${WebhookTargetFragment}
   ${DiscordTargetFragment}
+  ${SlackChannelTargetFragment}
 `;

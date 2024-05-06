@@ -10,7 +10,7 @@
   },
   "devDependencies": {
     "nx": "^16.9.1",
-    "@trivago/prettier-plugin-sort-imports": "^3.3.0",
+    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "@types/jest": "^27.4.1",
     "@types/node-fetch": "^2.6.2",
     "@typescript-eslint/eslint-plugin": "^5.14.0",
@@ -38,6 +38,7 @@
     "packages/notifi-axios-adapter",
     "packages/notifi-axios-utils",
     "packages/notifi-core",
+    "packages/notifi-dapp-example",
     "packages/notifi-dataplane",
     "packages/notifi-frontend-client",
     "packages/notifi-graphql",
@@ -46,6 +47,9 @@
     "packages/notifi-react-card",
     "packages/notifi-react-hooks",
     "packages/notifi-react-example",
-    "packages/notifi-solana-hw-login"
+    "packages/notifi-solana-hw-login",
+    "packages/notifi-wallet-provider",
+    "packages/notifi-react",
+    "packages/notifi-card-modal-example"
   ]
 }

@@ -4,3 +4,4 @@ import type * as Operations from './operations';
 export type { Types, Operations };
 
 export * from './NotifiService';
+export * from './NotifiSubscriptionService';

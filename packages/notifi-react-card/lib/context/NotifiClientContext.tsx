@@ -45,7 +45,7 @@ const getFrontendConfigInput = (params: NotifiParams): ConfigFactoryInput => {
       },
       tenantId: params.dappAddress,
       walletBlockchain: params.walletBlockchain,
-      env: params.env,
+      env: params.env || 'Production',
     };
   } else if ('signingAddress' in params) {
     return {
@@ -56,8 +56,8 @@ const getFrontendConfigInput = (params: NotifiParams): ConfigFactoryInput => {
       },
       tenantId: params.dappAddress,
       walletBlockchain: params.walletBlockchain,
-      env: params.env,
-    }
+      env: params.env || 'Production',
+    };
   }
   return {
     account: {
@@ -87,7 +87,7 @@ export const NotifiClientContextProvider: React.FC<NotifiParams> = ({
     return updatedFrontendClient;
   }, [
     params.dappAddress,
-    params.env,
+    params.env || 'Production',
     params.walletBlockchain,
     params.walletPublicKey,
   ]);

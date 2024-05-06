@@ -41,11 +41,6 @@ export type BroadcastMessageEventDetails = Extract<
   { __typename: 'BroadcastMessageEventDetails' }
 >;
 
-export type ChatMessageReceivedEventDetails = Extract<
-  Types.NotificationHistoryEntryFragmentFragment['detail'],
-  { __typename: 'ChatMessageReceivedEventDetails' }
->;
-
 export type DAOProposalChangedEventDetails = Extract<
   Types.NotificationHistoryEntryFragmentFragment['detail'],
   { __typename: 'DAOProposalChangedEventDetails' }
@@ -94,7 +89,6 @@ export type WalletsActivityReportWallet = Extract<
 export type EntryDetailType =
   | AccountBalanceChangedEventDetails
   | BroadcastMessageEventDetails
-  | ChatMessageReceivedEventDetails
   | DAOProposalChangedEventDetails
   | DirectTenantMessageEventDetails
   | GenericEventDetails

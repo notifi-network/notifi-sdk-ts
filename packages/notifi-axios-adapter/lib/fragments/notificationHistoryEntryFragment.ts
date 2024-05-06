@@ -3,7 +3,6 @@ export enum NotificationTypeName {
   BROADCAST_MESSAGE = 'BroadcastMessageEventDetails',
   DIRECT_TENANT_MESSAGE = 'DirectTenantMessageEventDetails',
   NFT_COLLECTION_REPORT = 'NftCollectionsReportEventDetails',
-  CHAT_MESSAGE_RECEIVED = 'ChatMessageReceivedEventDetails',
   DAO_PROPOSAL_CHANGED = 'DaoProposalChangedEventDetails',
   NFT_AUCTION_CHANGED = 'NftAuctionChangedEventDetails',
   WALLETS_ACTIVITY_CHANGED = 'WalletsActivityChangedEventDetails',
@@ -55,15 +54,6 @@ fragment NotificationHistoryEntry on NotificationHistoryEntry {
         volume1Day
         volume1DayChange
       }
-    }
-    ... on ChatMessageReceivedEventDetails {
-      senderName
-      conversationId
-      messageId
-      senderId
-      senderBlockchain
-      senderName
-      messageBody
     }
     ... on DAOProposalChangedEventDetails {
       tenantName

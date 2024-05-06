@@ -1,6 +1,7 @@
 // TODO: Import from library rather than copy / paste
-import { Types as Gql } from '@notifi-network/notifi-graphql';
+import { Types as Gql, Types } from '@notifi-network/notifi-graphql';
 
+import { CardConfigType } from '../client';
 import { AlertFrequency, FilterOptions } from './FilterOptions';
 
 export type ValueOrRef<ValueType> =
@@ -24,6 +25,8 @@ export type DirectPushEventTypeItem = Readonly<{
 export type FusionTypeBase = {
   name: string;
   type: 'fusion' | 'fusionToggle'; // fusionToggle is deprecated (use fusion with selectedUIType: 'TOGGLE' instead)
+  topicGroupName?: string;
+  index?: number;
   fusionEventId: ValueOrRef<string>;
   sourceAddress: ValueOrRef<string>;
   tooltipContent?: string;
@@ -168,15 +171,6 @@ export type XMTPTopicTypeItem = {
   optOutAtSignup?: boolean;
 };
 
-export type CreateSupportConversationEventTypeItem = {
-  type: 'createSupportConversation';
-  name: string;
-  sourceType: Gql.SourceType;
-  filterType: string;
-  alertFrequency: AlertFrequency;
-  optOutAtSignup?: boolean;
-};
-
 export type EventTypeItem =
   | DirectPushEventTypeItem
   | BroadcastEventTypeItem
@@ -187,8 +181,7 @@ export type EventTypeItem =
   | CustomTopicTypeItem
   | FusionEventTypeItem
   | WalletBalanceEventTypeItem
-  | XMTPTopicTypeItem
-  | CreateSupportConversationEventTypeItem;
+  | XMTPTopicTypeItem;
 
 export type EventTypeConfig = ReadonlyArray<EventTypeItem>;
 export type InputType =
@@ -262,3 +255,15 @@ export type TitleSubtitleConfigActive = Readonly<{
 export type TitleSubtitleConfig =
   | TitleSubtitleConfigActive
   | TitleSubtitleConfigInactive;
+
+export type FusionEventTopic = {
+  // The following from original fusionEventTypeItem (Legacy)
+  uiConfig: FusionEventTypeItem;
+  // The following is the respective fusionEventDescripter
+  fusionEventDescriptor: Types.FusionEventDescriptor;
+};
+
+export type TenantConfig = {
+  cardConfig: CardConfigType; // Legacy
+  fusionEventTopics: ReadonlyArray<FusionEventTopic>;
+};

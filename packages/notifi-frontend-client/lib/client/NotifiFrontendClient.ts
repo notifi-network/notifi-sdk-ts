@@ -11,9 +11,10 @@ import {
 import type {
   CardConfigItemV1,
   EventTypeItem,
+  FusionEventTopic,
+  TenantConfig,
   WalletBalanceEventTypeItem,
 } from '../models';
-import { IntercomCardConfigItemV1 } from '../models/IntercomCardConfig';
 import type { Authorization, NotifiStorage, Roles } from '../storage';
 import {
   NotifiFrontendStorage,
@@ -26,6 +27,7 @@ import { ensureSourceAndFilters, normalizeHexString } from './ensureSource';
 import {
   ensureDiscord,
   ensureEmail,
+  ensureSlack,
   ensureSms,
   ensureTelegram,
   ensureWebhook,
@@ -203,7 +205,7 @@ export type AcalaSignMessageFunction = (
   message: string,
 ) => Promise<hexString>;
 
-export type CardConfigType = CardConfigItemV1 | IntercomCardConfigItemV1;
+export type CardConfigType = CardConfigItemV1;
 
 type BeginLoginProps = Omit<Types.BeginLogInByTransactionInput, 'dappAddress'>;
 
@@ -754,6 +756,7 @@ export class NotifiFrontendClient {
     telegramId,
     webhook,
     discordId,
+    slackId,
   }: Readonly<{
     name: string;
     emailAddress?: string;
@@ -761,6 +764,7 @@ export class NotifiFrontendClient {
     telegramId?: string;
     webhook?: EnsureWebhookParams;
     discordId?: string;
+    slackId?: string;
   }>): Promise<Types.TargetGroupFragmentFragment> {
     const [
       targetGroupsQuery,
@@ -769,6 +773,7 @@ export class NotifiFrontendClient {
       telegramTargetId,
       webhookTargetId,
       discordTargetId,
+      slackTargetId,
     ] = await Promise.all([
       this._service.getTargetGroups({}),
       ensureEmail(this._service, emailAddress),
@@ -776,6 +781,7 @@ export class NotifiFrontendClient {
       ensureTelegram(this._service, telegramId),
       ensureWebhook(this._service, webhook),
       ensureDiscord(this._service, discordId),
+      ensureSlack(this._service, slackId),
     ]);
 
     const emailTargetIds = emailTargetId === undefined ? [] : [emailTargetId];
@@ -786,6 +792,8 @@ export class NotifiFrontendClient {
       webhookTargetId === undefined ? [] : [webhookTargetId];
     const discordTargetIds =
       discordTargetId === undefined ? [] : [discordTargetId];
+    const slackChannelTargetIds =
+      slackTargetId === undefined ? [] : [slackTargetId];
 
     const existing = targetGroupsQuery.targetGroup?.find(
       (it) => it?.name === name,
@@ -798,6 +806,7 @@ export class NotifiFrontendClient {
         telegramTargetIds,
         webhookTargetIds,
         discordTargetIds,
+        slackChannelTargetIds,
       });
     }
 
@@ -808,6 +817,7 @@ export class NotifiFrontendClient {
       telegramTargetIds,
       webhookTargetIds,
       discordTargetIds,
+      slackChannelTargetIds,
     });
 
     if (createMutation.createTargetGroup === undefined) {
@@ -824,6 +834,7 @@ export class NotifiFrontendClient {
     telegramTargetIds,
     webhookTargetIds,
     discordTargetIds,
+    slackChannelTargetIds,
   }: Readonly<{
     existing: Types.TargetGroupFragmentFragment;
     emailTargetIds: Array<string>;
@@ -831,13 +842,15 @@ export class NotifiFrontendClient {
     telegramTargetIds: Array<string>;
     webhookTargetIds: Array<string>;
     discordTargetIds: Array<string>;
+    slackChannelTargetIds: Array<string>;
   }>): Promise<Types.TargetGroupFragmentFragment> {
     if (
       areIdsEqual(emailTargetIds, existing.emailTargets ?? []) &&
       areIdsEqual(smsTargetIds, existing.smsTargets ?? []) &&
       areIdsEqual(telegramTargetIds, existing.telegramTargets ?? []) &&
       areIdsEqual(webhookTargetIds, existing.webhookTargets ?? []) &&
-      areIdsEqual(discordTargetIds, existing.discordTargets ?? [])
+      areIdsEqual(discordTargetIds, existing.discordTargets ?? []) &&
+      areIdsEqual(slackChannelTargetIds, existing.slackChannelTargets ?? [])
     ) {
       return existing;
     }
@@ -850,6 +863,7 @@ export class NotifiFrontendClient {
       telegramTargetIds,
       webhookTargetIds,
       discordTargetIds,
+      slackChannelTargetIds,
     });
 
     const updated = updateMutation.updateTargetGroup;
@@ -936,6 +950,30 @@ export class NotifiFrontendClient {
     return created;
   }
 
+  async ensureFusionAlerts(
+    input: Types.CreateFusionAlertsInput,
+  ): Promise<Types.CreateFusionAlertsMutation['createFusionAlerts']> {
+    const inputAlertsNames = new Set(input.alerts.map((alert) => alert.name));
+    const query = await this._service.getAlerts({});
+    const existingAlerts = new Set(query.alert);
+
+    const duplicateAlerts = [...existingAlerts].filter((alert) =>
+      inputAlertsNames.has(alert?.name),
+    );
+
+    const duplicateAlertsIds = duplicateAlerts
+      .map((alert) => alert?.id)
+      .filter((id): id is string => !!id); // TODO: n(^2) --> consider to move to BE when this grows huge
+
+    // Alerts are immutable, delete the existing instead
+    for (const id of duplicateAlertsIds) {
+      await this.deleteAlert({ id });
+    }
+
+    const mutation = await this._service.createFusionAlerts({ input });
+    return mutation.createFusionAlerts;
+  }
+
   async deleteAlert({
     id,
   }: Readonly<{
@@ -994,6 +1032,14 @@ export class NotifiFrontendClient {
     return result;
   }
 
+  async subscribeNotificationHistoryStateChanged(onMessageReceived: (data: any) => void | undefined, onError?: (data: any) => void | undefined, onComplete?: () => void | undefined): Promise<void> {
+    this._service.subscribeNotificationHistoryStateChanged(onMessageReceived, onError, onComplete);
+  }
+
+  async wsDispose() {
+    this._service.wsDispose();
+  }
+
   async getUserSettings(): Promise<Types.GetUserSettingsQuery['userSettings']> {
     const query = await this._service.getUserSettings({});
     const result = query.userSettings;
@@ -1020,6 +1066,7 @@ export class NotifiFrontendClient {
     return { pageInfo, nodes };
   }
 
+  /**@deprecated for legacy infra, use fetchTenantConfig instead for new infra (fusionEvent)  */
   async fetchSubscriptionCard(
     variables: FindSubscriptionCardParams,
   ): Promise<CardConfigType> {
@@ -1046,8 +1093,8 @@ export class NotifiFrontendClient {
         card = obj as CardConfigItemV1;
         break;
       }
-      case 'IntercomV1': {
-        card = obj as IntercomCardConfigItemV1;
+      default: {
+        throw new Error('Unsupported config version');
       }
     }
 
@@ -1056,6 +1103,55 @@ export class NotifiFrontendClient {
     }
 
     return card;
+  }
+
+  async fetchTenantConfig(
+    variables: FindSubscriptionCardParams,
+  ): Promise<TenantConfig> {
+    const query = await this._service.findTenantConfig({
+      input: {
+        ...variables,
+        tenant: this._configuration.tenantId,
+      },
+    });
+    const result = query.findTenantConfig;
+    if (result === undefined || !result.dataJson || !result.fusionEvents) {
+      throw new Error('Failed to find tenant config');
+    }
+
+    const tenantConfigJsonString = result.dataJson;
+    if (tenantConfigJsonString === undefined) {
+      throw new Error('Invalid config data');
+    }
+
+    const cardConfig = JSON.parse(tenantConfigJsonString) as CardConfigItemV1;
+    const fusionEventDescriptors = result.fusionEvents;
+
+    if (!cardConfig || cardConfig.version !== 'v1' || !fusionEventDescriptors)
+      throw new Error('Unsupported config format');
+
+    const fusionEventDescriptorMap = new Map<
+      string,
+      Types.FusionEventDescriptor
+    >(fusionEventDescriptors.map((item) => [item?.name ?? '', item ?? {}]));
+
+    fusionEventDescriptorMap.delete('');
+
+    const fusionEventTopics: FusionEventTopic[] = cardConfig.eventTypes
+      .map((eventType) => {
+        if (eventType.type === 'fusion') {
+          const fusionEventDescriptor = fusionEventDescriptorMap.get(
+            eventType.name,
+          );
+          return {
+            uiConfig: eventType,
+            fusionEventDescriptor,
+          };
+        }
+      })
+      .filter((item): item is FusionEventTopic => !!item);
+
+    return { cardConfig, fusionEventTopics };
   }
 
   async copyAuthorization(config: NotifiFrontendConfiguration) {
@@ -1121,27 +1217,6 @@ export class NotifiFrontendClient {
         params.connectWalletConflictResolutionTechnique,
     });
     return connectedWallet;
-  }
-
-  async getConversationMessages(
-    input: Types.GetConversationMessagesQueryVariables,
-  ): Promise<Types.GetConversationMessagesQuery> {
-    const query = await this._service.getConversationMessages(input);
-    return query;
-  }
-
-  async sendConversationMessages(
-    input: Types.SendConversationMessageMutationVariables,
-  ): Promise<Types.SendConversationMessageMutation> {
-    const mutation = await this._service.sendConversationMessages(input);
-    return mutation;
-  }
-
-  async createSupportConversation(
-    input: Types.CreateSupportConversationMutationVariables,
-  ): Promise<Types.CreateSupportConversationMutation> {
-    const mutation = await this._service.createSupportConversation(input);
-    return mutation;
   }
 
   async createDiscordTarget(input: string) {

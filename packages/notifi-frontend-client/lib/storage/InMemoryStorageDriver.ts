@@ -6,7 +6,8 @@ import {
 } from '../configuration/NotifiFrontendConfiguration';
 import { StorageDriver } from './NotifiFrontendStorage';
 
-const getEnvPrefix = (env: NotifiEnvironment): string => {
+const getEnvPrefix = (env?: NotifiEnvironment): string => {
+  if (!env) env = 'Production';
   switch (env) {
     case 'Production':
       return 'notifi-jwt';
@@ -22,8 +23,9 @@ const getEnvPrefix = (env: NotifiEnvironment): string => {
 export const createInMemoryStorageDriver = (
   config: NotifiFrontendConfiguration,
 ): StorageDriver => {
-  let keyPrefix = `${getEnvPrefix(config.env)}:${config.tenantId}:${config.walletBlockchain
-    }`;
+  let keyPrefix = `${getEnvPrefix(config.env || 'Production')}:${
+    config.tenantId
+  }:${config.walletBlockchain}`;
 
   if (checkIsConfigWithPublicKeyAndAddress(config)) {
     keyPrefix += `:${config.accountAddress}:${config.authenticationKey}`;
