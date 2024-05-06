@@ -57,7 +57,7 @@ export const AlertSubscriptionRow: React.FC<AlertSubscriptionRowProps> = ({
     parsedMetadata?.uiConfigOverride?.topicDisplayName !== ''
       ? parsedMetadata?.uiConfigOverride?.topicDisplayName
       : topic.uiConfig.name;
-  const isisSubscriptionValueSelectable =
+  const isSubscriptionValueSelectable =
     parsedMetadata?.uiConfigOverride?.isSubscriptionValueSelectable ?? false;
   const description = useMemo(() => {
     const filters = (parsedMetadata?.filters as AlertFilter[]) ?? [];
@@ -140,7 +140,7 @@ export const AlertSubscriptionRow: React.FC<AlertSubscriptionRowProps> = ({
 
       {/* show dropdown button for Trading Pair Price Alert */}
       {/* TODO: pass in a variable from AP to determine if the dropdown should be shown */}
-      {isisSubscriptionValueSelectable ? <SubscriptionValueInput /> : null}
+      {isSubscriptionValueSelectable ? <SubscriptionValueInput /> : null}
 
       {/* render radio button or button inputs if content with userInputParams length equals to 1 */}
       {userInputParams.length === 1 &&
