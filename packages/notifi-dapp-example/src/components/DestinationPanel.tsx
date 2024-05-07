@@ -1,9 +1,12 @@
 import { Icon } from '@/assets/Icon';
+import { useGlobalStateContext } from '@/context/GlobalStateContext';
+import { createCoinbaseNonce, subscribeCoinbaseMessaging } from '@/utils/XMTP';
 import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import {
   isCtaInfo,
   useNotifiTargetContext,
 } from '@notifi-network/notifi-react';
+import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import React, { useCallback, useMemo, useState } from 'react';
 
 import { DestinationInfoPrompt } from './DestinationInfoPrompt';
@@ -54,6 +57,44 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
       Verified
     </div>
   );
+
+  const [isLoading, setIsLoading] = useState(false);
+  const { wallets, selectedWallet } = useWallets();
+  const { popGlobalInfoModal } = useGlobalStateContext();
+
+  const signCoinbaseSignature = async () => {
+    try {
+      setIsLoading(true);
+
+      const nonce = await createCoinbaseNonce();
+      if (!nonce || !selectedWallet)
+        throw Error('Unable to sign the wallet. Please try again.');
+
+      const signature = await wallets[selectedWallet].signArbitrary(nonce);
+
+      const payload = {
+        address:
+          selectedWallet === 'coinbase'
+            ? wallets[selectedWallet]?.walletKeys?.hex ?? ''
+            : '',
+        nonce,
+        signature: signature as string,
+        isActivatedViaCb: true,
+        partnerAddress: '', //TODO: retrieve it from API
+        conversationTopic: '', //TODO: retrieve it from API
+      };
+
+      await subscribeCoinbaseMessaging(payload);
+    } catch (e) {
+      popGlobalInfoModal({
+        message: 'Unable to sign the wallet. Please try again.',
+        iconOrEmoji: { type: 'icon', id: 'warning' },
+        timeout: 3000,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="w-full flex flex-col justify-center items-center">
@@ -249,7 +290,15 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
                 buttonCopy={targetInfoPrompts.wallet?.infoPrompt.message ?? ''}
                 onClick={() => {
                   const infoPrompt = targetInfoPrompts.wallet?.infoPrompt;
-                  if (infoPrompt && isCtaInfo(infoPrompt)) infoPrompt.onClick();
+                  if (
+                    infoPrompt &&
+                    isCtaInfo(infoPrompt) &&
+                    infoPrompt.message === 'Sign Wallet' &&
+                    !isLoading
+                  )
+                    signCoinbaseSignature();
+                  else if (infoPrompt && isCtaInfo(infoPrompt))
+                    infoPrompt.onClick();
                 }}
                 infoPromptMessage={
                   targetInfoPrompts.wallet?.infoPrompt.message ?? ''

@@ -653,7 +653,7 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
               type: 'cta',
               message: 'Sign Wallet',
               onClick: () => {
-                // TODO: XMTP signature and verifyWeb3Target
+                // TODO: add action
               },
             });
             break;
