@@ -123,14 +123,7 @@ export const useInjectedWallet = (
       try {
         const signature: Promise<`0x${string}`> = await provider.request?.({
           method: 'personal_sign',
-          params: [
-            Buffer.from(message).toString('hex'),
-            /** ⬆️
-             * hex-encoded UTF-8 string to present to the user. See how to encode a string like this in the browser-string-hexer module.
-             * @ref https://docs.metamask.io/wallet/reference/personal_sign/
-             */
-            walletKeys?.hex,
-          ],
+          params: [message, walletKeys?.hex],
         });
 
         return signature;
