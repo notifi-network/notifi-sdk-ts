@@ -2,13 +2,15 @@ import {
   FusionEventTopic,
   UiType,
   UserInputParam,
-  ValueType,
 } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
-import { FusionFilterOptions } from 'notifi-frontend-client/dist';
 import React from 'react';
 
 import { useNotifiTargetContext, useNotifiTopicContext } from '../context';
+import {
+  derivePrefixAndSuffixFromValueType,
+  getUpdatedAlertFilterOptions,
+} from '../utils';
 import { defaultCopy } from '../utils/constants';
 
 export type TopicOptionsProps = {
@@ -58,9 +60,14 @@ export const TopicOptions: React.FC<TopicOptionsProps> = (props) => {
 
   const uiType = props.userInputParam.uiType;
 
-  const prefixAndSuffix = getPrefixAndSuffix(props.userInputParam.kind);
+  const prefixAndSuffix = derivePrefixAndSuffixFromValueType(
+    props.userInputParam.kind,
+  );
 
-  const renewFilterUptions = async (option: number | string) => {
+  const renewFilterOptions = async (
+    option: number | string,
+    topics: FusionEventTopic[],
+  ) => {
     if (!alertFilterOptions || !targetGroupId) return;
     const updatedAlertFilterOptiopns = getUpdatedAlertFilterOptions(
       filterName,
@@ -68,13 +75,19 @@ export const TopicOptions: React.FC<TopicOptionsProps> = (props) => {
       props.userInputParam.name,
       option,
     );
+    topics.map((topic) => {
+      return {
+        topic: topic,
+        filterOptions: updatedAlertFilterOptiopns,
+      };
+    });
     await subscribeAlertsWithFilterOptions(
-      [
-        {
-          topic: props.topic,
+      topics.map((topic) => {
+        return {
+          topic: topic,
           filterOptions: updatedAlertFilterOptiopns,
-        },
-      ],
+        };
+      }),
       targetGroupId,
     );
   };
@@ -105,7 +118,7 @@ export const TopicOptions: React.FC<TopicOptionsProps> = (props) => {
             )}
             onClick={() => {
               if (isLoadingTopic) return;
-              renewFilterUptions(option);
+              renewFilterOptions(option, [props.topic]);
             }}
           >
             <div>
@@ -125,7 +138,7 @@ export const TopicOptions: React.FC<TopicOptionsProps> = (props) => {
               onChange={(evt) => setCustomInput(evt.target.value)}
               onBlur={(evt) => {
                 if (!evt.target.value) return;
-                renewFilterUptions(evt.target.value);
+                renewFilterOptions(evt.target.value, [props.topic]);
               }}
               className={clsx(
                 'notifi-topic-options-custom-input',
@@ -150,43 +163,43 @@ export const TopicOptions: React.FC<TopicOptionsProps> = (props) => {
 
 // Utils
 
-const getUpdatedAlertFilterOptions = (
-  filterName: string,
-  alertFilterOptions: FusionFilterOptions,
-  inputParmName: string,
-  value: string | number,
-) => {
-  return {
-    ...alertFilterOptions,
-    input: {
-      ...alertFilterOptions.input,
-      [filterName]: {
-        ...alertFilterOptions.input[filterName],
-        [inputParmName]: value,
-      },
-    },
-  };
-};
+// const getUpdatedAlertFilterOptions = (
+//   filterName: string,
+//   alertFilterOptions: FusionFilterOptions,
+//   inputParmName: string,
+//   value: string | number,
+// ) => {
+//   return {
+//     ...alertFilterOptions,
+//     input: {
+//       ...alertFilterOptions.input,
+//       [filterName]: {
+//         ...alertFilterOptions.input[filterName],
+//         [inputParmName]: value,
+//       },
+//     },
+//   };
+// };
 
-const getPrefixAndSuffix = (
-  kind: ValueType,
-): { prefix: string; suffix: string } => {
-  switch (kind) {
-    case 'price':
-      return {
-        prefix: '$',
-        suffix: '',
-      };
-    case 'percentage':
-      return {
-        prefix: '',
-        suffix: '%',
-      };
-    case 'string':
-    case 'integer':
-      return {
-        prefix: '',
-        suffix: '',
-      };
-  }
-};
+// const derivePrefixAndSuffixFromValueType = (
+//   kind: ValueType,
+// ): { prefix: string; suffix: string } => {
+//   switch (kind) {
+//     case 'price':
+//       return {
+//         prefix: '$',
+//         suffix: '',
+//       };
+//     case 'percentage':
+//       return {
+//         prefix: '',
+//         suffix: '%',
+//       };
+//     case 'string':
+//     case 'integer':
+//       return {
+//         prefix: '',
+//         suffix: '',
+//       };
+//   }
+// };
