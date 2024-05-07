@@ -1,22 +1,20 @@
-import {
-  FusionEventMetadata,
-  FusionEventTopic,
-} from '@notifi-network/notifi-frontend-client';
+import { FusionEventTopic } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
-import { Filter } from 'notifi-frontend-client/dist';
 import React from 'react';
 
 import { Icon } from '../assets/Icons';
-import {
-  isAlertFilter,
-  useNotifiTargetContext,
-  useNotifiTopicContext,
-} from '../context';
+import { useNotifiTargetContext, useNotifiTopicContext } from '../context';
+import { getUserInputParams, isTopicGroupValid } from '../utils';
 import { Toggle } from './Toggle';
+import { TopicGroupOptions } from './TopicGroupOptions';
+import {
+  TopicGroupRowMetadata,
+  TopicRowCategory,
+  TopicStandaloneRowMetadata,
+} from './TopicList';
 import { TopicOptions } from './TopicOptions';
 
-export type TopicRowProps = {
-  topic: FusionEventTopic;
+type TopicRowPropsBase = {
   classNames?: {
     container?: string;
     baseRowContainer?: string;
@@ -26,8 +24,19 @@ export type TopicRowProps = {
   };
 };
 
-export const TopicRow: React.FC<TopicRowProps> = (props) => {
-  const topic = props.topic;
+type TopicGroupRowProps = TopicRowPropsBase & TopicGroupRowMetadata;
+
+type TopicStandaloneRowProps = TopicRowPropsBase & TopicStandaloneRowMetadata;
+
+export type TopicRowProps<T extends TopicRowCategory> = T extends 'standalone'
+  ? TopicStandaloneRowProps
+  : TopicGroupRowProps;
+
+export const TopicRow = <T extends TopicRowCategory>(
+  props: TopicRowProps<T>,
+) => {
+  const isTopicGroup = isTopicGroupRow(props);
+
   const {
     isAlertSubscribed,
     isLoading: isLoadingTopic,
@@ -39,22 +48,43 @@ export const TopicRow: React.FC<TopicRowProps> = (props) => {
     targetDocument: { targetGroupId },
   } = useNotifiTargetContext();
 
-  const userInputParams = React.useMemo(() => {
-    const metadata = topic.fusionEventDescriptor.metadata;
+  const benchmarkTopic = isTopicGroup ? props.topics[0] : props.topic;
+  /* NOTE: benchmarkTopic is either the 'first topic in the group' or the 'standalone topic'. This represent the target topic to be rendered. */
 
-    // TODO: impl fusion metadata validator
-    const parsedMetadata: FusionEventMetadata | null = metadata
-      ? (JSON.parse(metadata) as FusionEventMetadata)
-      : null;
+  if (isTopicGroup && !isTopicGroupValid(props.topics)) return null; // TODO: TBD partial valid case
 
-    const filters = parsedMetadata?.filters?.filter(isAlertFilter) ?? [];
-    return filters[0]?.userInputParams ?? [];
-  }, [topic]);
+  const userInputParams = getUserInputParams(benchmarkTopic);
+
+  const title = isTopicGroup
+    ? props.topicGroupName
+    : benchmarkTopic.uiConfig.displayNameOverride ??
+      benchmarkTopic.uiConfig.name;
+
+  const toggleStandAloneTopic = async (topic: FusionEventTopic) => {
+    if (!targetGroupId) return;
+    if (!isAlertSubscribed(benchmarkTopic.uiConfig.name)) {
+      return subscribeAlertsDefault([topic], targetGroupId);
+    }
+    unsubscribeAlert(benchmarkTopic.uiConfig.name);
+  };
+
+  const toggleTopicGroup = async (topics: FusionEventTopic[]) => {
+    if (!targetGroupId) return;
+    if (!isAlertSubscribed(benchmarkTopic.uiConfig.name)) {
+      return subscribeAlertsDefault(topics, targetGroupId);
+    }
+    const topicsToBeUnsubscribed = topics.filter((topic) =>
+      isAlertSubscribed(topic.uiConfig.name),
+    );
+    // TODO: replace with batch alert deletion (BE blocker)
+    for (const topic of topicsToBeUnsubscribed) {
+      await unsubscribeAlert(topic.uiConfig.name);
+    }
+  };
 
   return (
     <div
       className={clsx('notifi-topic-row', props.classNames?.baseRowContainer)}
-      key={topic.uiConfig.name}
     >
       <div className={clsx('notifi-topic-row-base', props.classNames?.content)}>
         <div
@@ -63,7 +93,7 @@ export const TopicRow: React.FC<TopicRowProps> = (props) => {
             props.classNames?.content,
           )}
         >
-          <div>{topic.uiConfig.displayNameOverride ?? topic.uiConfig.name}</div>
+          <div>{title}</div>
           <Icon
             type="info"
             className={clsx(
@@ -75,50 +105,55 @@ export const TopicRow: React.FC<TopicRowProps> = (props) => {
         </div>
 
         <Toggle
-          checked={isAlertSubscribed(topic.uiConfig.name)}
+          checked={isAlertSubscribed(benchmarkTopic.uiConfig.name)}
           disabled={isLoadingTopic}
-          setChecked={() => {
-            if (!targetGroupId) return;
-            if (!isAlertSubscribed(topic.uiConfig.name)) {
-              return subscribeAlertsDefault([props.topic], targetGroupId);
+          setChecked={async () => {
+            if (isTopicGroup) {
+              return toggleTopicGroup(props.topics);
             }
-            unsubscribeAlert(topic.uiConfig.name);
+            toggleStandAloneTopic(benchmarkTopic);
           }}
         />
       </div>
-
-      {userInputParams.length > 0 && isAlertSubscribed(topic.uiConfig.name) ? (
+      {userInputParams.length > 0 &&
+      isAlertSubscribed(benchmarkTopic.uiConfig.name) ? (
         <div
           className={clsx(
             'notifi-topic-row-user-inputs-row-container ',
             props.classNames?.userInputsRowContainer,
           )}
         >
-          {userInputParams.map((userInput, id) => {
-            return (
-              <TopicOptions key={id} userInputParam={userInput} topic={topic} />
-            );
-          })}
-          {/* NOTE: below is for multi filter UI rendering (Not supported yet)
-        {filters?.length > 0 ? (
-        <div
-          className={clsx(
-            'notifi-topic-row-user-inputs',
-            props.classNames?.userInputsRowContainer,
-          )}
-        >
-          {filters.map((filter, id) => {
-            return (
-              <div key={id}>
-                <label>{filter.name}</label>
-                {JSON.stringify()}
-              </div>
-            );
-          })}
-        </div>
-      ) : null} */}
+          {isTopicGroup
+            ? userInputParams.map((userInput, id) => {
+                return (
+                  <TopicGroupOptions
+                    key={id}
+                    userInputParam={userInput}
+                    topics={props.topics}
+                  />
+                );
+              })
+            : null}
+          {!isTopicGroup
+            ? userInputParams.map((userInput, id) => {
+                return (
+                  <TopicOptions
+                    key={id}
+                    userInputParam={userInput}
+                    topic={benchmarkTopic}
+                  />
+                );
+              })
+            : null}
         </div>
       ) : null}
     </div>
   );
+};
+
+// Utils
+const isTopicGroupRow = (
+  props: TopicRowProps<TopicRowCategory>,
+): props is TopicGroupRowProps => {
+  return 'topics' in props && 'topicGroupName' in props;
 };
