@@ -95,6 +95,38 @@ export type UpdateTargetInputs = <T extends 'form' | 'toggle'>(
   value: T extends 'form' ? { value: string; error?: string } : boolean,
 ) => void;
 
+type FormTargetRenewArgs = {
+  target: Extract<Target, 'email' | 'telegram' | 'phoneNumber'>;
+  value: string;
+};
+
+type ToggleTargetRenewArgs = {
+  target: Extract<Target, 'discord' | 'slack' | 'wallet'>;
+  value: boolean;
+};
+
+type TargetRenewArgs = FormTargetRenewArgs | ToggleTargetRenewArgs;
+
+const isFormTargetRenewArgs = (
+  args: TargetRenewArgs,
+): args is FormTargetRenewArgs => {
+  return (
+    args.target === 'email' ||
+    args.target === 'telegram' ||
+    args.target === 'phoneNumber'
+  );
+};
+
+const isToggleTargetRenewArgs = (
+  args: TargetRenewArgs,
+): args is ToggleTargetRenewArgs => {
+  return (
+    args.target === 'slack' ||
+    args.target === 'wallet' ||
+    args.target === 'discord'
+  );
+};
+
 export type NotifiTargetContextType = {
   isLoading: boolean;
   error: Error | null;
@@ -277,19 +309,41 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
   );
 
   const renewTargetGroup = useCallback(
-    async (args?: {
-      target: Extract<Target, 'discord' | 'slack' | 'wallet'>;
-      value: boolean;
-    }) => {
+    async (singleTargetRenewArgs?: TargetRenewArgs) => {
       let data = { ...targetGroupToBeSaved };
 
-      const expectedTarget = ['discord', 'slack', 'wallet'];
-      if (args && expectedTarget.includes(args.target)) {
-        const { target, value } = args;
-        data = {
-          ...targetGroupToBeSaved,
-          [`${target}Id`]: value ? 'Default' : undefined,
-        };
+      if (singleTargetRenewArgs) {
+        const { target, value } = singleTargetRenewArgs;
+        if (isFormTargetRenewArgs(singleTargetRenewArgs)) {
+          let formTarget: string | undefined = '';
+          let formValue: string | undefined = '';
+
+          if (target === 'email') {
+            formTarget = 'emailAddress';
+            formValue = value === '' ? undefined : value;
+          }
+
+          if (target === 'telegram') {
+            formTarget = 'telegramId';
+            formValue =
+              value === '' ? undefined : formatTelegramForSubscription(value);
+          }
+
+          if (target === 'phoneNumber') {
+            formTarget = target;
+            formValue = isValidPhoneNumber(value) ? value : undefined;
+          }
+
+          data = {
+            ...targetGroupToBeSaved,
+            [formTarget]: formValue,
+          };
+        } else if (isToggleTargetRenewArgs(singleTargetRenewArgs)) {
+          data = {
+            ...targetGroupToBeSaved,
+            [`${target}Id`]: value ? 'Default' : undefined,
+          };
+        }
       }
 
       setIsLoading(true);

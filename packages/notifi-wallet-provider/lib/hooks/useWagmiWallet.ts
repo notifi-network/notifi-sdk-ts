@@ -105,7 +105,7 @@ export const useWagmiWallet = (
 
       try {
         const signature: `0x${string}` = await signMessageAsync({
-          message: Buffer.from(message).toString('hex'),
+          message: message,
         });
 
         return signature;
