@@ -70,18 +70,30 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
       if (!nonce || !selectedWallet)
         throw Error('Unable to sign the wallet. Please try again.');
 
-      const signature = await wallets[selectedWallet].signArbitrary(nonce);
+      const address =
+        selectedWallet === 'coinbase'
+          ? wallets[selectedWallet]?.walletKeys?.hex ?? ''
+          : '';
+      const partnerAddress = ''; //TODO: retrieve it from API
+      const conversationTopic = ''; //TODO: retrieve it from API
+
+      const message = `Coinbase Wallet Messaging subscribe
+      Address: ${address}
+      Partner Address: ${partnerAddress}
+      Nonce: ${nonce}`;
+
+      const signature = await wallets[selectedWallet].signArbitrary(message);
+
+      if (!signature)
+        throw Error('Unable to sign the wallet. Please try again.');
 
       const payload = {
-        address:
-          selectedWallet === 'coinbase'
-            ? wallets[selectedWallet]?.walletKeys?.hex ?? ''
-            : '',
+        address,
         nonce,
         signature: signature as string,
         isActivatedViaCb: true,
-        partnerAddress: '', //TODO: retrieve it from API
-        conversationTopic: '', //TODO: retrieve it from API
+        partnerAddress,
+        conversationTopic,
       };
 
       await subscribeCoinbaseMessaging(payload);
