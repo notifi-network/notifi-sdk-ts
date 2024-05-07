@@ -15,7 +15,7 @@ export const InputFieldSlack: React.FC<InputFieldSlackProps> = ({
 }: InputFieldSlackProps) => {
   const {
     updateTargetInputs,
-    renewToggleTargetGroup,
+    renewTargetGroup,
     targetDocument: {
       targetData,
       targetInputs: { email, telegram, slack },
@@ -67,7 +67,8 @@ text-notifi-button-primary-blueish-bg md:ml-6 mt-1"
             checked={slack}
             onChange={() => {
               updateTargetInputs('slack', !slack);
-              if (isEditable) renewToggleTargetGroup('slack', !slack);
+              if (isEditable)
+                renewTargetGroup({ target: 'slack', value: !slack });
             }}
           />
         </div>

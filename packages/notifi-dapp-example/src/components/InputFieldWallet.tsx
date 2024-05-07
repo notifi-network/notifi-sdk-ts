@@ -16,7 +16,7 @@ export const InputFieldWallet: React.FC<InputFieldWalletProps> = ({
 }: InputFieldWalletProps) => {
   const {
     updateTargetInputs,
-    renewToggleTargetGroup,
+    renewTargetGroup,
     targetDocument: {
       targetInputs: { email, telegram, wallet },
     },
@@ -37,13 +37,14 @@ export const InputFieldWallet: React.FC<InputFieldWalletProps> = ({
         </div>
         <div className="flex flex-row items-center justify-between w-2/3 sm:w-90 mr-4">
           <div className="text-sm sm:ml-6 text-notifi-text">Wallet Alerts</div>
-          {isCoinbaseWallet ? (
+          {!isCoinbaseWallet ? (
             <Toggle
               disabled={disabled || !!telegram.error || !!email.error}
               checked={wallet}
               onChange={() => {
                 updateTargetInputs('wallet', !wallet);
-                if (isEditable) renewToggleTargetGroup('wallet', !wallet);
+                if (isEditable)
+                  renewTargetGroup({ target: 'wallet', value: !wallet });
               }}
             />
           ) : (

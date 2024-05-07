@@ -15,7 +15,7 @@ export const InputFieldDiscord: React.FC<InputFieldDiscordProps> = ({
 }) => {
   const {
     updateTargetInputs,
-    renewToggleTargetGroup,
+    renewTargetGroup,
     targetDocument: {
       targetInputs: { email, telegram, discord },
     },
@@ -43,7 +43,8 @@ export const InputFieldDiscord: React.FC<InputFieldDiscordProps> = ({
           checked={discord}
           onChange={() => {
             updateTargetInputs('discord', !discord);
-            if (isEditable) renewToggleTargetGroup('discord', !discord);
+            if (isEditable)
+              renewTargetGroup({ target: 'discord', value: !discord });
           }}
         />
       </div>

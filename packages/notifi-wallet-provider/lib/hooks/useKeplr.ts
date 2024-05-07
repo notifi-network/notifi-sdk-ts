@@ -35,9 +35,8 @@ export const useKeplr = (
         window.addEventListener('keplr_keystorechange', handleAccountChange);
       })
       .catch((e) => {
-        errorHandler(new Error(e));
         setIsKeplrInstalled(false);
-        console.log(e);
+        console.error(e);
       })
       .finally(() => loadingHandler(false));
 

@@ -28,7 +28,11 @@ export const useBinance = (
   };
 
   useEffect(() => {
-    geBinanceFromWindow().then((bnb) => setProvider(bnb));
+    geBinanceFromWindow()
+      .then((bnb) => setProvider(bnb))
+      .catch((e) => {
+        console.error(e);
+      });
   }, []);
 
   useEffect(() => {

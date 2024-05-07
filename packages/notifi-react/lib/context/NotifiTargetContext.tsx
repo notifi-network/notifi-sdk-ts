@@ -99,11 +99,10 @@ export type NotifiTargetContextType = {
   isLoading: boolean;
   error: Error | null;
   updateTargetInputs: UpdateTargetInputs;
-  renewTargetGroup: (arg?: TargetGroupInput) => Promise<void>;
-  renewToggleTargetGroup: (
-    target: Extract<Target, 'discord' | 'slack' | 'wallet'>,
-    value: boolean,
-  ) => Promise<void>;
+  renewTargetGroup: (args?: {
+    target: Extract<Target, 'discord' | 'slack' | 'wallet'>;
+    value: boolean;
+  }) => Promise<void>;
   isChangingTargets: Record<Target, boolean>;
   targetDocument: TargetDocument;
   unVerifiedTargets: Target[];
@@ -278,9 +277,22 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
   );
 
   const renewTargetGroup = useCallback(
-    (data?: TargetGroupInput) => {
+    async (args?: {
+      target: Extract<Target, 'discord' | 'slack' | 'wallet'>;
+      value: boolean;
+    }) => {
+      let data = { ...targetGroupToBeSaved };
+
+      const expectedTarget = ['discord', 'slack', 'wallet'];
+      if (args && expectedTarget.includes(args.target)) {
+        const { target, value } = args;
+        data = {
+          ...targetGroupToBeSaved,
+          [`${target}Id`]: value ? 'Default' : undefined,
+        };
+      }
+
       setIsLoading(true);
-      data = data ?? targetGroupToBeSaved;
       return frontendClient
         .ensureTargetGroup(data)
         .then((_result) => {
@@ -297,22 +309,6 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
         .finally(() => setIsLoading(false));
     },
     [frontendClient, targetGroupToBeSaved],
-  );
-
-  const renewToggleTargetGroup = useCallback(
-    async (
-      target: Extract<Target, 'discord' | 'slack' | 'wallet'>,
-      value: boolean,
-    ) => {
-      const expectedTarget = ['discord', 'slack', 'wallet'];
-      if (expectedTarget.includes(target)) {
-        await renewTargetGroup({
-          ...targetGroupToBeSaved,
-          [`${target}Id`]: value ? 'Default' : undefined,
-        });
-      }
-    },
-    [targetGroupToBeSaved],
   );
 
   // NOTE: The followings are internal functions
@@ -640,7 +636,6 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
         error,
         isLoading,
         renewTargetGroup,
-        renewToggleTargetGroup,
         unVerifiedTargets,
         isChangingTargets,
         targetDocument: {
