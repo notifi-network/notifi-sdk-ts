@@ -2,9 +2,11 @@ import { Icon } from '@/assets/Icon';
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
 import { createCoinbaseNonce, subscribeCoinbaseMessaging } from '@/utils/XMTP';
 import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
+import { createConsentMessage } from '@xmtp/consent-proof-signature'
 import {
   isCtaInfo,
   useNotifiTargetContext,
+  useNotifiFrontendClientContext
 } from '@notifi-network/notifi-react';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import React, { useCallback, useMemo, useState } from 'react';
@@ -39,6 +41,8 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
     targetDocument: { targetInfoPrompts, targetData },
   } = useNotifiTargetContext();
 
+  const { frontendClient } = useNotifiFrontendClientContext();
+
   const handleResendEmailVerificationClick = useCallback(() => {
     if (targetInfoPrompts.email?.infoPrompt.type !== 'cta') return;
     setIsEmailConfirmationSent(true);
@@ -62,7 +66,49 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
   const { wallets, selectedWallet } = useWallets();
   const { popGlobalInfoModal } = useGlobalStateContext();
 
-  const signCoinbaseSignature = async () => {
+  const signWallet = async () => {
+    if (!selectedWallet) {
+      throw Error('Unable to sign the wallet. Please try again.');
+    }
+
+    const targetId = targetData?.wallet?.data?.id ?? "";
+    const address =
+      selectedWallet === 'coinbase'
+        ? wallets[selectedWallet]?.walletKeys?.hex ?? ''
+        : '';
+    // TODO: get senderAddress from target
+    const senderAddress = "0xb49bbE2c31CF4a0fB74b16812b8c6B6FeEE23524"
+    const timestamp = Date.now();
+    const message = createConsentMessage(senderAddress, timestamp)
+    console.log(message)
+    const signature = await wallets[selectedWallet].signArbitrary(message);
+
+    if (!signature) {
+      throw Error('Unable to sign the wallet. Please try again.');
+    }
+
+    console.log(targetId)
+    console.log(address)
+    await frontendClient.verifyXmtpTarget(
+      {
+        input: {
+          web3TargetId: targetId,
+          accountId: address,
+          consentProofSignature: signature as string,
+          timestamp: timestamp,
+          isCBW: true,
+        }
+      });
+    // await signCoinbaseSignature(address, senderAddress);
+    await frontendClient.verifyCbwTarget(
+      {
+        input: {
+          targetId: targetId
+        }
+      });
+  }
+
+  const signCoinbaseSignature = async (address: string, senderAddress: string) => {
     try {
       setIsLoading(true);
 
@@ -70,16 +116,11 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
       if (!nonce || !selectedWallet)
         throw Error('Unable to sign the wallet. Please try again.');
 
-      const address =
-        selectedWallet === 'coinbase'
-          ? wallets[selectedWallet]?.walletKeys?.hex ?? ''
-          : '';
-      const partnerAddress = ''; //TODO: retrieve it from API
       const conversationTopic = ''; //TODO: retrieve it from API
 
       const message = `Coinbase Wallet Messaging subscribe
       Address: ${address}
-      Partner Address: ${partnerAddress}
+      Partner Address: ${senderAddress}
       Nonce: ${nonce}`;
 
       const signature = await wallets[selectedWallet].signArbitrary(message);
@@ -92,7 +133,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
         nonce,
         signature: signature as string,
         isActivatedViaCb: true,
-        partnerAddress,
+        partnerAddress: senderAddress,
         conversationTopic,
       };
 
@@ -124,11 +165,10 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
             </div>
           </div>
           <div
-            className={`flex ${
-              targetInfoPrompts.email?.infoPrompt.type === 'cta'
-                ? 'flex-col'
-                : 'flex-row'
-            } items-start justify-between w-3/4 sm:w-90 mr-4`}
+            className={`flex ${targetInfoPrompts.email?.infoPrompt.type === 'cta'
+              ? 'flex-col'
+              : 'flex-row'
+              } items-start justify-between w-3/4 sm:w-90 mr-4`}
           >
             <div className="text-sm ml-6 text-notifi-text">
               {targetData.email}
@@ -307,8 +347,9 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
                     isCtaInfo(infoPrompt) &&
                     infoPrompt.message === 'Sign Wallet' &&
                     !isLoading
-                  )
-                    signCoinbaseSignature();
+                  ) {
+                    signWallet();
+                  }
                   else if (infoPrompt && isCtaInfo(infoPrompt))
                     infoPrompt.onClick();
                 }}

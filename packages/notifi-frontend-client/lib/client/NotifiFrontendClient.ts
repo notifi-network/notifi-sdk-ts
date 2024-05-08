@@ -1216,4 +1216,18 @@ export class NotifiFrontendClient {
     const mutation = await this._service.updateUserSettings(input);
     return mutation;
   }
+
+  async verifyXmtpTarget(
+    input: Types.VerifyXmtpTargetMutationVariables,
+  ): Promise<Types.VerifyXmtpTargetMutation> {
+    const mutation = await this._service.verifyXmtpTarget(input);
+    return mutation;
+  }
+
+  async verifyCbwTarget(
+    input: Types.VerifyCbwTargetMutationVariables,
+  ): Promise<Types.VerifyCbwTargetMutation> {
+    const mutation = await this._service.verifyCbwTarget(input);
+    return mutation;
+  }
 }
