@@ -32,3 +32,29 @@ export const GetWeb3TargetResponseFragment = gql`
     }
   }
 `;
+
+export const VerifyXmtpTargetResponseFragment = gql`
+  fragment VerifyXmtpTargetResponseFragment on VerifyXmtpTargetResponse {
+    web3Target {
+      id
+      name
+      accountId
+      walletBlockchain
+      targetProtocol
+      isConfirmed
+    }
+  }
+`;
+
+export const VerifyCbwTargetResponseFragment = gql`
+  fragment VerifyCbwTargetResponseFragment on VerifyCbwTargetResponse {
+    web3Target {
+      id
+      name
+      accountId
+      walletBlockchain
+      targetProtocol
+      isConfirmed
+    }
+  }
+`;

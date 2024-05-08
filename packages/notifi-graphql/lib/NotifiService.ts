@@ -71,7 +71,9 @@ export class NotifiService
     Operations.BeginLogInWithWeb3Service,
     Operations.CompleteLogInWithWeb3Service,
     Operations.CreateWeb3TargetService,
-    Operations.GetWeb3TargetsService
+    Operations.GetWeb3TargetsService,
+    Operations.VerifyCbwTargetService,
+    Operations.VerifyXmtpTargetService
 {
   private _jwt: string | undefined;
   private _typedClient: ReturnType<typeof getSdk>;
@@ -570,6 +572,20 @@ export class NotifiService
   ): Promise<Generated.CompleteLogInWithWeb3Mutation> {
     const headers = this._requestHeaders();
     return this._typedClient.completeLogInWithWeb3(variables, headers);
+  }
+
+  async verifyCbwTarget(
+    variables: Generated.VerifyCbwTargetMutationVariables,
+  ): Promise<Generated.VerifyCbwTargetMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.verifyCbwTarget(variables, headers);
+  }
+
+  async verifyXmtpTarget(
+    variables: Generated.VerifyXmtpTargetMutationVariables,
+  ): Promise<Generated.VerifyXmtpTargetMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.verifyXmtpTarget(variables, headers);
   }
 
   private _requestHeaders(): HeadersInit {
