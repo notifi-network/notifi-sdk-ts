@@ -6,22 +6,31 @@ import { MobilePromptModal } from '@/components/MobilePromptModal';
 import { PoweredByNotifi } from '@/components/PoweredByNotifi';
 import { WalletSelectModal } from '@/components/WalletSelectModal';
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
+import { NotifiContextWrapper } from '@/context/NotifiContextWrapper';
+import { useNotifiRouter } from '@/hooks/useNotifiRouter';
 import { useRouterAsync } from '@/hooks/useRouterAsync';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
+// Rendering this Component will trigger the login function
+function LoginComponent() {
+  useNotifiRouter();
+  return null;
+}
+
 export default function Home() {
-  const { isLoadingRouter, handleRoute } = useRouterAsync();
+  const { isLoadingRouter } = useRouterAsync();
   const { popGlobalInfoModal } = useGlobalStateContext();
   const { selectedWallet, wallets, error, isLoading } = useWallets();
   const [isOpenWalletsModal, setIsOpenWalletsModal] = useState(false);
   const [isOpenMobilePromptModal, setIsOpenMobilePromptModal] = useState(false);
+  const [isSigningMessage, setIsSigningMessage] = useState(false);
 
   useEffect(() => {
-    if (selectedWallet && wallets[selectedWallet].walletKeys) {
-      handleRoute('/notifi');
-    }
+    if (selectedWallet && wallets[selectedWallet].walletKeys)
+      setIsSigningMessage(true);
+    else setIsSigningMessage(false);
   }, [selectedWallet]);
 
   useEffect(() => {
@@ -74,6 +83,12 @@ export default function Home() {
         <MobilePromptModal
           setIsOpenMobilePromptModal={setIsOpenMobilePromptModal}
         />
+      ) : null}
+
+      {isSigningMessage ? (
+        <NotifiContextWrapper>
+          <LoginComponent />
+        </NotifiContextWrapper>
       ) : null}
     </main>
   );

@@ -21,12 +21,6 @@ export const useNotifiRouter = () => {
   const { ftuStage, isLoading: isLoadingFtu } = useNotifiUserSettingContext();
   const { wallets, selectedWallet } = useWallets();
   const isLoginStarted = useRef(false);
-  console.log('isLoadingFtu', isLoadingFtu);
-  console.log(
-    'frontendClientStatus.isAuthenticated',
-    frontendClientStatus.isAuthenticated,
-  );
-  console.log('ftuStage', ftuStage);
 
   useEffect(() => {
     if (!frontendClientStatus.isInitialized) return;
@@ -51,7 +45,6 @@ export const useNotifiRouter = () => {
 
   useEffect(() => {
     if (isLoginStarted.current || frontendClientStatus.isAuthenticated) return;
-    setIsGlobalLoading(true);
     isLoginStarted.current = true;
     login(); // NOTE: No need handle error & loading, use isLoading & error hook instead
   }, []);
@@ -66,10 +59,10 @@ export const useNotifiRouter = () => {
   }, [loginError]);
 
   useEffect(() => {
-    console.log({ isLoadingLogin });
+    if (!frontendClientStatus.isAuthenticated) setIsGlobalLoading(false);
     if (isLoadingRouter || isLoadingLogin) {
       return setIsGlobalLoading(true);
     }
     setIsGlobalLoading(false);
-  }, [isLoadingRouter, isLoadingLogin]);
+  }, [isLoadingRouter, isLoadingLogin, frontendClientStatus]);
 };
