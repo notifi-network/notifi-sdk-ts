@@ -6,7 +6,6 @@ import { Icon } from '../assets/Icons';
 import { useNotifiTargetContext, useNotifiTopicContext } from '../context';
 import { getUserInputParams, isTopicGroupValid } from '../utils';
 import { Toggle } from './Toggle';
-import { TopicGroupOptions } from './TopicGroupOptions';
 import {
   TopicGroupRowMetadata,
   TopicRowCategory,
@@ -126,7 +125,7 @@ export const TopicRow = <T extends TopicRowCategory>(
           {isTopicGroup
             ? userInputParams.map((userInput, id) => {
                 return (
-                  <TopicGroupOptions
+                  <TopicOptions<'group'>
                     key={id}
                     userInputParam={userInput}
                     topics={props.topics}
@@ -137,7 +136,7 @@ export const TopicRow = <T extends TopicRowCategory>(
           {!isTopicGroup
             ? userInputParams.map((userInput, id) => {
                 return (
-                  <TopicOptions
+                  <TopicOptions<'standalone'>
                     key={id}
                     userInputParam={userInput}
                     topic={benchmarkTopic}
