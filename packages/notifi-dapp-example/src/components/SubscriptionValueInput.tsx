@@ -1,8 +1,8 @@
 import { Icon } from '@/assets/Icon';
-import { useNotifiTenantConfigContext } from '@notifi-network/notifi-react';
 import React from 'react';
 
 export const SubscriptionValueInput = () => {
+  // TODO: use real data from API
   const dummyList = [
     'ETH / USDC - Chain',
     'ETH / USD - Chain',
@@ -13,10 +13,8 @@ export const SubscriptionValueInput = () => {
     'ETH / 4 - Chain',
   ];
 
-  const { inputs } = useNotifiTenantConfigContext();
-  console.log('input', inputs);
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
-  const [value, setValue] = React.useState('');
+  const [subscriptionValue, setSubscriptionValue] = React.useState('');
 
   return (
     <div className="relative ml-14 w-60 h-12 bg-notifi-card-bg rounded-md mb-3 text-notifi-text p-3 border-0 focus:border-0 focus-visible:border-0 cursor-pointer">
@@ -25,7 +23,7 @@ export const SubscriptionValueInput = () => {
         className="rounded-md bg-notifi-card-bg text-start"
         onClick={() => setIsDropdownOpen((prev) => !prev)}
       >
-        {value ? value : 'select' ?? 'select'}
+        {subscriptionValue ? subscriptionValue : 'select' ?? 'select'}
       </div>
       {isDropdownOpen && (
         <div className="absolute top-12 left-0 w-60 bg-notifi-card-bg rounded-lg shadow-lg z-10 max-h-[180px] overflow-y-auto border border-notifi-card-border">
@@ -33,7 +31,8 @@ export const SubscriptionValueInput = () => {
             <div
               className="h-10 flex items-center justify-start text-middle text-notifi-text-light hover:text-white cursor-pointer border-b border-notifi-card-border pl-3"
               onClick={() => {
-                setValue(option);
+                setSubscriptionValue(option);
+                // TODO: uncomment this line when use real data
                 // props.setSubscriptionValue(option);
                 setIsDropdownOpen(false);
               }}

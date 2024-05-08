@@ -91,6 +91,7 @@ export const AlertSubscriptionOptions = <
                       <input
                         onClick={() => {
                           if (isLoadingTopic) return;
+
                           // renewFilterOptions(
                           //   option,
                           //   isTopicGroup ? props.topics : [props.topic],
