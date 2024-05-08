@@ -14,7 +14,7 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
 }) => {
   const { wallets } = useWallets();
   const availableWallets = objectKeys(wallets);
-  const walletsSupportForGMX: typeof availableWallets = [
+  let walletsRequiredForGMX: typeof availableWallets = [
     'metamask',
     'coinbase',
     'rabby',
@@ -25,7 +25,13 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
     'zerion',
   ];
 
-  const isAnySupportedWalletAvailable = walletsSupportForGMX
+  walletsRequiredForGMX = walletsRequiredForGMX.sort((a, b) => {
+    if (wallets[a].isInstalled && !wallets[b].isInstalled) return -1;
+    if (!wallets[a].isInstalled && wallets[b].isInstalled) return 1;
+    return 0;
+  });
+
+  const isAnySupportedWalletAvailable = walletsRequiredForGMX
     .map((wallet) => wallets[wallet].isInstalled)
     .includes(true);
 
@@ -55,30 +61,46 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
         </div>
 
         <div className="flex gap-6 px-12 pt-10 justify-center items-center flex-wrap">
-          {walletsSupportForGMX
-            .filter((wallet) => wallets[wallet].isInstalled)
-            .map((wallet) => {
-              return (
-                <div
-                  key={wallet}
-                  className="size-[126px] flex items-center justify-between gap-0.5 flex-col rounded-lg border border-notifi-card-border bg-notifi-destination-card-bg cursor-pointer py-3 px-4 text-notifi-text"
-                  onClick={() => {
-                    wallets[wallet].connect();
-                    setIsOpenWalletsModal(false);
-                    /** No need to handle loading and error case, use `const {isLoading, error} = useWallets()  */
-                  }}
-                >
-                  <Image
-                    src={`/logos/${wallet}.svg`}
-                    width={58}
-                    height={58}
-                    unoptimized={true}
-                    alt={wallet}
-                  />
-                  <div className="text-center">{convertWalletName(wallet)}</div>
+          {walletsRequiredForGMX.map((walletName) => {
+            const { connect, websiteURL, isInstalled } = wallets[walletName];
+            return (
+              <div
+                key={walletName}
+                className="relative size-[126px] flex items-center justify-between gap-0.5 flex-col rounded-lg border border-notifi-card-border bg-notifi-destination-card-bg cursor-pointer py-3 px-4 text-notifi-text"
+                onClick={() => {
+                  if (!isInstalled) return;
+
+                  connect?.();
+                  setIsOpenWalletsModal(false);
+                  /** No need to handle loading and error case, use `const {isLoading, error} = useWallets()  */
+                }}
+              >
+                <Image
+                  src={`/logos/${walletName}.svg`}
+                  width={58}
+                  height={58}
+                  unoptimized={true}
+                  alt={walletName}
+                />
+                <div className="text-center">
+                  {convertWalletName(walletName)}
                 </div>
-              );
-            })}
+
+                {!isInstalled ? (
+                  <div
+                    onClick={() => {
+                      window.open(websiteURL, '_blank');
+                    }}
+                    className="rounded-lg absolute h-full w-full top-0 right-0 bg-gray-400 opacity-40 hover:opacity-90"
+                  >
+                    <div className="rounded-lg h-full w-full flex bg-black opacity-0 cursor-pointer justify-center items-center text-center font-semibold hover:opacity-90">
+                      Install
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+            );
+          })}
         </div>
       </div>
     </>
