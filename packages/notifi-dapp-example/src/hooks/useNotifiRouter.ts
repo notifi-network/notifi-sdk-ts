@@ -59,7 +59,7 @@ export const useNotifiRouter = () => {
   }, [loginError]);
 
   useEffect(() => {
-    if (!frontendClientStatus.isAuthenticated) setIsGlobalLoading(false);
+    if (!frontendClientStatus.isAuthenticated) return setIsGlobalLoading(false);
     if (isLoadingRouter || isLoadingLogin) {
       return setIsGlobalLoading(true);
     }

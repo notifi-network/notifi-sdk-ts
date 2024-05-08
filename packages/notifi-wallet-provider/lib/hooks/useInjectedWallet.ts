@@ -6,6 +6,7 @@ import {
   cleanWalletsInLocalStorage,
   setWalletKeysToLocalStorage,
 } from '../utils/localStorageUtils';
+import { walletsWebsiteLink } from '../utils/wallet';
 import { useSyncInjectedProviders } from './useSyncInjectedProviders';
 
 export const useInjectedWallet = (
@@ -66,7 +67,7 @@ export const useInjectedWallet = (
     timeoutInMiniSec?: number,
   ): Promise<MetamaskWalletKeys | null> => {
     if (!provider) {
-      handleWalletNotExists('connectWallet');
+      handleWalletNotExists('Connect Wallet');
       return null;
     }
 
@@ -111,7 +112,7 @@ export const useInjectedWallet = (
   const signArbitrary = useCallback(
     async (message: string): Promise<`0x${string}` | undefined> => {
       if (!provider || !walletKeys) {
-        handleWalletNotExists('signArbitrary');
+        handleWalletNotExists('Sign Arbitrary');
         return;
       }
 
@@ -149,5 +150,6 @@ export const useInjectedWallet = (
     connectWallet,
     signArbitrary,
     disconnectWallet,
+    websiteURL: walletsWebsiteLink[walletName],
   };
 };

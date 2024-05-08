@@ -6,6 +6,7 @@ import {
   cleanWalletsInLocalStorage,
   setWalletKeysToLocalStorage,
 } from '../utils/localStorageUtils';
+import { walletsWebsiteLink } from '../utils/wallet';
 
 const walletName: keyof Wallets = 'binance';
 
@@ -70,7 +71,7 @@ export const useBinance = (
     timeoutInMiniSec?: number,
   ): Promise<MetamaskWalletKeys | null> => {
     if (!provider) {
-      handleWalletNotExists('connectWallet');
+      handleWalletNotExists('Connect Wallet');
       return null;
     }
 
@@ -116,7 +117,7 @@ export const useBinance = (
   const signArbitrary = useCallback(
     async (message: string): Promise<`0x${string}` | undefined> => {
       if (!provider || !walletKeys) {
-        handleWalletNotExists('signArbitrary');
+        handleWalletNotExists('Sign Arbitrary');
         return;
       }
 
@@ -154,6 +155,7 @@ export const useBinance = (
     connectWallet,
     signArbitrary,
     disconnectWallet,
+    websiteURL: walletsWebsiteLink[walletName],
   };
 };
 

@@ -6,6 +6,7 @@ import {
   cleanWalletsInLocalStorage,
   setWalletKeysToLocalStorage,
 } from '../utils/localStorageUtils';
+import { walletsWebsiteLink } from '../utils/wallet';
 
 export const useKeplr = (
   loadingHandler: React.Dispatch<React.SetStateAction<boolean>>,
@@ -132,6 +133,7 @@ export const useKeplr = (
     connectKeplr,
     signArbitraryKeplr,
     disconnectKeplr,
+    websiteURL: walletsWebsiteLink['keplr'],
   };
 };
 
