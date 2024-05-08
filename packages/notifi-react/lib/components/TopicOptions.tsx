@@ -6,16 +6,21 @@ import {
 import clsx from 'clsx';
 import React from 'react';
 
-import { useNotifiTargetContext, useNotifiTopicContext } from '../context';
-import {
-  derivePrefixAndSuffixFromValueType,
-  getUpdatedAlertFilterOptions,
-} from '../utils';
+import { useNotifiTopicContext } from '../context';
+import { useUserInputParmToFilterOption } from '../hooks/useUserInputParmToFilterOption';
 import { defaultCopy } from '../utils/constants';
+import { TopicRowCategory } from './TopicList';
 
-export type TopicOptionsProps = {
+type TopicGroupOptionsProps = TopicOptionsPropsBase & {
+  topics: FusionEventTopic[];
+  userInputParam: UserInputParam<UiType>;
+};
+type TopicStandAloneOptionsProps = TopicOptionsPropsBase & {
   topic: FusionEventTopic;
   userInputParam: UserInputParam<UiType>;
+};
+
+export type TopicOptionsPropsBase = {
   classNames?: {
     container?: string;
     discription?: string;
@@ -28,69 +33,28 @@ export type TopicOptionsProps = {
   };
 };
 
-export const TopicOptions: React.FC<TopicOptionsProps> = (props) => {
+export type TopicOptionsProps<T extends TopicRowCategory> =
+  T extends 'standalone' ? TopicStandAloneOptionsProps : TopicGroupOptionsProps;
+
+export const TopicOptions = <T extends TopicRowCategory>(
+  props: TopicOptionsProps<T>,
+) => {
+  const isTopicGroup = isTopicGroupOptions(props);
+  const benchmarkTopic = isTopicGroup ? props.topics[0] : props.topic;
+  /* NOTE: benchmarkTopic is either the 'first topic in the group' or the 'standalone topic'. This represent the target topic to be rendered. */
+
   const {
-    getAlertFilterOptions,
-    subscribeAlertsWithFilterOptions,
-    isLoading: isLoadingTopic,
-  } = useNotifiTopicContext();
-  const {
-    targetDocument: { targetGroupId },
-  } = useNotifiTargetContext();
-  const alertFilterOptions = getAlertFilterOptions(props.topic.uiConfig.name);
-
-  const filterName: string | undefined = Object.keys(
-    alertFilterOptions?.input ?? [],
-  )[0]; // NOTE: Only consider 1 to 1 relationship (1 filter for 1 topic)
-  const userInputOptions = alertFilterOptions?.input[filterName];
-
-  const subscribedValue = userInputOptions?.[props.userInputParam.name];
-
-  const [customInput, setCustomInput] = React.useState<string | number>();
-  React.useEffect(() => {
-    if (
-      !!subscribedValue &&
-      !props.userInputParam.options.includes(subscribedValue)
-    ) {
-      setCustomInput(subscribedValue);
-      return;
-    }
-    setCustomInput('');
-  }, [subscribedValue]);
-
-  const uiType = props.userInputParam.uiType;
-
-  const prefixAndSuffix = derivePrefixAndSuffixFromValueType(
-    props.userInputParam.kind,
+    customInput,
+    prefixAndSuffix,
+    renewFilterOptions,
+    subscribedValue,
+    uiType,
+    setCustomInput,
+  } = useUserInputParmToFilterOption(
+    benchmarkTopic.uiConfig.name,
+    props.userInputParam,
   );
-
-  const renewFilterOptions = async (
-    option: number | string,
-    topics: FusionEventTopic[],
-  ) => {
-    if (!alertFilterOptions || !targetGroupId) return;
-    const updatedAlertFilterOptiopns = getUpdatedAlertFilterOptions(
-      filterName,
-      alertFilterOptions,
-      props.userInputParam.name,
-      option,
-    );
-    topics.map((topic) => {
-      return {
-        topic: topic,
-        filterOptions: updatedAlertFilterOptiopns,
-      };
-    });
-    await subscribeAlertsWithFilterOptions(
-      topics.map((topic) => {
-        return {
-          topic: topic,
-          filterOptions: updatedAlertFilterOptiopns,
-        };
-      }),
-      targetGroupId,
-    );
-  };
+  const { isLoading: isLoadingTopic } = useNotifiTopicContext();
 
   return (
     <div className={clsx('notifi-topic-options', props.classNames?.container)}>
@@ -118,7 +82,10 @@ export const TopicOptions: React.FC<TopicOptionsProps> = (props) => {
             )}
             onClick={() => {
               if (isLoadingTopic) return;
-              renewFilterOptions(option, [props.topic]);
+              renewFilterOptions(
+                option,
+                isTopicGroup ? props.topics : [props.topic],
+              );
             }}
           >
             <div>
@@ -138,7 +105,10 @@ export const TopicOptions: React.FC<TopicOptionsProps> = (props) => {
               onChange={(evt) => setCustomInput(evt.target.value)}
               onBlur={(evt) => {
                 if (!evt.target.value) return;
-                renewFilterOptions(evt.target.value, [props.topic]);
+                renewFilterOptions(
+                  evt.target.value,
+                  isTopicGroup ? props.topics : [props.topic],
+                );
               }}
               className={clsx(
                 'notifi-topic-options-custom-input',
@@ -162,44 +132,8 @@ export const TopicOptions: React.FC<TopicOptionsProps> = (props) => {
 };
 
 // Utils
-
-// const getUpdatedAlertFilterOptions = (
-//   filterName: string,
-//   alertFilterOptions: FusionFilterOptions,
-//   inputParmName: string,
-//   value: string | number,
-// ) => {
-//   return {
-//     ...alertFilterOptions,
-//     input: {
-//       ...alertFilterOptions.input,
-//       [filterName]: {
-//         ...alertFilterOptions.input[filterName],
-//         [inputParmName]: value,
-//       },
-//     },
-//   };
-// };
-
-// const derivePrefixAndSuffixFromValueType = (
-//   kind: ValueType,
-// ): { prefix: string; suffix: string } => {
-//   switch (kind) {
-//     case 'price':
-//       return {
-//         prefix: '$',
-//         suffix: '',
-//       };
-//     case 'percentage':
-//       return {
-//         prefix: '',
-//         suffix: '%',
-//       };
-//     case 'string':
-//     case 'integer':
-//       return {
-//         prefix: '',
-//         suffix: '',
-//       };
-//   }
-// };
+const isTopicGroupOptions = (
+  props: TopicOptionsProps<TopicRowCategory>,
+): props is TopicGroupOptionsProps => {
+  return 'topics' in props;
+};
