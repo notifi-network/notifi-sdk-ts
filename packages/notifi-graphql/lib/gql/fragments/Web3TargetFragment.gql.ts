@@ -58,3 +58,16 @@ export const VerifyCbwTargetResponseFragment = gql`
     }
   }
 `;
+
+export const VerifyXmtpTargetViaXip42ResponseFragment = gql`
+  fragment VerifyXmtpTargetViaXip42ResponseFragment on VerifyXmtpTargetViaXip42Response {
+    web3Target {
+      id
+      name
+      accountId
+      walletBlockchain
+      targetProtocol
+      isConfirmed
+    }
+  }
+`;
