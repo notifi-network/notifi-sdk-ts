@@ -18,7 +18,7 @@ export const DummyAlertsModal: React.FC = () => {
       </div>
       <div className="md:w-[28.37rem] flex flex-col md:flex-row flex-wrap justify-between">
         {dummyAlerts.map((alert) => (
-          <div key={alert} className="w-56 flex items-center">
+          <div key={alert} className="w-56 flex items-center mb-3">
             <Icon
               id="right-arrow"
               width={11}

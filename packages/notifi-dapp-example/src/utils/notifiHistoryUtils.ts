@@ -8,6 +8,7 @@ export type ParsedNotificationHistory = {
   subject: string;
   message: string;
   read: boolean;
+  customIconUrl?: string;
 };
 
 export type ValidEventDetail = Extract<
@@ -54,6 +55,7 @@ export const parseNotificationHistory = (
       message:
         'Invalid notification history detail: only support GenericEventDetails',
       read: true,
+      customIconUrl: '',
     };
   }
 
@@ -67,6 +69,7 @@ export const parseNotificationHistory = (
     message: eventDetails.genericMessageHtml ?? eventDetails.genericMessage,
     icon: eventDetails.icon,
     read: history.read,
+    customIconUrl: eventDetails.customIconUrl,
   };
 };
 

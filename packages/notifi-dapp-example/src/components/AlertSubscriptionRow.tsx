@@ -2,30 +2,38 @@
 
 import { Icon } from '@/assets/Icon';
 import {
-  AlertFilter,
-  FusionEventMetadata,
-  FusionEventTopic,
-} from '@notifi-network/notifi-frontend-client';
+  getFusionFilter,
+  getUiConfigOverride,
+  getUserInputParams,
+  isTopicGroupValid,
+} from '@/utils/topic';
+import { FusionEventTopic } from '@notifi-network/notifi-frontend-client';
 import {
   useNotifiTargetContext,
   useNotifiTopicContext,
 } from '@notifi-network/notifi-react';
-import { useMemo } from 'react';
 import React from 'react';
 
+import {
+  TopicGroupRowMetadata,
+  TopicRowCategory,
+  TopicStandaloneRowMetadata,
+} from './AlertSubscription';
 import { AlertSubscriptionOptions } from './AlertSubscriptionOptions';
 import { SubscriptionValueInput } from './SubscriptionValueInput';
 import { Toggle } from './Toggle';
 
-type AlertSubscriptionRowProps = {
-  topic: FusionEventTopic;
-  // TODO: Dynamically render UI components using fusionEventData.metadata
-  // fusionEventData: Types.FusionEventData;
-};
+type TopicGroupRowProps = TopicGroupRowMetadata;
 
-export const AlertSubscriptionRow: React.FC<AlertSubscriptionRowProps> = ({
-  topic,
-}) => {
+type TopicStandaloneRowProps = TopicStandaloneRowMetadata;
+
+export type AlertSubscriptionRowProps<T extends TopicRowCategory> =
+  T extends 'standalone' ? TopicStandaloneRowProps : TopicGroupRowProps;
+
+export const AlertSubscriptionRow = <T extends TopicRowCategory>(
+  props: AlertSubscriptionRowProps<T>,
+) => {
+  const isTopicGroup = isTopicGroupRow(props);
   const [isAddPairOpen, setIsAddPairOpen] = React.useState<boolean>(false);
   const tradingPairAlertsList = [
     { 'ETH / USDC - Chain': 'Above 15928.00' },
@@ -42,32 +50,52 @@ export const AlertSubscriptionRow: React.FC<AlertSubscriptionRowProps> = ({
     targetDocument: { targetGroupId },
   } = useNotifiTargetContext();
 
-  const metadata = topic.fusionEventDescriptor?.metadata ?? null;
+  const benchmarkTopic = isTopicGroup ? props.topics[0] : props.topic;
 
-  if (!metadata) return null;
+  if (isTopicGroup && !isTopicGroupValid(props.topics)) return null;
 
-  const parsedMetadata: FusionEventMetadata | null = metadata
-    ? (JSON.parse(metadata) as FusionEventMetadata)
-    : null;
+  const userInputParams = getUserInputParams(benchmarkTopic);
 
-  const icon = parsedMetadata?.uiConfigOverride?.icon ?? 'INFO';
-  const customIconUrl = parsedMetadata?.uiConfigOverride?.customIconUrl ?? '';
-  const topicDisplayName =
-    parsedMetadata?.uiConfigOverride?.topicDisplayName &&
-    parsedMetadata?.uiConfigOverride?.topicDisplayName !== ''
-      ? parsedMetadata?.uiConfigOverride?.topicDisplayName
-      : topic.uiConfig.name;
-  const isSubscriptionValueSelectable =
-    parsedMetadata?.uiConfigOverride?.isSubscriptionValueSelectable ?? false;
-  const description = useMemo(() => {
-    const filters = (parsedMetadata?.filters as AlertFilter[]) ?? [];
-    return filters[0]?.description ?? '';
-  }, [topic]);
-  const userInputParams = useMemo(() => {
-    const filters = (parsedMetadata?.filters as AlertFilter[]) ?? [];
-    return filters[0]?.userInputParams ?? [];
-  }, [topic]);
+  const uiConfigOverride = getUiConfigOverride(benchmarkTopic);
+
+  const icon = uiConfigOverride?.icon ?? 'INFO';
+  const customIconUrl = uiConfigOverride?.customIconUrl ?? '';
+
+  const isSubscriptionValueInputable =
+    uiConfigOverride?.isSubscriptionValueInputable ?? false;
+
+  const description = getFusionFilter(benchmarkTopic)?.description ?? '';
+
   const reversedParams = [...userInputParams].reverse();
+
+  const title = isTopicGroup
+    ? props.topicGroupName
+    : uiConfigOverride?.topicDisplayName &&
+      uiConfigOverride?.topicDisplayName !== ''
+    ? uiConfigOverride?.topicDisplayName
+    : benchmarkTopic.uiConfig.name ?? benchmarkTopic.uiConfig.name;
+
+  const toggleStandAloneTopic = async (topic: FusionEventTopic) => {
+    if (!targetGroupId) return;
+    if (!isAlertSubscribed(benchmarkTopic.uiConfig.name)) {
+      return subscribeAlertsDefault([topic], targetGroupId);
+    }
+    unsubscribeAlert(benchmarkTopic.uiConfig.name);
+  };
+
+  const toggleTopicGroup = async (topics: FusionEventTopic[]) => {
+    if (!targetGroupId) return;
+    if (!isAlertSubscribed(benchmarkTopic.uiConfig.name)) {
+      return subscribeAlertsDefault(topics, targetGroupId);
+    }
+    const topicsToBeUnsubscribed = topics.filter((topic) =>
+      isAlertSubscribed(topic.uiConfig.name),
+    );
+    // TODO: replace with batch alert deletion (BE blocker)
+    for (const topic of topicsToBeUnsubscribed) {
+      await unsubscribeAlert(topic.uiConfig.name);
+    }
+  };
 
   return (
     <div className="flex flex-col p-2 px-4 bg-notifi-destination-card-bg rounded-md w-[359px]">
@@ -84,13 +112,13 @@ export const AlertSubscriptionRow: React.FC<AlertSubscriptionRowProps> = ({
               </div>
             )}
             <label>
-              {topicDisplayName}
+              {title}
               <div className="group inline-block align-middle">
-                {topic.uiConfig.tooltipContent ? (
+                {benchmarkTopic.uiConfig.tooltipContent ? (
                   <div className="relative">
                     <Icon id="info" className="text-notifi-text-light" />
                     <div className="hidden group-hover:block absolute text-sm font-medium max-w-48 bg-notifi-card-bg p-4 rounded-md z-10 border border-notifi-card-border w-48 bottom-[1.5rem] right-[-5rem]">
-                      <div>{topic.uiConfig.tooltipContent}</div>
+                      <div>{benchmarkTopic.uiConfig.tooltipContent}</div>
                     </div>
                   </div>
                 ) : null}
@@ -99,19 +127,18 @@ export const AlertSubscriptionRow: React.FC<AlertSubscriptionRowProps> = ({
           </div>
         </div>
         {/* hide toggle button if it is the Trading Pair Price Alert, but shown save button instead below */}
-        {userInputParams.length > 1 ? null : (
-          <Toggle
-            checked={isAlertSubscribed(topic.uiConfig.name)}
-            disabled={isLoadingTopic}
-            onChange={() => {
-              if (!targetGroupId) return;
-              if (!isAlertSubscribed(topic.uiConfig.name)) {
-                return subscribeAlertsDefault([topic], targetGroupId);
-              }
-              unsubscribeAlert(topic.uiConfig.name);
-            }}
-          />
-        )}
+        {/* {userInputParams.length > 1 ? null : ( */}
+        <Toggle
+          checked={isAlertSubscribed(benchmarkTopic.uiConfig.name)}
+          disabled={isLoadingTopic}
+          onChange={async () => {
+            if (isTopicGroup) {
+              return toggleTopicGroup(props.topics);
+            }
+            toggleStandAloneTopic(benchmarkTopic);
+          }}
+        />
+        {/* )} */}
       </div>
 
       {/* show Trading Pair Price Alert list if there are any
@@ -140,47 +167,79 @@ export const AlertSubscriptionRow: React.FC<AlertSubscriptionRowProps> = ({
 
       {/* show dropdown button for Trading Pair Price Alert */}
       {/* TODO: pass in a variable from AP to determine if the dropdown should be shown */}
-      {isSubscriptionValueSelectable ? <SubscriptionValueInput /> : null}
+      {isSubscriptionValueInputable ? <SubscriptionValueInput /> : null}
 
       {/* render radio button or button inputs if content with userInputParams length equals to 1 */}
       {userInputParams.length === 1 &&
-      isAlertSubscribed(topic.uiConfig.name) ? (
+      isAlertSubscribed(benchmarkTopic.uiConfig.name) ? (
         <div>
-          {userInputParams.map((userInput, id) => {
-            return (
-              <AlertSubscriptionOptions
-                index={id}
-                key={id}
-                userInputParam={userInput}
-                topic={topic}
-                description={description}
-              />
-            );
-          })}
+          {isTopicGroup
+            ? userInputParams.map((userInput, id) => {
+                return (
+                  <AlertSubscriptionOptions<'group'>
+                    index={id}
+                    key={id}
+                    userInputParam={userInput}
+                    topics={props.topics}
+                    description={description}
+                  />
+                );
+              })
+            : null}
+          {!isTopicGroup
+            ? userInputParams.map((userInput, id) => {
+                return (
+                  <AlertSubscriptionOptions<'standalone'>
+                    index={id}
+                    key={id}
+                    userInputParam={userInput}
+                    topic={benchmarkTopic}
+                    description={description}
+                  />
+                );
+              })
+            : null}
         </div>
       ) : null}
 
       {/* render radio button or button inputs if content with userInputParams length larger than 1, for GMX, it is the Trading Pair Price Alert */}
       {userInputParams.length > 1 && isAddPairOpen ? (
         <div>
-          {reversedParams.map((userInput, id) => {
-            return (
-              <AlertSubscriptionOptions
-                index={id}
-                key={id}
-                userInputParam={userInput}
-                topic={topic}
-                description={description}
-              />
-            );
-          })}
+          {isTopicGroup
+            ? reversedParams.map((userInput, id) => {
+                return (
+                  <AlertSubscriptionOptions<'group'>
+                    index={id}
+                    key={id}
+                    userInputParam={userInput}
+                    topics={props.topics}
+                    description={description}
+                  />
+                );
+              })
+            : null}
+          {!isTopicGroup
+            ? reversedParams.map((userInput, id) => {
+                return (
+                  <AlertSubscriptionOptions<'standalone'>
+                    index={id}
+                    key={id}
+                    userInputParam={userInput}
+                    topic={benchmarkTopic}
+                    description={description}
+                  />
+                );
+              })
+            : null}
           <button
             className="ml-14 h-9 w-18 rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text mt-1 mb-4"
             onClick={() => {
               if (!targetGroupId) return;
-              if (!isAlertSubscribed(topic.uiConfig.name)) {
-                // TODO: update logic here to subscribe not based on the name
-                // subscribeAlertsDefault([topic], targetGroupId);
+              if (!isAlertSubscribed(benchmarkTopic.uiConfig.name)) {
+                if (isTopicGroup) {
+                  return toggleTopicGroup(props.topics);
+                }
+                toggleStandAloneTopic(benchmarkTopic);
               }
               setIsAddPairOpen(false);
             }}
@@ -203,4 +262,11 @@ export const AlertSubscriptionRow: React.FC<AlertSubscriptionRowProps> = ({
       ) : null}
     </div>
   );
+};
+
+// Utils
+const isTopicGroupRow = (
+  props: AlertSubscriptionRowProps<TopicRowCategory>,
+): props is TopicGroupRowProps => {
+  return 'topics' in props && 'topicGroupName' in props;
 };
