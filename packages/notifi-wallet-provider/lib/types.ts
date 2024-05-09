@@ -2,10 +2,12 @@ import type { Keplr, StdSignature } from '@keplr-wallet/types';
 import { BrowserProvider, Eip1193Provider } from 'ethers';
 
 export type Ethereum = Eip1193Provider & BrowserProvider;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type BinanceChain = Ethereum & { requestAccounts: () => any };
 declare global {
   interface Window {
     keplr: Keplr;
-    ethereum: Ethereum;
+    BinanceChain: BinanceChain;
   }
 }
 
@@ -52,6 +54,14 @@ export class MetamaskWallet implements NotifiWallet {
     public disconnect: () => void,
   ) {}
 }
+export class CoinbaseWallet extends MetamaskWallet {}
+export class RabbyWallet extends MetamaskWallet {}
+export class ZerionWallet extends MetamaskWallet {}
+export class OKXWallet extends MetamaskWallet {}
+export class RainbowWallet extends MetamaskWallet {}
+export class BinanceWallet extends MetamaskWallet {}
+export class WalletConnectWallet extends MetamaskWallet {}
+
 export type KeplrSignMessage = (
   message: string | Uint8Array,
 ) => Promise<StdSignature | undefined>;
@@ -65,7 +75,15 @@ export class KeplrWallet implements NotifiWallet {
     public disconnect: () => void,
   ) {}
 }
+
 export type Wallets = {
   metamask: MetamaskWallet;
   keplr: KeplrWallet;
+  coinbase: CoinbaseWallet;
+  rabby: RabbyWallet;
+  rainbow: RainbowWallet;
+  zerion: ZerionWallet;
+  okx: OKXWallet;
+  binance: BinanceWallet;
+  walletconnect: WalletConnectWallet;
 };
