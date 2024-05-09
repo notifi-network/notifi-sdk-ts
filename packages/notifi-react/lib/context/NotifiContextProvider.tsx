@@ -22,7 +22,10 @@ export const NotifiContextProvider: FC<
 > = ({ children, ...params }) => {
   return (
     <NotifiFrontendClientContextProvider {...params}>
-      <NotifiTenantConfigContextProvider cardId={params.cardId}>
+      <NotifiTenantConfigContextProvider
+        cardId={params.cardId}
+        inputs={params.inputs}
+      >
         <NotifiTargetContextProvider>
           <NotifiTopicContextProvider>
             <NotifiHistoryContextProvider>
