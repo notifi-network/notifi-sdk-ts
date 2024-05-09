@@ -24,9 +24,9 @@ export const subscribeCoinbaseMessaging = async (
     method: 'POST',
     body: JSON.stringify(payload),
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'text/plain',
     },
-  }).then((v) => v.json());
+  })
 
-  return response;
+  return await response.json();
 };

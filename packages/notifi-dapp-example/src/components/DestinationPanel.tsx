@@ -170,9 +170,9 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
         throw Error('Unable to sign the wallet. Please try again.');
 
       const message = `Coinbase Wallet Messaging subscribe
-      Address: ${address}
-      Partner Address: ${senderAddress}
-      Nonce: ${nonce}`;
+Address: ${address}
+Partner Address: ${senderAddress}
+Nonce: ${nonce}`;
 
       const signature = await wallets[selectedWallet].signArbitrary(message);
 
