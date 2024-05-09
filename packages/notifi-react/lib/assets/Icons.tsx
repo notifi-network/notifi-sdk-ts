@@ -28,7 +28,7 @@ export const Icon: React.FC<Props & { type: IconType }> = (
           viewBox="0 0 24 24"
           fill="none"
         >
-          <g clip-path="url(#clip0_1821_6938)">
+          <g clipPath="url(#clip0_1821_6938)">
             <path
               d="M3.9 12C3.9 10.29 5.29 8.9 7 8.9H11V7H7C4.24 7 2 9.24 2 12C2 14.76 4.24 17 7 17H11V15.1H7C5.29 15.1 3.9 13.71 3.9 12ZM8 13H16V11H8V13ZM17 7H13V8.9H17C18.71 8.9 20.1 10.29 20.1 12C20.1 13.71 18.71 15.1 17 15.1H13V17H17C19.76 17 22 14.76 22 12C22 9.24 19.76 7 17 7Z"
               fill="currentColor"
@@ -208,7 +208,7 @@ export const Icon: React.FC<Props & { type: IconType }> = (
           viewBox="0 0 24 24"
           fill="none"
         >
-          <g clip-path="url(#clip0_5611_1341)">
+          <g clipPath="url(#clip0_5611_1341)">
             <path
               d="M7.5 17.4444C7.5 18.3 8.175 19 9 19H15C15.825 19 16.5 18.3 16.5 17.4444V8.11111H7.5V17.4444ZM17.25 5.77778H14.625L13.875 5H10.125L9.375 5.77778H6.75V7.33333H17.25V5.77778Z"
               fill="currentColor"
