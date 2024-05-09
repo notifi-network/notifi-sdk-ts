@@ -39,9 +39,10 @@ type Target =
   | 'slack'
   | 'wallet';
 
+export type TargetInputFromValue = { value: string; error?: string };
 type TargetInputForm = Record<
   Extract<Target, 'email' | 'phoneNumber' | 'telegram'>, // NOTE: only these 3 have their form input
-  { value: string; error?: string }
+  TargetInputFromValue
 >;
 
 type TargetInputToggles = Record<
