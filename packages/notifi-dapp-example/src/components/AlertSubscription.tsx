@@ -96,10 +96,6 @@ export const AlertSubscription: React.FC<AlertSubscriptionProps> = ({
           }
         })}
       </div>
-      {/* <div className="flex flex-wrap gap-4 justify-center w-72 md:w-[37rem]">
-        <div className="w-72 rounded-lg invisible h-0"></div>
-        <div className="w-72 rounded-lg invisible h-0"></div>
-      </div> */}
     </div>
   );
 };
