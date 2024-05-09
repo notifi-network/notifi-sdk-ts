@@ -8,7 +8,7 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Inbox',
+  title: 'GMX',
   description: 'Injective x Notifi Inbox',
 };
 

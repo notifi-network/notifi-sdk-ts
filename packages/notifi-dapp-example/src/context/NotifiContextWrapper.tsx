@@ -20,6 +20,7 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
     !wallets[selectedWallet].signArbitrary
   )
     return null;
+  const accountAddress = wallets[selectedWallet]?.walletKeys?.bech32 ?? '';
   let walletPublicKey = '';
   let signMessage;
   if (selectedWallet) {

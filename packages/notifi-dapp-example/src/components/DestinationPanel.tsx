@@ -1,9 +1,14 @@
 import { Icon } from '@/assets/Icon';
+import { useGlobalStateContext } from '@/context/GlobalStateContext';
+import { createCoinbaseNonce, subscribeCoinbaseMessaging } from '@/utils/XMTP';
 import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
+import { createConsentMessage } from '@xmtp/consent-proof-signature'
 import {
   isCtaInfo,
   useNotifiTargetContext,
+  useNotifiFrontendClientContext
 } from '@notifi-network/notifi-react';
+import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import React, { useCallback, useMemo, useState } from 'react';
 
 import { DestinationInfoPrompt } from './DestinationInfoPrompt';
@@ -36,6 +41,8 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
     targetDocument: { targetInfoPrompts, targetData },
   } = useNotifiTargetContext();
 
+  const { frontendClient } = useNotifiFrontendClientContext();
+
   const handleResendEmailVerificationClick = useCallback(() => {
     if (targetInfoPrompts.email?.infoPrompt.type !== 'cta') return;
     setIsEmailConfirmationSent(true);
@@ -55,6 +62,93 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
     </div>
   );
 
+  const [isLoading, setIsLoading] = useState(false);
+  const { wallets, selectedWallet } = useWallets();
+  const { popGlobalInfoModal } = useGlobalStateContext();
+
+  const signWallet = async () => {
+    if (!selectedWallet) {
+      throw Error('Unable to sign the wallet. Please try again.');
+    }
+
+    const targetId = targetData?.wallet?.data?.id ?? "";
+    const address =
+      selectedWallet === 'coinbase'
+        ? wallets[selectedWallet]?.walletKeys?.hex ?? ''
+        : '';
+    // TODO: get senderAddress from target
+    const senderAddress = "0xb49bbE2c31CF4a0fB74b16812b8c6B6FeEE23524"
+    const timestamp = Date.now();
+    const message = createConsentMessage(senderAddress, timestamp)
+    console.log(message)
+    const signature = await wallets[selectedWallet].signArbitrary(message);
+
+    if (!signature) {
+      throw Error('Unable to sign the wallet. Please try again.');
+    }
+
+    console.log(targetId)
+    console.log(address)
+    await frontendClient.verifyXmtpTarget(
+      {
+        input: {
+          web3TargetId: targetId,
+          accountId: address,
+          consentProofSignature: signature as string,
+          timestamp: timestamp,
+          isCBW: true,
+        }
+      });
+    // await signCoinbaseSignature(address, senderAddress);
+    await frontendClient.verifyCbwTarget(
+      {
+        input: {
+          targetId: targetId
+        }
+      });
+  }
+
+  const signCoinbaseSignature = async (address: string, senderAddress: string) => {
+    try {
+      setIsLoading(true);
+
+      const nonce = await createCoinbaseNonce();
+      if (!nonce || !selectedWallet)
+        throw Error('Unable to sign the wallet. Please try again.');
+
+      const conversationTopic = ''; //TODO: retrieve it from API
+
+      const message = `Coinbase Wallet Messaging subscribe
+      Address: ${address}
+      Partner Address: ${senderAddress}
+      Nonce: ${nonce}`;
+
+      const signature = await wallets[selectedWallet].signArbitrary(message);
+
+      if (!signature)
+        throw Error('Unable to sign the wallet. Please try again.');
+
+      const payload = {
+        address,
+        nonce,
+        signature: signature as string,
+        isActivatedViaCb: true,
+        partnerAddress: senderAddress,
+        conversationTopic,
+      };
+
+      await subscribeCoinbaseMessaging(payload);
+    } catch (e) {
+      popGlobalInfoModal({
+        message: 'Unable to sign the wallet. Please try again.',
+        iconOrEmoji: { type: 'icon', id: 'warning' },
+        timeout: 3000,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="w-full flex flex-col justify-center items-center">
       {contactInfo.email.active && targetData.email ? (
@@ -71,11 +165,10 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
             </div>
           </div>
           <div
-            className={`flex ${
-              targetInfoPrompts.email?.infoPrompt.type === 'cta'
-                ? 'flex-col'
-                : 'flex-row'
-            } items-start justify-between w-3/4 sm:w-90 mr-4`}
+            className={`flex ${targetInfoPrompts.email?.infoPrompt.type === 'cta'
+              ? 'flex-col'
+              : 'flex-row'
+              } items-start justify-between w-3/4 sm:w-90 mr-4`}
           >
             <div className="text-sm ml-6 text-notifi-text">
               {targetData.email}
@@ -227,6 +320,48 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
                   : 'Discord'}
               </div>
               {VerifiedText}
+            </div>
+          )}
+        </div>
+      ) : null}
+
+      {targetData.wallet.useWallet ? (
+        <div className="bg-notifi-destination-card-bg rounded-md w-full sm:w-112 h-18 flex flex-row items-center justify-between mb-2">
+          <div className="bg-notifi-destination-logo-card-bg rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
+            <Icon id="wallet-icon" className="text-notifi-toggle-on-bg" />
+            <div className="font-medium text-xs mt-2 text-notifi-grey-text">
+              Wallet
+            </div>
+          </div>
+
+          {targetInfoPrompts.wallet?.infoPrompt.type === 'cta' ? (
+            <div className="flex flex-row items-center justify-between w-3/4 sm:w-90 mr-4">
+              <div className="text-sm ml-6 text-notifi-text">Wallet Alerts</div>
+              <DestinationInfoPrompt
+                isButton={true}
+                buttonCopy={targetInfoPrompts.wallet?.infoPrompt.message ?? ''}
+                onClick={() => {
+                  const infoPrompt = targetInfoPrompts.wallet?.infoPrompt;
+                  if (
+                    infoPrompt &&
+                    isCtaInfo(infoPrompt) &&
+                    infoPrompt.message === 'Sign Wallet' &&
+                    !isLoading
+                  ) {
+                    signWallet();
+                  }
+                  else if (infoPrompt && isCtaInfo(infoPrompt))
+                    infoPrompt.onClick();
+                }}
+                infoPromptMessage={
+                  targetInfoPrompts.wallet?.infoPrompt.message ?? ''
+                }
+              />
+            </div>
+          ) : (
+            <div className="flex flex-row items-start justify-between w-3/4 sm:w-90 mr-4">
+              <div className="text-sm ml-6 text-notifi-text">Wallet Alerts</div>
+              {targetData.wallet?.data?.isConfirmed ? VerifiedText : null}
             </div>
           )}
         </div>

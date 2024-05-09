@@ -379,6 +379,7 @@ class NotifiClient {
       webhookTargetIds: [webhookTarget.id],
       discordTargetIds: [],
       slackChannelTargetIds: [],
+      web3TargetIds: [],
     });
     if (createResult.createTargetGroup === undefined) {
       throw new Error('Failed to create TargetGroup');
@@ -424,6 +425,7 @@ class NotifiClient {
       webhookTargetIds: [webhook.id],
       discordTargetIds: [],
       slackChannelTargetIds: [],
+      web3TargetIds: [],
     });
 
     const updated = updateResult.updateTargetGroup;

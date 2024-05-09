@@ -66,9 +66,9 @@ text-notifi-button-primary-blueish-bg md:ml-6 mt-1"
             disabled={disabled || !!telegram.error || !!email.error}
             checked={slack}
             onChange={() => {
-              isEditable
-                ? renewTargetGroup()
-                : updateTargetInputs('slack', !slack);
+              updateTargetInputs('slack', !slack);
+              if (isEditable)
+                renewTargetGroup({ target: 'slack', value: !slack });
             }}
           />
         </div>

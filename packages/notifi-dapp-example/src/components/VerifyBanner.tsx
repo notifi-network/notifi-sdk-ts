@@ -25,6 +25,8 @@ export const VerifyBanner: React.FC<VerifyBannerProps> = ({
           return 'Slack';
         case 'phoneNumber':
           return 'Phone Number';
+        case 'wallet':
+          return 'Wallet';
         default:
           return target;
       }
