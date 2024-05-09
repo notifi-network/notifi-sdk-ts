@@ -1,17 +1,15 @@
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
-import { useNotifiFrontendClientContext } from '@/context/NotifiFrontendClientContext';
 import { useNotifiTargetContext } from '@/context/NotifiTargetContext';
-import { useNotifiTenantConfig } from '@/context/NotifiTenantConfigContext';
-import {
-  useNotifiTopicContext,
-  validateTopic,
-} from '@/context/NotifiTopicContext';
-import {
-  FtuStage,
-  useNotifiUserSettingContext,
-} from '@/context/NotifiUserSettingContext';
 import { useRouterAsync } from '@/hooks/useRouterAsync';
 import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
+import {
+  FtuStage,
+  useNotifiFrontendClientContext,
+  useNotifiTenantConfigContext,
+  useNotifiTopicContext,
+  useNotifiUserSettingContext,
+  validateTopic,
+} from '@notifi-network/notifi-react';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 export type NotifiSignUpButtonProps = Readonly<{
@@ -31,7 +29,7 @@ export const SignUpButton: React.FC<NotifiSignUpButtonProps> = ({
     updateFtuStage,
     isLoading: isLoadingFtu,
   } = useNotifiUserSettingContext();
-  const { cardConfig } = useNotifiTenantConfig();
+  const { cardConfig } = useNotifiTenantConfigContext();
   const [isLoading, setIsLoading] = useState(false);
 
   const {

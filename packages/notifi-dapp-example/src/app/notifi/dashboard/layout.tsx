@@ -1,10 +1,12 @@
 'use client';
 
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
-import { FtuStage } from '@/context/NotifiUserSettingContext';
-import { useNotifiUserSettingContext } from '@/context/NotifiUserSettingContext';
 import { useNotifiRouter } from '@/hooks/useNotifiRouter';
 import { useRouterAsync } from '@/hooks/useRouterAsync';
+import {
+  FtuStage,
+  useNotifiUserSettingContext,
+} from '@notifi-network/notifi-react';
 import { useEffect } from 'react';
 
 export default function NotifiDashboardLayout({

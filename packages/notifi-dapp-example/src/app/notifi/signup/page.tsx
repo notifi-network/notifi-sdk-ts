@@ -2,19 +2,22 @@
 
 import { InputFields } from '@/components/InputFields';
 import { SignUpButton } from '@/components/SignUpButton';
-import { useNotifiFrontendClientContext } from '@/context/NotifiFrontendClientContext';
-import { useNotifiTenantConfig } from '@/context/NotifiTenantConfigContext';
-import { useNotifiUserSettingContext } from '@/context/NotifiUserSettingContext';
+import {
+  useNotifiFrontendClientContext,
+  useNotifiTenantConfigContext,
+  useNotifiUserSettingContext,
+} from '@notifi-network/notifi-react';
 
 export default function NotifiSignup() {
-  const { cardConfig } = useNotifiTenantConfig();
+  const { cardConfig } = useNotifiTenantConfigContext();
   const { frontendClientStatus } = useNotifiFrontendClientContext();
   const { isLoading: isLoadingFtu } = useNotifiUserSettingContext();
 
-  if (!frontendClientStatus.isAuthenticated || isLoadingFtu) return null;
+  if (!frontendClientStatus.isAuthenticated || isLoadingFtu || !cardConfig)
+    return null;
 
   return (
-    <div className="w-full md:h-4/6 sm:w-4/6 bg-notifi-card-bg rounded-2xl flex flex-col items-center justify-between mb-8 px-4">
+    <div className="w-full sm:min-h-[550px] sm:w-4/6 bg-notifi-card-bg rounded-2xl flex flex-col items-center justify-between mb-8 px-4">
       <div className="w-full">
         <div className="flex flex-col items-center justify-center">
           <p className="font-semibold text-xs opacity-50 mt-2.5 text-notifi-text-medium">

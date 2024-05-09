@@ -1,6 +1,6 @@
 import { CardView } from '@/app/notifi/dashboard/page';
 import { Icon } from '@/assets/Icon';
-import { useNotifiTargetContext } from '@/context/NotifiTargetContext';
+import { useNotifiTargetContext } from '@notifi-network/notifi-react';
 import React, { useMemo } from 'react';
 
 export type VerifyBannerProps = Readonly<{

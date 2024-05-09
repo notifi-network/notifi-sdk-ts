@@ -6,7 +6,6 @@ import { MobilePromptModal } from '@/components/MobilePromptModal';
 import { PoweredByNotifi } from '@/components/PoweredByNotifi';
 import { WalletSelectModal } from '@/components/WalletSelectModal';
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
-import { useInjectiveWallets } from '@/context/InjectiveWalletContext';
 import { useRouterAsync } from '@/hooks/useRouterAsync';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import Image from 'next/image';
@@ -16,25 +15,14 @@ export default function Home() {
   const { isLoadingRouter, handleRoute } = useRouterAsync();
   const { popGlobalInfoModal } = useGlobalStateContext();
   const { selectedWallet, wallets, error, isLoading } = useWallets();
-  const { selectedWallet: injectiveSelectedWallet, wallets: injectiveWallets } =
-    useInjectiveWallets();
   const [isOpenWalletsModal, setIsOpenWalletsModal] = useState(false);
   const [isOpenMobilePromptModal, setIsOpenMobilePromptModal] = useState(false);
 
-  const allWallets = {
-    ...wallets,
-    ...injectiveWallets,
-  };
-
   useEffect(() => {
-    if (
-      (selectedWallet && wallets[selectedWallet].walletKeys) ||
-      (injectiveSelectedWallet &&
-        injectiveWallets[injectiveSelectedWallet].walletKeys)
-    ) {
+    if (selectedWallet && wallets[selectedWallet].walletKeys) {
       handleRoute('/notifi');
     }
-  }, [selectedWallet, injectiveSelectedWallet]);
+  }, [selectedWallet]);
 
   useEffect(() => {
     if (error) {
@@ -80,7 +68,7 @@ export default function Home() {
       ) : null}
       {/* show this modal if there is no metamask and keplr extension detected */}
       {isOpenMobilePromptModal &&
-      !Object.values(allWallets)
+      !Object.values(wallets)
         .map((wallet) => wallet.isInstalled)
         .includes(true) ? (
         <MobilePromptModal

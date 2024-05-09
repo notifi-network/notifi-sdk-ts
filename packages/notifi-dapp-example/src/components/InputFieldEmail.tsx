@@ -1,6 +1,6 @@
 import { Icon } from '@/assets/Icon';
-import { useNotifiTargetContext } from '@/context/NotifiTargetContext';
 import { DeepPartialReadonly } from '@/utils/typeUtils';
+import { useNotifiTargetContext } from '@notifi-network/notifi-react';
 import React from 'react';
 
 export type InputFieldEmailProps = Readonly<{
@@ -19,12 +19,11 @@ export const InputFieldEmail: React.FC<InputFieldEmailProps> = ({
   isEditable,
 }: InputFieldEmailProps) => {
   const {
-    updateTarget,
-    setHasEmailChanges,
-    hasEmailChanges,
-    updateTargetForms,
+    updateTargetInputs,
+    isChangingTargets,
+    renewTargetGroup,
     targetDocument: {
-      targetInputForm: { email, telegram },
+      targetInputs: { email, telegram },
     },
   } = useNotifiTargetContext();
 
@@ -36,13 +35,15 @@ export const InputFieldEmail: React.FC<InputFieldEmailProps> = ({
       '^[a-zA-Z0-9._:$!%-+]+@[a-zA-Z0-9.-]+.[a-zA-Z]$',
     );
     if (emailRegex.test(email.value)) {
-      updateTargetForms('email', email.value);
+      updateTargetInputs('email', {
+        value: email.value,
+        error: '',
+      });
     } else {
-      updateTargetForms(
-        'email',
-        email.value,
-        'The email is invalid. Please try again.',
-      );
+      updateTargetInputs('email', {
+        value: email.value,
+        error: `The email is invalid. Please try again.`,
+      });
     }
   };
 
@@ -69,13 +70,20 @@ export const InputFieldEmail: React.FC<InputFieldEmailProps> = ({
           data-cy="notifiEmailInput"
           onBlur={validateEmail}
           disabled={disabled}
-          onFocus={() => updateTargetForms('email', email.value, '')}
+          onFocus={() =>
+            updateTargetInputs('email', {
+              value: email.value,
+              error: '',
+            })
+          }
           name="notifi-email"
           type="email"
           value={email.value}
           onChange={(e) => {
-            setHasEmailChanges(true);
-            updateTargetForms('email', e.target.value);
+            updateTargetInputs('email', {
+              value: e.target.value,
+              error: '',
+            });
           }}
           placeholder={copy?.placeholder ?? 'Enter your email address'}
         />
@@ -84,11 +92,11 @@ export const InputFieldEmail: React.FC<InputFieldEmailProps> = ({
             <p className="text-notifi-error text-xs block">{email.error}</p>
           </div>
         ) : null}
-        {isEditable && hasEmailChanges ? (
+        {isEditable && isChangingTargets.email ? (
           <button
             className="rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-16 h-7 mb-6 text-sm font-medium absolute top-2.5 right-1 disabled:opacity-50 disabled:hover:bg-notifi-button-primary-blueish-bg hover:bg-notifi-button-hover-bg"
             disabled={!!telegram.error || !!email.error}
-            onClick={() => updateTarget('email')}
+            onClick={() => renewTargetGroup()}
           >
             <span>Save</span>
           </button>

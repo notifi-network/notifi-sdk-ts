@@ -1,5 +1,5 @@
 import { Icon } from '@/assets/Icon';
-import { useNotifiTargetContext } from '@/context/NotifiTargetContext';
+import { useNotifiTargetContext } from '@notifi-network/notifi-react';
 import React from 'react';
 
 import { Toggle } from './Toggle';
@@ -14,12 +14,12 @@ export const InputFieldSlack: React.FC<InputFieldSlackProps> = ({
   isEditable,
 }: InputFieldSlackProps) => {
   const {
-    updateTarget,
+    updateTargetInputs,
+    renewTargetGroup,
     targetDocument: {
       targetData,
-      targetInputForm: { email, telegram },
+      targetInputs: { email, telegram },
     },
-    updateUseSlack,
   } = useNotifiTargetContext();
 
   return (
@@ -67,8 +67,8 @@ text-notifi-button-primary-blueish-bg md:ml-6 mt-1"
             checked={targetData.slack.useSlack}
             onChange={() => {
               isEditable
-                ? updateTarget('slack')
-                : updateUseSlack(!targetData.slack.useSlack);
+                ? renewTargetGroup()
+                : updateTargetInputs('slack', !targetData.slack.useSlack);
             }}
           />
         </div>

@@ -3,11 +3,13 @@
 import { ConfigAlertModal } from '@/components/ConfigAlertModal';
 import { ConfigDestinationModal } from '@/components/ConfigDestinationModal';
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
-import { useNotifiFrontendClientContext } from '@/context/NotifiFrontendClientContext';
-import { useNotifiTenantConfig } from '@/context/NotifiTenantConfigContext';
-import { FtuStage } from '@/context/NotifiUserSettingContext';
-import { useNotifiUserSettingContext } from '@/context/NotifiUserSettingContext';
 import { useRouterAsync } from '@/hooks/useRouterAsync';
+import {
+  FtuStage,
+  useNotifiFrontendClientContext,
+  useNotifiTenantConfigContext,
+  useNotifiUserSettingContext,
+} from '@notifi-network/notifi-react';
 import { useEffect } from 'react';
 
 export default function NotifiFTU() {
@@ -20,8 +22,12 @@ export default function NotifiFTU() {
   const { handleRoute } = useRouterAsync();
   const { setIsGlobalLoading } = useGlobalStateContext();
 
-  const { cardConfig } = useNotifiTenantConfig();
+  const { cardConfig } = useNotifiTenantConfigContext();
   const { ftuStage } = useNotifiUserSettingContext();
+
+  if (!cardConfig) {
+    return null;
+  }
 
   useEffect(() => {
     setIsGlobalLoading(true);

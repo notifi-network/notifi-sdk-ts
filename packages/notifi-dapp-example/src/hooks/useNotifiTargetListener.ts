@@ -1,5 +1,7 @@
-import { useNotifiFrontendClientContext } from '@/context/NotifiFrontendClientContext';
-import { useNotifiTargetContext } from '@/context/NotifiTargetContext';
+import {
+  useNotifiFrontendClientContext,
+  useNotifiTargetContext,
+} from '@notifi-network/notifi-react';
 import { useEffect } from 'react';
 
 export const useNotifiTargetListener = () => {

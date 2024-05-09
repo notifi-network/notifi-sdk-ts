@@ -1,10 +1,12 @@
 import { LoadingSpinner } from '@/components/LoadingSpinner';
-import { useNotifiTargetContext } from '@/context/NotifiTargetContext';
-import { useNotifiTopicContext } from '@/context/NotifiTopicContext';
-import { FtuStage } from '@/context/NotifiUserSettingContext';
-import { useNotifiUserSettingContext } from '@/context/NotifiUserSettingContext';
 import { useNotifiTargetListener } from '@/hooks/useNotifiTargetListener';
 import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
+import {
+  FtuStage,
+  useNotifiTargetContext,
+  useNotifiTopicContext,
+  useNotifiUserSettingContext,
+} from '@notifi-network/notifi-react';
 import React from 'react';
 
 import { DestinationPanel } from './DestinationPanel';

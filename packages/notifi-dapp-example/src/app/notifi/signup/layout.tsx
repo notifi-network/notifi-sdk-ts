@@ -1,8 +1,8 @@
 'use client';
 
 import { PoweredByNotifi } from '@/components/PoweredByNotifi';
-import { useNotifiFrontendClientContext } from '@/context/NotifiFrontendClientContext';
 import { useNotifiRouter } from '@/hooks/useNotifiRouter';
+import { useNotifiFrontendClientContext } from '@notifi-network/notifi-react';
 import Image from 'next/image';
 
 export default function NotifiSignup({

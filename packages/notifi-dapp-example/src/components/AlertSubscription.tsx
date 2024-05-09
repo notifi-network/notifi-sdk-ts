@@ -1,9 +1,12 @@
 'use client';
 
-import { useNotifiTenantConfig } from '@/context/NotifiTenantConfigContext';
-import { categorizeTopics } from '@/context/NotifiTopicContext';
+import {
+  categorizeTopics,
+  useNotifiTenantConfigContext,
+} from '@notifi-network/notifi-react';
 
 import { AlertSubscriptionBlock } from './AlertSubscriptionBlock';
+import { AlertSubscriptionRow } from './AlertSubscriptionRow';
 
 export type AlertSubscriptionRowProps = {
   title?: string;
@@ -12,22 +15,27 @@ export type AlertSubscriptionRowProps = {
 export const AlertSubscription: React.FC<AlertSubscriptionRowProps> = ({
   title,
 }) => {
-  const { cardConfig } = useNotifiTenantConfig();
-  const { categorizedTopics, uncategorizedTopics } = categorizeTopics(
-    cardConfig.eventTypes,
-  );
+  const { cardConfig, fusionEventTopics } = useNotifiTenantConfigContext();
+  if (!cardConfig) return null;
+  console.log('fusionEventTopics', fusionEventTopics);
+  const { categorizedTopics } = categorizeTopics(cardConfig.eventTypes);
 
   return (
-    <div className="flex flex-col items-center 2xl:px-[15.75rem] xl:px-[10rem] md:min-h-0 grow h-full">
+    <div className="flex flex-col items-center 2xl:px-[15.75rem] xl:px-[10rem] md:min-h-[94vh] grow h-full">
       {title ? (
-        <div className="mt-8 mb-6 font-medium text-lg text-notifi-text">
+        <div className="mt-8 mb-6 font-regular text-lg text-notifi-text">
           {title}
         </div>
       ) : null}
+      <div className="flex flex-col gap-4 justify-center w-86 mb-6">
+        {fusionEventTopics.map((topic) => (
+          <AlertSubscriptionRow topic={topic} key={topic.uiConfig.name} />
+        ))}
+      </div>
       <div className="flex flex-wrap gap-4 justify-center w-72 md:w-[37rem]">
-        {uncategorizedTopics.subTopics.length > 0 ? (
+        {/* {uncategorizedTopics.subTopics.length > 0 ? (
           <AlertSubscriptionBlock labelWithSubTopics={uncategorizedTopics} />
-        ) : null}
+        ) : null} */}
 
         {categorizedTopics.map((labelWithSubTopics, id) => {
           return (
