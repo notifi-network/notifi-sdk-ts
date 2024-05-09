@@ -8,10 +8,10 @@ type BellButtonProps = {
 };
 
 export const BellButton: FC<BellButtonProps> = ({ setIsCardOpen }) => {
-  const { hasUnreadNotification, unreadNotificationCount, updateNotificationCount } = useUnreadState();
+  const { hasUnreadNotification, unreadNotificationCount, clearNotificationCount } = useUnreadState();
   const cardOpen = () => {
     setIsCardOpen((prev) => !prev);
-    updateNotificationCount();
+    clearNotificationCount();
   }
   return (
     <div
