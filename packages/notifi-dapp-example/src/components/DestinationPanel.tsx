@@ -137,7 +137,9 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
             </div>
           ) : (
             <div className="flex flex-row items-start justify-between w-3/4 sm:w-90 mr-4">
-              <div className="text-sm ml-6">{targetData.telegram}</div>
+              <div className="text-sm ml-6 text-notifi-text">
+                {targetData.telegram}
+              </div>
               {VerifiedText}
             </div>
           )}

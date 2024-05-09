@@ -1,17 +1,13 @@
 import {
-  AlertFilter,
-  EventTypeItem,
   Filter,
   FusionEventMetadata,
   FusionEventTopic,
-  FusionEventTypeItem,
   FusionFilterOptions,
-  FusionToggleEventTypeItem,
-  LabelEventTypeItem,
   UserInputOptions,
   resolveStringRef,
 } from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
+import { isAlertFilter, isFusionFilterOptions } from 'notifi-react/utils/topic';
 import React, {
   FC,
   PropsWithChildren,
@@ -115,7 +111,7 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
       if (!fusionEventMetadataJson || !fusionEventId) return;
       const subscriptionValue = resolveStringRef(
         topic.uiConfig.name,
-        topic.uiConfig.sourceAddress, // TODO: AP not yet able to set input reference
+        topic.uiConfig.sourceAddress, // TODO:
         inputs,
       );
       createAlertInputs.push({
@@ -216,14 +212,12 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
     }
   };
 
-  // TODO: TBD --> ensure the format of filterOptions in AlertFragmentFragment
-
   const getAlertFilterOptions = useCallback(
     (topicName: string) => {
       const parsedFilterOptions = JSON.parse(
         alerts[topicName]?.filterOptions ?? '{}',
       );
-      return validateFilterOptions(parsedFilterOptions)
+      return isFusionFilterOptions(parsedFilterOptions)
         ? parsedFilterOptions
         : null;
     },
@@ -258,71 +252,3 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
 };
 
 export const useNotifiTopicContext = () => useContext(NotifiTopicContext);
-
-// Utilities
-export type LabelWithSubTopicsEventTypeItem = LabelEventTypeItem & {
-  subTopics: Array<FusionToggleEventTypeItem>;
-};
-
-type ValidTypeItem = FusionToggleEventTypeItem | LabelEventTypeItem;
-
-const validateEventType = (
-  eventType: EventTypeItem,
-): eventType is ValidTypeItem => {
-  // NOTE: now only support toggle fusion event type.
-  // TODO: allow dynamic UI components based on fusionEventData.metadata
-  return (
-    (eventType.type === 'fusion' && eventType.selectedUIType === 'TOGGLE') ||
-    eventType.type === 'label'
-  );
-};
-
-export const categorizeTopics = (
-  topics: ReadonlyArray<EventTypeItem>,
-  unCategorizedTopicsLabelName?: string,
-) => {
-  const categorizedEventTypeItems: LabelWithSubTopicsEventTypeItem[] = [];
-  const uncategorizedEventTypeItem: LabelWithSubTopicsEventTypeItem = {
-    name: unCategorizedTopicsLabelName ?? 'General',
-    type: 'label',
-    subTopics: [],
-  };
-  let currentLabel: LabelWithSubTopicsEventTypeItem | undefined = undefined;
-  topics.filter(validateEventType).forEach((row) => {
-    if (row.type === 'label') {
-      currentLabel = {
-        ...row,
-        subTopics: [],
-      };
-      categorizedEventTypeItems.push(currentLabel);
-    } else {
-      if (currentLabel) {
-        currentLabel.subTopics.push(row);
-      } else {
-        uncategorizedEventTypeItem.subTopics.push(row);
-      }
-    }
-  });
-  return {
-    categorizedTopics: categorizedEventTypeItems,
-    uncategorizedTopics: uncategorizedEventTypeItem,
-  };
-};
-
-export const isAlertFilter = (filter: Filter): filter is AlertFilter => {
-  return 'userInputParams' in filter;
-};
-
-// TODO: REMOVE after MVP-4329 merged
-// Only support fusion event type
-export const validateTopic = (
-  topic: EventTypeItem,
-): topic is FusionEventTypeItem => {
-  return topic.type === 'fusion';
-};
-
-const validateFilterOptions = (
-  filterOptions: any,
-): filterOptions is FusionFilterOptions => {
-  return 'version' in filterOptions && filterOptions.version === 1;
-};

@@ -34,6 +34,7 @@ export type FusionTypeBase = {
   alertFrequency?: AlertFrequency;
   optOutAtSignup?: boolean;
   displayNameOverride?: string;
+  topicGroupName?: string;
 };
 
 export type FusionToggleEventTypeItem = FusionTypeBase &

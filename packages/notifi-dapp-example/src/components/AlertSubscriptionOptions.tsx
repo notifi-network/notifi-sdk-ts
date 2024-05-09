@@ -39,55 +39,61 @@ export const AlertSubscriptionOptions: React.FC<TopicOptionsProps> = (
   const {
     targetDocument: { targetGroupId },
   } = useNotifiTargetContext();
+  const alertFilterOptions = getAlertFilterOptions(props.topic.uiConfig.name);
 
-  // TODO: Implement the following logic
+  const filterName: string | undefined = Object.keys(
+    alertFilterOptions?.input ?? [],
+  )[0]; // NOTE: Only consider 1 to 1 relationship (1 filter for 1 topic)
+  const userInputOptions = alertFilterOptions?.input[filterName];
 
-  // const alertFilterOptions = getAlertFilterOptions(props.topic.uiConfig.name);
-  // console.log('props.topic.uiConfig.name', alertFilterOptions);
-
-  // const filterName: string | undefined = Object.keys(
-  //   alertFilterOptions?.input ?? [],
-  // )[0]; // NOTE: Only consider 1 to 1 relationship (1 filter for 1 topic)
-  // const userInputOptions = alertFilterOptions?.input[filterName];
-
-  // const subscribedValue = userInputOptions?.[props.userInputParam.name];
+  const subscribedValue = userInputOptions?.[props.userInputParam.name];
 
   const [customInput, setCustomInput] = React.useState<string | number>('');
-  // React.useEffect(() => {
-  //   if (
-  //     !!subscribedValue &&
-  //     !props.userInputParam.options.includes(subscribedValue)
-  //   ) {
-  //     setCustomInput(subscribedValue);
-  //     return;
-  //   }
-  //   setCustomInput('');
-  // }, [subscribedValue]);
+  React.useEffect(() => {
+    if (
+      !!subscribedValue &&
+      !props.userInputParam.options.includes(subscribedValue)
+    ) {
+      setCustomInput(subscribedValue);
+      return;
+    }
+    setCustomInput('');
+  }, [subscribedValue]);
 
   const uiType = props.userInputParam.uiType;
   console.log('uiType', uiType);
 
-  const prefixAndSuffix = getPrefixAndSuffix(props.userInputParam.kind);
-  // const renewFilterOptions = async (option: number | string) => {
-  //   console.log('alertFilterOptions', alertFilterOptions);
-  //   if (!alertFilterOptions || !targetGroupId) return;
-  //   const updatedAlertFilterOptiopns = getUpdatedAlertFilterOptions(
-  //     filterName,
-  //     alertFilterOptions,
-  //     props.userInputParam.name,
-  //     option,
-  //   );
-  //   console.log('clicked');
-  //   await subscribeAlertsWithFilterOptions(
-  //     [
-  //       {
-  //         topic: props.topic,
-  //         filterOptions: updatedAlertFilterOptiopns,
-  //       },
-  //     ],
-  //     targetGroupId,
-  //   );
-  // };
+  const prefixAndSuffix = derivePrefixAndSuffixFromValueType(
+    props.userInputParam.kind,
+  );
+
+  const renewFilterOptions = async (
+    option: number | string,
+    topics: FusionEventTopic[],
+  ) => {
+    if (!alertFilterOptions || !targetGroupId) return;
+    const updatedAlertFilterOptiopns = getUpdatedAlertFilterOptions(
+      filterName,
+      alertFilterOptions,
+      props.userInputParam.name,
+      option,
+    );
+    topics.map((topic) => {
+      return {
+        topic: topic,
+        filterOptions: updatedAlertFilterOptiopns,
+      };
+    });
+    await subscribeAlertsWithFilterOptions(
+      topics.map((topic) => {
+        return {
+          topic: topic,
+          filterOptions: updatedAlertFilterOptiopns,
+        };
+      }),
+      targetGroupId,
+    );
+  };
 
   return (
     <div className="">
@@ -101,20 +107,18 @@ export const AlertSubscriptionOptions: React.FC<TopicOptionsProps> = (
         {props.userInputParam.options.map((option) => {
           return (
             <>
-              {uiType === 'button' ? (
+              {uiType !== 'radio' ? (
                 !option ? null : (
                   <button
-                    className={`w-18 h-12 bg-notifi-card-bg rounded-md mr-2 text-notifi-text-light`}
-                    // ${
-                    //   option === subscribedValue
-                    //     ? 'selected text-white border border-notifi-tenant-brand-bg'
-                    //     : ''
-                    // }
-
+                    className={`w-18 h-12 bg-notifi-card-bg rounded-md mr-2 text-notifi-text-light ${
+                      option === subscribedValue
+                        ? 'selected text-white border border-notifi-tenant-brand-bg'
+                        : ''
+                    }`}
                     onClick={() => {
                       if (isLoadingTopic) return;
                       console.log('before');
-                      // renewFilterOptions(option);
+                      renewFilterOptions(option, [props.topic]);
                     }}
                   >
                     <div>
@@ -162,8 +166,12 @@ export const AlertSubscriptionOptions: React.FC<TopicOptionsProps> = (
             </>
           );
         })}
-        {props.userInputParam.allowCustomInput && uiType === 'button' ? (
-          <div className="text-notifi-text-light inline-block relative w-60">
+        {props.userInputParam.allowCustomInput && uiType !== 'radio' ? (
+          <div
+            className={`text-notifi-text-light inline-block relative ${
+              props.userInputParam.options[0] ? '' : 'w-60'
+            }`}
+          >
             {props.userInputParam.options[0]
               ? 'prefix' in prefixAndSuffix && prefixAndSuffix.prefix
               : null}
@@ -172,13 +180,17 @@ export const AlertSubscriptionOptions: React.FC<TopicOptionsProps> = (
               onChange={(evt) => setCustomInput(evt.target.value)}
               onBlur={(evt) => {
                 if (!evt.target.value) return;
-                // renewFilterOptions(evt.target.value);
+                renewFilterOptions(evt.target.value, [props.topic]);
               }}
               placeholder="Custom"
               value={customInput}
               className={` ${
                 props.userInputParam.options[0] ? 'w-20' : 'w-full'
-              } h-12 bg-notifi-card-bg rounded-md mr-2 text-notifi-text-light text-center mx-1`}
+              } h-12 bg-notifi-card-bg rounded-md mr-2 text-notifi-text-light text-center mx-1 ${
+                customInput === subscribedValue
+                  ? 'selected text-white border border-notifi-tenant-brand-bg'
+                  : ''
+              }`}
             />
             {props.userInputParam.options[0] ? null : (
               <div className="absolute right-0 bottom-3">
@@ -213,7 +225,7 @@ const getUpdatedAlertFilterOptions = (
   };
 };
 
-const getPrefixAndSuffix = (
+export const derivePrefixAndSuffixFromValueType = (
   kind: ValueType,
 ): { prefix: string; suffix: string } => {
   switch (kind) {
