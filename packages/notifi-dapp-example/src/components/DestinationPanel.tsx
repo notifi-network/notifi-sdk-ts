@@ -386,9 +386,21 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
             </div>
           </div>
 
-          {targetInfoPrompts.wallet?.infoPrompt.type === 'cta' ? (
-            <div className="flex flex-row items-center justify-between w-3/4 sm:w-90 mr-4">
-              <div className="text-sm ml-6 text-notifi-text">Wallet Alerts</div>
+          <div className="flex flex-row items-center justify-between w-3/4 sm:w-90 mr-4">
+            <div className="flex items-center gap-1.5 text-sm ml-6 text-notifi-text">
+              Wallet Alerts
+              <button className="relative group flex items-center justify-center">
+                <Icon id="info" className="text-notifi-text-light" />
+
+                <div className="w-[194px] bg-black text-white text-start border border-gray-500 text-sm font-medium rounded-md p-4 hidden absolute z-10 left-[100%] group-hover:block transition-all duration-300 ease-in-out">
+                  Wallet messages are powered by XMTP and delivered natively
+                  into Coinbase Wallet. Download the Coinbase Wallet App or
+                  Browser Extension to receive wallet alerts!
+                </div>
+              </button>
+            </div>
+
+            {targetInfoPrompts.wallet?.infoPrompt.type === 'cta' ? (
               <DestinationInfoPrompt
                 isButton={true}
                 buttonCopy={targetInfoPrompts.wallet?.infoPrompt.message ?? ''}
@@ -405,13 +417,10 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
                   targetInfoPrompts.wallet?.infoPrompt.message ?? ''
                 }
               />
-            </div>
-          ) : (
-            <div className="flex flex-row items-start justify-between w-3/4 sm:w-90 mr-4">
-              <div className="text-sm ml-6 text-notifi-text">Wallet Alerts</div>
-              {targetData.wallet?.data?.isConfirmed ? VerifiedText : null}
-            </div>
-          )}
+            ) : targetData.wallet?.data?.isConfirmed ? (
+              VerifiedText
+            ) : null}
+          </div>
         </div>
       ) : null}
     </div>
