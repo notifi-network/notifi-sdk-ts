@@ -33,11 +33,14 @@ export const EcosystemHero: React.FC<EcosystemHeroProps> = ({
 
       <div className="text-notifi-grey-text">{subtitle}</div>
 
-      <button className=" bg-notifi-button-primary-blueish-bg w-52 h-11 cursor-pointer rounded-lg text-white">
+      <button
+        onClick={() => !isLoading && cta?.()}
+        className=" bg-notifi-button-primary-blueish-bg w-52 h-11 cursor-pointer rounded-lg text-white"
+      >
         {isLoading ? (
           <div className="m-auto h-5 w-5 animate-spin rounded-full  border-2 border-white border-b-transparent border-l-transparent"></div>
         ) : (
-          <div onClick={() => cta?.()}>{ctaButtonText}</div>
+          <div>{ctaButtonText}</div>
         )}
       </button>
     </div>

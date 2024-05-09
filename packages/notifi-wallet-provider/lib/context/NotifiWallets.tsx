@@ -120,6 +120,7 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
       metamask.signArbitrary,
       metamask.connectWallet,
       metamask.disconnectWallet,
+      metamask.websiteURL,
     ),
     coinbase: new CoinbaseWallet(
       coinbase.isWalletInstalled,
@@ -127,6 +128,7 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
       coinbase.signArbitrary,
       coinbase.connectWallet,
       coinbase.disconnectWallet,
+      coinbase.websiteURL,
     ),
     rabby: new RabbyWallet(
       rabby.isWalletInstalled,
@@ -134,6 +136,7 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
       rabby.signArbitrary,
       rabby.connectWallet,
       rabby.disconnectWallet,
+      rabby.websiteURL,
     ),
     walletconnect: new WalletConnectWallet(
       walletConnect.isWalletInstalled,
@@ -141,6 +144,7 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
       walletConnect.signArbitrary,
       walletConnect.connectWallet,
       walletConnect.disconnectWallet,
+      walletConnect.websiteURL,
     ),
     binance: new BinanceWallet(
       binance.isWalletInstalled,
@@ -148,6 +152,7 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
       binance.signArbitrary,
       binance.connectWallet,
       binance.disconnectWallet,
+      binance.websiteURL,
     ),
     okx: new OKXWallet(
       okx.isWalletInstalled,
@@ -155,6 +160,7 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
       okx.signArbitrary,
       okx.connectWallet,
       okx.disconnectWallet,
+      okx.websiteURL,
     ),
     rainbow: new RainbowWallet(
       rainbow.isWalletInstalled,
@@ -162,6 +168,7 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
       rainbow.signArbitrary,
       rainbow.connectWallet,
       rainbow.disconnectWallet,
+      rainbow.websiteURL,
     ),
     zerion: new ZerionWallet(
       zerion.isWalletInstalled,
@@ -169,6 +176,7 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
       zerion.signArbitrary,
       zerion.connectWallet,
       zerion.disconnectWallet,
+      zerion.websiteURL,
     ),
     keplr: new KeplrWallet(
       keplr.isKeplrInstalled,
@@ -176,6 +184,7 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
       keplr.signArbitraryKeplr,
       keplr.connectKeplr,
       keplr.disconnectKeplr,
+      keplr.websiteURL,
     ),
   };
 

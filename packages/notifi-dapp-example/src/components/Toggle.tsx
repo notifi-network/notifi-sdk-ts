@@ -28,7 +28,6 @@ export const Toggle: React.FC<ToggleProps> = ({
         }}
       />
       <div className="w-7 h-4 rounded-full peer bg-notifi-toggle-off-bg peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:absolute after:top-0.5 after:right-0.5 after:start-[2px] after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-notifi-toggle-on-bg relative"></div>
-      <div className="absolute w-[4px] h-[4px] top-[8px] left-[6px] peer-checked:top-[8px] peer-checked:start-[18px] bg-notifi-toggle-off-dot-bg peer-checked:bg-notifi-toggle-on-bg rounded-[56px] shadow-regular-shadow-small" />
     </label>
   );
 };

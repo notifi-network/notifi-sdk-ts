@@ -1,8 +1,10 @@
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
-import { useNotifiFrontendClientContext } from '@/context/NotifiFrontendClientContext';
-import { useNotifiTenantConfig } from '@/context/NotifiTenantConfigContext';
 import { validateEventDetails } from '@/utils/notifiHistoryUtils';
 import { Types } from '@notifi-network/notifi-graphql';
+import {
+  useNotifiFrontendClientContext,
+  useNotifiTenantConfigContext,
+} from '@notifi-network/notifi-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 type CursorInfo = Readonly<{
@@ -27,7 +29,7 @@ export const useNotifiHistory = (autoFetchHistoryAndUnreadCount?: boolean) => {
   const [nodes, setNodes] = useState<
     Types.FusionNotificationHistoryEntryFragmentFragment[]
   >([]);
-  const { cardConfig } = useNotifiTenantConfig();
+  const { cardConfig } = useNotifiTenantConfigContext();
   const historyLoaded = useRef<boolean>(false);
 
   const cardEventTypeNames = new Set(

@@ -1,7 +1,6 @@
 import { Icon } from '@/assets/Icon';
-import { useInjectiveWallets } from '@/context/InjectiveWalletContext';
 import { convertWalletName } from '@/utils/stringUtils';
-import { objectKeys } from '@notifi-network/notifi-react-card';
+import { objectKeys } from '@/utils/typeUtils';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
@@ -15,12 +14,6 @@ export const MobilePromptModal: React.FC<MobilePromptModalProps> = ({
 }: MobilePromptModalProps) => {
   const [isClient, setIsClient] = useState(false);
   const { wallets } = useWallets();
-  const { wallets: injectiveWallets } = useInjectiveWallets();
-
-  const allWallets = {
-    ...wallets,
-    ...injectiveWallets,
-  };
 
   useEffect(() => {
     setIsClient(true);
@@ -96,10 +89,10 @@ export const MobilePromptModal: React.FC<MobilePromptModalProps> = ({
                   />
                 </div>
 
-                {objectKeys(allWallets).map((wallet) => {
+                {objectKeys(wallets).map((wallet) => {
                   return (
                     <div key={wallet}>
-                      {!Object.values(allWallets)
+                      {!Object.values(wallets)
                         .map((wallet) => wallet.isInstalled)
                         .includes(true) ? (
                         <div
