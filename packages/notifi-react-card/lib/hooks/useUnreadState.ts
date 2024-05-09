@@ -22,6 +22,10 @@ export const useUnreadState = () => {
     () => (unreadNotificationCount > 0 ? true : false),
     [unreadNotificationCount],
   );
+
+  const updateNotificationCount = () => {
+    setUnreadNotificationCount(0);
+  };
   const { isClientAuthenticated } = useMemo(() => {
     return {
       isClientAuthenticated:
@@ -44,5 +48,5 @@ export const useUnreadState = () => {
 
   }, [isClientAuthenticated, walletPublicKey, isUsingFrontendClient]);
 
-  return { hasUnreadNotification, unreadNotificationCount };
+  return { hasUnreadNotification, unreadNotificationCount, updateNotificationCount };
 };
