@@ -1,12 +1,4 @@
-import { LabelWithSubTopicsEventTypeItem } from '@notifi-network/notifi-react';
-
-type SubscriptionValueInputProps = {
-  labelWithSubTopics?: LabelWithSubTopicsEventTypeItem;
-};
-
-export const SubscriptionValueInput: React.FC<SubscriptionValueInputProps> = ({
-  labelWithSubTopics,
-}) => {
+export const SubscriptionValueInput = () => {
   const dummyList = [
     'ETH / USDC - Chain',
     'ETH / USDC - Chain',
