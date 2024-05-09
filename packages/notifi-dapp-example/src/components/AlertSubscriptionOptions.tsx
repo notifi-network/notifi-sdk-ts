@@ -1,99 +1,53 @@
+import { useUserInputParmToFilterOption } from '@/hooks/useUserInputParmToFilterOption';
 import {
   FusionEventTopic,
-  FusionFilterOptions,
   UiType,
   UserInputParam,
-  ValueType,
 } from '@notifi-network/notifi-frontend-client';
-import {
-  useNotifiTargetContext,
-  useNotifiTopicContext,
-} from '@notifi-network/notifi-react';
+import { useNotifiTopicContext } from '@notifi-network/notifi-react';
 import React from 'react';
 
-export type TopicOptionsProps = {
+import { AlertSubscriptionTopicRowCategory } from './AlertSubscription';
+
+type AlertSubscriptionTopicGroupOptionsProps = {
+  topics: FusionEventTopic[];
+  userInputParam: UserInputParam<UiType>;
+  index: number;
+  description: string;
+};
+type AlertSubscriptionTopicStandAloneOptionsProps = {
   topic: FusionEventTopic;
   userInputParam: UserInputParam<UiType>;
-  description: string;
   index: number;
-  classNames?: {
-    container?: string;
-    discription?: string;
-    items?: string;
-    item?: string;
-    inputField?: string;
-  };
-  copy?: {
-    customInputPlaceholder?: string;
-  };
+  description: string;
 };
 
-export const AlertSubscriptionOptions: React.FC<TopicOptionsProps> = (
-  props,
+export type AlertSubscriptionOptionsProps<
+  T extends AlertSubscriptionTopicRowCategory,
+> = T extends 'standalone'
+  ? AlertSubscriptionTopicStandAloneOptionsProps
+  : AlertSubscriptionTopicGroupOptionsProps;
+
+export const AlertSubscriptionOptions = <
+  T extends AlertSubscriptionTopicRowCategory,
+>(
+  props: AlertSubscriptionOptionsProps<T>,
 ) => {
+  const isTopicGroup = isTopicGroupOptions(props);
+  const benchmarkTopic = isTopicGroup ? props.topics[0] : props.topic;
+
   const {
-    getAlertFilterOptions,
-    subscribeAlertsWithFilterOptions,
-    isLoading: isLoadingTopic,
-  } = useNotifiTopicContext();
-  const {
-    targetDocument: { targetGroupId },
-  } = useNotifiTargetContext();
-  const alertFilterOptions = getAlertFilterOptions(props.topic.uiConfig.name);
-
-  const filterName: string | undefined = Object.keys(
-    alertFilterOptions?.input ?? [],
-  )[0]; // NOTE: Only consider 1 to 1 relationship (1 filter for 1 topic)
-  const userInputOptions = alertFilterOptions?.input[filterName];
-
-  const subscribedValue = userInputOptions?.[props.userInputParam.name];
-
-  const [customInput, setCustomInput] = React.useState<string | number>('');
-  React.useEffect(() => {
-    if (
-      !!subscribedValue &&
-      !props.userInputParam.options.includes(subscribedValue)
-    ) {
-      setCustomInput(subscribedValue);
-      return;
-    }
-    setCustomInput('');
-  }, [subscribedValue]);
-
-  const uiType = props.userInputParam.uiType;
-  console.log('uiType', uiType);
-
-  const prefixAndSuffix = derivePrefixAndSuffixFromValueType(
-    props.userInputParam.kind,
+    customInput,
+    prefixAndSuffix,
+    renewFilterOptions,
+    subscribedValue,
+    uiType,
+    setCustomInput,
+  } = useUserInputParmToFilterOption(
+    benchmarkTopic.uiConfig.name,
+    props.userInputParam,
   );
-
-  const renewFilterOptions = async (
-    option: number | string,
-    topics: FusionEventTopic[],
-  ) => {
-    if (!alertFilterOptions || !targetGroupId) return;
-    const updatedAlertFilterOptiopns = getUpdatedAlertFilterOptions(
-      filterName,
-      alertFilterOptions,
-      props.userInputParam.name,
-      option,
-    );
-    topics.map((topic) => {
-      return {
-        topic: topic,
-        filterOptions: updatedAlertFilterOptiopns,
-      };
-    });
-    await subscribeAlertsWithFilterOptions(
-      topics.map((topic) => {
-        return {
-          topic: topic,
-          filterOptions: updatedAlertFilterOptiopns,
-        };
-      }),
-      targetGroupId,
-    );
-  };
+  const { isLoading: isLoadingTopic } = useNotifiTopicContext();
 
   return (
     <div className="">
@@ -117,8 +71,10 @@ export const AlertSubscriptionOptions: React.FC<TopicOptionsProps> = (
                     }`}
                     onClick={() => {
                       if (isLoadingTopic) return;
-                      console.log('before');
-                      renewFilterOptions(option, [props.topic]);
+                      renewFilterOptions(
+                        option,
+                        isTopicGroup ? props.topics : [props.topic],
+                      );
                     }}
                   >
                     <div>
@@ -133,6 +89,13 @@ export const AlertSubscriptionOptions: React.FC<TopicOptionsProps> = (
                   <div className="inline-flex items-center mr-6">
                     <label className="relative flex items-center rounded-full cursor-pointer">
                       <input
+                        onClick={() => {
+                          if (isLoadingTopic) return;
+                          // renewFilterOptions(
+                          //   option,
+                          //   isTopicGroup ? props.topics : [props.topic],
+                          // );
+                        }}
                         name="type"
                         type="radio"
                         className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border-2 border-notifi-text-light text-notifi-tenant-brand-bg transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-notifi-tenant-brand-bg hover:before:opacity-10"
@@ -180,7 +143,10 @@ export const AlertSubscriptionOptions: React.FC<TopicOptionsProps> = (
               onChange={(evt) => setCustomInput(evt.target.value)}
               onBlur={(evt) => {
                 if (!evt.target.value) return;
-                renewFilterOptions(evt.target.value, [props.topic]);
+                renewFilterOptions(
+                  evt.target.value,
+                  isTopicGroup ? props.topics : [props.topic],
+                );
               }}
               placeholder="Custom"
               value={customInput}
@@ -206,44 +172,8 @@ export const AlertSubscriptionOptions: React.FC<TopicOptionsProps> = (
 };
 
 // Utils
-
-const getUpdatedAlertFilterOptions = (
-  filterName: string,
-  alertFilterOptions: FusionFilterOptions,
-  inputParmName: string,
-  value: string | number,
-) => {
-  return {
-    ...alertFilterOptions,
-    input: {
-      ...alertFilterOptions.input,
-      [filterName]: {
-        ...alertFilterOptions.input[filterName],
-        [inputParmName]: value,
-      },
-    },
-  };
-};
-
-export const derivePrefixAndSuffixFromValueType = (
-  kind: ValueType,
-): { prefix: string; suffix: string } => {
-  switch (kind) {
-    case 'price':
-      return {
-        prefix: '$',
-        suffix: '',
-      };
-    case 'percentage':
-      return {
-        prefix: '',
-        suffix: '%',
-      };
-    case 'string':
-    case 'integer':
-      return {
-        prefix: '',
-        suffix: '',
-      };
-  }
+const isTopicGroupOptions = (
+  props: AlertSubscriptionOptionsProps<AlertSubscriptionTopicRowCategory>,
+): props is AlertSubscriptionTopicGroupOptionsProps => {
+  return 'topics' in props;
 };

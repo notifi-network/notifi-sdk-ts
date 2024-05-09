@@ -66,7 +66,7 @@ export default function Home() {
           setIsOpenWalletsModal(true);
           setIsOpenMobilePromptModal(true);
         }}
-        ctaButtonText="Connect Wallet To Start"
+        ctaButtonText="Connect Wallet"
       />
       <DummyAlertsModal />
       <div className="p-2 bg-white rounded-lg h-7 block md:hidden w-[110px] mt-12">
