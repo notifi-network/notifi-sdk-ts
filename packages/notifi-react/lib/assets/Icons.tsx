@@ -11,7 +11,8 @@ export type IconType =
   | 'arrow-back'
   | 'discord'
   | 'slack'
-  | 'info';
+  | 'info'
+  | 'bin';
 
 export const Icon: React.FC<Props & { type: IconType }> = (
   props: Props & { type: IconType },
@@ -195,6 +196,28 @@ export const Icon: React.FC<Props & { type: IconType }> = (
             d="M11.3335 8.66671H12.6668V10H11.3335V8.66671ZM11.3335 11.3334H12.6668V15.3334H11.3335V11.3334ZM12.0002 5.33337C8.32016 5.33337 5.3335 8.32004 5.3335 12C5.3335 15.68 8.32016 18.6667 12.0002 18.6667C15.6802 18.6667 18.6668 15.68 18.6668 12C18.6668 8.32004 15.6802 5.33337 12.0002 5.33337ZM12.0002 17.3334C9.06016 17.3334 6.66683 14.94 6.66683 12C6.66683 9.06004 9.06016 6.66671 12.0002 6.66671C14.9402 6.66671 17.3335 9.06004 17.3335 12C17.3335 14.94 14.9402 17.3334 12.0002 17.3334Z"
             fill="currentColor"
           />
+        </svg>
+      );
+    case 'bin':
+      return (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+        >
+          <g clip-path="url(#clip0_5611_1341)">
+            <path
+              d="M7.5 17.4444C7.5 18.3 8.175 19 9 19H15C15.825 19 16.5 18.3 16.5 17.4444V8.11111H7.5V17.4444ZM17.25 5.77778H14.625L13.875 5H10.125L9.375 5.77778H6.75V7.33333H17.25V5.77778Z"
+              fill="currentColor"
+            />
+          </g>
+          <defs>
+            <clipPath id="clip0_5611_1341">
+              <rect width="24" height="24" fill="white" />
+            </clipPath>
+          </defs>
         </svg>
       );
     default:
