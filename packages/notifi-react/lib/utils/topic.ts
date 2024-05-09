@@ -1,16 +1,17 @@
 import {
   AlertFilter,
   EventTypeItem,
+  Filter,
   FusionEventMetadata,
   FusionEventTopic,
   FusionFilterOptions,
   FusionToggleEventTypeItem,
+  InputObject,
   LabelEventTypeItem,
   UiType,
   UserInputParam,
   ValueType,
 } from '@notifi-network/notifi-frontend-client';
-import { Filter } from 'notifi-frontend-client/dist';
 
 export type LabelWithSubTopicsEventTypeItem = LabelEventTypeItem & {
   subTopics: Array<FusionToggleEventTypeItem>;
@@ -86,11 +87,18 @@ export const getFusionEventMetadata = (
 };
 
 export const isTopicGroupValid = (topics: FusionEventTopic[]): boolean => {
+  // NOTE: Ensure all topics have no filters at the same time
+  const isAllTopicWithoutFilters = topics.every(
+    (topic) =>
+      getFusionEventMetadata(topic)?.filters.filter(isAlertFilter).length === 0,
+  );
+  if (isAllTopicWithoutFilters) {
+    return true;
+  }
+
   // NOTE: Ensure all topics have the same userInputParams' options & default value
   const benchmarkTopic = topics[0];
-  const benchmarkTopicMetadata = JSON.parse(
-    benchmarkTopic.fusionEventDescriptor.metadata ?? '{}',
-  ) as FusionEventMetadata;
+  const benchmarkTopicMetadata = getFusionEventMetadata(benchmarkTopic);
   const benchmarkAlertFilter =
     benchmarkTopicMetadata?.filters.find(isAlertFilter);
   const benchmarkUserInputParams = benchmarkAlertFilter?.userInputParams;
@@ -159,10 +167,13 @@ export const isTopicGroupValid = (topics: FusionEventTopic[]): boolean => {
 export const isFusionEventMetadata = (
   metadata: unknown,
 ): metadata is FusionEventMetadata => {
-  if (typeof metadata !== 'object' || !metadata) {
+  const metadataToVerify = metadata as any;
+  if (typeof metadataToVerify !== 'object' || !metadataToVerify) {
     return false;
   }
-  return 'filters' in metadata && Array.isArray(metadata.filters);
+  return (
+    'filters' in metadataToVerify && Array.isArray(metadataToVerify.filters)
+  );
 };
 
 export const isAlertFilter = (filter: Filter): filter is AlertFilter => {
@@ -176,10 +187,13 @@ export const isAlertFilter = (filter: Filter): filter is AlertFilter => {
 export const isFusionFilterOptions = (
   filterOptions: unknown,
 ): filterOptions is FusionFilterOptions => {
-  if (typeof filterOptions !== 'object' || !filterOptions) {
+  const filterOptionsToVerify = filterOptions as any;
+  if (typeof filterOptionsToVerify !== 'object' || !filterOptionsToVerify) {
     return false;
   }
-  return 'version' in filterOptions && filterOptions.version === 1;
+  return (
+    'version' in filterOptionsToVerify && filterOptionsToVerify.version === 1
+  );
 };
 
 export const getUpdatedAlertFilterOptions = (
@@ -221,4 +235,31 @@ export const derivePrefixAndSuffixFromValueType = (
         suffix: '',
       };
   }
+};
+
+/** TopicStackRow related */
+
+export type TopicStackAlert = {
+  alertName: string;
+  id: string;
+  subscriptionValueInfo: InputObject;
+};
+
+export const resolveTopicStackAlertName = (alertName: string) => {
+  const [topicName, subscriptionValue, subscriptionLabel, timestamp] =
+    alertName.split(':;:');
+  return {
+    topicName,
+    subscriptionValue,
+    subscriptionLabel,
+    timestamp,
+  };
+};
+
+export const composeTopicStackAlertName = (
+  topicName: string,
+  subscriptionValue: string,
+  subscriptionLabel: string,
+) => {
+  return `${topicName}:;:${subscriptionValue}:;:${subscriptionLabel}:;:${Date.now()}`;
 };
