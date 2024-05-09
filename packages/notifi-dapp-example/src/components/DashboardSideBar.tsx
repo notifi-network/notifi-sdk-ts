@@ -7,7 +7,6 @@ import Image from 'next/image';
 import { Dispatch, FC, SetStateAction, useState } from 'react';
 
 import { PoweredByNotifi } from './PoweredByNotifi';
-import { SubscriptionValueInput } from './SubscriptionValueInput';
 
 export type DashboardSideBarProps = {
   accountAddress: string;

@@ -7,30 +7,25 @@ import {
 import { useNotifiTopicContext } from '@notifi-network/notifi-react';
 import React from 'react';
 
-import { AlertSubscriptionTopicRowCategory } from './AlertSubscription';
+import { TopicRowCategory } from './AlertSubscription';
 
-type AlertSubscriptionTopicGroupOptionsProps = {
+type TopicGroupOptionsProps = {
   topics: FusionEventTopic[];
   userInputParam: UserInputParam<UiType>;
   index: number;
   description: string;
 };
-type AlertSubscriptionTopicStandAloneOptionsProps = {
+type TopicStandAloneOptionsProps = {
   topic: FusionEventTopic;
   userInputParam: UserInputParam<UiType>;
   index: number;
   description: string;
 };
 
-export type AlertSubscriptionOptionsProps<
-  T extends AlertSubscriptionTopicRowCategory,
-> = T extends 'standalone'
-  ? AlertSubscriptionTopicStandAloneOptionsProps
-  : AlertSubscriptionTopicGroupOptionsProps;
+export type AlertSubscriptionOptionsProps<T extends TopicRowCategory> =
+  T extends 'standalone' ? TopicStandAloneOptionsProps : TopicGroupOptionsProps;
 
-export const AlertSubscriptionOptions = <
-  T extends AlertSubscriptionTopicRowCategory,
->(
+export const AlertSubscriptionOptions = <T extends TopicRowCategory>(
   props: AlertSubscriptionOptionsProps<T>,
 ) => {
   const isTopicGroup = isTopicGroupOptions(props);
@@ -174,7 +169,7 @@ export const AlertSubscriptionOptions = <
 
 // Utils
 const isTopicGroupOptions = (
-  props: AlertSubscriptionOptionsProps<AlertSubscriptionTopicRowCategory>,
-): props is AlertSubscriptionTopicGroupOptionsProps => {
+  props: AlertSubscriptionOptionsProps<TopicRowCategory>,
+): props is TopicGroupOptionsProps => {
   return 'topics' in props;
 };

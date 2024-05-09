@@ -11,24 +11,20 @@ export type AlertSubscriptionProps = {
   inFTU?: boolean;
 };
 
-export type AlertSubscriptionTopicRowCategory = 'standalone' | 'group';
+export type TopicRowCategory = 'standalone' | 'group';
 
-export type AlertSubscriptionTopicRowMetadata<
-  T extends AlertSubscriptionTopicRowCategory,
-> = T extends 'standalone'
-  ? AlertSubscriptionTopicStandaloneRowMetadata
-  : AlertSubscriptionTopicGroupRowMetadata;
+export type TopicRowMetadata<T extends TopicRowCategory> =
+  T extends 'standalone' ? TopicStandaloneRowMetadata : TopicGroupRowMetadata;
 
 type TopicRowMetadataBase = {
   index: number;
 };
 
-export type AlertSubscriptionTopicStandaloneRowMetadata =
-  TopicRowMetadataBase & {
-    topic: FusionEventTopic;
-  };
+export type TopicStandaloneRowMetadata = TopicRowMetadataBase & {
+  topic: FusionEventTopic;
+};
 
-export type AlertSubscriptionTopicGroupRowMetadata = TopicRowMetadataBase & {
+export type TopicGroupRowMetadata = TopicRowMetadataBase & {
   topicGroupName: string;
   topics: FusionEventTopic[];
 };
@@ -41,12 +37,8 @@ export const AlertSubscription: React.FC<AlertSubscriptionProps> = ({
 
   // TODO: Move this to a hook
   const topicRows = React.useMemo(() => {
-    const fusionEventTopicGroups: Record<
-      string,
-      AlertSubscriptionTopicGroupRowMetadata
-    > = {};
-    const fusionEventStandaloneTopics: AlertSubscriptionTopicStandaloneRowMetadata[] =
-      [];
+    const fusionEventTopicGroups: Record<string, TopicGroupRowMetadata> = {};
+    const fusionEventStandaloneTopics: TopicStandaloneRowMetadata[] = [];
     fusionEventTopics.forEach((topic, index) => {
       if (topic.uiConfig.topicGroupName) {
         if (!fusionEventTopicGroups[topic.uiConfig.topicGroupName]) {
@@ -70,8 +62,6 @@ export const AlertSubscription: React.FC<AlertSubscriptionProps> = ({
       ...fusionEventStandaloneTopics,
     ].sort((a, b) => a.index - b.index);
   }, [fusionEventTopics]);
-
-  console.log('topicRows', topicRows);
 
   return (
     <div
@@ -102,13 +92,13 @@ export const AlertSubscription: React.FC<AlertSubscriptionProps> = ({
 
 // Utils
 const isTopicStandaloneMetadata = (
-  topicRowMetadata: AlertSubscriptionTopicRowMetadata<AlertSubscriptionTopicRowCategory>,
-): topicRowMetadata is AlertSubscriptionTopicStandaloneRowMetadata => {
+  topicRowMetadata: TopicRowMetadata<TopicRowCategory>,
+): topicRowMetadata is TopicStandaloneRowMetadata => {
   return 'topic' in topicRowMetadata;
 };
 
 const isTopicGroupMetadata = (
-  topicRowMetadata: AlertSubscriptionTopicRowMetadata<AlertSubscriptionTopicRowCategory>,
-): topicRowMetadata is AlertSubscriptionTopicGroupRowMetadata => {
+  topicRowMetadata: TopicRowMetadata<TopicRowCategory>,
+): topicRowMetadata is TopicGroupRowMetadata => {
   return 'topicGroupName' in topicRowMetadata && 'topics' in topicRowMetadata;
 };

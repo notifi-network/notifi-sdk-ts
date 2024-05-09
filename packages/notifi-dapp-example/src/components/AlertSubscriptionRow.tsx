@@ -15,29 +15,22 @@ import {
 import React from 'react';
 
 import {
-  AlertSubscriptionTopicGroupRowMetadata,
-  AlertSubscriptionTopicRowCategory,
-  AlertSubscriptionTopicStandaloneRowMetadata,
+  TopicGroupRowMetadata,
+  TopicRowCategory,
+  TopicStandaloneRowMetadata,
 } from './AlertSubscription';
 import { AlertSubscriptionOptions } from './AlertSubscriptionOptions';
 import { SubscriptionValueInput } from './SubscriptionValueInput';
 import { Toggle } from './Toggle';
 
-type AlertSubscriptionTopicGroupRowProps =
-  AlertSubscriptionTopicGroupRowMetadata;
+type TopicGroupRowProps = TopicGroupRowMetadata;
 
-type AlertSubscriptionTopicStandaloneRowProps =
-  AlertSubscriptionTopicStandaloneRowMetadata;
+type TopicStandaloneRowProps = TopicStandaloneRowMetadata;
 
-export type AlertSubscriptionRowProps<
-  T extends AlertSubscriptionTopicRowCategory,
-> = T extends 'standalone'
-  ? AlertSubscriptionTopicStandaloneRowProps
-  : AlertSubscriptionTopicGroupRowProps;
+export type AlertSubscriptionRowProps<T extends TopicRowCategory> =
+  T extends 'standalone' ? TopicStandaloneRowProps : TopicGroupRowProps;
 
-export const AlertSubscriptionRow = <
-  T extends AlertSubscriptionTopicRowCategory,
->(
+export const AlertSubscriptionRow = <T extends TopicRowCategory>(
   props: AlertSubscriptionRowProps<T>,
 ) => {
   const isTopicGroup = isTopicGroupRow(props);
@@ -273,7 +266,7 @@ export const AlertSubscriptionRow = <
 
 // Utils
 const isTopicGroupRow = (
-  props: AlertSubscriptionRowProps<AlertSubscriptionTopicRowCategory>,
-): props is AlertSubscriptionTopicGroupRowProps => {
+  props: AlertSubscriptionRowProps<TopicRowCategory>,
+): props is TopicGroupRowProps => {
   return 'topics' in props && 'topicGroupName' in props;
 };

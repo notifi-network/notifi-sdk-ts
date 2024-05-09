@@ -6,6 +6,7 @@ import {
   FusionEventTopic,
   FusionFilterOptions,
   FusionToggleEventTypeItem,
+  InputObject,
   LabelEventTypeItem,
   UiType,
   UserInputParam,
@@ -110,19 +111,25 @@ export const getFusionFilter = (
 };
 
 export const isTopicGroupValid = (topics: FusionEventTopic[]): boolean => {
+  // NOTE: Ensure all topics have no filters at the same time
+  const isAllTopicWithoutFilters = topics.every(
+    (topic) =>
+      getFusionEventMetadata(topic)?.filters.filter(isAlertFilter).length === 0,
+  );
+  if (isAllTopicWithoutFilters) {
+    return true;
+  }
+
   // NOTE: Ensure all topics have the same userInputParams' options & default value
   const benchmarkTopic = topics[0];
-  const benchmarkTopicMetadata = JSON.parse(
-    benchmarkTopic.fusionEventDescriptor.metadata ?? '{}',
-  ) as FusionEventMetadata;
+  const benchmarkTopicMetadata = getFusionEventMetadata(benchmarkTopic);
   const benchmarkAlertFilter =
     benchmarkTopicMetadata?.filters.find(isAlertFilter);
   const benchmarkUserInputParams = benchmarkAlertFilter?.userInputParams;
 
-  // toggle type topics has no filter in the metaData
-  // if (!benchmarkAlertFilter) {
-  //   return false;
-  // }
+  if (!benchmarkAlertFilter) {
+    return false;
+  }
 
   if (benchmarkUserInputParams && benchmarkUserInputParams.length > 0) {
     const isGroupNameNotMatched = topics.find(
@@ -157,7 +164,10 @@ export const isTopicGroupValid = (topics: FusionEventTopic[]): boolean => {
         ]),
       );
       // TODO: Fix O(n^2) complexity
-      for (const key of benchmarkUserInputParamMap.keys()) {
+      const benchmarkUserInputParamKeys = Array.from(
+        benchmarkUserInputParamMap.keys(),
+      );
+      for (const key of benchmarkUserInputParamKeys) {
         const benchmarkUserInputParam = benchmarkUserInputParamMap.get(key);
         const userInputParam = userInputParamMap.get(key);
         if (!userInputParam || !benchmarkUserInputParam) {
@@ -184,10 +194,13 @@ export const isTopicGroupValid = (topics: FusionEventTopic[]): boolean => {
 export const isFusionEventMetadata = (
   metadata: unknown,
 ): metadata is FusionEventMetadata => {
-  if (typeof metadata !== 'object' || !metadata) {
+  const metadataToVerify = metadata;
+  if (typeof metadataToVerify !== 'object' || !metadataToVerify) {
     return false;
   }
-  return 'filters' in metadata && Array.isArray(metadata.filters);
+  return (
+    'filters' in metadataToVerify && Array.isArray(metadataToVerify.filters)
+  );
 };
 
 export const isAlertFilter = (filter: Filter): filter is AlertFilter => {
@@ -201,10 +214,13 @@ export const isAlertFilter = (filter: Filter): filter is AlertFilter => {
 export const isFusionFilterOptions = (
   filterOptions: unknown,
 ): filterOptions is FusionFilterOptions => {
-  if (typeof filterOptions !== 'object' || !filterOptions) {
+  const filterOptionsToVerify = filterOptions;
+  if (typeof filterOptionsToVerify !== 'object' || !filterOptionsToVerify) {
     return false;
   }
-  return 'version' in filterOptions && filterOptions.version === 1;
+  return (
+    'version' in filterOptionsToVerify && filterOptionsToVerify.version === 1
+  );
 };
 
 export const getUpdatedAlertFilterOptions = (
@@ -246,4 +262,31 @@ export const derivePrefixAndSuffixFromValueType = (
         suffix: 'x',
       };
   }
+};
+
+/** TopicStackRow related */
+
+export type TopicStackAlert = {
+  alertName: string;
+  id: string;
+  subscriptionValueInfo: InputObject;
+};
+
+export const resolveTopicStackAlertName = (alertName: string) => {
+  const [topicName, subscriptionValue, subscriptionLabel, timestamp] =
+    alertName.split(':;:');
+  return {
+    topicName,
+    subscriptionValue,
+    subscriptionLabel,
+    timestamp,
+  };
+};
+
+export const composeTopicStackAlertName = (
+  topicName: string,
+  subscriptionValue: string,
+  subscriptionLabel: string,
+) => {
+  return `${topicName}:;:${subscriptionValue}:;:${subscriptionLabel}:;:${Date.now()}`;
 };

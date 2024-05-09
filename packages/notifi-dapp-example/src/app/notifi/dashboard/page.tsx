@@ -84,6 +84,3 @@ export default function NotifiDashboard() {
     </div>
   );
 }
-function useNotifiContextWrapper(): { inputs: any } {
-  throw new Error('Function not implemented.');
-}
