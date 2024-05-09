@@ -54,6 +54,9 @@ export const defaultCopy = {
   topicOptions: {
     customInputPlaceholder: 'Custom',
   },
+  subscriptionValueInput: {
+    dropdownPlaceholder: '--- Select one option ---',
+  },
 };
 
 export const validationRegex: Record<string, RegExp> = {

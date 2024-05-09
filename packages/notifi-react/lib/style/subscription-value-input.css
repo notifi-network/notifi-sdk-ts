@@ -1,0 +1,29 @@
+.subscription-value-input-dropdown {
+  position: relative;
+}
+
+.subscription-value-input-dropdown-value {
+  border-radius: 6px;
+  background-color: var(
+    --notifi-subscription-input-dropdown-value-bg
+  ); /**TODO */
+  padding: 0.5rem 1rem;
+  text-align: center;
+  cursor: pointer;
+}
+.subscription-value-input-dropdown-list {
+  position: absolute;
+  bottom: 0;
+  transform: translateY(100%);
+  left: 0;
+  right: 0;
+  background-color: var(
+    --notifi-subscription-input-dropdown-list-bg
+  ); /**TODO */
+  z-index: 1;
+}
+.subscription-value-input-dropdown-list > * {
+  text-align: center;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
