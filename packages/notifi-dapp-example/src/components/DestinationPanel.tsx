@@ -2,13 +2,13 @@ import { Icon } from '@/assets/Icon';
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
 import { createCoinbaseNonce, subscribeCoinbaseMessaging } from '@/utils/XMTP';
 import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
-import { createConsentMessage } from '@xmtp/consent-proof-signature'
 import {
   isCtaInfo,
+  useNotifiFrontendClientContext,
   useNotifiTargetContext,
-  useNotifiFrontendClientContext
 } from '@notifi-network/notifi-react';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
+import { createConsentMessage } from '@xmtp/consent-proof-signature';
 import React, { useCallback, useMemo, useState } from 'react';
 
 import { DestinationInfoPrompt } from './DestinationInfoPrompt';
@@ -71,44 +71,45 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
       throw Error('Unable to sign the wallet. Please try again.');
     }
 
-    const targetId = targetData?.wallet?.data?.id ?? "";
+    const targetId = targetData?.wallet?.data?.id ?? '';
     const address =
       selectedWallet === 'coinbase'
         ? wallets[selectedWallet]?.walletKeys?.hex ?? ''
         : '';
     // TODO: get senderAddress from target
-    const senderAddress = "0xb49bbE2c31CF4a0fB74b16812b8c6B6FeEE23524"
+    const senderAddress = '0xb49bbE2c31CF4a0fB74b16812b8c6B6FeEE23524';
     const timestamp = Date.now();
-    const message = createConsentMessage(senderAddress, timestamp)
-    console.log(message)
+    const message = createConsentMessage(senderAddress, timestamp);
+    console.log(message);
     const signature = await wallets[selectedWallet].signArbitrary(message);
 
     if (!signature) {
       throw Error('Unable to sign the wallet. Please try again.');
     }
 
-    console.log(targetId)
-    console.log(address)
-    await frontendClient.verifyXmtpTarget(
-      {
-        input: {
-          web3TargetId: targetId,
-          accountId: address,
-          consentProofSignature: signature as string,
-          timestamp: timestamp,
-          isCBW: true,
-        }
-      });
+    console.log(targetId);
+    console.log(address);
+    await frontendClient.verifyXmtpTarget({
+      input: {
+        web3TargetId: targetId,
+        accountId: address,
+        consentProofSignature: signature as string,
+        timestamp: timestamp,
+        isCBW: true,
+      },
+    });
     // await signCoinbaseSignature(address, senderAddress);
-    await frontendClient.verifyCbwTarget(
-      {
-        input: {
-          targetId: targetId
-        }
-      });
-  }
+    await frontendClient.verifyCbwTarget({
+      input: {
+        targetId: targetId,
+      },
+    });
+  };
 
-  const signCoinbaseSignature = async (address: string, senderAddress: string) => {
+  const signCoinbaseSignature = async (
+    address: string,
+    senderAddress: string,
+  ) => {
     try {
       setIsLoading(true);
 
@@ -165,10 +166,11 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
             </div>
           </div>
           <div
-            className={`flex ${targetInfoPrompts.email?.infoPrompt.type === 'cta'
-              ? 'flex-col'
-              : 'flex-row'
-              } items-start justify-between w-3/4 sm:w-90 mr-4`}
+            className={`flex ${
+              targetInfoPrompts.email?.infoPrompt.type === 'cta'
+                ? 'flex-col'
+                : 'flex-row'
+            } items-start justify-between w-3/4 sm:w-90 mr-4`}
           >
             <div className="text-sm ml-6 text-notifi-text">
               {targetData.email}
@@ -349,8 +351,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
                     !isLoading
                   ) {
                     signWallet();
-                  }
-                  else if (infoPrompt && isCtaInfo(infoPrompt))
+                  } else if (infoPrompt && isCtaInfo(infoPrompt))
                     infoPrompt.onClick();
                 }}
                 infoPromptMessage={
