@@ -1,10 +1,10 @@
 import { Icon } from '@/assets/Icon';
+import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import {
   CtaInfo,
   isCtaInfo,
   useNotifiTargetContext,
-} from '@/context/NotifiTargetContext';
-import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
+} from '@notifi-network/notifi-react';
 import React, { useCallback, useMemo, useState } from 'react';
 
 import { DestinationInfoPrompt } from './DestinationInfoPrompt';
@@ -76,15 +76,21 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
               {targetData.email}
             </div>
             {targetInfoPrompts.email?.infoPrompt.type === 'cta' ? (
-              <DestinationInfoPrompt
-                isSent={isEmailConfirmationSent}
-                onClick={() => handleResendEmailVerificationClick()}
-                infoPromptMessage={
-                  isEmailConfirmationSent
-                    ? 'Verification email sent'
-                    : 'Resend verification email'
-                }
-              />
+              <div className="flex flex-col md:flex-row justify-center items-baseline">
+                <div className="text-sm ml-6 mr-1 text-notifi-text-light font-medium">
+                  We sent you an email.{' '}
+                </div>
+                <DestinationInfoPrompt
+                  type="email"
+                  isSent={isEmailConfirmationSent}
+                  onClick={() => handleResendEmailVerificationClick()}
+                  infoPromptMessage={
+                    isEmailConfirmationSent
+                      ? 'Verification email sent'
+                      : 'Resend verification email'
+                  }
+                />
+              </div>
             ) : (
               VerifiedText
             )}
