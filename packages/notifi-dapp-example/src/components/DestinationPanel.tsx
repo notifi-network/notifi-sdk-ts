@@ -9,6 +9,7 @@ import {
 } from '@notifi-network/notifi-react';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import { createConsentMessage } from '@xmtp/consent-proof-signature';
+import { useClient, useConsent } from '@xmtp/react-sdk';
 import React, { useCallback, useMemo, useState } from 'react';
 
 import { DestinationInfoPrompt } from './DestinationInfoPrompt';
@@ -65,8 +66,9 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const { wallets, selectedWallet } = useWallets();
   const { popGlobalInfoModal } = useGlobalStateContext();
+  const xmtp = useClient();
 
-  const signWallet = async () => {
+  const xip43Impl = async () => {
     if (!selectedWallet) {
       throw Error('Unable to sign the wallet. Please try again.');
     }
@@ -87,8 +89,6 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
       throw Error('Unable to sign the wallet. Please try again.');
     }
 
-    console.log(targetId);
-    console.log(address);
     await frontendClient.verifyXmtpTarget({
       input: {
         web3TargetId: targetId,
@@ -106,9 +106,61 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
     });
   };
 
+  const xmtpXip42Impl = async () => {
+    if (!selectedWallet) {
+      throw Error('Unable to sign the wallet. Please try again.');
+    }
+
+    const options: any = {
+      persistConversations: false,
+      env: 'production',
+    };
+
+    const address =
+      selectedWallet === 'coinbase'
+        ? wallets[selectedWallet]?.walletKeys?.hex ?? ''
+        : '';
+
+    const signer = {
+      getAddress: (): Promise<string> => {
+        return new Promise((resolve, reject) => {
+          resolve(address);
+        });
+      },
+      signMessage: (message: ArrayLike<number> | string): Promise<string> => {
+        return wallets[selectedWallet].signArbitrary(
+          message as string,
+        ) as Promise<string>;
+      },
+    };
+
+    console.log('initializing');
+    const client = await xmtp.initialize({ options, signer });
+
+    if (client === undefined) {
+      console.log('failed to initialize client');
+      throw Error('XMTP client is uninitialized. Please try again.');
+    }
+
+    // TODO: get sender address from target
+    const senderAddress = '0xb49bbE2c31CF4a0fB74b16812b8c6B6FeEE23524';
+    const conversation = await client.conversations.newConversation(
+      senderAddress,
+    );
+    const conversationTopic = conversation.topic.split('/')[3];
+    await client.contacts.allow([senderAddress]);
+
+    await signCoinbaseSignature(address, senderAddress, conversationTopic);
+  };
+
+  const signWallet = async () => {
+    await xmtpXip42Impl();
+  };
+
   const signCoinbaseSignature = async (
     address: string,
     senderAddress: string,
+    conversationTopic: string,
   ) => {
     try {
       setIsLoading(true);
@@ -116,8 +168,6 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
       const nonce = await createCoinbaseNonce();
       if (!nonce || !selectedWallet)
         throw Error('Unable to sign the wallet. Please try again.');
-
-      const conversationTopic = ''; //TODO: retrieve it from API
 
       const message = `Coinbase Wallet Messaging subscribe
       Address: ${address}
