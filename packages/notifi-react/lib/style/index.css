@@ -7,6 +7,7 @@
 @import url('./nav-header.css');
 @import url('./target-list.css');
 @import url('./topic-list.css');
+@import url('./subscription-value-input.css');
 
 :root {
   /* Color variables */
@@ -48,6 +49,10 @@
   --notifi-notifi-topic-list-row-bg: var(--notifi-color-grey2);
   --notifi-topic-options-item-bg: var(--notifi-color-grey1);
   --notifi-topic-option-radio-bg: var(--notifi-color-grey1);
+  --notifi-subscription-input-dropdown-value-bg: var(--notifi-color-grey1);
+  --notifi-subscription-input-dropdown-list-bg: var(
+    --notifi-color-grey1
+  ); /**TODO */
 }
 
 .notifi-theme-light {
@@ -70,4 +75,8 @@
   --notifi-notifi-topic-list-row-bg: var(--notifi-color-white);
   --notifi-topic-options-item-bg: var(--notifi-color-eggshell);
   --notifi-topic-option-radio-bg: var(--notifi-color-white);
+  --notifi-subscription-input-dropdown-value-bg: var(--notifi-color-grey1);
+  --notifi-subscription-input-dropdown-list-bg: var(
+    --notifi-color-grey1
+  ); /**TODO */
 }
