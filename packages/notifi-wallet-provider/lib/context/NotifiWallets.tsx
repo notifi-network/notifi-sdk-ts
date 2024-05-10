@@ -217,9 +217,7 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
   );
 };
 
-export const NotifiWalletProvider: React.FC<PropsWithChildren> = ({
-  children,
-}) => {
+const NotifiWalletProvider: React.FC<PropsWithChildren> = ({ children }) => {
   return (
     <NotifiWagmiProvider>
       <NotifiWallet>{children}</NotifiWallet>
