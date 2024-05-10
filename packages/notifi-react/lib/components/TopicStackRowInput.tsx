@@ -1,14 +1,10 @@
-import {
-  FusionEventTopic,
-  FusionFilterOptions,
-  InputObject,
-} from '@notifi-network/notifi-frontend-client';
+import { FusionEventTopic } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import React from 'react';
 
-import { useNotifiTargetContext, useNotifiTopicContext } from '../context';
+import { useNotifiTopicContext } from '../context';
+import { useTopicStackRowInput } from '../hooks/useTopicStackRowInput';
 import {
-  composeTopicStackAlertName,
   defaultCopy,
   getFusionEventMetadata,
   getUpdatedAlertFilterOptions,
@@ -41,89 +37,28 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
   if (!subscriptionValueOrRef) {
     return null; // TODO: handle undefined or error
   }
+  const { isLoading: isLoadingTopic, error: topicError } =
+    useNotifiTopicContext();
 
-  const [subscriptionValue, setSubscriptionValue] =
-    React.useState<InputObject | null>(null);
-  const [filterOptionsToBeSubscribed, setFilterOptionsToBeSubscribed] =
-    React.useState<FusionFilterOptions | null>(null);
-
-  // TODO: Move to hooks
-  // TODO: use useMemo when it (filters array) possibly grows huge
   const filterName = getFusionEventMetadata(props.topic)?.filters.find(
     isAlertFilter,
   )?.name;
 
   const userInputParams = getUserInputParams(props.topic);
 
-  React.useEffect(() => {
-    // Initial set up for filterOptionsToBeSubscribed
-    if (userInputParams && filterName) {
-      const input: FusionFilterOptions['input'] = {
-        [filterName]: {},
-      };
-      userInputParams.forEach((userInputParam) => {
-        input[filterName][userInputParam.name] = '';
-      });
-      setFilterOptionsToBeSubscribed({
-        version: 1,
-        input,
-      });
-    }
-  }, []);
-
-  // TODO: Move to hooks
-  const isUserInputParamsValid = React.useMemo(() => {
-    if (filterOptionsToBeSubscribed && filterName) {
-      filterOptionsToBeSubscribed.input[filterName];
-      const isAllFieldsInputted = userInputParams.every((userInputParam) => {
-        const input = filterOptionsToBeSubscribed.input;
-        return (
-          !!input[filterName][userInputParam.name] &&
-          input[filterName][userInputParam.name] !== ''
-        );
-      });
-      return isAllFieldsInputted ? true : false;
-    }
-    return false;
-  }, [filterOptionsToBeSubscribed]);
-
   const {
-    subscribeAlertsWithFilterOptions,
-    isLoading: isLoadingTopic,
-    error: topicError,
-  } = useNotifiTopicContext();
-  const {
-    targetDocument: { targetGroupId },
-  } = useNotifiTargetContext();
-
-  const onSave = async () => {
-    if (
-      !filterOptionsToBeSubscribed ||
-      !subscriptionValue ||
-      !targetGroupId ||
-      !isUserInputParamsValid
-    )
-      return;
-    const alertName = composeTopicStackAlertName(
-      props.topic.uiConfig.name,
-      subscriptionValue.value,
-      subscriptionValue.label,
-    );
-
-    await subscribeAlertsWithFilterOptions(
-      [
-        {
-          topic: props.topic,
-          filterOptions: filterOptionsToBeSubscribed,
-          customAlertName: alertName,
-          subscriptionValue: subscriptionValue.value,
-        },
-      ],
-      targetGroupId,
-    );
-    setSubscriptionValue(null);
-    props.onSave && props.onSave();
-  };
+    subscriptionValue,
+    setSubscriptionValue,
+    filterOptionsToBeSubscribed,
+    setFilterOptionsToBeSubscribed,
+    subscribeTopic,
+    isTopicReadyToSubscribe,
+  } = useTopicStackRowInput(
+    props.topic,
+    userInputParams,
+    filterName,
+    props.onSave,
+  );
 
   if (topicError) {
     return <ErrorGlobal />; // TODO: handle error
@@ -170,17 +105,13 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
             className={clsx(
               'notifi-topic-stack-row-input-button',
               props.classNames?.button,
-              (!filterOptionsToBeSubscribed ||
-                !subscriptionValue ||
-                !targetGroupId ||
-                !isUserInputParamsValid) &&
-                'disabled',
+              !isTopicReadyToSubscribe && 'disabled',
             )}
           >
             {isLoadingTopic ? (
               <LoadingAnimation type={'spinner'} />
             ) : (
-              <div onClick={onSave}>
+              <div onClick={subscribeTopic}>
                 {props.copy?.buttonContent ??
                   defaultCopy.topicStackRowInput.buttonContent}
               </div>

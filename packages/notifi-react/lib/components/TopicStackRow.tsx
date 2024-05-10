@@ -14,6 +14,7 @@ export type TopicStackRowProps = {
     header?: string;
     headerTitle?: string;
     icon?: string;
+    cta?: string;
     TopicStack?: TopicStackRowProps['className'];
     TopicStackRowInput?: TopicStackRowProps['className'];
   };
@@ -83,6 +84,7 @@ export const TopicStackRow: React.FC<TopicStackRowProps> = (props) => {
           onClick={() => {
             setIsTopicStackRowInputVisible(true);
           }}
+          className={clsx('notifi-topic-stack-row-cta', props.className?.cta)}
         >
           {props.copy?.cta ?? defaultCopy.topicStackRow.cta}
         </div>
