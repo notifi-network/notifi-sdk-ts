@@ -5,10 +5,10 @@ import { FusionEventTopic } from '@notifi-network/notifi-frontend-client';
 import { useNotifiTenantConfigContext } from '@notifi-network/notifi-react';
 import React from 'react';
 
-import { AlertSubscriptionRow } from './AlertSubscriptionRow';
+import { TopicRow } from './TopicRow';
 import { TopicStackRow } from './TopicStackRow';
 
-export type AlertSubscriptionProps = {
+export type TopicListProps = {
   title?: string;
   inFTU?: boolean;
 };
@@ -31,7 +31,7 @@ export type TopicGroupRowMetadata = TopicRowMetadataBase & {
   topics: FusionEventTopic[];
 };
 
-export const AlertSubscription: React.FC<AlertSubscriptionProps> = ({
+export const TopicList: React.FC<TopicListProps> = ({
   title,
   inFTU = false,
 }) => {
@@ -86,12 +86,10 @@ export const AlertSubscription: React.FC<AlertSubscriptionProps> = ({
               // NOTE: Grouping not supported for TopicStackRow
               return <TopicStackRow key={id} {...rowMetadata} />;
             }
-            return (
-              <AlertSubscriptionRow<'standalone'> {...rowMetadata} key={id} />
-            );
+            return <TopicRow<'standalone'> {...rowMetadata} key={id} />;
           }
           if (isTopicGroupMetadata(rowMetadata)) {
-            return <AlertSubscriptionRow<'group'> key={id} {...rowMetadata} />;
+            return <TopicRow<'group'> key={id} {...rowMetadata} />;
           }
         })}
       </div>

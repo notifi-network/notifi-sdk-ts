@@ -17,9 +17,9 @@ import {
 } from '@notifi-network/notifi-react';
 import React from 'react';
 
-import { AlertSubscriptionOptions } from './AlertSubscriptionOptions';
 import { LoadingAnimation } from './LoadingAnimation';
 import { SubscriptionValueInput } from './SubscriptionValueInput';
+import { TopicOptions } from './TopicOptions';
 
 export type TopicStackRowInputProps = {
   topic: FusionEventTopic;
@@ -142,7 +142,7 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
         <div className="">
           {reversedParams.map((userInputParm, id) => {
             return (
-              <AlertSubscriptionOptions<'standalone'>
+              <TopicOptions<'standalone'>
                 index={id}
                 description={description}
                 userInputParam={userInputParm}

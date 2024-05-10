@@ -7,7 +7,7 @@ import {
 import { useNotifiTopicContext } from '@notifi-network/notifi-react';
 import React from 'react';
 
-import { TopicRowCategory } from './AlertSubscription';
+import { TopicRowCategory } from './TopicList';
 
 type TopicGroupOptionsProps = {
   topics: FusionEventTopic[];
@@ -34,11 +34,11 @@ type TopicStandAloneOptionsProps = {
       };
 };
 
-export type AlertSubscriptionOptionsProps<T extends TopicRowCategory> =
+export type TopicOptionsProps<T extends TopicRowCategory> =
   T extends 'standalone' ? TopicStandAloneOptionsProps : TopicGroupOptionsProps;
 
-export const AlertSubscriptionOptions = <T extends TopicRowCategory>(
-  props: AlertSubscriptionOptionsProps<T>,
+export const TopicOptions = <T extends TopicRowCategory>(
+  props: TopicOptionsProps<T>,
 ) => {
   const isTopicGroup = isTopicGroupOptions(props);
   const benchmarkTopic = isTopicGroup ? props.topics[0] : props.topic;
@@ -191,7 +191,7 @@ export const AlertSubscriptionOptions = <T extends TopicRowCategory>(
 
 // Utils
 const isTopicGroupOptions = (
-  props: AlertSubscriptionOptionsProps<TopicRowCategory>,
+  props: TopicOptionsProps<TopicRowCategory>,
 ): props is TopicGroupOptionsProps => {
   return 'topics' in props;
 };

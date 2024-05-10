@@ -3,7 +3,7 @@ import { getFusionEventMetadata } from '@/utils/topic';
 import { useNotifiTopicContext } from '@notifi-network/notifi-react';
 import React from 'react';
 
-import { TopicStandaloneRowMetadata } from './AlertSubscription';
+import { TopicStandaloneRowMetadata } from './TopicList';
 import { TopicStack } from './TopicStack';
 import { TopicStackRowInput } from './TopicStackRowInput';
 
