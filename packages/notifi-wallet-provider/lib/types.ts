@@ -7,6 +7,7 @@ export type BinanceChain = Ethereum & { requestAccounts: () => any };
 declare global {
   interface Window {
     keplr: Keplr;
+    leap: Keplr;
     BinanceChain: BinanceChain;
   }
 }
@@ -24,13 +25,17 @@ export type WalletKeysBase = {
 
 export type MetamaskWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'hex'>;
 export type KeplrWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'base64'>;
+export type LeapWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'base64'>;
 
-export type WalletKeys = MetamaskWalletKeys | KeplrWalletKeys;
+export type WalletKeys = MetamaskWalletKeys | KeplrWalletKeys | LeapWalletKeys;
 
 export abstract class NotifiWallet {
   abstract isInstalled: boolean;
   abstract walletKeys: WalletKeys | null;
-  abstract signArbitrary?: KeplrSignMessage | MetamaskSignMessage;
+  abstract signArbitrary?:
+    | KeplrSignMessage
+    | MetamaskSignMessage
+    | LeapSignMessage;
   abstract connect?: () => Promise<Partial<WalletKeysBase> | null>;
   abstract disconnect?: () => void;
   abstract websiteURL: string;
@@ -68,6 +73,10 @@ export type KeplrSignMessage = (
   message: string | Uint8Array,
 ) => Promise<StdSignature | undefined>;
 
+export type LeapSignMessage = (
+  message: string | Uint8Array,
+) => Promise<StdSignature | void>;
+
 export class KeplrWallet implements NotifiWallet {
   constructor(
     public isInstalled: boolean,
@@ -78,10 +87,21 @@ export class KeplrWallet implements NotifiWallet {
     public websiteURL: string,
   ) {}
 }
+export class LeapWallet implements NotifiWallet {
+  constructor(
+    public isInstalled: boolean,
+    public walletKeys: LeapWalletKeys | null,
+    public signArbitrary: LeapSignMessage,
+    public connect: () => Promise<LeapWalletKeys | null>,
+    public disconnect: () => void,
+    public websiteURL: string,
+  ) {}
+}
 
 export type Wallets = {
   metamask: MetamaskWallet;
   keplr: KeplrWallet;
+  leap: LeapWallet;
   coinbase: CoinbaseWallet;
   rabby: RabbyWallet;
   rainbow: RainbowWallet;

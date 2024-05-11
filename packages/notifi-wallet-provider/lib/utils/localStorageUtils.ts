@@ -1,5 +1,6 @@
 import {
   KeplrWalletKeys,
+  LeapWalletKeys,
   MetamaskWalletKeys,
   NotifiWalletStorage,
   Wallets,
@@ -13,6 +14,8 @@ export const setWalletKeysToLocalStorage = <T extends keyof Wallets>(
     ? MetamaskWalletKeys
     : T extends 'keplr'
     ? KeplrWalletKeys
+    : T extends 'leap'
+    ? LeapWalletKeys
     : never,
 ) => {
   if (typeof window !== 'undefined') {

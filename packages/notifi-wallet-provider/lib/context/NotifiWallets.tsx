@@ -8,11 +8,13 @@ import React, {
 import { useBinance } from '../hooks/useBinance';
 import { useInjectedWallet } from '../hooks/useInjectedWallet';
 import { useKeplr } from '../hooks/useKeplr';
+import { useLeap } from '../hooks/useLeap';
 import { useWagmiWallet } from '../hooks/useWagmiWallet';
 import {
   BinanceWallet,
   CoinbaseWallet,
   KeplrWallet,
+  LeapWallet,
   MetamaskWallet,
   OKXWallet,
   RabbyWallet,
@@ -41,6 +43,7 @@ const WalletContext = createContext<WalletContextType>({
   wallets: {
     metamask: {} as MetamaskWallet, // intentionally empty initial object
     keplr: {} as KeplrWallet, // intentionally empty initial object
+    leap: {} as LeapWallet, // intentionally empty initial object
     coinbase: {} as CoinbaseWallet, // intentionally empty initial object
     rabby: {} as RabbyWallet, // intentionally empty initial object
     rainbow: {} as RainbowWallet, // intentionally empty initial object
@@ -74,6 +77,7 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
   };
 
   const keplr = useKeplr(setIsLoading, throwError, selectWallet);
+  const leap = useLeap(setIsLoading, throwError, selectWallet);
   const binance = useBinance(setIsLoading, throwError, selectWallet);
   const walletConnect = useWagmiWallet(
     setIsLoading,
@@ -185,6 +189,14 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
       keplr.connectKeplr,
       keplr.disconnectKeplr,
       keplr.websiteURL,
+    ),
+    leap: new LeapWallet(
+      leap.isLeapInstalled,
+      leap.walletKeysLeap,
+      leap.signArbitraryLeap,
+      leap.connectLeap,
+      leap.disconnectLeap,
+      leap.websiteURL,
     ),
   };
 
