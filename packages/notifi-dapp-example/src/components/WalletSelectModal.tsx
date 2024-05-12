@@ -91,7 +91,7 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
                     onClick={() => {
                       window.open(websiteURL, '_blank');
                     }}
-                    className="rounded-lg absolute h-full w-full top-0 right-0 bg-gray-400 opacity-40 hover:opacity-90"
+                    className="rounded-lg absolute h-full w-full top-0 right-0"
                   >
                     <div className="rounded-lg h-full w-full flex bg-black opacity-0 cursor-pointer justify-center items-center text-center font-semibold hover:opacity-90">
                       Install

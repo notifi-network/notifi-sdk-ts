@@ -23,7 +23,9 @@ export default function NotifiDashboard() {
 
   let accountAddress: string | undefined = '';
   if (selectedWallet) {
-    accountAddress = wallets[selectedWallet].walletKeys?.bech32;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    accountAddress = wallets[selectedWallet].walletKeys.hex ?? '';
   }
 
   if (!accountAddress) return;
