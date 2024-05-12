@@ -151,6 +151,15 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
     await client.contacts.allow([senderAddress]);
 
     await signCoinbaseSignature(address, senderAddress, conversationTopic);
+
+    const targetId = targetData?.wallet?.data?.id ?? '';
+    await frontendClient.verifyXmtpTargetViaXip42({
+      input: {
+        web3TargetId: targetId,
+        accountId: address,
+        conversationTopic
+      },
+    });
   };
 
   const signWallet = async () => {
@@ -170,9 +179,9 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
         throw Error('Unable to sign the wallet. Please try again.');
 
       const message = `Coinbase Wallet Messaging subscribe
-      Address: ${address}
-      Partner Address: ${senderAddress}
-      Nonce: ${nonce}`;
+Address: ${address}
+Partner Address: ${senderAddress}
+Nonce: ${nonce}`;
 
       const signature = await wallets[selectedWallet].signArbitrary(message);
 
@@ -216,11 +225,10 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
             </div>
           </div>
           <div
-            className={`flex ${
-              targetInfoPrompts.email?.infoPrompt.type === 'cta'
+            className={`flex ${targetInfoPrompts.email?.infoPrompt.type === 'cta'
                 ? 'flex-col'
                 : 'flex-row'
-            } items-start justify-between w-3/4 sm:w-90 mr-4`}
+              } items-start justify-between w-3/4 sm:w-90 mr-4`}
           >
             <div className="text-sm ml-6 text-notifi-text">
               {targetData.email}
