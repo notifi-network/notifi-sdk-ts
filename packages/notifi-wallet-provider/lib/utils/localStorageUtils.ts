@@ -6,6 +6,7 @@ import {
 } from '../types';
 
 const localStorageKey = 'NotifiWalletStorage';
+console.log('adding test log===>>');
 
 export const setWalletKeysToLocalStorage = <T extends keyof Wallets>(
   wallet: T,
