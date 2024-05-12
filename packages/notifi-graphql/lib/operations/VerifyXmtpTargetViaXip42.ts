@@ -1,6 +1,6 @@
 import {
   VerifyXmtpTargetViaXip42Mutation,
-  VerifyXmtpTargetViaXip42MutationVariables
+  VerifyXmtpTargetViaXip42MutationVariables,
 } from '../gql/generated';
 
 export type VerifyXmtpTargetViaXip42Service = Readonly<{

@@ -26,7 +26,7 @@ export const subscribeCoinbaseMessaging = async (
     headers: {
       'Content-Type': 'text/plain',
     },
-  })
+  });
 
   return await response.json();
 };
