@@ -313,4 +313,8 @@
     </clipPath>
     </defs>
   </symbol>
+
+  <symbol id='dropdown-arrow' width="7" height="4" viewBox="0 0 7 4" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0.849609 0L3.82316 3.54167L6.79671 0H0.849609Z" fill="currentColor"/>
+  </symbol>
 </svg>
