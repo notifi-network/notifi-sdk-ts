@@ -14,31 +14,26 @@ import {
 } from '@notifi-network/notifi-react';
 import React from 'react';
 
+import { Toggle } from './Toggle';
 import {
   TopicGroupRowMetadata,
   TopicRowCategory,
   TopicStandaloneRowMetadata,
-} from './AlertSubscription';
-import { AlertSubscriptionOptions } from './AlertSubscriptionOptions';
-import { SubscriptionValueInput } from './SubscriptionValueInput';
-import { Toggle } from './Toggle';
+} from './TopicList';
+import { TopicOptions } from './TopicOptions';
 
 type TopicGroupRowProps = TopicGroupRowMetadata;
 
 type TopicStandaloneRowProps = TopicStandaloneRowMetadata;
 
-export type AlertSubscriptionRowProps<T extends TopicRowCategory> =
-  T extends 'standalone' ? TopicStandaloneRowProps : TopicGroupRowProps;
+export type TopicRowProps<T extends TopicRowCategory> = T extends 'standalone'
+  ? TopicStandaloneRowProps
+  : TopicGroupRowProps;
 
-export const AlertSubscriptionRow = <T extends TopicRowCategory>(
-  props: AlertSubscriptionRowProps<T>,
+export const TopicRow = <T extends TopicRowCategory>(
+  props: TopicRowProps<T>,
 ) => {
   const isTopicGroup = isTopicGroupRow(props);
-  const [isAddPairOpen, setIsAddPairOpen] = React.useState<boolean>(false);
-  const tradingPairAlertsList = [
-    { 'ETH / USDC - Chain': 'Above 15928.00' },
-    { 'ETH / USDC - Chain': 'Above 15928.00' },
-  ];
   const {
     isAlertSubscribed,
     isLoading: isLoadingTopic,
@@ -61,12 +56,7 @@ export const AlertSubscriptionRow = <T extends TopicRowCategory>(
   const icon = uiConfigOverride?.icon ?? 'INFO';
   const customIconUrl = uiConfigOverride?.customIconUrl ?? '';
 
-  const isSubscriptionValueInputable =
-    uiConfigOverride?.isSubscriptionValueInputable ?? false;
-
   const description = getFusionFilter(benchmarkTopic)?.description ?? '';
-
-  const reversedParams = [...userInputParams].reverse();
 
   const title = isTopicGroup
     ? props.topicGroupName
@@ -127,7 +117,6 @@ export const AlertSubscriptionRow = <T extends TopicRowCategory>(
           </div>
         </div>
         {/* hide toggle button if it is the Trading Pair Price Alert, but shown save button instead below */}
-        {/* {userInputParams.length > 1 ? null : ( */}
         <Toggle
           checked={isAlertSubscribed(benchmarkTopic.uiConfig.name)}
           disabled={isLoadingTopic}
@@ -138,36 +127,7 @@ export const AlertSubscriptionRow = <T extends TopicRowCategory>(
             toggleStandAloneTopic(benchmarkTopic);
           }}
         />
-        {/* )} */}
       </div>
-
-      {/* show Trading Pair Price Alert list if there are any
-      using dummy data now TODO: update with real */}
-      {userInputParams.length > 1 ? (
-        <div className="ml-14 flex flex-col border-t border-b border-notifi-card-border mt-2 mb-4 mr-6">
-          {tradingPairAlertsList.map((item, index) => (
-            <div className="flex flex-row justify-between items-center py-3">
-              <div key={index} className="flex flex-col items-start">
-                <div className="text-sm font-regular text-notifi-text">
-                  {Object.keys(item)[0]}
-                </div>
-                <div className="text-xs font-regular text-notifi-text-light">
-                  {Object.values(item)[0]}
-                </div>
-              </div>
-              <Icon
-                id="trash-btn"
-                className="text-notifi-text-light top-6 left-4 cursor-pointer"
-                // onClick={() => unsubscribeAlert(topic.uiConfig.name)}
-              />
-            </div>
-          ))}
-        </div>
-      ) : null}
-
-      {/* show dropdown button for Trading Pair Price Alert */}
-      {/* TODO: pass in a variable from AP to determine if the dropdown should be shown */}
-      {isSubscriptionValueInputable ? <SubscriptionValueInput /> : null}
 
       {/* render radio button or button inputs if content with userInputParams length equals to 1 */}
       {userInputParams.length === 1 &&
@@ -176,7 +136,7 @@ export const AlertSubscriptionRow = <T extends TopicRowCategory>(
           {isTopicGroup
             ? userInputParams.map((userInput, id) => {
                 return (
-                  <AlertSubscriptionOptions<'group'>
+                  <TopicOptions<'group'>
                     index={id}
                     key={id}
                     userInputParam={userInput}
@@ -189,7 +149,7 @@ export const AlertSubscriptionRow = <T extends TopicRowCategory>(
           {!isTopicGroup
             ? userInputParams.map((userInput, id) => {
                 return (
-                  <AlertSubscriptionOptions<'standalone'>
+                  <TopicOptions<'standalone'>
                     index={id}
                     key={id}
                     userInputParam={userInput}
@@ -199,65 +159,6 @@ export const AlertSubscriptionRow = <T extends TopicRowCategory>(
                 );
               })
             : null}
-        </div>
-      ) : null}
-
-      {/* render radio button or button inputs if content with userInputParams length larger than 1, for GMX, it is the Trading Pair Price Alert */}
-      {userInputParams.length > 1 && isAddPairOpen ? (
-        <div>
-          {isTopicGroup
-            ? reversedParams.map((userInput, id) => {
-                return (
-                  <AlertSubscriptionOptions<'group'>
-                    index={id}
-                    key={id}
-                    userInputParam={userInput}
-                    topics={props.topics}
-                    description={description}
-                  />
-                );
-              })
-            : null}
-          {!isTopicGroup
-            ? reversedParams.map((userInput, id) => {
-                return (
-                  <AlertSubscriptionOptions<'standalone'>
-                    index={id}
-                    key={id}
-                    userInputParam={userInput}
-                    topic={benchmarkTopic}
-                    description={description}
-                  />
-                );
-              })
-            : null}
-          <button
-            className="ml-14 h-9 w-18 rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text mt-1 mb-4"
-            onClick={() => {
-              if (!targetGroupId) return;
-              if (!isAlertSubscribed(benchmarkTopic.uiConfig.name)) {
-                if (isTopicGroup) {
-                  return toggleTopicGroup(props.topics);
-                }
-                toggleStandAloneTopic(benchmarkTopic);
-              }
-              setIsAddPairOpen(false);
-            }}
-          >
-            Save
-          </button>
-        </div>
-      ) : null}
-
-      {/* add pair for Trading Pair Price Alert  */}
-      {userInputParams.length > 1 ? (
-        <div className="border-t border-notifi-card-border ml-14 mr-6">
-          <div
-            className="text-sm font-medium text-notifi-tenant-brand-bg py-2 cursor-pointer"
-            onClick={() => setIsAddPairOpen(true)}
-          >
-            + Add Pair
-          </div>
         </div>
       ) : null}
     </div>
@@ -266,7 +167,7 @@ export const AlertSubscriptionRow = <T extends TopicRowCategory>(
 
 // Utils
 const isTopicGroupRow = (
-  props: AlertSubscriptionRowProps<TopicRowCategory>,
+  props: TopicRowProps<TopicRowCategory>,
 ): props is TopicGroupRowProps => {
   return 'topics' in props && 'topicGroupName' in props;
 };
