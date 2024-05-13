@@ -65,6 +65,7 @@ export const TopicStackRow: React.FC<TopicStackRowProps> = (props) => {
                 key={id}
                 topicStackAlert={topicStackAlert}
                 className={props.className?.TopicStack}
+                topic={props.topic}
               />
             );
           })}
