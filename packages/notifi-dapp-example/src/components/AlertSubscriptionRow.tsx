@@ -20,7 +20,6 @@ import {
   TopicStandaloneRowMetadata,
 } from './AlertSubscription';
 import { AlertSubscriptionOptions } from './AlertSubscriptionOptions';
-import { SubscriptionValueInput } from './SubscriptionValueInput';
 import { Toggle } from './Toggle';
 
 type TopicGroupRowProps = TopicGroupRowMetadata;
@@ -34,11 +33,6 @@ export const AlertSubscriptionRow = <T extends TopicRowCategory>(
   props: AlertSubscriptionRowProps<T>,
 ) => {
   const isTopicGroup = isTopicGroupRow(props);
-  const [isAddPairOpen, setIsAddPairOpen] = React.useState<boolean>(false);
-  const tradingPairAlertsList = [
-    { 'ETH / USDC - Chain': 'Above 15928.00' },
-    { 'ETH / USDC - Chain': 'Above 15928.00' },
-  ];
   const {
     isAlertSubscribed,
     isLoading: isLoadingTopic,
@@ -61,12 +55,7 @@ export const AlertSubscriptionRow = <T extends TopicRowCategory>(
   const icon = uiConfigOverride?.icon ?? 'INFO';
   const customIconUrl = uiConfigOverride?.customIconUrl ?? '';
 
-  const isSubscriptionValueInputable =
-    uiConfigOverride?.isSubscriptionValueInputable ?? false;
-
   const description = getFusionFilter(benchmarkTopic)?.description ?? '';
-
-  const reversedParams = [...userInputParams].reverse();
 
   const title = isTopicGroup
     ? props.topicGroupName
@@ -143,7 +132,7 @@ export const AlertSubscriptionRow = <T extends TopicRowCategory>(
 
       {/* show Trading Pair Price Alert list if there are any
       using dummy data now TODO: update with real */}
-      {userInputParams.length > 1 ? (
+      {/* {userInputParams.length > 1 ? (
         <div className="ml-14 flex flex-col border-t border-b border-notifi-card-border mt-2 mb-4 mr-6">
           {tradingPairAlertsList.map((item, index) => (
             <div className="flex flex-row justify-between items-center py-3">
@@ -163,11 +152,11 @@ export const AlertSubscriptionRow = <T extends TopicRowCategory>(
             </div>
           ))}
         </div>
-      ) : null}
+      ) : null} */}
 
       {/* show dropdown button for Trading Pair Price Alert */}
       {/* TODO: pass in a variable from AP to determine if the dropdown should be shown */}
-      {isSubscriptionValueInputable ? <SubscriptionValueInput /> : null}
+      {/* {isSubscriptionValueInputable ? <SubscriptionValueInput /> : null} */}
 
       {/* render radio button or button inputs if content with userInputParams length equals to 1 */}
       {userInputParams.length === 1 &&
@@ -203,7 +192,7 @@ export const AlertSubscriptionRow = <T extends TopicRowCategory>(
       ) : null}
 
       {/* render radio button or button inputs if content with userInputParams length larger than 1, for GMX, it is the Trading Pair Price Alert */}
-      {userInputParams.length > 1 && isAddPairOpen ? (
+      {/* {userInputParams.length > 1 && isAddPairOpen ? (
         <div>
           {isTopicGroup
             ? reversedParams.map((userInput, id) => {
@@ -230,8 +219,8 @@ export const AlertSubscriptionRow = <T extends TopicRowCategory>(
                   />
                 );
               })
-            : null}
-          <button
+            : null} */}
+      {/* <button
             className="ml-14 h-9 w-18 rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text mt-1 mb-4"
             onClick={() => {
               if (!targetGroupId) return;
@@ -247,10 +236,10 @@ export const AlertSubscriptionRow = <T extends TopicRowCategory>(
             Save
           </button>
         </div>
-      ) : null}
+      ) : null} */}
 
       {/* add pair for Trading Pair Price Alert  */}
-      {userInputParams.length > 1 ? (
+      {/* {userInputParams.length > 1 ? (
         <div className="border-t border-notifi-card-border ml-14 mr-6">
           <div
             className="text-sm font-medium text-notifi-tenant-brand-bg py-2 cursor-pointer"
@@ -259,7 +248,7 @@ export const AlertSubscriptionRow = <T extends TopicRowCategory>(
             + Add Pair
           </div>
         </div>
-      ) : null}
+      ) : null} */}
     </div>
   );
 };

@@ -14,12 +14,24 @@ type TopicGroupOptionsProps = {
   userInputParam: UserInputParam<UiType>;
   index: number;
   description: string;
+  onSelectAction?:
+    | { actionType: 'instantSubscribe' }
+    | {
+        actionType: 'updateFilterOptions';
+        action: (userInputParamName: string, value: string | number) => void;
+      };
 };
 type TopicStandAloneOptionsProps = {
   topic: FusionEventTopic;
   userInputParam: UserInputParam<UiType>;
   index: number;
-  description: string;
+  description?: string;
+  onSelectAction?:
+    | { actionType: 'instantSubscribe' }
+    | {
+        actionType: 'updateFilterOptions';
+        action: (userInputParamName: string, value: string | number) => void;
+      };
 };
 
 export type AlertSubscriptionOptionsProps<T extends TopicRowCategory> =
@@ -44,6 +56,27 @@ export const AlertSubscriptionOptions = <T extends TopicRowCategory>(
   );
   const { isLoading: isLoadingTopic } = useNotifiTopicContext();
 
+  const [valueToBeSubscribed, setValueToBeSubscribed] = React.useState<
+    string | number
+  >();
+
+  const selectedOption =
+    props.onSelectAction?.actionType === 'updateFilterOptions'
+      ? valueToBeSubscribed
+      : subscribedValue;
+
+  const selectOrInputValue = (value: string | number) => {
+    if (isLoadingTopic) return;
+    if (props.onSelectAction?.actionType === 'updateFilterOptions') {
+      if (props.userInputParam.options.includes(value)) {
+        setCustomInput('');
+      }
+      props.onSelectAction?.action(props.userInputParam.name, value);
+      return setValueToBeSubscribed(value);
+    }
+    renewFilterOptions(value, isTopicGroup ? props.topics : [props.topic]);
+  };
+
   return (
     <div className="">
       {props.userInputParam.description ? (
@@ -59,17 +92,13 @@ export const AlertSubscriptionOptions = <T extends TopicRowCategory>(
               {uiType !== 'radio' ? (
                 !option ? null : (
                   <button
-                    className={`w-18 h-12 bg-notifi-card-bg rounded-md mr-2 text-notifi-text-light ${
-                      option === subscribedValue
+                    className={`w-16 h-12 bg-notifi-card-bg rounded-md mr-2 text-notifi-text-light ${
+                      option === selectedOption
                         ? 'selected text-white border border-notifi-tenant-brand-bg'
                         : ''
                     }`}
                     onClick={() => {
-                      if (isLoadingTopic) return;
-                      renewFilterOptions(
-                        option,
-                        isTopicGroup ? props.topics : [props.topic],
-                      );
+                      selectOrInputValue(option);
                     }}
                   >
                     <div>
@@ -85,12 +114,7 @@ export const AlertSubscriptionOptions = <T extends TopicRowCategory>(
                     <label className="relative flex items-center rounded-full cursor-pointer">
                       <input
                         onClick={() => {
-                          if (isLoadingTopic) return;
-
-                          // renewFilterOptions(
-                          //   option,
-                          //   isTopicGroup ? props.topics : [props.topic],
-                          // );
+                          selectOrInputValue(option);
                         }}
                         name="type"
                         type="radio"
@@ -128,7 +152,7 @@ export const AlertSubscriptionOptions = <T extends TopicRowCategory>(
         {props.userInputParam.allowCustomInput && uiType !== 'radio' ? (
           <div
             className={`text-notifi-text-light inline-block relative ${
-              props.userInputParam.options[0] ? '' : 'w-60'
+              props.userInputParam.options[0] ? 'w-[6.5rem]' : 'w-60'
             }`}
           >
             {props.userInputParam.options[0]
@@ -138,28 +162,26 @@ export const AlertSubscriptionOptions = <T extends TopicRowCategory>(
               disabled={isLoadingTopic}
               onChange={(evt) => setCustomInput(evt.target.value)}
               onBlur={(evt) => {
-                if (!evt.target.value) return;
-                renewFilterOptions(
-                  evt.target.value,
-                  isTopicGroup ? props.topics : [props.topic],
-                );
+                selectOrInputValue(evt.target.value);
               }}
               placeholder="Custom"
               value={customInput}
               className={` ${
-                props.userInputParam.options[0] ? 'w-20' : 'w-full'
-              } h-12 bg-notifi-card-bg rounded-md mr-2 text-notifi-text-light text-center mx-1 ${
+                props.userInputParam.options[0] ? 'w-[6rem]' : 'w-full'
+              } h-12 bg-notifi-card-bg rounded-md mr-2 text-notifi-text-light text-center ${
                 customInput === subscribedValue
                   ? 'selected text-white border border-notifi-tenant-brand-bg'
                   : ''
               }`}
             />
             {props.userInputParam.options[0] ? null : (
-              <div className="absolute right-0 bottom-3">
+              <div className="absolute right-3 bottom-3">
                 {'prefix' in prefixAndSuffix && prefixAndSuffix.prefix}
               </div>
             )}
-            {'suffix' in prefixAndSuffix && prefixAndSuffix.suffix}
+            <div className="absolute right-3 bottom-3">
+              {'suffix' in prefixAndSuffix && prefixAndSuffix.suffix}
+            </div>
           </div>
         ) : null}
       </div>

@@ -1,10 +1,12 @@
 'use client';
 
+import { getFusionEventMetadata } from '@/utils/topic';
 import { FusionEventTopic } from '@notifi-network/notifi-frontend-client';
 import { useNotifiTenantConfigContext } from '@notifi-network/notifi-react';
 import React from 'react';
 
 import { AlertSubscriptionRow } from './AlertSubscriptionRow';
+import { TopicStackRow } from './TopicStackRow';
 
 export type AlertSubscriptionProps = {
   title?: string;
@@ -74,15 +76,22 @@ export const AlertSubscription: React.FC<AlertSubscriptionProps> = ({
           {title}
         </div>
       ) : null}
-      <div className="flex flex-col gap-4 justify-center w-86 mb-6 pb-28">
+      <div className="flex flex-col gap-4 justify-center w-86 mb-6">
         {topicRows.map((rowMetadata, id) => {
           if (isTopicStandaloneMetadata(rowMetadata)) {
+            const isSubscriptionValueInputable = getFusionEventMetadata(
+              rowMetadata.topic,
+            )?.uiConfigOverride?.isSubscriptionValueInputable;
+            if (isSubscriptionValueInputable) {
+              // NOTE: Grouping not supported for TopicStackRow
+              return <TopicStackRow key={id} {...rowMetadata} />;
+            }
             return (
               <AlertSubscriptionRow<'standalone'> {...rowMetadata} key={id} />
             );
           }
           if (isTopicGroupMetadata(rowMetadata)) {
-            return <AlertSubscriptionRow<'group'> {...rowMetadata} key={id} />;
+            return <AlertSubscriptionRow<'group'> key={id} {...rowMetadata} />;
           }
         })}
       </div>
