@@ -1,6 +1,6 @@
 import { Icon } from '@/assets/Icon';
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
-import { createCoinbaseNonce, subscribeCoinbaseMessaging } from '@/utils/XMTP';
+import { createCoinbaseNonce, subscribeCoinbaseMessaging } from '@/utils/xmtp';
 import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import {
   isCtaInfo,
@@ -8,7 +8,7 @@ import {
   useNotifiTargetContext,
 } from '@notifi-network/notifi-react';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
-import { createConsentMessage } from '@xmtp/consent-proof-signature';
+// import { createConsentMessage } from '@xmtp/consent-proof-signature';
 import { useClient } from '@xmtp/react-sdk';
 import React, { useCallback, useMemo, useState } from 'react';
 
@@ -68,42 +68,43 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
   const { popGlobalInfoModal } = useGlobalStateContext();
   const xmtp = useClient();
 
-  const xip43Impl = async () => {
-    if (!selectedWallet) {
-      throw Error('Unable to sign the wallet. Please try again.');
-    }
+  // Temporarily commenting out this function because it will be needed later
+  // const xip43Impl = async () => {
+  //   if (!selectedWallet) {
+  //     throw Error('Unable to sign the wallet. Please try again.');
+  //   }
 
-    const targetId = targetData?.wallet?.data?.id ?? '';
-    const address =
-      selectedWallet === 'coinbase'
-        ? wallets[selectedWallet]?.walletKeys?.hex ?? ''
-        : '';
-    // TODO: get senderAddress from target
-    const senderAddress = '0xb49bbE2c31CF4a0fB74b16812b8c6B6FeEE23524';
-    const timestamp = Date.now();
-    const message = createConsentMessage(senderAddress, timestamp);
-    const signature = await wallets[selectedWallet].signArbitrary(message);
+  //   const targetId = targetData?.wallet?.data?.id ?? '';
+  //   const address =
+  //     selectedWallet === 'coinbase'
+  //       ? wallets[selectedWallet]?.walletKeys?.hex ?? ''
+  //       : '';
+  //   // TODO: get senderAddress from target
+  //   const senderAddress = '0xb49bbE2c31CF4a0fB74b16812b8c6B6FeEE23524';
+  //   const timestamp = Date.now();
+  //   const message = createConsentMessage(senderAddress, timestamp);
+  //   const signature = await wallets[selectedWallet].signArbitrary(message);
 
-    if (!signature) {
-      throw Error('Unable to sign the wallet. Please try again.');
-    }
+  //   if (!signature) {
+  //     throw Error('Unable to sign the wallet. Please try again.');
+  //   }
 
-    await frontendClient.verifyXmtpTarget({
-      input: {
-        web3TargetId: targetId,
-        accountId: address,
-        consentProofSignature: signature as string,
-        timestamp: timestamp,
-        isCBW: true,
-      },
-    });
-    // await signCoinbaseSignature(address, senderAddress);
-    await frontendClient.verifyCbwTarget({
-      input: {
-        targetId: targetId,
-      },
-    });
-  };
+  //   await frontendClient.verifyXmtpTarget({
+  //     input: {
+  //       web3TargetId: targetId,
+  //       accountId: address,
+  //       consentProofSignature: signature as string,
+  //       timestamp: timestamp,
+  //       isCBW: true,
+  //     },
+  //   });
+  //   // await signCoinbaseSignature(address, senderAddress);
+  //   await frontendClient.verifyCbwTarget({
+  //     input: {
+  //       targetId: targetId,
+  //     },
+  //   });
+  // };
 
   const xmtpXip42Impl = async () => {
     setIsLoading(true);
@@ -171,7 +172,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
             ? e.message
             : 'Unable to sign the wallet. Please try again.',
         iconOrEmoji: { type: 'icon', id: 'warning' },
-        timeout: 3000,
+        timeout: 5000,
       });
     } finally {
       setIsLoading(false);
@@ -187,44 +188,26 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
     senderAddress: string,
     conversationTopic: string,
   ) => {
-    try {
-      setIsLoading(true);
+    const nonce = await createCoinbaseNonce();
+    if (!nonce || !selectedWallet)
+      throw Error('Unable to sign the wallet. Please try again.');
 
-      const nonce = await createCoinbaseNonce();
-      if (!nonce || !selectedWallet)
-        throw Error('Unable to sign the wallet. Please try again.');
+    const message = `Coinbase Wallet Messaging subscribe\nAddress: ${address}\nPartner Address: ${senderAddress}\nNonce: ${nonce}`;
 
-      const message = `
-        Coinbase Wallet Messaging subscribe
-        Address: ${address}
-        Partner Address: ${senderAddress}
-        Nonce: ${nonce}
-      `;
+    const signature = await wallets[selectedWallet].signArbitrary(message);
 
-      const signature = await wallets[selectedWallet].signArbitrary(message);
+    if (!signature) throw Error('Unable to sign the wallet. Please try again.');
 
-      if (!signature)
-        throw Error('Unable to sign the wallet. Please try again.');
+    const payload = {
+      address,
+      nonce,
+      signature: signature,
+      isActivatedViaCb: true,
+      partnerAddress: senderAddress,
+      conversationTopic,
+    };
 
-      const payload = {
-        address,
-        nonce,
-        signature: signature as string,
-        isActivatedViaCb: true,
-        partnerAddress: senderAddress,
-        conversationTopic,
-      };
-
-      await subscribeCoinbaseMessaging(payload);
-    } catch (e) {
-      popGlobalInfoModal({
-        message: 'Unable to sign the wallet. Please try again.',
-        iconOrEmoji: { type: 'icon', id: 'warning' },
-        timeout: 3000,
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    return await subscribeCoinbaseMessaging(payload);
   };
 
   return (
