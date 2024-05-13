@@ -263,3 +263,24 @@ export const composeTopicStackAlertName = (
 ) => {
   return `${topicName}:;:${subscriptionValue}:;:${subscriptionLabel}:;:${Date.now()}`;
 };
+
+export enum ConvertOptionDirection {
+  /**Note: Convert the value rendered in browser to notifi backend acceptable format */
+  FtoB = 'frontendToBackend',
+  /**Note: Convert the value received from notifi backend to frontend renderable format */
+  BtoF = 'BackendToFrontend',
+}
+
+export const convertOptionValue = (
+  value: string | number,
+  type: ValueType,
+  direction?: ConvertOptionDirection,
+) => {
+  direction = direction ?? ConvertOptionDirection.FtoB;
+  if (type === 'percentage') {
+    return direction === ConvertOptionDirection.FtoB
+      ? Number(value) / 100
+      : Number(value) * 100;
+  }
+  return value;
+};
