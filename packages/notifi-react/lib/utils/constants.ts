@@ -57,6 +57,12 @@ export const defaultCopy = {
   subscriptionValueInput: {
     dropdownPlaceholder: '--- Select one option ---',
   },
+  topicStackRowInput: {
+    buttonContent: 'Save',
+  },
+  topicStackRow: {
+    cta: '+ Add',
+  },
 };
 
 export const validationRegex: Record<string, RegExp> = {

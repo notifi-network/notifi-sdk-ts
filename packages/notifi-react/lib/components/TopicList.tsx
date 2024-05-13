@@ -3,11 +3,15 @@ import clsx from 'clsx';
 import React from 'react';
 
 import { useNotifiTenantConfigContext } from '../context';
-import { TopicRow } from './TopicRow';
+import { getFusionEventMetadata } from '../utils';
+import { TopicRow, TopicRowPropsBase } from './TopicRow';
+import { TopicStackRow, TopicStackRowProps } from './TopicStackRow';
 
 export type TopicListProps = {
   classNames?: {
     container?: string;
+    TopicRow?: TopicRowPropsBase['classNames'];
+    TopicStackRow?: TopicStackRowProps['className'];
   };
 };
 
@@ -64,10 +68,35 @@ export const TopicList: React.FC<TopicListProps> = (props) => {
     <div className={clsx('notifi-topic-list', props.classNames?.container)}>
       {topicRows.map((rowMetadata, id) => {
         if (isTopicStandaloneMetadata(rowMetadata)) {
-          return <TopicRow<'standalone'> {...rowMetadata} key={id} />;
+          const isSubscriptionValueInputable = getFusionEventMetadata(
+            rowMetadata.topic,
+          )?.uiConfigOverride?.isSubscriptionValueInputable;
+          if (isSubscriptionValueInputable) {
+            // NOTE: Grouping not supported for TopicStackRow
+            return (
+              <TopicStackRow
+                key={id}
+                {...rowMetadata}
+                className={props.classNames?.TopicRow}
+              />
+            );
+          }
+          return (
+            <TopicRow<'standalone'>
+              {...rowMetadata}
+              key={id}
+              classNames={props.classNames?.TopicRow}
+            />
+          );
         }
         if (isTopicGroupMetadata(rowMetadata)) {
-          return <TopicRow<'group'> key={id} {...rowMetadata} />;
+          return (
+            <TopicRow<'group'>
+              key={id}
+              {...rowMetadata}
+              classNames={props.classNames?.TopicStackRow}
+            />
+          );
         }
       })}
     </div>
