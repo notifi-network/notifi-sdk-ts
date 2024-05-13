@@ -95,7 +95,7 @@ export const useLeap = (
 
   const disconnectLeap = () => {
     if (!window.leap) return handleLeapNotExists('disconnectLeap');
-    // window.leap.disable();
+    // window.leap.disable(); // TODO fix: https://docs.leapwallet.io/cosmos/for-dapps-connect-to-leap/api-reference#disconnect-from-dapp
     setWalletKeysLeap(null);
     cleanWalletsInLocalStorage();
     selectWallet(null);

@@ -17,9 +17,9 @@ export const setWalletKeysToLocalStorage = <T extends keyof Wallets>(
     ? KeplrWalletKeys
     : T extends 'leap'
     ? LeapWalletKeys
-    : // : T extends 'phantom'
-      // ? PhantomWalletKeys
-      never,
+    : T extends 'phantom'
+    ? PhantomWalletKeys
+    : never,
 ) => {
   if (typeof window !== 'undefined') {
     const storageWallet: NotifiWalletStorage = {
