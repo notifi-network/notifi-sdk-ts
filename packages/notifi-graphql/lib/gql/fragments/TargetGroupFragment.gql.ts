@@ -5,6 +5,7 @@ import { EmailTargetFragment } from './EmailTargetFragment.gql';
 import { SlackChannelTargetFragment } from './SlackTargetFragment.gql';
 import { SmsTargetFragment } from './SmsTargetFragment.gql';
 import { TelegramTargetFragment } from './TelegramTargetFragment.gql';
+import { Web3TargetFragment } from './Web3TargetFragment.gql';
 import { WebhookTargetFragment } from './WebhookTargetFragment.gql';
 
 export const TargetGroupFragment = gql`
@@ -29,6 +30,9 @@ export const TargetGroupFragment = gql`
     slackChannelTargets {
       ...SlackChannelTargetFragment
     }
+    web3Targets {
+      ...Web3TargetFragment
+    }
   }
 
   ${EmailTargetFragment}
@@ -37,4 +41,5 @@ export const TargetGroupFragment = gql`
   ${WebhookTargetFragment}
   ${DiscordTargetFragment}
   ${SlackChannelTargetFragment}
+  ${Web3TargetFragment}
 `;

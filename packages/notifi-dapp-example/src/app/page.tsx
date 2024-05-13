@@ -6,35 +6,32 @@ import { MobilePromptModal } from '@/components/MobilePromptModal';
 import { PoweredByNotifi } from '@/components/PoweredByNotifi';
 import { WalletSelectModal } from '@/components/WalletSelectModal';
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
-import { useInjectiveWallets } from '@/context/InjectiveWalletContext';
+import { NotifiContextWrapper } from '@/context/NotifiContextWrapper';
+import { useNotifiRouter } from '@/hooks/useNotifiRouter';
 import { useRouterAsync } from '@/hooks/useRouterAsync';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
+// Rendering this Component will trigger the login function
+function LoginComponent() {
+  useNotifiRouter();
+  return null;
+}
+
 export default function Home() {
-  const { isLoadingRouter, handleRoute } = useRouterAsync();
+  const { isLoadingRouter } = useRouterAsync();
   const { popGlobalInfoModal } = useGlobalStateContext();
   const { selectedWallet, wallets, error, isLoading } = useWallets();
-  const { selectedWallet: injectiveSelectedWallet, wallets: injectiveWallets } =
-    useInjectiveWallets();
   const [isOpenWalletsModal, setIsOpenWalletsModal] = useState(false);
   const [isOpenMobilePromptModal, setIsOpenMobilePromptModal] = useState(false);
-
-  const allWallets = {
-    ...wallets,
-    ...injectiveWallets,
-  };
+  const [isSigningMessage, setIsSigningMessage] = useState(false);
 
   useEffect(() => {
-    if (
-      (selectedWallet && wallets[selectedWallet].walletKeys) ||
-      (injectiveSelectedWallet &&
-        injectiveWallets[injectiveSelectedWallet].walletKeys)
-    ) {
-      handleRoute('/notifi');
-    }
-  }, [selectedWallet, injectiveSelectedWallet]);
+    if (selectedWallet && wallets[selectedWallet].walletKeys)
+      setIsSigningMessage(true);
+    else setIsSigningMessage(false);
+  }, [selectedWallet]);
 
   useEffect(() => {
     if (error) {
@@ -69,7 +66,7 @@ export default function Home() {
           setIsOpenWalletsModal(true);
           setIsOpenMobilePromptModal(true);
         }}
-        ctaButtonText="Connect Wallet To Start"
+        ctaButtonText="Connect Wallet"
       />
       <DummyAlertsModal />
       <div className="p-2 bg-white rounded-lg h-7 block md:hidden w-[110px] mt-12">
@@ -80,12 +77,18 @@ export default function Home() {
       ) : null}
       {/* show this modal if there is no metamask and keplr extension detected */}
       {isOpenMobilePromptModal &&
-      !Object.values(allWallets)
+      !Object.values(wallets)
         .map((wallet) => wallet.isInstalled)
         .includes(true) ? (
         <MobilePromptModal
           setIsOpenMobilePromptModal={setIsOpenMobilePromptModal}
         />
+      ) : null}
+
+      {isSigningMessage ? (
+        <NotifiContextWrapper>
+          <LoginComponent />
+        </NotifiContextWrapper>
       ) : null}
     </main>
   );

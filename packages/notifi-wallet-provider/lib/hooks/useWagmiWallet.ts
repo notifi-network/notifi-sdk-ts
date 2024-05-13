@@ -7,6 +7,7 @@ import {
   cleanWalletsInLocalStorage,
   setWalletKeysToLocalStorage,
 } from '../utils/localStorageUtils';
+import { walletsWebsiteLink } from '../utils/wallet';
 
 export const useWagmiWallet = (
   loadingHandler: React.Dispatch<React.SetStateAction<boolean>>,
@@ -94,7 +95,7 @@ export const useWagmiWallet = (
   const signArbitrary = useCallback(
     async (message: string): Promise<`0x${string}` | undefined> => {
       if (!isConnected || !walletKeys || !address) {
-        handleWalletNotExists('signArbitrary');
+        handleWalletNotExists('Sign Arbitrary');
         return;
       }
 
@@ -105,7 +106,7 @@ export const useWagmiWallet = (
 
       try {
         const signature: `0x${string}` = await signMessageAsync({
-          message: Buffer.from(message).toString('hex'),
+          message: message,
         });
 
         return signature;
@@ -130,5 +131,6 @@ export const useWagmiWallet = (
     connectWallet,
     signArbitrary,
     disconnectWallet,
+    websiteURL: walletsWebsiteLink[walletName],
   };
 };

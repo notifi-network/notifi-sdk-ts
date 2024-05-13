@@ -11,6 +11,7 @@ export const CreateTargetGroup = gql`
     $webhookTargetIds: [String!]!
     $discordTargetIds: [String!]!
     $slackChannelTargetIds: [String!]!
+    $web3TargetIds: [String!]!
   ) {
     createTargetGroup(
       targetGroupInput: {
@@ -21,6 +22,7 @@ export const CreateTargetGroup = gql`
         webhookTargetIds: $webhookTargetIds
         discordTargetIds: $discordTargetIds
         slackChannelTargetIds: $slackChannelTargetIds
+        web3TargetIds: $web3TargetIds
       }
     ) {
       ...TargetGroupFragment

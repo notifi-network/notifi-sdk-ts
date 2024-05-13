@@ -58,3 +58,7 @@ export * from './CreateSlackChannelTarget';
 export * from './CreateFusionAlerts';
 export * from './BeginLogInWithWeb3';
 export * from './CompleteLogInWithWeb3';
+export * from './CreateWeb3Target';
+export * from './GetWeb3Targets';
+export * from './VerifyCbwTarget';
+export * from './VerifyXmtpTarget';

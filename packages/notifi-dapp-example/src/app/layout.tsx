@@ -1,5 +1,4 @@
 import { GlobalStateContextProvider } from '@/context/GlobalStateContext';
-import InjectiveWalletProvider from '@/context/InjectiveWalletContext';
 import { NotifiWalletsWrapper } from '@/context/NotifiWalletsWrapper';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
@@ -9,7 +8,7 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Inbox',
+  title: 'GMX',
   description: 'Injective x Notifi Inbox',
 };
 
@@ -29,9 +28,7 @@ export default function RootLayout({
         // NOTE: Not support dark/light mode yet. TODO: consider adding a theme wrapper
       >
         <GlobalStateContextProvider>
-          <InjectiveWalletProvider>
-            <NotifiWalletsWrapper>{children}</NotifiWalletsWrapper>
-          </InjectiveWalletProvider>
+          <NotifiWalletsWrapper>{children}</NotifiWalletsWrapper>
         </GlobalStateContextProvider>
       </body>
     </html>
