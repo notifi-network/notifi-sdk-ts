@@ -1,10 +1,10 @@
 'use client';
 
 import { Icon } from '@/assets/Icon';
-import { AlertSubscription } from '@/components/AlertSubscription';
 import { DashboardDestinations } from '@/components/DashboardDestinations';
 import { DashboardHistory } from '@/components/DashboardHistory';
 import { DashboardSideBar } from '@/components/DashboardSideBar';
+import { TopicList } from '@/components/TopicList';
 import { VerifyBanner } from '@/components/VerifyBanner';
 import { useNotifiTargetContext } from '@notifi-network/notifi-react';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
@@ -23,9 +23,7 @@ export default function NotifiDashboard() {
 
   let accountAddress: string | undefined = '';
   if (selectedWallet) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    accountAddress = wallets[selectedWallet].walletKeys.hex ?? '';
+    accountAddress = wallets[selectedWallet].walletKeys?.bech32;
   }
 
   if (!accountAddress) return;
@@ -77,9 +75,7 @@ export default function NotifiDashboard() {
           {cardView === 'history' ? <DashboardHistory /> : null}
           {cardView === 'destination' ? <DashboardDestinations /> : null}
           {cardView === 'alertSubscription' ? (
-            <AlertSubscription
-              title={'Manage the alerts you want to receive'}
-            />
+            <TopicList title={'Manage the alerts you want to receive'} />
           ) : null}
         </div>
       </div>
