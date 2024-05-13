@@ -3,6 +3,7 @@
   "compilerOptions": {
     "jsx": "react",
     "lib": ["ES2021", "DOM"],
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "target": "es2020"
   }
 }
