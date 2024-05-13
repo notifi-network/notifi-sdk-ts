@@ -31,6 +31,12 @@ export type TopicOptionsPropsBase = {
   copy?: {
     customInputPlaceholder?: string;
   };
+  onSelectAction?:
+    | { actionType: 'instantSubscribe' }
+    | {
+        actionType: 'updateFilterOptions';
+        action: (userInputParamName: string, value: string | number) => void;
+      };
 };
 
 export type TopicOptionsProps<T extends TopicRowCategory> =
@@ -42,7 +48,6 @@ export const TopicOptions = <T extends TopicRowCategory>(
   const isTopicGroup = isTopicGroupOptions(props);
   const benchmarkTopic = isTopicGroup ? props.topics[0] : props.topic;
   /* NOTE: benchmarkTopic is either the 'first topic in the group' or the 'standalone topic'. This represent the target topic to be rendered. */
-
   const {
     customInput,
     prefixAndSuffix,
@@ -55,6 +60,27 @@ export const TopicOptions = <T extends TopicRowCategory>(
     props.userInputParam,
   );
   const { isLoading: isLoadingTopic } = useNotifiTopicContext();
+
+  const [valueToBeSubscribed, setValueToBeSubscribed] = React.useState<
+    string | number
+  >();
+
+  const selectedOption =
+    props.onSelectAction?.actionType === 'updateFilterOptions'
+      ? valueToBeSubscribed
+      : subscribedValue;
+
+  const selectOrInputValue = (value: string | number) => {
+    if (isLoadingTopic) return;
+    if (props.onSelectAction?.actionType === 'updateFilterOptions') {
+      if (props.userInputParam.options.includes(value)) {
+        setCustomInput('');
+      }
+      props.onSelectAction?.action(props.userInputParam.name, value);
+      return setValueToBeSubscribed(value);
+    }
+    renewFilterOptions(value, isTopicGroup ? props.topics : [props.topic]);
+  };
 
   return (
     <div className={clsx('notifi-topic-options', props.classNames?.container)}>
@@ -72,20 +98,17 @@ export const TopicOptions = <T extends TopicRowCategory>(
       <div
         className={clsx('notifi-topic-options-items', props.classNames?.items)}
       >
-        {props.userInputParam.options.map((option) => (
+        {props.userInputParam.options.map((option, id) => (
           <div
+            key={id}
             className={clsx(
               'notifi-topic-options-item',
               props.classNames?.item,
-              option === subscribedValue ? 'selected' : '',
+              option === selectedOption ? 'selected' : '',
               uiType === 'button' ? 'button' : 'radio',
             )}
             onClick={() => {
-              if (isLoadingTopic) return;
-              renewFilterOptions(
-                option,
-                isTopicGroup ? props.topics : [props.topic],
-              );
+              selectOrInputValue(option);
             }}
           >
             <div>
@@ -104,11 +127,7 @@ export const TopicOptions = <T extends TopicRowCategory>(
               disabled={isLoadingTopic}
               onChange={(evt) => setCustomInput(evt.target.value)}
               onBlur={(evt) => {
-                if (!evt.target.value) return;
-                renewFilterOptions(
-                  evt.target.value,
-                  isTopicGroup ? props.topics : [props.topic],
-                );
+                selectOrInputValue(evt.target.value);
               }}
               className={clsx(
                 'notifi-topic-options-custom-input',
