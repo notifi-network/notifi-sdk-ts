@@ -164,6 +164,10 @@
   padding: 1rem 0;
 }
 
+.notifi-topic-stack-row-cta {
+  cursor: pointer;
+}
+
 /* TopicStack styles */
 .notifi-topic-stack {
   margin-bottom: 1rem;
@@ -189,4 +193,25 @@
 .notifi-topic-stack-cta {
   color: var(--notifi-color-text-light); /**TODO: if dark-light needed */
   cursor: pointer;
+}
+
+/* TopicStackRowInput styles */
+
+.notifi-topic-stack-row-input {
+}
+
+.notifi-topic-stack-row-input-button {
+  text-align: center;
+  margin-top: 0.5rem;
+  background-color: var(--notifi-topic-stack-row-input-button-bg);
+  padding: 0.5rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+}
+
+.notifi-topic-stack-row-input-button.disabled {
+  background-color: var(--notifi-color-dusk); /**TODO: if dark-light needed */
+  cursor: not-allowed;
 }

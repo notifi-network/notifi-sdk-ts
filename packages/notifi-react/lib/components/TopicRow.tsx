@@ -13,7 +13,7 @@ import {
 } from './TopicList';
 import { TopicOptions } from './TopicOptions';
 
-type TopicRowPropsBase = {
+export type TopicRowPropsBase = {
   classNames?: {
     container?: string;
     baseRowContainer?: string;
