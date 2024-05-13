@@ -5,7 +5,10 @@ import {
   NotifiFrontendClientContextProvider,
   NotifiFrontendClientProviderProps,
 } from './NotifiFrontendClientContext';
-import { NotifiHistoryContextProvider } from './NotifiHistoryContext';
+import {
+  NotifiHistoryContextProvider,
+  NotifiHistoryProviderProps,
+} from './NotifiHistoryContext';
 import { NotifiTargetContextProvider } from './NotifiTargetContext';
 import {
   NotifiTenantConfigContextProvider,
@@ -15,7 +18,8 @@ import { NotifiTopicContextProvider } from './NotifiTopicContext';
 import { NotifiUserSettingContextProvider } from './NotifiUserSettingContext';
 
 export type NotifiContextProviderProps = NotifiFrontendClientProviderProps &
-  NotifiTenantConfigProps;
+  NotifiTenantConfigProps &
+  NotifiHistoryProviderProps;
 
 export const NotifiContextProvider: FC<
   PropsWithChildren<NotifiContextProviderProps>
@@ -28,7 +32,9 @@ export const NotifiContextProvider: FC<
       >
         <NotifiTargetContextProvider>
           <NotifiTopicContextProvider>
-            <NotifiHistoryContextProvider>
+            <NotifiHistoryContextProvider
+              notificationCountPerPage={params.notificationCountPerPage}
+            >
               <NotifiUserSettingContextProvider>
                 <GlobalStateContextProvider>
                   {children}
