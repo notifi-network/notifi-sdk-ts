@@ -1,0 +1,32 @@
+/* LoadingAnimation Styles */
+
+/* Spinner */
+
+.notifi-spinner-container {
+  width: 24px;
+  height: 24px;
+}
+.notifi-spinner {
+  border: 4px transparent solid;
+  border-top: 4px var(--notifi-spinner-color) solid; /*TODO: change color*/
+  border-radius: 50%;
+  -webkit-animation: spinner 0.6s infinite linear;
+  animation: spinner 0.6s infinite linear;
+}
+
+@-webkit-keyframes spinner {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+@keyframes spinner {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}

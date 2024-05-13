@@ -1,6 +1,9 @@
 'use client';
 
-import { NotifiEnvironment } from '@notifi-network/notifi-frontend-client';
+import {
+  InputObject,
+  NotifiEnvironment,
+} from '@notifi-network/notifi-frontend-client';
 import { NotifiContextProvider } from '@notifi-network/notifi-react';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import { getBytes } from 'ethers';
@@ -54,6 +57,10 @@ export const NotifiCardModalContextWrapper: React.FC<PropsWithChildren> = ({
   }
 
   if (!signMessage) return <div>No available wallet to sign</div>;
+  const pricePairInputs: InputObject[] = [
+    { label: 'BTC-LINK (LINK)', value: 'BTC_LINK' },
+    { label: 'BTC-ETH (ETH)', value: 'BTC_ETH' },
+  ];
 
   return (
     <NotifiContextProvider
@@ -63,6 +70,9 @@ export const NotifiCardModalContextWrapper: React.FC<PropsWithChildren> = ({
       walletPublicKey={walletPublicKey}
       signMessage={signMessage}
       cardId={cardId}
+      inputs={{
+        pricePairs: pricePairInputs,
+      }}
     >
       {children}
     </NotifiContextProvider>

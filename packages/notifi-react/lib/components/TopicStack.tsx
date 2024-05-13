@@ -5,6 +5,7 @@ import React from 'react';
 import { Icon } from '../assets/Icons';
 import { useNotifiTopicContext } from '../context';
 import { TopicStackAlert } from '../utils';
+import { LoadingAnimation } from './LoadingAnimation';
 
 type TopicStackProps = {
   topicStackAlert: TopicStackAlert;
@@ -30,6 +31,8 @@ export const TopicStack: React.FC<TopicStackProps> = (props) => {
     isAboveOrBelowThresholdUserInputOptions(userInputOptions)
       ? sortAboveOrBelowThresholdUserInputOptionValue(userInputOptions)
       : [];
+
+  const { isLoading } = useNotifiTopicContext();
 
   return (
     <div className={clsx('notifi-topic-stack', props.className?.container)}>
@@ -63,7 +66,7 @@ export const TopicStack: React.FC<TopicStackProps> = (props) => {
         className={clsx('notifi-topic-stack-cta', props.className?.cta)}
         onClick={() => unsubscribeAlert(props.topicStackAlert.alertName)}
       >
-        <Icon type="bin" />
+        {isLoading ? <LoadingAnimation type="spinner" /> : <Icon type="bin" />}
       </div>
     </div>
   );
