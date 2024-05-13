@@ -95,7 +95,7 @@ export const useLeap = (
 
   const disconnectLeap = () => {
     if (!window.leap) return handleLeapNotExists('disconnectLeap');
-    window.leap.disable();
+    // window.leap.disable();
     setWalletKeysLeap(null);
     cleanWalletsInLocalStorage();
     selectWallet(null);

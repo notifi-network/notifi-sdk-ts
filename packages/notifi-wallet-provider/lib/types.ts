@@ -1,5 +1,5 @@
 import type { Keplr, StdSignature } from '@keplr-wallet/types';
-import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
+// import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
 import { BrowserProvider, Eip1193Provider } from 'ethers';
 
 export type Ethereum = Eip1193Provider & BrowserProvider;
