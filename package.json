@@ -9,7 +9,6 @@
     "test": "npx lerna --scope=@notifi-network/notifi-react-example run test"
   },
   "devDependencies": {
-    "nx": "^16.9.1",
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "@types/jest": "^27.4.1",
     "@types/node-fetch": "^2.6.2",
@@ -21,6 +20,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "jest": "^27.5.1",
     "lerna": "^5.4.3",
+    "nx": "^16.9.1",
     "postcss": "^8.4.16",
     "prettier": "^2.5.1",
     "rimraf": "^3.0.2",
@@ -51,5 +51,10 @@
     "packages/notifi-wallet-provider",
     "packages/notifi-react",
     "packages/notifi-card-modal-example"
-  ]
+  ],
+  "dependencies": {
+    "@injectivelabs/ts-types": "^1.14.6",
+    "@injectivelabs/wallet-ts": "^1.14.7",
+    "@solana/wallet-adapter-phantom": "^0.9.24"
+  }
 }

@@ -9,6 +9,7 @@ import { useBinance } from '../hooks/useBinance';
 import { useInjectedWallet } from '../hooks/useInjectedWallet';
 import { useKeplr } from '../hooks/useKeplr';
 import { useLeap } from '../hooks/useLeap';
+import { usePhantom } from '../hooks/usePhantom';
 import { useWagmiWallet } from '../hooks/useWagmiWallet';
 import {
   BinanceWallet,
@@ -17,6 +18,7 @@ import {
   LeapWallet,
   MetamaskWallet,
   OKXWallet,
+  PhantomWallet,
   RabbyWallet,
   RainbowWallet,
   WalletConnectWallet,
@@ -43,7 +45,8 @@ const WalletContext = createContext<WalletContextType>({
   wallets: {
     metamask: {} as MetamaskWallet, // intentionally empty initial object
     keplr: {} as KeplrWallet, // intentionally empty initial object
-    leap: {} as LeapWallet, // intentionally empty initial object
+    leap: {} as LeapWallet, // intentionally empty initial objec
+    phantom: {} as PhantomWallet, // intentionally empty initial objec
     coinbase: {} as CoinbaseWallet, // intentionally empty initial object
     rabby: {} as RabbyWallet, // intentionally empty initial object
     rainbow: {} as RainbowWallet, // intentionally empty initial object
@@ -78,6 +81,7 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
 
   const keplr = useKeplr(setIsLoading, throwError, selectWallet);
   const leap = useLeap(setIsLoading, throwError, selectWallet);
+  const phantom = usePhantom(setIsLoading, throwError, selectWallet);
   const binance = useBinance(setIsLoading, throwError, selectWallet);
   const walletConnect = useWagmiWallet(
     setIsLoading,
@@ -197,6 +201,14 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
       leap.connectLeap,
       leap.disconnectLeap,
       leap.websiteURL,
+    ),
+    phantom: new PhantomWallet(
+      phantom.isPhantomInstalled,
+      phantom.walletKeysPhantom,
+      phantom.signArbitraryPhantom,
+      phantom.connectPhantom,
+      phantom.disconnectPhantom,
+      phantom.websiteURL,
     ),
   };
 

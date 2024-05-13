@@ -1,4 +1,5 @@
 import type { Keplr, StdSignature } from '@keplr-wallet/types';
+import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
 import { BrowserProvider, Eip1193Provider } from 'ethers';
 
 export type Ethereum = Eip1193Provider & BrowserProvider;
@@ -8,6 +9,9 @@ declare global {
   interface Window {
     keplr: Keplr;
     leap: Keplr;
+    phantom?: {
+      ethereum: PhantomWalletAdapter;
+    };
     BinanceChain: BinanceChain;
   }
 }
@@ -26,8 +30,13 @@ export type WalletKeysBase = {
 export type MetamaskWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'hex'>;
 export type KeplrWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'base64'>;
 export type LeapWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'base64'>;
+export type PhantomWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'hex'>;
 
-export type WalletKeys = MetamaskWalletKeys | KeplrWalletKeys | LeapWalletKeys;
+export type WalletKeys =
+  | MetamaskWalletKeys
+  | KeplrWalletKeys
+  | LeapWalletKeys
+  | PhantomWalletKeys;
 
 export abstract class NotifiWallet {
   abstract isInstalled: boolean;
@@ -35,7 +44,8 @@ export abstract class NotifiWallet {
   abstract signArbitrary?:
     | KeplrSignMessage
     | MetamaskSignMessage
-    | LeapSignMessage;
+    | LeapSignMessage
+    | PhantomSignMessage;
   abstract connect?: () => Promise<Partial<WalletKeysBase> | null>;
   abstract disconnect?: () => void;
   abstract websiteURL: string;
@@ -77,6 +87,8 @@ export type LeapSignMessage = (
   message: string | Uint8Array,
 ) => Promise<StdSignature | void>;
 
+export type PhantomSignMessage = (message: string) => Promise<string | void>;
+
 export class KeplrWallet implements NotifiWallet {
   constructor(
     public isInstalled: boolean,
@@ -98,10 +110,22 @@ export class LeapWallet implements NotifiWallet {
   ) {}
 }
 
+export class PhantomWallet implements NotifiWallet {
+  constructor(
+    public isInstalled: boolean,
+    public walletKeys: PhantomWalletKeys | null,
+    public signArbitrary: PhantomSignMessage,
+    public connect: () => Promise<PhantomWalletKeys | null>,
+    public disconnect: () => void,
+    public websiteURL: string,
+  ) {}
+}
+
 export type Wallets = {
   metamask: MetamaskWallet;
   keplr: KeplrWallet;
   leap: LeapWallet;
+  phantom: PhantomWallet;
   coinbase: CoinbaseWallet;
   rabby: RabbyWallet;
   rainbow: RainbowWallet;
