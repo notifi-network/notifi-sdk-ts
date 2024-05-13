@@ -1,7 +1,9 @@
 import {
   KeplrWalletKeys,
+  LeapWalletKeys,
   MetamaskWalletKeys,
   NotifiWalletStorage,
+  PhantomWalletKeys,
   Wallets,
 } from '../types';
 
@@ -13,26 +15,37 @@ export const setWalletKeysToLocalStorage = <T extends keyof Wallets>(
     ? MetamaskWalletKeys
     : T extends 'keplr'
     ? KeplrWalletKeys
-    : never,
+    : T extends 'leap'
+    ? LeapWalletKeys
+    : // : T extends 'phantom'
+      // ? PhantomWalletKeys
+      never,
 ) => {
-  const storageWallet: NotifiWalletStorage = {
-    walletName: wallet,
-    walletKeys: walletKeys,
-  };
-  localStorage.setItem(localStorageKey, JSON.stringify(storageWallet));
+  if (typeof window !== 'undefined') {
+    const storageWallet: NotifiWalletStorage = {
+      walletName: wallet,
+      walletKeys: walletKeys,
+    };
+    localStorage.setItem(localStorageKey, JSON.stringify(storageWallet));
+  }
 };
 
 export const cleanWalletsInLocalStorage = () => {
-  localStorage.removeItem(localStorageKey);
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem(localStorageKey);
+  }
 };
 
 export const getWalletsFromLocalStorage = (): NotifiWalletStorage | null => {
-  const storageWalletRaw = JSON.parse(
-    window.localStorage.getItem(localStorageKey) ?? '{}',
-  );
-  let storageWallet: NotifiWalletStorage | null = null;
-  if ('walletName' in storageWalletRaw) {
-    storageWallet = storageWalletRaw as NotifiWalletStorage;
+  if (typeof window !== 'undefined') {
+    const storageWalletRaw = JSON.parse(
+      window.localStorage.getItem(localStorageKey) ?? '{}',
+    );
+    let storageWallet: NotifiWalletStorage | null = null;
+    if ('walletName' in storageWalletRaw) {
+      storageWallet = storageWalletRaw as NotifiWalletStorage;
+    }
+    return storageWallet;
   }
-  return storageWallet;
+  return null;
 };
