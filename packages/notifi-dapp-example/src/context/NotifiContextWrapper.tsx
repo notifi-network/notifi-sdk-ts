@@ -25,6 +25,7 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
     return null;
   let walletPublicKey = '';
   let signMessage;
+  const accountAddress = wallets[selectedWallet]?.walletKeys?.bech32 ?? '';
   if (selectedWallet) {
     switch (selectedWallet) {
       case 'keplr':
@@ -119,6 +120,7 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
       // accountAddress={accountAddress}
       inputs={{
         pricePairs: pricePairInputs,
+        walletAddress: [{ label: '', value: walletPublicKey }],
       }}
       signMessage={signMessage}
       cardId={cardId}
