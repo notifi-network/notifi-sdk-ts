@@ -5,6 +5,10 @@ export function formatTelegramForSubscription(telegramId: string) {
   return telegramId;
 }
 
+export const capitalize = (str: string) => {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+};
+
 export function convertWalletName(walletName: string) {
   switch (walletName) {
     case 'metamask':

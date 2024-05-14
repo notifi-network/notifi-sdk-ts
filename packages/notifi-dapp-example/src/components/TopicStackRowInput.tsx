@@ -1,4 +1,5 @@
 import {
+  TopicStackAlert,
   composeTopicStackAlertName,
   getFusionEventMetadata,
   getFusionFilter,
@@ -25,9 +26,12 @@ export type TopicStackRowInputProps = {
   topic: FusionEventTopic;
   onSave?: () => void;
   setIsTopicStackRowInputVisible: (visible: boolean) => void;
-  copy?: {
-    buttonContent?: string;
-  };
+  topicStackAlerts: TopicStackAlert[];
+  isTopicStackRowInputVisible: boolean;
+  isShowSubscriptionValueInput: boolean;
+  setIsShowSubscriptionValueInput: (
+    isShowSubscriptionValueInput: boolean,
+  ) => void;
 };
 
 export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
@@ -70,7 +74,10 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
         input,
       });
     }
-  }, []);
+    if (subscriptionValue) {
+      props.setIsTopicStackRowInputVisible(true);
+    }
+  }, [subscriptionValue]);
 
   // TODO: Move to hooks
   const isUserInputParamsValid = React.useMemo(() => {
@@ -124,6 +131,7 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
     );
     setSubscriptionValue(null);
     props.setIsTopicStackRowInputVisible(false);
+    props.setIsShowSubscriptionValueInput(false);
     props.onSave && props.onSave();
   };
 
@@ -133,12 +141,23 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
 
   return (
     <div className="">
-      <SubscriptionValueInput
-        subscriptionValueRef={subscriptionValueOrRef}
-        subscriptionValue={subscriptionValue}
-        setSubscriptionValue={setSubscriptionValue}
-      />
-      {subscriptionValue || userInputParams.length > 0 ? (
+      {props.topicStackAlerts.length > 0 ? (
+        props.isShowSubscriptionValueInput ? (
+          <SubscriptionValueInput
+            subscriptionValueRef={subscriptionValueOrRef}
+            subscriptionValue={subscriptionValue}
+            setSubscriptionValue={setSubscriptionValue}
+          />
+        ) : null
+      ) : (
+        <SubscriptionValueInput
+          subscriptionValueRef={subscriptionValueOrRef}
+          subscriptionValue={subscriptionValue}
+          setSubscriptionValue={setSubscriptionValue}
+        />
+      )}
+      {props.isTopicStackRowInputVisible &&
+      (subscriptionValue || userInputParams.length > 0) ? (
         <div className="">
           {reversedParams.map((userInputParm, id) => {
             return (
@@ -157,6 +176,7 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
                         filterOptionsToBeSubscribed,
                         userInputParmName,
                         option,
+                        // convertOptionValue(option, userInputParm.kind),
                       );
                     setFilterOptionsToBeSubscribed(updatedAlertFilterOptiopns);
                   },
@@ -164,21 +184,18 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
               />
             );
           })}
-          <div
-            className={`${
-              !filterOptionsToBeSubscribed ||
-              !subscriptionValue ||
-              !targetGroupId ||
-              !isUserInputParamsValid
-                ? 'disabled'
-                : ''
-            }`}
-          >
+          <div>
             {isLoadingTopic ? (
               <LoadingAnimation type={'spinner'} />
             ) : (
               <button
-                className="ml-14 h-9 w-18 rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text mt-1 mb-4"
+                disabled={
+                  !filterOptionsToBeSubscribed ||
+                  !subscriptionValue ||
+                  !targetGroupId ||
+                  !isUserInputParamsValid
+                }
+                className="ml-14 h-9 w-18 rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text mt-1 mb-4 disabled:opacity-50 disabled:hover:bg-notifi-button-primary-blueish-bg "
                 onClick={onSave}
               >
                 Save

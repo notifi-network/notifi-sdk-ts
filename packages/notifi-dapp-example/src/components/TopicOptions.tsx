@@ -1,8 +1,10 @@
 import { useUserInputParmToFilterOption } from '@/hooks/useUserInputParmToFilterOption';
+import { capitalize } from '@/utils/stringUtils';
 import {
   FusionEventTopic,
   UiType,
   UserInputParam,
+  ValueType,
 } from '@notifi-network/notifi-frontend-client';
 import { useNotifiTopicContext } from '@notifi-network/notifi-react';
 import React from 'react';
@@ -58,7 +60,9 @@ export const TopicOptions = <T extends TopicRowCategory>(
 
   const [valueToBeSubscribed, setValueToBeSubscribed] = React.useState<
     string | number
-  >();
+  >(props.userInputParam.defaultValue);
+
+  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
 
   const selectedOption =
     props.onSelectAction?.actionType === 'updateFilterOptions'
@@ -76,7 +80,7 @@ export const TopicOptions = <T extends TopicRowCategory>(
     }
     renewFilterOptions(value, isTopicGroup ? props.topics : [props.topic]);
   };
-
+  console.log('errorMessage', errorMessage);
   return (
     <div className="">
       {props.userInputParam.description ? (
@@ -85,6 +89,7 @@ export const TopicOptions = <T extends TopicRowCategory>(
         </div>
       ) : null}
 
+      <div className="text-notifi-error text-xs ml-14 mt-2">{errorMessage}</div>
       <div className="flex flex-row ml-14 mt-3 mb-2">
         {props.userInputParam.options.map((option) => {
           return (
@@ -108,7 +113,7 @@ export const TopicOptions = <T extends TopicRowCategory>(
                     </div>
                   </button>
                 )
-              ) : (
+              ) : !option ? null : (
                 <div>
                   <div className="inline-flex items-center mr-6">
                     <label className="relative flex items-center rounded-full cursor-pointer">
@@ -141,7 +146,7 @@ export const TopicOptions = <T extends TopicRowCategory>(
                       className="font-light text-notifi-text cursor-pointer select-none ml-2"
                       htmlFor="html"
                     >
-                      {option}
+                      {capitalize(String(option))}
                     </label>
                   </div>
                 </div>
@@ -160,18 +165,49 @@ export const TopicOptions = <T extends TopicRowCategory>(
               : null}
             <input
               disabled={isLoadingTopic}
-              onChange={(evt) => setCustomInput(evt.target.value)}
+              onChange={(evt) => {
+                setErrorMessage(null);
+                if (props.userInputParam.options[0]) {
+                  if (
+                    Number(evt.target.value) > 49 ||
+                    (Number(evt.target.value) < 1 && evt.target.value !== '')
+                  ) {
+                    setErrorMessage('Please enter a value between 1 and 49');
+                  }
+                }
+                setCustomInput((prev) => {
+                  if (
+                    isUserInputValid(
+                      props.userInputParam.kind,
+                      evt.target.value,
+                    )
+                  ) {
+                    return evt.target.value;
+                  }
+                  return prev;
+                });
+              }}
               onBlur={(evt) => {
+                if (props.userInputParam.options[0]) {
+                  if (
+                    Number(evt.target.value) > 49 ||
+                    Number(evt.target.value) < 1
+                  ) {
+                    return;
+                  }
+                }
                 selectOrInputValue(evt.target.value);
               }}
-              placeholder="Custom"
+              placeholder="custom"
               value={customInput}
               className={` ${
-                props.userInputParam.options[0] ? 'w-[6rem]' : 'w-full'
-              } h-12 bg-notifi-card-bg rounded-md mr-2 text-notifi-text-light text-center ${
-                customInput === subscribedValue
-                  ? 'selected text-white border border-notifi-tenant-brand-bg'
-                  : ''
+                props.userInputParam.options[0]
+                  ? 'w-[6rem] text-center'
+                  : 'w-full pl-3'
+              } h-12 bg-notifi-card-bg rounded-md mr-2 text-notifi-text ${
+                customInput && props.userInputParam.options[0]
+                  ? 'selected text-white border border-notifi-tenant-brand-bg foucs-visible:border-0'
+                  : 'foucs-visible:border-0'
               }`}
             />
             {props.userInputParam.options[0] ? null : (
@@ -179,9 +215,9 @@ export const TopicOptions = <T extends TopicRowCategory>(
                 {'prefix' in prefixAndSuffix && prefixAndSuffix.prefix}
               </div>
             )}
-            <div className="absolute right-3 bottom-3">
+            {/* <div className="absolute right-3 bottom-3">
               {'suffix' in prefixAndSuffix && prefixAndSuffix.suffix}
-            </div>
+            </div> */}
           </div>
         ) : null}
       </div>
@@ -194,4 +230,22 @@ const isTopicGroupOptions = (
   props: TopicOptionsProps<TopicRowCategory>,
 ): props is TopicGroupOptionsProps => {
   return 'topics' in props;
+};
+
+const isUserInputValid = (type: ValueType, userInputValue: string | number) => {
+  if (userInputValue === '') return true;
+  if (type === 'percentage' || type === 'price') {
+    // regex for only allow float
+    const regex1 = /^\d+(\.)?$/;
+    const regex2 = /^\d+(\.\d+)?$/;
+    return (
+      regex1.test(userInputValue.toString()) ||
+      regex2.test(userInputValue.toString())
+    );
+  }
+  if (type === 'integer') {
+    // regex for only allow integer
+    return /^\d+$/.test(userInputValue.toString());
+  }
+  return true;
 };

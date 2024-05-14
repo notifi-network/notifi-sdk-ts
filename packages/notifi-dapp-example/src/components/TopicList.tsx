@@ -69,7 +69,7 @@ export const TopicList: React.FC<TopicListProps> = ({
     <div
       className={`flex flex-col items-center 2xl:px-[15.75rem] xl:px-[10rem] ${
         inFTU ? '' : 'md:min-h-[94vh]'
-      } grow h-full`}
+      } grow h-full mb-7`}
     >
       {title ? (
         <div className="mt-8 mb-6 font-regular text-lg text-notifi-text">

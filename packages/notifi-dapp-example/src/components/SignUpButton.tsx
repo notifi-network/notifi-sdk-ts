@@ -64,7 +64,10 @@ export const SignUpButton: React.FC<NotifiSignUpButtonProps> = ({
       setIsLoading(false);
       return;
     }
-    fusionEventTopics.forEach(async (topic) => {
+    const subEvents = fusionEventTopics.filter((event) => {
+      return event.uiConfig.optOutAtSignup ? false : true;
+    });
+    subEvents.forEach(async (topic) => {
       try {
         if (!ftuStage) {
           await subscribeAlertsDefault([topic], targetGroupId);
