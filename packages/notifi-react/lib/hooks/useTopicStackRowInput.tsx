@@ -28,7 +28,7 @@ export const useTopicStackRowInput = (
         [filterName]: {},
       };
       userInputParams.forEach((userInputParam) => {
-        input[filterName][userInputParam.name] = '';
+        input[filterName][userInputParam.name] = userInputParam.defaultValue;
       });
       setFilterOptionsToBeSubscribed({
         version: 1,
