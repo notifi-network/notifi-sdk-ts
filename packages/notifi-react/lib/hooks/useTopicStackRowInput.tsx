@@ -8,7 +8,7 @@ import {
 import React from 'react';
 
 import { useNotifiTargetContext, useNotifiTopicContext } from '../context';
-import { composeTopicStackAlertName } from '../utils';
+import { composeTopicStackAlertName, convertOptionValue } from '../utils';
 
 export const useTopicStackRowInput = (
   topic: FusionEventTopic,
@@ -28,7 +28,10 @@ export const useTopicStackRowInput = (
         [filterName]: {},
       };
       userInputParams.forEach((userInputParam) => {
-        input[filterName][userInputParam.name] = userInputParam.defaultValue;
+        input[filterName][userInputParam.name] = convertOptionValue(
+          userInputParam.defaultValue,
+          userInputParam.kind,
+        );
       });
       setFilterOptionsToBeSubscribed({
         version: 1,
