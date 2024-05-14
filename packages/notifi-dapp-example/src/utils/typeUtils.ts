@@ -1,3 +1,5 @@
+import { Types } from '@notifi-network/notifi-wallet-provider';
+
 /**
  * @description Returns an array of the object's keys with the correct type.
  * @example
@@ -15,3 +17,9 @@ export type DeepPartialReadonly<T> = T extends object
       [Key in keyof T]?: DeepPartialReadonly<T[Key]>;
     }>
   : T;
+
+export function isEVMChain(
+  keys: Types.MetamaskWalletKeys | Types.KeplrWalletKeys,
+): keys is Types.MetamaskWalletKeys {
+  return (keys as Types.MetamaskWalletKeys).hex !== undefined;
+}

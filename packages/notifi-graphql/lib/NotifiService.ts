@@ -73,7 +73,8 @@ export class NotifiService
     Operations.CreateWeb3TargetService,
     Operations.GetWeb3TargetsService,
     Operations.VerifyCbwTargetService,
-    Operations.VerifyXmtpTargetService
+    Operations.VerifyXmtpTargetService,
+    Operations.VerifyXmtpTargetViaXip42Service
 {
   private _jwt: string | undefined;
   private _typedClient: ReturnType<typeof getSdk>;
@@ -586,6 +587,13 @@ export class NotifiService
   ): Promise<Generated.VerifyXmtpTargetMutation> {
     const headers = this._requestHeaders();
     return this._typedClient.verifyXmtpTarget(variables, headers);
+  }
+
+  async verifyXmtpTargetViaXip42(
+    variables: Generated.VerifyXmtpTargetViaXip42MutationVariables,
+  ): Promise<Generated.VerifyXmtpTargetViaXip42Mutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.verifyXmtpTargetViaXip42(variables, headers);
   }
 
   private _requestHeaders(): HeadersInit {

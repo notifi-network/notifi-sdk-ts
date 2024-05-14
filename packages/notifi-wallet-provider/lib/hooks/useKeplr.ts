@@ -1,4 +1,5 @@
 import type { Keplr, StdSignature } from '@keplr-wallet/types';
+import { Buffer } from 'buffer';
 import { useCallback, useEffect, useState } from 'react';
 
 import { KeplrWalletKeys, Wallets } from '../types';

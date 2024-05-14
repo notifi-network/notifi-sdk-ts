@@ -1,11 +1,24 @@
 const coinbaseEndpoint = 'https://broadcast.coinbase.com/api/rpc';
 
+interface PubKey {
+  readonly type: string;
+  readonly value: string;
+}
+interface StdSignature {
+  readonly pub_key: PubKey;
+  readonly signature: string;
+}
+interface StdSignature {
+  readonly pub_key: PubKey;
+  readonly signature: string;
+}
+
 export type SubscribeMessageType = {
   address: string;
   isActivatedViaCb: boolean;
   nonce: string;
   partnerAddress: string;
-  signature: string;
+  signature: `0x${string}` | StdSignature;
   conversationTopic: string;
 };
 
@@ -24,9 +37,9 @@ export const subscribeCoinbaseMessaging = async (
     method: 'POST',
     body: JSON.stringify(payload),
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'text/plain',
     },
-  }).then((v) => v.json());
+  });
 
-  return response;
+  return await response.json();
 };
