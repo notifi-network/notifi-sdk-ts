@@ -48,7 +48,7 @@ export const HistoryDetail: React.FC<HistoryDetailProps> = ({
           </div>
 
           <div
-            className="font-medium text-base max-w-[675px] text-notifi-text"
+            className="font-medium text-base max-w-[675px] text-notifi-text whitespace-pre-wrap"
             dangerouslySetInnerHTML={{ __html: sanitizedMessage }}
           />
         </div>

@@ -80,7 +80,7 @@ export const TopicOptions = <T extends TopicRowCategory>(
     }
     renewFilterOptions(value, isTopicGroup ? props.topics : [props.topic]);
   };
-  console.log('errorMessage', errorMessage);
+
   return (
     <div className="">
       {props.userInputParam.description ? (

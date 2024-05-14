@@ -9,6 +9,15 @@ export const capitalize = (str: string) => {
   return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
+export const NumberFormatExample = (amount: number) => {
+  // Format the number with commas as thousands separators and fixed to two decimal places
+  const formattedAmount = amount.toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+  });
+
+  return formattedAmount;
+};
+
 export function convertWalletName(walletName: string) {
   switch (walletName) {
     case 'metamask':
