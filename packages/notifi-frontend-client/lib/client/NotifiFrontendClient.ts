@@ -1351,4 +1351,11 @@ export class NotifiFrontendClient {
     const mutation = await this._service.verifyCbwTarget(input);
     return mutation;
   }
+
+  async verifyXmtpTargetViaXip42(
+    input: Types.VerifyXmtpTargetViaXip42MutationVariables,
+  ): Promise<Types.VerifyXmtpTargetViaXip42Mutation> {
+    const mutation = await this._service.verifyXmtpTargetViaXip42(input);
+    return mutation;
+  }
 }
