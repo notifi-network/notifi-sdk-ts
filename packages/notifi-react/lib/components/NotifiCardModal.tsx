@@ -13,7 +13,7 @@ import { ErrorGlobal, ErrorGlobalProps } from './ErrorGlobal';
 import { Expiry, ExpiryProps } from './Expiry';
 import { Ftu, FtuProps } from './Ftu';
 import { Inbox } from './Inbox';
-import { LoadingGlobal, LoadingGlobalProps } from './LoadingGlobal';
+import { LoadingGlobalProps } from './LoadingGlobal';
 
 export type NotifiInputFieldsText = {
   label?: {
@@ -45,26 +45,14 @@ export type NotifiCardModalProps = Readonly<{
 type CardModalView = 'connect' | 'expiry' | 'ftu' | 'Inbox';
 
 export const NotifiCardModal: React.FC<NotifiCardModalProps> = (props) => {
-  const {
-    frontendClientStatus,
-    isLoading: isLoadingClient,
-    error: clientError,
-  } = useNotifiFrontendClientContext();
-  const {
-    ftuStage,
-    isLoading: isLoadingFtu,
-    error: userSettingError,
-  } = useNotifiUserSettingContext();
+  const { frontendClientStatus, error: clientError } =
+    useNotifiFrontendClientContext();
+  const { ftuStage, error: userSettingError } = useNotifiUserSettingContext();
   const [CardModalView, setCardModalView] = useState<CardModalView | null>(
     null,
   );
-  const {
-    setGlobalLoading,
-    setGlobalError,
-    globalLoading,
-    globalError,
-    setGlobalCtas,
-  } = useGlobalStateContext();
+  const { setGlobalError, globalError, setGlobalCtas } =
+    useGlobalStateContext();
   const [error, setError] = useState<Error | null>(null);
 
   if (props.onClose) {
@@ -92,14 +80,6 @@ export const NotifiCardModal: React.FC<NotifiCardModalProps> = (props) => {
   }, [frontendClientStatus, ftuStage]);
 
   useEffect(() => {
-    if (isLoadingClient || isLoadingFtu) {
-      setGlobalLoading({ isLoading: true });
-      return;
-    }
-    setGlobalLoading({ isLoading: false });
-  }, [isLoadingClient, isLoadingFtu]);
-
-  useEffect(() => {
     if (clientError || userSettingError || error) {
       setGlobalError({
         error: new Error(
@@ -111,19 +91,8 @@ export const NotifiCardModal: React.FC<NotifiCardModalProps> = (props) => {
     setGlobalError(null);
   }, [userSettingError, error]);
 
-  if (globalError || globalLoading.isLoading) {
-    return (
-      <div
-        className={clsx(
-          props.darkMode ? 'notifi-theme-dark' : 'notifi-theme-light',
-          'notifi-card-modal',
-          props.classNames?.container,
-        )}
-      >
-        {globalLoading.isLoading ? <LoadingGlobal /> : null}
-        {globalError ? <ErrorGlobal /> : null}
-      </div>
-    );
+  if (globalError) {
+    return <ErrorGlobal />;
   }
 
   return (
