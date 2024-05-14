@@ -91,7 +91,7 @@ export const GlobalStateContextProvider: FC<PropsWithChildren> = ({
       }}
     >
       {isGlobalLoading ? (
-        <div className="fixed h-screen w-screen bg-opacity-80 bg-white z-50">
+        <div className="fixed h-screen w-screen bg-opacity-50 bg-black z-50">
           <LoadingSpinner />
         </div>
       ) : null}

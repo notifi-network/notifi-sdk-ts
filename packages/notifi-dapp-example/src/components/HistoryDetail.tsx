@@ -33,7 +33,7 @@ export const HistoryDetail: React.FC<HistoryDetailProps> = ({
     <div className="p-6">
       <div className="hover:bg-notifi-card-border focus:bg-notifi-destination-card-bg h-6 w-6 rounded-2xl">
         <Icon
-          className="cursor-pointer text-notifi-text-medium mb-4"
+          className="cursor-pointer text-notifi-text mb-4"
           onClick={() => setHistoryDetailEntry(null)}
           id="left-arrow"
         />
