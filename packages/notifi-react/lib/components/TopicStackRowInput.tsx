@@ -5,6 +5,7 @@ import React from 'react';
 import { useNotifiTopicContext } from '../context';
 import { useTopicStackRowInput } from '../hooks/useTopicStackRowInput';
 import {
+  convertOptionValue,
   defaultCopy,
   getFusionEventMetadata,
   getUpdatedAlertFilterOptions,
@@ -93,7 +94,7 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
                         filterName,
                         filterOptionsToBeSubscribed,
                         userInputParmName,
-                        option,
+                        convertOptionValue(option, userInputParm.kind),
                       );
                     setFilterOptionsToBeSubscribed(updatedAlertFilterOptiopns);
                   },
