@@ -1,6 +1,6 @@
 {
   "name": "@notifi-network/notifi-wallet-provider",
-  "version": "0.90.9-alpha.42",
+  "version": "0.90.8",
   "description": "> TODO: description",
   "author": "eric-notifi <eric.lee@notifi.network>",
   "homepage": "https://github.com/notifi-network/notifi-sdk-ts",
@@ -35,6 +35,9 @@
     "url": "https://github.com/notifi-network/notifi-sdk-ts/issues"
   },
   "dependencies": {
+    "@injectivelabs/ts-types": "1.14.6",
+    "@injectivelabs/wallet-ts": "^1.14.6",
+    "@solana/web3.js": "^1.91.8",
     "bech32-converting": "^1.0.9",
     "buffer": "^6.0.3",
     "ethers": "^6.12.1",

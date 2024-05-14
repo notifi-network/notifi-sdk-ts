@@ -1,5 +1,6 @@
 import { ChainId, EthereumChainId } from '@injectivelabs/ts-types';
 import { Wallet, WalletStrategy } from '@injectivelabs/wallet-ts';
+import { Connection, PublicKey } from '@solana/web3.js';
 import converter from 'bech32-converting';
 import { useCallback, useEffect, useState } from 'react';
 
