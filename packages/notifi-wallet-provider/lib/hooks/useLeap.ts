@@ -1,3 +1,5 @@
+import { ChainId, EthereumChainId } from '@injectivelabs/ts-types';
+import { Wallet, WalletStrategy } from '@injectivelabs/wallet-ts';
 import type { StdSignature } from '@keplr-wallet/types';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -46,14 +48,16 @@ export const useLeap = (
       console.log('Leap account changed');
       if (!window.leap) return handleLeapNotExists('handleAccountChange');
 
-      window.leap.getKey('injective-1').then((key) => {
-        // TODO: dynamic cosmos chain id
-        const walletKeys = {
-          bech32: key.bech32Address,
-          base64: Buffer.from(key.pubKey).toString('base64'),
-        };
-        setWalletKeysLeap(walletKeys);
-      });
+      (window.leap as { getKey: (chainId: string) => Promise<any> })
+        .getKey('injective-1')
+        .then(async (key) => {
+          // TODO: dynamic cosmos chain id
+          const walletKeys = {
+            bech32: key.bech32Address,
+            base64: Buffer.from(key.pubKey).toString('base64'),
+          };
+          setWalletKeysLeap(walletKeys);
+        });
     };
 
     return () => {

@@ -23,8 +23,6 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
     'okx',
     'rainbow',
     'zerion',
-    'leap',
-    'phantom',
   ];
 
   walletsRequiredForGMX = walletsRequiredForGMX.sort((a, b) => {

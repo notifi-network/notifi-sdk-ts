@@ -4,7 +4,7 @@ import {
 } from '@notifi-network/notifi-react';
 import React from 'react';
 
-import { AlertSubscription } from './AlertSubscription';
+import { TopicList } from './TopicList';
 
 export const ConfigAlertModal = () => {
   const { updateFtuStage } = useNotifiUserSettingContext();
@@ -23,7 +23,7 @@ export const ConfigAlertModal = () => {
       </div>
 
       <div className="flex-grow min-h-0 my-6">
-        <AlertSubscription inFTU={true} />
+        <TopicList inFTU={true} />
       </div>
 
       <button

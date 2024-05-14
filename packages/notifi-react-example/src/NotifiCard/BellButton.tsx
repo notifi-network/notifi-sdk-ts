@@ -8,10 +8,14 @@ type BellButtonProps = {
 };
 
 export const BellButton: FC<BellButtonProps> = ({ setIsCardOpen }) => {
-  const { hasUnreadNotification, unreadNotificationCount } = useUnreadState();
+  const { hasUnreadNotification, unreadNotificationCount, clearNotificationCount } = useUnreadState();
+  const cardOpen = () => {
+    setIsCardOpen((prev) => !prev);
+    clearNotificationCount();
+  }
   return (
     <div
-      onClick={() => setIsCardOpen((prev) => !prev)}
+      onClick={() => cardOpen()}
       className={style.bellButton}
     >
       <img width={40} height={40} src="/bell-icon.svg" alt="logo" />

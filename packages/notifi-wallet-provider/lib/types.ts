@@ -8,10 +8,8 @@ export type BinanceChain = Ethereum & { requestAccounts: () => any };
 declare global {
   interface Window {
     keplr: Keplr;
-    leap: Keplr;
-    phantom?: {
-      ethereum: PhantomWalletAdapter;
-    };
+    phantom: PhantomWalletAdapter;
+    leap?: unknown;
     BinanceChain: BinanceChain;
   }
 }
@@ -99,6 +97,7 @@ export class KeplrWallet implements NotifiWallet {
     public websiteURL: string,
   ) {}
 }
+
 export class LeapWallet implements NotifiWallet {
   constructor(
     public isInstalled: boolean,

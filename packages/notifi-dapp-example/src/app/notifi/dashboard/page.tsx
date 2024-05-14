@@ -1,11 +1,12 @@
 'use client';
 
 import { Icon } from '@/assets/Icon';
-import { AlertSubscription } from '@/components/AlertSubscription';
 import { DashboardDestinations } from '@/components/DashboardDestinations';
 import { DashboardHistory } from '@/components/DashboardHistory';
 import { DashboardSideBar } from '@/components/DashboardSideBar';
+import { TopicList } from '@/components/TopicList';
 import { VerifyBanner } from '@/components/VerifyBanner';
+import { isEVMChain } from '@/utils/typeUtils';
 import { useNotifiTargetContext } from '@notifi-network/notifi-react';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import Image from 'next/image';
@@ -22,10 +23,10 @@ export default function NotifiDashboard() {
   if (!selectedWallet || !wallets[selectedWallet].walletKeys) return null;
 
   let accountAddress: string | undefined = '';
-  if (selectedWallet) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    accountAddress = wallets[selectedWallet].walletKeys.hex ?? '';
+  const keys = wallets[selectedWallet].walletKeys;
+
+  if (keys) {
+    accountAddress = isEVMChain(keys) ? keys.hex : keys.bech32;
   }
 
   if (!accountAddress) return;
@@ -77,9 +78,7 @@ export default function NotifiDashboard() {
           {cardView === 'history' ? <DashboardHistory /> : null}
           {cardView === 'destination' ? <DashboardDestinations /> : null}
           {cardView === 'alertSubscription' ? (
-            <AlertSubscription
-              title={'Manage the alerts you want to receive'}
-            />
+            <TopicList title={'Manage the alerts you want to receive'} />
           ) : null}
         </div>
       </div>

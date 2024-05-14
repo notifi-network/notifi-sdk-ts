@@ -80,6 +80,7 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
   };
 
   const keplr = useKeplr(setIsLoading, throwError, selectWallet);
+
   const leap = useLeap(setIsLoading, throwError, selectWallet);
   const phantom = usePhantom(setIsLoading, throwError, selectWallet);
   const binance = useBinance(setIsLoading, throwError, selectWallet);
@@ -222,6 +223,13 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
         !selectedWallet
       ) {
         wallets[walletName].connect();
+        if (
+          Object.keys(wallets).includes(walletName) &&
+          wallets[walletName].isInstalled &&
+          !selectedWallet
+        ) {
+          wallets[walletName].connect();
+        }
       }
     }
   }, [wallets]);
