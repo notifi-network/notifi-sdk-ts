@@ -1,4 +1,5 @@
 import { gql } from 'graphql-request';
+
 import { VerifyCbwTargetResponseFragment } from '../fragments/Web3TargetFragment.gql';
 
 export const VerifyCbwTarget = gql`

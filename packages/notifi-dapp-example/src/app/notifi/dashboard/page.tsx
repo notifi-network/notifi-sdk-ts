@@ -6,6 +6,7 @@ import { DashboardHistory } from '@/components/DashboardHistory';
 import { DashboardSideBar } from '@/components/DashboardSideBar';
 import { TopicList } from '@/components/TopicList';
 import { VerifyBanner } from '@/components/VerifyBanner';
+import { isEVMChain } from '@/utils/typeUtils';
 import { useNotifiTargetContext } from '@notifi-network/notifi-react';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import Image from 'next/image';
@@ -22,8 +23,10 @@ export default function NotifiDashboard() {
   if (!selectedWallet || !wallets[selectedWallet].walletKeys) return null;
 
   let accountAddress: string | undefined = '';
-  if (selectedWallet) {
-    accountAddress = wallets[selectedWallet].walletKeys?.bech32;
+  const keys = wallets[selectedWallet].walletKeys;
+
+  if (keys) {
+    accountAddress = isEVMChain(keys) ? keys.hex : keys.bech32;
   }
 
   if (!accountAddress) return;
