@@ -10,6 +10,8 @@ export type CreateDirectPushAlertInput = Readonly<{
     userId: string;
     emailAddresses: ReadonlyArray<string>;
     phoneNumbers: ReadonlyArray<string>;
+    fusionEventId?: string;
+    subscriptionValue?: string;
   }>;
 }>;
 

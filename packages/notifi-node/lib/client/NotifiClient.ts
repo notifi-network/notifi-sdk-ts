@@ -160,15 +160,19 @@ class NotifiClient {
       userId: string;
       emailAddresses?: ReadonlyArray<string>;
       phoneNumbers?: ReadonlyArray<string>;
+      fusionEventId?: string;
+      subscriptionValue?: string;
     }>,
   ) => Promise<ManagedAlert> = async (
     jwt,
-    { userId, emailAddresses, phoneNumbers },
+    { userId, emailAddresses, phoneNumbers, fusionEventId, subscriptionValue },
   ) => {
     const input = {
       userId,
       emailAddresses: emailAddresses ?? [],
       phoneNumbers: phoneNumbers ?? [],
+      fusionEventId,
+      subscriptionValue,
     };
     return await createDirectPushAlertImpl(this.a, jwt, {
       input,
