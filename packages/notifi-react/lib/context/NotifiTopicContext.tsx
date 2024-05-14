@@ -1,6 +1,4 @@
 import {
-  Filter,
-  FusionEventMetadata,
   FusionEventTopic,
   FusionFilterOptions,
   UserInputOptions,
@@ -20,6 +18,7 @@ import React, {
 
 import {
   TopicStackAlert,
+  convertOptionValue,
   getFusionEventMetadata,
   isAlertFilter,
   isFusionFilterOptions,
@@ -171,23 +170,20 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
       const fusionEventMetadataJson = fusionEventDescriptor.metadata;
       const fusionEventId = fusionEventDescriptor.id;
       if (fusionEventMetadataJson && fusionEventId) {
-        // TODO: might need impl validator for metadata
-        const fusionEventMetadata = JSON.parse(
-          fusionEventMetadataJson,
-        ) as FusionEventMetadata;
-        const filters = (fusionEventMetadata.filters as Filter[])?.filter(
-          isAlertFilter,
-        );
+        const fusionEventMetadata = getFusionEventMetadata(topic);
+        const filters = fusionEventMetadata?.filters?.filter(isAlertFilter);
         const fusionFilterOptionsInput: FusionFilterOptions['input'] = {};
-
         if (filters && filters.length > 0) {
           // NOTE: for now we only consider 1 to 1 relationship (1 filter for 1 topic)
 
           const userInputParams = filters[0].userInputParams;
           const userInputOptions: UserInputOptions = {};
           //TODO: O(n^2) to fix
-          userInputParams.forEach((userInput) => {
-            userInputOptions[userInput.name] = userInput.defaultValue;
+          userInputParams.forEach((userInputParm) => {
+            userInputOptions[userInputParm.name] = convertOptionValue(
+              userInputParm.defaultValue,
+              userInputParm.kind,
+            );
           });
           fusionFilterOptionsInput[filters[0].name] = userInputOptions;
         }

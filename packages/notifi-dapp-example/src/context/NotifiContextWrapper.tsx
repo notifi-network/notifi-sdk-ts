@@ -73,6 +73,7 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
       }
       const avax_data = await response_avax.json();
       getPricePair(avax_data, 'AVALANCHE', pricePairInputs, 'Avax');
+      sortList(pricePairInputs);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -88,6 +89,7 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
       }
       const arb_data = await response_arb.json();
       getPricePair(arb_data, 'ARBITRUM', pricePairInputs, 'Arb');
+      sortList(pricePairInputs);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -96,15 +98,17 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
   fetchAvaxData();
   fetchArbData();
 
-  pricePairInputs.sort((a, b) => {
-    if (a.value < b.value) {
-      return -1;
-    }
-    if (a.value > b.value) {
-      return 1;
-    }
-    return 0;
-  });
+  const sortList = (pricePairInputs: InputObject[]) => {
+    pricePairInputs.sort((a, b) => {
+      if (a.value < b.value) {
+        return -1;
+      }
+      if (a.value > b.value) {
+        return 1;
+      }
+      return 0;
+    });
+  };
 
   return (
     <NotifiContextProvider
