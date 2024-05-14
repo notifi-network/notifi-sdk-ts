@@ -63,7 +63,7 @@ export const TopicOptions = <T extends TopicRowCategory>(
 
   const [valueToBeSubscribed, setValueToBeSubscribed] = React.useState<
     string | number
-  >();
+  >(props.userInputParam.defaultValue);
 
   const selectedOption =
     props.onSelectAction?.actionType === 'updateFilterOptions'
