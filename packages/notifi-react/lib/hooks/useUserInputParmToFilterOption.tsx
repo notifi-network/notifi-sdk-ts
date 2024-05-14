@@ -7,6 +7,8 @@ import React from 'react';
 
 import { useNotifiTargetContext, useNotifiTopicContext } from '../context';
 import {
+  ConvertOptionDirection,
+  convertOptionValue,
   derivePrefixAndSuffixFromValueType,
   getUpdatedAlertFilterOptions,
 } from '../utils';
@@ -27,13 +29,17 @@ export const useUserInputParmToFilterOption = (
   )[0]; // NOTE: Only consider 1 to 1 relationship (1 filter for 1 topic)
   const userInputOptions = alertFilterOptions?.input[filterName];
 
-  const subscribedValue = userInputOptions?.[userInputParam.name];
+  const subscribedValue = convertOptionValue(
+    userInputOptions?.[userInputParam.name] ?? '',
+    userInputParam.kind,
+    ConvertOptionDirection.BtoF,
+  ).toString();
 
   const [customInput, setCustomInput] = React.useState<string | number>('');
   React.useEffect(() => {
     if (
       !!subscribedValue &&
-      !userInputParam.options.includes(subscribedValue)
+      !userInputParam.options.includes(subscribedValue.toString())
     ) {
       setCustomInput(subscribedValue);
       return;
@@ -56,7 +62,7 @@ export const useUserInputParmToFilterOption = (
       filterName,
       alertFilterOptions,
       userInputParam.name,
-      option,
+      convertOptionValue(option, userInputParam.kind),
     );
     await subscribeAlertsWithFilterOptions(
       topics.map((topic) => {
