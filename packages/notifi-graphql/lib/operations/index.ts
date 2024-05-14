@@ -62,3 +62,4 @@ export * from './CreateWeb3Target';
 export * from './GetWeb3Targets';
 export * from './VerifyCbwTarget';
 export * from './VerifyXmtpTarget';
+export * from './VerifyXmtpTargetViaXip42';
