@@ -5,25 +5,27 @@ import React from 'react';
 
 import { HistoryItem } from '../context';
 import { defaultCopy } from '../utils';
-import { InboxView } from './Inbox';
 import { NavHeader } from './NavHeader';
 
-type InboxHistoryDetailProps = {
+type HistoryDetailProps = {
   classNames?: {
     container?: string;
     main?: string;
+    subject?: string;
+    timestamp?: string;
+    message?: string;
   };
   copy?: {
     headerTitle?: string;
   };
   selectedHistoryItem: HistoryItem | null;
-  setInboxView: React.Dispatch<React.SetStateAction<InboxView>>;
+  setSelectedHistoryItem: React.Dispatch<
+    React.SetStateAction<HistoryItem | null>
+  >;
   isHidden: boolean;
 };
 
-export const InboxHistoryDetail: React.FC<InboxHistoryDetailProps> = (
-  props,
-) => {
+export const HistoryDetail: React.FC<HistoryDetailProps> = (props) => {
   const historyItem = props.selectedHistoryItem;
   if (!historyItem) {
     return null;
@@ -35,7 +37,7 @@ export const InboxHistoryDetail: React.FC<InboxHistoryDetailProps> = (
   return (
     <div
       className={clsx(
-        'notifi-inbox-history-detail',
+        'notifi-history-detail',
         props.isHidden && 'hidden',
         props.classNames?.container,
       )}
@@ -43,20 +45,37 @@ export const InboxHistoryDetail: React.FC<InboxHistoryDetailProps> = (
       <NavHeader
         leftCta={{
           icon: 'arrow-back',
-          action: () => props.setInboxView(InboxView.InboxHistoryList),
+          action: () => props.setSelectedHistoryItem(null),
         }}
       >
         {props.copy?.headerTitle ?? defaultCopy.inboxHistoryDetail.headerTitle}
       </NavHeader>
       <div
-        className={clsx(
-          'notifi-inbox-history-detail-main',
-          props.classNames?.main,
-        )}
+        className={clsx('notifi-history-detail-main', props.classNames?.main)}
       >
-        <div>{historyItem.subject}</div>
-        <div>{formatTimestampInHistoryDetail(historyItem.timestamp)}</div>
-        <div dangerouslySetInnerHTML={{ __html: sanitizedMessage }} />
+        <div
+          className={clsx(
+            'notifi-history-detail-subject',
+            props.classNames?.subject,
+          )}
+        >
+          {historyItem.subject}
+        </div>
+        <div
+          className={clsx(
+            'notifi-history-detail-timestamp',
+            props.classNames?.timestamp,
+          )}
+        >
+          {formatTimestampInHistoryDetail(historyItem.timestamp)}
+        </div>
+        <div
+          className={clsx(
+            'notifi-history-detail-message',
+            props.classNames?.message,
+          )}
+          dangerouslySetInnerHTML={{ __html: sanitizedMessage }}
+        />
       </div>
     </div>
   );

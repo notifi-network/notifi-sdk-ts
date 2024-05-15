@@ -1,11 +1,9 @@
 import clsx from 'clsx';
 import React from 'react';
 
-import { HistoryItem } from '../context';
 import { InboxConfigTargetEdit } from './InboxConfigTargetEdit';
 import { InboxConfigTopic } from './InboxConfigTopic';
-import { InboxHistoryDetail } from './InboxHistoryDetail';
-import { InboxHistoryList } from './InboxHistoryList';
+import { InboxHistory } from './InboxHistory';
 import { InboxNavTabs, InboxNavTabsProps } from './InboxNavTabs';
 
 type InboxProps = {
@@ -18,8 +16,7 @@ type InboxProps = {
 };
 
 export enum InboxView {
-  InboxHistoryList = 'inbox-history-list',
-  InboxHistoryDetail = 'inbox-history-detail',
+  InboxHistory = 'inbox-history',
   InboxConfigTopic = 'inbox-config-topic',
   InboxConfigTargetList = 'inbox-config-target-list',
   InboxConfigTargetEdit = 'inbox-config-target-edit',
@@ -27,27 +24,18 @@ export enum InboxView {
 
 export const Inbox: React.FC<InboxProps> = (props) => {
   const [inboxView, setInboxView] = React.useState<InboxView>(
-    InboxView.InboxHistoryList,
+    InboxView.InboxHistory,
   );
-  const [selectedHistoryItem, setSelectedHistoryItem] =
-    React.useState<HistoryItem | null>(null);
 
   return (
     <div className={clsx('notifi-inbox', props.classNames?.container)}>
       <div className={clsx('notifi-inbox-views', props.classNames?.inboxViews)}>
-        <InboxHistoryList
-          {...{ setSelectedHistoryItem, setInboxView }}
-          isHidden={inboxView !== InboxView.InboxHistoryList}
-        />
-        <InboxHistoryDetail
-          {...{ selectedHistoryItem, setInboxView }}
-          isHidden={inboxView !== InboxView.InboxHistoryDetail}
-        />
+        <InboxHistory isHidden={inboxView !== InboxView.InboxHistory} />
         {inboxView === InboxView.InboxConfigTopic ? <InboxConfigTopic /> : null}
         {inboxView === InboxView.InboxConfigTargetList ? (
           <InboxConfigTargetEdit />
         ) : null}
-        {inboxView === InboxView.InboxHistoryDetail ? (
+        {inboxView === InboxView.InboxConfigTargetList ? (
           <InboxConfigTargetEdit />
         ) : null}
       </div>
