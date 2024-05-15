@@ -383,7 +383,7 @@ const useNotifiClient = (
             setisTokenExpired(false);
           }
         } catch (_e: unknown) {
-          // Explicity ignore refresh errors
+          // Explicitly ignore refresh errors
           setExpiry(expiry);
           setIsAuthenticated(true);
         }
