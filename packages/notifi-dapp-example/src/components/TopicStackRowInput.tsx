@@ -1,6 +1,8 @@
+import { useGlobalStateContext } from '@/context/GlobalStateContext';
 import {
   TopicStackAlert,
   composeTopicStackAlertName,
+  convertOptionValue,
   getFusionEventMetadata,
   getFusionFilter,
   getUpdatedAlertFilterOptions,
@@ -37,6 +39,7 @@ export type TopicStackRowInputProps = {
 export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
   props,
 ) => {
+  const { setGlobalError } = useGlobalStateContext();
   const subscriptionValueOrRef = getFusionEventMetadata(props.topic)
     ?.uiConfigOverride?.subscriptionValueOrRef;
 
@@ -48,6 +51,7 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
     React.useState<InputObject | null>(null);
   const [filterOptionsToBeSubscribed, setFilterOptionsToBeSubscribed] =
     React.useState<FusionFilterOptions | null>(null);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   // TODO: Move to hooks
   // TODO: use useMemo when it (filters array) possibly grows huge
@@ -77,7 +81,7 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
     if (subscriptionValue) {
       props.setIsTopicStackRowInputVisible(true);
     }
-  }, [subscriptionValue]);
+  }, []);
 
   // TODO: Move to hooks
   const isUserInputParamsValid = React.useMemo(() => {
@@ -95,29 +99,27 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
     return false;
   }, [filterOptionsToBeSubscribed]);
 
-  const {
-    subscribeAlertsWithFilterOptions,
-    isLoading: isLoadingTopic,
-    error: topicError,
-  } = useNotifiTopicContext();
+  const { subscribeAlertsWithFilterOptions, error: topicError } =
+    useNotifiTopicContext();
   const {
     targetDocument: { targetGroupId },
   } = useNotifiTargetContext();
 
+  const isTopicReadyToSubscribe = !!(
+    filterOptionsToBeSubscribed &&
+    subscriptionValue &&
+    targetGroupId &&
+    isUserInputParamsValid
+  );
+
   const onSave = async () => {
-    if (
-      !filterOptionsToBeSubscribed ||
-      !subscriptionValue ||
-      !targetGroupId ||
-      !isUserInputParamsValid
-    )
-      return;
+    if (!isTopicReadyToSubscribe) return;
     const alertName = composeTopicStackAlertName(
       props.topic.uiConfig.name,
       subscriptionValue.value,
       subscriptionValue.label,
     );
-
+    setIsLoading(true);
     await subscribeAlertsWithFilterOptions(
       [
         {
@@ -129,14 +131,27 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
       ],
       targetGroupId,
     );
+    if (userInputParams && filterName) {
+      const input: FusionFilterOptions['input'] = {
+        [filterName]: {},
+      };
+      userInputParams.forEach((userInputParam) => {
+        input[filterName][userInputParam.name] = '';
+      });
+      setFilterOptionsToBeSubscribed({
+        version: 1,
+        input,
+      });
+    }
     setSubscriptionValue(null);
     props.setIsTopicStackRowInputVisible(false);
     props.setIsShowSubscriptionValueInput(false);
     props.onSave && props.onSave();
+    setIsLoading(false);
   };
 
   if (topicError) {
-    // return <ErrorGlobal />; // TODO: handle error
+    setGlobalError(topicError.message);
   }
 
   return (
@@ -175,8 +190,7 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
                         filterName,
                         filterOptionsToBeSubscribed,
                         userInputParmName,
-                        option,
-                        // convertOptionValue(option, userInputParm.kind),
+                        convertOptionValue(option, userInputParm.kind),
                       );
                     setFilterOptionsToBeSubscribed(updatedAlertFilterOptiopns);
                   },
@@ -185,22 +199,13 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
             );
           })}
           <div>
-            {isLoadingTopic ? (
-              <LoadingAnimation type={'spinner'} />
-            ) : (
-              <button
-                disabled={
-                  !filterOptionsToBeSubscribed ||
-                  !subscriptionValue ||
-                  !targetGroupId ||
-                  !isUserInputParamsValid
-                }
-                className="ml-14 h-9 w-18 rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text mt-1 mb-4 disabled:opacity-50 disabled:hover:bg-notifi-button-primary-blueish-bg "
-                onClick={onSave}
-              >
-                Save
-              </button>
-            )}
+            <button
+              disabled={!isTopicReadyToSubscribe}
+              className="ml-14 h-9 w-18 rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text mt-1 mb-4 disabled:opacity-50 disabled:hover:bg-notifi-button-primary-blueish-bg "
+              onClick={onSave}
+            >
+              {isLoading ? <LoadingAnimation /> : 'Save'}
+            </button>
           </div>
         </div>
       ) : null}

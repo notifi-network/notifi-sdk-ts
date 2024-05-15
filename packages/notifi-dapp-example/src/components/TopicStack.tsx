@@ -15,6 +15,8 @@ import {
 import { useNotifiTopicContext } from '@notifi-network/notifi-react';
 import React from 'react';
 
+import { LoadingAnimation } from './LoadingAnimation';
+
 type TopicStackProps = {
   topicStackAlert: TopicStackAlert;
   topic: FusionEventTopic;

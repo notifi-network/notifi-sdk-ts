@@ -157,7 +157,7 @@ export const TopicOptions = <T extends TopicRowCategory>(
         {props.userInputParam.allowCustomInput && uiType !== 'radio' ? (
           <div
             className={`text-notifi-text-light inline-block relative ${
-              props.userInputParam.options[0] ? 'w-[6.5rem]' : 'w-60'
+              props.userInputParam.options[0] ? 'w-[6.5rem]' : 'w-[247px]'
             }`}
           >
             {props.userInputParam.options[0]
@@ -169,7 +169,7 @@ export const TopicOptions = <T extends TopicRowCategory>(
                 setErrorMessage(null);
                 if (props.userInputParam.options[0]) {
                   if (
-                    Number(evt.target.value) > 49 ||
+                    Number(evt.target.value) > 99 ||
                     (Number(evt.target.value) < 1 && evt.target.value !== '')
                   ) {
                     setErrorMessage('Please enter a value between 1 and 49');
@@ -190,7 +190,7 @@ export const TopicOptions = <T extends TopicRowCategory>(
               onBlur={(evt) => {
                 if (props.userInputParam.options[0]) {
                   if (
-                    Number(evt.target.value) > 49 ||
+                    Number(evt.target.value) > 99 ||
                     Number(evt.target.value) < 1
                   ) {
                     return;
@@ -198,7 +198,7 @@ export const TopicOptions = <T extends TopicRowCategory>(
                 }
                 selectOrInputValue(evt.target.value);
               }}
-              placeholder="custom"
+              placeholder="Custom"
               value={customInput}
               className={` ${
                 props.userInputParam.options[0]
@@ -215,9 +215,11 @@ export const TopicOptions = <T extends TopicRowCategory>(
                 {'prefix' in prefixAndSuffix && prefixAndSuffix.prefix}
               </div>
             )}
-            {/* <div className="absolute right-3 bottom-3">
-              {'suffix' in prefixAndSuffix && prefixAndSuffix.suffix}
-            </div> */}
+            {customInput ? (
+              <div className="absolute right-4 bottom-3">
+                {'suffix' in prefixAndSuffix && prefixAndSuffix.suffix}
+              </div>
+            ) : null}
           </div>
         ) : null}
       </div>
@@ -237,7 +239,7 @@ const isUserInputValid = (type: ValueType, userInputValue: string | number) => {
   if (type === 'percentage' || type === 'price') {
     // regex for only allow float
     const regex1 = /^\d+(\.)?$/;
-    const regex2 = /^\d+(\.\d+)?$/;
+    const regex2 = /^\d{1,6}(\.\d{1,6})?$/;
     return (
       regex1.test(userInputValue.toString()) ||
       regex2.test(userInputValue.toString())

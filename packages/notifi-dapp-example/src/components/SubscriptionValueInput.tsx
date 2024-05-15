@@ -26,7 +26,7 @@ export const SubscriptionValueInput: React.FC<SubscriptionValueInputProps> = (
   );
 
   return (
-    <div className="relative ml-14 w-60 h-12 bg-notifi-card-bg rounded-md mb-3 text-notifi-text p-3 border-0 focus:border-0 focus-visible:border-0 cursor-pointer">
+    <div className="relative ml-14 w-[247px] h-12 bg-notifi-card-bg rounded-md mb-3 text-notifi-text p-3 border-0 focus:border-0 focus-visible:border-0 cursor-pointer">
       <Icon className="absolute right-0 bottom-0" id="dropdown-arrow" />
       <div
         className="rounded-md bg-notifi-card-bg text-start text-notifi-text"
@@ -37,7 +37,7 @@ export const SubscriptionValueInput: React.FC<SubscriptionValueInputProps> = (
           : 'Select Pair' ?? 'Select Pair'}
       </div>
       {isDropdownOpen && (
-        <div className="absolute top-12 left-0 w-60 bg-notifi-card-bg rounded-lg shadow-lg z-10 max-h-[180px] overflow-y-auto mt-1">
+        <div className="absolute top-12 left-0 w-[247px] bg-notifi-card-bg rounded-lg shadow-lg z-10 max-h-[180px] overflow-y-auto mt-1">
           {subscriptionValueOptions.map((option) => (
             <div
               className="h-10 flex items-center justify-start text-middle text-notifi-text font-normal hover:text-white cursor-pointer border-b border-notifi-card-border pl-3"
