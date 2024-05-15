@@ -1,9 +1,10 @@
 import clsx from 'clsx';
 import React from 'react';
 
-import { useNotifiHistoryContext } from '../context';
+import { HistoryItem, useNotifiHistoryContext } from '../context';
 import { defaultCopy, defaultLoadingAnimationStyle } from '../utils';
 import { HistoryRow } from './HistoryRow';
+import { InboxView } from './Inbox';
 import { LoadingAnimation } from './LoadingAnimation';
 import { NavHeader } from './NavHeader';
 
@@ -18,6 +19,12 @@ type InboxHistoryListProps = {
     headerTitle?: string;
     buttonText?: string;
   };
+  setSelectedHistoryItem: React.Dispatch<
+    React.SetStateAction<HistoryItem | null>
+  >;
+  setInboxView: React.Dispatch<React.SetStateAction<InboxView>>;
+  // inboxView: InboxView;
+  isHidden: boolean;
 };
 
 export const InboxHistoryList: React.FC<InboxHistoryListProps> = (props) => {
@@ -28,7 +35,11 @@ export const InboxHistoryList: React.FC<InboxHistoryListProps> = (props) => {
     props.classNames?.loadingSpinner ?? defaultLoadingAnimationStyle.spinner;
   return (
     <div
-      className={clsx('notifi-inbox-history-list', props.classNames?.container)}
+      className={clsx(
+        'notifi-inbox-history-list',
+        props.isHidden && 'hidden',
+        props.classNames?.container,
+      )}
     >
       <NavHeader>
         {props.copy?.headerTitle ?? defaultCopy.inboxHistoryList.headerTitle}
@@ -42,7 +53,14 @@ export const InboxHistoryList: React.FC<InboxHistoryListProps> = (props) => {
         {/* TODO: stay here for now for ref <div>loaded items count: {JSON.stringify(historyItems.length)}</div>
         <div>unread count: {JSON.stringify(unreadCount)}</div> */}
         {historyItems.map((item, id) => (
-          <HistoryRow key={id} historyItem={item} />
+          <HistoryRow
+            key={id}
+            historyItem={item}
+            onClick={() => {
+              props.setSelectedHistoryItem(item);
+              props.setInboxView(InboxView.InboxHistoryDetail);
+            }}
+          />
         ))}
         {hasNextPage ? (
           <button

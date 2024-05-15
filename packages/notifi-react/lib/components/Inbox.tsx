@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import React from 'react';
 
+import { HistoryItem } from '../context';
 import { InboxConfigTargetEdit } from './InboxConfigTargetEdit';
 import { InboxConfigTopic } from './InboxConfigTopic';
 import { InboxHistoryDetail } from './InboxHistoryDetail';
@@ -28,13 +29,20 @@ export const Inbox: React.FC<InboxProps> = (props) => {
   const [inboxView, setInboxView] = React.useState<InboxView>(
     InboxView.InboxHistoryList,
   );
+  const [selectedHistoryItem, setSelectedHistoryItem] =
+    React.useState<HistoryItem | null>(null);
+
   return (
     <div className={clsx('notifi-inbox', props.classNames?.container)}>
       <div className={clsx('notifi-inbox-views', props.classNames?.inboxViews)}>
-        {inboxView === InboxView.InboxHistoryList ? <InboxHistoryList /> : null}
-        {inboxView === InboxView.InboxHistoryDetail ? (
-          <InboxHistoryDetail />
-        ) : null}
+        <InboxHistoryList
+          {...{ setSelectedHistoryItem, setInboxView }}
+          isHidden={inboxView !== InboxView.InboxHistoryList}
+        />
+        <InboxHistoryDetail
+          {...{ selectedHistoryItem, setInboxView }}
+          isHidden={inboxView !== InboxView.InboxHistoryDetail}
+        />
         {inboxView === InboxView.InboxConfigTopic ? <InboxConfigTopic /> : null}
         {inboxView === InboxView.InboxConfigTargetList ? (
           <InboxConfigTargetEdit />

@@ -4,6 +4,9 @@
   flex-direction: column;
   height: 100%;
 }
+.notifi-inbox-history-list.hidden {
+  display: none;
+}
 
 .notifi-inbox-history-list-main {
   flex-grow: 1;
@@ -56,6 +59,9 @@
   left: 0;
   height: 100%;
 }
+.notifi-history-row-unread-indicator.read {
+  display: none;
+}
 
 .notifi-history-row-icon {
   display: flex;
@@ -97,4 +103,20 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+/* InboxHistoryDetail styles */
+.notifi-inbox-history-detail {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.notifi-inbox-history-detail.hidden {
+  display: none;
+}
+
+.notifi-inbox-history-detail-main {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 1rem;
 }

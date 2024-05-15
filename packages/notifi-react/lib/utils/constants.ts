@@ -70,6 +70,9 @@ export const defaultCopy = {
     headerTitle: 'Notifications',
     buttonText: 'Load More',
   },
+  inboxHistoryDetail: {
+    headerTitle: '',
+  },
 };
 
 export const validationRegex: Record<string, RegExp> = {
