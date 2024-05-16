@@ -65,7 +65,7 @@ export const InputFieldWallet: React.FC<InputFieldWalletProps> = ({
           ) : (
             <div className="text-sm sm:ml-6 text-gray-500 text-end">
               <div>Only available for</div>
-              <div>Coinbase Wallets</div>
+              <div>Coinbase Wallet</div>
             </div>
           )}
         </div>
