@@ -3,6 +3,7 @@ import React from 'react';
 
 import {
   FtuStage,
+  useNotifiFrontendClientContext,
   useNotifiTargetContext,
   useNotifiUserSettingContext,
 } from '../context';
@@ -45,6 +46,7 @@ export const Ftu: React.FC<FtuProps> = (props) => {
     targetDocument: { targetData },
   } = useNotifiTargetContext();
   const [ftuView, setFtuView] = React.useState<FtuView | null>(null);
+  const { frontendClientStatus } = useNotifiFrontendClientContext();
 
   const isTargetExist = React.useMemo(
     () =>
@@ -66,6 +68,7 @@ export const Ftu: React.FC<FtuProps> = (props) => {
   );
 
   React.useEffect(() => {
+    if (!frontendClientStatus.isAuthenticated) return;
     if (ftuStage === null) {
       setFtuView(FtuView.AlertList);
       return;
