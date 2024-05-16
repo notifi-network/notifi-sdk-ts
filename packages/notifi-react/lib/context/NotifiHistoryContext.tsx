@@ -25,8 +25,6 @@ export type historyItem = {
   read: boolean;
 };
 
-const messagePerPage = 50;
-
 export type NotifiHistoryContextType = {
   isLoading: boolean;
   error: Error | null;
@@ -41,9 +39,13 @@ const NotifiHistoryContext = createContext<NotifiHistoryContextType>(
   {} as NotifiHistoryContextType,
 );
 
-export const NotifiHistoryContextProvider: FC<PropsWithChildren> = ({
-  children,
-}) => {
+export type NotifiHistoryProviderProps = {
+  notificationCountPerPage?: number;
+};
+
+export const NotifiHistoryContextProvider: FC<
+  PropsWithChildren<NotifiHistoryProviderProps>
+> = ({ children, notificationCountPerPage = 20 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
   const { frontendClient, frontendClientStatus } =
@@ -55,81 +57,102 @@ export const NotifiHistoryContextProvider: FC<PropsWithChildren> = ({
   const [unreadCount, setUnreadCount] = useState<number | null>(null);
   const [historyItems, setHistoryItems] = useState<historyItem[]>([]);
   const { cardConfig } = useNotifiTenantConfigContext();
-  const cardEventTypeNames = new Set(
-    cardConfig?.eventTypes?.map((event) => event.name) ?? [],
-  );
-
-  // TODO: impl subscription listener to check if new history coming in
-  // const [historyChangeListener, setHistoryChangeListener] = useState<TBD | null>(null)
-  // useEffect(() => {
-  //   if (frontendClientStatus.isAuthenticated) {
-  //     frontendClient
-  //       .historyChanged()
-  //       .then((changeListener) => {
-  //         setHistoryChangeListener(changeListener)
-  //         changeListener.on('data', (data) => {
-  //           TODO: fetch new history items & update unread count
-  //         })
-  //       })
-  //   }
-  //   return () => {
-  //      changeListener.removeAllListeners()
-  //      setHistoryChangeListener(null)
-  //   };
-  // }, [frontendClientStatus]);
+  const isInitialLoaded = React.useRef(false);
 
   useEffect(() => {
+    // NOTE: Update historyItems & unreadCount when backend state changed
     if (frontendClientStatus.isAuthenticated) {
+      frontendClient.subscribeNotificationHistoryStateChanged((_data) => {
+        frontendClient
+          .getFusionNotificationHistory({
+            first: notificationCountPerPage,
+            includeHidden: false,
+          })
+          .then((res) => {
+            const historyItemIdMap = new Map(
+              historyItems.map((item) => [item.id, item]),
+            );
+            const newItems = res?.nodes
+              ?.map(parseHistoryItem)
+              .filter((item) => !historyItemIdMap.has(item.id));
+            if (newItems?.length && newItems.length > 0) {
+              setHistoryItems((existing) => [...newItems, ...existing]);
+              setUnreadCount((prev) => (prev ? prev + newItems.length : null));
+            }
+          });
+      });
+    }
+    return () => {
+      frontendClient.wsDispose();
+    };
+  }, [frontendClientStatus, historyItems]);
+
+  const getHistoryItems = React.useCallback(
+    async (initialLoad?: boolean) => {
+      const cardEventTypeNames = new Set(
+        cardConfig?.eventTypes?.map((event) => event.name) ?? [],
+      );
+      if (cardEventTypeNames.size === 0) {
+        return;
+      }
+      if (!initialLoad && !cursorInfo.hasNextPage) {
+        setError(new Error('No more notification history to fetch'));
+        return;
+      }
+      if (isLoading) {
+        return;
+      }
+      setIsLoading(true);
+      try {
+        const result = await frontendClient.getFusionNotificationHistory({
+          first: notificationCountPerPage,
+          after: cursorInfo.endCursor,
+          includeHidden: false,
+        });
+        if (!result || result.nodes?.length === 0 || !result.nodes) {
+          return;
+        }
+        //NOTE: Filter out the unsupported legacy history items
+        const validHistoryItems = result.nodes.filter((node) => {
+          if (!node.detail || !validateEventDetails(node.detail)) return false;
+          return cardEventTypeNames.has(node.detail.sourceName);
+        });
+
+        setHistoryItems((existing) =>
+          initialLoad
+            ? validHistoryItems.map(parseHistoryItem) ?? []
+            : [...existing, ...(validHistoryItems.map(parseHistoryItem) ?? [])],
+        );
+        setCursorInfo(result.pageInfo);
+        setError(null);
+      } catch (e) {
+        setError(
+          new Error(
+            'ERROR: Failed to fetch notification history, please try again.',
+          ),
+        );
+        console.error(e);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [cardConfig, cursorInfo],
+  );
+
+  useEffect(() => {
+    // NOTE: Initial load
+    if (
+      frontendClientStatus.isAuthenticated &&
+      !isInitialLoaded.current &&
+      cardConfig
+    ) {
+      isInitialLoaded.current = true;
       getHistoryItems(true);
       frontendClient.getUnreadNotificationHistoryCount().then(({ count }) => {
         setUnreadCount(count);
       });
     }
-  }, [frontendClientStatus]);
-
-  const getHistoryItems = async (initialLoad?: boolean) => {
-    if (!initialLoad && !cursorInfo.hasNextPage) {
-      setError(new Error('No more notification history to fetch'));
-      return;
-    }
-    if (isLoading) {
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      const result = await frontendClient.getFusionNotificationHistory({
-        first: messagePerPage,
-        after: cursorInfo.endCursor,
-        includeHidden: false,
-      });
-      if (!result || result.nodes?.length === 0 || !result.nodes) {
-        return;
-      }
-      //NOTE: Filter out the unsupported legacy history items
-      const validHistoryItems = result.nodes.filter((node) => {
-        if (!node.detail || !validateEventDetails(node.detail)) return false;
-        return cardEventTypeNames.has(node.detail.sourceName);
-      });
-
-      setHistoryItems((existing) =>
-        initialLoad
-          ? validHistoryItems.map(parseHistoryItem) ?? []
-          : [...existing, ...(validHistoryItems.map(parseHistoryItem) ?? [])],
-      );
-      setCursorInfo(result.pageInfo);
-      setError(null);
-    } catch (e) {
-      setError(
-        new Error(
-          'ERROR: Failed to fetch notification history, please try again.',
-        ),
-      );
-      console.error(e);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  }, [frontendClientStatus, getHistoryItems, cardConfig]);
 
   const markAsRead = async (ids?: string[]) => {
     const isIdsEmpty = ids?.length === 0 || !ids;
@@ -187,7 +210,6 @@ export const NotifiHistoryContextProvider: FC<PropsWithChildren> = ({
         }
 
         //  - client side
-
         setHistoryItems((items) => {
           const updatedItems = items.map((item) => {
             if (ids!.includes(item.id)) {
