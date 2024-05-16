@@ -41,6 +41,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
 
   const {
     targetDocument: { targetInfoPrompts, targetData },
+    refreshTargetDocument,
   } = useNotifiTargetContext();
 
   const { frontendClient } = useNotifiFrontendClientContext();
@@ -165,6 +166,11 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
           conversationTopic,
         },
       });
+
+      await frontendClient
+        .fetchData()
+        .then(refreshTargetDocument)
+        .catch((e) => console.error(e));
     } catch (e) {
       console.error(e);
 
