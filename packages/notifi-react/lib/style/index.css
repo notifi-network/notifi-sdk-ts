@@ -9,6 +9,7 @@
 @import url('./topic-list.css');
 @import url('./subscription-value-input.css');
 @import url('./loading-animation.css');
+@import url('./inbox.css');
 
 :root {
   /* Color variables */
@@ -57,6 +58,7 @@
   ); /**TODO */
   --notifi-spinner-color: var(--notifi-color-white);
   --notifi-topic-stack-row-input-button-bg: var(--notifi-color-secondary-light);
+  --notifi-nav-footer-bg: var(--notifi-color-grey2);
 }
 
 .notifi-theme-light {
@@ -85,4 +87,5 @@
   ); /**TODO */
   --notifi-spinner-color: var(--notifi-color-white);
   --notifi-topic-stack-row-input-button-bg: var(--notifi-color-seaglass-dark);
+  --notifi-nav-footer-bg: var(--notifi-color-cloud);
 }

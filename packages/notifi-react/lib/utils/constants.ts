@@ -68,3 +68,11 @@ export const defaultCopy = {
 export const validationRegex: Record<string, RegExp> = {
   email: new RegExp('^[a-zA-Z0-9._:$!%-+]+@[a-zA-Z0-9.-]+.[a-zA-Z]$'),
 };
+
+export const defaultLoadingAnimationStyle: Record<string, React.CSSProperties> =
+  {
+    spinner: {
+      borderTop: '4px var(--notifi-color-seaglass-dark) solid', // TODO: TBD see if dark/light mode needed?
+      position: 'absolute',
+    },
+  };

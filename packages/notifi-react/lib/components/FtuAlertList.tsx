@@ -4,11 +4,14 @@ import React from 'react';
 import { Icon, IconType } from '../assets/Icons';
 import {
   FtuStage,
+  useNotifiTargetContext,
   useNotifiTenantConfigContext,
+  useNotifiTopicContext,
   useNotifiUserSettingContext,
 } from '../context';
-import { defaultCopy } from '../utils/constants';
-import { LoadingGlobal } from './LoadingGlobal';
+import { getFusionEventMetadata } from '../utils';
+import { defaultCopy, defaultLoadingAnimationStyle } from '../utils/constants';
+import { LoadingAnimation } from './LoadingAnimation';
 
 export type FtuAlertListProps = {
   copy?: {
@@ -24,17 +27,46 @@ export type FtuAlertListProps = {
     alertsContainer?: string;
     alert?: string;
     buttonText?: string;
+    loadingSpinner?: React.CSSProperties;
   };
   iconType?: IconType;
 };
 
 export const FtuAlertList: React.FC<FtuAlertListProps> = (props) => {
   const { fusionEventTopics, cardConfig } = useNotifiTenantConfigContext();
-  const { updateFtuStage, isLoading: isLoadingFtu } =
-    useNotifiUserSettingContext();
+  const { updateFtuStage } = useNotifiUserSettingContext();
+  const { subscribeAlertsDefault } = useNotifiTopicContext();
+  const {
+    targetDocument: { targetGroupId },
+  } = useNotifiTargetContext();
+  const [isLoading, setIsLoading] = React.useState(false);
 
-  if (isLoadingFtu) {
-    return <LoadingGlobal />;
+  const loadingSpinnerStyle: React.CSSProperties =
+    props.classNames?.loadingSpinner ?? defaultLoadingAnimationStyle.spinner;
+
+  const onClick = async () => {
+    setIsLoading(true);
+    // NOTE: Subscribe default topics
+    if (!targetGroupId) return;
+    const topicsToSubscribe = fusionEventTopics.filter((topic) => {
+      const metadata = getFusionEventMetadata(topic);
+      const isStackableTopic =
+        metadata?.uiConfigOverride?.isSubscriptionValueInputable ?? false;
+      return !topic.uiConfig.optOutAtSignup && !isStackableTopic;
+    });
+    await subscribeAlertsDefault(topicsToSubscribe, targetGroupId);
+
+    // NOTE: Update FTU stage
+    if (cardConfig?.isContactInfoRequired) {
+      updateFtuStage(FtuStage.Destination);
+      return;
+    }
+    updateFtuStage(FtuStage.Alerts);
+    setIsLoading(false);
+  };
+
+  if (!fusionEventTopics || !fusionEventTopics.length) {
+    return null;
   }
 
   return (
@@ -79,21 +111,26 @@ export const FtuAlertList: React.FC<FtuAlertListProps> = (props) => {
           );
         })}
       </div>
-      <div
+      <button
         className={clsx(
           'notifi-ftu-alert-list-button',
           props.classNames?.buttonText,
         )}
-        onClick={() => {
-          if (cardConfig?.isContactInfoRequired) {
-            updateFtuStage(FtuStage.Destination);
-            return;
-          }
-          updateFtuStage(FtuStage.Alerts);
-        }}
+        disabled={isLoading}
+        onClick={onClick}
       >
-        {props.copy?.buttonText ?? defaultCopy.ftuAlertList.buttonText}
-      </div>
+        {isLoading ? (
+          <LoadingAnimation type="spinner" {...loadingSpinnerStyle} />
+        ) : null}
+        <div
+          className={clsx(
+            'notifi-ftu-alert-list-button-text',
+            isLoading && 'hidden',
+          )}
+        >
+          {props.copy?.buttonText ?? defaultCopy.ftuAlertList.buttonText}
+        </div>
+      </button>
     </div>
   );
 };
