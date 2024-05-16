@@ -43,7 +43,7 @@ export const VerifyBanner: React.FC<VerifyBannerProps> = ({
           id="check"
           className="text-notifi-button-primary-blueish-bg mr-3 w-3 mb-0.5"
         />
-        <div className="text-notifi-text">
+        <div className="text-notifi-text mr-1">
           Verify your {unVerifiedDestinationsString}
         </div>
       </div>
