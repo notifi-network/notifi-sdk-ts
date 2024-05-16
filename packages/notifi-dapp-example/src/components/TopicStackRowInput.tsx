@@ -1,5 +1,8 @@
+import { useGlobalStateContext } from '@/context/GlobalStateContext';
 import {
+  TopicStackAlert,
   composeTopicStackAlertName,
+  convertOptionValue,
   getFusionEventMetadata,
   getFusionFilter,
   getUpdatedAlertFilterOptions,
@@ -25,14 +28,14 @@ export type TopicStackRowInputProps = {
   topic: FusionEventTopic;
   onSave?: () => void;
   setIsTopicStackRowInputVisible: (visible: boolean) => void;
-  copy?: {
-    buttonContent?: string;
-  };
+  topicStackAlerts: TopicStackAlert[];
+  isTopicStackRowInputVisible: boolean;
 };
 
 export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
   props,
 ) => {
+  const { setGlobalError } = useGlobalStateContext();
   const subscriptionValueOrRef = getFusionEventMetadata(props.topic)
     ?.uiConfigOverride?.subscriptionValueOrRef;
 
@@ -44,6 +47,7 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
     React.useState<InputObject | null>(null);
   const [filterOptionsToBeSubscribed, setFilterOptionsToBeSubscribed] =
     React.useState<FusionFilterOptions | null>(null);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   // TODO: Move to hooks
   // TODO: use useMemo when it (filters array) possibly grows huge
@@ -63,12 +67,19 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
         [filterName]: {},
       };
       userInputParams.forEach((userInputParam) => {
-        input[filterName][userInputParam.name] = '';
+        if (userInputParam.uiType === 'radio') {
+          input[filterName][userInputParam.name] = userInputParam.defaultValue;
+        } else {
+          input[filterName][userInputParam.name] = '';
+        }
       });
       setFilterOptionsToBeSubscribed({
         version: 1,
         input,
       });
+    }
+    if (subscriptionValue) {
+      props.setIsTopicStackRowInputVisible(true);
     }
   }, []);
 
@@ -88,29 +99,27 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
     return false;
   }, [filterOptionsToBeSubscribed]);
 
-  const {
-    subscribeAlertsWithFilterOptions,
-    isLoading: isLoadingTopic,
-    error: topicError,
-  } = useNotifiTopicContext();
+  const { subscribeAlertsWithFilterOptions, error: topicError } =
+    useNotifiTopicContext();
   const {
     targetDocument: { targetGroupId },
   } = useNotifiTargetContext();
 
+  const isTopicReadyToSubscribe = !!(
+    filterOptionsToBeSubscribed &&
+    subscriptionValue &&
+    targetGroupId &&
+    isUserInputParamsValid
+  );
+
   const onSave = async () => {
-    if (
-      !filterOptionsToBeSubscribed ||
-      !subscriptionValue ||
-      !targetGroupId ||
-      !isUserInputParamsValid
-    )
-      return;
+    if (!isTopicReadyToSubscribe) return;
     const alertName = composeTopicStackAlertName(
       props.topic.uiConfig.name,
       subscriptionValue.value,
       subscriptionValue.label,
     );
-
+    setIsLoading(true);
     await subscribeAlertsWithFilterOptions(
       [
         {
@@ -122,13 +131,30 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
       ],
       targetGroupId,
     );
+    if (userInputParams && filterName) {
+      const input: FusionFilterOptions['input'] = {
+        [filterName]: {},
+      };
+      userInputParams.forEach((userInputParam) => {
+        if (userInputParam.uiType === 'radio') {
+          input[filterName][userInputParam.name] = userInputParam.defaultValue;
+        } else {
+          input[filterName][userInputParam.name] = '';
+        }
+      });
+      setFilterOptionsToBeSubscribed({
+        version: 1,
+        input,
+      });
+    }
     setSubscriptionValue(null);
     props.setIsTopicStackRowInputVisible(false);
     props.onSave && props.onSave();
+    setIsLoading(false);
   };
 
   if (topicError) {
-    // return <ErrorGlobal />; // TODO: handle error
+    setGlobalError(topicError.message);
   }
 
   return (
@@ -143,7 +169,9 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
           {reversedParams.map((userInputParm, id) => {
             return (
               <TopicOptions<'standalone'>
+                placeholder="Enter Price"
                 index={id}
+                key={id}
                 description={description}
                 userInputParam={userInputParm}
                 topic={props.topic}
@@ -156,7 +184,7 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
                         filterName,
                         filterOptionsToBeSubscribed,
                         userInputParmName,
-                        option,
+                        convertOptionValue(option, userInputParm.kind),
                       );
                     setFilterOptionsToBeSubscribed(updatedAlertFilterOptiopns);
                   },
@@ -164,26 +192,14 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
               />
             );
           })}
-          <div
-            className={`${
-              !filterOptionsToBeSubscribed ||
-              !subscriptionValue ||
-              !targetGroupId ||
-              !isUserInputParamsValid
-                ? 'disabled'
-                : ''
-            }`}
-          >
-            {isLoadingTopic ? (
-              <LoadingAnimation type={'spinner'} />
-            ) : (
-              <button
-                className="ml-14 h-9 w-18 rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text mt-1 mb-4"
-                onClick={onSave}
-              >
-                Save
-              </button>
-            )}
+          <div>
+            <button
+              disabled={!isTopicReadyToSubscribe}
+              className="ml-14 h-9 w-18 rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text mt-1 mb-4 disabled:opacity-50 disabled:hover:bg-notifi-button-primary-blueish-bg "
+              onClick={onSave}
+            >
+              {isLoading ? <LoadingAnimation /> : 'Save'}
+            </button>
           </div>
         </div>
       ) : null}

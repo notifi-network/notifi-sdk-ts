@@ -12,7 +12,7 @@ const dummyAlerts = [
 
 export const DummyAlertsModal: React.FC = () => {
   return (
-    <div className="flex flex-col gap-4 bg-notifi-dummy-alert-card-bg/50 p-10 w-11/12 md:max-w-[33.37rem] rounded-3xl mt-2">
+    <div className="flex flex-col gap-4 bg-notifi-dummy-alert-card-bg/50 p-8 pb-6 w-11/12 md:max-w-[33.37rem] rounded-3xl mt-2">
       <div className="font-medium text-notifi-text">
         Which alerts can I sign up for?
       </div>

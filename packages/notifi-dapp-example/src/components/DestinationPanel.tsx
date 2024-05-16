@@ -83,7 +83,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
   //       ? wallets[selectedWallet]?.walletKeys?.hex ?? ''
   //       : '';
   //   // TODO: get senderAddress from target
-  //   const senderAddress = '0xb49bbE2c31CF4a0fB74b16812b8c6B6FeEE23524';
+  //   const senderAddress = '0xE80E42B5308d5b137FC137302d571B56907c3003';
   //   const timestamp = Date.now();
   //   const message = createConsentMessage(senderAddress, timestamp);
   //   const signature = await wallets[selectedWallet].signArbitrary(message);
@@ -147,7 +147,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
       }
 
       // TODO: get senderAddress from target
-      const senderAddress = '0xb49bbE2c31CF4a0fB74b16812b8c6B6FeEE23524';
+      const senderAddress = '0xE80E42B5308d5b137FC137302d571B56907c3003';
       const conversation = await client.conversations.newConversation(
         senderAddress,
       );

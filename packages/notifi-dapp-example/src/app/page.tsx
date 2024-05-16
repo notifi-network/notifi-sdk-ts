@@ -55,9 +55,9 @@ export default function Home() {
             alt="Injective"
           />
         </div>
-        <div className="p-2 rounded-lg h-7 hidden md:block">
+        {/* <div className="p-2 rounded-lg h-7 hidden md:block">
           <PoweredByNotifi />
-        </div>
+        </div> */}
       </div>
 
       <EcosystemHero
@@ -69,7 +69,28 @@ export default function Home() {
         ctaButtonText="Connect Wallet"
       />
       <DummyAlertsModal />
-      <div className="p-2 bg-white rounded-lg h-7 block md:hidden w-[110px] mt-12">
+      <div className="w-[340px] text-[10px] text-notifi-text-medium text-center mt-6 mb-4">
+        Notifications are provided by Notifi and not affiliated with GMX. By
+        subscribing, you agree that info you provide to Notifi will be governed
+        by its{' '}
+        <a
+          href="https://notifi.network/privacy"
+          target="_blank"
+          className="underline"
+        >
+          Privacy Policy
+        </a>
+        and{' '}
+        <a
+          href="https://notifi.network/terms"
+          target="_blank"
+          className="underline"
+        >
+          Terms of Use
+        </a>
+        .
+      </div>
+      <div className="p-2 rounded-lg h-7 block w-[110px]">
         <PoweredByNotifi />
       </div>
       {isOpenWalletsModal ? (
