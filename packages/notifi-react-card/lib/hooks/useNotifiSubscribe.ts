@@ -16,6 +16,7 @@ import {
 import { walletToSource } from '../utils/walletUtils';
 import { useNotifiForm } from './../context/NotifiFormContext';
 import { AlertConfiguration } from './../utils/AlertConfiguration';
+import { assertIsSupportedBlockchain } from '../utils/assertIsSupported';
 
 export type ClientData = Readonly<{
   alerts: ReadonlyArray<Types.AlertFragmentFragment>;
@@ -363,6 +364,9 @@ export const useNotifiSubscribe: ({
   const logIn = useCallback(async (): Promise<SubscriptionData> => {
     if (demoPreview)
       throw new Error('Preview card does not support method call');
+    if (params.walletBlockchain === 'XION') {
+      throw new Error('Unsupported wallet blockchain');
+    }
     if (!client.isAuthenticated) {
       if (useHardwareWallet) {
         await logInViaHardwareWallet();

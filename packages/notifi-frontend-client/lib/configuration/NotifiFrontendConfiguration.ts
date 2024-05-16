@@ -32,13 +32,19 @@ type WalletBlockchainWithPublicKey = Extract<
   | 'SCROLL'
   | 'MANTA'
   | 'MONAD'
+  | 'BERACHAIN'
+  | 'EVMOS'
+
+
 >;
 
 type WalletBlockchainWithDelegate = 'XION';
 
 type WalletBlockchainWithPublicKeyAndAddress = Exclude<
   Types.WalletBlockchain,
-  WalletBlockchainWithPublicKey | 'OFF_CHAIN' | 'EVMOS'
+  | WalletBlockchainWithPublicKey
+  | 'OFF_CHAIN'
+  | WalletBlockchainWithDelegate
 >;
 
 export type NotifiConfigWithPublicKey = Readonly<{
@@ -82,7 +88,7 @@ export const checkIsConfigWithDelegate = (
   config: NotifiFrontendConfiguration,
 ): config is NotifiConfigWithDelegate => {
   return 'delegatedAddress' in config;
-}
+};
 
 export type ConfigFactoryInputDelegated = {
   account: Readonly<{
@@ -92,7 +98,7 @@ export type ConfigFactoryInputDelegated = {
   }>;
   tenantId: string;
   env?: NotifiEnvironment;
-  walletBlockchain: NotifiConfigWithPublicKeyAndAddress['walletBlockchain'];
+  walletBlockchain: WalletBlockchainWithDelegate;
   storageOption?: NotifiEnvironmentConfiguration['storageOption'];
 };
 
@@ -121,7 +127,7 @@ export type FrontendClientConfigFactory<T extends NotifiFrontendConfiguration> =
   (
     args: T extends NotifiConfigWithPublicKeyAndAddress
       ? ConfigFactoryInputPublicKeyAndAddress
-      : ConfigFactoryInputPublicKey,
+      : T extends NotifiConfigWithDelegate ? ConfigFactoryInputDelegated : ConfigFactoryInputPublicKey,
   ) => NotifiFrontendConfiguration;
 
 const evmChains = [
@@ -140,6 +146,7 @@ const evmChains = [
   'MANTA',
   'MONAD',
   'ZKSYNC',
+  'BERACHAIN',
 ] as const;
 
 type EVMChains = Extract<Types.WalletBlockchain, (typeof evmChains)[number]>;
@@ -177,18 +184,42 @@ const configFactoryPublicKeyAndAddress: FrontendClientConfigFactory<
   };
 };
 
-const validateConfigInput = (
+const configFactoryDelegated: FrontendClientConfigFactory<
+  NotifiConfigWithDelegate
+> = (args) => {
+  return {
+    tenantId: args.tenantId,
+    env: args.env,
+    walletBlockchain: args.walletBlockchain,
+    delegatedAddress: args.account.address,
+    delegatedPublicKey: args.account.publicKey,
+    delegatorAddress: args.account.delegatorAddress,
+    storageOption: args.storageOption,
+  };
+}
+
+const isWithPubkeyAndAddress = (
   config: ConfigFactoryInput,
 ): config is ConfigFactoryInputPublicKeyAndAddress => {
   return 'address' in config.account;
 };
 
+const isWithDelegate = (
+  config: ConfigFactoryInput,
+): config is ConfigFactoryInputDelegated => {
+  return 'delegatorAddress' in config.account;
+}
+
 export const newFrontendConfig = (
   config: ConfigFactoryInput,
 ): NotifiFrontendConfiguration => {
-  return validateConfigInput(config)
-    ? configFactoryPublicKeyAndAddress(config)
-    : configFactoryPublicKey(config);
+  if (isWithPubkeyAndAddress(config)) {
+    return configFactoryPublicKeyAndAddress(config);
+  } else if (isWithDelegate(config)) {
+    return configFactoryDelegated(config);
+  } else {
+    return configFactoryPublicKey(config);
+  }
 };
 
 export const envUrl = (env?: NotifiEnvironment, endpointType?: 'websocket' | 'http'): string => {

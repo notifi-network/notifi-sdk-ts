@@ -131,6 +131,18 @@ const signMessage = async ({
     case 'INJECTIVE':
     case 'OSMOSIS':
     case 'NIBIRU':
+    case 'ARCHWAY':
+    case 'ELYS':
+    case 'NEUTRON':
+    case 'AXELAR':
+    case 'AGORIC':
+    case 'CELESTIA':
+    case 'COSMOS':
+    case 'DYMENSION':
+    case 'PERSISTENCE':
+    case 'DYDX':
+    case 'ORAI':
+    case 'KAVA':
     case 'SOLANA': {
       if (signer.walletBlockchain !== params.walletBlockchain) {
         throw new Error('Signer and config have different walletBlockchain');
@@ -145,6 +157,7 @@ const signMessage = async ({
       const signature = Buffer.from(signedBuffer).toString('base64');
       return signature;
     }
+    case 'EVMOS':
     case 'ARBITRUM':
     case 'POLYGON':
     case 'BINANCE':
@@ -159,10 +172,12 @@ const signMessage = async ({
     case 'SCROLL':
     case 'MANTA':
     case 'MONAD':
-    case 'ETHEREUM': {
-      if (signer.walletBlockchain !== params.walletBlockchain) {
-        throw new Error('Signer and config have different walletBlockchain');
-      }
+    case 'BERACHAIN':
+    case 'ETHEREUM':
+      {
+        if (signer.walletBlockchain !== params.walletBlockchain) {
+          throw new Error('Signer and config have different walletBlockchain');
+        }
 
       const { walletPublicKey } = params;
       const messageBuffer = new TextEncoder().encode(
