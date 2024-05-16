@@ -131,6 +131,13 @@
   transition: all 0s 50000s;     
 }
 
+.history-link a {
+  color: #5ECBCC;
+}
+
+.history-link a:hover {
+  text-decoration: underline;
+}
 /* Light mode color variables controlled by system preferences */
 /* @media (prefers-color-scheme: dark) {
   :root {
