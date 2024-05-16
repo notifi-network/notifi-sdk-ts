@@ -82,7 +82,7 @@ export const HistoryList: React.FC<HistoryListProps> = ({
           </div>
         </div>
       ) : null}
-      <div className="min-h-0 overflow-y-scroll grow">
+      <div className="min-h-0 overflow-y-auto grow">
         {nodes.map((node) => (
           <HistoryListRow
             key={node.id}
