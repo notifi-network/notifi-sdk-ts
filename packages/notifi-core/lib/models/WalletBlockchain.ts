@@ -29,4 +29,12 @@ export type WalletBlockchain =
   | 'SOLANA'
   | 'SUI'
   | 'XION'
-  | 'ZKSYNC';
+  | 'ZKSYNC'
+  | 'AGORIC'
+  | 'ORAI'
+  | 'KAVA'
+  | 'CELESTIA'
+  | 'COSMOS'
+  | 'DYMENSION'
+  | 'PERSISTENCE'
+  | 'DYDX'

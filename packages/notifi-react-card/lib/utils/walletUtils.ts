@@ -54,6 +54,22 @@ export const walletToSourceType = (
       return 'AXELAR_WALLET';
     case 'XION':
       return 'XION_WALLET';
+    case 'AGORIC':
+      return 'AGORIC_WALLET';
+    case 'ORAI':
+      return 'ORAI_WALLET';
+    case 'KAVA':
+      return 'KAVA_WALLET';
+    case 'CELESTIA':
+      return 'CELESTIA_WALLET';
+    case 'COSMOS':
+      return 'COSMOS_WALLET';
+    case 'DYMENSION':
+      return 'DYMENSION_WALLET';
+    case 'PERSISTENCE':
+      return 'PERSISTENCE_WALLET';
+    case 'DYDX':
+      return 'DYDX_WALLET';
     default:
       throw new Error('Unsupported walletType');
   }

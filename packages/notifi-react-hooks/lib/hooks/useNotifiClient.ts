@@ -135,6 +135,14 @@ const signMessage = async ({
     case 'ELYS':
     case 'NEUTRON':
     case 'AXELAR':
+    case 'AGORIC':
+    case 'CELESTIA':
+    case 'COSMOS':
+    case 'DYMENSION':
+    case 'PERSISTENCE':
+    case 'DYDX':
+    case 'ORAI':
+    case 'KAVA':
     case 'SOLANA': {
       if (signer.walletBlockchain !== params.walletBlockchain) {
         throw new Error('Signer and config have different walletBlockchain');

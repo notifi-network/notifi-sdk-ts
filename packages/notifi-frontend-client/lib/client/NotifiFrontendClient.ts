@@ -63,7 +63,15 @@ export type SignMessageParams =
         | 'SCROLL'
         | 'MANTA'
         | 'EVMOS'
-        | 'MONAD';
+        | 'MONAD'
+        | 'AGORIC'
+        | 'ORAI'
+        | 'KAVA'
+        | 'CELESTIA'
+        | 'COSMOS'
+        | 'DYMENSION'
+        | 'PERSISTENCE'
+        | 'DYDX'
       signMessage: Uint8SignMessageFunction;
     }>
   | Readonly<{
@@ -182,7 +190,55 @@ export type WalletWithSignMessage =
       accountAddress: string;
       walletPublicKey: string;
       signMessage: Uint8SignMessageFunction;
-    }>;
+    }>
+    | Readonly<{
+      walletBlockchain: 'AGORIC';
+      accountAddress: string;
+      walletPublicKey: string;
+      signMessage: Uint8SignMessageFunction;
+    }>
+  | Readonly<{
+    walletBlockchain: 'ORAI';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>
+  | Readonly<{
+    walletBlockchain: 'KAVA';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>
+  | Readonly<{
+    walletBlockchain: 'CELESTIA';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>
+  | Readonly<{
+    walletBlockchain: 'COSMOS';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>
+  | Readonly<{
+    walletBlockchain: 'DYMENSION';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>
+  | Readonly<{
+    walletBlockchain: 'PERSISTENCE';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>
+  | Readonly<{
+    walletBlockchain: 'DYDX';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>;
 
 export type ConnectWalletParams = Readonly<{
   walletParams: WalletWithSignParams;
@@ -459,6 +515,14 @@ export class NotifiFrontendClient {
       case 'ELYS':
       case 'ARCHWAY':
       case 'AXELAR':
+      case 'AGORIC':
+      case 'CELESTIA':
+      case 'COSMOS':
+      case 'DYMENSION':
+      case 'PERSISTENCE':
+      case 'DYDX':
+      case 'ORAI':
+      case 'KAVA':
       case 'NEUTRON':
       case 'NIBIRU':
       case 'APTOS': {
@@ -535,6 +599,14 @@ export class NotifiFrontendClient {
       case 'NIBIRU':
       case 'ARCHWAY':
       case 'AXELAR':
+      case 'AGORIC':
+      case 'CELESTIA':
+      case 'COSMOS':
+      case 'DYMENSION':
+      case 'PERSISTENCE':
+      case 'DYDX':
+      case 'ORAI':
+      case 'KAVA':
       case 'INJECTIVE': {
         const { authenticationKey, tenantId } = this
           ._configuration as NotifiConfigWithPublicKeyAndAddress;

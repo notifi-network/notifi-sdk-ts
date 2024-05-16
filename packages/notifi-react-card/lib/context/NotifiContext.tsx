@@ -143,6 +143,63 @@ export type NeutronParams = Readonly<{
   signMessage: Uint8SignMessageFunction;
 }>;
 
+export type AgoricParams = Readonly<{
+  walletBlockchain: 'AGORIC';
+  accountAddress: string;
+  walletPublicKey: string; // The same as accountAddress
+  signMessage: Uint8SignMessageFunction;
+}>;
+
+export type OraiParams = Readonly<{
+  walletBlockchain: 'ORAI';
+  accountAddress: string;
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
+export type KavaParams = Readonly<{
+  walletBlockchain: 'KAVA';
+  accountAddress: string;
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
+export type CelestiaParams = Readonly<{
+  walletBlockchain: 'CELESTIA';
+  accountAddress: string;
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
+export type CosmosParams = Readonly<{
+  walletBlockchain: 'COSMOS';
+  accountAddress: string;
+  walletPublicKey: string; // The same as accountAddress
+  signMessage: Uint8SignMessageFunction;
+}>;
+
+export type DymensionParams = Readonly<{
+  walletBlockchain: 'DYMENSION';
+  accountAddress: string;
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
+export type PersistenceParams = Readonly<{
+  walletBlockchain: 'PERSISTENCE';
+  accountAddress: string;
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
+export type DydxParams = Readonly<{
+  walletBlockchain: 'DYDX';
+  accountAddress: string;
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
+
 export type ElysParams = Readonly<{
   walletBlockchain: 'ELYS';
   accountAddress: string;
@@ -242,7 +299,15 @@ type WalletParams =
   | MantaParams
   | MonadParams
   | BerachainParams
-  | EvmosParams;
+  | EvmosParams
+  | AgoricParams
+  | OraiParams
+  | KavaParams
+  | CelestiaParams
+  | CosmosParams
+  | DymensionParams
+  | PersistenceParams
+  | DydxParams;
 
 export type NotifiParams = Readonly<{
   alertConfigurations?: Record<string, AlertConfiguration | null>;
