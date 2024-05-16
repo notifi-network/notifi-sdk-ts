@@ -34,7 +34,9 @@ export const SubscriptionValueInput: React.FC<SubscriptionValueInputProps> = (
       >
         {props.subscriptionValue
           ? props.subscriptionValue.label
-          : 'Select Pair' ?? 'Select Pair'}
+          : <div className="text-notifi-text-light">Select Pair</div> ?? (
+              <div className="text-notifi-text-light">Select Pair</div>
+            )}
       </div>
       {isDropdownOpen && (
         <div className="absolute top-12 left-0 w-[247px] bg-notifi-card-bg rounded-lg shadow-lg z-10 max-h-[180px] overflow-y-auto mt-1">

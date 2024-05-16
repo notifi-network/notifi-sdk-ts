@@ -30,10 +30,6 @@ export type TopicStackRowInputProps = {
   setIsTopicStackRowInputVisible: (visible: boolean) => void;
   topicStackAlerts: TopicStackAlert[];
   isTopicStackRowInputVisible: boolean;
-  isShowSubscriptionValueInput: boolean;
-  setIsShowSubscriptionValueInput: (
-    isShowSubscriptionValueInput: boolean,
-  ) => void;
 };
 
 export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
@@ -71,7 +67,11 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
         [filterName]: {},
       };
       userInputParams.forEach((userInputParam) => {
-        input[filterName][userInputParam.name] = '';
+        if (userInputParam.uiType === 'radio') {
+          input[filterName][userInputParam.name] = userInputParam.defaultValue;
+        } else {
+          input[filterName][userInputParam.name] = '';
+        }
       });
       setFilterOptionsToBeSubscribed({
         version: 1,
@@ -136,7 +136,11 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
         [filterName]: {},
       };
       userInputParams.forEach((userInputParam) => {
-        input[filterName][userInputParam.name] = '';
+        if (userInputParam.uiType === 'radio') {
+          input[filterName][userInputParam.name] = userInputParam.defaultValue;
+        } else {
+          input[filterName][userInputParam.name] = '';
+        }
       });
       setFilterOptionsToBeSubscribed({
         version: 1,
@@ -145,7 +149,6 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
     }
     setSubscriptionValue(null);
     props.setIsTopicStackRowInputVisible(false);
-    props.setIsShowSubscriptionValueInput(false);
     props.onSave && props.onSave();
     setIsLoading(false);
   };
@@ -156,28 +159,19 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
 
   return (
     <div className="">
-      {props.topicStackAlerts.length > 0 ? (
-        props.isShowSubscriptionValueInput ? (
-          <SubscriptionValueInput
-            subscriptionValueRef={subscriptionValueOrRef}
-            subscriptionValue={subscriptionValue}
-            setSubscriptionValue={setSubscriptionValue}
-          />
-        ) : null
-      ) : (
-        <SubscriptionValueInput
-          subscriptionValueRef={subscriptionValueOrRef}
-          subscriptionValue={subscriptionValue}
-          setSubscriptionValue={setSubscriptionValue}
-        />
-      )}
-      {props.isTopicStackRowInputVisible &&
-      (subscriptionValue || userInputParams.length > 0) ? (
+      <SubscriptionValueInput
+        subscriptionValueRef={subscriptionValueOrRef}
+        subscriptionValue={subscriptionValue}
+        setSubscriptionValue={setSubscriptionValue}
+      />
+      {subscriptionValue || userInputParams.length > 0 ? (
         <div className="">
           {reversedParams.map((userInputParm, id) => {
             return (
               <TopicOptions<'standalone'>
+                placeholder="Enter Price"
                 index={id}
+                key={id}
                 description={description}
                 userInputParam={userInputParm}
                 topic={props.topic}

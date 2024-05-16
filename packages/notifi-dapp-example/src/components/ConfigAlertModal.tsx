@@ -22,7 +22,7 @@ export const ConfigAlertModal = () => {
         </div>
       </div>
 
-      <div className="flex-grow min-h-0 my-6">
+      <div className="flex-grow min-h-0 mt-6">
         <TopicList inFTU={true} />
       </div>
 

@@ -9,13 +9,19 @@ export const capitalize = (str: string) => {
   return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
-export const NumberFormatExample = (amount: number) => {
-  // Format the number with commas as thousands separators and fixed to two decimal places
-  const formattedAmount = amount.toLocaleString('en-US', {
-    minimumFractionDigits: 2,
-  });
+export const formatPriceNumber = (num: number) => {
+  const numberParts = num.toString().split('.');
+  const decimals = numberParts[1] ? numberParts[1].length : 0;
 
-  return formattedAmount;
+  if (decimals === 0) {
+    return Number(num)
+      .toFixed(2)
+      .replace(/\d(?=(\d{3})+\.)/g, '$&,');
+  } else {
+    return Number(num)
+      .toFixed(decimals)
+      .replace(/\d(?=(\d{3})+\.)/g, '$&,');
+  }
 };
 
 export function convertWalletName(walletName: string) {

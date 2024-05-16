@@ -23,9 +23,7 @@ export const TopicStackRow: React.FC<TopicStackRowProps> = (props) => {
     '';
 
   const [isTopicStackRowInputVisible, setIsTopicStackRowInputVisible] =
-    React.useState(false);
-  const [isShowSubscriptionValueInput, setIsShowSubscriptionValueInput] =
-    React.useState(false);
+    React.useState(topicStackAlerts.length > 0 ? false : true);
 
   return (
     <div className="flex flex-col p-2 px-4 bg-notifi-destination-card-bg rounded-md w-[359px]">
@@ -71,36 +69,31 @@ export const TopicStackRow: React.FC<TopicStackRowProps> = (props) => {
         </div>
       ) : null}
 
-      <TopicStackRowInput
-        isTopicStackRowInputVisible={isTopicStackRowInputVisible}
-        topicStackAlerts={topicStackAlerts}
-        setIsTopicStackRowInputVisible={setIsTopicStackRowInputVisible}
-        topic={props.topic}
-        onSave={() => setIsTopicStackRowInputVisible(false)}
-        isShowSubscriptionValueInput={isShowSubscriptionValueInput}
-        setIsShowSubscriptionValueInput={setIsShowSubscriptionValueInput}
-      />
-      <div
-        className={`${
-          isTopicStackRowInputVisible || topicStackAlerts.length === 0
-            ? 'border-t border-notifi-card-border'
-            : ''
-        } ml-14 mr-6`}
-      >
-        <div
-          className={`text-sm font-medium text-notifi-tenant-brand-bg py-2 cursor-pointer ${
-            topicStackAlerts.length > 0
-              ? ''
-              : ' border-t border-notifi-card-border'
-          }`}
-          onClick={() => {
-            setIsTopicStackRowInputVisible(true);
-            setIsShowSubscriptionValueInput(true);
-          }}
-        >
-          + Add Pair
+      {isTopicStackRowInputVisible || topicStackAlerts.length === 0 ? (
+        <TopicStackRowInput
+          isTopicStackRowInputVisible={isTopicStackRowInputVisible}
+          topicStackAlerts={topicStackAlerts}
+          setIsTopicStackRowInputVisible={setIsTopicStackRowInputVisible}
+          topic={props.topic}
+          onSave={() => setIsTopicStackRowInputVisible(false)}
+        />
+      ) : null}
+      {isTopicStackRowInputVisible || topicStackAlerts.length === 0 ? null : (
+        <div className=" ml-14 mr-6">
+          <div
+            className={`text-sm font-medium text-notifi-tenant-brand-bg py-2 cursor-pointer ${
+              topicStackAlerts.length > 0
+                ? ''
+                : ' border-t border-notifi-card-border'
+            }`}
+            onClick={() => {
+              setIsTopicStackRowInputVisible(true);
+            }}
+          >
+            + Add Pair
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

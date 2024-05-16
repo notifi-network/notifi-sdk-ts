@@ -16,6 +16,7 @@ type TopicGroupOptionsProps = {
   userInputParam: UserInputParam<UiType>;
   index: number;
   description: string;
+  placeholder?: string;
   onSelectAction?:
     | { actionType: 'instantSubscribe' }
     | {
@@ -28,6 +29,7 @@ type TopicStandAloneOptionsProps = {
   userInputParam: UserInputParam<UiType>;
   index: number;
   description?: string;
+  placeholder?: string;
   onSelectAction?:
     | { actionType: 'instantSubscribe' }
     | {
@@ -91,9 +93,9 @@ export const TopicOptions = <T extends TopicRowCategory>(
 
       <div className="text-notifi-error text-xs ml-14 mt-2">{errorMessage}</div>
       <div className="flex flex-row ml-14 mt-3 mb-2">
-        {props.userInputParam.options.map((option) => {
+        {props.userInputParam.options.map((option, id) => {
           return (
-            <>
+            <div key={id}>
               {uiType !== 'radio' ? (
                 !option ? null : (
                   <button
@@ -118,6 +120,7 @@ export const TopicOptions = <T extends TopicRowCategory>(
                   <div className="inline-flex items-center mr-6">
                     <label className="relative flex items-center rounded-full cursor-pointer">
                       <input
+                        checked={valueToBeSubscribed === option}
                         onClick={() => {
                           selectOrInputValue(option);
                         }}
@@ -151,7 +154,7 @@ export const TopicOptions = <T extends TopicRowCategory>(
                   </div>
                 </div>
               )}
-            </>
+            </div>
           );
         })}
         {props.userInputParam.allowCustomInput && uiType !== 'radio' ? (
@@ -172,7 +175,7 @@ export const TopicOptions = <T extends TopicRowCategory>(
                     Number(evt.target.value) > 99 ||
                     (Number(evt.target.value) < 1 && evt.target.value !== '')
                   ) {
-                    setErrorMessage('Please enter a value between 1 and 49');
+                    setErrorMessage('Please enter a value between 1 and 99');
                   }
                 }
                 setCustomInput((prev) => {
@@ -198,7 +201,7 @@ export const TopicOptions = <T extends TopicRowCategory>(
                 }
                 selectOrInputValue(evt.target.value);
               }}
-              placeholder="Custom"
+              placeholder={props.placeholder ?? 'Custom'}
               value={customInput}
               className={` ${
                 props.userInputParam.options[0]
@@ -206,8 +209,8 @@ export const TopicOptions = <T extends TopicRowCategory>(
                   : 'w-full pl-3'
               } h-12 bg-notifi-card-bg rounded-md mr-2 text-notifi-text ${
                 customInput && props.userInputParam.options[0]
-                  ? 'selected text-white border border-notifi-tenant-brand-bg foucs-visible:border-0'
-                  : 'foucs-visible:border-0'
+                  ? 'selected text-white border border-notifi-tenant-brand-bg focus:outline-none'
+                  : 'focus:outline-none focus:border-notifi-card-border'
               }`}
             />
             {props.userInputParam.options[0] ? null : (

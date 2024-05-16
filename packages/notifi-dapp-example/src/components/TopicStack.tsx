@@ -1,4 +1,5 @@
 import { Icon } from '@/assets/Icon';
+import { formatPriceNumber } from '@/utils/stringUtils';
 import {
   ConvertOptionDirection,
   TopicStackAlert,
@@ -15,8 +16,6 @@ import {
 import { useNotifiTopicContext } from '@notifi-network/notifi-react';
 import React from 'react';
 
-import { LoadingAnimation } from './LoadingAnimation';
-
 type TopicStackProps = {
   topicStackAlert: TopicStackAlert;
   topic: FusionEventTopic;
@@ -29,7 +28,6 @@ export const TopicStack: React.FC<TopicStackProps> = (props) => {
     if (!input) return;
     return Object.values(input)[0];
   }, [getAlertFilterOptions]);
-  const { isLoading } = useNotifiTopicContext();
 
   const fusionEventMetadata = getFusionEventMetadata(props.topic);
   const alertFilter = fusionEventMetadata?.filters.find(isAlertFilter);
@@ -107,11 +105,14 @@ const sortAboveOrBelowThresholdUserInputOptionValue = (
     if (valueType) {
       const prefix = derivePrefixAndSuffixFromValueType(valueType);
       const suffix = derivePrefixAndSuffixFromValueType(valueType);
-      const thresholdValue = convertOptionValue(
+      let thresholdValue = convertOptionValue(
         filterOptions.threshold,
         valueType,
         ConvertOptionDirection.BtoF,
       );
+      if (valueType === 'price') {
+        thresholdValue = formatPriceNumber(Number(thresholdValue));
+      }
       sortedFilterOptions.push(
         `${prefix.prefix} ${thresholdValue} ${suffix.suffix}`,
       );
