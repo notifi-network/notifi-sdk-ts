@@ -4,7 +4,12 @@ import { Connection, PublicKey } from '@solana/web3.js';
 import converter from 'bech32-converting';
 import { useCallback, useEffect, useState } from 'react';
 
-import { PhantomWalletKeys, WalletKeys, Wallets } from '../types';
+import {
+  PhantomWallet,
+  PhantomWalletKeys,
+  WalletKeys,
+  Wallets,
+} from '../types';
 import {
   cleanWalletsInLocalStorage,
   setWalletKeysToLocalStorage,
@@ -30,70 +35,22 @@ export const usePhantom = (
     );
   };
 
-  useEffect(() => {
-    loadingHandler(true);
-    checkPhantomInstalled()
-      .then((installed) => {
-        setIsPhantomInstalled(installed);
-        if (installed && window.phantom?.ethereum) {
-          window.phantom.ethereum.on('connect', handleConnect);
-          window.phantom.ethereum.on('disconnect', handleDisconnect);
-        }
-      })
-      .catch((e) => {
-        console.error(e);
-      })
-      .finally(() => loadingHandler(false));
-
-    return () => {
-      if (window.phantom?.ethereum) {
-        window.phantom.ethereum.off('connect', handleConnect);
-        window.phantom.ethereum.off('disconnect', handleDisconnect);
-      }
-      loadingHandler(false);
-    };
-  }, []);
-
-  const checkPhantomInstalled = async (): Promise<boolean> => {
-    const provider = getProvider();
-    if (provider) {
-      try {
-        await provider.connect();
-        return true;
-      } catch (error) {
-        return false;
-      }
-    }
-    return false;
-  };
-
-  const getProvider = () => {
-    if ('phantom' in window) {
-      const anyWindow: any = window;
-      const provider = anyWindow.phantom?.ethereum;
-
-      if (provider) {
-        return provider;
-      }
-    }
-
-    window.open('https://phantom.app/', '_blank');
-  };
-
   const connectPhantom =
     useCallback(async (): Promise<PhantomWalletKeys | null> => {
-      const provider = getProvider();
+      if (!window.solana) {
+        return null;
+      }
 
-      if (!provider) {
+      if (!injectivePhantomWallet.strategies.phantom) {
         return null;
       }
 
       loadingHandler(true);
 
       try {
-        const accounts = await provider.request({
-          method: 'eth_requestAccounts',
-        });
+        injectivePhantomWallet.setWallet(Wallet.Phantom);
+
+        const accounts = await injectivePhantomWallet.getAddresses();
 
         const walletKeys = {
           bech32: converter('inj').toBech32(accounts[0]),
@@ -115,41 +72,15 @@ export const usePhantom = (
       return null;
     }, [selectWallet, errorHandler]);
 
-  const handleConnect = () => {
-    const provider = getProvider();
-    if (provider) {
-      const publicKey = provider.publicKey;
-      if (publicKey) {
-        const walletKeys: PhantomWalletKeys = {
-          bech32: publicKey.toString(),
-          hex: publicKey.toBytes().toString('hex'),
-        };
-        setWalletKeysPhantom(walletKeys);
-        setWalletKeysToLocalStorage('phantom', walletKeys);
-        selectWallet('phantom');
-      }
-    }
-  };
-
-  const handleDisconnect = () => {
-    setWalletKeysPhantom(null);
-    cleanWalletsInLocalStorage();
-    selectWallet(null);
-  };
-
-  const disconnectPhantom = () => {
-    if (!window.phantom?.ethereum) {
+  const disconnectPhantom = useCallback(async () => {
+    if (!injectivePhantomWallet.strategies?.phantom) {
       return handlePhantomNotExists('disconnectPhantom');
     }
-
-    // Clear the selected wallet
+    injectivePhantomWallet.disconnect();
     selectWallet(null);
     setWalletKeysPhantom(null);
     cleanWalletsInLocalStorage();
-
-    // Emit account changed event with an empty array to indicate disconnection
-    window.phantom.ethereum.emit('disconnect');
-  };
+  }, []);
 
   const injectivePhantomWallet = new WalletStrategy({
     chainId: ChainId.Mainnet,
