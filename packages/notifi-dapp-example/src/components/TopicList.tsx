@@ -69,14 +69,14 @@ export const TopicList: React.FC<TopicListProps> = ({
     <div
       className={`flex flex-col items-center 2xl:px-[15.75rem] xl:px-[10rem] ${
         inFTU ? '' : 'md:min-h-[94vh]'
-      } grow h-full`}
+      } grow h-full mb-9`}
     >
       {title ? (
         <div className="mt-8 mb-6 font-regular text-lg text-notifi-text">
           {title}
         </div>
       ) : null}
-      <div className="flex flex-col gap-4 justify-center w-86 mb-6">
+      <div className="flex flex-col gap-4 justify-center w-86">
         {topicRows.map((rowMetadata, id) => {
           if (isTopicStandaloneMetadata(rowMetadata)) {
             const isSubscriptionValueInputable = getFusionEventMetadata(

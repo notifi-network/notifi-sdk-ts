@@ -12,6 +12,7 @@ import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import { useClient } from '@xmtp/react-sdk';
 import React, { useCallback, useMemo, useState } from 'react';
 
+import { CoinbaseInfoModal } from './CoinbaseInfoModal';
 import { DestinationInfoPrompt } from './DestinationInfoPrompt';
 
 export type UserInfoSection = {
@@ -40,6 +41,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
 
   const {
     targetDocument: { targetInfoPrompts, targetData },
+    refreshTargetDocument,
   } = useNotifiTargetContext();
 
   const { frontendClient } = useNotifiFrontendClientContext();
@@ -64,6 +66,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
   );
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isCBInfoModalOpen, setIsCBInfoModalOpen] = useState(false);
   const { wallets, selectedWallet } = useWallets();
   const { popGlobalInfoModal } = useGlobalStateContext();
   const xmtp = useClient();
@@ -80,7 +83,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
   //       ? wallets[selectedWallet]?.walletKeys?.hex ?? ''
   //       : '';
   //   // TODO: get senderAddress from target
-  //   const senderAddress = '0xb49bbE2c31CF4a0fB74b16812b8c6B6FeEE23524';
+  //   const senderAddress = '0xE80E42B5308d5b137FC137302d571B56907c3003';
   //   const timestamp = Date.now();
   //   const message = createConsentMessage(senderAddress, timestamp);
   //   const signature = await wallets[selectedWallet].signArbitrary(message);
@@ -144,7 +147,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
       }
 
       // TODO: get senderAddress from target
-      const senderAddress = '0xb49bbE2c31CF4a0fB74b16812b8c6B6FeEE23524';
+      const senderAddress = '0xE80E42B5308d5b137FC137302d571B56907c3003';
       const conversation = await client.conversations.newConversation(
         senderAddress,
       );
@@ -163,6 +166,11 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
           conversationTopic,
         },
       });
+
+      await frontendClient
+        .fetchData()
+        .then(refreshTargetDocument)
+        .catch((e) => console.error(e));
     } catch (e) {
       console.error(e);
 
@@ -210,8 +218,18 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
     return await subscribeCoinbaseMessaging(payload);
   };
 
+  const isWalletAlertVerified = targetData.wallet?.data?.isConfirmed;
+
+  const toggleCBInfoModal = () => {
+    setIsCBInfoModalOpen(!isCBInfoModalOpen);
+  };
+
   return (
     <div className="w-full flex flex-col justify-center items-center">
+      <CoinbaseInfoModal
+        handleClose={toggleCBInfoModal}
+        open={isCBInfoModalOpen}
+      />
       {contactInfo.email.active && targetData.email ? (
         <div className="bg-notifi-destination-card-bg rounded-md w-full sm:w-112 h-18 flex flex-row items-center justify-between mb-2">
           <div className="bg-notifi-destination-logo-card-bg rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
@@ -236,8 +254,8 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
               {targetData.email}
             </div>
             {targetInfoPrompts.email?.infoPrompt.type === 'cta' ? (
-              <div className="flex flex-col md:flex-row justify-center items-baseline">
-                <div className="text-sm ml-6 mr-1 text-notifi-text-light font-medium">
+              <div className="flex flex-col md:flex-row justify-center items-baseline ml-6">
+                <div className="text-sm mr-1 text-notifi-text-light font-medium">
                   We sent you an email.{' '}
                 </div>
                 <DestinationInfoPrompt
@@ -397,15 +415,29 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
           </div>
 
           <div className="flex flex-row items-center justify-between w-3/4 sm:w-90 mr-4">
-            <div className="flex items-center gap-1.5 text-sm ml-6 text-notifi-text">
+            <div className="relative flex items-center gap-1.5 text-sm ml-6 text-notifi-text">
               Wallet Alerts
-              <button className="relative group flex items-center justify-center">
-                <Icon id="info" className="text-notifi-text-light" />
-
-                <div className="w-[194px] bg-black text-white text-start border border-gray-500 text-sm font-medium rounded-md p-4 hidden absolute z-10 left-[100%] group-hover:block transition-all duration-300 ease-in-out">
-                  Wallet messages are powered by XMTP and delivered natively
-                  into Coinbase Wallet. Download the Coinbase Wallet App or
-                  Browser Extension to receive wallet alerts!
+              <button className="group flex items-center justify-center">
+                <Icon id="info" style={{ color: '#B6B8D5' }} />
+                <div className="w-[194px] bg-black text-white text-start border border-[#565A8D] text-sm font-medium rounded-md p-4 hidden absolute z-10 left-0 bottom-[102%] group-hover:block">
+                  {isWalletAlertVerified ? (
+                    <>
+                      Make sure messages are enabled in your Coinbase Wallet
+                      App.{' '}
+                      <span
+                        onClick={toggleCBInfoModal}
+                        className="text-notifi-toggle-on-bg underline cursor-pointer"
+                      >
+                        More info
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      Wallet messages are powered by XMTP and delivered natively
+                      into Coinbase Wallet. Download the Coinbase Wallet App or
+                      Browser Extension to receive wallet alerts!
+                    </>
+                  )}
                 </div>
               </button>
             </div>
@@ -427,7 +459,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
                   targetInfoPrompts.wallet?.infoPrompt.message ?? ''
                 }
               />
-            ) : targetData.wallet?.data?.isConfirmed ? (
+            ) : isWalletAlertVerified ? (
               VerifiedText
             ) : null}
           </div>

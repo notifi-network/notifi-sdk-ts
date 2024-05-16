@@ -22,12 +22,12 @@ export const ConfigAlertModal = () => {
         </div>
       </div>
 
-      <div className="flex-grow min-h-0 my-6">
+      <div className="flex-grow min-h-0 mt-6">
         <TopicList inFTU={true} />
       </div>
 
       <button
-        className="rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-72 h-11 mb-6 text-sm font-bold disabled:hover:bg-notifi-button-primary-blueish-bg hover:bg-notifi-button-hover-bg"
+        className="rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-72 h-11 mb-9 text-sm font-bold disabled:hover:bg-notifi-button-primary-blueish-bg hover:bg-notifi-button-hover-bg"
         onClick={() => {
           updateFtuStage(FtuStage.Done);
         }}

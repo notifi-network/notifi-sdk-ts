@@ -107,7 +107,7 @@ export const TopicRow = <T extends TopicRowCategory>(
                 {benchmarkTopic.uiConfig.tooltipContent ? (
                   <div className="relative">
                     <Icon id="info" className="text-notifi-text-light" />
-                    <div className="hidden group-hover:block absolute text-sm font-medium max-w-48 bg-notifi-card-bg p-4 rounded-md z-10 border border-notifi-card-border w-48 bottom-[1.5rem] right-[-5rem]">
+                    <div className="hidden group-hover:block absolute text-sm font-normal max-w-48 bg-notifi-card-bg p-4 rounded-md z-10 border border-notifi-card-border w-48 bottom-[1.5rem] right-[-5rem]">
                       <div>{benchmarkTopic.uiConfig.tooltipContent}</div>
                     </div>
                   </div>
@@ -130,8 +130,7 @@ export const TopicRow = <T extends TopicRowCategory>(
       </div>
 
       {/* render radio button or button inputs if content with userInputParams length equals to 1 */}
-      {userInputParams.length === 1 &&
-      isAlertSubscribed(benchmarkTopic.uiConfig.name) ? (
+      {isAlertSubscribed(benchmarkTopic.uiConfig.name) ? (
         <div>
           {isTopicGroup
             ? userInputParams.map((userInput, id) => {
