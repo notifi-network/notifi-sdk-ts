@@ -34,6 +34,7 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
   const isAnySupportedWalletAvailable = walletsRequiredForGMX
     .map((wallet) => wallets[wallet].isInstalled)
     .includes(true);
+  //
 
   return (
     <>
