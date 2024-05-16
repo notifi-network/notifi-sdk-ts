@@ -23,7 +23,7 @@ export const ConfigDestinationModal: React.FC<ConfigDestinationModalProps> = ({
   const { updateFtuStage } = useNotifiUserSettingContext();
 
   return (
-    <div className="w-full sm:min-h-[500px] sm:w-4/6 bg-notifi-card-bg rounded-2xl flex flex-col items-center justify-between mt-[1rem] mb-8 px-4">
+    <div className="w-full sm:min-h-[520px] sm:w-4/6 bg-notifi-card-bg rounded-2xl flex flex-col items-center justify-between mt-[1rem] mb-8 px-4">
       <div className="w-full">
         <div className="flex flex-col items-center justify-center">
           <p className="font-semibold text-xs opacity-50 mt-2.5 text-notifi-text-medium">
@@ -44,7 +44,7 @@ export const ConfigDestinationModal: React.FC<ConfigDestinationModalProps> = ({
         </div>
       </div>
       <button
-        className="rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-72 h-11 mt-6 sm:mt-0 mb-6 text-sm font-bold disabled:hover:bg-notifi-button-primary-blueish-bg hover:bg-notifi-button-hover-bg"
+        className="rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-72 h-11 mt-9 sm:mt-0 mb-9 text-sm font-bold disabled:hover:bg-notifi-button-primary-blueish-bg hover:bg-notifi-button-hover-bg"
         onClick={() => {
           updateFtuStage(FtuStage.Alerts);
         }}

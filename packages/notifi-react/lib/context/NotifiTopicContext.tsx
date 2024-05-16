@@ -1,6 +1,4 @@
 import {
-  Filter,
-  FusionEventMetadata,
   FusionEventTopic,
   FusionFilterOptions,
   UserInputOptions,

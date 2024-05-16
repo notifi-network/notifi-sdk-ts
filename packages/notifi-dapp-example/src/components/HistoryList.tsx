@@ -82,7 +82,7 @@ export const HistoryList: React.FC<HistoryListProps> = ({
           </div>
         </div>
       ) : null}
-      <div className="min-h-0 overflow-y-scroll grow">
+      <div className="min-h-0 overflow-y-auto grow">
         {nodes.map((node) => (
           <HistoryListRow
             key={node.id}
@@ -92,7 +92,7 @@ export const HistoryList: React.FC<HistoryListProps> = ({
           />
         ))}
         <div
-          className={` flex justify-center my-4 text-lg font-semibold cursor-pointer ${
+          className={` flex justify-center my-4 text-lg text-notifi-text font-semibold cursor-pointer ${
             !cursorInfo.hasNextPage ? 'hidden' : ''
           }`}
           onClick={() => getNotificationHistory()}
