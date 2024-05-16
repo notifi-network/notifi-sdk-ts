@@ -2,8 +2,12 @@ import clsx from 'clsx';
 import React from 'react';
 
 import { Icon } from '../assets/Icons';
-import { useNotifiFrontendClientContext } from '../context';
-import { defaultCopy } from '../utils/constants';
+import {
+  useNotifiFrontendClientContext,
+  useNotifiTargetContext,
+} from '../context';
+import { defaultCopy, defaultLoadingAnimationStyle } from '../utils/constants';
+import { LoadingAnimation } from './LoadingAnimation';
 import { PoweredByNotifi, PoweredByNotifiProps } from './PoweredByNotifi';
 
 export type ConnectProps = {
@@ -21,11 +25,25 @@ export type ConnectProps = {
     button?: string;
     footer?: string;
     PoweredByNotifi?: PoweredByNotifiProps['classNames'];
+    loadingSpinner?: React.CSSProperties;
   };
 };
 
 export const Connect: React.FC<ConnectProps> = (props) => {
   const { login } = useNotifiFrontendClientContext();
+  const {
+    renewTargetGroup,
+    targetDocument: { targetGroupId },
+  } = useNotifiTargetContext();
+  const [isLoading, setIsLoading] = React.useState(false);
+  const loadingSpinnerStyle: React.CSSProperties =
+    props.classNames?.loadingSpinner ?? defaultLoadingAnimationStyle.spinner;
+  const onClick = async () => {
+    setIsLoading(true);
+    await login();
+    !targetGroupId && (await renewTargetGroup());
+    setIsLoading(false);
+  };
   return (
     <div className={clsx('notifi-connect', props.classNames?.container)}>
       <div className={clsx('notifi-connect-main', props.classNames?.main)}>
@@ -43,14 +61,25 @@ export const Connect: React.FC<ConnectProps> = (props) => {
             ? props.copy.content
             : defaultCopy.connect.content}
         </div>
-        <div
+        <button
           className={clsx('notifi-connect-button', props.classNames?.button)}
-          onClick={login}
+          disabled={isLoading}
+          onClick={onClick}
         >
-          {props.copy?.buttonText
-            ? props.copy.buttonText
-            : defaultCopy.connect.buttonText}
-        </div>
+          {isLoading ? (
+            <LoadingAnimation type="spinner" {...loadingSpinnerStyle} />
+          ) : null}
+          <div
+            className={clsx(
+              'notifi-connect-button-text',
+              isLoading && 'hidden',
+            )}
+          >
+            {props.copy?.buttonText
+              ? props.copy.buttonText
+              : defaultCopy.connect.buttonText}
+          </div>
+        </button>
       </div>
 
       <div className={clsx('notifi-connect-footer', props.classNames?.footer)}>

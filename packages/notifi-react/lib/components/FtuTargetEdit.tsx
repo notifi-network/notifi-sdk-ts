@@ -3,10 +3,10 @@ import clsx from 'clsx';
 import React from 'react';
 
 import { TargetInputFromValue, useNotifiTargetContext } from '../context';
-import { defaultCopy } from '../utils/constants';
+import { defaultCopy, defaultLoadingAnimationStyle } from '../utils/constants';
 import { ErrorGlobal } from './ErrorGlobal';
 import { FtuView } from './Ftu';
-import { LoadingGlobal } from './LoadingGlobal';
+import { LoadingAnimation } from './LoadingAnimation';
 import { NavHeader } from './NavHeader';
 import { TargetInputs, TargetInputsProps } from './TargetInputs';
 
@@ -20,24 +20,30 @@ export type FtuTargetEditProps = {
   classNames?: {
     container?: string;
     button?: string;
+    loadingSpinner?: React.CSSProperties;
     TargetInputs?: TargetInputsProps['classNames'];
   };
   setFtuView: React.Dispatch<React.SetStateAction<FtuView | null>>;
 };
 
 export const FtuTargetEdit: React.FC<FtuTargetEditProps> = (props) => {
+  const loadingSpinnerStyle: React.CSSProperties =
+    props.classNames?.loadingSpinner ?? defaultLoadingAnimationStyle.spinner;
+  const [isLoading, setIsLoading] = React.useState(false);
   const {
     renewTargetGroup,
     targetDocument: { targetInputs },
     isChangingTargets,
-    isLoading: isLoadingTargets,
     error: targetError,
   } = useNotifiTargetContext();
   const isTargetInputChanged = Object.values(isChangingTargets).includes(true);
 
-  if (isLoadingTargets) {
-    return <LoadingGlobal />;
-  }
+  const onClick = async () => {
+    setIsLoading(true);
+    await renewTargetGroup();
+    props.setFtuView(FtuView.TargetList);
+    setIsLoading(false);
+  };
 
   if (targetError) {
     return <ErrorGlobal />;
@@ -77,13 +83,18 @@ export const FtuTargetEdit: React.FC<FtuTargetEditProps> = (props) => {
           'notifi-ftu-target-edit-button',
           props.classNames?.button,
         )}
-        disabled={!isTargetInputChanged || !isInputValid}
-        onClick={async () => {
-          await renewTargetGroup();
-          props.setFtuView(FtuView.TargetList);
-        }}
+        disabled={!isTargetInputChanged || !isInputValid || isLoading}
+        onClick={onClick}
       >
-        <div>
+        {isLoading ? (
+          <LoadingAnimation type="spinner" {...loadingSpinnerStyle} />
+        ) : null}
+        <div
+          className={clsx(
+            'notifi-ftu-target-edit-button-text',
+            isLoading && 'hidden',
+          )}
+        >
           {props.copy?.buttonText ?? defaultCopy.ftuTargetEdit.buttonText}
         </div>
       </button>
