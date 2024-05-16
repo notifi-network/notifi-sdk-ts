@@ -60,7 +60,7 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
           />
         </div>
 
-        <div className="flex gap-6 px-12 pt-10 justify-center items-center flex-wrap">
+        <div className="flex gap-6 px-5 md:px-12 pb-5 md:pb-0 pt-10 justify-center items-center flex-wrap">
           {walletsRequiredForGMX.map((walletName) => {
             const { connect, websiteURL, isInstalled } = wallets[walletName];
             return (
