@@ -1,7 +1,7 @@
 import converter from 'bech32-converting';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { Ethereum, MetamaskWalletKeys, Wallets } from '../types';
+import { Ethereum, MetamaskWalletKeys, WalletKeys, Wallets } from '../types';
 import {
   cleanWalletsInLocalStorage,
   setWalletKeysToLocalStorage,
@@ -76,13 +76,13 @@ export const useInjectedWallet = (
       disconnectWallet();
       loadingHandler(false);
     }, timeoutInMiniSec ?? 5000);
-
+    let walletKeys: WalletKeys | null = null;
     try {
       const accounts = await provider.request?.({
         method: 'eth_requestAccounts',
       });
 
-      const walletKeys = {
+      walletKeys = {
         bech32: converter('inj').toBech32(accounts[0]),
         hex: accounts[0],
       };
@@ -90,7 +90,7 @@ export const useInjectedWallet = (
       selectWallet(walletName);
       setWalletKeys(walletKeys);
       setWalletKeysToLocalStorage(walletName, walletKeys);
-      return walletKeys;
+      // return walletKeys;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       console.error(e);
@@ -101,6 +101,7 @@ export const useInjectedWallet = (
       loadingHandler(false);
       clearTimeout(timer);
     }
+    return walletKeys;
   };
 
   const disconnectWallet = () => {

@@ -1,11 +1,24 @@
 import { Icon } from '@/assets/Icon';
-import { TopicStackAlert } from '@/utils/topic';
-import { UserInputOptions } from '@notifi-network/notifi-frontend-client';
+import { formatPriceNumber } from '@/utils/stringUtils';
+import {
+  ConvertOptionDirection,
+  TopicStackAlert,
+  convertOptionValue,
+  derivePrefixAndSuffixFromValueType,
+  getFusionEventMetadata,
+  isAlertFilter,
+} from '@/utils/topic';
+import {
+  FusionEventTopic,
+  UserInputOptions,
+  ValueType,
+} from '@notifi-network/notifi-frontend-client';
 import { useNotifiTopicContext } from '@notifi-network/notifi-react';
 import React from 'react';
 
 type TopicStackProps = {
   topicStackAlert: TopicStackAlert;
+  topic: FusionEventTopic;
 };
 
 export const TopicStack: React.FC<TopicStackProps> = (props) => {
@@ -15,13 +28,27 @@ export const TopicStack: React.FC<TopicStackProps> = (props) => {
     if (!input) return;
     return Object.values(input)[0];
   }, [getAlertFilterOptions]);
+
+  const fusionEventMetadata = getFusionEventMetadata(props.topic);
+  const alertFilter = fusionEventMetadata?.filters.find(isAlertFilter);
+
+  if (!alertFilter) {
+    return null;
+  }
+
+  const userInputParmValueTypeMap = new Map(
+    alertFilter.userInputParams.map((param) => [param.name, param.kind]),
+  );
   const userInputOptionValuesToBeDisplayed =
     userInputOptions &&
     isAboveOrBelowThresholdUserInputOptions(userInputOptions)
-      ? sortAboveOrBelowThresholdUserInputOptionValue(userInputOptions)
+      ? sortAboveOrBelowThresholdUserInputOptionValue(
+          userInputOptions,
+          userInputParmValueTypeMap,
+        )
       : [];
   return (
-    <div className="flex flex-row justify-between items-center py-3">
+    <div className="flex flex-row justify-between items-center py-3 border-b border-notifi-card-border">
       <div className="flex flex-col items-start">
         <div className="text-sm font-regular text-notifi-text">
           {props.topicStackAlert.subscriptionValueInfo.label}
@@ -64,6 +91,7 @@ const isAboveOrBelowThresholdUserInputOptions = (
 
 const sortAboveOrBelowThresholdUserInputOptionValue = (
   filterOptions: Record<'threshold' | 'thresholdDirection', string>,
+  userInputParmValueTypeMap: Map<string, ValueType>,
 ) => {
   const sortedFilterOptions = [];
   if (filterOptions.thresholdDirection) {
@@ -73,7 +101,22 @@ const sortAboveOrBelowThresholdUserInputOptionValue = (
     sortedFilterOptions.push(thresholdDirection);
   }
   if (filterOptions.threshold) {
-    sortedFilterOptions.push(filterOptions.threshold);
+    const valueType = userInputParmValueTypeMap.get('threshold');
+    if (valueType) {
+      const prefix = derivePrefixAndSuffixFromValueType(valueType);
+      const suffix = derivePrefixAndSuffixFromValueType(valueType);
+      let thresholdValue = convertOptionValue(
+        filterOptions.threshold,
+        valueType,
+        ConvertOptionDirection.BtoF,
+      );
+      if (valueType === 'price') {
+        thresholdValue = formatPriceNumber(Number(thresholdValue));
+      }
+      sortedFilterOptions.push(
+        `${prefix.prefix} ${thresholdValue} ${suffix.suffix}`,
+      );
+    }
   }
   return sortedFilterOptions;
 };
