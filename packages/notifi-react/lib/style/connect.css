@@ -42,12 +42,23 @@
   background-color: var(--notifi-connect-button);
   color: var(--notifi-connect-button-text);
   border-radius: 0.5rem;
-  padding: 0.5rem 0rem;
+  padding: 0.9rem 0rem;
   text-align: center;
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
   width: 100%;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  align-items: center;
+}
+.notifi-connect-button-text.hidden {
+  visibility: hidden;
+}
+.notifi-connect-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .notifi-connect-footer {
