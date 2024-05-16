@@ -39,13 +39,13 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
     <>
       {/* hide this modal when on mobile view and there is no metamask and keplr extension detected */}
       <div
-        className={`fixed h-screen w-screen bg-black opacity-70 ${
+        className={`fixed inset-0 z-50 bg-black opacity-70 ${
           isAnySupportedWalletAvailable ? '' : 'hidden'
         } sm:block`}
         onClick={() => setIsOpenWalletsModal(false)}
       ></div>
       <div
-        className={`flex flex-col fixed w-90 min-h-72 md:min-w-[681px] md:h-[452px] border border-notifi-card-border bg-notifi-destination-card-bg rounded-xl ${
+        className={`flex flex-col fixed z-50 w-90 md:min-w-[681px] my-5 md:my-0 h-[452px] overflow-y-scroll md:overflow-y-hidden border border-notifi-card-border bg-notifi-destination-card-bg rounded-xl ${
           isAnySupportedWalletAvailable ? '' : 'hidden'
         } sm:flex`}
       >
