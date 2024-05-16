@@ -51,10 +51,10 @@ export const useNotifiRouter = () => {
 
   useEffect(() => {
     if (loginError) {
-      handleRoute('/');
       if (selectedWallet) {
         wallets[selectedWallet].disconnect();
       }
+      handleRoute('/');
     }
   }, [loginError]);
 

@@ -71,7 +71,7 @@ export const InputFieldTelegram: React.FC<InputFieldTelegramProps> = ({
           <input
             data-cy="notifiTelegramInput"
             onBlur={validateTelegram}
-            className={`text-notifi-text border bg-notifi-card-bg border-grey-300 rounded-md w-full sm:w-86 h-11 mr-4 text-sm pl-3 focus:outline-none focus:border-notifi-input-border ${
+            className={`notifi-inputField text-notifi-text border bg-notifi-card-bg border-grey-300 rounded-md w-full sm:w-86 h-11 mr-4 text-sm pl-3 focus:border-solid focus:border-blue-800 focus:outline-none ${
               hasErrors ? 'border-notifi-error' : 'border-none'
             } flex ${hasErrors ? 'pt-3' : 'pt-0'}`}
             disabled={disabled}

@@ -65,13 +65,13 @@ export const HistoryListRow: React.FC<HistoryListRowProps> = ({
       <div
         className={`${
           !parsedNotificationHistory.read ? '' : 'hidden'
-        } h-18 w-1 bg-notifi-tenant-brand-bg rounded-3xl flex justify-center items-center absolute top-0 left-0 z-1`}
+        } h-full w-1 bg-notifi-tenant-brand-bg rounded-3xl flex justify-center items-center absolute top-0 left-0 z-1`}
       ></div>
 
-      <div className="flex flex-row items-center">
+      <div className="flex flex-row items-center w-15">
         {customIconUrl.length > 0 ? (
           <>
-            <img src={customIconUrl} className="w-10 h-10 mr-3 ml-1" />
+            <img src={customIconUrl} className="w-10 h-10 mx-1" />
           </>
         ) : (
           <div className={`h-10 w-10 mr-3 ml-1`}>
@@ -80,7 +80,7 @@ export const HistoryListRow: React.FC<HistoryListRowProps> = ({
         )}
       </div>
 
-      <div className="grow text-sm">
+      <div className="grow text-sm md:max-w-full max-w-[70%]">
         <div
           className={`${
             !parsedNotificationHistory.read ? 'font-semibold' : ''
