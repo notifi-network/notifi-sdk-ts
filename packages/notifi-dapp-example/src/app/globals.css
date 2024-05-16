@@ -127,6 +127,10 @@
   --notifi-loading-skeleton-bg: var(--notifi-black);
 }
 
+.notifi-inputField:-webkit-autofill { 
+  transition: all 0s 50000s;     
+}
+
 /* Light mode color variables controlled by system preferences */
 /* @media (prefers-color-scheme: dark) {
   :root {

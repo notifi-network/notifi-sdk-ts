@@ -36,12 +36,16 @@ export const InputFieldWallet: React.FC<InputFieldWalletProps> = ({
           </div>
         </div>
         <div className="flex flex-row items-center justify-between w-2/3 sm:w-90 mr-4">
-          <div className="flex items-center gap-1.5 text-sm sm:ml-6 text-notifi-text">
+          <div className="relative flex items-center gap-1.5 text-sm sm:ml-6 text-notifi-text">
             Wallet Alerts
-            <button className="relative group flex items-center justify-center">
-              <Icon id="info" className="text-notifi-text-light" />
+            <button
+              className={`${
+                isEditable ? 'hidden' : 'flex'
+              } group  items-center justify-center `}
+            >
+              <Icon id="info" style={{ color: '#B6B8D5' }} />
 
-              <div className="w-[194px] bg-black text-white text-start border border-gray-500 text-sm font-medium rounded-md p-4 absolute z-10 hidden bottom-full inset-x-1/2 group-hover:block transition-all duration-300 ease-in-out">
+              <div className="-ml-4 w-[194px] bg-black text-white text-start border border-[#565A8D] text-sm font-medium rounded-md p-4 hidden absolute z-10 bottom-[102%] group-hover:block">
                 Wallet messages are powered by XMTP and delivered natively into
                 Coinbase Wallet. Download the Coinbase Wallet App or Browser
                 Extension to receive wallet alerts!
