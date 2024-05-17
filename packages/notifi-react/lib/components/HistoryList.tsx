@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import React from 'react';
 
-import { Icon } from '../assets/Icons';
+import { Icon, IconType } from '../assets/Icons';
 import { HistoryItem, useNotifiHistoryContext } from '../context';
 import { defaultCopy, defaultLoadingAnimationStyle } from '../utils';
 import { HistoryRow } from './HistoryRow';
@@ -14,6 +14,7 @@ type HistoryListProps = {
     main?: string;
     button?: string;
     loadingSpinner?: React.CSSProperties;
+    loadingMore?: string;
     inboxEmpty?: string;
     emptyIcon?: string;
     emptyTitle?: string;
@@ -25,6 +26,7 @@ type HistoryListProps = {
     emptyTitle?: string;
     emptyDescription?: string;
   };
+  emptyIcon?: IconType;
   setSelectedHistoryItem: React.Dispatch<
     React.SetStateAction<HistoryItem | null>
   >;
@@ -32,11 +34,36 @@ type HistoryListProps = {
 };
 
 export const HistoryList: React.FC<HistoryListProps> = (props) => {
-  const { historyItems, hasNextPage, getHistoryItems } =
-    useNotifiHistoryContext();
+  const {
+    historyItems,
+    hasNextPage,
+    getHistoryItems,
+    isLoading: isLoadingHistoryItems,
+  } = useNotifiHistoryContext();
   const [isLoadingMoreItems, setIsLoadingMoreItems] = React.useState(false);
   const loadingSpinnerStyle: React.CSSProperties =
     props.classNames?.loadingSpinner ?? defaultLoadingAnimationStyle.spinner;
+  const mainRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    // NOTE: Light weight implementation of infinite scroll
+    const scrollDetectedAction = async () => {
+      const scrollTop = mainRef.current?.scrollTop ?? 0;
+      const scrollHeight = mainRef.current?.scrollHeight ?? 0;
+      const offsetHeight = mainRef.current?.offsetHeight ?? 0;
+      const edgeBuffer = 10; // this buffer vary based on the css config (border, padding, margin size)
+      if (scrollTop > scrollHeight - offsetHeight - edgeBuffer) {
+        if (isLoadingHistoryItems || !hasNextPage) return;
+        setIsLoadingMoreItems(true);
+        await getHistoryItems();
+        setIsLoadingMoreItems(false);
+      }
+    };
+    mainRef.current?.addEventListener('scroll', scrollDetectedAction);
+    return () =>
+      mainRef.current?.removeEventListener('scroll', scrollDetectedAction);
+  }, [hasNextPage, isLoadingHistoryItems]);
+
   return (
     <div
       className={clsx(
@@ -48,7 +75,10 @@ export const HistoryList: React.FC<HistoryListProps> = (props) => {
       <NavHeader>
         {props.copy?.headerTitle ?? defaultCopy.inboxHistoryList.headerTitle}
       </NavHeader>
-      <div className={clsx('notifi-history-list-main', props.classNames?.main)}>
+      <div
+        ref={mainRef}
+        className={clsx('notifi-history-list-main', props.classNames?.main)}
+      >
         {/* HistoryList */}
         {historyItems.map((item, id) => (
           <HistoryRow
@@ -58,36 +88,19 @@ export const HistoryList: React.FC<HistoryListProps> = (props) => {
           />
         ))}
         {/* Load more */}
-        {hasNextPage ? (
-          <button
+        {isLoadingMoreItems ? (
+          <div
             className={clsx(
-              'notifi-history-list-button',
-              props.classNames?.button,
+              'notifi-history-list-loading-more',
+              props.classNames?.loadingMore,
               !hasNextPage && 'hidden',
             )}
-            disabled={isLoadingMoreItems}
-            onClick={async () => {
-              setIsLoadingMoreItems(true);
-              await getHistoryItems();
-              setIsLoadingMoreItems(false);
-            }}
           >
-            {isLoadingMoreItems ? (
-              <LoadingAnimation type="spinner" {...loadingSpinnerStyle} />
-            ) : null}
-            <div
-              className={clsx(
-                'notifi-history-list-button-text',
-                isLoadingMoreItems && 'hidden',
-              )}
-            >
-              {props.copy?.buttonText ??
-                defaultCopy.inboxHistoryList.buttonText}
-            </div>
-          </button>
+            <LoadingAnimation type="spinner" {...loadingSpinnerStyle} />
+          </div>
         ) : null}
         {/* EmptyInbox */}
-        {historyItems.length === 0 ? (
+        {!isLoadingHistoryItems && historyItems.length === 0 ? (
           <div
             className={clsx(
               'notifi-history-list-empty',
@@ -100,7 +113,7 @@ export const HistoryList: React.FC<HistoryListProps> = (props) => {
                 props.classNames?.emptyIcon,
               )}
             >
-              <Icon type="empty-box" />
+              <Icon type={props.emptyIcon ?? 'empty-box'} />
             </div>
 
             <div

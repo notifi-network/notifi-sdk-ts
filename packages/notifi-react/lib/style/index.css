@@ -66,6 +66,7 @@
   --notifi-history-row-timestamp-text: var(--notifi-color-heather);
   --notifi-history-row-subject-text: var(--notifi-color-heather);
   --notifi-history-detail-timestamp-text: var(--notifi-color-heather);
+  --notifi-history-list-empty-description-text: var(--notifi-color-heather);
 }
 
 .notifi-theme-light {
@@ -101,4 +102,5 @@
   --notifi-history-row-timestamp-text: var(--notifi-color-dusk);
   --notifi-history-row-subject-text: var(--notifi-color-dusk);
   --notifi-history-detail-timestamp-text: var(--notifi-color-dusk);
+  --notifi-history-list-empty-description-text: var(--notifi-color-dusk);
 }

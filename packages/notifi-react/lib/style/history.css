@@ -14,27 +14,16 @@
   padding: 1rem;
 }
 
-.notifi-history-list-button {
+.notifi-history-list-loading-more {
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0.9rem 0;
   font-weight: 700;
-  color: var(--notifi-ftu-button-text);
-  background-color: var(--notifi-ftu-button);
   border-radius: 6px;
   width: 100%;
   cursor: pointer;
   position: relative;
-}
-
-.notifi-history-list-button-text.hidden {
-  visibility: hidden;
-}
-
-.notifi-history-list-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
 }
 
 .notifi-history-list-empty {
