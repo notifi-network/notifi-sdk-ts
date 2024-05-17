@@ -40,7 +40,14 @@ export const Connect: React.FC<ConnectProps> = (props) => {
     setIsLoading(true);
     const frontendClient = await login();
     if (!frontendClient) return;
-    if (!isDefaultTargetGroupExist(frontendClient)) await renewTargetGroup();
+    const isDefaultTargetExist = await validateDefaultTargetGroup(
+      // TODO: Handle error
+      frontendClient,
+    );
+
+    if (!isDefaultTargetExist) {
+      await renewTargetGroup();
+    }
 
     setIsLoading(false);
   };
@@ -91,7 +98,7 @@ export const Connect: React.FC<ConnectProps> = (props) => {
 
 // Utils
 
-const isDefaultTargetGroupExist = async (
+const validateDefaultTargetGroup = async (
   frontendClient: NotifiFrontendClient,
 ) => {
   // NOTE: this extra request is necessary as the targetGroupId state in NotifiTargetContext will not be updated constantly right after login
