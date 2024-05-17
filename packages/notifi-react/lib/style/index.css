@@ -10,6 +10,7 @@
 @import url('./subscription-value-input.css');
 @import url('./loading-animation.css');
 @import url('./inbox.css');
+@import url('./history.css');
 
 :root {
   /* Color variables */
@@ -59,6 +60,11 @@
   --notifi-spinner-color: var(--notifi-color-white);
   --notifi-topic-stack-row-input-button-bg: var(--notifi-color-secondary-light);
   --notifi-nav-footer-bg: var(--notifi-color-grey2);
+  --notifi-history-row-bg: var(--notifi-color-grey2);
+  --notifi-history-row-unread-indicator: var(--notifi-color-seaglass-dark);
+  --notifi-history-row-title-text: var(--notifi-color-white);
+  --notifi-history-row-timestamp-text: var(--notifi-color-heather);
+  --notifi-history-row-subject-text: var(--notifi-color-heather);
 }
 
 .notifi-theme-light {
@@ -88,4 +94,9 @@
   --notifi-spinner-color: var(--notifi-color-white);
   --notifi-topic-stack-row-input-button-bg: var(--notifi-color-seaglass-dark);
   --notifi-nav-footer-bg: var(--notifi-color-cloud);
+  --notifi-history-row-bg: var(--notifi-color-white);
+  --notifi-history-row-unread-indicator: var(--notifi-color-secondary-light);
+  --notifi-history-row-title-text: var(--notifi-color-midnight);
+  --notifi-history-row-timestamp-text: var(--notifi-color-dusk);
+  --notifi-history-row-subject-text: var(--notifi-color-dusk);
 }
