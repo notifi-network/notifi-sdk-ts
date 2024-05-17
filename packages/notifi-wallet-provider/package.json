@@ -35,8 +35,11 @@
     "url": "https://github.com/notifi-network/notifi-sdk-ts/issues"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.32.0",
     "bech32-converting": "^1.0.9",
-    "ethers": "^6.11.1"
+    "ethers": "^6.11.1",
+    "viem": "^2.9.28",
+    "wagmi": "^2.7.0"
   },
   "peerDependencies": {
     "react": "^17.0.2 || ^18.0",
