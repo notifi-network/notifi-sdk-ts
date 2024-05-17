@@ -1,16 +1,14 @@
 'use client';
 
 import { Icon } from '@/assets/Icon';
-import { parseNotificationHistory } from '@/utils/notifiHistoryUtils';
-import { Types } from '@notifi-network/notifi-graphql';
+import { formatTimestampInHistoryDetail } from '@/utils/notifiHistoryUtils';
+import { HistoryItem } from '@notifi-network/notifi-react';
 import DOMPurify from 'dompurify';
 import { Dispatch, SetStateAction, useMemo } from 'react';
 
 type HistoryDetailProps = {
-  historyDetailEntry: Types.FusionNotificationHistoryEntryFragmentFragment | null;
-  setHistoryDetailEntry: Dispatch<
-    SetStateAction<Types.FusionNotificationHistoryEntryFragmentFragment | null>
-  >;
+  historyDetailEntry: HistoryItem | null;
+  setHistoryDetailEntry: Dispatch<SetStateAction<HistoryItem | null>>;
 };
 
 export const HistoryDetail: React.FC<HistoryDetailProps> = ({
@@ -19,10 +17,7 @@ export const HistoryDetail: React.FC<HistoryDetailProps> = ({
 }) => {
   if (!historyDetailEntry) return null;
 
-  const { timestamp, topic, message } = parseNotificationHistory(
-    historyDetailEntry,
-    'detail',
-  );
+  const { timestamp, topic, message } = historyDetailEntry;
 
   const sanitizedMessage = useMemo(
     () => DOMPurify.sanitize(message),
@@ -43,7 +38,7 @@ export const HistoryDetail: React.FC<HistoryDetailProps> = ({
           <div>
             <div className="font-medium text-xl text-notifi-text">{topic}</div>
             <div className="font-medium text-notifi-text-light mt-1">
-              {timestamp}
+              {formatTimestampInHistoryDetail(timestamp)}
             </div>
           </div>
 

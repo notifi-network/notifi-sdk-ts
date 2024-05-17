@@ -20,7 +20,7 @@ export default function NotifiExpiryLayout({
             width={115}
             height={24}
             unoptimized={true}
-            alt="Injective"
+            alt="GMX logo"
           />
         </div>
         <div className="p-2 rounded-lg h-7 hidden md:block">
