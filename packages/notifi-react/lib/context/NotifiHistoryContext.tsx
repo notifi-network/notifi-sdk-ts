@@ -46,7 +46,7 @@ export type NotifiHistoryProviderProps = {
 export const NotifiHistoryContextProvider: FC<
   PropsWithChildren<NotifiHistoryProviderProps>
 > = ({ children, notificationCountPerPage = 20 }) => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
   const { frontendClient, frontendClientStatus } =
     useNotifiFrontendClientContext();
@@ -99,9 +99,10 @@ export const NotifiHistoryContextProvider: FC<
         setError(new Error('No more notification history to fetch'));
         return;
       }
-      if (isLoading) {
+      if (isLoading && isInitialLoaded.current) {
         return;
       }
+      isInitialLoaded.current = true;
       setIsLoading(true);
       try {
         const result = await frontendClient.getFusionNotificationHistory({
@@ -146,7 +147,6 @@ export const NotifiHistoryContextProvider: FC<
       !isInitialLoaded.current &&
       cardConfig
     ) {
-      isInitialLoaded.current = true;
       getHistoryItems(true);
       frontendClient.getUnreadNotificationHistoryCount().then(({ count }) => {
         setUnreadCount(count);
