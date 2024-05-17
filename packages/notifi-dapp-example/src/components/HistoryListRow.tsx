@@ -42,7 +42,7 @@ export const HistoryListRow: React.FC<HistoryListRowProps> = ({
 
   return (
     <div
-      className={`mx-6 my-2 p-3 line-clamp-1 flex relative cursor-pointer bg-notifi-destination-card-bg rounded-lg ${
+      className={`mx-2 md:mx-6 my-2 p-3 line-clamp-1 flex relative cursor-pointer bg-notifi-destination-card-bg rounded-lg ${
         !historyDetailEntry.read ? 'bg-notifi-destination-logo-card-bg' : ''
       }  hover:border hover:border-notifi-input-border`}
       onClick={clickHistoryRow}
@@ -71,7 +71,7 @@ export const HistoryListRow: React.FC<HistoryListRowProps> = ({
         )}
       </div>
 
-      <div className="grow text-sm md:max-w-full max-w-[70%]">
+      <div className="grow text-sm md:max-w-full max-w-[65%]">
         <div
           className={`${
             !historyDetailEntry.read ? 'font-semibold' : ''

@@ -38,7 +38,7 @@ export const HistoryDetail: React.FC<HistoryDetailProps> = ({
   );
 
   return (
-    <div className="p-6">
+    <div className="p-6 h-full">
       <div className="hover:bg-notifi-card-border focus:bg-notifi-destination-card-bg h-6 w-6 rounded-2xl">
         <Icon
           className="cursor-pointer text-notifi-text mb-4"
@@ -46,8 +46,8 @@ export const HistoryDetail: React.FC<HistoryDetailProps> = ({
           id="left-arrow"
         />
       </div>
-      <div className="px-9 flex mt-3">
-        <div className="grow flex flex-col gap-6">
+      <div className="px-9 flex mt-3 h-full">
+        <div className="grow flex flex-col gap-6 overflow-y-scroll h-[90%]">
           <div>
             <div className="font-medium text-xl text-notifi-text">{topic}</div>
             <div className="font-medium text-notifi-text-light mt-1">
@@ -56,7 +56,7 @@ export const HistoryDetail: React.FC<HistoryDetailProps> = ({
           </div>
 
           <div
-            className="font-medium text-base max-w-[675px] text-notifi-text whitespace-pre-wrap history-link"
+            className="font-medium text-base break-words max-w-[70vw] sm:max-w-[675px] text-notifi-text whitespace-pre-wrap history-link"
             dangerouslySetInnerHTML={{ __html: replaceLinks(sanitizedMessage) }}
           />
         </div>
