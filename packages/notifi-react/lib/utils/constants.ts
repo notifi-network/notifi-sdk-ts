@@ -63,6 +63,13 @@ export const defaultCopy = {
   topicStackRow: {
     cta: '+ Add',
   },
+  historyRow: {
+    legacyTopic: 'Legacy: topic is removed',
+  },
+  inboxHistoryList: {
+    headerTitle: 'Notifications',
+    buttonText: 'Load More',
+  },
 };
 
 export const validationRegex: Record<string, RegExp> = {
