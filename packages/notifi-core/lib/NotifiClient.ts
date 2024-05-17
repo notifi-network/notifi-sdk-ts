@@ -264,27 +264,41 @@ export type SignMessageParams =
       signMessage: Uint8SignMessageFunction;
     }>
   | Readonly<{
-      walletBlockchain:
-        | 'ETHEREUM'
-        | 'POLYGON'
-        | 'ARBITRUM'
-        | 'AVALANCHE'
-        | 'BINANCE'
-        | 'INJECTIVE'
-        | 'OSMOSIS'
-        | 'NIBIRU'
-        | 'OPTIMISM'
-        | 'ZKSYNC'
-        | 'BASE'
-        | 'BLAST'
-        | 'CELO'
-        | 'MANTLE'
-        | 'LINEA'
-        | 'SCROLL'
-        | 'MANTA'
-        | 'MONAD';
-      signMessage: Uint8SignMessageFunction;
-    }>
+    walletBlockchain:
+    | 'ETHEREUM'
+    | 'POLYGON'
+    | 'ARBITRUM'
+    | 'AVALANCHE'
+    | 'BINANCE'
+    | 'INJECTIVE'
+    | 'OSMOSIS'
+    | 'ELYS'
+    | 'NEUTRON'
+    | 'ARCHWAY'
+    | 'AXELAR'
+    | 'BERACHAIN'
+    | 'NIBIRU'
+    | 'OPTIMISM'
+    | 'ZKSYNC'
+    | 'BASE'
+    | 'BLAST'
+    | 'CELO'
+    | 'MANTLE'
+    | 'LINEA'
+    | 'SCROLL'
+    | 'MANTA'
+    | 'MONAD'
+    | 'EVMOS'
+    | 'AGORIC'
+    | 'ORAI'
+    | 'KAVA'
+    | 'CELESTIA'
+    | 'COSMOS'
+    | 'DYMENSION'
+    | 'PERSISTENCE'
+    | 'DYDX'
+    signMessage: Uint8SignMessageFunction;
+  }>
   | Readonly<{
       walletBlockchain: 'XION';
       message: string;
@@ -313,36 +327,39 @@ export type WalletParams =
       walletPublicKey: string;
     }>
   | Readonly<{
-      walletBlockchain:
-        | 'ETHEREUM'
-        | 'POLYGON'
-        | 'ARBITRUM'
-        | 'AVALANCHE'
-        | 'BINANCE'
-        | 'OPTIMISM'
-        | 'ZKSYNC'
-        | 'BASE'
-        | 'BLAST'
-        | 'CELO'
-        | 'MANTLE'
-        | 'LINEA'
-        | 'SCROLL'
-        | 'MANTA'
-        | 'MONAD';
-      walletPublicKey: string;
-    }>
+    walletBlockchain:
+    | 'ETHEREUM'
+    | 'POLYGON'
+    | 'ARBITRUM'
+    | 'AVALANCHE'
+    | 'BINANCE'
+    | 'OPTIMISM'
+    | 'ZKSYNC'
+    | 'BASE'
+    | 'BLAST'
+    | 'CELO'
+    | 'MANTLE'
+    | 'LINEA'
+    | 'SCROLL'
+    | 'MANTA'
+    | 'MONAD'
+    | 'BERACHAIN'
+    | 'EVMOS';
+    walletPublicKey: string;
+  }>
   | Readonly<{
       walletBlockchain: 'APTOS';
       accountAddress: string;
       walletPublicKey: string;
     }>
   | Readonly<{
-      walletBlockchain: 'XION';
-      walletPublicKey: string;
-      signingAddress: string;
-      signingPubkey: string;
-      signMessage: XionSignMessageFunction;
-    }>
+    walletBlockchain: 'XION';
+    walletPublicKey: string;
+    signingAddress: string;
+    signingPubkey: string;
+    message: string;
+    signMessage: XionSignMessageFunction;
+  }>
   | Readonly<{
       walletBlockchain: 'ACALA';
       accountAddress: string;
@@ -369,10 +386,70 @@ export type WalletParams =
       walletPublicKey: string;
     }>
   | Readonly<{
-      walletBlockchain: 'NIBIRU';
-      accountAddress: string;
-      walletPublicKey: string;
-    }>;
+    walletBlockchain: 'NIBIRU';
+    accountAddress: string;
+    walletPublicKey: string;
+  }>
+  | Readonly<{
+    walletBlockchain: 'ELYS';
+    accountAddress: string;
+    walletPublicKey: string;
+  }>
+  | Readonly<{
+    walletBlockchain: 'NEUTRON';
+    accountAddress: string;
+    walletPublicKey: string;
+  }>
+  | Readonly<{
+    walletBlockchain: 'ARCHWAY';
+    accountAddress: string;
+    walletPublicKey: string;
+  }>
+  | Readonly<{
+    walletBlockchain: 'AXELAR';
+    accountAddress: string;
+    walletPublicKey: string;
+  }>
+  | Readonly<{
+    walletBlockchain: 'AGORIC';
+    accountAddress: string;
+    walletPublicKey: string;
+  }>
+  | Readonly<{
+    walletBlockchain: 'ORAI';
+    accountAddress: string;
+    walletPublicKey: string;
+  }>
+  | Readonly<{
+    walletBlockchain: 'KAVA';
+    accountAddress: string;
+    walletPublicKey: string;
+  }>
+  | Readonly<{
+    walletBlockchain: 'CELESTIA';
+    accountAddress: string;
+    walletPublicKey: string;
+  }>
+  | Readonly<{
+    walletBlockchain: 'COSMOS';
+    accountAddress: string;
+    walletPublicKey: string;
+  }>
+  | Readonly<{
+    walletBlockchain: 'DYMENSION';
+    accountAddress: string;
+    walletPublicKey: string;
+  }>
+  | Readonly<{
+    walletBlockchain: 'PERSISTENCE';
+    accountAddress: string;
+    walletPublicKey: string;
+  }>
+  | Readonly<{
+    walletBlockchain: 'DYDX';
+    accountAddress: string;
+    walletPublicKey: string;
+  }>
 
 export type WalletWithSignMessage =
   | Readonly<{
@@ -381,25 +458,28 @@ export type WalletWithSignMessage =
       signMessage: Uint8SignMessageFunction;
     }>
   | Readonly<{
-      walletBlockchain:
-        | 'ETHEREUM'
-        | 'POLYGON'
-        | 'ARBITRUM'
-        | 'AVALANCHE'
-        | 'BINANCE'
-        | 'OPTIMISM'
-        | 'ZKSYNC'
-        | 'BASE'
-        | 'BLAST'
-        | 'CELO'
-        | 'MANTLE'
-        | 'LINEA'
-        | 'SCROLL'
-        | 'MANTA'
-        | 'MONAD';
-      walletPublicKey: string;
-      signMessage: Uint8SignMessageFunction;
-    }>
+    walletBlockchain:
+    | 'ETHEREUM'
+    | 'POLYGON'
+    | 'ARBITRUM'
+    | 'AVALANCHE'
+    | 'BINANCE'
+    | 'OPTIMISM'
+    | 'ZKSYNC'
+    | 'BASE'
+    | 'BLAST'
+    | 'CELO'
+    | 'MANTLE'
+    | 'LINEA'
+    | 'SCROLL'
+    | 'MANTA'
+    | 'MONAD'
+    | 'BERACHAIN'
+    | 'EVMOS';
+
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>
   | Readonly<{
       walletBlockchain: 'APTOS';
       accountAddress: string;
@@ -433,11 +513,83 @@ export type WalletWithSignMessage =
       signMessage: Uint8SignMessageFunction;
     }>
   | Readonly<{
-      walletBlockchain: 'INJECTIVE';
-      accountAddress: string;
-      walletPublicKey: string;
-      signMessage: Uint8SignMessageFunction;
-    }>;
+    walletBlockchain: 'INJECTIVE';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>
+  | Readonly<{
+    walletBlockchain: 'ELYS';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>
+  | Readonly<{
+    walletBlockchain: 'NEUTRON';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>
+  | Readonly<{
+    walletBlockchain: 'ARCHWAY';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>
+  | Readonly<{
+    walletBlockchain: 'AXELAR';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>
+  | Readonly<{
+    walletBlockchain: 'AGORIC';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>
+| Readonly<{
+  walletBlockchain: 'ORAI';
+  accountAddress: string;
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>
+| Readonly<{
+  walletBlockchain: 'KAVA';
+  accountAddress: string;
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>
+| Readonly<{
+  walletBlockchain: 'CELESTIA';
+  accountAddress: string;
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>
+| Readonly<{
+  walletBlockchain: 'COSMOS';
+  accountAddress: string;
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>
+| Readonly<{
+  walletBlockchain: 'DYMENSION';
+  accountAddress: string;
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>
+| Readonly<{
+  walletBlockchain: 'PERSISTENCE';
+  accountAddress: string;
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>
+| Readonly<{
+  walletBlockchain: 'DYDX';
+  accountAddress: string;
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>
 
 export type WalletWithSignParams = Readonly<{
   displayName?: string;

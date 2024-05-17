@@ -233,6 +233,34 @@ const ensureWalletBalanceSources = async (
           return 'SUI_WALLET';
         case 'ZKSYNC':
           return 'ZKSYNC_WALLET';
+        case 'ARCHWAY':
+          return 'ARCHWAY_WALLET';
+        case 'ELYS':
+          return 'ELYS_WALLET';
+        case 'AXELAR':
+          return 'AXELAR_WALLET';
+        case 'NEUTRON':
+          return 'NEUTRON_WALLET';
+        case 'BERACHAIN':
+          return 'BERACHAIN_WALLET';
+        case 'XION':
+          return 'XION_WALLET';
+        case 'AGORIC':
+          return 'AGORIC_WALLET';
+        case 'ORAI':
+          return 'ORAI_WALLET';
+        case 'KAVA':
+          return 'KAVA_WALLET';
+        case 'CELESTIA':
+          return 'CELESTIA_WALLET';
+        case 'COSMOS':
+          return 'COSMOS_WALLET';
+        case 'DYMENSION':
+          return 'DYMENSION_WALLET';
+        case 'PERSISTENCE':
+          return 'PERSISTENCE_WALLET';
+        case 'DYDX':
+          return 'DYDX_WALLET';
         default:
           throw new Error('Unsupported walletType');
       }
