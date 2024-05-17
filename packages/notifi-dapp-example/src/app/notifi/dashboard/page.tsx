@@ -26,7 +26,7 @@ export default function NotifiDashboard() {
   const keys = wallets[selectedWallet].walletKeys;
 
   if (keys) {
-    accountAddress = isEVMChain(keys) ? keys.hex : keys.bech32;
+    accountAddress = isEVMChain(keys) ? keys.hex?.toLowerCase() : keys.bech32;
   }
 
   if (!accountAddress) return;

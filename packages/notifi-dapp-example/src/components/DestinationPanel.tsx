@@ -124,7 +124,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
 
       const address =
         selectedWallet === 'coinbase'
-          ? wallets[selectedWallet]?.walletKeys?.hex ?? ''
+          ? wallets[selectedWallet]?.walletKeys?.hex?.toLowerCase() ?? ''
           : '';
 
       const signer = {
