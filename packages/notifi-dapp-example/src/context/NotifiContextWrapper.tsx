@@ -47,6 +47,13 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
         };
         break;
       case 'metamask':
+      case 'walletconnect':
+      case 'okx':
+      case 'rabby':
+      case 'binance':
+      case 'rainbow':
+      case 'zerion':
+      case 'coinbase':
         walletPublicKey = wallets[selectedWallet].walletKeys?.hex ?? '';
         if (!walletPublicKey) throw new Error('ERROR: invalid walletPublicKey');
         signMessage = async (message: Uint8Array): Promise<Uint8Array> => {
@@ -100,7 +107,7 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
       env={env}
       walletBlockchain={walletBlockchain}
       walletPublicKey={walletPublicKey}
-      // accountAddress={accountAddress}
+      accountAddress={accountAddress}
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       //the type error can be fixed when we remove injecive wallet and use only notifi wallet
