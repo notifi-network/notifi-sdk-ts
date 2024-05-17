@@ -19,6 +19,19 @@ export const HistoryDetail: React.FC<HistoryDetailProps> = ({
 
   const { timestamp, topic, message } = historyDetailEntry;
 
+  const replaceLinks = (html: string): string => {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+    const links = doc.getElementsByTagName('a');
+
+    for (let i = 0; i < links.length; i++) {
+      const link = links[i];
+      link.setAttribute('target', '_blank');
+    }
+
+    return doc.documentElement.innerHTML;
+  };
+
   const sanitizedMessage = useMemo(
     () => DOMPurify.sanitize(message),
     [message],
@@ -44,7 +57,7 @@ export const HistoryDetail: React.FC<HistoryDetailProps> = ({
 
           <div
             className="font-medium text-base max-w-[675px] text-notifi-text whitespace-pre-wrap history-link"
-            dangerouslySetInnerHTML={{ __html: sanitizedMessage }}
+            dangerouslySetInnerHTML={{ __html: replaceLinks(sanitizedMessage) }}
           />
         </div>
       </div>
