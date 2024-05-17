@@ -1,11 +1,11 @@
 import { configureChains, createConfig } from 'wagmi';
-import { mainnet } from 'wagmi/chains';
+import { arbitrum, mainnet, polygon } from 'wagmi/chains';
 import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet';
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
 import { publicProvider } from 'wagmi/providers/public';
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [mainnet],
+  [mainnet, polygon, arbitrum],
   [publicProvider()],
 );
 

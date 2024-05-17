@@ -11,6 +11,63 @@ import {
 import { walletsWebsiteLink } from '../utils/wallet';
 import { useSyncInjectedProviders } from './useSyncInjectedProviders';
 
+export const getChainInfoByName = (
+  chainName: EVMChains,
+): AddEthereumChainParameter => {
+  switch (chainName) {
+    case 'polygon':
+      return {
+        chainId: '0x89',
+        chainName: 'Polygon',
+        nativeCurrency: {
+          name: 'MATIC',
+          symbol: 'MATIC',
+          decimals: 18,
+        },
+        rpcUrls: ['https://rpc.ankr.com/polygon'],
+        blockExplorerUrls: ['https://polygonscan.com/'],
+      };
+    case 'arbitrum':
+      return {
+        chainId: '0xa4b1',
+        chainName: 'Arbitrum',
+        nativeCurrency: {
+          name: 'Ether',
+          symbol: 'ETH',
+          decimals: 18,
+        },
+        rpcUrls: ['https://rpc.ankr.com/arbitrum'],
+        blockExplorerUrls: ['https://arbiscan.io/'],
+      };
+    case 'injective':
+      return {
+        chainId: '0x9dd', // Adjusted to reflect the correct chain ID for Injective
+        chainName: 'Injective',
+        nativeCurrency: {
+          name: 'Injective',
+          symbol: 'INJ',
+          decimals: 18,
+        },
+        rpcUrls: ['https://mainnet.rpc.inevm.com/http'],
+        blockExplorerUrls: ['https://explorer.injective.network'], // Updated block explorer URL
+      };
+    case 'ethereum':
+      return {
+        chainId: '0x1',
+        chainName: 'Ethereum',
+        nativeCurrency: {
+          name: 'Ether',
+          symbol: 'ETH',
+          decimals: 18,
+        },
+        rpcUrls: ['https://mainnet.infura.io/v3/'],
+        blockExplorerUrls: ['https://etherscan.io/'],
+      };
+    default:
+      throw new Error(`Unsupported Chain: ${chainName}`);
+  }
+};
+
 export const useInjectedWallet = (
   loadingHandler: React.Dispatch<React.SetStateAction<boolean>>,
   errorHandler: (e: Error, durationInMs?: number) => void,
@@ -28,51 +85,6 @@ export const useInjectedWallet = (
         `ERROR - ${location}: ${walletName} not initialized or not installed`,
       ),
     );
-  };
-
-  const getChainInfoByName = (
-    chainName: EVMChains,
-  ): AddEthereumChainParameter => {
-    switch (chainName) {
-      case 'polygon':
-        return {
-          chainId: '0x89',
-          chainName: 'Polygon',
-          nativeCurrency: {
-            name: 'MATIC',
-            symbol: 'MATIC',
-            decimals: 18,
-          },
-          rpcUrls: ['https://rpc.ankr.com/polygon'],
-          blockExplorerUrls: ['https://polygonscan.com/'],
-        };
-      case 'arbitrum':
-        return {
-          chainId: '0xa4b1',
-          chainName: 'Arbitrum',
-          nativeCurrency: {
-            name: 'Ether',
-            symbol: 'ETH',
-            decimals: 18,
-          },
-          rpcUrls: ['https://rpc.ankr.com/arbitrum'],
-          blockExplorerUrls: ['https://arbiscan.io/'],
-        };
-      case 'injective':
-        return {
-          chainId: '0x9dd', // Adjusted to reflect the correct chain ID for Injective
-          chainName: 'Injective',
-          nativeCurrency: {
-            name: 'Injective',
-            symbol: 'INJ',
-            decimals: 18,
-          },
-          rpcUrls: ['https://mainnet.rpc.inevm.com/http'],
-          blockExplorerUrls: ['https://explorer.injective.network'], // Updated block explorer URL
-        };
-      default:
-        throw new Error(`Unsupported Chain: ${chainName}`);
-    }
   };
 
   const injectedProviders = useSyncInjectedProviders();

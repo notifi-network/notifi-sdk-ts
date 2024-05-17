@@ -103,12 +103,14 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
     throwError,
     selectWallet,
     'walletconnect',
+    selectedChain,
   );
   const coinbase = useWagmiWallet(
     setIsLoading,
     throwError,
     selectWallet,
     'coinbase',
+    selectedChain,
   );
   const metamask = useInjectedWallet(
     setIsLoading,

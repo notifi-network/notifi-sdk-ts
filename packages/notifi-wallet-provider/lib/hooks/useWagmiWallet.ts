@@ -1,20 +1,33 @@
 import converter from 'bech32-converting';
 import { useCallback, useEffect, useState } from 'react';
-import { useAccount, useConnect, useDisconnect, useSignMessage } from 'wagmi';
+import {
+  useAccount,
+  useConnect,
+  useDisconnect,
+  useNetwork,
+  useSignMessage,
+  useSwitchNetwork,
+} from 'wagmi';
 
+import { EVMChains } from '../context/NotifiWallets';
 import { MetamaskWalletKeys, Wallets } from '../types';
 import {
   cleanWalletsInLocalStorage,
   setWalletKeysToLocalStorage,
 } from '../utils/localStorageUtils';
 import { walletsWebsiteLink } from '../utils/wallet';
+import { getChainInfoByName } from './useInjectedWallet';
 
 export const useWagmiWallet = (
   loadingHandler: React.Dispatch<React.SetStateAction<boolean>>,
   errorHandler: (e: Error, durationInMs?: number) => void,
   selectWallet: (wallet: keyof Wallets | null) => void,
   walletName: keyof Wallets,
+  selectedChain: EVMChains,
 ) => {
+  const { switchNetwork } = useSwitchNetwork();
+  const { chain } = useNetwork();
+
   const [walletKeys, setWalletKeys] = useState<MetamaskWalletKeys | null>(null);
   const [isWalletInstalled, setIsWalletInstalled] = useState<boolean>(false);
 
@@ -25,6 +38,37 @@ export const useWagmiWallet = (
 
   const isConnected =
     isWalletConnected && connector?.name.toLowerCase().includes(walletName);
+
+  useEffect(() => {
+    console.log('****************useNetwork output:', chain);
+
+    // Ensure that chain and selectedChain are defined before proceeding
+    if (!chain || !selectedChain) return;
+
+    console.log(
+      `logging current to selected chain: ${selectedChain.toLocaleLowerCase()} - ${chain?.name.toLocaleLowerCase()}`,
+    );
+    if (
+      chain &&
+      chain?.name.toLocaleLowerCase() !== selectedChain.toLocaleLowerCase()
+    ) {
+      // switchNetwork && switchNetwork(decimalChainId);
+      if (switchNetwork) {
+        console.log('Switching network to:', selectedChain);
+        const hexChainId = getChainInfoByName(selectedChain).chainId;
+        const decimalChainId = parseInt(hexChainId, 16);
+        switchNetwork(decimalChainId);
+      } else {
+        console.error('switchNetwork function not available');
+      }
+    } else {
+      console.log('Network is already selected');
+    }
+
+    if (chain?.unsupported) {
+      console.error('The network is unsupported');
+    }
+  }, [chain, selectedChain, switchNetwork]);
 
   const handleWalletNotExists = (location: string) => {
     cleanWalletsInLocalStorage();
@@ -46,7 +90,7 @@ export const useWagmiWallet = (
     if (!isConnected || !address || !isWalletInstalled) return;
 
     const walletKeys = {
-      bech32: converter('inj').toBech32(address),
+      bech32: converter(selectedChain).toBech32(address),
       hex: address,
     };
     setWalletKeys(walletKeys);
@@ -60,6 +104,12 @@ export const useWagmiWallet = (
     if (isWalletConnected) return null;
 
     loadingHandler(true);
+
+    const chainId = chain?.id;
+    console.log(`Current network: ${chain?.name}, Chain ID: ${chainId}`);
+    console.log('chain:');
+    console.log(chain);
+
     const timer = setTimeout(() => {
       disconnectWallet();
       loadingHandler(false);
