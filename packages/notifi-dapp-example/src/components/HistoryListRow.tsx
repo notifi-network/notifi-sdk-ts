@@ -58,7 +58,7 @@ export const HistoryListRow: React.FC<HistoryListRowProps> = ({
           <>
             <img
               src={historyDetailEntry.customIconUrl}
-              className="w-10 h-10 mx-1"
+              className="w-10 h-10 ml-1 mr-3"
             />
           </>
         ) : (
