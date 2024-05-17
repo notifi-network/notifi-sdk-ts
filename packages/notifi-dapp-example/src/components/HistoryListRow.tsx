@@ -40,9 +40,6 @@ export const HistoryListRow: React.FC<HistoryListRowProps> = ({
     onClick?.();
   };
 
-  // const icon = parsedNotificationHistory.icon as Types.GenericEventIconHint;
-  // const customIconUrl = parsedNotificationHistory.customIconUrl ?? '';
-
   return (
     <div
       className={`mx-6 my-2 p-3 line-clamp-1 flex relative cursor-pointer bg-notifi-destination-card-bg rounded-lg ${

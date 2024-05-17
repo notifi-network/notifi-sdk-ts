@@ -1,16 +1,6 @@
 import { Types } from '@notifi-network/notifi-graphql';
 import { format, isToday, isWithinInterval, parseISO, subDays } from 'date-fns';
 
-// export type ParsedNotificationHistory = {
-//   timestamp: string;
-//   icon: string;
-//   topic: string;
-//   subject: string;
-//   message: string;
-//   read: boolean;
-//   customIconUrl?: string;
-// };
-
 export type ValidEventDetail = Extract<
   Types.NotificationHistoryEntryFragmentFragment['detail'],
   { __typename: 'GenericEventDetails' }
@@ -40,38 +30,6 @@ export const validateEventDetails = (
     '__typename' in details && details.__typename === 'GenericEventDetails'
   );
 };
-
-// export const parseNotificationHistory = (
-//   history: Types.FusionNotificationHistoryEntryFragmentFragment,
-//   historyViewType: 'list' | 'detail',
-// ): ParsedNotificationHistory => {
-//   const eventDetails = history.detail;
-//   if (!eventDetails || eventDetails.__typename !== 'GenericEventDetails') {
-//     return {
-//       timestamp: '',
-//       topic: 'Unsupported Notification Type',
-//       icon: '',
-//       subject: 'Unsupported Notification Type',
-//       message:
-//         'Invalid notification history detail: only support GenericEventDetails',
-//       read: true,
-//       customIconUrl: '',
-//     };
-//   }
-
-//   return {
-//     timestamp:
-//       historyViewType === 'detail'
-//         ? formatTimestampInHistoryDetail(history.createdDate)
-//         : formatTimestampInHistoryRow(history.createdDate),
-//     topic: eventDetails.sourceName,
-//     subject: eventDetails.notificationTypeName,
-//     message: eventDetails.genericMessageHtml ?? eventDetails.genericMessage,
-//     icon: eventDetails.icon,
-//     read: history.read,
-//     customIconUrl: eventDetails.customIconUrl,
-//   };
-// };
 
 export const formatTimestampInHistoryRow = (timestamp: string) => {
   const dateObject = new Date(timestamp);
