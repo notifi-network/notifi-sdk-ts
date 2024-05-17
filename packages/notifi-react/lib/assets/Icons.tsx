@@ -1,8 +1,10 @@
+import { Types } from '@notifi-network/notifi-graphql';
 import React from 'react';
 
 export type Props = React.SVGProps<SVGSVGElement>;
 
 export type IconType =
+  | Types.GenericEventIconHint
   | 'connect'
   | 'check'
   | 'email'
@@ -293,6 +295,291 @@ export const Icon: React.FC<Props & { type: IconType }> = (
             fillRule="evenodd"
             clipRule="evenodd"
             d="M4.94394 8.04573C4.94394 4.14875 8.10307 0.989624 12.0001 0.989624C15.897 0.989624 19.0562 4.14875 19.0562 8.04573V10.9069C19.1218 11.5485 19.302 12.1743 19.5892 12.7544L21.2968 16.2032C21.8895 17.4004 21.0185 18.8037 19.6826 18.8037H12.0336L12.0001 18.8038L11.9665 18.8037H4.31768C2.98176 18.8037 2.11072 17.4004 2.70348 16.2032L4.38294 12.8112C4.74815 12.0736 4.93998 11.2624 4.94394 10.4395V8.04573ZM11.9976 23.9996C10.165 23.9996 8.64883 22.8374 8.39664 21.3257H15.5986C15.3464 22.8374 13.8302 23.9996 11.9976 23.9996ZM8.35979 20.88L8.35984 20.8643V20.8956L8.35979 20.88Z"
+            fill="currentColor"
+          />
+        </svg>
+      );
+    case 'CHART':
+      return (
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          {...props}
+        >
+          <path
+            d="M17.0556 5.5H6.94444C6.15 5.5 5.5 6.15 5.5 6.94444V17.0556C5.5 17.85 6.15 18.5 6.94444 18.5H17.0556C17.85 18.5 18.5 17.85 18.5 17.0556V6.94444C18.5 6.15 17.85 5.5 17.0556 5.5ZM9.83333 15.6111H8.38889V10.5556H9.83333V15.6111ZM12.7222 15.6111H11.2778V8.38889H12.7222V15.6111ZM15.6111 15.6111H14.1667V12.7222H15.6111V15.6111Z"
+            fill="currentColor"
+          />
+        </svg>
+      );
+    case 'CHECKMARK':
+      return (
+        <svg
+          {...props}
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M6 12.5L9.84 16L18 8"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
+        </svg>
+      );
+    case 'CLOCK':
+      return (
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          {...props}
+        >
+          <path
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M12 18C15.3137 18 18 15.3137 18 12C18 8.68629 15.3137 6 12 6C8.68629 6 6 8.68629 6 12C6 15.3137 8.68629 18 12 18ZM12.75 8C12.75 7.58579 12.4142 7.25 12 7.25C11.5858 7.25 11.25 7.58579 11.25 8V12.5V12.8107L11.4697 13.0303L13.9697 15.5303C14.2626 15.8232 14.7374 15.8232 15.0303 15.5303C15.3232 15.2374 15.3232 14.7626 15.0303 14.4697L12.75 12.1893V8Z"
+            fill="currentColor"
+          />
+        </svg>
+      );
+    case 'DAO':
+      return (
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          {...props}
+        >
+          <path
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M17.0623 7.92265L12.0002 5L6.93799 7.92265L12.0002 10.8453L17.0623 7.92265ZM12.0002 12L5.93799 8.5V15.5L12.0002 19L18.0623 15.5V8.5L12.0002 12Z"
+            fill="currentColor"
+          />
+        </svg>
+      );
+    case 'DOWN_ARROW':
+      return (
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          {...props}
+        >
+          <path
+            d="M8 13.4705L12 16.9999M12 16.9999L16 13.4705M12 16.9999V7"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      );
+    case 'FLAG':
+      return (
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          {...props}
+        >
+          <path
+            d="M14.1882 7.52941L13.8824 6H7V19H8.52941V13.6471H12.8118L13.1176 15.1765H18.4706V7.52941H14.1882Z"
+            fill="currentColor"
+          />
+        </svg>
+      );
+    case 'GRAPH':
+      return (
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          {...props}
+        >
+          <path
+            d="M7 16.5L10.5 11L13 14L17 8"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
+        </svg>
+      );
+    case 'INFO':
+      return (
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          {...props}
+        >
+          <path
+            d="M11.3335 8.66671H12.6668V10H11.3335V8.66671ZM11.3335 11.3334H12.6668V15.3334H11.3335V11.3334ZM12.0002 5.33337C8.32016 5.33337 5.3335 8.32004 5.3335 12C5.3335 15.68 8.32016 18.6667 12.0002 18.6667C15.6802 18.6667 18.6668 15.68 18.6668 12C18.6668 8.32004 15.6802 5.33337 12.0002 5.33337ZM12.0002 17.3334C9.06016 17.3334 6.66683 14.94 6.66683 12C6.66683 9.06004 9.06016 6.66671 12.0002 6.66671C14.9402 6.66671 17.3335 9.06004 17.3335 12C17.3335 14.94 14.9402 17.3334 12.0002 17.3334Z"
+            fill="currentColor"
+          />
+        </svg>
+      );
+    case 'MEGAPHONE':
+      return (
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          {...props}
+        >
+          <path
+            d="M16.7498 10.7917V12.2084H19.5832V10.7917H16.7498ZM15.3332 15.4738C16.0132 15.9767 16.8986 16.6425 17.5998 17.1667C17.8832 16.7913 18.1665 16.4088 18.4498 16.0334C17.7486 15.5092 16.8632 14.8434 16.1832 14.3334C15.8998 14.7159 15.6165 15.0984 15.3332 15.4738ZM18.4498 6.96671C18.1665 6.59129 17.8832 6.20879 17.5998 5.83337C16.8986 6.35754 16.0132 7.02337 15.3332 7.53337C15.6165 7.90879 15.8998 8.29129 16.1832 8.66671C16.8632 8.15671 17.7486 7.49796 18.4498 6.96671ZM6.83317 9.37504C6.054 9.37504 5.4165 10.0125 5.4165 10.7917V12.2084C5.4165 12.9875 6.054 13.625 6.83317 13.625H7.5415V16.4584H8.95817V13.625H9.6665L13.2082 15.75V7.25004L9.6665 9.37504H6.83317ZM14.979 11.5C14.979 10.558 14.5682 9.70796 13.9165 9.12712V13.8659C14.5682 13.2921 14.979 12.4421 14.979 11.5Z"
+            fill="currentColor"
+          />
+        </svg>
+      );
+    case 'PERCENT':
+      return (
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          {...props}
+        >
+          <circle
+            cx="8"
+            cy="9"
+            r="1.75"
+            stroke="currentColor"
+            strokeWidth="1.5"
+          />
+          <circle
+            cx="16"
+            cy="14"
+            r="1.75"
+            stroke="currentColor"
+            strokeWidth="1.5"
+          />
+          <line
+            x1="9.22548"
+            y1="16.4982"
+            x2="14.8394"
+            y2="6.77452"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
+        </svg>
+      );
+    case 'STAR':
+      return (
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          {...props}
+        >
+          <path
+            d="M12 5L13.5716 9.83688H18.6574L14.5429 12.8262L16.1145 17.6631L12 14.6738L7.8855 17.6631L9.4571 12.8262L5.3426 9.83688H10.4284L12 5Z"
+            fill="currentColor"
+          />
+        </svg>
+      );
+    case 'SWAP':
+      return (
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          {...props}
+        >
+          <path
+            d="M7.32357 17.9999L4.50007 14.7999M4.50007 14.7999L7.32357 11.5999M4.50007 14.7999H12.5"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M16.6764 12.4L19.4999 9.20003M19.4999 9.20003L16.6764 6.00004M19.4999 9.20003H11.5"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      );
+    case 'UP_ARROW':
+      return (
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          {...props}
+        >
+          <path
+            d="M8 10.5293L12 6.99995M12 6.99995L16 10.5293M12 6.99995V16.9999"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      );
+    case 'URGENT':
+      return (
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          {...props}
+        >
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M12 18C15.3137 18 18 15.3137 18 12C18 8.68629 15.3137 6 12 6C8.68629 6 6 8.68629 6 12C6 15.3137 8.68629 18 12 18ZM11.25 9.25C11.25 8.83579 11.5858 8.5 12 8.5C12.4142 8.5 12.75 8.83579 12.75 9.25V13.25C12.75 13.6642 12.4142 14 12 14C11.5858 14 11.25 13.6642 11.25 13.25V9.25ZM11.25 15.25C11.25 14.8358 11.5858 14.5 12 14.5C12.4142 14.5 12.75 14.8358 12.75 15.25C12.75 15.6642 12.4142 16 12 16C11.5858 16 11.25 15.6642 11.25 15.25Z"
+            fill="currentColor"
+          />
+        </svg>
+      );
+    case 'WATCH':
+      return (
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          {...props}
+        >
+          <path
+            d="M11.9998 7C8.6665 7 5.81984 9.07333 4.6665 12C5.81984 14.9267 8.6665 17 11.9998 17C15.3332 17 18.1798 14.9267 19.3332 12C18.1798 9.07333 15.3332 7 11.9998 7ZM11.9998 15.3333C10.1598 15.3333 8.6665 13.84 8.6665 12C8.6665 10.16 10.1598 8.66667 11.9998 8.66667C13.8398 8.66667 15.3332 10.16 15.3332 12C15.3332 13.84 13.8398 15.3333 11.9998 15.3333ZM11.9998 10C10.8932 10 9.99984 10.8933 9.99984 12C9.99984 13.1067 10.8932 14 11.9998 14C13.1065 14 13.9998 13.1067 13.9998 12C13.9998 10.8933 13.1065 10 11.9998 10Z"
             fill="currentColor"
           />
         </svg>

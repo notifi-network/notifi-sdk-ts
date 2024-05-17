@@ -73,6 +73,7 @@ export const NotifiCardModalContextWrapper: React.FC<PropsWithChildren> = ({
       inputs={{
         pricePairs: pricePairInputs,
       }}
+      notificationCountPerPage={8}
     >
       {children}
     </NotifiContextProvider>
