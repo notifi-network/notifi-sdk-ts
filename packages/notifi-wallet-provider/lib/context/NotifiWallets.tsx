@@ -22,7 +22,7 @@ import {
   ZerionWallet,
 } from '../types';
 import { getWalletsFromLocalStorage } from '../utils/localStorageUtils';
-import { NotifiWagmiProvider } from './WagmiProvider';
+import { NotifiWagmiProvider, WagmiProviderProps } from './WagmiProvider';
 
 let timer: number | NodeJS.Timeout;
 
@@ -217,11 +217,12 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
   );
 };
 
-export const NotifiWalletProvider: React.FC<PropsWithChildren> = ({
+export const NotifiWalletProvider = ({
   children,
-}) => {
+  ...props
+}: WagmiProviderProps) => {
   return (
-    <NotifiWagmiProvider>
+    <NotifiWagmiProvider {...props}>
       <NotifiWallet>{children}</NotifiWallet>
     </NotifiWagmiProvider>
   );

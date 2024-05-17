@@ -1,10 +1,20 @@
-import React, { PropsWithChildren } from 'react';
+import React, { useMemo } from 'react';
 import { WagmiConfig } from 'wagmi';
 
-import { config } from '../utils/wagmi';
+import { ConfigArgs, getConfig } from '../utils/wagmi';
 
-export const NotifiWagmiProvider: React.FC<PropsWithChildren> = ({
+export type WagmiProviderProps = ConfigArgs & {
+  children: React.ReactNode;
+};
+
+export const NotifiWagmiProvider = ({
   children,
-}) => {
+  ...props
+}: WagmiProviderProps) => {
+  const config = useMemo(
+    () => getConfig(props),
+    [props.coinbaseWalletAppName, props.walletConnectProjectId],
+  );
+
   return <WagmiConfig config={config}>{children}</WagmiConfig>;
 };

@@ -9,28 +9,45 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
   [publicProvider()],
 );
 
-export const connectors = [
-  new CoinbaseWalletConnector({
-    chains,
-    options: {
-      appName: 'Notifi x GMX',
-    },
-  }),
-  new WalletConnectConnector({
-    chains,
-    options: {
-      projectId: '632a105feb9cf8380428a4f240eb6f13',
-      qrModalOptions: {
-        explorerExcludedWalletIds: 'ALL',
-        enableExplorer: false,
-      },
-    },
-  }),
-];
+export type ConfigArgs = {
+  walletConnectProjectId?: string;
+  coinbaseWalletAppName?: string;
+};
 
-export const config = createConfig({
-  autoConnect: false,
-  connectors: connectors,
-  publicClient,
-  webSocketPublicClient,
-});
+export const getConfig = ({
+  walletConnectProjectId,
+  coinbaseWalletAppName,
+}: ConfigArgs) => {
+  const connectors = [];
+
+  if (coinbaseWalletAppName)
+    connectors.push(
+      new CoinbaseWalletConnector({
+        chains,
+        options: {
+          appName: coinbaseWalletAppName,
+        },
+      }),
+    );
+
+  if (walletConnectProjectId)
+    connectors.push(
+      new WalletConnectConnector({
+        chains,
+        options: {
+          projectId: walletConnectProjectId,
+          qrModalOptions: {
+            explorerExcludedWalletIds: 'ALL',
+            enableExplorer: false,
+          },
+        },
+      }),
+    );
+
+  return createConfig({
+    autoConnect: false,
+    connectors: connectors,
+    publicClient,
+    webSocketPublicClient,
+  });
+};
