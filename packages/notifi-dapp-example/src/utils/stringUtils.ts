@@ -15,6 +15,20 @@ export function convertWalletName(walletName: string) {
       return 'Leap Wallet';
     case 'phantom':
       return 'Phantom';
+    case 'coinbase':
+      return 'Coinbase Wallet';
+    case 'rabby':
+      return 'Rabby';
+    case 'rainbow':
+      return 'Rainbow';
+    case 'zerion':
+      return 'Zerion';
+    case 'okx':
+      return 'OKX';
+    case 'walletconnect':
+      return 'Wallet Connect';
+    case 'binance':
+      return 'Binance';
     default:
       return walletName;
   }
