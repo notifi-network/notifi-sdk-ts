@@ -28,6 +28,8 @@ import {
 import { getWalletsFromLocalStorage } from '../utils/localStorageUtils';
 import { NotifiWagmiProvider } from './WagmiProvider';
 
+export type EVMChains = 'ethereum' | 'polygon' | 'arbitrum' | 'injective';
+
 let timer: number | NodeJS.Timeout;
 
 type WalletContextType = {
@@ -36,6 +38,8 @@ type WalletContextType = {
   wallets: Wallets;
   error: Error | null;
   isLoading: boolean;
+  selectedChain: EVMChains;
+  switchChain: (chain: EVMChains) => void;
 };
 const WalletContext = createContext<WalletContextType>({
   selectedWallet: null,
@@ -57,9 +61,19 @@ const WalletContext = createContext<WalletContextType>({
   },
   error: null,
   isLoading: false,
+  selectedChain: 'ethereum',
+  switchChain: () => {
+    console.log('Not implemented');
+  },
 });
 
 const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
+  const [selectedChain, setSelectedChain] = useState<EVMChains>('ethereum');
+
+  const switchChain = (chain: EVMChains) => {
+    setSelectedChain(chain);
+  };
+
   const [selectedWallet, setSelectedWallet] = useState<keyof Wallets | null>(
     null,
   );
@@ -101,25 +115,35 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
     throwError,
     selectWallet,
     'metamask',
+    selectedChain,
   );
-  const okx = useInjectedWallet(setIsLoading, throwError, selectWallet, 'okx');
+  const okx = useInjectedWallet(
+    setIsLoading,
+    throwError,
+    selectWallet,
+    'okx',
+    selectedChain,
+  );
   const zerion = useInjectedWallet(
     setIsLoading,
     throwError,
     selectWallet,
     'zerion',
+    selectedChain,
   );
   const rabby = useInjectedWallet(
     setIsLoading,
     throwError,
     selectWallet,
     'rabby',
+    selectedChain,
   );
   const rainbow = useInjectedWallet(
     setIsLoading,
     throwError,
     selectWallet,
     'rainbow',
+    selectedChain,
   );
 
   const wallets: Wallets = {
@@ -242,6 +266,8 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
         wallets,
         error,
         isLoading,
+        selectedChain,
+        switchChain,
       }}
     >
       {children}

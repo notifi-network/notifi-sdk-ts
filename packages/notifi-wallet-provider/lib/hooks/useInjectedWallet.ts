@@ -1,6 +1,8 @@
 import converter from 'bech32-converting';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { AddEthereumChainParameter } from 'viem';
 
+import { EVMChains } from '../context/NotifiWallets';
 import { Ethereum, MetamaskWalletKeys, Wallets } from '../types';
 import {
   cleanWalletsInLocalStorage,
@@ -14,6 +16,7 @@ export const useInjectedWallet = (
   errorHandler: (e: Error, durationInMs?: number) => void,
   selectWallet: (wallet: keyof Wallets | null) => void,
   walletName: keyof Wallets,
+  selectedChain: EVMChains,
 ) => {
   const [walletKeys, setWalletKeys] = useState<MetamaskWalletKeys | null>(null);
   const [isWalletInstalled, setIsWalletInstalled] = useState<boolean>(false);
@@ -27,6 +30,51 @@ export const useInjectedWallet = (
     );
   };
 
+  const getChainInfoByName = (
+    chainName: EVMChains,
+  ): AddEthereumChainParameter => {
+    switch (chainName) {
+      case 'polygon':
+        return {
+          chainId: '0x89',
+          chainName: 'Polygon',
+          nativeCurrency: {
+            name: 'MATIC',
+            symbol: 'MATIC',
+            decimals: 18,
+          },
+          rpcUrls: ['https://rpc.ankr.com/polygon'],
+          blockExplorerUrls: ['https://polygonscan.com/'],
+        };
+      case 'arbitrum':
+        return {
+          chainId: '0xa4b1',
+          chainName: 'Arbitrum',
+          nativeCurrency: {
+            name: 'Ether',
+            symbol: 'ETH',
+            decimals: 18,
+          },
+          rpcUrls: ['https://rpc.ankr.com/arbitrum'],
+          blockExplorerUrls: ['https://arbiscan.io/'],
+        };
+      case 'injective':
+        return {
+          chainId: '0x9dd', // Adjusted to reflect the correct chain ID for Injective
+          chainName: 'Injective',
+          nativeCurrency: {
+            name: 'Injective',
+            symbol: 'INJ',
+            decimals: 18,
+          },
+          rpcUrls: ['https://mainnet.rpc.inevm.com/http'],
+          blockExplorerUrls: ['https://explorer.injective.network'], // Updated block explorer URL
+        };
+      default:
+        throw new Error(`Unsupported Chain: ${chainName}`);
+    }
+  };
+
   const injectedProviders = useSyncInjectedProviders();
 
   const provider = useMemo(
@@ -38,6 +86,21 @@ export const useInjectedWallet = (
       )?.provider as unknown as Ethereum,
     [injectedProviders],
   );
+
+  const getChainIdByName = (chain: EVMChains) => {
+    switch (chain) {
+      case 'ethereum':
+        return '0x1';
+      case 'polygon':
+        return '0x89';
+      case 'arbitrum':
+        return '0xa4b1';
+      case 'injective':
+        return '0x9dd';
+      default:
+        throw new Error(`Unsupported Chain: ${chain}`);
+    }
+  };
 
   useEffect(() => {
     setIsWalletInstalled(!!provider);
@@ -78,12 +141,41 @@ export const useInjectedWallet = (
     }, timeoutInMiniSec ?? 5000);
 
     try {
+      const chainId = await provider.request?.({ method: 'eth_chainId' });
+
+      // Check if the current chain ID matches the selected chain
+      if (chainId !== getChainIdByName(selectedChain)) {
+        try {
+          await provider.request?.({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: getChainIdByName(selectedChain) }],
+          });
+        } catch (switchError: any) {
+          // 4902 = Chain has not been added to MetaMask
+          if (switchError.code === 4902) {
+            try {
+              await provider.request?.({
+                method: 'wallet_addEthereumChain',
+                params: [getChainInfoByName(selectedChain)],
+              });
+            } catch (addError) {
+              console.error('Error adding chain:', addError);
+              throw addError;
+            }
+          } else {
+            console.error('Failed to switch chain:', switchError);
+            throw switchError;
+          }
+        }
+        // If the chain IDs don't match, prompt the user to switch to the correct chain
+      }
+
       const accounts = await provider.request?.({
         method: 'eth_requestAccounts',
       });
 
       const walletKeys = {
-        bech32: converter('inj').toBech32(accounts[0]),
+        bech32: converter(selectedChain).toBech32(accounts[0]),
         hex: accounts[0],
       };
 
