@@ -15,16 +15,14 @@ export type InboxNavTabsProps = {
 export const InboxNavTabs: React.FC<PropsWithChildren<InboxNavTabsProps>> = (
   props,
 ) => {
-  const bellActive =
-    props.inboxView === InboxView.InboxHistoryList ||
-    props.inboxView === InboxView.InboxHistoryDetail;
+  const bellActive = props.inboxView === InboxView.InboxHistory;
   const configActive =
     props.inboxView === InboxView.InboxConfigTopic ||
     props.inboxView === InboxView.InboxConfigTargetList ||
     props.inboxView === InboxView.InboxConfigTargetEdit;
   return (
     <div className={clsx('notifi-inbox-nav-tabs', props.classNames?.container)}>
-      <div onClick={() => props.setInboxView(InboxView.InboxHistoryList)}>
+      <div onClick={() => props.setInboxView(InboxView.InboxHistory)}>
         <Icon type={bellActive ? 'bell-fill' : 'bell'} />
       </div>
       <div onClick={() => props.setInboxView(InboxView.InboxConfigTopic)}>
