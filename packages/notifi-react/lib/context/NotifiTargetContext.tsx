@@ -106,7 +106,8 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
     useNotifiFrontendClientContext();
 
   const [error, setError] = useState<Error | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const isInitialLoaded = React.useRef(false);
   const [targetGroupId, setTargetGroupId] = useState<string | null>(null);
   const [targetInputs, setTargetInputs] = useState<TargetInputs>({
     email: { value: '', error: '' },
@@ -157,19 +158,26 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
   };
 
   useEffect(() => {
-    if (!frontendClientStatus.isAuthenticated) return;
-    frontendClient.fetchData().then((data) => {
-      refreshTargetDocument(data);
-    });
-    //NOTE: target change listener when window is refocused
-    const handler = () => {
-      if (!frontendClientStatus.isAuthenticated) return;
-      return frontendClient.fetchData().then(refreshTargetDocument);
-    };
-    window.addEventListener('focus', handler);
-    return () => {
-      window.removeEventListener('focus', handler);
-    };
+    if (frontendClientStatus.isAuthenticated && !isInitialLoaded.current) {
+      if (isLoading && isInitialLoaded.current) return;
+      isInitialLoaded.current = true;
+      setIsLoading(true);
+      frontendClient
+        .fetchData()
+        .then((data) => {
+          refreshTargetDocument(data);
+        })
+        .finally(() => setIsLoading(false)); // TODO: handle error
+      //NOTE: target change listener when window is refocused
+      const handler = () => {
+        if (!frontendClientStatus.isAuthenticated) return;
+        return frontendClient.fetchData().then(refreshTargetDocument);
+      };
+      window.addEventListener('focus', handler);
+      return () => {
+        window.removeEventListener('focus', handler);
+      };
+    }
   }, [frontendClientStatus.isAuthenticated]);
 
   useEffect(() => {
