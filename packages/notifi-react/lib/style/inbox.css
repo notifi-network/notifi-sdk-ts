@@ -29,3 +29,13 @@
   background: var(--notifi-nav-footer-bg);
   padding: 1rem 0;
 }
+
+/* InboxHistory styles */
+.notifi-inbox-history {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.notifi-inbox-history.hidden {
+  display: none;
+}
