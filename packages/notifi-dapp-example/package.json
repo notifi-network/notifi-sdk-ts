@@ -1,6 +1,6 @@
 {
   "name": "@notifi-network/notifi-dapp-example",
-  "version": "0.91.0",
+  "version": "0.91.1",
   "private": true,
   "description": "A notifi dapp empowered by notifi.network",
   "author": "eric-notifi <eric.lee@notifi.network>",
@@ -38,8 +38,8 @@
   },
   "dependencies": {
     "@injectivelabs/wallet-ts": "^1.14.7",
-    "@notifi-network/notifi-frontend-client": "^0.91.0",
-    "@notifi-network/notifi-graphql": "^0.91.0",
+    "@notifi-network/notifi-frontend-client": "^0.91.1",
+    "@notifi-network/notifi-graphql": "^0.91.1",
     "@notifi-network/notifi-wallet-provider": "^0.91.0",
     "date-fns": "^3.3.1",
     "dompurify": "^3.0.8",
