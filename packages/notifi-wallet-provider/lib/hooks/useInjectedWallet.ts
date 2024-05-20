@@ -2,7 +2,7 @@ import converter from 'bech32-converting';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { AddEthereumChainParameter } from 'viem';
 
-import { EVMChains } from '../context/NotifiWallets';
+import { AvailableChains, EVMChains } from '../context/NotifiWallets';
 import { Ethereum, MetamaskWalletKeys, Wallets } from '../types';
 import {
   cleanWalletsInLocalStorage,
@@ -12,7 +12,7 @@ import { walletsWebsiteLink } from '../utils/wallet';
 import { useSyncInjectedProviders } from './useSyncInjectedProviders';
 
 export const getChainInfoByName = (
-  chainName: EVMChains,
+  chainName: AvailableChains,
 ): AddEthereumChainParameter => {
   switch (chainName) {
     case 'polygon':
@@ -39,18 +39,19 @@ export const getChainInfoByName = (
         rpcUrls: ['https://rpc.ankr.com/arbitrum'],
         blockExplorerUrls: ['https://arbiscan.io/'],
       };
+    // case 'injective':
+    //   return {
+    //     chainId: '0x9dd', // Adjusted to reflect the correct chain ID for Injective
+    //     chainName: 'Injective',
+    //     nativeCurrency: {
+    //       name: 'Injective',
+    //       symbol: 'INJ',
+    //       decimals: 18,
+    //     },
+    //     rpcUrls: ['https://mainnet.rpc.inevm.com/http'],
+    //     blockExplorerUrls: ['https://explorer.injective.network'], // Updated block explorer URL
+    //   };
     case 'injective':
-      return {
-        chainId: '0x9dd', // Adjusted to reflect the correct chain ID for Injective
-        chainName: 'Injective',
-        nativeCurrency: {
-          name: 'Injective',
-          symbol: 'INJ',
-          decimals: 18,
-        },
-        rpcUrls: ['https://mainnet.rpc.inevm.com/http'],
-        blockExplorerUrls: ['https://explorer.injective.network'], // Updated block explorer URL
-      };
     case 'ethereum':
       return {
         chainId: '0x1',
@@ -73,7 +74,7 @@ export const useInjectedWallet = (
   errorHandler: (e: Error, durationInMs?: number) => void,
   selectWallet: (wallet: keyof Wallets | null) => void,
   walletName: keyof Wallets,
-  selectedChain: EVMChains,
+  selectedChain: AvailableChains,
 ) => {
   const [walletKeys, setWalletKeys] = useState<MetamaskWalletKeys | null>(null);
   const [isWalletInstalled, setIsWalletInstalled] = useState<boolean>(false);
@@ -99,16 +100,17 @@ export const useInjectedWallet = (
     [injectedProviders],
   );
 
-  const getChainIdByName = (chain: EVMChains) => {
+  const getChainIdByName = (chain: AvailableChains) => {
     switch (chain) {
+      case 'injective':
       case 'ethereum':
         return '0x1';
       case 'polygon':
         return '0x89';
       case 'arbitrum':
         return '0xa4b1';
-      case 'injective':
-        return '0x9dd';
+      // case 'injective':
+      //   return '0x9dd';
       default:
         throw new Error(`Unsupported Chain: ${chain}`);
     }
@@ -124,7 +126,9 @@ export const useInjectedWallet = (
         .request?.({ method: 'eth_accounts' })
         .then((accounts: string[]) => {
           const walletKeys = {
-            bech32: converter('inj').toBech32(accounts[0]), // TODO: dynamic cosmos chain addr conversion
+            bech32: converter(
+              selectedChain == 'injective' ? 'inj' : 'eth',
+            ).toBech32(accounts[0]), // TODO: dynamic cosmos chain addr conversion
             hex: accounts[0],
           };
           setWalletKeys(walletKeys);
@@ -187,7 +191,9 @@ export const useInjectedWallet = (
       });
 
       const walletKeys = {
-        bech32: converter(selectedChain).toBech32(accounts[0]),
+        bech32: converter(
+          selectedChain === 'injective' ? 'inj' : 'eth',
+        ).toBech32(accounts[0]),
         hex: accounts[0],
       };
 

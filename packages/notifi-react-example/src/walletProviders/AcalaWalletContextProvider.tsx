@@ -128,7 +128,7 @@ export const AcalaWalletContextProvider: FC<PropsWithChildren<{}>> = ({
     setMultipleAccounts(null);
   }, []);
 
-  //TO-DO: Migrate address conversions in BE, handled in FE for now because Polkadot library in JS is simplier to use
+  //TO-DO: Migrate address conversions in BE, handled in FE for now because Polkadot library in JS is simpler to use
   useEffect(() => {
     async function getAdditionalAddresses() {
       if (account === null) {

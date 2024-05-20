@@ -95,7 +95,6 @@ export const useKeplr = (
 
   const disconnectKeplr = () => {
     if (!window.keplr) return handleKeplrNotExists('disconnectKeplr');
-    window.keplr.disable();
     setWalletKeysKeplr(null);
     cleanWalletsInLocalStorage();
     selectWallet(null);

@@ -134,6 +134,7 @@ export const NotifiSubscribeButton: React.FC<NotifiSubscribeButtonProps> = ({
       frontendClient.userState?.status !== 'authenticated'
     ) {
       await frontendClientLogin();
+      await frontendClient.initialize();
       const data = await frontendClient.fetchData();
       isFirstTimeUser = (data.targetGroup?.length ?? 0) === 0;
     }

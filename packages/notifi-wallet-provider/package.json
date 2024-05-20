@@ -1,6 +1,6 @@
 {
   "name": "@notifi-network/notifi-wallet-provider",
-  "version": "0.90.8",
+  "version": "0.91.0",
   "description": "> TODO: description",
   "author": "eric-notifi <eric.lee@notifi.network>",
   "homepage": "https://github.com/notifi-network/notifi-sdk-ts",
@@ -35,14 +35,15 @@
     "url": "https://github.com/notifi-network/notifi-sdk-ts/issues"
   },
   "dependencies": {
-    "@injectivelabs/ts-types": "1.14.6",
-    "@injectivelabs/wallet-ts": "^1.14.6",
-    "@solana/web3.js": "^1.91.8",
+    "@coinbase/wallet-sdk": "^3.9.3",
+    "@injectivelabs/ts-types": "^1.14.6",
+    "@injectivelabs/wallet-ts": "^1.14.7",
     "bech32-converting": "^1.0.9",
+    "bs58": "^5.0.0",
     "buffer": "^6.0.3",
     "ethers": "^6.11.1",
     "viem": "^1.11.0",
-    "wagmi": "^1.4.2"
+    "wagmi": "^1.4.13"
   },
   "peerDependencies": {
     "react": "^17.0.2 || ^18.0",
@@ -50,5 +51,8 @@
   },
   "tsup": {
     "noExternal": []
+  },
+  "devDependencies": {
+    "@types/bs58": "^4.0.4"
   }
 }

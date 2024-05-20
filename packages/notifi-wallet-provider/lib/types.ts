@@ -22,13 +22,17 @@ declare global {
 export type WalletKeysBase = {
   bech32: string;
   base64: string;
+  base58: string;
   hex: string;
 };
 
 export type MetamaskWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'hex'>;
 export type KeplrWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'base64'>;
 export type LeapWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'base64'>;
-export type PhantomWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'hex'>;
+export type PhantomWalletKeys = PickKeys<
+  WalletKeysBase,
+  'bech32' | 'base58' | 'hex'
+>;
 
 export type WalletKeys =
   | MetamaskWalletKeys

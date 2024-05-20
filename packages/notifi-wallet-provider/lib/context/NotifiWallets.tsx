@@ -30,6 +30,8 @@ import { NotifiWagmiProvider } from './WagmiProvider';
 
 export type EVMChains = 'ethereum' | 'polygon' | 'arbitrum' | 'injective';
 
+export type AvailableChains = EVMChains | 'solana';
+
 let timer: number | NodeJS.Timeout;
 
 type WalletContextType = {
@@ -38,8 +40,8 @@ type WalletContextType = {
   wallets: Wallets;
   error: Error | null;
   isLoading: boolean;
-  selectedChain: EVMChains;
-  switchChain: (chain: EVMChains) => void;
+  selectedChain: AvailableChains;
+  switchChain: (chain: AvailableChains) => void;
 };
 const WalletContext = createContext<WalletContextType>({
   selectedWallet: null,
@@ -68,9 +70,10 @@ const WalletContext = createContext<WalletContextType>({
 });
 
 const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
-  const [selectedChain, setSelectedChain] = useState<EVMChains>('ethereum');
+  const [selectedChain, setSelectedChain] =
+    useState<AvailableChains>('ethereum');
 
-  const switchChain = (chain: EVMChains) => {
+  const switchChain = (chain: AvailableChains) => {
     setSelectedChain(chain);
   };
 
@@ -96,7 +99,12 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
   const keplr = useKeplr(setIsLoading, throwError, selectWallet);
 
   const leap = useLeap(setIsLoading, throwError, selectWallet);
-  const phantom = usePhantom(setIsLoading, throwError, selectWallet);
+  const phantom = usePhantom(
+    setIsLoading,
+    throwError,
+    selectWallet,
+    selectedChain,
+  );
   const binance = useBinance(setIsLoading, throwError, selectWallet);
   const walletConnect = useWagmiWallet(
     setIsLoading,

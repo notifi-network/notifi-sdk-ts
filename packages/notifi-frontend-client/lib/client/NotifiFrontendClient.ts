@@ -47,6 +47,11 @@ export type SignMessageParams =
         | 'AVALANCHE'
         | 'BINANCE'
         | 'OSMOSIS'
+        | 'ELYS'
+        | 'NEUTRON'
+        | 'ARCHWAY'
+        | 'AXELAR'
+        | 'BERACHAIN'
         | 'NIBIRU'
         | 'OPTIMISM'
         | 'ZKSYNC'
@@ -58,7 +63,16 @@ export type SignMessageParams =
         | 'LINEA'
         | 'SCROLL'
         | 'MANTA'
-        | 'MONAD';
+        | 'EVMOS'
+        | 'MONAD'
+        | 'AGORIC'
+        | 'ORAI'
+        | 'KAVA'
+        | 'CELESTIA'
+        | 'COSMOS'
+        | 'DYMENSION'
+        | 'PERSISTENCE'
+        | 'DYDX'
       signMessage: Uint8SignMessageFunction;
     }>
   | Readonly<{
@@ -110,7 +124,9 @@ export type WalletWithSignMessage =
         | 'LINEA'
         | 'SCROLL'
         | 'MANTA'
-        | 'MONAD';
+        | 'MONAD'
+        | 'EVMOS'
+        | 'BERACHAIN';
       walletPublicKey: string;
       signMessage: Uint8SignMessageFunction;
     }>
@@ -151,7 +167,79 @@ export type WalletWithSignMessage =
       accountAddress: string;
       walletPublicKey: string;
       signMessage: Uint8SignMessageFunction;
-    }>;
+    }>
+  | Readonly<{
+      walletBlockchain: 'ELYS';
+      accountAddress: string;
+      walletPublicKey: string;
+      signMessage: Uint8SignMessageFunction;
+    }>
+  | Readonly<{
+      walletBlockchain: 'NEUTRON';
+      accountAddress: string;
+      walletPublicKey: string;
+      signMessage: Uint8SignMessageFunction;
+    }>
+  | Readonly<{
+      walletBlockchain: 'ARCHWAY';
+      accountAddress: string;
+      walletPublicKey: string;
+      signMessage: Uint8SignMessageFunction;
+    }>
+  | Readonly<{
+      walletBlockchain: 'AXELAR';
+      accountAddress: string;
+      walletPublicKey: string;
+      signMessage: Uint8SignMessageFunction;
+    }>
+    | Readonly<{
+      walletBlockchain: 'AGORIC';
+      accountAddress: string;
+      walletPublicKey: string;
+      signMessage: Uint8SignMessageFunction;
+    }>
+  | Readonly<{
+    walletBlockchain: 'ORAI';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>
+  | Readonly<{
+    walletBlockchain: 'KAVA';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>
+  | Readonly<{
+    walletBlockchain: 'CELESTIA';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>
+  | Readonly<{
+    walletBlockchain: 'COSMOS';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>
+  | Readonly<{
+    walletBlockchain: 'DYMENSION';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>
+  | Readonly<{
+    walletBlockchain: 'PERSISTENCE';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>
+  | Readonly<{
+    walletBlockchain: 'DYDX';
+    accountAddress: string;
+    walletPublicKey: string;
+    signMessage: Uint8SignMessageFunction;
+  }>;
 
 export type ConnectWalletParams = Readonly<{
   walletParams: WalletWithSignParams;
@@ -393,6 +481,7 @@ export class NotifiFrontendClient {
     let loginResult: Types.UserFragmentFragment | undefined = undefined;
     switch (walletBlockchain) {
       case 'BLAST':
+      case 'BERACHAIN':
       case 'CELO':
       case 'MANTLE':
       case 'LINEA':
@@ -407,6 +496,7 @@ export class NotifiFrontendClient {
       case 'BINANCE':
       case 'OPTIMISM':
       case 'ZKSYNC':
+      case 'EVMOS':
       case 'SOLANA': {
         const result = await this._service.logInFromDapp({
           walletBlockchain,
@@ -423,6 +513,18 @@ export class NotifiFrontendClient {
       case 'NEAR':
       case 'INJECTIVE':
       case 'OSMOSIS':
+      case 'ELYS':
+      case 'ARCHWAY':
+      case 'AXELAR':
+      case 'AGORIC':
+      case 'CELESTIA':
+      case 'COSMOS':
+      case 'DYMENSION':
+      case 'PERSISTENCE':
+      case 'DYDX':
+      case 'ORAI':
+      case 'KAVA':
+      case 'NEUTRON':
       case 'NIBIRU':
       case 'APTOS': {
         const result = await this._service.logInFromDapp({
@@ -463,6 +565,7 @@ export class NotifiFrontendClient {
     }
     switch (signMessageParams.walletBlockchain) {
       case 'ETHEREUM':
+      case 'BERACHAIN':
       case 'POLYGON':
       case 'ARBITRUM':
       case 'AVALANCHE':
@@ -475,6 +578,7 @@ export class NotifiFrontendClient {
       case 'SCROLL':
       case 'MANTA':
       case 'MONAD':
+      case 'EVMOS':
       case 'OPTIMISM': {
         const { walletPublicKey, tenantId } = this
           ._configuration as NotifiConfigWithPublicKey;
@@ -491,6 +595,19 @@ export class NotifiFrontendClient {
       }
       case 'OSMOSIS':
       case 'ZKSYNC':
+      case 'ELYS':
+      case 'NEUTRON':
+      case 'NIBIRU':
+      case 'ARCHWAY':
+      case 'AXELAR':
+      case 'AGORIC':
+      case 'CELESTIA':
+      case 'COSMOS':
+      case 'DYMENSION':
+      case 'PERSISTENCE':
+      case 'DYDX':
+      case 'ORAI':
+      case 'KAVA':
       case 'INJECTIVE': {
         const { authenticationKey, tenantId } = this
           ._configuration as NotifiConfigWithPublicKeyAndAddress;

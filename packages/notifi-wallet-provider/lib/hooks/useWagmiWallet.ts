@@ -9,7 +9,7 @@ import {
   useSwitchNetwork,
 } from 'wagmi';
 
-import { EVMChains } from '../context/NotifiWallets';
+import { AvailableChains } from '../context/NotifiWallets';
 import { MetamaskWalletKeys, Wallets } from '../types';
 import {
   cleanWalletsInLocalStorage,
@@ -23,7 +23,7 @@ export const useWagmiWallet = (
   errorHandler: (e: Error, durationInMs?: number) => void,
   selectWallet: (wallet: keyof Wallets | null) => void,
   walletName: keyof Wallets,
-  selectedChain: EVMChains,
+  selectedChain: AvailableChains,
 ) => {
   const { switchNetwork } = useSwitchNetwork();
   const { chain } = useNetwork();
