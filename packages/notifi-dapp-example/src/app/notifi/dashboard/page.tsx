@@ -60,11 +60,11 @@ export default function NotifiDashboard() {
           />
           <Image
             src="/logos/gmx-logo.png"
-            width={115}
-            height={24}
+            width={100}
+            height={21}
             unoptimized={true}
             alt="gmx"
-            className="mt-10 mb-6"
+            className="mt-5 mb-4"
           />
         </div>
         {unVerifiedTargets.length > 0 && cardView === 'history' ? (
