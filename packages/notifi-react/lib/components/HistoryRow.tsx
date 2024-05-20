@@ -4,7 +4,11 @@ import { format, isToday, isWithinInterval, subDays } from 'date-fns';
 import React from 'react';
 
 import { Icon } from '../assets/Icons';
-import { historyItem, useNotifiTenantConfigContext } from '../context';
+import {
+  HistoryItem,
+  useNotifiHistoryContext,
+  useNotifiTenantConfigContext,
+} from '../context';
 import { defaultCopy, getFusionEventMetadata } from '../utils';
 
 export type HistoryRowProps = {
@@ -18,13 +22,16 @@ export type HistoryRowProps = {
     timestamp?: string;
     subject?: string;
   };
-  historyItem: historyItem;
+  historyItem: HistoryItem;
+  onClick?: () => void;
 };
 
 export const HistoryRow: React.FC<HistoryRowProps> = (props) => {
   const icon = props.historyItem.icon as Types.GenericEventIconHint;
+  // const [read, setRead] = React.useState<boolean>(props.historyItem.read);
 
   const { fusionEventTopics } = useNotifiTenantConfigContext();
+  const { markAsRead } = useNotifiHistoryContext();
 
   const titleDisplay = React.useMemo(() => {
     const topicName = props.historyItem.topic;
@@ -35,14 +42,22 @@ export const HistoryRow: React.FC<HistoryRowProps> = (props) => {
       ? getFusionEventMetadata(topic)?.uiConfigOverride?.historyDisplayName ??
           topicName
       : defaultCopy.historyRow.legacyTopic;
-  }, [fusionEventTopics]);
+  }, [fusionEventTopics, props]);
 
   return (
-    <div className={clsx('notifi-history-row', props.className?.container)}>
+    <div
+      className={clsx('notifi-history-row', props.className?.container)}
+      onClick={() => {
+        if (!props.historyItem.read) {
+          markAsRead([props.historyItem.id]);
+        }
+        props.onClick?.();
+      }}
+    >
       <div
         className={clsx(
           'notifi-history-row-unread-indicator',
-          !props.historyItem.read && 'unread',
+          props.historyItem.read && 'read',
           props.className?.unreadIndicator,
         )}
       ></div>

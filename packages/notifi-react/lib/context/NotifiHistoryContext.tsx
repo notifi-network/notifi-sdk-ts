@@ -15,7 +15,7 @@ type CursorInfo = Readonly<{
   endCursor?: string | undefined;
 }>;
 
-export type historyItem = {
+export type HistoryItem = {
   id: string;
   timestamp: string; // in miniSec
   icon: string;
@@ -30,7 +30,7 @@ export type NotifiHistoryContextType = {
   error: Error | null;
   getHistoryItems: (initialLoad?: boolean) => Promise<void>;
   markAsRead: (ids?: string[]) => Promise<void>;
-  historyItems: historyItem[];
+  historyItems: HistoryItem[];
   unreadCount: number;
   hasNextPage: boolean;
 };
@@ -55,7 +55,7 @@ export const NotifiHistoryContextProvider: FC<
     endCursor: undefined,
   });
   const [unreadCount, setUnreadCount] = useState<number | null>(null);
-  const [historyItems, setHistoryItems] = useState<historyItem[]>([]);
+  const [historyItems, setHistoryItems] = useState<HistoryItem[]>([]);
   const { cardConfig } = useNotifiTenantConfigContext();
   const isInitialLoaded = React.useRef(false);
 
@@ -247,7 +247,7 @@ export const useNotifiHistoryContext = () =>
 
 const parseHistoryItem = (
   history: Types.FusionNotificationHistoryEntryFragmentFragment,
-): historyItem => {
+): HistoryItem => {
   const eventDetails = history.detail;
   if (!eventDetails || eventDetails.__typename !== 'GenericEventDetails') {
     return {

@@ -70,6 +70,14 @@ export const defaultCopy = {
     headerTitle: 'Notifications',
     buttonText: 'Load More',
   },
+  inboxHistoryDetail: {
+    headerTitle: '',
+  },
+  historyList: {
+    inboxEmptyTitle: 'Inbox empty',
+    inboxEmptyDescription: `You haven’t received any notifications yet. You can manage your
+    destinations and alerts under settings.`,
+  },
 };
 
 export const validationRegex: Record<string, RegExp> = {
