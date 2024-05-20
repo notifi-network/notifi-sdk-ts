@@ -1,4 +1,3 @@
-import { objectKeys } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import React from 'react';
 
@@ -7,7 +6,7 @@ import {
   useNotifiTargetContext,
   useNotifiTenantConfigContext,
 } from '../context';
-import { defaultCopy } from '../utils';
+import { defaultCopy, hasTarget } from '../utils';
 
 export type TargetStateBannerProps = {
   classNames?: {
@@ -35,16 +34,6 @@ export const TargetStateBanner: React.FC<TargetStateBannerProps> = (props) => {
   } = useNotifiTargetContext();
   const { cardConfig } = useNotifiTenantConfigContext();
 
-  const hasTarget = !objectKeys(targetData).every((key) => {
-    const target = targetData[key];
-    if (typeof target === 'string') {
-      return !target;
-    }
-    if (typeof target === 'object') {
-      return !target.data;
-    }
-  });
-
   return (
     <div
       className={clsx(
@@ -52,7 +41,7 @@ export const TargetStateBanner: React.FC<TargetStateBannerProps> = (props) => {
         props.classNames?.container,
       )}
     >
-      {!hasTarget && !cardConfig?.isContactInfoRequired ? (
+      {!hasTarget(targetData) && !cardConfig?.isContactInfoRequired ? (
         <div>TODO: Register new target</div>
       ) : (
         <div
