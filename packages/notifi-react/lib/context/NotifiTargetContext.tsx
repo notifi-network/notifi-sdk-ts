@@ -158,6 +158,14 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
   };
 
   useEffect(() => {
+    //NOTE: target change listener when window is refocused
+    const handler = () => {
+      if (!frontendClientStatus.isAuthenticated) return;
+      return frontendClient.fetchData().then(refreshTargetDocument);
+    };
+    window.addEventListener('focus', handler);
+
+    // NOTE: Initial load
     if (frontendClientStatus.isAuthenticated && !isInitialLoaded.current) {
       if (isLoading && isInitialLoaded.current) return;
       isInitialLoaded.current = true;
@@ -168,16 +176,11 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
           refreshTargetDocument(data);
         })
         .finally(() => setIsLoading(false)); // TODO: handle error
-      //NOTE: target change listener when window is refocused
-      const handler = () => {
-        if (!frontendClientStatus.isAuthenticated) return;
-        return frontendClient.fetchData().then(refreshTargetDocument);
-      };
-      window.addEventListener('focus', handler);
-      return () => {
-        window.removeEventListener('focus', handler);
-      };
     }
+
+    return () => {
+      window.removeEventListener('focus', handler);
+    };
   }, [frontendClientStatus.isAuthenticated]);
 
   useEffect(() => {
