@@ -120,16 +120,14 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
         const fusionEventId = topic.fusionEventDescriptor.id;
         const fusionEventMetadata = getFusionEventMetadata(topic);
         if (!fusionEventMetadata || !fusionEventId) return;
-        let subscriptionValueObject: InputObject[] | null = [
-          { label: '', value: '' },
-        ];
         if (!subscriptionValue) {
           const subscriptionValueOrRef =
             getFusionEventMetadata(topic)?.uiConfigOverride
               ?.subscriptionValueOrRef;
-          subscriptionValueObject = subscriptionValueOrRef
+          const subscriptionValueObject = subscriptionValueOrRef
             ? [...resolveObjectArrayRef('', subscriptionValueOrRef, inputs)]
             : null;
+          subscriptionValue = subscriptionValueObject?.[0]?.value;
         }
         const legacySubscriptionValue = resolveStringRef(
           topic.uiConfig.name,
@@ -140,10 +138,7 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
           fusionEventId: fusionEventId,
           name: customAlertName ?? topic.uiConfig.name,
           targetGroupId,
-          subscriptionValue:
-            subscriptionValue ??
-            subscriptionValueObject?.[0]?.value ??
-            legacySubscriptionValue,
+          subscriptionValue: subscriptionValue ?? legacySubscriptionValue,
           filterOptions: JSON.stringify(filterOptions),
         });
       },
