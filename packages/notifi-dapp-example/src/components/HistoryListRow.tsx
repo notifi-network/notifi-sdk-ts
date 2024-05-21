@@ -86,7 +86,7 @@ export const HistoryListRow: React.FC<HistoryListRowProps> = ({
         </div>
       </div>
 
-      <div className="text-xs opacity-70 text-notifi-text-light">
+      <div className="text-xs opacity-70 text-notifi-text-light min-w-14">
         {formatTimestampInHistoryRow(historyDetailEntry.timestamp)}
       </div>
     </div>
