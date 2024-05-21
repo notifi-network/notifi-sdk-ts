@@ -17,6 +17,10 @@
   "files": [
     "dist"
   ],
+  "resolutions": {
+    "bs58": "^5.0.0",
+    "@types/bs58": "^4.0.4"
+  },
   "publishConfig": {
     "access": "public"
   },
@@ -35,13 +39,14 @@
     "url": "https://github.com/notifi-network/notifi-sdk-ts/issues"
   },
   "dependencies": {
-    "@coinbase/wallet-sdk": "^3.9.3",
     "@injectivelabs/ts-types": "^1.14.6",
     "@injectivelabs/wallet-ts": "^1.14.7",
     "bech32-converting": "^1.0.9",
+    "@solflare-wallet/sdk": "1.4.2",
     "bs58": "^5.0.0",
     "buffer": "^6.0.3",
     "ethers": "^6.11.1",
+    "notistack": "^3.0.1",
     "viem": "^1.11.0",
     "wagmi": "^1.4.13"
   },

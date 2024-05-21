@@ -54,6 +54,8 @@
   ],
   "dependencies": {
     "@injectivelabs/ts-types": "^1.14.6",
-    "@injectivelabs/wallet-ts": "^1.14.7"
+    "@injectivelabs/wallet-ts": "^1.14.7",
+    "dynamic": "^4.2.2",
+    "resolve-pkg": "^2.0.0"
   }
 }

@@ -9,7 +9,9 @@ declare global {
   interface Window {
     keplr: Keplr;
     phantom: PhantomWalletAdapter;
+    backpack: unknown;
     leap?: unknown;
+    solflare: unknown;
     BinanceChain: BinanceChain;
   }
 }
@@ -33,12 +35,22 @@ export type PhantomWalletKeys = PickKeys<
   WalletKeysBase,
   'bech32' | 'base58' | 'hex'
 >;
+export type BackpackWalletKeys = PickKeys<
+  WalletKeysBase,
+  'bech32' | 'base58' | 'hex'
+>;
+
+export type SolflareWalletKeys = PickKeys<
+  WalletKeysBase,
+  'bech32' | 'base58' | 'hex'
+>;
 
 export type WalletKeys =
   | MetamaskWalletKeys
   | KeplrWalletKeys
   | LeapWalletKeys
-  | PhantomWalletKeys;
+  | PhantomWalletKeys
+  | BackpackWallet;
 
 export abstract class NotifiWallet {
   abstract isInstalled: boolean;
@@ -90,7 +102,8 @@ export type LeapSignMessage = (
 ) => Promise<StdSignature | void>;
 
 export type PhantomSignMessage = (message: string) => Promise<string | void>;
-
+export type BackpackSignMessage = (message: string) => Promise<string | void>;
+export type SolflareSignMessage = (message: string) => Promise<string | void>;
 export class KeplrWallet implements NotifiWallet {
   constructor(
     public isInstalled: boolean,
@@ -124,11 +137,35 @@ export class PhantomWallet implements NotifiWallet {
   ) {}
 }
 
+export class BackpackWallet implements NotifiWallet {
+  constructor(
+    public isInstalled: boolean,
+    public walletKeys: BackpackWalletKeys | null,
+    public signArbitrary: BackpackSignMessage,
+    public connect: () => Promise<BackpackWalletKeys | null>,
+    public disconnect: () => void,
+    public websiteURL: string,
+  ) {}
+}
+
+export class SolflareWallet implements NotifiWallet {
+  constructor(
+    public isInstalled: boolean,
+    public walletKeys: SolflareWalletKeys | null,
+    public signArbitrary: SolflareSignMessage,
+    public connect: () => Promise<SolflareWalletKeys | null>,
+    public disconnect: () => void,
+    public websiteURL: string,
+  ) {}
+}
+
 export type Wallets = {
   metamask: MetamaskWallet;
   keplr: KeplrWallet;
   leap: LeapWallet;
   phantom: PhantomWallet;
+  backpack: BackpackWallet;
+  solflare: SolflareWallet;
   coinbase: CoinbaseWallet;
   rabby: RabbyWallet;
   rainbow: RainbowWallet;

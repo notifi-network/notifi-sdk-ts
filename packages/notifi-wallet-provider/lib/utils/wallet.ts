@@ -12,4 +12,6 @@ export const walletsWebsiteLink: { [key in keyof Wallets]: string } = {
   coinbase: 'https://www.coinbase.com/wallet/downloads',
   rainbow: 'https://rainbow.me/en/',
   zerion: 'https://zerion.io/',
+  backpack: 'https://backpack.app/download',
+  solflare: 'https://solflare.com/',
 };

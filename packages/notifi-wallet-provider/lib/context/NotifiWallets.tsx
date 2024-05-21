@@ -5,13 +5,16 @@ import React, {
   useState,
 } from 'react';
 
+import { useBackpack } from '../hooks/useBackpack';
 import { useBinance } from '../hooks/useBinance';
 import { useInjectedWallet } from '../hooks/useInjectedWallet';
 import { useKeplr } from '../hooks/useKeplr';
 import { useLeap } from '../hooks/useLeap';
 import { usePhantom } from '../hooks/usePhantom';
+import { useSolflare } from '../hooks/useSolflare';
 import { useWagmiWallet } from '../hooks/useWagmiWallet';
 import {
+  BackpackWallet,
   BinanceWallet,
   CoinbaseWallet,
   KeplrWallet,
@@ -21,6 +24,7 @@ import {
   PhantomWallet,
   RabbyWallet,
   RainbowWallet,
+  SolflareWallet,
   WalletConnectWallet,
   Wallets,
   ZerionWallet,
@@ -53,6 +57,8 @@ const WalletContext = createContext<WalletContextType>({
     keplr: {} as KeplrWallet, // intentionally empty initial object
     leap: {} as LeapWallet, // intentionally empty initial object
     phantom: {} as PhantomWallet, // intentionally empty initial object
+    backpack: {} as BackpackWallet, // intentionally empty initial object
+    solflare: {} as SolflareWallet, // intentionally empty initial object
     coinbase: {} as CoinbaseWallet, // intentionally empty initial object
     rabby: {} as RabbyWallet, // intentionally empty initial object
     rainbow: {} as RainbowWallet, // intentionally empty initial object
@@ -100,6 +106,18 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
 
   const leap = useLeap(setIsLoading, throwError, selectWallet);
   const phantom = usePhantom(
+    setIsLoading,
+    throwError,
+    selectWallet,
+    selectedChain,
+  );
+  const backPack = useBackpack(
+    setIsLoading,
+    throwError,
+    selectWallet,
+    selectedChain,
+  );
+  const solflare = useSolflare(
     setIsLoading,
     throwError,
     selectWallet,
@@ -244,6 +262,22 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
       phantom.connectPhantom,
       phantom.disconnectPhantom,
       phantom.websiteURL,
+    ),
+    backpack: new BackpackWallet(
+      backPack.isBackpackInstalled,
+      backPack.walletKeysBackpack,
+      backPack.signArbitraryBackpack,
+      backPack.connectBackpack,
+      backPack.disconnectBackpack,
+      backPack.websiteURL,
+    ),
+    solflare: new SolflareWallet(
+      solflare.isSolflareInstalled,
+      solflare.walletKeysSolflare,
+      solflare.signArbitrarySolflare,
+      solflare.connectSolflare,
+      solflare.disconnectSolflare,
+      solflare.websiteURL,
     ),
   };
 
