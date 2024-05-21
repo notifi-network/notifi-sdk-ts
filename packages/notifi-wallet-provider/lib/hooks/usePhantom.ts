@@ -146,12 +146,14 @@ export const usePhantom = (
           if (!provider) {
             throw new Error('Phantom provider not found');
           }
+          const encoder = new TextEncoder();
+          // const messageBytes = encoder.encode(message);
+
           const messageBuffer = Buffer.from(message, 'utf-8');
           const signedMessage = await provider.request({
             method: 'signMessage',
             params: {
               message: messageBuffer,
-              display: 'hex',
             },
           });
 
