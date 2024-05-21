@@ -225,8 +225,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
   };
 
   const isSignWalletRequired =
-    targetInfoPrompts.telegram?.infoPrompt?.message === 'Sign Wallet';
-
+    targetInfoPrompts.wallet?.infoPrompt?.message === 'Sign Wallet';
   return (
     <div className="w-full flex flex-col justify-center items-center">
       <CoinbaseInfoModal
@@ -427,7 +426,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
                     {isWalletAlertVerified ? (
                       <>
                         Make sure messages are enabled in your Coinbase Wallet
-                        App.{' '}
+                        Mobile App.{' '}
                         <span
                           onClick={toggleCBInfoModal}
                           className="text-notifi-toggle-on-bg underline cursor-pointer"
