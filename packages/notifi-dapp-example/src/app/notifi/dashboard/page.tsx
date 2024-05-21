@@ -19,6 +19,7 @@ export default function NotifiDashboard() {
   const { unVerifiedTargets } = useNotifiTargetContext();
   const { selectedWallet, wallets } = useWallets();
   const [isSideBarOpen, setIsSideBarOpen] = useState<boolean>(false);
+  const [isInHistoryDetail, setIsInHistoryDetail] = useState<boolean>(false);
 
   if (!selectedWallet || !wallets[selectedWallet].walletKeys) return null;
 
@@ -68,14 +69,19 @@ export default function NotifiDashboard() {
           />
         </div>
         {unVerifiedTargets.length > 0 && cardView === 'history' ? (
-          <VerifyBanner setCardView={setCardView} />
+          <VerifyBanner
+            setCardView={setCardView}
+            isInHistoryDetail={isInHistoryDetail}
+          />
         ) : null}
         <div
           className={`flex flex-col grow bg-notifi-card-bg rounded-3xl md:mb-10 mt-3 md:mr-10 ${
             cardView === 'alertSubscription' ? '' : 'min-h-0'
           }`}
         >
-          {cardView === 'history' ? <DashboardHistory /> : null}
+          {cardView === 'history' ? (
+            <DashboardHistory setIsInHistoryDetail={setIsInHistoryDetail} />
+          ) : null}
           {cardView === 'destination' ? <DashboardDestinations /> : null}
           {cardView === 'alertSubscription' ? (
             <TopicList title={'Manage the alerts you want to receive'} />
