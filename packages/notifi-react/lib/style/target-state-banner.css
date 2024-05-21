@@ -44,3 +44,35 @@
   cursor: pointer;
   color: var(--notifi-color-dusk);
 }
+
+.notifi-target-state-banner-signup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem 0;
+}
+
+.notifi-target-state-banner-signup-content {
+  display: flex;
+  align-items: center;
+  width: 80%;
+  margin-bottom: 0.5rem;
+}
+
+.notifi-target-state-banner-signup-text {
+  font-size: 0.9rem;
+  line-height: 1.3;
+}
+
+.notifi-target-state-banner-signup-icon {
+  color: var(--notifi-target-state-banner-signup-icon-color);
+  margin-right: 0.8rem;
+}
+
+.notifi-target-state-banner-signup-cta {
+  color: var(--notifi-color-white);
+  background-color: var(--notifi-target-state-banner-signup-cta-bg);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+}

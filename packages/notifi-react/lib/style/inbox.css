@@ -68,18 +68,19 @@
   font-size: 0.9rem;
 }
 
-/* InboxConfigTargetList styles */
+/* InboxConfigTargetList & InboxConfigTargetEdit styles */
+
+.notifi-inbox-config-target-edit,
 .notifi-inbox-config-target-list {
   display: flex;
   flex-direction: column;
   height: 100%;
 }
-
 .notifi-inbox-config-target-list-main {
   flex-grow: 1;
   overflow: scroll;
 }
-
+.notifi-inbox-config-target-edit-button,
 .notifi-inbox-config-target-list-button {
   display: flex;
   align-items: center;
@@ -93,9 +94,12 @@
   cursor: pointer;
   position: relative;
 }
+
+.notifi-inbox-config-target-edit-button-text.hidden,
 .notifi-inbox-config-target-list-button-text.hidden {
   visibility: hidden;
 }
+.notifi-inbox-config-target-edit-button:disabled,
 .notifi-inbox-config-target-list-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
@@ -111,4 +115,11 @@
   text-align: start;
   padding: 0;
   color: var(--notifi-inbox-config-target-list-item-verified-text);
+}
+
+/* InboxConfigTargetEdit styles */
+.notifi-inbox-config-target-edit-main {
+  flex-grow: 1;
+  overflow: scroll;
+  margin-top: 1.5rem;
 }
