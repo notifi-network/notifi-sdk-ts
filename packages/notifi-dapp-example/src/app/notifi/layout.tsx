@@ -31,7 +31,7 @@ export default function NotifiSingupLayout({
     : '';
 
   const showDisconnectButton =
-    ['notifi/ftu', 'notifi/signup'].includes(pathname) && accountAddress;
+    ['/notifi/ftu', '/notifi/signup'].includes(pathname) && accountAddress;
 
   return (
     <>
