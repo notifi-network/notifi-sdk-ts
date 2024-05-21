@@ -50,6 +50,7 @@ export const defaultCopy = {
     telegram: 'Telegram',
     discord: 'Discord',
     slack: 'Slack',
+    emailVerifyMessage: 'We’ve sent a verification email to:',
   },
   topicOptions: {
     customInputPlaceholder: 'Custom',
@@ -87,6 +88,15 @@ export const defaultCopy = {
       title: 'Manage alert destinations',
       description: 'You have unverified destinations',
     },
+  },
+  inboxConfigTargetList: {
+    header: 'Manage Destinations',
+    buttonText: 'Edit Destinations',
+  },
+  inboxConfigTargetEdit: {
+    header: 'Edit Destinations',
+    buttonTextHasTarget: 'Save Changes',
+    buttonTextNoTarget: 'Subscribe',
   },
 };
 

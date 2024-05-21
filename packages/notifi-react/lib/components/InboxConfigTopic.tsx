@@ -1,7 +1,8 @@
 import clsx from 'clsx';
 import React from 'react';
 
-import { defaultCopy } from '../utils';
+import { useNotifiTargetContext } from '../context';
+import { defaultCopy, hasTarget } from '../utils';
 import { InboxView } from './Inbox';
 import { NavHeader } from './NavHeader';
 import { TargetStateBanner, TargetStateBannerProps } from './TargetStateBanner';
@@ -23,6 +24,9 @@ export type InboxConfigTopicProps = {
 };
 
 export const InboxConfigTopic: React.FC<InboxConfigTopicProps> = (props) => {
+  const {
+    targetDocument: { targetData },
+  } = useNotifiTargetContext();
   return (
     <div
       className={clsx('notifi-inbox-config-topic', props.classNames?.container)}
@@ -44,9 +48,12 @@ export const InboxConfigTopic: React.FC<InboxConfigTopicProps> = (props) => {
         >
           <TargetStateBanner
             classNames={props.classNames?.TargetStateBanner}
-            onClickCta={() =>
-              props.setInboxView(InboxView.InboxConfigTargetList)
-            }
+            onClickCta={() => {
+              if (!hasTarget(targetData)) {
+                return props.setInboxView(InboxView.InboxConfigTargetEdit);
+              }
+              props.setInboxView(InboxView.InboxConfigTargetList);
+            }}
           />
         </div>
 
