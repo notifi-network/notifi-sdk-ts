@@ -426,7 +426,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
                     {isWalletAlertVerified ? (
                       <>
                         Make sure messages are enabled in your Coinbase Wallet
-                        App.{' '}
+                        Mobile App.{' '}
                         <span
                           onClick={toggleCBInfoModal}
                           className="text-notifi-toggle-on-bg underline cursor-pointer"
