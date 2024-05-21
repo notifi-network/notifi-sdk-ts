@@ -31,16 +31,15 @@ export type TargetDocument = {
 };
 
 export type Target = 'email' | 'phoneNumber' | 'telegram' | 'discord' | 'slack';
+export type FormTarget = Extract<Target, 'email' | 'phoneNumber' | 'telegram'>;
+export type ToggleTarget = Extract<Target, 'discord' | 'slack'>;
 
 export type TargetInputFromValue = { value: string; error?: string };
-type TargetInputForm = Record<
-  Extract<Target, 'email' | 'phoneNumber' | 'telegram'>, // NOTE: only these 3 have their form input
-  TargetInputFromValue
->;
+type TargetInputForm = Record<FormTarget, TargetInputFromValue>;
 
-type TargetInputToggles = Record<Extract<Target, 'discord' | 'slack'>, boolean>;
+export type TargetInputToggles = Record<ToggleTarget, boolean>;
 
-type TargetInputs = TargetInputForm & TargetInputToggles;
+export type TargetInputs = TargetInputForm & TargetInputToggles;
 
 export type TargetInfo = {
   target: Target;

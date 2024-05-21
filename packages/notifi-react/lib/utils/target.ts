@@ -1,6 +1,13 @@
 import { objectKeys } from '@notifi-network/notifi-frontend-client';
 
-import { TargetData } from '../context';
+import {
+  CtaInfo,
+  FormTarget,
+  Target,
+  TargetData,
+  TargetInfoPrompt,
+  TargetInputs,
+} from '../context';
 
 export const hasTarget = (targetData: TargetData) => {
   return !objectKeys(targetData).every((key) => {
@@ -14,4 +21,31 @@ export const hasTarget = (targetData: TargetData) => {
       return !target.data;
     }
   });
+};
+
+export const getAvailableTargetInputCount = (targetInputs: TargetInputs) => {
+  return objectKeys(targetInputs).filter((key) => {
+    if (isFormTarget(key)) {
+      return targetInputs[key].value;
+    }
+    return targetInputs[key];
+  }).length;
+};
+
+export const isTargetCta = (
+  targetInfoPrompt: TargetInfoPrompt,
+): targetInfoPrompt is CtaInfo => {
+  return targetInfoPrompt.type === 'cta';
+};
+
+export const isTargetVerified = (
+  targetInfoPrompt: TargetInfoPrompt,
+): targetInfoPrompt is CtaInfo => {
+  return targetInfoPrompt.type === 'message';
+};
+
+const isFormTarget = (target: Target): target is FormTarget => {
+  return (
+    target === 'email' || target === 'phoneNumber' || target === 'telegram'
+  );
 };
