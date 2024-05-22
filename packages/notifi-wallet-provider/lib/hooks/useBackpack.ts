@@ -1,5 +1,5 @@
-import { useWallet } from '@solana/wallet-adapter-react';
-import type { SolanaSignInInput } from '@solana/wallet-standard-features';
+import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack';
+import { PublicKey } from '@solana/web3.js';
 import bs58 from 'bs58';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -17,24 +17,18 @@ export const useBackpack = (
   selectWallet: (wallet: keyof Wallets | null) => void,
   selectedChain: 'solana' | EVMChains,
 ) => {
-  const getProvider = () => {
-    if ('backpack' in window) {
-      const provider: any = window.backpack;
-      if (provider?.isBackpack) {
-        return provider;
-      }
-    }
-  };
-
+  const [wallet, setWallet] = useState<BackpackWalletAdapter | null>(null);
   const [walletKeysBackpack, setWalletKeysBackpack] =
     useState<BackpackWalletKeys | null>(null);
-
   const [isBackpackInstalled, setIsBackpackInstalled] =
     useState<boolean>(false);
 
   useEffect(() => {
-    setIsBackpackInstalled(!!window.backpack);
-  }, []);
+    const newWallet = new BackpackWalletAdapter();
+    setWallet(newWallet);
+    if (!newWallet) throw new Error('Wallet not found');
+    setIsBackpackInstalled(true);
+  }, [selectedChain]);
 
   const handleBackpackNotExists = (location: string) => {
     cleanWalletsInLocalStorage();
@@ -47,19 +41,19 @@ export const useBackpack = (
 
   const connectBackpack =
     useCallback(async (): Promise<BackpackWalletKeys | null> => {
-      if (!window.backpack) {
+      if (!isBackpackInstalled) {
         return null;
       }
 
       loadingHandler(true);
 
       try {
-        const provider = getProvider();
-        if (!provider) {
-          throw new Error('Backpack provider not found');
-        }
+        if (!wallet) throw new Error('Wallet not found');
 
-        const { publicKey } = await window.backpack.solana.connect();
+        await wallet.connect();
+
+        const publicKey = wallet.publicKey;
+        if (!publicKey) throw new Error('Wallet connection failed');
 
         const walletKeys: BackpackWalletKeys = {
           base58: publicKey.toBase58(),
@@ -70,62 +64,73 @@ export const useBackpack = (
         selectWallet('backpack');
         setWalletKeysBackpack(walletKeys);
         setWalletKeysToLocalStorage('backpack', walletKeys);
-        loadingHandler(false);
+
         return walletKeys;
       } catch (e) {
         errorHandler(
           new Error('Backpack connection failed, check console for details'),
         );
+      } finally {
+        loadingHandler(false);
       }
 
-      loadingHandler(false);
       return null;
-    }, [selectWallet, errorHandler]);
+    }, [
+      wallet,
+      isBackpackInstalled,
+      selectWallet,
+      errorHandler,
+      loadingHandler,
+    ]);
 
-  const disconnectBackpack = useCallback(async () => {
-    if (!window.backpack) {
-      return handleBackpackNotExists('disconnectBackpack');
+  const disconnectBackpack = async () => {
+    try {
+      await wallet?.disconnect();
+      selectWallet(null);
+      setWalletKeysBackpack(null);
+      cleanWalletsInLocalStorage();
+    } catch (e) {
+      console.error('Error while disconnecting: ', e);
     }
-    window.backpack.disconnect();
-    selectWallet(null);
-    setWalletKeysBackpack(null);
-    cleanWalletsInLocalStorage();
-  }, []);
+  };
 
   const signArbitraryBackpack = useCallback(
     async (message: string): Promise<string | void> => {
-      if (!walletKeysBackpack) {
+      if (!window.backpack) {
+        return handleBackpackNotExists('signArbitraryBackpack');
+      }
+      if (!walletKeysBackpack || !wallet) {
         return;
       }
       loadingHandler(true);
       try {
-        const provider = getProvider();
-        if (!provider) {
-          throw new Error('Backpack provider not found');
-        }
         const messageBuffer = Buffer.from(message, 'utf-8');
-        console.log('logging provider');
-        console.log(provider);
-        console.log(provider.connection);
-        // const signedMessage = await provider.request({
-        //   method: 'signMessage',
-        //   params: {
-        //     message: messageBuffer,
-        //     display: 'hex',
-        //   },
-        // });
-        const signedMessage = await provider.signMessage('hello');
+        console.log('Signing message');
+        const signedMessage = await wallet.signMessage(messageBuffer);
+        console.log('Signed message: ');
+        console.log(signedMessage);
 
-        return signedMessage.signature;
+        // Extracting the signature from the signedMessage object
+        const signatureArray =
+          signedMessage instanceof Uint8Array
+            ? signedMessage
+            : new Uint8Array(Object.values(signedMessage.signature));
+
+        // Convert the signature to a base64 string
+        const signature = Buffer.from(signatureArray).toString('base64');
+        console.log('Signature (base64 encoded): ', signature);
+
+        return signature;
       } catch (e) {
         errorHandler(
           new Error('Backpack signArbitrary failed, check console for details'),
         );
         console.error(e);
+      } finally {
+        loadingHandler(false);
       }
-      loadingHandler(false);
     },
-    [walletKeysBackpack],
+    [walletKeysBackpack, wallet, errorHandler, loadingHandler],
   );
 
   return {

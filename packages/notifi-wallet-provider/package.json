@@ -41,8 +41,11 @@
   "dependencies": {
     "@injectivelabs/ts-types": "^1.14.6",
     "@injectivelabs/wallet-ts": "^1.14.7",
-    "bech32-converting": "^1.0.9",
+    "@solana/wallet-adapter-backpack": "^0.1.14",
+    "@solana/wallet-adapter-base": "^0.9.23",
+    "@solana/web3.js": "^1.91.8",
     "@solflare-wallet/sdk": "1.4.2",
+    "bech32-converting": "^1.0.9",
     "bs58": "^5.0.0",
     "buffer": "^6.0.3",
     "ethers": "^6.11.1",
