@@ -78,6 +78,16 @@ export const defaultCopy = {
     inboxEmptyDescription: `You haven’t received any notifications yet. You can manage your
     destinations and alerts under settings.`,
   },
+  inboxConfigTopic: {
+    header: 'Manage Notifications',
+    title: 'Manage the alerts you want to receive:',
+  },
+  targetStateBanner: {
+    verify: {
+      title: 'Manage alert destinations',
+      description: 'You have unverified destinations',
+    },
+  },
 };
 
 export const validationRegex: Record<string, RegExp> = {

@@ -7,6 +7,7 @@ import {
   useNotifiTargetContext,
   useNotifiUserSettingContext,
 } from '../context';
+import { hasTarget } from '../utils';
 import { FtuAlertEdit, FtuAlertEditProps } from './FtuAlertEdit';
 import { FtuAlertList, FtuAlertListProps } from './FtuAlertList';
 import { FtuTargetEdit, FtuTargetEditProps } from './FtuTargetEdit';
@@ -40,50 +41,31 @@ export type FtuProps = {
 };
 
 export const Ftu: React.FC<FtuProps> = (props) => {
-  // TODO: Move to hook
   const { ftuStage } = useNotifiUserSettingContext();
   const {
     targetDocument: { targetData },
+    isLoading: isLoadingTarget,
   } = useNotifiTargetContext();
   const [ftuView, setFtuView] = React.useState<FtuView | null>(null);
   const { frontendClientStatus } = useNotifiFrontendClientContext();
 
-  const isTargetExist = React.useMemo(
-    () =>
-      Object.values(targetData)
-        .map((target) => {
-          if (typeof target === 'string') {
-            return !!target;
-          }
-          if ('useSlack' in target) {
-            return target.useSlack;
-          }
-          if ('useDiscord' in target) {
-            return target.useDiscord;
-          }
-          return false;
-        })
-        .includes(true),
-    [targetData],
-  );
-
   React.useEffect(() => {
-    if (!frontendClientStatus.isAuthenticated) return;
+    if (!frontendClientStatus.isAuthenticated || isLoadingTarget) return;
     if (ftuStage === null) {
       setFtuView(FtuView.AlertList);
       return;
     }
-    if (ftuStage === FtuStage.Destination && !isTargetExist) {
+    if (ftuStage === FtuStage.Destination && !hasTarget(targetData)) {
       setFtuView(FtuView.TargetEdit);
       return;
     }
-    if (ftuStage === FtuStage.Destination && isTargetExist) {
+    if (ftuStage === FtuStage.Destination && hasTarget(targetData)) {
       setFtuView(FtuView.TargetList);
       return;
     }
     setFtuView(FtuView.AlertEdit);
     return;
-  }, [ftuStage, isTargetExist]);
+  }, [ftuStage, isLoadingTarget, targetData]);
 
   if (!ftuView) return null;
 

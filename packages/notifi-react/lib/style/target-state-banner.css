@@ -1,0 +1,43 @@
+.notifi-target-state-banner {
+  background-color: var(--notifi-target-state-banner-bg);
+  border-radius: 6px;
+  cursor: default;
+}
+
+.notifi-target-state-banner-verify {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0.5rem;
+}
+
+.notifi-target-state-banner-verify-icon {
+  color: var(--notifi-target-state-verify-icon-color);
+  width: 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.notifi-target-state-banner-verify-content {
+  flex-grow: 1;
+  margin-left: 1rem;
+}
+
+.notifi-target-state-banner-verify-title {
+  font-weight: 800;
+  margin-bottom: 0.2rem;
+}
+
+.notifi-target-state-banner-verify-description {
+  font-size: 600;
+  color: var(--notifi-color-rose);
+  font-size: 0.9rem;
+}
+
+.notifi-target-state-banner-verify-cta {
+  width: 1.5rem;
+  display: flex;
+  justify-content: flex-start;
+  cursor: pointer;
+  color: var(--notifi-color-dusk);
+}

@@ -47,7 +47,11 @@ type CardModalView = 'connect' | 'expiry' | 'ftu' | 'Inbox';
 export const NotifiCardModal: React.FC<NotifiCardModalProps> = (props) => {
   const { frontendClientStatus, error: clientError } =
     useNotifiFrontendClientContext();
-  const { ftuStage, error: userSettingError } = useNotifiUserSettingContext();
+  const {
+    ftuStage,
+    error: userSettingError,
+    isLoading: isLoadingFtu,
+  } = useNotifiUserSettingContext();
   const [CardModalView, setCardModalView] = useState<CardModalView | null>(
     null,
   );
@@ -60,24 +64,25 @@ export const NotifiCardModal: React.FC<NotifiCardModalProps> = (props) => {
   }
 
   useEffect(() => {
-    if (frontendClientStatus.isAuthenticated) {
-      if (!ftuStage || (!!ftuStage && ftuStage !== FtuStage.Done)) {
+    if (!frontendClientStatus.isInitialized) return;
+    if (frontendClientStatus.isExpired) {
+      setCardModalView('expiry');
+      return;
+    }
+
+    if (!frontendClientStatus.isAuthenticated) {
+      return setCardModalView('connect');
+    }
+
+    if (frontendClientStatus.isAuthenticated && !isLoadingFtu) {
+      if (ftuStage !== FtuStage.Done) {
         setCardModalView('ftu');
         return;
       }
       setCardModalView('Inbox');
       return;
     }
-    if (frontendClientStatus.isExpired) {
-      setCardModalView('expiry');
-      return;
-    }
-    if (frontendClientStatus.isInitialized) {
-      setCardModalView('connect');
-      return;
-    }
-    setError(new Error('ERROR: Failed to load client'));
-  }, [frontendClientStatus, ftuStage]);
+  }, [frontendClientStatus, ftuStage, isLoadingFtu]);
 
   useEffect(() => {
     if (clientError || userSettingError || error) {
@@ -89,7 +94,7 @@ export const NotifiCardModal: React.FC<NotifiCardModalProps> = (props) => {
       return;
     }
     setGlobalError(null);
-  }, [userSettingError, error]);
+  }, [userSettingError, error, isLoadingFtu]);
 
   if (globalError) {
     return <ErrorGlobal />;
