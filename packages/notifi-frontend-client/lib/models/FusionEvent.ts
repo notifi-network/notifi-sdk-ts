@@ -53,8 +53,12 @@ export type RequiredParserVariable = {
   variableDescription: string;
 };
 
-export type ValueType = 'integer' | 'price' | 'percentage' | 'string';
-
+// price is deprecated: use float or integer with {prefix: '$', suffix: ''} as userInputParam.prefixAndSuffix
+export type ValueType = 'integer' | 'price' | 'percentage' | 'string' | 'float';
+export type PrefixAndSuffix = {
+  prefix: string;
+  suffix: string;
+};
 /**
  * @param UiType - `radio` or `button` (scalable). Define what component should be rendered in Card topic subscription view.
  * @param defaultValue - The value for default alert subscription
@@ -67,6 +71,7 @@ export type UserInputParam<T extends UiType> = {
   options: (string | number)[];
   defaultValue: string | number;
   allowCustomInput?: boolean;
+  prefixAndSuffix?: PrefixAndSuffix;
 };
 
 export type UiType = 'radio' | 'button';
