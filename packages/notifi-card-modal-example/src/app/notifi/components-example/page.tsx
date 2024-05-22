@@ -3,6 +3,7 @@
 import {
   NotifiCardModal,
   NotifiCardModalProps,
+  useNotifiFrontendClientContext,
   useNotifiHistoryContext,
 } from '@notifi-network/notifi-react';
 import '@notifi-network/notifi-react/dist/index.css';
@@ -12,6 +13,7 @@ import React from 'react';
 const NotifiComponentExample = () => {
   const [isCardModalOpen, setIsCardModalOpen] = React.useState(false);
   const { unreadCount, isLoading } = useNotifiHistoryContext();
+  const { frontendClientStatus } = useNotifiFrontendClientContext();
   const copy: NotifiCardModalProps['copy'] = {
     Ftu: {
       FtuTargetEdit: {
@@ -36,7 +38,7 @@ const NotifiComponentExample = () => {
       },
     },
   };
-  if (isLoading) return null;
+  // if (frontendClientStatus.isAuthenticated && isLoading) return null;
 
   return (
     <div>
