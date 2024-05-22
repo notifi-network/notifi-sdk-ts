@@ -1,5 +1,5 @@
 import { Icon } from '@/assets/Icon';
-import { useNotifiTargetContext } from '@/context/NotifiTargetContext';
+import { useNotifiTargetContext } from '@notifi-network/notifi-react';
 import React from 'react';
 
 import { Toggle } from './Toggle';
@@ -14,12 +14,11 @@ export const InputFieldDiscord: React.FC<InputFieldDiscordProps> = ({
   isEditable,
 }) => {
   const {
-    updateTarget,
+    updateTargetInputs,
+    renewTargetGroup,
     targetDocument: {
-      targetData,
-      targetInputForm: { email, telegram },
+      targetInputs: { email, telegram, discord },
     },
-    updateUseDiscord,
   } = useNotifiTargetContext();
 
   return (
@@ -41,11 +40,11 @@ export const InputFieldDiscord: React.FC<InputFieldDiscordProps> = ({
         </div>
         <Toggle
           disabled={disabled || !!telegram.error || !!email.error}
-          checked={targetData.discord.useDiscord}
+          checked={discord}
           onChange={() => {
-            isEditable
-              ? updateTarget('discord')
-              : updateUseDiscord(!targetData.discord.useDiscord);
+            updateTargetInputs('discord', !discord);
+            if (isEditable)
+              renewTargetGroup({ target: 'discord', value: !discord });
           }}
         />
       </div>
