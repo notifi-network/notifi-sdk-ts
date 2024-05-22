@@ -1,50 +1,64 @@
 'use client';
 
-import { useNotifiHistory } from '@/hooks/useNotifiHistory';
-import { Types } from '@notifi-network/notifi-graphql';
+import {
+  HistoryItem,
+  useNotifiHistoryContext,
+} from '@notifi-network/notifi-react';
 import Image from 'next/image';
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 
 import { HistoryListRow } from './HistoryListRow';
+import { LoadingAnimation } from './LoadingAnimation';
 import { LoadingSkeloton } from './LoadingSkeloton';
 
 type HistoryListProps = {
-  setHistoryDetailEntry: Dispatch<
-    SetStateAction<Types.FusionNotificationHistoryEntryFragmentFragment | null>
-  >;
-  historyDetailEntry: Types.FusionNotificationHistoryEntryFragmentFragment | null;
+  setHistoryDetailEntry: Dispatch<SetStateAction<HistoryItem | null>>;
+  historyDetailEntry: HistoryItem | null;
 };
 
 export const HistoryList: React.FC<HistoryListProps> = ({
   setHistoryDetailEntry,
   historyDetailEntry,
 }) => {
+  const [isLoadingMoreItems, setIsLoadingMoreItems] = useState(false);
   const {
-    isLoading,
-    cursorInfo,
-    nodes,
+    isLoading: isLoadingHistoryItems,
+    historyItems,
+    hasNextPage,
+    getHistoryItems,
     unreadCount,
-    setUnreadCount,
-    getNotificationHistory,
-  } = useNotifiHistory(true);
+  } = useNotifiHistoryContext();
 
-  // useEffect(() => {
-  //   // TODO: TBD feature
-  //   return () => {
-  //     if (!historyLoaded.current) return;
-  //     // markNotifiHistoryAsRead();
-  //   };
-  // }, []);
+  const mainRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // NOTE: Light weight implementation of infinite scroll
+    const scrollDetectedAction = async () => {
+      const scrollTop = mainRef.current?.scrollTop ?? 0;
+      const scrollHeight = mainRef.current?.scrollHeight ?? 0;
+      const offsetHeight = mainRef.current?.offsetHeight ?? 0;
+      const edgeBuffer = 10; // this buffer vary based on the css config (border, padding, margin size)
+      if (scrollTop > scrollHeight - offsetHeight - edgeBuffer) {
+        if (isLoadingHistoryItems || !hasNextPage) return;
+        setIsLoadingMoreItems(true);
+        await getHistoryItems();
+        setIsLoadingMoreItems(false);
+      }
+    };
+    mainRef.current?.addEventListener('scroll', scrollDetectedAction);
+    return () =>
+      mainRef.current?.removeEventListener('scroll', scrollDetectedAction);
+  }, [hasNextPage, isLoadingHistoryItems]);
 
   return (
     <div
       className={`
         ${historyDetailEntry ? 'hidden' : ''} 
-        ${isLoading ? 'h-full' : ''}
+        ${isLoadingHistoryItems ? 'h-full' : ''}
         flex flex-col relative h-max-full overflow-y-auto
       `}
     >
-      {nodes.length > 0 ? (
+      {historyItems.length > 0 ? (
         <div className={`p-6 border-b border-gray-200 border-opacity-20`}>
           <div className="m-auto font-medium text-base text-notifi-text">
             Inbox
@@ -57,14 +71,14 @@ export const HistoryList: React.FC<HistoryListProps> = ({
         </div>
       ) : null}
 
-      {isLoading && (
+      {isLoadingHistoryItems && !isLoadingMoreItems && (
         <div className="mt-8 ml-20 bg-notifi-card rounded-3xl">
           <LoadingSkeloton />
           <LoadingSkeloton />
           <LoadingSkeloton />
         </div>
       )}
-      {nodes.length === 0 && !isLoading ? (
+      {historyItems.length === 0 && !isLoadingHistoryItems ? (
         <div className="flex flex-col justify-start h-[88vh] items-center pt-48 px-2">
           <Image
             src={'/logos/empty-inbox.png'}
@@ -82,23 +96,23 @@ export const HistoryList: React.FC<HistoryListProps> = ({
           </div>
         </div>
       ) : null}
-      <div className="min-h-0 overflow-y-auto grow">
-        {nodes.map((node) => (
+      <div ref={mainRef} className="min-h-0 overflow-y-auto grow">
+        {historyItems.map((node) => (
           <HistoryListRow
             key={node.id}
             historyDetailEntry={node}
-            setHistoryDetailEntry={setHistoryDetailEntry}
-            setUnreadCount={setUnreadCount}
+            onClick={() => setHistoryDetailEntry(node)}
           />
         ))}
-        <div
-          className={` flex justify-center my-4 text-lg text-notifi-text font-semibold cursor-pointer ${
-            !cursorInfo.hasNextPage ? 'hidden' : ''
-          }`}
-          onClick={() => getNotificationHistory()}
-        >
-          <div>Load more</div>
-        </div>
+        {isLoadingMoreItems ? (
+          <div
+            className={` flex justify-center my-4 text-lg text-notifi-text font-semibold cursor-pointer ${
+              !hasNextPage ? 'hidden' : ''
+            }`}
+          >
+            <LoadingAnimation />
+          </div>
+        ) : null}
       </div>
     </div>
   );

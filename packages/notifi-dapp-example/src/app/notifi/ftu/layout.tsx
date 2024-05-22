@@ -15,7 +15,7 @@ export default function NotifiFTU({ children }: { children: React.ReactNode }) {
             width={115}
             height={24}
             unoptimized={true}
-            alt="Injective"
+            alt="GMX logo"
           />
         </div>
       </div>

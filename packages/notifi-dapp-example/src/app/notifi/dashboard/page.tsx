@@ -19,6 +19,7 @@ export default function NotifiDashboard() {
   const { unVerifiedTargets } = useNotifiTargetContext();
   const { selectedWallet, wallets } = useWallets();
   const [isSideBarOpen, setIsSideBarOpen] = useState<boolean>(false);
+  const [isInHistoryDetail, setIsInHistoryDetail] = useState<boolean>(false);
 
   if (!selectedWallet || !wallets[selectedWallet].walletKeys) return null;
 
@@ -26,7 +27,7 @@ export default function NotifiDashboard() {
   const keys = wallets[selectedWallet].walletKeys;
 
   if (keys) {
-    accountAddress = isEVMChain(keys) ? keys.hex : keys.bech32;
+    accountAddress = isEVMChain(keys) ? keys.hex?.toLowerCase() : keys.bech32;
   }
 
   if (!accountAddress) return;
@@ -60,22 +61,27 @@ export default function NotifiDashboard() {
           />
           <Image
             src="/logos/gmx-logo.png"
-            width={115}
-            height={24}
+            width={100}
+            height={21}
             unoptimized={true}
             alt="gmx"
-            className="mt-10 mb-6"
+            className="mt-5 mb-4"
           />
         </div>
         {unVerifiedTargets.length > 0 && cardView === 'history' ? (
-          <VerifyBanner setCardView={setCardView} />
+          <VerifyBanner
+            setCardView={setCardView}
+            isInHistoryDetail={isInHistoryDetail}
+          />
         ) : null}
         <div
           className={`flex flex-col grow bg-notifi-card-bg rounded-3xl md:mb-10 mt-3 md:mr-10 ${
             cardView === 'alertSubscription' ? '' : 'min-h-0'
           }`}
         >
-          {cardView === 'history' ? <DashboardHistory /> : null}
+          {cardView === 'history' ? (
+            <DashboardHistory setIsInHistoryDetail={setIsInHistoryDetail} />
+          ) : null}
           {cardView === 'destination' ? <DashboardDestinations /> : null}
           {cardView === 'alertSubscription' ? (
             <TopicList title={'Manage the alerts you want to receive'} />

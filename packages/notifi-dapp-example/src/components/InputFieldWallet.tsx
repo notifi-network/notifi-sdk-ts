@@ -47,8 +47,7 @@ export const InputFieldWallet: React.FC<InputFieldWalletProps> = ({
 
               <div className="-ml-4 w-[194px] bg-black text-white text-start border border-[#565A8D] text-sm font-medium rounded-md p-4 hidden absolute z-10 bottom-[102%] group-hover:block">
                 Wallet messages are powered by XMTP and delivered natively into
-                Coinbase Wallet. Download the Coinbase Wallet App or Browser
-                Extension to receive wallet alerts!
+                Coinbase Wallet. Download the Coinbase Wallet App.
               </div>
             </button>
           </div>

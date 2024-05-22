@@ -25,7 +25,7 @@ export default function NotifiSignup({
             width={115}
             height={24}
             unoptimized={true}
-            alt="Injective"
+            alt="GMX logo"
           />
         </div>
       </div>

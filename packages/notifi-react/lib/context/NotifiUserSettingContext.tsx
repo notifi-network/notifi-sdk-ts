@@ -36,17 +36,21 @@ export const NotifiUserSettingContextProvider: FC<PropsWithChildren> = ({
   const [ftuStage, setFtuStage] = useState<FtuStage | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const isInitialLoaded = React.useRef(false);
 
   useEffect(() => {
-    if (!frontendClientStatus.isAuthenticated) return setIsLoading(false);
-    setIsLoading(true);
-    frontendClient
-      .getUserSettings()
-      .then((userSettings) => {
-        setFtuStage(userSettings?.ftuStage ?? null);
-      })
-      .catch((err) => setError(err))
-      .finally(() => setIsLoading(false));
+    if (frontendClientStatus.isAuthenticated && !isInitialLoaded.current) {
+      if (isLoading && isInitialLoaded.current) return;
+      isInitialLoaded.current = true;
+      setIsLoading(true);
+      frontendClient
+        .getUserSettings()
+        .then((userSettings) => {
+          setFtuStage(userSettings?.ftuStage ?? null);
+        })
+        .catch((err) => setError(err))
+        .finally(() => setIsLoading(false));
+    }
   }, [frontendClientStatus.isAuthenticated]);
 
   const updateFtuStage = useCallback(

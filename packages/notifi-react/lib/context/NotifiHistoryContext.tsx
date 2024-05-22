@@ -15,10 +15,11 @@ type CursorInfo = Readonly<{
   endCursor?: string | undefined;
 }>;
 
-export type historyItem = {
+export type HistoryItem = {
   id: string;
   timestamp: string; // in miniSec
   icon: string;
+  customIconUrl: string;
   topic: string;
   subject: string;
   message: string;
@@ -30,7 +31,7 @@ export type NotifiHistoryContextType = {
   error: Error | null;
   getHistoryItems: (initialLoad?: boolean) => Promise<void>;
   markAsRead: (ids?: string[]) => Promise<void>;
-  historyItems: historyItem[];
+  historyItems: HistoryItem[];
   unreadCount: number;
   hasNextPage: boolean;
 };
@@ -46,7 +47,7 @@ export type NotifiHistoryProviderProps = {
 export const NotifiHistoryContextProvider: FC<
   PropsWithChildren<NotifiHistoryProviderProps>
 > = ({ children, notificationCountPerPage = 20 }) => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
   const { frontendClient, frontendClientStatus } =
     useNotifiFrontendClientContext();
@@ -55,7 +56,7 @@ export const NotifiHistoryContextProvider: FC<
     endCursor: undefined,
   });
   const [unreadCount, setUnreadCount] = useState<number | null>(null);
-  const [historyItems, setHistoryItems] = useState<historyItem[]>([]);
+  const [historyItems, setHistoryItems] = useState<HistoryItem[]>([]);
   const { cardConfig } = useNotifiTenantConfigContext();
   const isInitialLoaded = React.useRef(false);
 
@@ -99,9 +100,10 @@ export const NotifiHistoryContextProvider: FC<
         setError(new Error('No more notification history to fetch'));
         return;
       }
-      if (isLoading) {
+      if (isLoading && isInitialLoaded.current) {
         return;
       }
+      isInitialLoaded.current = true;
       setIsLoading(true);
       try {
         const result = await frontendClient.getFusionNotificationHistory({
@@ -146,7 +148,6 @@ export const NotifiHistoryContextProvider: FC<
       !isInitialLoaded.current &&
       cardConfig
     ) {
-      isInitialLoaded.current = true;
       getHistoryItems(true);
       frontendClient.getUnreadNotificationHistoryCount().then(({ count }) => {
         setUnreadCount(count);
@@ -247,7 +248,7 @@ export const useNotifiHistoryContext = () =>
 
 const parseHistoryItem = (
   history: Types.FusionNotificationHistoryEntryFragmentFragment,
-): historyItem => {
+): HistoryItem => {
   const eventDetails = history.detail;
   if (!eventDetails || eventDetails.__typename !== 'GenericEventDetails') {
     return {
@@ -255,6 +256,7 @@ const parseHistoryItem = (
       timestamp: '',
       topic: 'Unsupported Notification Type',
       icon: '',
+      customIconUrl: '',
       subject: 'Unsupported Notification Type',
       message:
         'Invalid notification history detail: only support GenericEventDetails',
@@ -269,6 +271,7 @@ const parseHistoryItem = (
     subject: eventDetails.notificationTypeName,
     message: eventDetails.genericMessageHtml ?? eventDetails.genericMessage,
     icon: eventDetails.icon,
+    customIconUrl: eventDetails.customIconUrl ?? '',
     read: history.read,
   };
 };

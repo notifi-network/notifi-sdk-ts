@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'GMX',
-  description: 'Injective x Notifi Inbox',
+  description: 'GMX x Notifi Inbox',
 };
 
 export default function RootLayout({

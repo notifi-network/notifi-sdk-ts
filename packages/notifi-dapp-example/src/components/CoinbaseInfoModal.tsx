@@ -32,8 +32,8 @@ export const CoinbaseInfoModal: React.FC<CoinbaseInfoModalProps> = ({
 
             <div className="flex flex-col justify-center items-center mt-5 pt-0.5 text-base font-medium text-notifi-text-medium">
               <p className="text-center sm:max-w-lg">
-                In your Coinbase Wallet app, click on the message icon in the
-                top right of the screen. Then click ‘Start Messaging’
+                In your Coinbase Wallet mobile app, click on the message icon in
+                the top right of the screen. Then click ‘Start Messaging’
               </p>
             </div>
 

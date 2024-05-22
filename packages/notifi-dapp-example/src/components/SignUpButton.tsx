@@ -14,11 +14,15 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 export type NotifiSignUpButtonProps = Readonly<{
   buttonText: string;
   data: CardConfigItemV1;
+  isLoading: boolean;
+  setIsLoading: (isLoading: boolean) => void;
 }>;
 
 export const SignUpButton: React.FC<NotifiSignUpButtonProps> = ({
   buttonText,
   data,
+  isLoading,
+  setIsLoading,
 }) => {
   const eventTypes = data.eventTypes;
 
@@ -29,7 +33,6 @@ export const SignUpButton: React.FC<NotifiSignUpButtonProps> = ({
     isLoading: isLoadingFtu,
   } = useNotifiUserSettingContext();
   const { cardConfig, fusionEventTopics } = useNotifiTenantConfigContext();
-  const [isLoading, setIsLoading] = useState(false);
 
   const {
     renewTargetGroup,

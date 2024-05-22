@@ -81,11 +81,10 @@ export const MobilePromptModal: React.FC<MobilePromptModalProps> = ({
               </div>
               <div className="flex flex-col items-center justify-center">
                 <div className="border rounded-2xl h-16 w-80 mt-6 text-notifi-primary-text text-md font-semibold flex items-center justify-center">
-                  injective.notifi.network
                   <Icon
                     id="copy-btn"
                     className="text-notifi-primary-text cursor-pointer"
-                    onClick={() => handleCopy('injective.notifi.network')}
+                    onClick={() => handleCopy('')}
                   />
                 </div>
 
