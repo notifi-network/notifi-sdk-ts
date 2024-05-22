@@ -88,6 +88,9 @@
   visibility: hidden;
 }
 
+.notifi-ftu-alert-edit-button:disabled,
+.notifi-ftu-target-edit-button:disabled,
+.notifi-ftu-target-list-button:disabled,
 .notifi-ftu-alert-list-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
@@ -124,14 +127,12 @@
   cursor: pointer;
   position: relative;
 }
+
+.notifi-ftu-alert-edit-button-text.hidden,
+.notifi-ftu-target-list-button-text.hidden,
 .notifi-ftu-alert-list-button-text.hidden,
 .notifi-ftu-target-edit-button-text.hidden {
   visibility: hidden;
-}
-
-.notifi-ftu-target-edit-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
 }
 
 /* FtuTargetList styles */

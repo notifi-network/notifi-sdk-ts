@@ -31,7 +31,9 @@ export const Inbox: React.FC<InboxProps> = (props) => {
     <div className={clsx('notifi-inbox', props.classNames?.container)}>
       <div className={clsx('notifi-inbox-views', props.classNames?.inboxViews)}>
         <InboxHistory isHidden={inboxView !== InboxView.InboxHistory} />
-        {inboxView === InboxView.InboxConfigTopic ? <InboxConfigTopic /> : null}
+        {inboxView === InboxView.InboxConfigTopic ? (
+          <InboxConfigTopic {...{ setInboxView }} />
+        ) : null}
         {inboxView === InboxView.InboxConfigTargetList ? (
           <InboxConfigTargetEdit />
         ) : null}
