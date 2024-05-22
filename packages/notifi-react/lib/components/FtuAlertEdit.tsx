@@ -2,8 +2,9 @@ import clsx from 'clsx';
 import React from 'react';
 
 import { FtuStage, useNotifiUserSettingContext } from '../context';
-import { defaultCopy } from '../utils/constants';
+import { defaultCopy, defaultLoadingAnimationStyle } from '../utils/constants';
 import { FtuView } from './Ftu';
+import { LoadingAnimation } from './LoadingAnimation';
 import { NavHeader } from './NavHeader';
 import { TopicList } from './TopicList';
 
@@ -12,6 +13,7 @@ export type FtuAlertEditProps = {
     container?: string;
     main?: string;
     button?: string;
+    loadingSpinner?: React.CSSProperties;
   };
   copy?: {
     headerTitle?: string;
@@ -22,6 +24,18 @@ export type FtuAlertEditProps = {
 
 export const FtuAlertEdit: React.FC<FtuAlertEditProps> = (props) => {
   const { updateFtuStage } = useNotifiUserSettingContext();
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  const loadingSpinnerStyle: React.CSSProperties =
+    props.classNames?.loadingSpinner ?? defaultLoadingAnimationStyle.spinner;
+
+  const onClick = async () => {
+    setIsLoading(true);
+    await updateFtuStage(FtuStage.Done);
+    props.setFtuView(null);
+    setIsLoading(false);
+  };
+
   return (
     <div className={clsx('notifi-ftu-alert-edit', props.classNames?.container)}>
       <NavHeader
@@ -43,9 +57,18 @@ export const FtuAlertEdit: React.FC<FtuAlertEditProps> = (props) => {
           'notifi-ftu-alert-edit-button',
           props.classNames?.button,
         )}
-        onClick={async () => updateFtuStage(FtuStage.Done)}
+        disabled={isLoading}
+        onClick={onClick}
       >
-        <div>
+        {isLoading ? (
+          <LoadingAnimation type="spinner" {...loadingSpinnerStyle} />
+        ) : null}
+        <div
+          className={clsx(
+            'notifi-ftu-alert-edit-button-text',
+            isLoading && 'hidden',
+          )}
+        >
           {props.copy?.buttonText ?? defaultCopy.ftuAlertEdit.buttonText}
         </div>
       </button>

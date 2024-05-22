@@ -1,3 +1,4 @@
+import { NotifiFrontendClient } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import React from 'react';
 
@@ -31,17 +32,23 @@ export type ConnectProps = {
 
 export const Connect: React.FC<ConnectProps> = (props) => {
   const { login } = useNotifiFrontendClientContext();
-  const {
-    renewTargetGroup,
-    targetDocument: { targetGroupId },
-  } = useNotifiTargetContext();
+  const { renewTargetGroup } = useNotifiTargetContext();
   const [isLoading, setIsLoading] = React.useState(false);
   const loadingSpinnerStyle: React.CSSProperties =
     props.classNames?.loadingSpinner ?? defaultLoadingAnimationStyle.spinner;
   const onClick = async () => {
     setIsLoading(true);
-    await login();
-    !targetGroupId && (await renewTargetGroup());
+    const frontendClient = await login();
+    if (!frontendClient) return;
+    const isDefaultTargetExist = await validateDefaultTargetGroup(
+      // TODO: Handle error
+      frontendClient,
+    );
+
+    if (!isDefaultTargetExist) {
+      await renewTargetGroup();
+    }
+
     setIsLoading(false);
   };
   return (
@@ -87,4 +94,16 @@ export const Connect: React.FC<ConnectProps> = (props) => {
       </div>
     </div>
   );
+};
+
+// Utils
+
+const validateDefaultTargetGroup = async (
+  frontendClient: NotifiFrontendClient,
+) => {
+  // NOTE: this extra request is necessary as the targetGroupId state in NotifiTargetContext will not be updated constantly right after login
+  const targetGroup = (await frontendClient?.fetchData())?.targetGroup?.find(
+    (group) => group?.name === 'Default',
+  );
+  return !!targetGroup;
 };
