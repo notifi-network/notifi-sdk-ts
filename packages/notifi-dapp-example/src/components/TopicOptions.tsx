@@ -177,6 +177,15 @@ export const TopicOptions = <T extends TopicRowCategory>(
                   ) {
                     setErrorMessage('Please enter a value between 1 and 99');
                   }
+                } else {
+                  if (
+                    isUserInputValid(
+                      props.userInputParam.kind,
+                      evt.target.value,
+                    )
+                  ) {
+                    selectOrInputValue(evt.target.value);
+                  }
                 }
                 setCustomInput((prev) => {
                   if (
@@ -198,8 +207,8 @@ export const TopicOptions = <T extends TopicRowCategory>(
                   ) {
                     return;
                   }
+                  selectOrInputValue(evt.target.value);
                 }
-                selectOrInputValue(evt.target.value);
               }}
               placeholder={props.placeholder ?? 'Custom'}
               value={customInput}

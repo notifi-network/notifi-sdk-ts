@@ -2,10 +2,10 @@
 
 import { CardView } from '@/app/notifi/dashboard/page';
 import { Icon } from '@/assets/Icon';
-import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import Image from 'next/image';
-import { Dispatch, FC, SetStateAction, useState } from 'react';
+import { Dispatch, FC, SetStateAction } from 'react';
 
+import Disconnect from './Disconnect';
 import { PoweredByNotifi } from './PoweredByNotifi';
 
 export type DashboardSideBarProps = {
@@ -16,14 +16,10 @@ export type DashboardSideBarProps = {
 };
 
 export const DashboardSideBar: FC<DashboardSideBarProps> = ({
-  accountAddress,
   cardView,
   setCardView,
   setIsOpen,
 }) => {
-  const { wallets, selectedWallet } = useWallets();
-  const [isWalletMenuOpen, setIsWalletMenuOpen] = useState<boolean>(false);
-
   return (
     <div
       className={`fixed grow-0 md:w-80 w-screen h-screen px-7 z-[5] ${
@@ -113,39 +109,7 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
 
           <div className="w-full border border-gray-200 border-opacity-20 my-6"></div>
 
-          <div className={`rounded-[0.75rem] overflow-hidden`}>
-            <div
-              className={`cursor-pointer flex px-4 text-notifi-tab-unselected-text w-64 py-2 ${
-                isWalletMenuOpen
-                  ? 'bg-notifi-wallet-menu-card-bg border border-transparent'
-                  : ''
-              } 
-              `}
-              onClick={() => setIsWalletMenuOpen(!isWalletMenuOpen)}
-            >
-              <Icon
-                id={'user-protrait'}
-                className={`text-notifi-icon-unselected  mt-[0.125rem]`}
-              />
-              <div className="ml-5">
-                {accountAddress.slice(0, 6)} ... {accountAddress.slice(-6)}
-              </div>
-            </div>
-            {isWalletMenuOpen ? (
-              <div
-                className={`flex px-4 text-notifi-tab-unselected-text w-64 py-2 bg-notifi-wallet-menu-card-bg`}
-                onClick={() => {
-                  if (!selectedWallet) return;
-                  if (selectedWallet) {
-                    wallets[selectedWallet].disconnect();
-                  }
-                }}
-              >
-                <Icon id={'leave'} className={`text-notifi-icon-unselected`} />
-                <div className="ml-5 cursor-pointer">disconnect</div>
-              </div>
-            ) : null}
-          </div>
+          <Disconnect />
         </div>
         <div>
           <div className="py-1.5 px-3 bg-notifi-destination-card-bg rounded-lg h-7 bg-opacity-40">

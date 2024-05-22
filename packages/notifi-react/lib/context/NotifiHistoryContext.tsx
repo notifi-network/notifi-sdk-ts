@@ -15,10 +15,11 @@ type CursorInfo = Readonly<{
   endCursor?: string | undefined;
 }>;
 
-export type historyItem = {
+export type HistoryItem = {
   id: string;
   timestamp: string; // in miniSec
   icon: string;
+  customIconUrl: string;
   topic: string;
   subject: string;
   message: string;
@@ -30,7 +31,7 @@ export type NotifiHistoryContextType = {
   error: Error | null;
   getHistoryItems: (initialLoad?: boolean) => Promise<void>;
   markAsRead: (ids?: string[]) => Promise<void>;
-  historyItems: historyItem[];
+  historyItems: HistoryItem[];
   unreadCount: number;
   hasNextPage: boolean;
 };
@@ -55,7 +56,7 @@ export const NotifiHistoryContextProvider: FC<
     endCursor: undefined,
   });
   const [unreadCount, setUnreadCount] = useState<number | null>(null);
-  const [historyItems, setHistoryItems] = useState<historyItem[]>([]);
+  const [historyItems, setHistoryItems] = useState<HistoryItem[]>([]);
   const { cardConfig } = useNotifiTenantConfigContext();
   const isInitialLoaded = React.useRef(false);
 
@@ -247,7 +248,7 @@ export const useNotifiHistoryContext = () =>
 
 const parseHistoryItem = (
   history: Types.FusionNotificationHistoryEntryFragmentFragment,
-): historyItem => {
+): HistoryItem => {
   const eventDetails = history.detail;
   if (!eventDetails || eventDetails.__typename !== 'GenericEventDetails') {
     return {
@@ -255,6 +256,7 @@ const parseHistoryItem = (
       timestamp: '',
       topic: 'Unsupported Notification Type',
       icon: '',
+      customIconUrl: '',
       subject: 'Unsupported Notification Type',
       message:
         'Invalid notification history detail: only support GenericEventDetails',
@@ -269,6 +271,7 @@ const parseHistoryItem = (
     subject: eventDetails.notificationTypeName,
     message: eventDetails.genericMessageHtml ?? eventDetails.genericMessage,
     icon: eventDetails.icon,
+    customIconUrl: eventDetails.customIconUrl ?? '',
     read: history.read,
   };
 };
