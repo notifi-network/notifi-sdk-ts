@@ -11,6 +11,7 @@
 @import url('./loading-animation.css');
 @import url('./inbox.css');
 @import url('./history.css');
+@import url('./target-state-banner.css');
 
 :root {
   /* Color variables */
@@ -18,6 +19,7 @@
   --notifi-color-grey2: #323240;
   --notifi-color-grey3: #80829d;
   --notifi-color-white: #fff;
+  --notifi-color-black: #000;
   --notifi-color-eggshell: #f5f6fb;
   --notifi-color-seaglass: #9aa3ff;
   --notifi-color-secondary-light: #5260f0;
@@ -31,6 +33,7 @@
   --notifi-color-dusk: #80829d;
   --notifi-color-heather: #b6b8d5;
   --notifi-color-text-light: #868fa6;
+  --notifi-color-rose: #c78186;
 }
 
 .notifi-theme-dark {
@@ -67,6 +70,9 @@
   --notifi-history-row-subject-text: var(--notifi-color-heather);
   --notifi-history-detail-timestamp-text: var(--notifi-color-heather);
   --notifi-history-list-empty-description-text: var(--notifi-color-heather);
+  --notifi-target-state-banner-bg: var(--notifi-color-grey2);
+  --notifi-target-state-verify-icon-color: var(--notifi-color-white);
+  --notifi-inbox-config-topic-title-text: var(--notifi-color-heather);
 }
 
 .notifi-theme-light {
@@ -103,4 +109,7 @@
   --notifi-history-row-subject-text: var(--notifi-color-dusk);
   --notifi-history-detail-timestamp-text: var(--notifi-color-dusk);
   --notifi-history-list-empty-description-text: var(--notifi-color-dusk);
+  --notifi-target-state-banner-bg: var(--notifi-color-white);
+  --notifi-target-state-verify-icon-color: var(--notifi-color-black);
+  --notifi-inbox-config-topic-title-text: var(--notifi-color-dusk);
 }
