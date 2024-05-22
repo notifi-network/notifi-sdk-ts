@@ -29,7 +29,7 @@ export default function Disconnect() {
 
       <div className={`relative z-20 rounded-[0.75rem] overflow-hidden`}>
         <div
-          className={`cursor-pointer flex gap-x-5 px-4 text-notifi-tab-unselected-text w-52 py-2 ${
+          className={`cursor-pointer flex gap-x-5 px-4 text-notifi-tab-unselected-text w-56 py-2 ${
             isWalletMenuOpen
               ? 'bg-notifi-wallet-menu-card-bg border border-transparent'
               : ''
@@ -48,7 +48,7 @@ export default function Disconnect() {
 
         {isWalletMenuOpen ? (
           <div
-            className={`cursor-pointer flex gap-x-5 px-4 text-notifi-tab-unselected-text w-52 py-2 bg-notifi-wallet-menu-card-bg border-t border-[#565A8D]`}
+            className={`cursor-pointer flex gap-x-5 px-4 text-notifi-tab-unselected-text w-56 py-2 bg-notifi-wallet-menu-card-bg border-t border-[#565A8D]`}
             onClick={() => {
               if (keys) wallets[selectedWallet].disconnect();
             }}
