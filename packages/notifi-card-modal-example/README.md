@@ -1,36 +1,41 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Notifi Card Modal Example
+
+This is a working example of `@notifi-network/notifi-react` package. It aims to demonstrate:
+
+- The usage of Notifi Context
+- The usage of `NotifiCardModal` component
+
+> This example is bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+
+## Prerequisites
+
+1. ensure the your Node.js 18 or later (with its corresponding npm)
+
+2. set up the `.env.local` file by copying the `.env.local.example` file and fill in the required values
 
 ## Getting Started
 
-First, run the development server:
+First, clone `notifi-sdk-ts` mono repository and install the dependencies:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/notifi-network/notifi-sdk-ts.git
+
+npm install
+
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then, start the development server of `@notifi-network/notifi-card-modal-example` using lerna cli tool
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npx lerna --scope=@notifi-network/notifi-card-modal-example run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+🚀 Open [http://localhost:3000](http://localhost:3000) with your browser to get started. 🚀
 
-## Learn More
+> For more detail about the usage of `@notifi-network/notifi-react` package, checkout the [documentation]() of `@notifi-network/notifi-react`
+> Make sure the blockchain network and the wallet setting are correctly configured as per your expectation on `packages/notifi-card-modal-example/src/context/NotifiContextWrapper.tsx`
+> Feel free to add more preferred wallets by implementing new case in `NtofiContextWrapper.tsx`
 
-To learn more about Next.js, take a look at the following resources:
+## TODO
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- Cypress component test

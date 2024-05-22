@@ -1,13 +1,9 @@
-'useClient';
-
-import { NotifiCardModalContextWrapper } from '@/context/NotifiContext';
+import { NotifiContextWrapper } from '@/context/NotifiContextWrapper';
 
 export default function NotifiLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <NotifiCardModalContextWrapper>{children}</NotifiCardModalContextWrapper>
-  );
+  return <NotifiContextWrapper>{children}</NotifiContextWrapper>;
 }
