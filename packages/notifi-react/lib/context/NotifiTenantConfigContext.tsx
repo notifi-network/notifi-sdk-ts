@@ -59,6 +59,10 @@ export const NotifiTenantConfigContextProvider: FC<
       .finally(() => setIsLoading(false));
   }, [frontendClientStatus]);
 
+  if (!cardConfig) {
+    return null;
+  }
+
   return (
     <NotifiTenantConfigContext.Provider
       value={{ cardConfig, inputs, isLoading, error, fusionEventTopics }}

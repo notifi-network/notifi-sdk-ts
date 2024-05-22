@@ -6,6 +6,7 @@ type Props = {
   isButton?: boolean;
   buttonCopy?: string;
   isSent?: boolean;
+  type?: string;
 };
 
 export const DestinationInfoPrompt: React.FC<Props> = ({
@@ -14,6 +15,7 @@ export const DestinationInfoPrompt: React.FC<Props> = ({
   isButton = false,
   buttonCopy,
   isSent,
+  type,
 }) => {
   if (!onClick) {
     return <label>{infoPromptMessage}</label>;
@@ -35,7 +37,7 @@ export const DestinationInfoPrompt: React.FC<Props> = ({
           onClick={() => onClick()}
           className={`text-sm font-semibold ${
             isSent ? 'text-notifi-text-light' : 'text-notifi-toggle-on-bg'
-          } ml-6 cursor-pointer`}
+          } ${type === 'email' ? '' : 'ml-6'} cursor-pointer`}
         >
           <label className="cursor-pointer">{infoPromptMessage}</label>
         </a>

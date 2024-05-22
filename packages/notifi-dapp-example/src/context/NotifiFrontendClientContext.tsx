@@ -127,9 +127,9 @@ export const useNotifiFrontendClientContext = () =>
 const getFrontendConfigInput = (
   tenantId: string,
   env?: NotifiEnvironment,
-  params: WalletWithSignParams,
+  params?: WalletWithSignParams,
 ): ConfigFactoryInput => {
-  if ('accountAddress' in params) {
+  if (params && 'accountAddress' in params) {
     return {
       account: {
         address: params.accountAddress,
@@ -139,7 +139,7 @@ const getFrontendConfigInput = (
       walletBlockchain: params.walletBlockchain,
       env,
     };
-  } else if ('signingPubkey' in params) {
+  } else if (params && 'signingPubkey' in params) {
     return {
       account: {
         publicKey: params.walletPublicKey,
@@ -153,10 +153,10 @@ const getFrontendConfigInput = (
   } else {
     return {
       account: {
-        publicKey: params.walletPublicKey,
+        publicKey: params?.walletPublicKey ?? '',
       },
       tenantId,
-      walletBlockchain: params.walletBlockchain,
+      walletBlockchain: params?.walletBlockchain ?? 'AVALANCHE',
       env,
     };
   }

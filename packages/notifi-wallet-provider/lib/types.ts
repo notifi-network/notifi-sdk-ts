@@ -33,6 +33,7 @@ export abstract class NotifiWallet {
   abstract signArbitrary?: KeplrSignMessage | MetamaskSignMessage;
   abstract connect?: () => Promise<Partial<WalletKeysBase> | null>;
   abstract disconnect?: () => void;
+  abstract websiteURL: string;
 }
 
 export type NotifiWalletStorage = {
@@ -52,6 +53,7 @@ export class MetamaskWallet implements NotifiWallet {
     public signArbitrary: MetamaskSignMessage,
     public connect: () => Promise<MetamaskWalletKeys | null>,
     public disconnect: () => void,
+    public websiteURL: string,
   ) {}
 }
 export class CoinbaseWallet extends MetamaskWallet {}
@@ -73,6 +75,7 @@ export class KeplrWallet implements NotifiWallet {
     public signArbitrary: KeplrSignMessage,
     public connect: () => Promise<KeplrWalletKeys | null>,
     public disconnect: () => void,
+    public websiteURL: string,
   ) {}
 }
 
