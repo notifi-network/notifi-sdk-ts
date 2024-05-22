@@ -170,15 +170,14 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
       await frontendClient
         .fetchData()
         .then(refreshTargetDocument)
-        .catch((e) => console.error(e));
+        .catch((e: unknown) => console.error(e));
+
+      setIsCBInfoModalOpen(true);
     } catch (e) {
       console.error(e);
 
       popGlobalInfoModal({
-        message:
-          e instanceof Error && e.message
-            ? e.message
-            : 'Unable to sign the wallet. Please try again.',
+        message: 'Something went wrong. Please try again.',
         iconOrEmoji: { type: 'icon', id: 'warning' },
         timeout: 5000,
       });
