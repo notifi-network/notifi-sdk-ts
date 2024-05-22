@@ -18,13 +18,16 @@ export type SpriteIconId =
   | 'slack-icon'
   | 'telegram-icon'
   | 'discord-icon'
+  | 'wallet-icon'
   | 'check'
   | 'info'
   | 'edit-icon'
   | 'close-icon'
   | 'btn-nav'
   | 'leave'
-  | 'copy-btn';
+  | 'copy-btn'
+  | 'trash-btn'
+  | 'dropdown-arrow';
 
 /**
  * It takes an icon id and returns an svg element with the corresponding icon defined in /public/icons/sprite.svg.

@@ -8,6 +8,7 @@ export type ParsedNotificationHistory = {
   subject: string;
   message: string;
   read: boolean;
+  customIconUrl?: string;
 };
 
 export type ValidEventDetail = Extract<
@@ -54,6 +55,7 @@ export const parseNotificationHistory = (
       message:
         'Invalid notification history detail: only support GenericEventDetails',
       read: true,
+      customIconUrl: '',
     };
   }
 
@@ -67,6 +69,7 @@ export const parseNotificationHistory = (
     message: eventDetails.genericMessageHtml ?? eventDetails.genericMessage,
     icon: eventDetails.icon,
     read: history.read,
+    customIconUrl: eventDetails.customIconUrl,
   };
 };
 
@@ -77,10 +80,12 @@ const formatTimestampInHistoryRow = (timestamp: string) => {
   return format(
     new Date(timestamp),
     isToday(timestamp)
-      ? 'hh:mm b'
+      ? 'h:mm b'
       : isWithinInterval(dateObject, { start: sevenDaysAgo, end: now })
       ? 'eeee'
-      : 'MM/dd',
+      : dateObject.getFullYear() <= now.getFullYear() - 1
+      ? 'MMM d yyyy'
+      : 'MMM d',
   );
 };
 
@@ -89,7 +94,7 @@ const formatTimestampInHistoryDetail = (date: string): string => {
     const parsedDate = parseISO(date);
 
     const month = parsedDate.toLocaleString('default', { month: 'short' });
-    const clockTime = format(parsedDate, 'HH:mm b');
+    const clockTime = format(parsedDate, 'H:mm');
     const dateTime = format(parsedDate, 'dd');
     const finalDate = `${month} ${dateTime}`;
 

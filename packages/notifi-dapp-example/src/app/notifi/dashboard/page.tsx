@@ -6,8 +6,7 @@ import { DashboardDestinations } from '@/components/DashboardDestinations';
 import { DashboardHistory } from '@/components/DashboardHistory';
 import { DashboardSideBar } from '@/components/DashboardSideBar';
 import { VerifyBanner } from '@/components/VerifyBanner';
-import { useInjectiveWallets } from '@/context/InjectiveWalletContext';
-import { useNotifiTargetContext } from '@/context/NotifiTargetContext';
+import { useNotifiTargetContext } from '@notifi-network/notifi-react';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import Image from 'next/image';
 import { useState } from 'react';
@@ -18,27 +17,15 @@ export default function NotifiDashboard() {
   const [cardView, setCardView] = useState<CardView>('history');
   const { unVerifiedTargets } = useNotifiTargetContext();
   const { selectedWallet, wallets } = useWallets();
-  const {
-    selectedWallet: selectiedInjectiveWallet,
-    wallets: injectiveWallets,
-  } = useInjectiveWallets();
   const [isSideBarOpen, setIsSideBarOpen] = useState<boolean>(false);
 
-  if (
-    (!selectedWallet || !wallets[selectedWallet].walletKeys) &&
-    (!selectiedInjectiveWallet ||
-      !injectiveWallets[selectiedInjectiveWallet].walletKeys)
-  )
-    return null;
+  if (!selectedWallet || !wallets[selectedWallet].walletKeys) return null;
 
   let accountAddress: string | undefined = '';
   if (selectedWallet) {
     accountAddress = wallets[selectedWallet].walletKeys?.bech32;
   }
-  if (selectiedInjectiveWallet) {
-    accountAddress =
-      injectiveWallets[selectiedInjectiveWallet].walletKeys?.bech32;
-  }
+
   if (!accountAddress) return;
   return (
     <div className="min-h-screen flex items-start flex-row">
@@ -57,7 +44,11 @@ export default function NotifiDashboard() {
           setIsOpen={setIsSideBarOpen}
         />
       ) : null}
-      <div className="flex flex-col grow h-screen">
+      <div
+        className={`flex flex-col grow ${
+          cardView === 'alertSubscription' ? 'm-h-screen' : 'h-screen'
+        } md:ml-80`}
+      >
         <div className="md:hidden w-screen flex justify-center">
           <Icon
             id="btn-nav"

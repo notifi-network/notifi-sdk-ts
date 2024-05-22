@@ -1,17 +1,14 @@
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
-import { useNotifiFrontendClientContext } from '@/context/NotifiFrontendClientContext';
-import { useNotifiTargetContext } from '@/context/NotifiTargetContext';
-import { useNotifiTenantConfig } from '@/context/NotifiTenantConfigContext';
-import {
-  useNotifiTopicContext,
-  validateTopic,
-} from '@/context/NotifiTopicContext';
-import {
-  FtuStage,
-  useNotifiUserSettingContext,
-} from '@/context/NotifiUserSettingContext';
 import { useRouterAsync } from '@/hooks/useRouterAsync';
 import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
+import {
+  FtuStage,
+  useNotifiFrontendClientContext,
+  useNotifiTargetContext,
+  useNotifiTenantConfigContext,
+  useNotifiTopicContext,
+  useNotifiUserSettingContext,
+} from '@notifi-network/notifi-react';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 export type NotifiSignUpButtonProps = Readonly<{
@@ -31,15 +28,14 @@ export const SignUpButton: React.FC<NotifiSignUpButtonProps> = ({
     updateFtuStage,
     isLoading: isLoadingFtu,
   } = useNotifiUserSettingContext();
-  const { cardConfig } = useNotifiTenantConfig();
+  const { cardConfig, fusionEventTopics } = useNotifiTenantConfigContext();
   const [isLoading, setIsLoading] = useState(false);
 
   const {
-    targetGroup,
+    renewTargetGroup,
     refreshTargetDocument,
     targetDocument: {
-      targetData: { slack, discord },
-      targetInputForm: { email, phoneNumber, telegram },
+      targetInputs: { email, phoneNumber, telegram, slack, discord, wallet },
     },
   } = useNotifiTargetContext();
 
@@ -52,35 +48,52 @@ export const SignUpButton: React.FC<NotifiSignUpButtonProps> = ({
 
   const { setGlobalError, setIsGlobalLoading } = useGlobalStateContext();
 
-  const { subscribeFusionAlerts, isLoading: isSubscribingAlerts } =
+  const { subscribeAlertsDefault, isLoading: isSubscribingAlerts } =
     useNotifiTopicContext();
 
   const onClick = useCallback(async () => {
     if (!isAuthenticated) return;
     setIsLoading(true);
-    try {
-      if (!ftuStage) {
-        const subEvents = eventTypes.filter((event) => {
-          return event.optOutAtSignup ? false : true;
-        });
-        await subscribeFusionAlerts(subEvents.filter(validateTopic));
-
-        if (cardConfig?.isContactInfoRequired) {
-          await updateFtuStage(FtuStage.Destination);
-        } else {
-          await updateFtuStage(FtuStage.Alerts);
-        }
-        const newData = await frontendClient.fetchData();
-        refreshTargetDocument(newData);
-        await handleRoute('/notifi/ftu');
-      }
-    } catch (e: unknown) {
-      setGlobalError('ERROR: Failed to signup, please try again.');
-      console.error('Failed to singup', (e as Error).message);
-    } finally {
+    await renewTargetGroup();
+    const targetGroups = await frontendClient.getTargetGroups();
+    const targetGroupId = targetGroups.find(
+      (targetGroup) => targetGroup.name === 'Default',
+    )?.id;
+    if (!targetGroupId) {
+      setGlobalError('ERROR: Failed to get target group ID');
       setIsLoading(false);
+      return;
     }
-  }, [frontendClient, eventTypes, login, setGlobalError, targetGroup]);
+    fusionEventTopics.forEach(async (topic) => {
+      try {
+        if (!ftuStage) {
+          await subscribeAlertsDefault([topic], targetGroupId);
+
+          if (cardConfig?.isContactInfoRequired) {
+            await updateFtuStage(FtuStage.Destination);
+          } else {
+            await updateFtuStage(FtuStage.Alerts);
+          }
+          const newData = await frontendClient.fetchData();
+          refreshTargetDocument(newData);
+          await handleRoute('/notifi/ftu');
+        }
+      } catch (e: unknown) {
+        setGlobalError('ERROR: Failed to signup, please try again.');
+        console.error('Failed to singup', (e as Error).message);
+      } finally {
+        setIsLoading(false);
+      }
+    });
+  }, [
+    frontendClient,
+    eventTypes,
+    login,
+    setGlobalError,
+    renewTargetGroup,
+    discord,
+    wallet,
+  ]);
 
   useEffect(() => {
     if (
@@ -101,16 +114,18 @@ export const SignUpButton: React.FC<NotifiSignUpButtonProps> = ({
       ? !!email.value ||
           !!phoneNumber.value ||
           !!telegram.value ||
-          slack.useSlack ||
-          discord.useDiscord
+          slack ||
+          discord ||
+          wallet
       : true;
   }, [
     email,
     phoneNumber,
     telegram.value,
-    discord.useDiscord,
+    discord,
     data.isContactInfoRequired,
-    slack.useSlack,
+    slack,
+    wallet,
   ]);
 
   return (
