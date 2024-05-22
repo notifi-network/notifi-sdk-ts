@@ -1,8 +1,10 @@
 import clsx from 'clsx';
 import React from 'react';
 
-import { defaultCopy } from '../utils/constants';
+import { FtuStage, useNotifiUserSettingContext } from '../context';
+import { defaultCopy, defaultLoadingAnimationStyle } from '../utils/constants';
 import { FtuView } from './Ftu';
+import { LoadingAnimation } from './LoadingAnimation';
 import { NavHeader } from './NavHeader';
 import { TargetList } from './TargetList';
 
@@ -11,6 +13,7 @@ export type FtuTargetListProps = {
     container?: string;
     main?: string;
     button?: string;
+    loadingSpinner?: React.CSSProperties;
   };
   copy?: {
     headerTitle?: string;
@@ -20,6 +23,19 @@ export type FtuTargetListProps = {
 };
 
 export const FtuTargetList: React.FC<FtuTargetListProps> = (props) => {
+  const [isLoading, setIsLoading] = React.useState(false);
+  const { updateFtuStage } = useNotifiUserSettingContext();
+
+  const loadingSpinnerStyle: React.CSSProperties =
+    props.classNames?.loadingSpinner ?? defaultLoadingAnimationStyle.spinner;
+
+  const onClick = async () => {
+    setIsLoading(true);
+    await updateFtuStage(FtuStage.Alerts);
+    props.setFtuView(FtuView.AlertEdit);
+    setIsLoading(false);
+  };
+
   return (
     <div
       className={clsx('notifi-ftu-target-list', props.classNames?.container)}
@@ -43,11 +59,18 @@ export const FtuTargetList: React.FC<FtuTargetListProps> = (props) => {
           'notifi-ftu-target-list-button',
           props.classNames?.button,
         )}
-        onClick={async () => {
-          props.setFtuView(FtuView.AlertEdit);
-        }}
+        disabled={isLoading}
+        onClick={onClick}
       >
-        <div>
+        {isLoading ? (
+          <LoadingAnimation type="spinner" {...loadingSpinnerStyle} />
+        ) : null}
+        <div
+          className={clsx(
+            'notifi-ftu-target-list-button-text',
+            isLoading && 'hidden',
+          )}
+        >
           {props.copy?.buttonText ?? defaultCopy.ftuTargetList.buttonText}
         </div>
       </button>
