@@ -9,11 +9,13 @@ import { Dispatch, SetStateAction, useMemo } from 'react';
 type HistoryDetailProps = {
   historyDetailEntry: HistoryItem | null;
   setHistoryDetailEntry: Dispatch<SetStateAction<HistoryItem | null>>;
+  setIsInHistoryDetail: (historyDetailEntry: boolean) => void;
 };
 
 export const HistoryDetail: React.FC<HistoryDetailProps> = ({
   setHistoryDetailEntry,
   historyDetailEntry,
+  setIsInHistoryDetail,
 }) => {
   if (!historyDetailEntry) return null;
 
@@ -42,7 +44,10 @@ export const HistoryDetail: React.FC<HistoryDetailProps> = ({
       <div className="hover:bg-notifi-card-border focus:bg-notifi-destination-card-bg h-6 w-6 rounded-2xl">
         <Icon
           className="cursor-pointer text-notifi-text mb-4"
-          onClick={() => setHistoryDetailEntry(null)}
+          onClick={() => {
+            setHistoryDetailEntry(null);
+            setIsInHistoryDetail(false);
+          }}
           id="left-arrow"
         />
       </div>
