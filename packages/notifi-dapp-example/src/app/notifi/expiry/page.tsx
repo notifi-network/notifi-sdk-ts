@@ -3,8 +3,8 @@
 import { DummyAlertsModal } from '@/components/DummyAlertsModal';
 import { EcosystemHero } from '@/components/EcosystemHero';
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
-import { useNotifiFrontendClientContext } from '@/context/NotifiFrontendClientContext';
 import { useRouterAsync } from '@/hooks/useRouterAsync';
+import { useNotifiFrontendClientContext } from '@notifi-network/notifi-react';
 import { useEffect } from 'react';
 
 export default function NotifiExpiry() {
@@ -16,12 +16,6 @@ export default function NotifiExpiry() {
       handleRoute('/notifi');
       return;
     }
-    popGlobalInfoModal({
-      message:
-        'It’s been a while. Connect to Notifi to load your notification details.',
-      iconOrEmoji: { type: 'emoji', content: '👋' },
-      timeout: 20000,
-    });
   }, [frontendClientStatus]);
 
   return (
@@ -29,7 +23,7 @@ export default function NotifiExpiry() {
       <EcosystemHero
         isLoading={isLoadingRouter}
         cta={() => login().then(() => popGlobalInfoModal(null))}
-        ctaButtonText="Connect Wallet To Start"
+        ctaButtonText="Connect Wallet"
       />
       <DummyAlertsModal />
     </div>
