@@ -1,5 +1,3 @@
-// import { useWallet } from '@solana/wallet-adapter-react';
-// import type { SolanaSignInInput } from '@solana/wallet-standard-features';
 import Solflare from '@solflare-wallet/sdk';
 import bs58 from 'bs58';
 import { useCallback, useEffect, useState } from 'react';

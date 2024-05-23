@@ -71,17 +71,11 @@ export const useBackpack = (
       !currentPublicKey
     )
       return;
-    console.log('Checking account change');
-    console.log(currentPublicKey.current);
 
     let publicKey: string | null = null;
 
     if (window.backpack && window.backpack.publicKey) {
       publicKey = window?.backpack.publicKey?.toBase58();
-      console.log('pubkey window: ' + publicKey);
-      console.log(
-        `Public keys are equal: ${publicKey === currentPublicKey.current}`,
-      );
     }
 
     if (publicKey && publicKey !== currentPublicKey.current) {
@@ -114,14 +108,6 @@ export const useBackpack = (
 
       try {
         if (!wallet) throw new Error('Wallet not found');
-
-        const onConnect = (publicKey: PublicKey) => {
-          console.log('On connect fired');
-          console.log(publicKey);
-        };
-
-        wallet.on('connect', onConnect);
-        console.log('test');
 
         await wallet.connect();
 
@@ -174,10 +160,7 @@ export const useBackpack = (
       loadingHandler(true);
       try {
         const messageBuffer = Buffer.from(message, 'utf-8');
-        console.log('Signing message');
         const signedMessage = await wallet.signMessage(messageBuffer);
-        console.log('Signed message: ');
-        console.log(signedMessage);
 
         // Extracting the signature from the signedMessage object
         const signatureArray =
@@ -185,9 +168,7 @@ export const useBackpack = (
             ? signedMessage
             : new Uint8Array(Object.values(signedMessage.signature));
 
-        // Convert the signature to a base64 string
         const signature = Buffer.from(signatureArray).toString('base64');
-        console.log('Signature (base64 encoded): ', signature);
 
         return signature;
       } catch (e) {

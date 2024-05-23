@@ -21,13 +21,10 @@ export const usePhantom = (
   selectedChain: 'solana' | EVMChains,
 ) => {
   const getProvider = () => {
-    console.log('Getting provider');
     if ('phantom' in window) {
       const provider: any = window.phantom?.solana;
-      console.log(`Provider is ${provider}`);
 
       if (provider?.isPhantom) {
-        console.log('Phantom defo installed');
         return provider;
       } else {
         console.log('Phantom not installed');
@@ -42,9 +39,6 @@ export const usePhantom = (
 
   useEffect(() => {
     if (selectedChain === 'solana') {
-      console.log('window.phantom? ' + window.phantom);
-      console.log(window.phantom);
-      console.log('solana instlled?? ' + !!window.solana);
       setIsPhantomInstalled(!!window.solana);
     } else {
       setIsPhantomInstalled(!!injectivePhantomWallet.strategies?.phantom);
@@ -76,9 +70,6 @@ export const usePhantom = (
           }
 
           const { publicKey } = await provider.connect();
-
-          console.log('public key');
-          console.log(publicKey.toBase58().toString());
 
           const walletKeys: PhantomWalletKeys = {
             base58: publicKey.toBase58(),
@@ -156,11 +147,6 @@ export const usePhantom = (
               message: messageBuffer,
             },
           });
-
-          console.log('signedMessage');
-          console.log(signedMessage);
-          console.log('signedMessage.signature');
-          console.log(signedMessage.signature);
 
           // Return the signed message as is
           return signedMessage.signature;

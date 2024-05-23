@@ -1,6 +1,6 @@
 {
   "name": "@notifi-network/notifi-wallet-provider",
-  "version": "0.90.9-alpha.18",
+  "version": "0.91.0",
   "description": "> TODO: description",
   "author": "eric-notifi <eric.lee@notifi.network>",
   "homepage": "https://github.com/notifi-network/notifi-sdk-ts",
@@ -43,7 +43,6 @@
     "@injectivelabs/wallet-ts": "^1.14.7",
     "@solana/wallet-adapter-backpack": "^0.1.14",
     "@solana/wallet-adapter-base": "^0.9.23",
-    "@solana/web3.js": "^1.91.8",
     "@solflare-wallet/sdk": "1.4.2",
     "bech32-converting": "^1.0.9",
     "bs58": "^5.0.0",
@@ -62,6 +61,5 @@
   },
   "devDependencies": {
     "@types/bs58": "^4.0.4"
-  },
-  "gitHead": "eb9962cbdd34b3c0f1ef60d86c5dd5712a1315fd"
+  }
 }

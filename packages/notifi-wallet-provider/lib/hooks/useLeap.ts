@@ -45,7 +45,6 @@ export const useLeap = (
       .finally(() => loadingHandler(false));
 
     const handleAccountChange = () => {
-      console.log('Leap account changed');
       if (!window.leap) return handleLeapNotExists('handleAccountChange');
 
       !injectiveLeapWallet.strategies.leap

@@ -40,21 +40,15 @@ export const useWagmiWallet = (
     isWalletConnected && connector?.name.toLowerCase().includes(walletName);
 
   useEffect(() => {
-    console.log('****************useNetwork output:', chain);
-
     // Ensure that chain and selectedChain are defined before proceeding
     if (!chain || !selectedChain) return;
 
-    console.log(
-      `logging current to selected chain: ${selectedChain.toLocaleLowerCase()} - ${chain?.name.toLocaleLowerCase()}`,
-    );
     if (
       chain &&
       chain?.name.toLocaleLowerCase() !== selectedChain.toLocaleLowerCase()
     ) {
       // switchNetwork && switchNetwork(decimalChainId);
       if (switchNetwork) {
-        console.log('Switching network to:', selectedChain);
         const hexChainId = getChainInfoByName(selectedChain).chainId;
         const decimalChainId = parseInt(hexChainId, 16);
         switchNetwork(decimalChainId);
@@ -104,11 +98,6 @@ export const useWagmiWallet = (
     if (isWalletConnected) return null;
 
     loadingHandler(true);
-
-    const chainId = chain?.id;
-    console.log(`Current network: ${chain?.name}, Chain ID: ${chainId}`);
-    console.log('chain:');
-    console.log(chain);
 
     const timer = setTimeout(() => {
       disconnectWallet();
