@@ -32,6 +32,7 @@ type WalletContextType = {
   wallets: Wallets;
   error: Error | null;
   isLoading: boolean;
+  isAuthenticationVerified: boolean;
 };
 const WalletContext = createContext<WalletContextType>({
   selectedWallet: null,
@@ -51,6 +52,7 @@ const WalletContext = createContext<WalletContextType>({
   },
   error: null,
   isLoading: false,
+  isAuthenticationVerified: false,
 });
 
 const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
@@ -63,6 +65,8 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
 
   const [error, setError] = useState<Error | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isAuthenticationVerified, setIsAuthenticationVerified] =
+    useState<boolean>(false);
 
   const throwError = (e: Error, durationInMs?: number) => {
     clearTimeout(timer);
@@ -202,6 +206,15 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
     }
   }, [wallets]);
 
+  useEffect(() => {
+    const storageWallet = getWalletsFromLocalStorage();
+    const walletName = storageWallet?.walletName;
+
+    if (walletName) {
+      if (selectedWallet) setIsAuthenticationVerified(true);
+    } else setIsAuthenticationVerified(true);
+  }, [selectedWallet]);
+
   return (
     <WalletContext.Provider
       value={{
@@ -210,6 +223,7 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
         wallets,
         error,
         isLoading,
+        isAuthenticationVerified,
       }}
     >
       {children}
