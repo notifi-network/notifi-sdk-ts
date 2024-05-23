@@ -1,6 +1,6 @@
 {
   "name": "@notifi-network/notifi-wallet-provider",
-  "version": "0.91.0",
+  "version": "0.90.9-alpha.18",
   "description": "> TODO: description",
   "author": "eric-notifi <eric.lee@notifi.network>",
   "homepage": "https://github.com/notifi-network/notifi-sdk-ts",
@@ -62,5 +62,6 @@
   },
   "devDependencies": {
     "@types/bs58": "^4.0.4"
-  }
+  },
+  "gitHead": "eb9962cbdd34b3c0f1ef60d86c5dd5712a1315fd"
 }
