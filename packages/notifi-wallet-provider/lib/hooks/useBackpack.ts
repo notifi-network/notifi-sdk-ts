@@ -1,7 +1,7 @@
 import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack';
 import { PublicKey } from '@solana/web3.js';
 import bs58 from 'bs58';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { EVMChains } from '../context/NotifiWallets';
 import { BackpackWalletKeys, Wallets } from '../types';
@@ -22,6 +22,8 @@ export const useBackpack = (
     useState<BackpackWalletKeys | null>(null);
   const [isBackpackInstalled, setIsBackpackInstalled] =
     useState<boolean>(false);
+  const currentPublicKey = useRef<string | null>(null);
+  const isConnecting = useRef(false); // Prevent multiple connections
 
   useEffect(() => {
     const newWallet = new BackpackWalletAdapter();
@@ -30,36 +32,111 @@ export const useBackpack = (
     setIsBackpackInstalled(true);
   }, [selectedChain]);
 
-  const handleBackpackNotExists = (location: string) => {
-    cleanWalletsInLocalStorage();
-    errorHandler(
-      new Error(
-        `ERROR - ${location}: window.backpack not initialized or not installed`,
-      ),
-    );
+  const handleBackpackNotExists = useCallback(
+    (location: string) => {
+      cleanWalletsInLocalStorage();
+      errorHandler(
+        new Error(
+          `ERROR - ${location}: window.backpack not initialized or not installed`,
+        ),
+      );
+    },
+    [errorHandler],
+  );
+
+  const disconnectBackpack = useCallback(async () => {
+    try {
+      await wallet.disconnect();
+      selectWallet(null);
+      setWalletKeysBackpack(null);
+      cleanWalletsInLocalStorage();
+      currentPublicKey.current = null;
+    } catch (e) {
+      console.error('Error while disconnecting: ', e);
+    }
+  }, [wallet, selectWallet]);
+
+  const handleDisconnect = useCallback(async () => {
+    if (wallet) {
+      wallet.off('disconnect', handleDisconnect);
+    }
+    await disconnectBackpack();
+  }, [wallet, disconnectBackpack]);
+
+  const checkAccountChange = async () => {
+    if (
+      !wallet ||
+      !window.backpack ||
+      !window.backpack?.publicKey ||
+      !currentPublicKey
+    )
+      return;
+    console.log('Checking account change');
+    console.log(currentPublicKey.current);
+
+    let publicKey: string | null = null;
+
+    if (window.backpack && window.backpack.publicKey) {
+      publicKey = window?.backpack.publicKey?.toBase58();
+      console.log('pubkey window: ' + publicKey);
+      console.log(
+        `Public keys are equal: ${publicKey === currentPublicKey.current}`,
+      );
+    }
+
+    if (publicKey && publicKey !== currentPublicKey.current) {
+      await disconnectBackpack();
+      window.dispatchEvent(
+        new CustomEvent('backpackAccountChanged', { detail: publicKey }),
+      );
+    }
   };
+
+  useEffect(() => {
+    if (wallet) {
+      const interval = setInterval(checkAccountChange, 1000); // Check every second
+      return () => clearInterval(interval);
+    }
+  }, [wallet, checkAccountChange]);
 
   const connectBackpack =
     useCallback(async (): Promise<BackpackWalletKeys | null> => {
+      if (isConnecting.current) {
+        return null; // Prevent multiple connections
+      }
+
       if (!isBackpackInstalled) {
         return null;
       }
 
       loadingHandler(true);
+      isConnecting.current = true;
 
       try {
         if (!wallet) throw new Error('Wallet not found');
+
+        const onConnect = (publicKey: PublicKey) => {
+          console.log('On connect fired');
+          console.log(publicKey);
+        };
+
+        wallet.on('connect', onConnect);
+        console.log('test');
 
         await wallet.connect();
 
         const publicKey = wallet.publicKey;
         if (!publicKey) throw new Error('Wallet connection failed');
 
+        currentPublicKey.current = publicKey.toBase58();
+
         const walletKeys: BackpackWalletKeys = {
           base58: publicKey.toBase58(),
           hex: Buffer.from(bs58.decode(publicKey.toBase58())).toString('hex'),
           bech32: '',
         };
+
+        wallet.on('disconnect', handleDisconnect);
 
         selectWallet('backpack');
         setWalletKeysBackpack(walletKeys);
@@ -70,29 +147,21 @@ export const useBackpack = (
         errorHandler(
           new Error('Backpack connection failed, check console for details'),
         );
+        console.error(e);
       } finally {
+        isConnecting.current = false;
         loadingHandler(false);
       }
 
       return null;
     }, [
-      wallet,
       isBackpackInstalled,
+      loadingHandler,
+      wallet,
+      handleDisconnect,
       selectWallet,
       errorHandler,
-      loadingHandler,
     ]);
-
-  const disconnectBackpack = async () => {
-    try {
-      await wallet?.disconnect();
-      selectWallet(null);
-      setWalletKeysBackpack(null);
-      cleanWalletsInLocalStorage();
-    } catch (e) {
-      console.error('Error while disconnecting: ', e);
-    }
-  };
 
   const signArbitraryBackpack = useCallback(
     async (message: string): Promise<string | void> => {
@@ -130,7 +199,13 @@ export const useBackpack = (
         loadingHandler(false);
       }
     },
-    [walletKeysBackpack, wallet, errorHandler, loadingHandler],
+    [
+      walletKeysBackpack,
+      wallet,
+      errorHandler,
+      loadingHandler,
+      handleBackpackNotExists,
+    ],
   );
 
   return {
