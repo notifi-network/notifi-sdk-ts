@@ -31,7 +31,7 @@ export type TargetDocument = {
   targetData: TargetData;
 };
 
-type Target =
+export type Target =
   | 'email'
   | 'phoneNumber'
   | 'telegram'
@@ -39,13 +39,13 @@ type Target =
   | 'slack'
   | 'wallet';
 
+export type FormTarget = Extract<Target, 'email' | 'phoneNumber' | 'telegram'>;
+export type ToggleTarget = Extract<Target, 'discord' | 'slack' | 'wallet'>;
+
 export type TargetInputFromValue = { value: string; error?: string };
 type TargetInputForm = Record<FormTarget, TargetInputFromValue>;
 
-type TargetInputToggles = Record<
-  Extract<Target, 'discord' | 'slack' | 'wallet'>,
-  boolean
->;
+export type TargetInputToggles = Record<ToggleTarget, boolean>;
 
 export type TargetInputs = TargetInputForm & TargetInputToggles;
 
