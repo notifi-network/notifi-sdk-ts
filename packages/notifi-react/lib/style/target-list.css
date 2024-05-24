@@ -17,6 +17,7 @@
   background-color: var(--notifi-notifi-target-list-item-bg);
   padding: 1rem 0;
   border-radius: 6px;
+  position: relative;
 }
 
 .notifi-target-list-item-target {
@@ -25,8 +26,22 @@
   align-items: center;
 }
 
+.notifi-target-list-target-verify-message {
+  font-size: 0.9rem;
+  color: var(--notifi-target-list-target-verify-message-text);
+}
+
 .notifi-target-list-icon {
   color: var(--notifi-color-heather);
+}
+
+.notifi-target-list-item-remove {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  cursor: pointer;
+  color: var(--notifi-target-list-remove-text);
+  font-size: 0.75rem;
 }
 
 /* TargetCta styles */
@@ -37,7 +52,7 @@
 .notifi-target-cta-button {
   background-color: var(--notifi-target-list-cat-button-bg);
   color: var(--notifi-target-list-cat-button-text);
-  padding: 1rem 2rem;
+  padding: 0.5rem 2rem;
   text-align: center;
   cursor: pointer;
   border-radius: 6px;

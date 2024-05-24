@@ -67,3 +67,48 @@
   color: var(--notifi-inbox-config-topic-title-text);
   font-size: 0.9rem;
 }
+
+/* InboxConfigTargetList styles */
+.notifi-inbox-config-target-list {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.notifi-inbox-config-target-list-main {
+  flex-grow: 1;
+  overflow: scroll;
+}
+
+.notifi-inbox-config-target-list-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.9rem 0;
+  font-weight: 700;
+  color: var(--notifi-ftu-button-text);
+  background-color: var(--notifi-ftu-button);
+  border-radius: 6px;
+  margin: 1rem 2rem;
+  cursor: pointer;
+  position: relative;
+}
+.notifi-inbox-config-target-list-button-text.hidden {
+  visibility: hidden;
+}
+.notifi-inbox-config-target-list-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.notifi-inbox-config-target-list-item {
+  padding: 1rem;
+  align-items: start;
+}
+
+.notifi-inbox-config-target-list-item-verified {
+  background-color: transparent;
+  text-align: start;
+  padding: 0;
+  color: var(--notifi-inbox-config-target-list-item-verified-text);
+}
