@@ -2,6 +2,7 @@ import clsx from 'clsx';
 import React from 'react';
 
 import { InboxConfigTargetEdit } from './InboxConfigTargetEdit';
+import { InboxConfigTargetList } from './InboxConfigTargetList';
 import { InboxConfigTopic } from './InboxConfigTopic';
 import { InboxHistory } from './InboxHistory';
 import { InboxNavTabs, InboxNavTabsProps } from './InboxNavTabs';
@@ -35,10 +36,10 @@ export const Inbox: React.FC<InboxProps> = (props) => {
           <InboxConfigTopic {...{ setInboxView }} />
         ) : null}
         {inboxView === InboxView.InboxConfigTargetList ? (
-          <InboxConfigTargetEdit />
+          <InboxConfigTargetList {...{ setInboxView }} />
         ) : null}
-        {inboxView === InboxView.InboxConfigTargetList ? (
-          <InboxConfigTargetEdit />
+        {inboxView === InboxView.InboxConfigTargetEdit ? (
+          <InboxConfigTargetEdit {...{ setInboxView }} />
         ) : null}
       </div>
       <div className={clsx('notifi-inbox-footer', props.classNames?.footer)}>
