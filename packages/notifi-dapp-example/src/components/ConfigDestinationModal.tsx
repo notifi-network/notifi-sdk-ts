@@ -29,11 +29,14 @@ export const ConfigDestinationModal: React.FC<ConfigDestinationModalProps> = ({
           <p className="font-semibold text-xs opacity-50 mt-2.5 text-notifi-text-medium">
             STEP 2 of 3
           </p>
-          <p className="font-medium text-lg sm:my-6 mt-2 mb-6 text-notifi-text">
+          <p className="font-medium text-lg md:mt-6 mt-2 text-notifi-text">
             Verify your destinations
           </p>
         </div>
         <div className="flex flex-col items-center justify-center">
+          <p className="text-sm opacity-50 font-medium md:my-4 mt-2 mb-6 text-notifi-text-medium">
+            Verify to ensure you receive your alerts
+          </p>
           {isLoadingTargets || isLoadingTopics ? (
             <div>
               <LoadingSpinner />

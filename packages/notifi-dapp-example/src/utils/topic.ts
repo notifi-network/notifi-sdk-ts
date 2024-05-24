@@ -241,6 +241,7 @@ export const getUpdatedAlertFilterOptions = (
   };
 };
 
+//TODO: refactor when implement the suffix and prefix feature in AP
 export const derivePrefixAndSuffixFromValueType = (
   kind: ValueType,
 ): { prefix: string; suffix: string } => {
