@@ -11,15 +11,18 @@ export default function NotifiSingupLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { wallets, selectedWallet } = useWallets();
+  const { wallets, selectedWallet, isAuthenticationVerified } = useWallets();
   const pathname = usePathname();
   const router = useRouter();
 
   useEffect(() => {
-    if (!selectedWallet || !wallets[selectedWallet].walletKeys) {
+    if (
+      (!selectedWallet || !wallets[selectedWallet].walletKeys) &&
+      isAuthenticationVerified
+    ) {
       router.push('/');
     }
-  }, [selectedWallet]);
+  }, [selectedWallet, isAuthenticationVerified]);
 
   const showDisconnectButton = ['/notifi/ftu', '/notifi/signup'].includes(
     pathname,
