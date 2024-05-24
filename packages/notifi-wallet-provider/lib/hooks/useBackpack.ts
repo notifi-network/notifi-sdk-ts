@@ -1,5 +1,4 @@
 import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack';
-import { PublicKey } from '@solana/web3.js';
 import bs58 from 'bs58';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -162,6 +161,7 @@ export const useBackpack = (
         const messageBuffer = Buffer.from(message, 'utf-8');
         const signedMessage = await wallet.signMessage(messageBuffer);
 
+        // test
         // Extracting the signature from the signedMessage object
         const signatureArray =
           signedMessage instanceof Uint8Array

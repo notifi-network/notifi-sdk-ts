@@ -61,5 +61,6 @@
   },
   "devDependencies": {
     "@types/bs58": "^4.0.4"
-  }
+  },
+  "gitHead": "185a9a9de80db042c1c1289f7bb3071453b0bdc5"
 }
