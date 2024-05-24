@@ -3,6 +3,7 @@ import { Wallet, WalletStrategy } from '@injectivelabs/wallet-ts';
 import type { StdSignature } from '@keplr-wallet/types';
 import { useCallback, useEffect, useState } from 'react';
 
+import { AvailableChains } from '../context';
 import { LeapSignMessage, LeapWalletKeys, Wallets } from '../types';
 import {
   cleanWalletsInLocalStorage,
@@ -14,6 +15,7 @@ export const useLeap = (
   loadingHandler: React.Dispatch<React.SetStateAction<boolean>>,
   errorHandler: (e: Error, durationInMs?: number) => void,
   selectWallet: (wallet: keyof Wallets | null) => void,
+  selectedChain: AvailableChains,
 ) => {
   const [walletKeysLeap, setWalletKeysLeap] = useState<LeapWalletKeys | null>(
     null,
@@ -46,19 +48,7 @@ export const useLeap = (
 
     const handleAccountChange = () => {
       if (!window.leap) return handleLeapNotExists('handleAccountChange');
-
-      !injectiveLeapWallet.strategies.leap
-        ?.getPubKey()
-        // .getKey('injective-1')
-        .then(async (key) => {
-          // TODO: dynamic cosmos chain id
-          const accounts = await injectiveLeapWallet.getAddresses();
-          const walletKeys = {
-            bech32: accounts[0],
-            base64: key,
-          };
-          setWalletKeysLeap(walletKeys);
-        });
+      disconnectLeap();
     };
 
     return () => {
@@ -67,32 +57,43 @@ export const useLeap = (
     };
   }, []);
 
+  const handleKey = async (key: any, accounts?: any) => {
+    const walletKeys = {
+      bech32: accounts ? accounts[0] : key.bech32Address,
+      base64: Buffer.from(key.pubKey).toString('base64'),
+    };
+
+    selectWallet('leap');
+    setWalletKeysLeap(walletKeys);
+    setWalletKeysToLocalStorage('leap', walletKeys);
+    loadingHandler(false);
+
+    return walletKeys;
+  };
+
   const connectLeap = async (
     // TODO: dynamic cosmos chain id (Rather than passing in the chainId to the function, it should be provided by the context provider level)
     chainId?: string,
   ): Promise<LeapWalletKeys | null> => {
-    if (!injectiveLeapWallet.strategies.leap) {
-      await injectiveLeapWallet.enable();
-      handleLeapNotExists('connectLeap');
-      return null;
-    }
-
     loadingHandler(true);
+    await window.leap.enable(['injective-1', 'osmosis-1']);
 
     try {
-      injectiveLeapWallet.setWallet(Wallet.Leap);
-      const key = await injectiveLeapWallet.getPubKey();
-      const accounts = await injectiveLeapWallet.getAddresses();
-      const walletKeys = {
-        bech32: accounts[0],
-        base64: key,
-      };
+      if (selectedChain === 'osmosis') {
+        const key = await window.leap.getKey('osmosis-1');
+        return handleKey(key);
+      } else if (selectedChain === 'injective') {
+        if (!injectiveLeapWallet.strategies.leap) {
+          await injectiveLeapWallet.enable();
+          handleLeapNotExists('connectLeap');
+          return null;
+        }
+        injectiveLeapWallet.setWallet(Wallet.Leap);
+        const key = await injectiveLeapWallet.getPubKey();
+        const accounts = await injectiveLeapWallet.getAddresses();
 
-      selectWallet('leap');
-      setWalletKeysLeap(walletKeys);
-      setWalletKeysToLocalStorage('leap', walletKeys);
-      loadingHandler(false);
-      return walletKeys;
+        return handleKey(key, accounts);
+      }
     } catch (e) {
       errorHandler(
         new Error('Leap connection failed, check console for details'),
@@ -128,10 +129,21 @@ export const useLeap = (
           typeof message === 'string'
             ? message
             : Buffer.from(message).toString('base64');
-        const result = await injectiveLeapWallet.signArbitrary(
-          walletKeysLeap.bech32,
-          messageString,
-        );
+
+        let result;
+        if (selectedChain === 'osmosis') {
+          result = await window.leap.signArbitrary(
+            'osmosis-1',
+            walletKeysLeap.bech32,
+            messageString,
+          );
+          return result;
+        } else if (selectedChain === 'injective') {
+          result = await injectiveLeapWallet.signArbitrary(
+            walletKeysLeap.bech32,
+            messageString,
+          );
+        }
 
         if (typeof result === 'string') {
           // Check if the result is a valid JSON string
@@ -175,33 +187,6 @@ export const useLeap = (
     [walletKeysLeap],
   );
 
-  // const signArbitraryLeap = useCallback(
-  //   async (message: string | Uint8Array): Promise<any> => {
-  //     if (!walletKeysLeap || !injectiveLeapWallet.strategies.leap) {
-  //       return;
-  //     }
-
-  //     loadingHandler(true);
-
-  //     try {
-  //       const result = await injectiveLeapWallet.signArbitrary(
-  //         walletKeysLeap.bech32,
-  //         typeof message === 'string'
-  //           ? message
-  //           : Buffer.from(message).toString('base64'),
-  //       );
-
-  //       return result;
-  //     } catch (e) {
-  //       errorHandler(
-  //         new Error('Leap signArbitrary failed, check console for details'),
-  //       );
-  //       console.error(e);
-  //     }
-  //     loadingHandler(false);
-  //   },
-  //   [walletKeysLeap],
-  // );
   return {
     isLeapInstalled,
     walletKeysLeap,

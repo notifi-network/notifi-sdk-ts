@@ -6,7 +6,7 @@ import { Buffer } from 'buffer';
 // import { AvailableChains } from 'notifi-wallet-provider';
 import { useCallback, useEffect, useState } from 'react';
 
-import { EVMChains } from '../context/NotifiWallets';
+import { AvailableChains, EVMChains } from '../context/NotifiWallets';
 import { PhantomWallet, PhantomWalletKeys, Wallets } from '../types';
 import {
   cleanWalletsInLocalStorage,
@@ -18,7 +18,7 @@ export const usePhantom = (
   loadingHandler: React.Dispatch<React.SetStateAction<boolean>>,
   errorHandler: (e: Error, durationInMs?: number) => void,
   selectWallet: (wallet: keyof Wallets | null) => void,
-  selectedChain: 'solana' | EVMChains,
+  selectedChain: AvailableChains,
 ) => {
   const getProvider = () => {
     if ('phantom' in window) {

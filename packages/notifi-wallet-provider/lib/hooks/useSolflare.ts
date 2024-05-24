@@ -2,7 +2,7 @@ import Solflare from '@solflare-wallet/sdk';
 import bs58 from 'bs58';
 import { useCallback, useEffect, useState } from 'react';
 
-import { EVMChains } from '../context/NotifiWallets';
+import { AvailableChains, EVMChains } from '../context/NotifiWallets';
 import { SolflareWalletKeys, Wallets } from '../types';
 import {
   cleanWalletsInLocalStorage,
@@ -14,7 +14,7 @@ export const useSolflare = (
   loadingHandler: React.Dispatch<React.SetStateAction<boolean>>,
   errorHandler: (e: Error, durationInMs?: number) => void,
   selectWallet: (wallet: keyof Wallets | null) => void,
-  selectedChain: 'solana' | EVMChains,
+  selectedChain: AvailableChains,
 ) => {
   const [wallet, setWallet] = useState<any>();
   const [walletKeysSolflare, setWalletKeysSolflare] =

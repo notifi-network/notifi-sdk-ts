@@ -2,7 +2,7 @@ import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack';
 import bs58 from 'bs58';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { EVMChains } from '../context/NotifiWallets';
+import { AvailableChains } from '../context/NotifiWallets';
 import { BackpackWalletKeys, Wallets } from '../types';
 import {
   cleanWalletsInLocalStorage,
@@ -14,7 +14,7 @@ export const useBackpack = (
   loadingHandler: React.Dispatch<React.SetStateAction<boolean>>,
   errorHandler: (e: Error, durationInMs?: number) => void,
   selectWallet: (wallet: keyof Wallets | null) => void,
-  selectedChain: 'solana' | EVMChains,
+  selectedChain: AvailableChains,
 ) => {
   const [wallet, setWallet] = useState<BackpackWalletAdapter | null>(null);
   const [walletKeysBackpack, setWalletKeysBackpack] =

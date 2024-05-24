@@ -34,7 +34,7 @@ import { NotifiWagmiProvider } from './WagmiProvider';
 
 export type EVMChains = 'ethereum' | 'polygon' | 'arbitrum' | 'injective';
 
-export type AvailableChains = EVMChains | 'solana';
+export type AvailableChains = EVMChains | 'solana' | 'osmosis';
 
 let timer: number | NodeJS.Timeout;
 
@@ -102,9 +102,9 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
     }, durationInMs ?? 5000);
   };
 
-  const keplr = useKeplr(setIsLoading, throwError, selectWallet);
+  const keplr = useKeplr(setIsLoading, throwError, selectWallet, selectedChain);
 
-  const leap = useLeap(setIsLoading, throwError, selectWallet);
+  const leap = useLeap(setIsLoading, throwError, selectWallet, selectedChain);
   const phantom = usePhantom(
     setIsLoading,
     throwError,

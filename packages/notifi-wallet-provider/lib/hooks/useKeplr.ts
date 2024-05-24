@@ -1,5 +1,6 @@
 import type { Keplr, StdSignature } from '@keplr-wallet/types';
 import { Buffer } from 'buffer';
+import { AvailableChains } from 'notifi-wallet-provider/dist';
 import { useCallback, useEffect, useState } from 'react';
 
 import { KeplrWalletKeys, Wallets } from '../types';
@@ -13,11 +14,14 @@ export const useKeplr = (
   loadingHandler: React.Dispatch<React.SetStateAction<boolean>>,
   errorHandler: (e: Error, durationInMs?: number) => void,
   selectWallet: (wallet: keyof Wallets | null) => void,
+  selectedChain: AvailableChains,
 ) => {
   const [walletKeysKeplr, setWalletKeysKeplr] =
     useState<KeplrWalletKeys | null>(null);
 
   const [isKeplrInstalled, setIsKeplrInstalled] = useState<boolean>(false);
+
+  const chainKey = selectedChain === 'osmosis' ? 'osmosis' : 'injective-1';
 
   const handleKeplrNotExists = (location: string) => {
     cleanWalletsInLocalStorage();
@@ -43,17 +47,8 @@ export const useKeplr = (
       .finally(() => loadingHandler(false));
 
     const handleAccountChange = () => {
-      console.log('Keplr account changed');
       if (!window.keplr) return handleKeplrNotExists('handleAccountChange');
-
-      window.keplr.getKey('injective-1').then((key) => {
-        // TODO: dynamic cosmos chain id
-        const walletKeys = {
-          bech32: key.bech32Address,
-          base64: Buffer.from(key.pubKey).toString('base64'),
-        };
-        setWalletKeysKeplr(walletKeys);
-      });
+      disconnectKeplr();
     };
 
     return () => {
@@ -72,8 +67,8 @@ export const useKeplr = (
     }
     loadingHandler(true);
     try {
-      await window.keplr.enable(chainId ?? 'injective-1');
-      const key = await window.keplr.getKey(chainId ?? 'injective-1');
+      await window.keplr.enable(chainId ?? chainKey);
+      const key = await window.keplr.getKey(chainId ?? chainKey);
       const walletKeys = {
         bech32: key.bech32Address,
         base64: Buffer.from(key.pubKey).toString('base64'),
@@ -112,7 +107,7 @@ export const useKeplr = (
       loadingHandler(true);
       try {
         const result = await window.keplr.signArbitrary(
-          chainId ?? 'injective-1',
+          chainId ?? chainKey,
           walletKeysKeplr?.bech32,
           message,
         );
