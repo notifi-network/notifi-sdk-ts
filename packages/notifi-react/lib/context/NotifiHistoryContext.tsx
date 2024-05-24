@@ -7,6 +7,7 @@ import React, {
   useState,
 } from 'react';
 
+import { getFusionEventMetadata, resolveAlertName } from '../utils';
 import { useNotifiFrontendClientContext } from './NotifiFrontendClientContext';
 import { useNotifiTenantConfigContext } from './NotifiTenantConfigContext';
 
@@ -15,7 +16,7 @@ type CursorInfo = Readonly<{
   endCursor?: string | undefined;
 }>;
 
-export type historyItem = {
+export type HistoryItem = {
   id: string;
   timestamp: string; // in miniSec
   icon: string;
@@ -30,7 +31,7 @@ export type NotifiHistoryContextType = {
   error: Error | null;
   getHistoryItems: (initialLoad?: boolean) => Promise<void>;
   markAsRead: (ids?: string[]) => Promise<void>;
-  historyItems: historyItem[];
+  historyItems: HistoryItem[];
   unreadCount: number;
   hasNextPage: boolean;
 };
@@ -55,8 +56,8 @@ export const NotifiHistoryContextProvider: FC<
     endCursor: undefined,
   });
   const [unreadCount, setUnreadCount] = useState<number | null>(null);
-  const [historyItems, setHistoryItems] = useState<historyItem[]>([]);
-  const { cardConfig } = useNotifiTenantConfigContext();
+  const [historyItems, setHistoryItems] = useState<HistoryItem[]>([]);
+  const { cardConfig, fusionEventTopics } = useNotifiTenantConfigContext();
   const isInitialLoaded = React.useRef(false);
 
   useEffect(() => {
@@ -223,6 +224,54 @@ export const NotifiHistoryContextProvider: FC<
     }
   };
 
+  const parseHistoryItem = React.useCallback(
+    (
+      history: Types.FusionNotificationHistoryEntryFragmentFragment,
+    ): HistoryItem => {
+      const eventDetails = history.detail;
+      if (!eventDetails || eventDetails.__typename !== 'GenericEventDetails') {
+        return {
+          id: '',
+          timestamp: '',
+          topic: 'Unsupported Notification Type',
+          icon: '',
+          subject: 'Unsupported Notification Type',
+          message:
+            'Invalid notification history detail: only support GenericEventDetails',
+          read: true,
+        };
+      }
+
+      const resolved = resolveAlertName(eventDetails.sourceName);
+
+      const fusionTopic = fusionEventTopics.find(
+        (topic) =>
+          topic.fusionEventDescriptor.id === resolved.fusionEventTypeId,
+      );
+
+      const fusionMetadata = fusionTopic
+        ? getFusionEventMetadata(fusionTopic)
+        : null;
+
+      const historyTopic =
+        fusionTopic?.uiConfig.topicGroupName ?? // display topic group name if it belongs to a certain topic group
+        fusionMetadata?.uiConfigOverride?.historyDisplayName ?? // display topic name if it has a custom display name
+        fusionTopic?.fusionEventDescriptor.name ?? // display topic name if it has no custom display name
+        eventDetails.sourceName; // backward compatibility for legacy alerts
+
+      return {
+        id: history.id,
+        timestamp: history.createdDate,
+        topic: historyTopic,
+        subject: eventDetails.notificationTypeName,
+        message: eventDetails.genericMessageHtml ?? eventDetails.genericMessage,
+        icon: eventDetails.icon,
+        read: history.read,
+      };
+    },
+    [fusionEventTopics],
+  );
+
   return (
     <NotifiHistoryContext.Provider
       value={{
@@ -244,34 +293,6 @@ export const useNotifiHistoryContext = () =>
   React.useContext(NotifiHistoryContext);
 
 // Utils
-
-const parseHistoryItem = (
-  history: Types.FusionNotificationHistoryEntryFragmentFragment,
-): historyItem => {
-  const eventDetails = history.detail;
-  if (!eventDetails || eventDetails.__typename !== 'GenericEventDetails') {
-    return {
-      id: '',
-      timestamp: '',
-      topic: 'Unsupported Notification Type',
-      icon: '',
-      subject: 'Unsupported Notification Type',
-      message:
-        'Invalid notification history detail: only support GenericEventDetails',
-      read: true,
-    };
-  }
-
-  return {
-    id: history.id,
-    timestamp: history.createdDate,
-    topic: eventDetails.sourceName,
-    subject: eventDetails.notificationTypeName,
-    message: eventDetails.genericMessageHtml ?? eventDetails.genericMessage,
-    icon: eventDetails.icon,
-    read: history.read,
-  };
-};
 
 export type ValidEventDetail = Extract<
   Types.NotificationHistoryEntryFragmentFragment['detail'],
