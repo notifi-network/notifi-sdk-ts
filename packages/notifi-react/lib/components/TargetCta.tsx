@@ -1,9 +1,9 @@
 import clsx from 'clsx';
 import React from 'react';
 
-import { CtaInfo, TargetInfoPrompt } from '../context';
+import { TargetInfoPrompt, isCtaInfo } from '../context';
 
-type TargetCtaProps = {
+export type TargetCtaProps = {
   type: 'button' | 'link';
   ctaCalledSuccessfullyText?: string;
   targetInfoPrompt: TargetInfoPrompt;
@@ -16,11 +16,6 @@ type TargetCtaProps = {
     actionNotRequired?: string;
   };
 };
-const validateCta = (
-  targetInfoPrompt: TargetInfoPrompt,
-): targetInfoPrompt is CtaInfo => {
-  return targetInfoPrompt.type === 'cta';
-};
 
 export const TargetCta: React.FC<TargetCtaProps> = (props) => {
   const [ctaCalledSuccessfullyText, setCtaCalledSuccessfullyText] =
@@ -28,7 +23,7 @@ export const TargetCta: React.FC<TargetCtaProps> = (props) => {
 
   return (
     <div className={clsx('notifi-target-cta', props.className?.container)}>
-      {validateCta(props.targetInfoPrompt) ? (
+      {isCtaInfo(props.targetInfoPrompt) ? (
         <div
           className={clsx(
             props.type === 'button' && 'notifi-target-cta-button',
@@ -37,7 +32,7 @@ export const TargetCta: React.FC<TargetCtaProps> = (props) => {
             props.type === 'link' && props.className?.actionRequired?.link,
           )}
           onClick={() => {
-            if (!validateCta(props.targetInfoPrompt)) return;
+            if (!isCtaInfo(props.targetInfoPrompt)) return;
             props.targetInfoPrompt.onClick();
             setCtaCalledSuccessfullyText(
               props.ctaCalledSuccessfullyText ?? 'Done!',
@@ -48,7 +43,7 @@ export const TargetCta: React.FC<TargetCtaProps> = (props) => {
           {ctaCalledSuccessfullyText ?? props.targetInfoPrompt.message}
         </div>
       ) : null}
-      {!validateCta(props.targetInfoPrompt) ? (
+      {!isCtaInfo(props.targetInfoPrompt) ? (
         <div
           className={clsx(
             'notifi-target-cta-action-not-required',
