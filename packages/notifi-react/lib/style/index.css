@@ -26,6 +26,8 @@
   --notifi-color-seaglass-dark: #828ae3;
   --notifi-color-green1: #318c1a;
   --notifi-color-green2: #dff8d9;
+  --notifi-color-green3: #a4de95;
+  --notifi-color-green4: #328c1b;
   --notifi-color-dark: #1b1b22;
   --notifi-color-midnight: #262949;
   --notifi-color-cloud: #e8ebf5;
@@ -73,6 +75,11 @@
   --notifi-target-state-banner-bg: var(--notifi-color-grey2);
   --notifi-target-state-verify-icon-color: var(--notifi-color-white);
   --notifi-inbox-config-topic-title-text: var(--notifi-color-heather);
+  --notifi-target-list-remove-text: var(--notifi-color-eggshell);
+  --notifi-inbox-config-target-list-item-verified-text: var(
+    --notifi-color-green3
+  );
+  --notifi-target-list-target-verify-message-text: var(--notifi-color-heather);
 }
 
 .notifi-theme-light {
@@ -112,4 +119,9 @@
   --notifi-target-state-banner-bg: var(--notifi-color-white);
   --notifi-target-state-verify-icon-color: var(--notifi-color-black);
   --notifi-inbox-config-topic-title-text: var(--notifi-color-dusk);
+  --notifi-target-list-remove-text: var(--notifi-color-midnight);
+  --notifi-inbox-config-target-list-item-verified-text: var(
+    --notifi-color-green4
+  );
+  --notifi-target-list-target-verify-message-text: var(--notifi-color-dusk);
 }

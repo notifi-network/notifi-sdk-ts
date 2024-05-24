@@ -9,13 +9,16 @@
   align-items: center;
   justify-content: space-between;
   padding: 1rem 0.5rem;
+  cursor: pointer;
 }
 
 .notifi-target-state-banner-verify-icon {
   color: var(--notifi-target-state-verify-icon-color);
   width: 1.5rem;
+  height: 1.5rem;
   display: flex;
   justify-content: flex-end;
+  align-items: center;
 }
 
 .notifi-target-state-banner-verify-content {

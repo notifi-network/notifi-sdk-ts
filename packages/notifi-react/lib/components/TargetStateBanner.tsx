@@ -49,6 +49,7 @@ export const TargetStateBanner: React.FC<TargetStateBannerProps> = (props) => {
             'notifi-target-state-banner-verify',
             props.classNames?.verifyBanner,
           )}
+          onClick={props.onClickCta}
         >
           <div
             className={clsx(
@@ -90,7 +91,6 @@ export const TargetStateBanner: React.FC<TargetStateBannerProps> = (props) => {
               'notifi-target-state-banner-verify-cta',
               props.classNames?.verifyBannerCta,
             )}
-            onClick={props.onClickCta}
           >
             <Icon type="chevron-right" />
           </div>
