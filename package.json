@@ -53,9 +53,8 @@
     "packages/notifi-card-modal-example"
   ],
   "dependencies": {
-    "@injectivelabs/ts-types": "^1.14.6",
-    "@injectivelabs/wallet-ts": "^1.14.7",
-    "dynamic": "^4.2.2",
+    "i": "^0.3.7",
+    "npm": "^10.8.0",
     "resolve-pkg": "^2.0.0"
   }
 }

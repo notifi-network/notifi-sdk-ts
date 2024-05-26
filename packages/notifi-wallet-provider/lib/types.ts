@@ -44,13 +44,18 @@ export type SolflareWalletKeys = PickKeys<
   WalletKeysBase,
   'bech32' | 'base58' | 'hex'
 >;
+export type SuiWalletKeys = PickKeys<
+  WalletKeysBase,
+  'bech32' | 'hex' | 'base58'
+>;
 
 export type WalletKeys =
   | MetamaskWalletKeys
   | KeplrWalletKeys
   | LeapWalletKeys
   | PhantomWalletKeys
-  | BackpackWallet;
+  | BackpackWallet
+  | SuiWalletKeys;
 
 export abstract class NotifiWallet {
   abstract isInstalled: boolean;
@@ -59,7 +64,8 @@ export abstract class NotifiWallet {
     | KeplrSignMessage
     | MetamaskSignMessage
     | LeapSignMessage
-    | PhantomSignMessage;
+    | PhantomSignMessage
+    | SuiSignMessage;
   abstract connect?: () => Promise<Partial<WalletKeysBase> | null>;
   abstract disconnect?: () => void;
   abstract websiteURL: string;
@@ -104,6 +110,7 @@ export type LeapSignMessage = (
 export type PhantomSignMessage = (message: string) => Promise<string | void>;
 export type BackpackSignMessage = (message: string) => Promise<string | void>;
 export type SolflareSignMessage = (message: string) => Promise<string | void>;
+export type SuiSignMessage = (message: string) => Promise<string | void>;
 export class KeplrWallet implements NotifiWallet {
   constructor(
     public isInstalled: boolean,
@@ -159,6 +166,17 @@ export class SolflareWallet implements NotifiWallet {
   ) {}
 }
 
+export class SuiWallet implements NotifiWallet {
+  constructor(
+    public isInstalled: boolean,
+    public walletKeys: SuiWalletKeys | null,
+    public signArbitrary: SuiSignMessage,
+    public connect: () => Promise<SuiWalletKeys | null>,
+    public disconnect: () => void,
+    public websiteURL: string,
+  ) {}
+}
+
 export type Wallets = {
   metamask: MetamaskWallet;
   keplr: KeplrWallet;
@@ -166,11 +184,12 @@ export type Wallets = {
   phantom: PhantomWallet;
   backpack: BackpackWallet;
   solflare: SolflareWallet;
-  coinbase: CoinbaseWallet;
+  // coinbase: CoinbaseWallet;
   rabby: RabbyWallet;
   rainbow: RainbowWallet;
   zerion: ZerionWallet;
   okx: OKXWallet;
   binance: BinanceWallet;
-  walletconnect: WalletConnectWallet;
+  // walletconnect: WalletConnectWallet;
+  suiwallet: SuiWallet;
 };

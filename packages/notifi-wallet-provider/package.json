@@ -19,7 +19,9 @@
   ],
   "resolutions": {
     "bs58": "^5.0.0",
-    "@types/bs58": "^4.0.4"
+    "@types/bs58": "^4.0.4",
+    "@tanstack/react-query": "^5.37.1",
+    "@tanstack/react-query-persist-client": "^5.37.1"
   },
   "publishConfig": {
     "access": "public"
@@ -41,16 +43,19 @@
   "dependencies": {
     "@injectivelabs/ts-types": "^1.14.6",
     "@injectivelabs/wallet-ts": "^1.14.7",
+    "@mysten/dapp-kit": "^0.13.2",
+    "@mysten/sui.js": "^0.54.1",
     "@solana/wallet-adapter-backpack": "^0.1.14",
     "@solana/wallet-adapter-base": "^0.9.23",
     "@solflare-wallet/sdk": "1.4.2",
     "bech32-converting": "^1.0.9",
     "bs58": "^5.0.0",
     "buffer": "^6.0.3",
+    "dynamic": "^4.2.2",
     "ethers": "^6.11.1",
     "notistack": "^3.0.1",
-    "viem": "^1.11.0",
-    "wagmi": "^1.4.13"
+    "viem": "^2.12.1",
+    "wagmi": "^2.9.7"
   },
   "peerDependencies": {
     "react": "^17.0.2 || ^18.0",
