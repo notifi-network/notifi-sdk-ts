@@ -175,6 +175,7 @@ export class SuiWallet implements NotifiWallet {
   ) {}
 }
 export class EthosWallet extends SuiWallet {}
+export class MartianWallet extends SuiWallet {}
 
 export type Wallets = {
   metamask: MetamaskWallet;
@@ -192,4 +193,5 @@ export type Wallets = {
   // walletconnect: WalletConnectWallet;
   suiwallet: SuiWallet;
   ethoswallet: EthosWallet;
+  martianwallet: MartianWallet;
 };

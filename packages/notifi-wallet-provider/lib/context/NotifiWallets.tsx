@@ -29,6 +29,7 @@ import {
   EthosWallet, // Ethos,
   KeplrWallet,
   LeapWallet,
+  MartianWallet,
   MetamaskWallet,
   OKXWallet,
   PhantomWallet,
@@ -79,6 +80,7 @@ const WalletContext = createContext<WalletContextType>({
     // walletconnect: {} as WalletConnectWallet, // intentionally empty initial object
     suiwallet: {} as SuiWallet, // intentionally empty initial object
     ethoswallet: {} as EthosWallet,
+    martianwallet: {} as MartianWallet,
   },
   error: null,
   isLoading: false,
@@ -198,6 +200,13 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
     throwError,
     selectWallet,
     'ethoswallet',
+    selectedChain,
+  );
+  const martianwallet = useSuiWallet(
+    setIsLoading,
+    throwError,
+    selectWallet,
+    'martianwallet',
     selectedChain,
   );
 
@@ -321,6 +330,14 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
       ethoswallet.connectSui,
       ethoswallet.disconnectSui,
       ethoswallet.websiteURL,
+    ),
+    martianwallet: new MartianWallet(
+      martianwallet.isSuiInstalled,
+      martianwallet.walletKeySui,
+      martianwallet.signArbitrarySui,
+      martianwallet.connectSui,
+      martianwallet.disconnectSui,
+      martianwallet.websiteURL,
     ),
   };
 

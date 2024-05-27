@@ -7,7 +7,6 @@ import {
   useSignPersonalMessage,
   useWallets,
 } from '@mysten/dapp-kit';
-import bs58 from 'bs58';
 import { useCallback, useEffect, useState } from 'react';
 
 import { AvailableChains } from '../context/NotifiWallets';
@@ -24,6 +23,8 @@ const mapWalletNames = (walletName: keyof Wallets) => {
       return 'Sui Wallet';
     case 'ethoswallet':
       return 'Ethos Wallet';
+    case 'martianwallet':
+      return 'Martian Sui Wallet';
   }
 };
 
