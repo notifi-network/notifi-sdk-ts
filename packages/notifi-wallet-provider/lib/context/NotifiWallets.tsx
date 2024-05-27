@@ -26,6 +26,7 @@ import {
   BackpackWallet,
   BinanceWallet,
   CoinbaseWallet,
+  EthosWallet, // Ethos,
   KeplrWallet,
   LeapWallet,
   MetamaskWallet,
@@ -77,6 +78,7 @@ const WalletContext = createContext<WalletContextType>({
     binance: {} as BinanceWallet, // intentionally empty initial object
     // walletconnect: {} as WalletConnectWallet, // intentionally empty initial object
     suiwallet: {} as SuiWallet, // intentionally empty initial object
+    ethoswallet: {} as EthosWallet,
   },
   error: null,
   isLoading: false,
@@ -188,6 +190,14 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
     setIsLoading,
     throwError,
     selectWallet,
+    'suiwallet',
+    selectedChain,
+  );
+  const ethoswallet = useSuiWallet(
+    setIsLoading,
+    throwError,
+    selectWallet,
+    'ethoswallet',
     selectedChain,
   );
 
@@ -303,6 +313,14 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
       suiwallet.connectSui,
       suiwallet.disconnectSui,
       suiwallet.websiteURL,
+    ),
+    ethoswallet: new EthosWallet(
+      ethoswallet.isSuiInstalled,
+      ethoswallet.walletKeySui,
+      ethoswallet.signArbitrarySui,
+      ethoswallet.connectSui,
+      ethoswallet.disconnectSui,
+      ethoswallet.websiteURL,
     ),
   };
 

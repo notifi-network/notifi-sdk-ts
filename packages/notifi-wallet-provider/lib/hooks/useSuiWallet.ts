@@ -18,10 +18,20 @@ import {
 } from '../utils/localStorageUtils';
 import { walletsWebsiteLink } from '../utils/wallet';
 
+const mapWalletNames = (walletName: keyof Wallets) => {
+  switch (walletName) {
+    case 'suiwallet':
+      return 'Sui Wallet';
+    case 'ethoswallet':
+      return 'Ethos Wallet';
+  }
+};
+
 export const useSuiWallet = (
   loadingHandler: React.Dispatch<React.SetStateAction<boolean>>,
   errorHandler: (e: Error, durationInMs?: number) => void,
   selectWallet: (wallet: keyof Wallets | null) => void,
+  walletName: keyof Wallets,
   selectedChain: AvailableChains,
 ) => {
   const [walletKeySui, setWalletKeysSui] = useState<SuiWalletKeys | null>(null);
@@ -43,8 +53,11 @@ export const useSuiWallet = (
   }, [selectedChain, accounts]);
 
   const connectSui = useCallback(async (): Promise<SuiWalletKeys | null> => {
+    wallets.map((wallet) => console.log(wallet.name));
     try {
-      const wallet = wallets.find((wallet) => wallet.name === 'Sui Wallet');
+      const wallet = wallets.find(
+        (wallet) => wallet.name === mapWalletNames(walletName),
+      );
       if (!wallet) throw new Error('Sui Wallet not found');
 
       const walletKeysPromise = new Promise<SuiWalletKeys>(
@@ -55,13 +68,13 @@ export const useSuiWallet = (
               onSuccess: (data) => {
                 const account = data.accounts[0];
                 const walletKeys: SuiWalletKeys = {
-                  base58: bs58.encode(account.publicKey),
+                  // base58: bs58.encode(account.publicKey),
                   hex: account.address,
-                  bech32: '',
+                  // bech32: '',
                 };
                 setWalletKeysSui(walletKeys);
-                setWalletKeysToLocalStorage('suiwallet', walletKeys);
-                selectWallet('suiwallet');
+                setWalletKeysToLocalStorage(walletName, walletKeys);
+                selectWallet(walletName);
                 resolve(walletKeys);
               },
               onError: (error) => {
@@ -89,7 +102,7 @@ export const useSuiWallet = (
   };
 
   const signArbitrarySui = useCallback(
-    async (message: string): Promise<string> => {
+    async (message: string): Promise<string | undefined> => {
       if (!walletKeySui) throw new Error('Wallet not found');
       const encoder = new TextEncoder();
 
@@ -126,6 +139,6 @@ export const useSuiWallet = (
     connectSui,
     signArbitrarySui,
     disconnectSui,
-    websiteURL: walletsWebsiteLink['suiwallet'],
+    websiteURL: walletsWebsiteLink[walletName],
   };
 };

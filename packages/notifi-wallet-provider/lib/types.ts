@@ -44,10 +44,8 @@ export type SolflareWalletKeys = PickKeys<
   WalletKeysBase,
   'bech32' | 'base58' | 'hex'
 >;
-export type SuiWalletKeys = PickKeys<
-  WalletKeysBase,
-  'bech32' | 'hex' | 'base58'
->;
+export type SuiWalletKeys = PickKeys<WalletKeysBase, 'hex'>;
+// export type EthosWalletKeys = PickKeys<WalletKeysBase, 'hex'>;
 
 export type WalletKeys =
   | MetamaskWalletKeys
@@ -176,6 +174,7 @@ export class SuiWallet implements NotifiWallet {
     public websiteURL: string,
   ) {}
 }
+export class EthosWallet extends SuiWallet {}
 
 export type Wallets = {
   metamask: MetamaskWallet;
@@ -192,4 +191,5 @@ export type Wallets = {
   binance: BinanceWallet;
   // walletconnect: WalletConnectWallet;
   suiwallet: SuiWallet;
+  ethoswallet: EthosWallet;
 };
