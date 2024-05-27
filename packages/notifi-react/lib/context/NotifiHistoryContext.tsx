@@ -78,7 +78,9 @@ export const NotifiHistoryContextProvider: FC<
               .filter((item) => !historyItemIdMap.has(item.id));
             if (newItems?.length && newItems.length > 0) {
               setHistoryItems((existing) => [...newItems, ...existing]);
-              setUnreadCount((prev) => (prev ? prev + newItems.length : null));
+              setUnreadCount((prev) =>
+                prev !== null ? prev + newItems.length : null,
+              );
             }
           });
       });
