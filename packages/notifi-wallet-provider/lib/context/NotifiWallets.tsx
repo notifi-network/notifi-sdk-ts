@@ -10,6 +10,7 @@ import React, {
   PropsWithChildren,
   createContext,
   useEffect,
+  useMemo,
   useState,
 } from 'react';
 
@@ -91,12 +92,21 @@ const WalletContext = createContext<WalletContextType>({
 });
 
 const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
-  const [selectedChain, setSelectedChain] =
-    useState<AvailableChains>('ethereum');
+  const [selectedChain, setSelectedChain] = useState<AvailableChains>(() => {
+    const storedChain = localStorage.getItem('selectedChain');
+    return (storedChain as AvailableChains) || 'ethereum';
+  });
+
+  const memoizedSelectedChain = useMemo(() => selectedChain, [selectedChain]);
 
   const switchChain = (chain: AvailableChains) => {
     setSelectedChain(chain);
+    localStorage.setItem('selectedChain', chain);
   };
+
+  // const switchChain = (chain: AvailableChains) => {
+  //   setSelectedChain(chain);
+  // };
 
   const [selectedWallet, setSelectedWallet] = useState<keyof Wallets | null>(
     null,
@@ -117,26 +127,36 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
     }, durationInMs ?? 5000);
   };
 
-  const keplr = useKeplr(setIsLoading, throwError, selectWallet, selectedChain);
+  const keplr = useKeplr(
+    setIsLoading,
+    throwError,
+    selectWallet,
+    memoizedSelectedChain,
+  );
 
-  const leap = useLeap(setIsLoading, throwError, selectWallet, selectedChain);
+  const leap = useLeap(
+    setIsLoading,
+    throwError,
+    selectWallet,
+    memoizedSelectedChain,
+  );
   const phantom = usePhantom(
     setIsLoading,
     throwError,
     selectWallet,
-    selectedChain,
+    memoizedSelectedChain,
   );
   const backPack = useBackpack(
     setIsLoading,
     throwError,
     selectWallet,
-    selectedChain,
+    memoizedSelectedChain,
   );
   const solflare = useSolflare(
     setIsLoading,
     throwError,
     selectWallet,
-    selectedChain,
+    memoizedSelectedChain,
   );
   const binance = useBinance(setIsLoading, throwError, selectWallet);
   // const walletConnect = useWagmiWallet(
@@ -158,56 +178,56 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
     throwError,
     selectWallet,
     'metamask',
-    selectedChain,
+    memoizedSelectedChain,
   );
   const okx = useInjectedWallet(
     setIsLoading,
     throwError,
     selectWallet,
     'okx',
-    selectedChain,
+    memoizedSelectedChain,
   );
   const zerion = useInjectedWallet(
     setIsLoading,
     throwError,
     selectWallet,
     'zerion',
-    selectedChain,
+    memoizedSelectedChain,
   );
   const rabby = useInjectedWallet(
     setIsLoading,
     throwError,
     selectWallet,
     'rabby',
-    selectedChain,
+    memoizedSelectedChain,
   );
   const rainbow = useInjectedWallet(
     setIsLoading,
     throwError,
     selectWallet,
     'rainbow',
-    selectedChain,
+    memoizedSelectedChain,
   );
   const suiwallet = useSuiWallet(
     setIsLoading,
     throwError,
     selectWallet,
     'suiwallet',
-    selectedChain,
+    memoizedSelectedChain,
   );
   const ethoswallet = useSuiWallet(
     setIsLoading,
     throwError,
     selectWallet,
     'ethoswallet',
-    selectedChain,
+    memoizedSelectedChain,
   );
   const martianwallet = useSuiWallet(
     setIsLoading,
     throwError,
     selectWallet,
     'martianwallet',
-    selectedChain,
+    memoizedSelectedChain,
   );
 
   const wallets: Wallets = {
@@ -370,7 +390,7 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
         wallets,
         error,
         isLoading,
-        selectedChain,
+        selectedChain: memoizedSelectedChain,
         switchChain,
       }}
     >

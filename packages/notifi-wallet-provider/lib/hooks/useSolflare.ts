@@ -33,12 +33,12 @@ export const useSolflare = (
 
   useEffect(() => {
     setWallet(new Solflare());
+    setIsSolflareInstalled(true);
     if (wallet === undefined) {
       // The wallet is not loaded yet. You could show a loading spinner here.
       return;
     }
     if (!wallet) throw new Error('Wallet not found');
-    setIsSolflareInstalled(true);
   }, [selectedChain]);
 
   const connectSolflare =
@@ -50,18 +50,25 @@ export const useSolflare = (
 
       try {
         if (!wallet) throw new Error('Wallet not found');
-        wallet.on('connect', handleConnect);
 
         wallet.on('disconnect', disconnectSolflare);
         wallet.on('accountChanged', disconnectSolflare);
 
         await wallet.connect();
 
-        if (!walletKeysSolflare) throw new Error('Wallet Keys not found');
+        const walletKeys: SolflareWalletKeys = {
+          base58: wallet.publicKey.toBase58() ?? '',
+          hex: Buffer.from(
+            bs58.decode(wallet?.publicKey?.toBase58() ?? ''),
+          ).toString('hex'),
+          bech32: '',
+        };
+
+        if (!walletKeys) throw new Error('Wallet Keys not found');
 
         selectWallet('solflare');
-        setWalletKeysSolflare(walletKeysSolflare);
-        setWalletKeysToLocalStorage('solflare', walletKeysSolflare);
+        setWalletKeysSolflare(walletKeys);
+        setWalletKeysToLocalStorage('solflare', walletKeys);
         loadingHandler(false);
         return walletKeysSolflare;
       } catch (e) {
@@ -74,25 +81,9 @@ export const useSolflare = (
       return null;
     }, [selectWallet, errorHandler]);
 
-  const handleConnect = async () => {
-    const walletKeys: SolflareWalletKeys = {
-      base58: wallet.publicKey.toBase58() ?? '',
-      hex: Buffer.from(
-        bs58.decode(wallet?.publicKey?.toBase58() ?? ''),
-      ).toString('hex'),
-      bech32: '',
-    };
-
-    selectWallet('solflare');
-    setWalletKeysSolflare(walletKeys);
-    setWalletKeysToLocalStorage('solflare', walletKeys);
-    loadingHandler(false);
-  };
-
   const disconnectSolflare = async () => {
     try {
       await wallet.disconnect();
-      wallet.removeAllListeners('disconnect');
       selectWallet(null);
       setWalletKeysSolflare(null);
       cleanWalletsInLocalStorage();

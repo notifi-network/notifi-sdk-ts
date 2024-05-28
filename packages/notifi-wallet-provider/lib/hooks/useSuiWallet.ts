@@ -55,14 +55,6 @@ export const useSuiWallet = (
     const wallet = wallets.find(
       (wallet) => wallet.name === mapWalletNames(walletName),
     );
-    console.log('***SELECTEDCHAIN***', selectedChain);
-    console.log('wallets.length', wallets.length);
-    console.log('logwallet', wallet);
-    console.log('logWalletName', wallet?.name);
-    console.log('walletFeatures', wallet?.features);
-    console.log('account ccc', account);
-    console.log('autoConnectionStatus', autoConnectionStatus);
-    console.log('connectionStatus', connectionStatus);
     if (wallet === undefined) return; // Wallets not loaded yet
     if (!wallet) throw new Error('Wallet not found');
 
@@ -102,20 +94,6 @@ export const useSuiWallet = (
         handleSuiWalletNotExists('connectSui');
         throw new Error('Sui Wallet not found');
       }
-      console.log('***SELECTEDCHAIN***', selectedChain);
-
-      console.log('-------------------');
-      console.log('called once');
-      console.log('connectionStatus', connectionStatus);
-      console.log('wallets.length', wallets.length);
-      console.log('logwallet', wallet);
-      console.log('logWalletName', wallet?.name);
-      console.log('walletFeatures', wallet?.features);
-      console.log('account ccc', account);
-      console.log('autoConnectionStatus', autoConnectionStatus);
-      console.log('connectionStatus', connectionStatus);
-      console.log('-------------------');
-      console.log();
 
       const walletKeysPromise = new Promise<SuiWalletKeys>(
         (resolve, reject) => {
