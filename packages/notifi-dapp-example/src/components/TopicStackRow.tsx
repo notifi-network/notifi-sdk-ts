@@ -10,9 +10,11 @@ import { TopicStackRowInput } from './TopicStackRowInput';
 export type TopicStackRowProps = TopicStandaloneRowMetadata;
 
 export const TopicStackRow: React.FC<TopicStackRowProps> = (props) => {
-  const { getTopicStackAlertsFromTopicName } = useNotifiTopicContext();
-  const topicStackAlerts = getTopicStackAlertsFromTopicName(
-    props.topic.uiConfig.name,
+  const { getTopicStackAlerts } = useNotifiTopicContext();
+  if (!props.topic.fusionEventDescriptor.id) return null;
+
+  const topicStackAlerts = getTopicStackAlerts(
+    props.topic.fusionEventDescriptor.id,
   );
   const customIconUrl =
     getFusionEventMetadata(props.topic)?.uiConfigOverride?.customIconUrl ?? '';

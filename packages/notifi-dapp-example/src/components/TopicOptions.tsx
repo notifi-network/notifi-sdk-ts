@@ -46,6 +46,7 @@ export const TopicOptions = <T extends TopicRowCategory>(
 ) => {
   const isTopicGroup = isTopicGroupOptions(props);
   const benchmarkTopic = isTopicGroup ? props.topics[0] : props.topic;
+  if (!benchmarkTopic.fusionEventDescriptor.id) return null;
 
   const {
     customInput,
@@ -55,7 +56,7 @@ export const TopicOptions = <T extends TopicRowCategory>(
     uiType,
     setCustomInput,
   } = useUserInputParmToFilterOption(
-    benchmarkTopic.uiConfig.name,
+    benchmarkTopic.fusionEventDescriptor.id,
     props.userInputParam,
   );
   const { isLoading: isLoadingTopic } = useNotifiTopicContext();

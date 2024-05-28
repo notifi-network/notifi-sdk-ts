@@ -47,6 +47,9 @@ export const TopicRow = <T extends TopicRowCategory>(
 
   const benchmarkTopic = isTopicGroup ? props.topics[0] : props.topic;
 
+  const fusionEventTypeId = benchmarkTopic.fusionEventDescriptor.id;
+  if (!fusionEventTypeId) return null;
+
   if (isTopicGroup && !isTopicGroupValid(props.topics)) return null;
 
   const userInputParams = getUserInputParams(benchmarkTopic);
@@ -67,23 +70,24 @@ export const TopicRow = <T extends TopicRowCategory>(
 
   const toggleStandAloneTopic = async (topic: FusionEventTopic) => {
     if (!targetGroupId) return;
-    if (!isAlertSubscribed(benchmarkTopic.uiConfig.name)) {
+    if (!isAlertSubscribed(fusionEventTypeId)) {
       return subscribeAlertsDefault([topic], targetGroupId);
     }
-    unsubscribeAlert(benchmarkTopic.uiConfig.name);
+    unsubscribeAlert(fusionEventTypeId);
   };
 
   const toggleTopicGroup = async (topics: FusionEventTopic[]) => {
     if (!targetGroupId) return;
-    if (!isAlertSubscribed(benchmarkTopic.uiConfig.name)) {
+    if (!isAlertSubscribed(fusionEventTypeId)) {
       return subscribeAlertsDefault(topics, targetGroupId);
     }
     const topicsToBeUnsubscribed = topics.filter((topic) =>
-      isAlertSubscribed(topic.uiConfig.name),
+      topic.fusionEventDescriptor.id
+        ? isAlertSubscribed(topic.fusionEventDescriptor.id)
+        : false,
     );
-    // TODO: replace with batch alert deletion (BE blocker)
     for (const topic of topicsToBeUnsubscribed) {
-      await unsubscribeAlert(topic.uiConfig.name);
+      await unsubscribeAlert(topic.fusionEventDescriptor.id!);
     }
   };
 
@@ -118,7 +122,7 @@ export const TopicRow = <T extends TopicRowCategory>(
         </div>
         {/* hide toggle button if it is the Trading Pair Price Alert, but shown save button instead below */}
         <Toggle
-          checked={isAlertSubscribed(benchmarkTopic.uiConfig.name)}
+          checked={isAlertSubscribed(fusionEventTypeId)}
           disabled={isLoadingTopic}
           onChange={async () => {
             if (isTopicGroup) {
@@ -130,7 +134,7 @@ export const TopicRow = <T extends TopicRowCategory>(
       </div>
 
       {/* render radio button or button inputs if content with userInputParams length equals to 1 */}
-      {isAlertSubscribed(benchmarkTopic.uiConfig.name) ? (
+      {isAlertSubscribed(fusionEventTypeId) ? (
         <div>
           {isTopicGroup
             ? userInputParams.map((userInput, id) => {

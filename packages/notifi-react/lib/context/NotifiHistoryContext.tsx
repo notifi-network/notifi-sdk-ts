@@ -24,6 +24,7 @@ export type HistoryItem = {
   subject: string;
   message: string;
   read: boolean;
+  customIconUrl: string;
 };
 
 export type NotifiHistoryContextType = {
@@ -237,6 +238,7 @@ export const NotifiHistoryContextProvider: FC<
           timestamp: '',
           topic: 'Unsupported Notification Type',
           icon: '',
+          customIconUrl: '',
           subject: 'Unsupported Notification Type',
           message:
             'Invalid notification history detail: only support GenericEventDetails',
@@ -268,6 +270,7 @@ export const NotifiHistoryContextProvider: FC<
         subject: eventDetails.notificationTypeName,
         message: eventDetails.genericMessageHtml ?? eventDetails.genericMessage,
         icon: eventDetails.icon,
+        customIconUrl: eventDetails.customIconUrl ?? '',
         read: history.read,
       };
     },

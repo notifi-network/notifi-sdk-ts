@@ -14,7 +14,7 @@ import {
 import React from 'react';
 
 export const useUserInputParmToFilterOption = (
-  topicName: string,
+  alertName: string,
   userInputParam: UserInputParam<UiType>,
 ) => {
   const { getAlertFilterOptions, subscribeAlertsWithFilterOptions } =
@@ -22,7 +22,7 @@ export const useUserInputParmToFilterOption = (
   const {
     targetDocument: { targetGroupId },
   } = useNotifiTargetContext();
-  const alertFilterOptions = getAlertFilterOptions(topicName);
+  const alertFilterOptions = getAlertFilterOptions(alertName);
 
   const filterName: string | undefined = Object.keys(
     alertFilterOptions?.input ?? [],
