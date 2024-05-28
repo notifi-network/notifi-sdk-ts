@@ -215,6 +215,7 @@ export const getUpdatedAlertFilterOptions = (
   };
 };
 
+/** @deprecated use `userInputParam.prefixAndSuffix` */
 export const derivePrefixAndSuffixFromValueType = (
   kind: ValueType,
 ): { prefix: string; suffix: string } => {
@@ -231,6 +232,11 @@ export const derivePrefixAndSuffixFromValueType = (
       };
     case 'string':
     case 'integer':
+      return {
+        prefix: '',
+        suffix: '',
+      };
+    default:
       return {
         prefix: '',
         suffix: '',
