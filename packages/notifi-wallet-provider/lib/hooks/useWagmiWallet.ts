@@ -112,9 +112,7 @@ export const useWagmiWallet = (
         return signature;
       } catch (e) {
         errorHandler(
-          new Error(
-            `${walletName}'s signArbitrary failed, check console for details`,
-          ),
+          new Error('Wallet not signed. Please connect your wallet again.'),
         );
         console.error(e);
       } finally {

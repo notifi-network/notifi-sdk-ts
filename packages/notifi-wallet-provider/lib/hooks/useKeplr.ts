@@ -120,7 +120,7 @@ export const useKeplr = (
         return result;
       } catch (e) {
         errorHandler(
-          new Error('Keplr signArbitrary failed, check console for details'),
+          new Error('Wallet not signed. Please connect your wallet again.'),
         );
         console.error(e);
       }
