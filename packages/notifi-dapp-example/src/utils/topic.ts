@@ -11,6 +11,7 @@ import {
   UiType,
   UserInputParam,
   ValueType,
+  objectKeys,
 } from '@notifi-network/notifi-frontend-client';
 
 export type LabelWithSubTopicsEventTypeItem = LabelEventTypeItem & {
@@ -265,6 +266,51 @@ export const derivePrefixAndSuffixFromValueType = (
   }
 };
 
+export type AlertMetadataBase = {
+  fusionEventTypeId: string;
+};
+
+export type AlertMetadataForTopicStack = AlertMetadataBase & {
+  subscriptionValue: string;
+  subscriptionLabel: string;
+  timestamp: string;
+};
+
+export const isAlertMetadataForTopicStack = (
+  alertMetadata: AlertMetadata,
+): alertMetadata is AlertMetadataForTopicStack => {
+  return (
+    objectKeys(alertMetadata).length > 1 &&
+    'timestamp' in alertMetadata &&
+    'subscriptionValue' in alertMetadata &&
+    'subscriptionLabel' in alertMetadata
+  );
+};
+
+type AlertMetadata = AlertMetadataBase | AlertMetadataForTopicStack;
+
+export const resolveAlertName = (alertName: string): AlertMetadata => {
+  /** alertName always start with its corresponding `fusionEventTypeId`:
+   * 1. Alert created from normal topic (standalone topic or topic group): alert.name = fusionEventTypeId
+   * 2. Alert created from topic stack: alert.name = fusionEventTypeId:;:subscriptionValue:;:subscriptionLabel
+   * ... if more to come, add the identifier after fusionEventTypeId ex. fusionEventTypeId:;:<identifier>:;:<metadata>
+   */
+  const resolved = alertName.split(':;:');
+  if (resolved.length === 1) {
+    return {
+      fusionEventTypeId: resolved[0],
+    };
+  }
+  const [fusionEventTypeId, subscriptionValue, subscriptionLabel, timestamp] =
+    resolved;
+  return {
+    fusionEventTypeId,
+    subscriptionValue,
+    subscriptionLabel,
+    timestamp,
+  };
+};
+
 /** TopicStackRow related */
 
 export type TopicStackAlert = {
@@ -274,10 +320,10 @@ export type TopicStackAlert = {
 };
 
 export const resolveTopicStackAlertName = (alertName: string) => {
-  const [topicName, subscriptionValue, subscriptionLabel, timestamp] =
+  const [fusionEventTypeId, subscriptionValue, subscriptionLabel, timestamp] =
     alertName.split(':;:');
   return {
-    topicName,
+    fusionEventTypeId,
     subscriptionValue,
     subscriptionLabel,
     timestamp,
@@ -285,11 +331,11 @@ export const resolveTopicStackAlertName = (alertName: string) => {
 };
 
 export const composeTopicStackAlertName = (
-  topicName: string,
+  fusionEventTypeId: string,
   subscriptionValue: string,
   subscriptionLabel: string,
 ) => {
-  return `${topicName}:;:${subscriptionValue}:;:${subscriptionLabel}:;:${Date.now()}`;
+  return `${fusionEventTypeId}:;:${subscriptionValue}:;:${subscriptionLabel}:;:${Date.now()}`;
 };
 
 export enum ConvertOptionDirection {
