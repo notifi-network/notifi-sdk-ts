@@ -68,9 +68,9 @@ export const useTopicStackRowInput = (
   );
 
   const subscribeTopic = async () => {
-    if (!isTopicReadyToSubscribe) return;
+    if (!isTopicReadyToSubscribe || !topic.fusionEventDescriptor.id) return;
     const alertName = composeTopicStackAlertName(
-      topic.uiConfig.name,
+      topic.fusionEventDescriptor.id,
       subscriptionValue.value,
       subscriptionValue.label,
     );
