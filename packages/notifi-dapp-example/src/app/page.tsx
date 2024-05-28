@@ -10,6 +10,7 @@ import { NotifiContextWrapper } from '@/context/NotifiContextWrapper';
 import { useNotifiRouter } from '@/hooks/useNotifiRouter';
 import { useRouterAsync } from '@/hooks/useRouterAsync';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
@@ -107,9 +108,11 @@ export default function Home() {
       ) : null}
 
       {isSigningMessage ? (
-        <NotifiContextWrapper>
-          <LoginComponent />
-        </NotifiContextWrapper>
+        <QueryClientProvider client={new QueryClient()}>
+          <NotifiContextWrapper>
+            <LoginComponent />
+          </NotifiContextWrapper>
+        </QueryClientProvider>
       ) : null}
     </main>
   );
