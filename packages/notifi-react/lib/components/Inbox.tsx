@@ -1,18 +1,34 @@
 import clsx from 'clsx';
 import React from 'react';
 
-import { InboxConfigTargetEdit } from './InboxConfigTargetEdit';
-import { InboxConfigTargetList } from './InboxConfigTargetList';
-import { InboxConfigTopic } from './InboxConfigTopic';
-import { InboxHistory } from './InboxHistory';
+import {
+  InboxConfigTargetEdit,
+  InboxConfigTargetEditProps,
+} from './InboxConfigTargetEdit';
+import {
+  InboxConfigTargetList,
+  InboxConfigTargetListProps,
+} from './InboxConfigTargetList';
+import { InboxConfigTopic, InboxConfigTopicProps } from './InboxConfigTopic';
+import { InboxHistory, InboxHistoryProps } from './InboxHistory';
 import { InboxNavTabs, InboxNavTabsProps } from './InboxNavTabs';
 
-type InboxProps = {
+export type InboxProps = {
   classNames?: {
     container?: string;
     footer?: string;
     inboxViews?: string;
     InboxNavTabs?: InboxNavTabsProps['classNames'];
+    InboxConfigTargetEdit?: InboxConfigTargetEditProps['classNames'];
+    InboxConfigTargetList?: InboxConfigTargetListProps['classNames'];
+    InboxConfigTopic?: InboxConfigTopicProps['classNames'];
+    InboxHistory?: InboxHistoryProps['classNames'];
+  };
+  copy?: {
+    InboxConfigTargetEdit?: InboxConfigTargetEditProps['copy'];
+    InboxConfigTargetList?: InboxConfigTargetListProps['copy'];
+    InboxConfigTopic?: InboxConfigTopicProps['copy'];
+    // TODO
   };
 };
 
@@ -31,15 +47,30 @@ export const Inbox: React.FC<InboxProps> = (props) => {
   return (
     <div className={clsx('notifi-inbox', props.classNames?.container)}>
       <div className={clsx('notifi-inbox-views', props.classNames?.inboxViews)}>
-        <InboxHistory isHidden={inboxView !== InboxView.InboxHistory} />
+        <InboxHistory
+          isHidden={inboxView !== InboxView.InboxHistory}
+          classNames={props.classNames?.InboxHistory}
+        />
         {inboxView === InboxView.InboxConfigTopic ? (
-          <InboxConfigTopic {...{ setInboxView }} />
+          <InboxConfigTopic
+            {...{ setInboxView }}
+            classNames={props.classNames?.InboxConfigTopic}
+            copy={props.copy?.InboxConfigTopic}
+          />
         ) : null}
         {inboxView === InboxView.InboxConfigTargetList ? (
-          <InboxConfigTargetList {...{ setInboxView }} />
+          <InboxConfigTargetList
+            {...{ setInboxView }}
+            classNames={props.classNames?.InboxConfigTargetList}
+            copy={props.copy?.InboxConfigTargetList}
+          />
         ) : null}
         {inboxView === InboxView.InboxConfigTargetEdit ? (
-          <InboxConfigTargetEdit {...{ setInboxView }} />
+          <InboxConfigTargetEdit
+            {...{ setInboxView }}
+            classNames={props.classNames?.InboxConfigTargetEdit}
+            copy={props.copy?.InboxConfigTargetEdit}
+          />
         ) : null}
       </div>
       <div className={clsx('notifi-inbox-footer', props.classNames?.footer)}>

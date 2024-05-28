@@ -14,6 +14,18 @@ const NotifiComponentExample = () => {
           inputSeparators: {
             email: 'OR',
             sms: 'OR',
+            telegram: 'OR',
+          },
+        },
+      },
+    },
+    Inbox: {
+      InboxConfigTargetEdit: {
+        TargetInputs: {
+          inputSeparators: {
+            email: 'OR',
+            sms: 'OR',
+            telegram: 'OR',
           },
         },
       },
