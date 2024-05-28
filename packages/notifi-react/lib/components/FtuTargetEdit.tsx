@@ -1,8 +1,8 @@
-import { objectKeys } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import React from 'react';
 
-import { TargetInputFromValue, useNotifiTargetContext } from '../context';
+import { useNotifiTargetContext } from '../context';
+import { useIsTargetInputValid } from '../hooks/useIsTargetInputValid';
 import { defaultCopy, defaultLoadingAnimationStyle } from '../utils/constants';
 import { ErrorGlobal } from './ErrorGlobal';
 import { FtuView } from './Ftu';
@@ -32,7 +32,6 @@ export const FtuTargetEdit: React.FC<FtuTargetEditProps> = (props) => {
   const [isLoading, setIsLoading] = React.useState(false);
   const {
     renewTargetGroup,
-    targetDocument: { targetInputs },
     isChangingTargets,
     error: targetError,
   } = useNotifiTargetContext();
@@ -48,19 +47,7 @@ export const FtuTargetEdit: React.FC<FtuTargetEditProps> = (props) => {
   if (targetError) {
     return <ErrorGlobal />;
   }
-  const isInputValid = React.useMemo(() => {
-    return !objectKeys(targetInputs)
-      .map((key) => {
-        if (typeof targetInputs[key] !== 'boolean') {
-          const targetInput = targetInputs[key] as TargetInputFromValue;
-          if (targetInput.error) {
-            return false;
-          }
-        }
-        return true;
-      })
-      .includes(false);
-  }, [targetInputs]);
+  const isInputValid = useIsTargetInputValid();
 
   return (
     <div

@@ -12,7 +12,7 @@ import { Connect, ConnectProps } from './Connect';
 import { ErrorGlobal, ErrorGlobalProps } from './ErrorGlobal';
 import { Expiry, ExpiryProps } from './Expiry';
 import { Ftu, FtuProps } from './Ftu';
-import { Inbox } from './Inbox';
+import { Inbox, InboxProps } from './Inbox';
 import { LoadingGlobalProps } from './LoadingGlobal';
 
 export type NotifiInputFieldsText = {
@@ -31,12 +31,14 @@ export type NotifiCardModalProps = Readonly<{
     Connect?: ConnectProps['copy'];
     Expiry?: ExpiryProps['copy'];
     Ftu?: FtuProps['copy'];
+    Inbox?: InboxProps['copy'];
   }>;
   classNames?: Readonly<{
     container?: string;
     Connect?: ConnectProps['classNames'];
     Expiry?: ExpiryProps['classNames'];
     Ftu?: FtuProps['classNames'];
+    Inbox?: InboxProps['classNames'];
   }>;
   darkMode?: boolean;
   onClose?: () => void;
@@ -123,7 +125,9 @@ export const NotifiCardModal: React.FC<NotifiCardModalProps> = (props) => {
       {CardModalView === 'ftu' ? (
         <Ftu classNames={props.classNames?.Ftu} copy={props.copy?.Ftu} />
       ) : null}
-      {CardModalView === 'Inbox' ? <Inbox /> : null}
+      {CardModalView === 'Inbox' ? (
+        <Inbox classNames={props.classNames?.Inbox} copy={props.copy?.Inbox} />
+      ) : null}
     </div>
   );
 };
