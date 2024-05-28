@@ -6,6 +6,7 @@ import {
   NotifiWalletStorage,
   PhantomWalletKeys,
   SolflareWalletKeys,
+  SuiWalletKeys,
   Wallets,
 } from '../types';
 
@@ -25,6 +26,8 @@ export const setWalletKeysToLocalStorage = <T extends keyof Wallets>(
     ? BackpackWalletKeys
     : T extends 'solflare'
     ? SolflareWalletKeys
+    : T extends 'suiwallet'
+    ? SuiWalletKeys
     : never,
 ) => {
   if (typeof window !== 'undefined') {

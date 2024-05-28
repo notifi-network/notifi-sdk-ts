@@ -3,6 +3,7 @@ import {
   useAutoConnectWallet,
   useConnectWallet,
   useCurrentAccount,
+  useCurrentWallet,
   useDisconnectWallet,
   useSignPersonalMessage,
   useWallets,
@@ -35,8 +36,10 @@ export const useSuiWallet = (
   walletName: keyof Wallets,
   selectedChain: AvailableChains,
 ) => {
+  // const [wallet, setWallet] = useState<any>();
   const [walletKeySui, setWalletKeysSui] = useState<SuiWalletKeys | null>(null);
-  const [connectedWallet, setConnectedWallet] = useState<any>(null);
+
+  const { currentWallet, connectionStatus } = useCurrentWallet();
 
   const [isSuiInstalled, setIsSuiInstalled] = useState<boolean>(false);
   const accounts = useAccounts();
@@ -49,17 +52,70 @@ export const useSuiWallet = (
   const { mutate: signPersonalMessage } = useSignPersonalMessage();
 
   useEffect(() => {
-    if (wallets.length === undefined) return; // Wallets not loaded yet
+    const wallet = wallets.find(
+      (wallet) => wallet.name === mapWalletNames(walletName),
+    );
+    console.log('***SELECTEDCHAIN***', selectedChain);
+    console.log('wallets.length', wallets.length);
+    console.log('logwallet', wallet);
+    console.log('logWalletName', wallet?.name);
+    console.log('walletFeatures', wallet?.features);
+    console.log('account ccc', account);
+    console.log('autoConnectionStatus', autoConnectionStatus);
+    console.log('connectionStatus', connectionStatus);
+    if (wallet === undefined) return; // Wallets not loaded yet
+    if (!wallet) throw new Error('Wallet not found');
+
     setIsSuiInstalled(true);
-  }, [selectedChain, accounts]);
+  }, [accounts, account]);
+
+  useEffect(() => {
+    if (
+      (account === undefined && connectionStatus === 'connected') ||
+      (account === null && connectionStatus === 'connecting')
+    ) {
+      console.log(
+        `Account is ${account} and connection status is ${connectionStatus}`,
+      );
+      console.log('Account has been disconnected');
+      disconnectSui();
+    }
+  }, [currentWallet, connectionStatus, account]);
+
+  const handleSuiWalletNotExists = (location: string) => {
+    disconnect();
+    cleanWalletsInLocalStorage();
+    errorHandler(
+      new Error(
+        `ERROR - ${location}: Sui wallet not initialized or not installed`,
+      ),
+    );
+  };
 
   const connectSui = useCallback(async (): Promise<SuiWalletKeys | null> => {
-    wallets.map((wallet) => console.log(wallet.name));
+    // wallets.map((wallet) => console.log(wallet.name));
     try {
       const wallet = wallets.find(
         (wallet) => wallet.name === mapWalletNames(walletName),
       );
-      if (!wallet) throw new Error('Sui Wallet not found');
+      if (!wallet) {
+        handleSuiWalletNotExists('connectSui');
+        throw new Error('Sui Wallet not found');
+      }
+      console.log('***SELECTEDCHAIN***', selectedChain);
+
+      console.log('-------------------');
+      console.log('called once');
+      console.log('connectionStatus', connectionStatus);
+      console.log('wallets.length', wallets.length);
+      console.log('logwallet', wallet);
+      console.log('logWalletName', wallet?.name);
+      console.log('walletFeatures', wallet?.features);
+      console.log('account ccc', account);
+      console.log('autoConnectionStatus', autoConnectionStatus);
+      console.log('connectionStatus', connectionStatus);
+      console.log('-------------------');
+      console.log();
 
       const walletKeysPromise = new Promise<SuiWalletKeys>(
         (resolve, reject) => {
@@ -69,9 +125,7 @@ export const useSuiWallet = (
               onSuccess: (data) => {
                 const account = data.accounts[0];
                 const walletKeys: SuiWalletKeys = {
-                  // base58: bs58.encode(account.publicKey),
                   hex: account.address,
-                  // bech32: '',
                 };
                 setWalletKeysSui(walletKeys);
                 setWalletKeysToLocalStorage(walletName, walletKeys);
