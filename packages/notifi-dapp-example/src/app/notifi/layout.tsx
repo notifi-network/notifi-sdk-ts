@@ -3,6 +3,7 @@
 import Disconnect from '@/components/Disconnect';
 import { NotifiContextWrapper } from '@/context/NotifiContextWrapper';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 
@@ -35,7 +36,10 @@ export default function NotifiSingupLayout({
           <Disconnect />
         </div>
       ) : null}
-      <NotifiContextWrapper>{children}</NotifiContextWrapper>;
+
+      <QueryClientProvider client={new QueryClient()}>
+        <NotifiContextWrapper>{children}</NotifiContextWrapper>;
+      </QueryClientProvider>
     </>
   );
 }
