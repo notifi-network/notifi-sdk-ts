@@ -88,6 +88,10 @@ export const defaultCopy = {
       title: 'Manage alert destinations',
       description: 'You have unverified destinations',
     },
+    Signup: {
+      text: 'Get alerts via',
+      cta: 'Sign Up',
+    },
   },
   inboxConfigTargetList: {
     header: 'Manage Destinations',

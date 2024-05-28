@@ -7,7 +7,7 @@ import { HistoryList } from './HistoryList';
 
 export type InboxHistoryProps = {
   isHidden: boolean;
-  className?: {
+  classNames?: {
     container?: string;
   };
 };
@@ -20,7 +20,7 @@ export const InboxHistory: React.FC<InboxHistoryProps> = (props) => {
       className={clsx(
         'notifi-inbox-history',
         props.isHidden && 'hidden',
-        props.className?.container,
+        props.classNames?.container,
       )}
     >
       <HistoryList
