@@ -113,9 +113,10 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
   );
 
   const onSave = async () => {
-    if (!isTopicReadyToSubscribe) return;
+    if (!isTopicReadyToSubscribe || !props.topic.fusionEventDescriptor.id)
+      return;
     const alertName = composeTopicStackAlertName(
-      props.topic.uiConfig.name,
+      props.topic.fusionEventDescriptor.id,
       subscriptionValue.value,
       subscriptionValue.label,
     );
