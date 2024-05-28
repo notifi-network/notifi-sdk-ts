@@ -46,13 +46,16 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
     isChangingTargets,
   } = useNotifiTargetContext();
   const { cardConfig } = useNotifiTenantConfigContext();
+  const isItemRemoved = React.useRef(false);
   // TODO: extract to a separate component for each target
 
   React.useEffect(() => {
+    if (!isItemRemoved.current) return;
     const hasChange = !Object.values(isChangingTargets).every(
       (hasChange) => !hasChange,
     );
     hasChange && renewTargetGroup();
+    isItemRemoved.current = false;
   }, [isChangingTargets]);
 
   const isRemoveButtonAvailable = (targetInfoPrompt: TargetInfoPrompt) => {
@@ -119,6 +122,7 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
           {isRemoveButtonAvailable(targetInfoPrompts.email.infoPrompt) ? (
             <TargetListItemAction
               action={async () => {
+                isItemRemoved.current = true;
                 updateTargetInputs('email', { value: '' });
               }}
               classNames={{ removeCta: props.classNames?.removeCta }}
@@ -167,6 +171,7 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
           {isRemoveButtonAvailable(targetInfoPrompts.phoneNumber.infoPrompt) ? (
             <TargetListItemAction
               action={async () => {
+                isItemRemoved.current = true;
                 updateTargetInputs('phoneNumber', { value: '' });
               }}
               classNames={{ removeCta: props.classNames?.removeCta }}
@@ -215,6 +220,7 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
           {isRemoveButtonAvailable(targetInfoPrompts.telegram.infoPrompt) ? (
             <TargetListItemAction
               action={async () => {
+                isItemRemoved.current = true;
                 updateTargetInputs('telegram', { value: '' });
               }}
               classNames={{ removeCta: props.classNames?.removeCta }}
@@ -259,6 +265,7 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
           {isRemoveButtonAvailable(targetInfoPrompts.discord.infoPrompt) ? (
             <TargetListItemAction
               action={async () => {
+                isItemRemoved.current = true;
                 updateTargetInputs('discord', false);
               }}
               classNames={{ removeCta: props.classNames?.removeCta }}
@@ -300,6 +307,7 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
           {isRemoveButtonAvailable(targetInfoPrompts.slack.infoPrompt) ? (
             <TargetListItemAction
               action={async () => {
+                isItemRemoved.current = true;
                 updateTargetInputs('slack', false);
               }}
               classNames={{ removeCta: props.classNames?.removeCta }}
