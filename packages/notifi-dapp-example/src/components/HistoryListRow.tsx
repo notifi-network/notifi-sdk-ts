@@ -1,13 +1,10 @@
 import { Icon } from '@/assets/Icon';
 import { formatTimestampInHistoryRow } from '@/utils/notifiHistoryUtils';
-import { getFusionEventMetadata } from '@/utils/topic';
 import { Types } from '@notifi-network/notifi-graphql';
 import {
   HistoryItem,
   useNotifiHistoryContext,
-  useNotifiTenantConfigContext,
 } from '@notifi-network/notifi-react';
-import { useMemo } from 'react';
 
 type HistoryListRowProps = {
   historyDetailEntry: HistoryItem;
@@ -18,19 +15,7 @@ export const HistoryListRow: React.FC<HistoryListRowProps> = ({
   historyDetailEntry,
   onClick,
 }) => {
-  const { fusionEventTopics } = useNotifiTenantConfigContext();
   const { markAsRead } = useNotifiHistoryContext();
-
-  const titleDisplay = useMemo(() => {
-    const topicName = historyDetailEntry.topic;
-    const topic = fusionEventTopics.find(
-      (topic) => topic.uiConfig.name === topicName,
-    );
-    return topic
-      ? getFusionEventMetadata(topic)?.uiConfigOverride?.historyDisplayName ??
-          topicName
-      : topicName;
-  }, [fusionEventTopics]);
 
   const clickHistoryRow = () => {
     if (!historyDetailEntry?.id) return;
@@ -78,7 +63,9 @@ export const HistoryListRow: React.FC<HistoryListRowProps> = ({
               !historyDetailEntry.read ? 'font-semibold' : ''
             } text-notifi-text`}
           >
-            {titleDisplay.length > 0 ? titleDisplay : historyDetailEntry.topic}
+            {historyDetailEntry.topic.length > 0
+              ? historyDetailEntry.topic
+              : ''}
           </div>
           <div className="text-gray-500 text-sm text-notifi-text-medium">
             {historyDetailEntry.subject}
