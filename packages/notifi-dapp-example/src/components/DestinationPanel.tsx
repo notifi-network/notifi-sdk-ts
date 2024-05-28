@@ -124,7 +124,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
 
       const address =
         selectedWallet === 'coinbase'
-          ? wallets[selectedWallet]?.walletKeys?.hex ?? ''
+          ? wallets[selectedWallet]?.walletKeys?.hex?.toLowerCase() ?? ''
           : '';
 
       const signer = {
@@ -170,15 +170,14 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
       await frontendClient
         .fetchData()
         .then(refreshTargetDocument)
-        .catch((e) => console.error(e));
+        .catch((e: unknown) => console.error(e));
+
+      setIsCBInfoModalOpen(true);
     } catch (e) {
       console.error(e);
 
       popGlobalInfoModal({
-        message:
-          e instanceof Error && e.message
-            ? e.message
-            : 'Unable to sign the wallet. Please try again.',
+        message: 'Something went wrong. Please try again.',
         iconOrEmoji: { type: 'icon', id: 'warning' },
         timeout: 5000,
       });
@@ -224,6 +223,8 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
     setIsCBInfoModalOpen(!isCBInfoModalOpen);
   };
 
+  const isSignWalletRequired =
+    targetInfoPrompts.wallet?.infoPrompt?.message === 'Sign Wallet';
   return (
     <div className="w-full flex flex-col justify-center items-center">
       <CoinbaseInfoModal
@@ -415,31 +416,38 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
           </div>
 
           <div className="flex flex-row items-center justify-between w-3/4 sm:w-90 mr-4">
-            <div className="relative flex items-center gap-1.5 text-sm ml-6 text-notifi-text">
-              Wallet Alerts
-              <button className="group flex items-center justify-center">
-                <Icon id="info" style={{ color: '#B6B8D5' }} />
-                <div className="w-[194px] bg-black text-white text-start border border-[#565A8D] text-sm font-medium rounded-md p-4 hidden absolute z-10 left-0 bottom-[102%] group-hover:block">
-                  {isWalletAlertVerified ? (
-                    <>
-                      Make sure messages are enabled in your Coinbase Wallet
-                      App.{' '}
-                      <span
-                        onClick={toggleCBInfoModal}
-                        className="text-notifi-toggle-on-bg underline cursor-pointer"
-                      >
-                        More info
-                      </span>
-                    </>
-                  ) : (
-                    <>
-                      Wallet messages are powered by XMTP and delivered natively
-                      into Coinbase Wallet. Download the Coinbase Wallet App or
-                      Browser Extension to receive wallet alerts!
-                    </>
-                  )}
+            <div className="ml-6">
+              <div className="relative flex items-center gap-1.5 text-sm text-notifi-text">
+                Wallet Alerts
+                <button className="group flex items-center justify-center">
+                  <Icon id="info" style={{ color: '#B6B8D5' }} />
+                  <div className="w-[194px] bg-black text-white text-start border border-[#565A8D] text-sm font-medium rounded-md p-4 hidden absolute z-10 left-0 bottom-[102%] group-hover:block">
+                    {isWalletAlertVerified ? (
+                      <>
+                        Make sure messages are enabled in your Coinbase Wallet
+                        Mobile App.{' '}
+                        <span
+                          onClick={toggleCBInfoModal}
+                          className="text-notifi-toggle-on-bg underline cursor-pointer"
+                        >
+                          More info
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        Wallet messages are powered by XMTP and delivered
+                        natively into Coinbase Wallet. Download the Coinbase
+                        Wallet App.
+                      </>
+                    )}
+                  </div>
+                </button>
+              </div>
+              {isSignWalletRequired ? (
+                <div className="pt-0.5 text-notifi-text-light text-xs font-medium">
+                  2-3 wallet signatures required.
                 </div>
-              </button>
+              ) : null}
             </div>
 
             {targetInfoPrompts.wallet?.infoPrompt.type === 'cta' ? (

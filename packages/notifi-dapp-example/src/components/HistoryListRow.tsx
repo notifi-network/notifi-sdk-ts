@@ -1,100 +1,93 @@
 import { Icon } from '@/assets/Icon';
-import { useNotifiHistory } from '@/hooks/useNotifiHistory';
-import {
-  ParsedNotificationHistory,
-  parseNotificationHistory,
-} from '@/utils/notifiHistoryUtils';
+import { formatTimestampInHistoryRow } from '@/utils/notifiHistoryUtils';
+import { getFusionEventMetadata } from '@/utils/topic';
 import { Types } from '@notifi-network/notifi-graphql';
-import { Dispatch, SetStateAction, useState } from 'react';
+import {
+  HistoryItem,
+  useNotifiHistoryContext,
+  useNotifiTenantConfigContext,
+} from '@notifi-network/notifi-react';
+import { useMemo } from 'react';
 
 type HistoryListRowProps = {
-  historyDetailEntry: Types.FusionNotificationHistoryEntryFragmentFragment | null;
-  setHistoryDetailEntry: Dispatch<
-    SetStateAction<Types.FusionNotificationHistoryEntryFragmentFragment | null>
-  >;
-  setUnreadCount: Dispatch<SetStateAction<number | null>>;
+  historyDetailEntry: HistoryItem;
+  onClick?: () => void;
 };
 
 export const HistoryListRow: React.FC<HistoryListRowProps> = ({
   historyDetailEntry,
-  setHistoryDetailEntry,
-  setUnreadCount,
+  onClick,
 }) => {
-  const [parsedNotificationHistory, setParsedNotificationHistory] =
-    useState<ParsedNotificationHistory | null>(
-      historyDetailEntry
-        ? parseNotificationHistory(historyDetailEntry, 'list')
-        : null,
-    );
+  const { fusionEventTopics } = useNotifiTenantConfigContext();
+  const { markAsRead } = useNotifiHistoryContext();
 
-  const { markNotifiHistoryAsRead } = useNotifiHistory();
+  const titleDisplay = useMemo(() => {
+    const topicName = historyDetailEntry.topic;
+    const topic = fusionEventTopics.find(
+      (topic) => topic.uiConfig.name === topicName,
+    );
+    return topic
+      ? getFusionEventMetadata(topic)?.uiConfigOverride?.historyDisplayName ??
+          topicName
+      : topicName;
+  }, [fusionEventTopics]);
 
   const clickHistoryRow = () => {
     if (!historyDetailEntry?.id) return;
-    setHistoryDetailEntry(historyDetailEntry);
-    if (parsedNotificationHistory?.read) return;
-    markNotifiHistoryAsRead([historyDetailEntry.id]);
-    setUnreadCount((prev) => (prev ? prev - 1 : prev));
-    setParsedNotificationHistory((existing) => {
-      if (existing) {
-        return { ...existing, read: true };
-      }
-      return null;
-    });
+    if (!historyDetailEntry.read) {
+      markAsRead([historyDetailEntry.id]);
+    }
+    onClick?.();
   };
-
-  if (
-    !parsedNotificationHistory ||
-    parsedNotificationHistory.topic === 'Unsupported Notification Type'
-  ) {
-    return null;
-  }
-
-  const icon = parsedNotificationHistory.icon as Types.GenericEventIconHint;
-  const customIconUrl = parsedNotificationHistory.customIconUrl ?? '';
 
   return (
     <div
-      className={`mx-6 my-2 p-3 line-clamp-1 flex relative cursor-pointer bg-notifi-destination-card-bg rounded-lg ${
-        !parsedNotificationHistory.read
-          ? 'bg-notifi-destination-logo-card-bg'
-          : ''
+      className={`mx-2 md:mx-6 my-2 p-3 line-clamp-1 flex justify-between relative cursor-pointer bg-notifi-destination-card-bg rounded-lg ${
+        !historyDetailEntry.read ? 'bg-notifi-destination-logo-card-bg' : ''
       }  hover:border hover:border-notifi-input-border`}
       onClick={clickHistoryRow}
     >
       <div
         className={`${
-          !parsedNotificationHistory.read ? '' : 'hidden'
+          !historyDetailEntry.read ? '' : 'bg-transparent'
         } h-full w-1 bg-notifi-tenant-brand-bg rounded-3xl flex justify-center items-center absolute top-0 left-0 z-1`}
       ></div>
 
-      <div className="flex flex-row items-center w-15">
-        {customIconUrl.length > 0 ? (
-          <>
-            <img src={customIconUrl} className="w-10 h-10 mx-1" />
-          </>
-        ) : (
-          <div className={`h-10 w-10 mr-3 ml-1`}>
-            <Icon className="m-2" id={icon} />
+      <div className="flex flex-row">
+        <div className="flex flex-row items-center w-15">
+          {historyDetailEntry.customIconUrl.length > 0 ? (
+            <>
+              <img
+                src={historyDetailEntry.customIconUrl}
+                className="w-10 h-10 ml-1 mr-3"
+              />
+            </>
+          ) : (
+            <div className={`h-10 w-10 mr-3 ml-1`}>
+              <Icon
+                className="m-2"
+                id={historyDetailEntry.icon as Types.GenericEventIconHint}
+              />
+            </div>
+          )}
+        </div>
+
+        <div className="grow text-sm md:max-w-full max-w-[75%]">
+          <div
+            className={`${
+              !historyDetailEntry.read ? 'font-semibold' : ''
+            } text-notifi-text`}
+          >
+            {titleDisplay.length > 0 ? titleDisplay : historyDetailEntry.topic}
           </div>
-        )}
-      </div>
-
-      <div className="grow text-sm md:max-w-full max-w-[70%]">
-        <div
-          className={`${
-            !parsedNotificationHistory.read ? 'font-semibold' : ''
-          } text-notifi-text`}
-        >
-          {parsedNotificationHistory.topic}
-        </div>
-        <div className="text-gray-500 text-sm text-notifi-text-medium">
-          {parsedNotificationHistory.subject}
+          <div className="text-gray-500 text-sm text-notifi-text-medium">
+            {historyDetailEntry.subject}
+          </div>
         </div>
       </div>
 
-      <div className="text-xs opacity-70 text-notifi-text-light">
-        {parsedNotificationHistory.timestamp}
+      <div className="text-xs opacity-70 text-notifi-text-light min-w-14">
+        {formatTimestampInHistoryRow(historyDetailEntry.timestamp)}
       </div>
     </div>
   );

@@ -1,16 +1,6 @@
 import { Types } from '@notifi-network/notifi-graphql';
 import { format, isToday, isWithinInterval, parseISO, subDays } from 'date-fns';
 
-export type ParsedNotificationHistory = {
-  timestamp: string;
-  icon: string;
-  topic: string;
-  subject: string;
-  message: string;
-  read: boolean;
-  customIconUrl?: string;
-};
-
 export type ValidEventDetail = Extract<
   Types.NotificationHistoryEntryFragmentFragment['detail'],
   { __typename: 'GenericEventDetails' }
@@ -41,39 +31,7 @@ export const validateEventDetails = (
   );
 };
 
-export const parseNotificationHistory = (
-  history: Types.FusionNotificationHistoryEntryFragmentFragment,
-  historyViewType: 'list' | 'detail',
-): ParsedNotificationHistory => {
-  const eventDetails = history.detail;
-  if (!eventDetails || eventDetails.__typename !== 'GenericEventDetails') {
-    return {
-      timestamp: '',
-      topic: 'Unsupported Notification Type',
-      icon: '',
-      subject: 'Unsupported Notification Type',
-      message:
-        'Invalid notification history detail: only support GenericEventDetails',
-      read: true,
-      customIconUrl: '',
-    };
-  }
-
-  return {
-    timestamp:
-      historyViewType === 'detail'
-        ? formatTimestampInHistoryDetail(history.createdDate)
-        : formatTimestampInHistoryRow(history.createdDate),
-    topic: eventDetails.sourceName,
-    subject: eventDetails.notificationTypeName,
-    message: eventDetails.genericMessageHtml ?? eventDetails.genericMessage,
-    icon: eventDetails.icon,
-    read: history.read,
-    customIconUrl: eventDetails.customIconUrl,
-  };
-};
-
-const formatTimestampInHistoryRow = (timestamp: string) => {
+export const formatTimestampInHistoryRow = (timestamp: string) => {
   const dateObject = new Date(timestamp);
   const now = new Date();
   const sevenDaysAgo = subDays(now, 7);
@@ -89,7 +47,7 @@ const formatTimestampInHistoryRow = (timestamp: string) => {
   );
 };
 
-const formatTimestampInHistoryDetail = (date: string): string => {
+export const formatTimestampInHistoryDetail = (date: string): string => {
   try {
     const parsedDate = parseISO(date);
 
@@ -105,34 +63,4 @@ const formatTimestampInHistoryDetail = (date: string): string => {
   } catch {
     return '-';
   }
-};
-
-export type HistoryRowIconStyle = {
-  [key in Types.GenericEventIconHint]?: {
-    iconColor: string;
-    iconBackground: string;
-  };
-};
-
-export const iconStyles: HistoryRowIconStyle = {
-  CLOCK: {
-    // Radial orange
-    iconColor: 'text-white',
-    iconBackground: 'bg-radial-gradient-orange',
-  },
-  DAO: {
-    // People group blue
-    iconColor: 'text-white',
-    iconBackground: 'bg-radial-gradient-blue',
-  },
-  INFO: {
-    // Green lightbulb
-    iconColor: 'text-white',
-    iconBackground: 'bg-radial-gradient-green',
-  },
-  URGENT: {
-    // Red bell
-    iconColor: 'text-white',
-    iconBackground: 'bg-radial-gradient-red',
-  },
 };
