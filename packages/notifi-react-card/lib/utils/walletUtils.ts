@@ -22,6 +22,8 @@ export const walletToSourceType = (
       return 'BLAST_WALLET';
     case 'CELO':
       return 'CELO_WALLET';
+    case 'THE_ROOT_NETWORK':
+      return 'THE_ROOT_NETWORK';
     case 'INJECTIVE':
       return 'INJECTIVE_WALLET';
     case 'LINEA':

@@ -207,6 +207,8 @@ const ensureWalletBalanceSources = async (
           return 'BINANCE_WALLET';
         case 'ETHEREUM':
           return 'ETHEREUM_WALLET';
+        case 'THE_ROOT_NETWORK':
+          return 'THE_ROOT_NETWORK';
         case 'BASE':
           return 'ETHEREUM_WALLET';
         case 'BLAST':

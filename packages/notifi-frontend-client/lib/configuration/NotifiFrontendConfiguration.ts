@@ -34,6 +34,7 @@ type WalletBlockchainWithPublicKey = Extract<
   | 'MONAD'
   | 'BERACHAIN'
   | 'EVMOS'
+  | 'THE_ROOT_NETWORK'
 
 
 >;
@@ -137,6 +138,7 @@ const evmChains = [
   'AVALANCHE',
   'BINANCE',
   'OPTIMISM',
+  'THE_ROOT_NETWORK',
   'BASE',
   'BLAST',
   'CELO',

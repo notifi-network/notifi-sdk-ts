@@ -46,6 +46,7 @@ export type SignMessageParams =
         | 'AVALANCHE'
         | 'BINANCE'
         | 'OSMOSIS'
+        | 'THE_ROOT_NETWORK'
         | 'ELYS'
         | 'NEUTRON'
         | 'ARCHWAY'
@@ -115,6 +116,7 @@ export type WalletWithSignMessage =
         | 'AVALANCHE'
         | 'BINANCE'
         | 'OPTIMISM'
+        | 'THE_ROOT_NETWORK'
         | 'ZKSYNC'
         | 'BASE'
         | 'BLAST'
@@ -488,6 +490,7 @@ export class NotifiFrontendClient {
       case 'MANTA':
       case 'MONAD':
       case 'BASE':
+      case 'THE_ROOT_NETWORK':
       case 'ETHEREUM':
       case 'POLYGON':
       case 'ARBITRUM':
@@ -578,6 +581,7 @@ export class NotifiFrontendClient {
       case 'MANTA':
       case 'MONAD':
       case 'EVMOS':
+      case 'THE_ROOT_NETWORK':
       case 'OPTIMISM': {
         const { walletPublicKey, tenantId } = this
           ._configuration as NotifiConfigWithPublicKey;
