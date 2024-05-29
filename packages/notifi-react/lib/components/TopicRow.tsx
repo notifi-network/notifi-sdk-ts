@@ -49,7 +49,8 @@ export const TopicRow = <T extends TopicRowCategory>(
 
   const benchmarkTopic = isTopicGroup ? props.topics[0] : props.topic;
   /* NOTE: benchmarkTopic is either the 'first topic in the group' or the 'standalone topic'. This represent the target topic to be rendered. */
-
+  const fusionEventTypeId = benchmarkTopic.fusionEventDescriptor.id;
+  if (!fusionEventTypeId) return null;
   if (isTopicGroup && !isTopicGroupValid(props.topics)) return null; // TODO: TBD partial valid case
 
   const userInputParams = getUserInputParams(benchmarkTopic);
@@ -61,23 +62,24 @@ export const TopicRow = <T extends TopicRowCategory>(
 
   const toggleStandAloneTopic = async (topic: FusionEventTopic) => {
     if (!targetGroupId) return;
-    if (!isAlertSubscribed(benchmarkTopic.uiConfig.name)) {
+    if (!isAlertSubscribed(fusionEventTypeId)) {
       return subscribeAlertsDefault([topic], targetGroupId);
     }
-    unsubscribeAlert(benchmarkTopic.uiConfig.name);
+    unsubscribeAlert(fusionEventTypeId);
   };
 
   const toggleTopicGroup = async (topics: FusionEventTopic[]) => {
     if (!targetGroupId) return;
-    if (!isAlertSubscribed(benchmarkTopic.uiConfig.name)) {
+    if (!isAlertSubscribed(fusionEventTypeId)) {
       return subscribeAlertsDefault(topics, targetGroupId);
     }
     const topicsToBeUnsubscribed = topics.filter((topic) =>
-      isAlertSubscribed(topic.uiConfig.name),
+      topic.fusionEventDescriptor.id
+        ? isAlertSubscribed(topic.fusionEventDescriptor.id)
+        : false,
     );
-    // TODO: replace with batch alert deletion (BE blocker)
     for (const topic of topicsToBeUnsubscribed) {
-      await unsubscribeAlert(topic.uiConfig.name);
+      await unsubscribeAlert(topic.fusionEventDescriptor.id!);
     }
   };
 
@@ -104,7 +106,8 @@ export const TopicRow = <T extends TopicRowCategory>(
         </div>
 
         <Toggle
-          checked={isAlertSubscribed(benchmarkTopic.uiConfig.name)}
+          checked={isAlertSubscribed(fusionEventTypeId)}
+          // checked={isAlertSubscribed(benchmarkTopic.uiConfig.name)}
           disabled={isLoadingTopic}
           setChecked={async () => {
             if (isTopicGroup) {
@@ -114,8 +117,8 @@ export const TopicRow = <T extends TopicRowCategory>(
           }}
         />
       </div>
-      {userInputParams.length > 0 &&
-      isAlertSubscribed(benchmarkTopic.uiConfig.name) ? (
+      {userInputParams.length > 0 && isAlertSubscribed(fusionEventTypeId) ? (
+        // isAlertSubscribed(benchmarkTopic.uiConfig.name) ? (
         <div
           className={clsx(
             'notifi-topic-row-user-inputs-row-container ',

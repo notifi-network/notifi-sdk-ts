@@ -4,12 +4,8 @@ import { format, isToday, isWithinInterval, subDays } from 'date-fns';
 import React from 'react';
 
 import { Icon } from '../assets/Icons';
-import {
-  HistoryItem,
-  useNotifiHistoryContext,
-  useNotifiTenantConfigContext,
-} from '../context';
-import { defaultCopy, getFusionEventMetadata } from '../utils';
+import { HistoryItem, useNotifiHistoryContext } from '../context';
+import { defaultCopy } from '../utils';
 
 export type HistoryRowProps = {
   className?: {
@@ -28,21 +24,7 @@ export type HistoryRowProps = {
 
 export const HistoryRow: React.FC<HistoryRowProps> = (props) => {
   const icon = props.historyItem.icon as Types.GenericEventIconHint;
-  // const [read, setRead] = React.useState<boolean>(props.historyItem.read);
-
-  const { fusionEventTopics } = useNotifiTenantConfigContext();
   const { markAsRead } = useNotifiHistoryContext();
-
-  const titleDisplay = React.useMemo(() => {
-    const topicName = props.historyItem.topic;
-    const topic = fusionEventTopics.find(
-      (topic) => topic.uiConfig.name === topicName,
-    );
-    return topic
-      ? getFusionEventMetadata(topic)?.uiConfigOverride?.historyDisplayName ??
-          topicName
-      : defaultCopy.historyRow.legacyTopic;
-  }, [fusionEventTopics, props]);
 
   return (
     <div
@@ -76,7 +58,7 @@ export const HistoryRow: React.FC<HistoryRowProps> = (props) => {
               props.className?.titleText,
             )}
           >
-            {titleDisplay}
+            {props.historyItem.topic ?? defaultCopy.historyRow.legacyTopic}
           </div>
           <div
             className={clsx(
