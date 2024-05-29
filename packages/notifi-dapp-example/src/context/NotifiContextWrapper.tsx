@@ -19,7 +19,6 @@ const getPricePair = (
   pricePairInputs: InputObject[],
   chainLabel: string,
 ) => {
-  console.log('pricePair', pricePair);
   pricePair.forEach((pair) => {
     const { tokenSymbol } = pair;
 

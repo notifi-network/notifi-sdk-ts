@@ -1,5 +1,4 @@
 import { Icon } from '@/assets/Icon';
-import { useNotifiTargetListener } from '@/hooks/useNotifiTargetListener';
 import { useNotifiTenantConfigContext } from '@notifi-network/notifi-react';
 import React, { useState } from 'react';
 
@@ -7,7 +6,6 @@ import { DestinationPanel } from './DestinationPanel';
 import { DestinationsEditModal } from './DestinationsEditModal';
 
 export const DashboardDestinations = () => {
-  useNotifiTargetListener();
   const [open, setOpen] = useState(false);
   const { cardConfig } = useNotifiTenantConfigContext();
 
