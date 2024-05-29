@@ -7,15 +7,25 @@ import {
 import { NotifiContextProvider } from '@notifi-network/notifi-react';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import { getBytes } from 'ethers';
+import { useSearchParams } from 'next/navigation';
 import { PropsWithChildren } from 'react';
-
-const tenantId = process.env.NEXT_PUBLIC_TENANT_ID!;
-const env = process.env.NEXT_PUBLIC_ENV! as NotifiEnvironment;
-const cardId = process.env.NEXT_PUBLIC_CARD_ID!;
 
 export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
   children,
 }) => {
+  const searchParams = useSearchParams();
+  const tenantId =
+    searchParams.get('tenantid') ?? process.env.NEXT_PUBLIC_TENANT_ID ?? null;
+  const env =
+    (searchParams.get('env') as NotifiEnvironment) ??
+    (process.env.NEXT_PUBLIC_ENV as NotifiEnvironment) ??
+    null;
+  const cardId =
+    searchParams.get('cardid') ?? process.env.NEXT_PUBLIC_CARD_ID ?? null;
+
+  if (!tenantId || !env || !cardId)
+    throw new Error('ERROR: cannot find tenantId, env, or cardId');
+
   const { wallets, selectedWallet } = useWallets();
   if (
     !selectedWallet ||
