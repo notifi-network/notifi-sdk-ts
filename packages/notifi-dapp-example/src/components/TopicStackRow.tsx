@@ -1,6 +1,8 @@
 import { Icon } from '@/assets/Icon';
-import { getFusionEventMetadata } from '@/utils/topic';
-import { useNotifiTopicContext } from '@notifi-network/notifi-react';
+import {
+  getFusionEventMetadata,
+  useNotifiTopicContext,
+} from '@notifi-network/notifi-react';
 import React from 'react';
 
 import { TopicStandaloneRowMetadata } from './TopicList';
