@@ -1,5 +1,4 @@
 import { LoadingSpinner } from '@/components/LoadingSpinner';
-import { useNotifiTargetListener } from '@/hooks/useNotifiTargetListener';
 import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import {
   FtuStage,
@@ -17,7 +16,6 @@ export type ConfigDestinationModalProps = {
 export const ConfigDestinationModal: React.FC<ConfigDestinationModalProps> = ({
   contactInfo,
 }) => {
-  useNotifiTargetListener();
   const { isLoading: isLoadingTargets } = useNotifiTargetContext();
   const { isLoading: isLoadingTopics } = useNotifiTopicContext();
   const { updateFtuStage } = useNotifiUserSettingContext();

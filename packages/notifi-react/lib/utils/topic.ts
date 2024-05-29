@@ -75,6 +75,18 @@ export const getUserInputParams = (
   return filters[0]?.userInputParams ?? [];
 };
 
+export const getUiConfigOverride = (
+  topic: FusionEventTopic,
+): FusionEventMetadata['uiConfigOverride'] => {
+  const parsedMetadata = JSON.parse(
+    topic.fusionEventDescriptor.metadata ?? '{}',
+  );
+  if (!isFusionEventMetadata(parsedMetadata)) {
+    return {};
+  }
+  return parsedMetadata?.uiConfigOverride ?? {};
+};
+
 export const getFusionEventMetadata = (
   topic: FusionEventTopic,
 ): FusionEventMetadata | null => {
@@ -83,6 +95,18 @@ export const getFusionEventMetadata = (
   );
   if (isFusionEventMetadata(parsedMetadata)) {
     return parsedMetadata;
+  }
+  return null;
+};
+
+export const getFusionFilter = (
+  topic: FusionEventTopic,
+): AlertFilter | null => {
+  const parsedMetadata = JSON.parse(
+    topic.fusionEventDescriptor.metadata ?? '{}',
+  );
+  if (isFusionEventMetadata(parsedMetadata)) {
+    return (parsedMetadata?.filters as AlertFilter[])?.[0] ?? {};
   }
   return null;
 };
@@ -141,7 +165,10 @@ export const isTopicGroupValid = (topics: FusionEventTopic[]): boolean => {
         ]),
       );
       // TODO: Fix O(n^2) complexity
-      for (const key of benchmarkUserInputParamMap.keys()) {
+      const benchmarkUserInputParamKeys = Array.from(
+        benchmarkUserInputParamMap.keys(),
+      );
+      for (const key of benchmarkUserInputParamKeys) {
         const benchmarkUserInputParam = benchmarkUserInputParamMap.get(key);
         const userInputParam = userInputParamMap.get(key);
         if (!userInputParam || !benchmarkUserInputParam) {
