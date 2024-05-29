@@ -31,7 +31,7 @@ export const useUserInputParmToFilterOption = (
 
   const subscribedValue = userInputOptions?.[userInputParam.name];
 
-  const [customInput, setCustomInput] = React.useState<string | number>();
+  const [customInput, setCustomInput] = React.useState<string | number>('');
   React.useEffect(() => {
     if (
       !!subscribedValue &&

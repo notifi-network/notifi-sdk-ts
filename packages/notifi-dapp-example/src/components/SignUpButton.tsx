@@ -14,11 +14,15 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 export type NotifiSignUpButtonProps = Readonly<{
   buttonText: string;
   data: CardConfigItemV1;
+  isLoading: boolean;
+  setIsLoading: (isLoading: boolean) => void;
 }>;
 
 export const SignUpButton: React.FC<NotifiSignUpButtonProps> = ({
   buttonText,
   data,
+  isLoading,
+  setIsLoading,
 }) => {
   const eventTypes = data.eventTypes;
 
@@ -29,7 +33,6 @@ export const SignUpButton: React.FC<NotifiSignUpButtonProps> = ({
     isLoading: isLoadingFtu,
   } = useNotifiUserSettingContext();
   const { cardConfig, fusionEventTopics } = useNotifiTenantConfigContext();
-  const [isLoading, setIsLoading] = useState(false);
 
   const {
     renewTargetGroup,
@@ -64,7 +67,10 @@ export const SignUpButton: React.FC<NotifiSignUpButtonProps> = ({
       setIsLoading(false);
       return;
     }
-    fusionEventTopics.forEach(async (topic) => {
+    const subEvents = fusionEventTopics.filter((event) => {
+      return event.uiConfig.optOutAtSignup ? false : true;
+    });
+    subEvents.forEach(async (topic) => {
       try {
         if (!ftuStage) {
           await subscribeAlertsDefault([topic], targetGroupId);
@@ -130,7 +136,7 @@ export const SignUpButton: React.FC<NotifiSignUpButtonProps> = ({
 
   return (
     <button
-      className="rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-72 h-11 mb-6 text-sm font-bold disabled:opacity-50 disabled:hover:bg-notifi-button-primary-blueish-bg hover:bg-notifi-button-hover-bg"
+      className="rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-72 h-11 mb-9 text-sm font-bold disabled:opacity-50 disabled:hover:bg-notifi-button-primary-blueish-bg hover:bg-notifi-button-hover-bg"
       disabled={!isInitialized || hasErrors || !isInputFieldsValid}
       onClick={onClick}
     >

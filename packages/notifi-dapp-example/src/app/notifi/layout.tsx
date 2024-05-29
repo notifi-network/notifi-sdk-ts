@@ -1,8 +1,9 @@
 'use client';
 
+import Disconnect from '@/components/Disconnect';
 import { NotifiContextWrapper } from '@/context/NotifiContextWrapper';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 
 export default function NotifiSingupLayout({
@@ -10,13 +11,30 @@ export default function NotifiSingupLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { wallets, selectedWallet } = useWallets();
-
+  const { wallets, selectedWallet, isAuthenticationVerified } = useWallets();
+  const pathname = usePathname();
   const router = useRouter();
   useEffect(() => {
-    if (!selectedWallet || !wallets[selectedWallet].walletKeys) {
+    if (
+      (!selectedWallet || !wallets[selectedWallet].walletKeys) &&
+      isAuthenticationVerified
+    ) {
       router.push('/');
     }
-  }, [selectedWallet]);
-  return <NotifiContextWrapper>{children}</NotifiContextWrapper>;
+  }, [selectedWallet, isAuthenticationVerified]);
+
+  const showDisconnectButton = ['/notifi/ftu', '/notifi/signup'].includes(
+    pathname,
+  );
+
+  return (
+    <>
+      {showDisconnectButton ? (
+        <div className={`fixed z-40 top-7 right-0.5 hidden md:block`}>
+          <Disconnect />
+        </div>
+      ) : null}
+      <NotifiContextWrapper>{children}</NotifiContextWrapper>;
+    </>
+  );
 }

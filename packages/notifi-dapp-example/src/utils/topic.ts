@@ -241,6 +241,7 @@ export const getUpdatedAlertFilterOptions = (
   };
 };
 
+//TODO: refactor when implement the suffix and prefix feature in AP
 export const derivePrefixAndSuffixFromValueType = (
   kind: ValueType,
 ): { prefix: string; suffix: string } => {
@@ -289,4 +290,26 @@ export const composeTopicStackAlertName = (
   subscriptionLabel: string,
 ) => {
   return `${topicName}:;:${subscriptionValue}:;:${subscriptionLabel}:;:${Date.now()}`;
+};
+
+export enum ConvertOptionDirection {
+  /**Note: Convert the value rendered in browser to notifi backend acceptable format */
+  FtoB = 'frontendToBackend',
+  /**Note: Convert the value received from notifi backend to frontend renderable format */
+  BtoF = 'BackendToFrontend',
+}
+
+export const convertOptionValue = (
+  value: string | number,
+  type: ValueType,
+  direction?: ConvertOptionDirection,
+) => {
+  if (!value) return '';
+  direction = direction ?? ConvertOptionDirection.FtoB;
+  if (type === 'percentage') {
+    return direction === ConvertOptionDirection.FtoB
+      ? Number(value) / 100
+      : Number(value) * 100;
+  }
+  return value;
 };

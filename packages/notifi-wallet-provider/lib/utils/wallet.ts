@@ -15,4 +15,6 @@ export const walletsWebsiteLink: { [key in keyof Wallets]: string } = {
   backpack: 'https://backpack.app/download',
   solflare: 'https://solflare.com/',
   suiwallet: 'https://suiwallet.com/',
+  ethoswallet: 'https://www.ethos.io/download/',
+  martianwallet: 'https://martianwallet.xyz/',
 };

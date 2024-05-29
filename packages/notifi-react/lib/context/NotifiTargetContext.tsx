@@ -31,7 +31,7 @@ export type TargetDocument = {
   targetData: TargetData;
 };
 
-type Target =
+export type Target =
   | 'email'
   | 'phoneNumber'
   | 'telegram'
@@ -39,18 +39,15 @@ type Target =
   | 'slack'
   | 'wallet';
 
+export type FormTarget = Extract<Target, 'email' | 'phoneNumber' | 'telegram'>;
+export type ToggleTarget = Extract<Target, 'discord' | 'slack' | 'wallet'>;
+
 export type TargetInputFromValue = { value: string; error?: string };
-type TargetInputForm = Record<
-  Extract<Target, 'email' | 'phoneNumber' | 'telegram'>, // NOTE: only these 3 have their form input
-  TargetInputFromValue
->;
+type TargetInputForm = Record<FormTarget, TargetInputFromValue>;
 
-type TargetInputToggles = Record<
-  Extract<Target, 'discord' | 'slack' | 'wallet'>,
-  boolean
->;
+export type TargetInputToggles = Record<ToggleTarget, boolean>;
 
-type TargetInputs = TargetInputForm & TargetInputToggles;
+export type TargetInputs = TargetInputForm & TargetInputToggles;
 
 export type TargetInfo = {
   target: Target;
@@ -210,6 +207,14 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
   };
 
   useEffect(() => {
+    //NOTE: target change listener when window is refocused
+    const handler = () => {
+      if (!frontendClientStatus.isAuthenticated) return;
+      return frontendClient.fetchData().then(refreshTargetDocument);
+    };
+    window.addEventListener('focus', handler);
+
+    // NOTE: Initial load
     if (frontendClientStatus.isAuthenticated && !isInitialLoaded.current) {
       if (isLoading && isInitialLoaded.current) return;
       isInitialLoaded.current = true;
@@ -220,16 +225,11 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
           refreshTargetDocument(data);
         })
         .finally(() => setIsLoading(false)); // TODO: handle error
-      //NOTE: target change listener when window is refocused
-      const handler = () => {
-        if (!frontendClientStatus.isAuthenticated) return;
-        return frontendClient.fetchData().then(refreshTargetDocument);
-      };
-      window.addEventListener('focus', handler);
-      return () => {
-        window.removeEventListener('focus', handler);
-      };
     }
+
+    return () => {
+      window.removeEventListener('focus', handler);
+    };
   }, [frontendClientStatus.isAuthenticated]);
 
   useEffect(() => {

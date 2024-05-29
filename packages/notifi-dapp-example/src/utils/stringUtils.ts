@@ -5,6 +5,25 @@ export function formatTelegramForSubscription(telegramId: string) {
   return telegramId;
 }
 
+export const capitalize = (str: string) => {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+};
+
+export const formatPriceNumber = (num: number) => {
+  const numberParts = num.toString().split('.');
+  const decimals = numberParts[1] ? numberParts[1].length : 0;
+
+  if (decimals === 0) {
+    return Number(num)
+      .toFixed(2)
+      .replace(/\d(?=(\d{3})+\.)/g, '$&,');
+  } else {
+    return Number(num)
+      .toFixed(decimals)
+      .replace(/\d(?=(\d{3})+\.)/g, '$&,');
+  }
+};
+
 export function convertWalletName(walletName: string) {
   switch (walletName) {
     case 'metamask':

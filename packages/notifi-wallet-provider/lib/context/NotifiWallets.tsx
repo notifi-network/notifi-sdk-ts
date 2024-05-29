@@ -117,6 +117,8 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
 
   const [error, setError] = useState<Error | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isAuthenticationVerified, setIsAuthenticationVerified] =
+    useState<boolean>(false);
 
   const throwError = (e: Error, durationInMs?: number) => {
     clearTimeout(timer);
