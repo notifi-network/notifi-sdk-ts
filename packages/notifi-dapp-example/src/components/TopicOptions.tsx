@@ -112,7 +112,10 @@ export const TopicOptions = <T extends TopicRowCategory>(
                     <div>
                       {'prefix' in prefixAndSuffix && prefixAndSuffix.prefix}
                       {option}
-                      {'suffix' in prefixAndSuffix && prefixAndSuffix.suffix}
+                      {props.userInputParam.kind === 'integer'
+                        ? 'x'
+                        : ' suffix' in prefixAndSuffix &&
+                          prefixAndSuffix.suffix}
                     </div>
                   </button>
                 )
@@ -230,7 +233,9 @@ export const TopicOptions = <T extends TopicRowCategory>(
             )}
             {customInput ? (
               <div className="absolute right-4 bottom-3">
-                {'suffix' in prefixAndSuffix && prefixAndSuffix.suffix}
+                {props.userInputParam.kind === 'integer'
+                  ? 'x'
+                  : ' suffix' in prefixAndSuffix && prefixAndSuffix.suffix}
               </div>
             ) : null}
           </div>

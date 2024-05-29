@@ -39,7 +39,7 @@ export const CoinbaseInfoModal: React.FC<CoinbaseInfoModalProps> = ({
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-8">
               <Image
-                src="/logos/CB1.png"
+                src="/images/coinbase-wallet1.png"
                 width={200}
                 height={388}
                 unoptimized={true}
@@ -47,7 +47,7 @@ export const CoinbaseInfoModal: React.FC<CoinbaseInfoModalProps> = ({
               />
 
               <Image
-                src="/logos/CB2.png"
+                src="/images/coinbase-wallet2.png"
                 width={200}
                 height={388}
                 unoptimized={true}
