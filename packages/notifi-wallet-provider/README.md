@@ -4,9 +4,40 @@ Simply wrap the React components with `NotifiWalletProvider` to utilize Notifi's
 
 > **Supported wallets**
 >
-> - [x] Metamask browser extension
-> - [x] Keplr browser extension
-> - [ ] more to come ...
+> EVM
+>
+> - [x] Metamask
+> - [] Coinbase (TODO: Update to work with the latest WAGMI / VIEM packages)
+> - [x] Rabby
+> - [] Walletconnect (TODO: Update to work with the latest WAGMI / VIEM packages)
+> - [x] Binance
+> - [x] Okx
+> - [x] Rainbow
+> - [x] Zerion
+
+INJECTIVE
+
+> - [x] Metamask
+> - [x] Keplr
+> - [x] Leap
+> - [x] Phantom
+
+SOLANA
+
+> - [x] Phantom
+> - [x] Backpack
+> - [x] Solflare
+
+OSMOSIS
+
+> - [x] Keplr
+> - [x] Leap
+
+SUI
+
+> - [x] Sui Wallet
+> - [x] Ethos
+> - [x] Martian
 
 ## Prerequisites
 
