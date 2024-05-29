@@ -87,19 +87,17 @@ const formatTelegramForSubscription = (telegramId: string) => {
 };
 
 export type UpdateTargetInputs = <T extends 'form' | 'toggle'>(
-  target: T extends 'form'
-    ? Extract<Target, 'email' | 'phoneNumber' | 'telegram'>
-    : Extract<Target, 'discord' | 'slack' | 'wallet'>,
-  value: T extends 'form' ? { value: string; error?: string } : boolean,
+  target: T extends 'form' ? FormTarget : ToggleTarget,
+  value: T extends 'form' ? TargetInputFromValue : boolean,
 ) => void;
 
 type FormTargetRenewArgs = {
-  target: Extract<Target, 'email' | 'telegram' | 'phoneNumber'>;
+  target: FormTarget;
   value: string;
 };
 
 type ToggleTargetRenewArgs = {
-  target: Extract<Target, 'discord' | 'slack' | 'wallet'>;
+  target: ToggleTarget;
   value: boolean;
 };
 
@@ -129,8 +127,8 @@ export type NotifiTargetContextType = {
   isLoading: boolean;
   error: Error | null;
   updateTargetInputs: UpdateTargetInputs;
-  renewTargetGroup: (args?: {
-    target: Extract<Target, 'discord' | 'slack' | 'wallet'>;
+  renewTargetGroup: (singleTargetRenewArgs?: {
+    target: ToggleTarget;
     value: boolean;
   }) => Promise<void>;
   isChangingTargets: Record<Target, boolean>;
@@ -302,9 +300,7 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
 
   const updateTargetInputs = useCallback(
     <T extends 'form' | 'toggle'>(
-      target: T extends 'form'
-        ? Extract<Target, 'email' | 'phoneNumber' | 'telegram'>
-        : Extract<Target, 'discord' | 'slack' | 'wallet'>,
+      target: T extends 'form' ? FormTarget : ToggleTarget,
       value: T extends 'form' ? { value: string; error?: string } : boolean,
     ) => {
       if (target in targetInputs) {
