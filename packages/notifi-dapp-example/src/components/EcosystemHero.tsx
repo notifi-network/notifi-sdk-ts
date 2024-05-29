@@ -22,7 +22,7 @@ export const EcosystemHero: React.FC<EcosystemHeroProps> = ({
           src="/logos/gmx-notifi-logo.png"
           width={195}
           height={44}
-          alt="Injective"
+          alt="GMX notifi logo"
           unoptimized={true}
         />
       </div>

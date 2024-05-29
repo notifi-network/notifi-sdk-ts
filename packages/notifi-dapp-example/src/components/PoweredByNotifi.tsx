@@ -16,7 +16,7 @@ export const PoweredByNotifi: React.FC<PoweredByNotifiProps> = ({
       src="/logos/powered-by-notifi-light.png"
       width={width ? width : 96}
       height={height ? height : 13}
-      alt="Injective"
+      alt="Powered by notifi"
       unoptimized={true}
     />
   );
