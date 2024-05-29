@@ -205,7 +205,6 @@ export type DydxParams = Readonly<{
   signMessage: Uint8SignMessageFunction;
 }>;
 
-
 export type ElysParams = Readonly<{
   walletBlockchain: 'ELYS';
   accountAddress: string;
