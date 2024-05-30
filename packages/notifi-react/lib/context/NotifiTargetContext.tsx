@@ -658,7 +658,9 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
               type: 'cta',
               message: 'Sign Wallet',
               onClick: () => {
-                // TODO: add action
+                // Note: -
+                // No action required here as this is only possible on the client side
+                // based on the connected wallet instance. We're handling this on the frontend.
               },
             });
             break;
