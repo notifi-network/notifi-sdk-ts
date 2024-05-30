@@ -35,9 +35,8 @@ export const useKeplr = (
         window.addEventListener('keplr_keystorechange', handleAccountChange);
       })
       .catch((e) => {
-        errorHandler(new Error(e));
         setIsKeplrInstalled(false);
-        console.log(e);
+        console.error(e);
       })
       .finally(() => loadingHandler(false));
 
@@ -118,7 +117,7 @@ export const useKeplr = (
         return result;
       } catch (e) {
         errorHandler(
-          new Error('Keplr signArbitrary failed, check console for details'),
+          new Error('Wallet not signed. Please connect your wallet again.'),
         );
         console.error(e);
       }
@@ -136,10 +135,17 @@ export const useKeplr = (
 };
 
 const getKeplrFromWindow = async (): Promise<Keplr> => {
+  if (typeof window === 'undefined' || !window.keplr) {
+    throw new Error(
+      'Cannot get keplr without a window | Cannot get keplr from window',
+    );
+  }
   if (window.keplr) {
     return window.keplr;
+  } else if (document.readyState === 'complete') {
+    throw new Error('Please install the Keplr extension');
   }
-  return new Promise<Keplr>((resolve) => {
+  return new Promise<Keplr>((resolve, reject) => {
     const onDocumentStateChange = (event: Event) => {
       if (
         event.target &&
@@ -147,6 +153,8 @@ const getKeplrFromWindow = async (): Promise<Keplr> => {
       ) {
         if (window.keplr) {
           resolve(window.keplr);
+        } else {
+          reject('Please install the Keplr extension');
         }
         document.removeEventListener('readystatechange', onDocumentStateChange);
       }

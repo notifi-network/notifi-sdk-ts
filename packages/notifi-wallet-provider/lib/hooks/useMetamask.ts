@@ -34,8 +34,8 @@ export const useMetamask = (
         metamask.on('accountsChanged', handleAccountChange);
       })
       .catch((e) => {
-        errorHandler(new Error(e));
         setIsMetamaskInstalled(false);
+        console.error(e);
       })
       .finally(() => loadingHandler(false));
 
@@ -129,7 +129,7 @@ export const useMetamask = (
         // ⬆️ Note:A hex-encoded 129-byte array starting with 0x.
       } catch (e) {
         errorHandler(
-          new Error('Metamask signArbitrary failed, check console for details'),
+          new Error('Wallet not signed. Please connect your wallet again.'),
         );
         console.error(e);
       }
@@ -152,7 +152,7 @@ export const getWalletFromWindow = async (): Promise<Ethereum> => {
     return window.ethereum;
   }
 
-  return new Promise<Ethereum>((resolve) => {
+  return new Promise<Ethereum>((resolve, reject) => {
     const onDocumentStateChange = (event: Event) => {
       if (
         event.target &&
@@ -160,6 +160,8 @@ export const getWalletFromWindow = async (): Promise<Ethereum> => {
       ) {
         if (window.ethereum) {
           resolve(window.ethereum);
+        } else {
+          reject('Please install the metamask extension');
         }
         document.removeEventListener('readystatechange', onDocumentStateChange);
       }
