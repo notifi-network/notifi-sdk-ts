@@ -8,8 +8,8 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'GMX',
-  description: 'GMX x Notifi Inbox',
+  title: 'Inbox',
+  description: 'Injective x Notifi Inbox',
 };
 
 export default function RootLayout({

@@ -2,18 +2,19 @@ import converter from 'bech32-converting';
 import { useCallback, useEffect, useState } from 'react';
 import { useAccount, useConnect, useDisconnect, useSignMessage } from 'wagmi';
 
+import { AvailableChains } from '../context';
 import { MetamaskWalletKeys, Wallets } from '../types';
 import {
   cleanWalletsInLocalStorage,
   setWalletKeysToLocalStorage,
 } from '../utils/localStorageUtils';
-import { walletsWebsiteLink } from '../utils/wallet';
 
 export const useWagmiWallet = (
   loadingHandler: React.Dispatch<React.SetStateAction<boolean>>,
   errorHandler: (e: Error, durationInMs?: number) => void,
   selectWallet: (wallet: keyof Wallets | null) => void,
   walletName: keyof Wallets,
+  selectedChain: AvailableChains,
 ) => {
   const [walletKeys, setWalletKeys] = useState<MetamaskWalletKeys | null>(null);
   const [isWalletInstalled, setIsWalletInstalled] = useState<boolean>(false);
@@ -95,7 +96,7 @@ export const useWagmiWallet = (
   const signArbitrary = useCallback(
     async (message: string): Promise<`0x${string}` | undefined> => {
       if (!isConnected || !walletKeys || !address) {
-        handleWalletNotExists('Sign Arbitrary');
+        handleWalletNotExists('signArbitrary');
         return;
       }
 
@@ -106,7 +107,7 @@ export const useWagmiWallet = (
 
       try {
         const signature: `0x${string}` = await signMessageAsync({
-          message: message,
+          message: Buffer.from(message).toString('hex'),
         });
 
         return signature;
@@ -131,6 +132,5 @@ export const useWagmiWallet = (
     connectWallet,
     signArbitrary,
     disconnectWallet,
-    websiteURL: walletsWebsiteLink[walletName],
   };
 };

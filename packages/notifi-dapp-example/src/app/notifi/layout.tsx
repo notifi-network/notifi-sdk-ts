@@ -14,7 +14,6 @@ export default function NotifiSingupLayout({
   const { wallets, selectedWallet, isAuthenticationVerified } = useWallets();
   const pathname = usePathname();
   const router = useRouter();
-
   useEffect(() => {
     if (
       (!selectedWallet || !wallets[selectedWallet].walletKeys) &&
