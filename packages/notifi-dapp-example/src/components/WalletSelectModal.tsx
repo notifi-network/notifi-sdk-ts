@@ -6,6 +6,13 @@ import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import Image from 'next/image';
 import { Dispatch, FC, SetStateAction } from 'react';
 
+const walletsWebsiteLink = {
+  metamask: 'https://metamask.io/download/',
+  keplr: 'https://www.keplr.app/download',
+  leap: 'https://www.leapwallet.io/download',
+  phantom: 'https://phantom.app/download',
+};
+
 type WalletSelectModalProps = {
   setIsOpenWalletsModal: Dispatch<SetStateAction<boolean>>;
 };
@@ -20,6 +27,20 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
     ...wallets,
     ...injectiveWallets,
   };
+
+  const availableWallets = objectKeys(allWallets);
+  let walletsRequiredForODF: typeof availableWallets = [
+    'metamask',
+    'leap',
+    'keplr',
+    'phantom',
+  ];
+
+  walletsRequiredForODF = walletsRequiredForODF.sort((a, b) => {
+    if (allWallets[a].isInstalled && !allWallets[b].isInstalled) return -1;
+    if (!allWallets[a].isInstalled && allWallets[b].isInstalled) return 1;
+    return 0;
+  });
 
   return (
     <>
@@ -52,54 +73,46 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
           onClick={() => setIsOpenWalletsModal(false)}
         />
         <div className="flex grow gap-6 p-5 justify-center items-center flex-wrap">
-          {objectKeys(wallets)
-            .filter((wallet) => wallets[wallet].isInstalled)
-            .map((wallet) => {
-              return (
-                <div
-                  key={wallet}
-                  className="bg-white size-32 flex items-center justify-center flex-col gap-3 rounded-lg border border-gray-600/10 cursor-pointer"
-                  onClick={() => {
-                    wallets[wallet].connect();
-                    setIsOpenWalletsModal(false);
-                    /** No need to handle loading and error case, use `const {isLoading, error} = useWallets()  */
-                  }}
-                >
-                  <Image
-                    src={`/logos/${wallet}.svg`}
-                    width={77}
-                    height={77}
-                    unoptimized={true}
-                    alt={wallet}
-                  />
-                  <div>{convertWalletName(wallet)}</div>
-                </div>
-              );
-            })}
-          {objectKeys(injectiveWallets)
-            .filter((wallet) => injectiveWallets[wallet].isInstalled)
-            .map((wallet) => {
-              return (
-                <div
-                  key={wallet}
-                  className="bg-white size-32 flex items-center justify-center flex-col gap-3 rounded-lg border border-gray-600/10 cursor-pointer"
-                  onClick={() => {
-                    injectiveWallets[wallet].connect();
-                    setIsOpenWalletsModal(false);
-                    /** No need to handle loading and error case, use `const {isLoading, error} = useWallets()  */
-                  }}
-                >
-                  <Image
-                    src={`/logos/${wallet}.svg`}
-                    width={77}
-                    height={77}
-                    unoptimized={true}
-                    alt={wallet}
-                  />
-                  <div>{convertWalletName(wallet)}</div>
-                </div>
-              );
-            })}
+          {walletsRequiredForODF.map((wallet) => {
+            const { connect, isInstalled } = allWallets[wallet];
+            const websiteURL = walletsWebsiteLink[wallet];
+
+            return (
+              <div
+                key={wallet}
+                className="relative bg-white size-32 flex items-center justify-center flex-col gap-3 rounded-lg border border-gray-600/10 cursor-pointer"
+                onClick={() => {
+                  if (!isInstalled) return;
+
+                  connect?.();
+                  setIsOpenWalletsModal(false);
+                  /** No need to handle loading and error case, use `const {isLoading, error} = useWallets()  */
+                }}
+              >
+                <Image
+                  src={`/logos/${wallet}.svg`}
+                  width={77}
+                  height={77}
+                  unoptimized={true}
+                  alt={wallet}
+                />
+                <div>{convertWalletName(wallet)}</div>
+
+                {!isInstalled ? (
+                  <div
+                    onClick={() => {
+                      window.open(websiteURL, '_blank');
+                    }}
+                    className="rounded-lg absolute h-full w-full top-0 right-0"
+                  >
+                    <div className="rounded-lg h-full w-full flex bg-black opacity-0 cursor-pointer justify-center text-white items-center text-center font-semibold hover:opacity-80">
+                      Install
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+            );
+          })}
         </div>
       </div>
     </>
