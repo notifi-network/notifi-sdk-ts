@@ -12,6 +12,7 @@ export type WalletBlockchain =
   | 'CELO'
   | 'ELYS'
   | 'ETHEREUM'
+  | 'THE_ROOT_NETWORK'
   | 'EVMOS'
   | 'INJECTIVE'
   | 'LINEA'

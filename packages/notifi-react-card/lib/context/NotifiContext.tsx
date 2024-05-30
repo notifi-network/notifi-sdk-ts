@@ -22,6 +22,12 @@ export type SolanaParams = Readonly<{
   signMessage: Uint8SignMessageFunction;
   hardwareLoginPlugin: HardwareLoginPlugin;
 }>;
+export type TheRootNetworkParams = Readonly<{
+  walletBlockchain: 'THE_ROOT_NETWORK';
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
 export type EthereumParams = Readonly<{
   walletBlockchain: 'ETHEREUM';
   walletPublicKey: string;
@@ -307,7 +313,8 @@ type WalletParams =
   | CosmosParams
   | DymensionParams
   | PersistenceParams
-  | DydxParams;
+  | DydxParams
+  | TheRootNetworkParams;
 
 export type NotifiParams = Readonly<{
   alertConfigurations?: Record<string, AlertConfiguration | null>;

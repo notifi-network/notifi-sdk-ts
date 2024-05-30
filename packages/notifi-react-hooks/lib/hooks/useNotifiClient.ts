@@ -173,6 +173,7 @@ const signMessage = async ({
     case 'MANTA':
     case 'MONAD':
     case 'BERACHAIN':
+    case 'THE_ROOT_NETWORK':
     case 'ETHEREUM':
       {
         if (signer.walletBlockchain !== params.walletBlockchain) {

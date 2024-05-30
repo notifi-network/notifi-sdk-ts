@@ -17,6 +17,7 @@ import { InjectedConnector } from 'wagmi/connectors/injected';
 
 enum SupportedEvmChains {
   ETHEREUM = 1,
+  TRN = 7668,
   BINANCE = 56,
   AVALANCHE = 43114,
   ARBITRUM = 42161,
@@ -33,6 +34,7 @@ const supportedEvmChains = [
   SupportedEvmChains.POLYGON,
   SupportedEvmChains.OPTIMISM,
   SupportedEvmChains.ZKSYNC,
+  SupportedEvmChains.TRN
 ];
 
 export const MetamaskNotifiContextWrapper: React.FC<PropsWithChildren> = ({
@@ -67,6 +69,8 @@ export const MetamaskNotifiContextWrapper: React.FC<PropsWithChildren> = ({
         return 'OPTIMISM';
       case SupportedEvmChains.ZKSYNC:
         return 'ZKSYNC';
+      case SupportedEvmChains.TRN:
+        return 'THE_ROOT_NETWORK'
       default:
         return 'ETHEREUM';
     }

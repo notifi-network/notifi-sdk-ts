@@ -7,12 +7,38 @@ import {
   useContext,
   useState,
 } from 'react';
-import { WagmiConfig, configureChains, createClient, mainnet } from 'wagmi';
+import { Chain, WagmiConfig, configureChains, createClient, mainnet, } from 'wagmi';
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
 import { infuraProvider } from 'wagmi/providers/infura';
 
+const theRootNetwork: Chain = {
+  /** ID in number form */
+  id: 7668,
+  /** Human-readable name */
+  name: "The Root Network",
+  /** Internal network name */
+  network: "TRN",
+  /** Currency used by chain */
+  nativeCurrency: {
+    name: "XRP",
+    /** 2-6 characters long */
+    symbol: 'XRP',
+    decimals: 6,
+  },
+  rpcUrls: {
+    default: {
+      http: ["https://root.rootnet.live/archive"],
+      webSocket: ["wss://root.rootnet.live/archive/ws"]
+    },
+    public: {
+      http: ["https://root.rootnet.live/archive"],
+      webSocket: ['wss://root.rootnet.live/archive/ws']
+    }
+  }
+}
+
 export const connector = new WalletConnectConnector({
-  chains: [mainnet],
+  chains: [mainnet, theRootNetwork],
   options: {
     projectId: 'f633a048d4392b31be9fce99e7b417db',
   },
