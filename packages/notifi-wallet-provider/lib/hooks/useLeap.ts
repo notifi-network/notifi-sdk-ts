@@ -1,10 +1,10 @@
-import { ChainId, EthereumChainId } from '@injectivelabs/ts-types';
+import { ChainId } from '@injectivelabs/ts-types';
 import { Wallet, WalletStrategy } from '@injectivelabs/wallet-ts';
 import type { StdSignature } from '@keplr-wallet/types';
 import { useCallback, useEffect, useState } from 'react';
 
 import { AvailableChains } from '../context';
-import { LeapSignMessage, LeapWalletKeys, Wallets } from '../types';
+import { LeapWalletKeys, Wallets } from '../types';
 import {
   cleanWalletsInLocalStorage,
   setWalletKeysToLocalStorage,
@@ -76,23 +76,16 @@ export const useLeap = (
     chainId?: string,
   ): Promise<LeapWalletKeys | null> => {
     loadingHandler(true);
-    await window.leap.enable(['injective-1', 'osmosis-1']);
 
     try {
       if (selectedChain === 'osmosis') {
+        await window.leap.enable('osmosis-1');
         const key = await window.leap.getKey('osmosis-1');
         return handleKey(key);
       } else if (selectedChain === 'injective') {
-        if (!injectiveLeapWallet.strategies.leap) {
-          await injectiveLeapWallet.enable();
-          handleLeapNotExists('connectLeap');
-          return null;
-        }
-        injectiveLeapWallet.setWallet(Wallet.Leap);
-        const key = await injectiveLeapWallet.getPubKey();
-        const accounts = await injectiveLeapWallet.getAddresses();
-
-        return handleKey(key, accounts);
+        await window.leap.enable('injective-1');
+        const key = await window.leap.getKey('injective-1');
+        return handleKey(key);
       }
     } catch (e) {
       errorHandler(
