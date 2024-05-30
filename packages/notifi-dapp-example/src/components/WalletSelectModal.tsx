@@ -30,9 +30,9 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
 
   const availableWallets = objectKeys(allWallets);
   let walletsRequiredForODF: typeof availableWallets = [
+    'keplr',
     'metamask',
     'leap',
-    'keplr',
     'phantom',
   ];
 
