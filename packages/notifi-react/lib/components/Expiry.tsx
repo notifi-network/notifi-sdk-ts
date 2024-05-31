@@ -2,8 +2,10 @@ import React from 'react';
 
 import { defaultCopy } from '../utils/constants';
 import { Connect } from './Connect';
+import { CardModalView } from './NotifiCardModal';
 
 export type ExpiryProps = {
+  setCardModalView: React.Dispatch<React.SetStateAction<CardModalView | null>>;
   copy?: {
     title?: string;
     content?: string;
@@ -21,6 +23,7 @@ export type ExpiryProps = {
 export const Expiry: React.FC<ExpiryProps> = (props) => {
   return (
     <Connect
+      setCardModalView={props.setCardModalView}
       copy={props.copy ?? defaultCopy.expiry}
       classNames={
         props.classNames ?? {

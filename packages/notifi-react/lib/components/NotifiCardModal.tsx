@@ -44,7 +44,7 @@ export type NotifiCardModalProps = Readonly<{
   onClose?: () => void;
 }>;
 
-type CardModalView = 'connect' | 'expiry' | 'ftu' | 'Inbox';
+export type CardModalView = 'connect' | 'expiry' | 'ftu' | 'Inbox';
 
 export const NotifiCardModal: React.FC<NotifiCardModalProps> = (props) => {
   const { frontendClientStatus, error: clientError } =
@@ -84,10 +84,11 @@ export const NotifiCardModal: React.FC<NotifiCardModalProps> = (props) => {
       setCardModalView('Inbox');
       return;
     }
-  }, [frontendClientStatus, ftuStage, isLoadingFtu]);
+  }, []);
 
   useEffect(() => {
     if (clientError || userSettingError || error) {
+      console.error({ clientError, userSettingError, error });
       setGlobalError({
         error: new Error(
           'ERROR: Failed to load client or user settings, please try again',
@@ -112,18 +113,24 @@ export const NotifiCardModal: React.FC<NotifiCardModalProps> = (props) => {
     >
       {CardModalView === 'connect' ? (
         <Connect
+          setCardModalView={setCardModalView}
           copy={props.copy?.Connect}
           classNames={props.classNames?.Connect}
         />
       ) : null}
       {CardModalView === 'expiry' ? (
         <Expiry
+          setCardModalView={setCardModalView}
           copy={props.copy?.Expiry}
           classNames={props.classNames?.Expiry}
         />
       ) : null}
       {CardModalView === 'ftu' ? (
-        <Ftu classNames={props.classNames?.Ftu} copy={props.copy?.Ftu} />
+        <Ftu
+          classNames={props.classNames?.Ftu}
+          copy={props.copy?.Ftu}
+          onComplete={() => setCardModalView('Inbox')}
+        />
       ) : null}
       {CardModalView === 'Inbox' ? (
         <Inbox classNames={props.classNames?.Inbox} copy={props.copy?.Inbox} />
