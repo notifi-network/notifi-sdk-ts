@@ -50,6 +50,6 @@
     "packages/notifi-solana-hw-login",
     "packages/notifi-wallet-provider",
     "packages/notifi-react",
-    "packages/notifi-card-modal-example"
+    "packages/notifi-react-example-v2"
   ]
 }
