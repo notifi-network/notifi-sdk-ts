@@ -69,6 +69,33 @@ export const FtuAlertList: React.FC<FtuAlertListProps> = (props) => {
     return null;
   }
 
+  const topicLists = React.useMemo(() => {
+    const topicGroupNames: { index: number; value: string }[] = [];
+    const topicNames: { index: number; value: string }[] = [];
+    fusionEventTopics.forEach((topic, id) => {
+      if (topic.uiConfig.topicGroupName) {
+        if (
+          topicGroupNames
+            .map((name) => name.value)
+            .includes(topic.uiConfig.topicGroupName)
+        )
+          return;
+        topicGroupNames.push({
+          index: topic.uiConfig.index ?? id,
+          value: topic.uiConfig.topicGroupName,
+        });
+        return;
+      }
+      topicNames.push({
+        index: topic.uiConfig.index ?? id,
+        value: topic.uiConfig.name,
+      });
+    });
+    return [...topicNames, ...topicGroupNames].sort(
+      (a, b) => a.index - b.index,
+    );
+  }, [fusionEventTopics]);
+
   return (
     <div className={clsx('notifi-ftu-alert-list', props.classNames)}>
       <div
@@ -90,14 +117,14 @@ export const FtuAlertList: React.FC<FtuAlertListProps> = (props) => {
           props.classNames?.alertsContainer,
         )}
       >
-        {fusionEventTopics.map((topic) => {
+        {topicLists.map((topic) => {
           return (
             <div
               className={clsx(
                 'notifi-ftu-alert-list-alert',
                 props.classNames?.alert,
               )}
-              key={topic.uiConfig.name}
+              key={topic.value}
             >
               <Icon
                 type={props.iconType ?? 'check'}
@@ -106,7 +133,7 @@ export const FtuAlertList: React.FC<FtuAlertListProps> = (props) => {
                   props.classNames?.icon,
                 )}
               />
-              {topic.uiConfig.name}
+              {topic.value}
             </div>
           );
         })}
