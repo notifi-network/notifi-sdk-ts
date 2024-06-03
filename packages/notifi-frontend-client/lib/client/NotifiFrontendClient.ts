@@ -72,7 +72,7 @@ export type SignMessageParams =
         | 'COSMOS'
         | 'DYMENSION'
         | 'PERSISTENCE'
-        | 'DYDX'
+        | 'DYDX';
       signMessage: Uint8SignMessageFunction;
     }>
   | Readonly<{
@@ -192,54 +192,54 @@ export type WalletWithSignMessage =
       walletPublicKey: string;
       signMessage: Uint8SignMessageFunction;
     }>
-    | Readonly<{
+  | Readonly<{
       walletBlockchain: 'AGORIC';
       accountAddress: string;
       walletPublicKey: string;
       signMessage: Uint8SignMessageFunction;
     }>
   | Readonly<{
-    walletBlockchain: 'ORAI';
-    accountAddress: string;
-    walletPublicKey: string;
-    signMessage: Uint8SignMessageFunction;
-  }>
+      walletBlockchain: 'ORAI';
+      accountAddress: string;
+      walletPublicKey: string;
+      signMessage: Uint8SignMessageFunction;
+    }>
   | Readonly<{
-    walletBlockchain: 'KAVA';
-    accountAddress: string;
-    walletPublicKey: string;
-    signMessage: Uint8SignMessageFunction;
-  }>
+      walletBlockchain: 'KAVA';
+      accountAddress: string;
+      walletPublicKey: string;
+      signMessage: Uint8SignMessageFunction;
+    }>
   | Readonly<{
-    walletBlockchain: 'CELESTIA';
-    accountAddress: string;
-    walletPublicKey: string;
-    signMessage: Uint8SignMessageFunction;
-  }>
+      walletBlockchain: 'CELESTIA';
+      accountAddress: string;
+      walletPublicKey: string;
+      signMessage: Uint8SignMessageFunction;
+    }>
   | Readonly<{
-    walletBlockchain: 'COSMOS';
-    accountAddress: string;
-    walletPublicKey: string;
-    signMessage: Uint8SignMessageFunction;
-  }>
+      walletBlockchain: 'COSMOS';
+      accountAddress: string;
+      walletPublicKey: string;
+      signMessage: Uint8SignMessageFunction;
+    }>
   | Readonly<{
-    walletBlockchain: 'DYMENSION';
-    accountAddress: string;
-    walletPublicKey: string;
-    signMessage: Uint8SignMessageFunction;
-  }>
+      walletBlockchain: 'DYMENSION';
+      accountAddress: string;
+      walletPublicKey: string;
+      signMessage: Uint8SignMessageFunction;
+    }>
   | Readonly<{
-    walletBlockchain: 'PERSISTENCE';
-    accountAddress: string;
-    walletPublicKey: string;
-    signMessage: Uint8SignMessageFunction;
-  }>
+      walletBlockchain: 'PERSISTENCE';
+      accountAddress: string;
+      walletPublicKey: string;
+      signMessage: Uint8SignMessageFunction;
+    }>
   | Readonly<{
-    walletBlockchain: 'DYDX';
-    accountAddress: string;
-    walletPublicKey: string;
-    signMessage: Uint8SignMessageFunction;
-  }>;
+      walletBlockchain: 'DYDX';
+      accountAddress: string;
+      walletPublicKey: string;
+      signMessage: Uint8SignMessageFunction;
+    }>;
 
 export type ConnectWalletParams = Readonly<{
   walletParams: WalletWithSignParams;
