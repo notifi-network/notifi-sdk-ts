@@ -27,7 +27,7 @@ import {
   BackpackWallet,
   BinanceWallet,
   CoinbaseWallet,
-  EthosWallet, // Ethos,
+  EthosWallet,
   KeplrWallet,
   LeapWallet,
   MartianWallet,
@@ -72,13 +72,13 @@ const WalletContext = createContext<WalletContextType>({
     phantom: {} as PhantomWallet, // intentionally empty initial object
     backpack: {} as BackpackWallet, // intentionally empty initial object
     solflare: {} as SolflareWallet, // intentionally empty initial object
-    // coinbase: {} as CoinbaseWallet, // intentionally empty initial object
+    coinbase: {} as CoinbaseWallet, // intentionally empty initial object
     rabby: {} as RabbyWallet, // intentionally empty initial object
     rainbow: {} as RainbowWallet, // intentionally empty initial object
     zerion: {} as ZerionWallet, // intentionally empty initial object
     okx: {} as OKXWallet, // intentionally empty initial object
     binance: {} as BinanceWallet, // intentionally empty initial object
-    // walletconnect: {} as WalletConnectWallet, // intentionally empty initial object
+    walletconnect: {} as WalletConnectWallet, // intentionally empty initial object
     suiwallet: {} as SuiWallet, // intentionally empty initial object
     ethoswallet: {} as EthosWallet,
     martianwallet: {} as MartianWallet,
@@ -103,10 +103,6 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
     setSelectedChain(chain);
     localStorage.setItem('selectedChain', chain);
   };
-
-  // const switchChain = (chain: AvailableChains) => {
-  //   setSelectedChain(chain);
-  // };
 
   const [selectedWallet, setSelectedWallet] = useState<keyof Wallets | null>(
     null,
@@ -161,20 +157,20 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
     memoizedSelectedChain,
   );
   const binance = useBinance(setIsLoading, throwError, selectWallet);
-  // const walletConnect = useWagmiWallet(
-  //   setIsLoading,
-  //   throwError,
-  //   selectWallet,
-  //   'walletconnect',
-  //   selectedChain,
-  // );
-  // const coinbase = useWagmiWallet(
-  //   setIsLoading,
-  //   throwError,
-  //   selectWallet,
-  //   'coinbase',
-  //   selectedChain,
-  // );
+  const walletConnect = useWagmiWallet(
+    setIsLoading,
+    throwError,
+    selectWallet,
+    'walletconnect',
+    selectedChain,
+  );
+  const coinbase = useWagmiWallet(
+    setIsLoading,
+    throwError,
+    selectWallet,
+    'coinbase',
+    selectedChain,
+  );
   const metamask = useInjectedWallet(
     setIsLoading,
     throwError,
@@ -241,14 +237,14 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
       metamask.disconnectWallet,
       metamask.websiteURL,
     ),
-    // coinbase: new CoinbaseWallet(
-    //   coinbase.isWalletInstalled,
-    //   coinbase.walletKeys,
-    //   coinbase.signArbitrary,
-    //   coinbase.connectWallet,
-    //   coinbase.disconnectWallet,
-    //   coinbase.websiteURL,
-    // ),
+    coinbase: new CoinbaseWallet(
+      coinbase.isWalletInstalled,
+      coinbase.walletKeys,
+      coinbase.signArbitrary,
+      coinbase.connectWallet,
+      coinbase.disconnectWallet,
+      coinbase.websiteURL,
+    ),
     rabby: new RabbyWallet(
       rabby.isWalletInstalled,
       rabby.walletKeys,
@@ -257,14 +253,14 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
       rabby.disconnectWallet,
       rabby.websiteURL,
     ),
-    // walletconnect: new WalletConnectWallet(
-    //   walletConnect.isWalletInstalled,
-    //   walletConnect.walletKeys,
-    //   walletConnect.signArbitrary,
-    //   walletConnect.connectWallet,
-    //   walletConnect.disconnectWallet,
-    //   walletConnect.websiteURL,
-    // ),
+    walletconnect: new WalletConnectWallet(
+      walletConnect.isWalletInstalled,
+      walletConnect.walletKeys,
+      walletConnect.signArbitrary,
+      walletConnect.connectWallet,
+      walletConnect.disconnectWallet,
+      walletConnect.websiteURL,
+    ),
     binance: new BinanceWallet(
       binance.isWalletInstalled,
       binance.walletKeys,
@@ -417,11 +413,10 @@ const networkConfigs: Record<string, MyNetworkConfig> = {
     },
   },
 };
+const queryClient = new QueryClient();
 export const NotifiWalletProvider: React.FC<PropsWithChildren> = ({
   children,
 }) => {
-  const queryClient = new QueryClient();
-
   return (
     <QueryClientProvider client={queryClient}>
       <SuiClientProvider networks={networkConfigs} defaultNetwork="mainnet">

@@ -1,13 +1,21 @@
 import converter from 'bech32-converting';
 import { useCallback, useEffect, useState } from 'react';
-import { useAccount, useConnect, useDisconnect, useSignMessage } from 'wagmi';
+import {
+  useAccount,
+  useConnect,
+  useDisconnect,
+  useSignMessage,
+  useSwitchChain,
+} from 'wagmi';
 
-import { AvailableChains } from '../context';
+import { AvailableChains } from '../context/NotifiWallets';
 import { MetamaskWalletKeys, Wallets } from '../types';
 import {
   cleanWalletsInLocalStorage,
   setWalletKeysToLocalStorage,
 } from '../utils/localStorageUtils';
+import { walletsWebsiteLink } from '../utils/wallet';
+import { getChainInfoByName } from './useInjectedWallet';
 
 export const useWagmiWallet = (
   loadingHandler: React.Dispatch<React.SetStateAction<boolean>>,
@@ -16,16 +24,42 @@ export const useWagmiWallet = (
   walletName: keyof Wallets,
   selectedChain: AvailableChains,
 ) => {
+  const { chains, switchChainAsync } = useSwitchChain();
+
   const [walletKeys, setWalletKeys] = useState<MetamaskWalletKeys | null>(null);
   const [isWalletInstalled, setIsWalletInstalled] = useState<boolean>(false);
 
   const { disconnect } = useDisconnect();
   const { signMessageAsync } = useSignMessage();
   const { address, isConnected: isWalletConnected, connector } = useAccount();
-  const { connect, connectors } = useConnect();
+  const { connectors, connectAsync } = useConnect();
 
   const isConnected =
     isWalletConnected && connector?.name.toLowerCase().includes(walletName);
+
+  useEffect(() => {
+    const switchChain = async () => {
+      try {
+        if (selectedChain === 'polygon') {
+          console.log('Switching to Polygon network');
+          const switchChainResult = await switchChainAsync({ chainId: 137 });
+          console.log(switchChainResult);
+        } else if (selectedChain === 'arbitrum') {
+          console.log('Switching to Arbitrum network');
+          const switchChainResult = await switchChainAsync({ chainId: 42161 });
+          console.log(switchChainResult);
+        } else if (selectedChain === 'ethereum') {
+          console.log('Switching to Ethereum network');
+          const switchChainResult = await switchChainAsync({ chainId: 1 });
+          console.log(switchChainResult);
+        }
+      } catch (error) {
+        console.error('Error switching chain:', error);
+      }
+    };
+
+    switchChain();
+  }, [chains, selectedChain, switchChainAsync]);
 
   const handleWalletNotExists = (location: string) => {
     cleanWalletsInLocalStorage();
@@ -47,7 +81,7 @@ export const useWagmiWallet = (
     if (!isConnected || !address || !isWalletInstalled) return;
 
     const walletKeys = {
-      bech32: converter('inj').toBech32(address),
+      bech32: converter(selectedChain).toBech32(address),
       hex: address,
     };
     setWalletKeys(walletKeys);
@@ -61,6 +95,7 @@ export const useWagmiWallet = (
     if (isWalletConnected) return null;
 
     loadingHandler(true);
+
     const timer = setTimeout(() => {
       disconnectWallet();
       loadingHandler(false);
@@ -72,7 +107,10 @@ export const useWagmiWallet = (
       );
       if (!provider) return null;
 
-      connect({ connector: provider });
+      await connectAsync({
+        connector: provider,
+        chainId: parseInt(getChainInfoByName(selectedChain).chainId, 16),
+      });
       return null;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
@@ -96,7 +134,7 @@ export const useWagmiWallet = (
   const signArbitrary = useCallback(
     async (message: string): Promise<`0x${string}` | undefined> => {
       if (!isConnected || !walletKeys || !address) {
-        handleWalletNotExists('signArbitrary');
+        handleWalletNotExists('Sign Arbitrary');
         return;
       }
 
@@ -105,9 +143,13 @@ export const useWagmiWallet = (
         loadingHandler(false);
       }, 5000);
 
+      await switchChainAsync({
+        chainId: parseInt(getChainInfoByName(selectedChain).chainId, 16),
+      });
+
       try {
         const signature: `0x${string}` = await signMessageAsync({
-          message: Buffer.from(message).toString('hex'),
+          message: message,
         });
 
         return signature;
@@ -132,5 +174,6 @@ export const useWagmiWallet = (
     connectWallet,
     signArbitrary,
     disconnectWallet,
+    websiteURL: walletsWebsiteLink[walletName],
   };
 };

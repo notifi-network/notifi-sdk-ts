@@ -184,13 +184,13 @@ export type Wallets = {
   phantom: PhantomWallet;
   backpack: BackpackWallet;
   solflare: SolflareWallet;
-  // coinbase: CoinbaseWallet;
+  coinbase: CoinbaseWallet;
   rabby: RabbyWallet;
   rainbow: RainbowWallet;
   zerion: ZerionWallet;
   okx: OKXWallet;
   binance: BinanceWallet;
-  // walletconnect: WalletConnectWallet;
+  walletconnect: WalletConnectWallet;
   suiwallet: SuiWallet;
   ethoswallet: EthosWallet;
   martianwallet: MartianWallet;

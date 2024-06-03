@@ -1,16 +1,23 @@
+'use client';
+
 import { GlobalStateContextProvider } from '@/context/GlobalStateContext';
 import { NotifiWalletsWrapper } from '@/context/NotifiWalletsWrapper';
-import type { Metadata } from 'next';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Inter } from 'next/font/google';
+import { WagmiProvider, createConfig, http } from 'wagmi';
+import { mainnet } from 'wagmi/chains';
 
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
 
-export const metadata: Metadata = {
-  title: 'Inbox',
-  description: 'Injective x Notifi Inbox',
-};
+export const config = createConfig({
+  chains: [mainnet],
+  transports: {
+    [mainnet.id]: http(),
+  },
+});
+const queryClient = new QueryClient();
 
 export default function RootLayout({
   children,
@@ -27,9 +34,13 @@ export default function RootLayout({
         dark-mode="true"
         // NOTE: Not support dark/light mode yet. TODO: consider adding a theme wrapper
       >
-        <GlobalStateContextProvider>
-          <NotifiWalletsWrapper>{children}</NotifiWalletsWrapper>
-        </GlobalStateContextProvider>
+        <WagmiProvider config={config}>
+          <QueryClientProvider client={queryClient}>
+            <GlobalStateContextProvider>
+              <NotifiWalletsWrapper>{children}</NotifiWalletsWrapper>
+            </GlobalStateContextProvider>
+          </QueryClientProvider>
+        </WagmiProvider>
       </body>
     </html>
   );
