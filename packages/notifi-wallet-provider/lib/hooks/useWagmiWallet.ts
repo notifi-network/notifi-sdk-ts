@@ -10,12 +10,12 @@ import {
 
 import { AvailableChains } from '../context/NotifiWallets';
 import { MetamaskWalletKeys, Wallets } from '../types';
+import { getChainInfoByName } from '../utils/chainInfo';
 import {
   cleanWalletsInLocalStorage,
   setWalletKeysToLocalStorage,
 } from '../utils/localStorageUtils';
 import { walletsWebsiteLink } from '../utils/wallet';
-import { getChainInfoByName } from './useInjectedWallet';
 
 export const useWagmiWallet = (
   loadingHandler: React.Dispatch<React.SetStateAction<boolean>>,
@@ -41,17 +41,11 @@ export const useWagmiWallet = (
     const switchChain = async () => {
       try {
         if (selectedChain === 'polygon') {
-          console.log('Switching to Polygon network');
-          const switchChainResult = await switchChainAsync({ chainId: 137 });
-          console.log(switchChainResult);
+          await switchChainAsync({ chainId: 137 });
         } else if (selectedChain === 'arbitrum') {
-          console.log('Switching to Arbitrum network');
-          const switchChainResult = await switchChainAsync({ chainId: 42161 });
-          console.log(switchChainResult);
+          await switchChainAsync({ chainId: 42161 });
         } else if (selectedChain === 'ethereum') {
-          console.log('Switching to Ethereum network');
-          const switchChainResult = await switchChainAsync({ chainId: 1 });
-          console.log(switchChainResult);
+          await switchChainAsync({ chainId: 1 });
         }
       } catch (error) {
         console.error('Error switching chain:', error);
