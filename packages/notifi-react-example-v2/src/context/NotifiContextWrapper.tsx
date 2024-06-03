@@ -73,6 +73,18 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
 
   return (
     <>
+      <ul>
+        <li>
+          Select{' '}
+          <span style={{ fontWeight: 800 }}>Notifi Component Example</span> if
+          you want to try the react component: NotifiCardModal
+        </li>
+        <li>
+          Select <span style={{ fontWeight: 800 }}>Notifi Context Example</span>{' '}
+          if you want to try the react context (advanced)
+        </li>
+      </ul>
+
       {selectedWallet === 'metamask' ? (
         <NotifiContextProvider
           tenantId={tenantId}
