@@ -318,6 +318,18 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
       let data = { ...targetGroupToBeSaved };
 
       if (singleTargetRenewArgs) {
+        data = {
+          name: 'Default',
+          emailAddress: !targetData.email ? undefined : targetData.email,
+          phoneNumber: !targetData.phoneNumber
+            ? undefined
+            : targetData.phoneNumber,
+          telegramId: !targetData.telegram ? undefined : targetData.telegram,
+          discordId: targetData.discord.useDiscord ? 'Default' : undefined,
+          slackId: targetData.slack.useSlack ? 'Default' : undefined,
+          walletId: targetData.wallet.useWallet ? 'Default' : undefined,
+        };
+
         const { target, value } = singleTargetRenewArgs;
         if (isFormTargetRenewArgs(singleTargetRenewArgs)) {
           let formTarget: string | undefined = '';
@@ -340,12 +352,12 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
           }
 
           data = {
-            ...targetGroupToBeSaved,
+            ...data,
             [formTarget]: formValue,
           };
         } else if (isToggleTargetRenewArgs(singleTargetRenewArgs)) {
           data = {
-            ...targetGroupToBeSaved,
+            ...data,
             [`${target}Id`]: value ? 'Default' : undefined,
           };
         }
@@ -367,7 +379,7 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
         .catch((e) => setError(e as Error))
         .finally(() => setIsLoading(false));
     },
-    [frontendClient, targetGroupToBeSaved],
+    [frontendClient, targetGroupToBeSaved, targetData],
   );
 
   // NOTE: The followings are internal functions
