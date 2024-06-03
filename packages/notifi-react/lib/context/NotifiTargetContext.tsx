@@ -1,5 +1,6 @@
 import { objectKeys } from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
+import { useClient } from '@xmtp/react-sdk';
 import { isValidPhoneNumber } from 'libphonenumber-js';
 import React, {
   FC,
@@ -12,6 +13,7 @@ import React, {
   useState,
 } from 'react';
 
+import { createCoinbaseNonce, subscribeCoinbaseMessaging } from '../utils/xmtp';
 import { useNotifiFrontendClientContext } from './NotifiFrontendClientContext';
 
 export type TargetGroupInput = {
@@ -144,8 +146,9 @@ const NotifiTargetContext = createContext<NotifiTargetContextType>(
 export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
   children,
 }) => {
-  const { frontendClient, frontendClientStatus } =
+  const { frontendClient, frontendClientStatus, walletWithSignParams } =
     useNotifiFrontendClientContext();
+  const xmtp = useClient();
 
   const [error, setError] = useState<Error | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -661,6 +664,141 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
     [],
   );
 
+  // NOTE: Temporarily commenting out this function because it will be needed later
+  // const xip43Impl = async () => {
+
+  //   const targetId = targetData?.wallet?.data?.id ?? '';
+  //   const address = '';
+
+  //   // TODO: get senderAddress from target
+  //   const senderAddress = '0xE80E42B5308d5b137FC137302d571B56907c3003';
+  //   const timestamp = Date.now();
+  //   const message = createConsentMessage(senderAddress, timestamp);
+  //   const signature = '';
+
+  //   if (!signature) {
+  //     throw Error('Unable to sign the wallet. Please try again.');
+  //   }
+
+  //   await frontendClient.verifyXmtpTarget({
+  //     input: {
+  //       web3TargetId: targetId,
+  //       accountId: address,
+  //       consentProofSignature: signature as string,
+  //       timestamp: timestamp,
+  //       isCBW: true,
+  //     },
+  //   });
+  //   // await signCoinbaseSignature(address, senderAddress);
+  //   await frontendClient.verifyCbwTarget({
+  //     input: {
+  //       targetId: targetId,
+  //     },
+  //   });
+  // };
+
+  const signCoinbaseSignature = useCallback(
+    async (
+      address: string,
+      senderAddress: string,
+      conversationTopic: string,
+    ) => {
+      const nonce = await createCoinbaseNonce();
+      if (!nonce) throw Error('Unable to sign the wallet. Please try again.');
+
+      const message = `Coinbase Wallet Messaging subscribe\nAddress: ${address}\nPartner Address: ${senderAddress}\nNonce: ${nonce}`;
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      const signature = await walletWithSignParams.signMessage(message);
+
+      if (!signature)
+        throw Error('Unable to sign the wallet. Please try again.');
+
+      const payload = {
+        address,
+        nonce,
+        signature: signature as `0x${string}`,
+        isActivatedViaCb: true,
+        partnerAddress: senderAddress,
+        conversationTopic,
+      };
+
+      return await subscribeCoinbaseMessaging(payload);
+    },
+    [walletWithSignParams.signMessage],
+  );
+
+  const xmtpXip42Impl = useCallback(async () => {
+    try {
+      const options: any = {
+        persistConversations: false,
+        env: 'production',
+      };
+      const address = walletWithSignParams.walletPublicKey;
+
+      const signer = {
+        getAddress: (): Promise<string> => {
+          return new Promise((resolve) => {
+            resolve(address);
+          });
+        },
+        signMessage: (message: ArrayLike<number> | string): Promise<string> => {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          return walletWithSignParams.signMessage(message) as Promise<string>;
+        },
+      };
+
+      const client = await xmtp.initialize({ options, signer });
+
+      if (client === undefined) {
+        throw Error('XMTP client is uninitialized. Please try again.');
+      }
+
+      // TODO: get senderAddress from target
+      const senderAddress = '0xE80E42B5308d5b137FC137302d571B56907c3003';
+      const conversation = await client.conversations.newConversation(
+        senderAddress,
+      );
+      const conversationTopic = conversation.topic.split('/')[3];
+
+      await client.contacts.allow([senderAddress]);
+
+      await signCoinbaseSignature(address, senderAddress, conversationTopic);
+
+      const targetId = targetData?.wallet?.data?.id ?? '';
+
+      await frontendClient.verifyXmtpTargetViaXip42({
+        input: {
+          web3TargetId: targetId,
+          accountId: address,
+          conversationTopic,
+        },
+      });
+
+      await frontendClient
+        .fetchData()
+        .then(refreshTargetDocument)
+        .catch((e: unknown) => console.error(e));
+
+      return true;
+    } catch (e) {
+      console.error(e);
+      return false;
+    }
+  }, [
+    walletWithSignParams,
+    targetData,
+    signCoinbaseSignature,
+    frontendClient,
+    xmtp,
+  ]);
+
+  const signWallet = useCallback(async () => {
+    return await xmtpXip42Impl();
+  }, [xmtpXip42Impl]);
+
   const refreshWeb3Target = useCallback(
     async (web3Target?: Types.Web3TargetFragmentFragment) => {
       if (web3Target) {
@@ -670,9 +808,7 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
               type: 'cta',
               message: 'Sign Wallet',
               onClick: () => {
-                // Note: -
-                // No action required here as this is only possible on the client side
-                // based on the connected wallet instance. We're handling this on the frontend.
+                return signWallet();
               },
             });
             break;
@@ -699,7 +835,7 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
         }));
       }
     },
-    [],
+    [signWallet],
   );
 
   return (
