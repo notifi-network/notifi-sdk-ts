@@ -80,7 +80,7 @@ export default function Home() {
           className="underline"
         >
           Privacy Policy
-        </a>
+        </a>{' '}
         and{' '}
         <a
           href="https://notifi.network/terms"
