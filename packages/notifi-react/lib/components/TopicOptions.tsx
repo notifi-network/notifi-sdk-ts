@@ -184,7 +184,8 @@ const isTopicGroupOptions = (
 
 const isUserInputValid = (type: ValueType, userInputValue: string | number) => {
   if (userInputValue === '') return true;
-  if (type === 'percentage' || type === 'price') {
+  // 'percentage' and 'price' are deprecated. For legacy support only
+  if (type === 'percentage' || type === 'price' || type === 'float') {
     // regex for only allow float
     const regex1 = /^\d+(\.)?$/;
     const regex2 = /^\d+(\.\d+)?$/;
