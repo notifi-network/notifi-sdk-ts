@@ -31,6 +31,39 @@
   color: var(--notifi-target-list-target-verify-message-text);
 }
 
+.notifi-target-list-target-confirmed-message {
+  font-size: 0.9rem;
+  color: var(--notifi-target-list-target-verify-message-text);
+  text-align: center;
+}
+
+.notifi-target-list-target-confirm-tooltip {
+  display: inline-block;
+  position: relative;
+  height: 1.2rem;
+}
+
+.notifi-target-list-target-confirm-tooltip-content {
+  padding: 0.5rem;
+  border-radius: 6px;
+  background-color: var(--notifi-target-list-tooltip-bg);
+  border: var(--notifi-color-heather) 1px solid;
+  width: 13rem;
+  position: absolute;
+  transform: translate(3.3rem, -1.3rem);
+  right: 0;
+  bottom: 0;
+  visibility: hidden;
+}
+.notifi-target-list-target-confirm-tooltip-icon:hover
+  ~ .notifi-target-list-target-confirm-tooltip-content {
+  visibility: visible;
+}
+.notifi-target-list-target-confirm-tooltip-icon {
+  position: absolute;
+  top: 0;
+}
+
 .notifi-target-list-icon {
   color: var(--notifi-color-heather);
 }

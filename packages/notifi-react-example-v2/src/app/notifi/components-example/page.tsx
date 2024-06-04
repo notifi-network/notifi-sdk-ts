@@ -40,14 +40,31 @@ const NotifiComponentExample = () => {
       },
     },
   };
-  // if (frontendClientStatus.isAuthenticated && isLoading) return null;
+  const bellIconHref = `/bell-${
+    searchParams.get('scene') === 'light' ? 'light' : 'dark'
+  }.svg`;
 
   return (
     <div>
+      <div>
+        You can switch between tenants and some other params by adding arguments
+        in URL:
+        <ul>
+          <li>
+            tenantid, cardid and env: ex.
+            "/notifi/components-example?tenant=your-tenant-id&cardid=your-card-id&env=Production"
+          </li>
+          <li>
+            scene: ex. "/notifi/components-example?scene=light" (default is
+            dark)
+          </li>
+        </ul>
+      </div>
       <div style={{ position: 'relative', width: '50px', cursor: 'pointer' }}>
         <Image
-          src="/bell.svg"
-          alt="bell"
+          src={bellIconHref}
+          alt={bellIconHref}
+          style={{ border: '1px solid lightgray', borderRadius: '100px' }}
           width={50}
           height={50}
           onClick={() => setIsCardModalOpen((prev) => !prev)}
