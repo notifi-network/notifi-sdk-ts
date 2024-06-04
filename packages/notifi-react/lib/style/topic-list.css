@@ -22,10 +22,24 @@
 .notifi-topic-row-content {
   display: flex;
   align-items: center;
+  position: relative;
 }
 
-.notifi-topic-list-tooltip-icon {
-  color: var(--notifi-color-heather);
+.notifi-topic-list-tooltip-icon:hover ~ .notifi-topic-list-tooltip-content {
+  visibility: visible;
+}
+
+.notifi-topic-list-tooltip-content {
+  position: absolute;
+  background-color: var(--notifi-topic-list-tooltip-bg);
+  padding: 0.5rem;
+  top: 0;
+  transform: translate(50%, -100%);
+  right: 0;
+  border-radius: 6px;
+  border: var(--notifi-color-heather) 1px solid;
+  visibility: hidden;
+  width: 10rem;
 }
 
 .notifi-topic-row-user-inputs-row-container {
@@ -65,8 +79,8 @@
 }
 
 .notifi-topic-options-item.button.selected {
-  border: solid 1px var(--notifi-color-seaglass-dark);
-  color: var(--notifi-color-seaglass-dark);
+  border: solid 2px var(--notifi-color-secondary-light);
+  color: var(--notifi-topic-options-item-selected-text);
 }
 
 .notifi-topic-options-item.radio {

@@ -25,6 +25,8 @@ type TargetListProps = {
     TargetCta?: TargetCtaProps['className'];
     removeCta?: string;
     verifyMessage?: string;
+    tooltipIcon?: string;
+    tooltipContent?: string;
   };
   copy?: {
     email?: string;
@@ -33,6 +35,8 @@ type TargetListProps = {
     discord?: string;
     slack?: string;
     emailVerifyMessage?: string;
+    discordVerifiedMessage?: string;
+    discordVerifiedPromptTooltip?: string;
   };
   parentComponent?: 'inbox' | 'ftu';
 };
@@ -257,6 +261,35 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
               {props.copy?.discord ?? defaultCopy.targetList.discord}
             </label>
           </div>
+          {isTargetVerified(targetInfoPrompts.discord.infoPrompt) ? (
+            <div
+              className={clsx(
+                'notifi-target-list-target-confirmed-message',
+                props.classNames?.verifyMessage,
+              )}
+            >
+              {props.copy?.discordVerifiedMessage ??
+                defaultCopy.targetList.discordVerifiedMessage}
+              <div className={'notifi-target-list-target-confirm-tooltip'}>
+                <Icon
+                  className={clsx(
+                    'notifi-target-list-target-confirm-tooltip-icon',
+                    props.classNames?.tooltipIcon,
+                  )}
+                  type="info"
+                />
+                <div
+                  className={clsx(
+                    'notifi-target-list-target-confirm-tooltip-content',
+                    props.classNames?.tooltipContent,
+                  )}
+                >
+                  {props.copy?.discordVerifiedPromptTooltip ??
+                    defaultCopy.targetList.discordVerifiedPromptTooltip}
+                </div>
+              </div>
+            </div>
+          ) : null}
           <TargetCta
             type="button"
             targetInfoPrompt={targetInfoPrompts.discord.infoPrompt}
