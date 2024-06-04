@@ -20,6 +20,7 @@ export type TopicRowPropsBase = {
     userInputsRowContainer?: string;
     content?: string;
     tooltipIcon?: string;
+    tooltipContent?: string;
   };
 };
 
@@ -95,19 +96,30 @@ export const TopicRow = <T extends TopicRowCategory>(
           )}
         >
           <div>{title}</div>
-          <Icon
-            type="info"
-            className={clsx(
-              'notifi-topic-list-tooltip-icon',
-              props.classNames?.tooltipIcon,
-            )}
-          />
-          {/* TODO: impl tooltip  */}
+          {benchmarkTopic.uiConfig.tooltipContent ? (
+            <>
+              <Icon
+                type="info"
+                className={clsx(
+                  'notifi-topic-list-tooltip-icon',
+                  props.classNames?.tooltipIcon,
+                )}
+              />
+
+              <div
+                className={clsx(
+                  'notifi-topic-list-tooltip-content',
+                  props.classNames?.tooltipContent,
+                )}
+              >
+                {benchmarkTopic.uiConfig.tooltipContent}
+              </div>
+            </>
+          ) : null}
         </div>
 
         <Toggle
           checked={isAlertSubscribed(fusionEventTypeId)}
-          // checked={isAlertSubscribed(benchmarkTopic.uiConfig.name)}
           disabled={isLoadingTopic}
           setChecked={async () => {
             if (isTopicGroup) {
@@ -118,7 +130,6 @@ export const TopicRow = <T extends TopicRowCategory>(
         />
       </div>
       {userInputParams.length > 0 && isAlertSubscribed(fusionEventTypeId) ? (
-        // isAlertSubscribed(benchmarkTopic.uiConfig.name) ? (
         <div
           className={clsx(
             'notifi-topic-row-user-inputs-row-container ',

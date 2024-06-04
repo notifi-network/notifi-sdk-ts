@@ -28,6 +28,7 @@ export const TargetInputField: React.FC<TargetInputFieldProps> = (props) => {
     targetDocument: { targetInputs },
     updateTargetInputs,
   } = useNotifiTargetContext();
+  const [isInputFocused, setIsInputFocused] = React.useState(false);
 
   const [isDisplayingErrorMsg, setIsDisplayingErrorMsg] = React.useState(false);
 
@@ -79,6 +80,7 @@ export const TargetInputField: React.FC<TargetInputFieldProps> = (props) => {
         className={clsx(
           'notifi-target-input-field-input-container',
           props.classNames?.container,
+          isInputFocused ? 'focused' : '',
         )}
       >
         <Icon
@@ -115,8 +117,12 @@ export const TargetInputField: React.FC<TargetInputFieldProps> = (props) => {
               error: `The ${props.targetType} is invalid. Please try again.`,
             });
           }}
-          onFocus={() => setIsDisplayingErrorMsg(false)}
+          onFocus={() => {
+            setIsInputFocused(true);
+            setIsDisplayingErrorMsg(false);
+          }}
           onBlur={() => {
+            setIsInputFocused(false);
             if (targetToBeSaved.error) {
               setIsDisplayingErrorMsg(true);
             }
