@@ -308,7 +308,6 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
                       (await infoPrompt.onClick()) as unknown as boolean;
 
                     setIsLoading(false);
-                    console.log('response ============>>>>> ', { response });
 
                     if (!response)
                       popGlobalInfoModal({

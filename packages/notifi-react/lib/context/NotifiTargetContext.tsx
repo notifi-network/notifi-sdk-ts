@@ -13,6 +13,7 @@ import React, {
   useState,
 } from 'react';
 
+import { reformatSignatureForWalletTarget } from '../utils/wallet';
 import { createCoinbaseNonce, subscribeCoinbaseMessaging } from '../utils/xmtp';
 import { useNotifiFrontendClientContext } from './NotifiFrontendClientContext';
 
@@ -139,6 +140,8 @@ export type NotifiTargetContextType = {
   refreshTargetDocument: (newData: Types.FetchDataQuery) => void;
 };
 
+let web3TargetId = '';
+
 const NotifiTargetContext = createContext<NotifiTargetContextType>(
   {} as NotifiTargetContextType, // intentionally empty as initial value
 );
@@ -206,6 +209,7 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
     slackId: targetInputs.slack ? 'Default' : undefined,
     walletId: targetInputs.wallet ? 'Default' : undefined,
   };
+  web3TargetId = targetData?.wallet?.data?.id ?? '';
 
   useEffect(() => {
     //NOTE: target change listener when window is refocused
@@ -669,14 +673,7 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       const signature = await walletWithSignParams.signMessage(message);
-      let hexString = '0x';
-
-      for (let i = 0; i < Object.keys(signature).length; i++) {
-        // Convert each value to a two-digit hexadecimal string and append it to the result
-        hexString += signature[i].toString(16).padStart(2, '0');
-      }
-
-      return hexString;
+      return reformatSignatureForWalletTarget(signature);
     },
     [walletWithSignParams.signMessage],
   );
@@ -782,11 +779,9 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
 
       await signCoinbaseSignature(address, senderAddress, conversationTopic);
 
-      const targetId = targetData?.wallet?.data?.id ?? '';
-
       await frontendClient.verifyXmtpTargetViaXip42({
         input: {
-          web3TargetId: targetId,
+          web3TargetId,
           accountId: address,
           conversationTopic,
         },
