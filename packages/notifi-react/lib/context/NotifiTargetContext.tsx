@@ -664,6 +664,23 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
     [],
   );
 
+  const getSignature = useCallback(
+    async (message: ArrayLike<number> | string) => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      const signature = await walletWithSignParams.signMessage(message);
+      let hexString = '0x';
+
+      for (let i = 0; i < Object.keys(signature).length; i++) {
+        // Convert each value to a two-digit hexadecimal string and append it to the result
+        hexString += signature[i].toString(16).padStart(2, '0');
+      }
+
+      return hexString;
+    },
+    [walletWithSignParams.signMessage],
+  );
+
   // NOTE: Temporarily commenting out this function because it will be needed later
   // const xip43Impl = async () => {
 
@@ -708,9 +725,7 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
 
       const message = `Coinbase Wallet Messaging subscribe\nAddress: ${address}\nPartner Address: ${senderAddress}\nNonce: ${nonce}`;
 
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      const signature = await walletWithSignParams.signMessage(message);
+      const signature = await getSignature(message);
 
       if (!signature)
         throw Error('Unable to sign the wallet. Please try again.');
@@ -726,7 +741,7 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
 
       return await subscribeCoinbaseMessaging(payload);
     },
-    [walletWithSignParams.signMessage],
+    [getSignature],
   );
 
   const xmtpXip42Impl = useCallback(async () => {
@@ -743,10 +758,10 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
             resolve(address);
           });
         },
-        signMessage: (message: ArrayLike<number> | string): Promise<string> => {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          return walletWithSignParams.signMessage(message) as Promise<string>;
+        signMessage: async (
+          message: ArrayLike<number> | string,
+        ): Promise<string> => {
+          return getSignature(message);
         },
       };
 
@@ -784,7 +799,6 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
 
       return true;
     } catch (e) {
-      console.error(e);
       return false;
     }
   }, [
@@ -793,6 +807,7 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
     signCoinbaseSignature,
     frontendClient,
     xmtp,
+    getSignature,
   ]);
 
   const signWallet = useCallback(async () => {
