@@ -54,6 +54,10 @@
   box-sizing: content-box;
 }
 
+.notifi-target-input-field-input-container.focused {
+  border: 1.5px solid var(--notifi-color-seaglass-dark);
+}
+
 .notifi-target-input-field-icon {
   margin-right: 0.8rem;
   color: var(--notifi-color-grey3);
