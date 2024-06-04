@@ -38,6 +38,11 @@ export default function NotifiSignup({
         </div>
       </div>
       {children}
+      <div className="text-xs w-full sm:w-[460px] italic font-regular sm:ml-0 ml-2 mb-2">
+        By choosing to receive Injective Notifications, you agree to hold the
+        Injective Foundation and its affiliates harmless for any claims related
+        to the Notifications.
+      </div>
       <div className="p-2 bg-white rounded-lg h-7 block md:hidden w-[110px] mt-2">
         <PoweredByNotifi />
       </div>

@@ -38,7 +38,14 @@ export default function NotifiFTU() {
   return (
     <>
       {ftuStage === FtuStage.Destination ? (
-        <ConfigDestinationModal contactInfo={cardConfig.contactInfo} />
+        <>
+          <ConfigDestinationModal contactInfo={cardConfig.contactInfo} />
+          <div className="text-xs w-full sm:w-[460px] italic font-regular sm:ml-0 ml-2 mb-2">
+            By choosing to receive Injective Notifications, you agree to hold
+            the Injective Foundation and its affiliates harmless for any claims
+            related to the Notifications.
+          </div>
+        </>
       ) : null}
 
       {ftuStage === FtuStage.Alerts ? <ConfigAlertModal /> : null}
