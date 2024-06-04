@@ -84,6 +84,9 @@
     --notifi-color-seaglass-dark
   );
   --notifi-target-state-banner-signup-cta-bg: var(--notifi-color-seaglass-dark);
+  --notifi-topic-options-item-selected-text: var(--notifi-color-white);
+  --notifi-topic-list-tooltip-bg: var(--notifi-color-dark);
+  --notifi-target-list-tooltip-bg: var(--notifi-color-dark);
 }
 
 .notifi-theme-light {
@@ -132,6 +135,11 @@
     --notifi-color-secondary-light
   );
   --notifi-target-state-banner-signup-cta-bg: var(
-    --notifi-color-secondary-ligh
+    --notifi-color-secondary-light
   );
+  --notifi-topic-options-item-selected-text: var(
+    --notifi-color-secondary-light
+  );
+  --notifi-topic-list-tooltip-bg: var(--notifi-color-eggshell);
+  --notifi-target-list-tooltip-bg: var(--notifi-color-eggshell);
 }
