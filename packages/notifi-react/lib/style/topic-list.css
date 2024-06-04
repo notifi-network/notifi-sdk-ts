@@ -119,7 +119,7 @@
 }
 
 .notifi-topic-options-custom-input.selected {
-  border: 1px solid var(--notifi-color-seaglass-dark);
+  border: 2px solid var(--notifi-color-secondary-light);
 }
 
 .notifi-topic-options-custom-input::placeholder {
