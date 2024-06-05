@@ -2,7 +2,7 @@
 .notifi-target-inputs {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
   padding: 0 2rem;
   overflow: scroll;
   scrollbar-width: none;
@@ -10,22 +10,32 @@
 .notifi-input-separator {
   display: flex;
   align-items: center;
-  flex-direction: row;
-  text-align: center;
   justify-content: center;
-  font-size: 14px;
-  margin-top: 10px;
+  font-size: 10px;
+  height: 0px;
+  color: var(--notifi-input-separator-text);
 }
 
-.notifi-input-separator:before,
-.notifi-input-separator:after {
-  background-color: var(--notifi-color-grey3);
+.notifi-input-separator:before {
+  background-color: var(--notifi-input-separator-line);
   content: '';
   display: inline-block;
   height: 1px;
   position: relative;
   vertical-align: middle;
   width: 45%;
+  margin-right: 0.5rem;
+}
+
+.notifi-input-separator:after {
+  background-color: var(--notifi-input-separator-line);
+  content: '';
+  display: inline-block;
+  height: 1px;
+  position: relative;
+  vertical-align: middle;
+  width: 45%;
+  margin-left: 0.5rem;
 }
 
 /* TargetInputField styles */

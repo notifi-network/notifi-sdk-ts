@@ -19,6 +19,7 @@
   --notifi-color-grey2: #323240;
   --notifi-color-grey3: #80829d;
   --notifi-color-white: #fff;
+  --notifi-color-blackish1: #32323b;
   --notifi-color-black: #000;
   --notifi-color-eggshell: #f5f6fb;
   --notifi-color-seaglass: #9aa3ff;
@@ -88,6 +89,8 @@
   --notifi-topic-list-tooltip-bg: var(--notifi-color-dark);
   --notifi-target-list-tooltip-bg: var(--notifi-color-dark);
   --notifi-topic-list-tooltip-icon-color-hover: var(--notifi-color-white);
+  --notifi-input-separator-text: var(--notifi-color-dusk);
+  --notifi-input-separator-line: var(--notifi-color-blackish1);
 }
 
 .notifi-theme-light {
@@ -144,4 +147,6 @@
   --notifi-topic-list-tooltip-bg: var(--notifi-color-eggshell);
   --notifi-target-list-tooltip-bg: var(--notifi-color-eggshell);
   --notifi-topic-list-tooltip-icon-color-hover: var(--notifi-color-dusk);
+  --notifi-input-separator-text: var(--notifi-color-heather);
+  --notifi-input-separator-line: var(--notifi-color-heather);
 }
