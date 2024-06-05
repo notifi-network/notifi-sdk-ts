@@ -53,6 +53,7 @@
   align-items: center;
   max-height: 1rem;
   box-sizing: content-box;
+  border: 1.5px solid transparent;
 }
 
 .notifi-target-input-field-input-container.focused {
