@@ -25,6 +25,15 @@
   position: relative;
 }
 
+.notifi-topic-list-tooltip-icon {
+  color: var(--notifi-color-heather);
+}
+
+.notifi-topic-list-tooltip-icon:hover {
+  visibility: visible;
+  color: var(--notifi-topic-list-tooltip-icon-color-hover);
+}
+
 .notifi-topic-list-tooltip-icon:hover ~ .notifi-topic-list-tooltip-content {
   visibility: visible;
 }
@@ -69,6 +78,8 @@
 
 .notifi-topic-options-description {
   margin: 0.5rem 0;
+  font-size: 0.9rem;
+  color: var(--notifi-color-heather);
 }
 
 .notifi-topic-options-items {
@@ -97,6 +108,7 @@
 
 .notifi-topic-options-item.radio {
   display: flex;
+  margin-right: 1rem;
 }
 
 .notifi-topic-options-item.radio::before {
@@ -108,7 +120,7 @@
   height: 1.4em;
   position: relative;
   top: -0.2em;
-  margin-right: 1em;
+  margin-right: 0.5em;
   vertical-align: top;
   cursor: pointer;
   text-align: center;

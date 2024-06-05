@@ -87,6 +87,7 @@
   --notifi-topic-options-item-selected-text: var(--notifi-color-white);
   --notifi-topic-list-tooltip-bg: var(--notifi-color-dark);
   --notifi-target-list-tooltip-bg: var(--notifi-color-dark);
+  --notifi-topic-list-tooltip-icon-color-hover: var(--notifi-color-white);
 }
 
 .notifi-theme-light {
@@ -142,4 +143,5 @@
   );
   --notifi-topic-list-tooltip-bg: var(--notifi-color-eggshell);
   --notifi-target-list-tooltip-bg: var(--notifi-color-eggshell);
+  --notifi-topic-list-tooltip-icon-color-hover: var(--notifi-color-dusk);
 }

@@ -115,7 +115,8 @@ export const TopicOptions = <T extends TopicRowCategory>(
           >
             <div>
               {'prefix' in prefixAndSuffix && prefixAndSuffix.prefix}
-              {option}
+              {option.toString().charAt(0).toUpperCase() +
+                option.toString().slice(1)}
               {'suffix' in prefixAndSuffix && prefixAndSuffix.suffix}
             </div>
           </div>
