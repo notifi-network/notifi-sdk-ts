@@ -669,10 +669,20 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
   );
 
   const getSignature = useCallback(
-    async (message: ArrayLike<number> | string) => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      const signature = await walletWithSignParams.signMessage(message);
+    async (message: Uint8Array | string) => {
+      let signature: Uint8Array | string = '';
+
+      // TODO: Add logic for rest of the chains
+      switch (walletWithSignParams.walletBlockchain) {
+        case 'AVALANCHE':
+        case 'ETHEREUM':
+          signature = await walletWithSignParams.signMessage(
+            message as Uint8Array,
+          );
+          break;
+        default:
+          signature = '';
+      }
       return reformatSignatureForWalletTarget(signature);
     },
     [walletWithSignParams.signMessage],
@@ -711,12 +721,48 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
   //   });
   // };
 
-  const signCoinbaseSignature = useCallback(
-    async (
-      address: string,
-      senderAddress: string,
-      conversationTopic: string,
-    ) => {
+  const xmtpXip42Impl = useCallback(async () => {
+    const options: any = {
+      persistConversations: false,
+      env: 'production',
+    };
+    const address = walletWithSignParams.walletPublicKey;
+
+    const signer = {
+      getAddress: (): Promise<string> => {
+        return new Promise((resolve) => {
+          resolve(address);
+        });
+      },
+      signMessage: async (message: Uint8Array | string): Promise<string> => {
+        return getSignature(message);
+      },
+    };
+
+    const client = await xmtp.initialize({ options, signer });
+
+    if (client === undefined) {
+      throw Error('XMTP client is uninitialized. Please try again.');
+    }
+
+    // TODO: get senderAddress from target
+    const senderAddress = '0xE80E42B5308d5b137FC137302d571B56907c3003';
+    const conversation = await client.conversations.newConversation(
+      senderAddress,
+    );
+
+    await client.contacts.allow([senderAddress]);
+
+    return conversation.topic.split('/')[3];
+  }, [walletWithSignParams.walletPublicKey, xmtp, getSignature]);
+
+  const signCoinbaseSignature = useCallback(async () => {
+    try {
+      const conversationTopic = await xmtpXip42Impl();
+      const address = walletWithSignParams.walletPublicKey;
+      // TODO: get senderAddress from target
+      const senderAddress = '0xE80E42B5308d5b137FC137302d571B56907c3003';
+
       const nonce = await createCoinbaseNonce();
       if (!nonce) throw Error('Unable to sign the wallet. Please try again.');
 
@@ -736,48 +782,7 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
         conversationTopic,
       };
 
-      return await subscribeCoinbaseMessaging(payload);
-    },
-    [getSignature],
-  );
-
-  const xmtpXip42Impl = useCallback(async () => {
-    try {
-      const options: any = {
-        persistConversations: false,
-        env: 'production',
-      };
-      const address = walletWithSignParams.walletPublicKey;
-
-      const signer = {
-        getAddress: (): Promise<string> => {
-          return new Promise((resolve) => {
-            resolve(address);
-          });
-        },
-        signMessage: async (
-          message: ArrayLike<number> | string,
-        ): Promise<string> => {
-          return getSignature(message);
-        },
-      };
-
-      const client = await xmtp.initialize({ options, signer });
-
-      if (client === undefined) {
-        throw Error('XMTP client is uninitialized. Please try again.');
-      }
-
-      // TODO: get senderAddress from target
-      const senderAddress = '0xE80E42B5308d5b137FC137302d571B56907c3003';
-      const conversation = await client.conversations.newConversation(
-        senderAddress,
-      );
-      const conversationTopic = conversation.topic.split('/')[3];
-
-      await client.contacts.allow([senderAddress]);
-
-      await signCoinbaseSignature(address, senderAddress, conversationTopic);
+      await subscribeCoinbaseMessaging(payload);
 
       await frontendClient.verifyXmtpTargetViaXip42({
         input: {
@@ -797,17 +802,16 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
       return false;
     }
   }, [
-    walletWithSignParams,
-    targetData,
-    signCoinbaseSignature,
+    walletWithSignParams.walletPublicKey,
     frontendClient,
-    xmtp,
+    xmtpXip42Impl,
     getSignature,
   ]);
 
   const signWallet = useCallback(async () => {
-    return await xmtpXip42Impl();
-  }, [xmtpXip42Impl]);
+    // TODO: Add logic for handling different wallets
+    return await signCoinbaseSignature();
+  }, [signCoinbaseSignature]);
 
   const refreshWeb3Target = useCallback(
     async (web3Target?: Types.Web3TargetFragmentFragment) => {
