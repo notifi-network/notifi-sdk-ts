@@ -99,6 +99,6 @@
 .notifi-target-cta-action-not-required {
   background-color: var(--notifi-color-green2);
   color: var(--notifi-color-green1);
-  padding: 1rem 2rem;
+  padding: 0.5rem 2rem;
   border-radius: 6px;
 }
