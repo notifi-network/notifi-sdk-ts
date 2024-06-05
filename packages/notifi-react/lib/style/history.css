@@ -15,7 +15,7 @@
 .notifi-history-list-main {
   flex-grow: 1;
   overflow-y: auto;
-  padding: 0rem 1rem 1rem 1rem;
+  padding: 0rem 1.5rem 1rem 1.5rem;
   scrollbar-width: none;
 }
 
@@ -67,6 +67,11 @@
   border-radius: 0 6px 6px 0;
   overflow: hidden;
   cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.notifi-history-row:hover {
+  border: 1px solid var(--notifi-color-dusk);
 }
 
 .notifi-history-row-unread-indicator {
