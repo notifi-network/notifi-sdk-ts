@@ -5,6 +5,7 @@
   gap: 1.5rem;
   padding: 0 2rem;
   overflow: scroll;
+  scrollbar-width: none;
 }
 .notifi-input-separator {
   display: flex;

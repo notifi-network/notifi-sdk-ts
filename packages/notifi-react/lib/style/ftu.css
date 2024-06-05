@@ -9,6 +9,7 @@
 .notifi-ftu-views {
   flex-grow: 1;
   overflow: scroll;
+  scrollbar-width: none;
 }
 
 .notifi-ftu-footer {
@@ -28,6 +29,7 @@
   flex-grow: 1;
   padding: 0 2rem;
   overflow-y: scroll;
+  scrollbar-width: none;
 }
 
 .notifi-ftu-alert-list-title {
@@ -146,6 +148,7 @@
 .notifi-ftu-target-list-main {
   flex-grow: 1;
   overflow: scroll;
+  scrollbar-width: none;
 }
 
 /* FtuAlertEdit styles */
@@ -159,4 +162,5 @@
 .notifi-ftu-alert-edit-main {
   flex-grow: 1;
   overflow: scroll;
+  scrollbar-width: none;
 }

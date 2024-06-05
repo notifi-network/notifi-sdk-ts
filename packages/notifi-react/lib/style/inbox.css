@@ -10,6 +10,7 @@
 .notifi-inbox-views {
   flex-grow: 1;
   overflow: scroll;
+  scrollbar-width: none;
 }
 
 .notifi-inbox-footer {
@@ -56,6 +57,7 @@
 .notifi-inbox-config-topic-main {
   flex-grow: 1;
   overflow: scroll;
+  scrollbar-width: none;
 }
 
 .notifi-inbox-config-topic-banner {
@@ -79,6 +81,7 @@
 .notifi-inbox-config-target-list-main {
   flex-grow: 1;
   overflow: scroll;
+  scrollbar-width: none;
 }
 .notifi-inbox-config-target-edit-button,
 .notifi-inbox-config-target-list-button {
@@ -122,4 +125,5 @@
   flex-grow: 1;
   overflow: scroll;
   margin-top: 1.5rem;
+  scrollbar-width: none;
 }

@@ -12,6 +12,7 @@
   flex-grow: 1;
   overflow-y: auto;
   padding: 1rem;
+  scrollbar-width: none;
 }
 
 .notifi-history-list-loading-more {
@@ -133,6 +134,7 @@
   flex-grow: 1;
   overflow-y: auto;
   padding: 1rem;
+  scrollbar-width: none;
 }
 
 .notifi-history-detail-subject {
