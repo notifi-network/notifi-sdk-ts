@@ -13,6 +13,16 @@
 @import url('./history.css');
 @import url('./target-state-banner.css');
 
+button {
+  /* Reset default button styles */
+  border: none;
+  outline: none;
+  text-decoration: none;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
 :root {
   /* Color variables */
   --notifi-color-grey1: #1c1c23;
