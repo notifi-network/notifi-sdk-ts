@@ -122,7 +122,12 @@ export const TopicOptions = <T extends TopicRowCategory>(
           </div>
         ))}
         {props.userInputParam.allowCustomInput ? (
-          <div className="notifi-topic-option-cutom-input-container">
+          <div
+            className={clsx(
+              'notifi-topic-option-custom-input-container',
+              customInput ? 'selected' : '',
+            )}
+          >
             <div className="notifi-topic-option-custom-input-prefix">
               {prefixAndSuffix.prefix}
             </div>
@@ -130,6 +135,7 @@ export const TopicOptions = <T extends TopicRowCategory>(
               disabled={isLoadingTopic}
               onChange={(evt) => {
                 setCustomInput((prev) => {
+                  if (evt.target.value === '') return '0';
                   if (
                     isUserInputValid(
                       props.userInputParam.kind,
@@ -142,12 +148,12 @@ export const TopicOptions = <T extends TopicRowCategory>(
                 });
               }}
               onBlur={(evt) => {
+                if (customInput === '') return;
                 selectOrInputValue(evt.target.value);
               }}
               className={clsx(
                 'notifi-topic-options-custom-input',
                 props.classNames?.inputField,
-                customInput ? 'selected' : '',
               )}
               placeholder={
                 props.copy?.customInputPlaceholder ??

@@ -83,6 +83,7 @@
 }
 
 .notifi-topic-options-items {
+  border: solid 2px transparent;
   margin-bottom: 0.5rem;
   display: flex;
   flex-grow: 1;
@@ -94,11 +95,14 @@
 }
 
 .notifi-topic-options-item.button {
+  border: 2px solid transparent;
   border-radius: 6px;
   background-color: var(--notifi-topic-options-item-bg);
   color: var(--notifi-color-heather);
-
-  padding: 0.5rem 1rem;
+  height: 3rem;
+  padding: 0rem 1rem;
+  display: flex;
+  align-items: center;
 }
 
 .notifi-topic-options-item.button.selected {
@@ -135,15 +139,16 @@
 .notifi-topic-options-custom-input {
   border-radius: 6px;
   outline: none;
-  background-color: var(--notifi-topic-options-item-bg);
-  color: var(--notifi-color-heather);
-  border: none;
+  background-color: inherit;
+  color: inherit;
+  border: 2px solid transparent;
   padding: 0 1rem;
   width: 100%;
 }
 
-.notifi-topic-options-custom-input.selected {
+.notifi-topic-option-custom-input-container.selected {
   border: 2px solid var(--notifi-color-secondary-light);
+  color: var(--notifi-topic-options-item-selected-text);
 }
 
 .notifi-topic-options-custom-input::placeholder {
@@ -151,11 +156,16 @@
   text-align: center;
 }
 
-.notifi-topic-option-cutom-input-container {
+.notifi-topic-option-custom-input-container {
+  background-color: var(--notifi-topic-options-item-bg);
+  border: 2px solid transparent;
   display: flex;
   position: relative;
   flex-grow: 1;
   min-width: 0;
+  height: 3rem;
+  border-radius: 6px;
+  color: var(--notifi-color-heather);
 }
 
 .notifi-topic-option-custom-input-prefix,
@@ -164,20 +174,22 @@
   color: var(--notifi-color-heather);
 }
 
-.notifi-topic-options-custom-input.selected
-  + .notifi-topic-option-custom-input-prefix {
+.notifi-topic-option-custom-input-container.selected
+  > .notifi-topic-option-custom-input-prefix {
   position: absolute;
   left: 0.1rem;
   top: 0.5rem;
   display: block;
+  color: var(--notifi-topic-options-item-selected-text);
 }
 
-.notifi-topic-options-custom-input.selected
-  + .notifi-topic-option-custom-input-suffix {
+.notifi-topic-option-custom-input-container.selected
+  > .notifi-topic-option-custom-input-suffix {
   position: absolute;
-  right: 0.2rem;
-  top: 0.5rem;
+  right: 0.5rem;
+  top: 1rem;
   display: block;
+  color: var(--notifi-topic-options-item-selected-text);
 }
 
 /* TopicStackRow styles */

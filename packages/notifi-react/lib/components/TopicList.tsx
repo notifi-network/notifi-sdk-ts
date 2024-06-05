@@ -11,7 +11,7 @@ export type TopicListProps = {
   classNames?: {
     container?: string;
     TopicRow?: TopicRowPropsBase['classNames'];
-    TopicStackRow?: TopicStackRowProps['className'];
+    TopicStackRow?: TopicStackRowProps['classNames'];
   };
 };
 
@@ -77,7 +77,7 @@ export const TopicList: React.FC<TopicListProps> = (props) => {
               <TopicStackRow
                 key={id}
                 {...rowMetadata}
-                className={props.classNames?.TopicRow}
+                classNames={props.classNames?.TopicRow}
               />
             );
           }
