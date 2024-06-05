@@ -42,6 +42,18 @@
   width: 10rem;
 }
 
+.notifi-topic-list
+  > .notifi-topic-row:first-child
+  .notifi-topic-row-base
+  .notifi-topic-row-content
+  .notifi-topic-list-tooltip-content {
+  /* style for the first topic row's tooltip */
+  transform: translate(50%, 1.5rem);
+  z-index: 1;
+  /* height: 100%;
+  bottom: 0; */
+}
+
 .notifi-topic-row-user-inputs-row-container {
   display: flex;
   flex-direction: column;
