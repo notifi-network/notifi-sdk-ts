@@ -42,7 +42,7 @@ const NotifiComponentExample = () => {
   };
   const bellIconHref = `/bell-${
     searchParams.get('scene') === 'light' ? 'light' : 'dark'
-  }.svg`;
+  }${isCardModalOpen ? '-open' : ''}.svg`;
 
   return (
     <div>
