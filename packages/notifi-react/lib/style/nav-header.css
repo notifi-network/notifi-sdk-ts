@@ -3,6 +3,10 @@
   display: flex;
   padding: 1rem;
 }
+.notifi-nav-header-title::after {
+  content: '_'; /* This is a placeholder in case the title is empty */
+  visibility: hidden;
+}
 .notifi-nave-header-right-cta,
 .notifi-nav-header-left-cta {
   display: flex;
