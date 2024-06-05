@@ -672,16 +672,51 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
     async (message: Uint8Array | string) => {
       let signature: Uint8Array | string = '';
 
+      if (typeof message === 'string') {
+        const encoder = new TextEncoder();
+        message = encoder.encode(message);
+      }
+
       // TODO: Add logic for rest of the chains
       switch (walletWithSignParams.walletBlockchain) {
         case 'AVALANCHE':
         case 'ETHEREUM':
-          signature = await walletWithSignParams.signMessage(
-            message as Uint8Array,
-          );
+        case 'POLYGON':
+        case 'ARBITRUM':
+        case 'BINANCE':
+        case 'ELYS':
+        case 'NEUTRON':
+        case 'ARCHWAY':
+        case 'AXELAR':
+        case 'BERACHAIN':
+        case 'OPTIMISM':
+        case 'ZKSYNC':
+        case 'INJECTIVE':
+        case 'BASE':
+        case 'BLAST':
+        case 'CELO':
+        case 'MANTLE':
+        case 'LINEA':
+        case 'SCROLL':
+        case 'MANTA':
+        case 'EVMOS':
+        case 'MONAD':
+        case 'AGORIC':
+        case 'ORAI':
+        case 'KAVA':
+        case 'CELESTIA':
+        case 'COSMOS':
+        case 'DYMENSION':
+        case 'DYDX':
+        case 'XION':
+        case 'NEAR':
+        case 'SUI':
+          signature = await walletWithSignParams.signMessage(message);
           break;
-        default:
-          signature = '';
+        default: {
+          setError(Error('This chain is not supported'));
+          throw Error('This chain is not supported');
+        }
       }
       return reformatSignatureForWalletTarget(signature);
     },
@@ -809,7 +844,7 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
   ]);
 
   const signWallet = useCallback(async () => {
-    // TODO: Add logic for handling different wallets
+    // TODO: Add logic to handle different wallet signatures
     return await signCoinbaseSignature();
   }, [signCoinbaseSignature]);
 
