@@ -8,10 +8,14 @@
   display: none;
 }
 
+.notifi-history-list-target-state-banner-container {
+  margin: 1rem 1rem 0.5rem 1rem;
+}
+
 .notifi-history-list-main {
   flex-grow: 1;
   overflow-y: auto;
-  padding: 1rem;
+  padding: 0rem 1rem 1rem 1rem;
   scrollbar-width: none;
 }
 
