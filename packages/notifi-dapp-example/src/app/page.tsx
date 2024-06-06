@@ -10,6 +10,7 @@ import { useInjectiveWallets } from '@/context/InjectiveWalletContext';
 import { useRouterAsync } from '@/hooks/useRouterAsync';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import Image from 'next/image';
+import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export default function Home() {
@@ -20,6 +21,9 @@ export default function Home() {
     useInjectiveWallets();
   const [isOpenWalletsModal, setIsOpenWalletsModal] = useState(false);
   const [isOpenMobilePromptModal, setIsOpenMobilePromptModal] = useState(false);
+
+  const searchParams = useSearchParams();
+  const tempCardId = searchParams.get('cardid');
 
   const allWallets = {
     ...wallets,
@@ -32,7 +36,7 @@ export default function Home() {
       (injectiveSelectedWallet &&
         injectiveWallets[injectiveSelectedWallet].walletKeys)
     ) {
-      handleRoute('/notifi');
+      handleRoute(`/notifi${tempCardId ? `?cardid=${tempCardId}` : ''}`);
     }
   }, [selectedWallet, injectiveSelectedWallet]);
 

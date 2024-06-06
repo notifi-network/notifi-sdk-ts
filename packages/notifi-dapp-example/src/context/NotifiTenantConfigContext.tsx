@@ -23,16 +23,18 @@ const NotifiTenantConfigContext = createContext<NotifiTenantConfigContextType>(
   {} as NotifiTenantConfigContextType,
 );
 
-const notifiSubscriptionCardId =
-  process.env.NEXT_PUBLIC_NOTIFI_SUBSCRIPTION_CARD_ID!;
-
 type NotifiTenantConfigProps = {
   inputs?: Record<string, unknown>;
+  cardId?: string;
 };
 
 export const NotifiTenantConfigContextProvider: FC<
   PropsWithChildren<NotifiTenantConfigProps>
-> = ({ inputs = {}, children }) => {
+> = ({ inputs = {}, children, cardId }) => {
+  const [id, setId] = useState<string>(
+    cardId ?? process.env.NEXT_PUBLIC_NOTIFI_SUBSCRIPTION_CARD_ID!,
+  );
+
   const { frontendClient, frontendClientStatus } =
     useNotifiFrontendClientContext();
   const [isLoading, setIsLoading] = useState(true);
@@ -46,7 +48,7 @@ export const NotifiTenantConfigContextProvider: FC<
 
     frontendClient
       .fetchSubscriptionCard({
-        id: notifiSubscriptionCardId,
+        id,
         type: 'SUBSCRIPTION_CARD',
       })
       .then((cardConfig) => {
@@ -56,7 +58,12 @@ export const NotifiTenantConfigContextProvider: FC<
         setError(null);
       })
       .catch((e) => {
-        setError(new Error('Failed to fetch Card Config, please try again'));
+        if (id !== process.env.NEXT_PUBLIC_NOTIFI_SUBSCRIPTION_CARD_ID!) {
+          /* Could be the failure from using mis-match cardid from urlParams, try again with default cardId */
+          setId(process.env.NEXT_PUBLIC_NOTIFI_SUBSCRIPTION_CARD_ID!);
+          return;
+        }
+        setError(new Error('Failed to fetch Card Config, please try again.'));
         console.error(e);
       })
       .finally(() => setIsLoading(false));
@@ -86,7 +93,7 @@ export const NotifiTenantConfigContextProvider: FC<
     //     console.log(e);
     //   })
     //   .finally(() => setIsGlobalLoading(false));
-  }, [frontendClient]);
+  }, [frontendClient, id]);
 
   if (!cardConfig) {
     return null;

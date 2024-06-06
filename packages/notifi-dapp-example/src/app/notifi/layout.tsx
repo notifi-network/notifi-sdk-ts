@@ -4,6 +4,7 @@ import { useInjectiveWallets } from '@/context/InjectiveWalletContext';
 import { NotifiContextWrapper } from '@/context/NotifiContextWrapper';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import { useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import React, { useEffect } from 'react';
 
 export default function NotifiSingupLayout({
@@ -11,9 +12,11 @@ export default function NotifiSingupLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const searchParams = useSearchParams();
   const { wallets, selectedWallet } = useWallets();
   const { selectedWallet: injectiveSelectedWallet, wallets: injectiveWallets } =
     useInjectiveWallets();
+  const tempCardId = searchParams.get('cardid');
 
   const router = useRouter();
 
@@ -26,5 +29,9 @@ export default function NotifiSingupLayout({
       router.push('/');
     }
   }, [selectedWallet, injectiveWallets]);
-  return <NotifiContextWrapper>{children}</NotifiContextWrapper>;
+  return (
+    <NotifiContextWrapper cardId={tempCardId ?? undefined}>
+      {children}
+    </NotifiContextWrapper>
+  );
 }
