@@ -28,6 +28,7 @@ button {
   --notifi-color-grey1: #1c1c23;
   --notifi-color-grey2: #323240;
   --notifi-color-grey3: #80829d;
+  --notifi-color-grey4: #4a4a5e;
   --notifi-color-white: #fff;
   --notifi-color-blackish1: #32323b;
   --notifi-color-black: #000;
@@ -101,6 +102,8 @@ button {
   --notifi-topic-list-tooltip-icon-color-hover: var(--notifi-color-white);
   --notifi-input-separator-text: var(--notifi-color-dusk);
   --notifi-input-separator-line: var(--notifi-color-blackish1);
+  --notifi-ftu-footer-bg: var(--notifi-color-grey2);
+  --notifi-ftu-footer-border: var(--notifi-color-grey4);
 }
 
 .notifi-theme-light {
@@ -159,4 +162,6 @@ button {
   --notifi-topic-list-tooltip-icon-color-hover: var(--notifi-color-dusk);
   --notifi-input-separator-text: var(--notifi-color-heather);
   --notifi-input-separator-line: var(--notifi-color-heather);
+  --notifi-ftu-footer-bg: var(--notifi-color-white);
+  --notifi-ftu-footer-border: var(--notifi-color-cloud);
 }

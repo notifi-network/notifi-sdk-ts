@@ -14,6 +14,7 @@ export type FtuAlertEditProps = {
     main?: string;
     button?: string;
     loadingSpinner?: React.CSSProperties;
+    buttonContainer?: string;
   };
   copy?: {
     headerTitle?: string;
@@ -51,27 +52,33 @@ export const FtuAlertEdit: React.FC<FtuAlertEditProps> = (props) => {
       >
         <TopicList />
       </div>
-
-      <button
+      <div
         className={clsx(
-          'notifi-ftu-alert-edit-button',
-          props.classNames?.button,
+          'notifi-ftu-button-container',
+          props.classNames?.buttonContainer,
         )}
-        disabled={isLoading}
-        onClick={onClick}
       >
-        {isLoading ? (
-          <LoadingAnimation type="spinner" {...loadingSpinnerStyle} />
-        ) : null}
-        <div
+        <button
           className={clsx(
-            'notifi-ftu-alert-edit-button-text',
-            isLoading && 'hidden',
+            'notifi-ftu-alert-edit-button',
+            props.classNames?.button,
           )}
+          disabled={isLoading}
+          onClick={onClick}
         >
-          {props.copy?.buttonText ?? defaultCopy.ftuAlertEdit.buttonText}
-        </div>
-      </button>
+          {isLoading ? (
+            <LoadingAnimation type="spinner" {...loadingSpinnerStyle} />
+          ) : null}
+          <div
+            className={clsx(
+              'notifi-ftu-alert-edit-button-text',
+              isLoading && 'hidden',
+            )}
+          >
+            {props.copy?.buttonText ?? defaultCopy.ftuAlertEdit.buttonText}
+          </div>
+        </button>
+      </div>
     </div>
   );
 };

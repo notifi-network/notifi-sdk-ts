@@ -15,9 +15,10 @@
 .notifi-ftu-footer {
   width: 100%;
   display: flex;
-  height: 3rem;
+  height: 2.2rem;
   justify-content: center;
   align-items: center;
+  background-color: var(--notifi-ftu-footer-bg);
 }
 
 /* FtuAlertList styles */
@@ -113,6 +114,18 @@
   margin-top: 1rem;
 }
 
+.notifi-ftu-target-edit-main {
+  flex-grow: 1;
+  overflow: scroll;
+  scrollbar-width: none;
+  height: 0; /* a hack of making height the same when children are overflowed */
+}
+.notifi-ftu-button-container {
+  border-top: var(--notifi-ftu-footer-border) 1px solid;
+  padding: 0.75rem 2rem 0 2rem;
+  background-color: var(--notifi-ftu-footer-bg);
+}
+
 .notifi-ftu-alert-list-button,
 .notifi-ftu-alert-edit-button,
 .notifi-ftu-target-list-button,
@@ -121,11 +134,11 @@
   align-items: center;
   justify-content: center;
   padding: 0.9rem 0;
+  width: 100%;
   font-weight: 700;
   color: var(--notifi-ftu-button-text);
   background-color: var(--notifi-ftu-button);
   border-radius: 6px;
-  margin: 1rem 2rem;
   cursor: pointer;
   position: relative;
 }
@@ -149,6 +162,7 @@
   flex-grow: 1;
   overflow: scroll;
   scrollbar-width: none;
+  height: 0; /* a hack of making height the same when children are overflowed */
 }
 
 /* FtuAlertEdit styles */
@@ -163,4 +177,5 @@
   flex-grow: 1;
   overflow: scroll;
   scrollbar-width: none;
+  height: 0; /* a hack of making height the same when children are overflowed */
 }
