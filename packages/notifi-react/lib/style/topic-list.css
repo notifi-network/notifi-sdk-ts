@@ -3,8 +3,8 @@
 .notifi-topic-list {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  margin: 1rem 2rem;
+  gap: 0.5rem;
+  margin: 1rem 1.5rem;
 }
 
 /* TopicRow styles */
@@ -25,6 +25,15 @@
   position: relative;
 }
 
+.notifi-topic-list-tooltip-icon {
+  color: var(--notifi-color-heather);
+}
+
+.notifi-topic-list-tooltip-icon:hover {
+  visibility: visible;
+  color: var(--notifi-topic-list-tooltip-icon-color-hover);
+}
+
 .notifi-topic-list-tooltip-icon:hover ~ .notifi-topic-list-tooltip-content {
   visibility: visible;
 }
@@ -42,6 +51,16 @@
   width: 10rem;
 }
 
+.notifi-topic-list
+  > .notifi-topic-row:first-child
+  .notifi-topic-row-base
+  .notifi-topic-row-content
+  .notifi-topic-list-tooltip-content {
+  /* style for the first topic row's tooltip */
+  transform: translate(50%, 1.5rem);
+  z-index: 1;
+}
+
 .notifi-topic-row-user-inputs-row-container {
   display: flex;
   flex-direction: column;
@@ -57,9 +76,12 @@
 
 .notifi-topic-options-description {
   margin: 0.5rem 0;
+  font-size: 0.9rem;
+  color: var(--notifi-color-heather);
 }
 
 .notifi-topic-options-items {
+  border: solid 2px transparent;
   margin-bottom: 0.5rem;
   display: flex;
   flex-grow: 1;
@@ -71,11 +93,14 @@
 }
 
 .notifi-topic-options-item.button {
+  border: 2px solid transparent;
   border-radius: 6px;
   background-color: var(--notifi-topic-options-item-bg);
   color: var(--notifi-color-heather);
-
-  padding: 0.5rem 1rem;
+  height: 3rem;
+  padding: 0rem 1rem;
+  display: flex;
+  align-items: center;
 }
 
 .notifi-topic-options-item.button.selected {
@@ -85,6 +110,7 @@
 
 .notifi-topic-options-item.radio {
   display: flex;
+  margin-right: 1rem;
 }
 
 .notifi-topic-options-item.radio::before {
@@ -96,7 +122,7 @@
   height: 1.4em;
   position: relative;
   top: -0.2em;
-  margin-right: 1em;
+  margin-right: 0.5em;
   vertical-align: top;
   cursor: pointer;
   text-align: center;
@@ -111,15 +137,16 @@
 .notifi-topic-options-custom-input {
   border-radius: 6px;
   outline: none;
-  background-color: var(--notifi-topic-options-item-bg);
-  color: var(--notifi-color-heather);
-  border: none;
+  background-color: inherit;
+  color: inherit;
+  border: 2px solid transparent;
   padding: 0 1rem;
   width: 100%;
 }
 
-.notifi-topic-options-custom-input.selected {
+.notifi-topic-option-custom-input-container.selected {
   border: 2px solid var(--notifi-color-secondary-light);
+  color: var(--notifi-topic-options-item-selected-text);
 }
 
 .notifi-topic-options-custom-input::placeholder {
@@ -127,11 +154,16 @@
   text-align: center;
 }
 
-.notifi-topic-option-cutom-input-container {
+.notifi-topic-option-custom-input-container {
+  background-color: var(--notifi-topic-options-item-bg);
+  border: 2px solid transparent;
   display: flex;
   position: relative;
   flex-grow: 1;
   min-width: 0;
+  height: 3rem;
+  border-radius: 6px;
+  color: var(--notifi-color-heather);
 }
 
 .notifi-topic-option-custom-input-prefix,
@@ -140,20 +172,22 @@
   color: var(--notifi-color-heather);
 }
 
-.notifi-topic-options-custom-input.selected
-  + .notifi-topic-option-custom-input-prefix {
+.notifi-topic-option-custom-input-container.selected
+  > .notifi-topic-option-custom-input-prefix {
   position: absolute;
   left: 0.1rem;
   top: 0.5rem;
   display: block;
+  color: var(--notifi-topic-options-item-selected-text);
 }
 
-.notifi-topic-options-custom-input.selected
-  + .notifi-topic-option-custom-input-suffix {
+.notifi-topic-option-custom-input-container.selected
+  > .notifi-topic-option-custom-input-suffix {
   position: absolute;
-  right: 0.2rem;
-  top: 0.5rem;
+  right: 0.5rem;
+  top: 1rem;
   display: block;
+  color: var(--notifi-topic-options-item-selected-text);
 }
 
 /* TopicStackRow styles */

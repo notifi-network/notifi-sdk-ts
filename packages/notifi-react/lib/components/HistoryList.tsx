@@ -2,13 +2,20 @@ import clsx from 'clsx';
 import React from 'react';
 
 import { Icon, IconType } from '../assets/Icons';
-import { HistoryItem, useNotifiHistoryContext } from '../context';
-import { defaultCopy, defaultLoadingAnimationStyle } from '../utils';
+import {
+  HistoryItem,
+  useNotifiHistoryContext,
+  useNotifiTargetContext,
+} from '../context';
+import { defaultCopy, defaultLoadingAnimationStyle, hasTarget } from '../utils';
 import { HistoryRow } from './HistoryRow';
+import { InboxView } from './Inbox';
 import { LoadingAnimation } from './LoadingAnimation';
 import { NavHeader } from './NavHeader';
+import { TargetStateBanner, TargetStateBannerProps } from './TargetStateBanner';
 
 type HistoryListProps = {
+  setInboxView: React.Dispatch<React.SetStateAction<InboxView>>;
   classNames?: {
     container?: string;
     main?: string;
@@ -19,6 +26,8 @@ type HistoryListProps = {
     emptyIcon?: string;
     emptyTitle?: string;
     emptyDescription?: string;
+    TargetStateBannerContainer?: string;
+    TargetStateBanner?: TargetStateBannerProps['classNames'];
   };
   copy?: {
     headerTitle?: string;
@@ -64,6 +73,10 @@ export const HistoryList: React.FC<HistoryListProps> = (props) => {
       mainRef.current?.removeEventListener('scroll', scrollDetectedAction);
   }, [hasNextPage, isLoadingHistoryItems]);
 
+  const {
+    targetDocument: { targetData },
+  } = useNotifiTargetContext();
+
   return (
     <div
       className={clsx(
@@ -75,6 +88,23 @@ export const HistoryList: React.FC<HistoryListProps> = (props) => {
       <NavHeader>
         {props.copy?.headerTitle ?? defaultCopy.inboxHistoryList.headerTitle}
       </NavHeader>
+      <div
+        className={clsx(
+          'notifi-history-list-target-state-banner-container',
+          props.classNames?.TargetStateBannerContainer,
+        )}
+      >
+        <TargetStateBanner
+          classNames={props.classNames?.TargetStateBanner}
+          onClickCta={() => {
+            if (!hasTarget(targetData)) {
+              return props.setInboxView(InboxView.InboxConfigTargetEdit);
+            }
+            props.setInboxView(InboxView.InboxConfigTargetList);
+          }}
+        />
+      </div>
+
       <div
         ref={mainRef}
         className={clsx('notifi-history-list-main', props.classNames?.main)}

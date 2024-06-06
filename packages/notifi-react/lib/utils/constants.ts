@@ -11,8 +11,7 @@ export const defaultCopy = {
   },
   ftuAlertList: {
     title: 'Notifications',
-    description:
-      'See your activity and gain access to alerts. Push notifications are also available and optional.',
+    description: 'See your activity and gain access to alerts',
     buttonText: 'Next',
   },
   poweredByNotifi: 'Powered',

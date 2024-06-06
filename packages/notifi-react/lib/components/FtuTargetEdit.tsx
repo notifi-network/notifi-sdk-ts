@@ -21,6 +21,8 @@ export type FtuTargetEditProps = {
     container?: string;
     button?: string;
     loadingSpinner?: React.CSSProperties;
+    main?: string;
+    buttonContainer?: string;
     TargetInputs?: TargetInputsProps['classNames'];
   };
   setFtuView: React.Dispatch<React.SetStateAction<FtuView | null>>;
@@ -64,27 +66,38 @@ export const FtuTargetEdit: React.FC<FtuTargetEditProps> = (props) => {
       >
         {props.copy?.description ?? defaultCopy.ftuTargetEdit.description}
       </div>
-      <TargetInputs copy={props.copy?.TargetInputs} />
-      <button
-        className={clsx(
-          'notifi-ftu-target-edit-button',
-          props.classNames?.button,
-        )}
-        disabled={!isTargetInputChanged || !isInputValid || isLoading}
-        onClick={onClick}
+      <div
+        className={clsx('notifi-ftu-target-edit-main', props.classNames?.main)}
       >
-        {isLoading ? (
-          <LoadingAnimation type="spinner" {...loadingSpinnerStyle} />
-        ) : null}
-        <div
+        <TargetInputs copy={props.copy?.TargetInputs} />
+      </div>
+      <div
+        className={clsx(
+          'notifi-ftu-button-container',
+          props.classNames?.buttonContainer,
+        )}
+      >
+        <button
           className={clsx(
-            'notifi-ftu-target-edit-button-text',
-            isLoading && 'hidden',
+            'notifi-ftu-target-edit-button',
+            props.classNames?.button,
           )}
+          disabled={!isTargetInputChanged || !isInputValid || isLoading}
+          onClick={onClick}
         >
-          {props.copy?.buttonText ?? defaultCopy.ftuTargetEdit.buttonText}
-        </div>
-      </button>
+          {isLoading ? (
+            <LoadingAnimation type="spinner" {...loadingSpinnerStyle} />
+          ) : null}
+          <div
+            className={clsx(
+              'notifi-ftu-target-edit-button-text',
+              isLoading && 'hidden',
+            )}
+          >
+            {props.copy?.buttonText ?? defaultCopy.ftuTargetEdit.buttonText}
+          </div>
+        </button>
+      </div>
     </div>
   );
 };

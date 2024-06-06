@@ -41,9 +41,10 @@ export const TargetStateBanner: React.FC<TargetStateBannerProps> = (props) => {
   const {
     unVerifiedTargets,
     targetDocument: { targetData },
+    isLoading: isLoadingTarget,
   } = useNotifiTargetContext();
   const { cardConfig } = useNotifiTenantConfigContext();
-  if (!cardConfig) return null;
+  if (!cardConfig || isLoadingTarget) return null;
 
   const activeTargets = objectKeys(cardConfig.contactInfo)
     .map((target) =>
