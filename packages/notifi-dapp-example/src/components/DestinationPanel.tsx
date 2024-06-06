@@ -298,6 +298,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
               <DestinationInfoPrompt
                 isButton={true}
                 buttonCopy={targetInfoPrompts.wallet?.infoPrompt.message ?? ''}
+                isLoading={isLoading}
                 onClick={async () => {
                   if (isLoading) return;
                   const infoPrompt = targetInfoPrompts.wallet?.infoPrompt;
