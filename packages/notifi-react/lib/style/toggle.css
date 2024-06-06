@@ -1,5 +1,5 @@
 .notifi-toggle-container {
-  --notifi-toggle-size: 22px;
+  --notifi-toggle-size: 16px;
   --notifi-toggle-padding: 2px;
   --notifi-toggle-container: calc(
     var(--notifi-toggle-size) + 2 * var(--notifi-toggle-padding)

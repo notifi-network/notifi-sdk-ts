@@ -632,7 +632,7 @@ export const Icon: React.FC<Props & { type: IconType }> = (
           fill="none"
           {...props}
         >
-          <g clip-path="url(#clip0_1955_18391)">
+          <g clipPath="url(#clip0_1955_18391)">
             <path
               d="M3.71191 10.5C3.90574 10.9457 4.22553 11.3251 4.63199 11.5916C5.03845 11.858 5.51389 12 5.99991 12C6.48594 12 6.96138 11.858 7.36784 11.5916C7.7743 11.3251 8.09408 10.9457 8.28791 10.5H3.71191Z"
               fill="currentColor"
@@ -659,7 +659,7 @@ export const Icon: React.FC<Props & { type: IconType }> = (
           fill="none"
           {...props}
         >
-          <g clip-path="url(#clip0_1949_17209)">
+          <g clipPath="url(#clip0_1949_17209)">
             <path
               d="M8.58984 7.41L13.1698 12L8.58984 16.59L9.99984 18L15.9998 12L9.99984 6L8.58984 7.41Z"
               fill="currentColor"

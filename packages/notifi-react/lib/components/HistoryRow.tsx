@@ -28,7 +28,11 @@ export const HistoryRow: React.FC<HistoryRowProps> = (props) => {
 
   return (
     <div
-      className={clsx('notifi-history-row', props.className?.container)}
+      className={clsx(
+        'notifi-history-row',
+        props.className?.container,
+        props.historyItem.read ? 'read' : '',
+      )}
       onClick={() => {
         if (!props.historyItem.read) {
           markAsRead([props.historyItem.id]);
