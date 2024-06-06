@@ -59,8 +59,6 @@
   /* style for the first topic row's tooltip */
   transform: translate(50%, 1.5rem);
   z-index: 1;
-  /* height: 100%;
-  bottom: 0; */
 }
 
 .notifi-topic-row-user-inputs-row-container {

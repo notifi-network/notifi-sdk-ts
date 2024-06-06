@@ -49,11 +49,12 @@
 }
 
 .notifi-history-list-empty-description {
-  font-size: 0.9rem;
+  font-size: 0.87rem;
   font-weight: 500;
   line-height: 1.5;
-  width: 80%;
+  width: 95%;
   color: var(--notifi-history-list-empty-description-text);
+  text-align: center;
 }
 
 /* HistoryRow styles */
