@@ -50,6 +50,7 @@ export const Inbox: React.FC<InboxProps> = (props) => {
         <InboxHistory
           isHidden={inboxView !== InboxView.InboxHistory}
           classNames={props.classNames?.InboxHistory}
+          setInboxView={setInboxView}
         />
         {inboxView === InboxView.InboxConfigTopic ? (
           <InboxConfigTopic

@@ -2,7 +2,7 @@
 
 .notifi-target-list {
   padding-top: 0.8rem;
-  margin: 0 2.5rem;
+  margin: 0 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -99,6 +99,6 @@
 .notifi-target-cta-action-not-required {
   background-color: var(--notifi-color-green2);
   color: var(--notifi-color-green1);
-  padding: 1rem 2rem;
+  padding: 0.5rem 2rem;
   border-radius: 6px;
 }

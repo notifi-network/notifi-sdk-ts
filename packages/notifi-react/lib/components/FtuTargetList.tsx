@@ -14,6 +14,7 @@ export type FtuTargetListProps = {
     main?: string;
     button?: string;
     loadingSpinner?: React.CSSProperties;
+    buttonContainer?: string;
   };
   copy?: {
     headerTitle?: string;
@@ -53,27 +54,33 @@ export const FtuTargetList: React.FC<FtuTargetListProps> = (props) => {
       >
         <TargetList />
       </div>
-
-      <button
+      <div
         className={clsx(
-          'notifi-ftu-target-list-button',
-          props.classNames?.button,
+          'notifi-ftu-button-container',
+          props.classNames?.buttonContainer,
         )}
-        disabled={isLoading}
-        onClick={onClick}
       >
-        {isLoading ? (
-          <LoadingAnimation type="spinner" {...loadingSpinnerStyle} />
-        ) : null}
-        <div
+        <button
           className={clsx(
-            'notifi-ftu-target-list-button-text',
-            isLoading && 'hidden',
+            'notifi-ftu-target-list-button',
+            props.classNames?.button,
           )}
+          disabled={isLoading}
+          onClick={onClick}
         >
-          {props.copy?.buttonText ?? defaultCopy.ftuTargetList.buttonText}
-        </div>
-      </button>
+          {isLoading ? (
+            <LoadingAnimation type="spinner" {...loadingSpinnerStyle} />
+          ) : null}
+          <div
+            className={clsx(
+              'notifi-ftu-target-list-button-text',
+              isLoading && 'hidden',
+            )}
+          >
+            {props.copy?.buttonText ?? defaultCopy.ftuTargetList.buttonText}
+          </div>
+        </button>
+      </div>
     </div>
   );
 };
