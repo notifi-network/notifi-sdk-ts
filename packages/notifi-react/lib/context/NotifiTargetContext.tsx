@@ -141,6 +141,7 @@ export type NotifiTargetContextType = {
 };
 
 let web3TargetId = '';
+let senderAddress = '';
 
 const NotifiTargetContext = createContext<NotifiTargetContextType>(
   {} as NotifiTargetContextType, // intentionally empty as initial value
@@ -210,6 +211,10 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
     walletId: targetInputs.wallet ? 'Default' : undefined,
   };
   web3TargetId = targetData?.wallet?.data?.id ?? '';
+
+  // Note: This is tenant-specific. For now, we're supporting GMX only.
+  // In the near future, we should retrieve this from the web3 target: targetData.wallet.data.senderAddress
+  senderAddress = '0xE80E42B5308d5b137FC137302d571B56907c3003';
 
   useEffect(() => {
     //NOTE: target change listener when window is refocused
@@ -729,8 +734,6 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
   //   const targetId = targetData?.wallet?.data?.id ?? '';
   //   const address = '';
 
-  //   // TODO: get senderAddress from target
-  //   const senderAddress = '0xE80E42B5308d5b137FC137302d571B56907c3003';
   //   const timestamp = Date.now();
   //   const message = createConsentMessage(senderAddress, timestamp);
   //   const signature = '';
@@ -780,8 +783,6 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
       throw Error('XMTP client is uninitialized. Please try again.');
     }
 
-    // TODO: get senderAddress from target
-    const senderAddress = '0xE80E42B5308d5b137FC137302d571B56907c3003';
     const conversation = await client.conversations.newConversation(
       senderAddress,
     );
@@ -795,8 +796,6 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
     try {
       const conversationTopic = await xmtpXip42Impl();
       const address = walletWithSignParams.walletPublicKey;
-      // TODO: get senderAddress from target
-      const senderAddress = '0xE80E42B5308d5b137FC137302d571B56907c3003';
 
       const nonce = await createCoinbaseNonce();
       if (!nonce) throw Error('Unable to sign the wallet. Please try again.');
