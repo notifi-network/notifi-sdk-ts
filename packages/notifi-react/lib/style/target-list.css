@@ -15,7 +15,7 @@
   gap: 0.25rem;
   align-items: center;
   background-color: var(--notifi-notifi-target-list-item-bg);
-  padding: 1rem 0;
+  padding: 1rem;
   border-radius: 6px;
   position: relative;
 }
@@ -55,6 +55,13 @@
   bottom: 0;
   visibility: hidden;
 }
+
+.notifi-target-list-target-confirm-tooltip-icon:hover {
+  color: var(
+    --notifi-topic-list-tooltip-icon-color-hover
+  ); /* TODO: Add new color variable for this */
+}
+
 .notifi-target-list-target-confirm-tooltip-icon:hover
   ~ .notifi-target-list-target-confirm-tooltip-content {
   visibility: visible;
