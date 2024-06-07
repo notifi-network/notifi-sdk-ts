@@ -1,15 +1,10 @@
 import { Icon } from '@/assets/Icon';
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
-import { createCoinbaseNonce, subscribeCoinbaseMessaging } from '@/utils/xmtp';
 import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import {
   isCtaInfo,
-  useNotifiFrontendClientContext,
   useNotifiTargetContext,
 } from '@notifi-network/notifi-react';
-import { useWallets } from '@notifi-network/notifi-wallet-provider';
-// import { createConsentMessage } from '@xmtp/consent-proof-signature';
-import { useClient } from '@xmtp/react-sdk';
 import React, { useCallback, useMemo, useState } from 'react';
 
 import { CoinbaseInfoModal } from './CoinbaseInfoModal';
@@ -41,10 +36,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
 
   const {
     targetDocument: { targetInfoPrompts, targetData },
-    refreshTargetDocument,
   } = useNotifiTargetContext();
-
-  const { frontendClient } = useNotifiFrontendClientContext();
 
   const handleResendEmailVerificationClick = useCallback(() => {
     if (targetInfoPrompts.email?.infoPrompt.type !== 'cta') return;
@@ -67,155 +59,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
 
   const [isLoading, setIsLoading] = useState(false);
   const [isCBInfoModalOpen, setIsCBInfoModalOpen] = useState(false);
-  const { wallets, selectedWallet } = useWallets();
   const { popGlobalInfoModal } = useGlobalStateContext();
-  const xmtp = useClient();
-
-  // Temporarily commenting out this function because it will be needed later
-  // const xip43Impl = async () => {
-  //   if (!selectedWallet) {
-  //     throw Error('Unable to sign the wallet. Please try again.');
-  //   }
-
-  //   const targetId = targetData?.wallet?.data?.id ?? '';
-  //   const address =
-  //     selectedWallet === 'coinbase'
-  //       ? wallets[selectedWallet]?.walletKeys?.hex ?? ''
-  //       : '';
-  //   // TODO: get senderAddress from target
-  //   const senderAddress = '0xE80E42B5308d5b137FC137302d571B56907c3003';
-  //   const timestamp = Date.now();
-  //   const message = createConsentMessage(senderAddress, timestamp);
-  //   const signature = await wallets[selectedWallet].signArbitrary(message);
-
-  //   if (!signature) {
-  //     throw Error('Unable to sign the wallet. Please try again.');
-  //   }
-
-  //   await frontendClient.verifyXmtpTarget({
-  //     input: {
-  //       web3TargetId: targetId,
-  //       accountId: address,
-  //       consentProofSignature: signature as string,
-  //       timestamp: timestamp,
-  //       isCBW: true,
-  //     },
-  //   });
-  //   // await signCoinbaseSignature(address, senderAddress);
-  //   await frontendClient.verifyCbwTarget({
-  //     input: {
-  //       targetId: targetId,
-  //     },
-  //   });
-  // };
-
-  const xmtpXip42Impl = async () => {
-    setIsLoading(true);
-
-    try {
-      if (!selectedWallet) {
-        throw Error('Unable to sign the wallet. Please try again.');
-      }
-
-      const options: any = {
-        persistConversations: false,
-        env: 'production',
-      };
-
-      const address =
-        selectedWallet === 'coinbase'
-          ? wallets[selectedWallet]?.walletKeys?.hex?.toLowerCase() ?? ''
-          : '';
-
-      const signer = {
-        getAddress: (): Promise<string> => {
-          return new Promise((resolve) => {
-            resolve(address);
-          });
-        },
-        signMessage: (message: ArrayLike<number> | string): Promise<string> => {
-          return wallets[selectedWallet].signArbitrary(
-            message as string,
-          ) as Promise<string>;
-        },
-      };
-
-      const client = await xmtp.initialize({ options, signer });
-
-      if (client === undefined) {
-        throw Error('XMTP client is uninitialized. Please try again.');
-      }
-
-      // TODO: get senderAddress from target
-      const senderAddress = '0xE80E42B5308d5b137FC137302d571B56907c3003';
-      const conversation = await client.conversations.newConversation(
-        senderAddress,
-      );
-      const conversationTopic = conversation.topic.split('/')[3];
-
-      await client.contacts.allow([senderAddress]);
-
-      await signCoinbaseSignature(address, senderAddress, conversationTopic);
-
-      const targetId = targetData?.wallet?.data?.id ?? '';
-
-      await frontendClient.verifyXmtpTargetViaXip42({
-        input: {
-          web3TargetId: targetId,
-          accountId: address,
-          conversationTopic,
-        },
-      });
-
-      await frontendClient
-        .fetchData()
-        .then(refreshTargetDocument)
-        .catch((e: unknown) => console.error(e));
-
-      setIsCBInfoModalOpen(true);
-    } catch (e) {
-      console.error(e);
-
-      popGlobalInfoModal({
-        message: 'Something went wrong. Please try again.',
-        iconOrEmoji: { type: 'icon', id: 'warning' },
-        timeout: 5000,
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const signWallet = async () => {
-    await xmtpXip42Impl();
-  };
-
-  const signCoinbaseSignature = async (
-    address: string,
-    senderAddress: string,
-    conversationTopic: string,
-  ) => {
-    const nonce = await createCoinbaseNonce();
-    if (!nonce || !selectedWallet)
-      throw Error('Unable to sign the wallet. Please try again.');
-
-    const message = `Coinbase Wallet Messaging subscribe\nAddress: ${address}\nPartner Address: ${senderAddress}\nNonce: ${nonce}`;
-
-    const signature = await wallets[selectedWallet].signArbitrary(message);
-
-    if (!signature) throw Error('Unable to sign the wallet. Please try again.');
-
-    const payload = {
-      address,
-      nonce,
-      signature: signature,
-      isActivatedViaCb: true,
-      partnerAddress: senderAddress,
-      conversationTopic,
-    };
-
-    return await subscribeCoinbaseMessaging(payload);
-  };
 
   const isWalletAlertVerified = targetData.wallet?.data?.isConfirmed;
 
@@ -454,13 +298,24 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
               <DestinationInfoPrompt
                 isButton={true}
                 buttonCopy={targetInfoPrompts.wallet?.infoPrompt.message ?? ''}
-                onClick={() => {
+                isLoading={isLoading}
+                onClick={async () => {
                   if (isLoading) return;
                   const infoPrompt = targetInfoPrompts.wallet?.infoPrompt;
 
                   if (infoPrompt && isCtaInfo(infoPrompt)) {
-                    if (infoPrompt.message === 'Sign Wallet') signWallet();
-                    else infoPrompt.onClick();
+                    setIsLoading(true);
+                    const response =
+                      (await infoPrompt.onClick()) as unknown as boolean;
+
+                    setIsLoading(false);
+
+                    if (!response)
+                      popGlobalInfoModal({
+                        message: 'Something went wrong. Please try again.',
+                        iconOrEmoji: { type: 'icon', id: 'warning' },
+                        timeout: 5000,
+                      });
                   }
                 }}
                 infoPromptMessage={

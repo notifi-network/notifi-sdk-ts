@@ -26,6 +26,7 @@ export type NotifiFrontendClientContextType = {
   isLoading: boolean;
   error: Error | null;
   login: () => Promise<NotifiFrontendClient | undefined>;
+  walletWithSignParams: WalletWithSignParams;
 };
 
 export const NotifiFrontendClientContext =
@@ -111,6 +112,7 @@ export const NotifiFrontendClientContextProvider: FC<
         isLoading,
         error,
         login,
+        walletWithSignParams,
       }}
     >
       {children}
