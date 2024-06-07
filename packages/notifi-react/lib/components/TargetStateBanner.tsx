@@ -4,6 +4,7 @@ import React from 'react';
 
 import { Icon } from '../assets/Icons';
 import {
+  Target,
   useNotifiTargetContext,
   useNotifiTenantConfigContext,
 } from '../context';
@@ -35,9 +36,11 @@ export type TargetStateBannerProps = {
     };
   };
   onClickCta?: () => void;
+  parentComponent?: 'history' | 'config';
 };
 
 export const TargetStateBanner: React.FC<TargetStateBannerProps> = (props) => {
+  const parentComponent = props.parentComponent ?? 'config';
   const {
     unVerifiedTargets,
     targetDocument: { targetData },
@@ -61,7 +64,7 @@ export const TargetStateBanner: React.FC<TargetStateBannerProps> = (props) => {
         props.classNames?.container,
       )}
     >
-      {!hasTarget(targetData) ? (
+      {!hasTarget(targetData) && parentComponent === 'config' ? (
         <div
           className={clsx(
             'notifi-target-state-banner-signup',
@@ -110,7 +113,63 @@ export const TargetStateBanner: React.FC<TargetStateBannerProps> = (props) => {
               defaultCopy.targetStateBanner.Signup.cta}
           </button>
         </div>
-      ) : (
+      ) : null}
+
+      {!hasTarget(targetData) && parentComponent === 'history' ? (
+        <div
+          className={clsx(
+            'notifi-target-state-banner-signup',
+            parentComponent === 'history' && 'history',
+            props.classNames?.signupBanner,
+          )}
+        >
+          <div
+            className={clsx(
+              'notifi-target-state-banner-signup-content',
+              parentComponent === 'history' && 'history',
+              props.classNames?.signupBannerContent,
+            )}
+          >
+            <div
+              className={clsx(
+                'notifi-target-state-banner-signup-icon',
+                parentComponent === 'history' && 'history',
+                props.classNames?.signupBannerIcon,
+              )}
+            >
+              <Icon type="bell-thin" />
+            </div>
+            <div
+              className={clsx(
+                'notifi-target-state-banner-signup-text',
+                props.classNames?.signupBannerText,
+              )}
+            >
+              {props.copy?.signup?.text ??
+                defaultCopy.targetStateBanner.Signup.text}
+              {''}
+              {activeTargets.length > 1
+                ? `${activeTargets
+                    .slice(0, -1)
+                    .join(', ')}, or ${activeTargets.slice(-1)}`
+                : activeTargets.slice(-1)}
+            </div>
+          </div>
+          <button
+            className={clsx(
+              'notifi-target-state-banner-signup-cta',
+              parentComponent === 'history' && 'history',
+              props.classNames?.signupBannerCta,
+            )}
+            onClick={props.onClickCta}
+          >
+            {props.copy?.signup?.cta ??
+              defaultCopy.targetStateBanner.Signup.cta}
+          </button>
+        </div>
+      ) : null}
+
+      {hasTarget(targetData) && parentComponent === 'config' ? (
         <div
           className={clsx(
             'notifi-target-state-banner-verify',
@@ -162,7 +221,69 @@ export const TargetStateBanner: React.FC<TargetStateBannerProps> = (props) => {
             <Icon type="chevron-right" />
           </div>
         </div>
-      )}
+      ) : null}
+
+      {hasTarget(targetData) && parentComponent === 'history' ? (
+        <div
+          className={clsx(
+            'notifi-target-state-banner-verify',
+            parentComponent === 'history' && 'history',
+            props.classNames?.verifyBanner,
+          )}
+          onClick={props.onClickCta}
+        >
+          <div
+            className={clsx(
+              'notifi-target-state-banner-verify-icon',
+              parentComponent === 'history' && 'history',
+              props.classNames?.verifyBannerIcon,
+            )}
+          >
+            <Icon type="check-circle" />
+            {/* TODO: Allow to pass in a custom icon */}
+          </div>
+          <div
+            className={clsx(
+              'notifi-target-state-banner-verify-content',
+              props.classNames?.verifyBannerContent,
+            )}
+          >
+            <div
+              className={clsx(
+                'notifi-target-state-banner-verify-title',
+                parentComponent === 'history' && 'history',
+                props.classNames?.verifyBannerTitle,
+              )}
+            >
+              {`${
+                defaultCopy.targetStateBanner.verifyInHistory.title
+              } ${formatUnverifiedTargets(unVerifiedTargets)}`}
+            </div>
+          </div>
+          <div
+            className={clsx(
+              'notifi-target-state-banner-verify-cta',
+              parentComponent === 'history' && 'history',
+              props.classNames?.verifyBannerCta,
+            )}
+          >
+            {defaultCopy.targetStateBanner.verifyInHistory.ctaText}
+          </div>
+        </div>
+      ) : null}
     </div>
   );
+};
+
+// Utils
+
+const formatUnverifiedTargets = (unVerifiedTargets: Target[]) => {
+  const captializedTargets = unVerifiedTargets.map(
+    (target) => target.charAt(0).toUpperCase() + target.slice(1),
+  );
+  return captializedTargets.length > 1
+    ? `${captializedTargets
+        .slice(0, -1)
+        .join(', ')}, and ${captializedTargets.slice(-1)}`
+    : captializedTargets.slice(-1);
 };

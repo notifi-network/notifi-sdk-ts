@@ -50,6 +50,7 @@ export const defaultCopy = {
     discord: 'Discord',
     slack: 'Slack',
     emailVerifyMessage: 'We’ve sent a verification email to:',
+    emailCtaCalledSuccessfullyText: 'Email sent',
     discordVerifiedMessage: 'Make sure you have enabled DMs in Discord',
     discordVerifiedPromptTooltip:
       'Make sure you have enabled DMs in Discord. Right click on the server after joining, go to Privacy Settings, and enable Direct Messages.',
@@ -89,6 +90,10 @@ export const defaultCopy = {
     verify: {
       title: 'Manage alert destinations',
       description: 'You have unverified destinations',
+    },
+    verifyInHistory: {
+      title: 'Verify Your',
+      ctaText: 'Verify',
     },
     Signup: {
       text: 'Get alerts via',

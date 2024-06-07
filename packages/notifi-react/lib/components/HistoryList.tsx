@@ -102,6 +102,7 @@ export const HistoryList: React.FC<HistoryListProps> = (props) => {
             }
             props.setInboxView(InboxView.InboxConfigTargetList);
           }}
+          parentComponent="history"
         />
       </div>
 

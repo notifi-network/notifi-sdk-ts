@@ -82,7 +82,7 @@ export const FtuTargetEdit: React.FC<FtuTargetEditProps> = (props) => {
             'notifi-ftu-target-edit-button',
             props.classNames?.button,
           )}
-          disabled={!isTargetInputChanged || !isInputValid || isLoading}
+          disabled={!isInputValid || isLoading}
           onClick={onClick}
         >
           {isLoading ? (

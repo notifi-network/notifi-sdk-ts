@@ -29,6 +29,7 @@ button {
   --notifi-color-grey2: #323240;
   --notifi-color-grey3: #80829d;
   --notifi-color-grey4: #4a4a5e;
+  --notifi-color-grey5: #434354;
   --notifi-color-white: #fff;
   --notifi-color-blackish1: #32323b;
   --notifi-color-black: #000;
@@ -104,11 +105,17 @@ button {
   --notifi-input-separator-line: var(--notifi-color-blackish1);
   --notifi-ftu-footer-bg: var(--notifi-color-grey2);
   --notifi-ftu-footer-border: var(--notifi-color-grey4);
+  --notifi-target-state-banner-signup-history-bg: var(--notifi-color-grey5);
+  --notifi-target-state-banner-verify-history-bg: var(--notifi-color-grey5);
+  --notifi-target-state-banner-verify-cta-history-bg: var(
+    --notifi-color-seaglass-dark
+  );
+  --notifi-target-state-banner-verify-icon-color: var(--notifi-color-dark);
 }
 
 .notifi-theme-light {
   --notifi-font-color: var(--notifi-color-midnight);
-  --notifi-card-background: var(--notifi-color-cloud);
+  --notifi-card-background: var(--notifi-color-eggshell);
   --notifi-connect-button: var(--notifi-color-midnight);
   --notifi-connect-button-text: var(--notifi-color-white);
   --notifi-ftu-alert-list: var(--notifi-color-secondary-light);
@@ -164,4 +171,8 @@ button {
   --notifi-input-separator-line: var(--notifi-color-heather);
   --notifi-ftu-footer-bg: var(--notifi-color-white);
   --notifi-ftu-footer-border: var(--notifi-color-cloud);
+  --notifi-target-state-banner-signup-history-bg: var(--notifi-color-cloud);
+  --notifi-target-state-banner-verify-history-bg: var(--notifi-color-cloud);
+  --notifi-target-state-banner-verify-cta-history-bg: var(--notifi-color-white);
+  --notifi-target-state-banner-verify-icon-color: var(--notifi-color-eggshell);
 }
