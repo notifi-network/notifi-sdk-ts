@@ -1,14 +1,12 @@
 'use client';
 
 import { Icon } from '@/assets/Icon';
+import { FusionEventTopic } from '@notifi-network/notifi-frontend-client';
 import {
   getFusionFilter,
   getUiConfigOverride,
   getUserInputParams,
   isTopicGroupValid,
-} from '@/utils/topic';
-import { FusionEventTopic } from '@notifi-network/notifi-frontend-client';
-import {
   useNotifiTargetContext,
   useNotifiTopicContext,
 } from '@notifi-network/notifi-react';

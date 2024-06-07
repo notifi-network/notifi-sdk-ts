@@ -1,19 +1,19 @@
 import { Icon } from '@/assets/Icon';
 import { formatPriceNumber } from '@/utils/stringUtils';
 import {
+  FusionEventTopic,
+  UserInputOptions,
+  ValueType,
+} from '@notifi-network/notifi-frontend-client';
+import {
   ConvertOptionDirection,
   TopicStackAlert,
   convertOptionValue,
   derivePrefixAndSuffixFromValueType,
   getFusionEventMetadata,
   isAlertFilter,
-} from '@/utils/topic';
-import {
-  FusionEventTopic,
-  UserInputOptions,
-  ValueType,
-} from '@notifi-network/notifi-frontend-client';
-import { useNotifiTopicContext } from '@notifi-network/notifi-react';
+  useNotifiTopicContext,
+} from '@notifi-network/notifi-react';
 import React from 'react';
 
 type TopicStackProps = {

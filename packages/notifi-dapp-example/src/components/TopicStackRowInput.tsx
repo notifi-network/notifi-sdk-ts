@@ -1,5 +1,10 @@
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
 import {
+  FusionEventTopic,
+  FusionFilterOptions,
+  InputObject,
+} from '@notifi-network/notifi-frontend-client';
+import {
   TopicStackAlert,
   composeTopicStackAlertName,
   convertOptionValue,
@@ -8,13 +13,6 @@ import {
   getUpdatedAlertFilterOptions,
   getUserInputParams,
   isAlertFilter,
-} from '@/utils/topic';
-import {
-  FusionEventTopic,
-  FusionFilterOptions,
-  InputObject,
-} from '@notifi-network/notifi-frontend-client';
-import {
   useNotifiTargetContext,
   useNotifiTopicContext,
 } from '@notifi-network/notifi-react';

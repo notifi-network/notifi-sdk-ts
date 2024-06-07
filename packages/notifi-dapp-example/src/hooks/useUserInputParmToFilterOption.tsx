@@ -1,13 +1,11 @@
 import {
-  derivePrefixAndSuffixFromValueType,
-  getUpdatedAlertFilterOptions,
-} from '@/utils/topic';
-import {
   FusionEventTopic,
   UiType,
   UserInputParam,
 } from '@notifi-network/notifi-frontend-client';
 import {
+  derivePrefixAndSuffixFromValueType,
+  getUpdatedAlertFilterOptions,
   useNotifiTargetContext,
   useNotifiTopicContext,
 } from '@notifi-network/notifi-react';

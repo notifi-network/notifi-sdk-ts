@@ -1,8 +1,10 @@
 'use client';
 
-import { getFusionEventMetadata } from '@/utils/topic';
 import { FusionEventTopic } from '@notifi-network/notifi-frontend-client';
-import { useNotifiTenantConfigContext } from '@notifi-network/notifi-react';
+import {
+  getFusionEventMetadata,
+  useNotifiTenantConfigContext,
+} from '@notifi-network/notifi-react';
 import React from 'react';
 
 import { TopicRow } from './TopicRow';
