@@ -191,7 +191,7 @@ export const SubscriptionCardV1: React.FC<SubscriptionCardV1Props> = ({
 
       return { state: 'history' };
     });
-  }, []);
+  }, [demoPreview]);
 
   const rightIcon: NotifiAlertBoxButtonProps | undefined = useMemo(() => {
     if (onClose === undefined) {
