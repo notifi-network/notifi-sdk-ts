@@ -124,29 +124,41 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
         const fusionEventId = topic.fusionEventDescriptor.id;
         const fusionEventMetadata = getFusionEventMetadata(topic);
         if (!fusionEventMetadata || !fusionEventId) return;
-        if (!subscriptionValue) {
-          const subscriptionValueOrRef =
-            getFusionEventMetadata(topic)?.uiConfigOverride
-              ?.subscriptionValueOrRef;
-          const subscriptionValueObject = subscriptionValueOrRef
-            ? [...resolveObjectArrayRef('', subscriptionValueOrRef, inputs)]
-            : null;
-          subscriptionValue = subscriptionValueObject?.[0]?.value;
+        try {
+          /** Error caught here often caused by incorrect `inputs` format  */
+          if (!subscriptionValue) {
+            const subscriptionValueOrRef =
+              getFusionEventMetadata(topic)?.uiConfigOverride
+                ?.subscriptionValueOrRef;
+            const subscriptionValueObject = subscriptionValueOrRef
+              ? [...resolveObjectArrayRef('', subscriptionValueOrRef, inputs)]
+              : null;
+            subscriptionValue = subscriptionValueObject?.[0]?.value;
+          }
+          const legacySubscriptionValue = resolveStringRef(
+            topic.uiConfig.name,
+            topic.uiConfig.sourceAddress,
+            inputs,
+          );
+          const alertName = customAlertName ?? fusionEventId;
+          alertNamesToCreate.push(alertName);
+          createAlertInputs.push({
+            fusionEventId: fusionEventId,
+            name: alertName,
+            targetGroupId,
+            subscriptionValue: subscriptionValue ?? legacySubscriptionValue,
+            filterOptions: JSON.stringify(filterOptions),
+          });
+        } catch (e) {
+          console.error(e);
+          if (e instanceof Error) {
+            const error = {
+              ...e,
+              message: `Cannot resolve subscription value. Make sure "inputs" argument is in correct format. ${e.message}`,
+            };
+            setError(error);
+          }
         }
-        const legacySubscriptionValue = resolveStringRef(
-          topic.uiConfig.name,
-          topic.uiConfig.sourceAddress,
-          inputs,
-        );
-        const alertName = customAlertName ?? fusionEventId;
-        alertNamesToCreate.push(alertName);
-        createAlertInputs.push({
-          fusionEventId: fusionEventId,
-          name: alertName,
-          targetGroupId,
-          subscriptionValue: subscriptionValue ?? legacySubscriptionValue,
-          filterOptions: JSON.stringify(filterOptions),
-        });
       },
     );
 
@@ -207,31 +219,42 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
           version: 1,
           input: fusionFilterOptionsInput,
         };
+        try {
+          /** Error caught here often caused by incorrect `inputs` format  */
+          const subscriptionValueOrRef =
+            getFusionEventMetadata(topic)?.uiConfigOverride
+              ?.subscriptionValueOrRef;
+          const subscriptionValue = subscriptionValueOrRef
+            ? resolveObjectArrayRef('', subscriptionValueOrRef, inputs)
+            : null;
 
-        const subscriptionValueOrRef =
-          getFusionEventMetadata(topic)?.uiConfigOverride
-            ?.subscriptionValueOrRef;
-        const subscriptionValue = subscriptionValueOrRef
-          ? resolveObjectArrayRef('', subscriptionValueOrRef, inputs)
-          : null;
+          const legacySubscriptionValue = resolveStringRef(
+            topic.uiConfig.name,
+            topic.uiConfig.sourceAddress, // NOTE: Deprecated, always the hardcoded '*'
+            inputs,
+          );
 
-        const legacySubscriptionValue = resolveStringRef(
-          topic.uiConfig.name,
-          topic.uiConfig.sourceAddress, // NOTE: Deprecated, always the hardcoded '*'
-          inputs,
-        );
+          const alertName = fusionEventId;
+          alertNamesToCreate.push(alertName);
 
-        const alertName = fusionEventId;
-        alertNamesToCreate.push(alertName);
-
-        createAlertInputs.push({
-          fusionEventId: fusionEventId,
-          name: alertName,
-          targetGroupId,
-          subscriptionValue:
-            subscriptionValue?.[0]?.value ?? legacySubscriptionValue,
-          filterOptions: JSON.stringify(filterOptions),
-        });
+          createAlertInputs.push({
+            fusionEventId: fusionEventId,
+            name: alertName,
+            targetGroupId,
+            subscriptionValue:
+              subscriptionValue?.[0]?.value ?? legacySubscriptionValue,
+            filterOptions: JSON.stringify(filterOptions),
+          });
+        } catch (e) {
+          console.error(e);
+          if (e instanceof Error) {
+            const error = {
+              ...e,
+              message: `Cannot resolve subscription value. Make sure "inputs" argument is in correct format. ${e.message}`,
+            };
+            setError(error);
+          }
+        }
       }
     });
 
