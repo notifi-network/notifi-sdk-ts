@@ -1,0 +1,33 @@
+.notifi-error-global {
+  display: flex;
+  flex-direction: column;
+  border-radius: 6px;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.notifi-ftu-target-edit-main {
+  flex-grow: 1;
+  overflow: scroll;
+  scrollbar-width: none;
+  height: 0; /* a hack of making height the same when children are overflowed */
+}
+
+.notifi-error-global-error-title {
+  color: var(--notifi-color-pink);
+  margin: 1rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.notifi-error-global-error-main {
+  flex-grow: 1;
+  overflow: scroll;
+  scrollbar-width: none;
+  height: 0; /* a hack of making height the same when children are overflowed */
+}
+
+.notifi-error-global-error-detail {
+  margin: 1rem;
+}

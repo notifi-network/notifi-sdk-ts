@@ -94,6 +94,7 @@ export const TargetInputs: React.FC<TargetInputsProps> = (props) => {
             classNames={props.classNames?.targetInputField?.telegram}
             targetType="telegram"
             iconType={props.copy?.iconType?.telegram ?? 'telegram'}
+            validateRegex={validationRegex.telegram}
           />
           {props.copy?.inputSeparators?.telegram ? (
             <div

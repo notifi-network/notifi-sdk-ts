@@ -109,10 +109,16 @@ export const defaultCopy = {
     buttonTextHasTarget: 'Save Changes',
     buttonTextNoTarget: 'Subscribe',
   },
+  errorGlobal: {
+    header: 'An error occurred',
+    title: 'Something went wrong, refresh the page and try again: ',
+    detail: 'Contact support if the issue persists',
+  },
 };
 
 export const validationRegex: Record<string, RegExp> = {
   email: new RegExp('^[a-zA-Z0-9._:$!%-+]+@[a-zA-Z0-9.-]+.[a-zA-Z]$'),
+  telegram: new RegExp('.{5,}'),
 };
 
 export const defaultLoadingAnimationStyle: Record<string, React.CSSProperties> =

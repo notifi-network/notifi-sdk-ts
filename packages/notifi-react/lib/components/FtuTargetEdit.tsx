@@ -47,7 +47,7 @@ export const FtuTargetEdit: React.FC<FtuTargetEditProps> = (props) => {
   };
 
   if (targetError) {
-    return <ErrorGlobal />;
+    return <ErrorGlobal detail={JSON.stringify(targetError.message)} />;
   }
   const isInputValid = useIsTargetInputValid();
 
