@@ -16,22 +16,22 @@
   justify-content: center;
   align-items: center;
   padding: 0 2rem;
+  height: 0;
 }
 
 .notifi-connect-title {
   font-size: 1.5rem;
   font-weight: 800;
   text-align: center;
-  padding: 1rem;
+  padding: 2.5rem 1rem 0.5rem 1rem;
 }
 
 .notifi-connect-description {
   color: var(--notifi-color-grey3);
   font-size: 0.9rem;
-  font-weight: 600;
   line-height: 133%;
   text-align: center;
-  padding: 1rem 2rem;
+  padding: 1rem;
 }
 
 .notifi-connect-alert-list-container {
@@ -42,7 +42,6 @@
 
 .notifi-connect-alert-list-alert {
   font-size: 0.9rem;
-  font-weight: 600;
   display: flex;
   align-items: center;
 }

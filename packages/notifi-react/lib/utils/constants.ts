@@ -1,8 +1,7 @@
 export const defaultCopy = {
   connect: {
     title: 'Notifications',
-    description:
-      'See your activity and gain access to alerts. Push notifications are also available and optional.',
+    description: 'See your activity and gain access to alerts',
     buttonText: 'Next',
   },
   expiry: {
