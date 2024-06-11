@@ -14,9 +14,9 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
   padding: 0 2rem;
   height: 0;
+  padding: 0 3.125rem;
 }
 
 .notifi-connect-title {
@@ -31,7 +31,8 @@
   font-size: 0.9rem;
   line-height: 133%;
   text-align: center;
-  padding: 1rem;
+  padding: 0 2rem;
+  margin-bottom: 0.5rem;
 }
 
 .notifi-connect-alert-list-container {
@@ -68,7 +69,7 @@
   justify-content: center;
   position: relative;
   align-items: center;
-  margin: 0 2rem;
+  margin: 0.5rem 2rem 0rem 2rem;
 }
 .notifi-connect-button-text.hidden {
   visibility: hidden;
