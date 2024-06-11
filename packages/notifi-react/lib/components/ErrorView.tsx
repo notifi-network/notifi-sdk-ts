@@ -1,13 +1,14 @@
 import clsx from 'clsx';
 import React from 'react';
 
-import { useGlobalStateContext } from '../context/GlobalStateContext';
 import { defaultCopy } from '../utils';
-import { NavHeader } from './NavHeader';
+import { NavHeader, NavHeaderCta } from './NavHeader';
+import { PoweredByNotifi, PoweredByNotifiProps } from './PoweredByNotifi';
 
-export type ErrorGlobalProps = {
+export type ErrorViewProps = {
   title?: string;
   detail?: string;
+  cta?: NavHeaderCta;
   copy?: {
     header: string;
   };
@@ -16,14 +17,15 @@ export type ErrorGlobalProps = {
     title?: string;
     main?: string;
     detail?: string;
+    footer?: string;
+    PoweredByNotifi?: PoweredByNotifiProps['classNames'];
   };
 };
 
-export const ErrorGlobal: React.FC<ErrorGlobalProps> = (props) => {
-  const { globalError } = useGlobalStateContext();
+export const ErrorView: React.FC<ErrorViewProps> = (props) => {
   return (
     <div className={clsx('notifi-error-global', props.classNames?.container)}>
-      <NavHeader>
+      <NavHeader leftCta={props.cta}>
         {props.copy?.header ?? defaultCopy.errorGlobal.header}
       </NavHeader>
       <div
@@ -49,8 +51,9 @@ export const ErrorGlobal: React.FC<ErrorGlobalProps> = (props) => {
           {props.detail ?? defaultCopy.errorGlobal.detail}
         </div>
       </div>
-
-      <div>{globalError?.errorData ? globalError?.errorData : null}</div>
+      <div className={clsx('notifi-error-footer', props.classNames?.footer)}>
+        <PoweredByNotifi classNames={props.classNames?.PoweredByNotifi} />
+      </div>
     </div>
   );
 };

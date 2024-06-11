@@ -111,7 +111,7 @@ export const defaultCopy = {
   },
   errorGlobal: {
     header: 'An error occurred',
-    title: 'Something went wrong, refresh the page and try again: ',
+    title: 'Something went wrong, please try again: ',
     detail: 'Contact support if the issue persists',
   },
 };

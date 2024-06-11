@@ -4,7 +4,6 @@ import React from 'react';
 import { useNotifiTargetContext } from '../context';
 import { useIsTargetInputValid } from '../hooks/useIsTargetInputValid';
 import { defaultCopy, defaultLoadingAnimationStyle } from '../utils/constants';
-import { ErrorGlobal } from './ErrorGlobal';
 import { FtuView } from './Ftu';
 import { LoadingAnimation } from './LoadingAnimation';
 import { NavHeader } from './NavHeader';
@@ -32,12 +31,7 @@ export const FtuTargetEdit: React.FC<FtuTargetEditProps> = (props) => {
   const loadingSpinnerStyle: React.CSSProperties =
     props.classNames?.loadingSpinner ?? defaultLoadingAnimationStyle.spinner;
   const [isLoading, setIsLoading] = React.useState(false);
-  const {
-    renewTargetGroup,
-    isChangingTargets,
-    error: targetError,
-  } = useNotifiTargetContext();
-  const isTargetInputChanged = Object.values(isChangingTargets).includes(true);
+  const { renewTargetGroup } = useNotifiTargetContext();
 
   const onClick = async () => {
     setIsLoading(true);
@@ -46,9 +40,6 @@ export const FtuTargetEdit: React.FC<FtuTargetEditProps> = (props) => {
     setIsLoading(false);
   };
 
-  if (targetError) {
-    return <ErrorGlobal detail={JSON.stringify(targetError.message)} />;
-  }
   const isInputValid = useIsTargetInputValid();
 
   return (

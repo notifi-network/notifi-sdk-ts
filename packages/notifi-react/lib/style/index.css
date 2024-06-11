@@ -12,7 +12,7 @@
 @import url('./inbox.css');
 @import url('./history.css');
 @import url('./target-state-banner.css');
-@import url('./error-global.css');
+@import url('./error.css');
 
 button {
   /* Reset default button styles */
