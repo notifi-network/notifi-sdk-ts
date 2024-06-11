@@ -10,13 +10,20 @@ import { NotifiTenantConfigContextProvider } from './NotifiTenantConfigContext';
 import { NotifiTopicContextProvider } from './NotifiTopicContext';
 import { NotifiUserSettingContextProvider } from './NotifiUserSettingContext';
 
-const tenantId = process.env.NEXT_PUBLIC_TENANT_ID!;
-const env = process.env.NEXT_PUBLIC_ENV! as NotifiEnvironment;
-const walletBlockchain = process.env.NEXT_PUBLIC_CHAIN! as any; // ref:  NotifiParams['walletBlockchain']
+type NotifiContextWrapperProps = {
+  walletBlockchain?: string;
+  env?: NotifiEnvironment;
+  tenantId?: string;
+  cardId?: string;
+};
 
-export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
-  children,
-}) => {
+export const NotifiContextWrapper: React.FC<
+  PropsWithChildren<NotifiContextWrapperProps>
+> = ({ children, ...props }) => {
+  const tenantId = props.tenantId ?? process.env.NEXT_PUBLIC_TENANT_ID!;
+  const env = props.env ?? (process.env.NEXT_PUBLIC_ENV! as NotifiEnvironment);
+  const walletBlockchain =
+    props.walletBlockchain ?? (process.env.NEXT_PUBLIC_CHAIN! as any);
   const { wallets, selectedWallet } = useWallets();
   const { wallets: injectiveWallets, selectedWallet: injectiveSelectedWallet } =
     useInjectiveWallets();
@@ -106,7 +113,7 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
       //the type error can be fixed when we remove injecive wallet and use only notifi wallet
       signMessage={signMessage}
     >
-      <NotifiTenantConfigContextProvider>
+      <NotifiTenantConfigContextProvider cardId={props.cardId}>
         <NotifiTargetContextProvider>
           <NotifiTopicContextProvider>
             <NotifiUserSettingContextProvider>

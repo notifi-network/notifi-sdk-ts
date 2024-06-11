@@ -3,6 +3,7 @@ import InjectiveWalletProvider from '@/context/InjectiveWalletContext';
 import { NotifiWalletsWrapper } from '@/context/NotifiWalletsWrapper';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import { Suspense } from 'react';
 
 import './globals.css';
 
@@ -28,11 +29,13 @@ export default function RootLayout({
         dark-mode="false"
         // NOTE: Not support dark/light mode yet. TODO: consider adding a theme wrapper
       >
-        <GlobalStateContextProvider>
-          <InjectiveWalletProvider>
-            <NotifiWalletsWrapper>{children}</NotifiWalletsWrapper>
-          </InjectiveWalletProvider>
-        </GlobalStateContextProvider>
+        <Suspense>
+          <GlobalStateContextProvider>
+            <InjectiveWalletProvider>
+              <NotifiWalletsWrapper>{children}</NotifiWalletsWrapper>
+            </InjectiveWalletProvider>
+          </GlobalStateContextProvider>
+        </Suspense>
       </body>
     </html>
   );
