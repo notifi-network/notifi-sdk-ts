@@ -1,4 +1,5 @@
 import type { Keplr, StdSignature } from '@keplr-wallet/types';
+import { Buffer } from 'buffer';
 import { useCallback, useEffect, useState } from 'react';
 
 import { KeplrWalletKeys, Wallets } from '../types';
@@ -6,6 +7,7 @@ import {
   cleanWalletsInLocalStorage,
   setWalletKeysToLocalStorage,
 } from '../utils/localStorageUtils';
+import { walletsWebsiteLink } from '../utils/wallet';
 
 export const useKeplr = (
   loadingHandler: React.Dispatch<React.SetStateAction<boolean>>,
@@ -35,9 +37,8 @@ export const useKeplr = (
         window.addEventListener('keplr_keystorechange', handleAccountChange);
       })
       .catch((e) => {
-        errorHandler(new Error(e));
         setIsKeplrInstalled(false);
-        console.log(e);
+        console.error(e);
       })
       .finally(() => loadingHandler(false));
 
@@ -119,7 +120,7 @@ export const useKeplr = (
         return result;
       } catch (e) {
         errorHandler(
-          new Error('Keplr signArbitrary failed, check console for details'),
+          new Error('Wallet not signed. Please connect your wallet again.'),
         );
         console.error(e);
       }
@@ -133,6 +134,7 @@ export const useKeplr = (
     connectKeplr,
     signArbitraryKeplr,
     disconnectKeplr,
+    websiteURL: walletsWebsiteLink['keplr'],
   };
 };
 

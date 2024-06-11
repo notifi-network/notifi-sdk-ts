@@ -6,35 +6,33 @@ import { MobilePromptModal } from '@/components/MobilePromptModal';
 import { PoweredByNotifi } from '@/components/PoweredByNotifi';
 import { WalletSelectModal } from '@/components/WalletSelectModal';
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
-import { useInjectiveWallets } from '@/context/InjectiveWalletContext';
+import { NotifiContextWrapper } from '@/context/NotifiContextWrapper';
+import { useNotifiRouter } from '@/hooks/useNotifiRouter';
 import { useRouterAsync } from '@/hooks/useRouterAsync';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
+// Rendering this Component will trigger the login function
+function LoginComponent() {
+  useNotifiRouter();
+  return null;
+}
+
 export default function Home() {
-  const { isLoadingRouter, handleRoute } = useRouterAsync();
+  const { isLoadingRouter } = useRouterAsync();
   const { popGlobalInfoModal } = useGlobalStateContext();
   const { selectedWallet, wallets, error, isLoading } = useWallets();
-  const { selectedWallet: injectiveSelectedWallet, wallets: injectiveWallets } =
-    useInjectiveWallets();
   const [isOpenWalletsModal, setIsOpenWalletsModal] = useState(false);
   const [isOpenMobilePromptModal, setIsOpenMobilePromptModal] = useState(false);
-
-  const allWallets = {
-    ...wallets,
-    ...injectiveWallets,
-  };
+  const [isSigningMessage, setIsSigningMessage] = useState(false);
 
   useEffect(() => {
-    if (
-      (selectedWallet && wallets[selectedWallet].walletKeys) ||
-      (injectiveSelectedWallet &&
-        injectiveWallets[injectiveSelectedWallet].walletKeys)
-    ) {
-      handleRoute('/notifi');
-    }
-  }, [selectedWallet, injectiveSelectedWallet]);
+    if (selectedWallet && wallets[selectedWallet].walletKeys)
+      setIsSigningMessage(true);
+    else setIsSigningMessage(false);
+  }, [selectedWallet]);
 
   useEffect(() => {
     if (error) {
@@ -51,20 +49,16 @@ export default function Home() {
       <div className="md:fixed md:top-8 md:left-8 md:right-8 m-3 md:m-0 flex justify-between items-center">
         <div className="left-8 flex items-center">
           <Image
-            src="/logos/injective.png"
+            src="/logos/gmx-logo.png"
             width={115}
             height={24}
             unoptimized={true}
-            alt="Injective"
+            alt="GMX logo"
           />
-          <div className="mx-4 h-4 border-l-2 border-grey-700"></div>
-          <div className="text-gray-400 text-xs tracking-wider w-full">
-            INJECTIVE NOTIFICATIONS
-          </div>
         </div>
-        <div className="p-2 bg-white rounded-lg h-7 hidden md:block">
+        {/* <div className="p-2 rounded-lg h-7 hidden md:block">
           <PoweredByNotifi />
-        </div>
+        </div> */}
       </div>
 
       <EcosystemHero
@@ -73,10 +67,31 @@ export default function Home() {
           setIsOpenWalletsModal(true);
           setIsOpenMobilePromptModal(true);
         }}
-        ctaButtonText="Connect Wallet To Start"
+        ctaButtonText="Connect Wallet"
       />
       <DummyAlertsModal />
-      <div className="p-2 bg-white rounded-lg h-7 block md:hidden w-[110px] mt-12">
+      <div className="w-[340px] text-[10px] text-notifi-text-medium text-center mt-6 mb-4">
+        Notifications are provided by Notifi and not affiliated with GMX. By
+        subscribing, you agree that info you provide to Notifi will be governed
+        by its{' '}
+        <a
+          href="https://notifi.network/privacy"
+          target="_blank"
+          className="underline"
+        >
+          Privacy Policy
+        </a>{' '}
+        and{' '}
+        <a
+          href="https://notifi.network/terms"
+          target="_blank"
+          className="underline"
+        >
+          Terms of Use
+        </a>
+        .
+      </div>
+      <div className="p-2 rounded-lg h-7 block w-[110px]">
         <PoweredByNotifi />
       </div>
       {isOpenWalletsModal ? (
@@ -84,12 +99,20 @@ export default function Home() {
       ) : null}
       {/* show this modal if there is no metamask and keplr extension detected */}
       {isOpenMobilePromptModal &&
-      !Object.values(allWallets)
+      !Object.values(wallets)
         .map((wallet) => wallet.isInstalled)
         .includes(true) ? (
         <MobilePromptModal
           setIsOpenMobilePromptModal={setIsOpenMobilePromptModal}
         />
+      ) : null}
+
+      {isSigningMessage ? (
+        <QueryClientProvider client={new QueryClient()}>
+          <NotifiContextWrapper>
+            <LoginComponent />
+          </NotifiContextWrapper>
+        </QueryClientProvider>
       ) : null}
     </main>
   );

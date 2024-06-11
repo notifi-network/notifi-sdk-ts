@@ -1,13 +1,13 @@
 'use client';
 
 import { Icon } from '@/assets/Icon';
-import { AlertSubscription } from '@/components/AlertSubscription';
 import { DashboardDestinations } from '@/components/DashboardDestinations';
 import { DashboardHistory } from '@/components/DashboardHistory';
 import { DashboardSideBar } from '@/components/DashboardSideBar';
+import { TopicList } from '@/components/TopicList';
 import { VerifyBanner } from '@/components/VerifyBanner';
-import { useInjectiveWallets } from '@/context/InjectiveWalletContext';
-import { useNotifiTargetContext } from '@/context/NotifiTargetContext';
+import { isEVMChain } from '@/utils/typeUtils';
+import { useNotifiTargetContext } from '@notifi-network/notifi-react';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import Image from 'next/image';
 import { useState } from 'react';
@@ -18,27 +18,18 @@ export default function NotifiDashboard() {
   const [cardView, setCardView] = useState<CardView>('history');
   const { unVerifiedTargets } = useNotifiTargetContext();
   const { selectedWallet, wallets } = useWallets();
-  const {
-    selectedWallet: selectiedInjectiveWallet,
-    wallets: injectiveWallets,
-  } = useInjectiveWallets();
   const [isSideBarOpen, setIsSideBarOpen] = useState<boolean>(false);
+  const [isInHistoryDetail, setIsInHistoryDetail] = useState<boolean>(false);
 
-  if (
-    (!selectedWallet || !wallets[selectedWallet].walletKeys) &&
-    (!selectiedInjectiveWallet ||
-      !injectiveWallets[selectiedInjectiveWallet].walletKeys)
-  )
-    return null;
+  if (!selectedWallet || !wallets[selectedWallet].walletKeys) return null;
 
   let accountAddress: string | undefined = '';
-  if (selectedWallet) {
-    accountAddress = wallets[selectedWallet].walletKeys?.bech32;
+  const keys = wallets[selectedWallet].walletKeys;
+
+  if (keys) {
+    accountAddress = isEVMChain(keys) ? keys.hex?.toLowerCase() : keys.bech32;
   }
-  if (selectiedInjectiveWallet) {
-    accountAddress =
-      injectiveWallets[selectiedInjectiveWallet].walletKeys?.bech32;
-  }
+
   if (!accountAddress) return;
   return (
     <div className="min-h-screen flex items-start flex-row">
@@ -57,36 +48,43 @@ export default function NotifiDashboard() {
           setIsOpen={setIsSideBarOpen}
         />
       ) : null}
-      <div className="flex flex-col grow h-screen">
+      <div
+        className={`flex flex-col grow ${
+          cardView === 'alertSubscription' ? 'm-h-screen' : 'h-screen'
+        } md:ml-80`}
+      >
         <div className="md:hidden w-screen flex justify-center">
           <Icon
             id="btn-nav"
-            className="top-6 left-4 cursor-pointer fixed"
+            className="top-6 left-4 cursor-pointer fixed text-notifi-text"
             onClick={() => setIsSideBarOpen(true)}
           />
           <Image
-            className="mt-3"
-            src="/logos/injective.png"
-            width={115}
-            height={24}
-            alt="Injective"
+            src="/logos/gmx-logo.png"
+            width={100}
+            height={21}
             unoptimized={true}
+            alt="gmx"
+            className="mt-5 mb-4"
           />
         </div>
         {unVerifiedTargets.length > 0 && cardView === 'history' ? (
-          <VerifyBanner setCardView={setCardView} />
+          <VerifyBanner
+            setCardView={setCardView}
+            isInHistoryDetail={isInHistoryDetail}
+          />
         ) : null}
         <div
-          className={`flex flex-col grow bg-white rounded-3xl md:mb-10 mt-3 md:mr-10 ${
+          className={`flex flex-col grow bg-notifi-card-bg rounded-3xl md:mb-10 mt-3 md:mr-10 ${
             cardView === 'alertSubscription' ? '' : 'min-h-0'
-          } shadow-card`}
+          }`}
         >
-          {cardView === 'history' ? <DashboardHistory /> : null}
+          {cardView === 'history' ? (
+            <DashboardHistory setIsInHistoryDetail={setIsInHistoryDetail} />
+          ) : null}
           {cardView === 'destination' ? <DashboardDestinations /> : null}
           {cardView === 'alertSubscription' ? (
-            <AlertSubscription
-              title={'Manage the alerts you want to receive'}
-            />
+            <TopicList title={'Manage the alerts you want to receive'} />
           ) : null}
         </div>
       </div>

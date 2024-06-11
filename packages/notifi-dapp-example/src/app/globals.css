@@ -9,11 +9,19 @@
     --notifi-gray1: 247 251 255;
     --notifi-gray2: 102 109 128;
     --notifi-gray3: 54 57 74;
+    --notifi-gray4: 197 202 227;
+    --notifi-gray5: 94 94 118;
+    --notifi-gray6: 134 143 166;
     --notifi-white: 255 255 255;
+    --notifi-black: 0 0 0;
+    --notifi-midnight: 12, 14, 28;
+    --notifi-midnight-blue: 33 53 76;
     --notifi-blueish0: 225 235 248;
     --notifi-blueish1: 198 233 245;
     --notifi-blueish2: 0 194 253;
-    --notifi-brand: 48 64 247;
+    --notifi-brand: 49 65 242;
+    --tenant-brand-dark: 94 203 204;
+    --tenant-brand-light: 48 64 247;
     --notifi-blueish4: 82 96 255;
     --notifi-light-blue: 247 251 255;
     --notifi-coral: 234 126 104;
@@ -25,6 +33,9 @@
     --backgroundpressed-100: 223, 225, 231;
     --notifi-light-purple: 241 242 245;
     --notifi-purple: 211 219 251;
+    --notifi-dark-green: 22 24 44;
+    --notifi-dark-blue: 26 40 63;
+    --notifi-blue-gray: 86 90 141;
   }
 }
 
@@ -43,6 +54,8 @@
 /* Dark mode color variables controlled by NotifiContext */
 .notifi-dapp[dark-mode='true'] {
   --notifi-primary-text: var(--notifi-brand);
+  --notifi-text: var(--notifi-white);
+  --notifi-grey-text: var(--notifi-gray4);
   --notifi-bgimg-left: var(--notifi-white);
   --notifi-bgimg-middle: var(--notifi-blueish0);
   --notifi-bgimg-right: var(--notifi-blueish1);
@@ -51,26 +64,36 @@
   --notifi-button-hover-bg: var(--notifi-blueish4);
   --notifi-button-primary-text: var(--notifi-white);
   --notifi-label-connect-wallet-text: var(--notifi-blueish2);
-  --notifi-card-bg: var(--notifi-light-blue);
+  --notifi-destination-card-bg: var(--notifi-dark-blue);
+  --notifi-dummy-alert-card-bg: var(--notifi-dark-green);
+  --notifi-card-bg: var(--notifi-midnight);
   --notifi-success: var(--notifi-green);
   --notifi-error: var(--notifi-red);
   --notifi-toggle-off-bg: var(--notifi-heather);
-  --notifi-toggle-on-bg: var(--notifi-cyan);
+  --notifi-toggle-on-bg: var(--tenant-brand-dark);
   --notifi-destination-card-text: var(--notifi-dusk);
-  --notifi-icon-unselected: var(--notifi-gray2);
-  --notifi-icon-selected: var(--notifi-gray3);
-  --notifi-tab-unselected-text: var(--notifi-dusk);
+  --notifi-icon-unselected: var(--notifi-gray6);
+  --notifi-icon-selected: var(--notifi-white);
+  --notifi-tab-unselected-text: var(--notifi-gray6);
   --notifi-alert-subscription-block-bg: var(--notifi-gray1);
-  --notifi-text-light: var(--notifi-gray2);
-  --notifi-text-medium: var(--notifi-gray3);
+  --notifi-text-light: var(--notifi-gray6);
+  --notifi-text-medium: var(--notifi-gray4);
   --notifi-toggle-off-dot-bg: var(--backgroundpressed-100);
   --notifi-back-button-hover-bg: var(--notifi-light-purple);
   --notifi-back-button-focus-bg: var(--notifi-purple);
+  --notifi-tenant-bg: var(--tenant-brand-dark);
+  --notifi-card-border: var(--notifi-blue-gray);
+  --notifi-input-border: var(--notifi-brand);
+  --notifi-destination-logo-card-bg: var(--notifi-midnight-blue);
+  --notifi-wallet-menu-card-bg: var(--notifi-black);
+  --notifi-loading-skeleton-bg: var(--notifi-brand);
 }
 
 /* Light mode color variables controlled by NotifiContext */
 .notifi-dapp[dark-mode='false'] {
   --notifi-primary-text: var(--notifi-brand);
+  --notifi-text: var(--notifi-black);
+  --notifi-grey-text: var(--notifi-gray5);
   --notifi-bgimg-left: var(--notifi-white);
   --notifi-bgimg-middle: var(--notifi-blueish0);
   --notifi-bgimg-right: var(--notifi-blueish1);
@@ -79,7 +102,9 @@
   --notifi-button-hover-bg: var(--notifi-blueish4);
   --notifi-button-primary-text: var(--notifi-white);
   --notifi-label-connect-wallet-text: var(--notifi-blueish2);
-  --notifi-card-bg: var(--notifi-light-blue);
+  --notifi-destination-card-bg: var(--notifi-light-blue);
+  --notifi-dummy-alert-card-bg: var(--notifi-white);
+  --notifi-card-bg: var(--notifi-white);
   --notifi-success: var(--notifi-green);
   --notifi-error: var(--notifi-red);
   --notifi-toggle-off-bg: var(--notifi-heather);
@@ -94,8 +119,25 @@
   --notifi-toggle-off-dot-bg: var(--backgroundpressed-100);
   --notifi-back-button-hover-bg: var(--notifi-light-purple);
   --notifi-back-button-focus-bg: var(--notifi-purple);
+  --notifi-tenant-bg: var(--tenant-brand-light);
+  --notifi-card-border: var(--notifi-blue-gray);
+  --notifi-input-border: var(--notifi-gray3);
+  --notifi-destination-logo-card-bg: var(--notifi-white);
+  --notifi-wallet-menu-card-bg: var(--notifi-white);
+  --notifi-loading-skeleton-bg: var(--notifi-black);
 }
 
+.notifi-inputField:-webkit-autofill { 
+  transition: all 0s 50000s;     
+}
+
+.history-link a {
+  color: #5ECBCC;
+}
+
+.history-link a:hover {
+  text-decoration: underline;
+}
 /* Light mode color variables controlled by system preferences */
 /* @media (prefers-color-scheme: dark) {
   :root {

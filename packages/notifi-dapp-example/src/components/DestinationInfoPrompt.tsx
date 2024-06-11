@@ -6,6 +6,8 @@ type Props = {
   isButton?: boolean;
   buttonCopy?: string;
   isSent?: boolean;
+  type?: string;
+  isLoading?: boolean;
 };
 
 export const DestinationInfoPrompt: React.FC<Props> = ({
@@ -14,6 +16,8 @@ export const DestinationInfoPrompt: React.FC<Props> = ({
   isButton = false,
   buttonCopy,
   isSent,
+  type,
+  isLoading,
 }) => {
   if (!onClick) {
     return <label>{infoPromptMessage}</label>;
@@ -24,9 +28,15 @@ export const DestinationInfoPrompt: React.FC<Props> = ({
       {isButton ? (
         <button
           onClick={() => onClick()}
-          className="rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-24 h-8 text-sm font-medium disabled:opacity-50 disabled:hover:bg-notifi-button-primary-blueish-bg hover:bg-notifi-button-hover-bg"
+          className="ml-1 rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-24 h-8 text-sm font-medium disabled:opacity-50 disabled:hover:bg-notifi-button-primary-blueish-bg hover:bg-notifi-button-hover-bg"
         >
-          {buttonCopy}
+          {isLoading ? (
+            <div className="w-full h-full flex justify-center items-center">
+              <div className="animate-spin rounded-full h-5 w-5 border-2 border-b-transparent border-l-transparent text-white" />
+            </div>
+          ) : (
+            buttonCopy
+          )}
         </button>
       ) : (
         <a
@@ -34,10 +44,8 @@ export const DestinationInfoPrompt: React.FC<Props> = ({
           rel="noopener noreferrer"
           onClick={() => onClick()}
           className={`text-sm font-semibold ${
-            isSent
-              ? 'text-notifi-text-light'
-              : 'text-notifi-button-primary-blueish-bg'
-          } ml-6 cursor-pointer`}
+            isSent ? 'text-notifi-text-light' : 'text-notifi-toggle-on-bg'
+          } ${type === 'email' ? '' : 'ml-6'} cursor-pointer`}
         >
           <label className="cursor-pointer">{infoPromptMessage}</label>
         </a>

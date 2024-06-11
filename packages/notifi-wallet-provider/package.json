@@ -36,7 +36,10 @@
   },
   "dependencies": {
     "bech32-converting": "^1.0.9",
-    "ethers": "^6.11.1"
+    "buffer": "^6.0.3",
+    "ethers": "^6.11.1",
+    "viem": "^1.11.0",
+    "wagmi": "^1.4.2"
   },
   "peerDependencies": {
     "react": "^17.0.2 || ^18.0",
@@ -44,7 +47,6 @@
   },
   "tsup": {
     "noExternal": [
-      "libphonenumber-js"
     ]
   }
 }

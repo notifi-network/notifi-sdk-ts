@@ -1,27 +1,16 @@
-import {
-  InjectiveWallets,
-  LeapWalletKeys,
-  NotifiWalletStorage,
-  PhantomWalletKeys,
-} from './types';
+import { NotifiWalletStorage } from './types';
 
 const localStorageKey = 'NotifiWalletStorage';
 // TODO: move to wallet-provider package
-export const setInjWalletKeysToLocalStorage = <
-  T extends keyof InjectiveWallets,
->(
-  wallet: T,
-  walletKeys: LeapWalletKeys | PhantomWalletKeys,
-) => {
-  const storageWallet: NotifiWalletStorage = {
-    walletName: wallet,
-    walletKeys: walletKeys,
-  };
-  localStorage.setItem(localStorageKey, JSON.stringify(storageWallet));
-};
 
 export const cleanWalletsInLocalStorage = () => {
+  console.log('Removing localStorageKey');
   localStorage.removeItem(localStorageKey);
+  if (localStorage.getItem(localStorageKey)) {
+    console.error('Failed to remove cache, retry');
+    localStorage.removeItem(localStorageKey);
+    console.log('Result', localStorage.getItem(localStorageKey));
+  }
 };
 
 export const getWalletsFromLocalStorage = (): NotifiWalletStorage | null => {

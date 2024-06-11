@@ -1,7 +1,6 @@
 import { Icon } from '@/assets/Icon';
-import { useInjectiveWallets } from '@/context/InjectiveWalletContext';
 import { convertWalletName } from '@/utils/stringUtils';
-import { objectKeys } from '@notifi-network/notifi-react-card';
+import { objectKeys } from '@/utils/typeUtils';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
@@ -15,12 +14,6 @@ export const MobilePromptModal: React.FC<MobilePromptModalProps> = ({
 }: MobilePromptModalProps) => {
   const [isClient, setIsClient] = useState(false);
   const { wallets } = useWallets();
-  const { wallets: injectiveWallets } = useInjectiveWallets();
-
-  const allWallets = {
-    ...wallets,
-    ...injectiveWallets,
-  };
 
   useEffect(() => {
     setIsClient(true);
@@ -88,18 +81,17 @@ export const MobilePromptModal: React.FC<MobilePromptModalProps> = ({
               </div>
               <div className="flex flex-col items-center justify-center">
                 <div className="border rounded-2xl h-16 w-80 mt-6 text-notifi-primary-text text-md font-semibold flex items-center justify-center">
-                  injective.notifi.network
                   <Icon
                     id="copy-btn"
                     className="text-notifi-primary-text cursor-pointer"
-                    onClick={() => handleCopy('injective.notifi.network')}
+                    onClick={() => handleCopy('')}
                   />
                 </div>
 
-                {objectKeys(allWallets).map((wallet) => {
+                {objectKeys(wallets).map((wallet) => {
                   return (
                     <div key={wallet}>
-                      {!Object.values(allWallets)
+                      {!Object.values(wallets)
                         .map((wallet) => wallet.isInstalled)
                         .includes(true) ? (
                         <div

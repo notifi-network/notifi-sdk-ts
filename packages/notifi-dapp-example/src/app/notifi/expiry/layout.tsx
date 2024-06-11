@@ -16,18 +16,14 @@ export default function NotifiExpiryLayout({
       <div className="fixed top-8 left-8 right-8 flex justify-between">
         <div className="left-8 flex items-center">
           <Image
-            src="/logos/injective.png"
+            src="/logos/gmx-logo.png"
             width={115}
             height={24}
-            alt="Injective"
             unoptimized={true}
+            alt="GMX logo"
           />
-          <div className="mx-4 h-4 border-l-2 border-grey-700"></div>
-          <div className="text-gray-400 text-xs tracking-wider">
-            INJECTIVE NOTIFICATIONS
-          </div>
         </div>
-        <div className=" p-2 bg-white rounded-lg h-7">
+        <div className="p-2 rounded-lg h-7 hidden md:block">
           <PoweredByNotifi />
         </div>
       </div>

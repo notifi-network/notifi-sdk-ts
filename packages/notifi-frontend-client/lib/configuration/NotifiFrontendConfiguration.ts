@@ -35,17 +35,13 @@ type WalletBlockchainWithPublicKey = Extract<
   | 'BERACHAIN'
   | 'EVMOS'
   | 'THE_ROOT_NETWORK'
-
-
 >;
 
 type WalletBlockchainWithDelegate = 'XION';
 
 type WalletBlockchainWithPublicKeyAndAddress = Exclude<
   Types.WalletBlockchain,
-  | WalletBlockchainWithPublicKey
-  | 'OFF_CHAIN'
-  | WalletBlockchainWithDelegate
+  WalletBlockchainWithPublicKey | 'OFF_CHAIN' | WalletBlockchainWithDelegate
 >;
 
 export type NotifiConfigWithPublicKey = Readonly<{
@@ -128,7 +124,9 @@ export type FrontendClientConfigFactory<T extends NotifiFrontendConfiguration> =
   (
     args: T extends NotifiConfigWithPublicKeyAndAddress
       ? ConfigFactoryInputPublicKeyAndAddress
-      : T extends NotifiConfigWithDelegate ? ConfigFactoryInputDelegated : ConfigFactoryInputPublicKey,
+      : T extends NotifiConfigWithDelegate
+      ? ConfigFactoryInputDelegated
+      : ConfigFactoryInputPublicKey,
   ) => NotifiFrontendConfiguration;
 
 const evmChains = [
@@ -198,7 +196,7 @@ const configFactoryDelegated: FrontendClientConfigFactory<
     delegatorAddress: args.account.delegatorAddress,
     storageOption: args.storageOption,
   };
-}
+};
 
 const isWithPubkeyAndAddress = (
   config: ConfigFactoryInput,
@@ -210,7 +208,7 @@ const isWithDelegate = (
   config: ConfigFactoryInput,
 ): config is ConfigFactoryInputDelegated => {
   return 'delegatorAddress' in config.account;
-}
+};
 
 export const newFrontendConfig = (
   config: ConfigFactoryInput,
@@ -224,7 +222,10 @@ export const newFrontendConfig = (
   }
 };
 
-export const envUrl = (env?: NotifiEnvironment, endpointType?: 'websocket' | 'http'): string => {
+export const envUrl = (
+  env?: NotifiEnvironment,
+  endpointType?: 'websocket' | 'http',
+): string => {
   if (!env) env = 'Production';
 
   let url = '';

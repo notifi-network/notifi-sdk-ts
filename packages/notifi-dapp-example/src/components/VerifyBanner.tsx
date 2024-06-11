@@ -1,14 +1,16 @@
 import { CardView } from '@/app/notifi/dashboard/page';
 import { Icon } from '@/assets/Icon';
-import { useNotifiTargetContext } from '@/context/NotifiTargetContext';
+import { useNotifiTargetContext } from '@notifi-network/notifi-react';
 import React, { useMemo } from 'react';
 
 export type VerifyBannerProps = Readonly<{
   setCardView: (cardView: CardView) => void;
+  isInHistoryDetail: boolean;
 }>;
 
 export const VerifyBanner: React.FC<VerifyBannerProps> = ({
   setCardView,
+  isInHistoryDetail,
 }: VerifyBannerProps) => {
   const { unVerifiedTargets } = useNotifiTargetContext();
 
@@ -25,6 +27,8 @@ export const VerifyBanner: React.FC<VerifyBannerProps> = ({
           return 'Slack';
         case 'phoneNumber':
           return 'Phone Number';
+        case 'wallet':
+          return 'Wallet';
         default:
           return target;
       }
@@ -35,13 +39,19 @@ export const VerifyBanner: React.FC<VerifyBannerProps> = ({
   }, [unVerifiedTargets]);
 
   return (
-    <div className="flex flex-row justify-between items-center py-2 bg-white mt-4 md:mt-6 rounded-[14px] mx-4 md:mx-0 md:mr-10 shadow-card">
+    <div
+      className={`flex flex-row justify-between items-center py-2 bg-notifi-card-bg mt-4 mb-3 md:mt-6 rounded-[14px] mx-4 md:mx-0 md:mr-10 md:mb-0 ${
+        isInHistoryDetail ? 'md:flex hidden' : ''
+      }`}
+    >
       <div className="flex flex-row items-center justify-center ml-3 text-sm font-medium">
         <Icon
           id="check"
           className="text-notifi-button-primary-blueish-bg mr-3 w-3 mb-0.5"
         />
-        <div>Verify your {unVerifiedDestinationsString}</div>
+        <div className="text-notifi-text mr-1">
+          Verify your {unVerifiedDestinationsString}
+        </div>
       </div>
       <button
         onClick={() => setCardView('destination')}

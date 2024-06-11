@@ -1,6 +1,7 @@
 import {
   FusionEventTopic,
   FusionFilterOptions,
+  InputObject,
   UserInputOptions,
   resolveObjectArrayRef,
   resolveStringRef,
@@ -119,10 +120,19 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
     const createAlertInputs: Types.CreateFusionAlertInput[] = [];
     const alertNamesToCreate: string[] = [];
     topicWithFilterOptionsList.forEach(
-      ({ topic, filterOptions, subscriptionValue, customAlertName }) => {
+      ({ topic, filterOptions, customAlertName, subscriptionValue }) => {
         const fusionEventId = topic.fusionEventDescriptor.id;
         const fusionEventMetadata = getFusionEventMetadata(topic);
         if (!fusionEventMetadata || !fusionEventId) return;
+        if (!subscriptionValue) {
+          const subscriptionValueOrRef =
+            getFusionEventMetadata(topic)?.uiConfigOverride
+              ?.subscriptionValueOrRef;
+          const subscriptionValueObject = subscriptionValueOrRef
+            ? [...resolveObjectArrayRef('', subscriptionValueOrRef, inputs)]
+            : null;
+          subscriptionValue = subscriptionValueObject?.[0]?.value;
+        }
         const legacySubscriptionValue = resolveStringRef(
           topic.uiConfig.name,
           topic.uiConfig.sourceAddress,

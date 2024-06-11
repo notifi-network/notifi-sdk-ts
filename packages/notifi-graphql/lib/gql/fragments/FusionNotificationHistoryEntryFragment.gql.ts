@@ -86,6 +86,7 @@ export const FusionNotificationHistoryEntryFragment = gql`
           url
         }
         icon
+        customIconUrl
       }
     }
   }

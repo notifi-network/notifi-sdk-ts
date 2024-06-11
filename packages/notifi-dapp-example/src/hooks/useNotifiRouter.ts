@@ -1,8 +1,9 @@
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
-import { useInjectiveWallets } from '@/context/InjectiveWalletContext';
-import { useNotifiFrontendClientContext } from '@/context/NotifiFrontendClientContext';
-import { FtuStage } from '@/context/NotifiUserSettingContext';
-import { useNotifiUserSettingContext } from '@/context/NotifiUserSettingContext';
+import {
+  FtuStage,
+  useNotifiFrontendClientContext,
+  useNotifiUserSettingContext,
+} from '@notifi-network/notifi-react';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import { useEffect, useRef } from 'react';
 
@@ -13,14 +14,12 @@ export const useNotifiRouter = () => {
     frontendClientStatus,
     login,
     error: loginError,
-    loading: isLoadingLogin,
+    isLoading: isLoadingLogin,
   } = useNotifiFrontendClientContext();
   const { handleRoute, isLoadingRouter } = useRouterAsync();
   const { setIsGlobalLoading } = useGlobalStateContext();
   const { ftuStage, isLoading: isLoadingFtu } = useNotifiUserSettingContext();
   const { wallets, selectedWallet } = useWallets();
-  const { wallets: injectiveWallets, selectedWallet: injectiveSelectedWallet } =
-    useInjectiveWallets();
   const isLoginStarted = useRef(false);
 
   useEffect(() => {
@@ -46,27 +45,24 @@ export const useNotifiRouter = () => {
 
   useEffect(() => {
     if (isLoginStarted.current || frontendClientStatus.isAuthenticated) return;
-    setIsGlobalLoading(true);
     isLoginStarted.current = true;
     login(); // NOTE: No need handle error & loading, use isLoading & error hook instead
   }, []);
 
   useEffect(() => {
     if (loginError) {
-      handleRoute('/');
       if (selectedWallet) {
         wallets[selectedWallet].disconnect();
-      } else if (injectiveSelectedWallet) {
-        injectiveWallets[injectiveSelectedWallet].disconnect();
       }
+      handleRoute('/');
     }
   }, [loginError]);
 
   useEffect(() => {
-    console.log({ isLoadingLogin });
+    if (!frontendClientStatus.isAuthenticated) return setIsGlobalLoading(false);
     if (isLoadingRouter || isLoadingLogin) {
       return setIsGlobalLoading(true);
     }
     setIsGlobalLoading(false);
-  }, [isLoadingRouter, isLoadingLogin]);
+  }, [isLoadingRouter, isLoadingLogin, frontendClientStatus]);
 };
