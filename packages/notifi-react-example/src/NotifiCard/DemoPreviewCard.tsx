@@ -3,11 +3,34 @@ import {
   NotifiDemoPreviewContextProvider,
   NotifiSubscriptionCard,
 } from '@notifi-network/notifi-react-card';
+import React from 'react';
 
 export const DemoPrviewCard = () => {
+  const [view, setView] = React.useState('');
+  console.log('view', view);
   return (
     <div>
-      <h1>Notifi Card: Dummy Demo</h1>
+      <select value={view} onChange={(e) => setView(e.target.value)}>
+        <option value="history">history</option>
+        <option value="signup">signup</option>
+        <option value="preview">preview</option>
+      </select>
+      <NotifiDemoPreviewContextProvider
+        view={view as any}
+        data={JSON.parse(data)}
+      >
+        <NotifiContext
+          dappAddress=""
+          env="Development"
+          walletBlockchain="SOLANA"
+          walletPublicKey="string"
+          signMessage={async (msg: Uint8Array) => msg}
+          hardwareLoginPlugin={{ sendMessage: async (msg: string) => msg }}
+        >
+          <NotifiSubscriptionCard darkMode cardId="" />
+        </NotifiContext>
+      </NotifiDemoPreviewContextProvider>
+      {/* <h1>Notifi Card: Dummy Demo</h1>
       Dummy Demo NotifiSubscriptionCard: Preview page
       <NotifiDemoPreviewContextProvider view="preview" data={JSON.parse(data)}>
         <NotifiContext
@@ -59,7 +82,7 @@ export const DemoPrviewCard = () => {
         >
           <NotifiSubscriptionCard darkMode cardId="" />
         </NotifiContext>
-      </NotifiDemoPreviewContextProvider>
+      </NotifiDemoPreviewContextProvider> */}
     </div>
   );
 };
