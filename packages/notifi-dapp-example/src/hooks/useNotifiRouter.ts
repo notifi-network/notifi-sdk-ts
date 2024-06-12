@@ -69,12 +69,16 @@ export const useNotifiRouter = (urlParams?: Record<string, string>) => {
 
   useEffect(() => {
     if (loginError) {
-      handleRoute('/');
       if (selectedWallet) {
         wallets[selectedWallet].disconnect();
       } else if (injectiveSelectedWallet) {
         injectiveWallets[injectiveSelectedWallet].disconnect();
       }
+      setTimeout(() => {
+        /** NOTE: preserve 0.5s to make sure cache is cleaned before route back to root dir*/
+        console.log(`LOGIN ERROR: ${JSON.stringify(loginError)}`);
+        handleRoute('/');
+      }, 5000);
     }
   }, [loginError]);
 
