@@ -1,6 +1,6 @@
 {
   "name": "@notifi-network/notifi-react",
-  "version": "0.91.2",
+  "version": "0.91.3",
   "description": "React components to access Notifi core services",
   "keywords": [
     "notifi",
@@ -40,17 +40,17 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@notifi-network/notifi-frontend-client": "^0.91.2",
+    "@notifi-network/notifi-frontend-client": "^0.91.3",
+    "@xmtp/consent-proof-signature": "^0.1.2",
+    "@xmtp/react-sdk": "^6.0.1",
     "clsx": "^1.2.1",
     "date-fns": "^2.29.3",
     "dompurify": "^3.0.5",
     "libphonenumber-js": "^1.10.13",
-    "react-virtuoso": "^3.1.1",
-    "@xmtp/consent-proof-signature": "^0.1.2",
-    "@xmtp/react-sdk": "^6.0.1"
+    "react-virtuoso": "^3.1.1"
   },
   "devDependencies": {
-    "@notifi-network/notifi-core": "^0.91.2",
+    "@notifi-network/notifi-core": "^0.91.3",
     "@types/dompurify": "^3.0.3",
     "@types/marked": "^5.0.1"
   },

@@ -1,6 +1,6 @@
 {
   "name": "@notifi-network/notifi-wallet-provider",
-  "version": "0.91.0",
+  "version": "0.91.3",
   "description": "> TODO: description",
   "author": "eric-notifi <eric.lee@notifi.network>",
   "homepage": "https://github.com/notifi-network/notifi-sdk-ts",
@@ -46,7 +46,6 @@
     "react-dom": "^17.0.2 || ^18.0"
   },
   "tsup": {
-    "noExternal": [
-    ]
+    "noExternal": []
   }
 }
