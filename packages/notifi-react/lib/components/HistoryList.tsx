@@ -75,6 +75,7 @@ export const HistoryList: React.FC<HistoryListProps> = (props) => {
 
   const {
     targetDocument: { targetData },
+    unVerifiedTargets,
   } = useNotifiTargetContext();
 
   return (
@@ -88,23 +89,25 @@ export const HistoryList: React.FC<HistoryListProps> = (props) => {
       <NavHeader>
         {props.copy?.headerTitle ?? defaultCopy.inboxHistoryList.headerTitle}
       </NavHeader>
-      <div
-        className={clsx(
-          'notifi-history-list-target-state-banner-container',
-          props.classNames?.TargetStateBannerContainer,
-        )}
-      >
-        <TargetStateBanner
-          classNames={props.classNames?.TargetStateBanner}
-          onClickCta={() => {
-            if (!hasTarget(targetData)) {
-              return props.setInboxView(InboxView.InboxConfigTargetEdit);
-            }
-            props.setInboxView(InboxView.InboxConfigTargetList);
-          }}
-          parentComponent="history"
-        />
-      </div>
+      {unVerifiedTargets.length > 0 ? (
+        <div
+          className={clsx(
+            'notifi-history-list-target-state-banner-container',
+            props.classNames?.TargetStateBannerContainer,
+          )}
+        >
+          <TargetStateBanner
+            classNames={props.classNames?.TargetStateBanner}
+            onClickCta={() => {
+              if (!hasTarget(targetData)) {
+                return props.setInboxView(InboxView.InboxConfigTargetEdit);
+              }
+              props.setInboxView(InboxView.InboxConfigTargetList);
+            }}
+            parentComponent="history"
+          />
+        </div>
+      ) : null}
 
       <div
         ref={mainRef}

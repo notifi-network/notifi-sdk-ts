@@ -29,6 +29,7 @@
   cursor: pointer;
   background: var(--notifi-nav-footer-bg);
   padding: 1rem 0;
+  border-top: var(--notifi-ftu-footer-border) 1px solid; /** TODO: change to notifi-nav-footer-border */
 }
 
 .notifi-inbox-nav-tabs > div {
