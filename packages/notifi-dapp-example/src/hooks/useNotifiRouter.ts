@@ -3,12 +3,20 @@ import { useInjectiveWallets } from '@/context/InjectiveWalletContext';
 import { useNotifiFrontendClientContext } from '@/context/NotifiFrontendClientContext';
 import { FtuStage } from '@/context/NotifiUserSettingContext';
 import { useNotifiUserSettingContext } from '@/context/NotifiUserSettingContext';
+import { objectKeys } from '@/utils/typeUtils';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import { useEffect, useRef } from 'react';
 
 import { useRouterAsync } from './useRouterAsync';
 
-export const useNotifiRouter = () => {
+export const useNotifiRouter = (urlParams?: Record<string, string>) => {
+  console.log(0, { urlParams });
+  const urlParamsString = urlParams
+    ? objectKeys(urlParams)
+        .map((key) => `${key}=${urlParams[key]}`)
+        .join('&')
+    : '';
+  console.log(1, { urlParamsString });
   const {
     frontendClientStatus,
     login,
@@ -26,19 +34,27 @@ export const useNotifiRouter = () => {
   useEffect(() => {
     if (!frontendClientStatus.isInitialized) return;
     if (frontendClientStatus.isExpired) {
-      handleRoute('/notifi/expiry');
+      handleRoute(
+        `/notifi/expiry${urlParamsString ? `?${urlParamsString}` : ''}`,
+      );
       return;
     }
     if (frontendClientStatus.isAuthenticated && !isLoadingFtu) {
       if (!ftuStage) {
-        handleRoute('/notifi/signup');
+        handleRoute(
+          `/notifi/signup${urlParamsString ? `?${urlParamsString}` : ''}`,
+        );
         return;
       }
       if (ftuStage === FtuStage.Done) {
-        handleRoute('/notifi/dashboard');
+        handleRoute(
+          `/notifi/dashboard${urlParamsString ? `?${urlParamsString}` : ''}`,
+        );
         return;
       } else {
-        handleRoute('/notifi/ftu');
+        handleRoute(
+          `/notifi/ftu${urlParamsString ? `?${urlParamsString}` : ''}`,
+        );
         return;
       }
     }

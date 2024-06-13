@@ -3,9 +3,12 @@
 import { PoweredByNotifi } from '@/components/PoweredByNotifi';
 import { useNotifiRouter } from '@/hooks/useNotifiRouter';
 import Image from 'next/image';
+import { useSearchParams } from 'next/navigation';
 
 export default function NotifiFTU({ children }: { children: React.ReactNode }) {
-  useNotifiRouter();
+  const searchParams = useSearchParams();
+  const tempCardId = searchParams.get('cardid');
+  useNotifiRouter(tempCardId ? { cardid: tempCardId } : undefined);
 
   return (
     <div className="w-full min-h-screen flex flex-col items-center justify-start md:items-center bg-notifi-page-bg">

@@ -8,14 +8,22 @@ import { DashboardSideBar } from '@/components/DashboardSideBar';
 import { VerifyBanner } from '@/components/VerifyBanner';
 import { useInjectiveWallets } from '@/context/InjectiveWalletContext';
 import { useNotifiTargetContext } from '@/context/NotifiTargetContext';
+import { useNotifiTenantConfig } from '@/context/NotifiTenantConfigContext';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import Image from 'next/image';
+import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 
 export type CardView = 'history' | 'destination' | 'alertSubscription';
 
 export default function NotifiDashboard() {
-  const [cardView, setCardView] = useState<CardView>('history');
+  const searchParams = useSearchParams();
+  const tempCardId = searchParams.get('cardid');
+  const { cardConfig } = useNotifiTenantConfig();
+  const validTempCardId = tempCardId && cardConfig.id === tempCardId;
+  const [cardView, setCardView] = useState<CardView>(
+    tempCardId && validTempCardId ? 'alertSubscription' : 'history',
+  );
   const { unVerifiedTargets } = useNotifiTargetContext();
   const { selectedWallet, wallets } = useWallets();
   const {

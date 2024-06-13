@@ -3,13 +3,16 @@
 import { PoweredByNotifi } from '@/components/PoweredByNotifi';
 import { useNotifiRouter } from '@/hooks/useNotifiRouter';
 import Image from 'next/image';
+import { useSearchParams } from 'next/navigation';
 
 export default function NotifiExpiryLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  useNotifiRouter();
+  const searchParams = useSearchParams();
+  const tempCardId = searchParams.get('cardid');
+  useNotifiRouter(tempCardId ? { cardid: tempCardId } : undefined);
 
   return (
     <>
