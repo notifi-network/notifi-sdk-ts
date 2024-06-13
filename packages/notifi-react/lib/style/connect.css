@@ -14,29 +14,46 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
   padding: 0 2rem;
-}
-
-.notifi-connect-icon {
-  margin-bottom: 1rem;
-  color: var(--notifi-color-grey3);
+  height: 0;
+  padding: 0 3.125rem;
 }
 
 .notifi-connect-title {
-  font-size: 1.1rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  line-height: 133%;
+  font-size: 1.5rem;
+  font-weight: 800;
   text-align: center;
+  padding: 2.5rem 1rem 0.5rem 1rem;
 }
 
-.notifi-connect-content {
-  font-size: 1rem;
-  font-weight: 500;
-  margin-bottom: 1.5rem;
+.notifi-connect-description {
+  color: var(--notifi-color-grey3);
+  font-size: 0.9rem;
   line-height: 133%;
   text-align: center;
+  padding: 0 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.notifi-connect-alert-list-container {
+  display: flex;
+  gap: 0.5rem;
+  flex-direction: column;
+}
+
+.notifi-connect-alert-list-alert {
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+}
+
+.notifi-connect-alert-icon {
+  color: var(--notifi-ftu-alert-list);
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-right: 0.5rem;
+  font-weight: 700;
+  stroke-width: 3;
 }
 
 .notifi-connect-button {
@@ -48,11 +65,11 @@
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
-  width: 100%;
   display: flex;
   justify-content: center;
   position: relative;
   align-items: center;
+  margin: 0.5rem 2rem 0rem 2rem;
 }
 .notifi-connect-button-text.hidden {
   visibility: hidden;

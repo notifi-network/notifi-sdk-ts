@@ -3,12 +3,13 @@ import React from 'react';
 
 import { FtuStage, useNotifiUserSettingContext } from '../context';
 import { defaultCopy, defaultLoadingAnimationStyle } from '../utils/constants';
-import { FtuView } from './Ftu';
 import { LoadingAnimation } from './LoadingAnimation';
 import { NavHeader } from './NavHeader';
 import { TopicList } from './TopicList';
 
 export type FtuAlertEditProps = {
+  onClickNext: () => void;
+  onClickBack?: () => void;
   classNames?: {
     container?: string;
     main?: string;
@@ -20,7 +21,7 @@ export type FtuAlertEditProps = {
     headerTitle?: string;
     buttonText?: string;
   };
-  setFtuView: React.Dispatch<React.SetStateAction<FtuView | null>>;
+  // setFtuView: React.Dispatch<React.SetStateAction<FtuView | null>>;
 };
 
 export const FtuAlertEdit: React.FC<FtuAlertEditProps> = (props) => {
@@ -33,17 +34,21 @@ export const FtuAlertEdit: React.FC<FtuAlertEditProps> = (props) => {
   const onClick = async () => {
     setIsLoading(true);
     await updateFtuStage(FtuStage.Done);
-    props.setFtuView(null);
     setIsLoading(false);
+    props.onClickNext();
   };
 
   return (
     <div className={clsx('notifi-ftu-alert-edit', props.classNames?.container)}>
       <NavHeader
-        leftCta={{
-          icon: 'arrow-back',
-          action: () => props.setFtuView(FtuView.TargetList),
-        }}
+        leftCta={
+          props.onClickBack
+            ? {
+                icon: 'arrow-back',
+                action: () => props.onClickBack!(),
+              }
+            : undefined
+        }
       >
         {props.copy?.headerTitle ?? defaultCopy.ftuAlertEdit.headerTitle}
       </NavHeader>

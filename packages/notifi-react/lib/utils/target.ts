@@ -7,6 +7,7 @@ import {
   TargetData,
   TargetInfoPrompt,
   TargetInputs,
+  ToggleTarget,
 } from '../context';
 
 export const hasTarget = (targetData: TargetData) => {
@@ -44,8 +45,12 @@ export const isTargetVerified = (
   return targetInfoPrompt.type === 'message';
 };
 
-const isFormTarget = (target: Target): target is FormTarget => {
-  return (
-    target === 'email' || target === 'phoneNumber' || target === 'telegram'
-  );
+export const isFormTarget = (target: Target): target is FormTarget => {
+  const supportedFormTargets: Target[] = ['email', 'phoneNumber', 'telegram'];
+  return supportedFormTargets.includes(target);
+};
+
+export const isToggleTarget = (target: Target): target is ToggleTarget => {
+  const supportedToggleTargets: Target[] = ['discord', 'slack'];
+  return supportedToggleTargets.includes(target);
 };

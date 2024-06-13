@@ -5,23 +5,24 @@ import {
   FtuStage,
   useNotifiFrontendClientContext,
   useNotifiTargetContext,
+  useNotifiTenantConfigContext,
   useNotifiUserSettingContext,
 } from '../context';
 import { hasTarget } from '../utils';
 import { FtuAlertEdit, FtuAlertEditProps } from './FtuAlertEdit';
-import { FtuAlertList, FtuAlertListProps } from './FtuAlertList';
+import { FtuAlertListProps } from './FtuAlertList';
 import { FtuTargetEdit, FtuTargetEditProps } from './FtuTargetEdit';
 import { FtuTargetList, FtuTargetListProps } from './FtuTargetList';
 import { PoweredByNotifi, PoweredByNotifiProps } from './PoweredByNotifi';
 
 export enum FtuView {
-  AlertList = 'alertList',
   TargetEdit = 'edit',
   TargetList = 'list',
   AlertEdit = 'alertEdit',
 }
 
 export type FtuProps = {
+  onComplete: () => void;
   copy?: {
     FtuAlertList?: FtuAlertListProps['copy'];
     FtuTargetEdit?: FtuTargetEditProps['copy'];
@@ -42,6 +43,7 @@ export type FtuProps = {
 
 export const Ftu: React.FC<FtuProps> = (props) => {
   const { ftuStage } = useNotifiUserSettingContext();
+  const { cardConfig } = useNotifiTenantConfigContext();
   const {
     targetDocument: { targetData },
     isLoading: isLoadingTarget,
@@ -51,10 +53,6 @@ export const Ftu: React.FC<FtuProps> = (props) => {
 
   React.useEffect(() => {
     if (!frontendClientStatus.isAuthenticated || isLoadingTarget) return;
-    if (ftuStage === null) {
-      setFtuView(FtuView.AlertList);
-      return;
-    }
     if (ftuStage === FtuStage.Destination && !hasTarget(targetData)) {
       setFtuView(FtuView.TargetEdit);
       return;
@@ -72,12 +70,6 @@ export const Ftu: React.FC<FtuProps> = (props) => {
   return (
     <div className={clsx('notifi-ftu', props.classNames?.container)}>
       <div className={clsx('notifi-ftu-views', props.classNames?.ftuViews)}>
-        {ftuView === FtuView.AlertList ? (
-          <FtuAlertList
-            copy={props.copy?.FtuAlertList}
-            classNames={props.classNames?.FtuAlertList}
-          />
-        ) : null}
         {ftuView === FtuView.TargetEdit ? (
           <FtuTargetEdit
             setFtuView={setFtuView}
@@ -89,18 +81,30 @@ export const Ftu: React.FC<FtuProps> = (props) => {
           <FtuTargetList
             copy={props.copy?.FtuTargetList}
             classNames={props.classNames?.FtuTargetList}
-            setFtuView={setFtuView}
+            onClickNext={() => setFtuView(FtuView.AlertEdit)}
+            onClickBack={() => setFtuView(FtuView.TargetEdit)}
           />
         ) : null}
         {ftuView === FtuView.AlertEdit ? (
           <FtuAlertEdit
             copy={props.copy?.FtuAlertEdit}
             classNames={props.classNames?.FtuAlertEdit}
-            setFtuView={setFtuView}
+            onClickNext={() => {
+              setFtuView(null);
+              props.onComplete();
+            }}
+            onClickBack={
+              cardConfig?.isContactInfoRequired
+                ? () => {
+                    if (cardConfig?.isContactInfoRequired) {
+                      return setFtuView(FtuView.TargetList);
+                    }
+                  }
+                : undefined
+            }
           />
         ) : null}
       </div>
-
       <div className={clsx('notifi-ftu-footer', props.classNames?.footer)}>
         <PoweredByNotifi classNames={props.classNames?.PoweredByNotifi} />
       </div>

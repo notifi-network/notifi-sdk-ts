@@ -3,12 +3,13 @@ import React from 'react';
 
 import { FtuStage, useNotifiUserSettingContext } from '../context';
 import { defaultCopy, defaultLoadingAnimationStyle } from '../utils/constants';
-import { FtuView } from './Ftu';
 import { LoadingAnimation } from './LoadingAnimation';
 import { NavHeader } from './NavHeader';
 import { TargetList } from './TargetList';
 
 export type FtuTargetListProps = {
+  onClickNext: () => void;
+  onClickBack: () => void;
   classNames?: {
     container?: string;
     main?: string;
@@ -20,7 +21,7 @@ export type FtuTargetListProps = {
     headerTitle?: string;
     buttonText?: string;
   };
-  setFtuView: React.Dispatch<React.SetStateAction<FtuView | null>>;
+  // setFtuView: React.Dispatch<React.SetStateAction<FtuView | null>>;
 };
 
 export const FtuTargetList: React.FC<FtuTargetListProps> = (props) => {
@@ -33,7 +34,7 @@ export const FtuTargetList: React.FC<FtuTargetListProps> = (props) => {
   const onClick = async () => {
     setIsLoading(true);
     await updateFtuStage(FtuStage.Alerts);
-    props.setFtuView(FtuView.AlertEdit);
+    props.onClickNext();
     setIsLoading(false);
   };
 
@@ -44,7 +45,7 @@ export const FtuTargetList: React.FC<FtuTargetListProps> = (props) => {
       <NavHeader
         leftCta={{
           icon: 'arrow-back',
-          action: () => props.setFtuView(FtuView.TargetEdit),
+          action: () => props.onClickBack(),
         }}
       >
         {props.copy?.headerTitle ?? defaultCopy.ftuTargetList.headerTitle}

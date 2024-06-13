@@ -12,7 +12,6 @@ import {
   getUserInputParams,
   isAlertFilter,
 } from '../utils';
-import { ErrorGlobal } from './ErrorGlobal';
 import { LoadingAnimation } from './LoadingAnimation';
 import { SubscriptionValueInput } from './SubscriptionValueInput';
 import { TopicOptions } from './TopicOptions';
@@ -38,8 +37,7 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
   if (!subscriptionValueOrRef) {
     return null; // TODO: handle undefined or error
   }
-  const { isLoading: isLoadingTopic, error: topicError } =
-    useNotifiTopicContext();
+  const { isLoading: isLoadingTopic } = useNotifiTopicContext();
 
   const filterName = getFusionEventMetadata(props.topic)?.filters.find(
     isAlertFilter,
@@ -60,10 +58,6 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
     filterName,
     props.onSave,
   );
-
-  if (topicError) {
-    return <ErrorGlobal />; // TODO: handle error
-  }
 
   return (
     <div

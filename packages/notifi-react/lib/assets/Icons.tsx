@@ -22,7 +22,9 @@ export type IconType =
   | 'empty-box'
   | 'round-bell'
   | 'chevron-right'
-  | 'bell-circle';
+  | 'bell-circle'
+  | 'check-circle'
+  | 'bell-thin';
 
 export const Icon: React.FC<Props & { type: IconType }> = (
   props: Props & { type: IconType },
@@ -697,6 +699,41 @@ export const Icon: React.FC<Props & { type: IconType }> = (
           <path
             d="M10.4901 16.1875C11.1212 16.1875 11.6376 15.6712 11.6376 15.0401H9.3427C9.3427 15.6712 9.85331 16.1875 10.4901 16.1875ZM13.9324 12.7452V9.8766C13.9324 8.11529 12.9915 6.64083 11.3507 6.25071V5.86058C11.3507 5.38439 10.9663 5 10.4901 5C10.0139 5 9.62956 5.38439 9.62956 5.86058V6.25071C7.98299 6.64083 7.04783 8.10955 7.04783 9.8766V12.7452L5.90039 13.8926V14.4663H15.0799V13.8926L13.9324 12.7452Z"
             fill="#262949"
+          />
+        </svg>
+      );
+    case 'check-circle':
+      return (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="11"
+          height="11"
+          viewBox="0 0 11 11"
+          fill="none"
+          {...props}
+        >
+          <circle cx="5.45455" cy="5.45455" r="5.45455" fill="currentColor" />
+          <path
+            d="M7.87876 4.24243L4.84846 7.27273L3.03027 6.06061"
+            // stroke="#1B1B22"
+            stroke-width="1.21212"
+            stroke-linecap="round"
+          />
+        </svg>
+      );
+    case 'bell-thin':
+      return (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="10"
+          height="12"
+          viewBox="0 0 10 12"
+          fill="none"
+          {...props}
+        >
+          <path
+            d="M4.58974 11.1875C5.22083 11.1875 5.73718 10.6712 5.73718 10.0401H3.44231C3.44231 10.6712 3.95292 11.1875 4.58974 11.1875ZM8.03205 7.74519V4.8766C8.03205 3.11529 7.09115 1.64083 5.45032 1.25071V0.860577C5.45032 0.384391 5.06593 0 4.58974 0C4.11356 0 3.72917 0.384391 3.72917 0.860577V1.25071C2.0826 1.64083 1.14744 3.10955 1.14744 4.8766V7.74519L0 8.89263V9.46635H9.17949V8.89263L8.03205 7.74519Z"
+            fill="currentColor"
           />
         </svg>
       );
