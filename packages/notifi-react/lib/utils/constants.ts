@@ -1,8 +1,8 @@
 export const defaultCopy = {
   connect: {
-    title: 'Connect your wallet to use notifications',
-    content: '',
-    buttonText: 'Connect to Wallet',
+    title: 'Notifications',
+    description: 'See your activity and gain access to alerts',
+    buttonText: 'Next',
   },
   expiry: {
     title: 'Subscription Expiry',
@@ -50,6 +50,7 @@ export const defaultCopy = {
     discord: 'Discord',
     slack: 'Slack',
     emailVerifyMessage: 'We’ve sent a verification email to:',
+    emailCtaCalledSuccessfullyText: 'Email sent',
     discordVerifiedMessage: 'Make sure you have enabled DMs in Discord',
     discordVerifiedPromptTooltip:
       'Make sure you have enabled DMs in Discord. Right click on the server after joining, go to Privacy Settings, and enable Direct Messages.',
@@ -90,6 +91,10 @@ export const defaultCopy = {
       title: 'Manage alert destinations',
       description: 'You have unverified destinations',
     },
+    verifyInHistory: {
+      title: 'Verify Your',
+      ctaText: 'Verify',
+    },
     Signup: {
       text: 'Get alerts via',
       cta: 'Sign Up',
@@ -104,10 +109,16 @@ export const defaultCopy = {
     buttonTextHasTarget: 'Save Changes',
     buttonTextNoTarget: 'Subscribe',
   },
+  errorGlobal: {
+    header: 'An error occurred',
+    title: 'Something went wrong, please try again: ',
+    detail: 'Contact support if the issue persists',
+  },
 };
 
 export const validationRegex: Record<string, RegExp> = {
   email: new RegExp('^[a-zA-Z0-9._:$!%-+]+@[a-zA-Z0-9.-]+.[a-zA-Z]$'),
+  telegram: new RegExp('.{5,}'),
 };
 
 export const defaultLoadingAnimationStyle: Record<string, React.CSSProperties> =

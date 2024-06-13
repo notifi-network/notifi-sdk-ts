@@ -5,15 +5,20 @@ import React, { useEffect, useState } from 'react';
 import {
   FtuStage,
   useNotifiFrontendClientContext,
+  useNotifiHistoryContext,
+  useNotifiTargetContext,
+  useNotifiTenantConfigContext,
+  useNotifiTopicContext,
   useNotifiUserSettingContext,
 } from '../context';
 import { useGlobalStateContext } from '../context/GlobalStateContext';
 import { Connect, ConnectProps } from './Connect';
-import { ErrorGlobal, ErrorGlobalProps } from './ErrorGlobal';
+import { ErrorView, ErrorViewProps } from './ErrorView';
 import { Expiry, ExpiryProps } from './Expiry';
 import { Ftu, FtuProps } from './Ftu';
 import { Inbox, InboxProps } from './Inbox';
 import { LoadingGlobalProps } from './LoadingGlobal';
+import { PoweredByNotifi } from './PoweredByNotifi';
 
 export type NotifiInputFieldsText = {
   label?: {
@@ -26,7 +31,7 @@ export type NotifiInputFieldsText = {
 
 export type NotifiCardModalProps = Readonly<{
   copy?: DeepPartialReadonly<{
-    ErrorGlobal?: ErrorGlobalProps['copy'];
+    ErrorGlobal?: ErrorViewProps['copy'];
     LoadingGlobal?: LoadingGlobalProps['copy'];
     Connect?: ConnectProps['copy'];
     Expiry?: ExpiryProps['copy'];
@@ -44,7 +49,7 @@ export type NotifiCardModalProps = Readonly<{
   onClose?: () => void;
 }>;
 
-type CardModalView = 'connect' | 'expiry' | 'ftu' | 'Inbox';
+export type CardModalView = 'connect' | 'expiry' | 'ftu' | 'Inbox';
 
 export const NotifiCardModal: React.FC<NotifiCardModalProps> = (props) => {
   const { frontendClientStatus, error: clientError } =
@@ -59,7 +64,11 @@ export const NotifiCardModal: React.FC<NotifiCardModalProps> = (props) => {
   );
   const { setGlobalError, globalError, setGlobalCtas } =
     useGlobalStateContext();
-  const [error, setError] = useState<Error | null>(null);
+
+  const { error: historyError } = useNotifiHistoryContext();
+  const { error: tenantError } = useNotifiTenantConfigContext();
+  const { error: topicError } = useNotifiTopicContext();
+  const { error: targetError } = useNotifiTargetContext();
 
   if (props.onClose) {
     setGlobalCtas({ onClose: props.onClose });
@@ -84,22 +93,82 @@ export const NotifiCardModal: React.FC<NotifiCardModalProps> = (props) => {
       setCardModalView('Inbox');
       return;
     }
-  }, [frontendClientStatus, ftuStage, isLoadingFtu]);
+  }, []);
 
   useEffect(() => {
-    if (clientError || userSettingError || error) {
+    if (
+      clientError ||
+      userSettingError ||
+      historyError ||
+      tenantError ||
+      topicError ||
+      targetError
+    ) {
       setGlobalError({
         error: new Error(
-          'ERROR: Failed to load client or user settings, please try again',
+          `In 
+              ${
+                clientError?.message
+                  ? ` ClientContext: \n ${clientError.message}`
+                  : ''
+              } 
+              ${
+                userSettingError?.message
+                  ? ` UserSettingContext: \n ${userSettingError.message}`
+                  : ''
+              }
+              ${
+                historyError?.message
+                  ? ` HistoryContext: \n ${historyError.message}`
+                  : ''
+              }
+              ${
+                tenantError?.message
+                  ? ` TenantConfigContext: \n ${tenantError.message}`
+                  : ''
+              }
+              ${
+                topicError?.message
+                  ? ` TopicContext: \n ${topicError.message}`
+                  : ''
+              }
+              ${
+                targetError?.message
+                  ? ` TargetContext: \n ${targetError.message}`
+                  : ''
+              }
+          `,
         ),
       });
       return;
     }
-    setGlobalError(null);
-  }, [userSettingError, error, isLoadingFtu]);
+  }, [
+    userSettingError,
+    isLoadingFtu,
+    clientError,
+    historyError,
+    tenantError,
+    targetError,
+  ]);
 
   if (globalError) {
-    return <ErrorGlobal />;
+    return (
+      <div
+        className={clsx(
+          props.darkMode ? 'notifi-theme-dark' : 'notifi-theme-light',
+          'notifi-card-modal',
+          props.classNames?.container,
+        )}
+      >
+        <ErrorView
+          detail={globalError.error.message}
+          cta={{
+            icon: 'arrow-back',
+            action: () => setGlobalError(null),
+          }}
+        />
+      </div>
+    );
   }
 
   return (
@@ -112,18 +181,24 @@ export const NotifiCardModal: React.FC<NotifiCardModalProps> = (props) => {
     >
       {CardModalView === 'connect' ? (
         <Connect
+          setCardModalView={setCardModalView}
           copy={props.copy?.Connect}
           classNames={props.classNames?.Connect}
         />
       ) : null}
       {CardModalView === 'expiry' ? (
         <Expiry
+          setCardModalView={setCardModalView}
           copy={props.copy?.Expiry}
           classNames={props.classNames?.Expiry}
         />
       ) : null}
       {CardModalView === 'ftu' ? (
-        <Ftu classNames={props.classNames?.Ftu} copy={props.copy?.Ftu} />
+        <Ftu
+          classNames={props.classNames?.Ftu}
+          copy={props.copy?.Ftu}
+          onComplete={() => setCardModalView('Inbox')}
+        />
       ) : null}
       {CardModalView === 'Inbox' ? (
         <Inbox classNames={props.classNames?.Inbox} copy={props.copy?.Inbox} />

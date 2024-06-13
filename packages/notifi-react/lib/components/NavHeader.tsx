@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import React, { PropsWithChildren } from 'react';
 
 import { Icon, IconType } from '../assets/Icons';
@@ -23,7 +24,12 @@ export const NavHeader: React.FC<PropsWithChildren<NavHeaderProps>> = (
       >
         {props.leftCta?.icon ? <Icon type={props.leftCta?.icon} /> : null}
       </div>
-      <div className="notifi-nav-header-title">
+      <div
+        className={clsx(
+          'notifi-nav-header-title',
+          props.children ? '' : 'isEmpty',
+        )}
+      >
         <div>{props.children}</div>
       </div>
       <div
