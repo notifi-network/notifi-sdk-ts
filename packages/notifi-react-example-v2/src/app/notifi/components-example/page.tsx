@@ -23,7 +23,7 @@ const NotifiComponentExample = () => {
           inputSeparators: {
             email: 'OR',
             sms: 'OR',
-            // telegram: 'OR',
+            telegram: 'OR',
           },
         },
       },
@@ -34,7 +34,7 @@ const NotifiComponentExample = () => {
           inputSeparators: {
             email: 'OR',
             sms: 'OR',
-            // telegram: 'OR',
+            telegram: 'OR',
           },
         },
       },

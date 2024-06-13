@@ -11,6 +11,12 @@
   padding: 1rem 0.5rem;
   cursor: pointer;
 }
+.notifi-target-state-banner-verify.history {
+  padding: 0.7rem 0.5rem;
+  background-color: var(--notifi-target-state-banner-verify-history-bg);
+  border-radius: 6px;
+  cursor: default;
+}
 
 .notifi-target-state-banner-verify-icon {
   color: var(--notifi-target-state-verify-icon-color);
@@ -19,6 +25,10 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
+}
+.notifi-target-state-banner-verify-icon.history {
+  color: inherit;
+  stroke: var(--notifi-target-state-banner-verify-icon-color);
 }
 
 .notifi-target-state-banner-verify-content {
@@ -29,6 +39,10 @@
 .notifi-target-state-banner-verify-title {
   font-weight: 600;
   margin-bottom: 0.2rem;
+}
+
+.notifi-target-state-banner-verify-title.history {
+  font-size: 0.9rem;
 }
 
 .notifi-target-state-banner-verify-description {
@@ -45,11 +59,26 @@
   color: var(--notifi-color-dusk);
 }
 
+.notifi-target-state-banner-verify-cta.history {
+  padding: 0.5rem;
+  width: 5rem;
+  background-color: var(--notifi-target-state-banner-verify-cta-history-bg);
+  border-radius: 6px;
+  color: inherit;
+  justify-content: center;
+  font-size: 0.9rem;
+}
+
 .notifi-target-state-banner-signup {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 1rem 0;
+  padding: 0.7rem 1rem;
+}
+.notifi-target-state-banner-signup.history {
+  flex-direction: row;
+  background-color: var(--notifi-target-state-banner-signup-history-bg);
+  border-radius: 6px;
 }
 
 .notifi-target-state-banner-signup-content {
@@ -57,6 +86,10 @@
   align-items: center;
   width: 80%;
   margin-bottom: 0.5rem;
+}
+
+.notifi-target-state-banner-signup-content.history {
+  margin-bottom: 0;
 }
 
 .notifi-target-state-banner-signup-text {
@@ -68,6 +101,9 @@
   color: var(--notifi-target-state-banner-signup-icon-color);
   margin-right: 0.8rem;
 }
+.notifi-target-state-banner-signup-icon.history {
+  color: inherit;
+}
 
 .notifi-target-state-banner-signup-cta {
   color: var(--notifi-color-white);
@@ -75,4 +111,9 @@
   padding: 0.5rem 1rem;
   border-radius: 6px;
   cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.notifi-target-state-banner-signup-cta.history {
+  width: 7rem;
 }
