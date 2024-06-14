@@ -37,6 +37,10 @@
   text-align: center;
 }
 
+.notifi-target-list-target-confirmed-message.inbox {
+  text-align: left;
+}
+
 .notifi-target-list-target-confirm-tooltip {
   display: inline-block;
   position: relative;
@@ -56,6 +60,10 @@
   visibility: hidden;
 }
 
+.notifi-target-list-target-confirm-tooltip-content.inbox {
+  transform: translate(10rem, -1.3rem);
+}
+
 .notifi-target-list-target-confirm-tooltip-icon:hover {
   color: var(
     --notifi-topic-list-tooltip-icon-color-hover
@@ -73,6 +81,11 @@
 
 .notifi-target-list-icon {
   color: var(--notifi-color-heather);
+}
+
+.notifi-target-list-item-target-id {
+  font-size: 0.9rem;
+  color: var(--notifi-target-list-target-verify-message-text);
 }
 
 .notifi-target-list-item-remove {
