@@ -203,6 +203,7 @@ export type ContactInfo = Readonly<{
 export type EmailContactInfo = ContactInfo;
 export type DiscordContactInfo = ContactInfo;
 export type SlackContactInfo = ContactInfo;
+export type WalletContactInfo = ContactInfo;
 
 export type CountryCode = string;
 
@@ -228,6 +229,7 @@ export type ContactInfoConfig = Readonly<{
   webhook: WebhookContactInfo;
   discord: DiscordContactInfo;
   slack: SlackContactInfo;
+  wallet: WalletContactInfo;
 }>;
 
 export type CardConfigItemV1 = Readonly<{

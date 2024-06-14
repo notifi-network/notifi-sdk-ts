@@ -77,9 +77,26 @@ export type TargetData = {
   email: string;
   phoneNumber: string;
   telegram: string;
-  discord: { useDiscord: boolean; data?: Types.DiscordTargetFragmentFragment };
-  slack: { useSlack: boolean; data?: Types.SlackChannelTargetFragmentFragment }; // TODO: Add back slack after merging
-  wallet: { useWallet: boolean; data?: Types.Web3TargetFragmentFragment };
+  discord: {
+    useDiscord: boolean;
+    data?: Types.DiscordTargetFragmentFragment;
+    // NOTE: available by default
+    isAvailable: boolean;
+  };
+  slack: {
+    useSlack: boolean;
+    data?: Types.SlackChannelTargetFragmentFragment;
+    // NOTE: available by default
+    isAvailable: boolean;
+  };
+  wallet: {
+    useWallet: boolean;
+    data?: Types.Web3TargetFragmentFragment;
+    /* NOTE: unavailable by default.
+     * The condition now determine whether the `wallet` target is available or not is if the dapp connects to `coinbase` wallet. But we are not able to know the information in "notifi-react" library Level.
+     */
+    isAvailable?: boolean;
+  };
 };
 
 const formatTelegramForSubscription = (telegramId: string) => {
@@ -147,9 +164,14 @@ const NotifiTargetContext = createContext<NotifiTargetContextType>(
   {} as NotifiTargetContextType, // intentionally empty as initial value
 );
 
-export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
-  children,
-}) => {
+export type NotifiTargetContextProviderProps = {
+  toggleTargetAvailability?: Partial<Record<ToggleTarget, boolean>>;
+};
+
+export const NotifiTargetContextProvider: FC<
+  PropsWithChildren<NotifiTargetContextProviderProps>
+> = ({ children, toggleTargetAvailability }) => {
+  console.log(1, { toggleTargetAvailability });
   const { frontendClient, frontendClientStatus, walletWithSignParams } =
     useNotifiFrontendClientContext();
   const xmtp = useClient();
@@ -180,9 +202,18 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
     email: '',
     phoneNumber: '',
     telegram: '',
-    discord: { useDiscord: false },
-    slack: { useSlack: false },
-    wallet: { useWallet: false },
+    discord: {
+      useDiscord: false,
+      isAvailable: toggleTargetAvailability?.discord ?? true,
+    },
+    slack: {
+      useSlack: false,
+      isAvailable: toggleTargetAvailability?.slack ?? true,
+    },
+    wallet: {
+      useWallet: false,
+      isAvailable: toggleTargetAvailability?.wallet ?? false,
+    },
   });
   const [targetInfoPrompts, setTargetInfoPrompts] = useState<
     Partial<Record<Target, TargetInfo>>
@@ -213,7 +244,7 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
   web3TargetId = targetData?.wallet?.data?.id ?? '';
 
   // Note: This is tenant-specific. For now, we're supporting GMX only.
-  // In the near future, we should retrieve this from the web3 target: targetData.wallet.data.senderAddress
+  // TODO: we should retrieve this from the web3 target: targetData.wallet.data.senderAddress
   senderAddress = '0xE80E42B5308d5b137FC137302d571B56907c3003';
 
   useEffect(() => {
@@ -593,7 +624,11 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
         });
         setTargetData((prev) => ({
           ...prev,
-          discord: { useDiscord: true, data: discordTarget },
+          discord: {
+            useDiscord: true,
+            data: discordTarget,
+            isAvailable: toggleTargetAvailability?.discord ?? true,
+          },
         }));
       } else if (!!discordTarget && discordTarget.isConfirmed) {
         switch (discordTarget.userStatus) {
@@ -619,13 +654,18 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
         }
         setTargetData((prev) => ({
           ...prev,
-          discord: { useDiscord: true, data: discordTarget },
+          discord: {
+            useDiscord: true,
+            data: discordTarget,
+            isAvailable: toggleTargetAvailability?.discord ?? true,
+          },
         }));
       } else {
         setTargetData((prev) => ({
           ...prev,
           discord: {
             useDiscord: false,
+            isAvailable: toggleTargetAvailability?.discord ?? true,
           },
         }));
       }
@@ -661,12 +701,19 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
         }
         setTargetData((prev) => ({
           ...prev,
-          slack: { useSlack: true, data: slackTarget },
+          slack: {
+            useSlack: true,
+            data: slackTarget,
+            isAvailable: toggleTargetAvailability?.slack ?? true,
+          },
         }));
       } else {
         setTargetData((prev) => ({
           ...prev,
-          slack: { useSlack: false },
+          slack: {
+            useSlack: false,
+            isAvailable: toggleTargetAvailability?.slack ?? true,
+          },
         }));
       }
     },
@@ -874,17 +921,42 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
         }
         setTargetData((prev) => ({
           ...prev,
-          wallet: { useWallet: true, data: web3Target },
+          wallet: {
+            useWallet: true,
+            data: web3Target,
+            isAvailable: toggleTargetAvailability?.wallet ?? false,
+          },
         }));
       } else {
         setTargetData((prev) => ({
           ...prev,
-          wallet: { useWallet: false },
+          wallet: {
+            useWallet: false,
+            isAvailable: toggleTargetAvailability?.wallet ?? false,
+          },
         }));
       }
     },
-    [signWallet],
+    [signWallet, toggleTargetAvailability],
   );
+
+  useEffect(() => {
+    setTargetData((prev) => ({
+      ...prev,
+      discord: {
+        ...prev.discord,
+        isAvailable: toggleTargetAvailability?.discord ?? true,
+      },
+      slack: {
+        ...prev.slack,
+        isAvailable: toggleTargetAvailability?.slack ?? true,
+      },
+      wallet: {
+        ...prev.wallet,
+        isAvailable: toggleTargetAvailability?.wallet ?? false,
+      },
+    }));
+  }, [toggleTargetAvailability]);
 
   return (
     <NotifiTargetContext.Provider

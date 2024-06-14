@@ -36,7 +36,7 @@ export const TargetCta: React.FC<TargetCtaProps> = (props) => {
             if (!isCtaInfo(props.targetInfoPrompt)) return;
             props.targetInfoPrompt.onClick();
             setCtaCalledSuccessfullyText(
-              props.ctaCalledSuccessfullyText ?? 'Done!',
+              props.ctaCalledSuccessfullyText ?? 'Done!', // TODO: Move this to defaultCopy
             );
             setTimeout(() => setCtaCalledSuccessfullyText(null), 5000);
           }}

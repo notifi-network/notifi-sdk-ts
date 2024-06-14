@@ -34,7 +34,14 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
 
   const targetListItemArgsList = React.useMemo(() => {
     // TODO: Move to custom hook when it gets too complex
-    const order = ['email', 'phoneNumber', 'telegram', 'discord', 'slack'];
+    const order = [
+      'email',
+      'phoneNumber',
+      'telegram',
+      'discord',
+      'slack',
+      'wallet',
+    ];
     const verifiedTargets = objectKeys(targetData)
       .filter((target) => {
         const targetInfo = targetInfoPrompts[target];
@@ -104,6 +111,21 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
           targetListItemArgs.iconType = 'slack';
           targetListItemArgs.label = defaultCopy.targetList.slack;
           targetListItemArgs.targetCtaType = 'button';
+          break;
+        case 'wallet':
+          if (!targetData[target].useWallet) return null;
+          targetListItemArgs.iconType = 'connect';
+          targetListItemArgs.label = defaultCopy.targetList.wallet;
+          targetListItemArgs.targetCtaType = 'button';
+          // TODO: Add to copy
+          targetListItemArgs.message = {
+            beforeVerify: '2-3 signatures required to verify',
+            beforeVerifyTooltip:
+              'Wallet messages are powered by XMTP and delivered natively into Coinbase Wallet. Download the Coinbase Wallet App.',
+            afterVerify: 'Enable messages in Coinbase Wallet App',
+            afterVerifyTooltip:
+              'Make sure messages are enabled in your Coinbase Wallet Mobile App. More info',
+          };
           break;
       }
 

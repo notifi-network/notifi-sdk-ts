@@ -52,6 +52,6 @@ export const isFormTarget = (target: Target): target is FormTarget => {
 };
 
 export const isToggleTarget = (target: Target): target is ToggleTarget => {
-  const supportedToggleTargets: Target[] = ['discord', 'slack'];
+  const supportedToggleTargets: Target[] = ['discord', 'slack', 'wallet'];
   return supportedToggleTargets.includes(target);
 };

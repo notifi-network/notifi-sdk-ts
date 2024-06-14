@@ -1,3 +1,4 @@
+// TODO: this is target related utility functions, need to move to target.ts
 export const reformatSignatureForWalletTarget = (
   signature: Uint8Array | string,
 ) => {

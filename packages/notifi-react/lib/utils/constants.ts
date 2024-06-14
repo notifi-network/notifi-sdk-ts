@@ -20,6 +20,10 @@ export const defaultCopy = {
   inputToggles: {
     discord: 'Discord DM Bot',
     slack: 'Slack',
+    wallet: 'Wallet Alerts',
+    discordUnavailable: 'Discord unavailable',
+    slackUnavailable: 'Slack unavailable',
+    walletUnavailable: 'Only available for Coinbase Wallet',
   },
   ftu: {
     headerTitles: {
@@ -46,6 +50,7 @@ export const defaultCopy = {
     telegram: 'Telegram',
     discord: 'Discord',
     slack: 'Slack',
+    wallet: 'Wallets',
     emailVerifyMessage: 'We’ve sent a verification email to:',
     emailCtaCalledSuccessfullyText: 'Email sent',
     discordVerifiedMessage: 'Make sure Discord DMs are enabled',
