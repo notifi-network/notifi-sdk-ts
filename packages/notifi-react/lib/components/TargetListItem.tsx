@@ -37,11 +37,12 @@ export type TargetListItemProps = {
     targetListVerifiedItem?: string;
     targetListItemTarget?: string;
     icon?: string;
-    TargetCta?: TargetCtaProps['className'];
     removeCta?: string;
     verifyMessage?: string;
     tooltipIcon?: string;
     tooltipContent?: string;
+    targetId?: string;
+    TargetCta?: TargetCtaProps['className'];
   };
 };
 
@@ -115,7 +116,15 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
         ) : null}
         {isTargetVerified(props.targetInfo.infoPrompt) &&
         props.parentComponent === 'ftu' ? null : (
-          <div>{targetData[props.target]}</div>
+          <div
+            className={clsx(
+              'notifi-target-list-item-target-id',
+              props.classNames?.targetId,
+            )}
+          >
+            {/** TODO: Move to use memo once the target display id > 1 format */}
+            {targetData[props.target]}
+          </div>
         )}
         <TargetCta
           type={props.targetCtaType}
@@ -135,7 +144,8 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
       </div>
     );
 
-  if (isToggleTarget(props.target))
+  if (isToggleTarget(props.target)) {
+    const toggleTargetData = targetData[props.target];
     return (
       <div
         className={clsx(
@@ -158,6 +168,21 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
           />
           <label>{props.label}</label>
         </div>
+        {!isTargetVerified(props.targetInfo.infoPrompt) ||
+        props.parentComponent === 'ftu' ? null : (
+          <div
+            className={clsx(
+              'notifi-target-list-item-target-id',
+              props.classNames?.targetId,
+            )}
+          >
+            {/** TODO: Move to use memo once the target display id > 1 format */}
+            {/** Display Discord username */}
+            {toggleTargetData?.data &&
+              'username' in toggleTargetData.data &&
+              `@${toggleTargetData.data.username}`}
+          </div>
+        )}
         {/* TODO: impl before verify message for toggle targets */}
         {props.message?.afterVerify &&
         isTargetVerified(props.targetInfo.infoPrompt) ? (
@@ -165,6 +190,7 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
             className={clsx(
               'notifi-target-list-target-confirmed-message',
               props.classNames?.verifyMessage,
+              props.parentComponent === 'inbox' ? 'inbox' : '',
             )}
           >
             {props.message.afterVerify}
@@ -180,6 +206,7 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
                 className={clsx(
                   'notifi-target-list-target-confirm-tooltip-content',
                   props.classNames?.tooltipContent,
+                  props.parentComponent === 'inbox' ? 'inbox' : '',
                 )}
               >
                 {props.message.afterVerifyTooltip}
@@ -203,6 +230,7 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
         ) : null}
       </div>
     );
+  }
 
   return null;
 };
