@@ -18,17 +18,18 @@ const nextConfig = {
   //   // your project has ESLint errors.
   //   ignoreDuringBuilds: true,
   // },
-  // webpack: ( /** BUILD ONLY */
-  //   config,
-  //   { buildId, dev, isServer, defaultLoaders, nextRuntime, webpack }
-  // ) => {
-  //   config.plugins.push(new CopyPlugin({
-  //     patterns: [
-  //       { from: "public/wasm", to: "./server/chunks" },
-  //     ],
-  //   }))
-  //   return config;
-  // },
+  webpack: (
+    config,
+    { buildId, dev, isServer, defaultLoaders, nextRuntime, webpack }
+  ) => {
+    config.plugins.push(new CopyPlugin({
+      patterns: [
+        // { from: "public/wasm", to: "./server/chunks" }, /** BUILD ONLY */
+        { from: "public/wasm", to: "./server/vendor-chunks/" },
+      ],
+    }))
+    return config;
+  },
 };
 
 export default nextConfig;
