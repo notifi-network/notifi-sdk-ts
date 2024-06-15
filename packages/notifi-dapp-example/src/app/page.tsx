@@ -108,11 +108,9 @@ export default function Home() {
       ) : null}
 
       {isSigningMessage ? (
-        <QueryClientProvider client={new QueryClient()}>
-          <NotifiContextWrapper>
-            <LoginComponent />
-          </NotifiContextWrapper>
-        </QueryClientProvider>
+        <NotifiContextWrapper>
+          <LoginComponent />
+        </NotifiContextWrapper>
       ) : null}
     </main>
   );

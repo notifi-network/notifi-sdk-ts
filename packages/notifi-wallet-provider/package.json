@@ -38,8 +38,14 @@
     "bech32-converting": "^1.0.9",
     "buffer": "^6.0.3",
     "ethers": "^6.11.1",
-    "viem": "^1.11.0",
-    "wagmi": "^1.4.2"
+    "viem": "^2.14.0",
+    "wagmi": "^2.10.2"
+  },
+  "resolutions": {
+    "bs58": "^5.0.0",
+    "@types/bs58": "^4.0.4",
+    "@tanstack/react-query": "^5.37.1",
+    "@tanstack/react-query-persist-client": "^5.37.1"
   },
   "peerDependencies": {
     "react": "^17.0.2 || ^18.0",

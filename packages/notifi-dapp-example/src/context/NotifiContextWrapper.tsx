@@ -49,25 +49,25 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
 }) => {
   const { wallets, selectedWallet } = useWallets();
 
-  const { isLoading: isArbLoading, data: arbData } = useQuery(
-    ['arb'],
-    async () => {
+  const { isLoading: isArbLoading, data: arbData } = useQuery({
+    queryKey: ['arb'],
+    queryFn: async () => {
       const response = await fetch(
         'https://arbitrum-api.gmxinfra.io/prices/tickers',
       );
       return response.json();
     },
-  );
+  });
 
-  const { isLoading: isAvaxLoading, data: avaxData } = useQuery(
-    ['avax'],
-    async () => {
+  const { isLoading: isAvaxLoading, data: avaxData } = useQuery({
+    queryKey: ['avax'],
+    queryFn: async () => {
       const response = await fetch(
         'https://avalanche-api.gmxinfra.io/prices/tickers',
       );
       return response.json();
     },
-  );
+  });
 
   if (
     !selectedWallet ||

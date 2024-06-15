@@ -41,7 +41,7 @@
     "@notifi-network/notifi-frontend-client": "^0.91.3",
     "@notifi-network/notifi-graphql": "^0.91.3",
     "@notifi-network/notifi-wallet-provider": "^0.91.3",
-    "@tanstack/react-query": "^4.28.0",
+    "@tanstack/react-query": "^5.45.0",
     "@xmtp/consent-proof-signature": "^0.1.2",
     "@xmtp/react-sdk": "^6.0.1",
     "copy-webpack-plugin": "^12.0.2",

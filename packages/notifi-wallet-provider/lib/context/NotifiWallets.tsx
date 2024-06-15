@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React, {
   PropsWithChildren,
   createContext,
@@ -214,20 +215,22 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
       if (selectedWallet) setIsAuthenticationVerified(true);
     } else setIsAuthenticationVerified(true);
   }, [selectedWallet]);
-
+  const queryClient = new QueryClient();
   return (
-    <WalletContext.Provider
-      value={{
-        selectedWallet,
-        selectWallet,
-        wallets,
-        error,
-        isLoading,
-        isAuthenticationVerified,
-      }}
-    >
-      {children}
-    </WalletContext.Provider>
+    <QueryClientProvider client={queryClient}>
+      <WalletContext.Provider
+        value={{
+          selectedWallet,
+          selectWallet,
+          wallets,
+          error,
+          isLoading,
+          isAuthenticationVerified,
+        }}
+      >
+        {children}
+      </WalletContext.Provider>
+    </QueryClientProvider>
   );
 };
 

@@ -1,36 +1,28 @@
-import { configureChains, createConfig } from 'wagmi';
-import { mainnet } from 'wagmi/chains';
-import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet';
-import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
-import { publicProvider } from 'wagmi/providers/public';
+import { createConfig, http } from 'wagmi';
+import { arbitrum, mainnet, polygon } from 'wagmi/chains';
+import { coinbaseWallet, walletConnect } from 'wagmi/connectors';
 
-const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [mainnet],
-  [publicProvider()],
-);
-
-export const connectors = [
-  new CoinbaseWalletConnector({
-    chains,
-    options: {
-      appName: 'Notifi x GMX',
-    },
-  }),
-  new WalletConnectConnector({
-    chains,
-    options: {
+export const config = createConfig({
+  chains: [mainnet, polygon, arbitrum],
+  multiInjectedProviderDiscovery: false,
+  connectors: [
+    coinbaseWallet({
+      appName: 'Notifi',
+      // darkMode: true,
+    }), //TODO: make it dynamic
+    walletConnect({
       projectId: '632a105feb9cf8380428a4f240eb6f13',
+      isNewChainsStale: true,
       qrModalOptions: {
+        themeMode: 'dark',
         explorerExcludedWalletIds: 'ALL',
         enableExplorer: false,
       },
-    },
-  }),
-];
-
-export const config = createConfig({
-  autoConnect: false,
-  connectors: connectors,
-  publicClient,
-  webSocketPublicClient,
+    }),
+  ],
+  transports: {
+    [mainnet.id]: http(),
+    [polygon.id]: http(),
+    [arbitrum.id]: http(),
+  },
 });
