@@ -17,13 +17,10 @@ export default function NotifiSingupLayout({
   const router = useRouter();
 
   useEffect(() => {
-    if (
-      (!selectedWallet || !wallets[selectedWallet].walletKeys) &&
-      isAuthenticationVerified
-    ) {
+    if (!selectedWallet || !wallets[selectedWallet].walletKeys) {
       router.push('/');
     }
-  }, [selectedWallet, isAuthenticationVerified]);
+  }, [selectedWallet]);
 
   const showDisconnectButton = ['/notifi/ftu', '/notifi/signup'].includes(
     pathname,

@@ -35,6 +35,7 @@
     "url": "https://github.com/notifi-network/notifi-sdk-ts/issues"
   },
   "dependencies": {
+    "@coinbase/wallet-sdk": "^4.0.3",
     "bech32-converting": "^1.0.9",
     "buffer": "^6.0.3",
     "ethers": "^6.11.1",

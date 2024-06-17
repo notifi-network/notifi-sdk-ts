@@ -85,12 +85,16 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
     throwError,
     selectWallet,
     'walletconnect',
+    isAuthenticationVerified,
+    setIsAuthenticationVerified,
   );
   const coinbase = useWagmiWallet(
     setIsLoading,
     throwError,
     selectWallet,
     'coinbase',
+    isAuthenticationVerified,
+    setIsAuthenticationVerified,
   );
   const metamask = useInjectedWallet(
     setIsLoading,
@@ -197,15 +201,25 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
     const storageWallet = getWalletsFromLocalStorage();
     if (storageWallet) {
       const walletName = storageWallet.walletName;
+      console.log('inside notifiwallets.tsx');
+      console.log('selectedWallet', selectedWallet);
+      console.log('storageWallet', storageWallet);
+      console.log('isAuthenticationVerified', isAuthenticationVerified);
       if (
         Object.keys(wallets).includes(walletName) &&
         wallets[walletName].isInstalled &&
         !selectedWallet
+        // &&
+        // isAuthenticationVerified
       ) {
+        if (!isAuthenticationVerified && walletName === 'coinbase') {
+          return;
+        }
+        console.log('connecting wallet from within notifiwallets.tsx');
         wallets[walletName].connect();
       }
     }
-  }, [wallets]);
+  }, [selectedWallet, wallets, isAuthenticationVerified]);
 
   useEffect(() => {
     const storageWallet = getWalletsFromLocalStorage();
@@ -215,6 +229,7 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
       if (selectedWallet) setIsAuthenticationVerified(true);
     } else setIsAuthenticationVerified(true);
   }, [selectedWallet]);
+
   const queryClient = new QueryClient();
   return (
     <QueryClientProvider client={queryClient}>

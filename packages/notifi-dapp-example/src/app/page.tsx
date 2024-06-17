@@ -23,16 +23,25 @@ function LoginComponent() {
 export default function Home() {
   const { isLoadingRouter } = useRouterAsync();
   const { popGlobalInfoModal } = useGlobalStateContext();
-  const { selectedWallet, wallets, error, isLoading } = useWallets();
+
+  const {
+    selectedWallet,
+    wallets,
+    error,
+    isLoading,
+    isAuthenticationVerified,
+  } = useWallets();
   const [isOpenWalletsModal, setIsOpenWalletsModal] = useState(false);
   const [isOpenMobilePromptModal, setIsOpenMobilePromptModal] = useState(false);
   const [isSigningMessage, setIsSigningMessage] = useState(false);
 
   useEffect(() => {
-    if (selectedWallet && wallets[selectedWallet].walletKeys)
+    if (selectedWallet && wallets[selectedWallet].walletKeys) {
       setIsSigningMessage(true);
-    else setIsSigningMessage(false);
-  }, [selectedWallet]);
+    } else {
+      setIsSigningMessage(false);
+    }
+  }, [selectedWallet, isAuthenticationVerified]);
 
   useEffect(() => {
     if (error) {

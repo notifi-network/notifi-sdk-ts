@@ -8,7 +8,9 @@ export const config = createConfig({
   connectors: [
     coinbaseWallet({
       appName: 'Notifi',
-      // darkMode: true,
+      version: '3',
+      darkMode: true,
+      reloadOnDisconnect: true,
     }), //TODO: make it dynamic
     walletConnect({
       projectId: '632a105feb9cf8380428a4f240eb6f13',

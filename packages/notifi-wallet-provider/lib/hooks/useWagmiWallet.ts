@@ -7,6 +7,7 @@ import {
   cleanWalletsInLocalStorage,
   setWalletKeysToLocalStorage,
 } from '../utils/localStorageUtils';
+import { config } from '../utils/wagmi';
 import { walletsWebsiteLink } from '../utils/wallet';
 
 export const useWagmiWallet = (
@@ -14,13 +15,21 @@ export const useWagmiWallet = (
   errorHandler: (e: Error, durationInMs?: number) => void,
   selectWallet: (wallet: keyof Wallets | null) => void,
   walletName: keyof Wallets,
+  isAuthenticationVerified: boolean,
+  setIsAuthenticationVerified: React.Dispatch<React.SetStateAction<boolean>>,
 ) => {
   const [walletKeys, setWalletKeys] = useState<MetamaskWalletKeys | null>(null);
   const [isWalletInstalled, setIsWalletInstalled] = useState<boolean>(false);
 
-  const { disconnect } = useDisconnect();
   const { signMessageAsync } = useSignMessage();
-  const { address, isConnected: isWalletConnected, connector } = useAccount();
+  const {
+    address,
+    isConnected: isWalletConnected,
+    connector,
+    isReconnecting,
+    isDisconnected,
+  } = useAccount();
+  const { disconnect } = useDisconnect({ config });
   const { connect, connectors } = useConnect();
 
   const isConnected =
@@ -36,6 +45,14 @@ export const useWagmiWallet = (
   };
 
   useEffect(() => {
+    if (isDisconnected) {
+      setIsAuthenticationVerified(false);
+    } else if (isWalletConnected) {
+      setIsAuthenticationVerified(true);
+    }
+  }, [isDisconnected, isWalletConnected]);
+
+  useEffect(() => {
     const provider = connectors.find((v) =>
       v.name.toLowerCase()?.includes(walletName),
     );
@@ -43,7 +60,13 @@ export const useWagmiWallet = (
   }, [connectors]);
 
   useEffect(() => {
-    if (!isConnected || !address || !isWalletInstalled) return;
+    if (
+      !isConnected ||
+      !address ||
+      !isWalletInstalled ||
+      !isAuthenticationVerified
+    )
+      return;
 
     const walletKeys = {
       bech32: converter('inj').toBech32(address),
@@ -52,12 +75,17 @@ export const useWagmiWallet = (
     setWalletKeys(walletKeys);
     selectWallet(walletName);
     setWalletKeysToLocalStorage(walletName, walletKeys);
-  }, [address, isWalletInstalled, isConnected]);
+  }, [address, isWalletInstalled, isConnected, isAuthenticationVerified]);
 
   const connectWallet = async (
     timeoutInMiniSec?: number,
   ): Promise<MetamaskWalletKeys | null> => {
-    if (isWalletConnected) return null;
+    console.log(`connecting to ${walletName} wallet`);
+    console.log('isAuthVerified?? ' + isAuthenticationVerified);
+    console.log('isReconnecting?? ' + isReconnecting);
+    console.log('isWalletconnected' + isWalletConnected);
+    if (isWalletConnected || isReconnecting || isAuthenticationVerified)
+      return null;
 
     loadingHandler(true);
     const timer = setTimeout(() => {

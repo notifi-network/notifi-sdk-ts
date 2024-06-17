@@ -19,16 +19,40 @@ export const useNotifiRouter = () => {
   const { handleRoute, isLoadingRouter } = useRouterAsync();
   const { setIsGlobalLoading } = useGlobalStateContext();
   const { ftuStage, isLoading: isLoadingFtu } = useNotifiUserSettingContext();
-  const { wallets, selectedWallet } = useWallets();
+  const { wallets, selectedWallet, isAuthenticationVerified } = useWallets();
   const isLoginStarted = useRef(false);
 
   useEffect(() => {
-    if (!frontendClientStatus.isInitialized) return;
+    console.log('in use effect in router');
+    console.log('frontend client:');
+    console.log(frontendClientStatus);
+    console.log('ftu stage:' + ftuStage);
+    console.log('isAuthenticationVerified:' + isAuthenticationVerified);
+    console.log('selectedWallet: ' + selectedWallet);
+    console.log('isLoadingRouter: ' + isLoadingRouter);
+    if (
+      !frontendClientStatus.isInitialized
+      // !isAuthenticationVerified ||
+      // || ftuStage === null // todo uncomment this
+    )
+      return;
+
+    if (!isAuthenticationVerified && selectedWallet === 'coinbase') {
+      return;
+    }
+
     if (frontendClientStatus.isExpired) {
       handleRoute('/notifi/expiry');
       return;
     }
-    if (frontendClientStatus.isAuthenticated && !isLoadingFtu) {
+    if (
+      frontendClientStatus.isAuthenticated &&
+      // isAuthenticationVerified && //todo uncomment
+      !isLoadingRouter
+    ) {
+      if (!isAuthenticationVerified && selectedWallet === 'coinbase') {
+        return; // todo only for cbw
+      }
       if (!ftuStage) {
         handleRoute('/notifi/signup');
         return;
@@ -41,7 +65,13 @@ export const useNotifiRouter = () => {
         return;
       }
     }
-  }, [frontendClientStatus, ftuStage, isLoadingFtu]);
+  }, [
+    frontendClientStatus.isAuthenticated,
+    frontendClientStatus.isExpired,
+    frontendClientStatus.isAuthenticated,
+    ftuStage,
+    isAuthenticationVerified,
+  ]);
 
   useEffect(() => {
     if (isLoginStarted.current || frontendClientStatus.isAuthenticated) return;
