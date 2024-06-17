@@ -29,54 +29,129 @@
 .notifi-target-list-target-verify-message {
   font-size: 0.9rem;
   color: var(--notifi-target-list-target-verify-message-text);
+  margin-bottom: 0.625rem;
 }
 
 .notifi-target-list-target-confirmed-message {
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   color: var(--notifi-target-list-target-verify-message-text);
   text-align: center;
+  margin-bottom: 0.625rem;
 }
 
 .notifi-target-list-target-confirmed-message.inbox {
   text-align: left;
 }
 
-.notifi-target-list-target-confirm-tooltip {
+.notifi-target-list-item-tooltip {
   display: inline-block;
   position: relative;
-  height: 1.2rem;
+  height: 1rem;
 }
 
-.notifi-target-list-target-confirm-tooltip-content {
+.notifi-target-list-item-tooltip-content {
   padding: 0.5rem;
   border-radius: 6px;
   background-color: var(--notifi-target-list-tooltip-bg);
   border: var(--notifi-color-heather) 1px solid;
-  width: 13rem;
+  width: 11.5rem;
   position: absolute;
-  transform: translate(3.3rem, -1.3rem);
+  display: none;
+  text-align: left;
+  color: var(--notifi-color-white);
+  z-index: 1;
+}
+
+.notifi-target-list-item-tooltip-icon:hover
+  ~ .notifi-target-list-item-tooltip-content.top-right,
+.notifi-target-list-item-tooltip-content.top-right:hover {
+  top: 1.5rem;
+  right: -1.5rem;
+  display: block;
+}
+
+.notifi-target-list-item-tooltip-icon:hover
+  ~ .notifi-target-list-item-tooltip-content.top-left,
+.notifi-target-list-item-tooltip-content.top-left:hover {
+  top: 1.5rem;
+  left: 0;
+  display: block;
+}
+
+.notifi-target-list-item-tooltip-icon:hover
+  ~ .notifi-target-list-item-tooltip-content.bottom-right,
+.notifi-target-list-item-tooltip-content.bottom-right:hover {
+  bottom: 1rem;
+  right: -1.5rem;
+  display: block;
+}
+
+.notifi-target-list-item-tooltip-icon:hover
+  ~ .notifi-target-list-item-tooltip-content.bottom-left,
+.notifi-target-list-item-tooltip-content.bottom-left:hover {
+  bottom: 1rem;
+  left: 0;
+  display: block;
+}
+
+/* .notifi-target-list-target-confirm-tooltip-content {
+  padding: 0.5rem;
+  border-radius: 6px;
+  background-color: var(--notifi-target-list-tooltip-bg);
+  border: var(--notifi-color-heather) 1px solid;
+  width: 11.5rem;
+  position: absolute;
+  transform: translate(2.4rem, -1.3rem);
   right: 0;
   bottom: 0;
   visibility: hidden;
-}
+  text-align: left;
+  color: var(--notifi-color-white);
+} */
 
-.notifi-target-list-target-confirm-tooltip-content.inbox {
-  transform: translate(10rem, -1.3rem);
+/* 1st target list confirmed message tooltip style  */
+/* .notifi-target-list
+  > .notifi-target-list-item:first-child
+  .notifi-target-list-target-confirmed-message
+  .notifi-target-list-target-confirm-tooltip
+  .notifi-target-list-target-confirm-tooltip-content {
+  transform: translate(2.4rem, 105%);
+  z-index: 1;
 }
+/* 1st target list unconfirmed message tooltip style  */
+/* .notifi-target-list
+  > .notifi-target-list-item:first-child
+  .notifi-target-list-target-verify-message
+  .notifi-target-list-target-confirm-tooltip
+  .notifi-target-list-target-confirm-tooltip-content {
+  transform: translate(2.4rem, 105%);
+  z-index: 1;
+} */
+/* .notifi-target-list-item-tooltip-content.inbox {
+  transform: translate(2.4rem, -1.3rem);
+  z-index: 1;
+} */
 
-.notifi-target-list-target-confirm-tooltip-icon:hover {
+.notifi-target-list-item-tooltip-icon:hover {
   color: var(
     --notifi-topic-list-tooltip-icon-color-hover
   ); /* TODO: Add new color variable for this */
 }
 
-.notifi-target-list-target-confirm-tooltip-icon:hover
+/* .notifi-target-list-target-confirm-tooltip-icon:hover
+  ~ .notifi-target-list-target-item-tooltip-content.top-left {
+  top: 1.2rem;
+  left: 0;
+  visibility: visible;
+} */
+
+/* .notifi-target-list-target-confirm-tooltip-icon:hover
   ~ .notifi-target-list-target-confirm-tooltip-content {
   visibility: visible;
-}
-.notifi-target-list-target-confirm-tooltip-icon {
+} */
+.notifi-target-list-item-tooltip-icon {
   position: absolute;
-  top: 0;
+  top: 0rem;
 }
 
 .notifi-target-list-icon {
@@ -86,6 +161,7 @@
 .notifi-target-list-item-target-id {
   font-size: 0.9rem;
   color: var(--notifi-target-list-target-verify-message-text);
+  margin-bottom: 0.25rem;
 }
 
 .notifi-target-list-item-remove {
