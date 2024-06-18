@@ -50,7 +50,7 @@
 }
 
 .notifi-target-list-item-tooltip-content {
-  padding: 0.5rem;
+  padding: 1rem;
   border-radius: 6px;
   background-color: var(--notifi-target-list-tooltip-bg);
   border: var(--notifi-color-heather) 1px solid;

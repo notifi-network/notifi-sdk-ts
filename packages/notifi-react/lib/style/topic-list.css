@@ -41,7 +41,7 @@
 .notifi-topic-list-tooltip-content {
   position: absolute;
   background-color: var(--notifi-topic-list-tooltip-bg);
-  padding: 0.5rem;
+  padding: 1rem;
   top: 0;
   transform: translate(50%, -100%);
   right: 0;
