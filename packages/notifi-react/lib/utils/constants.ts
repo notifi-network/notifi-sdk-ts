@@ -92,7 +92,7 @@ export const defaultCopy = {
       description: 'You have unverified destinations',
     },
     verifyInHistory: {
-      title: 'Verify Your',
+      title: 'Verify your',
       ctaText: 'Verify',
     },
     Signup: {

@@ -278,9 +278,10 @@ export const TargetStateBanner: React.FC<TargetStateBannerProps> = (props) => {
 // Utils
 
 const formatUnverifiedTargets = (unVerifiedTargets: Target[]) => {
-  const captializedTargets = unVerifiedTargets.map(
-    (target) => target.charAt(0).toUpperCase() + target.slice(1),
-  );
+  const captializedTargets = unVerifiedTargets.map((target) => {
+    if (target === 'email') return target;
+    return target.charAt(0).toUpperCase() + target.slice(1);
+  });
   return captializedTargets.length > 1
     ? `${captializedTargets
         .slice(0, -1)
