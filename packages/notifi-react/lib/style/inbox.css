@@ -29,7 +29,7 @@
   cursor: pointer;
   background: var(--notifi-nav-footer-bg);
   padding: 1rem 0;
-  border-top: var(--notifi-ftu-footer-border) 1px solid; /** TODO: change to notifi-nav-footer-border */
+  border-top: var(--notifi-inbox-footer-border) 1px solid;
 }
 
 .notifi-inbox-nav-tabs > div {
@@ -83,6 +83,7 @@
   flex-grow: 1;
   overflow: scroll;
   scrollbar-width: none;
+  border-bottom: var(--notifi-inbox-footer-border) 1px solid;
 }
 .notifi-inbox-config-target-edit-button,
 .notifi-inbox-config-target-list-button {
@@ -127,4 +128,5 @@
   overflow: scroll;
   margin-top: 1.5rem;
   scrollbar-width: none;
+  border-bottom: var(--notifi-inbox-footer-border) 1px solid;
 }

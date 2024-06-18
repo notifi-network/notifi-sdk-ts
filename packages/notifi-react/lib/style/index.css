@@ -112,6 +112,7 @@ button {
     --notifi-color-seaglass-dark
   );
   --notifi-target-state-banner-verify-icon-color: var(--notifi-color-dark);
+  --notifi-inbox-footer-border: var(--notifi-color-grey4);
 }
 
 .notifi-theme-light {
@@ -176,4 +177,5 @@ button {
   --notifi-target-state-banner-verify-history-bg: var(--notifi-color-cloud);
   --notifi-target-state-banner-verify-cta-history-bg: var(--notifi-color-white);
   --notifi-target-state-banner-verify-icon-color: var(--notifi-color-eggshell);
+  --notifi-inbox-footer-border: var(--notifi-color-cloud);
 }
