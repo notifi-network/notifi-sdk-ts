@@ -60,7 +60,7 @@
 /* HistoryRow styles */
 .notifi-history-row {
   display: flex;
-  align-items: center;
+  /* align-items: center; */
   padding: 10px 1rem 10px 0;
   background-color: var(--notifi-history-row-bg);
   position: relative;
