@@ -70,6 +70,10 @@
   border: 1.5px solid var(--notifi-color-seaglass-dark);
 }
 
+.notifi-target-input-field-input-container.warning {
+  border: 1.5px solid var(--notifi-color-error);
+}
+
 .notifi-target-input-field-input::placeholder {
   font-size: 1rem;
   font-weight: 500;
@@ -90,15 +94,6 @@
   border: none;
   color: var(--notifi-font-color);
   font-weight: 500;
-}
-
-.notifi-target-input-field-error-message {
-  color: var(--notifi-color-pink);
-  font-size: 0.7rem;
-  text-align: center;
-  position: absolute;
-  bottom: 0.1rem;
-  left: 1rem;
 }
 
 /* TargetInputToggle styles */

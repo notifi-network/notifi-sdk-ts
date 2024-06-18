@@ -1,3 +1,5 @@
+import { Target } from '../context';
+
 export const defaultCopy = {
   connect: {
     title: 'Notifications',
@@ -114,10 +116,14 @@ export const defaultCopy = {
     title: 'Something went wrong, please try again: ',
     detail: 'Contact support if the issue persists',
   },
+  targetInputField: {
+    inValidErrorMessage: (target: Target) =>
+      `Please enter a valid ${target} address`,
+  },
 };
 
 export const validationRegex: Record<string, RegExp> = {
-  email: new RegExp('^[a-zA-Z0-9._:$!%-+]+@[a-zA-Z0-9.-]+.[a-zA-Z]$'),
+  email: new RegExp('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'),
   telegram: new RegExp('.{5,}'),
 };
 

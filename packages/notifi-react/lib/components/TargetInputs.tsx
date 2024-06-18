@@ -2,12 +2,14 @@ import clsx from 'clsx';
 import React from 'react';
 
 import { IconType } from '../assets/Icons';
-import { Target, useNotifiTenantConfigContext } from '../context';
+import { FormTarget, Target, useNotifiTenantConfigContext } from '../context';
 import { validationRegex } from '../utils/constants';
 import { TargetInputField, TargetInputFieldProps } from './TargetInputField';
 import { TargetInputToggle } from './TargetInputToggle';
 
 export type TargetInputsProps = {
+  formTargetsOnFocus?: (target: FormTarget) => void;
+  formTargetsOnBlur?: (target: FormTarget) => void;
   copy?: {
     iconType?: Partial<
       Record<Extract<Target, 'email' | 'telegram' | 'phoneNumber'>, IconType>
@@ -54,6 +56,8 @@ export const TargetInputs: React.FC<TargetInputsProps> = (props) => {
             targetType="email"
             iconType={props.copy?.iconType?.email ?? 'email'}
             validateRegex={validationRegex.email}
+            onFocus={props.formTargetsOnFocus}
+            onBlur={props.formTargetsOnBlur}
           />
           {props.copy?.inputSeparators?.email ? (
             <div
@@ -74,6 +78,8 @@ export const TargetInputs: React.FC<TargetInputsProps> = (props) => {
             classNames={props.classNames?.targetInputField?.phoneNumber}
             targetType="phoneNumber"
             iconType={props.copy?.iconType?.phoneNumber ?? 'sms'}
+            onFocus={props.formTargetsOnFocus}
+            onBlur={props.formTargetsOnBlur}
           />
           {props.copy?.inputSeparators?.sms ? (
             <div
@@ -95,6 +101,8 @@ export const TargetInputs: React.FC<TargetInputsProps> = (props) => {
             targetType="telegram"
             iconType={props.copy?.iconType?.telegram ?? 'telegram'}
             validateRegex={validationRegex.telegram}
+            onFocus={props.formTargetsOnFocus}
+            onBlur={props.formTargetsOnBlur}
           />
           {props.copy?.inputSeparators?.telegram ? (
             <div

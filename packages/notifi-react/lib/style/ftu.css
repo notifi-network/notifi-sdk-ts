@@ -109,9 +109,15 @@
 .notifi-ftu-target-edit-description {
   color: var(--notifi-ftu-target-edit-description);
   text-align: center;
-  margin-bottom: 1rem;
   font-size: 0.9rem;
-  margin-top: 1rem;
+  margin: 0.75rem 0 0.75rem 0;
+}
+
+.notifi-ftu-target-edit-invalid-email-warning {
+  color: var(--notifi-color-error);
+  margin: 0 2rem 0.5rem 2rem;
+  height: 1rem;
+  font-size: 0.9rem;
 }
 
 .notifi-ftu-target-edit-main {
