@@ -14,7 +14,7 @@ export const defaultCopy = {
     description: 'See your activity and gain access to alerts',
     buttonText: 'Next',
   },
-  poweredByNotifi: 'Powered',
+  poweredByNotifi: 'Powered by',
   inputFields: {
     email: 'Email address',
     phoneNumber: 'Phone Number',

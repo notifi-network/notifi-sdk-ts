@@ -113,6 +113,7 @@ button {
   );
   --notifi-target-state-banner-verify-icon-color: var(--notifi-color-dark);
   --notifi-inbox-footer-border: var(--notifi-color-grey4);
+  --notifi-powered-by-text: var(--notifi-color-heather);
 }
 
 .notifi-theme-light {
@@ -178,4 +179,5 @@ button {
   --notifi-target-state-banner-verify-cta-history-bg: var(--notifi-color-white);
   --notifi-target-state-banner-verify-icon-color: var(--notifi-color-eggshell);
   --notifi-inbox-footer-border: var(--notifi-color-cloud);
+  --notifi-powered-by-text: var(--notifi-color-midnight);
 }

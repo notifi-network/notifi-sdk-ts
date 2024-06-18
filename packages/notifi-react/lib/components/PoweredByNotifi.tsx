@@ -16,7 +16,10 @@ export type PoweredByNotifiProps = {
 
 export const PoweredByNotifi: React.FC<PoweredByNotifiProps> = (props) => {
   return (
-    <div className={clsx('powered-by-notifi', props.classNames?.container)}>
+    <div
+      className={clsx('powered-by-notifi', props.classNames?.container)}
+      onClick={() => window.open('https://notifi.network', '_blank')}
+    >
       <div
         className={clsx(
           'notifi-powered-by-notifi-content',

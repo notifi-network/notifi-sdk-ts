@@ -1,16 +1,19 @@
 .powered-by-notifi {
   display: flex;
+  cursor: pointer;
 }
 
 .notifi-powered-by-notifi-content {
   font-size: 0.6rem;
   margin-right: 0.5rem;
+  opacity: 0.7;
+  color: var(--notifi-powered-by-text);
 }
 
 .powered-by-notifi-logo {
   width: 0.6rem;
   height: 0.6rem;
-  margin-right: 0.5rem;
+  margin-right: 0.27rem;
 }
 
 .powered-by-notifi-text {
