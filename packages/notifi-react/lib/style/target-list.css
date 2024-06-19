@@ -1,12 +1,12 @@
 /* TargetList styles */
 
 .notifi-target-list {
-  padding-top: 0.8rem;
   margin: 0 1rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   border-radius: 6px;
+  padding: 0.8rem 0 0.8rem 0;
 }
 
 .notifi-target-list-item {
