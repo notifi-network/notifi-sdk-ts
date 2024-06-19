@@ -25,6 +25,11 @@
   position: relative;
 }
 
+.notifi-topic-list-tooltip-container {
+  position: relative;
+  display: flex;
+}
+
 .notifi-topic-list-tooltip-icon {
   color: var(--notifi-color-heather);
 }
@@ -42,23 +47,43 @@
   position: absolute;
   background-color: var(--notifi-topic-list-tooltip-bg);
   padding: 1rem;
-  top: 0;
-  transform: translate(50%, -100%);
-  right: 0;
   border-radius: 6px;
   border: var(--notifi-color-heather) 1px solid;
-  visibility: hidden;
   width: 10rem;
+  display: none;
+  z-index: 1;
 }
 
-.notifi-topic-list
-  > .notifi-topic-row:first-child
-  .notifi-topic-row-base
-  .notifi-topic-row-content
-  .notifi-topic-list-tooltip-content {
-  /* style for the first topic row's tooltip */
-  transform: translate(50%, 1.5rem);
-  z-index: 1;
+.notifi-topic-list-tooltip-icon:hover
+  ~ .notifi-topic-list-tooltip-content.top-right,
+.notifi-topic-list-tooltip-content.top-right:hover {
+  top: 1.5rem;
+  right: -1rem;
+  display: block;
+}
+
+.notifi-topic-list-tooltip-icon:hover
+  ~ .notifi-topic-list-tooltip-content.top-left,
+.notifi-topic-list-tooltip-content.top-left:hover {
+  top: 1.5rem;
+  left: -1rem;
+  display: block;
+}
+
+.notifi-topic-list-tooltip-icon:hover
+  ~ .notifi-topic-list-tooltip-content.bottom-right,
+.notifi-topic-list-tooltip-content.bottom-right:hover {
+  bottom: 1.5rem;
+  right: -1rem;
+  display: block;
+}
+
+.notifi-topic-list-tooltip-icon:hover
+  ~ .notifi-topic-list-tooltip-content.bottom-left,
+.notifi-topic-list-tooltip-content.bottom-left:hover {
+  bottom: 1.5rem;
+  left: -1rem;
+  display: block;
 }
 
 .notifi-topic-row-user-inputs-row-container {

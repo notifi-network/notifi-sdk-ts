@@ -9,6 +9,7 @@ import {
   useNotifiTargetContext,
   useNotifiTenantConfigContext,
 } from '../context';
+import { useComponentPosition } from '../hooks/useComponentPosition';
 import {
   getAvailableTargetInputCount,
   isFormTarget,
@@ -47,13 +48,6 @@ export type TargetListItemProps = {
   };
 };
 
-enum TooltipIconPosition {
-  TopLeft = 'top-left',
-  TopRight = 'top-right',
-  BottomLeft = 'bottom-left',
-  BottomRight = 'bottom-right',
-}
-
 export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
   const tooltipRef = React.useRef<HTMLDivElement>(null);
   const {
@@ -64,8 +58,6 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
   } = useNotifiTargetContext();
   const { cardConfig } = useNotifiTenantConfigContext();
   const isItemRemoved = React.useRef(false);
-  const [tooltipIconPosition, setTooltipIconPosition] =
-    React.useState<TooltipIconPosition>(TooltipIconPosition.TopLeft);
 
   React.useEffect(() => {
     if (!isItemRemoved.current) return;
@@ -75,6 +67,7 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
     hasChange && renewTargetGroup();
     isItemRemoved.current = false;
   }, [isChangingTargets]);
+
   const isRemoveButtonAvailable = (targetInfoPrompt: TargetInfoPrompt) => {
     if (cardConfig?.isContactInfoRequired) {
       return (
@@ -90,42 +83,12 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
 
   if (!targetData[props.target] || !props.targetInfo.infoPrompt) return null;
 
-  React.useEffect(() => {
-    // NOTE: Get the tooltip position to determine the tooltip content position which never goes off the modal
-    // TODO: Move to hook `useTooltipPosition` by which we can use it in other components (TopicList)
-    const targetListContainer = document.getElementsByClassName(
-      props.parentComponent === 'inbox'
-        ? 'notifi-inbox-config-target-list-main'
-        : 'notifi-ftu-target-list-main',
-    )?.[0];
-    if (!targetListContainer) return;
-    const handleScroll = () => {
-      if (!tooltipRef.current) return;
-      const tooltipIconRect = tooltipRef.current.getBoundingClientRect();
-      const targetListContainerRect =
-        targetListContainer.getBoundingClientRect();
-      const tooltipIconFromTop =
-        tooltipIconRect.top - targetListContainerRect?.top;
-      const tooltipIconFromLeft =
-        tooltipIconRect.left - targetListContainerRect?.left;
-      const contianerMiddlePositionX = targetListContainerRect?.width / 2;
-      const containerMiddlePositionY = targetListContainerRect?.height / 2;
-      setTooltipIconPosition(() => {
-        if (tooltipIconFromTop > containerMiddlePositionY) {
-          return tooltipIconFromLeft > contianerMiddlePositionX
-            ? TooltipIconPosition.BottomRight
-            : TooltipIconPosition.BottomLeft;
-        }
-        return tooltipIconFromLeft > contianerMiddlePositionX
-          ? TooltipIconPosition.TopRight
-          : TooltipIconPosition.TopLeft;
-      });
-    };
-    handleScroll();
-    targetListContainer.addEventListener('scroll', handleScroll);
-    return () =>
-      targetListContainer.removeEventListener('scroll', handleScroll);
-  }, [tooltipRef.current]);
+  const { componentPosition: tooltipIconPosition } = useComponentPosition(
+    tooltipRef,
+    props.parentComponent === 'inbox'
+      ? 'notifi-inbox-config-target-list-main'
+      : 'notifi-ftu-target-list-main',
+  );
 
   if (isFormTarget(props.target))
     return (

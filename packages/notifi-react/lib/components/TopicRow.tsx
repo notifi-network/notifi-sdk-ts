@@ -4,6 +4,7 @@ import React from 'react';
 
 import { Icon } from '../assets/Icons';
 import { useNotifiTargetContext, useNotifiTopicContext } from '../context';
+import { useComponentPosition } from '../hooks/useComponentPosition';
 import { getUserInputParams, isTopicGroupValid } from '../utils';
 import { Toggle } from './Toggle';
 import {
@@ -19,6 +20,7 @@ export type TopicRowPropsBase = {
     baseRowContainer?: string;
     userInputsRowContainer?: string;
     content?: string;
+    tooltipContainer?: string;
     tooltipIcon?: string;
     tooltipContent?: string;
   };
@@ -35,6 +37,7 @@ export type TopicRowProps<T extends TopicRowCategory> = T extends 'standalone'
 export const TopicRow = <T extends TopicRowCategory>(
   props: TopicRowProps<T>,
 ) => {
+  const tooltipRef = React.useRef<HTMLDivElement>(null);
   const isTopicGroup = isTopicGroupRow(props);
 
   const {
@@ -84,6 +87,11 @@ export const TopicRow = <T extends TopicRowCategory>(
     }
   };
 
+  const { componentPosition: tooltipPosition } = useComponentPosition(
+    tooltipRef,
+    'notifi-inbox-config-topic-main',
+  );
+
   return (
     <div
       className={clsx('notifi-topic-row', props.classNames?.baseRowContainer)}
@@ -97,7 +105,13 @@ export const TopicRow = <T extends TopicRowCategory>(
         >
           <div>{title}</div>
           {benchmarkTopic.uiConfig.tooltipContent ? (
-            <>
+            <div
+              ref={tooltipRef}
+              className={clsx(
+                'notifi-topic-list-tooltip-container',
+                props.classNames?.tooltipContainer,
+              )}
+            >
               <Icon
                 type="info"
                 className={clsx(
@@ -110,11 +124,12 @@ export const TopicRow = <T extends TopicRowCategory>(
                 className={clsx(
                   'notifi-topic-list-tooltip-content',
                   props.classNames?.tooltipContent,
+                  tooltipPosition,
                 )}
               >
                 {benchmarkTopic.uiConfig.tooltipContent}
               </div>
-            </>
+            </div>
           ) : null}
         </div>
 

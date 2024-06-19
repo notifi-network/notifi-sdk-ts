@@ -64,7 +64,7 @@
   ~ .notifi-target-list-item-tooltip-content.top-right,
 .notifi-target-list-item-tooltip-content.top-right:hover {
   top: 1.5rem;
-  right: -1.5rem;
+  right: -2rem;
   display: block;
 }
 
@@ -72,7 +72,7 @@
   ~ .notifi-target-list-item-tooltip-content.top-left,
 .notifi-target-list-item-tooltip-content.top-left:hover {
   top: 1.5rem;
-  left: 0;
+  left: -1rem;
   display: block;
 }
 
@@ -80,7 +80,7 @@
   ~ .notifi-target-list-item-tooltip-content.bottom-right,
 .notifi-target-list-item-tooltip-content.bottom-right:hover {
   bottom: 1rem;
-  right: -1.5rem;
+  right: -2rem;
   display: block;
 }
 
@@ -88,7 +88,7 @@
   ~ .notifi-target-list-item-tooltip-content.bottom-left,
 .notifi-target-list-item-tooltip-content.bottom-left:hover {
   bottom: 1rem;
-  left: 0;
+  left: -1rem;
   display: block;
 }
 
