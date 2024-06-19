@@ -3,6 +3,7 @@ import { objectKeys } from '@notifi-network/notifi-frontend-client';
 import {
   CtaInfo,
   FormTarget,
+  MessageInfo,
   Target,
   TargetData,
   TargetInfoPrompt,
@@ -41,7 +42,7 @@ export const isTargetCta = (
 
 export const isTargetVerified = (
   targetInfoPrompt: TargetInfoPrompt,
-): targetInfoPrompt is CtaInfo => {
+): targetInfoPrompt is MessageInfo => {
   return targetInfoPrompt.type === 'message';
 };
 

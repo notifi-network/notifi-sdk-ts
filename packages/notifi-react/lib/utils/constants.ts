@@ -53,7 +53,7 @@ export const defaultCopy = {
     slack: 'Slack',
     emailVerifyMessage: 'We’ve sent a verification email to:',
     emailCtaCalledSuccessfullyText: 'Email sent',
-    discordVerifiedMessage: 'Make sure you have enabled DMs in Discord',
+    discordVerifiedMessage: 'Make sure Discord DMs are enabled',
     discordVerifiedPromptTooltip:
       'Make sure you have enabled DMs in Discord. Right click on the server after joining, go to Privacy Settings, and enable Direct Messages.',
   },

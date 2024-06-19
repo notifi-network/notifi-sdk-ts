@@ -125,7 +125,7 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
     targetListContainer.addEventListener('scroll', handleScroll);
     return () =>
       targetListContainer.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [tooltipRef.current]);
 
   if (isFormTarget(props.target))
     return (
@@ -162,18 +162,17 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
             {props.message.beforeVerify}
           </div>
         ) : null}
-        {isTargetVerified(props.targetInfo.infoPrompt) &&
-        props.parentComponent === 'ftu' ? null : (
-          <div
-            className={clsx(
-              'notifi-target-list-item-target-id',
-              props.classNames?.targetId,
-            )}
-          >
-            {/** TODO: Move to use memo once the target display id > 1 format */}
-            {targetData[props.target]}
-          </div>
-        )}
+
+        <div
+          className={clsx(
+            'notifi-target-list-item-target-id',
+            props.classNames?.targetId,
+          )}
+        >
+          {/** TODO: Move to use memo once the target display id > 1 format */}
+          {targetData[props.target]}
+        </div>
+
         <TargetCta
           type={props.targetCtaType}
           targetInfoPrompt={props.targetInfo.infoPrompt}

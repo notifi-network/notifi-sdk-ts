@@ -126,15 +126,7 @@
 }
 
 .notifi-inbox-config-target-list-item {
-  padding: 1rem;
   align-items: start;
-}
-
-.notifi-inbox-config-target-list-item-verified {
-  background-color: transparent;
-  text-align: start;
-  padding: 0;
-  color: var(--notifi-inbox-config-target-list-item-verified-text);
 }
 
 /* InboxConfigTargetEdit styles */
