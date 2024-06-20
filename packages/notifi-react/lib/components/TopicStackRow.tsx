@@ -3,18 +3,21 @@ import React from 'react';
 
 import { Icon } from '../assets/Icons';
 import { useNotifiTopicContext } from '../context';
+import { useComponentPosition } from '../hooks/useComponentPosition';
 import { defaultCopy } from '../utils';
 import { TopicStandaloneRowMetadata } from './TopicList';
 import { TopicStack } from './TopicStack';
 import { TopicStackRowInput } from './TopicStackRowInput';
 
 export type TopicStackRowProps = {
+  parentComponent?: 'inbox' | 'ftu';
   classNames?: {
     container?: string;
     header?: string;
     headerTitle?: string;
     icon?: string;
     cta?: string;
+    tooltipContainer?: string;
     tooltipContent?: string;
     TopicStack?: TopicStackRowProps['classNames'];
     TopicStackRowInput?: TopicStackRowProps['classNames'];
@@ -25,6 +28,8 @@ export type TopicStackRowProps = {
 } & TopicStandaloneRowMetadata;
 
 export const TopicStackRow: React.FC<TopicStackRowProps> = (props) => {
+  const parentComponent = props.parentComponent ?? 'ftu';
+  const tooltipRef = React.useRef<HTMLDivElement>(null);
   const { getTopicStackAlerts } = useNotifiTopicContext();
   if (!props.topic.fusionEventDescriptor.id) return null;
 
@@ -34,6 +39,13 @@ export const TopicStackRow: React.FC<TopicStackRowProps> = (props) => {
 
   const [isTopicStackRowInputVisible, setIsTopicStackRowInputVisible] =
     React.useState(topicStackAlerts.length === 0 ? true : false);
+
+  const { componentPosition: tooltipPosition } = useComponentPosition(
+    tooltipRef,
+    parentComponent === 'inbox'
+      ? 'notifi-inbox-config-topic-main'
+      : 'notifi-ftu-alert-edit-main',
+  );
 
   return (
     <div
@@ -54,7 +66,13 @@ export const TopicStackRow: React.FC<TopicStackRowProps> = (props) => {
           <div>{props.topic.uiConfig.name}</div>
 
           {props.topic.uiConfig.tooltipContent ? (
-            <>
+            <div
+              ref={tooltipRef}
+              className={clsx(
+                'notifi-topic-list-tooltip-container',
+                props.classNames?.tooltipContainer,
+              )}
+            >
               <Icon
                 type="info"
                 className={clsx(
@@ -67,11 +85,12 @@ export const TopicStackRow: React.FC<TopicStackRowProps> = (props) => {
                 className={clsx(
                   'notifi-topic-list-tooltip-content',
                   props.classNames?.tooltipContent,
+                  tooltipPosition,
                 )}
               >
                 {props.topic.uiConfig.tooltipContent}
               </div>
-            </>
+            </div>
           ) : null}
         </div>
       </div>

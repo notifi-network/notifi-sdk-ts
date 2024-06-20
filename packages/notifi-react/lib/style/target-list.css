@@ -58,6 +58,7 @@
   text-align: left;
   color: var(--notifi-color-white);
   z-index: 1;
+  color: var(--notifi-target-list-item-tooltip-content-text);
 }
 
 .notifi-target-list-item-tooltip-icon:hover
@@ -157,8 +158,8 @@
 }
 
 .notifi-target-list-item-target-id {
-  font-size: 0.9rem;
-  font-weight: 500;
+  font-size: 0.85rem;
+  font-weight: 600;
   /* margin-bottom: 0.25rem; */
 }
 

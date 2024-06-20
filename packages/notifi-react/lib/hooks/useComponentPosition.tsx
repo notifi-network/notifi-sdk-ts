@@ -44,7 +44,7 @@ export const useComponentPosition = (
     targetListContainer.addEventListener('scroll', handleScroll);
     return () =>
       targetListContainer.removeEventListener('scroll', handleScroll);
-  }, [componentRef.current]);
+  }, [componentRef.current, parentComponentRelativeClassName]);
   return {
     componentPosition,
   };

@@ -77,7 +77,7 @@
 .notifi-target-input-field-input::placeholder {
   font-size: 1rem;
   font-weight: 500;
-  color: var(--notifi-color-grey3);
+  color: var(--notifi-color-dusk);
 }
 
 .notifi-target-input-field-icon {

@@ -156,7 +156,7 @@
 
 .notifi-topic-options-item.radio.selected::before {
   background-color: var(--notifi-color-seaglass-dark);
-  box-shadow: inset 0 0 0px 2px #323240 !important;
+  box-shadow: inset 0 0 0px 2px var(--notifi-topic-option-radio-inner-ring) !important;
   border: 2.5px solid var(--notifi-color-seaglass-dark);
 }
 

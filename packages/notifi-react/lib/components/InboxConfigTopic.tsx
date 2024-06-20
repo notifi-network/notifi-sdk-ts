@@ -66,7 +66,7 @@ export const InboxConfigTopic: React.FC<InboxConfigTopicProps> = (props) => {
           {props.copy?.title ?? defaultCopy.inboxConfigTopic.title}
         </div>
         <div>
-          <TopicList />
+          <TopicList parentComponent="inbox" />
         </div>
       </div>
     </div>

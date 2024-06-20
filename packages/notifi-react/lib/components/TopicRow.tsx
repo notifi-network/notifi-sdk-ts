@@ -15,6 +15,7 @@ import {
 import { TopicOptions } from './TopicOptions';
 
 export type TopicRowPropsBase = {
+  parentComponent?: 'inbox' | 'ftu';
   classNames?: {
     container?: string;
     baseRowContainer?: string;
@@ -37,6 +38,7 @@ export type TopicRowProps<T extends TopicRowCategory> = T extends 'standalone'
 export const TopicRow = <T extends TopicRowCategory>(
   props: TopicRowProps<T>,
 ) => {
+  const parentComponent = props.parentComponent ?? 'ftu';
   const tooltipRef = React.useRef<HTMLDivElement>(null);
   const isTopicGroup = isTopicGroupRow(props);
 
@@ -89,7 +91,9 @@ export const TopicRow = <T extends TopicRowCategory>(
 
   const { componentPosition: tooltipPosition } = useComponentPosition(
     tooltipRef,
-    'notifi-inbox-config-topic-main',
+    parentComponent === 'inbox'
+      ? 'notifi-inbox-config-topic-main'
+      : 'notifi-ftu-alert-edit-main',
   );
 
   return (

@@ -41,6 +41,7 @@
 
 .notifi-history-list-empty-icon {
   margin-bottom: 1rem;
+  color: var(--notifi-history-list-empty-icon);
 }
 
 .notifi-history-list-empty-title {

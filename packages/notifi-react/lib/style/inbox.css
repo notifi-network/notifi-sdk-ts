@@ -66,14 +66,19 @@
 }
 
 .notifi-inbox-config-topic-title {
-  margin: 0 2rem;
+  margin: 0 1rem;
   color: var(--notifi-inbox-config-topic-title-text);
   font-size: 0.9rem;
 }
 
 /* InboxConfigTargetList & InboxConfigTargetEdit styles */
 
-.notifi-inbox-config-target-edit,
+.notifi-inbox-config-target-edit {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 .notifi-inbox-config-target-list {
   display: flex;
   flex-direction: column;
