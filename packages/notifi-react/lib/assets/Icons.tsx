@@ -24,7 +24,8 @@ export type IconType =
   | 'chevron-right'
   | 'bell-circle'
   | 'check-circle'
-  | 'bell-thin';
+  | 'bell-thin'
+  | 'triangle-down';
 
 export const Icon: React.FC<Props & { type: IconType }> = (
   props: Props & { type: IconType },
@@ -733,6 +734,21 @@ export const Icon: React.FC<Props & { type: IconType }> = (
         >
           <path
             d="M4.58974 11.1875C5.22083 11.1875 5.73718 10.6712 5.73718 10.0401H3.44231C3.44231 10.6712 3.95292 11.1875 4.58974 11.1875ZM8.03205 7.74519V4.8766C8.03205 3.11529 7.09115 1.64083 5.45032 1.25071V0.860577C5.45032 0.384391 5.06593 0 4.58974 0C4.11356 0 3.72917 0.384391 3.72917 0.860577V1.25071C2.0826 1.64083 1.14744 3.10955 1.14744 4.8766V7.74519L0 8.89263V9.46635H9.17949V8.89263L8.03205 7.74519Z"
+            fill="currentColor"
+          />
+        </svg>
+      );
+    case 'triangle-down':
+      return (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="7"
+          height="7"
+          viewBox="0 0 7 7"
+          fill="none"
+        >
+          <path
+            d="M0.849609 0L3.82316 3.54167L6.79671 0H0.849609Z"
             fill="currentColor"
           />
         </svg>

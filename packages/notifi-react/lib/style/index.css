@@ -73,11 +73,10 @@ button {
   --notifi-topic-options-item-bg: var(--notifi-color-grey1);
   --notifi-topic-option-radio-bg: var(--notifi-color-grey1);
   --notifi-subscription-input-dropdown-value-bg: var(--notifi-color-grey1);
-  --notifi-subscription-input-dropdown-list-bg: var(
-    --notifi-color-grey1
-  ); /**TODO */
+  --notifi-subscription-input-dropdown-list-bg: var(--notifi-color-grey1);
   --notifi-spinner-color: var(--notifi-color-white);
   --notifi-topic-stack-row-input-button-bg: var(--notifi-color-secondary-light);
+  --notifi-topic-stack-row-input-button-text: var(--notifi-color-white);
   --notifi-nav-footer-bg: var(--notifi-color-grey2);
   --notifi-history-row-bg: var(--notifi-color-grey2);
   --notifi-history-row-unread-indicator: var(--notifi-color-seaglass-dark);
@@ -112,6 +111,8 @@ button {
   --notifi-target-state-banner-verify-icon-color: var(--notifi-color-dark);
   --notifi-inbox-footer-border: var(--notifi-color-grey4);
   --notifi-powered-by-text: var(--notifi-color-heather);
+  --notifi-topic-stack-separator: var(--notifi-color-grey5);
+  --notifi-topic-stack-row-cta-text: var(--notifi-color-seaglass-dark);
 }
 
 .notifi-theme-light {
@@ -134,12 +135,11 @@ button {
   --notifi-notifi-topic-list-row-bg: var(--notifi-color-white);
   --notifi-topic-options-item-bg: var(--notifi-color-eggshell);
   --notifi-topic-option-radio-bg: var(--notifi-color-white);
-  --notifi-subscription-input-dropdown-value-bg: var(--notifi-color-grey1);
-  --notifi-subscription-input-dropdown-list-bg: var(
-    --notifi-color-grey1
-  ); /**TODO */
+  --notifi-subscription-input-dropdown-value-bg: var(--notifi-color-eggshell);
+  --notifi-subscription-input-dropdown-list-bg: var(--notifi-color-eggshell);
   --notifi-spinner-color: var(--notifi-color-white);
   --notifi-topic-stack-row-input-button-bg: var(--notifi-color-seaglass-dark);
+  --notifi-topic-stack-row-input-button-text: var(--notifi-color-white);
   --notifi-nav-footer-bg: var(--notifi-color-cloud);
   --notifi-history-row-bg: var(--notifi-color-white);
   --notifi-history-row-unread-indicator: var(--notifi-color-secondary-light);
@@ -176,4 +176,6 @@ button {
   --notifi-target-state-banner-verify-icon-color: var(--notifi-color-eggshell);
   --notifi-inbox-footer-border: var(--notifi-color-cloud);
   --notifi-powered-by-text: var(--notifi-color-midnight);
+  --notifi-topic-stack-separator: var(--notifi-color-heather);
+  --notifi-topic-stack-row-cta-text: var(--notifi-color-secondary-light);
 }

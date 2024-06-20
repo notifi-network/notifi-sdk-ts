@@ -90,7 +90,7 @@ export const TopicStackRow: React.FC<TopicStackRowProps> = (props) => {
         </div>
       ) : null}
 
-      {isTopicStackRowInputVisible ? (
+      {isTopicStackRowInputVisible || topicStackAlerts.length === 0 ? (
         <TopicStackRowInput
           topic={props.topic}
           onSave={() => setIsTopicStackRowInputVisible(false)}
@@ -98,7 +98,7 @@ export const TopicStackRow: React.FC<TopicStackRowProps> = (props) => {
         />
       ) : null}
 
-      {!isTopicStackRowInputVisible ? (
+      {isTopicStackRowInputVisible || topicStackAlerts.length === 0 ? null : (
         <div
           onClick={() => {
             setIsTopicStackRowInputVisible(true);
@@ -107,7 +107,7 @@ export const TopicStackRow: React.FC<TopicStackRowProps> = (props) => {
         >
           {props.copy?.cta ?? defaultCopy.topicStackRow.cta}
         </div>
-      ) : null}
+      )}
     </div>
   );
 };
