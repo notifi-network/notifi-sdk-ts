@@ -9,6 +9,7 @@ import {
   useNotifiTargetContext,
   useNotifiTenantConfigContext,
 } from '../context';
+import { useComponentPosition } from '../hooks/useComponentPosition';
 import {
   getAvailableTargetInputCount,
   isFormTarget,
@@ -19,6 +20,7 @@ import {
 import { TargetCta, TargetCtaProps } from './TargetCta';
 
 export type TargetListItemProps = {
+  targetListRef: React.RefObject<HTMLDivElement>;
   iconType: IconType;
   label: string;
   targetCtaType: TargetCtaProps['type'];
@@ -47,6 +49,7 @@ export type TargetListItemProps = {
 };
 
 export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
+  const tooltipRef = React.useRef<HTMLDivElement>(null);
   const {
     targetDocument: { targetData, targetInputs },
     renewTargetGroup,
@@ -64,6 +67,7 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
     hasChange && renewTargetGroup();
     isItemRemoved.current = false;
   }, [isChangingTargets]);
+
   const isRemoveButtonAvailable = (targetInfoPrompt: TargetInfoPrompt) => {
     if (cardConfig?.isContactInfoRequired) {
       return (
@@ -78,6 +82,13 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
   };
 
   if (!targetData[props.target] || !props.targetInfo.infoPrompt) return null;
+
+  const { componentPosition: tooltipIconPosition } = useComponentPosition(
+    tooltipRef,
+    props.parentComponent === 'inbox'
+      ? 'notifi-inbox-config-target-list-main'
+      : 'notifi-ftu-target-list-main',
+  );
 
   if (isFormTarget(props.target))
     return (
@@ -114,18 +125,17 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
             {props.message.beforeVerify}
           </div>
         ) : null}
-        {isTargetVerified(props.targetInfo.infoPrompt) &&
-        props.parentComponent === 'ftu' ? null : (
-          <div
-            className={clsx(
-              'notifi-target-list-item-target-id',
-              props.classNames?.targetId,
-            )}
-          >
-            {/** TODO: Move to use memo once the target display id > 1 format */}
-            {targetData[props.target]}
-          </div>
-        )}
+
+        <div
+          className={clsx(
+            'notifi-target-list-item-target-id',
+            props.classNames?.targetId,
+          )}
+        >
+          {/** TODO: Move to use memo once the target display id > 1 format */}
+          {targetData[props.target]}
+        </div>
+
         <TargetCta
           type={props.targetCtaType}
           targetInfoPrompt={props.targetInfo.infoPrompt}
@@ -183,7 +193,37 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
               `@${toggleTargetData.data.username}`}
           </div>
         )}
-        {/* TODO: impl before verify message for toggle targets */}
+        {props.message?.beforeVerify &&
+        isTargetCta(props.targetInfo.infoPrompt) ? (
+          <div
+            className={clsx(
+              'notifi-target-list-target-verify-message',
+              props.classNames?.verifyMessage,
+            )}
+          >
+            {props.message.beforeVerify}
+            <div className={'notifi-target-list-item-tooltip'} ref={tooltipRef}>
+              {/* TODO: rename to `notifi-target-list-item-tooltip` */}
+              <Icon
+                className={clsx(
+                  'notifi-target-list-item-tooltip-icon', // TODO: rename to `notifi-target-list-item-tooltip-icon`
+                  props.classNames?.tooltipIcon,
+                )}
+                type="info"
+              />
+              <div
+                className={clsx(
+                  'notifi-target-list-item-tooltip-content', // TODO: rename to `notifi-target-list-item-tooltip-content`
+                  props.classNames?.tooltipContent,
+                  props.parentComponent === 'inbox' ? 'inbox' : '',
+                  tooltipIconPosition,
+                )}
+              >
+                {props.message.beforeVerifyTooltip}
+              </div>
+            </div>
+          </div>
+        ) : null}
         {props.message?.afterVerify &&
         isTargetVerified(props.targetInfo.infoPrompt) ? (
           <div
@@ -194,19 +234,20 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
             )}
           >
             {props.message.afterVerify}
-            <div className={'notifi-target-list-target-confirm-tooltip'}>
+            <div className={'notifi-target-list-item-tooltip'} ref={tooltipRef}>
               <Icon
                 className={clsx(
-                  'notifi-target-list-target-confirm-tooltip-icon',
+                  'notifi-target-list-item-tooltip-icon',
                   props.classNames?.tooltipIcon,
                 )}
                 type="info"
               />
               <div
                 className={clsx(
-                  'notifi-target-list-target-confirm-tooltip-content',
+                  'notifi-target-list-item-tooltip-content',
                   props.classNames?.tooltipContent,
                   props.parentComponent === 'inbox' ? 'inbox' : '',
+                  tooltipIconPosition,
                 )}
               >
                 {props.message.afterVerifyTooltip}

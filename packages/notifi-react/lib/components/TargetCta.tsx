@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import React from 'react';
 
+import { Icon } from '../assets/Icons';
 import { TargetInfoPrompt, isCtaInfo } from '../context';
 
 export type TargetCtaProps = {
@@ -50,6 +51,7 @@ export const TargetCta: React.FC<TargetCtaProps> = (props) => {
             props.className?.actionNotRequired,
           )}
         >
+          <Icon type="check" />
           {props.targetInfoPrompt.message}
         </div>
       ) : null}

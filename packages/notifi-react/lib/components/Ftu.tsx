@@ -48,6 +48,7 @@ export const Ftu: React.FC<FtuProps> = (props) => {
     targetDocument: { targetData },
     isLoading: isLoadingTarget,
   } = useNotifiTargetContext();
+  const { updateFtuStage } = useNotifiUserSettingContext();
   const [ftuView, setFtuView] = React.useState<FtuView | null>(null);
   const { frontendClientStatus } = useNotifiFrontendClientContext();
 
@@ -63,7 +64,7 @@ export const Ftu: React.FC<FtuProps> = (props) => {
     }
     setFtuView(FtuView.AlertEdit);
     return;
-  }, [ftuStage, isLoadingTarget, targetData]);
+  }, []);
 
   if (!ftuView) return null;
 
@@ -97,7 +98,9 @@ export const Ftu: React.FC<FtuProps> = (props) => {
               cardConfig?.isContactInfoRequired
                 ? () => {
                     if (cardConfig?.isContactInfoRequired) {
-                      return setFtuView(FtuView.TargetList);
+                      updateFtuStage(FtuStage.Destination);
+                      setFtuView(FtuView.TargetList);
+                      return;
                     }
                   }
                 : undefined

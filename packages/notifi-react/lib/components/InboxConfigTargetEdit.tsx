@@ -13,12 +13,14 @@ export type InboxConfigTargetEditProps = {
   classNames?: {
     container?: string;
     main?: string;
+    invalidEmailWarning?: string;
     button?: string;
     loadingSpinner?: React.CSSProperties;
     TargetInputs?: TargetInputsProps['classNames'];
   };
   copy?: {
     header?: string;
+    description?: string;
     buttonTextHasTarget?: string;
     buttonTextNoTarget?: string;
     TargetInputs?: TargetInputsProps['copy'];
@@ -30,7 +32,7 @@ export const InboxConfigTargetEdit: React.FC<InboxConfigTargetEditProps> = (
   props,
 ) => {
   const {
-    targetDocument: { targetData },
+    targetDocument: { targetData, targetInputs },
     renewTargetGroup,
     isChangingTargets,
   } = useNotifiTargetContext();
@@ -40,6 +42,8 @@ export const InboxConfigTargetEdit: React.FC<InboxConfigTargetEditProps> = (
   const isUpdated = React.useRef(false);
 
   const isTargetInputChanged = Object.values(isChangingTargets).includes(true);
+  const [isShowingInvalidEmailWarning, setIsShowingInvalidEmailWarning] =
+    React.useState(false);
 
   React.useEffect(() => {
     if (!isUpdated.current) return;
@@ -75,6 +79,22 @@ export const InboxConfigTargetEdit: React.FC<InboxConfigTargetEditProps> = (
       </NavHeader>
       <div
         className={clsx(
+          'notifi-inboxConfig-target-edit-description',
+          props.classNames?.TargetInputs,
+        )}
+      >
+        {props.copy?.description ?? defaultCopy.ftuTargetEdit.description}
+      </div>
+      <div
+        className={clsx(
+          'notifi-inbox-config-target-edit-invalid-email-warning',
+          props.classNames?.invalidEmailWarning,
+        )}
+      >
+        {isShowingInvalidEmailWarning ? targetInputs.email.error : null}
+      </div>
+      <div
+        className={clsx(
           'notifi-inbox-config-target-edit-main',
           props.classNames?.main,
         )}
@@ -82,6 +102,12 @@ export const InboxConfigTargetEdit: React.FC<InboxConfigTargetEditProps> = (
         <TargetInputs
           classNames={props.classNames?.TargetInputs}
           copy={props.copy?.TargetInputs}
+          formTargetsOnFocus={(target) => {
+            if (target === 'email') setIsShowingInvalidEmailWarning(false);
+          }}
+          formTargetsOnBlur={(target) => {
+            if (target === 'email') setIsShowingInvalidEmailWarning(true);
+          }}
         />
       </div>
       <button

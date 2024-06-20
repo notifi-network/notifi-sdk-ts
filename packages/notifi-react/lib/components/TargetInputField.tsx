@@ -2,11 +2,13 @@ import clsx from 'clsx';
 import React, { useMemo } from 'react';
 
 import { Icon, IconType } from '../assets/Icons';
-import { Target, useNotifiTargetContext } from '../context';
+import { FormTarget, useNotifiTargetContext } from '../context';
 import { defaultCopy } from '../utils/constants';
 
 export type TargetInputFieldProps = {
-  targetType: Extract<Target, 'email' | 'telegram' | 'phoneNumber'>;
+  targetType: FormTarget;
+  onFocus?: (target: FormTarget) => void;
+  onBlur?: (target: FormTarget) => void;
   iconType: IconType;
   validateRegex?: RegExp;
   copy?: {
@@ -19,18 +21,25 @@ export type TargetInputFieldProps = {
     label?: string;
     icon?: string;
     input?: string;
-    errorMessage?: string;
   };
 };
 
 export const TargetInputField: React.FC<TargetInputFieldProps> = (props) => {
   const {
-    targetDocument: { targetInputs },
+    targetDocument: { targetInputs, targetData },
     updateTargetInputs,
   } = useNotifiTargetContext();
   const [isInputFocused, setIsInputFocused] = React.useState(false);
 
-  const [isDisplayingErrorMsg, setIsDisplayingErrorMsg] = React.useState(false);
+  const [isShowingInvalidWarning, setIsShowingInvalidWarning] =
+    React.useState(false);
+
+  React.useEffect(() => {
+    updateTargetInputs(props.targetType, {
+      value: targetData?.[props.targetType] ?? '',
+    });
+    setIsShowingInvalidWarning(false);
+  }, []);
 
   const targetToBeSaved = useMemo(() => {
     switch (props.targetType) {
@@ -81,6 +90,8 @@ export const TargetInputField: React.FC<TargetInputFieldProps> = (props) => {
           'notifi-target-input-field-input-container',
           props.classNames?.container,
           isInputFocused ? 'focused' : '',
+          // NOTE: Now we only show error for invalid email input
+          isShowingInvalidWarning ? 'warning' : '',
         )}
       >
         <Icon
@@ -114,24 +125,32 @@ export const TargetInputField: React.FC<TargetInputFieldProps> = (props) => {
             }
             updateTargetInputs(props.targetType, {
               value: targetInput,
-              error: `The ${props.targetType} is invalid. Please try again.`,
+              error: defaultCopy.targetInputField.inValidErrorMessage(
+                props.targetType,
+              ),
             });
           }}
           onFocus={() => {
             setIsInputFocused(true);
-            setIsDisplayingErrorMsg(false);
+            setIsShowingInvalidWarning(false);
+            props.onFocus?.(props.targetType);
           }}
           onBlur={() => {
             setIsInputFocused(false);
+            props.onBlur?.(props.targetType);
             if (targetToBeSaved.error) {
-              setIsDisplayingErrorMsg(true);
+              if (props.targetType === 'email') {
+                // NOTE: Now we only show error for invalid email input
+                setIsShowingInvalidWarning(true);
+              }
             }
           }}
           placeholder={inputPlaceholder}
           disabled={props.disabled}
         />
       </div>
-      {isDisplayingErrorMsg ? (
+      {/* TODO: target input error message */}
+      {/* {isDisplayingErrorMsg ? (
         <div
           className={clsx(
             'notifi-target-input-field-error-message',
@@ -140,7 +159,7 @@ export const TargetInputField: React.FC<TargetInputFieldProps> = (props) => {
         >
           {targetToBeSaved.error}
         </div>
-      ) : null}
+      ) : null} */}
     </div>
   );
 };

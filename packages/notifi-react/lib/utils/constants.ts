@@ -1,3 +1,5 @@
+import { Target } from '../context';
+
 export const defaultCopy = {
   connect: {
     title: 'Notifications',
@@ -14,7 +16,7 @@ export const defaultCopy = {
     description: 'See your activity and gain access to alerts',
     buttonText: 'Next',
   },
-  poweredByNotifi: 'Powered',
+  poweredByNotifi: 'Powered by',
   inputFields: {
     email: 'Email address',
     phoneNumber: 'Phone Number',
@@ -51,7 +53,7 @@ export const defaultCopy = {
     slack: 'Slack',
     emailVerifyMessage: 'We’ve sent a verification email to:',
     emailCtaCalledSuccessfullyText: 'Email sent',
-    discordVerifiedMessage: 'Make sure you have enabled DMs in Discord',
+    discordVerifiedMessage: 'Make sure Discord DMs are enabled',
     discordVerifiedPromptTooltip:
       'Make sure you have enabled DMs in Discord. Right click on the server after joining, go to Privacy Settings, and enable Direct Messages.',
   },
@@ -92,7 +94,7 @@ export const defaultCopy = {
       description: 'You have unverified destinations',
     },
     verifyInHistory: {
-      title: 'Verify Your',
+      title: 'Verify your',
       ctaText: 'Verify',
     },
     Signup: {
@@ -114,10 +116,14 @@ export const defaultCopy = {
     title: 'Something went wrong, please try again: ',
     detail: 'Contact support if the issue persists',
   },
+  targetInputField: {
+    inValidErrorMessage: (target: Target) =>
+      `Please enter a valid ${target} address`,
+  },
 };
 
 export const validationRegex: Record<string, RegExp> = {
-  email: new RegExp('^[a-zA-Z0-9._:$!%-+]+@[a-zA-Z0-9.-]+.[a-zA-Z]$'),
+  email: new RegExp('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'),
   telegram: new RegExp('.{5,}'),
 };
 
