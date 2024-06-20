@@ -50,11 +50,17 @@ export const TargetStateBanner: React.FC<TargetStateBannerProps> = (props) => {
   if (!cardConfig || isLoadingTarget) return null;
 
   const activeTargets = objectKeys(cardConfig.contactInfo)
-    .map((target) =>
-      cardConfig.contactInfo[target]?.active
-        ? target.charAt(0).toUpperCase() + target.slice(1)
-        : null,
-    )
+    .map((target) => {
+      if (!cardConfig.contactInfo[target]?.active) return null;
+      switch (target) {
+        case 'sms':
+          return 'SMS';
+        case 'email':
+          return target;
+        default:
+          return target.charAt(0).toUpperCase() + target.slice(1);
+      }
+    })
     .filter((target): target is string => target !== null);
 
   return (
@@ -146,8 +152,7 @@ export const TargetStateBanner: React.FC<TargetStateBannerProps> = (props) => {
               )}
             >
               {props.copy?.signup?.text ??
-                defaultCopy.targetStateBanner.Signup.text}
-              {''}
+                defaultCopy.targetStateBanner.Signup.text}{' '}
               {activeTargets.length > 1
                 ? `${activeTargets
                     .slice(0, -1)
