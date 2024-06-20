@@ -32,7 +32,7 @@ export default function NotifiDashboard() {
 
   if (!accountAddress) return;
   return (
-    <div className="min-h-screen flex items-start flex-row">
+    <div className="min-h-screen flex items-start flex-row bg-black">
       {/* desktop sidebar */}
       <DashboardSideBar
         accountAddress={accountAddress}
@@ -56,15 +56,15 @@ export default function NotifiDashboard() {
         <div className="md:hidden w-screen flex justify-center">
           <Icon
             id="btn-nav"
-            className="top-6 left-4 cursor-pointer fixed text-notifi-text"
+            className="top-6 left-4 cursor-pointer fixed text-white"
             onClick={() => setIsSideBarOpen(true)}
           />
           <Image
-            src="/logos/gmx-logo.png"
+            src="/logos/xion-logo-white.png"
             width={100}
             height={21}
             unoptimized={true}
-            alt="gmx"
+            alt="xion logo"
             className="mt-5 mb-4"
           />
         </div>
@@ -75,7 +75,7 @@ export default function NotifiDashboard() {
           />
         ) : null}
         <div
-          className={`flex flex-col grow bg-notifi-card-bg rounded-3xl md:mb-10 mt-3 md:mr-10 ${
+          className={`flex flex-col grow bg-white rounded-3xl md:mb-10 mt-3 md:mr-10 ${
             cardView === 'alertSubscription' ? '' : 'min-h-0'
           }`}
         >

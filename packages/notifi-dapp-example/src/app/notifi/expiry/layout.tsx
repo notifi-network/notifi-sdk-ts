@@ -16,11 +16,11 @@ export default function NotifiExpiryLayout({
       <div className="fixed top-8 left-8 right-8 flex justify-between">
         <div className="left-8 flex items-center">
           <Image
-            src="/logos/gmx-logo.png"
+            src="/logos/xion-logo.png"
             width={115}
             height={24}
             unoptimized={true}
-            alt="GMX logo"
+            alt="XION logo"
           />
         </div>
         <div className="p-2 rounded-lg h-7 hidden md:block">

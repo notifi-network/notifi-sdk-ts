@@ -11,11 +11,11 @@ export default function NotifiFTU({ children }: { children: React.ReactNode }) {
       <div className="w-full md:mt-8 m-3 flex flex-row justify-between items-center">
         <div className="ml-8 flex items-center justify-center md:justify-start w-full my-4 md:my-0">
           <Image
-            src="/logos/gmx-logo.png"
+            src="/logos/xion-logo.png"
             width={115}
             height={24}
             unoptimized={true}
-            alt="GMX logo"
+            alt="XION logo"
           />
         </div>
       </div>

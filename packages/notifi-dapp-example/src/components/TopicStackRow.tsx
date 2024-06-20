@@ -30,7 +30,7 @@ export const TopicStackRow: React.FC<TopicStackRowProps> = (props) => {
     React.useState(topicStackAlerts.length > 0 ? false : true);
 
   return (
-    <div className="flex flex-col p-2 px-4 bg-notifi-destination-card-bg rounded-md md:w-[359px]">
+    <div className="flex flex-col p-2 px-4 bg-notifi-destination-card-bg rounded-md md:w-[359px] shadow-destinationCard">
       <div className="flex items-center justify-between">
         <div className="flex flex-row justify-center items-center text-sm font-regular text-notifi-text">
           <div className="flex flex-row items-center">

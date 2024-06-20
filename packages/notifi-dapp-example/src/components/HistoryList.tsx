@@ -59,7 +59,7 @@ export const HistoryList: React.FC<HistoryListProps> = ({
       `}
     >
       {historyItems.length > 0 ? (
-        <div className={`p-6 border-b border-gray-200 border-opacity-20`}>
+        <div className={`p-6 border-b border-gray-200`}>
           <div className="m-auto font-medium text-base text-notifi-text">
             Inbox
           </div>

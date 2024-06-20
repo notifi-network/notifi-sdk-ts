@@ -28,7 +28,7 @@ export const InputFieldWallet: React.FC<InputFieldWalletProps> = ({
 
   return (
     <>
-      <div className="bg-notifi-destination-card-bg rounded-md w-full sm:w-112 h-18 flex flex-row items-center mb-2 gap-3 sm:gap-0">
+      <div className="bg-notifi-destination-card-bg rounded-lg w-full sm:w-112 h-18 flex flex-row items-center mb-2 gap-3 sm:gap-0 shadow-destinationCard">
         <div className="bg-notifi-destination-logo-card-bg rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
           <Icon id="wallet-icon" className="text-notifi-tenant-brand-bg" />
           <div className="font-medium text-xs mt-2 text-notifi-grey-text">
@@ -36,7 +36,7 @@ export const InputFieldWallet: React.FC<InputFieldWalletProps> = ({
           </div>
         </div>
         <div className="flex flex-row items-center justify-between w-2/3 sm:w-90 mr-4">
-          <div className="relative flex items-center gap-1.5 text-sm sm:ml-6 text-notifi-text">
+          <div className="relative flex items-center gap-1.5 text-sm sm:ml-6 text-notifi-text-light">
             Wallet Alerts
             <button
               className={`${

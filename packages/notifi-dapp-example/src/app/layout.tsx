@@ -8,8 +8,8 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'GMX',
-  description: 'GMX x Notifi Inbox',
+  title: 'XION',
+  description: 'XION x Notifi Inbox',
 };
 
 export default function RootLayout({
@@ -23,8 +23,8 @@ export default function RootLayout({
         <link href="https://rsms.me/inter/inter.css" rel="stylesheet" />
       </head>
       <body
-        className={`${inter.className} notifi-dapp bg-gradient-gmx`}
-        dark-mode="true"
+        className={`${inter.className} notifi-dapp bg-notifi-solid-bg`}
+        dark-mode="false"
         // NOTE: Not support dark/light mode yet. TODO: consider adding a theme wrapper
       >
         <GlobalStateContextProvider>

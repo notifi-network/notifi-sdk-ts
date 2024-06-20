@@ -41,9 +41,9 @@ export const HistoryDetail: React.FC<HistoryDetailProps> = ({
 
   return (
     <div className="p-6 h-full">
-      <div className="hover:bg-notifi-card-border focus:bg-notifi-destination-card-bg h-6 w-6 rounded-2xl">
+      <div className="hover:bg-notifi-input-border focus:bg-notifi-destination-card-bg h-6 w-6 rounded-2xl">
         <Icon
-          className="cursor-pointer text-notifi-text mb-4"
+          className="cursor-pointer text-notifi-text-light mb-4"
           onClick={() => {
             setHistoryDetailEntry(null);
             setIsInHistoryDetail(false);

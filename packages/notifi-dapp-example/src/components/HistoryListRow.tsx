@@ -27,9 +27,11 @@ export const HistoryListRow: React.FC<HistoryListRowProps> = ({
 
   return (
     <div
-      className={`mx-2 md:mx-6 my-2 p-3 line-clamp-1 flex justify-between relative cursor-pointer bg-notifi-destination-card-bg rounded-lg ${
-        !historyDetailEntry.read ? 'bg-notifi-destination-logo-card-bg' : ''
-      }  hover:border hover:border-notifi-input-border`}
+      className={`mx-2 md:mx-6 my-2 p-3 line-clamp-1 flex justify-between relative cursor-pointer bg-notifi-history-read-card-bg rounded-lg ${
+        !historyDetailEntry.read
+          ? 'bg-notifi-history-unread-card-bg shadow-destinationCard'
+          : ''
+      }  hover:border hover:border-black`}
       onClick={clickHistoryRow}
     >
       <div

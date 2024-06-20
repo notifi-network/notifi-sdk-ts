@@ -28,8 +28,8 @@ const config: Config = {
       },
       boxShadow: {
         container: '0px 10px 40px 0px #0000000D',
-        destinationCard: '0px 2px 6px 0px #0000001A',
-        card: '0px 2px 0px 0px rgba(219, 235, 242, 1)',
+        destinationCard: '0px 5px 20px 0px rgba(0, 0, 0, 0.07)',
+        card: '10px 40px 100px 0px rgba(43, 64, 117, 0.1)',
       },
       colors: {
         notifi: {
@@ -70,6 +70,9 @@ const config: Config = {
             'rgb(var(--notifi-destination-logo-card-bg))',
           'wallet-menu-card-bg': 'rgb(var(--notifi-wallet-menu-card-bg))',
           'loading-skeloton-bg': 'rgb(var(--notifi-loading-skeleton-bg))',
+          'solid-bg': 'rgb(var(--notifi-solid-bg))',
+          'history-read-card-bg': 'rgb(var(--notifi-history-read-card-bg))',
+          'history-unread-card-bg': 'rgb(var(--notifi-history-unread-card-bg))',
         },
       },
       backgroundImage: {

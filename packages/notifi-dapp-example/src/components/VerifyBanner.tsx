@@ -40,14 +40,14 @@ export const VerifyBanner: React.FC<VerifyBannerProps> = ({
 
   return (
     <div
-      className={`flex flex-row justify-between items-center py-2 bg-notifi-card-bg mt-4 mb-3 md:mt-6 rounded-[14px] mx-4 md:mx-0 md:mr-10 md:mb-0 ${
+      className={`flex flex-row justify-between items-center py-2 bg-notifi-card-bg mt-4 mb-3 md:mt-6 rounded-3xl mx-4 md:mx-0 md:mr-10 md:mb-0 ${
         isInHistoryDetail ? 'md:flex hidden' : ''
       }`}
     >
       <div className="flex flex-row items-center justify-center ml-3 text-sm font-medium">
         <Icon
           id="check"
-          className="text-notifi-button-primary-blueish-bg mr-3 w-3 mb-0.5"
+          className="text-notifi-button-primary-bg mr-3 w-3 mb-0.5"
         />
         <div className="text-notifi-text mr-1">
           Verify your {unVerifiedDestinationsString}
@@ -55,7 +55,7 @@ export const VerifyBanner: React.FC<VerifyBannerProps> = ({
       </div>
       <button
         onClick={() => setCardView('destination')}
-        className="mr-3 w-18 h-8 bg-notifi-button-primary-blueish-bg rounded-md text-sm font-bold text-white disabled:hover:bg-notifi-button-primary-blueish-bg hover:bg-notifi-button-hover-bg"
+        className="mr-3 w-18 h-8 bg-notifi-button-primary-bg rounded-3xl text-sm font-bold text-white disabled:hover:bg-notifi-button-primary-bg hover:bg-black"
       >
         Verify
       </button>

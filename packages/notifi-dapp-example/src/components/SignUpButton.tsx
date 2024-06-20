@@ -136,7 +136,7 @@ export const SignUpButton: React.FC<NotifiSignUpButtonProps> = ({
 
   return (
     <button
-      className="rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-72 h-11 mb-9 text-sm font-bold disabled:opacity-50 disabled:hover:bg-notifi-button-primary-blueish-bg hover:bg-notifi-button-hover-bg"
+      className="rounded-3xl bg-notifi-button-primary-bg text-notifi-button-primary-text w-72 h-11 mb-9 text-sm font-bold disabled:opacity-50 disabled:hover:bg-notifi-button-primary-bg hover:bg-black"
       disabled={!isInitialized || hasErrors || !isInputFieldsValid}
       onClick={onClick}
     >

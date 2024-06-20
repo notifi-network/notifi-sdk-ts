@@ -23,7 +23,7 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
   return (
     <div
       className={`fixed grow-0 md:w-80 w-screen h-screen px-7 z-[5] ${
-        setIsOpen ? 'md:hidden block bg-gradient-gmx' : 'md:block hidden'
+        setIsOpen ? 'md:hidden block bg-black' : 'md:block hidden'
       }`}
     >
       <div className="flex flex-col justify-between items-center md:items-start h-full pb-6">
@@ -36,11 +36,11 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
             />
           ) : null}
           <Image
-            src="/logos/gmx-logo.png"
-            width={setIsOpen ? 115 : 103}
-            height={setIsOpen ? 24 : 26}
-            alt="gmx-logo"
-            className="my-10"
+            src="/logos/xion-logo-white.png"
+            width={setIsOpen ? 115 : 81}
+            height={setIsOpen ? 24 : 29}
+            alt="xion-logo"
+            className="mt-8 mb-10"
             unoptimized={true}
           />
           <div
@@ -50,9 +50,9 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
             }}
             className={`flex px-4 ${
               cardView === 'history'
-                ? 'bg-gradient-side-nav-card text-notifi-text'
+                ? 'bg-white text-notifi-text'
                 : 'text-notifi-tab-unselected-text'
-            }  w-64 py-3 rounded-[12px] mb-2 cursor-pointer`}
+            }  w-64 py-3 rounded-3xl mb-2 cursor-pointer`}
           >
             <Icon
               id={'inbox'}
@@ -69,9 +69,9 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
               setCardView('destination');
               setIsOpen?.(false);
             }}
-            className={`flex px-4 w-64 py-3 rounded-[12px] mb-2 cursor-pointer ${
+            className={`flex px-4 w-64 py-3 rounded-3xl mb-2 cursor-pointer ${
               cardView === 'destination'
-                ? 'bg-gradient-side-nav-card text-notifi-text'
+                ? 'bg-white text-notifi-text'
                 : 'text-notifi-tab-unselected-text'
             }`}
           >
@@ -79,7 +79,7 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
               id={'destinations'}
               className={`${
                 cardView === 'destination'
-                  ? 'text-notifi-icon-selected'
+                  ? 'bg-whtie text-notifi-icon-selected'
                   : 'text-notifi-icon-unselected'
               } mt-[0.125rem]`}
             />
@@ -90,9 +90,9 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
               setCardView('alertSubscription');
               setIsOpen?.(false);
             }}
-            className={`flex px-4 w-64 py-3 rounded-[12px] mb-2 cursor-pointer ${
+            className={`flex px-4 w-64 py-3 rounded-3xl mb-2 cursor-pointer ${
               cardView === 'alertSubscription'
-                ? 'bg-gradient-side-nav-card text-notifi-text'
+                ? 'bg-white text-notifi-text'
                 : 'text-notifi-tab-unselected-text'
             }`}
           >
@@ -112,11 +112,11 @@ export const DashboardSideBar: FC<DashboardSideBarProps> = ({
           <Disconnect />
         </div>
         <div>
-          <div className="py-1.5 px-3 bg-notifi-destination-card-bg rounded-lg h-7 bg-opacity-40">
-            <PoweredByNotifi width={127} height={16} />
+          <div className="py-1.5 px-3 bg-white rounded-lg h-7 bg-opacity-15">
+            <PoweredByNotifi width={127} height={16} isLightLogo={true} />
           </div>
 
-          <div className="text-[10px] text-notifi-text-medium text-center mt-4 ml-1">
+          <div className="text-[10px] text-white mt-4 ml-1">
             <a
               href="https://notifi.network/privacy"
               target="_blank"

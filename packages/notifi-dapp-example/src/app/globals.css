@@ -12,7 +12,11 @@
     --notifi-gray4: 197 202 227;
     --notifi-gray5: 94 94 118;
     --notifi-gray6: 134 143 166;
+    --notifi-gray7: 139 139 139;
+    --notifi-gray8: 73 73 73;
     --notifi-white: 255 255 255;
+    --notifi-eggshell: 245 246 251;
+    --notifi-accent: 246 246 246;
     --notifi-black: 0 0 0;
     --notifi-midnight: 12, 14, 28;
     --notifi-midnight-blue: 33 53 76;
@@ -21,7 +25,7 @@
     --notifi-blueish2: 0 194 253;
     --notifi-brand: 49 65 242;
     --tenant-brand-dark: 94 203 204;
-    --tenant-brand-light: 48 64 247;
+    --tenant-brand-light: 0 0 0;
     --notifi-blueish4: 82 96 255;
     --notifi-light-blue: 247 251 255;
     --notifi-coral: 234 126 104;
@@ -33,6 +37,7 @@
     --backgroundpressed-100: 223, 225, 231;
     --notifi-light-purple: 241 242 245;
     --notifi-purple: 211 219 251;
+    --notifi-stroke: 211 211 211;
     --notifi-dark-green: 22 24 44;
     --notifi-dark-blue: 26 40 63;
     --notifi-blue-gray: 86 90 141;
@@ -59,12 +64,12 @@
   --notifi-bgimg-left: var(--notifi-white);
   --notifi-bgimg-middle: var(--notifi-blueish0);
   --notifi-bgimg-right: var(--notifi-blueish1);
-  --notifi-button-primary-bg: var(--notifi-coral);
+  --notifi-button-primary-bg: var(--tenant-brand-light);
   --notifi-button-primary-blueish-bg: var(--notifi-brand);
   --notifi-button-hover-bg: var(--notifi-blueish4);
-  --notifi-button-primary-text: var(--notifi-white);
+  --notifi-button-primary-text: var(--notifi-accent);
   --notifi-label-connect-wallet-text: var(--notifi-blueish2);
-  --notifi-destination-card-bg: var(--notifi-dark-blue);
+  --notifi-destination-card-bg: var(--notifi-white);
   --notifi-dummy-alert-card-bg: var(--notifi-dark-green);
   --notifi-card-bg: var(--notifi-midnight);
   --notifi-success: var(--notifi-green);
@@ -73,20 +78,23 @@
   --notifi-toggle-on-bg: var(--tenant-brand-dark);
   --notifi-destination-card-text: var(--notifi-dusk);
   --notifi-icon-unselected: var(--notifi-gray6);
-  --notifi-icon-selected: var(--notifi-white);
+  --notifi-icon-selected: var(--notifi-black);
   --notifi-tab-unselected-text: var(--notifi-gray6);
   --notifi-alert-subscription-block-bg: var(--notifi-gray1);
-  --notifi-text-light: var(--notifi-gray6);
-  --notifi-text-medium: var(--notifi-gray4);
+  --notifi-text-light: var(--notifi-gray7);
+  --notifi-text-medium: var(--notifi-gray8);
   --notifi-toggle-off-dot-bg: var(--backgroundpressed-100);
   --notifi-back-button-hover-bg: var(--notifi-light-purple);
   --notifi-back-button-focus-bg: var(--notifi-purple);
   --notifi-tenant-bg: var(--tenant-brand-dark);
   --notifi-card-border: var(--notifi-blue-gray);
   --notifi-input-border: var(--notifi-brand);
-  --notifi-destination-logo-card-bg: var(--notifi-midnight-blue);
+  --notifi-destination-logo-card-bg: var(--notifi-white);
   --notifi-wallet-menu-card-bg: var(--notifi-black);
   --notifi-loading-skeleton-bg: var(--notifi-brand);
+  --notifi-solid-bg: var(--notifi-black);
+  --notifi-history-unread-card-bg: var(--notifi-white);
+  --notifi-history-read-card-bg: var(--notifi-accent);
 }
 
 /* Light mode color variables controlled by NotifiContext */
@@ -97,34 +105,37 @@
   --notifi-bgimg-left: var(--notifi-white);
   --notifi-bgimg-middle: var(--notifi-blueish0);
   --notifi-bgimg-right: var(--notifi-blueish1);
-  --notifi-button-primary-bg: var(--notifi-coral);
+  --notifi-button-primary-bg: var(--tenant-brand-light);
   --notifi-button-primary-blueish-bg: var(--notifi-brand);
   --notifi-button-hover-bg: var(--notifi-blueish4);
   --notifi-button-primary-text: var(--notifi-white);
   --notifi-label-connect-wallet-text: var(--notifi-blueish2);
-  --notifi-destination-card-bg: var(--notifi-light-blue);
+  --notifi-destination-card-bg: var(--notifi-white);
   --notifi-dummy-alert-card-bg: var(--notifi-white);
   --notifi-card-bg: var(--notifi-white);
   --notifi-success: var(--notifi-green);
   --notifi-error: var(--notifi-red);
-  --notifi-toggle-off-bg: var(--notifi-heather);
-  --notifi-toggle-on-bg: var(--notifi-cyan);
+  --notifi-toggle-off-bg: var(--notifi-stroke);
+  --notifi-toggle-on-bg: var(--notifi-black);
   --notifi-destination-card-text: var(--notifi-dusk);
-  --notifi-icon-unselected: var(--notifi-gray2);
-  --notifi-icon-selected: var(--notifi-gray3);
+  --notifi-icon-unselected: var(--notifi-gray7);
+  --notifi-icon-selected: var(--notifi-black);
   --notifi-tab-unselected-text: var(--notifi-dusk);
   --notifi-alert-subscription-block-bg: var(--notifi-gray1);
-  --notifi-text-light: var(--notifi-gray2);
-  --notifi-text-medium: var(--notifi-gray3);
+  --notifi-text-light: var(--notifi-gray7);
+  --notifi-text-medium: var(--notifi-gray8);
   --notifi-toggle-off-dot-bg: var(--backgroundpressed-100);
   --notifi-back-button-hover-bg: var(--notifi-light-purple);
   --notifi-back-button-focus-bg: var(--notifi-purple);
   --notifi-tenant-bg: var(--tenant-brand-light);
   --notifi-card-border: var(--notifi-blue-gray);
-  --notifi-input-border: var(--notifi-gray3);
-  --notifi-destination-logo-card-bg: var(--notifi-white);
+  --notifi-input-border: var(--notifi-stroke);
+  --notifi-destination-logo-card-bg: var(--notifi-black);
   --notifi-wallet-menu-card-bg: var(--notifi-white);
   --notifi-loading-skeleton-bg: var(--notifi-black);
+  --notifi-solid-bg: var(--notifi-white);
+  --notifi-history-unread-card-bg: var(--notifi-white);
+  --notifi-history-read-card-bg: var(--notifi-accent);
 }
 
 .notifi-inputField:-webkit-autofill { 

@@ -27,12 +27,10 @@ export default function Disconnect() {
         />
       ) : null}
 
-      <div className={`relative z-20 rounded-[0.75rem] overflow-hidden`}>
+      <div className={`relative z-20 overflow-hidden`}>
         <div
           className={`cursor-pointer flex gap-x-5 px-4 text-notifi-tab-unselected-text w-56 py-2 ${
-            isWalletMenuOpen
-              ? 'bg-notifi-wallet-menu-card-bg border border-transparent'
-              : ''
+            isWalletMenuOpen ? 'border border-notifi-input-border ' : ''
           } 
               `}
           onClick={() => setIsWalletMenuOpen(!isWalletMenuOpen)}
@@ -48,7 +46,7 @@ export default function Disconnect() {
 
         {isWalletMenuOpen ? (
           <div
-            className={`cursor-pointer flex gap-x-5 px-4 text-notifi-tab-unselected-text w-56 py-2 bg-notifi-wallet-menu-card-bg border-t border-[#565A8D]`}
+            className={`cursor-pointer flex gap-x-5 px-4 text-notifi-tab-unselected-text w-56 py-2 border border-notifi-input-border border-t-transparent`}
             onClick={() => {
               if (keys) wallets[selectedWallet].disconnect();
             }}

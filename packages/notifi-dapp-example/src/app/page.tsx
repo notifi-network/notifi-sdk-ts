@@ -49,11 +49,11 @@ export default function Home() {
       <div className="md:fixed md:top-8 md:left-8 md:right-8 m-3 md:m-0 flex justify-between items-center">
         <div className="left-8 flex items-center">
           <Image
-            src="/logos/gmx-logo.png"
+            src="/logos/XION-logo.png"
             width={115}
             height={24}
             unoptimized={true}
-            alt="GMX logo"
+            alt="XION logo"
           />
         </div>
         {/* <div className="p-2 rounded-lg h-7 hidden md:block">
@@ -70,7 +70,7 @@ export default function Home() {
         ctaButtonText="Connect Wallet"
       />
       <DummyAlertsModal />
-      <div className="w-[340px] text-[10px] text-notifi-text-medium text-center mt-6 mb-4">
+      {/* <div className="w-[340px] text-[10px] text-notifi-text-medium text-center mt-6 mb-4">
         Notifications are provided by Notifi and not affiliated with GMX. By
         subscribing, you agree that info you provide to Notifi will be governed
         by its{' '}
@@ -90,8 +90,8 @@ export default function Home() {
           Terms of Use
         </a>
         .
-      </div>
-      <div className="p-2 rounded-lg h-7 block w-[110px]">
+      </div> */}
+      <div className="p-2 rounded-lg h-7 block w-[110px] mt-6">
         <PoweredByNotifi />
       </div>
       {isOpenWalletsModal ? (

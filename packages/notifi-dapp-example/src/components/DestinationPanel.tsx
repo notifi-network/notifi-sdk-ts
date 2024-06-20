@@ -1,5 +1,5 @@
 import { Icon } from '@/assets/Icon';
-import { useGlobalStateContext } from '@/context/GlobalStateContext';
+// import { useGlobalStateContext } from '@/context/GlobalStateContext';
 import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import {
   isCtaInfo,
@@ -57,18 +57,18 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
     </div>
   );
 
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
   const [isCBInfoModalOpen, setIsCBInfoModalOpen] = useState(false);
-  const { popGlobalInfoModal } = useGlobalStateContext();
+  // const { popGlobalInfoModal } = useGlobalStateContext();
 
-  const isWalletAlertVerified = targetData.wallet?.data?.isConfirmed;
+  // const isWalletAlertVerified = targetData.wallet?.data?.isConfirmed;
 
   const toggleCBInfoModal = () => {
     setIsCBInfoModalOpen(!isCBInfoModalOpen);
   };
 
-  const isSignWalletRequired =
-    targetInfoPrompts.wallet?.infoPrompt?.message === 'Sign Wallet';
+  // const isSignWalletRequired =
+  //   targetInfoPrompts.wallet?.infoPrompt?.message === 'Sign Wallet';
   return (
     <div className="w-full flex flex-col justify-center items-center">
       <CoinbaseInfoModal
@@ -76,15 +76,15 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
         open={isCBInfoModalOpen}
       />
       {contactInfo.email.active && targetData.email ? (
-        <div className="bg-notifi-destination-card-bg rounded-md w-full sm:w-112 h-18 flex flex-row items-center justify-between mb-2">
+        <div className="bg-notifi-destination-card-bg rounded-lg w-full sm:w-112 h-18 flex flex-row items-center justify-between mb-2 shadow-destinationCard">
           <div className="bg-notifi-destination-logo-card-bg rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
             <Icon
               id="email-icon"
               width="15px"
               height="12px"
-              className="text-notifi-toggle-on-bg"
+              className="text-notifi-button-primary-text"
             />
-            <div className="font-medium text-xs mt-2 text-notifi-grey-text">
+            <div className="font-medium text-xs mt-2 text-notifi-text-light">
               Email
             </div>
           </div>
@@ -121,15 +121,15 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
         </div>
       ) : null}
       {contactInfo.telegram.active && targetData.telegram ? (
-        <div className="bg-notifi-destination-card-bg rounded-md w-full sm:w-112 h-18 flex flex-row items-center justify-between mb-2">
+        <div className="bg-notifi-destination-card-bg rounded-lg w-full sm:w-112 h-18 flex flex-row items-center justify-between mb-2 shadow-destinationCard">
           <div className="bg-notifi-destination-logo-card-bg rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
             <Icon
               id="telegram-icon"
               width="16px"
               height="14px"
-              className="text-notifi-toggle-on-bg"
+              className="text-notifi-button-primary-text"
             />
-            <div className="font-medium text-xs mt-2 text-notifi-grey-text">
+            <div className="font-medium text-xs mt-2 text-notifi-text-light">
               Telegram
             </div>
           </div>
@@ -163,16 +163,17 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
           )}
         </div>
       ) : null}
-      {/* {targetData.slack.useSlack ? (
-        <div className="bg-notifi-destination-card-bg rounded-md w-full sm:w-112 h-18 flex flex-row items-center justify-between mb-2">
+
+      {targetData.slack.useSlack ? (
+        <div className="bg-notifi-destination-card-bg rounded-lg w-full sm:w-112 h-18 flex flex-row items-center justify-between mb-2 shadow-destinationCard">
           <div className="bg-notifi-destination-logo-card-bg rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
             <Icon
               id="slack-icon"
               width="16px"
               height="16px"
-              className="text-notifi-toggle-on-bg"
+              className="text-notifi-button-primary-text"
             />
-            <div className="font-medium text-xs mt-2 text-notifi-grey-text">
+            <div className="font-medium text-xs mt-2 text-notifi-text-light">
               Slack
             </div>
           </div>
@@ -184,7 +185,8 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
                 isButton={true}
                 buttonCopy="Enable Bot"
                 onClick={() => {
-                  (targetInfoPrompts.slack?.infoPrompt as CtaInfo).onClick();
+                  const infoPrompt = targetInfoPrompts.slack?.infoPrompt;
+                  if (infoPrompt && isCtaInfo(infoPrompt)) infoPrompt.onClick();
                 }}
                 infoPromptMessage={
                   targetInfoPrompts.slack?.infoPrompt.message ?? ''
@@ -202,18 +204,18 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
             </div>
           )}
         </div>
-      ) : null} */}
+      ) : null}
 
       {contactInfo?.discord?.active && targetData.discord.useDiscord ? (
-        <div className="bg-notifi-destination-card-bg rounded-md w-full sm:w-112 h-18 flex flex-row items-center justify-between mb-2">
+        <div className="bg-notifi-destination-card-bg rounded-lg w-full sm:w-112 h-18 flex flex-row items-center justify-between mb-2 shadow-destinationCard">
           <div className="bg-notifi-destination-logo-card-bg rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
             <Icon
               id="discord-icon"
               width="17px"
               height="13px"
-              className="text-notifi-toggle-on-bg"
+              className="text-notifi-button-primary-text"
             />
-            <div className="font-medium text-xs mt-2 text-notifi-grey-text">
+            <div className="font-medium text-xs mt-2 text-notifi-text-light">
               Discord
             </div>
           </div>
@@ -250,11 +252,11 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
         </div>
       ) : null}
 
-      {targetData.wallet.useWallet ? (
-        <div className="bg-notifi-destination-card-bg rounded-md w-full sm:w-112 h-18 flex flex-row items-center justify-between mb-2">
+      {/* {targetData.wallet.useWallet ? (
+        <div className="bg-notifi-destination-card-bg rounded-lg w-full sm:w-112 h-18 flex flex-row items-center justify-between mb-2 shadow-destinationCard">
           <div className="bg-notifi-destination-logo-card-bg rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
-            <Icon id="wallet-icon" className="text-notifi-toggle-on-bg" />
-            <div className="font-medium text-xs mt-2 text-notifi-grey-text">
+            <Icon id="wallet-icon" className="text-notifi-button-primary-text" />
+            <div className="font-medium text-xs mt-2 text-notifi-text-light">
               Wallet
             </div>
           </div>
@@ -327,7 +329,7 @@ export const DestinationPanel: React.FC<DestinationPanelProps> = ({
             ) : null}
           </div>
         </div>
-      ) : null}
+      ) : null} */}
     </div>
   );
 };

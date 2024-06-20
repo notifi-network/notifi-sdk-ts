@@ -28,7 +28,7 @@ export const DestinationInfoPrompt: React.FC<Props> = ({
       {isButton ? (
         <button
           onClick={() => onClick()}
-          className="ml-1 rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-24 h-8 text-sm font-medium disabled:opacity-50 disabled:hover:bg-notifi-button-primary-blueish-bg hover:bg-notifi-button-hover-bg"
+          className="ml-1 rounded-3xl bg-notifi-button-primary-bg text-notifi-button-primary-text w-24 h-8 text-sm font-medium disabled:opacity-50 disabled:hover:bg-notifi-button-primary-bg hover:bg-notifi-button-primary-bg"
         >
           {isLoading ? (
             <div className="w-full h-full flex justify-center items-center">

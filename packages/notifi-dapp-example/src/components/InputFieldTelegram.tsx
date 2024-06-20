@@ -55,15 +55,15 @@ export const InputFieldTelegram: React.FC<InputFieldTelegramProps> = ({
 
   return (
     <>
-      <div className="bg-notifi-destination-card-bg rounded-md w-full sm:w-112 h-18 flex flex-row items-center mb-2 gap-2 sm:gap-4">
+      <div className="bg-notifi-destination-card-bg rounded-lg w-full sm:w-112 h-18 flex flex-row items-center mb-2 gap-2 sm:gap-4 shadow-destinationCard">
         <div className="bg-notifi-destination-logo-card-bg rounded-md w-18 h-18 shadow-destinationCard text-notifi-destination-card-text flex flex-col items-center justify-center">
           <Icon
             id="telegram-icon"
             width="16px"
             height="14px"
-            className="text-notifi-tenant-brand-bg"
+            className="text-notifi-button-primary-text"
           />
-          <div className="font-medium text-xs mt-2 text-notifi-grey-text">
+          <div className="font-medium text-xs mt-2 text-notifi-text-light">
             Telegram
           </div>
         </div>
@@ -71,8 +71,8 @@ export const InputFieldTelegram: React.FC<InputFieldTelegramProps> = ({
           <input
             data-cy="notifiTelegramInput"
             onBlur={validateTelegram}
-            className={`notifi-inputField text-notifi-text border bg-notifi-card-bg border-grey-300 rounded-md w-full sm:w-86 h-11 mr-4 text-sm pl-3 focus:border-solid focus:border-blue-800 focus:outline-none ${
-              hasErrors ? 'border-notifi-error' : 'border-none'
+            className={`notifi-inputField text-notifi-text border bg-notifi-destination-card-bg border-grey-300 rounded-md w-full sm:w-86 h-11 mr-4 text-sm pl-3 border-notifi-input-border focus:border-solid focus:border-black focus:outline-none ${
+              hasErrors ? 'border-notifi-error' : ''
             } flex ${hasErrors ? 'pt-3' : 'pt-0'}`}
             disabled={disabled}
             name="notifi-telegram"
@@ -101,7 +101,7 @@ export const InputFieldTelegram: React.FC<InputFieldTelegramProps> = ({
           ) : null}
           {isEditable && isChangingTargets.telegram ? (
             <button
-              className="rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-16 h-7 mb-6 text-sm font-medium absolute top-2.5 right-1 disabled:opacity-50 disabled:hover:bg-notifi-button-primary-blueish-bg hover:bg-notifi-button-hover-bg"
+              className="rounded-3xl bg-notifi-button-primary-bg text-notifi-button-primary-text w-16 h-7 mb-6 text-sm font-medium absolute top-2.5 right-1 disabled:opacity-50 disabled:hover:bg-notifi-button-primary-bg hover:bg-notifi-button-primary-bg"
               disabled={!!telegram.error || !!email.error}
               onClick={() => renewTargetGroup()}
             >

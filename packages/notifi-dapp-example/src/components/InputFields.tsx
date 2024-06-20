@@ -3,8 +3,8 @@ import React from 'react';
 
 import { InputFieldDiscord } from './InputFieldDiscord';
 import { InputFieldEmail } from './InputFieldEmail';
+import { InputFieldSlack } from './InputFieldSlack';
 import { InputFieldTelegram } from './InputFieldTelegram';
-import { InputFieldWallet } from './InputFieldWallet';
 
 export type InputFieldsProps = {
   contactInfo: CardConfigItemV1['contactInfo'];
@@ -28,7 +28,7 @@ export const InputFields: React.FC<InputFieldsProps> = ({
       {contactInfo?.discord?.active ? (
         <InputFieldDiscord disabled={inputDisabled} isEditable={isEditable} />
       ) : null}
-      <InputFieldWallet disabled={inputDisabled} isEditable={isEditable} />
+      <InputFieldSlack disabled={inputDisabled} isEditable={isEditable} />
     </div>
   );
 };
