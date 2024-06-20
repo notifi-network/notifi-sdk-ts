@@ -33,7 +33,7 @@ export const InputFieldEmail: React.FC<InputFieldEmailProps> = ({
       return;
     }
     const emailRegex = new RegExp(
-      '^[a-zA-Z0-9._:$!%-+]+@[a-zA-Z0-9.-]+.[a-zA-Z]$',
+      '^[a-zA-Z0-9._:$!%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$',
     );
     if (emailRegex.test(email.value)) {
       updateTargetForms('email', email.value);

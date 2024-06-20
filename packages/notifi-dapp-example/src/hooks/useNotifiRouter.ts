@@ -78,7 +78,7 @@ export const useNotifiRouter = (urlParams?: Record<string, string>) => {
         /** NOTE: preserve 0.5s to make sure cache is cleaned before route back to root dir*/
         console.log(`LOGIN ERROR: ${JSON.stringify(loginError)}`);
         handleRoute('/');
-      }, 5000);
+      }, 500);
     }
   }, [loginError]);
 
