@@ -7,6 +7,7 @@ import { useTopicStackRowInput } from '../hooks/useTopicStackRowInput';
 import {
   convertOptionValue,
   defaultCopy,
+  defaultLoadingAnimationStyle,
   getFusionEventMetadata,
   getUpdatedAlertFilterOptions,
   getUserInputParams,
@@ -20,6 +21,7 @@ export type TopicStackRowInputProps = {
   classNames?: {
     container?: string;
     button?: string;
+    loadingSpinner?: React.CSSProperties;
   };
   topic: FusionEventTopic;
   onSave?: () => void;
@@ -59,6 +61,9 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
     props.onSave,
   );
 
+  const loadingSpinnerStyle: React.CSSProperties =
+    props.classNames?.loadingSpinner ?? defaultLoadingAnimationStyle.spinner;
+
   return (
     <div
       className={clsx(
@@ -71,49 +76,53 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
         subscriptionValue={subscriptionValue}
         setSubscriptionValue={setSubscriptionValue}
       />
-      {subscriptionValue && userInputParams.length > 0 ? (
-        <div className={clsx('notifi-topic-row-user-inputs-row-container')}>
-          {userInputParams.map((userInputParm, id) => {
-            return (
-              <TopicOptions<'standalone'>
-                key={id}
-                userInputParam={userInputParm}
-                topic={props.topic}
-                onSelectAction={{
-                  actionType: 'updateFilterOptions',
-                  action: (userInputParmName, option) => {
-                    if (!filterOptionsToBeSubscribed || !filterName) return;
-                    const updatedAlertFilterOptiopns =
-                      getUpdatedAlertFilterOptions(
-                        filterName,
-                        filterOptionsToBeSubscribed,
-                        userInputParmName,
-                        convertOptionValue(option, userInputParm.kind),
-                      );
-                    setFilterOptionsToBeSubscribed(updatedAlertFilterOptiopns);
-                  },
-                }}
-              />
-            );
-          })}
+      {/* {subscriptionValue && userInputParams.length > 0 ? ( */}
+      <div className={clsx('notifi-topic-row-user-inputs-row-container')}>
+        {userInputParams.map((userInputParm, id) => {
+          return (
+            <TopicOptions<'standalone'>
+              key={id}
+              userInputParam={userInputParm}
+              topic={props.topic}
+              onSelectAction={{
+                actionType: 'updateFilterOptions',
+                action: (userInputParmName, option) => {
+                  if (!filterOptionsToBeSubscribed || !filterName) return;
+                  const updatedAlertFilterOptiopns =
+                    getUpdatedAlertFilterOptions(
+                      filterName,
+                      filterOptionsToBeSubscribed,
+                      userInputParmName,
+                      convertOptionValue(option, userInputParm.kind),
+                    );
+                  setFilterOptionsToBeSubscribed(updatedAlertFilterOptiopns);
+                },
+              }}
+            />
+          );
+        })}
+        <div
+          className={clsx(
+            'notifi-topic-stack-row-input-button',
+            props.classNames?.button,
+            !isTopicReadyToSubscribe && 'disabled',
+          )}
+          onClick={subscribeTopic}
+        >
+          {isLoadingTopic ? (
+            <LoadingAnimation type={'spinner'} {...loadingSpinnerStyle} />
+          ) : null}
           <div
             className={clsx(
-              'notifi-topic-stack-row-input-button',
-              props.classNames?.button,
-              !isTopicReadyToSubscribe && 'disabled',
+              'notifi-topic-stack-row-input-button-text',
+              isLoadingTopic && 'hidden',
             )}
           >
-            {isLoadingTopic ? (
-              <LoadingAnimation type={'spinner'} />
-            ) : (
-              <div onClick={subscribeTopic}>
-                {props.copy?.buttonContent ??
-                  defaultCopy.topicStackRowInput.buttonContent}
-              </div>
-            )}
+            {props.copy?.buttonContent ??
+              defaultCopy.topicStackRowInput.buttonContent}
           </div>
         </div>
-      ) : null}
+      </div>
     </div>
   );
 };

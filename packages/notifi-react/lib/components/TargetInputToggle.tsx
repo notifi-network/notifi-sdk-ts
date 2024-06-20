@@ -21,7 +21,7 @@ export type TargetInputToggleProps = Readonly<{
 
 export const TargetInputToggle: React.FC<TargetInputToggleProps> = (props) => {
   const {
-    targetDocument: { targetInputs },
+    targetDocument: { targetInputs, targetData },
     updateTargetInputs,
   } = useNotifiTargetContext();
 
@@ -33,6 +33,17 @@ export const TargetInputToggle: React.FC<TargetInputToggleProps> = (props) => {
         return targetInputs.discord;
     }
   }, [targetInputs]);
+
+  React.useEffect(() => {
+    switch (props.targetType) {
+      case 'discord':
+        updateTargetInputs('discord', targetData?.discord.useDiscord);
+        break;
+      case 'slack':
+        updateTargetInputs('slack', targetData?.slack.useSlack);
+        break;
+    }
+  }, []);
 
   const title =
     props.copy?.title ?? props.targetType === 'slack'

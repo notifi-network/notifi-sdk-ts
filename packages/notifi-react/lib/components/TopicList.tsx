@@ -13,6 +13,7 @@ export type TopicListProps = {
     TopicRow?: TopicRowPropsBase['classNames'];
     TopicStackRow?: TopicStackRowProps['classNames'];
   };
+  parentComponent?: 'inbox' | 'ftu';
 };
 
 export type TopicRowCategory = 'standalone' | 'group';
@@ -34,6 +35,7 @@ export type TopicGroupRowMetadata = TopicRowMetadataBase & {
 };
 
 export const TopicList: React.FC<TopicListProps> = (props) => {
+  const parentComponent = props.parentComponent ?? 'ftu';
   const { fusionEventTopics } = useNotifiTenantConfigContext();
 
   // TODO: Move this to a hook
@@ -78,6 +80,7 @@ export const TopicList: React.FC<TopicListProps> = (props) => {
                 key={id}
                 {...rowMetadata}
                 classNames={props.classNames?.TopicRow}
+                parentComponent={parentComponent}
               />
             );
           }
@@ -86,6 +89,7 @@ export const TopicList: React.FC<TopicListProps> = (props) => {
               {...rowMetadata}
               key={id}
               classNames={props.classNames?.TopicRow}
+              parentComponent={parentComponent}
             />
           );
         }
@@ -95,6 +99,7 @@ export const TopicList: React.FC<TopicListProps> = (props) => {
               key={id}
               {...rowMetadata}
               classNames={props.classNames?.TopicStackRow}
+              parentComponent={parentComponent}
             />
           );
         }

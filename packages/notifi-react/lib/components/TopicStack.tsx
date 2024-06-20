@@ -16,7 +16,6 @@ import {
   getFusionEventMetadata,
   isAlertFilter,
 } from '../utils';
-import { LoadingAnimation } from './LoadingAnimation';
 
 type TopicStackProps = {
   topicStackAlert: TopicStackAlert;
@@ -89,10 +88,17 @@ export const TopicStack: React.FC<TopicStackProps> = (props) => {
       </div>
 
       <div
-        className={clsx('notifi-topic-stack-cta', props.className?.cta)}
-        onClick={() => unsubscribeAlert(props.topicStackAlert.alertName)}
+        className={clsx(
+          'notifi-topic-stack-cta',
+          props.className?.cta,
+          isLoading ? 'disabled' : '',
+        )}
+        onClick={() => {
+          if (isLoading) return;
+          unsubscribeAlert(props.topicStackAlert.alertName);
+        }}
       >
-        {isLoading ? <LoadingAnimation type="spinner" /> : <Icon type="bin" />}
+        <Icon type="bin" />
       </div>
     </div>
   );

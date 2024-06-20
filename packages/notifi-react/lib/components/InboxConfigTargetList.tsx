@@ -61,10 +61,6 @@ export const InboxConfigTargetList: React.FC<InboxConfigTargetListProps> = (
           classNames={{
             TargetListItem: {
               targetListVerifiedItem: 'notifi-inbox-config-target-list-item',
-              TargetCta: {
-                actionNotRequired:
-                  'notifi-inbox-config-target-list-item-verified',
-              },
             },
           }}
           parentComponent="inbox"

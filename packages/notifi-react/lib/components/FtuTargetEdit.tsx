@@ -18,6 +18,7 @@ export type FtuTargetEditProps = {
   };
   classNames?: {
     container?: string;
+    invalidEmailWarning?: string;
     button?: string;
     loadingSpinner?: React.CSSProperties;
     main?: string;
@@ -31,7 +32,12 @@ export const FtuTargetEdit: React.FC<FtuTargetEditProps> = (props) => {
   const loadingSpinnerStyle: React.CSSProperties =
     props.classNames?.loadingSpinner ?? defaultLoadingAnimationStyle.spinner;
   const [isLoading, setIsLoading] = React.useState(false);
-  const { renewTargetGroup } = useNotifiTargetContext();
+  const {
+    renewTargetGroup,
+    targetDocument: { targetInputs },
+  } = useNotifiTargetContext();
+  const [isShowingInvalidEmailWarning, setIsShowingInvalidEmailWarning] =
+    React.useState(false);
 
   const onClick = async () => {
     setIsLoading(true);
@@ -58,9 +64,26 @@ export const FtuTargetEdit: React.FC<FtuTargetEditProps> = (props) => {
         {props.copy?.description ?? defaultCopy.ftuTargetEdit.description}
       </div>
       <div
+        className={clsx(
+          'notifi-ftu-target-edit-invalid-email-warning',
+          props.classNames?.invalidEmailWarning,
+        )}
+      >
+        {isShowingInvalidEmailWarning ? targetInputs.email.error : null}
+      </div>
+
+      <div
         className={clsx('notifi-ftu-target-edit-main', props.classNames?.main)}
       >
-        <TargetInputs copy={props.copy?.TargetInputs} />
+        <TargetInputs
+          copy={props.copy?.TargetInputs}
+          formTargetsOnFocus={(target) => {
+            if (target === 'email') setIsShowingInvalidEmailWarning(false);
+          }}
+          formTargetsOnBlur={(target) => {
+            if (target === 'email') setIsShowingInvalidEmailWarning(true);
+          }}
+        />
       </div>
       <div
         className={clsx(

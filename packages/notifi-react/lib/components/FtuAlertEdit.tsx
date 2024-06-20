@@ -55,7 +55,7 @@ export const FtuAlertEdit: React.FC<FtuAlertEditProps> = (props) => {
       <div
         className={clsx('notifi-ftu-alert-edit-main', props.classNames?.main)}
       >
-        <TopicList />
+        <TopicList parentComponent="ftu" />
       </div>
       <div
         className={clsx(

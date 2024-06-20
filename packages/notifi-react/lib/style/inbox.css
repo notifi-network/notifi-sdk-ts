@@ -29,7 +29,7 @@
   cursor: pointer;
   background: var(--notifi-nav-footer-bg);
   padding: 1rem 0;
-  border-top: var(--notifi-ftu-footer-border) 1px solid; /** TODO: change to notifi-nav-footer-border */
+  border-top: var(--notifi-inbox-footer-border) 1px solid;
 }
 
 .notifi-inbox-nav-tabs > div {
@@ -66,14 +66,19 @@
 }
 
 .notifi-inbox-config-topic-title {
-  margin: 0 2rem;
+  margin: 0 1rem;
   color: var(--notifi-inbox-config-topic-title-text);
   font-size: 0.9rem;
 }
 
 /* InboxConfigTargetList & InboxConfigTargetEdit styles */
 
-.notifi-inbox-config-target-edit,
+.notifi-inbox-config-target-edit {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 .notifi-inbox-config-target-list {
   display: flex;
   flex-direction: column;
@@ -83,7 +88,23 @@
   flex-grow: 1;
   overflow: scroll;
   scrollbar-width: none;
+  border-bottom: var(--notifi-inbox-footer-border) 1px solid;
 }
+
+.notifi-inboxConfig-target-edit-description {
+  color: var(--notifi-ftu-target-edit-description); /* TODO: Color */
+  text-align: center;
+  font-size: 0.9rem;
+  margin: 0.75rem 0 0.75rem 0;
+}
+
+.notifi-inbox-config-target-edit-invalid-email-warning {
+  color: var(--notifi-color-error);
+  margin: 0 2rem 0.5rem 2rem;
+  height: 1rem;
+  font-size: 0.9rem;
+}
+
 .notifi-inbox-config-target-edit-button,
 .notifi-inbox-config-target-list-button {
   display: flex;
@@ -110,21 +131,13 @@
 }
 
 .notifi-inbox-config-target-list-item {
-  padding: 1rem;
   align-items: start;
-}
-
-.notifi-inbox-config-target-list-item-verified {
-  background-color: transparent;
-  text-align: start;
-  padding: 0;
-  color: var(--notifi-inbox-config-target-list-item-verified-text);
 }
 
 /* InboxConfigTargetEdit styles */
 .notifi-inbox-config-target-edit-main {
   flex-grow: 1;
   overflow: scroll;
-  margin-top: 1.5rem;
   scrollbar-width: none;
+  border-bottom: var(--notifi-inbox-footer-border) 1px solid;
 }

@@ -24,7 +24,8 @@ export type IconType =
   | 'chevron-right'
   | 'bell-circle'
   | 'check-circle'
-  | 'bell-thin';
+  | 'bell-thin'
+  | 'triangle-down';
 
 export const Icon: React.FC<Props & { type: IconType }> = (
   props: Props & { type: IconType },
@@ -90,9 +91,9 @@ export const Icon: React.FC<Props & { type: IconType }> = (
       return (
         <svg
           {...props}
-          width="11"
-          height="17"
-          viewBox="0 0 11 17"
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
@@ -106,15 +107,15 @@ export const Icon: React.FC<Props & { type: IconType }> = (
       return (
         <svg
           {...props}
-          width="17"
+          width="16"
           height="16"
-          viewBox="0 0 17 16"
+          viewBox="0 0 16 16"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
             d="M8.63846 15.4458L16.4253 0.189566L0.00576619 5.06668L3.35716 9.10781L12.9656 3.06713L5.27554 11.4143L8.63846 15.4458Z"
-            fill="#B6B8D5"
+            fill="currentColor"
           />
         </svg>
       );
@@ -608,19 +609,19 @@ export const Icon: React.FC<Props & { type: IconType }> = (
             fillRule="evenodd"
             clipRule="evenodd"
             d="M16.5 6.875C15.9305 6.875 15.4687 6.41329 15.4687 5.84375L15.4687 1.03125C15.4687 0.461706 15.9305 -2.01818e-08 16.5 -4.50772e-08C17.0695 -6.99726e-08 17.5312 0.461706 17.5312 1.03125L17.5312 5.84375C17.5312 6.41329 17.0695 6.875 16.5 6.875Z"
-            fill="#828AE3"
+            fill="currentColor"
           />
           <path
             fillRule="evenodd"
             clipRule="evenodd"
             d="M11.653 8.39704C12.0191 7.96074 11.9622 7.31028 11.5259 6.94418L7.83935 3.85077C7.40305 3.48467 6.75258 3.54158 6.38649 3.97787C6.02039 4.41417 6.0773 5.06464 6.5136 5.43073L10.2002 8.52415C10.6365 8.89024 11.2869 8.83333 11.653 8.39704Z"
-            fill="#828AE3"
+            fill="currentColor"
           />
           <path
             fillRule="evenodd"
             clipRule="evenodd"
             d="M21.2879 8.39704C20.9218 7.96074 20.9787 7.31028 21.415 6.94418L25.1016 3.85077C25.5379 3.48467 26.1883 3.54158 26.5544 3.97787C26.9205 4.41417 26.8636 5.06464 26.4273 5.43073L22.7407 8.52415C22.3044 8.89024 21.654 8.83333 21.2879 8.39704Z"
-            fill="#828AE3"
+            fill="currentColor"
           />
         </svg>
       );
@@ -694,7 +695,7 @@ export const Icon: React.FC<Props & { type: IconType }> = (
             r="9.5"
             fill="white"
             stroke="currentColor"
-            stroke-width="2"
+            strokeWidth="2"
           />
           <path
             d="M10.4901 16.1875C11.1212 16.1875 11.6376 15.6712 11.6376 15.0401H9.3427C9.3427 15.6712 9.85331 16.1875 10.4901 16.1875ZM13.9324 12.7452V9.8766C13.9324 8.11529 12.9915 6.64083 11.3507 6.25071V5.86058C11.3507 5.38439 10.9663 5 10.4901 5C10.0139 5 9.62956 5.38439 9.62956 5.86058V6.25071C7.98299 6.64083 7.04783 8.10955 7.04783 9.8766V12.7452L5.90039 13.8926V14.4663H15.0799V13.8926L13.9324 12.7452Z"
@@ -716,8 +717,8 @@ export const Icon: React.FC<Props & { type: IconType }> = (
           <path
             d="M7.87876 4.24243L4.84846 7.27273L3.03027 6.06061"
             // stroke="#1B1B22"
-            stroke-width="1.21212"
-            stroke-linecap="round"
+            strokeWidth="1.21212"
+            strokeLinecap="round"
           />
         </svg>
       );
@@ -733,6 +734,21 @@ export const Icon: React.FC<Props & { type: IconType }> = (
         >
           <path
             d="M4.58974 11.1875C5.22083 11.1875 5.73718 10.6712 5.73718 10.0401H3.44231C3.44231 10.6712 3.95292 11.1875 4.58974 11.1875ZM8.03205 7.74519V4.8766C8.03205 3.11529 7.09115 1.64083 5.45032 1.25071V0.860577C5.45032 0.384391 5.06593 0 4.58974 0C4.11356 0 3.72917 0.384391 3.72917 0.860577V1.25071C2.0826 1.64083 1.14744 3.10955 1.14744 4.8766V7.74519L0 8.89263V9.46635H9.17949V8.89263L8.03205 7.74519Z"
+            fill="currentColor"
+          />
+        </svg>
+      );
+    case 'triangle-down':
+      return (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="7"
+          height="7"
+          viewBox="0 0 7 7"
+          fill="none"
+        >
+          <path
+            d="M0.849609 0L3.82316 3.54167L6.79671 0H0.849609Z"
             fill="currentColor"
           />
         </svg>
