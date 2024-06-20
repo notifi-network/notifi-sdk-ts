@@ -6,6 +6,7 @@ import {
   HistoryItem,
   useNotifiHistoryContext,
   useNotifiTargetContext,
+  useNotifiTenantConfigContext,
 } from '../context';
 import { defaultCopy, defaultLoadingAnimationStyle, hasTarget } from '../utils';
 import { HistoryRow } from './HistoryRow';
@@ -49,6 +50,7 @@ export const HistoryList: React.FC<HistoryListProps> = (props) => {
     getHistoryItems,
     isLoading: isLoadingHistoryItems,
   } = useNotifiHistoryContext();
+  const { cardConfig } = useNotifiTenantConfigContext();
   const [isLoadingMoreItems, setIsLoadingMoreItems] = React.useState(false);
   const loadingSpinnerStyle: React.CSSProperties =
     props.classNames?.loadingSpinner ?? defaultLoadingAnimationStyle.spinner;
@@ -78,6 +80,10 @@ export const HistoryList: React.FC<HistoryListProps> = (props) => {
     unVerifiedTargets,
   } = useNotifiTargetContext();
 
+  const isShowingTargetStateBanner =
+    unVerifiedTargets.length > 0 ||
+    (!hasTarget(targetData) && !cardConfig?.isContactInfoRequired);
+
   return (
     <div
       className={clsx(
@@ -89,7 +95,7 @@ export const HistoryList: React.FC<HistoryListProps> = (props) => {
       <NavHeader>
         {props.copy?.headerTitle ?? defaultCopy.inboxHistoryList.headerTitle}
       </NavHeader>
-      {unVerifiedTargets.length > 0 ? (
+      {isShowingTargetStateBanner ? (
         <div
           className={clsx(
             'notifi-history-list-target-state-banner-container',
@@ -111,7 +117,11 @@ export const HistoryList: React.FC<HistoryListProps> = (props) => {
 
       <div
         ref={mainRef}
-        className={clsx('notifi-history-list-main', props.classNames?.main)}
+        className={clsx(
+          'notifi-history-list-main',
+          props.classNames?.main,
+          isShowingTargetStateBanner ? 'w-banner' : '',
+        )}
       >
         {/* HistoryList */}
         {historyItems.map((item, id) => (

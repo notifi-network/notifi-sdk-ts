@@ -6,6 +6,7 @@ import {
 import clsx from 'clsx';
 import React from 'react';
 
+import { Icon } from '../assets/Icons';
 import { useNotifiTenantConfigContext } from '../context';
 import { defaultCopy } from '../utils';
 
@@ -17,6 +18,8 @@ type SubscriptionValueInputProps = {
     container?: string;
     dropdownContainer?: string;
     dropdownValue?: string;
+    dropdownValueContent?: string;
+    dropdownIcon?: string;
     dropdownList?: string;
   };
   copy?: {
@@ -54,10 +57,27 @@ export const SubscriptionValueInput: React.FC<SubscriptionValueInputProps> = (
             )}
             onClick={() => setIsDropdownOpen((prev) => !prev)}
           >
-            {props.subscriptionValue
-              ? props.subscriptionValue.label
-              : props.copy?.dropdownPlaceholder ??
-                defaultCopy.subscriptionValueInput.dropdownPlaceholder}
+            <div
+              className={clsx(
+                'subscription-value-input-dropdown-value-content',
+                props.className?.dropdownValueContent,
+                !props.subscriptionValue ? 'unselected' : '',
+              )}
+            >
+              {props.subscriptionValue
+                ? props.subscriptionValue.label
+                : props.copy?.dropdownPlaceholder ??
+                  defaultCopy.subscriptionValueInput.dropdownPlaceholder}
+            </div>
+
+            <div
+              className={clsx(
+                'subscription-value-input-dropdown-icon',
+                props.className?.dropdownIcon,
+              )}
+            >
+              <Icon type="triangle-down" />
+            </div>
           </div>
           {isDropdownOpen && (
             <div

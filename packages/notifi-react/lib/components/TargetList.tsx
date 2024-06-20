@@ -32,81 +32,98 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
     targetDocument: { targetInfoPrompts, targetData },
   } = useNotifiTargetContext();
 
+  const targetListItemArgsList = React.useMemo(() => {
+    // TODO: Move to custom hook when it gets too complex
+    const order = ['email', 'phoneNumber', 'telegram', 'discord', 'slack'];
+    const verifiedTargets = objectKeys(targetData)
+      .filter((target) => {
+        const targetInfo = targetInfoPrompts[target];
+        return targetInfo ? isTargetVerified(targetInfo.infoPrompt) : false;
+      })
+      .sort((a, b) => {
+        return order.indexOf(a) - order.indexOf(b);
+      });
+
+    const unverifiedTargets = objectKeys(targetData)
+      .filter((target) => !verifiedTargets.includes(target))
+      .sort((a, b) => {
+        return order.indexOf(a) - order.indexOf(b);
+      });
+
+    return [...unverifiedTargets, ...verifiedTargets].map((target) => {
+      const targetInfo = targetInfoPrompts[target];
+      if (!targetInfo || !targetData[target]) return null;
+      const targetListItemArgs = {
+        target,
+        targetInfo,
+      } as TargetListItemProps;
+
+      switch (target) {
+        case 'email':
+          targetListItemArgs.iconType = 'email';
+          targetListItemArgs.label =
+            props.copy?.email ?? defaultCopy.targetList.email;
+          targetListItemArgs.targetCtaType = 'link';
+          targetListItemArgs.message = {
+            beforeVerify:
+              props.copy?.emailVerifyMessage ??
+              defaultCopy.targetList.emailVerifyMessage,
+          };
+          targetListItemArgs.ctaCalledSuccessfullyText =
+            props.copy?.emailCtaCalledSuccessfullyText ??
+            defaultCopy.targetList.emailCtaCalledSuccessfullyText;
+          break;
+        case 'phoneNumber':
+          targetListItemArgs.iconType = 'sms';
+          targetListItemArgs.label =
+            props.copy?.sms ?? defaultCopy.targetList.phoneNumber;
+          targetListItemArgs.targetCtaType = 'button';
+          break;
+        case 'telegram':
+          targetListItemArgs.iconType = 'telegram';
+          targetListItemArgs.label =
+            props.copy?.telegram ?? defaultCopy.targetList.telegram;
+          targetListItemArgs.targetCtaType = 'button';
+          break;
+        case 'discord':
+          if (!targetData[target].useDiscord) return null;
+          targetListItemArgs.iconType = 'discord';
+          targetListItemArgs.label = defaultCopy.targetList.discord;
+          targetListItemArgs.targetCtaType = 'button';
+          targetListItemArgs.message = {
+            afterVerify:
+              props.copy?.discordVerifiedMessage ??
+              defaultCopy.targetList.discordVerifiedMessage,
+            afterVerifyTooltip:
+              props.copy?.discordVerifiedPromptTooltip ??
+              defaultCopy.targetList.discordVerifiedPromptTooltip,
+          };
+          break;
+        case 'slack':
+          if (!targetData[target].useSlack) return null;
+          targetListItemArgs.iconType = 'slack';
+          targetListItemArgs.label = defaultCopy.targetList.slack;
+          targetListItemArgs.targetCtaType = 'button';
+          break;
+      }
+
+      return targetListItemArgs;
+    });
+  }, [targetData, targetInfoPrompts]);
+
   return (
     <div className={clsx('notifi-target-list', props.classNames?.container)}>
-      {objectKeys(targetData)
-        .sort((key) => {
-          // the unconfirmed items should be at the top
-          const target = targetInfoPrompts[key];
-          if (!target?.infoPrompt) return 1;
-          return isTargetVerified(target.infoPrompt) ? 1 : -1;
-        })
-        .map((target) => {
-          // TODO: Extract this logic to a useMemo
-          const targetInfo = targetInfoPrompts[target];
-          if (!targetInfo || !targetData[target]) return null;
-          const targetListItemArgs = {
-            target,
-            targetInfo,
-          } as TargetListItemProps;
-          switch (target) {
-            case 'email':
-              targetListItemArgs.iconType = 'email';
-              targetListItemArgs.label =
-                props.copy?.email ?? defaultCopy.targetList.email;
-              targetListItemArgs.targetCtaType = 'link';
-              targetListItemArgs.message = {
-                beforeVerify:
-                  props.copy?.emailVerifyMessage ??
-                  defaultCopy.targetList.emailVerifyMessage,
-              };
-              targetListItemArgs.ctaCalledSuccessfullyText =
-                props.copy?.emailCtaCalledSuccessfullyText ??
-                defaultCopy.targetList.emailCtaCalledSuccessfullyText;
-              break;
-            case 'phoneNumber':
-              targetListItemArgs.iconType = 'sms';
-              targetListItemArgs.label =
-                props.copy?.sms ?? defaultCopy.targetList.phoneNumber;
-              targetListItemArgs.targetCtaType = 'button';
-              break;
-            case 'telegram':
-              targetListItemArgs.iconType = 'telegram';
-              targetListItemArgs.label =
-                props.copy?.telegram ?? defaultCopy.targetList.telegram;
-              targetListItemArgs.targetCtaType = 'button';
-              break;
-            case 'discord':
-              if (!targetData[target].useDiscord) return null;
-              targetListItemArgs.iconType = 'discord';
-              targetListItemArgs.label = defaultCopy.targetList.discord;
-              targetListItemArgs.targetCtaType = 'button';
-              targetListItemArgs.message = {
-                afterVerify:
-                  props.copy?.discordVerifiedMessage ??
-                  defaultCopy.targetList.discordVerifiedMessage,
-                afterVerifyTooltip:
-                  props.copy?.discordVerifiedPromptTooltip ??
-                  defaultCopy.targetList.discordVerifiedPromptTooltip,
-              };
-              break;
-            case 'slack':
-              if (!targetData[target].useSlack) return null;
-              targetListItemArgs.iconType = 'slack';
-              targetListItemArgs.label = defaultCopy.targetList.slack;
-              targetListItemArgs.targetCtaType = 'button';
-              break;
-          }
-
-          return (
-            <TargetListItem
-              key={target}
-              {...targetListItemArgs}
-              parentComponent={parentComponent}
-              classNames={props.classNames?.TargetListItem}
-            />
-          );
-        })}
+      {targetListItemArgsList.map((targetListItemArgs) => {
+        if (!targetListItemArgs) return null;
+        return (
+          <TargetListItem
+            key={targetListItemArgs.target}
+            {...targetListItemArgs}
+            parentComponent={parentComponent}
+            classNames={props.classNames?.TargetListItem}
+          />
+        );
+      })}
     </div>
   );
 };

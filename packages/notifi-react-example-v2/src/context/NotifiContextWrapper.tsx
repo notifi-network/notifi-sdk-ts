@@ -67,8 +67,13 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
 
   if (!signMessage) return <div>No available wallet to sign</div>;
   const pricePairInputs: InputObject[] = [
+    { label: 'BTC-NOTIFI (NOTIFI)', value: 'BTC_NOTIFI' },
     { label: 'BTC-LINK (LINK)', value: 'BTC_LINK' },
     { label: 'BTC-ETH (ETH)', value: 'BTC_ETH' },
+    { label: 'BTC-USDC (USDC)', value: 'BTC_USDC' },
+    { label: 'BTC-USDT (USDT)', value: 'BTC_USDT' },
+    { label: 'BTC-BUSD (BUSD)', value: 'BTC_BUSD' },
+    { label: 'BTC-SOL (SOL)', value: 'BTC_SOL' },
   ];
 
   return (
