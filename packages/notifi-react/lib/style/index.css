@@ -74,6 +74,7 @@ button {
   --notifi-notifi-target-list-item-bg: var(--notifi-color-grey2);
   --notifi-notifi-topic-list-row-bg: var(--notifi-color-grey2);
   --notifi-topic-options-item-bg: var(--notifi-color-grey1);
+  --notifi-topic-options-item-text: var(--notifi-color-heather);
   --notifi-topic-option-radio-bg: var(--notifi-color-grey1);
   --notifi-subscription-input-dropdown-value-bg: var(--notifi-color-grey1);
   --notifi-subscription-input-dropdown-list-bg: var(--notifi-color-grey1);
@@ -142,6 +143,7 @@ button {
   --notifi-notifi-target-list-item-bg: var(--notifi-color-white);
   --notifi-notifi-topic-list-row-bg: var(--notifi-color-white);
   --notifi-topic-options-item-bg: var(--notifi-color-eggshell);
+  --notifi-topic-options-item-text: var(--notifi-color-dusk);
   --notifi-topic-option-radio-inner-ring: var(--notifi-color-light);
   --notifi-topic-option-radio-bg: var(--notifi-color-white);
   --notifi-subscription-input-dropdown-value-bg: var(--notifi-color-eggshell);
