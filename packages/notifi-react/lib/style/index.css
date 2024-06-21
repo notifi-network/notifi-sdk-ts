@@ -87,6 +87,7 @@ button {
   --notifi-history-row-title-text: var(--notifi-color-white);
   --notifi-history-row-timestamp-text: var(--notifi-color-heather);
   --notifi-history-row-subject-text: var(--notifi-color-heather);
+  --notifi-history-detail-bg: var(--notifi-color-dark);
   --notifi-history-detail-timestamp-text: var(--notifi-color-heather);
   --notifi-history-list-empty-icon: var(--notifi-color-seaglass-dark);
   --notifi-history-list-empty-description-text: var(--notifi-color-heather);
@@ -157,6 +158,7 @@ button {
   --notifi-history-row-title-text: var(--notifi-color-midnight);
   --notifi-history-row-timestamp-text: var(--notifi-color-dusk);
   --notifi-history-row-subject-text: var(--notifi-color-dusk);
+  --notifi-history-detail-bg: var(--notifi-color-white);
   --notifi-history-detail-timestamp-text: var(--notifi-color-dusk);
   --notifi-history-list-empty-icon: var(--notifi-color-secondary-light);
   --notifi-history-list-empty-description-text: var(--notifi-color-dusk);
