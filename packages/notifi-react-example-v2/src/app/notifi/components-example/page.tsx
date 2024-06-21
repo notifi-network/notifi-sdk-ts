@@ -74,12 +74,12 @@ const NotifiComponentExample = () => {
             style={{
               backgroundColor: '#4B58EF',
               borderRadius: '100px',
-              width: '20px',
+              width: `${unreadCount < 10 ? '20px' : '25px'}`,
               textAlign: 'center',
               color: 'white',
               position: 'absolute',
               top: '0',
-              right: '0',
+              right: '2px',
             }}
           >
             {unreadCount ? unreadCount : null}
