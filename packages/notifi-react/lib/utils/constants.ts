@@ -6,11 +6,6 @@ export const defaultCopy = {
     description: 'See your activity and gain access to alerts',
     buttonText: 'Next',
   },
-  expiry: {
-    title: 'Subscription Expiry',
-    content: 'Your subscription has expired',
-    buttonText: 'Connect to Wallet',
-  },
   ftuAlertList: {
     title: 'Notifications',
     description: 'See your activity and gain access to alerts',
@@ -122,6 +117,7 @@ export const defaultCopy = {
   },
 };
 
+// TODO: Move this to utils (Maybe target.ts)
 export const validationRegex: Record<string, RegExp> = {
   email: new RegExp('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'),
   telegram: new RegExp('.{5,}'),

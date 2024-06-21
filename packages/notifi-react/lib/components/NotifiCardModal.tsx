@@ -14,11 +14,10 @@ import {
 import { useGlobalStateContext } from '../context/GlobalStateContext';
 import { Connect, ConnectProps } from './Connect';
 import { ErrorView, ErrorViewProps } from './ErrorView';
-import { Expiry, ExpiryProps } from './Expiry';
+import { Expiry } from './Expiry';
 import { Ftu, FtuProps } from './Ftu';
 import { Inbox, InboxProps } from './Inbox';
 import { LoadingGlobalProps } from './LoadingGlobal';
-import { PoweredByNotifi } from './PoweredByNotifi';
 
 export type NotifiInputFieldsText = {
   label?: {
@@ -34,14 +33,12 @@ export type NotifiCardModalProps = Readonly<{
     ErrorGlobal?: ErrorViewProps['copy'];
     LoadingGlobal?: LoadingGlobalProps['copy'];
     Connect?: ConnectProps['copy'];
-    Expiry?: ExpiryProps['copy'];
     Ftu?: FtuProps['copy'];
     Inbox?: InboxProps['copy'];
   }>;
   classNames?: Readonly<{
     container?: string;
     Connect?: ConnectProps['classNames'];
-    Expiry?: ExpiryProps['classNames'];
     Ftu?: FtuProps['classNames'];
     Inbox?: InboxProps['classNames'];
   }>;
@@ -187,11 +184,7 @@ export const NotifiCardModal: React.FC<NotifiCardModalProps> = (props) => {
         />
       ) : null}
       {CardModalView === 'expiry' ? (
-        <Expiry
-          setCardModalView={setCardModalView}
-          copy={props.copy?.Expiry}
-          classNames={props.classNames?.Expiry}
-        />
+        <Expiry setCardModalView={setCardModalView} />
       ) : null}
       {CardModalView === 'ftu' ? (
         <Ftu
