@@ -84,18 +84,7 @@ export const HistoryDetail: React.FC<HistoryDetailProps> = (props) => {
 // Utils
 const formatTimestampInHistoryDetail = (date: string): string => {
   try {
-    const parsedDate = parseISO(date);
-
-    const month = parsedDate.toLocaleString('default', { month: 'short' });
-    const clockTime = format(parsedDate, 'HH:mm b');
-    const dateTime = format(parsedDate, 'dd');
-    const finalDate = `${month} ${dateTime}`;
-    const day = format(parsedDate, 'E');
-
-    if (isToday(parsedDate)) {
-      return clockTime;
-    }
-    return day + ', ' + finalDate + ', ' + clockTime;
+    return format(parseISO(date), isToday(parseISO(date)) ? 'HH:mm b' : 'PPPp');
   } catch {
     return '-';
   }
