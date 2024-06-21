@@ -40,7 +40,7 @@ export const VerifyBanner: React.FC<VerifyBannerProps> = ({
 
   return (
     <div
-      className={`flex flex-row justify-between items-center py-2 bg-notifi-card-bg mt-4 mb-3 md:mt-6 rounded-3xl mx-4 md:mx-0 md:mr-10 md:mb-0 ${
+      className={`flex flex-row justify-between items-center py-2 bg-notifi-card-bg mt-4 mb-3 md:mt-6 rounded-2xl mx-4 md:mx-0 md:mr-10 md:mb-0 ${
         isInHistoryDetail ? 'md:flex hidden' : ''
       }`}
     >

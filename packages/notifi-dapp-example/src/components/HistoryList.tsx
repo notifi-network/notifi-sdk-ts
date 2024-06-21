@@ -81,7 +81,7 @@ export const HistoryList: React.FC<HistoryListProps> = ({
       {historyItems.length === 0 && !isLoadingHistoryItems ? (
         <div className="flex flex-col justify-start h-[88vh] items-center pt-48 px-2">
           <Image
-            src={'/logos/empty-inbox.png'}
+            src={'/logos/empty-inbox-xion.png'}
             width={33}
             height={20}
             alt="empty-inbox"
