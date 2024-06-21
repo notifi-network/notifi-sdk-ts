@@ -48,7 +48,7 @@
   background-color: var(--notifi-topic-list-tooltip-bg);
   padding: 1rem;
   border-radius: 6px;
-  border: var(--notifi-color-heather) 1px solid;
+  border: var(--notifi-topic-list-tooltip-content-border) 1px solid;
   width: 10rem;
   display: none;
   z-index: 1;

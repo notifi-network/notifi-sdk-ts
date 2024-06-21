@@ -104,7 +104,9 @@ button {
   --notifi-topic-options-item-selected-text: var(--notifi-color-white);
   --notifi-topic-option-radio-inner-ring: var(--notifi-color-grey2);
   --notifi-topic-list-tooltip-bg: var(--notifi-color-dark);
+  --notifi-topic-list-tooltip-content-border: var(--notifi-color-dark);
   --notifi-target-list-tooltip-bg: var(--notifi-color-dark);
+  --notifi-target-list-item-tooltip-content-border: var(--notifi-color-dark);
   --notifi-target-list-item-tooltip-content-text: var(--notifi-color-white);
   --notifi-topic-list-tooltip-icon-color-hover: var(--notifi-color-white);
   --notifi-input-separator-text: var(--notifi-color-dusk);
@@ -178,7 +180,9 @@ button {
     --notifi-color-secondary-light
   );
   --notifi-topic-list-tooltip-bg: var(--notifi-color-eggshell);
+  --notifi-topic-list-tooltip-content-border: var(--notifi-color-heather);
   --notifi-target-list-tooltip-bg: var(--notifi-color-eggshell);
+  --notifi-target-list-item-tooltip-content-border: var(--notifi-color-heather);
   --notifi-target-list-item-tooltip-content-text: var(--notifi-color-black);
   --notifi-topic-list-tooltip-icon-color-hover: var(--notifi-color-dusk);
   --notifi-input-separator-text: var(--notifi-color-heather);
