@@ -20,7 +20,7 @@
 
 .notifi-target-state-banner-verify-icon {
   color: var(--notifi-target-state-verify-icon-color);
-  width: 1.5rem;
+  width: 1.3rem;
   height: 1.5rem;
   display: flex;
   justify-content: flex-end;
@@ -33,7 +33,8 @@
 
 .notifi-target-state-banner-verify-content {
   flex-grow: 1;
-  margin-left: 1rem;
+  margin: 0 1rem;
+  width: 0;
 }
 
 .notifi-target-state-banner-verify-title {
@@ -61,7 +62,7 @@
 
 .notifi-target-state-banner-verify-cta.history {
   padding: 0.5rem;
-  width: 5rem;
+  width: 4rem;
   background-color: var(--notifi-target-state-banner-verify-cta-history-bg);
   border-radius: 6px;
   color: inherit;

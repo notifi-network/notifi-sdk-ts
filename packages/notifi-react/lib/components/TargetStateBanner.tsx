@@ -102,9 +102,11 @@ export const TargetStateBanner: React.FC<TargetStateBannerProps> = (props) => {
               {''}
               {/* Only the last element should be joined with ', or', others should be joined with ', ' */}
               {activeTargets.length > 1
-                ? `${activeTargets
-                    .slice(0, -1)
-                    .join(', ')}, or ${activeTargets.slice(-1)}`
+                ? activeTargets.length === 2
+                  ? `${activeTargets[0]} or ${activeTargets[1]}`
+                  : `${activeTargets
+                      .slice(0, -1)
+                      .join(', ')}, or ${activeTargets.slice(-1)}`
                 : activeTargets.slice(-1)}
             </div>
           </div>
@@ -288,8 +290,10 @@ const formatUnverifiedTargets = (unVerifiedTargets: Target[]) => {
     return target.charAt(0).toUpperCase() + target.slice(1);
   });
   return captializedTargets.length > 1
-    ? `${captializedTargets
-        .slice(0, -1)
-        .join(', ')}, and ${captializedTargets.slice(-1)}`
+    ? captializedTargets.length === 2
+      ? `${captializedTargets[0]} and ${captializedTargets[1]}`
+      : `${captializedTargets
+          .slice(0, -1)
+          .join(', ')}, and ${captializedTargets.slice(-1)}`
     : captializedTargets.slice(-1);
 };
