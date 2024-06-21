@@ -56,6 +56,7 @@ button {
 .notifi-theme-dark {
   --notifi-font-color: var(--notifi-color-white);
   --notifi-card-background: var(--notifi-color-dark);
+  --notifi-connect-bg: var(--notifi-color-dark);
   --notifi-connect-button: var(--notifi-color-white);
   --notifi-connect-button-text: var(--notifi-color-midnight);
   --notifi-ftu-alert-list: var(--notifi-color-seaglass);
@@ -73,6 +74,7 @@ button {
   --notifi-notifi-target-list-item-bg: var(--notifi-color-grey2);
   --notifi-notifi-topic-list-row-bg: var(--notifi-color-grey2);
   --notifi-topic-options-item-bg: var(--notifi-color-grey1);
+  --notifi-topic-options-item-text: var(--notifi-color-heather);
   --notifi-topic-option-radio-bg: var(--notifi-color-grey1);
   --notifi-subscription-input-dropdown-value-bg: var(--notifi-color-grey1);
   --notifi-subscription-input-dropdown-list-bg: var(--notifi-color-grey1);
@@ -85,6 +87,7 @@ button {
   --notifi-history-row-title-text: var(--notifi-color-white);
   --notifi-history-row-timestamp-text: var(--notifi-color-heather);
   --notifi-history-row-subject-text: var(--notifi-color-heather);
+  --notifi-history-detail-bg: var(--notifi-color-dark);
   --notifi-history-detail-timestamp-text: var(--notifi-color-heather);
   --notifi-history-list-empty-icon: var(--notifi-color-seaglass-dark);
   --notifi-history-list-empty-description-text: var(--notifi-color-heather);
@@ -101,7 +104,9 @@ button {
   --notifi-topic-options-item-selected-text: var(--notifi-color-white);
   --notifi-topic-option-radio-inner-ring: var(--notifi-color-grey2);
   --notifi-topic-list-tooltip-bg: var(--notifi-color-dark);
+  --notifi-topic-list-tooltip-content-border: var(--notifi-color-dark);
   --notifi-target-list-tooltip-bg: var(--notifi-color-dark);
+  --notifi-target-list-item-tooltip-content-border: var(--notifi-color-dark);
   --notifi-target-list-item-tooltip-content-text: var(--notifi-color-white);
   --notifi-topic-list-tooltip-icon-color-hover: var(--notifi-color-white);
   --notifi-input-separator-text: var(--notifi-color-dusk);
@@ -123,6 +128,7 @@ button {
 .notifi-theme-light {
   --notifi-font-color: var(--notifi-color-midnight);
   --notifi-card-background: var(--notifi-color-light);
+  --notifi-connect-bg: var(--notifi-color-white);
   --notifi-connect-button: var(--notifi-color-midnight);
   --notifi-connect-button-text: var(--notifi-color-white);
   --notifi-ftu-alert-list: var(--notifi-color-secondary-light);
@@ -140,6 +146,7 @@ button {
   --notifi-notifi-target-list-item-bg: var(--notifi-color-white);
   --notifi-notifi-topic-list-row-bg: var(--notifi-color-white);
   --notifi-topic-options-item-bg: var(--notifi-color-eggshell);
+  --notifi-topic-options-item-text: var(--notifi-color-dusk);
   --notifi-topic-option-radio-inner-ring: var(--notifi-color-light);
   --notifi-topic-option-radio-bg: var(--notifi-color-white);
   --notifi-subscription-input-dropdown-value-bg: var(--notifi-color-eggshell);
@@ -153,6 +160,7 @@ button {
   --notifi-history-row-title-text: var(--notifi-color-midnight);
   --notifi-history-row-timestamp-text: var(--notifi-color-dusk);
   --notifi-history-row-subject-text: var(--notifi-color-dusk);
+  --notifi-history-detail-bg: var(--notifi-color-white);
   --notifi-history-detail-timestamp-text: var(--notifi-color-dusk);
   --notifi-history-list-empty-icon: var(--notifi-color-secondary-light);
   --notifi-history-list-empty-description-text: var(--notifi-color-dusk);
@@ -172,7 +180,9 @@ button {
     --notifi-color-secondary-light
   );
   --notifi-topic-list-tooltip-bg: var(--notifi-color-eggshell);
+  --notifi-topic-list-tooltip-content-border: var(--notifi-color-heather);
   --notifi-target-list-tooltip-bg: var(--notifi-color-eggshell);
+  --notifi-target-list-item-tooltip-content-border: var(--notifi-color-heather);
   --notifi-target-list-item-tooltip-content-text: var(--notifi-color-black);
   --notifi-topic-list-tooltip-icon-color-hover: var(--notifi-color-dusk);
   --notifi-input-separator-text: var(--notifi-color-heather);

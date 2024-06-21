@@ -97,6 +97,6 @@ const formatTimestampInHistoryRow = (timestamp: string) => {
       ? 'hh:mm b'
       : isWithinInterval(dateObject, { start: sevenDaysAgo, end: now })
       ? 'eee'
-      : 'MM/dd',
+      : 'MMM d',
   );
 };

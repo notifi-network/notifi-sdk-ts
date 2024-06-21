@@ -5,6 +5,7 @@
   overflow: hidden;
   height: 100%;
   width: 100%;
+  background-color: var(--notifi-connect-bg);
 }
 
 .notifi-connect-main {
@@ -21,7 +22,7 @@
 
 .notifi-connect-title {
   font-size: 1.5rem;
-  font-weight: 800;
+  font-weight: 600;
   text-align: center;
   padding: 2.5rem 1rem 0.5rem 1rem;
 }

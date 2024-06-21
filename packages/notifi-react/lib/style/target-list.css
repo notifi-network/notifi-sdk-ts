@@ -51,7 +51,7 @@
   padding: 1rem;
   border-radius: 6px;
   background-color: var(--notifi-target-list-tooltip-bg);
-  border: var(--notifi-color-heather) 1px solid;
+  border: var(--notifi-target-list-item-tooltip-content-border) 1px solid;
   width: 11.5rem;
   position: absolute;
   display: none;

@@ -48,7 +48,7 @@
   background-color: var(--notifi-topic-list-tooltip-bg);
   padding: 1rem;
   border-radius: 6px;
-  border: var(--notifi-color-heather) 1px solid;
+  border: var(--notifi-topic-list-tooltip-content-border) 1px solid;
   width: 10rem;
   display: none;
   z-index: 1;
@@ -121,7 +121,7 @@
   border: 2px solid transparent;
   border-radius: 6px;
   background-color: var(--notifi-topic-options-item-bg);
-  color: var(--notifi-color-heather);
+  color: var(--notifi-topic-options-item-text);
   height: 3rem;
   padding: 0rem 1rem;
   display: flex;
@@ -177,7 +177,7 @@
 }
 
 .notifi-topic-options-custom-input::placeholder {
-  color: var(--notifi-color-heather);
+  color: var(--notifi-topic-options-item-text);
   font-size: 1rem;
   text-align: center;
 }

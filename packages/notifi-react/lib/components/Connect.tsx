@@ -20,6 +20,7 @@ import { PoweredByNotifi, PoweredByNotifiProps } from './PoweredByNotifi';
 export type ConnectProps = {
   iconType?: IconType;
   setCardModalView: React.Dispatch<React.SetStateAction<CardModalView | null>>;
+  loginWithoutSubscription?: boolean;
   copy?: {
     title?: string;
     buttonText?: string;
@@ -57,9 +58,9 @@ export const Connect: React.FC<ConnectProps> = (props) => {
   const onClick = async () => {
     setIsLoading(true);
     const frontendClient = await login();
+    if (props.loginWithoutSubscription) return;
     if (!frontendClient) return;
     const isDefaultTargetExist = await validateDefaultTargetGroup(
-      // TODO: Handle error
       frontendClient,
     );
 
@@ -70,6 +71,7 @@ export const Connect: React.FC<ConnectProps> = (props) => {
 
   React.useEffect(() => {
     // NOTE: Determine the next step after finish logging in
+    if (props.loginWithoutSubscription) return;
     const subscribeAndUpdateFtuStage = async () => {
       if (!targetGroupId || !frontendClientStatus.isAuthenticated) return;
 
