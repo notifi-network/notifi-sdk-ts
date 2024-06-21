@@ -5,6 +5,7 @@
   overflow: hidden;
   height: 100%;
   width: 100%;
+  background-color: var(--notifi-connect-bg);
 }
 
 .notifi-connect-main {

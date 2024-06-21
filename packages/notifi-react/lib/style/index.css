@@ -56,6 +56,7 @@ button {
 .notifi-theme-dark {
   --notifi-font-color: var(--notifi-color-white);
   --notifi-card-background: var(--notifi-color-dark);
+  --notifi-connect-bg: var(--notifi-color-dark);
   --notifi-connect-button: var(--notifi-color-white);
   --notifi-connect-button-text: var(--notifi-color-midnight);
   --notifi-ftu-alert-list: var(--notifi-color-seaglass);
@@ -123,6 +124,7 @@ button {
 .notifi-theme-light {
   --notifi-font-color: var(--notifi-color-midnight);
   --notifi-card-background: var(--notifi-color-light);
+  --notifi-connect-bg: var(--notifi-color-white);
   --notifi-connect-button: var(--notifi-color-midnight);
   --notifi-connect-button-text: var(--notifi-color-white);
   --notifi-ftu-alert-list: var(--notifi-color-secondary-light);
