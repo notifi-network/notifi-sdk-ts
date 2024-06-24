@@ -19,7 +19,13 @@ export type DeepPartialReadonly<T> = T extends object
   : T;
 
 export function isEVMChain(
-  keys: Types.MetamaskWalletKeys | Types.KeplrWalletKeys,
+  keys: Types.MetamaskWalletKeys | Types.KeplrWalletKeys | Types.XionWalletKeys,
 ): keys is Types.MetamaskWalletKeys {
   return (keys as Types.MetamaskWalletKeys).hex !== undefined;
+}
+
+export function isXionChain(
+  keys: Types.MetamaskWalletKeys | Types.KeplrWalletKeys | Types.XionWalletKeys,
+): keys is Types.XionWalletKeys {
+  return (keys as Types.XionWalletKeys).grantee !== undefined;
 }

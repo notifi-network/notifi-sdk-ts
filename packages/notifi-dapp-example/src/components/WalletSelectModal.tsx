@@ -14,16 +14,7 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
 }) => {
   const { wallets } = useWallets();
   const availableWallets = objectKeys(wallets);
-  let walletsRequiredForGMX: typeof availableWallets = [
-    'metamask',
-    'coinbase',
-    'rabby',
-    'walletconnect',
-    'binance',
-    'okx',
-    'rainbow',
-    'zerion',
-  ];
+  let walletsRequiredForGMX: typeof availableWallets = ['xion'];
 
   walletsRequiredForGMX = walletsRequiredForGMX.sort((a, b) => {
     if (wallets[a].isInstalled && !wallets[b].isInstalled) return -1;
