@@ -37,6 +37,7 @@
   "dependencies": {
     "bech32-converting": "^1.0.9",
     "buffer": "^6.0.3",
+    "@burnt-labs/abstraxion": "^1.0.0-alpha.45",
     "ethers": "^6.11.1",
     "viem": "^1.11.0",
     "wagmi": "^1.4.2"
