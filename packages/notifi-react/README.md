@@ -377,3 +377,40 @@ export const MyComponent = () => {
 
 > Notifi provides an example project to showcase the usage of the Notifi React Context. You can find the example project [here](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-card-modal-example)
 > For more comprehensive information, please refer to [notifi-dapp-example](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-dapp-example)
+
+> **IMPORTANT** to use `NotifiTopicContext`, you need to wrap your component with `NotifiFrontendClientContext` first.
+
+### **NotifiHistoryContext**
+
+Check or manipulate the history notification items of the connected user account.
+
+```tsx
+import { useNotifiHistoryContext } from '@notifi-network/notifi-react';
+
+export const MyComponent = () => {
+  const {
+    isLoading,
+    error,
+    getHistoryItems,
+    markAsRead,
+    historyItems,
+    unreadCount,
+    hasNextPage,
+  } = useNotifiHistoryContext();
+
+  // Other code ...
+};
+```
+
+1. **getHistoryItems**: A function to get the history notification items. This method will update the `historyItems` state. It takes `(initialLoad?: boolean)` as input args. If `initialLoad` is true, it will clean up the `historyItem` and fetch the first page of the history items. If `initialLoad` is `undefined` or `false`, it will fetch the next page from existing page cursor. You can use `hasNextPage` to check if there is more page to fetch.
+2. **markAsRead**: A function to mark all or particular notification items as read. it takes`(ids?: string[])` as input. If `ids` is not provided, it will mark all the items as read.
+3. **historyItems**: The history notification items.
+4. **unreadCount**: The unread notification count in `historyItems`.
+5. **hasNextPage**: A boolean to check if there is more page to fetch. If `true`, calling `getHistoryItems()` will fetch the next page.
+
+> **IMPORTANT** to use `NotifiHistoryContext`, you need to wrap your component with `NotifiFrontendClientContext` first.
+
+> **NOTE**
+> page count is set to 20 by default. You can change the page count by setting the `notificationCountPerPage` in the `<NotifiContextProvider />`or `<NotifiHistoryContextProvider />` Property.
+>
+> Check the example [here](https://github.com/notifi-network/notifi-sdk-ts/blob/1885f21a93160f8f222700c39b1fbc34b12edea0/packages/notifi-react-example-v2/src/context/NotifiContextWrapper.tsx#L121)
