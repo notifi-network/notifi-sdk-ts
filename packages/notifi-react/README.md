@@ -349,24 +349,18 @@ import { useNotifiTopicContext } from '@notifi-network/notifi-react';
 
 export const MyComponent = () => {
   const {
-    error,
     isLoading,
-    topics,
-    topicDocument: {
-        isLoading,
-        error,
-        subscribeAlertsDefault,
-        unsubscribeAlert,
-        isAlertSubscribed,
-        subscribeAlertsWithFilterOptions,
-        getAlertFilterOptions,
-        getTopicStackAlerts,
-        getTopicStackAlertsFromTopicName, // Deprecated (replaced with getTopicStackAlerts)
-      } = useNotifiTopicContext();
+    error,
+    subscribeAlertsDefault,
+    unsubscribeAlert,
+    isAlertSubscribed,
+    subscribeAlertsWithFilterOptions,
+    getAlertFilterOptions,
+    getTopicStackAlerts,
+  } = useNotifiTopicContext();
 
   // Other code ...
 };
-
 ```
 
 1. **subscribeAlertsDefault**: A function to subscribe topic with the default filterOptions. This will create alerts for the user.
