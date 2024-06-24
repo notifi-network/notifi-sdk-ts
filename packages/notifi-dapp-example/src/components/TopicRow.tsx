@@ -90,11 +90,11 @@ export const TopicRow = <T extends TopicRowCategory>(
   };
 
   return (
-    <div className="flex flex-col p-2 px-4 bg-notifi-destination-card-bg rounded-md md:w-[359px] shadow-destinationCard">
+    <div className="flex flex-col py-2 bg-notifi-destination-card-bg rounded-md w-72">
       <div className="flex items-center justify-between">
         <div className="flex flex-row justify-center items-center text-sm font-regular text-notifi-text">
           <div className="flex flex-row items-center">
-            {customIconUrl.length > 0 ? (
+            {/* {customIconUrl.length > 0 ? (
               <>
                 <img src={customIconUrl} className="w-10 h-10 mr-3 ml-1" />
               </>
@@ -102,7 +102,7 @@ export const TopicRow = <T extends TopicRowCategory>(
               <div className={`h-10 w-10 mr-3 ml-1`}>
                 <Icon className="m-2" id={icon} />
               </div>
-            )}
+            )} */}
             <label>
               {title}
               <div className="group inline-block align-middle">

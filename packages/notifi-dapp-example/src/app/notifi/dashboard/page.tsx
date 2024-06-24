@@ -1,6 +1,7 @@
 'use client';
 
 import { Icon } from '@/assets/Icon';
+import { ConfigAlertModal } from '@/components/ConfigAlertModal';
 import { DashboardDestinations } from '@/components/DashboardDestinations';
 import { DashboardHistory } from '@/components/DashboardHistory';
 import { DashboardSideBar } from '@/components/DashboardSideBar';
@@ -83,9 +84,7 @@ export default function NotifiDashboard() {
             <DashboardHistory setIsInHistoryDetail={setIsInHistoryDetail} />
           ) : null}
           {cardView === 'destination' ? <DashboardDestinations /> : null}
-          {cardView === 'alertSubscription' ? (
-            <TopicList title={'Manage the alerts you want to receive'} />
-          ) : null}
+          {cardView === 'alertSubscription' ? <ConfigAlertModal /> : null}
         </div>
       </div>
     </div>

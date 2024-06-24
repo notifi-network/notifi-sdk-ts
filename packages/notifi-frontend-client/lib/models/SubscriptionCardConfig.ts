@@ -3,6 +3,7 @@ import { Types as Gql, Types } from '@notifi-network/notifi-graphql';
 
 import { CardConfigType } from '../client';
 import { AlertFrequency, FilterOptions } from './FilterOptions';
+import { GenericEventIconHint } from 'notifi-graphql/lib/gql/generated';
 
 export type ValueOrRef<ValueType> =
   | Readonly<{
@@ -91,6 +92,8 @@ export type LabelEventTypeItem = Readonly<{
   name: string;
   tooltipContent?: string;
   optOutAtSignup?: boolean;
+  icon?: GenericEventIconHint;
+  iconUrl?: string;
 }>;
 
 export type TradingPairEventTypeItem = Readonly<{

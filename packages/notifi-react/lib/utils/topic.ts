@@ -62,6 +62,23 @@ export const categorizeTopics = (
   };
 };
 
+export const getFusionEventTopicsBySubTopics = (
+  fusionEventTopics: ReadonlyArray<FusionEventTopic>,
+  subTopics: ReadonlyArray<FusionToggleEventTypeItem>,
+) => {
+  const subTopicIds = subTopics.map((subTopic) => {
+    if (subTopic.fusionEventId?.type === 'value') {
+      return subTopic.fusionEventId.value;
+    } else {
+      return '';
+    }
+  });
+  const fusionEventTopicsBySubTopics = fusionEventTopics.filter((topic) =>
+    subTopicIds.includes(topic.fusionEventDescriptor.id ?? ''),
+  );
+  return fusionEventTopicsBySubTopics;
+};
+
 export const getUserInputParams = (
   topic: FusionEventTopic,
 ): UserInputParam<UiType>[] => {
