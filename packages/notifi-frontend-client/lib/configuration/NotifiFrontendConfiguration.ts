@@ -213,10 +213,10 @@ const isWithDelegate = (
 export const newFrontendConfig = (
   config: ConfigFactoryInput,
 ): NotifiFrontendConfiguration => {
-  if (isWithPubkeyAndAddress(config)) {
-    return configFactoryPublicKeyAndAddress(config);
-  } else if (isWithDelegate(config)) {
+  if (isWithDelegate(config)) {
     return configFactoryDelegated(config);
+  } else if (isWithPubkeyAndAddress(config)) {
+    return configFactoryPublicKeyAndAddress(config);
   } else {
     return configFactoryPublicKey(config);
   }
