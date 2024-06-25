@@ -43,11 +43,10 @@ export const useXion = (
     const pubKey = accountData
       ? Buffer.from(accountData.pubkey).toString('base64')
       : '';
-
     const walletKeys = {
-      grantee: client?.granteeAddress,
-      granter: account.bech32Address,
-      pubKey,
+      grantee: client.granteeAddress,
+      bech32: account.bech32Address,
+      base64: pubKey,
     };
     setWalletKeys(walletKeys);
     selectWallet(walletName);

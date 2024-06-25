@@ -20,16 +20,14 @@ export type WalletKeysBase = {
   bech32: string;
   base64: string;
   hex: string;
-  granter: string;
   grantee: string;
-  pubKey: string;
 };
 
 export type MetamaskWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'hex'>;
 export type KeplrWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'base64'>;
 export type XionWalletKeys = PickKeys<
   WalletKeysBase,
-  'granter' | 'grantee' | 'pubKey'
+  'bech32' | 'base64' | 'grantee'
 >;
 
 export type WalletKeys = MetamaskWalletKeys | KeplrWalletKeys | XionWalletKeys;

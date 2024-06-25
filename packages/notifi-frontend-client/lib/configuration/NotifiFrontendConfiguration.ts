@@ -201,7 +201,7 @@ const configFactoryDelegated: FrontendClientConfigFactory<
 const isWithPubkeyAndAddress = (
   config: ConfigFactoryInput,
 ): config is ConfigFactoryInputPublicKeyAndAddress => {
-  return 'address' in config.account;
+  return 'address' in config.account && !isWithDelegate(config);
 };
 
 const isWithDelegate = (
