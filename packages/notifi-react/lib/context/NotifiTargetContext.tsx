@@ -171,7 +171,6 @@ export type NotifiTargetContextProviderProps = {
 export const NotifiTargetContextProvider: FC<
   PropsWithChildren<NotifiTargetContextProviderProps>
 > = ({ children, toggleTargetAvailability }) => {
-  console.log(1, { toggleTargetAvailability });
   const { frontendClient, frontendClientStatus, walletWithSignParams } =
     useNotifiFrontendClientContext();
   const xmtp = useClient();

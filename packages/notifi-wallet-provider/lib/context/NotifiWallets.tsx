@@ -67,6 +67,7 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isAuthenticationVerified, setIsAuthenticationVerified] =
     useState<boolean>(false);
+  const isReloaded = React.useRef(false);
 
   const throwError = (e: Error, durationInMs?: number) => {
     clearTimeout(timer);
@@ -199,9 +200,11 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
       if (
         Object.keys(wallets).includes(walletName) &&
         wallets[walletName].isInstalled &&
-        !selectedWallet
+        !selectedWallet &&
+        !isReloaded.current
       ) {
         wallets[walletName].connect();
+        isReloaded.current = true;
       }
     }
   }, [wallets]);
