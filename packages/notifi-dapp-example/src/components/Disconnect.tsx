@@ -1,7 +1,7 @@
 'use client';
 
 import { Icon } from '@/assets/Icon';
-import { isEVMChain, isXionChain } from '@/utils/typeUtils';
+import { isEVMChain } from '@/utils/typeUtils';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import React, { useState } from 'react';
 
@@ -13,8 +13,6 @@ export default function Disconnect() {
   const accountAddress = keys
     ? isEVMChain(keys)
       ? keys.hex?.toLowerCase()
-      : isXionChain(keys)
-      ? keys.granter
       : keys.bech32
     : '';
 

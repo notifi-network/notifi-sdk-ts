@@ -111,19 +111,6 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
           return getBytes(result);
         };
         break;
-      case 'xion':
-        walletPublicKey = wallets[selectedWallet].walletKeys?.pubKey ?? '';
-        if (!walletPublicKey) throw new Error('ERROR: invalid walletPublicKey');
-        signMessage = async (message: Uint8Array): Promise<Uint8Array> => {
-          const messageString = Buffer.from(message).toString('utf8');
-          const result = await wallets[selectedWallet].signArbitrary(
-            messageString,
-          );
-          if (!result) throw new Error('ERROR: invalid signature');
-
-          return Buffer.from(result, 'base64');
-        };
-        break;
     }
   }
 
@@ -139,27 +126,6 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
   if (arbData && !isArbLoading) {
     getPricePair(arbData, 'ARBITRUM', pricePairInputs, 'Arb');
     sortList(pricePairInputs);
-  }
-
-  if (selectedWallet === 'xion') {
-    const walletKeys = wallets[selectedWallet].walletKeys;
-    const signingAddress = walletKeys?.grantee ?? '';
-    const signingPubkey = walletKeys?.granter ?? '';
-
-    return (
-      <NotifiContextProvider
-        tenantId={tenantId}
-        env={env}
-        walletBlockchain={walletBlockchain}
-        walletPublicKey={walletPublicKey}
-        signingAddress={signingAddress}
-        signingPubkey={signingPubkey}
-        signMessage={signMessage}
-        cardId={cardId}
-      >
-        {children}
-      </NotifiContextProvider>
-    );
   }
 
   return (
