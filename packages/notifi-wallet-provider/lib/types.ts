@@ -20,7 +20,7 @@ export type WalletKeysBase = {
   bech32: string;
   base64: string;
   hex: string;
-  grantee: string;
+  grantee: string; //TODO: specifically for Xion now, make it generic pattern, checking the format
 };
 
 export type MetamaskWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'hex'>;
