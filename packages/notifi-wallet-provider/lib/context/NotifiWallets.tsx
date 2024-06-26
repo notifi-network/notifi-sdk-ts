@@ -1,3 +1,6 @@
+import { Abstraxion, useModal } from '@burnt-labs/abstraxion';
+import '@burnt-labs/abstraxion/dist/index.css';
+import '@burnt-labs/ui/dist/index.css';
 import React, {
   PropsWithChildren,
   createContext,
@@ -9,6 +12,7 @@ import { useBinance } from '../hooks/useBinance';
 import { useInjectedWallet } from '../hooks/useInjectedWallet';
 import { useKeplr } from '../hooks/useKeplr';
 import { useWagmiWallet } from '../hooks/useWagmiWallet';
+import { useXion } from '../hooks/useXion';
 import {
   BinanceWallet,
   CoinbaseWallet,
@@ -19,10 +23,12 @@ import {
   RainbowWallet,
   WalletConnectWallet,
   Wallets,
+  XionWallet,
   ZerionWallet,
 } from '../types';
 import { getWalletsFromLocalStorage } from '../utils/localStorageUtils';
 import { NotifiWagmiProvider } from './WagmiProvider';
+import { XionProvider } from './XionProvider';
 
 let timer: number | NodeJS.Timeout;
 
@@ -49,6 +55,7 @@ const WalletContext = createContext<WalletContextType>({
     okx: {} as OKXWallet, // intentionally empty initial object
     binance: {} as BinanceWallet, // intentionally empty initial object
     walletconnect: {} as WalletConnectWallet, // intentionally empty initial object
+    xion: {} as XionWallet, // intentionally empty initial object
   },
   error: null,
   isLoading: false,
@@ -67,6 +74,10 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isAuthenticationVerified, setIsAuthenticationVerified] =
     useState<boolean>(false);
+  const [, setShowModal]: [
+    boolean,
+    React.Dispatch<React.SetStateAction<boolean>>,
+  ] = useModal();
 
   const throwError = (e: Error, durationInMs?: number) => {
     clearTimeout(timer);
@@ -116,6 +127,7 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
     selectWallet,
     'rainbow',
   );
+  const xion = useXion(setIsLoading, throwError, selectWallet, 'xion');
 
   const wallets: Wallets = {
     metamask: new MetamaskWallet(
@@ -190,6 +202,14 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
       keplr.disconnectKeplr,
       keplr.websiteURL,
     ),
+    xion: new XionWallet(
+      xion.isWalletInstalled,
+      xion.walletKeys,
+      xion.signArbitrary,
+      xion.connectWallet,
+      xion.disconnectWallet,
+      xion.websiteURL,
+    ),
   };
 
   useEffect(() => {
@@ -199,7 +219,8 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
       if (
         Object.keys(wallets).includes(walletName) &&
         wallets[walletName].isInstalled &&
-        !selectedWallet
+        !selectedWallet &&
+        walletName !== 'xion'
       ) {
         wallets[walletName].connect();
       }
@@ -226,6 +247,11 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
         isAuthenticationVerified,
       }}
     >
+      <Abstraxion
+        onClose={() => {
+          setShowModal(false);
+        }}
+      />
       {children}
     </WalletContext.Provider>
   );
@@ -236,7 +262,9 @@ export const NotifiWalletProvider: React.FC<PropsWithChildren> = ({
 }) => {
   return (
     <NotifiWagmiProvider>
-      <NotifiWallet>{children}</NotifiWallet>
+      <XionProvider>
+        <NotifiWallet>{children}</NotifiWallet>
+      </XionProvider>
     </NotifiWagmiProvider>
   );
 };

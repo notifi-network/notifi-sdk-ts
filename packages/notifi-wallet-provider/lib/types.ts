@@ -20,17 +20,25 @@ export type WalletKeysBase = {
   bech32: string;
   base64: string;
   hex: string;
+  grantee: string; //TODO: specifically for Xion now, make it generic pattern, checking the format
 };
 
 export type MetamaskWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'hex'>;
 export type KeplrWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'base64'>;
+export type XionWalletKeys = PickKeys<
+  WalletKeysBase,
+  'bech32' | 'base64' | 'grantee'
+>;
 
-export type WalletKeys = MetamaskWalletKeys | KeplrWalletKeys;
+export type WalletKeys = MetamaskWalletKeys | KeplrWalletKeys | XionWalletKeys;
 
 export abstract class NotifiWallet {
   abstract isInstalled: boolean;
   abstract walletKeys: WalletKeys | null;
-  abstract signArbitrary?: KeplrSignMessage | MetamaskSignMessage;
+  abstract signArbitrary?:
+    | KeplrSignMessage
+    | MetamaskSignMessage
+    | XionSignMessage;
   abstract connect?: () => Promise<Partial<WalletKeysBase> | null>;
   abstract disconnect?: () => void;
   abstract websiteURL: string;
@@ -68,12 +76,24 @@ export type KeplrSignMessage = (
   message: string | Uint8Array,
 ) => Promise<StdSignature | undefined>;
 
+export type XionSignMessage = (message: string) => Promise<string | undefined>;
+
 export class KeplrWallet implements NotifiWallet {
   constructor(
     public isInstalled: boolean,
     public walletKeys: KeplrWalletKeys | null,
     public signArbitrary: KeplrSignMessage,
     public connect: () => Promise<KeplrWalletKeys | null>,
+    public disconnect: () => void,
+    public websiteURL: string,
+  ) {}
+}
+export class XionWallet implements NotifiWallet {
+  constructor(
+    public isInstalled: boolean,
+    public walletKeys: XionWalletKeys | null,
+    public signArbitrary: XionSignMessage,
+    public connect: () => Promise<null>,
     public disconnect: () => void,
     public websiteURL: string,
   ) {}
@@ -89,4 +109,5 @@ export type Wallets = {
   okx: OKXWallet;
   binance: BinanceWallet;
   walletconnect: WalletConnectWallet;
+  xion: XionWallet;
 };
