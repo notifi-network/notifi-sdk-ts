@@ -1,6 +1,10 @@
 import { Target } from '../context';
 
 export const defaultCopy = {
+  notifiTargetContext: {
+    defaultWalletTargetSenderAddress:
+      '0xE80E42B5308d5b137FC137302d571B56907c3003', // GMX
+  },
   connect: {
     title: 'Notifications',
     description: 'See your activity and gain access to alerts',
