@@ -31,7 +31,15 @@ export type TargetListItemProps = {
     beforeVerify?: string;
     afterVerify?: string;
     beforeVerifyTooltip?: string;
+    beforeVerifyTooltipEndingLink?: {
+      text: string;
+      url: string;
+    };
     afterVerifyTooltip?: string;
+    afterVerifyTooltipEndingLink?: {
+      text: string;
+      url: string;
+    };
   };
   parentComponent?: 'inbox' | 'ftu';
   classNames?: {
@@ -203,23 +211,31 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
           >
             {props.message.beforeVerify}
             <div className={'notifi-target-list-item-tooltip'} ref={tooltipRef}>
-              {/* TODO: rename to `notifi-target-list-item-tooltip` */}
               <Icon
                 className={clsx(
-                  'notifi-target-list-item-tooltip-icon', // TODO: rename to `notifi-target-list-item-tooltip-icon`
+                  'notifi-target-list-item-tooltip-icon',
                   props.classNames?.tooltipIcon,
                 )}
                 type="info"
               />
               <div
                 className={clsx(
-                  'notifi-target-list-item-tooltip-content', // TODO: rename to `notifi-target-list-item-tooltip-content`
+                  'notifi-target-list-item-tooltip-content',
                   props.classNames?.tooltipContent,
                   props.parentComponent === 'inbox' ? 'inbox' : '',
                   tooltipIconPosition,
                 )}
               >
-                {props.message.beforeVerifyTooltip}
+                {props.message.beforeVerifyTooltip}{' '}
+                {props.message.beforeVerifyTooltipEndingLink ? (
+                  <a
+                    href={props.message.beforeVerifyTooltipEndingLink.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {props.message.beforeVerifyTooltipEndingLink.text}
+                  </a>
+                ) : null}
               </div>
             </div>
           </div>
@@ -250,7 +266,16 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
                   tooltipIconPosition,
                 )}
               >
-                {props.message.afterVerifyTooltip}
+                {props.message.afterVerifyTooltip}{' '}
+                {props.message.afterVerifyTooltipEndingLink ? (
+                  <a
+                    href={props.message.afterVerifyTooltipEndingLink.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {props.message.afterVerifyTooltipEndingLink.text}
+                  </a>
+                ) : null}
               </div>
             </div>
           </div>

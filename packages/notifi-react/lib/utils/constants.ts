@@ -56,6 +56,16 @@ export const defaultCopy = {
     discordVerifiedMessage: 'Make sure Discord DMs are enabled',
     discordVerifiedPromptTooltip:
       'Make sure you have enabled DMs in Discord. Right click on the server after joining, go to Privacy Settings, and enable Direct Messages.',
+    walletVerifyMessage: '2-3 signatures required to verify',
+    walletVerifyTooltip:
+      'Wallet messages are powered by XMTP and delivered natively into Coinbase Wallet. Download the Coinbase Wallet App.',
+    walletVerifiedMessage: 'Enable messages in Coinbase Wallet App',
+    walletVerifiedTooltip:
+      'Make sure messages are enabled in your Coinbase Wallet Mobile App.',
+    walletVerifiedTooltipLink: {
+      text: 'More info',
+      url: 'https://docs.notifi.network/docs/target-setup/slack-integration',
+    },
   },
   topicOptions: {
     customInputPlaceholder: 'Custom',

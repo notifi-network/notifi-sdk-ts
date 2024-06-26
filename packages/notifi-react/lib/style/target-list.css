@@ -61,6 +61,10 @@
   color: var(--notifi-target-list-item-tooltip-content-text);
 }
 
+.notifi-target-list-item-tooltip-content > a {
+  color: var(--notifi-color-seaglass-dark);
+}
+
 .notifi-target-list-item-tooltip-icon:hover
   ~ .notifi-target-list-item-tooltip-content.top-right,
 .notifi-target-list-item-tooltip-content.top-right:hover {

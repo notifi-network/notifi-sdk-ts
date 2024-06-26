@@ -119,12 +119,12 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
           targetListItemArgs.targetCtaType = 'button';
           // TODO: Add to copy
           targetListItemArgs.message = {
-            beforeVerify: '2-3 signatures required to verify',
-            beforeVerifyTooltip:
-              'Wallet messages are powered by XMTP and delivered natively into Coinbase Wallet. Download the Coinbase Wallet App.',
-            afterVerify: 'Enable messages in Coinbase Wallet App',
-            afterVerifyTooltip:
-              'Make sure messages are enabled in your Coinbase Wallet Mobile App. More info',
+            beforeVerify: defaultCopy.targetList.walletVerifyMessage,
+            beforeVerifyTooltip: defaultCopy.targetList.walletVerifyTooltip,
+            afterVerify: defaultCopy.targetList.walletVerifiedMessage,
+            afterVerifyTooltip: defaultCopy.targetList.walletVerifiedTooltip,
+            afterVerifyTooltipEndingLink:
+              defaultCopy.targetList.walletVerifiedTooltipLink,
           };
           break;
       }
