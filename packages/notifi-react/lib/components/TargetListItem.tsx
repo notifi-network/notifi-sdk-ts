@@ -17,16 +17,16 @@ import {
   isTargetVerified,
   isToggleTarget,
 } from '../utils';
-import { TargetCta, TargetCtaProps } from './TargetCta';
+import { PostCta, TargetCta, TargetCtaProps } from './TargetCta';
 
 export type TargetListItemProps = {
   targetListRef: React.RefObject<HTMLDivElement>;
+  postCta: PostCta;
   iconType: IconType;
   label: string;
   targetCtaType: TargetCtaProps['type'];
   target: Target;
   targetInfo: TargetInfo;
-  ctaCalledSuccessfullyText?: string;
   message?: {
     beforeVerify?: string;
     afterVerify?: string;
@@ -147,8 +147,8 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
         <TargetCta
           type={props.targetCtaType}
           targetInfoPrompt={props.targetInfo.infoPrompt}
-          ctaCalledSuccessfullyText={props.ctaCalledSuccessfullyText}
           className={props.classNames?.TargetCta}
+          postCta={props.postCta}
         />
         {isRemoveButtonAvailable(props.targetInfo.infoPrompt) ? (
           <TargetListItemAction
@@ -284,6 +284,7 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
           type={props.targetCtaType}
           targetInfoPrompt={props.targetInfo.infoPrompt}
           className={props.classNames?.TargetCta}
+          postCta={props.postCta}
         />
         {isRemoveButtonAvailable(props.targetInfo.infoPrompt) ? (
           <TargetListItemAction

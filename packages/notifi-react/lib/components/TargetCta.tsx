@@ -3,11 +3,26 @@ import React from 'react';
 
 import { Icon } from '../assets/Icons';
 import { TargetInfoPrompt, isCtaInfo } from '../context';
+import { LoadingAnimation, LoadingAnimationProps } from './LoadingAnimation';
+
+export type PostCta = LoadingAnimationPostCta | TextPostCta;
+
+type LoadingAnimationPostCta = {
+  type: 'loading-animation';
+  animationType: LoadingAnimationProps['type'];
+  isLoading: boolean;
+};
+
+type TextPostCta = {
+  type: 'text';
+  text: string;
+  durationInMs: number;
+};
 
 export type TargetCtaProps = {
   type: 'button' | 'link';
-  ctaCalledSuccessfullyText?: string;
   targetInfoPrompt: TargetInfoPrompt;
+  postCta: PostCta;
   className?: {
     container?: string;
     actionRequired?: {
@@ -19,8 +34,16 @@ export type TargetCtaProps = {
 };
 
 export const TargetCta: React.FC<TargetCtaProps> = (props) => {
-  const [ctaCalledSuccessfullyText, setCtaCalledSuccessfullyText] =
-    React.useState<string | null>(null);
+  const [isPostCtaShown, setIsPostCtaShown] = React.useState(false);
+
+  React.useEffect(() => {
+    if (isLoadingAnimationPostCta(props.postCta)) {
+      if (props.postCta.isLoading) {
+        return setIsPostCtaShown(true);
+      }
+      return setIsPostCtaShown(false);
+    }
+  }, [props.postCta]);
 
   return (
     <div className={clsx('notifi-target-cta', props.className?.container)}>
@@ -35,13 +58,25 @@ export const TargetCta: React.FC<TargetCtaProps> = (props) => {
           onClick={() => {
             if (!isCtaInfo(props.targetInfoPrompt)) return;
             props.targetInfoPrompt.onClick();
-            setCtaCalledSuccessfullyText(
-              props.ctaCalledSuccessfullyText ?? 'Done!', // TODO: Move this to defaultCopy
-            );
-            setTimeout(() => setCtaCalledSuccessfullyText(null), 5000);
+
+            if (!isLoadingAnimationPostCta(props.postCta)) {
+              setIsPostCtaShown(true);
+              setTimeout(
+                () => setIsPostCtaShown(false),
+                props.postCta.durationInMs,
+              );
+            }
           }}
         >
-          {ctaCalledSuccessfullyText ?? props.targetInfoPrompt.message}
+          {isPostCtaShown ? (
+            isLoadingAnimationPostCta(props.postCta) ? (
+              <LoadingAnimation type={props.postCta.animationType} />
+            ) : (
+              props.postCta.text
+            )
+          ) : (
+            props.targetInfoPrompt.message
+          )}
         </div>
       ) : null}
       {!isCtaInfo(props.targetInfoPrompt) ? (
@@ -57,4 +92,12 @@ export const TargetCta: React.FC<TargetCtaProps> = (props) => {
       ) : null}
     </div>
   );
+};
+
+// Utils
+
+const isLoadingAnimationPostCta = (
+  postCta: PostCta,
+): postCta is LoadingAnimationPostCta => {
+  return postCta.type === 'loading-animation';
 };

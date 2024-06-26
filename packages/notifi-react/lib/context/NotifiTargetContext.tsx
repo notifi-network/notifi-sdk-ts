@@ -158,9 +158,6 @@ export type NotifiTargetContextType = {
   refreshTargetDocument: (newData: Types.FetchDataQuery) => void;
 };
 
-// let web3TargetIdR = '';
-// let senderAddress = '';
-
 const NotifiTargetContext = createContext<NotifiTargetContextType>(
   {} as NotifiTargetContextType, // intentionally empty as initial value
 );
@@ -721,7 +718,6 @@ export const NotifiTargetContextProvider: FC<
     // @ts-ignore TODO: diable after BE supports senderAddress
     targetData?.wallet?.data?.senderAddress ??
     defaultCopy.notifiTargetContext.defaultWalletTargetSenderAddress; // Default with GMX address
-  // senderAddress = targetData?.wallet?.data?.senderAddress ?? senderAddress; // If none, fallback to GMX
 
   const getSignature = useCallback(
     async (message: Uint8Array | string) => {
@@ -831,36 +827,28 @@ export const NotifiTargetContextProvider: FC<
       },
     };
     // NOTE: 1st signature: init XMTP with user wallet (need sign every time)
-    console.log(3.21, { options, signer });
     const client = await xmtp.initialize({ options, signer });
 
     if (client === undefined) {
       throw Error('XMTP client is uninitialized. Please try again.');
     }
-    console.log(3.22, { client });
     // NOTE: 2nd signature: create a new XMTP conversation with the tenant sender (will skip if ever signed before)
     const conversation = await client.conversations.newConversation(
       senderAddress,
     );
 
     await client.contacts.allow([senderAddress]);
-    console.log(3.23, { senderAddress, conversation });
 
     return conversation.topic.split('/')[3];
   }, [walletWithSignParams.walletPublicKey, xmtp, getSignature]);
 
   const signCoinbaseSignature = useCallback(
     async (web3TargetId: Types.Web3Target['id']) => {
-      console.log(3.1, 'start signCoinbaseSignature');
+      setIsLoading(true);
       try {
-        console.log(3.2, 'start xmtpXip42');
         const conversationTopic = await xmtpXip42Impl();
 
         const address = walletWithSignParams.walletPublicKey;
-        console.log(3.3, 'start createCoinbaseNonce', {
-          conversationTopic,
-          address,
-        });
         let nonce = '';
         try {
           nonce = await createCoinbaseNonce();
@@ -875,10 +863,8 @@ export const NotifiTargetContextProvider: FC<
 
         const message = `Coinbase Wallet Messaging subscribe\nAddress: ${address}\nPartner Address: ${senderAddress}\nNonce: ${nonce}`;
 
-        console.log(3.4, { nonce });
         // NOTE: 3rd signature: sign the notifi message above to sync with Notifi BE
         const signature = await getSignature(message);
-        console.log(3.5, { signature });
 
         if (!signature)
           throw Error('Unable to sign the wallet. Please try again.');
@@ -909,6 +895,8 @@ export const NotifiTargetContextProvider: FC<
       } catch (e) {
         console.error('error in signCoinbaseSignature: ', e);
         return false;
+      } finally {
+        setIsLoading(false);
       }
     },
     [
@@ -918,25 +906,9 @@ export const NotifiTargetContextProvider: FC<
       getSignature,
     ],
   );
-  // console.log(1, { res: targetData?.wallet?.data?.id });
-  // web3TargetIdR = targetData?.wallet?.data?.id ?? '';
-  // const web3TargetId = targetData?.wallet?.data?.id ?? '';
-  // console.log(2, { web3TargetId, web3TargetIdR });
-
-  // const signWallet = useCallback(
-  //   async (id: Types.Web3Target['id']) => {
-  //     console.log(3, { web3TargetId, web3TargetIdR, id });
-  //     // TODO: Add logic to handle different wallet signatures
-  //     // const res = await signCoinbaseSignature(web3TargetId);
-  //     // const newWeb3TargetId = res?.web3Target?.id;
-  //     return await signCoinbaseSignature(id);
-  //   },
-  //   [signCoinbaseSignature],
-  // );
 
   const refreshWeb3Target = useCallback(
     async (web3Target?: Types.Web3TargetFragmentFragment) => {
-      console.log('refeshWeb3Target called', web3Target);
       if (web3Target) {
         switch (web3Target.isConfirmed) {
           case false:
@@ -944,7 +916,6 @@ export const NotifiTargetContextProvider: FC<
               type: 'cta',
               message: 'Sign Wallet',
               onClick: () => {
-                console.log(2, 'cta called');
                 // NOTE: sign coinbase requires up to 3 signing process: 1. init XMTP, 2. create XMTP conversation, 3. sign the confirm message to Notifi BE
                 return signCoinbaseSignature(web3Target.id);
               },
