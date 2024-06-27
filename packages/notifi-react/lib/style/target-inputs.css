@@ -109,3 +109,8 @@
 .notifi-target-input-toggle-label {
   font-size: 1rem;
 }
+
+.notifi-target-input-toggle-unavailable {
+  color: var(--notifi-target-input-toggle-unavailable-text);
+  font-size: 0.75rem;
+}

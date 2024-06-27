@@ -18,10 +18,18 @@ type TargetListProps = {
     telegram?: string;
     discord?: string;
     slack?: string;
+    wallet?: string;
+    postCtaEmail?: string;
+    postCtaEmailDurationInMs?: number;
+    postCtaTelegram?: string;
+    postCtaTelegramDurationInMs?: number;
+    postCtaDiscord?: string;
+    postCtaDiscordDurationInMs?: number;
+    postCtaSlack?: string;
+    postCtaSlackDurationInMs?: number;
     emailVerifyMessage?: string;
     discordVerifiedMessage?: string;
     discordVerifiedPromptTooltip?: string;
-    emailCtaCalledSuccessfullyText?: string;
   };
   parentComponent?: 'inbox' | 'ftu';
 };
@@ -30,11 +38,19 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
   const parentComponent = props.parentComponent ?? 'ftu';
   const {
     targetDocument: { targetInfoPrompts, targetData },
+    isLoading: isLoadingTarget,
   } = useNotifiTargetContext();
 
   const targetListItemArgsList = React.useMemo(() => {
     // TODO: Move to custom hook when it gets too complex
-    const order = ['email', 'phoneNumber', 'telegram', 'discord', 'slack'];
+    const order = [
+      'email',
+      'phoneNumber',
+      'telegram',
+      'discord',
+      'slack',
+      'wallet',
+    ];
     const verifiedTargets = objectKeys(targetData)
       .filter((target) => {
         const targetInfo = targetInfoPrompts[target];
@@ -69,21 +85,39 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
               props.copy?.emailVerifyMessage ??
               defaultCopy.targetList.emailVerifyMessage,
           };
-          targetListItemArgs.ctaCalledSuccessfullyText =
-            props.copy?.emailCtaCalledSuccessfullyText ??
-            defaultCopy.targetList.emailCtaCalledSuccessfullyText;
+          targetListItemArgs.postCta = {
+            type: 'text',
+            text:
+              props.copy?.postCtaEmail ?? defaultCopy.targetList.postCtaEmail,
+            durationInMs:
+              props.copy?.postCtaEmailDurationInMs ??
+              defaultCopy.targetList.postCtaEmailDurationInMs,
+          };
           break;
         case 'phoneNumber':
           targetListItemArgs.iconType = 'sms';
           targetListItemArgs.label =
             props.copy?.sms ?? defaultCopy.targetList.phoneNumber;
           targetListItemArgs.targetCtaType = 'button';
+          targetListItemArgs.postCta = {
+            //NOTE: SMS target will never go through a post CTA
+            type: 'text',
+            text: '',
+            durationInMs: 0,
+          };
           break;
         case 'telegram':
           targetListItemArgs.iconType = 'telegram';
           targetListItemArgs.label =
             props.copy?.telegram ?? defaultCopy.targetList.telegram;
           targetListItemArgs.targetCtaType = 'button';
+          targetListItemArgs.postCta = {
+            type: 'text',
+            text:
+              props.copy?.postCtaTelegram ??
+              defaultCopy.targetList.postCtaTelegram,
+            durationInMs: 5000,
+          };
           break;
         case 'discord':
           if (!targetData[target].useDiscord) return null;
@@ -98,12 +132,47 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
               props.copy?.discordVerifiedPromptTooltip ??
               defaultCopy.targetList.discordVerifiedPromptTooltip,
           };
+          targetListItemArgs.postCta = {
+            type: 'text',
+            text:
+              props.copy?.postCtaDiscord ??
+              defaultCopy.targetList.postCtaDiscord,
+            durationInMs:
+              props.copy?.postCtaDiscordDurationInMs ??
+              defaultCopy.targetList.postCtaDiscordDurationInMs,
+          };
           break;
         case 'slack':
           if (!targetData[target].useSlack) return null;
           targetListItemArgs.iconType = 'slack';
           targetListItemArgs.label = defaultCopy.targetList.slack;
           targetListItemArgs.targetCtaType = 'button';
+          targetListItemArgs.postCta = {
+            type: 'text',
+            text:
+              props.copy?.postCtaSlack ?? defaultCopy.targetList.postCtaSlack,
+            durationInMs:
+              props.copy?.postCtaSlackDurationInMs ??
+              defaultCopy.targetList.postCtaSlackDurationInMs,
+          };
+          break;
+        case 'wallet':
+          if (!targetData[target].useWallet) return null;
+          targetListItemArgs.iconType = 'connect';
+          targetListItemArgs.label = defaultCopy.targetList.wallet;
+          targetListItemArgs.targetCtaType = 'button';
+          targetListItemArgs.message = {
+            beforeVerify: defaultCopy.targetList.walletVerifyMessage,
+            beforeVerifyTooltip: defaultCopy.targetList.walletVerifyTooltip,
+            afterVerify: defaultCopy.targetList.walletVerifiedMessage,
+            afterVerifyTooltip: defaultCopy.targetList.walletVerifiedTooltip,
+            afterVerifyTooltipEndingLink:
+              defaultCopy.targetList.walletVerifiedTooltipLink,
+          };
+          targetListItemArgs.postCta = {
+            type: 'loading-animation',
+            animationType: 'spinner',
+          };
           break;
       }
 

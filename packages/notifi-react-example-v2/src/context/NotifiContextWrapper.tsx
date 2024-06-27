@@ -51,10 +51,16 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
         };
         break;
       case 'metamask':
+      case 'coinbase':
         walletPublicKey = wallets[selectedWallet].walletKeys?.hex ?? '';
         if (!walletPublicKey) throw new Error('ERROR: invalid walletPublicKey');
         signMessage = async (message: Uint8Array): Promise<Uint8Array> => {
           const messageString = Buffer.from(message).toString('utf8');
+          console.log('sign params:', {
+            wallets,
+            selectedWallet,
+            messageString,
+          });
           const result = await wallets[selectedWallet].signArbitrary(
             messageString,
           );
@@ -94,6 +100,7 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
         <NotifiContextProvider
           tenantId={tenantId}
           env={env}
+          // toggleTargetAvailability={{ discord: false }}
           walletBlockchain={'ETHEREUM'} // Change to any EVM chain if needed
           walletPublicKey={walletPublicKey}
           signMessage={signMessage}
@@ -113,6 +120,23 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
           walletBlockchain={'INJECTIVE'} // Switching between Cosmos chains are not supported yet
           walletPublicKey={walletPublicKey}
           accountAddress={accountAddress}
+          signMessage={signMessage}
+          cardId={cardId}
+          inputs={{
+            pricePairs: pricePairInputs,
+          }}
+          notificationCountPerPage={8}
+        >
+          {children}
+        </NotifiContextProvider>
+      ) : null}
+      {selectedWallet === 'coinbase' ? (
+        <NotifiContextProvider
+          tenantId={tenantId}
+          env={env}
+          toggleTargetAvailability={{ wallet: true }}
+          walletBlockchain={'ETHEREUM'} // Change to any EVM chain if needed
+          walletPublicKey={walletPublicKey}
           signMessage={signMessage}
           cardId={cardId}
           inputs={{
