@@ -1,14 +1,18 @@
 'use client';
 
 import { objectKeys } from '@notifi-network/notifi-frontend-client';
-import { useWallets } from '@notifi-network/notifi-wallet-provider';
+import { Types, useWallets } from '@notifi-network/notifi-wallet-provider';
 import { useRouter } from 'next/navigation';
 
 export default function Home() {
   const { wallets } = useWallets();
   const router = useRouter();
 
-  const supportedWallets = ['metamask', 'keplr'];
+  const supportedWallets: (keyof Types.Wallets)[] = [
+    'metamask',
+    'keplr',
+    'coinbase',
+  ];
 
   return (
     <div>

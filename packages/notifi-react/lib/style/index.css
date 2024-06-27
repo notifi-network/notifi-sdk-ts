@@ -123,6 +123,7 @@ button {
   --notifi-powered-by-text: var(--notifi-color-heather);
   --notifi-topic-stack-separator: var(--notifi-color-grey5);
   --notifi-topic-stack-row-cta-text: var(--notifi-color-seaglass-dark);
+  --notifi-target-input-toggle-unavailable-text: var(--notifi-color-heather);
 }
 
 .notifi-theme-light {
@@ -197,4 +198,5 @@ button {
   --notifi-powered-by-text: var(--notifi-color-midnight);
   --notifi-topic-stack-separator: var(--notifi-color-heather);
   --notifi-topic-stack-row-cta-text: var(--notifi-color-secondary-light);
+  --notifi-target-input-toggle-unavailable-text: var(--notifi-color-grey3);
 }

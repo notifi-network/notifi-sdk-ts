@@ -80,6 +80,8 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
     React.Dispatch<React.SetStateAction<boolean>>,
   ] = useModal();
 
+  const isReloaded = React.useRef(false);
+
   const throwError = (e: Error, durationInMs?: number) => {
     clearTimeout(timer);
     setError(e);
@@ -232,9 +234,11 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
         Object.keys(wallets).includes(walletName) &&
         wallets[walletName].isInstalled &&
         !selectedWallet &&
-        walletName !== 'xion'
+        walletName !== 'xion' &&
+        !isReloaded.current
       ) {
         wallets[walletName].connect();
+        isReloaded.current = true;
       }
     }
   }, [wallets]);

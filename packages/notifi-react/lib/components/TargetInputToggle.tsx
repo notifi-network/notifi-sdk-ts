@@ -2,20 +2,22 @@ import clsx from 'clsx';
 import { DeepPartialReadonly } from 'notifi-react-card/lib/utils';
 import React, { useMemo } from 'react';
 
-import { Target, useNotifiTargetContext } from '../context';
+import { Target, ToggleTarget, useNotifiTargetContext } from '../context';
 import { defaultCopy } from '../utils/constants';
 import { Toggle, ToggleProps } from './Toggle';
 
 export type TargetInputToggleProps = Readonly<{
-  targetType: Extract<Target, 'slack' | 'discord'>;
+  targetType: Extract<Target, 'slack' | 'discord' | 'wallet'>;
   disabled: boolean;
   copy?: {
-    title?: string;
+    title?: Partial<Record<ToggleTarget, string>>;
+    unavailable?: Partial<Record<ToggleTarget, string>>;
   };
   classNames?: DeepPartialReadonly<{
     container: string;
     label: string;
     toggle: ToggleProps['classNames'];
+    unavailable: string;
   }>;
 }>;
 
@@ -31,6 +33,8 @@ export const TargetInputToggle: React.FC<TargetInputToggleProps> = (props) => {
         return targetInputs.slack;
       case 'discord':
         return targetInputs.discord;
+      case 'wallet':
+        return targetInputs.wallet;
     }
   }, [targetInputs]);
 
@@ -42,13 +46,32 @@ export const TargetInputToggle: React.FC<TargetInputToggleProps> = (props) => {
       case 'slack':
         updateTargetInputs('slack', targetData?.slack.useSlack);
         break;
+      case 'wallet':
+        updateTargetInputs('wallet', targetData?.wallet.useWallet);
+        break;
     }
   }, []);
 
   const title =
-    props.copy?.title ?? props.targetType === 'slack'
-      ? defaultCopy.inputToggles.slack
-      : defaultCopy.inputToggles.discord;
+    props.targetType === 'slack'
+      ? props.copy?.title?.slack ?? defaultCopy.inputToggles.slack
+      : props.targetType === 'discord'
+      ? props.copy?.title?.discord ?? defaultCopy.inputToggles.discord
+      : props.targetType === 'wallet'
+      ? props.copy?.title?.wallet ?? defaultCopy.inputToggles.wallet
+      : 'Unknown target type';
+
+  const unavailable =
+    props.targetType === 'slack'
+      ? props.copy?.unavailable?.slack ??
+        defaultCopy.inputToggles.slackUnavailable
+      : props.targetType === 'discord'
+      ? props.copy?.unavailable?.discord ??
+        defaultCopy.inputToggles.discordUnavailable
+      : props.targetType === 'wallet'
+      ? props.copy?.unavailable?.wallet ??
+        defaultCopy.inputToggles.walletUnavailable
+      : 'Unknown target type';
 
   const onClick = useMemo(() => {
     switch (props.targetType) {
@@ -56,8 +79,12 @@ export const TargetInputToggle: React.FC<TargetInputToggleProps> = (props) => {
         return () => updateTargetInputs('slack', !targetInputs.slack);
       case 'discord':
         return () => updateTargetInputs('discord', !targetInputs.discord);
+      case 'wallet':
+        return () => updateTargetInputs('wallet', !targetInputs.wallet);
     }
   }, [targetInputs]);
+
+  const targetIsAvailable = targetData[props.targetType].isAvailable;
 
   return (
     <div
@@ -74,12 +101,23 @@ export const TargetInputToggle: React.FC<TargetInputToggleProps> = (props) => {
       >
         {title}
       </div>
-      <Toggle
-        classNames={props.classNames?.toggle}
-        disabled={props.disabled}
-        checked={useTarget}
-        setChecked={onClick}
-      />
+      {targetIsAvailable ? (
+        <Toggle
+          classNames={props.classNames?.toggle}
+          disabled={props.disabled}
+          checked={useTarget}
+          setChecked={onClick}
+        />
+      ) : (
+        <div
+          className={clsx(
+            'notifi-target-input-toggle-unavailable',
+            props.classNames?.unavailable,
+          )}
+        >
+          {unavailable}
+        </div>
+      )}
     </div>
   );
 };
