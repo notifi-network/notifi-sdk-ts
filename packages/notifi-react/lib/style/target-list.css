@@ -61,6 +61,10 @@
   color: var(--notifi-target-list-item-tooltip-content-text);
 }
 
+.notifi-target-list-item-tooltip-content > a {
+  color: var(--notifi-color-seaglass-dark);
+}
+
 .notifi-target-list-item-tooltip-icon:hover
   ~ .notifi-target-list-item-tooltip-content.top-right,
 .notifi-target-list-item-tooltip-content.top-right:hover {
@@ -93,61 +97,12 @@
   display: block;
 }
 
-/* .notifi-target-list-target-confirm-tooltip-content {
-  padding: 0.5rem;
-  border-radius: 6px;
-  background-color: var(--notifi-target-list-tooltip-bg);
-  border: var(--notifi-color-heather) 1px solid;
-  width: 11.5rem;
-  position: absolute;
-  transform: translate(2.4rem, -1.3rem);
-  right: 0;
-  bottom: 0;
-  visibility: hidden;
-  text-align: left;
-  color: var(--notifi-color-white);
-} */
-
-/* 1st target list confirmed message tooltip style  */
-/* .notifi-target-list
-  > .notifi-target-list-item:first-child
-  .notifi-target-list-target-confirmed-message
-  .notifi-target-list-target-confirm-tooltip
-  .notifi-target-list-target-confirm-tooltip-content {
-  transform: translate(2.4rem, 105%);
-  z-index: 1;
-}
-/* 1st target list unconfirmed message tooltip style  */
-/* .notifi-target-list
-  > .notifi-target-list-item:first-child
-  .notifi-target-list-target-verify-message
-  .notifi-target-list-target-confirm-tooltip
-  .notifi-target-list-target-confirm-tooltip-content {
-  transform: translate(2.4rem, 105%);
-  z-index: 1;
-} */
-/* .notifi-target-list-item-tooltip-content.inbox {
-  transform: translate(2.4rem, -1.3rem);
-  z-index: 1;
-} */
-
 .notifi-target-list-item-tooltip-icon:hover {
   color: var(
     --notifi-topic-list-tooltip-icon-color-hover
   ); /* TODO: Add new color variable for this */
 }
 
-/* .notifi-target-list-target-confirm-tooltip-icon:hover
-  ~ .notifi-target-list-target-item-tooltip-content.top-left {
-  top: 1.2rem;
-  left: 0;
-  visibility: visible;
-} */
-
-/* .notifi-target-list-target-confirm-tooltip-icon:hover
-  ~ .notifi-target-list-target-confirm-tooltip-content {
-  visibility: visible;
-} */
 .notifi-target-list-item-tooltip-icon {
   position: absolute;
   top: 0rem;
@@ -177,6 +132,10 @@
 .notifi-target-cta {
 }
 
+.disabled {
+  cursor: wait !important;
+}
+
 .notifi-target-cta-button {
   background-color: var(--notifi-target-list-cat-button-bg);
   color: var(--notifi-target-list-cat-button-text);
@@ -184,6 +143,16 @@
   text-align: center;
   cursor: pointer;
   border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notifi-target-cta-loading-spinner {
+  border-top: 2px solid var(--notifi-color-white) !important;
+  border-right: 2px solid var(--notifi-color-white) !important;
+  height: 0.75rem !important;
+  width: 0.75rem !important;
 }
 
 .notifi-target-cta-link {

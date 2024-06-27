@@ -1,6 +1,10 @@
 import { Target } from '../context';
 
 export const defaultCopy = {
+  notifiTargetContext: {
+    defaultWalletTargetSenderAddress:
+      '0xE80E42B5308d5b137FC137302d571B56907c3003', // GMX
+  },
   connect: {
     title: 'Notifications',
     description: 'See your activity and gain access to alerts',
@@ -20,6 +24,10 @@ export const defaultCopy = {
   inputToggles: {
     discord: 'Discord DM Bot',
     slack: 'Slack',
+    wallet: 'Wallet Alerts',
+    discordUnavailable: 'Discord unavailable',
+    slackUnavailable: 'Slack unavailable',
+    walletUnavailable: 'Only available for Coinbase Wallet',
   },
   ftu: {
     headerTitles: {
@@ -46,11 +54,29 @@ export const defaultCopy = {
     telegram: 'Telegram',
     discord: 'Discord',
     slack: 'Slack',
+    wallet: 'Wallets',
     emailVerifyMessage: 'We’ve sent a verification email to:',
-    emailCtaCalledSuccessfullyText: 'Email sent',
+    postCtaEmail: 'Email sent',
+    postCtaEmailDurationInMs: 5000,
+    postCtaTelegram: 'Done!',
+    postCtaTelegramDurationInMs: 5000,
+    postCtaDiscord: 'Done!',
+    postCtaDiscordDurationInMs: 5000,
+    postCtaSlack: 'Done!',
+    postCtaSlackDurationInMs: 5000,
     discordVerifiedMessage: 'Make sure Discord DMs are enabled',
     discordVerifiedPromptTooltip:
       'Make sure you have enabled DMs in Discord. Right click on the server after joining, go to Privacy Settings, and enable Direct Messages.',
+    walletVerifyMessage: '2-3 signatures required to verify',
+    walletVerifyTooltip:
+      'Wallet messages are powered by XMTP and delivered natively into Coinbase Wallet. Download the Coinbase Wallet App.',
+    walletVerifiedMessage: 'Enable messages in Coinbase Wallet App',
+    walletVerifiedTooltip:
+      'Make sure messages are enabled in your Coinbase Wallet Mobile App.',
+    walletVerifiedTooltipLink: {
+      text: 'More info',
+      url: 'https://docs.notifi.network/docs/target-setup/slack-integration',
+    },
   },
   topicOptions: {
     customInputPlaceholder: 'Custom',

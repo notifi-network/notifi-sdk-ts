@@ -5,7 +5,7 @@ import { IconType } from '../assets/Icons';
 import { FormTarget, Target, useNotifiTenantConfigContext } from '../context';
 import { validationRegex } from '../utils/constants';
 import { TargetInputField, TargetInputFieldProps } from './TargetInputField';
-import { TargetInputToggle } from './TargetInputToggle';
+import { TargetInputToggle, TargetInputToggleProps } from './TargetInputToggle';
 
 export type TargetInputsProps = {
   formTargetsOnFocus?: (target: FormTarget) => void;
@@ -26,7 +26,9 @@ export type TargetInputsProps = {
       telegram?: string;
       slack?: string;
       discord?: string;
+      wallet?: string;
     };
+    TargetInputToggle?: TargetInputToggleProps['copy'];
   };
   classNames?: {
     container?: string;
@@ -40,7 +42,9 @@ export type TargetInputsProps = {
       telegram?: string;
       slack?: string;
       discord?: string;
+      wallet?: string;
     };
+    TargetInputToggle: TargetInputToggleProps['classNames'];
   };
 };
 
@@ -119,7 +123,12 @@ export const TargetInputs: React.FC<TargetInputsProps> = (props) => {
       {cardConfig?.contactInfo.discord?.active ? (
         // TODO: impl disable
         <>
-          <TargetInputToggle targetType="discord" disabled={false} />
+          <TargetInputToggle
+            targetType="discord"
+            disabled={false}
+            copy={props.copy?.TargetInputToggle}
+            classNames={props.classNames?.TargetInputToggle}
+          />
           {props.copy?.inputSeparators?.discord ? (
             <div
               className={clsx(
@@ -134,7 +143,12 @@ export const TargetInputs: React.FC<TargetInputsProps> = (props) => {
       ) : null}
       {cardConfig?.contactInfo.slack?.active ? (
         <>
-          <TargetInputToggle targetType="slack" disabled={false} />
+          <TargetInputToggle
+            targetType="slack"
+            disabled={false}
+            copy={props.copy?.TargetInputToggle}
+            classNames={props.classNames?.TargetInputToggle}
+          />
           {props.copy?.inputSeparators?.slack ? (
             <div
               className={clsx(
@@ -143,6 +157,26 @@ export const TargetInputs: React.FC<TargetInputsProps> = (props) => {
               )}
             >
               <div>{props.copy?.inputSeparators?.slack}</div>
+            </div>
+          ) : null}
+        </>
+      ) : null}
+      {cardConfig?.contactInfo.wallet?.active ? (
+        <>
+          <TargetInputToggle
+            targetType="wallet"
+            disabled={false}
+            copy={props.copy?.TargetInputToggle}
+            classNames={props.classNames?.TargetInputToggle}
+          />
+          {props.copy?.inputSeparators?.wallet ? (
+            <div
+              className={clsx(
+                'notifi-input-separator',
+                props.classNames?.inputSeparators?.wallet,
+              )}
+            >
+              <div>{props.copy?.inputSeparators?.wallet}</div>
             </div>
           ) : null}
         </>

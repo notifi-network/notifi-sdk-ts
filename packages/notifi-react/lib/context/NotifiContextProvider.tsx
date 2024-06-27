@@ -9,7 +9,10 @@ import {
   NotifiHistoryContextProvider,
   NotifiHistoryProviderProps,
 } from './NotifiHistoryContext';
-import { NotifiTargetContextProvider } from './NotifiTargetContext';
+import {
+  NotifiTargetContextProvider,
+  NotifiTargetContextProviderProps,
+} from './NotifiTargetContext';
 import {
   NotifiTenantConfigContextProvider,
   NotifiTenantConfigProps,
@@ -19,7 +22,8 @@ import { NotifiUserSettingContextProvider } from './NotifiUserSettingContext';
 
 export type NotifiContextProviderProps = NotifiFrontendClientProviderProps &
   NotifiTenantConfigProps &
-  NotifiHistoryProviderProps;
+  NotifiHistoryProviderProps &
+  NotifiTargetContextProviderProps;
 
 export const NotifiContextProvider: FC<
   PropsWithChildren<NotifiContextProviderProps>
@@ -30,7 +34,9 @@ export const NotifiContextProvider: FC<
         cardId={params.cardId}
         inputs={params.inputs}
       >
-        <NotifiTargetContextProvider>
+        <NotifiTargetContextProvider
+          toggleTargetAvailability={params.toggleTargetAvailability}
+        >
           <NotifiTopicContextProvider>
             <NotifiHistoryContextProvider
               notificationCountPerPage={params.notificationCountPerPage}
