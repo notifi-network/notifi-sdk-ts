@@ -187,7 +187,8 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
           <label>{props.label}</label>
         </div>
         {!isTargetVerified(props.targetInfo.infoPrompt) ||
-        props.parentComponent === 'ftu' ? null : (
+        props.parentComponent === 'ftu' ||
+        props.target === 'wallet' ? null : (
           <div
             className={clsx(
               'notifi-target-list-item-target-id',
