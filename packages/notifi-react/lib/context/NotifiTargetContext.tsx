@@ -1,6 +1,5 @@
 import { objectKeys } from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
-import { useClient } from '@xmtp/react-sdk';
 import { isValidPhoneNumber } from 'libphonenumber-js';
 import React, {
   FC,
@@ -14,6 +13,7 @@ import React, {
 } from 'react';
 
 import { useTargetWallet } from '../hooks/useTargetWallet';
+import { formatTelegramForSubscription } from '../utils';
 import { useNotifiFrontendClientContext } from './NotifiFrontendClientContext';
 
 export type TargetGroupInput = {
@@ -96,13 +96,6 @@ export type TargetData = {
      */
     isAvailable?: boolean;
   };
-};
-
-const formatTelegramForSubscription = (telegramId: string) => {
-  if (telegramId.startsWith('@')) {
-    return telegramId.slice(1);
-  }
-  return telegramId;
 };
 
 export type UpdateTargetInputs = <T extends 'form' | 'toggle'>(
@@ -302,6 +295,25 @@ export const NotifiTargetContextProvider: FC<
     }
   }, [targetInputs]);
 
+  useEffect(() => {
+    // NOTE: For dynamic re-rendering of the target availability (TargetInputToggles)
+    setTargetData((prev) => ({
+      ...prev,
+      discord: {
+        ...prev.discord,
+        isAvailable: toggleTargetAvailability?.discord ?? true,
+      },
+      slack: {
+        ...prev.slack,
+        isAvailable: toggleTargetAvailability?.slack ?? true,
+      },
+      wallet: {
+        ...prev.wallet,
+        isAvailable: toggleTargetAvailability?.wallet ?? false,
+      },
+    }));
+  }, [toggleTargetAvailability]);
+
   const unVerifiedTargets = useMemo(() => {
     const {
       email: emailInfoPrompt,
@@ -421,7 +433,7 @@ export const NotifiTargetContextProvider: FC<
     [frontendClient, targetGroupToBeSaved, targetData],
   );
 
-  // NOTE: The followings are internal functions
+  // INTERNAL METHOD BELOW:
   const updateTargetInfoPrompt = useCallback(
     (type: Target, infoPrompt?: TargetInfoPrompt | null) => {
       if (!infoPrompt) {
@@ -767,28 +779,10 @@ export const NotifiTargetContextProvider: FC<
     [toggleTargetAvailability, signCoinbaseSignature],
   );
 
-  useEffect(() => {
-    setTargetData((prev) => ({
-      ...prev,
-      discord: {
-        ...prev.discord,
-        isAvailable: toggleTargetAvailability?.discord ?? true,
-      },
-      slack: {
-        ...prev.slack,
-        isAvailable: toggleTargetAvailability?.slack ?? true,
-      },
-      wallet: {
-        ...prev.wallet,
-        isAvailable: toggleTargetAvailability?.wallet ?? false,
-      },
-    }));
-  }, [toggleTargetAvailability]);
-
   return (
     <NotifiTargetContext.Provider
       value={{
-        refreshTargetDocument,
+        refreshTargetDocument, // TODO: Consider to remove (Only consumed by `notifi-dapp-example` Signup button)
         error,
         errorWallet,
         isLoading,

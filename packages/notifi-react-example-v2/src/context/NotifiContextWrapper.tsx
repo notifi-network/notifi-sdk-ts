@@ -68,7 +68,6 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
           return getBytes(result);
         };
         break;
-      // TODO: Support Coinbase wallet
     }
   }
 

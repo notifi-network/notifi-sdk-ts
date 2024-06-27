@@ -4,7 +4,7 @@ import React from 'react';
 
 import { TargetData, useNotifiFrontendClientContext } from '../context';
 import { defaultCopy } from '../utils';
-import { reformatSignatureForWalletTarget } from '../utils/wallet';
+import { reformatSignatureForWalletTarget } from '../utils';
 import { createCoinbaseNonce, subscribeCoinbaseMessaging } from '../utils/xmtp';
 
 export const useTargetWallet = (walletData: TargetData['wallet']) => {
