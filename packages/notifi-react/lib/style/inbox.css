@@ -120,8 +120,7 @@
   position: relative;
 }
 
-.notifi-inbox-config-target-edit-button-text.hidden,
-.notifi-inbox-config-target-list-button-text.hidden {
+.notifi-inbox-config-target-edit-button-text.hidden {
   visibility: hidden;
 }
 .notifi-inbox-config-target-edit-button:disabled,

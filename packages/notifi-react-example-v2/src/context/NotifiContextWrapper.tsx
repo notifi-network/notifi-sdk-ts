@@ -56,6 +56,11 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
         if (!walletPublicKey) throw new Error('ERROR: invalid walletPublicKey');
         signMessage = async (message: Uint8Array): Promise<Uint8Array> => {
           const messageString = Buffer.from(message).toString('utf8');
+          console.log('sign params:', {
+            wallets,
+            selectedWallet,
+            messageString,
+          });
           const result = await wallets[selectedWallet].signArbitrary(
             messageString,
           );

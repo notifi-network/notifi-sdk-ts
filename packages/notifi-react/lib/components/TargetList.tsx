@@ -172,7 +172,6 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
           targetListItemArgs.postCta = {
             type: 'loading-animation',
             animationType: 'spinner',
-            isLoading: isLoadingTarget,
           };
           break;
       }

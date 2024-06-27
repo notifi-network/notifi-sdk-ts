@@ -52,7 +52,7 @@ export type TargetListItemProps = {
     tooltipIcon?: string;
     tooltipContent?: string;
     targetId?: string;
-    TargetCta?: TargetCtaProps['className'];
+    TargetCta?: TargetCtaProps['classNames'];
   };
 };
 
@@ -147,7 +147,7 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
         <TargetCta
           type={props.targetCtaType}
           targetInfoPrompt={props.targetInfo.infoPrompt}
-          className={props.classNames?.TargetCta}
+          classNames={props.classNames?.TargetCta}
           postCta={props.postCta}
         />
         {isRemoveButtonAvailable(props.targetInfo.infoPrompt) ? (
@@ -283,7 +283,7 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
         <TargetCta
           type={props.targetCtaType}
           targetInfoPrompt={props.targetInfo.infoPrompt}
-          className={props.classNames?.TargetCta}
+          classNames={props.classNames?.TargetCta}
           postCta={props.postCta}
         />
         {isRemoveButtonAvailable(props.targetInfo.infoPrompt) ? (
