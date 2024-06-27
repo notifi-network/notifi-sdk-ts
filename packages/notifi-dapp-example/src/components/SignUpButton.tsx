@@ -36,7 +36,6 @@ export const SignUpButton: React.FC<NotifiSignUpButtonProps> = ({
 
   const {
     renewTargetGroup,
-    refreshTargetDocument,
     targetDocument: {
       targetInputs: { email, phoneNumber, telegram, slack, discord, wallet },
     },
@@ -80,8 +79,6 @@ export const SignUpButton: React.FC<NotifiSignUpButtonProps> = ({
           } else {
             await updateFtuStage(FtuStage.Alerts);
           }
-          const newData = await frontendClient.fetchData();
-          refreshTargetDocument(newData);
           await handleRoute('/notifi/ftu');
         }
       } catch (e: unknown) {
