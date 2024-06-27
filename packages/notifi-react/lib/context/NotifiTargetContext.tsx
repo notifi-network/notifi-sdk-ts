@@ -137,7 +137,6 @@ export type NotifiTargetContextType = {
   isChangingTargets: Record<Target, boolean>;
   targetDocument: TargetDocument;
   unVerifiedTargets: Target[];
-  refreshTargetDocument: (newData: Types.FetchDataQuery) => void;
 };
 
 let web3TargetId = '';
@@ -889,7 +888,6 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
   return (
     <NotifiTargetContext.Provider
       value={{
-        refreshTargetDocument,
         error,
         isLoading,
         renewTargetGroup,
