@@ -71,14 +71,21 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
   const [error, setError] = useState<Error | null>(null);
   const { frontendClient, frontendClientStatus } =
     useNotifiFrontendClientContext();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [alerts, setAlerts] = useState<
     Record<string, Types.AlertFragmentFragment>
   >({});
+  const isInitialLoaded = React.useRef(false);
 
   useEffect(() => {
-    if (!frontendClientStatus.isAuthenticated) return;
-    frontendClient.fetchFusionData().then(refreshAlerts);
+    if (!frontendClientStatus.isAuthenticated || isInitialLoaded.current)
+      return;
+    isInitialLoaded.current = true;
+    frontendClient
+      .fetchFusionData()
+      .then(refreshAlerts)
+      .catch(() => (isInitialLoaded.current = false))
+      .finally(() => setIsLoading(false));
   }, [frontendClientStatus.isAuthenticated]);
 
   const unsubscribeAlert = useCallback(

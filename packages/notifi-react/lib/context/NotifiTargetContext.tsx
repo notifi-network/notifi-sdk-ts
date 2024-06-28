@@ -255,6 +255,7 @@ export const NotifiTargetContextProvider: FC<
           refreshTargetDocument(data);
         })
         .catch((e) => {
+          isInitialLoaded.current = false;
           if (e instanceof Error) {
             setError({
               ...e,
