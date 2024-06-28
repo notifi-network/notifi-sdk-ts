@@ -76,3 +76,10 @@ export const isToggleTarget = (target: Target): target is ToggleTarget => {
   const supportedToggleTargets: Target[] = ['discord', 'slack', 'wallet'];
   return supportedToggleTargets.includes(target);
 };
+
+export const getWalletTargetSignMessage = (
+  address: string,
+  senderAddress: string,
+  nonce: string,
+) =>
+  `Coinbase Wallet Messaging subscribe\nAddress: ${address}\nPartner Address: ${senderAddress}\nNonce: ${nonce}`;

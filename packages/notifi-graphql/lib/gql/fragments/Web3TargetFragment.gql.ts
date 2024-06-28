@@ -8,6 +8,7 @@ export const Web3TargetFragment = gql`
     walletBlockchain
     targetProtocol
     isConfirmed
+    senderAddress
   }
 `;
 
@@ -29,6 +30,7 @@ export const GetWeb3TargetResponseFragment = gql`
       walletBlockchain
       targetProtocol
       isConfirmed
+      senderAddress
     }
   }
 `;
@@ -42,6 +44,7 @@ export const VerifyXmtpTargetResponseFragment = gql`
       walletBlockchain
       targetProtocol
       isConfirmed
+      senderAddress
     }
   }
 `;
@@ -55,6 +58,7 @@ export const VerifyCbwTargetResponseFragment = gql`
       walletBlockchain
       targetProtocol
       isConfirmed
+      senderAddress
     }
   }
 `;
@@ -68,6 +72,7 @@ export const VerifyXmtpTargetViaXip42ResponseFragment = gql`
       walletBlockchain
       targetProtocol
       isConfirmed
+      senderAddress
     }
   }
 `;

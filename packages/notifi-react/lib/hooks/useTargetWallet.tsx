@@ -2,24 +2,19 @@ import { Types } from '@notifi-network/notifi-graphql';
 import { useClient } from '@xmtp/react-sdk';
 import React from 'react';
 
-import { TargetData, useNotifiFrontendClientContext } from '../context';
-import { defaultCopy } from '../utils';
-import { reformatSignatureForWalletTarget } from '../utils';
+import { useNotifiFrontendClientContext } from '../context';
+import {
+  getWalletTargetSignMessage,
+  reformatSignatureForWalletTarget,
+} from '../utils';
 import { createCoinbaseNonce, subscribeCoinbaseMessaging } from '../utils/xmtp';
 
-export const useTargetWallet = (walletData: TargetData['wallet']) => {
+export const useTargetWallet = () => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState<Error | null>(null);
   const { frontendClient, walletWithSignParams } =
     useNotifiFrontendClientContext();
   const xmtp = useClient();
-  const senderAddress =
-    // TODO: refactor this const into needed methods
-    // eslint-disable-next-line
-    // @ts-ignore TODO: disable after BE supports senderAddress
-    walletData?.data?.senderAddress ??
-    defaultCopy.notifiTargetContext.defaultWalletTargetSenderAddress; // Default with GMX address
-
   const getSignature = React.useCallback(
     async (message: Uint8Array | string) => {
       let signature: Uint8Array | string = '';
@@ -75,68 +70,66 @@ export const useTargetWallet = (walletData: TargetData['wallet']) => {
     [walletWithSignParams.signMessage],
   );
 
-  const xmtpXip42Impl = React.useCallback(async () => {
-    type XmtpInitOption = (typeof xmtp.initialize extends (a: infer U) => void
-      ? U
-      : never)['options'];
+  const xmtpXip42Impl = React.useCallback(
+    async (senderAddress: string) => {
+      type XmtpInitOption = (typeof xmtp.initialize extends (a: infer U) => void
+        ? U
+        : never)['options'];
 
-    const options: XmtpInitOption = {
-      persistConversations: false,
-      env: 'production',
-    };
-    const address = walletWithSignParams.walletPublicKey;
+      const options: XmtpInitOption = {
+        persistConversations: false,
+        env: 'production',
+      };
+      const address = walletWithSignParams.walletPublicKey;
 
-    const signer = {
-      getAddress: (): Promise<string> => {
-        return new Promise((resolve) => {
-          resolve(address);
-        });
-      },
-      signMessage: async (message: Uint8Array | string): Promise<string> => {
-        return getSignature(message);
-      },
-    };
-    // NOTE: 1st signature: init XMTP with user wallet (need sign every time)
-    const client = await xmtp.initialize({ options, signer });
+      const signer = {
+        getAddress: (): Promise<string> => {
+          return new Promise((resolve) => {
+            resolve(address);
+          });
+        },
+        signMessage: async (message: Uint8Array | string): Promise<string> => {
+          return getSignature(message);
+        },
+      };
+      // NOTE: 1st signature: init XMTP with user wallet (need sign every time)
+      const client = await xmtp.initialize({ options, signer });
+      if (!client) {
+        throw Error(
+          'xmtpXip42Impl: XMTP client is uninitialized. Please try again.',
+        );
+      }
+      // NOTE: 2nd signature: create a new XMTP conversation with the tenant sender (will skip if ever signed before)
+      const conversation = await client.conversations.newConversation(
+        senderAddress,
+      );
 
-    if (client === undefined) {
-      throw Error('XMTP client is uninitialized. Please try again.');
-    }
-    // NOTE: 2nd signature: create a new XMTP conversation with the tenant sender (will skip if ever signed before)
-    const conversation = await client.conversations.newConversation(
-      senderAddress,
-    );
+      await client.contacts.allow([senderAddress]);
 
-    await client.contacts.allow([senderAddress]);
-
-    return conversation.topic.split('/')[3];
-  }, [walletWithSignParams.walletPublicKey, xmtp, getSignature]);
+      return conversation.topic.split('/')[3];
+    },
+    [walletWithSignParams.walletPublicKey, xmtp, getSignature],
+  );
 
   const signCoinbaseSignature = React.useCallback(
     async (
       web3TargetId: Types.Web3Target['id'],
+      senderAddress: string,
     ): Promise<Types.Web3TargetFragmentFragment | undefined> => {
       setIsLoading(true);
       try {
-        const conversationTopic = await xmtpXip42Impl();
+        const conversationTopic = await xmtpXip42Impl(senderAddress);
+        if (!conversationTopic)
+          throw Error('Unable to get the conversation topic');
 
         const address = walletWithSignParams.walletPublicKey;
-        let nonce = '';
-        try {
-          nonce = await createCoinbaseNonce();
-        } catch (e) {
-          console.error('error in createCoinbaseNonce: ', e);
-          if (e instanceof Error) setError(e);
-          return;
-        }
-        if (!nonce) {
-          setError(
-            Error('Unable to get the nonce from coinbase wallet, try again.'),
-          );
-          return;
-        }
+        const nonce = await createCoinbaseNonce();
 
-        const message = `Coinbase Wallet Messaging subscribe\nAddress: ${address}\nPartner Address: ${senderAddress}\nNonce: ${nonce}`;
+        const message = getWalletTargetSignMessage(
+          address,
+          senderAddress,
+          nonce,
+        );
 
         // NOTE: 3rd signature: sign the notifi message above to sync with Notifi BE
         const signature = await getSignature(message);
@@ -165,7 +158,15 @@ export const useTargetWallet = (walletData: TargetData['wallet']) => {
         return walletVerifyResult.verifyXmtpTargetViaXip42.web3Target;
       } catch (e) {
         console.error('error in signCoinbaseSignature: ', e);
-        setError(e instanceof Error ? e : Error('An error occurred'));
+        setError(
+          e instanceof Error
+            ? {
+                ...e,
+                message:
+                  'useTargetWallet - signCoinbaseSignature: ' + e.message,
+              }
+            : Error('signCoinbaseSignature: Error occurred, please try again.'),
+        );
         return;
       } finally {
         setIsLoading(false);
