@@ -208,7 +208,7 @@ export const NotifiTargetContextProvider: FC<
     signCoinbaseSignature,
     isLoading: isLoadingWallet,
     error: errorWallet,
-  } = useTargetWallet(targetData.wallet);
+  } = useTargetWallet();
   const [targetInfoPrompts, setTargetInfoPrompts] = useState<
     Partial<Record<Target, TargetInfo>>
   >({
@@ -738,8 +738,17 @@ export const NotifiTargetContextProvider: FC<
               message: 'Sign Wallet',
               onClick: async () => {
                 // NOTE: sign coinbase requires up to 3 signing process: 1. init XMTP, 2. create XMTP conversation, 3. sign the confirm message to Notifi BE
+                if (!web3Target.senderAddress) {
+                  setError(
+                    new Error(
+                      'ERROR: Missing sender address, please try again',
+                    ),
+                  );
+                  return;
+                }
                 const updatedWeb3Target = await signCoinbaseSignature(
                   web3Target.id,
+                  web3Target.senderAddress,
                 );
                 if (!updatedWeb3Target) return;
                 refreshWeb3Target(updatedWeb3Target);
