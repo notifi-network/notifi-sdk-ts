@@ -29,12 +29,17 @@
 .notifi-target-list-target-verify-message {
   font-size: 0.9rem;
   color: var(--notifi-target-list-target-verify-message-text);
+  display: flex;
+  align-items: center;
 }
 
 .notifi-target-list-target-confirmed-message {
   font-size: 0.875rem;
   color: var(--notifi-target-list-target-verify-message-text);
   text-align: center;
+  text-align: center;
+  display: flex;
+  align-items: center;
 }
 
 .notifi-target-list-target-confirmed-message.inbox {
@@ -44,7 +49,8 @@
 .notifi-target-list-item-tooltip {
   display: inline-block;
   position: relative;
-  height: 1rem;
+  height: 1.5rem;
+  width: 1.5rem;
 }
 
 .notifi-target-list-item-tooltip-content {
@@ -104,8 +110,6 @@
 }
 
 .notifi-target-list-item-tooltip-icon {
-  position: absolute;
-  top: 0rem;
 }
 
 .notifi-target-list-icon {
@@ -139,7 +143,7 @@
 .notifi-target-cta-button {
   background-color: var(--notifi-target-list-cat-button-bg);
   color: var(--notifi-target-list-cat-button-text);
-  padding: 0.5rem 2rem;
+  padding: 0.5rem 1rem;
   text-align: center;
   cursor: pointer;
   border-radius: 6px;
