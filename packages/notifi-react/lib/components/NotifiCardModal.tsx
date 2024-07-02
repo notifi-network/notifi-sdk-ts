@@ -94,7 +94,6 @@ export const NotifiCardModal: React.FC<NotifiCardModalProps> = (props) => {
 
   useEffect(() => {
     if (
-      clientError ||
       userSettingError ||
       historyError ||
       tenantError ||
@@ -106,7 +105,7 @@ export const NotifiCardModal: React.FC<NotifiCardModalProps> = (props) => {
           `In 
               ${
                 clientError?.message
-                  ? ` ClientContext: \n ${clientError.message}`
+                  ? ` FrontendClientContext: \n ${clientError.message}`
                   : ''
               } 
               ${

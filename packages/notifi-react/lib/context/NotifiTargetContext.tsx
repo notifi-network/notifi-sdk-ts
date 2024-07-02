@@ -148,7 +148,7 @@ export type NotifiTargetContextType = {
   isChangingTargets: Record<Target, boolean>;
   targetDocument: TargetDocument;
   unVerifiedTargets: Target[];
-  refreshTargetDocument: (newData: Types.FetchDataQuery) => void;
+  refreshTargetDocument: (newData: Types.FetchFusionDataQuery) => void;
 };
 
 const NotifiTargetContext = createContext<NotifiTargetContextType>(
@@ -240,7 +240,7 @@ export const NotifiTargetContextProvider: FC<
     //NOTE: target change listener when window is refocused
     const handler = () => {
       if (!frontendClientStatus.isAuthenticated) return;
-      return frontendClient.fetchData().then(refreshTargetDocument);
+      return frontendClient.fetchFusionData().then(refreshTargetDocument);
     };
     window.addEventListener('focus', handler);
 
@@ -250,7 +250,7 @@ export const NotifiTargetContextProvider: FC<
       isInitialLoaded.current = true;
       setIsLoading(true);
       frontendClient
-        .fetchData()
+        .fetchFusionData()
         .then((data) => {
           refreshTargetDocument(data);
         })
@@ -419,7 +419,7 @@ export const NotifiTargetContextProvider: FC<
         .ensureTargetGroup(data)
         .then((_result) => {
           frontendClient
-            .fetchData()
+            .fetchFusionData()
             .then((data) => {
               refreshTargetDocument(data);
               setError(null);
@@ -454,61 +454,68 @@ export const NotifiTargetContextProvider: FC<
     [],
   );
 
-  const refreshTargetDocument = useCallback((newData: Types.FetchDataQuery) => {
-    const targetGroup = newData.targetGroup?.find(
-      (tg) => tg?.name === 'Default',
-    );
-    // Update target group Id
-    setTargetGroupId(targetGroup?.id ?? null);
+  const refreshTargetDocument = useCallback(
+    (newData: Types.FetchFusionDataQuery) => {
+      const targetGroup = newData.targetGroup?.find(
+        (tg) => tg?.name === 'Default',
+      );
+      // Update target group Id
+      setTargetGroupId(targetGroup?.id ?? null);
 
-    // Update inputs state
-    setTargetInputs((prev) => ({
-      ...prev,
-      email: {
-        value: targetGroup?.emailTargets?.[0]?.emailAddress ?? prev.email.value,
-      },
-      phoneNumber: {
-        value:
-          targetGroup?.smsTargets?.[0]?.phoneNumber ?? prev.phoneNumber.value,
-      },
-      telegram: {
-        value:
-          targetGroup?.telegramTargets?.[0]?.telegramId ?? prev.telegram.value,
-      },
-      discord: !!targetGroup?.discordTargets?.find(
+      // Update inputs state
+      setTargetInputs((prev) => ({
+        ...prev,
+        email: {
+          value:
+            targetGroup?.emailTargets?.[0]?.emailAddress ?? prev.email.value,
+        },
+        phoneNumber: {
+          value:
+            targetGroup?.smsTargets?.[0]?.phoneNumber ?? prev.phoneNumber.value,
+        },
+        telegram: {
+          value:
+            targetGroup?.telegramTargets?.[0]?.telegramId ??
+            prev.telegram.value,
+        },
+        discord: !!targetGroup?.discordTargets?.find(
+          (it) => it?.name === 'Default',
+        ),
+        slack: !!targetGroup?.slackChannelTargets?.find(
+          (it) => it?.name === 'Default',
+        ),
+        wallet: !!targetGroup?.web3Targets?.find(
+          (it) => it?.name === 'Default',
+        ),
+      }));
+
+      // Update target data (TargetData) & info prompts (TargetInfoPrompt)
+      const emailTarget = targetGroup?.emailTargets?.[0];
+      refreshEmailTarget(emailTarget);
+
+      const smsTarget = targetGroup?.smsTargets?.[0];
+      refreshSmsTarget(smsTarget);
+
+      const telegramTarget = targetGroup?.telegramTargets?.[0];
+      refreshTelegramTarget(telegramTarget);
+
+      const discordTarget = targetGroup?.discordTargets?.find(
         (it) => it?.name === 'Default',
-      ),
-      slack: !!targetGroup?.slackChannelTargets?.find(
+      );
+      refreshDiscordTarget(discordTarget);
+
+      const slackTarget = targetGroup?.slackChannelTargets?.find(
         (it) => it?.name === 'Default',
-      ),
-      wallet: !!targetGroup?.web3Targets?.find((it) => it?.name === 'Default'),
-    }));
+      );
+      refreshSlackTarget(slackTarget);
 
-    // Update target data (TargetData) & info prompts (TargetInfoPrompt)
-    const emailTarget = targetGroup?.emailTargets?.[0];
-    refreshEmailTarget(emailTarget);
-
-    const smsTarget = targetGroup?.smsTargets?.[0];
-    refreshSmsTarget(smsTarget);
-
-    const telegramTarget = targetGroup?.telegramTargets?.[0];
-    refreshTelegramTarget(telegramTarget);
-
-    const discordTarget = targetGroup?.discordTargets?.find(
-      (it) => it?.name === 'Default',
-    );
-    refreshDiscordTarget(discordTarget);
-
-    const slackTarget = targetGroup?.slackChannelTargets?.find(
-      (it) => it?.name === 'Default',
-    );
-    refreshSlackTarget(slackTarget);
-
-    const web3Target = targetGroup?.web3Targets?.find(
-      (it) => it?.name === 'Default',
-    );
-    refreshWeb3Target(web3Target);
-  }, []);
+      const web3Target = targetGroup?.web3Targets?.find(
+        (it) => it?.name === 'Default',
+      );
+      refreshWeb3Target(web3Target);
+    },
+    [],
+  );
 
   const refreshEmailTarget = useCallback(
     async (emailTarget?: Types.EmailTargetFragmentFragment) => {
