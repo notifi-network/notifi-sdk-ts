@@ -143,8 +143,9 @@
   text-align: center;
   cursor: pointer;
   border-radius: 6px;
+  min-width: 5.5rem;
+  min-height: 1.25rem;
   display: flex;
-  align-items: center;
   justify-content: center;
 }
 
