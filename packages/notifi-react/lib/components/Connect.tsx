@@ -57,15 +57,21 @@ export const Connect: React.FC<ConnectProps> = (props) => {
 
   const onClick = async () => {
     setIsLoading(true);
-    const frontendClient = await login();
-    if (props.loginWithoutSubscription) return;
-    if (!frontendClient) return;
-    const isDefaultTargetExist = await validateDefaultTargetGroup(
-      frontendClient,
-    );
+    try {
+      const frontendClient = await login();
+      if (props.loginWithoutSubscription) return;
+      if (!frontendClient) return;
+      const isDefaultTargetExist = await validateDefaultTargetGroup(
+        frontendClient,
+      );
 
-    if (!isDefaultTargetExist) {
-      await renewTargetGroup();
+      if (!isDefaultTargetExist) {
+        await renewTargetGroup();
+      }
+    } catch (error) {
+      console.error(error);
+      setIsLoading(false);
+      return;
     }
   };
 

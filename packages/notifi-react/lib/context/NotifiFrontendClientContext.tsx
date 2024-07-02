@@ -75,7 +75,7 @@ export const NotifiFrontendClientContextProvider: FC<
       })
       .catch((error) => {
         setError(error);
-        console.log(error);
+        console.error(error);
       })
       .finally(() => setIsLoading(false));
   }, [walletWithSignParams.walletPublicKey]);
@@ -95,7 +95,14 @@ export const NotifiFrontendClientContextProvider: FC<
       setFrontendClient(frontendClient);
       setError(null);
     } catch (error) {
-      setError(error as Error);
+      if (error instanceof Error) {
+        const newError = {
+          ...error,
+          message: `login: User rejects to sign, or mis-impl the signMessage method: ${error.message}`,
+        };
+        setError(newError);
+        console.error(newError);
+      }
     } finally {
       setIsLoading(false);
     }
