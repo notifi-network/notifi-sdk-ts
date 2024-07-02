@@ -275,12 +275,19 @@ export class NotifiService
     const headers = this._requestHeaders();
     return this._typedClient.deleteWebhookTarget(variables, headers);
   }
-
+  /** @deprecated use fetchFusionData instead. This is for legacy  */
   async fetchData(
     variables: Generated.FetchDataQueryVariables,
   ): Promise<Generated.FetchDataQuery> {
     const headers = this._requestHeaders();
     return this._typedClient.fetchData(variables, headers);
+  }
+
+  async fetchFusionData(
+    variables: Generated.FetchFusionDataQueryVariables,
+  ): Promise<Generated.FetchFusionDataQuery> {
+    const headers = this._requestHeaders();
+    return this._typedClient.fetchFusionData(variables, headers);
   }
 
   async findTenantConfig(

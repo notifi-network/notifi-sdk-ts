@@ -1,7 +1,6 @@
 import {
   FusionEventTopic,
   FusionFilterOptions,
-  InputObject,
   UserInputOptions,
   resolveObjectArrayRef,
   resolveStringRef,
@@ -79,7 +78,7 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
 
   useEffect(() => {
     if (!frontendClientStatus.isAuthenticated) return;
-    frontendClient.fetchData().then(refreshAlerts);
+    frontendClient.fetchFusionData().then(refreshAlerts);
   }, [frontendClientStatus.isAuthenticated]);
 
   const unsubscribeAlert = useCallback(
@@ -90,7 +89,7 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
       frontendClient
         .deleteAlert({ id: alert.id })
         .then(() => {
-          frontendClient.fetchData().then(refreshAlerts);
+          frontendClient.fetchFusionData().then(refreshAlerts);
           setError(null);
         })
         .catch((e) => {
@@ -177,7 +176,7 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
 
     try {
       await frontendClient.ensureFusionAlerts({ alerts: createAlertInputs });
-      const data = await frontendClient.fetchData();
+      const data = await frontendClient.fetchFusionData();
       refreshAlerts(data);
       setError(null);
     } catch (e) {
@@ -273,7 +272,7 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
 
     try {
       await frontendClient.ensureFusionAlerts({ alerts: createAlertInputs });
-      const data = await frontendClient.fetchData();
+      const data = await frontendClient.fetchFusionData();
       refreshAlerts(data);
       setError(null);
     } catch (e) {
@@ -295,7 +294,7 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
     [alerts],
   );
 
-  const refreshAlerts = (newData: Types.FetchDataQuery) => {
+  const refreshAlerts = (newData: Types.FetchFusionDataQuery) => {
     const alerts: Record<string, Types.AlertFragmentFragment> = {};
     newData.alert?.forEach((alert) => {
       if (alert?.name) {
