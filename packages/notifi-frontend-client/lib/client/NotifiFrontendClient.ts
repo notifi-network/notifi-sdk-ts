@@ -721,8 +721,13 @@ export class NotifiFrontendClient {
     await Promise.all([saveAuthorizationPromise, saveRolesPromise]);
   }
 
+  /** @deprecated use fetchFusionData instead. This is for legacy  */
   async fetchData(): Promise<Types.FetchDataQuery> {
     return this._service.fetchData({});
+  }
+
+  async fetchFusionData(): Promise<Types.FetchFusionDataQuery> {
+    return this._service.fetchFusionData({});
   }
 
   async beginLoginViaTransaction({

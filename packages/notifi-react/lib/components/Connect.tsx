@@ -208,8 +208,8 @@ const validateDefaultTargetGroup = async (
   frontendClient: NotifiFrontendClient,
 ) => {
   // NOTE: this extra request is necessary as the targetGroupId state in NotifiTargetContext will not be updated constantly right after login
-  const targetGroup = (await frontendClient?.fetchData())?.targetGroup?.find(
-    (group) => group?.name === 'Default',
-  );
+  const targetGroup = (
+    await frontendClient?.fetchFusionData()
+  )?.targetGroup?.find((group) => group?.name === 'Default');
   return !!targetGroup;
 };
