@@ -33,6 +33,7 @@ export type TargetStateBannerProps = {
     signup?: {
       text?: string;
       cta?: string;
+      textInConfig?: string;
     };
   };
   onClickCta?: () => void;
@@ -70,78 +71,23 @@ export const TargetStateBanner: React.FC<TargetStateBannerProps> = (props) => {
         props.classNames?.container,
       )}
     >
-      {!hasTarget(targetData) && parentComponent === 'config' ? (
-        <div
-          className={clsx(
-            'notifi-target-state-banner-signup',
-            props.classNames?.signupBanner,
-          )}
-        >
-          <div
-            className={clsx(
-              'notifi-target-state-banner-signup-content',
-              props.classNames?.signupBannerContent,
-            )}
-          >
-            <div
-              className={clsx(
-                'notifi-target-state-banner-signup-icon',
-                props.classNames?.signupBannerIcon,
-              )}
-            >
-              <Icon type="bell-circle" />
-            </div>
-            <div
-              className={clsx(
-                'notifi-target-state-banner-signup-text',
-                props.classNames?.signupBannerText,
-              )}
-            >
-              {props.copy?.signup?.text ??
-                defaultCopy.targetStateBanner.Signup.text}
-              {''}
-              {/* Only the last element should be joined with ', or', others should be joined with ', ' */}
-              {activeTargets.length > 1
-                ? activeTargets.length === 2
-                  ? `${activeTargets[0]} or ${activeTargets[1]}`
-                  : `${activeTargets
-                      .slice(0, -1)
-                      .join(', ')}, or ${activeTargets.slice(-1)}`
-                : activeTargets.slice(-1)}
-            </div>
-          </div>
-          <button
-            className={clsx(
-              'notifi-target-state-banner-signup-cta',
-              props.classNames?.signupBannerCta,
-            )}
-            onClick={props.onClickCta}
-          >
-            {props.copy?.signup?.cta ??
-              defaultCopy.targetStateBanner.Signup.cta}
-          </button>
-        </div>
-      ) : null}
-
       {!hasTarget(targetData) && parentComponent === 'history' ? (
         <div
           className={clsx(
             'notifi-target-state-banner-signup',
-            parentComponent === 'history' && 'history',
             props.classNames?.signupBanner,
           )}
         >
           <div
             className={clsx(
               'notifi-target-state-banner-signup-content',
-              parentComponent === 'history' && 'history',
               props.classNames?.signupBannerContent,
             )}
           >
             <div
               className={clsx(
                 'notifi-target-state-banner-signup-icon',
-                parentComponent === 'history' && 'history',
+
                 props.classNames?.signupBannerIcon,
               )}
             >
@@ -154,7 +100,7 @@ export const TargetStateBanner: React.FC<TargetStateBannerProps> = (props) => {
               )}
             >
               {props.copy?.signup?.text ??
-                defaultCopy.targetStateBanner.Signup.text}{' '}
+                defaultCopy.targetStateBanner.Signup.textInHistory}{' '}
               {activeTargets.length > 1
                 ? `${activeTargets
                     .slice(0, -1)
@@ -165,18 +111,17 @@ export const TargetStateBanner: React.FC<TargetStateBannerProps> = (props) => {
           <button
             className={clsx(
               'notifi-target-state-banner-signup-cta',
-              parentComponent === 'history' && 'history',
               props.classNames?.signupBannerCta,
             )}
             onClick={props.onClickCta}
           >
             {props.copy?.signup?.cta ??
-              defaultCopy.targetStateBanner.Signup.cta}
+              defaultCopy.targetStateBanner.Signup.ctaInHistory}
           </button>
         </div>
       ) : null}
 
-      {hasTarget(targetData) && parentComponent === 'config' ? (
+      {parentComponent === 'config' ? (
         <div
           className={clsx(
             'notifi-target-state-banner-verify',
@@ -204,8 +149,11 @@ export const TargetStateBanner: React.FC<TargetStateBannerProps> = (props) => {
                 props.classNames?.verifyBannerTitle,
               )}
             >
-              {props.copy?.verify?.title ??
-                defaultCopy.targetStateBanner.verify.title}
+              {hasTarget(targetData)
+                ? props.copy?.verify?.title ??
+                  defaultCopy.targetStateBanner.verify.title
+                : props.copy?.signup?.textInConfig ??
+                  defaultCopy.targetStateBanner.Signup.textInConfig}
             </div>
             {unVerifiedTargets.length > 0 && (
               <div

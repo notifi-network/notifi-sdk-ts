@@ -70,11 +70,8 @@
 
 .notifi-target-state-banner-signup {
   display: flex;
-  flex-direction: column;
   align-items: center;
   padding: 0.7rem 1rem;
-}
-.notifi-target-state-banner-signup.history {
   flex-direction: row;
   background-color: var(--notifi-target-state-banner-signup-history-bg);
   border-radius: 6px;
@@ -85,9 +82,6 @@
   align-items: center;
   width: 70%;
   margin-bottom: 0.5rem;
-}
-
-.notifi-target-state-banner-signup-content.history {
   margin-bottom: 0;
 }
 
@@ -99,8 +93,6 @@
 .notifi-target-state-banner-signup-icon {
   color: var(--notifi-target-state-banner-signup-icon-color);
   margin-right: 0.8rem;
-}
-.notifi-target-state-banner-signup-icon.history {
   color: inherit;
 }
 
@@ -111,8 +103,5 @@
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.9rem;
-}
-
-.notifi-target-state-banner-signup-cta.history {
   width: 7rem;
 }

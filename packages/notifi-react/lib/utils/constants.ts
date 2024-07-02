@@ -119,8 +119,9 @@ export const defaultCopy = {
       ctaText: 'Verify',
     },
     Signup: {
-      text: 'Get alerts via',
-      cta: 'Sign Up',
+      textInHistory: 'Get alerts via',
+      ctaInHistory: 'Sign Up',
+      textInConfig: 'Get notifications to the destinations of your choice.',
     },
   },
   inboxConfigTargetList: {
