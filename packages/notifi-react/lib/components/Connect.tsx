@@ -44,8 +44,12 @@ export type ConnectProps = {
 };
 
 export const Connect: React.FC<ConnectProps> = (props) => {
-  const { login, frontendClientStatus, loginViaHardwareWallet } =
-    useNotifiFrontendClientContext();
+  const {
+    login,
+    frontendClientStatus,
+    loginViaHardwareWallet,
+    walletWithSignParams,
+  } = useNotifiFrontendClientContext();
   const {
     renewTargetGroup,
     targetDocument: { targetGroupId },
@@ -63,7 +67,7 @@ export const Connect: React.FC<ConnectProps> = (props) => {
     try {
       let frontendClient: NotifiFrontendClient | undefined = undefined;
       if (useHardwareWalletLogin) {
-        frontendClient = await loginViaHardwareWallet?.();
+        frontendClient = await loginViaHardwareWallet();
       } else {
         frontendClient = await login();
       }
@@ -205,7 +209,9 @@ export const Connect: React.FC<ConnectProps> = (props) => {
           })}
         </div>
       </div>
-      {loginViaHardwareWallet ? (
+      {walletWithSignParams.walletBlockchain === 'SOLANA' ? (
+        /* NOTE: Only Solana requires special handling for hardware wallet login (see detail in NotifiFrontendClientContext.tsx) */
+        // TODO: Crete a separate component SolanaHardwareWalletToggle.tsx
         <Toggle
           setChecked={() => setUseHardwareWalletLogin((prev) => !prev)}
           checked={useHardwareWalletLogin}

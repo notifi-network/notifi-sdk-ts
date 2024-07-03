@@ -1,13 +1,9 @@
 import {
-  ConfigFactoryInput,
   NotifiEnvironment,
   NotifiFrontendClient,
-  Uint8SignMessageFunction,
-  WalletWithSignParams as WalletWithSignParamsRaw,
+  WalletWithSignParams,
   newFrontendClient,
 } from '@notifi-network/notifi-frontend-client';
-import { Types } from '@notifi-network/notifi-graphql';
-import { HardwareLoginPlugin } from 'notifi-react-card/lib/plugins';
 import React, {
   FC,
   PropsWithChildren,
@@ -17,7 +13,12 @@ import React, {
   useState,
 } from 'react';
 
-import { useHardwareWallet } from '../hooks/useSolanaHardwareWallet';
+import {
+  SolanaParams,
+  SolanaParamsWithHardwareLoginPlugin,
+  getFrontendConfigInput,
+  loginViaSolanaHardwareWallet,
+} from '../utils/frontendClient';
 
 export type FrontendClientStatus = {
   isExpired: boolean;
@@ -31,7 +32,7 @@ export type NotifiFrontendClientContextType = {
   isLoading: boolean;
   error: Error | null;
   login: () => Promise<NotifiFrontendClient | undefined>;
-  loginViaHardwareWallet?: () => Promise<NotifiFrontendClient | undefined>;
+  loginViaHardwareWallet: () => Promise<NotifiFrontendClient | undefined>;
   walletWithSignParams: WalletWithSignParams;
 };
 
@@ -41,28 +42,16 @@ export const NotifiFrontendClientContext =
   );
 
 // NOTE: The Utils type for Solana hardware wallet login specifically
-type SolanaParams = Readonly<{
-  walletBlockchain: 'SOLANA';
-  walletPublicKey: string;
-  signMessage: Uint8SignMessageFunction;
-}>;
-// NOTE: The Utils type for Solana hardware wallet login specifically
-type WalletWithSignParamsWoSolana = Exclude<
-  WalletWithSignParamsRaw,
-  SolanaParams
->;
-// NOTE: The Utils type for Solana hardware wallet login specifically
-type SolanaParamsWithHardwareLoginPlugin = SolanaParams & {
-  hardwareLoginPlugin: HardwareLoginPlugin;
-};
-export type WalletWithSignParams =
+type WalletWithSignParamsWoSolana = Exclude<WalletWithSignParams, SolanaParams>;
+
+export type WalletWithSignParamsModified =
   | WalletWithSignParamsWoSolana
   | SolanaParamsWithHardwareLoginPlugin;
 
 export type NotifiFrontendClientProviderProps = {
   tenantId: string;
   env?: NotifiEnvironment;
-} & WalletWithSignParams;
+} & WalletWithSignParamsModified;
 
 export const NotifiFrontendClientContextProvider: FC<
   PropsWithChildren<NotifiFrontendClientProviderProps>
@@ -77,8 +66,6 @@ export const NotifiFrontendClientContextProvider: FC<
       isInitialized: false,
       isAuthenticated: false,
     });
-  const { login: loginViaHardwareWalletImpl } =
-    useHardwareWallet(walletWithSignParams);
 
   useEffect(() => {
     const configInput = getFrontendConfigInput(
@@ -109,8 +96,6 @@ export const NotifiFrontendClientContextProvider: FC<
 
   const login = async () => {
     if (!frontendClient) return;
-    // TODO: Implement a more general hardware wallet login frontendClientMethod.
-    // if (loginMethod === 'hardwareWallet') { return frontendClient.loginWithHardwareWallet(); }
     setIsLoading(true);
     try {
       await frontendClient.logIn(walletWithSignParams);
@@ -137,9 +122,13 @@ export const NotifiFrontendClientContextProvider: FC<
   };
 
   const loginViaHardwareWallet = async () => {
+    /* NOTE: Only Solana hardware wallet requires a transaction to login (rather than just signing a message)
+     * Reason: MEMO program requires a transaction to verify user's ownership (Ref: https://spl.solana.com/memo)
+     */
     if (!frontendClient) return;
+    setIsLoading(true);
     try {
-      await loginViaHardwareWalletImpl(frontendClient);
+      await loginViaSolanaHardwareWallet(frontendClient, walletWithSignParams);
       setFrontendClientStatus({
         isExpired: frontendClient.userState?.status === 'expired',
         isInitialized: !!frontendClient,
@@ -156,6 +145,8 @@ export const NotifiFrontendClientContextProvider: FC<
         setError(newError);
         console.error(newError);
       }
+    } finally {
+      setIsLoading(false);
     }
     return frontendClient;
   };
@@ -181,43 +172,3 @@ export const NotifiFrontendClientContextProvider: FC<
 
 export const useNotifiFrontendClientContext = () =>
   useContext(NotifiFrontendClientContext);
-
-// Utils
-
-const getFrontendConfigInput = (
-  tenantId: string,
-  params: WalletWithSignParams,
-  env?: NotifiEnvironment,
-): ConfigFactoryInput => {
-  if ('accountAddress' in params) {
-    return {
-      account: {
-        address: params.accountAddress,
-        publicKey: params.walletPublicKey,
-      },
-      tenantId,
-      walletBlockchain: params.walletBlockchain,
-      env,
-    };
-  } else if ('signingPubkey' in params) {
-    return {
-      account: {
-        publicKey: params.walletPublicKey,
-        delegatorAddress: params.signingPubkey,
-        address: params.signingAddress,
-      },
-      tenantId,
-      walletBlockchain: params.walletBlockchain,
-      env,
-    };
-  } else {
-    return {
-      account: {
-        publicKey: params.walletPublicKey,
-      },
-      tenantId,
-      walletBlockchain: params.walletBlockchain,
-      env,
-    };
-  }
-};

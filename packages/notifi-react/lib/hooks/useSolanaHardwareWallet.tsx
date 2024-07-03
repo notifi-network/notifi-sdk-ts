@@ -1,14 +1,10 @@
 import { NotifiFrontendClient } from '@notifi-network/notifi-frontend-client';
-import React from 'react';
 
-import { WalletWithSignParams } from '../context';
+import { WalletWithSignParamsModified } from '../context';
 
 export const useHardwareWallet = (
-  walletWithSignParams: WalletWithSignParams,
+  walletWithSignParams: WalletWithSignParamsModified,
 ) => {
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [error, setError] = React.useState<Error | null>(null);
-
   const login = async (frontendClient: NotifiFrontendClient | null) => {
     if (walletWithSignParams.walletBlockchain !== 'SOLANA' || !frontendClient)
       return;
@@ -32,8 +28,6 @@ export const useHardwareWallet = (
     return frontendClient;
   };
   return {
-    isLoading,
-    error,
     login,
   };
 };
