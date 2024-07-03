@@ -11,6 +11,7 @@ import React, {
 import { useBinance } from '../hooks/useBinance';
 import { useInjectedWallet } from '../hooks/useInjectedWallet';
 import { useKeplr } from '../hooks/useKeplr';
+import { usePhantom } from '../hooks/usePhantom';
 import { useWagmiWallet } from '../hooks/useWagmiWallet';
 import { useXion } from '../hooks/useXion';
 import {
@@ -19,6 +20,7 @@ import {
   KeplrWallet,
   MetamaskWallet,
   OKXWallet,
+  PhantomWallet,
   RabbyWallet,
   RainbowWallet,
   WalletConnectWallet,
@@ -56,6 +58,7 @@ const WalletContext = createContext<WalletContextType>({
     binance: {} as BinanceWallet, // intentionally empty initial object
     walletconnect: {} as WalletConnectWallet, // intentionally empty initial object
     xion: {} as XionWallet, // intentionally empty initial object
+    phantom: {} as PhantomWallet, // intentionally empty initial object
   },
   error: null,
   isLoading: false,
@@ -128,6 +131,8 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
     'rainbow',
   );
   const xion = useXion(setIsLoading, throwError, selectWallet, 'xion');
+
+  const phantom = usePhantom(setIsLoading, throwError, selectWallet);
 
   const wallets: Wallets = {
     metamask: new MetamaskWallet(
@@ -209,6 +214,15 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
       xion.connectWallet,
       xion.disconnectWallet,
       xion.websiteURL,
+    ),
+    phantom: new PhantomWallet(
+      phantom.isPhantomInstalled,
+      phantom.walletKeysPhantom,
+      phantom.signArbitraryPhantom,
+      phantom.connectPhantom,
+      phantom.disconnectPhantom,
+      phantom.websiteURL,
+      phantom.signTransactionPhantom,
     ),
   };
 

@@ -2,6 +2,7 @@ import {
   KeplrWalletKeys,
   MetamaskWalletKeys,
   NotifiWalletStorage,
+  PhantomWalletKeys,
   Wallets,
   XionWalletKeys,
 } from '../types';
@@ -16,6 +17,8 @@ export const setWalletKeysToLocalStorage = <T extends keyof Wallets>(
     ? KeplrWalletKeys
     : T extends 'xion'
     ? XionWalletKeys
+    : T extends 'phantom'
+    ? PhantomWalletKeys
     : never,
 ) => {
   const storageWallet: NotifiWalletStorage = {
