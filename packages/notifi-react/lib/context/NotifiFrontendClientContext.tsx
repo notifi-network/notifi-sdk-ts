@@ -2,9 +2,12 @@ import {
   ConfigFactoryInput,
   NotifiEnvironment,
   NotifiFrontendClient,
-  WalletWithSignParams,
+  Uint8SignMessageFunction,
+  WalletWithSignParams as WalletWithSignParamsRaw,
   newFrontendClient,
 } from '@notifi-network/notifi-frontend-client';
+import { Types } from '@notifi-network/notifi-graphql';
+import { HardwareLoginPlugin } from 'notifi-react-card/lib/plugins';
 import React, {
   FC,
   PropsWithChildren,
@@ -13,6 +16,8 @@ import React, {
   useEffect,
   useState,
 } from 'react';
+
+import { useHardwareWallet } from '../hooks/useSolanaHardwareWallet';
 
 export type FrontendClientStatus = {
   isExpired: boolean;
@@ -26,6 +31,7 @@ export type NotifiFrontendClientContextType = {
   isLoading: boolean;
   error: Error | null;
   login: () => Promise<NotifiFrontendClient | undefined>;
+  loginViaHardwareWallet?: () => Promise<NotifiFrontendClient | undefined>;
   walletWithSignParams: WalletWithSignParams;
 };
 
@@ -33,6 +39,25 @@ export const NotifiFrontendClientContext =
   createContext<NotifiFrontendClientContextType>(
     {} as NotifiFrontendClientContextType,
   );
+
+// NOTE: The Utils type for Solana hardware wallet login specifically
+type SolanaParams = Readonly<{
+  walletBlockchain: 'SOLANA';
+  walletPublicKey: string;
+  signMessage: Uint8SignMessageFunction;
+}>;
+// NOTE: The Utils type for Solana hardware wallet login specifically
+type WalletWithSignParamsWoSolana = Exclude<
+  WalletWithSignParamsRaw,
+  SolanaParams
+>;
+// NOTE: The Utils type for Solana hardware wallet login specifically
+type SolanaParamsWithHardwareLoginPlugin = SolanaParams & {
+  hardwareLoginPlugin: HardwareLoginPlugin;
+};
+export type WalletWithSignParams =
+  | WalletWithSignParamsWoSolana
+  | SolanaParamsWithHardwareLoginPlugin;
 
 export type NotifiFrontendClientProviderProps = {
   tenantId: string;
@@ -52,6 +77,8 @@ export const NotifiFrontendClientContextProvider: FC<
       isInitialized: false,
       isAuthenticated: false,
     });
+  const { login: loginViaHardwareWalletImpl } =
+    useHardwareWallet(walletWithSignParams);
 
   useEffect(() => {
     const configInput = getFrontendConfigInput(
@@ -109,6 +136,30 @@ export const NotifiFrontendClientContextProvider: FC<
     return frontendClient;
   };
 
+  const loginViaHardwareWallet = async () => {
+    if (!frontendClient) return;
+    try {
+      await loginViaHardwareWalletImpl(frontendClient);
+      setFrontendClientStatus({
+        isExpired: frontendClient.userState?.status === 'expired',
+        isInitialized: !!frontendClient,
+        isAuthenticated: frontendClient.userState?.status === 'authenticated',
+      });
+      setFrontendClient(frontendClient);
+      setError(null);
+    } catch (error) {
+      if (error instanceof Error) {
+        const newError = {
+          ...error,
+          message: `loginViaHardwareWallet: User rejects to sign, or mis-impl the signMessage method: ${error.message}`,
+        };
+        setError(newError);
+        console.error(newError);
+      }
+    }
+    return frontendClient;
+  };
+
   if (!frontendClient) return null;
 
   return (
@@ -119,6 +170,7 @@ export const NotifiFrontendClientContextProvider: FC<
         isLoading,
         error,
         login,
+        loginViaHardwareWallet,
         walletWithSignParams,
       }}
     >

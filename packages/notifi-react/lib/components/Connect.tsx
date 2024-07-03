@@ -16,6 +16,7 @@ import { defaultCopy, defaultLoadingAnimationStyle } from '../utils/constants';
 import { LoadingAnimation } from './LoadingAnimation';
 import { CardModalView } from './NotifiCardModal';
 import { PoweredByNotifi, PoweredByNotifiProps } from './PoweredByNotifi';
+import { Toggle } from './Toggle';
 
 export type ConnectProps = {
   iconType?: IconType;
@@ -43,7 +44,8 @@ export type ConnectProps = {
 };
 
 export const Connect: React.FC<ConnectProps> = (props) => {
-  const { login, frontendClientStatus } = useNotifiFrontendClientContext();
+  const { login, frontendClientStatus, loginViaHardwareWallet } =
+    useNotifiFrontendClientContext();
   const {
     renewTargetGroup,
     targetDocument: { targetGroupId },
@@ -54,18 +56,29 @@ export const Connect: React.FC<ConnectProps> = (props) => {
   const [isLoading, setIsLoading] = React.useState(false);
   const loadingSpinnerStyle: React.CSSProperties =
     props.classNames?.loadingSpinner ?? defaultLoadingAnimationStyle.spinner;
-
+  const [useHardwareWalletLogin, setUseHardwareWalletLogin] =
+    React.useState(false);
   const onClick = async () => {
     setIsLoading(true);
     try {
-      const frontendClient = await login();
+      let frontendClient: NotifiFrontendClient | undefined = undefined;
+      if (useHardwareWalletLogin) {
+        frontendClient = await loginViaHardwareWallet?.();
+      } else {
+        frontendClient = await login();
+      }
+      // const frontendClient = await login();
+      console.log(1, 'finish login', { frontendClient });
+
       if (props.loginWithoutSubscription) return;
       if (!frontendClient) return;
+      console.log(2, 'start validateDefaultTargetGroup');
       const isDefaultTargetExist = await validateDefaultTargetGroup(
         frontendClient,
       );
 
       if (!isDefaultTargetExist) {
+        console.log(3, 'start renewTargetGroup');
         await renewTargetGroup();
       }
     } catch (error) {
@@ -77,6 +90,11 @@ export const Connect: React.FC<ConnectProps> = (props) => {
 
   React.useEffect(() => {
     // NOTE: Determine the next step after finish logging in
+    console.log(3.1, 'Update FTU', {
+      targetGroupId,
+      ftuStage,
+      frontendClientStatus,
+    });
     if (props.loginWithoutSubscription) return;
     const subscribeAndUpdateFtuStage = async () => {
       if (!targetGroupId || !frontendClientStatus.isAuthenticated) return;
@@ -91,10 +109,13 @@ export const Connect: React.FC<ConnectProps> = (props) => {
       switch (ftuStage) {
         case FtuStage.Destination:
         case FtuStage.Alerts:
+          console.log(3.2, 'setFtu to ftu');
           props.setCardModalView('ftu');
           break;
         case FtuStage.Done:
+          console.log(3.2, 'setFtu to Inbox');
           props.setCardModalView('Inbox');
+
           break;
         default: // ftuStage === null
           await subscribeAlertsDefault(topicsToSubscribe, targetGroupId);
@@ -108,6 +129,7 @@ export const Connect: React.FC<ConnectProps> = (props) => {
           }
           break;
       }
+      console.log(3.3, 'finish subscribeAndUpdateFtuStage');
       setIsLoading(false);
     };
     subscribeAndUpdateFtuStage();
@@ -183,6 +205,13 @@ export const Connect: React.FC<ConnectProps> = (props) => {
           })}
         </div>
       </div>
+      {loginViaHardwareWallet ? (
+        <Toggle
+          setChecked={() => setUseHardwareWalletLogin((prev) => !prev)}
+          checked={useHardwareWalletLogin}
+          disabled={isLoading}
+        />
+      ) : null}
       <button
         data-cy="notifi-connect-button"
         className={clsx('notifi-connect-button', props.classNames?.button)}
