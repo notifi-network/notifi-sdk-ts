@@ -18,7 +18,7 @@ import {
   SolanaParamsWithHardwareLoginPlugin,
   getFrontendConfigInput,
   loginViaSolanaHardwareWallet,
-} from '../utils/frontendClient';
+} from '../utils';
 
 export type FrontendClientStatus = {
   isExpired: boolean;
@@ -121,10 +121,10 @@ export const NotifiFrontendClientContextProvider: FC<
     return frontendClient;
   };
 
+  /**
+   * @description - Only Solana hardware wallet requires a transaction login (rather than signing a message). Reason: MEMO program requires a transaction to verify user's ownership (Ref: https://spl.solana.com/memo)
+   */
   const loginViaHardwareWallet = async () => {
-    /* NOTE: Only Solana hardware wallet requires a transaction to login (rather than just signing a message)
-     * Reason: MEMO program requires a transaction to verify user's ownership (Ref: https://spl.solana.com/memo)
-     */
     if (!frontendClient) return;
     setIsLoading(true);
     try {

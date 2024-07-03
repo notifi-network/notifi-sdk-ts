@@ -8,6 +8,7 @@ export const defaultCopy = {
   connect: {
     title: 'Notifications',
     description: 'See your activity and gain access to alerts',
+    hardwareWalletLabel: 'Use Hardware WalletList',
     buttonText: 'Next',
   },
   ftuAlertList: {

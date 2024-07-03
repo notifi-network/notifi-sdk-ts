@@ -24,6 +24,7 @@ export type ConnectProps = {
   loginWithoutSubscription?: boolean;
   copy?: {
     title?: string;
+    hardwareWalletLabel?: string;
     buttonText?: string;
     description?: string;
   };
@@ -39,6 +40,8 @@ export type ConnectProps = {
     description?: string;
     alertsContainer?: string;
     alert?: string;
+    hardwareWallet?: string;
+    hardwareWalletLabel?: string;
     buttonText?: string;
   };
 };
@@ -212,11 +215,27 @@ export const Connect: React.FC<ConnectProps> = (props) => {
       {walletWithSignParams.walletBlockchain === 'SOLANA' ? (
         /* NOTE: Only Solana requires special handling for hardware wallet login (see detail in NotifiFrontendClientContext.tsx) */
         // TODO: Crete a separate component SolanaHardwareWalletToggle.tsx
-        <Toggle
-          setChecked={() => setUseHardwareWalletLogin((prev) => !prev)}
-          checked={useHardwareWalletLogin}
-          disabled={isLoading}
-        />
+        <div
+          className={clsx(
+            'notifi-connect-hardware-wallet',
+            props.classNames?.hardwareWallet,
+          )}
+        >
+          <div
+            className={clsx(
+              'notifi-connect-hardware-wallet-label',
+              props.classNames?.hardwareWalletLabel,
+            )}
+          >
+            {props.copy?.hardwareWalletLabel ??
+              defaultCopy.connect.hardwareWalletLabel}
+          </div>
+          <Toggle
+            setChecked={() => setUseHardwareWalletLogin((prev) => !prev)}
+            checked={useHardwareWalletLogin}
+            disabled={isLoading}
+          />
+        </div>
       ) : null}
       <button
         data-cy="notifi-connect-button"
