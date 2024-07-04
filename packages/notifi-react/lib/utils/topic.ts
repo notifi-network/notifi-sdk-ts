@@ -351,6 +351,7 @@ export enum ConvertOptionDirection {
   BtoF = 'BackendToFrontend',
 }
 
+/** @deprecated no longer need this, use "value" directly. Reason: to simplify and show the values without any conversion. If the developer needs to convert the 50% to .5, then they can normalize their values by converting from .5 to 50. We give flexibility to the developers to pass any values from parsers  */
 export const convertOptionValue = (
   value: string | number,
   type: ValueType,

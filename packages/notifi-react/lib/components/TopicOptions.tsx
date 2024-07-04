@@ -67,6 +67,10 @@ export const TopicOptions = <T extends TopicRowCategory>(
     string | number
   >(props.userInputParam.defaultValue);
 
+  const options = props.userInputParam.options.map((option) =>
+    option.toString(),
+  );
+
   const selectedOption =
     props.onSelectAction?.actionType === 'updateFilterOptions'
       ? valueToBeSubscribed
@@ -74,8 +78,9 @@ export const TopicOptions = <T extends TopicRowCategory>(
 
   const selectOrInputValue = (value: string | number) => {
     if (isLoadingTopic) return;
+    value = value.toString();
     if (props.onSelectAction?.actionType === 'updateFilterOptions') {
-      if (props.userInputParam.options.includes(value)) {
+      if (options.includes(value)) {
         setCustomInput('');
       }
       props.onSelectAction?.action(props.userInputParam.name, value);
@@ -100,7 +105,7 @@ export const TopicOptions = <T extends TopicRowCategory>(
       <div
         className={clsx('notifi-topic-options-items', props.classNames?.items)}
       >
-        {props.userInputParam.options.map((option, id) => (
+        {options.map((option, id) => (
           <div
             key={id}
             className={clsx(
@@ -115,8 +120,7 @@ export const TopicOptions = <T extends TopicRowCategory>(
           >
             <div>
               {'prefix' in prefixAndSuffix && prefixAndSuffix.prefix}
-              {option.toString().charAt(0).toUpperCase() +
-                option.toString().slice(1)}
+              {option.charAt(0).toUpperCase() + option.slice(1)}
               {'suffix' in prefixAndSuffix && prefixAndSuffix.suffix}
             </div>
           </div>
@@ -180,7 +184,8 @@ const isTopicGroupOptions = (
 
 const isUserInputValid = (type: ValueType, userInputValue: string | number) => {
   if (userInputValue === '') return true;
-  if (type === 'percentage' || type === 'price') {
+  // 'percentage' and 'price' are deprecated. For legacy support only
+  if (type === 'percentage' || type === 'price' || type === 'float') {
     // regex for only allow float
     const regex1 = /^\d+(\.)?$/;
     const regex2 = /^\d+(\.\d+)?$/;
