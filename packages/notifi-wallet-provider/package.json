@@ -40,7 +40,8 @@
     "@burnt-labs/abstraxion": "^1.0.0-alpha.45",
     "ethers": "^6.11.1",
     "viem": "^1.11.0",
-    "wagmi": "^1.4.2"
+    "wagmi": "^1.4.2",
+    "@solana/web3.js": "^1.47.1"
   },
   "peerDependencies": {
     "react": "^17.0.2 || ^18.0",

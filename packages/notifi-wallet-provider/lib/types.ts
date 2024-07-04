@@ -1,5 +1,8 @@
 import type { Keplr, StdSignature } from '@keplr-wallet/types';
+import { Connection, Transaction } from '@solana/web3.js';
 import { BrowserProvider, Eip1193Provider } from 'ethers';
+
+import { PhantomProvider } from './utils/solana.type';
 
 export type Ethereum = Eip1193Provider & BrowserProvider;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -8,6 +11,8 @@ declare global {
   interface Window {
     keplr: Keplr;
     BinanceChain: BinanceChain;
+    // NOTE: Only support solana for now (for EVM, use EIP1193Provider)
+    phantom: { bitcoin: never; ethereum: never; solana: PhantomProvider };
   }
 }
 
@@ -18,6 +23,7 @@ declare global {
  */
 export type WalletKeysBase = {
   bech32: string;
+  base58: string;
   base64: string;
   hex: string;
   grantee: string; //TODO: specifically for Xion now, make it generic pattern, checking the format
@@ -29,8 +35,13 @@ export type XionWalletKeys = PickKeys<
   WalletKeysBase,
   'bech32' | 'base64' | 'grantee'
 >;
+export type PhantomWalletKeys = PickKeys<WalletKeysBase, 'base58'>;
 
-export type WalletKeys = MetamaskWalletKeys | KeplrWalletKeys | XionWalletKeys;
+export type WalletKeys =
+  | MetamaskWalletKeys
+  | KeplrWalletKeys
+  | XionWalletKeys
+  | PhantomWalletKeys;
 
 export abstract class NotifiWallet {
   abstract isInstalled: boolean;
@@ -38,7 +49,8 @@ export abstract class NotifiWallet {
   abstract signArbitrary?:
     | KeplrSignMessage
     | MetamaskSignMessage
-    | XionSignMessage;
+    | XionSignMessage
+    | PhantomSignMessage;
   abstract connect?: () => Promise<Partial<WalletKeysBase> | null>;
   abstract disconnect?: () => void;
   abstract websiteURL: string;
@@ -99,6 +111,22 @@ export class XionWallet implements NotifiWallet {
   ) {}
 }
 
+export type PhantomSignMessage = (message: Uint8Array) => Promise<Uint8Array>;
+export class PhantomWallet implements NotifiWallet {
+  constructor(
+    public isInstalled: boolean,
+    public walletKeys: PhantomWalletKeys | null,
+    public signArbitrary: PhantomSignMessage,
+    public connect: () => Promise<PhantomWalletKeys | null>,
+    public disconnect: () => void,
+    public websiteURL: string,
+    public signTransaction: (
+      transaction: Transaction,
+      connection: Connection,
+    ) => Promise<string>,
+  ) {}
+}
+
 export type Wallets = {
   metamask: MetamaskWallet;
   keplr: KeplrWallet;
@@ -110,4 +138,5 @@ export type Wallets = {
   binance: BinanceWallet;
   walletconnect: WalletConnectWallet;
   xion: XionWallet;
+  phantom: PhantomWallet;
 };

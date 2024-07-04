@@ -11,4 +11,5 @@ export const walletsWebsiteLink: { [key in keyof Wallets]: string } = {
   rainbow: 'https://rainbow.me/en/',
   zerion: 'https://zerion.io/',
   xion: 'https://xion.burnt.com/',
+  phantom: 'https://phantom.app/download',
 };
