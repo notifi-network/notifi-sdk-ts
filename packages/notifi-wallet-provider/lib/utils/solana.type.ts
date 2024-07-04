@@ -29,7 +29,10 @@ export interface PhantomProvider {
   signMessage: (
     message: Uint8Array | string,
     display?: DisplayEncoding,
-  ) => Promise<any>;
+  ) => Promise<{
+    signature: Uint8Array;
+    publicKey: object;
+  }>;
   connect: (opts?: Partial<ConnectOpts>) => Promise<{ publicKey: PublicKey }>;
   disconnect: () => Promise<void>;
   on: (event: PhantomEvent, handler: (args: any) => void) => void;
