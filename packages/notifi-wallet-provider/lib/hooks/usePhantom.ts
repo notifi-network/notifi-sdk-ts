@@ -105,23 +105,24 @@ export const usePhantom = (
   };
 
   const signArbitraryPhantom = useCallback(
-    async (message: string | Uint8Array): Promise<any> => {
-      // TODO: resolve type (Uint8Array???)
+    async (message: string | Uint8Array): Promise<Uint8Array> => {
       if (!window.phantom.solana || !walletKeysPhantom) {
         handlePhantomNotExists('signArbitraryPhantom');
-        return;
+        return new Uint8Array();
       }
       loadingHandler(true);
       try {
         const result = await window.phantom.solana.signMessage(message);
-        return result;
+        return result.signature;
       } catch (e) {
         errorHandler(
           new Error('Wallet not signed. Please connect your wallet again.'),
         );
         console.error(e);
+        return new Uint8Array();
+      } finally {
+        loadingHandler(false);
       }
-      loadingHandler(false);
     },
     [walletKeysPhantom],
   );
