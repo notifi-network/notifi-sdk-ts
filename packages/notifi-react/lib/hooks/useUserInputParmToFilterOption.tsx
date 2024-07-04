@@ -39,7 +39,9 @@ export const useUserInputParmToFilterOption = (
   React.useEffect(() => {
     if (
       !!subscribedValue &&
-      !userInputParam.options.includes(subscribedValue.toString())
+      !userInputParam.options
+        .map((option) => option.toString())
+        .includes(subscribedValue.toString())
     ) {
       setCustomInput(subscribedValue);
       return;
@@ -49,9 +51,9 @@ export const useUserInputParmToFilterOption = (
 
   const uiType = userInputParam.uiType;
 
-  const prefixAndSuffix = derivePrefixAndSuffixFromValueType(
-    userInputParam.kind,
-  );
+  const prefixAndSuffix =
+    userInputParam.prefixAndSuffix ??
+    derivePrefixAndSuffixFromValueType(userInputParam.kind);
 
   const renewFilterOptions = async (
     option: number | string,

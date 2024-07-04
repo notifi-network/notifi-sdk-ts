@@ -29,6 +29,14 @@ type TopicStackProps = {
   topic: FusionEventTopic;
 };
 
+type InputParmValueMetadata = {
+  valueType: ValueType;
+  prefixAndSuffix: {
+    prefix: string;
+    suffix: string;
+  } | null;
+};
+
 export const TopicStack: React.FC<TopicStackProps> = (props) => {
   const { unsubscribeAlert, getAlertFilterOptions } = useNotifiTopicContext();
   const userInputOptions = React.useMemo(() => {
@@ -46,8 +54,11 @@ export const TopicStack: React.FC<TopicStackProps> = (props) => {
     return null;
   }
 
-  const userInputParmValueTypeMap = new Map(
-    alertFilter.userInputParams.map((param) => [param.name, param.kind]),
+  const userInputParmValueMetadataMap = new Map(
+    alertFilter.userInputParams.map((param) => [
+      param.name,
+      { valueType: param.kind, prefixAndSuffix: param.prefixAndSuffix ?? null },
+    ]),
   );
 
   const userInputOptionValuesToBeDisplayed =
@@ -55,7 +66,7 @@ export const TopicStack: React.FC<TopicStackProps> = (props) => {
     isAboveOrBelowThresholdUserInputOptions(userInputOptions)
       ? sortAboveOrBelowThresholdUserInputOptionValue(
           userInputOptions,
-          userInputParmValueTypeMap,
+          userInputParmValueMetadataMap,
         )
       : [];
 
@@ -120,7 +131,7 @@ const isAboveOrBelowThresholdUserInputOptions = (
 
 const sortAboveOrBelowThresholdUserInputOptionValue = (
   filterOptions: Record<'threshold' | 'thresholdDirection', string>,
-  userInputParmValueTypeMap: Map<string, ValueType>,
+  userInputParmValueMetadataMap: Map<string, InputParmValueMetadata>,
 ) => {
   const sortedFilterOptions = [];
   if (filterOptions.thresholdDirection) {
@@ -130,18 +141,22 @@ const sortAboveOrBelowThresholdUserInputOptionValue = (
     sortedFilterOptions.push(thresholdDirection);
   }
   if (filterOptions.threshold) {
-    const valueType = userInputParmValueTypeMap.get('threshold');
-    if (valueType) {
-      const prefix = derivePrefixAndSuffixFromValueType(valueType);
-      const suffix = derivePrefixAndSuffixFromValueType(valueType);
+    const inputParamMetadata = userInputParmValueMetadataMap.get('threshold');
+    if (inputParamMetadata) {
+      const prefix = inputParamMetadata.prefixAndSuffix
+        ? inputParamMetadata.prefixAndSuffix.prefix
+        : derivePrefixAndSuffixFromValueType(inputParamMetadata.valueType)
+            .prefix;
+      const suffix = inputParamMetadata.prefixAndSuffix
+        ? inputParamMetadata.prefixAndSuffix.suffix
+        : derivePrefixAndSuffixFromValueType(inputParamMetadata.valueType)
+            .suffix;
       const thresholdValue = convertOptionValue(
         filterOptions.threshold,
-        valueType,
+        inputParamMetadata.valueType,
         ConvertOptionDirection.BtoF,
       );
-      sortedFilterOptions.push(
-        `${prefix.prefix} ${thresholdValue} ${suffix.suffix}`,
-      );
+      sortedFilterOptions.push(`${prefix} ${thresholdValue} ${suffix}`);
     }
   }
   return sortedFilterOptions;
