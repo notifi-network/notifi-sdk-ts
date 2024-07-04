@@ -107,6 +107,7 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
           cardId={cardId}
           inputs={{
             pricePairs: pricePairInputs,
+            walletAddress: [{ label: '', value: walletPublicKey }],
           }}
           notificationCountPerPage={8}
         >
@@ -124,6 +125,7 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
           cardId={cardId}
           inputs={{
             pricePairs: pricePairInputs,
+            walletAddress: [{ label: '', value: accountAddress }],
           }}
           notificationCountPerPage={8}
         >
@@ -141,6 +143,7 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
           cardId={cardId}
           inputs={{
             pricePairs: pricePairInputs,
+            walletAddress: [{ label: '', value: walletPublicKey }],
           }}
           notificationCountPerPage={8}
         >

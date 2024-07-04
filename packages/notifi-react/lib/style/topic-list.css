@@ -169,6 +169,7 @@
   border: 2px solid transparent;
   padding: 0 1rem;
   width: 100%;
+  text-align: center;
 }
 
 .notifi-topic-option-custom-input-container.selected {

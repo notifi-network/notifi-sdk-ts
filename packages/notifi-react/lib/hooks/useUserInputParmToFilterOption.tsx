@@ -39,7 +39,9 @@ export const useUserInputParmToFilterOption = (
   React.useEffect(() => {
     if (
       !!subscribedValue &&
-      !userInputParam.options.includes(subscribedValue.toString())
+      !userInputParam.options
+        .map((option) => option.toString())
+        .includes(subscribedValue.toString())
     ) {
       setCustomInput(subscribedValue);
       return;
