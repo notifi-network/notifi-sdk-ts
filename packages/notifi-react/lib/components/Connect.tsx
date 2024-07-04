@@ -1,17 +1,12 @@
-import { NotifiFrontendClient } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import React from 'react';
 
 import { Icon, IconType } from '../assets/Icons';
 import {
-  FtuStage,
   useNotifiFrontendClientContext,
-  useNotifiTargetContext,
   useNotifiTenantConfigContext,
-  useNotifiTopicContext,
-  useNotifiUserSettingContext,
 } from '../context';
-import { getFusionEventMetadata } from '../utils';
+import { useConnect } from '../hooks/useConnect';
 import { defaultCopy, defaultLoadingAnimationStyle } from '../utils/constants';
 import { LoadingAnimation } from './LoadingAnimation';
 import { CardModalView } from './NotifiCardModal';
@@ -47,102 +42,23 @@ export type ConnectProps = {
 };
 
 export const Connect: React.FC<ConnectProps> = (props) => {
-  const {
-    login,
-    frontendClientStatus,
-    loginViaHardwareWallet,
-    walletWithSignParams,
-  } = useNotifiFrontendClientContext();
-  const {
-    renewTargetGroup,
-    targetDocument: { targetGroupId },
-  } = useNotifiTargetContext();
-  const { updateFtuStage, ftuStage } = useNotifiUserSettingContext();
-  const { fusionEventTopics, cardConfig } = useNotifiTenantConfigContext();
-  const { subscribeAlertsDefault } = useNotifiTopicContext();
-  const [isLoading, setIsLoading] = React.useState(false);
+  const { walletWithSignParams } = useNotifiFrontendClientContext();
+  const { fusionEventTopics } = useNotifiTenantConfigContext();
   const loadingSpinnerStyle: React.CSSProperties =
     props.classNames?.loadingSpinner ?? defaultLoadingAnimationStyle.spinner;
-  const [useHardwareWalletLogin, setUseHardwareWalletLogin] =
-    React.useState(false);
-  const onClick = async () => {
-    setIsLoading(true);
-    try {
-      let frontendClient: NotifiFrontendClient | undefined = undefined;
-      if (useHardwareWalletLogin) {
-        frontendClient = await loginViaHardwareWallet();
-      } else {
-        frontendClient = await login();
-      }
-      // const frontendClient = await login();
-      console.log(1, 'finish login', { frontendClient });
 
-      if (props.loginWithoutSubscription) return;
-      if (!frontendClient) return;
-      console.log(2, 'start validateDefaultTargetGroup');
-      const isDefaultTargetExist = await validateDefaultTargetGroup(
-        frontendClient,
-      );
-
-      if (!isDefaultTargetExist) {
-        console.log(3, 'start renewTargetGroup');
-        await renewTargetGroup();
-      }
-    } catch (error) {
-      console.error(error);
-      setIsLoading(false);
-      return;
-    }
-  };
-
-  React.useEffect(() => {
-    // NOTE: Determine the next step after finish logging in
-    console.log(3.1, 'Update FTU', {
-      targetGroupId,
-      ftuStage,
-      frontendClientStatus,
-    });
-    if (props.loginWithoutSubscription) return;
-    const subscribeAndUpdateFtuStage = async () => {
-      if (!targetGroupId || !frontendClientStatus.isAuthenticated) return;
-
-      const topicsToSubscribe = fusionEventTopics.filter((topic) => {
-        const metadata = getFusionEventMetadata(topic);
-        const isStackableTopic =
-          metadata?.uiConfigOverride?.isSubscriptionValueInputable ?? false;
-        return !topic.uiConfig.optOutAtSignup && !isStackableTopic;
-      });
-
-      switch (ftuStage) {
-        case FtuStage.Destination:
-        case FtuStage.Alerts:
-          console.log(3.2, 'setFtu to ftu');
-          props.setCardModalView('ftu');
-          break;
-        case FtuStage.Done:
-          console.log(3.2, 'setFtu to Inbox');
-          props.setCardModalView('Inbox');
-
-          break;
-        default: // ftuStage === null
-          await subscribeAlertsDefault(topicsToSubscribe, targetGroupId);
-
-          if (cardConfig?.isContactInfoRequired) {
-            console.log('updateFtuStage(FtuStage.Destination)');
-            await updateFtuStage(FtuStage.Destination);
-          } else {
-            console.log('updateFtuStage(FtuStage.Alerts)');
-            await updateFtuStage(FtuStage.Alerts);
-          }
-          break;
-      }
-      console.log(3.3, 'finish subscribeAndUpdateFtuStage');
-      setIsLoading(false);
-    };
-    subscribeAndUpdateFtuStage();
-  }, [targetGroupId, ftuStage, frontendClientStatus]);
+  const {
+    connect,
+    isLoading,
+    useHardwareWalletLogin,
+    setUseHardwareWalletLogin,
+  } = useConnect(
+    (cardModalView) => props.setCardModalView(cardModalView),
+    props.loginWithoutSubscription,
+  );
 
   const topicLists = React.useMemo(() => {
+    // TODO: Move to NotifiTenantConfigContext when somewhere else needs this
     const topicGroupNames: { index: number; value: string }[] = [];
     const topicNames: { index: number; value: string }[] = [];
     fusionEventTopics.forEach((topic, id) => {
@@ -241,7 +157,7 @@ export const Connect: React.FC<ConnectProps> = (props) => {
         data-cy="notifi-connect-button"
         className={clsx('notifi-connect-button', props.classNames?.button)}
         disabled={isLoading}
-        onClick={onClick}
+        onClick={connect}
       >
         {isLoading ? (
           <LoadingAnimation type="spinner" {...loadingSpinnerStyle} />
@@ -260,16 +176,4 @@ export const Connect: React.FC<ConnectProps> = (props) => {
       </div>
     </div>
   );
-};
-
-// Utils
-
-const validateDefaultTargetGroup = async (
-  frontendClient: NotifiFrontendClient,
-) => {
-  // NOTE: this extra request is necessary as the targetGroupId state in NotifiTargetContext will not be updated constantly right after login
-  const targetGroup = (
-    await frontendClient?.fetchFusionData()
-  )?.targetGroup?.find((group) => group?.name === 'Default');
-  return !!targetGroup;
 };
