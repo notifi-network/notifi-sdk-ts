@@ -139,13 +139,13 @@ export const usePhantom = (
 const getPhantomFromWindow = async (): Promise<PhantomProvider> => {
   if (typeof window === 'undefined' || !window.phantom.solana) {
     throw new Error(
-      'Cannot get phantom without a window | Cannot get phantom from window',
+      'Cannot get phantom without a window | Cannot get phantom solana from window',
     );
   }
   if (window.phantom.solana) {
     return window.phantom.solana;
   } else if (document.readyState === 'complete') {
-    throw new Error('Please install the Phantom extension');
+    throw new Error('Please install the Phantom extension (Solana)');
   }
   return new Promise<PhantomProvider>((resolve, reject) => {
     const onDocumentStateChange = (event: Event) => {
@@ -156,7 +156,7 @@ const getPhantomFromWindow = async (): Promise<PhantomProvider> => {
         if (window.phantom.solana) {
           resolve(window.phantom.solana);
         } else {
-          reject('Please install the Phantom extension');
+          reject('Please install the Phantom extension (Solana)');
         }
         document.removeEventListener('readystatechange', onDocumentStateChange);
       }

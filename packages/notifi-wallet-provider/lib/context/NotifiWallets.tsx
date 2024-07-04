@@ -1,6 +1,4 @@
 import { Abstraxion, useModal } from '@burnt-labs/abstraxion';
-import '@burnt-labs/abstraxion/dist/index.css';
-import '@burnt-labs/ui/dist/index.css';
 import React, {
   PropsWithChildren,
   createContext,
