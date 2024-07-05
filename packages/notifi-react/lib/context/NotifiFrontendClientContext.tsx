@@ -1,5 +1,4 @@
 import {
-  ConfigFactoryInput,
   NotifiEnvironment,
   NotifiFrontendClient,
   WalletWithSignParams,
@@ -14,6 +13,13 @@ import React, {
   useState,
 } from 'react';
 
+import {
+  SolanaParams,
+  SolanaParamsWithHardwareLoginPlugin,
+  getFrontendConfigInput,
+  loginViaSolanaHardwareWallet,
+} from '../utils';
+
 export type FrontendClientStatus = {
   isExpired: boolean;
   isInitialized: boolean;
@@ -26,6 +32,7 @@ export type NotifiFrontendClientContextType = {
   isLoading: boolean;
   error: Error | null;
   login: () => Promise<NotifiFrontendClient | undefined>;
+  loginViaHardwareWallet: () => Promise<NotifiFrontendClient | undefined>;
   walletWithSignParams: WalletWithSignParams;
 };
 
@@ -34,10 +41,17 @@ export const NotifiFrontendClientContext =
     {} as NotifiFrontendClientContextType,
   );
 
+// NOTE: The Utils type for Solana hardware wallet login specifically
+type WalletWithSignParamsWoSolana = Exclude<WalletWithSignParams, SolanaParams>;
+
+export type WalletWithSignParamsModified =
+  | WalletWithSignParamsWoSolana
+  | SolanaParamsWithHardwareLoginPlugin;
+
 export type NotifiFrontendClientProviderProps = {
   tenantId: string;
   env?: NotifiEnvironment;
-} & WalletWithSignParams;
+} & WalletWithSignParamsModified;
 
 export const NotifiFrontendClientContextProvider: FC<
   PropsWithChildren<NotifiFrontendClientProviderProps>
@@ -82,8 +96,6 @@ export const NotifiFrontendClientContextProvider: FC<
 
   const login = async () => {
     if (!frontendClient) return;
-    // TODO: Implement a more general hardware wallet login frontendClientMethod.
-    // if (loginMethod === 'hardwareWallet') { return frontendClient.loginWithHardwareWallet(); }
     setIsLoading(true);
     try {
       await frontendClient.logIn(walletWithSignParams);
@@ -109,6 +121,36 @@ export const NotifiFrontendClientContextProvider: FC<
     return frontendClient;
   };
 
+  /**
+   * @description - Only Solana hardware wallet requires a transaction login (rather than signing a message). Reason: MEMO program requires a transaction to verify user's ownership (Ref: https://spl.solana.com/memo)
+   */
+  const loginViaHardwareWallet = async () => {
+    if (!frontendClient) return;
+    setIsLoading(true);
+    try {
+      await loginViaSolanaHardwareWallet(frontendClient, walletWithSignParams);
+      setFrontendClientStatus({
+        isExpired: frontendClient.userState?.status === 'expired',
+        isInitialized: !!frontendClient,
+        isAuthenticated: frontendClient.userState?.status === 'authenticated',
+      });
+      setFrontendClient(frontendClient);
+      setError(null);
+    } catch (error) {
+      if (error instanceof Error) {
+        const newError = {
+          ...error,
+          message: `loginViaHardwareWallet: User rejects to sign, or mis-impl the signMessage method: ${error.message}`,
+        };
+        setError(newError);
+        console.error(newError);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+    return frontendClient;
+  };
+
   if (!frontendClient) return null;
 
   return (
@@ -119,6 +161,7 @@ export const NotifiFrontendClientContextProvider: FC<
         isLoading,
         error,
         login,
+        loginViaHardwareWallet,
         walletWithSignParams,
       }}
     >
@@ -129,43 +172,3 @@ export const NotifiFrontendClientContextProvider: FC<
 
 export const useNotifiFrontendClientContext = () =>
   useContext(NotifiFrontendClientContext);
-
-// Utils
-
-const getFrontendConfigInput = (
-  tenantId: string,
-  params: WalletWithSignParams,
-  env?: NotifiEnvironment,
-): ConfigFactoryInput => {
-  if ('accountAddress' in params) {
-    return {
-      account: {
-        address: params.accountAddress,
-        publicKey: params.walletPublicKey,
-      },
-      tenantId,
-      walletBlockchain: params.walletBlockchain,
-      env,
-    };
-  } else if ('signingPubkey' in params) {
-    return {
-      account: {
-        publicKey: params.walletPublicKey,
-        delegatorAddress: params.signingPubkey,
-        address: params.signingAddress,
-      },
-      tenantId,
-      walletBlockchain: params.walletBlockchain,
-      env,
-    };
-  } else {
-    return {
-      account: {
-        publicKey: params.walletPublicKey,
-      },
-      tenantId,
-      walletBlockchain: params.walletBlockchain,
-      env,
-    };
-  }
-};

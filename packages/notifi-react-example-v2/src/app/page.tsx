@@ -12,6 +12,7 @@ export default function Home() {
     'metamask',
     'keplr',
     'coinbase',
+    'phantom',
   ];
 
   return (
