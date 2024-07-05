@@ -8,10 +8,11 @@
 }
 .notifi-spinner {
   border: 4px transparent solid;
-  border-top: 4px var(--notifi-spinner-color) solid; /*TODO: change color*/
+  border-top: 4px var(--notifi-spinner-color) solid;
   border-radius: 50%;
   -webkit-animation: spinner 0.6s infinite linear;
   animation: spinner 0.6s infinite linear;
+  position: absolute;
 }
 
 @-webkit-keyframes spinner {

@@ -3,7 +3,7 @@ import React from 'react';
 
 import { useNotifiTargetContext } from '../context';
 import { useIsTargetInputValid } from '../hooks/useIsTargetInputValid';
-import { defaultCopy, defaultLoadingAnimationStyle } from '../utils/constants';
+import { defaultCopy } from '../utils/constants';
 import { FtuView } from './Ftu';
 import { LoadingAnimation } from './LoadingAnimation';
 import { NavHeader } from './NavHeader';
@@ -29,8 +29,6 @@ export type FtuTargetEditProps = {
 };
 
 export const FtuTargetEdit: React.FC<FtuTargetEditProps> = (props) => {
-  const loadingSpinnerStyle: React.CSSProperties =
-    props.classNames?.loadingSpinner ?? defaultLoadingAnimationStyle.spinner;
   const [isLoading, setIsLoading] = React.useState(false);
   const {
     renewTargetGroup,
@@ -100,7 +98,10 @@ export const FtuTargetEdit: React.FC<FtuTargetEditProps> = (props) => {
           onClick={onClick}
         >
           {isLoading ? (
-            <LoadingAnimation type="spinner" {...loadingSpinnerStyle} />
+            <LoadingAnimation
+              type="spinner"
+              classNames={{ spinner: 'notifi-ftu-target-edit-button-spinner' }}
+            />
           ) : null}
           <div
             className={clsx(

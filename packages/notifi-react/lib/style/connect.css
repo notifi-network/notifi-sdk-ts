@@ -93,6 +93,10 @@
   cursor: not-allowed;
 }
 
+.notifi-connect-button-spinner {
+  /* NOTE: intentionally left empty to override (!important is needed) */
+}
+
 .notifi-connect-footer {
   width: 100%;
   display: flex;

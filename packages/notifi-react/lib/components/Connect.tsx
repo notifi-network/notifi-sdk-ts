@@ -7,7 +7,7 @@ import {
   useNotifiTenantConfigContext,
 } from '../context';
 import { useConnect } from '../hooks/useConnect';
-import { defaultCopy, defaultLoadingAnimationStyle } from '../utils/constants';
+import { defaultCopy } from '../utils/constants';
 import { LoadingAnimation } from './LoadingAnimation';
 import { CardModalView } from './NotifiCardModal';
 import { PoweredByNotifi, PoweredByNotifiProps } from './PoweredByNotifi';
@@ -44,8 +44,6 @@ export type ConnectProps = {
 export const Connect: React.FC<ConnectProps> = (props) => {
   const { walletWithSignParams } = useNotifiFrontendClientContext();
   const { fusionEventTopics } = useNotifiTenantConfigContext();
-  const loadingSpinnerStyle: React.CSSProperties =
-    props.classNames?.loadingSpinner ?? defaultLoadingAnimationStyle.spinner;
 
   const {
     connect,
@@ -160,7 +158,10 @@ export const Connect: React.FC<ConnectProps> = (props) => {
         onClick={connect}
       >
         {isLoading ? (
-          <LoadingAnimation type="spinner" {...loadingSpinnerStyle} />
+          <LoadingAnimation
+            type="spinner"
+            classNames={{ spinner: 'notifi-connect-button-spinner' }}
+          />
         ) : null}
         <div
           className={clsx('notifi-connect-button-text', isLoading && 'hidden')}

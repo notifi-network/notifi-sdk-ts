@@ -10,7 +10,7 @@ import {
   useNotifiUserSettingContext,
 } from '../context';
 import { getFusionEventMetadata } from '../utils';
-import { defaultCopy, defaultLoadingAnimationStyle } from '../utils/constants';
+import { defaultCopy } from '../utils/constants';
 import { LoadingAnimation } from './LoadingAnimation';
 
 export type FtuAlertListProps = {
@@ -32,6 +32,7 @@ export type FtuAlertListProps = {
   iconType?: IconType;
 };
 
+/** @deprecated TODO: remove this deprecated component*/
 export const FtuAlertList: React.FC<FtuAlertListProps> = (props) => {
   const { fusionEventTopics, cardConfig } = useNotifiTenantConfigContext();
   const { updateFtuStage } = useNotifiUserSettingContext();
@@ -40,9 +41,6 @@ export const FtuAlertList: React.FC<FtuAlertListProps> = (props) => {
     targetDocument: { targetGroupId },
   } = useNotifiTargetContext();
   const [isLoading, setIsLoading] = React.useState(false);
-
-  const loadingSpinnerStyle: React.CSSProperties =
-    props.classNames?.loadingSpinner ?? defaultLoadingAnimationStyle.spinner;
 
   const onClick = async () => {
     setIsLoading(true);
@@ -147,7 +145,10 @@ export const FtuAlertList: React.FC<FtuAlertListProps> = (props) => {
         onClick={onClick}
       >
         {isLoading ? (
-          <LoadingAnimation type="spinner" {...loadingSpinnerStyle} />
+          <LoadingAnimation
+            type="spinner"
+            classNames={{ spinner: 'notifi-ftu-alert-list-button-spinner' }}
+          />
         ) : null}
         <div
           className={clsx(
