@@ -57,7 +57,7 @@ export const TopicRow = <T extends TopicRowCategory>(
   /* NOTE: benchmarkTopic is either the 'first topic in the group' or the 'standalone topic'. This represent the target topic to be rendered. */
   const fusionEventTypeId = benchmarkTopic.fusionEventDescriptor.id;
   if (!fusionEventTypeId) return null;
-  if (isTopicGroup && !isTopicGroupValid(props.topics)) return null; // TODO: TBD partial valid case
+  if (isTopicGroup && !isTopicGroupValid(props.topics)) return null;
 
   const userInputParams = getUserInputParams(benchmarkTopic);
 

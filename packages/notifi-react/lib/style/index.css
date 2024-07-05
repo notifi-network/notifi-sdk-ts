@@ -108,11 +108,13 @@ button {
   --notifi-target-list-tooltip-bg: var(--notifi-color-dark);
   --notifi-target-list-item-tooltip-content-border: var(--notifi-color-dark);
   --notifi-target-list-item-tooltip-content-text: var(--notifi-color-white);
+  --notifi-target-list-item-tooltip-icon-color-hover: var(--notifi-color-white);
   --notifi-topic-list-tooltip-icon-color-hover: var(--notifi-color-white);
   --notifi-input-separator-text: var(--notifi-color-dusk);
   --notifi-input-separator-line: var(--notifi-color-blackish1);
   --notifi-ftu-footer-bg: var(--notifi-color-grey2);
   --notifi-ftu-footer-border: var(--notifi-color-grey4);
+  --notifi-ftu-header-border: var(--notifi-color-grey4);
   --notifi-target-state-banner-signup-history-bg: var(--notifi-color-grey5);
   --notifi-target-state-banner-verify-history-bg: var(--notifi-color-grey5);
   --notifi-target-state-banner-verify-cta-history-bg: var(
@@ -185,11 +187,13 @@ button {
   --notifi-target-list-tooltip-bg: var(--notifi-color-eggshell);
   --notifi-target-list-item-tooltip-content-border: var(--notifi-color-heather);
   --notifi-target-list-item-tooltip-content-text: var(--notifi-color-black);
+  --notifi-target-list-item-tooltip-icon-color-hover: var(--notifi-color-dusk);
   --notifi-topic-list-tooltip-icon-color-hover: var(--notifi-color-dusk);
   --notifi-input-separator-text: var(--notifi-color-heather);
   --notifi-input-separator-line: var(--notifi-color-heather);
   --notifi-ftu-footer-bg: var(--notifi-color-white);
   --notifi-ftu-footer-border: var(--notifi-color-cloud);
+  --notifi-ftu-header-border: var(--notifi-color-cloud);
   --notifi-target-state-banner-signup-history-bg: var(--notifi-color-cloud);
   --notifi-target-state-banner-verify-history-bg: var(--notifi-color-cloud);
   --notifi-target-state-banner-verify-cta-history-bg: var(--notifi-color-white);

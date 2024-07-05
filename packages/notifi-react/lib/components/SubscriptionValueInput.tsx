@@ -42,7 +42,6 @@ export const SubscriptionValueInput: React.FC<SubscriptionValueInputProps> = (
     <div
       className={clsx('subscription-value-input', props.className?.container)}
     >
-      {/** Dropdown (TODO: consider to create a new component) */}
       {subscriptionValueOptions.length > 0 ? (
         <div
           className={clsx(
@@ -101,7 +100,6 @@ export const SubscriptionValueInput: React.FC<SubscriptionValueInputProps> = (
           )}
         </div>
       ) : null}
-      {/** Text field (TODO: consider to create a new component) TODO#2: Style CSS */}
       {subscriptionValueOptions.length === 0 ? (
         <div>
           <input

@@ -65,9 +65,7 @@
   margin-bottom: 0.5rem;
 }
 .notifi-connect-hardware-wallet-label {
-  color: var(
-    --notifi-connect-hardware-wallet-label-text
-  ); /* TODO: Add color variable */
+  color: var(--notifi-connect-hardware-wallet-label-text);
 }
 
 .notifi-connect-button {

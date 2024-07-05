@@ -268,7 +268,7 @@
 .notifi-topic-stack-content-subtitle {
   display: flex;
   font-size: 0.9rem;
-  color: var(--notifi-color-text-light); /**TODO: if dark-light needed */
+  color: var(--notifi-color-text-light);
 }
 
 .notifi-topic-stack-content-subtitle > * {
@@ -276,7 +276,7 @@
 }
 
 .notifi-topic-stack-cta {
-  color: var(--notifi-color-text-light); /**TODO: if dark-light needed */
+  color: var(--notifi-color-text-light);
   cursor: pointer;
 }
 
@@ -312,7 +312,7 @@
 }
 
 .notifi-topic-stack-row-input-button.disabled {
-  background-color: var(--notifi-color-dusk); /**TODO: if dark-light needed */
+  background-color: var(--notifi-color-dusk);
   cursor: not-allowed;
 }
 

@@ -308,7 +308,6 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
   const getTopicStackAlertsFromTopicName = (topicName: string) => {
     return Object.keys(alerts)
       .map((alertName) => {
-        // TODO: refactor to use alert.subscriptionValue when endpoint ready
         const resolved = resolveTopicStackAlertName(alertName);
 
         if (resolved.fusionEventTypeId === topicName) {

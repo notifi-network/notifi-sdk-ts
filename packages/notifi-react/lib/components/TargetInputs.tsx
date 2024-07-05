@@ -2,7 +2,12 @@ import clsx from 'clsx';
 import React from 'react';
 
 import { IconType } from '../assets/Icons';
-import { FormTarget, Target, useNotifiTenantConfigContext } from '../context';
+import {
+  FormTarget,
+  Target,
+  useNotifiTargetContext,
+  useNotifiTenantConfigContext,
+} from '../context';
 import { getTargetValidateRegex } from '../utils';
 import { TargetInputField, TargetInputFieldProps } from './TargetInputField';
 import { TargetInputToggle, TargetInputToggleProps } from './TargetInputToggle';
@@ -50,6 +55,7 @@ export type TargetInputsProps = {
 
 export const TargetInputs: React.FC<TargetInputsProps> = (props) => {
   const { cardConfig } = useNotifiTenantConfigContext();
+  const { isLoading } = useNotifiTargetContext();
   return (
     <div className={clsx('notifi-target-inputs', props.classNames?.container)}>
       {cardConfig?.contactInfo.email?.active ? (
@@ -121,11 +127,10 @@ export const TargetInputs: React.FC<TargetInputsProps> = (props) => {
         </>
       ) : null}
       {cardConfig?.contactInfo.discord?.active ? (
-        // TODO: impl disable
         <>
           <TargetInputToggle
             targetType="discord"
-            disabled={false}
+            disabled={isLoading}
             copy={props.copy?.TargetInputToggle}
             classNames={props.classNames?.TargetInputToggle}
           />
@@ -145,7 +150,7 @@ export const TargetInputs: React.FC<TargetInputsProps> = (props) => {
         <>
           <TargetInputToggle
             targetType="slack"
-            disabled={false}
+            disabled={isLoading}
             copy={props.copy?.TargetInputToggle}
             classNames={props.classNames?.TargetInputToggle}
           />
@@ -165,7 +170,7 @@ export const TargetInputs: React.FC<TargetInputsProps> = (props) => {
         <>
           <TargetInputToggle
             targetType="wallet"
-            disabled={false}
+            disabled={isLoading}
             copy={props.copy?.TargetInputToggle}
             classNames={props.classNames?.TargetInputToggle}
           />

@@ -38,7 +38,6 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
   const parentComponent = props.parentComponent ?? 'ftu';
   const {
     targetDocument: { targetInfoPrompts, targetData },
-    isLoading: isLoadingTarget,
   } = useNotifiTargetContext();
 
   const targetListItemArgsList = React.useMemo(() => {

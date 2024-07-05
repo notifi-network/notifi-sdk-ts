@@ -87,9 +87,14 @@ export const NotifiFrontendClientContextProvider: FC<
         setFrontendClient(frontendClient);
         setError(null);
       })
-      .catch((error) => {
-        setError(error);
-        console.error(error);
+      .catch((e) => {
+        if (e instanceof Error) {
+          setError({
+            ...e,
+            message: `  failed to initialize frontendClient (.initialize): ${e.message}`,
+          });
+        }
+        console.error(e);
       })
       .finally(() => setIsLoading(false));
   }, [walletWithSignParams.walletPublicKey]);
