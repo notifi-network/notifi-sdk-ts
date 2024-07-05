@@ -54,7 +54,13 @@ export const NotifiTenantConfigContextProvider: FC<
         setError(null);
       })
       .catch((e) => {
-        setError(e);
+        if (e instanceof Error) {
+          setError({
+            ...e,
+            message: `Failed to fetch tenant config (.fetchTenantConfig): ${e.message}`,
+          });
+        }
+        console.error(e);
       })
       .finally(() => setIsLoading(false));
   }, [frontendClientStatus]);

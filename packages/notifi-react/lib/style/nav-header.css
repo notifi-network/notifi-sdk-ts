@@ -2,7 +2,7 @@
   background-color: var(--notifi-nav-header-background);
   display: flex;
   padding: 1rem;
-  border-bottom: 1px solid var(--notifi-ftu-footer-border); /* TODO: make its own variable (--notifi-ftu-header-border) once confirmed */
+  border-bottom: 1px solid var(--notifi-ftu-header-border);
 }
 .notifi-nav-header-title.isEmpty::after {
   content: '_'; /* This is a placeholder in case the title is empty */

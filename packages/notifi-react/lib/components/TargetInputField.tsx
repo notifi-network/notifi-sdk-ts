@@ -149,17 +149,6 @@ export const TargetInputField: React.FC<TargetInputFieldProps> = (props) => {
           disabled={props.disabled}
         />
       </div>
-      {/* TODO: target input error message */}
-      {/* {isDisplayingErrorMsg ? (
-        <div
-          className={clsx(
-            'notifi-target-input-field-error-message',
-            props.classNames?.errorMessage,
-          )}
-        >
-          {targetToBeSaved.error}
-        </div>
-      ) : null} */}
     </div>
   );
 };

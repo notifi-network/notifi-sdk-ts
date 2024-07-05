@@ -92,7 +92,7 @@
 }
 
 .notifi-inboxConfig-target-edit-description {
-  color: var(--notifi-ftu-target-edit-description); /* TODO: Color */
+  color: var(--notifi-ftu-target-edit-description);
   text-align: center;
   font-size: 0.9rem;
   margin: 0.75rem 0 0.75rem 0;
