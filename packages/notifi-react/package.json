@@ -41,6 +41,8 @@
   },
   "dependencies": {
     "@notifi-network/notifi-frontend-client": "^0.91.3",
+    "@notifi-network/notifi-solana-hw-login": "^0.91.3",
+    "@notifi-network/notifi-graphql": "^0.91.3",
     "@xmtp/consent-proof-signature": "^0.1.2",
     "@xmtp/react-sdk": "^6.0.1",
     "clsx": "^1.2.1",

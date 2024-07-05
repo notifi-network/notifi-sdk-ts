@@ -5,7 +5,9 @@ import {
   NotifiEnvironment,
 } from '@notifi-network/notifi-frontend-client';
 import { NotifiContextProvider } from '@notifi-network/notifi-react';
+import { MemoProgramHardwareLoginPlugin } from '@notifi-network/notifi-solana-hw-login';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
+import { Connection, clusterApiUrl } from '@solana/web3.js';
 import { getBytes } from 'ethers';
 import { useSearchParams } from 'next/navigation';
 import { PropsWithChildren } from 'react';
@@ -36,11 +38,20 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
   let accountAddress = '';
   let walletPublicKey = '';
   let signMessage;
+  /** ⬇️ SOLANA specific */
+  let solanaHardwareLoginPlugin: MemoProgramHardwareLoginPlugin | null = null;
+  const connection = new Connection(
+    process.env.NEXT_PUBLIC_SOLANA_RPC_HTTP ?? clusterApiUrl('mainnet-beta'),
+    {
+      wsEndpoint: process.env.NEXT_PUBLIC_SOLANA_RPC_WS,
+    },
+  );
+  /** ⬆️ SOLANA specific */
   if (selectedWallet) {
-    accountAddress = wallets[selectedWallet].walletKeys?.bech32 ?? '';
     switch (selectedWallet) {
-      // TODO: Other wallets
+      // NOTE: ⬇️ Wallet specific signMessage implementation
       case 'keplr':
+        accountAddress = wallets[selectedWallet].walletKeys?.bech32 ?? '';
         walletPublicKey = wallets[selectedWallet].walletKeys?.base64 ?? '';
         if (!walletPublicKey) throw new Error('ERROR: invalid walletPublicKey');
         signMessage = async (message: Uint8Array): Promise<Uint8Array> => {
@@ -52,15 +63,11 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
         break;
       case 'metamask':
       case 'coinbase':
+        accountAddress = wallets[selectedWallet].walletKeys?.bech32 ?? '';
         walletPublicKey = wallets[selectedWallet].walletKeys?.hex ?? '';
         if (!walletPublicKey) throw new Error('ERROR: invalid walletPublicKey');
         signMessage = async (message: Uint8Array): Promise<Uint8Array> => {
           const messageString = Buffer.from(message).toString('utf8');
-          console.log('sign params:', {
-            wallets,
-            selectedWallet,
-            messageString,
-          });
           const result = await wallets[selectedWallet].signArbitrary(
             messageString,
           );
@@ -68,10 +75,22 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
           return getBytes(result);
         };
         break;
+      case 'phantom':
+        if (!wallets[selectedWallet].walletKeys)
+          throw new Error('ERROR: invalid walletKeys');
+        walletPublicKey = wallets[selectedWallet].walletKeys!.base58;
+        signMessage = wallets[selectedWallet].signArbitrary;
+        solanaHardwareLoginPlugin = new MemoProgramHardwareLoginPlugin({
+          walletPublicKey,
+          connection,
+          sendTransaction: wallets[selectedWallet].signTransaction,
+        });
+        break;
     }
   }
 
   if (!signMessage) return <div>No available wallet to sign</div>;
+
   const pricePairInputs: InputObject[] = [
     { label: 'BTC-NOTIFI (NOTIFI)', value: 'BTC_NOTIFI' },
     { label: 'BTC-LINK (LINK)', value: 'BTC_LINK' },
@@ -136,7 +155,7 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
         <NotifiContextProvider
           tenantId={tenantId}
           env={env}
-          toggleTargetAvailability={{ wallet: true }}
+          toggleTargetAvailability={{ wallet: true }} // **IMPORTANT** Enable wallet only for Coinbase Wallet. Wallet target only supports Coinbase Wallet for now
           walletBlockchain={'ETHEREUM'} // Change to any EVM chain if needed
           walletPublicKey={walletPublicKey}
           signMessage={signMessage}
@@ -146,6 +165,23 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
             walletAddress: [{ label: '', value: walletPublicKey }],
           }}
           notificationCountPerPage={8}
+        >
+          {children}
+        </NotifiContextProvider>
+      ) : null}
+      {selectedWallet === 'phantom' && solanaHardwareLoginPlugin ? (
+        <NotifiContextProvider
+          tenantId={tenantId}
+          env={env}
+          walletBlockchain={'SOLANA'}
+          walletPublicKey={walletPublicKey}
+          signMessage={signMessage}
+          cardId={cardId}
+          inputs={{
+            pricePairs: pricePairInputs,
+          }}
+          notificationCountPerPage={8}
+          hardwareLoginPlugin={solanaHardwareLoginPlugin}
         >
           {children}
         </NotifiContextProvider>

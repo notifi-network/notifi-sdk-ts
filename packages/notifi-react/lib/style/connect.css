@@ -57,6 +57,19 @@
   stroke-width: 3;
 }
 
+.notifi-connect-hardware-wallet {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2rem;
+  margin-bottom: 0.5rem;
+}
+.notifi-connect-hardware-wallet-label {
+  color: var(
+    --notifi-connect-hardware-wallet-label-text
+  ); /* TODO: Add color variable */
+}
+
 .notifi-connect-button {
   background-color: var(--notifi-connect-button);
   color: var(--notifi-connect-button-text);
