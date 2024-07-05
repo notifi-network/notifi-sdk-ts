@@ -36,6 +36,10 @@
   position: relative;
 }
 
+.notifi-history-list-loading-more-spinner {
+  /* NOTE: intentionally left empty to allow override */
+}
+
 .notifi-history-list-empty {
   display: flex;
   flex-direction: column;

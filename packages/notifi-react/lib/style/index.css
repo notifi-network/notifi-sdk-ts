@@ -78,7 +78,7 @@ button {
   --notifi-topic-option-radio-bg: var(--notifi-color-grey1);
   --notifi-subscription-input-dropdown-value-bg: var(--notifi-color-grey1);
   --notifi-subscription-input-dropdown-list-bg: var(--notifi-color-grey1);
-  --notifi-spinner-color: var(--notifi-color-white);
+  --notifi-spinner-color: var(--notifi-color-seaglass-dark);
   --notifi-topic-stack-row-input-button-bg: var(--notifi-color-secondary-light);
   --notifi-topic-stack-row-input-button-text: var(--notifi-color-white);
   --notifi-nav-footer-bg: var(--notifi-color-grey2);

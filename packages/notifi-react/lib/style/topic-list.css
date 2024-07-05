@@ -315,3 +315,7 @@
   background-color: var(--notifi-color-dusk); /**TODO: if dark-light needed */
   cursor: not-allowed;
 }
+
+.notifi-topic-stack-row-input-button-spinner {
+  /* NOTE: intentionally left empty to allow override (!important is needed) */
+}

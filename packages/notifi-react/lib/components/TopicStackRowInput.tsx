@@ -7,7 +7,6 @@ import { useTopicStackRowInput } from '../hooks/useTopicStackRowInput';
 import {
   convertOptionValue,
   defaultCopy,
-  defaultLoadingAnimationStyle,
   getFusionEventMetadata,
   getUpdatedAlertFilterOptions,
   getUserInputParams,
@@ -61,9 +60,6 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
     props.onSave,
   );
 
-  const loadingSpinnerStyle: React.CSSProperties =
-    props.classNames?.loadingSpinner ?? defaultLoadingAnimationStyle.spinner;
-
   return (
     <div
       className={clsx(
@@ -76,7 +72,6 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
         subscriptionValue={subscriptionValue}
         setSubscriptionValue={setSubscriptionValue}
       />
-      {/* {subscriptionValue && userInputParams.length > 0 ? ( */}
       <div className={clsx('notifi-topic-row-user-inputs-row-container')}>
         {userInputParams.map((userInputParm, id) => {
           return (
@@ -110,7 +105,12 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
           onClick={subscribeTopic}
         >
           {isLoadingTopic ? (
-            <LoadingAnimation type={'spinner'} {...loadingSpinnerStyle} />
+            <LoadingAnimation
+              type={'spinner'}
+              classNames={{
+                spinner: 'notifi-topic-stack-row-input-button-spinner',
+              }}
+            />
           ) : null}
           <div
             className={clsx(

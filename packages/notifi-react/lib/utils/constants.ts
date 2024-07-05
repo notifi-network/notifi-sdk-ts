@@ -1,10 +1,6 @@
 import { Target } from '../context';
 
 export const defaultCopy = {
-  notifiTargetContext: {
-    defaultWalletTargetSenderAddress:
-      '0xE80E42B5308d5b137FC137302d571B56907c3003', // GMX
-  },
   connect: {
     title: 'Notifications',
     description: 'See your activity and gain access to alerts',
@@ -150,11 +146,3 @@ export const validationRegex: Record<string, RegExp> = {
   email: new RegExp('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'),
   telegram: new RegExp('.{5,}'),
 };
-
-export const defaultLoadingAnimationStyle: Record<string, React.CSSProperties> =
-  {
-    spinner: {
-      borderTop: '4px var(--notifi-color-seaglass-dark) solid', // TODO: TBD see if dark/light mode needed?
-      position: 'absolute',
-    },
-  };
