@@ -14,7 +14,7 @@ import { getFusionEventMetadata } from '../utils';
 
 export const useConnect = (
   afterConnected: (cardModalView: CardModalView) => void,
-  isTopicsNotSubscribed?: boolean,
+  isTopicsSubscriptionNotRequired?: boolean,
 ) => {
   const {
     login,
@@ -78,8 +78,8 @@ export const useConnect = (
         frontendClient = await login();
       }
 
-      if (isTopicsNotSubscribed) return;
       if (!frontendClient) return;
+
       const isDefaultTargetExist = await validateDefaultTargetGroup(
         frontendClient,
       );
@@ -94,8 +94,7 @@ export const useConnect = (
   };
 
   React.useEffect(() => {
-    // Step#2: Determine the view according to target group and ftu stage (After successful login: isAuthenticated === true)
-    if (isTopicsNotSubscribed) return;
+    // Step#2: Subscribe topics (if FTU) or prompt to next view according to target group and ftu stage (After successful login: isAuthenticated === true)
     const subscribeAndUpdateFtuStage = async () => {
       if (!targetGroupId || !frontendClientStatus.isAuthenticated) return;
 
@@ -109,22 +108,20 @@ export const useConnect = (
       switch (ftuStage) {
         case FtuStage.Destination:
         case FtuStage.Alerts:
-          console.log(3.2, 'setFtu to ftu');
           afterConnected('ftu');
           break;
         case FtuStage.Done:
-          console.log(3.2, 'setFtu to Inbox');
           afterConnected('Inbox');
 
           break;
         default: // ftuStage === null
-          await subscribeAlertsDefault(topicsToSubscribe, targetGroupId);
+          if (!isTopicsSubscriptionNotRequired) {
+            await subscribeAlertsDefault(topicsToSubscribe, targetGroupId);
+          }
 
           if (cardConfig?.isContactInfoRequired) {
-            console.log('updateFtuStage(FtuStage.Destination)');
             await updateFtuStage(FtuStage.Destination);
           } else {
-            console.log('updateFtuStage(FtuStage.Alerts)');
             await updateFtuStage(FtuStage.Alerts);
           }
           break;
