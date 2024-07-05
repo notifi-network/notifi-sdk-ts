@@ -3,7 +3,7 @@ import React from 'react';
 
 import { IconType } from '../assets/Icons';
 import { FormTarget, Target, useNotifiTenantConfigContext } from '../context';
-import { validationRegex } from '../utils/constants';
+import { getTargetValidateRegex } from '../utils';
 import { TargetInputField, TargetInputFieldProps } from './TargetInputField';
 import { TargetInputToggle, TargetInputToggleProps } from './TargetInputToggle';
 
@@ -59,7 +59,7 @@ export const TargetInputs: React.FC<TargetInputsProps> = (props) => {
             classNames={props.classNames?.targetInputField?.email}
             targetType="email"
             iconType={props.copy?.iconType?.email ?? 'email'}
-            validateRegex={validationRegex.email}
+            validateRegex={getTargetValidateRegex('email')}
             onFocus={props.formTargetsOnFocus}
             onBlur={props.formTargetsOnBlur}
           />
@@ -104,7 +104,7 @@ export const TargetInputs: React.FC<TargetInputsProps> = (props) => {
             classNames={props.classNames?.targetInputField?.telegram}
             targetType="telegram"
             iconType={props.copy?.iconType?.telegram ?? 'telegram'}
-            validateRegex={validationRegex.telegram}
+            validateRegex={getTargetValidateRegex('telegram')}
             onFocus={props.formTargetsOnFocus}
             onBlur={props.formTargetsOnBlur}
           />
