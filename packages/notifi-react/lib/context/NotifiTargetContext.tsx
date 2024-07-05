@@ -254,7 +254,16 @@ export const NotifiTargetContextProvider: FC<
         .then((data) => {
           refreshTargetDocument(data);
         })
-        .finally(() => setIsLoading(false)); // TODO: handle error
+        .catch((e) => {
+          if (e instanceof Error) {
+            setError({
+              ...e,
+              message: ` Initial load target data error (fetchFusionData): ${e.message}`,
+            });
+          }
+          console.error(e);
+        })
+        .finally(() => setIsLoading(false));
     }
 
     return () => {

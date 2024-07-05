@@ -36,7 +36,10 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
     ?.uiConfigOverride?.subscriptionValueOrRef;
 
   if (!subscriptionValueOrRef) {
-    return null; // TODO: handle undefined or error
+    console.error(
+      'ERROR - unable to render TopicStackRowInput. Ensure fusionEventMetadata includes subscriptionValueOrRef',
+    );
+    return null;
   }
   const { isLoading: isLoadingTopic } = useNotifiTopicContext();
 

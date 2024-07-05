@@ -48,7 +48,15 @@ export const NotifiUserSettingContextProvider: FC<PropsWithChildren> = ({
         .then((userSettings) => {
           setFtuStage(userSettings?.ftuStage ?? null);
         })
-        .catch((err) => setError(err))
+        .catch((e) => {
+          if (e instanceof Error) {
+            setError({
+              ...e,
+              message: `Failed to fetch user settings (.getUserSettings): ${e.message}`,
+            });
+          }
+          console.error(e);
+        })
         .finally(() => setIsLoading(false));
     }
   }, [frontendClientStatus.isAuthenticated]);
