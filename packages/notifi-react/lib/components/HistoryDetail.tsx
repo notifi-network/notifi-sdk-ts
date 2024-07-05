@@ -84,7 +84,7 @@ export const HistoryDetail: React.FC<HistoryDetailProps> = (props) => {
 // Utils
 const formatTimestampInHistoryDetail = (date: string): string => {
   try {
-    return format(parseISO(date), isToday(parseISO(date)) ? 'HH:mm b' : 'PPPp');
+    return format(parseISO(date), 'PPPp');
   } catch {
     return '-';
   }
