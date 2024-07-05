@@ -8,7 +8,7 @@ import {
   useNotifiTargetContext,
   useNotifiTenantConfigContext,
 } from '../context';
-import { defaultCopy, defaultLoadingAnimationStyle, hasTarget } from '../utils';
+import { defaultCopy, hasTarget } from '../utils';
 import { HistoryRow } from './HistoryRow';
 import { InboxView } from './Inbox';
 import { LoadingAnimation } from './LoadingAnimation';
@@ -52,8 +52,6 @@ export const HistoryList: React.FC<HistoryListProps> = (props) => {
   } = useNotifiHistoryContext();
   const { cardConfig } = useNotifiTenantConfigContext();
   const [isLoadingMoreItems, setIsLoadingMoreItems] = React.useState(false);
-  const loadingSpinnerStyle: React.CSSProperties =
-    props.classNames?.loadingSpinner ?? defaultLoadingAnimationStyle.spinner;
   const mainRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
@@ -140,7 +138,12 @@ export const HistoryList: React.FC<HistoryListProps> = (props) => {
               !hasNextPage && 'hidden',
             )}
           >
-            <LoadingAnimation type="spinner" {...loadingSpinnerStyle} />
+            <LoadingAnimation
+              type="spinner"
+              classNames={{
+                spinner: 'notifi-history-list-loading-more-spinner',
+              }}
+            />
           </div>
         ) : null}
         {/* EmptyInbox */}

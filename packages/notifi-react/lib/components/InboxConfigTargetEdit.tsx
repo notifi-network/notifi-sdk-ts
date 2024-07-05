@@ -3,7 +3,7 @@ import React from 'react';
 
 import { useNotifiTargetContext } from '../context';
 import { useIsTargetInputValid } from '../hooks/useIsTargetInputValid';
-import { defaultCopy, defaultLoadingAnimationStyle, hasTarget } from '../utils';
+import { defaultCopy, hasTarget } from '../utils';
 import { InboxView } from './Inbox';
 import { LoadingAnimation } from './LoadingAnimation';
 import { NavHeader } from './NavHeader';
@@ -36,8 +36,6 @@ export const InboxConfigTargetEdit: React.FC<InboxConfigTargetEditProps> = (
     renewTargetGroup,
     isChangingTargets,
   } = useNotifiTargetContext();
-  const loadingSpinnerStyle: React.CSSProperties =
-    props.classNames?.loadingSpinner ?? defaultLoadingAnimationStyle.spinner;
   const [isLoading, setIsLoading] = React.useState(false);
   const isUpdated = React.useRef(false);
 
@@ -119,7 +117,12 @@ export const InboxConfigTargetEdit: React.FC<InboxConfigTargetEditProps> = (
         onClick={onClick}
       >
         {isLoading ? (
-          <LoadingAnimation type="spinner" {...loadingSpinnerStyle} />
+          <LoadingAnimation
+            type="spinner"
+            classNames={{
+              spinner: 'notifi-inbox-config-target-edit-button-spinner',
+            }}
+          />
         ) : null}
         <div
           className={clsx(

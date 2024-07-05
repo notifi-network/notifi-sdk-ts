@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import React from 'react';
 
 import { FtuStage, useNotifiUserSettingContext } from '../context';
-import { defaultCopy, defaultLoadingAnimationStyle } from '../utils/constants';
+import { defaultCopy } from '../utils/constants';
 import { LoadingAnimation } from './LoadingAnimation';
 import { NavHeader } from './NavHeader';
 import { TopicList } from './TopicList';
@@ -21,15 +21,11 @@ export type FtuAlertEditProps = {
     headerTitle?: string;
     buttonText?: string;
   };
-  // setFtuView: React.Dispatch<React.SetStateAction<FtuView | null>>;
 };
 
 export const FtuAlertEdit: React.FC<FtuAlertEditProps> = (props) => {
   const { updateFtuStage } = useNotifiUserSettingContext();
   const [isLoading, setIsLoading] = React.useState(false);
-
-  const loadingSpinnerStyle: React.CSSProperties =
-    props.classNames?.loadingSpinner ?? defaultLoadingAnimationStyle.spinner;
 
   const onClick = async () => {
     setIsLoading(true);
@@ -72,7 +68,10 @@ export const FtuAlertEdit: React.FC<FtuAlertEditProps> = (props) => {
           onClick={onClick}
         >
           {isLoading ? (
-            <LoadingAnimation type="spinner" {...loadingSpinnerStyle} />
+            <LoadingAnimation
+              type="spinner"
+              classNames={{ spinner: 'notifi-ftu-alert-edit-button-spinner' }}
+            />
           ) : null}
           <div
             className={clsx(
