@@ -70,13 +70,11 @@
 /* HistoryRow styles */
 .notifi-history-row {
   display: flex;
-  /* align-items: center; */
   padding: 10px 1rem 10px 0;
   background-color: var(--notifi-history-row-bg);
   position: relative;
   margin-bottom: 0.5rem;
-  border-radius: 0 6px 6px 0;
-  overflow: hidden;
+  border-radius: 6px;
   cursor: pointer;
   border: 1px solid transparent;
 }
