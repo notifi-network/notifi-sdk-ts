@@ -1,4 +1,5 @@
 import {
+  CustomInputConstraints,
   FusionEventTopic,
   UiType,
   UserInputParam,
@@ -144,6 +145,7 @@ export const TopicOptions = <T extends TopicRowCategory>(
                     isUserInputValid(
                       props.userInputParam.kind,
                       evt.target.value,
+                      props.userInputParam.customInputConstraints,
                     )
                   ) {
                     return evt.target.value;
@@ -152,11 +154,27 @@ export const TopicOptions = <T extends TopicRowCategory>(
                 });
               }}
               onBlur={(evt) => {
-                if (customInput === '')
+                // 3 cases:
+                // Case#1:  If input is empty, reset to current subscribing value
+                if (evt.target.value === '') {
                   return options.includes(selectedOption)
-                    ? ''
+                    ? setCustomInput('')
                     : setCustomInput(selectedOption);
-                selectOrInputValue(evt.target.value);
+                }
+                // Case#2: If input === existing selected option, set customInput to empty
+                if (
+                  options.includes(evt.target.value) &&
+                  selectedOption === evt.target.value
+                )
+                  return setCustomInput('');
+
+                // Case#3: Subscribe new value
+                const { value } = validateCustomInputRange(
+                  evt.target.value,
+                  props.userInputParam.customInputConstraints,
+                );
+                setCustomInput(value.toString());
+                selectOrInputValue(value);
               }}
               className={clsx(
                 'notifi-topic-options-custom-input',
@@ -185,7 +203,11 @@ const isTopicGroupOptions = (
   return 'topics' in props;
 };
 
-const isUserInputValid = (type: ValueType, userInputValue: string | number) => {
+const isUserInputValid = (
+  type: ValueType,
+  userInputValue: string | number,
+  customInputConstraint?: CustomInputConstraints,
+) => {
   if (userInputValue === '') return true;
   // 'percentage' and 'price' are deprecated. For legacy support only
   const leadingZeroRegex = /^0\d+/; // regex for leading 0
@@ -193,9 +215,13 @@ const isUserInputValid = (type: ValueType, userInputValue: string | number) => {
     // regex for only allow float
     const floatRegex1 = /^\d+(\.)?$/; // regex for 0.
     const floatRegex2 = /^\d+(\.\d+)?$/; // regex for float
+    const floatWithMaxDecimalPlacesRegex = new RegExp(
+      `^\\d+(\\.\\d{0,${customInputConstraint?.maxDecimalPlaces ?? 18}})?$`, // If not provided, default to 18 decimal places (EVM big int limit)
+    );
 
     return (
       !leadingZeroRegex.test(userInputValue.toString()) &&
+      floatWithMaxDecimalPlacesRegex.test(userInputValue.toString()) &&
       (floatRegex1.test(userInputValue.toString()) ||
         floatRegex2.test(userInputValue.toString()))
     );
@@ -209,4 +235,29 @@ const isUserInputValid = (type: ValueType, userInputValue: string | number) => {
   return true;
 };
 
-// An regex for only allow float. But not allow invalid leading zero (e.g. 01, 001, 00.1, 000.1 ...)
+type CustomInputValidationStatus =
+  | 'valid'
+  | 'aboveUpperBound'
+  | 'belowLowerBound';
+const validateCustomInputRange = (
+  input: string,
+  customInputConstraint?: CustomInputConstraints,
+): { status: CustomInputValidationStatus; value: number } => {
+  const upperBound = customInputConstraint?.upperBound;
+  const lowerBound = customInputConstraint?.lowerBound;
+  if (input === '' || isNaN(Number(input)))
+    throw new Error('validateCustomInputRange - Input cannot be empty');
+
+  if (
+    isNaN(Number(upperBound)) ||
+    isNaN(Number(lowerBound)) ||
+    !upperBound ||
+    !lowerBound
+  )
+    return { status: 'valid', value: Number(input) };
+  if (Number(input) > Number(upperBound))
+    return { status: 'aboveUpperBound', value: upperBound };
+  if (Number(input) < Number(lowerBound))
+    return { status: 'belowLowerBound', value: lowerBound };
+  return { status: 'valid', value: Number(input) };
+};
