@@ -205,7 +205,7 @@
   > .notifi-topic-option-custom-input-prefix {
   position: absolute;
   left: 0.1rem;
-  top: 0.5rem;
+  top: 0.9rem;
   display: block;
   color: var(--notifi-topic-options-item-selected-text);
 }
@@ -213,8 +213,8 @@
 .notifi-topic-option-custom-input-container.selected
   > .notifi-topic-option-custom-input-suffix {
   position: absolute;
-  right: 0.5rem;
-  top: 1rem;
+  right: 0.3rem;
+  top: 0.9rem;
   display: block;
   color: var(--notifi-topic-options-item-selected-text);
 }

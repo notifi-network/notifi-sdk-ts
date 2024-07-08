@@ -357,7 +357,7 @@ export const convertOptionValue = (
   type: ValueType,
   direction?: ConvertOptionDirection,
 ) => {
-  if (!value) return '';
+  if (value === '') return '';
   direction = direction ?? ConvertOptionDirection.FtoB;
   if (type === 'percentage') {
     return direction === ConvertOptionDirection.FtoB

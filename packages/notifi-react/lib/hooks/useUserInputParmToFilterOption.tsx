@@ -80,7 +80,7 @@ export const useUserInputParmToFilterOption = (
     customInput,
     prefixAndSuffix,
     renewFilterOptions,
-    subscribedValue,
+    subscribedValue: subscribedValue.toString(),
     uiType,
     setCustomInput,
   };

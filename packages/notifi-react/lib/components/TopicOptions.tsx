@@ -63,9 +63,9 @@ export const TopicOptions = <T extends TopicRowCategory>(
   );
   const { isLoading: isLoadingTopic } = useNotifiTopicContext();
 
-  const [valueToBeSubscribed, setValueToBeSubscribed] = React.useState<
-    string | number
-  >(props.userInputParam.defaultValue);
+  const [valueToBeSubscribed, setValueToBeSubscribed] = React.useState<string>(
+    props.userInputParam.defaultValue.toString(),
+  );
 
   const options = props.userInputParam.options.map((option) =>
     option.toString(),
@@ -139,7 +139,7 @@ export const TopicOptions = <T extends TopicRowCategory>(
               disabled={isLoadingTopic}
               onChange={(evt) => {
                 setCustomInput((prev) => {
-                  if (evt.target.value === '') return '0';
+                  if (evt.target.value === '') return '';
                   if (
                     isUserInputValid(
                       props.userInputParam.kind,
@@ -152,7 +152,10 @@ export const TopicOptions = <T extends TopicRowCategory>(
                 });
               }}
               onBlur={(evt) => {
-                if (customInput === '') return;
+                if (customInput === '')
+                  return options.includes(selectedOption)
+                    ? ''
+                    : setCustomInput(selectedOption);
                 selectOrInputValue(evt.target.value);
               }}
               className={clsx(
@@ -185,18 +188,25 @@ const isTopicGroupOptions = (
 const isUserInputValid = (type: ValueType, userInputValue: string | number) => {
   if (userInputValue === '') return true;
   // 'percentage' and 'price' are deprecated. For legacy support only
+  const leadingZeroRegex = /^0\d+/; // regex for leading 0
   if (type === 'percentage' || type === 'price' || type === 'float') {
     // regex for only allow float
-    const regex1 = /^\d+(\.)?$/;
-    const regex2 = /^\d+(\.\d+)?$/;
+    const floatRegex1 = /^\d+(\.)?$/; // regex for 0.
+    const floatRegex2 = /^\d+(\.\d+)?$/; // regex for float
+
     return (
-      regex1.test(userInputValue.toString()) ||
-      regex2.test(userInputValue.toString())
+      !leadingZeroRegex.test(userInputValue.toString()) &&
+      (floatRegex1.test(userInputValue.toString()) ||
+        floatRegex2.test(userInputValue.toString()))
     );
   }
   if (type === 'integer') {
-    // regex for only allow integer
-    return /^\d+$/.test(userInputValue.toString());
+    return (
+      !leadingZeroRegex.test(userInputValue.toString()) &&
+      /^\d+$/.test(userInputValue.toString()) // regex for only allow integer
+    );
   }
   return true;
 };
+
+// An regex for only allow float. But not allow invalid leading zero (e.g. 01, 001, 00.1, 000.1 ...)
