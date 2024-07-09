@@ -72,8 +72,14 @@ export type UserInputParam<T extends UiType> = {
   defaultValue: string | number;
   allowCustomInput?: boolean;
   prefixAndSuffix?: PrefixAndSuffix;
+  customInputConstraints?: CustomInputConstraints;
 };
 
+export type CustomInputConstraints = {
+  maxDecimalPlaces?: number;
+  upperBound?: number;
+  lowerBound?: number;
+};
 export type UiType = 'radio' | 'button';
 export type FilterType = 'AlertFilter';
 
