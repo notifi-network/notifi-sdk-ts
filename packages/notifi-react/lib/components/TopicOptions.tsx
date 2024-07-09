@@ -216,7 +216,7 @@ const isUserInputValid = (
     const floatRegex1 = /^\d+(\.)?$/; // regex for 0.
     const floatRegex2 = /^\d+(\.\d+)?$/; // regex for float
     const floatWithMaxDecimalPlacesRegex = new RegExp(
-      `^\\d+(\\.\\d{0,${customInputConstraint?.maxDecimalPlaces ?? 18}})?$`, // If not provided, default to 18 decimal places (EVM big int limit)
+      `^\\d+(\\.\\d{0,${customInputConstraint?.maxDecimalPlaces ?? 18}})?$`, // If not provided, default to 18 decimal places (EVM bigint limit)
     );
 
     return (

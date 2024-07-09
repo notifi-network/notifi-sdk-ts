@@ -140,6 +140,7 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  -webkit-line-clamp: 1;
 }
 
 /* InboxHistoryDetail styles */
