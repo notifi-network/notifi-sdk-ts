@@ -1,4 +1,5 @@
-schema: https://api.dev.notifi.network/gql/
+# TODO: Temporary use prod to get rid of  dev breaking change (connectWallet being removed 20240710) -> Should change back to https://api.dev.notifi.network/gql/
+schema: https://api.notifi.network/gql/
 documents: ./lib/gql/**/*.gql.ts
 generates:
   ./lib/gql/generated.ts:
