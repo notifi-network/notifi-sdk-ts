@@ -7,7 +7,7 @@ import React, {
   useState,
 } from 'react';
 
-import { getFusionEventMetadata, resolveAlertName } from '../utils';
+import { getFusionEventMetadata } from '../utils';
 import { useNotifiFrontendClientContext } from './NotifiFrontendClientContext';
 import { useNotifiTenantConfigContext } from './NotifiTenantConfigContext';
 
@@ -96,6 +96,18 @@ export const NotifiHistoryContextProvider: FC<
       const cardEventTypeNames = new Set(
         cardConfig?.eventTypes?.map((event) => event.name) ?? [],
       );
+      // TODO: Use FusionEventId to filter the history items (Blocker: MVP-5101)
+      // const cardEventFusionIds = new Set(
+      //   cardConfig?.eventTypes?.map((event) =>
+      //     event.type === 'fusion'
+      //       ? resolveStringRef(
+      //           `getHistoryItem - resolve ${event.name}`,
+      //           event.fusionEventId,
+      //           {},
+      //         )
+      //       : '',
+      //   ) ?? [],
+      // );
       if (cardEventTypeNames.size === 0) {
         return;
       }
@@ -121,6 +133,9 @@ export const NotifiHistoryContextProvider: FC<
         const validHistoryItems = result.nodes.filter((node) => {
           if (!node.detail || !validateEventDetails(node.detail)) return false;
           return cardEventTypeNames.has(node.detail.sourceName);
+          // TODO: Use FusionEventId to filter the history items (Blocker: MVP-5101)
+          // ||
+          // cardEventFusionIds.has(node.detail.fusionEventId)
         });
 
         setHistoryItems((existing) =>
@@ -246,21 +261,21 @@ export const NotifiHistoryContextProvider: FC<
         };
       }
 
-      const resolved = resolveAlertName(eventDetails.sourceName);
-
-      const fusionTopic = fusionEventTopics.find(
-        (topic) =>
-          topic.fusionEventDescriptor.id === resolved.fusionEventTypeId,
+      const fusionEventTopic = fusionEventTopics.find(
+        (fusionEventTopic) =>
+          // TODO: Use FusionEventId to find the topic (Blocker: MVP-5101)
+          // fusionEventTopic.uiConfig.fusionEventId ===
+          //   eventDetails.fusionEventId ||
+          fusionEventTopic.uiConfig.name === eventDetails.sourceName,
       );
-
-      const fusionMetadata = fusionTopic
-        ? getFusionEventMetadata(fusionTopic)
+      const fusionEventMetadata = fusionEventTopic
+        ? getFusionEventMetadata(fusionEventTopic)
         : null;
 
       const historyTopic =
-        fusionTopic?.uiConfig.topicGroupName ?? // display topic group name if it belongs to a certain topic group
-        fusionMetadata?.uiConfigOverride?.historyDisplayName ?? // display topic name if it has a custom display name
-        fusionTopic?.fusionEventDescriptor.name ?? // display topic name if it has no custom display name
+        fusionEventMetadata?.uiConfigOverride?.historyDisplayName || // display topic name if it has a custom display name
+        fusionEventTopic?.uiConfig.topicGroupName || // display topic group name if it belongs to a certain topic group
+        fusionEventTopic?.fusionEventDescriptor.name || // display topic name if it has no custom display name
         eventDetails.sourceName; // backward compatibility for legacy alerts
 
       return {

@@ -5,7 +5,11 @@ import React from 'react';
 import { Icon } from '../assets/Icons';
 import { useNotifiTargetContext, useNotifiTopicContext } from '../context';
 import { useComponentPosition } from '../hooks/useComponentPosition';
-import { getUserInputParams, isTopicGroupValid } from '../utils';
+import {
+  getFusionEventMetadata,
+  getUserInputParams,
+  isTopicGroupValid,
+} from '../utils';
 import { Toggle } from './Toggle';
 import {
   TopicGroupRowMetadata,
@@ -63,8 +67,10 @@ export const TopicRow = <T extends TopicRowCategory>(
 
   const title = isTopicGroup
     ? props.topicGroupName
-    : benchmarkTopic.uiConfig.displayNameOverride ??
-      benchmarkTopic.uiConfig.name;
+    : getFusionEventMetadata(benchmarkTopic)?.uiConfigOverride
+        ?.topicDisplayName || // 1. Show topic displayname in fusionEventMetadata
+      benchmarkTopic.uiConfig.displayNameOverride || // 2. Fall back to cardConfig'displayNameOverride  (May deprecated sooner or later)
+      benchmarkTopic.uiConfig.name; // 3. Fall back to topic name
 
   const toggleStandAloneTopic = async (topic: FusionEventTopic) => {
     if (!targetGroupId) return;
