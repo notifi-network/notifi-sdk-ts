@@ -8,7 +8,7 @@
     "start": "next start",
     "test": "cypress run --component --spec 'cypress/component/NotifiCardModal.cy.tsx' --browser chrome",
     "cypress:open": "cypress open",
-    "cypress:ci": "cypress run --component --spec 'cypress/component/NotifiCardModal.cy.tsx' --browser chrome"
+    "cypress:ci": "cypress run --component --group notifi-e2e --spec 'cypress/component/NotifiCardModal.cy.tsx' --browser chrome --record"
   },
   "dependencies": {
     "ethers": "^6.11.1",
