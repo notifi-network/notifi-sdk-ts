@@ -45,7 +45,11 @@ export type Target =
 export type FormTarget = Extract<Target, 'email' | 'phoneNumber' | 'telegram'>;
 export type ToggleTarget = Extract<Target, 'discord' | 'slack' | 'wallet'>;
 
-export type TargetInputFromValue = { value: string; error?: string };
+export type TargetInputFromValue = {
+  value: string;
+  error?: string;
+  isValid?: boolean;
+};
 type TargetInputForm = Record<FormTarget, TargetInputFromValue>;
 
 export type TargetInputToggles = Record<ToggleTarget, boolean>;
@@ -198,12 +202,14 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
   const targetGroupToBeSaved: TargetGroupInput = {
     name: 'Default',
     emailAddress:
-      targetInputs.email.value === '' ? undefined : targetInputs.email.value,
+      targetInputs.email.value === '' || !targetInputs.email.isValid
+        ? undefined
+        : targetInputs.email.value,
     phoneNumber: isValidPhoneNumber(targetInputs.phoneNumber.value)
       ? targetInputs.phoneNumber.value
       : undefined,
     telegramId:
-      targetInputs.telegram.value === ''
+      targetInputs.telegram.value === '' || !targetInputs.telegram.isValid
         ? undefined
         : formatTelegramForSubscription(targetInputs.telegram.value),
     discordId: targetInputs.discord ? 'Default' : undefined,
@@ -310,16 +316,74 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
       .filter((item): item is Target => !!item);
   }, [targetInfoPrompts, targetData]);
 
+  const EMAIL_REGEX = /^[a-zA-Z0-9._:$!%-+]+@[a-zA-Z0-9.-]+.[a-zA-Z]$/;
+  const TELEGRAM_REGEX =
+    /^@?(?=\w{5,32}\b)[a-zA-Z0-9]+(?:[a-zA-Z0-9_ ]+[a-zA-Z0-9])*$/;
+
+  const validateEmail = (
+    email: string,
+  ): { isValid: boolean; error?: string } => {
+    if (email === '') {
+      return { isValid: true };
+    }
+    const isValid = EMAIL_REGEX.test(email);
+    return {
+      isValid,
+      error: isValid ? undefined : 'Invalid email address',
+    };
+  };
+
+  const validateTelegram = (
+    telegramId: string,
+  ): { isValid: boolean; error?: string } => {
+    if (telegramId === '') {
+      return { isValid: true };
+    }
+    const isValid = telegramId.length > 1 && TELEGRAM_REGEX.test(telegramId);
+    return {
+      isValid,
+      error: isValid ? undefined : 'Invalid telegram ID',
+    };
+  };
+
   const updateTargetInputs = useCallback(
     <T extends 'form' | 'toggle'>(
       target: T extends 'form' ? FormTarget : ToggleTarget,
-      value: T extends 'form' ? { value: string; error?: string } : boolean,
+      value: T extends 'form' ? TargetInputFromValue : boolean,
     ) => {
       if (target in targetInputs) {
-        setTargetInputs((prev) => ({
-          ...prev,
-          [target]: value,
-        }));
+        setTargetInputs((prev) => {
+          if (typeof value === 'object' && 'value' in value) {
+            if (target === 'email') {
+              const { isValid, error } = validateEmail(value.value);
+              return {
+                ...prev,
+                [target]: { value: value.value, error, isValid },
+              };
+            } else if (target === 'telegram') {
+              const { isValid, error } = validateTelegram(value.value);
+              return {
+                ...prev,
+                [target]: { value: value.value, error, isValid },
+              };
+            } else {
+              // For other form inputs (e.g., phoneNumber)
+              return {
+                ...prev,
+                [target]: { value: value.value, error: value.error },
+              };
+            }
+          } else if (typeof value === 'boolean') {
+            // For toggle inputs
+            return {
+              ...prev,
+              [target]: value,
+            };
+          }
+          // If we reach here, it means we got an unexpected input
+          console.error(`Unexpected input for target ${target}:`, value);
+          return prev; // Return previous state unchanged
+        });
       }
     },
     [],
@@ -423,27 +487,47 @@ export const NotifiTargetContextProvider: FC<PropsWithChildren> = ({
     setTargetGroupId(targetGroup?.id ?? null);
 
     // Update inputs state
-    setTargetInputs((prev) => ({
-      ...prev,
-      email: {
-        value: targetGroup?.emailTargets?.[0]?.emailAddress ?? prev.email.value,
-      },
-      phoneNumber: {
-        value:
-          targetGroup?.smsTargets?.[0]?.phoneNumber ?? prev.phoneNumber.value,
-      },
-      telegram: {
-        value:
-          targetGroup?.telegramTargets?.[0]?.telegramId ?? prev.telegram.value,
-      },
-      discord: !!targetGroup?.discordTargets?.find(
-        (it) => it?.name === 'Default',
-      ),
-      slack: !!targetGroup?.slackChannelTargets?.find(
-        (it) => it?.name === 'Default',
-      ),
-      wallet: !!targetGroup?.web3Targets?.find((it) => it?.name === 'Default'),
-    }));
+    setTargetInputs((prev) => {
+      const newEmail =
+        targetGroup?.emailTargets?.[0]?.emailAddress ?? prev.email.value;
+      const isEmailChanged = newEmail !== prev.email.value;
+      const { isValid: isEmailValid, error: emailError } = isEmailChanged
+        ? validateEmail(newEmail)
+        : prev.email;
+
+      const newTelegram =
+        targetGroup?.telegramTargets?.[0]?.telegramId ?? prev.telegram.value;
+      const isTelegramChanged = newTelegram !== prev.telegram.value;
+      const { isValid: isTelegramValid, error: telegramError } =
+        isTelegramChanged ? validateTelegram(newTelegram) : prev.telegram;
+
+      return {
+        ...prev,
+        email: {
+          value: newEmail,
+          error: isEmailChanged ? emailError : prev.email.error,
+          isValid: isEmailChanged ? isEmailValid : prev.email.isValid,
+        },
+        telegram: {
+          value: newTelegram,
+          error: isTelegramChanged ? telegramError : prev.telegram.error,
+          isValid: isTelegramChanged ? isTelegramValid : prev.telegram.isValid,
+        },
+        phoneNumber: {
+          value:
+            targetGroup?.smsTargets?.[0]?.phoneNumber ?? prev.phoneNumber.value,
+        },
+        discord: !!targetGroup?.discordTargets?.find(
+          (it) => it?.name === 'Default',
+        ),
+        slack: !!targetGroup?.slackChannelTargets?.find(
+          (it) => it?.name === 'Default',
+        ),
+        wallet: !!targetGroup?.web3Targets?.find(
+          (it) => it?.name === 'Default',
+        ),
+      };
+    });
 
     // Update target data (TargetData) & info prompts (TargetInfoPrompt)
     const emailTarget = targetGroup?.emailTargets?.[0];
