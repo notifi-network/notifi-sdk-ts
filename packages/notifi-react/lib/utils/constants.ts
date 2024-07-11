@@ -7,11 +7,6 @@ export const defaultCopy = {
     hardwareWalletLabel: 'Use Hardware Wallet',
     buttonText: 'Next',
   },
-  ftuAlertList: {
-    title: 'Notifications',
-    description: 'See your activity and gain access to alerts',
-    buttonText: 'Next',
-  },
   poweredByNotifi: 'Powered by',
   inputFields: {
     email: 'Email address',
