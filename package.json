@@ -6,7 +6,7 @@
     "docs": "npx typedoc",
     "format": "prettier --config .prettierrc packages/**/lib/**/*.ts* --write",
     "lint": "eslint --ext .ts,.tsx packages/**/lib --fix",
-    "test": "npx lerna --scope=@notifi-network/notifi-react-example run test"
+    "test": "npx lerna --scope=@notifi-network/notifi-react-example-v2 run test"
   },
   "devDependencies": {
     "nx": "^16.9.1",
