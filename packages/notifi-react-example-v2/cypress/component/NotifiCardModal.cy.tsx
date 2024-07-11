@@ -8,6 +8,7 @@ import { aliasMutation, aliasQuery, getTopicList } from '../utils';
 
 describe('NotifiCardModal First Time User Test', () => {
   beforeEach(() => {
+    cy.wait(2000); // To avoid "Too many login requests have been made" error
     const env = Cypress.env('ENV');
     cy.loadCSS();
     cy.intercept('POST', envUrl(env), (req) => {
@@ -44,6 +45,24 @@ describe('NotifiCardModal First Time User Test', () => {
     cy.intercept('POST', envUrl(env), (req) =>
       aliasMutation(req, 'createFusionAlerts'),
     );
+    cy.intercept('POST', envUrl(env), (req) =>
+      aliasQuery(req, 'getEmailTargets'),
+    );
+    cy.intercept('POST', envUrl(env), (req) =>
+      aliasQuery(req, 'getSmsTargets'),
+    );
+    cy.intercept('POST', envUrl(env), (req) =>
+      aliasQuery(req, 'getTelegramTargets'),
+    );
+    cy.intercept('POST', envUrl(env), (req) =>
+      aliasMutation(req, 'createEmailTarget'),
+    );
+    cy.intercept('POST', envUrl(env), (req) =>
+      aliasMutation(req, 'createSmsTarget'),
+    );
+    cy.intercept('POST', envUrl(env), (req) =>
+      aliasMutation(req, 'createTelegramTarget'),
+    );
   });
 
   it('FTU flow - Connect view', () => {
@@ -79,16 +98,24 @@ describe('NotifiCardModal First Time User Test', () => {
       const tenantConfig = response?.body.data.findTenantConfig;
 
       const cardConfig = JSON.parse(tenantConfig.dataJson) as CardConfigItemV1;
-      console.log({ cardConfig });
-      cy.get('[data-cy="notifi-connect-button"]').click();
+      cy.get('[data-cy="notifi-connect-button"]').should('exist').click();
       // #1 - Connect view (Connect.tsx): Click on connect button, the following queries should be made
       cy.wait('@gqlLogInFromDappMutation');
       cy.wait('@gqlFetchFusionDataQuery');
-      cy.wait('@gqlGetUserSettingsQuery');
-      cy.wait('@gqlGetFusionNotificationHistoryQuery');
-      cy.wait('@gqlGetUnreadNotificationHistoryCountQuery');
-      cy.wait('@gqlFetchFusionDataQuery');
-      cy.wait('@gqlFetchFusionDataQuery');
+      // NOTE: Initial fetch after logging in. The following requests are triggered by the effect of frontendClientStatus.isAuthenticated (after logging in)
+      cy.wait('@gqlGetUserSettingsQuery'); // --> NotifiUserSettingContext
+      cy.wait('@gqlGetFusionNotificationHistoryQuery'); // --> NotifiHistoryContext
+      cy.wait('@gqlGetUnreadNotificationHistoryCountQuery'); // --> NotifiHistoryContext
+      cy.wait('@gqlFetchFusionDataQuery'); // --> NotifiTargetContext
+      cy.wait('@gqlFetchFusionDataQuery'); // --> NotifiTopicContext
+      // NOTE: Ensure targets and subscribe topics
+      cy.wait('@gqlGetTargetGroupsQuery'); // --> Create new target group#1:  frontendClient.ensureTargetGroup()
+      cy.wait('@gqlCreateTargetGroupMutation'); // -->  Create new target group#1#2: frontendClient.ensureTargetGroup()
+      cy.wait('@gqlFetchFusionDataQuery'); // --> Refresh target data after ensuring targetGroup:  frontendClient.ensureTargetGroup().then(()=>fetchFusionData())
+      cy.wait('@gqlGetAlertsQuery'); // --> subscribe default alerts#1:  (in useConnect.ts --> ensureFusionAlerts)
+      cy.wait('@gqlCreateFusionAlertsMutation'); // --> subscribe default alerts#2:  (in useConnect.ts --> ensureFusionAlerts)
+      cy.wait('@gqlFetchFusionDataQuery'); // --> Update and render updated alerts after subscribing (ensureFusionAlerts.then)
+      cy.wait('@gqlUpdateUserSettingsMutation'); // --> Update FTU stage to land on FtuTargetEdit.tsx
 
       // #2 - FTU Target Edit view (FtuTargetEdit.tsx)
       //   * Check wether all active contact info are displayed
@@ -112,26 +139,50 @@ describe('NotifiCardModal First Time User Test', () => {
             )
               .children('.notifi-target-input-field-input-container')
               .children('input')
-              .type(`tester-${contact}@notifi.network`);
+              .type(
+                contact === 'sms'
+                  ? '+18882378289' // Dummy test phone number
+                  : `tester-${contact}@notifi.network`,
+              );
           }
           // TODO: implement toggle type
         }
       }
       //   * Click on Next button: The following queries should be made
-      cy.get('[data-cy="notifi-ftu-target-edit-button"]').click();
-      cy.wait('@gqlGetTargetGroupsQuery');
-      cy.wait('@gqlCreateTargetGroupMutation');
-      cy.wait('@gqlFetchFusionDataQuery');
-      cy.wait('@gqlGetAlertsQuery');
-      cy.wait('@gqlCreateFusionAlertsMutation');
-      cy.wait('@gqlFetchFusionDataQuery');
-      cy.wait('@gqlUpdateTargetGroupMutation');
+      cy.get('[data-cy="notifi-ftu-target-edit-button"]')
+        .should('exist')
+        .click();
+      cy.wait('@gqlGetTargetGroupsQuery'); // --> Get existing target groups. In frontendClient.ensureTargetGroup()
+      for (const contact of supportedContact) {
+        // --> Get target for each form target (email, sms, telegram). In frontendClient.ensureTargetGroup()
+        if (
+          contact === 'email' ||
+          contact === 'sms' ||
+          contact === 'telegram'
+        ) {
+          cy.wait(
+            `@gqlGet${
+              contact.charAt(0).toUpperCase() + contact.slice(1)
+            }TargetsQuery`,
+          );
+          cy.wait(
+            `@gqlCreate${
+              contact.charAt(0).toUpperCase() + contact.slice(1)
+            }TargetMutation`,
+          );
+        }
+        // TODO: implement toggle type
+      }
+      cy.wait('@gqlUpdateTargetGroupMutation'); // --> Update target group with new targets. In frontendClient.ensureTargetGroup()
+      cy.wait('@gqlFetchFusionDataQuery'); // --> Refresh target data after ensuring targetGroup:  frontendClient.ensureTargetGroup().then(()=>fetchFusionData())
 
       // #3 - FTU Target List view (FtuTargetList.tsx)
-      cy.get('[data-cy="notifi-ftu-target-list-button"]').click();
+      cy.get('[data-cy="notifi-ftu-target-list-button"]')
+        .should('exist')
+        .click();
       //   * Click on Next button: The following query should be made
       cy.wait('@gqlUpdateUserSettingsMutation');
-      cy.wait(2000); // Wait one sec to avoid hitting endpoint to often
+      // cy.wait(2000); // Wait one sec to avoid hitting endpoint to often
     });
   });
 
@@ -140,23 +191,30 @@ describe('NotifiCardModal First Time User Test', () => {
     cy.overrideCardConfig({
       isContactInfoRequired: false,
     });
-    cy.wait('@gqlFindTenantConfigQuery').then(({ response }) => {
-      const tenantConfig = response?.body.data.findTenantConfig;
-
-      const cardConfig = JSON.parse(tenantConfig.dataJson) as CardConfigItemV1;
-      console.log({ cardConfig });
-      cy.get('[data-cy="notifi-connect-button"]').click();
+    cy.wait('@gqlFindTenantConfigQuery').then(() => {
+      cy.get('[data-cy="notifi-connect-button"]').should('exist').click();
       // #1 - Connect view (Connect.tsx): Click on connect button, the following queries should be made
       cy.wait('@gqlLogInFromDappMutation');
       cy.wait('@gqlFetchFusionDataQuery');
-      cy.wait('@gqlGetUserSettingsQuery');
-      cy.wait('@gqlGetFusionNotificationHistoryQuery');
-      cy.wait('@gqlGetUnreadNotificationHistoryCountQuery');
-      cy.wait('@gqlFetchFusionDataQuery');
-      cy.wait('@gqlFetchFusionDataQuery');
+      // NOTE: Initial fetch after logging in. The following requests are triggered by the effect of frontendClientStatus.isAuthenticated (after logging in)
+      cy.wait('@gqlGetUserSettingsQuery'); // --> NotifiUserSettingContext
+      cy.wait('@gqlGetFusionNotificationHistoryQuery'); // --> NotifiHistoryContext
+      cy.wait('@gqlGetUnreadNotificationHistoryCountQuery'); // --> NotifiHistoryContext
+      cy.wait('@gqlFetchFusionDataQuery'); // --> NotifiTargetContext
+      cy.wait('@gqlFetchFusionDataQuery'); // --> NotifiTopicContext
+      // NOTE: Ensure targets and subscribe topics
+      cy.wait('@gqlGetTargetGroupsQuery'); // --> Create new target group#1:  frontendClient.ensureTargetGroup()
+      cy.wait('@gqlCreateTargetGroupMutation'); // -->  Create new target group#1#2: frontendClient.ensureTargetGroup()
+      cy.wait('@gqlFetchFusionDataQuery'); // --> Refresh target data after ensuring targetGroup:  frontendClient.ensureTargetGroup().then(()=>fetchFusionData())
+      cy.wait('@gqlGetAlertsQuery'); // --> subscribe default alerts#1:  (in useConnect.ts --> ensureFusionAlerts)
+      cy.wait('@gqlCreateFusionAlertsMutation'); // --> subscribe default alerts#2:  (in useConnect.ts --> ensureFusionAlerts)
+      cy.wait('@gqlFetchFusionDataQuery'); // --> Update and render updated alerts after subscribing (ensureFusionAlerts.then)
+      cy.wait('@gqlUpdateUserSettingsMutation'); // --> Update FTU stage to land on FtuTargetEdit.tsx
 
       // #2 - FTU Alert Edit view (FtuAlertEdit.tsx): Click on Next button, the following query should be made
-      cy.get('[data-cy="notifi-ftu-alert-edit-button"]').click();
+      cy.get('[data-cy="notifi-ftu-alert-edit-button"]')
+        .should('exist')
+        .click();
       cy.wait('@gqlUpdateUserSettingsMutation');
     });
   });
@@ -164,6 +222,7 @@ describe('NotifiCardModal First Time User Test', () => {
 
 describe('NotifiCardModal Inbox Test', () => {
   beforeEach(() => {
+    cy.wait(2000); // To avoid "Too many login requests have been made" error
     const env = Cypress.env('ENV');
     cy.loadCSS();
     cy.clearNotifiStorage();
@@ -208,15 +267,16 @@ describe('NotifiCardModal Inbox Test', () => {
     });
     cy.mountCardModal();
     cy.wait('@gqlFindTenantConfigQuery');
-    cy.get('[data-cy="notifi-connect-button"]').click();
+    cy.get('[data-cy="notifi-connect-button"]').should('exist').click();
     // #1 - Connect view (Connect.tsx): Click on connect button, the following queries should be made
     cy.wait('@gqlLogInFromDappMutation');
     cy.wait('@gqlFetchFusionDataQuery');
-    cy.wait('@gqlGetUserSettingsQuery');
-    cy.wait('@gqlGetFusionNotificationHistoryQuery');
-    cy.wait('@gqlGetUnreadNotificationHistoryCountQuery');
-    cy.wait('@gqlFetchFusionDataQuery');
-    cy.wait('@gqlFetchFusionDataQuery');
+    // NOTE: Initial fetch after logging in. The following requests are triggered by the effect of frontendClientStatus.isAuthenticated (after logging in)
+    cy.wait('@gqlGetUserSettingsQuery'); // --> NotifiUserSettingContext
+    cy.wait('@gqlGetFusionNotificationHistoryQuery'); // --> NotifiHistoryContext
+    cy.wait('@gqlGetUnreadNotificationHistoryCountQuery'); // --> NotifiHistoryContext
+    cy.wait('@gqlFetchFusionDataQuery'); // --> NotifiTargetContext
+    cy.wait('@gqlFetchFusionDataQuery'); // --> NotifiTopicContext
     // #2 - Check if nav tabs exist & click on history tab
     cy.get('[data-cy="notifi-inbox-nav-tabs"]')
       .should('exist')
@@ -229,6 +289,7 @@ describe('NotifiCardModal Inbox Test', () => {
 
     // #4 - Click on a history item
     cy.get('[data-cy="notifi-history-list"]')
+      .should('exist')
       .children('.notifi-history-list-main')
       .children('.notifi-history-row')
       .eq(0)
@@ -236,25 +297,24 @@ describe('NotifiCardModal Inbox Test', () => {
     // #5: Confirm both history view & detail view are rendered
     cy.get('[data-cy="notifi-history-list"]').should('exist');
     cy.get('[data-cy="notifi-history-detail"]').should('exist');
-    cy.wait(2000); // To avoid "Too many login requests have been made" error
   });
 
   it('INBOX flow - Config view: empty target', () => {
     // check whether can successfully find tenant config
-
     cy.mountCardModal();
     cy.overrideTargetGroup();
     cy.wait('@gqlFindTenantConfigQuery');
 
-    cy.get('[data-cy="notifi-connect-button"]').click();
+    cy.get('[data-cy="notifi-connect-button"]').should('exist').click();
     // #1 - Connect view (Connect.tsx): Click on connect button, the following queries should be made
     cy.wait('@gqlLogInFromDappMutation');
     cy.wait('@gqlFetchFusionDataQuery');
-    cy.wait('@gqlGetUserSettingsQuery');
-    cy.wait('@gqlGetFusionNotificationHistoryQuery');
-    cy.wait('@gqlGetUnreadNotificationHistoryCountQuery');
-    cy.wait('@gqlFetchFusionDataQuery');
-    cy.wait('@gqlFetchFusionDataQuery');
+    // NOTE: Initial fetch after logging in. The following requests are triggered by the effect of frontendClientStatus.isAuthenticated (after logging in)
+    cy.wait('@gqlGetUserSettingsQuery'); // --> NotifiUserSettingContext
+    cy.wait('@gqlGetFusionNotificationHistoryQuery'); // --> NotifiHistoryContext
+    cy.wait('@gqlGetUnreadNotificationHistoryCountQuery'); // --> NotifiHistoryContext
+    cy.wait('@gqlFetchFusionDataQuery'); // --> NotifiTargetContext
+    cy.wait('@gqlFetchFusionDataQuery'); // --> NotifiTopicContext
     // #2 - Check if nav tabs exist & click on gear tab
     cy.get('[data-cy="notifi-inbox-nav-tabs"]')
       .should('exist')
@@ -264,7 +324,6 @@ describe('NotifiCardModal Inbox Test', () => {
     cy.get('.notifi-topic-list').should('exist');
     cy.get('.notifi-target-state-banner').should('exist').click();
     cy.get('.notifi-inbox-config-target-edit-button-text').should('exist');
-    cy.wait(2000); // To avoid "Too many login requests have been made" error
   });
 
   it('INBOX flow - Config view: with target', () => {
@@ -272,15 +331,16 @@ describe('NotifiCardModal Inbox Test', () => {
     cy.mountCardModal();
     cy.wait('@gqlFindTenantConfigQuery');
 
-    cy.get('[data-cy="notifi-connect-button"]').click();
+    cy.get('[data-cy="notifi-connect-button"]').should('exist').click();
     // #1 - Connect view (Connect.tsx): Click on connect button, the following queries should be made
     cy.wait('@gqlLogInFromDappMutation');
     cy.wait('@gqlFetchFusionDataQuery');
-    cy.wait('@gqlGetUserSettingsQuery');
-    cy.wait('@gqlGetFusionNotificationHistoryQuery');
-    cy.wait('@gqlGetUnreadNotificationHistoryCountQuery');
-    cy.wait('@gqlFetchFusionDataQuery');
-    cy.wait('@gqlFetchFusionDataQuery');
+    // NOTE: Initial fetch after logging in. The following requests are triggered by the effect of frontendClientStatus.isAuthenticated (after logging in)
+    cy.wait('@gqlGetUserSettingsQuery'); // --> NotifiUserSettingContext
+    cy.wait('@gqlGetFusionNotificationHistoryQuery'); // --> NotifiHistoryContext
+    cy.wait('@gqlGetUnreadNotificationHistoryCountQuery'); // --> NotifiHistoryContext
+    cy.wait('@gqlFetchFusionDataQuery'); // --> NotifiTargetContext
+    cy.wait('@gqlFetchFusionDataQuery'); // --> NotifiTopicContext
     // #2 - Check if nav tabs exist & click on gear tab
     cy.get('[data-cy="notifi-inbox-nav-tabs"]')
       .should('exist')
@@ -288,6 +348,5 @@ describe('NotifiCardModal Inbox Test', () => {
       .eq(1)
       .click();
     cy.get('.notifi-target-state-banner-verify').should('exist');
-    cy.wait(2000); // To avoid "Too many login requests have been made" error
   });
 });
