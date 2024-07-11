@@ -1,2 +1,1 @@
-export { aliasMutation } from './graphql-utils';
-// export * from './graphql-utils';
+export { aliasMutation, aliasQuery, hasOperationName } from './graphql-utils';

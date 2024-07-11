@@ -24,6 +24,6 @@ jobs:
           component: true
           record: true
           build: npm run build
-          command: npx lerna --scope=@notifi-network/notifi-react-example run cypress:ci
+          command: npx lerna --scope=@notifi-network/notifi-react-example-v2 run cypress:ci
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
