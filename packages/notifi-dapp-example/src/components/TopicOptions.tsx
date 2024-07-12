@@ -92,8 +92,18 @@ export const TopicOptions = <T extends TopicRowCategory>(
         </div>
       ) : null}
 
-      <div className="text-notifi-error text-xs ml-14 mt-2">{errorMessage}</div>
-      <div className="flex flex-row ml-14 mt-3 mb-2">
+      {errorMessage ? (
+        <div className="text-notifi-error text-xs ml-14 mt-2">
+          {errorMessage}
+        </div>
+      ) : null}
+      <div
+        className={`flex flex-row ml-14 ${
+          uiType === 'radio' && !props.userInputParam.options[0]
+            ? null
+            : 'mt-3 mb-2'
+        }`}
+      >
         {props.userInputParam.options.map((option, id) => {
           return (
             <div key={id}>
@@ -112,10 +122,7 @@ export const TopicOptions = <T extends TopicRowCategory>(
                     <div>
                       {'prefix' in prefixAndSuffix && prefixAndSuffix.prefix}
                       {option}
-                      {props.userInputParam.kind === 'integer'
-                        ? 'x'
-                        : ' suffix' in prefixAndSuffix &&
-                          prefixAndSuffix.suffix}
+                      {'suffix' in prefixAndSuffix && prefixAndSuffix.suffix}
                     </div>
                   </button>
                 )
@@ -167,9 +174,17 @@ export const TopicOptions = <T extends TopicRowCategory>(
               props.userInputParam.options[0] ? 'w-[6.5rem]' : 'w-[247px]'
             }`}
           >
-            {props.userInputParam.options[0]
-              ? 'prefix' in prefixAndSuffix && prefixAndSuffix.prefix
-              : null}
+            {props.userInputParam.options[0] ? (
+              customInput ? (
+                <div className="absolute left-3 bottom-3">
+                  {'prefix' in prefixAndSuffix && prefixAndSuffix.prefix}
+                </div>
+              ) : null
+            ) : (
+              <div className="absolute left-3 bottom-3">
+                {'prefix' in prefixAndSuffix && prefixAndSuffix.prefix}
+              </div>
+            )}
             <input
               disabled={isLoadingTopic}
               onChange={(evt) => {
@@ -219,25 +234,24 @@ export const TopicOptions = <T extends TopicRowCategory>(
               className={` ${
                 props.userInputParam.options[0]
                   ? 'w-[6rem] text-center'
-                  : 'w-full pl-3'
+                  : 'w-full pl-7'
               } h-12 bg-notifi-card-bg rounded-md mr-2 text-notifi-text ${
                 customInput && props.userInputParam.options[0]
                   ? 'selected text-white border border-notifi-tenant-brand-bg focus:outline-none'
                   : 'focus:outline-none focus:border-notifi-card-border'
               }`}
             />
-            {props.userInputParam.options[0] ? null : (
+            {props.userInputParam.options[0] ? (
+              customInput ? (
+                <div className="absolute right-4 bottom-3">
+                  {'suffix' in prefixAndSuffix && prefixAndSuffix.suffix}
+                </div>
+              ) : null
+            ) : (
               <div className="absolute right-3 bottom-3">
-                {'prefix' in prefixAndSuffix && prefixAndSuffix.prefix}
+                {'suffix' in prefixAndSuffix && prefixAndSuffix.suffix}
               </div>
             )}
-            {customInput ? (
-              <div className="absolute right-4 bottom-3">
-                {props.userInputParam.kind === 'integer'
-                  ? 'x'
-                  : ' suffix' in prefixAndSuffix && prefixAndSuffix.suffix}
-              </div>
-            ) : null}
           </div>
         ) : null}
       </div>
