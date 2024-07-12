@@ -48,9 +48,16 @@ export const Ftu: React.FC<FtuProps> = (props) => {
   const { updateFtuStage } = useNotifiUserSettingContext();
   const [ftuView, setFtuView] = React.useState<FtuView | null>(null);
   const { frontendClientStatus } = useNotifiFrontendClientContext();
+  const isInitialLoaded = React.useRef(false);
 
   React.useEffect(() => {
-    if (!frontendClientStatus.isAuthenticated || isLoadingTarget) return;
+    if (
+      !frontendClientStatus.isAuthenticated ||
+      isLoadingTarget ||
+      isInitialLoaded.current
+    )
+      return;
+    isInitialLoaded.current = true;
     if (ftuStage === FtuStage.Destination && !hasTarget(targetData)) {
       setFtuView(FtuView.TargetEdit);
       return;
@@ -61,7 +68,7 @@ export const Ftu: React.FC<FtuProps> = (props) => {
     }
     setFtuView(FtuView.AlertEdit);
     return;
-  }, []);
+  }, [isLoadingTarget]);
 
   if (!ftuView) return null;
 
