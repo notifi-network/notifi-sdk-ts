@@ -21,17 +21,11 @@ declare global {
     interface Chainable {
       clearNotifiStorage(): Promise<void>;
       updateTargetGroup(targetGroup?: TargetGroup): Promise<void>;
-      // overrideTenantConfigWithFixture(
-      //   items: Record<string, any>,
-      //   fixtureName?: string,
-      // ): void;
 
       mountCardModal(isRandomMnemonic?: boolean): void;
       loadCSS(): void;
       overrideCardConfig(items: Record<string, any>): void;
       overrideTargetGroup(isEmpty?: boolean): void;
-      // overrideFetchDataTargetGroupWithFixture(fixtureName: string): void;
-      // overrideUserSettingsWithFixture(fixtureName: string): void;
     }
   }
 }
@@ -39,9 +33,7 @@ declare global {
 const loadCSS = () => {
   cy.document().then((doc) => {
     cy.readFile('../notifi-react/dist/index.css', 'utf-8').then((css) => {
-      // cy.readFile('node_modules/@notifi-network/', 'utf-8').then((css) => {
       cy.document().then((doc) => {
-        // console.log('FJAIEJFOISAJFIEJAIFJ', JSON.stringify(css));
         const style = doc.createElement('style');
         style.innerHTML = css;
         doc.head.appendChild(style);
@@ -97,31 +89,6 @@ const mountCardModal = (isRandomMnemonic?: boolean) => {
   );
 };
 
-const overrideTenantConfigWithFixture = (
-  items: Record<string, any>,
-  fixtureName?: string,
-) => {
-  const env = Cypress.env('ENV');
-  cy.fixture(fixtureName ?? 'test-tenantConfig.json').then((tenantConfig) => {
-    cy.intercept('POST', envUrl(env), (req) => {
-      aliasQuery(req, 'findTenantConfig');
-      if (hasOperationName(req, 'findTenantConfig')) {
-        req.reply((res) => {
-          const originalTenantConfig = JSON.parse(
-            res.body.data.findTenantConfig.dataJson,
-          );
-          const testTenantConfig = {
-            ...originalTenantConfig,
-            ...tenantConfig,
-            ...items,
-          };
-          res.body.data.findTenantConfig.dataJson =
-            JSON.stringify(testTenantConfig);
-        });
-      }
-    });
-  });
-};
 const overrideCardConfig = (items: Record<string, any>) => {
   const env = Cypress.env('ENV');
   cy.intercept('POST', envUrl(env), (req) => {
@@ -169,40 +136,6 @@ const overrideTargetGroup = (isEmpty?: boolean) => {
         };
       });
     }
-  });
-};
-
-const overrideFetchDataTargetGroupWithFixture = (fixtureName: string) => {
-  cy.fixture(fixtureName).then((targetGroup) => {
-    const env = Cypress.env('ENV');
-    cy.intercept('POST', envUrl(env), (req) => {
-      aliasQuery(req, 'fetchData');
-      if (hasOperationName(req, 'fetchData')) {
-        req.reply((res) => {
-          res.body.data = {
-            ...res.body.data,
-            targetGroup: [targetGroup],
-          };
-        });
-      }
-    });
-  });
-};
-
-const overrideUserSettingsWithFixture = (fixtureName: string) => {
-  cy.fixture(fixtureName).then((userSettings) => {
-    const env = Cypress.env('ENV');
-    cy.intercept('POST', envUrl(env), (req) => {
-      aliasQuery(req, 'getUserSettings');
-      if (hasOperationName(req, 'getUserSettings')) {
-        req.reply((res) => {
-          res.body.data = {
-            ...res.body.data,
-            userSettings,
-          };
-        });
-      }
-    });
   });
 };
 
@@ -256,19 +189,7 @@ const clearNotifiStorage = async () => {
 
 Cypress.Commands.add('clearNotifiStorage', clearNotifiStorage);
 Cypress.Commands.add('updateTargetGroup', updateTargetGroup);
-// Cypress.Commands.add(
-//   'overrideTenantConfigWithFixture',
-//   overrideTenantConfigWithFixture,
-// );
 Cypress.Commands.add('mountCardModal', mountCardModal);
 Cypress.Commands.add('loadCSS', loadCSS);
 Cypress.Commands.add('overrideCardConfig', overrideCardConfig);
 Cypress.Commands.add('overrideTargetGroup', overrideTargetGroup);
-// Cypress.Commands.add(
-//   'overrideFetchDataTargetGroupWithFixture',
-//   overrideFetchDataTargetGroupWithFixture,
-// );
-// Cypress.Commands.add(
-//   'overrideUserSettingsWithFixture',
-//   overrideUserSettingsWithFixture,
-// );

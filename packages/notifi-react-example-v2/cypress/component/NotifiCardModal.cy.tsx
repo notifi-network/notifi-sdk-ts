@@ -197,11 +197,12 @@ describe('NotifiCardModal Inbox Test', () => {
     cy.get('[data-cy="notifi-history-detail"]').should('exist');
   });
 
-  it.only('INBOX flow - Config view: empty target', () => {
+  it('INBOX flow - Config view: empty target', () => {
     // check whether can successfully find tenant config
     const env = Cypress.env('ENV');
-    cy.overrideTargetGroup();
+
     cy.mountCardModal();
+    cy.overrideTargetGroup();
     cy.intercept('POST', envUrl(env), (req) => {
       aliasQuery(req, 'findTenantConfig');
     });
