@@ -88,6 +88,7 @@ export const TargetInputToggle: React.FC<TargetInputToggleProps> = (props) => {
 
   return (
     <div
+      data-cy={`notifi-target-input-${props.targetType}`}
       className={clsx(
         'notifi-target-input-toggle-container',
         props.classNames?.container,

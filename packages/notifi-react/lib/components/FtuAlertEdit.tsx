@@ -60,6 +60,7 @@ export const FtuAlertEdit: React.FC<FtuAlertEditProps> = (props) => {
         )}
       >
         <button
+          data-cy="notifi-ftu-alert-edit-button"
           className={clsx(
             'notifi-ftu-alert-edit-button',
             props.classNames?.button,

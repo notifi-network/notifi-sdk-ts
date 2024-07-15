@@ -110,6 +110,7 @@ export const FtuAlertList: React.FC<FtuAlertListProps> = (props) => {
         {props.copy?.description ?? defaultCopy.ftuAlertList.description}
       </div>
       <div
+        data-cy="notifi-ftu-alert-list-container"
         className={clsx(
           'notifi-ftu-alert-list-container',
           props.classNames?.alertsContainer,
@@ -141,6 +142,7 @@ export const FtuAlertList: React.FC<FtuAlertListProps> = (props) => {
           'notifi-ftu-alert-list-button',
           props.classNames?.buttonText,
         )}
+        data-cy="notifi-ftu-alert-list-button"
         disabled={isLoading}
         onClick={onClick}
       >
