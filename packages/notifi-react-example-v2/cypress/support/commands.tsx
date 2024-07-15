@@ -143,8 +143,8 @@ const overrideTargetGroup = (isEmpty?: boolean) => {
       };
   const env = Cypress.env('ENV');
   cy.intercept('POST', envUrl(env), (req) => {
-    aliasQuery(req, 'fetchData');
-    if (hasOperationName(req, 'fetchData')) {
+    aliasQuery(req, 'fetchFusionData');
+    if (hasOperationName(req, 'fetchFusionData')) {
       req.reply((res) => {
         console.log({ tg: res.body.data.targetGroup });
         res.body.data = {

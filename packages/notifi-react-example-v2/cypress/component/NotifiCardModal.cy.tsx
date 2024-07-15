@@ -14,7 +14,7 @@ describe('NotifiCardModal First Time User Test', () => {
       aliasQuery(req, 'findTenantConfig');
     });
     cy.intercept('POST', envUrl(env), (req) => {
-      aliasQuery(req, 'fetchData');
+      aliasQuery(req, 'fetchFusionData');
     });
     cy.intercept('POST', envUrl(env), (req) =>
       aliasMutation(req, 'logInFromDapp'),
@@ -83,12 +83,12 @@ describe('NotifiCardModal First Time User Test', () => {
       cy.get('[data-cy="notifi-connect-button"]').click();
       // #1 - Connect view (Connect.tsx): Click on connect button, the following queries should be made
       cy.wait('@gqlLogInFromDappMutation');
-      cy.wait('@gqlFetchDataQuery');
+      cy.wait('@gqlFetchFusionDataQuery');
       cy.wait('@gqlGetUserSettingsQuery');
       cy.wait('@gqlGetFusionNotificationHistoryQuery');
       cy.wait('@gqlGetUnreadNotificationHistoryCountQuery');
-      cy.wait('@gqlFetchDataQuery');
-      cy.wait('@gqlFetchDataQuery');
+      cy.wait('@gqlFetchFusionDataQuery');
+      cy.wait('@gqlFetchFusionDataQuery');
 
       // #2 - FTU Target Edit view (FtuTargetEdit.tsx)
       //   * Check wether all active contact info are displayed
@@ -121,10 +121,10 @@ describe('NotifiCardModal First Time User Test', () => {
       cy.get('[data-cy="notifi-ftu-target-edit-button"]').click();
       cy.wait('@gqlGetTargetGroupsQuery');
       cy.wait('@gqlCreateTargetGroupMutation');
-      cy.wait('@gqlFetchDataQuery');
+      cy.wait('@gqlFetchFusionDataQuery');
       cy.wait('@gqlGetAlertsQuery');
       cy.wait('@gqlCreateFusionAlertsMutation');
-      cy.wait('@gqlFetchDataQuery');
+      cy.wait('@gqlFetchFusionDataQuery');
       cy.wait('@gqlUpdateTargetGroupMutation');
 
       // #3 - FTU Target List view (FtuTargetList.tsx)
@@ -148,12 +148,12 @@ describe('NotifiCardModal First Time User Test', () => {
       cy.get('[data-cy="notifi-connect-button"]').click();
       // #1 - Connect view (Connect.tsx): Click on connect button, the following queries should be made
       cy.wait('@gqlLogInFromDappMutation');
-      cy.wait('@gqlFetchDataQuery');
+      cy.wait('@gqlFetchFusionDataQuery');
       cy.wait('@gqlGetUserSettingsQuery');
       cy.wait('@gqlGetFusionNotificationHistoryQuery');
       cy.wait('@gqlGetUnreadNotificationHistoryCountQuery');
-      cy.wait('@gqlFetchDataQuery');
-      cy.wait('@gqlFetchDataQuery');
+      cy.wait('@gqlFetchFusionDataQuery');
+      cy.wait('@gqlFetchFusionDataQuery');
 
       // #2 - FTU Alert Edit view (FtuAlertEdit.tsx): Click on Next button, the following query should be made
       cy.get('[data-cy="notifi-ftu-alert-edit-button"]').click();
@@ -170,7 +170,7 @@ describe('NotifiCardModal Inbox Test', () => {
     cy.intercept('POST', envUrl(env), (req) => {
       aliasQuery(req, 'findTenantConfig');
     });
-    // We do not put fetchData here because we will need to override it
+    // We do not put fetchFusionData here because we will need to override it
     cy.intercept('POST', envUrl(env), (req) =>
       aliasMutation(req, 'logInFromDapp'),
     );
@@ -204,19 +204,19 @@ describe('NotifiCardModal Inbox Test', () => {
   it('INBOX flow - History view', () => {
     const env = Cypress.env('ENV');
     cy.intercept('POST', envUrl(env), (req) => {
-      aliasQuery(req, 'fetchData');
+      aliasQuery(req, 'fetchFusionData');
     });
     cy.mountCardModal();
     cy.wait('@gqlFindTenantConfigQuery');
     cy.get('[data-cy="notifi-connect-button"]').click();
     // #1 - Connect view (Connect.tsx): Click on connect button, the following queries should be made
     cy.wait('@gqlLogInFromDappMutation');
-    cy.wait('@gqlFetchDataQuery');
+    cy.wait('@gqlFetchFusionDataQuery');
     cy.wait('@gqlGetUserSettingsQuery');
     cy.wait('@gqlGetFusionNotificationHistoryQuery');
     cy.wait('@gqlGetUnreadNotificationHistoryCountQuery');
-    cy.wait('@gqlFetchDataQuery');
-    cy.wait('@gqlFetchDataQuery');
+    cy.wait('@gqlFetchFusionDataQuery');
+    cy.wait('@gqlFetchFusionDataQuery');
     // #2 - Check if nav tabs exist & click on history tab
     cy.get('[data-cy="notifi-inbox-nav-tabs"]')
       .should('exist')
@@ -249,12 +249,12 @@ describe('NotifiCardModal Inbox Test', () => {
     cy.get('[data-cy="notifi-connect-button"]').click();
     // #1 - Connect view (Connect.tsx): Click on connect button, the following queries should be made
     cy.wait('@gqlLogInFromDappMutation');
-    cy.wait('@gqlFetchDataQuery');
+    cy.wait('@gqlFetchFusionDataQuery');
     cy.wait('@gqlGetUserSettingsQuery');
     cy.wait('@gqlGetFusionNotificationHistoryQuery');
     cy.wait('@gqlGetUnreadNotificationHistoryCountQuery');
-    cy.wait('@gqlFetchDataQuery');
-    cy.wait('@gqlFetchDataQuery');
+    cy.wait('@gqlFetchFusionDataQuery');
+    cy.wait('@gqlFetchFusionDataQuery');
     // #2 - Check if nav tabs exist & click on gear tab
     cy.get('[data-cy="notifi-inbox-nav-tabs"]')
       .should('exist')
@@ -262,7 +262,7 @@ describe('NotifiCardModal Inbox Test', () => {
       .eq(1)
       .click();
     cy.get('.notifi-topic-list').should('exist');
-    cy.get('.notifi-target-state-banner-signup-cta').should('exist').click();
+    cy.get('.notifi-target-state-banner').should('exist').click();
     cy.get('.notifi-inbox-config-target-edit-button-text').should('exist');
     cy.wait(2000); // To avoid "Too many login requests have been made" error
   });
@@ -275,12 +275,12 @@ describe('NotifiCardModal Inbox Test', () => {
     cy.get('[data-cy="notifi-connect-button"]').click();
     // #1 - Connect view (Connect.tsx): Click on connect button, the following queries should be made
     cy.wait('@gqlLogInFromDappMutation');
-    cy.wait('@gqlFetchDataQuery');
+    cy.wait('@gqlFetchFusionDataQuery');
     cy.wait('@gqlGetUserSettingsQuery');
     cy.wait('@gqlGetFusionNotificationHistoryQuery');
     cy.wait('@gqlGetUnreadNotificationHistoryCountQuery');
-    cy.wait('@gqlFetchDataQuery');
-    cy.wait('@gqlFetchDataQuery');
+    cy.wait('@gqlFetchFusionDataQuery');
+    cy.wait('@gqlFetchFusionDataQuery');
     // #2 - Check if nav tabs exist & click on gear tab
     cy.get('[data-cy="notifi-inbox-nav-tabs"]')
       .should('exist')
