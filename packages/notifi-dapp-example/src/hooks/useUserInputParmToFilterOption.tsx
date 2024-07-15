@@ -43,9 +43,9 @@ export const useUserInputParmToFilterOption = (
 
   const uiType = userInputParam.uiType;
 
-  const prefixAndSuffix = derivePrefixAndSuffixFromValueType(
-    userInputParam.kind,
-  );
+  const prefixAndSuffix =
+    userInputParam.prefixAndSuffix ??
+    derivePrefixAndSuffixFromValueType(userInputParam.kind);
 
   const renewFilterOptions = async (
     option: number | string,

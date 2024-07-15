@@ -3,6 +3,8 @@ import {
   FusionEventTopic,
   FusionFilterOptions,
   InputObject,
+  UiType,
+  UserInputParam,
 } from '@notifi-network/notifi-frontend-client';
 import {
   TopicStackAlert,
@@ -56,7 +58,17 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
   const description = getFusionFilter(props.topic)?.description ?? '';
 
   const userInputParams = getUserInputParams(props.topic);
-  const reversedParams = [...userInputParams].reverse();
+
+  const correctUserInputParamsOrder = (
+    userInputParams: UserInputParam<UiType>[],
+  ) => {
+    if (userInputParams.length > 0 && userInputParams[0].uiType === 'radio') {
+      return userInputParams;
+    } else {
+      const reversedParams = [...userInputParams].reverse();
+      return reversedParams;
+    }
+  };
 
   React.useEffect(() => {
     // Initial set up for filterOptionsToBeSubscribed
@@ -165,32 +177,36 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
       />
       {subscriptionValue || userInputParams.length > 0 ? (
         <div className="">
-          {reversedParams.map((userInputParm, id) => {
-            return (
-              <TopicOptions<'standalone'>
-                placeholder="Enter Price"
-                index={id}
-                key={id}
-                description={description}
-                userInputParam={userInputParm}
-                topic={props.topic}
-                onSelectAction={{
-                  actionType: 'updateFilterOptions',
-                  action: (userInputParmName, option) => {
-                    if (!filterOptionsToBeSubscribed || !filterName) return;
-                    const updatedAlertFilterOptiopns =
-                      getUpdatedAlertFilterOptions(
-                        filterName,
-                        filterOptionsToBeSubscribed,
-                        userInputParmName,
-                        convertOptionValue(option, userInputParm.kind),
+          {correctUserInputParamsOrder(userInputParams).map(
+            (userInputParm, id) => {
+              return (
+                <TopicOptions<'standalone'>
+                  placeholder="Enter Price"
+                  index={id}
+                  key={id}
+                  description={description}
+                  userInputParam={userInputParm}
+                  topic={props.topic}
+                  onSelectAction={{
+                    actionType: 'updateFilterOptions',
+                    action: (userInputParmName, option) => {
+                      if (!filterOptionsToBeSubscribed || !filterName) return;
+                      const updatedAlertFilterOptiopns =
+                        getUpdatedAlertFilterOptions(
+                          filterName,
+                          filterOptionsToBeSubscribed,
+                          userInputParmName,
+                          convertOptionValue(option, userInputParm.kind),
+                        );
+                      setFilterOptionsToBeSubscribed(
+                        updatedAlertFilterOptiopns,
                       );
-                    setFilterOptionsToBeSubscribed(updatedAlertFilterOptiopns);
-                  },
-                }}
-              />
-            );
-          })}
+                    },
+                  }}
+                />
+              );
+            },
+          )}
           <div>
             <button
               disabled={!isTopicReadyToSubscribe}
