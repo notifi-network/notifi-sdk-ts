@@ -181,7 +181,7 @@ const updateTargetGroup = async (targetGroup?: TargetGroup) => {
   };
   const client = newFrontendClient(configInput) as NotifiFrontendClient;
   await client.initialize();
-  if (client.userState.status !== 'authenticated') {
+  if (client.userState?.status !== 'authenticated') {
     await client.logIn({
       signMessage: async (message: Uint8Array) => {
         const signature = await wallet.signMessage(message);

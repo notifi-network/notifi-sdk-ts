@@ -15,13 +15,13 @@ export const getTopicList = (
     throw new Error('Unsupported config format');
 
   const fusionEventDescriptorMap = new Map<string, Types.FusionEventDescriptor>(
-    fusionEventDescriptors.map((item) => [item?.name ?? '', item ?? {}]),
+    fusionEventDescriptors.map((item: any) => [item?.name ?? '', item ?? {}]),
   );
 
   fusionEventDescriptorMap.delete('');
 
   const fusionEventTopics: FusionEventTopic[] = cardConfig.eventTypes
-    .map((eventType) => {
+    .map((eventType: any) => {
       if (eventType.type === 'fusion') {
         const fusionEventDescriptor = fusionEventDescriptorMap.get(
           eventType.name,
@@ -32,7 +32,7 @@ export const getTopicList = (
         };
       }
     })
-    .filter((item): item is FusionEventTopic => !!item);
+    .filter((item: any): item is FusionEventTopic => !!item);
 
   const topicGroupNames: { index: number; value: string }[] = [];
   const topicNames: { index: number; value: string }[] = [];

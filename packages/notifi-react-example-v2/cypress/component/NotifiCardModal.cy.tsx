@@ -46,15 +46,11 @@ describe('NotifiCardModal First Time User Test', () => {
     );
   });
 
-  it('FTU flow - Connect page', () => {
-    // NOTE: only 1 query: findTenantConfig
-    // const env = Cypress.env('ENV');
+  it('FTU flow - Connect view', () => {
     cy.mountCardModal(true);
 
-    // cy.intercept('POST', envUrl(env), (req) => {
-    //   aliasQuery(req, 'findTenantConfig');
-    // });
     cy.wait('@gqlFindTenantConfigQuery').then(({ response }) => {
+      if (!response) throw new Error('FTU flow - Connect view: No response');
       // Check wether all topics are displayed
       const topicList = getTopicList(response);
 
@@ -221,23 +217,23 @@ describe('NotifiCardModal Inbox Test', () => {
     cy.wait('@gqlGetUnreadNotificationHistoryCountQuery');
     cy.wait('@gqlFetchDataQuery');
     cy.wait('@gqlFetchDataQuery');
-    // Check if nav tabs exist & click on history tab
+    // #2 - Check if nav tabs exist & click on history tab
     cy.get('[data-cy="notifi-inbox-nav-tabs"]')
       .should('exist')
       .children('div')
       .eq(0)
       .click();
-    // Confirm history view is rendered & detail view is not
+    // #3 - Confirm history view is rendered & detail view is not
     cy.get('[data-cy="notifi-history-list"]').should('exist');
     cy.get('[data-cy="notifi-history-detail"]').should('not.exist');
 
-    // Click on a history item
+    // #4 - Click on a history item
     cy.get('[data-cy="notifi-history-list"]')
       .children('.notifi-history-list-main')
       .children('.notifi-history-row')
       .eq(0)
       .click();
-    // Confirm both history view & detail view are rendered
+    // #5: Confirm both history view & detail view are rendered
     cy.get('[data-cy="notifi-history-list"]').should('exist');
     cy.get('[data-cy="notifi-history-detail"]').should('exist');
     cy.wait(2000); // To avoid "Too many login requests have been made" error
@@ -259,7 +255,7 @@ describe('NotifiCardModal Inbox Test', () => {
     cy.wait('@gqlGetUnreadNotificationHistoryCountQuery');
     cy.wait('@gqlFetchDataQuery');
     cy.wait('@gqlFetchDataQuery');
-
+    // #2 - Check if nav tabs exist & click on gear tab
     cy.get('[data-cy="notifi-inbox-nav-tabs"]')
       .should('exist')
       .children('div')
@@ -272,7 +268,6 @@ describe('NotifiCardModal Inbox Test', () => {
   });
 
   it('INBOX flow - Config view: with target', () => {
-    // check whether can successfully find tenant config
     cy.overrideTargetGroup(false);
     cy.mountCardModal();
     cy.wait('@gqlFindTenantConfigQuery');
@@ -286,7 +281,7 @@ describe('NotifiCardModal Inbox Test', () => {
     cy.wait('@gqlGetUnreadNotificationHistoryCountQuery');
     cy.wait('@gqlFetchDataQuery');
     cy.wait('@gqlFetchDataQuery');
-
+    // #2 - Check if nav tabs exist & click on gear tab
     cy.get('[data-cy="notifi-inbox-nav-tabs"]')
       .should('exist')
       .children('div')
