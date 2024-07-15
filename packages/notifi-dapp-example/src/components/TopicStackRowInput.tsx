@@ -63,7 +63,6 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
     userInputParams: UserInputParam<UiType>[],
   ) => {
     if (userInputParams.length > 0 && userInputParams[0].uiType === 'radio') {
-      console.log(userInputParams);
       return userInputParams;
     } else {
       const reversedParams = [...userInputParams].reverse();
