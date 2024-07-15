@@ -95,6 +95,7 @@ export const useConnect = (
 
   React.useEffect(() => {
     // Step#2: Subscribe topics (if FTU) or prompt to next view according to target group and ftu stage (After successful login: isAuthenticated === true)
+    if (isLoadingUpdateUserSetting) return;
     const subscribeAndUpdateFtuStage = async () => {
       if (!targetGroupId || !frontendClientStatus.isAuthenticated) return;
 

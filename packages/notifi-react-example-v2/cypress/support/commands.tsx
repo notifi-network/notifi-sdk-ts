@@ -112,8 +112,19 @@ const overrideCardConfig = (items: Record<string, any>) => {
 const overrideTargetGroup = (isEmpty?: boolean) => {
   isEmpty = isEmpty ?? true;
   const dummyTargetGroup = isEmpty
-    ? { name: 'Default' }
+    ? {
+        id: '54a1493f1d6c427bb344373830b180d6',
+        name: 'Default',
+        emailTargets: [],
+        smsTargets: [],
+        telegramTargets: [],
+        webhookTargets: [],
+        discordTargets: [],
+        slackChannelTargets: [],
+        web3Targets: [],
+      }
     : {
+        id: '54a1493f1d6c427bb344373830b180d6',
         name: 'Default',
         emailTargets: [
           {
@@ -123,6 +134,12 @@ const overrideTargetGroup = (isEmpty?: boolean) => {
             name: 'tester-0.39@notifi.network',
           },
         ],
+        smsTargets: [],
+        telegramTargets: [],
+        webhookTargets: [],
+        discordTargets: [],
+        slackChannelTargets: [],
+        web3Targets: [],
       };
   const env = Cypress.env('ENV');
   cy.intercept('POST', envUrl(env), (req) => {

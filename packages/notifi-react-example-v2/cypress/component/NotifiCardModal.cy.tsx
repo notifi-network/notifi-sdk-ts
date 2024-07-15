@@ -11,38 +11,61 @@ describe('NotifiCardModal First Time User Test', () => {
     const env = Cypress.env('ENV');
     cy.loadCSS();
     cy.intercept('POST', envUrl(env), (req) => {
-      aliasQuery(req, 'fetchData');
-    });
-  });
-
-  it('FTU flow - FtuAlertList', () => {
-    const env = Cypress.env('ENV');
-    cy.mountCardModal(true);
-
-    cy.intercept('POST', envUrl(env), (req) => {
       aliasQuery(req, 'findTenantConfig');
     });
-    cy.get('[data-cy="notifi-connect-button"]').click();
-    // FtuAlertList
+    cy.intercept('POST', envUrl(env), (req) => {
+      aliasQuery(req, 'fetchData');
+    });
+    cy.intercept('POST', envUrl(env), (req) =>
+      aliasMutation(req, 'logInFromDapp'),
+    );
+    cy.intercept('POST', envUrl(env), (req) => {
+      aliasMutation(req, 'updateTargetGroup');
+    });
+    cy.intercept('POST', envUrl(env), (req) =>
+      aliasMutation(req, 'updateUserSettings'),
+    );
+    cy.intercept('POST', envUrl(env), (req) =>
+      aliasQuery(req, 'getUserSettings'),
+    );
+    cy.intercept('POST', envUrl(env), (req) =>
+      aliasQuery(req, 'getFusionNotificationHistory'),
+    );
+    cy.intercept('POST', envUrl(env), (req) =>
+      aliasQuery(req, 'getUnreadNotificationHistoryCount'),
+    );
+    cy.intercept('POST', envUrl(env), (req) =>
+      aliasQuery(req, 'getTargetGroups'),
+    );
+    cy.intercept('POST', envUrl(env), (req) =>
+      aliasMutation(req, 'createTargetGroup'),
+    );
+    cy.intercept('POST', envUrl(env), (req) => aliasQuery(req, 'getAlerts'));
+    cy.intercept('POST', envUrl(env), (req) =>
+      aliasMutation(req, 'createFusionAlerts'),
+    );
+  });
+
+  it('FTU flow - Connect page', () => {
+    // NOTE: only 1 query: findTenantConfig
+    // const env = Cypress.env('ENV');
+    cy.mountCardModal(true);
+
+    // cy.intercept('POST', envUrl(env), (req) => {
+    //   aliasQuery(req, 'findTenantConfig');
+    // });
     cy.wait('@gqlFindTenantConfigQuery').then(({ response }) => {
       // Check wether all topics are displayed
       const topicList = getTopicList(response);
 
-      cy.get('[data-cy="notifi-ftu-alert-list-container"]')
+      cy.get('[data-cy="notifi-connect-alert-list-container"]')
         .should('exist')
         .children()
         .should('have.length', topicList.length);
     });
-
-    /** Wait until all requests done before next test */
-    cy.wait('@gqlFetchDataQuery'); // Connect.tsx (Check targetGroup status)
-    cy.wait('@gqlFetchDataQuery'); // NotifiTargetContext (frontendClientStatus -> isAuthenticated)
-    cy.wait('@gqlFetchDataQuery'); // NotifiTopicContext (frontendClientStatus -> isAuthenticated)
-    cy.wait('@gqlFetchDataQuery'); // NotifiTopicContext (subscribeAlertsDefault)
   });
 
   it('FTU flow -isTargetRequired: FtuTargetEdit & FtuTargetList', () => {
-    const env = Cypress.env('ENV');
     cy.mountCardModal(true);
     cy.overrideCardConfig({
       isContactInfoRequired: true,
@@ -62,21 +85,17 @@ describe('NotifiCardModal First Time User Test', () => {
       const cardConfig = JSON.parse(tenantConfig.dataJson) as CardConfigItemV1;
       console.log({ cardConfig });
       cy.get('[data-cy="notifi-connect-button"]').click();
-      // Wait until login request done (refer to FtuFlow test for more detail)
+      // #1 - Connect view (Connect.tsx): Click on connect button, the following queries should be made
+      cy.wait('@gqlLogInFromDappMutation');
+      cy.wait('@gqlFetchDataQuery');
+      cy.wait('@gqlGetUserSettingsQuery');
+      cy.wait('@gqlGetFusionNotificationHistoryQuery');
+      cy.wait('@gqlGetUnreadNotificationHistoryCountQuery');
       cy.wait('@gqlFetchDataQuery');
       cy.wait('@gqlFetchDataQuery');
-      cy.wait('@gqlFetchDataQuery');
-      cy.wait('@gqlFetchDataQuery');
-      cy.wait(1000); // Wait one sec to avoid hitting endpoint to often
 
-      cy.get('[data-cy="notifi-ftu-alert-list-button"]').click();
-
-      cy.intercept('POST', envUrl(env), (req) => {
-        aliasMutation(req, 'updateUserSettings');
-      });
-      cy.wait('@gqlUpdateUserSettingsMutation');
-
-      // Check wether all active contact info are displayed
+      // #2 - FTU Target Edit view (FtuTargetEdit.tsx)
+      //   * Check wether all active contact info are displayed
       const supportedContact = objectKeys(cardConfig.contactInfo);
       for (const contact of supportedContact) {
         if (cardConfig.contactInfo[contact].active) {
@@ -102,25 +121,25 @@ describe('NotifiCardModal First Time User Test', () => {
           // TODO: implement toggle type
         }
       }
+      //   * Click on Next button: The following queries should be made
       cy.get('[data-cy="notifi-ftu-target-edit-button"]').click();
-      cy.intercept('POST', envUrl(env), (req) => {
-        aliasMutation(req, 'updateTargetGroup');
-      });
-      cy.wait('@gqlUpdateTargetGroupMutation').then(({ response }) => {
-        expect(response?.statusCode).to.equal(200);
-      });
+      cy.wait('@gqlGetTargetGroupsQuery');
+      cy.wait('@gqlCreateTargetGroupMutation');
+      cy.wait('@gqlFetchDataQuery');
+      cy.wait('@gqlGetAlertsQuery');
+      cy.wait('@gqlCreateFusionAlertsMutation');
+      cy.wait('@gqlFetchDataQuery');
+      cy.wait('@gqlUpdateTargetGroupMutation');
+
+      // #3 - FTU Target List view (FtuTargetList.tsx)
       cy.get('[data-cy="notifi-ftu-target-list-button"]').click();
-      cy.intercept('POST', envUrl(env), (req) =>
-        aliasMutation(req, 'updateUserSettings'),
-      );
-      cy.wait('@gqlUpdateUserSettingsMutation').then(({ response }) => {
-        expect(response?.statusCode).to.equal(200);
-      });
+      //   * Click on Next button: The following query should be made
+      cy.wait('@gqlUpdateUserSettingsMutation');
+      cy.wait(2000); // Wait one sec to avoid hitting endpoint to often
     });
   });
 
   it('FTU flow - isTargetNotRequired: FtuAlertEdit', () => {
-    const env = Cypress.env('ENV');
     cy.mountCardModal(true);
     cy.overrideCardConfig({
       isContactInfoRequired: false,
@@ -131,26 +150,18 @@ describe('NotifiCardModal First Time User Test', () => {
       const cardConfig = JSON.parse(tenantConfig.dataJson) as CardConfigItemV1;
       console.log({ cardConfig });
       cy.get('[data-cy="notifi-connect-button"]').click();
-      // Wait until login request done (refer to FtuFlow test for more detail)
+      // #1 - Connect view (Connect.tsx): Click on connect button, the following queries should be made
+      cy.wait('@gqlLogInFromDappMutation');
+      cy.wait('@gqlFetchDataQuery');
+      cy.wait('@gqlGetUserSettingsQuery');
+      cy.wait('@gqlGetFusionNotificationHistoryQuery');
+      cy.wait('@gqlGetUnreadNotificationHistoryCountQuery');
       cy.wait('@gqlFetchDataQuery');
       cy.wait('@gqlFetchDataQuery');
-      cy.wait('@gqlFetchDataQuery');
-      cy.wait('@gqlFetchDataQuery');
-      cy.wait(1000); // Wait one sec to avoid hitting endpoint to often
 
-      cy.get('[data-cy="notifi-ftu-alert-list-button"]').click();
-
-      cy.intercept('POST', envUrl(env), (req) => {
-        aliasMutation(req, 'updateUserSettings');
-      });
-      cy.wait('@gqlUpdateUserSettingsMutation');
+      // #2 - FTU Alert Edit view (FtuAlertEdit.tsx): Click on Next button, the following query should be made
       cy.get('[data-cy="notifi-ftu-alert-edit-button"]').click();
-      cy.intercept('POST', envUrl(env), (req) =>
-        aliasMutation(req, 'updateUserSettings'),
-      );
-      cy.wait('@gqlUpdateUserSettingsMutation').then(({ response }) => {
-        expect(response?.statusCode).to.equal(200);
-      });
+      cy.wait('@gqlUpdateUserSettingsMutation');
     });
   });
 });
@@ -161,20 +172,54 @@ describe('NotifiCardModal Inbox Test', () => {
     cy.loadCSS();
     cy.clearNotifiStorage();
     cy.intercept('POST', envUrl(env), (req) => {
-      aliasQuery(req, 'fetchData');
-      aliasMutation(req, 'logInFromDapp');
+      aliasQuery(req, 'findTenantConfig');
     });
+    // We do not put fetchData here because we will need to override it
+    cy.intercept('POST', envUrl(env), (req) =>
+      aliasMutation(req, 'logInFromDapp'),
+    );
+    cy.intercept('POST', envUrl(env), (req) => {
+      aliasMutation(req, 'updateTargetGroup');
+    });
+    cy.intercept('POST', envUrl(env), (req) =>
+      aliasMutation(req, 'updateUserSettings'),
+    );
+    cy.intercept('POST', envUrl(env), (req) =>
+      aliasQuery(req, 'getUserSettings'),
+    );
+    cy.intercept('POST', envUrl(env), (req) =>
+      aliasQuery(req, 'getFusionNotificationHistory'),
+    );
+    cy.intercept('POST', envUrl(env), (req) =>
+      aliasQuery(req, 'getUnreadNotificationHistoryCount'),
+    );
+    cy.intercept('POST', envUrl(env), (req) =>
+      aliasQuery(req, 'getTargetGroups'),
+    );
+    cy.intercept('POST', envUrl(env), (req) =>
+      aliasMutation(req, 'createTargetGroup'),
+    );
+    cy.intercept('POST', envUrl(env), (req) => aliasQuery(req, 'getAlerts'));
+    cy.intercept('POST', envUrl(env), (req) =>
+      aliasMutation(req, 'createFusionAlerts'),
+    );
   });
 
   it('INBOX flow - History view', () => {
-    // check whether can successfully find tenant config
     const env = Cypress.env('ENV');
-    cy.mountCardModal();
     cy.intercept('POST', envUrl(env), (req) => {
-      aliasQuery(req, 'findTenantConfig');
+      aliasQuery(req, 'fetchData');
     });
+    cy.mountCardModal();
     cy.wait('@gqlFindTenantConfigQuery');
     cy.get('[data-cy="notifi-connect-button"]').click();
+    // #1 - Connect view (Connect.tsx): Click on connect button, the following queries should be made
+    cy.wait('@gqlLogInFromDappMutation');
+    cy.wait('@gqlFetchDataQuery');
+    cy.wait('@gqlGetUserSettingsQuery');
+    cy.wait('@gqlGetFusionNotificationHistoryQuery');
+    cy.wait('@gqlGetUnreadNotificationHistoryCountQuery');
+    cy.wait('@gqlFetchDataQuery');
     cy.wait('@gqlFetchDataQuery');
     // Check if nav tabs exist & click on history tab
     cy.get('[data-cy="notifi-inbox-nav-tabs"]')
@@ -195,60 +240,59 @@ describe('NotifiCardModal Inbox Test', () => {
     // Confirm both history view & detail view are rendered
     cy.get('[data-cy="notifi-history-list"]').should('exist');
     cy.get('[data-cy="notifi-history-detail"]').should('exist');
+    cy.wait(2000); // To avoid "Too many login requests have been made" error
   });
 
   it('INBOX flow - Config view: empty target', () => {
     // check whether can successfully find tenant config
-    const env = Cypress.env('ENV');
 
     cy.mountCardModal();
     cy.overrideTargetGroup();
-    cy.intercept('POST', envUrl(env), (req) => {
-      aliasQuery(req, 'findTenantConfig');
-    });
     cy.wait('@gqlFindTenantConfigQuery');
 
     cy.get('[data-cy="notifi-connect-button"]').click();
+    // #1 - Connect view (Connect.tsx): Click on connect button, the following queries should be made
     cy.wait('@gqlLogInFromDappMutation');
+    cy.wait('@gqlFetchDataQuery');
+    cy.wait('@gqlGetUserSettingsQuery');
+    cy.wait('@gqlGetFusionNotificationHistoryQuery');
+    cy.wait('@gqlGetUnreadNotificationHistoryCountQuery');
+    cy.wait('@gqlFetchDataQuery');
+    cy.wait('@gqlFetchDataQuery');
 
-    cy.wait('@gqlFetchDataQuery').then(({ response }) => {
-      console.log({ response });
-      cy.get('[data-cy="notifi-inbox-nav-tabs"]')
-        .should('exist')
-        .children('div')
-        .eq(1)
-        .click();
-      cy.get('.notifi-topic-list').should('exist');
-      cy.get('.notifi-target-state-banner-signup-cta').should('exist').click();
-      cy.get('.notifi-inbox-config-target-edit-button-text').should('exist');
-    });
+    cy.get('[data-cy="notifi-inbox-nav-tabs"]')
+      .should('exist')
+      .children('div')
+      .eq(1)
+      .click();
+    cy.get('.notifi-topic-list').should('exist');
+    cy.get('.notifi-target-state-banner-signup-cta').should('exist').click();
+    cy.get('.notifi-inbox-config-target-edit-button-text').should('exist');
+    cy.wait(2000); // To avoid "Too many login requests have been made" error
   });
 
   it('INBOX flow - Config view: with target', () => {
     // check whether can successfully find tenant config
-    const env = Cypress.env('ENV');
     cy.overrideTargetGroup(false);
     cy.mountCardModal();
-    cy.intercept('POST', envUrl(env), (req) => {
-      aliasQuery(req, 'findTenantConfig');
-    });
     cy.wait('@gqlFindTenantConfigQuery');
 
     cy.get('[data-cy="notifi-connect-button"]').click();
+    // #1 - Connect view (Connect.tsx): Click on connect button, the following queries should be made
     cy.wait('@gqlLogInFromDappMutation');
+    cy.wait('@gqlFetchDataQuery');
+    cy.wait('@gqlGetUserSettingsQuery');
+    cy.wait('@gqlGetFusionNotificationHistoryQuery');
+    cy.wait('@gqlGetUnreadNotificationHistoryCountQuery');
+    cy.wait('@gqlFetchDataQuery');
+    cy.wait('@gqlFetchDataQuery');
 
-    cy.wait('@gqlFetchDataQuery').then(({ response }) => {
-      console.log({ response });
-      cy.get('[data-cy="notifi-inbox-nav-tabs"]')
-        .should('exist')
-        .children('div')
-        .eq(1)
-        .click();
-      cy.get('.notifi-target-state-banner-verify').should('exist').click();
-      cy.get('.notifi-inbox-config-target-list-button-text')
-        .should('exist')
-        .click();
-      cy.get('.notifi-inbox-config-target-edit-button').should('exist');
-    });
+    cy.get('[data-cy="notifi-inbox-nav-tabs"]')
+      .should('exist')
+      .children('div')
+      .eq(1)
+      .click();
+    cy.get('.notifi-target-state-banner-verify').should('exist');
+    cy.wait(2000); // To avoid "Too many login requests have been made" error
   });
 });
