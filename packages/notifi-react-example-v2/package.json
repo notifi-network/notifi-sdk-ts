@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build:next": "next build",
+    "build:analyze": "ANALYZE=true next build",
     "start": "next start",
     "test": "cypress run --component --spec 'cypress/component/NotifiCardModal.cy.tsx' --browser chrome",
     "cypress:open": "cypress open",
@@ -27,6 +28,7 @@
     "crypto-browserify": "^3.12.0",
     "typescript": "^5",
     "ethereumjs-wallet": "^1.0.2",
-    "cypress": "^13.11.0"
+    "cypress": "^13.11.0",
+    "@next/bundle-analyzer": "^14.2.5"
   }
 }

@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
+import bundleAnalyzer from '@next/bundle-analyzer';
 import { log } from 'console';
 import CopyPlugin from 'copy-webpack-plugin';
 import process from 'process';
@@ -41,4 +42,9 @@ if (args.includes('build')) {
   };
 }
 
-export default nextConfig;
+/** Next bundler analyzer. Reference: https://nextjs.org/docs/app/building-your-application/optimizing/bundle-analyzer */
+const withBundleAnalyzer = bundleAnalyzer({
+  enabled: process.env.ANALYZE === 'true',
+});
+
+export default withBundleAnalyzer(nextConfig);

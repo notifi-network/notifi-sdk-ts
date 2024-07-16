@@ -90,7 +90,6 @@ export const NotifiCardModal: React.FC<NotifiCardModalProps> = (props) => {
       setCardModalView('Inbox');
       return;
     }
-    console.error('NotifiCardModal - Unexpected CardView state');
   }, [ftuStage]);
 
   useEffect(() => {
