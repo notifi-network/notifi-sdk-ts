@@ -10,7 +10,6 @@ import {
 } from '../context';
 import { hasTarget } from '../utils';
 import { FtuAlertEdit, FtuAlertEditProps } from './FtuAlertEdit';
-import { FtuAlertListProps } from './FtuAlertList';
 import { FtuTargetEdit, FtuTargetEditProps } from './FtuTargetEdit';
 import { FtuTargetList, FtuTargetListProps } from './FtuTargetList';
 import { PoweredByNotifi, PoweredByNotifiProps } from './PoweredByNotifi';
@@ -24,7 +23,6 @@ export enum FtuView {
 export type FtuProps = {
   onComplete: () => void;
   copy?: {
-    FtuAlertList?: FtuAlertListProps['copy'];
     FtuTargetEdit?: FtuTargetEditProps['copy'];
     FtuTargetList?: FtuTargetListProps['copy'];
     FtuAlertEdit?: FtuAlertEditProps['copy'];
@@ -33,7 +31,6 @@ export type FtuProps = {
     container?: string;
     footer?: string;
     ftuViews?: string;
-    FtuAlertList?: FtuAlertListProps['classNames'];
     FtuTargetEdit?: FtuTargetEditProps['classNames'];
     FtuTargetList?: FtuTargetListProps['classNames'];
     FtuAlertEdit?: FtuAlertEditProps['classNames'];
@@ -51,9 +48,16 @@ export const Ftu: React.FC<FtuProps> = (props) => {
   const { updateFtuStage } = useNotifiUserSettingContext();
   const [ftuView, setFtuView] = React.useState<FtuView | null>(null);
   const { frontendClientStatus } = useNotifiFrontendClientContext();
+  const isInitialLoaded = React.useRef(false);
 
   React.useEffect(() => {
-    if (!frontendClientStatus.isAuthenticated || isLoadingTarget) return;
+    if (
+      !frontendClientStatus.isAuthenticated ||
+      isLoadingTarget ||
+      isInitialLoaded.current
+    )
+      return;
+    isInitialLoaded.current = true;
     if (ftuStage === FtuStage.Destination && !hasTarget(targetData)) {
       setFtuView(FtuView.TargetEdit);
       return;
@@ -64,7 +68,7 @@ export const Ftu: React.FC<FtuProps> = (props) => {
     }
     setFtuView(FtuView.AlertEdit);
     return;
-  }, []);
+  }, [isLoadingTarget]);
 
   if (!ftuView) return null;
 

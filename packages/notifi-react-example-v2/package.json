@@ -14,7 +14,11 @@
     "ethers": "^6.11.1",
     "next": "14.1.4",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "@notifi-network/notifi-frontend-client": "^0.91.3",
+    "@notifi-network/notifi-graphql": "^0.91.3",
+    "@notifi-network/notifi-react": "^0.91.3",
+    "@notifi-network/notifi-wallet-provider": "^0.91.3"
   },
   "devDependencies": {
     "@types/node": "^20",
@@ -22,6 +26,7 @@
     "@types/react-dom": "^18",
     "crypto-browserify": "^3.12.0",
     "typescript": "^5",
-    "ethereumjs-wallet": "^1.0.2"
+    "ethereumjs-wallet": "^1.0.2",
+    "cypress": "^13.11.0"
   }
 }

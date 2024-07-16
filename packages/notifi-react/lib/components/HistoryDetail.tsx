@@ -36,6 +36,7 @@ export const HistoryDetail: React.FC<HistoryDetailProps> = (props) => {
   );
   return (
     <div
+      data-cy="notifi-history-detail"
       className={clsx(
         'notifi-history-detail',
         props.isHidden && 'hidden',

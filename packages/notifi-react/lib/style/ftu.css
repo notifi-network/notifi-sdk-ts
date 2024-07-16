@@ -27,67 +27,6 @@
   background-color: var(--notifi-ftu-footer-bg);
 }
 
-/* FtuAlertList styles */
-.notifi-ftu-alert-list {
-  /* TODO: remove alert list */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex-grow: 1;
-  padding: 0 2rem;
-  overflow-y: scroll;
-  scrollbar-width: none;
-}
-
-.notifi-ftu-alert-list-title {
-  /* TODO: remove alert list */
-  font-size: 1.5rem;
-  font-weight: 800;
-  margin-bottom: 0.5rem;
-  text-align: center;
-}
-
-.notifi-ftu-alert-list-description {
-  /* TODO: remove alert list */
-  color: var(--notifi-color-grey3);
-  font-size: 0.9rem;
-  font-weight: 600;
-  line-height: 133%;
-  margin-bottom: 1.5rem;
-  text-align: center;
-}
-
-.notifi-ftu-alert-list-container {
-  /* TODO: remove alert list */
-  display: flex;
-  gap: 0.5rem;
-  flex-direction: column;
-  margin-bottom: 2.5rem;
-}
-
-.notifi-ftu-alert-list-alert {
-  /* TODO: remove alert list */
-  font-size: 0.9rem;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-}
-
-.notifi-ftu-alert-icon {
-  color: var(--notifi-ftu-alert-list); /* TODO: remove alert list */
-  width: 1.5rem;
-  height: 1.5rem;
-  margin-right: 0.5rem;
-  font-weight: 700;
-  stroke-width: 3;
-}
-
-.notifi-ftu-alert-list-button-text.hidden {
-  /* TODO: remove alert list */
-  visibility: hidden;
-}
-
 /* FtuTargetEdit styles */
 .notifi-ftu-target-edit {
   display: flex;
@@ -148,7 +87,6 @@
 
 /* FTU common style */
 
-.notifi-ftu-alert-list-button, /* TODO: remove alert list */
 .notifi-ftu-alert-edit-button,
 .notifi-ftu-target-list-button,
 .notifi-ftu-target-edit-button {
@@ -167,22 +105,18 @@
 
 .notifi-ftu-alert-edit-button:disabled,
 .notifi-ftu-target-edit-button:disabled,
-.notifi-ftu-target-list-button:disabled,
-.notifi-ftu-alert-list-button:disabled {
-  /* TODO: remove alert list */
+.notifi-ftu-target-list-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
 .notifi-ftu-alert-edit-button-text.hidden,
 .notifi-ftu-target-list-button-text.hidden,
-.notifi-ftu-alert-list-button-text.hidden, /* TODO: remove alert list */
 .notifi-ftu-target-edit-button-text.hidden {
   visibility: hidden;
 }
 
 .notifi-ftu-alert-edit-button-spinner,
-.notifi-ftu-alert-list-button-spinner, /* TODO: remove alert list */
 .notifi-ftu-target-edit-button-spinner,
 .notifi-ftu-target-list-button-spinner {
   /* NOTE: intentionally left empty to allow override (!important is needed) */

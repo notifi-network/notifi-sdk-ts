@@ -49,7 +49,7 @@
 }
 
 .notifi-connect-alert-icon {
-  color: var(--notifi-ftu-alert-list);
+  color: var(--notifi-connect-alert-icon);
   width: 1.5rem;
   height: 1.5rem;
   margin-right: 0.5rem;

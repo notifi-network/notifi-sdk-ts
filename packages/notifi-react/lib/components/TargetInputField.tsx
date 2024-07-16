@@ -73,6 +73,7 @@ export const TargetInputField: React.FC<TargetInputFieldProps> = (props) => {
 
   return (
     <div
+      data-cy={`notifi-target-input-${props.targetType}`}
       className={clsx('notifi-target-input-field', props.classNames?.container)}
     >
       {props.copy?.label ? (

@@ -59,7 +59,7 @@ button {
   --notifi-connect-bg: var(--notifi-color-dark);
   --notifi-connect-button: var(--notifi-color-white);
   --notifi-connect-button-text: var(--notifi-color-midnight);
-  --notifi-ftu-alert-list: var(--notifi-color-seaglass);
+  --notifi-connect-alert-icon: var(--notifi-color-seaglass);
   --notifi-ftu-target-edit-description: var(--notifi-color-heather);
   --notifi-input-field-background: var(--notifi-color-grey2);
   --notifi-toggle-inactive: var(--notifi-color-dusk);
@@ -134,7 +134,7 @@ button {
   --notifi-connect-bg: var(--notifi-color-white);
   --notifi-connect-button: var(--notifi-color-midnight);
   --notifi-connect-button-text: var(--notifi-color-white);
-  --notifi-ftu-alert-list: var(--notifi-color-secondary-light);
+  --notifi-connect-alert-icon: var(--notifi-color-secondary-light);
   --notifi-ftu-target-edit-description: var(--notifi-color-dusk);
   --notifi-input-field-background: var(--notifi-color-white);
   --notifi-toggle-inactive: var(--notifi-color-heather);
