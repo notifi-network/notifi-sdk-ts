@@ -1,0 +1,29 @@
+.notifi-nav-header {
+  background-color: var(--notifi-nav-header-background);
+  display: flex;
+  padding: 1rem;
+  border-bottom: 1px solid var(--notifi-ftu-header-border);
+}
+.notifi-nav-header-title.isEmpty::after {
+  content: '_'; /* This is a placeholder in case the title is empty */
+  visibility: hidden;
+}
+.notifi-nave-header-right-cta,
+.notifi-nav-header-left-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  height: 1rem;
+  position: absolute;
+  left: 1rem;
+  top: 1.15rem;
+}
+
+.notifi-nav-header-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+  font-weight: 500;
+}

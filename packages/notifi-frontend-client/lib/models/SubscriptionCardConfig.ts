@@ -202,6 +202,8 @@ export type ContactInfo = Readonly<{
 }>;
 export type EmailContactInfo = ContactInfo;
 export type DiscordContactInfo = ContactInfo;
+export type SlackContactInfo = ContactInfo;
+export type WalletContactInfo = ContactInfo;
 
 export type CountryCode = string;
 
@@ -226,6 +228,8 @@ export type ContactInfoConfig = Readonly<{
   telegram: TelegramContactInfo;
   webhook: WebhookContactInfo;
   discord: DiscordContactInfo;
+  slack: SlackContactInfo;
+  wallet: WalletContactInfo;
 }>;
 
 export type CardConfigItemV1 = Readonly<{
@@ -259,7 +263,7 @@ export type TitleSubtitleConfig =
 export type FusionEventTopic = {
   // The following from original fusionEventTypeItem (Legacy)
   uiConfig: FusionEventTypeItem;
-  // The following is the respective fusionEventDescripter
+  // The following is the respective fusionEventDescriptor
   fusionEventDescriptor: Types.FusionEventDescriptor;
 };
 

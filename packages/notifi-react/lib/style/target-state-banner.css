@@ -1,0 +1,107 @@
+.notifi-target-state-banner {
+  background-color: var(--notifi-target-state-banner-bg);
+  border-radius: 6px;
+  cursor: default;
+}
+
+.notifi-target-state-banner-verify {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0.5rem;
+  cursor: pointer;
+}
+.notifi-target-state-banner-verify.history {
+  padding: 0.7rem 0.5rem;
+  background-color: var(--notifi-target-state-banner-verify-history-bg);
+  border-radius: 6px;
+  cursor: default;
+}
+
+.notifi-target-state-banner-verify-icon {
+  color: var(--notifi-target-state-verify-icon-color);
+  width: 1.3rem;
+  height: 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.notifi-target-state-banner-verify-icon.history {
+  color: inherit;
+  stroke: var(--notifi-target-state-banner-verify-icon-color);
+}
+
+.notifi-target-state-banner-verify-content {
+  flex-grow: 1;
+  margin: 0 1rem;
+  width: 0;
+}
+
+.notifi-target-state-banner-verify-title {
+  margin-bottom: 0.2rem;
+}
+
+.notifi-target-state-banner-verify-title.history {
+  font-size: 0.9rem;
+}
+
+.notifi-target-state-banner-verify-description {
+  color: var(--notifi-color-rose);
+  font-size: 0.75rem;
+}
+
+.notifi-target-state-banner-verify-cta {
+  width: 1.5rem;
+  display: flex;
+  justify-content: flex-start;
+  cursor: pointer;
+  color: var(--notifi-color-dusk);
+}
+
+.notifi-target-state-banner-verify-cta.history {
+  padding: 0.5rem;
+  width: 4rem;
+  background-color: var(--notifi-target-state-banner-verify-cta-history-bg);
+  border-radius: 6px;
+  color: inherit;
+  justify-content: center;
+  font-size: 0.9rem;
+}
+
+.notifi-target-state-banner-signup {
+  display: flex;
+  align-items: center;
+  padding: 0.7rem 1rem;
+  flex-direction: row;
+  background-color: var(--notifi-target-state-banner-signup-history-bg);
+  border-radius: 6px;
+}
+
+.notifi-target-state-banner-signup-content {
+  display: flex;
+  align-items: center;
+  width: 70%;
+  margin-bottom: 0.5rem;
+  margin-bottom: 0;
+}
+
+.notifi-target-state-banner-signup-text {
+  font-size: 0.9rem;
+  line-height: 1.3;
+}
+
+.notifi-target-state-banner-signup-icon {
+  color: var(--notifi-target-state-banner-signup-icon-color);
+  margin-right: 0.8rem;
+  color: inherit;
+}
+
+.notifi-target-state-banner-signup-cta {
+  color: var(--notifi-color-white);
+  background-color: var(--notifi-target-state-banner-signup-cta-bg);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  width: 7rem;
+}

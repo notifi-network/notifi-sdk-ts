@@ -33,17 +33,19 @@ export type NotifiTenantConfigProps = {
 export const NotifiTenantConfigContextProvider: FC<
   PropsWithChildren<NotifiTenantConfigProps>
 > = ({ inputs = {}, children, cardId }) => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const { frontendClient, frontendClientStatus } =
     useNotifiFrontendClientContext();
+  const isInitialLoaded = React.useRef(false);
 
   const [cardConfig, setCardConfig] = useState<CardConfigItemV1 | null>(null);
   const [fusionEventTopics, setFusionEventTopics] = useState<
     ReadonlyArray<FusionEventTopic>
   >([]);
   useEffect(() => {
-    if (!frontendClientStatus.isInitialized) return;
+    if (!frontendClientStatus.isInitialized || isInitialLoaded.current) return;
+    isInitialLoaded.current = true;
     setIsLoading(true);
 
     frontendClient
@@ -54,7 +56,14 @@ export const NotifiTenantConfigContextProvider: FC<
         setError(null);
       })
       .catch((e) => {
-        setError(e);
+        isInitialLoaded.current = false;
+        if (e instanceof Error) {
+          setError({
+            ...e,
+            message: `Failed to fetch tenant config (.fetchTenantConfig): ${e.message}`,
+          });
+        }
+        console.error(e);
       })
       .finally(() => setIsLoading(false));
   }, [frontendClientStatus]);

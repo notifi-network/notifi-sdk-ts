@@ -1,0 +1,104 @@
+.notifi-connect {
+  display: flex;
+  flex-direction: column;
+  border-radius: 6px;
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+  background-color: var(--notifi-connect-bg);
+}
+
+.notifi-connect-main {
+  flex-grow: 1;
+  overflow: scroll;
+  scrollbar-width: none;
+  display: flex;
+  justify-content: center;
+  padding: 0 2rem;
+  height: 0;
+  padding: 0 3.125rem;
+  align-items: center;
+}
+
+.notifi-connect-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+  padding: 2.5rem 1rem 0.5rem 1rem;
+}
+
+.notifi-connect-description {
+  color: var(--notifi-color-grey3);
+  font-size: 0.9rem;
+  line-height: 133%;
+  text-align: center;
+  padding: 0 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.notifi-connect-alert-list-container {
+  display: flex;
+  gap: 0.5rem;
+  flex-direction: column;
+}
+
+.notifi-connect-alert-list-alert {
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+}
+
+.notifi-connect-alert-icon {
+  color: var(--notifi-connect-alert-icon);
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-right: 0.5rem;
+  font-weight: 700;
+  stroke-width: 3;
+}
+
+.notifi-connect-hardware-wallet {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2rem;
+  margin-bottom: 0.5rem;
+}
+.notifi-connect-hardware-wallet-label {
+  color: var(--notifi-connect-hardware-wallet-label-text);
+}
+
+.notifi-connect-button {
+  background-color: var(--notifi-connect-button);
+  color: var(--notifi-connect-button-text);
+  border-radius: 0.5rem;
+  padding: 0.9rem 0rem;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  align-items: center;
+  margin: 0.5rem 2rem 0rem 2rem;
+}
+.notifi-connect-button-text.hidden {
+  visibility: hidden;
+}
+.notifi-connect-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.notifi-connect-button-spinner {
+  /* NOTE: intentionally left empty to override (!important is needed) */
+}
+
+.notifi-connect-footer {
+  width: 100%;
+  display: flex;
+  height: 3rem;
+  justify-content: center;
+  align-items: center;
+}

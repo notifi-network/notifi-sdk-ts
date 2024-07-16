@@ -1,4 +1,3 @@
-import { HardwareLoginPlugin } from '@notifi-network/notifi-react-card';
 import type { WalletContextState } from '@solana/wallet-adapter-react';
 import {
   Connection,
@@ -7,7 +6,11 @@ import {
   TransactionInstruction,
 } from '@solana/web3.js';
 
-type MemoProgramHardwareLoginPluginParams = Readonly<{
+export interface HardwareLoginPlugin {
+  sendMessage: (message: string) => Promise<string>;
+}
+
+export type MemoProgramHardwareLoginPluginParams = Readonly<{
   walletPublicKey: string;
   connection: Connection;
   sendTransaction: WalletContextState['sendTransaction'];

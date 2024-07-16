@@ -33,6 +33,12 @@ export const defaultDemoConfigV1: CardConfigItemV1 = {
     discord: {
       active: false,
     },
+    slack: {
+      active: false,
+    },
+    wallet: {
+      active: false,
+    },
     webhook: {} as unknown as WebhookContactInfo,
   },
 };

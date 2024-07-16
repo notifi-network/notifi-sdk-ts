@@ -1,0 +1,53 @@
+.notifi-toggle-container {
+  --notifi-toggle-size: 16px;
+  --notifi-toggle-padding: 2px;
+  --notifi-toggle-container: calc(
+    var(--notifi-toggle-size) + 2 * var(--notifi-toggle-padding)
+  );
+  position: relative;
+  display: inline-block;
+  width: calc(var(--notifi-toggle-container) + var(--notifi-toggle-size));
+  height: var(--notifi-toggle-container);
+}
+
+.notifi-toggle-input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.notifi-toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--notifi-toggle-inactive);
+  border-radius: var(--notifi-toggle-container);
+  transition: 0.2s;
+}
+
+.notifi-toggle-slider:before {
+  position: absolute;
+  content: '';
+  height: var(--notifi-toggle-size);
+  width: var(--notifi-toggle-size);
+  left: var(--notifi-toggle-padding);
+  bottom: var(--notifi-toggle-padding);
+  background-color: var(--notifi-toggle-handle);
+  border-radius: 50%;
+  transition: 0.2s;
+}
+
+.notifi-toggle-input:checked + .notifi-toggle-slider {
+  background-color: var(--notifi-toggle-active);
+}
+
+.notifi-toggle-input:checked + .notifi-toggle-slider:before {
+  transform: translateX(calc(var(--notifi-toggle-size)));
+}
+
+.notifi-toggle-slider--disabled {
+  cursor: progress;
+}
