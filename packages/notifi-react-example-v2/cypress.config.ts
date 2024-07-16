@@ -19,4 +19,8 @@ export default defineConfig({
       'civil squeeze word coach always source aunt believe yard urge night alert', // Change to your own mnemonic if needed
     WALLET_BLOCKCHAIN: 'ETHEREUM',
   },
+  retries: {
+    runMode: 2,
+    openMode: 0,
+  },
 });
