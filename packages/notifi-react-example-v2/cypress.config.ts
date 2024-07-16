@@ -19,14 +19,4 @@ export default defineConfig({
       'civil squeeze word coach always source aunt believe yard urge night alert', // Change to your own mnemonic if needed
     WALLET_BLOCKCHAIN: 'ETHEREUM',
   },
-  // env: {
-  //   PRC_ENDPINT:
-  //     'https://mainnet.infura.io/v3/9c9ff698105d4f6b9b2b93eddc0dff72', // Change to your own EVM rpc endpoint
-  //   DAPP_ADDRESS: '4zfoga0vjqh90ahg8apd', // Default test tenant (change if needed)
-  //   CARD_ID: '90f9ac3f674a4a79955204afc1142a39', // Default test card (change if needed)
-  //   ENV: 'Production',
-  //   MNEMONIC:
-  //     'civil squeeze word coach always source aunt believe yard urge night alert', // Change to your own mnemonic if needed
-  //   WALLET_BLOCKCHAIN: 'ETHEREUM',
-  // },
 });
