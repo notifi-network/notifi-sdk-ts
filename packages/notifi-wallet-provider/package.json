@@ -1,6 +1,6 @@
 {
   "name": "@notifi-network/notifi-wallet-provider",
-  "version": "0.91.3",
+  "version": "0.92.0",
   "description": "> TODO: description",
   "author": "eric-notifi <eric.lee@notifi.network>",
   "homepage": "https://github.com/notifi-network/notifi-sdk-ts",
@@ -35,13 +35,13 @@
     "url": "https://github.com/notifi-network/notifi-sdk-ts/issues"
   },
   "dependencies": {
+    "@burnt-labs/abstraxion": "^1.0.0-alpha.45",
+    "@solana/web3.js": "^1.47.1",
     "bech32-converting": "^1.0.9",
     "buffer": "^6.0.3",
-    "@burnt-labs/abstraxion": "^1.0.0-alpha.45",
     "ethers": "^6.11.1",
     "viem": "^1.11.0",
-    "wagmi": "^1.4.2",
-    "@solana/web3.js": "^1.47.1"
+    "wagmi": "^1.4.2"
   },
   "peerDependencies": {
     "react": "^17.0.2 || ^18.0",

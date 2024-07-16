@@ -1,6 +1,6 @@
 {
   "name": "@notifi-network/notifi-react-example-v2",
-  "version": "0.91.0",
+  "version": "0.92.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -12,23 +12,23 @@
     "cypress:ci": "cypress run --component --group notifi-e2e --spec 'cypress/component/NotifiCardModal.cy.tsx' --browser chrome --record"
   },
   "dependencies": {
+    "@notifi-network/notifi-frontend-client": "^0.92.0",
+    "@notifi-network/notifi-graphql": "^0.92.0",
+    "@notifi-network/notifi-react": "^0.92.0",
+    "@notifi-network/notifi-wallet-provider": "^0.92.0",
     "ethers": "^6.11.1",
     "next": "14.1.4",
     "react": "^18",
-    "react-dom": "^18",
-    "@notifi-network/notifi-frontend-client": "^0.91.3",
-    "@notifi-network/notifi-graphql": "^0.91.3",
-    "@notifi-network/notifi-react": "^0.91.3",
-    "@notifi-network/notifi-wallet-provider": "^0.91.3"
+    "react-dom": "^18"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^14.2.5",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "crypto-browserify": "^3.12.0",
-    "typescript": "^5",
-    "ethereumjs-wallet": "^1.0.2",
     "cypress": "^13.11.0",
-    "@next/bundle-analyzer": "^14.2.5"
+    "ethereumjs-wallet": "^1.0.2",
+    "typescript": "^5"
   }
 }
