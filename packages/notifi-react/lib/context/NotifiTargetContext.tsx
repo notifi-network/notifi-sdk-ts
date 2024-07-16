@@ -148,7 +148,6 @@ export type NotifiTargetContextType = {
   isChangingTargets: Record<Target, boolean>;
   targetDocument: TargetDocument;
   unVerifiedTargets: Target[];
-  refreshTargetDocument: (newData: Types.FetchFusionDataQuery) => void;
 };
 
 const NotifiTargetContext = createContext<NotifiTargetContextType>(
@@ -808,7 +807,6 @@ export const NotifiTargetContextProvider: FC<
   return (
     <NotifiTargetContext.Provider
       value={{
-        refreshTargetDocument, // TODO: Consider to remove (Only consumed by `notifi-dapp-example` Signup button)
         error,
         errorWallet,
         isLoading,
