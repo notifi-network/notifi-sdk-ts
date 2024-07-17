@@ -414,3 +414,137 @@ export const MyComponent = () => {
 > page count is set to 20 by default. You can change the page count by setting the `notificationCountPerPage` in the `<NotifiContextProvider />`or `<NotifiHistoryContextProvider />` Property.
 >
 > Check the example [here](https://github.com/notifi-network/notifi-sdk-ts/blob/1885f21a93160f8f222700c39b1fbc34b12edea0/packages/notifi-react-example-v2/src/context/NotifiContextWrapper.tsx#L121)
+
+## Migrate from `@notifi-network/notifi-react-card` (v0.) to `@notifi-network/notifi-react` (v1.)
+
+`@notifi-network/notifi-react` is a major upgrade of `@notifi-network/notifi-react-card`. `@notifi-network/notifi-react` provides more advanced features by adopting the new Notifi infrastructure (called `fusion`). Migrating to `@notifi-network/notifi-react` will have the following benefits:
+
+- **Optimized bundle size**: the package size of has a significant reduction (~20%)
+- **Better efficiency and performant**: the network request amount is reduced significantly. (~50%)
+- **Better UI & UX**: The new UI/UX design is more user-friendly and intuitive.
+- **Advanced new features**: support Notifi Admin Portal V2 new features. Check out Notifi Admin Portal V2 [here](https://admin.notifi.network/) for more information.
+
+> **IMPORTANT** > `@notifi-network/notifi-react-card` will no longer be maintained. Please use the `@notifi-network/notifi-react` if you are new to the Notifi React SDK.
+> For the existing Dapp which is already utilizing `@notifi-network/notifi-react-card`, you can easily do the migration by following the migration guide below.
+
+### Migration Guide
+
+As `@notifi-network/notifi-react` is a separate package from `@notifi-network/notifi-react-card`, new package installation is required.
+
+```json
+// package.json
+{
+  // ...
+  "dependencies": {
+    "@notifi-network/notifi-frontend-client": "^1.0.0",
+    "@notifi-network/notifi-graphql": "^1.0.0",
+    "@notifi-network/notifi-react": "^1.0.0"
+  }
+  // ...
+}
+```
+
+### Step 1: Replace the `NotifiContext` with the `NotifiContextProvider`
+
+Most of input props of the `NotifiContextProvider` are the same as `NotifiContext`. The only differences are listed below:
+
+**Deprecated props:**
+
+- `alertConfigurations`(Optional) is deprecated. (No longer needed)
+- `keepSubscriptionData` (Optional) is deprecated. (No longer needed)
+- `multiWallet` (Optional) is deprecated. (No longer needed)
+- `isUsingFrontendClient` (Optional) is deprecated. (No longer needed)
+
+**Newly added props:**
+
+- `tenantId` (Required): The `tenantId` property originally was set in the `NotifiSubscriptionCard` component as `dappAddress`. Now it is moved to context provider level.
+
+- `cardId` (Required): The `cardId` property originally was set in the `NotifiSubscriptionCard` component. Now it is moved to context provider level.
+
+- `notificationCountPerPage` (Optional): The `notificationCountPerPage` property is used to set the number of notifications per fetch in the notification history. The default value is `20`.
+
+- `toggleTargetAvailability` (Optional): The `toggleTargetAvailability` property is used to enable/disable the target availability feature. The default value depends on the active destinations set in the Notifi Admin Portal. See below, more detail [click here](https://github.com/notifi-network/notifi-sdk-ts/blob/8bb68f8f661e0c41f4411adec2cd9f12df0e5bcb/packages/notifi-react/lib/context/NotifiTargetContext.tsx#L82)
+
+### Step 2: Replace the `<NotifiSubscriptionCard />` with the `<NotifiCardModal />`
+
+Most of the props of `NotifiCardModal` are the same as `NotifiSubscriptionCard`. The only differences are listed below:
+
+**Deprecated props:**
+
+- `loadingSpinnerSize` (Optional) is deprecated. (No longer needed as we can use css override to customize the spinner size)
+
+- `loadingSpinnerColor` (Optional) is deprecated. (No longer needed as we can use css override to customize the spinner color)
+
+- `cardId` (Optional) is deprecated. (No longer needed as we can set the `cardId` in the `NotifiContextProvider`)
+
+- `inputLabels` and `inputSeparators` (Optional) is deprecated. Instead, we can use the `copy` prop to customize the input labels. (See below)
+
+```tsx
+const copy: NotifiCardModalProps['copy'] = {
+  Ftu: {
+    FtuTargetEdit: {
+      TargetInputs: {
+        inputSeparators: {
+          email: 'OR',
+          sms: 'OR',
+          telegram: 'OR',
+          discord: 'OR',
+        },
+        targetInputFields: {
+          email: {
+            label: 'Email',
+            placeholder: 'Enter your email',
+          },
+        },
+      },
+    },
+  },
+  Inbox: {
+    InboxConfigTargetEdit: {
+      TargetInputs: {
+        inputSeparators: {
+          email: 'OR',
+          sms: 'OR',
+          telegram: 'OR',
+          discord: 'OR',
+        },
+        targetInputFields: {
+          email: {
+            label: 'Email',
+            placeholder: 'Enter your email',
+          },
+        },
+      },
+    },
+  },
+};
+// ...
+<NotifiCardModal copy={copy} />;
+```
+
+> More example in [`@notifi-network/notifi-react-example-v2`](https://github.com/notifi-network/notifi-sdk-ts/blob/8bb68f8f661e0c41f4411adec2cd9f12df0e5bcb/packages/notifi-react-example-v2/src/app/notifi/components-example/page.tsx#L19)
+
+**Newly added props:**
+
+- N/A
+
+**On-going (TODO)**
+
+- `disclosureCopy` (Optional): Not supported yet. but it is planned to be removed and make use of the `copy` prop instead (TBD)
+
+- `onClose` (Optional)
+
+### Step 3 Restyle the card by using the css override
+
+Since the Component layout has significant changes, the css classes of the `NotifiCardModal` are also changed significantly. If you are already using the existing `NotifiSubscriptionCard` with css override, you might need to deprecate all the css classes and re-implement the css override.
+For more detail about CSS classes, please refer to the [source code](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-react/lib/style)
+
+### Step 4: Remove all the related code of the `@notifi-network/notifi-react-card`
+
+- Remove the `@notifi-network/notifi-react-card` package from the `package.json` file.
+
+- Remove the `NotifiSubscriptionCard` component from the codebase.
+
+- Remove the `NotifiContext` component from the codebase.
+
+- Remove the legacy css override related to the `NotifiSubscriptionCard`.
