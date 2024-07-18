@@ -1,15 +1,35 @@
+import {
+  FusionFilterOptions,
+  InputObject,
+} from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import React from 'react';
 
 import { Icon } from '../assets/Icons';
 import { useNotifiTopicContext } from '../context';
 import { useComponentPosition } from '../hooks/useComponentPosition';
-import { defaultCopy } from '../utils';
-import { TopicStandaloneRowMetadata } from './TopicList';
-import { TopicStack } from './TopicStack';
-import { TopicStackRowInput } from './TopicStackRowInput';
+import {
+  TopicStackAlert,
+  defaultCopy,
+  getFusionEventMetadata,
+  getUserInputParams,
+  isEqual,
+  isTopicGroupValid,
+  resolveAlertName,
+} from '../utils';
+import {
+  TopicGroupRowMetadata,
+  TopicRowCategory,
+  TopicStandaloneRowMetadata,
+} from './TopicList';
+import { TopicStack, TopicStackProps } from './TopicStack';
+import {
+  TopicStackRowInput,
+  TopicStackRowInputProps,
+  TopicStackRowInputPropsBase,
+} from './TopicStackRowInput';
 
-export type TopicStackRowProps = {
+export type TopicStackRowPropsBase = {
   parentComponent?: 'inbox' | 'ftu';
   classNames?: {
     container?: string;
@@ -19,23 +39,112 @@ export type TopicStackRowProps = {
     cta?: string;
     tooltipContainer?: string;
     tooltipContent?: string;
-    TopicStack?: TopicStackRowProps['classNames'];
-    TopicStackRowInput?: TopicStackRowProps['classNames'];
+    TopicStack?: TopicStackProps['classNames'];
+    TopicStackRowInput?: TopicStackRowInputPropsBase['classNames'];
   };
   copy?: {
     cta?: string;
   };
-} & TopicStandaloneRowMetadata;
+};
 
-export const TopicStackRow: React.FC<TopicStackRowProps> = (props) => {
+type TopicStackGroupRowProps = TopicStackRowPropsBase & TopicGroupRowMetadata;
+
+type TopicStackStandaloneRowProps = TopicStackRowPropsBase &
+  TopicStandaloneRowMetadata;
+
+export type TopicStackRowProps<T extends TopicRowCategory> =
+  T extends 'standalone'
+    ? TopicStackStandaloneRowProps
+    : TopicStackGroupRowProps;
+
+export const TopicStackRow = <T extends TopicRowCategory>(
+  props: TopicStackRowProps<T>,
+) => {
   const parentComponent = props.parentComponent ?? 'ftu';
   const tooltipRef = React.useRef<HTMLDivElement>(null);
   const { getTopicStackAlerts } = useNotifiTopicContext();
-  if (!props.topic.fusionEventDescriptor.id) return null;
+  const isTopicGroup = isTopicGroupRow(props);
+  const benchmarkTopic = isTopicGroup ? props.topics[0] : props.topic;
+  /* NOTE: benchmarkTopic is either the 'first topic in the group' or the 'standalone topic'. This represent the target topic to be rendered. */
+  const fusionEventTypeId = benchmarkTopic.fusionEventDescriptor.id;
+  if (!fusionEventTypeId) return null;
+  if (isTopicGroup && !isTopicGroupValid(props.topics)) return null;
 
-  const topicStackAlerts = getTopicStackAlerts(
-    props.topic.fusionEventDescriptor.id,
-  );
+  // if (isTopicGroup) {
+  // const topics = isTopicGroup ? props.topics : [benchmarkTopic];
+
+  const alertsList = React.useMemo(() => {
+    const topics = isTopicGroup ? props.topics : [benchmarkTopic];
+    const existingAlerts = topics
+      .map(
+        (topic) => getTopicStackAlerts(topic.fusionEventDescriptor.id!), // TODO: type
+      )
+      .reduce((acc, curr) => acc.concat(curr), []);
+
+    const alertFilterOptionsAndSubscriptionValues = existingAlerts.map(
+      (alert) => ({
+        filterOptions: alert.filterOptions,
+        subscriptionValueInfo: alert.subscriptionValueInfo,
+      }),
+    );
+
+    const sortedAlertFilterOptionsAndSubscriptionValues: {
+      filterOptions: FusionFilterOptions;
+      subscriptionValueInfo: InputObject;
+    }[] = [];
+
+    alertFilterOptionsAndSubscriptionValues.forEach(
+      (optionsAndSubscriptionValueInfo) => {
+        if (
+          !sortedAlertFilterOptionsAndSubscriptionValues.some(
+            (it) =>
+              isEqual(
+                it.filterOptions,
+                optionsAndSubscriptionValueInfo.filterOptions,
+              ) &&
+              isEqual(
+                it.subscriptionValueInfo,
+                optionsAndSubscriptionValueInfo.subscriptionValueInfo,
+              ),
+          )
+        ) {
+          sortedAlertFilterOptionsAndSubscriptionValues.push(
+            optionsAndSubscriptionValueInfo,
+          );
+        }
+      },
+    );
+    console.log(1, { sortedAlertFilterOptionsAndSubscriptionValues });
+
+    const alertsList: TopicStackAlert[][] = [];
+    sortedAlertFilterOptionsAndSubscriptionValues.forEach(
+      (filterOptionsAndSubscriptionValueInfo) => {
+        const group = existingAlerts.filter(
+          (alert) =>
+            isEqual(
+              alert.filterOptions,
+              filterOptionsAndSubscriptionValueInfo.filterOptions,
+            ) &&
+            isEqual(
+              alert.subscriptionValueInfo,
+              filterOptionsAndSubscriptionValueInfo.subscriptionValueInfo,
+            ),
+        );
+        alertsList.push(group);
+      },
+    );
+    console.log(2, { alertsList });
+    return alertsList;
+  }, [getTopicStackAlerts, props]);
+
+  const title = isTopicGroup
+    ? props.topicGroupName
+    : getFusionEventMetadata(benchmarkTopic)?.uiConfigOverride
+        ?.topicDisplayName || // 1. Show topic displayname in fusionEventMetadata
+      benchmarkTopic.uiConfig.displayNameOverride || // 2. Fall back to cardConfig'displayNameOverride  (May deprecated sooner or later)
+      benchmarkTopic.uiConfig.name; // 3. Fall back to topic name
+
+  const topicStackAlerts = getTopicStackAlerts(fusionEventTypeId);
 
   const [isTopicStackRowInputVisible, setIsTopicStackRowInputVisible] =
     React.useState(topicStackAlerts.length === 0 ? true : false);
@@ -63,9 +172,9 @@ export const TopicStackRow: React.FC<TopicStackRowProps> = (props) => {
             props.classNames?.headerTitle,
           )}
         >
-          <div>{props.topic.uiConfig.name}</div>
+          <div>{title}</div>
 
-          {props.topic.uiConfig.tooltipContent ? (
+          {benchmarkTopic.uiConfig.tooltipContent ? (
             <div
               ref={tooltipRef}
               className={clsx(
@@ -88,33 +197,38 @@ export const TopicStackRow: React.FC<TopicStackRowProps> = (props) => {
                   tooltipPosition,
                 )}
               >
-                {props.topic.uiConfig.tooltipContent}
+                {benchmarkTopic.uiConfig.tooltipContent}
               </div>
             </div>
           ) : null}
         </div>
       </div>
-      {topicStackAlerts.length > 0 ? (
+      {alertsList.length > 0 ? (
         <div className={clsx('notifi-topic-stacks')}>
-          {topicStackAlerts.map((topicStackAlert, id) => {
-            return (
-              <TopicStack
-                key={id}
-                topicStackAlert={topicStackAlert}
-                className={props.classNames?.TopicStack}
-                topic={props.topic}
-              />
-            );
+          {alertsList.map((topicStackAlerts, id) => {
+            return <TopicStack key={id} topicStackAlerts={topicStackAlerts} />;
           })}
         </div>
       ) : null}
 
       {isTopicStackRowInputVisible || topicStackAlerts.length === 0 ? (
-        <TopicStackRowInput
-          topic={props.topic}
-          onSave={() => setIsTopicStackRowInputVisible(false)}
-          classNames={props.classNames?.TopicStackRowInput}
-        />
+        <>
+          {isTopicGroup ? (
+            /* TODO: Refactor */
+            <TopicStackRowInput<'group'>
+              topics={props.topics}
+              onSave={() => setIsTopicStackRowInputVisible(false)}
+              classNames={props.classNames?.TopicStackRowInput}
+            />
+          ) : null}
+          {!isTopicGroup ? (
+            <TopicStackRowInput<'standalone'>
+              topic={props.topic}
+              onSave={() => setIsTopicStackRowInputVisible(false)}
+              classNames={props.classNames?.TopicStackRowInput}
+            />
+          ) : null}
+        </>
       ) : null}
 
       {isTopicStackRowInputVisible || topicStackAlerts.length === 0 ? null : (
@@ -129,4 +243,10 @@ export const TopicStackRow: React.FC<TopicStackRowProps> = (props) => {
       )}
     </div>
   );
+};
+// Utils
+const isTopicGroupRow = (
+  props: TopicStackRowProps<TopicRowCategory>,
+): props is TopicStackGroupRowProps => {
+  return 'topics' in props && 'topicGroupName' in props;
 };

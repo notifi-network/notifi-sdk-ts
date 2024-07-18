@@ -7,7 +7,10 @@ import { ValueType } from 'notifi-frontend-client/dist';
 import React from 'react';
 
 import { Icon } from '../assets/Icons';
-import { useNotifiTopicContext } from '../context';
+import {
+  useNotifiTenantConfigContext,
+  useNotifiTopicContext,
+} from '../context';
 import {
   ConvertOptionDirection,
   TopicStackAlert,
@@ -15,18 +18,19 @@ import {
   derivePrefixAndSuffixFromValueType,
   getFusionEventMetadata,
   isAlertFilter,
+  resolveAlertName,
 } from '../utils';
 
-type TopicStackProps = {
-  topicStackAlert: TopicStackAlert;
-  className?: {
+export type TopicStackProps = {
+  topicStackAlerts: TopicStackAlert[];
+  classNames?: {
     container?: string;
     contentContainer?: string;
     title?: string;
     subtitle?: string;
     cta?: string;
   };
-  topic: FusionEventTopic;
+  // topic: FusionEventTopic;
 };
 
 type InputParmValueMetadata = {
@@ -39,15 +43,20 @@ type InputParmValueMetadata = {
 
 export const TopicStack: React.FC<TopicStackProps> = (props) => {
   const { unsubscribeAlert, getAlertFilterOptions } = useNotifiTopicContext();
+  const { getFusionTopic } = useNotifiTenantConfigContext();
+  const benchmarkAlert = props.topicStackAlerts[0];
+  console.log(3, { benchmarkAlert });
   const userInputOptions = React.useMemo(() => {
-    const input = getAlertFilterOptions(props.topicStackAlert.alertName)?.input;
+    const input = getAlertFilterOptions(benchmarkAlert.alertName)?.input;
     if (!input) return;
     return Object.values(input)[0];
   }, [getAlertFilterOptions]);
 
   const { isLoading } = useNotifiTopicContext();
-
-  const fusionEventMetadata = getFusionEventMetadata(props.topic);
+  const resolved = resolveAlertName(benchmarkAlert.alertName);
+  const fusionTopic = getFusionTopic(resolved.fusionEventTypeId);
+  if (!fusionTopic) return null;
+  const fusionEventMetadata = getFusionEventMetadata(fusionTopic);
   const alertFilter = fusionEventMetadata?.filters.find(isAlertFilter);
 
   if (!alertFilter) {
@@ -71,25 +80,25 @@ export const TopicStack: React.FC<TopicStackProps> = (props) => {
       : [];
 
   return (
-    <div className={clsx('notifi-topic-stack', props.className?.container)}>
+    <div className={clsx('notifi-topic-stack', props.classNames?.container)}>
       <div
         className={clsx(
           'notifi-topic-stack-content',
-          props.className?.contentContainer,
+          props.classNames?.contentContainer,
         )}
       >
         <div
           className={clsx(
             'notifi-topic-stack-content-title',
-            props.className?.subtitle,
+            props.classNames?.subtitle,
           )}
         >
-          {props.topicStackAlert.subscriptionValueInfo.label}
+          {benchmarkAlert.subscriptionValueInfo.label}
         </div>
         <div
           className={clsx(
             'notifi-topic-stack-content-subtitle',
-            props.className?.subtitle,
+            props.classNames?.subtitle,
           )}
         >
           {userInputOptionValuesToBeDisplayed.map((option, id) => (
@@ -101,12 +110,16 @@ export const TopicStack: React.FC<TopicStackProps> = (props) => {
       <div
         className={clsx(
           'notifi-topic-stack-cta',
-          props.className?.cta,
+          props.classNames?.cta,
           isLoading ? 'disabled' : '',
         )}
-        onClick={() => {
+        onClick={async () => {
           if (isLoading) return;
-          unsubscribeAlert(props.topicStackAlert.alertName);
+          for (const alert of props.topicStackAlerts) {
+            await unsubscribeAlert(alert.alertName);
+          }
+
+          // unsubscribeAlert(benchmarkAlert.alertName);
         }}
       >
         <Icon type="bin" />
