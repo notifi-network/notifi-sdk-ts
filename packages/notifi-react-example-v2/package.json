@@ -1,6 +1,6 @@
 {
   "name": "@notifi-network/notifi-react-example-v2",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -12,9 +12,9 @@
     "cypress:ci": "cypress run --component --group notifi-e2e --spec 'cypress/component/NotifiCardModal.cy.tsx' --browser chrome --record"
   },
   "dependencies": {
-    "@notifi-network/notifi-frontend-client": "^1.0.0",
+    "@notifi-network/notifi-frontend-client": "^1.0.1",
     "@notifi-network/notifi-graphql": "^1.0.0",
-    "@notifi-network/notifi-react": "^1.0.0",
+    "@notifi-network/notifi-react": "^1.0.1",
     "@notifi-network/notifi-wallet-provider": "^1.0.0",
     "ethers": "^6.11.1",
     "next": "14.1.4",
