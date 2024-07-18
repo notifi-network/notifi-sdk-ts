@@ -47,6 +47,14 @@ export const useUserInputParmToFilterOption = (
     userInputParam.prefixAndSuffix ??
     derivePrefixAndSuffixFromValueType(userInputParam.kind);
 
+  const upperBound =
+    userInputParam.customInputConstraints?.upperBound ?? undefined;
+  const lowerBound =
+    userInputParam.customInputConstraints?.lowerBound ?? undefined;
+
+  const customInputPlaceholder =
+    userInputParam.customInputPlaceholder ?? 'Enter Price';
+
   const renewFilterOptions = async (
     option: number | string,
     topics: FusionEventTopic[],
@@ -75,5 +83,8 @@ export const useUserInputParmToFilterOption = (
     subscribedValue,
     uiType,
     setCustomInput,
+    upperBound,
+    lowerBound,
+    customInputPlaceholder,
   };
 };

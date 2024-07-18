@@ -17,6 +17,7 @@ const getPricePair = (
   pricePair: [],
   chain: string,
   pricePairInputs: InputObject[],
+  pricePairsWithTermInputs: InputObject[],
   chainLabel: string,
 ) => {
   pricePair.forEach((pair) => {
@@ -25,14 +26,31 @@ const getPricePair = (
     const exchange = chain;
     const exchange_label = chainLabel;
     const label = `${tokenSymbol} / USD - ${exchange_label}`;
+    const labelWithLongTerm = `LONG ${tokenSymbol} / USD - ${exchange_label}`;
+    const labelWithShortTerm = `SHORT ${tokenSymbol} / USD - ${exchange_label}`;
     const value = `${tokenSymbol}_USD_${exchange}`;
+    const valueWithLongTerm = `LONG_${tokenSymbol}_USD_${exchange}`;
+    const valueWithShortTerm = `SHORT_${tokenSymbol}_USD_${exchange}`;
     const pricePairInput = { label, value };
+    const pricePairWithLongTermInput = {
+      label: labelWithLongTerm,
+      value: valueWithLongTerm,
+    };
+    const pricePairWithShortTermInput = {
+      label: labelWithShortTerm,
+      value: valueWithShortTerm,
+    };
 
     pricePairInputs.push(pricePairInput);
+    pricePairsWithTermInputs.push(pricePairWithLongTermInput);
+    pricePairsWithTermInputs.push(pricePairWithShortTermInput);
   });
 };
 
-const sortList = (pricePairInputs: InputObject[]) => {
+const sortList = (
+  pricePairInputs: InputObject[],
+  pricePairsWithTermInputs: InputObject[],
+) => {
   pricePairInputs.sort((a, b) => {
     if (a.value < b.value) {
       return -1;
@@ -41,6 +59,11 @@ const sortList = (pricePairInputs: InputObject[]) => {
       return 1;
     }
     return 0;
+  });
+  pricePairsWithTermInputs.sort((a, b) => {
+    const secondTermA = a.label.split(' ')[1];
+    const secondTermB = b.label.split(' ')[1];
+    return secondTermA.localeCompare(secondTermB);
   });
 };
 
@@ -117,15 +140,28 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
   if (!signMessage) return <div>No available wallet to sign</div>;
 
   const pricePairInputs: InputObject[] = [];
+  const pricePairsWithTermInputs: InputObject[] = [];
 
   if (avaxData && !isAvaxLoading) {
-    getPricePair(avaxData, 'AVALANCHE', pricePairInputs, 'Avax');
-    sortList(pricePairInputs);
+    getPricePair(
+      avaxData,
+      'AVALANCHE',
+      pricePairInputs,
+      pricePairsWithTermInputs,
+      'Avax',
+    );
+    sortList(pricePairInputs, pricePairsWithTermInputs);
   }
 
   if (arbData && !isArbLoading) {
-    getPricePair(arbData, 'ARBITRUM', pricePairInputs, 'Arb');
-    sortList(pricePairInputs);
+    getPricePair(
+      arbData,
+      'ARBITRUM',
+      pricePairInputs,
+      pricePairsWithTermInputs,
+      'Arb',
+    );
+    sortList(pricePairInputs, pricePairsWithTermInputs);
   }
 
   return (
@@ -136,6 +172,7 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
       walletPublicKey={walletPublicKey}
       inputs={{
         pricePairs: pricePairInputs,
+        pricePairsWithTerm: pricePairsWithTermInputs,
         walletAddress: [{ label: '', value: walletPublicKey }],
       }}
       signMessage={signMessage}
