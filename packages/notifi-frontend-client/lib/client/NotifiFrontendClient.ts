@@ -361,17 +361,8 @@ export class NotifiFrontendClient {
           authorization = newAuthorization;
         }
       } catch (e: unknown) {
-        if (
-          typeof e === 'object' &&
-          e !== null &&
-          'code' in e &&
-          (e as any).code === 'AUTH_NOT_AUTHORIZED'
-        ) {
-          await this.logOut();
-          console.log('Failed to refresh Notifi token: AUTH NOT AUTHORIZED', e);
-        } else {
-          console.error('Unexpected Token Refresh error:', e);
-        }
+        await this.logOut();
+        console.log('Failed to refresh Notifi token:', e);
       }
     }
 
