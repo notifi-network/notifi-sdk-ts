@@ -73,6 +73,7 @@ export const useTopicStackRowInput = (
   );
 
   const isInvalid = subscribedAlerts?.some((alert) => {
+    // Not allow duplicate subscriptionValue with the same filterOptions
     const alertMetadata = resolveAlertName(alert.alertName);
     if (!isStackTopicAlertMetadata(alertMetadata)) return false;
     const isSubscriptionValueMatched =

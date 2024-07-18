@@ -1,7 +1,3 @@
-import {
-  FusionFilterOptions,
-  InputObject,
-} from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import React from 'react';
 
@@ -9,13 +5,10 @@ import { Icon } from '../assets/Icons';
 import { useNotifiTopicContext } from '../context';
 import { useComponentPosition } from '../hooks/useComponentPosition';
 import {
-  TopicStackAlert,
   defaultCopy,
   getFusionEventMetadata,
-  getUserInputParams,
   isEqual,
   isTopicGroupValid,
-  resolveAlertName,
 } from '../utils';
 import {
   TopicGroupRowMetadata,
@@ -25,7 +18,6 @@ import {
 import { TopicStack, TopicStackProps } from './TopicStack';
 import {
   TopicStackRowInput,
-  TopicStackRowInputProps,
   TopicStackRowInputPropsBase,
 } from './TopicStackRowInput';
 
@@ -73,66 +65,38 @@ export const TopicStackRow = <T extends TopicRowCategory>(
   // if (isTopicGroup) {
   // const topics = isTopicGroup ? props.topics : [benchmarkTopic];
 
-  const alertsList = React.useMemo(() => {
+  const alertsStack = React.useMemo(() => {
     const topics = isTopicGroup ? props.topics : [benchmarkTopic];
-    const existingAlerts = topics
-      .map(
-        (topic) => getTopicStackAlerts(topic.fusionEventDescriptor.id!), // TODO: type
-      )
-      .reduce((acc, curr) => acc.concat(curr), []);
+    const existingAlerts = topics.flatMap(
+      (topic) => getTopicStackAlerts(topic.fusionEventDescriptor.id!), // TODO: Type
+    );
 
-    const alertFilterOptionsAndSubscriptionValues = existingAlerts.map(
-      (alert) => ({
+    const uniqueCriteria = new Map();
+
+    existingAlerts.forEach((alert) => {
+      const criteriaKey = JSON.stringify({
         filterOptions: alert.filterOptions,
         subscriptionValueInfo: alert.subscriptionValueInfo,
-      }),
+      });
+
+      if (!uniqueCriteria.has(criteriaKey)) {
+        uniqueCriteria.set(criteriaKey, alert);
+      }
+    });
+
+    console.log(1, { uniqueCriteria: Array.from(uniqueCriteria.values()) });
+
+    const alertsList = Array.from(uniqueCriteria.values()).map((uniqueAlert) =>
+      existingAlerts.filter(
+        (alert) =>
+          isEqual(alert.filterOptions, uniqueAlert.filterOptions) &&
+          isEqual(
+            alert.subscriptionValueInfo,
+            uniqueAlert.subscriptionValueInfo,
+          ),
+      ),
     );
 
-    const sortedAlertFilterOptionsAndSubscriptionValues: {
-      filterOptions: FusionFilterOptions;
-      subscriptionValueInfo: InputObject;
-    }[] = [];
-
-    alertFilterOptionsAndSubscriptionValues.forEach(
-      (optionsAndSubscriptionValueInfo) => {
-        if (
-          !sortedAlertFilterOptionsAndSubscriptionValues.some(
-            (it) =>
-              isEqual(
-                it.filterOptions,
-                optionsAndSubscriptionValueInfo.filterOptions,
-              ) &&
-              isEqual(
-                it.subscriptionValueInfo,
-                optionsAndSubscriptionValueInfo.subscriptionValueInfo,
-              ),
-          )
-        ) {
-          sortedAlertFilterOptionsAndSubscriptionValues.push(
-            optionsAndSubscriptionValueInfo,
-          );
-        }
-      },
-    );
-    console.log(1, { sortedAlertFilterOptionsAndSubscriptionValues });
-
-    const alertsList: TopicStackAlert[][] = [];
-    sortedAlertFilterOptionsAndSubscriptionValues.forEach(
-      (filterOptionsAndSubscriptionValueInfo) => {
-        const group = existingAlerts.filter(
-          (alert) =>
-            isEqual(
-              alert.filterOptions,
-              filterOptionsAndSubscriptionValueInfo.filterOptions,
-            ) &&
-            isEqual(
-              alert.subscriptionValueInfo,
-              filterOptionsAndSubscriptionValueInfo.subscriptionValueInfo,
-            ),
-        );
-        alertsList.push(group);
-      },
-    );
     console.log(2, { alertsList });
     return alertsList;
   }, [getTopicStackAlerts, props]);
@@ -203,10 +167,10 @@ export const TopicStackRow = <T extends TopicRowCategory>(
           ) : null}
         </div>
       </div>
-      {alertsList.length > 0 ? (
+      {alertsStack.length > 0 ? (
         <div className={clsx('notifi-topic-stacks')}>
-          {alertsList.map((topicStackAlerts, id) => {
-            return <TopicStack key={id} topicStackAlerts={topicStackAlerts} />;
+          {alertsStack.map((alerts, id) => {
+            return <TopicStack key={id} topicStackAlerts={alerts} />;
           })}
         </div>
       ) : null}
