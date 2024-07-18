@@ -1,81 +1,139 @@
 # Notifi React SDK
 
-`@notifi-network/notifi-react` accelerates the development of Notifi integrated dapps by providing:
+`@notifi-network/notifi-react` accelerates the development of Notifi integrated dapps.
 
-- Out-of-the-box React components (`NotifiCardModal`) by which developers can just plug and play.
+-  [Out of The Box Implementation](#out-of-the-box-implementation)
+-  [Customized Implementation](#advanced-customized-implementation)
+-  [Creating Your Own Card](#creating-your-own-card)
+-  [Migrating from an older version of the SDK ](#migrate-your-card)
 
-- React Contexts for more advanced use cases in case developers want to build their own UI components.
 
-> Give it a hand-on by checking out the [example project](https://notifi-sdk-ts-vercel-notifi-react-example-v2.vercel.app/)
 
-## React Components (NotifiCardModal)
+> Play around with a Card [Example](https://notifi-sdk-ts-vercel-notifi-react-example-v2.vercel.app/)
 
-Dapp developers can easily mount the `NotifiCardModal` component to their dapp to enable the Notifi notification service without any hassle. The `NotifiCardModal` component provides the following features:
+<br/><br/>
 
-1. login Notifi services
+# Out of The Box Implementation
 
-2. manage (subscribe/unsubscribe) topics
+Dapp developers can easily mount the `NotifiCardModal` component to their dapp to enable the Notifi notification service. The `NotifiCardModal` component provides the following features to the user:
 
-3. manage (add/remove) targets
+- Login to Notifi Services
 
-4. Preview notification details
+-  Manage Subscriptions to Notifications
 
-### Getting Started
+- Manage Targets/Channels for Notifications
 
-1. Make sure the react environment is set up properly with the following dependencies:
+- Preview Notification Details
 
+<br/><br/>
+## Getting Started
+*Environment*
 - Node version >= 18 (with corresponding npm version)
 - React version >= 17
 
-2. Make sure you have a Notifi tenant account. we will need the following information to set up the `NotifiCardModal`.
+>If you haven't created a Notifi tenant account yet [set up an account](https://admin.notifi.network/signup?environment=prd)
 
-- tenantId
-- cardId
+<br/><br/>
+### Mount the `NotifiCardModal` to your dApp
 
-> You can register a new tenant through [Notifi Admin Portal](https://admin.notifi.network/) for free if you do not have one yet.
-> Check out the [detail here](https://docs.notifi.network/docs/getting-started)
-
-#### Mount `NotifiCardModal` to your dapp
-
-1. Wrap your app with `NotifiContextProvider`
-
+*Example*
 ```tsx
-import { NotifiFrontendClientProvider } from '@notifi-network/notifi-react';
+import { NotifiContextProvider, NotifiCardModal } from '@notifi-network/notifi-react';
+import { useEthers } from '@usedapp/core';
+import { providers } from 'ethers';
 
-const App = () => {
-  const params = {
-    // params for contexts
-  };
+const NotifiCard = () => {
+
+  const { account, library } = useEthers();
+  const signer = useMemo(() => {
+    if (library instanceof providers.JsonRpcProvider) {
+      return library.getSigner();
+    }
+    return undefined;
+  }, [library]);
+
+  if (account === undefined || signer === undefined) {
+    // account is required
+    return null;
+  }
+
   return (
-    <NotifiContextProvider {...params}>
-      <App />
-    </NotifiContextProvider>
+//tenantId/dAppId and cardId are found on the Notifi Tenant Portal. Please see Docs below.
+ <NotifiContextProvider
+    tenantId="YOUR_TENANT_ID"
+    env="Production"
+    cardId="YOUR_CARD_ID"
+    signMessage={signMessage}
+    walletBlockchain="ETHEREUM"
+    walletPublicKey={account}
+    >   
+        <NotifiCardModal darkMode={true} />
+  </NotifiContextProvider>
+  );
+};
+```
+> [Docs](https://docs.notifi.network/docs/getting-started)
+
+<br/><br/>
+
+# Advanced Customized Implementation
+
+
+
+The style of the `NotifiCardModal` is fully customizable. There are two approaches to customize the card style:
+<br/><br/>
+
+## Customizing the Card Styling
+
+#### **Global CSS override (*Recommended*)**
+ By overriding the default CSS classes, we can style the elements in the card.
+   [Default CSS Classes are found here.](https://github.com/notifi-network/notifi-sdk-ts/tree/stage-notifi-react-m2/packages/notifi-react/lib/style)
+
+*Example*
+```tsx
+import { NotifiContextProvider, NotifiCardModal } from '@notifi-network/notifi-react';
+import { useEthers } from '@usedapp/core';
+import { providers } from 'ethers';
+import "../../../styles/notifi/index.css";
+
+const NotifiCard = () => {
+
+  const { account, library } = useEthers();
+  const signer = useMemo(() => {
+    if (library instanceof providers.JsonRpcProvider) {
+      return library.getSigner();
+    }
+    return undefined;
+  }, [library]);
+
+  if (account === undefined || signer === undefined) {
+    // account is required
+    return null;
+  }
+
+  return (
+//tenantId/dAppId and cardId are found on the Notifi Tenant Portal. Please see Docs below.
+ <NotifiContextProvider
+    tenantId="YOUR_TENANT_ID"
+    env="Production"
+    cardId="YOUR_CARD_ID"
+    signMessage={signMessage}
+    walletBlockchain="ETHEREUM"
+    walletPublicKey={account}
+    >   
+        <NotifiCardModal darkMode={true} />
+  </NotifiContextProvider>
   );
 };
 ```
 
-2. Mount `NotifiCardModal` component to wherever you want in your dapp.
+#### **Custom CSS class**
+You can pass in custom CSS classes to the `NotifiCardModal` component.
 
-```tsx
-import { NotifiCardModal } from '@notifi-network/notifi-react';
+   > **NOTE** Before implementing, please review the `classNames` property structure in the `NotifiCardModal` component.
+   > View the `classNames` [structure here.](https://github.com/notifi-network/notifi-sdk-ts/blob/238add5a222d113ac7fdb90898b4c8dd8c584929/packages/notifi-react/lib/components/NotifiCardModal.tsx#L39)
 
-const MyComponent = () => {
-  const cardModalParams = {
-    // params for NotifiCardModal
-  };
-  return <NotifiCardModal {...cardModalParams} />;
-};
-```
-
-> [Check out the example project](https://notifi-sdk-ts-vercel-notifi-react-example-v2.vercel.app/) which is powered by next.js 14 app router.
-
-#### Customize the card style
-
-The style of `NotifiCardModal` is fully customizable. There are two approaches to customize the card style:
-
-1. Global css override (Recommended): By overriding the default css class, we can style almost all the elements in the card. [Check out the default css class here](https://github.com/notifi-network/notifi-sdk-ts/tree/stage-notifi-react-m2/packages/notifi-react/lib/style)
-
-2. Custom css class: it is allowed to pass in the custom css class to the `NotifiCardModal` component. This requires the more advanced understanding of the `NotifiCardModal` component structure. And example to adopt custom class to card modal container below.
+*Example*
 
    ```tsx
    const YourComponent = () => {
@@ -94,20 +152,25 @@ The style of `NotifiCardModal` is fully customizable. There are two approaches t
    };
    ```
 
-   > **NOTE** Before start implementing this, make sure you have a good understanding of the `classNames` property structure in the `NotifiCardModal` component.
-   > Check out the `classNames` property [structure here](https://github.com/notifi-network/notifi-sdk-ts/blob/238add5a222d113ac7fdb90898b4c8dd8c584929/packages/notifi-react/lib/components/NotifiCardModal.tsx#L39)
 
-#### Customize the copy text
+
+<br/><br/>
+
+## Customizing the Card Copy
 
 The copy text in the `NotifiCardModal` is fully customizable by inserting the custom copy text object to the `NotifiCardModal` component.
 
-> **NOTE** Before start doing this, make sure you have a good understanding of the `copy` property structure in the `NotifiCardModal` component.
-> Check out the `copy` prop [structure here](https://github.com/notifi-network/notifi-sdk-ts/blob/238add5a222d113ac7fdb90898b4c8dd8c584929/packages/notifi-react/lib/components/NotifiCardModal.tsx#L32)
+*Common Example*
 
-An often-used example is the destination (target) input separator customization like below:
-![](https://i.imgur.com/Rxld99Q.png)
+ Destination (Target) input separator copy customization as seen below:  
+![](https://i.imgur.com/Rxld99Q.png)  
 
-You can customize the separator copy `OR` by passing the `customCopy` object to the `NotifiCardModal` component.
+
+
+> **NOTE** Before implementing, please review the `copy` property structure in the `NotifiCardModal` component.
+> View the `copy` [structure here](https://github.com/notifi-network/notifi-sdk-ts/blob/238add5a222d113ac7fdb90898b4c8dd8c584929/packages/notifi-react/lib/components/NotifiCardModal.tsx#L32)
+
+  *Example*
 
 ```tsx
 const YourComponent = () => {
@@ -148,22 +211,28 @@ const YourComponent = () => {
 };
 ```
 
-## Notifi React Contexts (Advanced)
+<br/><br/>
 
-If you want to build your own UI components instead of using the `NotifiCardModal`, you can use the Notifi React Contexts to access the Notifi core services.
 
-Two main concepts in Notifi React Contexts:
+# Creating Your Own Card
 
-1. **NotifiContextProvider**: A provider to wrap your dapp with all the Notifi contexts.
-2. **specific contexts**: The specific contexts to provide the specific Notifi services.
-   - **NotifiFrontendClientContext**: Provide the Notifi Frontend Client instance and also the auth status (authenticated, initiated, or expired)
-   - **NotifiTenantConfigContext**: Provide the tenant configuration.
-   - **NotifiUserSettingContext**: Provide the user specific methods and state
-   - **NotifiTargetContext**: Provide Notifi Target (destination) related methods and state.
-   - **NotifiTopicContext**: Provide the topic related methods and state.
+If you want to build your own UI components instead of using the `NotifiCardModal`, you can use the Notifi React Context to access the Notifi core services.
 
-By simply wrap the app with `NotifiContextProvider` like below, you can access the Notifi services in your dapp.
+<br/><br/>
 
+### Important Notifi React Contexts:   
+
+-  **NotifiContextProvider**:   A provider to wrap your dapp with all Notifi contexts.  
+- **Specific Context Providers**:   
+   - **NotifiFrontendClientContext**: Provides the Notifi Frontend Client instance and  user authentication status (Authenticated, Initiated, or Expired)
+   - **NotifiTenantConfigContext**: Provides the tenant configuration.
+   - **NotifiUserSettingContext**: Provides available user methods and states
+   - **NotifiTargetContext**: Provides Notifi Target related methods and state.
+   - **NotifiTopicContext**: Provides Topic related methods and state.
+
+>By wrapping your app with `NotifiContextProvider`, you can access the Notifi services in your dapp.
+
+*Example*
 ```tsx
 import { NotifiContextProvider } from '@notifi-network/notifi-react';
 
@@ -179,7 +248,7 @@ const App = () => {
 };
 ```
 
-Or use particular contexts to access the specific Notifi services.
+Or use particular contexts to access specific Notifi services.
 
 ```tsx
 import {
@@ -200,13 +269,12 @@ const App = () => {
   );
 };
 ```
+<br></br>
+## **NotifiFrontendClientContext**
 
-In the following sections, we will introduce the specific contexts in more detail and how to use them.
+Provides the Notifi Frontend Client and the user authentication status.
 
-### **NotifiFrontendClientContext**
-
-Provide the Notifi Frontend Client instance and also the auth status (authenticated, initiated, or expired)
-
+*Example*
 ```tsx
 import { useNotifiFrontendClientContext } from '@/context/NotifiFrontendClientContext';
 
@@ -217,17 +285,19 @@ export const MyComponent = () => {
   // Other code ...
 };
 ```
+**Methods**  
+- **login**: A function to trigger the login process.
+- **frontendClientStatus**: The status of the frontend client, it can be one of the following:
+   - **initiated**: The frontend client/user has been initiated but not authenticated.
+   - **authenticated**: The frontend client/user is authenticated.
+   - **expired**: The frontend client/user is authentication/authorization expired.   
+  
+- **frontendClient**: The frontend client instance, used to interact with the Notifi backend services.
 
-1. **login**: A function to trigger the login process.
-2. **frontendClientStatus**: The status of the frontend client, it can be one of the following:
-   - **INITIATED**: The frontend client is initiated but not authenticated.
-   - **AUTHENTICATED**: The frontend client is authenticated.
-   - **EXPIRED**: The frontend client is expired.
-3. **frontendClient**: The frontend client instance. You can use it to interact with the Notifi backend services.
+<br></br>
+## **NotifiTenantConfigContext**
 
-### **NotifiTenantConfigContext**
-
-Provide the tenant configuration.
+Provides the tenant configuration.
 
 ```tsx
 import { useNotifiTenantConfigContext } from '@/context/NotifiTenantConfigContext';
@@ -240,28 +310,45 @@ export const MyComponent = () => {
 };
 ```
 
-1. **cardConfig**: The card ui configuration set in Notifi Admin portal.
-2. **inputs**: `input` is a special concept which is used when the dynamic topic subscription value needs to be adopted. One example is that we want to allow a user to subscribe the topic which relates to his/her specific wallet address' state (eg, a transition signed by the wallet). This case, we need to somehow pass the wallet address to the topic subscription. The `input` is the place to store the dynamic value.
+- **cardConfig**: The card UI configuration set in Notifi Admin portal.
+- **fusionEventTopics**: The detailed information of the fusion event topics in the specific UI card config. [Interface.](https://github.com/notifi-network/notifi-sdk-ts/blob/439023715e78ca1b02eab363a19c4bad51038cdd/packages/notifi-react/lib/context/NotifiTenantConfigContext.tsx#L18)
+- **inputs**: `input` is a concept which is used when a dynamic topic subscription value needs to be adopted. The `input` is a key-value pair object. The key is the value associated with the `Create a new topic` section in Admin Portal. The value is the dynamic value that needs to be passed into the topic subscription. The value needs to be an array of [InputObject](https://github.com/notifi-network/notifi-sdk-ts/blob/439023715e78ca1b02eab363a19c4bad51038cdd/packages/notifi-frontend-client/lib/models/FusionEvent.ts#L24) interface.
+<br></br>
 
-The `input` is a key-value pair object. The key is the value associated with the `Create a new topic` section in Admin Portal. The value is the dynamic value that needs to be passed into the topic subscription. The value needs to be an array of [InputObject](https://github.com/notifi-network/notifi-sdk-ts/blob/439023715e78ca1b02eab363a19c4bad51038cdd/packages/notifi-frontend-client/lib/models/FusionEvent.ts#L24) interface.
+
+**Example**:   
+
+  
+  We want to allow a user to subscribe the topic which relates to his/her specific wallet address' state (eg, a transaction signed by the wallet). In this case, we need to pass the wallet address to the topic subscription. The `input` is where we would store the dynamic value.
+
+<br></br>
+
+
 
 ![Notifi Admin Portal UX](https://i.imgur.com/eJlqMdZ.png)
 
-- Case 1: `Wallet Address` is selected, the key is set to `walletAddress`. So the `input` will be `{ walletAddress: [{label: '', '<user_wallet_address>'}] }`
-- Case 2: `No input From User` is selected, we do not need to specify the `inputs` object.
-- Case 3: `User Selects From List` is selected with a self-defined value. It means we want to allow users to select preferred targets to subscribe. For example, we want to allow users to define multiple smart contracts' state change (eg. staked value changed). So we want to provide a list of options for users to select. If we set `farm` in Admin portal UX in `User Selects From List` section. And we want to allow to have `BTC/ETH farm` and `BTC/USDT farm`, we can set the `inputs` object to `{ farm: [{label: 'BTC/ETH farm', value: 'BTC-ETH'}, {label: 'BTC/USDT farm', value: 'BTC-USDT'}] }`. The `value` is the value that will be passed to the topic subscription.
+**Case 1**: `Wallet Address` is selected, the key is set to `walletAddress`. So the `input` will be
+```
+ input={ walletAddress: [{label: '', '<USER_WALLET_ADDRESS_GOES_HERE>'}] }
+ ```
+**Case 2**: `No input From User` is selected, we do not need to specify the `inputs` object.  
+
+**Case 3**: `User Selects From List` is selected with a self-defined value. It means we want to allow users to select preferred targets to subscribe. 
+
+- **Example**:   
+We want to allow users to define multiple smart contracts' state change (eg. staked value changed). So we want to provide a list of options for users to select. If we set `farm` in Admin portal UX in `User Selects From List` section. And we want to allow to have `BTC/ETH farm` and `BTC/USDT farm`, we can set the `inputs` object to `{ farm: [{label: 'BTC/ETH farm', value: 'BTC-ETH'}, {label: 'BTC/USDT farm', value: 'BTC-USDT'}] }`. The `value` is the value that will be passed to the topic subscription.
 
 > **NOTE** the `value` in the `InputObject` should associate with the subscription value in the parser. `label` is the display name in the UI.
 >
-> - [more info](https://docs.notifi.network/docs/next/notifi-hosted-development)
+> - [Additional Documentation](https://docs.notifi.network/docs/next/notifi-hosted-development)
 
-3. **fusionEventTopics**: The detail info of the fusion event topics in the specific ui card config. See the interface [here](https://github.com/notifi-network/notifi-sdk-ts/blob/439023715e78ca1b02eab363a19c4bad51038cdd/packages/notifi-react/lib/context/NotifiTenantConfigContext.tsx#L18)
 
-> **IMPORTANT** to use `NotifiTenantConfigContext`, you need to wrap your component with `NotifiFrontendClientContext` first.
 
-### **NotifiUserSettingContext**
+<br></br>
 
-Provide the user specific methods and state
+## **NotifiUserSettingContext**
+
+Provides user specific methods and state.
 
 ```tsx
 import { useNotifiUserSettingContext } from '@notifi-network/notifi-react';
@@ -273,25 +360,26 @@ export const MyComponent = () => {
   // Other code ...
 };
 ```
+**Methods**  
+- **ftuStage**: The current First Time User stage of the user.
 
-1. **ftuStage**: The current First Time User stage of the user.
+- **updateFtuStage**: A function to update the FTU stage of the user.
 
-2. **updateFtuStage**: A function to update the FTU stage of the user.
 
-> **IMPORTANT** to use `NotifiUserConfigContext`, you need to wrap your component with `NotifiFrontendClientContext` first.
+<br></br>
+## **NotifiTargetContext**
 
-### **NotifiTargetContext**
-
-Provide Notifi Target (destination) related methods and state.
+Provides the Notifi Target related methods and state.
 `Target` is an important concept in Notifi. It is the destination which need to be notified when the specific event is triggered. Notifi currently supports the following targets:
 
 - Email
 - Telegram
-- sms
-- discord
-- slack
-- more to come...
+- SMS
+- Discord
+- Slack
+- Want another destination? [Email Us](sales@notifi.network)
 
+*Example*
 ```tsx
 import { useNotifiTargetContext } from '@notifi-network/notifi-react';
 
@@ -315,35 +403,36 @@ export const MyComponent = () => {
 };
 ```
 
-1. **renewTargetGroup**: A function to renew the target group. `targetGroup` is a group of targets which owned by the user.
+**Methods**  
+- **renewTargetGroup**: A function to renew the target group. `targetGroup` is a group of targets which owned by the user.
 
-2. **unVerifiedTargets**: The list of targets which are not verified yet.
+- **unVerifiedTargets**: The list of targets which are not verified yet.
 
-3. **targetInputs**: The targetInputs is the temporary storage which reflects the on-demand target input changes. It is used to store the target input changes before the user confirms the changes.
+- **targetInputs**: The targetInputs is the temporary storage which reflects the on-demand target input changes. It is used to store the target input changes before the user confirms the changes.
 
-4. **isChangingTargets**: if a target is under changing status, it means the users are changing the target inputs and has the unsaved changes.
+- **isChangingTargets**: if a target is undergoing a change, it means the users are changing the target inputs and has unsaved changes.
 
-5. **targetInfoPrompts**: The targetInfoPrompts is the prompt message which is used to guide the user to input the target information.
+- **targetInfoPrompts**: The targetInfoPrompts is the prompt message which is used to guide the user to input the target destination information.
 
-6. **updateTargetInputs**: A function to update the target inputs. It is used to update the target when the user changes the target inputs.
+- **updateTargetInputs**: A function to update the target inputs. It is used to update the target when the user changes/finalizes the target inputs.
 
-7. **renewTargetGroup**: A function to update backend target state according to the targetInputs.
+- **renewTargetGroup**: A function to update the backend target state according to the targetInputs.
 
-8. **TargetGroupId**: The target group id which is the arg to call `renewTargetGroup` function.
+- **TargetGroupId**: The target group id which is the argument to call `renewTargetGroup` function.
 
-9. **targetData**: The target data which is the backend target state.
+- **targetData**: The target data which is the current state of the targets in the backend.
 
-> **IMPORTANT** to use `NotifiTargetContext`, you need to wrap your component with `NotifiFrontendClientContext` first.
-
-### **NotifiTopicContext**
+<br></br>
+## **NotifiTopicContext**
 
 Provide the topic related methods and state.
-`Topic` is an important concept in Notifi. It is the prototype that shapes the event which will be triggered. Users are able to `subscribe` a certain topic to receive the notification when the event is triggered.
+`Topic` is an important concept in Notifi. It is the prototype that shapes the event which will be triggered. Users are able to `subscribe` to certain topics in order to receive the notification when the event is triggered.
 
 > **IMPORTANT CONCEPT**
-> Once the users subscribe a topic, notifi service creates an `Alert` object belong to the users associated with the topic.
-> [more info](https://github.com/notifi-network/notifi-sdk-ts/blob/439023715e78ca1b02eab363a19c4bad51038cdd/packages/notifi-react/lib/context/NotifiTopicContext.tsx#L60)
+> Once a user subscribes to a topic, Notifi Service creates an `Alert` object associated to the users with the respective topic.
+> [Additional Information.](https://github.com/notifi-network/notifi-sdk-ts/blob/439023715e78ca1b02eab363a19c4bad51038cdd/packages/notifi-react/lib/context/NotifiTopicContext.tsx#L60)
 
+*Example*
 ```tsx
 import { useNotifiTopicContext } from '@notifi-network/notifi-react';
 
@@ -362,28 +451,28 @@ export const MyComponent = () => {
   // Other code ...
 };
 ```
+**Methods**
+- **subscribeAlertsDefault**: A function to subscribe to the respective topic with the default filterOptions. This will create an alert configuration for the user.
 
-1. **subscribeAlertsDefault**: A function to subscribe topic with the default filterOptions. This will create alerts for the user.
+- **unsubscribeAlert**: A function to unsubscribe to the respective topic. This will remove the alert configuration from the user's alert list.
 
-2. **unsubscribeAlert**: A function to unsubscribe the topic. This will remove the alert object from the user's alert list.
+- **isAlertSubscribed**: A function to check if the topic is subscribed (This checks whether an alert configuration exists).
 
-3. **isAlertSubscribed**: A function to check if the topic is subscribed (whether the alert object is created).
+- **subscribeAlertsWithFilterOptions**: A function to subscribe to the respective topic with custom filter options. This will create an alert configuration for the user.
 
-4. **subscribeAlertsWithFilterOptions**: A function to subscribe the topic with custom filter options. This will create alerts for the user.
+- **getAlertFilterOptions**: A function to get the filter options from the subscribed topic (`Alert` configuration/object).
 
-5. **getAlertFilterOptions**: A function to get the filter options from the subscribed topic (`Alert` object).
+- **getTopicStackAlerts**: A function to get the subscribed stackable topic. (`Alert` configuration/objects).
 
-6. **getTopicStackAlerts**: A function to get the subscribed stackable topic. (`Alert` objects).
+> Notifi provides an example project to showcase the usage of the Notifi React Context through this [Example.](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-card-modal-example)  
+> For more comprehensive information, please refer to the [notifi-dapp-example.](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-dapp-example)
 
-> Notifi provides an example project to showcase the usage of the Notifi React Context. You can find the example project [here](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-card-modal-example)
-> For more comprehensive information, please refer to [notifi-dapp-example](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-dapp-example)
+<br></br>
+## **NotifiHistoryContext**
 
-> **IMPORTANT** to use `NotifiTopicContext`, you need to wrap your component with `NotifiFrontendClientContext` first.
+Check or manipulate the notification history of the connected users' account.  
 
-### **NotifiHistoryContext**
-
-Check or manipulate the history notification items of the connected user account.
-
+*Example*
 ```tsx
 import { useNotifiHistoryContext } from '@notifi-network/notifi-react';
 
@@ -401,33 +490,42 @@ export const MyComponent = () => {
   // Other code ...
 };
 ```
+**Methods**
+  - **getHistoryItems**: A function to get the notification history items. This method will update the `historyItems` state. It takes `(initialLoad?: boolean)` as input arguments. If `initialLoad` is `true`, it will clean the existing `historyItem` and fetch the first page of the notification history items. If `initialLoad` is `undefined` or `false`, it will fetch the next page from an existing page cursor. You can use `hasNextPage` to check if there are more pages to fetch.
+  
+   - **markAsRead**: A function to mark all or particular notification items as read. it takes`(ids?: string[])` as input. If `ids` is not provided, it will mark all the items as read.
+   - **historyItems**: The Notification History Items.
+  - **unreadCount**: An integer variable representing the unread notification count in `historyItems`.
+  - **hasNextPage**: A boolean variable to check if there is more page to fetch. If `true`, calling `getHistoryItems()` will fetch the next page.
 
-1. **getHistoryItems**: A function to get the history notification items. This method will update the `historyItems` state. It takes `(initialLoad?: boolean)` as input args. If `initialLoad` is true, it will clean up the `historyItem` and fetch the first page of the history items. If `initialLoad` is `undefined` or `false`, it will fetch the next page from existing page cursor. You can use `hasNextPage` to check if there is more page to fetch.
-2. **markAsRead**: A function to mark all or particular notification items as read. it takes`(ids?: string[])` as input. If `ids` is not provided, it will mark all the items as read.
-3. **historyItems**: The history notification items.
-4. **unreadCount**: The unread notification count in `historyItems`.
-5. **hasNextPage**: A boolean to check if there is more page to fetch. If `true`, calling `getHistoryItems()` will fetch the next page.
 
-> **IMPORTANT** to use `NotifiHistoryContext`, you need to wrap your component with `NotifiFrontendClientContext` first.
+> **NOTE:** 
+>  page counts are set to 20 by default. You can change the page count by setting the `notificationCountPerPage` in the `<NotifiContextProvider />`or `<NotifiHistoryContextProvider />` Property.
+[See an Example.](https://github.com/notifi-network/notifi-sdk-ts/blob/1885f21a93160f8f222700c39b1fbc34b12edea0/packages/notifi-react-example-v2/src/context/NotifiContextWrapper.tsx#L121)
 
-> **NOTE**
-> page count is set to 20 by default. You can change the page count by setting the `notificationCountPerPage` in the `<NotifiContextProvider />`or `<NotifiHistoryContextProvider />` Property.
->
-> Check the example [here](https://github.com/notifi-network/notifi-sdk-ts/blob/1885f21a93160f8f222700c39b1fbc34b12edea0/packages/notifi-react-example-v2/src/context/NotifiContextWrapper.tsx#L121)
+<br> <br>
 
-## Migrate from `@notifi-network/notifi-react-card` (v0.) to `@notifi-network/notifi-react` (v1.)
 
-`@notifi-network/notifi-react` is a major upgrade of `@notifi-network/notifi-react-card`. `@notifi-network/notifi-react` provides more advanced features by adopting the new Notifi infrastructure (called `fusion`). Migrating to `@notifi-network/notifi-react` will have the following benefits:
+# Migrate Your Card
 
-- **Optimized bundle size**: the package size of has a significant reduction (~20%)
-- **Better efficiency and performant**: the network request amount is reduced significantly. (~50%)
-- **Better UI & UX**: The new UI/UX design is more user-friendly and intuitive.
+#### Migrate from `@notifi-network/notifi-react-card` (v0.) to `@notifi-network/notifi-react` (v1.)
+
+##### *`@notifi-network/notifi-react` is a major upgrade of `@notifi-network/notifi-react-card`. `@notifi-network/notifi-react` which provides more advanced features by adopting the new Notifi infrastructure (called `fusion`).*
+
+<br> <br>
+
+#### Migrating to `@notifi-network/notifi-react` will have the following benefits:
+
+- **Optimized bundle size**: the package size reduction of ~20%.
+- **Better efficiency and performant**: the network request are reduced by ~50%.
+- **Better UI & UX**: The new UI/UX design is more user-friendly, intuitive, and customizable.
 - **Advanced new features**: support Notifi Admin Portal V2 new features. Check out Notifi Admin Portal V2 [here](https://admin.notifi.network/) for more information.
 
-> **IMPORTANT** > `@notifi-network/notifi-react-card` will no longer be maintained. Please use the `@notifi-network/notifi-react` if you are new to the Notifi React SDK.
-> For the existing Dapp which is already utilizing `@notifi-network/notifi-react-card`, you can easily do the migration by following the migration guide below.
+> **IMPORTANT**   `@notifi-network/notifi-react-card` will no longer be maintained. Please use the `@notifi-network/notifi-react` if you are new to the Notifi React SDK.
+> For any existing Dapps utilizing `@notifi-network/notifi-react-card`, follow the migration guide below.
 
-### Migration Guide
+<br> </br>
+## Migration Guide
 
 As `@notifi-network/notifi-react` is a separate package from `@notifi-network/notifi-react-card`, new package installation is required.
 
@@ -443,101 +541,68 @@ As `@notifi-network/notifi-react` is a separate package from `@notifi-network/no
   // ...
 }
 ```
+<br> </br>
 
-### Step 1: Replace the `NotifiContext` with the `NotifiContextProvider`
+###  Step 1: Replace the `NotifiContext` with the `NotifiContextProvider`
 
-Most of input props of the `NotifiContextProvider` are the same as `NotifiContext`. The only differences are listed below:
+Many of input props of the `NotifiContextProvider` are the same as `NotifiContext`. Differences are highlighted below.
+<br> </br>
 
-**Deprecated props:**
 
-- `alertConfigurations`(Optional) is deprecated. (No longer needed)
-- `keepSubscriptionData` (Optional) is deprecated. (No longer needed)
-- `multiWallet` (Optional) is deprecated. (No longer needed)
-- `isUsingFrontendClient` (Optional) is deprecated. (No longer needed)
+**Deprecated props**
 
-**Newly added props:**
+- `alertConfigurations`*(Optional)* is deprecated. (No longer needed)
+- `keepSubscriptionData` *(Optional)* is deprecated. (No longer needed)
+- `multiWallet` *(Optional)* is deprecated. (No longer needed)
+- `isUsingFrontendClient` *(Optional)* is deprecated. (No longer needed)
 
-- `tenantId` (Required): The `tenantId` property originally was set in the `NotifiSubscriptionCard` component as `dappAddress`. Now it is moved to context provider level.
+**Newly added props**
 
-- `cardId` (Required): The `cardId` property originally was set in the `NotifiSubscriptionCard` component. Now it is moved to context provider level.
+- `tenantId` **(Required)**: The `tenantId` or `dAppID` (as referenced on the Admin Portal) property originally was set in the `NotifiSubscriptionCard` component as `dappAddress`. Now it is moved to context provider level.
 
-- `notificationCountPerPage` (Optional): The `notificationCountPerPage` property is used to set the number of notifications per fetch in the notification history. The default value is `20`.
+- `cardId` **(Required)**: The `cardId` property originally was set in the `NotifiSubscriptionCard` component. Now it is moved to context provider level.
 
-- `toggleTargetAvailability` (Optional): The `toggleTargetAvailability` property is used to enable/disable the target availability feature. The default value depends on the active destinations set in the Notifi Admin Portal. See below, more detail [click here](https://github.com/notifi-network/notifi-sdk-ts/blob/8bb68f8f661e0c41f4411adec2cd9f12df0e5bcb/packages/notifi-react/lib/context/NotifiTargetContext.tsx#L82)
+- `notificationCountPerPage` *(Optional)*: The `notificationCountPerPage` property is used to set the number of notifications per fetch in the notification history. The default value is `20`.
+
+- `toggleTargetAvailability` *(Optional)*: The `toggleTargetAvailability` property is used to enable/disable the target availability feature. The default value depends on the active destinations set in the Notifi Admin Portal. Additional infromation can be found  [here.](https://github.com/notifi-network/notifi-sdk-ts/blob/8bb68f8f661e0c41f4411adec2cd9f12df0e5bcb/packages/notifi-react/lib/context/NotifiTargetContext.tsx#L82)
+
+<br> </br>
 
 ### Step 2: Replace the `<NotifiSubscriptionCard />` with the `<NotifiCardModal />`
 
 Most of the props of `NotifiCardModal` are the same as `NotifiSubscriptionCard`. The only differences are listed below:
+<br> </br>
 
-**Deprecated props:**
+**Deprecated props**
 
-- `loadingSpinnerSize` (Optional) is deprecated. (No longer needed as we can use css override to customize the spinner size)
+- `loadingSpinnerSize` *(Optional)* is deprecated. (No longer needed as we can utilize css overrides to customize the spinner size)
 
-- `loadingSpinnerColor` (Optional) is deprecated. (No longer needed as we can use css override to customize the spinner color)
+- `loadingSpinnerColor` *(Optional)* is deprecated. (No longer needed as we can utilize css overrides to customize the spinner color)
 
-- `cardId` (Optional) is deprecated. (No longer needed as we can set the `cardId` in the `NotifiContextProvider`)
+- `cardId` *(Optional)* is deprecated. (No longer needed as we can set the `cardId` in the `NotifiContextProvider`)
 
-- `inputLabels` and `inputSeparators` (Optional) is deprecated. Instead, we can use the `copy` prop to customize the input labels. (See below)
+- `inputLabels` and `inputSeparators` *(Optional)* is deprecated. Instead, we can use the `copy` prop to customize the input labels. [Seen Here](customizing-the-card-copy)
 
-```tsx
-const copy: NotifiCardModalProps['copy'] = {
-  Ftu: {
-    FtuTargetEdit: {
-      TargetInputs: {
-        inputSeparators: {
-          email: 'OR',
-          sms: 'OR',
-          telegram: 'OR',
-          discord: 'OR',
-        },
-        targetInputFields: {
-          email: {
-            label: 'Email',
-            placeholder: 'Enter your email',
-          },
-        },
-      },
-    },
-  },
-  Inbox: {
-    InboxConfigTargetEdit: {
-      TargetInputs: {
-        inputSeparators: {
-          email: 'OR',
-          sms: 'OR',
-          telegram: 'OR',
-          discord: 'OR',
-        },
-        targetInputFields: {
-          email: {
-            label: 'Email',
-            placeholder: 'Enter your email',
-          },
-        },
-      },
-    },
-  },
-};
-// ...
-<NotifiCardModal copy={copy} />;
-```
 
-> More example in [`@notifi-network/notifi-react-example-v2`](https://github.com/notifi-network/notifi-sdk-ts/blob/8bb68f8f661e0c41f4411adec2cd9f12df0e5bcb/packages/notifi-react-example-v2/src/app/notifi/components-example/page.tsx#L19)
+> Examples Found In [`@notifi-network/notifi-react-example-v2`](https://github.com/notifi-network/notifi-sdk-ts/blob/8bb68f8f661e0c41f4411adec2cd9f12df0e5bcb/packages/notifi-react-example-v2/src/app/notifi/components-example/page.tsx#L19)
 
-**Newly added props:**
 
-- N/A
 
-**On-going (TODO)**
+**On-going:** (SUBJECT TO CHANGES)
 
 - `disclosureCopy` (Optional): Not supported yet. but it is planned to be removed and make use of the `copy` prop instead (TBD)
 
 - `onClose` (Optional)
 
+<br></br>
+
 ### Step 3 Restyle the card by using the css override
 
-Since the Component layout has significant changes, the css classes of the `NotifiCardModal` are also changed significantly. If you are already using the existing `NotifiSubscriptionCard` with css override, you might need to deprecate all the css classes and re-implement the css override.
-For more detail about CSS classes, please refer to the [source code](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-react/lib/style)
+
+Component layout has significant changes, and accordingly the css classes of the `NotifiCardModal` are also changed. If you are already using the existing `NotifiSubscriptionCard` with the global css override, you will need to deprecate all the css classes and re-implement the new global css override.
+For more detail about CSS classes, please refer to the [source code.](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-react/lib/style)
+
+<br></br>
 
 ### Step 4: Remove all the related code of the `@notifi-network/notifi-react-card`
 
