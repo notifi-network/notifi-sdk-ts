@@ -361,7 +361,8 @@ export class NotifiFrontendClient {
           authorization = newAuthorization;
         }
       } catch (e: unknown) {
-        console.log('Failed to refresh Notifi token', e);
+        await this.logOut();
+        console.log('Failed to refresh Notifi token:', e);
       }
     }
 
