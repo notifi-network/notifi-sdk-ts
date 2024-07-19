@@ -47,6 +47,12 @@ export type AlertFilter = FilterBase & {
   description: string;
 };
 
+export type CustomInputConstraints = {
+  maxDecimalPlaces?: number;
+  upperBound?: number;
+  lowerBound?: number;
+};
+
 export type RequiredParserVariable = {
   variableName: string;
   variableType: ValueType;
@@ -71,7 +77,9 @@ export type UserInputParam<T extends UiType> = {
   options: (string | number)[];
   defaultValue: string | number;
   allowCustomInput?: boolean;
+  customInputPlaceholder?: string;
   prefixAndSuffix?: PrefixAndSuffix;
+  customInputConstraints?: CustomInputConstraints;
 };
 
 export type UiType = 'radio' | 'button';

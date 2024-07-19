@@ -19,6 +19,7 @@ export type NotifiTenantConfigContextType = {
   inputs: Record<string, unknown>;
   isLoading: boolean;
   error: Error | null;
+  getFusionTopic: (fusionEventId: string) => FusionEventTopic | undefined;
 };
 
 const NotifiTenantConfigContext = createContext<NotifiTenantConfigContextType>(
@@ -63,9 +64,22 @@ export const NotifiTenantConfigContextProvider: FC<
     return null;
   }
 
+  const getFusionTopic = (fusionEventId: string) => {
+    return fusionEventTopics.find(
+      (topic) => topic.fusionEventDescriptor.id === fusionEventId,
+    );
+  };
+
   return (
     <NotifiTenantConfigContext.Provider
-      value={{ cardConfig, inputs, isLoading, error, fusionEventTopics }}
+      value={{
+        cardConfig,
+        inputs,
+        isLoading,
+        error,
+        fusionEventTopics,
+        getFusionTopic,
+      }}
     >
       {children}
     </NotifiTenantConfigContext.Provider>

@@ -189,6 +189,31 @@ export const isTopicGroupValid = (topics: FusionEventTopic[]): boolean => {
       }
     }
   }
+
+  // NOTE: If It is stackable topic, ensure all topics have the same subscriptionRef
+  const benchmarkSubscriptionValueOrRef =
+    benchmarkTopicMetadata?.uiConfigOverride?.subscriptionValueOrRef;
+  const benchmarkSubscriptionRef =
+    benchmarkSubscriptionValueOrRef?.type === 'ref'
+      ? benchmarkSubscriptionValueOrRef.ref
+      : null;
+  if (
+    benchmarkTopicMetadata?.uiConfigOverride?.isSubscriptionValueInputable &&
+    benchmarkSubscriptionRef
+  ) {
+    const isValid = topics.every((topic) => {
+      const subTopicMetadata = getFusionEventMetadata(topic);
+      const subTopicSubscriptionValueOrRef =
+        subTopicMetadata?.uiConfigOverride?.subscriptionValueOrRef;
+      const subTopicSubscriptionRef =
+        subTopicSubscriptionValueOrRef?.type === 'ref'
+          ? subTopicSubscriptionValueOrRef.ref
+          : null;
+      return benchmarkSubscriptionRef === subTopicSubscriptionRef;
+    });
+    return isValid;
+  }
+
   return true;
 };
 
@@ -288,11 +313,12 @@ export const isAlertMetadataForTopicStack = (
     objectKeys(alertMetadata).length > 1 &&
     'timestamp' in alertMetadata &&
     'subscriptionValue' in alertMetadata &&
-    'subscriptionLabel' in alertMetadata
+    'subscriptionLabel' in alertMetadata &&
+    'fusionEventTypeId' in alertMetadata
   );
 };
 
-type AlertMetadata = AlertMetadataBase | AlertMetadataForTopicStack;
+export type AlertMetadata = AlertMetadataBase | AlertMetadataForTopicStack;
 
 export const resolveAlertName = (alertName: string): AlertMetadata => {
   /** alertName always start with its corresponding `fusionEventTypeId`:
@@ -322,6 +348,7 @@ export type TopicStackAlert = {
   alertName: string;
   id: string;
   subscriptionValueInfo: InputObject;
+  filterOptions: FusionFilterOptions;
 };
 
 /** @deprecated - Use resolveAlertName instead */
