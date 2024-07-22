@@ -4,14 +4,7 @@ import {
   WalletWithSignParams,
   newFrontendClient,
 } from '@notifi-network/notifi-frontend-client';
-import React, {
-  FC,
-  PropsWithChildren,
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import React from 'react';
 
 import {
   SolanaParams,
@@ -26,6 +19,17 @@ export type FrontendClientStatus = {
   isAuthenticated: boolean;
 };
 
+/**
+ * @param nonce - The signature signed by any type of transaction with this nonce can be used with the following login method for authentication. NOTE: Nonce is refreshed every 10 minutes, and expires in 15 minutes. So, If a tx process takes more than 5 minutes, it could potentially failed to login due to nonce expiration.
+ * @param login - By passing above signature, the user can be authenticated;
+ * */
+export type LoginViaTransaction = {
+  nonce: string;
+  login: (
+    signatureSignedWithNotifiNonce: string,
+  ) => Promise<NotifiFrontendClient | undefined>;
+};
+
 export type NotifiFrontendClientContextType = {
   frontendClient: NotifiFrontendClient;
   frontendClientStatus: FrontendClientStatus;
@@ -33,15 +37,12 @@ export type NotifiFrontendClientContextType = {
   error: Error | null;
   login: () => Promise<NotifiFrontendClient | undefined>;
   loginViaHardwareWallet: () => Promise<NotifiFrontendClient | undefined>;
+  loginViaTransaction: LoginViaTransaction;
   walletWithSignParams: WalletWithSignParamsModified;
-  nonceForTransactionLogin: string;
-  loginViaTransaction: (
-    signatureSignedWithNotifiNonce: string,
-  ) => Promise<NotifiFrontendClient | undefined>;
 };
 
 export const NotifiFrontendClientContext =
-  createContext<NotifiFrontendClientContextType>(
+  React.createContext<NotifiFrontendClientContextType>(
     {} as NotifiFrontendClientContextType,
   );
 
@@ -57,22 +58,24 @@ export type NotifiFrontendClientProviderProps = {
   env?: NotifiEnvironment;
 } & WalletWithSignParamsModified;
 
-export const NotifiFrontendClientContextProvider: FC<
-  PropsWithChildren<NotifiFrontendClientProviderProps>
+export const NotifiFrontendClientContextProvider: React.FC<
+  React.PropsWithChildren<NotifiFrontendClientProviderProps>
 > = ({ children, tenantId, env, ...walletWithSignParams }) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
-  const [transactionNonce, setTransactionNonce] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [error, setError] = React.useState<Error | null>(null);
+  const [transactionNonce, setTransactionNonce] = React.useState<string | null>(
+    null,
+  );
   const [frontendClient, setFrontendClient] =
-    useState<NotifiFrontendClient | null>(null);
+    React.useState<NotifiFrontendClient | null>(null);
   const [frontendClientStatus, setFrontendClientStatus] =
-    useState<FrontendClientStatus>({
+    React.useState<FrontendClientStatus>({
       isExpired: false,
       isInitialized: false,
       isAuthenticated: false,
     });
 
-  useEffect(() => {
+  React.useEffect(() => {
     const configInput = getFrontendConfigInput(
       tenantId,
       walletWithSignParams,
@@ -104,7 +107,7 @@ export const NotifiFrontendClientContextProvider: FC<
       .finally(() => setIsLoading(false));
   }, [walletWithSignParams.walletPublicKey]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!frontendClient || !frontendClientStatus.isInitialized) return;
     const getNonce = async () => {
       const nonce = await frontendClient?.beginLoginViaTransaction({
@@ -164,7 +167,6 @@ export const NotifiFrontendClientContextProvider: FC<
         isInitialized: !!frontendClient,
         isAuthenticated: frontendClient.userState?.status === 'authenticated',
       });
-      console.log(4, 'loginViaTransaction success');
       setFrontendClient(frontendClient);
       setError(null);
     } catch (error) {
@@ -186,7 +188,7 @@ export const NotifiFrontendClientContextProvider: FC<
   /**
    * @description - Only Solana hardware wallet requires a transaction login (rather than signing a message). Reason: MEMO program requires a transaction to verify user's ownership (Ref: https://spl.solana.com/memo)
    */
-  const loginViaHardwareWallet = async () => {
+  const loginViaHardwareWallet = React.useCallback(async () => {
     if (!frontendClient) return;
     setIsLoading(true);
     try {
@@ -211,7 +213,7 @@ export const NotifiFrontendClientContextProvider: FC<
       setIsLoading(false);
     }
     return frontendClient;
-  };
+  }, [walletWithSignParams]);
 
   if (!frontendClient || !transactionNonce) return null;
 
@@ -225,8 +227,10 @@ export const NotifiFrontendClientContextProvider: FC<
         login,
         loginViaHardwareWallet,
         walletWithSignParams,
-        nonceForTransactionLogin: transactionNonce,
-        loginViaTransaction,
+        loginViaTransaction: {
+          nonce: transactionNonce,
+          login: loginViaTransaction,
+        },
       }}
     >
       {children}
@@ -235,4 +239,4 @@ export const NotifiFrontendClientContextProvider: FC<
 };
 
 export const useNotifiFrontendClientContext = () =>
-  useContext(NotifiFrontendClientContext);
+  React.useContext(NotifiFrontendClientContext);

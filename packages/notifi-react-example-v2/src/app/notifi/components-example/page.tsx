@@ -7,7 +7,6 @@ import {
   useNotifiHistoryContext,
 } from '@notifi-network/notifi-react';
 import '@notifi-network/notifi-react/dist/index.css';
-import { ethers } from 'ethers';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import React from 'react';
@@ -19,10 +18,14 @@ const NotifiComponentExample = () => {
   const {
     frontendClientStatus,
     walletWithSignParams,
-    nonceForTransactionLogin,
-    loginViaTransaction,
+    loginViaTransaction: {
+      nonce: nonceForTransactionLogin,
+      login: loginViaTransaction,
+    },
   } = useNotifiFrontendClientContext();
   const [isLoading, setIsLoading] = React.useState(false);
+  const [signatureViaNotifiNonce, setSignatureViaNotifiNonce] =
+    React.useState<string>();
   const copy: NotifiCardModalProps['copy'] = {
     Ftu: {
       FtuTargetEdit: {
@@ -53,27 +56,33 @@ const NotifiComponentExample = () => {
     searchParams.get('scene') === 'light' ? 'light' : 'dark'
   }${isCardModalOpen ? '-open' : ''}.svg`;
 
-  // SOLANA specific ⬇️
-  const transactionSignerSolana =
-    walletWithSignParams.walletBlockchain === 'SOLANA'
-      ? walletWithSignParams.hardwareLoginPlugin
-      : null;
-
+  // SOLANA specific ⬇️ (For Auto-login feature using loginViaTransaction)
   const signSolanaTransaction = React.useCallback(async () => {
     setIsLoading(true);
+    const transactionSignerSolana =
+      walletWithSignParams.walletBlockchain === 'SOLANA'
+        ? walletWithSignParams.hardwareLoginPlugin
+        : null;
     try {
       const signature = await transactionSignerSolana?.sendMessage(
         nonceForTransactionLogin,
       );
+
       if (!signature) throw new Error('No signature - SOLANA');
-      await loginViaTransaction(signature);
+      setSignatureViaNotifiNonce(signature);
     } catch (e) {
       console.error('Error signing SOLANA transaction', e);
     } finally {
       setIsLoading(false);
     }
-  }, [nonceForTransactionLogin, transactionSignerSolana, loginViaTransaction]);
-  // SOLANA specific ⬆️
+  }, [nonceForTransactionLogin, loginViaTransaction, walletWithSignParams]);
+
+  React.useEffect(() => {
+    if (!signatureViaNotifiNonce) return;
+    loginViaTransaction(signatureViaNotifiNonce);
+  }, [signatureViaNotifiNonce]);
+
+  // SOLANA specific ⬆️ (For Auto-login feature using loginViaTransaction)
 
   return (
     <div>
