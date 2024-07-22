@@ -13,6 +13,11 @@ export const useSignTransaction = () => {
     },
   } = useNotifiFrontendClientContext();
 
+  const isSupported = ['SOLANA'].includes(
+    // TODO: Impl other blockchains transaction
+    walletWithSignParams.walletBlockchain,
+  );
+
   const signTransaction = React.useCallback(async () => {
     setIsLoading(true);
     let transactionSigner = null;
@@ -50,5 +55,6 @@ export const useSignTransaction = () => {
   return {
     isLoading,
     signTransaction,
+    isSupported,
   };
 };
