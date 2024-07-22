@@ -151,39 +151,41 @@ export const NotifiFrontendClientContextProvider: React.FC<
     return frontendClient;
   };
 
-  const loginViaTransaction = async (
-    signatureSignedWithNotifiNonce: string,
-  ) => {
-    if (!frontendClient) return;
-    setIsLoading(true);
-    try {
-      await frontendClient?.completeLoginViaTransaction({
-        walletAddress: walletWithSignParams.walletPublicKey,
-        walletBlockchain: walletWithSignParams.walletBlockchain,
-        transactionSignature: signatureSignedWithNotifiNonce,
-      });
-      setFrontendClientStatus({
-        isExpired: frontendClient.userState?.status === 'expired',
-        isInitialized: !!frontendClient,
-        isAuthenticated: frontendClient.userState?.status === 'authenticated',
-      });
-      setFrontendClient(frontendClient);
-      setError(null);
-    } catch (error) {
-      if (error instanceof Error) {
-        const newError = {
-          ...error,
-          message: `loginViaTrasaction: User rejects to sign, or mis-impl the signMessage method: ${error.message}`,
-        };
-        setError(newError);
-        console.error(newError);
+  const loginViaTransaction = React.useCallback(
+    async (signatureSignedWithNotifiNonce: string) => {
+      console.log(3, { frontendClient });
+      if (!frontendClient) return;
+      setIsLoading(true);
+      try {
+        await frontendClient?.completeLoginViaTransaction({
+          walletAddress: walletWithSignParams.walletPublicKey,
+          walletBlockchain: walletWithSignParams.walletBlockchain,
+          transactionSignature: signatureSignedWithNotifiNonce,
+        });
+        setFrontendClientStatus({
+          isExpired: frontendClient.userState?.status === 'expired',
+          isInitialized: !!frontendClient,
+          isAuthenticated: frontendClient.userState?.status === 'authenticated',
+        });
+        setFrontendClient(frontendClient);
+        setError(null);
+      } catch (error) {
+        if (error instanceof Error) {
+          const newError = {
+            ...error,
+            message: `loginViaTrasaction: User rejects to sign, or mis-impl the signMessage method: ${error.message}`,
+          };
+          setError(newError);
+          console.error(newError);
+        }
+      } finally {
+        setIsLoading(false);
       }
-    } finally {
-      setIsLoading(false);
-    }
 
-    return frontendClient;
-  };
+      return frontendClient;
+    },
+    [walletWithSignParams.walletPublicKey, !!frontendClient],
+  );
 
   /**
    * @description - Only Solana hardware wallet requires a transaction login (rather than signing a message). Reason: MEMO program requires a transaction to verify user's ownership (Ref: https://spl.solana.com/memo)
@@ -213,7 +215,7 @@ export const NotifiFrontendClientContextProvider: React.FC<
       setIsLoading(false);
     }
     return frontendClient;
-  }, [walletWithSignParams]);
+  }, [walletWithSignParams.walletPublicKey, !!frontendClient]);
 
   if (!frontendClient || !transactionNonce) return null;
 
