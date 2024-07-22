@@ -4,12 +4,12 @@
 
 -  [Out of The Box Implementation](#out-of-the-box-implementation)
 -  [Customized Implementation](#advanced-customized-implementation)
--  [Creating Your Own Card](#creating-your-own-card)
+-  [Custom Integration](#custom-integration)
 -  [Migrating from an older version of the SDK ](#migrate-your-card)
 
 
 
-> Play around with a Card [Example](https://notifi-sdk-ts-vercel-notifi-react-example-v2.vercel.app/)
+> Play around with a Card [Example](notifi-sdk-ts-notifi-dapp-example.vercel.app)
 
 <br/><br/>
 
@@ -35,8 +35,9 @@ Dapp developers can easily mount the `NotifiCardModal` component to their dapp t
 
 <br/><br/>
 ### Mount the `NotifiCardModal` to your dApp
-
-*Example*
+> **IMPORTANT** to use `NotifiCardModal`, you need to wrap your component with `NotifiContextProvider` first.
+> 
+*Example Quick Start for Ethereum*
 ```tsx
 import { NotifiContextProvider, NotifiCardModal } from '@notifi-network/notifi-react';
 import { useEthers } from '@usedapp/core';
@@ -87,51 +88,20 @@ The style of the `NotifiCardModal` is fully customizable. There are two approach
 
 #### **Global CSS override (*Recommended*)**
  By overriding the default CSS classes, we can style the elements in the card.
-   [Default CSS Classes are found here.](https://github.com/notifi-network/notifi-sdk-ts/tree/stage-notifi-react-m2/packages/notifi-react/lib/style)
+   [Default CSS Classes are found here.](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-react/lib/style)
 
 *Example*
 ```tsx
-import { NotifiContextProvider, NotifiCardModal } from '@notifi-network/notifi-react';
-import { useEthers } from '@usedapp/core';
-import { providers } from 'ethers';
-import "../../../styles/notifi/index.css";
 
-const NotifiCard = () => {
+import "@/styles/notifi/index.css";
 
-  const { account, library } = useEthers();
-  const signer = useMemo(() => {
-    if (library instanceof providers.JsonRpcProvider) {
-      return library.getSigner();
-    }
-    return undefined;
-  }, [library]);
-
-  if (account === undefined || signer === undefined) {
-    // account is required
-    return null;
-  }
-
-  return (
-//tenantId/dAppId and cardId are found on the Notifi Tenant Portal. Please see Docs below.
- <NotifiContextProvider
-    tenantId="YOUR_TENANT_ID"
-    env="Production"
-    cardId="YOUR_CARD_ID"
-    signMessage={signMessage}
-    walletBlockchain="ETHEREUM"
-    walletPublicKey={account}
-    >   
-        <NotifiCardModal darkMode={true} />
-  </NotifiContextProvider>
-  );
-};
 ```
 
 #### **Custom CSS class**
 You can pass in custom CSS classes to the `NotifiCardModal` component.
 
    > **NOTE** Before implementing, please review the `classNames` property structure in the `NotifiCardModal` component.
-   > View the `classNames` [structure here.](https://github.com/notifi-network/notifi-sdk-ts/blob/238add5a222d113ac7fdb90898b4c8dd8c584929/packages/notifi-react/lib/components/NotifiCardModal.tsx#L39)
+   > View the `classNames` [structure here.](https://github.com/notifi-network/notifi-sdk-ts/blob/main/packages/notifi-react/lib/components/NotifiCardModal.tsx#L39)
 
 *Example*
 
@@ -168,7 +138,7 @@ The copy text in the `NotifiCardModal` is fully customizable by inserting the cu
 
 
 > **NOTE** Before implementing, please review the `copy` property structure in the `NotifiCardModal` component.
-> View the `copy` [structure here](https://github.com/notifi-network/notifi-sdk-ts/blob/238add5a222d113ac7fdb90898b4c8dd8c584929/packages/notifi-react/lib/components/NotifiCardModal.tsx#L32)
+> View the `copy` [structure here](https://github.com/notifi-network/notifi-sdk-ts/blob/main/packages/notifi-react/lib/components/NotifiCardModal.tsx#L32)
 
   *Example*
 
@@ -214,7 +184,7 @@ const YourComponent = () => {
 <br/><br/>
 
 
-# Creating Your Own Card
+# Custom Integration
 
 If you want to build your own UI components instead of using the `NotifiCardModal`, you can use the Notifi React Context to access the Notifi core services.
 
@@ -311,8 +281,8 @@ export const MyComponent = () => {
 ```
 
 - **cardConfig**: The card UI configuration set in Notifi Admin portal.
-- **fusionEventTopics**: The detailed information of the fusion event topics in the specific UI card config. [Interface.](https://github.com/notifi-network/notifi-sdk-ts/blob/439023715e78ca1b02eab363a19c4bad51038cdd/packages/notifi-react/lib/context/NotifiTenantConfigContext.tsx#L18)
-- **inputs**: `input` is a concept which is used when a dynamic topic subscription value needs to be adopted. The `input` is a key-value pair object. The key is the value associated with the `Create a new topic` section in Admin Portal. The value is the dynamic value that needs to be passed into the topic subscription. The value needs to be an array of [InputObject](https://github.com/notifi-network/notifi-sdk-ts/blob/439023715e78ca1b02eab363a19c4bad51038cdd/packages/notifi-frontend-client/lib/models/FusionEvent.ts#L24) interface.
+- **fusionEventTopics**: The detailed information of the fusion event topics in the specific UI card config. [Interface.](https://github.com/notifi-network/notifi-sdk-ts/blob/main/packages/notifi-react/lib/context/NotifiTenantConfigContext.tsx#L18)
+- **inputs**: `input` is a concept which is used when a dynamic topic subscription value needs to be adopted. The `input` is a key-value pair object. The key is the value associated with the `Create a new topic` section in Admin Portal. The value is the dynamic value that needs to be passed into the topic subscription. The value needs to be an array of [InputObject](https://github.com/notifi-network/notifi-sdk-ts/blob/main/packages/notifi-frontend-client/lib/models/FusionEvent.ts#L24) interface.
 <br></br>
 
 
@@ -430,7 +400,7 @@ Provide the topic related methods and state.
 
 > **IMPORTANT CONCEPT**
 > Once a user subscribes to a topic, Notifi Service creates an `Alert` object associated to the users with the respective topic.
-> [Additional Information.](https://github.com/notifi-network/notifi-sdk-ts/blob/439023715e78ca1b02eab363a19c4bad51038cdd/packages/notifi-react/lib/context/NotifiTopicContext.tsx#L60)
+> [Additional Information.](https://github.com/notifi-network/notifi-sdk-ts/blob/main/packages/notifi-react/lib/context/NotifiTopicContext.tsx#L60)
 
 *Example*
 ```tsx
@@ -501,7 +471,7 @@ export const MyComponent = () => {
 
 > **NOTE:** 
 >  page counts are set to 20 by default. You can change the page count by setting the `notificationCountPerPage` in the `<NotifiContextProvider />`or `<NotifiHistoryContextProvider />` Property.
-[See an Example.](https://github.com/notifi-network/notifi-sdk-ts/blob/1885f21a93160f8f222700c39b1fbc34b12edea0/packages/notifi-react-example-v2/src/context/NotifiContextWrapper.tsx#L121)
+[See an Example.](https://github.com/notifi-network/notifi-sdk-ts/blob/main/packages/notifi-react-example-v2/src/context/NotifiContextWrapper.tsx#L121)
 
 <br> <br>
 
@@ -564,7 +534,7 @@ Many of input props of the `NotifiContextProvider` are the same as `NotifiContex
 
 - `notificationCountPerPage` *(Optional)*: The `notificationCountPerPage` property is used to set the number of notifications per fetch in the notification history. The default value is `20`.
 
-- `toggleTargetAvailability` *(Optional)*: The `toggleTargetAvailability` property is used to enable/disable the target availability feature. The default value depends on the active destinations set in the Notifi Admin Portal. Additional infromation can be found  [here.](https://github.com/notifi-network/notifi-sdk-ts/blob/8bb68f8f661e0c41f4411adec2cd9f12df0e5bcb/packages/notifi-react/lib/context/NotifiTargetContext.tsx#L82)
+- `toggleTargetAvailability` *(Optional)*: The `toggleTargetAvailability` property is used to enable/disable the target availability feature. The default value depends on the active destinations set in the Notifi Admin Portal. Additional infromation can be found  [here.](https://github.com/notifi-network/notifi-sdk-ts/blob/main/packages/notifi-react/lib/context/NotifiTargetContext.tsx#L82)
 
 <br> </br>
 
@@ -584,7 +554,7 @@ Most of the props of `NotifiCardModal` are the same as `NotifiSubscriptionCard`.
 - `inputLabels` and `inputSeparators` *(Optional)* is deprecated. Instead, we can use the `copy` prop to customize the input labels. [Seen Here](customizing-the-card-copy)
 
 
-> Examples Found In [`@notifi-network/notifi-react-example-v2`](https://github.com/notifi-network/notifi-sdk-ts/blob/8bb68f8f661e0c41f4411adec2cd9f12df0e5bcb/packages/notifi-react-example-v2/src/app/notifi/components-example/page.tsx#L19)
+> Examples Found In [`@notifi-network/notifi-react-example-v2`](https://github.com/notifi-network/notifi-sdk-ts/blob/main/packages/notifi-react-example-v2/src/app/notifi/components-example/page.tsx#L19)
 
 
 
