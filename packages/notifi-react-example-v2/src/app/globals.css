@@ -3,3 +3,45 @@
   border: 1px solid lightgray;
   border-radius: 6px;
 }
+
+button {
+  cursor: pointer;
+}
+
+.loading-solana-tx {
+  -webkit-animation-name: animation;
+  -webkit-animation-duration: 5s;
+  -webkit-animation-timing-function: ease-in-out;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-play-state: running;
+  border-radius: 10rem;
+  animation-name: animation;
+  animation-duration: 2s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-play-state: running;
+  color: lightcoral;
+}
+
+@-webkit-keyframes animation {
+  0% {
+    color: lightcoral;
+  }
+  50.0% {
+    color: sandybrown;
+  }
+  100.0% {
+    color: r lightcoral;
+  }
+}
+@keyframes animation {
+  0% {
+    color: r lightcoral;
+  }
+  50.0% {
+    color: sandybrown;
+  }
+  100.0% {
+    color: r lightcoral;
+  }
+}

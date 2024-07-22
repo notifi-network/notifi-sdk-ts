@@ -7,6 +7,7 @@ import {
   useNotifiHistoryContext,
 } from '@notifi-network/notifi-react';
 import '@notifi-network/notifi-react/dist/index.css';
+import { ethers } from 'ethers';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import React from 'react';
@@ -14,8 +15,14 @@ import React from 'react';
 const NotifiComponentExample = () => {
   const searchParams = useSearchParams();
   const [isCardModalOpen, setIsCardModalOpen] = React.useState(false);
-  const { unreadCount, isLoading } = useNotifiHistoryContext();
-  const { frontendClientStatus } = useNotifiFrontendClientContext();
+  const { unreadCount } = useNotifiHistoryContext();
+  const {
+    frontendClientStatus,
+    walletWithSignParams,
+    nonceForTransactionLogin,
+    loginViaTransaction,
+  } = useNotifiFrontendClientContext();
+  const [isLoading, setIsLoading] = React.useState(false);
   const copy: NotifiCardModalProps['copy'] = {
     Ftu: {
       FtuTargetEdit: {
@@ -46,6 +53,28 @@ const NotifiComponentExample = () => {
     searchParams.get('scene') === 'light' ? 'light' : 'dark'
   }${isCardModalOpen ? '-open' : ''}.svg`;
 
+  // SOLANA specific ⬇️
+  const transactionSignerSolana =
+    walletWithSignParams.walletBlockchain === 'SOLANA'
+      ? walletWithSignParams.hardwareLoginPlugin
+      : null;
+
+  const signSolanaTransaction = React.useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const signature = await transactionSignerSolana?.sendMessage(
+        nonceForTransactionLogin,
+      );
+      if (!signature) throw new Error('No signature - SOLANA');
+      await loginViaTransaction(signature);
+    } catch (e) {
+      console.error('Error signing SOLANA transaction', e);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [nonceForTransactionLogin, transactionSignerSolana, loginViaTransaction]);
+  // SOLANA specific ⬆️
+
   return (
     <div>
       <div>
@@ -62,6 +91,22 @@ const NotifiComponentExample = () => {
           </li>
         </ul>
       </div>
+
+      {walletWithSignParams.walletBlockchain === 'SOLANA' &&
+      !frontendClientStatus.isAuthenticated ? (
+        <>
+          {isLoading ? (
+            <div className="loading-solana-tx">
+              Loading ... (tx in process){' '}
+            </div>
+          ) : (
+            <button onClick={signSolanaTransaction}>
+              Sign dummy SOLANA transaction
+            </button>
+          )}
+        </>
+      ) : null}
+
       <div style={{ position: 'relative', width: '50px', cursor: 'pointer' }}>
         <Image
           src={bellIconHref}
