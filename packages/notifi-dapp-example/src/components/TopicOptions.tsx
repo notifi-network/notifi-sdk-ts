@@ -320,15 +320,15 @@ const isUserInputValid = (
   userInputValue: string | number,
   customInputConstraint?: CustomInputConstraints,
 ) => {
-  if (userInputValue === '') return true;
+  if (userInputValue === '' || userInputValue === '-') return true;
   // 'percentage' and 'price' are deprecated. For legacy support only
   const leadingZeroRegex = /^0\d+/; // regex for leading 0
   if (type === 'percentage' || type === 'price' || type === 'float') {
     // regex for only allow float
-    const floatRegex1 = /^\d+(\.)?$/; // regex for 0.
-    const floatRegex2 = /^\d+(\.\d+)?$/; // regex for float
+    const floatRegex1 = /^-?\d+(\.)?$/; // regex for 0. or -0.
+    const floatRegex2 = /^-?\d+(\.\d+)?$/; // regex for float
     const floatWithMaxDecimalPlacesRegex = new RegExp(
-      `^\\d+(\\.\\d{0,${customInputConstraint?.maxDecimalPlaces ?? 18}})?$`, // If not provided, default to 18 decimal places (EVM bigint limit)
+      `^-?\\d+(\\.\\d{0,${customInputConstraint?.maxDecimalPlaces ?? 18}})?$`, // If not provided, default to 18 decimal places (EVM bigint limit)
     );
 
     return (
@@ -341,7 +341,7 @@ const isUserInputValid = (
   if (type === 'integer') {
     return (
       !leadingZeroRegex.test(userInputValue.toString()) &&
-      /^\d+$/.test(userInputValue.toString()) // regex for only allow integer
+      /^-?\d+$/.test(userInputValue.toString()) // regex for only allow integer
     );
   }
   return true;

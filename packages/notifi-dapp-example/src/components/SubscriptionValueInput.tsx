@@ -69,7 +69,7 @@ export const SubscriptionValueInput: React.FC<SubscriptionValueInputProps> = (
       {isDropdownOpen && (
         <div>
           {getSubscriptionValueOrRef() === 'pricePairs' ? null : (
-            <div className="absolute top-12 left-0 w-[247px] h-10 bg-notifi-card-bg rounded-md mb-3 text-notifi-text p-3 border-0 focus:border-0 focus-visible:border-0 cursor-pointer z-50 mt-1 text-sm">
+            <div className="absolute top-12 left-0 w-[247px] h-10 bg-notifi-card-bg mb-3 text-notifi-text p-3 border-0 focus:border-0 focus-visible:border-0 cursor-pointer z-50 mt-1 text-sm">
               <Icon
                 className="absolute left-16 top-[21px]"
                 id="dropdown-arrow"
@@ -85,7 +85,7 @@ export const SubscriptionValueInput: React.FC<SubscriptionValueInputProps> = (
               </div>
               {isTermSelectDropdownOpen && (
                 <div>
-                  <div className="absolute top-8 left-0 w-[90px] bg-notifi-dropdown-bg rounded-md shadow-lg z-10 max-h-[90px] overflow-y-auto mt-1 ml-1 p-1 text-sm font-medium">
+                  <div className="absolute top-8 left-0 w-[90px] bg-notifi-dropdown-bg rounded-md shadow-lg z-10 max-h-[90px] mt-1 ml-1 p-1 text-sm font-medium">
                     <div
                       className="h-7 flex rounded-md items-center justify-start text-middle text-notifi-tenant-brand-bg font-normal hover:bg-notifi-card-bg cursor-pointer pl-3"
                       onClick={() => {
