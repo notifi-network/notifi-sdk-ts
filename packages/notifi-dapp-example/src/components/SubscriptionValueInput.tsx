@@ -119,9 +119,11 @@ export const SubscriptionValueInput: React.FC<SubscriptionValueInputProps> = (
             </div>
           )}
           <div
-            className={`absolute top-12 left-0 w-[247px] ${
-              getSubscriptionValueOrRef() === 'pricePairs' ? '' : 'pt-[36px]'
-            } bg-notifi-card-bg rounded-lg shadow-lg z-10 max-h-[180px] overflow-y-auto mt-1`}
+            className={`absolute left-0 w-[247px] ${
+              getSubscriptionValueOrRef() === 'pricePairs'
+                ? 'top-12 rounded-lg'
+                : 'top-[86px] rounded-b-lg'
+            } bg-notifi-card-bg shadow-lg z-10 max-h-[140px] overflow-y-auto mt-1`}
           >
             {filteredOptions.map((option) => (
               <div
