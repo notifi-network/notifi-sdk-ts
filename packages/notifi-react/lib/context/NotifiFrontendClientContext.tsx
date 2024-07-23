@@ -153,7 +153,6 @@ export const NotifiFrontendClientContextProvider: React.FC<
 
   const loginViaTransaction = React.useCallback(
     async (signatureSignedWithNotifiNonce: string) => {
-      console.log(3, { frontendClient });
       if (!frontendClient) return;
       setIsLoading(true);
       try {
@@ -173,7 +172,7 @@ export const NotifiFrontendClientContextProvider: React.FC<
         if (error instanceof Error) {
           const newError = {
             ...error,
-            message: `loginViaTrasaction: User rejects to sign, or mis-impl the signMessage method: ${error.message}`,
+            message: `loginViaTrasaction: failed to call .completeLoginViaTransaction: ${error.message}`,
           };
           setError(newError);
           console.error(newError);

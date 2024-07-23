@@ -1,4 +1,5 @@
 import { useNotifiFrontendClientContext } from '@notifi-network/notifi-react';
+import { ethers } from 'ethers';
 import React from 'react';
 
 export const useSignTransaction = () => {
@@ -13,10 +14,11 @@ export const useSignTransaction = () => {
     },
   } = useNotifiFrontendClientContext();
 
-  const isSupported = ['SOLANA'].includes(
-    // TODO: Impl other blockchains transaction
-    walletWithSignParams.walletBlockchain,
-  );
+  const isSupported = [
+    'SOLANA',
+    // TODO: ⬇ Impl other blockchains transaction
+    /*'ETHEREUM'*/
+  ].includes(walletWithSignParams.walletBlockchain);
 
   const signTransaction = React.useCallback(async () => {
     setIsLoading(true);
@@ -34,6 +36,43 @@ export const useSignTransaction = () => {
           setSignatureViaNotifiNonce(signature);
         } catch (e) {
           console.error('Error signing SOLANA transaction', e);
+        } finally {
+          setIsLoading(false);
+        }
+        break;
+      case 'ETHEREUM':
+        // TODO: WIP below
+        try {
+          // eslint-disable-next-line
+          // @ts-ignore
+          transactionSigner = window.ethereum;
+          if (!transactionSigner) throw new Error('No signer - ETH');
+          const accounts = await transactionSigner.request({
+            method: 'eth_accounts',
+            params: [],
+          });
+
+          const memo = ethers.hexlify(
+            ethers.toUtf8Bytes(nonceForTransactionLogin),
+          );
+          console.log(1, { accounts, memo, nonceForTransactionLogin });
+          // const signature = await transactionSigner.request({
+          //   method: 'eth_sendTransaction',
+          //   params: [
+          //     {
+          //       from: accounts[0],
+          //       to: accounts[0],
+          //       value: '1',
+          //       gasLimit: '0x5028',
+          //       maxPriorityFeePerGas: '0x3b9aca00',
+          //       maxFeePerGas: '0x2540be400',
+          //       data: memo,
+          //     },
+          //   ],
+          // });
+          // setSignatureViaNotifiNonce(signature);
+        } catch (e) {
+          console.error('Error signing ETHEREUM transaction', e);
         } finally {
           setIsLoading(false);
         }
