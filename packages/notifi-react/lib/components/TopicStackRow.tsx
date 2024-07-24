@@ -68,7 +68,7 @@ export const TopicStackRow = <T extends TopicRowCategory>(
   const alertsStack = React.useMemo(() => {
     const topics = isTopicGroup ? props.topics : [benchmarkTopic];
     const existingAlerts = topics.flatMap(
-      (topic) => getTopicStackAlerts(topic.fusionEventDescriptor.id!), // TODO: Type
+      (topic) => getTopicStackAlerts(topic.fusionEventDescriptor.id!), // Must has id (BE enforced)
     );
 
     const uniqueCriteria = new Map();
@@ -97,7 +97,6 @@ export const TopicStackRow = <T extends TopicRowCategory>(
       ),
     );
 
-    console.log(2, { alertsList });
     return alertsList;
   }, [getTopicStackAlerts, props]);
 
@@ -178,7 +177,6 @@ export const TopicStackRow = <T extends TopicRowCategory>(
       {isTopicStackRowInputVisible || topicStackAlerts.length === 0 ? (
         <>
           {isTopicGroup ? (
-            /* TODO: Refactor */
             <TopicStackRowInput<'group'>
               topics={props.topics}
               onSave={() => setIsTopicStackRowInputVisible(false)}

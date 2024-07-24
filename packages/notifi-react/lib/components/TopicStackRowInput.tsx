@@ -1,13 +1,10 @@
 import { FusionEventTopic } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
-import _ from 'lodash';
 import React from 'react';
 
 import { useNotifiTopicContext } from '../context';
 import { useTopicStackRowInput } from '../hooks/useTopicStackRowInput';
 import {
-  AlertMetadata,
-  AlertMetadataForTopicStack,
   convertOptionValue,
   defaultCopy,
   getFusionEventMetadata,
@@ -15,7 +12,6 @@ import {
   getUserInputParams,
   isAlertFilter,
   isTopicGroupValid,
-  resolveAlertName,
 } from '../utils';
 import { LoadingAnimation } from './LoadingAnimation';
 import { SubscriptionValueInput } from './SubscriptionValueInput';

@@ -100,11 +100,6 @@ export const useTopicStackRowInput = (
   const subscribeTopic = async () => {
     if (!isTopicReadyToSubscribe || !benchmarkTopic.fusionEventDescriptor.id)
       return;
-    // const alertName = composeTopicStackAlertName(
-    //   topic.fusionEventDescriptor.id,
-    //   subscriptionValue.value,
-    //   subscriptionValue.label,
-    // );
 
     const topicWithFilterOptionsList = topics
       .map((topic) => {
@@ -129,15 +124,6 @@ export const useTopicStackRowInput = (
       );
 
     await subscribeAlertsWithFilterOptions(
-      // [
-      // {
-      //   topic: topic,
-      //   filterOptions: filterOptionsToBeSubscribed,
-      //   customAlertName: alertName,
-      //   subscriptionValue: subscriptionValue.value,
-      // },
-
-      // ],
       topicWithFilterOptionsList,
       targetGroupId,
     );

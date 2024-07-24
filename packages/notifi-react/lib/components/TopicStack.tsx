@@ -1,7 +1,4 @@
-import {
-  FusionEventTopic,
-  UserInputOptions,
-} from '@notifi-network/notifi-frontend-client';
+import { UserInputOptions } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import { ValueType } from 'notifi-frontend-client/dist';
 import React from 'react';
@@ -30,7 +27,6 @@ export type TopicStackProps = {
     subtitle?: string;
     cta?: string;
   };
-  // topic: FusionEventTopic;
 };
 
 type InputParmValueMetadata = {
@@ -45,7 +41,6 @@ export const TopicStack: React.FC<TopicStackProps> = (props) => {
   const { unsubscribeAlert, getAlertFilterOptions } = useNotifiTopicContext();
   const { getFusionTopic } = useNotifiTenantConfigContext();
   const benchmarkAlert = props.topicStackAlerts[0];
-  console.log(3, { benchmarkAlert });
   const userInputOptions = React.useMemo(() => {
     const input = getAlertFilterOptions(benchmarkAlert.alertName)?.input;
     if (!input) return;
@@ -118,8 +113,6 @@ export const TopicStack: React.FC<TopicStackProps> = (props) => {
           for (const alert of props.topicStackAlerts) {
             await unsubscribeAlert(alert.alertName);
           }
-
-          // unsubscribeAlert(benchmarkAlert.alertName);
         }}
       >
         <Icon type="bin" />
