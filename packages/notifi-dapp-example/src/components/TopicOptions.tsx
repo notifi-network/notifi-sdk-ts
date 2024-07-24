@@ -83,7 +83,7 @@ export const TopicOptions = <T extends TopicRowCategory>(
     if (isLoadingTopic) return;
     value = value.toString();
     if (props.onSelectAction?.actionType === 'updateFilterOptions') {
-      if (options.includes(value)) {
+      if (options.map(String).includes(String(value))) {
         setCustomInput('');
       }
       props.onSelectAction?.action(props.userInputParam.name, value);
@@ -274,7 +274,11 @@ export const TopicOptions = <T extends TopicRowCategory>(
                 setCustomInput(value.toString());
                 selectOrInputValue(value);
               }}
-              placeholder={customInputPlaceholder ?? 'Custom'}
+              placeholder={
+                props.userInputParam.kind === 'price'
+                  ? 'Enter Price'
+                  : customInputPlaceholder
+              }
               value={customInput}
               className={` ${
                 props.userInputParam.options[0]

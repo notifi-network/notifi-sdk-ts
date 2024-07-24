@@ -33,7 +33,7 @@ export const useUserInputParmToFilterOption = (
   React.useEffect(() => {
     if (
       !!subscribedValue &&
-      !userInputParam.options.includes(subscribedValue)
+      !userInputParam.options.map(String).includes(String(subscribedValue))
     ) {
       setCustomInput(subscribedValue);
       return;
@@ -53,7 +53,7 @@ export const useUserInputParmToFilterOption = (
     userInputParam.customInputConstraints?.lowerBound ?? undefined;
 
   const customInputPlaceholder =
-    userInputParam.customInputPlaceholder ?? 'Enter Price';
+    userInputParam.customInputPlaceholder ?? 'Custom';
 
   const renewFilterOptions = async (
     option: number | string,
