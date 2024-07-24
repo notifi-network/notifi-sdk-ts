@@ -29,16 +29,18 @@ import {
 import { useNotifiFrontendClientContext } from './NotifiFrontendClientContext';
 import { useNotifiTenantConfigContext } from './NotifiTenantConfigContext';
 
+export type TopicWithFilterOption = {
+  topic: FusionEventTopic;
+  filterOptions: FusionFilterOptions;
+  subscriptionValue?: string;
+  customAlertName?: string;
+};
+
 export type NotifiTopicContextType = {
   isLoading: boolean;
   error: Error | null;
   subscribeAlertsWithFilterOptions: (
-    topicWithFilterOptionsList: ReadonlyArray<{
-      topic: FusionEventTopic;
-      filterOptions: FusionFilterOptions;
-      subscriptionValue?: string;
-      customAlertName?: string;
-    }>,
+    topicWithFilterOptionsList: ReadonlyArray<TopicWithFilterOption>,
     targetGroupId: string,
   ) => Promise<void>;
   subscribeAlertsDefault: (
@@ -325,6 +327,7 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
               label: resolved.subscriptionLabel,
               value: resolved.subscriptionValue,
             },
+            filterOptions: getAlertFilterOptions(alertName),
           };
         }
       })
@@ -353,6 +356,7 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
               label: resolved.subscriptionLabel,
               value: resolved.subscriptionValue,
             },
+            filterOptions: getAlertFilterOptions(alertName),
           };
         }
       })
@@ -361,7 +365,8 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
           data !== undefined &&
           'id' in data &&
           'alertName' in data &&
-          'subscriptionValueInfo' in data,
+          'subscriptionValueInfo' in data &&
+          'filterOptions' in data,
       );
   };
 

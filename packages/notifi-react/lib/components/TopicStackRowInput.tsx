@@ -11,29 +11,51 @@ import {
   getUpdatedAlertFilterOptions,
   getUserInputParams,
   isAlertFilter,
+  isTopicGroupValid,
 } from '../utils';
 import { LoadingAnimation } from './LoadingAnimation';
 import { SubscriptionValueInput } from './SubscriptionValueInput';
+import { TopicRowCategory } from './TopicList';
 import { TopicOptions } from './TopicOptions';
 
-export type TopicStackRowInputProps = {
+export type TopicStackRowInputPropsBase = {
   classNames?: {
     container?: string;
     button?: string;
     loadingSpinner?: React.CSSProperties;
   };
-  topic: FusionEventTopic;
+  // topic: FusionEventTopic;
   onSave?: () => void;
   copy?: {
     buttonContent?: string;
   };
 };
 
-export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
-  props,
+type TopicStackGroupRowInputProps = TopicStackRowInputPropsBase & {
+  topics: FusionEventTopic[];
+};
+
+type TopicStackStandaloneRowInputProps = TopicStackRowInputPropsBase & {
+  topic: FusionEventTopic;
+};
+
+export type TopicStackRowInputProps<T extends TopicRowCategory> =
+  T extends 'standalone'
+    ? TopicStackStandaloneRowInputProps
+    : TopicStackGroupRowInputProps;
+
+export const TopicStackRowInput = <T extends TopicRowCategory>(
+  props: TopicStackRowInputProps<T>,
 ) => {
-  const subscriptionValueOrRef = getFusionEventMetadata(props.topic)
-    ?.uiConfigOverride?.subscriptionValueOrRef;
+  const isTopicGroup = isTopicStackRowInput(props);
+  const benchmarkTopic = isTopicGroup ? props.topics[0] : props.topic;
+  /* NOTE: benchmarkTopic is either the 'first topic in the group' or the 'standalone topic'. This represent the target topic to be rendered. */
+  const fusionEventTypeId = benchmarkTopic.fusionEventDescriptor.id;
+  if (!fusionEventTypeId) return null;
+  if (isTopicGroup && !isTopicGroupValid(props.topics)) return null;
+  const subscriptionValueOrRef =
+    getFusionEventMetadata(benchmarkTopic)?.uiConfigOverride
+      ?.subscriptionValueOrRef;
 
   if (!subscriptionValueOrRef) {
     console.error(
@@ -43,11 +65,10 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
   }
   const { isLoading: isLoadingTopic } = useNotifiTopicContext();
 
-  const filterName = getFusionEventMetadata(props.topic)?.filters.find(
-    isAlertFilter,
-  )?.name;
+  const filterName =
+    getFusionEventMetadata(benchmarkTopic)?.filters.find(isAlertFilter)?.name;
 
-  const userInputParams = getUserInputParams(props.topic);
+  const userInputParams = getUserInputParams(benchmarkTopic);
 
   const {
     subscriptionValue,
@@ -57,7 +78,7 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
     subscribeTopic,
     isTopicReadyToSubscribe,
   } = useTopicStackRowInput(
-    props.topic,
+    isTopicGroup ? props.topics : [benchmarkTopic],
     userInputParams,
     filterName,
     props.onSave,
@@ -81,7 +102,7 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
             <TopicOptions<'standalone'>
               key={id}
               userInputParam={userInputParm}
-              topic={props.topic}
+              topic={benchmarkTopic}
               onSelectAction={{
                 actionType: 'updateFilterOptions',
                 action: (userInputParmName, option) => {
@@ -128,4 +149,10 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
       </div>
     </div>
   );
+};
+// Utils
+const isTopicStackRowInput = (
+  props: TopicStackRowInputProps<TopicRowCategory>,
+): props is TopicStackGroupRowInputProps => {
+  return 'topics' in props;
 };

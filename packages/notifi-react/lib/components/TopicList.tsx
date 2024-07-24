@@ -5,13 +5,13 @@ import React from 'react';
 import { useNotifiTenantConfigContext } from '../context';
 import { getFusionEventMetadata } from '../utils';
 import { TopicRow, TopicRowPropsBase } from './TopicRow';
-import { TopicStackRow, TopicStackRowProps } from './TopicStackRow';
+import { TopicStackRow, TopicStackRowPropsBase } from './TopicStackRow';
 
 export type TopicListProps = {
   classNames?: {
     container?: string;
     TopicRow?: TopicRowPropsBase['classNames'];
-    TopicStackRow?: TopicStackRowProps['classNames'];
+    TopicStackRow?: TopicStackRowPropsBase['classNames'];
   };
   parentComponent?: 'inbox' | 'ftu';
 };
@@ -74,9 +74,8 @@ export const TopicList: React.FC<TopicListProps> = (props) => {
             rowMetadata.topic,
           )?.uiConfigOverride?.isSubscriptionValueInputable;
           if (isSubscriptionValueInputable) {
-            // NOTE: Grouping not supported for TopicStackRow
             return (
-              <TopicStackRow
+              <TopicStackRow<'standalone'>
                 key={id}
                 {...rowMetadata}
                 classNames={props.classNames?.TopicRow}
@@ -94,6 +93,20 @@ export const TopicList: React.FC<TopicListProps> = (props) => {
           );
         }
         if (isTopicGroupMetadata(rowMetadata)) {
+          const isSubscriptionValueInputable = getFusionEventMetadata(
+            rowMetadata.topics[0],
+          )?.uiConfigOverride?.isSubscriptionValueInputable;
+
+          if (isSubscriptionValueInputable) {
+            return (
+              <TopicStackRow<'group'>
+                key={id}
+                {...rowMetadata}
+                classNames={props.classNames?.TopicRow}
+                parentComponent={parentComponent}
+              />
+            );
+          }
           return (
             <TopicRow<'group'>
               key={id}
