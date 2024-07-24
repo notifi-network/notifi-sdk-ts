@@ -361,7 +361,6 @@ import { useNotifiUserSettingContext } from '@notifi-network/notifi-react';
 export const MyComponent = () => {
   const { ftuStage, updateFtuStage, isLoading, error } =
     useNotifiUserSettingContext();
-
   // Other code ...
 };
 ```
