@@ -50,21 +50,15 @@ export const SubscriptionValueInput: React.FC<SubscriptionValueInputProps> = (
         className="rounded-md bg-notifi-card-bg text-start text-notifi-text"
         onClick={() => setIsDropdownOpen((prev) => !prev)}
       >
-        {props.subscriptionValue
-          ? props.subscriptionValue.label
-          : (
-              <div className="text-notifi-text-light">
-                {getSubscriptionValueOrRef() === 'pricePairs'
-                  ? 'Select Pair'
-                  : 'Select Market'}
-              </div>
-            ) ?? (
-              <div className="text-notifi-text-light">
-                {getSubscriptionValueOrRef() === 'pricePairs'
-                  ? 'Select Pair'
-                  : 'Select Market'}
-              </div>
-            )}
+        {props.subscriptionValue ? (
+          props.subscriptionValue.label
+        ) : (
+          <div className="text-notifi-text-light">
+            {getSubscriptionValueOrRef() === 'pricePairs'
+              ? 'Select Pair'
+              : 'Select Market'}
+          </div>
+        )}
       </div>
       {isDropdownOpen && (
         <div>
