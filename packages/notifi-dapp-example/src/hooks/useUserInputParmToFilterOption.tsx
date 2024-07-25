@@ -33,7 +33,7 @@ export const useUserInputParmToFilterOption = (
   React.useEffect(() => {
     if (
       !!subscribedValue &&
-      !userInputParam.options.includes(subscribedValue)
+      !userInputParam.options.map(String).includes(String(subscribedValue))
     ) {
       setCustomInput(subscribedValue);
       return;
@@ -46,6 +46,14 @@ export const useUserInputParmToFilterOption = (
   const prefixAndSuffix =
     userInputParam.prefixAndSuffix ??
     derivePrefixAndSuffixFromValueType(userInputParam.kind);
+
+  const upperBound =
+    userInputParam.customInputConstraints?.upperBound ?? undefined;
+  const lowerBound =
+    userInputParam.customInputConstraints?.lowerBound ?? undefined;
+
+  const customInputPlaceholder =
+    userInputParam.customInputPlaceholder ?? 'Custom';
 
   const renewFilterOptions = async (
     option: number | string,
@@ -75,5 +83,8 @@ export const useUserInputParmToFilterOption = (
     subscribedValue,
     uiType,
     setCustomInput,
+    upperBound,
+    lowerBound,
+    customInputPlaceholder,
   };
 };

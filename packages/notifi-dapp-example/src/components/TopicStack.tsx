@@ -12,46 +12,65 @@ import {
   derivePrefixAndSuffixFromValueType,
   getFusionEventMetadata,
   isAlertFilter,
+  resolveAlertName,
+  useNotifiTenantConfigContext,
   useNotifiTopicContext,
 } from '@notifi-network/notifi-react';
 import React from 'react';
 
-type TopicStackProps = {
-  topicStackAlert: TopicStackAlert;
-  topic: FusionEventTopic;
+export type TopicStackProps = {
+  topicStackAlerts: TopicStackAlert[];
+};
+
+type InputParmValueMetadata = {
+  valueType: ValueType;
+  prefixAndSuffix: {
+    prefix: string;
+    suffix: string;
+  } | null;
 };
 
 export const TopicStack: React.FC<TopicStackProps> = (props) => {
   const { unsubscribeAlert, getAlertFilterOptions } = useNotifiTopicContext();
+  const { getFusionTopic } = useNotifiTenantConfigContext();
+  const benchmarkAlert = props.topicStackAlerts[0];
   const userInputOptions = React.useMemo(() => {
-    const input = getAlertFilterOptions(props.topicStackAlert.alertName)?.input;
+    const input = getAlertFilterOptions(benchmarkAlert.alertName)?.input;
     if (!input) return;
     return Object.values(input)[0];
   }, [getAlertFilterOptions]);
 
-  const fusionEventMetadata = getFusionEventMetadata(props.topic);
+  const { isLoading } = useNotifiTopicContext();
+  const resolved = resolveAlertName(benchmarkAlert.alertName);
+  const fusionTopic = getFusionTopic(resolved.fusionEventTypeId);
+  if (!fusionTopic) return null;
+  const fusionEventMetadata = getFusionEventMetadata(fusionTopic);
   const alertFilter = fusionEventMetadata?.filters.find(isAlertFilter);
 
   if (!alertFilter) {
     return null;
   }
 
-  const userInputParmValueTypeMap = new Map(
-    alertFilter.userInputParams.map((param) => [param.name, param.kind]),
+  const userInputParmValueMetadataMap = new Map(
+    alertFilter.userInputParams.map((param) => [
+      param.name,
+      { valueType: param.kind, prefixAndSuffix: param.prefixAndSuffix ?? null },
+    ]),
   );
+
   const userInputOptionValuesToBeDisplayed =
     userInputOptions &&
     isAboveOrBelowThresholdUserInputOptions(userInputOptions)
       ? sortAboveOrBelowThresholdUserInputOptionValue(
           userInputOptions,
-          userInputParmValueTypeMap,
+          userInputParmValueMetadataMap,
         )
       : [];
   return (
     <div className="flex flex-row justify-between items-center py-3 border-b border-notifi-card-border">
       <div className="flex flex-col items-start">
         <div className="text-sm font-regular text-notifi-text">
-          {props.topicStackAlert.subscriptionValueInfo.label}
+          {benchmarkAlert.subscriptionValueInfo.label}
         </div>
         <div className="flex flex-row text-xs font-regular text-notifi-text-light">
           {userInputOptionValuesToBeDisplayed.map((option, id) => (
@@ -63,8 +82,12 @@ export const TopicStack: React.FC<TopicStackProps> = (props) => {
       </div>
 
       <div
-        className=""
-        onClick={() => unsubscribeAlert(props.topicStackAlert.alertName)}
+        onClick={async () => {
+          if (isLoading) return;
+          for (const alert of props.topicStackAlerts) {
+            await unsubscribeAlert(alert.alertName);
+          }
+        }}
       >
         <Icon
           id="trash-btn"
@@ -91,7 +114,7 @@ const isAboveOrBelowThresholdUserInputOptions = (
 
 const sortAboveOrBelowThresholdUserInputOptionValue = (
   filterOptions: Record<'threshold' | 'thresholdDirection', string>,
-  userInputParmValueTypeMap: Map<string, ValueType>,
+  userInputParmValueMetadataMap: Map<string, InputParmValueMetadata>,
 ) => {
   const sortedFilterOptions = [];
   if (filterOptions.thresholdDirection) {
@@ -101,21 +124,22 @@ const sortAboveOrBelowThresholdUserInputOptionValue = (
     sortedFilterOptions.push(thresholdDirection);
   }
   if (filterOptions.threshold) {
-    const valueType = userInputParmValueTypeMap.get('threshold');
-    if (valueType) {
-      const prefix = derivePrefixAndSuffixFromValueType(valueType);
-      const suffix = derivePrefixAndSuffixFromValueType(valueType);
-      let thresholdValue = convertOptionValue(
+    const inputParamMetadata = userInputParmValueMetadataMap.get('threshold');
+    if (inputParamMetadata) {
+      const prefix = inputParamMetadata.prefixAndSuffix
+        ? inputParamMetadata.prefixAndSuffix.prefix
+        : derivePrefixAndSuffixFromValueType(inputParamMetadata.valueType)
+            .prefix;
+      const suffix = inputParamMetadata.prefixAndSuffix
+        ? inputParamMetadata.prefixAndSuffix.suffix
+        : derivePrefixAndSuffixFromValueType(inputParamMetadata.valueType)
+            .suffix;
+      const thresholdValue = convertOptionValue(
         filterOptions.threshold,
-        valueType,
+        inputParamMetadata.valueType,
         ConvertOptionDirection.BtoF,
       );
-      if (valueType === 'price') {
-        thresholdValue = formatPriceNumber(Number(thresholdValue));
-      }
-      sortedFilterOptions.push(
-        `${prefix.prefix} ${thresholdValue} ${suffix.suffix}`,
-      );
+      sortedFilterOptions.push(`${prefix}${thresholdValue}${suffix}`);
     }
   }
   return sortedFilterOptions;
