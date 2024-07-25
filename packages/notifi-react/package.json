@@ -1,6 +1,6 @@
 {
   "name": "@notifi-network/notifi-react",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "React components to access Notifi core services",
   "keywords": [
     "notifi",
