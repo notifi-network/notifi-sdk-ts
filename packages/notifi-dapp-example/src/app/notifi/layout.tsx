@@ -38,7 +38,7 @@ export default function NotifiSingupLayout({
       ) : null}
 
       <QueryClientProvider client={new QueryClient()}>
-        <NotifiContextWrapper>{children}</NotifiContextWrapper>;
+        <NotifiContextWrapper>{children}</NotifiContextWrapper>
       </QueryClientProvider>
     </>
   );

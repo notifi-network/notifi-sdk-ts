@@ -1,33 +1,72 @@
 import { Icon } from '@/assets/Icon';
+import { useUserInputParmToFilterOption } from '@/hooks/useUserInputParmToFilterOption';
 import {
+  TopicStackAlert,
   getFusionEventMetadata,
+  isEqual,
   useNotifiTopicContext,
 } from '@notifi-network/notifi-react';
 import React from 'react';
 
-import { TopicStandaloneRowMetadata } from './TopicList';
+import { TopicRowCategory } from './TopicList';
+import { TopicRowProps, isTopicGroupRow } from './TopicRow';
 import { TopicStack } from './TopicStack';
 import { TopicStackRowInput } from './TopicStackRowInput';
 
-export type TopicStackRowProps = TopicStandaloneRowMetadata;
-
-export const TopicStackRow: React.FC<TopicStackRowProps> = (props) => {
+export const TopicStackRow = <T extends TopicRowCategory>(
+  props: TopicRowProps<T>,
+) => {
+  const isTopicGroup = isTopicGroupRow(props);
   const { getTopicStackAlerts } = useNotifiTopicContext();
-  if (!props.topic.fusionEventDescriptor.id) return null;
+  const benchmarkTopic = isTopicGroup ? props.topics[0] : props.topic;
+  const fusionEventTypeId = benchmarkTopic.fusionEventDescriptor.id;
+  if (!fusionEventTypeId) return null;
 
-  const topicStackAlerts = getTopicStackAlerts(
-    props.topic.fusionEventDescriptor.id,
-  );
+  const topicStackAlerts = getTopicStackAlerts(fusionEventTypeId);
   const customIconUrl =
-    getFusionEventMetadata(props.topic)?.uiConfigOverride?.customIconUrl ?? '';
-  const icon =
-    getFusionEventMetadata(props.topic)?.uiConfigOverride?.icon ?? 'INFO';
-  const title =
-    getFusionEventMetadata(props.topic)?.uiConfigOverride?.topicDisplayName ??
+    getFusionEventMetadata(benchmarkTopic)?.uiConfigOverride?.customIconUrl ??
     '';
-
+  const icon =
+    getFusionEventMetadata(benchmarkTopic)?.uiConfigOverride?.icon ?? 'INFO';
+  const title =
+    getFusionEventMetadata(benchmarkTopic)?.uiConfigOverride
+      ?.topicDisplayName ?? '';
+  const isTradingPairAlert = title.includes('Pair');
   const [isTopicStackRowInputVisible, setIsTopicStackRowInputVisible] =
     React.useState(topicStackAlerts.length > 0 ? false : true);
+
+  const alertsStack = React.useMemo(() => {
+    const topics = isTopicGroup ? props.topics : [benchmarkTopic];
+    const existingAlerts: TopicStackAlert[] = topics.flatMap((topic) =>
+      getTopicStackAlerts(topic.fusionEventDescriptor.id!),
+    );
+
+    const uniqueCriteria = new Map();
+
+    existingAlerts.forEach((alert) => {
+      const criteriaKey = JSON.stringify({
+        filterOptions: alert.filterOptions,
+        subscriptionValueInfo: alert.subscriptionValueInfo,
+      });
+
+      if (!uniqueCriteria.has(criteriaKey)) {
+        uniqueCriteria.set(criteriaKey, alert);
+      }
+    });
+
+    const alertsList = Array.from(uniqueCriteria.values()).map((uniqueAlert) =>
+      existingAlerts.filter(
+        (alert) =>
+          isEqual(alert.filterOptions, uniqueAlert.filterOptions) &&
+          isEqual(
+            alert.subscriptionValueInfo,
+            uniqueAlert.subscriptionValueInfo,
+          ),
+      ),
+    );
+
+    return alertsList;
+  }, [getTopicStackAlerts, props]);
 
   return (
     <div className="flex flex-col p-2 px-4 bg-notifi-destination-card-bg rounded-md md:w-[359px]">
@@ -46,11 +85,11 @@ export const TopicStackRow: React.FC<TopicStackRowProps> = (props) => {
             <label>
               {title}
               <div className="group inline-block align-middle">
-                {props.topic.uiConfig.tooltipContent ? (
+                {benchmarkTopic.uiConfig.tooltipContent ? (
                   <div className="relative">
                     <Icon id="info" className="text-notifi-text-light" />
                     <div className="hidden group-hover:block absolute text-sm font-medium max-w-48 bg-notifi-card-bg p-4 rounded-md z-10 border border-notifi-card-border w-48 bottom-[1.5rem] right-[-5rem]">
-                      <div>{props.topic.uiConfig.tooltipContent}</div>
+                      <div>{benchmarkTopic.uiConfig.tooltipContent}</div>
                     </div>
                   </div>
                 ) : null}
@@ -61,26 +100,28 @@ export const TopicStackRow: React.FC<TopicStackRowProps> = (props) => {
       </div>
       {topicStackAlerts.length > 0 ? (
         <div className="ml-14 flex flex-col border-t border-notifi-card-border my-2 mr-6">
-          {topicStackAlerts.map((topicStackAlert, id) => {
-            return (
-              <TopicStack
-                key={id}
-                topicStackAlert={topicStackAlert}
-                topic={props.topic}
-              />
-            );
+          {alertsStack.map((topicStackAlert, id) => {
+            return <TopicStack key={id} topicStackAlerts={topicStackAlert} />;
           })}
         </div>
       ) : null}
 
       {isTopicStackRowInputVisible || topicStackAlerts.length === 0 ? (
-        <TopicStackRowInput
-          isTopicStackRowInputVisible={isTopicStackRowInputVisible}
-          topicStackAlerts={topicStackAlerts}
-          setIsTopicStackRowInputVisible={setIsTopicStackRowInputVisible}
-          topic={props.topic}
-          onSave={() => setIsTopicStackRowInputVisible(false)}
-        />
+        isTopicGroup ? (
+          <TopicStackRowInput
+            isTopicStackRowInputVisible={isTopicStackRowInputVisible}
+            setIsTopicStackRowInputVisible={setIsTopicStackRowInputVisible}
+            topics={props.topics}
+            onSave={() => setIsTopicStackRowInputVisible(false)}
+          />
+        ) : (
+          <TopicStackRowInput
+            isTopicStackRowInputVisible={isTopicStackRowInputVisible}
+            setIsTopicStackRowInputVisible={setIsTopicStackRowInputVisible}
+            topic={props.topic}
+            onSave={() => setIsTopicStackRowInputVisible(false)}
+          />
+        )
       ) : null}
       {isTopicStackRowInputVisible || topicStackAlerts.length === 0 ? null : (
         <div className=" ml-14 mr-6">
@@ -94,7 +135,7 @@ export const TopicStackRow: React.FC<TopicStackRowProps> = (props) => {
               setIsTopicStackRowInputVisible(true);
             }}
           >
-            + Add Pair
+            {isTradingPairAlert ? '+ Add Pair' : '+ Add Fee Rate'}
           </div>
         </div>
       )}

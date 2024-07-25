@@ -1,7 +1,11 @@
 'use client';
 
 import { Icon } from '@/assets/Icon';
-import { FusionEventTopic } from '@notifi-network/notifi-frontend-client';
+import {
+  FusionEventTopic,
+  UiType,
+  UserInputParam,
+} from '@notifi-network/notifi-frontend-client';
 import {
   getFusionFilter,
   getUiConfigOverride,
@@ -89,6 +93,17 @@ export const TopicRow = <T extends TopicRowCategory>(
     }
   };
 
+  const correctUserInputParamsOrder = (
+    userInputParams: UserInputParam<UiType>[],
+  ) => {
+    if (userInputParams.length > 0 && userInputParams[0].uiType === 'radio') {
+      return userInputParams;
+    } else {
+      const reversedParams = [...userInputParams].reverse();
+      return reversedParams;
+    }
+  };
+
   return (
     <div className="flex flex-col p-2 px-4 bg-notifi-destination-card-bg rounded-md md:w-[359px]">
       <div className="flex items-center justify-between">
@@ -135,30 +150,34 @@ export const TopicRow = <T extends TopicRowCategory>(
       {isAlertSubscribed(fusionEventTypeId) ? (
         <div>
           {isTopicGroup
-            ? userInputParams.map((userInput, id) => {
-                return (
-                  <TopicOptions<'group'>
-                    index={id}
-                    key={id}
-                    userInputParam={userInput}
-                    topics={props.topics}
-                    description={description}
-                  />
-                );
-              })
+            ? correctUserInputParamsOrder(userInputParams).map(
+                (userInput, id) => {
+                  return (
+                    <TopicOptions<'group'>
+                      index={id}
+                      key={id}
+                      userInputParam={userInput}
+                      topics={props.topics}
+                      description={description}
+                    />
+                  );
+                },
+              )
             : null}
           {!isTopicGroup
-            ? userInputParams.map((userInput, id) => {
-                return (
-                  <TopicOptions<'standalone'>
-                    index={id}
-                    key={id}
-                    userInputParam={userInput}
-                    topic={benchmarkTopic}
-                    description={description}
-                  />
-                );
-              })
+            ? correctUserInputParamsOrder(userInputParams).map(
+                (userInput, id) => {
+                  return (
+                    <TopicOptions<'standalone'>
+                      index={id}
+                      key={id}
+                      userInputParam={userInput}
+                      topic={benchmarkTopic}
+                      description={description}
+                    />
+                  );
+                },
+              )
             : null}
         </div>
       ) : null}
@@ -167,7 +186,7 @@ export const TopicRow = <T extends TopicRowCategory>(
 };
 
 // Utils
-const isTopicGroupRow = (
+export const isTopicGroupRow = (
   props: TopicRowProps<TopicRowCategory>,
 ): props is TopicGroupRowProps => {
   return 'topics' in props && 'topicGroupName' in props;

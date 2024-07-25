@@ -16,6 +16,7 @@
     --notifi-black: 0 0 0;
     --notifi-midnight: 12, 14, 28;
     --notifi-midnight-blue: 33 53 76;
+    --notifi-midnight-blue2: 36 41 74;
     --notifi-blueish0: 225 235 248;
     --notifi-blueish1: 198 233 245;
     --notifi-blueish2: 0 194 253;
@@ -85,6 +86,7 @@
   --notifi-card-border: var(--notifi-blue-gray);
   --notifi-input-border: var(--notifi-brand);
   --notifi-destination-logo-card-bg: var(--notifi-midnight-blue);
+  --notifi-dropdown-bg: var(--notifi-midnight-blue2);
   --notifi-wallet-menu-card-bg: var(--notifi-black);
   --notifi-loading-skeleton-bg: var(--notifi-brand);
 }
