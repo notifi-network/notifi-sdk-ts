@@ -93,6 +93,7 @@ export const NotifiHistoryContextProvider: FC<
 
   const getHistoryItems = React.useCallback(
     async (initialLoad?: boolean) => {
+      if (!frontendClientStatus.isAuthenticated) return;
       const cardEventTypeNames = new Set(
         cardConfig?.eventTypes?.map((event) => event.name) ?? [],
       );
@@ -156,7 +157,7 @@ export const NotifiHistoryContextProvider: FC<
         setIsLoading(false);
       }
     },
-    [cardConfig, cursorInfo],
+    [cardConfig, cursorInfo, frontendClientStatus],
   );
 
   useEffect(() => {

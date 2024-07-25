@@ -1,5 +1,6 @@
 'use client';
 
+import { useSignTransaction } from '@/hooks/useSignTransaction';
 import {
   NotifiCardModal,
   NotifiCardModalProps,
@@ -14,8 +15,13 @@ import React from 'react';
 const NotifiComponentExample = () => {
   const searchParams = useSearchParams();
   const [isCardModalOpen, setIsCardModalOpen] = React.useState(false);
-  const { unreadCount, isLoading } = useNotifiHistoryContext();
+  const { unreadCount } = useNotifiHistoryContext();
   const { frontendClientStatus } = useNotifiFrontendClientContext();
+  const {
+    isLoading,
+    signTransaction,
+    isSupported: isSignTxSupported,
+  } = useSignTransaction();
   const copy: NotifiCardModalProps['copy'] = {
     Ftu: {
       FtuTargetEdit: {
@@ -62,6 +68,16 @@ const NotifiComponentExample = () => {
           </li>
         </ul>
       </div>
+      {isSignTxSupported && !frontendClientStatus.isAuthenticated ? (
+        <>
+          {isLoading ? (
+            <div className="loading-solana-tx">Loading ... (tx in process)</div>
+          ) : (
+            <button onClick={signTransaction}>Sign dummy transaction</button>
+          )}
+        </>
+      ) : null}
+
       <div style={{ position: 'relative', width: '50px', cursor: 'pointer' }}>
         <Image
           src={bellIconHref}
