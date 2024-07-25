@@ -10,6 +10,7 @@ import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { HistoryListRow } from './HistoryListRow';
 import { LoadingAnimation } from './LoadingAnimation';
 import { LoadingSkeloton } from './LoadingSkeloton';
+import { Toggle } from './Toggle';
 
 type HistoryListProps = {
   setHistoryDetailEntry: Dispatch<SetStateAction<HistoryItem | null>>;
@@ -21,6 +22,7 @@ export const HistoryList: React.FC<HistoryListProps> = ({
   historyDetailEntry,
 }) => {
   const [isLoadingMoreItems, setIsLoadingMoreItems] = useState(false);
+  const [isUnread, setIsUnread] = useState(false);
   const {
     isLoading: isLoadingHistoryItems,
     historyItems,
@@ -59,15 +61,27 @@ export const HistoryList: React.FC<HistoryListProps> = ({
       `}
     >
       {historyItems.length > 0 ? (
-        <div className={`p-6 border-b border-gray-200 border-opacity-20`}>
-          <div className="m-auto font-medium text-base text-notifi-text">
-            Inbox
-          </div>
-          {unreadCount ? (
-            <div className="m-auto text-sm text-notifi-text-light">
-              {unreadCount} unread message{unreadCount > 1 ? 's' : ''}
+        <div
+          className={`p-6 border-b border-gray-200 border-opacity-20 flex flex-row justify-between items-start`}
+        >
+          <div>
+            <div className="m-auto font-medium text-base text-notifi-text">
+              Inbox
             </div>
-          ) : null}
+            {unreadCount ? (
+              <div className="m-auto text-sm text-notifi-text-light">
+                {unreadCount} unread message{unreadCount > 1 ? 's' : ''}
+              </div>
+            ) : null}
+          </div>
+          <div className="flex flex-row gap-2">
+            <div className="text-notifi-text text-sm">Unreads</div>
+            <Toggle
+              disabled={false}
+              checked={isUnread}
+              onChange={() => setIsUnread(!isUnread)}
+            />
+          </div>
         </div>
       ) : null}
 
