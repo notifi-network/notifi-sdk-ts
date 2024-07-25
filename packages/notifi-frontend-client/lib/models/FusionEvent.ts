@@ -47,12 +47,6 @@ export type AlertFilter = FilterBase & {
   description: string;
 };
 
-export type CustomInputConstraints = {
-  maxDecimalPlaces?: number;
-  upperBound?: number;
-  lowerBound?: number;
-};
-
 export type RequiredParserVariable = {
   variableName: string;
   variableType: ValueType;
