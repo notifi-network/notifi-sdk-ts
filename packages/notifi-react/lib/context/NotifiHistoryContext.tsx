@@ -43,11 +43,12 @@ const NotifiHistoryContext = createContext<NotifiHistoryContextType>(
 
 export type NotifiHistoryProviderProps = {
   notificationCountPerPage?: number;
+  includeRead?: boolean;
 };
 
 export const NotifiHistoryContextProvider: FC<
   PropsWithChildren<NotifiHistoryProviderProps>
-> = ({ children, notificationCountPerPage = 20 }) => {
+> = ({ children, notificationCountPerPage = 20, includeRead = false }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
   const { frontendClient, frontendClientStatus } =
@@ -69,6 +70,7 @@ export const NotifiHistoryContextProvider: FC<
           .getFusionNotificationHistory({
             first: notificationCountPerPage,
             includeHidden: false,
+            includeRead,
           })
           .then((res) => {
             const historyItemIdMap = new Map(
@@ -126,6 +128,7 @@ export const NotifiHistoryContextProvider: FC<
           first: notificationCountPerPage,
           after: cursorInfo.endCursor,
           includeHidden: false,
+          includeRead,
         });
         if (!result || result.nodes?.length === 0 || !result.nodes) {
           return;

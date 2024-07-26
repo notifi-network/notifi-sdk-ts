@@ -111,7 +111,7 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
           const result = await wallets[selectedWallet].signArbitrary(message);
 
           if (!result) throw new Error('ERROR: invalid signature');
-          return Buffer.from(result.signature, 'base64');
+          return Uint8Array.from(Buffer.from(result.signature, 'base64'));
         };
         break;
       case 'metamask':

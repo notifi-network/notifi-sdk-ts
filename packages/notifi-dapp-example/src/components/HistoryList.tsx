@@ -29,7 +29,7 @@ export const HistoryList: React.FC<HistoryListProps> = ({
     hasNextPage,
     getHistoryItems,
     unreadCount,
-  } = useNotifiHistoryContext();
+  } = useNotifiHistoryContext({ includeRead });
 
   const mainRef = useRef<HTMLDivElement>(null);
 
