@@ -83,7 +83,7 @@ export const TopicOptions = <T extends TopicRowCategory>(
     if (isLoadingTopic) return;
     value = value.toString();
     if (props.onSelectAction?.actionType === 'updateFilterOptions') {
-      if (options.map(String).includes(String(value))) {
+      if (options.includes(value)) {
         setCustomInput('');
       }
       props.onSelectAction?.action(props.userInputParam.name, value);
@@ -119,7 +119,7 @@ export const TopicOptions = <T extends TopicRowCategory>(
                 !option ? null : (
                   <button
                     className={`w-16 h-12 bg-notifi-card-bg rounded-md mr-2 text-notifi-text-light ${
-                      option === selectedOption
+                      String(option) === String(selectedOption)
                         ? 'selected text-white border border-notifi-tenant-brand-bg'
                         : ''
                     }`}
@@ -186,17 +186,18 @@ export const TopicOptions = <T extends TopicRowCategory>(
               props.userInputParam.options[0] ? 'w-[6.5rem]' : 'w-[247px]'
             }`}
           >
-            {props.userInputParam.options[0] ? (
-              customInput ? (
-                <div className="absolute left-3 bottom-3">
-                  {'prefix' in prefixAndSuffix && prefixAndSuffix.prefix}
-                </div>
-              ) : null
-            ) : (
-              <div className="absolute left-3 bottom-3">
-                {'prefix' in prefixAndSuffix && prefixAndSuffix.prefix}
-              </div>
-            )}
+            <div
+              className={`absolute left-3 bottom-3 ${
+                props.userInputParam.options[0]
+                  ? customInput
+                    ? 'block'
+                    : 'hide'
+                  : 'block'
+              }`}
+            >
+              {'prefix' in prefixAndSuffix && prefixAndSuffix.prefix}
+            </div>
+
             <input
               disabled={isLoadingTopic}
               onChange={(evt) => {
@@ -294,17 +295,17 @@ export const TopicOptions = <T extends TopicRowCategory>(
                   : 'focus:outline-none focus:border-notifi-card-border'
               }`}
             />
-            {props.userInputParam.options[0] ? (
-              customInput ? (
-                <div className="absolute right-4 bottom-3">
-                  {'suffix' in prefixAndSuffix && prefixAndSuffix.suffix}
-                </div>
-              ) : null
-            ) : (
-              <div className="absolute right-3 bottom-3">
-                {'suffix' in prefixAndSuffix && prefixAndSuffix.suffix}
-              </div>
-            )}
+            <div
+              className={`absolute bottom-3 ${
+                props.userInputParam.options[0]
+                  ? customInput
+                    ? 'block right-4'
+                    : 'hide'
+                  : 'block right-3'
+              }`}
+            >
+              {'suffix' in prefixAndSuffix && prefixAndSuffix.suffix}
+            </div>
           </div>
         ) : null}
       </div>

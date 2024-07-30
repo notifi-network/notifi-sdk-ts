@@ -135,7 +135,7 @@ export const TopicStackRow = <T extends TopicRowCategory>(
               setIsTopicStackRowInputVisible(true);
             }}
           >
-            {isTradingPairAlert ? '+ Add Pair' : '+ Add Fee Rate'}
+            {isTradingPairAlert ? '+ Add Pair' : '+ Add Fee Rate Alert'}
           </div>
         </div>
       )}

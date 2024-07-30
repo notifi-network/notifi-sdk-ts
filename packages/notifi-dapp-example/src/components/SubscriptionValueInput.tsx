@@ -21,7 +21,7 @@ export const SubscriptionValueInput: React.FC<SubscriptionValueInputProps> = (
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
   const [isTermSelectDropdownOpen, setIsTermSelectDropdownOpen] =
     React.useState(false);
-  const [selectTerm, setSelectTerm] = React.useState<string>('All');
+  const [selectedTerm, setSelectedTerm] = React.useState<string>('All');
   const subscriptionValueOptions = resolveObjectArrayRef(
     'subscriptionValueOptions',
     subscriptionValueOrRef,
@@ -37,10 +37,10 @@ export const SubscriptionValueInput: React.FC<SubscriptionValueInputProps> = (
   };
 
   const filteredOptions = subscriptionValueOptions.filter((option) => {
-    if (selectTerm === 'All') {
+    if (selectedTerm === 'All') {
       return true;
     }
-    return option.label.startsWith(selectTerm);
+    return option.label.startsWith(selectedTerm);
   });
 
   return (
@@ -75,7 +75,7 @@ export const SubscriptionValueInput: React.FC<SubscriptionValueInputProps> = (
                   e.stopPropagation();
                 }}
               >
-                {selectTerm}
+                {selectedTerm}
               </div>
               {isTermSelectDropdownOpen && (
                 <div>
@@ -83,7 +83,7 @@ export const SubscriptionValueInput: React.FC<SubscriptionValueInputProps> = (
                     <div
                       className="h-7 flex rounded-md items-center justify-start text-middle text-notifi-tenant-brand-bg font-normal hover:bg-notifi-card-bg cursor-pointer pl-3"
                       onClick={() => {
-                        setSelectTerm('All');
+                        setSelectedTerm('All');
                         setIsTermSelectDropdownOpen(false);
                       }}
                     >
@@ -92,7 +92,7 @@ export const SubscriptionValueInput: React.FC<SubscriptionValueInputProps> = (
                     <div
                       className="h-7 flex items-center rounded-md justify-start text-middle text-notifi-text font-normal hover:bg-notifi-card-bg cursor-pointer pl-3"
                       onClick={() => {
-                        setSelectTerm('LONG');
+                        setSelectedTerm('LONG');
                         setIsTermSelectDropdownOpen(false);
                       }}
                     >
@@ -101,7 +101,7 @@ export const SubscriptionValueInput: React.FC<SubscriptionValueInputProps> = (
                     <div
                       className="h-7 flex items-center rounded-md justify-start text-middle text-notifi-text font-normal hover:bg-notifi-card-bg cursor-pointer pl-3"
                       onClick={() => {
-                        setSelectTerm('SHORT');
+                        setSelectedTerm('SHORT');
                         setIsTermSelectDropdownOpen(false);
                       }}
                     >
