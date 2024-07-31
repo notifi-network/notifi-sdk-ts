@@ -22,14 +22,15 @@ export const HistoryList: React.FC<HistoryListProps> = ({
   historyDetailEntry,
 }) => {
   const [isLoadingMoreItems, setIsLoadingMoreItems] = useState(false);
-  const [isUnread, setIsUnread] = useState(false);
   const {
     isLoading: isLoadingHistoryItems,
     historyItems,
     hasNextPage,
     getHistoryItems,
     unreadCount,
-  } = useNotifiHistoryContext({ includeRead });
+    isIncludeRead,
+    setIsIncludeRead,
+  } = useNotifiHistoryContext();
 
   const mainRef = useRef<HTMLDivElement>(null);
 
@@ -78,8 +79,8 @@ export const HistoryList: React.FC<HistoryListProps> = ({
             <div className="text-notifi-text text-sm">Unreads</div>
             <Toggle
               disabled={false}
-              checked={isUnread}
-              onChange={() => setIsUnread(!isUnread)}
+              checked={!isIncludeRead}
+              onChange={() => setIsIncludeRead(!isIncludeRead)}
             />
           </div>
         </div>

@@ -35,6 +35,8 @@ export type NotifiHistoryContextType = {
   historyItems: HistoryItem[];
   unreadCount: number;
   hasNextPage: boolean;
+  isIncludeRead: boolean;
+  setIsIncludeRead: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const NotifiHistoryContext = createContext<NotifiHistoryContextType>(
@@ -43,12 +45,11 @@ const NotifiHistoryContext = createContext<NotifiHistoryContextType>(
 
 export type NotifiHistoryProviderProps = {
   notificationCountPerPage?: number;
-  includeRead?: boolean;
 };
 
 export const NotifiHistoryContextProvider: FC<
   PropsWithChildren<NotifiHistoryProviderProps>
-> = ({ children, notificationCountPerPage = 20, includeRead = false }) => {
+> = ({ children, notificationCountPerPage = 20 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
   const { frontendClient, frontendClientStatus } =
@@ -58,6 +59,7 @@ export const NotifiHistoryContextProvider: FC<
     endCursor: undefined,
   });
   const [unreadCount, setUnreadCount] = useState<number | null>(null);
+  const [isIncludeRead, setIsIncludeRead] = useState<boolean>(false);
   const [historyItems, setHistoryItems] = useState<HistoryItem[]>([]);
   const { cardConfig, fusionEventTopics } = useNotifiTenantConfigContext();
   const isInitialLoaded = React.useRef(false);
@@ -70,7 +72,7 @@ export const NotifiHistoryContextProvider: FC<
           .getFusionNotificationHistory({
             first: notificationCountPerPage,
             includeHidden: false,
-            includeRead,
+            includeRead: isIncludeRead,
           })
           .then((res) => {
             const historyItemIdMap = new Map(
@@ -128,7 +130,7 @@ export const NotifiHistoryContextProvider: FC<
           first: notificationCountPerPage,
           after: cursorInfo.endCursor,
           includeHidden: false,
-          includeRead,
+          includeRead: isIncludeRead,
         });
         if (!result || result.nodes?.length === 0 || !result.nodes) {
           return;
@@ -306,6 +308,8 @@ export const NotifiHistoryContextProvider: FC<
         historyItems,
         unreadCount: unreadCount ?? 0,
         hasNextPage: cursorInfo.hasNextPage,
+        isIncludeRead,
+        setIsIncludeRead,
       }}
     >
       {children}
