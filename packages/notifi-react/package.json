@@ -41,10 +41,12 @@
   },
   "dependencies": {
     "@notifi-network/notifi-frontend-client": "^1.0.1",
-    "@notifi-network/notifi-graphql": "^1.0.0",
-    "@notifi-network/notifi-solana-hw-login": "^1.0.1",
     "@xmtp/consent-proof-signature": "^0.1.2",
     "@xmtp/react-sdk": "^6.0.1",
+    "@xmtp/content-type-reaction": "^1.1.7",
+    "@xmtp/content-type-remote-attachment": "^1.1.8",
+    "@xmtp/content-type-reply": "^1.1.9",
+    "@xmtp/xmtp-js": "^11.5.0",
     "clsx": "^1.2.1",
     "date-fns": "^2.29.3",
     "dompurify": "^3.0.5",
@@ -54,6 +56,12 @@
     "@notifi-network/notifi-core": "^1.0.0",
     "@types/dompurify": "^3.0.3",
     "@types/marked": "^5.0.1"
+  },
+  "peerDependencies": {
+    "react": "^18"
+  },
+  "engines": {
+    "node": ">=18"
   },
   "tsup": {
     "noExternal": [
