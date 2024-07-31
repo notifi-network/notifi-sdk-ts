@@ -140,7 +140,9 @@ export const NotifiFrontendClientContextProvider: React.FC<
       if (error instanceof Error) {
         const newError = {
           ...error,
-          message: `login: User rejects to sign, or mis-impl the signMessage method: ${error.message}`,
+          message: `login: Failed to login User rejects to sign, or mis-impl the signMessage method: ${JSON.stringify(
+            error.message,
+          )}`,
         };
         setError(newError);
         console.error(newError);

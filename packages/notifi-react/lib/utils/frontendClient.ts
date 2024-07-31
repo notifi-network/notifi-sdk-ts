@@ -5,7 +5,6 @@ import {
   Uint8SignMessageFunction,
   WalletWithSignParams,
 } from '@notifi-network/notifi-frontend-client';
-import { HardwareLoginPlugin } from 'notifi-solana-hw-login';
 
 import { WalletWithSignParamsModified } from '../context';
 
@@ -15,6 +14,11 @@ export type SolanaParams = Readonly<{
   walletPublicKey: string;
   signMessage: Uint8SignMessageFunction;
 }>;
+
+export type HardwareLoginPlugin = {
+  // NOTE: instead of importing from notifi-solana-hw-login, we duplicate the type here (for performance reasons)
+  sendMessage: (message: string) => Promise<string>;
+};
 
 export type SolanaParamsWithHardwareLoginPlugin = SolanaParams & {
   hardwareLoginPlugin: HardwareLoginPlugin;
