@@ -758,7 +758,7 @@ export class NotifiFrontendClient {
 
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     const logValue =
-      'Notifi Auth: 0x' +
+      '0x4E413A' +
       hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
     return { nonce: logValue };
   }
