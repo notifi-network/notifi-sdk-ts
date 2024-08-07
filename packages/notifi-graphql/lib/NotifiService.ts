@@ -579,7 +579,15 @@ export class NotifiService
     variables: Generated.CompleteLogInWithWeb3MutationVariables,
   ): Promise<Generated.CompleteLogInWithWeb3Mutation> {
     const headers = this._requestHeaders();
-    return this._typedClient.completeLogInWithWeb3(variables, headers);
+    const result = await this._typedClient.completeLogInWithWeb3(
+      variables,
+      headers,
+    );
+    const token = result?.completeLogInWithWeb3?.user?.authorization?.token;
+    if (token !== undefined) {
+      this._jwt = token;
+    }
+    return result;
   }
 
   async verifyCbwTarget(
