@@ -137,7 +137,7 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
     }
   }
 
-  if (!signMessage) return <div>No available wallet to sign</div>;
+  if (!signMessage) return null;
 
   const pricePairInputs: InputObject[] = [];
   const pricePairsWithTermInputs: InputObject[] = [];
