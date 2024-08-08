@@ -61,7 +61,6 @@ export const TopicOptions = <T extends TopicRowCategory>(
     benchmarkTopic.fusionEventDescriptor.id,
     props.userInputParam,
   );
-
   const { isLoading: isLoadingTopic } = useNotifiTopicContext();
 
   const [valueToBeSubscribed, setValueToBeSubscribed] = React.useState<
@@ -192,7 +191,7 @@ export const TopicOptions = <T extends TopicRowCategory>(
                 props.userInputParam.options[0]
                   ? customInput
                     ? 'block'
-                    : 'hide'
+                    : 'hidden'
                   : 'block'
               }`}
             >
@@ -302,7 +301,7 @@ export const TopicOptions = <T extends TopicRowCategory>(
                 props.userInputParam.options[0]
                   ? customInput
                     ? 'block right-4'
-                    : 'hide'
+                    : 'hidden'
                   : 'block right-3'
               }`}
             >
