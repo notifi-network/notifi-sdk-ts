@@ -85,12 +85,17 @@ export const TopicList: React.FC<TopicListProps> = ({
               rowMetadata.topic,
             )?.uiConfigOverride?.isSubscriptionValueInputable;
             if (isSubscriptionValueInputable) {
-              // NOTE: Grouping not supported for TopicStackRow
-              return <TopicStackRow key={id} {...rowMetadata} />;
+              return <TopicStackRow<'standalone'> key={id} {...rowMetadata} />;
             }
             return <TopicRow<'standalone'> {...rowMetadata} key={id} />;
           }
           if (isTopicGroupMetadata(rowMetadata)) {
+            const isSubscriptionValueInputable = getFusionEventMetadata(
+              rowMetadata.topics[0],
+            )?.uiConfigOverride?.isSubscriptionValueInputable;
+            if (isSubscriptionValueInputable) {
+              return <TopicStackRow<'group'> key={id} {...rowMetadata} />;
+            }
             return <TopicRow<'group'> key={id} {...rowMetadata} />;
           }
         })}

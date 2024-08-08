@@ -70,6 +70,7 @@ const config: Config = {
             'rgb(var(--notifi-destination-logo-card-bg))',
           'wallet-menu-card-bg': 'rgb(var(--notifi-wallet-menu-card-bg))',
           'loading-skeloton-bg': 'rgb(var(--notifi-loading-skeleton-bg))',
+          'dropdown-bg': 'rgb(var(--notifi-dropdown-bg))',
         },
       },
       backgroundImage: {

@@ -3,9 +3,12 @@ import {
   FusionEventTopic,
   FusionFilterOptions,
   InputObject,
+  UiType,
+  UserInputParam,
 } from '@notifi-network/notifi-frontend-client';
 import {
   TopicStackAlert,
+  TopicWithFilterOption,
   composeTopicStackAlertName,
   convertOptionValue,
   getFusionEventMetadata,
@@ -20,22 +23,36 @@ import React from 'react';
 
 import { LoadingAnimation } from './LoadingAnimation';
 import { SubscriptionValueInput } from './SubscriptionValueInput';
+import { TopicRowCategory } from './TopicList';
 import { TopicOptions } from './TopicOptions';
 
-export type TopicStackRowInputProps = {
+type TopicGroupStackRowInputProps = {
+  topics: FusionEventTopic[];
+  onSave?: () => void;
+  setIsTopicStackRowInputVisible: (visible: boolean) => void;
+  isTopicStackRowInputVisible: boolean;
+};
+type TopicStandAloneStackRowInputProps = {
   topic: FusionEventTopic;
   onSave?: () => void;
   setIsTopicStackRowInputVisible: (visible: boolean) => void;
-  topicStackAlerts: TopicStackAlert[];
   isTopicStackRowInputVisible: boolean;
 };
 
-export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
-  props,
+export type TopicStackRowInputProps<T extends TopicRowCategory> =
+  T extends 'standalone'
+    ? TopicStandAloneStackRowInputProps
+    : TopicGroupStackRowInputProps;
+
+export const TopicStackRowInput = <T extends TopicRowCategory>(
+  props: TopicStackRowInputProps<T>,
 ) => {
+  const isTopicGroup = isTopicGroupStackRowInput(props);
+  const benchmarkTopic = isTopicGroup ? props.topics[0] : props.topic;
   const { setGlobalError } = useGlobalStateContext();
-  const subscriptionValueOrRef = getFusionEventMetadata(props.topic)
-    ?.uiConfigOverride?.subscriptionValueOrRef;
+  const subscriptionValueOrRef = getFusionEventMetadata(
+    isTopicGroup ? props.topics[0] : props.topic,
+  )?.uiConfigOverride?.subscriptionValueOrRef;
 
   if (!subscriptionValueOrRef) {
     return null; // TODO: handle undefined or error
@@ -49,14 +66,28 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
 
   // TODO: Move to hooks
   // TODO: use useMemo when it (filters array) possibly grows huge
-  const filterName = getFusionEventMetadata(props.topic)?.filters.find(
-    isAlertFilter,
-  )?.name;
+  const filterName = getFusionEventMetadata(
+    isTopicGroup ? props.topics[0] : props.topic,
+  )?.filters.find(isAlertFilter)?.name;
 
-  const description = getFusionFilter(props.topic)?.description ?? '';
+  const description =
+    getFusionFilter(isTopicGroup ? props.topics[0] : props.topic)
+      ?.description ?? '';
 
-  const userInputParams = getUserInputParams(props.topic);
-  const reversedParams = [...userInputParams].reverse();
+  const userInputParams = getUserInputParams(
+    isTopicGroup ? props.topics[0] : props.topic,
+  );
+
+  const correctUserInputParamsOrder = (
+    userInputParams: UserInputParam<UiType>[],
+  ) => {
+    if (userInputParams.length > 0 && userInputParams[0].uiType === 'radio') {
+      return userInputParams;
+    } else {
+      const reversedParams = [...userInputParams].reverse();
+      return reversedParams;
+    }
+  };
 
   React.useEffect(() => {
     // Initial set up for filterOptionsToBeSubscribed
@@ -111,23 +142,33 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
   );
 
   const onSave = async () => {
-    if (!isTopicReadyToSubscribe || !props.topic.fusionEventDescriptor.id)
+    if (!isTopicReadyToSubscribe || !benchmarkTopic.fusionEventDescriptor.id)
       return;
-    const alertName = composeTopicStackAlertName(
-      props.topic.fusionEventDescriptor.id,
-      subscriptionValue.value,
-      subscriptionValue.label,
-    );
-    setIsLoading(true);
+
+    const subscribeTopics = isTopicGroup ? props.topics : [props.topic];
+    const topicWithFilterOptionsList = subscribeTopics
+      .map((topic) => {
+        return !topic.fusionEventDescriptor.id
+          ? null
+          : ({
+              topic: topic,
+              filterOptions: filterOptionsToBeSubscribed,
+              customAlertName: composeTopicStackAlertName(
+                topic.fusionEventDescriptor.id,
+                subscriptionValue.value,
+                subscriptionValue.label,
+              ),
+              subscriptionValue: subscriptionValue.value,
+            } as TopicWithFilterOption);
+      })
+      .filter(
+        (
+          topicWithFilterOptions,
+        ): topicWithFilterOptions is TopicWithFilterOption =>
+          topicWithFilterOptions !== null,
+      );
     await subscribeAlertsWithFilterOptions(
-      [
-        {
-          topic: props.topic,
-          filterOptions: filterOptionsToBeSubscribed,
-          customAlertName: alertName,
-          subscriptionValue: subscriptionValue.value,
-        },
-      ],
+      topicWithFilterOptionsList,
       targetGroupId,
     );
     if (userInputParams && filterName) {
@@ -165,32 +206,67 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
       />
       {subscriptionValue || userInputParams.length > 0 ? (
         <div className="">
-          {reversedParams.map((userInputParm, id) => {
-            return (
-              <TopicOptions<'standalone'>
-                placeholder="Enter Price"
-                index={id}
-                key={id}
-                description={description}
-                userInputParam={userInputParm}
-                topic={props.topic}
-                onSelectAction={{
-                  actionType: 'updateFilterOptions',
-                  action: (userInputParmName, option) => {
-                    if (!filterOptionsToBeSubscribed || !filterName) return;
-                    const updatedAlertFilterOptiopns =
-                      getUpdatedAlertFilterOptions(
-                        filterName,
-                        filterOptionsToBeSubscribed,
-                        userInputParmName,
-                        convertOptionValue(option, userInputParm.kind),
-                      );
-                    setFilterOptionsToBeSubscribed(updatedAlertFilterOptiopns);
-                  },
-                }}
-              />
-            );
-          })}
+          {isTopicGroup
+            ? correctUserInputParamsOrder(userInputParams).map(
+                (userInputParm, id) => {
+                  return (
+                    <TopicOptions<'group'>
+                      index={id}
+                      key={id}
+                      description={description}
+                      userInputParam={userInputParm}
+                      topics={props.topics}
+                      onSelectAction={{
+                        actionType: 'updateFilterOptions',
+                        action: (userInputParmName, option) => {
+                          if (!filterOptionsToBeSubscribed || !filterName)
+                            return;
+                          const updatedAlertFilterOptiopns =
+                            getUpdatedAlertFilterOptions(
+                              filterName,
+                              filterOptionsToBeSubscribed,
+                              userInputParmName,
+                              convertOptionValue(option, userInputParm.kind),
+                            );
+                          setFilterOptionsToBeSubscribed(
+                            updatedAlertFilterOptiopns,
+                          );
+                        },
+                      }}
+                    />
+                  );
+                },
+              )
+            : correctUserInputParamsOrder(userInputParams).map(
+                (userInputParm, id) => {
+                  return (
+                    <TopicOptions<'standalone'>
+                      index={id}
+                      key={id}
+                      description={description}
+                      userInputParam={userInputParm}
+                      topic={props.topic}
+                      onSelectAction={{
+                        actionType: 'updateFilterOptions',
+                        action: (userInputParmName, option) => {
+                          if (!filterOptionsToBeSubscribed || !filterName)
+                            return;
+                          const updatedAlertFilterOptiopns =
+                            getUpdatedAlertFilterOptions(
+                              filterName,
+                              filterOptionsToBeSubscribed,
+                              userInputParmName,
+                              convertOptionValue(option, userInputParm.kind),
+                            );
+                          setFilterOptionsToBeSubscribed(
+                            updatedAlertFilterOptiopns,
+                          );
+                        },
+                      }}
+                    />
+                  );
+                },
+              )}
           <div>
             <button
               disabled={!isTopicReadyToSubscribe}
@@ -204,4 +280,10 @@ export const TopicStackRowInput: React.FC<TopicStackRowInputProps> = (
       ) : null}
     </div>
   );
+};
+
+const isTopicGroupStackRowInput = (
+  props: TopicStackRowInputProps<TopicRowCategory>,
+): props is TopicGroupStackRowInputProps => {
+  return 'topics' in props;
 };
