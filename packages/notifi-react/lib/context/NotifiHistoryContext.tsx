@@ -59,7 +59,7 @@ export const NotifiHistoryContextProvider: FC<
     endCursor: undefined,
   });
   const [unreadCount, setUnreadCount] = useState<number | null>(null);
-  const [isIncludeRead, setIsIncludeRead] = useState<boolean>(false);
+  const [isIncludeRead, setIsIncludeRead] = useState<boolean>(true);
   const [historyItems, setHistoryItems] = useState<HistoryItem[]>([]);
   const { cardConfig, fusionEventTopics } = useNotifiTenantConfigContext();
   const isInitialLoaded = React.useRef(false);
@@ -128,7 +128,7 @@ export const NotifiHistoryContextProvider: FC<
       try {
         const result = await frontendClient.getFusionNotificationHistory({
           first: notificationCountPerPage,
-          after: cursorInfo.endCursor,
+          after: initialLoad ? undefined : cursorInfo.endCursor,
           includeHidden: false,
           includeRead: isIncludeRead,
         });
@@ -162,7 +162,7 @@ export const NotifiHistoryContextProvider: FC<
         setIsLoading(false);
       }
     },
-    [cardConfig, cursorInfo, frontendClientStatus],
+    [cardConfig, cursorInfo, frontendClientStatus, isIncludeRead],
   );
 
   useEffect(() => {
@@ -178,6 +178,14 @@ export const NotifiHistoryContextProvider: FC<
       });
     }
   }, [frontendClientStatus, getHistoryItems, cardConfig]);
+
+  useEffect(() => {
+    // reload history items with unread filter toggle change
+    if (frontendClientStatus.isAuthenticated) {
+      setHistoryItems([]);
+      getHistoryItems(true);
+    }
+  }, [isIncludeRead]);
 
   const markAsRead = async (ids?: string[]) => {
     const isIdsEmpty = ids?.length === 0 || !ids;
