@@ -277,7 +277,10 @@ export const MyComponent = () => {
   **Step2**: put the `loginViaTransaction.nonce` as memo when user signs a transaction.
   **Step3**: Pass in the signature from `Step#2` to the `loginViaTransaction.login` method.
 
-  _Example for EVM dapp_
+  <details>
+  <summary>Example for EVM dapp</summary>
+
+  **Case 1**: Plain transaction
 
   ```ts
   // Any component in the dapp which has access to the NotifiFrontendClientContext
@@ -302,6 +305,50 @@ export const MyComponent = () => {
   });
   loginViaTransaction(signature);
   ```
+
+  **Case 2**: smart contract transaction
+
+  ```ts
+  const {
+    walletWithSignParams,
+    loginViaTransaction: {
+      nonce: nonceForTransactionLogin,
+      login: loginViaTransaction,
+    },
+  } = useNotifiFrontendClientContext();
+
+  const smartContract = new ethers.Contract(
+    `<contract-address>`,
+    `<contract-abi>`,
+    provider.getSigner(),
+  );
+
+  // Assume the smart contract has an "example" method with one argument uint amount
+  const amount = ethers.utils.parseUnits('0.1', 'ether');
+
+  // Step 1: Get the calldata for the smart contract method call
+  const calldata = smartContract.interface.encodeFunctionData('example', [
+    amount,
+  ]);
+
+  // Step 2: Append notifi nonce to the calldata
+  const txParams = {
+    to: smartContract.address,
+    data: calldata + nonceForTransactionLogin.replace('0x', ''),
+  };
+
+  // Step 3: Sign the transaction with new calldata
+  const { hash } = await provider.getSigner().sendTransaction(txParams);
+
+  // Step 4: Use the transaction signature to login to notifi
+  loginViaTransaction(hash);
+  ```
+
+  **IMPORTANT NOTE**:
+
+  - **Browser extension constraints**: Some browser extensions (Metamask ...) do not allow appending additional info to the calldata of particular smart contract method (example: Token contract (ERC20, ERC721 ...etc)). Browser extension (Metamask) will throw `Message: Invalid token value; should be exactly xx hex digits long` error in this case.
+
+  </details>
 
 ## **NotifiTenantConfigContext**
 
