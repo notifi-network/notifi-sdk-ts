@@ -20,6 +20,11 @@
   top: 1.15rem;
 }
 
+.notifi-nave-header-right-cta {
+  left: 0;
+  right: 1rem;
+}
+
 .notifi-nav-header-title {
   display: flex;
   align-items: center;

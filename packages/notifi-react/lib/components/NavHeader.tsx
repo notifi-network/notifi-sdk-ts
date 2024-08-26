@@ -2,6 +2,7 @@ import clsx from 'clsx';
 import React, { PropsWithChildren } from 'react';
 
 import { Icon, IconType } from '../assets/Icons';
+import { useGlobalStateContext } from '../context/GlobalStateContext';
 
 export type NavHeaderCta = {
   icon: IconType;
@@ -16,6 +17,8 @@ export type NavHeaderProps = {
 export const NavHeader: React.FC<PropsWithChildren<NavHeaderProps>> = (
   props,
 ) => {
+  const { globalCtas } = useGlobalStateContext();
+
   return (
     <div className="notifi-nav-header">
       <div
@@ -34,9 +37,13 @@ export const NavHeader: React.FC<PropsWithChildren<NavHeaderProps>> = (
       </div>
       <div
         className="notifi-nave-header-right-cta"
-        onClick={() => props.rightCta?.action()}
+        onClick={() => props.rightCta?.action() ?? globalCtas?.onClose?.()}
       >
-        {props.rightCta?.icon ? <Icon type={props.rightCta?.icon} /> : null}
+        {props.rightCta?.icon ? (
+          <Icon type={props.rightCta?.icon} />
+        ) : globalCtas?.onClose ? (
+          <Icon type={'close'} />
+        ) : null}
       </div>
     </div>
   );

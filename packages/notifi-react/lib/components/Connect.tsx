@@ -6,6 +6,7 @@ import {
   useNotifiFrontendClientContext,
   useNotifiTenantConfigContext,
 } from '../context';
+import { useGlobalStateContext } from '../context/GlobalStateContext';
 import { useConnect } from '../hooks/useConnect';
 import { defaultCopy } from '../utils/constants';
 import { LoadingAnimation } from './LoadingAnimation';
@@ -44,6 +45,7 @@ export type ConnectProps = {
 export const Connect: React.FC<ConnectProps> = (props) => {
   const { walletWithSignParams } = useNotifiFrontendClientContext();
   const { fusionEventTopics } = useNotifiTenantConfigContext();
+  const { globalCtas } = useGlobalStateContext();
 
   const {
     connect,
@@ -87,6 +89,15 @@ export const Connect: React.FC<ConnectProps> = (props) => {
     <div className={clsx('notifi-connect', props.classNames?.container)}>
       <div className={clsx('notifi-connect-title', props.classNames?.title)}>
         {props.copy?.title ?? defaultCopy.connect.title}
+
+        {globalCtas?.onClose ? (
+          <div
+            className="notifi-connect-right-cta"
+            onClick={() => globalCtas?.onClose?.()}
+          >
+            <Icon type={'close'} />
+          </div>
+        ) : null}
       </div>
       <div
         className={clsx(
