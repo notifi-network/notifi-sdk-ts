@@ -36,7 +36,7 @@ export const NavHeader: React.FC<PropsWithChildren<NavHeaderProps>> = (
         <div>{props.children}</div>
       </div>
       <div
-        className="notifi-nave-header-right-cta"
+        className="notifi-nav-header-right-cta"
         onClick={() => props.rightCta?.action() ?? globalCtas?.onClose?.()}
       >
         {props.rightCta?.icon ? (
