@@ -498,6 +498,18 @@ export class NotifiService
     return result;
   }
 
+  async logInByOAuth(
+    variables: Generated.LogInByOAuthMutationVariables,
+  ): Promise<Generated.LogInByOAuthMutation> {
+    const headers = this._requestHeaders();
+    const result = await this._typedClient.logInByOAuth(variables, headers);
+    const token = result.logInByOAuth?.authorization?.token;
+    if (token !== undefined) {
+      this._jwt = token;
+    }
+    return result;
+  }
+
   async markFusionNotificationHistoryAsRead(
     variables: Generated.MarkFusionNotificationHistoryAsReadMutationVariables,
   ): Promise<Generated.MarkFusionNotificationHistoryAsReadMutation> {
