@@ -1,11 +1,9 @@
 # `@notifi-network/notifi-axios-utils`
 
-> TODO: description
+This package is deprecated and will no longer be maintained.
+Please use the following package instead.
 
-## Usage
+- `@notifi-network/notifi-graphql`
+- `@notifi-network/notifi-frontend-client`
 
-```
-const notifiAxiosUtils = require('@notifi-network/notifi-axios-utils');
-
-// TODO: DEMONSTRATE API
-```
+> **IMPORTANT**: Do not use companion packages (`@notifi-network/*`) version over `~1.1.1` with this package.

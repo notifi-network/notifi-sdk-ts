@@ -1,5 +1,12 @@
 # `@notifi-network/notifi-react-card`
 
+> This package is deprecated and will no longer be maintained.
+> Please use the following package instead.
+>
+> - `@notifi-network/notifi-react`
+>
+> **IMPORTANT**: Do not use companion packages (`@notifi-network/*`) version over `~1.1.1` with this package.
+
 A drop-in component that can get your dapp up and running with alert notifications in minutes.
 
 We currently support the following blockchains:
