@@ -2,34 +2,19 @@ import {
   ConfigFactoryInput,
   NotifiEnvironment,
   NotifiFrontendClient,
-  Uint8SignMessageFunction,
   WalletWithSignParams,
 } from '@notifi-network/notifi-frontend-client';
 
-import { WalletWithSignParamsModified } from '../context';
-
-// TODO: Refactor frontendClient and import it from notifi-frontend-client
-export type SolanaParams = Readonly<{
-  walletBlockchain: 'SOLANA';
-  walletPublicKey: string;
-  signMessage: Uint8SignMessageFunction;
-}>;
-
-export type HardwareLoginPlugin = {
-  // NOTE: instead of importing from notifi-solana-hw-login, we duplicate the type here (for performance reasons)
-  sendMessage: (message: string) => Promise<string>;
-};
-
-export type SolanaParamsWithHardwareLoginPlugin = SolanaParams & {
-  hardwareLoginPlugin: HardwareLoginPlugin;
-};
-
 export const loginViaSolanaHardwareWallet = async (
   frontendClient: NotifiFrontendClient,
-  walletWithSignParams: WalletWithSignParamsModified,
+  walletWithSignParams: WalletWithSignParams,
 ) => {
   if (walletWithSignParams.walletBlockchain !== 'SOLANA')
-    throw new Error('loginViaSolanaHardwareWallet: Invalid blockchain');
+    throw new Error('loginViaSolanaHardwareWallet: Only SOLANA is supported');
+  if (!walletWithSignParams.hardwareLoginPlugin)
+    throw new Error(
+      'loginViaSolanaHardwareWallet: loginViaSolanaHardwareWallet: Missing hardwareLoginPlugin',
+    );
   const plugin = walletWithSignParams.hardwareLoginPlugin;
   const { nonce } = await frontendClient.beginLoginViaTransaction({
     walletAddress: walletWithSignParams.walletPublicKey,
@@ -50,9 +35,10 @@ export const loginViaSolanaHardwareWallet = async (
   return logInResult;
 };
 
+// TODO: consolidate with frontendClient package
 export const getFrontendConfigInput = (
   tenantId: string,
-  params: WalletWithSignParamsModified,
+  params: WalletWithSignParams,
   env?: NotifiEnvironment,
 ): ConfigFactoryInput => {
   if ('accountAddress' in params) {

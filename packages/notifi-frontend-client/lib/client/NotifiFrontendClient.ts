@@ -112,6 +112,9 @@ export type WalletWithSignMessage =
       walletBlockchain: 'SOLANA';
       walletPublicKey: string;
       signMessage: Uint8SignMessageFunction;
+      hardwareLoginPlugin?: {
+        sendMessage: (message: string) => Promise<string>; // For Solana hardware wallet
+      };
     }>
   | Readonly<{
       walletBlockchain:

@@ -6,12 +6,7 @@ import {
 } from '@notifi-network/notifi-frontend-client';
 import React from 'react';
 
-import {
-  SolanaParams,
-  SolanaParamsWithHardwareLoginPlugin,
-  getFrontendConfigInput,
-  loginViaSolanaHardwareWallet,
-} from '../utils';
+import { getFrontendConfigInput, loginViaSolanaHardwareWallet } from '../utils';
 
 export type FrontendClientStatus = {
   isExpired: boolean;
@@ -38,7 +33,7 @@ export type NotifiFrontendClientContextType = {
   login: () => Promise<NotifiFrontendClient | undefined>;
   loginViaHardwareWallet: () => Promise<NotifiFrontendClient | undefined>;
   loginViaTransaction: LoginViaTransaction;
-  walletWithSignParams: WalletWithSignParamsModified;
+  walletWithSignParams: WalletWithSignParams;
 };
 
 export const NotifiFrontendClientContext =
@@ -46,17 +41,10 @@ export const NotifiFrontendClientContext =
     {} as NotifiFrontendClientContextType,
   );
 
-// NOTE: The Utils type for Solana hardware wallet login specifically
-type WalletWithSignParamsWoSolana = Exclude<WalletWithSignParams, SolanaParams>;
-
-export type WalletWithSignParamsModified =
-  | WalletWithSignParamsWoSolana
-  | SolanaParamsWithHardwareLoginPlugin;
-
 export type NotifiFrontendClientProviderProps = {
   tenantId: string;
   env?: NotifiEnvironment;
-} & WalletWithSignParamsModified;
+} & WalletWithSignParams;
 
 export const NotifiFrontendClientContextProvider: React.FC<
   React.PropsWithChildren<NotifiFrontendClientProviderProps>
