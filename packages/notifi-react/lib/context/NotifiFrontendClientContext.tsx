@@ -1,12 +1,13 @@
 import {
   NotifiEnvironment,
+  NotifiEnvironmentConfiguration,
   NotifiFrontendClient,
   WalletWithSignParams,
-  newFrontendClient,
+  instantiateFrontendClient,
 } from '@notifi-network/notifi-frontend-client';
 import React from 'react';
 
-import { getFrontendConfigInput, loginViaSolanaHardwareWallet } from '../utils';
+import { loginViaSolanaHardwareWallet } from '../utils';
 
 export type FrontendClientStatus = {
   isExpired: boolean;
@@ -44,11 +45,12 @@ export const NotifiFrontendClientContext =
 export type NotifiFrontendClientProviderProps = {
   tenantId: string;
   env?: NotifiEnvironment;
+  storageOption?: NotifiEnvironmentConfiguration['storageOption'];
 } & WalletWithSignParams;
 
 export const NotifiFrontendClientContextProvider: React.FC<
   React.PropsWithChildren<NotifiFrontendClientProviderProps>
-> = ({ children, tenantId, env, ...walletWithSignParams }) => {
+> = ({ children, tenantId, env, storageOption, ...walletWithSignParams }) => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState<Error | null>(null);
   const [transactionNonce, setTransactionNonce] = React.useState<string | null>(
@@ -68,12 +70,12 @@ export const NotifiFrontendClientContextProvider: React.FC<
       : walletWithSignParams.walletPublicKey;
 
   React.useEffect(() => {
-    const configInput = getFrontendConfigInput(
+    const frontendClient = instantiateFrontendClient(
       tenantId,
       walletWithSignParams,
       env,
+      storageOption,
     );
-    const frontendClient = newFrontendClient(configInput);
 
     setIsLoading(true);
     frontendClient
