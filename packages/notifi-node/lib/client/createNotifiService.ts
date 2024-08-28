@@ -1,8 +1,11 @@
-import type { NotifiEnvironment } from '@notifi-network/notifi-axios-utils';
-import { notifiConfigs } from '@notifi-network/notifi-axios-utils';
 import { NotifiDataplaneClient } from '@notifi-network/notifi-dataplane';
-import { NotifiService, NotifiSubscriptionService } from '@notifi-network/notifi-graphql';
+import {
+  NotifiService,
+  NotifiSubscriptionService,
+} from '@notifi-network/notifi-graphql';
 import { GraphQLClient } from 'graphql-request';
+
+import { NotifiEnvironment, notifiConfigs } from '../utils';
 
 export const createGraphQLClient = (env?: NotifiEnvironment): GraphQLClient => {
   if (!env) env = 'Production';
@@ -29,7 +32,8 @@ export const createDataplaneClient = (
 };
 
 export const createNotifiService = (
-  gqlClient: GraphQLClient, subService: NotifiSubscriptionService
+  gqlClient: GraphQLClient,
+  subService: NotifiSubscriptionService,
 ): NotifiService => {
   return new NotifiService(gqlClient, subService);
 };
