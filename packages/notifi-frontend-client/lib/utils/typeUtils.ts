@@ -9,3 +9,9 @@ export const objectKeys = <T extends Record<keyof T, unknown>>(
 ): (keyof T)[] => {
   return Object?.keys(object) as (keyof T)[];
 };
+
+export type DeepPartialReadonly<T> = T extends object
+  ? Readonly<{
+      [Key in keyof T]?: DeepPartialReadonly<T[Key]>;
+    }>
+  : T;

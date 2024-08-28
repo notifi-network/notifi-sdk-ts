@@ -1,7 +1,7 @@
-import type { Alert } from '@notifi-network/notifi-core';
+import { Types } from '@notifi-network/notifi-graphql';
 
 export type UserAlert = Pick<
-  Alert,
+  Types.AlertFragmentFragment,
   'id' | 'name' | 'filter' | 'filterOptions' | 'groupName'
 >;
 

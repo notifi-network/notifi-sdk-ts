@@ -1,5 +1,4 @@
-import type { NotifiEnvironment } from '@notifi-network/notifi-axios-utils';
-
+import type { NotifiEnvironment } from '../utils';
 import NotifiClient from './NotifiClient';
 
 export type { NotifiEnvironment };

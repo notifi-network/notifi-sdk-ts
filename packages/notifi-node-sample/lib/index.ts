@@ -1,5 +1,5 @@
-import { GqlError } from '@notifi-network/notifi-axios-utils';
 import { FusionMessage } from '@notifi-network/notifi-dataplane';
+import { GqlError } from '@notifi-network/notifi-node';
 import {
   NotifiClient,
   NotifiEnvironment,
@@ -61,7 +61,7 @@ const notifiServiceMiddleware = (
   const notifiEnv = parseEnv(body.env);
   const graphqlClient = createGraphQLClient(notifiEnv);
   const dpapiClient = createDataplaneClient(notifiEnv);
-  const subService = createNotifiSubscriptionService(notifiEnv)
+  const subService = createNotifiSubscriptionService(notifiEnv);
   const notifiService = createNotifiService(graphqlClient, subService);
   res.locals.notifiService = notifiService;
   res.locals.dpapiClient = dpapiClient;
