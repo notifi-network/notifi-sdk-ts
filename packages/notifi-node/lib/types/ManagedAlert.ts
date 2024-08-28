@@ -1,3 +1,3 @@
-import type { Alert } from '@notifi-network/notifi-core';
+import { Types } from '@notifi-network/notifi-graphql';
 
-export type ManagedAlert = Pick<Alert, 'id'>;
+export type ManagedAlert = Pick<Types.AlertFragmentFragment, 'id'>;

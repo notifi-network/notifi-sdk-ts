@@ -1,9 +1,7 @@
-import {
-  NotifiEnvironment,
-  notifiConfigs,
-} from '@notifi-network/notifi-axios-utils';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 import WebSocket from 'ws';
+
+import { NotifiEnvironment, notifiConfigs } from '../utils';
 
 export function createSubscriptionClient(jwt: string): SubscriptionClient;
 export function createSubscriptionClient(
