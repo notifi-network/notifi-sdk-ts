@@ -4,7 +4,7 @@ import {
   NotifiEnvironment,
   NotifiFrontendConfiguration,
   checkIsConfigWithDelegate,
-  checkIsConfigWithOAuth,
+  checkIsConfigWithOidc,
   checkIsConfigWithPublicKeyAndAddress,
 } from '../configuration/NotifiFrontendConfiguration';
 import { StorageDriver } from './NotifiFrontendStorage';
@@ -33,7 +33,7 @@ export const createLocalForageStorageDriver = (
   let keyPrefix = `${getEnvPrefix(config.env)}:${config.tenantId}:${
     config.walletBlockchain
   }`;
-  if (checkIsConfigWithOAuth(config)) {
+  if (checkIsConfigWithOidc(config)) {
     keyPrefix += `:${config.userAccount}`;
   } else if (checkIsConfigWithPublicKeyAndAddress(config)) {
     keyPrefix += `:${config.accountAddress}:${config.authenticationKey}`;

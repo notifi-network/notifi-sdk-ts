@@ -65,7 +65,7 @@ export type NotifiConfigWithDelegate = Readonly<{
 }> &
   NotifiEnvironmentConfiguration;
 
-export type NotifiConfigWithOAuth = Readonly<{
+export type NotifiConfigWithOidc = Readonly<{
   walletBlockchain: 'OFF_CHAIN';
   userAccount: string;
 }> &
@@ -75,13 +75,13 @@ export type NotifiFrontendConfiguration =
   | NotifiConfigWithPublicKey
   | NotifiConfigWithPublicKeyAndAddress
   | NotifiConfigWithDelegate
-  | NotifiConfigWithOAuth;
+  | NotifiConfigWithOidc;
 
 export type ConfigFactoryInput =
   | ConfigFactoryInputPublicKeyAndAddress
   | ConfigFactoryInputPublicKey
   | ConfigFactoryInputDelegated
-  | ConfigFactoryInputOAuth;
+  | ConfigFactoryInputOidc;
 
 export const checkIsConfigWithPublicKeyAndAddress = (
   config: NotifiFrontendConfiguration,
@@ -95,9 +95,9 @@ export const checkIsConfigWithDelegate = (
   return 'delegatedAddress' in config;
 };
 
-export const checkIsConfigWithOAuth = (
+export const checkIsConfigWithOidc = (
   config: NotifiFrontendConfiguration,
-): config is NotifiConfigWithOAuth => {
+): config is NotifiConfigWithOidc => {
   return config.walletBlockchain === 'OFF_CHAIN';
 };
 
@@ -134,7 +134,7 @@ export type ConfigFactoryInputPublicKey = {
   storageOption?: NotifiEnvironmentConfiguration['storageOption'];
 };
 
-export type ConfigFactoryInputOAuth = {
+export type ConfigFactoryInputOidc = {
   account: Readonly<{
     userAccount: string;
   }>;
@@ -152,7 +152,7 @@ export type FrontendClientConfigFactory<T extends NotifiFrontendConfiguration> =
       ? ConfigFactoryInputDelegated
       : T extends NotifiConfigWithPublicKey
       ? ConfigFactoryInputPublicKey
-      : ConfigFactoryInputOAuth,
+      : ConfigFactoryInputOidc,
   ) => NotifiFrontendConfiguration;
 
 const evmChains = [
@@ -224,7 +224,7 @@ const configFactoryDelegated: FrontendClientConfigFactory<
   };
 };
 
-const configFactoryOAuth: FrontendClientConfigFactory<NotifiConfigWithOAuth> = (
+const configFactoryOidc: FrontendClientConfigFactory<NotifiConfigWithOidc> = (
   args,
 ) => {
   return {
@@ -248,9 +248,9 @@ const isWithDelegate = (
   return 'delegatorAddress' in config.account;
 };
 
-const isWithOAuth = (
+const isWithOidc = (
   config: ConfigFactoryInput,
-): config is ConfigFactoryInputOAuth => {
+): config is ConfigFactoryInputOidc => {
   return (
     'userAccount' in config.account && config.walletBlockchain === 'OFF_CHAIN'
   );
@@ -259,8 +259,8 @@ const isWithOAuth = (
 export const newFrontendConfig = (
   config: ConfigFactoryInput,
 ): NotifiFrontendConfiguration => {
-  if (isWithOAuth(config)) {
-    return configFactoryOAuth(config);
+  if (isWithOidc(config)) {
+    return configFactoryOidc(config);
   } else if (isWithDelegate(config)) {
     return configFactoryDelegated(config);
   } else if (isWithPubkeyAndAddress(config)) {

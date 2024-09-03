@@ -99,7 +99,7 @@ export type SignMessageParams =
     }>
   | Readonly<{
       walletBlockchain: 'OFF_CHAIN';
-      signIn: OAuthSignInFunction;
+      signIn: OidcSignInFunction;
     }>;
 
 export type WalletWithSignParams = Readonly<{
@@ -249,7 +249,7 @@ export type WalletWithSignMessage =
   | Readonly<{
       walletBlockchain: 'OFF_CHAIN';
       userAccount: string;
-      signIn: OAuthSignInFunction;
+      signIn: OidcSignInFunction;
     }>;
 
 export type ConnectWalletParams = Readonly<{
@@ -273,13 +273,13 @@ export type AcalaSignMessageFunction = (
   message: string,
 ) => Promise<hexString>;
 
-export type OAuthCredentials = {
-  oAuthIssuer: Types.OAuthIssuer;
+export type OidcCredentials = {
+  oidcProvider: Types.OidcProvider;
   jwt: string;
 };
-export type OAuthSignInFunction = () => Promise<OAuthCredentials>;
+export type OidcSignInFunction = () => Promise<OidcCredentials>;
 
-export type AuthenticateResult = Signature | OAuthCredentials;
+export type AuthenticateResult = Signature | OidcCredentials;
 type Signature = string;
 
 export type CardConfigType = CardConfigItemV1;
@@ -583,20 +583,20 @@ export class NotifiFrontendClient {
       case 'OFF_CHAIN': {
         if (typeof signature === 'string')
           throw new Error(
-            `logIn - Invalid signature - expected OAuthCredentials, but got string: ${signature}`,
+            `logIn - Invalid signature - expected OidcCredentials, but got string: ${signature}`,
           );
-        if (!('oAuthIssuer' in signature))
+        if (!('oidcProvider' in signature))
           throw new Error(
-            `logIn - Invalid signature - expected OAuthCredentials, but got invalid object ${signature}`,
+            `logIn - Invalid signature - expected OidcCredentials, but got invalid object ${signature}`,
           );
-        // 3rd party OAuth login
-        const { oAuthIssuer, jwt } = signature;
-        const result = await this._service.logInByOAuth({
+        // 3rd party OIDC login
+        const { oidcProvider, jwt } = signature;
+        const result = await this._service.logInByOidc({
           dappId: tenantId,
-          oAuthIssuer,
-          token: jwt,
+          oidcProvider,
+          idToken: jwt,
         });
-        loginResult = result.logInByOAuth;
+        loginResult = result.logInByOidc.user;
       }
     }
 
@@ -746,11 +746,11 @@ export class NotifiFrontendClient {
         return signature;
       }
       case 'OFF_CHAIN': {
-        const oAuthCredentials = await signMessageParams.signIn();
-        if (!oAuthCredentials) {
-          throw new Error('._authenticate: OAuth login failed');
+        const oidcCredentials = await signMessageParams.signIn();
+        if (!oidcCredentials) {
+          throw new Error('._authenticate: OIDC login failed');
         }
-        return oAuthCredentials;
+        return oidcCredentials;
       }
       default:
         // Need implementation for other blockchains
@@ -1352,7 +1352,7 @@ export class NotifiFrontendClient {
   ): Promise<Types.ConnectWalletMutation> {
     if (params.walletParams.walletBlockchain === 'OFF_CHAIN')
       throw new Error(
-        'ERROR: subscribeWallet - OFF_CHAIN OAuth login does not support wallet connection',
+        'ERROR: subscribeWallet - OFF_CHAIN OIDC login does not support wallet connection',
       );
     const { walletBlockchain, signMessage, walletPublicKey } =
       params.walletParams;
