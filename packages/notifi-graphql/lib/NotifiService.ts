@@ -497,13 +497,25 @@ export class NotifiService
     }
     return result;
   }
-
+  // TODO: Remove this method after the migration is done
   async logInByOAuth(
     variables: Generated.LogInByOAuthMutationVariables,
   ): Promise<Generated.LogInByOAuthMutation> {
     const headers = this._requestHeaders();
     const result = await this._typedClient.logInByOAuth(variables, headers);
     const token = result.logInByOAuth?.authorization?.token;
+    if (token !== undefined) {
+      this._jwt = token;
+    }
+    return result;
+  }
+
+  async logInByOidc(
+    variables: Generated.LogInByOidcMutationVariables,
+  ): Promise<Generated.LogInByOidcMutation> {
+    const headers = this._requestHeaders();
+    const result = await this._typedClient.logInByOidc(variables, headers);
+    const token = result.logInByOidc?.user?.authorization?.token;
     if (token !== undefined) {
       this._jwt = token;
     }

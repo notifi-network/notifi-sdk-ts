@@ -2,6 +2,7 @@ import { gql } from 'graphql-request';
 
 import { UserFragment } from '../fragments/UserFragment.gql';
 
+// TODO: Remove after Oidc migration
 export const LogInByOAuth = gql`
   ${UserFragment}
 
