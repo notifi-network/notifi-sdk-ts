@@ -52,7 +52,7 @@ export const loginViaSolanaHardwareWallet = async (
 
 export const getFrontendConfigInput = (
   tenantId: string,
-  params: WalletWithSignParams,
+  params: WalletWithSignParamsModified,
   env?: NotifiEnvironment,
 ): ConfigFactoryInput => {
   if ('accountAddress' in params) {
@@ -71,6 +71,15 @@ export const getFrontendConfigInput = (
         publicKey: params.walletPublicKey,
         delegatorAddress: params.signingPubkey,
         address: params.signingAddress,
+      },
+      tenantId,
+      walletBlockchain: params.walletBlockchain,
+      env,
+    };
+  } else if ('userAccount' in params) {
+    return {
+      account: {
+        userAccount: params.userAccount,
       },
       tenantId,
       walletBlockchain: params.walletBlockchain,
