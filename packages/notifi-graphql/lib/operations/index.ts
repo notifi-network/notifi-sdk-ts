@@ -63,3 +63,6 @@ export * from './GetWeb3Targets';
 export * from './VerifyCbwTarget';
 export * from './VerifyXmtpTarget';
 export * from './VerifyXmtpTargetViaXip42';
+// TODO: Remove this export after Oidc migration
+export * from './LogInByOAuth';
+export * from './LogInByOidc';
