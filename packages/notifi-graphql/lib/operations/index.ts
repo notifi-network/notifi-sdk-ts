@@ -67,6 +67,4 @@ export * from './CreateWebPushTarget';
 export * from './UpdateWebPushTarget';
 export * from './DeleteWebPushTarget';
 export * from './GetWebPushTargets';
-// TODO: Remove this export after Oidc migration
-export * from './LogInByOAuth';
 export * from './LogInByOidc';
