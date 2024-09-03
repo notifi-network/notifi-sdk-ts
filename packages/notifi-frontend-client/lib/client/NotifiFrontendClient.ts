@@ -96,6 +96,10 @@ export type SignMessageParams =
   | Readonly<{
       walletBlockchain: 'SUI';
       signMessage: Uint8SignMessageFunction;
+    }>
+  | Readonly<{
+      walletBlockchain: 'OFF_CHAIN';
+      signIn: OidcSignInFunction;
     }>;
 
 export type WalletWithSignParams = Readonly<{
@@ -241,6 +245,11 @@ export type WalletWithSignMessage =
       accountAddress: string;
       walletPublicKey: string;
       signMessage: Uint8SignMessageFunction;
+    }>
+  | Readonly<{
+      walletBlockchain: 'OFF_CHAIN';
+      userAccount: string;
+      signIn: OidcSignInFunction;
     }>;
 
 export type ConnectWalletParams = Readonly<{
@@ -263,6 +272,15 @@ export type AcalaSignMessageFunction = (
   acalaAddress: string,
   message: string,
 ) => Promise<hexString>;
+
+export type OidcCredentials = {
+  oidcProvider: Types.OidcProvider;
+  jwt: string;
+};
+export type OidcSignInFunction = () => Promise<OidcCredentials>;
+
+export type AuthenticateResult = Signature | OidcCredentials;
+type Signature = string;
 
 export type CardConfigType = CardConfigItemV1;
 
@@ -414,10 +432,16 @@ export class NotifiFrontendClient {
         message,
         signMessage: signMessageParams.signMessage,
       } as const;
-      const signature = await this._signMessage({
+
+      const signature = await this._authenticate({
         signMessageParams: params,
         timestamp: Math.round(Date.now() / 1000),
       });
+
+      if (typeof signature !== 'string')
+        throw new Error(
+          'logInWith Web3 - WithDelegate : Invalid signature - expected string',
+        );
 
       const { completeLogInWithWeb3 } = await this.completeLogInWithWeb3({
         nonce,
@@ -440,10 +464,15 @@ export class NotifiFrontendClient {
         message,
         signMessage: signMessageParams.signMessage,
       } as const;
-      const signature = await this._signMessage({
+      const signature = await this._authenticate({
         signMessageParams: params,
         timestamp: Math.round(Date.now() / 1000),
       });
+
+      if (typeof signature !== 'string')
+        throw new Error(
+          'logInWith Web3 - PublicKeyAndAddress : Invalid signature - expected string',
+        );
 
       const { completeLogInWithWeb3 } = await this.completeLogInWithWeb3({
         nonce,
@@ -467,13 +496,14 @@ export class NotifiFrontendClient {
     signMessageParams: SignMessageParams,
   ): Promise<Types.UserFragmentFragment> {
     const timestamp = Math.round(Date.now() / 1000);
-    const signature = await this._signMessage({
+    const { tenantId, walletBlockchain } = this._configuration;
+
+    const signature = await this._authenticate({
       signMessageParams,
       timestamp,
     });
 
-    const { tenantId, walletBlockchain } = this._configuration;
-
+    // TODO: Refactor 'XION' into switch statement
     if (
       walletBlockchain === 'XION' &&
       signMessageParams.walletBlockchain === 'XION'
@@ -502,6 +532,10 @@ export class NotifiFrontendClient {
       case 'ZKSYNC':
       case 'EVMOS':
       case 'SOLANA': {
+        if (typeof signature !== 'string')
+          throw new Error(
+            `logIn - Invalid signature - expected string, but got ${signature}`,
+          );
         const result = await this._service.logInFromDapp({
           walletBlockchain,
           walletPublicKey: this._configuration.walletPublicKey,
@@ -531,6 +565,10 @@ export class NotifiFrontendClient {
       case 'NEUTRON':
       case 'NIBIRU':
       case 'APTOS': {
+        if (typeof signature !== 'string')
+          throw new Error(
+            `logIn - Invalid signature - expected string, but got ${signature}`,
+          );
         const result = await this._service.logInFromDapp({
           walletBlockchain,
           walletPublicKey: this._configuration.authenticationKey,
@@ -542,6 +580,24 @@ export class NotifiFrontendClient {
         loginResult = result.logInFromDapp;
         break;
       }
+      case 'OFF_CHAIN': {
+        if (typeof signature === 'string')
+          throw new Error(
+            `logIn - Invalid signature - expected OidcCredentials, but got string: ${signature}`,
+          );
+        if (!('oidcProvider' in signature))
+          throw new Error(
+            `logIn - Invalid signature - expected OidcCredentials, but got invalid object ${signature}`,
+          );
+        // 3rd party OIDC login
+        const { oidcProvider, jwt } = signature;
+        const result = await this._service.logInByOidc({
+          dappId: tenantId,
+          oidcProvider,
+          idToken: jwt,
+        });
+        loginResult = result.logInByOidc.user;
+      }
     }
 
     if (loginResult === undefined) {
@@ -552,13 +608,13 @@ export class NotifiFrontendClient {
     return loginResult;
   }
 
-  private async _signMessage({
+  private async _authenticate({
     signMessageParams,
     timestamp,
   }: Readonly<{
     signMessageParams: SignMessageParams;
     timestamp: number;
-  }>): Promise<string> {
+  }>): Promise<AuthenticateResult> {
     if (
       this._configuration.walletBlockchain !==
       signMessageParams.walletBlockchain
@@ -688,6 +744,13 @@ export class NotifiFrontendClient {
         const signedBuffer = await signMessageParams.signMessage(messageBuffer);
         const signature = Buffer.from(signedBuffer).toString('base64');
         return signature;
+      }
+      case 'OFF_CHAIN': {
+        const oidcCredentials = await signMessageParams.signIn();
+        if (!oidcCredentials) {
+          throw new Error('._authenticate: OIDC login failed');
+        }
+        return oidcCredentials;
       }
       default:
         // Need implementation for other blockchains
@@ -1287,6 +1350,10 @@ export class NotifiFrontendClient {
   async subscribeWallet(
     params: ConnectWalletParams,
   ): Promise<Types.ConnectWalletMutation> {
+    if (params.walletParams.walletBlockchain === 'OFF_CHAIN')
+      throw new Error(
+        'ERROR: subscribeWallet - OFF_CHAIN OIDC login does not support wallet connection',
+      );
     const { walletBlockchain, signMessage, walletPublicKey } =
       params.walletParams;
     const signMessageParams = {
@@ -1298,10 +1365,12 @@ export class NotifiFrontendClient {
       await this.logIn(signMessageParams);
     }
     const timestamp = Math.round(Date.now() / 1000);
-    const signature = await this._signMessage({
+    const signature = await this._authenticate({
       signMessageParams,
       timestamp,
     });
+    if (typeof signature !== 'string')
+      throw new Error('subscribeWallet - Invalid signature - expected string');
     const connectedWallet = await this._service.connectWallet({
       walletBlockchain,
       walletPublicKey,

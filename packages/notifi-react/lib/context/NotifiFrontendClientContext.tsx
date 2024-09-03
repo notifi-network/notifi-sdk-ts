@@ -74,6 +74,10 @@ export const NotifiFrontendClientContextProvider: React.FC<
       isInitialized: false,
       isAuthenticated: false,
     });
+  const userId =
+    walletWithSignParams.walletBlockchain === 'OFF_CHAIN'
+      ? walletWithSignParams.userAccount
+      : walletWithSignParams.walletPublicKey;
 
   React.useEffect(() => {
     const configInput = getFrontendConfigInput(
@@ -105,10 +109,13 @@ export const NotifiFrontendClientContextProvider: React.FC<
         console.error(e);
       })
       .finally(() => setIsLoading(false));
-  }, [walletWithSignParams.walletPublicKey]);
+  }, [userId]);
 
   React.useEffect(() => {
     if (!frontendClient || !frontendClientStatus.isInitialized) return;
+    if (walletWithSignParams.walletBlockchain === 'OFF_CHAIN')
+      return setTransactionNonce('off-chain-sign-in');
+
     const getNonce = async () => {
       const nonce = await frontendClient?.beginLoginViaTransaction({
         walletAddress: walletWithSignParams.walletPublicKey,
@@ -125,7 +132,10 @@ export const NotifiFrontendClientContextProvider: React.FC<
   }, [frontendClientStatus.isInitialized]);
 
   const login = async () => {
-    if (!frontendClient) return;
+    if (!frontendClient || !frontendClientStatus.isInitialized) {
+      setError(new Error('.login: Frontend client not initialized'));
+      return;
+    }
     setIsLoading(true);
     try {
       await frontendClient.logIn(walletWithSignParams);
@@ -155,7 +165,18 @@ export const NotifiFrontendClientContextProvider: React.FC<
 
   const loginViaTransaction = React.useCallback(
     async (signatureSignedWithNotifiNonce: string) => {
-      if (!frontendClient) return;
+      if (
+        !frontendClient ||
+        !frontendClientStatus.isInitialized ||
+        walletWithSignParams.walletBlockchain === 'OFF_CHAIN'
+      ) {
+        setError(
+          new Error(
+            '.loginViaTransaction: Frontend client not initialized / or Invalid blockchain',
+          ),
+        );
+        return;
+      }
       setIsLoading(true);
       try {
         await frontendClient?.completeLoginViaTransaction({
@@ -185,14 +206,25 @@ export const NotifiFrontendClientContextProvider: React.FC<
 
       return frontendClient;
     },
-    [walletWithSignParams.walletPublicKey, !!frontendClient],
+    [userId, !!frontendClient],
   );
 
   /**
    * @description - Only Solana hardware wallet requires a transaction login (rather than signing a message). Reason: MEMO program requires a transaction to verify user's ownership (Ref: https://spl.solana.com/memo)
    */
   const loginViaHardwareWallet = React.useCallback(async () => {
-    if (!frontendClient) return;
+    if (
+      !frontendClient ||
+      !frontendClientStatus.isInitialized ||
+      walletWithSignParams.walletBlockchain === 'OFF_CHAIN'
+    ) {
+      setError(
+        new Error(
+          '.loginViaHardwareWallet: Frontend client not initialized / or Invalid blockchain',
+        ),
+      );
+      return;
+    }
     setIsLoading(true);
     try {
       await loginViaSolanaHardwareWallet(frontendClient, walletWithSignParams);
@@ -216,7 +248,7 @@ export const NotifiFrontendClientContextProvider: React.FC<
       setIsLoading(false);
     }
     return frontendClient;
-  }, [walletWithSignParams.walletPublicKey, !!frontendClient]);
+  }, [userId, !!frontendClient]);
 
   if (!frontendClient || !transactionNonce) return null;
 
