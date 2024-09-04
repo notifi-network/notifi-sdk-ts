@@ -35,6 +35,8 @@ export type NotifiHistoryContextType = {
   historyItems: HistoryItem[];
   unreadCount: number;
   hasNextPage: boolean;
+  isIncludeRead: boolean;
+  setIsIncludeRead: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const NotifiHistoryContext = createContext<NotifiHistoryContextType>(
@@ -57,6 +59,7 @@ export const NotifiHistoryContextProvider: FC<
     endCursor: undefined,
   });
   const [unreadCount, setUnreadCount] = useState<number | null>(null);
+  const [isIncludeRead, setIsIncludeRead] = useState<boolean>(true);
   const [historyItems, setHistoryItems] = useState<HistoryItem[]>([]);
   const { cardConfig, fusionEventTopics } = useNotifiTenantConfigContext();
   const isInitialLoaded = React.useRef(false);
@@ -69,6 +72,7 @@ export const NotifiHistoryContextProvider: FC<
           .getFusionNotificationHistory({
             first: notificationCountPerPage,
             includeHidden: false,
+            includeRead: isIncludeRead,
           })
           .then((res) => {
             const historyItemIdMap = new Map(
@@ -124,8 +128,9 @@ export const NotifiHistoryContextProvider: FC<
       try {
         const result = await frontendClient.getFusionNotificationHistory({
           first: notificationCountPerPage,
-          after: cursorInfo.endCursor,
+          after: initialLoad ? undefined : cursorInfo.endCursor,
           includeHidden: false,
+          includeRead: isIncludeRead,
         });
         if (!result || result.nodes?.length === 0 || !result.nodes) {
           return;
@@ -157,7 +162,7 @@ export const NotifiHistoryContextProvider: FC<
         setIsLoading(false);
       }
     },
-    [cardConfig, cursorInfo, frontendClientStatus],
+    [cardConfig, cursorInfo, frontendClientStatus, isIncludeRead],
   );
 
   useEffect(() => {
@@ -173,6 +178,14 @@ export const NotifiHistoryContextProvider: FC<
       });
     }
   }, [frontendClientStatus, getHistoryItems, cardConfig]);
+
+  useEffect(() => {
+    // NOTE: refresh history while switch between the following modes: only showing unread (`isIncludeRead=false`) & showing all histories (`isIncludeRead=ture`)
+    if (frontendClientStatus.isAuthenticated) {
+      setHistoryItems([]);
+      getHistoryItems(true);
+    }
+  }, [isIncludeRead]);
 
   const markAsRead = async (ids?: string[]) => {
     const isIdsEmpty = ids?.length === 0 || !ids;
@@ -303,6 +316,8 @@ export const NotifiHistoryContextProvider: FC<
         historyItems,
         unreadCount: unreadCount ?? 0,
         hasNextPage: cursorInfo.hasNextPage,
+        isIncludeRead,
+        setIsIncludeRead,
       }}
     >
       {children}
