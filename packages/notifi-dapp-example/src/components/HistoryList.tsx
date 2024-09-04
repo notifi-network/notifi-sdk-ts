@@ -53,6 +53,10 @@ export const HistoryList: React.FC<HistoryListProps> = ({
       mainRef.current?.removeEventListener('scroll', scrollDetectedAction);
   }, [hasNextPage, isLoadingHistoryItems]);
 
+  const unreadMessageText = unreadCount
+    ? `${unreadCount} unread message${unreadCount > 1 ? 's' : ''}`
+    : '';
+
   return (
     <div
       className={`
@@ -71,7 +75,7 @@ export const HistoryList: React.FC<HistoryListProps> = ({
             </div>
             {unreadCount ? (
               <div className="m-auto text-sm text-notifi-text-light">
-                {unreadCount} unread message{unreadCount > 1 ? 's' : ''}
+                {unreadMessageText}
               </div>
             ) : null}
           </div>

@@ -180,7 +180,7 @@ export const NotifiHistoryContextProvider: FC<
   }, [frontendClientStatus, getHistoryItems, cardConfig]);
 
   useEffect(() => {
-    // reload history items with unread filter toggle change
+    // NOTE: refresh history while switch between the following modes: only showing unread (`isIncludeRead=false`) & showing all histories (`isIncludeRead=ture`)
     if (frontendClientStatus.isAuthenticated) {
       setHistoryItems([]);
       getHistoryItems(true);
