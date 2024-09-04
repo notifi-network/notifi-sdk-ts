@@ -66,6 +66,7 @@ export default function Home() {
             .map((wallet) => {
               return (
                 <button
+                  className="plain-button"
                   key={wallet}
                   onClick={() => {
                     wallets[wallet]
@@ -82,6 +83,7 @@ export default function Home() {
       <h3>OIDC (OpenID Connect) Auth</h3>
       {isOidcGoogle !== null || isLocalhost() ? (
         <button
+          className="plain-button"
           onClick={() => {
             setIsOidcGoogle((prev) => {
               localStorage.setItem(

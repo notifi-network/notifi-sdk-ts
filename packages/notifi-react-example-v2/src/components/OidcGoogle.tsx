@@ -86,6 +86,7 @@ export default function OidcGoogle() {
         <br></br>
         <br></br>
         <button
+          className="plain-button"
           onClick={() => {
             const newOidcData = {
               clientId: clientIdInputRef.current?.value ?? '',
@@ -143,6 +144,7 @@ export default function OidcGoogle() {
       {!oneTimeCode ? (
         <div>
           <button
+            className="plain-button"
             onClick={async () => {
               window.location.href = `https://accounts.google.com/o/oauth2/auth?client_id=${oidcData.clientId}&redirect_uri=${oidcData.redirectUri}&response_type=code&scope=email%20profile&access_type=offline`;
             }}
@@ -151,6 +153,7 @@ export default function OidcGoogle() {
           </button>
           <br></br>
           <button
+            className="plain-button"
             onClick={() => {
               localStorage.removeItem(oidcLocalStorageKey);
               setOidcData({
@@ -168,6 +171,7 @@ export default function OidcGoogle() {
       {oneTimeCode && !idToken ? (
         <div>
           <button
+            className="plain-button"
             onClick={async () => {
               const result = await deriveIdTokenFromOneTimeCode(oneTimeCode);
               if (result.error) {

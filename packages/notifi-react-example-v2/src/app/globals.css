@@ -4,7 +4,7 @@
   border-radius: 6px;
 }
 
-button {
+.plain-button {
   cursor: pointer;
   border: 1px solid grey !important;
   border-radius: 2px !important;
