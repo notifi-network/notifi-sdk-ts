@@ -67,7 +67,7 @@ export const defaultCopy = {
       'Make sure messages are enabled in your Coinbase Wallet Mobile App.',
     walletVerifiedTooltipLink: {
       text: 'More info',
-      url: 'https://docs.notifi.network/docs/target-setup/slack-integration',
+      url: 'https://docs.notifi.network/docs/target-setup/wallet-integration',
     },
   },
   topicOptions: {
