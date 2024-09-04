@@ -76,6 +76,7 @@ export default function OidcGoogle() {
   }, []);
 
   if (!oidcData.clientId || !oidcData.clientSecret || !oidcData.redirectUri) {
+    // TODO: Migrate to new component for other OIDC providers
     return (
       <div>
         <h1>Input Google OAuth2 client id</h1>

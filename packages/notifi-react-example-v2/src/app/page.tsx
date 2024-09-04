@@ -13,6 +13,7 @@ export default function Home() {
   const { wallets } = useWallets();
   const router = useRouter();
   const [isOidcGoogle, setIsOidcGoogle] = React.useState<boolean | null>(null);
+  const [isClient, setIsClient] = React.useState(false);
 
   const supportedWallets: (keyof Types.Wallets)[] = [
     'metamask',
@@ -22,12 +23,21 @@ export default function Home() {
   ];
 
   React.useEffect(() => {
-    console.log(localStorage.getItem(oidcModeStateLocalStorageKey));
+    setIsClient(true);
     const isOidc =
       (localStorage.getItem(oidcModeStateLocalStorageKey) as OidcModeState) ===
       'ENABLED';
     setIsOidcGoogle(isOidc);
   }, []);
+
+  const isLocalhost = () => {
+    if (typeof window === 'undefined') return false;
+    return window.location.origin.startsWith('http://localhost');
+  };
+
+  if (!isClient) {
+    return null; // Render nothing on the server
+  }
 
   return (
     <>
@@ -70,7 +80,7 @@ export default function Home() {
         </>
       ) : null}
       <h3>OIDC (OpenID Connect) Auth</h3>
-      {isOidcGoogle !== null ? (
+      {isOidcGoogle !== null || isLocalhost() ? (
         <button
           onClick={() => {
             setIsOidcGoogle((prev) => {
@@ -84,10 +94,16 @@ export default function Home() {
             });
           }}
         >
-          {isOidcGoogle ? 'Exist OIDC example mode' : 'Google'}
+          {isOidcGoogle ? 'Exit OIDC example mode' : 'Google'}
         </button>
       ) : null}
       {isOidcGoogle ? <OidcGoogle /> : null}
+      {!isLocalhost() ? (
+        <div>
+          OIDC example only available in local environment. For more detail,
+          checkout the README.md of `@notifi-network/notifi-react-example-v2`
+        </div>
+      ) : null}
     </>
   );
 }
