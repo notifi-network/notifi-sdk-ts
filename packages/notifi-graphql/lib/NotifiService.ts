@@ -611,6 +611,13 @@ export class NotifiService
     return this._typedClient.verifyXmtpTargetViaXip42(variables, headers);
   }
 
+  async createWebPushTarget(
+    variables: Generated.CreateWebPushTargetMutationVariables,
+  ): Promise<Generated.CreateWebPushTargetMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.createWebPushTarget(variables, headers);
+  }
+
   private _requestHeaders(): HeadersInit {
     const requestId = uuid();
     const headers: HeadersInit = {
