@@ -637,6 +637,13 @@ export class NotifiService
     return this._typedClient.updateWebPushTarget(variables, headers);
   }
 
+  async deleteWebPushTarget(
+    variables: Generated.DeleteWebPushTargetMutationVariables,
+  ): Promise<Generated.DeleteWebPushTargetMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.deleteWebPushTarget(variables, headers);
+  }
+
   private _requestHeaders(): HeadersInit {
     const requestId = uuid();
     const headers: HeadersInit = {

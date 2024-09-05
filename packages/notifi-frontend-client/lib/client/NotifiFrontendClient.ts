@@ -1567,4 +1567,11 @@ export class NotifiFrontendClient {
     const mutation = await this._service.updateWebPushTarget(input);
     return mutation;
   }
+
+  async deleteWebPushTarget(
+    input: Types.DeleteWebPushTargetMutationVariables,
+  ): Promise<Types.DeleteWebPushTargetMutation> {
+    const mutation = await this._service.deleteWebPushTarget(input);
+    return mutation;
+  }
 }

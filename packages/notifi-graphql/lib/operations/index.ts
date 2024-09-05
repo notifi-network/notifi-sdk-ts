@@ -66,3 +66,4 @@ export * from './VerifyXmtpTargetViaXip42';
 export * from './LogInByOidc';
 export * from './CreateWebPushTarget';
 export * from './UpdateWebPushTarget';
+export * from './DeleteWebPushTarget';
