@@ -632,6 +632,13 @@ export class NotifiService
     return this._typedClient.deleteWebPushTarget(variables, headers);
   }
 
+  async getWebPushTargets(
+    variables: Generated.GetWebPushTargetsQueryVariables,
+  ): Promise<Generated.GetWebPushTargetsQuery> {
+    const headers = this._requestHeaders();
+    return this._typedClient.getWebPushTargets(variables, headers);
+  }
+
   private _requestHeaders(): HeadersInit {
     const requestId = uuid();
     const headers: HeadersInit = {
