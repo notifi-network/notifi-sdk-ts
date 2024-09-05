@@ -1553,4 +1553,11 @@ export class NotifiFrontendClient {
     const mutation = await this._service.verifyXmtpTargetViaXip42(input);
     return mutation;
   }
+
+  async createWebPushTarget(
+    input: Types.CreateWebPushTargetMutationVariables,
+  ): Promise<Types.CreateWebPushTargetMutation> {
+    const mutation = await this._service.createWebPushTarget(input);
+    return mutation;
+  }
 }
