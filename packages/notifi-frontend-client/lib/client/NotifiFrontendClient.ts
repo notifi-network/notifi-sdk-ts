@@ -1574,4 +1574,15 @@ export class NotifiFrontendClient {
     const mutation = await this._service.deleteWebPushTarget(input);
     return mutation;
   }
+
+  async getWebPushTargets(
+    input: Types.GetWebPushTargetsQueryVariables,
+  ): Promise<Types.GetWebPushTargetsQuery['webPushTargets']> {
+    const query = await this._service.getWebPushTargets(input);
+    const result = query.webPushTargets;
+    if (!result) {
+      throw new Error('Failed to fetch webpush targets');
+    }
+    return result;
+  }
 }

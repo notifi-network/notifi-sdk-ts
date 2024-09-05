@@ -67,3 +67,4 @@ export * from './LogInByOidc';
 export * from './CreateWebPushTarget';
 export * from './UpdateWebPushTarget';
 export * from './DeleteWebPushTarget';
+export * from './GetWebPushTargets';
