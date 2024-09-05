@@ -1370,4 +1370,11 @@ export class NotifiFrontendClient {
     const mutation = await this._service.createWebPushTarget(input);
     return mutation;
   }
+
+  async updateWebPushTarget(
+    input: Types.UpdateWebPushTargetMutationVariables,
+  ): Promise<Types.UpdateWebPushTargetMutation> {
+    const mutation = await this._service.updateWebPushTarget(input);
+    return mutation;
+  }
 }

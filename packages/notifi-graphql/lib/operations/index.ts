@@ -64,3 +64,4 @@ export * from './VerifyCbwTarget';
 export * from './VerifyXmtpTarget';
 export * from './VerifyXmtpTargetViaXip42';
 export * from './CreateWebPushTarget';
+export * from './UpdateWebPushTarget';

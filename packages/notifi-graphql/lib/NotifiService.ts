@@ -618,6 +618,13 @@ export class NotifiService
     return this._typedClient.createWebPushTarget(variables, headers);
   }
 
+  async updateWebPushTarget(
+    variables: Generated.UpdateWebPushTargetMutationVariables,
+  ): Promise<Generated.UpdateWebPushTargetMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.updateWebPushTarget(variables, headers);
+  }
+
   private _requestHeaders(): HeadersInit {
     const requestId = uuid();
     const headers: HeadersInit = {
