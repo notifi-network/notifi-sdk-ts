@@ -26,6 +26,9 @@
       ],
       "@notifi-network/notifi-react-hooks": [
         "notifi-react-hooks/lib"
+      ],
+      "@notifi-network/notifi-web-push-service-worker": [
+        "notifi-web-push-service-worker/lib"
       ]
     }
   }

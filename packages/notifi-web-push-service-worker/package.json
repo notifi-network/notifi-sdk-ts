@@ -1,0 +1,38 @@
+{
+  "name": "@notifi-network/notifi-web-push-service-worker",
+  "version": "0.0.1",
+  "description": "A package for receiving notifications on your PWA via web push",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "npm run clean && npm run compile",
+    "compile": "tsup lib/index.ts --format cjs,esm --dts --clean && esbuild ./lib/notifi-service-worker.js --bundle --outfile=./dist/notifi-service-worker.js",
+    "clean": "rimraf ./dist",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepublishOnly": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/notifi-network/notifi-sdk-ts.git"
+  },
+  "author": "kai-notifi <kaito.trias@notifi.network>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/notifi-network/notifi-sdk-ts/issues"
+  },
+  "homepage": "https://github.com/notifi-network/notifi-sdk-ts#readme",
+  "dependencies": {
+    "@notifi-network/notifi-frontend-client": "^1.1.3-alpha.8"
+  },
+  "gitHead": "2b02f90e5b01bf13a9ce842a603a7cb21b3d2881"
+}
