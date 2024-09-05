@@ -19,7 +19,9 @@ const NotifiContextExample = () => {
       {frontendClientStatus.isAuthenticated ? (
         <div>- Logged in</div>
       ) : (
-        <button onClick={() => login()}>Login</button>
+        <button className="plain-button" onClick={() => login()}>
+          Login
+        </button>
       )}
       <h1>NotifiTenantConfigContext</h1>
       <h2>Topics </h2>
@@ -36,6 +38,7 @@ const NotifiContextExample = () => {
         {JSON.stringify(targetDocument)}
       </div>
       <button
+        className="plain-button"
         onClick={() => {
           updateTargetInputs('email', {
             value: `${Math.round(
@@ -48,6 +51,7 @@ const NotifiContextExample = () => {
       </button>
       <br />
       <button
+        className="plain-button"
         onClick={() => {
           renewTargetGroup();
         }}
