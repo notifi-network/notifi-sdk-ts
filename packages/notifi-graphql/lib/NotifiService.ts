@@ -611,6 +611,34 @@ export class NotifiService
     return this._typedClient.verifyXmtpTargetViaXip42(variables, headers);
   }
 
+  async createWebPushTarget(
+    variables: Generated.CreateWebPushTargetMutationVariables,
+  ): Promise<Generated.CreateWebPushTargetMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.createWebPushTarget(variables, headers);
+  }
+
+  async updateWebPushTarget(
+    variables: Generated.UpdateWebPushTargetMutationVariables,
+  ): Promise<Generated.UpdateWebPushTargetMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.updateWebPushTarget(variables, headers);
+  }
+
+  async deleteWebPushTarget(
+    variables: Generated.DeleteWebPushTargetMutationVariables,
+  ): Promise<Generated.DeleteWebPushTargetMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.deleteWebPushTarget(variables, headers);
+  }
+
+  async getWebPushTargets(
+    variables: Generated.GetWebPushTargetsQueryVariables,
+  ): Promise<Generated.GetWebPushTargetsQuery> {
+    const headers = this._requestHeaders();
+    return this._typedClient.getWebPushTargets(variables, headers);
+  }
+
   private _requestHeaders(): HeadersInit {
     const requestId = uuid();
     const headers: HeadersInit = {

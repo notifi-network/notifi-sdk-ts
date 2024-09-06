@@ -1363,4 +1363,36 @@ export class NotifiFrontendClient {
     const mutation = await this._service.verifyXmtpTargetViaXip42(input);
     return mutation;
   }
+
+  async createWebPushTarget(
+    input: Types.CreateWebPushTargetMutationVariables,
+  ): Promise<Types.CreateWebPushTargetMutation> {
+    const mutation = await this._service.createWebPushTarget(input);
+    return mutation;
+  }
+
+  async updateWebPushTarget(
+    input: Types.UpdateWebPushTargetMutationVariables,
+  ): Promise<Types.UpdateWebPushTargetMutation> {
+    const mutation = await this._service.updateWebPushTarget(input);
+    return mutation;
+  }
+
+  async deleteWebPushTarget(
+    input: Types.DeleteWebPushTargetMutationVariables,
+  ): Promise<Types.DeleteWebPushTargetMutation> {
+    const mutation = await this._service.deleteWebPushTarget(input);
+    return mutation;
+  }
+
+  async getWebPushTargets(
+    input: Types.GetWebPushTargetsQueryVariables,
+  ): Promise<Types.GetWebPushTargetsQuery['webPushTargets']> {
+    const query = await this._service.getWebPushTargets(input);
+    const result = query.webPushTargets;
+    if (!result) {
+      throw new Error('Failed to fetch webpush targets');
+    }
+    return result;
+  }
 }
