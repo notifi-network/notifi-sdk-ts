@@ -38,9 +38,14 @@ _Environment_
 
 ### Mount the `NotifiCardModal` to your dApp
 
-> **IMPORTANT** to use `NotifiCardModal`, you need to wrap your component with `NotifiContextProvider` first.
->
-> _Example Quick Start for Ethereum_
+#### Prerequisites (**IMPORTANT**)
+
+- To use `NotifiCardModal`, you need to wrap your component with `NotifiContextProvider` first.
+- Notifi supports both `on-chain` and `off-chain` authentication. The authentication method differs based on the `WalletWithSignParams` [props](https://github.com/notifi-network/notifi-sdk-ts/blob/1457d642900b8969abb8f1ad353aaeb7059a6946/packages/notifi-react/lib/context/NotifiFrontendClientContext.tsx#L49) passed to the `NotifiContextProvider`.
+  - For `on-chain` authentication, `walletBlockchain='<blockchain>'`, `signMessage` callback function, and the respective `wallet keys or addresses` for the `blockchain` are required. The common EVM blockchain example is shown above.
+  - For `off-chain` authentication, `walletBlockchain='OFF_CHAIN'`, `signIn` callback function, and `userAccount` are required. `userAccount` can be any user-related unique identifier derived from a JWT token. The Google off-chain OIDC authentication example is shown below.
+
+#### **Example Quick Start for Ethereum (On chain)**
 
 ```tsx
 import {
@@ -73,14 +78,50 @@ const NotifiCard = () => {
       signMessage={signMessage}
       walletBlockchain="ETHEREUM"
       walletPublicKey={account}
+      {/* ... other optional props */}
     >
-      <NotifiCardModal darkMode={true} />
+      <NotifiCardModal {/* ... other optional props ex. darkMode */} />
     </NotifiContextProvider>
   );
 };
 ```
 
-> [Docs](https://docs.notifi.network/docs/getting-started)
+#### **Example Quick Start for google OIDC (Off chain)**
+
+```tsx
+const NotifiCard = () => {
+  // ... other codes
+  const jwt = '<the-oidc-id-token-here>';
+  const userAccount = jwtDecode(jwt).email; // or any unique identifier
+  const signIn: OidcSignInFunction = async () => {
+    return {
+      oidcProvider: 'GOOGLE',
+      jwt,
+    };
+  };
+
+  return (
+    <NotifiContextProvider
+      tenantId="YOUR_TENANT_ID"
+      env="Production"
+      cardId="YOUR_CARD_ID"
+      walletBlockchain={'OFF_CHAIN'}
+      userAccount={userAccount}
+      signIn={signIn}
+      {/* ... other optional props */}
+    >
+      <NotifiCardModal {/* ... other optional props ex. darkMode */} />
+    </NotifiContextProvider>
+  );
+};
+```
+
+**Reference**
+
+> - [Getting start Docs](https://docs.notifi.network/docs/getting-started)
+> - Notifi supported blockchains: [WalletBlockchain Enum document](https://graphdoc.io/preview/enum/WalletBlockchain?endpoint=https://api.dev.notifi.network/gql/)
+> - Notifi supported OIDC providers: [OidcProvider Enum document](https://graphdoc.io/preview/enum/OidcProvider?endpoint=https://api.dev.notifi.network/gql/)
+> - To enable OIDC login, it requires additional setup to integrate your OIDC provider with Notifi tenant using [Notifi Admin Portal](https://admin.notifi.network/) check on the Notifi Documentation **(WIP: coming soon)**
 
 <br/><br/>
 
@@ -264,6 +305,7 @@ export const MyComponent = () => {
 **Methods**
 
 - **login**: A function to trigger the login process.
+
 - **frontendClientStatus**: The status of the frontend client, it can be one of the following:
   - **initiated**: The frontend client/user has been initiated but not authenticated.
   - **authenticated**: The frontend client/user is authenticated.
