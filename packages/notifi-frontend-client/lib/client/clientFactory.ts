@@ -1,5 +1,6 @@
 import { NotifiService } from '@notifi-network/notifi-graphql';
 import { GraphQLClient } from 'graphql-request';
+import { RequestConfig } from 'graphql-request/build/esm/types';
 import { NotifiSubscriptionService } from 'notifi-graphql/lib/NotifiSubscriptionService';
 
 import {
@@ -26,10 +27,13 @@ export const newNotifiStorage = (config: NotifiFrontendConfiguration) => {
   return new NotifiFrontendStorage(driver);
 };
 
-export const newNotifiService = (config: NotifiFrontendConfiguration) => {
+export const newNotifiService = (
+  config: NotifiFrontendConfiguration,
+  gqlClientRequestConfig?: RequestConfig,
+) => {
   const url = envUrl(config.env, 'http');
   const wsurl = envUrl(config.env, 'websocket');
-  const client = new GraphQLClient(url);
+  const client = new GraphQLClient(url, gqlClientRequestConfig);
   const subService = new NotifiSubscriptionService(wsurl);
   return new NotifiService(client, subService);
 };
@@ -47,6 +51,7 @@ export const instantiateFrontendClient = (
   params: UserParams,
   env?: NotifiEnvironment,
   storageOption?: NotifiEnvironmentConfiguration['storageOption'],
+  gqlClientRequestConfig?: RequestConfig, // NOTE: `graphql-request` by default uses XMLHttpRequest API. To adopt fetch API, pass in { fetch: fetch }
 ): NotifiFrontendClient => {
   let config: NotifiFrontendConfiguration | null = null;
   if ('accountAddress' in params) {
@@ -96,7 +101,7 @@ export const instantiateFrontendClient = (
     throw new Error('ERROR - instantiateFrontendClient: Invalid UserParams');
   }
 
-  const service = newNotifiService(config);
+  const service = newNotifiService(config, gqlClientRequestConfig);
   const storage = newNotifiStorage(config);
   return new NotifiFrontendClient(config, service, storage);
 };

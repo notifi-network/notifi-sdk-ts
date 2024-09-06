@@ -21,13 +21,13 @@ const tenantId = '<notifi-tenent-id>'; // dappAddress
 const env = 'Production'; // or 'Development'
 const walletBlockchain = '<the-blockchain-of-your-choice>'; // e.g. 'Ethereum'
 
-const client = newFrontendClient({
-  account: {
-    // Users wallet credentials (public key, address ... etc)
-  },
+const client = instantiateFrontendClient({
+  walletBlockchain,
+  // ⬇ Users wallet credentials (public key, address, user account ... etc), properties differ depending on the blockchain (below is an example for Evm chains)
+  walletPublicKey: '<user-wallet-public-key>',
+  // ⬇ Notifi tenant credentials
   tenantId,
   env,
-  walletBlockchain,
 });
 
 const newUserState = await client.initialize();
@@ -40,12 +40,16 @@ const newUserState = await client.initialize();
 
 ## 🔏 Authorization
 
-There are two ways to authorize a user with Notifi:
+There are two authentication categories to onboard the users with Notifi:
 
-1. Arbitrary signature authorization
-2. Transaction signature authorization
+1. **On-chain (blockchain) authorization**
 
-### Arbitrary signature authorization
+   - Arbitrary signature authorization
+   - Transaction signature authorization
+
+2. **Off-chain (OpenID Connect) authorization**
+
+### On-chain method: Arbitrary signature authorization
 
 Authorize users using `logIn` client method by providing a `signMessage` callback function.
 
@@ -66,10 +70,13 @@ const loginResult = await client.logIn({
 >
 > - The format of the returned signature differs depending on the blockchain, see the [type doc here](https://github.com/notifi-network/notifi-sdk-ts/blob/a00d59215032375b35c303ff1ccec54892d3c423/packages/notifi-frontend-client/lib/client/NotifiFrontendClient.ts#L37)
 > - The example of implementing `signMessage` callback function: [notifi-svelte-example](https://github.com/notifi-network/notifi-svelte-example/blob/26e2ef14ad507e35bce148bab71adc4d437ef44f/src/routes/%2Bpage.svelte#L26)
+> - Notifi supported blockchains: [WalletBlockchain Enum documentation](https://graphdoc.io/preview/enum/WalletBlockchain?endpoint=https://api.dev.notifi.network/gql/)
 
-### Transaction signature authorization
+<br><br>
 
-Authorize users using `beginLoginViaTransaction` method and `completeLoginViaTransaction` client method. The `beginLoginViaTransaction` method will return a nonce that should be appended to the transaction data before signing the transaction. The `completeLoginViaTransaction` method will take the transaction signature and the nonce to complete the login process. The following examples show how to authorize a user using the transaction signature method on EVM (Ethereum virtual machine) compatible blockchains.
+### On-chain method: Transaction signature authorization
+
+Authorize users by using `beginLoginViaTransaction` method and `completeLoginViaTransaction` client method. The `beginLoginViaTransaction` method will return a nonce that should be appended to the transaction data before signing the transaction. The `completeLoginViaTransaction` method will take the transaction signature and the nonce to complete the login process. The following examples show how to authorize a user using the transaction signature method on EVM (Ethereum virtual machine) compatible blockchains.
 
 ```ts
 const smartContract = new ethers.Contract(
@@ -114,6 +121,36 @@ const notifiLoginResult = await notifiClient.completeLoginViaTransaction({
 **IMPORTANT NOTE**:
 
 - **Browser extension constraints**: Some browser extensions (Metamask ...) do not allow appending additional info to the calldata of particular smart contract method (example: Token contract (ERC20, ERC721 ...etc)). Browser extension (Metamask) will throw `Message: Invalid token value; should be exactly xx hex digits long` error in this case.
+
+<br><br>
+
+### Off-chain method: OpenID Connect (OIDC) Authorization
+
+Authorize users by using `logIn` client method by providing a `signIn` callback function.
+
+```ts
+const signIn: OidcSignInFunction = async () => {
+  // other logic here to generate the OIDC token id (JWT token)
+  const jwt = '<the-oidc-id-token-here>';
+  return {
+    oidcProvider: 'GOOGLE',
+    jwt,
+  };
+};
+
+const loginResult = await client.logIn({
+  walletBlockchain: 'OFF_CHAIN',
+  signIn,
+});
+```
+
+> **NOTE**
+>
+> - Respective OIDC `login` [arguments](https://github.com/notifi-network/notifi-sdk-ts/blob/1457d642900b8969abb8f1ad353aaeb7059a6946/packages/notifi-frontend-client/lib/client/NotifiFrontendClient.ts#L104)
+> - Notifi supported OIDC providers: [OidcProvider Enum document](https://graphdoc.io/preview/enum/OidcProvider?endpoint=https://api.dev.notifi.network/gql/)
+> - To enable OIDC login, it requires additional setup to integrate your OIDC provider with Notifi tenant using [Notifi Admin Portal](https://admin.notifi.network/) check on the Notifi Documentation **(WIP: coming soon)**
+
+<br><br>
 
 ## Fetch User Data
 
