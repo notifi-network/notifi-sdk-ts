@@ -10,6 +10,7 @@ import '@notifi-network/notifi-react/dist/index.css';
 import { JwtPayload, jwtDecode } from 'jwt-decode';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React from 'react';
+import { tryCreateWebPushSubscription } from '@notifi-network/notifi-web-push-service-worker';
 
 export const oidcModeStateLocalStorageKey = 'NotifiReactExampleOidcMode';
 export enum OidcModeState {
@@ -57,6 +58,15 @@ export default function OidcGoogle() {
   const clientSecretInputRef = React.useRef<HTMLInputElement>(null);
 
   console.log(window.location.origin);
+
+  React.useEffect(() => {
+    if (idToken) {
+      console.log(process.env.NEXT_PUBLIC_TENANT_ID)
+      console.log(process.env.NEXT_PUBLIC_ENV)
+      const userAccount = (jwtDecode(idToken) as CustomJwtPayload).email
+      tryCreateWebPushSubscription(userAccount, process.env.NEXT_PUBLIC_TENANT_ID ?? '', process.env.NEXT_PUBLIC_ENV ?? '');
+    }
+  }, [idToken]);
 
   React.useEffect(() => {
     // NOTE: initial load credentials from localStorage

@@ -15,9 +15,18 @@ let nextConfig = {
     /** ⬇️ For @xmpt/sdk requires .wasm bundled  */
     config.plugins.push(
       new CopyPlugin({
-        patterns: [{ from: 'public/wasm', to: './server/vendor-chunks' }],
+        patterns: [{ from: 'public/wasm', to: './server/vendor-chunks' },
+        {
+          from: '.yalc/@notifi-network/notifi-web-push-service-worker/dist/notifi-service-worker.js',
+          to: "../public/"
+        },
+        ],
       }),
     );
+    config.entry['notifi-service-worker'] = {
+      import: 'public/notifi-service-worker.js',
+      dependOn: undefined,
+    }
     return config;
   },
 };
@@ -34,7 +43,12 @@ if (args.includes('build')) {
       /** ⬇️ For @xmpt/sdk requires .wasm bundled  */
       config.plugins.push(
         new CopyPlugin({
-          patterns: [{ from: 'public/wasm', to: './server/chunks' }],
+          patterns: [{ from: 'public/wasm', to: './server/chunks' },
+            // {
+            //   from: '.yalc/@notifi-network/notifi-web-push-service-worker/lib/notifi-service-worker.js',
+            //   to: "../public/"
+            // },
+          ],
         }),
       );
       return config;

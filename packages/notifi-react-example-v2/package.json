@@ -12,18 +12,19 @@
     "cypress:ci": "cypress run --component --group notifi-e2e --spec 'cypress/component/NotifiCardModal.cy.tsx' --browser chrome --record"
   },
   "dependencies": {
+    "@notifi-network/notifi-frontend-client": "^1.1.2",
     "@notifi-network/notifi-react": "^1.1.2",
     "@notifi-network/notifi-solana-hw-login": "^1.1.2",
     "@notifi-network/notifi-wallet-provider": "^1.0.0",
+    "@notifi-network/notifi-web-push-service-worker": "file:.yalc/@notifi-network/notifi-web-push-service-worker",
     "ethers": "^6.11.1",
+    "jwt-decode": "^4.0.0",
     "next": "14.1.4",
     "react": "^18",
-    "react-dom": "^18",
-    "jwt-decode": "^4.0.0"
+    "react-dom": "^18"
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^14.2.5",
-    "@notifi-network/notifi-frontend-client": "^1.1.2",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

@@ -8,6 +8,24 @@ import { objectKeys } from '@notifi-network/notifi-frontend-client';
 import { Types, useWallets } from '@notifi-network/notifi-wallet-provider';
 import { useRouter } from 'next/navigation';
 import React from 'react';
+import { initWebPushServiceWorker } from '@notifi-network/notifi-web-push-service-worker';
+
+function unsubscribePushManger() {
+  navigator.serviceWorker.ready.then((reg) => {
+    reg.pushManager.getSubscription().then((subscription) => {
+      if (subscription) {
+        subscription
+          .unsubscribe()
+          .then((successful) => {
+            console.log("Successfully unsubscribe push manager")
+          })
+          .catch((e) => {
+            console.error("Failed to unsusbcribe push manager")
+          });
+      }
+    });
+  });
+}
 
 export default function Home() {
   const { wallets } = useWallets();
@@ -21,6 +39,11 @@ export default function Home() {
     'coinbase',
     'phantom',
   ];
+
+
+  React.useEffect(() => {
+    initWebPushServiceWorker()
+  }, []);
 
   React.useEffect(() => {
     setIsClient(true);
@@ -99,6 +122,14 @@ export default function Home() {
           {isOidcGoogle ? 'Exit OIDC example mode' : 'Google'}
         </button>
       ) : null}
+      <button
+        className="plain-button"
+        onClick={() => {
+          unsubscribePushManger();
+        }}
+      >
+        Unsubscribe push subscription
+      </button>
       {isOidcGoogle ? <OidcGoogle /> : null}
       {!isLocalhost() ? (
         <div>
