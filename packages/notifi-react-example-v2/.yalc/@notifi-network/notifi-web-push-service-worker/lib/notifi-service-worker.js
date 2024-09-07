@@ -80,7 +80,9 @@ async function createWebPushTarget(subscription, vapidPublicKey) {
 
     const targetGroups = await client.getTargetGroups();
     const defaultTargetGroup = targetGroups.find((targetGroup) => targetGroup.name === 'Default');
-    const webPushTargetIds = defaultTargetGroup?.webPushTargets?.map((t) => t?.Id) ?? [];
+    const webPushTargetIds = defaultTargetGroup?.webPushTargets?.map((t) => t?.id) ?? [];
+
+    console.log(defaultTargetGroup?.webPushTargets)
 
     const webPushTargetResponse = await client.createWebPushTarget({
       vapidPublicKey: vapidPublicKey,
@@ -89,14 +91,14 @@ async function createWebPushTarget(subscription, vapidPublicKey) {
       p256dh: subscriptionJson.keys.p256dh
     })
 
-    if (!webPushTargetResponse.createWebPushTarget.webPushTarget) {
-      console.log(webPushTargetResponse)
+    console.log(webPushTargetResponse.createWebPushTarget.webPushTarget)
+
+    if (!webPushTargetResponse.createWebPushTarget.webPushTarget || !webPushTargetResponse.createWebPushTarget.webPushTarget?.id) {
       console.error('Failed to create web push target. CreateWebPushTargetMutation failed.');
       return;
     }
 
-    webPushTargetIds.push(webPushTargetResponse.createWebPushTarget.webPushTarget?.Id);
-
+    webPushTargetIds.push(webPushTargetResponse.createWebPushTarget.webPushTarget?.id);
     await client.ensureTargetGroup({
       name: 'Default',
       emailAddress: defaultTargetGroup?.emailTargets[0]?.emailAddress,
@@ -115,7 +117,6 @@ async function createWebPushTarget(subscription, vapidPublicKey) {
 
 function GetSubsciption(userAccount, dappId, env) {
   if (Notification.permission !== "granted") {
-    console.log(Notification.permission)
     console.log('Notification permissions not granted');
     return;
   }
@@ -125,7 +126,6 @@ function GetSubsciption(userAccount, dappId, env) {
     return;
   }
 
-  console.log('Creating client')
   // TODO: Instantiate Notifi client here. If it fails, don't do anything.
   client = instantiateFrontendClient(
     dappId,
@@ -137,25 +137,19 @@ function GetSubsciption(userAccount, dappId, env) {
     undefined,
     { fetch }
   );
-  console.log('here')
 
   client.initialize().then(userState => {
     if (userState.status == 'authenticated') {
       // TODO: Get vapid key here
-      console.log('attempting to create subscription')
       let vapidPublicKey = "BBw1aI15zN4HFMIlbWoV2E390hxgY47-mBjN41Ewr2YCNGPdoR3-Q1vI-LAyfut8rqwSOWrcBA5sA5aC4gHcFjA";
 
       if (Notification.permission === "granted") {
-        console.log('permission granted')
         self.registration.pushManager.getSubscription()
           .then(async (subscription) => {
-            console.log('Registration starting')
-
             if (subscription) {
               console.log('subscription already exists')
               return subscription;
             }
-
 
             const convertedVapidKey = urlBase64ToUint8Array(vapidPublicKey);
 
@@ -165,13 +159,8 @@ function GetSubsciption(userAccount, dappId, env) {
             });
           })
           .then(async (subscription) => {
-            console.log(
-              'Received PushSubscription: ',
-              JSON.stringify(subscription),
-            );
-            // TODO: create web push target here and store the target id in indexed db
-            console.log('creating web push target')
             await createWebPushTarget(subscription, vapidPublicKey)
+            // TODO: save target id in indexed db
           });
       }
     }

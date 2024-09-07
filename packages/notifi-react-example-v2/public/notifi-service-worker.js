@@ -11112,32 +11112,33 @@ ${WebPushTargetFragmentFragmentDoc}`;
     return outputArray;
   }
   async function createWebPushTarget(subscription, vapidPublicKey) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _i;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j;
     try {
       const subscriptionJson = subscription.toJSON();
       const targetGroups = await client.getTargetGroups();
       const defaultTargetGroup = targetGroups.find((targetGroup) => targetGroup.name === "Default");
-      const webPushTargetIds = (_b = (_a = defaultTargetGroup == null ? void 0 : defaultTargetGroup.webPushTargets) == null ? void 0 : _a.map((t) => t == null ? void 0 : t.Id)) != null ? _b : [];
+      const webPushTargetIds = (_b = (_a = defaultTargetGroup == null ? void 0 : defaultTargetGroup.webPushTargets) == null ? void 0 : _a.map((t) => t == null ? void 0 : t.id)) != null ? _b : [];
+      console.log(defaultTargetGroup == null ? void 0 : defaultTargetGroup.webPushTargets);
       const webPushTargetResponse = await client.createWebPushTarget({
         vapidPublicKey,
         endpoint: subscriptionJson.endpoint,
         auth: subscriptionJson.keys.auth,
         p256dh: subscriptionJson.keys.p256dh
       });
-      if (!webPushTargetResponse.createWebPushTarget.webPushTarget) {
-        console.log(webPushTargetResponse);
+      console.log(webPushTargetResponse.createWebPushTarget.webPushTarget);
+      if (!webPushTargetResponse.createWebPushTarget.webPushTarget || !((_c = webPushTargetResponse.createWebPushTarget.webPushTarget) == null ? void 0 : _c.id)) {
         console.error("Failed to create web push target. CreateWebPushTargetMutation failed.");
         return;
       }
-      webPushTargetIds.push((_c = webPushTargetResponse.createWebPushTarget.webPushTarget) == null ? void 0 : _c.Id);
+      webPushTargetIds.push((_d = webPushTargetResponse.createWebPushTarget.webPushTarget) == null ? void 0 : _d.id);
       await client.ensureTargetGroup({
         name: "Default",
-        emailAddress: (_d = defaultTargetGroup == null ? void 0 : defaultTargetGroup.emailTargets[0]) == null ? void 0 : _d.emailAddress,
-        phoneNumber: (_e = defaultTargetGroup == null ? void 0 : defaultTargetGroup.smsTargets[0]) == null ? void 0 : _e.phoneNumber,
-        telegramId: (_f = defaultTargetGroup == null ? void 0 : defaultTargetGroup.telegramTargets[0]) == null ? void 0 : _f.telegramId,
-        discordId: (_g = defaultTargetGroup == null ? void 0 : defaultTargetGroup.discordTargets[0]) == null ? void 0 : _g.name,
-        slackId: (_h = defaultTargetGroup == null ? void 0 : defaultTargetGroup.slackChannelTargets[0]) == null ? void 0 : _h.name,
-        walletId: (_i = defaultTargetGroup == null ? void 0 : defaultTargetGroup.web3Targets[0]) == null ? void 0 : _i.name,
+        emailAddress: (_e = defaultTargetGroup == null ? void 0 : defaultTargetGroup.emailTargets[0]) == null ? void 0 : _e.emailAddress,
+        phoneNumber: (_f = defaultTargetGroup == null ? void 0 : defaultTargetGroup.smsTargets[0]) == null ? void 0 : _f.phoneNumber,
+        telegramId: (_g = defaultTargetGroup == null ? void 0 : defaultTargetGroup.telegramTargets[0]) == null ? void 0 : _g.telegramId,
+        discordId: (_h = defaultTargetGroup == null ? void 0 : defaultTargetGroup.discordTargets[0]) == null ? void 0 : _h.name,
+        slackId: (_i = defaultTargetGroup == null ? void 0 : defaultTargetGroup.slackChannelTargets[0]) == null ? void 0 : _i.name,
+        walletId: (_j = defaultTargetGroup == null ? void 0 : defaultTargetGroup.web3Targets[0]) == null ? void 0 : _j.name,
         webPushTargetIds
       });
     } catch (err) {
@@ -11146,7 +11147,6 @@ ${WebPushTargetFragmentFragmentDoc}`;
   }
   function GetSubsciption(userAccount, dappId, env) {
     if (Notification.permission !== "granted") {
-      console.log(Notification.permission);
       console.log("Notification permissions not granted");
       return;
     }
@@ -11154,7 +11154,6 @@ ${WebPushTargetFragmentFragmentDoc}`;
       console.log("UserAccount, Notifi dappId, or env not found. Skipping subscription instantiation.");
       return;
     }
-    console.log("Creating client");
     client = instantiateFrontendClient(
       dappId,
       {
@@ -11165,15 +11164,11 @@ ${WebPushTargetFragmentFragmentDoc}`;
       void 0,
       { fetch }
     );
-    console.log("here");
     client.initialize().then((userState) => {
       if (userState.status == "authenticated") {
-        console.log("attempting to create subscription");
         let vapidPublicKey = "BBw1aI15zN4HFMIlbWoV2E390hxgY47-mBjN41Ewr2YCNGPdoR3-Q1vI-LAyfut8rqwSOWrcBA5sA5aC4gHcFjA";
         if (Notification.permission === "granted") {
-          console.log("permission granted");
           self.registration.pushManager.getSubscription().then(async (subscription) => {
-            console.log("Registration starting");
             if (subscription) {
               console.log("subscription already exists");
               return subscription;
@@ -11184,11 +11179,6 @@ ${WebPushTargetFragmentFragmentDoc}`;
               applicationServerKey: convertedVapidKey
             });
           }).then(async (subscription) => {
-            console.log(
-              "Received PushSubscription: ",
-              JSON.stringify(subscription)
-            );
-            console.log("creating web push target");
             await createWebPushTarget(subscription, vapidPublicKey);
           });
         }
