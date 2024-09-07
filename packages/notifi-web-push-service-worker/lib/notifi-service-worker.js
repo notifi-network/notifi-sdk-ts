@@ -80,7 +80,7 @@ async function createWebPushTarget(subscription, vapidPublicKey) {
 
     const targetGroups = await client.getTargetGroups();
     const defaultTargetGroup = targetGroups.find((targetGroup) => targetGroup.name === 'Default');
-    const webPushTargetIds = defaultTargetGroup?.webPushTargets?.map((t) => t?.Id) ?? [];
+    const webPushTargetIds = defaultTargetGroup?.webPushTargets?.map((t) => t?.id) ?? [];
 
     const webPushTargetResponse = await client.createWebPushTarget({
       vapidPublicKey: vapidPublicKey,
@@ -89,13 +89,12 @@ async function createWebPushTarget(subscription, vapidPublicKey) {
       p256dh: subscriptionJson.keys.p256dh
     })
 
-    if (!webPushTargetResponse.createWebPushTarget.webPushTarget) {
+    if (!webPushTargetResponse.createWebPushTarget.webPushTarget || !webPushTargetResponse.createWebPushTarget.webPushTarget?.id) {
       console.error('Failed to create web push target. CreateWebPushTargetMutation failed.');
       return;
     }
 
-    webPushTargetIds.push(webPushTargetResponse.createWebPushTarget.webPushTarget?.Id);
-
+    webPushTargetIds.push(webPushTargetResponse.createWebPushTarget.webPushTarget?.id);
     await client.ensureTargetGroup({
       name: 'Default',
       emailAddress: defaultTargetGroup?.emailTargets[0]?.emailAddress,
