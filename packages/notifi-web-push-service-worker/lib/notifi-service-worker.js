@@ -1,5 +1,5 @@
 import { instantiateFrontendClient } from "@notifi-network/notifi-frontend-client";
-
+let client;
 function createDb() {
   let dbInstance;
 
@@ -74,9 +74,46 @@ function urlBase64ToUint8Array(base64String) {
   return outputArray;
 }
 
+async function createWebPushTarget(subscription, vapidPublicKey) {
+  try {
+    const subscriptionJson = subscription.toJSON();
+
+    const targetGroups = await client.getTargetGroups();
+    const defaultTargetGroup = targetGroups.find((targetGroup) => targetGroup.name === 'Default');
+    const webPushTargetIds = defaultTargetGroup?.webPushTargets?.map((t) => t?.Id) ?? [];
+
+    const webPushTargetResponse = await client.createWebPushTarget({
+      vapidPublicKey: vapidPublicKey,
+      endpoint: subscriptionJson.endpoint,
+      auth: subscriptionJson.keys.auth,
+      p256dh: subscriptionJson.keys.p256dh
+    })
+
+    if (!webPushTargetResponse.createWebPushTarget.webPushTarget) {
+      console.error('Failed to create web push target. CreateWebPushTargetMutation failed.');
+      return;
+    }
+
+    webPushTargetIds.push(webPushTargetResponse.createWebPushTarget.webPushTarget?.Id);
+
+    await client.ensureTargetGroup({
+      name: 'Default',
+      emailAddress: defaultTargetGroup?.emailTargets[0]?.emailAddress,
+      phoneNumber: defaultTargetGroup?.smsTargets[0]?.phoneNumber,
+      telegramId: defaultTargetGroup?.telegramTargets[0]?.telegramId,
+      discordId: defaultTargetGroup?.discordTargets[0]?.name,
+      slackId: defaultTargetGroup?.slackChannelTargets[0]?.name,
+      walletId: defaultTargetGroup?.web3Targets[0]?.name,
+      webPushTargetIds: webPushTargetIds
+    });
+  }
+  catch (err) {
+    console.error(err, "Failed to create web push target.")
+  }
+}
+
 function GetSubsciption(userAccount, dappId, env) {
   if (Notification.permission !== "granted") {
-    console.log(Notification.permission)
     console.log('Notification permissions not granted');
     return;
   }
@@ -86,35 +123,30 @@ function GetSubsciption(userAccount, dappId, env) {
     return;
   }
 
-  console.log('Creating client')
   // TODO: Instantiate Notifi client here. If it fails, don't do anything.
-  let client = instantiateFrontendClient(
+  client = instantiateFrontendClient(
     dappId,
     {
       walletBlockchain: 'OFF_CHAIN',
       userAccount: userAccount
     },
     env,
+    undefined,
+    { fetch }
   );
-  console.log('here')
 
   client.initialize().then(userState => {
     if (userState.status == 'authenticated') {
       // TODO: Get vapid key here
-      console.log('attempting to create subscription')
       let vapidPublicKey = "BBw1aI15zN4HFMIlbWoV2E390hxgY47-mBjN41Ewr2YCNGPdoR3-Q1vI-LAyfut8rqwSOWrcBA5sA5aC4gHcFjA";
 
       if (Notification.permission === "granted") {
-        console.log('permission granted')
         self.registration.pushManager.getSubscription()
           .then(async (subscription) => {
-            console.log('Registration starting')
-
             if (subscription) {
               console.log('subscription already exists')
               return subscription;
             }
-
 
             const convertedVapidKey = urlBase64ToUint8Array(vapidPublicKey);
 
@@ -124,23 +156,8 @@ function GetSubsciption(userAccount, dappId, env) {
             });
           })
           .then(async (subscription) => {
-            console.log(
-              'Received PushSubscription: ',
-              JSON.stringify(subscription),
-            );
-            // TODO: create web push target here and store the target id in indexed db
-            const subscriptionJson = subscription.toJSON();
-            const webPushTargetResponse = await client.createWebPushTarget({
-              vapidPublicKey: vapidPublicKey,
-              endpoint: subscriptionJson.endpoint,
-              auth: subscriptionJson.keys.auth,
-              p256dh: subscriptionJson.keys.p256dh
-            })
-
-            console.log(
-              'WebPushTargetResponse',
-              JSON.stringify(webPushTargetResponse),
-            );
+            await createWebPushTarget(subscription, vapidPublicKey)
+            // TODO: save target id in indexed db
           });
       }
     }
@@ -180,3 +197,5 @@ self.addEventListener('message', (event) => {
     console.error(e, "Error parsing message data")
   }
 });
+
+// TODO: Add listener for when Push Subscription changes
