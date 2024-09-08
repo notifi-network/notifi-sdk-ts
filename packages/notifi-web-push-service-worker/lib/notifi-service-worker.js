@@ -1,5 +1,7 @@
 import { instantiateFrontendClient } from "@notifi-network/notifi-frontend-client";
 let client;
+let db = createDb();
+const webPushTargetIdKey = 'webPushTargetId';
 function createDb() {
   let dbInstance;
 
@@ -7,7 +9,7 @@ function createDb() {
     if (dbInstance) return dbInstance;
 
     dbInstance = new Promise((resolve, reject) => {
-      const openreq = indexedDB.open('notifi', 1);
+      const openreq = indexedDB.open('notifi');
 
       openreq.onerror = () => {
         reject(openreq.error);
@@ -76,17 +78,16 @@ function urlBase64ToUint8Array(base64String) {
 
 async function createWebPushTarget(subscription, vapidPublicKey) {
   try {
-    const subscriptionJson = subscription.toJSON();
-
+    const conv = (val) => self.btoa(String.fromCharCode.apply(null, new Uint8Array(val)));
     const targetGroups = await client.getTargetGroups();
     const defaultTargetGroup = targetGroups.find((targetGroup) => targetGroup.name === 'Default');
     const webPushTargetIds = defaultTargetGroup?.webPushTargets?.map((t) => t?.id) ?? [];
 
     const webPushTargetResponse = await client.createWebPushTarget({
       vapidPublicKey: vapidPublicKey,
-      endpoint: subscriptionJson.endpoint,
-      auth: subscriptionJson.keys.auth,
-      p256dh: subscriptionJson.keys.p256dh
+      endpoint: subscription.endpoint,
+      auth: conv(subscription.getKey("auth")),
+      p256dh: conv(subscription.getKey("p256dh"))
     })
 
     if (!webPushTargetResponse.createWebPushTarget.webPushTarget || !webPushTargetResponse.createWebPushTarget.webPushTarget?.id) {
@@ -105,9 +106,42 @@ async function createWebPushTarget(subscription, vapidPublicKey) {
       walletId: defaultTargetGroup?.web3Targets[0]?.name,
       webPushTargetIds: webPushTargetIds
     });
+    await db.set(webPushTargetIdKey, webPushTargetResponse.createWebPushTarget.webPushTarget?.id);
   }
   catch (err) {
     console.error(err, "Failed to create web push target.")
+  }
+}
+
+async function updateWebPushTarget(subscription, webPushTargetId) {
+  try {
+    const conv = (val) => self.btoa(String.fromCharCode.apply(null, new Uint8Array(val)));
+    await client.updateWebPushTarget({
+      id: webPushTargetId,
+      endpoint: subscription.endpoint,
+      auth: conv(subscription.getKey("auth")),
+      p256dh: conv(subscription.getKey("p256dh"))
+    });
+  }
+  catch (err) {
+    console.error(err, "Failed to update web push target.")
+  }
+}
+
+async function createOrUpdateWebPushTarget(subscription, vapidPublicKey) {
+  const webPushTargetId = await db.get(webPushTargetIdKey);
+  if (!webPushTargetId || webPushTargetId === '') {
+    await createWebPushTarget(subscription, vapidPublicKey);
+  }
+  else {
+    const getWebPushTargetsResponse = await client.getWebPushTargets({ ids: [webPushTargetId] });
+
+    if (getWebPushTargetsResponse.nodes.length !== 1) {
+      await createWebPushTarget(subscription, vapidPublicKey);
+    }
+    else {
+      await updateWebPushTarget(subscription, webPushTargetId);
+    }
   }
 }
 
@@ -122,7 +156,6 @@ function GetSubsciption(userAccount, dappId, env) {
     return;
   }
 
-  // TODO: Instantiate Notifi client here. If it fails, don't do anything.
   client = instantiateFrontendClient(
     dappId,
     {
@@ -135,7 +168,7 @@ function GetSubsciption(userAccount, dappId, env) {
   );
 
   client.initialize().then(userState => {
-    if (userState.status == 'authenticated') {
+    if (userState.status === 'authenticated') {
       // TODO: Get vapid key here
       let vapidPublicKey = "BBw1aI15zN4HFMIlbWoV2E390hxgY47-mBjN41Ewr2YCNGPdoR3-Q1vI-LAyfut8rqwSOWrcBA5sA5aC4gHcFjA";
 
@@ -155,11 +188,12 @@ function GetSubsciption(userAccount, dappId, env) {
             });
           })
           .then(async (subscription) => {
-            await createWebPushTarget(subscription, vapidPublicKey)
-            // TODO: save target id in indexed db
+            await createOrUpdateWebPushTarget(subscription, vapidPublicKey)
           });
       }
     }
+  }).catch((err) => {
+    console.error(err, 'Notifi client failed to initialize.')
   });
 }
 
@@ -197,4 +231,26 @@ self.addEventListener('message', (event) => {
   }
 });
 
-// TODO: Add listener for when Push Subscription changes
+self.addEventListener(
+  "pushsubscriptionchange",
+  (event) => {
+    console.log('push subscription changed!!')
+    console.log(event)
+    const subscription = self.registration.pushManager
+      .subscribe(event.oldSubscription.options)
+      .then(async (subscription) => {
+        client.initialize().then(async userState => {
+          if (userState.status === 'authenticated') {
+            // TODO: Get vapid key here
+            let vapidPublicKey = "BBw1aI15zN4HFMIlbWoV2E390hxgY47-mBjN41Ewr2YCNGPdoR3-Q1vI-LAyfut8rqwSOWrcBA5sA5aC4gHcFjA";
+
+            if (Notification.permission === "granted") {
+              await createOrUpdateWebPushTarget(subscription, vapidPublicKey);
+            }
+          }
+        })
+      });
+    event.waitUntil(subscription);
+  },
+  false,
+);
