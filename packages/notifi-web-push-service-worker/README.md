@@ -39,7 +39,7 @@ export default function Home() {
 ```
 <br/><br/>
 
-# Unsubscribing for WebPush notifications
+# Unsubscribing from WebPush notifications
 This will disable notifications coming in for WebPush. To manage alerts and other destinations, please continue to use the full notifi-frontend-client or notifi-react packages.
 ```tsx
 function unsubscribePushManger() {
