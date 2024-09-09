@@ -1,4 +1,4 @@
-import { GqlError } from '@notifi-network/notifi-axios-utils';
+import { GqlError } from './utils';
 
 export * from './client';
 export * from './types';

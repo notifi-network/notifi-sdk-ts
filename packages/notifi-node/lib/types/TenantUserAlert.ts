@@ -1,6 +1,6 @@
-import type { Alert } from '@notifi-network/notifi-core';
+import { Types } from '@notifi-network/notifi-graphql';
 
 export type TenantUserAlert = Pick<
-  Alert,
+  Types.AlertFragmentFragment,
   'id' | 'name' | 'groupName' | 'filter' | 'filterOptions' | 'sourceGroup'
 >;

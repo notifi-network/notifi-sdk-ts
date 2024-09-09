@@ -1,5 +1,5 @@
+import { DeepPartialReadonly } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
-import { DeepPartialReadonly } from 'notifi-react-card/lib/utils';
 import React, { useEffect, useState } from 'react';
 
 import {

@@ -65,15 +65,24 @@ export type NotifiConfigWithDelegate = Readonly<{
 }> &
   NotifiEnvironmentConfiguration;
 
+export type NotifiConfigWithOidc = Readonly<{
+  walletBlockchain: 'OFF_CHAIN';
+  userAccount: string;
+}> &
+  NotifiEnvironmentConfiguration;
+
 export type NotifiFrontendConfiguration =
   | NotifiConfigWithPublicKey
   | NotifiConfigWithPublicKeyAndAddress
-  | NotifiConfigWithDelegate;
+  | NotifiConfigWithDelegate
+  | NotifiConfigWithOidc;
 
+/**@deprecated No longer need to use configFactory, use instantiateFrontendClient instead */
 export type ConfigFactoryInput =
   | ConfigFactoryInputPublicKeyAndAddress
   | ConfigFactoryInputPublicKey
-  | ConfigFactoryInputDelegated;
+  | ConfigFactoryInputDelegated
+  | ConfigFactoryInputOidc;
 
 export const checkIsConfigWithPublicKeyAndAddress = (
   config: NotifiFrontendConfiguration,
@@ -87,6 +96,13 @@ export const checkIsConfigWithDelegate = (
   return 'delegatedAddress' in config;
 };
 
+export const checkIsConfigWithOidc = (
+  config: NotifiFrontendConfiguration,
+): config is NotifiConfigWithOidc => {
+  return config.walletBlockchain === 'OFF_CHAIN';
+};
+
+/**@deprecated No longer need to use configFactory, use instantiateFrontendClient instead */
 export type ConfigFactoryInputDelegated = {
   account: Readonly<{
     address: string;
@@ -99,6 +115,7 @@ export type ConfigFactoryInputDelegated = {
   storageOption?: NotifiEnvironmentConfiguration['storageOption'];
 };
 
+/**@deprecated No longer need to use configFactory, use instantiateFrontendClient instead */
 export type ConfigFactoryInputPublicKeyAndAddress = {
   account: Readonly<{
     address: string;
@@ -110,6 +127,7 @@ export type ConfigFactoryInputPublicKeyAndAddress = {
   storageOption?: NotifiEnvironmentConfiguration['storageOption'];
 };
 
+/**@deprecated No longer need to use configFactory, use instantiateFrontendClient instead */
 export type ConfigFactoryInputPublicKey = {
   account: Readonly<{
     publicKey: string;
@@ -120,13 +138,27 @@ export type ConfigFactoryInputPublicKey = {
   storageOption?: NotifiEnvironmentConfiguration['storageOption'];
 };
 
+/**@deprecated No longer need to use configFactory, use instantiateFrontendClient instead */
+export type ConfigFactoryInputOidc = {
+  account: Readonly<{
+    userAccount: string;
+  }>;
+  tenantId: string;
+  env?: NotifiEnvironment;
+  walletBlockchain: 'OFF_CHAIN';
+  storageOption?: NotifiEnvironmentConfiguration['storageOption'];
+};
+
+/**@deprecated No longer need to use configFactory, use instantiateFrontendClient instead */
 export type FrontendClientConfigFactory<T extends NotifiFrontendConfiguration> =
   (
     args: T extends NotifiConfigWithPublicKeyAndAddress
       ? ConfigFactoryInputPublicKeyAndAddress
       : T extends NotifiConfigWithDelegate
       ? ConfigFactoryInputDelegated
-      : ConfigFactoryInputPublicKey,
+      : T extends NotifiConfigWithPublicKey
+      ? ConfigFactoryInputPublicKey
+      : ConfigFactoryInputOidc,
   ) => NotifiFrontendConfiguration;
 
 const evmChains = [
@@ -151,10 +183,13 @@ const evmChains = [
 
 type EVMChains = Extract<Types.WalletBlockchain, (typeof evmChains)[number]>;
 
-const isEvmChain = (chain: Types.WalletBlockchain): chain is EVMChains => {
+export const isEvmChain = (
+  chain: Types.WalletBlockchain,
+): chain is EVMChains => {
   return !!evmChains.find((c) => c === chain);
 };
 
+/**@deprecated No longer need to use configFactory, use instantiateFrontendClient instead */
 const configFactoryPublicKey: FrontendClientConfigFactory<
   NotifiConfigWithPublicKey
 > = (args) => {
@@ -170,7 +205,7 @@ const configFactoryPublicKey: FrontendClientConfigFactory<
     storageOption: args.storageOption,
   };
 };
-
+/**@deprecated No longer need to use configFactory, use instantiateFrontendClient instead */
 const configFactoryPublicKeyAndAddress: FrontendClientConfigFactory<
   NotifiConfigWithPublicKeyAndAddress
 > = (args) => {
@@ -183,7 +218,7 @@ const configFactoryPublicKeyAndAddress: FrontendClientConfigFactory<
     storageOption: args.storageOption,
   };
 };
-
+/**@deprecated No longer need to use configFactory, use instantiateFrontendClient instead */
 const configFactoryDelegated: FrontendClientConfigFactory<
   NotifiConfigWithDelegate
 > = (args) => {
@@ -197,23 +232,45 @@ const configFactoryDelegated: FrontendClientConfigFactory<
     storageOption: args.storageOption,
   };
 };
-
+/**@deprecated No longer need to use configFactory, use instantiateFrontendClient instead */
+const configFactoryOidc: FrontendClientConfigFactory<NotifiConfigWithOidc> = (
+  args,
+) => {
+  return {
+    tenantId: args.tenantId,
+    env: args.env,
+    userAccount: args.account.userAccount,
+    storageOption: args.storageOption,
+    walletBlockchain: args.walletBlockchain,
+  };
+};
+/**@deprecated No longer need to use configFactory, use instantiateFrontendClient instead */
 const isWithPubkeyAndAddress = (
   config: ConfigFactoryInput,
 ): config is ConfigFactoryInputPublicKeyAndAddress => {
   return 'address' in config.account && !isWithDelegate(config);
 };
-
+/**@deprecated No longer need to use configFactory, use instantiateFrontendClient instead */
 const isWithDelegate = (
   config: ConfigFactoryInput,
 ): config is ConfigFactoryInputDelegated => {
   return 'delegatorAddress' in config.account;
 };
-
+/**@deprecated No longer need to use configFactory, use instantiateFrontendClient instead */
+const isWithOidc = (
+  config: ConfigFactoryInput,
+): config is ConfigFactoryInputOidc => {
+  return (
+    'userAccount' in config.account && config.walletBlockchain === 'OFF_CHAIN'
+  );
+};
+/**@deprecated No longer need to use configFactory, use instantiateFrontendClient instead */
 export const newFrontendConfig = (
   config: ConfigFactoryInput,
 ): NotifiFrontendConfiguration => {
-  if (isWithDelegate(config)) {
+  if (isWithOidc(config)) {
+    return configFactoryOidc(config);
+  } else if (isWithDelegate(config)) {
     return configFactoryDelegated(config);
   } else if (isWithPubkeyAndAddress(config)) {
     return configFactoryPublicKeyAndAddress(config);

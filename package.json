@@ -35,18 +35,12 @@
     "testEnvironment": "node"
   },
   "workspaces": [
-    "packages/notifi-axios-adapter",
-    "packages/notifi-axios-utils",
-    "packages/notifi-core",
     "packages/notifi-dapp-example",
     "packages/notifi-dataplane",
     "packages/notifi-frontend-client",
     "packages/notifi-graphql",
     "packages/notifi-node",
     "packages/notifi-node-sample",
-    "packages/notifi-react-card",
-    "packages/notifi-react-hooks",
-    "packages/notifi-react-example",
     "packages/notifi-solana-hw-login",
     "packages/notifi-wallet-provider",
     "packages/notifi-react",

@@ -1,11 +1,10 @@
 /// <reference types="cypress" />
 import { arrayify } from '@ethersproject/bytes';
 import {
-  ConfigFactoryInput,
+  EvmUserParams,
   envUrl,
-  newFrontendClient,
+  instantiateFrontendClient,
 } from '@notifi-network/notifi-frontend-client';
-import { NotifiFrontendClient } from '@notifi-network/notifi-frontend-client';
 import {
   NotifiCardModal,
   NotifiCardModalProps,
@@ -171,15 +170,11 @@ const updateTargetGroup = async (targetGroup?: TargetGroup) => {
   const env = Cypress.env('ENV');
   const walletBlockchain = Cypress.env('WALLET_BLOCKCHAIN');
   const wallet = getConnectedWallet();
-  const configInput: ConfigFactoryInput = {
-    account: {
-      publicKey: wallet.address,
-    },
-    tenantId: dappAddress,
+  const EvmUserParams: EvmUserParams = {
     walletBlockchain: walletBlockchain,
-    env,
+    walletPublicKey: wallet.address,
   };
-  const client = newFrontendClient(configInput) as NotifiFrontendClient;
+  const client = instantiateFrontendClient(dappAddress, EvmUserParams, env);
   await client.initialize();
   if (client.userState?.status !== 'authenticated') {
     await client.logIn({

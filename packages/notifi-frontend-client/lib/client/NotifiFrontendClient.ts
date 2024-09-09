@@ -34,6 +34,10 @@ import {
   ensureWebhook,
 } from './ensureTarget';
 
+/** NOTE:
+ * 1. Used for frontend client `login` related methods - requires only authentication method(s) to be passed in (w/o UserParams)
+ * 2. TODO: refactor to combine all Uint8SignMessageFunction to a single case.
+ */
 export type SignMessageParams =
   | Readonly<{
       walletBlockchain: 'SOLANA';
@@ -96,152 +100,278 @@ export type SignMessageParams =
   | Readonly<{
       walletBlockchain: 'SUI';
       signMessage: Uint8SignMessageFunction;
+    }>
+  | Readonly<{
+      walletBlockchain: 'OFF_CHAIN';
+      signIn: OidcSignInFunction;
     }>;
 
-export type WalletWithSignParams = Readonly<{
-  displayName?: string;
-}> &
-  WalletWithSignMessage;
-
-export type WalletWithSignMessage =
-  | Readonly<{
-      walletBlockchain: 'SOLANA';
-      walletPublicKey: string;
+/** NOTE:
+ * 1. Used for FrontendClientContext's props in `@notifi-network/notifi-react` - requires both authentication method(s) & UserParams to be passed in
+ * 2. Naming might look confusing as it is a legacy naming to avoid breaking changes
+ */
+export type WalletWithSignParams =
+  | (Readonly<{
       signMessage: Uint8SignMessageFunction;
-    }>
-  | Readonly<{
-      walletBlockchain:
-        | 'ETHEREUM'
-        | 'POLYGON'
-        | 'ARBITRUM'
-        | 'AVALANCHE'
-        | 'BINANCE'
-        | 'OPTIMISM'
-        | 'THE_ROOT_NETWORK'
-        | 'ZKSYNC'
-        | 'BASE'
-        | 'BLAST'
-        | 'CELO'
-        | 'MANTLE'
-        | 'LINEA'
-        | 'SCROLL'
-        | 'MANTA'
-        | 'MONAD'
-        | 'EVMOS'
-        | 'BERACHAIN';
-      walletPublicKey: string;
+      hardwareLoginPlugin?: {
+        // NOTE: Solana specific: solana hardware wallet sign-in requires a memo contract verification
+        sendMessage: (message: string) => Promise<string>;
+      };
+    }> &
+      SolanaUserParams)
+  | (Readonly<{
       signMessage: Uint8SignMessageFunction;
-    }>
-  | Readonly<{
-      walletBlockchain: 'APTOS';
-      accountAddress: string;
-      walletPublicKey: string;
+    }> &
+      EvmUserParams)
+  | (Readonly<{
       signMessage: AptosSignMessageFunction;
-    }>
-  | Readonly<{
-      walletBlockchain: 'XION';
-      walletPublicKey: string;
-      signingAddress: string;
-      signingPubkey: string;
-      message: string;
+    }> &
+      AptosUserParams)
+  | (Readonly<{
       signMessage: XionSignMessageFunction;
-    }>
-  | Readonly<{
-      walletBlockchain: 'ACALA';
-      accountAddress: string;
-      walletPublicKey: string;
+      message: string;
+    }> &
+      XionUserParams)
+  | (Readonly<{
       signMessage: AcalaSignMessageFunction;
-    }>
-  | Readonly<{
-      walletBlockchain: 'NEAR';
-      accountAddress: string;
-      walletPublicKey: string;
+    }> &
+      AcalaUserParams)
+  | (Readonly<{
       signMessage: Uint8SignMessageFunction;
-    }>
-  | Readonly<{
-      walletBlockchain: 'SUI';
-      accountAddress: string;
-      walletPublicKey: string;
+    }> &
+      NearUserParams)
+  | (Readonly<{
       signMessage: Uint8SignMessageFunction;
-    }>
-  | Readonly<{
-      walletBlockchain: 'INJECTIVE';
-      accountAddress: string;
-      walletPublicKey: string;
+    }> &
+      SuiUserParams)
+  | (Readonly<{
       signMessage: Uint8SignMessageFunction;
-    }>
-  | Readonly<{
-      walletBlockchain: 'ELYS';
-      accountAddress: string;
-      walletPublicKey: string;
+    }> &
+      InjectiveUserParams)
+  | (Readonly<{
       signMessage: Uint8SignMessageFunction;
-    }>
-  | Readonly<{
-      walletBlockchain: 'NEUTRON';
-      accountAddress: string;
-      walletPublicKey: string;
+    }> &
+      ElysUserParams)
+  | (Readonly<{
       signMessage: Uint8SignMessageFunction;
-    }>
-  | Readonly<{
-      walletBlockchain: 'ARCHWAY';
-      accountAddress: string;
-      walletPublicKey: string;
+    }> &
+      NeutronUserParams)
+  | (Readonly<{
       signMessage: Uint8SignMessageFunction;
-    }>
-  | Readonly<{
-      walletBlockchain: 'AXELAR';
-      accountAddress: string;
-      walletPublicKey: string;
+    }> &
+      ArchwayUserParams)
+  | (Readonly<{
       signMessage: Uint8SignMessageFunction;
-    }>
-  | Readonly<{
-      walletBlockchain: 'AGORIC';
-      accountAddress: string;
-      walletPublicKey: string;
+    }> &
+      AxelarUserParams)
+  | (Readonly<{
       signMessage: Uint8SignMessageFunction;
-    }>
-  | Readonly<{
-      walletBlockchain: 'ORAI';
-      accountAddress: string;
-      walletPublicKey: string;
+    }> &
+      AgoricUserParams)
+  | (Readonly<{
       signMessage: Uint8SignMessageFunction;
-    }>
-  | Readonly<{
-      walletBlockchain: 'KAVA';
-      accountAddress: string;
-      walletPublicKey: string;
+    }> &
+      OraiUserParams)
+  | (Readonly<{
       signMessage: Uint8SignMessageFunction;
-    }>
-  | Readonly<{
-      walletBlockchain: 'CELESTIA';
-      accountAddress: string;
-      walletPublicKey: string;
+    }> &
+      KavaUserParams)
+  | (Readonly<{
       signMessage: Uint8SignMessageFunction;
-    }>
-  | Readonly<{
-      walletBlockchain: 'COSMOS';
-      accountAddress: string;
-      walletPublicKey: string;
+    }> &
+      CelestiaUserParams)
+  | (Readonly<{
       signMessage: Uint8SignMessageFunction;
-    }>
-  | Readonly<{
-      walletBlockchain: 'DYMENSION';
-      accountAddress: string;
-      walletPublicKey: string;
+    }> &
+      CosmosUserParams)
+  | (Readonly<{
       signMessage: Uint8SignMessageFunction;
-    }>
-  | Readonly<{
-      walletBlockchain: 'PERSISTENCE';
-      accountAddress: string;
-      walletPublicKey: string;
+    }> &
+      DymensionUserParams)
+  | (Readonly<{
       signMessage: Uint8SignMessageFunction;
-    }>
-  | Readonly<{
+    }> &
+      PersistenceUserParams)
+  | (Readonly<{
       walletBlockchain: 'DYDX';
       accountAddress: string;
       walletPublicKey: string;
       signMessage: Uint8SignMessageFunction;
-    }>;
+    }> &
+      DydxUserParams)
+  | (Readonly<{
+      signIn: OidcSignInFunction;
+    }> &
+      OffChainUserParams);
+
+/** NOTE:
+ * 1. Used for instantiating client object (.instantiateFrontendClient) - requires only UserParams (w/o authentication method(s)) to be passed in
+ * 2. Naming might look confusing with `WalletWithSignParams`(which is a legacy naming to avoid breaking changes)
+ */
+export type UserParams =
+  | SolanaUserParams
+  | XionUserParams
+  | EvmUserParams
+  | AptosUserParams
+  | AcalaUserParams
+  | NearUserParams
+  | SuiUserParams
+  | InjectiveUserParams
+  | ElysUserParams
+  | NeutronUserParams
+  | ArchwayUserParams
+  | AxelarUserParams
+  | AgoricUserParams
+  | OraiUserParams
+  | KavaUserParams
+  | CelestiaUserParams
+  | CosmosUserParams
+  | DymensionUserParams
+  | PersistenceUserParams
+  | DydxUserParams
+  | OffChainUserParams;
+
+export type SolanaUserParams = Readonly<{
+  walletBlockchain: 'SOLANA';
+  walletPublicKey: string;
+}>;
+
+export type EvmUserParams = Readonly<{
+  walletBlockchain:
+    | 'ETHEREUM'
+    | 'POLYGON'
+    | 'ARBITRUM'
+    | 'AVALANCHE'
+    | 'BINANCE'
+    | 'OPTIMISM'
+    | 'THE_ROOT_NETWORK'
+    | 'ZKSYNC'
+    | 'BASE'
+    | 'BLAST'
+    | 'CELO'
+    | 'MANTLE'
+    | 'LINEA'
+    | 'SCROLL'
+    | 'MANTA'
+    | 'MONAD'
+    | 'EVMOS'
+    | 'BERACHAIN';
+  walletPublicKey: string;
+}>;
+
+export type AptosUserParams = Readonly<{
+  walletBlockchain: 'APTOS';
+  accountAddress: string;
+  walletPublicKey: string;
+}>;
+
+export type XionUserParams = Readonly<{
+  walletBlockchain: 'XION';
+  walletPublicKey: string;
+  signingAddress: string;
+  signingPubkey: string;
+}>;
+
+export type AcalaUserParams = Readonly<{
+  walletBlockchain: 'ACALA';
+  accountAddress: string;
+  walletPublicKey: string;
+}>;
+
+export type NearUserParams = Readonly<{
+  walletBlockchain: 'NEAR';
+  accountAddress: string;
+  walletPublicKey: string;
+}>;
+
+export type SuiUserParams = Readonly<{
+  walletBlockchain: 'SUI';
+  accountAddress: string;
+  walletPublicKey: string;
+}>;
+
+export type InjectiveUserParams = Readonly<{
+  walletBlockchain: 'INJECTIVE';
+  accountAddress: string;
+  walletPublicKey: string;
+}>;
+
+export type ElysUserParams = Readonly<{
+  walletBlockchain: 'ELYS';
+  accountAddress: string;
+  walletPublicKey: string;
+}>;
+
+export type NeutronUserParams = Readonly<{
+  walletBlockchain: 'NEUTRON';
+  accountAddress: string;
+  walletPublicKey: string;
+}>;
+
+export type ArchwayUserParams = Readonly<{
+  walletBlockchain: 'ARCHWAY';
+  accountAddress: string;
+  walletPublicKey: string;
+}>;
+
+export type AxelarUserParams = Readonly<{
+  walletBlockchain: 'AXELAR';
+  accountAddress: string;
+  walletPublicKey: string;
+}>;
+
+export type AgoricUserParams = Readonly<{
+  walletBlockchain: 'AGORIC';
+  accountAddress: string;
+  walletPublicKey: string;
+}>;
+
+export type OraiUserParams = Readonly<{
+  walletBlockchain: 'ORAI';
+  accountAddress: string;
+  walletPublicKey: string;
+}>;
+
+export type KavaUserParams = Readonly<{
+  walletBlockchain: 'KAVA';
+  accountAddress: string;
+  walletPublicKey: string;
+}>;
+
+export type CelestiaUserParams = Readonly<{
+  walletBlockchain: 'CELESTIA';
+  accountAddress: string;
+  walletPublicKey: string;
+}>;
+
+export type CosmosUserParams = Readonly<{
+  walletBlockchain: 'COSMOS';
+  accountAddress: string;
+  walletPublicKey: string;
+}>;
+
+export type DymensionUserParams = Readonly<{
+  walletBlockchain: 'DYMENSION';
+  accountAddress: string;
+  walletPublicKey: string;
+}>;
+
+export type PersistenceUserParams = Readonly<{
+  walletBlockchain: 'PERSISTENCE';
+  accountAddress: string;
+  walletPublicKey: string;
+}>;
+
+export type DydxUserParams = Readonly<{
+  walletBlockchain: 'DYDX';
+  accountAddress: string;
+  walletPublicKey: string;
+}>;
+
+export type OffChainUserParams = Readonly<{
+  walletBlockchain: 'OFF_CHAIN';
+  userAccount: string;
+}>;
 
 export type ConnectWalletParams = Readonly<{
   walletParams: WalletWithSignParams;
@@ -263,6 +393,15 @@ export type AcalaSignMessageFunction = (
   acalaAddress: string,
   message: string,
 ) => Promise<hexString>;
+
+export type OidcCredentials = {
+  oidcProvider: Types.OidcProvider;
+  jwt: string;
+};
+export type OidcSignInFunction = () => Promise<OidcCredentials>;
+
+export type AuthenticateResult = Signature | OidcCredentials;
+type Signature = string;
 
 export type CardConfigType = CardConfigItemV1;
 
@@ -414,10 +553,16 @@ export class NotifiFrontendClient {
         message,
         signMessage: signMessageParams.signMessage,
       } as const;
-      const signature = await this._signMessage({
+
+      const signature = await this._authenticate({
         signMessageParams: params,
         timestamp: Math.round(Date.now() / 1000),
       });
+
+      if (typeof signature !== 'string')
+        throw new Error(
+          'logInWith Web3 - WithDelegate : Invalid signature - expected string',
+        );
 
       const { completeLogInWithWeb3 } = await this.completeLogInWithWeb3({
         nonce,
@@ -440,10 +585,15 @@ export class NotifiFrontendClient {
         message,
         signMessage: signMessageParams.signMessage,
       } as const;
-      const signature = await this._signMessage({
+      const signature = await this._authenticate({
         signMessageParams: params,
         timestamp: Math.round(Date.now() / 1000),
       });
+
+      if (typeof signature !== 'string')
+        throw new Error(
+          'logInWith Web3 - PublicKeyAndAddress : Invalid signature - expected string',
+        );
 
       const { completeLogInWithWeb3 } = await this.completeLogInWithWeb3({
         nonce,
@@ -467,13 +617,14 @@ export class NotifiFrontendClient {
     signMessageParams: SignMessageParams,
   ): Promise<Types.UserFragmentFragment> {
     const timestamp = Math.round(Date.now() / 1000);
-    const signature = await this._signMessage({
+    const { tenantId, walletBlockchain } = this._configuration;
+
+    const signature = await this._authenticate({
       signMessageParams,
       timestamp,
     });
 
-    const { tenantId, walletBlockchain } = this._configuration;
-
+    // TODO: Refactor 'XION' into switch statement
     if (
       walletBlockchain === 'XION' &&
       signMessageParams.walletBlockchain === 'XION'
@@ -502,6 +653,10 @@ export class NotifiFrontendClient {
       case 'ZKSYNC':
       case 'EVMOS':
       case 'SOLANA': {
+        if (typeof signature !== 'string')
+          throw new Error(
+            `logIn - Invalid signature - expected string, but got ${signature}`,
+          );
         const result = await this._service.logInFromDapp({
           walletBlockchain,
           walletPublicKey: this._configuration.walletPublicKey,
@@ -531,6 +686,10 @@ export class NotifiFrontendClient {
       case 'NEUTRON':
       case 'NIBIRU':
       case 'APTOS': {
+        if (typeof signature !== 'string')
+          throw new Error(
+            `logIn - Invalid signature - expected string, but got ${signature}`,
+          );
         const result = await this._service.logInFromDapp({
           walletBlockchain,
           walletPublicKey: this._configuration.authenticationKey,
@@ -542,6 +701,24 @@ export class NotifiFrontendClient {
         loginResult = result.logInFromDapp;
         break;
       }
+      case 'OFF_CHAIN': {
+        if (typeof signature === 'string')
+          throw new Error(
+            `logIn - Invalid signature - expected OidcCredentials, but got string: ${signature}`,
+          );
+        if (!('oidcProvider' in signature))
+          throw new Error(
+            `logIn - Invalid signature - expected OidcCredentials, but got invalid object ${signature}`,
+          );
+        // 3rd party OIDC login
+        const { oidcProvider, jwt } = signature;
+        const result = await this._service.logInByOidc({
+          dappId: tenantId,
+          oidcProvider,
+          idToken: jwt,
+        });
+        loginResult = result.logInByOidc.user;
+      }
     }
 
     if (loginResult === undefined) {
@@ -552,13 +729,13 @@ export class NotifiFrontendClient {
     return loginResult;
   }
 
-  private async _signMessage({
+  private async _authenticate({
     signMessageParams,
     timestamp,
   }: Readonly<{
     signMessageParams: SignMessageParams;
     timestamp: number;
-  }>): Promise<string> {
+  }>): Promise<AuthenticateResult> {
     if (
       this._configuration.walletBlockchain !==
       signMessageParams.walletBlockchain
@@ -688,6 +865,13 @@ export class NotifiFrontendClient {
         const signedBuffer = await signMessageParams.signMessage(messageBuffer);
         const signature = Buffer.from(signedBuffer).toString('base64');
         return signature;
+      }
+      case 'OFF_CHAIN': {
+        const oidcCredentials = await signMessageParams.signIn();
+        if (!oidcCredentials) {
+          throw new Error('._authenticate: OIDC login failed');
+        }
+        return oidcCredentials;
       }
       default:
         // Need implementation for other blockchains
@@ -1287,6 +1471,10 @@ export class NotifiFrontendClient {
   async subscribeWallet(
     params: ConnectWalletParams,
   ): Promise<Types.ConnectWalletMutation> {
+    if (params.walletParams.walletBlockchain === 'OFF_CHAIN')
+      throw new Error(
+        'ERROR: subscribeWallet - OFF_CHAIN OIDC login does not support wallet connection',
+      );
     const { walletBlockchain, signMessage, walletPublicKey } =
       params.walletParams;
     const signMessageParams = {
@@ -1298,10 +1486,12 @@ export class NotifiFrontendClient {
       await this.logIn(signMessageParams);
     }
     const timestamp = Math.round(Date.now() / 1000);
-    const signature = await this._signMessage({
+    const signature = await this._authenticate({
       signMessageParams,
       timestamp,
     });
+    if (typeof signature !== 'string')
+      throw new Error('subscribeWallet - Invalid signature - expected string');
     const connectedWallet = await this._service.connectWallet({
       walletBlockchain,
       walletPublicKey,
