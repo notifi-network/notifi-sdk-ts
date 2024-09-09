@@ -167,10 +167,14 @@ function GetSubsciption(userAccount, dappId, env) {
     { fetch }
   );
 
-  client.initialize().then(userState => {
+  client.initialize().then(async userState => {
     if (userState.status === 'authenticated') {
-      // TODO: Get vapid key here
-      let vapidPublicKey = "BBw1aI15zN4HFMIlbWoV2E390hxgY47-mBjN41Ewr2YCNGPdoR3-Q1vI-LAyfut8rqwSOWrcBA5sA5aC4gHcFjA";
+      let getVapidKeysResponse = await client.getVapidPublicKeys();
+      let vapidBot = getVapidKeysResponse.nodes[0];
+      if (!vapidBot) {
+        console.error('Tenant does not have a configured Vapid bot. Will not attempt web push subscription.');
+        return;
+      }
 
       if (Notification.permission === "granted") {
         self.registration.pushManager.getSubscription()
@@ -180,7 +184,7 @@ function GetSubsciption(userAccount, dappId, env) {
               return subscription;
             }
 
-            const convertedVapidKey = urlBase64ToUint8Array(vapidPublicKey);
+            const convertedVapidKey = urlBase64ToUint8Array(vapidBot.publicKey);
 
             return await self.registration.pushManager.subscribe({
               userVisibleOnly: true,
@@ -188,7 +192,7 @@ function GetSubsciption(userAccount, dappId, env) {
             });
           })
           .then(async (subscription) => {
-            await createOrUpdateWebPushTarget(subscription, vapidPublicKey)
+            await createOrUpdateWebPushTarget(subscription, vapidBot.publicKey)
           });
       }
     }
@@ -209,6 +213,7 @@ self.addEventListener('push', async function (event) {
       icon: payload.Icon ?? 'https://notifi.network/logo.png'
     })
   );
+  // TODO: Analytics here
 });
 
 self.addEventListener('notificationclick', async function (event) {
@@ -241,11 +246,15 @@ self.addEventListener(
       .then(async (subscription) => {
         client.initialize().then(async userState => {
           if (userState.status === 'authenticated') {
-            // TODO: Get vapid key here
-            let vapidPublicKey = "BBw1aI15zN4HFMIlbWoV2E390hxgY47-mBjN41Ewr2YCNGPdoR3-Q1vI-LAyfut8rqwSOWrcBA5sA5aC4gHcFjA";
+            let getVapidKeysResponse = await client.getVapidPublicKeys();
+            let vapidBot = getVapidKeysResponse.nodes[0];
+            if (!vapidBot) {
+              console.error('Tenant does not have a configured Vapid bot. Will not attempt web push subscription.');
+              return;
+            }
 
             if (Notification.permission === "granted") {
-              await createOrUpdateWebPushTarget(subscription, vapidPublicKey);
+              await createOrUpdateWebPushTarget(subscription, vapidBot.publicKey);
             }
           }
         })

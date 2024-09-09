@@ -1599,4 +1599,13 @@ export class NotifiFrontendClient {
     }
     return result;
   }
+
+  async getVapidPublicKeys(): Promise<Types.GetVapidPublicKeysQuery['vapidPublicKeys']> {
+    const query = await this._service.getVapidPublicKeys({});
+    const result = query.vapidPublicKeys;
+    if (!result) {
+      throw new Error('Failed to fetch vapid public keys');
+    }
+    return result;
+  }
 }
