@@ -91,6 +91,10 @@ const formatTimestampInHistoryRow = (timestamp: string) => {
   const dateObject = new Date(timestamp);
   const now = new Date();
   const sevenDaysAgo = subDays(now, 7);
+  // NOTE:
+  // case#1 ('hh:mm b' format): time (e.g. 12:00 PM, 1:00 AM, etc.); 'b' could be AM/PM/noon/midnight;
+  // case#2 ('eee' format): day of the week (e.g. Mon, Tue, Wed, etc.);
+  // case#3 ('MMM d' format): month and day (e.g. Jan 1, Feb 2, etc.)
   return format(
     new Date(timestamp),
     isToday(dateObject)
@@ -98,5 +102,7 @@ const formatTimestampInHistoryRow = (timestamp: string) => {
       : isWithinInterval(dateObject, { start: sevenDaysAgo, end: now })
       ? 'eee'
       : 'MMM d',
-  );
+  )
+    .replace('noon', 'PM')
+    .replace('midnight', 'AM');
 };
