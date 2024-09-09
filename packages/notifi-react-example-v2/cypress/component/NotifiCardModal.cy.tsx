@@ -108,10 +108,7 @@ describe('NotifiCardModal First Time User Test', () => {
       cy.wait('@gqlGetUnreadNotificationHistoryCountQuery'); // --> NotifiHistoryContext
       cy.wait('@gqlFetchFusionDataQuery'); // --> NotifiTargetContext
       cy.wait('@gqlFetchFusionDataQuery'); // --> NotifiTopicContext
-      // NOTE: Ensure targets and subscribe topics
-      cy.wait('@gqlGetTargetGroupsQuery'); // --> Create new target group#1:  frontendClient.ensureTargetGroup()
-      cy.wait('@gqlCreateTargetGroupMutation'); // -->  Create new target group#1#2: frontendClient.ensureTargetGroup()
-      cy.wait('@gqlFetchFusionDataQuery'); // --> Refresh target data after ensuring targetGroup:  frontendClient.ensureTargetGroup().then(()=>fetchFusionData())
+      // NOTE: Ensure targets and subscribe topics (Note: targetGroup is auto created upon user creation)
       cy.wait('@gqlGetAlertsQuery'); // --> subscribe default alerts#1:  (in useConnect.ts --> ensureFusionAlerts)
       cy.wait('@gqlCreateFusionAlertsMutation'); // --> subscribe default alerts#2:  (in useConnect.ts --> ensureFusionAlerts)
       cy.wait('@gqlFetchFusionDataQuery'); // --> Update and render updated alerts after subscribing (ensureFusionAlerts.then)
@@ -202,10 +199,7 @@ describe('NotifiCardModal First Time User Test', () => {
       cy.wait('@gqlGetUnreadNotificationHistoryCountQuery'); // --> NotifiHistoryContext
       cy.wait('@gqlFetchFusionDataQuery'); // --> NotifiTargetContext
       cy.wait('@gqlFetchFusionDataQuery'); // --> NotifiTopicContext
-      // NOTE: Ensure targets and subscribe topics
-      cy.wait('@gqlGetTargetGroupsQuery'); // --> Create new target group#1:  frontendClient.ensureTargetGroup()
-      cy.wait('@gqlCreateTargetGroupMutation'); // -->  Create new target group#1#2: frontendClient.ensureTargetGroup()
-      cy.wait('@gqlFetchFusionDataQuery'); // --> Refresh target data after ensuring targetGroup:  frontendClient.ensureTargetGroup().then(()=>fetchFusionData())
+      // NOTE: Ensure targets and subscribe topics (Note: targetGroup is auto created upon user creation)
       cy.wait('@gqlGetAlertsQuery'); // --> subscribe default alerts#1:  (in useConnect.ts --> ensureFusionAlerts)
       cy.wait('@gqlCreateFusionAlertsMutation'); // --> subscribe default alerts#2:  (in useConnect.ts --> ensureFusionAlerts)
       cy.wait('@gqlFetchFusionDataQuery'); // --> Update and render updated alerts after subscribing (ensureFusionAlerts.then)

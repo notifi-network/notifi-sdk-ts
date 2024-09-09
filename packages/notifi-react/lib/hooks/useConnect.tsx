@@ -83,7 +83,7 @@ export const useConnect = (
       const isDefaultTargetExist = await validateDefaultTargetGroup(
         frontendClient,
       );
-
+      // ⬇ Ensure default target group is created (This should be created automatically by the backend upon new user creation). Here is just a double check.
       if (!isDefaultTargetExist) {
         await renewTargetGroup();
       }
