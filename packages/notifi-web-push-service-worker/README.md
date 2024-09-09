@@ -48,10 +48,10 @@ This is done because service worker must be a static js file and expose it to yo
 <br/><br/>
 
 # Subscribing for WebPush notifications
-Subscribing for WebPush notifications is a mult-step process.
+Subscribing for WebPush notifications is a multi-step process.
 1. Initialize service worker
 2. Upon initializing the Notifi FE client or Notifi React card, call the service worker endpoint to let the service worker know that the user has signed into Notifi.
-3. Request the user for [Notification permissions](https://developer.mozilla.org/en-US/docs/Web/API/Notification/requestPermission_static) and call the service worker to let the service worker know that permissions for web push have been granted. Requirements for each OS/browser is different. Please look at the requirements for the each OS/browser.
+3. Request the user for [Notification permissions](https://developer.mozilla.org/en-US/docs/Web/API/Notification/requestPermission_static) and call the service worker to let the service worker know that permissions for web push have been granted. Requirements for each OS/browser is different. Please check each requirements for different OS/browsers.
 
 Once these steps have been fulfilled, PWA users will receive all alerts created via the notifi-frontend-client or notifi-react packages.
 
@@ -69,7 +69,7 @@ export default function Home() {
 ## Create Web Push Subscription
 The service worker needs to be informed if it can create a web push subscritions in two different places. First, after user authorization has completed in the Notifi FE client or Notifi React Card. Second, after the user has granted [explicit permissions for web push notifcations](https://developer.mozilla.org/en-US/docs/Web/API/Notification/requestPermission_static). The following endpoint, ```tryCreateWebPushSubscription```, will call the service worker to attempt to register a web push subscription and subscribe the user to Notifi alerts. If any of these conditions are not fulfilled, the service worker will not create a web push subscription.
 
-The code below calls the service worker to try creating a web push subscription after the Notifi React card has completed the user authorization flow.
+The code below calls the service worker to try to create a web push subscription after the Notifi React card has completed the user authorization flow.
 ```tsx
 import { useNotifiFrontendClientContext } from '@notifi-network/notifi-react';
 import { tryCreateWebPushSubscription } from '@notifi-network/notifi-web-push-service-worker';
