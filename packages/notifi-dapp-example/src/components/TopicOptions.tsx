@@ -1,6 +1,7 @@
 import { useUserInputParmToFilterOption } from '@/hooks/useUserInputParmToFilterOption';
 import { capitalize } from '@/utils/stringUtils';
 import {
+  CustomInputConstraints,
   FusionEventTopic,
   UiType,
   UserInputParam,
@@ -16,7 +17,6 @@ type TopicGroupOptionsProps = {
   userInputParam: UserInputParam<UiType>;
   index: number;
   description: string;
-  placeholder?: string;
   onSelectAction?:
     | { actionType: 'instantSubscribe' }
     | {
@@ -29,7 +29,6 @@ type TopicStandAloneOptionsProps = {
   userInputParam: UserInputParam<UiType>;
   index: number;
   description?: string;
-  placeholder?: string;
   onSelectAction?:
     | { actionType: 'instantSubscribe' }
     | {
@@ -55,6 +54,9 @@ export const TopicOptions = <T extends TopicRowCategory>(
     subscribedValue,
     uiType,
     setCustomInput,
+    upperBound,
+    lowerBound,
+    customInputPlaceholder,
   } = useUserInputParmToFilterOption(
     benchmarkTopic.fusionEventDescriptor.id,
     props.userInputParam,
@@ -63,7 +65,11 @@ export const TopicOptions = <T extends TopicRowCategory>(
 
   const [valueToBeSubscribed, setValueToBeSubscribed] = React.useState<
     string | number
-  >(props.userInputParam.defaultValue);
+  >(props.userInputParam.defaultValue.toString());
+
+  const options = props.userInputParam.options.map((option) =>
+    option.toString(),
+  );
 
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
 
@@ -74,8 +80,9 @@ export const TopicOptions = <T extends TopicRowCategory>(
 
   const selectOrInputValue = (value: string | number) => {
     if (isLoadingTopic) return;
+    value = value.toString();
     if (props.onSelectAction?.actionType === 'updateFilterOptions') {
-      if (props.userInputParam.options.includes(value)) {
+      if (options.includes(value)) {
         setCustomInput('');
       }
       props.onSelectAction?.action(props.userInputParam.name, value);
@@ -92,16 +99,26 @@ export const TopicOptions = <T extends TopicRowCategory>(
         </div>
       ) : null}
 
-      <div className="text-notifi-error text-xs ml-14 mt-2">{errorMessage}</div>
-      <div className="flex flex-row ml-14 mt-3 mb-2">
-        {props.userInputParam.options.map((option, id) => {
+      {errorMessage ? (
+        <div className="text-notifi-error text-xs ml-14 mt-2">
+          {errorMessage}
+        </div>
+      ) : null}
+      <div
+        className={`flex flex-row ml-14 ${
+          uiType === 'radio' && !props.userInputParam.options[0]
+            ? null
+            : 'mt-3 mb-2'
+        }`}
+      >
+        {options.map((option, id) => {
           return (
             <div key={id}>
               {uiType !== 'radio' ? (
                 !option ? null : (
                   <button
                     className={`w-16 h-12 bg-notifi-card-bg rounded-md mr-2 text-notifi-text-light ${
-                      option === selectedOption
+                      String(option) === String(selectedOption)
                         ? 'selected text-white border border-notifi-tenant-brand-bg'
                         : ''
                     }`}
@@ -112,10 +129,7 @@ export const TopicOptions = <T extends TopicRowCategory>(
                     <div>
                       {'prefix' in prefixAndSuffix && prefixAndSuffix.prefix}
                       {option}
-                      {props.userInputParam.kind === 'integer'
-                        ? 'x'
-                        : ' suffix' in prefixAndSuffix &&
-                          prefixAndSuffix.suffix}
+                      {'suffix' in prefixAndSuffix && prefixAndSuffix.suffix}
                     </div>
                   </button>
                 )
@@ -124,11 +138,15 @@ export const TopicOptions = <T extends TopicRowCategory>(
                   <div className="inline-flex items-center mr-6">
                     <label className="relative flex items-center rounded-full cursor-pointer">
                       <input
-                        checked={valueToBeSubscribed === option}
+                        checked={option === selectedOption}
                         onClick={() => {
                           selectOrInputValue(option);
                         }}
-                        name="type"
+                        name={
+                          isTopicGroup
+                            ? props.topics[0].fusionEventDescriptor.id
+                            : props.topic.fusionEventDescriptor.id
+                        }
                         type="radio"
                         className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border-2 border-notifi-text-light text-notifi-tenant-brand-bg transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-notifi-tenant-brand-bg hover:before:opacity-10"
                       />
@@ -167,9 +185,19 @@ export const TopicOptions = <T extends TopicRowCategory>(
               props.userInputParam.options[0] ? 'w-[6.5rem]' : 'w-[247px]'
             }`}
           >
-            {props.userInputParam.options[0]
-              ? 'prefix' in prefixAndSuffix && prefixAndSuffix.prefix
-              : null}
+            {/* TODO: prefix/suffix renders differently based on if the threshold options is empty or not, we'll add a field for these conditions or we'll update to have the render consistent with the different conditions. */}
+            <div
+              className={`absolute left-3 bottom-3 ${
+                props.userInputParam.options[0]
+                  ? customInput
+                    ? 'block'
+                    : 'hidden'
+                  : 'block'
+              }`}
+            >
+              {'prefix' in prefixAndSuffix && prefixAndSuffix.prefix}
+            </div>
+
             <input
               disabled={isLoadingTopic}
               onChange={(evt) => {
@@ -183,12 +211,25 @@ export const TopicOptions = <T extends TopicRowCategory>(
                   }
                 } else {
                   if (
-                    isUserInputValid(
-                      props.userInputParam.kind,
-                      evt.target.value,
-                    )
+                    lowerBound &&
+                    upperBound &&
+                    (Number(evt.target.value) > upperBound ||
+                      (Number(evt.target.value) < lowerBound &&
+                        evt.target.value !== ''))
                   ) {
-                    selectOrInputValue(evt.target.value);
+                    setErrorMessage(
+                      `Please enter a value between ${lowerBound} and ${upperBound}`,
+                    );
+                  } else {
+                    if (
+                      isUserInputValid(
+                        props.userInputParam.kind,
+                        evt.target.value,
+                        props.userInputParam.customInputConstraints,
+                      )
+                    ) {
+                      selectOrInputValue(evt.target.value);
+                    }
                   }
                 }
                 setCustomInput((prev) => {
@@ -196,6 +237,7 @@ export const TopicOptions = <T extends TopicRowCategory>(
                     isUserInputValid(
                       props.userInputParam.kind,
                       evt.target.value,
+                      props.userInputParam.customInputConstraints,
                     )
                   ) {
                     return evt.target.value;
@@ -213,31 +255,58 @@ export const TopicOptions = <T extends TopicRowCategory>(
                   }
                   selectOrInputValue(evt.target.value);
                 }
+                if (evt.target.value === '') {
+                  return options.includes(selectedOption?.toString() ?? '')
+                    ? setCustomInput('')
+                    : setCustomInput(selectedOption?.toString() ?? '');
+                }
+                // Case#2: If input === existing selected option, set customInput to empty
+                if (
+                  options.includes(evt.target.value) &&
+                  selectedOption === evt.target.value
+                )
+                  return setCustomInput('');
+
+                // Case#3: Subscribe new value
+                const { value } = validateCustomInputRange(
+                  evt.target.value,
+                  props.userInputParam.customInputConstraints,
+                );
+                setCustomInput(value.toString());
+                selectOrInputValue(value);
               }}
-              placeholder={props.placeholder ?? 'Custom'}
+              placeholder={
+                props.userInputParam.kind === 'price'
+                  ? 'Enter Price'
+                  : customInputPlaceholder
+              }
               value={customInput}
               className={` ${
                 props.userInputParam.options[0]
                   ? 'w-[6rem] text-center'
-                  : 'w-full pl-3'
+                  : `w-full ${
+                      'prefix' in prefixAndSuffix && prefixAndSuffix.prefix
+                        ? 'pl-7'
+                        : 'pl-3'
+                    }`
               } h-12 bg-notifi-card-bg rounded-md mr-2 text-notifi-text ${
                 customInput && props.userInputParam.options[0]
                   ? 'selected text-white border border-notifi-tenant-brand-bg focus:outline-none'
                   : 'focus:outline-none focus:border-notifi-card-border'
               }`}
             />
-            {props.userInputParam.options[0] ? null : (
-              <div className="absolute right-3 bottom-3">
-                {'prefix' in prefixAndSuffix && prefixAndSuffix.prefix}
-              </div>
-            )}
-            {customInput ? (
-              <div className="absolute right-4 bottom-3">
-                {props.userInputParam.kind === 'integer'
-                  ? 'x'
-                  : ' suffix' in prefixAndSuffix && prefixAndSuffix.suffix}
-              </div>
-            ) : null}
+            {/* TODO: prefix/suffix renders differently based on if the threshold options is empty or not, we'll add a field for these conditions or we'll update to have the render consistent with the different conditions. */}
+            <div
+              className={`absolute bottom-3 ${
+                props.userInputParam.options[0]
+                  ? customInput
+                    ? 'block right-4'
+                    : 'hidden'
+                  : 'block right-3'
+              }`}
+            >
+              {'suffix' in prefixAndSuffix && prefixAndSuffix.suffix}
+            </div>
           </div>
         ) : null}
       </div>
@@ -252,20 +321,61 @@ const isTopicGroupOptions = (
   return 'topics' in props;
 };
 
-const isUserInputValid = (type: ValueType, userInputValue: string | number) => {
-  if (userInputValue === '') return true;
-  if (type === 'percentage' || type === 'price') {
+const isUserInputValid = (
+  type: ValueType,
+  userInputValue: string | number,
+  customInputConstraint?: CustomInputConstraints,
+) => {
+  if (userInputValue === '' || userInputValue === '-') return true;
+  // 'percentage' and 'price' are deprecated. For legacy support only
+  const leadingZeroRegex = /^0\d+/; // regex for leading 0
+  if (type === 'percentage' || type === 'price' || type === 'float') {
     // regex for only allow float
-    const regex1 = /^\d+(\.)?$/;
-    const regex2 = /^\d{1,6}(\.\d{1,6})?$/;
+    const floatRegex1 = /^-?\d+(\.)?$/; // regex for 0. or -0.
+    const floatRegex2 = /^-?\d+(\.\d+)?$/; // regex for float
+    const floatWithMaxDecimalPlacesRegex = new RegExp(
+      `^-?\\d+(\\.\\d{0,${customInputConstraint?.maxDecimalPlaces ?? 18}})?$`, // If not provided, default to 18 decimal places (EVM bigint limit)
+    );
+
     return (
-      regex1.test(userInputValue.toString()) ||
-      regex2.test(userInputValue.toString())
+      !leadingZeroRegex.test(userInputValue.toString()) &&
+      floatWithMaxDecimalPlacesRegex.test(userInputValue.toString()) &&
+      (floatRegex1.test(userInputValue.toString()) ||
+        floatRegex2.test(userInputValue.toString()))
     );
   }
   if (type === 'integer') {
-    // regex for only allow integer
-    return /^\d+$/.test(userInputValue.toString());
+    return (
+      !leadingZeroRegex.test(userInputValue.toString()) &&
+      /^-?\d+$/.test(userInputValue.toString()) // regex for only allow integer
+    );
   }
   return true;
+};
+
+type CustomInputValidationStatus =
+  | 'valid'
+  | 'aboveUpperBound'
+  | 'belowLowerBound';
+const validateCustomInputRange = (
+  input: string,
+  customInputConstraint?: CustomInputConstraints,
+): { status: CustomInputValidationStatus; value: number } => {
+  const upperBound = customInputConstraint?.upperBound;
+  const lowerBound = customInputConstraint?.lowerBound;
+  if (input === '' || isNaN(Number(input)))
+    throw new Error('validateCustomInputRange - Input cannot be empty');
+
+  if (
+    isNaN(Number(upperBound)) ||
+    isNaN(Number(lowerBound)) ||
+    !upperBound ||
+    !lowerBound
+  )
+    return { status: 'valid', value: Number(input) };
+  if (Number(input) > Number(upperBound))
+    return { status: 'aboveUpperBound', value: upperBound };
+  if (Number(input) < Number(lowerBound))
+    return { status: 'belowLowerBound', value: lowerBound };
+  return { status: 'valid', value: Number(input) };
 };

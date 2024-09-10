@@ -71,6 +71,7 @@ export type UserInputParam<T extends UiType> = {
   options: (string | number)[];
   defaultValue: string | number;
   allowCustomInput?: boolean;
+  customInputPlaceholder?: string;
   prefixAndSuffix?: PrefixAndSuffix;
   customInputConstraints?: CustomInputConstraints;
 };

@@ -8,11 +8,13 @@ export const GetFusionNotificationHistory = gql`
     $after: String
     $first: Int
     $includeHidden: Boolean
+    $includeRead: Boolean
   ) {
     fusionNotificationHistory(
       after: $after
       first: $first
       includeHidden: $includeHidden
+      includeRead: $includeRead
     ) {
       nodes {
         ...FusionNotificationHistoryEntryFragment
