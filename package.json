@@ -45,6 +45,7 @@
     "packages/notifi-wallet-provider",
     "packages/notifi-react",
     "packages/notifi-react-example-v2",
-    "packages/notifi-web-push-service-worker"
+    "packages/notifi-web-push-service-worker",
+    "packages/notifi-pwa-example"
   ]
 }
