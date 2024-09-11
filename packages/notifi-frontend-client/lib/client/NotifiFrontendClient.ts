@@ -1024,6 +1024,7 @@ export class NotifiFrontendClient {
     discordId,
     slackId,
     walletId,
+    webPushTargetIds,
   }: Readonly<{
     name: string;
     emailAddress?: string;
@@ -1033,6 +1034,7 @@ export class NotifiFrontendClient {
     discordId?: string;
     slackId?: string;
     walletId?: string;
+    webPushTargetIds?: Array<string>;
   }>): Promise<Types.TargetGroupFragmentFragment> {
     const [
       targetGroupsQuery,
@@ -1070,6 +1072,15 @@ export class NotifiFrontendClient {
       (it) => it?.name === name,
     );
     if (existing !== undefined) {
+      // Web push targets are different from the other targets in the way that it isn't managed in the Frontend card.
+      // Instead, web push targets are managed by the service worker in the client's PWA.
+      // If webPushTargetIds is undefined, FE client will retain the existing web push targets in the target group.
+      if (!webPushTargetIds) {
+        webPushTargetIds =
+          existing.webPushTargets?.map<string>((target) => target?.id ?? '') ??
+          [];
+      }
+
       return this._updateTargetGroup({
         existing,
         emailTargetIds,
@@ -1079,6 +1090,7 @@ export class NotifiFrontendClient {
         discordTargetIds,
         slackChannelTargetIds,
         web3TargetIds,
+        webPushTargetIds,
       });
     }
 
@@ -1091,6 +1103,7 @@ export class NotifiFrontendClient {
       discordTargetIds,
       slackChannelTargetIds,
       web3TargetIds,
+      webPushTargetIds: webPushTargetIds ?? [],
     });
 
     if (createMutation.createTargetGroup === undefined) {
@@ -1109,6 +1122,7 @@ export class NotifiFrontendClient {
     discordTargetIds,
     slackChannelTargetIds,
     web3TargetIds,
+    webPushTargetIds,
   }: Readonly<{
     existing: Types.TargetGroupFragmentFragment;
     emailTargetIds: Array<string>;
@@ -1118,6 +1132,7 @@ export class NotifiFrontendClient {
     discordTargetIds: Array<string>;
     slackChannelTargetIds: Array<string>;
     web3TargetIds: Array<string>;
+    webPushTargetIds: Array<string>;
   }>): Promise<Types.TargetGroupFragmentFragment> {
     if (
       areIdsEqual(emailTargetIds, existing.emailTargets ?? []) &&
@@ -1126,7 +1141,8 @@ export class NotifiFrontendClient {
       areIdsEqual(webhookTargetIds, existing.webhookTargets ?? []) &&
       areIdsEqual(discordTargetIds, existing.discordTargets ?? []) &&
       areIdsEqual(slackChannelTargetIds, existing.slackChannelTargets ?? []) &&
-      areIdsEqual(web3TargetIds, existing.web3Targets ?? [])
+      areIdsEqual(web3TargetIds, existing.web3Targets ?? []) &&
+      areIdsEqual(webPushTargetIds, existing.webPushTargets ?? [])
     ) {
       return existing;
     }
@@ -1141,6 +1157,7 @@ export class NotifiFrontendClient {
       discordTargetIds,
       slackChannelTargetIds,
       web3TargetIds,
+      webPushTargetIds,
     });
 
     const updated = updateMutation.updateTargetGroup;
@@ -1582,6 +1599,17 @@ export class NotifiFrontendClient {
     const result = query.webPushTargets;
     if (!result) {
       throw new Error('Failed to fetch webpush targets');
+    }
+    return result;
+  }
+
+  async getVapidPublicKeys(): Promise<
+    Types.GetVapidPublicKeysQuery['vapidPublicKeys']
+  > {
+    const query = await this._service.getVapidPublicKeys({});
+    const result = query.vapidPublicKeys;
+    if (!result) {
+      throw new Error('Failed to fetch vapid public keys');
     }
     return result;
   }

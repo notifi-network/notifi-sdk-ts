@@ -12,6 +12,7 @@ export const CreateTargetGroup = gql`
     $discordTargetIds: [String!]!
     $slackChannelTargetIds: [String!]!
     $web3TargetIds: [String!]!
+    $webPushTargetIds: [String!]!
   ) {
     createTargetGroup(
       targetGroupInput: {
@@ -23,6 +24,7 @@ export const CreateTargetGroup = gql`
         discordTargetIds: $discordTargetIds
         slackChannelTargetIds: $slackChannelTargetIds
         web3TargetIds: $web3TargetIds
+        webPushTargetIds: $webPushTargetIds
       }
     ) {
       ...TargetGroupFragment

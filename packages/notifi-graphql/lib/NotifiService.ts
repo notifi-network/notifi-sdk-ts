@@ -74,7 +74,8 @@ export class NotifiService
     Operations.GetWeb3TargetsService,
     Operations.VerifyCbwTargetService,
     Operations.VerifyXmtpTargetService,
-    Operations.VerifyXmtpTargetViaXip42Service
+    Operations.VerifyXmtpTargetViaXip42Service,
+    Operations.GetVapidPublicKeysService
 {
   private _jwt: string | undefined;
   private _typedClient: ReturnType<typeof getSdk>;
@@ -649,6 +650,13 @@ export class NotifiService
   ): Promise<Generated.GetWebPushTargetsQuery> {
     const headers = this._requestHeaders();
     return this._typedClient.getWebPushTargets(variables, headers);
+  }
+
+  async getVapidPublicKeys(
+    variables: Generated.GetVapidPublicKeysQueryVariables,
+  ): Promise<Generated.GetVapidPublicKeysQuery> {
+    const headers = this._requestHeaders();
+    return this._typedClient.getVapidPublicKeys(variables, headers);
   }
 
   private _requestHeaders(): HeadersInit {
