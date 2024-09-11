@@ -1,0 +1,24 @@
+{
+  "name": "@notifi-network/notifi-pwa-example",
+  "version": "1.1.2",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@notifi-network/notifi-web-push-service-worker": "1.1.2",
+    "@notifi-network/notifi-react": "1.1.2",
+    "copy-webpack-plugin": "^12.0.2",
+    "next": "14.2.9",
+    "react": "^18",
+    "react-dom": "^18",
+    "jwt-decode": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "typescript": "^5"
+  }
+}
