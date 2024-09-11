@@ -40,71 +40,71 @@ import {
  */
 export type SignMessageParams =
   | Readonly<{
-    walletBlockchain: 'SOLANA';
-    signMessage: Uint8SignMessageFunction;
-  }>
+      walletBlockchain: 'SOLANA';
+      signMessage: Uint8SignMessageFunction;
+    }>
   | Readonly<{
-    walletBlockchain:
-    | 'ETHEREUM'
-    | 'POLYGON'
-    | 'ARBITRUM'
-    | 'AVALANCHE'
-    | 'BINANCE'
-    | 'OSMOSIS'
-    | 'THE_ROOT_NETWORK'
-    | 'ELYS'
-    | 'NEUTRON'
-    | 'ARCHWAY'
-    | 'AXELAR'
-    | 'BERACHAIN'
-    | 'NIBIRU'
-    | 'OPTIMISM'
-    | 'ZKSYNC'
-    | 'INJECTIVE'
-    | 'BASE'
-    | 'BLAST'
-    | 'CELO'
-    | 'MANTLE'
-    | 'LINEA'
-    | 'SCROLL'
-    | 'MANTA'
-    | 'EVMOS'
-    | 'MONAD'
-    | 'AGORIC'
-    | 'ORAI'
-    | 'KAVA'
-    | 'CELESTIA'
-    | 'COSMOS'
-    | 'DYMENSION'
-    | 'PERSISTENCE'
-    | 'DYDX';
-    signMessage: Uint8SignMessageFunction;
-  }>
+      walletBlockchain:
+        | 'ETHEREUM'
+        | 'POLYGON'
+        | 'ARBITRUM'
+        | 'AVALANCHE'
+        | 'BINANCE'
+        | 'OSMOSIS'
+        | 'THE_ROOT_NETWORK'
+        | 'ELYS'
+        | 'NEUTRON'
+        | 'ARCHWAY'
+        | 'AXELAR'
+        | 'BERACHAIN'
+        | 'NIBIRU'
+        | 'OPTIMISM'
+        | 'ZKSYNC'
+        | 'INJECTIVE'
+        | 'BASE'
+        | 'BLAST'
+        | 'CELO'
+        | 'MANTLE'
+        | 'LINEA'
+        | 'SCROLL'
+        | 'MANTA'
+        | 'EVMOS'
+        | 'MONAD'
+        | 'AGORIC'
+        | 'ORAI'
+        | 'KAVA'
+        | 'CELESTIA'
+        | 'COSMOS'
+        | 'DYMENSION'
+        | 'PERSISTENCE'
+        | 'DYDX';
+      signMessage: Uint8SignMessageFunction;
+    }>
   | Readonly<{
-    walletBlockchain: 'APTOS';
-    signMessage: AptosSignMessageFunction;
-  }>
+      walletBlockchain: 'APTOS';
+      signMessage: AptosSignMessageFunction;
+    }>
   | Readonly<{
-    walletBlockchain: 'XION';
-    message: string;
-    signMessage: XionSignMessageFunction;
-  }>
+      walletBlockchain: 'XION';
+      message: string;
+      signMessage: XionSignMessageFunction;
+    }>
   | Readonly<{
-    walletBlockchain: 'ACALA';
-    signMessage: AcalaSignMessageFunction;
-  }>
+      walletBlockchain: 'ACALA';
+      signMessage: AcalaSignMessageFunction;
+    }>
   | Readonly<{
-    walletBlockchain: 'NEAR';
-    signMessage: Uint8SignMessageFunction;
-  }>
+      walletBlockchain: 'NEAR';
+      signMessage: Uint8SignMessageFunction;
+    }>
   | Readonly<{
-    walletBlockchain: 'SUI';
-    signMessage: Uint8SignMessageFunction;
-  }>
+      walletBlockchain: 'SUI';
+      signMessage: Uint8SignMessageFunction;
+    }>
   | Readonly<{
-    walletBlockchain: 'OFF_CHAIN';
-    signIn: OidcSignInFunction;
-  }>;
+      walletBlockchain: 'OFF_CHAIN';
+      signIn: OidcSignInFunction;
+    }>;
 
 /** NOTE:
  * 1. Used for FrontendClientContext's props in `@notifi-network/notifi-react` - requires both authentication method(s) & UserParams to be passed in
@@ -112,97 +112,97 @@ export type SignMessageParams =
  */
 export type WalletWithSignParams =
   | (Readonly<{
-    signMessage: Uint8SignMessageFunction;
-    hardwareLoginPlugin?: {
-      // NOTE: Solana specific: solana hardware wallet sign-in requires a memo contract verification
-      sendMessage: (message: string) => Promise<string>;
-    };
-  }> &
-    SolanaUserParams)
+      signMessage: Uint8SignMessageFunction;
+      hardwareLoginPlugin?: {
+        // NOTE: Solana specific: solana hardware wallet sign-in requires a memo contract verification
+        sendMessage: (message: string) => Promise<string>;
+      };
+    }> &
+      SolanaUserParams)
   | (Readonly<{
-    signMessage: Uint8SignMessageFunction;
-  }> &
-    EvmUserParams)
+      signMessage: Uint8SignMessageFunction;
+    }> &
+      EvmUserParams)
   | (Readonly<{
-    signMessage: AptosSignMessageFunction;
-  }> &
-    AptosUserParams)
+      signMessage: AptosSignMessageFunction;
+    }> &
+      AptosUserParams)
   | (Readonly<{
-    signMessage: XionSignMessageFunction;
-    message: string;
-  }> &
-    XionUserParams)
+      signMessage: XionSignMessageFunction;
+      message: string;
+    }> &
+      XionUserParams)
   | (Readonly<{
-    signMessage: AcalaSignMessageFunction;
-  }> &
-    AcalaUserParams)
+      signMessage: AcalaSignMessageFunction;
+    }> &
+      AcalaUserParams)
   | (Readonly<{
-    signMessage: Uint8SignMessageFunction;
-  }> &
-    NearUserParams)
+      signMessage: Uint8SignMessageFunction;
+    }> &
+      NearUserParams)
   | (Readonly<{
-    signMessage: Uint8SignMessageFunction;
-  }> &
-    SuiUserParams)
+      signMessage: Uint8SignMessageFunction;
+    }> &
+      SuiUserParams)
   | (Readonly<{
-    signMessage: Uint8SignMessageFunction;
-  }> &
-    InjectiveUserParams)
+      signMessage: Uint8SignMessageFunction;
+    }> &
+      InjectiveUserParams)
   | (Readonly<{
-    signMessage: Uint8SignMessageFunction;
-  }> &
-    ElysUserParams)
+      signMessage: Uint8SignMessageFunction;
+    }> &
+      ElysUserParams)
   | (Readonly<{
-    signMessage: Uint8SignMessageFunction;
-  }> &
-    NeutronUserParams)
+      signMessage: Uint8SignMessageFunction;
+    }> &
+      NeutronUserParams)
   | (Readonly<{
-    signMessage: Uint8SignMessageFunction;
-  }> &
-    ArchwayUserParams)
+      signMessage: Uint8SignMessageFunction;
+    }> &
+      ArchwayUserParams)
   | (Readonly<{
-    signMessage: Uint8SignMessageFunction;
-  }> &
-    AxelarUserParams)
+      signMessage: Uint8SignMessageFunction;
+    }> &
+      AxelarUserParams)
   | (Readonly<{
-    signMessage: Uint8SignMessageFunction;
-  }> &
-    AgoricUserParams)
+      signMessage: Uint8SignMessageFunction;
+    }> &
+      AgoricUserParams)
   | (Readonly<{
-    signMessage: Uint8SignMessageFunction;
-  }> &
-    OraiUserParams)
+      signMessage: Uint8SignMessageFunction;
+    }> &
+      OraiUserParams)
   | (Readonly<{
-    signMessage: Uint8SignMessageFunction;
-  }> &
-    KavaUserParams)
+      signMessage: Uint8SignMessageFunction;
+    }> &
+      KavaUserParams)
   | (Readonly<{
-    signMessage: Uint8SignMessageFunction;
-  }> &
-    CelestiaUserParams)
+      signMessage: Uint8SignMessageFunction;
+    }> &
+      CelestiaUserParams)
   | (Readonly<{
-    signMessage: Uint8SignMessageFunction;
-  }> &
-    CosmosUserParams)
+      signMessage: Uint8SignMessageFunction;
+    }> &
+      CosmosUserParams)
   | (Readonly<{
-    signMessage: Uint8SignMessageFunction;
-  }> &
-    DymensionUserParams)
+      signMessage: Uint8SignMessageFunction;
+    }> &
+      DymensionUserParams)
   | (Readonly<{
-    signMessage: Uint8SignMessageFunction;
-  }> &
-    PersistenceUserParams)
+      signMessage: Uint8SignMessageFunction;
+    }> &
+      PersistenceUserParams)
   | (Readonly<{
-    walletBlockchain: 'DYDX';
-    accountAddress: string;
-    walletPublicKey: string;
-    signMessage: Uint8SignMessageFunction;
-  }> &
-    DydxUserParams)
+      walletBlockchain: 'DYDX';
+      accountAddress: string;
+      walletPublicKey: string;
+      signMessage: Uint8SignMessageFunction;
+    }> &
+      DydxUserParams)
   | (Readonly<{
-    signIn: OidcSignInFunction;
-  }> &
-    OffChainUserParams);
+      signIn: OidcSignInFunction;
+    }> &
+      OffChainUserParams);
 
 /** NOTE:
  * 1. Used for instantiating client object (.instantiateFrontendClient) - requires only UserParams (w/o authentication method(s)) to be passed in
@@ -238,24 +238,24 @@ export type SolanaUserParams = Readonly<{
 
 export type EvmUserParams = Readonly<{
   walletBlockchain:
-  | 'ETHEREUM'
-  | 'POLYGON'
-  | 'ARBITRUM'
-  | 'AVALANCHE'
-  | 'BINANCE'
-  | 'OPTIMISM'
-  | 'THE_ROOT_NETWORK'
-  | 'ZKSYNC'
-  | 'BASE'
-  | 'BLAST'
-  | 'CELO'
-  | 'MANTLE'
-  | 'LINEA'
-  | 'SCROLL'
-  | 'MANTA'
-  | 'MONAD'
-  | 'EVMOS'
-  | 'BERACHAIN';
+    | 'ETHEREUM'
+    | 'POLYGON'
+    | 'ARBITRUM'
+    | 'AVALANCHE'
+    | 'BINANCE'
+    | 'OPTIMISM'
+    | 'THE_ROOT_NETWORK'
+    | 'ZKSYNC'
+    | 'BASE'
+    | 'BLAST'
+    | 'CELO'
+    | 'MANTLE'
+    | 'LINEA'
+    | 'SCROLL'
+    | 'MANTA'
+    | 'MONAD'
+    | 'EVMOS'
+    | 'BERACHAIN';
   walletPublicKey: string;
 }>;
 
@@ -434,17 +434,17 @@ export type SupportedCardConfigType = CardConfigItemV1;
 
 export type UserState = Readonly<
   | {
-    status: 'loggedOut';
-  }
+      status: 'loggedOut';
+    }
   | {
-    status: 'authenticated';
-    authorization: Authorization;
-    roles: Roles;
-  }
+      status: 'authenticated';
+      authorization: Authorization;
+      roles: Roles;
+    }
   | {
-    status: 'expired';
-    authorization: Authorization;
-  }
+      status: 'expired';
+      authorization: Authorization;
+    }
 >;
 
 export class NotifiFrontendClient {
@@ -452,7 +452,7 @@ export class NotifiFrontendClient {
     private _configuration: NotifiFrontendConfiguration,
     private _service: NotifiService,
     private _storage: NotifiStorage,
-  ) { }
+  ) {}
 
   private _clientRandomUuid: string | null = null;
   private _userState: UserState | null = null;
@@ -852,8 +852,9 @@ export class NotifiFrontendClient {
         const { authenticationKey, accountAddress, tenantId } = this
           ._configuration as NotifiConfigWithPublicKeyAndAddress;
 
-        const message = `${`ed25519:` + authenticationKey
-          }${tenantId}${accountAddress}${timestamp.toString()}`;
+        const message = `${
+          `ed25519:` + authenticationKey
+        }${tenantId}${accountAddress}${timestamp.toString()}`;
         const textAsBuffer = new TextEncoder().encode(message);
         const hashBuffer = await window.crypto.subtle.digest(
           'SHA-256',
@@ -1033,7 +1034,7 @@ export class NotifiFrontendClient {
     discordId?: string;
     slackId?: string;
     walletId?: string;
-    webPushTargetIds?: Array<string>
+    webPushTargetIds?: Array<string>;
   }>): Promise<Types.TargetGroupFragmentFragment> {
     const [
       targetGroupsQuery,
@@ -1075,7 +1076,9 @@ export class NotifiFrontendClient {
       // Instead, web push targets are managed by the service worker in the client's PWA.
       // If webPushTargetIds is undefined, FE client will retain the existing web push targets in the target group.
       if (!webPushTargetIds) {
-        webPushTargetIds = existing.webPushTargets?.map<string>(target => target?.id ?? '') ?? []
+        webPushTargetIds =
+          existing.webPushTargets?.map<string>((target) => target?.id ?? '') ??
+          [];
       }
 
       return this._updateTargetGroup({
@@ -1100,7 +1103,7 @@ export class NotifiFrontendClient {
       discordTargetIds,
       slackChannelTargetIds,
       web3TargetIds,
-      webPushTargetIds: webPushTargetIds ?? []
+      webPushTargetIds: webPushTargetIds ?? [],
     });
 
     if (createMutation.createTargetGroup === undefined) {
@@ -1511,9 +1514,9 @@ export class NotifiFrontendClient {
       walletPublicKey,
       accountId:
         walletBlockchain === 'APTOS' ||
-          walletBlockchain === 'ACALA' ||
-          walletBlockchain === 'NEAR' ||
-          walletBlockchain === 'SUI'
+        walletBlockchain === 'ACALA' ||
+        walletBlockchain === 'NEAR' ||
+        walletBlockchain === 'SUI'
           ? params.walletParams.accountAddress
           : undefined,
       signature,
@@ -1600,7 +1603,9 @@ export class NotifiFrontendClient {
     return result;
   }
 
-  async getVapidPublicKeys(): Promise<Types.GetVapidPublicKeysQuery['vapidPublicKeys']> {
+  async getVapidPublicKeys(): Promise<
+    Types.GetVapidPublicKeysQuery['vapidPublicKeys']
+  > {
     const query = await this._service.getVapidPublicKeys({});
     const result = query.vapidPublicKeys;
     if (!result) {
