@@ -1,4 +1,8 @@
-export function initWebPushServiceWorker(serviceWorkerFilePath?: string | null, userAccount?: string | null, dappId?: string | null, env?: string | null) {
+import {
+  NotifiEnvironment,
+} from '@notifi-network/notifi-frontend-client';
+
+export function initWebPushServiceWorker(serviceWorkerFilePath?: string | null, userAccount?: string | null, dappId?: string | null, env?: NotifiEnvironment | null) {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register(
       serviceWorkerFilePath ?? '/notifi-service-worker.js',
@@ -29,7 +33,7 @@ export function initWebPushServiceWorker(serviceWorkerFilePath?: string | null, 
   }
 }
 
-export function tryCreateWebPushSubscription(userAccount: string, dappId: string, env: string) {
+export function tryCreateWebPushSubscription(userAccount: string, dappId: string, env: NotifiEnvironment) {
   console.log('tryCreateWebPushSubscription was called')
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.getRegistration().then((registration) => {

@@ -1,3 +1,5 @@
+// TODO: Convert to typescript
+
 import { instantiateFrontendClient } from "@notifi-network/notifi-frontend-client";
 let client;
 let db = createDb();
@@ -176,7 +178,10 @@ function GetSubsciption(userAccount, dappId, env) {
         self.registration.pushManager.getSubscription()
           .then(async (subscription) => {
             if (subscription) {
-              console.log('subscription already exists')
+              console.log('Subscription already exists')
+
+              // Ensure that web push target is created for push manager subscription
+              await createOrUpdateWebPushTarget(subscription, vapidBot.publicKey); 
               return subscription;
             }
 
