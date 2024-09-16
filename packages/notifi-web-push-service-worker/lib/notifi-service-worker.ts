@@ -2,8 +2,13 @@ import {
   NotifiFrontendClient,
   instantiateFrontendClient,
 } from '@notifi-network/notifi-frontend-client';
+import { NotifiEnvironment } from 'notifi-frontend-client/dist';
 
 declare const self: ServiceWorkerGlobalScope;
+
+interface PushSubscriptionChangeEvent extends ExtendableEvent {
+  oldSubscription: PushSubscription;
+}
 
 let client: NotifiFrontendClient;
 const db = createDb();
@@ -57,11 +62,6 @@ function createDb() {
           req.onerror = () => reject(req.error);
         });
       });
-      // let request: IDBRequest<any>;
-      // await withStore('readonly', (store) => {
-      //   request = store.get(key);
-      // });
-      // return request.result;
     },
     set(key: IDBValidKey, value: string) {
       return withStore('readwrite', (store) => {
@@ -76,7 +76,7 @@ function createDb() {
   };
 }
 
-function urlBase64ToUint8Array(base64String: any) {
+function urlBase64ToUint8Array(base64String: string) {
   const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
   const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
 
@@ -89,15 +89,15 @@ function urlBase64ToUint8Array(base64String: any) {
   return outputArray;
 }
 
+function uint8ArrayToBase64Url(uint8Array: Uint8Array) {
+  return self.btoa(String.fromCharCode.apply(null, Array.from(uint8Array)));
+}
+
 async function createWebPushTarget(
   subscription: PushSubscription,
   vapidPublicKey: string,
 ) {
   try {
-    const conv = (val: ArrayBuffer) =>
-      self.btoa(
-        String.fromCharCode.apply(null, Array.from(new Uint8Array(val))),
-      );
     const targetGroups = await client.getTargetGroups();
     const defaultTargetGroup = targetGroups.find(
       (targetGroup) => targetGroup.name === 'Default',
@@ -115,8 +115,8 @@ async function createWebPushTarget(
     const webPushTargetResponse = await client.createWebPushTarget({
       vapidPublicKey: vapidPublicKey,
       endpoint: subscription.endpoint,
-      auth: conv(authBuffer),
-      p256dh: conv(p256dhBuffer),
+      auth: uint8ArrayToBase64Url(new Uint8Array(authBuffer)),
+      p256dh: uint8ArrayToBase64Url(new Uint8Array(p256dhBuffer)),
     });
 
     if (
@@ -152,17 +152,21 @@ async function createWebPushTarget(
   }
 }
 
-async function updateWebPushTarget(subscription: any, webPushTargetId: any) {
+async function updateWebPushTarget(
+  subscription: PushSubscription,
+  webPushTargetId: string,
+) {
   try {
-    const conv = (val: any) =>
-      self.btoa(
-        String.fromCharCode.apply(null, Array.from(new Uint8Array(val))),
-      );
+    const authBuffer = subscription.getKey('auth');
+    const p256dhBuffer = subscription.getKey('p256dh');
+    if (!authBuffer || !p256dhBuffer)
+      throw new Error('Invalid subscription auth or p256dh key');
+
     await client.updateWebPushTarget({
       id: webPushTargetId,
       endpoint: subscription.endpoint,
-      auth: conv(subscription.getKey('auth')),
-      p256dh: conv(subscription.getKey('p256dh')),
+      auth: uint8ArrayToBase64Url(new Uint8Array(authBuffer)),
+      p256dh: uint8ArrayToBase64Url(new Uint8Array(p256dhBuffer)),
     });
   } catch (err) {
     console.error(err, 'Failed to update web push target.');
@@ -170,8 +174,8 @@ async function updateWebPushTarget(subscription: any, webPushTargetId: any) {
 }
 
 async function createOrUpdateWebPushTarget(
-  subscription: any,
-  vapidPublicKey: any,
+  subscription: PushSubscription,
+  vapidPublicKey: string,
 ) {
   const webPushTargetId = await db.get(webPushTargetIdKey);
   if (!webPushTargetId || webPushTargetId === '') {
@@ -189,20 +193,17 @@ async function createOrUpdateWebPushTarget(
   }
 }
 
-function GetSubsciption(userAccount: any, dappId: any, env: any) {
+function GetSubsciption(
+  userAccount: string,
+  dappId: string,
+  env: NotifiEnvironment,
+) {
   if (Notification.permission !== 'granted') {
     console.log('Notification permissions not granted');
     return;
   }
 
-  if (
-    !userAccount ||
-    !dappId ||
-    !env ||
-    userAccount == '' ||
-    dappId == '' ||
-    env == ''
-  ) {
+  if (!userAccount || !dappId || !env) {
     console.log(
       'UserAccount, Notifi dappId, or env not found. Skipping subscription instantiation.',
     );
@@ -252,6 +253,7 @@ function GetSubsciption(userAccount: any, dappId: any, env: any) {
               });
             })
             .then(async (subscription) => {
+              // TODO: Handle subscription errors
               await createOrUpdateWebPushTarget(
                 subscription,
                 vapidBot.publicKey,
@@ -282,9 +284,12 @@ self.addEventListener('push', async function (event) {
   // TODO: Analytics here
 });
 
-self.addEventListener('notificationclick', async function (event) {
-  // TODO: Analytics here
-});
+self.addEventListener(
+  'notificationclick',
+  async function (event: NotificationEvent) {
+    // TODO: Analytics here
+  },
+);
 
 self.addEventListener('notificationclose', async function (event) {
   // TODO: Analytics here
@@ -304,12 +309,11 @@ self.addEventListener('message', (event) => {
 self.addEventListener(
   'pushsubscriptionchange',
   (event) => {
+    // Force casting "PushSubscriptionChangeEvent" because it is not widely supported across browsers: https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerGlobalScope/pushsubscriptionchange_event
     console.log('push subscription changed!!');
     console.log(event);
     const subscription = self.registration.pushManager
-      // eslint-disable-next-line
-      // @ts-ignore
-      .subscribe(event.oldSubscription.options)
+      .subscribe((event as PushSubscriptionChangeEvent).oldSubscription.options)
       .then(async (subscription) => {
         client.initialize().then(async (userState) => {
           if (userState.status === 'authenticated') {
@@ -323,6 +327,7 @@ self.addEventListener(
             }
 
             if (Notification.permission === 'granted') {
+              // TODO: Handle subscription errors
               await createOrUpdateWebPushTarget(
                 subscription,
                 vapidBot.publicKey,
@@ -331,9 +336,7 @@ self.addEventListener(
           }
         });
       });
-    // eslint-disable-next-line
-    // @ts-ignore
-    event.waitUntil(subscription);
+    (event as PushSubscriptionChangeEvent).waitUntil(subscription);
   },
   false,
 );
