@@ -1,11 +1,16 @@
-// TODO: Convert to typescript
-import { instantiateFrontendClient } from '@notifi-network/notifi-frontend-client';
+import {
+  NotifiFrontendClient,
+  instantiateFrontendClient,
+} from '@notifi-network/notifi-frontend-client';
 
-let client;
-let db = createDb();
+declare const self: ServiceWorkerGlobalScope;
+
+let client: NotifiFrontendClient;
+const db = createDb();
 const webPushTargetIdKey = 'webPushTargetId';
+
 function createDb() {
-  let dbInstance;
+  let dbInstance: Promise<IDBDatabase>;
 
   function getDB() {
     if (dbInstance) return dbInstance;
@@ -30,7 +35,10 @@ function createDb() {
     return dbInstance;
   }
 
-  async function withStore(type, callback) {
+  async function withStore(
+    type: IDBTransactionMode,
+    callback: (store: IDBObjectStore) => void,
+  ): Promise<void> {
     const db = await getDB();
     return new Promise((resolve, reject) => {
       const transaction = db.transaction('keyvaluepairs', type);
@@ -41,19 +49,26 @@ function createDb() {
   }
 
   return {
-    async get(key) {
-      let request;
-      await withStore('readonly', (store) => {
-        request = store.get(key);
+    async get(key: IDBValidKey): Promise<string | undefined> {
+      return new Promise((resolve, reject) => {
+        withStore('readonly', (store) => {
+          const req = store.get(key);
+          req.onsuccess = () => resolve(req.result);
+          req.onerror = () => reject(req.error);
+        });
       });
-      return request.result;
+      // let request: IDBRequest<any>;
+      // await withStore('readonly', (store) => {
+      //   request = store.get(key);
+      // });
+      // return request.result;
     },
-    set(key, value) {
+    set(key: IDBValidKey, value: string) {
       return withStore('readwrite', (store) => {
         store.put(value, key);
       });
     },
-    delete(key) {
+    delete(key: IDBValidKey) {
       return withStore('readwrite', (store) => {
         store.delete(key);
       });
@@ -61,35 +76,47 @@ function createDb() {
   };
 }
 
-function urlBase64ToUint8Array(base64String) {
-  var padding = '='.repeat((4 - (base64String.length % 4)) % 4);
-  var base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+function urlBase64ToUint8Array(base64String: any) {
+  const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
 
-  var rawData = self.atob(base64);
-  var outputArray = new Uint8Array(rawData.length);
+  const rawData = self.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
 
-  for (var i = 0; i < rawData.length; ++i) {
+  for (let i = 0; i < rawData.length; ++i) {
     outputArray[i] = rawData.charCodeAt(i);
   }
   return outputArray;
 }
 
-async function createWebPushTarget(subscription, vapidPublicKey) {
+async function createWebPushTarget(
+  subscription: PushSubscription,
+  vapidPublicKey: string,
+) {
   try {
-    const conv = (val) =>
-      self.btoa(String.fromCharCode.apply(null, new Uint8Array(val)));
+    const conv = (val: ArrayBuffer) =>
+      self.btoa(
+        String.fromCharCode.apply(null, Array.from(new Uint8Array(val))),
+      );
     const targetGroups = await client.getTargetGroups();
     const defaultTargetGroup = targetGroups.find(
       (targetGroup) => targetGroup.name === 'Default',
     );
-    const webPushTargetIds =
-      defaultTargetGroup?.webPushTargets?.map((t) => t?.id) ?? [];
+    if (!defaultTargetGroup?.webPushTargets)
+      throw new Error('Default target group not found.');
+    const authBuffer = subscription.getKey('auth');
+    const p256dhBuffer = subscription.getKey('p256dh');
+    if (!authBuffer || !p256dhBuffer)
+      throw new Error('Invalid subscription auth or p256dh key');
+    const webPushTargetIds = defaultTargetGroup.webPushTargets
+      .map((it) => it?.id)
+      .filter((it): it is string => !!it);
 
     const webPushTargetResponse = await client.createWebPushTarget({
       vapidPublicKey: vapidPublicKey,
       endpoint: subscription.endpoint,
-      auth: conv(subscription.getKey('auth')),
-      p256dh: conv(subscription.getKey('p256dh')),
+      auth: conv(authBuffer),
+      p256dh: conv(p256dhBuffer),
     });
 
     if (
@@ -105,14 +132,15 @@ async function createWebPushTarget(subscription, vapidPublicKey) {
     webPushTargetIds.push(
       webPushTargetResponse.createWebPushTarget.webPushTarget?.id,
     );
+
     await client.ensureTargetGroup({
       name: 'Default',
-      emailAddress: defaultTargetGroup?.emailTargets[0]?.emailAddress,
-      phoneNumber: defaultTargetGroup?.smsTargets[0]?.phoneNumber,
-      telegramId: defaultTargetGroup?.telegramTargets[0]?.telegramId,
-      discordId: defaultTargetGroup?.discordTargets[0]?.name,
-      slackId: defaultTargetGroup?.slackChannelTargets[0]?.name,
-      walletId: defaultTargetGroup?.web3Targets[0]?.name,
+      emailAddress: defaultTargetGroup?.emailTargets?.[0]?.emailAddress,
+      phoneNumber: defaultTargetGroup?.smsTargets?.[0]?.phoneNumber,
+      telegramId: defaultTargetGroup?.telegramTargets?.[0]?.telegramId,
+      discordId: defaultTargetGroup?.discordTargets?.[0]?.name,
+      slackId: defaultTargetGroup?.slackChannelTargets?.[0]?.name,
+      walletId: defaultTargetGroup?.web3Targets?.[0]?.name,
       webPushTargetIds: webPushTargetIds,
     });
     await db.set(
@@ -124,10 +152,12 @@ async function createWebPushTarget(subscription, vapidPublicKey) {
   }
 }
 
-async function updateWebPushTarget(subscription, webPushTargetId) {
+async function updateWebPushTarget(subscription: any, webPushTargetId: any) {
   try {
-    const conv = (val) =>
-      self.btoa(String.fromCharCode.apply(null, new Uint8Array(val)));
+    const conv = (val: any) =>
+      self.btoa(
+        String.fromCharCode.apply(null, Array.from(new Uint8Array(val))),
+      );
     await client.updateWebPushTarget({
       id: webPushTargetId,
       endpoint: subscription.endpoint,
@@ -139,7 +169,10 @@ async function updateWebPushTarget(subscription, webPushTargetId) {
   }
 }
 
-async function createOrUpdateWebPushTarget(subscription, vapidPublicKey) {
+async function createOrUpdateWebPushTarget(
+  subscription: any,
+  vapidPublicKey: any,
+) {
   const webPushTargetId = await db.get(webPushTargetIdKey);
   if (!webPushTargetId || webPushTargetId === '') {
     await createWebPushTarget(subscription, vapidPublicKey);
@@ -148,7 +181,7 @@ async function createOrUpdateWebPushTarget(subscription, vapidPublicKey) {
       ids: [webPushTargetId],
     });
 
-    if (getWebPushTargetsResponse.nodes.length !== 1) {
+    if (getWebPushTargetsResponse?.nodes?.length !== 1) {
       await createWebPushTarget(subscription, vapidPublicKey);
     } else {
       await updateWebPushTarget(subscription, webPushTargetId);
@@ -156,7 +189,7 @@ async function createOrUpdateWebPushTarget(subscription, vapidPublicKey) {
   }
 }
 
-function GetSubsciption(userAccount, dappId, env) {
+function GetSubsciption(userAccount: any, dappId: any, env: any) {
   if (Notification.permission !== 'granted') {
     console.log('Notification permissions not granted');
     return;
@@ -191,8 +224,8 @@ function GetSubsciption(userAccount, dappId, env) {
     .initialize()
     .then(async (userState) => {
       if (userState.status === 'authenticated') {
-        let getVapidKeysResponse = await client.getVapidPublicKeys();
-        let vapidBot = getVapidKeysResponse.nodes[0];
+        const getVapidKeysResponse = await client.getVapidPublicKeys();
+        const vapidBot = getVapidKeysResponse?.nodes?.[0];
         if (!vapidBot) {
           console.error(
             'Tenant does not have a configured Vapid bot. Will not attempt web push subscription.',
@@ -205,13 +238,7 @@ function GetSubsciption(userAccount, dappId, env) {
             .getSubscription()
             .then(async (subscription) => {
               if (subscription) {
-                console.log('Subscription already exists');
-
-                // Ensure that web push target is created for push manager subscription
-                await createOrUpdateWebPushTarget(
-                  subscription,
-                  vapidBot.publicKey,
-                );
+                console.log('subscription already exists');
                 return subscription;
               }
 
@@ -239,7 +266,7 @@ function GetSubsciption(userAccount, dappId, env) {
 }
 
 self.addEventListener('push', async function (event) {
-  let payload = event.data
+  const payload = event.data
     ? JSON.parse(event.data.text())
     : {
         Subject: 'No Payload',
@@ -280,12 +307,14 @@ self.addEventListener(
     console.log('push subscription changed!!');
     console.log(event);
     const subscription = self.registration.pushManager
+      // eslint-disable-next-line
+      // @ts-ignore
       .subscribe(event.oldSubscription.options)
       .then(async (subscription) => {
         client.initialize().then(async (userState) => {
           if (userState.status === 'authenticated') {
-            let getVapidKeysResponse = await client.getVapidPublicKeys();
-            let vapidBot = getVapidKeysResponse.nodes[0];
+            const getVapidKeysResponse = await client.getVapidPublicKeys();
+            const vapidBot = getVapidKeysResponse?.nodes?.[0];
             if (!vapidBot) {
               console.error(
                 'Tenant does not have a configured Vapid bot. Will not attempt web push subscription.',
@@ -302,6 +331,8 @@ self.addEventListener(
           }
         });
       });
+    // eslint-disable-next-line
+    // @ts-ignore
     event.waitUntil(subscription);
   },
   false,
