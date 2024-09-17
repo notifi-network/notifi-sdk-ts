@@ -8,26 +8,23 @@ export async function createOrUpdateWebPushTarget(
   vapidPublicKey: string,
   db: IndexedDb,
   frontendClient: NotifiFrontendClient,
-) {
+): Promise<void> {
   const webPushTargetId = await db.get(webPushTargetIdKey);
   if (!webPushTargetId || webPushTargetId === '') {
     await createWebPushTarget(subscription, vapidPublicKey, frontendClient, db);
-  } else {
-    const getWebPushTargetsResponse = await frontendClient.getWebPushTargets({
-      ids: [webPushTargetId],
-    });
-
-    if (getWebPushTargetsResponse?.nodes?.length !== 1) {
-      await createWebPushTarget(
-        subscription,
-        vapidPublicKey,
-        frontendClient,
-        db,
-      );
-    } else {
-      await updateWebPushTarget(subscription, webPushTargetId, frontendClient);
-    }
+    return;
   }
+
+  const getWebPushTargetsResponse = await frontendClient.getWebPushTargets({
+    ids: [webPushTargetId],
+  });
+
+  if (getWebPushTargetsResponse?.nodes?.length !== 1) {
+    await createWebPushTarget(subscription, vapidPublicKey, frontendClient, db);
+    return;
+  }
+
+  await updateWebPushTarget(subscription, webPushTargetId, frontendClient);
 }
 
 async function createWebPushTarget(
@@ -36,59 +33,54 @@ async function createWebPushTarget(
   frontendClient: NotifiFrontendClient,
   db: IndexedDb,
 ) {
-  try {
-    const targetGroups = await frontendClient.getTargetGroups();
-    const defaultTargetGroup = targetGroups.find(
-      (targetGroup) => targetGroup.name === 'Default',
+  const targetGroups = await frontendClient.getTargetGroups();
+  const defaultTargetGroup = targetGroups.find(
+    (targetGroup) => targetGroup.name === 'Default',
+  );
+  if (!defaultTargetGroup?.webPushTargets)
+    throw new Error('createWebPushTarget: default target group not found.');
+  const authBuffer = subscription.getKey('auth');
+  const p256dhBuffer = subscription.getKey('p256dh');
+  if (!authBuffer || !p256dhBuffer)
+    throw new Error(
+      'createWebPushTarget: invalid subscription auth or p256dh key',
     );
-    if (!defaultTargetGroup?.webPushTargets)
-      throw new Error('Default target group not found.');
-    const authBuffer = subscription.getKey('auth');
-    const p256dhBuffer = subscription.getKey('p256dh');
-    if (!authBuffer || !p256dhBuffer)
-      throw new Error('Invalid subscription auth or p256dh key');
-    const webPushTargetIds = defaultTargetGroup.webPushTargets
-      .map((it) => it?.id)
-      .filter((it): it is string => !!it);
+  const webPushTargetIds = defaultTargetGroup.webPushTargets
+    .map((it) => it?.id)
+    .filter((it): it is string => !!it);
 
-    const webPushTargetResponse = await frontendClient.createWebPushTarget({
-      vapidPublicKey: vapidPublicKey,
-      endpoint: subscription.endpoint,
-      auth: uint8ArrayToBase64Url(new Uint8Array(authBuffer)),
-      p256dh: uint8ArrayToBase64Url(new Uint8Array(p256dhBuffer)),
-    });
+  const webPushTargetResponse = await frontendClient.createWebPushTarget({
+    vapidPublicKey: vapidPublicKey,
+    endpoint: subscription.endpoint,
+    auth: uint8ArrayToBase64Url(new Uint8Array(authBuffer)),
+    p256dh: uint8ArrayToBase64Url(new Uint8Array(p256dhBuffer)),
+  });
 
-    if (
-      !webPushTargetResponse.createWebPushTarget.webPushTarget ||
-      !webPushTargetResponse.createWebPushTarget.webPushTarget?.id
-    ) {
-      console.error(
-        'Failed to create web push target. CreateWebPushTargetMutation failed.',
-      );
-      return;
-    }
-
-    webPushTargetIds.push(
-      webPushTargetResponse.createWebPushTarget.webPushTarget?.id,
-    );
-    // TODO: Rather than using ensureTargetGroup, might create a new client method for web push target
-    await frontendClient.ensureTargetGroup({
-      name: 'Default',
-      emailAddress: defaultTargetGroup?.emailTargets?.[0]?.emailAddress,
-      phoneNumber: defaultTargetGroup?.smsTargets?.[0]?.phoneNumber,
-      telegramId: defaultTargetGroup?.telegramTargets?.[0]?.telegramId,
-      discordId: defaultTargetGroup?.discordTargets?.[0]?.name,
-      slackId: defaultTargetGroup?.slackChannelTargets?.[0]?.name,
-      walletId: defaultTargetGroup?.web3Targets?.[0]?.name,
-      webPushTargetIds: webPushTargetIds,
-    });
-    await db.set(
-      webPushTargetIdKey,
-      webPushTargetResponse.createWebPushTarget.webPushTarget?.id,
-    );
-  } catch (err) {
-    console.error(err, 'Failed to create web push target.');
+  if (
+    !webPushTargetResponse.createWebPushTarget.webPushTarget ||
+    !webPushTargetResponse.createWebPushTarget.webPushTarget?.id
+  ) {
+    throw new Error('createWebPushTarget: failed to create web push target. ');
   }
+
+  webPushTargetIds.push(
+    webPushTargetResponse.createWebPushTarget.webPushTarget?.id,
+  );
+  // TODO: Rather than using ensureTargetGroup, might create a new client method for web push target
+  await frontendClient.ensureTargetGroup({
+    name: 'Default',
+    emailAddress: defaultTargetGroup?.emailTargets?.[0]?.emailAddress,
+    phoneNumber: defaultTargetGroup?.smsTargets?.[0]?.phoneNumber,
+    telegramId: defaultTargetGroup?.telegramTargets?.[0]?.telegramId,
+    discordId: defaultTargetGroup?.discordTargets?.[0]?.name,
+    slackId: defaultTargetGroup?.slackChannelTargets?.[0]?.name,
+    walletId: defaultTargetGroup?.web3Targets?.[0]?.name,
+    webPushTargetIds: webPushTargetIds,
+  });
+  await db.set(
+    webPushTargetIdKey,
+    webPushTargetResponse.createWebPushTarget.webPushTarget?.id,
+  );
 }
 
 async function updateWebPushTarget(
@@ -96,19 +88,17 @@ async function updateWebPushTarget(
   webPushTargetId: string,
   frontendClient: NotifiFrontendClient,
 ) {
-  try {
-    const authBuffer = subscription.getKey('auth');
-    const p256dhBuffer = subscription.getKey('p256dh');
-    if (!authBuffer || !p256dhBuffer)
-      throw new Error('Invalid subscription auth or p256dh key');
+  const authBuffer = subscription.getKey('auth');
+  const p256dhBuffer = subscription.getKey('p256dh');
+  if (!authBuffer || !p256dhBuffer)
+    throw new Error(
+      'updateWebPushTarget: invalid subscription auth or p256dh key',
+    );
 
-    await frontendClient.updateWebPushTarget({
-      id: webPushTargetId,
-      endpoint: subscription.endpoint,
-      auth: uint8ArrayToBase64Url(new Uint8Array(authBuffer)),
-      p256dh: uint8ArrayToBase64Url(new Uint8Array(p256dhBuffer)),
-    });
-  } catch (err) {
-    console.error(err, 'Failed to update web push target.');
-  }
+  await frontendClient.updateWebPushTarget({
+    id: webPushTargetId,
+    endpoint: subscription.endpoint,
+    auth: uint8ArrayToBase64Url(new Uint8Array(authBuffer)),
+    p256dh: uint8ArrayToBase64Url(new Uint8Array(p256dhBuffer)),
+  });
 }

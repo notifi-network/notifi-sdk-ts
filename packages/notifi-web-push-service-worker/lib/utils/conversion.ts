@@ -1,4 +1,5 @@
 export function urlBase64ToUint8Array(base64String: string) {
+  // NOTE: only available in browser or browser-like environments
   const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
   const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
 
@@ -12,6 +13,7 @@ export function urlBase64ToUint8Array(base64String: string) {
 }
 
 export function uint8ArrayToBase64Url(uint8Array: Uint8Array) {
+  // NOTE: only available in browser or browser-like environments
   return self.btoa(String.fromCharCode.apply(null, Array.from(uint8Array)));
 }
 

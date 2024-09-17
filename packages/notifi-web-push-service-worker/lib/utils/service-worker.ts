@@ -4,61 +4,80 @@ import {
   NotifiServiceWorkerMessagePayload,
   NotifiWebPushEventData,
 } from '../types';
+import { notifiServiceWorkerDefaultFilePath } from './constants';
 
-export function initWebPushServiceWorker(
-  serviceWorkerFilePath?: string | null,
-  userAccount?: string | null,
-  dappId?: string | null,
-  env?: NotifiEnvironment | null,
-) {
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker
-      .register(serviceWorkerFilePath ?? '/notifi-service-worker.js', {
-        type: 'module',
-        scope: '/',
-      })
-      .then((registration) => {
-        if (!userAccount || !dappId || !env) {
-          return;
-        }
+/**
+ * @description Only registers service worker if not passing userAccount, dappId or env; otherwise, it will also try to subscribe web push
+ * @note you can call tryCreateWebPushSubscription after this function to subscribe web push
+ * @IMPORTANT Case sensitive, make sure all input arguments are identical to the ones in browser (or app) code
+ */
+export async function initWebPushServiceWorker(
+  serviceWorkerFilePath?: string,
+  userAccount?: string,
+  dappId?: string,
+  env?: NotifiEnvironment,
+): Promise<void> {
+  if (!('serviceWorker' in navigator))
+    throw new Error(
+      'initWebPushServiceWorker: Failed to initialize service worker, serviceWorker is not supported in this app',
+    );
 
-        const payload = {
-          type: 'NotifiCheckSubscription',
-          userAccount: userAccount,
-          dappId: dappId,
-          env: env,
-        };
-        registration?.active?.postMessage(JSON.stringify(payload));
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  } else {
-    console.error('Web push service worker failed to start.');
+  const registration = await navigator.serviceWorker.register(
+    serviceWorkerFilePath ?? notifiServiceWorkerDefaultFilePath,
+    {
+      type: 'module',
+      scope: '/',
+    },
+  );
+
+  if (!userAccount || !dappId || !env) {
+    console.log(
+      'initWebPushServiceWorker: userAccount, dappId or env is missing, only registering service worker w/o subscribing web push',
+    );
+    return;
   }
+
+  const payload: NotifiServiceWorkerMessagePayload = {
+    type: 'NotifiCheckSubscription',
+    userAccount,
+    dappId,
+    env,
+  };
+
+  registration.active?.postMessage(JSON.stringify(payload));
 }
 
-export function tryCreateWebPushSubscription(
-  userAccount: string, // IMPORTANT: Case sensitive, make sure to pass the account identically as it is in (web) app
+/**
+ * @IMPORTANT Case sensitive, make sure all input arguments are identical to the ones in browser (or app) code
+ */
+export async function tryCreateWebPushSubscription(
+  userAccount: string,
   dappId: string,
   env: NotifiEnvironment,
-) {
-  console.log('tryCreateWebPushSubscription was called');
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistration().then((registration) => {
-      const payload: NotifiServiceWorkerMessagePayload = {
-        type: 'NotifiCheckSubscription',
-        userAccount,
-        dappId,
-        env,
-      };
-      registration?.active?.postMessage(JSON.stringify(payload));
-    });
-  } else {
-    console.error(
-      'Web push service worker failed to try create web push subscription.',
+): Promise<void> {
+  if (!('serviceWorker' in navigator))
+    throw new Error(
+      'tryCreateWebPushSubscription: Failed to initialize service worker, serviceWorker is not supported in this app',
+    );
+
+  const registration = await navigator.serviceWorker.getRegistration();
+
+  if (!registration) {
+    throw new Error(
+      'tryCreateWebPushSubscription: Failed to get service worker registration, service worker is not registered',
     );
   }
+
+  console.log('tryCreateWebPushSubscription was called');
+
+  const payload: NotifiServiceWorkerMessagePayload = {
+    type: 'NotifiCheckSubscription',
+    userAccount,
+    dappId,
+    env,
+  };
+
+  registration.active?.postMessage(JSON.stringify(payload));
 }
 
 export const isNotifiServiceWorkerMessage = (

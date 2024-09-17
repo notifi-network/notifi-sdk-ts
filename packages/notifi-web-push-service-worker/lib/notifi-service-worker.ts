@@ -61,7 +61,9 @@ self.addEventListener('message', (event) => {
   switch (type) {
     case 'NotifiCheckSubscription':
       getSubscription(userAccount, dappId, env).catch((e) => {
-        console.error(e, 'Error getting subscription');
+        if (e instanceof Error) {
+          console.error('Message event error:', e.message);
+        }
       });
       break;
     default:
@@ -77,27 +79,31 @@ self.addEventListener(
       // Force casting "PushSubscriptionChangeEvent" because it is not widely supported across browsers: https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerGlobalScope/pushsubscriptionchange_event
       .subscribe((event as PushSubscriptionChangeEvent).oldSubscription.options)
       .then(async (subscription) => {
-        client.initialize().then(async (userState) => {
-          if (userState.status === 'authenticated') {
-            const getVapidKeysResponse = await client.getVapidPublicKeys();
-            const vapidBot = getVapidKeysResponse?.nodes?.[0];
-            if (!vapidBot) {
-              return console.error(
-                'Tenant does not have a configured Vapid bot. Will not attempt web push subscription.',
-              );
-            }
-
-            if (Notification.permission === 'granted') {
-              // TODO: Handle subscription errors
-              await createOrUpdateWebPushTarget(
-                subscription,
-                vapidBot.publicKey,
-                db,
-                client,
-              );
-            }
+        try {
+          const userState = await client.initialize();
+          if (userState.status !== 'authenticated') {
+            throw new Error('user not authenticated or expired');
           }
-        });
+
+          const getVapidKeysResponse = await client.getVapidPublicKeys();
+          const vapidBot = getVapidKeysResponse?.nodes?.[0];
+          if (!vapidBot) {
+            throw new Error('tenant does not have a configured Vapid bot');
+          }
+
+          if (Notification.permission === 'granted') {
+            await createOrUpdateWebPushTarget(
+              subscription,
+              vapidBot.publicKey,
+              db,
+              client,
+            );
+          }
+        } catch (e) {
+          if (e instanceof Error) {
+            console.error('Push subscription change event error:', e.message);
+          }
+        }
       });
     // Force casting "PushSubscriptionChangeEvent" because it is not widely supported across browsers: https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerGlobalScope/pushsubscriptionchange_event
     (event as PushSubscriptionChangeEvent).waitUntil(subscription);
@@ -121,10 +127,9 @@ async function getSubscription(
   }
 
   if (!userAccount || !dappId || !env) {
-    console.log(
-      'UserAccount, Notifi dappId, or env not found. Skipping subscription instantiation.',
+    throw new Error(
+      'userAccount, Notifi dappId, or env not found. Skipping subscription instantiation.',
     );
-    return;
   }
 
   client = instantiateFrontendClient(
@@ -140,19 +145,13 @@ async function getSubscription(
 
   const userState = await client.initialize();
   if (userState.status !== 'authenticated') {
-    console.error(
-      'Failed to initialize Notifi frontend client: user not authenticated or expired',
-    );
-    return;
+    throw new Error('user not authenticated or expired');
   }
 
   const getVapidKeysResponse = await client.getVapidPublicKeys();
   const vapidBot = getVapidKeysResponse?.nodes?.[0];
   if (!vapidBot) {
-    console.error(
-      'Tenant does not have a configured Vapid bot. Will not attempt web push subscription.',
-    );
-    return;
+    throw new Error('tenant does not have a configured Vapid bot');
   }
 
   const subscription = await self.registration.pushManager.getSubscription();

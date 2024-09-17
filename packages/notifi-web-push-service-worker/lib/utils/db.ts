@@ -15,7 +15,6 @@ export function createDb(): IndexedDb {
       };
 
       openreq.onupgradeneeded = () => {
-        // First time setup: create an empty object store
         openreq.result.createObjectStore(notifiDefaultDbStore);
       };
 
