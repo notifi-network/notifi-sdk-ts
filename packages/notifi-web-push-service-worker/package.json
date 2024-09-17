@@ -16,7 +16,7 @@
   },
   "scripts": {
     "build": "npm run clean && npm run compile",
-    "compile": "tsup lib/index.ts --format cjs,esm --dts --clean && esbuild ./lib/notifi-service-worker.js --bundle --outfile=./dist/notifi-service-worker.js",
+    "compile": "tsup lib/index.ts --format cjs,esm --dts --clean && esbuild ./lib/notifi-service-worker.ts --bundle --outfile=./dist/notifi-service-worker.js",
     "clean": "rimraf ./dist",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepublishOnly": "npm run build"
