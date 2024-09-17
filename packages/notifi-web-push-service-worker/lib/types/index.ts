@@ -13,7 +13,7 @@ export type NotifiWebPushEventData = {
   Subject: string;
   Message: string;
   Icon?: string; // iconUrl
-  EncryptedBlob?: string; // TODO: should not be optional (BE WIP)
+  EncryptedBlob: string;
 };
 
 export type IndexedDb = {
@@ -21,3 +21,9 @@ export type IndexedDb = {
   set(key: IDBValidKey, value: string): Promise<void>;
   delete(key: IDBValidKey): Promise<void>;
 };
+
+export type NotifiNotificationData = {
+  encryptedBlob: string;
+};
+
+export type UserInteractionType = 'MESSAGE_OPENED' | 'MESSAGE_CLOSED';

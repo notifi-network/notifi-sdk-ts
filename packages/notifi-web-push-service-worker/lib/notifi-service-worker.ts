@@ -7,11 +7,16 @@ import {
   createDb,
   createOrUpdateWebPushTarget,
   defaultIconUrl,
+  isNotifiNotificationData,
   isNotifiServiceWorkerMessage,
   isNotifiWebPushEventData,
   parseJsonString,
+  sendMessageDeliveredAnalytics,
+  sendUserInteractionAnalytics,
   urlBase64ToUint8Array,
 } from '@notifi-network/notifi-web-push-service-worker';
+
+import { NotifiNotificationData } from './types/index';
 
 declare const self: ServiceWorkerGlobalScope;
 
@@ -28,23 +33,53 @@ self.addEventListener('push', async function (event) {
     return console.error('Push event: Invalid event data:', event.data?.text());
   }
 
-  const { Subject, Message, Icon } = eventData;
+  const { Subject, Message, Icon, EncryptedBlob } = eventData;
+  const data: NotifiNotificationData = {
+    encryptedBlob: EncryptedBlob,
+  };
 
   event.waitUntil(
     self.registration.showNotification(Subject, {
       body: Message,
       icon: Icon ?? defaultIconUrl,
+      data: JSON.stringify(data),
     }),
   );
-  // TODO: Analytics here
+  await sendMessageDeliveredAnalytics(notifiEnv, EncryptedBlob);
 });
 
 self.addEventListener('notificationclick', async function (event) {
-  // TODO: Analytics here
+  const notificationData = parseJsonString({
+    jsonString: event.notification.data ?? '{}',
+    validator: isNotifiNotificationData,
+  });
+
+  if (!notificationData) {
+    return;
+  }
+
+  await sendUserInteractionAnalytics(
+    notifiEnv,
+    'MESSAGE_OPENED',
+    notificationData.encryptedBlob,
+  );
 });
 
 self.addEventListener('notificationclose', async function (event) {
-  // TODO: Analytics here
+  const notificationData = parseJsonString({
+    jsonString: event.notification.data ?? '{}',
+    validator: isNotifiNotificationData,
+  });
+
+  if (!notificationData) {
+    return;
+  }
+
+  await sendUserInteractionAnalytics(
+    notifiEnv,
+    'MESSAGE_CLOSED',
+    notificationData.encryptedBlob,
+  );
 });
 
 self.addEventListener('message', (event) => {
@@ -74,7 +109,6 @@ self.addEventListener('message', (event) => {
 self.addEventListener(
   'pushsubscriptionchange',
   (event) => {
-    console.log('push subscription changed!!');
     const subscription = self.registration.pushManager
       // Force casting "PushSubscriptionChangeEvent" because it is not widely supported across browsers: https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerGlobalScope/pushsubscriptionchange_event
       .subscribe((event as PushSubscriptionChangeEvent).oldSubscription.options)
@@ -114,6 +148,7 @@ self.addEventListener(
 // ⬇ Helper functions & service worker global variables ⬇
 
 let client: NotifiFrontendClient;
+let notifiEnv: NotifiEnvironment;
 const db = createDb();
 
 async function getSubscription(
@@ -132,6 +167,7 @@ async function getSubscription(
     );
   }
 
+  notifiEnv = env;
   client = instantiateFrontendClient(
     dappId,
     {
