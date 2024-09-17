@@ -1,8 +1,7 @@
 import { NotifiFrontendClient } from '@notifi-network/notifi-frontend-client';
 
-import { uint8ArrayToBase64Url } from '../utils';
-import { webPushTargetIdKey } from '../utils/constants';
-import { IndexedDb } from '../utils/db';
+import { IndexedDb } from '../types';
+import { uint8ArrayToBase64Url, webPushTargetIdKey } from '../utils';
 
 export async function createOrUpdateWebPushTarget(
   subscription: PushSubscription,
@@ -72,7 +71,7 @@ async function createWebPushTarget(
     webPushTargetIds.push(
       webPushTargetResponse.createWebPushTarget.webPushTarget?.id,
     );
-
+    // TODO: Rather than using ensureTargetGroup, might create a new client method for web push target
     await frontendClient.ensureTargetGroup({
       name: 'Default',
       emailAddress: defaultTargetGroup?.emailTargets?.[0]?.emailAddress,

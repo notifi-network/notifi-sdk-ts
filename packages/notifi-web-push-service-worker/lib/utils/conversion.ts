@@ -14,3 +14,18 @@ export function urlBase64ToUint8Array(base64String: string) {
 export function uint8ArrayToBase64Url(uint8Array: Uint8Array) {
   return self.btoa(String.fromCharCode.apply(null, Array.from(uint8Array)));
 }
+
+export function parseJsonString<T>(input: {
+  jsonString: string;
+  validator: (data: unknown) => data is T;
+}): T | undefined {
+  try {
+    const parsed = JSON.parse(input.jsonString);
+    if (input.validator(parsed)) {
+      return parsed;
+    }
+  } catch (e) {
+    console.error('Failed to parse JSON:', e);
+  }
+  return undefined;
+}

@@ -1,10 +1,5 @@
+import { IndexedDb } from '../types';
 import { notifiDb, notifiDefaultDbStore } from './constants';
-
-export type IndexedDb = {
-  get(key: IDBValidKey): Promise<string | undefined>;
-  set(key: IDBValidKey, value: string): Promise<void>;
-  delete(key: IDBValidKey): Promise<void>;
-};
 
 export function createDb(): IndexedDb {
   let dbInstance: Promise<IDBDatabase>;

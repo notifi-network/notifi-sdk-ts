@@ -1,16 +1,17 @@
 import {
+  NotifiEnvironment,
   NotifiFrontendClient,
   instantiateFrontendClient,
 } from '@notifi-network/notifi-frontend-client';
-import { NotifiEnvironment } from 'notifi-frontend-client/dist';
-
 import {
-  NotifiServiceWorkerMessageType,
+  createDb,
+  createOrUpdateWebPushTarget,
+  defaultIconUrl,
   isNotifiServiceWorkerMessage,
-} from '.';
-import { createOrUpdateWebPushTarget } from './notifi-service/webpush-target';
-import { urlBase64ToUint8Array } from './utils';
-import { createDb } from './utils/db';
+  isNotifiWebPushEventData,
+  parseJsonString,
+  urlBase64ToUint8Array,
+} from '@notifi-network/notifi-web-push-service-worker';
 
 declare const self: ServiceWorkerGlobalScope;
 
@@ -19,17 +20,20 @@ interface PushSubscriptionChangeEvent extends ExtendableEvent {
 }
 
 self.addEventListener('push', async function (event) {
-  const payload = event.data
-    ? JSON.parse(event.data.text())
-    : {
-        Subject: 'No Payload',
-        Message: 'No payload',
-      };
+  const eventData = parseJsonString({
+    jsonString: event.data?.text() ?? '{}',
+    validator: isNotifiWebPushEventData,
+  });
+  if (!eventData) {
+    return console.error('Push event: Invalid event data:', event.data?.text());
+  }
+
+  const { Subject, Message, Icon } = eventData;
 
   event.waitUntil(
-    self.registration.showNotification(payload.Subject, {
-      body: payload.Message,
-      icon: payload.Icon ?? 'https://notifi.network/logo.png',
+    self.registration.showNotification(Subject, {
+      body: Message,
+      icon: Icon ?? defaultIconUrl,
     }),
   );
   // TODO: Analytics here
@@ -44,26 +48,24 @@ self.addEventListener('notificationclose', async function (event) {
 });
 
 self.addEventListener('message', (event) => {
-  let parsedEventData: object;
-
-  try {
-    parsedEventData = JSON.parse(event.data);
-  } catch (e) {
-    console.error('Failed to parse message event data', e);
-    return;
+  const eventData = parseJsonString({
+    jsonString: event.data,
+    validator: isNotifiServiceWorkerMessage,
+  });
+  if (!eventData) {
+    return console.error('Invalid message event data:', event.data);
   }
 
-  if (!isNotifiServiceWorkerMessage(parsedEventData)) return;
+  const { userAccount, dappId, env, type } = eventData;
 
-  const { userAccount, dappId, env, type } = parsedEventData;
   switch (type) {
-    case NotifiServiceWorkerMessageType.NotifiCheckSubscription:
+    case 'NotifiCheckSubscription':
       getSubscription(userAccount, dappId, env).catch((e) => {
         console.error(e, 'Error getting subscription');
       });
       break;
     default:
-      console.error('Unsupported message type');
+      console.error('Unsupported message event type');
   }
 });
 
@@ -71,7 +73,6 @@ self.addEventListener(
   'pushsubscriptionchange',
   (event) => {
     console.log('push subscription changed!!');
-    console.log(event);
     const subscription = self.registration.pushManager
       // Force casting "PushSubscriptionChangeEvent" because it is not widely supported across browsers: https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerGlobalScope/pushsubscriptionchange_event
       .subscribe((event as PushSubscriptionChangeEvent).oldSubscription.options)
@@ -81,10 +82,9 @@ self.addEventListener(
             const getVapidKeysResponse = await client.getVapidPublicKeys();
             const vapidBot = getVapidKeysResponse?.nodes?.[0];
             if (!vapidBot) {
-              console.error(
+              return console.error(
                 'Tenant does not have a configured Vapid bot. Will not attempt web push subscription.',
               );
-              return;
             }
 
             if (Notification.permission === 'granted') {
@@ -102,7 +102,7 @@ self.addEventListener(
     // Force casting "PushSubscriptionChangeEvent" because it is not widely supported across browsers: https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerGlobalScope/pushsubscriptionchange_event
     (event as PushSubscriptionChangeEvent).waitUntil(subscription);
   },
-  false,
+  false, // TODO: Remove?? (TBC)
 );
 
 // ⬇ Helper functions & service worker global variables ⬇
