@@ -58,10 +58,28 @@ self.addEventListener('notificationclick', async function (event) {
     return;
   }
 
-  await sendUserInteractionAnalytics(
-    notifiEnv,
-    'MESSAGE_OPENED',
-    notificationData.encryptedBlob,
+  event.notification.close();
+  event.waitUntil(
+    Promise.all([
+      sendUserInteractionAnalytics(
+        notifiEnv,
+        'MESSAGE_OPENED',
+        notificationData.encryptedBlob,
+      ),
+      self.clients
+        .matchAll({
+          type: 'window',
+          includeUncontrolled: true,
+        })
+        .then((clientList) => {
+          for (const client of clientList) {
+            const urlOrigin = new URL(client.url).origin;
+            if (urlOrigin === self.location.origin && 'focus' in client)
+              return client.focus();
+          }
+          self.clients.openWindow('/');
+        }),
+    ]),
   );
 });
 
