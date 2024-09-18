@@ -1,11 +1,10 @@
 'use client';
 
 import { useGoogleOauth2Context } from '@/context/GoogleOauth2Context';
-import { NotifiEnvironment } from '@notifi-network/notifi-frontend-client';
+import { isNotifiEnv } from '@notifi-network/notifi-frontend-client';
 import { NotifiContextProvider } from '@notifi-network/notifi-react';
 import '@notifi-network/notifi-react/dist/index.css';
 import { JwtPayload, jwtDecode } from 'jwt-decode';
-import { useSearchParams } from 'next/navigation';
 import React, { PropsWithChildren } from 'react';
 
 export const oidcModeStateLocalStorageKey = 'NotifiReactExampleOidcMode';
@@ -25,18 +24,17 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
   children,
 }) => {
   const { getIdToken, idToken } = useGoogleOauth2Context();
-  const searchParams = useSearchParams();
-  const tenantId =
-    searchParams.get('tenantid') ?? process.env.NEXT_PUBLIC_TENANT_ID ?? null;
-  const env =
-    (searchParams.get('env') as NotifiEnvironment) ??
-    (process.env.NEXT_PUBLIC_ENV as NotifiEnvironment) ??
-    null;
-  const cardId =
-    searchParams.get('cardid') ?? process.env.NEXT_PUBLIC_CARD_ID ?? null;
+  const tenantId = process.env.NEXT_PUBLIC_TENANT_ID ?? null;
+
+  const env = isNotifiEnv(process.env.NEXT_PUBLIC_ENV)
+    ? process.env.NEXT_PUBLIC_ENV
+    : null;
+  const cardId = process.env.NEXT_PUBLIC_CARD_ID ?? null;
 
   if (!tenantId || !env || !cardId)
-    throw new Error('ERROR: cannot find tenantId, env, or cardId');
+    throw new Error(
+      'ERROR: cannot find tenantId, env, or cardId. Make sure you have a .env.local file',
+    );
   return (
     <>
       {!idToken ? (

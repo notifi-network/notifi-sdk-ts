@@ -2,12 +2,15 @@
 
 import { useGoogleOauth2Context } from '@/context/GoogleOauth2Context';
 import { CustomJwtPayload } from '@/context/NotifiContextWrapper';
+import { isNotifiEnv } from '@notifi-network/notifi-frontend-client';
 import {
   NotifiCardModal,
   useNotifiFrontendClientContext,
 } from '@notifi-network/notifi-react';
-import { initWebPushServiceWorker } from '@notifi-network/notifi-web-push-service-worker';
-import { tryCreateWebPushSubscription } from '@notifi-network/notifi-web-push-service-worker';
+import {
+  initWebPushServiceWorker,
+  tryCreateWebPushSubscription,
+} from '@notifi-network/notifi-web-push-service-worker';
 import { jwtDecode } from 'jwt-decode';
 import React from 'react';
 
@@ -19,16 +22,17 @@ export default function Home() {
   }, []);
 
   const enableWebPush = React.useCallback(() => {
-    if (Notification.permission !== 'granted') {
-      Notification.requestPermission();
-    }
+    const notifiEnv = isNotifiEnv(process.env.NEXT_PUBLIC_ENV)
+      ? process.env.NEXT_PUBLIC_ENV
+      : null;
+    const notifiTenantId = process.env.NEXT_PUBLIC_TENANT_ID ?? null;
+
+    if (!notifiEnv || !notifiTenantId)
+      throw new Error('Missing env or tenantId, check .env.local');
+
     if (frontendClientStatus.isAuthenticated && idToken) {
       const userAccount = (jwtDecode(idToken) as CustomJwtPayload).email;
-      tryCreateWebPushSubscription(
-        userAccount,
-        process.env.NEXT_PUBLIC_TENANT_ID ?? '',
-        process.env.NEXT_PUBLIC_ENV ?? '',
-      );
+      tryCreateWebPushSubscription(userAccount, notifiTenantId, notifiEnv);
     }
   }, [frontendClientStatus.isAuthenticated, idToken]);
 
