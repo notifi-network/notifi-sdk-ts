@@ -1,6 +1,7 @@
 import { NotifiEnvironment } from '@notifi-network/notifi-frontend-client';
 
 import {
+  NotifiNotificationData,
   NotifiServiceWorkerMessagePayload,
   NotifiWebPushEventData,
 } from '../types';
@@ -97,6 +98,15 @@ export const isNotifiWebPushEventData = (
   const eventData = data as NotifiWebPushEventData;
   if (!('Subject' in eventData)) return false;
   if (!('Message' in eventData)) return false;
-  // if (!('EncryptedBlob' in eventData)) return false; // TODO: uncomment when BE is ready
+  if (!('EncryptedBlob' in eventData)) return false;
+  return true;
+};
+
+export const isNotifiNotificationData = (
+  data: unknown,
+): data is NotifiNotificationData => {
+  if (typeof data !== 'object') return false;
+  const eventData = data as NotifiNotificationData;
+  if (!('encryptedBlob' in eventData)) return false;
   return true;
 };
