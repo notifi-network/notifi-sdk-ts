@@ -11,7 +11,7 @@ const nextConfig = {
     config.externals.push('pino-pretty', 'lokijs', 'encoding');
     config.plugins.push(
       new CopyPlugin({
-        // ⬇️ Copy the built service-worker.js to the public folder
+        // ⬇️ Copy the built notifi-service-worker.js to the public folder. For more details, refer to the README.md#installation-&-setup of the notifi-web-push-service-worker package.
         patterns: [
           {
             from: '../notifi-web-push-service-worker/dist/notifi-service-worker.js',

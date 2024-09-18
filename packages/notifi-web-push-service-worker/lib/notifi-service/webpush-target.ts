@@ -19,11 +19,16 @@ export async function createOrUpdateWebPushTarget(
     ids: [webPushTargetId],
   });
 
-  if (getWebPushTargetsResponse?.nodes?.length !== 1) {
+  // NOTE: cannot find existing web push target, create a new one
+  if (
+    !getWebPushTargetsResponse?.nodes ||
+    getWebPushTargetsResponse?.nodes?.length === 0
+  ) {
     await createWebPushTarget(subscription, vapidPublicKey, frontendClient, db);
     return;
   }
 
+  // NOTE: found existing web push target, update it
   await updateWebPushTarget(subscription, webPushTargetId, frontendClient);
 }
 

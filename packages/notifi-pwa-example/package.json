@@ -1,10 +1,16 @@
 {
   "name": "@notifi-network/notifi-pwa-example",
   "version": "1.1.2",
+  "description": "A Progressive Web App (PWA) example empowered by notifi.network",
+  "homepage": "https://github.com/notifi-network/notifi-sdk-ts",
+  "license": "MIT",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/notifi-network/notifi-sdk-ts.git"
+  },
   "scripts": {
-    "dev": "next dev",
-    "lint": "next lint"
+    "dev": "next dev"
   },
   "dependencies": {
     "@notifi-network/notifi-web-push-service-worker": "1.1.2",
