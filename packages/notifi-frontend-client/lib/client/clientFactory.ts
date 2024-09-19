@@ -1,7 +1,9 @@
-import { NotifiService } from '@notifi-network/notifi-graphql';
+import {
+  NotifiService,
+  NotifiSubscriptionService,
+} from '@notifi-network/notifi-graphql';
 import { GraphQLClient } from 'graphql-request';
 import { RequestConfig } from 'graphql-request/build/esm/types';
-import { NotifiSubscriptionService } from 'notifi-graphql/lib/NotifiSubscriptionService';
 
 import {
   ConfigFactoryInput,
