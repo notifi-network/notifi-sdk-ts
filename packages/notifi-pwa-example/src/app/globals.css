@@ -1,0 +1,15 @@
+.notifi-card-modal-container {
+  width: 23rem;
+  border: 1px solid lightgray;
+  border-radius: 6px;
+}
+
+.btn {
+  margin-bottom: 1rem;
+  width: 15rem;
+  border: 1px solid grey;
+  background-color: lightgrey;
+  border-radius: 2px;
+  cursor: pointer;
+  text-align: center;
+}

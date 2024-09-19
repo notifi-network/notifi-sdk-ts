@@ -1,10 +1,12 @@
 import { Types } from '@notifi-network/notifi-graphql';
 
-export type NotifiEnvironment =
-  | 'Production'
-  | 'Staging'
-  | 'Development'
-  | 'Local';
+const notifiEnvs = ['Production', 'Staging', 'Development', 'Local'] as const;
+export type NotifiEnvironment = (typeof notifiEnvs)[number];
+export const isNotifiEnv = (env: unknown): env is NotifiEnvironment => {
+  if (typeof env !== 'string') return false;
+  if (notifiEnvs.includes(env as NotifiEnvironment)) return true;
+  return false;
+};
 
 export type NotifiEnvironmentConfiguration = Readonly<{
   env?: NotifiEnvironment;
