@@ -56,10 +56,9 @@ This monorepo contains the following packages which are used to interact with No
 - [@notifi-network/notifi-react](#notifi-react)
 - [@notifi-network/notifi-node](#notifi-node)
 - [@notifi-network/notifi-graphql](#notifi-graphql)
-- [@notifi-network/notifi-web-push-service-worker]()
+- [@notifi-network/notifi-web-push-service-worker](#notifi-web-push-service-worker)
 
 ![notifi-sdk-ts-overview](https://github.com/user-attachments/assets/b3011861-068f-4144-99a9-7e18175a9054)
-
 
 > Explore the [type docs](https://docs.notifi.network/notifi-sdk-ts/)
 
@@ -173,7 +172,7 @@ This section is to introduce some often-used commands for repository maintainers
 
 ## Advanced
 
-We understand that not all scenarios can be solved with the current state of the SDK. When adding SDK features, we'd like to ensure we're building exactly what developers want. If you need to break out of the SDK features for more advanced interaction with Notifi, please see our <a href="https://docs.notifi.network"><strong>Notifi GraphQL API</strong></a> that you can consume alongside the SDK.
+We understand that not all scenarios can be solved with the current state of the SDK. When adding SDK features, we'd like to ensure we're building exactly what developers want. If you need to break out of the SDK features for more advanced interaction with Notifi, please see our Notifi [GraphQL API](https://api.notifi.network/gql/) that you can consume alongside the SDK.
 </br>
 
 ### Built With ❤️ and ...
