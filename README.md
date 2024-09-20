@@ -16,12 +16,10 @@
   <h3 align="center">Notifi SDK</h3>
 
   <p align="center">
-    Typescript based SDK for React and NodeJS projects.
+    Notifi Typescript based SDK .
     <br />
-    <a href="https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages">See our packages for more examples »</a><br />
-    <a href="https://notifi-network.github.io/notifi-sdk-ts/"><strong>Explore the docs »</strong></a>
     <br />
-    <a href="https://discord.gg/nAqR3mk3rv"><strong>Join our Discord!!</strong></a>
+    <strong>Know more about <a href="https://notifi.network/">Notifi.network</a></strong>
     <br />
     <br />
     ·
@@ -29,65 +27,162 @@
     ·
     <a href="https://github.com/notifi-network/notifi-sdk-ts/issues">Request Feature</a>
     ·
+    <a href="https://discord.gg/nAqR3mk3rv">Join our Discord</a>
   </p>
 </div>
 
-<!-- ABOUT THE PROJECT -->
+## About Notifi
 
-## Usage Scenarios
+Notifi is a cross-blockchain notification service that allows dapps to send notifications to their users.
 
-<h2>Direct Push</h2>
-This type of interaction assumes you have a server already running and want to push a notification to a member of your dapp. In this scenario, we first require the dapp to directly tell Notifi on our Discord SDK channel that they want to leverage our SDK. Notifi will create a tenancy that is owned by the dapp and transfer a SID/Secret pair. For now this is manual, but we will have a self-service admin panel for dapps to use in the future.
+Application owners (Developers) can push notifications to their users in various ways by leveraging Notifi protocol.
 
-For users to sign up for notifications, the dapp will use our React SDK to logInFromDapp and then create/modify notifications. From here, the DApp SVC can send a message to the user's wallet address, where Notifi will take care of any special filtering and routing the user wanted to do. Examples coming soon!
+- **Community messages**: broadcast messages to the on-chain community by using [Community Manager of Notifi Admin Portal](https://admin.notifi.network/community).
 
-![Direct Push Diagram][scenario-push-diagram]
+- **On-chain events**: By using Notifi [on-chain parser](https://github.com/notifi-network/notifi-parser-sdk), Dapps can send notifications to their users based on on-chain events.
 
-<h2>Monitor and Trigger</h2>
-In this scenario, Notifi can monitor the blockchain and detect important events that users can subscribe to. This is how Notifi implements DAO proposal notifications today. If you have a dapp that you'd like Notifi to monitor, please join our Discord server and tell us about it! We'll be open sourcing our plugins for DAO proposals in the future to help make this more self service. This can seem like a bit of magic, so feel free to ask any questions in our Discord#SDK.
+Register a new account on [Notifi Admin Portal](https://admin.notifi.network) and start sending notifications to your users.
 
-![Monitoring Diagram][scenario-monitor-diagram]
+> For more detailed info to get started with Notifi, please check the [official documentation](https://docs.notifi.network/docs/getting-started).
 
-<p align="right">(<a href="#top">back to top</a>)</p>
+<br/>
+<br/>
+
+## About Notifi SDK TS
+
+This monorepo contains the following packages which are used to interact with Notifi services.
+
+- [@notifi-network/notifi-frontend-client](#notifi-frontend-client)
+- [@notifi-network/notifi-react](#notifi-react)
+- [@notifi-network/notifi-node](#notifi-node)
+- [@notifi-network/notifi-graphql](#notifi-graphql)
+- [@notifi-network/notifi-web-push-service-worker](#notifi-web-push-service-worker)
+
+![notifi-sdk-ts-overview](https://github.com/user-attachments/assets/b3011861-068f-4144-99a9-7e18175a9054)
+
+> Explore the [type docs](https://docs.notifi.network/notifi-sdk-ts/)
+
+#### Notifi Frontend Client
+
+[@notifi-network/notifi-frontend-client](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-frontend-client) package is used from the frontend (Application) side by instantiating a `NotifiFrontendClient` object which provides the necessary client methods to interact with Notifi services.
+
+> - This package is not framework-specific, so it can be used in any frontend application.
+> - The implementation of `@notifi-network/notifi-front-client`: [@notifi-network/notifi-react](#notifi-react)
+
+#### Notifi React
+
+[@notifi-network/notifi-react](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-react) package is a React library that provides:
+
+- An out-of-the-box UI card modal component, `NotifiCardModal` by which developers can easily integrate with Notifi services without worrying about the underlying implementation.
+- A set of context methods by which allows developers to build their custom UI components to interact with Notifi services.
+
+> - This package is specifically designed for [React based applications](https://www.robinwieruch.de/react-starter/) .
+> - Respective example package: [@notifi-network/notifi-react-example-v2](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-react-example-v2)
+> - This package is a implementation of the [@notifi-network/notifi-frontend-client](#notifi-frontend-client) package.
+
+#### Notifi Node
+
+[@notifi-network/notifi-node](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-node) package is used from a NodeJS server side. Dapp owners can implement the off-chain parsing logics and send notifications to their users.
+
+> Respective example packages: [@notifi-network/notifi-node-sample](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-node-sample)
+
+#### Notifi GraphQL
+
+[@notifi-network/notifi-graphql](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-graphql), powered by [graphql-codegen](https://the-guild.dev/graphql/codegen/docs/getting-started), serves as a GraphQL client that provides the necessary types and queries to interact with Notifi services.
+This is particularly useful for developers who want to build their services (SDK) on top of Notifi services.
+
+> The implementation of `@notifi-network/notifi-graphql`: [@notifi-network/notifi-frontend-client](#notifi-frontend-client)
+
+#### Notifi Web Push Service Worker
+
+[@notifi-network/notifi-web-push-service-worker](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-web-push-service-worker) package introduces a [Service Worker](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API) that handles the browser push notification subscription.
+This is useful for the cross platform applications which adopt the Progressive Web App (PWA) architecture.
+
+> - Respective example packages: [@notifi-network/notifi-pwa-example](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-pwa-example)
+
+<br/>
+<br/>
+
+## Build with Notifi (for repository maintainers or Contributors)
+
+This section is to introduce some often-used commands for repository maintainers or contributors. Notifi is always open to contributions, so feel free to create a PR if you have any ideas or improvements.
+
+1. Build all packages after making changes
+
+   ```bash
+   # on the root directory
+   npm run build
+   ```
+
+    </br>
+
+2. Run headless cypress tests locally
+
+   ```bash
+   # on the root directory
+   npm run test
+
+   ```
+
+   For the detailed test scenarios, please check out the [Cypress test scripts](https://github.com/notifi-network/notifi-sdk-ts/blob/main/packages/notifi-react-example-v2/cypress/component/NotifiCardModal.cy.tsx)
+   </br>
+
+3. Run script on specific package
+
+   ```bash
+   # on the root directory
+   npx lerna --scope=@notifi-network/package-name run script-name
+   # example1: the following command will run dev server on the notifi-react-example-v2 package
+   npx lerna --scope=@notifi-network/notifi-react-example-v2 run dev
+   # example2: the following command will run open cypress test runner on the notifi-react-example-v2 package
+   npx lerna --scope=@notifi-network/notifi-react-example-v2 run cypress:open
+   ```
+
+    </br>
+
+4. Deploy the canary version of the package (internal maintainers only)
+
+   ```bash
+   # on the root directory
+   npx lerna publish --canary --force-publish
+   ```
+
+    </br>
+
+5. Deploy the stable version of the package (internal maintainers only)
+
+   ```bash
+   # on the root directory
+   npx lerna publish
+   ```
+
+    </br>
+
+6. Regenerate the documentation (internal maintainers only)
+
+   ```bash
+   # on the root directory
+   npm run docs
+   ```
+
+   This will re-generate the type documentation based on `@notifi-network/frontend-client` package and update the `docs` folder.
+
+<br/>
+<br/>
+
+## Advanced
+
+We understand that not all scenarios can be solved with the current state of the SDK. When adding SDK features, we'd like to ensure we're building exactly what developers want. If you need to break out of the SDK features for more advanced interaction with Notifi, please see our Notifi [GraphQL API](https://api.notifi.network/gql/) that you can consume alongside the SDK.
+</br>
 
 ### Built With ❤️ and ...
 
-- [Next.js](https://nextjs.org/)
-- [React.js](https://reactjs.org/)
-- [Vue.js](https://vuejs.org/)
 - [Lerna.js](https://lerna.js.org/)
 - [Cypress](https://www.cypress.io/)
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-<!-- GETTING STARTED -->
-
-## Getting Started with Direct Push
-
-- Join our <a href="https://discord.gg/nAqR3mk3rv">Notifi Discord</a>
-- Message our SDK channel for access
-- Install our npm package in your React app
-- Create UI for your users to register for notifications
-- Use our GraphQL API from your service to send messages to Notifi (NodeJS SDK coming soon!)
-
-## Getting Started with Notifi Monitoring
-
-- Join our <a href="https://discord.gg/nAqR3mk3rv">Notifi Discord</a>
-- Message our SDK channel with your scenario
-
-Note: For Notifi's monitoring scenario, we will be releasing our Notifi Monitoring code in the future so you can simply template and/or extend off of existing patterns
-
-## Steps to deploy canary (for local development of SDK and deploying to npm)
-
-npx lerna exec -- npx rimraf dist
-
-npx lerna exec -- npx rimraf node_modules
-
-npx lerna bootstrap
-
-npx lerna run build
-
-npx lerna publish --canary
+- [Nx](https://nx.dev/)
+- [React.js](https://reactjs.org/)
+- [Next.js](https://nextjs.org/)
+- [GraphQL-Codegen](https://the-guild.dev/graphql/codegen/docs/getting-started)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -106,70 +201,3 @@ npx lerna publish --canary
 [license-url]: https://github.com/notifi-network/notifi-sdk-ts/blob/main/LICENSE.txt
 [scenario-push-diagram]: images/push_diagram.svg
 [scenario-monitor-diagram]: images/monitor_diagram.svg
-
-## E2E Test
-
-The E2E test is particularly for `@notifi-network/notifi-react-card` since it provides a React component (UI/UX) to let developers integrate with notifi's BE more easily.
-
-To ensure all the components are working as expected, we use `cypress` [component test](https://docs.cypress.io/guides/component-testing/overview) to implement the E2E (end-to-end) test.
-
-Run the command below to start the cypress test runner [heedlessly](https://docs.cypress.io/guides/guides/command-line#cypress-run-headed).
-
-```bash
-npm run test
-# or
-# npx lerna --scope=@notifi-network/notifi-react-example run test
-```
-
-If you would like to contribute, feel free to create a new test case in `packages/notifi-react-example/cypress/component/NotifiSubscriptionCard.cy.tsx`, to ensure the implemented new features are working as expected. These test cases will also be included in the CI/CD pipeline when the PR is created & merged.
-
-There is the example format of the test case below.
-
-```typescript
-// ...
-describe('New feature', () => {
-  it('Flow#1', () => {
-    // ... implement the test content for the new feature flow#1
-  });
-
-  it('Flow#2', () => {
-    // ... implement the test content for the new feature flow#2
-  });
-});
-```
-
-<details>
-  <summary>Notes</summary>
-
-1. It might be useful to run cypress `headed mode` while developing new test script.
-
-```bash
-npx lerna --scope=@notifi-network/notifi-react-example run cypress:open
-```
-
-2. Learn more about cypress from [official documentation](https://docs.cypress.io/guides/end-to-end-testing/writing-your-first-end-to-end-test)
-
-</details>
-
-> We use the exclusive notifi tenant for e2e test, see the details below.
->
-> - tenantId (dappAddress): `notifie2e`
-> - cardId: `718f2bb0fd80401887643764017cc780`
->
-> For normal test scenario, we are able to simply manipulate card data through cypress `intercept` and `fixture` function.
-> Feel free to contact us in case that the feature test requires a new react-card.
-
-More detail for repository maintainer, check the Doc [here](https://notifi.atlassian.net/l/cp/dNM0ZL07).
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-## Regenerate docs
-
-npm run docs
-
-<br/>
-<br/>
-
-## Advanced
-
-We understand that not all scenarios can be solved with the current state of the SDK. When adding SDK features, we'd like to ensure we're building exactly what developers want. If you need to break out of the SDK features for more advanced interaction with Notifi, please see our <a href="https://docs.notifi.network"><strong>Notifi GraphQL API</strong></a> that you can consume alongside the SDK.
