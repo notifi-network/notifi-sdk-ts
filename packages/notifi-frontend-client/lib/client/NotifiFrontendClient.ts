@@ -941,8 +941,15 @@ export class NotifiFrontendClient {
     const hashBuffer = await crypto.subtle.digest('SHA-256', data);
 
     const hashArray = Array.from(new Uint8Array(hashBuffer));
+
+    let prefix = '0x';
+    // TDOO: ⬇ Legacy purpose and will be deprecated after SDK V2. the prefix format will be aligned across all blockchains.
+    if (walletBlockchain === 'SOLANA' || walletBlockchain === 'OSMOSIS') {
+      prefix = 'Notifi Auth: 0x';
+    }
+
     const logValue =
-      '0x' + hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+      prefix + hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
     return { nonce: logValue };
   }
 

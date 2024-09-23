@@ -16,7 +16,8 @@ const NotifiComponentExample = () => {
   const searchParams = useSearchParams();
   const [isCardModalOpen, setIsCardModalOpen] = React.useState(false);
   const { unreadCount } = useNotifiHistoryContext();
-  const { frontendClientStatus } = useNotifiFrontendClientContext();
+  const { frontendClientStatus, loginViaTransaction } =
+    useNotifiFrontendClientContext();
   const {
     isLoading,
     signTransaction,
@@ -51,7 +52,11 @@ const NotifiComponentExample = () => {
   const bellIconHref = `/bell-${
     searchParams.get('scene') === 'light' ? 'light' : 'dark'
   }${isCardModalOpen ? '-open' : ''}.svg`;
-
+  console.log({
+    isSignTxSupported,
+    auth: frontendClientStatus.isAuthenticated,
+    loginViaTransaction,
+  });
   return (
     <div>
       <div>
@@ -68,7 +73,9 @@ const NotifiComponentExample = () => {
           </li>
         </ul>
       </div>
-      {isSignTxSupported && !frontendClientStatus.isAuthenticated ? (
+      {isSignTxSupported &&
+      !frontendClientStatus.isAuthenticated &&
+      loginViaTransaction ? (
         <>
           {isLoading ? (
             <div className="loading-solana-tx">Loading ... (tx in process)</div>
