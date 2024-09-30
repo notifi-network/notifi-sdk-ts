@@ -65,7 +65,7 @@ export const HistoryList: React.FC<HistoryListProps> = ({
         flex flex-col relative h-max-full overflow-y-auto
       `}
     >
-      {historyItems.length > 0 ? (
+      {!isIncludeRead || historyItems.length > 0 ? (
         <div
           className={`p-6 border-b border-gray-200 border-opacity-20 flex flex-row justify-between items-start`}
         >
