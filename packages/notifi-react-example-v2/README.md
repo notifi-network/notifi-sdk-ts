@@ -37,10 +37,6 @@ npx lerna --scope=@notifi-network/notifi-card-modal-example run dev
 
 🚀 Open [http://localhost:3000](http://localhost:3000) with your browser to get started. 🚀
 
-> - For more detail about the usage of `@notifi-network/notifi-react` package, checkout the [documentation]() of `@notifi-network/notifi-react`
-> - Make sure the blockchain network and the wallet setting are correctly configured as per your expectation on `packages/notifi-card-modal-example/src/context/NotifiContextWrapper.tsx`
+> - For more detail about the usage & config of `@notifi-network/notifi-react` package, checkout the [documentation](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-react) of `@notifi-network/notifi-react`
+> - Ensure the [blockchain network and the wallet setting](https://github.com/notifi-network/notifi-sdk-ts/blob/68b574175abbf49d15df330cc699711cab84159a/packages/notifi-react-example-v2/src/context/NotifiContextWrapper.tsx#L119) are correctly configured on `packages/notifi-card-modal-example/src/context/NotifiContextWrapper.tsx`
 > - Feel free to add more preferred wallets by implementing new case in `NtofiContextWrapper.tsx`
-
-## TODO
-
-- Cypress component test
