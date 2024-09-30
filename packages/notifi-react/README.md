@@ -716,9 +716,12 @@ For more detail about CSS classes, please refer to the [source code.](https://gi
 
 ## Dependency related configuration
 
-### `@xmtp`
+When using `@notifi-network/notifi-react`, it requires some additional configuration for specific dependencies.
 
-`notifi-react`'s dependency, `@xmtp/xxx`, requires specific configuration to handle the `wasm` file. The following configuration is required in nextjs ( the recommended framework ).
+### "@xmtp" related configuration
+
+The `@notifi-network/notifi-react`'s dependency, `@xmtp/xxx`, requires specific configuration to handle the `wasm` file.
+The following configuration is required in nextjs (the recommended framework).
 
 - **Nextjs version 14.2.0 or above**
 
@@ -760,4 +763,7 @@ The projects might encounter the following error if the above configuration is n
 Error: ENOENT: no such file or directory, open '/path/to/project/.next/server/vendor-chunks/user_preferences_bindings_wasm_bg.wasm'
 ```
 
-> Reference: [official xmpt example](https://github.com/xmtp/xmtp-web/blob/main/examples/nextjs/next.config.mjs)
+> Reference:
+>
+> - [official xmpt example](https://github.com/xmtp/xmtp-web/blob/main/examples/nextjs/next.config.mjs)
+> - [Notifi React Example config](https://github.com/notifi-network/notifi-sdk-ts/blob/main/packages/notifi-react-example-v2/next.config.mjs)
