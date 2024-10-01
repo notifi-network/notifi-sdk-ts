@@ -66,6 +66,7 @@ export const InboxConfigTargetList: React.FC<InboxConfigTargetListProps> = (
       <button
         data-cy="notifi-inbox-config-target-list-button"
         className={clsx(
+          'btn',
           'notifi-inbox-config-target-list-button',
           props.classNames?.button,
         )}

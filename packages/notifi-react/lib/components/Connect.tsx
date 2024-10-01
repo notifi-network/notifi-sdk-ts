@@ -153,7 +153,11 @@ export const Connect: React.FC<ConnectProps> = (props) => {
       ) : null}
       <button
         data-cy="notifi-connect-button"
-        className={clsx('notifi-connect-button', props.classNames?.button)}
+        className={clsx(
+          'btn',
+          'notifi-connect-button',
+          props.classNames?.button,
+        )}
         disabled={isLoading}
         onClick={connect}
       >

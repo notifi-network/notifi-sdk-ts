@@ -60,6 +60,7 @@ export const FtuTargetList: React.FC<FtuTargetListProps> = (props) => {
         <button
           data-cy="notifi-ftu-target-list-button"
           className={clsx(
+            'btn',
             'notifi-ftu-target-list-button',
             props.classNames?.button,
           )}

@@ -14,9 +14,7 @@
 @import url('./target-state-banner.css');
 @import url('./error.css');
 
-/*TODO: Should not rewrite default html style which might override the consumers' global style*/
-button {
-  /* Reset default button styles */
+.btn {
   border: none;
   outline: none;
   text-decoration: none;
