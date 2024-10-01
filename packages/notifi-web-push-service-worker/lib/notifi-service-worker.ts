@@ -17,6 +17,14 @@ import {
 } from '@notifi-network/notifi-web-push-service-worker';
 
 import { NotifiNotificationData } from './types/index';
+import {
+  getNotifiDappId,
+  getNotifiEnv,
+  getNotifiUserAccount,
+  storeNotifiDappId,
+  storeNotifiEnv,
+  storeNotifiUserAccount,
+} from './utils';
 
 declare const self: ServiceWorkerGlobalScope;
 
@@ -45,7 +53,20 @@ self.addEventListener('push', async function (event) {
       data: JSON.stringify(data),
     }),
   );
-  await sendMessageDeliveredAnalytics(notifiEnv, EncryptedBlob);
+
+  const notifiEnv = await getNotifiEnv(db);
+
+  if (!notifiEnv) {
+    console.error(
+      `Error in sending delivered analytics: Notifi env does not exist.`,
+    );
+    return;
+  }
+
+  await sendMessageDeliveredAnalytics(
+    notifiEnv as NotifiEnvironment,
+    EncryptedBlob,
+  );
 });
 
 self.addEventListener('notificationclick', async function (event) {
@@ -59,10 +80,16 @@ self.addEventListener('notificationclick', async function (event) {
   }
 
   event.notification.close();
+
+  const notifiEnv = await getNotifiEnv(db);
+  if (!notifiEnv) {
+    console.error(`Error in notification click: Notifi env does not exist.`);
+    return;
+  }
   event.waitUntil(
     Promise.all([
       sendUserInteractionAnalytics(
-        notifiEnv,
+        notifiEnv as NotifiEnvironment,
         'MESSAGE_OPENED',
         notificationData.encryptedBlob,
       ),
@@ -93,8 +120,13 @@ self.addEventListener('notificationclose', async function (event) {
     return;
   }
 
+  const notifiEnv = await getNotifiEnv(db);
+  if (!notifiEnv) {
+    console.error(`Error in notification close: Notifi env does not exist.`);
+    return;
+  }
   await sendUserInteractionAnalytics(
-    notifiEnv,
+    notifiEnv as NotifiEnvironment,
     'MESSAGE_CLOSED',
     notificationData.encryptedBlob,
   );
@@ -132,6 +164,11 @@ self.addEventListener(
       .subscribe((event as PushSubscriptionChangeEvent).oldSubscription.options)
       .then(async (subscription) => {
         try {
+          const client = await initializeNotifiClientFromDb();
+          if (!client) {
+            throw new Error('Failed to initialize client from db');
+          }
+
           const userState = await client.initialize();
           if (userState.status !== 'authenticated') {
             throw new Error('user not authenticated or expired');
@@ -165,9 +202,46 @@ self.addEventListener(
 
 // ⬇ Helper functions & service worker global variables ⬇
 
-let client: NotifiFrontendClient;
-let notifiEnv: NotifiEnvironment;
 const db = createDb();
+
+async function initializeNotifiClientFromDb(): Promise<
+  NotifiFrontendClient | undefined
+> {
+  const userAccount = await getNotifiUserAccount(db);
+  if (!userAccount) {
+    console.error(
+      'Error in initializing Notifi client from db: User account does not exist',
+    );
+    return undefined;
+  }
+
+  const notifiEnv = await getNotifiEnv(db);
+  if (!notifiEnv) {
+    console.error(
+      'Error in initializing Notifi client from db: Notifi env does not exist',
+    );
+    return undefined;
+  }
+
+  const dappId = await getNotifiDappId(db);
+  if (!dappId) {
+    console.error(
+      'Error in initializing Notifi client from db: Notifi dappId does not exist',
+    );
+    return undefined;
+  }
+
+  return instantiateFrontendClient(
+    dappId,
+    {
+      walletBlockchain: 'OFF_CHAIN',
+      userAccount,
+    },
+    notifiEnv as NotifiEnvironment,
+    undefined,
+    { fetch },
+  );
+}
 
 async function getSubscription(
   userAccount: string,
@@ -185,8 +259,7 @@ async function getSubscription(
     );
   }
 
-  notifiEnv = env;
-  client = instantiateFrontendClient(
+  const client = instantiateFrontendClient(
     dappId,
     {
       walletBlockchain: 'OFF_CHAIN',
@@ -202,19 +275,29 @@ async function getSubscription(
     throw new Error('user not authenticated or expired');
   }
 
+  await storeNotifiDappId(db, dappId);
+  await storeNotifiEnv(db, env);
+  await storeNotifiUserAccount(db, userAccount);
+
   const getVapidKeysResponse = await client.getVapidPublicKeys();
   const vapidBot = getVapidKeysResponse?.nodes?.[0];
   if (!vapidBot) {
     throw new Error('tenant does not have a configured Vapid bot');
   }
 
+  const convertedVapidKey = urlBase64ToUint8Array(vapidBot.publicKey);
   const subscription = await self.registration.pushManager.getSubscription();
   if (subscription) {
     console.log('subscription already exists');
+    await createOrUpdateWebPushTarget(
+      subscription,
+      vapidBot.publicKey,
+      db,
+      client,
+    );
     return subscription;
   }
 
-  const convertedVapidKey = urlBase64ToUint8Array(vapidBot.publicKey);
   const newSubscription = await self.registration.pushManager.subscribe({
     userVisibleOnly: true,
     applicationServerKey: convertedVapidKey,
