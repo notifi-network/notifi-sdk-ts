@@ -35,9 +35,8 @@ export const usePhantom = (
         setIsPhantomInstalled(true);
         phantom.on('accountChanged', handleAccountChange);
       })
-      .catch((e) => {
+      .catch(() => {
         setIsPhantomInstalled(false);
-        console.error(e);
       })
       .finally(() => loadingHandler(false));
 

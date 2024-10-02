@@ -31,13 +31,13 @@ export const useBinance = (
   useEffect(() => {
     geBinanceFromWindow()
       .then((bnb) => setProvider(bnb))
-      .catch((e) => {
-        console.error(e);
+      .catch(() => {
+        setIsWalletInstalled(false);
       });
   }, []);
 
   useEffect(() => {
-    setIsWalletInstalled(!!provider);
+    setIsWalletInstalled(!!provider); // TODO: Test and see if can be removed
 
     if (!provider) return;
 

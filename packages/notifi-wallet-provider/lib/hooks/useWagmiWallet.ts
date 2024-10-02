@@ -90,6 +90,7 @@ export const useWagmiWallet = (
     cleanWalletsInLocalStorage();
     selectWallet(null);
     disconnect();
+    loadingHandler(false);
   };
 
   const signArbitrary = useCallback(

@@ -38,7 +38,6 @@ export const useKeplr = (
       })
       .catch((e) => {
         setIsKeplrInstalled(false);
-        console.error(e);
       })
       .finally(() => loadingHandler(false));
 
@@ -95,10 +94,15 @@ export const useKeplr = (
 
   const disconnectKeplr = () => {
     if (!window.keplr) return handleKeplrNotExists('disconnectKeplr');
-    window.keplr.disable();
-    setWalletKeysKeplr(null);
-    cleanWalletsInLocalStorage();
-    selectWallet(null);
+    loadingHandler(true);
+    window.keplr
+      .disable()
+      .then(() => {
+        setWalletKeysKeplr(null);
+        cleanWalletsInLocalStorage();
+        selectWallet(null);
+      })
+      .finally(() => loadingHandler(false));
   };
 
   const signArbitraryKeplr = useCallback(
