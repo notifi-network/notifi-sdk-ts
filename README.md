@@ -158,7 +158,9 @@ This section is to introduce some often-used commands for repository maintainers
 
     </br>
 
-6. Regenerate the documentation (internal maintainers only)
+6. Regenerate the documentation (internal maintainers or contributor only)
+
+   The following command needs to be executed after making changes to the `@notifi-network/frontend-client` package.
 
    ```bash
    # on the root directory
