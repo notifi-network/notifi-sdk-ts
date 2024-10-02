@@ -92,6 +92,7 @@ export const FtuTargetEdit: React.FC<FtuTargetEditProps> = (props) => {
         <button
           data-cy="notifi-ftu-target-edit-button"
           className={clsx(
+            'btn',
             'notifi-ftu-target-edit-button',
             props.classNames?.button,
           )}

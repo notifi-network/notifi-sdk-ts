@@ -110,6 +110,7 @@ export const InboxConfigTargetEdit: React.FC<InboxConfigTargetEditProps> = (
       </div>
       <button
         className={clsx(
+          'btn',
           'notifi-inbox-config-target-edit-button',
           props.classNames?.button,
         )}

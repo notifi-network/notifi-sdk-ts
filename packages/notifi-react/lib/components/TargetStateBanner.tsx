@@ -110,6 +110,7 @@ export const TargetStateBanner: React.FC<TargetStateBannerProps> = (props) => {
           </div>
           <button
             className={clsx(
+              'btn',
               'notifi-target-state-banner-signup-cta',
               props.classNames?.signupBannerCta,
             )}

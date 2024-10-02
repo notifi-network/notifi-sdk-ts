@@ -4,12 +4,6 @@
   border-radius: 6px;
 }
 
-.plain-button {
-  cursor: pointer;
-  border: 1px solid grey !important;
-  border-radius: 2px !important;
-}
-
 .loading-solana-tx {
   -webkit-animation-name: animation;
   -webkit-animation-duration: 5s;
