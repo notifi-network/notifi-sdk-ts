@@ -6,11 +6,12 @@
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 
+https://github.com/user-attachments/assets/90a98d11-a221-4d61-9cf9-e41c7382e08a
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
   <a href="https://github.com/notifi-network/notifi-sdk-ts">
-    <img src="https://docs.notifi.network/img/notifi-logo-mark-dark.svg" alt="Logo" width="80" height="80">
+    <img src="https://github.com/user-attachments/assets/90a98d11-a221-4d61-9cf9-e41c7382e08a" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">Notifi SDK</h3>
