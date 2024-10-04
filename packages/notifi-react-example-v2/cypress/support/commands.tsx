@@ -60,6 +60,25 @@ const mountCardModal = (isRandomMnemonic?: boolean) => {
   const walletBlockchain = Cypress.env('WALLET_BLOCKCHAIN');
   const wallet = getConnectedWallet(isRandomMnemonic);
   const copy: NotifiCardModalProps['copy'] = {
+    Connect: {
+      footerContent: [
+        {
+          type: 'plain-text',
+          text: 'This is an example of some footer content that may link to a ',
+        },
+        {
+          type: 'hyperlink',
+          text: 'privacy policy',
+          url: 'https://notifi.network',
+        },
+        { type: 'plain-text', text: ' and ' },
+        {
+          type: 'hyperlink',
+          text: 'terms of service',
+          url: 'https://notifi.network',
+        },
+      ],
+    },
     Ftu: {
       FtuTargetEdit: {
         TargetInputs: {
