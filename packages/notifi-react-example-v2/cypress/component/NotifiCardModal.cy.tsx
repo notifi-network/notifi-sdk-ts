@@ -77,6 +77,9 @@ describe('NotifiCardModal First Time User Test', () => {
         .should('exist')
         .children()
         .should('have.length', topicList.length);
+
+      // NOTE: get component using css class as changing class name will cause breaking changes
+      cy.get('.notifi-connect-footer-content').should('exist');
     });
   });
 

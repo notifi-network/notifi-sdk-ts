@@ -6,7 +6,6 @@
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 
-https://github.com/user-attachments/assets/90a98d11-a221-4d61-9cf9-e41c7382e08a
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
@@ -150,6 +149,9 @@ This section is to introduce some often-used commands for repository maintainers
     ```
 
     For the detailed test scenarios, please check out the [Cypress test scripts](https://github.com/notifi-network/notifi-sdk-ts/blob/main/packages/notifi-react-example-v2/cypress/component/NotifiCardModal.cy.tsx)
+
+    > IMPORTANT: if you change the test script, make sure run test script multiple times (at least 5~10) to ensure the test is stable - `for i in {1..10}; do npm run test; done; `.
+
     </br>
 
 3.  Run script against specific package

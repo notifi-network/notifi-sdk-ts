@@ -13,15 +13,30 @@ import { CardModalView } from './NotifiCardModal';
 import { PoweredByNotifi, PoweredByNotifiProps } from './PoweredByNotifi';
 import { Toggle } from './Toggle';
 
+export type FooterContentText = {
+  type: 'plain-text';
+  text: string;
+};
+
+export type FooterContentHyperlink = {
+  type: 'hyperlink';
+  text: string;
+  url: string;
+};
+
+export type FooterContent = (FooterContentText | FooterContentHyperlink)[];
+
 export type ConnectProps = {
   iconType?: IconType;
   setCardModalView: React.Dispatch<React.SetStateAction<CardModalView | null>>;
   loginWithoutSubscription?: boolean;
+
   copy?: {
     title?: string;
     hardwareWalletLabel?: string;
     buttonText?: string;
     description?: string;
+    footerContent?: FooterContent;
   };
   classNames?: {
     container?: string;
@@ -38,6 +53,7 @@ export type ConnectProps = {
     hardwareWallet?: string;
     hardwareWalletLabel?: string;
     buttonText?: string;
+    footerContent?: string;
   };
 };
 
@@ -175,6 +191,33 @@ export const Connect: React.FC<ConnectProps> = (props) => {
             : defaultCopy.connect.buttonText}
         </div>
       </button>
+
+      {props.copy?.footerContent && props.copy.footerContent.length > 0 ? (
+        <div
+          className={clsx(
+            'notifi-connect-footer-content',
+            props.classNames?.footerContent,
+          )}
+        >
+          {props.copy.footerContent.map((content, index) => {
+            switch (content.type) {
+              case 'plain-text':
+                return <span key={index}>{content.text}</span>;
+              case 'hyperlink':
+                return (
+                  <a
+                    key={index}
+                    href={content.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {content.text}
+                  </a>
+                );
+            }
+          })}
+        </div>
+      ) : null}
 
       <div className={clsx('notifi-connect-footer', props.classNames?.footer)}>
         <PoweredByNotifi classNames={props.classNames?.PoweredByNotifi} />

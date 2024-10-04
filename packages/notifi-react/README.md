@@ -175,7 +175,7 @@ const YourComponent = () => {
 
 The copy text in the `NotifiCardModal` is fully customizable by inserting the custom copy text object to the `NotifiCardModal` component.
 
-_Common Example_
+**Common Example 1: Customizing the destination separator**
 
 Destination (Target) input separator copy customization as seen below:  
 ![](https://i.imgur.com/Rxld99Q.png)
@@ -183,7 +183,7 @@ Destination (Target) input separator copy customization as seen below:
 > **NOTE** Before implementing, please review the `copy` property structure in the `NotifiCardModal` component.
 > View the `copy` [structure here](https://github.com/notifi-network/notifi-sdk-ts/blob/main/packages/notifi-react/lib/components/NotifiCardModal.tsx#L32)
 
-_Example_
+_Example code_
 
 ```tsx
 const YourComponent = () => {
@@ -225,6 +225,53 @@ const YourComponent = () => {
 ```
 
 <br/><br/>
+
+**Common Example 2: Customizing the Connect view footer**
+
+Connect view footer preview as seen below:
+
+![custom-footer-content](https://github.com/user-attachments/assets/8156b76b-2f8b-47a2-9a3e-d640fc8a4ae1)
+
+_Example code_
+
+```tsx
+const YourComponent = () => {
+  // ...
+  const { frontendClientStatus } = useNotifiFrontendClientContext();
+  const customCopy: NotifiCardModalProps['copy'] = {
+    Connect: {
+      footerContent: [
+        {
+          type: 'plain-text',
+          text: 'This is an example of some footer content that may link to a ',
+        },
+        {
+          type: 'hyperlink',
+          text: 'privacy policy',
+          url: 'https://notifi.network',
+        },
+        { type: 'plain-text', text: ' and ' },
+        {
+          type: 'hyperlink',
+          text: 'terms of service',
+          url: 'https://notifi.network',
+        },
+      ],
+    },
+    // ... other copy customization
+  };
+
+  return (
+    <>
+      {/*  ... */}
+      <NotifiCardModal copy={customCopy} />
+      {/*  ... */}
+    </>
+  );
+};
+```
+
+> - Checkout the example project [codebase](https://github.com/notifi-network/notifi-sdk-ts/blob/main/packages/notifi-react-example-v2/src/app/notifi/components-example/page.tsx)
 
 # Custom Integration
 
