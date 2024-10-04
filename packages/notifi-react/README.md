@@ -230,7 +230,7 @@ const YourComponent = () => {
 
 Connect view footer preview as seen below:
 
-![](https://i.imgur.com/wdBreGJ.png)
+![custom-footer-content](https://github.com/user-attachments/assets/8156b76b-2f8b-47a2-9a3e-d640fc8a4ae1)
 
 _Example code_
 
