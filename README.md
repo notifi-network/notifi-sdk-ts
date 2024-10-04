@@ -6,11 +6,12 @@
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 
+https://github.com/user-attachments/assets/90a98d11-a221-4d61-9cf9-e41c7382e08a
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
   <a href="https://github.com/notifi-network/notifi-sdk-ts">
-    <img src="images/logo.jpg" alt="Logo" width="80" height="80">
+    <img src="https://github.com/user-attachments/assets/90a98d11-a221-4d61-9cf9-e41c7382e08a" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">Notifi SDK</h3>
@@ -103,71 +104,104 @@ This is useful for the cross platform applications which adopt the Progressive W
 <br/>
 <br/>
 
-## Build with Notifi (for repository maintainers or Contributors)
+## Build with Notifi (for repository maintainers or contributors)
+
+### Prerequisites
+
+- Node.js (v18.x or higher with corresponding npm version)
+
+- [NVM (Node Version Manager)](https://www.freecodecamp.org/news/node-version-manager-nvm-install-guide/) is recommended to manage the node versions. Run `nvm use` to adopt supported node version (defined in `.nvmrc`).
+
+- prettier configured in your IDE: in your **vscode** `settings.json`, add the following configuration. If you are using other IDEs, please make sure the `.prettierrc` file is adopted by the IDE.
+
+  ```json
+  // ... other settings
+  "prettier.configPath": "./.prettierrc"
+  // ... other settings
+  ```
+
+### Commands
 
 This section is to introduce some often-used commands for repository maintainers or contributors. Notifi is always open to contributions, so feel free to create a PR if you have any ideas or improvements.
 
-1. Build all packages after making changes
+1.  Build all packages after making changes
 
-   ```bash
-   # on the root directory
-   npm run build
-   ```
+    After making changes, make sure to build all packages to ensure the changes are reflected in the built files.
 
+    ```bash
+    # on the root directory
+    npm run build
+    ```
+
+     </br>
+
+2.  Run headless cypress tests locally
+
+    You can run the cypress tests locally against the `notifi-react-example-v2` package by using the following command.
     </br>
 
-2. Run headless cypress tests locally
+    ```bash
+    # on the root directory
+    npm run test
 
-   ```bash
-   # on the root directory
-   npm run test
+    # To run the cypress open test runner
+    npx lerna --scope=@notifi-network/notifi-react-example-v2 run cypress:open
 
-   ```
+    ```
 
-   For the detailed test scenarios, please check out the [Cypress test scripts](https://github.com/notifi-network/notifi-sdk-ts/blob/main/packages/notifi-react-example-v2/cypress/component/NotifiCardModal.cy.tsx)
-   </br>
-
-3. Run script on specific package
-
-   ```bash
-   # on the root directory
-   npx lerna --scope=@notifi-network/package-name run script-name
-   # example1: the following command will run dev server on the notifi-react-example-v2 package
-   npx lerna --scope=@notifi-network/notifi-react-example-v2 run dev
-   # example2: the following command will run open cypress test runner on the notifi-react-example-v2 package
-   npx lerna --scope=@notifi-network/notifi-react-example-v2 run cypress:open
-   ```
-
+    For the detailed test scenarios, please check out the [Cypress test scripts](https://github.com/notifi-network/notifi-sdk-ts/blob/main/packages/notifi-react-example-v2/cypress/component/NotifiCardModal.cy.tsx)
     </br>
 
-4. Deploy the canary version of the package (internal maintainers only)
+3.  Run script against specific package
 
-   ```bash
-   # on the root directory
-   npx lerna publish --canary --force-publish
-   ```
+    You can run the script against a specific package by using the following command.
 
+    ```bash
+    # on the root directory
+    npx lerna --scope=@notifi-network/package-name run script-name
+    # example1: the following command will run dev server on the notifi-react-example-v2 package
+    npx lerna --scope=@notifi-network/notifi-react-example-v2 run dev
+    # example2: the following command will run open cypress test runner on the notifi-react-example-v2 package
+    npx lerna --scope=@notifi-network/notifi-react-example-v2 run cypress:open
+    ```
+
+     </br>
+
+4.  Publish canary version to npm (**internal maintainers only**)
+    The following command will publish the all packages with canary version to npm. It will prompt you to select the version with suffix `-alpha.x`.
+
+    **IMPORTANT**: Run `npm run build` before running the following command.
     </br>
 
-5. Deploy the stable version of the package (internal maintainers only)
+    ```bash
+    # on the root directory
+    npx lerna publish --canary --force-publish
+    ```
 
-   ```bash
-   # on the root directory
-   npx lerna publish
-   ```
+      </br>
 
+5.  Publish official version to npm (**internal maintainers only**)
+
+    The following command will publish the updated packages to npm. It will prompt you to select the version for each package.
+    **IMPORTANT**: Run `npm run build` before running the following command.
     </br>
 
-6. Regenerate the documentation (internal maintainers or contributor only)
+    ```bash
+    # on the root directory
+    npx lerna publish
+    ```
 
-   The following command needs to be executed after making changes to the `@notifi-network/frontend-client` package.
+  </br>
 
-   ```bash
-   # on the root directory
-   npm run docs
-   ```
+6.  Regenerate the documentation (internal maintainers or contributor only)
 
-   This will re-generate the type documentation based on `@notifi-network/frontend-client` package and update the `docs` folder.
+    Run the command below to generate the updated typedoc when `@notifi-network/frontend-client` is amended.
+    </br>
+
+    ```bash
+    # on the root directory
+    npm run docs
+    ```
 
 <br/>
 <br/>
@@ -201,5 +235,3 @@ We understand that not all scenarios can be solved with the current state of the
 [issues-url]: https://github.com/notifi-network/notifi-sdk-ts/issues
 [license-shield]: https://img.shields.io/github/license/notifi-network/notifi-sdk-ts.svg?style=for-the-badge
 [license-url]: https://github.com/notifi-network/notifi-sdk-ts/blob/main/LICENSE.txt
-[scenario-push-diagram]: images/push_diagram.svg
-[scenario-monitor-diagram]: images/monitor_diagram.svg
