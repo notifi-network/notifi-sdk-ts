@@ -23,6 +23,26 @@ const NotifiComponentExample = () => {
     isSupported: isSignTxSupported,
   } = useSignTransaction();
   const copy: NotifiCardModalProps['copy'] = {
+    /* ⬇ Uncomment below to enable footer content */
+    // Connect: {
+    //   footerContent: [
+    //     {
+    //       type: 'plain-text',
+    //       text: 'This is an example of some footer content that may link to a ',
+    //     },
+    //     {
+    //       type: 'hyperlink',
+    //       text: 'privacy policy',
+    //       url: 'https://notifi.network',
+    //     },
+    //     { type: 'plain-text', text: ' and ' },
+    //     {
+    //       type: 'hyperlink',
+    //       text: 'terms of service',
+    //       url: 'https://notifi.network',
+    //     },
+    //   ],
+    // },
     Ftu: {
       FtuTargetEdit: {
         TargetInputs: {

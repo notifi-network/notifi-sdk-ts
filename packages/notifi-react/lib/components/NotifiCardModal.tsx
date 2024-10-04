@@ -29,13 +29,13 @@ export type NotifiInputFieldsText = {
 };
 
 export type NotifiCardModalProps = Readonly<{
-  copy?: DeepPartialReadonly<{
+  copy?: {
     ErrorGlobal?: ErrorViewProps['copy'];
     LoadingGlobal?: LoadingGlobalProps['copy'];
     Connect?: ConnectProps['copy'];
     Ftu?: FtuProps['copy'];
     Inbox?: InboxProps['copy'];
-  }>;
+  };
   classNames?: Readonly<{
     container?: string;
     Connect?: ConnectProps['classNames'];
@@ -94,6 +94,7 @@ export const NotifiCardModal: React.FC<NotifiCardModalProps> = (props) => {
 
   useEffect(() => {
     if (
+      clientError ||
       userSettingError ||
       historyError ||
       tenantError ||
@@ -105,7 +106,7 @@ export const NotifiCardModal: React.FC<NotifiCardModalProps> = (props) => {
           `In 
               ${
                 clientError?.message
-                  ? ` FrontendClientContext: \n ${clientError.message}`
+                  ? ` ClientContext: \n ${clientError.message}`
                   : ''
               } 
               ${

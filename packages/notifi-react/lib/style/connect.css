@@ -95,6 +95,21 @@
   /* NOTE: intentionally left empty to override (!important is needed) */
 }
 
+.notifi-connect-footer-content {
+  margin: 1rem 2rem 0 2rem;
+  font-size: 0.75rem;
+  text-align: center;
+  line-height: 1.33;
+}
+
+.notifi-connect-footer-content span {
+  color: var(--notifi-color-grey3);
+}
+
+.notifi-connect-footer-content a {
+  color: var(--notifi-color-grey3);
+}
+
 .notifi-connect-footer {
   width: 100%;
   display: flex;

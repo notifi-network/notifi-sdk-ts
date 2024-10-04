@@ -6,7 +6,6 @@
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 
-https://github.com/user-attachments/assets/90a98d11-a221-4d61-9cf9-e41c7382e08a
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
