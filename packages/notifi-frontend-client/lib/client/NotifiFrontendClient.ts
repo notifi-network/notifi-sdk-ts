@@ -84,6 +84,10 @@ export type SignMessageParams =
       walletBlockchain: 'APTOS';
       signMessage: AptosSignMessageFunction;
     }>
+    | Readonly<{
+      walletBlockchain: 'MOVEMENT';
+      signMessage: MovementSignMessageFunction;
+    }>
   | Readonly<{
       walletBlockchain: 'XION';
       message: string;
@@ -127,6 +131,10 @@ export type WalletWithSignParams =
       signMessage: AptosSignMessageFunction;
     }> &
       AptosUserParams)
+  | (Readonly<{
+        signMessage: MovementSignMessageFunction;
+      }> &
+        MovementUserParams)
   | (Readonly<{
       signMessage: XionSignMessageFunction;
       message: string;
@@ -213,6 +221,7 @@ export type UserParams =
   | XionUserParams
   | EvmUserParams
   | AptosUserParams
+  | MovementUserParams
   | AcalaUserParams
   | NearUserParams
   | SuiUserParams
@@ -261,6 +270,12 @@ export type EvmUserParams = Readonly<{
 
 export type AptosUserParams = Readonly<{
   walletBlockchain: 'APTOS';
+  accountAddress: string;
+  walletPublicKey: string;
+}>;
+
+export type MovementUserParams = Readonly<{
+  walletBlockchain: 'MOVEMENT';
   accountAddress: string;
   walletPublicKey: string;
 }>;
@@ -389,6 +404,11 @@ export type AptosSignMessageFunction = (
   nonce: number,
 ) => Promise<string>;
 type hexString = `0x${string}`;
+export type MovementSignMessageFunction = (
+  message: string,
+  nonce: number,
+) => Promise<string>;
+
 export type AcalaSignMessageFunction = (
   acalaAddress: string,
   message: string,
@@ -685,6 +705,7 @@ export class NotifiFrontendClient {
       case 'KAVA':
       case 'NEUTRON':
       case 'NIBIRU':
+      case 'MOVEMENT':
       case 'APTOS': {
         if (typeof signature !== 'string')
           throw new Error(
@@ -832,6 +853,13 @@ export class NotifiFrontendClient {
         return signedBuffer;
       }
       case 'APTOS': {
+        const signature = await signMessageParams.signMessage(
+          SIGNING_MESSAGE,
+          timestamp,
+        );
+        return signature;
+      }
+      case 'MOVEMENT': {
         const signature = await signMessageParams.signMessage(
           SIGNING_MESSAGE,
           timestamp,
@@ -1497,6 +1525,7 @@ export class NotifiFrontendClient {
       walletPublicKey,
       accountId:
         walletBlockchain === 'APTOS' ||
+        walletBlockchain === 'MOVEMENT' ||
         walletBlockchain === 'ACALA' ||
         walletBlockchain === 'NEAR' ||
         walletBlockchain === 'SUI'

@@ -38,4 +38,5 @@ export type WalletBlockchain =
   | 'COSMOS'
   | 'DYMENSION'
   | 'PERSISTENCE'
-  | 'DYDX';
+  | 'DYDX'
+  | 'MOVEMENT';

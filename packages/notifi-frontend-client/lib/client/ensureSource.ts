@@ -199,6 +199,8 @@ const ensureWalletBalanceSources = async (
           return 'ACALA_WALLET';
         case 'APTOS':
           return 'APTOS_WALLET';
+        case 'MOVEMENT':
+          return 'MOVEMENT_WALLET';
         case 'ARBITRUM':
           return 'ARBITRUM_WALLET';
         case 'AVALANCHE':
@@ -318,6 +320,7 @@ const normalizeSourceAddress = (
     case 'BENQI':
     case 'DELTA_PRIME':
     case 'DELTA_PRIME_LENDING_RATES':
+    case 'MOVEMENT_WALLET':
     case 'APTOS_WALLET':
       return normalizeHexString(blockchainAddress);
     default:
