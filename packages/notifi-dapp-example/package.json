@@ -37,7 +37,6 @@
     "typescript": "^5"
   },
   "dependencies": {
-    "@injectivelabs/wallet-ts": "^1.14.7",
     "@notifi-network/notifi-frontend-client": "^2.0.0",
     "@notifi-network/notifi-graphql": "^2.0.0",
     "@notifi-network/notifi-wallet-provider": "^2.0.0",
