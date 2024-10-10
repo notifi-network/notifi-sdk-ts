@@ -25,6 +25,14 @@
   font-weight: 600;
   text-align: center;
   padding: 2.5rem 1rem 0.5rem 1rem;
+  position: relative;
+}
+
+.notifi-connect-right-cta {
+  position: absolute;
+  top: 2.5rem;
+  right: 1rem;
+  cursor: pointer;
 }
 
 .notifi-connect-description {

@@ -25,6 +25,7 @@ export type IconType =
   | 'bell-circle'
   | 'check-circle'
   | 'bell-thin'
+  | 'close'
   | 'triangle-down';
 
 export const Icon: React.FC<Props & { type: IconType }> = (
@@ -749,6 +750,23 @@ export const Icon: React.FC<Props & { type: IconType }> = (
         >
           <path
             d="M0.849609 0L3.82316 3.54167L6.79671 0H0.849609Z"
+            fill="currentColor"
+          />
+        </svg>
+      );
+    case 'close':
+      return (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          fill="none"
+        >
+          <path
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M4.08894 4.61125C3.69842 5.00178 3.69842 5.63494 4.08894 6.02547L6.5643 8.50083L4.08977 10.9754C3.69924 11.3659 3.69924 11.999 4.08977 12.3896C4.48029 12.7801 5.11346 12.7801 5.50398 12.3896L7.97852 9.91504L10.4529 12.3894C10.8434 12.78 11.4766 12.78 11.8671 12.3894C12.2576 11.9989 12.2576 11.3657 11.8671 10.9752L9.39273 8.50083L11.8679 6.02561C12.2585 5.63509 12.2585 5.00192 11.8679 4.6114C11.4774 4.22087 10.8443 4.22087 10.4537 4.6114L7.97852 7.08661L5.50316 4.61125C5.11263 4.22073 4.47947 4.22073 4.08894 4.61125Z"
             fill="currentColor"
           />
         </svg>

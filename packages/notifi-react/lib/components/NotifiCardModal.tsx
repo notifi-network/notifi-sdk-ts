@@ -67,9 +67,9 @@ export const NotifiCardModal: React.FC<NotifiCardModalProps> = (props) => {
   const { error: topicError } = useNotifiTopicContext();
   const { error: targetError } = useNotifiTargetContext();
 
-  if (props.onClose) {
-    setGlobalCtas({ onClose: props.onClose });
-  }
+  useEffect(() => {
+    if (props.onClose) setGlobalCtas({ onClose: props.onClose });
+  }, [props.onClose]);
 
   useEffect(() => {
     if (!frontendClientStatus.isInitialized) return;
