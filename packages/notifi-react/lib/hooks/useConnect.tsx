@@ -129,7 +129,12 @@ export const useConnect = (
       }
     };
     subscribeAndUpdateFtuStage();
-  }, [targetGroupId, ftuStage, frontendClientStatus]);
+  }, [
+    targetGroupId,
+    ftuStage,
+    frontendClientStatus,
+    isLoadingUpdateUserSetting,
+  ]);
   return {
     connect,
     isLoading,
