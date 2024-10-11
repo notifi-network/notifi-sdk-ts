@@ -6,9 +6,9 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "require": "./dist/index.js",
-      "import": "./dist/index.mjs",
-      "types": "./dist/index.d.ts"
+      "import": "./dist/index.mjs"
     }
   },
   "publishConfig": {
@@ -31,9 +31,6 @@
     "url": "https://github.com/notifi-network/notifi-sdk-ts/issues"
   },
   "homepage": "https://github.com/notifi-network/notifi-sdk-ts#readme",
-  "dependencies": {
-    "@notifi-network/notifi-react-card": "^1.1.2"
-  },
   "peerDependencies": {
     "@solana/wallet-adapter-react": "^0.15.30",
     "@solana/web3.js": "^1.73.3"
