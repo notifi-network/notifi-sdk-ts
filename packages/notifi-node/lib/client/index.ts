@@ -1,10 +1,9 @@
-import type { NotifiEnvironment } from '../utils';
-import NotifiClient from './NotifiClient';
+export * from '../utils';
 
-export type { NotifiEnvironment };
-
-export { NotifiClient };
-
+export * from './NotifiNodeClient';
 export * from './createNotifiService';
 export * from './createSubscriptionClient';
 export * from './subscribeTenantEntityUpdated';
+
+/* NOTE: ⬇ for backwards compatibility (avoid breaking change) */
+export { NotifiNodeClient as NotifiClient } from './NotifiNodeClient';
