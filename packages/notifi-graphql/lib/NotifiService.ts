@@ -2,13 +2,13 @@ import { GraphQLClient } from 'graphql-request';
 import { v4 as uuid } from 'uuid';
 
 import { version } from '../package.json';
-import {
-  NotifiSubscriptionService,
-  SubscriptionQueries,
-} from './NotifiSubscriptionService';
+import { NotifiSubscriptionService } from './NotifiSubscriptionService';
 import * as Generated from './gql/generated';
 import { getSdk } from './gql/generated';
 import type * as Operations from './operations';
+import { stateChangedSubscriptionQuery } from './gql';
+import { tenantEntityChangedSubscriptionQuery } from './gql/subscriptions/tenantEntityChanged';
+import { ExecutionResult } from 'graphql-ws';
 
 export class NotifiService
   implements
@@ -449,7 +449,21 @@ export class NotifiService
   ): Promise<void> {
     this._notifiSubService.subscribe(
       this._jwt,
-      SubscriptionQueries.StateChanged,
+      stateChangedSubscriptionQuery,
+      onMessageReceived,
+      onError,
+      onComplete,
+    );
+  }
+
+  async subscribeTenantEntityUpdated(
+    onMessageReceived: (data: ExecutionResult) => void,
+    onError?: (error: Error) => void,
+    onComplete?: () => void | undefined,
+  ): Promise<void> {
+    this._notifiSubService.subscribe(
+      this._jwt,
+      tenantEntityChangedSubscriptionQuery,
       onMessageReceived,
       onError,
       onComplete,
