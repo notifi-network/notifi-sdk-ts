@@ -1,6 +1,6 @@
 {
   "name": "@notifi-network/notifi-graphql",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "The GraphQL API for Notifi",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
