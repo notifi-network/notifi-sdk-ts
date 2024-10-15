@@ -146,4 +146,36 @@ export class NotifiNodeClient {
     }
     return recreated;
   };
+
+  subscribeTenantEntityUpdated = (
+    onTenantEntityUpdate: (
+      event: Gql.TenantEntityChangeEvent,
+    ) => void | undefined,
+  ) => {
+    this.service.subscribeTenantEntityUpdated(
+      (data) => {
+        if (isTenantEntityUpdateEvent(data)) onTenantEntityUpdate(data);
+      },
+      (error) => {
+        if (error instanceof Error) {
+          throw error;
+        }
+      },
+    );
+  };
 }
+
+// Utils
+
+const isTenantEntityUpdateEvent = (
+  data: unknown,
+): data is Gql.TenantEntityChangeEvent => {
+  return (
+    typeof data === 'object' &&
+    data !== null &&
+    'typename' in data &&
+    (data.typename === 'UserCreatedEvent' ||
+      data.typename === 'AlertCreatedEvent' ||
+      data.typename === 'AlertDeletedEvent')
+  );
+};
