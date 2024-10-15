@@ -148,21 +148,25 @@ export class NotifiNodeClient {
   };
 
   subscribeTenantEntityUpdated = (
-    onTenantEntityUpdate: (
-      event: Gql.TenantEntityChangeEvent,
-    ) => void | undefined,
+    jwt: string,
+    onTenantEntityUpdate: (event: Gql.TenantEntityChangeEvent) => void,
+    onError?: (error: Error) => void,
+    onComplete?: () => void,
   ) => {
+    this.service.setJwt(jwt);
     this.service.subscribeTenantEntityUpdated(
       (data) => {
         if (isTenantEntityUpdateEvent(data)) onTenantEntityUpdate(data);
       },
-      (error) => {
-        if (error instanceof Error) {
-          throw error;
-        }
-      },
+      onError,
+      onComplete,
     );
   };
+  // TODO: ⬇ is to close websocket connection, we should not allow SDK to directly manipulate websocket connection. Instead, we should allow users to unsubscribe from the subscription.
+  // disposeWebSocket = async (jwt: string) => {
+  //   this.service.setJwt(jwt);
+  //   await this.service.wsDispose();
+  // };
 }
 
 // Utils
