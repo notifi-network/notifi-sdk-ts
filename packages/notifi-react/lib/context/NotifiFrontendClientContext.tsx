@@ -33,7 +33,10 @@ export type NotifiFrontendClientContextType = {
   error: Error | null;
   login: () => Promise<NotifiFrontendClient | undefined>;
   loginViaHardwareWallet: () => Promise<NotifiFrontendClient | undefined>;
-  loginViaTransaction: LoginViaTransaction;
+  // In the following cases, loginViaTransaction will be null:
+  // 1. If the walletBlockchain prop is OFF_CHAIN
+  // 2. If the isEnabledLoginViaTransaction prop is false or undefined
+  loginViaTransaction: LoginViaTransaction | null;
   walletWithSignParams: WalletWithSignParams;
 };
 
@@ -46,11 +49,19 @@ export type NotifiFrontendClientProviderProps = {
   tenantId: string;
   env?: NotifiEnvironment;
   storageOption?: NotifiEnvironmentConfiguration['storageOption'];
+  isEnabledLoginViaTransaction?: boolean;
 } & WalletWithSignParams;
 
 export const NotifiFrontendClientContextProvider: React.FC<
   React.PropsWithChildren<NotifiFrontendClientProviderProps>
-> = ({ children, tenantId, env, storageOption, ...walletWithSignParams }) => {
+> = ({
+  children,
+  tenantId,
+  env,
+  storageOption,
+  isEnabledLoginViaTransaction,
+  ...walletWithSignParams
+}) => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState<Error | null>(null);
   const [transactionNonce, setTransactionNonce] = React.useState<string | null>(
@@ -64,10 +75,15 @@ export const NotifiFrontendClientContextProvider: React.FC<
       isInitialized: false,
       isAuthenticated: false,
     });
+
   const userId =
     walletWithSignParams.walletBlockchain === 'OFF_CHAIN'
       ? walletWithSignParams.userAccount
       : walletWithSignParams.walletPublicKey;
+
+  const isLogInViaTransactionAvailable =
+    walletWithSignParams.walletBlockchain !== 'OFF_CHAIN' &&
+    isEnabledLoginViaTransaction;
 
   React.useEffect(() => {
     const frontendClient = instantiateFrontendClient(
@@ -102,9 +118,12 @@ export const NotifiFrontendClientContextProvider: React.FC<
   }, [userId]);
 
   React.useEffect(() => {
-    if (!frontendClient || !frontendClientStatus.isInitialized) return;
-    if (walletWithSignParams.walletBlockchain === 'OFF_CHAIN')
-      return setTransactionNonce('off-chain-sign-in');
+    if (
+      !frontendClient ||
+      !frontendClientStatus.isInitialized ||
+      !isLogInViaTransactionAvailable
+    )
+      return;
 
     const getNonce = async () => {
       const nonce = await frontendClient?.beginLoginViaTransaction({
@@ -119,7 +138,7 @@ export const NotifiFrontendClientContextProvider: React.FC<
       getNonce().then((nonce) => setTransactionNonce(nonce));
     }, 600000); // refresh nonce every 10 minutes (nonce expires in 15 minutes)
     return () => clearInterval(interval);
-  }, [frontendClientStatus.isInitialized]);
+  }, [frontendClientStatus.isInitialized, isLogInViaTransactionAvailable]);
 
   const login = async () => {
     if (!frontendClient || !frontendClientStatus.isInitialized) {
@@ -153,20 +172,16 @@ export const NotifiFrontendClientContextProvider: React.FC<
     return frontendClient;
   };
 
-  const loginViaTransaction = React.useCallback(
+  const _loginViaTransaction = React.useCallback(
     async (signatureSignedWithNotifiNonce: string) => {
-      if (
-        !frontendClient ||
-        !frontendClientStatus.isInitialized ||
-        walletWithSignParams.walletBlockchain === 'OFF_CHAIN'
-      ) {
+      if (!isLogInViaTransactionAvailable) return;
+      if (!frontendClient || !frontendClientStatus.isInitialized) {
         setError(
-          new Error(
-            '.loginViaTransaction: Frontend client not initialized / or Invalid blockchain',
-          ),
+          new Error('.loginViaTransaction: Frontend client not initialized'),
         );
         return;
       }
+
       setIsLoading(true);
       try {
         await frontendClient?.completeLoginViaTransaction({
@@ -196,7 +211,7 @@ export const NotifiFrontendClientContextProvider: React.FC<
 
       return frontendClient;
     },
-    [userId, !!frontendClient],
+    [userId, !!frontendClient, isEnabledLoginViaTransaction],
   );
 
   /**
@@ -240,7 +255,7 @@ export const NotifiFrontendClientContextProvider: React.FC<
     return frontendClient;
   }, [userId, !!frontendClient]);
 
-  if (!frontendClient || !transactionNonce) return null;
+  if (!frontendClient) return null;
 
   return (
     <NotifiFrontendClientContext.Provider
@@ -252,10 +267,13 @@ export const NotifiFrontendClientContextProvider: React.FC<
         login,
         loginViaHardwareWallet,
         walletWithSignParams,
-        loginViaTransaction: {
-          nonce: transactionNonce,
-          login: loginViaTransaction,
-        },
+        loginViaTransaction:
+          isLogInViaTransactionAvailable && transactionNonce
+            ? {
+                nonce: transactionNonce,
+                login: _loginViaTransaction,
+              }
+            : null,
       }}
     >
       {children}

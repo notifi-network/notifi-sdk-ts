@@ -120,7 +120,7 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
           tenantId={tenantId}
           env={env}
           // toggleTargetAvailability={{ discord: false }}
-          walletBlockchain={'ETHEREUM'} // Change to any EVM chain if needed
+          walletBlockchain={'ARBITRUM'} // Change to any EVM chain if needed
           walletPublicKey={walletPublicKey}
           signMessage={signMessage}
           cardId={cardId}
@@ -129,6 +129,7 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
             walletAddress: [{ label: '', value: walletPublicKey }],
           }}
           notificationCountPerPage={8}
+          isEnabledLoginViaTransaction // TODO: Enable when ready
         >
           {children}
         </NotifiContextProvider>
@@ -182,6 +183,7 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
           }}
           notificationCountPerPage={8}
           hardwareLoginPlugin={solanaHardwareLoginPlugin}
+          isEnabledLoginViaTransaction
         >
           {children}
         </NotifiContextProvider>
