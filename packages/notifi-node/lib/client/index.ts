@@ -1,8 +1,6 @@
 export * from '../utils';
-
 export * from './NotifiNodeClient';
 export * from './createNotifiService';
-export * from './createSubscriptionClient';
 export * from './subscribeTenantEntityUpdated';
 
 /* NOTE: ⬇ for backwards compatibility (avoid breaking change) */
