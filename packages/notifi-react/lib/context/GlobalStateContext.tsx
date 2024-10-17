@@ -18,7 +18,7 @@ export type GlobalError = {
   errorData?: string; // Allowing to pass custom string data to be parsed by JSON.parse
 };
 
-export type Cta = 'onClose' | 'onNext' | 'onBack';
+export type Cta = 'onClose';
 
 export type GlobalCtas = Record<Cta, () => void>;
 
