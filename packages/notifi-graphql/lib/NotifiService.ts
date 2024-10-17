@@ -460,8 +460,8 @@ export class NotifiService
     onMessageReceived: (data: ExecutionResult) => void,
     onError?: (error: Error) => void,
     onComplete?: () => void,
-  ): Promise<void> {
-    this._notifiSubService.subscribe(
+  ) {
+    return this._notifiSubService.subscribe(
       this._jwt,
       tenantEntityChangedSubscriptionQuery,
       onMessageReceived,

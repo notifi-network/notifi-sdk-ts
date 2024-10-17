@@ -1,4 +1,5 @@
-import { createClient, Client } from 'graphql-ws';
+import { createClient, Client, SubscribePayload, Event } from 'graphql-ws';
+import { Observable } from 'relay-runtime';
 
 /**
  * @param webSocketImpl - A custom WebSocket implementation to use instead of the one provided by the global scope. Mostly useful for when using the client outside of the browser environment.
@@ -30,36 +31,54 @@ export class NotifiSubscriptionService {
     this.jwt = jwt;
 
     if (!this.wsClient) {
-      this.initializeClient();
+      this._initializeClient();
     }
-    this.wsClient?.subscribe(
-      {
-        query: subscriptionQuery,
-        extensions: {
-          type: 'start',
-        },
+    if (!this.wsClient) return null;
+
+    const observable = this._toObservable(this.wsClient, {
+      query: subscriptionQuery,
+      extensions: {
+        type: 'start',
       },
-      {
-        next: (data) => {
-          if (onMessageReceived) {
-            onMessageReceived(data);
-          }
-        },
-        error: (error) => {
-          if (onError && error instanceof Error) {
-            onError(error);
-          }
-        },
-        complete: () => {
-          if (onComplete) {
-            onComplete();
-          }
-        },
+    });
+
+    const subscription = observable.subscribe({
+      next: (data) => {
+        if (onMessageReceived) {
+          onMessageReceived(data);
+        }
       },
-    );
+      error: (error: unknown) => {
+        if (onError && error instanceof Error) {
+          onError(error);
+        }
+      },
+      complete: () => {
+        console.log('Subscription complete');
+        if (onComplete) {
+          onComplete();
+        }
+      },
+    });
+
+    return subscription;
   };
 
-  private initializeClient = () => {
+  private _toObservable(client: Client, operation: SubscribePayload) {
+    return Observable.create((observer) =>
+      client.subscribe(operation, {
+        next: (data) => observer.next(data),
+        error: (err) => {
+          if (err instanceof Error) {
+            observer.error(err);
+          }
+        },
+        complete: () => observer.complete(),
+      }),
+    );
+  }
+
+  private _initializeClient = () => {
     this.wsClient = createClient({
       url: this.wsurl,
       connectionParams: {
