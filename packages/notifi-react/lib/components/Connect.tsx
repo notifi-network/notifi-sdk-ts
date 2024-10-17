@@ -109,10 +109,10 @@ export const Connect: React.FC<ConnectProps> = (props) => {
         {props.copy?.title ?? defaultCopy.connect.title}
 
         {props.navHeaderRightCta &&
-        globalCtas?.[props.navHeaderRightCta.action] ? (
+        globalCtas?.[props.navHeaderRightCta.globalCtaType] ? (
           <div
             className="notifi-connect-right-cta"
-            onClick={() => globalCtas[props.navHeaderRightCta!.action]()}
+            onClick={() => globalCtas[props.navHeaderRightCta!.globalCtaType]()}
           >
             <Icon type={props.navHeaderRightCta?.icon} />
           </div>

@@ -18,13 +18,9 @@ export type GlobalError = {
   errorData?: string; // Allowing to pass custom string data to be parsed by JSON.parse
 };
 
-export enum CtaTypeEnum {
-  onClose = 'onClose',
-}
+export type Cta = 'onClose' | 'onNext' | 'onBack';
 
-export type CtaType = `${CtaTypeEnum}`;
-
-export type GlobalCtas = Record<CtaType, () => void>;
+export type GlobalCtas = Record<Cta, () => void>;
 
 export type GlobalStateContextType = {
   globalLoading: GlobalLoading;

@@ -52,7 +52,7 @@ export type NotifiCardModalProps = Readonly<{
 export type CardModalView = 'connect' | 'expiry' | 'ftu' | 'Inbox';
 
 const navHeaderRightCta: NavHeaderRightCta = {
-  action: 'onClose',
+  globalCtaType: 'onClose',
   icon: 'close',
 };
 

@@ -1,9 +1,6 @@
 import clsx from 'clsx';
 import React from 'react';
-
-import { IconType } from '../assets/Icons';
 import { useNotifiTargetContext } from '../context';
-import { CtaType, useGlobalStateContext } from '../context/GlobalStateContext';
 import { useIsTargetInputValid } from '../hooks/useIsTargetInputValid';
 import { defaultCopy } from '../utils/constants';
 import { FtuView } from './Ftu';
