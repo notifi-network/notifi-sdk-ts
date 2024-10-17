@@ -155,10 +155,10 @@ export type FrontendClientConfigFactory<T extends NotifiFrontendConfiguration> =
     args: T extends NotifiConfigWithPublicKeyAndAddress
       ? ConfigFactoryInputPublicKeyAndAddress
       : T extends NotifiConfigWithDelegate
-      ? ConfigFactoryInputDelegated
-      : T extends NotifiConfigWithPublicKey
-      ? ConfigFactoryInputPublicKey
-      : ConfigFactoryInputOidc,
+        ? ConfigFactoryInputDelegated
+        : T extends NotifiConfigWithPublicKey
+          ? ConfigFactoryInputPublicKey
+          : ConfigFactoryInputOidc,
   ) => NotifiFrontendConfiguration;
 
 const evmChains = [
@@ -300,5 +300,5 @@ export const envUrl = (
       url = '://api.stg.notifi.network/gql';
   }
 
-  return `${endpointType === 'websocket' ? 'wss' : 'https'}${url}`;
+  return `${endpointType === 'websocket' ? 'wss' : env === 'Local' ? 'http' : 'https'}${url}`;
 };
