@@ -148,19 +148,18 @@ export class NotifiNodeClient {
   };
 
   subscribeTenantEntityUpdated = (
-    onTenantEntityUpdate: (
-      event: Gql.TenantEntityChangeEvent,
-    ) => void | undefined,
+    jwt: string,
+    onTenantEntityUpdate: (event: Gql.TenantEntityChangeEvent) => void,
+    onError?: (error: Error) => void,
+    onComplete?: () => void,
   ) => {
-    this.service.subscribeTenantEntityUpdated(
+    this.service.setJwt(jwt);
+    return this.service.subscribeTenantEntityUpdated(
       (data) => {
         if (isTenantEntityUpdateEvent(data)) onTenantEntityUpdate(data);
       },
-      (error) => {
-        if (error instanceof Error) {
-          throw error;
-        }
-      },
+      onError,
+      onComplete,
     );
   };
 }
