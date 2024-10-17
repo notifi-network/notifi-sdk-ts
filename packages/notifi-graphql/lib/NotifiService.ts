@@ -459,9 +459,9 @@ export class NotifiService
   async subscribeTenantEntityUpdated(
     onMessageReceived: (data: ExecutionResult) => void,
     onError?: (error: Error) => void,
-    onComplete?: () => void | undefined,
-  ): Promise<void> {
-    this._notifiSubService.subscribe(
+    onComplete?: () => void,
+  ) {
+    return this._notifiSubService.subscribe(
       this._jwt,
       tenantEntityChangedSubscriptionQuery,
       onMessageReceived,
