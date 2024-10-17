@@ -2,20 +2,28 @@ import clsx from 'clsx';
 import React, { PropsWithChildren } from 'react';
 
 import { Icon, IconType } from '../assets/Icons';
+import { Cta, useGlobalStateContext } from '../context/GlobalStateContext';
 
 export type NavHeaderCta = {
   icon: IconType;
   action: () => void;
 };
 
+export type NavHeaderRightCta = {
+  icon: IconType;
+  globalCtaType: Cta;
+};
+
 export type NavHeaderProps = {
   leftCta?: NavHeaderCta;
-  rightCta?: NavHeaderCta;
+  rightCta?: NavHeaderRightCta;
 };
 
 export const NavHeader: React.FC<PropsWithChildren<NavHeaderProps>> = (
   props,
 ) => {
+  const { globalCtas } = useGlobalStateContext();
+
   return (
     <div className="notifi-nav-header">
       <div
@@ -32,12 +40,14 @@ export const NavHeader: React.FC<PropsWithChildren<NavHeaderProps>> = (
       >
         <div>{props.children}</div>
       </div>
-      <div
-        className="notifi-nave-header-right-cta"
-        onClick={() => props.rightCta?.action()}
-      >
-        {props.rightCta?.icon ? <Icon type={props.rightCta?.icon} /> : null}
-      </div>
+      {props.rightCta && globalCtas?.[props.rightCta.globalCtaType] ? (
+        <div
+          className="notifi-nav-header-right-cta"
+          onClick={() => globalCtas[props.rightCta!.globalCtaType]()}
+        >
+          <Icon type={props.rightCta?.icon} />
+        </div>
+      ) : null}
     </div>
   );
 };

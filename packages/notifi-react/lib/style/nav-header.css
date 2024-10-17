@@ -8,7 +8,7 @@
   content: '_'; /* This is a placeholder in case the title is empty */
   visibility: hidden;
 }
-.notifi-nave-header-right-cta,
+.notifi-nav-header-right-cta,
 .notifi-nav-header-left-cta {
   display: flex;
   align-items: center;
@@ -18,6 +18,11 @@
   position: absolute;
   left: 1rem;
   top: 1.15rem;
+}
+
+.notifi-nav-header-right-cta {
+  left: unset;
+  right: 1rem;
 }
 
 .notifi-nav-header-title {

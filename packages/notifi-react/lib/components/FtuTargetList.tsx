@@ -4,7 +4,7 @@ import React from 'react';
 import { FtuStage, useNotifiUserSettingContext } from '../context';
 import { defaultCopy } from '../utils/constants';
 import { LoadingAnimation } from './LoadingAnimation';
-import { NavHeader } from './NavHeader';
+import { NavHeader, NavHeaderRightCta } from './NavHeader';
 import { TargetList } from './TargetList';
 
 export type FtuTargetListProps = {
@@ -21,6 +21,7 @@ export type FtuTargetListProps = {
     headerTitle?: string;
     buttonText?: string;
   };
+  navHeaderRightCta?: NavHeaderRightCta;
 };
 
 export const FtuTargetList: React.FC<FtuTargetListProps> = (props) => {
@@ -43,6 +44,7 @@ export const FtuTargetList: React.FC<FtuTargetListProps> = (props) => {
           icon: 'arrow-back',
           action: () => props.onClickBack(),
         }}
+        rightCta={props.navHeaderRightCta}
       >
         {props.copy?.headerTitle ?? defaultCopy.ftuTargetList.headerTitle}
       </NavHeader>

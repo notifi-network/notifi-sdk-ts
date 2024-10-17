@@ -4,7 +4,7 @@ import React from 'react';
 import { useNotifiTargetContext } from '../context';
 import { defaultCopy, hasTarget } from '../utils';
 import { InboxView } from './Inbox';
-import { NavHeader } from './NavHeader';
+import { NavHeader, NavHeaderRightCta } from './NavHeader';
 import { TargetStateBanner, TargetStateBannerProps } from './TargetStateBanner';
 import { TopicList } from './TopicList';
 
@@ -21,6 +21,7 @@ export type InboxConfigTopicProps = {
     title?: string;
   };
   setInboxView: React.Dispatch<React.SetStateAction<InboxView>>;
+  navHeaderRightCta?: NavHeaderRightCta;
 };
 
 export const InboxConfigTopic: React.FC<InboxConfigTopicProps> = (props) => {
@@ -31,7 +32,7 @@ export const InboxConfigTopic: React.FC<InboxConfigTopicProps> = (props) => {
     <div
       className={clsx('notifi-inbox-config-topic', props.classNames?.container)}
     >
-      <NavHeader>
+      <NavHeader rightCta={props.navHeaderRightCta}>
         {props.copy?.header ?? defaultCopy.inboxConfigTopic.header}
       </NavHeader>
       <div

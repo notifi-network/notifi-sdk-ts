@@ -1,11 +1,11 @@
 import clsx from 'clsx';
-import { format, isToday, parseISO } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import DOMPurify from 'dompurify';
 import React from 'react';
 
 import { HistoryItem } from '../context';
 import { defaultCopy } from '../utils';
-import { NavHeader } from './NavHeader';
+import { NavHeader, NavHeaderRightCta } from './NavHeader';
 
 type HistoryDetailProps = {
   classNames?: {
@@ -23,6 +23,7 @@ type HistoryDetailProps = {
     React.SetStateAction<HistoryItem | null>
   >;
   isHidden: boolean;
+  navHeaderRightCta?: NavHeaderRightCta;
 };
 
 export const HistoryDetail: React.FC<HistoryDetailProps> = (props) => {
@@ -48,6 +49,7 @@ export const HistoryDetail: React.FC<HistoryDetailProps> = (props) => {
           icon: 'arrow-back',
           action: () => props.setSelectedHistoryItem(null),
         }}
+        rightCta={props.navHeaderRightCta}
       >
         {props.copy?.headerTitle ?? defaultCopy.inboxHistoryDetail.headerTitle}
       </NavHeader>

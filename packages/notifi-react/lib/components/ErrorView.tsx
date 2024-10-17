@@ -2,13 +2,14 @@ import clsx from 'clsx';
 import React from 'react';
 
 import { defaultCopy } from '../utils';
-import { NavHeader, NavHeaderCta } from './NavHeader';
+import { NavHeader, NavHeaderCta, NavHeaderRightCta } from './NavHeader';
 import { PoweredByNotifi, PoweredByNotifiProps } from './PoweredByNotifi';
 
 export type ErrorViewProps = {
   title?: string;
   detail?: string;
   cta?: NavHeaderCta;
+  navHeaderRightCta?: NavHeaderRightCta;
   copy?: {
     header: string;
   };
@@ -25,7 +26,7 @@ export type ErrorViewProps = {
 export const ErrorView: React.FC<ErrorViewProps> = (props) => {
   return (
     <div className={clsx('notifi-error-global', props.classNames?.container)}>
-      <NavHeader leftCta={props.cta}>
+      <NavHeader leftCta={props.cta} rightCta={props.navHeaderRightCta}>
         {props.copy?.header ?? defaultCopy.errorGlobal.header}
       </NavHeader>
       <div

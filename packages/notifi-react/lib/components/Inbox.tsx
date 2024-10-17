@@ -12,6 +12,7 @@ import {
 import { InboxConfigTopic, InboxConfigTopicProps } from './InboxConfigTopic';
 import { InboxHistory, InboxHistoryProps } from './InboxHistory';
 import { InboxNavTabs, InboxNavTabsProps } from './InboxNavTabs';
+import { NavHeaderRightCta } from './NavHeader';
 
 export type InboxProps = {
   classNames?: {
@@ -30,6 +31,7 @@ export type InboxProps = {
     InboxConfigTopic?: InboxConfigTopicProps['copy'];
     // TODO
   };
+  navHeaderRightCta?: NavHeaderRightCta;
 };
 
 export enum InboxView {
@@ -51,12 +53,14 @@ export const Inbox: React.FC<InboxProps> = (props) => {
           isHidden={inboxView !== InboxView.InboxHistory}
           classNames={props.classNames?.InboxHistory}
           setInboxView={setInboxView}
+          navHeaderRightCta={props.navHeaderRightCta}
         />
         {inboxView === InboxView.InboxConfigTopic ? (
           <InboxConfigTopic
             {...{ setInboxView }}
             classNames={props.classNames?.InboxConfigTopic}
             copy={props.copy?.InboxConfigTopic}
+            navHeaderRightCta={props.navHeaderRightCta}
           />
         ) : null}
         {inboxView === InboxView.InboxConfigTargetList ? (
@@ -64,6 +68,7 @@ export const Inbox: React.FC<InboxProps> = (props) => {
             {...{ setInboxView }}
             classNames={props.classNames?.InboxConfigTargetList}
             copy={props.copy?.InboxConfigTargetList}
+            navHeaderRightCta={props.navHeaderRightCta}
           />
         ) : null}
         {inboxView === InboxView.InboxConfigTargetEdit ? (
@@ -71,6 +76,7 @@ export const Inbox: React.FC<InboxProps> = (props) => {
             {...{ setInboxView }}
             classNames={props.classNames?.InboxConfigTargetEdit}
             copy={props.copy?.InboxConfigTargetEdit}
+            navHeaderRightCta={props.navHeaderRightCta}
           />
         ) : null}
       </div>
