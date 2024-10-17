@@ -35,14 +35,16 @@
     "graphql": "^16.6.0",
     "graphql-request": "^6.0.0",
     "graphql-ws": "^5.16.0",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "relay-runtime": "^18.1.0"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^4.0.1",
     "@graphql-codegen/typescript": "^4.0.1",
     "@graphql-codegen/typescript-graphql-request": "^6.0.0",
     "@graphql-codegen/typescript-operations": "^4.0.1",
-    "@types/uuid": "^8.3.4"
+    "@types/uuid": "^8.3.4",
+    "@types/relay-runtime": "^18.0.0"
   },
   "gitHead": "2b02f90e5b01bf13a9ce842a603a7cb21b3d2881"
 }

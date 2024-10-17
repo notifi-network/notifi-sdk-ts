@@ -1,15 +1,19 @@
 {
   "name": "@notifi-network/notifi-node",
   "version": "2.1.0",
-  "description": "The node.js library for server-initiated pushes",
-  "author": "juni-notifi <hyungjoon.kim@notifi.network>",
+  "description": "Server-initiated operations with Notifi",
   "homepage": "https://github.com/notifi-network/notifi-sdk-ts#readme",
   "license": "MIT",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    }
+  },
   "publishConfig": {
     "access": "public"
   },
@@ -30,7 +34,6 @@
     "@notifi-network/notifi-graphql": "^2.1.0",
     "graphql": "^16.6.0",
     "graphql-request": "^6.0.0",
-    "subscriptions-transport-ws": "^0.11.0",
     "ws": "^8.11.0"
   },
   "gitHead": "2b02f90e5b01bf13a9ce842a603a7cb21b3d2881"

@@ -4,6 +4,7 @@ import {
   NotifiSubscriptionService,
 } from '@notifi-network/notifi-graphql';
 import { GraphQLClient } from 'graphql-request';
+import WebSocket from 'ws';
 
 import { NotifiEnvironment, notifiConfigs } from '../utils';
 
@@ -20,7 +21,7 @@ export const createNotifiSubscriptionService = (
 ): NotifiSubscriptionService => {
   if (!env) env = 'Production';
   const { wsUrl } = notifiConfigs(env);
-  return new NotifiSubscriptionService(wsUrl);
+  return new NotifiSubscriptionService(wsUrl, WebSocket);
 };
 
 export const createDataplaneClient = (

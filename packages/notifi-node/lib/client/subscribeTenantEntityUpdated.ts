@@ -1,12 +1,13 @@
 import { ExecutionResult } from 'graphql';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 
-import { TenantConnectedWallet, TenantUserAlert } from '../types';
+// import { TenantConnectedWallet, TenantUserAlert } from '../types';
+import { Types as Gql } from '@notifi-network/notifi-graphql';
 
 export type TenantUser = Readonly<{
   id: string;
-  alerts: ReadonlyArray<TenantUserAlert>;
-  connectedWallets: ReadonlyArray<TenantConnectedWallet>;
+  alerts: ReadonlyArray<Gql.AlertFragmentFragment>;
+  connectedWallets: ReadonlyArray<Gql.TenantConnectedWallet>;
 }>;
 
 const QUERY = `
@@ -77,7 +78,7 @@ export type UserCreatedEvent = Readonly<{
 export type AlertCreatedEvent = Readonly<{
   __typename: 'AlertCreatedEvent';
   user: TenantUser;
-  alert: TenantUserAlert;
+  alert: Gql.AlertFragmentFragment;
 }>;
 
 export type AlertDeletedEvent = Readonly<{
