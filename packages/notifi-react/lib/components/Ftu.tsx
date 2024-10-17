@@ -12,6 +12,7 @@ import { hasTarget } from '../utils';
 import { FtuAlertEdit, FtuAlertEditProps } from './FtuAlertEdit';
 import { FtuTargetEdit, FtuTargetEditProps } from './FtuTargetEdit';
 import { FtuTargetList, FtuTargetListProps } from './FtuTargetList';
+import { NavHeaderRightCta } from './NavHeader';
 import { PoweredByNotifi, PoweredByNotifiProps } from './PoweredByNotifi';
 
 export enum FtuView {
@@ -36,6 +37,7 @@ export type FtuProps = {
     FtuAlertEdit?: FtuAlertEditProps['classNames'];
     PoweredByNotifi?: PoweredByNotifiProps['classNames'];
   };
+  navHeaderRightCta?: NavHeaderRightCta;
 };
 
 export const Ftu: React.FC<FtuProps> = (props) => {
@@ -80,6 +82,7 @@ export const Ftu: React.FC<FtuProps> = (props) => {
             setFtuView={setFtuView}
             copy={props.copy?.FtuTargetEdit}
             classNames={props.classNames?.FtuTargetEdit}
+            navHeaderRightCta={props.navHeaderRightCta}
           />
         ) : null}
         {ftuView === FtuView.TargetList ? (
@@ -88,6 +91,7 @@ export const Ftu: React.FC<FtuProps> = (props) => {
             classNames={props.classNames?.FtuTargetList}
             onClickNext={() => setFtuView(FtuView.AlertEdit)}
             onClickBack={() => setFtuView(FtuView.TargetEdit)}
+            navHeaderRightCta={props.navHeaderRightCta}
           />
         ) : null}
         {ftuView === FtuView.AlertEdit ? (
@@ -109,6 +113,7 @@ export const Ftu: React.FC<FtuProps> = (props) => {
                   }
                 : undefined
             }
+            navHeaderRightCta={props.navHeaderRightCta}
           />
         ) : null}
       </div>

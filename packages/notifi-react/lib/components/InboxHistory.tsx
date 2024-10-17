@@ -5,6 +5,7 @@ import { HistoryItem } from '../context';
 import { HistoryDetail } from './HistoryDetail';
 import { HistoryList } from './HistoryList';
 import { InboxView } from './Inbox';
+import { NavHeaderRightCta } from './NavHeader';
 
 export type InboxHistoryProps = {
   isHidden: boolean;
@@ -12,6 +13,7 @@ export type InboxHistoryProps = {
     container?: string;
   };
   setInboxView: React.Dispatch<React.SetStateAction<InboxView>>;
+  navHeaderRightCta?: NavHeaderRightCta;
 };
 
 export const InboxHistory: React.FC<InboxHistoryProps> = (props) => {
@@ -29,10 +31,12 @@ export const InboxHistory: React.FC<InboxHistoryProps> = (props) => {
         {...{ setSelectedHistoryItem }}
         isHidden={!!selectedHistoryItem}
         setInboxView={props.setInboxView}
+        navHeaderRightCta={props.navHeaderRightCta}
       />
       <HistoryDetail
         {...{ selectedHistoryItem, setSelectedHistoryItem }}
         isHidden={!selectedHistoryItem}
+        navHeaderRightCta={props.navHeaderRightCta}
       />
     </div>
   );

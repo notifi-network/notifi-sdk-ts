@@ -1,4 +1,3 @@
-import { DeepPartialReadonly } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
 
@@ -11,13 +10,17 @@ import {
   useNotifiTopicContext,
   useNotifiUserSettingContext,
 } from '../context';
-import { useGlobalStateContext } from '../context/GlobalStateContext';
+import {
+  GlobalCtas,
+  useGlobalStateContext,
+} from '../context/GlobalStateContext';
 import { Connect, ConnectProps } from './Connect';
 import { ErrorView, ErrorViewProps } from './ErrorView';
 import { Expiry } from './Expiry';
 import { Ftu, FtuProps } from './Ftu';
 import { Inbox, InboxProps } from './Inbox';
 import { LoadingGlobalProps } from './LoadingGlobal';
+import { NavHeaderRightCta } from './NavHeader';
 
 export type NotifiInputFieldsText = {
   label?: {
@@ -43,10 +46,15 @@ export type NotifiCardModalProps = Readonly<{
     Inbox?: InboxProps['classNames'];
   }>;
   darkMode?: boolean;
-  onClose?: () => void;
+  globalCtas?: GlobalCtas;
 }>;
 
 export type CardModalView = 'connect' | 'expiry' | 'ftu' | 'Inbox';
+
+const navHeaderRightCta: NavHeaderRightCta = {
+  action: 'onClose',
+  icon: 'close',
+};
 
 export const NotifiCardModal: React.FC<NotifiCardModalProps> = (props) => {
   const { frontendClientStatus, error: clientError } =
@@ -67,9 +75,11 @@ export const NotifiCardModal: React.FC<NotifiCardModalProps> = (props) => {
   const { error: topicError } = useNotifiTopicContext();
   const { error: targetError } = useNotifiTargetContext();
 
-  if (props.onClose) {
-    setGlobalCtas({ onClose: props.onClose });
-  }
+  useEffect(() => {
+    if (props?.globalCtas) {
+      setGlobalCtas({ ...props.globalCtas });
+    }
+  }, [props?.globalCtas]);
 
   useEffect(() => {
     if (!frontendClientStatus.isInitialized) return;
@@ -163,6 +173,7 @@ export const NotifiCardModal: React.FC<NotifiCardModalProps> = (props) => {
             icon: 'arrow-back',
             action: () => setGlobalError(null),
           }}
+          navHeaderRightCta={navHeaderRightCta}
         />
       </div>
     );
@@ -181,20 +192,29 @@ export const NotifiCardModal: React.FC<NotifiCardModalProps> = (props) => {
           setCardModalView={setCardModalView}
           copy={props.copy?.Connect}
           classNames={props.classNames?.Connect}
+          navHeaderRightCta={navHeaderRightCta}
         />
       ) : null}
       {CardModalView === 'expiry' ? (
-        <Expiry setCardModalView={setCardModalView} />
+        <Expiry
+          setCardModalView={setCardModalView}
+          navHeaderRightCta={navHeaderRightCta}
+        />
       ) : null}
       {CardModalView === 'ftu' ? (
         <Ftu
           classNames={props.classNames?.Ftu}
           copy={props.copy?.Ftu}
           onComplete={() => setCardModalView('Inbox')}
+          navHeaderRightCta={navHeaderRightCta}
         />
       ) : null}
       {CardModalView === 'Inbox' ? (
-        <Inbox classNames={props.classNames?.Inbox} copy={props.copy?.Inbox} />
+        <Inbox
+          classNames={props.classNames?.Inbox}
+          copy={props.copy?.Inbox}
+          navHeaderRightCta={navHeaderRightCta}
+        />
       ) : null}
     </div>
   );

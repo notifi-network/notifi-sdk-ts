@@ -1,12 +1,14 @@
 import clsx from 'clsx';
 import React from 'react';
 
+import { IconType } from '../assets/Icons';
 import { useNotifiTargetContext } from '../context';
+import { CtaType, useGlobalStateContext } from '../context/GlobalStateContext';
 import { useIsTargetInputValid } from '../hooks/useIsTargetInputValid';
 import { defaultCopy } from '../utils/constants';
 import { FtuView } from './Ftu';
 import { LoadingAnimation } from './LoadingAnimation';
-import { NavHeader } from './NavHeader';
+import { NavHeader, NavHeaderRightCta } from './NavHeader';
 import { TargetInputs, TargetInputsProps } from './TargetInputs';
 
 export type FtuTargetEditProps = {
@@ -26,6 +28,7 @@ export type FtuTargetEditProps = {
     TargetInputs?: TargetInputsProps['classNames'];
   };
   setFtuView: React.Dispatch<React.SetStateAction<FtuView | null>>;
+  navHeaderRightCta?: NavHeaderRightCta;
 };
 
 export const FtuTargetEdit: React.FC<FtuTargetEditProps> = (props) => {
@@ -50,7 +53,7 @@ export const FtuTargetEdit: React.FC<FtuTargetEditProps> = (props) => {
     <div
       className={clsx('notifi-ftu-target-edit', props.classNames?.container)}
     >
-      <NavHeader>
+      <NavHeader rightCta={props.navHeaderRightCta}>
         {props.copy?.headerTitle ?? defaultCopy.ftuTargetEdit.headerTitle}
       </NavHeader>
       <div
