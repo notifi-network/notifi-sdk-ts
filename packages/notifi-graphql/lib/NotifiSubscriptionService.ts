@@ -20,6 +20,9 @@ export class NotifiSubscriptionService {
     private webSocketImpl?: unknown,
   ) {}
 
+  /**
+   * @deprecated Should not directly manipulate the websocket client. Instead use the returned subscription object to manage the subscription. ex. subscription.unsubscribe()
+   */
   disposeClient = () => {
     if (this.wsClient) {
       this.jwt = undefined;
