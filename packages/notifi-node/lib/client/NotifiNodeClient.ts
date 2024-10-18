@@ -3,7 +3,11 @@ import {
   NotifiDataplaneClient,
   PublishFusionMessageResponse,
 } from '@notifi-network/notifi-dataplane';
-import { Types as Gql, NotifiService } from '@notifi-network/notifi-graphql';
+import {
+  Types as Gql,
+  NotifiService,
+  NotifiEmitterEvent,
+} from '@notifi-network/notifi-graphql';
 import { isEqual } from '../utils';
 
 export class NotifiNodeClient {
@@ -161,6 +165,17 @@ export class NotifiNodeClient {
       onError,
       onComplete,
     );
+  };
+
+  addEventListener = (
+    event: NotifiEmitterEvent,
+    callBack: (...args: any[]) => void,
+  ) => {
+    return this.service.addEventListener(event, callBack);
+  };
+
+  removeEventListener = (event: NotifiEmitterEvent, callBack: () => void) => {
+    return this.service.removeEventListener(event, callBack);
   };
 }
 
