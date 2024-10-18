@@ -1,37 +1,9 @@
-// TODO: Try import fragment from fragment file
-export const tenantEntityChangedSubscriptionQuery = `
-fragment TenantUserAlertFragment on TenantUserAlert {
-  id
-  name
-  groupName
-  filter {
-    id
-    name
-    filterType
-  }
-  filterOptions
-  sourceGroup {
-    id
-    name
-    sources {
-      id
-      name
-      type
-      blockchainAddress
-    }
-  }
-}
+import { TenantUserAlertFragment } from '../fragments/TenantUserAlertFragment.gql';
+import { TenantUserFragment } from '../fragments/TenantUserFragment.gql';
 
-fragment TenantUserFragment on TenantUser {
-  id
-  alerts {
-    ...TenantUserAlertFragment
-  }
-  connectedWallets {
-    address
-    walletBlockchain
-  }
-}
+export const tenantEntityChangedSubscriptionQuery = `
+${TenantUserAlertFragment}
+${TenantUserFragment}
 
 subscription {
   tenantEntityChanged {
