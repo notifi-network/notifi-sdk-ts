@@ -9,6 +9,7 @@ import type * as Operations from './operations';
 import { stateChangedSubscriptionQuery } from './gql';
 import { tenantEntityChangedSubscriptionQuery } from './gql/subscriptions/tenantEntityChanged';
 import { ExecutionResult } from 'graphql-ws';
+import { NotifiEmitterEvents } from './NotifiEventEmitter';
 
 export class NotifiService
   implements
@@ -472,6 +473,20 @@ export class NotifiService
 
   async wsDispose() {
     this._notifiSubService.disposeClient();
+  }
+
+  addEventListener<K extends keyof NotifiEmitterEvents>(
+    event: K,
+    callBack: (...args: NotifiEmitterEvents[K]) => void,
+  ) {
+    return this._notifiSubService.addEventListener(event, callBack);
+  }
+
+  removeEventListener<K extends keyof NotifiEmitterEvents>(
+    event: K,
+    callBack: (...args: NotifiEmitterEvents[K]) => void,
+  ) {
+    return this._notifiSubService.removeEventListener(event, callBack);
   }
 
   async getUserSettings(

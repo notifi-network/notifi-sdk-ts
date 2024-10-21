@@ -3,7 +3,11 @@ import {
   NotifiDataplaneClient,
   PublishFusionMessageResponse,
 } from '@notifi-network/notifi-dataplane';
-import { Types as Gql, NotifiService } from '@notifi-network/notifi-graphql';
+import {
+  Types as Gql,
+  NotifiEmitterEvents,
+  NotifiService,
+} from '@notifi-network/notifi-graphql';
 import { isEqual } from '../utils';
 
 export class NotifiNodeClient {
@@ -162,6 +166,25 @@ export class NotifiNodeClient {
       onComplete,
     );
   };
+
+  addEventListener = <K extends keyof NotifiEmitterEvents>(
+    event: K,
+    callBack: (...args: NotifiEmitterEvents[K]) => void,
+  ) => {
+    return this.service.addEventListener(event, callBack);
+  };
+
+  removeEventListener = <K extends keyof NotifiEmitterEvents>(
+    event: K,
+    callBack: (...args: NotifiEmitterEvents[K]) => void,
+  ) => {
+    return this.service.removeEventListener(event, callBack);
+  };
+  // TODO: ⬇ is to close websocket connection, we should not allow SDK to directly manipulate websocket connection. Instead, we should allow users to unsubscribe from the subscription.
+  // disposeWebSocket = async (jwt: string) => {
+  //   this.service.setJwt(jwt);
+  //   await this.service.wsDispose();
+  // };
 }
 
 // Utils
