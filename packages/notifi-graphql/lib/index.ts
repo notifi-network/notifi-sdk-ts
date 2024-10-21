@@ -5,3 +5,4 @@ export type { Types, Operations };
 
 export * from './NotifiService';
 export * from './NotifiSubscriptionService';
+export * from './NotifiEventEmitter';
