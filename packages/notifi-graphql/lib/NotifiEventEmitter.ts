@@ -1,37 +1,41 @@
-export type NotifiEmitterEvent = NotifiWebsocketEmitterEvent;
+import { Client as WebSocketClient } from 'graphql-ws';
 
-export type NotifiWebsocketEmitterEvent =
-  | 'wsConnecting'
-  | 'wsConnected'
-  | 'wsClosed'
-  | 'wsError';
+export type NotifiEmitterEvents = {
+  wsConnecting: [];
+  wsConnected: [WebSocketClient];
+  /* ⬇ The argument is actually the websocket `CloseEvent`, but to avoid bundling DOM typings because the client can run in Node env too, you should assert the websocket type during implementation.
+   ** https://the-guild.dev/graphql/ws/docs/modules/client#eventclosedlistener
+   */
+  wsClosed: [unknown];
+  wsError: [Error];
+};
 
-// TODO: Refactor GQL subscription to use NotifiEventEmitter and add corresponding event types
+export type EventCallback<
+  T extends Record<string, any[]>,
+  K extends keyof T,
+> = (...args: T[K]) => void;
 
 export class NotifiEventEmitter<T extends Record<string, Array<any>>> {
-  private _eventListeners: {
-    [Key in keyof T]?: Array<(...args: T[Key]) => void>;
-  } = {};
+  private listeners: { [K in keyof T]?: Array<EventCallback<T, K>> } = {};
 
-  on<U extends keyof T>(event: U, callback: (...args: T[U]) => void) {
-    const callbacks = this._eventListeners[event] ?? [];
-    callbacks.push(callback);
-    this._eventListeners[event] = callbacks;
-  }
-
-  off<U extends keyof T>(event: U, callback: (...args: T[U]) => void) {
-    const callbacks = this._eventListeners[event];
-    if (callbacks && callbacks.length > 0) {
-      const index = callbacks.indexOf(callback);
-      const isIncluded = index !== -1;
-      if (isIncluded) {
-        callbacks.splice(index, 1);
-      }
+  on<K extends keyof T>(event: K, listener: EventCallback<T, K>): void {
+    if (!this.listeners[event]) {
+      this.listeners[event] = [];
     }
+    this.listeners[event]!.push(listener);
   }
 
-  emit<U extends keyof T>(event: U, ...args: T[U]) {
-    const callbacks = this._eventListeners[event];
-    callbacks?.forEach((callback) => callback(...args));
+  off<K extends keyof T>(event: K, listener: EventCallback<T, K>): void {
+    if (!this.listeners[event]) return;
+    this.listeners[event] = this.listeners[event]!.filter(
+      (l) => l !== listener,
+    );
+  }
+
+  emit<K extends keyof T>(event: K, ...args: T[K]): void {
+    if (!this.listeners[event]) return;
+    for (const listener of this.listeners[event]!) {
+      listener(...args);
+    }
   }
 }

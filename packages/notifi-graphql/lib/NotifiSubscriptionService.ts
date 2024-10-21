@@ -1,20 +1,19 @@
-import { createClient, Client, SubscribePayload, Event } from 'graphql-ws';
-import { Observable } from 'relay-runtime';
 import {
-  NotifiEventEmitter,
-  NotifiWebsocketEmitterEvent,
-} from './NotifiEventEmitter';
+  createClient,
+  Client as WebSocketClient,
+  SubscribePayload,
+} from 'graphql-ws';
+import { Observable } from 'relay-runtime';
+import { NotifiEventEmitter, NotifiEmitterEvents } from './NotifiEventEmitter';
 
 /**
  * @param webSocketImpl - A custom WebSocket implementation to use instead of the one provided by the global scope. Mostly useful for when using the client outside of the browser environment.
  * @ref https://github.com/enisdenjo/graphql-ws/blob/c030ed1d5f7e8a552dffbfd46712caf7dfe91a54/src/client.ts#L400
  */
 export class NotifiSubscriptionService {
-  private wsClient: Client | undefined;
+  private wsClient: WebSocketClient | undefined;
   private jwt: string | undefined;
-  private eventEmitter = new NotifiEventEmitter<
-    Record<NotifiWebsocketEmitterEvent, Array<any>>
-  >();
+  private eventEmitter = new NotifiEventEmitter<NotifiEmitterEvents>();
   constructor(
     private wsurl: string,
     private webSocketImpl?: unknown,
@@ -74,21 +73,21 @@ export class NotifiSubscriptionService {
     return subscription;
   };
 
-  addEventListener = (
-    event: NotifiWebsocketEmitterEvent,
-    callBack: () => void,
+  addEventListener = <K extends keyof NotifiEmitterEvents>(
+    event: K,
+    callBack: (...args: NotifiEmitterEvents[K]) => void,
   ) => {
     return this.eventEmitter.on(event, callBack);
   };
 
-  removeEventListener = (
-    event: NotifiWebsocketEmitterEvent,
-    callBack: () => void,
+  removeEventListener = <K extends keyof NotifiEmitterEvents>(
+    event: K,
+    callBack: (...args: NotifiEmitterEvents[K]) => void,
   ) => {
     return this.eventEmitter.off(event, callBack);
   };
 
-  private _toObservable(client: Client, operation: SubscribePayload) {
+  private _toObservable(client: WebSocketClient, operation: SubscribePayload) {
     return Observable.create((observer) =>
       client.subscribe(operation, {
         next: (data) => observer.next(data),
@@ -119,17 +118,21 @@ export class NotifiSubscriptionService {
 
     this.wsClient.on('connected', () => {
       console.log('WebSocket connected'); // TODO: Remove before merge
-      this.eventEmitter.emit('wsConnected');
+
+      this.eventEmitter.emit('wsConnected', this.wsClient!);
     });
 
     this.wsClient.on('closed', (event) => {
-      console.log(`WebSocket closed: ${JSON.stringify(event)}`); // TODO: Remove before merge
+      console.log(`WebSocket closed`); // TODO: Remove before merge
+
       this.eventEmitter.emit('wsClosed', event);
     });
 
     this.wsClient.on('error', (error) => {
       console.error('WebSocket error:', error); // TODO: Remove before merge
-      this.eventEmitter.emit('wsError', error);
+      if (error instanceof Error) {
+        this.eventEmitter.emit('wsError', error);
+      }
     });
   };
 }
