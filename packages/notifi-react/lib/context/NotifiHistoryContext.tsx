@@ -74,6 +74,9 @@ export const NotifiHistoryContextProvider: FC<
   useEffect(() => {
     // NOTE: Update historyItems & unreadCount when backend state changed
     if (frontendClientStatus.isAuthenticated) {
+      const fusionEventIds = new Set(
+        fusionEventTopics.map((topic) => topic.fusionEventDescriptor.id ?? ''),
+      );
       frontendClient.subscribeNotificationHistoryStateChanged((_data) => {
         frontendClient
           .getFusionNotificationHistory({
@@ -82,23 +85,16 @@ export const NotifiHistoryContextProvider: FC<
             includeRead: isIncludeRead,
           })
           .then((res) => {
-            const existingItemIdMap = new Map(
-              historyItems.map((item) => [item.id, item]),
-            );
-
-            const fusionEventIdMap = new Map(
-              fusionEventTopics.map((topic) => [
-                topic.fusionEventDescriptor.id,
-                topic,
-              ]),
+            const existingItemIds = new Set(
+              historyItems.map((item) => item.id),
             );
 
             const newItems = res?.nodes
               ?.map(parseHistoryItem)
               .filter(
                 (item) =>
-                  !existingItemIdMap.has(item.id) &&
-                  fusionEventIdMap.has(item.fusionEventId),
+                  !existingItemIds.has(item.id) &&
+                  fusionEventIds.has(item.fusionEventId),
               );
 
             if (newItems?.length && newItems.length > 0) {
