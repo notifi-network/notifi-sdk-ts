@@ -45,11 +45,17 @@ const NotifiHistoryContext = createContext<NotifiHistoryContextType>(
 
 export type NotifiHistoryProviderProps = {
   notificationCountPerPage?: number;
+  // NOTE: 'tenant' - fetch tenant unread count, 'card' - fetch card unread count (default)
+  unreadCountScope?: 'tenant' | 'card';
 };
 
 export const NotifiHistoryContextProvider: FC<
   PropsWithChildren<NotifiHistoryProviderProps>
-> = ({ children, notificationCountPerPage = 20 }) => {
+> = ({
+  children,
+  notificationCountPerPage = 20,
+  unreadCountScope = 'card',
+}) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
   const { frontendClient, frontendClientStatus } =
@@ -173,8 +179,22 @@ export const NotifiHistoryContextProvider: FC<
       cardConfig
     ) {
       getHistoryItems(true);
+
+      let getUnreadCountInput: string | undefined = undefined;
+      switch (unreadCountScope) {
+        case 'card':
+          if (!cardConfig.id)
+            return setError(
+              new Error(
+                'Card ID is missing, fetch tenant unread count instead.',
+              ),
+            );
+          getUnreadCountInput = cardConfig.id;
+          break;
+        default: // tenant, intentionally left blank
+      }
       frontendClient
-        .getUnreadNotificationHistoryCount(cardConfig.id ?? undefined)
+        .getUnreadNotificationHistoryCount(getUnreadCountInput)
         .then(({ count }) => {
           setUnreadCount(count);
         });
