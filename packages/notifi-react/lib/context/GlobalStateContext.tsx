@@ -18,7 +18,9 @@ export type GlobalError = {
   errorData?: string; // Allowing to pass custom string data to be parsed by JSON.parse
 };
 
-type GlobalCtas = Record<string, () => void>;
+export type Cta = 'onClose';
+
+export type GlobalCtas = Record<Cta, () => void>;
 
 export type GlobalStateContextType = {
   globalLoading: GlobalLoading;

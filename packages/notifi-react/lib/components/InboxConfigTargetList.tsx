@@ -4,7 +4,7 @@ import React from 'react';
 import { useNotifiTargetContext } from '../context';
 import { defaultCopy, hasTarget } from '../utils';
 import { InboxView } from './Inbox';
-import { NavHeader } from './NavHeader';
+import { NavHeader, NavHeaderRightCta } from './NavHeader';
 import { TargetList } from './TargetList';
 
 export type InboxConfigTargetListProps = {
@@ -19,6 +19,7 @@ export type InboxConfigTargetListProps = {
     buttonText?: string;
   };
   setInboxView: React.Dispatch<React.SetStateAction<InboxView>>;
+  navHeaderRightCta?: NavHeaderRightCta;
 };
 
 export const InboxConfigTargetList: React.FC<InboxConfigTargetListProps> = (
@@ -45,6 +46,7 @@ export const InboxConfigTargetList: React.FC<InboxConfigTargetListProps> = (
           icon: 'arrow-back',
           action: () => props.setInboxView(InboxView.InboxConfigTopic),
         }}
+        rightCta={props.navHeaderRightCta}
       >
         {props.copy?.header ?? defaultCopy.inboxConfigTargetList.header}
       </NavHeader>

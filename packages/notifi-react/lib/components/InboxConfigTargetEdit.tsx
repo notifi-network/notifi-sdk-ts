@@ -6,7 +6,7 @@ import { useIsTargetInputValid } from '../hooks/useIsTargetInputValid';
 import { defaultCopy, hasTarget } from '../utils';
 import { InboxView } from './Inbox';
 import { LoadingAnimation } from './LoadingAnimation';
-import { NavHeader } from './NavHeader';
+import { NavHeader, NavHeaderRightCta } from './NavHeader';
 import { TargetInputs, TargetInputsProps } from './TargetInputs';
 
 export type InboxConfigTargetEditProps = {
@@ -26,6 +26,7 @@ export type InboxConfigTargetEditProps = {
     TargetInputs?: TargetInputsProps['copy'];
   };
   setInboxView: React.Dispatch<React.SetStateAction<InboxView>>;
+  navHeaderRightCta?: NavHeaderRightCta;
 };
 
 export const InboxConfigTargetEdit: React.FC<InboxConfigTargetEditProps> = (
@@ -72,6 +73,7 @@ export const InboxConfigTargetEdit: React.FC<InboxConfigTargetEditProps> = (
           icon: 'arrow-back',
           action: () => props.setInboxView(InboxView.InboxConfigTargetList),
         }}
+        rightCta={props.navHeaderRightCta}
       >
         {props.copy?.header ?? defaultCopy.inboxConfigTargetEdit.header}
       </NavHeader>

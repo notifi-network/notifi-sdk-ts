@@ -12,7 +12,7 @@ import { defaultCopy, hasTarget } from '../utils';
 import { HistoryRow } from './HistoryRow';
 import { InboxView } from './Inbox';
 import { LoadingAnimation } from './LoadingAnimation';
-import { NavHeader } from './NavHeader';
+import { NavHeader, NavHeaderRightCta } from './NavHeader';
 import { TargetStateBanner, TargetStateBannerProps } from './TargetStateBanner';
 
 type HistoryListProps = {
@@ -41,6 +41,7 @@ type HistoryListProps = {
     React.SetStateAction<HistoryItem | null>
   >;
   isHidden: boolean;
+  navHeaderRightCta?: NavHeaderRightCta;
 };
 
 export const HistoryList: React.FC<HistoryListProps> = (props) => {
@@ -91,7 +92,7 @@ export const HistoryList: React.FC<HistoryListProps> = (props) => {
         props.classNames?.container,
       )}
     >
-      <NavHeader>
+      <NavHeader rightCta={props.navHeaderRightCta}>
         {props.copy?.headerTitle ?? defaultCopy.inboxHistoryList.headerTitle}
       </NavHeader>
       {isShowingTargetStateBanner ? (

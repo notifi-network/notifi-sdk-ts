@@ -4,7 +4,7 @@ import React from 'react';
 import { FtuStage, useNotifiUserSettingContext } from '../context';
 import { defaultCopy } from '../utils/constants';
 import { LoadingAnimation } from './LoadingAnimation';
-import { NavHeader } from './NavHeader';
+import { NavHeader, NavHeaderRightCta } from './NavHeader';
 import { TopicList } from './TopicList';
 
 export type FtuAlertEditProps = {
@@ -21,6 +21,7 @@ export type FtuAlertEditProps = {
     headerTitle?: string;
     buttonText?: string;
   };
+  navHeaderRightCta?: NavHeaderRightCta;
 };
 
 export const FtuAlertEdit: React.FC<FtuAlertEditProps> = (props) => {
@@ -45,6 +46,7 @@ export const FtuAlertEdit: React.FC<FtuAlertEditProps> = (props) => {
               }
             : undefined
         }
+        rightCta={props.navHeaderRightCta}
       >
         {props.copy?.headerTitle ?? defaultCopy.ftuAlertEdit.headerTitle}
       </NavHeader>
