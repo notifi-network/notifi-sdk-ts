@@ -84,7 +84,7 @@ export type SignMessageParams =
       walletBlockchain: 'APTOS';
       signMessage: AptosSignMessageFunction;
     }>
-    | Readonly<{
+  | Readonly<{
       walletBlockchain: 'MOVEMENT';
       signMessage: MovementSignMessageFunction;
     }>
@@ -132,9 +132,9 @@ export type WalletWithSignParams =
     }> &
       AptosUserParams)
   | (Readonly<{
-        signMessage: MovementSignMessageFunction;
-      }> &
-        MovementUserParams)
+      signMessage: MovementSignMessageFunction;
+    }> &
+      MovementUserParams)
   | (Readonly<{
       signMessage: XionSignMessageFunction;
       message: string;
@@ -1326,10 +1326,14 @@ export class NotifiFrontendClient {
     return { pageInfo, nodes };
   }
 
-  async getUnreadNotificationHistoryCount(): Promise<
+  async getUnreadNotificationHistoryCount(
+    cardId?: string,
+  ): Promise<
     Types.GetUnreadNotificationHistoryCountQuery['unreadNotificationHistoryCount']
   > {
-    const query = await this._service.getUnreadNotificationHistoryCount({});
+    const query = await this._service.getUnreadNotificationHistoryCount({
+      cardId,
+    });
     const result = query.unreadNotificationHistoryCount;
     if (!result) {
       throw new Error('Failed to fetch unread notification history count');
@@ -1550,9 +1554,8 @@ export class NotifiFrontendClient {
   async markFusionNotificationHistoryAsRead(
     input: Types.MarkFusionNotificationHistoryAsReadMutationVariables,
   ): Promise<Types.MarkFusionNotificationHistoryAsReadMutation> {
-    const mutation = await this._service.markFusionNotificationHistoryAsRead(
-      input,
-    );
+    const mutation =
+      await this._service.markFusionNotificationHistoryAsRead(input);
     return mutation;
   }
   async updateUserSettings(

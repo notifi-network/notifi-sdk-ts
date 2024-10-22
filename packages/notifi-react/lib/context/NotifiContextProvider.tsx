@@ -40,6 +40,7 @@ export const NotifiContextProvider: FC<
           <NotifiTopicContextProvider>
             <NotifiHistoryContextProvider
               notificationCountPerPage={params.notificationCountPerPage}
+              unreadCountScope={params.unreadCountScope}
             >
               <NotifiUserSettingContextProvider>
                 <GlobalStateContextProvider>
