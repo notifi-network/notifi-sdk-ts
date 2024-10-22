@@ -273,6 +273,30 @@ const YourComponent = () => {
 
 > - Checkout the example project [codebase](https://github.com/notifi-network/notifi-sdk-ts/blob/main/packages/notifi-react-example-v2/src/app/notifi/components-example/page.tsx)
 
+<br/><br/>
+
+**Common Example 3: Adding the Close Icon on the Card**
+
+Close Icon preview as seen below:
+
+_Example code_
+
+```tsx
+const YourComponent = () => {
+  const [isCardModalOpen, setIsCardModalOpen] = React.useState(false);
+
+  return (
+    <>
+      <NotifiCardModal
+        globalCtas={{ onClose: () => setIsCardModalOpen(false) }}
+        // The onClose function enables the close-icon on the card
+        // We are passing a callback function here to update the local state and close the modal
+      />
+    </>
+  );
+};
+```
+
 # Custom Integration
 
 If you want to build your own UI components instead of using the `NotifiCardModal`, you can use the Notifi React Context to access the Notifi core services.
