@@ -279,6 +279,8 @@ const YourComponent = () => {
 
 Close Icon preview as seen below:
 
+![close-icon-preview](https://github.com/user-attachments/assets/79de998f-9807-45cc-a4d7-583e6298d2e7)
+
 _Example code_
 
 ```tsx
