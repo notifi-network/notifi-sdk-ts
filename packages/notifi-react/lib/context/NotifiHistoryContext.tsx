@@ -173,9 +173,11 @@ export const NotifiHistoryContextProvider: FC<
       cardConfig
     ) {
       getHistoryItems(true);
-      frontendClient.getUnreadNotificationHistoryCount().then(({ count }) => {
-        setUnreadCount(count);
-      });
+      frontendClient
+        .getUnreadNotificationHistoryCount(cardConfig.id ?? undefined)
+        .then(({ count }) => {
+          setUnreadCount(count);
+        });
     }
   }, [frontendClientStatus, getHistoryItems, cardConfig]);
 

@@ -1351,10 +1351,14 @@ export class NotifiFrontendClient {
     return { pageInfo, nodes };
   }
 
-  async getUnreadNotificationHistoryCount(): Promise<
+  async getUnreadNotificationHistoryCount(
+    cardId?: string,
+  ): Promise<
     Types.GetUnreadNotificationHistoryCountQuery['unreadNotificationHistoryCount']
   > {
-    const query = await this._service.getUnreadNotificationHistoryCount({});
+    const query = await this._service.getUnreadNotificationHistoryCount({
+      cardId,
+    });
     const result = query.unreadNotificationHistoryCount;
     if (!result) {
       throw new Error('Failed to fetch unread notification history count');
