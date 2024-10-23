@@ -89,6 +89,7 @@ export class NotifiService
 
   setJwt(jwt: string | undefined) {
     this._jwt = jwt;
+    this._notifiSubService.setJwt(jwt);
   }
 
   async logOut(): Promise<void> {

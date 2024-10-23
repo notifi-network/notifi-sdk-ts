@@ -11,22 +11,26 @@ import { NotifiEventEmitter, NotifiEmitterEvents } from './NotifiEventEmitter';
  * @ref https://github.com/enisdenjo/graphql-ws/blob/c030ed1d5f7e8a552dffbfd46712caf7dfe91a54/src/client.ts#L400
  */
 export class NotifiSubscriptionService {
-  private wsClient: WebSocketClient | undefined;
-  private jwt: string | undefined;
+  private _wsClient: WebSocketClient | undefined;
+  private _jwt: string | undefined;
   private eventEmitter = new NotifiEventEmitter<NotifiEmitterEvents>();
   constructor(
     private wsurl: string,
     private webSocketImpl?: unknown,
   ) {}
 
+  setJwt = (jwt: string | undefined) => {
+    this._jwt = jwt;
+  };
+
   /**
    * @deprecated Should not directly manipulate the websocket client. Instead use the returned subscription object to manage the subscription. ex. subscription.unsubscribe()
    */
   disposeClient = () => {
-    if (this.wsClient) {
-      this.jwt = undefined;
-      this.wsClient.terminate();
-      this.wsClient.dispose();
+    if (this._wsClient) {
+      this._jwt = undefined;
+      this._wsClient.terminate();
+      this._wsClient.dispose();
     }
   };
 
@@ -37,14 +41,14 @@ export class NotifiSubscriptionService {
     onError?: (data: any) => void | undefined,
     onComplete?: () => void | undefined,
   ) => {
-    this.jwt = jwt;
+    this._jwt = jwt;
 
-    if (!this.wsClient) {
+    if (!this._wsClient) {
       this._initializeClient();
     }
-    if (!this.wsClient) return null;
+    if (!this._wsClient) return null;
 
-    const observable = this._toObservable(this.wsClient, {
+    const observable = this._toObservable(this._wsClient, {
       query: subscriptionQuery,
       extensions: {
         type: 'start',
@@ -102,33 +106,33 @@ export class NotifiSubscriptionService {
   }
 
   private _initializeClient = () => {
-    this.wsClient = createClient({
+    this._wsClient = createClient({
       url: this.wsurl,
       connectionParams: {
-        Authorization: `Bearer ${this.jwt}`,
+        Authorization: `Bearer ${this._jwt}`,
       },
       /* https://github.com/enisdenjo/graphql-ws/blob/c030ed1d5f7e8a552dffbfd46712caf7dfe91a54/src/client.ts#L400 */
       webSocketImpl: this.webSocketImpl,
     });
 
-    this.wsClient.on('connecting', () => {
+    this._wsClient.on('connecting', () => {
       console.log('WebSocket connecting'); // TODO: Remove before merge
       this.eventEmitter.emit('wsConnecting');
     });
 
-    this.wsClient.on('connected', () => {
+    this._wsClient.on('connected', () => {
       console.log('WebSocket connected'); // TODO: Remove before merge
 
-      this.eventEmitter.emit('wsConnected', this.wsClient!);
+      this.eventEmitter.emit('wsConnected', this._wsClient!);
     });
 
-    this.wsClient.on('closed', (event) => {
+    this._wsClient.on('closed', (event) => {
       console.log(`WebSocket closed`); // TODO: Remove before merge
 
       this.eventEmitter.emit('wsClosed', event);
     });
 
-    this.wsClient.on('error', (error) => {
+    this._wsClient.on('error', (error) => {
       console.error('WebSocket error:', error); // TODO: Remove before merge
       if (error instanceof Error) {
         this.eventEmitter.emit('wsError', error);
