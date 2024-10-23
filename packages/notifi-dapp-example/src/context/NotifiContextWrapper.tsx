@@ -58,11 +58,26 @@ export const NotifiContextWrapper: React.FC<
         if (!walletPublicKey) throw new Error('ERROR: invalid walletPublicKey');
         signMessage = async (message: Uint8Array): Promise<Uint8Array> => {
           const messageString = Buffer.from(message).toString('utf8');
-          const result = await wallets[selectedWallet].signArbitrary(
-            messageString,
+          
+          // @ts-ignore
+          const signature = await window.ethereum.request(
+            {
+              method: 'personal_sign',
+              params: [
+                Buffer.from(messageString).toString('hex'),
+                walletPublicKey,
+              ],
+            },
           );
-          if (!result) throw new Error('ERROR: invalid signature');
-          return getBytes(result);
+          console.log({messageString, payloadForWindowEthereumRequest:  {
+            method: 'personal_sign',
+            params: [
+              Buffer.from(messageString).toString('hex'),
+              walletPublicKey,
+            ],
+          }, rawHexSignature: signature, bytesSignatureConvertedFromHex: getBytes(signature), base64SignatureConvertedFromBtyes: Buffer.from(getBytes(signature)).toString('base64')});
+
+          return getBytes(signature);
         };
         break;
     }
