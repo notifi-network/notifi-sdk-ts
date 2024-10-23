@@ -36,11 +36,9 @@ export class NotifiNodeClient {
     return this.clientState;
   }
 
-  logIn: (
+  async logIn(
     input: Gql.LogInFromServiceMutationVariables['input'],
-  ) => Promise<Gql.LogInFromServiceMutation['logInFromService']> = async (
-    input,
-  ) => {
+  ): Promise<Gql.LogInFromServiceMutation['logInFromService']> {
     const results = await this.service.logInFromService({ input });
     const authorization = results.logInFromService;
     if (authorization === undefined) {
@@ -48,7 +46,7 @@ export class NotifiNodeClient {
     }
     this.clientState = { status: 'initialized', jwt: authorization.token };
     return authorization;
-  };
+  }
 
   publishFusionMessage(
     params: Readonly<FusionMessage[]>,
