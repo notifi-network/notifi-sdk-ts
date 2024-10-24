@@ -2,13 +2,14 @@ import { GraphQLClient } from 'graphql-request';
 import { v4 as uuid } from 'uuid';
 
 import { version } from '../package.json';
-import {
-  NotifiSubscriptionService,
-  SubscriptionQueries,
-} from './NotifiSubscriptionService';
+import { NotifiSubscriptionService } from './NotifiSubscriptionService';
 import * as Generated from './gql/generated';
 import { getSdk } from './gql/generated';
 import type * as Operations from './operations';
+import { stateChangedSubscriptionQuery } from './gql';
+import { tenantEntityChangedSubscriptionQuery } from './gql/subscriptions/tenantEntityChanged';
+import { ExecutionResult } from 'graphql-ws';
+import { NotifiEmitterEvents } from './NotifiEventEmitter';
 
 export class NotifiService
   implements
@@ -88,6 +89,7 @@ export class NotifiService
 
   setJwt(jwt: string | undefined) {
     this._jwt = jwt;
+    this._notifiSubService.setJwt(jwt);
   }
 
   async logOut(): Promise<void> {
@@ -449,7 +451,21 @@ export class NotifiService
   ): Promise<void> {
     this._notifiSubService.subscribe(
       this._jwt,
-      SubscriptionQueries.StateChanged,
+      stateChangedSubscriptionQuery,
+      onMessageReceived,
+      onError,
+      onComplete,
+    );
+  }
+
+  async subscribeTenantEntityUpdated(
+    onMessageReceived: (data: ExecutionResult) => void,
+    onError?: (error: Error) => void,
+    onComplete?: () => void,
+  ) {
+    return this._notifiSubService.subscribe(
+      this._jwt,
+      tenantEntityChangedSubscriptionQuery,
       onMessageReceived,
       onError,
       onComplete,
@@ -458,6 +474,20 @@ export class NotifiService
 
   async wsDispose() {
     this._notifiSubService.disposeClient();
+  }
+
+  addEventListener<K extends keyof NotifiEmitterEvents>(
+    event: K,
+    callBack: (...args: NotifiEmitterEvents[K]) => void,
+  ) {
+    return this._notifiSubService.addEventListener(event, callBack);
+  }
+
+  removeEventListener<K extends keyof NotifiEmitterEvents>(
+    event: K,
+    callBack: (...args: NotifiEmitterEvents[K]) => void,
+  ) {
+    return this._notifiSubService.removeEventListener(event, callBack);
   }
 
   async getUserSettings(

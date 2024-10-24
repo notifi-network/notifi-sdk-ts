@@ -1,2 +1,2 @@
 export * from './notifiConfigs';
-export * from './gqlError';
+export * from './math';
