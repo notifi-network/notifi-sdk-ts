@@ -119,7 +119,7 @@ export const NotifiFrontendClientContextProvider: React.FC<
       getNonce().then((nonce) => setTransactionNonce(nonce));
     }, 600000); // refresh nonce every 10 minutes (nonce expires in 15 minutes)
     return () => clearInterval(interval);
-  }, [frontendClientStatus.isInitialized]);
+  }, [frontendClientStatus.isInitialized, frontendClient]);
 
   const login = async () => {
     if (!frontendClient || !frontendClientStatus.isInitialized) {
