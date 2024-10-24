@@ -306,6 +306,13 @@ export class NotifiService
     return this._typedClient.getAlerts(variables, headers);
   }
 
+  async getActiveAlerts(
+    variables: Generated.GetActiveAlertsQueryVariables,
+  ): Promise<Generated.GetActiveAlertsQuery> {
+    const headers = this._requestHeaders();
+    return this._typedClient.getActiveAlerts(variables, headers);
+  }
+
   async getConfigurationForDapp(
     variables: Generated.GetConfigurationForDappQueryVariables,
   ): Promise<Generated.GetConfigurationForDappQuery> {

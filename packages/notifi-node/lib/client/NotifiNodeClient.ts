@@ -91,14 +91,15 @@ export class NotifiNodeClient {
     return connection;
   }
 
-  async getTenantUser(params: Gql.GetTenantUserQueryVariables) {
-    this.isClientValid('getTenantUser');
-    const result = await this.service.getTenantUser(params);
-    const connection = result.tenantUser;
+  async getActiveAlerts(
+    params: Gql.GetActiveAlertsQueryVariables,
+  ): Promise<Gql.GetActiveAlertsQuery['activeAlerts']> {
+    this.isClientValid('getActiveAlerts');
+    const result = await this.service.getActiveAlerts(params);
+    const connection = result.activeAlerts;
     if (connection === undefined) {
-      throw new Error('Get tenant user failed');
+      throw new Error('Get active alerts failed');
     }
-
     return connection;
   }
 
