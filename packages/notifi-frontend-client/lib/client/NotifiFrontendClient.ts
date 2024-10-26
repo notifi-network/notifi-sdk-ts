@@ -799,7 +799,8 @@ export class NotifiFrontendClient {
       case 'MONAD':
       case 'EVMOS':
       case 'THE_ROOT_NETWORK':
-      case 'OPTIMISM': {
+      case 'OPTIMISM':
+      case 'MOVEMENT': {
         const { walletPublicKey, tenantId } = this
           ._configuration as NotifiConfigWithPublicKey;
         const messageBuffer = new TextEncoder().encode(
@@ -828,7 +829,9 @@ export class NotifiFrontendClient {
       case 'DYDX':
       case 'ORAI':
       case 'KAVA':
-      case 'INJECTIVE': {
+      case 'INJECTIVE':
+      case 'ARCH':
+      case 'BITCOIN': {
         const { authenticationKey, tenantId } = this
           ._configuration as NotifiConfigWithPublicKeyAndAddress;
         const messageBuffer = new TextEncoder().encode(
@@ -876,10 +879,7 @@ export class NotifiFrontendClient {
         );
         return signature;
       }
-      case 'MOVEMENT':
-      case 'SUI':
-      case 'ARCH':
-      case 'BITCOIN': {
+      case 'SUI': {
         const { accountAddress, tenantId } = this
           ._configuration as NotifiConfigWithPublicKeyAndAddress;
         const messageBuffer = new TextEncoder().encode(
