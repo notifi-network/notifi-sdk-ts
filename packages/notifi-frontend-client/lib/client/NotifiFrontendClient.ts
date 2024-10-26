@@ -77,16 +77,15 @@ export type SignMessageParams =
         | 'COSMOS'
         | 'DYMENSION'
         | 'PERSISTENCE'
-        | 'DYDX';
+        | 'DYDX'
+        | 'ARCH'
+        | 'BITCOIN'
+        | 'MOVEMENT';
       signMessage: Uint8SignMessageFunction;
     }>
   | Readonly<{
       walletBlockchain: 'APTOS';
       signMessage: AptosSignMessageFunction;
-    }>
-    | Readonly<{
-      walletBlockchain: 'MOVEMENT';
-      signMessage: MovementSignMessageFunction;
     }>
   | Readonly<{
       walletBlockchain: 'XION';
@@ -132,9 +131,17 @@ export type WalletWithSignParams =
     }> &
       AptosUserParams)
   | (Readonly<{
-        signMessage: MovementSignMessageFunction;
-      }> &
-        MovementUserParams)
+      signMessage: Uint8SignMessageFunction;
+    }> &
+      MovementUserParams)
+  | (Readonly<{
+      signMessage: Uint8SignMessageFunction;
+    }> &
+      BitcoinUserParams)
+  | (Readonly<{
+      signMessage: Uint8SignMessageFunction;
+    }> &
+      ArchUserParams)
   | (Readonly<{
       signMessage: XionSignMessageFunction;
       message: string;
@@ -238,7 +245,9 @@ export type UserParams =
   | DymensionUserParams
   | PersistenceUserParams
   | DydxUserParams
-  | OffChainUserParams;
+  | OffChainUserParams
+  | BitcoinUserParams
+  | ArchUserParams;
 
 export type SolanaUserParams = Readonly<{
   walletBlockchain: 'SOLANA';
@@ -276,6 +285,18 @@ export type AptosUserParams = Readonly<{
 
 export type MovementUserParams = Readonly<{
   walletBlockchain: 'MOVEMENT';
+  accountAddress: string;
+  walletPublicKey: string;
+}>;
+
+export type BitcoinUserParams = Readonly<{
+  walletBlockchain: 'BITCOIN';
+  accountAddress: string;
+  walletPublicKey: string;
+}>;
+
+export type ArchUserParams = Readonly<{
+  walletBlockchain: 'ARCH';
   accountAddress: string;
   walletPublicKey: string;
 }>;
@@ -404,10 +425,6 @@ export type AptosSignMessageFunction = (
   nonce: number,
 ) => Promise<string>;
 type hexString = `0x${string}`;
-export type MovementSignMessageFunction = (
-  message: string,
-  nonce: number,
-) => Promise<string>;
 
 export type AcalaSignMessageFunction = (
   acalaAddress: string,
@@ -859,14 +876,10 @@ export class NotifiFrontendClient {
         );
         return signature;
       }
-      case 'MOVEMENT': {
-        const signature = await signMessageParams.signMessage(
-          SIGNING_MESSAGE,
-          timestamp,
-        );
-        return signature;
-      }
-      case 'SUI': {
+      case 'MOVEMENT':
+      case 'SUI':
+      case 'ARCH':
+      case 'BITCOIN': {
         const { accountAddress, tenantId } = this
           ._configuration as NotifiConfigWithPublicKeyAndAddress;
         const messageBuffer = new TextEncoder().encode(
@@ -1550,9 +1563,8 @@ export class NotifiFrontendClient {
   async markFusionNotificationHistoryAsRead(
     input: Types.MarkFusionNotificationHistoryAsReadMutationVariables,
   ): Promise<Types.MarkFusionNotificationHistoryAsReadMutation> {
-    const mutation = await this._service.markFusionNotificationHistoryAsRead(
-      input,
-    );
+    const mutation =
+      await this._service.markFusionNotificationHistoryAsRead(input);
     return mutation;
   }
   async updateUserSettings(
