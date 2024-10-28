@@ -10,6 +10,7 @@ import { stateChangedSubscriptionQuery } from './gql';
 import { tenantEntityChangedSubscriptionQuery } from './gql/subscriptions/tenantEntityChanged';
 import { ExecutionResult } from 'graphql-ws';
 import { NotifiEmitterEvents } from './NotifiEventEmitter';
+import { Subscription } from 'relay-runtime';
 
 export class NotifiService
   implements
@@ -465,7 +466,7 @@ export class NotifiService
     );
   }
 
-  async subscribeTenantEntityUpdated(
+  subscribeTenantEntityUpdated(
     onMessageReceived: (data: ExecutionResult) => void,
     onError?: (error: Error) => void,
     onComplete?: () => void,
@@ -486,7 +487,7 @@ export class NotifiService
   addEventListener<K extends keyof NotifiEmitterEvents>(
     event: K,
     callBack: (...args: NotifiEmitterEvents[K]) => void,
-  ) {
+  ): Subscription | null {
     return this._notifiSubService.addEventListener(event, callBack);
   }
 

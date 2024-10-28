@@ -165,6 +165,9 @@ export class NotifiNodeClient {
     return recreated;
   }
 
+  /**
+   * @deprecated Use addEventListener instead
+   */
   subscribeTenantEntityUpdated(
     onTenantEntityUpdate: (event: Gql.TenantEntityChangeEvent) => void,
     onError?: (error: Error) => void,
@@ -180,6 +183,9 @@ export class NotifiNodeClient {
     );
   }
 
+  /**
+   * @important for removing the event listener, check the guidelines in the NotifiEventEmitter (notifi-graphql/lib/NotifiEventEmitter.ts) class. https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-graphql/lib
+   */
   addEventListener<K extends keyof NotifiEmitterEvents>(
     event: K,
     callBack: (...args: NotifiEmitterEvents[K]) => void,
