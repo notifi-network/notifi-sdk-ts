@@ -6,21 +6,17 @@ export const useSignTransaction = () => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [signatureViaNotifiNonce, setSignatureViaNotifiNonce] =
     React.useState<string>();
-  const {
-    walletWithSignParams,
-    loginViaTransaction: {
-      nonce: nonceForTransactionLogin,
-      login: loginViaTransaction,
-    },
-  } = useNotifiFrontendClientContext();
+  const { walletWithSignParams, loginViaTransaction } =
+    useNotifiFrontendClientContext();
 
   const isSupported = [
     'SOLANA',
     // TODO: ⬇ Impl other blockchains transaction
-    /*'ETHEREUM'*/
+    'ARBITRUM',
   ].includes(walletWithSignParams.walletBlockchain);
 
   const signTransaction = React.useCallback(async () => {
+    if (!loginViaTransaction) return;
     setIsLoading(true);
     let transactionSigner = null;
 
@@ -28,9 +24,11 @@ export const useSignTransaction = () => {
       case 'SOLANA':
         try {
           transactionSigner = walletWithSignParams.hardwareLoginPlugin;
+          console.log(1, { nonce: loginViaTransaction.nonce });
           const signature = await transactionSigner?.sendMessage(
-            nonceForTransactionLogin,
+            loginViaTransaction.nonce,
           );
+          console.log(2, { signature });
 
           if (!signature) throw new Error('No signature - SOLANA');
           setSignatureViaNotifiNonce(signature);
@@ -40,7 +38,7 @@ export const useSignTransaction = () => {
           setIsLoading(false);
         }
         break;
-      case 'ETHEREUM':
+      case 'ARBITRUM':
         // TODO: WIP below
         try {
           // eslint-disable-next-line
@@ -52,25 +50,25 @@ export const useSignTransaction = () => {
             params: [],
           });
 
-          const memo = ethers.hexlify(
-            ethers.toUtf8Bytes(nonceForTransactionLogin),
-          );
-          console.log(1, { accounts, memo, nonceForTransactionLogin });
-          // const signature = await transactionSigner.request({
-          //   method: 'eth_sendTransaction',
-          //   params: [
-          //     {
-          //       from: accounts[0],
-          //       to: accounts[0],
-          //       value: '1',
-          //       gasLimit: '0x5028',
-          //       maxPriorityFeePerGas: '0x3b9aca00',
-          //       maxFeePerGas: '0x2540be400',
-          //       data: memo,
-          //     },
-          //   ],
-          // });
-          // setSignatureViaNotifiNonce(signature);
+          // const memo = ethers.hexlify(
+          //   ethers.toUtf8Bytes(loginViaTransaction.nonce),
+          // );
+          console.log(1, { accounts, nonce: loginViaTransaction.nonce });
+          const signature = await transactionSigner.request({
+            method: 'eth_sendTransaction',
+            params: [
+              {
+                from: accounts[0],
+                to: accounts[0],
+                value: '1',
+                gasLimit: '0x5028',
+                maxPriorityFeePerGas: '0x3b9aca00', // 1 Gwei
+                maxFeePerGas: '0x2540be400', // 1 Gwei
+                data: loginViaTransaction.nonce,
+              },
+            ],
+          });
+          setSignatureViaNotifiNonce(signature);
         } catch (e) {
           console.error('Error signing ETHEREUM transaction', e);
         } finally {
@@ -81,15 +79,16 @@ export const useSignTransaction = () => {
         // TODO: Impl other blockchains transaction
         throw new Error('Unsupported blockchain');
     }
-  }, [nonceForTransactionLogin]);
+  }, [loginViaTransaction?.nonce]);
 
   React.useEffect(() => {
-    if (!signatureViaNotifiNonce) return;
+    if (!signatureViaNotifiNonce || !loginViaTransaction) return;
     setIsLoading(true);
-    loginViaTransaction(signatureViaNotifiNonce).then(() =>
-      setIsLoading(false),
-    );
-  }, [signatureViaNotifiNonce, loginViaTransaction]);
+    loginViaTransaction.login(signatureViaNotifiNonce).finally(() => {
+      setSignatureViaNotifiNonce(undefined);
+      setIsLoading(false);
+    });
+  }, [signatureViaNotifiNonce, loginViaTransaction?.nonce]);
 
   return {
     isLoading,
