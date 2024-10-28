@@ -79,12 +79,16 @@ export type SignMessageParams =
         | 'PERSISTENCE'
         | 'DYDX'
         | 'ARCH'
-        | 'BITCOIN'
-        | 'MOVEMENT';
+        | 'BITCOIN';
+
       signMessage: Uint8SignMessageFunction;
     }>
   | Readonly<{
       walletBlockchain: 'APTOS';
+      signMessage: AptosSignMessageFunction;
+    }>
+  | Readonly<{
+      walletBlockchain: 'MOVEMENT';
       signMessage: AptosSignMessageFunction;
     }>
   | Readonly<{
@@ -131,7 +135,7 @@ export type WalletWithSignParams =
     }> &
       AptosUserParams)
   | (Readonly<{
-      signMessage: Uint8SignMessageFunction;
+      signMessage: AptosSignMessageFunction;
     }> &
       MovementUserParams)
   | (Readonly<{
@@ -800,8 +804,7 @@ export class NotifiFrontendClient {
       case 'MONAD':
       case 'EVMOS':
       case 'THE_ROOT_NETWORK':
-      case 'OPTIMISM':
-      case 'MOVEMENT': {
+      case 'OPTIMISM': {
         const { walletPublicKey, tenantId } = this
           ._configuration as NotifiConfigWithPublicKey;
         const messageBuffer = new TextEncoder().encode(
@@ -873,7 +876,8 @@ export class NotifiFrontendClient {
         );
         return signedBuffer;
       }
-      case 'APTOS': {
+      case 'APTOS':
+      case 'MOVEMENT': {
         const signature = await signMessageParams.signMessage(
           SIGNING_MESSAGE,
           timestamp,
