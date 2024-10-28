@@ -723,6 +723,7 @@ export class NotifiFrontendClient {
       case 'NEUTRON':
       case 'NIBIRU':
       case 'MOVEMENT':
+      case 'ARCH':
       case 'APTOS': {
         if (typeof signature !== 'string')
           throw new Error(
