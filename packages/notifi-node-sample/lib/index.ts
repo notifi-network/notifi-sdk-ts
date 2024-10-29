@@ -1,14 +1,13 @@
 import { FusionMessage } from '@notifi-network/notifi-dataplane';
-import { GqlError } from '@notifi-network/notifi-node';
 import {
   NotifiClient,
   NotifiEnvironment,
+  NotifiNodeClient,
   createDataplaneClient,
   createGraphQLClient,
   createNotifiService,
   createNotifiSubscriptionService,
 } from '@notifi-network/notifi-node';
-import { randomUUID } from 'crypto';
 import type { NextFunction, Request, Response } from 'express';
 import express from 'express';
 import morgan from 'morgan';
@@ -102,10 +101,8 @@ app.post('/login', (req, res) => {
     })
     .catch((e: unknown) => {
       let message = 'Unknown server error';
-      if (e instanceof GqlError) {
-        message = `${e.message}: ${e.getErrorMessages().join(', ')}`;
-      } else if (e instanceof Error) {
-        message = e.message;
+      if (e instanceof Error) {
+        message = `notifi-node: login - ${e.message}`;
       }
       console.log('Error in login', message);
       return res.status(500).json({ message });
@@ -142,107 +139,6 @@ const authorizeMiddleware = (
   next();
 };
 
-app.post('/sendSimpleHealthThreshold', authorizeMiddleware, (req, res) => {
-  const jwt: string = res.locals.jwt;
-
-  const {
-    walletPublicKey,
-    walletBlockchain,
-    healthValue,
-  }: Readonly<{
-    walletPublicKey?: string;
-    walletBlockchain?: string;
-    healthValue?: number;
-  }> = req.body ?? {};
-
-  if (walletPublicKey === undefined) {
-    return res.status(400).json({
-      message: 'walletPublicKey is required',
-    });
-  }
-
-  if (walletBlockchain === undefined) {
-    return res.status(400).json({
-      message: 'walletBlockchain is required',
-    });
-  } else if (walletBlockchain !== 'SOLANA' && walletBlockchain !== 'NEAR') {
-    return res.status(400).json({
-      message: 'Unsupported walletBlockchain',
-    });
-  }
-
-  if (healthValue === undefined) {
-    return res.status(400).json({
-      message: 'value is required',
-    });
-  }
-
-  const client = new NotifiClient(
-    res.locals.notifiService,
-    res.locals.dpapiClient,
-  );
-
-  return client
-    .sendSimpleHealthThreshold(jwt, {
-      key: randomUUID(),
-      walletPublicKey,
-      walletBlockchain,
-      healthValue,
-    })
-    .then(() => {
-      return res.status(200).json({ message: 'success' });
-    })
-    .catch((e: unknown) => {
-      let message = 'Unknown server error';
-      if (e instanceof GqlError) {
-        message = `${e.message}: ${e.getErrorMessages().join(', ')}`;
-      } else if (e instanceof Error) {
-        message = e.message;
-      }
-
-      return res.status(500).json({ message });
-    });
-});
-
-app.post('/deleteUserAlert', authorizeMiddleware, (req, res) => {
-  const jwt: string = res.locals.jwt;
-
-  const {
-    alertId,
-  }: Readonly<{
-    alertId?: string;
-  }> = req.body ?? {};
-
-  if (alertId === undefined) {
-    return res.status(400).json({
-      message: 'alertId is required',
-    });
-  }
-
-  const client = new NotifiClient(
-    res.locals.notifiService,
-    res.locals.dpapiClient,
-  );
-
-  return client
-    .deleteUserAlert(jwt, {
-      alertId,
-    })
-    .then((alertId) => {
-      return res.status(200).json({ alertId });
-    })
-    .catch((e: unknown) => {
-      let message = 'Unknown server error';
-      if (e instanceof GqlError) {
-        message = `${e.message}: ${e.getErrorMessages().join(', ')}`;
-      } else if (e instanceof Error) {
-        message = e.message;
-      }
-
-      return res.status(500).json({ message });
-    });
-});
-
 app.post('/createTenantUser', authorizeMiddleware, (req, res) => {
   const jwt: string = res.locals.jwt;
 
@@ -275,8 +171,10 @@ app.post('/createTenantUser', authorizeMiddleware, (req, res) => {
     res.locals.dpapiClient,
   );
 
+  client.initialize(jwt);
+
   return client
-    .createTenantUser(jwt, {
+    .createTenantUser({
       walletBlockchain,
       walletPublicKey,
     })
@@ -285,123 +183,8 @@ app.post('/createTenantUser', authorizeMiddleware, (req, res) => {
     })
     .catch((e: unknown) => {
       let message = 'Unknown server error';
-      if (e instanceof GqlError) {
-        message = `${e.message}: ${e.getErrorMessages().join(', ')}`;
-      } else if (e instanceof Error) {
-        message = e.message;
-      }
-
-      return res.status(500).json({ message });
-    });
-});
-
-app.post('/broadcastMessage', authorizeMiddleware, (req, res) => {
-  const jwt: string = res.locals.jwt;
-
-  const {
-    topicName,
-    message,
-    subject,
-  }: Readonly<{
-    topicName?: string;
-    message?: string;
-    subject?: string;
-  }> = req.body ?? {};
-
-  if (topicName === undefined) {
-    return res.status(400).json({
-      message: 'topicName is required',
-    });
-  }
-
-  if (message === undefined) {
-    return res.status(400).json({
-      message: 'message is required',
-    });
-  }
-
-  if (subject === undefined) {
-    return res.status(400).json({
-      message: 'subject is required',
-    });
-  }
-
-  const client = new NotifiClient(
-    res.locals.notifiService,
-    res.locals.dpapiClient,
-  );
-
-  return client
-    .sendBroadcastMessage(jwt, {
-      topicName,
-      variables: [
-        {
-          key: 'message',
-          value: message,
-        },
-        {
-          key: 'subject',
-          value: subject,
-        },
-      ],
-    })
-    .then(() => {
-      return res.status(200).json({ success: true });
-    })
-    .catch((e: unknown) => {
-      let message = 'Unknown server error';
-      if (e instanceof GqlError) {
-        message = `${e.message}: ${e.getErrorMessages().join(', ')}`;
-      } else if (e instanceof Error) {
-        message = e.message;
-      }
-
-      return res.status(500).json({ message });
-    });
-});
-
-app.post('/createDirectPushAlert', authorizeMiddleware, (req, res) => {
-  const jwt: string = res.locals.jwt;
-
-  const {
-    userId,
-    email,
-  }: Readonly<{
-    userId?: string;
-    email?: string;
-  }> = req.body ?? {};
-
-  if (userId === undefined) {
-    return res.status(400).json({
-      message: 'userId is required',
-    });
-  }
-
-  if (email === undefined) {
-    return res.status(400).json({
-      message: 'email is required',
-    });
-  }
-
-  const client = new NotifiClient(
-    res.locals.notifiService,
-    res.locals.dpapiClient,
-  );
-
-  return client
-    .createDirectPushAlert(jwt, {
-      userId,
-      emailAddresses: [email],
-    })
-    .then((alert) => {
-      return res.status(200).json({ alert });
-    })
-    .catch((e: unknown) => {
-      let message = 'Unknown server error';
-      if (e instanceof GqlError) {
-        message = `${e.message}: ${e.getErrorMessages().join(', ')}`;
-      } else if (e instanceof Error) {
-        message = e.message;
+      if (e instanceof Error) {
+        message = `notifi-node: createTenantUser - ${e.message}`;
       }
 
       return res.status(500).json({ message });
@@ -431,8 +214,11 @@ app.post('/publishFusionMessage', authorizeMiddleware, (req, res) => {
     res.locals.notifiService,
     res.locals.dpapiClient,
   );
+
+  client.initialize(jwt);
+
   return client
-    .publishFusionMessage(jwt, variables)
+    .publishFusionMessage(variables)
     .then((result) => {
       return res.status(200).json({ result });
     })
@@ -446,202 +232,99 @@ app.post('/publishFusionMessage', authorizeMiddleware, (req, res) => {
     });
 });
 
-app.post('/sendDirectPush', authorizeMiddleware, (req, res) => {
-  const jwt: string = res.locals.jwt;
-
-  const {
-    walletBlockchain,
-    walletPublicKey,
-    message,
-    type,
-    template,
-  }: Readonly<{
-    walletBlockchain?: string;
-    walletPublicKey?: string;
-    message?: string;
-    type?: string; // This is directPushId
-    template?: {
-      emailTemplate?: string;
-      smsTemplate?: string;
-      telegramTemplate?: string;
-      variables: Record<string, string>;
-    };
-  }> = req.body ?? {};
-
-  if (walletPublicKey === undefined) {
-    return res.status(400).json({
-      message: 'walletPublicKey is required',
-    });
-  }
-
-  if (walletBlockchain === undefined) {
-    return res.status(400).json({
-      message: 'walletBlockchain is required',
-    });
-  } else if (walletBlockchain !== 'SOLANA' && walletBlockchain !== 'NEAR') {
-    return res.status(400).json({
-      message: 'Unsupported walletBlockchain',
-    });
-  }
-
-  if (message === undefined && template === undefined) {
-    return res.status(400).json({
-      message: 'Either message or template is required',
-    });
-  }
-
+let tenantEntityChangedSubscription: NonNullable<
+  Awaited<ReturnType<NotifiNodeClient['subscribeTenantEntityUpdated']>>
+> | null = null;
+let webSocketClient: any;
+app.get('/subscribeTenantEntityChanged', authorizeMiddleware, (_req, res) => {
+  if (tenantEntityChangedSubscription)
+    return res
+      .status(200)
+      .json({ message: 'already subscribed, unsubscribe before re-calling' });
   const client = new NotifiClient(
     res.locals.notifiService,
     res.locals.dpapiClient,
   );
 
-  return client
-    .sendDirectPush(jwt, {
-      key: randomUUID(),
-      walletPublicKey,
-      walletBlockchain,
-      message,
-      type,
-      template,
-    })
-    .then(() => {
-      return res.status(200).json({ message: 'success' });
-    })
-    .catch((e: unknown) => {
-      let message = 'Unknown server error';
-      if (e instanceof GqlError) {
-        message = `${e.message}: ${e.getErrorMessages().join(', ')}`;
-      } else if (e instanceof Error) {
-        message = e.message;
-      }
+  client.initialize(res.locals.jwt);
 
-      return res.status(500).json({ message });
-    });
-});
+  // NOTE: Add event listeners to monitor websocket connection status (You can also remove event listeners using removeEventListener method)
+  client.addEventListener('wsConnecting', () => {
+    console.log('notifi-node: Websocket connecting');
+  });
+  client.addEventListener('wsConnected', (wsClient) => {
+    console.log('notifi-node: Websocket connected', wsClient);
+    webSocketClient = wsClient;
+  });
+  client.addEventListener('wsClosed', (closeEvent) => {
+    console.log('notifi-node: Websocket closed');
+    // Do something to when the websocket is closed. Ex, remove event listeners.
+  });
+  client.addEventListener('wsError', (err) => {
+    console.log('notifi-node: Websocket error', err);
+    // Do something to handle the error
+  });
 
-app.post('/addSourceToSourceGroup', authorizeMiddleware, (req, res) => {
-  const jwt: string = res.locals.jwt;
-
-  const {
-    sourceGroupId,
-    sourceId,
-    walletAddress,
-    sourceType,
-  }: Readonly<{
-    sourceGroupId?: string;
-    sourceId?: string;
-    walletAddress?: string;
-    sourceType?: string;
-  }> = req.body ?? {};
-
-  if (sourceGroupId === undefined) {
-    return res.status(400).json({
-      message: 'walletPublicKey is required',
-    });
-  }
-
-  if (sourceId === undefined) {
-    if (walletAddress === undefined || sourceType === undefined) {
-      return res.status(400).json({
-        message:
-          'Both walletAddress and sourceType are required if sourceId is not provided',
+  client
+    .subscribeTenantEntityUpdated(
+      (event) => {
+        console.log(`Tenant entity updated: ${JSON.stringify(event)}`);
+        // Do something with the event
+      },
+      (err) => {
+        console.log(`Error in tenant entity updated: ${err}`);
+        res.status(500).json({ message: err.message });
+      },
+      () => {
+        console.log('Subscription completed');
+        res.status(200).json({ message: 'completed' });
+      },
+    )
+    .then((sub) => {
+      tenantEntityChangedSubscription = sub;
+      console.log('subscribed', tenantEntityChangedSubscription);
+      res.status(200).json({
+        message: 'notifi-node: subscribeTanatEntityChanged - subscribed',
       });
-    }
-  } else if (walletAddress !== undefined || sourceType === undefined) {
-    return res.status(400).json({
-      message: 'Cannot provide both sourceId and walletAddress/sourceType',
-    });
-  }
-
-  const client = new NotifiClient(
-    res.locals.notifiService,
-    res.locals.dpapiClient,
-  );
-
-  return client
-    .addSourceToSourceGroup(jwt, {
-      sourceGroupId,
-      sourceId,
-      walletAddress,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      sourceType: sourceType as any,
-    })
-    .then((sourceGroup) => {
-      return res.status(200).json({ sourceGroup });
     })
     .catch((e: unknown) => {
       let message = 'Unknown server error';
-      if (e instanceof GqlError) {
-        message = `${e.message}: ${e.getErrorMessages().join(', ')}`;
-      } else if (e instanceof Error) {
+      if (e instanceof Error) {
         message = e.message;
       }
-
       return res.status(500).json({ message });
     });
 });
 
-app.post('/removeSourceFromSourceGroup', authorizeMiddleware, (req, res) => {
-  const jwt: string = res.locals.jwt;
+app.get(
+  '/unsubscribe-tenant-entity-change-event',
+  authorizeMiddleware,
+  (_req, res) => {
+    if (tenantEntityChangedSubscription) {
+      try {
+        // webSocketClient.terminate();
+        tenantEntityChangedSubscription.unsubscribe();
+        webSocketClient.dispose(); // NOTE: Somehow unsubscribe cannot close the websocket connection sometimes, so we manually close it (we can also use .terminate method to close immediately)
+        tenantEntityChangedSubscription = null;
+        webSocketClient = null;
 
-  const {
-    sourceGroupId,
-    sourceId,
-    walletAddress,
-    sourceType,
-  }: Readonly<{
-    sourceGroupId?: string;
-    sourceId?: string;
-    walletAddress?: string;
-    sourceType?: string;
-  }> = req.body ?? {};
-
-  if (sourceGroupId === undefined) {
-    return res.status(400).json({
-      message: 'walletPublicKey is required',
-    });
-  }
-
-  if (sourceId === undefined) {
-    if (walletAddress === undefined || sourceType === undefined) {
-      return res.status(400).json({
-        message:
-          'Both walletAddress and sourceType are required if sourceId is not provided',
-      });
-    }
-  } else if (walletAddress !== undefined || sourceType === undefined) {
-    return res.status(400).json({
-      message: 'Cannot provide both sourceId and walletAddress/sourceType',
-    });
-  }
-
-  const client = new NotifiClient(
-    res.locals.notifiService,
-    res.locals.dpapiClient,
-  );
-
-  return client
-    .removeSourceFromSourceGroup(jwt, {
-      sourceGroupId,
-      sourceId,
-      walletAddress,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      sourceType: sourceType as any,
-    })
-    .then((sourceGroup) => {
-      return res.status(200).json({ sourceGroup });
-    })
-    .catch((e: unknown) => {
-      let message = 'Unknown server error';
-      if (e instanceof GqlError) {
-        message = `${e.message}: ${e.getErrorMessages().join(', ')}`;
-      } else if (e instanceof Error) {
-        message = e.message;
+        return res.status(200).json({
+          message: 'notifi-node: unsubscribeTenantEntityChanged - unsubscribed',
+        });
+      } catch (e: unknown) {
+        let message = 'Unknown server error';
+        if (e instanceof Error) {
+          message = e.message;
+        }
+        return res.status(500).json({ message });
       }
-
-      return res.status(500).json({ message });
+    }
+    return res.status(200).json({
+      message:
+        'notifi-node: unsubscribeTenantEntityChanged - no tenant entity updated subscription',
     });
-});
+  },
+);
 
 app.listen(port, () => {
   console.log(`Listening on ${port}`);
