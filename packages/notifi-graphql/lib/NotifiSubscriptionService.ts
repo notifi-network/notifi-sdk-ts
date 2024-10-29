@@ -91,9 +91,9 @@ export class NotifiSubscriptionService {
   /**
    * @important for removing the event listener, check the guidelines in the NotifiEventEmitter (notifi-graphql/lib/NotifiEventEmitter.ts) class. https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-graphql/lib
    */
-  addEventListener = <K extends keyof NotifiEmitterEvents>(
-    event: K,
-    callBack: (...args: NotifiEmitterEvents[K]) => void,
+  addEventListener = <T extends keyof NotifiEmitterEvents>(
+    event: T,
+    callBack: (...args: NotifiEmitterEvents[T]) => void,
   ) => {
     this.eventEmitter.on(event, callBack);
     switch (event) {
@@ -106,9 +106,9 @@ export class NotifiSubscriptionService {
     }
   };
 
-  removeEventListener = <K extends keyof NotifiEmitterEvents>(
-    event: K,
-    callBack: (...args: NotifiEmitterEvents[K]) => void,
+  removeEventListener = <T extends keyof NotifiEmitterEvents>(
+    event: T,
+    callBack: (...args: NotifiEmitterEvents[T]) => void,
   ) => {
     return this.eventEmitter.off(event, callBack);
   };

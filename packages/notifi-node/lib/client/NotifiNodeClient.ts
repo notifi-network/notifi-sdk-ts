@@ -110,9 +110,9 @@ export class NotifiNodeClient {
    * @important To remove event listener, check the guidelines in the NotifiEventEmitter (notifi-graphql/lib/NotifiEventEmitter.ts) class.
    * https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-graphql/lib
    */
-  addEventListener<K extends keyof NotifiEmitterEvents>(
-    event: K,
-    callBack: (...args: NotifiEmitterEvents[K]) => void,
+  addEventListener<T extends keyof NotifiEmitterEvents>(
+    event: T,
+    callBack: (...args: NotifiEmitterEvents[T]) => void,
   ) {
     if (this.clientState.status !== 'initialized')
       throw new Error(
@@ -121,9 +121,9 @@ export class NotifiNodeClient {
     return this.service.addEventListener(event, callBack);
   }
 
-  removeEventListener<K extends keyof NotifiEmitterEvents>(
-    event: K,
-    callBack: (...args: NotifiEmitterEvents[K]) => void,
+  removeEventListener<T extends keyof NotifiEmitterEvents>(
+    event: T,
+    callBack: (...args: NotifiEmitterEvents[T]) => void,
   ) {
     this.isClientValid('removeEventListener');
     return this.service.removeEventListener(event, callBack);

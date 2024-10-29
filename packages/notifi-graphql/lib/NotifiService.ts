@@ -475,16 +475,16 @@ export class NotifiService
     this._notifiSubService.disposeClient();
   }
 
-  addEventListener<K extends keyof NotifiEmitterEvents>(
-    event: K,
-    callBack: (...args: NotifiEmitterEvents[K]) => void,
+  addEventListener<T extends keyof NotifiEmitterEvents>(
+    event: T,
+    callBack: (...args: NotifiEmitterEvents[T]) => void,
   ): Subscription | null {
     return this._notifiSubService.addEventListener(event, callBack);
   }
 
-  removeEventListener<K extends keyof NotifiEmitterEvents>(
-    event: K,
-    callBack: (...args: NotifiEmitterEvents[K]) => void,
+  removeEventListener<T extends keyof NotifiEmitterEvents>(
+    event: T,
+    callBack: (...args: NotifiEmitterEvents[T]) => void,
   ) {
     return this._notifiSubService.removeEventListener(event, callBack);
   }
