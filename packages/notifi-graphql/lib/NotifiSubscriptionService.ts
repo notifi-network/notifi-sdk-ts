@@ -3,8 +3,17 @@ import {
   Client as WebSocketClient,
   SubscribePayload,
 } from 'graphql-ws';
-import { Observable } from 'relay-runtime';
+import { Observable, Subscription } from 'relay-runtime';
 import { NotifiEventEmitter, NotifiEmitterEvents } from './NotifiEventEmitter';
+import {
+  stateChangedSubscriptionQuery,
+  tenantEntityChangedSubscriptionQuery,
+} from './gql';
+import { StateChangedEvent, TenantEntityChangeEvent } from './gql/generated';
+
+type SubscriptionQuery =
+  | typeof tenantEntityChangedSubscriptionQuery
+  | typeof stateChangedSubscriptionQuery;
 
 /**
  * @param webSocketImpl - A custom WebSocket implementation to use instead of the one provided by the global scope. Mostly useful for when using the client outside of the browser environment.
@@ -33,7 +42,9 @@ export class NotifiSubscriptionService {
       this._wsClient.dispose();
     }
   };
-
+  /**
+   * @deprecated Use addEventListener instead
+   */
   subscribe = (
     jwt: string | undefined,
     subscriptionQuery: string,
@@ -77,18 +88,80 @@ export class NotifiSubscriptionService {
     return subscription;
   };
 
-  addEventListener = <K extends keyof NotifiEmitterEvents>(
-    event: K,
-    callBack: (...args: NotifiEmitterEvents[K]) => void,
+  /**
+   * @important for removing the event listener, check the guidelines in the NotifiEventEmitter (notifi-graphql/lib/NotifiEventEmitter.ts) class. https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-graphql/lib
+   */
+  addEventListener = <T extends keyof NotifiEmitterEvents>(
+    event: T,
+    callBack: (...args: NotifiEmitterEvents[T]) => void,
   ) => {
-    return this.eventEmitter.on(event, callBack);
+    this.eventEmitter.on(event, callBack);
+    switch (event) {
+      case 'tenantEntityChanged':
+        return this._subscribe(tenantEntityChangedSubscriptionQuery);
+      case 'stateChanged':
+        return this._subscribe(stateChangedSubscriptionQuery);
+      default:
+        return null;
+    }
   };
 
-  removeEventListener = <K extends keyof NotifiEmitterEvents>(
-    event: K,
-    callBack: (...args: NotifiEmitterEvents[K]) => void,
+  removeEventListener = <T extends keyof NotifiEmitterEvents>(
+    event: T,
+    callBack: (...args: NotifiEmitterEvents[T]) => void,
   ) => {
     return this.eventEmitter.off(event, callBack);
+  };
+
+  /**
+   * @returns null if jwt or wsClient is not correctly set
+   */
+  private _subscribe = (
+    subscriptionQuery: SubscriptionQuery,
+  ): Subscription | null => {
+    if (!this._wsClient) {
+      this._initializeClient();
+    }
+
+    if (!this._wsClient || !this._jwt) return null;
+
+    console.log('Subscribing, JWT & wsClient are set'); // TODO: Remove before merge
+
+    const observable = this._toObservable(this._wsClient, {
+      query: subscriptionQuery,
+      extensions: {
+        type: 'start',
+      },
+    });
+
+    const subscription = observable.subscribe({
+      next: (data) => {
+        switch (subscriptionQuery) {
+          case tenantEntityChangedSubscriptionQuery:
+            this.eventEmitter.emit(
+              'tenantEntityChanged',
+              data as TenantEntityChangeEvent,
+            );
+            break;
+          case stateChangedSubscriptionQuery:
+            this.eventEmitter.emit('stateChanged', data as StateChangedEvent);
+            break;
+          default:
+            console.warn('Unknown subscription query:', subscriptionQuery);
+        }
+      },
+      error: (error: unknown) => {
+        this.eventEmitter.emit(
+          'gqlSubscriptionError',
+          error instanceof Error
+            ? error
+            : new Error('Unknown gql subscription error'),
+        );
+      },
+      complete: () => this.eventEmitter.emit('gqlComplete'),
+    });
+
+    return subscription;
   };
 
   private _toObservable(client: WebSocketClient, operation: SubscribePayload) {

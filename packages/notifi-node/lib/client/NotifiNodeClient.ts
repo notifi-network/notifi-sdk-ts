@@ -8,7 +8,6 @@ import {
   NotifiEmitterEvents,
   NotifiService,
 } from '@notifi-network/notifi-graphql';
-import { isEqual } from '../utils';
 
 type NotifiNodeclientUninitializedState = Readonly<{
   status: 'uninitialized';
@@ -46,6 +45,10 @@ export class NotifiNodeClient {
     }
     this.clientState = { status: 'initialized', jwt: authorization.token };
     return authorization;
+  }
+
+  get status(): NotifiNodeclientStatus {
+    return this.clientState;
   }
 
   publishFusionMessage(
@@ -103,86 +106,13 @@ export class NotifiNodeClient {
     return connection;
   }
 
-  async updateTargetGroup(
-    targetGroup: Gql.TargetGroupFragmentFragment,
-    webhook: Gql.WebhookTargetFragmentFragment,
-  ): Promise<Gql.TargetGroupFragmentFragment> {
-    this.isClientValid('updateTargetGroup');
-    const updateResult = await this.service.updateTargetGroup({
-      id: targetGroup.id,
-      name: targetGroup.name ?? targetGroup.id,
-      emailTargetIds: [],
-      smsTargetIds: [],
-      telegramTargetIds: [],
-      webhookTargetIds: [webhook.id],
-      discordTargetIds: [],
-      slackChannelTargetIds: [],
-      web3TargetIds: [],
-    });
-
-    const updated = updateResult.updateTargetGroup;
-    if (updated === undefined) {
-      throw new Error('Failed to update targetGroup');
-    }
-
-    return updated;
-  }
-
-  async createOrUpdateWebhook(
-    params: Gql.CreateWebhookTargetMutationVariables,
-  ): Promise<Gql.WebhookTargetFragmentFragment> {
-    this.isClientValid('createOrUpdateWebhook');
-    const getResult = await this.service.getWebhookTargets({});
-    const existing = getResult.webhookTarget?.find((w) => {
-      return w.url === params.url && w.format === params.format;
-    });
-
-    if (existing === undefined) {
-      const createResult = await this.service.createWebhookTarget(params);
-      const result = createResult.createWebhookTarget;
-      if (result === undefined) {
-        throw new Error('Failed to create webhook target');
-      }
-      return result;
-    }
-
-    if (isEqual(existing.headers, params.headers)) {
-      return existing;
-    }
-
-    const deleteResult = await this.service.deleteWebhookTarget({
-      id: existing.id,
-    });
-    if (deleteResult.deleteWebhookTarget?.id === undefined) {
-      throw new Error('Failed to delete webhook target');
-    }
-
-    const recreateResult = await this.service.createWebhookTarget(params);
-    const recreated = recreateResult.createWebhookTarget;
-    if (recreated === undefined) {
-      throw new Error('Failed to recreate webhook target');
-    }
-    return recreated;
-  }
-
-  subscribeTenantEntityUpdated(
-    onTenantEntityUpdate: (event: Gql.TenantEntityChangeEvent) => void,
-    onError?: (error: Error) => void,
-    onComplete?: () => void,
-  ) {
-    this.isClientValid('subscribeTenantEntityUpdated');
-    return this.service.subscribeTenantEntityUpdated(
-      (data) => {
-        if (isTenantEntityUpdateEvent(data)) onTenantEntityUpdate(data);
-      },
-      onError,
-      onComplete,
-    );
-  }
-
-  addEventListener<K extends keyof NotifiEmitterEvents>(
-    event: K,
-    callBack: (...args: NotifiEmitterEvents[K]) => void,
+  /**
+   * @important To remove event listener, check the guidelines in the NotifiEventEmitter (notifi-graphql/lib/NotifiEventEmitter.ts) class.
+   * https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-graphql/lib
+   */
+  addEventListener<T extends keyof NotifiEmitterEvents>(
+    event: T,
+    callBack: (...args: NotifiEmitterEvents[T]) => void,
   ) {
     if (this.clientState.status !== 'initialized')
       throw new Error(
@@ -191,18 +121,13 @@ export class NotifiNodeClient {
     return this.service.addEventListener(event, callBack);
   }
 
-  removeEventListener<K extends keyof NotifiEmitterEvents>(
-    event: K,
-    callBack: (...args: NotifiEmitterEvents[K]) => void,
+  removeEventListener<T extends keyof NotifiEmitterEvents>(
+    event: T,
+    callBack: (...args: NotifiEmitterEvents[T]) => void,
   ) {
     this.isClientValid('removeEventListener');
     return this.service.removeEventListener(event, callBack);
   }
-  // TODO: ⬇ is to close websocket connection, we should not allow SDK to directly manipulate websocket connection. Instead, we should allow users to unsubscribe from the subscription.
-  // disposeWebSocket = async (jwt: string) => {
-  //   this.service.setJwt(jwt);
-  //   await this.service.wsDispose();
-  // };
 
   /** NOTE: throw if client is not initialized */
   private isClientValid(
@@ -216,18 +141,3 @@ export class NotifiNodeClient {
     return true;
   }
 }
-
-// Utils
-
-const isTenantEntityUpdateEvent = (
-  data: unknown,
-): data is Gql.TenantEntityChangeEvent => {
-  return (
-    typeof data === 'object' &&
-    data !== null &&
-    'typename' in data &&
-    (data.typename === 'UserCreatedEvent' ||
-      data.typename === 'AlertCreatedEvent' ||
-      data.typename === 'AlertDeletedEvent')
-  );
-};
