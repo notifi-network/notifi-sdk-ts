@@ -5,7 +5,15 @@ import {
 } from 'graphql-ws';
 import { Observable, Subscription } from 'relay-runtime';
 import { NotifiEventEmitter, NotifiEmitterEvents } from './NotifiEventEmitter';
-import { tenantEntityChangedSubscriptionQuery } from './gql/subscriptions/tenantEntityChanged';
+import {
+  stateChangedSubscriptionQuery,
+  tenantEntityChangedSubscriptionQuery,
+} from './gql';
+import { StateChangedEvent, TenantEntityChangeEvent } from './gql/generated';
+
+type SubscriptionQuery =
+  | typeof tenantEntityChangedSubscriptionQuery
+  | typeof stateChangedSubscriptionQuery;
 
 /**
  * @param webSocketImpl - A custom WebSocket implementation to use instead of the one provided by the global scope. Mostly useful for when using the client outside of the browser environment.
@@ -91,6 +99,8 @@ export class NotifiSubscriptionService {
     switch (event) {
       case 'tenantEntityChanged':
         return this._subscribe(tenantEntityChangedSubscriptionQuery);
+      case 'stateChanged':
+        return this._subscribe(stateChangedSubscriptionQuery);
       default:
         return null;
     }
@@ -106,7 +116,9 @@ export class NotifiSubscriptionService {
   /**
    * @returns null if jwt or wsClient is not correctly set
    */
-  private _subscribe = (subscriptionQuery: string): Subscription | null => {
+  private _subscribe = (
+    subscriptionQuery: SubscriptionQuery,
+  ): Subscription | null => {
     if (!this._wsClient) {
       this._initializeClient();
     }
@@ -126,7 +138,13 @@ export class NotifiSubscriptionService {
       next: (data) => {
         switch (subscriptionQuery) {
           case tenantEntityChangedSubscriptionQuery:
-            this.eventEmitter.emit('tenantEntityChanged', data); // TODO: Types.TenantEntityChangeEvent
+            this.eventEmitter.emit(
+              'tenantEntityChanged',
+              data as TenantEntityChangeEvent,
+            );
+            break;
+          case stateChangedSubscriptionQuery:
+            this.eventEmitter.emit('stateChanged', data as StateChangedEvent);
             break;
           default:
             console.warn('Unknown subscription query:', subscriptionQuery);

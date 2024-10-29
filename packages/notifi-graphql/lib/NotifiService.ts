@@ -6,8 +6,10 @@ import { NotifiSubscriptionService } from './NotifiSubscriptionService';
 import * as Generated from './gql/generated';
 import { getSdk } from './gql/generated';
 import type * as Operations from './operations';
-import { stateChangedSubscriptionQuery } from './gql';
-import { tenantEntityChangedSubscriptionQuery } from './gql/subscriptions/tenantEntityChanged';
+import {
+  stateChangedSubscriptionQuery,
+  tenantEntityChangedSubscriptionQuery,
+} from './gql';
 import { ExecutionResult } from 'graphql-ws';
 import { NotifiEmitterEvents } from './NotifiEventEmitter';
 import { Subscription } from 'relay-runtime';
@@ -95,6 +97,7 @@ export class NotifiService
 
   async logOut(): Promise<void> {
     this._jwt = undefined;
+    this._notifiSubService.setJwt(undefined);
   }
 
   async addSourceToSourceGroup(
@@ -128,7 +131,7 @@ export class NotifiService
     );
     const token = result.completeLogInByTransaction?.authorization?.token;
     if (token !== undefined) {
-      this._jwt = token;
+      this._onAuthComplete(token);
     }
     return result;
   }
@@ -451,7 +454,9 @@ export class NotifiService
       headers,
     );
   }
-
+  /**
+   * @deprecated Use addEventListener instead
+   */
   async subscribeNotificationHistoryStateChanged(
     onMessageReceived: (data: any) => void | undefined,
     onError?: (data: any) => void | undefined,
@@ -466,6 +471,10 @@ export class NotifiService
     );
   }
 
+  // TODO: Remove below method before stage branch is merged
+  /**
+   * @deprecated Use addEventListener instead
+   */
   subscribeTenantEntityUpdated(
     onMessageReceived: (data: ExecutionResult) => void,
     onError?: (error: Error) => void,
@@ -519,7 +528,7 @@ export class NotifiService
     const result = await this._typedClient.logInFromDapp(variables, headers);
     const token = result.logInFromDapp?.authorization?.token;
     if (token !== undefined) {
-      this._jwt = token;
+      this._onAuthComplete(token);
     }
     return result;
   }
@@ -531,7 +540,7 @@ export class NotifiService
     const result = await this._typedClient.logInFromService(variables, headers);
     const token = result.logInFromService?.token;
     if (token !== undefined) {
-      this._jwt = token;
+      this._onAuthComplete(token);
     }
     return result;
   }
@@ -543,7 +552,7 @@ export class NotifiService
     const result = await this._typedClient.logInByOidc(variables, headers);
     const token = result.logInByOidc?.user?.authorization?.token;
     if (token !== undefined) {
-      this._jwt = token;
+      this._onAuthComplete(token);
     }
     return result;
   }
@@ -575,7 +584,7 @@ export class NotifiService
     );
     const token = result.refreshAuthorization?.token;
     if (token !== undefined) {
-      this._jwt = token;
+      this._onAuthComplete(token);
     }
     return result;
   }
@@ -635,7 +644,7 @@ export class NotifiService
     );
     const token = result?.completeLogInWithWeb3?.user?.authorization?.token;
     if (token !== undefined) {
-      this._jwt = token;
+      this._onAuthComplete(token);
     }
     return result;
   }
@@ -687,6 +696,11 @@ export class NotifiService
   ): Promise<Generated.GetWebPushTargetsQuery> {
     const headers = this._requestHeaders();
     return this._typedClient.getWebPushTargets(variables, headers);
+  }
+
+  private _onAuthComplete(jwt: string | undefined): void {
+    this._jwt = jwt;
+    this._notifiSubService.setJwt(jwt);
   }
 
   private _requestHeaders(): HeadersInit {
