@@ -471,24 +471,6 @@ export class NotifiService
     );
   }
 
-  // TODO: Remove below method before stage branch is merged
-  /**
-   * @deprecated Use addEventListener instead
-   */
-  subscribeTenantEntityUpdated(
-    onMessageReceived: (data: ExecutionResult) => void,
-    onError?: (error: Error) => void,
-    onComplete?: () => void,
-  ) {
-    return this._notifiSubService.subscribe(
-      this._jwt,
-      tenantEntityChangedSubscriptionQuery,
-      onMessageReceived,
-      onError,
-      onComplete,
-    );
-  }
-
   async wsDispose() {
     this._notifiSubService.disposeClient();
   }
