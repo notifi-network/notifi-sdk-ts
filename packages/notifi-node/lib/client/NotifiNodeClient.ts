@@ -47,6 +47,10 @@ export class NotifiNodeClient {
     return authorization;
   }
 
+  get status(): NotifiNodeclientStatus {
+    return this.clientState;
+  }
+
   publishFusionMessage(
     params: Readonly<FusionMessage[]>,
   ): Promise<PublishFusionMessageResponse> {
