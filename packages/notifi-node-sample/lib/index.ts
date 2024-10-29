@@ -34,6 +34,7 @@ app.get('/', (_req, res) => {
   });
 });
 
+// TODO: Move to a separate file
 const parseEnv = (envString: string | undefined): NotifiEnvironment => {
   const str = envString ?? process.env.NOTIFI_ENV;
   let notifiEnv: NotifiEnvironment = 'Production';
@@ -49,6 +50,38 @@ const parseEnv = (envString: string | undefined): NotifiEnvironment => {
   return notifiEnv;
 };
 
+// TODO: Move to a separate file
+const authorizeMiddleware = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const authorization = req.headers.authorization;
+  if (authorization === undefined) {
+    return res.status(401).json({
+      message: 'Authorization is required',
+    });
+  }
+
+  let jwt = '';
+  if (authorization.startsWith('Bearer ')) {
+    const tokens = authorization.split(' ');
+    if (tokens.length > 1) {
+      jwt = tokens[1];
+    }
+  }
+
+  if (jwt === '') {
+    return res.status(401).json({
+      message: 'Bearer token is required',
+    });
+  }
+
+  res.locals.jwt = jwt;
+  next();
+};
+
+// TODO: Move to a separate file
 const notifiServiceMiddleware = (
   req: Request,
   res: Response,
@@ -109,36 +142,6 @@ app.post('/login', (req, res) => {
     });
 });
 
-const authorizeMiddleware = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const authorization = req.headers.authorization;
-  if (authorization === undefined) {
-    return res.status(401).json({
-      message: 'Authorization is required',
-    });
-  }
-
-  let jwt = '';
-  if (authorization.startsWith('Bearer ')) {
-    const tokens = authorization.split(' ');
-    if (tokens.length > 1) {
-      jwt = tokens[1];
-    }
-  }
-
-  if (jwt === '') {
-    return res.status(401).json({
-      message: 'Bearer token is required',
-    });
-  }
-
-  res.locals.jwt = jwt;
-  next();
-};
-
 app.post('/createTenantUser', authorizeMiddleware, (req, res) => {
   const jwt: string = res.locals.jwt;
 
@@ -191,24 +194,18 @@ app.post('/createTenantUser', authorizeMiddleware, (req, res) => {
     });
 });
 
-app.post('/publishFusionMessage', authorizeMiddleware, (req, res) => {
+app.post('/get-active-alerts', authorizeMiddleware, (req, res) => {
   const jwt: string = res.locals.jwt;
 
   const {
-    variables,
+    first,
+    after,
+    fusionEventIds,
   }: Readonly<{
-    /**
-     * @param FusionMessage.variablesJson - Variables for template rendering. For instance, `fromAddress` can be displayed with `{{ eventData.fromAddress }}`.
-     * FusionMessage's generic type parameter defines the type of variablesJson. Defaults to CommunityManagerJsonPayload for Community Manager post templates if not provided.
-     */
-    variables?: Readonly<FusionMessage[]>;
+    first?: number;
+    after?: string;
+    fusionEventIds?: string[];
   }> = req.body ?? {};
-
-  if (!variables) {
-    return res.status(400).json({
-      message: 'messages is required',
-    });
-  }
 
   const client = new NotifiClient(
     res.locals.notifiService,
@@ -218,7 +215,46 @@ app.post('/publishFusionMessage', authorizeMiddleware, (req, res) => {
   client.initialize(jwt);
 
   return client
-    .publishFusionMessage(variables)
+    .getActiveAlerts({ first, after, fusionEventIds })
+    .then((result) => {
+      return res.status(200).json(result);
+    })
+    .catch((e: unknown) => {
+      let message = 'Unknown server error';
+      if (e instanceof Error) {
+        message = e.message;
+      }
+
+      return res.status(500).json({ message });
+    });
+});
+
+app.post('/publish-fusion-message', authorizeMiddleware, (req, res) => {
+  const jwt: string = res.locals.jwt;
+
+  if (!req.body.variables || !Array.isArray(req.body.variables))
+    res.status(400).json({
+      message: 'variables field is required & must be an array',
+    });
+
+  /**
+   * @param FusionMessage.variablesJson - Variables for template rendering. For instance, `fromAddress` can be displayed with `{{ eventData.fromAddress }}`.
+   * FusionMessage's generic type parameter defines the type of variablesJson. Defaults to object type for flexibility.
+   * NOTE: CommunityManagerJsonPayload for Community Manager post templates if provided.
+   */
+  const fusionMessages = (req.body.variables as unknown[]).filter(
+    isFusionMessage,
+  );
+
+  const client = new NotifiClient(
+    res.locals.notifiService,
+    res.locals.dpapiClient,
+  );
+
+  client.initialize(jwt);
+
+  return client
+    .publishFusionMessage(fusionMessages)
     .then((result) => {
       return res.status(200).json({ result });
     })
@@ -264,36 +300,49 @@ app.get('/subscribeTenantEntityChanged', authorizeMiddleware, (_req, res) => {
     console.log('notifi-node: Websocket error', err);
     // Do something to handle the error
   });
+  tenantEntityChangedSubscription = client.addEventListener(
+    'tenantEntityChanged',
+    (event) => {
+      console.log(`Tenant entity updated: ${JSON.stringify(event)}`);
+      // Do something with the event
+    },
+  );
 
-  client
-    .subscribeTenantEntityUpdated(
-      (event) => {
-        console.log(`Tenant entity updated: ${JSON.stringify(event)}`);
-        // Do something with the event
-      },
-      (err) => {
-        console.log(`Error in tenant entity updated: ${err}`);
-        res.status(500).json({ message: err.message });
-      },
-      () => {
-        console.log('Subscription completed');
-        res.status(200).json({ message: 'completed' });
-      },
-    )
-    .then((sub) => {
-      tenantEntityChangedSubscription = sub;
-      console.log('subscribed', tenantEntityChangedSubscription);
-      res.status(200).json({
-        message: 'notifi-node: subscribeTanatEntityChanged - subscribed',
-      });
-    })
-    .catch((e: unknown) => {
-      let message = 'Unknown server error';
-      if (e instanceof Error) {
-        message = e.message;
-      }
-      return res.status(500).json({ message });
+  // client
+  //   .subscribeTenantEntityUpdated(
+  //     (event) => {
+  //       console.log(`Tenant entity updated: ${JSON.stringify(event)}`);
+  //       // Do something with the event
+  //     },
+  //     (err) => {
+  //       console.log(`Error in tenant entity updated: ${err}`);
+  //       res.status(500).json({ message: err.message });
+  //     },
+  //     () => {
+  //       console.log('Subscription completed');
+  //       res.status(200).json({ message: 'completed' });
+  //     },
+  //   )
+  //   .then((sub) => {
+  //     tenantEntityChangedSubscription = sub;
+  //     console.log('subscribed', tenantEntityChangedSubscription);
+  //     res.status(200).json({
+  //       message: 'notifi-node: subscribeTanatEntityChanged - subscribed',
+  //     });
+  //   })
+  //   .catch((e: unknown) => {
+  //     let message = 'Unknown server error';
+  //     if (e instanceof Error) {
+  //       message = e.message;
+  //     }
+  //     return res.status(500).json({ message });
+  //   });
+
+  if (tenantEntityChangedSubscription) {
+    return res.status(200).json({
+      message: 'notifi-node: subscribeTenantEntityChanged - subscribed',
     });
+  }
 });
 
 app.get(
@@ -329,3 +378,12 @@ app.get(
 app.listen(port, () => {
   console.log(`Listening on ${port}`);
 });
+
+// Utils // TODO: Move to a separate file
+const isFusionMessage = (message: unknown): message is FusionMessage => {
+  if (!message || typeof message !== 'object') return false;
+  const keys = Object.keys(message);
+  if (!keys.includes('eventTypeId') || !keys.includes('variablesJson'))
+    return false;
+  return true;
+};
