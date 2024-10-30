@@ -10,31 +10,59 @@ import {
 } from '@notifi-network/notifi-node';
 import type { NextFunction, Request, Response } from 'express';
 import express from 'express';
-import morgan from 'morgan';
-import json from 'morgan-json';
+import winston from 'winston';
+
+declare module 'express-serve-static-core' {
+  interface Request {
+    _startTime?: number;
+  }
+}
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded());
 
-const format = json({
-  short: ':method :url :status',
-  length: ':res[content-length]',
-  'response-time': ':response-time ms',
+const logger = winston.createLogger({
+  // TODO: Create a utils/constants file and move the log file name there
+  level: 'info',
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.json()
+  ),
+  transports: [
+    new winston.transports.Console(),
+    // TODO: Create a utils/constants file and move the log file name there
+    // new winston.transports.File({ filename: 'query-history.log' })
+  ]
 });
 
-app.use(morgan(format));
+app.use((req: Request, res: Response, next: NextFunction) => {
+  req._startTime = Date.now();
+  res.on('finish', () => {
+    logger.info({
+      method: req.method,
+      url: req.url,
+      status: res.statusCode,
+      length: res.get('Content-Length') || 0,
+      'response-time': `${Date.now() - req._startTime!} ms`
+    });
+  });
+  next();
+});
 
 const port = process.env.PORT || '8080';
 
+// TODO: Rather than putting hello world, add a simple html page for
+// 1. breifly introduce the usage
+// 2. a link to https://docs.notifi.network/docs/getting-started-with-self-hosted#creating-your-node-js-server
 app.get('/', (_req, res) => {
   return res.status(200).json({
     hello: 'world',
   });
 });
 
-// TODO: Move to a separate file
+// TODO: Move to a separate file (utils)
 const parseEnv = (envString: string | undefined): NotifiEnvironment => {
   const str = envString ?? process.env.NOTIFI_ENV;
   let notifiEnv: NotifiEnvironment = 'Production';
@@ -50,7 +78,7 @@ const parseEnv = (envString: string | undefined): NotifiEnvironment => {
   return notifiEnv;
 };
 
-// TODO: Move to a separate file
+// TODO: Move to a separate file (middleware)
 const authorizeMiddleware = (
   req: Request,
   res: Response,
@@ -81,7 +109,7 @@ const authorizeMiddleware = (
   next();
 };
 
-// TODO: Move to a separate file
+// TODO: Move to a separate file (middleware)
 const notifiServiceMiddleware = (
   req: Request,
   res: Response,
@@ -233,7 +261,7 @@ app.post('/publish-fusion-message', authorizeMiddleware, (req, res) => {
   const jwt: string = res.locals.jwt;
 
   if (!req.body.variables || !Array.isArray(req.body.variables))
-    res.status(400).json({
+    return res.status(400).json({
       message: 'variables field is required & must be an array',
     });
 
