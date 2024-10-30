@@ -1,55 +1,18 @@
 import { FusionMessage } from '@notifi-network/notifi-dataplane';
-import {
-  NotifiClient,
-  NotifiEnvironment,
-  NotifiNodeClient,
-  createDataplaneClient,
-  createGraphQLClient,
-  createNotifiService,
-  createNotifiSubscriptionService,
-} from '@notifi-network/notifi-node';
-import type { NextFunction, Request, Response } from 'express';
+import { NotifiClient, NotifiNodeClient } from '@notifi-network/notifi-node';
 import express from 'express';
-import winston from 'winston';
-
-declare module 'express-serve-static-core' {
-  interface Request {
-    _startTime?: number;
-  }
-}
+import { loggerMiddleWare } from './middleware/logger';
+import {
+  notifiAuthMiddleware,
+  notifiServiceMiddleware,
+} from './middleware/notifiService';
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded());
-
-const logger = winston.createLogger({
-  // TODO: Create a utils/constants file and move the log file name there
-  level: 'info',
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.json()
-  ),
-  transports: [
-    new winston.transports.Console(),
-    // TODO: Create a utils/constants file and move the log file name there
-    // new winston.transports.File({ filename: 'query-history.log' })
-  ]
-});
-
-app.use((req: Request, res: Response, next: NextFunction) => {
-  req._startTime = Date.now();
-  res.on('finish', () => {
-    logger.info({
-      method: req.method,
-      url: req.url,
-      status: res.statusCode,
-      length: res.get('Content-Length') || 0,
-      'response-time': `${Date.now() - req._startTime!} ms`
-    });
-  });
-  next();
-});
+app.use(loggerMiddleWare);
+app.use(notifiServiceMiddleware);
 
 const port = process.env.PORT || '8080';
 
@@ -61,74 +24,6 @@ app.get('/', (_req, res) => {
     hello: 'world',
   });
 });
-
-// TODO: Move to a separate file (utils)
-const parseEnv = (envString: string | undefined): NotifiEnvironment => {
-  const str = envString ?? process.env.NOTIFI_ENV;
-  let notifiEnv: NotifiEnvironment = 'Production';
-  if (
-    str === 'Production' ||
-    str === 'Staging' ||
-    str === 'Development' ||
-    str === 'Local'
-  ) {
-    notifiEnv = str;
-  }
-
-  return notifiEnv;
-};
-
-// TODO: Move to a separate file (middleware)
-const authorizeMiddleware = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const authorization = req.headers.authorization;
-  if (authorization === undefined) {
-    return res.status(401).json({
-      message: 'Authorization is required',
-    });
-  }
-
-  let jwt = '';
-  if (authorization.startsWith('Bearer ')) {
-    const tokens = authorization.split(' ');
-    if (tokens.length > 1) {
-      jwt = tokens[1];
-    }
-  }
-
-  if (jwt === '') {
-    return res.status(401).json({
-      message: 'Bearer token is required',
-    });
-  }
-
-  res.locals.jwt = jwt;
-  next();
-};
-
-// TODO: Move to a separate file (middleware)
-const notifiServiceMiddleware = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const body: Readonly<{
-    env?: string;
-  }> = req.body ?? {};
-  const notifiEnv = parseEnv(body.env);
-  const graphqlClient = createGraphQLClient(notifiEnv);
-  const dpapiClient = createDataplaneClient(notifiEnv);
-  const subService = createNotifiSubscriptionService(notifiEnv);
-  const notifiService = createNotifiService(graphqlClient, subService);
-  res.locals.notifiService = notifiService;
-  res.locals.dpapiClient = dpapiClient;
-  next();
-};
-
-app.use(notifiServiceMiddleware);
 
 app.post('/login', (req, res) => {
   const body: Readonly<{
@@ -170,7 +65,7 @@ app.post('/login', (req, res) => {
     });
 });
 
-app.post('/createTenantUser', authorizeMiddleware, (req, res) => {
+app.post('/createTenantUser', notifiAuthMiddleware, (req, res) => {
   const jwt: string = res.locals.jwt;
 
   const {
@@ -222,7 +117,7 @@ app.post('/createTenantUser', authorizeMiddleware, (req, res) => {
     });
 });
 
-app.post('/get-active-alerts', authorizeMiddleware, (req, res) => {
+app.post('/get-active-alerts', notifiAuthMiddleware, (req, res) => {
   const jwt: string = res.locals.jwt;
 
   const {
@@ -257,7 +152,7 @@ app.post('/get-active-alerts', authorizeMiddleware, (req, res) => {
     });
 });
 
-app.post('/publish-fusion-message', authorizeMiddleware, (req, res) => {
+app.post('/publish-fusion-message', notifiAuthMiddleware, (req, res) => {
   const jwt: string = res.locals.jwt;
 
   if (!req.body.variables || !Array.isArray(req.body.variables))
@@ -300,7 +195,7 @@ let tenantEntityChangedSubscription: NonNullable<
   Awaited<ReturnType<NotifiNodeClient['subscribeTenantEntityUpdated']>>
 > | null = null;
 let webSocketClient: any;
-app.get('/subscribeTenantEntityChanged', authorizeMiddleware, (_req, res) => {
+app.get('/subscribeTenantEntityChanged', notifiAuthMiddleware, (_req, res) => {
   if (tenantEntityChangedSubscription)
     return res
       .status(200)
@@ -375,7 +270,7 @@ app.get('/subscribeTenantEntityChanged', authorizeMiddleware, (_req, res) => {
 
 app.get(
   '/unsubscribe-tenant-entity-change-event',
-  authorizeMiddleware,
+  notifiAuthMiddleware,
   (_req, res) => {
     if (tenantEntityChangedSubscription) {
       try {
@@ -407,7 +302,7 @@ app.listen(port, () => {
   console.log(`Listening on ${port}`);
 });
 
-// Utils // TODO: Move to a separate file
+// Utils
 const isFusionMessage = (message: unknown): message is FusionMessage => {
   if (!message || typeof message !== 'object') return false;
   const keys = Object.keys(message);
