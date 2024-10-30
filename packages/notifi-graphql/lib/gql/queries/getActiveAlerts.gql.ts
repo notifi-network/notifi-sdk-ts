@@ -3,15 +3,11 @@ import { gql } from 'graphql-request';
 import { PageInfoFragment } from '../fragments/PageInfoFragment.gql';
 
 export const GetActiveAlerts = gql`
-  query getActiveAlerts(
-    $first: Int
-    $after: String
-    $fusionEventIds: [String!]
-  ) {
+  query getActiveAlerts($first: Int, $after: String, $fusionEventId: String!) {
     activeAlerts(
       after: $after
       first: $first
-      activeAlertsInput: { fusionEventIds: $fusionEventIds }
+      activeAlertsInput: { fusionEventId: $fusionEventId }
     ) {
       nodes {
         id
