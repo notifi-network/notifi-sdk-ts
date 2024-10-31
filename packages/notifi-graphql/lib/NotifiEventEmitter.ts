@@ -1,7 +1,6 @@
 import { Client as WebSocketClient } from 'graphql-ws';
 import {
   StateChangedEvent,
-  TenantEntityChangeEvent,
   TenantActiveAlertChangeEvent,
 } from './gql/generated';
 
@@ -26,8 +25,6 @@ type NotifiSubscriptionStatusEvents = {
 };
 
 type NotifiSubscriptionEvents = {
-  // TODO: Deprecate this event
-  tenantEntityChanged: [TenantEntityChangeEvent];
   tenantActiveAlertChanged: [TenantActiveAlertChangeEvent];
   stateChanged: [StateChangedEvent];
 };

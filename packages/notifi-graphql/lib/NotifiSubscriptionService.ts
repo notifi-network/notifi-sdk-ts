@@ -5,19 +5,14 @@ import {
 } from 'graphql-ws';
 import { Observable, Subscription } from 'relay-runtime';
 import { NotifiEventEmitter, NotifiEmitterEvents } from './NotifiEventEmitter';
-import {
-  stateChangedSubscriptionQuery,
-  tenantEntityChangedSubscriptionQuery,
-} from './gql';
+import { stateChangedSubscriptionQuery } from './gql';
 import {
   StateChangedEvent,
   TenantActiveAlertChangeEvent,
-  TenantEntityChangeEvent,
 } from './gql/generated';
 import { tenantActiveAlertChangedSubscriptionQuery } from './gql/subscriptions/tenantActiveAlertChanged.gql';
 
 type SubscriptionQuery =
-  | typeof tenantEntityChangedSubscriptionQuery
   | typeof stateChangedSubscriptionQuery
   | typeof tenantActiveAlertChangedSubscriptionQuery;
 
@@ -103,9 +98,6 @@ export class NotifiSubscriptionService {
   ) => {
     this.eventEmitter.on(event, callBack);
     switch (event) {
-      // TODO: Deprecate this event
-      case 'tenantEntityChanged':
-        return this._subscribe(tenantEntityChangedSubscriptionQuery);
       case 'stateChanged':
         return this._subscribe(stateChangedSubscriptionQuery);
       case 'tenantActiveAlertChanged':
@@ -146,13 +138,6 @@ export class NotifiSubscriptionService {
     const subscription = observable.subscribe({
       next: (data) => {
         switch (subscriptionQuery) {
-          // TODO: Deprecate this event
-          case tenantEntityChangedSubscriptionQuery:
-            this.eventEmitter.emit(
-              'tenantEntityChanged',
-              data as TenantEntityChangeEvent,
-            );
-            break;
           case stateChangedSubscriptionQuery:
             this.eventEmitter.emit('stateChanged', data as StateChangedEvent);
             break;
