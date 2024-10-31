@@ -6,11 +6,7 @@ import { NotifiSubscriptionService } from './NotifiSubscriptionService';
 import * as Generated from './gql/generated';
 import { getSdk } from './gql/generated';
 import type * as Operations from './operations';
-import {
-  stateChangedSubscriptionQuery,
-  tenantEntityChangedSubscriptionQuery,
-} from './gql';
-import { ExecutionResult } from 'graphql-ws';
+import { stateChangedSubscriptionQuery } from './gql';
 import { NotifiEmitterEvents } from './NotifiEventEmitter';
 import { Subscription } from 'relay-runtime';
 

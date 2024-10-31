@@ -5,12 +5,14 @@ import {
 } from 'graphql-ws';
 import { Observable, Subscription } from 'relay-runtime';
 import { NotifiEventEmitter, NotifiEmitterEvents } from './NotifiEventEmitter';
-import { stateChangedSubscriptionQuery } from './gql';
+import {
+  stateChangedSubscriptionQuery,
+  tenantActiveAlertChangedSubscriptionQuery,
+} from './gql';
 import {
   StateChangedEvent,
   TenantActiveAlertChangeEvent,
 } from './gql/generated';
-import { tenantActiveAlertChangedSubscriptionQuery } from './gql/subscriptions/tenantActiveAlertChanged.gql';
 
 type SubscriptionQuery =
   | typeof stateChangedSubscriptionQuery

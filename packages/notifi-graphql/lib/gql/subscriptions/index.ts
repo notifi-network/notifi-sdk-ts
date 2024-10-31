@@ -1,2 +1,2 @@
 export * from './stateChanged.gql';
-export * from './tenantEntityChanged.gql';
+export * from './tenantActiveAlertChanged.gql';
