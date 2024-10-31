@@ -1,7 +1,6 @@
 import { ActiveAlertFragment } from '../fragments/ActiveAlertFragment.gql';
 import { gql } from 'graphql-request';
 
-// TODO: Impl ActiveAlertFragment to getActiveAlerts query
 export const tenantActiveAlertChangedSubscriptionQuery = `
   subscription tenantActiveAlertChanged {
     tenantActiveAlertChanged {
