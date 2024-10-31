@@ -4,16 +4,17 @@ import {
   SubscribePayload,
 } from 'graphql-ws';
 import { Observable, Subscription } from 'relay-runtime';
-import { NotifiEventEmitter, NotifiEmitterEvents } from './NotifiEventEmitter';
 import {
-  stateChangedSubscriptionQuery,
-  tenantEntityChangedSubscriptionQuery,
-} from './gql';
-import { StateChangedEvent, TenantEntityChangeEvent } from './gql/generated';
+  NotifiEventEmitter,
+  NotifiEmitterEvents,
+  NotifiSubscriptionEvents,
+} from './NotifiEventEmitter';
+import { stateChangedSubscriptionQuery } from './gql';
+import { tenantActiveAlertChangedSubscriptionQuery } from './gql/subscriptions/tenantActiveAlertChanged.gql';
 
 type SubscriptionQuery =
-  | typeof tenantEntityChangedSubscriptionQuery
-  | typeof stateChangedSubscriptionQuery;
+  | typeof stateChangedSubscriptionQuery
+  | typeof tenantActiveAlertChangedSubscriptionQuery;
 
 /**
  * @param webSocketImpl - A custom WebSocket implementation to use instead of the one provided by the global scope. Mostly useful for when using the client outside of the browser environment.
@@ -97,10 +98,10 @@ export class NotifiSubscriptionService {
   ) => {
     this.eventEmitter.on(event, callBack);
     switch (event) {
-      case 'tenantEntityChanged':
-        return this._subscribe(tenantEntityChangedSubscriptionQuery);
       case 'stateChanged':
         return this._subscribe(stateChangedSubscriptionQuery);
+      case 'tenantActiveAlertChanged':
+        return this._subscribe(tenantActiveAlertChangedSubscriptionQuery);
       default:
         return null;
     }
@@ -137,14 +138,25 @@ export class NotifiSubscriptionService {
     const subscription = observable.subscribe({
       next: (data) => {
         switch (subscriptionQuery) {
-          case tenantEntityChangedSubscriptionQuery:
-            this.eventEmitter.emit(
-              'tenantEntityChanged',
-              data as TenantEntityChangeEvent,
-            );
-            break;
           case stateChangedSubscriptionQuery:
-            this.eventEmitter.emit('stateChanged', data as StateChangedEvent);
+            const stateChangedData = getSubscriptionData('stateChanged', data);
+            if (!stateChangedData) {
+              throw new Error('Invalid stateChanged event data');
+            }
+            this.eventEmitter.emit('stateChanged', stateChangedData);
+            break;
+          case tenantActiveAlertChangedSubscriptionQuery:
+            const tenantActiveAlertChangedData = getSubscriptionData(
+              'tenantActiveAlertChanged',
+              data,
+            );
+            if (!tenantActiveAlertChangedData) {
+              throw new Error('Invalid tenantActiveAlertChanged event data');
+            }
+            this.eventEmitter.emit(
+              'tenantActiveAlertChanged',
+              tenantActiveAlertChangedData,
+            );
             break;
           default:
             console.warn('Unknown subscription query:', subscriptionQuery);
@@ -213,3 +225,25 @@ export class NotifiSubscriptionService {
     });
   };
 }
+
+// Utils
+
+const getSubscriptionData = <T extends keyof NotifiSubscriptionEvents>(
+  subscriptionEvent: T,
+  data: unknown,
+) => {
+  // NOTE: The raw data from the subscription is in the format { data: { subscriptionEvent: T } }
+  if (typeof data !== 'object' || data === null) return null;
+  if (!('data' in data)) return null;
+  const subscriptionData = data.data;
+  if (
+    typeof subscriptionData === 'object' &&
+    subscriptionData !== null &&
+    subscriptionEvent in subscriptionData
+  ) {
+    return (subscriptionData as Record<keyof NotifiSubscriptionEvents, any>)[
+      subscriptionEvent
+    ] as NotifiSubscriptionEvents[T][0];
+  }
+  return null;
+};

@@ -1,6 +1,7 @@
 import { gql } from 'graphql-request';
 
 import { PageInfoFragment } from '../fragments/PageInfoFragment.gql';
+import { ActiveAlertFragment } from '../fragments/ActiveAlertFragment.gql';
 
 export const GetActiveAlerts = gql`
   query getActiveAlerts($first: Int, $after: String, $fusionEventId: String!) {
@@ -10,24 +11,13 @@ export const GetActiveAlerts = gql`
       activeAlertsInput: { fusionEventId: $fusionEventId }
     ) {
       nodes {
-        id
-        filterOptionsJson
-        fusionEventId
-        subscriptionValue
-        user {
-          id
-          connectedWallets {
-            address
-            walletBlockchain
-          }
-        }
+        ...ActiveAlertFragment
       }
       pageInfo {
         ...PageInfoFragment
       }
     }
   }
+  ${ActiveAlertFragment}
   ${PageInfoFragment}
 `;
-
-// ...FusionNotificationHistoryEntryFragment
