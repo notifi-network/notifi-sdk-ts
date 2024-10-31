@@ -1,10 +1,11 @@
 import { FusionMessage } from '@notifi-network/notifi-dataplane';
 import { NotifiClient, NotifiNodeClient } from '@notifi-network/notifi-node';
-import express from 'express';
+import express, { Request } from 'express';
 import { loggerMiddleWare } from './middleware/logger';
 import {
   notifiAuthMiddleware,
   notifiServiceMiddleware,
+  ServiceMiddleWareHttpBody,
 } from './middleware/notifiService';
 
 const app = express();
@@ -16,32 +17,29 @@ app.use(notifiServiceMiddleware);
 
 const port = process.env.PORT || '8080';
 
-// TODO: Rather than putting hello world, add a simple html page for
-// 1. breifly introduce the usage
-// 2. a link to https://docs.notifi.network/docs/getting-started-with-self-hosted#creating-your-node-js-server
 app.get('/', (_req, res) => {
-  return res.status(200).json({
-    hello: 'world',
-  });
+  return res.status(200).send(
+    `
+    <h2> 🚀 Notifi Node Sample API Server 🚀 </h2>
+    <a href="https://docs.notifi.network/docs/getting-started-with-self-hosted#creating-your-node-js-server" target="_blank">Getting Started</a>
+      <br/>
+    <a href="https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-node-sample#notifi-node-sample " target="_blank">Example API documentation</a>
+    `,
+  );
 });
 
-app.post('/login', (req, res) => {
-  const body: Readonly<{
-    sid?: string;
-    secret?: string;
-  }> = req.body ?? {};
+type LoginFromServiceHttpBody = {
+  sid?: string;
+  secret?: string;
+};
+app.post('/login', (req: Request<{}, {}, LoginFromServiceHttpBody>, res) => {
+  const body = req.body ?? {};
 
   const sid = body.sid ?? process.env.NOTIFI_SID;
-  if (sid === undefined || sid === '') {
-    return res.status(401).json({
-      message: 'sid is required',
-    });
-  }
-
   const secret = body.secret ?? process.env.NOTIFI_SECRET;
-  if (secret === undefined || secret === '') {
+  if (!sid || !secret) {
     return res.status(401).json({
-      message: 'secret is required',
+      message: 'sid is required/ secret is required',
     });
   }
 
@@ -65,213 +63,197 @@ app.post('/login', (req, res) => {
     });
 });
 
-app.post('/createTenantUser', notifiAuthMiddleware, (req, res) => {
-  const jwt: string = res.locals.jwt;
-
-  const {
-    walletBlockchain,
-    walletPublicKey,
-  }: Readonly<{
-    walletBlockchain?: string;
-    walletPublicKey?: string;
-  }> = req.body ?? {};
-
-  if (walletPublicKey === undefined) {
-    return res.status(400).json({
-      message: 'walletPublicKey is required',
-    });
-  }
-
-  if (walletBlockchain === undefined) {
-    return res.status(400).json({
-      message: 'walletBlockchain is required',
-    });
-  } else if (walletBlockchain !== 'SOLANA' && walletBlockchain !== 'NEAR') {
-    return res.status(400).json({
-      message: 'Unsupported walletBlockchain',
-    });
-  }
-
-  const client = new NotifiClient(
-    res.locals.notifiService,
-    res.locals.dpapiClient,
-  );
-
-  client.initialize(jwt);
-
-  return client
-    .createTenantUser({
-      walletBlockchain,
-      walletPublicKey,
-    })
-    .then((userId) => {
-      return res.status(200).json({ userId });
-    })
-    .catch((e: unknown) => {
-      let message = 'Unknown server error';
-      if (e instanceof Error) {
-        message = `notifi-node: createTenantUser - ${e.message}`;
-      }
-
-      return res.status(500).json({ message });
-    });
-});
-
-app.post('/get-active-alerts', notifiAuthMiddleware, (req, res) => {
-  const jwt: string = res.locals.jwt;
-
-  const {
-    first,
-    after,
-    fusionEventIds,
-  }: Readonly<{
-    first?: number;
-    after?: string;
-    fusionEventIds?: string[];
-  }> = req.body ?? {};
-
-  const client = new NotifiClient(
-    res.locals.notifiService,
-    res.locals.dpapiClient,
-  );
-
-  client.initialize(jwt);
-
-  return client
-    .getActiveAlerts({ first, after, fusionEventIds })
-    .then((result) => {
-      return res.status(200).json(result);
-    })
-    .catch((e: unknown) => {
-      let message = 'Unknown server error';
-      if (e instanceof Error) {
-        message = e.message;
-      }
-
-      return res.status(500).json({ message });
-    });
-});
-
-app.post('/publish-fusion-message', notifiAuthMiddleware, (req, res) => {
-  const jwt: string = res.locals.jwt;
-
-  if (!req.body.variables || !Array.isArray(req.body.variables))
-    return res.status(400).json({
-      message: 'variables field is required & must be an array',
-    });
-
-  /**
-   * @param FusionMessage.variablesJson - Variables for template rendering. For instance, `fromAddress` can be displayed with `{{ eventData.fromAddress }}`.
-   * FusionMessage's generic type parameter defines the type of variablesJson. Defaults to object type for flexibility.
-   * NOTE: CommunityManagerJsonPayload for Community Manager post templates if provided.
-   */
-  const fusionMessages = (req.body.variables as unknown[]).filter(
-    isFusionMessage,
-  );
-
-  const client = new NotifiClient(
-    res.locals.notifiService,
-    res.locals.dpapiClient,
-  );
-
-  client.initialize(jwt);
-
-  return client
-    .publishFusionMessage(fusionMessages)
-    .then((result) => {
-      return res.status(200).json({ result });
-    })
-    .catch((e: unknown) => {
-      let message = 'Unknown server error';
-      if (e instanceof Error) {
-        message = e.message;
-      }
-
-      return res.status(500).json({ message });
-    });
-});
-
-let tenantEntityChangedSubscription: NonNullable<
-  Awaited<ReturnType<NotifiNodeClient['subscribeTenantEntityUpdated']>>
-> | null = null;
-let webSocketClient: any;
-app.get('/subscribeTenantEntityChanged', notifiAuthMiddleware, (_req, res) => {
-  if (tenantEntityChangedSubscription)
-    return res
-      .status(200)
-      .json({ message: 'already subscribed, unsubscribe before re-calling' });
-  const client = new NotifiClient(
-    res.locals.notifiService,
-    res.locals.dpapiClient,
-  );
-
-  client.initialize(res.locals.jwt);
-
-  // NOTE: Add event listeners to monitor websocket connection status (You can also remove event listeners using removeEventListener method)
-  client.addEventListener('wsConnecting', () => {
-    console.log('notifi-node: Websocket connecting');
-  });
-  client.addEventListener('wsConnected', (wsClient) => {
-    console.log('notifi-node: Websocket connected', wsClient);
-    webSocketClient = wsClient;
-  });
-  client.addEventListener('wsClosed', (closeEvent) => {
-    console.log('notifi-node: Websocket closed');
-    // Do something to when the websocket is closed. Ex, remove event listeners.
-  });
-  client.addEventListener('wsError', (err) => {
-    console.log('notifi-node: Websocket error', err);
-    // Do something to handle the error
-  });
-  tenantEntityChangedSubscription = client.addEventListener(
-    'tenantEntityChanged',
-    (event) => {
-      console.log(`Tenant entity updated: ${JSON.stringify(event)}`);
-      // Do something with the event
-    },
-  );
-
-  // client
-  //   .subscribeTenantEntityUpdated(
-  //     (event) => {
-  //       console.log(`Tenant entity updated: ${JSON.stringify(event)}`);
-  //       // Do something with the event
-  //     },
-  //     (err) => {
-  //       console.log(`Error in tenant entity updated: ${err}`);
-  //       res.status(500).json({ message: err.message });
-  //     },
-  //     () => {
-  //       console.log('Subscription completed');
-  //       res.status(200).json({ message: 'completed' });
-  //     },
-  //   )
-  //   .then((sub) => {
-  //     tenantEntityChangedSubscription = sub;
-  //     console.log('subscribed', tenantEntityChangedSubscription);
-  //     res.status(200).json({
-  //       message: 'notifi-node: subscribeTanatEntityChanged - subscribed',
-  //     });
-  //   })
-  //   .catch((e: unknown) => {
-  //     let message = 'Unknown server error';
-  //     if (e instanceof Error) {
-  //       message = e.message;
-  //     }
-  //     return res.status(500).json({ message });
-  //   });
-
-  if (tenantEntityChangedSubscription) {
-    return res.status(200).json({
-      message: 'notifi-node: subscribeTenantEntityChanged - subscribed',
-    });
-  }
-});
-
-app.get(
-  '/unsubscribe-tenant-entity-change-event',
+type CreateTenantUserHttpBody = {
+  walletBlockchain?: string;
+  walletPublicKey?: string;
+} & ServiceMiddleWareHttpBody;
+app.post(
+  '/create-tenant-user',
   notifiAuthMiddleware,
-  (_req, res) => {
+  (req: Request<{}, {}, CreateTenantUserHttpBody>, res) => {
+    const jwt: string = res.locals.jwt;
+
+    const { walletBlockchain, walletPublicKey } = req.body ?? {};
+
+    if (!walletPublicKey || !walletBlockchain) {
+      return res.status(400).json({
+        message: 'walletPublicKey is required/ walletBlockchain is required',
+      });
+    }
+
+    // TODO: Confirm if the supported blockchains are up-to-date
+    if (walletBlockchain !== 'SOLANA' && walletBlockchain !== 'NEAR') {
+      return res.status(400).json({
+        message: 'Unsupported walletBlockchain',
+      });
+    }
+
+    const client = new NotifiClient(
+      res.locals.notifiService,
+      res.locals.dpapiClient,
+    );
+
+    client.initialize(jwt);
+
+    return client
+      .createTenantUser({
+        walletBlockchain,
+        walletPublicKey,
+      })
+      .then((userId) => {
+        return res.status(200).json({ userId });
+      })
+      .catch((e: unknown) => {
+        let message = 'Unknown server error';
+        if (e instanceof Error) {
+          message = `notifi-node: createTenantUser - ${e.message}`;
+        }
+
+        return res.status(500).json({ message });
+      });
+  },
+);
+
+type GetActiveAlertsHttpBody = {
+  first?: number;
+  after?: string;
+  fusionEventIds?: string[];
+} & ServiceMiddleWareHttpBody;
+app.post(
+  '/get-active-alerts',
+  notifiAuthMiddleware,
+  (req: Request<{}, {}, GetActiveAlertsHttpBody>, res) => {
+    const jwt: string = res.locals.jwt;
+
+    const { first, after, fusionEventIds } = req.body ?? {};
+
+    const client = new NotifiClient(
+      res.locals.notifiService,
+      res.locals.dpapiClient,
+    );
+
+    client.initialize(jwt);
+
+    return client
+      .getActiveAlerts({ first, after, fusionEventIds })
+      .then((result) => {
+        return res.status(200).json(result);
+      })
+      .catch((e: unknown) => {
+        let message = 'Unknown server error';
+        if (e instanceof Error) {
+          message = e.message;
+        }
+
+        return res.status(500).json({ message });
+      });
+  },
+);
+
+type GetFusionNotificationHistoryHttpBody = {
+  variables?: FusionMessage[];
+} & ServiceMiddleWareHttpBody;
+
+app.post(
+  '/publish-fusion-message',
+  notifiAuthMiddleware,
+  (req: Request<{}, {}, GetFusionNotificationHistoryHttpBody>, res) => {
+    const jwt: string = res.locals.jwt;
+
+    if (!req.body.variables || !Array.isArray(req.body.variables))
+      return res.status(400).json({
+        message: 'variables field is required & must be an array',
+      });
+    /** // TODO: move to readme.md
+     * @param FusionMessage.variablesJson - Variables for template rendering. For instance, `fromAddress` can be displayed with `{{ eventData.fromAddress }}`.
+     * FusionMessage's generic type parameter defines the type of variablesJson. Defaults to object type for flexibility.
+     * NOTE: CommunityManagerJsonPayload for Community Manager post templates if provided.
+     */
+    const fusionMessages = (req.body.variables as unknown[]).filter(
+      isFusionMessage,
+    );
+
+    const client = new NotifiClient(
+      res.locals.notifiService,
+      res.locals.dpapiClient,
+    );
+
+    client.initialize(jwt);
+
+    return client
+      .publishFusionMessage(fusionMessages)
+      .then((result) => {
+        return res.status(200).json({ result });
+      })
+      .catch((e: unknown) => {
+        let message = 'Unknown server error';
+        if (e instanceof Error) {
+          message = e.message;
+        }
+
+        return res.status(500).json({ message });
+      });
+  },
+);
+
+type SubscribeTenantEntityChangedHttpBody = ServiceMiddleWareHttpBody;
+let tenantEntityChangedSubscription: Awaited<
+  ReturnType<NotifiNodeClient['addEventListener']>
+> = null;
+let webSocketClient: any;
+app.post(
+  '/subscribe-tenant-entity-changed-event',
+  notifiAuthMiddleware,
+  (_req: Request<{}, {}, SubscribeTenantEntityChangedHttpBody>, res) => {
+    if (tenantEntityChangedSubscription)
+      return res
+        .status(200)
+        .json({ message: 'already subscribed, unsubscribe before re-calling' });
+    const client = new NotifiClient(
+      res.locals.notifiService,
+      res.locals.dpapiClient,
+    );
+
+    client.initialize(res.locals.jwt);
+
+    tenantEntityChangedSubscription = client.addEventListener(
+      'tenantEntityChanged',
+      (event) => {
+        console.log(`Tenant entity updated: ${JSON.stringify(event)}`);
+        // Do something with the event
+      },
+    );
+
+    // NOTE: Add event listeners to monitor websocket connection status (You can also remove event listeners using removeEventListener method)
+    client.addEventListener('wsConnecting', () => {
+      console.log('notifi-node: Websocket connecting');
+    });
+    client.addEventListener('wsConnected', (wsClient) => {
+      console.log('notifi-node: Websocket connected', wsClient);
+      webSocketClient = wsClient;
+    });
+    client.addEventListener('wsClosed', (closeEvent) => {
+      console.log('notifi-node: Websocket closed');
+      // Do something to when the websocket is closed. Ex, remove event listeners.
+    });
+    client.addEventListener('wsError', (err) => {
+      console.log('notifi-node: Websocket error', err);
+      // Do something to handle the error
+    });
+
+    if (tenantEntityChangedSubscription) {
+      return res.status(200).json({
+        message: 'notifi-node: subscribeTenantEntityChanged - subscribed',
+      });
+    }
+  },
+);
+
+type UnsubscribeTenantEntityChangedHttpBody = ServiceMiddleWareHttpBody;
+app.post(
+  '/unsubscribe-tenant-entity-changed-event',
+  notifiAuthMiddleware,
+  (_req: Request<{}, {}, UnsubscribeTenantEntityChangedHttpBody>, res) => {
     if (tenantEntityChangedSubscription) {
       try {
         // webSocketClient.terminate();

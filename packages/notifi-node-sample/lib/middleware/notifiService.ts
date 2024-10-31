@@ -37,14 +37,15 @@ export const notifiAuthMiddleware = (
   next();
 };
 
+export type ServiceMiddleWareHttpBody = {
+  env?: string;
+};
 export const notifiServiceMiddleware = (
-  req: Request,
+  req: Request<{}, {}, ServiceMiddleWareHttpBody>,
   res: Response,
   next: NextFunction,
 ) => {
-  const body: Readonly<{
-    env?: string;
-  }> = req.body ?? {};
+  const body = req.body ?? {};
   const notifiEnv = parseEnv(body.env);
   const graphqlClient = createGraphQLClient(notifiEnv);
   const dpapiClient = createDataplaneClient(notifiEnv);
