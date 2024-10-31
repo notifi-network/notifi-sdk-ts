@@ -1,5 +1,9 @@
 import { Client as WebSocketClient } from 'graphql-ws';
-import { StateChangedEvent, TenantEntityChangeEvent } from './gql/generated';
+import {
+  StateChangedEvent,
+  TenantEntityChangeEvent,
+  TenantActiveAlertChangeEvent,
+} from './gql/generated';
 
 /** IMPORTANT: the guidelines to remove the event listener:
  * 1. For status events (NotifiWebSocketStatusEvents or NotifiSubscriptionStatusEvents), calling removeEventListener will remove the listener.
@@ -22,7 +26,9 @@ type NotifiSubscriptionStatusEvents = {
 };
 
 type NotifiSubscriptionEvents = {
+  // TODO: Deprecate this event
   tenantEntityChanged: [TenantEntityChangeEvent];
+  tenantActiveAlertChanged: [TenantActiveAlertChangeEvent];
   stateChanged: [StateChangedEvent];
 };
 

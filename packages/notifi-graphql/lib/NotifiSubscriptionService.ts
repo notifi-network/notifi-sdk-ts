@@ -9,11 +9,17 @@ import {
   stateChangedSubscriptionQuery,
   tenantEntityChangedSubscriptionQuery,
 } from './gql';
-import { StateChangedEvent, TenantEntityChangeEvent } from './gql/generated';
+import {
+  StateChangedEvent,
+  TenantActiveAlertChangeEvent,
+  TenantEntityChangeEvent,
+} from './gql/generated';
+import { tenantActiveAlertChangedSubscriptionQuery } from './gql/subscriptions/tenantActiveAlertChanged.gql';
 
 type SubscriptionQuery =
   | typeof tenantEntityChangedSubscriptionQuery
-  | typeof stateChangedSubscriptionQuery;
+  | typeof stateChangedSubscriptionQuery
+  | typeof tenantActiveAlertChangedSubscriptionQuery;
 
 /**
  * @param webSocketImpl - A custom WebSocket implementation to use instead of the one provided by the global scope. Mostly useful for when using the client outside of the browser environment.
@@ -97,10 +103,13 @@ export class NotifiSubscriptionService {
   ) => {
     this.eventEmitter.on(event, callBack);
     switch (event) {
+      // TODO: Deprecate this event
       case 'tenantEntityChanged':
         return this._subscribe(tenantEntityChangedSubscriptionQuery);
       case 'stateChanged':
         return this._subscribe(stateChangedSubscriptionQuery);
+      case 'tenantActiveAlertChanged':
+        return this._subscribe(tenantActiveAlertChangedSubscriptionQuery);
       default:
         return null;
     }
@@ -137,6 +146,7 @@ export class NotifiSubscriptionService {
     const subscription = observable.subscribe({
       next: (data) => {
         switch (subscriptionQuery) {
+          // TODO: Deprecate this event
           case tenantEntityChangedSubscriptionQuery:
             this.eventEmitter.emit(
               'tenantEntityChanged',
@@ -145,6 +155,12 @@ export class NotifiSubscriptionService {
             break;
           case stateChangedSubscriptionQuery:
             this.eventEmitter.emit('stateChanged', data as StateChangedEvent);
+            break;
+          case tenantActiveAlertChangedSubscriptionQuery:
+            this.eventEmitter.emit(
+              'tenantActiveAlertChanged',
+              data as TenantActiveAlertChangeEvent,
+            );
             break;
           default:
             console.warn('Unknown subscription query:', subscriptionQuery);
