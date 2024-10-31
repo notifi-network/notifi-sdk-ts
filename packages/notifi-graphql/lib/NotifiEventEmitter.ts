@@ -24,7 +24,7 @@ type NotifiSubscriptionStatusEvents = {
   gqlComplete: [];
 };
 
-type NotifiSubscriptionEvents = {
+export type NotifiSubscriptionEvents = {
   tenantActiveAlertChanged: [TenantActiveAlertChangeEvent];
   stateChanged: [StateChangedEvent];
 };

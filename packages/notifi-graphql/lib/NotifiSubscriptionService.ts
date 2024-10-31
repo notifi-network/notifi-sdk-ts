@@ -4,15 +4,13 @@ import {
   SubscribePayload,
 } from 'graphql-ws';
 import { Observable, Subscription } from 'relay-runtime';
-import { NotifiEventEmitter, NotifiEmitterEvents } from './NotifiEventEmitter';
 import {
-  stateChangedSubscriptionQuery,
-  tenantActiveAlertChangedSubscriptionQuery,
-} from './gql';
-import {
-  StateChangedEvent,
-  TenantActiveAlertChangeEvent,
-} from './gql/generated';
+  NotifiEventEmitter,
+  NotifiEmitterEvents,
+  NotifiSubscriptionEvents,
+} from './NotifiEventEmitter';
+import { stateChangedSubscriptionQuery } from './gql';
+import { tenantActiveAlertChangedSubscriptionQuery } from './gql/subscriptions/tenantActiveAlertChanged.gql';
 
 type SubscriptionQuery =
   | typeof stateChangedSubscriptionQuery
@@ -141,12 +139,23 @@ export class NotifiSubscriptionService {
       next: (data) => {
         switch (subscriptionQuery) {
           case stateChangedSubscriptionQuery:
-            this.eventEmitter.emit('stateChanged', data as StateChangedEvent);
+            const stateChangedData = getSubscriptionData('stateChanged', data);
+            if (!stateChangedData) {
+              throw new Error('Invalid stateChanged event data');
+            }
+            this.eventEmitter.emit('stateChanged', stateChangedData);
             break;
           case tenantActiveAlertChangedSubscriptionQuery:
+            const tenantActiveAlertChangedData = getSubscriptionData(
+              'tenantActiveAlertChanged',
+              data,
+            );
+            if (!tenantActiveAlertChangedData) {
+              throw new Error('Invalid tenantActiveAlertChanged event data');
+            }
             this.eventEmitter.emit(
               'tenantActiveAlertChanged',
-              data as TenantActiveAlertChangeEvent,
+              tenantActiveAlertChangedData,
             );
             break;
           default:
@@ -216,3 +225,25 @@ export class NotifiSubscriptionService {
     });
   };
 }
+
+// Utils
+
+const getSubscriptionData = <T extends keyof NotifiSubscriptionEvents>(
+  subscriptionEvent: T,
+  data: unknown,
+) => {
+  // NOTE: The raw data from the subscription is in the format { data: { subscriptionEvent: T } }
+  if (typeof data !== 'object' || data === null) return null;
+  if (!('data' in data)) return null;
+  const subscriptionData = data.data;
+  if (
+    typeof subscriptionData === 'object' &&
+    subscriptionData !== null &&
+    subscriptionEvent in subscriptionData
+  ) {
+    return (subscriptionData as Record<keyof NotifiSubscriptionEvents, any>)[
+      subscriptionEvent
+    ] as NotifiSubscriptionEvents[T][0];
+  }
+  return null;
+};
