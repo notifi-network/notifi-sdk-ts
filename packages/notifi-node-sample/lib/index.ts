@@ -110,7 +110,7 @@ app.post(
 type GetActiveAlertsHttpBody = {
   first?: number;
   after?: string;
-  fusionEventIds: string[];
+  fusionEventId: string;
 } & ServiceMiddleWareHttpBody;
 app.post(
   '/get-active-alerts',
@@ -118,7 +118,7 @@ app.post(
   (req: Request<{}, {}, GetActiveAlertsHttpBody>, res) => {
     const jwt: string = res.locals.jwt;
 
-    const { first, after, fusionEventIds } = req.body ?? {};
+    const { first, after, fusionEventId } = req.body ?? {};
 
     const client = new NotifiClient(
       res.locals.notifiService,
@@ -127,13 +127,13 @@ app.post(
 
     client.initialize(jwt);
 
-    if (!fusionEventIds)
+    if (!fusionEventId)
       return res
         .status(400)
         .json({ message: 'fusionEventIds is required in post body' });
 
     return client
-      .getActiveAlerts({ first, after, fusionEventIds })
+      .getActiveAlerts({ first, after, fusionEventId })
       .then((result) => {
         return res.status(200).json(result);
       })
