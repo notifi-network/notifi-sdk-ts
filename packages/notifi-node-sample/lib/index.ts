@@ -81,13 +81,6 @@ app.post(
       });
     }
 
-    // TODO: Confirm if the supported blockchains are up-to-date
-    if (walletBlockchain !== 'SOLANA' && walletBlockchain !== 'NEAR') {
-      return res.status(400).json({
-        message: 'Unsupported walletBlockchain',
-      });
-    }
-
     const client = new NotifiClient(
       res.locals.notifiService,
       res.locals.dpapiClient,
@@ -97,7 +90,7 @@ app.post(
 
     return client
       .createTenantUser({
-        walletBlockchain,
+        walletBlockchain: walletBlockchain as WalletBlockchain, // ⬅ Ensure you input the correct value in request body: https://docs.notifi.network/notifi-sdk-ts/modules/_internal_.html#WalletBlockchain
         walletPublicKey,
       })
       .then((userId) => {
@@ -117,7 +110,7 @@ app.post(
 type GetActiveAlertsHttpBody = {
   first?: number;
   after?: string;
-  fusionEventIds?: string[];
+  fusionEventIds: string[];
 } & ServiceMiddleWareHttpBody;
 app.post(
   '/get-active-alerts',
@@ -133,6 +126,11 @@ app.post(
     );
 
     client.initialize(jwt);
+
+    if (!fusionEventIds)
+      return res
+        .status(400)
+        .json({ message: 'fusionEventIds is required in post body' });
 
     return client
       .getActiveAlerts({ first, after, fusionEventIds })
@@ -292,3 +290,10 @@ const isFusionMessage = (message: unknown): message is FusionMessage => {
     return false;
   return true;
 };
+
+// NOTE: we could import it form `notifi-graphql` package. But for performance concerns and better practice (not to install extra package just for type), we extract the WalletBlockchain type manually
+type WalletBlockchain = (NotifiNodeClient['createTenantUser'] extends (
+  arg: infer T,
+) => any
+  ? T
+  : never)['walletBlockchain'];
