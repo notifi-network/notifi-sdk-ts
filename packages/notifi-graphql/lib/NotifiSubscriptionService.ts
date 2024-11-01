@@ -201,49 +201,57 @@ export class NotifiSubscriptionService {
     });
 
     this._wsClient.on('connecting', () => {
-      console.log('WebSocket connecting'); // TODO: Remove before merge
       this.eventEmitter.emit('wsConnecting');
     });
 
     this._wsClient.on('connected', () => {
-      console.log('WebSocket connected'); // TODO: Remove before merge
-
       this.eventEmitter.emit('wsConnected', this._wsClient!);
     });
 
     this._wsClient.on('closed', (event) => {
-      console.log(`WebSocket closed`); // TODO: Remove before merge
-
       this.eventEmitter.emit('wsClosed', event);
     });
 
     this._wsClient.on('error', (error) => {
-      console.error('WebSocket error:', error); // TODO: Remove before merge
-      if (error instanceof Error) {
-        this.eventEmitter.emit('wsError', error);
+      if (error instanceof Error /*⬅ Client (browser) side error*/) {
+        return this.eventEmitter.emit('wsError', error);
       }
+      this.eventEmitter.emit('wsError', {
+        ...(error as Error),
+        message: 'NotifiEventEmitter: Server side or unknown error',
+      });
     });
   };
 }
 
 // Utils
 
+// NOTE: GraphQL Subscription Event Response Format: https://spec.graphql.org/October2021/#sec-Response-Format
+type GqlSubscriptionEventData<T extends keyof NotifiSubscriptionEvents> = {
+  data: Record<T, NotifiSubscriptionEvents[T][0]>;
+};
+
 const getSubscriptionData = <T extends keyof NotifiSubscriptionEvents>(
   subscriptionEvent: T,
-  data: unknown,
+  subscriptionEventData: unknown,
 ) => {
-  // NOTE: The raw data from the subscription is in the format { data: { subscriptionEvent: T } }
-  if (typeof data !== 'object' || data === null) return null;
-  if (!('data' in data)) return null;
-  const subscriptionData = data.data;
   if (
-    typeof subscriptionData === 'object' &&
-    subscriptionData !== null &&
-    subscriptionEvent in subscriptionData
+    typeof subscriptionEventData !== 'object' ||
+    subscriptionEventData === null
+  )
+    return null;
+
+  if (!('data' in subscriptionEventData)) return null;
+
+  const { data: eventPayload } =
+    subscriptionEventData as GqlSubscriptionEventData<T>;
+
+  if (
+    typeof eventPayload === 'object' &&
+    eventPayload !== null &&
+    subscriptionEvent in eventPayload
   ) {
-    return (subscriptionData as Record<keyof NotifiSubscriptionEvents, any>)[
-      subscriptionEvent
-    ] as NotifiSubscriptionEvents[T][0];
+    return eventPayload[subscriptionEvent];
   }
   return null;
 };
