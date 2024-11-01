@@ -1,5 +1,5 @@
 import { FusionMessage } from '@notifi-network/notifi-dataplane';
-import { NotifiClient, NotifiNodeClient } from '@notifi-network/notifi-node';
+import { NotifiNodeClient } from '@notifi-network/notifi-node';
 import express, { Request } from 'express';
 import { loggerMiddleWare } from './middleware/logger';
 import {
@@ -43,7 +43,7 @@ app.post('/login', (req: Request<{}, {}, LoginFromServiceHttpBody>, res) => {
     });
   }
 
-  const client = new NotifiClient(
+  const client = new NotifiNodeClient(
     res.locals.notifiService,
     res.locals.dpapiClient,
   );
@@ -81,7 +81,7 @@ app.post(
       });
     }
 
-    const client = new NotifiClient(
+    const client = new NotifiNodeClient(
       res.locals.notifiService,
       res.locals.dpapiClient,
     );
@@ -120,7 +120,7 @@ app.post(
 
     const { first, after, fusionEventId } = req.body ?? {};
 
-    const client = new NotifiClient(
+    const client = new NotifiNodeClient(
       res.locals.notifiService,
       res.locals.dpapiClient,
     );
@@ -171,7 +171,7 @@ app.post(
       isFusionMessage,
     );
 
-    const client = new NotifiClient(
+    const client = new NotifiNodeClient(
       res.locals.notifiService,
       res.locals.dpapiClient,
     );
@@ -194,30 +194,37 @@ app.post(
   },
 );
 
-type SubscribeTenantEntityChangedHttpBody = ServiceMiddleWareHttpBody;
-let tenantEntityChangedSubscription: Awaited<
+type SubscribeTenantActiveAlertChangedHttpBody = ServiceMiddleWareHttpBody;
+let tenantActiveAlertChangedSubscription: Awaited<
   ReturnType<NotifiNodeClient['addEventListener']>
 > = null;
 let webSocketClient: any;
 app.post(
-  '/subscribe-tenant-entity-changed-event',
+  '/subscribe-active-alert-changed-event',
   notifiAuthMiddleware,
-  (_req: Request<{}, {}, SubscribeTenantEntityChangedHttpBody>, res) => {
-    if (tenantEntityChangedSubscription)
+  (_req: Request<{}, {}, SubscribeTenantActiveAlertChangedHttpBody>, res) => {
+    if (tenantActiveAlertChangedSubscription)
       return res
         .status(200)
         .json({ message: 'already subscribed, unsubscribe before re-calling' });
-    const client = new NotifiClient(
+    const client = new NotifiNodeClient(
       res.locals.notifiService,
       res.locals.dpapiClient,
     );
 
     client.initialize(res.locals.jwt);
 
-    tenantEntityChangedSubscription = client.addEventListener(
-      'tenantEntityChanged',
+    tenantActiveAlertChangedSubscription = client.addEventListener(
+      'tenantActiveAlertChanged',
       (event) => {
-        console.log(`Tenant entity updated: ${JSON.stringify(event)}`);
+        if (event.__typename === 'ActiveAlertCreatedEvent')
+          console.log(
+            `Active alert created, payload: $${JSON.stringify(event)}`,
+          );
+        if (event.__typename === 'ActiveAlertDeletedEvent')
+          console.log(
+            `Active alert deleted, payload: $${JSON.stringify(event)}`,
+          );
         // Do something with the event
       },
     );
@@ -239,29 +246,30 @@ app.post(
       // Do something to handle the error
     });
 
-    if (tenantEntityChangedSubscription) {
+    if (tenantActiveAlertChangedSubscription) {
       return res.status(200).json({
-        message: 'notifi-node: subscribeTenantEntityChanged - subscribed',
+        message: 'notifi-node: subscribeTenantActiveAlertChanged - subscribed',
       });
     }
   },
 );
 
-type UnsubscribeTenantEntityChangedHttpBody = ServiceMiddleWareHttpBody;
+type UnsubscribeTenantActiveAlertChangedHttpBody = ServiceMiddleWareHttpBody;
 app.post(
-  '/unsubscribe-tenant-entity-changed-event',
+  '/unsubscribe-tenant-active-alert-changed-event',
   notifiAuthMiddleware,
-  (_req: Request<{}, {}, UnsubscribeTenantEntityChangedHttpBody>, res) => {
-    if (tenantEntityChangedSubscription) {
+  (_req: Request<{}, {}, UnsubscribeTenantActiveAlertChangedHttpBody>, res) => {
+    if (tenantActiveAlertChangedSubscription) {
       try {
         // webSocketClient.terminate();
-        tenantEntityChangedSubscription.unsubscribe();
+        tenantActiveAlertChangedSubscription.unsubscribe();
         webSocketClient.dispose(); // NOTE: Somehow unsubscribe cannot close the websocket connection sometimes, so we manually close it (we can also use .terminate method to close immediately)
-        tenantEntityChangedSubscription = null;
+        tenantActiveAlertChangedSubscription = null;
         webSocketClient = null;
 
         return res.status(200).json({
-          message: 'notifi-node: unsubscribeTenantEntityChanged - unsubscribed',
+          message:
+            'notifi-node: unsubscribeTenantActiveAlertChanged - unsubscribed',
         });
       } catch (e: unknown) {
         let message = 'Unknown server error';
@@ -273,7 +281,7 @@ app.post(
     }
     return res.status(200).json({
       message:
-        'notifi-node: unsubscribeTenantEntityChanged - no tenant entity updated subscription',
+        'notifi-node: unsubscribeTenantActiveAlertChanged - no tenant active alert updated subscription',
     });
   },
 );

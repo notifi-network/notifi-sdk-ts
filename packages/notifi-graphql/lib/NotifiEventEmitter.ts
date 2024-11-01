@@ -12,14 +12,14 @@ export type NotifiEmitterEvents = NotifiWebSocketStatusEvents &
   NotifiSubscriptionEvents &
   NotifiSubscriptionStatusEvents;
 
-type NotifiWebSocketStatusEvents = {
+export type NotifiWebSocketStatusEvents = {
   wsConnecting: [];
   wsConnected: [WebSocketClient];
   wsClosed: [unknown]; // ⬅ The argument is actually the websocket `CloseEvent`, but to avoid bundling DOM typings because the client can run in Node env too, you should assert the websocket type during implementation. https://the-guild.dev/graphql/ws/docs/modules/client#eventclosedlistener
   wsError: [Error];
 };
 
-type NotifiSubscriptionStatusEvents = {
+export type NotifiSubscriptionStatusEvents = {
   gqlSubscriptionError: [Error];
   gqlComplete: [];
 };
