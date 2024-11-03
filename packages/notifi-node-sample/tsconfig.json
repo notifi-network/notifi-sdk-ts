@@ -1,6 +1,11 @@
 {
+  "ts-node": {
+    "files": true
+  },
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "types": ["express"],
-  }
+    "typeRoots": ["../../node_modules/@types", "."],
+    "types": ["express", "node"]
+  },
+  "include": ["lib/**/*.ts", "types.d.ts"]
 }

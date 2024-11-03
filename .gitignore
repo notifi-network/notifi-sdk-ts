@@ -6,4 +6,5 @@
 .npmrc
 
 .nx/
-lerna-debug.log
+
+**/*.log
