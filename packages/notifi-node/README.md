@@ -1,4 +1,4 @@
-# Notifi Node
+# Notifi Node (@notifi-network/notifi-node)
 
 This SDK is intended for use with _Servers_ who have obtained a SID / Secret pair from Notifi.
 Please reach out to us for help on [Discord](https://discord.gg/nAqR3mk3rv)!
@@ -140,7 +140,7 @@ const result = await client.publishFusionMessage(fusionMessages);
 > The generic type of `FusionMessage<T>` defines the type of `FusionMessage.variablesJson`. Defaults to object type for flexibility. (CommunityManagerJsonPayload for Community Manager post templates if provided.)
 > For more details about `FusionMessage`, please check on the [type definition](https://github.com/notifi-network/notifi-sdk-ts/blob/main/packages/notifi-dataplane/lib/types/FusionMessage.ts)
 
-### Receiving active alerts under the tenant
+### Receiving active alerts under a tenant
 
 Use `getActiveAlerts` method to get all active alerts under the tenant.
 
@@ -162,11 +162,9 @@ Notifi Node SDK provides a way to listen to the events using the `addEventListen
 
 #### 1. GraphQL subscription events
 
-We can listen to the event when the tenant entity is updated by subscribing to the `tenantEntityUpdated` event.
+Notifi provides several GraphQL subscription events by which we can easily tracking the entity changes. When listening to this category of events, it returns a `Subscription` object which is used to stop the Graphql subscription.
 
-Importantly, when listening to this category of events, it returns a `Subscription` object which is used to stop the Graphql subscription.
-
-Accordingly, we need to ensure the following two methods are called in order to close the subscription:
+To stop listening to the events, we need to do the following:
 
 1. Call the `subscription.unsubscribe` method. This will stop the Graphql subscription.
 2. Call the `removeEventListener` method with the event name and the callback function. This will remove the event listener.
@@ -191,14 +189,14 @@ client.removeEventListener('tenantEntityUpdated', eventHandler);
 
 #### 2. WebSocket status events:
 
-The websocket connection is specifically for the GraphQL subscription. It will be automatically established when graphql subscription is started. The following events are to listen to the WebSocket status:
+Since websocket connection is automatically opened when the GraphQL subscription is started, we might listen to the WebSocket status events to understand the status of the WebSocket connection under some circumstances.
 
 - `wsConnected`: When the WebSocket connection is established.
 - `wsConnecting`: When the WebSocket connection is being established.
 - `wsClosed`: When the WebSocket connection is closed.
 - `wsError`: When there is an error in the WebSocket connection.
 
-When we want to stop listening to the WebSocket status events, we can simply call the `removeEventListener` method with the event name and the callback function.
+To stop listening to the WebSocket status events, simply call the `removeEventListener` method with the event name and the callback function.
 
 **Example:**
 
@@ -227,7 +225,7 @@ We can also listen to the following events to understand the status of the Graph
 - `gqlSubscriptionError`: When there is an error in the GraphQL subscription.
 - `gqlComplete`: When the GraphQL subscription is completed.
 
-When we want to stop listening to the GraphQL subscription status events, we can simply call the `removeEventListener` method with the event name and the callback function.
+To stop listening to the GraphQL subscription status events, simply call the `removeEventListener` method with the event name and the callback function.
 
 ```ts
 const eventHandler = (event) => {

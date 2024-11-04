@@ -1,4 +1,4 @@
-# `notifi-node-sample`
+# Notifi Admin Express API server (@notifi-network/notifi-node-sample)
 
 This example demonstrates how to use the `@notifi-network/notifi-node` package on express.js server.
 
@@ -57,6 +57,8 @@ npx lerna --scope=@notifi-network/notifi-node-sample run dev
 
 - **[/login](#login-to-get-a-authorizationbearer-jwt-token)**
 - **[/publish-fusion-message](#broadcast-notification-message)**
+- **[/get-active-alerts](#get-active-alerts)**
+- **[Active alert changed event](#active-alert-changed-event)** (Subscribe & Unsubscribe)
 
 ### Login to get a Authorization(Bearer) jwt token.
 
@@ -127,6 +129,44 @@ npx lerna --scope=@notifi-network/notifi-node-sample run dev
 >
 > - The `variablesJson` parameter is the set of variables that will be used when rendering your templates. If you have a variable `fromAddress`, for example, you can display it in the template with the expression `{{ eventData.fromAddress }}`
 > - `FusionMessage<T>`'s generic type `T` represents the shape `variablesJson` payload. Defaults to `object` for better flexibility. Specify to [CommunityManagerJsonPayload](TBD) if for the notification sent by community manager (Learn more about [Notifi Community Manager](https://docs.notifi.network/docs/getting-started#learn-more-about-community-manager)
+
+### Get active alerts
+
+- endpoint: `/get-active-alerts`
+- method: `POST`
+- required headers: `Authorization: Bearer <jwt token>`
+- request body:
+
+```json
+{
+  "fusionEventId": "fusion-event-id"
+}
+```
+
+> NOTE:
+>
+> - `first` and `after` are optional parameters. It allows you to paginate the results.
+> - `fusionEventId` is the unique identifier of the topic (alert) you want to get the active alerts for. It is a required parameter, you can get that value from [Notifi Admin Portal](https://admin.notifi.network/): `Alert Manager` -> `Topics` -> scroll to the topic you want to get the active alerts for -> `Event Type ID`
+
+### Active Alert changed event
+
+#### Subscribe to active alert changed event & websocket connection status event
+
+- endpoint: `/subscribe-active-alert-changed-event`
+- method: `POST`
+- required headers: `Authorization: Bearer <jwt token>`
+- request body: `null`
+
+By calling this endpoint, you will subscribe to the active alert changed event along with websocket connection status event. The event payload will be printed on the server console. Feel free to modify the code to handle the event payload as per your requirement.
+
+#### Unsubscribe from active alert changed event
+
+- endpoint: `/unsubscribe-active-alert-changed-event`
+- method: `POST`
+- required headers: `Authorization: Bearer <jwt token>`
+- request body: `null`
+
+By calling this endpoint, you will unsubscribe from the active alert changed event if you have subscribed to it.
 
 ### Demo video
 
