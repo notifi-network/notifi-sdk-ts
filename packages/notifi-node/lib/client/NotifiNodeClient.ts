@@ -107,8 +107,7 @@ export class NotifiNodeClient {
   }
 
   /**
-   * @important To remove event listener, check the guidelines in the NotifiEventEmitter (notifi-graphql/lib/NotifiEventEmitter.ts) class.
-   * https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-graphql/lib
+   * @important To remove event listener, check the README.md of `notifi-node` package for more details. https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-node
    */
   addEventListener<T extends keyof NotifiEmitterEvents>(
     event: T,
@@ -120,7 +119,11 @@ export class NotifiNodeClient {
       );
     return this.service.addEventListener(event, callBack);
   }
-
+  /**
+   * @important To remove event listener, check the README.md of `notifi-node` or `notifi-frontend-client` package for more details.
+   * - `notifi-node`:  https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-node
+   * - `notifi-frontend-client`:  https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-frontend-client
+   */
   removeEventListener<T extends keyof NotifiEmitterEvents>(
     event: T,
     callBack: (...args: NotifiEmitterEvents[T]) => void,
