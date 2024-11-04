@@ -1,7 +1,6 @@
 {
   "name": "@notifi-network/notifi-node-sample",
   "description": "Node sample for notifi SDK",
-  "author": "juni-notifi <hyungjoon.kim@notifi.network>",
   "homepage": "https://github.com/notifi-network/notifi-sdk-ts#readme",
   "license": "MIT",
   "main": "./dist/index.js",

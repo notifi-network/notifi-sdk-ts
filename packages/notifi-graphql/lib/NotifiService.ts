@@ -477,7 +477,11 @@ export class NotifiService
   ): Subscription | null {
     return this._notifiSubService.addEventListener(event, callBack);
   }
-
+  /**
+   * @important To remove event listener, check the README.md of `notifi-node` or `notifi-frontend-client` package for more details.
+   * - `notifi-node`:  https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-node
+   * - `notifi-frontend-client`:  https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-frontend-client
+   */
   removeEventListener<T extends keyof NotifiEmitterEvents>(
     event: T,
     callBack: (...args: NotifiEmitterEvents[T]) => void,

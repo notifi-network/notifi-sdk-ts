@@ -162,11 +162,6 @@ app.post(
       return res.status(400).json({
         message: 'variables field is required & must be an array',
       });
-    /** // TODO: move to readme.md
-     * @param FusionMessage.variablesJson - Variables for template rendering. For instance, `fromAddress` can be displayed with `{{ eventData.fromAddress }}`.
-     * FusionMessage's generic type parameter defines the type of variablesJson. Defaults to object type for flexibility.
-     * NOTE: CommunityManagerJsonPayload for Community Manager post templates if provided.
-     */
     const fusionMessages = (req.body.variables as unknown[]).filter(
       isFusionMessage,
     );
