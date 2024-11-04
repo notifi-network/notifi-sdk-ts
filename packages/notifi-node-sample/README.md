@@ -1,10 +1,22 @@
 # `notifi-node-sample`
 
-> express.js sample showing usage of `@notifi-network/notifi-node`
+This example demonstrates how to use the `@notifi-network/notifi-node` package on express.js server.
+
+> To know more about `@notifi-network/notifi-node` package, please visit [documentation](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-node)
 
 ## Prerequisites
 
-- Clone root repository and install dependencies
+- Node.js v18.0.0 or higher (with corresponding npm version)
+- A Notifi tenant account with a tenant sid and secret
+
+> - If you haven't created a Notifi tenant account yet [set up an account](https://admin.notifi.network/signup?environment=prd)
+> - Know more about Notifi Tenant: [https://docs.notifi.network/docs](https://docs.notifi.network/docs)
+
+## Getting Started
+
+Follow the following steps will create a simple express server that hosts few http API endpoints to showcase the tenant admin functionalities using the `@notifi-network/notifi-node` package.
+
+- Clone `notifi-sdk-ts` [monorepo](https://github.com/notifi-network/notifi-sdk-ts)
 
 ```bash
 # SSH
@@ -26,13 +38,6 @@ npm install
 npm run build
 ```
 
-- Install dependencies
-
-```bash
-cd packages/notifi-node-sample
-npm install
-```
-
 - Config environment variables
 
 ```bash
@@ -42,21 +47,23 @@ export NOTIFI_ENV="Production-or-Development" && \
  PORT="custom-port(optional)"
 ```
 
-> You can register your own tenant account and get the sid and secret from [Notifi Admin Portal](https://admin.notifi.network/)
-
 - Start the example express server listening on the port specified in the environment variables (default 8080 if not specified)
 
 ```bash
 npx lerna --scope=@notifi-network/notifi-node-sample run dev
 ```
 
-## Usage
+## Usage: express API endpoints
 
-### login and get a Authorization(Bearer) jwt token.
+- **[/login](#login-to-get-a-authorizationbearer-jwt-token)**
+- **[/publish-fusion-message](#broadcast-notification-message)**
+
+### Login to get a Authorization(Bearer) jwt token.
 
 - endpoint: `/login`
 - method: `POST`
-- requeest body:
+- required headers: `Authorization: Bearer <jwt-token>`
+- request body:
 
 ```json
 {
@@ -66,7 +73,7 @@ npx lerna --scope=@notifi-network/notifi-node-sample run dev
 }
 ```
 
-Then we can get a response with a jwt token by which we can access other endpoints.
+- response body:
 
 ```json
 {
@@ -75,56 +82,11 @@ Then we can get a response with a jwt token by which we can access other endpoin
 }
 ```
 
-### Send a directPush message using http post.
+### Broadcast notification message
 
-- endpoint: `/sendDirectPush`
+- endpoint: `/publish-fusion-message`
 - method: `POST`
-
-- request body:
-
-**Case#1**: Only define message
-
-```json
-{
-  "walletBlockchain": "SOLANA", // Or ETHEREUM, BINANCE, POLYGON ... etc
-  "walletPublicKey": "the-wallet-address-to-receive-the-notification",
-  "message": "message-content",
-  "type": "directPushId" // ex. erictestnotifi__directpush
-}
-```
-
-**Case#2**: Specify custom variables
-
-```json
-{
-  "walletBlockchain": "SOLANA", // Or ETHEREUM, BINANCE, POLYGON ... etc
-  "walletPublicKey": "the-wallet-address-to-receive-the-notification",
-  "type": "directPushId", // ex. erictestnotifi__directpush
-  "template": {
-    "variables": {
-      "message": "The message content",
-      "subject": "The subject",
-      "title": "custom title directPush"
-    }
-  }
-}
-```
-
-If the request is successful, we can get a response body like this:
-
-```json
-{
-  "message": "success"
-}
-```
-
-- Demo video: https://github.com/notifi-network/notifi-sdk-ts/assets/127958634/ba25c59b-2c82-4ee2-8c63-ad43fd85ae31
-
-### Send a fusion Broadcast Message (AP v2) using http post.
-
-- endpoint: `/publishFusionMessage`
-- method: `POST`
-
+- required headers: `Authorization: Bearer <jwt-token>`
 - request body:
 
 ```json
@@ -149,11 +111,7 @@ If the request is successful, we can get a response body like this:
 }
 ```
 
-> NOTE:
-> The `variablesJson` parameter is the set of variables that will be used when rendering your templates.
-> If you have a variable `fromAddress`, for example, you can display it in the template with the expression `{{ eventData.fromAddress }}`
-
-If the request is successful, we can get a response body like this:
+- response body:
 
 ```json
 {
@@ -165,4 +123,11 @@ If the request is successful, we can get a response body like this:
 }
 ```
 
-- Demo video: https://github.com/notifi-network/notifi-sdk-ts/pull/454
+> NOTE:
+>
+> - The `variablesJson` parameter is the set of variables that will be used when rendering your templates. If you have a variable `fromAddress`, for example, you can display it in the template with the expression `{{ eventData.fromAddress }}`
+> - `FusionMessage<T>`'s generic type `T` represents the shape `variablesJson` payload. Defaults to `object` for better flexibility. Specify to [CommunityManagerJsonPayload](TBD) if for the notification sent by community manager (Learn more about [Notifi Community Manager](https://docs.notifi.network/docs/getting-started#learn-more-about-community-manager)
+
+### Demo video
+
+<video width="600" controls> <source src="https://i.imgur.com/5UAsUcY.mp4" type="video/mp4"> Your browser does not support the video tag. </video>
