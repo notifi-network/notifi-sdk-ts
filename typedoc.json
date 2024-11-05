@@ -1,4 +1,0 @@
-{
-  "entryPoints": ["packages/notifi-frontend-client/lib/index.ts"],
-  "tsconfig": "packages/notifi-frontend-client/tsconfig.build.json"
-}
