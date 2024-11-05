@@ -14,12 +14,12 @@ export const setWalletKeysToLocalStorage = <T extends keyof Wallets>(
   walletKeys: T extends 'metamask'
     ? MetamaskWalletKeys
     : T extends 'keplr'
-    ? KeplrWalletKeys
-    : T extends 'xion'
-    ? XionWalletKeys
-    : T extends 'phantom'
-    ? PhantomWalletKeys
-    : never,
+      ? KeplrWalletKeys
+      : T extends 'xion'
+        ? XionWalletKeys
+        : T extends 'phantom'
+          ? PhantomWalletKeys
+          : never,
 ) => {
   const storageWallet: NotifiWalletStorage = {
     walletName: wallet,

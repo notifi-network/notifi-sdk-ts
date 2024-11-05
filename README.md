@@ -58,9 +58,7 @@ This monorepo contains the following packages which are used to interact with No
 - [@notifi-network/notifi-graphql](#notifi-graphql)
 - [@notifi-network/notifi-web-push-service-worker](#notifi-web-push-service-worker)
 
-![notifi-sdk-ts-overview](https://github.com/user-attachments/assets/b3011861-068f-4144-99a9-7e18175a9054)
-
-> Explore the [type docs](https://docs.notifi.network/notifi-sdk-ts/)
+![notifi-sdk-ts-overview](https://github.com/user-attachments/assets/f57e06a0-9198-435c-bf06-7f64cce00ea3)
 
 #### Notifi Frontend Client
 
@@ -68,6 +66,7 @@ This monorepo contains the following packages which are used to interact with No
 
 > - This package is not framework-specific, so it can be used in any frontend application.
 > - The implementation of `@notifi-network/notifi-front-client`: [@notifi-network/notifi-react](#notifi-react)
+> - Type documentation: [Notifi Frontend Client](https://docs.notifi.network/notifi-sdk-ts/notifi-frontend-client/modules.html)
 
 #### Notifi React
 
@@ -79,12 +78,14 @@ This monorepo contains the following packages which are used to interact with No
 > - This package is specifically designed for [React based applications](https://www.robinwieruch.de/react-starter/) .
 > - Respective example package: [@notifi-network/notifi-react-example-v2](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-react-example-v2)
 > - This package is a implementation of the [@notifi-network/notifi-frontend-client](#notifi-frontend-client) package.
+> - Type documentation: [Notifi React](https://docs.notifi.network/notifi-sdk-ts/notifi-react/modules.html)
 
 #### Notifi Node
 
 [@notifi-network/notifi-node](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-node) package is used from a NodeJS server side. Dapp owners can implement the off-chain parsing logics and send notifications to their users.
 
 > Respective example packages: [@notifi-network/notifi-node-sample](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-node-sample)
+> Type documentation: [Notifi Node](https://docs.notifi.network/notifi-sdk-ts/notifi-node/modules.html)
 
 #### Notifi GraphQL
 
@@ -92,13 +93,14 @@ This monorepo contains the following packages which are used to interact with No
 This is particularly useful for developers who want to build their services (SDK) on top of Notifi services.
 
 > The implementation of `@notifi-network/notifi-graphql`: [@notifi-network/notifi-frontend-client](#notifi-frontend-client)
+> Type documentation: [Notifi GraphQL](https://docs.notifi.network/notifi-sdk-ts/notifi-graphql/modules.html)
 
-#### Notifi Web Push Service Worker
+#### Notifi Web Push Service Worker (Coming soon)
 
 [@notifi-network/notifi-web-push-service-worker](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-web-push-service-worker) package introduces a [Service Worker](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API) that handles the browser push notification subscription.
 This is useful for the cross platform applications which adopt the Progressive Web App (PWA) architecture.
 
-> - Respective example packages: [@notifi-network/notifi-pwa-example](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-pwa-example)
+> Respective example packages: [@notifi-network/notifi-pwa-example](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-pwa-example)
 
 <br/>
 <br/>
@@ -119,20 +121,20 @@ This is useful for the cross platform applications which adopt the Progressive W
   // ... other settings
   ```
 
-### Commands
+### Contribute to the repository (for contributors)
 
-This section is to introduce some often-used commands for repository maintainers or contributors. Notifi is always open to contributions, so feel free to create a PR if you have any ideas or improvements.
+Before contributing, please make sure the following steps are followed.
 
-1.  Build all packages after making changes
-
-    After making changes, make sure to build all packages to ensure the changes are reflected in the built files.
+1.  Before pushing the change, ensure the formatting is correct by running the following command.
 
     ```bash
     # on the root directory
-    npm run build
+    npm run format
     ```
 
-     </br>
+    > **!IMPORTANT NOTE**:
+    > <u>`git push`</u> could be rejected if the formatting is not correct since this repository implements the pre-push git hook to ensure the code formatting
+    > If you DO NOT adopt the <u>`"prettier.configPath": "./.prettierrc"`</u> in your IDE settings, please run the <u>`npm run format`</u> command and commit the formatted changes before pushing the changes.
 
 2.  Run headless cypress tests locally
 
@@ -154,22 +156,25 @@ This section is to introduce some often-used commands for repository maintainers
 
     </br>
 
-3.  Run script against specific package
+3.  Make sure to build all packages after making changes.
 
-    You can run the script against a specific package by using the following command.
+    After making changes, make sure to build all packages to ensure the changes are reflected in the built files.
 
     ```bash
     # on the root directory
-    npx lerna --scope=@notifi-network/package-name run script-name
-    # example1: the following command will run dev server on the notifi-react-example-v2 package
-    npx lerna --scope=@notifi-network/notifi-react-example-v2 run dev
-    # example2: the following command will run open cypress test runner on the notifi-react-example-v2 package
-    npx lerna --scope=@notifi-network/notifi-react-example-v2 run cypress:open
+    npm run build
     ```
 
      </br>
 
-4.  Publish canary version to npm (**internal maintainers only**)
+> NOTE: You can run npm scripts against a specific package by utilizing `lerna` command `npx lerna --scope=@notifi-network/<package-name> run <script-name>`. Please check on the following examples (make sure you are on the root directory):
+>
+> - run dev server on the notifi-react-example-v2 package: `npx lerna --scope=@notifi-network/notifi-react-example-v2 run dev`
+> - run open cypress test runner on the notifi-react-example-v2 package: `npx lerna --scope=@notifi-network/notifi-react-example-v2 run cypress:open`
+
+### Publish packages to npm (for internal maintainers)
+
+1.  Publish canary version to npm
     The following command will publish the all packages with canary version to npm. It will prompt you to select the version with suffix `-alpha.x`.
 
     **IMPORTANT**: Run `npm run build` before running the following command.
@@ -182,7 +187,7 @@ This section is to introduce some often-used commands for repository maintainers
 
       </br>
 
-5.  Publish official version to npm (**internal maintainers only**)
+2.  Publish official version to npm
 
     The following command will publish the updated packages to npm. It will prompt you to select the version for each package.
     **IMPORTANT**: Run `npm run build` before running the following command.
@@ -193,20 +198,32 @@ This section is to introduce some often-used commands for repository maintainers
     npx lerna publish
     ```
 
-  </br>
+### Type documentation
 
-6.  Regenerate the documentation (internal maintainers or contributor only)
+`notifi-sdk-ts` utilizes [typedoc](https://typedoc.org/) to generate the type documentation. We want to ensure that the documentation is always up-to-date by regenerating the documentation when the codebase is updated.
 
-    Run the command below to generate the updated typedoc when `@notifi-network/frontend-client` is amended.
-    </br>
+1. Run the command below to generate the updated typedoc.
+   </br>
 
-    ```bash
-    # on the root directory
-    npm run docs
-    ```
+   ```bash
+   # on the root directory
+   npm run docs
+   ```
 
-<br/>
-<br/>
+2. To preview the generated documentation locally, run the following command.
+   </br>
+
+   ```bash
+   # on the root directory
+   npm run serve-docs
+   ```
+
+   </br>
+
+This will establish a local server by `light-server` to host the Type documentation page on `http://localhost:4000`.
+
+</br>
+</br>
 
 ## Advanced
 
@@ -221,6 +238,8 @@ We understand that not all scenarios can be solved with the current state of the
 - [React.js](https://reactjs.org/)
 - [Next.js](https://nextjs.org/)
 - [GraphQL-Codegen](https://the-guild.dev/graphql/codegen/docs/getting-started)
+- [TypeDoc](https://typedoc.org/)
+- [husky](https://typicode.github.io/husky/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 

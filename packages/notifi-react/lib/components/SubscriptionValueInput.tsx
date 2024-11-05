@@ -65,8 +65,8 @@ export const SubscriptionValueInput: React.FC<SubscriptionValueInputProps> = (
             >
               {props.subscriptionValue
                 ? props.subscriptionValue.label
-                : props.copy?.dropdownPlaceholder ??
-                  defaultCopy.subscriptionValueInput.dropdownPlaceholder}
+                : (props.copy?.dropdownPlaceholder ??
+                  defaultCopy.subscriptionValueInput.dropdownPlaceholder)}
             </div>
 
             <div

@@ -1,11 +1,11 @@
 import {
+  NotifiEnvironment,
   createDataplaneClient,
   createGraphQLClient,
   createNotifiService,
   createNotifiSubscriptionService,
-  NotifiEnvironment,
 } from '@notifi-network/notifi-node';
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
 export const notifiAuthMiddleware = (
   req: Request,

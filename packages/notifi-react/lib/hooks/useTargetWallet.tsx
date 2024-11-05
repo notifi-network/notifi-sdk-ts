@@ -100,9 +100,8 @@ export const useTargetWallet = () => {
         );
       }
       // NOTE: 2nd signature: create a new XMTP conversation with the tenant sender (will skip if ever signed before)
-      const conversation = await client.conversations.newConversation(
-        senderAddress,
-      );
+      const conversation =
+        await client.conversations.newConversation(senderAddress);
 
       await client.contacts.allow([senderAddress]);
 

@@ -146,7 +146,7 @@ export const NotifiHistoryContextProvider: FC<
 
         setHistoryItems((existing) =>
           initialLoad
-            ? validHistoryItems.map(parseHistoryItem) ?? []
+            ? (validHistoryItems.map(parseHistoryItem) ?? [])
             : [...existing, ...(validHistoryItems.map(parseHistoryItem) ?? [])],
         );
         setCursorInfo(result.pageInfo);

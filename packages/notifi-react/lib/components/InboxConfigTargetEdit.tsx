@@ -134,10 +134,10 @@ export const InboxConfigTargetEdit: React.FC<InboxConfigTargetEditProps> = (
           )}
         >
           {hasTarget(targetData)
-            ? props.copy?.buttonTextHasTarget ??
-              defaultCopy.inboxConfigTargetEdit.buttonTextHasTarget
-            : props.copy?.buttonTextNoTarget ??
-              defaultCopy.inboxConfigTargetEdit.buttonTextNoTarget}
+            ? (props.copy?.buttonTextHasTarget ??
+              defaultCopy.inboxConfigTargetEdit.buttonTextHasTarget)
+            : (props.copy?.buttonTextNoTarget ??
+              defaultCopy.inboxConfigTargetEdit.buttonTextNoTarget)}
         </div>
       </button>
     </div>
