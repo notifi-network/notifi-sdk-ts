@@ -151,10 +151,10 @@ export const TargetStateBanner: React.FC<TargetStateBannerProps> = (props) => {
               )}
             >
               {hasTarget(targetData)
-                ? props.copy?.verify?.title ??
-                  defaultCopy.targetStateBanner.verify.title
-                : props.copy?.signup?.textInConfig ??
-                  defaultCopy.targetStateBanner.Signup.textInConfig}
+                ? (props.copy?.verify?.title ??
+                  defaultCopy.targetStateBanner.verify.title)
+                : (props.copy?.signup?.textInConfig ??
+                  defaultCopy.targetStateBanner.Signup.textInConfig)}
             </div>
             {unVerifiedTargets.length > 0 && (
               <div

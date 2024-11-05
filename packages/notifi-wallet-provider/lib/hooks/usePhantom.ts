@@ -85,9 +85,8 @@ export const usePhantom = (
     transaction: Transaction,
     connection: Connection,
   ) => {
-    const signedTransaction = await window.phantom.solana.signTransaction(
-      transaction,
-    );
+    const signedTransaction =
+      await window.phantom.solana.signTransaction(transaction);
     const signature = await connection.sendRawTransaction(
       signedTransaction.serialize(),
     );

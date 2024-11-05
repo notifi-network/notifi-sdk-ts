@@ -54,24 +54,24 @@ export const TargetInputToggle: React.FC<TargetInputToggleProps> = (props) => {
 
   const title =
     props.targetType === 'slack'
-      ? props.copy?.title?.slack ?? defaultCopy.inputToggles.slack
+      ? (props.copy?.title?.slack ?? defaultCopy.inputToggles.slack)
       : props.targetType === 'discord'
-      ? props.copy?.title?.discord ?? defaultCopy.inputToggles.discord
-      : props.targetType === 'wallet'
-      ? props.copy?.title?.wallet ?? defaultCopy.inputToggles.wallet
-      : 'Unknown target type';
+        ? (props.copy?.title?.discord ?? defaultCopy.inputToggles.discord)
+        : props.targetType === 'wallet'
+          ? (props.copy?.title?.wallet ?? defaultCopy.inputToggles.wallet)
+          : 'Unknown target type';
 
   const unavailable =
     props.targetType === 'slack'
-      ? props.copy?.unavailable?.slack ??
-        defaultCopy.inputToggles.slackUnavailable
+      ? (props.copy?.unavailable?.slack ??
+        defaultCopy.inputToggles.slackUnavailable)
       : props.targetType === 'discord'
-      ? props.copy?.unavailable?.discord ??
-        defaultCopy.inputToggles.discordUnavailable
-      : props.targetType === 'wallet'
-      ? props.copy?.unavailable?.wallet ??
-        defaultCopy.inputToggles.walletUnavailable
-      : 'Unknown target type';
+        ? (props.copy?.unavailable?.discord ??
+          defaultCopy.inputToggles.discordUnavailable)
+        : props.targetType === 'wallet'
+          ? (props.copy?.unavailable?.wallet ??
+            defaultCopy.inputToggles.walletUnavailable)
+          : 'Unknown target type';
 
   const onClick = useMemo(() => {
     switch (props.targetType) {

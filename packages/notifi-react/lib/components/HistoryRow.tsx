@@ -100,8 +100,8 @@ const formatTimestampInHistoryRow = (timestamp: string) => {
     isToday(dateObject)
       ? 'hh:mm b'
       : isWithinInterval(dateObject, { start: sevenDaysAgo, end: now })
-      ? 'eee'
-      : 'MMM d',
+        ? 'eee'
+        : 'MMM d',
   )
     .replace('noon', 'PM')
     .replace('midnight', 'AM');

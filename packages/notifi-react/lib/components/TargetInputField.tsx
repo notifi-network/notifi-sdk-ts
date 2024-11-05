@@ -53,11 +53,11 @@ export const TargetInputField: React.FC<TargetInputFieldProps> = (props) => {
   }, [props.targetType, targetInputs]);
 
   const inputPlaceholder =
-    props.copy?.placeholder ?? props.targetType === 'email'
+    (props.copy?.placeholder ?? props.targetType === 'email')
       ? defaultCopy.inputFields.email
       : props.targetType === 'phoneNumber'
-      ? defaultCopy.inputFields.phoneNumber
-      : defaultCopy.inputFields.telegram;
+        ? defaultCopy.inputFields.phoneNumber
+        : defaultCopy.inputFields.telegram;
 
   const isTargetValid = (targetInput: string) => {
     if (targetInput === '' || !props.validateRegex) {
@@ -107,8 +107,8 @@ export const TargetInputField: React.FC<TargetInputFieldProps> = (props) => {
             props.targetType === 'email'
               ? 'email'
               : props.targetType === 'phoneNumber'
-              ? 'tel'
-              : 'text'
+                ? 'tel'
+                : 'text'
           }
           className={clsx(
             'notifi-target-input-field-input',
