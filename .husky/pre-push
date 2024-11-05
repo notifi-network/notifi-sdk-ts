@@ -1,0 +1,4 @@
+
+echo "Running pre-push hook: Checking code format with Prettier...\nIf fails, please run 'npm run format'. This will fix the code format automatically. Then you will need to commit the changes and push again.\n"
+
+prettier --config .prettierrc packages/**/lib/**/*.ts* --check  
