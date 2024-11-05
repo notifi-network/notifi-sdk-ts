@@ -58,7 +58,7 @@ This monorepo contains the following packages which are used to interact with No
 - [@notifi-network/notifi-graphql](#notifi-graphql)
 - [@notifi-network/notifi-web-push-service-worker](#notifi-web-push-service-worker)
 
-![notifi-sdk-ts-overview](https://github.com/user-attachments/assets/b3011861-068f-4144-99a9-7e18175a9054)
+![notifi-sdk-ts-overview](https://github.com/user-attachments/assets/f57e06a0-9198-435c-bf06-7f64cce00ea3)
 
 #### Notifi Frontend Client
 
