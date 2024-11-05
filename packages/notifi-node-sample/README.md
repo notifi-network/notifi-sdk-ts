@@ -41,8 +41,7 @@ npm run build
 - Config environment variables
 
 ```bash
-export NOTIFI_ENV="Production-or-Development" && \
- NOTIFI_SECRET="your-tenent-secret" && \
+export NOTIFI_SECRET="your-tenant-secret" && \
  NOTIFI_SID="your-sid" && \
  PORT="custom-port(optional)"
 ```
@@ -69,9 +68,8 @@ npx lerna --scope=@notifi-network/notifi-node-sample run dev
 
 ```json
 {
-  "sid": "NPOFGOF0Z3P0NLVPXDVA111PVYV16KIG",
-  "secret": "vV$)RuHwJ6D3&7@w$y2-U6?oE4%VzVYpnCVPp9gGtKp~NBe^PB99SsDZR2naU+2>",
-  "env": "Production"
+  "sid": "your-sid",
+  "secret": "your-secret"
 }
 ```
 
@@ -95,18 +93,12 @@ npx lerna --scope=@notifi-network/notifi-node-sample run dev
 {
   "variables": [
     {
-      "eventTypeId": "71cc71b9c5de4a838e8c8bf46d25fb2c",
+      "eventTypeId": "event-type-id",
       "variablesJson": {
-        "Platform": {
-          "message__markdown": "[link text](https://bots.ondiscord.xyz)",
-          "message": "gets overriden by message__markdown",
-          "subject": "dpush test"
-        },
-        "Email": {
-          "message": "gets overriden by message__markdown",
-          "message__markdown": "[link text](https://bots.ondiscord.xyz)",
-          "subject": "dpush test"
-        }
+        "fromAddress": "from-wallet-address",
+        "toAddress": "to-wallet-address",
+        "amount": "amount",
+        "currency": "ETH"
       }
     }
   ]
@@ -127,8 +119,8 @@ npx lerna --scope=@notifi-network/notifi-node-sample run dev
 
 > NOTE:
 >
-> - The `variablesJson` parameter is the set of variables that will be used when rendering your templates. If you have a variable `fromAddress`, for example, you can display it in the template with the expression `{{ eventData.fromAddress }}`
-> - `FusionMessage<T>`'s generic type `T` represents the shape `variablesJson` payload. Defaults to `object` for better flexibility. Specify to [CommunityManagerJsonPayload](TBD) if for the notification sent by community manager (Learn more about [Notifi Community Manager](https://docs.notifi.network/docs/getting-started#learn-more-about-community-manager)
+> - The `variablesJson` parameter is the set of variables that will be used when rendering your templates. If you have a variable `fromAddress`. For example, you can display it in the template with the expression `{{ eventData.fromAddress }}`
+> - Passing `specificWallets` optionally if you want to send to specific users. By default, it sends to all users who have subscribed to the `event-type-id`. For example, `specificWallets: [{ walletBlockchain: 'ETHEREUM', walletPublicKey: 'user-wallet-public-key' }]`
 
 ### Get active alerts
 
@@ -139,7 +131,7 @@ npx lerna --scope=@notifi-network/notifi-node-sample run dev
 
 ```json
 {
-  "fusionEventId": "fusion-event-id"
+  "fusionEventId": "event-type-id"
 }
 ```
 
