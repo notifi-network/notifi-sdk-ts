@@ -1,1 +1,4 @@
-docs/** linguist-generated=true
+docs/notifi-frontend-client/** linguist-generated=true
+docs/notifi-graphql/** linguist-generated=true
+docs/notifi-react/** linguist-generated=true
+docs/notifi-node/** linguist-generated=true
