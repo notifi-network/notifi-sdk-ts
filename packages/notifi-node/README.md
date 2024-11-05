@@ -40,11 +40,9 @@ import {
   createNotifiService,
 } from '@notifi-network/notifi-node';
 
-const notifiEnv = 'Production'; // Or 'Development'
-
-const gqlClient = createGraphQLClient(notifiEnv);
-const dpapiClient = createDataplaneClient(notifiEnv);
-const subService = createNotifiSubscriptionService(notifiEnv);
+const gqlClient = createGraphQLClient();
+const dpapiClient = createDataplaneClient();
+const subService = createNotifiSubscriptionService();
 const notifiService = createNotifiService(graphqlClient, subService);
 
 // Instantiate a NotifiNodeClient
@@ -117,13 +115,11 @@ const messagePayloads = [
   {
     eventTypeId: 'event-type-id',
     variablesJson: {
-      campaignId: 'compaign-id',
-      Platform: {
-        subject: 'subject',
-        message: 'message',
-        message__markdown: 'markdown-message',
-        sourceMessage: '<p>html-formatted-message</p>',
-      },
+      /** Could be any shape of object according to the need of template */
+      fromAddress: 'from-wallet-address',
+      toAddress: 'to-wallet-address',
+      amount: 'amount',
+      currency: 'ETH',
     },
     // Passing `specificWallets` optionally if you want to send to specific users. By default, it sends to all users who have subscribed to the `event-type-id`.
     // specificWallets: [{
@@ -136,9 +132,9 @@ const messagePayloads = [
 const result = await client.publishFusionMessage(fusionMessages);
 ```
 
-> `FusionMessage.variablesJson`: Variables for template rendering. For instance, `fromAddress` can be displayed with `{{ eventData.fromAddress }}`.
-> The generic type of `FusionMessage<T>` defines the type of `FusionMessage.variablesJson`. Defaults to object type for flexibility. (CommunityManagerJsonPayload for Community Manager post templates if provided.)
-> For more details about `FusionMessage`, please check on the [type definition](https://github.com/notifi-network/notifi-sdk-ts/blob/main/packages/notifi-dataplane/lib/types/FusionMessage.ts)
+> NOTE:
+>
+> - The `variablesJson` parameter is the set of variables that will be used when rendering your templates. If you have a variable `fromAddress`, for example, you can display it in the template with the expression `{{ eventData.fromAddress }}`
 
 ### Receiving active alerts under a tenant
 
@@ -164,6 +160,8 @@ Notifi Node SDK provides a way to listen to the events using the `addEventListen
 
 Notifi provides several GraphQL subscription events by which we can easily tracking the entity changes. When listening to this category of events, it returns a `Subscription` object which is used to stop the Graphql subscription.
 
+- `tenantActiveAlertChanged`: When the active alert is changed (created or deleted).
+
 To stop listening to the events, we need to do the following:
 
 1. Call the `subscription.unsubscribe` method. This will stop the Graphql subscription.
@@ -178,16 +176,19 @@ const eventHandler = (event) => {
 
 // Listen to the tenant entity updated event
 const subscription = client.addEventListener(
-  'tenantEntityUpdated',
+  'tenantActiveAlertChanged',
   eventHandler,
 );
 
 // Stop the subscription
 subscription.unsubscribe();
-client.removeEventListener('tenantEntityUpdated', eventHandler);
+client.removeEventListener('tenantActiveAlertChanged', eventHandler);
 ```
 
-#### 2. WebSocket status events:
+#### 2. WebSocket status events :
+
+> NOTE: This events are particularly for some advanced use cases especially when you want to interact with the WebSocket connection.
+> Example, you can utilize the WebSocket client object from `wsConnected` handler to dispose the WebSocket connection.
 
 Since websocket connection is automatically opened when the GraphQL subscription is started, we might listen to the WebSocket status events to understand the status of the WebSocket connection under some circumstances.
 
