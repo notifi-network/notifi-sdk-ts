@@ -1,6 +1,6 @@
 {
   "name": "@notifi-network/notifi-node",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Server-initiated operations with Notifi",
   "homepage": "https://github.com/notifi-network/notifi-sdk-ts#readme",
   "license": "MIT",
@@ -30,8 +30,8 @@
     "url": "https://github.com/notifi-network/notifi-sdk-ts/issues"
   },
   "dependencies": {
-    "@notifi-network/notifi-dataplane": "^3.0.0",
-    "@notifi-network/notifi-graphql": "^3.0.0",
+    "@notifi-network/notifi-dataplane": "^3.0.1",
+    "@notifi-network/notifi-graphql": "^3.0.1",
     "graphql": "^16.6.0",
     "graphql-request": "^6.0.0",
     "ws": "^8.11.0"
