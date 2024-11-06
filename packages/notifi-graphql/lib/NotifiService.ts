@@ -690,7 +690,6 @@ export class NotifiService
     const headers: HeadersInit = {
       'X-Request-Id': requestId,
       'X-Notifi-Client-Version': version,
-      'Accept-Encoding': 'gzip, br',
     };
 
     if (this._jwt !== undefined) {
