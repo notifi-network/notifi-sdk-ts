@@ -25,6 +25,7 @@ export type HistoryItem = {
   message: string;
   read: boolean;
   customIconUrl: string;
+  fusionEventId: string;
 };
 
 export type NotifiHistoryContextType = {
@@ -45,11 +46,17 @@ const NotifiHistoryContext = createContext<NotifiHistoryContextType>(
 
 export type NotifiHistoryProviderProps = {
   notificationCountPerPage?: number;
+  // NOTE: 'tenant' - fetch tenant unread count, 'card' - fetch card unread count (default)
+  unreadCountScope?: 'tenant' | 'card';
 };
 
 export const NotifiHistoryContextProvider: FC<
   PropsWithChildren<NotifiHistoryProviderProps>
-> = ({ children, notificationCountPerPage = 20 }) => {
+> = ({
+  children,
+  notificationCountPerPage = 20,
+  unreadCountScope = 'card',
+}) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
   const { frontendClient, frontendClientStatus } =
@@ -67,6 +74,9 @@ export const NotifiHistoryContextProvider: FC<
   useEffect(() => {
     // NOTE: Update historyItems & unreadCount when backend state changed
     if (frontendClientStatus.isAuthenticated) {
+      const fusionEventIds = new Set(
+        fusionEventTopics.map((topic) => topic.fusionEventDescriptor.id ?? ''),
+      );
       frontendClient.subscribeNotificationHistoryStateChanged((_data) => {
         frontendClient
           .getFusionNotificationHistory({
@@ -75,12 +85,18 @@ export const NotifiHistoryContextProvider: FC<
             includeRead: isIncludeRead,
           })
           .then((res) => {
-            const historyItemIdMap = new Map(
-              historyItems.map((item) => [item.id, item]),
+            const existingItemIds = new Set(
+              historyItems.map((item) => item.id),
             );
+
             const newItems = res?.nodes
               ?.map(parseHistoryItem)
-              .filter((item) => !historyItemIdMap.has(item.id));
+              .filter(
+                (item) =>
+                  !existingItemIds.has(item.id) &&
+                  fusionEventIds.has(item.fusionEventId),
+              );
+
             if (newItems?.length && newItems.length > 0) {
               setHistoryItems((existing) => [...newItems, ...existing]);
               setUnreadCount((prev) =>
@@ -173,9 +189,25 @@ export const NotifiHistoryContextProvider: FC<
       cardConfig
     ) {
       getHistoryItems(true);
-      frontendClient.getUnreadNotificationHistoryCount().then(({ count }) => {
-        setUnreadCount(count);
-      });
+
+      let getUnreadCountInput: string | undefined = undefined;
+      switch (unreadCountScope) {
+        case 'card':
+          if (!cardConfig.id)
+            return setError(
+              new Error(
+                'Card ID is missing, fetch tenant unread count instead.',
+              ),
+            );
+          getUnreadCountInput = cardConfig.id;
+          break;
+        default: // tenant, intentionally left blank
+      }
+      frontendClient
+        .getUnreadNotificationHistoryCount(getUnreadCountInput)
+        .then(({ count }) => {
+          setUnreadCount(count);
+        });
     }
   }, [frontendClientStatus, getHistoryItems, cardConfig]);
 
@@ -261,6 +293,7 @@ export const NotifiHistoryContextProvider: FC<
       history: Types.FusionNotificationHistoryEntryFragmentFragment,
     ): HistoryItem => {
       const eventDetails = history.detail;
+      const fusionEventVariables = history.fusionEventVariables;
       if (!eventDetails || eventDetails.__typename !== 'GenericEventDetails') {
         return {
           id: '',
@@ -272,6 +305,7 @@ export const NotifiHistoryContextProvider: FC<
           message:
             'Invalid notification history detail: only support GenericEventDetails',
           read: true,
+          fusionEventId: '',
         };
       }
 
@@ -301,6 +335,9 @@ export const NotifiHistoryContextProvider: FC<
         icon: eventDetails.icon,
         customIconUrl: eventDetails.customIconUrl ?? '',
         read: history.read,
+        fusionEventId:
+          parseHistoryFusionVariablesJson(fusionEventVariables)?.NotifiData
+            .EventTypeId ?? '',
       };
     },
     [fusionEventTopics],
@@ -338,4 +375,45 @@ export const validateEventDetails = (details: {
   __typename: string;
 }): details is ValidEventDetail => {
   return details.__typename === 'GenericEventDetails';
+};
+
+// TODO: update the type for EventData and AlertData
+type HistoryFusionEventVariables<T extends object = object> = {
+  EventData: unknown;
+  AlertData: unknown;
+  NotifiData: {
+    TenantId: string;
+    TenantName: string;
+    ChangeSignature: string;
+    SourceTypeId: string;
+    AlertId: string;
+    ComparisonValue: string;
+    EventTypeId: string;
+    TopicHistoryDisplayName: string;
+    Blockchain: string;
+    PixelUrl: string;
+  };
+  unsubscribe_url: string;
+};
+
+const parseHistoryFusionVariablesJson = (
+  variablesJson: string,
+): HistoryFusionEventVariables | null => {
+  try {
+    const variables = JSON.parse(variablesJson);
+    if (
+      typeof variables === 'object' &&
+      variables.NotifiData &&
+      'EventTypeId' in variables.NotifiData
+    ) {
+      return variables as HistoryFusionEventVariables;
+    }
+    return null;
+  } catch (e) {
+    console.warn(
+      'NotifiHistoryContext: Found invalid fusionVariablesJson: ',
+      variablesJson,
+    );
+    return null;
+  }
 };

@@ -667,6 +667,11 @@ export const MyComponent = () => {
 };
 ```
 
+**Input props**
+
+- **notificationCountPerPage** (Optional): The number of notifications per fetch in the notification history. The default value is `20`.
+- **unreadCountScope** (Optional): The scope can be `card` or `tenant`. The default value is `card`.
+
 **Methods**
 
 - **getHistoryItems**: A function to get the notification history items. This method will update the `historyItems` state. It takes `(initialLoad?: boolean)` as input arguments. If `initialLoad` is `true`, it will clean the existing `historyItem` and fetch the first page of the notification history items. If `initialLoad` is `undefined` or `false`, it will fetch the next page from an existing page cursor. You can use `hasNextPage` to check if there are more pages to fetch.
