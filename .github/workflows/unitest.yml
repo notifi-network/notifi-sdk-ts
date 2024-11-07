@@ -1,0 +1,38 @@
+name: Unit Test (notifi-node/ notifi-frontend-client)
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies & build project
+        run: |
+          npm cache clean --force
+          rm -rf node_modules
+          npm install
+          npm run build
+
+      - name: Run Node tests
+        run: npm run test:node
+        env:
+          FUSION_EVENT_ID: ${{ secrets.FUSION_EVENT_ID }}
+          TENANT_SECRET: ${{ secrets.TENANT_SECRET }}
+          TENANT_SID: ${{ secrets.TENANT_SID }}
