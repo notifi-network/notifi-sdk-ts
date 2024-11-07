@@ -24,7 +24,8 @@
   "scripts": {
     "build": "npm run clean && npm run compile",
     "clean": "rimraf ./dist",
-    "compile": "tsc -p tsconfig.build.json"
+    "compile": "tsc -p tsconfig.build.json",
+    "test": "jest"
   },
   "bugs": {
     "url": "https://github.com/notifi-network/notifi-sdk-ts/issues"
@@ -35,6 +36,10 @@
     "graphql": "^16.6.0",
     "graphql-request": "^6.0.0",
     "ws": "^8.11.0"
+  },
+  "devDependencies": {
+    "dotenv": "^16.4.5",
+    "ethers": "^6.11.1"
   },
   "gitHead": "2b02f90e5b01bf13a9ce842a603a7cb21b3d2881"
 }
