@@ -30,9 +30,12 @@ jobs:
           npm install
           npm run build
 
-      - name: Run Node tests
+      - name: Run tests - @notifi-network/notifi-node
         run: npm run test:node
         env:
           FUSION_EVENT_ID: ${{ secrets.FUSION_EVENT_ID }}
           TENANT_SECRET: ${{ secrets.TENANT_SECRET }}
           TENANT_SID: ${{ secrets.TENANT_SID }}
+
+      - name: Run tests - @notifi-network/notifi-frontend-client
+        run: npm run test:frontend-client
