@@ -328,6 +328,14 @@ const notifications = nodes.map((node) => {
 });
 ```
 
+## Contributing & Testing
+
+We welcome and appreciate your contributions! Please review our [contribution guidelines](https://github.com/notifi-network/notifi-sdk-ts?tab=readme-ov-file#contribute-to-the-repository-for-contributors) before getting started.
+
+To ensure a smooth contribution process, please run `npm run test` below to confirm that all tests pass before submitting your changes
+
+If your contribution includes a new feature, you may also want to create a dedicated test case within the` __tests__/NotifiFrontendClient.test.ts` file to validate its functionality.
+
 ## 📝 More examples
 
 - [notifi-dapp-example](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-dapp-example): A dapp example built with `@notifi/notifi-frontend-client` and `@notifi/notifi-react` SDKs.
