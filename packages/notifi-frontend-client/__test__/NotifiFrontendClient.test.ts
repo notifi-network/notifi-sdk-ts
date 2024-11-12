@@ -15,13 +15,16 @@ describe('NotifiFrontendClient Unit Test', () => {
   let wallet: ethers.HDNodeWallet;
 
   beforeEach(() => {
+    const currentTestName = expect.getState().currentTestName;
+    console.info(`Starting test: ${currentTestName}`);
+
     wallet = getConnectedWallet();
     const evmUserParams: EvmUserParams = {
       walletBlockchain: walletBlockchain,
       walletPublicKey: wallet.address,
     };
     client = instantiateFrontendClient(dappAddress, evmUserParams, env, {
-      // TODO: inline document
+      /* ⬇ explicitly specify 'InMemory' driverType as Nodejs environment does not have 'localStorage' (default option) */
       driverType: 'InMemory',
     });
   });
@@ -139,7 +142,7 @@ describe('NotifiFrontendClient Unit Test', () => {
   };
 });
 
-// Utils & Constants
+// Utils & Constants (TODO: Move to a separate module when growing)
 const env = 'Production';
 const dappAddress = 'xdjczkhmgann9g24871z';
 const cardId = '019305821e1772c1b3b8d07df1d724ee';

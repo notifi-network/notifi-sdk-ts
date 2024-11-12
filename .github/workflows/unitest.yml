@@ -23,12 +23,14 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Install dependencies & build project
+      - name: Install dependencies
         run: |
           npm cache clean --force
           rm -rf node_modules
           npm install
-          npm run build
+
+      - name: Build project
+        run: npm run build
 
       - name: Run tests - @notifi-network/notifi-node
         run: npm run test:node
