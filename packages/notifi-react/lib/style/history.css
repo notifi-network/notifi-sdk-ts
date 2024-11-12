@@ -161,8 +161,7 @@
   scrollbar-width: none;
 }
 
-.notifi-history-detail-subject,
-.notifi-history-detail-topic {
+.notifi-history-detail-subject {
   font-weight: 800;
   margin-bottom: 0.5rem;
   line-height: 1.5;
