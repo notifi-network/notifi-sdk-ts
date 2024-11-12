@@ -12,6 +12,7 @@ type HistoryDetailProps = {
     container?: string;
     main?: string;
     subject?: string;
+    topicName?: string;
     timestamp?: string;
     message?: string;
   };
@@ -58,11 +59,11 @@ export const HistoryDetail: React.FC<HistoryDetailProps> = (props) => {
       >
         <div
           className={clsx(
-            'notifi-history-detail-subject',
-            props.classNames?.subject,
+            'notifi-history-detail-topic',
+            props.classNames?.topicName,
           )}
         >
-          {historyItem.subject}
+          {historyItem.topic}
         </div>
         <div
           className={clsx(
