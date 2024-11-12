@@ -6,6 +6,8 @@
     "format": "prettier --config .prettierrc packages/**/lib/**/*.ts* --write",
     "lint": "eslint --ext .ts,.tsx packages/**/lib --fix",
     "test": "npx lerna --scope=@notifi-network/notifi-react-example-v2 run test",
+    "test:node": "npx lerna --scope=@notifi-network/notifi-node run test",
+    "test:frontend-client": "npx lerna --scope=@notifi-network/notifi-frontend-client run test",
     "serve-docs": "npm run docs && light-server -s ./docs -p 4000",
     "docs": "npm run build-docs && cp -r packages/notifi-frontend-client/docs/notifi-frontend-client packages/notifi-node/docs/notifi-node packages/notifi-graphql/docs/notifi-graphql packages/notifi-react/docs/notifi-react docs",
     "build-docs": "npm run build-docs:frontend-client && npm run build-docs:graphql && npm run build-docs:node && npm run build-docs:react",
@@ -37,10 +39,6 @@
     "typedoc": "^0.26.7",
     "typedoc-plugin-missing-exports": "^3.0.0",
     "typescript": "^4.6.3"
-  },
-  "jest": {
-    "preset": "ts-jest",
-    "testEnvironment": "node"
   },
   "workspaces": [
     "packages/notifi-dapp-example",

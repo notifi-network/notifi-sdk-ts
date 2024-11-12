@@ -18,7 +18,7 @@
     "build": "npm run clean && npm run compile",
     "compile": "tsup lib/index.ts --format cjs,esm --dts --clean",
     "clean": "rimraf ./dist",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "prepublishOnly": "npm run build"
   },
   "repository": {
@@ -35,6 +35,9 @@
     "@notifi-network/notifi-graphql": "^3.0.1",
     "graphql-request": "^6.0.0",
     "localforage": "^1.10.0"
+  },
+  "devDependencies": {
+    "ethers": "^6.11.1"
   },
   "gitHead": "2b02f90e5b01bf13a9ce842a603a7cb21b3d2881"
 }

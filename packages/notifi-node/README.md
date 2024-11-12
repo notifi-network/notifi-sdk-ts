@@ -242,6 +242,17 @@ client.removeEventListener('gqlSubscriptionError', eventHandler);
 client.removeEventListener('gqlComplete', eventHandler);
 ```
 
+## Contributing & Testing
+
+We welcome and appreciate your contributions! Please review our [contribution guidelines](https://github.com/notifi-network/notifi-sdk-ts?tab=readme-ov-file#contribute-to-the-repository-for-contributors) before getting started.
+
+To ensure a smooth contribution process, please follow the steps below to confirm that all tests pass before submitting your changes:
+
+    - Fill in the credentials in the `.env.example` file and rename it to `.env`.
+    - Run `npm run test` to execute all tests.
+
+If your contribution includes a new feature, you may also want to create a dedicated test case within the` __tests__/NotifiNodeClient.test.ts` file to validate its functionality.
+
 ## More example
 
 - [notifi-node-sample](): An example demonstrating how to use the `@notifi-network/notifi-node` package on express.js server.

@@ -125,52 +125,69 @@ This is useful for the cross platform applications which adopt the Progressive W
 
 Before contributing, please make sure the following steps are followed.
 
-1.  Before pushing the change, ensure the formatting is correct by running the following command.
+#### Code formatting
 
-    ```bash
-    # on the root directory
-    npm run format
-    ```
+Before pushing the change, ensure the formatting is correct by running the following command
 
-    > **!IMPORTANT NOTE**:
-    > <u>`git push`</u> could be rejected if the formatting is not correct since this repository implements the pre-push git hook to ensure the code formatting
-    > If you DO NOT adopt the <u>`"prettier.configPath": "./.prettierrc"`</u> in your IDE settings, please run the <u>`npm run format`</u> command and commit the formatted changes before pushing the changes.
+```bash
+# on the root directory
+npm run format
+```
 
-2.  Run headless cypress tests locally
+> **!IMPORTANT NOTE**:
+> A push may be rejected if the code formatting is incorrect, as this repository enforces a pre-push Git hook to maintain consistent formatting.
+> If your IDE does not automatically use <u>`"prettier.configPath": "./.prettierrc"`</u> , please run <u>npm run format</u> and commit the changes before pushing.
 
-    You can run the cypress tests locally against the `notifi-react-example-v2` package by using the following command.
+#### Build packages
+
+After making changes, build all packages to ensure updates are reflected in the compiled files:
+
+```bash
+# on the root directory
+npm run build
+```
+
+#### Unit tests (Jest) & Component tests (Cypress)
+
+1. Component Tests for @notifi-network/notifi-react (Cypress):
+
+   For changes in the `@notifi-network/notifi-react package`, run Cypress tests to verify UI component functionality. Execute these tests locally against the `notifi-react-example-v2` package:
+   </br>
+
+   ```bash
+   # Run all tests
+   npm run test
+
+   # Open Cypress test runner
+   npx lerna --scope=@notifi-network/notifi-react-example-v2 run cypress:open
+
+   ```
+
+   Detailed scenarios can be found in the [Cypress test scripts](https://github.com/notifi-network/notifi-sdk-ts/blob/main/packages/notifi-react-example-v2/cypress/component/NotifiCardModal.cy.tsx)
+
+   > IMPORTANT:
+   > If you modify test scripts, please run them multiple times (at least 5–10) to confirm stability:
+   > `for i in {1..10}; do npm run test; done; `.
+
+   </br>
+
+2. Unit Tests for Other Packages (Jest):
+   For non-UI packages, run Jest tests to verify functionality. Before testing, configure the .env file in `packages/notifi-node/`:
+
+   - Copy `.env.example` to `.env` and populate necessary environment variables.
+   - Run tests with `npm run test:node && npm run test:frontend-client`
+
     </br>
 
-    ```bash
-    # on the root directory
-    npm run test
-
-    # To run the cypress open test runner
-    npx lerna --scope=@notifi-network/notifi-react-example-v2 run cypress:open
-
-    ```
-
-    For the detailed test scenarios, please check out the [Cypress test scripts](https://github.com/notifi-network/notifi-sdk-ts/blob/main/packages/notifi-react-example-v2/cypress/component/NotifiCardModal.cy.tsx)
-
-    > IMPORTANT: if you change the test script, make sure run test script multiple times (at least 5~10) to ensure the test is stable - `for i in {1..10}; do npm run test; done; `.
-
-    </br>
-
-3.  Make sure to build all packages after making changes.
-
-    After making changes, make sure to build all packages to ensure the changes are reflected in the built files.
-
-    ```bash
-    # on the root directory
-    npm run build
-    ```
-
-     </br>
-
-> NOTE: You can run npm scripts against a specific package by utilizing `lerna` command `npx lerna --scope=@notifi-network/<package-name> run <script-name>`. Please check on the following examples (make sure you are on the root directory):
+> Tip:
+> Use `lerna` commands to run scripts for a specific package (`npx lerna --scope=@notifi-network/<package-name> run <script-name>`).
 >
-> - run dev server on the notifi-react-example-v2 package: `npx lerna --scope=@notifi-network/notifi-react-example-v2 run dev`
-> - run open cypress test runner on the notifi-react-example-v2 package: `npx lerna --scope=@notifi-network/notifi-react-example-v2 run cypress:open`
+> - Start the development server for `notifi-react-example-v2`:
+>   `npx lerna --scope=@notifi-network/notifi-react-example-v2 run dev`
+> - Open Cypress test runner for `notifi-react-example-v2`:
+>   `npx lerna --scope=@notifi-network/notifi-react-example-v2 run cypress:open`
+
+</br>
 
 ### Publish packages to npm (for internal maintainers)
 
