@@ -1,4 +1,4 @@
-import { Types } from '@notifi-network/notifi-graphql';
+import { NotifiEmitterEvents, Types } from '@notifi-network/notifi-graphql';
 import { NotifiService } from '@notifi-network/notifi-graphql';
 
 import {
@@ -577,7 +577,7 @@ export class NotifiFrontendClient {
         }
       } catch (e: unknown) {
         await this.logOut();
-        console.log('Failed to refresh Notifi token:', e);
+        console.error('Failed to refresh Notifi token:', e);
       }
     }
 
@@ -1017,11 +1017,6 @@ export class NotifiFrontendClient {
     await Promise.all([saveAuthorizationPromise, saveRolesPromise]);
   }
 
-  /** @deprecated use fetchFusionData instead. This is for legacy  */
-  async fetchData(): Promise<Types.FetchDataQuery> {
-    return this._service.fetchData({});
-  }
-
   async fetchFusionData(): Promise<Types.FetchFusionDataQuery> {
     return this._service.fetchFusionData({});
   }
@@ -1269,80 +1264,9 @@ export class NotifiFrontendClient {
     return updated;
   }
 
-  async getSourceGroups(): Promise<
-    ReadonlyArray<Types.SourceGroupFragmentFragment>
-  > {
-    const query = await this._service.getSourceGroups({});
-    const results = query.sourceGroup?.filter(notNullOrEmpty) ?? [];
-    return results;
-  }
-
   async getAlerts(): Promise<ReadonlyArray<Types.AlertFragmentFragment>> {
     const query = await this._service.getAlerts({});
     return query.alert?.filter(notNullOrEmpty) ?? [];
-  }
-
-  async ensureAlert({
-    eventType,
-    inputs,
-    targetGroupName = 'Default',
-  }: Readonly<{
-    eventType: EventTypeItem;
-    inputs: Record<string, unknown>;
-    targetGroupName?: string;
-  }>): Promise<Types.AlertFragmentFragment> {
-    const [alertsQuery, targetGroupsQuery, sourceAndFilters] =
-      await Promise.all([
-        this._service.getAlerts({}),
-        this._service.getTargetGroups({}),
-        ensureSourceAndFilters(this._service, eventType, inputs),
-      ]);
-
-    const targetGroup = targetGroupsQuery.targetGroup?.find(
-      (it) => it?.name === targetGroupName,
-    );
-    if (targetGroup === undefined) {
-      throw new Error('Target group does not exist');
-    }
-
-    const { sourceGroup, filter, filterOptions } = sourceAndFilters;
-    const packedOptions = packFilterOptions(filterOptions);
-
-    const existing = alertsQuery.alert?.find(
-      (it) => it !== undefined && it.name === eventType.name,
-    );
-
-    if (existing !== undefined) {
-      if (
-        existing.sourceGroup.id === sourceGroup.id &&
-        existing.targetGroup.id === targetGroup.id &&
-        existing.filter.id === filter.id &&
-        existing.filterOptions === packedOptions
-      ) {
-        return existing;
-      }
-
-      // Alerts are immutable, delete the existing instead
-      await this.deleteAlert({
-        id: existing.id,
-      });
-    }
-
-    const mutation = await this._service.createAlert({
-      name: eventType.name,
-      sourceGroupId: sourceGroup.id,
-      filterId: filter.id,
-      targetGroupId: targetGroup.id,
-      filterOptions: packedOptions,
-      groupName: 'managed',
-    });
-
-    const created = mutation.createAlert;
-    if (created === undefined) {
-      throw new Error('Failed to create alert');
-    }
-
-    return created;
   }
 
   async ensureFusionAlerts(
@@ -1394,28 +1318,6 @@ export class NotifiFrontendClient {
     return result;
   }
 
-  /**
-   *@deprecated
-   *@description Use getFusionNotificationHistory instead
-   */
-  async getNotificationHistory(
-    variables: Types.GetNotificationHistoryQueryVariables,
-  ): Promise<
-    Readonly<{
-      pageInfo: Types.PageInfoFragmentFragment;
-      nodes: ReadonlyArray<Types.NotificationHistoryEntryFragmentFragment>;
-    }>
-  > {
-    const query = await this._service.getNotificationHistory(variables);
-    const nodes = query.notificationHistory?.nodes;
-    const pageInfo = query.notificationHistory?.pageInfo;
-    if (nodes === undefined || pageInfo === undefined) {
-      throw new Error('Failed to fetch notification history');
-    }
-
-    return { pageInfo, nodes };
-  }
-
   async getUnreadNotificationHistoryCount(
     cardId?: string,
   ): Promise<
@@ -1431,20 +1333,21 @@ export class NotifiFrontendClient {
     return result;
   }
 
-  async subscribeNotificationHistoryStateChanged(
-    onMessageReceived: (data: any) => void | undefined,
-    onError?: (data: any) => void | undefined,
-    onComplete?: () => void | undefined,
-  ): Promise<void> {
-    this._service.subscribeNotificationHistoryStateChanged(
-      onMessageReceived,
-      onError,
-      onComplete,
-    );
+  /**
+   * @important for removing the event listener, check the guidelines in the NotifiEventEmitter (notifi-graphql/lib/NotifiEventEmitter.ts) class. https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-graphql/lib
+   */
+  addEventListener<K extends keyof NotifiEmitterEvents>(
+    event: K,
+    callBack: (...args: NotifiEmitterEvents[K]) => void,
+  ) {
+    return this._service.addEventListener(event, callBack);
   }
 
-  async wsDispose() {
-    this._service.wsDispose();
+  removeEventListener<K extends keyof NotifiEmitterEvents>(
+    event: K,
+    callBack: (...args: NotifiEmitterEvents[K]) => void,
+  ) {
+    return this._service.removeEventListener(event, callBack);
   }
 
   async getUserSettings(): Promise<Types.GetUserSettingsQuery['userSettings']> {
@@ -1471,45 +1374,6 @@ export class NotifiFrontendClient {
     }
 
     return { pageInfo, nodes };
-  }
-
-  /**@deprecated for legacy infra, use fetchTenantConfig instead for new infra (fusionEvent)  */
-  async fetchSubscriptionCard(
-    variables: FindSubscriptionCardParams,
-  ): Promise<CardConfigType> {
-    const query = await this._service.findTenantConfig({
-      input: {
-        ...variables,
-        tenant: this._configuration.tenantId,
-      },
-    });
-    const result = query.findTenantConfig;
-    if (result === undefined) {
-      throw new Error('Failed to find tenant config');
-    }
-
-    const value = result.dataJson;
-    if (value === undefined) {
-      throw new Error('Invalid config data');
-    }
-
-    const obj = JSON.parse(value);
-    let card: CardConfigType | undefined = undefined;
-    switch (obj.version) {
-      case 'v1': {
-        card = obj as CardConfigItemV1;
-        break;
-      }
-      default: {
-        throw new Error('Unsupported config version');
-      }
-    }
-
-    if (card === undefined) {
-      throw new Error('Unsupported config format');
-    }
-
-    return card;
   }
 
   async fetchTenantConfig(
@@ -1706,5 +1570,168 @@ export class NotifiFrontendClient {
       throw new Error('Failed to fetch webpush targets');
     }
     return result;
+  }
+
+  /** ⬇ Deprecated methods */
+
+  /** @deprecated only for legacy infrastructure */
+  async getSourceGroups(): Promise<
+    ReadonlyArray<Types.SourceGroupFragmentFragment>
+  > {
+    const query = await this._service.getSourceGroups({});
+    const results = query.sourceGroup?.filter(notNullOrEmpty) ?? [];
+    return results;
+  }
+
+  /**
+   * @deprecated use the return type of addEventListener & removeEventListener instead.
+   * @description never use this when having multiple gql subscription in the app. This case, dispose websocket could break other subscriptions.
+   */
+  async wsDispose() {
+    this._service.wsDispose();
+  }
+
+  /**
+   * @deprecated Use getFusionNotificationHistory instead
+   */
+  async getNotificationHistory(
+    variables: Types.GetNotificationHistoryQueryVariables,
+  ): Promise<
+    Readonly<{
+      pageInfo: Types.PageInfoFragmentFragment;
+      nodes: ReadonlyArray<Types.NotificationHistoryEntryFragmentFragment>;
+    }>
+  > {
+    const query = await this._service.getNotificationHistory(variables);
+    const nodes = query.notificationHistory?.nodes;
+    const pageInfo = query.notificationHistory?.pageInfo;
+    if (nodes === undefined || pageInfo === undefined) {
+      throw new Error('Failed to fetch notification history');
+    }
+
+    return { pageInfo, nodes };
+  }
+
+  /**
+   * @deprecated use addEventListener instead.
+   */
+  async subscribeNotificationHistoryStateChanged(
+    onMessageReceived: (data: any) => void | undefined,
+    onError?: (data: any) => void | undefined,
+    onComplete?: () => void | undefined,
+  ): Promise<void> {
+    this._service.subscribeNotificationHistoryStateChanged(
+      onMessageReceived,
+      onError,
+      onComplete,
+    );
+  }
+
+  /** @deprecated legacy infrastructure, use ensureFusionAlerts instead */
+  async ensureAlert({
+    eventType,
+    inputs,
+    targetGroupName = 'Default',
+  }: Readonly<{
+    eventType: EventTypeItem;
+    inputs: Record<string, unknown>;
+    targetGroupName?: string;
+  }>): Promise<Types.AlertFragmentFragment> {
+    const [alertsQuery, targetGroupsQuery, sourceAndFilters] =
+      await Promise.all([
+        this._service.getAlerts({}),
+        this._service.getTargetGroups({}),
+        ensureSourceAndFilters(this._service, eventType, inputs),
+      ]);
+
+    const targetGroup = targetGroupsQuery.targetGroup?.find(
+      (it) => it?.name === targetGroupName,
+    );
+    if (targetGroup === undefined) {
+      throw new Error('Target group does not exist');
+    }
+
+    const { sourceGroup, filter, filterOptions } = sourceAndFilters;
+    const packedOptions = packFilterOptions(filterOptions);
+
+    const existing = alertsQuery.alert?.find(
+      (it) => it !== undefined && it.name === eventType.name,
+    );
+
+    if (existing !== undefined) {
+      if (
+        existing.sourceGroup.id === sourceGroup.id &&
+        existing.targetGroup.id === targetGroup.id &&
+        existing.filter.id === filter.id &&
+        existing.filterOptions === packedOptions
+      ) {
+        return existing;
+      }
+
+      // Alerts are immutable, delete the existing instead
+      await this.deleteAlert({
+        id: existing.id,
+      });
+    }
+
+    const mutation = await this._service.createAlert({
+      name: eventType.name,
+      sourceGroupId: sourceGroup.id,
+      filterId: filter.id,
+      targetGroupId: targetGroup.id,
+      filterOptions: packedOptions,
+      groupName: 'managed',
+    });
+
+    const created = mutation.createAlert;
+    if (created === undefined) {
+      throw new Error('Failed to create alert');
+    }
+
+    return created;
+  }
+
+  /** @deprecated use fetchFusionData instead. This is for legacy  */
+  async fetchData(): Promise<Types.FetchDataQuery> {
+    return this._service.fetchData({});
+  }
+
+  /**@deprecated for legacy infra, use fetchTenantConfig instead for new infra (fusionEvent)  */
+  async fetchSubscriptionCard(
+    variables: FindSubscriptionCardParams,
+  ): Promise<CardConfigType> {
+    const query = await this._service.findTenantConfig({
+      input: {
+        ...variables,
+        tenant: this._configuration.tenantId,
+      },
+    });
+    const result = query.findTenantConfig;
+    if (result === undefined) {
+      throw new Error('Failed to find tenant config');
+    }
+
+    const value = result.dataJson;
+    if (value === undefined) {
+      throw new Error('Invalid config data');
+    }
+
+    const obj = JSON.parse(value);
+    let card: CardConfigType | undefined = undefined;
+    switch (obj.version) {
+      case 'v1': {
+        card = obj as CardConfigItemV1;
+        break;
+      }
+      default: {
+        throw new Error('Unsupported config version');
+      }
+    }
+
+    if (card === undefined) {
+      throw new Error('Unsupported config format');
+    }
+
+    return card;
   }
 }

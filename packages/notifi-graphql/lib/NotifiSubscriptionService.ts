@@ -1,12 +1,13 @@
 import {
-  createClient,
-  Client as WebSocketClient,
   SubscribePayload,
+  Client as WebSocketClient,
+  createClient,
 } from 'graphql-ws';
 import { Observable, Subscription } from 'relay-runtime';
+
 import {
-  NotifiEventEmitter,
   NotifiEmitterEvents,
+  NotifiEventEmitter,
   NotifiSubscriptionEvents,
 } from './NotifiEventEmitter';
 import { stateChangedSubscriptionQuery } from './gql';
@@ -79,7 +80,6 @@ export class NotifiSubscriptionService {
         }
       },
       complete: () => {
-        console.log('Subscription complete');
         if (onComplete) {
           onComplete();
         }
@@ -129,8 +129,6 @@ export class NotifiSubscriptionService {
     }
 
     if (!this._wsClient || !this._jwt) return null;
-
-    console.log('Subscribing, JWT & wsClient are set'); // TODO: Remove before merge
 
     const observable = this._toObservable(this._wsClient, {
       query: subscriptionQuery,
