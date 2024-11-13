@@ -542,7 +542,7 @@ export class NotifiFrontendClient {
         }
       } catch (e: unknown) {
         await this.logOut();
-        console.log('Failed to refresh Notifi token:', e);
+        console.error('Failed to refresh Notifi token:', e);
       }
     }
 
