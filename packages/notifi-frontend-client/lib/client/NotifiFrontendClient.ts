@@ -1550,12 +1550,12 @@ export class NotifiFrontendClient {
   /**
    * @deprecated use addEventListener instead.
    */
-  async subscribeNotificationHistoryStateChanged(
+  subscribeNotificationHistoryStateChanged(
     onMessageReceived: (data: any) => void | undefined,
     onError?: (data: any) => void | undefined,
     onComplete?: () => void | undefined,
-  ): Promise<void> {
-    this._service.subscribeNotificationHistoryStateChanged(
+  ): ReturnType<NotifiService['subscribeNotificationHistoryStateChanged']> {
+    return this._service.subscribeNotificationHistoryStateChanged(
       onMessageReceived,
       onError,
       onComplete,

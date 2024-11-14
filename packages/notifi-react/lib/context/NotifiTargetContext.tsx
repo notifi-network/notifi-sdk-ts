@@ -1,4 +1,7 @@
-import { objectKeys } from '@notifi-network/notifi-frontend-client';
+import {
+  NotifiFrontendClient,
+  objectKeys,
+} from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
 import { isValidPhoneNumber } from 'libphonenumber-js';
 import React, {
@@ -235,13 +238,24 @@ export const NotifiTargetContextProvider: FC<
     walletId: targetInputs.wallet ? 'Default' : undefined,
   };
 
+  const currentSubscription =
+    React.useRef<ReturnType<NotifiFrontendClient['addEventListener']>>(null);
+
   useEffect(() => {
     //NOTE: target change listener when window is refocused
-    const handler = () => {
-      if (!frontendClientStatus.isAuthenticated) return;
+    const handler = (evt: Types.StateChangedEvent) => {
+      if (
+        !frontendClientStatus.isAuthenticated ||
+        evt.__typename !== 'TargetStateChangedEvent'
+      )
+        return;
+      console.log('TargetStateChangedEvent', evt);
       return frontendClient.fetchFusionData().then(refreshTargetDocument);
     };
-    window.addEventListener('focus', handler);
+    currentSubscription.current = frontendClient.addEventListener(
+      'stateChanged',
+      handler,
+    );
 
     // NOTE: Initial load
     if (frontendClientStatus.isAuthenticated && !isInitialLoaded.current) {
@@ -267,7 +281,10 @@ export const NotifiTargetContextProvider: FC<
     }
 
     return () => {
-      window.removeEventListener('focus', handler);
+      // window.removeEventListener('focus', handler);
+      currentSubscription.current?.unsubscribe();
+      currentSubscription.current = null;
+      frontendClient.removeEventListener('stateChanged', handler);
     };
   }, [frontendClientStatus.isAuthenticated]);
 

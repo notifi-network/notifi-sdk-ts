@@ -1,14 +1,14 @@
 import { GraphQLClient } from 'graphql-request';
+import { Subscription } from 'relay-runtime';
 import { v4 as uuid } from 'uuid';
 
 import { version } from '../package.json';
+import { NotifiEmitterEvents } from './NotifiEventEmitter';
 import { NotifiSubscriptionService } from './NotifiSubscriptionService';
+import { stateChangedSubscriptionQuery } from './gql';
 import * as Generated from './gql/generated';
 import { getSdk } from './gql/generated';
 import type * as Operations from './operations';
-import { stateChangedSubscriptionQuery } from './gql';
-import { NotifiEmitterEvents } from './NotifiEventEmitter';
-import { Subscription } from 'relay-runtime';
 
 export class NotifiService
   implements
@@ -453,12 +453,12 @@ export class NotifiService
   /**
    * @deprecated Use addEventListener instead
    */
-  async subscribeNotificationHistoryStateChanged(
+  subscribeNotificationHistoryStateChanged(
     onMessageReceived: (data: any) => void | undefined,
     onError?: (data: any) => void | undefined,
     onComplete?: () => void | undefined,
-  ): Promise<void> {
-    this._notifiSubService.subscribe(
+  ): Subscription | null {
+    return this._notifiSubService.subscribe(
       this._jwt,
       stateChangedSubscriptionQuery,
       onMessageReceived,
