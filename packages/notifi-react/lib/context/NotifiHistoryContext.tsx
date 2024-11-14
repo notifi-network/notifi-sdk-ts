@@ -1,3 +1,4 @@
+import { NotifiFrontendClient } from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
 import React, {
   FC,
@@ -71,43 +72,57 @@ export const NotifiHistoryContextProvider: FC<
   const { cardConfig, fusionEventTopics } = useNotifiTenantConfigContext();
   const isInitialLoaded = React.useRef(false);
 
+  const currentSubscription =
+    React.useRef<ReturnType<NotifiFrontendClient['addEventListener']>>(null);
+
   useEffect(() => {
     // NOTE: Update historyItems & unreadCount when backend state changed
     if (frontendClientStatus.isAuthenticated) {
       const fusionEventIds = new Set(
         fusionEventTopics.map((topic) => topic.fusionEventDescriptor.id ?? ''),
       );
-      frontendClient.subscribeNotificationHistoryStateChanged((_data) => {
-        frontendClient
-          .getFusionNotificationHistory({
-            first: notificationCountPerPage,
-            includeHidden: false,
-            includeRead: isIncludeRead,
-          })
-          .then((res) => {
-            const existingItemIds = new Set(
-              historyItems.map((item) => item.id),
-            );
 
-            const newItems = res?.nodes
-              ?.map(parseHistoryItem)
-              .filter(
-                (item) =>
-                  !existingItemIds.has(item.id) &&
-                  fusionEventIds.has(item.fusionEventId),
+      currentSubscription.current =
+        frontendClient.subscribeNotificationHistoryStateChanged((evt) => {
+          if (
+            evt.data.stateChanged.__typename !==
+            'NotificationHistoryStateChangedEvent'
+          )
+            return;
+          console.log(
+            'NotificationHistoryStateChangedEvent',
+            evt.data.stateChanged,
+          );
+          frontendClient
+            .getFusionNotificationHistory({
+              first: notificationCountPerPage,
+              includeHidden: false,
+              includeRead: isIncludeRead,
+            })
+            .then((res) => {
+              const existingItemIds = new Set(
+                historyItems.map((item) => item.id),
               );
 
-            if (newItems?.length && newItems.length > 0) {
-              setHistoryItems((existing) => [...newItems, ...existing]);
-              setUnreadCount((prev) =>
-                prev !== null ? prev + newItems.length : null,
-              );
-            }
-          });
-      });
+              const newItems = res?.nodes
+                ?.map(parseHistoryItem)
+                .filter(
+                  (item) =>
+                    !existingItemIds.has(item.id) &&
+                    fusionEventIds.has(item.fusionEventId),
+                );
+
+              if (newItems?.length && newItems.length > 0) {
+                setHistoryItems((existing) => [...newItems, ...existing]);
+                setUnreadCount((prev) =>
+                  prev !== null ? prev + newItems.length : null,
+                );
+              }
+            });
+        });
     }
     return () => {
-      frontendClient.wsDispose();
+      currentSubscription.current?.unsubscribe();
     };
   }, [frontendClientStatus, historyItems]);
 
