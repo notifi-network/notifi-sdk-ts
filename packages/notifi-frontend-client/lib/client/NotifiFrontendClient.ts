@@ -137,12 +137,10 @@ export type WalletWithSignParams =
     }> &
       AptosUserParams)
   | (Readonly<{
-      nonce: string;
       signMessage: AptosSignMessageFunction;
     }> &
       MovementUserParams)
   | (Readonly<{
-      nonce: string;
       signMessage: Uint8SignMessageFunction;
     }> &
       BitcoinUserParams)
