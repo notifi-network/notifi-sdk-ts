@@ -515,11 +515,8 @@ type LoginParams =
   | LoginWeb3Params;
 
 function isLoginWeb3Params(params: LoginParams): params is LoginWeb3Params {
-  return (
-    CHAINS_WITH_LOGIN_WEB3.includes(
-      params.walletBlockchain as (typeof CHAINS_WITH_LOGIN_WEB3)[number],
-    ) &&
-    ('nonce' in params || 'message' in params)
+  return CHAINS_WITH_LOGIN_WEB3.includes(
+    params.walletBlockchain as (typeof CHAINS_WITH_LOGIN_WEB3)[number],
   );
 }
 
@@ -670,6 +667,7 @@ export class NotifiFrontendClient {
         const { nonce } = await this.beginLogInWithWeb3({
           authAddress: this._configuration.accountAddress,
           authType: 'APTOS_SIGNED_MESSAGE',
+          walletPubkey: this._configuration.authenticationKey,
         });
         return {
           signMessageParams: {
