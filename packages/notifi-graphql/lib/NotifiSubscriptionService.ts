@@ -95,15 +95,26 @@ export class NotifiSubscriptionService {
   addEventListener = <T extends keyof NotifiEmitterEvents>(
     event: T,
     callBack: (...args: NotifiEmitterEvents[T]) => void,
+    // TODO: Add on error & on complete callbacks
   ) => {
-    this.eventEmitter.on(event, callBack);
+    const id = Math.random().toString(36).slice(2, 11); // ⬅ Generate a random id for the listener
+    this.eventEmitter.on(event, callBack, id);
     switch (event) {
       case 'stateChanged':
-        return this._subscribe(stateChangedSubscriptionQuery);
+        return {
+          id,
+          subscription: this._subscribe(stateChangedSubscriptionQuery, id),
+        };
       case 'tenantActiveAlertChanged':
-        return this._subscribe(tenantActiveAlertChangedSubscriptionQuery);
+        return {
+          id,
+          subscription: this._subscribe(
+            tenantActiveAlertChangedSubscriptionQuery,
+            id,
+          ),
+        };
       default:
-        return null;
+        throw new Error('Unknown event');
     }
   };
   /**
@@ -113,9 +124,9 @@ export class NotifiSubscriptionService {
    */
   removeEventListener = <T extends keyof NotifiEmitterEvents>(
     event: T,
-    callBack: (...args: NotifiEmitterEvents[T]) => void,
+    id: string,
   ) => {
-    return this.eventEmitter.off(event, callBack);
+    return this.eventEmitter.off(event, id);
   };
 
   /**
@@ -123,9 +134,10 @@ export class NotifiSubscriptionService {
    */
   private _subscribe = (
     subscriptionQuery: SubscriptionQuery,
+    id: string,
   ): Subscription | null => {
     if (!this._wsClient) {
-      this._initializeClient();
+      this._initializeClient(id);
     }
 
     if (!this._wsClient || !this._jwt) return null;
@@ -145,7 +157,7 @@ export class NotifiSubscriptionService {
             if (!stateChangedData) {
               throw new Error('Invalid stateChanged event data');
             }
-            this.eventEmitter.emit('stateChanged', stateChangedData);
+            this.eventEmitter.emit('stateChanged', id, stateChangedData);
             break;
           case tenantActiveAlertChangedSubscriptionQuery:
             const tenantActiveAlertChangedData = getSubscriptionData(
@@ -157,6 +169,7 @@ export class NotifiSubscriptionService {
             }
             this.eventEmitter.emit(
               'tenantActiveAlertChanged',
+              id,
               tenantActiveAlertChangedData,
             );
             break;
@@ -165,15 +178,17 @@ export class NotifiSubscriptionService {
         }
       },
       error: (error: unknown) => {
-        this.eventEmitter.emit(
-          'gqlSubscriptionError',
-          error instanceof Error
-            ? error
-            : new Error('Unknown gql subscription error'),
-        );
+        console.error(
+          `NotifiSubscriptionService._subscribe (id: ${id})`,
+          error,
+        ); // TODO: Expose error handler
       },
-      complete: () => this.eventEmitter.emit('gqlComplete'),
+      complete: () => {
+        console.info('Subscription completed', id); // TODO: Expose complete handler
+      },
     });
+
+    console.log('Subscribed', subscription); // TODO: Remove before merge
 
     return subscription;
   };
@@ -192,7 +207,7 @@ export class NotifiSubscriptionService {
     );
   }
 
-  private _initializeClient = () => {
+  private _initializeClient = (id?: string) => {
     this._wsClient = createClient({
       url: this.wsurl,
       connectionParams: {
@@ -203,25 +218,29 @@ export class NotifiSubscriptionService {
     });
 
     this._wsClient.on('connecting', () => {
-      this.eventEmitter.emit('wsConnecting');
+      console.info(
+        'NotifiSubscriptionService._initializeClient:  Connecting to ws',
+      );
     });
 
     this._wsClient.on('connected', () => {
-      this.eventEmitter.emit('wsConnected', this._wsClient!);
+      console.info(
+        'NotifiSubscriptionService._initializeClient:  Connected to ws',
+      );
     });
 
     this._wsClient.on('closed', (event) => {
-      this.eventEmitter.emit('wsClosed', event);
+      console.warn(
+        'NotifiSubscriptionService._initializeClient:  Closed ws',
+        event,
+      );
     });
 
     this._wsClient.on('error', (error) => {
-      if (error instanceof Error /*⬅ Client (browser) side error*/) {
-        return this.eventEmitter.emit('wsError', error);
-      }
-      this.eventEmitter.emit('wsError', {
-        ...(error as Error),
-        message: 'NotifiEventEmitter: Server side or unknown error',
-      });
+      console.error(
+        'NotifiSubscriptionService._initializeClient: Websocket Error:',
+        error,
+      );
     });
   };
 }

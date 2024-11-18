@@ -239,7 +239,7 @@ export const NotifiTargetContextProvider: FC<
   };
 
   const currentSubscription =
-    React.useRef<ReturnType<NotifiFrontendClient['addEventListener']>>(null);
+    React.useRef<ReturnType<NotifiFrontendClient['addEventListener']>>();
 
   useEffect(() => {
     //NOTE: target change listener when window is refocused
@@ -282,9 +282,14 @@ export const NotifiTargetContextProvider: FC<
 
     return () => {
       // window.removeEventListener('focus', handler);
-      currentSubscription.current?.unsubscribe();
-      currentSubscription.current = null;
-      frontendClient.removeEventListener('stateChanged', handler);
+      const { id, subscription } = currentSubscription.current ?? {};
+      if (!id || !subscription) return;
+      // currentSubscription.current?.unsubscribe();
+      // currentSubscription.current = null;
+      // frontendClient.removeEventListener('stateChanged', handler);
+      subscription.unsubscribe();
+      currentSubscription.current = undefined;
+      frontendClient.removeEventListener('stateChanged', id);
     };
   }, [frontendClientStatus.isAuthenticated]);
 

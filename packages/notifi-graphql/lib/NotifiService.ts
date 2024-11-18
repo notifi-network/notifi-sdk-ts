@@ -474,7 +474,7 @@ export class NotifiService
   addEventListener<T extends keyof NotifiEmitterEvents>(
     event: T,
     callBack: (...args: NotifiEmitterEvents[T]) => void,
-  ): Subscription | null {
+  ): { id: string; subscription: Subscription | null } {
     return this._notifiSubService.addEventListener(event, callBack);
   }
   /**
@@ -484,9 +484,9 @@ export class NotifiService
    */
   removeEventListener<T extends keyof NotifiEmitterEvents>(
     event: T,
-    callBack: (...args: NotifiEmitterEvents[T]) => void,
+    id: string,
   ) {
-    return this._notifiSubService.removeEventListener(event, callBack);
+    return this._notifiSubService.removeEventListener(event, id);
   }
 
   async getUserSettings(

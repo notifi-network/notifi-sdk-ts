@@ -126,10 +126,10 @@ export class NotifiNodeClient {
    */
   removeEventListener<T extends keyof NotifiEmitterEvents>(
     event: T,
-    callBack: (...args: NotifiEmitterEvents[T]) => void,
+    id: string,
   ) {
     this.isClientValid('removeEventListener');
-    return this.service.removeEventListener(event, callBack);
+    return this.service.removeEventListener(event, id);
   }
 
   /** NOTE: throw if client is not initialized */

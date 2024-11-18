@@ -1280,9 +1280,9 @@ export class NotifiFrontendClient {
 
   removeEventListener<K extends keyof NotifiEmitterEvents>(
     event: K,
-    callBack: (...args: NotifiEmitterEvents[K]) => void,
+    id: string,
   ) {
-    return this._service.removeEventListener(event, callBack);
+    return this._service.removeEventListener(event, id);
   }
 
   async getUserSettings(): Promise<Types.GetUserSettingsQuery['userSettings']> {

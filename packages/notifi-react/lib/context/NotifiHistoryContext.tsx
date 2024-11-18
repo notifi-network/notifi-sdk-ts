@@ -73,7 +73,11 @@ export const NotifiHistoryContextProvider: FC<
   const isInitialLoaded = React.useRef(false);
 
   const currentSubscription =
-    React.useRef<ReturnType<NotifiFrontendClient['addEventListener']>>(null);
+    React.useRef<
+      ReturnType<
+        NotifiFrontendClient['subscribeNotificationHistoryStateChanged']
+      >
+    >(null);
 
   useEffect(() => {
     // NOTE: Update historyItems & unreadCount when backend state changed
