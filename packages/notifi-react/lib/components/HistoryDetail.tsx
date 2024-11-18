@@ -62,7 +62,7 @@ export const HistoryDetail: React.FC<HistoryDetailProps> = (props) => {
             props.classNames?.subject,
           )}
         >
-          {historyItem.subject}
+          {historyItem.topic}
         </div>
         <div
           className={clsx(
