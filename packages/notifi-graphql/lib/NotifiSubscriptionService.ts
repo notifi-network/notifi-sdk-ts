@@ -13,9 +13,23 @@ import {
 import { stateChangedSubscriptionQuery } from './gql';
 import { tenantActiveAlertChangedSubscriptionQuery } from './gql/subscriptions/tenantActiveAlertChanged.gql';
 
-type SubscriptionQuery =
+export type SubscriptionQuery =
   | typeof stateChangedSubscriptionQuery
   | typeof tenantActiveAlertChangedSubscriptionQuery;
+
+export type SubscribeInputs = {
+  subscriptionQuery: SubscriptionQuery;
+  id: string;
+  onError?: (error: unknown) => void;
+  onComplete?: () => void;
+};
+
+type _Subscribe = (input: SubscribeInputs) => Subscription | null;
+
+export type EventListenerOutputs = {
+  id: string;
+  subscription: Subscription | null;
+};
 
 /**
  * @param webSocketImpl - A custom WebSocket implementation to use instead of the one provided by the global scope. Mostly useful for when using the client outside of the browser environment.
@@ -95,27 +109,36 @@ export class NotifiSubscriptionService {
   addEventListener = <T extends keyof NotifiEmitterEvents>(
     event: T,
     callBack: (...args: NotifiEmitterEvents[T]) => void,
-    // TODO: Add on error & on complete callbacks
-  ) => {
+    onError?: (error: unknown) => void,
+    onComplete?: () => void,
+  ): EventListenerOutputs => {
     const id = Math.random().toString(36).slice(2, 11); // ⬅ Generate a random id for the listener
-    this.eventEmitter.on(event, callBack, id);
+    const subscribeInputs: SubscribeInputs = {
+      subscriptionQuery: '' as SubscriptionQuery, // ⬅ Placeholder (empty string intentionally)
+      id,
+      onError,
+      onComplete,
+    };
+
     switch (event) {
       case 'stateChanged':
-        return {
-          id,
-          subscription: this._subscribe(stateChangedSubscriptionQuery, id),
-        };
+        subscribeInputs.subscriptionQuery = stateChangedSubscriptionQuery;
+        break;
       case 'tenantActiveAlertChanged':
-        return {
-          id,
-          subscription: this._subscribe(
-            tenantActiveAlertChangedSubscriptionQuery,
-            id,
-          ),
-        };
+        subscribeInputs.subscriptionQuery =
+          tenantActiveAlertChangedSubscriptionQuery;
+        break;
       default:
         throw new Error('Unknown event');
     }
+
+    const subscription = this._subscribe(subscribeInputs);
+    this.eventEmitter.on(event, callBack, id);
+
+    return {
+      id,
+      subscription,
+    };
   };
   /**
    * @important To remove event listener, check the README.md of `notifi-node` or `notifi-frontend-client` package for more details.
@@ -132,12 +155,14 @@ export class NotifiSubscriptionService {
   /**
    * @returns null if jwt or wsClient is not correctly set
    */
-  private _subscribe = (
-    subscriptionQuery: SubscriptionQuery,
-    id: string,
-  ): Subscription | null => {
+  private _subscribe: _Subscribe = ({
+    subscriptionQuery,
+    id,
+    onError,
+    onComplete,
+  }) => {
     if (!this._wsClient) {
-      this._initializeClient(id);
+      this._initializeClient();
     }
 
     if (!this._wsClient || !this._jwt) return null;
@@ -177,15 +202,8 @@ export class NotifiSubscriptionService {
             console.warn('Unknown subscription query:', subscriptionQuery);
         }
       },
-      error: (error: unknown) => {
-        console.error(
-          `NotifiSubscriptionService._subscribe (id: ${id})`,
-          error,
-        ); // TODO: Expose error handler
-      },
-      complete: () => {
-        console.info('Subscription completed', id); // TODO: Expose complete handler
-      },
+      error: onError,
+      complete: onComplete,
     });
 
     console.log('Subscribed', subscription); // TODO: Remove before merge
@@ -207,7 +225,12 @@ export class NotifiSubscriptionService {
     );
   }
 
-  private _initializeClient = (id?: string) => {
+  private _initializeClient = () => {
+    if (!this._jwt)
+      throw new Error(
+        'NotifiSubscriptionService._initializeClient: Missing JWT',
+      );
+
     this._wsClient = createClient({
       url: this.wsurl,
       connectionParams: {

@@ -28,7 +28,7 @@ export class NotifiEventEmitter<T extends Record<string, Array<any>>> {
     listener: EventCallback<T, K>,
     id: string,
   ): void {
-    console.log('listening', event, this.listeners, id);
+    console.log('listening', { id, event, listeners: this.listeners });
     if (!this.listeners[event]) {
       this.listeners[event] = {};
     }
@@ -37,6 +37,7 @@ export class NotifiEventEmitter<T extends Record<string, Array<any>>> {
   }
 
   off<K extends keyof T>(event: K, id: string): void {
+    console.log('removing', { id, event, listeners: this.listeners });
     if (!this.listeners[event]?.[id]) return;
 
     delete (this.listeners[event] as Record<string, EventCallback<T, K>>)[id];
@@ -44,7 +45,7 @@ export class NotifiEventEmitter<T extends Record<string, Array<any>>> {
 
   emit<K extends keyof T>(event: K, id: string, ...args: T[K]): void {
     if (!this.listeners[event]?.[id]) return;
-    console.log('emitting', event, this.listeners);
+    console.log('emitting', { id, event, listeners: this.listeners });
     if (this.listeners[event]?.[id]) {
       (this.listeners[event] as Record<string, EventCallback<T, K>>)[id](
         ...args,

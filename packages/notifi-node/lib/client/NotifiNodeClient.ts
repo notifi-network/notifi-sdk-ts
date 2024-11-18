@@ -4,6 +4,7 @@ import {
   PublishFusionMessageResponse,
 } from '@notifi-network/notifi-dataplane';
 import {
+  EventListenerOutputs,
   Types as Gql,
   NotifiEmitterEvents,
   NotifiService,
@@ -112,12 +113,14 @@ export class NotifiNodeClient {
   addEventListener<T extends keyof NotifiEmitterEvents>(
     event: T,
     callBack: (...args: NotifiEmitterEvents[T]) => void,
-  ) {
+    onError?: (error: unknown) => void,
+    onComplete?: () => void,
+  ): EventListenerOutputs {
     if (this.clientState.status !== 'initialized')
       throw new Error(
         'notifi-node - addEventListener: Client not initialized, call initialize() first',
       );
-    return this.service.addEventListener(event, callBack);
+    return this.service.addEventListener(event, callBack, onError, onComplete);
   }
   /**
    * @important To remove event listener, check the README.md of `notifi-node` or `notifi-frontend-client` package for more details.

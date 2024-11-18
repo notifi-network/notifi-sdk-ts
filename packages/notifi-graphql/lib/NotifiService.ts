@@ -4,7 +4,10 @@ import { v4 as uuid } from 'uuid';
 
 import { version } from '../package.json';
 import { NotifiEmitterEvents } from './NotifiEventEmitter';
-import { NotifiSubscriptionService } from './NotifiSubscriptionService';
+import {
+  EventListenerOutputs,
+  NotifiSubscriptionService,
+} from './NotifiSubscriptionService';
 import { stateChangedSubscriptionQuery } from './gql';
 import * as Generated from './gql/generated';
 import { getSdk } from './gql/generated';
@@ -474,8 +477,15 @@ export class NotifiService
   addEventListener<T extends keyof NotifiEmitterEvents>(
     event: T,
     callBack: (...args: NotifiEmitterEvents[T]) => void,
-  ): { id: string; subscription: Subscription | null } {
-    return this._notifiSubService.addEventListener(event, callBack);
+    onError?: (error: unknown) => void,
+    onComplete?: () => void,
+  ): EventListenerOutputs {
+    return this._notifiSubService.addEventListener(
+      event,
+      callBack,
+      onError,
+      onComplete,
+    );
   }
   /**
    * @important To remove event listener, check the README.md of `notifi-node` or `notifi-frontend-client` package for more details.
