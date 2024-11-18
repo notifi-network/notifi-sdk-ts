@@ -74,9 +74,7 @@ export const NotifiHistoryContextProvider: FC<
 
   const currentSubscription =
     React.useRef<
-      ReturnType<
-        NotifiFrontendClient['subscribeNotificationHistoryStateChanged']
-      >
+      ReturnType<NotifiFrontendClient['addEventListener']>['subscription']
     >(null);
 
   useEffect(() => {
@@ -85,49 +83,48 @@ export const NotifiHistoryContextProvider: FC<
       const fusionEventIds = new Set(
         fusionEventTopics.map((topic) => topic.fusionEventDescriptor.id ?? ''),
       );
+      const eventHandler = (evt: Types.StateChangedEvent) => {
+        if (evt.__typename !== 'NotificationHistoryStateChangedEvent') return;
+        console.log('NotificationHistoryStateChangedEvent', evt);
+        frontendClient
+          .getFusionNotificationHistory({
+            first: notificationCountPerPage,
+            includeHidden: false,
+            includeRead: isIncludeRead,
+          })
+          .then((res) => {
+            const existingItemIds = new Set(
+              historyItems.map((item) => item.id),
+            );
 
-      currentSubscription.current =
-        frontendClient.subscribeNotificationHistoryStateChanged((evt) => {
-          if (
-            evt.data.stateChanged.__typename !==
-            'NotificationHistoryStateChangedEvent'
-          )
-            return;
-          console.log(
-            'NotificationHistoryStateChangedEvent',
-            evt.data.stateChanged,
-          );
-          frontendClient
-            .getFusionNotificationHistory({
-              first: notificationCountPerPage,
-              includeHidden: false,
-              includeRead: isIncludeRead,
-            })
-            .then((res) => {
-              const existingItemIds = new Set(
-                historyItems.map((item) => item.id),
+            const newItems = res?.nodes
+              ?.map(parseHistoryItem)
+              .filter(
+                (item) =>
+                  !existingItemIds.has(item.id) &&
+                  fusionEventIds.has(item.fusionEventId),
               );
 
-              const newItems = res?.nodes
-                ?.map(parseHistoryItem)
-                .filter(
-                  (item) =>
-                    !existingItemIds.has(item.id) &&
-                    fusionEventIds.has(item.fusionEventId),
-                );
+            if (newItems?.length && newItems.length > 0) {
+              setHistoryItems((existing) => [...newItems, ...existing]);
+              setUnreadCount((prev) =>
+                prev !== null ? prev + newItems.length : null,
+              );
+            }
+          });
+      };
 
-              if (newItems?.length && newItems.length > 0) {
-                setHistoryItems((existing) => [...newItems, ...existing]);
-                setUnreadCount((prev) =>
-                  prev !== null ? prev + newItems.length : null,
-                );
-              }
-            });
-        });
+      const { subscription, id } = frontendClient.addEventListener(
+        'stateChanged',
+        eventHandler,
+      );
+      currentSubscription.current = subscription;
+      return () => {
+        currentSubscription.current?.unsubscribe();
+        currentSubscription.current = null;
+        frontendClient.removeEventListener('stateChanged', id);
+      };
     }
-    return () => {
-      currentSubscription.current?.unsubscribe();
-    };
   }, [frontendClientStatus, historyItems]);
 
   const getHistoryItems = React.useCallback(
