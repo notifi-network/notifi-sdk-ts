@@ -447,10 +447,9 @@ export type OidcCredentials = {
 };
 
 export type OidcSignInFunction = () => Promise<OidcCredentials>;
+export type SignMessageResult = { signature: string; signedMessage: string };
 
-export type AuthenticateResult =
-  | { signature: string; signedMessage: string }
-  | OidcCredentials;
+export type AuthenticateResult = SignMessageResult | OidcCredentials;
 
 export type CardConfigType = CardConfigItemV1;
 
@@ -691,9 +690,7 @@ export class NotifiFrontendClient {
 
   private async logInWithWeb3(
     loginWeb3Params: LoginWeb3Params,
-  ): Promise<Types.UserFragmentFragment> {
-    let user: Types.UserFragmentFragment | undefined = undefined;
-
+  ): Promise<Types.UserFragmentFragment | undefined> {
     if (
       !CHAINS_WITH_LOGIN_WEB3.includes(loginWeb3Params.walletBlockchain) ||
       loginWeb3Params.walletBlockchain !== loginWeb3Params.walletBlockchain
@@ -723,7 +720,117 @@ export class NotifiFrontendClient {
       signingPubkey,
     });
 
-    user = completeLogInWithWeb3.user;
+    return completeLogInWithWeb3.user;
+  }
+
+  async logIn(loginParams: LoginParams): Promise<Types.UserFragmentFragment> {
+    const timestamp = Math.round(Date.now() / 1000);
+    const { tenantId, walletBlockchain } = this._configuration;
+
+    let user: Types.UserFragmentFragment | undefined = undefined;
+
+    if (isLoginWeb3Params(loginParams)) {
+      user = await this.logInWithWeb3(loginParams);
+    } else if (walletBlockchain === 'OFF_CHAIN') {
+      const authentication = await this._authenticate({
+        signMessageParams: loginParams,
+        timestamp,
+      });
+
+      if (!('oidcProvider' in authentication)) {
+        throw new Error('logIn - Invalid signature - expected OidcCredentials');
+      }
+
+      // 3rd party OIDC login
+      const { oidcProvider, jwt } = authentication;
+      const result = await this._service.logInByOidc({
+        dappId: tenantId,
+        oidcProvider,
+        idToken: jwt,
+      });
+      user = result.logInByOidc.user;
+    } else {
+      const authentication = await this._authenticate({
+        signMessageParams: loginParams,
+        timestamp,
+      });
+
+      if (
+        !('signature' in authentication) ||
+        typeof authentication.signature !== 'string'
+      ) {
+        throw new Error(
+          'logIn - Invalid signature - expected string signature and signedMessage',
+        );
+      }
+
+      switch (walletBlockchain) {
+        case 'BLAST':
+        case 'BERACHAIN':
+        case 'CELO':
+        case 'MANTLE':
+        case 'LINEA':
+        case 'SCROLL':
+        case 'MANTA':
+        case 'MONAD':
+        case 'BASE':
+        case 'THE_ROOT_NETWORK':
+        case 'ETHEREUM':
+        case 'POLYGON':
+        case 'ARBITRUM':
+        case 'AVALANCHE':
+        case 'BINANCE':
+        case 'OPTIMISM':
+        case 'ZKSYNC':
+        case 'EVMOS':
+        case 'SOLANA': {
+          const result = await this._service.logInFromDapp({
+            walletBlockchain,
+            walletPublicKey: this._configuration.walletPublicKey,
+            dappAddress: tenantId,
+            timestamp,
+            signature: authentication.signature,
+          });
+          user = result.logInFromDapp;
+          break;
+        }
+        case 'SUI':
+        case 'ACALA':
+        case 'NEAR':
+        case 'INJECTIVE':
+        case 'OSMOSIS':
+        case 'ELYS':
+        case 'ARCHWAY':
+        case 'AXELAR':
+        case 'AGORIC':
+        case 'CELESTIA':
+        case 'COSMOS':
+        case 'DYMENSION':
+        case 'PERSISTENCE':
+        case 'DYDX':
+        case 'ORAI':
+        case 'KAVA':
+        case 'NEUTRON':
+        case 'NIBIRU':
+        case 'MOVEMENT':
+        case 'ARCH':
+        case 'APTOS': {
+          const result = await this._service.logInFromDapp({
+            walletBlockchain,
+            walletPublicKey: this._configuration.authenticationKey,
+            accountId: this._configuration.accountAddress,
+            dappAddress: tenantId,
+            timestamp,
+            signature: authentication.signature,
+          });
+          user = result.logInFromDapp;
+          break;
+        }
+        default: {
+          throw new Error(`Unsupported wallet blockchain: ${walletBlockchain}`);
+        }
+      }
+    }
 
     if (user === undefined) {
       return Promise.reject('Failed to login');
@@ -731,120 +838,6 @@ export class NotifiFrontendClient {
 
     await this._handleLogInResult(user);
     return user;
-  }
-
-  async logIn(
-    signMessageParams: LoginParams,
-  ): Promise<Types.UserFragmentFragment> {
-    const timestamp = Math.round(Date.now() / 1000);
-    const { tenantId, walletBlockchain } = this._configuration;
-
-    if (isLoginWeb3Params(signMessageParams)) {
-      return this.logInWithWeb3(signMessageParams);
-    }
-
-    const signature = await this._authenticate({
-      signMessageParams,
-      timestamp,
-    });
-
-    let loginResult: Types.UserFragmentFragment | undefined = undefined;
-    switch (walletBlockchain) {
-      case 'BLAST':
-      case 'BERACHAIN':
-      case 'CELO':
-      case 'MANTLE':
-      case 'LINEA':
-      case 'SCROLL':
-      case 'MANTA':
-      case 'MONAD':
-      case 'BASE':
-      case 'THE_ROOT_NETWORK':
-      case 'ETHEREUM':
-      case 'POLYGON':
-      case 'ARBITRUM':
-      case 'AVALANCHE':
-      case 'BINANCE':
-      case 'OPTIMISM':
-      case 'ZKSYNC':
-      case 'EVMOS':
-      case 'SOLANA': {
-        if (typeof signature !== 'string')
-          throw new Error(
-            `logIn - Invalid signature - expected string, but got ${signature}`,
-          );
-        const result = await this._service.logInFromDapp({
-          walletBlockchain,
-          walletPublicKey: this._configuration.walletPublicKey,
-          dappAddress: tenantId,
-          timestamp,
-          signature,
-        });
-        loginResult = result.logInFromDapp;
-        break;
-      }
-      case 'SUI':
-      case 'ACALA':
-      case 'NEAR':
-      case 'INJECTIVE':
-      case 'OSMOSIS':
-      case 'ELYS':
-      case 'ARCHWAY':
-      case 'AXELAR':
-      case 'AGORIC':
-      case 'CELESTIA':
-      case 'COSMOS':
-      case 'DYMENSION':
-      case 'PERSISTENCE':
-      case 'DYDX':
-      case 'ORAI':
-      case 'KAVA':
-      case 'NEUTRON':
-      case 'NIBIRU':
-      case 'MOVEMENT':
-      case 'ARCH':
-      case 'APTOS': {
-        if (typeof signature !== 'string')
-          throw new Error(
-            `logIn - Invalid signature - expected string, but got ${signature}`,
-          );
-        const result = await this._service.logInFromDapp({
-          walletBlockchain,
-          walletPublicKey: this._configuration.authenticationKey,
-          accountId: this._configuration.accountAddress,
-          dappAddress: tenantId,
-          timestamp,
-          signature,
-        });
-        loginResult = result.logInFromDapp;
-        break;
-      }
-      case 'OFF_CHAIN': {
-        if (typeof signature === 'string')
-          throw new Error(
-            `logIn - Invalid signature - expected OidcCredentials, but got string: ${signature}`,
-          );
-        if (!('oidcProvider' in signature))
-          throw new Error(
-            `logIn - Invalid signature - expected OidcCredentials, but got invalid object ${signature}`,
-          );
-        // 3rd party OIDC login
-        const { oidcProvider, jwt } = signature;
-        const result = await this._service.logInByOidc({
-          dappId: tenantId,
-          oidcProvider,
-          idToken: jwt,
-        });
-        loginResult = result.logInByOidc.user;
-      }
-    }
-
-    if (loginResult === undefined) {
-      return Promise.reject('Failed to login');
-    }
-
-    await this._handleLogInResult(loginResult);
-    return loginResult;
   }
 
   private async _authenticate({
