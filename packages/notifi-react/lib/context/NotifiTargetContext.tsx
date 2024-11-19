@@ -239,24 +239,9 @@ export const NotifiTargetContextProvider: FC<
   };
 
   const currentSubscription =
-    React.useRef<ReturnType<NotifiFrontendClient['addEventListener']>>(null);
+    React.useRef<ReturnType<NotifiFrontendClient['addEventListener']>>();
 
   useEffect(() => {
-    //NOTE: target change listener when window is refocused
-    const handler = (evt: Types.StateChangedEvent) => {
-      if (
-        !frontendClientStatus.isAuthenticated ||
-        evt.__typename !== 'TargetStateChangedEvent'
-      )
-        return;
-      console.log('TargetStateChangedEvent', evt);
-      return frontendClient.fetchFusionData().then(refreshTargetDocument);
-    };
-    currentSubscription.current = frontendClient.addEventListener(
-      'stateChanged',
-      handler,
-    );
-
     // NOTE: Initial load
     if (frontendClientStatus.isAuthenticated && !isInitialLoaded.current) {
       if (isLoading && isInitialLoaded.current) return;
@@ -280,12 +265,39 @@ export const NotifiTargetContextProvider: FC<
         .finally(() => setIsLoading(false));
     }
 
-    return () => {
-      // window.removeEventListener('focus', handler);
-      currentSubscription.current?.unsubscribe();
-      currentSubscription.current = null;
-      frontendClient.removeEventListener('stateChanged', handler);
-    };
+    // NOTE: Subscription for state change
+    if (frontendClientStatus.isAuthenticated) {
+      const handler = (evt: Types.StateChangedEvent) => {
+        if (
+          !frontendClientStatus.isAuthenticated ||
+          evt.__typename !== 'TargetStateChangedEvent'
+        )
+          return;
+        console.log('TargetStateChangedEvent', evt);
+        return frontendClient.fetchFusionData().then(refreshTargetDocument);
+      };
+      currentSubscription.current = frontendClient.addEventListener(
+        'stateChanged',
+        handler,
+        (error) => {
+          if (error instanceof Error) {
+            setError({
+              ...error,
+              message: `NotifiTargetContext - stateChanged: ${error.message}`,
+            });
+          }
+          console.error('NotifiTargetContext - stateChanged:', error);
+        },
+      );
+      return () => {
+        const { id, subscription } = currentSubscription.current ?? {};
+        if (!id || !subscription) return;
+        subscription.unsubscribe();
+        currentSubscription.current = undefined;
+        frontendClient.removeEventListener('stateChanged', id);
+        setError(null);
+      };
+    }
   }, [frontendClientStatus.isAuthenticated]);
 
   useEffect(() => {
