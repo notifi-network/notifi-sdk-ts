@@ -1,4 +1,8 @@
-import { NotifiEmitterEvents, Types } from '@notifi-network/notifi-graphql';
+import {
+  EventListenerOutputs,
+  NotifiEmitterEvents,
+  Types,
+} from '@notifi-network/notifi-graphql';
 import { NotifiService } from '@notifi-network/notifi-graphql';
 
 import {
@@ -1274,15 +1278,22 @@ export class NotifiFrontendClient {
   addEventListener<K extends keyof NotifiEmitterEvents>(
     event: K,
     callBack: (...args: NotifiEmitterEvents[K]) => void,
-  ) {
-    return this._service.addEventListener(event, callBack);
+    onError?: (error: unknown) => void,
+    onCompleted?: () => void,
+  ): EventListenerOutputs {
+    return this._service.addEventListener(
+      event,
+      callBack,
+      onError,
+      onCompleted,
+    );
   }
 
   removeEventListener<K extends keyof NotifiEmitterEvents>(
     event: K,
-    callBack: (...args: NotifiEmitterEvents[K]) => void,
+    id: string,
   ) {
-    return this._service.removeEventListener(event, callBack);
+    return this._service.removeEventListener(event, id);
   }
 
   async getUserSettings(): Promise<Types.GetUserSettingsQuery['userSettings']> {
