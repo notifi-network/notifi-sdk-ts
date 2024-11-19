@@ -1,11 +1,12 @@
 import { FusionMessage } from '@notifi-network/notifi-dataplane';
 import { NotifiNodeClient } from '@notifi-network/notifi-node';
 import express, { Request } from 'express';
+
 import { loggerMiddleWare } from './middleware/logger';
 import {
+  ServiceMiddleWareHttpBody,
   notifiAuthMiddleware,
   notifiServiceMiddleware,
-  ServiceMiddleWareHttpBody,
 } from './middleware/notifiService';
 
 const app = express();
@@ -190,10 +191,10 @@ app.post(
 );
 
 type SubscribeTenantActiveAlertChangedHttpBody = ServiceMiddleWareHttpBody;
-let tenantActiveAlertChangedSubscription: Awaited<
-  ReturnType<NotifiNodeClient['addEventListener']>
-> = null;
-let webSocketClient: any;
+let tenantActiveAlertChangedSubscription:
+  | Awaited<ReturnType<NotifiNodeClient['addEventListener']>>
+  | undefined = undefined;
+// let webSocketClient: any;
 app.post(
   '/subscribe-active-alert-changed-event',
   notifiAuthMiddleware,
@@ -225,21 +226,21 @@ app.post(
     );
 
     // NOTE: Add event listeners to monitor websocket connection status (You can also remove event listeners using removeEventListener method)
-    client.addEventListener('wsConnecting', () => {
-      console.log('notifi-node: Websocket connecting');
-    });
-    client.addEventListener('wsConnected', (wsClient) => {
-      console.log('notifi-node: Websocket connected', wsClient);
-      webSocketClient = wsClient;
-    });
-    client.addEventListener('wsClosed', (closeEvent) => {
-      console.log('notifi-node: Websocket closed');
-      // Do something to when the websocket is closed. Ex, remove event listeners.
-    });
-    client.addEventListener('wsError', (err) => {
-      console.log('notifi-node: Websocket error', err);
-      // Do something to handle the error
-    });
+    // client.addEventListener('wsConnecting', () => {
+    //   console.log('notifi-node: Websocket connecting');
+    // });
+    // client.addEventListener('wsConnected', (wsClient) => {
+    //   console.log('notifi-node: Websocket connected', wsClient);
+    //   webSocketClient = wsClient;
+    // });
+    // client.addEventListener('wsClosed', (closeEvent) => {
+    //   console.log('notifi-node: Websocket closed');
+    //   // Do something to when the websocket is closed. Ex, remove event listeners.
+    // });
+    // client.addEventListener('wsError', (err) => {
+    //   console.log('notifi-node: Websocket error', err);
+    //   // Do something to handle the error
+    // });
 
     if (tenantActiveAlertChangedSubscription) {
       return res.status(200).json({
@@ -257,11 +258,21 @@ app.post(
     if (tenantActiveAlertChangedSubscription) {
       try {
         // webSocketClient.terminate();
-        tenantActiveAlertChangedSubscription.unsubscribe();
-        webSocketClient.dispose(); // NOTE: Somehow unsubscribe cannot close the websocket connection sometimes, so we manually close it (we can also use .terminate method to close immediately)
-        tenantActiveAlertChangedSubscription = null;
-        webSocketClient = null;
+        tenantActiveAlertChangedSubscription.subscription?.unsubscribe();
 
+        // webSocketClient.dispose(); // NOTE: Somehow unsubscribe cannot close the websocket connection sometimes, so we manually close it (we can also use .terminate method to close immediately)
+
+        // webSocketClient = null;
+        const client = new NotifiNodeClient(
+          res.locals.notifiService,
+          res.locals.dpapiClient,
+        );
+        client.initialize(res.locals.jwt);
+        client.removeEventListener(
+          'tenantActiveAlertChanged',
+          tenantActiveAlertChangedSubscription.id,
+        );
+        tenantActiveAlertChangedSubscription = undefined;
         return res.status(200).json({
           message:
             'notifi-node: unsubscribeTenantActiveAlertChanged - unsubscribed',
