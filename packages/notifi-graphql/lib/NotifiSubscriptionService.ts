@@ -233,31 +233,32 @@ export class NotifiSubscriptionService {
       webSocketImpl: this.webSocketImpl,
     });
 
-    this._wsClient.on('connecting', () => {
-      console.info(
-        'NotifiSubscriptionService._initializeClient:  Connecting to ws',
-      );
-    });
+    /** ⬇ Uncomment to monitor websocket behavior (debugging purpose) */
+    // this._wsClient.on('connecting', () => {
+    //   console.info(
+    //     'NotifiSubscriptionService._initializeClient:  Connecting to ws',
+    //   );
+    // });
 
-    this._wsClient.on('connected', () => {
-      console.info(
-        'NotifiSubscriptionService._initializeClient:  Connected to ws',
-      );
-    });
+    // this._wsClient.on('connected', () => {
+    //   console.info(
+    //     'NotifiSubscriptionService._initializeClient:  Connected to ws',
+    //   );
+    // });
 
-    this._wsClient.on('closed', (event) => {
-      console.warn(
-        'NotifiSubscriptionService._initializeClient:  Closed ws',
-        event,
-      );
-    });
+    // this._wsClient.on('closed', (event) => {
+    //   console.info(
+    //     'NotifiSubscriptionService._initializeClient:  Closed ws',
+    //     event,
+    //   );
+    // });
 
-    this._wsClient.on('error', (error) => {
-      console.error(
-        'NotifiSubscriptionService._initializeClient: Websocket Error:',
-        error,
-      );
-    });
+    // this._wsClient.on('error', (error) => {
+    //   console.error(
+    //     'NotifiSubscriptionService._initializeClient: Websocket Error:',
+    //     error,
+    //   );
+    // });
   };
 }
 
