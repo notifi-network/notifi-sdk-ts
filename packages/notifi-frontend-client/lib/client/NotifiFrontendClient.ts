@@ -34,6 +34,8 @@ import {
   ensureWebhook,
 } from './ensureTarget';
 
+type HexString = `0x${string}`;
+
 /** NOTE:
  * 1. Used for frontend client `login` related methods - requires only authentication method(s) to be passed in (w/o UserParams)
  * 2. TODO: refactor to combine all Uint8SignMessageFunction to a single case.
@@ -85,15 +87,17 @@ export type SignMessageParams =
     }>
   | Readonly<{
       walletBlockchain: 'APTOS';
+      nonce: string;
       signMessage: AptosSignMessageFunction;
     }>
   | Readonly<{
       walletBlockchain: 'MOVEMENT';
+      nonce: string;
       signMessage: AptosSignMessageFunction;
     }>
   | Readonly<{
       walletBlockchain: 'XION';
-      message: string;
+      message: string; //TODO: in future we can remove this as the message will be returned by _.authenticate anyways...
       signMessage: XionSignMessageFunction;
     }>
   | Readonly<{
@@ -426,23 +430,26 @@ export type Uint8SignMessageFunction = (
 ) => Promise<Uint8Array>;
 export type AptosSignMessageFunction = (
   message: string,
-  nonce: number,
-) => Promise<string>;
-type hexString = `0x${string}`;
+  nonce: string,
+) => Promise<{
+  signatureHex: HexString;
+  signedMessage: string;
+}>;
 
 export type AcalaSignMessageFunction = (
   acalaAddress: string,
   message: string,
-) => Promise<hexString>;
+) => Promise<HexString>;
 
 export type OidcCredentials = {
   oidcProvider: Types.OidcProvider;
   jwt: string;
 };
-export type OidcSignInFunction = () => Promise<OidcCredentials>;
 
-export type AuthenticateResult = Signature | OidcCredentials;
-type Signature = string;
+export type OidcSignInFunction = () => Promise<OidcCredentials>;
+export type SignMessageResult = { signature: string; signedMessage: string };
+
+export type AuthenticateResult = SignMessageResult | OidcCredentials;
 
 export type CardConfigType = CardConfigItemV1;
 
@@ -469,7 +476,10 @@ type FindSubscriptionCardParams = Omit<Types.FindTenantConfigInput, 'tenant'>;
 
 // Don't split this line into multiple lines due to some packagers or other build modules that
 // modify the string literal, which then causes authentication to fail due to different strings
-export const SIGNING_MESSAGE = `Sign in with Notifi \n\n    No password needed or gas is needed. \n\n    Clicking “Approve” only means you have proved this wallet is owned by you! \n\n    This request will not trigger any transaction or cost any gas fees. \n\n    Use of our website and service is subject to our terms of service and privacy policy. \n \n 'Nonce:' `;
+const SIGNING_MESSAGE_WITHOUT_NONCE = `Sign in with Notifi \n\n    No password needed or gas is needed. \n\n    Clicking “Approve” only means you have proved this wallet is owned by you! \n\n    This request will not trigger any transaction or cost any gas fees. \n\n    Use of our website and service is subject to our terms of service and privacy policy.`;
+export const SIGNING_MESSAGE = `${SIGNING_MESSAGE_WITHOUT_NONCE} \n \n 'Nonce:' `;
+
+const CHAINS_WITH_LOGIN_WEB3 = ['XION', 'APTOS', 'MOVEMENT'] as const;
 
 export type SupportedCardConfigType = CardConfigItemV1;
 
@@ -487,6 +497,31 @@ export type UserState = Readonly<
       authorization: Authorization;
     }
 >;
+
+type LoginWeb3Params = Omit<
+  Extract<
+    SignMessageParams,
+    | { walletBlockchain: 'XION' }
+    | { walletBlockchain: 'APTOS' }
+    | { walletBlockchain: 'MOVEMENT' }
+  >,
+  'message' | 'nonce'
+>;
+
+type LoginParams =
+  | Exclude<
+      SignMessageParams,
+      | { walletBlockchain: 'XION' }
+      | { walletBlockchain: 'APTOS' }
+      | { walletBlockchain: 'MOVEMENT' }
+    >
+  | LoginWeb3Params;
+
+function isLoginWeb3Params(params: LoginParams): params is LoginWeb3Params {
+  return CHAINS_WITH_LOGIN_WEB3.includes(
+    params.walletBlockchain as (typeof CHAINS_WITH_LOGIN_WEB3)[number],
+  );
+}
 
 export class NotifiFrontendClient {
   constructor(
@@ -568,82 +603,233 @@ export class NotifiFrontendClient {
     };
   }
 
-  private async logInWithWeb3(signMessageParams: {
-    walletBlockchain: 'XION';
-    signMessage: XionSignMessageFunction;
-  }): Promise<Types.UserFragmentFragment> {
-    let user: Types.UserFragmentFragment | undefined = undefined;
+  private async prepareLoginWithWeb3(
+    signMessageParams: LoginWeb3Params,
+  ): Promise<{
+    signMessageParams: SignMessageParams;
+    signingAddress: string;
+    signingPubkey: string;
+    nonce: string;
+  }> {
+    if (signMessageParams.walletBlockchain === 'XION') {
+      // Narrow the type of signMessage for XION
+      const xionSignMessage =
+        signMessageParams.signMessage as XionSignMessageFunction;
+
+      if (checkIsConfigWithDelegate(this._configuration)) {
+        const { delegatedAddress, delegatedPublicKey, delegatorAddress } =
+          this._configuration;
+        const { nonce } = await this._beginLogInWithWeb3({
+          authAddress: delegatorAddress,
+          authType: 'COSMOS_AUTHZ_GRANT',
+        });
+
+        const signedMessage = `${SIGNING_MESSAGE}${nonce}`;
+        return {
+          signMessageParams: {
+            walletBlockchain: 'XION',
+            message: signedMessage,
+            signMessage: xionSignMessage,
+          },
+          signingAddress: delegatedAddress,
+          signingPubkey: delegatedPublicKey,
+          nonce,
+        };
+      } else if (checkIsConfigWithPublicKeyAndAddress(this._configuration)) {
+        const { authenticationKey, accountAddress } = this._configuration;
+        const { nonce } = await this._beginLogInWithWeb3({
+          authAddress: accountAddress,
+          authType: 'COSMOS_ADR36',
+        });
+        const signedMessage = `${SIGNING_MESSAGE}${nonce}`;
+        return {
+          signMessageParams: {
+            walletBlockchain: 'XION',
+            message: signedMessage,
+            signMessage: xionSignMessage,
+          },
+          signingAddress: accountAddress,
+          signingPubkey: authenticationKey,
+          nonce,
+        };
+      }
+    }
 
     if (
-      this._configuration.walletBlockchain !== 'XION' ||
-      signMessageParams.walletBlockchain !== 'XION'
+      signMessageParams.walletBlockchain === 'APTOS' ||
+      signMessageParams.walletBlockchain === 'MOVEMENT'
     ) {
-      throw new Error('Wallet blockchain must be XION for loginWithWeb3');
+      // Narrow the type of signMessage for APTOS/MOVEMENT
+      const aptosSignMessage =
+        signMessageParams.signMessage as AptosSignMessageFunction;
+
+      if (checkIsConfigWithPublicKeyAndAddress(this._configuration)) {
+        const { nonce } = await this._beginLogInWithWeb3({
+          authAddress: this._configuration.accountAddress,
+          authType: 'APTOS_SIGNED_MESSAGE',
+          walletPubkey: this._configuration.authenticationKey,
+        });
+
+        return {
+          signMessageParams: {
+            walletBlockchain: signMessageParams.walletBlockchain,
+            nonce,
+            signMessage: aptosSignMessage,
+          },
+          signingAddress: this._configuration.accountAddress,
+          signingPubkey: this._configuration.authenticationKey,
+          nonce,
+        };
+      }
     }
-    if (checkIsConfigWithDelegate(this._configuration)) {
-      const { delegatedAddress, delegatedPublicKey, delegatorAddress } =
-        this._configuration;
-      const { nonce } = await this.beginLogInWithWeb3({
-        authAddress: delegatorAddress,
-        authType: 'COSMOS_AUTHZ_GRANT',
+
+    throw new Error(
+      `Invalid loginWeb3Params: ${JSON.stringify(signMessageParams)}`,
+    );
+  }
+
+  private async logInWithWeb3(
+    loginWeb3Params: LoginWeb3Params,
+  ): Promise<Types.UserFragmentFragment | undefined> {
+    if (
+      !CHAINS_WITH_LOGIN_WEB3.includes(loginWeb3Params.walletBlockchain) ||
+      loginWeb3Params.walletBlockchain !== loginWeb3Params.walletBlockchain
+    ) {
+      throw new Error(
+        `Wallet blockchain must be one of ${CHAINS_WITH_LOGIN_WEB3.join(', ')} for loginWithWeb3`,
+      );
+    }
+
+    const { nonce, signingAddress, signingPubkey, signMessageParams } =
+      await this.prepareLoginWithWeb3(loginWeb3Params);
+
+    const authentication = await this._authenticate({
+      signMessageParams,
+      timestamp: Math.round(Date.now() / 1000),
+    });
+
+    if (!('signature' in authentication)) {
+      throw new Error('logInWith Web3 - Invalid signature - expected string');
+    }
+
+    const { completeLogInWithWeb3 } = await this.completeLogInWithWeb3({
+      nonce,
+      signature: authentication.signature,
+      signedMessage: authentication.signedMessage,
+      signingAddress,
+      signingPubkey,
+    });
+
+    return completeLogInWithWeb3.user;
+  }
+
+  async logIn(loginParams: LoginParams): Promise<Types.UserFragmentFragment> {
+    const timestamp = Math.round(Date.now() / 1000);
+    const { tenantId, walletBlockchain } = this._configuration;
+
+    let user: Types.UserFragmentFragment | undefined = undefined;
+
+    if (isLoginWeb3Params(loginParams)) {
+      user = await this.logInWithWeb3(loginParams);
+    } else if (walletBlockchain === 'OFF_CHAIN') {
+      const authentication = await this._authenticate({
+        signMessageParams: loginParams,
+        timestamp,
       });
 
-      const message = `${SIGNING_MESSAGE}${nonce}}`;
-      const params = {
-        walletBlockchain: 'XION',
-        message,
-        signMessage: signMessageParams.signMessage,
-      } as const;
+      if (!('oidcProvider' in authentication)) {
+        throw new Error('logIn - Invalid signature - expected OidcCredentials');
+      }
 
-      const signature = await this._authenticate({
-        signMessageParams: params,
-        timestamp: Math.round(Date.now() / 1000),
+      // 3rd party OIDC login
+      const { oidcProvider, jwt } = authentication;
+      const result = await this._service.logInByOidc({
+        dappId: tenantId,
+        oidcProvider,
+        idToken: jwt,
+      });
+      user = result.logInByOidc.user;
+    } else {
+      const authentication = await this._authenticate({
+        signMessageParams: loginParams,
+        timestamp,
       });
 
-      if (typeof signature !== 'string')
+      if (
+        !('signature' in authentication) ||
+        typeof authentication.signature !== 'string'
+      ) {
         throw new Error(
-          'logInWith Web3 - WithDelegate : Invalid signature - expected string',
+          'logIn - Invalid signature - expected string signature and signedMessage',
         );
+      }
 
-      const { completeLogInWithWeb3 } = await this.completeLogInWithWeb3({
-        nonce,
-        signature,
-        signedMessage: message,
-        signingAddress: delegatedAddress,
-        signingPubkey: delegatedPublicKey,
-      });
-      user = completeLogInWithWeb3.user;
-    } else if (checkIsConfigWithPublicKeyAndAddress(this._configuration)) {
-      const { authenticationKey, accountAddress } = this._configuration;
-      const { nonce } = await this.beginLogInWithWeb3({
-        authAddress: accountAddress,
-        authType: 'COSMOS_ADR36',
-      });
-
-      const message = `${SIGNING_MESSAGE}${nonce}}`;
-      const params = {
-        walletBlockchain: 'XION',
-        message,
-        signMessage: signMessageParams.signMessage,
-      } as const;
-      const signature = await this._authenticate({
-        signMessageParams: params,
-        timestamp: Math.round(Date.now() / 1000),
-      });
-
-      if (typeof signature !== 'string')
-        throw new Error(
-          'logInWith Web3 - PublicKeyAndAddress : Invalid signature - expected string',
-        );
-
-      const { completeLogInWithWeb3 } = await this.completeLogInWithWeb3({
-        nonce,
-        signature,
-        signedMessage: message,
-        signingAddress: accountAddress,
-        signingPubkey: authenticationKey,
-      });
-      user = completeLogInWithWeb3.user;
+      switch (walletBlockchain) {
+        case 'BLAST':
+        case 'BERACHAIN':
+        case 'CELO':
+        case 'MANTLE':
+        case 'LINEA':
+        case 'SCROLL':
+        case 'MANTA':
+        case 'MONAD':
+        case 'BASE':
+        case 'THE_ROOT_NETWORK':
+        case 'ETHEREUM':
+        case 'POLYGON':
+        case 'ARBITRUM':
+        case 'AVALANCHE':
+        case 'BINANCE':
+        case 'OPTIMISM':
+        case 'ZKSYNC':
+        case 'EVMOS':
+        case 'SOLANA': {
+          const result = await this._service.logInFromDapp({
+            walletBlockchain,
+            walletPublicKey: this._configuration.walletPublicKey,
+            dappAddress: tenantId,
+            timestamp,
+            signature: authentication.signature,
+          });
+          user = result.logInFromDapp;
+          break;
+        }
+        case 'SUI':
+        case 'ACALA':
+        case 'NEAR':
+        case 'INJECTIVE':
+        case 'OSMOSIS':
+        case 'ELYS':
+        case 'ARCHWAY':
+        case 'AXELAR':
+        case 'AGORIC':
+        case 'CELESTIA':
+        case 'COSMOS':
+        case 'DYMENSION':
+        case 'PERSISTENCE':
+        case 'DYDX':
+        case 'ORAI':
+        case 'KAVA':
+        case 'NEUTRON':
+        case 'NIBIRU':
+        case 'MOVEMENT':
+        case 'ARCH':
+        case 'APTOS': {
+          const result = await this._service.logInFromDapp({
+            walletBlockchain,
+            walletPublicKey: this._configuration.authenticationKey,
+            accountId: this._configuration.accountAddress,
+            dappAddress: tenantId,
+            timestamp,
+            signature: authentication.signature,
+          });
+          user = result.logInFromDapp;
+          break;
+        }
+        default: {
+          throw new Error(`Unsupported wallet blockchain: ${walletBlockchain}`);
+        }
+      }
     }
 
     if (user === undefined) {
@@ -652,124 +838,6 @@ export class NotifiFrontendClient {
 
     await this._handleLogInResult(user);
     return user;
-  }
-
-  async logIn(
-    signMessageParams: SignMessageParams,
-  ): Promise<Types.UserFragmentFragment> {
-    const timestamp = Math.round(Date.now() / 1000);
-    const { tenantId, walletBlockchain } = this._configuration;
-
-    const signature = await this._authenticate({
-      signMessageParams,
-      timestamp,
-    });
-
-    // TODO: Refactor 'XION' into switch statement
-    if (
-      walletBlockchain === 'XION' &&
-      signMessageParams.walletBlockchain === 'XION'
-    ) {
-      return this.logInWithWeb3(signMessageParams);
-    }
-
-    let loginResult: Types.UserFragmentFragment | undefined = undefined;
-    switch (walletBlockchain) {
-      case 'BLAST':
-      case 'BERACHAIN':
-      case 'CELO':
-      case 'MANTLE':
-      case 'LINEA':
-      case 'SCROLL':
-      case 'MANTA':
-      case 'MONAD':
-      case 'BASE':
-      case 'THE_ROOT_NETWORK':
-      case 'ETHEREUM':
-      case 'POLYGON':
-      case 'ARBITRUM':
-      case 'AVALANCHE':
-      case 'BINANCE':
-      case 'OPTIMISM':
-      case 'ZKSYNC':
-      case 'EVMOS':
-      case 'SOLANA': {
-        if (typeof signature !== 'string')
-          throw new Error(
-            `logIn - Invalid signature - expected string, but got ${signature}`,
-          );
-        const result = await this._service.logInFromDapp({
-          walletBlockchain,
-          walletPublicKey: this._configuration.walletPublicKey,
-          dappAddress: tenantId,
-          timestamp,
-          signature,
-        });
-        loginResult = result.logInFromDapp;
-        break;
-      }
-      case 'SUI':
-      case 'ACALA':
-      case 'NEAR':
-      case 'INJECTIVE':
-      case 'OSMOSIS':
-      case 'ELYS':
-      case 'ARCHWAY':
-      case 'AXELAR':
-      case 'AGORIC':
-      case 'CELESTIA':
-      case 'COSMOS':
-      case 'DYMENSION':
-      case 'PERSISTENCE':
-      case 'DYDX':
-      case 'ORAI':
-      case 'KAVA':
-      case 'NEUTRON':
-      case 'NIBIRU':
-      case 'MOVEMENT':
-      case 'ARCH':
-      case 'APTOS': {
-        if (typeof signature !== 'string')
-          throw new Error(
-            `logIn - Invalid signature - expected string, but got ${signature}`,
-          );
-        const result = await this._service.logInFromDapp({
-          walletBlockchain,
-          walletPublicKey: this._configuration.authenticationKey,
-          accountId: this._configuration.accountAddress,
-          dappAddress: tenantId,
-          timestamp,
-          signature,
-        });
-        loginResult = result.logInFromDapp;
-        break;
-      }
-      case 'OFF_CHAIN': {
-        if (typeof signature === 'string')
-          throw new Error(
-            `logIn - Invalid signature - expected OidcCredentials, but got string: ${signature}`,
-          );
-        if (!('oidcProvider' in signature))
-          throw new Error(
-            `logIn - Invalid signature - expected OidcCredentials, but got invalid object ${signature}`,
-          );
-        // 3rd party OIDC login
-        const { oidcProvider, jwt } = signature;
-        const result = await this._service.logInByOidc({
-          dappId: tenantId,
-          oidcProvider,
-          idToken: jwt,
-        });
-        loginResult = result.logInByOidc.user;
-      }
-    }
-
-    if (loginResult === undefined) {
-      return Promise.reject('Failed to login');
-    }
-
-    await this._handleLogInResult(loginResult);
-    return loginResult;
   }
 
   private async _authenticate({
@@ -807,16 +875,15 @@ export class NotifiFrontendClient {
       case 'OPTIMISM': {
         const { walletPublicKey, tenantId } = this
           ._configuration as NotifiConfigWithPublicKey;
-        const messageBuffer = new TextEncoder().encode(
-          `${SIGNING_MESSAGE}${walletPublicKey}${tenantId}${timestamp.toString()}`,
-        );
+        const signedMessage = `${SIGNING_MESSAGE}${walletPublicKey}${tenantId}${timestamp.toString()}`;
+        const messageBuffer = new TextEncoder().encode(signedMessage);
 
         const signedBuffer = await signMessageParams.signMessage(messageBuffer);
         const signature = normalizeHexString(
           Buffer.from(signedBuffer).toString('hex'),
         );
 
-        return signature;
+        return { signature, signedMessage };
       }
       case 'OSMOSIS':
       case 'ZKSYNC':
@@ -838,24 +905,22 @@ export class NotifiFrontendClient {
       case 'BITCOIN': {
         const { authenticationKey, tenantId } = this
           ._configuration as NotifiConfigWithPublicKeyAndAddress;
-        const messageBuffer = new TextEncoder().encode(
-          `${SIGNING_MESSAGE}${authenticationKey}${tenantId}${timestamp.toString()}`,
-        );
+        const signedMessage = `${SIGNING_MESSAGE}${authenticationKey}${tenantId}${timestamp.toString()}`;
+        const messageBuffer = new TextEncoder().encode(signedMessage);
 
         const signedBuffer = await signMessageParams.signMessage(messageBuffer);
         const signature = Buffer.from(signedBuffer).toString('base64');
-        return signature;
+        return { signature, signedMessage };
       }
       case 'SOLANA': {
         const { walletPublicKey, tenantId } = this
           ._configuration as NotifiConfigWithPublicKey;
-        const messageBuffer = new TextEncoder().encode(
-          `${SIGNING_MESSAGE}${walletPublicKey}${tenantId}${timestamp.toString()}`,
-        );
+        const signedMessage = `${SIGNING_MESSAGE}${walletPublicKey}${tenantId}${timestamp.toString()}`;
+        const messageBuffer = new TextEncoder().encode(signedMessage);
 
         const signedBuffer = await signMessageParams.signMessage(messageBuffer);
         const signature = Buffer.from(signedBuffer).toString('base64');
-        return signature;
+        return { signature, signedMessage };
       }
       case 'XION': {
         const { message } = signMessageParams;
@@ -863,7 +928,7 @@ export class NotifiFrontendClient {
 
         const signedBuffer = await signMessageParams.signMessage(messageBuffer);
         const signature = Buffer.from(signedBuffer).toString('base64');
-        return signature;
+        return { signature, signedMessage: message };
       }
       case 'ACALA': {
         const { accountAddress, tenantId } = this
@@ -874,25 +939,25 @@ export class NotifiFrontendClient {
           accountAddress,
           message,
         );
-        return signedBuffer;
+        return { signature: signedBuffer, signedMessage: message };
       }
       case 'APTOS':
       case 'MOVEMENT': {
-        const signature = await signMessageParams.signMessage(
-          SIGNING_MESSAGE,
-          timestamp,
-        );
-        return signature;
+        const { signatureHex, signedMessage } =
+          await signMessageParams.signMessage(
+            SIGNING_MESSAGE_WITHOUT_NONCE,
+            signMessageParams.nonce,
+          );
+        return { signature: signatureHex, signedMessage };
       }
       case 'SUI': {
         const { accountAddress, tenantId } = this
           ._configuration as NotifiConfigWithPublicKeyAndAddress;
-        const messageBuffer = new TextEncoder().encode(
-          `${SIGNING_MESSAGE}${accountAddress}${tenantId}${timestamp.toString()}`,
-        );
+        const signedMessage = `${SIGNING_MESSAGE}${accountAddress}${tenantId}${timestamp.toString()}`;
+        const messageBuffer = new TextEncoder().encode(signedMessage);
         const signedBuffer = await signMessageParams.signMessage(messageBuffer);
         const signature = signedBuffer.toString();
-        return signature;
+        return { signature, signedMessage };
       }
       case 'NEAR': {
         const { authenticationKey, accountAddress, tenantId } = this
@@ -910,7 +975,7 @@ export class NotifiFrontendClient {
 
         const signedBuffer = await signMessageParams.signMessage(messageBuffer);
         const signature = Buffer.from(signedBuffer).toString('base64');
-        return signature;
+        return { signature, signedMessage: message };
       }
       case 'OFF_CHAIN': {
         const oidcCredentials = await signMessageParams.signIn();
@@ -921,7 +986,7 @@ export class NotifiFrontendClient {
       }
       default:
         // Need implementation for other blockchains
-        return 'Chain not yet supported';
+        return { signature: 'chain not supported yet', signedMessage: '' };
     }
   }
 
@@ -1028,7 +1093,7 @@ export class NotifiFrontendClient {
     return result;
   }
 
-  async beginLogInWithWeb3({
+  async _beginLogInWithWeb3({
     authType,
     authAddress,
     walletPubkey,
