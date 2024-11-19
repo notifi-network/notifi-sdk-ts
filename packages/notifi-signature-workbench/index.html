@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <title>Blockchain Signature Test Bench</title>
+  </head>
+  <body>
+    <h1>Connect your wallet, enter a message, and sign it.</h1>
+    <h3>Don't worry, your message is not sent anywhere. Feel free to reveal your darkest secrets. I promise I won't judge.</h3>
+    
+    <div id="chain-selector">
+      <label for="blockchain">Select Blockchain:</label>
+      <select id="blockchain" onchange="loadChainScript(this.value)">
+        <option value="evm">Ethereum (EVM)</option>
+        <option value="sui">Sui</option>
+        <option value="solana" disabled>Solana</option>
+        <option value="aptos">Aptos (& Movement)</option>
+      </select>
+    </div>
+
+    <div id="user"></div>
+    <button id="connect">Connect</button>
+
+    <script>
+      let currentModule = null;
+
+      async function loadChainScript(chain) {
+        // Disable connect button during loading
+        const connectButton = document.getElementById('connect');
+        connectButton.disabled = true;
+
+        try {
+          // Remove any previously loaded chain script and module
+          if (currentModule) {
+            // Call cleanup if it exists
+            if (currentModule.cleanup) {
+              await currentModule.cleanup();
+            }
+            currentModule = null;
+          }
+
+          // Clear any existing script tag
+          const oldScript = document.querySelector('script[data-chain-script]');
+          if (oldScript) {
+            oldScript.remove();
+          }
+
+          // Remove all existing event listeners from the connect button
+          const newButton = connectButton.cloneNode(true);
+          connectButton.parentNode.replaceChild(newButton, connectButton);
+
+          // Import the new module dynamically
+          currentModule = await import(`/src/chains/${chain}.ts`);
+          
+          // Initialize the new module if it has an init function
+          if (currentModule.init) {
+            await currentModule.init();
+          }
+        } catch (error) {
+          console.error('Error loading chain script:', error);
+        } finally {
+          // Re-enable connect button after everything is done
+          document.getElementById('connect').disabled = false;
+        }
+      }
+
+      // Load default chain (EVM) on page load
+      loadChainScript('evm');
+    </script>
+  </body>
+</html>

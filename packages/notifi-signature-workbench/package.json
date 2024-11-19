@@ -1,0 +1,21 @@
+{
+  "name": "@notifi-network/notifi-signature-workbench",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.2",
+    "vite": "^4.4.5"
+  },
+  "dependencies": {
+    "@aptos-labs/wallet-standard": "^0.2.0",
+    "@mysten/wallet-standard": "^0.13.13",
+    "@w3vm/core": "^0.0.4",
+    "viem": "^2.21.47"
+  }
+}
