@@ -130,6 +130,34 @@ describe('NotifiFrontendClient Unit Test', () => {
     expect(updateUserSettings?.ftuStage).toBe(1);
   });
 
+  it('addEventListener - target state change', async () => {
+    await login();
+
+    const eventHandler = (evt: Types.StateChangedEvent) => {
+      expect(evt).toHaveProperty('__typename');
+      expect(evt.__typename).toBe('TargetStateChangedEvent');
+    };
+
+    const errorHandler = (error: unknown) => {
+      if (error) throw error;
+    };
+
+    const id = client.addEventListener(
+      'stateChanged',
+      eventHandler,
+      errorHandler,
+    );
+
+    expect(id).toBeDefined();
+
+    await client.ensureTargetGroup({
+      name: 'Default',
+      emailAddress: 'tester@notifi.network',
+    });
+
+    client.removeEventListener('stateChanged', id);
+  });
+
   // ⬇ Internal helper functions
   const login = async () => {
     return client.logIn({

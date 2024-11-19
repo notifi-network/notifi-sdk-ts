@@ -26,11 +26,6 @@ export type SubscribeInputs = {
 
 type _Subscribe = (input: SubscribeInputs) => Subscription | null;
 
-export type EventListenerOutputs = {
-  id: string;
-  subscription: Subscription | null;
-};
-
 /**
  * @param webSocketImpl - A custom WebSocket implementation to use instead of the one provided by the global scope. Mostly useful for when using the client outside of the browser environment.
  * @ref https://github.com/enisdenjo/graphql-ws/blob/c030ed1d5f7e8a552dffbfd46712caf7dfe91a54/src/client.ts#L400
@@ -49,69 +44,14 @@ export class NotifiSubscriptionService {
   };
 
   /**
-   * @deprecated Should not directly manipulate the websocket client. Instead use the returned subscription object to manage the subscription. ex. subscription.unsubscribe()
-   */
-  disposeClient = () => {
-    if (this._wsClient) {
-      this._jwt = undefined;
-      this._wsClient.terminate();
-      this._wsClient.dispose();
-    }
-  };
-  /**
-   * @deprecated Use addEventListener instead
-   */
-  subscribe = (
-    jwt: string | undefined,
-    subscriptionQuery: string,
-    onMessageReceived: (data: any) => void | undefined,
-    onError?: (data: any) => void | undefined,
-    onComplete?: () => void | undefined,
-  ) => {
-    this._jwt = jwt;
-
-    if (!this._wsClient) {
-      this._initializeClient();
-    }
-    if (!this._wsClient) return null;
-
-    const observable = this._toObservable(this._wsClient, {
-      query: subscriptionQuery,
-      extensions: {
-        type: 'start',
-      },
-    });
-
-    const subscription = observable.subscribe({
-      next: (data) => {
-        if (onMessageReceived) {
-          onMessageReceived(data);
-        }
-      },
-      error: (error: unknown) => {
-        if (onError && error instanceof Error) {
-          onError(error);
-        }
-      },
-      complete: () => {
-        if (onComplete) {
-          onComplete();
-        }
-      },
-    });
-
-    return subscription;
-  };
-
-  /**
-   * @important for removing the event listener, check the guidelines in the NotifiEventEmitter (notifi-graphql/lib/NotifiEventEmitter.ts) class. https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-graphql/lib
+   * @returns {string} - The id of the event listener (used to remove the event listener)
    */
   addEventListener = <T extends keyof NotifiEmitterEvents>(
     event: T,
-    callBack: (...args: NotifiEmitterEvents[T]) => void,
+    callback: (...args: NotifiEmitterEvents[T]) => void,
     onError?: (error: unknown) => void,
     onComplete?: () => void,
-  ): EventListenerOutputs => {
+  ): string => {
     const id = Math.random().toString(36).slice(2, 11); // ⬅ Generate a random id for the listener
     const subscribeInputs: SubscribeInputs = {
       subscriptionQuery: '' as SubscriptionQuery, // ⬅ Placeholder (empty string intentionally)
@@ -133,18 +73,16 @@ export class NotifiSubscriptionService {
     }
 
     const subscription = this._subscribe(subscribeInputs);
-    this.eventEmitter.on(event, callBack, id);
+    if (!subscription)
+      throw new Error(
+        'NotifiSubscriptionService.addEventListener: Subscription failed',
+      );
 
-    return {
-      id,
-      subscription,
-    };
+    this.eventEmitter.on(event, { callback, subscription }, id);
+
+    return id;
   };
-  /**
-   * @important To remove event listener, check the README.md of `notifi-node` or `notifi-frontend-client` package for more details.
-   * - `notifi-node`:  https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-node
-   * - `notifi-frontend-client`:  https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-frontend-client
-   */
+
   removeEventListener = <T extends keyof NotifiEmitterEvents>(
     event: T,
     id: string,
@@ -206,8 +144,6 @@ export class NotifiSubscriptionService {
       complete: onComplete,
     });
 
-    console.log('Subscribed', subscription); // TODO: Remove before merge
-
     return subscription;
   };
 
@@ -240,31 +176,89 @@ export class NotifiSubscriptionService {
       webSocketImpl: this.webSocketImpl,
     });
 
-    this._wsClient.on('connecting', () => {
-      console.info(
-        'NotifiSubscriptionService._initializeClient:  Connecting to ws',
-      );
+    /** ⬇ Uncomment to monitor websocket behavior (debugging purpose) */
+    // this._wsClient.on('connecting', () => {
+    //   console.info(
+    //     'NotifiSubscriptionService._initializeClient:  Connecting to ws',
+    //   );
+    // });
+
+    // this._wsClient.on('connected', () => {
+    //   console.info(
+    //     'NotifiSubscriptionService._initializeClient:  Connected to ws',
+    //   );
+    // });
+
+    // this._wsClient.on('closed', (event) => {
+    //   console.info(
+    //     'NotifiSubscriptionService._initializeClient:  Closed ws',
+    //     event,
+    //   );
+    // });
+
+    // this._wsClient.on('error', (error) => {
+    //   console.error(
+    //     'NotifiSubscriptionService._initializeClient: Websocket Error:',
+    //     error,
+    //   );
+    // });
+  };
+
+  /* ⬇⬇⬇⬇⬇ Deprecated methods ⬇⬇⬇⬇⬇⬇ */
+
+  /**
+   * @deprecated Should not directly manipulate the websocket client. Instead use the returned subscription object to manage the subscription. ex. subscription.unsubscribe()
+   */
+  disposeClient = () => {
+    if (this._wsClient) {
+      this._jwt = undefined;
+      this._wsClient.terminate();
+      this._wsClient.dispose();
+    }
+  };
+  /**
+   * @deprecated Use addEventListener instead
+   */
+  subscribe = (
+    jwt: string | undefined,
+    subscriptionQuery: string,
+    onMessageReceived: (data: any) => void | undefined,
+    onError?: (data: any) => void | undefined,
+    onComplete?: () => void | undefined,
+  ) => {
+    this._jwt = jwt;
+
+    if (!this._wsClient) {
+      this._initializeClient();
+    }
+    if (!this._wsClient) return null;
+
+    const observable = this._toObservable(this._wsClient, {
+      query: subscriptionQuery,
+      extensions: {
+        type: 'start',
+      },
     });
 
-    this._wsClient.on('connected', () => {
-      console.info(
-        'NotifiSubscriptionService._initializeClient:  Connected to ws',
-      );
+    const subscription = observable.subscribe({
+      next: (data) => {
+        if (onMessageReceived) {
+          onMessageReceived(data);
+        }
+      },
+      error: (error: unknown) => {
+        if (onError && error instanceof Error) {
+          onError(error);
+        }
+      },
+      complete: () => {
+        if (onComplete) {
+          onComplete();
+        }
+      },
     });
 
-    this._wsClient.on('closed', (event) => {
-      console.warn(
-        'NotifiSubscriptionService._initializeClient:  Closed ws',
-        event,
-      );
-    });
-
-    this._wsClient.on('error', (error) => {
-      console.error(
-        'NotifiSubscriptionService._initializeClient: Websocket Error:',
-        error,
-      );
-    });
+    return subscription;
   };
 }
 

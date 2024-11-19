@@ -1,5 +1,6 @@
 import {
   NotifiEnvironment,
+  NotifiNodeClient,
   createDataplaneClient,
   createGraphQLClient,
   createNotifiService,
@@ -51,8 +52,7 @@ export const notifiServiceMiddleware = (
   const dpapiClient = createDataplaneClient(notifiEnv);
   const subService = createNotifiSubscriptionService(notifiEnv);
   const notifiService = createNotifiService(graphqlClient, subService);
-  res.locals.notifiService = notifiService;
-  res.locals.dpapiClient = dpapiClient;
+  res.locals.client = new NotifiNodeClient(notifiService, dpapiClient);
   next();
 };
 

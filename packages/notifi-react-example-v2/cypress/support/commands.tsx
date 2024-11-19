@@ -46,7 +46,7 @@ const getConnectedWallet = (isRandomMnemonic?: boolean) => {
   const mnemonic = isRandomMnemonic
     ? generateMnemonic()
     : Cypress.env('MNEMONIC');
-  console.log({ mnemonic });
+  console.info({ mnemonic });
   const provider = new ethers.JsonRpcProvider(envUrl(env));
   const wallet = ethers.Wallet.fromPhrase(mnemonic, provider);
   const connectedWallet = wallet.connect(provider);
@@ -164,7 +164,7 @@ const overrideTargetGroup = (isEmpty?: boolean) => {
     aliasQuery(req, 'fetchFusionData');
     if (hasOperationName(req, 'fetchFusionData')) {
       req.reply((res) => {
-        console.log({ tg: res.body.data.targetGroup });
+        console.info({ tg: res.body.data.targetGroup });
         res.body.data = {
           ...res.body.data,
           targetGroup: [dummyTargetGroup],
@@ -210,7 +210,7 @@ const updateTargetGroup = async (targetGroup?: TargetGroup) => {
 const clearNotifiStorage = async () => {
   const req = indexedDB.deleteDatabase('notifi');
   req.onsuccess = (event) => {
-    console.log(event);
+    console.info(event);
     return;
   };
   req.onerror = (error) => {

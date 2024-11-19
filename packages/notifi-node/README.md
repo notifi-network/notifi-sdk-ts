@@ -171,7 +171,7 @@ To stop listening to the events, we need to do the following:
 
 ```ts
 const eventHandler = (event) => {
-  console.log('Event received:', event);
+  console.info('Event received:', event);
 };
 
 // Listen to the tenant entity updated event
@@ -203,7 +203,7 @@ To stop listening to the WebSocket status events, simply call the `removeEventLi
 
 ```ts
 const eventHandler = (event) => {
-  console.log('Event received:', event);
+  console.info('Event received:', event);
 };
 
 // Listen to the WebSocket status events (The return type of addEventListener is never)
@@ -230,7 +230,7 @@ To stop listening to the GraphQL subscription status events, simply call the `re
 
 ```ts
 const eventHandler = (event) => {
-  console.log('Event received:', event);
+  console.info('Event received:', event);
 };
 
 // Listen to the GraphQL subscription status events (The return type of addEventListener is never)
