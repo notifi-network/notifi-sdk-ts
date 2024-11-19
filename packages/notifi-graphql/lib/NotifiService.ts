@@ -4,10 +4,7 @@ import { v4 as uuid } from 'uuid';
 
 import { version } from '../package.json';
 import { NotifiEmitterEvents } from './NotifiEventEmitter';
-import {
-  EventListenerOutputs,
-  NotifiSubscriptionService,
-} from './NotifiSubscriptionService';
+import { NotifiSubscriptionService } from './NotifiSubscriptionService';
 import { stateChangedSubscriptionQuery } from './gql';
 import * as Generated from './gql/generated';
 import { getSdk } from './gql/generated';
@@ -474,12 +471,15 @@ export class NotifiService
     this._notifiSubService.disposeClient();
   }
 
+  /**
+   * @returns {string} - The id of the event listener (used to remove the event listener)
+   */
   addEventListener<T extends keyof NotifiEmitterEvents>(
     event: T,
     callBack: (...args: NotifiEmitterEvents[T]) => void,
     onError?: (error: unknown) => void,
     onComplete?: () => void,
-  ): EventListenerOutputs {
+  ): string {
     return this._notifiSubService.addEventListener(
       event,
       callBack,
@@ -487,11 +487,7 @@ export class NotifiService
       onComplete,
     );
   }
-  /**
-   * @important To remove event listener, check the README.md of `notifi-node` or `notifi-frontend-client` package for more details.
-   * - `notifi-node`:  https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-node
-   * - `notifi-frontend-client`:  https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-frontend-client
-   */
+
   removeEventListener<T extends keyof NotifiEmitterEvents>(
     event: T,
     id: string,

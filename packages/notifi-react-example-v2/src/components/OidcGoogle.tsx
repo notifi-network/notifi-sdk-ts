@@ -56,8 +56,6 @@ export default function OidcGoogle() {
   const clientIdInputRef = React.useRef<HTMLInputElement>(null);
   const clientSecretInputRef = React.useRef<HTMLInputElement>(null);
 
-  console.log(window.location.origin);
-
   React.useEffect(() => {
     // NOTE: initial load credentials from localStorage
     const oidcData = JSON.parse(
@@ -71,7 +69,6 @@ export default function OidcGoogle() {
     const urlParams = window.location.href.match(regex);
     if (!urlParams?.length || urlParams.length < 1) return;
     const oneTimeCode = urlParams[1];
-    console.log(oneTimeCode);
     setOneTimeCode(() => decodeURIComponent(oneTimeCode));
   }, []);
 
@@ -173,7 +170,6 @@ export default function OidcGoogle() {
               if (result.error) {
                 alert(result.error);
               }
-              console.log({ accessCredentials: result });
               setIdToken(() => result.id_token);
               router.push('/');
             }}

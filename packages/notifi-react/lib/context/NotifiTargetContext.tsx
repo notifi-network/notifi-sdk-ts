@@ -267,18 +267,15 @@ export const NotifiTargetContextProvider: FC<
 
     // NOTE: Subscription for state change
     if (frontendClientStatus.isAuthenticated) {
-      const handler = (evt: Types.StateChangedEvent) => {
-        if (
-          !frontendClientStatus.isAuthenticated ||
-          evt.__typename !== 'TargetStateChangedEvent'
-        )
-          return;
-        console.log('TargetStateChangedEvent', evt);
-        return frontendClient.fetchFusionData().then(refreshTargetDocument);
+      const targetChangedHandler = (evt: Types.StateChangedEvent) => {
+        if (evt.__typename === 'TargetStateChangedEvent') {
+          frontendClient.fetchFusionData().then(refreshTargetDocument);
+        }
       };
+
       currentSubscription.current = frontendClient.addEventListener(
         'stateChanged',
-        handler,
+        targetChangedHandler,
         (error) => {
           if (error instanceof Error) {
             setError({
@@ -289,12 +286,12 @@ export const NotifiTargetContextProvider: FC<
           console.error('NotifiTargetContext - stateChanged:', error);
         },
       );
+
       return () => {
-        const { id, subscription } = currentSubscription.current ?? {};
-        if (!id || !subscription) return;
-        subscription.unsubscribe();
-        currentSubscription.current = undefined;
+        const id = currentSubscription.current;
+        if (!id) return;
         frontendClient.removeEventListener('stateChanged', id);
+        currentSubscription.current = undefined;
         setError(null);
       };
     }

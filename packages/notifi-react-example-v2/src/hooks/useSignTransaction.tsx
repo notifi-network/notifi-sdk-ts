@@ -24,11 +24,9 @@ export const useSignTransaction = () => {
       case 'SOLANA':
         try {
           transactionSigner = walletWithSignParams.hardwareLoginPlugin;
-          console.log(1, { nonce: loginViaTransaction.nonce });
           const signature = await transactionSigner?.sendMessage(
             loginViaTransaction.nonce,
           );
-          console.log(2, { signature });
 
           if (!signature) throw new Error('No signature - SOLANA');
           setSignatureViaNotifiNonce(signature);
@@ -53,7 +51,6 @@ export const useSignTransaction = () => {
           // const memo = ethers.hexlify(
           //   ethers.toUtf8Bytes(loginViaTransaction.nonce),
           // );
-          console.log(1, { accounts, nonce: loginViaTransaction.nonce });
           const signature = await transactionSigner.request({
             method: 'eth_sendTransaction',
             params: [

@@ -72,11 +72,7 @@ const NotifiComponentExample = () => {
   const bellIconHref = `/bell-${
     searchParams.get('scene') === 'light' ? 'light' : 'dark'
   }${isCardModalOpen ? '-open' : ''}.svg`;
-  console.log({
-    isSignTxSupported,
-    auth: frontendClientStatus.isAuthenticated,
-    loginViaTransaction,
-  });
+
   return (
     <div>
       <div>

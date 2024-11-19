@@ -34,7 +34,8 @@
   "dependencies": {
     "@notifi-network/notifi-graphql": "^3.0.1",
     "graphql-request": "^6.0.0",
-    "localforage": "^1.10.0"
+    "localforage": "^1.10.0",
+    "ws": "^8.11.0"
   },
   "devDependencies": {
     "ethers": "^6.11.1"
