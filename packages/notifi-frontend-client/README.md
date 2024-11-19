@@ -98,7 +98,7 @@ const { nonce } = await notifiClient.beginLoginViaTransaction({
   walletBlockchain,
   walletAddress,
 });
-console.log({ notifiNonce: nonce }); // notifiNonce will be a 32 bytes hex string
+console.info({ notifiNonce: nonce }); // notifiNonce will be a 32 bytes hex string
 
 // Step 3: Append notifi nonce to the calldata
 const txParams = {

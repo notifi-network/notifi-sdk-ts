@@ -33,28 +33,25 @@ export class NotifiEventEmitter<T extends Record<string, Array<any>>> {
     if (!this.listeners[event]) {
       this.listeners[event] = {};
     }
-    (this.listeners[event] as Record<string, ListenerPayload<T, K>>)[id] =
+    (this.listeners[event] as Record<string, ListenerPayload<T, K>>)[id] = // ⬅ Workaround for TS limitation (not able to infer that this.listeners[event] is defined)
       listener;
-    console.log('listened', { id, event, listeners: this.listeners });
   }
 
   off<K extends keyof T>(event: K, id: string): void {
     if (!this.listeners[event]?.[id]) return;
-    (this.listeners[event] as Record<string, ListenerPayload<T, K>>)[
+    (this.listeners[event] as Record<string, ListenerPayload<T, K>>)[ // ⬅ Workaround for TS limitation (not able to infer that this.listeners[event] is defined)
       id
-    ].subscription.unsubscribe();
-    delete (this.listeners[event] as Record<string, ListenerPayload<T, K>>)[id];
-    console.log('removed', { id, event, listeners: this.listeners });
+    ].subscription
+      .unsubscribe();
+    delete (this.listeners[event] as Record<string, ListenerPayload<T, K>>)[id]; // ⬅ Workaround for TS limitation (not able to infer that this.listeners[event] is defined)
   }
 
   emit<K extends keyof T>(event: K, id: string, ...args: T[K]): void {
     if (!this.listeners[event]?.[id]) return;
 
     if (this.listeners[event]?.[id]) {
-      (this.listeners[event] as Record<string, ListenerPayload<T, K>>)[
-        id
-      ].callback(...args);
+      (this.listeners[event] as Record<string, ListenerPayload<T, K>>)[id] // ⬅ Workaround for TS limitation (not able to infer that this.listeners[event] is defined)
+        .callback(...args);
     }
-    console.log('emitted', { id, event, listeners: this.listeners });
   }
 }

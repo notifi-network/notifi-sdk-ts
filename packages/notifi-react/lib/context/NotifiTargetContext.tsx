@@ -268,14 +268,11 @@ export const NotifiTargetContextProvider: FC<
     // NOTE: Subscription for state change
     if (frontendClientStatus.isAuthenticated) {
       const targetChangedHandler = (evt: Types.StateChangedEvent) => {
-        if (
-          !frontendClientStatus.isAuthenticated ||
-          evt.__typename !== 'TargetStateChangedEvent'
-        )
-          return;
-        console.log('TargetStateChangedEvent', evt);
-        return frontendClient.fetchFusionData().then(refreshTargetDocument);
+        if (evt.__typename === 'TargetStateChangedEvent') {
+          frontendClient.fetchFusionData().then(refreshTargetDocument);
+        }
       };
+
       currentSubscription.current = frontendClient.addEventListener(
         'stateChanged',
         targetChangedHandler,

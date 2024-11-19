@@ -44,61 +44,6 @@ export class NotifiSubscriptionService {
   };
 
   /**
-   * @deprecated Should not directly manipulate the websocket client. Instead use the returned subscription object to manage the subscription. ex. subscription.unsubscribe()
-   */
-  disposeClient = () => {
-    if (this._wsClient) {
-      this._jwt = undefined;
-      this._wsClient.terminate();
-      this._wsClient.dispose();
-    }
-  };
-  /**
-   * @deprecated Use addEventListener instead
-   */
-  subscribe = (
-    jwt: string | undefined,
-    subscriptionQuery: string,
-    onMessageReceived: (data: any) => void | undefined,
-    onError?: (data: any) => void | undefined,
-    onComplete?: () => void | undefined,
-  ) => {
-    this._jwt = jwt;
-
-    if (!this._wsClient) {
-      this._initializeClient();
-    }
-    if (!this._wsClient) return null;
-
-    const observable = this._toObservable(this._wsClient, {
-      query: subscriptionQuery,
-      extensions: {
-        type: 'start',
-      },
-    });
-
-    const subscription = observable.subscribe({
-      next: (data) => {
-        if (onMessageReceived) {
-          onMessageReceived(data);
-        }
-      },
-      error: (error: unknown) => {
-        if (onError && error instanceof Error) {
-          onError(error);
-        }
-      },
-      complete: () => {
-        if (onComplete) {
-          onComplete();
-        }
-      },
-    });
-
-    return subscription;
-  };
-
-  /**
    * @returns {string} - The id of the event listener (used to remove the event listener)
    */
   addEventListener = <T extends keyof NotifiEmitterEvents>(
@@ -199,8 +144,6 @@ export class NotifiSubscriptionService {
       complete: onComplete,
     });
 
-    console.log('Subscribed', subscription); // TODO: Remove before merge
-
     return subscription;
   };
 
@@ -259,6 +202,63 @@ export class NotifiSubscriptionService {
     //     error,
     //   );
     // });
+  };
+
+  /* ⬇⬇⬇⬇⬇ Deprecated methods ⬇⬇⬇⬇⬇⬇ */
+
+  /**
+   * @deprecated Should not directly manipulate the websocket client. Instead use the returned subscription object to manage the subscription. ex. subscription.unsubscribe()
+   */
+  disposeClient = () => {
+    if (this._wsClient) {
+      this._jwt = undefined;
+      this._wsClient.terminate();
+      this._wsClient.dispose();
+    }
+  };
+  /**
+   * @deprecated Use addEventListener instead
+   */
+  subscribe = (
+    jwt: string | undefined,
+    subscriptionQuery: string,
+    onMessageReceived: (data: any) => void | undefined,
+    onError?: (data: any) => void | undefined,
+    onComplete?: () => void | undefined,
+  ) => {
+    this._jwt = jwt;
+
+    if (!this._wsClient) {
+      this._initializeClient();
+    }
+    if (!this._wsClient) return null;
+
+    const observable = this._toObservable(this._wsClient, {
+      query: subscriptionQuery,
+      extensions: {
+        type: 'start',
+      },
+    });
+
+    const subscription = observable.subscribe({
+      next: (data) => {
+        if (onMessageReceived) {
+          onMessageReceived(data);
+        }
+      },
+      error: (error: unknown) => {
+        if (onError && error instanceof Error) {
+          onError(error);
+        }
+      },
+      complete: () => {
+        if (onComplete) {
+          onComplete();
+        }
+      },
+    });
+
+    return subscription;
   };
 }
 

@@ -83,7 +83,7 @@ export const NotifiHistoryContextProvider: FC<
       );
       const historyUpdateHandler = (evt: Types.StateChangedEvent) => {
         if (evt.__typename !== 'NotificationHistoryStateChangedEvent') return;
-        console.log('NotificationHistoryStateChangedEvent', evt);
+
         frontendClient
           .getFusionNotificationHistory({
             first: notificationCountPerPage,
