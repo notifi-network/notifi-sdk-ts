@@ -1,8 +1,4 @@
-import {
-  EventListenerOutputs,
-  NotifiEmitterEvents,
-  Types,
-} from '@notifi-network/notifi-graphql';
+import { NotifiEmitterEvents, Types } from '@notifi-network/notifi-graphql';
 import { NotifiService } from '@notifi-network/notifi-graphql';
 
 import {
@@ -1273,14 +1269,14 @@ export class NotifiFrontendClient {
   }
 
   /**
-   * @important for removing the event listener, check the guidelines in the NotifiEventEmitter (notifi-graphql/lib/NotifiEventEmitter.ts) class. https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-graphql/lib
+   * @returns {string} - The id of the event listener (used to remove the event listener)
    */
   addEventListener<K extends keyof NotifiEmitterEvents>(
     event: K,
     callBack: (...args: NotifiEmitterEvents[K]) => void,
     onError?: (error: unknown) => void,
     onCompleted?: () => void,
-  ): EventListenerOutputs {
+  ): string {
     return this._service.addEventListener(
       event,
       callBack,

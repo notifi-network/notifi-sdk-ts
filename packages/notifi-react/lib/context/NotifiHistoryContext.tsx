@@ -73,9 +73,7 @@ export const NotifiHistoryContextProvider: FC<
   const isInitialLoaded = React.useRef(false);
 
   const currentSubscription =
-    React.useRef<
-      ReturnType<NotifiFrontendClient['addEventListener']>['subscription']
-    >(null);
+    React.useRef<ReturnType<NotifiFrontendClient['addEventListener']>>();
 
   useEffect(() => {
     // NOTE: Update historyItems & unreadCount when backend state changed
@@ -83,7 +81,7 @@ export const NotifiHistoryContextProvider: FC<
       const fusionEventIds = new Set(
         fusionEventTopics.map((topic) => topic.fusionEventDescriptor.id ?? ''),
       );
-      const eventHandler = (evt: Types.StateChangedEvent) => {
+      const historyUpdateHandler = (evt: Types.StateChangedEvent) => {
         if (evt.__typename !== 'NotificationHistoryStateChangedEvent') return;
         console.log('NotificationHistoryStateChangedEvent', evt);
         frontendClient
@@ -114,15 +112,26 @@ export const NotifiHistoryContextProvider: FC<
           });
       };
 
-      const { subscription, id } = frontendClient.addEventListener(
+      currentSubscription.current = frontendClient.addEventListener(
         'stateChanged',
-        eventHandler,
+        historyUpdateHandler,
+        (error) => {
+          if (error instanceof Error) {
+            setError({
+              ...error,
+              message: `NotifiHistoryContext - stateChanged: ${error.message}`,
+            });
+          }
+          console.error('NotifiHistoryContext - stateChanged:', error);
+        },
       );
-      currentSubscription.current = subscription;
+
       return () => {
-        currentSubscription.current?.unsubscribe();
-        currentSubscription.current = null;
+        const id = currentSubscription.current;
+        if (!id) return;
         frontendClient.removeEventListener('stateChanged', id);
+        currentSubscription.current = undefined;
+        setError(null);
       };
     }
   }, [frontendClientStatus, historyItems]);
