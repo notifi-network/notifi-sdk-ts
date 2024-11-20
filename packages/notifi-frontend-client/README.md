@@ -328,6 +328,35 @@ const notifications = nodes.map((node) => {
 });
 ```
 
+## ⚠️ Listening to events
+
+Using `addEventListener` method allows to monitor the `stateChanged` event.
+
+**Listening to event**
+
+```ts
+const id = client.addEventListener('stateChanged', eventHandler, errorHandler);
+
+const eventHandler = (event) => {
+  if (event.__typename === 'TargetStateChangedEvent') {
+    console.info('User target state changed', event);
+  }
+  if (event.__typename === 'NotificationHistoryStateChangedEvent') {
+    console.info('New notification coming', event);
+  }
+};
+
+const errorHandler = (error: Error) => {
+  console.error('Error occurred', error);
+};
+```
+
+**Removing the event listener**
+
+```ts
+client.removeEventListener('stateChanged', id);
+```
+
 ## Contributing & Testing
 
 We welcome and appreciate your contributions! Please review our [contribution guidelines](https://github.com/notifi-network/notifi-sdk-ts?tab=readme-ov-file#contribute-to-the-repository-for-contributors) before getting started.
