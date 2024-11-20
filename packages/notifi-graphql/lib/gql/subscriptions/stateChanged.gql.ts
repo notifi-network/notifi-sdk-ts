@@ -3,7 +3,16 @@ import { gql } from 'graphql-request';
 export const stateChangedSubscriptionQuery = `
   subscription stateChanged {
     stateChanged {
-      __typename
+      ... on TargetStateChangedEvent {
+        __typename
+        targetId
+        targetType
+        timestamp
+      }
+      ... on NotificationHistoryStateChangedEvent {
+        __typename
+        timestamp
+      }
     }
   }
 ` as const;

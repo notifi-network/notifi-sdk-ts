@@ -4,6 +4,7 @@ import {
 } from '@notifi-network/notifi-graphql';
 import { GraphQLClient } from 'graphql-request';
 import { RequestConfig } from 'graphql-request/build/esm/types';
+import WebSocket from 'ws';
 
 import {
   ConfigFactoryInput,
@@ -36,7 +37,16 @@ export const newNotifiService = (
   const url = envUrl(config.env, 'http');
   const wsurl = envUrl(config.env, 'websocket');
   const client = new GraphQLClient(url, gqlClientRequestConfig);
-  const subService = new NotifiSubscriptionService(wsurl);
+
+  const subService = new NotifiSubscriptionService(
+    wsurl,
+    /** NOTE - websocketImpl arg:
+     * - In browser env, adopt global WebSocket automatically.
+     * - In Node.js env, manually pass in WebSocket Implementation.
+     * @ref https://github.com/enisdenjo/graphql-ws/blob/c030ed1d5f7e8a552dffbfd46712caf7dfe91a54/src/client.ts#L400
+     */
+    typeof window !== 'undefined' ? undefined : WebSocket,
+  );
   return new NotifiService(client, subService);
 };
 

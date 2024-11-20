@@ -1,4 +1,7 @@
-import { objectKeys } from '@notifi-network/notifi-frontend-client';
+import {
+  NotifiFrontendClient,
+  objectKeys,
+} from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
 import { isValidPhoneNumber } from 'libphonenumber-js';
 import React, {
@@ -235,14 +238,10 @@ export const NotifiTargetContextProvider: FC<
     walletId: targetInputs.wallet ? 'Default' : undefined,
   };
 
-  useEffect(() => {
-    //NOTE: target change listener when window is refocused
-    const handler = () => {
-      if (!frontendClientStatus.isAuthenticated) return;
-      return frontendClient.fetchFusionData().then(refreshTargetDocument);
-    };
-    window.addEventListener('focus', handler);
+  const currentSubscription =
+    React.useRef<ReturnType<NotifiFrontendClient['addEventListener']>>();
 
+  useEffect(() => {
     // NOTE: Initial load
     if (frontendClientStatus.isAuthenticated && !isInitialLoaded.current) {
       if (isLoading && isInitialLoaded.current) return;
@@ -266,9 +265,36 @@ export const NotifiTargetContextProvider: FC<
         .finally(() => setIsLoading(false));
     }
 
-    return () => {
-      window.removeEventListener('focus', handler);
-    };
+    // NOTE: Subscription for state change
+    if (frontendClientStatus.isAuthenticated) {
+      const targetChangedHandler = (evt: Types.StateChangedEvent) => {
+        if (evt.__typename === 'TargetStateChangedEvent') {
+          frontendClient.fetchFusionData().then(refreshTargetDocument);
+        }
+      };
+
+      currentSubscription.current = frontendClient.addEventListener(
+        'stateChanged',
+        targetChangedHandler,
+        (error) => {
+          if (error instanceof Error) {
+            setError({
+              ...error,
+              message: `NotifiTargetContext - stateChanged: ${error.message}`,
+            });
+          }
+          console.error('NotifiTargetContext - stateChanged:', error);
+        },
+      );
+
+      return () => {
+        const id = currentSubscription.current;
+        if (!id) return;
+        frontendClient.removeEventListener('stateChanged', id);
+        currentSubscription.current = undefined;
+        setError(null);
+      };
+    }
   }, [frontendClientStatus.isAuthenticated]);
 
   useEffect(() => {
