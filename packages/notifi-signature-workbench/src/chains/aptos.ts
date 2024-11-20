@@ -114,7 +114,7 @@ async function handleConnect() {
 
                 document.getElementById('wallet-info')!.innerText = `Connected with ${wallet.name}`
                 // Set initial user display
-                document.getElementById('user')!.innerText = `Address: ${accountInfo.args.address}`
+                document.getElementById('user')!.innerText = `Address: ${accountInfo.args.address}, Pubkey: ${accountInfo.args.publicKey.toString()}`
 
                 // Hide wallet selection and show message section
                 document.getElementById('wallet-selection')!.style.display = 'none'
