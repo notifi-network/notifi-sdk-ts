@@ -1,6 +1,6 @@
 {
   "name": "@notifi-network/notifi-react",
-  "version": "3.0.1",
+  "version": "3.1.0",
   "description": "React components to access Notifi core services",
   "keywords": [
     "notifi",
@@ -40,7 +40,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@notifi-network/notifi-frontend-client": "^3.0.1",
+    "@notifi-network/notifi-frontend-client": "^3.1.0",
     "@xmtp/consent-proof-signature": "^0.1.2",
     "@xmtp/content-type-reaction": "^1.1.7",
     "@xmtp/content-type-remote-attachment": "^1.1.8",
