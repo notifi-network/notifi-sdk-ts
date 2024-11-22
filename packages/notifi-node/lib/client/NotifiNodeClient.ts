@@ -107,29 +107,27 @@ export class NotifiNodeClient {
   }
 
   /**
-   * @important To remove event listener, check the README.md of `notifi-node` package for more details. https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-node
+   * @returns {string} - The id of the event listener (used to remove the event listener)
    */
   addEventListener<T extends keyof NotifiEmitterEvents>(
     event: T,
     callBack: (...args: NotifiEmitterEvents[T]) => void,
-  ) {
+    onError?: (error: unknown) => void,
+    onComplete?: () => void,
+  ): string {
     if (this.clientState.status !== 'initialized')
       throw new Error(
         'notifi-node - addEventListener: Client not initialized, call initialize() first',
       );
-    return this.service.addEventListener(event, callBack);
+    return this.service.addEventListener(event, callBack, onError, onComplete);
   }
-  /**
-   * @important To remove event listener, check the README.md of `notifi-node` or `notifi-frontend-client` package for more details.
-   * - `notifi-node`:  https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-node
-   * - `notifi-frontend-client`:  https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-frontend-client
-   */
+
   removeEventListener<T extends keyof NotifiEmitterEvents>(
     event: T,
-    callBack: (...args: NotifiEmitterEvents[T]) => void,
+    id: string,
   ) {
     this.isClientValid('removeEventListener');
-    return this.service.removeEventListener(event, callBack);
+    return this.service.removeEventListener(event, id);
   }
 
   /** NOTE: throw if client is not initialized */

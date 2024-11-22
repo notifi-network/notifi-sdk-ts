@@ -98,7 +98,7 @@ const { nonce } = await notifiClient.beginLoginViaTransaction({
   walletBlockchain,
   walletAddress,
 });
-console.log({ notifiNonce: nonce }); // notifiNonce will be a 32 bytes hex string
+console.info({ notifiNonce: nonce }); // notifiNonce will be a 32 bytes hex string
 
 // Step 3: Append notifi nonce to the calldata
 const txParams = {
@@ -326,6 +326,35 @@ const notifications = nodes.map((node) => {
     timestamp: node.createdDate,
   };
 });
+```
+
+## ⚠️ Listening to events
+
+Using `addEventListener` method allows to monitor the `stateChanged` event.
+
+**Listening to event**
+
+```ts
+const id = client.addEventListener('stateChanged', eventHandler, errorHandler);
+
+const eventHandler = (event) => {
+  if (event.__typename === 'TargetStateChangedEvent') {
+    console.info('User target state changed', event);
+  }
+  if (event.__typename === 'NotificationHistoryStateChangedEvent') {
+    console.info('New notification coming', event);
+  }
+};
+
+const errorHandler = (error: Error) => {
+  console.error('Error occurred', error);
+};
+```
+
+**Removing the event listener**
+
+```ts
+client.removeEventListener('stateChanged', id);
 ```
 
 ## Contributing & Testing

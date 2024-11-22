@@ -1,11 +1,12 @@
 import { FusionMessage } from '@notifi-network/notifi-dataplane';
 import { NotifiNodeClient } from '@notifi-network/notifi-node';
 import express, { Request } from 'express';
+
 import { loggerMiddleWare } from './middleware/logger';
 import {
+  ServiceMiddleWareHttpBody,
   notifiAuthMiddleware,
   notifiServiceMiddleware,
-  ServiceMiddleWareHttpBody,
 } from './middleware/notifiService';
 
 const app = express();
@@ -28,6 +29,8 @@ app.get('/', (_req, res) => {
   );
 });
 
+let client: NotifiNodeClient | undefined = undefined;
+
 type LoginFromServiceHttpBody = {
   sid?: string;
   secret?: string;
@@ -43,10 +46,13 @@ app.post('/login', (req: Request<{}, {}, LoginFromServiceHttpBody>, res) => {
     });
   }
 
-  const client = new NotifiNodeClient(
-    res.locals.notifiService,
-    res.locals.dpapiClient,
-  );
+  client = res.locals.client;
+
+  if (!client) {
+    return res.status(500).json({
+      message: 'notifi-node: login - failed to initialize client',
+    });
+  }
 
   return client
     .logIn({ sid, secret })
@@ -58,7 +64,7 @@ app.post('/login', (req: Request<{}, {}, LoginFromServiceHttpBody>, res) => {
       if (e instanceof Error) {
         message = `notifi-node: login - ${e.message}`;
       }
-      console.log('Error in login', message);
+      console.error('Error in login', message);
       return res.status(500).json({ message });
     });
 });
@@ -71,7 +77,8 @@ app.post(
   '/create-tenant-user',
   notifiAuthMiddleware,
   (req: Request<{}, {}, CreateTenantUserHttpBody>, res) => {
-    const jwt: string = res.locals.jwt;
+    if (!client || client.status.status === 'uninitialized') {
+    }
 
     const { walletBlockchain, walletPublicKey } = req.body ?? {};
 
@@ -81,12 +88,17 @@ app.post(
       });
     }
 
-    const client = new NotifiNodeClient(
-      res.locals.notifiService,
-      res.locals.dpapiClient,
-    );
+    if (!client) {
+      client = res.locals.client;
+      client && client.initialize(res.locals.jwt);
+    }
 
-    client.initialize(jwt);
+    if (!client || client.status.status === 'uninitialized') {
+      return res.status(400).json({
+        message:
+          'notifi-node: createTenantUser - client not initialized, call /login first',
+      });
+    }
 
     return client
       .createTenantUser({
@@ -99,7 +111,7 @@ app.post(
       .catch((e: unknown) => {
         let message = 'Unknown server error';
         if (e instanceof Error) {
-          message = `notifi-node: createTenantUser - ${e.message}`;
+          message = `notifi-node: createTenantUser (jwt: ${trimJwt(res.locals.jwt)}) - ${e.message}`;
         }
 
         return res.status(500).json({ message });
@@ -116,16 +128,19 @@ app.post(
   '/get-active-alerts',
   notifiAuthMiddleware,
   (req: Request<{}, {}, GetActiveAlertsHttpBody>, res) => {
-    const jwt: string = res.locals.jwt;
+    if (!client) {
+      client = res.locals.client;
+      client && client.initialize(res.locals.jwt);
+    }
+
+    if (!client || client.status.status === 'uninitialized') {
+      return res.status(400).json({
+        message:
+          '/get-active-alerts - client not initialized, call /login first',
+      });
+    }
 
     const { first, after, fusionEventId } = req.body ?? {};
-
-    const client = new NotifiNodeClient(
-      res.locals.notifiService,
-      res.locals.dpapiClient,
-    );
-
-    client.initialize(jwt);
 
     if (!fusionEventId)
       return res
@@ -156,7 +171,17 @@ app.post(
   '/publish-fusion-message',
   notifiAuthMiddleware,
   (req: Request<{}, {}, GetFusionNotificationHistoryHttpBody>, res) => {
-    const jwt: string = res.locals.jwt;
+    if (!client) {
+      client = res.locals.client;
+      client && client.initialize(res.locals.jwt);
+    }
+
+    if (!client || client.status.status === 'uninitialized') {
+      return res.status(400).json({
+        message:
+          '/publish-fusion-message - client not initialized, call /login first',
+      });
+    }
 
     if (!req.body.variables || !Array.isArray(req.body.variables))
       return res.status(400).json({
@@ -165,13 +190,6 @@ app.post(
     const fusionMessages = (req.body.variables as unknown[]).filter(
       isFusionMessage,
     );
-
-    const client = new NotifiNodeClient(
-      res.locals.notifiService,
-      res.locals.dpapiClient,
-    );
-
-    client.initialize(jwt);
 
     return client
       .publishFusionMessage(fusionMessages)
@@ -190,10 +208,9 @@ app.post(
 );
 
 type SubscribeTenantActiveAlertChangedHttpBody = ServiceMiddleWareHttpBody;
-let tenantActiveAlertChangedSubscription: Awaited<
-  ReturnType<NotifiNodeClient['addEventListener']>
-> = null;
-let webSocketClient: any;
+let tenantActiveAlertChangedSubscription:
+  | ReturnType<NotifiNodeClient['addEventListener']>
+  | undefined = undefined;
 app.post(
   '/subscribe-active-alert-changed-event',
   notifiAuthMiddleware,
@@ -202,44 +219,34 @@ app.post(
       return res
         .status(200)
         .json({ message: 'already subscribed, unsubscribe before re-calling' });
-    const client = new NotifiNodeClient(
-      res.locals.notifiService,
-      res.locals.dpapiClient,
-    );
 
-    client.initialize(res.locals.jwt);
+    if (!client) {
+      client = res.locals.client;
+      client?.initialize(res.locals.jwt);
+    }
+
+    if (!client || client.status.status === 'uninitialized') {
+      return res.status(400).json({
+        message:
+          'notifi-node: createTenantUser - client not initialized, call /login first',
+      });
+    }
 
     tenantActiveAlertChangedSubscription = client.addEventListener(
       'tenantActiveAlertChanged',
       (event) => {
         if (event.__typename === 'ActiveAlertCreatedEvent')
-          console.log(
+          console.info(
             `Active alert created, payload: $${JSON.stringify(event)}`,
           );
         if (event.__typename === 'ActiveAlertDeletedEvent')
-          console.log(
+          console.info(
             `Active alert deleted, payload: $${JSON.stringify(event)}`,
           );
         // Do something with the event
       },
+      console.error,
     );
-
-    // NOTE: Add event listeners to monitor websocket connection status (You can also remove event listeners using removeEventListener method)
-    client.addEventListener('wsConnecting', () => {
-      console.log('notifi-node: Websocket connecting');
-    });
-    client.addEventListener('wsConnected', (wsClient) => {
-      console.log('notifi-node: Websocket connected', wsClient);
-      webSocketClient = wsClient;
-    });
-    client.addEventListener('wsClosed', (closeEvent) => {
-      console.log('notifi-node: Websocket closed');
-      // Do something to when the websocket is closed. Ex, remove event listeners.
-    });
-    client.addEventListener('wsError', (err) => {
-      console.log('notifi-node: Websocket error', err);
-      // Do something to handle the error
-    });
 
     if (tenantActiveAlertChangedSubscription) {
       return res.status(200).json({
@@ -254,14 +261,19 @@ app.post(
   '/unsubscribe-tenant-active-alert-changed-event',
   notifiAuthMiddleware,
   (_req: Request<{}, {}, UnsubscribeTenantActiveAlertChangedHttpBody>, res) => {
+    if (!client || client.status.status === 'uninitialized')
+      return res.status(400).json({
+        message:
+          'notifi-node: subscribeTenantActiveAlertChanged - client not initialized, call /login first',
+      });
+
     if (tenantActiveAlertChangedSubscription) {
       try {
-        // webSocketClient.terminate();
-        tenantActiveAlertChangedSubscription.unsubscribe();
-        webSocketClient.dispose(); // NOTE: Somehow unsubscribe cannot close the websocket connection sometimes, so we manually close it (we can also use .terminate method to close immediately)
-        tenantActiveAlertChangedSubscription = null;
-        webSocketClient = null;
-
+        client.removeEventListener(
+          'tenantActiveAlertChanged',
+          tenantActiveAlertChangedSubscription,
+        );
+        tenantActiveAlertChangedSubscription = undefined;
         return res.status(200).json({
           message:
             'notifi-node: unsubscribeTenantActiveAlertChanged - unsubscribed',
@@ -282,7 +294,7 @@ app.post(
 );
 
 app.listen(port, () => {
-  console.log(`Listening on ${port}`);
+  console.info(`Listening on ${port}`);
 });
 
 // Utils
@@ -300,3 +312,7 @@ type WalletBlockchain = (NotifiNodeClient['createTenantUser'] extends (
 ) => any
   ? T
   : never)['walletBlockchain'];
+
+const trimJwt = (jwt: string) => {
+  return jwt.slice(0, 5) + '...' + jwt.slice(-5);
+};

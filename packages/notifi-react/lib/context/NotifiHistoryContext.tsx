@@ -1,3 +1,4 @@
+import { NotifiFrontendClient } from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
 import React, {
   FC,
@@ -71,13 +72,18 @@ export const NotifiHistoryContextProvider: FC<
   const { cardConfig, fusionEventTopics } = useNotifiTenantConfigContext();
   const isInitialLoaded = React.useRef(false);
 
+  const currentSubscription =
+    React.useRef<ReturnType<NotifiFrontendClient['addEventListener']>>();
+
   useEffect(() => {
     // NOTE: Update historyItems & unreadCount when backend state changed
     if (frontendClientStatus.isAuthenticated) {
       const fusionEventIds = new Set(
         fusionEventTopics.map((topic) => topic.fusionEventDescriptor.id ?? ''),
       );
-      frontendClient.subscribeNotificationHistoryStateChanged((_data) => {
+      const historyUpdateHandler = (evt: Types.StateChangedEvent) => {
+        if (evt.__typename !== 'NotificationHistoryStateChangedEvent') return;
+
         frontendClient
           .getFusionNotificationHistory({
             first: notificationCountPerPage,
@@ -104,11 +110,30 @@ export const NotifiHistoryContextProvider: FC<
               );
             }
           });
-      });
+      };
+
+      currentSubscription.current = frontendClient.addEventListener(
+        'stateChanged',
+        historyUpdateHandler,
+        (error) => {
+          if (error instanceof Error) {
+            setError({
+              ...error,
+              message: `NotifiHistoryContext - stateChanged: ${error.message}`,
+            });
+          }
+          console.error('NotifiHistoryContext - stateChanged:', error);
+        },
+      );
+
+      return () => {
+        const id = currentSubscription.current;
+        if (!id) return;
+        frontendClient.removeEventListener('stateChanged', id);
+        currentSubscription.current = undefined;
+        setError(null);
+      };
     }
-    return () => {
-      frontendClient.wsDispose();
-    };
   }, [frontendClientStatus, historyItems]);
 
   const getHistoryItems = React.useCallback(

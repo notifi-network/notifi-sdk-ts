@@ -312,6 +312,11 @@ For more comprehensive information, please refer to the <a href="https://github.
 <pre><code class="tsx"><span class="hl-0">import</span><span class="hl-1"> { </span><span class="hl-2">useNotifiHistoryContext</span><span class="hl-1"> } </span><span class="hl-0">from</span><span class="hl-1"> </span><span class="hl-3">&#39;@notifi-network/notifi-react&#39;</span><span class="hl-1">;</span><br/><br/><span class="hl-0">export</span><span class="hl-1"> </span><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">MyComponent</span><span class="hl-1"> = () </span><span class="hl-4">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-4">const</span><span class="hl-1"> {</span><br/><span class="hl-1">    </span><span class="hl-6">isLoading</span><span class="hl-1">,</span><br/><span class="hl-1">    </span><span class="hl-6">error</span><span class="hl-1">,</span><br/><span class="hl-1">    </span><span class="hl-6">getHistoryItems</span><span class="hl-1">,</span><br/><span class="hl-1">    </span><span class="hl-6">markAsRead</span><span class="hl-1">,</span><br/><span class="hl-1">    </span><span class="hl-6">historyItems</span><span class="hl-1">,</span><br/><span class="hl-1">    </span><span class="hl-6">unreadCount</span><span class="hl-1">,</span><br/><span class="hl-1">    </span><span class="hl-6">hasNextPage</span><span class="hl-1">,</span><br/><span class="hl-1">  } = </span><span class="hl-5">useNotifiHistoryContext</span><span class="hl-1">();</span><br/><br/><span class="hl-1">  </span><span class="hl-8">// Other code ...</span><br/><span class="hl-1">};</span>
 </code><button type="button">Copy</button></pre>
 
+<p><strong>Input props</strong></p>
+<ul>
+<li><strong>notificationCountPerPage</strong> (Optional): The number of notifications per fetch in the notification history. The default value is <code>20</code>.</li>
+<li><strong>unreadCountScope</strong> (Optional): The scope can be <code>card</code> or <code>tenant</code>. The default value is <code>card</code>.</li>
+</ul>
 <p><strong>Methods</strong></p>
 <ul>
 <li>

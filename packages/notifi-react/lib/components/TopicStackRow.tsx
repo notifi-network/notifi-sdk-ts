@@ -84,8 +84,6 @@ export const TopicStackRow = <T extends TopicRowCategory>(
       }
     });
 
-    console.log(1, { uniqueCriteria: Array.from(uniqueCriteria.values()) });
-
     const alertsList = Array.from(uniqueCriteria.values()).map((uniqueAlert) =>
       existingAlerts.filter(
         (alert) =>
