@@ -9,13 +9,23 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
+    "@rollup/plugin-inject": "^5.0.5",
+    "postcss-nesting": "^13.0.1",
+    "rollup-plugin-polyfill-node": "^0.13.0",
     "typescript": "^5.0.2",
     "vite": "^4.4.5"
   },
   "dependencies": {
     "@aptos-labs/wallet-standard": "^0.2.0",
+    "@cosmos-kit/core": "^2.15.0",
+    "@cosmos-kit/keplr": "^2.14.1",
+    "@cosmos-kit/leap": "^2.14.1",
+    "@cosmos-kit/station": "^2.12.0",
+    "@esbuild-plugins/node-modules-polyfill": "^0.2.2",
     "@mysten/wallet-standard": "^0.13.13",
     "@w3vm/core": "^0.0.4",
+    "chain-registry": "^1.69.43",
     "viem": "^2.21.47"
   }
 }

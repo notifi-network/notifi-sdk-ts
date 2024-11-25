@@ -43,7 +43,6 @@ Below is a list of wallets that have been tested with the LoginWithWeb3 flow:
 ### High Priority
 - Add Solana support
 - Integrate with GraphQL package to verify LoginWithWeb3 flow
-- Add Cosmos support (looks like https://docs.cosmostation.io/extension/integration/cosmos/typescript should work)
 
 ### Medium Priority
 - Add integration tests to SDK CI pipeline
