@@ -174,6 +174,10 @@ export type WalletWithSignParams =
   | (Readonly<{
       signMessage: Uint8SignMessageFunction;
     }> &
+      OsmosisUserParams)
+  | (Readonly<{
+      signMessage: Uint8SignMessageFunction;
+    }> &
       ElysUserParams)
   | (Readonly<{
       signMessage: Uint8SignMessageFunction;
@@ -241,6 +245,7 @@ export type UserParams =
   | NearUserParams
   | SuiUserParams
   | InjectiveUserParams
+  | OsmosisUserParams
   | ElysUserParams
   | NeutronUserParams
   | ArchwayUserParams
@@ -336,6 +341,12 @@ export type SuiUserParams = Readonly<{
 
 export type InjectiveUserParams = Readonly<{
   walletBlockchain: 'INJECTIVE';
+  accountAddress: string;
+  walletPublicKey: string;
+}>;
+
+export type OsmosisUserParams = Readonly<{
+  walletBlockchain: 'OSMOSIS';
   accountAddress: string;
   walletPublicKey: string;
 }>;
