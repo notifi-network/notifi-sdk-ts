@@ -1,5 +1,7 @@
 import { Types } from '@notifi-network/notifi-graphql';
 
+import { CosmosBlockchain, EvmBlockchain } from '../client/blockchains';
+
 export type NotifiEnvironment =
   | 'Production'
   | 'Staging'
@@ -13,35 +15,13 @@ export type NotifiEnvironmentConfiguration = Readonly<{
     driverType?: 'LocalForage' | 'InMemory';
   }>;
 }>;
+type WalletBlockchainWithPublicKey = EvmBlockchain | 'SOLANA';
 
-type WalletBlockchainWithPublicKey = Extract<
-  Types.WalletBlockchain,
-  | 'ETHEREUM'
-  | 'POLYGON'
-  | 'ARBITRUM'
-  | 'AVALANCHE'
-  | 'BINANCE'
-  | 'OPTIMISM'
-  | 'SOLANA'
-  | 'ZKSYNC'
-  | 'BASE'
-  | 'BLAST'
-  | 'CELO'
-  | 'MANTLE'
-  | 'LINEA'
-  | 'SCROLL'
-  | 'MANTA'
-  | 'MONAD'
-  | 'BERACHAIN'
-  | 'EVMOS'
-  | 'THE_ROOT_NETWORK'
->;
-
-type WalletBlockchainWithDelegate = 'XION';
+type WalletBlockchainWithDelegate = CosmosBlockchain;
 
 type WalletBlockchainWithPublicKeyAndAddress = Exclude<
   Types.WalletBlockchain,
-  WalletBlockchainWithPublicKey | 'OFF_CHAIN' | WalletBlockchainWithDelegate
+  WalletBlockchainWithPublicKey | 'OFF_CHAIN'
 >;
 
 export type NotifiConfigWithPublicKey = Readonly<{
