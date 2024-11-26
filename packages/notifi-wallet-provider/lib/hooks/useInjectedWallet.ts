@@ -48,6 +48,10 @@ export const useInjectedWallet = (
       provider
         .request?.({ method: 'eth_accounts' })
         .then((accounts: string[]) => {
+          if (accounts.length === 0) {
+            setWalletKeys(null);
+            return;
+          }
           const walletKeys = {
             bech32: converter('inj').toBech32(accounts[0]), // TODO: dynamic cosmos chain addr conversion
             hex: accounts[0],
@@ -105,9 +109,29 @@ export const useInjectedWallet = (
   };
 
   const disconnectWallet = () => {
-    setWalletKeys(null);
-    cleanWalletsInLocalStorage();
-    selectWallet(null);
+    provider
+      .request?.({
+        method: 'wallet_revokePermissions',
+        params: [{ eth_accounts: {} }],
+      })
+      .catch((e) => {
+        if (e instanceof Error) {
+          errorHandler({
+            ...e,
+            message: 'ERROR: useInjectedWallet - disconnectWallet' + e.message,
+          });
+        }
+        errorHandler(
+          new Error(
+            'ERROR: useInjectedWallet - disconnectWallet: Unknown error',
+          ),
+        );
+      })
+      .finally(() => {
+        setWalletKeys(null);
+        cleanWalletsInLocalStorage();
+        selectWallet(null);
+      });
   };
 
   const signArbitrary = useCallback(
