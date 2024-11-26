@@ -131,6 +131,11 @@ type BtcWalletWithSignParams = Readonly<{
 }> &
   BtcUserParams;
 
+type CosmosWalletWithSignParams = Readonly<{
+  signMessage: CosmosSignMessageFunction;
+}> &
+  CosmosUserParams;
+
 type EvmWalletWithSignParams = Readonly<{
   signMessage: Uint8SignMessageFunction;
 }> &
@@ -164,6 +169,7 @@ export type WalletWithSignParams =
   | NearWalletWithSignParams
   | SuiWalletWithSignParams
   | OffChainWalletWithSignParams
+  | CosmosWalletWithSignParams
   | UnmaintainedWalletWithSignParams;
 
 /** NOTE:
