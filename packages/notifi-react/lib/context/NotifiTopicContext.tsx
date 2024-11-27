@@ -207,6 +207,9 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
       const fusionEventId = fusionEventDescriptor.id;
       if (fusionEventMetadataJson && fusionEventId) {
         const fusionEventMetadata = getFusionEventMetadata(topic);
+        // NOTE: stackable topics does not support default subscription
+        if (fusionEventMetadata?.uiConfigOverride?.isSubscriptionValueInputable)
+          return;
         const filters = fusionEventMetadata?.filters?.filter(isAlertFilter);
         const fusionFilterOptionsInput: FusionFilterOptions['input'] = {};
         if (filters && filters.length > 0) {

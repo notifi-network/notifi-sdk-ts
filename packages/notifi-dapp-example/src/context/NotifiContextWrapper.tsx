@@ -72,25 +72,25 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
 }) => {
   const { wallets, selectedWallet } = useWallets();
 
-  const { isLoading: isArbLoading, data: arbData } = useQuery(
-    ['arb'],
-    async () => {
+  const { isLoading: isArbLoading, data: arbData } = useQuery({
+    queryKey: ['arb'],
+    queryFn: async () => {
       const response = await fetch(
         'https://arbitrum-api.gmxinfra.io/prices/tickers',
       );
       return response.json();
     },
-  );
+  });
 
-  const { isLoading: isAvaxLoading, data: avaxData } = useQuery(
-    ['avax'],
-    async () => {
+  const { isLoading: isAvaxLoading, data: avaxData } = useQuery({
+    queryKey: ['avax'],
+    queryFn: async () => {
       const response = await fetch(
         'https://avalanche-api.gmxinfra.io/prices/tickers',
       );
       return response.json();
     },
-  );
+  });
 
   if (
     !selectedWallet ||
@@ -127,9 +127,8 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
         if (!walletPublicKey) throw new Error('ERROR: invalid walletPublicKey');
         signMessage = async (message: Uint8Array): Promise<Uint8Array> => {
           const messageString = Buffer.from(message).toString('utf8');
-          const result = await wallets[selectedWallet].signArbitrary(
-            messageString,
-          );
+          const result =
+            await wallets[selectedWallet].signArbitrary(messageString);
           if (!result) throw new Error('ERROR: invalid signature');
           return getBytes(result);
         };
