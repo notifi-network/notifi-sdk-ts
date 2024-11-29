@@ -31,6 +31,7 @@ import {
   CosmosBlockchain,
   EvmBlockchain,
   UnmaintainedBlockchain,
+  isAptosBlockchain,
   isCosmosBlockchain,
   isUsingAptosBlockchain,
   isUsingBtcBlockchain,
@@ -105,6 +106,10 @@ export type SignMessageParams =
   | Readonly<{
       walletBlockchain: 'OFF_CHAIN';
       signIn: OidcSignInFunction;
+    }>
+  | Readonly<{
+      walletBlockchain: 'INJECTIVE';
+      signMessage: Uint8SignMessageFunction;
     }>;
 
 /** NOTE:
@@ -151,6 +156,11 @@ type SuiWalletWithSignParams = Readonly<{
 }> &
   SuiUserParams;
 
+type InjectiveWalletWithSignParams = Readonly<{
+  signMessage: Uint8SignMessageFunction;
+}> &
+  InjectiveUserParams;
+
 type OffChainWalletWithSignParams = Readonly<{
   signIn: OidcSignInFunction;
 }> &
@@ -170,6 +180,7 @@ export type WalletWithSignParams =
   | SuiWalletWithSignParams
   | OffChainWalletWithSignParams
   | CosmosWalletWithSignParams
+  | InjectiveWalletWithSignParams
   | UnmaintainedWalletWithSignParams;
 
 /** NOTE:
@@ -185,8 +196,8 @@ export type UserParams =
   | CosmosUserParams
   | OffChainUserParams
   | UnmaintainedUserParams
-  | BtcUserParams;
-
+  | BtcUserParams
+  | InjectiveUserParams;
 export type SolanaUserParams = Readonly<{
   walletBlockchain: 'SOLANA';
   walletPublicKey: string;
@@ -206,6 +217,12 @@ export type BtcUserParams = Readonly<{
 
 export type EvmUserParams = Readonly<{
   walletBlockchain: EvmBlockchain;
+  walletPublicKey: string;
+}>;
+
+export type InjectiveUserParams = Readonly<{
+  walletBlockchain: 'INJECTIVE';
+  accountAddress: string;
   walletPublicKey: string;
 }>;
 
@@ -480,12 +497,7 @@ export class NotifiFrontendClient {
           nonce,
         };
       }
-    }
-
-    if (
-      signMessageParams.walletBlockchain === 'APTOS' ||
-      signMessageParams.walletBlockchain === 'MOVEMENT'
-    ) {
+    } else if (isAptosBlockchain(signMessageParams.walletBlockchain)) {
       // Narrow the type of signMessage for APTOS/MOVEMENT
       const aptosSignMessage =
         signMessageParams.signMessage as AptosSignMessageFunction;
@@ -622,7 +634,9 @@ export class NotifiFrontendClient {
         }
         case 'SUI':
         case 'NEAR':
-        case 'ARCH': {
+        case 'ARCH':
+        case 'INJECTIVE':
+        case 'BITCOIN': {
           const result = await this._service.logInFromDapp({
             walletBlockchain,
             walletPublicKey: this._configuration.authenticationKey,
@@ -695,7 +709,10 @@ export class NotifiFrontendClient {
       );
 
       return { signature, signedMessage };
-    } else if (isUsingBtcBlockchain(signMessageParams)) {
+    } else if (
+      isUsingBtcBlockchain(signMessageParams) ||
+      signMessageParams.walletBlockchain === 'INJECTIVE'
+    ) {
       //TODO: Implement
       const { authenticationKey, tenantId } = this
         ._configuration as NotifiConfigWithPublicKeyAndAddress;

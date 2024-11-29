@@ -37,7 +37,6 @@ export const EVM_BLOCKCHAINS = [
   'BERACHAIN',
   'OPTIMISM',
   'THE_ROOT_NETWORK',
-  'INJECTIVE',
   'ZKSYNC',
 ] as const;
 
@@ -61,6 +60,7 @@ const ALL_BLOCKCHAINS = [
   'SOLANA',
   'SUI',
   'NEAR',
+  'INJECTIVE',
 ] as const;
 
 type Blockchain = (typeof ALL_BLOCKCHAINS)[number];
