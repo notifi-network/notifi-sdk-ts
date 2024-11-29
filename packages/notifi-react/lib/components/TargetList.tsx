@@ -2,7 +2,12 @@ import { objectKeys } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import React from 'react';
 
-import { useNotifiTargetContext } from '../context';
+import {
+  NotifiTenantConfigContextType,
+  Target,
+  useNotifiTargetContext,
+  useNotifiTenantConfigContext,
+} from '../context';
 import { isTargetVerified } from '../utils';
 import { defaultCopy } from '../utils/constants';
 import { TargetListItem, TargetListItemProps } from './TargetListItem';
@@ -39,6 +44,7 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
   const {
     targetDocument: { targetInfoPrompts, targetData },
   } = useNotifiTargetContext();
+  const { cardConfig } = useNotifiTenantConfigContext();
 
   const targetListItemArgsList = React.useMemo(() => {
     // TODO: Move to custom hook when it gets too complex
@@ -67,11 +73,13 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
 
     return [...unverifiedTargets, ...verifiedTargets].map((target) => {
       const targetInfo = targetInfoPrompts[target];
-      if (!targetInfo || !targetData[target]) return null;
       const targetListItemArgs = {
         target,
         targetInfo,
       } as TargetListItemProps;
+
+      if (!cardConfig?.contactInfo[targetToContactInfoKey(target)]?.active)
+        return null;
 
       switch (target) {
         case 'email':
@@ -119,7 +127,7 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
           };
           break;
         case 'discord':
-          if (!targetData[target].useDiscord) return null;
+          // if (!targetData[target].useDiscord) return null;
           targetListItemArgs.iconType = 'discord';
           targetListItemArgs.label = defaultCopy.targetList.discord;
           targetListItemArgs.targetCtaType = 'button';
@@ -142,7 +150,7 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
           };
           break;
         case 'slack':
-          if (!targetData[target].useSlack) return null;
+          // if (!targetData[target].useSlack) return null;
           targetListItemArgs.iconType = 'slack';
           targetListItemArgs.label = defaultCopy.targetList.slack;
           targetListItemArgs.targetCtaType = 'button';
@@ -156,7 +164,7 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
           };
           break;
         case 'wallet':
-          if (!targetData[target].useWallet) return null;
+          // if (!targetData[target].useWallet) return null;
           targetListItemArgs.iconType = 'connect';
           targetListItemArgs.label = defaultCopy.targetList.wallet;
           targetListItemArgs.targetCtaType = 'button';
@@ -194,4 +202,14 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
       })}
     </div>
   );
+};
+
+// Utils
+type ContactInfoKey = keyof NonNullable<
+  NotifiTenantConfigContextType['cardConfig']
+>['contactInfo'];
+
+const targetToContactInfoKey = (target: Target): ContactInfoKey => {
+  if (target === 'phoneNumber') return 'sms';
+  return target;
 };
