@@ -56,15 +56,15 @@ export const getAvailableTargetInputCount = (targetInputs: TargetInputs) => {
 };
 
 export const isTargetCta = (
-  targetInfoPrompt: TargetInfoPrompt,
+  targetInfoPrompt: TargetInfoPrompt | undefined,
 ): targetInfoPrompt is CtaInfo => {
-  return targetInfoPrompt.type === 'cta';
+  return targetInfoPrompt?.type === 'cta';
 };
 
 export const isTargetVerified = (
-  targetInfoPrompt: TargetInfoPrompt,
+  targetInfoPrompt: TargetInfoPrompt | undefined,
 ): targetInfoPrompt is MessageInfo => {
-  return targetInfoPrompt.type === 'message';
+  return targetInfoPrompt?.type === 'message';
 };
 
 export const isFormTarget = (target: Target): target is FormTarget => {
