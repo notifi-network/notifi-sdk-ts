@@ -144,10 +144,7 @@ export type NotifiTargetContextType = {
   error: Error | null;
   errorWallet: Error | null;
   updateTargetInputs: UpdateTargetInputs;
-  renewTargetGroup: (singleTargetRenewArgs?: {
-    target: ToggleTarget;
-    value: boolean;
-  }) => Promise<void>;
+  renewTargetGroup: (singleTargetRenewArgs?: TargetRenewArgs) => Promise<void>;
   isChangingTargets: Record<Target, boolean>;
   targetDocument: TargetDocument;
   unVerifiedTargets: Target[];
@@ -583,10 +580,7 @@ export const NotifiTargetContextProvider: FC<
             });
         }
       } else {
-        updateTargetInfoPrompt('email', {
-          type: 'message',
-          message: 'Verified',
-        });
+        updateTargetInfoPrompt('email', null);
       }
     },
     [frontendClient],
