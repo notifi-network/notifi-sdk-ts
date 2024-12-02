@@ -3,6 +3,7 @@ import React from 'react';
 
 import { Icon, IconType } from '../assets/Icons';
 import {
+  FormTarget,
   Target,
   TargetInfo,
   TargetInfoPrompt,
@@ -12,6 +13,7 @@ import {
 import { useComponentPosition } from '../hooks/useComponentPosition';
 import {
   getAvailableTargetInputCount,
+  getTargetValidateRegex,
   isFormTarget,
   isTargetCta,
   isTargetVerified,
@@ -73,7 +75,7 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
     const hasChange = !Object.values(isChangingTargets).every(
       (hasChange) => !hasChange,
     );
-    hasChange && renewTargetGroup();
+    // hasChange && renewTargetGroup();
     isItemRemoved.current = false;
   }, [isChangingTargets]);
 
@@ -99,14 +101,14 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
       : 'notifi-ftu-target-list-main',
   );
 
-  if (isFormTarget(props.target) && props.targetInfo)
+  if (isFormTarget(props.target))
     return (
       <div
         className={clsx(
           'notifi-target-list-item',
           props.classNames?.targetListItem,
           // NOTE: only used when we want to adopt different style for verified items
-          isTargetVerified(props.targetInfo.infoPrompt) &&
+          isTargetVerified(props.targetInfo?.infoPrompt) &&
             props.classNames?.targetListVerifiedItem,
         )}
       >
@@ -122,12 +124,19 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
           />
           <label>{props.label}</label>
           {/* TODO */}
-          <TargetInputField targetType={props.target} iconType={'email'} />
-          <div onClick={() => renewTargetGroup()}> update</div>
+          {!props.targetInfo ? (
+            <TargetInputField
+              targetType={props.target}
+              // @ts-ignore
+              iconType={props.target}
+              // @ts-ignore
+              validateRegex={getTargetValidateRegex(props.target)}
+            />
+          ) : null}
         </div>
         {/* TODO: impl after verify message for form targets */}
         {props.message?.beforeVerify &&
-        isTargetCta(props.targetInfo.infoPrompt) ? (
+        isTargetCta(props.targetInfo?.infoPrompt) ? (
           <div
             className={clsx(
               'notifi-target-list-target-verify-message',
@@ -148,17 +157,43 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
           {targetData[props.target]}
         </div>
 
-        <TargetCta
-          type={props.targetCtaType}
-          targetInfoPrompt={props.targetInfo.infoPrompt}
-          classNames={props.classNames?.TargetCta}
-          postCta={props.postCta}
-        />
-        {isRemoveButtonAvailable(props.targetInfo.infoPrompt) ? (
+        {props.targetInfo ? (
+          <TargetCta
+            type={props.targetCtaType}
+            targetInfoPrompt={props.targetInfo.infoPrompt}
+            classNames={props.classNames?.TargetCta}
+            postCta={props.postCta}
+          />
+        ) : (
+          <>
+            {!targetInputs[props.target].error &&
+            targetInputs[props.target].value ? (
+              <div
+                onClick={() => {
+                  const target = props.target as FormTarget;
+                  renewTargetGroup({
+                    target: target,
+                    value: targetInputs[target].value,
+                  });
+                }}
+              >
+                TODO: Add new (Signup)
+              </div>
+            ) : null}
+          </>
+        )}
+        {props.targetInfo ? (
+          // {isRemoveButtonAvailable(props.targetInfo.infoPrompt) ? (
           <TargetListItemAction
             action={async () => {
               isItemRemoved.current = true;
-              updateTargetInputs(props.target, { value: '' });
+              // updateTargetInputs(props.target, { value: '' });
+              const target = props.target as FormTarget;
+              updateTargetInputs(target, { value: '' });
+              renewTargetGroup({
+                target: target,
+                value: '',
+              });
             }}
             classNames={{ removeCta: props.classNames?.removeCta }}
           />
