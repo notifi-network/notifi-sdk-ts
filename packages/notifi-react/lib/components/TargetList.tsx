@@ -60,16 +60,10 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
       const targetInfo = targetInfoPrompts[target];
       return targetInfo ? isTargetVerified(targetInfo.infoPrompt) : false;
     });
-    // .sort((a, b) => {
-    //   return order.indexOf(a) - order.indexOf(b);
-    // });
 
     const unverifiedTargets = objectKeys(targetData).filter(
       (target) => !verifiedTargets.includes(target),
     );
-    // .sort((a, b) => {
-    //   return order.indexOf(a) - order.indexOf(b);
-    // });
 
     return [...unverifiedTargets, ...verifiedTargets]
       .sort((a, b) => {
@@ -131,7 +125,6 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
             };
             break;
           case 'discord':
-            // if (!targetData[target].useDiscord) return null;
             targetListItemArgs.iconType = 'discord';
             targetListItemArgs.label = defaultCopy.targetList.discord;
             targetListItemArgs.targetCtaType = 'button';
@@ -154,7 +147,6 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
             };
             break;
           case 'slack':
-            // if (!targetData[target].useSlack) return null;
             targetListItemArgs.iconType = 'slack';
             targetListItemArgs.label = defaultCopy.targetList.slack;
             targetListItemArgs.targetCtaType = 'button';
@@ -168,7 +160,6 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
             };
             break;
           case 'wallet':
-            // if (!targetData[target].useWallet) return null;
             targetListItemArgs.iconType = 'connect';
             targetListItemArgs.label = defaultCopy.targetList.wallet;
             targetListItemArgs.targetCtaType = 'button';

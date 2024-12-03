@@ -78,6 +78,7 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
   } = useTargetWallet();
 
   const isRemoveButtonAvailable = () => {
+    // TODO: Only for reference, remove before merge.
     // const isRemoveButtonAvailable = (targetInfoPrompt: TargetInfoPrompt) => {
     // if (cardConfig?.isContactInfoRequired) {
     //   return (
@@ -90,6 +91,7 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
     //   isTargetVerified(targetInfoPrompt) && props.parentComponent !== 'ftu'
     // );
     switch (props.target) {
+      // TODO: Add case section for each targets
       // case 'discord':
       //   return (
       //     !!props.targetInfo &&
@@ -138,7 +140,8 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
             type: 'cta',
             message: 'Enable Bot',
             onClick: async () => {
-              await updateTargetInputs(props.target, true);
+              // TODO: Remove this after adding documentation: 1. single target subscription always sync with with targetData. 2. targetInput & multiple target subscription.
+              // await updateTargetInputs(props.target, true);
               const targetGroup = await renewTargetGroup({
                 target: props.target as ToggleTarget,
                 value: true,
@@ -164,7 +167,8 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
             type: 'cta',
             message: 'Sign Wallet',
             onClick: async () => {
-              await updateTargetInputs(props.target, true);
+              // TODO: Remove this after adding documentation: 1. single target subscription always sync with with targetData. 2. targetInput & multiple target subscription.
+              // await updateTargetInputs(props.target, true);
               const targetGroup = await renewTargetGroup({
                 target: props.target as ToggleTarget,
                 value: true,
@@ -213,8 +217,6 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
     props.target,
     targetInputs /* renewTargetGroup, updateTargetInputs, signCoinbaseSignature */,
   ]);
-
-  // if (!targetData[props.target] || !props.targetInfo.infoPrompt) return null;
 
   const { componentPosition: tooltipIconPosition } = useComponentPosition(
     tooltipRef,
@@ -448,8 +450,8 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
         {isRemoveButtonAvailable() ? (
           <TargetListItemAction
             action={async () => {
-              // isItemRemoved.current = true;
-              updateTargetInputs(props.target, false);
+              // TODO: Remove this after adding documentation: 1. single target subscription always sync with with targetData. 2. targetInput & multiple target subscription.
+              // updateTargetInputs(props.target, false);
               renewTargetGroup({
                 // TODO: Add target type
                 target: props.target as ToggleTarget,
