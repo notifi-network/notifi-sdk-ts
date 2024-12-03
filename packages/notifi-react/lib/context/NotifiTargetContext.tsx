@@ -144,7 +144,9 @@ export type NotifiTargetContextType = {
   error: Error | null;
   errorWallet: Error | null;
   updateTargetInputs: UpdateTargetInputs;
-  renewTargetGroup: (singleTargetRenewArgs?: TargetRenewArgs) => Promise<void>;
+  renewTargetGroup: (
+    singleTargetRenewArgs?: TargetRenewArgs,
+  ) => Promise<Types.TargetGroupFragmentFragment | null>;
   isChangingTargets: Record<Target, boolean>;
   targetDocument: TargetDocument;
   unVerifiedTargets: Target[];
@@ -397,7 +399,9 @@ export const NotifiTargetContextProvider: FC<
   );
 
   const renewTargetGroup = useCallback(
-    async (singleTargetRenewArgs?: TargetRenewArgs) => {
+    async (
+      singleTargetRenewArgs?: TargetRenewArgs,
+    ): Promise<Types.TargetGroupFragmentFragment | null> => {
       let data = { ...targetGroupToBeSaved };
 
       if (singleTargetRenewArgs) {
@@ -458,8 +462,12 @@ export const NotifiTargetContextProvider: FC<
             })
             .catch((e) => setError(e as Error))
             .finally(() => setIsLoading(false));
+          return _result;
         })
-        .catch((e) => setError(e as Error))
+        .catch((e) => {
+          setError(e as Error);
+          return null;
+        })
         .finally(() => setIsLoading(false));
     },
     [frontendClient, targetGroupToBeSaved, targetData],
@@ -760,6 +768,7 @@ export const NotifiTargetContextProvider: FC<
             isAvailable: toggleTargetAvailability?.slack ?? true,
           },
         }));
+        updateTargetInfoPrompt('slack', null);
       }
     },
     [],
@@ -820,6 +829,7 @@ export const NotifiTargetContextProvider: FC<
             isAvailable: toggleTargetAvailability?.wallet ?? false,
           },
         }));
+        updateTargetInfoPrompt('wallet', null);
       }
     },
     [toggleTargetAvailability, signCoinbaseSignature],

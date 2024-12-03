@@ -12,6 +12,7 @@ import {
   useNotifiTenantConfigContext,
 } from '../context';
 import { useComponentPosition } from '../hooks/useComponentPosition';
+import { useTargetWallet } from '../hooks/useTargetWallet';
 import {
   getAvailableTargetInputCount,
   getTargetValidateRegex,
@@ -70,6 +71,11 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
   } = useNotifiTargetContext();
   const { cardConfig } = useNotifiTenantConfigContext();
   const isItemRemoved = React.useRef(false);
+  const {
+    signCoinbaseSignature,
+    isLoading: isLoadingWallet,
+    error: errorWallet,
+  } = useTargetWallet();
 
   React.useEffect(() => {
     if (!isItemRemoved.current) return;
@@ -80,17 +86,27 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
     isItemRemoved.current = false;
   }, [isChangingTargets]);
 
-  const isRemoveButtonAvailable = (targetInfoPrompt: TargetInfoPrompt) => {
-    if (cardConfig?.isContactInfoRequired) {
-      return (
-        getAvailableTargetInputCount(targetInputs) > 1 &&
-        // isTargetVerified(targetInfoPrompt) &&
-        props.parentComponent !== 'ftu'
-      );
+  const isRemoveButtonAvailable = () => {
+    // const isRemoveButtonAvailable = (targetInfoPrompt: TargetInfoPrompt) => {
+    // if (cardConfig?.isContactInfoRequired) {
+    //   return (
+    //     getAvailableTargetInputCount(targetInputs) > 1 &&
+    //     // isTargetVerified(targetInfoPrompt) &&
+    //     props.parentComponent !== 'ftu'
+    //   );
+    // }
+    // return (
+    //   isTargetVerified(targetInfoPrompt) && props.parentComponent !== 'ftu'
+    // );
+    switch (props.target) {
+      // case 'discord':
+      //   return (
+      //     !!props.targetInfo &&
+      //     props.targetInfo.infoPrompt.message !== 'Enable Bot'
+      //   );
+      default:
+        return !!props.targetInfo;
     }
-    return (
-      isTargetVerified(targetInfoPrompt) && props.parentComponent !== 'ftu'
-    );
   };
 
   // if (!targetData[props.target] || !props.targetInfo.infoPrompt) return null;
@@ -169,17 +185,22 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
           <>
             {!targetInputs[props.target].error &&
             targetInputs[props.target].value ? (
-              <div
-                onClick={() => {
-                  const target = props.target as FormTarget;
-                  renewTargetGroup({
-                    target: target,
-                    value: targetInputs[target].value,
-                  });
+              <TargetCta
+                type={'button'}
+                targetInfoPrompt={{
+                  type: 'cta',
+                  message: 'Signup',
+                  onClick: async () => {
+                    const target = props.target as FormTarget;
+                    renewTargetGroup({
+                      target: target,
+                      value: targetInputs[target].value,
+                    });
+                  },
                 }}
-              >
-                TODO: Add new (Signup)
-              </div>
+                classNames={props.classNames?.TargetCta}
+                postCta={props.postCta}
+              />
             ) : null}
           </>
         )}
@@ -322,7 +343,6 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
             </div>
           </div>
         ) : null}
-        <div>{JSON.stringify(props.targetInfo)}</div>
         {props.targetInfo ? (
           <TargetCta
             type={props.targetCtaType}
@@ -331,22 +351,60 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
             postCta={props.postCta}
           />
         ) : (
-          <div
-            onClick={() => {
-              updateTargetInputs(props.target, true);
-              renewTargetGroup({
-                // TODO: Add target type
-                target: props.target as ToggleTarget,
-                value: true,
-              });
+          <TargetCta
+            type={props.targetCtaType}
+            targetInfoPrompt={{
+              type: 'cta',
+              message:
+                props.target === 'discord'
+                  ? 'Enable Bot'
+                  : props.target === 'wallet'
+                    ? 'Sign Wallet'
+                    : 'Sign up', // Only for Discord --> discuss with sam renaming 'Signup' to 'Enable Bot'
+              onClick: async () => {
+                await updateTargetInputs(props.target, true);
+                const targetGroup = await renewTargetGroup({
+                  target: props.target as ToggleTarget,
+                  value: true,
+                });
+                // TODO: Only for Discord
+                switch (props.target) {
+                  case 'discord':
+                    if (targetGroup?.discordTargets?.[0]?.verificationLink) {
+                      window.open(
+                        targetGroup?.discordTargets?.[0]?.verificationLink,
+                        '_blank',
+                      );
+                    }
+                    break;
+                  case 'wallet':
+                    const walletTargetId = targetGroup?.web3Targets?.[0]?.id;
+                    const walletTargetSenderAddress =
+                      targetGroup?.web3Targets?.[0]?.senderAddress;
+                    if (
+                      !targetGroup?.web3Targets?.[0]?.isConfirmed &&
+                      walletTargetId &&
+                      walletTargetSenderAddress
+                    ) {
+                      const updatedWeb3Target = await signCoinbaseSignature(
+                        walletTargetId,
+                        walletTargetSenderAddress,
+                      );
+                    }
+                    // TODO: how to refresh target data
+                    break;
+                  default:
+                    break;
+                }
+              },
             }}
-          >
-            TODO: Signup
-          </div>
+            classNames={props.classNames?.TargetCta}
+            postCta={props.postCta}
+          />
         )}
 
-        {props.targetInfo ? (
-          // {isRemoveButtonAvailable(props.targetInfo.infoPrompt) ? (
+        {/* {props.targetInfo ? ( */}
+        {isRemoveButtonAvailable() ? (
           <TargetListItemAction
             action={async () => {
               isItemRemoved.current = true;
