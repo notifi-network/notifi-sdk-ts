@@ -712,6 +712,7 @@ export const NotifiTargetContextProvider: FC<
             isAvailable: toggleTargetAvailability?.discord ?? true,
           },
         }));
+        updateTargetInfoPrompt('discord', null);
       }
     },
     [],

@@ -7,6 +7,7 @@ import {
   Target,
   TargetInfo,
   TargetInfoPrompt,
+  ToggleTarget,
   useNotifiTargetContext,
   useNotifiTenantConfigContext,
 } from '../context';
@@ -201,142 +202,166 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
       </div>
     );
 
-  if (isToggleTarget(props.target) && props.targetInfo?.infoPrompt) {
+  if (isToggleTarget(props.target)) {
     const toggleTargetData = targetData[props.target];
-    return <div>{props.target} TODO</div>;
-    //   <div
-    //     className={clsx(
-    //       'notifi-target-list-item',
-    //       props.classNames?.targetListItem,
-    //       // NOTE: only used when we want to adopt different style for verified items
-    //       isTargetVerified(props.targetInfo.infoPrompt) &&
-    //         props.classNames?.targetListVerifiedItem,
-    //     )}
-    //   >
-    //     <div
-    //       className={clsx(
-    //         'notifi-target-list-item-target',
-    //         props.classNames?.targetListItemTarget,
-    //       )}
-    //     >
-    //       <Icon
-    //         type={props.iconType}
-    //         className={clsx('notifi-target-list-icon', props.classNames?.icon)}
-    //       />
-    //       <label>{props.label}</label>
-    //     </div>
-    //     {!isTargetVerified(props.targetInfo.infoPrompt) ||
-    //     props.parentComponent === 'ftu' ||
-    //     props.target === 'wallet' ? null : (
-    //       <div
-    //         className={clsx(
-    //           'notifi-target-list-item-target-id',
-    //           props.classNames?.targetId,
-    //         )}
-    //       >
-    //         {/** TODO: Move to use memo once the target display id > 1 format */}
-    //         {/** Display Discord username */}
-    //         {toggleTargetData?.data &&
-    //           'username' in toggleTargetData.data &&
-    //           `@${toggleTargetData.data.username}`}
-    //       </div>
-    //     )}
-    //     {props.message?.beforeVerify &&
-    //     isTargetCta(props.targetInfo.infoPrompt) ? (
-    //       <div
-    //         className={clsx(
-    //           'notifi-target-list-target-verify-message',
-    //           props.classNames?.verifyMessage,
-    //         )}
-    //       >
-    //         {props.message.beforeVerify}
-    //         <div className={'notifi-target-list-item-tooltip'} ref={tooltipRef}>
-    //           <Icon
-    //             className={clsx(
-    //               'notifi-target-list-item-tooltip-icon',
-    //               props.classNames?.tooltipIcon,
-    //             )}
-    //             type="info"
-    //           />
-    //           <div
-    //             className={clsx(
-    //               'notifi-target-list-item-tooltip-content',
-    //               props.classNames?.tooltipContent,
-    //               props.parentComponent === 'inbox' ? 'inbox' : '',
-    //               tooltipIconPosition,
-    //             )}
-    //           >
-    //             {props.message.beforeVerifyTooltip}{' '}
-    //             {props.message.beforeVerifyTooltipEndingLink ? (
-    //               <a
-    //                 href={props.message.beforeVerifyTooltipEndingLink.url}
-    //                 target="_blank"
-    //                 rel="noopener noreferrer"
-    //               >
-    //                 {props.message.beforeVerifyTooltipEndingLink.text}
-    //               </a>
-    //             ) : null}
-    //           </div>
-    //         </div>
-    //       </div>
-    //     ) : null}
-    //     {props.message?.afterVerify &&
-    //     isTargetVerified(props.targetInfo.infoPrompt) ? (
-    //       <div
-    //         className={clsx(
-    //           'notifi-target-list-target-confirmed-message',
-    //           props.classNames?.verifyMessage,
-    //           props.parentComponent === 'inbox' ? 'inbox' : '',
-    //         )}
-    //       >
-    //         {props.message.afterVerify}
-    //         <div className={'notifi-target-list-item-tooltip'} ref={tooltipRef}>
-    //           <Icon
-    //             className={clsx(
-    //               'notifi-target-list-item-tooltip-icon',
-    //               props.classNames?.tooltipIcon,
-    //             )}
-    //             type="info"
-    //           />
-    //           <div
-    //             className={clsx(
-    //               'notifi-target-list-item-tooltip-content',
-    //               props.classNames?.tooltipContent,
-    //               props.parentComponent === 'inbox' ? 'inbox' : '',
-    //               tooltipIconPosition,
-    //             )}
-    //           >
-    //             {props.message.afterVerifyTooltip}{' '}
-    //             {props.message.afterVerifyTooltipEndingLink ? (
-    //               <a
-    //                 href={props.message.afterVerifyTooltipEndingLink.url}
-    //                 target="_blank"
-    //                 rel="noopener noreferrer"
-    //               >
-    //                 {props.message.afterVerifyTooltipEndingLink.text}
-    //               </a>
-    //             ) : null}
-    //           </div>
-    //         </div>
-    //       </div>
-    //     ) : null}
-    //     <TargetCta
-    //       type={props.targetCtaType}
-    //       targetInfoPrompt={props.targetInfo.infoPrompt}
-    //       classNames={props.classNames?.TargetCta}
-    //       postCta={props.postCta}
-    //     />
-    //     {isRemoveButtonAvailable(props.targetInfo.infoPrompt) ? (
-    //       <TargetListItemAction
-    //         action={async () => {
-    //           isItemRemoved.current = true;
-    //           updateTargetInputs(props.target, false);
-    //         }}
-    //         classNames={{ removeCta: props.classNames?.removeCta }}
-    //       />
-    //     ) : null}
-    //   </div>
-    // );
+    // return <div>{props.target} TODO</div>;
+    return (
+      <div
+        className={clsx(
+          'notifi-target-list-item',
+          props.classNames?.targetListItem,
+          // NOTE: only used when we want to adopt different style for verified items
+          isTargetVerified(props.targetInfo?.infoPrompt) &&
+            props.classNames?.targetListVerifiedItem,
+        )}
+      >
+        <div
+          className={clsx(
+            'notifi-target-list-item-target',
+            props.classNames?.targetListItemTarget,
+          )}
+        >
+          <Icon
+            type={props.iconType}
+            className={clsx('notifi-target-list-icon', props.classNames?.icon)}
+          />
+          <label>{props.label}</label>
+        </div>
+        {!isTargetVerified(props.targetInfo?.infoPrompt) ||
+        props.parentComponent === 'ftu' ||
+        props.target === 'wallet' ? null : (
+          <div
+            className={clsx(
+              'notifi-target-list-item-target-id',
+              props.classNames?.targetId,
+            )}
+          >
+            {/** TODO: Move to use memo once the target display id > 1 format */}
+            {/** Display Discord username */}
+            {toggleTargetData?.data &&
+              'username' in toggleTargetData.data &&
+              `@${toggleTargetData.data.username}`}
+          </div>
+        )}
+        {props.message?.beforeVerify &&
+        isTargetCta(props.targetInfo?.infoPrompt) ? (
+          <div
+            className={clsx(
+              'notifi-target-list-target-verify-message',
+              props.classNames?.verifyMessage,
+            )}
+          >
+            {props.message.beforeVerify}
+            <div className={'notifi-target-list-item-tooltip'} ref={tooltipRef}>
+              <Icon
+                className={clsx(
+                  'notifi-target-list-item-tooltip-icon',
+                  props.classNames?.tooltipIcon,
+                )}
+                type="info"
+              />
+              <div
+                className={clsx(
+                  'notifi-target-list-item-tooltip-content',
+                  props.classNames?.tooltipContent,
+                  props.parentComponent === 'inbox' ? 'inbox' : '',
+                  tooltipIconPosition,
+                )}
+              >
+                {props.message.beforeVerifyTooltip}{' '}
+                {props.message.beforeVerifyTooltipEndingLink ? (
+                  <a
+                    href={props.message.beforeVerifyTooltipEndingLink.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {props.message.beforeVerifyTooltipEndingLink.text}
+                  </a>
+                ) : null}
+              </div>
+            </div>
+          </div>
+        ) : null}
+        {props.message?.afterVerify &&
+        isTargetVerified(props.targetInfo?.infoPrompt) ? (
+          <div
+            className={clsx(
+              'notifi-target-list-target-confirmed-message',
+              props.classNames?.verifyMessage,
+              props.parentComponent === 'inbox' ? 'inbox' : '',
+            )}
+          >
+            {props.message.afterVerify}
+            <div className={'notifi-target-list-item-tooltip'} ref={tooltipRef}>
+              <Icon
+                className={clsx(
+                  'notifi-target-list-item-tooltip-icon',
+                  props.classNames?.tooltipIcon,
+                )}
+                type="info"
+              />
+              <div
+                className={clsx(
+                  'notifi-target-list-item-tooltip-content',
+                  props.classNames?.tooltipContent,
+                  props.parentComponent === 'inbox' ? 'inbox' : '',
+                  tooltipIconPosition,
+                )}
+              >
+                {props.message.afterVerifyTooltip}{' '}
+                {props.message.afterVerifyTooltipEndingLink ? (
+                  <a
+                    href={props.message.afterVerifyTooltipEndingLink.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {props.message.afterVerifyTooltipEndingLink.text}
+                  </a>
+                ) : null}
+              </div>
+            </div>
+          </div>
+        ) : null}
+        <div>{JSON.stringify(props.targetInfo)}</div>
+        {props.targetInfo ? (
+          <TargetCta
+            type={props.targetCtaType}
+            targetInfoPrompt={props.targetInfo.infoPrompt}
+            classNames={props.classNames?.TargetCta}
+            postCta={props.postCta}
+          />
+        ) : (
+          <div
+            onClick={() => {
+              updateTargetInputs(props.target, true);
+              renewTargetGroup({
+                // TODO: Add target type
+                target: props.target as ToggleTarget,
+                value: true,
+              });
+            }}
+          >
+            TODO: Signup
+          </div>
+        )}
+
+        {props.targetInfo ? (
+          // {isRemoveButtonAvailable(props.targetInfo.infoPrompt) ? (
+          <TargetListItemAction
+            action={async () => {
+              isItemRemoved.current = true;
+              updateTargetInputs(props.target, false);
+              renewTargetGroup({
+                // TODO: Add target type
+                target: props.target as ToggleTarget,
+                value: false,
+              });
+            }}
+            classNames={{ removeCta: props.classNames?.removeCta }}
+          />
+        ) : null}
+      </div>
+    );
   }
 
   return null;
