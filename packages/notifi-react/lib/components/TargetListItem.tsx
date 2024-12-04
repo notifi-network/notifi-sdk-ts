@@ -3,21 +3,26 @@ import React from 'react';
 
 import { Icon, IconType } from '../assets/Icons';
 import {
+  FormTarget,
   Target,
   TargetInfo,
   TargetInfoPrompt,
+  ToggleTarget,
   useNotifiTargetContext,
   useNotifiTenantConfigContext,
 } from '../context';
 import { useComponentPosition } from '../hooks/useComponentPosition';
+import { useTargetWallet } from '../hooks/useTargetWallet';
 import {
   getAvailableTargetInputCount,
+  getTargetValidateRegex,
   isFormTarget,
   isTargetCta,
   isTargetVerified,
   isToggleTarget,
 } from '../utils';
 import { PostCta, TargetCta, TargetCtaProps } from './TargetCta';
+import { TargetInputField } from './TargetInputField';
 
 export type TargetListItemProps = {
   targetListRef: React.RefObject<HTMLDivElement>;
@@ -26,7 +31,7 @@ export type TargetListItemProps = {
   label: string;
   targetCtaType: TargetCtaProps['type'];
   target: Target;
-  targetInfo: TargetInfo;
+  targetInfo?: TargetInfo;
   message?: {
     beforeVerify?: string;
     afterVerify?: string;
@@ -65,31 +70,153 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
     isChangingTargets,
   } = useNotifiTargetContext();
   const { cardConfig } = useNotifiTenantConfigContext();
-  const isItemRemoved = React.useRef(false);
+  // const isItemRemoved = React.useRef(false);
+  const {
+    signCoinbaseSignature,
+    isLoading: isLoadingWallet,
+    error: errorWallet,
+  } = useTargetWallet();
 
-  React.useEffect(() => {
-    if (!isItemRemoved.current) return;
-    const hasChange = !Object.values(isChangingTargets).every(
-      (hasChange) => !hasChange,
-    );
-    hasChange && renewTargetGroup();
-    isItemRemoved.current = false;
-  }, [isChangingTargets]);
-
-  const isRemoveButtonAvailable = (targetInfoPrompt: TargetInfoPrompt) => {
-    if (cardConfig?.isContactInfoRequired) {
-      return (
-        getAvailableTargetInputCount(targetInputs) > 1 &&
-        isTargetVerified(targetInfoPrompt) &&
-        props.parentComponent !== 'ftu'
-      );
+  const isRemoveButtonAvailable = () => {
+    // TODO: Only for reference, remove before merge.
+    // const isRemoveButtonAvailable = (targetInfoPrompt: TargetInfoPrompt) => {
+    // if (cardConfig?.isContactInfoRequired) {
+    //   return (
+    //     getAvailableTargetInputCount(targetInputs) > 1 &&
+    //     // isTargetVerified(targetInfoPrompt) &&
+    //     props.parentComponent !== 'ftu'
+    //   );
+    // }
+    // return (
+    //   isTargetVerified(targetInfoPrompt) && props.parentComponent !== 'ftu'
+    // );
+    switch (props.target) {
+      // TODO: Add case section for each targets
+      // case 'discord':
+      //   return (
+      //     !!props.targetInfo &&
+      //     props.targetInfo.infoPrompt.message !== 'Enable Bot'
+      //   );
+      default:
+        return !!props.targetInfo;
     }
-    return (
-      isTargetVerified(targetInfoPrompt) && props.parentComponent !== 'ftu'
-    );
   };
 
-  if (!targetData[props.target] || !props.targetInfo.infoPrompt) return null;
+  const signupCtaProps: TargetCtaProps = React.useMemo(() => {
+    const defaultCtaProps: TargetCtaProps = {
+      type: 'button',
+      targetInfoPrompt: {
+        type: 'cta',
+        message: 'Signup',
+        onClick: async () => console.log('Default Signup placeHolder'),
+      },
+      postCta: props.postCta,
+      classNames: props.classNames?.TargetCta,
+    };
+
+    switch (props.target) {
+      case 'email':
+      case 'telegram':
+        return {
+          ...defaultCtaProps,
+          type: 'button',
+          targetInfoPrompt: {
+            type: 'cta',
+            message: 'Signup',
+            onClick: async () => {
+              const target = props.target as FormTarget;
+              renewTargetGroup({
+                target: target,
+                value: targetInputs[target].value,
+              });
+            },
+          },
+        };
+      case 'discord':
+        return {
+          ...defaultCtaProps,
+          type: 'button',
+          targetInfoPrompt: {
+            type: 'cta',
+            message: 'Enable Bot',
+            onClick: async () => {
+              // TODO: Remove this after adding documentation: 1. single target subscription always sync with with targetData. 2. targetInput & multiple target subscription.
+              // await updateTargetInputs(props.target, true);
+              const targetGroup = await renewTargetGroup({
+                target: props.target as ToggleTarget,
+                value: true,
+              });
+
+              if (
+                targetGroup?.discordTargets?.[0]?.verificationLink &&
+                !targetGroup?.discordTargets?.[0]?.isConfirmed
+              ) {
+                window.open(
+                  targetGroup?.discordTargets?.[0]?.verificationLink,
+                  '_blank',
+                );
+              }
+            },
+          },
+        };
+      case 'wallet':
+        return {
+          ...defaultCtaProps,
+          type: 'button',
+          targetInfoPrompt: {
+            type: 'cta',
+            message: 'Sign Wallet',
+            onClick: async () => {
+              // TODO: Remove this after adding documentation: 1. single target subscription always sync with with targetData. 2. targetInput & multiple target subscription.
+              // await updateTargetInputs(props.target, true);
+              const targetGroup = await renewTargetGroup({
+                target: props.target as ToggleTarget,
+                value: true,
+              });
+              // TODO: Handle error
+              const walletTargetId = targetGroup?.web3Targets?.[0]?.id;
+              const walletTargetSenderAddress =
+                targetGroup?.web3Targets?.[0]?.senderAddress;
+              if (
+                !targetGroup?.web3Targets?.[0]?.isConfirmed &&
+                walletTargetId &&
+                walletTargetSenderAddress
+              ) {
+                const updatedWeb3Target = await signCoinbaseSignature(
+                  walletTargetId,
+                  walletTargetSenderAddress,
+                );
+              }
+            },
+          },
+        };
+      case 'slack':
+        return {
+          ...defaultCtaProps,
+          type: 'button',
+          targetInfoPrompt: {
+            type: 'cta',
+            message: 'Signup',
+            onClick: async () => {
+              await updateTargetInputs(props.target, true);
+              const targetGroup = await renewTargetGroup({
+                target: props.target as ToggleTarget,
+                value: true,
+              });
+              const verificationLink =
+                targetGroup?.slackChannelTargets?.[0]?.verificationLink;
+              if (!verificationLink) return;
+              window.open(verificationLink, '_blank');
+            },
+          },
+        };
+      default:
+        return defaultCtaProps;
+    }
+  }, [
+    props.target,
+    targetInputs /* renewTargetGroup, updateTargetInputs, signCoinbaseSignature */,
+  ]);
 
   const { componentPosition: tooltipIconPosition } = useComponentPosition(
     tooltipRef,
@@ -105,7 +232,7 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
           'notifi-target-list-item',
           props.classNames?.targetListItem,
           // NOTE: only used when we want to adopt different style for verified items
-          isTargetVerified(props.targetInfo.infoPrompt) &&
+          isTargetVerified(props.targetInfo?.infoPrompt) &&
             props.classNames?.targetListVerifiedItem,
         )}
       >
@@ -119,11 +246,32 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
             type={props.iconType}
             className={clsx('notifi-target-list-icon', props.classNames?.icon)}
           />
-          <label>{props.label}</label>
+          <div
+            className={clsx(
+              'notifi-target-list-item-target-id',
+              props.classNames?.targetId,
+            )}
+          >
+            {/** TODO: Move to use memo once the target display id > 1 format */}
+            {targetData[props.target]}
+          </div>
+          {/* TODO */}
+          {!props.targetInfo ? (
+            <>
+              <label>{props.label}</label>{' '}
+              <TargetInputField
+                targetType={props.target}
+                // @ts-ignore
+                iconType={props.target}
+                // @ts-ignore
+                validateRegex={getTargetValidateRegex(props.target)}
+              />
+            </>
+          ) : null}
         </div>
         {/* TODO: impl after verify message for form targets */}
         {props.message?.beforeVerify &&
-        isTargetCta(props.targetInfo.infoPrompt) ? (
+        isTargetCta(props.targetInfo?.infoPrompt) ? (
           <div
             className={clsx(
               'notifi-target-list-target-verify-message',
@@ -134,27 +282,32 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
           </div>
         ) : null}
 
-        <div
-          className={clsx(
-            'notifi-target-list-item-target-id',
-            props.classNames?.targetId,
-          )}
-        >
-          {/** TODO: Move to use memo once the target display id > 1 format */}
-          {targetData[props.target]}
-        </div>
-
-        <TargetCta
-          type={props.targetCtaType}
-          targetInfoPrompt={props.targetInfo.infoPrompt}
-          classNames={props.classNames?.TargetCta}
-          postCta={props.postCta}
-        />
-        {isRemoveButtonAvailable(props.targetInfo.infoPrompt) ? (
+        {props.targetInfo ? (
+          <TargetCta
+            type={props.targetCtaType}
+            targetInfoPrompt={props.targetInfo.infoPrompt}
+            classNames={props.classNames?.TargetCta}
+            postCta={props.postCta}
+          />
+        ) : (
+          <>
+            {!targetInputs[props.target].error &&
+            targetInputs[props.target].value ? (
+              <TargetCta {...signupCtaProps} />
+            ) : null}
+          </>
+        )}
+        {isRemoveButtonAvailable() ? (
           <TargetListItemAction
             action={async () => {
-              isItemRemoved.current = true;
-              updateTargetInputs(props.target, { value: '' });
+              // isItemRemoved.current = true;
+              // updateTargetInputs(props.target, { value: '' });
+              const target = props.target as FormTarget;
+              updateTargetInputs(target, { value: '' });
+              renewTargetGroup({
+                target: target,
+                value: '',
+              });
             }}
             classNames={{ removeCta: props.classNames?.removeCta }}
           />
@@ -164,13 +317,14 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
 
   if (isToggleTarget(props.target)) {
     const toggleTargetData = targetData[props.target];
+    // return <div>{props.target} TODO</div>;
     return (
       <div
         className={clsx(
           'notifi-target-list-item',
           props.classNames?.targetListItem,
           // NOTE: only used when we want to adopt different style for verified items
-          isTargetVerified(props.targetInfo.infoPrompt) &&
+          isTargetVerified(props.targetInfo?.infoPrompt) &&
             props.classNames?.targetListVerifiedItem,
         )}
       >
@@ -186,7 +340,7 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
           />
           <label>{props.label}</label>
         </div>
-        {!isTargetVerified(props.targetInfo.infoPrompt) ||
+        {!isTargetVerified(props.targetInfo?.infoPrompt) ||
         props.parentComponent === 'ftu' ||
         props.target === 'wallet' ? null : (
           <div
@@ -203,7 +357,7 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
           </div>
         )}
         {props.message?.beforeVerify &&
-        isTargetCta(props.targetInfo.infoPrompt) ? (
+        (isTargetCta(props.targetInfo?.infoPrompt) || !props.targetInfo) ? (
           <div
             className={clsx(
               'notifi-target-list-target-verify-message',
@@ -242,7 +396,7 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
           </div>
         ) : null}
         {props.message?.afterVerify &&
-        isTargetVerified(props.targetInfo.infoPrompt) ? (
+        isTargetVerified(props.targetInfo?.infoPrompt) ? (
           <div
             className={clsx(
               'notifi-target-list-target-confirmed-message',
@@ -281,17 +435,28 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
             </div>
           </div>
         ) : null}
-        <TargetCta
-          type={props.targetCtaType}
-          targetInfoPrompt={props.targetInfo.infoPrompt}
-          classNames={props.classNames?.TargetCta}
-          postCta={props.postCta}
-        />
-        {isRemoveButtonAvailable(props.targetInfo.infoPrompt) ? (
+        {props.targetInfo ? (
+          <TargetCta
+            type={props.targetCtaType}
+            targetInfoPrompt={props.targetInfo.infoPrompt}
+            classNames={props.classNames?.TargetCta}
+            postCta={props.postCta}
+          />
+        ) : (
+          <TargetCta {...signupCtaProps} />
+        )}
+
+        {/* {props.targetInfo ? ( */}
+        {isRemoveButtonAvailable() ? (
           <TargetListItemAction
             action={async () => {
-              isItemRemoved.current = true;
-              updateTargetInputs(props.target, false);
+              // TODO: Remove this after adding documentation: 1. single target subscription always sync with with targetData. 2. targetInput & multiple target subscription.
+              // updateTargetInputs(props.target, false);
+              renewTargetGroup({
+                // TODO: Add target type
+                target: props.target as ToggleTarget,
+                value: false,
+              });
             }}
             classNames={{ removeCta: props.classNames?.removeCta }}
           />
