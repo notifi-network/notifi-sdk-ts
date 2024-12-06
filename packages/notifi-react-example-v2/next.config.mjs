@@ -38,6 +38,7 @@ let nextConfig = {
 if (args.includes('build')) {
   nextConfig = {
     ...nextConfig,
+    trailingSlash: true,
     /** ⬇ For including static index.html: https://nextjs.org/docs/app/building-your-application/deploying/static-exports */
     output: 'export',
     /** ⬇ For @xmpt/sdk (external bindings wasm files) - Nextjs version >= '^14.2.0'   */
