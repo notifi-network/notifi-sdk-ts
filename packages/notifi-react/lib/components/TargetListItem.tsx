@@ -5,7 +5,7 @@ import { Icon, IconType } from '../assets/Icons';
 import {
   FormTarget,
   Target,
-  TargetInfo, // TargetInfoPrompt, // TODO: remove
+  TargetInfo,
   ToggleTarget,
   useNotifiTargetContext,
   useNotifiTenantConfigContext,
@@ -13,7 +13,6 @@ import {
 import { useComponentPosition } from '../hooks/useComponentPosition';
 import { useTargetWallet } from '../hooks/useTargetWallet';
 import {
-  // getAvailableTargetInputCount, // TODO: remove
   getTargetValidateRegex,
   hasMoreThanOneValidTarget,
   isFormTarget,
@@ -70,7 +69,6 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
     isChangingTargets,
   } = useNotifiTargetContext();
   const { cardConfig } = useNotifiTenantConfigContext();
-  // const isItemRemoved = React.useRef(false);  // TODO: remove
   const {
     signCoinbaseSignature,
     isLoading: isLoadingWallet,
@@ -193,6 +191,7 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
                 walletTargetId &&
                 walletTargetSenderAddress
               ) {
+                // TODO: Remove unused variable
                 const updatedWeb3Target = await signCoinbaseSignature(
                   walletTargetId,
                   walletTargetSenderAddress,
@@ -226,7 +225,7 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
     }
   }, [
     props.target,
-    targetInputs /* renewTargetGroup, updateTargetInputs, signCoinbaseSignature */,
+    targetInputs /* renewTargetGroup, updateTargetInputs, signCoinbaseSignature */, //TODO: econsider the dependency
   ]);
 
   const { componentPosition: tooltipIconPosition } = useComponentPosition(
@@ -308,8 +307,6 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
         {isRemoveButtonAvailable() ? (
           <TargetListItemAction
             action={async () => {
-              // isItemRemoved.current = true; // TODO: remove
-              // updateTargetInputs(props.target, { value: '' });
               const target = props.target as FormTarget;
               updateTargetInputs(target, { value: '' });
               renewTargetGroup({
@@ -325,7 +322,6 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
 
   if (isToggleTarget(props.target)) {
     const toggleTargetData = targetData[props.target];
-    // return <div>{props.target} TODO</div>; // TODO: remove
     return (
       <div
         className={clsx(
@@ -454,14 +450,12 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
           <TargetCta {...signupCtaProps} />
         )}
 
-        {/* {props.targetInfo ? ( */}
         {isRemoveButtonAvailable() ? (
           <TargetListItemAction
             action={async () => {
               // TODO: Remove this after adding documentation: 1. single target subscription always sync with with targetData. 2. targetInput & multiple target subscription.
               // updateTargetInputs(props.target, false); // TODO: remove
               renewTargetGroup({
-                // TODO: Add target type
                 target: props.target as ToggleTarget,
                 value: false,
               });
