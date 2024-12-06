@@ -46,6 +46,25 @@ export const hasTarget = (targetData: TargetData) => {
   });
 };
 
+export const hasMoreThanOneValidTarget = (targetData: TargetData) => {
+  return (
+    objectKeys(targetData).filter((key) => {
+      const target = targetData[key];
+      if (typeof target === 'string' && target !== '') {
+        return target;
+      }
+      if (typeof target === 'object') {
+        if (key === 'discord' || key === 'wallet') {
+          return !!targetData[key].data?.isConfirmed;
+        }
+        if (key === 'slack') {
+          return targetData[key].data?.verificationStatus === 'VERIFIED'; // TODO: define enum for slack verification status
+        }
+      }
+    }).length > 1
+  );
+};
+
 export const getAvailableTargetInputCount = (targetInputs: TargetInputs) => {
   return objectKeys(targetInputs).filter((key) => {
     if (isFormTarget(key)) {
