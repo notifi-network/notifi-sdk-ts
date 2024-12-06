@@ -1,0 +1,141 @@
+name: Publish App
+
+on:
+  push:
+    branches:
+      - main
+  release:
+    types: [released]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    environment: ${{ github.event_name == 'release' && 'production' || 'develop' }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: main
+
+      - name: Bail if its the SDK repo
+        if: github.repository == 'notifi-network/notifi-sdk-ts'
+        run: exit 0 # We don't want to publish the SDK repo, and we also want it to be green
+
+      - name: Validate Required Variables
+        run: |
+          missing_vars=0
+          if [ -z "${{ vars.NEXT_PUBLIC_ENV }}" ]; then
+            echo "Error: NEXT_PUBLIC_ENV is not set"
+            missing_vars=1
+          fi
+          if [ -z "${{ vars.NEXT_PUBLIC_CHAIN }}" ]; then
+            echo "Error: NEXT_PUBLIC_CHAIN is not set"
+            missing_vars=1
+          fi
+          if [ -z "${{ vars.NEXT_PUBLIC_TENANT_ID }}" ]; then
+            echo "Error: NEXT_PUBLIC_TENANT_ID is not set"
+            missing_vars=1
+          fi
+          if [ -z "${{ vars.NEXT_PUBLIC_NOTIFI_SUBSCRIPTION_CARD_ID }}" ]; then
+            echo "Error: NEXT_PUBLIC_NOTIFI_SUBSCRIPTION_CARD_ID is not set"
+            missing_vars=1
+          fi
+          if [ -z "${{ vars.NEXT_PUBLIC_HOME_PAGE_TITLE_1 }}" ]; then
+            echo "Error: NEXT_PUBLIC_HOME_PAGE_TITLE_1 is not set"
+            missing_vars=1
+          fi
+          if [ -z "${{ vars.NEXT_PUBLIC_HOME_PAGE_SUBTITLE }}" ]; then
+            echo "Error: NEXT_PUBLIC_HOME_PAGE_SUBTITLE is not set"
+            missing_vars=1
+          fi
+          if [ -z "${{ vars.AWS_ROLE_TO_ASSUME }}" ]; then
+            echo "Error: AWS_ROLE_TO_ASSUME is not set"
+            missing_vars=1
+          fi
+          if [ -z "${{ vars.AWS_BUCKET_NAME }}" ]; then
+            echo "Error: AWS_BUCKET_NAME is not set"
+            missing_vars=1
+          fi
+          if [ -z "${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}" ]; then
+            echo "Error: CLOUDFRONT_DISTRIBUTION_ID is not set"
+            missing_vars=1
+          fi
+          if [ -z "${{ secrets.SLACK_WEBHOOK_URL }}" ]; then
+            echo "Error: SLACK_WEBHOOK_URL is not set"
+            missing_vars=1
+          fi
+
+          if [ $missing_vars -ne 0 ]; then
+            exit 1
+          fi
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        id: npm-cache
+        with:
+          path: |
+            **/node_modules
+            ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Cache Next.js build cache
+        uses: actions/cache@v3
+        id: next-cache
+        with:
+          path: packages/notifi-dapp-example/.next/cache
+          key: ${{ runner.os }}-next-${{ hashFiles('packages/notifi-dapp-example/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-next-
+
+      - name: Build All packages
+        run: npm run build
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ vars.AWS_REGION || 'us-west-2' }}
+          role-session-name: elixir-${{ github.event_name }}-${{ github.sha }}
+
+      - name: Build App
+        env:
+          NEXT_PUBLIC_ENV: ${{ vars.NEXT_PUBLIC_ENV }}
+          NEXT_PUBLIC_CHAIN: ${{ vars.NEXT_PUBLIC_CHAIN }}
+          NEXT_PUBLIC_TENANT_ID: ${{ vars.NEXT_PUBLIC_TENANT_ID }}
+          NEXT_PUBLIC_NOTIFI_SUBSCRIPTION_CARD_ID: ${{ vars.NEXT_PUBLIC_NOTIFI_SUBSCRIPTION_CARD_ID }}
+          NEXT_PUBLIC_HOME_PAGE_TITLE_1: ${{ vars.NEXT_PUBLIC_HOME_PAGE_TITLE_1 }}
+          NEXT_PUBLIC_HOME_PAGE_SUBTITLE: ${{ vars.NEXT_PUBLIC_HOME_PAGE_SUBTITLE }}
+        run: cd packages/notifi-dapp-example && npm run build:next
+
+      - name: Upload to S3
+        run: |
+          aws s3 sync packages/notifi-dapp-example/out s3://${{ vars.AWS_BUCKET_NAME }} --delete
+
+      - name: Invalidate Cloudfront Cache
+        run: |
+          aws cloudfront create-invalidation --distribution-id ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }} --paths '/*'
+
+      - name: Send custom event details to a Slack workflow
+        if: always()
+        uses: slackapi/slack-github-action@v2.0.0
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: webhook-trigger
+          payload: |
+            status: "${{ job.status }}"
+            environment: ${{ github.event_name == 'release' && 'production' || 'develop' }}
+            url: ${{ github.event.pull_request.html_url || github.event.head_commit.url }}
+            deployer: ${{ github.actor }}
