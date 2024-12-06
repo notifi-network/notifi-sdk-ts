@@ -5,8 +5,7 @@ import { Icon, IconType } from '../assets/Icons';
 import {
   FormTarget,
   Target,
-  TargetInfo,
-  TargetInfoPrompt,
+  TargetInfo, // TargetInfoPrompt, // TODO: remove
   ToggleTarget,
   useNotifiTargetContext,
   useNotifiTenantConfigContext,
@@ -14,8 +13,9 @@ import {
 import { useComponentPosition } from '../hooks/useComponentPosition';
 import { useTargetWallet } from '../hooks/useTargetWallet';
 import {
-  getAvailableTargetInputCount,
+  // getAvailableTargetInputCount, // TODO: remove
   getTargetValidateRegex,
+  hasMoreThanOneValidTarget,
   isFormTarget,
   isTargetCta,
   isTargetVerified,
@@ -70,7 +70,7 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
     isChangingTargets,
   } = useNotifiTargetContext();
   const { cardConfig } = useNotifiTenantConfigContext();
-  // const isItemRemoved = React.useRef(false);
+  // const isItemRemoved = React.useRef(false);  // TODO: remove
   const {
     signCoinbaseSignature,
     isLoading: isLoadingWallet,
@@ -90,15 +90,26 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
     // return (
     //   isTargetVerified(targetInfoPrompt) && props.parentComponent !== 'ftu'
     // );
+    const isTargetRemovable = !!cardConfig?.isContactInfoRequired
+      ? hasMoreThanOneValidTarget(targetData)
+      : true;
+
     switch (props.target) {
-      // TODO: Add case section for each targets
-      // case 'discord':
-      //   return (
-      //     !!props.targetInfo &&
-      //     props.targetInfo.infoPrompt.message !== 'Enable Bot'
-      //   );
+      case 'discord':
+        return (
+          !!props.targetInfo &&
+          props.targetInfo.infoPrompt.message !== 'Enable Bot' &&
+          isTargetRemovable
+        );
+
+      case 'wallet':
+        return (
+          !!props.targetInfo &&
+          props.targetInfo.infoPrompt.message !== 'Sign Wallet' &&
+          isTargetRemovable
+        );
       default:
-        return !!props.targetInfo;
+        return !!props.targetInfo && isTargetRemovable;
     }
   };
 
@@ -297,7 +308,7 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
         {isRemoveButtonAvailable() ? (
           <TargetListItemAction
             action={async () => {
-              // isItemRemoved.current = true;
+              // isItemRemoved.current = true; // TODO: remove
               // updateTargetInputs(props.target, { value: '' });
               const target = props.target as FormTarget;
               updateTargetInputs(target, { value: '' });
@@ -314,7 +325,7 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
 
   if (isToggleTarget(props.target)) {
     const toggleTargetData = targetData[props.target];
-    // return <div>{props.target} TODO</div>;
+    // return <div>{props.target} TODO</div>; // TODO: remove
     return (
       <div
         className={clsx(
@@ -448,7 +459,7 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
           <TargetListItemAction
             action={async () => {
               // TODO: Remove this after adding documentation: 1. single target subscription always sync with with targetData. 2. targetInput & multiple target subscription.
-              // updateTargetInputs(props.target, false);
+              // updateTargetInputs(props.target, false); // TODO: remove
               renewTargetGroup({
                 // TODO: Add target type
                 target: props.target as ToggleTarget,
