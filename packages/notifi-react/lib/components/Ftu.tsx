@@ -9,7 +9,6 @@ import {
   useNotifiUserSettingContext,
 } from '../context';
 import { FtuAlertEdit, FtuAlertEditProps } from './FtuAlertEdit';
-import { FtuTargetEditProps } from './FtuTargetEdit';
 import { FtuTargetList, FtuTargetListProps } from './FtuTargetList';
 import { NavHeaderRightCta } from './NavHeader';
 import { PoweredByNotifi, PoweredByNotifiProps } from './PoweredByNotifi';
@@ -22,7 +21,6 @@ export enum FtuView {
 export type FtuProps = {
   onComplete: () => void;
   copy?: {
-    FtuTargetEdit?: FtuTargetEditProps['copy'];
     FtuTargetList?: FtuTargetListProps['copy'];
     FtuAlertEdit?: FtuAlertEditProps['copy'];
   };
@@ -30,7 +28,6 @@ export type FtuProps = {
     container?: string;
     footer?: string;
     ftuViews?: string;
-    FtuTargetEdit?: FtuTargetEditProps['classNames'];
     FtuTargetList?: FtuTargetListProps['classNames'];
     FtuAlertEdit?: FtuAlertEditProps['classNames'];
     PoweredByNotifi?: PoweredByNotifiProps['classNames'];
