@@ -27,6 +27,6 @@ Within each environment we need to setup the following variables:
 And the following secrets:
 1. `SLACK_WEBHOOK_URL`
 
-It's recommended to use a [repository secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets) for the `SLACK_WEBHOOK_URL` secret and any other common variables across the environments to maintain a single source of truth.
+It's recommended to use a repository secret for the `SLACK_WEBHOOK_URL` secret and any other common variables across the environments to maintain a single source of truth.
 
 Additionally, for the Slack notification to work, you will need to configure the Slack workflow which plumbs the variables into a template and delivers them into a channel of your choosing. For an example, see the [Elixir Deployment Notification workflow](https://slack.com/shortcuts/Ft083UQBAQ8J/c3d950cc680fbcfebce251051048ad33).
