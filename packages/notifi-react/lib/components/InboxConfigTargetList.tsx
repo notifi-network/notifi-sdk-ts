@@ -26,7 +26,6 @@ export const InboxConfigTargetList: React.FC<InboxConfigTargetListProps> = (
   props,
 ) => {
   const {
-    isLoading,
     targetDocument: { targetData },
   } = useNotifiTargetContext();
 
@@ -65,21 +64,6 @@ export const InboxConfigTargetList: React.FC<InboxConfigTargetListProps> = (
           parentComponent="inbox"
         />
       </div>
-      {/* <button
-        data-cy="notifi-inbox-config-target-list-button"
-        className={clsx(
-          'btn',
-          'notifi-inbox-config-target-list-button',
-          props.classNames?.button,
-        )}
-        disabled={isLoading}
-        onClick={() => props.setInboxView(InboxView.InboxConfigTargetEdit)}
-      >
-        <div className={clsx('notifi-inbox-config-target-list-button-text')}>
-          {props.copy?.buttonText ??
-            defaultCopy.inboxConfigTargetList.buttonText}
-        </div>
-      </button> */}
     </div>
   );
 };
