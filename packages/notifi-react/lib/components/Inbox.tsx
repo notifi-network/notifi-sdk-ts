@@ -1,7 +1,6 @@
 import clsx from 'clsx';
 import React from 'react';
 
-import { InboxConfigTargetEditProps } from './InboxConfigTargetEdit';
 import {
   InboxConfigTargetList,
   InboxConfigTargetListProps,
@@ -17,16 +16,13 @@ export type InboxProps = {
     footer?: string;
     inboxViews?: string;
     InboxNavTabs?: InboxNavTabsProps['classNames'];
-    InboxConfigTargetEdit?: InboxConfigTargetEditProps['classNames'];
     InboxConfigTargetList?: InboxConfigTargetListProps['classNames'];
     InboxConfigTopic?: InboxConfigTopicProps['classNames'];
     InboxHistory?: InboxHistoryProps['classNames'];
   };
   copy?: {
-    InboxConfigTargetEdit?: InboxConfigTargetEditProps['copy'];
     InboxConfigTargetList?: InboxConfigTargetListProps['copy'];
     InboxConfigTopic?: InboxConfigTopicProps['copy'];
-    // TODO
   };
   navHeaderRightCta?: NavHeaderRightCta;
 };
