@@ -71,14 +71,14 @@ export const Inbox: React.FC<InboxProps> = (props) => {
             navHeaderRightCta={props.navHeaderRightCta}
           />
         ) : null}
-        {inboxView === InboxView.InboxConfigTargetEdit ? (
+        {/* {inboxView === InboxView.InboxConfigTargetEdit ? (
           <InboxConfigTargetEdit
             {...{ setInboxView }}
             classNames={props.classNames?.InboxConfigTargetEdit}
             copy={props.copy?.InboxConfigTargetEdit}
             navHeaderRightCta={props.navHeaderRightCta}
           />
-        ) : null}
+        ) : null} */}
       </div>
       <div className={clsx('notifi-inbox-footer', props.classNames?.footer)}>
         <InboxNavTabs

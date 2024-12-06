@@ -65,7 +65,7 @@ export const InboxConfigTargetList: React.FC<InboxConfigTargetListProps> = (
           parentComponent="inbox"
         />
       </div>
-      <button
+      {/* <button
         data-cy="notifi-inbox-config-target-list-button"
         className={clsx(
           'btn',
@@ -79,7 +79,7 @@ export const InboxConfigTargetList: React.FC<InboxConfigTargetListProps> = (
           {props.copy?.buttonText ??
             defaultCopy.inboxConfigTargetList.buttonText}
         </div>
-      </button>
+      </button> */}
     </div>
   );
 };

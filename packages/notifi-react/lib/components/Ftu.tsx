@@ -16,7 +16,7 @@ import { NavHeaderRightCta } from './NavHeader';
 import { PoweredByNotifi, PoweredByNotifiProps } from './PoweredByNotifi';
 
 export enum FtuView {
-  TargetEdit = 'edit',
+  // TargetEdit = 'edit',
   TargetList = 'list',
   AlertEdit = 'alertEdit',
 }
@@ -60,11 +60,15 @@ export const Ftu: React.FC<FtuProps> = (props) => {
     )
       return;
     isInitialLoaded.current = true;
-    if (ftuStage === FtuStage.Destination && !hasTarget(targetData)) {
-      setFtuView(FtuView.TargetEdit);
-      return;
-    }
-    if (ftuStage === FtuStage.Destination && hasTarget(targetData)) {
+    // if (ftuStage === FtuStage.Destination && !hasTarget(targetData)) {
+    //   setFtuView(FtuView.TargetEdit);
+    //   return;
+    // }
+    // if (ftuStage === FtuStage.Destination && hasTarget(targetData)) {
+    //   setFtuView(FtuView.TargetList);
+    //   return;
+    // }
+    if (ftuStage === FtuStage.Destination) {
       setFtuView(FtuView.TargetList);
       return;
     }
@@ -77,20 +81,20 @@ export const Ftu: React.FC<FtuProps> = (props) => {
   return (
     <div className={clsx('notifi-ftu', props.classNames?.container)}>
       <div className={clsx('notifi-ftu-views', props.classNames?.ftuViews)}>
-        {ftuView === FtuView.TargetEdit ? (
+        {/* {ftuView === FtuView.TargetEdit ? (
           <FtuTargetEdit
             setFtuView={setFtuView}
             copy={props.copy?.FtuTargetEdit}
             classNames={props.classNames?.FtuTargetEdit}
             navHeaderRightCta={props.navHeaderRightCta}
           />
-        ) : null}
+        ) : null} */}
         {ftuView === FtuView.TargetList ? (
           <FtuTargetList
             copy={props.copy?.FtuTargetList}
             classNames={props.classNames?.FtuTargetList}
             onClickNext={() => setFtuView(FtuView.AlertEdit)}
-            onClickBack={() => setFtuView(FtuView.TargetEdit)}
+            // onClickBack={() => setFtuView(FtuView.TargetEdit)}
             navHeaderRightCta={props.navHeaderRightCta}
           />
         ) : null}
