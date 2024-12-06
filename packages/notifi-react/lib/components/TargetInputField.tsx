@@ -9,7 +9,6 @@ export type TargetInputFieldProps = {
   targetType: FormTarget;
   onFocus?: (target: FormTarget) => void;
   onBlur?: (target: FormTarget) => void;
-  iconType: IconType;
   validateRegex?: RegExp;
   copy?: {
     placeholder?: string;
@@ -41,6 +40,7 @@ export const TargetInputField: React.FC<TargetInputFieldProps> = (props) => {
     setIsShowingInvalidWarning(false);
   }, []);
 
+  // TODO: Need refactor: consolidate or deprecate targetEdit logic
   const targetToBeSaved = useMemo(() => {
     switch (props.targetType) {
       case 'email':
@@ -95,13 +95,6 @@ export const TargetInputField: React.FC<TargetInputFieldProps> = (props) => {
           isShowingInvalidWarning ? 'warning' : '',
         )}
       >
-        <Icon
-          type={props.iconType}
-          className={clsx(
-            'notifi-target-input-field-icon',
-            props.classNames?.icon,
-          )}
-        />
         <input
           type={
             props.targetType === 'email'
