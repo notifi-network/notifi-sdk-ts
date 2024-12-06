@@ -261,9 +261,6 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
               <label>{props.label}</label>{' '}
               <TargetInputField
                 targetType={props.target}
-                // @ts-ignore
-                iconType={props.target}
-                // @ts-ignore
                 validateRegex={getTargetValidateRegex(props.target)}
               />
             </>

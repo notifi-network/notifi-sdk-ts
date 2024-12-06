@@ -85,13 +85,15 @@ export const getWalletTargetSignMessage = (
   `Coinbase Wallet Messaging subscribe\nAddress: ${address}\nPartner Address: ${senderAddress}\nNonce: ${nonce}`;
 
 export const getTargetValidateRegex = (
-  target: Extract<Target, 'email' | 'telegram'>,
+  target: Extract<Target, 'email' | 'telegram' | 'phoneNumber'>,
 ) => {
   switch (target) {
     case 'email':
       return new RegExp('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$');
     case 'telegram':
       return new RegExp('.{5,}');
+    case 'phoneNumber':
+      return undefined;
     default:
       throw new Error('Not supported target type');
   }

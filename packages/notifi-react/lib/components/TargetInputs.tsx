@@ -64,7 +64,6 @@ export const TargetInputs: React.FC<TargetInputsProps> = (props) => {
             copy={props.copy?.targetInputFields?.email}
             classNames={props.classNames?.targetInputField?.email}
             targetType="email"
-            iconType={props.copy?.iconType?.email ?? 'email'}
             validateRegex={getTargetValidateRegex('email')}
             onFocus={props.formTargetsOnFocus}
             onBlur={props.formTargetsOnBlur}
@@ -87,7 +86,6 @@ export const TargetInputs: React.FC<TargetInputsProps> = (props) => {
             copy={props.copy?.targetInputFields?.phoneNumber}
             classNames={props.classNames?.targetInputField?.phoneNumber}
             targetType="phoneNumber"
-            iconType={props.copy?.iconType?.phoneNumber ?? 'sms'}
             onFocus={props.formTargetsOnFocus}
             onBlur={props.formTargetsOnBlur}
           />
@@ -109,7 +107,6 @@ export const TargetInputs: React.FC<TargetInputsProps> = (props) => {
             copy={props.copy?.targetInputFields?.telegram}
             classNames={props.classNames?.targetInputField?.telegram}
             targetType="telegram"
-            iconType={props.copy?.iconType?.telegram ?? 'telegram'}
             validateRegex={getTargetValidateRegex('telegram')}
             onFocus={props.formTargetsOnFocus}
             onBlur={props.formTargetsOnBlur}
