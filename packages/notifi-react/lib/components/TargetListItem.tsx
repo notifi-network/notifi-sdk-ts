@@ -96,10 +96,15 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
       case 'discord':
         return (
           !!props.targetInfo &&
-          props.targetInfo.infoPrompt.message !== 'Enable Bot' &&
+          props.targetInfo.infoPrompt.message !== 'Set up' &&
           isTargetRemovable
         );
-
+      case 'slack':
+        return (
+          !!props.targetInfo &&
+          props.targetInfo.infoPrompt.message !== 'Set Up' &&
+          isTargetRemovable
+        );
       case 'wallet':
         return (
           !!props.targetInfo &&

@@ -671,7 +671,7 @@ export const NotifiTargetContextProvider: FC<
       if (!!discordTarget && !discordTarget.isConfirmed) {
         updateTargetInfoPrompt('discord', {
           type: 'cta',
-          message: 'Enable Bot',
+          message: 'Set Up',
           onClick: () => window.open(discordTarget.verificationLink, '_blank'),
         });
         setTargetData((prev) => ({
@@ -735,7 +735,7 @@ export const NotifiTargetContextProvider: FC<
           case 'MISSING_CHANNEL':
             updateTargetInfoPrompt('slack', {
               type: 'cta',
-              message: 'Enable Bot',
+              message: 'Set Up',
               onClick: () =>
                 window.open(slackTarget.verificationLink, '_blank'),
             });
