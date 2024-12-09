@@ -31,7 +31,8 @@ export enum InboxView {
   InboxHistory = 'inbox-history',
   InboxConfigTopic = 'inbox-config-topic',
   InboxConfigTargetList = 'inbox-config-target-list',
-  InboxConfigTargetEdit = 'inbox-config-target-edit',
+  // TODO: remove
+  // InboxConfigTargetEdit = 'inbox-config-target-edit',
 }
 
 export const Inbox: React.FC<InboxProps> = (props) => {
