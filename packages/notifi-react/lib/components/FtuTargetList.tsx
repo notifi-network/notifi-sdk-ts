@@ -9,7 +9,6 @@ import { TargetList } from './TargetList';
 
 export type FtuTargetListProps = {
   onClickNext: () => void;
-  onClickBack: () => void;
   classNames?: {
     container?: string;
     main?: string;
@@ -39,13 +38,7 @@ export const FtuTargetList: React.FC<FtuTargetListProps> = (props) => {
     <div
       className={clsx('notifi-ftu-target-list', props.classNames?.container)}
     >
-      <NavHeader
-        leftCta={{
-          icon: 'arrow-back',
-          action: () => props.onClickBack(),
-        }}
-        rightCta={props.navHeaderRightCta}
-      >
+      <NavHeader rightCta={props.navHeaderRightCta}>
         {props.copy?.headerTitle ?? defaultCopy.ftuTargetList.headerTitle}
       </NavHeader>
       <div
