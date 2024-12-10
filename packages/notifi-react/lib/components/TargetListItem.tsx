@@ -14,7 +14,7 @@ import { useComponentPosition } from '../hooks/useComponentPosition';
 import { useTargetWallet } from '../hooks/useTargetWallet';
 import {
   getTargetValidateRegex,
-  hasMoreThanOneValidTarget,
+  hasValidTargetMoreThan,
   isFormTarget,
   isTargetCta,
   isTargetVerified,
@@ -66,7 +66,7 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
     targetDocument: { targetData, targetInputs },
     renewTargetGroup,
     updateTargetInputs,
-    isChangingTargets,
+    // isChangingTargets,
   } = useNotifiTargetContext();
   const { cardConfig } = useNotifiTenantConfigContext();
   const {
@@ -89,7 +89,7 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
     //   isTargetVerified(targetInfoPrompt) && props.parentComponent !== 'ftu'
     // );
     const isTargetRemovable = !!cardConfig?.isContactInfoRequired
-      ? hasMoreThanOneValidTarget(targetData)
+      ? hasValidTargetMoreThan(targetData, 1)
       : true;
 
     switch (props.target) {

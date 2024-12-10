@@ -361,18 +361,19 @@ export const NotifiTargetContextProvider: FC<
       email: emailInfoPrompt?.infoPrompt.type === 'cta',
       phoneNumber: phoneNumberInfoPrompt?.infoPrompt.type === 'cta',
       telegram: telegramInfoPrompt?.infoPrompt.type === 'cta',
-      slack:
-        targetData.slack.useSlack &&
-        discordInfoPrompt?.infoPrompt.type === 'cta' &&
-        discordInfoPrompt?.infoPrompt.message === 'Enable Bot',
-      wallet:
-        targetData.wallet.useWallet &&
-        walletInfoPrompt?.infoPrompt.type === 'cta' &&
-        walletInfoPrompt?.infoPrompt.message === 'Sign Wallet',
-      discord:
-        targetData.discord.useDiscord &&
-        discordInfoPrompt?.infoPrompt.type === 'cta' &&
-        discordInfoPrompt?.infoPrompt.message === 'Enable Bot',
+      // toggle targets will never be unverified (TODO: refactor)
+      slack: false,
+      // targetData.slack.useSlack &&
+      // discordInfoPrompt?.infoPrompt.type === 'cta' &&
+      // discordInfoPrompt?.infoPrompt.message === 'Enable Bot',
+      wallet: false,
+      // targetData.wallet.useWallet &&
+      // walletInfoPrompt?.infoPrompt.type === 'cta' &&
+      // walletInfoPrompt?.infoPrompt.message === 'Sign Wallet',
+      discord: false,
+      // targetData.discord.useDiscord &&
+      // discordInfoPrompt?.infoPrompt.type === 'cta' &&
+      // discordInfoPrompt?.infoPrompt.message === 'Enable Bot',
     };
     return objectKeys(unConfirmedTargets)
       .map((key) => {
