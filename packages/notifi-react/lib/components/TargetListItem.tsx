@@ -66,7 +66,6 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
     targetDocument: { targetData, targetInputs },
     renewTargetGroup,
     updateTargetInputs,
-    // isChangingTargets,
   } = useNotifiTargetContext();
   const { cardConfig } = useNotifiTenantConfigContext();
   const {
@@ -149,6 +148,7 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
       case 'discord':
         return {
           ...defaultCtaProps,
+          isCtaDisabled: !targetData[props.target].isAvailable,
           type: 'button',
           targetInfoPrompt: {
             type: 'cta',
@@ -176,6 +176,7 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
       case 'wallet':
         return {
           ...defaultCtaProps,
+          isCtaDisabled: !targetData[props.target].isAvailable,
           type: 'button',
           targetInfoPrompt: {
             type: 'cta',
@@ -208,6 +209,7 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
       case 'slack':
         return {
           ...defaultCtaProps,
+          isCtaDisabled: !targetData[props.target].isAvailable,
           type: 'button',
           targetInfoPrompt: {
             type: 'cta',
@@ -450,6 +452,7 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
             targetInfoPrompt={props.targetInfo.infoPrompt}
             classNames={props.classNames?.TargetCta}
             postCta={props.postCta}
+            isCtaDisabled={!targetData[props.target].isAvailable}
           />
         ) : (
           <TargetCta {...signupCtaProps} />
