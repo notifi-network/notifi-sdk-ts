@@ -1,7 +1,13 @@
 import clsx from 'clsx';
 import React from 'react';
 
-import { FtuStage, useNotifiUserSettingContext } from '../context';
+import {
+  FtuStage,
+  useNotifiTargetContext,
+  useNotifiTenantConfigContext,
+  useNotifiUserSettingContext,
+} from '../context';
+import { hasValidTargetMoreThan } from '../utils';
 import { defaultCopy } from '../utils/constants';
 import { LoadingAnimation } from './LoadingAnimation';
 import { NavHeader, NavHeaderRightCta } from './NavHeader';
@@ -26,6 +32,10 @@ export type FtuTargetListProps = {
 export const FtuTargetList: React.FC<FtuTargetListProps> = (props) => {
   const [isLoading, setIsLoading] = React.useState(false);
   const { updateFtuStage } = useNotifiUserSettingContext();
+  const { cardConfig } = useNotifiTenantConfigContext();
+  const {
+    targetDocument: { targetData },
+  } = useNotifiTargetContext();
 
   const onClick = async () => {
     setIsLoading(true);
@@ -33,6 +43,10 @@ export const FtuTargetList: React.FC<FtuTargetListProps> = (props) => {
     props.onClickNext();
     setIsLoading(false);
   };
+
+  const isTargetListValid = cardConfig?.isContactInfoRequired
+    ? hasValidTargetMoreThan(targetData, 0)
+    : true;
 
   return (
     <div
@@ -59,7 +73,7 @@ export const FtuTargetList: React.FC<FtuTargetListProps> = (props) => {
             'notifi-ftu-target-list-button',
             props.classNames?.button,
           )}
-          disabled={isLoading}
+          disabled={isLoading || !isTargetListValid}
           onClick={onClick}
         >
           {isLoading ? (

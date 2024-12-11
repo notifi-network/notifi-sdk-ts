@@ -110,6 +110,7 @@ export const TargetInputField: React.FC<TargetInputFieldProps> = (props) => {
           value={targetToBeSaved.value}
           onChange={(evt) => {
             const targetInput = evt.target.value;
+            // TODO: consider if this section still needed (may deprecate isTargetValid method)
             if (isTargetValid(targetInput)) {
               updateTargetInputs(props.targetType, {
                 value: targetInput,

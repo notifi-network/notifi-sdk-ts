@@ -135,7 +135,8 @@
 }
 
 .disabled {
-  cursor: wait !important;
+  cursor: not-allowed !important;
+  opacity: 0.5;
 }
 
 .notifi-target-cta-button {
