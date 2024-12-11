@@ -46,14 +46,20 @@ export const hasTarget = (targetData: TargetData) => {
   });
 };
 
-export const hasMoreThanOneValidTarget = (targetData: TargetData) => {
+export const hasValidTargetMoreThan = (
+  targetData: TargetData,
+  moreThan: number,
+) => {
   return (
     objectKeys(targetData).filter((key) => {
       const target = targetData[key];
+      // NOTE: formTargets are considered valid as long as they are not empty (even if they are not confirmed)
       if (typeof target === 'string' && target !== '') {
         return target;
       }
+
       if (typeof target === 'object') {
+        // NOTE: toggleTargets are considered valid only if they are confirmed
         if (key === 'discord' || key === 'wallet') {
           return !!targetData[key].data?.isConfirmed;
         }
@@ -61,7 +67,7 @@ export const hasMoreThanOneValidTarget = (targetData: TargetData) => {
           return targetData[key].data?.verificationStatus === 'VERIFIED'; // TODO: define enum for slack verification status
         }
       }
-    }).length > 1
+    }).length > moreThan
   );
 };
 
