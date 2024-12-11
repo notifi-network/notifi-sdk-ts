@@ -105,9 +105,10 @@ export const HistoryList: React.FC<HistoryListProps> = (props) => {
           <TargetStateBanner
             classNames={props.classNames?.TargetStateBanner}
             onClickCta={() => {
-              if (!hasTarget(targetData)) {
-                return props.setInboxView(InboxView.InboxConfigTargetEdit);
-              }
+              // TODO: remove
+              // if (!hasTarget(targetData)) {
+              //   return props.setInboxView(InboxView.InboxConfigTargetEdit);
+              // }
               props.setInboxView(InboxView.InboxConfigTargetList);
             }}
             parentComponent="history"

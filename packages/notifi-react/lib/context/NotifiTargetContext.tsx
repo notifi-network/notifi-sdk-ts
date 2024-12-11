@@ -144,10 +144,9 @@ export type NotifiTargetContextType = {
   error: Error | null;
   errorWallet: Error | null;
   updateTargetInputs: UpdateTargetInputs;
-  renewTargetGroup: (singleTargetRenewArgs?: {
-    target: ToggleTarget;
-    value: boolean;
-  }) => Promise<void>;
+  renewTargetGroup: (
+    singleTargetRenewArgs?: TargetRenewArgs,
+  ) => Promise<Types.TargetGroupFragmentFragment | null>;
   isChangingTargets: Record<Target, boolean>;
   targetDocument: TargetDocument;
   unVerifiedTargets: Target[];
@@ -362,18 +361,19 @@ export const NotifiTargetContextProvider: FC<
       email: emailInfoPrompt?.infoPrompt.type === 'cta',
       phoneNumber: phoneNumberInfoPrompt?.infoPrompt.type === 'cta',
       telegram: telegramInfoPrompt?.infoPrompt.type === 'cta',
-      slack:
-        targetData.slack.useSlack &&
-        discordInfoPrompt?.infoPrompt.type === 'cta' &&
-        discordInfoPrompt?.infoPrompt.message === 'Enable Bot',
-      wallet:
-        targetData.wallet.useWallet &&
-        walletInfoPrompt?.infoPrompt.type === 'cta' &&
-        walletInfoPrompt?.infoPrompt.message === 'Sign Wallet',
-      discord:
-        targetData.discord.useDiscord &&
-        discordInfoPrompt?.infoPrompt.type === 'cta' &&
-        discordInfoPrompt?.infoPrompt.message === 'Enable Bot',
+      // toggle targets will never be unverified (TODO: refactor)
+      slack: false,
+      // targetData.slack.useSlack &&
+      // discordInfoPrompt?.infoPrompt.type === 'cta' &&
+      // discordInfoPrompt?.infoPrompt.message === 'Enable Bot',
+      wallet: false,
+      // targetData.wallet.useWallet &&
+      // walletInfoPrompt?.infoPrompt.type === 'cta' &&
+      // walletInfoPrompt?.infoPrompt.message === 'Sign Wallet',
+      discord: false,
+      // targetData.discord.useDiscord &&
+      // discordInfoPrompt?.infoPrompt.type === 'cta' &&
+      // discordInfoPrompt?.infoPrompt.message === 'Enable Bot',
     };
     return objectKeys(unConfirmedTargets)
       .map((key) => {
@@ -400,7 +400,9 @@ export const NotifiTargetContextProvider: FC<
   );
 
   const renewTargetGroup = useCallback(
-    async (singleTargetRenewArgs?: TargetRenewArgs) => {
+    async (
+      singleTargetRenewArgs?: TargetRenewArgs,
+    ): Promise<Types.TargetGroupFragmentFragment | null> => {
       let data = { ...targetGroupToBeSaved };
 
       if (singleTargetRenewArgs) {
@@ -461,8 +463,12 @@ export const NotifiTargetContextProvider: FC<
             })
             .catch((e) => setError(e as Error))
             .finally(() => setIsLoading(false));
+          return _result;
         })
-        .catch((e) => setError(e as Error))
+        .catch((e) => {
+          setError(e as Error);
+          return null;
+        })
         .finally(() => setIsLoading(false));
     },
     [frontendClient, targetGroupToBeSaved, targetData],
@@ -583,10 +589,7 @@ export const NotifiTargetContextProvider: FC<
             });
         }
       } else {
-        updateTargetInfoPrompt('email', {
-          type: 'message',
-          message: 'Verified',
-        });
+        updateTargetInfoPrompt('email', null);
       }
     },
     [frontendClient],
@@ -669,7 +672,7 @@ export const NotifiTargetContextProvider: FC<
       if (!!discordTarget && !discordTarget.isConfirmed) {
         updateTargetInfoPrompt('discord', {
           type: 'cta',
-          message: 'Enable Bot',
+          message: 'Set Up',
           onClick: () => window.open(discordTarget.verificationLink, '_blank'),
         });
         setTargetData((prev) => ({
@@ -718,6 +721,7 @@ export const NotifiTargetContextProvider: FC<
             isAvailable: toggleTargetAvailability?.discord ?? true,
           },
         }));
+        updateTargetInfoPrompt('discord', null);
       }
     },
     [],
@@ -732,7 +736,7 @@ export const NotifiTargetContextProvider: FC<
           case 'MISSING_CHANNEL':
             updateTargetInfoPrompt('slack', {
               type: 'cta',
-              message: 'Enable Bot',
+              message: 'Set Up',
               onClick: () =>
                 window.open(slackTarget.verificationLink, '_blank'),
             });
@@ -765,6 +769,7 @@ export const NotifiTargetContextProvider: FC<
             isAvailable: toggleTargetAvailability?.slack ?? true,
           },
         }));
+        updateTargetInfoPrompt('slack', null);
       }
     },
     [],
@@ -825,6 +830,7 @@ export const NotifiTargetContextProvider: FC<
             isAvailable: toggleTargetAvailability?.wallet ?? false,
           },
         }));
+        updateTargetInfoPrompt('wallet', null);
       }
     },
     [toggleTargetAvailability, signCoinbaseSignature],

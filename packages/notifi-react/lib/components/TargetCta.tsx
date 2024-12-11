@@ -22,6 +22,7 @@ export type TargetCtaProps = {
   type: 'button' | 'link';
   targetInfoPrompt: TargetInfoPrompt;
   postCta: PostCta;
+  isCtaDisabled?: boolean;
   classNames?: {
     container?: string;
     actionRequired?: {
@@ -55,10 +56,10 @@ export const TargetCta: React.FC<TargetCtaProps> = (props) => {
             props.type === 'button' && props.classNames?.actionRequired?.button,
             props.type === 'link' && 'notifi-target-cta-link',
             props.type === 'link' && props.classNames?.actionRequired?.link,
-            isPostCtaShown && 'disabled',
+            (isPostCtaShown || props.isCtaDisabled) && 'disabled',
           )}
           onClick={async () => {
-            if (isPostCtaShown) return;
+            if (isPostCtaShown || props.isCtaDisabled) return;
             if (!isCtaInfo(props.targetInfoPrompt)) return;
 
             setIsLoading(true);
