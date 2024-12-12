@@ -8,13 +8,12 @@ import {
   TargetInfo,
   ToggleTarget,
   useNotifiTargetContext,
-  useNotifiTenantConfigContext,
 } from '../context';
 import { useComponentPosition } from '../hooks/useComponentPosition';
+import { useTargetListItem } from '../hooks/useTargetListItem';
 import { useTargetWallet } from '../hooks/useTargetWallet';
 import {
   getTargetValidateRegex,
-  hasValidTargetMoreThan,
   isFormTarget,
   isTargetCta,
   isTargetVerified,
@@ -22,6 +21,8 @@ import {
 } from '../utils';
 import { PostCta, TargetCta, TargetCtaProps } from './TargetCta';
 import { TargetInputField } from './TargetInputField';
+
+// import { TargetListItemForm } from './TargetListItemForm';
 
 export type TargetListItemProps = {
   targetListRef: React.RefObject<HTMLDivElement>;
@@ -60,6 +61,44 @@ export type TargetListItemProps = {
   };
 };
 
+// type TargetListItemFromProps = TargetListItemPropsBase & { target: FormTarget };
+
+// type TargetListItemPropsBase = {
+//   targetListRef: React.RefObject<HTMLDivElement>;
+//   postCta: PostCta;
+//   iconType: IconType;
+//   label: string;
+//   targetCtaType: TargetCtaProps['type'];
+//   targetInfo?: TargetInfo;
+//   message?: {
+//     beforeVerify?: string;
+//     afterVerify?: string;
+//     beforeVerifyTooltip?: string;
+//     beforeVerifyTooltipEndingLink?: {
+//       text: string;
+//       url: string;
+//     };
+//     afterVerifyTooltip?: string;
+//     afterVerifyTooltipEndingLink?: {
+//       text: string;
+//       url: string;
+//     };
+//   };
+//   parentComponent?: 'inbox' | 'ftu';
+//   classNames?: {
+//     targetListItem?: string;
+//     targetListVerifiedItem?: string;
+//     targetListItemTarget?: string;
+//     icon?: string;
+//     removeCta?: string;
+//     verifyMessage?: string;
+//     tooltipIcon?: string;
+//     tooltipContent?: string;
+//     targetId?: string;
+//     TargetCta?: TargetCtaProps['classNames'];
+//   };
+// };
+
 export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
   const tooltipRef = React.useRef<HTMLDivElement>(null);
   const {
@@ -67,173 +106,12 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
     renewTargetGroup,
     updateTargetInputs,
   } = useNotifiTargetContext();
-  const { cardConfig } = useNotifiTenantConfigContext();
-  const {
-    signCoinbaseSignature,
-    isLoading: isLoadingWallet,
-    error: errorWallet,
-  } = useTargetWallet();
 
-  const isRemoveButtonAvailable = () => {
-    // TODO: Only for reference, remove before merge.
-    // const isRemoveButtonAvailable = (targetInfoPrompt: TargetInfoPrompt) => {
-    // if (cardConfig?.isContactInfoRequired) {
-    //   return (
-    //     getAvailableTargetInputCount(targetInputs) > 1 &&
-    //     // isTargetVerified(targetInfoPrompt) &&
-    //     props.parentComponent !== 'ftu'
-    //   );
-    // }
-    // return (
-    //   isTargetVerified(targetInfoPrompt) && props.parentComponent !== 'ftu'
-    // );
-    const isTargetRemovable = !!cardConfig?.isContactInfoRequired
-      ? hasValidTargetMoreThan(targetData, 1)
-      : true;
-
-    switch (props.target) {
-      case 'discord':
-        return (
-          !!props.targetInfo &&
-          props.targetInfo.infoPrompt.message !== 'Set up' &&
-          isTargetRemovable
-        );
-      case 'slack':
-        return (
-          !!props.targetInfo &&
-          props.targetInfo.infoPrompt.message !== 'Set Up' &&
-          isTargetRemovable
-        );
-      case 'wallet':
-        return (
-          !!props.targetInfo &&
-          props.targetInfo.infoPrompt.message !== 'Sign Wallet' &&
-          isTargetRemovable
-        );
-      default:
-        return !!props.targetInfo && isTargetRemovable;
-    }
-  };
-
-  const signupCtaProps: TargetCtaProps = React.useMemo(() => {
-    const defaultCtaProps: TargetCtaProps = {
-      type: 'button',
-      targetInfoPrompt: {
-        type: 'cta',
-        message: 'Signup',
-        onClick: async () => console.log('Default Signup placeHolder'),
-      },
-      postCta: props.postCta,
-      classNames: props.classNames?.TargetCta,
-    };
-
-    switch (props.target) {
-      case 'email':
-      case 'telegram':
-        return {
-          ...defaultCtaProps,
-          type: 'button',
-          targetInfoPrompt: {
-            type: 'cta',
-            message: 'Signup',
-            onClick: async () => {
-              const target = props.target as FormTarget;
-              renewTargetGroup({
-                target: target,
-                value: targetInputs[target].value,
-              });
-            },
-          },
-        };
-      case 'discord':
-        return {
-          ...defaultCtaProps,
-          isCtaDisabled: !targetData[props.target].isAvailable,
-          type: 'button',
-          targetInfoPrompt: {
-            type: 'cta',
-            message: 'Enable Bot',
-            onClick: async () => {
-              // TODO: Remove this after adding documentation: 1. single target subscription always sync with with targetData. 2. targetInput & multiple target subscription.
-              // await updateTargetInputs(props.target, true);
-              const targetGroup = await renewTargetGroup({
-                target: props.target as ToggleTarget,
-                value: true,
-              });
-
-              if (
-                targetGroup?.discordTargets?.[0]?.verificationLink &&
-                !targetGroup?.discordTargets?.[0]?.isConfirmed
-              ) {
-                window.open(
-                  targetGroup?.discordTargets?.[0]?.verificationLink,
-                  '_blank',
-                );
-              }
-            },
-          },
-        };
-      case 'wallet':
-        return {
-          ...defaultCtaProps,
-          isCtaDisabled: !targetData[props.target].isAvailable,
-          type: 'button',
-          targetInfoPrompt: {
-            type: 'cta',
-            message: 'Sign Wallet',
-            onClick: async () => {
-              // TODO: Remove this after adding documentation: 1. single target subscription always sync with with targetData. 2. targetInput & multiple target subscription.
-              // await updateTargetInputs(props.target, true);
-              const targetGroup = await renewTargetGroup({
-                target: props.target as ToggleTarget,
-                value: true,
-              });
-              // TODO: Handle error
-              const walletTargetId = targetGroup?.web3Targets?.[0]?.id;
-              const walletTargetSenderAddress =
-                targetGroup?.web3Targets?.[0]?.senderAddress;
-              if (
-                !targetGroup?.web3Targets?.[0]?.isConfirmed &&
-                walletTargetId &&
-                walletTargetSenderAddress
-              ) {
-                // TODO: Remove unused variable
-                const updatedWeb3Target = await signCoinbaseSignature(
-                  walletTargetId,
-                  walletTargetSenderAddress,
-                );
-              }
-            },
-          },
-        };
-      case 'slack':
-        return {
-          ...defaultCtaProps,
-          isCtaDisabled: !targetData[props.target].isAvailable,
-          type: 'button',
-          targetInfoPrompt: {
-            type: 'cta',
-            message: 'Signup',
-            onClick: async () => {
-              await updateTargetInputs(props.target, true);
-              const targetGroup = await renewTargetGroup({
-                target: props.target as ToggleTarget,
-                value: true,
-              });
-              const verificationLink =
-                targetGroup?.slackChannelTargets?.[0]?.verificationLink;
-              if (!verificationLink) return;
-              window.open(verificationLink, '_blank');
-            },
-          },
-        };
-      default:
-        return defaultCtaProps;
-    }
-  }, [
-    props.target,
-    targetInputs /* renewTargetGroup, updateTargetInputs, signCoinbaseSignature */, //TODO: econsider the dependency
-  ]);
+  // TODO: signupCtaProps needs to include className
+  const { isRemoveButtonAvailable, signupCtaProps } = useTargetListItem({
+    target: props.target,
+    postCta: props.postCta,
+  });
 
   const { componentPosition: tooltipIconPosition } = useComponentPosition(
     tooltipRef,
@@ -243,6 +121,20 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
   );
 
   if (isFormTarget(props.target))
+    // return (
+    //   <TargetListItemForm
+    //     target={props.target}
+    //     iconType={props.iconType}
+    //     label={props.label}
+    //     targetInfo={props.targetInfo}
+    //     targetCtaType={props.targetCtaType}
+    //     message={props.message}
+    //     postCta={props.postCta}
+    //     isRemoveButtonAvailable={isRemoveButtonAvailable}
+    //     // TODO: signupCtaProps needs to include className
+    //     signupCtaProps={signupCtaProps}
+    //   />
+    // );
     return (
       <div
         className={clsx(
@@ -311,7 +203,7 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
             ) : null}
           </>
         )}
-        {isRemoveButtonAvailable() ? (
+        {isRemoveButtonAvailable ? (
           <TargetListItemAction
             action={async () => {
               const target = props.target as FormTarget;
@@ -458,7 +350,7 @@ export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
           <TargetCta {...signupCtaProps} />
         )}
 
-        {isRemoveButtonAvailable() ? (
+        {isRemoveButtonAvailable ? (
           <TargetListItemAction
             action={async () => {
               // TODO: Remove this after adding documentation: 1. single target subscription always sync with with targetData. 2. targetInput & multiple target subscription.
