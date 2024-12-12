@@ -2,18 +2,34 @@ import React from 'react';
 
 import { PostCta, TargetCtaProps } from '../components/TargetCta';
 import {
+  TargetListItemMessage,
+  TooltipEndingLink,
+} from '../components/TargetListItem';
+import {
   FormTarget,
   Target,
   ToggleTarget,
   useNotifiTargetContext,
   useNotifiTenantConfigContext,
 } from '../context';
-import { hasValidTargetMoreThan } from '../utils';
+import {
+  hasValidTargetMoreThan,
+  isTargetCta,
+  isTargetVerified,
+} from '../utils';
 import { useTargetWallet } from './useTargetWallet';
+
+type ClassifiedTargetListItemMessage = {
+  type: 'signup' | 'verify' | 'complete';
+  content: string;
+  tooltip?: string;
+  tooltipEndingLink?: TooltipEndingLink;
+};
 
 export const useTargetListItem = (input: {
   target: Target;
   postCta: PostCta;
+  message?: TargetListItemMessage;
 }) => {
   const { cardConfig } = useNotifiTenantConfigContext();
   const { signCoinbaseSignature } = useTargetWallet();
@@ -172,8 +188,45 @@ export const useTargetListItem = (input: {
     targetInputs /* renewTargetGroup, updateTargetInputs, signCoinbaseSignature */, //TODO: econsider the dependency
   ]);
 
+  const classifiedTargetListItemMessage: ClassifiedTargetListItemMessage | null =
+    React.useMemo(() => {
+      const targetInfo = targetInfoPrompts[input.target];
+      // SIGNUP MESSAGE
+      if (!targetInfo && input.message?.beforeSignup) {
+        return {
+          type: 'signup',
+          content: input.message.beforeSignup,
+          tooltip: input.message.beforeSignupTooltip,
+          tooltipEndingLink: input.message.beforeSignupTooltipEndingLink,
+        };
+      }
+      // VERIFY MESSAGE
+      if (isTargetCta(targetInfo?.infoPrompt) && input.message?.beforeVerify) {
+        return {
+          type: 'verify',
+          content: input.message.beforeVerify,
+          tooltip: input.message.beforeVerifyTooltip,
+          tooltipEndingLink: input.message.beforeVerifyTooltipEndingLink,
+        };
+      }
+      // COMPLETE MESSAGE
+      if (
+        isTargetVerified(targetInfo?.infoPrompt) &&
+        input.message?.afterVerify
+      ) {
+        return {
+          type: 'complete',
+          content: input.message.afterVerify,
+          tooltip: input.message.afterVerifyTooltip,
+          tooltipEndingLink: input.message.afterVerifyTooltipEndingLink,
+        };
+      }
+      return null;
+    }, [targetInfoPrompts[input.target], input.message]);
+
   return {
     signupCtaProps,
     isRemoveButtonAvailable,
+    classifiedTargetListItemMessage,
   };
 };

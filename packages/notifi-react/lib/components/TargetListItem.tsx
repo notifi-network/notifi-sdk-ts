@@ -24,20 +24,7 @@ type TargetListItemPropsBase = {
   label: string;
   targetCtaType: TargetCtaProps['type'];
   targetInfo?: TargetInfo;
-  message?: {
-    beforeVerify?: string;
-    afterVerify?: string;
-    beforeVerifyTooltip?: string;
-    beforeVerifyTooltipEndingLink?: {
-      text: string;
-      url: string;
-    };
-    afterVerifyTooltip?: string;
-    afterVerifyTooltipEndingLink?: {
-      text: string;
-      url: string;
-    };
-  };
+  message?: TargetListItemMessage;
   parentComponent?: 'inbox' | 'ftu';
   classNames?: {
     targetListItem?: string;
@@ -51,6 +38,23 @@ type TargetListItemPropsBase = {
     targetId?: string;
     TargetCta?: TargetCtaProps['classNames'];
   };
+};
+
+export type TargetListItemMessage = {
+  beforeSignup?: string;
+  beforeSignupTooltip?: string;
+  beforeSignupTooltipEndingLink?: TooltipEndingLink;
+  beforeVerify?: string;
+  afterVerify?: string;
+  beforeVerifyTooltip?: string;
+  beforeVerifyTooltipEndingLink?: TooltipEndingLink;
+  afterVerifyTooltip?: string;
+  afterVerifyTooltipEndingLink?: TooltipEndingLink;
+};
+
+export type TooltipEndingLink = {
+  text: string;
+  url: string;
 };
 
 export const TargetListItem: React.FC<TargetListItemProps> = (props) => {

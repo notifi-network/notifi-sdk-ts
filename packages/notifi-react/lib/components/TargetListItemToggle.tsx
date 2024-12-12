@@ -6,7 +6,7 @@ import { Icon } from '../assets/Icons';
 import { ToggleTarget, useNotifiTargetContext } from '../context';
 import { useComponentPosition } from '../hooks/useComponentPosition';
 import { useTargetListItem } from '../hooks/useTargetListItem';
-import { isTargetCta, isTargetVerified } from '../utils';
+import { isTargetVerified } from '../utils';
 import { TargetCta } from './TargetCta';
 import { TargetListItemToggleProps } from './TargetListItem';
 import { TargetListItemAction } from './TargetListItemAction';
@@ -18,9 +18,14 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
     targetDocument: { targetData },
     renewTargetGroup,
   } = useNotifiTargetContext();
-  const { isRemoveButtonAvailable, signupCtaProps } = useTargetListItem({
+  const {
+    isRemoveButtonAvailable,
+    signupCtaProps,
+    classifiedTargetListItemMessage,
+  } = useTargetListItem({
     target: props.target,
     postCta: props.postCta,
+    message: props.message,
   });
   const tooltipRef = React.useRef<HTMLDivElement>(null);
   const { componentPosition: tooltipIconPosition } = useComponentPosition(
@@ -49,10 +54,6 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
     }
   }, [toggleTargetData.data, props.target]);
 
-  const isBeforeVerifyMessageAvailable =
-    (isTargetCta(props.targetInfo?.infoPrompt) || !props.targetInfo) &&
-    props.message?.beforeVerify;
-
   return (
     <div
       className={clsx(
@@ -63,7 +64,7 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
           props.classNames?.targetListVerifiedItem,
       )}
     >
-      {/* ICON/ LABEL */}
+      {/* ICON/ LABEL / USERNAME */}
       <div
         className={clsx(
           'notifi-target-list-item-target',
@@ -76,21 +77,6 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
         />
         <label>{props.label}</label>
       </div>
-      {/* TODO: Remove, for ref now */}
-      {/* {!isTargetVerified(props.targetInfo?.infoPrompt) ||
-      props.parentComponent === 'ftu' ||
-      props.target === 'wallet' ? null : (
-        <div
-          className={clsx(
-            'notifi-target-list-item-target-id',
-            props.classNames?.targetId,
-          )}
-        >
-          {toggleTargetData.data &&
-            'username' in toggleTargetData.data! &&
-            `@${toggleTargetData.data.username}`}
-        </div>
-      )} */}
 
       {userName ? (
         <div
@@ -103,85 +89,46 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
         </div>
       ) : null}
 
-      {/* WARNING TEXT BEFORE TARGET VERIFIED (IF APPLICABLE) */}
-      {isBeforeVerifyMessageAvailable ? (
+      {/* TARGET STATUS MESSAGE */}
+      {classifiedTargetListItemMessage ? (
         <div
           className={clsx(
             'notifi-target-list-target-verify-message',
             props.classNames?.verifyMessage,
           )}
         >
-          {props.message!.beforeVerify}
-          <div className={'notifi-target-list-item-tooltip'} ref={tooltipRef}>
-            <Icon
-              className={clsx(
-                'notifi-target-list-item-tooltip-icon',
-                props.classNames?.tooltipIcon,
-              )}
-              type="info"
-            />
-            <div
-              className={clsx(
-                'notifi-target-list-item-tooltip-content',
-                props.classNames?.tooltipContent,
-                props.parentComponent === 'inbox' ? 'inbox' : '',
-                tooltipIconPosition,
-              )}
-            >
-              {props.message!.beforeVerifyTooltip}{' '}
-              {props.message!.beforeVerifyTooltipEndingLink ? (
-                <a
-                  href={props.message!.beforeVerifyTooltipEndingLink.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {props.message!.beforeVerifyTooltipEndingLink.text}
-                </a>
-              ) : null}
+          {classifiedTargetListItemMessage.content}
+          {/* TODO: create tooltip component */}
+          {classifiedTargetListItemMessage.tooltip && (
+            <div className={'notifi-target-list-item-tooltip'} ref={tooltipRef}>
+              <Icon
+                className={clsx(
+                  'notifi-target-list-item-tooltip-icon',
+                  props.classNames?.tooltipIcon,
+                )}
+                type="info"
+              />
+              <div
+                className={clsx(
+                  'notifi-target-list-item-tooltip-content',
+                  props.classNames?.tooltipContent,
+                  props.parentComponent === 'inbox' ? 'inbox' : '',
+                  tooltipIconPosition,
+                )}
+              >
+                {classifiedTargetListItemMessage.tooltip}
+                {classifiedTargetListItemMessage.tooltipEndingLink ? (
+                  <a
+                    href={classifiedTargetListItemMessage.tooltipEndingLink.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {classifiedTargetListItemMessage.tooltipEndingLink.text}
+                  </a>
+                ) : null}
+              </div>
             </div>
-          </div>
-        </div>
-      ) : null}
-
-      {/* CONFIRMATION MESSAGE AFTER TARGET VERIFIED (IF APPLICABLE) */}
-      {props.message?.afterVerify &&
-      isTargetVerified(props.targetInfo?.infoPrompt) ? (
-        <div
-          className={clsx(
-            'notifi-target-list-target-confirmed-message',
-            props.classNames?.verifyMessage,
-            props.parentComponent === 'inbox' ? 'inbox' : '',
           )}
-        >
-          {props.message.afterVerify}
-          <div className={'notifi-target-list-item-tooltip'} ref={tooltipRef}>
-            <Icon
-              className={clsx(
-                'notifi-target-list-item-tooltip-icon',
-                props.classNames?.tooltipIcon,
-              )}
-              type="info"
-            />
-            <div
-              className={clsx(
-                'notifi-target-list-item-tooltip-content',
-                props.classNames?.tooltipContent,
-                props.parentComponent === 'inbox' ? 'inbox' : '',
-                tooltipIconPosition,
-              )}
-            >
-              {props.message.afterVerifyTooltip}{' '}
-              {props.message.afterVerifyTooltipEndingLink ? (
-                <a
-                  href={props.message.afterVerifyTooltipEndingLink.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {props.message.afterVerifyTooltipEndingLink.text}
-                </a>
-              ) : null}
-            </div>
-          </div>
         </div>
       ) : null}
 
