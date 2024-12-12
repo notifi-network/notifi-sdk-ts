@@ -11,10 +11,8 @@ import {
 } from '../utils';
 import { TargetCta } from './TargetCta';
 import { TargetInputField } from './TargetInputField';
-import { TargetListItemFromProps, TargetListItemProps } from './TargetListItem';
+import { TargetListItemFromProps } from './TargetListItem';
 import { TargetListItemAction } from './TargetListItemAction';
-
-// TODO: confirm the cross import between this component and TargetListItem causes no issues
 
 export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
   props,
@@ -29,6 +27,9 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
     postCta: props.postCta,
   });
 
+  const isBeforeVerifyMessageAvailable =
+    isTargetCta(props.targetInfo?.infoPrompt) && props.message?.beforeVerify;
+
   return (
     <div
       className={clsx(
@@ -39,6 +40,7 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
           props.classNames?.targetListVerifiedItem,
       )}
     >
+      {/*  ICON / LABEL  / INPUT FIELD */}
       <div
         className={clsx(
           'notifi-target-list-item-target',
@@ -55,10 +57,8 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
             props.classNames?.targetId,
           )}
         >
-          {/** TODO: Move to use memo once the target display id > 1 format */}
           {targetData[props.target]}
         </div>
-        {/* TODO */}
         {!props.targetInfo ? (
           <>
             <label>{props.label}</label>{' '}
@@ -69,19 +69,20 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
           </>
         ) : null}
       </div>
-      {/* TODO: impl after verify message for form targets */}
-      {props.message?.beforeVerify &&
-      isTargetCta(props.targetInfo?.infoPrompt) ? (
+
+      {/* WARNING TEXT BEFORE TARGET VERIFIED */}
+      {isBeforeVerifyMessageAvailable ? (
         <div
           className={clsx(
             'notifi-target-list-target-verify-message',
             props.classNames?.verifyMessage,
           )}
         >
-          {props.message.beforeVerify}
+          {props.message!.beforeVerify}
         </div>
       ) : null}
 
+      {/* TARGET STATUS CTA */}
       {props.targetInfo ? (
         <TargetCta
           type={props.targetCtaType}
@@ -93,11 +94,15 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
         <>
           {!targetInputs[props.target].error &&
           targetInputs[props.target].value ? (
-            // TODO: not yet consider class names
-            <TargetCta {...signupCtaProps} />
+            <TargetCta
+              {...signupCtaProps}
+              classNames={props.classNames?.TargetCta}
+            />
           ) : null}
         </>
       )}
+
+      {/* REMOVE CTA */}
       {isRemoveButtonAvailable ? (
         <TargetListItemAction
           action={async () => {

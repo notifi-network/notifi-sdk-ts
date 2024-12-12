@@ -1,3 +1,4 @@
+import { Types } from '@notifi-network/notifi-graphql';
 import clsx from 'clsx';
 import React from 'react';
 
@@ -9,8 +10,6 @@ import { isTargetCta, isTargetVerified } from '../utils';
 import { TargetCta } from './TargetCta';
 import { TargetListItemToggleProps } from './TargetListItem';
 import { TargetListItemAction } from './TargetListItemAction';
-
-// TODO: confirm the cross import between this component and TargetListItem causes no issues
 
 export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
   props,
@@ -32,6 +31,28 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
   );
   const toggleTargetData = targetData[props.target];
 
+  const userName = React.useMemo(() => {
+    if (!toggleTargetData.data) return null;
+    switch (props.target) {
+      case 'discord':
+        return (
+          (toggleTargetData.data as Types.DiscordTargetFragmentFragment)
+            .username ?? null
+        );
+      case 'slack':
+        return (
+          (toggleTargetData.data as Types.SlackChannelTargetFragmentFragment)
+            .slackChannelName ?? null
+        );
+      default:
+        return null;
+    }
+  }, [toggleTargetData.data, props.target]);
+
+  const isBeforeVerifyMessageAvailable =
+    (isTargetCta(props.targetInfo?.infoPrompt) || !props.targetInfo) &&
+    props.message?.beforeVerify;
+
   return (
     <div
       className={clsx(
@@ -42,6 +63,7 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
           props.classNames?.targetListVerifiedItem,
       )}
     >
+      {/* ICON/ LABEL */}
       <div
         className={clsx(
           'notifi-target-list-item-target',
@@ -54,7 +76,8 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
         />
         <label>{props.label}</label>
       </div>
-      {!isTargetVerified(props.targetInfo?.infoPrompt) ||
+      {/* TODO: Remove, for ref now */}
+      {/* {!isTargetVerified(props.targetInfo?.infoPrompt) ||
       props.parentComponent === 'ftu' ||
       props.target === 'wallet' ? null : (
         <div
@@ -63,22 +86,32 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
             props.classNames?.targetId,
           )}
         >
-          {/** TODO: Move to use memo once the target display id > 1 format */}
-          {/** Display Discord username */}
           {toggleTargetData.data &&
             'username' in toggleTargetData.data! &&
             `@${toggleTargetData.data.username}`}
         </div>
-      )}
-      {props.message?.beforeVerify &&
-      (isTargetCta(props.targetInfo?.infoPrompt) || !props.targetInfo) ? (
+      )} */}
+
+      {userName ? (
+        <div
+          className={clsx(
+            'notifi-target-list-item-target-id',
+            props.classNames?.targetId,
+          )}
+        >
+          {`@${userName}`}
+        </div>
+      ) : null}
+
+      {/* WARNING TEXT BEFORE TARGET VERIFIED (IF APPLICABLE) */}
+      {isBeforeVerifyMessageAvailable ? (
         <div
           className={clsx(
             'notifi-target-list-target-verify-message',
             props.classNames?.verifyMessage,
           )}
         >
-          {props.message.beforeVerify}
+          {props.message!.beforeVerify}
           <div className={'notifi-target-list-item-tooltip'} ref={tooltipRef}>
             <Icon
               className={clsx(
@@ -95,20 +128,22 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
                 tooltipIconPosition,
               )}
             >
-              {props.message.beforeVerifyTooltip}{' '}
-              {props.message.beforeVerifyTooltipEndingLink ? (
+              {props.message!.beforeVerifyTooltip}{' '}
+              {props.message!.beforeVerifyTooltipEndingLink ? (
                 <a
-                  href={props.message.beforeVerifyTooltipEndingLink.url}
+                  href={props.message!.beforeVerifyTooltipEndingLink.url}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  {props.message.beforeVerifyTooltipEndingLink.text}
+                  {props.message!.beforeVerifyTooltipEndingLink.text}
                 </a>
               ) : null}
             </div>
           </div>
         </div>
       ) : null}
+
+      {/* CONFIRMATION MESSAGE AFTER TARGET VERIFIED (IF APPLICABLE) */}
       {props.message?.afterVerify &&
       isTargetVerified(props.targetInfo?.infoPrompt) ? (
         <div
@@ -149,6 +184,8 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
           </div>
         </div>
       ) : null}
+
+      {/* TARGET STATUS CTA */}
       {props.targetInfo ? (
         <TargetCta
           type={props.targetCtaType}
@@ -161,6 +198,7 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
         <TargetCta {...signupCtaProps} />
       )}
 
+      {/* REMOVE CTA */}
       {isRemoveButtonAvailable ? (
         <TargetListItemAction
           action={async () => {
