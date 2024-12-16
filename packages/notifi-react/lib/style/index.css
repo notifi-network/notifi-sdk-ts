@@ -25,90 +25,113 @@
 
 :root {
   /* Color variables */
+  /* TODO: refactor color pattern to use rgb values ex. 255, 255, 255 */
   --notifi-color-grey1: #1c1c23;
   --notifi-color-grey2: #323240;
   --notifi-color-grey3: #80829d;
   --notifi-color-grey4: #4a4a5e;
   --notifi-color-grey5: #434354;
-  --notifi-color-white: #fff;
+  --notifi-color-grey6: 66, 66, 82; /* #424252 */
+  --notifi-color-white: 255, 255, 255; /* #fff */
   --notifi-color-blackish1: #32323b;
   --notifi-color-black: #000;
   --notifi-color-light: #f3f4f9;
   --notifi-color-eggshell: #f5f6fb;
   --notifi-color-seaglass: #9aa3ff;
-  --notifi-color-secondary-light: #5260f0;
+  --notifi-color-secondary-light: 82, 96, 240; /* #5260f0; */
   --notifi-color-seaglass-dark: #828ae3;
+  --notifi-color-light-blue: 227, 230, 245; /* #e3e6f5; */
   --notifi-color-green1: #318c1a;
   --notifi-color-green2: #dff8d9;
-  --notifi-color-green3: #a4de95;
-  --notifi-color-green4: #328c1b;
+  --notifi-color-green3: 164, 222, 149; /* #a4de95; */
+  --notifi-color-green4: 50, 140, 27; /* #328c1b */
   --notifi-color-dark: #1b1b22;
   --notifi-color-midnight: #262949;
   --notifi-color-cloud: #e8ebf5;
   --notifi-color-error: #d5828b;
   --notifi-color-dusk: #80829d;
-  --notifi-color-heather: #b6b8d5;
+  --notifi-color-heather: 182, 184, 213; /* #b6b8d5; */
   --notifi-color-text-light: #868fa6;
   --notifi-color-rose: #c78186;
 }
 
 .notifi-theme-dark {
-  --notifi-font-color: var(--notifi-color-white);
+  --notifi-font-color: rgba(var(--notifi-color-white), 1);
   --notifi-card-background: var(--notifi-color-dark);
   --notifi-connect-bg: var(--notifi-color-dark);
-  --notifi-connect-button: var(--notifi-color-white);
+  --notifi-connect-button: rgba(var(--notifi-color-white), 1);
   --notifi-connect-button-text: var(--notifi-color-midnight);
   --notifi-connect-alert-icon: var(--notifi-color-seaglass);
-  --notifi-ftu-target-edit-description: var(--notifi-color-heather);
+  --notifi-ftu-target-edit-description: rgba(var(--notifi-color-heather), 1);
   --notifi-input-field-background: var(--notifi-color-grey2);
   --notifi-toggle-inactive: var(--notifi-color-dusk);
   --notifi-toggle-active: var(--notifi-color-seaglass-dark);
-  --notifi-toggle-handle: var(--notifi-color-white);
+  --notifi-toggle-handle: rgba(var(--notifi-color-white), 1);
   --notifi-nav-header-background: var(--notifi-color-grey2);
   --notifi-ftu-button-text: var(--notifi-color-midnight);
-  --notifi-ftu-button: var(--notifi-color-white);
+  --notifi-ftu-button: rgba(var(--notifi-color-white), 1);
   --notifi-target-list-cat-button-bg: var(--notifi-color-seaglass-dark);
-  --notifi-target-list-cat-button-text: var(--notifi-color-white);
-  --notifi-target-list-cta-link-text: var(--notifi-color-seaglass-dark);
+  --notifi-target-list-cat-button-text: rgba(var(--notifi-color-white), 1);
+  --notifi-target-list-cta-link-text: rgba(var(--notifi-color-white), 1);
   --notifi-notifi-target-list-item-bg: var(--notifi-color-grey2);
   --notifi-notifi-topic-list-row-bg: var(--notifi-color-grey2);
   --notifi-topic-options-item-bg: var(--notifi-color-grey1);
-  --notifi-topic-options-item-text: var(--notifi-color-heather);
+  --notifi-topic-options-item-text: rgba(var(--notifi-color-heather), 1);
   --notifi-topic-option-radio-bg: var(--notifi-color-grey1);
   --notifi-subscription-input-dropdown-value-bg: var(--notifi-color-grey1);
   --notifi-subscription-input-dropdown-list-bg: var(--notifi-color-grey1);
   --notifi-spinner-color: var(--notifi-color-seaglass-dark);
-  --notifi-topic-stack-row-input-button-bg: var(--notifi-color-secondary-light);
-  --notifi-topic-stack-row-input-button-text: var(--notifi-color-white);
+  --notifi-topic-stack-row-input-button-bg: rgba(
+    var(--notifi-color-secondary-light),
+    1
+  );
+  --notifi-topic-stack-row-input-button-text: rgba(
+    var(--notifi-color-white),
+    1
+  );
   --notifi-nav-footer-bg: var(--notifi-color-grey2);
   --notifi-history-row-bg: var(--notifi-color-grey2);
   --notifi-history-row-unread-indicator: var(--notifi-color-seaglass-dark);
-  --notifi-history-row-title-text: var(--notifi-color-white);
-  --notifi-history-row-timestamp-text: var(--notifi-color-heather);
-  --notifi-history-row-subject-text: var(--notifi-color-heather);
-  --notifi-history-detail-bg: var(--notifi-color-dark);
-  --notifi-history-detail-timestamp-text: var(--notifi-color-heather);
+  --notifi-history-row-title-text: rgba(var(--notifi-color-white), 1);
+  --notifi-history-row-timestamp-text: rgba(var(--notifi-color-heather), 1);
+  --notifi-history-row-subject-text: rgba(var(--notifi-color-heather), 1);
+  --notifi-history-detail-bg: rgba(var(--notifi-color-dark) ;, 1)
+    --notifi-history-detail-timestamp-text: rgba(var(--notifi-color-heather), 1);
   --notifi-history-list-empty-icon: var(--notifi-color-seaglass-dark);
-  --notifi-history-list-empty-description-text: var(--notifi-color-heather);
+  --notifi-history-list-empty-description-text: rgba(
+    var(--notifi-color-heather),
+    1
+  );
   --notifi-target-state-banner-bg: var(--notifi-color-grey2);
-  --notifi-target-state-verify-icon-color: var(--notifi-color-white);
-  --notifi-inbox-config-topic-title-text: var(--notifi-color-heather);
+  --notifi-target-state-verify-icon-color: rgba(var(--notifi-color-white), 1);
+  --notifi-inbox-config-topic-title-text: rgba(var(--notifi-color-heather), 1);
   --notifi-target-list-remove-text: var(--notifi-color-eggshell);
-  --notifi-target-cta-action-not-require-text: var(--notifi-color-green3);
-  --notifi-target-list-target-verify-message-text: var(--notifi-color-heather);
+  --notifi-target-cta-action-not-require-text: rgb(var(--notifi-color-green3));
+  --notifi-target-cta-action-not-require-bg: rgba(
+    var(--notifi-color-green3),
+    0.4
+  );
   --notifi-target-state-banner-signup-icon-color: var(
     --notifi-color-seaglass-dark
   );
   --notifi-target-state-banner-signup-cta-bg: var(--notifi-color-seaglass-dark);
-  --notifi-topic-options-item-selected-text: var(--notifi-color-white);
+  --notifi-topic-options-item-selected-text: rgba(var(--notifi-color-white), 1);
   --notifi-topic-option-radio-inner-ring: var(--notifi-color-grey2);
   --notifi-topic-list-tooltip-bg: var(--notifi-color-dark);
   --notifi-topic-list-tooltip-content-border: var(--notifi-color-dark);
   --notifi-target-list-tooltip-bg: var(--notifi-color-dark);
   --notifi-target-list-item-tooltip-content-border: var(--notifi-color-dark);
-  --notifi-target-list-item-tooltip-content-text: var(--notifi-color-white);
+  --notifi-target-list-item-tooltip-content-text: rgba(
+    var(--notifi-color-white),
+    1
+  );
   --notifi-target-list-item-tooltip-icon-color-hover: var(--notifi-color-white);
-  --notifi-topic-list-tooltip-icon-color-hover: var(--notifi-color-white);
+  --notifi-target-list-item-warning-bg: rgba(var(--notifi-color-grey6), 1);
+  --notifi-target-list-item-warning-text: rgba(var(--notifi-color-heather), 1);
+  --notifi-topic-list-tooltip-icon-color-hover: rgba(
+    var(--notifi-color-white),
+    1
+  );
   --notifi-input-separator-text: var(--notifi-color-dusk);
   --notifi-input-separator-line: var(--notifi-color-blackish1);
   --notifi-ftu-footer-bg: var(--notifi-color-grey2);
@@ -121,85 +144,124 @@
   );
   --notifi-target-state-banner-verify-icon-color: var(--notifi-color-dark);
   --notifi-inbox-footer-border: var(--notifi-color-grey4);
-  --notifi-powered-by-text: var(--notifi-color-heather);
+  --notifi-powered-by-text: rgba(var(--notifi-color-heather), 1);
   --notifi-topic-stack-separator: var(--notifi-color-grey5);
   --notifi-topic-stack-row-cta-text: var(--notifi-color-seaglass-dark);
-  --notifi-target-input-toggle-unavailable-text: var(--notifi-color-heather);
+  --notifi-target-input-toggle-unavailable-text: rgba(
+    var(--notifi-color-heather),
+    1
+  );
 }
 
 .notifi-theme-light {
   --notifi-font-color: var(--notifi-color-midnight);
   --notifi-card-background: var(--notifi-color-light);
-  --notifi-connect-bg: var(--notifi-color-white);
+  --notifi-connect-bg: rgba(var(--notifi-color-white), 1);
   --notifi-connect-button: var(--notifi-color-midnight);
-  --notifi-connect-button-text: var(--notifi-color-white);
-  --notifi-connect-alert-icon: var(--notifi-color-secondary-light);
+  --notifi-connect-button-text: rgba(var(--notifi-color-white), 1);
+  --notifi-connect-alert-icon: rgba(var(--notifi-color-secondary-light), 1);
   --notifi-ftu-target-edit-description: var(--notifi-color-dusk);
-  --notifi-input-field-background: var(--notifi-color-white);
-  --notifi-toggle-inactive: var(--notifi-color-heather);
-  --notifi-toggle-active: var(--notifi-color-secondary-light);
-  --notifi-toggle-handle: var(--notifi-color-white);
-  --notifi-nav-header-background: var(--notifi-color-white);
-  --notifi-ftu-button-text: var(--notifi-color-white);
+  --notifi-input-field-background: rgba(var(--notifi-color-white), 1);
+  --notifi-toggle-inactive: rgba(var(--notifi-color-heather), 1);
+  --notifi-toggle-active: rgba(var(--notifi-color-secondary-light), 1);
+  --notifi-toggle-handle: rgba(var(--notifi-color-white), 1);
+  --notifi-nav-header-background: rgba(var(--notifi-color-white), 1);
+  --notifi-ftu-button-text: rgba(var(--notifi-color-white), 1);
   --notifi-ftu-button: var(--notifi-color-midnight);
-  --notifi-target-list-cat-button-bg: var(--notifi-color-secondary-light);
-  --notifi-target-list-cat-button-text: var(--notifi-color-white);
-  --notifi-target-list-cta-link-text: var(--notifi-color-secondary-light);
-  --notifi-notifi-target-list-item-bg: var(--notifi-color-white);
-  --notifi-notifi-topic-list-row-bg: var(--notifi-color-white);
+  --notifi-target-list-cat-button-bg: rgba(
+    var(--notifi-color-secondary-light),
+    1
+  );
+  --notifi-target-list-cat-button-text: rgba(var(--notifi-color-white), 1);
+  --notifi-target-list-cta-link-text: rgba(
+    var(--notifi-color-secondary-light),
+    1
+  );
+  --notifi-notifi-target-list-item-bg: rgba(var(--notifi-color-white), 1);
+  --notifi-notifi-topic-list-row-bg: rgba(var(--notifi-color-white), 1);
   --notifi-topic-options-item-bg: var(--notifi-color-eggshell);
   --notifi-topic-options-item-text: var(--notifi-color-dusk);
   --notifi-topic-option-radio-inner-ring: var(--notifi-color-light);
-  --notifi-topic-option-radio-bg: var(--notifi-color-white);
+  --notifi-topic-option-radio-bg: rgba(var(--notifi-color-white), 1);
   --notifi-subscription-input-dropdown-value-bg: var(--notifi-color-eggshell);
   --notifi-subscription-input-dropdown-list-bg: var(--notifi-color-eggshell);
   --notifi-spinner-color: var(--notifi-color-seaglass-dark);
   --notifi-topic-stack-row-input-button-bg: var(--notifi-color-seaglass-dark);
-  --notifi-topic-stack-row-input-button-text: var(--notifi-color-white);
-  --notifi-nav-footer-bg: var(--notifi-color-white);
-  --notifi-history-row-bg: var(--notifi-color-white);
-  --notifi-history-row-unread-indicator: var(--notifi-color-secondary-light);
+  --notifi-topic-stack-row-input-button-text: rgba(
+    var(--notifi-color-white),
+    1
+  );
+  --notifi-nav-footer-bg: rgba(var(--notifi-color-white), 1);
+  --notifi-history-row-bg: rgba(var(--notifi-color-white), 1);
+  --notifi-history-row-unread-indicator: rgba(
+    var(--notifi-color-secondary-light),
+    1
+  );
   --notifi-history-row-title-text: var(--notifi-color-midnight);
   --notifi-history-row-timestamp-text: var(--notifi-color-dusk);
   --notifi-history-row-subject-text: var(--notifi-color-dusk);
-  --notifi-history-detail-bg: var(--notifi-color-white);
+  --notifi-history-detail-bg: rgba(var(--notifi-color-white), 1);
   --notifi-history-detail-timestamp-text: var(--notifi-color-dusk);
-  --notifi-history-list-empty-icon: var(--notifi-color-secondary-light);
+  --notifi-history-list-empty-icon: rgba(
+    var(--notifi-color-secondary-light),
+    1
+  );
   --notifi-history-list-empty-description-text: var(--notifi-color-dusk);
-  --notifi-target-state-banner-bg: var(--notifi-color-white);
+  --notifi-target-state-banner-bg: rgba(var(--notifi-color-white), 1);
   --notifi-target-state-verify-icon-color: var(--notifi-color-black);
   --notifi-inbox-config-topic-title-text: var(--notifi-color-dusk);
   --notifi-target-list-remove-text: var(--notifi-color-midnight);
-  --notifi-target-cta-action-not-require-text: var(--notifi-color-green4);
+  --notifi-target-cta-action-not-require-text: rgb(var(--notifi-color-green4));
+  --notifi-target-cta-action-not-require-bg: rgba(
+    var(--notifi-color-green4),
+    0.4
+  );
   --notifi-target-list-target-verify-message-text: var(--notifi-color-dusk);
-  --notifi-target-state-banner-signup-icon-color: var(
-    --notifi-color-secondary-light
+  --notifi-target-state-banner-signup-icon-color: rgba(
+    var(--notifi-color-secondary-light),
+    1
   );
-  --notifi-target-state-banner-signup-cta-bg: var(
-    --notifi-color-secondary-light
+  --notifi-target-state-banner-signup-cta-bg: rgba(
+    var(--notifi-color-secondary-light),
+    1
   );
-  --notifi-topic-options-item-selected-text: var(
-    --notifi-color-secondary-light
+  --notifi-topic-options-item-selected-text: rgba(
+    var(--notifi-color-secondary-light),
+    1
   );
   --notifi-topic-list-tooltip-bg: var(--notifi-color-eggshell);
-  --notifi-topic-list-tooltip-content-border: var(--notifi-color-heather);
+  --notifi-topic-list-tooltip-content-border: rgba(
+    var(--notifi-color-heather),
+    1
+  );
   --notifi-target-list-tooltip-bg: var(--notifi-color-eggshell);
-  --notifi-target-list-item-tooltip-content-border: var(--notifi-color-heather);
+  --notifi-target-list-item-tooltip-content-border: rgba(
+    var(--notifi-color-heather),
+    1
+  );
   --notifi-target-list-item-tooltip-content-text: var(--notifi-color-black);
   --notifi-target-list-item-tooltip-icon-color-hover: var(--notifi-color-dusk);
+  --notifi-target-list-item-warning-bg: rgba(var(--notifi-color-light-blue), 1);
+  --notifi-target-list-item-warning-text: rgba(var(--notifi-color-heather), 1);
   --notifi-topic-list-tooltip-icon-color-hover: var(--notifi-color-dusk);
-  --notifi-input-separator-text: var(--notifi-color-heather);
-  --notifi-input-separator-line: var(--notifi-color-heather);
-  --notifi-ftu-footer-bg: var(--notifi-color-white);
+  --notifi-input-separator-text: rgba(var(--notifi-color-heather), 1);
+  --notifi-input-separator-line: rgba(var(--notifi-color-heather), 1);
+  --notifi-ftu-footer-bg: rgba(var(--notifi-color-white), 1);
   --notifi-ftu-footer-border: var(--notifi-color-cloud);
   --notifi-ftu-header-border: var(--notifi-color-cloud);
   --notifi-target-state-banner-signup-history-bg: var(--notifi-color-cloud);
   --notifi-target-state-banner-verify-history-bg: var(--notifi-color-cloud);
-  --notifi-target-state-banner-verify-cta-history-bg: var(--notifi-color-white);
+  --notifi-target-state-banner-verify-cta-history-bg: rgba(
+    var(--notifi-color-white),
+    1
+  );
   --notifi-target-state-banner-verify-icon-color: var(--notifi-color-eggshell);
   --notifi-inbox-footer-border: var(--notifi-color-cloud);
   --notifi-powered-by-text: var(--notifi-color-midnight);
-  --notifi-topic-stack-separator: var(--notifi-color-heather);
-  --notifi-topic-stack-row-cta-text: var(--notifi-color-secondary-light);
+  --notifi-topic-stack-separator: rgba(var(--notifi-color-heather), 1);
+  --notifi-topic-stack-row-cta-text: rgba(
+    var(--notifi-color-secondary-light),
+    1
+  );
   --notifi-target-input-toggle-unavailable-text: var(--notifi-color-grey3);
 }

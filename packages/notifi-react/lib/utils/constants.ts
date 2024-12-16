@@ -47,7 +47,7 @@ export const defaultCopy = {
     discord: 'Discord',
     slack: 'Slack',
     wallet: 'Wallets',
-    emailVerifyMessage: 'We’ve sent a verification email to:',
+    emailVerifyMessage: 'Verification email sent',
     postCtaEmail: 'Email sent',
     postCtaEmailDurationInMs: 5000,
     postCtaTelegram: 'Done!',

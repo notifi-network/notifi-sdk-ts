@@ -91,13 +91,18 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
                 defaultCopy.targetList.emailVerifyMessage,
             };
             targetListItemArgs.postCta = {
-              type: 'text',
-              text:
-                props.copy?.postCtaEmail ?? defaultCopy.targetList.postCtaEmail,
-              durationInMs:
-                props.copy?.postCtaEmailDurationInMs ??
-                defaultCopy.targetList.postCtaEmailDurationInMs,
+              type: 'loading-animation',
+              animationType: 'spinner',
             };
+            // TODO: remove default copy email postCtaEmail & postCtaEmailDurationInMs
+            // {
+            //   type: 'text',
+            //   text:
+            //     props.copy?.postCtaEmail ?? defaultCopy.targetList.postCtaEmail,
+            //   durationInMs:
+            //     props.copy?.postCtaEmailDurationInMs ??
+            //     defaultCopy.targetList.postCtaEmailDurationInMs,
+            // };
             break;
           case 'phoneNumber':
             targetListItemArgs.iconType = 'sms';
@@ -115,14 +120,22 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
             targetListItemArgs.iconType = 'telegram';
             targetListItemArgs.label =
               props.copy?.telegram ?? defaultCopy.targetList.telegram;
-            targetListItemArgs.targetCtaType = 'button';
-            targetListItemArgs.postCta = {
-              type: 'text',
-              text:
-                props.copy?.postCtaTelegram ??
-                defaultCopy.targetList.postCtaTelegram,
-              durationInMs: 5000,
+            targetListItemArgs.message = {
+              beforeVerify: 'Verify your Telegram account',
             };
+            targetListItemArgs.targetCtaType = 'link';
+            targetListItemArgs.postCta = {
+              type: 'loading-animation',
+              animationType: 'spinner',
+            };
+            // TODO: remove default copy telegram postCtaTelegram & postCtaTelegramDurationInMs
+            // {
+            //   type: 'text',
+            //   text:
+            //     props.copy?.postCtaTelegram ??
+            //     defaultCopy.targetList.postCtaTelegram,
+            //   durationInMs: 5000,
+            // };
             break;
           case 'discord':
             targetListItemArgs.iconType = 'discord';
@@ -137,27 +150,37 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
                 defaultCopy.targetList.discordVerifiedPromptTooltip,
             };
             targetListItemArgs.postCta = {
-              type: 'text',
-              text:
-                props.copy?.postCtaDiscord ??
-                defaultCopy.targetList.postCtaDiscord,
-              durationInMs:
-                props.copy?.postCtaDiscordDurationInMs ??
-                defaultCopy.targetList.postCtaDiscordDurationInMs,
+              type: 'loading-animation',
+              animationType: 'spinner',
             };
+            // TODO: remove default copy discord postCtaDiscord & postCtaDiscordDurationInMs
+            // {
+            //   type: 'text',
+            //   text:
+            //     props.copy?.postCtaDiscord ??
+            //     defaultCopy.targetList.postCtaDiscord,
+            //   durationInMs:
+            //     props.copy?.postCtaDiscordDurationInMs ??
+            //     defaultCopy.targetList.postCtaDiscordDurationInMs,
+            // };
             break;
           case 'slack':
             targetListItemArgs.iconType = 'slack';
             targetListItemArgs.label = defaultCopy.targetList.slack;
             targetListItemArgs.targetCtaType = 'button';
             targetListItemArgs.postCta = {
-              type: 'text',
-              text:
-                props.copy?.postCtaSlack ?? defaultCopy.targetList.postCtaSlack,
-              durationInMs:
-                props.copy?.postCtaSlackDurationInMs ??
-                defaultCopy.targetList.postCtaSlackDurationInMs,
+              type: 'loading-animation',
+              animationType: 'spinner',
             };
+            // TODO: remove default copy slack postCtaSlack & postCtaSlackDurationInMs
+            // {
+            //   type: 'text',
+            //   text:
+            //     props.copy?.postCtaSlack ?? defaultCopy.targetList.postCtaSlack,
+            //   durationInMs:
+            //     props.copy?.postCtaSlackDurationInMs ??
+            //     defaultCopy.targetList.postCtaSlackDurationInMs,
+            // };
             break;
           case 'wallet':
             targetListItemArgs.iconType = 'connect';
