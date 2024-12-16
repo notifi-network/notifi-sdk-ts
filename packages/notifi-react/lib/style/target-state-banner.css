@@ -97,7 +97,7 @@
 }
 
 .notifi-target-state-banner-signup-cta {
-  color: var(--notifi-color-white);
+  color: rgba(var(--notifi-color-white), 1);
   background-color: var(--notifi-target-state-banner-signup-cta-bg);
   padding: 0.5rem 1rem;
   border-radius: 6px;

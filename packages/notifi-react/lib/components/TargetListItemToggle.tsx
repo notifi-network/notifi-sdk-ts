@@ -65,35 +65,47 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
       )}
     >
       {/* ICON/ LABEL / USERNAME */}
-      <div
-        className={clsx(
-          'notifi-target-list-item-target',
-          props.classNames?.targetListItemTarget,
-        )}
-      >
-        <Icon
-          type={props.iconType}
-          className={clsx('notifi-target-list-icon', props.classNames?.icon)}
-        />
-        <label>{props.label}</label>
-      </div>
-
-      {userName ? (
+      <div className="notifi-target-list-item-content">
         <div
           className={clsx(
-            'notifi-target-list-item-target-id',
-            props.classNames?.targetId,
+            'notifi-target-list-item-target',
+            props.classNames?.targetListItemTarget,
           )}
         >
-          {`@${userName}`}
+          <Icon
+            type={props.iconType}
+            className={clsx('notifi-target-list-icon', props.classNames?.icon)}
+          />
+          <div
+            className={clsx(
+              'notifi-target-list-item-target-id',
+              props.classNames?.targetId,
+            )}
+          >
+            {userName ? `@${userName}` : <label>{props.label}</label>}
+          </div>
         </div>
-      ) : null}
+
+        {/* TARGET STATUS CTA */}
+        {/* TODO: refactor (combine to one) */}
+        {props.targetInfo ? (
+          <TargetCta
+            type={props.targetCtaType}
+            targetInfoPrompt={props.targetInfo.infoPrompt}
+            classNames={props.classNames?.TargetCta}
+            postCta={props.postCta}
+            isCtaDisabled={!targetData[props.target].isAvailable}
+          />
+        ) : (
+          <TargetCta {...signupCtaProps} />
+        )}
+      </div>
 
       {/* TARGET STATUS MESSAGE */}
       {classifiedTargetListItemMessage ? (
         <div
           className={clsx(
-            'notifi-target-list-target-verify-message',
+            'notifi-target-list-item-warning',
             props.classNames?.verifyMessage,
           )}
         >
@@ -133,7 +145,7 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
       ) : null}
 
       {/* TARGET STATUS CTA */}
-      {props.targetInfo ? (
+      {/* {props.targetInfo ? (
         <TargetCta
           type={props.targetCtaType}
           targetInfoPrompt={props.targetInfo.infoPrompt}
@@ -143,7 +155,7 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
         />
       ) : (
         <TargetCta {...signupCtaProps} />
-      )}
+      )} */}
 
       {/* REMOVE CTA */}
       {isRemoveButtonAvailable ? (

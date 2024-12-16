@@ -48,7 +48,13 @@ export const TargetCta: React.FC<TargetCtaProps> = (props) => {
   }, [isLoading]);
 
   return (
-    <div className={clsx('notifi-target-cta', props.classNames?.container)}>
+    <div
+      className={clsx(
+        'notifi-target-cta',
+        !isCtaInfo(props.targetInfoPrompt) && 'no-action-required',
+        props.classNames?.container,
+      )}
+    >
       {isCtaInfo(props.targetInfoPrompt) ? (
         <div
           className={clsx(
@@ -97,7 +103,8 @@ export const TargetCta: React.FC<TargetCtaProps> = (props) => {
           )}
         >
           <Icon type="check" />
-          {props.targetInfoPrompt.message}
+          {/* TODO: remove */}
+          {/* {props.targetInfoPrompt.message} */}
         </div>
       ) : null}
     </div>

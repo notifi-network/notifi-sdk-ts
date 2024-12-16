@@ -645,7 +645,7 @@ export const NotifiTargetContextProvider: FC<
           case false:
             updateTargetInfoPrompt('telegram', {
               type: 'cta',
-              message: 'Verify ID',
+              message: 'Verify',
               onClick: () => {
                 if (!telegramTarget?.confirmationUrl) {
                   return;

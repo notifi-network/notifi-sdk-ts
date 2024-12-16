@@ -47,40 +47,52 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
       )}
     >
       {/*  ICON / LABEL  / INPUT FIELD */}
-      <div
-        className={clsx(
-          'notifi-target-list-item-target',
-          props.classNames?.targetListItemTarget,
-        )}
-      >
-        <Icon
-          type={props.iconType}
-          className={clsx('notifi-target-list-icon', props.classNames?.icon)}
-        />
+      <div className="notifi-target-list-item-content">
         <div
           className={clsx(
-            'notifi-target-list-item-target-id',
-            props.classNames?.targetId,
+            'notifi-target-list-item-target',
+            props.classNames?.targetListItemTarget,
           )}
         >
-          {targetData[props.target]}
+          <Icon
+            type={props.iconType}
+            className={clsx('notifi-target-list-icon', props.classNames?.icon)}
+          />
+          {/* <label>{props.label}</label> */}
+          <div
+            className={clsx(
+              'notifi-target-list-item-target-id',
+              props.classNames?.targetId,
+            )}
+          >
+            {targetData[props.target] || <label>{props.label}</label>}
+          </div>
         </div>
-        {!props.targetInfo ? (
-          <>
-            <label>{props.label}</label>{' '}
-            <TargetInputField
-              targetType={props.target}
-              validateRegex={getTargetValidateRegex(props.target)}
-            />
-          </>
+
+        {!props.targetInfo &&
+        !targetInputs[props.target].error &&
+        targetInputs[props.target].value ? (
+          <TargetCta
+            {...signupCtaProps}
+            classNames={props.classNames?.TargetCta}
+          />
         ) : null}
       </div>
+
+      {!props.targetInfo ? (
+        <div className="notifi-target-list-item-input-form">
+          <TargetInputField
+            targetType={props.target}
+            validateRegex={getTargetValidateRegex(props.target)}
+          />
+        </div>
+      ) : null}
 
       {/* TARGET STATUS MESSAGE */}
       {classifiedTargetListItemMessage ? (
         <div
           className={clsx(
-            'notifi-target-list-target-verify-message',
+            'notifi-target-list-item-warning',
             props.classNames?.verifyMessage,
           )}
         >
@@ -116,30 +128,20 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
               </div>
             </div>
           )}
-        </div>
-      ) : null}
 
-      {/* TARGET STATUS CTA */}
-      {props.targetInfo ? (
-        <TargetCta
-          type={props.targetCtaType}
-          targetInfoPrompt={props.targetInfo.infoPrompt}
-          classNames={props.classNames?.TargetCta}
-          postCta={props.postCta}
-        />
-      ) : (
-        <>
-          {!targetInputs[props.target].error &&
-          targetInputs[props.target].value ? (
+          {/* Warning CTA */}
+          {props.targetInfo ? (
             <TargetCta
-              {...signupCtaProps}
+              type={props.targetCtaType}
+              targetInfoPrompt={props.targetInfo.infoPrompt}
               classNames={props.classNames?.TargetCta}
+              postCta={props.postCta}
             />
           ) : null}
-        </>
-      )}
-
+        </div>
+      ) : null}
       {/* REMOVE CTA */}
+      {/* TODO: consider to reuse TargetCta */}
       {isRemoveButtonAvailable ? (
         <TargetListItemAction
           action={async () => {

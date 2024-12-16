@@ -31,7 +31,7 @@
 }
 
 .notifi-topic-list-tooltip-icon {
-  color: var(--notifi-color-heather);
+  color: rgba(var(--notifi-color-heather), 1);
 }
 
 .notifi-topic-list-tooltip-icon:hover {
@@ -102,7 +102,7 @@
 .notifi-topic-options-description {
   margin: 0.5rem 0;
   font-size: 0.9rem;
-  color: var(--notifi-color-heather);
+  color: rgba(var(--notifi-color-heather), 1);
 }
 
 .notifi-topic-options-items {
@@ -129,7 +129,7 @@
 }
 
 .notifi-topic-options-item.button.selected {
-  border: solid 2px var(--notifi-color-secondary-light);
+  border: solid 2px rgba(var(--notifi-color-secondary-light), 1);
   color: var(--notifi-topic-options-item-selected-text);
 }
 
@@ -173,7 +173,7 @@
 }
 
 .notifi-topic-option-custom-input-container.selected {
-  border: 2px solid var(--notifi-color-secondary-light);
+  border: 2px solid rgba(var(--notifi-color-secondary-light), 1);
   color: var(--notifi-topic-options-item-selected-text);
 }
 
@@ -192,13 +192,13 @@
   min-width: 0;
   height: 3rem;
   border-radius: 6px;
-  color: var(--notifi-color-heather);
+  color: rgba(var(--notifi-color-heather), 1);
 }
 
 .notifi-topic-option-custom-input-prefix,
 .notifi-topic-option-custom-input-suffix {
   display: none;
-  color: var(--notifi-color-heather);
+  color: rgba(var(--notifi-color-heather), 1);
 }
 
 .notifi-topic-option-custom-input-container.selected
