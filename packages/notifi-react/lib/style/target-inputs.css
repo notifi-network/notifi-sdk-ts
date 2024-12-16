@@ -57,7 +57,9 @@
 .notifi-target-input-field-input-container {
   display: flex;
   flex-direction: row;
-  background-color: var(--notifi-input-field-background);
+  /* background-color: var(--notifi-input-field-background); */
+  /* TODO: Change to its own color variable */
+  background-color: var(--notifi-topic-options-item-bg);
   border-radius: 0.5rem;
   padding: 1rem;
   align-items: center;
@@ -82,7 +84,7 @@
 
 .notifi-target-input-field-icon {
   margin-right: 0.8rem;
-  color: var(--notifi-color-heather);
+  color: rgba(var(--notifi-color-heather), 1);
 }
 
 .notifi-target-input-field-input {
