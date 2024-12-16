@@ -84,7 +84,7 @@
 
 .notifi-target-input-field-icon {
   margin-right: 0.8rem;
-  color: var(--notifi-color-heather);
+  color: rgba(var(--notifi-color-heather), 1);
 }
 
 .notifi-target-input-field-input {

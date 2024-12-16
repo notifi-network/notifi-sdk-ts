@@ -114,7 +114,7 @@
 }
 
 .notifi-target-list-icon {
-  color: var(--notifi-color-heather);
+  color: rgba(var(--notifi-color-heather), 1);
 }
 
 .notifi-target-list-item-target-id {
@@ -190,7 +190,8 @@
 
 .notifi-target-list-item-warning {
   position: relative;
-  background: grey;
+  background: var(--notifi-target-list-item-warning-bg);
+  color: var(--notifi-target-list-item-warning-text);
   border-radius: 0 0 6px 6px;
   margin-top: -6px;
   padding: calc(0.5rem + 6px) 1rem 0.5rem 1rem;
