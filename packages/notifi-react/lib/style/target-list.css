@@ -64,7 +64,6 @@
   position: absolute;
   display: none;
   text-align: left;
-  color: var(--notifi-color-white);
   z-index: 3;
   color: var(--notifi-target-list-item-tooltip-content-text);
 }
@@ -167,8 +166,8 @@
 }
 
 .notifi-target-cta-loading-spinner {
-  border-top: 2px solid var(--notifi-color-white) !important;
-  border-right: 2px solid var(--notifi-color-white) !important;
+  border-top: 2px solid rgba(var(--notifi-color-white), 1) !important;
+  border-right: 2px solid rgba(var(--notifi-color-white), 1) !important;
   height: 0.75rem !important;
   width: 0.75rem !important;
 }
@@ -176,6 +175,9 @@
 .notifi-target-cta-link {
   color: var(--notifi-target-list-cta-link-text);
   cursor: pointer;
+  display: inline-block;
+  margin-left: 0.5rem;
+  min-height: 1rem;
 }
 
 .notifi-target-cta-action-not-required {

@@ -49,7 +49,7 @@ export const useTargetListItem = (input: {
       case 'discord':
         return (
           !!targetInfo &&
-          targetInfo.infoPrompt.message !== 'Set up' &&
+          targetInfo.infoPrompt.message !== 'Set Up' &&
           isTargetRemovable
         );
       case 'slack':

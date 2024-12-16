@@ -68,24 +68,15 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
             {targetData[props.target] || <label>{props.label}</label>}
           </div>
         </div>
-        {props.targetInfo ? (
+
+        {!props.targetInfo &&
+        !targetInputs[props.target].error &&
+        targetInputs[props.target].value ? (
           <TargetCta
-            type={props.targetCtaType}
-            targetInfoPrompt={props.targetInfo.infoPrompt}
+            {...signupCtaProps}
             classNames={props.classNames?.TargetCta}
-            postCta={props.postCta}
           />
-        ) : (
-          <>
-            {!targetInputs[props.target].error &&
-            targetInputs[props.target].value ? (
-              <TargetCta
-                {...signupCtaProps}
-                classNames={props.classNames?.TargetCta}
-              />
-            ) : null}
-          </>
-        )}
+        ) : null}
       </div>
 
       {!props.targetInfo ? (
@@ -98,7 +89,6 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
       ) : null}
 
       {/* TARGET STATUS MESSAGE */}
-      {/* <div className="notifi-target-list-item-bottom"> */}
       {classifiedTargetListItemMessage ? (
         <div
           className={clsx(
@@ -138,29 +128,20 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
               </div>
             </div>
           )}
-        </div>
-      ) : null}
-      {/* </div> */}
-      {/* TARGET STATUS CTA */}
-      {/* {props.targetInfo ? (
-        <TargetCta
-          type={props.targetCtaType}
-          targetInfoPrompt={props.targetInfo.infoPrompt}
-          classNames={props.classNames?.TargetCta}
-          postCta={props.postCta}
-        />
-      ) : (
-        <>
-          {!targetInputs[props.target].error &&
-          targetInputs[props.target].value ? (
+
+          {/* Warning CTA */}
+          {props.targetInfo ? (
             <TargetCta
-              {...signupCtaProps}
+              type={props.targetCtaType}
+              targetInfoPrompt={props.targetInfo.infoPrompt}
               classNames={props.classNames?.TargetCta}
+              postCta={props.postCta}
             />
           ) : null}
-        </>
-      )} */}
+        </div>
+      ) : null}
       {/* REMOVE CTA */}
+      {/* TODO: consider to reuse TargetCta */}
       {isRemoveButtonAvailable ? (
         <TargetListItemAction
           action={async () => {

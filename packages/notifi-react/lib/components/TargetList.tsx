@@ -120,7 +120,10 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
             targetListItemArgs.iconType = 'telegram';
             targetListItemArgs.label =
               props.copy?.telegram ?? defaultCopy.targetList.telegram;
-            targetListItemArgs.targetCtaType = 'button';
+            targetListItemArgs.message = {
+              beforeVerify: 'Verify your Telegram account',
+            };
+            targetListItemArgs.targetCtaType = 'link';
             targetListItemArgs.postCta = {
               type: 'loading-animation',
               animationType: 'spinner',

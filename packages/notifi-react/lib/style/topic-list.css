@@ -129,7 +129,7 @@
 }
 
 .notifi-topic-options-item.button.selected {
-  border: solid 2px var(--notifi-color-secondary-light);
+  border: solid 2px rgba(var(--notifi-color-secondary-light), 1);
   color: var(--notifi-topic-options-item-selected-text);
 }
 
@@ -173,7 +173,7 @@
 }
 
 .notifi-topic-option-custom-input-container.selected {
-  border: 2px solid var(--notifi-color-secondary-light);
+  border: 2px solid rgba(var(--notifi-color-secondary-light), 1);
   color: var(--notifi-topic-options-item-selected-text);
 }
 
