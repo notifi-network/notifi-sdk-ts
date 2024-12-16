@@ -24,8 +24,8 @@
   display: flex;
   gap: 0.5rem;
   align-items: center;
-  margin-bottom: 0.5rem;
   margin-right: 0.5rem;
+  max-width: 60%;
 }
 
 .notifi-target-list-target-verify-message {
@@ -121,6 +121,9 @@
   font-weight: 600;
   display: inline;
   /* margin-bottom: 0.25rem; */
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .notifi-target-list-item-remove {
@@ -137,9 +140,11 @@
 
 .notifi-target-cta {
   display: inline;
-  /* right: 1rem;
-  top: 0.5rem;
-  z-index: 1; */
+  margin-left: auto;
+}
+
+.no-action-required {
+  margin-left: 0;
 }
 
 .disabled {
@@ -174,6 +179,8 @@
 
 .notifi-target-cta-action-not-required {
   color: var(--notifi-target-cta-action-not-require-text);
+  background-color: var(--notifi-target-cta-action-not-require-bg);
+  border-radius: 10rem;
   stroke-width: 3;
   display: flex;
   align-items: center;
