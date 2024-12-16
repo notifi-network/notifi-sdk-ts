@@ -87,6 +87,7 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
         </div>
 
         {/* TARGET STATUS CTA */}
+        {/* TODO: refactor (combine to one) */}
         {props.targetInfo ? (
           <TargetCta
             type={props.targetCtaType}

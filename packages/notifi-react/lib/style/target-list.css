@@ -65,7 +65,7 @@
   display: none;
   text-align: left;
   color: var(--notifi-color-white);
-  z-index: 1;
+  z-index: 3;
   color: var(--notifi-target-list-item-tooltip-content-text);
 }
 
@@ -110,6 +110,7 @@
 }
 
 .notifi-target-list-item-tooltip-icon {
+  margin-bottom: -5px;
 }
 
 .notifi-target-list-icon {
@@ -191,7 +192,8 @@
   position: relative;
   background: grey;
   border-radius: 0 0 6px 6px;
-  padding: 0.5rem 1rem 0.5rem 1rem;
+  margin-top: -6px;
+  padding: calc(0.5rem + 6px) 1rem 0.5rem 1rem;
 }
 .notifi-target-list-item-content {
   background-color: var(--notifi-notifi-target-list-item-bg);
@@ -199,6 +201,7 @@
   padding: 1rem;
   border-radius: 6px;
   display: flex;
+  z-index: 2;
 }
 
 .notifi-target-list-item-input-form {
