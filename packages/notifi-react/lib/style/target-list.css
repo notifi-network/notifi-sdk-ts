@@ -23,9 +23,9 @@
 .notifi-target-list-item-target {
   display: flex;
   gap: 0.5rem;
-  align-items: center;
+  align-items: flex-start;
   margin-right: 0.5rem;
-  max-width: 60%;
+  max-width: 70%;
 }
 
 .notifi-target-list-target-verify-message {
@@ -114,16 +114,19 @@
 
 .notifi-target-list-icon {
   color: rgba(var(--notifi-color-heather), 1);
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: flex-start;
 }
 
 .notifi-target-list-item-target-id {
   font-size: 0.85rem;
   font-weight: 600;
   display: inline;
-  /* margin-bottom: 0.25rem; */
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  overflow: auto;
+  word-wrap: break-word;
+  padding-right: 25px;
 }
 
 .notifi-target-list-item-remove {
@@ -145,6 +148,11 @@
 
 .no-action-required {
   margin-left: 0;
+  display: inline-block;
+  width: 0px;
+  height: 16px;
+  border-radius: 10rem;
+  position: relative;
 }
 
 .disabled {
@@ -190,6 +198,9 @@
   gap: 0.5rem;
   width: 16px;
   height: 16px;
+  position: absolute;
+  top: 3px;
+  left: 0.5rem;
 }
 
 .notifi-target-list-item-warning {

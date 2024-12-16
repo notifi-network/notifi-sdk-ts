@@ -71,10 +71,11 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
             props.classNames?.targetListItemTarget,
           )}
         >
-          <Icon
-            type={props.iconType}
+          <div
             className={clsx('notifi-target-list-icon', props.classNames?.icon)}
-          />
+          >
+            <Icon type={props.iconType} />
+          </div>
           <div
             className={clsx(
               'notifi-target-list-item-target-id',
@@ -82,11 +83,20 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
             )}
           >
             {userName ? `@${userName}` : <label>{props.label}</label>}
+            {props.targetInfo &&
+            props.targetInfo.infoPrompt.message === 'Verified' ? (
+              <TargetCta
+                type={props.targetCtaType}
+                targetInfoPrompt={props.targetInfo.infoPrompt}
+                classNames={props.classNames?.TargetCta}
+                isCtaDisabled={!targetData[props.target].isAvailable}
+              />
+            ) : null}
           </div>
         </div>
 
-        {/* TARGET STATUS CTA */}
-        {props.targetInfo ? (
+        {/* TARGET SIGNUP CTA */}
+        {/* {props.targetInfo ? (
           <TargetCta
             type={props.targetCtaType}
             targetInfoPrompt={props.targetInfo.infoPrompt}
@@ -95,7 +105,8 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
           />
         ) : (
           <TargetCta {...signupCtaProps} />
-        )}
+        )} */}
+        {!props.targetInfo ? <TargetCta {...signupCtaProps} /> : null}
       </div>
 
       {/* TARGET STATUS MESSAGE */}

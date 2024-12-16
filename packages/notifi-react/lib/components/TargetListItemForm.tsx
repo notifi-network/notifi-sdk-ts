@@ -54,10 +54,12 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
             props.classNames?.targetListItemTarget,
           )}
         >
-          <Icon
-            type={props.iconType}
+          <div
             className={clsx('notifi-target-list-icon', props.classNames?.icon)}
-          />
+          >
+            <Icon type={props.iconType} />
+          </div>
+
           <div
             className={clsx(
               'notifi-target-list-item-target-id',
@@ -66,6 +68,15 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
           >
             {/* TODO: Line clamp under certain width */}
             {targetData[props.target] || <label>{props.label}</label>}
+            {/* VERIFIED CHECK ICON */}
+            {!!props.targetInfo &&
+            props.targetInfo.infoPrompt.message === 'Verified' ? (
+              <TargetCta
+                type={props.targetCtaType}
+                targetInfoPrompt={props.targetInfo.infoPrompt}
+                classNames={props.classNames?.TargetCta}
+              />
+            ) : null}
           </div>
         </div>
 
@@ -75,16 +86,6 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
         targetInputs[props.target].value ? (
           <TargetCta
             {...signupCtaProps}
-            classNames={props.classNames?.TargetCta}
-          />
-        ) : null}
-
-        {/* VERIFIED CHECK ICON */}
-        {!!props.targetInfo &&
-        props.targetInfo.infoPrompt.message === 'Verified' ? (
-          <TargetCta
-            type={props.targetCtaType}
-            targetInfoPrompt={props.targetInfo.infoPrompt}
             classNames={props.classNames?.TargetCta}
           />
         ) : null}
