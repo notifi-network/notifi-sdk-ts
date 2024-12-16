@@ -9,7 +9,6 @@ import { useTargetListItem } from '../hooks/useTargetListItem';
 import { isTargetVerified } from '../utils';
 import { TargetCta } from './TargetCta';
 import { TargetListItemToggleProps } from './TargetListItem';
-import { TargetListItemAction } from './TargetListItemAction';
 
 export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
   props,
@@ -143,32 +142,26 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
           )}
         </div>
       ) : null}
-      {/* TODO: remove postCta related */}
-      {/* TARGET STATUS CTA */}
-      {/* {props.targetInfo ? (
-        <TargetCta
-          type={props.targetCtaType}
-          targetInfoPrompt={props.targetInfo.infoPrompt}
-          classNames={props.classNames?.TargetCta}
-          postCta={props.postCta}
-          isCtaDisabled={!targetData[props.target].isAvailable}
-        />
-      ) : (
-        <TargetCta {...signupCtaProps} />
-      )} */}
 
-      {/* REMOVE CTA */}
+      {/* REMOVE TARGET CTA */}
       {isRemoveButtonAvailable ? (
-        <TargetListItemAction
-          action={async () => {
-            // TODO: Remove this after adding documentation: 1. single target subscription always sync with with targetData. 2. targetInput & multiple target subscription.
-            // updateTargetInputs(props.target, false); // TODO: remove
-            renewTargetGroup({
-              target: props.target as ToggleTarget,
-              value: false,
-            });
+        <TargetCta
+          type="link"
+          targetInfoPrompt={{
+            type: 'cta',
+            message: 'Remove',
+            onClick: async () => {
+              // TODO: Remove this after adding documentation: 1. single target subscription always sync with with targetData. 2. targetInput & multiple target subscription.
+              // updateTargetInputs(props.target, false); // TODO: remove
+              renewTargetGroup({
+                target: props.target as ToggleTarget,
+                value: false,
+              });
+            },
           }}
-          classNames={{ removeCta: props.classNames?.removeCta }}
+          classNames={{
+            container: 'notifi-target-list-item-remove',
+          }}
         />
       ) : null}
     </div>

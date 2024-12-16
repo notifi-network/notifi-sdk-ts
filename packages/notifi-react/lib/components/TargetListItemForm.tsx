@@ -9,7 +9,6 @@ import { getTargetValidateRegex, isTargetVerified } from '../utils';
 import { TargetCta } from './TargetCta';
 import { TargetInputField } from './TargetInputField';
 import { TargetListItemFromProps } from './TargetListItem';
-import { TargetListItemAction } from './TargetListItemAction';
 
 export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
   props,
@@ -140,19 +139,25 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
           ) : null}
         </div>
       ) : null}
-      {/* REMOVE CTA */}
-      {/* TODO: consider to reuse TargetCta */}
+      {/* REMOVE TARGET CTA */}
       {isRemoveButtonAvailable ? (
-        <TargetListItemAction
-          action={async () => {
-            const target = props.target as FormTarget;
-            updateTargetInputs(target, { value: '' });
-            renewTargetGroup({
-              target: target,
-              value: '',
-            });
+        <TargetCta
+          type="link"
+          targetInfoPrompt={{
+            type: 'cta',
+            message: 'Remove',
+            onClick: async () => {
+              const target = props.target as FormTarget;
+              updateTargetInputs(target, { value: '' });
+              renewTargetGroup({
+                target: target,
+                value: '',
+              });
+            },
           }}
-          classNames={{ removeCta: props.classNames?.removeCta }}
+          classNames={{
+            container: 'notifi-target-list-item-remove',
+          }}
         />
       ) : null}
     </div>
