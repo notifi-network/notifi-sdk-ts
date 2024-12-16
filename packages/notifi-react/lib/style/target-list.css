@@ -10,12 +10,12 @@
 }
 
 .notifi-target-list-item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  /* display: flex; */
+  /* flex-direction: column; */
+  /* gap: 0.5rem; */
   align-items: center;
   background-color: var(--notifi-notifi-target-list-item-bg);
-  padding: 1rem;
+  /* padding: 1rem; */
   border-radius: 6px;
   position: relative;
 }
@@ -24,6 +24,8 @@
   display: flex;
   gap: 0.5rem;
   align-items: center;
+  margin-bottom: 0.5rem;
+  margin-right: 0.5rem;
 }
 
 .notifi-target-list-target-verify-message {
@@ -117,6 +119,7 @@
 .notifi-target-list-item-target-id {
   font-size: 0.85rem;
   font-weight: 600;
+  display: inline;
   /* margin-bottom: 0.25rem; */
 }
 
@@ -127,11 +130,16 @@
   cursor: pointer;
   color: var(--notifi-target-list-remove-text);
   font-size: 0.75rem;
+  z-index: 2;
 }
 
 /* TargetCta styles */
 
 .notifi-target-cta {
+  display: inline;
+  /* right: 1rem;
+  top: 0.5rem;
+  z-index: 1; */
 }
 
 .disabled {
@@ -142,7 +150,7 @@
 .notifi-target-cta-button {
   background-color: var(--notifi-target-list-cat-button-bg);
   color: var(--notifi-target-list-cat-button-text);
-  padding: 0.5rem 1rem;
+  padding: 0.3rem 1rem;
   text-align: center;
   cursor: pointer;
   border-radius: 6px;
@@ -170,4 +178,22 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.notifi-target-list-item-warning {
+  position: relative;
+  background: grey;
+  border-radius: 0 0 6px 6px;
+  padding: 0.5rem 1rem 0.5rem 1rem;
+}
+.notifi-target-list-item-content {
+  background-color: var(--notifi-notifi-target-list-item-bg);
+  position: relative;
+  padding: 1rem;
+  border-radius: 6px;
+  display: flex;
+}
+
+.notifi-target-list-item-input-form {
+  padding: 0 1rem 1rem 1rem;
 }
