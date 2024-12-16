@@ -187,10 +187,14 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
             targetListItemArgs.label = defaultCopy.targetList.wallet;
             targetListItemArgs.targetCtaType = 'button';
             targetListItemArgs.message = {
-              beforeVerify: targetData.wallet.isAvailable
-                ? defaultCopy.targetList.walletVerifyMessage
-                : // TODO: move it to default copy
-                  'Only available for Coinbase Wallet',
+              beforeSignup: !targetData.wallet.isAvailable
+                ? 'Only available for Coinbase Wallet'
+                : undefined,
+              beforeVerify: defaultCopy.targetList.walletVerifyMessage,
+              // beforeVerify: targetData.wallet.isAvailable
+              //   ? defaultCopy.targetList.walletVerifyMessage
+              //   : // TODO: move it to default copy
+              //     'Only available for Coinbase Wallet',
               beforeVerifyTooltip: defaultCopy.targetList.walletVerifyTooltip,
               afterVerify: defaultCopy.targetList.walletVerifiedMessage,
               afterVerifyTooltip: defaultCopy.targetList.walletVerifiedTooltip,

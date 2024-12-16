@@ -47,14 +47,14 @@
 .notifi-target-list-target-confirmed-message.inbox {
   text-align: left;
 }
-
+/* TODO: remove */
 .notifi-target-list-item-tooltip {
   display: inline-block;
   position: relative;
   height: 1.5rem;
   width: 1.5rem;
 }
-
+/* TODO: remove */
 .notifi-target-list-item-tooltip-content {
   padding: 1rem;
   border-radius: 6px;
@@ -67,11 +67,11 @@
   z-index: 3;
   color: var(--notifi-target-list-item-tooltip-content-text);
 }
-
+/* TODO: remove */
 .notifi-target-list-item-tooltip-content > a {
   color: var(--notifi-color-seaglass-dark);
 }
-
+/* TODO: remove */
 .notifi-target-list-item-tooltip-icon:hover
   ~ .notifi-target-list-item-tooltip-content.top-right,
 .notifi-target-list-item-tooltip-content.top-right:hover {
@@ -79,7 +79,7 @@
   right: -1rem;
   display: block;
 }
-
+/* TODO: remove */
 .notifi-target-list-item-tooltip-icon:hover
   ~ .notifi-target-list-item-tooltip-content.top-left,
 .notifi-target-list-item-tooltip-content.top-left:hover {
@@ -87,7 +87,7 @@
   left: -1rem;
   display: block;
 }
-
+/* TODO: remove */
 .notifi-target-list-item-tooltip-icon:hover
   ~ .notifi-target-list-item-tooltip-content.bottom-right,
 .notifi-target-list-item-tooltip-content.bottom-right:hover {
@@ -95,7 +95,7 @@
   right: -1rem;
   display: block;
 }
-
+/* TODO: remove */
 .notifi-target-list-item-tooltip-icon:hover
   ~ .notifi-target-list-item-tooltip-content.bottom-left,
 .notifi-target-list-item-tooltip-content.bottom-left:hover {
@@ -103,11 +103,11 @@
   left: -1rem;
   display: block;
 }
-
+/* TODO: remove */
 .notifi-target-list-item-tooltip-icon:hover {
   color: var(--notifi-target-list-item-tooltip-icon-color-hover);
 }
-
+/* TODO: remove */
 .notifi-target-list-item-tooltip-icon {
   margin-bottom: -5px;
 }
@@ -188,6 +188,8 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  width: 16px;
+  height: 16px;
 }
 
 .notifi-target-list-item-warning {

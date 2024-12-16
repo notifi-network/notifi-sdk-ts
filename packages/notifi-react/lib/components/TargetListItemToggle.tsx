@@ -9,6 +9,7 @@ import { useTargetListItem } from '../hooks/useTargetListItem';
 import { isTargetVerified } from '../utils';
 import { TargetCta } from './TargetCta';
 import { TargetListItemToggleProps } from './TargetListItem';
+import { Tooltip } from './Tooltip';
 
 export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
   props,
@@ -23,7 +24,6 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
     classifiedTargetListItemMessage,
   } = useTargetListItem({
     target: props.target,
-    // postCta: props.postCta, // TODO: remove postCta related
     message: props.message,
   });
   const tooltipRef = React.useRef<HTMLDivElement>(null);
@@ -86,13 +86,11 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
         </div>
 
         {/* TARGET STATUS CTA */}
-        {/* TODO: refactor (combine to one) */}
         {props.targetInfo ? (
           <TargetCta
             type={props.targetCtaType}
             targetInfoPrompt={props.targetInfo.infoPrompt}
             classNames={props.classNames?.TargetCta}
-            // postCta={props.postCta} // TODO: remove postCta related
             isCtaDisabled={!targetData[props.target].isAvailable}
           />
         ) : (
@@ -109,36 +107,22 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
           )}
         >
           {classifiedTargetListItemMessage.content}
-          {/* TODO: create tooltip component */}
           {classifiedTargetListItemMessage.tooltip && (
-            <div className={'notifi-target-list-item-tooltip'} ref={tooltipRef}>
-              <Icon
-                className={clsx(
-                  'notifi-target-list-item-tooltip-icon',
-                  props.classNames?.tooltipIcon,
-                )}
-                type="info"
-              />
-              <div
-                className={clsx(
-                  'notifi-target-list-item-tooltip-content',
-                  props.classNames?.tooltipContent,
-                  props.parentComponent === 'inbox' ? 'inbox' : '',
-                  tooltipIconPosition,
-                )}
-              >
-                {classifiedTargetListItemMessage.tooltip}
-                {classifiedTargetListItemMessage.tooltipEndingLink ? (
-                  <a
-                    href={classifiedTargetListItemMessage.tooltipEndingLink.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {classifiedTargetListItemMessage.tooltipEndingLink.text}
-                  </a>
-                ) : null}
-              </div>
-            </div>
+            <Tooltip
+              tooltipRef={tooltipRef}
+              tooltipIconPosition={tooltipIconPosition}
+            >
+              {classifiedTargetListItemMessage.tooltip}
+              {classifiedTargetListItemMessage.tooltipEndingLink ? (
+                <a
+                  href={classifiedTargetListItemMessage.tooltipEndingLink.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {classifiedTargetListItemMessage.tooltipEndingLink.text}
+                </a>
+              ) : null}
+            </Tooltip>
           )}
         </div>
       ) : null}

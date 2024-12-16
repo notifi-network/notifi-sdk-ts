@@ -9,6 +9,7 @@ import { getTargetValidateRegex, isTargetVerified } from '../utils';
 import { TargetCta } from './TargetCta';
 import { TargetInputField } from './TargetInputField';
 import { TargetListItemFromProps } from './TargetListItem';
+import { Tooltip } from './Tooltip';
 
 export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
   props,
@@ -57,22 +58,33 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
             type={props.iconType}
             className={clsx('notifi-target-list-icon', props.classNames?.icon)}
           />
-          {/* <label>{props.label}</label> */}
           <div
             className={clsx(
               'notifi-target-list-item-target-id',
               props.classNames?.targetId,
             )}
           >
+            {/* TODO: Line clamp under certain width */}
             {targetData[props.target] || <label>{props.label}</label>}
           </div>
         </div>
 
+        {/* TARGET SIGNUP CTA */}
         {!props.targetInfo &&
         !targetInputs[props.target].error &&
         targetInputs[props.target].value ? (
           <TargetCta
             {...signupCtaProps}
+            classNames={props.classNames?.TargetCta}
+          />
+        ) : null}
+
+        {/* VERIFIED CHECK ICON */}
+        {!!props.targetInfo &&
+        props.targetInfo.infoPrompt.message === 'Verified' ? (
+          <TargetCta
+            type={props.targetCtaType}
+            targetInfoPrompt={props.targetInfo.infoPrompt}
             classNames={props.classNames?.TargetCta}
           />
         ) : null}
@@ -97,7 +109,7 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
         >
           {classifiedTargetListItemMessage.content}
           {/* TODO: create tooltip component */}
-          {classifiedTargetListItemMessage.tooltip && (
+          {/* {classifiedTargetListItemMessage.tooltip && (
             <div className={'notifi-target-list-item-tooltip'} ref={tooltipRef}>
               <Icon
                 className={clsx(
@@ -126,6 +138,23 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
                 ) : null}
               </div>
             </div>
+          )} */}
+          {classifiedTargetListItemMessage.tooltip && (
+            <Tooltip
+              tooltipRef={tooltipRef}
+              tooltipIconPosition={tooltipIconPosition}
+            >
+              {classifiedTargetListItemMessage.tooltip}
+              {classifiedTargetListItemMessage.tooltipEndingLink ? (
+                <a
+                  href={classifiedTargetListItemMessage.tooltipEndingLink.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {classifiedTargetListItemMessage.tooltipEndingLink.text}
+                </a>
+              ) : null}
+            </Tooltip>
           )}
 
           {/* Warning CTA */}
