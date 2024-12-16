@@ -32,7 +32,7 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
     classifiedTargetListItemMessage,
   } = useTargetListItem({
     target: props.target,
-    postCta: props.postCta,
+    // postCta: props.postCta, // TODO: remove postCta related
     message: props.message,
   });
 
@@ -135,7 +135,7 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
               type={props.targetCtaType}
               targetInfoPrompt={props.targetInfo.infoPrompt}
               classNames={props.classNames?.TargetCta}
-              postCta={props.postCta}
+              // postCta={props.postCta} // TODO: remove postCta related
             />
           ) : null}
         </div>

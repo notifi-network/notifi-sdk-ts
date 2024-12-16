@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { PostCta, TargetCtaProps } from '../components/TargetCta';
+import { TargetCtaProps } from '../components/TargetCta';
 import {
   TargetListItemMessage,
   TooltipEndingLink,
@@ -28,7 +28,7 @@ type ClassifiedTargetListItemMessage = {
 
 export const useTargetListItem = (input: {
   target: Target;
-  postCta: PostCta;
+  // postCta: PostCta; // TODO: remove postCta related
   message?: TargetListItemMessage;
 }) => {
   const { cardConfig } = useNotifiTenantConfigContext();
@@ -77,7 +77,7 @@ export const useTargetListItem = (input: {
         message: 'Signup',
         onClick: async () => console.log('Default Signup placeHolder'),
       },
-      postCta: input.postCta,
+      // postCta: input.postCta,
     };
 
     switch (input.target) {

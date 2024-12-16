@@ -24,7 +24,7 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
     classifiedTargetListItemMessage,
   } = useTargetListItem({
     target: props.target,
-    postCta: props.postCta,
+    // postCta: props.postCta, // TODO: remove postCta related
     message: props.message,
   });
   const tooltipRef = React.useRef<HTMLDivElement>(null);
@@ -93,7 +93,7 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
             type={props.targetCtaType}
             targetInfoPrompt={props.targetInfo.infoPrompt}
             classNames={props.classNames?.TargetCta}
-            postCta={props.postCta}
+            // postCta={props.postCta} // TODO: remove postCta related
             isCtaDisabled={!targetData[props.target].isAvailable}
           />
         ) : (
@@ -143,7 +143,7 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
           )}
         </div>
       ) : null}
-
+      {/* TODO: remove postCta related */}
       {/* TARGET STATUS CTA */}
       {/* {props.targetInfo ? (
         <TargetCta
