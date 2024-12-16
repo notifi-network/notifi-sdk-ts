@@ -49,7 +49,7 @@ export const useTargetListItem = (input: {
       case 'discord':
         return (
           !!targetInfo &&
-          targetInfo.infoPrompt.message !== 'Set up' &&
+          targetInfo.infoPrompt.message !== 'Set Up' &&
           isTargetRemovable
         );
       case 'slack':
@@ -91,10 +91,12 @@ export const useTargetListItem = (input: {
             message: 'Signup',
             onClick: async () => {
               const target = input.target as FormTarget;
-              renewTargetGroup({
+              await renewTargetGroup({
                 target: target,
                 value: targetInputs[target].value,
               });
+              //NOTE: Wait for 1 second for target context state change
+              await new Promise((resolve) => setTimeout(resolve, 1000));
             },
           },
         };
@@ -123,6 +125,8 @@ export const useTargetListItem = (input: {
                   '_blank',
                 );
               }
+              //NOTE: Wait for 1 second for target context state change
+              await new Promise((resolve) => setTimeout(resolve, 1000));
             },
           },
         };
