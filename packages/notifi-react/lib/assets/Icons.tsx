@@ -36,23 +36,16 @@ export const Icon: React.FC<Props & { type: IconType }> = (
       return (
         <svg
           {...props}
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
+          width="16"
+          height="15"
+          viewBox="0 0 16 15"
           fill="none"
+          xmlns="http://www.w3.org/2000/svg"
         >
-          <g clipPath="url(#clip0_1821_6938)">
-            <path
-              d="M3.9 12C3.9 10.29 5.29 8.9 7 8.9H11V7H7C4.24 7 2 9.24 2 12C2 14.76 4.24 17 7 17H11V15.1H7C5.29 15.1 3.9 13.71 3.9 12ZM8 13H16V11H8V13ZM17 7H13V8.9H17C18.71 8.9 20.1 10.29 20.1 12C20.1 13.71 18.71 15.1 17 15.1H13V17H17C19.76 17 22 14.76 22 12C22 9.24 19.76 7 17 7Z"
-              fill="currentColor"
-            />
-          </g>
-          <defs>
-            <clipPath id="clip0_1821_6938">
-              <rect width="24" height="24" fill="white" />
-            </clipPath>
-          </defs>
+          <path
+            d="M2.79837 11.4916C1.93482 10.3455 2.16444 8.71202 3.31047 7.84847L5.99125 5.82847L5.03175 4.5551L2.35097 6.5751C0.501236 7.9689 0.131199 10.6013 1.525 12.4511C2.9188 14.3008 5.55123 14.6708 7.40097 13.277L10.0817 11.2571L9.12225 9.98368L6.44147 12.0037C5.29544 12.8672 3.66192 12.6376 2.79837 11.4916ZM6.05117 10.0913L11.4127 6.05127L10.4027 4.71088L5.04117 8.75088L6.05117 10.0913ZM9.05292 1.52511L6.37214 3.5451L7.33164 4.81847L10.0124 2.79848C11.1585 1.93493 12.792 2.16455 13.6555 3.31058C14.5191 4.45661 14.2895 6.09014 13.1434 6.95368L10.4626 8.97368L11.4221 10.2471L14.1029 8.22705C15.9527 6.83326 16.3227 4.20082 14.9289 2.35108C13.5351 0.501345 10.9027 0.131307 9.05292 1.52511Z"
+            fill="currentColor"
+          />
         </svg>
       );
     case 'check':
@@ -76,9 +69,9 @@ export const Icon: React.FC<Props & { type: IconType }> = (
       return (
         <svg
           {...props}
-          width="13"
-          height="11"
-          viewBox="0 0 13 11"
+          width="16"
+          height="18"
+          viewBox="0 -2 16 16"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
@@ -140,9 +133,9 @@ export const Icon: React.FC<Props & { type: IconType }> = (
       return (
         <svg
           {...props}
-          width="17"
-          height="13"
-          viewBox="0 0 17 13"
+          width="16"
+          height="18"
+          viewBox="0 -2 16 16"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
