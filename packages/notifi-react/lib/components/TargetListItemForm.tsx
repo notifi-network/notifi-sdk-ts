@@ -51,6 +51,7 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
         <div
           className={clsx(
             'notifi-target-list-item-target',
+            isRemoveButtonAvailable && 'has-remove-button',
             props.classNames?.targetListItemTarget,
           )}
         >

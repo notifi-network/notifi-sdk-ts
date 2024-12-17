@@ -68,6 +68,7 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
         <div
           className={clsx(
             'notifi-target-list-item-target',
+            isRemoveButtonAvailable && 'has-remove-button',
             props.classNames?.targetListItemTarget,
           )}
         >
