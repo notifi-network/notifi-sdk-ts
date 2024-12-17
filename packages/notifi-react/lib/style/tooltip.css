@@ -19,7 +19,7 @@
 }
 
 .tooltip-content > a {
-  color: var(--notifi-color-seaglass-dark);
+  color: var(--tooltip-content-a-text);
 }
 
 .tooltip-icon:hover ~ .tooltip-content.top-right,
