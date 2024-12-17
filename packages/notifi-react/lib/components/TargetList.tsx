@@ -24,14 +24,14 @@ type TargetListProps = {
     discord?: string;
     slack?: string;
     wallet?: string;
-    postCtaEmail?: string;
-    postCtaEmailDurationInMs?: number;
-    postCtaTelegram?: string;
-    postCtaTelegramDurationInMs?: number;
-    postCtaDiscord?: string;
-    postCtaDiscordDurationInMs?: number;
-    postCtaSlack?: string;
-    postCtaSlackDurationInMs?: number;
+    // postCtaEmail?: string;
+    // postCtaEmailDurationInMs?: number;
+    // postCtaTelegram?: string;
+    // postCtaTelegramDurationInMs?: number;
+    // postCtaDiscord?: string;
+    // postCtaDiscordDurationInMs?: number;
+    // postCtaSlack?: string;
+    // postCtaSlackDurationInMs?: number;
     emailVerifyMessage?: string;
     discordVerifiedMessage?: string;
     discordVerifiedPromptTooltip?: string;
@@ -90,10 +90,10 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
                 props.copy?.emailVerifyMessage ??
                 defaultCopy.targetList.emailVerifyMessage,
             };
-            targetListItemArgs.postCta = {
-              type: 'loading-animation',
-              animationType: 'spinner',
-            };
+            // targetListItemArgs.postCta = {
+            //   type: 'loading-animation',
+            //   animationType: 'spinner',
+            // };
             // TODO: remove default copy email postCtaEmail & postCtaEmailDurationInMs
             // {
             //   type: 'text',
@@ -109,12 +109,12 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
             targetListItemArgs.label =
               props.copy?.sms ?? defaultCopy.targetList.phoneNumber;
             targetListItemArgs.targetCtaType = 'button';
-            targetListItemArgs.postCta = {
-              //NOTE: SMS target will never go through a post CTA
-              type: 'text',
-              text: '',
-              durationInMs: 0,
-            };
+            // targetListItemArgs.postCta = {
+            //   //NOTE: SMS target will never go through a post CTA
+            //   type: 'text',
+            //   text: '',
+            //   durationInMs: 0,
+            // };
             break;
           case 'telegram':
             targetListItemArgs.iconType = 'telegram';
@@ -124,10 +124,10 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
               beforeVerify: 'Verify your Telegram account',
             };
             targetListItemArgs.targetCtaType = 'link';
-            targetListItemArgs.postCta = {
-              type: 'loading-animation',
-              animationType: 'spinner',
-            };
+            // targetListItemArgs.postCta = {
+            //   type: 'loading-animation',
+            //   animationType: 'spinner',
+            // };
             // TODO: remove default copy telegram postCtaTelegram & postCtaTelegramDurationInMs
             // {
             //   type: 'text',
@@ -149,10 +149,10 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
                 props.copy?.discordVerifiedPromptTooltip ??
                 defaultCopy.targetList.discordVerifiedPromptTooltip,
             };
-            targetListItemArgs.postCta = {
-              type: 'loading-animation',
-              animationType: 'spinner',
-            };
+            // targetListItemArgs.postCta = {
+            //   type: 'loading-animation',
+            //   animationType: 'spinner',
+            // };
             // TODO: remove default copy discord postCtaDiscord & postCtaDiscordDurationInMs
             // {
             //   type: 'text',
@@ -168,10 +168,10 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
             targetListItemArgs.iconType = 'slack';
             targetListItemArgs.label = defaultCopy.targetList.slack;
             targetListItemArgs.targetCtaType = 'button';
-            targetListItemArgs.postCta = {
-              type: 'loading-animation',
-              animationType: 'spinner',
-            };
+            // targetListItemArgs.postCta = {
+            //   type: 'loading-animation',
+            //   animationType: 'spinner',
+            // };
             // TODO: remove default copy slack postCtaSlack & postCtaSlackDurationInMs
             // {
             //   type: 'text',
@@ -187,20 +187,24 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
             targetListItemArgs.label = defaultCopy.targetList.wallet;
             targetListItemArgs.targetCtaType = 'button';
             targetListItemArgs.message = {
-              beforeVerify: targetData.wallet.isAvailable
-                ? defaultCopy.targetList.walletVerifyMessage
-                : // TODO: move it to default copy
-                  'Only available for Coinbase Wallet',
+              beforeSignup: !targetData.wallet.isAvailable
+                ? 'Only available for Coinbase Wallet'
+                : undefined,
+              beforeVerify: defaultCopy.targetList.walletVerifyMessage,
+              // beforeVerify: targetData.wallet.isAvailable
+              //   ? defaultCopy.targetList.walletVerifyMessage
+              //   : // TODO: move it to default copy
+              //     'Only available for Coinbase Wallet',
               beforeVerifyTooltip: defaultCopy.targetList.walletVerifyTooltip,
               afterVerify: defaultCopy.targetList.walletVerifiedMessage,
               afterVerifyTooltip: defaultCopy.targetList.walletVerifiedTooltip,
               afterVerifyTooltipEndingLink:
                 defaultCopy.targetList.walletVerifiedTooltipLink,
             };
-            targetListItemArgs.postCta = {
-              type: 'loading-animation',
-              animationType: 'spinner',
-            };
+            // targetListItemArgs.postCta = {
+            //   type: 'loading-animation',
+            //   animationType: 'spinner',
+            // };
             break;
         }
 
