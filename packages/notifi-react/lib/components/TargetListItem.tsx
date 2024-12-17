@@ -19,7 +19,6 @@ export type TargetListItemFromProps = TargetListItemPropsBase & {
 
 type TargetListItemPropsBase = {
   targetListRef: React.RefObject<HTMLDivElement>;
-  // postCta: PostCta; // TODO: remove postCta related
   iconType: IconType;
   label: string;
   targetCtaType: TargetCtaProps['type'];
