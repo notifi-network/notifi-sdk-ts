@@ -106,7 +106,7 @@
   --notifi-target-state-banner-bg: var(--notifi-color-grey2);
   --notifi-target-state-verify-icon-color: rgba(var(--notifi-color-white), 1);
   --notifi-inbox-config-topic-title-text: rgba(var(--notifi-color-heather), 1);
-  --notifi-target-list-remove-text: var(--notifi-color-eggshell);
+  --notifi-target-list-remove-text: rgb(var(--notifi-color-heather));
   --notifi-target-cta-action-not-require-text: rgb(var(--notifi-color-green3));
   --notifi-target-cta-action-not-require-bg: rgba(
     var(--notifi-color-green3),
@@ -124,16 +124,6 @@
   --tooltip-content-border: var(--notifi-color-dark);
   --tooltip-content-text: rgba(var(--notifi-color-white), 1);
   --tooltip-icon-color-hover: rgb(var(--notifi-color-white));
-  --notifi-target-list-item-tooltip-content-border: var(
-    --notifi-color-dark
-  ); /* TODO: remove */
-  --notifi-target-list-item-tooltip-content-text: rgba(
-    var(--notifi-color-white),
-    1
-  ); /* TODO: remove */
-  --notifi-target-list-item-tooltip-icon-color-hover: var(
-    --notifi-color-white
-  ); /* TODO: remove */
   --notifi-target-list-item-warning-bg: rgba(var(--notifi-color-grey6), 1);
   --notifi-target-list-item-warning-text: rgba(var(--notifi-color-heather), 1);
   --notifi-topic-list-tooltip-icon-color-hover: rgba(
@@ -246,16 +236,6 @@
   --tooltip-content-border: rgba(var(--notifi-color-heather), 1);
   --tooltip-content-text: var(--notifi-color-black);
   --tooltip-icon-color-hover: var(--notifi-color-dusk);
-  --notifi-target-list-item-tooltip-content-border: rgba(
-    var(--notifi-color-heather),
-    1
-  ); /* TODO: remove */
-  --notifi-target-list-item-tooltip-content-text: var(
-    --notifi-color-black
-  ); /* TODO: remove */
-  --notifi-target-list-item-tooltip-icon-color-hover: var(
-    --notifi-color-dusk
-  ); /* TODO: remove */
   --notifi-target-list-item-warning-bg: rgba(var(--notifi-color-light-blue), 1);
   --notifi-target-list-item-warning-text: rgba(var(--notifi-color-heather), 1);
   --notifi-topic-list-tooltip-icon-color-hover: var(--notifi-color-dusk);

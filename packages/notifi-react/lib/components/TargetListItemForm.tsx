@@ -154,6 +154,9 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
           }}
           classNames={{
             container: 'notifi-target-list-item-remove',
+            actionRequired: {
+              link: 'notifi-target-list-item-remove-link',
+            },
           }}
         />
       ) : null}

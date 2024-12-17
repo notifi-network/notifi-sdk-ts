@@ -50,70 +50,6 @@
 .notifi-target-list-target-confirmed-message.inbox {
   text-align: left;
 }
-/* TODO: remove */
-.notifi-target-list-item-tooltip {
-  display: inline-block;
-  position: relative;
-  height: 1.5rem;
-  width: 1.5rem;
-}
-/* TODO: remove */
-.notifi-target-list-item-tooltip-content {
-  padding: 1rem;
-  border-radius: 6px;
-  background-color: var(--notifi-target-list-tooltip-bg);
-  border: var(--notifi-target-list-item-tooltip-content-border) 1px solid;
-  width: 11.5rem;
-  position: absolute;
-  display: none;
-  text-align: left;
-  z-index: 3;
-  color: var(--notifi-target-list-item-tooltip-content-text);
-}
-/* TODO: remove */
-.notifi-target-list-item-tooltip-content > a {
-  color: var(--notifi-color-seaglass-dark);
-}
-/* TODO: remove */
-.notifi-target-list-item-tooltip-icon:hover
-  ~ .notifi-target-list-item-tooltip-content.top-right,
-.notifi-target-list-item-tooltip-content.top-right:hover {
-  top: 1.5rem;
-  right: -1rem;
-  display: block;
-}
-/* TODO: remove */
-.notifi-target-list-item-tooltip-icon:hover
-  ~ .notifi-target-list-item-tooltip-content.top-left,
-.notifi-target-list-item-tooltip-content.top-left:hover {
-  top: 1.5rem;
-  left: -1rem;
-  display: block;
-}
-/* TODO: remove */
-.notifi-target-list-item-tooltip-icon:hover
-  ~ .notifi-target-list-item-tooltip-content.bottom-right,
-.notifi-target-list-item-tooltip-content.bottom-right:hover {
-  bottom: 1.5rem;
-  right: -1rem;
-  display: block;
-}
-/* TODO: remove */
-.notifi-target-list-item-tooltip-icon:hover
-  ~ .notifi-target-list-item-tooltip-content.bottom-left,
-.notifi-target-list-item-tooltip-content.bottom-left:hover {
-  bottom: 1.5rem;
-  left: -1rem;
-  display: block;
-}
-/* TODO: remove */
-.notifi-target-list-item-tooltip-icon:hover {
-  color: var(--notifi-target-list-item-tooltip-icon-color-hover);
-}
-/* TODO: remove */
-.notifi-target-list-item-tooltip-icon {
-  margin-bottom: -5px;
-}
 
 .notifi-target-list-icon {
   color: rgba(var(--notifi-color-heather), 1);
@@ -138,9 +74,12 @@
   top: 0.8rem;
   right: 1rem;
   cursor: pointer;
-  color: var(--notifi-target-list-remove-text);
   font-size: 0.75rem;
   z-index: 2;
+}
+
+.notifi-target-list-item-remove-link {
+  color: var(--notifi-target-list-remove-text) !important;
 }
 
 /* TargetCta styles */
