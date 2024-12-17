@@ -9,7 +9,7 @@ import { getTargetValidateRegex, isTargetVerified } from '../utils';
 import { TargetCta } from './TargetCta';
 import { TargetInputField } from './TargetInputField';
 import { TargetListItemFromProps } from './TargetListItem';
-import { TargetListItemAction } from './TargetListItemAction';
+import { Tooltip } from './Tooltip';
 
 export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
   props,
@@ -32,7 +32,7 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
     classifiedTargetListItemMessage,
   } = useTargetListItem({
     target: props.target,
-    postCta: props.postCta,
+    // postCta: props.postCta, // TODO: remove postCta related
     message: props.message,
   });
 
@@ -54,21 +54,33 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
             props.classNames?.targetListItemTarget,
           )}
         >
-          <Icon
-            type={props.iconType}
+          <div
             className={clsx('notifi-target-list-icon', props.classNames?.icon)}
-          />
-          {/* <label>{props.label}</label> */}
+          >
+            <Icon type={props.iconType} />
+          </div>
+
           <div
             className={clsx(
               'notifi-target-list-item-target-id',
               props.classNames?.targetId,
             )}
           >
+            {/* TODO: Line clamp under certain width */}
             {targetData[props.target] || <label>{props.label}</label>}
+            {/* VERIFIED CHECK ICON */}
+            {!!props.targetInfo &&
+            props.targetInfo.infoPrompt.message === 'Verified' ? (
+              <TargetCta
+                type={props.targetCtaType}
+                targetInfoPrompt={props.targetInfo.infoPrompt}
+                classNames={props.classNames?.TargetCta}
+              />
+            ) : null}
           </div>
         </div>
 
+        {/* TARGET SIGNUP CTA */}
         {!props.targetInfo &&
         !targetInputs[props.target].error &&
         targetInputs[props.target].value ? (
@@ -98,7 +110,7 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
         >
           {classifiedTargetListItemMessage.content}
           {/* TODO: create tooltip component */}
-          {classifiedTargetListItemMessage.tooltip && (
+          {/* {classifiedTargetListItemMessage.tooltip && (
             <div className={'notifi-target-list-item-tooltip'} ref={tooltipRef}>
               <Icon
                 className={clsx(
@@ -127,6 +139,23 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
                 ) : null}
               </div>
             </div>
+          )} */}
+          {classifiedTargetListItemMessage.tooltip && (
+            <Tooltip
+              tooltipRef={tooltipRef}
+              tooltipIconPosition={tooltipIconPosition}
+            >
+              {classifiedTargetListItemMessage.tooltip}
+              {classifiedTargetListItemMessage.tooltipEndingLink ? (
+                <a
+                  href={classifiedTargetListItemMessage.tooltipEndingLink.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {classifiedTargetListItemMessage.tooltipEndingLink.text}
+                </a>
+              ) : null}
+            </Tooltip>
           )}
 
           {/* Warning CTA */}
@@ -135,24 +164,30 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
               type={props.targetCtaType}
               targetInfoPrompt={props.targetInfo.infoPrompt}
               classNames={props.classNames?.TargetCta}
-              postCta={props.postCta}
+              // postCta={props.postCta} // TODO: remove postCta related
             />
           ) : null}
         </div>
       ) : null}
-      {/* REMOVE CTA */}
-      {/* TODO: consider to reuse TargetCta */}
+      {/* REMOVE TARGET CTA */}
       {isRemoveButtonAvailable ? (
-        <TargetListItemAction
-          action={async () => {
-            const target = props.target as FormTarget;
-            updateTargetInputs(target, { value: '' });
-            renewTargetGroup({
-              target: target,
-              value: '',
-            });
+        <TargetCta
+          type="link"
+          targetInfoPrompt={{
+            type: 'cta',
+            message: 'Remove',
+            onClick: async () => {
+              const target = props.target as FormTarget;
+              updateTargetInputs(target, { value: '' });
+              renewTargetGroup({
+                target: target,
+                value: '',
+              });
+            },
           }}
-          classNames={{ removeCta: props.classNames?.removeCta }}
+          classNames={{
+            container: 'notifi-target-list-item-remove',
+          }}
         />
       ) : null}
     </div>

@@ -3,7 +3,7 @@ import React from 'react';
 import { IconType } from '../assets/Icons';
 import { FormTarget, TargetInfo, ToggleTarget } from '../context';
 import { isFormTarget, isToggleTarget } from '../utils';
-import { PostCta, TargetCtaProps } from './TargetCta';
+import { TargetCtaProps } from './TargetCta';
 import { TargetListItemForm } from './TargetListItemForm';
 import { TargetListItemToggle } from './TargetListItemToggle';
 
@@ -19,7 +19,7 @@ export type TargetListItemFromProps = TargetListItemPropsBase & {
 
 type TargetListItemPropsBase = {
   targetListRef: React.RefObject<HTMLDivElement>;
-  postCta: PostCta;
+  // postCta: PostCta; // TODO: remove postCta related
   iconType: IconType;
   label: string;
   targetCtaType: TargetCtaProps['type'];
