@@ -134,8 +134,8 @@ export const Icon: React.FC<Props & { type: IconType }> = (
         <svg
           {...props}
           width="16"
-          height="18"
-          viewBox="0 -2 16 16"
+          height="17"
+          viewBox="0 -3 16 16"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
