@@ -3,25 +3,11 @@ import React from 'react';
 
 import { Icon } from '../assets/Icons';
 import { TargetInfoPrompt, isCtaInfo } from '../context';
-import { LoadingAnimation, LoadingAnimationProps } from './LoadingAnimation';
-
-// export type PostCta = LoadingAnimationPostCta | TextPostCta;
-
-type LoadingAnimationPostCta = {
-  type: 'loading-animation';
-  animationType: LoadingAnimationProps['type'];
-};
-
-type TextPostCta = {
-  type: 'text';
-  text: string;
-  durationInMs: number;
-};
+import { LoadingAnimation } from './LoadingAnimation';
 
 export type TargetCtaProps = {
   type: 'button' | 'link';
   targetInfoPrompt: TargetInfoPrompt;
-  // postCta: PostCta;
   isCtaDisabled?: boolean;
   classNames?: {
     container?: string;
@@ -35,17 +21,7 @@ export type TargetCtaProps = {
 };
 
 export const TargetCta: React.FC<TargetCtaProps> = (props) => {
-  // const [isPostCtaShown, setIsPostCtaShown] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
-  // TODO: remove postCta related
-  // React.useEffect(() => {
-  //   if (isLoadingAnimationPostCta(props.postCta)) {
-  //     if (isLoading) {
-  //       return setIsPostCtaShown(true);
-  //     }
-  //     return setIsPostCtaShown(false);
-  //   }
-  // }, [isLoading]);
 
   return (
     <div
@@ -71,19 +47,11 @@ export const TargetCta: React.FC<TargetCtaProps> = (props) => {
             setIsLoading(true);
             await props.targetInfoPrompt.onClick();
             setIsLoading(false);
-            // TODO: remove postCta related
-            // if (!isLoadingAnimationPostCta(props.postCta)) {
-            //   setTimeout(
-            //     () => setIsPostCtaShown(false),
-            //     props.postCta.durationInMs,
-            //   );
-            // }
           }}
         >
           {isLoading ? (
             <LoadingAnimation
               type={'spinner'}
-              // type={props.postCta.animationType}
               classNames={{ spinner: 'notifi-target-cta-loading-spinner' }}
             />
           ) : (
@@ -105,11 +73,3 @@ export const TargetCta: React.FC<TargetCtaProps> = (props) => {
     </div>
   );
 };
-
-// Utils
-// TODO: remove postCta related
-// const isLoadingAnimationPostCta = (
-//   postCta: PostCta,
-// ): postCta is LoadingAnimationPostCta => {
-//   return postCta.type === 'loading-animation';
-// };

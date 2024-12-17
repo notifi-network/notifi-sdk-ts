@@ -22,10 +22,13 @@
 
 .notifi-target-list-item-target {
   display: flex;
-  gap: 0.5rem;
+  /* gap: 0.5rem; */
   align-items: flex-start;
   margin-right: 0.5rem;
-  max-width: 70%;
+}
+
+.has-remove-button {
+  max-width: 80%;
 }
 
 .notifi-target-list-target-verify-message {
@@ -47,77 +50,14 @@
 .notifi-target-list-target-confirmed-message.inbox {
   text-align: left;
 }
-/* TODO: remove */
-.notifi-target-list-item-tooltip {
-  display: inline-block;
-  position: relative;
-  height: 1.5rem;
-  width: 1.5rem;
-}
-/* TODO: remove */
-.notifi-target-list-item-tooltip-content {
-  padding: 1rem;
-  border-radius: 6px;
-  background-color: var(--notifi-target-list-tooltip-bg);
-  border: var(--notifi-target-list-item-tooltip-content-border) 1px solid;
-  width: 11.5rem;
-  position: absolute;
-  display: none;
-  text-align: left;
-  z-index: 3;
-  color: var(--notifi-target-list-item-tooltip-content-text);
-}
-/* TODO: remove */
-.notifi-target-list-item-tooltip-content > a {
-  color: var(--notifi-color-seaglass-dark);
-}
-/* TODO: remove */
-.notifi-target-list-item-tooltip-icon:hover
-  ~ .notifi-target-list-item-tooltip-content.top-right,
-.notifi-target-list-item-tooltip-content.top-right:hover {
-  top: 1.5rem;
-  right: -1rem;
-  display: block;
-}
-/* TODO: remove */
-.notifi-target-list-item-tooltip-icon:hover
-  ~ .notifi-target-list-item-tooltip-content.top-left,
-.notifi-target-list-item-tooltip-content.top-left:hover {
-  top: 1.5rem;
-  left: -1rem;
-  display: block;
-}
-/* TODO: remove */
-.notifi-target-list-item-tooltip-icon:hover
-  ~ .notifi-target-list-item-tooltip-content.bottom-right,
-.notifi-target-list-item-tooltip-content.bottom-right:hover {
-  bottom: 1.5rem;
-  right: -1rem;
-  display: block;
-}
-/* TODO: remove */
-.notifi-target-list-item-tooltip-icon:hover
-  ~ .notifi-target-list-item-tooltip-content.bottom-left,
-.notifi-target-list-item-tooltip-content.bottom-left:hover {
-  bottom: 1.5rem;
-  left: -1rem;
-  display: block;
-}
-/* TODO: remove */
-.notifi-target-list-item-tooltip-icon:hover {
-  color: var(--notifi-target-list-item-tooltip-icon-color-hover);
-}
-/* TODO: remove */
-.notifi-target-list-item-tooltip-icon {
-  margin-bottom: -5px;
-}
 
 .notifi-target-list-icon {
   color: rgba(var(--notifi-color-heather), 1);
-  width: 24px;
-  height: 24px;
+  /* width: 24px;
+  height: 24px; */
   display: flex;
   align-items: flex-start;
+  margin-right: 0.5rem;
 }
 
 .notifi-target-list-item-target-id {
@@ -131,12 +71,15 @@
 
 .notifi-target-list-item-remove {
   position: absolute;
-  top: 1rem;
+  top: 0.8rem;
   right: 1rem;
   cursor: pointer;
-  color: var(--notifi-target-list-remove-text);
   font-size: 0.75rem;
   z-index: 2;
+}
+
+.notifi-target-list-item-remove-link {
+  color: var(--notifi-target-list-remove-text) !important;
 }
 
 /* TargetCta styles */
@@ -167,10 +110,11 @@
   text-align: center;
   cursor: pointer;
   border-radius: 6px;
-  min-width: 5.5rem;
-  min-height: 1.25rem;
+  min-width: 5rem;
+  min-height: 1.1rem;
   display: flex;
   justify-content: center;
+  font-size: 0.875rem;
 }
 
 .notifi-target-cta-loading-spinner {
@@ -210,14 +154,16 @@
   border-radius: 0 0 6px 6px;
   margin-top: -6px;
   padding: calc(0.5rem + 6px) 1rem 0.5rem 1rem;
+  font-size: 0.875rem;
 }
 .notifi-target-list-item-content {
   background-color: var(--notifi-notifi-target-list-item-bg);
   position: relative;
-  padding: 1rem;
+  padding: 0.62rem 1rem 0.62rem 1rem;
   border-radius: 6px;
   display: flex;
   z-index: 2;
+  min-height: 1.7rem;
 }
 
 .notifi-target-list-item-input-form {

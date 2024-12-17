@@ -68,6 +68,7 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
         <div
           className={clsx(
             'notifi-target-list-item-target',
+            isRemoveButtonAvailable && 'has-remove-button',
             props.classNames?.targetListItemTarget,
           )}
         >
@@ -83,6 +84,8 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
             )}
           >
             {userName ? `@${userName}` : <label>{props.label}</label>}
+
+            {/* TARGET SIGNUP CTA */}
             {props.targetInfo &&
             props.targetInfo.infoPrompt.message === 'Verified' ? (
               <TargetCta
@@ -95,17 +98,6 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
           </div>
         </div>
 
-        {/* TARGET SIGNUP CTA */}
-        {/* {props.targetInfo ? (
-          <TargetCta
-            type={props.targetCtaType}
-            targetInfoPrompt={props.targetInfo.infoPrompt}
-            classNames={props.classNames?.TargetCta}
-            isCtaDisabled={!targetData[props.target].isAvailable}
-          />
-        ) : (
-          <TargetCta {...signupCtaProps} />
-        )} */}
         {!props.targetInfo ? <TargetCta {...signupCtaProps} /> : null}
       </div>
 
@@ -156,6 +148,9 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
           }}
           classNames={{
             container: 'notifi-target-list-item-remove',
+            actionRequired: {
+              link: 'notifi-target-list-item-remove-link',
+            },
           }}
         />
       ) : null}
