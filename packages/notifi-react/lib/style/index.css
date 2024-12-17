@@ -13,6 +13,7 @@
 @import url('./history.css');
 @import url('./target-state-banner.css');
 @import url('./error.css');
+@import url('./tooltip.css');
 
 .btn {
   border: none;
@@ -120,12 +121,19 @@
   --notifi-topic-list-tooltip-bg: var(--notifi-color-dark);
   --notifi-topic-list-tooltip-content-border: var(--notifi-color-dark);
   --notifi-target-list-tooltip-bg: var(--notifi-color-dark);
-  --notifi-target-list-item-tooltip-content-border: var(--notifi-color-dark);
+  --tooltip-content-border: var(--notifi-color-dark);
+  --tooltip-content-text: rgba(var(--notifi-color-white), 1);
+  --tooltip-icon-color-hover: rgb(var(--notifi-color-white));
+  --notifi-target-list-item-tooltip-content-border: var(
+    --notifi-color-dark
+  ); /* TODO: remove */
   --notifi-target-list-item-tooltip-content-text: rgba(
     var(--notifi-color-white),
     1
-  );
-  --notifi-target-list-item-tooltip-icon-color-hover: var(--notifi-color-white);
+  ); /* TODO: remove */
+  --notifi-target-list-item-tooltip-icon-color-hover: var(
+    --notifi-color-white
+  ); /* TODO: remove */
   --notifi-target-list-item-warning-bg: rgba(var(--notifi-color-grey6), 1);
   --notifi-target-list-item-warning-text: rgba(var(--notifi-color-heather), 1);
   --notifi-topic-list-tooltip-icon-color-hover: rgba(
@@ -235,12 +243,19 @@
     1
   );
   --notifi-target-list-tooltip-bg: var(--notifi-color-eggshell);
+  --tooltip-content-border: rgba(var(--notifi-color-heather), 1);
+  --tooltip-content-text: var(--notifi-color-black);
+  --tooltip-icon-color-hover: var(--notifi-color-dusk);
   --notifi-target-list-item-tooltip-content-border: rgba(
     var(--notifi-color-heather),
     1
-  );
-  --notifi-target-list-item-tooltip-content-text: var(--notifi-color-black);
-  --notifi-target-list-item-tooltip-icon-color-hover: var(--notifi-color-dusk);
+  ); /* TODO: remove */
+  --notifi-target-list-item-tooltip-content-text: var(
+    --notifi-color-black
+  ); /* TODO: remove */
+  --notifi-target-list-item-tooltip-icon-color-hover: var(
+    --notifi-color-dusk
+  ); /* TODO: remove */
   --notifi-target-list-item-warning-bg: rgba(var(--notifi-color-light-blue), 1);
   --notifi-target-list-item-warning-text: rgba(var(--notifi-color-heather), 1);
   --notifi-topic-list-tooltip-icon-color-hover: var(--notifi-color-dusk);
