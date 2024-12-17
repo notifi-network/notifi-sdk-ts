@@ -32,7 +32,6 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
     classifiedTargetListItemMessage,
   } = useTargetListItem({
     target: props.target,
-    // postCta: props.postCta, // TODO: remove postCta related
     message: props.message,
   });
 
@@ -67,7 +66,6 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
               props.classNames?.targetId,
             )}
           >
-            {/* TODO: Line clamp under certain width */}
             {targetData[props.target] || <label>{props.label}</label>}
             {/* VERIFIED CHECK ICON */}
             {!!props.targetInfo &&
@@ -110,37 +108,6 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
           )}
         >
           {classifiedTargetListItemMessage.content}
-          {/* TODO: create tooltip component */}
-          {/* {classifiedTargetListItemMessage.tooltip && (
-            <div className={'notifi-target-list-item-tooltip'} ref={tooltipRef}>
-              <Icon
-                className={clsx(
-                  'notifi-target-list-item-tooltip-icon',
-                  props.classNames?.tooltipIcon,
-                )}
-                type="info"
-              />
-              <div
-                className={clsx(
-                  'notifi-target-list-item-tooltip-content',
-                  props.classNames?.tooltipContent,
-                  props.parentComponent === 'inbox' ? 'inbox' : '',
-                  tooltipIconPosition,
-                )}
-              >
-                {classifiedTargetListItemMessage.tooltip}
-                {classifiedTargetListItemMessage.tooltipEndingLink ? (
-                  <a
-                    href={classifiedTargetListItemMessage.tooltipEndingLink.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {classifiedTargetListItemMessage.tooltipEndingLink.text}
-                  </a>
-                ) : null}
-              </div>
-            </div>
-          )} */}
           {classifiedTargetListItemMessage.tooltip && (
             <Tooltip
               tooltipRef={tooltipRef}
@@ -165,7 +132,6 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
               type={props.targetCtaType}
               targetInfoPrompt={props.targetInfo.infoPrompt}
               classNames={props.classNames?.TargetCta}
-              // postCta={props.postCta} // TODO: remove postCta related
             />
           ) : null}
         </div>

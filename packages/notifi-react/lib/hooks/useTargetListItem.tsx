@@ -28,7 +28,6 @@ type ClassifiedTargetListItemMessage = {
 
 export const useTargetListItem = (input: {
   target: Target;
-  // postCta: PostCta; // TODO: remove postCta related
   message?: TargetListItemMessage;
 }) => {
   const { cardConfig } = useNotifiTenantConfigContext();
