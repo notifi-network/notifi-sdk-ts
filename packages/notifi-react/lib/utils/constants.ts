@@ -9,7 +9,7 @@ export const defaultCopy = {
   },
   poweredByNotifi: 'Powered by',
   inputFields: {
-    email: 'Email address',
+    email: 'Enter your email address',
     phoneNumber: 'Phone Number',
     telegram: 'Telegram ID',
   },

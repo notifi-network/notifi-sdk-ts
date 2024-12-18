@@ -66,7 +66,7 @@ export const useTargetListItem = (input: {
       default:
         return !!targetInfo && isTargetRemovable;
     }
-  }, [input.target, targetData, cardConfig]); // TODO: review the dependency
+  }, [input.target, targetData, cardConfig, targetInfoPrompts]);
 
   const signupCtaProps: TargetCtaProps = React.useMemo(() => {
     const defaultCtaProps: TargetCtaProps = {
@@ -76,7 +76,6 @@ export const useTargetListItem = (input: {
         message: 'Signup',
         onClick: async () => console.log('Default Signup placeHolder'),
       },
-      // postCta: input.postCta,
     };
 
     switch (input.target) {
@@ -106,7 +105,7 @@ export const useTargetListItem = (input: {
           type: 'button',
           targetInfoPrompt: {
             type: 'cta',
-            message: 'Enable Bot',
+            message: 'Sign Up',
             onClick: async () => {
               // TODO: Remove this after adding documentation: 1. single target subscription always sync with with targetData. 2. targetInput & multiple target subscription.
               // await updateTargetInputs(props.target, true);
@@ -169,7 +168,7 @@ export const useTargetListItem = (input: {
           type: 'button',
           targetInfoPrompt: {
             type: 'cta',
-            message: 'Signup',
+            message: 'Sign Up',
             onClick: async () => {
               await updateTargetInputs(input.target, true);
               const targetGroup = await renewTargetGroup({

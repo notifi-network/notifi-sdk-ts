@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import React from 'react';
 
 import { useNotifiTargetContext } from '../context';
-import { defaultCopy, hasTarget } from '../utils';
+import { defaultCopy } from '../utils';
 import { InboxView } from './Inbox';
 import { NavHeader, NavHeaderRightCta } from './NavHeader';
 import { TargetList } from './TargetList';
@@ -28,10 +28,6 @@ export const InboxConfigTargetList: React.FC<InboxConfigTargetListProps> = (
   const {
     targetDocument: { targetData },
   } = useNotifiTargetContext();
-
-  if (!hasTarget(targetData)) {
-    props.setInboxView(InboxView.InboxConfigTopic);
-  }
 
   return (
     <div

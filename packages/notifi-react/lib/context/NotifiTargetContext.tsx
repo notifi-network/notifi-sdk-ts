@@ -353,27 +353,16 @@ export const NotifiTargetContextProvider: FC<
       email: emailInfoPrompt,
       phoneNumber: phoneNumberInfoPrompt,
       telegram: telegramInfoPrompt,
-      discord: discordInfoPrompt,
-      wallet: walletInfoPrompt,
     } = targetInfoPrompts;
 
     const unConfirmedTargets = {
       email: emailInfoPrompt?.infoPrompt.type === 'cta',
       phoneNumber: phoneNumberInfoPrompt?.infoPrompt.type === 'cta',
       telegram: telegramInfoPrompt?.infoPrompt.type === 'cta',
-      // toggle targets will never be unverified (TODO: refactor)
+      // TOGGLE TARGET will never be unverified (Unverified means the target is not confirmed)
       slack: false,
-      // targetData.slack.useSlack &&
-      // discordInfoPrompt?.infoPrompt.type === 'cta' &&
-      // discordInfoPrompt?.infoPrompt.message === 'Enable Bot',
       wallet: false,
-      // targetData.wallet.useWallet &&
-      // walletInfoPrompt?.infoPrompt.type === 'cta' &&
-      // walletInfoPrompt?.infoPrompt.message === 'Sign Wallet',
       discord: false,
-      // targetData.discord.useDiscord &&
-      // discordInfoPrompt?.infoPrompt.type === 'cta' &&
-      // discordInfoPrompt?.infoPrompt.message === 'Enable Bot',
     };
     return objectKeys(unConfirmedTargets)
       .map((key) => {
