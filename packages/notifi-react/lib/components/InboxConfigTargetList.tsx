@@ -4,7 +4,7 @@ import React from 'react';
 import { useNotifiTargetContext } from '../context';
 import { defaultCopy } from '../utils';
 import { InboxView } from './Inbox';
-import { NavHeader, NavHeaderRightCta } from './NavHeader';
+import { NavHeader, NavHeaderProps, NavHeaderRightCta } from './NavHeader';
 import { TargetList } from './TargetList';
 
 export type InboxConfigTargetListProps = {
@@ -13,6 +13,7 @@ export type InboxConfigTargetListProps = {
     main?: string;
     button?: string;
     loadingSpinner?: React.CSSProperties;
+    NavHeader?: NavHeaderProps['classNames'];
   };
   copy?: {
     header?: string;
@@ -42,6 +43,11 @@ export const InboxConfigTargetList: React.FC<InboxConfigTargetListProps> = (
           action: () => props.setInboxView(InboxView.InboxConfigTopic),
         }}
         rightCta={props.navHeaderRightCta}
+        classNames={
+          props.classNames?.NavHeader ?? {
+            container: 'notifi-inbox-config-target-header',
+          }
+        }
       >
         {props.copy?.header ?? defaultCopy.inboxConfigTargetList.header}
       </NavHeader>

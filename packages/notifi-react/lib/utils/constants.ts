@@ -33,7 +33,7 @@ export const defaultCopy = {
     buttonText: 'Next',
   },
   ftuTargetList: {
-    headerTitle: 'Verify your destinations',
+    headerTitle: 'How do you want to be notified?',
     buttonText: 'Next',
   },
   ftuAlertEdit: {
