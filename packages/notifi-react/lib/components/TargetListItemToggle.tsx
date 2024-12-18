@@ -97,8 +97,9 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
             ) : null}
           </div>
         </div>
-
-        {!props.targetInfo ? <TargetCta {...signupCtaProps} /> : null}
+        {props.targetInfo?.infoPrompt.message !== 'Verified' ? (
+          <TargetCta {...signupCtaProps} />
+        ) : null}
       </div>
 
       {/* TARGET STATUS MESSAGE */}

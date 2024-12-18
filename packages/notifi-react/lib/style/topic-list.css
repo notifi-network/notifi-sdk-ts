@@ -28,6 +28,7 @@
 .notifi-topic-list-tooltip-container {
   position: relative;
   display: flex;
+  margin-left: 0.2rem;
 }
 
 .notifi-topic-list-tooltip-icon {

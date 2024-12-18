@@ -105,7 +105,7 @@ export const useTargetListItem = (input: {
           type: 'button',
           targetInfoPrompt: {
             type: 'cta',
-            message: 'Sign Up',
+            message: 'Set Up',
             onClick: async () => {
               // TODO: Remove this after adding documentation: 1. single target subscription always sync with with targetData. 2. targetInput & multiple target subscription.
               // await updateTargetInputs(props.target, true);
@@ -153,7 +153,7 @@ export const useTargetListItem = (input: {
                 walletTargetSenderAddress
               ) {
                 // TODO: Remove unused variable
-                const updatedWeb3Target = await signCoinbaseSignature(
+                const _updatedWeb3Target = await signCoinbaseSignature(
                   walletTargetId,
                   walletTargetSenderAddress,
                 );
@@ -168,7 +168,7 @@ export const useTargetListItem = (input: {
           type: 'button',
           targetInfoPrompt: {
             type: 'cta',
-            message: 'Sign Up',
+            message: 'Set Up',
             onClick: async () => {
               await updateTargetInputs(input.target, true);
               const targetGroup = await renewTargetGroup({

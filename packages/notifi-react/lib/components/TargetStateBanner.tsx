@@ -196,7 +196,6 @@ export const TargetStateBanner: React.FC<TargetStateBannerProps> = (props) => {
             )}
           >
             <Icon type="check-circle" />
-            {/* TODO: Allow to pass in a custom icon */}
           </div>
           <div
             className={clsx(

@@ -19,8 +19,6 @@ export const InboxNavTabs: React.FC<PropsWithChildren<InboxNavTabsProps>> = (
   const configActive =
     props.inboxView === InboxView.InboxConfigTopic ||
     props.inboxView === InboxView.InboxConfigTargetList;
-  // TODO: remove
-  // props.inboxView === InboxView.InboxConfigTargetEdit;
   return (
     <div
       data-cy="notifi-inbox-nav-tabs"

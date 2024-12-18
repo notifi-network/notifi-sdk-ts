@@ -10,7 +10,7 @@ import {
 import { hasValidTargetMoreThan } from '../utils';
 import { defaultCopy } from '../utils/constants';
 import { LoadingAnimation } from './LoadingAnimation';
-import { NavHeader, NavHeaderRightCta } from './NavHeader';
+import { NavHeader, NavHeaderProps, NavHeaderRightCta } from './NavHeader';
 import { TargetList } from './TargetList';
 
 export type FtuTargetListProps = {
@@ -21,6 +21,7 @@ export type FtuTargetListProps = {
     button?: string;
     loadingSpinner?: React.CSSProperties;
     buttonContainer?: string;
+    NavHeader?: NavHeaderProps['classNames'];
   };
   copy?: {
     headerTitle?: string;
@@ -52,7 +53,14 @@ export const FtuTargetList: React.FC<FtuTargetListProps> = (props) => {
     <div
       className={clsx('notifi-ftu-target-list', props.classNames?.container)}
     >
-      <NavHeader rightCta={props.navHeaderRightCta}>
+      <NavHeader
+        rightCta={props.navHeaderRightCta}
+        classNames={
+          props.classNames?.NavHeader ?? {
+            container: 'notifi-ftu-target-list-header',
+          }
+        }
+      >
         {props.copy?.headerTitle ?? defaultCopy.ftuTargetList.headerTitle}
       </NavHeader>
       <div

@@ -40,7 +40,6 @@ export const TargetInputField: React.FC<TargetInputFieldProps> = (props) => {
     setIsShowingInvalidWarning(false);
   }, []);
 
-  // TODO: Need refactor: consolidate or deprecate targetEdit logic
   const targetToBeSaved = useMemo(() => {
     switch (props.targetType) {
       case 'email':
@@ -110,7 +109,6 @@ export const TargetInputField: React.FC<TargetInputFieldProps> = (props) => {
           value={targetToBeSaved.value}
           onChange={(evt) => {
             const targetInput = evt.target.value;
-            // TODO: consider if this section still needed (may deprecate isTargetValid method)
             if (isTargetValid(targetInput)) {
               updateTargetInputs(props.targetType, {
                 value: targetInput,
