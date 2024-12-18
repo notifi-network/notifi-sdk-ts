@@ -12,7 +12,7 @@ import { defaultCopy, hasTarget } from '../utils';
 import { HistoryRow } from './HistoryRow';
 import { InboxView } from './Inbox';
 import { LoadingAnimation } from './LoadingAnimation';
-import { NavHeader, NavHeaderRightCta } from './NavHeader';
+import { NavHeader, NavHeaderProps, NavHeaderRightCta } from './NavHeader';
 import { TargetStateBanner, TargetStateBannerProps } from './TargetStateBanner';
 
 type HistoryListProps = {
@@ -29,6 +29,7 @@ type HistoryListProps = {
     emptyDescription?: string;
     TargetStateBannerContainer?: string;
     TargetStateBanner?: TargetStateBannerProps['classNames'];
+    NavHeader?: NavHeaderProps['classNames'];
   };
   copy?: {
     headerTitle?: string;
@@ -92,7 +93,14 @@ export const HistoryList: React.FC<HistoryListProps> = (props) => {
         props.classNames?.container,
       )}
     >
-      <NavHeader rightCta={props.navHeaderRightCta}>
+      <NavHeader
+        rightCta={props.navHeaderRightCta}
+        classNames={
+          props.classNames?.NavHeader ?? {
+            container: 'notifi-inbox-history-list-header',
+          }
+        }
+      >
         {props.copy?.headerTitle ?? defaultCopy.inboxHistoryList.headerTitle}
       </NavHeader>
       {isShowingTargetStateBanner ? (
