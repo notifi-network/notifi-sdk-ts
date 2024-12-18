@@ -8,7 +8,6 @@ import {
   useNotifiTargetContext,
   useNotifiTenantConfigContext,
 } from '../context';
-import { isTargetVerified } from '../utils';
 import { defaultCopy } from '../utils/constants';
 import { TargetListItem, TargetListItemProps } from './TargetListItem';
 
@@ -24,14 +23,6 @@ type TargetListProps = {
     discord?: string;
     slack?: string;
     wallet?: string;
-    // postCtaEmail?: string;
-    // postCtaEmailDurationInMs?: number;
-    // postCtaTelegram?: string;
-    // postCtaTelegramDurationInMs?: number;
-    // postCtaDiscord?: string;
-    // postCtaDiscordDurationInMs?: number;
-    // postCtaSlack?: string;
-    // postCtaSlackDurationInMs?: number;
     emailVerifyMessage?: string;
     discordVerifiedMessage?: string;
     discordVerifiedPromptTooltip?: string;
@@ -56,16 +47,8 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
       'slack',
       'wallet',
     ];
-    const verifiedTargets = objectKeys(targetData).filter((target) => {
-      const targetInfo = targetInfoPrompts[target];
-      return targetInfo ? isTargetVerified(targetInfo.infoPrompt) : false;
-    });
 
-    const unverifiedTargets = objectKeys(targetData).filter(
-      (target) => !verifiedTargets.includes(target),
-    );
-    // TODO: no longer need to distinguish between verified and unverified (refactor)
-    return [...unverifiedTargets, ...verifiedTargets]
+    return objectKeys(targetData)
       .sort((a, b) => {
         return order.indexOf(a) - order.indexOf(b);
       })
