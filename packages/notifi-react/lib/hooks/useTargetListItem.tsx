@@ -153,7 +153,7 @@ export const useTargetListItem = (input: {
                 walletTargetSenderAddress
               ) {
                 // TODO: Remove unused variable
-                const updatedWeb3Target = await signCoinbaseSignature(
+                const _updatedWeb3Target = await signCoinbaseSignature(
                   walletTargetId,
                   walletTargetSenderAddress,
                 );

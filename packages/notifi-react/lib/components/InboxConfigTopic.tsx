@@ -50,10 +50,6 @@ export const InboxConfigTopic: React.FC<InboxConfigTopicProps> = (props) => {
           <TargetStateBanner
             classNames={props.classNames?.TargetStateBanner}
             onClickCta={() => {
-              // TODO: remove
-              // if (!hasTarget(targetData)) {
-              //   return props.setInboxView(InboxView.InboxConfigTargetEdit);
-              // }
               props.setInboxView(InboxView.InboxConfigTargetList);
             }}
           />
