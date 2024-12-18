@@ -33,7 +33,7 @@ export const defaultCopy = {
     buttonText: 'Next',
   },
   ftuTargetList: {
-    headerTitle: 'Verify your destinations',
+    headerTitle: 'How do you want to be notified?',
     buttonText: 'Next',
   },
   ftuAlertEdit: {
@@ -112,12 +112,6 @@ export const defaultCopy = {
     header: 'Manage Destinations',
     buttonText: 'Edit Destinations',
   },
-  // TODO: remove
-  // inboxConfigTargetEdit: {
-  //   header: 'Edit Destinations',
-  //   buttonTextHasTarget: 'Save Changes',
-  //   buttonTextNoTarget: 'Subscribe',
-  // },
   errorGlobal: {
     header: 'An error occurred',
     title: 'Something went wrong, please try again: ',

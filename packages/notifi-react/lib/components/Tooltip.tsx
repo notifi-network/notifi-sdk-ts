@@ -30,7 +30,6 @@ export const Tooltip: React.FC<PropsWithChildren<TooltipProps>> = ({
         className={clsx(
           'tooltip-content',
           props.classNames?.tooltipContent,
-          // props.parentComponent === 'inbox' ? 'inbox' : '',
           props.tooltipIconPosition,
         )}
       >
