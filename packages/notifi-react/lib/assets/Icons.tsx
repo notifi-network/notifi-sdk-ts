@@ -71,7 +71,7 @@ export const Icon: React.FC<Props & { type: IconType }> = (
           {...props}
           width="16"
           height="18"
-          viewBox="0 -2 16 16"
+          viewBox="0 -2 15 13"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
@@ -193,9 +193,9 @@ export const Icon: React.FC<Props & { type: IconType }> = (
       return (
         <svg
           {...props}
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
+          width="19"
+          height="19"
+          viewBox="3 3 19 19"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >

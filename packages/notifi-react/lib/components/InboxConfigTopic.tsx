@@ -4,7 +4,7 @@ import React from 'react';
 import { useNotifiTargetContext } from '../context';
 import { defaultCopy, hasTarget } from '../utils';
 import { InboxView } from './Inbox';
-import { NavHeader, NavHeaderRightCta } from './NavHeader';
+import { NavHeader, NavHeaderProps, NavHeaderRightCta } from './NavHeader';
 import { TargetStateBanner, TargetStateBannerProps } from './TargetStateBanner';
 import { TopicList } from './TopicList';
 
@@ -15,6 +15,7 @@ export type InboxConfigTopicProps = {
     TargetStateBanner?: TargetStateBannerProps['classNames'];
     banner?: string;
     title?: string;
+    NavHeader?: NavHeaderProps['classNames'];
   };
   copy?: {
     header?: string;
@@ -32,7 +33,14 @@ export const InboxConfigTopic: React.FC<InboxConfigTopicProps> = (props) => {
     <div
       className={clsx('notifi-inbox-config-topic', props.classNames?.container)}
     >
-      <NavHeader rightCta={props.navHeaderRightCta}>
+      <NavHeader
+        rightCta={props.navHeaderRightCta}
+        classNames={
+          props.classNames?.NavHeader ?? {
+            container: 'notifi-inbox-config-topic-header',
+          }
+        }
+      >
         {props.copy?.header ?? defaultCopy.inboxConfigTopic.header}
       </NavHeader>
       <div
@@ -50,10 +58,6 @@ export const InboxConfigTopic: React.FC<InboxConfigTopicProps> = (props) => {
           <TargetStateBanner
             classNames={props.classNames?.TargetStateBanner}
             onClickCta={() => {
-              // TODO: remove
-              // if (!hasTarget(targetData)) {
-              //   return props.setInboxView(InboxView.InboxConfigTargetEdit);
-              // }
               props.setInboxView(InboxView.InboxConfigTargetList);
             }}
           />
