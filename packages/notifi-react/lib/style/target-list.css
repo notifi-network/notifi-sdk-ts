@@ -64,6 +64,7 @@
   word-wrap: break-word;
   padding-right: 25px;
   letter-spacing: 0.42px;
+  overflow: hidden;
 }
 
 .notifi-target-list-item-remove {
