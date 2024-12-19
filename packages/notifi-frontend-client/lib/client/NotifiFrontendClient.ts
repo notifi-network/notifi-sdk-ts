@@ -23,6 +23,22 @@ import {
 } from '../storage';
 import { notNullOrEmpty, packFilterOptions } from '../utils';
 import { areIdsEqual } from '../utils/areIdsEqual';
+import {
+  APTOS_BLOCKCHAINS,
+  AptosBlockchain,
+  BtcBlockchain,
+  COSMOS_BLOCKCHAINS,
+  CosmosBlockchain,
+  EvmBlockchain,
+  UnmaintainedBlockchain,
+  isAptosBlockchain,
+  isCosmosBlockchain,
+  isUsingAptosBlockchain,
+  isUsingBtcBlockchain,
+  isUsingCosmosBlockchain,
+  isUsingEvmBlockchain,
+  isUsingUnmaintainedBlockchain,
+} from './blockchains';
 import { ensureSourceAndFilters, normalizeHexString } from './ensureSource';
 import {
   ensureDiscord,
@@ -40,69 +56,44 @@ type HexString = `0x${string}`;
  * 1. Used for frontend client `login` related methods - requires only authentication method(s) to be passed in (w/o UserParams)
  * 2. TODO: refactor to combine all Uint8SignMessageFunction to a single case.
  */
+
+type CosmosSignMessageParams = Readonly<{
+  walletBlockchain: CosmosBlockchain;
+  message: string;
+  signMessage: CosmosSignMessageFunction;
+}>;
+
+type AptosSignMessageParams = Readonly<{
+  walletBlockchain: AptosBlockchain;
+  nonce: string;
+  signMessage: AptosSignMessageFunction;
+}>;
+
+// TODO: add message here when we migrate to loginwithweb3...
+type BtcSignMessageParams = Readonly<{
+  walletBlockchain: BtcBlockchain;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
+type EvmSignMessageParams = Readonly<{
+  walletBlockchain: EvmBlockchain;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
+type UnmaintainedSignMessageParams = Readonly<{
+  walletBlockchain: UnmaintainedBlockchain;
+  signMessage: Uint8SignMessageFunction;
+}>;
+
 export type SignMessageParams =
+  | CosmosSignMessageParams
+  | BtcSignMessageParams
+  | EvmSignMessageParams
+  | AptosSignMessageParams
+  | UnmaintainedSignMessageParams
   | Readonly<{
       walletBlockchain: 'SOLANA';
       signMessage: Uint8SignMessageFunction;
-    }>
-  | Readonly<{
-      walletBlockchain:
-        | 'ETHEREUM'
-        | 'POLYGON'
-        | 'ARBITRUM'
-        | 'AVALANCHE'
-        | 'BINANCE'
-        | 'OSMOSIS'
-        | 'THE_ROOT_NETWORK'
-        | 'ELYS'
-        | 'NEUTRON'
-        | 'ARCHWAY'
-        | 'AXELAR'
-        | 'BERACHAIN'
-        | 'NIBIRU'
-        | 'OPTIMISM'
-        | 'ZKSYNC'
-        | 'INJECTIVE'
-        | 'BASE'
-        | 'BLAST'
-        | 'CELO'
-        | 'MANTLE'
-        | 'LINEA'
-        | 'SCROLL'
-        | 'MANTA'
-        | 'EVMOS'
-        | 'MONAD'
-        | 'AGORIC'
-        | 'ORAI'
-        | 'KAVA'
-        | 'CELESTIA'
-        | 'COSMOS'
-        | 'DYMENSION'
-        | 'PERSISTENCE'
-        | 'DYDX'
-        | 'ARCH'
-        | 'BITCOIN';
-
-      signMessage: Uint8SignMessageFunction;
-    }>
-  | Readonly<{
-      walletBlockchain: 'APTOS';
-      nonce: string;
-      signMessage: AptosSignMessageFunction;
-    }>
-  | Readonly<{
-      walletBlockchain: 'MOVEMENT';
-      nonce: string;
-      signMessage: AptosSignMessageFunction;
-    }>
-  | Readonly<{
-      walletBlockchain: 'XION';
-      message: string; //TODO: in future we can remove this as the message will be returned by _.authenticate anyways...
-      signMessage: XionSignMessageFunction;
-    }>
-  | Readonly<{
-      walletBlockchain: 'ACALA';
-      signMessage: AcalaSignMessageFunction;
     }>
   | Readonly<{
       walletBlockchain: 'NEAR';
@@ -115,117 +106,82 @@ export type SignMessageParams =
   | Readonly<{
       walletBlockchain: 'OFF_CHAIN';
       signIn: OidcSignInFunction;
+    }>
+  | Readonly<{
+      walletBlockchain: 'INJECTIVE';
+      signMessage: Uint8SignMessageFunction;
     }>;
 
 /** NOTE:
  * 1. Used for FrontendClientContext's props in `@notifi-network/notifi-react` - requires both authentication method(s) & UserParams to be passed in
  * 2. Naming might look confusing as it is a legacy naming to avoid breaking changes
  */
+
+type SolanaWalletWithSignParams = Readonly<{
+  signMessage: Uint8SignMessageFunction;
+  hardwareLoginPlugin?: {
+    // NOTE: Solana specific: solana hardware wallet sign-in requires a memo contract verification
+    sendMessage: (message: string) => Promise<string>;
+  };
+}> &
+  SolanaUserParams;
+
+type AptosWalletWithSignParams = Readonly<{
+  signMessage: AptosSignMessageFunction;
+}> &
+  AptosUserParams;
+
+type BtcWalletWithSignParams = Readonly<{
+  signMessage: Uint8SignMessageFunction;
+}> &
+  BtcUserParams;
+
+type CosmosWalletWithSignParams = Readonly<{
+  signMessage: CosmosSignMessageFunction;
+}> &
+  CosmosUserParams;
+
+type EvmWalletWithSignParams = Readonly<{
+  signMessage: Uint8SignMessageFunction;
+}> &
+  EvmUserParams;
+
+type NearWalletWithSignParams = Readonly<{
+  signMessage: Uint8SignMessageFunction;
+}> &
+  NearUserParams;
+
+type SuiWalletWithSignParams = Readonly<{
+  signMessage: Uint8SignMessageFunction;
+}> &
+  SuiUserParams;
+
+type InjectiveWalletWithSignParams = Readonly<{
+  signMessage: Uint8SignMessageFunction;
+}> &
+  InjectiveUserParams;
+
+type OffChainWalletWithSignParams = Readonly<{
+  signIn: OidcSignInFunction;
+}> &
+  OffChainUserParams;
+
+type UnmaintainedWalletWithSignParams = Readonly<{
+  signMessage: Uint8SignMessageFunction;
+}> &
+  UnmaintainedUserParams;
+
 export type WalletWithSignParams =
-  | (Readonly<{
-      signMessage: Uint8SignMessageFunction;
-      hardwareLoginPlugin?: {
-        // NOTE: Solana specific: solana hardware wallet sign-in requires a memo contract verification
-        sendMessage: (message: string) => Promise<string>;
-      };
-    }> &
-      SolanaUserParams)
-  | (Readonly<{
-      signMessage: Uint8SignMessageFunction;
-    }> &
-      EvmUserParams)
-  | (Readonly<{
-      signMessage: AptosSignMessageFunction;
-    }> &
-      AptosUserParams)
-  | (Readonly<{
-      signMessage: AptosSignMessageFunction;
-    }> &
-      MovementUserParams)
-  | (Readonly<{
-      signMessage: Uint8SignMessageFunction;
-    }> &
-      BitcoinUserParams)
-  | (Readonly<{
-      signMessage: Uint8SignMessageFunction;
-    }> &
-      ArchUserParams)
-  | (Readonly<{
-      signMessage: XionSignMessageFunction;
-      message: string;
-    }> &
-      XionUserParams)
-  | (Readonly<{
-      signMessage: AcalaSignMessageFunction;
-    }> &
-      AcalaUserParams)
-  | (Readonly<{
-      signMessage: Uint8SignMessageFunction;
-    }> &
-      NearUserParams)
-  | (Readonly<{
-      signMessage: Uint8SignMessageFunction;
-    }> &
-      SuiUserParams)
-  | (Readonly<{
-      signMessage: Uint8SignMessageFunction;
-    }> &
-      InjectiveUserParams)
-  | (Readonly<{
-      signMessage: Uint8SignMessageFunction;
-    }> &
-      ElysUserParams)
-  | (Readonly<{
-      signMessage: Uint8SignMessageFunction;
-    }> &
-      NeutronUserParams)
-  | (Readonly<{
-      signMessage: Uint8SignMessageFunction;
-    }> &
-      ArchwayUserParams)
-  | (Readonly<{
-      signMessage: Uint8SignMessageFunction;
-    }> &
-      AxelarUserParams)
-  | (Readonly<{
-      signMessage: Uint8SignMessageFunction;
-    }> &
-      AgoricUserParams)
-  | (Readonly<{
-      signMessage: Uint8SignMessageFunction;
-    }> &
-      OraiUserParams)
-  | (Readonly<{
-      signMessage: Uint8SignMessageFunction;
-    }> &
-      KavaUserParams)
-  | (Readonly<{
-      signMessage: Uint8SignMessageFunction;
-    }> &
-      CelestiaUserParams)
-  | (Readonly<{
-      signMessage: Uint8SignMessageFunction;
-    }> &
-      CosmosUserParams)
-  | (Readonly<{
-      signMessage: Uint8SignMessageFunction;
-    }> &
-      DymensionUserParams)
-  | (Readonly<{
-      signMessage: Uint8SignMessageFunction;
-    }> &
-      PersistenceUserParams)
-  | (Readonly<{
-      walletBlockchain: 'DYDX';
-      accountAddress: string;
-      walletPublicKey: string;
-      signMessage: Uint8SignMessageFunction;
-    }> &
-      DydxUserParams)
-  | (Readonly<{
-      signIn: OidcSignInFunction;
-    }> &
-      OffChainUserParams);
+  | SolanaWalletWithSignParams
+  | AptosWalletWithSignParams
+  | BtcWalletWithSignParams
+  | EvmWalletWithSignParams
+  | NearWalletWithSignParams
+  | SuiWalletWithSignParams
+  | OffChainWalletWithSignParams
+  | CosmosWalletWithSignParams
+  | InjectiveWalletWithSignParams
+  | UnmaintainedWalletWithSignParams;
 
 /** NOTE:
  * 1. Used for instantiating client object (.instantiateFrontendClient) - requires only UserParams (w/o authentication method(s)) to be passed in
@@ -233,91 +189,58 @@ export type WalletWithSignParams =
  */
 export type UserParams =
   | SolanaUserParams
-  | XionUserParams
   | EvmUserParams
   | AptosUserParams
-  | MovementUserParams
-  | AcalaUserParams
   | NearUserParams
   | SuiUserParams
-  | InjectiveUserParams
-  | ElysUserParams
-  | NeutronUserParams
-  | ArchwayUserParams
-  | AxelarUserParams
-  | AgoricUserParams
-  | OraiUserParams
-  | KavaUserParams
-  | CelestiaUserParams
   | CosmosUserParams
-  | DymensionUserParams
-  | PersistenceUserParams
-  | DydxUserParams
   | OffChainUserParams
-  | BitcoinUserParams
-  | ArchUserParams;
-
+  | UnmaintainedUserParams
+  | BtcUserParams
+  | InjectiveUserParams;
 export type SolanaUserParams = Readonly<{
   walletBlockchain: 'SOLANA';
   walletPublicKey: string;
 }>;
 
-export type EvmUserParams = Readonly<{
-  walletBlockchain:
-    | 'ETHEREUM'
-    | 'POLYGON'
-    | 'ARBITRUM'
-    | 'AVALANCHE'
-    | 'BINANCE'
-    | 'OPTIMISM'
-    | 'THE_ROOT_NETWORK'
-    | 'ZKSYNC'
-    | 'BASE'
-    | 'BLAST'
-    | 'CELO'
-    | 'MANTLE'
-    | 'LINEA'
-    | 'SCROLL'
-    | 'MANTA'
-    | 'MONAD'
-    | 'EVMOS'
-    | 'BERACHAIN';
-  walletPublicKey: string;
-}>;
-
 export type AptosUserParams = Readonly<{
-  walletBlockchain: 'APTOS';
+  walletBlockchain: AptosBlockchain;
   accountAddress: string;
   walletPublicKey: string;
 }>;
 
-export type MovementUserParams = Readonly<{
-  walletBlockchain: 'MOVEMENT';
+export type BtcUserParams = Readonly<{
+  walletBlockchain: BtcBlockchain;
   accountAddress: string;
   walletPublicKey: string;
 }>;
 
-export type BitcoinUserParams = Readonly<{
-  walletBlockchain: 'BITCOIN';
+export type EvmUserParams = Readonly<{
+  walletBlockchain: EvmBlockchain;
+  walletPublicKey: string;
+}>;
+
+export type InjectiveUserParams = Readonly<{
+  walletBlockchain: 'INJECTIVE';
   accountAddress: string;
   walletPublicKey: string;
 }>;
 
-export type ArchUserParams = Readonly<{
-  walletBlockchain: 'ARCH';
-  accountAddress: string;
-  walletPublicKey: string;
-}>;
+export type CosmosUserParams =
+  | Readonly<{
+      walletBlockchain: CosmosBlockchain;
+      accountAddress: string;
+      walletPublicKey: string;
+    }>
+  | Readonly<{
+      walletBlockchain: CosmosBlockchain;
+      walletPublicKey: string;
+      signingAddress: string;
+      signingPubkey: string;
+    }>;
 
-export type XionUserParams = Readonly<{
-  walletBlockchain: 'XION';
-  walletPublicKey: string;
-  signingAddress: string;
-  signingPubkey: string;
-}>;
-
-export type AcalaUserParams = Readonly<{
-  walletBlockchain: 'ACALA';
+export type UnmaintainedUserParams = Readonly<{
+  walletBlockchain: UnmaintainedBlockchain;
   accountAddress: string;
   walletPublicKey: string;
 }>;
@@ -334,84 +257,6 @@ export type SuiUserParams = Readonly<{
   walletPublicKey: string;
 }>;
 
-export type InjectiveUserParams = Readonly<{
-  walletBlockchain: 'INJECTIVE';
-  accountAddress: string;
-  walletPublicKey: string;
-}>;
-
-export type ElysUserParams = Readonly<{
-  walletBlockchain: 'ELYS';
-  accountAddress: string;
-  walletPublicKey: string;
-}>;
-
-export type NeutronUserParams = Readonly<{
-  walletBlockchain: 'NEUTRON';
-  accountAddress: string;
-  walletPublicKey: string;
-}>;
-
-export type ArchwayUserParams = Readonly<{
-  walletBlockchain: 'ARCHWAY';
-  accountAddress: string;
-  walletPublicKey: string;
-}>;
-
-export type AxelarUserParams = Readonly<{
-  walletBlockchain: 'AXELAR';
-  accountAddress: string;
-  walletPublicKey: string;
-}>;
-
-export type AgoricUserParams = Readonly<{
-  walletBlockchain: 'AGORIC';
-  accountAddress: string;
-  walletPublicKey: string;
-}>;
-
-export type OraiUserParams = Readonly<{
-  walletBlockchain: 'ORAI';
-  accountAddress: string;
-  walletPublicKey: string;
-}>;
-
-export type KavaUserParams = Readonly<{
-  walletBlockchain: 'KAVA';
-  accountAddress: string;
-  walletPublicKey: string;
-}>;
-
-export type CelestiaUserParams = Readonly<{
-  walletBlockchain: 'CELESTIA';
-  accountAddress: string;
-  walletPublicKey: string;
-}>;
-
-export type CosmosUserParams = Readonly<{
-  walletBlockchain: 'COSMOS';
-  accountAddress: string;
-  walletPublicKey: string;
-}>;
-
-export type DymensionUserParams = Readonly<{
-  walletBlockchain: 'DYMENSION';
-  accountAddress: string;
-  walletPublicKey: string;
-}>;
-
-export type PersistenceUserParams = Readonly<{
-  walletBlockchain: 'PERSISTENCE';
-  accountAddress: string;
-  walletPublicKey: string;
-}>;
-
-export type DydxUserParams = Readonly<{
-  walletBlockchain: 'DYDX';
-  accountAddress: string;
-  walletPublicKey: string;
-}>;
-
 export type OffChainUserParams = Readonly<{
   walletBlockchain: 'OFF_CHAIN';
   userAccount: string;
@@ -422,12 +267,10 @@ export type ConnectWalletParams = Readonly<{
   connectWalletConflictResolutionTechnique: Types.ConnectWalletInput['connectWalletConflictResolutionTechnique'];
 }>;
 
-// TODO: Clean up blockchain-specific dependencies out of this package
-export type XionSignMessageFunction = (message: Uint8Array) => Promise<string>;
-
 export type Uint8SignMessageFunction = (
   message: Uint8Array,
 ) => Promise<Uint8Array>;
+
 export type AptosSignMessageFunction = (
   message: string,
   nonce: string,
@@ -436,10 +279,10 @@ export type AptosSignMessageFunction = (
   signedMessage: string;
 }>;
 
-export type AcalaSignMessageFunction = (
-  acalaAddress: string,
-  message: string,
-) => Promise<HexString>;
+export type CosmosSignMessageFunction = (message: string) => Promise<{
+  signatureBase64: string;
+  signedMessage: string;
+}>;
 
 export type OidcCredentials = {
   oidcProvider: Types.OidcProvider;
@@ -479,7 +322,10 @@ type FindSubscriptionCardParams = Omit<Types.FindTenantConfigInput, 'tenant'>;
 const SIGNING_MESSAGE_WITHOUT_NONCE = `Sign in with Notifi \n\n    No password needed or gas is needed. \n\n    Clicking “Approve” only means you have proved this wallet is owned by you! \n\n    This request will not trigger any transaction or cost any gas fees. \n\n    Use of our website and service is subject to our terms of service and privacy policy.`;
 export const SIGNING_MESSAGE = `${SIGNING_MESSAGE_WITHOUT_NONCE} \n \n 'Nonce:' `;
 
-const CHAINS_WITH_LOGIN_WEB3 = ['XION', 'APTOS', 'MOVEMENT'] as const;
+const CHAINS_WITH_LOGIN_WEB3 = [
+  ...APTOS_BLOCKCHAINS,
+  ...COSMOS_BLOCKCHAINS,
+] as const;
 
 export type SupportedCardConfigType = CardConfigItemV1;
 
@@ -501,9 +347,8 @@ export type UserState = Readonly<
 type LoginWeb3Params = Omit<
   Extract<
     SignMessageParams,
-    | { walletBlockchain: 'XION' }
-    | { walletBlockchain: 'APTOS' }
-    | { walletBlockchain: 'MOVEMENT' }
+    | { walletBlockchain: CosmosBlockchain }
+    | { walletBlockchain: AptosBlockchain }
   >,
   'message' | 'nonce'
 >;
@@ -511,9 +356,8 @@ type LoginWeb3Params = Omit<
 type LoginParams =
   | Exclude<
       SignMessageParams,
-      | { walletBlockchain: 'XION' }
-      | { walletBlockchain: 'APTOS' }
-      | { walletBlockchain: 'MOVEMENT' }
+      | { walletBlockchain: CosmosBlockchain }
+      | { walletBlockchain: AptosBlockchain }
     >
   | LoginWeb3Params;
 
@@ -611,10 +455,10 @@ export class NotifiFrontendClient {
     signingPubkey: string;
     nonce: string;
   }> {
-    if (signMessageParams.walletBlockchain === 'XION') {
+    if (isCosmosBlockchain(signMessageParams.walletBlockchain)) {
       // Narrow the type of signMessage for XION
-      const xionSignMessage =
-        signMessageParams.signMessage as XionSignMessageFunction;
+      const cosmosSignMessage =
+        signMessageParams.signMessage as CosmosSignMessageFunction;
 
       if (checkIsConfigWithDelegate(this._configuration)) {
         const { delegatedAddress, delegatedPublicKey, delegatorAddress } =
@@ -627,9 +471,9 @@ export class NotifiFrontendClient {
         const signedMessage = `${SIGNING_MESSAGE}${nonce}`;
         return {
           signMessageParams: {
-            walletBlockchain: 'XION',
+            walletBlockchain: signMessageParams.walletBlockchain,
             message: signedMessage,
-            signMessage: xionSignMessage,
+            signMessage: cosmosSignMessage,
           },
           signingAddress: delegatedAddress,
           signingPubkey: delegatedPublicKey,
@@ -644,21 +488,16 @@ export class NotifiFrontendClient {
         const signedMessage = `${SIGNING_MESSAGE}${nonce}`;
         return {
           signMessageParams: {
-            walletBlockchain: 'XION',
+            walletBlockchain: signMessageParams.walletBlockchain,
             message: signedMessage,
-            signMessage: xionSignMessage,
+            signMessage: cosmosSignMessage,
           },
           signingAddress: accountAddress,
           signingPubkey: authenticationKey,
           nonce,
         };
       }
-    }
-
-    if (
-      signMessageParams.walletBlockchain === 'APTOS' ||
-      signMessageParams.walletBlockchain === 'MOVEMENT'
-    ) {
+    } else if (isAptosBlockchain(signMessageParams.walletBlockchain)) {
       // Narrow the type of signMessage for APTOS/MOVEMENT
       const aptosSignMessage =
         signMessageParams.signMessage as AptosSignMessageFunction;
@@ -782,7 +621,6 @@ export class NotifiFrontendClient {
         case 'BINANCE':
         case 'OPTIMISM':
         case 'ZKSYNC':
-        case 'EVMOS':
         case 'SOLANA': {
           const result = await this._service.logInFromDapp({
             walletBlockchain,
@@ -795,26 +633,10 @@ export class NotifiFrontendClient {
           break;
         }
         case 'SUI':
-        case 'ACALA':
         case 'NEAR':
-        case 'INJECTIVE':
-        case 'OSMOSIS':
-        case 'ELYS':
-        case 'ARCHWAY':
-        case 'AXELAR':
-        case 'AGORIC':
-        case 'CELESTIA':
-        case 'COSMOS':
-        case 'DYMENSION':
-        case 'PERSISTENCE':
-        case 'DYDX':
-        case 'ORAI':
-        case 'KAVA':
-        case 'NEUTRON':
-        case 'NIBIRU':
-        case 'MOVEMENT':
         case 'ARCH':
-        case 'APTOS': {
+        case 'INJECTIVE':
+        case 'BITCOIN': {
           const result = await this._service.logInFromDapp({
             walletBlockchain,
             walletPublicKey: this._configuration.authenticationKey,
@@ -855,63 +677,54 @@ export class NotifiFrontendClient {
         'Sign message params and configuration must have the same blockchain',
       );
     }
-    switch (signMessageParams.walletBlockchain) {
-      case 'ETHEREUM':
-      case 'BERACHAIN':
-      case 'POLYGON':
-      case 'ARBITRUM':
-      case 'AVALANCHE':
-      case 'BINANCE':
-      case 'BASE':
-      case 'BLAST':
-      case 'CELO':
-      case 'MANTLE':
-      case 'LINEA':
-      case 'SCROLL':
-      case 'MANTA':
-      case 'MONAD':
-      case 'EVMOS':
-      case 'THE_ROOT_NETWORK':
-      case 'OPTIMISM': {
-        const { walletPublicKey, tenantId } = this
-          ._configuration as NotifiConfigWithPublicKey;
-        const signedMessage = `${SIGNING_MESSAGE}${walletPublicKey}${tenantId}${timestamp.toString()}`;
-        const messageBuffer = new TextEncoder().encode(signedMessage);
 
-        const signedBuffer = await signMessageParams.signMessage(messageBuffer);
-        const signature = normalizeHexString(
-          Buffer.from(signedBuffer).toString('hex'),
+    if (isUsingUnmaintainedBlockchain(signMessageParams)) {
+      // Happens for chains that we discontinued support for
+      // e.g. Acala, EVMOS
+      throw new Error(
+        `Unsupported blockchain: ${signMessageParams.walletBlockchain}. Please contact us if you beleive this is an error or if you need support for a new blockchain.`,
+      );
+    }
+
+    if (isUsingCosmosBlockchain(signMessageParams)) {
+      const { signatureBase64, signedMessage } =
+        await signMessageParams.signMessage(signMessageParams.message);
+      return { signature: signatureBase64, signedMessage };
+    } else if (isUsingAptosBlockchain(signMessageParams)) {
+      const { signatureHex, signedMessage } =
+        await signMessageParams.signMessage(
+          SIGNING_MESSAGE_WITHOUT_NONCE,
+          signMessageParams.nonce,
         );
+      return { signature: signatureHex, signedMessage };
+    } else if (isUsingEvmBlockchain(signMessageParams)) {
+      const { walletPublicKey, tenantId } = this
+        ._configuration as NotifiConfigWithPublicKey;
+      const signedMessage = `${SIGNING_MESSAGE}${walletPublicKey}${tenantId}${timestamp.toString()}`;
+      const messageBuffer = new TextEncoder().encode(signedMessage);
 
-        return { signature, signedMessage };
-      }
-      case 'OSMOSIS':
-      case 'ZKSYNC':
-      case 'ELYS':
-      case 'NEUTRON':
-      case 'NIBIRU':
-      case 'ARCHWAY':
-      case 'AXELAR':
-      case 'AGORIC':
-      case 'CELESTIA':
-      case 'COSMOS':
-      case 'DYMENSION':
-      case 'PERSISTENCE':
-      case 'DYDX':
-      case 'ORAI':
-      case 'KAVA':
-      case 'INJECTIVE':
-      case 'ARCH':
-      case 'BITCOIN': {
-        const { authenticationKey, tenantId } = this
-          ._configuration as NotifiConfigWithPublicKeyAndAddress;
-        const signedMessage = `${SIGNING_MESSAGE}${authenticationKey}${tenantId}${timestamp.toString()}`;
-        const messageBuffer = new TextEncoder().encode(signedMessage);
+      const signedBuffer = await signMessageParams.signMessage(messageBuffer);
+      const signature = normalizeHexString(
+        Buffer.from(signedBuffer).toString('hex'),
+      );
 
-        const signedBuffer = await signMessageParams.signMessage(messageBuffer);
-        const signature = Buffer.from(signedBuffer).toString('base64');
-        return { signature, signedMessage };
-      }
+      return { signature, signedMessage };
+    } else if (
+      isUsingBtcBlockchain(signMessageParams) ||
+      signMessageParams.walletBlockchain === 'INJECTIVE'
+    ) {
+      //TODO: Implement
+      const { authenticationKey, tenantId } = this
+        ._configuration as NotifiConfigWithPublicKeyAndAddress;
+      const signedMessage = `${SIGNING_MESSAGE}${authenticationKey}${tenantId}${timestamp.toString()}`;
+      const messageBuffer = new TextEncoder().encode(signedMessage);
+      const signedBuffer = await signMessageParams.signMessage(messageBuffer);
+      const signature = Buffer.from(signedBuffer).toString('base64');
+      return { signature, signedMessage };
+    }
+
+    // Can only be the lonely chains now, e.g. Solana, Sui, ...
+    switch (signMessageParams.walletBlockchain) {
       case 'SOLANA': {
         const { walletPublicKey, tenantId } = this
           ._configuration as NotifiConfigWithPublicKey;
@@ -921,34 +734,6 @@ export class NotifiFrontendClient {
         const signedBuffer = await signMessageParams.signMessage(messageBuffer);
         const signature = Buffer.from(signedBuffer).toString('base64');
         return { signature, signedMessage };
-      }
-      case 'XION': {
-        const { message } = signMessageParams;
-        const messageBuffer = new TextEncoder().encode(message);
-
-        const signedBuffer = await signMessageParams.signMessage(messageBuffer);
-        const signature = Buffer.from(signedBuffer).toString('base64');
-        return { signature, signedMessage: message };
-      }
-      case 'ACALA': {
-        const { accountAddress, tenantId } = this
-          ._configuration as NotifiConfigWithPublicKeyAndAddress;
-
-        const message = `${SIGNING_MESSAGE}${accountAddress}${tenantId}${timestamp.toString()}`;
-        const signedBuffer = await signMessageParams.signMessage(
-          accountAddress,
-          message,
-        );
-        return { signature: signedBuffer, signedMessage: message };
-      }
-      case 'APTOS':
-      case 'MOVEMENT': {
-        const { signatureHex, signedMessage } =
-          await signMessageParams.signMessage(
-            SIGNING_MESSAGE_WITHOUT_NONCE,
-            signMessageParams.nonce,
-          );
-        return { signature: signatureHex, signedMessage };
       }
       case 'SUI': {
         const { accountAddress, tenantId } = this
@@ -984,9 +769,6 @@ export class NotifiFrontendClient {
         }
         return oidcCredentials;
       }
-      default:
-        // Need implementation for other blockchains
-        return { signature: 'chain not supported yet', signedMessage: '' };
     }
   }
 
