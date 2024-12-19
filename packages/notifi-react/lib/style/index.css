@@ -181,7 +181,7 @@
     var(--notifi-color-dusk)
   );
   --notifi-target-state-banner-verify-cta-text: rgb(var(--notifi-color-dusk));
-  --notifi-topic-options-item-radio-before-border: rbg(
+  --notifi-topic-options-item-radio-before-border: rgb(
     var(--notifi-color-dusk)
   );
   --notifi-topic-stack-row-input-button-disabled-bg: rgb(
@@ -347,7 +347,7 @@
     var(--notifi-color-dusk)
   );
   --notifi-target-state-banner-verify-cta-text: rgb(var(--notifi-color-dusk));
-  --notifi-topic-options-item-radio-before-border: rbg(
+  --notifi-topic-options-item-radio-before-border: rgb(
     var(--notifi-color-dusk)
   );
   --notifi-topic-stack-row-input-button-disabled-bg: rgb(
