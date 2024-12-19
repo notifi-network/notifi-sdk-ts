@@ -86,7 +86,7 @@ export const useTargetListItem = (input: {
           type: 'button',
           targetInfoPrompt: {
             type: 'cta',
-            message: 'Signup',
+            message: 'Save',
             onClick: async () => {
               const target = input.target as FormTarget;
               await renewTargetGroup({
