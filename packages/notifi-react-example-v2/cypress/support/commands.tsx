@@ -79,16 +79,6 @@ const mountCardModal = (isRandomMnemonic?: boolean) => {
         },
       ],
     },
-    Ftu: {
-      FtuTargetEdit: {
-        TargetInputs: {
-          inputSeparators: {
-            email: 'OR',
-            sms: 'OR',
-          },
-        },
-      },
-    },
   };
   cy.mount(
     <NotifiContextProvider

@@ -84,7 +84,7 @@
 }
 
 .notifi-history-row:hover {
-  border: 1px solid var(--notifi-color-dusk);
+  border: 1px solid var(--notifi-history-row-hover-border);
 }
 
 .notifi-history-row-unread-indicator {
@@ -178,6 +178,6 @@
 }
 
 .notifi-history-detail-message > p > a {
-  color: var(--notifi-color-seaglass-dark);
+  color: var(--notifi-target-input-field-input-container-focused-border);
   text-decoration: none;
 }
