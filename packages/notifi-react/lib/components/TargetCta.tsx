@@ -3,25 +3,12 @@ import React from 'react';
 
 import { Icon } from '../assets/Icons';
 import { TargetInfoPrompt, isCtaInfo } from '../context';
-import { LoadingAnimation, LoadingAnimationProps } from './LoadingAnimation';
-
-export type PostCta = LoadingAnimationPostCta | TextPostCta;
-
-type LoadingAnimationPostCta = {
-  type: 'loading-animation';
-  animationType: LoadingAnimationProps['type'];
-};
-
-type TextPostCta = {
-  type: 'text';
-  text: string;
-  durationInMs: number;
-};
+import { LoadingAnimation } from './LoadingAnimation';
 
 export type TargetCtaProps = {
   type: 'button' | 'link';
   targetInfoPrompt: TargetInfoPrompt;
-  postCta: PostCta;
+  isCtaDisabled?: boolean;
   classNames?: {
     container?: string;
     actionRequired?: {
@@ -34,20 +21,16 @@ export type TargetCtaProps = {
 };
 
 export const TargetCta: React.FC<TargetCtaProps> = (props) => {
-  const [isPostCtaShown, setIsPostCtaShown] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
 
-  React.useEffect(() => {
-    if (isLoadingAnimationPostCta(props.postCta)) {
-      if (isLoading) {
-        return setIsPostCtaShown(true);
-      }
-      return setIsPostCtaShown(false);
-    }
-  }, [isLoading]);
-
   return (
-    <div className={clsx('notifi-target-cta', props.classNames?.container)}>
+    <div
+      className={clsx(
+        'notifi-target-cta',
+        !isCtaInfo(props.targetInfoPrompt) && 'no-action-required',
+        props.classNames?.container,
+      )}
+    >
       {isCtaInfo(props.targetInfoPrompt) ? (
         <div
           className={clsx(
@@ -55,39 +38,28 @@ export const TargetCta: React.FC<TargetCtaProps> = (props) => {
             props.type === 'button' && props.classNames?.actionRequired?.button,
             props.type === 'link' && 'notifi-target-cta-link',
             props.type === 'link' && props.classNames?.actionRequired?.link,
-            isPostCtaShown && 'disabled',
+            (props.isCtaDisabled || isLoading) && 'disabled',
           )}
           onClick={async () => {
-            if (isPostCtaShown) return;
+            if (props.isCtaDisabled) return;
             if (!isCtaInfo(props.targetInfoPrompt)) return;
 
             setIsLoading(true);
             await props.targetInfoPrompt.onClick();
             setIsLoading(false);
-
-            if (!isLoadingAnimationPostCta(props.postCta)) {
-              setIsPostCtaShown(true);
-              setTimeout(
-                () => setIsPostCtaShown(false),
-                props.postCta.durationInMs,
-              );
-            }
           }}
         >
-          {isPostCtaShown ? (
-            isLoadingAnimationPostCta(props.postCta) ? (
-              <LoadingAnimation
-                type={props.postCta.animationType}
-                classNames={{ spinner: 'notifi-target-cta-loading-spinner' }}
-              />
-            ) : (
-              props.postCta.text
-            )
+          {isLoading ? (
+            <LoadingAnimation
+              type={'spinner'}
+              classNames={{ spinner: 'notifi-target-cta-loading-spinner' }}
+            />
           ) : (
             props.targetInfoPrompt.message
           )}
         </div>
       ) : null}
+
       {!isCtaInfo(props.targetInfoPrompt) ? (
         <div
           className={clsx(
@@ -96,17 +68,8 @@ export const TargetCta: React.FC<TargetCtaProps> = (props) => {
           )}
         >
           <Icon type="check" />
-          {props.targetInfoPrompt.message}
         </div>
       ) : null}
     </div>
   );
-};
-
-// Utils
-
-const isLoadingAnimationPostCta = (
-  postCta: PostCta,
-): postCta is LoadingAnimationPostCta => {
-  return postCta.type === 'loading-animation';
 };
