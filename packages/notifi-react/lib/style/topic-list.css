@@ -29,62 +29,7 @@
   position: relative;
   display: flex;
   margin-left: 0.2rem;
-}
-
-.notifi-topic-list-tooltip-icon {
-  color: rgba(var(--notifi-color-heather), 1);
-}
-
-.notifi-topic-list-tooltip-icon:hover {
-  visibility: visible;
-  color: var(--notifi-topic-list-tooltip-icon-color-hover);
-}
-
-.notifi-topic-list-tooltip-icon:hover ~ .notifi-topic-list-tooltip-content {
-  visibility: visible;
-}
-
-.notifi-topic-list-tooltip-content {
-  position: absolute;
-  background-color: var(--notifi-topic-list-tooltip-bg);
-  padding: 1rem;
-  border-radius: 6px;
-  border: var(--notifi-topic-list-tooltip-content-border) 1px solid;
-  width: 10rem;
-  display: none;
-  z-index: 1;
-}
-
-.notifi-topic-list-tooltip-icon:hover
-  ~ .notifi-topic-list-tooltip-content.top-right,
-.notifi-topic-list-tooltip-content.top-right:hover {
-  top: 1.5rem;
-  right: -1rem;
-  display: block;
-}
-
-.notifi-topic-list-tooltip-icon:hover
-  ~ .notifi-topic-list-tooltip-content.top-left,
-.notifi-topic-list-tooltip-content.top-left:hover {
-  top: 1.5rem;
-  left: -1rem;
-  display: block;
-}
-
-.notifi-topic-list-tooltip-icon:hover
-  ~ .notifi-topic-list-tooltip-content.bottom-right,
-.notifi-topic-list-tooltip-content.bottom-right:hover {
-  bottom: 1.5rem;
-  right: -1rem;
-  display: block;
-}
-
-.notifi-topic-list-tooltip-icon:hover
-  ~ .notifi-topic-list-tooltip-content.bottom-left,
-.notifi-topic-list-tooltip-content.bottom-left:hover {
-  bottom: 1.5rem;
-  left: -1rem;
-  display: block;
+  margin-bottom: 0.2rem;
 }
 
 .notifi-topic-row-user-inputs-row-container {

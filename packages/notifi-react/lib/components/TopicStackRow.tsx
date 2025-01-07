@@ -10,6 +10,7 @@ import {
   isEqual,
   isTopicGroupValid,
 } from '../utils';
+import { Tooltip } from './Tooltip';
 import {
   TopicGroupRowMetadata,
   TopicRowCategory,
@@ -136,31 +137,18 @@ export const TopicStackRow = <T extends TopicRowCategory>(
           <div>{title}</div>
 
           {benchmarkTopic.uiConfig.tooltipContent ? (
-            <div
-              ref={tooltipRef}
-              className={clsx(
-                'notifi-topic-list-tooltip-container',
-                props.classNames?.tooltipContainer,
-              )}
+            <Tooltip
+              tooltipRef={tooltipRef}
+              tooltipIconPosition={tooltipPosition}
+              classNames={{
+                container: clsx(
+                  'notifi-topic-list-tooltip-container',
+                  props.classNames?.tooltipContainer,
+                ),
+              }}
             >
-              <Icon
-                type="info"
-                className={clsx(
-                  'notifi-topic-list-tooltip-icon',
-                  props.classNames?.icon,
-                )}
-              />
-
-              <div
-                className={clsx(
-                  'notifi-topic-list-tooltip-content',
-                  props.classNames?.tooltipContent,
-                  tooltipPosition,
-                )}
-              >
-                {benchmarkTopic.uiConfig.tooltipContent}
-              </div>
-            </div>
+              {benchmarkTopic.uiConfig.tooltipContent}
+            </Tooltip>
           ) : null}
         </div>
       </div>
