@@ -45,7 +45,7 @@ import {
   ensureEmail,
   ensureSlack,
   ensureSms,
-  ensureTelegram, // ensureTelegramDefault,
+  ensureTelegram,
   ensureWeb3,
   ensureWebhook,
   renewTelegram,

@@ -16,6 +16,7 @@ import React, {
 } from 'react';
 
 import { useTargetWallet } from '../hooks/useTargetWallet';
+import { formTargets, toggleTargets } from '../utils';
 import { useNotifiFrontendClientContext } from './NotifiFrontendClientContext';
 
 export type TargetGroupInput = {
@@ -35,20 +36,10 @@ export type TargetDocument = {
   targetData: TargetData;
 };
 
-// TODO: refactor ex. formTargets = [email, phoneNumber]; toggleTargets = [discord, slack, telegram, wallet];
-export type Target =
-  | 'email'
-  | 'phoneNumber'
-  | 'telegram'
-  | 'discord'
-  | 'slack'
-  | 'wallet';
+export type Target = FormTarget | ToggleTarget;
 
-export type FormTarget = Extract<Target, 'email' | 'phoneNumber'>;
-export type ToggleTarget = Extract<
-  Target,
-  'discord' | 'slack' | 'wallet' | 'telegram'
->;
+export type FormTarget = (typeof formTargets)[number];
+export type ToggleTarget = (typeof toggleTargets)[number];
 
 export type TargetInputFromValue = { value: string; error?: string };
 type TargetInputForm = Record<FormTarget, TargetInputFromValue>;
@@ -129,18 +120,14 @@ type TargetRenewArgs = FormTargetRenewArgs | ToggleTargetRenewArgs;
 const isFormTargetRenewArgs = (
   args: TargetRenewArgs,
 ): args is FormTargetRenewArgs => {
-  return args.target === 'email' || args.target === 'phoneNumber';
+  return formTargets.includes(args.target as FormTarget);
+  // return args.target === 'email' || args.target === 'phoneNumber';
 };
 
 const isToggleTargetRenewArgs = (
   args: TargetRenewArgs,
 ): args is ToggleTargetRenewArgs => {
-  return (
-    args.target === 'slack' ||
-    args.target === 'wallet' ||
-    args.target === 'discord' ||
-    args.target === 'telegram'
-  );
+  return toggleTargets.includes(args.target as ToggleTarget);
 };
 
 export type NotifiTargetContextType = {
@@ -354,11 +341,8 @@ export const NotifiTargetContextProvider: FC<
   }, [toggleTargetAvailability]);
 
   const unVerifiedTargets = useMemo(() => {
-    const {
-      email: emailInfoPrompt,
-      phoneNumber: phoneNumberInfoPrompt,
-      // telegram: telegramInfoPrompt,
-    } = targetInfoPrompts;
+    const { email: emailInfoPrompt, phoneNumber: phoneNumberInfoPrompt } =
+      targetInfoPrompts;
 
     const unConfirmedTargets = {
       email: emailInfoPrompt?.infoPrompt.type === 'cta',

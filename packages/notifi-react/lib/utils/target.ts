@@ -1,6 +1,7 @@
 import { objectKeys } from '@notifi-network/notifi-frontend-client';
 
-import {
+// NOTE: Only import "type" to avoid circular dependency
+import type {
   CtaInfo,
   FormTarget,
   MessageInfo,
@@ -10,6 +11,14 @@ import {
   TargetInputs,
   ToggleTarget,
 } from '../context';
+
+export const formTargets = ['email', 'phoneNumber'] as const;
+export const toggleTargets = [
+  'discord',
+  'slack',
+  'telegram',
+  'wallet',
+] as const;
 
 export const reformatSignatureForWalletTarget = (
   signature: Uint8Array | string,
@@ -93,15 +102,8 @@ export const isFormTarget = (target: Target): target is FormTarget => {
   return supportedFormTargets.includes(target);
 };
 
-export const isToggleTarget = (target: Target): target is ToggleTarget => {
-  const supportedToggleTargets: Target[] = [
-    'discord',
-    'slack',
-    'wallet',
-    'telegram',
-  ];
-  return supportedToggleTargets.includes(target);
-};
+export const isToggleTarget = (target: Target): target is ToggleTarget =>
+  toggleTargets.includes(target as ToggleTarget);
 
 export const getWalletTargetSignMessage = (
   address: string,
@@ -110,9 +112,7 @@ export const getWalletTargetSignMessage = (
 ) =>
   `Coinbase Wallet Messaging subscribe\nAddress: ${address}\nPartner Address: ${senderAddress}\nNonce: ${nonce}`;
 
-export const getTargetValidateRegex = (
-  target: Extract<Target, 'email' | 'phoneNumber'>,
-) => {
+export const getTargetValidateRegex = (target: FormTarget) => {
   switch (target) {
     case 'email':
       return new RegExp('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$');

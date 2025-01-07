@@ -1,7 +1,6 @@
 import clsx from 'clsx';
 import React, { useMemo } from 'react';
 
-import { Icon, IconType } from '../assets/Icons';
 import { FormTarget, useNotifiTargetContext } from '../context';
 import { defaultCopy } from '../utils/constants';
 
