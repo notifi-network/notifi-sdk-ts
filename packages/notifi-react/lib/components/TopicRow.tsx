@@ -2,7 +2,6 @@ import { FusionEventTopic } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import React from 'react';
 
-import { Icon } from '../assets/Icons';
 import { useNotifiTargetContext, useNotifiTopicContext } from '../context';
 import { useComponentPosition } from '../hooks/useComponentPosition';
 import {
@@ -11,6 +10,7 @@ import {
   isTopicGroupValid,
 } from '../utils';
 import { Toggle } from './Toggle';
+import { Tooltip } from './Tooltip';
 import {
   TopicGroupRowMetadata,
   TopicRowCategory,
@@ -115,31 +115,18 @@ export const TopicRow = <T extends TopicRowCategory>(
         >
           <div>{title}</div>
           {benchmarkTopic.uiConfig.tooltipContent ? (
-            <div
-              ref={tooltipRef}
-              className={clsx(
-                'notifi-topic-list-tooltip-container',
-                props.classNames?.tooltipContainer,
-              )}
+            <Tooltip
+              tooltipRef={tooltipRef}
+              tooltipIconPosition={tooltipPosition}
+              classNames={{
+                container: clsx(
+                  'notifi-topic-list-tooltip-container',
+                  props.classNames?.tooltipContainer,
+                ),
+              }}
             >
-              <Icon
-                type="info"
-                className={clsx(
-                  'notifi-topic-list-tooltip-icon',
-                  props.classNames?.tooltipIcon,
-                )}
-              />
-
-              <div
-                className={clsx(
-                  'notifi-topic-list-tooltip-content',
-                  props.classNames?.tooltipContent,
-                  tooltipPosition,
-                )}
-              >
-                {benchmarkTopic.uiConfig.tooltipContent}
-              </div>
-            </div>
+              {benchmarkTopic.uiConfig.tooltipContent}
+            </Tooltip>
           ) : null}
         </div>
 
