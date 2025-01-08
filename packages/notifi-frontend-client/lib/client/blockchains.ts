@@ -37,6 +37,8 @@ export const EVM_BLOCKCHAINS = [
   'BERACHAIN',
   'OPTIMISM',
   'THE_ROOT_NETWORK',
+  'SONIC',
+  'ROME',
   'ZKSYNC',
 ] as const;
 
