@@ -2,9 +2,9 @@ import clsx from 'clsx';
 import React from 'react';
 
 import { useNotifiTargetContext } from '../context';
-import { defaultCopy, hasTarget } from '../utils';
+import { defaultCopy } from '../utils';
 import { InboxView } from './Inbox';
-import { NavHeader, NavHeaderRightCta } from './NavHeader';
+import { NavHeader, NavHeaderProps, NavHeaderRightCta } from './NavHeader';
 import { TargetList } from './TargetList';
 
 export type InboxConfigTargetListProps = {
@@ -13,6 +13,7 @@ export type InboxConfigTargetListProps = {
     main?: string;
     button?: string;
     loadingSpinner?: React.CSSProperties;
+    NavHeader?: NavHeaderProps['classNames'];
   };
   copy?: {
     header?: string;
@@ -26,13 +27,8 @@ export const InboxConfigTargetList: React.FC<InboxConfigTargetListProps> = (
   props,
 ) => {
   const {
-    isLoading,
     targetDocument: { targetData },
   } = useNotifiTargetContext();
-
-  if (!hasTarget(targetData)) {
-    props.setInboxView(InboxView.InboxConfigTopic);
-  }
 
   return (
     <div
@@ -47,6 +43,11 @@ export const InboxConfigTargetList: React.FC<InboxConfigTargetListProps> = (
           action: () => props.setInboxView(InboxView.InboxConfigTopic),
         }}
         rightCta={props.navHeaderRightCta}
+        classNames={
+          props.classNames?.NavHeader ?? {
+            container: 'notifi-inbox-config-target-header',
+          }
+        }
       >
         {props.copy?.header ?? defaultCopy.inboxConfigTargetList.header}
       </NavHeader>
@@ -65,21 +66,6 @@ export const InboxConfigTargetList: React.FC<InboxConfigTargetListProps> = (
           parentComponent="inbox"
         />
       </div>
-      <button
-        data-cy="notifi-inbox-config-target-list-button"
-        className={clsx(
-          'btn',
-          'notifi-inbox-config-target-list-button',
-          props.classNames?.button,
-        )}
-        disabled={isLoading}
-        onClick={() => props.setInboxView(InboxView.InboxConfigTargetEdit)}
-      >
-        <div className={clsx('notifi-inbox-config-target-list-button-text')}>
-          {props.copy?.buttonText ??
-            defaultCopy.inboxConfigTargetList.buttonText}
-        </div>
-      </button>
     </div>
   );
 };

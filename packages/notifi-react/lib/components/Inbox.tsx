@@ -2,10 +2,6 @@ import clsx from 'clsx';
 import React from 'react';
 
 import {
-  InboxConfigTargetEdit,
-  InboxConfigTargetEditProps,
-} from './InboxConfigTargetEdit';
-import {
   InboxConfigTargetList,
   InboxConfigTargetListProps,
 } from './InboxConfigTargetList';
@@ -20,16 +16,13 @@ export type InboxProps = {
     footer?: string;
     inboxViews?: string;
     InboxNavTabs?: InboxNavTabsProps['classNames'];
-    InboxConfigTargetEdit?: InboxConfigTargetEditProps['classNames'];
     InboxConfigTargetList?: InboxConfigTargetListProps['classNames'];
     InboxConfigTopic?: InboxConfigTopicProps['classNames'];
     InboxHistory?: InboxHistoryProps['classNames'];
   };
   copy?: {
-    InboxConfigTargetEdit?: InboxConfigTargetEditProps['copy'];
     InboxConfigTargetList?: InboxConfigTargetListProps['copy'];
     InboxConfigTopic?: InboxConfigTopicProps['copy'];
-    // TODO
   };
   navHeaderRightCta?: NavHeaderRightCta;
 };
@@ -38,7 +31,6 @@ export enum InboxView {
   InboxHistory = 'inbox-history',
   InboxConfigTopic = 'inbox-config-topic',
   InboxConfigTargetList = 'inbox-config-target-list',
-  InboxConfigTargetEdit = 'inbox-config-target-edit',
 }
 
 export const Inbox: React.FC<InboxProps> = (props) => {
@@ -68,14 +60,6 @@ export const Inbox: React.FC<InboxProps> = (props) => {
             {...{ setInboxView }}
             classNames={props.classNames?.InboxConfigTargetList}
             copy={props.copy?.InboxConfigTargetList}
-            navHeaderRightCta={props.navHeaderRightCta}
-          />
-        ) : null}
-        {inboxView === InboxView.InboxConfigTargetEdit ? (
-          <InboxConfigTargetEdit
-            {...{ setInboxView }}
-            classNames={props.classNames?.InboxConfigTargetEdit}
-            copy={props.copy?.InboxConfigTargetEdit}
             navHeaderRightCta={props.navHeaderRightCta}
           />
         ) : null}

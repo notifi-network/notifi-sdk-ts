@@ -5,7 +5,7 @@ import React from 'react';
 
 import { HistoryItem } from '../context';
 import { defaultCopy } from '../utils';
-import { NavHeader, NavHeaderRightCta } from './NavHeader';
+import { NavHeader, NavHeaderProps, NavHeaderRightCta } from './NavHeader';
 
 type HistoryDetailProps = {
   classNames?: {
@@ -14,6 +14,7 @@ type HistoryDetailProps = {
     subject?: string;
     timestamp?: string;
     message?: string;
+    NavHeader?: NavHeaderProps['classNames'];
   };
   copy?: {
     headerTitle?: string;
@@ -50,6 +51,11 @@ export const HistoryDetail: React.FC<HistoryDetailProps> = (props) => {
           action: () => props.setSelectedHistoryItem(null),
         }}
         rightCta={props.navHeaderRightCta}
+        classNames={
+          props.classNames?.NavHeader ?? {
+            container: 'notifi-inbox-history-detail-header',
+          }
+        }
       >
         {props.copy?.headerTitle ?? defaultCopy.inboxHistoryDetail.headerTitle}
       </NavHeader>
