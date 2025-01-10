@@ -623,7 +623,7 @@ export class NotifiFrontendClient {
         case 'ZKSYNC':
         case 'SOLANA':
         case 'ROME':
-        case 'SONIC':{
+        case 'SONIC': {
           const result = await this._service.logInFromDapp({
             walletBlockchain,
             walletPublicKey: this._configuration.walletPublicKey,
