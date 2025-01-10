@@ -159,6 +159,8 @@ const evmChains = [
   'MONAD',
   'ZKSYNC',
   'BERACHAIN',
+  'SONIC',
+  'ROME',
 ] as const;
 
 type EVMChains = Extract<Types.WalletBlockchain, (typeof evmChains)[number]>;
