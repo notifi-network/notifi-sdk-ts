@@ -57,8 +57,8 @@ export type TooltipEndingLink = {
 };
 
 export const TargetListItem: React.FC<TargetListItemProps> = (props) => {
-  if (isFormTarget(props.target))
-    return <TargetListItemForm {...(props as TargetListItemFromProps)} />;
+  // if (isFormTarget(props.target))
+  //   return <TargetListItemForm {...(props as TargetListItemFromProps)} />;
 
   if (isToggleTarget(props.target)) {
     return <TargetListItemToggle {...(props as TargetListItemToggleProps)} />;

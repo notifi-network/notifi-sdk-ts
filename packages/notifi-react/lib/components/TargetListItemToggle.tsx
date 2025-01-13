@@ -48,6 +48,11 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
           (toggleTargetData.data as Types.SlackChannelTargetFragmentFragment)
             .slackChannelName ?? null
         );
+      case 'telegram':
+        return (
+          (toggleTargetData.data as Types.TelegramTargetFragmentFragment)
+            .telegramId ?? null
+        );
       default:
         return null;
     }
@@ -64,6 +69,7 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
       )}
     >
       {/* ICON/ LABEL / USERNAME */}
+      {/* {JSON.stringify(props.targetInfo)} */}
       <div className="notifi-target-list-item-content">
         <div
           className={clsx(
@@ -86,6 +92,7 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
             {userName ? `@${userName}` : <label>{props.label}</label>}
 
             {/* TARGET SIGNUP CTA */}
+
             {props.targetInfo &&
             props.targetInfo.infoPrompt.message === 'Verified' ? (
               <TargetCta
@@ -101,7 +108,6 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
           <TargetCta {...signupCtaProps} />
         ) : null}
       </div>
-
       {/* TARGET STATUS MESSAGE */}
       {classifiedTargetListItemMessage ? (
         <div
@@ -130,7 +136,6 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
           )}
         </div>
       ) : null}
-
       {/* REMOVE TARGET CTA */}
       {isRemoveButtonAvailable ? (
         <TargetCta

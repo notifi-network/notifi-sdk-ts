@@ -45,6 +45,13 @@ export const useTargetListItem = (input: {
     targetData[input.target];
     const targetInfo = targetInfoPrompts[input.target];
     switch (input.target) {
+      // TODO: Refactor
+      case 'telegram':
+        return (
+          !!targetInfo &&
+          targetInfo.infoPrompt.message !== 'Set Up' &&
+          isTargetRemovable
+        );
       case 'discord':
         return (
           !!targetInfo &&
@@ -80,7 +87,7 @@ export const useTargetListItem = (input: {
 
     switch (input.target) {
       case 'email':
-      case 'telegram':
+        // case 'telegram':
         return {
           ...defaultCtaProps,
           type: 'button',
@@ -93,6 +100,37 @@ export const useTargetListItem = (input: {
                 target: target,
                 value: targetInputs[target].value,
               });
+              //NOTE: Wait for 1 second for target context state change
+              await new Promise((resolve) => setTimeout(resolve, 1000));
+            },
+          },
+        };
+      case 'telegram':
+        return {
+          ...defaultCtaProps,
+          isCtaDisabled: !targetData[input.target].isAvailable,
+          type: 'button',
+          targetInfoPrompt: {
+            type: 'cta',
+            message: 'Set Up',
+            onClick: async () => {
+              // TODO: Remove this after adding documentation: 1. single target subscription always sync with with targetData. 2. targetInput & multiple target subscription.
+              // await updateTargetInputs(props.target, true);
+              const targetGroup = await renewTargetGroup({
+                target: input.target as ToggleTarget,
+                value: true,
+              });
+              console.log({ input });
+
+              if (
+                targetGroup?.telegramTargets?.[0]?.confirmationUrl &&
+                !targetGroup?.discordTargets?.[0]?.isConfirmed
+              ) {
+                window.open(
+                  targetGroup?.telegramTargets?.[0]?.confirmationUrl,
+                  '_blank',
+                );
+              }
               //NOTE: Wait for 1 second for target context state change
               await new Promise((resolve) => setTimeout(resolve, 1000));
             },
