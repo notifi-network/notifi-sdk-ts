@@ -89,7 +89,7 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
               props.classNames?.targetId,
             )}
           >
-            {userName ? `@${userName}` : <label>{props.label}</label>}
+            {userName ? `${userName}` : <label>{props.label}</label>}
 
             {/* TARGET SIGNUP CTA */}
 

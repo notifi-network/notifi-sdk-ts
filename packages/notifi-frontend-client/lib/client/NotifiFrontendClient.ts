@@ -1029,7 +1029,6 @@ export class NotifiFrontendClient {
       this._service.getTargetGroups({}),
       ensureEmail(this._service, emailAddress),
       ensureSms(this._service, phoneNumber),
-      // ensureTelegram(this._service, telegramId),
       renewTelegram(this._service, telegramId),
       ensureWebhook(this._service, webhook),
       ensureDiscord(this._service, discordId),

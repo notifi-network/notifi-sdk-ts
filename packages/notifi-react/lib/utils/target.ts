@@ -62,7 +62,6 @@ export const hasValidTargetMoreThan = (
       if (typeof target === 'object') {
         // NOTE: toggleTargets are considered valid only if they are confirmed
         if (key === 'discord' || key === 'wallet' || key === 'telegram') {
-          console.log({ key, data: targetData[key].data });
           return !!targetData[key].data?.isConfirmed;
         }
         if (key === 'slack') {

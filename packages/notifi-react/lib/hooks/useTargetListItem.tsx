@@ -120,11 +120,9 @@ export const useTargetListItem = (input: {
                 target: input.target as ToggleTarget,
                 value: true,
               });
-              console.log({ input });
-
               if (
                 targetGroup?.telegramTargets?.[0]?.confirmationUrl &&
-                !targetGroup?.discordTargets?.[0]?.isConfirmed
+                !targetGroup?.telegramTargets?.[0]?.isConfirmed
               ) {
                 window.open(
                   targetGroup?.telegramTargets?.[0]?.confirmationUrl,

@@ -321,9 +321,9 @@ export const NotifiTargetContextProvider: FC<
     //   setIsChangingTargets((prev) => ({ ...prev, telegram: false }));
     // }
     if (targetData.telegram.useTelegram !== targetInputs.telegram) {
-      setIsChangingTargets((prev) => ({ ...prev, discord: true }));
+      setIsChangingTargets((prev) => ({ ...prev, telegram: true }));
     } else {
-      setIsChangingTargets((prev) => ({ ...prev, discord: false }));
+      setIsChangingTargets((prev) => ({ ...prev, telegram: false }));
     }
     if (targetData.phoneNumber !== targetInputs.phoneNumber.value) {
       setIsChangingTargets((prev) => ({ ...prev, phoneNumber: true }));
@@ -370,14 +370,15 @@ export const NotifiTargetContextProvider: FC<
     const {
       email: emailInfoPrompt,
       phoneNumber: phoneNumberInfoPrompt,
-      telegram: telegramInfoPrompt,
+      // telegram: telegramInfoPrompt,
     } = targetInfoPrompts;
 
     const unConfirmedTargets = {
       email: emailInfoPrompt?.infoPrompt.type === 'cta',
       phoneNumber: phoneNumberInfoPrompt?.infoPrompt.type === 'cta',
-      telegram: telegramInfoPrompt?.infoPrompt.type === 'cta',
+      // telegram: telegramInfoPrompt?.infoPrompt.type === 'cta',
       // TOGGLE TARGET will never be unverified (Unverified means the target is not confirmed)
+      telegram: false,
       slack: false,
       wallet: false,
       discord: false,
@@ -552,7 +553,10 @@ export const NotifiTargetContextProvider: FC<
       const smsTarget = targetGroup?.smsTargets?.[0];
       refreshSmsTarget(smsTarget);
 
-      const telegramTarget = targetGroup?.telegramTargets?.[0];
+      // const telegramTarget = targetGroup?.telegramTargets?.[0];
+      const telegramTarget = targetGroup?.telegramTargets?.find(
+        (it) => it?.name === 'Default',
+      );
       refreshTelegramTarget(telegramTarget);
 
       const discordTarget = targetGroup?.discordTargets?.find(
