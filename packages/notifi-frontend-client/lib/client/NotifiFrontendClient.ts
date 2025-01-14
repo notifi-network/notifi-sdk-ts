@@ -45,9 +45,10 @@ import {
   ensureEmail,
   ensureSlack,
   ensureSms,
-  ensureTelegram,
+  ensureTelegram, // ensureTelegramDefault,
   ensureWeb3,
   ensureWebhook,
+  renewTelegram,
 } from './ensureTarget';
 
 type HexString = `0x${string}`;
@@ -912,6 +913,7 @@ export class NotifiFrontendClient {
     return results;
   }
 
+  /** @deprecated Use renewTargetGroup instead */
   async ensureTargetGroup({
     name,
     emailAddress,
@@ -945,6 +947,92 @@ export class NotifiFrontendClient {
       ensureEmail(this._service, emailAddress),
       ensureSms(this._service, phoneNumber),
       ensureTelegram(this._service, telegramId),
+      ensureWebhook(this._service, webhook),
+      ensureDiscord(this._service, discordId),
+      ensureSlack(this._service, slackId),
+      ensureWeb3(this._service, walletId),
+    ]);
+
+    const emailTargetIds = emailTargetId === undefined ? [] : [emailTargetId];
+    const smsTargetIds = smsTargetId === undefined ? [] : [smsTargetId];
+    const telegramTargetIds =
+      telegramTargetId === undefined ? [] : [telegramTargetId];
+    const webhookTargetIds =
+      webhookTargetId === undefined ? [] : [webhookTargetId];
+    const discordTargetIds =
+      discordTargetId === undefined ? [] : [discordTargetId];
+    const slackChannelTargetIds =
+      slackTargetId === undefined ? [] : [slackTargetId];
+    const web3TargetIds = web3TargetId === undefined ? [] : [web3TargetId];
+
+    const existing = targetGroupsQuery.targetGroup?.find(
+      (it) => it?.name === name,
+    );
+    if (existing !== undefined) {
+      return this._updateTargetGroup({
+        existing,
+        emailTargetIds,
+        smsTargetIds,
+        telegramTargetIds,
+        webhookTargetIds,
+        discordTargetIds,
+        slackChannelTargetIds,
+        web3TargetIds,
+      });
+    }
+
+    const createMutation = await this._service.createTargetGroup({
+      name,
+      emailTargetIds,
+      smsTargetIds,
+      telegramTargetIds,
+      webhookTargetIds,
+      discordTargetIds,
+      slackChannelTargetIds,
+      web3TargetIds,
+    });
+
+    if (createMutation.createTargetGroup === undefined) {
+      throw new Error('Failed to create target group');
+    }
+
+    return createMutation.createTargetGroup;
+  }
+
+  async renewTargetGroup({
+    name,
+    emailAddress,
+    phoneNumber,
+    telegramId,
+    webhook,
+    discordId,
+    slackId,
+    walletId,
+  }: Readonly<{
+    name: string;
+    emailAddress?: string;
+    phoneNumber?: string;
+    telegramId?: string;
+    webhook?: EnsureWebhookParams;
+    discordId?: string;
+    slackId?: string;
+    walletId?: string;
+  }>): Promise<Types.TargetGroupFragmentFragment> {
+    const [
+      targetGroupsQuery,
+      emailTargetId,
+      smsTargetId,
+      telegramTargetId,
+      webhookTargetId,
+      discordTargetId,
+      slackTargetId,
+      web3TargetId,
+    ] = await Promise.all([
+      this._service.getTargetGroups({}),
+      ensureEmail(this._service, emailAddress),
+      ensureSms(this._service, phoneNumber),
+      // ensureTelegram(this._service, telegramId),
+      renewTelegram(this._service, telegramId),
       ensureWebhook(this._service, webhook),
       ensureDiscord(this._service, discordId),
       ensureSlack(this._service, slackId),
