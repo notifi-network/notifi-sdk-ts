@@ -34,6 +34,8 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
       : 'notifi-ftu-target-list-main',
   );
   const toggleTargetData = targetData[props.target];
+  const isVerified =
+    !!props.targetInfo && isTargetVerified(props.targetInfo?.infoPrompt);
 
   const userName = React.useMemo(() => {
     if (!toggleTargetData.data) return null;
@@ -64,8 +66,7 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
         'notifi-target-list-item',
         props.classNames?.targetListItem,
         // NOTE: only used when we want to adopt different style for verified items
-        isTargetVerified(props.targetInfo?.infoPrompt) &&
-          props.classNames?.targetListVerifiedItem,
+        isVerified && props.classNames?.targetListVerifiedItem,
       )}
     >
       {/* ICON/ LABEL / USERNAME */}
@@ -89,24 +90,21 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
               props.classNames?.targetId,
             )}
           >
-            {userName ? `${userName}` : <label>{props.label}</label>}
+            {isVerified ? `${userName}` : <label>{props.label}</label>}
 
             {/* TARGET SIGNUP CTA */}
 
-            {props.targetInfo &&
-            props.targetInfo.infoPrompt.message === 'Verified' ? (
+            {isVerified ? (
               <TargetCta
                 type={props.targetCtaType}
-                targetInfoPrompt={props.targetInfo.infoPrompt}
+                targetInfoPrompt={props.targetInfo!.infoPrompt}
                 classNames={props.classNames?.TargetCta}
                 isCtaDisabled={!targetData[props.target].isAvailable}
               />
             ) : null}
           </div>
         </div>
-        {props.targetInfo?.infoPrompt.message !== 'Verified' ? (
-          <TargetCta {...signupCtaProps} />
-        ) : null}
+        {!isVerified ? <TargetCta {...signupCtaProps} /> : null}
       </div>
       {/* TARGET STATUS MESSAGE */}
       {classifiedTargetListItemMessage ? (

@@ -90,7 +90,10 @@ export const isTargetCta = (
 export const isTargetVerified = (
   targetInfoPrompt: TargetInfoPrompt | undefined,
 ): targetInfoPrompt is MessageInfo => {
-  return targetInfoPrompt?.type === 'message';
+  return (
+    targetInfoPrompt?.type === 'message' &&
+    targetInfoPrompt.message === 'Verified'
+  );
 };
 
 export const isFormTarget = (target: Target): target is FormTarget => {
