@@ -621,7 +621,9 @@ export class NotifiFrontendClient {
         case 'BINANCE':
         case 'OPTIMISM':
         case 'ZKSYNC':
-        case 'SOLANA': {
+        case 'SOLANA':
+        case 'ROME':
+        case 'SONIC': {
           const result = await this._service.logInFromDapp({
             walletBlockchain,
             walletPublicKey: this._configuration.walletPublicKey,
