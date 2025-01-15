@@ -35,6 +35,7 @@ export type TargetDocument = {
   targetData: TargetData;
 };
 
+// TODO: refactor ex. formTargets = [email, phoneNumber]; toggleTargets = [discord, slack, telegram, wallet];
 export type Target =
   | 'email'
   | 'phoneNumber'
@@ -80,10 +81,10 @@ export type MessageInfo = {
 export type TargetData = {
   email: string;
   phoneNumber: string;
-  // telegram: string;
   telegram: {
     useTelegram: boolean;
     data?: Types.TelegramTargetFragmentFragment;
+    // NOTE: available by default
     isAvailable: boolean;
   };
   discord: {
@@ -128,11 +129,7 @@ type TargetRenewArgs = FormTargetRenewArgs | ToggleTargetRenewArgs;
 const isFormTargetRenewArgs = (
   args: TargetRenewArgs,
 ): args is FormTargetRenewArgs => {
-  return (
-    args.target === 'email' ||
-    // args.target === 'telegram' ||
-    args.target === 'phoneNumber'
-  );
+  return args.target === 'email' || args.target === 'phoneNumber';
 };
 
 const isToggleTargetRenewArgs = (
@@ -199,7 +196,6 @@ export const NotifiTargetContextProvider: FC<
   const [targetData, setTargetData] = useState<TargetData>({
     email: '',
     phoneNumber: '',
-    // telegram: '',
     telegram: {
       useTelegram: false,
       isAvailable: toggleTargetAvailability?.telegram ?? true,
@@ -240,10 +236,6 @@ export const NotifiTargetContextProvider: FC<
     phoneNumber: isValidPhoneNumber(targetInputs.phoneNumber.value)
       ? targetInputs.phoneNumber.value
       : undefined,
-    // telegramId:
-    //   targetInputs.telegram.value === ''
-    //     ? undefined
-    //     : formatTelegramForSubscription(targetInputs.telegram.value),
     telegramId: targetInputs.telegram ? 'Default' : undefined,
     discordId: targetInputs.discord ? 'Default' : undefined,
     slackId: targetInputs.slack ? 'Default' : undefined,
@@ -315,11 +307,6 @@ export const NotifiTargetContextProvider: FC<
     } else {
       setIsChangingTargets((prev) => ({ ...prev, email: false }));
     }
-    // if (targetData.telegram !== targetInputs.telegram.value) {
-    //   setIsChangingTargets((prev) => ({ ...prev, telegram: true }));
-    // } else {
-    //   setIsChangingTargets((prev) => ({ ...prev, telegram: false }));
-    // }
     if (targetData.telegram.useTelegram !== targetInputs.telegram) {
       setIsChangingTargets((prev) => ({ ...prev, telegram: true }));
     } else {
@@ -376,7 +363,6 @@ export const NotifiTargetContextProvider: FC<
     const unConfirmedTargets = {
       email: emailInfoPrompt?.infoPrompt.type === 'cta',
       phoneNumber: phoneNumberInfoPrompt?.infoPrompt.type === 'cta',
-      // telegram: telegramInfoPrompt?.infoPrompt.type === 'cta',
       // TOGGLE TARGET will never be unverified (Unverified means the target is not confirmed)
       telegram: false,
       slack: false,
@@ -420,7 +406,6 @@ export const NotifiTargetContextProvider: FC<
           phoneNumber: !targetData.phoneNumber
             ? undefined
             : targetData.phoneNumber,
-          // telegramId: !targetData.telegram ? undefined : targetData.telegram,
           telegramId: !targetData.telegram.useTelegram ? 'Default' : undefined,
           discordId: targetData.discord.useDiscord ? 'Default' : undefined,
           slackId: targetData.slack.useSlack ? 'Default' : undefined,
@@ -436,12 +421,6 @@ export const NotifiTargetContextProvider: FC<
             formTarget = 'emailAddress';
             formValue = value === '' ? undefined : value;
           }
-
-          // if (target === 'telegram') {
-          //   formTarget = 'telegramId';
-          //   formValue =
-          //     value === '' ? undefined : formatTelegramForSubscription(value);
-          // }
 
           if (target === 'phoneNumber') {
             formTarget = target;
@@ -462,27 +441,24 @@ export const NotifiTargetContextProvider: FC<
       }
 
       setIsLoading(true);
-      return (
-        frontendClient
-          // .ensureTargetGroup(data)
-          .renewTargetGroup(data)
-          .then((_result) => {
-            frontendClient
-              .fetchFusionData()
-              .then((data) => {
-                refreshTargetDocument(data);
-                setError(null);
-              })
-              .catch((e) => setError(e as Error))
-              .finally(() => setIsLoading(false));
-            return _result;
-          })
-          .catch((e) => {
-            setError(e as Error);
-            return null;
-          })
-          .finally(() => setIsLoading(false))
-      );
+      return frontendClient
+        .renewTargetGroup(data)
+        .then((_result) => {
+          frontendClient
+            .fetchFusionData()
+            .then((data) => {
+              refreshTargetDocument(data);
+              setError(null);
+            })
+            .catch((e) => setError(e as Error))
+            .finally(() => setIsLoading(false));
+          return _result;
+        })
+        .catch((e) => {
+          setError(e as Error);
+          return null;
+        })
+        .finally(() => setIsLoading(false));
     },
     [frontendClient, targetGroupToBeSaved, targetData],
   );
@@ -527,11 +503,6 @@ export const NotifiTargetContextProvider: FC<
           value:
             targetGroup?.smsTargets?.[0]?.phoneNumber ?? prev.phoneNumber.value,
         },
-        // telegram: {
-        //   value:
-        //     targetGroup?.telegramTargets?.[0]?.telegramId ??
-        //     prev.telegram.value,
-        // },
         telegram: !!targetGroup?.telegramTargets?.find(
           (it) => it?.name === 'Default',
         ),
@@ -553,7 +524,6 @@ export const NotifiTargetContextProvider: FC<
       const smsTarget = targetGroup?.smsTargets?.[0];
       refreshSmsTarget(smsTarget);
 
-      // const telegramTarget = targetGroup?.telegramTargets?.[0];
       const telegramTarget = targetGroup?.telegramTargets?.find(
         (it) => it?.name === 'Default',
       );
@@ -649,39 +619,6 @@ export const NotifiTargetContextProvider: FC<
 
   const refreshTelegramTarget = useCallback(
     async (telegramTarget?: Types.TelegramTargetFragmentFragment) => {
-      // setTargetData((prev) => ({
-      //   ...prev,
-      //   telegram: telegramTarget?.telegramId ?? '',
-      // }));
-      // if (telegramTarget) {
-      //   switch (telegramTarget.isConfirmed) {
-      //     case true:
-      //       updateTargetInfoPrompt('telegram', {
-      //         type: 'message',
-      //         message: 'Verified',
-      //       });
-      //       break;
-      //     case false:
-      //       updateTargetInfoPrompt('telegram', {
-      //         type: 'cta',
-      //         message: 'Verify',
-      //         onClick: () => {
-      //           if (!telegramTarget?.confirmationUrl) {
-      //             return;
-      //           }
-      //           window.open(telegramTarget?.confirmationUrl);
-      //         },
-      //       });
-      //       break;
-      //     default:
-      //       updateTargetInfoPrompt('telegram', {
-      //         type: 'error',
-      //         message: 'ERROR: Unexpected telegram state',
-      //       });
-      //   }
-      // } else {
-      //   updateTargetInfoPrompt('telegram', null);
-      // }
       // TODO: Refactor - extract telegram target not exist case
       if (!!telegramTarget && !telegramTarget.isConfirmed) {
         updateTargetInfoPrompt('telegram', {

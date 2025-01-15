@@ -45,7 +45,7 @@ export const useTargetListItem = (input: {
     targetData[input.target];
     const targetInfo = targetInfoPrompts[input.target];
     switch (input.target) {
-      // TODO: Refactor
+      // TODO: Refactor (remove redundant code)
       case 'telegram':
         return (
           !!targetInfo &&
@@ -76,6 +76,7 @@ export const useTargetListItem = (input: {
   }, [input.target, targetData, cardConfig, targetInfoPrompts]);
 
   const signupCtaProps: TargetCtaProps = React.useMemo(() => {
+    // TODO: Refactor (remove redundant code)
     const defaultCtaProps: TargetCtaProps = {
       type: 'button',
       targetInfoPrompt: {
@@ -87,7 +88,6 @@ export const useTargetListItem = (input: {
 
     switch (input.target) {
       case 'email':
-        // case 'telegram':
         return {
           ...defaultCtaProps,
           type: 'button',

@@ -46,17 +46,13 @@ export const TargetInputField: React.FC<TargetInputFieldProps> = (props) => {
         return targetInputs.email;
       case 'phoneNumber':
         return targetInputs.phoneNumber;
-      case 'telegram':
-        return targetInputs.telegram;
     }
   }, [props.targetType, targetInputs]);
 
   const inputPlaceholder =
     (props.copy?.placeholder ?? props.targetType === 'email')
       ? defaultCopy.inputFields.email
-      : props.targetType === 'phoneNumber'
-        ? defaultCopy.inputFields.phoneNumber
-        : defaultCopy.inputFields.telegram;
+      : defaultCopy.inputFields.phoneNumber;
 
   const isTargetValid = (targetInput: string) => {
     if (targetInput === '' || !props.validateRegex) {

@@ -11,14 +11,6 @@ import {
   ToggleTarget,
 } from '../context';
 
-// TODO: Deprecate this method
-export const formatTelegramForSubscription = (telegramId: string) => {
-  if (telegramId.startsWith('@')) {
-    return telegramId.slice(1);
-  }
-  return telegramId;
-};
-
 export const reformatSignatureForWalletTarget = (
   signature: Uint8Array | string,
 ) => {
@@ -124,8 +116,6 @@ export const getTargetValidateRegex = (
   switch (target) {
     case 'email':
       return new RegExp('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$');
-    // case 'telegram':
-    //   return new RegExp('.{5,}');
     case 'phoneNumber':
       return undefined;
     default:
