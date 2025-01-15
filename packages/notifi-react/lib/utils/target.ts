@@ -11,6 +11,7 @@ import {
   ToggleTarget,
 } from '../context';
 
+// TODO: Deprecate this method
 export const formatTelegramForSubscription = (telegramId: string) => {
   if (telegramId.startsWith('@')) {
     return telegramId.slice(1);
@@ -60,7 +61,7 @@ export const hasValidTargetMoreThan = (
 
       if (typeof target === 'object') {
         // NOTE: toggleTargets are considered valid only if they are confirmed
-        if (key === 'discord' || key === 'wallet') {
+        if (key === 'discord' || key === 'wallet' || key === 'telegram') {
           return !!targetData[key].data?.isConfirmed;
         }
         if (key === 'slack') {
@@ -89,16 +90,24 @@ export const isTargetCta = (
 export const isTargetVerified = (
   targetInfoPrompt: TargetInfoPrompt | undefined,
 ): targetInfoPrompt is MessageInfo => {
-  return targetInfoPrompt?.type === 'message';
+  return (
+    targetInfoPrompt?.type === 'message' &&
+    targetInfoPrompt.message === 'Verified'
+  );
 };
 
 export const isFormTarget = (target: Target): target is FormTarget => {
-  const supportedFormTargets: Target[] = ['email', 'phoneNumber', 'telegram'];
+  const supportedFormTargets: Target[] = ['email', 'phoneNumber'];
   return supportedFormTargets.includes(target);
 };
 
 export const isToggleTarget = (target: Target): target is ToggleTarget => {
-  const supportedToggleTargets: Target[] = ['discord', 'slack', 'wallet'];
+  const supportedToggleTargets: Target[] = [
+    'discord',
+    'slack',
+    'wallet',
+    'telegram',
+  ];
   return supportedToggleTargets.includes(target);
 };
 
@@ -110,13 +119,13 @@ export const getWalletTargetSignMessage = (
   `Coinbase Wallet Messaging subscribe\nAddress: ${address}\nPartner Address: ${senderAddress}\nNonce: ${nonce}`;
 
 export const getTargetValidateRegex = (
-  target: Extract<Target, 'email' | 'telegram' | 'phoneNumber'>,
+  target: Extract<Target, 'email' | 'phoneNumber'>,
 ) => {
   switch (target) {
     case 'email':
       return new RegExp('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$');
-    case 'telegram':
-      return new RegExp('.{5,}');
+    // case 'telegram':
+    //   return new RegExp('.{5,}');
     case 'phoneNumber':
       return undefined;
     default:
