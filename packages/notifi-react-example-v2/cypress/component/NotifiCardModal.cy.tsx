@@ -118,7 +118,7 @@ describe('NotifiCardModal First Time User Test', () => {
       cy.wait('@gqlUpdateUserSettingsMutation'); // --> Update FTU stage to land on FtuTargetEdit.tsx
 
       // #2 - FTU Target List view (FtuTargetList.tsx)
-      //   * Check wether all active contact info are displayed
+      //   * Check wether all active contact info are correctly rendered
       const enabledContacts = objectKeys(cardConfig.contactInfo).filter(
         (contact) => cardConfig.contactInfo[contact].active,
       );
@@ -133,11 +133,7 @@ describe('NotifiCardModal First Time User Test', () => {
         .should('be.disabled');
 
       for (const contact of enabledContacts) {
-        if (
-          contact === 'email' ||
-          contact === 'sms' ||
-          contact === 'telegram'
-        ) {
+        if (contact === 'email' || contact === 'sms') {
           cy.get(
             `[data-cy="notifi-target-input-${
               contact === 'sms' ? 'phoneNumber' : contact
