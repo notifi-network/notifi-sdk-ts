@@ -12,7 +12,6 @@ import {
   NotifiEnvironmentConfiguration,
   NotifiFrontendConfiguration,
   envUrl,
-  isEvmChain,
   newFrontendConfig,
 } from '../configuration';
 import {
@@ -21,6 +20,7 @@ import {
   createLocalForageStorageDriver,
 } from '../storage';
 import { NotifiFrontendClient, UserParams } from './NotifiFrontendClient';
+import { isEvmBlockchain } from './blockchains';
 
 export const newNotifiStorage = (config: NotifiFrontendConfiguration) => {
   const driver =
@@ -102,7 +102,7 @@ export const instantiateFrontendClient = (
       tenantId,
       env,
       walletBlockchain: params.walletBlockchain,
-      walletPublicKey: isEvmChain(params.walletBlockchain)
+      walletPublicKey: isEvmBlockchain(params.walletBlockchain)
         ? params.walletPublicKey.toLowerCase()
         : params.walletPublicKey,
       storageOption,

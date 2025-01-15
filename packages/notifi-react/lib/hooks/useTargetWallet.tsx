@@ -1,5 +1,11 @@
+import {
+  EvmUserParams,
+  Uint8SignMessageFunction,
+  WalletWithSignParams,
+} from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
 import { useClient } from '@xmtp/react-sdk';
+import { isUsingEvmBlockchain } from 'notifi-frontend-client/lib/client/blockchains';
 import React from 'react';
 
 import { useNotifiFrontendClientContext } from '../context';
@@ -14,9 +20,19 @@ export const useTargetWallet = () => {
   const [error, setError] = React.useState<Error | null>(null);
   const { frontendClient, walletWithSignParams } =
     useNotifiFrontendClientContext();
+  const authMethod =
+    walletWithSignParams.walletBlockchain === 'OFF_CHAIN'
+      ? walletWithSignParams.signIn
+      : walletWithSignParams.signMessage;
   const xmtp = useClient();
+
   const getSignature = React.useCallback(
     async (message: Uint8Array | string) => {
+      if (walletWithSignParams.walletBlockchain === 'OFF_CHAIN') {
+        setError(Error('OFF_CHAIN is not supported'));
+        return 'Invalid signature: OFF_CHAIN is not supported';
+      }
+
       let signature: Uint8Array | string = '';
 
       if (typeof message === 'string') {
@@ -24,54 +40,23 @@ export const useTargetWallet = () => {
         message = encoder.encode(message);
       }
 
-      // TODO: Add logic for rest of the chains
-      switch (walletWithSignParams.walletBlockchain) {
-        case 'AVALANCHE':
-        case 'ETHEREUM':
-        case 'POLYGON':
-        case 'ARBITRUM':
-        case 'BINANCE':
-        case 'ELYS':
-        case 'NEUTRON':
-        case 'ARCHWAY':
-        case 'AXELAR':
-        case 'BERACHAIN':
-        case 'OPTIMISM':
-        case 'ZKSYNC':
-        case 'INJECTIVE':
-        case 'BASE':
-        case 'BLAST':
-        case 'CELO':
-        case 'MANTLE':
-        case 'LINEA':
-        case 'SCROLL':
-        case 'MANTA':
-        case 'EVMOS':
-        case 'MONAD':
-        case 'AGORIC':
-        case 'ORAI':
-        case 'KAVA':
-        case 'CELESTIA':
-        case 'COSMOS':
-        case 'DYMENSION':
-        case 'DYDX':
-        case 'XION':
-        case 'NEAR':
-        case 'SUI':
-          signature = await walletWithSignParams.signMessage(message);
-          break;
-        default: {
-          setError(Error('This chain is not supported'));
-          throw Error('This chain is not supported');
-        }
+      if (isUsingEvmBlockchain(walletWithSignParams)) {
+        signature = await walletWithSignParams.signMessage(message);
+      } else {
+        setError(Error('This chain is not supported'));
+        console.error('This chain is not supported');
       }
       return reformatSignatureForWalletTarget(signature);
     },
-    [walletWithSignParams.signMessage],
+    [authMethod],
   );
 
   const xmtpXip42Impl = React.useCallback(
     async (senderAddress: string) => {
+      if (walletWithSignParams.walletBlockchain === 'OFF_CHAIN') {
+        setError(Error('OFF_CHAIN is not supported'));
+        return 'Invalid implementation: OFF_CHAIN is not supported';
+      }
       type XmtpInitOption = (typeof xmtp.initialize extends (a: infer U) => void
         ? U
         : never)['options'];
@@ -107,7 +92,7 @@ export const useTargetWallet = () => {
 
       return conversation.topic.split('/')[3];
     },
-    [walletWithSignParams.walletPublicKey, xmtp, getSignature],
+    [authMethod, xmtp, getSignature],
   );
 
   const signCoinbaseSignature = React.useCallback(
@@ -115,6 +100,10 @@ export const useTargetWallet = () => {
       web3TargetId: Types.Web3Target['id'],
       senderAddress: string,
     ): Promise<Types.Web3TargetFragmentFragment | undefined> => {
+      if (walletWithSignParams.walletBlockchain === 'OFF_CHAIN') {
+        setError(Error('OFF_CHAIN is not supported'));
+        return;
+      }
       setIsLoading(true);
       try {
         const conversationTopic = await xmtpXip42Impl(senderAddress);
@@ -171,12 +160,7 @@ export const useTargetWallet = () => {
         setIsLoading(false);
       }
     },
-    [
-      walletWithSignParams.walletPublicKey,
-      frontendClient,
-      xmtpXip42Impl,
-      getSignature,
-    ],
+    [authMethod, frontendClient, xmtpXip42Impl, getSignature],
   );
 
   return {
@@ -216,3 +200,18 @@ export const useTargetWallet = () => {
   //   });
   // };
 };
+
+// Utils
+
+/**
+ * Extracts the EvmWalletWithSignParams from WalletWithSignParams
+ * NOTE: We do not want to expose WalletSignParams to public in notifi-frontend-client
+ */
+type EvmWalletWithSignParams = ExtractEvmWallet<WalletWithSignParams>;
+
+type ExtractEvmWallet<T> = T extends Readonly<{
+  signMessage: Uint8SignMessageFunction;
+}> &
+  EvmUserParams
+  ? T
+  : never;
