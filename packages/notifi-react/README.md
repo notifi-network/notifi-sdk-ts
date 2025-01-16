@@ -125,108 +125,93 @@ const NotifiCard = () => {
 
 <br/><br/>
 
-# Advanced Customized Implementation
+# Customize NotifiCardModal component
 
-The style of the `NotifiCardModal` is fully customizable. There are two approaches to customize the card style:
-<br/><br/>
+`NotifiCardModal` is fully customizable using **global CSS overrides** and **optional properties**.
 
-## Customizing the Card Styling
+<br/>
 
-#### **Global CSS override (_Recommended_)**
+## Global CSS overrides
 
 By overriding the default CSS classes, we can style the elements in the card.
 [Default CSS Classes are found here.](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-react/lib/style)
 
-_Example_
-
-```tsx
-import '@/styles/notifi/index.css';
-```
-
-#### **Custom CSS class**
-
-You can pass in custom CSS classes to the `NotifiCardModal` component.
-
-> **NOTE** Before implementing, please review the `classNames` property structure in the `NotifiCardModal` component.
-> View the `classNames` [structure here.](https://github.com/notifi-network/notifi-sdk-ts/blob/main/packages/notifi-react/lib/components/NotifiCardModal.tsx#L39)
+Before overriding the CSS classes, we need to adopt the default style of the `NotifiCardModal` component. To do this, we need to import the default CSS file from the `@notifi-network/notifi-react` package like below.
 
 _Example_
 
 ```tsx
-const YourComponent = () => {
-  // ...
-  const customClassName: NotifiCardModalProps['classNames'] = {
-    container: 'custom-card-modal-container',
-  };
-
-  return (
-    <>
-      {/*  ... */}
-      <NotifiCardModal classNames={customClassName} />
-      {/*  ... */}
-    </>
-  );
-};
+import '@notifi-network/notifi-react/dist/index.css';
 ```
+
+> - Make sure this import is placed at the top level of the component file. [complete example](https://github.com/notifi-network/notifi-sdk-ts/blob/97280b625ef133811d176fbb8add73f6b3f7bd44/packages/notifi-react-example-v2/src/components/OidcGoogle.tsx#L9)
+>   Find the overrideable CSS classes [here](https://github.com/notifi-network/notifi-sdk-ts/tree/97280b625ef133811d176fbb8add73f6b3f7bd44/packages/notifi-react/lib/style)
 
 <br/><br/>
 
-## Customizing the Card Copy
+## Other Optional Properties
 
-The copy text in the `NotifiCardModal` is fully customizable by inserting the custom copy text object to the `NotifiCardModal` component.
+`NotifiCardModal` component provides the following additional optional properties to customize the card even further:
 
-**Common Example 1: Customizing the destination separator**
+- [darkMode](#adjusting-card-color-scheme---darkmode)
+- [globalCtas](#additional-optional-cta-call-to-action---globalctas)
+- [copy](#customizing-the-card-copy---copy)
+- [classNames](#embedding-custom-css-classes-in-components---classnames)
 
-Destination (Target) input separator copy customization as seen below:  
-![](https://i.imgur.com/Rxld99Q.png)
+> Check out the [NotifiCardModalProps type documentation ](https://docs.notifi.network/notifi-sdk-ts/notifi-react/types/NotifiCardModalProps.html) to know more details
 
-> **NOTE** Before implementing, please review the `copy` property structure in the `NotifiCardModal` component.
-> View the `copy` [structure here](https://github.com/notifi-network/notifi-sdk-ts/blob/main/packages/notifi-react/lib/components/NotifiCardModal.tsx#L32)
+<br/>
 
-_Example code_
+#### Adjusting card color scheme - `darkMode`
+
+The `darkMode` property allows you to switch the card color scheme between light and dark mode.
+
+> Default scheme: `light` (light mode)
+
+**Example**
 
 ```tsx
-const YourComponent = () => {
-  // ...
-  const { frontendClientStatus } = useNotifiFrontendClientContext();
-  const customCopy: NotifiCardModalProps['copy'] = {
-    Ftu: {
-      FtuTargetEdit: {
-        TargetInputs: {
-          inputSeparators: {
-            email: 'OR',
-            sms: 'OR',
-            telegram: 'OR',
-          },
-        },
-      },
-    },
-    Inbox: {
-      InboxConfigTargetEdit: {
-        TargetInputs: {
-          inputSeparators: {
-            email: 'OR',
-            sms: 'OR',
-            telegram: 'OR',
-          },
-        },
-      },
-    },
-  };
-
-  return (
-    <>
-      {/*  ... */}
-      <NotifiCardModal copy={customCopy} />
-      {/*  ... */}
-    </>
-  );
-};
+<NotifiCardModal darkMode />
 ```
 
-<br/><br/>
+<br/>
 
-**Common Example 2: Customizing the Connect view footer**
+#### Additional optional CTA (Call to Action) - `globalCtas`
+
+The `globalCtas` property allows to add certain supported CTAs to the card. Now it supports `onClose` CTA.
+
+**Example**
+
+```tsx
+// ...
+const [isCardModalOpen, setIsCardModalOpen] = useState(false);
+
+// ...
+
+{
+  isCardModalOpen ? (
+    <NotifiCardModal
+      globalCtas={{ onClose: () => setIsCardModalOpen(false) }}
+    />
+  ) : null;
+}
+```
+
+**NOTE**
+
+The `onClose` function enables the close-icon on the card. We are passing a callback function here to update the local state and close the modal.
+
+![close-icon-preview](https://github.com/user-attachments/assets/79de998f-9807-45cc-a4d7-583e6298d2e7)
+
+<br/>
+
+#### Customizing the card copy - `copy`
+
+The `copy` property allows you to customize the card's default copy.
+
+There are many customizable copy sections in the NotifiCardModal component. Check out the [NotifiCardModalProps type documentation ](https://docs.notifi.network/notifi-sdk-ts/notifi-react/types/NotifiCardModalProps.html) to know more details
+
+**Common Example: Customizing the Connect view footer**
 
 Connect view footer preview as seen below:
 
@@ -273,31 +258,33 @@ const YourComponent = () => {
 
 > - Checkout the example project [codebase](https://github.com/notifi-network/notifi-sdk-ts/blob/main/packages/notifi-react-example-v2/src/app/notifi/components-example/page.tsx)
 
-<br/><br/>
+<br/>
 
-**Common Example 3: Adding the Close Icon on the Card**
+#### Embedding custom CSS classes in components - `classNames`
 
-Close Icon preview as seen below:
+You can pass in custom CSS classes to the `NotifiCardModal` component.
+Check out the `classNames` property in [NotifiCardModalProps type documentation ](https://docs.notifi.network/notifi-sdk-ts/notifi-react/types/NotifiCardModalProps.html) to know the className customizable components.
 
-![close-icon-preview](https://github.com/user-attachments/assets/79de998f-9807-45cc-a4d7-583e6298d2e7)
-
-_Example code_
+_Example_
 
 ```tsx
 const YourComponent = () => {
-  const [isCardModalOpen, setIsCardModalOpen] = React.useState(false);
+  // ...
+  const customClassName: NotifiCardModalProps['classNames'] = {
+    container: 'custom-card-modal-container', // This will add 'custom-card-modal-container' class to the card modal container
+  };
 
   return (
     <>
-      <NotifiCardModal
-        globalCtas={{ onClose: () => setIsCardModalOpen(false) }}
-        // The onClose function enables the close-icon on the card
-        // We are passing a callback function here to update the local state and close the modal
-      />
+      {/*  ... */}
+      <NotifiCardModal classNames={customClassName} />
+      {/*  ... */}
     </>
   );
 };
 ```
+
+<br/><br/>
 
 # Custom Integration
 
