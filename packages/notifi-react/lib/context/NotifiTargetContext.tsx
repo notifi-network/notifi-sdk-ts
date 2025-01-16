@@ -603,7 +603,6 @@ export const NotifiTargetContextProvider: FC<
 
   const refreshTelegramTarget = useCallback(
     async (telegramTarget?: Types.TelegramTargetFragmentFragment) => {
-      // TODO: Refactor - extract telegram target not exist case
       if (!!telegramTarget && !telegramTarget.isConfirmed) {
         updateTargetInfoPrompt('telegram', {
           type: 'cta',

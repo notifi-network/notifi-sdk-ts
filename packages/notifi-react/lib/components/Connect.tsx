@@ -76,7 +76,6 @@ export const Connect: React.FC<ConnectProps> = (props) => {
   );
 
   const topicLists = React.useMemo(() => {
-    // TODO: Move to NotifiTenantConfigContext when somewhere else needs this
     const topicGroupNames: { index: number; value: string }[] = [];
     const topicNames: { index: number; value: string }[] = [];
     fusionEventTopics.forEach((topic, id) => {

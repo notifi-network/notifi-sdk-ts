@@ -575,6 +575,9 @@ export const MyComponent = () => {
 
 - **renewTargetGroup**: A function to update the backend target state according to the targetInputs.
 
+  - **Update single target**: passing `singleTargetRenewArgs` as an argument. **NOTE**: This action does not require updating `targetInputs` manually. `targetInputs` will be updated automatically once `renewTargetGroup` is called successfully.
+  - **Update all targets**: all targets will be updated according to the `targetInputs` state w/o passing any argument.
+
 - **TargetGroupId**: The target group id which is the argument to call `renewTargetGroup` function.
 
 - **targetData**: The target data which is the current state of the targets in the backend.

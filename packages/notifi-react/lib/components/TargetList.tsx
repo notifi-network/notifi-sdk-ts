@@ -38,7 +38,6 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
   const { cardConfig } = useNotifiTenantConfigContext();
 
   const targetListItemArgsList = React.useMemo(() => {
-    // TODO: Move to custom hook when it gets too complex
     const order = [
       'email',
       'phoneNumber',

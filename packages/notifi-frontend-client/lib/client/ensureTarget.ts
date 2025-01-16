@@ -104,31 +104,6 @@ export const ensureSms = ensureTarget(
   (arg: Types.SmsTargetFragmentFragment | undefined) => arg?.phoneNumber,
 );
 
-// TODO: move to deprecated section
-/** @deprecated Use renewTelegram instead */
-export const ensureTelegram = ensureTarget(
-  async (service: Operations.CreateTelegramTargetService, value: string) => {
-    const mutation = await service.createTelegramTarget({
-      name: value.toLowerCase(),
-      value: value.toLowerCase(),
-    });
-
-    const result = mutation.createTelegramTarget;
-    if (result === undefined) {
-      throw new Error('Failed to create telegramTarget');
-    }
-
-    return result;
-  },
-  async (service: Operations.GetTelegramTargetsService) => {
-    const query = await service.getTelegramTargets({});
-    return query.telegramTarget;
-  },
-  (arg: Types.TelegramTargetFragmentFragment | undefined) =>
-    arg?.telegramId?.toLowerCase(),
-  (value) => value.toLowerCase(),
-);
-
 export const renewTelegram = ensureTarget(
   // Create telegram target function
   async (service: Operations.CreateTelegramTargetService, value: string) => {
@@ -277,3 +252,27 @@ export const ensureWebhook = async (
 
   return created.id;
 };
+
+/** @deprecated Use renewTelegram instead */
+export const ensureTelegram = ensureTarget(
+  async (service: Operations.CreateTelegramTargetService, value: string) => {
+    const mutation = await service.createTelegramTarget({
+      name: value.toLowerCase(),
+      value: value.toLowerCase(),
+    });
+
+    const result = mutation.createTelegramTarget;
+    if (result === undefined) {
+      throw new Error('Failed to create telegramTarget');
+    }
+
+    return result;
+  },
+  async (service: Operations.GetTelegramTargetsService) => {
+    const query = await service.getTelegramTargets({});
+    return query.telegramTarget;
+  },
+  (arg: Types.TelegramTargetFragmentFragment | undefined) =>
+    arg?.telegramId?.toLowerCase(),
+  (value) => value.toLowerCase(),
+);
