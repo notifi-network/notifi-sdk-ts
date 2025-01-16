@@ -12,14 +12,6 @@ export const defaultCopy = {
     email: 'Enter your email address',
     phoneNumber: 'Phone Number',
   },
-  inputToggles: {
-    discord: 'Discord DM Bot',
-    slack: 'Slack',
-    wallet: 'Wallet Alerts',
-    discordUnavailable: 'Discord unavailable',
-    slackUnavailable: 'Slack unavailable',
-    walletUnavailable: 'Only available for Coinbase Wallet',
-  },
   ftu: {
     headerTitles: {
       ftuTargetEdit: 'How do you want to be notified?',

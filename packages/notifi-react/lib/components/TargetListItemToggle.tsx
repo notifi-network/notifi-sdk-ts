@@ -70,7 +70,6 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
       )}
     >
       {/* ICON/ LABEL / USERNAME */}
-      {/* {JSON.stringify(props.targetInfo)} */}
       <div className="notifi-target-list-item-content">
         <div
           className={clsx(

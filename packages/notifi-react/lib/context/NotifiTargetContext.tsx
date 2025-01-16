@@ -121,7 +121,6 @@ const isFormTargetRenewArgs = (
   args: TargetRenewArgs,
 ): args is FormTargetRenewArgs => {
   return formTargets.includes(args.target as FormTarget);
-  // return args.target === 'email' || args.target === 'phoneNumber';
 };
 
 const isToggleTargetRenewArgs = (
@@ -390,7 +389,7 @@ export const NotifiTargetContextProvider: FC<
           phoneNumber: !targetData.phoneNumber
             ? undefined
             : targetData.phoneNumber,
-          telegramId: !targetData.telegram.useTelegram ? 'Default' : undefined,
+          telegramId: targetData.telegram.useTelegram ? 'Default' : undefined,
           discordId: targetData.discord.useDiscord ? 'Default' : undefined,
           slackId: targetData.slack.useSlack ? 'Default' : undefined,
           walletId: targetData.wallet.useWallet ? 'Default' : undefined,
@@ -420,7 +419,6 @@ export const NotifiTargetContextProvider: FC<
             ...data,
             [`${target}Id`]: value ? 'Default' : undefined,
           };
-          console.log({ data });
         }
       }
 

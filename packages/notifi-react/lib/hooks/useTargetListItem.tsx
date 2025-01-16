@@ -57,7 +57,10 @@ export const useTargetListItem = (input: {
       targetInfoPrompt: {
         type: 'cta',
         message: 'Signup',
-        onClick: async () => console.log('Default Signup placeHolder'),
+        onClick: async () => {
+          const errorMsg = `ERROR: No signup action defined for target: ${input.target}`;
+          console.error(errorMsg);
+        },
       },
     };
 
