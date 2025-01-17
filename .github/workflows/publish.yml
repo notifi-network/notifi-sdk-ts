@@ -1,4 +1,4 @@
-name: Publish App
+name: Publish App (@notifi-network/notifi-dapp-example)
 
 on:
   push:
@@ -105,7 +105,7 @@ jobs:
         with:
           role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME }}
           aws-region: ${{ vars.AWS_REGION || 'us-west-2' }}
-          role-session-name: elixir-${{ github.event_name }}-${{ github.sha }}
+          role-session-name: notifi-dapp-${{ github.event_name }}-${{ github.sha }}
 
       - name: Build App
         env:
