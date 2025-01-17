@@ -72,13 +72,20 @@ export const TopicOptions = <T extends TopicRowCategory>(
     option.toString(),
   );
 
+  const [optimisticValue, setOptimisticValue] = React.useState<string | null>(
+    null,
+  );
   const selectedOption =
     props.onSelectAction?.actionType === 'updateFilterOptions'
       ? valueToBeSubscribed
-      : subscribedValue;
+      : optimisticValue
+        ? optimisticValue
+        : subscribedValue;
 
-  const selectOrInputValue = (value: string | number) => {
+  const selectOrInputValue = async (value: string | number) => {
     if (isLoadingTopic) return;
+    setOptimisticValue(value.toString());
+
     value = value.toString();
     if (props.onSelectAction?.actionType === 'updateFilterOptions') {
       if (options.includes(value)) {
@@ -87,7 +94,12 @@ export const TopicOptions = <T extends TopicRowCategory>(
       props.onSelectAction?.action(props.userInputParam.name, value);
       return setValueToBeSubscribed(value);
     }
-    renewFilterOptions(value, isTopicGroup ? props.topics : [props.topic]);
+    console.log(2);
+    await renewFilterOptions(
+      value,
+      isTopicGroup ? props.topics : [props.topic],
+    );
+    setOptimisticValue(null);
   };
 
   return (
@@ -116,6 +128,8 @@ export const TopicOptions = <T extends TopicRowCategory>(
               uiType === 'button' ? 'button' : 'radio',
             )}
             onClick={() => {
+              console.log(1);
+              if (customInput !== '') setCustomInput('');
               selectOrInputValue(option);
             }}
           >
