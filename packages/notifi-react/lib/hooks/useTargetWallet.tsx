@@ -1,8 +1,3 @@
-import {
-  EvmUserParams,
-  Uint8SignMessageFunction,
-  WalletWithSignParams,
-} from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
 import { useClient } from '@xmtp/react-sdk';
 import { isUsingEvmBlockchain } from 'notifi-frontend-client/lib/client/blockchains';
@@ -200,18 +195,3 @@ export const useTargetWallet = () => {
   //   });
   // };
 };
-
-// Utils
-
-/**
- * Extracts the EvmWalletWithSignParams from WalletWithSignParams
- * NOTE: We do not want to expose WalletSignParams to public in notifi-frontend-client
- */
-type EvmWalletWithSignParams = ExtractEvmWallet<WalletWithSignParams>;
-
-type ExtractEvmWallet<T> = T extends Readonly<{
-  signMessage: Uint8SignMessageFunction;
-}> &
-  EvmUserParams
-  ? T
-  : never;
