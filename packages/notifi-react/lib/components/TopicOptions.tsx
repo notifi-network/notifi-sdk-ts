@@ -65,7 +65,7 @@ export const TopicOptions = <T extends TopicRowCategory>(
   const { isLoading: isLoadingTopic } = useNotifiTopicContext();
 
   const [valueToBeSubscribed, setValueToBeSubscribed] = React.useState<string>(
-    props.userInputParam.defaultValue.toString(),
+    subscribedValue || props.userInputParam.defaultValue.toString(),
   );
 
   const options = props.userInputParam.options.map((option) =>
@@ -75,35 +75,36 @@ export const TopicOptions = <T extends TopicRowCategory>(
   const [optimisticValue, setOptimisticValue] = React.useState<string | null>(
     null,
   );
-  const selectedOption =
-    props.onSelectAction?.actionType === 'updateFilterOptions'
-      ? valueToBeSubscribed
-      : optimisticValue
-        ? optimisticValue
-        : subscribedValue;
+
+  const selectedOption = valueToBeSubscribed
+    ? valueToBeSubscribed /* Render on UI optimistically as soon as the option is selected  */
+    : subscribedValue;
 
   const selectOrInputValue = async (value: string | number) => {
     if (isLoadingTopic) return;
-    setOptimisticValue(value.toString());
+    /* Render on UI optimistically as soon as the option is selected */
+    setValueToBeSubscribed(value.toString());
 
+    /* CASE1: w/o subscription (for stackable topic options) */
     value = value.toString();
     if (props.onSelectAction?.actionType === 'updateFilterOptions') {
       if (options.includes(value)) {
         setCustomInput('');
       }
-      props.onSelectAction?.action(props.userInputParam.name, value);
-      return setValueToBeSubscribed(value);
+      return props.onSelectAction?.action(props.userInputParam.name, value);
     }
-    console.log(2);
+
+    /* CASE2: instantly subscribe */
     await renewFilterOptions(
       value,
       isTopicGroup ? props.topics : [props.topic],
     );
-    setOptimisticValue(null);
+    setValueToBeSubscribed('');
   };
 
   return (
     <div className={clsx('notifi-topic-options', props.classNames?.container)}>
+      {JSON.stringify(selectedOption)},{JSON.stringify(subscribedValue)}
       {props.userInputParam.description ? (
         <div
           className={clsx(
@@ -114,7 +115,6 @@ export const TopicOptions = <T extends TopicRowCategory>(
           {props.userInputParam.description}
         </div>
       ) : null}
-
       <div
         className={clsx('notifi-topic-options-items', props.classNames?.items)}
       >
