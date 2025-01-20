@@ -34,7 +34,7 @@ export type TopicOptionsPropsBase = {
     customInputPlaceholder?: string;
   };
   preventDefault?: (
-    /* Rather than behavior (instant subscription), expose a callback with "userInputParamName" & selected value args */
+    /* Rather than executing default behavior (instant subscription), expose a callback with "userInputParamName" & selected value args */
     userInputParamName: string,
     selected: string | number,
   ) => void;
@@ -122,7 +122,7 @@ export const TopicOptions = <T extends TopicRowCategory>(
               uiType === 'button' ? 'button' : 'radio',
             )}
             onClick={() => {
-              console.log(1);
+              if (isLoadingTopic) return;
               if (customInput !== '') setCustomInput('');
               selectOrInputValue(option);
             }}
@@ -181,7 +181,11 @@ export const TopicOptions = <T extends TopicRowCategory>(
                   evt.target.value,
                   props.userInputParam.customInputConstraints,
                 );
-                setCustomInput(value.toString());
+                if (options.includes(value.toString())) {
+                  setCustomInput('');
+                } else {
+                  setCustomInput(value.toString());
+                }
                 selectOrInputValue(value);
               }}
               className={clsx(
