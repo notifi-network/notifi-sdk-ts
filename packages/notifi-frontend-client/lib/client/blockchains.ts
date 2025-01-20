@@ -25,7 +25,6 @@ export const EVM_BLOCKCHAINS = [
   'ARBITRUM',
   'AVALANCHE',
   'BINANCE',
-  'THE_ROOT_NETWORK',
   'MONAD',
   'BASE',
   'BLAST',
