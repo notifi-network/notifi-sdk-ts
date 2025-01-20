@@ -7,12 +7,6 @@ on:
   release:
     types: [released]
   workflow_dispatch:
-  # PR TEST ONLY - Remove before merging
-  pull_request:
-    types:
-      - opened
-      - reopened
-      - synchronize
 
 jobs:
   build:
