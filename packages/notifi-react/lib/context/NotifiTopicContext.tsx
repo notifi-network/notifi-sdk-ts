@@ -91,20 +91,31 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
   }, [frontendClientStatus.isAuthenticated]);
 
   const unsubscribeAlert = useCallback(
-    (alertName: string) => {
+    async (alertName: string) => {
       setIsLoading(true);
       const alert = alerts[alertName];
       if (!alert) return;
-      frontendClient
-        .deleteAlert({ id: alert.id })
-        .then(() => {
-          frontendClient.fetchFusionData().then(refreshAlerts);
-          setError(null);
-        })
-        .catch((e) => {
-          setError(e);
-        })
-        .finally(() => setIsLoading(false));
+      // frontendClient
+      //   .deleteAlert({ id: alert.id })
+      //   .then(() => {
+      //     frontendClient.fetchFusionData().then(refreshAlerts);
+      //     setError(null);
+      //   })
+      //   .catch((e) => {
+      //     setError(e);
+      //   })
+      //   .finally(() => setIsLoading(false));
+      try {
+        await frontendClient.deleteAlert({ id: alert.id });
+        const data = await frontendClient.fetchFusionData();
+        refreshAlerts(data);
+        setError(null);
+      } catch (e) {
+        if (e instanceof Error) setError(e);
+        console.error(e);
+      } finally {
+        setIsLoading(false);
+      }
     },
     [alerts, frontendClient],
   );

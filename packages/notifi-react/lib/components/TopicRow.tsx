@@ -61,6 +61,7 @@ export const TopicRow = <T extends TopicRowCategory>(
   /* NOTE: benchmarkTopic is either the 'first topic in the group' or the 'standalone topic'. This represent the target topic to be rendered. */
   const fusionEventTypeId = benchmarkTopic.fusionEventDescriptor.id;
   if (!fusionEventTypeId) return null;
+  const [isOptimistic, setIsOptimistic] = React.useState<boolean>(false);
   if (isTopicGroup && !isTopicGroupValid(props.topics)) return null;
 
   const userInputParams = getUserInputParams(benchmarkTopic);
@@ -74,10 +75,14 @@ export const TopicRow = <T extends TopicRowCategory>(
 
   const toggleStandAloneTopic = async (topic: FusionEventTopic) => {
     if (!targetGroupId) return;
+    setIsOptimistic(true);
     if (!isAlertSubscribed(fusionEventTypeId)) {
-      return subscribeAlertsDefault([topic], targetGroupId);
+      await subscribeAlertsDefault([topic], targetGroupId);
+      setIsOptimistic(false);
+      return;
     }
-    unsubscribeAlert(fusionEventTypeId);
+    await unsubscribeAlert(fusionEventTypeId);
+    setIsOptimistic(false);
   };
 
   const toggleTopicGroup = async (topics: FusionEventTopic[]) => {
@@ -142,9 +147,14 @@ export const TopicRow = <T extends TopicRowCategory>(
             </div>
           ) : null}
         </div>
-
+        {JSON.stringify(isOptimistic)},{' '}
+        {JSON.stringify(isAlertSubscribed(fusionEventTypeId))}
         <Toggle
-          checked={isAlertSubscribed(fusionEventTypeId)}
+          checked={
+            isOptimistic
+              ? !isAlertSubscribed(fusionEventTypeId)
+              : isAlertSubscribed(fusionEventTypeId)
+          }
           disabled={isLoadingTopic}
           setChecked={async () => {
             if (isTopicGroup) {
