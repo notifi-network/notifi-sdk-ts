@@ -103,19 +103,15 @@ export const TopicStackRowInput = <T extends TopicRowCategory>(
               key={id}
               userInputParam={userInputParm}
               topic={benchmarkTopic}
-              onSelectAction={{
-                actionType: 'updateFilterOptions',
-                action: (userInputParmName, option) => {
-                  if (!filterOptionsToBeSubscribed || !filterName) return;
-                  const updatedAlertFilterOptiopns =
-                    getUpdatedAlertFilterOptions(
-                      filterName,
-                      filterOptionsToBeSubscribed,
-                      userInputParmName,
-                      convertOptionValue(option, userInputParm.kind),
-                    );
-                  setFilterOptionsToBeSubscribed(updatedAlertFilterOptiopns);
-                },
+              preventDefault={(userInputParmName, selected) => {
+                if (!filterOptionsToBeSubscribed || !filterName) return;
+                const updatedAlertFilterOptiopns = getUpdatedAlertFilterOptions(
+                  filterName,
+                  filterOptionsToBeSubscribed,
+                  userInputParmName,
+                  convertOptionValue(selected, userInputParm.kind),
+                );
+                setFilterOptionsToBeSubscribed(updatedAlertFilterOptiopns);
               }}
             />
           );
