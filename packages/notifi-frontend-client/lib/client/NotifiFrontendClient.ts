@@ -1089,6 +1089,21 @@ export class NotifiFrontendClient {
     }
   }
 
+  async deleteAlerts({
+    ids,
+  }: Readonly<{
+    ids: Array<string>;
+  }>): Promise<Types.DeleteAlertsMutation['deleteAlerts']> {
+    const mutation = await this._service.deleteAlerts({
+      input: { alertIds: ids },
+    });
+    const result = mutation.deleteAlerts;
+    if (result === undefined) {
+      throw new Error('Failed to delete alerts');
+    }
+    return result;
+  }
+
   async updateWallets() {
     const walletEventTypeItem: WalletBalanceEventTypeItem = {
       name: 'User Wallets',

@@ -243,6 +243,13 @@ export class NotifiService
     return this._typedClient.deleteAlert(variables, headers);
   }
 
+  async deleteAlerts(
+    variables: Generated.DeleteAlertsMutationVariables,
+  ): Promise<Generated.DeleteAlertsMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.deleteAlerts(variables, headers);
+  }
+
   async DeleteDirectPushAlert(
     variables: Generated.DeleteDirectPushAlertMutationVariables,
   ): Promise<Generated.DeleteDirectPushAlertMutation> {

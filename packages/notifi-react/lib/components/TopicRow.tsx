@@ -61,7 +61,13 @@ export const TopicRow = <T extends TopicRowCategory>(
   /* NOTE: benchmarkTopic is either the 'first topic in the group' or the 'standalone topic'. This represent the target topic to be rendered. */
   const fusionEventTypeId = benchmarkTopic.fusionEventDescriptor.id;
   if (!fusionEventTypeId) return null;
-  const [isOptimistic, setIsOptimistic] = React.useState<boolean>(false);
+  const [isOptimisticRendering, setIsOptimisticRendering] =
+    React.useState<boolean>(false);
+  const isSubscribed = isOptimisticRendering
+    ? !isAlertSubscribed(fusionEventTypeId)
+    : isAlertSubscribed(fusionEventTypeId);
+  console.log('isSubscribed', isSubscribed);
+
   if (isTopicGroup && !isTopicGroupValid(props.topics)) return null;
 
   const userInputParams = getUserInputParams(benchmarkTopic);
@@ -75,29 +81,38 @@ export const TopicRow = <T extends TopicRowCategory>(
 
   const toggleStandAloneTopic = async (topic: FusionEventTopic) => {
     if (!targetGroupId) return;
-    setIsOptimistic(true);
+    setIsOptimisticRendering(true);
     if (!isAlertSubscribed(fusionEventTypeId)) {
       await subscribeAlertsDefault([topic], targetGroupId);
-      setIsOptimistic(false);
+      setIsOptimisticRendering(false);
       return;
     }
     await unsubscribeAlert(fusionEventTypeId);
-    setIsOptimistic(false);
+    setIsOptimisticRendering(false);
   };
 
   const toggleTopicGroup = async (topics: FusionEventTopic[]) => {
     if (!targetGroupId) return;
+    setIsOptimisticRendering(true);
     if (!isAlertSubscribed(fusionEventTypeId)) {
-      return subscribeAlertsDefault(topics, targetGroupId);
+      await subscribeAlertsDefault(topics, targetGroupId);
+      setIsOptimisticRendering(false);
+      return;
     }
     const topicsToBeUnsubscribed = topics.filter((topic) =>
       topic.fusionEventDescriptor.id
         ? isAlertSubscribed(topic.fusionEventDescriptor.id)
         : false,
     );
-    for (const topic of topicsToBeUnsubscribed) {
-      await unsubscribeAlert(topic.fusionEventDescriptor.id!);
-    }
+    // for (const topic of topicsToBeUnsubscribed) {
+    //   await unsubscribeAlert(topic.fusionEventDescriptor.id!);
+    // }
+    await Promise.all(
+      topicsToBeUnsubscribed.map((topic) =>
+        unsubscribeAlert(topic.fusionEventDescriptor.id!),
+      ),
+    );
+    setIsOptimisticRendering(false);
   };
 
   const { componentPosition: tooltipPosition } = useComponentPosition(
@@ -147,14 +162,9 @@ export const TopicRow = <T extends TopicRowCategory>(
             </div>
           ) : null}
         </div>
-        {JSON.stringify(isOptimistic)},{' '}
-        {JSON.stringify(isAlertSubscribed(fusionEventTypeId))}
+        {JSON.stringify(isSubscribed)}
         <Toggle
-          checked={
-            isOptimistic
-              ? !isAlertSubscribed(fusionEventTypeId)
-              : isAlertSubscribed(fusionEventTypeId)
-          }
+          checked={isSubscribed}
           disabled={isLoadingTopic}
           setChecked={async () => {
             if (isTopicGroup) {
@@ -164,7 +174,7 @@ export const TopicRow = <T extends TopicRowCategory>(
           }}
         />
       </div>
-      {userInputParams.length > 0 && isAlertSubscribed(fusionEventTypeId) ? (
+      {userInputParams.length > 0 && isSubscribed ? (
         <div
           className={clsx(
             'notifi-topic-row-user-inputs-row-container ',
