@@ -1076,7 +1076,9 @@ export class NotifiFrontendClient {
     const mutation = await this._service.createFusionAlerts({ input });
     return mutation.createFusionAlerts;
   }
-
+  /**
+   * @deprecated Use `deleteAlerts` instead
+   */
   async deleteAlert({
     id,
   }: Readonly<{
