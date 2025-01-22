@@ -1,5 +1,7 @@
 import { gql } from 'graphql-request';
 
+import { ErrorFragments } from '../fragments/ErrorFragments.gql';
+
 export const CreateFusionAlerts = gql`
   mutation createFusionAlerts($input: CreateFusionAlertsInput!) {
     createFusionAlerts(input: $input) {
@@ -10,22 +12,11 @@ export const CreateFusionAlerts = gql`
         filterOptions
       }
       errors {
-        ... on ArgumentError {
-          __typename
-          message
-          paramName
-        }
-        ... on ArgumentNullError {
-          __typename
-          message
-          paramName
-        }
-        ... on ArgumentOutOfRangeError {
-          __typename
-          message
-          paramName
-        }
+        ...ArgumentErrorFragment
+        ...ArgumentNullErrorFragment
+        ...ArgumentOutOfRangeErrorFragment
       }
     }
   }
+  ${ErrorFragments}
 `;

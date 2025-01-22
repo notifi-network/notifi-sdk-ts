@@ -1,5 +1,7 @@
 import { gql } from 'graphql-request';
 
+import { ErrorFragments } from '../fragments/ErrorFragments.gql';
+
 export const DeleteAlerts = gql`
   mutation deleteAlerts($input: DeleteAlertsInput!) {
     deleteAlerts(input: $input) {
@@ -7,19 +9,11 @@ export const DeleteAlerts = gql`
         alertsIds
       }
       errors {
-        ... on ArgumentError {
-          message
-          paramName
-        }
-        ... on ArgumentNullError {
-          message
-          paramName
-        }
-        ... on ArgumentOutOfRangeError {
-          message
-          paramName
-        }
+        ...ArgumentErrorFragment
+        ...ArgumentNullErrorFragment
+        ...ArgumentOutOfRangeErrorFragment
       }
     }
   }
+  ${ErrorFragments}
 `;
