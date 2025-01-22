@@ -1076,7 +1076,9 @@ export class NotifiFrontendClient {
     const mutation = await this._service.createFusionAlerts({ input });
     return mutation.createFusionAlerts;
   }
-
+  /**
+   * @deprecated Use `deleteAlerts` instead
+   */
   async deleteAlert({
     id,
   }: Readonly<{
@@ -1087,6 +1089,21 @@ export class NotifiFrontendClient {
     if (result === undefined) {
       throw new Error('Failed to delete alert');
     }
+  }
+
+  async deleteAlerts({
+    ids,
+  }: Readonly<{
+    ids: Array<string>;
+  }>): Promise<Types.DeleteAlertsMutation['deleteAlerts']> {
+    const mutation = await this._service.deleteAlerts({
+      input: { alertIds: ids },
+    });
+    const result = mutation.deleteAlerts;
+    if (result === undefined) {
+      throw new Error('Failed to delete alerts');
+    }
+    return result;
   }
 
   async updateWallets() {
