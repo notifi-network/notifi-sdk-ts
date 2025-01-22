@@ -74,7 +74,7 @@ describe('NotifiFrontendClient Unit Test', () => {
     expect(result.emailTargets![0]!.emailAddress).toBe('tester@notifi.network');
   });
 
-  it('ensureFusionAlerts & deleteAlert & getAlerts', async () => {
+  it('ensureFusionAlerts & deleteAlerts & getAlerts', async () => {
     await login();
 
     const targetGroups = await client.getTargetGroups();
@@ -99,7 +99,7 @@ describe('NotifiFrontendClient Unit Test', () => {
     const alertId = result.alerts![0].id;
 
     // Delete alert
-    await client.deleteAlert({ id: alertId });
+    await client.deleteAlerts({ ids: [alertId] });
 
     // Get alerts
     const alerts = await client.getAlerts();
