@@ -70,7 +70,6 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
       )}
     >
       {/* ICON/ LABEL / USERNAME */}
-      {/* {JSON.stringify(props.targetInfo)} */}
       <div className="notifi-target-list-item-content">
         <div
           className={clsx(
@@ -142,8 +141,6 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
             type: 'cta',
             message: 'Remove',
             onClick: async () => {
-              // TODO: Remove this after adding documentation: 1. single target subscription always sync with with targetData. 2. targetInput & multiple target subscription.
-              // updateTargetInputs(props.target, false); // TODO: remove
               renewTargetGroup({
                 target: props.target as ToggleTarget,
                 value: false,

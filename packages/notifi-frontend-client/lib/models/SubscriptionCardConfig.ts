@@ -1,4 +1,8 @@
-// TODO: Import from library rather than copy / paste
+/**
+ * TODO: Reform tenant config
+ * - Deprecated unused types
+ * - increment version (TBD) - (ex. CardConfigItemV2)
+ *  */
 import { Types as Gql, Types } from '@notifi-network/notifi-graphql';
 
 import { CardConfigType } from '../client';

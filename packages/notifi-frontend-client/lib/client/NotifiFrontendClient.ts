@@ -45,7 +45,7 @@ import {
   ensureEmail,
   ensureSlack,
   ensureSms,
-  ensureTelegram, // ensureTelegramDefault,
+  ensureTelegram,
   ensureWeb3,
   ensureWebhook,
   renewTelegram,
@@ -999,6 +999,9 @@ export class NotifiFrontendClient {
     return createMutation.createTargetGroup;
   }
 
+  /**
+   * @description !IMPORTANT: the id arguments (telegramId, discordId, slackId, walletId) is the self-defined identity (only within notifi BE). This is NEITHER the user name NOR the user id of associated platform.
+   */
   async renewTargetGroup({
     name,
     emailAddress,

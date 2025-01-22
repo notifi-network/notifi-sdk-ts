@@ -10,7 +10,7 @@ export type LoadingGlobalProps = {
 
 export const LoadingGlobal: React.FC = () => {
   const { globalLoading } = useGlobalStateContext();
-  // TODO: Confirm style and impl
+  // NOTE: Not being used by far. Currently no global loading state for NotifiCardModal
   return (
     <div>
       {globalLoading.loadingData ? <h1>{globalLoading.loadingData}</h1> : null}

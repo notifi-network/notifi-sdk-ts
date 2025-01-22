@@ -38,7 +38,6 @@ export const TopicList: React.FC<TopicListProps> = (props) => {
   const parentComponent = props.parentComponent ?? 'ftu';
   const { fusionEventTopics } = useNotifiTenantConfigContext();
 
-  // TODO: Move this to a hook
   const topicRows = React.useMemo(() => {
     const fusionEventTopicGroups: Record<string, TopicGroupRowMetadata> = {};
     const fusionEventStandaloneTopics: TopicStandaloneRowMetadata[] = [];

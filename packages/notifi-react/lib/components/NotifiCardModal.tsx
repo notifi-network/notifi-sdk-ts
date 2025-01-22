@@ -22,15 +22,6 @@ import { Inbox, InboxProps } from './Inbox';
 import { LoadingGlobalProps } from './LoadingGlobal';
 import { NavHeaderRightCta } from './NavHeader';
 
-export type NotifiInputFieldsText = {
-  label?: {
-    email?: string;
-    sms?: string;
-    telegram?: string;
-  };
-  placeholderText?: { email?: string; sms?: string; telegram?: string };
-};
-
 export type NotifiCardModalProps = Readonly<{
   copy?: {
     ErrorGlobal?: ErrorViewProps['copy'];
