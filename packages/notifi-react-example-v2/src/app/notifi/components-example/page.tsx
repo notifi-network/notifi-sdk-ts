@@ -44,30 +44,6 @@ const NotifiComponentExample = () => {
     //     },
     //   ],
     // },
-    Ftu: {
-      FtuTargetEdit: {
-        TargetInputs: {
-          inputSeparators: {
-            email: 'OR',
-            sms: 'OR',
-            telegram: 'OR',
-            discord: 'OR',
-          },
-        },
-      },
-    },
-    Inbox: {
-      InboxConfigTargetEdit: {
-        TargetInputs: {
-          inputSeparators: {
-            email: 'OR',
-            sms: 'OR',
-            telegram: 'OR',
-            discord: 'OR',
-          },
-        },
-      },
-    },
   };
   const bellIconHref = `/bell-${
     searchParams.get('scene') === 'light' ? 'light' : 'dark'

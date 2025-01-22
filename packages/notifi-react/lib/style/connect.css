@@ -36,7 +36,7 @@
 }
 
 .notifi-connect-description {
-  color: var(--notifi-color-grey3);
+  color: var(--notifi-connect-description-text);
   font-size: 0.9rem;
   line-height: 133%;
   text-align: center;
@@ -111,11 +111,11 @@
 }
 
 .notifi-connect-footer-content span {
-  color: var(--notifi-color-grey3);
+  color: var(--notifi-connect-footer-content-text);
 }
 
 .notifi-connect-footer-content a {
-  color: var(--notifi-color-grey3);
+  color: var(--notifi-connect-footer-content-text);
 }
 
 .notifi-connect-footer {

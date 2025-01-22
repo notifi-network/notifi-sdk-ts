@@ -15,7 +15,7 @@
 }
 
 .notifi-error-global-error-title {
-  color: var(--notifi-color-error);
+  color: var(--notifi-error-global-error-title-text);
   margin: 1rem;
   font-size: 1.1rem;
   font-weight: 600;
