@@ -12,6 +12,7 @@ on:
 
 jobs:
   cypress-run:
+    if: github.repository == 'notifi-network/notifi-sdk-ts'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
