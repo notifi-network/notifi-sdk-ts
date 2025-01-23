@@ -33,12 +33,11 @@ export type TopicOptionsPropsBase = {
   copy?: {
     customInputPlaceholder?: string;
   };
-  onSelectAction?:
-    | { actionType: 'instantSubscribe' }
-    | {
-        actionType: 'updateFilterOptions';
-        action: (userInputParamName: string, value: string | number) => void;
-      };
+  preventDefault?: (
+    /* Rather than executing default behavior (instant subscription), expose a callback with "userInputParamName" & selected value args */
+    userInputParamName: string,
+    selected: string | number,
+  ) => void;
 };
 
 export type TopicOptionsProps<T extends TopicRowCategory> =
@@ -65,29 +64,37 @@ export const TopicOptions = <T extends TopicRowCategory>(
   const { isLoading: isLoadingTopic } = useNotifiTopicContext();
 
   const [valueToBeSubscribed, setValueToBeSubscribed] = React.useState<string>(
-    props.userInputParam.defaultValue.toString(),
+    subscribedValue || props.userInputParam.defaultValue.toString(),
   );
 
   const options = props.userInputParam.options.map((option) =>
     option.toString(),
   );
 
-  const selectedOption =
-    props.onSelectAction?.actionType === 'updateFilterOptions'
-      ? valueToBeSubscribed
-      : subscribedValue;
+  const selectedOption = valueToBeSubscribed
+    ? valueToBeSubscribed /* Render on UI optimistically as soon as the option is selected  */
+    : subscribedValue;
 
-  const selectOrInputValue = (value: string | number) => {
+  const selectOrInputValue = async (value: string | number) => {
     if (isLoadingTopic) return;
+    /* Render on UI optimistically right away */
+    setValueToBeSubscribed(value.toString());
     value = value.toString();
-    if (props.onSelectAction?.actionType === 'updateFilterOptions') {
+
+    /* CASE1: Exec externally provided callback (for stackable topic options) */
+    if (props.preventDefault) {
       if (options.includes(value)) {
         setCustomInput('');
       }
-      props.onSelectAction?.action(props.userInputParam.name, value);
-      return setValueToBeSubscribed(value);
+      return props.preventDefault(props.userInputParam.name, value);
     }
-    renewFilterOptions(value, isTopicGroup ? props.topics : [props.topic]);
+
+    /* CASE2: instantly subscribe */
+    await renewFilterOptions(
+      value,
+      isTopicGroup ? props.topics : [props.topic],
+    );
+    setValueToBeSubscribed('');
   };
 
   return (
@@ -102,7 +109,6 @@ export const TopicOptions = <T extends TopicRowCategory>(
           {props.userInputParam.description}
         </div>
       ) : null}
-
       <div
         className={clsx('notifi-topic-options-items', props.classNames?.items)}
       >
@@ -116,6 +122,8 @@ export const TopicOptions = <T extends TopicRowCategory>(
               uiType === 'button' ? 'button' : 'radio',
             )}
             onClick={() => {
+              if (isLoadingTopic) return;
+              if (customInput !== '') setCustomInput('');
               selectOrInputValue(option);
             }}
           >
@@ -173,7 +181,11 @@ export const TopicOptions = <T extends TopicRowCategory>(
                   evt.target.value,
                   props.userInputParam.customInputConstraints,
                 );
-                setCustomInput(value.toString());
+                if (options.includes(value.toString())) {
+                  setCustomInput('');
+                } else {
+                  setCustomInput(value.toString());
+                }
                 selectOrInputValue(value);
               }}
               className={clsx(

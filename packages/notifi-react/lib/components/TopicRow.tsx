@@ -50,7 +50,7 @@ export const TopicRow = <T extends TopicRowCategory>(
     isAlertSubscribed,
     isLoading: isLoadingTopic,
     subscribeAlertsDefault,
-    unsubscribeAlert,
+    unsubscribeAlerts,
   } = useNotifiTopicContext();
 
   const {
@@ -61,6 +61,12 @@ export const TopicRow = <T extends TopicRowCategory>(
   /* NOTE: benchmarkTopic is either the 'first topic in the group' or the 'standalone topic'. This represent the target topic to be rendered. */
   const fusionEventTypeId = benchmarkTopic.fusionEventDescriptor.id;
   if (!fusionEventTypeId) return null;
+  const [isOptimisticRendering, setIsOptimisticRendering] =
+    React.useState<boolean>(false);
+  const isSubscribed = isOptimisticRendering
+    ? !isAlertSubscribed(fusionEventTypeId)
+    : isAlertSubscribed(fusionEventTypeId);
+
   if (isTopicGroup && !isTopicGroupValid(props.topics)) return null;
 
   const userInputParams = getUserInputParams(benchmarkTopic);
@@ -72,27 +78,24 @@ export const TopicRow = <T extends TopicRowCategory>(
       benchmarkTopic.uiConfig.displayNameOverride || // 2. Fall back to cardConfig'displayNameOverride  (May deprecated sooner or later)
       benchmarkTopic.uiConfig.name; // 3. Fall back to topic name
 
-  const toggleStandAloneTopic = async (topic: FusionEventTopic) => {
-    if (!targetGroupId) return;
+  const toggleTopic = async (topics: FusionEventTopic[]) => {
+    if (!targetGroupId || topics.length === 0) return;
+    setIsOptimisticRendering(true);
     if (!isAlertSubscribed(fusionEventTypeId)) {
-      return subscribeAlertsDefault([topic], targetGroupId);
-    }
-    unsubscribeAlert(fusionEventTypeId);
-  };
-
-  const toggleTopicGroup = async (topics: FusionEventTopic[]) => {
-    if (!targetGroupId) return;
-    if (!isAlertSubscribed(fusionEventTypeId)) {
-      return subscribeAlertsDefault(topics, targetGroupId);
+      await subscribeAlertsDefault(topics, targetGroupId);
+      setIsOptimisticRendering(false);
+      return;
     }
     const topicsToBeUnsubscribed = topics.filter((topic) =>
       topic.fusionEventDescriptor.id
         ? isAlertSubscribed(topic.fusionEventDescriptor.id)
         : false,
     );
-    for (const topic of topicsToBeUnsubscribed) {
-      await unsubscribeAlert(topic.fusionEventDescriptor.id!);
-    }
+    const alertIds = topicsToBeUnsubscribed.map(
+      (topic) => topic.fusionEventDescriptor.id!,
+    );
+    await unsubscribeAlerts(alertIds);
+    setIsOptimisticRendering(false);
   };
 
   const { componentPosition: tooltipPosition } = useComponentPosition(
@@ -142,19 +145,15 @@ export const TopicRow = <T extends TopicRowCategory>(
             </div>
           ) : null}
         </div>
-
         <Toggle
-          checked={isAlertSubscribed(fusionEventTypeId)}
+          checked={isSubscribed}
           disabled={isLoadingTopic}
           setChecked={async () => {
-            if (isTopicGroup) {
-              return toggleTopicGroup(props.topics);
-            }
-            toggleStandAloneTopic(benchmarkTopic);
+            toggleTopic(isTopicGroup ? props.topics : [props.topic]);
           }}
         />
       </div>
-      {userInputParams.length > 0 && isAlertSubscribed(fusionEventTypeId) ? (
+      {userInputParams.length > 0 && isSubscribed ? (
         <div
           className={clsx(
             'notifi-topic-row-user-inputs-row-container ',
