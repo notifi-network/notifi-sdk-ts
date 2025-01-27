@@ -9,7 +9,6 @@ export type TargetInputFieldProps = {
   targetType: FormTarget;
   onFocus?: (target: FormTarget) => void;
   onBlur?: (target: FormTarget) => void;
-  iconType: IconType;
   validateRegex?: RegExp;
   copy?: {
     placeholder?: string;
@@ -95,13 +94,6 @@ export const TargetInputField: React.FC<TargetInputFieldProps> = (props) => {
           isShowingInvalidWarning ? 'warning' : '',
         )}
       >
-        <Icon
-          type={props.iconType}
-          className={clsx(
-            'notifi-target-input-field-icon',
-            props.classNames?.icon,
-          )}
-        />
         <input
           type={
             props.targetType === 'email'

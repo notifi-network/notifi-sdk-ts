@@ -46,6 +46,31 @@ export const hasTarget = (targetData: TargetData) => {
   });
 };
 
+export const hasValidTargetMoreThan = (
+  targetData: TargetData,
+  moreThan: number,
+) => {
+  return (
+    objectKeys(targetData).filter((key) => {
+      const target = targetData[key];
+      // NOTE: formTargets are considered valid as long as they are not empty (even if they are not confirmed)
+      if (typeof target === 'string' && target !== '') {
+        return target;
+      }
+
+      if (typeof target === 'object') {
+        // NOTE: toggleTargets are considered valid only if they are confirmed
+        if (key === 'discord' || key === 'wallet') {
+          return !!targetData[key].data?.isConfirmed;
+        }
+        if (key === 'slack') {
+          return targetData[key].data?.verificationStatus === 'VERIFIED'; // TODO: define enum for slack verification status
+        }
+      }
+    }).length > moreThan
+  );
+};
+
 export const getAvailableTargetInputCount = (targetInputs: TargetInputs) => {
   return objectKeys(targetInputs).filter((key) => {
     if (isFormTarget(key)) {
@@ -56,15 +81,15 @@ export const getAvailableTargetInputCount = (targetInputs: TargetInputs) => {
 };
 
 export const isTargetCta = (
-  targetInfoPrompt: TargetInfoPrompt,
+  targetInfoPrompt: TargetInfoPrompt | undefined,
 ): targetInfoPrompt is CtaInfo => {
-  return targetInfoPrompt.type === 'cta';
+  return targetInfoPrompt?.type === 'cta';
 };
 
 export const isTargetVerified = (
-  targetInfoPrompt: TargetInfoPrompt,
+  targetInfoPrompt: TargetInfoPrompt | undefined,
 ): targetInfoPrompt is MessageInfo => {
-  return targetInfoPrompt.type === 'message';
+  return targetInfoPrompt?.type === 'message';
 };
 
 export const isFormTarget = (target: Target): target is FormTarget => {
@@ -85,13 +110,15 @@ export const getWalletTargetSignMessage = (
   `Coinbase Wallet Messaging subscribe\nAddress: ${address}\nPartner Address: ${senderAddress}\nNonce: ${nonce}`;
 
 export const getTargetValidateRegex = (
-  target: Extract<Target, 'email' | 'telegram'>,
+  target: Extract<Target, 'email' | 'telegram' | 'phoneNumber'>,
 ) => {
   switch (target) {
     case 'email':
       return new RegExp('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$');
     case 'telegram':
       return new RegExp('.{5,}');
+    case 'phoneNumber':
+      return undefined;
     default:
       throw new Error('Not supported target type');
   }
