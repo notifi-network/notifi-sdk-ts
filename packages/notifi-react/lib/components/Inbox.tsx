@@ -12,6 +12,7 @@ import {
 import { InboxConfigTopic, InboxConfigTopicProps } from './InboxConfigTopic';
 import { InboxHistory, InboxHistoryProps } from './InboxHistory';
 import { InboxNavTabs, InboxNavTabsProps } from './InboxNavTabs';
+import { LoadingAnimation } from './LoadingAnimation';
 import { NavHeaderRightCta } from './NavHeader';
 
 export type InboxProps = {
@@ -32,6 +33,7 @@ export type InboxProps = {
     // TODO
   };
   navHeaderRightCta?: NavHeaderRightCta;
+  isDiscoverViewEnabled?: boolean;
 };
 
 export enum InboxView {
@@ -39,12 +41,21 @@ export enum InboxView {
   InboxConfigTopic = 'inbox-config-topic',
   InboxConfigTargetList = 'inbox-config-target-list',
   InboxConfigTargetEdit = 'inbox-config-target-edit',
+  InboxDiscover = 'inbox-discover',
 }
 
 export const Inbox: React.FC<InboxProps> = (props) => {
   const [inboxView, setInboxView] = React.useState<InboxView>(
     InboxView.InboxHistory,
   );
+  const [isDiscoverViewLoading, setIsDiscoverViewLoading] =
+    React.useState(true);
+
+  React.useEffect(() => {
+    if (inboxView !== InboxView.InboxDiscover) {
+      setIsDiscoverViewLoading(true);
+    }
+  }, [inboxView]);
 
   return (
     <div className={clsx('notifi-inbox', props.classNames?.container)}>
@@ -62,6 +73,27 @@ export const Inbox: React.FC<InboxProps> = (props) => {
             copy={props.copy?.InboxConfigTopic}
             navHeaderRightCta={props.navHeaderRightCta}
           />
+        ) : null}
+        {inboxView === InboxView.InboxDiscover ? (
+          <>
+            <div
+              style={{
+                height: '100%',
+                width: '100%',
+                display: !isDiscoverViewLoading ? 'flex' : 'none',
+              }}
+            >
+              <iframe
+                src="https://notifi.network"
+                title="Notifi"
+                height={'100%'}
+                width={'100%'}
+                onLoad={() => setIsDiscoverViewLoading(false)}
+                className="text"
+              />
+            </div>
+            {isDiscoverViewLoading ? <LoadingAnimation type="spinner" /> : null}
+          </>
         ) : null}
         {inboxView === InboxView.InboxConfigTargetList ? (
           <InboxConfigTargetList
@@ -85,6 +117,7 @@ export const Inbox: React.FC<InboxProps> = (props) => {
           setInboxView={setInboxView}
           inboxView={inboxView}
           classNames={props.classNames?.InboxNavTabs}
+          isDiscoverViewEnabled={props.isDiscoverViewEnabled}
         />
       </div>
     </div>

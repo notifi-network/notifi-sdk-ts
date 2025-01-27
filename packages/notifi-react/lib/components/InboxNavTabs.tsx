@@ -10,6 +10,7 @@ export type InboxNavTabsProps = {
   classNames?: {
     container?: string;
   };
+  isDiscoverViewEnabled?: boolean;
 };
 
 export const InboxNavTabs: React.FC<PropsWithChildren<InboxNavTabsProps>> = (
@@ -28,6 +29,11 @@ export const InboxNavTabs: React.FC<PropsWithChildren<InboxNavTabsProps>> = (
       <div onClick={() => props.setInboxView(InboxView.InboxHistory)}>
         <Icon type={bellActive ? 'bell-fill' : 'bell'} />
       </div>
+      {props.isDiscoverViewEnabled ? (
+        <div onClick={() => props.setInboxView(InboxView.InboxDiscover)}>
+          PT
+        </div>
+      ) : null}
       <div onClick={() => props.setInboxView(InboxView.InboxConfigTopic)}>
         <Icon type={configActive ? 'gear-fill' : 'gear'} />
       </div>
