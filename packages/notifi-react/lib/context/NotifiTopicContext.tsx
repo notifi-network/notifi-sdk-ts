@@ -48,11 +48,15 @@ export type NotifiTopicContextType = {
     topics: ReadonlyArray<FusionEventTopic>,
     targetGroupId: string,
   ) => Promise<void>;
-  unsubscribeAlert: (topicName: string) => void;
+
+  unsubscribeAlerts: (topicNames: string[]) => void;
   isAlertSubscribed: (topicName: string) => boolean;
   getAlertFilterOptions: (topicName: string) => FusionFilterOptions | null;
-  getTopicStackAlertsFromTopicName: (topicName: string) => TopicStackAlert[];
   getTopicStackAlerts: (fusionEventTypeId: string) => TopicStackAlert[];
+  /**@deprecated Use unsubscribeAlerts instead */
+  unsubscribeAlert: (topicName: string) => void;
+  /**@deprecated Use getTopicStackAlerts instead */
+  getTopicStackAlertsFromTopicName: (topicName: string) => TopicStackAlert[];
 };
 
 const NotifiTopicContext = createContext<NotifiTopicContextType>(
@@ -90,6 +94,9 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
       .finally(() => setIsLoading(false));
   }, [frontendClientStatus.isAuthenticated]);
 
+  /**
+   * @deprecated Use unsubscribeAlerts instead
+   */
   const unsubscribeAlert = useCallback(
     (alertName: string) => {
       setIsLoading(true);
@@ -105,6 +112,25 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
           setError(e);
         })
         .finally(() => setIsLoading(false));
+    },
+    [alerts, frontendClient],
+  );
+
+  const unsubscribeAlerts = useCallback(
+    async (alertNames: string[]) => {
+      setIsLoading(true);
+      const alertIds = alertNames.map((alertName) => alerts[alertName]?.id);
+      try {
+        await frontendClient.deleteAlerts({ ids: alertIds });
+        const data = await frontendClient.fetchFusionData();
+        refreshAlerts(data);
+        setError(null);
+      } catch (e) {
+        if (e instanceof Error) setError(e);
+        console.error(e);
+      } finally {
+        setIsLoading(false);
+      }
     },
     [alerts, frontendClient],
   );
@@ -172,14 +198,18 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
 
     setIsLoading(true);
     // Note: Alert object is immutable, so we need to delete the old one first
-    for (const alertName of Object.keys(alerts)) {
-      if (alertNamesToCreate.includes(alertName)) {
-        const id = alerts[alertName].id;
-        try {
-          await frontendClient.deleteAlert({ id });
-        } catch (e) {
-          /* Intentionally left blank */
-        }
+    const alertIds = Object.keys(alerts)
+      .filter((alertName) => alertNamesToCreate.includes(alertName))
+      .map((alertName) => alerts[alertName].id);
+
+    if (alertIds.length > 0) {
+      try {
+        await frontendClient.deleteAlerts({ ids: alertIds });
+      } catch (e) {
+        if (e instanceof Error)
+          setError({ ...e, message: `Failed to del. existing. ${e.message}` });
+        console.error(e);
+        return setIsLoading(false);
       }
     }
 
@@ -379,11 +409,12 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
         isLoading,
         error,
         subscribeAlertsDefault,
-        unsubscribeAlert,
         isAlertSubscribed,
         subscribeAlertsWithFilterOptions,
         getAlertFilterOptions,
         getTopicStackAlerts,
+        unsubscribeAlerts,
+        unsubscribeAlert,
         getTopicStackAlertsFromTopicName,
       }}
     >

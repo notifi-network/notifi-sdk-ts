@@ -1,5 +1,6 @@
 import { gql } from 'graphql-request';
 
+import { ErrorFragments } from '../fragments/ErrorFragments.gql';
 import { WebPushTargetFragment } from '../fragments/WebPushTargetFragment.gql';
 
 export const CreateWebPushTarget = gql`
@@ -21,14 +22,11 @@ export const CreateWebPushTarget = gql`
         ...WebPushTargetFragment
       }
       errors {
-        ... on TargetLimitExceededError {
-          message
-        }
-        ... on UnexpectedError {
-          message
-        }
+        ...TargetLimitExceededErrorFragment
+        ...UnexpectedErrorFragment
       }
     }
   }
   ${WebPushTargetFragment}
+  ${ErrorFragments}
 `;

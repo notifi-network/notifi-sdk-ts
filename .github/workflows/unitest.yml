@@ -12,6 +12,7 @@ on:
 
 jobs:
   test:
+    if: github.repository == 'notifi-network/notifi-sdk-ts'
     runs-on: ubuntu-latest
 
     steps:

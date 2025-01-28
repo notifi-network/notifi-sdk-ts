@@ -2,14 +2,11 @@ import { gql } from 'graphql-request';
 
 import { ErrorFragments } from '../fragments/ErrorFragments.gql';
 
-export const CreateFusionAlerts = gql`
-  mutation createFusionAlerts($input: CreateFusionAlertsInput!) {
-    createFusionAlerts(input: $input) {
-      alerts {
-        groupName
-        id
-        name
-        filterOptions
+export const DeleteAlerts = gql`
+  mutation deleteAlerts($input: DeleteAlertsInput!) {
+    deleteAlerts(input: $input) {
+      deleteAlertsResponse {
+        alertsIds
       }
       errors {
         ...ArgumentErrorFragment
