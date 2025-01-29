@@ -4,6 +4,8 @@ import React, { PropsWithChildren } from 'react';
 import { Icon } from '../assets/Icons';
 import { InboxView } from './Inbox';
 
+type Tab = 'config' | 'discover' | 'history';
+
 export type InboxNavTabsProps = {
   setInboxView: React.Dispatch<React.SetStateAction<InboxView>>;
   inboxView: InboxView;
@@ -16,26 +18,34 @@ export type InboxNavTabsProps = {
 export const InboxNavTabs: React.FC<PropsWithChildren<InboxNavTabsProps>> = (
   props,
 ) => {
-  const bellActive = props.inboxView === InboxView.InboxHistory;
-  const configActive =
-    props.inboxView === InboxView.InboxConfigTopic ||
-    props.inboxView === InboxView.InboxConfigTargetList ||
-    props.inboxView === InboxView.InboxConfigTargetEdit;
+  const activeTab: Tab = React.useMemo(() => {
+    switch (props.inboxView) {
+      case InboxView.InboxConfigTopic:
+      case InboxView.InboxConfigTargetList:
+      case InboxView.InboxConfigTargetEdit:
+        return 'config';
+      case InboxView.InboxDiscover:
+        return 'discover';
+      case InboxView.InboxHistory:
+        return 'history';
+    }
+  }, [props.inboxView]);
+
   return (
     <div
       data-cy="notifi-inbox-nav-tabs"
       className={clsx('notifi-inbox-nav-tabs', props.classNames?.container)}
     >
       <div onClick={() => props.setInboxView(InboxView.InboxHistory)}>
-        <Icon type={bellActive ? 'bell-fill' : 'bell'} />
+        <Icon type={activeTab === 'history' ? 'bell-fill' : 'bell'} />
       </div>
       {props.isDiscoverViewEnabled ? (
         <div onClick={() => props.setInboxView(InboxView.InboxDiscover)}>
-          PT
+          <Icon type={activeTab === 'discover' ? 'compass-fill' : 'compass'} />
         </div>
       ) : null}
       <div onClick={() => props.setInboxView(InboxView.InboxConfigTopic)}>
-        <Icon type={configActive ? 'gear-fill' : 'gear'} />
+        <Icon type={activeTab === 'config' ? 'gear-fill' : 'gear'} />
       </div>
     </div>
   );
