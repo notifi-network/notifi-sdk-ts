@@ -1,6 +1,10 @@
 import { Types } from '@notifi-network/notifi-graphql';
 
-import { CosmosBlockchain, EvmBlockchain } from '../client/blockchains';
+import {
+  CosmosBlockchain,
+  EvmBlockchain,
+  isEvmBlockchain,
+} from '../client/blockchains';
 
 export type NotifiEnvironment =
   | 'Production'
@@ -141,42 +145,12 @@ export type FrontendClientConfigFactory<T extends NotifiFrontendConfiguration> =
           : ConfigFactoryInputOidc,
   ) => NotifiFrontendConfiguration;
 
-const evmChains = [
-  'ETHEREUM',
-  'POLYGON',
-  'ARBITRUM',
-  'AVALANCHE',
-  'BINANCE',
-  'OPTIMISM',
-  'THE_ROOT_NETWORK',
-  'BASE',
-  'BLAST',
-  'CELO',
-  'MANTLE',
-  'LINEA',
-  'SCROLL',
-  'MANTA',
-  'MONAD',
-  'ZKSYNC',
-  'BERACHAIN',
-  'SONIC',
-  'ROME',
-] as const;
-
-type EVMChains = Extract<Types.WalletBlockchain, (typeof evmChains)[number]>;
-
-export const isEvmChain = (
-  chain: Types.WalletBlockchain,
-): chain is EVMChains => {
-  return !!evmChains.find((c) => c === chain);
-};
-
 /**@deprecated No longer need to use configFactory, use instantiateFrontendClient instead */
 const configFactoryPublicKey: FrontendClientConfigFactory<
   NotifiConfigWithPublicKey
 > = (args) => {
   let walletPublicKey = args.account.publicKey;
-  if (isEvmChain(args.walletBlockchain)) {
+  if (isEvmBlockchain(args.walletBlockchain)) {
     walletPublicKey = walletPublicKey.toLowerCase();
   }
   return {
