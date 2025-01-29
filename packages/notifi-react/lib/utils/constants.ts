@@ -92,6 +92,9 @@ export const defaultCopy = {
   inboxHistoryDetail: {
     headerTitle: '',
   },
+  inboxDiscover: {
+    src: 'https://notifi.network',
+  },
   historyList: {
     inboxEmptyTitle: 'Inbox empty',
     inboxEmptyDescription: `You haven’t received any notifications yet. You can manage your

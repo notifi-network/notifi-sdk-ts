@@ -10,9 +10,9 @@ import {
   InboxConfigTargetListProps,
 } from './InboxConfigTargetList';
 import { InboxConfigTopic, InboxConfigTopicProps } from './InboxConfigTopic';
+import { InboxDiscover, InboxDiscoverProps } from './InboxDiscover';
 import { InboxHistory, InboxHistoryProps } from './InboxHistory';
 import { InboxNavTabs, InboxNavTabsProps } from './InboxNavTabs';
-import { LoadingAnimation } from './LoadingAnimation';
 import { NavHeaderRightCta } from './NavHeader';
 
 export type InboxProps = {
@@ -30,7 +30,7 @@ export type InboxProps = {
     InboxConfigTargetEdit?: InboxConfigTargetEditProps['copy'];
     InboxConfigTargetList?: InboxConfigTargetListProps['copy'];
     InboxConfigTopic?: InboxConfigTopicProps['copy'];
-    // TODO
+    InboxDiscover?: InboxDiscoverProps['copy'];
   };
   navHeaderRightCta?: NavHeaderRightCta;
   isDiscoverViewEnabled?: boolean;
@@ -48,14 +48,6 @@ export const Inbox: React.FC<InboxProps> = (props) => {
   const [inboxView, setInboxView] = React.useState<InboxView>(
     InboxView.InboxHistory,
   );
-  const [isDiscoverViewLoading, setIsDiscoverViewLoading] =
-    React.useState(true);
-
-  React.useEffect(() => {
-    if (inboxView !== InboxView.InboxDiscover) {
-      setIsDiscoverViewLoading(true);
-    }
-  }, [inboxView]);
 
   return (
     <div className={clsx('notifi-inbox', props.classNames?.container)}>
@@ -75,25 +67,7 @@ export const Inbox: React.FC<InboxProps> = (props) => {
           />
         ) : null}
         {inboxView === InboxView.InboxDiscover ? (
-          <>
-            <div
-              style={{
-                height: '100%',
-                width: '100%',
-                display: !isDiscoverViewLoading ? 'flex' : 'none',
-              }}
-            >
-              <iframe
-                src="https://notifi.network"
-                title="Notifi"
-                height={'100%'}
-                width={'100%'}
-                onLoad={() => setIsDiscoverViewLoading(false)}
-                className="text"
-              />
-            </div>
-            {isDiscoverViewLoading ? <LoadingAnimation type="spinner" /> : null}
-          </>
+          <InboxDiscover inboxView={inboxView} />
         ) : null}
         {inboxView === InboxView.InboxConfigTargetList ? (
           <InboxConfigTargetList
