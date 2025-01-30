@@ -15,13 +15,18 @@ import { ethers } from 'ethers';
 
 import { aliasQuery, hasOperationName } from '../utils';
 
+type MountCardModalInput = {
+  isRandomMnemonic?: boolean;
+  isDiscoverViewEnabled?: boolean;
+};
+
 declare global {
   namespace Cypress {
     interface Chainable {
       clearNotifiStorage(): Promise<void>;
       updateTargetGroup(targetGroup?: TargetGroup): Promise<void>;
 
-      mountCardModal(isRandomMnemonic?: boolean): void;
+      mountCardModal(mountCardModalInput?: MountCardModalInput): void;
       loadCSS(): void;
       overrideCardConfig(items: Record<string, any>): void;
       overrideTargetGroup(isEmpty?: boolean): void;
@@ -53,12 +58,12 @@ const getConnectedWallet = (isRandomMnemonic?: boolean) => {
   return connectedWallet;
 };
 
-const mountCardModal = (isRandomMnemonic?: boolean) => {
+const mountCardModal = (mountCardModalInput?: MountCardModalInput) => {
   const cardId = Cypress.env('CARD_ID');
   const tenantId = Cypress.env('DAPP_ADDRESS');
   const env = Cypress.env('ENV');
   const walletBlockchain = Cypress.env('WALLET_BLOCKCHAIN');
-  const wallet = getConnectedWallet(isRandomMnemonic);
+  const wallet = getConnectedWallet(mountCardModalInput?.isRandomMnemonic);
   const copy: NotifiCardModalProps['copy'] = {
     Connect: {
       footerContent: [
@@ -102,7 +107,12 @@ const mountCardModal = (isRandomMnemonic?: boolean) => {
       }}
       cardId={cardId}
     >
-      <NotifiCardModal darkMode copy={copy} />,
+      <NotifiCardModal
+        darkMode
+        copy={copy}
+        isDiscoverViewEnabled={mountCardModalInput?.isDiscoverViewEnabled}
+      />
+      ,
     </NotifiContextProvider>,
   );
 };

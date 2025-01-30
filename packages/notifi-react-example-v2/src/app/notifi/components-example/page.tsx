@@ -57,6 +57,10 @@ const NotifiComponentExample = () => {
       },
     },
     Inbox: {
+      // TODO: Update associated docs
+      // InboxDiscover: {
+      //   src: 'https://docs.notifi.network/docs/next',
+      // },
       InboxConfigTargetEdit: {
         TargetInputs: {
           inputSeparators: {
@@ -133,6 +137,8 @@ const NotifiComponentExample = () => {
           <NotifiCardModal
             darkMode={searchParams.get('scene') === 'light' ? false : true}
             copy={copy}
+            // TODO: Update associated docs
+            // isDiscoverViewEnabled
           />
         </div>
       ) : null}

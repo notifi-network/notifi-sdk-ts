@@ -62,45 +62,45 @@ This monorepo contains the following packages which are used to interact with No
 
 #### Notifi Frontend Client
 
-[@notifi-network/notifi-frontend-client](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-frontend-client) package is used from the frontend (Application) side by instantiating a `NotifiFrontendClient` object which provides the necessary client methods to interact with Notifi services.
+The [@notifi-network/notifi-frontend-client](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-frontend-client) package is utilized on the frontend (application) side by creating an instance of the NotifiFrontendClient object. This object offers essential client methods to seamlessly interact with Notifi services.
 
-> - This package is not framework-specific, so it can be used in any frontend application.
-> - The implementation of `@notifi-network/notifi-front-client`: [@notifi-network/notifi-react](#notifi-react)
-> - Type documentation: [Notifi Frontend Client](https://docs.notifi.network/notifi-sdk-ts/notifi-frontend-client/modules.html)
+> - This package is framework-agnostic, making it compatible with any frontend application.
+> - For an example implementation of @notifi-network/notifi-frontend-client, refer to [@notifi-network/notifi-react](#notifi-react)
+> - Type documentation can be found here: [Notifi Frontend Client](https://docs.notifi.network/notifi-sdk-ts/notifi-frontend-client/modules.html)
 
 #### Notifi React
 
-[@notifi-network/notifi-react](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-react) package is a React library that provides:
+The [@notifi-network/notifi-react](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-react) package is a React library that provides:
 
-- An out-of-the-box UI card modal component, `NotifiCardModal` by which developers can easily integrate with Notifi services without worrying about the underlying implementation.
-- A set of context methods by which allows developers to build their custom UI components to interact with Notifi services.
+- An out-of-the-box UI card modal component, `NotifiCardModal`, enabling developers to seamlessly integrate Notifi services without dealing with the underlying implementation.
+- A set of context methods that allow developers to build custom UI components for interacting with Notifi services.
 
 > - This package is specifically designed for [React based applications](https://www.robinwieruch.de/react-starter/) .
-> - Respective example package: [@notifi-network/notifi-react-example-v2](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-react-example-v2)
-> - This package is a implementation of the [@notifi-network/notifi-frontend-client](#notifi-frontend-client) package.
+> - Example implementation: [@notifi-network/notifi-react-example-v2](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-react-example-v2)
+> - This package is built on top of the [@notifi-network/notifi-frontend-client](#notifi-frontend-client) package.
 > - Type documentation: [Notifi React](https://docs.notifi.network/notifi-sdk-ts/notifi-react/modules.html)
 
 #### Notifi Node
 
-[@notifi-network/notifi-node](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-node) package is used from a NodeJS server side. Dapp owners can implement the off-chain parsing logics and send notifications to their users.
+The [@notifi-network/notifi-node](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-node) package is designed for use on the Node.js server side. It enables dApp owners to implement off-chain log parsing logic and send notifications to their users.
 
-> Respective example packages: [@notifi-network/notifi-node-sample](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-node-sample)
+> Example implementation: [@notifi-network/notifi-node-sample](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-node-sample)
 > Type documentation: [Notifi Node](https://docs.notifi.network/notifi-sdk-ts/notifi-node/modules.html)
 
 #### Notifi GraphQL
 
-[@notifi-network/notifi-graphql](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-graphql), powered by [graphql-codegen](https://the-guild.dev/graphql/codegen/docs/getting-started), serves as a GraphQL client that provides the necessary types and queries to interact with Notifi services.
-This is particularly useful for developers who want to build their services (SDK) on top of Notifi services.
+The [@notifi-network/notifi-graphql](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-graphql), powered by [graphql-codegen](https://the-guild.dev/graphql/codegen/docs/getting-started), is a GraphQL client that provides the necessary types and queries for interacting with Notifi services.
+This package is particularly useful for developers looking to build custom services (SDKs) on top of Notifi's infrastructure.
 
-> The implementation of `@notifi-network/notifi-graphql`: [@notifi-network/notifi-frontend-client](#notifi-frontend-client)
-> Type documentation: [Notifi GraphQL](https://docs.notifi.network/notifi-sdk-ts/notifi-graphql/modules.html)
+> - Example implementation:: [@notifi-network/notifi-frontend-client](#notifi-frontend-client)
+> - Type documentation: [Notifi GraphQL](https://docs.notifi.network/notifi-sdk-ts/notifi-graphql/modules.html)
 
 #### Notifi Web Push Service Worker (Coming soon)
 
-[@notifi-network/notifi-web-push-service-worker](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-web-push-service-worker) package introduces a [Service Worker](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API) that handles the browser push notification subscription.
-This is useful for the cross platform applications which adopt the Progressive Web App (PWA) architecture.
+The [@notifi-network/notifi-web-push-service-worker](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-web-push-service-worker) package provides a [Service Worker](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API) to manage browser push notification subscriptions.
+This is particularly useful for cross-platform applications that follow the Progressive Web App (PWA) architecture.
 
-> Respective example packages: [@notifi-network/notifi-pwa-example](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-pwa-example)
+> Example implementation: [@notifi-network/notifi-pwa-example](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-pwa-example)
 
 <br/>
 <br/>
