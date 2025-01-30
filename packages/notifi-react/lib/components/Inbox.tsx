@@ -67,7 +67,10 @@ export const Inbox: React.FC<InboxProps> = (props) => {
           />
         ) : null}
         {inboxView === InboxView.InboxDiscover ? (
-          <InboxDiscover inboxView={inboxView} />
+          <InboxDiscover
+            inboxView={inboxView}
+            copy={props.copy?.InboxDiscover}
+          />
         ) : null}
         {inboxView === InboxView.InboxConfigTargetList ? (
           <InboxConfigTargetList
