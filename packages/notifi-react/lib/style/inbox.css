@@ -147,3 +147,21 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* InboxDiscover styles */
+.notifi-inbox-discover {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.notifi-inbox-discover-iframe {
+  height: 100%;
+  width: 100%;
+}
+
+.notifi-inbox-discover-iframe.isLoading {
+  display: none;
+}
