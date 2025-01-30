@@ -47,6 +47,7 @@ export type NotifiCardModalProps = Readonly<{
   }>;
   darkMode?: boolean;
   globalCtas?: GlobalCtas;
+  isDiscoverViewEnabled?: boolean;
 }>;
 
 export type CardModalView = 'connect' | 'expiry' | 'ftu' | 'Inbox';
@@ -214,6 +215,7 @@ export const NotifiCardModal: React.FC<NotifiCardModalProps> = (props) => {
           classNames={props.classNames?.Inbox}
           copy={props.copy?.Inbox}
           navHeaderRightCta={navHeaderRightCta}
+          isDiscoverViewEnabled={props.isDiscoverViewEnabled}
         />
       ) : null}
     </div>

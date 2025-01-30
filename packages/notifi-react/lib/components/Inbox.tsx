@@ -10,6 +10,7 @@ import {
   InboxConfigTargetListProps,
 } from './InboxConfigTargetList';
 import { InboxConfigTopic, InboxConfigTopicProps } from './InboxConfigTopic';
+import { InboxDiscover, InboxDiscoverProps } from './InboxDiscover';
 import { InboxHistory, InboxHistoryProps } from './InboxHistory';
 import { InboxNavTabs, InboxNavTabsProps } from './InboxNavTabs';
 import { NavHeaderRightCta } from './NavHeader';
@@ -29,9 +30,10 @@ export type InboxProps = {
     InboxConfigTargetEdit?: InboxConfigTargetEditProps['copy'];
     InboxConfigTargetList?: InboxConfigTargetListProps['copy'];
     InboxConfigTopic?: InboxConfigTopicProps['copy'];
-    // TODO
+    InboxDiscover?: InboxDiscoverProps['copy'];
   };
   navHeaderRightCta?: NavHeaderRightCta;
+  isDiscoverViewEnabled?: boolean;
 };
 
 export enum InboxView {
@@ -39,6 +41,7 @@ export enum InboxView {
   InboxConfigTopic = 'inbox-config-topic',
   InboxConfigTargetList = 'inbox-config-target-list',
   InboxConfigTargetEdit = 'inbox-config-target-edit',
+  InboxDiscover = 'inbox-discover',
 }
 
 export const Inbox: React.FC<InboxProps> = (props) => {
@@ -63,6 +66,12 @@ export const Inbox: React.FC<InboxProps> = (props) => {
             navHeaderRightCta={props.navHeaderRightCta}
           />
         ) : null}
+        {inboxView === InboxView.InboxDiscover ? (
+          <InboxDiscover
+            inboxView={inboxView}
+            copy={props.copy?.InboxDiscover}
+          />
+        ) : null}
         {inboxView === InboxView.InboxConfigTargetList ? (
           <InboxConfigTargetList
             {...{ setInboxView }}
@@ -85,6 +94,7 @@ export const Inbox: React.FC<InboxProps> = (props) => {
           setInboxView={setInboxView}
           inboxView={inboxView}
           classNames={props.classNames?.InboxNavTabs}
+          isDiscoverViewEnabled={props.isDiscoverViewEnabled}
         />
       </div>
     </div>
