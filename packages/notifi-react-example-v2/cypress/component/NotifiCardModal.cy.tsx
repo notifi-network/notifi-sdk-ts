@@ -66,7 +66,7 @@ describe('NotifiCardModal First Time User Test', () => {
   });
 
   it('FTU flow - Connect view', () => {
-    cy.mountCardModal(true);
+    cy.mountCardModal({ isRandomMnemonic: true });
 
     cy.wait('@gqlFindTenantConfigQuery').then(({ response }) => {
       if (!response) throw new Error('FTU flow - Connect view: No response');
@@ -84,7 +84,7 @@ describe('NotifiCardModal First Time User Test', () => {
   });
 
   it('FTU flow -isTargetRequired: FtuTargetEdit & FtuTargetList', () => {
-    cy.mountCardModal(true);
+    cy.mountCardModal({ isRandomMnemonic: true });
     cy.overrideCardConfig({
       isContactInfoRequired: true,
       contactInfo: {
@@ -187,7 +187,7 @@ describe('NotifiCardModal First Time User Test', () => {
   });
 
   it('FTU flow - isTargetNotRequired: FtuAlertEdit', () => {
-    cy.mountCardModal(true);
+    cy.mountCardModal({ isRandomMnemonic: true });
     cy.overrideCardConfig({
       isContactInfoRequired: false,
     });
@@ -345,5 +345,29 @@ describe('NotifiCardModal Inbox Test', () => {
       .eq(1)
       .click();
     cy.get('.notifi-target-state-banner-verify').should('exist');
+  });
+
+  it('INBOX flow - Optional discover view', () => {
+    cy.overrideTargetGroup(false);
+    cy.mountCardModal({ isDiscoverViewEnabled: true });
+    cy.wait('@gqlFindTenantConfigQuery');
+
+    cy.get('[data-cy="notifi-connect-button"]').should('exist').click();
+    // #1 - Connect view (Connect.tsx): Click on connect button, the following queries should be made
+    cy.wait('@gqlLogInFromDappMutation');
+    cy.wait('@gqlFetchFusionDataQuery');
+    // NOTE: Initial fetch after logging in. The following requests are triggered by the effect of frontendClientStatus.isAuthenticated (after logging in)
+    cy.wait('@gqlGetUserSettingsQuery'); // --> NotifiUserSettingContext
+    cy.wait('@gqlGetFusionNotificationHistoryQuery'); // --> NotifiHistoryContext
+    cy.wait('@gqlGetUnreadNotificationHistoryCountQuery'); // --> NotifiHistoryContext
+    cy.wait('@gqlFetchFusionDataQuery'); // --> NotifiTargetContext
+    cy.wait('@gqlFetchFusionDataQuery'); // --> NotifiTopicContext
+    // #2 - Check if nav tabs exist & click on gear tab
+    cy.get('[data-cy="notifi-inbox-nav-tabs"]')
+      .should('exist')
+      .children('div')
+      .eq(1)
+      .click();
+    cy.get('.notifi-inbox-discover-iframe').should('exist');
   });
 });

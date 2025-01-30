@@ -133,6 +133,7 @@ const NotifiComponentExample = () => {
           <NotifiCardModal
             darkMode={searchParams.get('scene') === 'light' ? false : true}
             copy={copy}
+            isDiscoverViewEnabled
           />
         </div>
       ) : null}
