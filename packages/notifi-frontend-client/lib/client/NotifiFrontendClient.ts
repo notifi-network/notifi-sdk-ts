@@ -10,10 +10,8 @@ import {
 } from '../configuration';
 import type {
   CardConfigItemV1,
-  EventTypeItem,
   FusionEventTopic,
   TenantConfig,
-  WalletBalanceEventTypeItem,
 } from '../models';
 import {
   APTOS_BLOCKCHAINS,
@@ -37,9 +35,7 @@ import {
   createInMemoryStorageDriver,
   createLocalForageStorageDriver,
 } from '../storage';
-import { notNullOrEmpty, packFilterOptions } from '../utils';
-import { areIdsEqual } from '../utils/areIdsEqual';
-import { ensureSourceAndFilters, normalizeHexString } from './ensureSource';
+import { areIdsEqual, normalizeHexString, notNullOrEmpty } from '../utils';
 import {
   ensureDiscord,
   ensureEmail,
@@ -1106,19 +1102,6 @@ export class NotifiFrontendClient {
     return result;
   }
 
-  async updateWallets() {
-    const walletEventTypeItem: WalletBalanceEventTypeItem = {
-      name: 'User Wallets',
-      type: 'walletBalance',
-    };
-    const result = await ensureSourceAndFilters(
-      this._service,
-      walletEventTypeItem,
-      {},
-    );
-    return result;
-  }
-
   async getUnreadNotificationHistoryCount(
     cardId?: string,
   ): Promise<
@@ -1382,44 +1365,6 @@ export class NotifiFrontendClient {
 
   /** ⬇ Deprecated methods */
 
-  /** @deprecated only for legacy infrastructure */
-  async getSourceGroups(): Promise<
-    ReadonlyArray<Types.SourceGroupFragmentFragment>
-  > {
-    const query = await this._service.getSourceGroups({});
-    const results = query.sourceGroup?.filter(notNullOrEmpty) ?? [];
-    return results;
-  }
-
-  /**
-   * @deprecated use the return type of addEventListener & removeEventListener instead.
-   * @description never use this when having multiple gql subscription in the app. This case, dispose websocket could break other subscriptions.
-   */
-  async wsDispose() {
-    this._service.wsDispose();
-  }
-
-  /**
-   * @deprecated Use getFusionNotificationHistory instead
-   */
-  async getNotificationHistory(
-    variables: Types.GetNotificationHistoryQueryVariables,
-  ): Promise<
-    Readonly<{
-      pageInfo: Types.PageInfoFragmentFragment;
-      nodes: ReadonlyArray<Types.NotificationHistoryEntryFragmentFragment>;
-    }>
-  > {
-    const query = await this._service.getNotificationHistory(variables);
-    const nodes = query.notificationHistory?.nodes;
-    const pageInfo = query.notificationHistory?.pageInfo;
-    if (nodes === undefined || pageInfo === undefined) {
-      throw new Error('Failed to fetch notification history');
-    }
-
-    return { pageInfo, nodes };
-  }
-
   /**
    * @deprecated use addEventListener instead.
    */
@@ -1433,70 +1378,6 @@ export class NotifiFrontendClient {
       onError,
       onComplete,
     );
-  }
-
-  /** @deprecated legacy infrastructure, use ensureFusionAlerts instead */
-  async ensureAlert({
-    eventType,
-    inputs,
-    targetGroupName = 'Default',
-  }: Readonly<{
-    eventType: EventTypeItem;
-    inputs: Record<string, unknown>;
-    targetGroupName?: string;
-  }>): Promise<Types.AlertFragmentFragment> {
-    const [alertsQuery, targetGroupsQuery, sourceAndFilters] =
-      await Promise.all([
-        this._service.getAlerts({}),
-        this._service.getTargetGroups({}),
-        ensureSourceAndFilters(this._service, eventType, inputs),
-      ]);
-
-    const targetGroup = targetGroupsQuery.targetGroup?.find(
-      (it) => it?.name === targetGroupName,
-    );
-    if (targetGroup === undefined) {
-      throw new Error('Target group does not exist');
-    }
-
-    const { sourceGroup, filter, filterOptions } = sourceAndFilters;
-    const packedOptions = packFilterOptions(filterOptions);
-
-    const existing = alertsQuery.alert?.find(
-      (it) => it !== undefined && it.name === eventType.name,
-    );
-
-    if (existing !== undefined) {
-      if (
-        existing.sourceGroup.id === sourceGroup.id &&
-        existing.targetGroup.id === targetGroup.id &&
-        existing.filter.id === filter.id &&
-        existing.filterOptions === packedOptions
-      ) {
-        return existing;
-      }
-
-      // Alerts are immutable, delete the existing instead
-      await this.deleteAlert({
-        id: existing.id,
-      });
-    }
-
-    const mutation = await this._service.createAlert({
-      name: eventType.name,
-      sourceGroupId: sourceGroup.id,
-      filterId: filter.id,
-      targetGroupId: targetGroup.id,
-      filterOptions: packedOptions,
-      groupName: 'managed',
-    });
-
-    const created = mutation.createAlert;
-    if (created === undefined) {
-      throw new Error('Failed to create alert');
-    }
-
-    return created;
   }
 
   /** @deprecated use fetchFusionData instead. This is for legacy  */
