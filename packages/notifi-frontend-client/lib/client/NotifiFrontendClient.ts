@@ -15,14 +15,6 @@ import type {
   TenantConfig,
   WalletBalanceEventTypeItem,
 } from '../models';
-import type { Authorization, NotifiStorage, Roles } from '../storage';
-import {
-  NotifiFrontendStorage,
-  createInMemoryStorageDriver,
-  createLocalForageStorageDriver,
-} from '../storage';
-import { notNullOrEmpty, packFilterOptions } from '../utils';
-import { areIdsEqual } from '../utils/areIdsEqual';
 import {
   APTOS_BLOCKCHAINS,
   AptosBlockchain,
@@ -38,7 +30,15 @@ import {
   isUsingCosmosBlockchain,
   isUsingEvmBlockchain,
   isUsingUnmaintainedBlockchain,
-} from './blockchains';
+} from '../models';
+import type { Authorization, NotifiStorage, Roles } from '../storage';
+import {
+  NotifiFrontendStorage,
+  createInMemoryStorageDriver,
+  createLocalForageStorageDriver,
+} from '../storage';
+import { notNullOrEmpty, packFilterOptions } from '../utils';
+import { areIdsEqual } from '../utils/areIdsEqual';
 import { ensureSourceAndFilters, normalizeHexString } from './ensureSource';
 import {
   ensureDiscord,

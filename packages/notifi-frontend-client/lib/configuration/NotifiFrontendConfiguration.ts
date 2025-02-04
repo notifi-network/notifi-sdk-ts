@@ -1,10 +1,6 @@
 import { Types } from '@notifi-network/notifi-graphql';
 
-import {
-  CosmosBlockchain,
-  EvmBlockchain,
-  isEvmBlockchain,
-} from '../client/blockchains';
+import { CosmosBlockchain, EvmBlockchain, isEvmBlockchain } from '../models';
 
 /* NOTE: type of argument to instantiate a NotifiFrontendClient */
 

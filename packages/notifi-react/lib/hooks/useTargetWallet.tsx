@@ -1,6 +1,6 @@
+import { isUsingEvmBlockchain } from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
 import { useClient } from '@xmtp/react-sdk';
-import { isUsingEvmBlockchain } from 'notifi-frontend-client/lib/client/blockchains';
 import React from 'react';
 
 import { useNotifiFrontendClientContext } from '../context';
