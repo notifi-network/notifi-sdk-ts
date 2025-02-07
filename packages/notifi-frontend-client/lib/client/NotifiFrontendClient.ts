@@ -23,6 +23,9 @@ import {
   SOLANA_BLOCKCHAINS,
   type SolanaBlockchain,
   type TenantConfig,
+  type TenantConfigMetadata,
+  type TenantConfigV2,
+  type TopicMetadata,
   type UnmaintainedBlockchain,
   isAptosBlockchain,
   isCosmosBlockchain,
@@ -1134,6 +1137,57 @@ export class NotifiFrontendClient {
         }
       })
       .filter((item): item is FusionEventTopic => !!item);
+
+    return { cardConfig, fusionEventTopics };
+  }
+
+  async fetchTenantConfigV2(
+    variables: FindSubscriptionCardParams,
+  ): Promise<TenantConfigV2> {
+    const query = await this._service.findTenantConfig({
+      input: {
+        ...variables,
+        tenant: this._configuration.tenantId,
+      },
+    });
+    const result = query.findTenantConfig;
+    if (result === undefined || !result.dataJson || !result.fusionEvents) {
+      throw new Error('Failed to find tenant config');
+    }
+
+    const tenantConfigJsonString = result.dataJson;
+    if (tenantConfigJsonString === undefined) {
+      throw new Error('Invalid config data');
+    }
+    // TODO: use validator method
+    const cardConfig = JSON.parse(
+      tenantConfigJsonString,
+    ) as TenantConfigMetadata;
+    const fusionEventDescriptors = result.fusionEvents;
+
+    if (!cardConfig || cardConfig.version !== 'v2' || !fusionEventDescriptors)
+      throw new Error('Unsupported config format');
+
+    const fusionEventDescriptorMap = new Map<
+      string,
+      Types.FusionEventDescriptor
+    >(fusionEventDescriptors.map((item) => [item?.name ?? '', item ?? {}]));
+
+    fusionEventDescriptorMap.delete('');
+
+    const fusionEventTopics: TopicMetadata[] = cardConfig.eventTypes
+      .map((eventType) => {
+        if (eventType.type === 'fusion') {
+          const fusionEventDescriptor = fusionEventDescriptorMap.get(
+            eventType.name,
+          );
+          return {
+            uiConfig: eventType,
+            fusionEventDescriptor,
+          };
+        }
+      })
+      .filter((item): item is TopicMetadata => !!item);
 
     return { cardConfig, fusionEventTopics };
   }

@@ -201,13 +201,16 @@ export type InputItem = Readonly<{
 
 export type InputsConfig = ReadonlyArray<InputItem>;
 
+// export type ContactInfo = Readonly<{
+//   active: boolean;
+// }>;
+// export type EmailContactInfo = ContactInfo;
+// export type DiscordContactInfo = ContactInfo;
+// export type SlackContactInfo = ContactInfo;
+// export type WalletContactInfo = ContactInfo;
 export type ContactInfo = Readonly<{
   active: boolean;
 }>;
-export type EmailContactInfo = ContactInfo;
-export type DiscordContactInfo = ContactInfo;
-export type SlackContactInfo = ContactInfo;
-export type WalletContactInfo = ContactInfo;
 
 export type CountryCode = string;
 
@@ -226,15 +229,18 @@ export type WebhookContactInfo = ContactInfo &
     headers: ValueOrRef<WebhookHeaders>;
   }>;
 
-export type ContactInfoConfig = Readonly<{
-  email: EmailContactInfo;
-  sms: SmsContactInfo;
-  telegram: TelegramContactInfo;
-  webhook: WebhookContactInfo;
-  discord: DiscordContactInfo;
-  slack: SlackContactInfo;
-  wallet: WalletContactInfo;
-}>;
+// export type ContactInfoConfig = Readonly<{
+//   email: EmailContactInfo;
+//   sms: SmsContactInfo;
+//   telegram: TelegramContactInfo;
+//   webhook: WebhookContactInfo;
+//   discord: DiscordContactInfo;
+//   slack: SlackContactInfo;
+//   wallet: WalletContactInfo;
+// }>;
+export type Target = // TODO: Remove type form notifi-react context. Use this instead
+  'email' | 'sms' | 'telegram' | 'discord' | 'slack' | 'wallet';
+export type ContactInfoConfig = Record<Target, ContactInfo>;
 
 export type CardConfigItemV1 = Readonly<{
   version: 'v1';
@@ -274,4 +280,39 @@ export type FusionEventTopic = {
 export type TenantConfig = {
   cardConfig: CardConfigType; // Legacy
   fusionEventTopics: ReadonlyArray<FusionEventTopic>;
+};
+
+export type TenantConfigV2 = {
+  cardConfig: TenantConfigMetadata;
+  fusionEventTopics: Array<TopicMetadata>;
+};
+
+// export const isTenantConfigV2 = (
+//   tenantInfo: ,
+// ): tenantInfo is TenantConfigV2 =>
+//   (tenantInfo as TenantConfigV2).cardConfig.version === 'v2';
+
+export type TopicMetadata = {
+  uiConfig: TopicUiConfig;
+  fusionEventDescriptor: Types.FusionEventDescriptor;
+};
+
+export type TopicUiConfig = {
+  name: string;
+  type: 'fusion';
+  topicGroupName?: string;
+  index?: number;
+  fusionEventId: string; // TODO: need further refactor (changed from ValueOrRef<string> to string)
+  tooltipContent?: string;
+  optOutAtSignup?: boolean;
+  displayNameOverride?: string;
+};
+
+/** v2 of CardConfigItemV1 (rename) */
+export type TenantConfigMetadata = {
+  version: 'v2'; // TODO: TBD
+  id: string;
+  contactInfo: ContactInfoConfig;
+  isContactInfoRequired?: boolean;
+  eventTypes: Array<TopicUiConfig>;
 };
