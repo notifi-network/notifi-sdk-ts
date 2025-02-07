@@ -1,6 +1,6 @@
 import { Types } from '@notifi-network/notifi-graphql';
 
-import { ValueOrRef } from './SubscriptionCardConfig';
+import { ValueOrRef } from './TenantConfig';
 
 export type FusionEventMetadata = {
   uiConfigOverride?: {

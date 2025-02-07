@@ -1,6 +1,8 @@
 import {
   CardConfigItemV1,
   FusionEventTopic,
+  TenantConfigMetadata,
+  TopicMetadata,
 } from '@notifi-network/notifi-frontend-client';
 import React, {
   FC,
@@ -14,12 +16,14 @@ import React, {
 import { useNotifiFrontendClientContext } from './NotifiFrontendClientContext';
 
 export type NotifiTenantConfigContextType = {
-  cardConfig: CardConfigItemV1 | null;
-  fusionEventTopics: ReadonlyArray<FusionEventTopic>;
+  cardConfig: CardConfigItemV1 | TenantConfigMetadata | null;
+  fusionEventTopics: ReadonlyArray<FusionEventTopic | TopicMetadata>;
   inputs: Record<string, unknown>;
   isLoading: boolean;
   error: Error | null;
-  getFusionTopic: (fusionEventId: string) => FusionEventTopic | undefined;
+  getFusionTopic: (
+    fusionEventId: string,
+  ) => FusionEventTopic | TopicMetadata | undefined;
 };
 
 const NotifiTenantConfigContext = createContext<NotifiTenantConfigContextType>(
@@ -40,9 +44,11 @@ export const NotifiTenantConfigContextProvider: FC<
     useNotifiFrontendClientContext();
   const isInitialLoaded = React.useRef(false);
 
-  const [cardConfig, setCardConfig] = useState<CardConfigItemV1 | null>(null);
+  const [cardConfig, setCardConfig] = useState<
+    CardConfigItemV1 | TenantConfigMetadata | null
+  >(null);
   const [fusionEventTopics, setFusionEventTopics] = useState<
-    ReadonlyArray<FusionEventTopic>
+    ReadonlyArray<FusionEventTopic | TopicMetadata>
   >([]);
   useEffect(() => {
     if (!frontendClientStatus.isInitialized || isInitialLoaded.current) return;
