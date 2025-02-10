@@ -8,30 +8,38 @@ import {
   FusionToggleEventTypeItem,
   InputObject,
   LabelEventTypeItem,
+  LabelUiConfig,
+  TopicMetadata,
+  TopicUiConfig,
   UiType,
   UserInputParam,
   ValueType,
   objectKeys,
 } from '@notifi-network/notifi-frontend-client';
 
-export type LabelWithSubTopicsEventTypeItem = LabelEventTypeItem & {
-  subTopics: Array<FusionToggleEventTypeItem>;
+export type LabelWithSubTopicsEventTypeItem = (
+  | LabelUiConfig
+  | LabelEventTypeItem
+) & {
+  subTopics: Array<FusionToggleEventTypeItem | TopicUiConfig>;
 };
 
-type ValidTypeItem = FusionToggleEventTypeItem | LabelEventTypeItem;
+type ValidTypeItem =
+  | FusionToggleEventTypeItem
+  | LabelEventTypeItem
+  | TopicUiConfig
+  | LabelUiConfig;
 
 const validateEventType = (
-  eventType: EventTypeItem,
+  eventType: EventTypeItem | LabelEventTypeItem | TopicUiConfig | LabelUiConfig,
 ): eventType is ValidTypeItem => {
-  // NOTE: now only support toggle fusion event type.
-  return (
-    (eventType.type === 'fusion' && eventType.selectedUIType === 'TOGGLE') ||
-    eventType.type === 'label'
-  );
+  return eventType.type === 'fusion' || eventType.type === 'label';
 };
 
 export const categorizeTopics = (
-  topics: ReadonlyArray<EventTypeItem>,
+  topics: ReadonlyArray<
+    EventTypeItem | LabelEventTypeItem | TopicUiConfig | LabelUiConfig
+  >,
   unCategorizedTopicsLabelName?: string,
 ) => {
   const categorizedEventTypeItems: LabelWithSubTopicsEventTypeItem[] = [];
@@ -88,7 +96,7 @@ export const getUiConfigOverride = (
 };
 
 export const getFusionEventMetadata = (
-  topic: FusionEventTopic,
+  topic: FusionEventTopic | TopicMetadata,
 ): FusionEventMetadata | null => {
   const parsedMetadata = JSON.parse(
     topic.fusionEventDescriptor.metadata ?? '{}',
