@@ -14,7 +14,7 @@ export type SmsContactInfo = ContactInfo &
   }>;
 
 export type Target = // TODO: Remove type form notifi-react context. Use this instead
-  'email' | 'sms' | 'telegram' | 'discord' | 'slack' | 'wallet';
+  'email' | 'sms' | 'telegram' | 'discord' | 'slack' | 'wallet' | 'browser';
 export type ContactInfoConfig = Omit<Record<Target, ContactInfo>, 'sms'> & {
   sms: SmsContactInfo;
 };
@@ -32,6 +32,7 @@ export type TopicMetadata = {
 /** v2 of CardConfigItemV1 (rename) */
 export type TenantConfigMetadata = Readonly<{
   version: 'v2'; // TODO: TBD
+  name: string;
   id: string;
   contactInfo: ContactInfoConfig;
   isContactInfoRequired?: boolean;

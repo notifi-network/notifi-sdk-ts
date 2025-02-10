@@ -1,6 +1,7 @@
 import {
   FusionEventTopic,
   FusionFilterOptions,
+  TopicMetadata,
   UserInputOptions,
   resolveObjectArrayRef,
   resolveStringRef,
@@ -226,7 +227,7 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
   };
 
   const subscribeAlertsDefault = async (
-    topics: ReadonlyArray<FusionEventTopic>,
+    topics: ReadonlyArray<FusionEventTopic | TopicMetadata>,
     targetGroupId: string,
   ) => {
     const createAlertInputs: Types.CreateFusionAlertInput[] = [];
@@ -269,9 +270,12 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
             ? resolveObjectArrayRef('', subscriptionValueOrRef, inputs)
             : null;
 
+          // NOTE: For backward compatibility (v1 tenant config)
           const legacySubscriptionValue = resolveStringRef(
             topic.uiConfig.name,
-            topic.uiConfig.sourceAddress, // NOTE: Deprecated, always the hardcoded '*'
+            'sourceAddress' in topic.uiConfig
+              ? topic.uiConfig.sourceAddress // V1 tenant metadata --> Deprecated, always the hardcoded '*'
+              : { type: 'value', value: '*' }, // fallback to '*' when neither sourceAddress nor subscriptionValueOrRef is provided
             inputs,
           );
 
