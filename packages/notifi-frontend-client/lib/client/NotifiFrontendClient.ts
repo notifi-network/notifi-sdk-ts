@@ -1196,6 +1196,8 @@ export class NotifiFrontendClient {
 
     if (!cardConfig || !fusionEventDescriptors)
       throw new Error('Unsupported config format');
+    if (!['v1', 'v2'].includes(cardConfig.version))
+      throw new Error('Unsupported config version');
 
     const fusionEventDescriptorMap = new Map<
       string,
@@ -1204,39 +1206,37 @@ export class NotifiFrontendClient {
 
     fusionEventDescriptorMap.delete('');
 
+    const topicMetadatas = cardConfig.eventTypes.map((eventType) => {
+      if (eventType.type === 'fusion') {
+        const fusionEventDescriptor = fusionEventDescriptorMap.get(
+          eventType.name,
+        );
+        return {
+          uiConfig: eventType,
+          fusionEventDescriptor,
+        };
+      }
+    });
+
     if (cardConfig.version === 'v1') {
-      const fusionEventTopics: FusionEventTopic[] = cardConfig.eventTypes
-        .map((eventType) => {
-          if (eventType.type === 'fusion') {
-            const fusionEventDescriptor = fusionEventDescriptorMap.get(
-              eventType.name,
-            );
-            return {
-              uiConfig: eventType,
-              fusionEventDescriptor,
-            };
-          }
-        })
-        .filter((item): item is FusionEventTopic => !!item);
-
-      return { cardConfig, fusionEventTopics };
+      // V1 deprecated
+      const topicMetadatasV1 = topicMetadatas.filter(
+        (item): item is FusionEventTopic => !!item,
+      );
+      return {
+        cardConfig,
+        fusionEventTopics: topicMetadatasV1,
+      };
     }
-    // V2
-    const fusionEventTopics = cardConfig.eventTypes
-      .map((eventType) => {
-        if (eventType.type === 'fusion') {
-          const fusionEventDescriptor = fusionEventDescriptorMap.get(
-            eventType.name,
-          );
-          return {
-            uiConfig: eventType,
-            fusionEventDescriptor,
-          };
-        }
-      })
-      .filter((item): item is TopicMetadata => !!item);
 
-    return { cardConfig, fusionEventTopics };
+    // V2
+    const topicMetadatasV2 = topicMetadatas.filter(
+      (item): item is TopicMetadata => !!item,
+    );
+    return {
+      cardConfig,
+      fusionEventTopics: topicMetadatasV2,
+    };
   }
 
   async copyAuthorization(config: NotifiFrontendConfiguration) {

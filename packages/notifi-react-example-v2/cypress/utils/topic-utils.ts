@@ -11,8 +11,10 @@ export const getTopicList = (
   );
   const fusionEventDescriptors =
     findTenantConfigResponse.body.data.findTenantConfig.fusionEvents;
-  if (!cardConfig || cardConfig.version !== 'v1' || !fusionEventDescriptors)
+  if (!cardConfig || !fusionEventDescriptors)
     throw new Error('Unsupported config format');
+  if (!['v1', 'v2'].includes(cardConfig.version))
+    throw new Error('Unsupported config version');
 
   const fusionEventDescriptorMap = new Map<string, Types.FusionEventDescriptor>(
     fusionEventDescriptors.map((item: any) => [item?.name ?? '', item ?? {}]),
