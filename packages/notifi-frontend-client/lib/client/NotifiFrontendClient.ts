@@ -38,7 +38,12 @@ import {
   createInMemoryStorageDriver,
   createLocalForageStorageDriver,
 } from '../storage';
-import { areIdsEqual, normalizeHexString, notNullOrEmpty } from '../utils';
+import {
+  areIdsEqual,
+  normalizeHexString,
+  notNullOrEmpty,
+  parseTenantConfig,
+} from '../utils';
 import {
   ensureDiscord,
   ensureEmail,
@@ -1188,16 +1193,11 @@ export class NotifiFrontendClient {
     if (tenantConfigJsonString === undefined) {
       throw new Error('Invalid config data');
     }
-    // TODO: use validator method
-    const cardConfig = JSON.parse(tenantConfigJsonString) as
-      | TenantConfigMetadata
-      | CardConfigItemV1;
-    const fusionEventDescriptors = result.fusionEvents;
 
-    if (!cardConfig || !fusionEventDescriptors)
-      throw new Error('Unsupported config format');
-    if (!['v1', 'v2'].includes(cardConfig.version))
-      throw new Error('Unsupported config version');
+    const tenantConfig = parseTenantConfig(tenantConfigJsonString);
+    const fusionEventDescriptors = result.fusionEvents;
+    if (!fusionEventDescriptors)
+      throw new Error('fusionEventDescriptors not found');
 
     const fusionEventDescriptorMap = new Map<
       string,
@@ -1206,7 +1206,7 @@ export class NotifiFrontendClient {
 
     fusionEventDescriptorMap.delete('');
 
-    const topicMetadatas = cardConfig.eventTypes.map((eventType) => {
+    const topicMetadatas = tenantConfig.eventTypes.map((eventType) => {
       if (eventType.type === 'fusion') {
         const fusionEventDescriptor = fusionEventDescriptorMap.get(
           eventType.name,
@@ -1218,13 +1218,13 @@ export class NotifiFrontendClient {
       }
     });
 
-    if (cardConfig.version === 'v1') {
+    if (tenantConfig.version === 'v1') {
       // V1 deprecated
       const topicMetadatasV1 = topicMetadatas.filter(
         (item): item is FusionEventTopic => !!item,
       );
       return {
-        cardConfig,
+        cardConfig: tenantConfig, // NOTE: cardConfig is legacy naming of tenantConfig
         fusionEventTopics: topicMetadatasV1,
       };
     }
@@ -1234,7 +1234,7 @@ export class NotifiFrontendClient {
       (item): item is TopicMetadata => !!item,
     );
     return {
-      cardConfig,
+      cardConfig: tenantConfig, // NOTE: cardConfig is legacy naming of tenantConfig
       fusionEventTopics: topicMetadatasV2,
     };
   }
