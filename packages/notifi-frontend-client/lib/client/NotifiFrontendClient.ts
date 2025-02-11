@@ -12,7 +12,6 @@ import type {
   CardConfigItemV1,
   FusionEventTopic,
   TenantConfig,
-  TenantConfigMetadata,
   TenantConfigV2,
   TopicMetadata,
 } from '../models';
@@ -298,6 +297,7 @@ export type SignMessageResult = { signature: string; signedMessage: string };
 
 export type AuthenticateResult = SignMessageResult | OidcCredentials;
 
+/**@deprecated use TenantConfigMetadata */
 export type CardConfigType = CardConfigItemV1;
 
 type BeginLoginProps = Omit<Types.BeginLogInByTransactionInput, 'dappAddress'>;
@@ -330,8 +330,6 @@ const CHAINS_WITH_LOGIN_WEB3 = [
   ...APTOS_BLOCKCHAINS,
   ...COSMOS_BLOCKCHAINS,
 ] as const;
-
-export type SupportedCardConfigType = CardConfigItemV1;
 
 export type UserState = Readonly<
   | {

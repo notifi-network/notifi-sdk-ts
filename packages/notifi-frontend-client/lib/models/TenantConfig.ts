@@ -58,7 +58,6 @@ export type TopicUiConfig = Readonly<{
   fusionEventId: string; // TODO: need further refactor (changed from ValueOrRef<string> to string)
   tooltipContent?: string;
   optOutAtSignup?: boolean;
-  displayNameOverride?: string;
 }>;
 
 export type LabelUiConfig = Readonly<{

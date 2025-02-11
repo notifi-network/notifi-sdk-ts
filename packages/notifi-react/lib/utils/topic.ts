@@ -71,7 +71,7 @@ export const categorizeTopics = (
 };
 
 export const getUserInputParams = (
-  topic: FusionEventTopic,
+  topic: FusionEventTopic | TopicMetadata,
 ): UserInputParam<UiType>[] => {
   const parsedMetadata = JSON.parse(
     topic.fusionEventDescriptor.metadata ?? '{}',
@@ -84,7 +84,7 @@ export const getUserInputParams = (
 };
 
 export const getUiConfigOverride = (
-  topic: FusionEventTopic,
+  topic: FusionEventTopic | TopicMetadata,
 ): FusionEventMetadata['uiConfigOverride'] => {
   const parsedMetadata = JSON.parse(
     topic.fusionEventDescriptor.metadata ?? '{}',
@@ -108,7 +108,7 @@ export const getFusionEventMetadata = (
 };
 
 export const getFusionFilter = (
-  topic: FusionEventTopic,
+  topic: FusionEventTopic | TopicMetadata,
 ): AlertFilter | null => {
   const parsedMetadata = JSON.parse(
     topic.fusionEventDescriptor.metadata ?? '{}',
@@ -119,7 +119,9 @@ export const getFusionFilter = (
   return null;
 };
 
-export const isTopicGroupValid = (topics: FusionEventTopic[]): boolean => {
+export const isTopicGroupValid = (
+  topics: (FusionEventTopic | TopicMetadata)[],
+): boolean => {
   // NOTE: Ensure all topics have no filters at the same time
   const isAllTopicWithoutFilters = topics.every(
     (topic) =>
