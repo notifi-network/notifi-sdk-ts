@@ -43,7 +43,7 @@ import {
   createInMemoryStorageDriver,
   createLocalForageStorageDriver,
 } from '../storage';
-import { notNullOrEmpty } from '../utils';
+import { notNullOrEmpty, parseTenantConfig } from '../utils';
 import { areIdsEqual } from '../utils/areIdsEqual';
 import { normalizeHexString } from '../utils/crypto';
 import {
@@ -313,6 +313,7 @@ export type SignMessageResult = { signature: string; signedMessage: string };
 
 export type AuthenticateResult = SignMessageResult | OidcCredentials;
 
+/**@deprecated use TenantConfigMetadata */
 export type CardConfigType = CardConfigItemV1;
 
 type BeginLoginProps = Omit<Types.BeginLogInByTransactionInput, 'dappAddress'>;
@@ -341,8 +342,6 @@ const CHAINS_WITH_LOGIN_WEB3 = [
   ...COSMOS_BLOCKCHAINS,
   ...SOLANA_BLOCKCHAINS,
 ] as const;
-
-export type SupportedCardConfigType = CardConfigItemV1;
 
 export type UserState = Readonly<
   | {
@@ -1110,14 +1109,11 @@ export class NotifiFrontendClient {
     if (tenantConfigJsonString === undefined) {
       throw new Error('Invalid config data');
     }
-    // TODO: use validator method
-    const cardConfig = JSON.parse(tenantConfigJsonString) as
-      | TenantConfigMetadata
-      | CardConfigItemV1;
-    const fusionEventDescriptors = result.fusionEvents;
 
-    if (!cardConfig || !fusionEventDescriptors)
-      throw new Error('Unsupported config format');
+    const tenantConfig = parseTenantConfig(tenantConfigJsonString);
+    const fusionEventDescriptors = result.fusionEvents;
+    if (!fusionEventDescriptors)
+      throw new Error('fusionEventDescriptors not found');
 
     const fusionEventDescriptorMap = new Map<
       string,
@@ -1126,39 +1122,37 @@ export class NotifiFrontendClient {
 
     fusionEventDescriptorMap.delete('');
 
-    if (cardConfig.version === 'v1') {
-      const fusionEventTopics: FusionEventTopic[] = cardConfig.eventTypes
-        .map((eventType) => {
-          if (eventType.type === 'fusion') {
-            const fusionEventDescriptor = fusionEventDescriptorMap.get(
-              eventType.name,
-            );
-            return {
-              uiConfig: eventType,
-              fusionEventDescriptor,
-            };
-          }
-        })
-        .filter((item): item is FusionEventTopic => !!item);
+    const topicMetadatas = tenantConfig.eventTypes.map((eventType) => {
+      if (eventType.type === 'fusion') {
+        const fusionEventDescriptor = fusionEventDescriptorMap.get(
+          eventType.name,
+        );
+        return {
+          uiConfig: eventType,
+          fusionEventDescriptor,
+        };
+      }
+    });
 
-      return { cardConfig, fusionEventTopics };
+    if (tenantConfig.version === 'v1') {
+      // V1 deprecated
+      const topicMetadatasV1 = topicMetadatas.filter(
+        (item): item is FusionEventTopic => !!item,
+      );
+      return {
+        cardConfig: tenantConfig, // NOTE: cardConfig is legacy naming of tenantConfig
+        fusionEventTopics: topicMetadatasV1,
+      };
     }
-    // V2
-    const fusionEventTopics = cardConfig.eventTypes
-      .map((eventType) => {
-        if (eventType.type === 'fusion') {
-          const fusionEventDescriptor = fusionEventDescriptorMap.get(
-            eventType.name,
-          );
-          return {
-            uiConfig: eventType,
-            fusionEventDescriptor,
-          };
-        }
-      })
-      .filter((item): item is TopicMetadata => !!item);
 
-    return { cardConfig, fusionEventTopics };
+    // V2
+    const topicMetadatasV2 = topicMetadatas.filter(
+      (item): item is TopicMetadata => !!item,
+    );
+    return {
+      cardConfig: tenantConfig, // NOTE: cardConfig is legacy naming of tenantConfig
+      fusionEventTopics: topicMetadatasV2,
+    };
   }
 
   async copyAuthorization(config: NotifiFrontendConfiguration) {

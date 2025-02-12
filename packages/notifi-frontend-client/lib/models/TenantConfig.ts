@@ -13,9 +13,20 @@ export type SmsContactInfo = ContactInfo &
     supportedCountryCodes: ReadonlyArray<CountryCode>;
   }>;
 
-export type Target = // TODO: Remove type form notifi-react context. Use this instead
-  'email' | 'sms' | 'telegram' | 'discord' | 'slack' | 'wallet';
-export type ContactInfoConfig = Omit<Record<Target, ContactInfo>, 'sms'> & {
+/** Difference from Target in NotifiTargetContext is `sms` (phoneNumber in NotifiTargetContext) --> consolidate in the future */
+export type TenantConfigTarget =
+  | 'email'
+  | 'sms'
+  | 'telegram'
+  | 'discord'
+  | 'slack'
+  | 'wallet'
+  | 'browser';
+
+export type ContactInfoConfig = Omit<
+  Record<TenantConfigTarget, ContactInfo>,
+  'sms'
+> & {
   sms: SmsContactInfo;
 };
 
@@ -31,7 +42,8 @@ export type TopicMetadata = {
 
 /** v2 of CardConfigItemV1 (rename) */
 export type TenantConfigMetadata = Readonly<{
-  version: 'v2'; // TODO: TBD
+  version: 'v2';
+  name: string;
   id: string;
   contactInfo: ContactInfoConfig;
   isContactInfoRequired?: boolean;
@@ -46,7 +58,6 @@ export type TopicUiConfig = Readonly<{
   fusionEventId: string; // TODO: need further refactor (changed from ValueOrRef<string> to string)
   tooltipContent?: string;
   optOutAtSignup?: boolean;
-  displayNameOverride?: string;
 }>;
 
 export type LabelUiConfig = Readonly<{
@@ -56,7 +67,6 @@ export type LabelUiConfig = Readonly<{
   optOutAtSignup?: boolean;
 }>;
 
-// Move to /utils
 export type ValueOrRef<ValueType> =
   | Readonly<{
       type: 'ref';
