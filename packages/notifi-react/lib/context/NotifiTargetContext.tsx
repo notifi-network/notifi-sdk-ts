@@ -601,13 +601,20 @@ export const NotifiTargetContextProvider: FC<
 
   const refreshTelegramTarget = useCallback(
     async (telegramTarget?: Types.TelegramTargetFragmentFragment) => {
-      if (!!telegramTarget && !telegramTarget.isConfirmed) {
-        updateTargetInfoPrompt('telegram', {
-          type: 'cta',
-          message: 'Set Up',
-          onClick: () => window.open(telegramTarget.confirmationUrl, '_blank'),
-        });
-        setTargetData((prev) => ({
+      if (!!telegramTarget) {
+        const infoPrompt: TargetInfoPrompt = telegramTarget.isConfirmed
+          ? {
+              type: 'message',
+              message: 'Verified',
+            }
+          : {
+              type: 'cta',
+              message: 'Set Up',
+              onClick: () =>
+                window.open(telegramTarget.confirmationUrl, '_blank'),
+            };
+        updateTargetInfoPrompt('telegram', infoPrompt);
+        return setTargetData((prev) => ({
           ...prev,
           telegram: {
             useTelegram: true,
@@ -615,21 +622,15 @@ export const NotifiTargetContextProvider: FC<
             isAvailable: toggleTargetAvailability?.telegram ?? true,
           },
         }));
-      } else if (!!telegramTarget && telegramTarget.isConfirmed) {
-        updateTargetInfoPrompt('telegram', {
-          type: 'message',
-          message: 'Verified',
-        });
-      } else {
-        setTargetData((prev) => ({
-          ...prev,
-          telegram: {
-            useTelegram: false,
-            isAvailable: toggleTargetAvailability?.telegram ?? true,
-          },
-        }));
-        updateTargetInfoPrompt('telegram', null);
       }
+      setTargetData((prev) => ({
+        ...prev,
+        telegram: {
+          useTelegram: false,
+          isAvailable: toggleTargetAvailability?.telegram ?? true,
+        },
+      }));
+      updateTargetInfoPrompt('telegram', null);
     },
     [],
   );
