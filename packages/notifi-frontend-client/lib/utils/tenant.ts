@@ -1,8 +1,8 @@
-import { CardConfigItemV1, TenantConfigMetadata } from '../models';
+import { CardConfigItemV1, CardConfigItemV2 } from '../models';
 
 export const parseTenantConfig = (
   dataJson: string,
-): TenantConfigMetadata | CardConfigItemV1 => {
+): CardConfigItemV2 | CardConfigItemV1 => {
   try {
     const parsed = JSON.parse(dataJson);
     if ('version' in parsed) {
@@ -10,7 +10,7 @@ export const parseTenantConfig = (
         case 'v1':
           return parsed as CardConfigItemV1;
         case 'v2':
-          return parsed as TenantConfigMetadata;
+          return parsed as CardConfigItemV2;
       }
       throw new Error(`Unsupported tenant config version: ${parsed.version}`);
     }
