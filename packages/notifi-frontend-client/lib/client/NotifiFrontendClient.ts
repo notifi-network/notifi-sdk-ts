@@ -23,7 +23,6 @@ import {
   SOLANA_BLOCKCHAINS,
   type SolanaBlockchain,
   type TenantConfig,
-  type TenantConfigMetadata,
   type TenantConfigV2,
   type TopicMetadata,
   type UnmaintainedBlockchain,
