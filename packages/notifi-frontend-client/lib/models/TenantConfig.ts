@@ -31,7 +31,7 @@ export type ContactInfoConfig = Omit<
 };
 
 export type TenantConfigV2 = Readonly<{
-  cardConfig: TenantConfigMetadata;
+  cardConfig: CardConfigItemV2;
   fusionEventTopics: Array<TopicMetadata>;
 }>;
 
@@ -40,8 +40,7 @@ export type TopicMetadata = {
   fusionEventDescriptor: Types.FusionEventDescriptor;
 };
 
-/** v2 of CardConfigItemV1 (rename) */
-export type TenantConfigMetadata = Readonly<{
+export type CardConfigItemV2 = Readonly<{
   version: 'v2';
   name: string;
   id: string;
@@ -55,7 +54,7 @@ export type TopicUiConfig = Readonly<{
   type: 'fusion';
   topicGroupName?: string;
   index?: number;
-  fusionEventId: string; // TODO: need further refactor (changed from ValueOrRef<string> to string)
+  fusionEventId: string;
   tooltipContent?: string;
   optOutAtSignup?: boolean;
 }>;
