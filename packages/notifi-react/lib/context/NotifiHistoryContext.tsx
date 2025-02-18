@@ -142,6 +142,7 @@ export const NotifiHistoryContextProvider: FC<
       const cardEventTypeNames = new Set(
         cardConfig?.eventTypes?.map((event) => event.name) ?? [],
       );
+      cardEventTypeNames.add('System User Notifications'); // NOTE: Add "System User Notifications" topic to the list (to receive system events: email verification link sent ... etc)
       // TODO: Use FusionEventId to filter the history items (Blocker: MVP-5101)
       // const cardEventFusionIds = new Set(
       //   cardConfig?.eventTypes?.map((event) =>
