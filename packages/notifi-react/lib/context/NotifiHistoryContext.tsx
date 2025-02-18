@@ -155,9 +155,6 @@ export const NotifiHistoryContextProvider: FC<
       //       : '',
       //   ) ?? [],
       // );
-      if (cardEventTypeNames.size === 0) {
-        return;
-      }
       if (!initialLoad && !cursorInfo.hasNextPage) {
         setError(new Error('No more notification history to fetch'));
         return;
