@@ -74,7 +74,8 @@ export class NotifiService
     Operations.GetWeb3TargetsService,
     Operations.VerifyCbwTargetService,
     Operations.VerifyXmtpTargetService,
-    Operations.VerifyXmtpTargetViaXip42Service
+    Operations.VerifyXmtpTargetViaXip42Service,
+    Operations.DeleteDiscordTargetService
 {
   private _jwt: string | undefined;
   private _typedClient: ReturnType<typeof getSdk>;
@@ -171,6 +172,12 @@ export class NotifiService
   ): Promise<Generated.CreateDiscordTargetMutation> {
     const headers = this._requestHeaders();
     return this._typedClient.createDiscordTarget(variables, headers);
+  }
+  async deleteDiscordTarget(
+    variables: Generated.DeleteDiscordTargetMutationVariables,
+  ): Promise<Generated.DeleteDiscordTargetMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.deleteDiscordTarget(variables, headers);
   }
 
   async createSlackChannelTarget(

@@ -69,3 +69,4 @@ export * from './DeleteWebPushTarget';
 export * from './GetWebPushTargets';
 export * from './LogInByOidc';
 export * from './DeleteAlerts';
+export * from './DeleteDiscordTarget';
