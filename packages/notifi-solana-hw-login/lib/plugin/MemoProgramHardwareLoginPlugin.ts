@@ -14,6 +14,7 @@ export type MemoProgramHardwareLoginPluginParams = Readonly<{
   walletPublicKey: string;
   connection: Connection;
   sendTransaction: WalletContextState['sendTransaction'];
+  signTransaction: WalletContextState['signTransaction'];
 }>;
 
 export class MemoProgramHardwareLoginPlugin implements HardwareLoginPlugin {
@@ -24,35 +25,33 @@ export class MemoProgramHardwareLoginPlugin implements HardwareLoginPlugin {
   }
 
   sendMessage: (message: string) => Promise<string> = async (message) => {
-    const { walletPublicKey, connection, sendTransaction } = this.params;
+    const { walletPublicKey, connection, signTransaction } = this.params;
 
+    const MEMO_PROGRAM_ID = new PublicKey(
+      'MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr',
+    );
     const publicKey = new PublicKey(walletPublicKey);
     const latestBlockHash = await connection.getLatestBlockhash();
     const txn = new Transaction();
-    txn.recentBlockhash = latestBlockHash.blockhash;
-    txn.feePayer = publicKey;
+
     txn.add(
       new TransactionInstruction({
-        data: Buffer.from(message, 'utf-8'),
-        keys: [
-          {
-            isSigner: true,
-            isWritable: false,
-            pubkey: publicKey,
-          },
-        ],
-        programId: new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr'),
+        programId: MEMO_PROGRAM_ID,
+        keys: [],
+        data: Buffer.from(message, 'utf8'),
       }),
     );
 
+    txn.feePayer = publicKey;
+    txn.recentBlockhash = latestBlockHash.blockhash;
     // Send transaction and wait for it to confirm
-    const blockHashAgain = await connection.getLatestBlockhash();
-    const signature = await sendTransaction(txn, connection);
-    await connection.confirmTransaction({
-      blockhash: blockHashAgain.blockhash,
-      lastValidBlockHeight: blockHashAgain.lastValidBlockHeight,
-      signature,
-    });
-    return signature;
+    if (!signTransaction) {
+      throw new Error('Wallet does not support transaction signing');
+    }
+    const signedTx = await signTransaction(txn);
+    const serializedTx = signedTx.serialize();
+
+    const base64Tx = Buffer.from(serializedTx).toString('base64');
+    return base64Tx;
   };
 }
