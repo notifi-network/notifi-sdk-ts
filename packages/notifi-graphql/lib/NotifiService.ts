@@ -75,7 +75,8 @@ export class NotifiService
     Operations.VerifyCbwTargetService,
     Operations.VerifyXmtpTargetService,
     Operations.VerifyXmtpTargetViaXip42Service,
-    Operations.DeleteDiscordTargetService
+    Operations.DeleteDiscordTargetService,
+    Operations.DeleteEmailTargetService
 {
   private _jwt: string | undefined;
   private _typedClient: ReturnType<typeof getSdk>;
@@ -167,6 +168,14 @@ export class NotifiService
     const headers = this._requestHeaders();
     return this._typedClient.createEmailTarget(variables, headers);
   }
+
+  async deleteEmailTarget(
+    variables: Generated.DeleteEmailTargetMutationVariables,
+  ): Promise<Generated.DeleteEmailTargetMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.deleteEmailTarget(variables, headers);
+  }
+
   async createDiscordTarget(
     variables: Generated.CreateDiscordTargetMutationVariables,
   ): Promise<Generated.CreateDiscordTargetMutation> {
