@@ -74,3 +74,4 @@ export * from './DeleteEmailTarget';
 export * from './DeleteTelegramTarget';
 export * from './DeleteSmsTarget';
 export * from './DeleteSlackChannelTarget';
+export * from './DeleteWeb3Target';

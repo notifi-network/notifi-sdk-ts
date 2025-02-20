@@ -79,7 +79,8 @@ export class NotifiService
     Operations.DeleteEmailTargetService,
     Operations.DeleteTelegramTargetService,
     Operations.DeleteSmsTargetService,
-    Operations.DeleteSlackChannelTargetService
+    Operations.DeleteSlackChannelTargetService,
+    Operations.DeleteWeb3TargetService
 {
   private _jwt: string | undefined;
   private _typedClient: ReturnType<typeof getSdk>;
@@ -211,6 +212,13 @@ export class NotifiService
   ): Promise<Generated.CreateWeb3TargetMutation> {
     const headers = this._requestHeaders();
     return this._typedClient.createWeb3Target(variables, headers);
+  }
+
+  async deleteWeb3Target(
+    variables: Generated.DeleteWeb3TargetMutationVariables,
+  ): Promise<Generated.DeleteWeb3TargetMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.deleteWeb3Target(variables, headers);
   }
 
   async createSmsTarget(
