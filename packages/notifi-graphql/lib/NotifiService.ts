@@ -76,7 +76,8 @@ export class NotifiService
     Operations.VerifyXmtpTargetService,
     Operations.VerifyXmtpTargetViaXip42Service,
     Operations.DeleteDiscordTargetService,
-    Operations.DeleteEmailTargetService
+    Operations.DeleteEmailTargetService,
+    Operations.DeleteTelegramTargetService
 {
   private _jwt: string | undefined;
   private _typedClient: ReturnType<typeof getSdk>;
@@ -229,6 +230,13 @@ export class NotifiService
   ): Promise<Generated.CreateTargetGroupMutation> {
     const headers = this._requestHeaders();
     return this._typedClient.createTargetGroup(variables, headers);
+  }
+
+  async deleteTelegramTarget(
+    variables: Generated.DeleteTelegramTargetMutationVariables,
+  ): Promise<Generated.DeleteTelegramTargetMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.deleteTelegramTarget(variables, headers);
   }
 
   async createTenantUser(
