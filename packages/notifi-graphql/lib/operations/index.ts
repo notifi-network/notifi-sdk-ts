@@ -72,3 +72,4 @@ export * from './DeleteAlerts';
 export * from './DeleteDiscordTarget';
 export * from './DeleteEmailTarget';
 export * from './DeleteTelegramTarget';
+export * from './DeleteSmsTarget';

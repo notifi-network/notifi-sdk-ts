@@ -77,7 +77,8 @@ export class NotifiService
     Operations.VerifyXmtpTargetViaXip42Service,
     Operations.DeleteDiscordTargetService,
     Operations.DeleteEmailTargetService,
-    Operations.DeleteTelegramTargetService
+    Operations.DeleteTelegramTargetService,
+    Operations.DeleteSmsTargetService
 {
   private _jwt: string | undefined;
   private _typedClient: ReturnType<typeof getSdk>;
@@ -209,6 +210,13 @@ export class NotifiService
   ): Promise<Generated.CreateSmsTargetMutation> {
     const headers = this._requestHeaders();
     return this._typedClient.createSmsTarget(variables, headers);
+  }
+
+  async deleteSmsTarget(
+    variables: Generated.DeleteSmsTargetMutationVariables,
+  ): Promise<Generated.DeleteSmsTargetMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.deleteSmsTarget(variables, headers);
   }
 
   async createSource(
