@@ -35,5 +35,8 @@
     "@solana/wallet-adapter-react": "^0.15.30",
     "@solana/web3.js": "^1.73.3"
   },
-  "gitHead": "2b02f90e5b01bf13a9ce842a603a7cb21b3d2881"
+  "gitHead": "2b02f90e5b01bf13a9ce842a603a7cb21b3d2881",
+  "dependencies": {
+    "bs58": "^6.0.0"
+  }
 }

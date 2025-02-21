@@ -18,7 +18,7 @@ import './NotifiCard.css';
 
 export const NotifiCard: React.FC = () => {
   const { connection } = useConnection();
-  const { wallet, sendTransaction, signMessage } = useWallet();
+  const { wallet, sendTransaction, signMessage, signTransaction} = useWallet();
   const adapter = wallet?.adapter;
   const publicKey = adapter?.publicKey?.toBase58() ?? null;
 
@@ -26,7 +26,7 @@ export const NotifiCard: React.FC = () => {
     return new MemoProgramHardwareLoginPlugin({
       walletPublicKey: publicKey ?? '',
       connection,
-      sendTransaction,
+      signTransaction,
     });
   }, [publicKey, connection, sendTransaction]);
 

@@ -19,7 +19,7 @@ export const loginViaSolanaHardwareWallet = async (
     walletBlockchain: walletWithSignParams.walletBlockchain,
   });
 
-  const transactionSignature = await plugin.sendMessage(nonce);
+  const transactionSignature = await plugin.signTransaction(nonce);
 
   const logInResult = await frontendClient.completeLoginViaTransaction({
     walletAddress: walletWithSignParams.walletPublicKey,

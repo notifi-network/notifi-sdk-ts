@@ -120,8 +120,9 @@ export type SignMessageParams =
 type SolanaWalletWithSignParams = Readonly<{
   signMessage: Uint8SignMessageFunction;
   hardwareLoginPlugin?: {
-    // NOTE: Solana specific: solana hardware wallet sign-in requires a memo contract verification
+    /** @deprecated No longer used. Will be removed in a future version. */
     sendMessage: (message: string) => Promise<string>;
+    signTransaction: (message: string) => Promise<string>;
   };
 }> &
   SolanaUserParams;
@@ -319,7 +320,7 @@ type FindSubscriptionCardParams = Omit<Types.FindTenantConfigInput, 'tenant'>;
 
 // Don't split this line into multiple lines due to some packagers or other build modules that
 // modify the string literal, which then causes authentication to fail due to different strings
-const SIGNING_MESSAGE_WITHOUT_NONCE = `Sign in with Notifi \n\n    No password needed or gas is needed. \n\n    Clicking “Approve” only means you have proved this wallet is owned by you! \n\n    This request will not trigger any transaction or cost any gas fees. \n\n    Use of our website and service is subject to our terms of service and privacy policy.`;
+const SIGNING_MESSAGE_WITHOUT_NONCE = `Sign in with Notifi \n\n    No password needed or gas is needed. \n\n    Clicking "Approve" only means you have proved this wallet is owned by you! \n\n    This request will not trigger any transaction or cost any gas fees. \n\n    Use of our website and service is subject to our terms of service and privacy policy.`;
 export const SIGNING_MESSAGE = `${SIGNING_MESSAGE_WITHOUT_NONCE} \n \n 'Nonce:' `;
 
 const CHAINS_WITH_LOGIN_WEB3 = [
@@ -535,7 +536,9 @@ export class NotifiFrontendClient {
       loginWeb3Params.walletBlockchain !== loginWeb3Params.walletBlockchain
     ) {
       throw new Error(
-        `Wallet blockchain must be one of ${CHAINS_WITH_LOGIN_WEB3.join(', ')} for loginWithWeb3`,
+        `Wallet blockchain must be one of ${CHAINS_WITH_LOGIN_WEB3.join(
+          ', ',
+        )} for loginWithWeb3`,
       );
     }
 
@@ -1316,8 +1319,9 @@ export class NotifiFrontendClient {
   async markFusionNotificationHistoryAsRead(
     input: Types.MarkFusionNotificationHistoryAsReadMutationVariables,
   ): Promise<Types.MarkFusionNotificationHistoryAsReadMutation> {
-    const mutation =
-      await this._service.markFusionNotificationHistoryAsRead(input);
+    const mutation = await this._service.markFusionNotificationHistoryAsRead(
+      input,
+    );
     return mutation;
   }
   async updateUserSettings(
