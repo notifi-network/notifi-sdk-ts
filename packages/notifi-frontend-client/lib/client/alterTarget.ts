@@ -1,19 +1,4 @@
-import { Operations } from '@notifi-network/notifi-graphql';
-
-type TargetService =
-  | Operations.GetEmailTargetsService
-  | Operations.GetSmsTargetsService
-  | Operations.GetTelegramTargetsService
-  | Operations.GetDiscordTargetsService
-  | Operations.GetSlackChannelTargetsService
-  | Operations.GetWeb3TargetsService
-  | Operations.CreateEmailTargetService
-  | Operations.CreateSmsTargetService
-  | Operations.CreateTelegramTargetService
-  | Operations.CreateDiscordTargetService
-  | Operations.CreateSlackChannelTargetService
-  | Operations.CreateWeb3TargetService
-  | Operations.DeleteEmailTargetService;
+import { NotifiService } from '@notifi-network/notifi-graphql';
 
 // TODO: remove and reuse
 type Target =
@@ -29,14 +14,14 @@ type CreateTarget = {
   type: 'create';
   value: string;
   target: Target;
-  service: TargetService;
+  service: NotifiService;
 };
 
 type DeleteTarget = {
   type: 'delete';
   id: string;
   target: Target;
-  service: TargetService;
+  service: NotifiService;
 };
 
 type AlterTarget = CreateTarget | DeleteTarget;
@@ -44,134 +29,85 @@ type AlterTarget = CreateTarget | DeleteTarget;
 export const alterTarget = async (
   alterTarget: AlterTarget,
 ): Promise<string | undefined> => {
+  const alterTargetService = alterTarget.service;
   if (alterTarget.type === 'create') {
-    if (alterTarget.target === 'email') {
-      const alertService =
-        alterTarget.service as Operations.CreateEmailTargetService;
-      const mutation = await alertService.createEmailTarget({
-        name: alterTarget.value,
-        value: alterTarget.value,
-      });
-      return mutation.createEmailTarget?.id;
-    }
-    if (alterTarget.target === 'phoneNumber') {
-      const alertService =
-        alterTarget.service as Operations.CreateSmsTargetService;
-      const mutation = await alertService.createSmsTarget({
-        name: alterTarget.value,
-        value: alterTarget.value,
-      });
-      return mutation.createSmsTarget?.id;
-    }
-    if (alterTarget.target === 'telegram') {
-      const alertService =
-        alterTarget.service as Operations.CreateTelegramTargetService;
-      const mutation = await alertService.createTelegramTarget({
-        name: alterTarget.value,
-        value: alterTarget.value,
-      });
-      return mutation.createTelegramTarget?.id;
-    }
-    if (alterTarget.target === 'discord') {
-      const alertService =
-        alterTarget.service as Operations.CreateDiscordTargetService;
-      const mutation = await alertService.createDiscordTarget({
-        name: alterTarget.value,
-        value: alterTarget.value,
-      });
-      return mutation.createDiscordTarget?.id;
+    switch (alterTarget.target) {
+      case 'email':
+        const emailTargetMutation = await alterTargetService.createEmailTarget({
+          name: alterTarget.value,
+          value: alterTarget.value,
+        });
+        return emailTargetMutation.createEmailTarget?.id;
+      case 'phoneNumber':
+        const smsTargetMutation = await alterTargetService.createSmsTarget({
+          name: alterTarget.value,
+          value: alterTarget.value,
+        });
+        return smsTargetMutation.createSmsTarget?.id;
+      case 'telegram':
+        const telegramTargetMutation =
+          await alterTargetService.createTelegramTarget({
+            name: alterTarget.value,
+            value: alterTarget.value,
+          });
+        return telegramTargetMutation.createTelegramTarget?.id;
+      case 'discord':
+        const discordTargetMutation =
+          await alterTargetService.createDiscordTarget({
+            name: alterTarget.value,
+            value: alterTarget.value,
+          });
+        return discordTargetMutation.createDiscordTarget?.id;
+      case 'slack':
+        const slackChannelTargetMutation =
+          await alterTargetService.createSlackChannelTarget({
+            name: alterTarget.value,
+            value: alterTarget.value,
+          });
+        return slackChannelTargetMutation.createSlackChannelTarget
+          .slackChannelTarget?.id;
+      case 'wallet':
+        const web3TargetMutation = await alterTargetService.createWeb3Target({
+          name: alterTarget.value,
+          accountId: '',
+          walletBlockchain: 'OFF_CHAIN',
+          web3TargetProtocol: 'XMTP',
+        });
+        return web3TargetMutation.createWeb3Target?.id;
     }
   }
   if (alterTarget.type === 'delete') {
-    if (alterTarget.target === 'email') {
-      const alertService =
-        alterTarget.service as Operations.DeleteEmailTargetService &
-          Operations.GetEmailTargetsService;
-      const emailTargets = await alertService.getEmailTargets({});
-      const existing = emailTargets.emailTarget?.find(
-        (it) => it?.id === alterTarget.id,
-      );
-      if (!!existing) {
-        await alertService.deleteEmailTarget({
+    switch (alterTarget.target) {
+      case 'email':
+        await alterTargetService.deleteEmailTarget({
           id: alterTarget.id,
         });
-      }
-      return undefined;
-    }
-    if (alterTarget.target === 'phoneNumber') {
-      const alertService =
-        alterTarget.service as Operations.GetSmsTargetsService &
-          Operations.DeleteSmsTargetService;
-      const smsTargets = await alertService.getSmsTargets({});
-      const existing = smsTargets.smsTarget?.find(
-        (it) => it?.id === alterTarget.id,
-      );
-      if (!!existing) {
-        await alertService.deleteSmsTarget({
+        return;
+      case 'phoneNumber':
+        await alterTargetService.deleteSmsTarget({
           id: alterTarget.id,
         });
-      }
-      return undefined;
-    }
-    if (alterTarget.target === 'telegram') {
-      const alertService =
-        alterTarget.service as Operations.GetTelegramTargetsService &
-          Operations.DeleteTelegramTargetService;
-      const telegramTargets = await alertService.getTelegramTargets({});
-      const existing = telegramTargets.telegramTarget?.find(
-        (it) => it?.id === alterTarget.id,
-      );
-      if (!!existing) {
-        await alertService.deleteTelegramTarget({
+        return;
+      case 'telegram':
+        await alterTargetService.deleteTelegramTarget({
           id: alterTarget.id,
         });
-      }
-      return undefined;
-    }
-    if (alterTarget.target === 'discord') {
-      const alertService =
-        alterTarget.service as Operations.GetDiscordTargetsService &
-          Operations.DeleteDiscordTargetService;
-      const discordTargets = await alertService.getDiscordTargets({});
-      const existing = discordTargets.discordTarget?.find(
-        (it) => it?.id === alterTarget.id,
-      );
-      if (!!existing) {
-        await alertService.deleteDiscordTarget({
+        return;
+      case 'discord':
+        await alterTargetService.deleteDiscordTarget({
           id: alterTarget.id,
         });
-      }
-      return undefined;
-    }
-    if (alterTarget.target === 'slack') {
-      const alertService =
-        alterTarget.service as Operations.GetSlackChannelTargetsService &
-          Operations.DeleteSlackChannelTargetService;
-      const slackTargets = await alertService.getSlackChannelTargets({});
-      const existing = slackTargets.slackChannelTargets?.nodes?.find(
-        (it) => it?.id === alterTarget.id,
-      );
-      if (!!existing) {
-        await alertService.deleteSlackChannelTarget({
+        return;
+      case 'slack':
+        await alterTargetService.deleteSlackChannelTarget({
           id: alterTarget.id,
         });
-      }
-      return undefined;
-    }
-    if (alterTarget.target === 'wallet') {
-      const alertService =
-        alterTarget.service as Operations.GetWeb3TargetsService &
-          Operations.DeleteWeb3TargetService;
-      const web3Targets = await alertService.getWeb3Targets({});
-      const existing = web3Targets.web3Targets?.nodes?.find(
-        (it) => it?.id === alterTarget.id,
-      );
-      if (!!existing) {
-        await alertService.deleteWeb3Target({
+        return;
+      case 'wallet':
+        await alterTargetService.deleteWeb3Target({
           id: alterTarget.id,
         });
-      }
-      return undefined;
+        return;
     }
   }
 };
