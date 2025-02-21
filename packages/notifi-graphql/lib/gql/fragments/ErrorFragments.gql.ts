@@ -33,4 +33,9 @@ export const ErrorFragments = gql`
     __typename
     message
   }
+
+  fragment TargetAssignedToExistingTargetGroupErrorFragment on TargetAssignedToExistingTargetGroupError {
+    __typename
+    message
+  }
 `;

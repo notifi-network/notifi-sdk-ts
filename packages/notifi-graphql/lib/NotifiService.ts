@@ -74,7 +74,13 @@ export class NotifiService
     Operations.GetWeb3TargetsService,
     Operations.VerifyCbwTargetService,
     Operations.VerifyXmtpTargetService,
-    Operations.VerifyXmtpTargetViaXip42Service
+    Operations.VerifyXmtpTargetViaXip42Service,
+    Operations.DeleteDiscordTargetService,
+    Operations.DeleteEmailTargetService,
+    Operations.DeleteTelegramTargetService,
+    Operations.DeleteSmsTargetService,
+    Operations.DeleteSlackChannelTargetService,
+    Operations.DeleteWeb3TargetService
 {
   private _jwt: string | undefined;
   private _typedClient: ReturnType<typeof getSdk>;
@@ -166,11 +172,25 @@ export class NotifiService
     const headers = this._requestHeaders();
     return this._typedClient.createEmailTarget(variables, headers);
   }
+
+  async deleteEmailTarget(
+    variables: Generated.DeleteEmailTargetMutationVariables,
+  ): Promise<Generated.DeleteEmailTargetMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.deleteEmailTarget(variables, headers);
+  }
+
   async createDiscordTarget(
     variables: Generated.CreateDiscordTargetMutationVariables,
   ): Promise<Generated.CreateDiscordTargetMutation> {
     const headers = this._requestHeaders();
     return this._typedClient.createDiscordTarget(variables, headers);
+  }
+  async deleteDiscordTarget(
+    variables: Generated.DeleteDiscordTargetMutationVariables,
+  ): Promise<Generated.DeleteDiscordTargetMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.deleteDiscordTarget(variables, headers);
   }
 
   async createSlackChannelTarget(
@@ -180,6 +200,13 @@ export class NotifiService
     return this._typedClient.createSlackChannelTarget(variables, headers);
   }
 
+  async deleteSlackChannelTarget(
+    variables: Generated.DeleteSlackChannelTargetMutationVariables,
+  ): Promise<Generated.DeleteSlackChannelTargetMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.deleteSlackChannelTarget(variables, headers);
+  }
+
   async createWeb3Target(
     variables: Generated.CreateWeb3TargetMutationVariables,
   ): Promise<Generated.CreateWeb3TargetMutation> {
@@ -187,11 +214,25 @@ export class NotifiService
     return this._typedClient.createWeb3Target(variables, headers);
   }
 
+  async deleteWeb3Target(
+    variables: Generated.DeleteWeb3TargetMutationVariables,
+  ): Promise<Generated.DeleteWeb3TargetMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.deleteWeb3Target(variables, headers);
+  }
+
   async createSmsTarget(
     variables: Generated.CreateSmsTargetMutationVariables,
   ): Promise<Generated.CreateSmsTargetMutation> {
     const headers = this._requestHeaders();
     return this._typedClient.createSmsTarget(variables, headers);
+  }
+
+  async deleteSmsTarget(
+    variables: Generated.DeleteSmsTargetMutationVariables,
+  ): Promise<Generated.DeleteSmsTargetMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.deleteSmsTarget(variables, headers);
   }
 
   async createSource(
@@ -213,6 +254,13 @@ export class NotifiService
   ): Promise<Generated.CreateTargetGroupMutation> {
     const headers = this._requestHeaders();
     return this._typedClient.createTargetGroup(variables, headers);
+  }
+
+  async deleteTelegramTarget(
+    variables: Generated.DeleteTelegramTargetMutationVariables,
+  ): Promise<Generated.DeleteTelegramTargetMutation> {
+    const headers = this._requestHeaders();
+    return this._typedClient.deleteTelegramTarget(variables, headers);
   }
 
   async createTenantUser(
