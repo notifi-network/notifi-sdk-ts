@@ -32,70 +32,38 @@ export const alterTargetGroupImpl = async (
   );
   if (!existingTargetGroup) throw new Error('Target group not found');
 
-  let emailTargetIds: string[] | [] = [];
-  if (alterTargetGroup.email.type !== 'remove') {
-    const email = alterTargetGroup.email;
-    const targets = (await service.getEmailTargets({})).emailTarget;
-    if (email.type === 'delete') {
-      alterTarget({
-        type: email.type,
-        id: email.id,
-        target: 'email',
-        service: service,
-      });
-    }
-    if (email.type === 'ensure') {
-      const target = targets?.find((it) => it?.name === email.targetName);
-      if (target !== undefined) {
-        emailTargetIds = [target.id];
-      }
-      const created = await alterTarget({
-        type: 'create',
-        value: email.targetName,
-        target: 'email',
-        service: service,
-      });
-      if (!created) throw new Error('Failed to create target');
-      emailTargetIds = [created];
-    }
-  }
+  const emailTargetIds = await updateTargets(
+    'email',
+    alterTargetGroup.email,
+    service,
+  );
 
-  let smsTargetIds: string[] | [] = [];
-  // TODO: Implement
-  let telegramTargetIds: string[] | [] = [];
-  // TODO: Implement
-  let discordTargetIds: string[] | [] = [];
-  if (alterTargetGroup.discord.type !== 'remove') {
-    const discord = alterTargetGroup.discord;
-    const targets = (await service.getDiscordTargets({})).discordTarget;
-    if (discord.type === 'delete') {
-      alterTarget({
-        type: discord.type,
-        id: discord.id,
-        target: 'discord',
-        service: service,
-      });
-    }
-    if (discord.type === 'ensure') {
-      const target = targets?.find((it) => it?.name === discord.targetName);
-      if (target !== undefined) {
-        discordTargetIds = [target.id];
-      } else {
-        const created = await alterTarget({
-          type: 'create',
-          value: discord.targetName,
-          target: 'discord',
-          service: service,
-        });
-        if (!created) throw new Error('Failed to create target');
-        discordTargetIds = [created];
-      }
-    }
-  }
-  let slackChannelTargetIds: string[] | [] = [];
-  // TODO: Implement
-  let walletTargetIds: string[] | [] = [];
-  // TODO: Implement
+  const smsTargetIds = await updateTargets(
+    'phoneNumber',
+    alterTargetGroup.phoneNumber,
+    service,
+  );
+
+  const telegramTargetIds = await updateTargets(
+    'telegram',
+    alterTargetGroup.telegram,
+    service,
+  );
+  const discordTargetIds = await updateTargets(
+    'discord',
+    alterTargetGroup.discord,
+    service,
+  );
+  const slackChannelTargetIds = await updateTargets(
+    'slack',
+    alterTargetGroup.slack,
+    service,
+  );
+  const walletTargetIds = await updateTargets(
+    'wallet',
+    alterTargetGroup.wallet,
+    service,
+  );
 
   if (
     areIdsEqual(emailTargetIds, existingTargetGroup.emailTargets ?? []) &&
@@ -129,4 +97,69 @@ export const alterTargetGroupImpl = async (
   }
 
   return updated;
+};
+
+const updateTargets = async (
+  type: Target,
+  updateTargetInGroup: UpdateTargetInGroup,
+  service: NotifiService,
+): Promise<string[]> => {
+  if (updateTargetInGroup.type === 'remove') {
+    return [];
+  }
+
+  let targets: (({ id: string } & Record<any, any>) | undefined)[] | undefined;
+
+  switch (type) {
+    case 'email':
+      targets = (await service.getEmailTargets({})).emailTarget;
+      break;
+    case 'phoneNumber':
+      targets = (await service.getSmsTargets({})).smsTarget;
+      break;
+    case 'telegram':
+      targets = (await service.getTelegramTargets({})).telegramTarget;
+      break;
+    case 'discord':
+      targets = (await service.getDiscordTargets({})).discordTarget;
+      break;
+    case 'slack':
+      targets = (await service.getSlackChannelTargets({})).slackChannelTargets
+        ?.nodes;
+      break;
+    case 'wallet':
+      targets = (await service.getWeb3Targets({})).web3Targets?.nodes;
+      break;
+  }
+
+  if (
+    updateTargetInGroup.type === 'delete' &&
+    targets?.find((it) => it?.id === updateTargetInGroup.id)
+  ) {
+    await alterTarget({
+      type: updateTargetInGroup.type,
+      id: updateTargetInGroup.id,
+      target: type,
+      service: service,
+    });
+    return [];
+  }
+  if (updateTargetInGroup.type === 'ensure') {
+    const target = targets?.find(
+      (it) => it?.name === updateTargetInGroup.targetName,
+    );
+    if (!!target) {
+      return [target.id];
+    }
+    const created = await alterTarget({
+      type: 'create',
+      value: updateTargetInGroup.targetName,
+      target: type,
+      service: service,
+    });
+    if (!created) throw new Error('Failed to create target');
+    return [created];
+  }
+  // TODO: review all cases again
+  return [];
 };
