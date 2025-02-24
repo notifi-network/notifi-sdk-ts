@@ -8,6 +8,8 @@ import { NotifiContextProvider } from '@notifi-network/notifi-react';
 import { MemoProgramHardwareLoginPlugin } from '@notifi-network/notifi-solana-hw-login';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import { Connection, clusterApiUrl } from '@solana/web3.js';
+import { PublicKey } from '@solana/web3.js';
+import { Transaction, VersionedTransaction } from '@solana/web3.js';
 import { getBytes } from 'ethers';
 import { useSearchParams } from 'next/navigation';
 import { PropsWithChildren } from 'react';
@@ -83,7 +85,23 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
         solanaHardwareLoginPlugin = new MemoProgramHardwareLoginPlugin({
           walletPublicKey,
           connection,
-          signTransaction: wallets[selectedWallet].signTransaction,
+          signTransaction: async <T extends Transaction | VersionedTransaction>(
+            transaction: T,
+          ): Promise<T> => {
+            if (transaction instanceof Transaction) {
+              const signature = await wallets[selectedWallet].signTransaction(
+                transaction,
+                connection,
+              );
+              transaction.addSignature(
+                new PublicKey(walletPublicKey),
+                Buffer.from(signature, 'base64'),
+              );
+              return transaction as T;
+            } else {
+              throw new Error('VersionedTransaction not supported');
+            }
+          },
         });
         break;
     }

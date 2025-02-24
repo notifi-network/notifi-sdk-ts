@@ -123,7 +123,7 @@ type SolanaWalletWithSignParams = Readonly<{
     /**
      * @deprecated Use signTransaction() instead. We no longer have to send a txn, and instead simply rely on the signed TX as we can verify this on Notifi Services.
      */
-    sendMessage: (message: string) => Promise<string>;
+    sendMessage?: (message: string) => Promise<string>;
     signTransaction: (message: string) => Promise<string>;
   };
 }> &
@@ -1321,8 +1321,9 @@ export class NotifiFrontendClient {
   async markFusionNotificationHistoryAsRead(
     input: Types.MarkFusionNotificationHistoryAsReadMutationVariables,
   ): Promise<Types.MarkFusionNotificationHistoryAsReadMutation> {
-    const mutation =
-      await this._service.markFusionNotificationHistoryAsRead(input);
+    const mutation = await this._service.markFusionNotificationHistoryAsRead(
+      input,
+    );
     return mutation;
   }
   async updateUserSettings(
