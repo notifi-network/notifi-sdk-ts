@@ -8,13 +8,20 @@ import {
 import base58 from 'bs58';
 
 export interface HardwareLoginPlugin {
+  /**
+   * @deprecated Use signMessage() instead. We no longer have to send a txn, and instead simply rely on the signed TX as we can verify this on Notifi Services.
+   */
   sendMessage: (message: string) => Promise<string>;
+  signMessage: (message: string) => Promise<string>;
 }
 
 export type MemoProgramHardwareLoginPluginParams = Readonly<{
   walletPublicKey: string;
   connection: Connection;
-  sendTransaction: WalletContextState['sendTransaction'];
+  /**
+   * @deprecated Use signMessage() instead. We no longer have to send a txn, and instead simply rely on the signed TX as we can verify this on Notifi Services.
+   */
+  sendTransaction?: WalletContextState['sendTransaction'];
   signTransaction: WalletContextState['signTransaction'];
 }>;
 
@@ -30,6 +37,10 @@ export class MemoProgramHardwareLoginPlugin implements HardwareLoginPlugin {
    */
   sendMessage: (message: string) => Promise<string> = async (message) => {
     const { walletPublicKey, connection, sendTransaction } = this.params;
+
+    if (!sendTransaction) {
+      throw new Error('Wallet does not support transaction sending');
+    }
 
     const publicKey = new PublicKey(walletPublicKey);
     const latestBlockHash = await connection.getLatestBlockhash();

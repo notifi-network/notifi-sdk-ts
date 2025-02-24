@@ -120,7 +120,9 @@ export type SignMessageParams =
 type SolanaWalletWithSignParams = Readonly<{
   signMessage: Uint8SignMessageFunction;
   hardwareLoginPlugin?: {
-    /** @deprecated No longer used. Will be removed in a future version. */
+    /**
+     * @deprecated Use signTransaction() instead. We no longer have to send a txn, and instead simply rely on the signed TX as we can verify this on Notifi Services.
+     */
     sendMessage: (message: string) => Promise<string>;
     signTransaction: (message: string) => Promise<string>;
   };
@@ -320,7 +322,7 @@ type FindSubscriptionCardParams = Omit<Types.FindTenantConfigInput, 'tenant'>;
 
 // Don't split this line into multiple lines due to some packagers or other build modules that
 // modify the string literal, which then causes authentication to fail due to different strings
-const SIGNING_MESSAGE_WITHOUT_NONCE = `Sign in with Notifi \n\n    No password needed or gas is needed. \n\n    Clicking "Approve" only means you have proved this wallet is owned by you! \n\n    This request will not trigger any transaction or cost any gas fees. \n\n    Use of our website and service is subject to our terms of service and privacy policy.`;
+const SIGNING_MESSAGE_WITHOUT_NONCE = `Sign in with Notifi \n\n    No password needed or gas is needed. \n\n    Clicking “Approve” only means you have proved this wallet is owned by you! \n\n    This request will not trigger any transaction or cost any gas fees. \n\n    Use of our website and service is subject to our terms of service and privacy policy.`;
 export const SIGNING_MESSAGE = `${SIGNING_MESSAGE_WITHOUT_NONCE} \n \n 'Nonce:' `;
 
 const CHAINS_WITH_LOGIN_WEB3 = [
