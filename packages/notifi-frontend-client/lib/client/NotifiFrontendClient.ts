@@ -1321,9 +1321,8 @@ export class NotifiFrontendClient {
   async markFusionNotificationHistoryAsRead(
     input: Types.MarkFusionNotificationHistoryAsReadMutationVariables,
   ): Promise<Types.MarkFusionNotificationHistoryAsReadMutation> {
-    const mutation = await this._service.markFusionNotificationHistoryAsRead(
-      input,
-    );
+    const mutation =
+      await this._service.markFusionNotificationHistoryAsRead(input);
     return mutation;
   }
   async updateUserSettings(
