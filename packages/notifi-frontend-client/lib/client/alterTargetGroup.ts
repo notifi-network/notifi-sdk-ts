@@ -11,57 +11,57 @@ type Target =
   | 'discord'
   | 'slack'
   | 'wallet';
-export type AlterTargetGroup = Readonly<
+export type AlterTargetGroupParams = Readonly<
   {
     name: string;
-  } & Record<Target, UpdateTargetInGroup>
+  } & Record<Target, UpdateTargetsParm>
 >;
-export type UpdateTargetInGroup =
+export type UpdateTargetsParm =
   | { type: 'remove' }
   | { type: 'delete'; id: string }
-  | { type: 'ensure'; targetName: string };
+  | { type: 'ensure'; name: string };
 
 export const alterTargetGroupImpl = async (
-  alterTargetGroup: AlterTargetGroup,
+  alterTargetGroupParams: AlterTargetGroupParams,
   service: NotifiService,
 ): Promise<Types.TargetGroupFragmentFragment> => {
   // NOTE: Only supports single target in each category for now.
   const targetGroups = (await service.getTargetGroups({})).targetGroup;
   const existingTargetGroup = targetGroups?.find(
-    (it) => it?.name === alterTargetGroup.name,
+    (it) => it?.name === alterTargetGroupParams.name,
   );
   if (!existingTargetGroup) throw new Error('Target group not found');
 
   const emailTargetIds = await updateTargets(
     'email',
-    alterTargetGroup.email,
+    alterTargetGroupParams.email,
     service,
   );
 
   const smsTargetIds = await updateTargets(
     'phoneNumber',
-    alterTargetGroup.phoneNumber,
+    alterTargetGroupParams.phoneNumber,
     service,
   );
 
   const telegramTargetIds = await updateTargets(
     'telegram',
-    alterTargetGroup.telegram,
+    alterTargetGroupParams.telegram,
     service,
   );
   const discordTargetIds = await updateTargets(
     'discord',
-    alterTargetGroup.discord,
+    alterTargetGroupParams.discord,
     service,
   );
   const slackChannelTargetIds = await updateTargets(
     'slack',
-    alterTargetGroup.slack,
+    alterTargetGroupParams.slack,
     service,
   );
   const walletTargetIds = await updateTargets(
     'wallet',
-    alterTargetGroup.wallet,
+    alterTargetGroupParams.wallet,
     service,
   );
 
@@ -101,7 +101,7 @@ export const alterTargetGroupImpl = async (
 
 const updateTargets = async (
   type: Target,
-  updateTargetInGroup: UpdateTargetInGroup,
+  updateTargetInGroup: UpdateTargetsParm,
   service: NotifiService,
 ): Promise<string[]> => {
   if (updateTargetInGroup.type === 'remove') {
@@ -145,15 +145,13 @@ const updateTargets = async (
     return [];
   }
   if (updateTargetInGroup.type === 'ensure') {
-    const target = targets?.find(
-      (it) => it?.name === updateTargetInGroup.targetName,
-    );
+    const target = targets?.find((it) => it?.name === updateTargetInGroup.name);
     if (!!target) {
       return [target.id];
     }
     const created = await alterTarget({
       type: 'create',
-      value: updateTargetInGroup.targetName,
+      value: updateTargetInGroup.name,
       target: type,
       service: service,
     });
