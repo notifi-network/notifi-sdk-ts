@@ -14,13 +14,14 @@ type Target =
 export type AlterTargetGroupParams = Readonly<
   {
     name: string;
-  } & Record<Target, UpdateTargetsParm>
+  } & Partial<Record<Target, UpdateTargetsParam>>
 >;
-export type UpdateTargetsParm =
+export type UpdateTargetsParam =
   | { type: 'remove' }
   | { type: 'delete'; id: string }
   | { type: 'ensure'; name: string };
 
+/** @description by default, if "undefined", remove the target from targetGroup  */
 export const alterTargetGroupImpl = async (
   alterTargetGroupParams: AlterTargetGroupParams,
   service: NotifiService,
@@ -32,36 +33,38 @@ export const alterTargetGroupImpl = async (
   );
   if (!existingTargetGroup) throw new Error('Target group not found');
 
+  const removeTargetParam: UpdateTargetsParam = { type: 'remove' };
+
   const emailTargetIds = await updateTargets(
     'email',
-    alterTargetGroupParams.email,
+    alterTargetGroupParams.email ?? removeTargetParam,
     service,
   );
 
   const smsTargetIds = await updateTargets(
     'phoneNumber',
-    alterTargetGroupParams.phoneNumber,
+    alterTargetGroupParams.phoneNumber ?? removeTargetParam,
     service,
   );
 
   const telegramTargetIds = await updateTargets(
     'telegram',
-    alterTargetGroupParams.telegram,
+    alterTargetGroupParams.telegram ?? removeTargetParam,
     service,
   );
   const discordTargetIds = await updateTargets(
     'discord',
-    alterTargetGroupParams.discord,
+    alterTargetGroupParams.discord ?? removeTargetParam,
     service,
   );
   const slackChannelTargetIds = await updateTargets(
     'slack',
-    alterTargetGroupParams.slack,
+    alterTargetGroupParams.slack ?? removeTargetParam,
     service,
   );
   const walletTargetIds = await updateTargets(
     'wallet',
-    alterTargetGroupParams.wallet,
+    alterTargetGroupParams.wallet ?? removeTargetParam,
     service,
   );
 
@@ -101,7 +104,7 @@ export const alterTargetGroupImpl = async (
 
 const updateTargets = async (
   type: Target,
-  updateTargetInGroup: UpdateTargetsParm,
+  updateTargetInGroup: UpdateTargetsParam,
   service: NotifiService,
 ): Promise<string[]> => {
   if (updateTargetInGroup.type === 'remove') {
