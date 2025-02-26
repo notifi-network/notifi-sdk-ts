@@ -1,4 +1,8 @@
-import { FusionEventTopic } from '@notifi-network/notifi-frontend-client';
+import {
+  FusionEventTopic,
+  TopicMetadata,
+  parseTenantConfig,
+} from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
 import { CyHttpMessages } from 'cypress/types/net-stubbing';
 
@@ -6,13 +10,13 @@ export type DisplayedTopic = { index: number; value: string };
 export const getTopicList = (
   findTenantConfigResponse: CyHttpMessages.IncomingResponse,
 ): DisplayedTopic[] => {
-  const cardConfig = JSON.parse(
+  const tenantConfig = parseTenantConfig(
     findTenantConfigResponse.body.data.findTenantConfig.dataJson,
   );
   const fusionEventDescriptors =
     findTenantConfigResponse.body.data.findTenantConfig.fusionEvents;
-  if (!cardConfig || cardConfig.version !== 'v1' || !fusionEventDescriptors)
-    throw new Error('Unsupported config format');
+  if (!fusionEventDescriptors)
+    throw new Error('No fusion events found in tenant config');
 
   const fusionEventDescriptorMap = new Map<string, Types.FusionEventDescriptor>(
     fusionEventDescriptors.map((item: any) => [item?.name ?? '', item ?? {}]),
@@ -20,8 +24,8 @@ export const getTopicList = (
 
   fusionEventDescriptorMap.delete('');
 
-  const fusionEventTopics: FusionEventTopic[] = cardConfig.eventTypes
-    .map((eventType: any) => {
+  const topicMetadatas = tenantConfig.eventTypes
+    .map((eventType) => {
       if (eventType.type === 'fusion') {
         const fusionEventDescriptor = fusionEventDescriptorMap.get(
           eventType.name,
@@ -32,11 +36,11 @@ export const getTopicList = (
         };
       }
     })
-    .filter((item: any): item is FusionEventTopic => !!item);
+    .filter((item): item is TopicMetadata | FusionEventTopic => !!item);
 
   const topicGroupNames: { index: number; value: string }[] = [];
   const topicNames: { index: number; value: string }[] = [];
-  fusionEventTopics.forEach((topic, id) => {
+  topicMetadatas.forEach((topic, id) => {
     if (topic.uiConfig.topicGroupName) {
       if (
         topicGroupNames

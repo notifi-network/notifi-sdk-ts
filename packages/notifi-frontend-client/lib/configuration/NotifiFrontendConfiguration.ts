@@ -1,32 +1,14 @@
 import { Types } from '@notifi-network/notifi-graphql';
 
-import {
-  CosmosBlockchain,
-  EvmBlockchain,
-  isEvmBlockchain,
-} from '../client/blockchains';
+import { CosmosBlockchain, EvmBlockchain, isEvmBlockchain } from '../models';
 
-export type NotifiEnvironment =
-  | 'Production'
-  | 'Staging'
-  | 'Development'
-  | 'Local';
+/* NOTE: type of argument to instantiate a NotifiFrontendClient */
 
-export type NotifiEnvironmentConfiguration = Readonly<{
-  env?: NotifiEnvironment;
-  tenantId: string;
-  storageOption?: Readonly<{
-    driverType?: 'LocalForage' | 'InMemory';
-  }>;
-}>;
-type WalletBlockchainWithPublicKey = EvmBlockchain | 'SOLANA';
-
-type WalletBlockchainWithDelegate = CosmosBlockchain;
-
-type WalletBlockchainWithPublicKeyAndAddress = Exclude<
-  Types.WalletBlockchain,
-  WalletBlockchainWithPublicKey | 'OFF_CHAIN'
->;
+export type NotifiFrontendConfiguration =
+  | NotifiConfigWithPublicKey
+  | NotifiConfigWithPublicKeyAndAddress
+  | NotifiConfigWithDelegate
+  | NotifiConfigWithOidc;
 
 export type NotifiConfigWithPublicKey = Readonly<{
   walletBlockchain: WalletBlockchainWithPublicKey;
@@ -55,18 +37,13 @@ export type NotifiConfigWithOidc = Readonly<{
 }> &
   NotifiEnvironmentConfiguration;
 
-export type NotifiFrontendConfiguration =
-  | NotifiConfigWithPublicKey
-  | NotifiConfigWithPublicKeyAndAddress
-  | NotifiConfigWithDelegate
-  | NotifiConfigWithOidc;
+type WalletBlockchainWithPublicKey = EvmBlockchain | 'SOLANA';
 
-/**@deprecated No longer need to use configFactory, use instantiateFrontendClient instead */
-export type ConfigFactoryInput =
-  | ConfigFactoryInputPublicKeyAndAddress
-  | ConfigFactoryInputPublicKey
-  | ConfigFactoryInputDelegated
-  | ConfigFactoryInputOidc;
+type WalletBlockchainWithPublicKeyAndAddress = Exclude<
+  Types.WalletBlockchain,
+  WalletBlockchainWithPublicKey | 'OFF_CHAIN'
+>;
+type WalletBlockchainWithDelegate = CosmosBlockchain;
 
 export const checkIsConfigWithPublicKeyAndAddress = (
   config: NotifiFrontendConfiguration,
@@ -85,6 +62,51 @@ export const checkIsConfigWithOidc = (
 ): config is NotifiConfigWithOidc => {
   return config.walletBlockchain === 'OFF_CHAIN';
 };
+
+export type NotifiEnvironmentConfiguration = Readonly<{
+  env?: NotifiEnvironment;
+  tenantId: string;
+  storageOption?: Readonly<{
+    driverType?: 'LocalForage' | 'InMemory';
+  }>;
+}>;
+
+export type NotifiEnvironment =
+  | 'Production'
+  | 'Staging'
+  | 'Development'
+  | 'Local';
+
+export const envUrl = (
+  env?: NotifiEnvironment,
+  endpointType?: 'websocket' | 'http',
+): string => {
+  if (!env) env = 'Production';
+
+  let url = '';
+  switch (env) {
+    case 'Development':
+      url = '://api.dev.notifi.network/gql';
+      break;
+    case 'Local':
+      url = '://localhost:5001/gql';
+      break;
+    case 'Production':
+      url = '://api.notifi.network/gql';
+      break;
+    case 'Staging':
+      url = '://api.stg.notifi.network/gql';
+  }
+
+  return `${endpointType === 'websocket' ? 'wss' : env === 'Local' ? 'http' : 'https'}${url}`;
+};
+
+/**@deprecated No longer need to use configFactory, use instantiateFrontendClient instead */
+export type ConfigFactoryInput =
+  | ConfigFactoryInputPublicKeyAndAddress
+  | ConfigFactoryInputPublicKey
+  | ConfigFactoryInputDelegated
+  | ConfigFactoryInputOidc;
 
 /**@deprecated No longer need to use configFactory, use instantiateFrontendClient instead */
 export type ConfigFactoryInputDelegated = {
@@ -233,28 +255,4 @@ export const newFrontendConfig = (
   } else {
     return configFactoryPublicKey(config);
   }
-};
-
-export const envUrl = (
-  env?: NotifiEnvironment,
-  endpointType?: 'websocket' | 'http',
-): string => {
-  if (!env) env = 'Production';
-
-  let url = '';
-  switch (env) {
-    case 'Development':
-      url = '://api.dev.notifi.network/gql';
-      break;
-    case 'Local':
-      url = '://localhost:5001/gql';
-      break;
-    case 'Production':
-      url = '://api.notifi.network/gql';
-      break;
-    case 'Staging':
-      url = '://api.stg.notifi.network/gql';
-  }
-
-  return `${endpointType === 'websocket' ? 'wss' : env === 'Local' ? 'http' : 'https'}${url}`;
 };

@@ -10,19 +10,11 @@ import {
 } from '../configuration';
 import type {
   CardConfigItemV1,
-  EventTypeItem,
   FusionEventTopic,
   TenantConfig,
-  WalletBalanceEventTypeItem,
+  TenantConfigV2,
+  TopicMetadata,
 } from '../models';
-import type { Authorization, NotifiStorage, Roles } from '../storage';
-import {
-  NotifiFrontendStorage,
-  createInMemoryStorageDriver,
-  createLocalForageStorageDriver,
-} from '../storage';
-import { notNullOrEmpty, packFilterOptions } from '../utils';
-import { areIdsEqual } from '../utils/areIdsEqual';
 import {
   APTOS_BLOCKCHAINS,
   AptosBlockchain,
@@ -38,8 +30,19 @@ import {
   isUsingCosmosBlockchain,
   isUsingEvmBlockchain,
   isUsingUnmaintainedBlockchain,
-} from './blockchains';
-import { ensureSourceAndFilters, normalizeHexString } from './ensureSource';
+} from '../models';
+import type { Authorization, NotifiStorage, Roles } from '../storage';
+import {
+  NotifiFrontendStorage,
+  createInMemoryStorageDriver,
+  createLocalForageStorageDriver,
+} from '../storage';
+import {
+  areIdsEqual,
+  normalizeHexString,
+  notNullOrEmpty,
+  parseTenantConfig,
+} from '../utils';
 import {
   ensureDiscord,
   ensureEmail,
@@ -294,6 +297,7 @@ export type SignMessageResult = { signature: string; signedMessage: string };
 
 export type AuthenticateResult = SignMessageResult | OidcCredentials;
 
+/**@deprecated use TenantConfigMetadata */
 export type CardConfigType = CardConfigItemV1;
 
 type BeginLoginProps = Omit<Types.BeginLogInByTransactionInput, 'dappAddress'>;
@@ -326,8 +330,6 @@ const CHAINS_WITH_LOGIN_WEB3 = [
   ...APTOS_BLOCKCHAINS,
   ...COSMOS_BLOCKCHAINS,
 ] as const;
-
-export type SupportedCardConfigType = CardConfigItemV1;
 
 export type UserState = Readonly<
   | {
@@ -1106,19 +1108,6 @@ export class NotifiFrontendClient {
     return result;
   }
 
-  async updateWallets() {
-    const walletEventTypeItem: WalletBalanceEventTypeItem = {
-      name: 'User Wallets',
-      type: 'walletBalance',
-    };
-    const result = await ensureSourceAndFilters(
-      this._service,
-      walletEventTypeItem,
-      {},
-    );
-    return result;
-  }
-
   async getUnreadNotificationHistoryCount(
     cardId?: string,
   ): Promise<
@@ -1186,7 +1175,7 @@ export class NotifiFrontendClient {
 
   async fetchTenantConfig(
     variables: FindSubscriptionCardParams,
-  ): Promise<TenantConfig> {
+  ): Promise<TenantConfig | TenantConfigV2> {
     const query = await this._service.findTenantConfig({
       input: {
         ...variables,
@@ -1203,11 +1192,10 @@ export class NotifiFrontendClient {
       throw new Error('Invalid config data');
     }
 
-    const cardConfig = JSON.parse(tenantConfigJsonString) as CardConfigItemV1;
+    const tenantConfig = parseTenantConfig(tenantConfigJsonString);
     const fusionEventDescriptors = result.fusionEvents;
-
-    if (!cardConfig || cardConfig.version !== 'v1' || !fusionEventDescriptors)
-      throw new Error('Unsupported config format');
+    if (!fusionEventDescriptors)
+      throw new Error('fusionEventDescriptors not found');
 
     const fusionEventDescriptorMap = new Map<
       string,
@@ -1216,21 +1204,37 @@ export class NotifiFrontendClient {
 
     fusionEventDescriptorMap.delete('');
 
-    const fusionEventTopics: FusionEventTopic[] = cardConfig.eventTypes
-      .map((eventType) => {
-        if (eventType.type === 'fusion') {
-          const fusionEventDescriptor = fusionEventDescriptorMap.get(
-            eventType.name,
-          );
-          return {
-            uiConfig: eventType,
-            fusionEventDescriptor,
-          };
-        }
-      })
-      .filter((item): item is FusionEventTopic => !!item);
+    const topicMetadatas = tenantConfig.eventTypes.map((eventType) => {
+      if (eventType.type === 'fusion') {
+        const fusionEventDescriptor = fusionEventDescriptorMap.get(
+          eventType.name,
+        );
+        return {
+          uiConfig: eventType,
+          fusionEventDescriptor,
+        };
+      }
+    });
 
-    return { cardConfig, fusionEventTopics };
+    if (tenantConfig.version === 'v1') {
+      // V1 deprecated
+      const topicMetadatasV1 = topicMetadatas.filter(
+        (item): item is FusionEventTopic => !!item,
+      );
+      return {
+        cardConfig: tenantConfig, // NOTE: cardConfig is legacy naming of tenantConfig
+        fusionEventTopics: topicMetadatasV1,
+      };
+    }
+
+    // V2
+    const topicMetadatasV2 = topicMetadatas.filter(
+      (item): item is TopicMetadata => !!item,
+    );
+    return {
+      cardConfig: tenantConfig, // NOTE: cardConfig is legacy naming of tenantConfig
+      fusionEventTopics: topicMetadatasV2,
+    };
   }
 
   async copyAuthorization(config: NotifiFrontendConfiguration) {
@@ -1382,44 +1386,6 @@ export class NotifiFrontendClient {
 
   /** ⬇ Deprecated methods */
 
-  /** @deprecated only for legacy infrastructure */
-  async getSourceGroups(): Promise<
-    ReadonlyArray<Types.SourceGroupFragmentFragment>
-  > {
-    const query = await this._service.getSourceGroups({});
-    const results = query.sourceGroup?.filter(notNullOrEmpty) ?? [];
-    return results;
-  }
-
-  /**
-   * @deprecated use the return type of addEventListener & removeEventListener instead.
-   * @description never use this when having multiple gql subscription in the app. This case, dispose websocket could break other subscriptions.
-   */
-  async wsDispose() {
-    this._service.wsDispose();
-  }
-
-  /**
-   * @deprecated Use getFusionNotificationHistory instead
-   */
-  async getNotificationHistory(
-    variables: Types.GetNotificationHistoryQueryVariables,
-  ): Promise<
-    Readonly<{
-      pageInfo: Types.PageInfoFragmentFragment;
-      nodes: ReadonlyArray<Types.NotificationHistoryEntryFragmentFragment>;
-    }>
-  > {
-    const query = await this._service.getNotificationHistory(variables);
-    const nodes = query.notificationHistory?.nodes;
-    const pageInfo = query.notificationHistory?.pageInfo;
-    if (nodes === undefined || pageInfo === undefined) {
-      throw new Error('Failed to fetch notification history');
-    }
-
-    return { pageInfo, nodes };
-  }
-
   /**
    * @deprecated use addEventListener instead.
    */
@@ -1433,70 +1399,6 @@ export class NotifiFrontendClient {
       onError,
       onComplete,
     );
-  }
-
-  /** @deprecated legacy infrastructure, use ensureFusionAlerts instead */
-  async ensureAlert({
-    eventType,
-    inputs,
-    targetGroupName = 'Default',
-  }: Readonly<{
-    eventType: EventTypeItem;
-    inputs: Record<string, unknown>;
-    targetGroupName?: string;
-  }>): Promise<Types.AlertFragmentFragment> {
-    const [alertsQuery, targetGroupsQuery, sourceAndFilters] =
-      await Promise.all([
-        this._service.getAlerts({}),
-        this._service.getTargetGroups({}),
-        ensureSourceAndFilters(this._service, eventType, inputs),
-      ]);
-
-    const targetGroup = targetGroupsQuery.targetGroup?.find(
-      (it) => it?.name === targetGroupName,
-    );
-    if (targetGroup === undefined) {
-      throw new Error('Target group does not exist');
-    }
-
-    const { sourceGroup, filter, filterOptions } = sourceAndFilters;
-    const packedOptions = packFilterOptions(filterOptions);
-
-    const existing = alertsQuery.alert?.find(
-      (it) => it !== undefined && it.name === eventType.name,
-    );
-
-    if (existing !== undefined) {
-      if (
-        existing.sourceGroup.id === sourceGroup.id &&
-        existing.targetGroup.id === targetGroup.id &&
-        existing.filter.id === filter.id &&
-        existing.filterOptions === packedOptions
-      ) {
-        return existing;
-      }
-
-      // Alerts are immutable, delete the existing instead
-      await this.deleteAlert({
-        id: existing.id,
-      });
-    }
-
-    const mutation = await this._service.createAlert({
-      name: eventType.name,
-      sourceGroupId: sourceGroup.id,
-      filterId: filter.id,
-      targetGroupId: targetGroup.id,
-      filterOptions: packedOptions,
-      groupName: 'managed',
-    });
-
-    const created = mutation.createAlert;
-    if (created === undefined) {
-      throw new Error('Failed to create alert');
-    }
-
-    return created;
   }
 
   /** @deprecated use fetchFusionData instead. This is for legacy  */

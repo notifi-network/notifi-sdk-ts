@@ -1,6 +1,7 @@
 import {
   FusionEventTopic,
   FusionFilterOptions,
+  TopicMetadata,
   UserInputOptions,
   resolveObjectArrayRef,
   resolveStringRef,
@@ -30,7 +31,7 @@ import { useNotifiFrontendClientContext } from './NotifiFrontendClientContext';
 import { useNotifiTenantConfigContext } from './NotifiTenantConfigContext';
 
 export type TopicWithFilterOption = {
-  topic: FusionEventTopic;
+  topic: FusionEventTopic | TopicMetadata;
   filterOptions: FusionFilterOptions;
   subscriptionValue?: string;
   customAlertName?: string;
@@ -45,7 +46,7 @@ export type NotifiTopicContextType = {
   ) => Promise<void>;
   subscribeAlertsDefault: (
     /* Subscribe in default value */
-    topics: ReadonlyArray<FusionEventTopic>,
+    topics: ReadonlyArray<FusionEventTopic | TopicMetadata>,
     targetGroupId: string,
   ) => Promise<void>;
 
@@ -144,7 +145,7 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
 
   const subscribeAlertsWithFilterOptions = async (
     topicWithFilterOptionsList: ReadonlyArray<{
-      topic: FusionEventTopic;
+      topic: FusionEventTopic | TopicMetadata;
       subscriptionValue?: string;
       filterOptions: FusionFilterOptions;
       customAlertName?: string;
@@ -171,7 +172,9 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
           }
           const legacySubscriptionValue = resolveStringRef(
             topic.uiConfig.name,
-            topic.uiConfig.sourceAddress,
+            'sourceAddress' in topic.uiConfig
+              ? topic.uiConfig.sourceAddress // V1 tenant metadata --> Deprecated, always the hardcoded '*'
+              : { type: 'value', value: '*' }, // fallback to '*' when neither sourceAddress nor subscriptionValueOrRef is provided
             inputs,
           );
           const alertName = customAlertName ?? fusionEventId;
@@ -226,7 +229,7 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
   };
 
   const subscribeAlertsDefault = async (
-    topics: ReadonlyArray<FusionEventTopic>,
+    topics: ReadonlyArray<FusionEventTopic | TopicMetadata>,
     targetGroupId: string,
   ) => {
     const createAlertInputs: Types.CreateFusionAlertInput[] = [];
@@ -269,9 +272,12 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
             ? resolveObjectArrayRef('', subscriptionValueOrRef, inputs)
             : null;
 
+          // NOTE: For backward compatibility (v1 tenant config)
           const legacySubscriptionValue = resolveStringRef(
             topic.uiConfig.name,
-            topic.uiConfig.sourceAddress, // NOTE: Deprecated, always the hardcoded '*'
+            'sourceAddress' in topic.uiConfig
+              ? topic.uiConfig.sourceAddress // V1 tenant metadata --> Deprecated, always the hardcoded '*'
+              : { type: 'value', value: '*' }, // fallback to '*' when neither sourceAddress nor subscriptionValueOrRef is provided
             inputs,
           );
 

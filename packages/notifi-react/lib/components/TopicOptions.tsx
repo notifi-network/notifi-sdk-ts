@@ -1,6 +1,7 @@
 import {
   CustomInputConstraints,
   FusionEventTopic,
+  TopicMetadata,
   UiType,
   UserInputParam,
   ValueType,
@@ -14,11 +15,11 @@ import { defaultCopy } from '../utils/constants';
 import { TopicRowCategory } from './TopicList';
 
 type TopicGroupOptionsProps = TopicOptionsPropsBase & {
-  topics: FusionEventTopic[];
+  topics: (FusionEventTopic | TopicMetadata)[];
   userInputParam: UserInputParam<UiType>;
 };
 type TopicStandAloneOptionsProps = TopicOptionsPropsBase & {
-  topic: FusionEventTopic;
+  topic: FusionEventTopic | TopicMetadata;
   userInputParam: UserInputParam<UiType>;
 };
 

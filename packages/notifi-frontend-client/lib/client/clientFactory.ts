@@ -14,13 +14,13 @@ import {
   envUrl,
   newFrontendConfig,
 } from '../configuration';
+import { isEvmBlockchain } from '../models';
 import {
   NotifiFrontendStorage,
   createInMemoryStorageDriver,
   createLocalForageStorageDriver,
 } from '../storage';
 import { NotifiFrontendClient, UserParams } from './NotifiFrontendClient';
-import { isEvmBlockchain } from './blockchains';
 
 export const newNotifiStorage = (config: NotifiFrontendConfiguration) => {
   const driver =

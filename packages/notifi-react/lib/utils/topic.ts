@@ -8,30 +8,38 @@ import {
   FusionToggleEventTypeItem,
   InputObject,
   LabelEventTypeItem,
+  LabelUiConfig,
+  TopicMetadata,
+  TopicUiConfig,
   UiType,
   UserInputParam,
   ValueType,
   objectKeys,
 } from '@notifi-network/notifi-frontend-client';
 
-export type LabelWithSubTopicsEventTypeItem = LabelEventTypeItem & {
-  subTopics: Array<FusionToggleEventTypeItem>;
+export type LabelWithSubTopicsEventTypeItem = (
+  | LabelUiConfig
+  | LabelEventTypeItem
+) & {
+  subTopics: Array<FusionToggleEventTypeItem | TopicUiConfig>;
 };
 
-type ValidTypeItem = FusionToggleEventTypeItem | LabelEventTypeItem;
+type ValidTypeItem =
+  | FusionToggleEventTypeItem
+  | LabelEventTypeItem
+  | TopicUiConfig
+  | LabelUiConfig;
 
 const validateEventType = (
-  eventType: EventTypeItem,
+  eventType: EventTypeItem | LabelEventTypeItem | TopicUiConfig | LabelUiConfig,
 ): eventType is ValidTypeItem => {
-  // NOTE: now only support toggle fusion event type.
-  return (
-    (eventType.type === 'fusion' && eventType.selectedUIType === 'TOGGLE') ||
-    eventType.type === 'label'
-  );
+  return eventType.type === 'fusion' || eventType.type === 'label';
 };
 
 export const categorizeTopics = (
-  topics: ReadonlyArray<EventTypeItem>,
+  topics: ReadonlyArray<
+    EventTypeItem | LabelEventTypeItem | TopicUiConfig | LabelUiConfig
+  >,
   unCategorizedTopicsLabelName?: string,
 ) => {
   const categorizedEventTypeItems: LabelWithSubTopicsEventTypeItem[] = [];
@@ -63,7 +71,7 @@ export const categorizeTopics = (
 };
 
 export const getUserInputParams = (
-  topic: FusionEventTopic,
+  topic: FusionEventTopic | TopicMetadata,
 ): UserInputParam<UiType>[] => {
   const parsedMetadata = JSON.parse(
     topic.fusionEventDescriptor.metadata ?? '{}',
@@ -76,7 +84,7 @@ export const getUserInputParams = (
 };
 
 export const getUiConfigOverride = (
-  topic: FusionEventTopic,
+  topic: FusionEventTopic | TopicMetadata,
 ): FusionEventMetadata['uiConfigOverride'] => {
   const parsedMetadata = JSON.parse(
     topic.fusionEventDescriptor.metadata ?? '{}',
@@ -88,7 +96,7 @@ export const getUiConfigOverride = (
 };
 
 export const getFusionEventMetadata = (
-  topic: FusionEventTopic,
+  topic: FusionEventTopic | TopicMetadata,
 ): FusionEventMetadata | null => {
   const parsedMetadata = JSON.parse(
     topic.fusionEventDescriptor.metadata ?? '{}',
@@ -100,7 +108,7 @@ export const getFusionEventMetadata = (
 };
 
 export const getFusionFilter = (
-  topic: FusionEventTopic,
+  topic: FusionEventTopic | TopicMetadata,
 ): AlertFilter | null => {
   const parsedMetadata = JSON.parse(
     topic.fusionEventDescriptor.metadata ?? '{}',
@@ -111,7 +119,9 @@ export const getFusionFilter = (
   return null;
 };
 
-export const isTopicGroupValid = (topics: FusionEventTopic[]): boolean => {
+export const isTopicGroupValid = (
+  topics: (FusionEventTopic | TopicMetadata)[],
+): boolean => {
   // NOTE: Ensure all topics have no filters at the same time
   const isAllTopicWithoutFilters = topics.every(
     (topic) =>
