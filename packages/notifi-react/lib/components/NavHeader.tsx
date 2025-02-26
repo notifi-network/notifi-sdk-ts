@@ -17,6 +17,9 @@ export type NavHeaderRightCta = {
 export type NavHeaderProps = {
   leftCta?: NavHeaderCta;
   rightCta?: NavHeaderRightCta;
+  classNames?: {
+    container?: string;
+  };
 };
 
 export const NavHeader: React.FC<PropsWithChildren<NavHeaderProps>> = (
@@ -25,7 +28,7 @@ export const NavHeader: React.FC<PropsWithChildren<NavHeaderProps>> = (
   const { globalCtas } = useGlobalStateContext();
 
   return (
-    <div className="notifi-nav-header">
+    <div className={clsx('notifi-nav-header', props.classNames?.container)}>
       <div
         className="notifi-nav-header-left-cta"
         onClick={() => props.leftCta?.action()}

@@ -28,10 +28,11 @@
 .notifi-topic-list-tooltip-container {
   position: relative;
   display: flex;
+  margin-left: 0.2rem;
 }
 
 .notifi-topic-list-tooltip-icon {
-  color: var(--notifi-color-heather);
+  color: rgba(var(--notifi-color-heather), 1);
 }
 
 .notifi-topic-list-tooltip-icon:hover {
@@ -102,7 +103,7 @@
 .notifi-topic-options-description {
   margin: 0.5rem 0;
   font-size: 0.9rem;
-  color: var(--notifi-color-heather);
+  color: rgba(var(--notifi-color-heather), 1);
 }
 
 .notifi-topic-options-items {
@@ -129,7 +130,7 @@
 }
 
 .notifi-topic-options-item.button.selected {
-  border: solid 2px var(--notifi-color-secondary-light);
+  border: solid 2px rgba(var(--notifi-color-secondary-light), 1);
   color: var(--notifi-topic-options-item-selected-text);
 }
 
@@ -141,7 +142,7 @@
 .notifi-topic-options-item.radio::before {
   content: '';
   border-radius: 100%;
-  border: 2.5px solid var(--notifi-color-dusk);
+  border: 2.5px solid var(--notifi-topic-options-item-radio-before-border);
   display: inline-block;
   width: 1rem;
   height: 1rem;
@@ -155,9 +156,10 @@
 }
 
 .notifi-topic-options-item.radio.selected::before {
-  background-color: var(--notifi-color-seaglass-dark);
+  background-color: var(--notifi-topic-option-item-radio-selected-before-bg);
   box-shadow: inset 0 0 0px 2px var(--notifi-topic-option-radio-inner-ring) !important;
-  border: 2.5px solid var(--notifi-color-seaglass-dark);
+  border: 2.5px solid
+    var(--notifi-topic-option-item-radio-selected-before-border);
 }
 
 .notifi-topic-options-custom-input {
@@ -173,7 +175,7 @@
 }
 
 .notifi-topic-option-custom-input-container.selected {
-  border: 2px solid var(--notifi-color-secondary-light);
+  border: 2px solid rgba(var(--notifi-color-secondary-light), 1);
   color: var(--notifi-topic-options-item-selected-text);
 }
 
@@ -192,13 +194,13 @@
   min-width: 0;
   height: 3rem;
   border-radius: 6px;
-  color: var(--notifi-color-heather);
+  color: rgba(var(--notifi-color-heather), 1);
 }
 
 .notifi-topic-option-custom-input-prefix,
 .notifi-topic-option-custom-input-suffix {
   display: none;
-  color: var(--notifi-color-heather);
+  color: rgba(var(--notifi-color-heather), 1);
 }
 
 .notifi-topic-option-custom-input-container.selected
@@ -268,7 +270,7 @@
 .notifi-topic-stack-content-subtitle {
   display: flex;
   font-size: 0.9rem;
-  color: var(--notifi-color-text-light);
+  color: var(--notifi-topic-stack-content-subtitle-text);
 }
 
 .notifi-topic-stack-content-subtitle > * {
@@ -276,7 +278,7 @@
 }
 
 .notifi-topic-stack-cta {
-  color: var(--notifi-color-text-light);
+  color: var(--notifi-topic-stack-cta-text);
   cursor: pointer;
 }
 
@@ -312,7 +314,7 @@
 }
 
 .notifi-topic-stack-row-input-button.disabled {
-  background-color: var(--notifi-color-dusk);
+  background-color: var(--notifi-topic-stack-row-input-button-disabled-bg);
   cursor: not-allowed;
 }
 

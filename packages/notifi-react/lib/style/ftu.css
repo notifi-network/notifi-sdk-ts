@@ -22,8 +22,8 @@
 }
 
 .notifi-ftu-button-container {
-  border-top: var(--notifi-ftu-footer-border) 1px solid;
-  padding: 0.75rem 2rem 0 2rem;
+  /* border-top: var(--notifi-ftu-footer-border) 1px solid; */
+  padding: 0.75rem 1.5rem 0 1.5rem;
   background-color: var(--notifi-ftu-footer-bg);
 }
 
@@ -34,15 +34,8 @@
   height: 100%;
 }
 
-.notifi-ftu-target-edit-description {
-  color: var(--notifi-ftu-target-edit-description);
-  text-align: center;
-  font-size: 0.9rem;
-  margin: 0.75rem 0 0.75rem 0;
-}
-
 .notifi-ftu-target-edit-invalid-email-warning {
-  color: var(--notifi-color-error);
+  color: var(--notifi-ftu-target-edit-invalid-email-warning-text);
   margin: 0 2rem 0.5rem 2rem;
   height: 1rem;
   font-size: 0.9rem;
@@ -120,4 +113,9 @@
 .notifi-ftu-target-edit-button-spinner,
 .notifi-ftu-target-list-button-spinner {
   /* NOTE: intentionally left empty to allow override (!important is needed) */
+}
+
+.notifi-ftu-target-list-header {
+  background-color: var(--notifi-ftu-header-bg) !important;
+  border: none !important;
 }

@@ -46,7 +46,7 @@
 }
 
 .notifi-target-state-banner-verify-description {
-  color: var(--notifi-color-rose);
+  color: var(--notifi-target-state-banner-verify-description-text);
   font-size: 0.75rem;
 }
 
@@ -55,7 +55,7 @@
   display: flex;
   justify-content: flex-start;
   cursor: pointer;
-  color: var(--notifi-color-dusk);
+  color: var(--notifi-target-state-banner-verify-cta-text);
 }
 
 .notifi-target-state-banner-verify-cta.history {
@@ -97,7 +97,7 @@
 }
 
 .notifi-target-state-banner-signup-cta {
-  color: var(--notifi-color-white);
+  color: rgba(var(--notifi-color-white), 1);
   background-color: var(--notifi-target-state-banner-signup-cta-bg);
   padding: 0.5rem 1rem;
   border-radius: 6px;
