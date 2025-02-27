@@ -24,6 +24,10 @@ import {
 import { notNullOrEmpty, packFilterOptions } from '../utils';
 import { areIdsEqual } from '../utils/areIdsEqual';
 import {
+  AlterTargetGroupParams,
+  alterTargetGroupImpl,
+} from './alterTargetGroup';
+import {
   APTOS_BLOCKCHAINS,
   AptosBlockchain,
   BtcBlockchain,
@@ -1468,6 +1472,12 @@ export class NotifiFrontendClient {
       throw new Error('Failed to fetch webpush targets');
     }
     return result;
+  }
+
+  async alterTargetGroup(
+    alterTargetGroupParams: AlterTargetGroupParams,
+  ): Promise<Types.TargetGroupFragmentFragment> {
+    return await alterTargetGroupImpl(alterTargetGroupParams, this._service);
   }
 
   /** ⬇ Deprecated methods */
