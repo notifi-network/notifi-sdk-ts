@@ -1,7 +1,7 @@
 import { NotifiService } from '@notifi-network/notifi-graphql';
 
-// TODO: remove and reuse
-type Target =
+// TODO: Use import statement in notifi-react instead of re-defining
+export type NotifiTarget =
   | 'email'
   | 'phoneNumber'
   | 'telegram'
@@ -13,14 +13,14 @@ type Target =
 type CreateTarget = {
   type: 'create';
   value: string;
-  target: Target;
+  target: NotifiTarget;
   service: NotifiService;
 };
 
 type DeleteTarget = {
   type: 'delete';
   id: string;
-  target: Target;
+  target: NotifiTarget;
   service: NotifiService;
 };
 

@@ -1,20 +1,12 @@
 import { NotifiService, Types } from '@notifi-network/notifi-graphql';
 
 import { areIdsEqual } from '../utils/areIdsEqual';
-import { alterTarget } from './alterTarget';
+import { NotifiTarget, alterTarget } from './alterTarget';
 
-// TODO: remove and reuse
-type Target =
-  | 'email'
-  | 'phoneNumber'
-  | 'telegram'
-  | 'discord'
-  | 'slack'
-  | 'wallet';
 export type AlterTargetGroupParams = Readonly<
   {
     name: string;
-  } & Partial<Record<Target, UpdateTargetsParam>>
+  } & Partial<Record<NotifiTarget, UpdateTargetsParam>>
 >;
 export type UpdateTargetsParam =
   | { type: 'remove' }
@@ -35,38 +27,45 @@ export const alterTargetGroupImpl = async (
 
   const removeTargetParam: UpdateTargetsParam = { type: 'remove' };
 
-  const emailTargetIds = await updateTargets(
-    'email',
-    alterTargetGroupParams.email ?? removeTargetParam,
-    service,
-  );
-
-  const smsTargetIds = await updateTargets(
-    'phoneNumber',
-    alterTargetGroupParams.phoneNumber ?? removeTargetParam,
-    service,
-  );
-
-  const telegramTargetIds = await updateTargets(
-    'telegram',
-    alterTargetGroupParams.telegram ?? removeTargetParam,
-    service,
-  );
-  const discordTargetIds = await updateTargets(
-    'discord',
-    alterTargetGroupParams.discord ?? removeTargetParam,
-    service,
-  );
-  const slackChannelTargetIds = await updateTargets(
-    'slack',
-    alterTargetGroupParams.slack ?? removeTargetParam,
-    service,
-  );
-  const walletTargetIds = await updateTargets(
-    'wallet',
-    alterTargetGroupParams.wallet ?? removeTargetParam,
-    service,
-  );
+  const [
+    emailTargetIds,
+    smsTargetIds,
+    telegramTargetIds,
+    discordTargetIds,
+    slackChannelTargetIds,
+    walletTargetIds,
+  ] = await Promise.all([
+    updateTargets(
+      'email',
+      alterTargetGroupParams.email ?? removeTargetParam,
+      service,
+    ),
+    updateTargets(
+      'phoneNumber',
+      alterTargetGroupParams.phoneNumber ?? removeTargetParam,
+      service,
+    ),
+    updateTargets(
+      'telegram',
+      alterTargetGroupParams.telegram ?? removeTargetParam,
+      service,
+    ),
+    updateTargets(
+      'discord',
+      alterTargetGroupParams.discord ?? removeTargetParam,
+      service,
+    ),
+    updateTargets(
+      'slack',
+      alterTargetGroupParams.slack ?? removeTargetParam,
+      service,
+    ),
+    updateTargets(
+      'wallet',
+      alterTargetGroupParams.wallet ?? removeTargetParam,
+      service,
+    ),
+  ]);
 
   if (
     areIdsEqual(emailTargetIds, existingTargetGroup.emailTargets ?? []) &&
@@ -103,7 +102,7 @@ export const alterTargetGroupImpl = async (
 };
 
 const updateTargets = async (
-  type: Target,
+  type: NotifiTarget,
   updateTargetInGroup: UpdateTargetsParam,
   service: NotifiService,
 ): Promise<string[]> => {
