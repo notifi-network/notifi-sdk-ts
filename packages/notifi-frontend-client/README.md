@@ -163,27 +163,64 @@ The `fetchFusionData` client method is used to fetch the user's data, including 
 >
 > - [interface](https://github.com/notifi-network/notifi-sdk-ts/blob/a00d59215032375b35c303ff1ccec54892d3c423/packages/notifi-frontend-client/lib/client/NotifiFrontendClient.ts#L726)
 
-## 📭 Destinations
+## 📭 Destinations (Target & TargetGroup)
 
-The `ensureTargetGroup` client method is used to create a target group for the user's contact information.
+When a user logs in for the first time, a default target group named `Default` is automatically created for them. Users can manage their target groups using the `alterTargetGroup` client method.
 
-Notifi supports the following destination types:
+### Supported Destination Types
 
-- Email
-- SMS
-- Telegram
-- Discord
-- More to come
+Notifi currently supports the following destination types:
 
-```ts
-const targetGroup = client.ensureTargetGroup({
-  name: 'Default',
-  emailAddress: '<user-email>',
-  // ... other destination types if needed
+- **Email**
+- **SMS**
+- **Telegram**
+- **Discord**
+- **More to come** (additional types will be added in the future)
+
+### Target Group Management
+
+The `alterTargetGroup` method allows users to modify their target groups. It supports three operations:
+
+1. **Ensure** (`{ type: 'ensure'; name: string }`):
+   - Adds a target to the target group if it doesn't already exist.
+   - If the target doesn't exist, it creates a new target using the provided `name`.
+2. **Remove** (`{ type: 'remove' }`):
+   - Removes the target from the target group.
+   - The target remains in Notifi's backend and can be re-added later without re-verification.
+3. **Delete** (`{ type: 'delete'; id: string }`):
+   - Removes the target from the target group and deletes it from Notifi's backend.
+   - The target will need to be re-verified if added again in the future.
+
+### Example Usage
+
+Below is an example of how to use the `alterTargetGroup` method:
+
+```typescript
+const targetGroup = await client.alterTargetGroup({
+  name: 'Default', // Target group name
+  email: {
+    type: 'ensure',
+    name: '<user-email>', // Add or ensure the email target
+  },
+  discord: {
+    type: 'remove', // Remove the discord target from the group
+  },
+  telegram: {
+    type: 'delete',
+    id: '<telegram-id>', // Delete the Telegram target from the group and backend
+  },
+  // Other destination types can be added as needed
+  // Note: Targets not specified will be removed from the target group
 });
 ```
 
-> Reference: [ensureTargetGroup](https://github.com/notifi-network/notifi-sdk-ts/blob/a00d59215032375b35c303ff1ccec54892d3c423/packages/notifi-frontend-client/lib/client/NotifiFrontendClient.ts#L834)
+### Key Notes
+
+- **Reference Documentation**: For detailed type documentation, refer to [this link (WIP)]().
+- **Remove vs Delete**:
+  - **Remove**: Targets are only removed from the target group but remain in Notifi's backend. They can be re-added using the `ensure` method without re-verification.
+  - **Delete**: Targets are removed from the target group and permanently deleted from Notifi's backend. Re-adding them will require re-verification.
+- **Unspecified Targets**: If a target type is not included in the `alterTargetGroup` call, it will be removed from the target group.
 
 ## 🪢 Topics & Alerts
 
