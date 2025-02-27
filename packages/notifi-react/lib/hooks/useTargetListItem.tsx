@@ -35,37 +35,20 @@ export const useTargetListItem = (input: {
   const {
     targetDocument: { targetData, targetInputs, targetInfoPrompts },
     renewTargetGroup,
-    updateTargetInputs,
   } = useNotifiTargetContext();
+
   const isRemoveButtonAvailable = React.useMemo(() => {
     const isTargetRemovable = !!cardConfig?.isContactInfoRequired
       ? hasValidTargetMoreThan(targetData, 1)
       : true;
 
-    targetData[input.target];
     const targetInfo = targetInfoPrompts[input.target];
-    switch (input.target) {
-      case 'discord':
-        return (
-          !!targetInfo &&
-          targetInfo.infoPrompt.message !== 'Set Up' &&
-          isTargetRemovable
-        );
-      case 'slack':
-        return (
-          !!targetInfo &&
-          targetInfo.infoPrompt.message !== 'Set Up' &&
-          isTargetRemovable
-        );
-      case 'wallet':
-        return (
-          !!targetInfo &&
-          targetInfo.infoPrompt.message !== 'Sign Wallet' &&
-          isTargetRemovable
-        );
-      default:
-        return !!targetInfo && isTargetRemovable;
-    }
+    const removableTargetExists = !!targetInfo && isTargetRemovable;
+    const isTargetSignedUp = (signupMessage: string) =>
+      !['Set Up', 'Sign Wallet'].includes(signupMessage);
+    return (
+      removableTargetExists && isTargetSignedUp(targetInfo.infoPrompt.message)
+    );
   }, [input.target, targetData, cardConfig, targetInfoPrompts]);
 
   const signupCtaProps: TargetCtaProps = React.useMemo(() => {
@@ -74,16 +57,17 @@ export const useTargetListItem = (input: {
       targetInfoPrompt: {
         type: 'cta',
         message: 'Signup',
-        onClick: async () => console.log('Default Signup placeHolder'),
+        onClick: async () => {
+          const errorMsg = `ERROR: No signup action defined for target: ${input.target}`;
+          console.error(errorMsg);
+        },
       },
     };
 
     switch (input.target) {
       case 'email':
-      case 'telegram':
         return {
           ...defaultCtaProps,
-          type: 'button',
           targetInfoPrompt: {
             type: 'cta',
             message: 'Save',
@@ -98,17 +82,40 @@ export const useTargetListItem = (input: {
             },
           },
         };
-      case 'discord':
+      case 'telegram':
         return {
           ...defaultCtaProps,
           isCtaDisabled: !targetData[input.target].isAvailable,
-          type: 'button',
           targetInfoPrompt: {
             type: 'cta',
             message: 'Set Up',
             onClick: async () => {
-              // TODO: Remove this after adding documentation: 1. single target subscription always sync with with targetData. 2. targetInput & multiple target subscription.
-              // await updateTargetInputs(props.target, true);
+              const targetGroup = await renewTargetGroup({
+                target: input.target as ToggleTarget,
+                value: true,
+              });
+              if (
+                targetGroup?.telegramTargets?.[0]?.confirmationUrl &&
+                !targetGroup?.telegramTargets?.[0]?.isConfirmed
+              ) {
+                window.open(
+                  targetGroup?.telegramTargets?.[0]?.confirmationUrl,
+                  '_blank',
+                );
+              }
+              //NOTE: Wait for 1 second for target context state change
+              await new Promise((resolve) => setTimeout(resolve, 1000));
+            },
+          },
+        };
+      case 'discord':
+        return {
+          ...defaultCtaProps,
+          isCtaDisabled: !targetData[input.target].isAvailable,
+          targetInfoPrompt: {
+            type: 'cta',
+            message: 'Set Up',
+            onClick: async () => {
               const targetGroup = await renewTargetGroup({
                 target: input.target as ToggleTarget,
                 value: true,
@@ -132,13 +139,10 @@ export const useTargetListItem = (input: {
         return {
           ...defaultCtaProps,
           isCtaDisabled: !targetData[input.target].isAvailable,
-          type: 'button',
           targetInfoPrompt: {
             type: 'cta',
             message: 'Sign Wallet',
             onClick: async () => {
-              // TODO: Remove this after adding documentation: 1. single target subscription always sync with with targetData. 2. targetInput & multiple target subscription.
-              // await updateTargetInputs(props.target, true);
               const targetGroup = await renewTargetGroup({
                 target: input.target as ToggleTarget,
                 value: true,
@@ -152,8 +156,7 @@ export const useTargetListItem = (input: {
                 walletTargetId &&
                 walletTargetSenderAddress
               ) {
-                // TODO: Remove unused variable
-                const _updatedWeb3Target = await signCoinbaseSignature(
+                await signCoinbaseSignature(
                   walletTargetId,
                   walletTargetSenderAddress,
                 );
@@ -165,12 +168,10 @@ export const useTargetListItem = (input: {
         return {
           ...defaultCtaProps,
           isCtaDisabled: !targetData[input.target].isAvailable,
-          type: 'button',
           targetInfoPrompt: {
             type: 'cta',
             message: 'Set Up',
             onClick: async () => {
-              await updateTargetInputs(input.target, true);
               const targetGroup = await renewTargetGroup({
                 target: input.target as ToggleTarget,
                 value: true,
@@ -185,10 +186,7 @@ export const useTargetListItem = (input: {
       default:
         return defaultCtaProps;
     }
-  }, [
-    input.target,
-    targetInputs /* renewTargetGroup, updateTargetInputs, signCoinbaseSignature */, //TODO: econsider the dependency
-  ]);
+  }, [input.target, targetInputs, renewTargetGroup, signCoinbaseSignature]);
 
   const classifiedTargetListItemMessage: ClassifiedTargetListItemMessage | null =
     React.useMemo(() => {

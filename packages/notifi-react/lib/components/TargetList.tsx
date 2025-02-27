@@ -38,7 +38,6 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
   const { cardConfig } = useNotifiTenantConfigContext();
 
   const targetListItemArgsList = React.useMemo(() => {
-    // TODO: Move to custom hook when it gets too complex
     const order = [
       'email',
       'phoneNumber',
@@ -84,9 +83,6 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
             targetListItemArgs.iconType = 'telegram';
             targetListItemArgs.label =
               props.copy?.telegram ?? defaultCopy.targetList.telegram;
-            targetListItemArgs.message = {
-              beforeVerify: 'Verify your Telegram account',
-            };
             targetListItemArgs.targetCtaType = 'link';
             break;
           case 'discord':

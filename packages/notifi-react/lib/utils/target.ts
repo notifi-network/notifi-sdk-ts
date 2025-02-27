@@ -1,6 +1,7 @@
 import { objectKeys } from '@notifi-network/notifi-frontend-client';
 
-import {
+// NOTE: Only import "type" to avoid circular dependency
+import type {
   CtaInfo,
   FormTarget,
   MessageInfo,
@@ -11,12 +12,13 @@ import {
   ToggleTarget,
 } from '../context';
 
-export const formatTelegramForSubscription = (telegramId: string) => {
-  if (telegramId.startsWith('@')) {
-    return telegramId.slice(1);
-  }
-  return telegramId;
-};
+export const formTargets = ['email', 'phoneNumber'] as const;
+export const toggleTargets = [
+  'discord',
+  'slack',
+  'telegram',
+  'wallet',
+] as const;
 
 export const reformatSignatureForWalletTarget = (
   signature: Uint8Array | string,
@@ -60,7 +62,7 @@ export const hasValidTargetMoreThan = (
 
       if (typeof target === 'object') {
         // NOTE: toggleTargets are considered valid only if they are confirmed
-        if (key === 'discord' || key === 'wallet') {
+        if (key === 'discord' || key === 'wallet' || key === 'telegram') {
           return !!targetData[key].data?.isConfirmed;
         }
         if (key === 'slack') {
@@ -89,18 +91,19 @@ export const isTargetCta = (
 export const isTargetVerified = (
   targetInfoPrompt: TargetInfoPrompt | undefined,
 ): targetInfoPrompt is MessageInfo => {
-  return targetInfoPrompt?.type === 'message';
+  return (
+    targetInfoPrompt?.type === 'message' &&
+    targetInfoPrompt.message === 'Verified'
+  );
 };
 
 export const isFormTarget = (target: Target): target is FormTarget => {
-  const supportedFormTargets: Target[] = ['email', 'phoneNumber', 'telegram'];
+  const supportedFormTargets: Target[] = ['email', 'phoneNumber'];
   return supportedFormTargets.includes(target);
 };
 
-export const isToggleTarget = (target: Target): target is ToggleTarget => {
-  const supportedToggleTargets: Target[] = ['discord', 'slack', 'wallet'];
-  return supportedToggleTargets.includes(target);
-};
+export const isToggleTarget = (target: Target): target is ToggleTarget =>
+  toggleTargets.includes(target as ToggleTarget);
 
 export const getWalletTargetSignMessage = (
   address: string,
@@ -109,14 +112,10 @@ export const getWalletTargetSignMessage = (
 ) =>
   `Coinbase Wallet Messaging subscribe\nAddress: ${address}\nPartner Address: ${senderAddress}\nNonce: ${nonce}`;
 
-export const getTargetValidateRegex = (
-  target: Extract<Target, 'email' | 'telegram' | 'phoneNumber'>,
-) => {
+export const getTargetValidateRegex = (target: FormTarget) => {
   switch (target) {
     case 'email':
       return new RegExp('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$');
-    case 'telegram':
-      return new RegExp('.{5,}');
     case 'phoneNumber':
       return undefined;
     default:

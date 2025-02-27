@@ -10,7 +10,7 @@
   border-radius: 6px;
   background-color: var(--notifi-target-list-tooltip-bg);
   border: var(--tooltip-content-border) 1px solid;
-  width: 11.5rem;
+  width: 10rem;
   position: absolute;
   display: none;
   text-align: left;
