@@ -394,7 +394,7 @@ export const NotifiTargetContextProvider: FC<
     async (
       singleTargetRenewArgs?: TargetRenewArgs,
     ): Promise<Types.TargetGroupFragmentFragment | null> => {
-      let data = { ...targetGroupToBeSaved };
+      let data: AlterTargetGroupParams = { ...targetGroupToBeSaved };
 
       if (singleTargetRenewArgs) {
         data = {

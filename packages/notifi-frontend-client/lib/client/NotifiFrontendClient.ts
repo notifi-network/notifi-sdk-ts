@@ -937,27 +937,14 @@ export class NotifiFrontendClient {
       .map((alert) => alert?.id)
       .filter((id): id is string => !!id); // TODO: n(^2) --> consider to move to BE when this grows huge
 
-    // Alerts are immutable, delete the existing instead
+    /* Alerts are immutable, delete the existing instead */
+    // TODO: refactor using deleteAlerts
     for (const id of duplicateAlertsIds) {
       await this.deleteAlert({ id });
     }
 
     const mutation = await this._service.createFusionAlerts({ input });
     return mutation.createFusionAlerts;
-  }
-  /**
-   * @deprecated Use `deleteAlerts` instead
-   */
-  async deleteAlert({
-    id,
-  }: Readonly<{
-    id: string;
-  }>): Promise<void> {
-    const mutation = await this._service.deleteAlert({ id });
-    const result = mutation.deleteAlert?.id;
-    if (result === undefined) {
-      throw new Error('Failed to delete alert');
-    }
   }
 
   async deleteAlerts({
@@ -1212,7 +1199,11 @@ export class NotifiFrontendClient {
     return await alterTargetGroupImpl(alterTargetGroupParams, this._service);
   }
 
-  /** ⬇ Deprecated methods */
+  /**
+   * ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇
+   * ⬇ ⬇ Deprecated methods ⬇ ⬇
+   * ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇
+   */
 
   /** @deprecated only for legacy infrastructure */
   async getSourceGroups(): Promise<
@@ -1601,5 +1592,19 @@ export class NotifiFrontendClient {
     }
 
     return updated;
+  }
+  /**
+   * @deprecated Use `deleteAlerts` instead
+   */
+  async deleteAlert({
+    id,
+  }: Readonly<{
+    id: string;
+  }>): Promise<void> {
+    const mutation = await this._service.deleteAlert({ id });
+    const result = mutation.deleteAlert?.id;
+    if (result === undefined) {
+      throw new Error('Failed to delete alert');
+    }
   }
 }

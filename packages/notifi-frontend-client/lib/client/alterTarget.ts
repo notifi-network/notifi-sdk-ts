@@ -1,6 +1,5 @@
 import { NotifiService } from '@notifi-network/notifi-graphql';
 
-// TODO: Use import statement in notifi-react instead of re-defining
 export type NotifiTarget =
   | 'email'
   | 'phoneNumber'
@@ -9,7 +8,6 @@ export type NotifiTarget =
   | 'slack'
   | 'wallet';
 
-// TODO: consolidate
 type CreateTarget = {
   type: 'create';
   value: string;
