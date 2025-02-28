@@ -160,6 +160,6 @@ const updateTargets = async (
     if (!created) throw new Error('Failed to create target');
     return [created];
   }
-  // TODO: review all cases again
+  /* Remove from Group (type === 'remove') */
   return [];
 };

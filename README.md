@@ -62,37 +62,36 @@ This monorepo contains the following packages which are used to interact with No
 
 #### Notifi Frontend Client
 
-[@notifi-network/notifi-frontend-client](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-frontend-client) package is used from the frontend (Application) side by instantiating a `NotifiFrontendClient` object which provides the necessary client methods to interact with Notifi services.
+[@notifi-network/notifi-frontend-client](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-frontend-client) package is designed for frontend (application) use. It enables interaction with Notifi services by instantiating a `NotifiFrontendClient` object, which provides essential client methods.
 
-> - This package is not framework-specific, so it can be used in any frontend application.
-> - The implementation of `@notifi-network/notifi-front-client`: [@notifi-network/notifi-react](#notifi-react)
+> - Framework-agnostic: This package can be integrated into any frontend application, regardless of the framework.
+> - Implementation reference: See [@notifi-network/notifi-react](#notifi-react) for an example implementation.
 > - Type documentation: [Notifi Frontend Client](https://docs.notifi.network/notifi-sdk-ts/notifi-frontend-client/modules.html)
 
 #### Notifi React
 
 [@notifi-network/notifi-react](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-react) package is a React library that provides:
 
-- An out-of-the-box UI card modal component, `NotifiCardModal` by which developers can easily integrate with Notifi services without worrying about the underlying implementation.
-- A set of context methods by which allows developers to build their custom UI components to interact with Notifi services.
+- Prebuilt UI Component: An out-of-the-box UI card modal component, `NotifiCardModal` enabling developers to seamlessly integrate Notifi services without managing underlying implementation details.
+- Custom UI Flexibility: A set of context methods that allow developers to build custom UI components to interact with Notifi services.
 
-> - This package is specifically designed for [React based applications](https://www.robinwieruch.de/react-starter/) .
-> - Respective example package: [@notifi-network/notifi-react-example-v2](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-react-example-v2)
-> - This package is a implementation of the [@notifi-network/notifi-frontend-client](#notifi-frontend-client) package.
+> - Framework-specific: Designed exclusively for [React based applications](https://www.robinwieruch.de/react-starter/) .
+> - Example implementation: Refer to the [@notifi-network/notifi-react-example-v2](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-react-example-v2) package for a practical example.
+> - Built on: This package implements the [@notifi-network/notifi-frontend-client](#notifi-frontend-client) package.
 > - Type documentation: [Notifi React](https://docs.notifi.network/notifi-sdk-ts/notifi-react/modules.html)
 
 #### Notifi Node
 
-[@notifi-network/notifi-node](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-node) package is used from a NodeJS server side. Dapp owners can implement the off-chain parsing logics and send notifications to their users.
+[@notifi-network/notifi-node](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-node) package is designed for Node.js server-side use. It allows DApp owners to implement off-chain log parsing logic and send notifications to their users.
 
-> Respective example packages: [@notifi-network/notifi-node-sample](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-node-sample)
+> Example implementation: Refer to the [@notifi-network/notifi-node-sample](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-node-sample) package for a practical example.
 > Type documentation: [Notifi Node](https://docs.notifi.network/notifi-sdk-ts/notifi-node/modules.html)
 
 #### Notifi GraphQL
 
-[@notifi-network/notifi-graphql](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-graphql), powered by [graphql-codegen](https://the-guild.dev/graphql/codegen/docs/getting-started), serves as a GraphQL client that provides the necessary types and queries to interact with Notifi services.
-This is particularly useful for developers who want to build their services (SDK) on top of Notifi services.
+[@notifi-network/notifi-graphql](https://github.com/notifi-network/notifi-sdk-ts/tree/main/packages/notifi-graphql), powered by [graphql-codegen](https://the-guild.dev/graphql/codegen/docs/getting-started), provides a GraphQL client with the necessary types and queries to interact with Notifi services. It is especially useful for developers looking to build custom services (SDKs) on top of Notifi's infrastructure.
 
-> The implementation of `@notifi-network/notifi-graphql`: [@notifi-network/notifi-frontend-client](#notifi-frontend-client)
+> Implementation reference: See [@notifi-network/notifi-frontend-client](#notifi-frontend-client) for an example implementation.
 > Type documentation: [Notifi GraphQL](https://docs.notifi.network/notifi-sdk-ts/notifi-graphql/modules.html)
 
 #### Notifi Web Push Service Worker (Coming soon)
@@ -179,13 +178,19 @@ npm run build
 
     </br>
 
-> Tip:
+> **Tips**:
 > Use `lerna` commands to run scripts for a specific package (`npx lerna --scope=@notifi-network/<package-name> run <script-name>`).
 >
 > - Start the development server for `notifi-react-example-v2`:
 >   `npx lerna --scope=@notifi-network/notifi-react-example-v2 run dev`
 > - Open Cypress test runner for `notifi-react-example-v2`:
 >   `npx lerna --scope=@notifi-network/notifi-react-example-v2 run cypress:open`
+>
+> **Other conventions**:
+>
+> - Avoid leaving commented code in the codebase. If necessary, use the following guidelines:
+>   - For actionable items: `// TODO: <your comment>`
+>   - For code descriptions: `/* <your comment> */`
 
 </br>
 
