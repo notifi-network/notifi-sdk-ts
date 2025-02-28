@@ -554,6 +554,7 @@ export class NotifiFrontendClient {
         const { nonce } = await this._beginLogInWithWeb3({
           walletPubkey: this._configuration.walletPublicKey,
           authType: authType,
+          authAddress: this._configuration.walletPublicKey,
         });
 
         return {

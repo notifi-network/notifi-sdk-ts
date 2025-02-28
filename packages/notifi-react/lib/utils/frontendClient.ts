@@ -18,7 +18,7 @@ export const loginViaSolanaHardwareWallet = async (
 
   const { nonce } = await frontendClient._beginLogInWithWeb3({
     walletPubkey: walletWithSignParams.walletPublicKey,
-    authType: Web3AuthType.SOLANA_HARDWARE_SIGN_MESSAGE,
+    authType: 'SOLANA_HARDWARE_SIGN_MESSAGE',
     authAddress: walletWithSignParams.walletPublicKey,
   });
 
