@@ -6,6 +6,7 @@ import {
   type NotifiConfigWithPublicKeyAndAddress,
   type NotifiFrontendConfiguration,
   checkIsConfigWithDelegate,
+  checkIsConfigWithPublicKey,
   checkIsConfigWithPublicKeyAndAddress,
 } from '../configuration';
 import type {
@@ -30,9 +31,12 @@ import {
   COSMOS_BLOCKCHAINS,
   CosmosBlockchain,
   EvmBlockchain,
+  SOLANA_BLOCKCHAINS,
+  SolanaBlockchain,
   UnmaintainedBlockchain,
   isAptosBlockchain,
   isCosmosBlockchain,
+  isSolanaBlockchain,
   isUsingAptosBlockchain,
   isUsingBtcBlockchain,
   isUsingCosmosBlockchain,
@@ -81,6 +85,14 @@ type EvmSignMessageParams = Readonly<{
   signMessage: Uint8SignMessageFunction;
 }>;
 
+type SolanaSignMessageParams = Readonly<{
+  walletBlockchain: SolanaBlockchain;
+  signMessage: Uint8SignMessageFunction;
+  hardwareLoginPlugin?: {
+    signTransaction: (message: string) => Promise<string>;
+  };
+}>;
+
 type UnmaintainedSignMessageParams = Readonly<{
   walletBlockchain: UnmaintainedBlockchain;
   signMessage: Uint8SignMessageFunction;
@@ -91,11 +103,8 @@ export type SignMessageParams =
   | BtcSignMessageParams
   | EvmSignMessageParams
   | AptosSignMessageParams
+  | SolanaSignMessageParams
   | UnmaintainedSignMessageParams
-  | Readonly<{
-      walletBlockchain: 'SOLANA';
-      signMessage: Uint8SignMessageFunction;
-    }>
   | Readonly<{
       walletBlockchain: 'NEAR';
       signMessage: Uint8SignMessageFunction;
@@ -121,8 +130,11 @@ export type SignMessageParams =
 type SolanaWalletWithSignParams = Readonly<{
   signMessage: Uint8SignMessageFunction;
   hardwareLoginPlugin?: {
-    // NOTE: Solana specific: solana hardware wallet sign-in requires a memo contract verification
-    sendMessage: (message: string) => Promise<string>;
+    /**
+     * @deprecated Use signTransaction() instead. We no longer have to send a txn, and instead simply rely on the signed TX as we can verify this on Notifi Services.
+     */
+    sendMessage?: (message: string) => Promise<string>;
+    signTransaction: (message: string) => Promise<string>;
   };
 }> &
   SolanaUserParams;
@@ -326,6 +338,7 @@ export const SIGNING_MESSAGE = `${SIGNING_MESSAGE_WITHOUT_NONCE} \n \n 'Nonce:' 
 const CHAINS_WITH_LOGIN_WEB3 = [
   ...APTOS_BLOCKCHAINS,
   ...COSMOS_BLOCKCHAINS,
+  ...SOLANA_BLOCKCHAINS,
 ] as const;
 
 export type SupportedCardConfigType = CardConfigItemV1;
@@ -350,6 +363,7 @@ type LoginWeb3Params = Omit<
     SignMessageParams,
     | { walletBlockchain: CosmosBlockchain }
     | { walletBlockchain: AptosBlockchain }
+    | { walletBlockchain: SolanaBlockchain }
   >,
   'message' | 'nonce'
 >;
@@ -518,6 +532,43 @@ export class NotifiFrontendClient {
           },
           signingAddress: this._configuration.accountAddress,
           signingPubkey: this._configuration.authenticationKey,
+          nonce,
+        };
+      }
+    } else if (isSolanaBlockchain(signMessageParams.walletBlockchain)) {
+      // Check if we're using a hardware wallet by looking for the hardwareLoginPlugin
+      const isHardwareWallet =
+        'hardwareLoginPlugin' in signMessageParams &&
+        signMessageParams.hardwareLoginPlugin !== undefined;
+
+      const authType = isHardwareWallet
+        ? 'SOLANA_HARDWARE_SIGN_MESSAGE'
+        : 'SOLANA_SIGN_MESSAGE';
+
+      if (signMessageParams.walletBlockchain !== 'SOLANA')
+        throw new Error(
+          'loginViaSolanaHardwareWallet: Only SOLANA is supported',
+        );
+
+      if (checkIsConfigWithPublicKey(this._configuration)) {
+        const { nonce } = await this._beginLogInWithWeb3({
+          walletPubkey: this._configuration.walletPublicKey,
+          authType: authType,
+        });
+
+        return {
+          signMessageParams: {
+            walletBlockchain: signMessageParams.walletBlockchain,
+            signMessage:
+              signMessageParams.signMessage as Uint8SignMessageFunction,
+            ...(isHardwareWallet && {
+              hardwareLoginPlugin: signMessageParams.hardwareLoginPlugin as {
+                signTransaction: (message: string) => Promise<string>;
+              },
+            }),
+          },
+          signingAddress: this._configuration.walletPublicKey,
+          signingPubkey: this._configuration.walletPublicKey,
           nonce,
         };
       }

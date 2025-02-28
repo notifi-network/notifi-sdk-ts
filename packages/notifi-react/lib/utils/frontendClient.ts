@@ -1,5 +1,6 @@
 import {
   NotifiFrontendClient,
+  SIGNING_MESSAGE,
   WalletWithSignParams,
 } from '@notifi-network/notifi-frontend-client';
 
@@ -14,21 +15,26 @@ export const loginViaSolanaHardwareWallet = async (
       'loginViaSolanaHardwareWallet: loginViaSolanaHardwareWallet: Missing hardwareLoginPlugin',
     );
   const plugin = walletWithSignParams.hardwareLoginPlugin;
-  const { nonce } = await frontendClient.beginLoginViaTransaction({
-    walletAddress: walletWithSignParams.walletPublicKey,
-    walletBlockchain: walletWithSignParams.walletBlockchain,
+
+  const { nonce } = await frontendClient._beginLogInWithWeb3({
+    walletPubkey: walletWithSignParams.walletPublicKey,
+    authType: Web3AuthType.SOLANA_HARDWARE_SIGN_MESSAGE,
+    authAddress: walletWithSignParams.walletPublicKey,
   });
 
-  const transactionSignature = await plugin.sendMessage(nonce);
+  const signedMessage = `${SIGNING_MESSAGE}${nonce}`;
 
-  const logInResult = await frontendClient.completeLoginViaTransaction({
-    walletAddress: walletWithSignParams.walletPublicKey,
-    walletBlockchain: walletWithSignParams.walletBlockchain,
-    transactionSignature,
+  const transactionSignature = await plugin.signTransaction(nonce);
+
+  const logInResult = await frontendClient.completeLogInWithWeb3({
+    nonce: nonce,
+    signedMessage: signedMessage,
+    signature: transactionSignature,
+    signingAddress: walletWithSignParams.walletPublicKey,
   });
 
-  if (logInResult?.completeLogInByTransaction === undefined) {
-    throw new Error('Log in failed');
+  if (logInResult?.completeLogInWithWeb3 === undefined) {
+    throw new Error('Log in via Web3 failed');
   }
-  return logInResult;
+  return logInResult.completeLogInWithWeb3.user;
 };
