@@ -31,6 +31,7 @@ export const loginViaSolanaHardwareWallet = async (
     signedMessage: signedMessage,
     signature: transactionSignature,
     signingAddress: walletWithSignParams.walletPublicKey,
+    signingPubkey: walletWithSignParams.walletPublicKey,
   });
 
   if (logInResult?.completeLogInWithWeb3 === undefined) {

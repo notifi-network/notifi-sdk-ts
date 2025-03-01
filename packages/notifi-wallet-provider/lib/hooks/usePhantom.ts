@@ -93,6 +93,12 @@ export const usePhantom = (
     return signature;
   };
 
+  const signHardwareTransactionPhantom = async (transaction: Transaction) => {
+    const signedTransaction =
+      await window.phantom.solana.signTransaction(transaction);
+    return signedTransaction;
+  };
+
   const disconnectPhantom = () => {
     if (!window.phantom.solana)
       return handlePhantomNotExists('disconnectPhantom');
@@ -131,6 +137,7 @@ export const usePhantom = (
     signTransactionPhantom,
     signArbitraryPhantom,
     disconnectPhantom,
+    signHardwareTransactionPhantom,
     websiteURL: walletsWebsiteLink['phantom'],
   };
 };

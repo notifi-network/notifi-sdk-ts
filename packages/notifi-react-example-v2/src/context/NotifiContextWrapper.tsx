@@ -92,15 +92,11 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
             transaction: T,
           ): Promise<T> => {
             if (transaction instanceof Transaction) {
-              const signature = await wallets[selectedWallet].signTransaction(
-                transaction,
-                connection,
-              );
-              transaction.addSignature(
-                new PublicKey(walletPublicKey),
-                Buffer.from(signature, 'base64'),
-              );
-              return transaction as T;
+              const signedTransaction =
+                await wallets[selectedWallet].signHardwareTransaction(
+                  transaction,
+                );
+              return signedTransaction as T;
             } else {
               throw new Error('VersionedTransaction not supported');
             }
