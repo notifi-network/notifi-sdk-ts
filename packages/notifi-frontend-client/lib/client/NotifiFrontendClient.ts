@@ -87,6 +87,7 @@ type EvmSignMessageParams = Readonly<{
 
 type SolanaSignMessageParams = Readonly<{
   walletBlockchain: SolanaBlockchain;
+  nonce: string;
   signMessage: Uint8SignMessageFunction;
   hardwareLoginPlugin?: {
     signTransaction: (message: string) => Promise<string>;
@@ -537,13 +538,6 @@ export class NotifiFrontendClient {
       }
     } else if (isSolanaBlockchain(signMessageParams.walletBlockchain)) {
       // Check if we're using a hardware wallet by looking for the hardwareLoginPlugin
-      const isHardwareWallet =
-        'hardwareLoginPlugin' in signMessageParams &&
-        signMessageParams.hardwareLoginPlugin !== undefined;
-
-      const authType = isHardwareWallet
-        ? 'SOLANA_HARDWARE_SIGN_MESSAGE'
-        : 'SOLANA_SIGN_MESSAGE';
 
       if (signMessageParams.walletBlockchain !== 'SOLANA')
         throw new Error(
@@ -553,20 +547,16 @@ export class NotifiFrontendClient {
       if (checkIsConfigWithPublicKey(this._configuration)) {
         const { nonce } = await this._beginLogInWithWeb3({
           walletPubkey: this._configuration.walletPublicKey,
-          authType: authType,
+          authType: 'SOLANA_SIGN_MESSAGE',
           authAddress: this._configuration.walletPublicKey,
         });
 
         return {
           signMessageParams: {
             walletBlockchain: signMessageParams.walletBlockchain,
+            nonce,
             signMessage:
               signMessageParams.signMessage as Uint8SignMessageFunction,
-            ...(isHardwareWallet && {
-              hardwareLoginPlugin: signMessageParams.hardwareLoginPlugin as {
-                signTransaction: (message: string) => Promise<string>;
-              },
-            }),
           },
           signingAddress: this._configuration.walletPublicKey,
           signingPubkey: this._configuration.walletPublicKey,
@@ -783,7 +773,7 @@ export class NotifiFrontendClient {
       case 'SOLANA': {
         const { walletPublicKey, tenantId } = this
           ._configuration as NotifiConfigWithPublicKey;
-        const signedMessage = `${SIGNING_MESSAGE}${walletPublicKey}${tenantId}${timestamp.toString()}`;
+        const signedMessage = `${SIGNING_MESSAGE}${signMessageParams.nonce}`;
         const messageBuffer = new TextEncoder().encode(signedMessage);
 
         const signedBuffer = await signMessageParams.signMessage(messageBuffer);
