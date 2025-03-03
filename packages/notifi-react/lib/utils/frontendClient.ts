@@ -37,5 +37,5 @@ export const loginViaSolanaHardwareWallet = async (
   if (logInResult?.completeLogInWithWeb3 === undefined) {
     throw new Error('Log in via Web3 failed');
   }
-  return logInResult.completeLogInWithWeb3.user;
+  return logInResult;
 };

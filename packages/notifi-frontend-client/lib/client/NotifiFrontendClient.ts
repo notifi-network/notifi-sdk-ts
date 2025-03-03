@@ -594,6 +594,11 @@ export class NotifiFrontendClient {
       throw new Error('logInWith Web3 - Invalid signature - expected string');
     }
 
+    if (!authentication.signature) {
+      throw new Error(
+        'Signature expected! In order to continue, please sign the transaction to confirm your notifications.',
+      );
+    }
     const { completeLogInWithWeb3 } = await this.completeLogInWithWeb3({
       nonce,
       signature: authentication.signature,
@@ -777,6 +782,10 @@ export class NotifiFrontendClient {
         const messageBuffer = new TextEncoder().encode(signedMessage);
 
         const signedBuffer = await signMessageParams.signMessage(messageBuffer);
+
+        if (!signedBuffer) {
+          throw Error('Signature not completed');
+        }
         const signature = Buffer.from(signedBuffer).toString('base64');
         return { signature, signedMessage };
       }
@@ -943,6 +952,8 @@ export class NotifiFrontendClient {
       signingPubkey: '',
       ...input,
     });
+
+    await this._handleLogInResult(result.completeLogInWithWeb3.user);
 
     return result;
   }
