@@ -83,7 +83,7 @@ describe('NotifiCardModal First Time User Test', () => {
     });
   });
 
-  it('FTU flow -isTargetRequired: FtuTargetEdit & FtuTargetList', () => {
+  it('FTU flow -isTargetRequired: FtuTargetList', () => {
     cy.mountCardModal(true);
     cy.overrideCardConfig({
       isContactInfoRequired: true,
@@ -117,72 +117,48 @@ describe('NotifiCardModal First Time User Test', () => {
       cy.wait('@gqlFetchFusionDataQuery'); // --> Update and render updated alerts after subscribing (ensureFusionAlerts.then)
       cy.wait('@gqlUpdateUserSettingsMutation'); // --> Update FTU stage to land on FtuTargetEdit.tsx
 
-      // #2 - FTU Target Edit view (FtuTargetEdit.tsx)
-      //   * Check wether all active contact info are displayed
-      const supportedContact = objectKeys(cardConfig.contactInfo);
-      for (const contact of supportedContact) {
-        if (cardConfig.contactInfo[contact].active) {
+      // #2 - FTU Target List view (FtuTargetList.tsx)
+      //   * Check wether all active contact info are correctly rendered
+      const enabledContacts = objectKeys(cardConfig.contactInfo).filter(
+        (contact) => cardConfig.contactInfo[contact].active,
+      );
+      cy.get('.notifi-target-list-item').should(
+        'have.length',
+        enabledContacts.length,
+      );
+
+      //  * Next button should be disabled
+      cy.get('[data-cy="notifi-ftu-target-list-button"]')
+        .should('exist')
+        .should('be.disabled');
+
+      for (const contact of enabledContacts) {
+        if (contact === 'email' || contact === 'sms') {
           cy.get(
             `[data-cy="notifi-target-input-${
               contact === 'sms' ? 'phoneNumber' : contact
             }"]`,
-          ).should('exist');
-          if (
-            contact === 'email' ||
-            contact === 'sms' ||
-            contact === 'telegram'
-          ) {
-            cy.get(
-              `[data-cy="notifi-target-input-${
-                contact === 'sms' ? 'phoneNumber' : contact
-              }"]`,
-            )
-              .children('.notifi-target-input-field-input-container')
-              .children('input')
-              .type(
-                contact === 'sms'
-                  ? '+18882378289' // Dummy test phone number
-                  : `tester-${contact}@notifi.network`,
-              );
-          }
-          // TODO: implement toggle type
+          )
+            .children('.notifi-target-input-field-input-container')
+            .children('input')
+            .type(
+              contact === 'sms'
+                ? '+18882378289' // Dummy test phone number
+                : `tester-${contact}@notifi.network`,
+            );
         }
       }
-      //   * Click on Next button: The following queries should be made
-      cy.get('[data-cy="notifi-ftu-target-edit-button"]')
-        .should('exist')
-        .click();
-      cy.wait('@gqlGetTargetGroupsQuery'); // --> Get existing target groups. In frontendClient.ensureTargetGroup()
-      for (const contact of supportedContact) {
-        // --> Get target for each form target (email, sms, telegram). In frontendClient.ensureTargetGroup()
-        if (
-          contact === 'email' ||
-          contact === 'sms' ||
-          contact === 'telegram'
-        ) {
-          cy.wait(
-            `@gqlGet${
-              contact.charAt(0).toUpperCase() + contact.slice(1)
-            }TargetsQuery`,
-          );
-          cy.wait(
-            `@gqlCreate${
-              contact.charAt(0).toUpperCase() + contact.slice(1)
-            }TargetMutation`,
-          );
-        }
-        // TODO: implement toggle type
-      }
+
+      // Signup the first target (Email)
+      cy.get('.notifi-target-cta-button').eq(0).click();
       cy.wait('@gqlUpdateTargetGroupMutation'); // --> Update target group with new targets. In frontendClient.ensureTargetGroup()
       cy.wait('@gqlFetchFusionDataQuery'); // --> Refresh target data after ensuring targetGroup:  frontendClient.ensureTargetGroup().then(()=>fetchFusionData())
 
-      // #3 - FTU Target List view (FtuTargetList.tsx)
+      // Click on Next button
       cy.get('[data-cy="notifi-ftu-target-list-button"]')
-        .should('exist')
+        .should('not.be.disabled')
         .click();
-      //   * Click on Next button: The following query should be made
       cy.wait('@gqlUpdateUserSettingsMutation');
-      // cy.wait(2000); // Wait one sec to avoid hitting endpoint to often
     });
   });
 
@@ -207,7 +183,6 @@ describe('NotifiCardModal First Time User Test', () => {
       cy.wait('@gqlCreateFusionAlertsMutation'); // --> subscribe default alerts#2:  (in useConnect.ts --> ensureFusionAlerts)
       cy.wait('@gqlFetchFusionDataQuery'); // --> Update and render updated alerts after subscribing (ensureFusionAlerts.then)
       cy.wait('@gqlUpdateUserSettingsMutation'); // --> Update FTU stage to land on FtuTargetEdit.tsx
-
       // #2 - FTU Alert Edit view (FtuAlertEdit.tsx): Click on Next button, the following query should be made
       cy.get('[data-cy="notifi-ftu-alert-edit-button"]')
         .should('exist')
@@ -320,7 +295,7 @@ describe('NotifiCardModal Inbox Test', () => {
       .click();
     cy.get('.notifi-topic-list').should('exist');
     cy.get('.notifi-target-state-banner').should('exist').click();
-    cy.get('.notifi-inbox-config-target-edit-button-text').should('exist');
+    cy.get('.notifi-target-list-item').should('exist');
   });
 
   it('INBOX flow - Config view: with target', () => {

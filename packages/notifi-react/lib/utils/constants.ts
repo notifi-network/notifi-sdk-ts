@@ -9,17 +9,8 @@ export const defaultCopy = {
   },
   poweredByNotifi: 'Powered by',
   inputFields: {
-    email: 'Email address',
+    email: 'Enter your email address',
     phoneNumber: 'Phone Number',
-    telegram: 'Telegram ID',
-  },
-  inputToggles: {
-    discord: 'Discord DM Bot',
-    slack: 'Slack',
-    wallet: 'Wallet Alerts',
-    discordUnavailable: 'Discord unavailable',
-    slackUnavailable: 'Slack unavailable',
-    walletUnavailable: 'Only available for Coinbase Wallet',
   },
   ftu: {
     headerTitles: {
@@ -33,7 +24,7 @@ export const defaultCopy = {
     buttonText: 'Next',
   },
   ftuTargetList: {
-    headerTitle: 'Verify your destinations',
+    headerTitle: 'How do you want to be notified?',
     buttonText: 'Next',
   },
   ftuAlertEdit: {
@@ -47,15 +38,7 @@ export const defaultCopy = {
     discord: 'Discord',
     slack: 'Slack',
     wallet: 'Wallets',
-    emailVerifyMessage: 'We’ve sent a verification email to:',
-    postCtaEmail: 'Email sent',
-    postCtaEmailDurationInMs: 5000,
-    postCtaTelegram: 'Done!',
-    postCtaTelegramDurationInMs: 5000,
-    postCtaDiscord: '',
-    postCtaDiscordDurationInMs: 0,
-    postCtaSlack: 'Done!',
-    postCtaSlackDurationInMs: 5000,
+    emailVerifyMessage: 'Verification email sent',
     discordVerifiedMessage: 'Make sure Discord DMs are enabled',
     discordVerifiedPromptTooltip:
       'Make sure you have enabled DMs in Discord. Right click on the server after joining, go to Privacy Settings, and enable Direct Messages.',
@@ -119,11 +102,6 @@ export const defaultCopy = {
   inboxConfigTargetList: {
     header: 'Manage Destinations',
     buttonText: 'Edit Destinations',
-  },
-  inboxConfigTargetEdit: {
-    header: 'Edit Destinations',
-    buttonTextHasTarget: 'Save Changes',
-    buttonTextNoTarget: 'Subscribe',
   },
   errorGlobal: {
     header: 'An error occurred',

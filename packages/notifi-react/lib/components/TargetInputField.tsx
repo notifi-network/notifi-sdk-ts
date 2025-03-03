@@ -1,7 +1,6 @@
 import clsx from 'clsx';
 import React, { useMemo } from 'react';
 
-import { Icon, IconType } from '../assets/Icons';
 import { FormTarget, useNotifiTargetContext } from '../context';
 import { defaultCopy } from '../utils/constants';
 
@@ -9,7 +8,6 @@ export type TargetInputFieldProps = {
   targetType: FormTarget;
   onFocus?: (target: FormTarget) => void;
   onBlur?: (target: FormTarget) => void;
-  iconType: IconType;
   validateRegex?: RegExp;
   copy?: {
     placeholder?: string;
@@ -47,17 +45,13 @@ export const TargetInputField: React.FC<TargetInputFieldProps> = (props) => {
         return targetInputs.email;
       case 'phoneNumber':
         return targetInputs.phoneNumber;
-      case 'telegram':
-        return targetInputs.telegram;
     }
   }, [props.targetType, targetInputs]);
 
   const inputPlaceholder =
     (props.copy?.placeholder ?? props.targetType === 'email')
       ? defaultCopy.inputFields.email
-      : props.targetType === 'phoneNumber'
-        ? defaultCopy.inputFields.phoneNumber
-        : defaultCopy.inputFields.telegram;
+      : defaultCopy.inputFields.phoneNumber;
 
   const isTargetValid = (targetInput: string) => {
     if (targetInput === '' || !props.validateRegex) {
@@ -95,13 +89,6 @@ export const TargetInputField: React.FC<TargetInputFieldProps> = (props) => {
           isShowingInvalidWarning ? 'warning' : '',
         )}
       >
-        <Icon
-          type={props.iconType}
-          className={clsx(
-            'notifi-target-input-field-icon',
-            props.classNames?.icon,
-          )}
-        />
         <input
           type={
             props.targetType === 'email'

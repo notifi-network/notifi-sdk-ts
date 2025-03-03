@@ -3,7 +3,6 @@
 import { NotifiEnvironment } from '@notifi-network/notifi-frontend-client';
 import {
   NotifiCardModal,
-  NotifiCardModalProps,
   NotifiContextProvider,
 } from '@notifi-network/notifi-react';
 import '@notifi-network/notifi-react/dist/index.css';
@@ -196,7 +195,7 @@ export default function OidcGoogle() {
           <div className="notifi-card-modal-container">
             <NotifiCardModal
               darkMode={searchParams.get('scene') === 'light' ? false : true}
-              copy={copy}
+              // copy={copy}
             />
           </div>
         </NotifiContextProvider>
@@ -204,32 +203,3 @@ export default function OidcGoogle() {
     </>
   );
 }
-
-// Constants & utils
-
-const copy: NotifiCardModalProps['copy'] = {
-  Ftu: {
-    FtuTargetEdit: {
-      TargetInputs: {
-        inputSeparators: {
-          email: 'OR',
-          sms: 'OR',
-          telegram: 'OR',
-          discord: 'OR',
-        },
-      },
-    },
-  },
-  Inbox: {
-    InboxConfigTargetEdit: {
-      TargetInputs: {
-        inputSeparators: {
-          email: 'OR',
-          sms: 'OR',
-          telegram: 'OR',
-          discord: 'OR',
-        },
-      },
-    },
-  },
-};

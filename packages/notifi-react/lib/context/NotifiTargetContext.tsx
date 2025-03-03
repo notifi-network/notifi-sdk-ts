@@ -4,6 +4,10 @@ import {
 } from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
 import { isValidPhoneNumber } from 'libphonenumber-js';
+import {
+  AlterTargetGroupParams,
+  UpdateTargetsParam,
+} from 'notifi-frontend-client/lib/client/alterTargetGroup';
 import React, {
   FC,
   PropsWithChildren,
@@ -16,7 +20,7 @@ import React, {
 } from 'react';
 
 import { useTargetWallet } from '../hooks/useTargetWallet';
-import { formatTelegramForSubscription } from '../utils';
+import { formTargets, toggleTargets } from '../utils';
 import { useNotifiFrontendClientContext } from './NotifiFrontendClientContext';
 
 export type TargetGroupInput = {
@@ -36,16 +40,10 @@ export type TargetDocument = {
   targetData: TargetData;
 };
 
-export type Target =
-  | 'email'
-  | 'phoneNumber'
-  | 'telegram'
-  | 'discord'
-  | 'slack'
-  | 'wallet';
+export type Target = FormTarget | ToggleTarget;
 
-export type FormTarget = Extract<Target, 'email' | 'phoneNumber' | 'telegram'>;
-export type ToggleTarget = Extract<Target, 'discord' | 'slack' | 'wallet'>;
+export type FormTarget = (typeof formTargets)[number];
+export type ToggleTarget = (typeof toggleTargets)[number];
 
 export type TargetInputFromValue = { value: string; error?: string };
 type TargetInputForm = Record<FormTarget, TargetInputFromValue>;
@@ -78,7 +76,12 @@ export type MessageInfo = {
 export type TargetData = {
   email: string;
   phoneNumber: string;
-  telegram: string;
+  telegram: {
+    useTelegram: boolean;
+    data?: Types.TelegramTargetFragmentFragment;
+    // NOTE: available by default
+    isAvailable: boolean;
+  };
   discord: {
     useDiscord: boolean;
     data?: Types.DiscordTargetFragmentFragment;
@@ -121,21 +124,13 @@ type TargetRenewArgs = FormTargetRenewArgs | ToggleTargetRenewArgs;
 const isFormTargetRenewArgs = (
   args: TargetRenewArgs,
 ): args is FormTargetRenewArgs => {
-  return (
-    args.target === 'email' ||
-    args.target === 'telegram' ||
-    args.target === 'phoneNumber'
-  );
+  return formTargets.includes(args.target as FormTarget);
 };
 
 const isToggleTargetRenewArgs = (
   args: TargetRenewArgs,
 ): args is ToggleTargetRenewArgs => {
-  return (
-    args.target === 'slack' ||
-    args.target === 'wallet' ||
-    args.target === 'discord'
-  );
+  return toggleTargets.includes(args.target as ToggleTarget);
 };
 
 export type NotifiTargetContextType = {
@@ -144,10 +139,9 @@ export type NotifiTargetContextType = {
   error: Error | null;
   errorWallet: Error | null;
   updateTargetInputs: UpdateTargetInputs;
-  renewTargetGroup: (singleTargetRenewArgs?: {
-    target: ToggleTarget;
-    value: boolean;
-  }) => Promise<void>;
+  renewTargetGroup: (
+    singleTargetRenewArgs?: TargetRenewArgs,
+  ) => Promise<Types.TargetGroupFragmentFragment | null>;
   isChangingTargets: Record<Target, boolean>;
   targetDocument: TargetDocument;
   unVerifiedTargets: Target[];
@@ -174,7 +168,7 @@ export const NotifiTargetContextProvider: FC<
   const [targetInputs, setTargetInputs] = useState<TargetInputs>({
     email: { value: '', error: '' },
     phoneNumber: { value: '', error: '' },
-    telegram: { value: '', error: '' },
+    telegram: false,
     discord: false,
     slack: false,
     wallet: false,
@@ -192,7 +186,10 @@ export const NotifiTargetContextProvider: FC<
   const [targetData, setTargetData] = useState<TargetData>({
     email: '',
     phoneNumber: '',
-    telegram: '',
+    telegram: {
+      useTelegram: false,
+      isAvailable: toggleTargetAvailability?.telegram ?? true,
+    },
     discord: {
       useDiscord: false,
       isAvailable: toggleTargetAvailability?.discord ?? true,
@@ -222,20 +219,27 @@ export const NotifiTargetContextProvider: FC<
     wallet: undefined,
   });
 
-  const targetGroupToBeSaved: TargetGroupInput = {
+  const targetGroupToBeSaved: AlterTargetGroupParams = {
     name: 'Default',
-    emailAddress:
-      targetInputs.email.value === '' ? undefined : targetInputs.email.value,
+    email:
+      targetInputs.email.value === ''
+        ? { type: 'remove' }
+        : { type: 'ensure', name: targetInputs.email.value },
     phoneNumber: isValidPhoneNumber(targetInputs.phoneNumber.value)
-      ? targetInputs.phoneNumber.value
-      : undefined,
-    telegramId:
-      targetInputs.telegram.value === ''
-        ? undefined
-        : formatTelegramForSubscription(targetInputs.telegram.value),
-    discordId: targetInputs.discord ? 'Default' : undefined,
-    slackId: targetInputs.slack ? 'Default' : undefined,
-    walletId: targetInputs.wallet ? 'Default' : undefined,
+      ? { type: 'ensure', name: targetInputs.phoneNumber.value }
+      : { type: 'remove' },
+    telegram: targetInputs.telegram
+      ? { type: 'ensure', name: 'Default' }
+      : { type: 'remove' },
+    discord: targetInputs.discord
+      ? { type: 'ensure', name: 'Default' }
+      : { type: 'remove' },
+    slack: targetInputs.slack
+      ? { type: 'ensure', name: 'Default' }
+      : { type: 'remove' },
+    wallet: targetInputs.wallet
+      ? { type: 'ensure', name: 'Default' }
+      : { type: 'remove' },
   };
 
   const currentSubscription =
@@ -303,7 +307,7 @@ export const NotifiTargetContextProvider: FC<
     } else {
       setIsChangingTargets((prev) => ({ ...prev, email: false }));
     }
-    if (targetData.telegram !== targetInputs.telegram.value) {
+    if (targetData.telegram.useTelegram !== targetInputs.telegram) {
       setIsChangingTargets((prev) => ({ ...prev, telegram: true }));
     } else {
       setIsChangingTargets((prev) => ({ ...prev, telegram: false }));
@@ -350,30 +354,17 @@ export const NotifiTargetContextProvider: FC<
   }, [toggleTargetAvailability]);
 
   const unVerifiedTargets = useMemo(() => {
-    const {
-      email: emailInfoPrompt,
-      phoneNumber: phoneNumberInfoPrompt,
-      telegram: telegramInfoPrompt,
-      discord: discordInfoPrompt,
-      wallet: walletInfoPrompt,
-    } = targetInfoPrompts;
+    const { email: emailInfoPrompt, phoneNumber: phoneNumberInfoPrompt } =
+      targetInfoPrompts;
 
     const unConfirmedTargets = {
       email: emailInfoPrompt?.infoPrompt.type === 'cta',
       phoneNumber: phoneNumberInfoPrompt?.infoPrompt.type === 'cta',
-      telegram: telegramInfoPrompt?.infoPrompt.type === 'cta',
-      slack:
-        targetData.slack.useSlack &&
-        discordInfoPrompt?.infoPrompt.type === 'cta' &&
-        discordInfoPrompt?.infoPrompt.message === 'Enable Bot',
-      wallet:
-        targetData.wallet.useWallet &&
-        walletInfoPrompt?.infoPrompt.type === 'cta' &&
-        walletInfoPrompt?.infoPrompt.message === 'Sign Wallet',
-      discord:
-        targetData.discord.useDiscord &&
-        discordInfoPrompt?.infoPrompt.type === 'cta' &&
-        discordInfoPrompt?.infoPrompt.message === 'Enable Bot',
+      // TOGGLE TARGET will never be unverified (Unverified means the target is not confirmed)
+      telegram: false,
+      slack: false,
+      wallet: false,
+      discord: false,
     };
     return objectKeys(unConfirmedTargets)
       .map((key) => {
@@ -400,58 +391,67 @@ export const NotifiTargetContextProvider: FC<
   );
 
   const renewTargetGroup = useCallback(
-    async (singleTargetRenewArgs?: TargetRenewArgs) => {
-      let data = { ...targetGroupToBeSaved };
+    async (
+      singleTargetRenewArgs?: TargetRenewArgs,
+    ): Promise<Types.TargetGroupFragmentFragment | null> => {
+      let data: AlterTargetGroupParams = { ...targetGroupToBeSaved };
 
       if (singleTargetRenewArgs) {
         data = {
           name: 'Default',
-          emailAddress: !targetData.email ? undefined : targetData.email,
+          email: !targetData.email
+            ? { type: 'remove' }
+            : { type: 'ensure', name: targetData.email },
           phoneNumber: !targetData.phoneNumber
-            ? undefined
-            : targetData.phoneNumber,
-          telegramId: !targetData.telegram ? undefined : targetData.telegram,
-          discordId: targetData.discord.useDiscord ? 'Default' : undefined,
-          slackId: targetData.slack.useSlack ? 'Default' : undefined,
-          walletId: targetData.wallet.useWallet ? 'Default' : undefined,
+            ? { type: 'remove' }
+            : { type: 'ensure', name: targetData.phoneNumber },
+          telegram: targetData.telegram.useTelegram
+            ? { type: 'ensure', name: 'Default' }
+            : { type: 'remove' },
+          discord: targetData.discord.useDiscord
+            ? { type: 'ensure', name: 'Default' }
+            : { type: 'remove' },
+          slack: targetData.slack.useSlack
+            ? { type: 'ensure', name: 'Default' }
+            : { type: 'remove' },
+          wallet: targetData.wallet.useWallet
+            ? { type: 'ensure', name: 'Default' }
+            : { type: 'remove' },
         };
 
         const { target, value } = singleTargetRenewArgs;
         if (isFormTargetRenewArgs(singleTargetRenewArgs)) {
-          let formTarget: string | undefined = '';
-          let formValue: string | undefined = '';
+          let formValue: UpdateTargetsParam = { type: 'remove' };
 
           if (target === 'email') {
-            formTarget = 'emailAddress';
-            formValue = value === '' ? undefined : value;
-          }
-
-          if (target === 'telegram') {
-            formTarget = 'telegramId';
             formValue =
-              value === '' ? undefined : formatTelegramForSubscription(value);
+              value === ''
+                ? { type: 'remove' }
+                : { type: 'ensure', name: value };
           }
 
           if (target === 'phoneNumber') {
-            formTarget = target;
-            formValue = isValidPhoneNumber(value) ? value : undefined;
+            formValue = isValidPhoneNumber(value)
+              ? { type: 'ensure', name: value }
+              : { type: 'remove' };
           }
 
           data = {
             ...data,
-            [formTarget]: formValue,
+            [target]: formValue,
           };
         } else if (isToggleTargetRenewArgs(singleTargetRenewArgs)) {
           data = {
             ...data,
-            [`${target}Id`]: value ? 'Default' : undefined,
+            [target]: value
+              ? { type: 'ensure', name: 'Default' }
+              : { type: 'remove' },
           };
         }
       }
-
       setIsLoading(true);
       return frontendClient
-        .ensureTargetGroup(data)
+        .alterTargetGroup(data)
         .then((_result) => {
           frontendClient
             .fetchFusionData()
@@ -461,8 +461,12 @@ export const NotifiTargetContextProvider: FC<
             })
             .catch((e) => setError(e as Error))
             .finally(() => setIsLoading(false));
+          return _result;
         })
-        .catch((e) => setError(e as Error))
+        .catch((e) => {
+          setError(e as Error);
+          return null;
+        })
         .finally(() => setIsLoading(false));
     },
     [frontendClient, targetGroupToBeSaved, targetData],
@@ -508,11 +512,9 @@ export const NotifiTargetContextProvider: FC<
           value:
             targetGroup?.smsTargets?.[0]?.phoneNumber ?? prev.phoneNumber.value,
         },
-        telegram: {
-          value:
-            targetGroup?.telegramTargets?.[0]?.telegramId ??
-            prev.telegram.value,
-        },
+        telegram: !!targetGroup?.telegramTargets?.find(
+          (it) => it?.name === 'Default',
+        ),
         discord: !!targetGroup?.discordTargets?.find(
           (it) => it?.name === 'Default',
         ),
@@ -531,7 +533,9 @@ export const NotifiTargetContextProvider: FC<
       const smsTarget = targetGroup?.smsTargets?.[0];
       refreshSmsTarget(smsTarget);
 
-      const telegramTarget = targetGroup?.telegramTargets?.[0];
+      const telegramTarget = targetGroup?.telegramTargets?.find(
+        (it) => it?.name === 'Default',
+      );
       refreshTelegramTarget(telegramTarget);
 
       const discordTarget = targetGroup?.discordTargets?.find(
@@ -583,10 +587,7 @@ export const NotifiTargetContextProvider: FC<
             });
         }
       } else {
-        updateTargetInfoPrompt('email', {
-          type: 'message',
-          message: 'Verified',
-        });
+        updateTargetInfoPrompt('email', null);
       }
     },
     [frontendClient],
@@ -627,39 +628,36 @@ export const NotifiTargetContextProvider: FC<
 
   const refreshTelegramTarget = useCallback(
     async (telegramTarget?: Types.TelegramTargetFragmentFragment) => {
-      setTargetData((prev) => ({
-        ...prev,
-        telegram: telegramTarget?.telegramId ?? '',
-      }));
-      if (telegramTarget) {
-        switch (telegramTarget.isConfirmed) {
-          case true:
-            updateTargetInfoPrompt('telegram', {
+      if (!!telegramTarget) {
+        const infoPrompt: TargetInfoPrompt = telegramTarget.isConfirmed
+          ? {
               type: 'message',
               message: 'Verified',
-            });
-            break;
-          case false:
-            updateTargetInfoPrompt('telegram', {
+            }
+          : {
               type: 'cta',
-              message: 'Verify ID',
-              onClick: () => {
-                if (!telegramTarget?.confirmationUrl) {
-                  return;
-                }
-                window.open(telegramTarget?.confirmationUrl);
-              },
-            });
-            break;
-          default:
-            updateTargetInfoPrompt('telegram', {
-              type: 'error',
-              message: 'ERROR: Unexpected telegram state',
-            });
-        }
-      } else {
-        updateTargetInfoPrompt('telegram', null);
+              message: 'Set Up',
+              onClick: () =>
+                window.open(telegramTarget.confirmationUrl, '_blank'),
+            };
+        updateTargetInfoPrompt('telegram', infoPrompt);
+        return setTargetData((prev) => ({
+          ...prev,
+          telegram: {
+            useTelegram: true,
+            data: telegramTarget,
+            isAvailable: toggleTargetAvailability?.telegram ?? true,
+          },
+        }));
       }
+      setTargetData((prev) => ({
+        ...prev,
+        telegram: {
+          useTelegram: false,
+          isAvailable: toggleTargetAvailability?.telegram ?? true,
+        },
+      }));
+      updateTargetInfoPrompt('telegram', null);
     },
     [],
   );
@@ -669,7 +667,7 @@ export const NotifiTargetContextProvider: FC<
       if (!!discordTarget && !discordTarget.isConfirmed) {
         updateTargetInfoPrompt('discord', {
           type: 'cta',
-          message: 'Enable Bot',
+          message: 'Set Up',
           onClick: () => window.open(discordTarget.verificationLink, '_blank'),
         });
         setTargetData((prev) => ({
@@ -718,6 +716,7 @@ export const NotifiTargetContextProvider: FC<
             isAvailable: toggleTargetAvailability?.discord ?? true,
           },
         }));
+        updateTargetInfoPrompt('discord', null);
       }
     },
     [],
@@ -732,7 +731,7 @@ export const NotifiTargetContextProvider: FC<
           case 'MISSING_CHANNEL':
             updateTargetInfoPrompt('slack', {
               type: 'cta',
-              message: 'Enable Bot',
+              message: 'Set Up',
               onClick: () =>
                 window.open(slackTarget.verificationLink, '_blank'),
             });
@@ -765,6 +764,7 @@ export const NotifiTargetContextProvider: FC<
             isAvailable: toggleTargetAvailability?.slack ?? true,
           },
         }));
+        updateTargetInfoPrompt('slack', null);
       }
     },
     [],
@@ -825,6 +825,7 @@ export const NotifiTargetContextProvider: FC<
             isAvailable: toggleTargetAvailability?.wallet ?? false,
           },
         }));
+        updateTargetInfoPrompt('wallet', null);
       }
     },
     [toggleTargetAvailability, signCoinbaseSignature],
