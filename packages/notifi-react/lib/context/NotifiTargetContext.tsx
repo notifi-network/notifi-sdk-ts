@@ -4,6 +4,10 @@ import {
 } from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
 import { isValidPhoneNumber } from 'libphonenumber-js';
+import {
+  AlterTargetGroupParams,
+  UpdateTargetsParam,
+} from 'notifi-frontend-client/lib/client/alterTargetGroup';
 import React, {
   FC,
   PropsWithChildren,
@@ -215,17 +219,27 @@ export const NotifiTargetContextProvider: FC<
     wallet: undefined,
   });
 
-  const targetGroupToBeSaved: TargetGroupInput = {
+  const targetGroupToBeSaved: AlterTargetGroupParams = {
     name: 'Default',
-    emailAddress:
-      targetInputs.email.value === '' ? undefined : targetInputs.email.value,
+    email:
+      targetInputs.email.value === ''
+        ? { type: 'remove' }
+        : { type: 'ensure', name: targetInputs.email.value },
     phoneNumber: isValidPhoneNumber(targetInputs.phoneNumber.value)
-      ? targetInputs.phoneNumber.value
-      : undefined,
-    telegramId: targetInputs.telegram ? 'Default' : undefined,
-    discordId: targetInputs.discord ? 'Default' : undefined,
-    slackId: targetInputs.slack ? 'Default' : undefined,
-    walletId: targetInputs.wallet ? 'Default' : undefined,
+      ? { type: 'ensure', name: targetInputs.phoneNumber.value }
+      : { type: 'remove' },
+    telegram: targetInputs.telegram
+      ? { type: 'ensure', name: 'Default' }
+      : { type: 'remove' },
+    discord: targetInputs.discord
+      ? { type: 'ensure', name: 'Default' }
+      : { type: 'remove' },
+    slack: targetInputs.slack
+      ? { type: 'ensure', name: 'Default' }
+      : { type: 'remove' },
+    wallet: targetInputs.wallet
+      ? { type: 'ensure', name: 'Default' }
+      : { type: 'remove' },
   };
 
   const currentSubscription =
@@ -380,51 +394,64 @@ export const NotifiTargetContextProvider: FC<
     async (
       singleTargetRenewArgs?: TargetRenewArgs,
     ): Promise<Types.TargetGroupFragmentFragment | null> => {
-      let data = { ...targetGroupToBeSaved };
+      let data: AlterTargetGroupParams = { ...targetGroupToBeSaved };
 
       if (singleTargetRenewArgs) {
         data = {
           name: 'Default',
-          emailAddress: !targetData.email ? undefined : targetData.email,
+          email: !targetData.email
+            ? { type: 'remove' }
+            : { type: 'ensure', name: targetData.email },
           phoneNumber: !targetData.phoneNumber
-            ? undefined
-            : targetData.phoneNumber,
-          telegramId: targetData.telegram.useTelegram ? 'Default' : undefined,
-          discordId: targetData.discord.useDiscord ? 'Default' : undefined,
-          slackId: targetData.slack.useSlack ? 'Default' : undefined,
-          walletId: targetData.wallet.useWallet ? 'Default' : undefined,
+            ? { type: 'remove' }
+            : { type: 'ensure', name: targetData.phoneNumber },
+          telegram: targetData.telegram.useTelegram
+            ? { type: 'ensure', name: 'Default' }
+            : { type: 'remove' },
+          discord: targetData.discord.useDiscord
+            ? { type: 'ensure', name: 'Default' }
+            : { type: 'remove' },
+          slack: targetData.slack.useSlack
+            ? { type: 'ensure', name: 'Default' }
+            : { type: 'remove' },
+          wallet: targetData.wallet.useWallet
+            ? { type: 'ensure', name: 'Default' }
+            : { type: 'remove' },
         };
 
         const { target, value } = singleTargetRenewArgs;
         if (isFormTargetRenewArgs(singleTargetRenewArgs)) {
-          let formTarget: string | undefined = '';
-          let formValue: string | undefined = '';
+          let formValue: UpdateTargetsParam = { type: 'remove' };
 
           if (target === 'email') {
-            formTarget = 'emailAddress';
-            formValue = value === '' ? undefined : value;
+            formValue =
+              value === ''
+                ? { type: 'remove' }
+                : { type: 'ensure', name: value };
           }
 
           if (target === 'phoneNumber') {
-            formTarget = target;
-            formValue = isValidPhoneNumber(value) ? value : undefined;
+            formValue = isValidPhoneNumber(value)
+              ? { type: 'ensure', name: value }
+              : { type: 'remove' };
           }
 
           data = {
             ...data,
-            [formTarget]: formValue,
+            [target]: formValue,
           };
         } else if (isToggleTargetRenewArgs(singleTargetRenewArgs)) {
           data = {
             ...data,
-            [`${target}Id`]: value ? 'Default' : undefined,
+            [target]: value
+              ? { type: 'ensure', name: 'Default' }
+              : { type: 'remove' },
           };
         }
       }
-
       setIsLoading(true);
       return frontendClient
-        .renewTargetGroup(data)
+        .alterTargetGroup(data)
         .then((_result) => {
           frontendClient
             .fetchFusionData()
