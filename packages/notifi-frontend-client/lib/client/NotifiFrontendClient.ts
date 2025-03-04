@@ -425,8 +425,8 @@ export class NotifiFrontendClient {
           authorization = newAuthorization;
         }
       } catch (e: unknown) {
-        await this.logOut();
         console.error('Failed to refresh Notifi token:', e);
+        return await this.logOut();
       }
     }
 
@@ -446,10 +446,12 @@ export class NotifiFrontendClient {
       this._storage.setRoles(null),
       this._service.logOut(),
     ]);
-
-    return {
+    this._service.setJwt(undefined);
+    const logOutStatus: UserState = {
       status: 'loggedOut',
     };
+    this._userState = logOutStatus;
+    return logOutStatus;
   }
 
   private async prepareLoginWithWeb3(
