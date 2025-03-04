@@ -87,7 +87,6 @@ export const alterTargetGroupImpl = async (
     emailTargetIds,
     smsTargetIds,
     telegramTargetIds,
-    webhookTargetIds: [], // Webhook target is deprecated
     discordTargetIds,
     slackChannelTargetIds,
     web3TargetIds: walletTargetIds,

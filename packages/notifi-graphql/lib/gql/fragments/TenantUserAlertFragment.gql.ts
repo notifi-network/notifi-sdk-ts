@@ -23,7 +23,6 @@ export const TenantUserAlertFragment = gql`
       hasVerifiedSms
       hasVerifiedWeb3
       hasVerifiedEmails
-      hasVerifiedWebhook
       hasVerifiedDiscord
       hasVerifiedTelegram
     }
