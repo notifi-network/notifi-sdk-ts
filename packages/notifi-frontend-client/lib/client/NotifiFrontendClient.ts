@@ -41,6 +41,7 @@ import {
   isUsingBtcBlockchain,
   isUsingCosmosBlockchain,
   isUsingEvmBlockchain,
+  isUsingSolanaBlockchain,
   isUsingUnmaintainedBlockchain,
 } from './blockchains';
 import { ensureSourceAndFilters, normalizeHexString } from './ensureSource';
@@ -771,24 +772,23 @@ export class NotifiFrontendClient {
       const signedBuffer = await signMessageParams.signMessage(messageBuffer);
       const signature = Buffer.from(signedBuffer).toString('base64');
       return { signature, signedMessage };
+    } else if (isUsingSolanaBlockchain(signMessageParams)) {
+      const { walletPublicKey, tenantId } = this
+        ._configuration as NotifiConfigWithPublicKey;
+      const signedMessage = `${SIGNING_MESSAGE}${signMessageParams.nonce}`;
+      const messageBuffer = new TextEncoder().encode(signedMessage);
+
+      const signedBuffer = await signMessageParams.signMessage(messageBuffer);
+
+      if (!signedBuffer) {
+        throw Error('Signature not completed');
+      }
+      const signature = Buffer.from(signedBuffer).toString('base64');
+      return { signature, signedMessage };
     }
 
     // Can only be the lonely chains now, e.g. Solana, Sui, ...
     switch (signMessageParams.walletBlockchain) {
-      case 'SOLANA': {
-        const { walletPublicKey, tenantId } = this
-          ._configuration as NotifiConfigWithPublicKey;
-        const signedMessage = `${SIGNING_MESSAGE}${signMessageParams.nonce}`;
-        const messageBuffer = new TextEncoder().encode(signedMessage);
-
-        const signedBuffer = await signMessageParams.signMessage(messageBuffer);
-
-        if (!signedBuffer) {
-          throw Error('Signature not completed');
-        }
-        const signature = Buffer.from(signedBuffer).toString('base64');
-        return { signature, signedMessage };
-      }
       case 'SUI': {
         const { accountAddress, tenantId } = this
           ._configuration as NotifiConfigWithPublicKeyAndAddress;
