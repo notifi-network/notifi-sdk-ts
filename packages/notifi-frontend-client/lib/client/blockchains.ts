@@ -25,6 +25,7 @@ export const EVM_BLOCKCHAINS = [
   'ARBITRUM',
   'AVALANCHE',
   'BINANCE',
+  'BOB',
   'MONAD',
   'BASE',
   'BLAST',
@@ -38,6 +39,7 @@ export const EVM_BLOCKCHAINS = [
   'THE_ROOT_NETWORK',
   'SEI',
   'SONIC',
+  'SWELLCHAIN',
   'ROME',
   'ZKSYNC',
 ] as const;
