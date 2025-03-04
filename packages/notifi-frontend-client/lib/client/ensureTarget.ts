@@ -213,48 +213,6 @@ export const ensureWeb3 = ensureTarget(
   () => 'Default',
 );
 
-export type EnsureWebhookParams = Omit<
-  Types.CreateWebhookTargetMutationVariables,
-  'name'
->;
-
-// Webhook cannot use ensureTarget due to requiring more than one parameter in its creation
-/** @deprecated Use alterTarget instead */
-export const ensureWebhook = async (
-  service: Operations.CreateWebhookTargetService &
-    Operations.GetWebhookTargetsService,
-  params: EnsureWebhookParams | undefined,
-): Promise<string | undefined> => {
-  if (params === undefined) {
-    return undefined;
-  }
-
-  const query = await service.getWebhookTargets({});
-  const existing = query.webhookTarget;
-
-  const found = existing?.find(
-    (it) =>
-      it?.url.toLowerCase() === params.url.toLowerCase() &&
-      it?.format === params.format,
-  );
-
-  if (found !== undefined) {
-    return found.id;
-  }
-
-  const mutation = await service.createWebhookTarget({
-    ...params,
-    name: params.url.toLowerCase(),
-    url: params.url.toLowerCase(),
-  });
-  const created = mutation.createWebhookTarget;
-  if (created === undefined) {
-    throw new Error('Failed to create webhook target');
-  }
-
-  return created.id;
-};
-
 /** @deprecated Use alterTarget instead */
 export const ensureTelegram = ensureTarget(
   async (service: Operations.CreateTelegramTargetService, value: string) => {

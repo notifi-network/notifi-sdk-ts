@@ -26,12 +26,10 @@ export class NotifiService
     Operations.CreateTargetGroupService,
     Operations.CreateTelegramTargetService,
     Operations.CreateTenantUserService,
-    Operations.CreateWebhookTargetService,
     Operations.DeleteAlertService,
     Operations.DeleteUserAlertService,
     Operations.DeleteSourceGroupService,
     Operations.DeleteTargetGroupService,
-    Operations.DeleteWebhookTargetService,
     Operations.FetchDataService,
     Operations.FindTenantConfigService,
     Operations.GetAlertsService,
@@ -50,7 +48,6 @@ export class NotifiService
     Operations.GetTenantConnectedWalletsService,
     Operations.GetTenantUserService,
     Operations.GetTopicsService,
-    Operations.GetWebhookTargetsService,
     Operations.LogInFromDappService,
     Operations.LogInFromServiceService,
     Operations.RefreshAuthorizationService,
@@ -270,13 +267,6 @@ export class NotifiService
     return this._typedClient.createTenantUser(variables, headers);
   }
 
-  async createWebhookTarget(
-    variables: Generated.CreateWebhookTargetMutationVariables,
-  ): Promise<Generated.CreateWebhookTargetMutation> {
-    const headers = this._requestHeaders();
-    return this._typedClient.createWebhookTarget(variables, headers);
-  }
-
   async createTelegramTarget(
     variables: Generated.CreateTelegramTargetMutationVariables,
   ): Promise<Generated.CreateTelegramTargetMutation> {
@@ -326,12 +316,6 @@ export class NotifiService
     return this._typedClient.deleteTargetGroup(variables, headers);
   }
 
-  async deleteWebhookTarget(
-    variables: Generated.DeleteWebhookTargetMutationVariables,
-  ): Promise<Generated.DeleteWebhookTargetMutation> {
-    const headers = this._requestHeaders();
-    return this._typedClient.deleteWebhookTarget(variables, headers);
-  }
   /** @deprecated use fetchFusionData instead. This is for legacy  */
   async fetchData(
     variables: Generated.FetchDataQueryVariables,
@@ -555,13 +539,6 @@ export class NotifiService
   ): Promise<Generated.GetUserSettingsQuery> {
     const headers = this._requestHeaders();
     return this._typedClient.getUserSettings(variables, headers);
-  }
-
-  async getWebhookTargets(
-    variables: Generated.GetWebhookTargetsQueryVariables,
-  ): Promise<Generated.GetWebhookTargetsQuery> {
-    const headers = this._requestHeaders();
-    return this._typedClient.getWebhookTargets(variables, headers);
   }
 
   async logInFromDapp(

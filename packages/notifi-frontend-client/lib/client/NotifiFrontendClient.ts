@@ -51,7 +51,6 @@ import {
   ensureSms,
   ensureTelegram,
   ensureWeb3,
-  ensureWebhook,
   renewTelegram,
 } from './ensureTarget';
 
@@ -314,11 +313,6 @@ type CompleteLoginProps = Omit<
 >;
 
 type CompleteLoginWithWeb3Props = Types.CompleteLogInWithWeb3Input;
-
-type EnsureWebhookParams = Omit<
-  Types.CreateWebhookTargetMutationVariables,
-  'name'
->;
 
 type FindSubscriptionCardParams = Omit<Types.FindTenantConfigInput, 'tenant'>;
 
@@ -1372,7 +1366,6 @@ export class NotifiFrontendClient {
     emailAddress,
     phoneNumber,
     telegramId,
-    webhook,
     discordId,
     slackId,
     walletId,
@@ -1381,7 +1374,6 @@ export class NotifiFrontendClient {
     emailAddress?: string;
     phoneNumber?: string;
     telegramId?: string;
-    webhook?: EnsureWebhookParams;
     discordId?: string;
     slackId?: string;
     walletId?: string;
@@ -1391,7 +1383,6 @@ export class NotifiFrontendClient {
       emailTargetId,
       smsTargetId,
       telegramTargetId,
-      webhookTargetId,
       discordTargetId,
       slackTargetId,
       web3TargetId,
@@ -1400,7 +1391,6 @@ export class NotifiFrontendClient {
       ensureEmail(this._service, emailAddress),
       ensureSms(this._service, phoneNumber),
       ensureTelegram(this._service, telegramId),
-      ensureWebhook(this._service, webhook),
       ensureDiscord(this._service, discordId),
       ensureSlack(this._service, slackId),
       ensureWeb3(this._service, walletId),
@@ -1410,8 +1400,6 @@ export class NotifiFrontendClient {
     const smsTargetIds = smsTargetId === undefined ? [] : [smsTargetId];
     const telegramTargetIds =
       telegramTargetId === undefined ? [] : [telegramTargetId];
-    const webhookTargetIds =
-      webhookTargetId === undefined ? [] : [webhookTargetId];
     const discordTargetIds =
       discordTargetId === undefined ? [] : [discordTargetId];
     const slackChannelTargetIds =
@@ -1427,7 +1415,6 @@ export class NotifiFrontendClient {
         emailTargetIds,
         smsTargetIds,
         telegramTargetIds,
-        webhookTargetIds,
         discordTargetIds,
         slackChannelTargetIds,
         web3TargetIds,
@@ -1439,7 +1426,6 @@ export class NotifiFrontendClient {
       emailTargetIds,
       smsTargetIds,
       telegramTargetIds,
-      webhookTargetIds,
       discordTargetIds,
       slackChannelTargetIds,
       web3TargetIds,
@@ -1461,7 +1447,6 @@ export class NotifiFrontendClient {
     emailAddress,
     phoneNumber,
     telegramId,
-    webhook,
     discordId,
     slackId,
     walletId,
@@ -1470,7 +1455,6 @@ export class NotifiFrontendClient {
     emailAddress?: string;
     phoneNumber?: string;
     telegramId?: string;
-    webhook?: EnsureWebhookParams;
     discordId?: string;
     slackId?: string;
     walletId?: string;
@@ -1480,7 +1464,6 @@ export class NotifiFrontendClient {
       emailTargetId,
       smsTargetId,
       telegramTargetId,
-      webhookTargetId,
       discordTargetId,
       slackTargetId,
       web3TargetId,
@@ -1489,7 +1472,6 @@ export class NotifiFrontendClient {
       ensureEmail(this._service, emailAddress),
       ensureSms(this._service, phoneNumber),
       renewTelegram(this._service, telegramId),
-      ensureWebhook(this._service, webhook),
       ensureDiscord(this._service, discordId),
       ensureSlack(this._service, slackId),
       ensureWeb3(this._service, walletId),
@@ -1499,8 +1481,6 @@ export class NotifiFrontendClient {
     const smsTargetIds = smsTargetId === undefined ? [] : [smsTargetId];
     const telegramTargetIds =
       telegramTargetId === undefined ? [] : [telegramTargetId];
-    const webhookTargetIds =
-      webhookTargetId === undefined ? [] : [webhookTargetId];
     const discordTargetIds =
       discordTargetId === undefined ? [] : [discordTargetId];
     const slackChannelTargetIds =
@@ -1516,7 +1496,6 @@ export class NotifiFrontendClient {
         emailTargetIds,
         smsTargetIds,
         telegramTargetIds,
-        webhookTargetIds,
         discordTargetIds,
         slackChannelTargetIds,
         web3TargetIds,
@@ -1528,7 +1507,6 @@ export class NotifiFrontendClient {
       emailTargetIds,
       smsTargetIds,
       telegramTargetIds,
-      webhookTargetIds,
       discordTargetIds,
       slackChannelTargetIds,
       web3TargetIds,
@@ -1548,7 +1526,6 @@ export class NotifiFrontendClient {
     emailTargetIds,
     smsTargetIds,
     telegramTargetIds,
-    webhookTargetIds,
     discordTargetIds,
     slackChannelTargetIds,
     web3TargetIds,
@@ -1557,7 +1534,6 @@ export class NotifiFrontendClient {
     emailTargetIds: Array<string>;
     smsTargetIds: Array<string>;
     telegramTargetIds: Array<string>;
-    webhookTargetIds: Array<string>;
     discordTargetIds: Array<string>;
     slackChannelTargetIds: Array<string>;
     web3TargetIds: Array<string>;
@@ -1566,7 +1542,6 @@ export class NotifiFrontendClient {
       areIdsEqual(emailTargetIds, existing.emailTargets ?? []) &&
       areIdsEqual(smsTargetIds, existing.smsTargets ?? []) &&
       areIdsEqual(telegramTargetIds, existing.telegramTargets ?? []) &&
-      areIdsEqual(webhookTargetIds, existing.webhookTargets ?? []) &&
       areIdsEqual(discordTargetIds, existing.discordTargets ?? []) &&
       areIdsEqual(slackChannelTargetIds, existing.slackChannelTargets ?? []) &&
       areIdsEqual(web3TargetIds, existing.web3Targets ?? [])
@@ -1580,7 +1555,6 @@ export class NotifiFrontendClient {
       emailTargetIds,
       smsTargetIds,
       telegramTargetIds,
-      webhookTargetIds,
       discordTargetIds,
       slackChannelTargetIds,
       web3TargetIds,
