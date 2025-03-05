@@ -223,6 +223,7 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
       phantom.disconnectPhantom,
       phantom.websiteURL,
       phantom.signTransactionPhantom,
+      phantom.signHardwareTransactionPhantom,
     ),
   };
 

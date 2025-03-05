@@ -74,6 +74,12 @@ export const checkIsConfigWithPublicKeyAndAddress = (
   return 'accountAddress' in config;
 };
 
+export const checkIsConfigWithPublicKey = (
+  config: NotifiFrontendConfiguration,
+): config is NotifiConfigWithPublicKey => {
+  return 'walletPublicKey' in config;
+};
+
 export const checkIsConfigWithDelegate = (
   config: NotifiFrontendConfiguration,
 ): config is NotifiConfigWithDelegate => {
