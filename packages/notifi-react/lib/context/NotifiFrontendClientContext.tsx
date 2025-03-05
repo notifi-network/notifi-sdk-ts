@@ -32,6 +32,7 @@ export type NotifiFrontendClientContextType = {
   isLoading: boolean;
   error: Error | null;
   login: () => Promise<NotifiFrontendClient | undefined>;
+  logout: () => Promise<void>;
   loginViaHardwareWallet: () => Promise<NotifiFrontendClient | undefined>;
   // In the following cases, loginViaTransaction will be null:
   // 1. If the walletBlockchain prop is OFF_CHAIN
@@ -97,12 +98,7 @@ export const NotifiFrontendClientContextProvider: React.FC<
     frontendClient
       .initialize()
       .then(() => {
-        setFrontendClientStatus({
-          isExpired: frontendClient.userState?.status === 'expired',
-          isInitialized: !!frontendClient,
-          isAuthenticated: frontendClient.userState?.status === 'authenticated',
-        });
-        setFrontendClient(frontendClient);
+        _refreshFrontendClient(frontendClient);
         setError(null);
       })
       .catch((e) => {
@@ -148,12 +144,7 @@ export const NotifiFrontendClientContextProvider: React.FC<
     setIsLoading(true);
     try {
       await frontendClient.logIn(walletWithSignParams);
-      setFrontendClientStatus({
-        isExpired: frontendClient.userState?.status === 'expired',
-        isInitialized: !!frontendClient,
-        isAuthenticated: frontendClient.userState?.status === 'authenticated',
-      });
-      setFrontendClient(frontendClient);
+      _refreshFrontendClient(frontendClient);
       setError(null);
     } catch (error) {
       if (error instanceof Error) {
@@ -170,6 +161,29 @@ export const NotifiFrontendClientContextProvider: React.FC<
       setIsLoading(false);
     }
     return frontendClient;
+  };
+
+  const logout = async () => {
+    if (!frontendClient) {
+      setError(
+        new Error('.logout: Failed to logout - client not instantiated'),
+      );
+      return;
+    }
+    try {
+      await frontendClient?.logOut();
+      _refreshFrontendClient(frontendClient);
+      setError(null);
+    } catch (error) {
+      if (error instanceof Error) {
+        const newError = {
+          ...error,
+          message: `logout: Failed to logout - ${JSON.stringify(error.message)}`,
+        };
+        setError(newError);
+        console.error(newError);
+      }
+    }
   };
 
   const _loginViaTransaction = React.useCallback(
@@ -189,12 +203,7 @@ export const NotifiFrontendClientContextProvider: React.FC<
           walletBlockchain: walletWithSignParams.walletBlockchain,
           transactionSignature: signatureSignedWithNotifiNonce,
         });
-        setFrontendClientStatus({
-          isExpired: frontendClient.userState?.status === 'expired',
-          isInitialized: !!frontendClient,
-          isAuthenticated: frontendClient.userState?.status === 'authenticated',
-        });
-        setFrontendClient(frontendClient);
+        _refreshFrontendClient(frontendClient);
         setError(null);
       } catch (error) {
         if (error instanceof Error) {
@@ -212,6 +221,18 @@ export const NotifiFrontendClientContextProvider: React.FC<
       return frontendClient;
     },
     [userId, !!frontendClient, isEnabledLoginViaTransaction],
+  );
+
+  const _refreshFrontendClient = React.useCallback(
+    (frontendClient: NotifiFrontendClient) => {
+      setFrontendClientStatus({
+        isExpired: frontendClient.userState?.status === 'expired',
+        isInitialized: !!frontendClient,
+        isAuthenticated: frontendClient.userState?.status === 'authenticated',
+      });
+      setFrontendClient(frontendClient);
+    },
+    [setFrontendClientStatus, setFrontendClient],
   );
 
   /**
@@ -233,12 +254,7 @@ export const NotifiFrontendClientContextProvider: React.FC<
     setIsLoading(true);
     try {
       await loginViaSolanaHardwareWallet(frontendClient, walletWithSignParams);
-      setFrontendClientStatus({
-        isExpired: frontendClient.userState?.status === 'expired',
-        isInitialized: !!frontendClient,
-        isAuthenticated: frontendClient.userState?.status === 'authenticated',
-      });
-      setFrontendClient(frontendClient);
+      _refreshFrontendClient(frontendClient);
       setError(null);
     } catch (error) {
       if (error instanceof Error) {
@@ -265,6 +281,7 @@ export const NotifiFrontendClientContextProvider: React.FC<
         isLoading,
         error,
         login,
+        logout,
         loginViaHardwareWallet,
         walletWithSignParams,
         loginViaTransaction:
