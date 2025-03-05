@@ -591,13 +591,9 @@ export class NotifiFrontendClient {
       timestamp: Math.round(Date.now() / 1000),
     });
 
-    if (!('signature' in authentication)) {
-      throw new Error('logInWith Web3 - Invalid signature - expected string');
-    }
-
-    if (!authentication.signature) {
+    if (!('signature' in authentication) || !authentication.signature) {
       throw new Error(
-        'Signature expected! In order to continue, please sign the transaction to confirm your notifications.',
+        'Web3loginAuth - Signature required. Please sign the transaction to confirm your notifications.',
       );
     }
     const { completeLogInWithWeb3 } = await this.completeLogInWithWeb3({
@@ -781,7 +777,7 @@ export class NotifiFrontendClient {
       const signedBuffer = await signMessageParams.signMessage(messageBuffer);
 
       if (!signedBuffer) {
-        throw Error('Signature not completed');
+        throw Error('._authenticate - Signature not completed');
       }
       const signature = Buffer.from(signedBuffer).toString('base64');
       return { signature, signedMessage };
@@ -953,6 +949,7 @@ export class NotifiFrontendClient {
       ...input,
     });
 
+    //This is to ensure that hardware wallet logins are given authentication.
     await this._handleLogInResult(result.completeLogInWithWeb3.user);
 
     return result;
