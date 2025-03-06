@@ -1,3 +1,4 @@
+import { Icon } from '@/assets/Icon';
 import {
   FtuStage,
   useNotifiUserSettingContext,
@@ -6,15 +7,25 @@ import React from 'react';
 
 import { TopicList } from './TopicList';
 
-export const ConfigAlertModal = () => {
+type FtuAlertEditProps = {
+  onClickBack?: () => void;
+};
+
+export const FtuAlertEdit: React.FC<FtuAlertEditProps> = ({ onClickBack }) => {
   const { updateFtuStage } = useNotifiUserSettingContext();
 
   return (
-    <div className="w-full h-full sm:w-4/6 bg-notifi-card-bg rounded-2xl flex flex-col items-center justify-between mt-[1rem] mb-[2rem]">
+    <div className="w-full h-full sm:w-4/6 bg-notifi-card-bg rounded-2xl flex flex-col items-center justify-between mt-[1rem] mb-[2rem] relative">
+      <div
+        onClick={onClickBack}
+        className="text-notifi-text-medium absolute cursor-pointer flex items-center hover:bg-notifi-card-border focus:bg-notifi-destination-card-bg h-6 w-6 rounded-2xl top-6 left-6"
+      >
+        <Icon id="left-arrow" />
+      </div>
       <div>
         <div className="flex flex-col items-center justify-center">
           <p className="font-semibold text-xs opacity-50 mt-2.5 text-notifi-text-medium">
-            STEP 3 OF 3
+            STEP 2 OF 2
           </p>
           <p className="font-medium text-lg sm:mt-6 mt-2 text-notifi-text">
             Select alerts you want to receive
