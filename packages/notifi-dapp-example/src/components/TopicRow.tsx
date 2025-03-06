@@ -125,9 +125,7 @@ export const TopicRow = <T extends TopicRowCategory>(
         <div className="flex flex-row items-center gap-1">
           <div className="group inline-block align-middle">
             {benchmarkTopic.uiConfig.tooltipContent ? (
-              <Tooltip>
-                <div>{benchmarkTopic.uiConfig.tooltipContent}</div>
-              </Tooltip>
+              <Tooltip>{benchmarkTopic.uiConfig.tooltipContent}</Tooltip>
             ) : null}
           </div>
           {/* hide toggle button if it is the Trading Pair Price Alert, but shown save button instead below */}

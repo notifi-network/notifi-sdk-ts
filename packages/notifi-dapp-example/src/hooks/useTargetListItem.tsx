@@ -15,6 +15,7 @@ import {
   TargetListItemMessage,
   TooltipEndingLink,
 } from '../components/TargetListItem';
+import { useTargetWallet } from './useTargetWallet';
 
 type ClassifiedTargetListItemMessage = {
   type: 'signup' | 'verify' | 'complete';
@@ -28,6 +29,7 @@ export const useTargetListItem = (input: {
   message?: TargetListItemMessage;
 }) => {
   const { cardConfig } = useNotifiTenantConfigContext();
+  const { signCoinbaseSignature } = useTargetWallet();
   const {
     targetDocument: { targetData, targetInputs, targetInfoPrompts },
     renewTargetGroup,
@@ -152,10 +154,10 @@ export const useTargetListItem = (input: {
                 walletTargetId &&
                 walletTargetSenderAddress
               ) {
-                // await signCoinbaseSignature(
-                //   walletTargetId,
-                //   walletTargetSenderAddress,
-                // );
+                await signCoinbaseSignature(
+                  walletTargetId,
+                  walletTargetSenderAddress,
+                );
               }
             },
           },

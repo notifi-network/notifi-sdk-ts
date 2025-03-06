@@ -2,14 +2,12 @@
 
 import { Icon } from '@/assets/Icon';
 import { isEVMChain } from '@/utils/typeUtils';
-import { useNotifiFrontendClientContext } from '@notifi-network/notifi-react';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import React, { useState } from 'react';
 
 export default function Disconnect() {
   const { wallets, selectedWallet } = useWallets();
   const [isWalletMenuOpen, setIsWalletMenuOpen] = useState<boolean>(false);
-  const { logout } = useNotifiFrontendClientContext();
 
   const keys = selectedWallet && wallets[selectedWallet].walletKeys;
   const accountAddress = keys
@@ -52,10 +50,7 @@ export default function Disconnect() {
           <div
             className={`cursor-pointer flex gap-x-5 px-4 text-notifi-tab-unselected-text w-56 py-2 bg-notifi-wallet-menu-card-bg border-t border-[#565A8D]`}
             onClick={() => {
-              if (keys) {
-                wallets[selectedWallet].disconnect();
-                logout();
-              }
+              if (keys) wallets[selectedWallet].disconnect();
             }}
           >
             <Icon id={'leave'} className={`text-notifi-icon-unselected`} />

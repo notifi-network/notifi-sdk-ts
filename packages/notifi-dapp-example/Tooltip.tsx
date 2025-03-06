@@ -3,11 +3,11 @@ import React, { PropsWithChildren } from 'react';
 
 export const Tooltip: React.FC<PropsWithChildren> = ({ children }) => {
   return (
-    <button className="group flex items-center justify-center relative">
-      <Icon id="info" style={{ color: '#B6B8D5' }} />
-      <div className="w-[194px] bg-black text-white text-start border border-[#565A8D] text-sm font-medium rounded-md p-4 hidden absolute z-10 left-0 bottom-[102%] group-hover:block">
+    <div className="relative group">
+      <Icon id="info" className="text-notifi-text-light" />
+      <div className="text-notifi-text hidden group-hover:block absolute text-sm font-normal max-w-48 bg-notifi-card-bg p-4 rounded-md z-10 border border-notifi-card-border w-48 bottom-[1.5rem] right-[-5rem]">
         {children}
       </div>
-    </button>
+    </div>
   );
 };

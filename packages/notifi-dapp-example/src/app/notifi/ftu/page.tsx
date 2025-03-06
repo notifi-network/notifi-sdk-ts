@@ -2,6 +2,7 @@
 
 import { FtuAlertEdit } from '@/components/FtuAlertEdit';
 import { FtuTargetList } from '@/components/FtuTargetList';
+import { useGlobalStateContext } from '@/context/GlobalStateContext';
 import {
   FusionEventMetadata,
   FusionEventTopic,
@@ -36,25 +37,18 @@ export default function NotifiFTU() {
   const [ftuView, setFtuView] = React.useState<FtuView | null>(null);
   const { frontendClientStatus } = useNotifiFrontendClientContext();
   const isInitialLoaded = React.useRef(false);
+  const { setGlobalError } = useGlobalStateContext();
 
   if (!cardConfig) {
     return null;
   }
 
-  useEffect(() => {
-    if (
-      !frontendClientStatus.isAuthenticated ||
-      isLoadingTarget ||
-      isInitialLoaded.current ||
-      !targetGroupId ||
-      isLoadingSubscribingTopics
-    )
+  const subscribeAndUpdateFtuStage = async () => {
+    if (!targetGroupId || !frontendClientStatus.isAuthenticated) {
+      setGlobalError('Missing targetGroupId or user is not authenticated');
       return;
-    isInitialLoaded.current = true;
-
-    const subscribeAndUpdateFtuStage = async () => {
-      if (!targetGroupId || !frontendClientStatus.isAuthenticated) return;
-
+    }
+    try {
       const topicsToSubscribe = fusionEventTopics.filter((topic) => {
         const metadata = getFusionEventMetadata(topic);
         const isStackableTopic =
@@ -68,18 +62,31 @@ export default function NotifiFTU() {
       } else {
         await updateFtuStage(FtuStage.Alerts);
       }
-    };
+    } catch (error) {
+      setGlobalError('Failed to subscribe and update FTU stage:');
+    }
+  };
+
+  useEffect(() => {
+    if (
+      !frontendClientStatus.isAuthenticated ||
+      isLoadingTarget ||
+      isInitialLoaded.current ||
+      !targetGroupId ||
+      isLoadingSubscribingTopics
+    )
+      return;
+    isInitialLoaded.current = true;
 
     if (ftuStage === null) {
       subscribeAndUpdateFtuStage();
       setFtuView(FtuView.TargetList);
-      updateFtuStage(FtuStage.Destination);
-    } else if (ftuStage === FtuStage.Destination) {
-      setFtuView(FtuView.TargetList);
-      return;
     } else {
-      setFtuView(FtuView.AlertEdit);
-      return;
+      setFtuView(
+        ftuStage === FtuStage.Destination
+          ? FtuView.TargetList
+          : FtuView.AlertEdit,
+      );
     }
   }, [
     frontendClientStatus.isAuthenticated,
@@ -108,11 +115,8 @@ export default function NotifiFTU() {
           onClickBack={
             cardConfig?.isContactInfoRequired
               ? () => {
-                  if (cardConfig?.isContactInfoRequired) {
-                    updateFtuStage(FtuStage.Destination);
-                    setFtuView(FtuView.TargetList);
-                    return;
-                  }
+                  updateFtuStage(FtuStage.Destination);
+                  setFtuView(FtuView.TargetList);
                 }
               : undefined
           }

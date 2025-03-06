@@ -58,25 +58,6 @@ export const TargetInputField: React.FC<TargetInputFieldProps> = (props) => {
   };
 
   return (
-    // <div
-    //   data-cy={`notifi-target-input-${props.targetType}`}
-    //   className={clsx('notifi-target-input-field', props.classNames?.container)}
-    // >
-    //   {props.copy?.label ? (
-    //     <label
-    //       className={clsx(
-    //         'notifi-target-input-field-label',
-    //         props.classNames?.label,
-    //       )}
-    //     >
-    //       {props.copy.label}
-    //     </label>
-    //   ) : null}
-    // <div
-    //   className={`notifi-inputField text-notifi-text border bg-notifi-card-bg rounded-md w-full sm:w-86 h-11 mr-4 text-sm pl-3 focus:border-solid focus:border-blue-800 focus:outline-none ${
-    //     isShowingInvalidWarning ? 'border-notifi-error' : 'border-none'
-    //   } flex ${isShowingInvalidWarning ? 'pt-3' : 'pt-0'}`}
-    // >
     <div>
       <input
         type={
@@ -130,6 +111,5 @@ export const TargetInputField: React.FC<TargetInputFieldProps> = (props) => {
         </div>
       ) : null}
     </div>
-    // </div>
   );
 };
