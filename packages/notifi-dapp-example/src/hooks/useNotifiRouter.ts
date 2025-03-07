@@ -29,10 +29,6 @@ export const useNotifiRouter = () => {
       return;
     }
     if (frontendClientStatus.isAuthenticated && !isLoadingFtu) {
-      if (!ftuStage) {
-        handleRoute('/notifi/signup');
-        return;
-      }
       if (ftuStage === FtuStage.Done) {
         handleRoute('/notifi/dashboard');
         return;

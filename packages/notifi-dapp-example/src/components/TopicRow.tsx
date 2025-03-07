@@ -16,6 +16,7 @@ import {
 } from '@notifi-network/notifi-react';
 import React from 'react';
 
+import { Tooltip } from '../../Tooltip';
 import { Toggle } from './Toggle';
 import {
   TopicGroupRowMetadata,
@@ -66,9 +67,9 @@ export const TopicRow = <T extends TopicRowCategory>(
   const title = isTopicGroup
     ? props.topicGroupName
     : uiConfigOverride?.topicDisplayName &&
-      uiConfigOverride?.topicDisplayName !== ''
-    ? uiConfigOverride?.topicDisplayName
-    : benchmarkTopic.uiConfig.name ?? benchmarkTopic.uiConfig.name;
+        uiConfigOverride?.topicDisplayName !== ''
+      ? uiConfigOverride?.topicDisplayName
+      : (benchmarkTopic.uiConfig.name ?? benchmarkTopic.uiConfig.name);
 
   const toggleStandAloneTopic = async (topic: FusionEventTopic) => {
     if (!targetGroupId) return;
@@ -118,32 +119,27 @@ export const TopicRow = <T extends TopicRowCategory>(
                 <Icon className="m-2" id={icon} />
               </div>
             )}
-            <label>
-              {title}
-              <div className="group inline-block align-middle">
-                {benchmarkTopic.uiConfig.tooltipContent ? (
-                  <div className="relative">
-                    <Icon id="info" className="text-notifi-text-light" />
-                    <div className="hidden group-hover:block absolute text-sm font-normal max-w-48 bg-notifi-card-bg p-4 rounded-md z-10 border border-notifi-card-border w-48 bottom-[1.5rem] right-[-5rem]">
-                      <div>{benchmarkTopic.uiConfig.tooltipContent}</div>
-                    </div>
-                  </div>
-                ) : null}
-              </div>
-            </label>
+            <label>{title}</label>
           </div>
         </div>
-        {/* hide toggle button if it is the Trading Pair Price Alert, but shown save button instead below */}
-        <Toggle
-          checked={isAlertSubscribed(fusionEventTypeId)}
-          disabled={isLoadingTopic}
-          onChange={async () => {
-            if (isTopicGroup) {
-              return toggleTopicGroup(props.topics);
-            }
-            toggleStandAloneTopic(benchmarkTopic);
-          }}
-        />
+        <div className="flex flex-row items-center gap-1">
+          <div className="group inline-block align-middle">
+            {benchmarkTopic.uiConfig.tooltipContent ? (
+              <Tooltip>{benchmarkTopic.uiConfig.tooltipContent}</Tooltip>
+            ) : null}
+          </div>
+          {/* hide toggle button if it is the Trading Pair Price Alert, but shown save button instead below */}
+          <Toggle
+            checked={isAlertSubscribed(fusionEventTypeId)}
+            disabled={isLoadingTopic}
+            onChange={async () => {
+              if (isTopicGroup) {
+                return toggleTopicGroup(props.topics);
+              }
+              toggleStandAloneTopic(benchmarkTopic);
+            }}
+          />
+        </div>
       </div>
 
       {/* render radio button or button inputs if content with userInputParams length equals to 1 */}
