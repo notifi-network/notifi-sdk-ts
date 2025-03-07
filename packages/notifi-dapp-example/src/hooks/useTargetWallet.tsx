@@ -1,4 +1,5 @@
 import { createCoinbaseNonce, subscribeCoinbaseMessaging } from '@/utils/xmtp';
+import { isUsingEvmBlockchain } from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
 import {
   getWalletTargetSignMessage,
@@ -6,7 +7,6 @@ import {
   useNotifiFrontendClientContext,
 } from '@notifi-network/notifi-react';
 import { useClient } from '@xmtp/react-sdk';
-// import { isUsingEvmBlockchain } from 'notifi-network/notifi-frontend-client/dist/client/blockchains';
 import React from 'react';
 
 export const useTargetWallet = () => {
