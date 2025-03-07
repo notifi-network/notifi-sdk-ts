@@ -94,9 +94,6 @@ export default function NotifiFTU() {
     targetGroupId,
     isLoadingSubscribingTopics,
     ftuStage,
-    cardConfig,
-    fusionEventTopics,
-    subscribeAlertsDefault,
     updateFtuStage,
   ]);
 
