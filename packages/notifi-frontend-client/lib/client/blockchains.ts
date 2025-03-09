@@ -37,17 +37,22 @@ export const EVM_BLOCKCHAINS = [
   'OPTIMISM',
   'THE_ROOT_NETWORK',
   'SONIC',
+  'SEI',
+  'SWELLCHAIN',
+  'BOB',
   'ROME',
   'ZKSYNC',
 ] as const;
 
 export const APTOS_BLOCKCHAINS = ['APTOS', 'MOVEMENT'] as const;
 
+export const SOLANA_BLOCKCHAINS = ['SOLANA'] as const;
+
 export const BTC_BLOCKCHAINS = ['BITCOIN', 'ARCH'] as const;
 
 // These are chains which we are no longer actively maintaining
 
-export const UNMAINTAINED_BLOCKCHAINS = ['ACALA', 'EVMOS'] as const;
+export const UNMAINTAINED_BLOCKCHAINS = ['ACALA', 'EVMOS', 'ABSTRACT'] as const;
 
 // All blockchains supported by Notifi - this is used mainly for sanity checking below
 const ALL_BLOCKCHAINS = [
@@ -126,6 +131,18 @@ export function isUsingBtcBlockchain<
   T extends { walletBlockchain: Blockchain },
 >(params: T): params is Extract<T, { walletBlockchain: BtcBlockchain }> {
   return isBtcBlockchain(params.walletBlockchain);
+}
+
+export type SolanaBlockchain = (typeof SOLANA_BLOCKCHAINS)[number];
+export function isSolanaBlockchain(
+  blockchain: Blockchain,
+): blockchain is SolanaBlockchain {
+  return SOLANA_BLOCKCHAINS.includes(blockchain as any);
+}
+export function isUsingSolanaBlockchain<
+  T extends { walletBlockchain: Blockchain },
+>(params: T): params is Extract<T, { walletBlockchain: SolanaBlockchain }> {
+  return isSolanaBlockchain(params.walletBlockchain);
 }
 
 // IGNORE BELOW HERE, this simpply serves to ensure all blockchains are covered

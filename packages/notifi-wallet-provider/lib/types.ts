@@ -124,6 +124,9 @@ export class PhantomWallet implements NotifiWallet {
       transaction: Transaction,
       connection: Connection,
     ) => Promise<string>,
+    public signHardwareTransaction: (
+      transaction: Transaction,
+    ) => Promise<Transaction>,
   ) {}
 }
 
