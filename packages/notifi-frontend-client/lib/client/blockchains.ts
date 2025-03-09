@@ -37,6 +37,9 @@ export const EVM_BLOCKCHAINS = [
   'OPTIMISM',
   'THE_ROOT_NETWORK',
   'SONIC',
+  'SEI',
+  'SWELLCHAIN',
+  'BOB',
   'ROME',
   'ZKSYNC',
 ] as const;
@@ -49,7 +52,7 @@ export const BTC_BLOCKCHAINS = ['BITCOIN', 'ARCH'] as const;
 
 // These are chains which we are no longer actively maintaining
 
-export const UNMAINTAINED_BLOCKCHAINS = ['ACALA', 'EVMOS'] as const;
+export const UNMAINTAINED_BLOCKCHAINS = ['ACALA', 'EVMOS', 'ABSTRACT'] as const;
 
 // All blockchains supported by Notifi - this is used mainly for sanity checking below
 const ALL_BLOCKCHAINS = [
