@@ -950,6 +950,7 @@ export class NotifiFrontendClient {
     });
 
     //This is to ensure that hardware wallet logins are given authentication.
+    //TODO: This is used for Solana Hardware Wallet Sign. May change in future for various HW wallet signs.
     await this._handleLogInResult(result.completeLogInWithWeb3.user);
 
     return result;
