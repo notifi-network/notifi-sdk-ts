@@ -34,7 +34,6 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
   const isAnySupportedWalletAvailable = walletsRequiredForGMX
     .map((wallet) => wallets[wallet].isInstalled)
     .includes(true);
-  //
 
   return (
     <>
@@ -68,10 +67,10 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
               <div
                 key={walletName}
                 className="relative size-[126px] flex items-center justify-between gap-0.5 flex-col rounded-lg border border-notifi-card-border bg-notifi-destination-card-bg cursor-pointer py-3 px-4 text-notifi-text"
-                onClick={() => {
+                onClick={async () => {
                   if (!isInstalled) return;
 
-                  connect?.();
+                  await connect?.();
                   setIsOpenWalletsModal(false);
                   /** No need to handle loading and error case, use `const {isLoading, error} = useWallets()  */
                 }}
