@@ -1,3 +1,4 @@
+// All method in ensureTarget.ts are deprecated, use methods in alterTarget.ts instead
 import type { Operations, Types } from '@notifi-network/notifi-graphql';
 
 type EnsureTargetFuncFactory = <
@@ -25,7 +26,7 @@ type EnsureTargetFunc<CreateService, GetService> = (
   service: CreateService & GetService,
   value: string | undefined,
 ) => Promise<string | undefined>;
-
+/** @deprecated Use alterTarget instead */
 export const ensureTarget: EnsureTargetFuncFactory = (
   create,
   fetch,
@@ -52,7 +53,7 @@ export const ensureTarget: EnsureTargetFuncFactory = (
     return created.id;
   };
 };
-
+/** @deprecated Use alterTarget instead */
 export const ensureEmail = ensureTarget(
   // Create email target function
   async (service: Operations.CreateEmailTargetService, value: string) => {
@@ -79,7 +80,7 @@ export const ensureEmail = ensureTarget(
   // Email target value transform function
   (value: string) => value.toLowerCase(),
 );
-
+/** @deprecated Use alterTarget instead */
 export const ensureSms = ensureTarget(
   // Create SMS target function
   async (service: Operations.CreateSmsTargetService, value: string) => {
@@ -103,7 +104,7 @@ export const ensureSms = ensureTarget(
   // SMS target identify generator
   (arg: Types.SmsTargetFragmentFragment | undefined) => arg?.phoneNumber,
 );
-
+/** @deprecated Use alterTarget instead */
 export const renewTelegram = ensureTarget(
   // Create telegram target function
   async (service: Operations.CreateTelegramTargetService, value: string) => {
@@ -129,7 +130,7 @@ export const renewTelegram = ensureTarget(
   // Telegram target value transform function
   () => 'Default',
 );
-
+/** @deprecated Use alterTarget instead */
 export const ensureDiscord = ensureTarget(
   // Create Discord target function
   async (service: Operations.CreateDiscordTargetService, value: string) => {
@@ -155,7 +156,7 @@ export const ensureDiscord = ensureTarget(
   // Discord target value transform function
   () => 'Default',
 );
-
+/** @deprecated Use alterTarget instead */
 export const ensureSlack = ensureTarget(
   // Create Slack target function
   async (
@@ -184,7 +185,7 @@ export const ensureSlack = ensureTarget(
   // Slack target value transform function
   () => 'Default',
 );
-
+/** @deprecated Use alterTarget instead */
 export const ensureWeb3 = ensureTarget(
   // Create Wallet target function
   async (service: Operations.CreateWeb3TargetService, value: string) => {
@@ -212,48 +213,7 @@ export const ensureWeb3 = ensureTarget(
   () => 'Default',
 );
 
-export type EnsureWebhookParams = Omit<
-  Types.CreateWebhookTargetMutationVariables,
-  'name'
->;
-
-// Webhook cannot use ensureTarget due to requiring more than one parameter in its creation
-export const ensureWebhook = async (
-  service: Operations.CreateWebhookTargetService &
-    Operations.GetWebhookTargetsService,
-  params: EnsureWebhookParams | undefined,
-): Promise<string | undefined> => {
-  if (params === undefined) {
-    return undefined;
-  }
-
-  const query = await service.getWebhookTargets({});
-  const existing = query.webhookTarget;
-
-  const found = existing?.find(
-    (it) =>
-      it?.url.toLowerCase() === params.url.toLowerCase() &&
-      it?.format === params.format,
-  );
-
-  if (found !== undefined) {
-    return found.id;
-  }
-
-  const mutation = await service.createWebhookTarget({
-    ...params,
-    name: params.url.toLowerCase(),
-    url: params.url.toLowerCase(),
-  });
-  const created = mutation.createWebhookTarget;
-  if (created === undefined) {
-    throw new Error('Failed to create webhook target');
-  }
-
-  return created.id;
-};
-
-/** @deprecated Use renewTelegram instead */
+/** @deprecated Use alterTarget instead */
 export const ensureTelegram = ensureTarget(
   async (service: Operations.CreateTelegramTargetService, value: string) => {
     const mutation = await service.createTelegramTarget({

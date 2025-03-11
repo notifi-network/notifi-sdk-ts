@@ -8,7 +8,6 @@ export const CreateTargetGroup = gql`
     $emailTargetIds: [String!]!
     $smsTargetIds: [String!]!
     $telegramTargetIds: [String!]!
-    $webhookTargetIds: [String!]!
     $discordTargetIds: [String!]!
     $slackChannelTargetIds: [String!]!
     $web3TargetIds: [String!]!
@@ -19,7 +18,6 @@ export const CreateTargetGroup = gql`
         emailTargetIds: $emailTargetIds
         smsTargetIds: $smsTargetIds
         telegramTargetIds: $telegramTargetIds
-        webhookTargetIds: $webhookTargetIds
         discordTargetIds: $discordTargetIds
         slackChannelTargetIds: $slackChannelTargetIds
         web3TargetIds: $web3TargetIds

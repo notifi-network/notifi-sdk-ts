@@ -8,6 +8,7 @@ import {
 } from '@notifi-network/notifi-react';
 import React from 'react';
 
+import { Tooltip } from '../../Tooltip';
 import { TopicRowCategory } from './TopicList';
 import { TopicRowProps, isTopicGroupRow } from './TopicRow';
 import { TopicStack } from './TopicStack';
@@ -82,20 +83,15 @@ export const TopicStackRow = <T extends TopicRowCategory>(
                 <Icon className="m-2" id={icon} />
               </div>
             )}
-            <label>
-              {title}
-              <div className="group inline-block align-middle">
-                {benchmarkTopic.uiConfig.tooltipContent ? (
-                  <div className="relative">
-                    <Icon id="info" className="text-notifi-text-light" />
-                    <div className="hidden group-hover:block absolute text-sm font-medium max-w-48 bg-notifi-card-bg p-4 rounded-md z-10 border border-notifi-card-border w-48 bottom-[1.5rem] right-[-5rem]">
-                      <div>{benchmarkTopic.uiConfig.tooltipContent}</div>
-                    </div>
-                  </div>
-                ) : null}
-              </div>
-            </label>
+            <label>{title}</label>
           </div>
+        </div>
+        <div className="group inline-block align-middle -mr-1">
+          {benchmarkTopic.uiConfig.tooltipContent ? (
+            <Tooltip>
+              <div>{benchmarkTopic.uiConfig.tooltipContent}</div>
+            </Tooltip>
+          ) : null}
         </div>
       </div>
       {topicStackAlerts.length > 0 ? (
