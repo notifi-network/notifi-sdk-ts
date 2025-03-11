@@ -7,13 +7,21 @@ import {
 } from '@solana/web3.js';
 
 export interface HardwareLoginPlugin {
-  sendMessage: (message: string) => Promise<string>;
+  /**
+   * @deprecated Use signTransacation() instead. We no longer have to send a txn, and instead simply rely on the signed TX as we can verify this on Notifi Services.
+   */
+  sendMessage?: (message: string) => Promise<string>;
+  signTransaction: (message: string) => Promise<string>;
 }
 
 export type MemoProgramHardwareLoginPluginParams = Readonly<{
   walletPublicKey: string;
   connection: Connection;
-  sendTransaction: WalletContextState['sendTransaction'];
+  /**
+   * @deprecated Use signMessage() instead. We no longer have to send a txn, and instead simply rely on the signed TX as we can verify this on Notifi Services.
+   */
+  sendTransaction?: WalletContextState['sendTransaction'];
+  signTransaction: WalletContextState['signTransaction'];
 }>;
 
 export class MemoProgramHardwareLoginPlugin implements HardwareLoginPlugin {
@@ -45,6 +53,9 @@ export class MemoProgramHardwareLoginPlugin implements HardwareLoginPlugin {
       }),
     );
 
+    if (!sendTransaction) {
+      throw new Error('Wallet does not support transaction sending');
+    }
     // Send transaction and wait for it to confirm
     const blockHashAgain = await connection.getLatestBlockhash();
     const signature = await sendTransaction(txn, connection);
@@ -54,5 +65,35 @@ export class MemoProgramHardwareLoginPlugin implements HardwareLoginPlugin {
       signature,
     });
     return signature;
+  };
+
+  signTransaction: (message: string) => Promise<string> = async (message) => {
+    const { walletPublicKey, connection, signTransaction } = this.params;
+    const MEMO_PROGRAM_ID = new PublicKey(
+      'MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr',
+    );
+    const publicKey = new PublicKey(walletPublicKey);
+    const latestBlockHash = await connection.getLatestBlockhash();
+    const txn = new Transaction();
+    txn.recentBlockhash = latestBlockHash.blockhash;
+    txn.feePayer = publicKey;
+
+    txn.add(
+      new TransactionInstruction({
+        programId: MEMO_PROGRAM_ID,
+        keys: [],
+        data: Buffer.from(message, 'utf8'),
+      }),
+    );
+
+    if (!signTransaction) {
+      throw new Error('Wallet does not support transaction signing');
+    }
+
+    const signedTx = await signTransaction(txn);
+    const serializedTx = signedTx.serialize();
+
+    const base64Tx = Buffer.from(serializedTx).toString('base64');
+    return base64Tx;
   };
 }

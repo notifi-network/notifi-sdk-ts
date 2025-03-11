@@ -6,6 +6,7 @@ import {
   type NotifiConfigWithPublicKeyAndAddress,
   type NotifiFrontendConfiguration,
   checkIsConfigWithDelegate,
+  checkIsConfigWithPublicKey,
   checkIsConfigWithPublicKeyAndAddress,
 } from '../configuration';
 import type {
@@ -34,13 +35,17 @@ import {
   COSMOS_BLOCKCHAINS,
   CosmosBlockchain,
   EvmBlockchain,
+  SOLANA_BLOCKCHAINS,
+  SolanaBlockchain,
   UnmaintainedBlockchain,
   isAptosBlockchain,
   isCosmosBlockchain,
+  isSolanaBlockchain,
   isUsingAptosBlockchain,
   isUsingBtcBlockchain,
   isUsingCosmosBlockchain,
   isUsingEvmBlockchain,
+  isUsingSolanaBlockchain,
   isUsingUnmaintainedBlockchain,
 } from './blockchains';
 import { ensureSourceAndFilters, normalizeHexString } from './ensureSource';
@@ -84,6 +89,15 @@ type EvmSignMessageParams = Readonly<{
   signMessage: Uint8SignMessageFunction;
 }>;
 
+type SolanaSignMessageParams = Readonly<{
+  walletBlockchain: SolanaBlockchain;
+  nonce: string;
+  signMessage: Uint8SignMessageFunction;
+  hardwareLoginPlugin?: {
+    signTransaction: (message: string) => Promise<string>;
+  };
+}>;
+
 type UnmaintainedSignMessageParams = Readonly<{
   walletBlockchain: UnmaintainedBlockchain;
   signMessage: Uint8SignMessageFunction;
@@ -94,11 +108,8 @@ export type SignMessageParams =
   | BtcSignMessageParams
   | EvmSignMessageParams
   | AptosSignMessageParams
+  | SolanaSignMessageParams
   | UnmaintainedSignMessageParams
-  | Readonly<{
-      walletBlockchain: 'SOLANA';
-      signMessage: Uint8SignMessageFunction;
-    }>
   | Readonly<{
       walletBlockchain: 'NEAR';
       signMessage: Uint8SignMessageFunction;
@@ -124,8 +135,11 @@ export type SignMessageParams =
 type SolanaWalletWithSignParams = Readonly<{
   signMessage: Uint8SignMessageFunction;
   hardwareLoginPlugin?: {
-    // NOTE: Solana specific: solana hardware wallet sign-in requires a memo contract verification
-    sendMessage: (message: string) => Promise<string>;
+    /**
+     * @deprecated Use signTransaction() instead. We no longer have to send a txn, and instead simply rely on the signed TX as we can verify this on Notifi Services.
+     */
+    sendMessage?: (message: string) => Promise<string>;
+    signTransaction: (message: string) => Promise<string>;
   };
 }> &
   SolanaUserParams;
@@ -324,6 +338,7 @@ export const SIGNING_MESSAGE = `${SIGNING_MESSAGE_WITHOUT_NONCE} \n \n 'Nonce:' 
 const CHAINS_WITH_LOGIN_WEB3 = [
   ...APTOS_BLOCKCHAINS,
   ...COSMOS_BLOCKCHAINS,
+  ...SOLANA_BLOCKCHAINS,
 ] as const;
 
 export type SupportedCardConfigType = CardConfigItemV1;
@@ -348,6 +363,7 @@ type LoginWeb3Params = Omit<
     SignMessageParams,
     | { walletBlockchain: CosmosBlockchain }
     | { walletBlockchain: AptosBlockchain }
+    | { walletBlockchain: SolanaBlockchain }
   >,
   'message' | 'nonce'
 >;
@@ -521,6 +537,33 @@ export class NotifiFrontendClient {
           nonce,
         };
       }
+    } else if (isSolanaBlockchain(signMessageParams.walletBlockchain)) {
+      // Check if we're using a hardware wallet by looking for the hardwareLoginPlugin
+
+      if (signMessageParams.walletBlockchain !== 'SOLANA')
+        throw new Error(
+          'loginViaSolanaHardwareWallet: Only SOLANA is supported',
+        );
+
+      if (checkIsConfigWithPublicKey(this._configuration)) {
+        const { nonce } = await this._beginLogInWithWeb3({
+          walletPubkey: this._configuration.walletPublicKey,
+          authType: 'SOLANA_SIGN_MESSAGE',
+          authAddress: this._configuration.walletPublicKey,
+        });
+
+        return {
+          signMessageParams: {
+            walletBlockchain: signMessageParams.walletBlockchain,
+            nonce,
+            signMessage:
+              signMessageParams.signMessage as Uint8SignMessageFunction,
+          },
+          signingAddress: this._configuration.walletPublicKey,
+          signingPubkey: this._configuration.walletPublicKey,
+          nonce,
+        };
+      }
     }
 
     throw new Error(
@@ -548,10 +591,11 @@ export class NotifiFrontendClient {
       timestamp: Math.round(Date.now() / 1000),
     });
 
-    if (!('signature' in authentication)) {
-      throw new Error('logInWith Web3 - Invalid signature - expected string');
+    if (!('signature' in authentication) || !authentication.signature) {
+      throw new Error(
+        'Web3loginAuth - Signature required. Please sign the transaction to confirm your notifications.',
+      );
     }
-
     const { completeLogInWithWeb3 } = await this.completeLogInWithWeb3({
       nonce,
       signature: authentication.signature,
@@ -728,20 +772,23 @@ export class NotifiFrontendClient {
       const signedBuffer = await signMessageParams.signMessage(messageBuffer);
       const signature = Buffer.from(signedBuffer).toString('base64');
       return { signature, signedMessage };
+    } else if (isUsingSolanaBlockchain(signMessageParams)) {
+      const { walletPublicKey, tenantId } = this
+        ._configuration as NotifiConfigWithPublicKey;
+      const signedMessage = `${SIGNING_MESSAGE}${signMessageParams.nonce}`;
+      const messageBuffer = new TextEncoder().encode(signedMessage);
+
+      const signedBuffer = await signMessageParams.signMessage(messageBuffer);
+
+      if (!signedBuffer) {
+        throw Error('._authenticate - Signature not completed');
+      }
+      const signature = Buffer.from(signedBuffer).toString('base64');
+      return { signature, signedMessage };
     }
 
     // Can only be the lonely chains now, e.g. Solana, Sui, ...
     switch (signMessageParams.walletBlockchain) {
-      case 'SOLANA': {
-        const { walletPublicKey, tenantId } = this
-          ._configuration as NotifiConfigWithPublicKey;
-        const signedMessage = `${SIGNING_MESSAGE}${walletPublicKey}${tenantId}${timestamp.toString()}`;
-        const messageBuffer = new TextEncoder().encode(signedMessage);
-
-        const signedBuffer = await signMessageParams.signMessage(messageBuffer);
-        const signature = Buffer.from(signedBuffer).toString('base64');
-        return { signature, signedMessage };
-      }
       case 'SUI': {
         const { accountAddress, tenantId } = this
           ._configuration as NotifiConfigWithPublicKeyAndAddress;
@@ -905,6 +952,10 @@ export class NotifiFrontendClient {
       signingPubkey: '',
       ...input,
     });
+
+    //This is to ensure that hardware wallet logins are given authentication.
+    //TODO: This is used for Solana Hardware Wallet Sign. May change in future for various HW wallet signs.
+    await this._handleLogInResult(result.completeLogInWithWeb3.user);
 
     return result;
   }
