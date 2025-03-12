@@ -37,7 +37,7 @@ export const useTargetListItem = (input: {
 
   const isRemoveButtonAvailable = React.useMemo(() => {
     const isTargetRemovable = !!cardConfig?.isContactInfoRequired
-      ? hasValidTargetMoreThan(targetData, 1)
+      ? hasValidTargetMoreThan(targetData, 0)
       : true;
 
     const targetInfo = targetInfoPrompts[input.target];

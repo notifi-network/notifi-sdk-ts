@@ -104,7 +104,7 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
         </div>
       ) : null}
       {/* REMOVE TARGET CTA */}
-      {isRemoveButtonAvailable ? (
+      {isRemoveButtonAvailable && isVerified ? (
         <TargetCta
           type="link"
           targetInfoPrompt={{

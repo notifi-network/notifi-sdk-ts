@@ -6,11 +6,13 @@ import React, { useMemo } from 'react';
 export type VerifyBannerProps = Readonly<{
   setCardView: (cardView: CardView) => void;
   isInHistoryDetail: boolean;
+  hasValidTargetMoreThanOne: boolean | undefined;
 }>;
 
 export const VerifyBanner: React.FC<VerifyBannerProps> = ({
   setCardView,
   isInHistoryDetail,
+  hasValidTargetMoreThanOne,
 }: VerifyBannerProps) => {
   const { unVerifiedTargets } = useNotifiTargetContext();
 
@@ -44,20 +46,29 @@ export const VerifyBanner: React.FC<VerifyBannerProps> = ({
         isInHistoryDetail ? 'md:flex hidden' : ''
       }`}
     >
-      <div className="flex flex-row items-center justify-center ml-3 text-sm font-medium">
-        <Icon
-          id="check"
-          className="text-notifi-button-primary-blueish-bg mr-3 w-3 mb-0.5"
-        />
+      <div className="flex flex-row items-center justify-center ml-4 text-sm font-medium">
+        {hasValidTargetMoreThanOne ? (
+          <Icon
+            id="check"
+            className="text-notifi-button-primary-bg mr-3 w-3 mb-0.5"
+          />
+        ) : (
+          <Icon
+            id="banner-bell"
+            className="text-notifi-button-primary-bg mr-3 w-3 h-3 text-center"
+          />
+        )}
         <div className="text-notifi-text mr-1">
-          Verify your {unVerifiedDestinationsString}
+          {hasValidTargetMoreThanOne
+            ? `Verify your ${unVerifiedDestinationsString}`
+            : 'Get notifications to the destinations of your choice'}
         </div>
       </div>
       <button
         onClick={() => setCardView('destination')}
         className="mr-3 w-18 h-8 bg-notifi-button-primary-blueish-bg rounded-md text-sm font-bold text-white disabled:hover:bg-notifi-button-primary-blueish-bg hover:bg-notifi-button-hover-bg"
       >
-        Verify
+        {hasValidTargetMoreThanOne ? 'Verify' : 'Add'}
       </button>
     </div>
   );
