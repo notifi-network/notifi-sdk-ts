@@ -114,6 +114,22 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
           return Uint8Array.from(Buffer.from(result.signature, 'base64'));
         };
         break;
+      case 'torus':
+      case 'phantomSolana':
+      case 'ledger':
+      case 'sollet':
+      case 'solletExtension':
+      case 'slope':
+      case 'solflare':
+        walletPublicKey = wallets[selectedWallet].walletKeys?.base58 ?? '';
+        if (!walletPublicKey) throw new Error('ERROR: invalid walletPublicKey');
+        signMessage = async (message: Uint8Array): Promise<Uint8Array> => {
+          const result = await wallets[selectedWallet].signArbitrary(message);
+
+          if (!result) throw new Error('ERROR: invalid signature');
+          return result;
+        };
+        break;
       case 'metamask':
       case 'walletconnect':
       case 'okx':
@@ -169,11 +185,11 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
       env={env}
       walletBlockchain={walletBlockchain}
       walletPublicKey={walletPublicKey}
-      inputs={{
-        pricePairs: pricePairInputs,
-        pricePairsWithTerm: pricePairsWithTermInputs,
-        walletAddress: [{ label: '', value: walletPublicKey }],
-      }}
+      // inputs={{
+      //   pricePairs: pricePairInputs,
+      //   pricePairsWithTerm: pricePairsWithTermInputs,
+      //   walletAddress: [{ label: '', value: walletPublicKey }],
+      // }}
       signMessage={signMessage}
       cardId={cardId}
     >
