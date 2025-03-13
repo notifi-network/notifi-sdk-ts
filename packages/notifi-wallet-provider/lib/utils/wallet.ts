@@ -12,4 +12,12 @@ export const walletsWebsiteLink: { [key in keyof Wallets]: string } = {
   zerion: 'https://zerion.io/',
   xion: 'https://xion.burnt.com/',
   phantom: 'https://phantom.app/download',
+  phantomSolana: 'https://phantom.app/download',
+  solflare: 'https://solflare.com/',
+  ledger: 'https://www.ledger.com/',
+  sollet: 'https://www.sollet.io/',
+  solletExtension:
+    'https://chrome.google.com/webstore/detail/sollet/fhmfendgdocmcbmfikdcogofphimnkno',
+  torus: 'https://tor.us/',
+  slope: 'https://slope.finance/',
 };
