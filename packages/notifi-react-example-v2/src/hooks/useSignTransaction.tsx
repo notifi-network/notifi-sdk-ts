@@ -24,6 +24,14 @@ export const useSignTransaction = () => {
       case 'SOLANA':
         try {
           transactionSigner = walletWithSignParams.hardwareLoginPlugin;
+
+          if (!transactionSigner) throw new Error('No signer - SOLANA');
+
+          if (!transactionSigner.sendMessage) {
+            throw new Error(
+              'Transaction signer does not have sendMessage method',
+            );
+          }
           const signature = await transactionSigner?.sendMessage(
             loginViaTransaction.nonce,
           );
