@@ -10,23 +10,32 @@ import { useBinance } from '../hooks/useBinance';
 import { useInjectedWallet } from '../hooks/useInjectedWallet';
 import { useKeplr } from '../hooks/useKeplr';
 import { usePhantom } from '../hooks/usePhantom';
+import { useSolanaWallets } from '../hooks/useSolanaWallets';
 import { useWagmiWallet } from '../hooks/useWagmiWallet';
 import { useXion } from '../hooks/useXion';
 import {
   BinanceWallet,
   CoinbaseWallet,
   KeplrWallet,
+  LedgerWallet,
   MetamaskWallet,
   OKXWallet,
+  PhantomSolanaWallet,
   PhantomWallet,
   RabbyWallet,
   RainbowWallet,
+  SlopeWallet,
+  SolflareWallet,
+  SolletExtensionWallet,
+  SolletWallet,
+  TorusWallet,
   WalletConnectWallet,
   Wallets,
   XionWallet,
   ZerionWallet,
 } from '../types';
 import { getWalletsFromLocalStorage } from '../utils/localStorageUtils';
+import { SolanaContextProvider } from './SolanaContextProvider';
 import { NotifiWagmiProvider } from './WagmiProvider';
 import { XionProvider } from './XionProvider';
 
@@ -57,6 +66,13 @@ const WalletContext = createContext<WalletContextType>({
     walletconnect: {} as WalletConnectWallet, // intentionally empty initial object
     xion: {} as XionWallet, // intentionally empty initial object
     phantom: {} as PhantomWallet, // intentionally empty initial object
+    phantomSolana: {} as PhantomSolanaWallet, // intentionally empty initial object
+    solflare: {} as SolflareWallet, // intentionally empty initial object
+    ledger: {} as LedgerWallet, // intentionally empty initial object
+    sollet: {} as SolletWallet, // intentionally empty initial object
+    solletExtension: {} as SolletExtensionWallet, // intentionally empty initial object
+    torus: {} as TorusWallet, // intentionally empty initial object
+    slope: {} as SlopeWallet, // intentionally empty initial object
   },
   error: null,
   isLoading: false,
@@ -133,6 +149,49 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
   const xion = useXion(setIsLoading, throwError, selectWallet, 'xion');
 
   const phantom = usePhantom(setIsLoading, throwError, selectWallet);
+
+  const phantomSolana = useSolanaWallets(
+    setIsLoading,
+    throwError,
+    selectWallet,
+    'phantomSolana',
+  );
+  const torus = useSolanaWallets(
+    setIsLoading,
+    throwError,
+    selectWallet,
+    'torus',
+  );
+  const slope = useSolanaWallets(
+    setIsLoading,
+    throwError,
+    selectWallet,
+    'slope',
+  );
+  const sollet = useSolanaWallets(
+    setIsLoading,
+    throwError,
+    selectWallet,
+    'sollet',
+  );
+  const solletExtension = useSolanaWallets(
+    setIsLoading,
+    throwError,
+    selectWallet,
+    'solletExtension',
+  );
+  const solflare = useSolanaWallets(
+    setIsLoading,
+    throwError,
+    selectWallet,
+    'solflare',
+  );
+  const ledger = useSolanaWallets(
+    setIsLoading,
+    throwError,
+    selectWallet,
+    'ledger',
+  );
 
   const wallets: Wallets = {
     metamask: new MetamaskWallet(
@@ -225,6 +284,62 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
       phantom.signTransactionPhantom,
       phantom.signHardwareTransactionPhantom,
     ),
+    phantomSolana: new PhantomSolanaWallet(
+      phantomSolana.isWalletInstalled,
+      phantomSolana.walletKeys,
+      phantomSolana.signArbitrary,
+      phantomSolana.connectWallet,
+      phantomSolana.disconnectWallet,
+      phantomSolana.websiteURL,
+    ),
+    solflare: new PhantomSolanaWallet(
+      solflare.isWalletInstalled,
+      solflare.walletKeys,
+      solflare.signArbitrary,
+      solflare.connectWallet,
+      solflare.disconnectWallet,
+      solflare.websiteURL,
+    ),
+    sollet: new PhantomSolanaWallet(
+      sollet.isWalletInstalled,
+      sollet.walletKeys,
+      sollet.signArbitrary,
+      sollet.connectWallet,
+      sollet.disconnectWallet,
+      sollet.websiteURL,
+    ),
+    solletExtension: new PhantomSolanaWallet(
+      solletExtension.isWalletInstalled,
+      solletExtension.walletKeys,
+      solletExtension.signArbitrary,
+      solletExtension.connectWallet,
+      solletExtension.disconnectWallet,
+      solletExtension.websiteURL,
+    ),
+    ledger: new PhantomSolanaWallet(
+      ledger.isWalletInstalled,
+      ledger.walletKeys,
+      ledger.signArbitrary,
+      ledger.connectWallet,
+      ledger.disconnectWallet,
+      ledger.websiteURL,
+    ),
+    torus: new PhantomSolanaWallet(
+      torus.isWalletInstalled,
+      torus.walletKeys,
+      torus.signArbitrary,
+      torus.connectWallet,
+      torus.disconnectWallet,
+      torus.websiteURL,
+    ),
+    slope: new PhantomSolanaWallet(
+      slope.isWalletInstalled,
+      slope.walletKeys,
+      slope.signArbitrary,
+      slope.connectWallet,
+      slope.disconnectWallet,
+      slope.websiteURL,
+    ),
   };
 
   useEffect(() => {
@@ -279,9 +394,11 @@ export const NotifiWalletProvider: React.FC<PropsWithChildren> = ({
 }) => {
   return (
     <NotifiWagmiProvider>
-      <XionProvider>
-        <NotifiWallet>{children}</NotifiWallet>
-      </XionProvider>
+      <SolanaContextProvider>
+        <XionProvider>
+          <NotifiWallet>{children}</NotifiWallet>
+        </XionProvider>
+      </SolanaContextProvider>
     </NotifiWagmiProvider>
   );
 };
