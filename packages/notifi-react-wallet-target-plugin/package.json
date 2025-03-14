@@ -1,0 +1,58 @@
+{
+  "name": "@notifi-network/notifi-react-wallet-target-plugin",
+  "version": "5.1.0",
+  "description": "The Wallet Target Plugin context provider for notifi-react SDK.",
+  "keywords": [
+    "notifi",
+    "react",
+    "web3",
+    "blockchain",
+    "notification",
+    "plugin"
+  ],
+  "author": "eric-notifi <eric.lee@notifi.network>",
+  "homepage": "https://github.com/notifi-network/notifi-sdk-ts#readme",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./dist/index.css": "./dist/index.css"
+  },
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/notifi-network/notifi-sdk-ts.git"
+  },
+  "scripts": {
+    "build": "npm run clean && npm run compile",
+    "clean": "rimraf ./dist",
+    "compile": "tsup lib/index.ts --sourcemap --format cjs,esm --dts --clean --external react",
+    "format": "prettier --config .prettierrc **/*.ts --write",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@xmtp/consent-proof-signature": "^0.1.2",
+    "@xmtp/content-type-reaction": "^1.1.7",
+    "@xmtp/content-type-remote-attachment": "^1.1.8",
+    "@xmtp/content-type-reply": "^1.1.9",
+    "@xmtp/react-sdk": "^6.0.1",
+    "@xmtp/xmtp-js": "^11.5.0"
+  },
+  "peerDependencies": {
+    "react": "^18",
+    "@notifi-network/notifi-frontend-client": "5.1.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
