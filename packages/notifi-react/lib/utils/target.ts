@@ -105,13 +105,6 @@ export const isFormTarget = (target: Target): target is FormTarget => {
 export const isToggleTarget = (target: Target): target is ToggleTarget =>
   toggleTargets.includes(target as ToggleTarget);
 
-export const getWalletTargetSignMessage = (
-  address: string,
-  senderAddress: string,
-  nonce: string,
-) =>
-  `Coinbase Wallet Messaging subscribe\nAddress: ${address}\nPartner Address: ${senderAddress}\nNonce: ${nonce}`;
-
 export const getTargetValidateRegex = (target: FormTarget) => {
   switch (target) {
     case 'email':
