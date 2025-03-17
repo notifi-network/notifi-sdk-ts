@@ -41,12 +41,6 @@
   },
   "dependencies": {
     "@notifi-network/notifi-frontend-client": "^5.2.0",
-    "@xmtp/consent-proof-signature": "^0.1.2",
-    "@xmtp/content-type-reaction": "^1.1.7",
-    "@xmtp/content-type-remote-attachment": "^1.1.8",
-    "@xmtp/content-type-reply": "^1.1.9",
-    "@xmtp/react-sdk": "^6.0.1",
-    "@xmtp/xmtp-js": "^11.5.0",
     "clsx": "^1.2.1",
     "date-fns": "^2.29.3",
     "dompurify": "^3.0.5",
@@ -57,7 +51,8 @@
     "@types/marked": "^5.0.1"
   },
   "peerDependencies": {
-    "react": "^18"
+    "react": "^18",
+    "@notifi-network/notifi-react-wallet-target-plugin": "^5.2.0"
   },
   "engines": {
     "node": ">=18"

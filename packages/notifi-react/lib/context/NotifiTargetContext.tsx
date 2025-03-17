@@ -3,6 +3,10 @@ import {
   objectKeys,
 } from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
+import {
+  NotifiWalletTargetContextType,
+  SignCoinbaseSignature,
+} from '@notifi-network/notifi-react-wallet-target-plugin';
 import { isValidPhoneNumber } from 'libphonenumber-js';
 import {
   AlterTargetGroupParams,
@@ -19,7 +23,6 @@ import React, {
   useState,
 } from 'react';
 
-import { useTargetWallet } from '../hooks/useTargetWallet';
 import { formTargets, toggleTargets } from '../utils';
 import { useNotifiFrontendClientContext } from './NotifiFrontendClientContext';
 
@@ -145,6 +148,8 @@ export type NotifiTargetContextType = {
   isChangingTargets: Record<Target, boolean>;
   targetDocument: TargetDocument;
   unVerifiedTargets: Target[];
+  // TODO: Confirm possibility to remove
+  signCoinbaseSignature?: SignCoinbaseSignature;
 };
 
 const NotifiTargetContext = createContext<NotifiTargetContextType>(
@@ -153,11 +158,14 @@ const NotifiTargetContext = createContext<NotifiTargetContextType>(
 
 export type NotifiTargetContextProviderProps = {
   toggleTargetAvailability?: Partial<Record<ToggleTarget, boolean>>;
+  plugin?: {
+    walletTarget: NotifiWalletTargetContextType;
+  };
 };
 
 export const NotifiTargetContextProvider: FC<
   PropsWithChildren<NotifiTargetContextProviderProps>
-> = ({ children, toggleTargetAvailability }) => {
+> = ({ children, toggleTargetAvailability, plugin }) => {
   const { frontendClient, frontendClientStatus } =
     useNotifiFrontendClientContext();
 
@@ -203,11 +211,6 @@ export const NotifiTargetContextProvider: FC<
       isAvailable: toggleTargetAvailability?.wallet ?? false,
     },
   });
-  const {
-    signCoinbaseSignature,
-    isLoading: isLoadingWallet,
-    error: errorWallet,
-  } = useTargetWallet();
   const [targetInfoPrompts, setTargetInfoPrompts] = useState<
     Partial<Record<Target, TargetInfo>>
   >({
@@ -788,10 +791,12 @@ export const NotifiTargetContextProvider: FC<
                   );
                   return;
                 }
-                const updatedWeb3Target = await signCoinbaseSignature(
-                  web3Target.id,
-                  web3Target.senderAddress,
-                );
+                const updatedWeb3Target =
+                  await plugin?.walletTarget.signCoinbaseSignature(
+                    frontendClient,
+                    web3Target.id,
+                    web3Target.senderAddress,
+                  );
                 if (!updatedWeb3Target) return;
                 refreshWeb3Target(updatedWeb3Target);
               },
@@ -828,16 +833,16 @@ export const NotifiTargetContextProvider: FC<
         updateTargetInfoPrompt('wallet', null);
       }
     },
-    [toggleTargetAvailability, signCoinbaseSignature],
+    [toggleTargetAvailability, plugin],
   );
 
   return (
     <NotifiTargetContext.Provider
       value={{
         error,
-        errorWallet,
+        errorWallet: plugin?.walletTarget.error ?? null,
         isLoading,
-        isLoadingWallet,
+        isLoadingWallet: plugin?.walletTarget.isLoading ?? false,
         renewTargetGroup,
         unVerifiedTargets,
         isChangingTargets,
@@ -848,6 +853,7 @@ export const NotifiTargetContextProvider: FC<
           targetInfoPrompts,
         },
         updateTargetInputs,
+        signCoinbaseSignature: plugin?.walletTarget.signCoinbaseSignature,
       }}
     >
       {children}
