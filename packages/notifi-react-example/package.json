@@ -46,7 +46,7 @@
     "react-scripts": "5.0.1"
   },
   "scripts": {
-    "start": "BROWSER=none react-app-rewired start",
+    "start": "react-app-rewired start",
     "test": "cypress run --component --spec 'cypress/component/NotifiSubscriptionCard.cy.tsx' --browser chrome",
     "eject": "react-app-rewired eject",
     "cypress:open": "cypress open",
