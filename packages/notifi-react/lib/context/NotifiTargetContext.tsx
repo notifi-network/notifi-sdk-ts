@@ -3,7 +3,7 @@ import {
   objectKeys,
 } from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
-import {
+import type {
   NotifiWalletTargetContextType,
   SignCoinbaseSignature,
 } from '@notifi-network/notifi-react-wallet-target-plugin';
