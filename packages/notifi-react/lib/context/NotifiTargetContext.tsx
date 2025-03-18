@@ -99,7 +99,8 @@ export type TargetData = {
     useWallet: boolean;
     data?: Types.Web3TargetFragmentFragment;
     /* NOTE: unavailable by default.
-     * The condition now determine whether the `wallet` target is available or not is if the dapp connects to `coinbase` wallet. But we are not able to know the information in "notifi-react" library Level.
+     * - The current condition for determining whether the wallet target is available depends on whether the dApp is connected to the coinbase wallet. However, this information is not accessible at the "notifi-react" library level.
+     * - @!IMPORTANT: If enabling this, make sure to consume the `@notifi-network/notifi-react-wallet-target-plugin`.
      */
     isAvailable?: boolean;
   };

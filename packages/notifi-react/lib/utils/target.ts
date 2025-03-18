@@ -8,7 +8,6 @@ import type {
   Target,
   TargetData,
   TargetInfoPrompt,
-  TargetInputs,
   ToggleTarget,
 } from '../context';
 
@@ -19,20 +18,6 @@ export const toggleTargets = [
   'telegram',
   'wallet',
 ] as const;
-
-export const reformatSignatureForWalletTarget = (
-  signature: Uint8Array | string,
-) => {
-  if (!signature) return '';
-
-  let hexString = '0x';
-
-  Object.values(signature).forEach(
-    (v) => (hexString += v.toString(16).padStart(2, '0')),
-  );
-
-  return hexString;
-};
 
 export const hasTarget = (targetData: TargetData) => {
   return !objectKeys(targetData).every((key) => {
@@ -71,15 +56,6 @@ export const hasValidTargetMoreThan = (
       }
     }).length > moreThan
   );
-};
-
-export const getAvailableTargetInputCount = (targetInputs: TargetInputs) => {
-  return objectKeys(targetInputs).filter((key) => {
-    if (isFormTarget(key)) {
-      return targetInputs[key].value;
-    }
-    return targetInputs[key];
-  }).length;
 };
 
 export const isTargetCta = (

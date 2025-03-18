@@ -197,7 +197,7 @@ export const useTargetListItem = (input: {
       default:
         return defaultCtaProps;
     }
-  }, [input.target, targetInputs, renewTargetGroup]);
+  }, [input.target, targetInputs, renewTargetGroup, plugin]);
 
   const classifiedTargetListItemMessage: ClassifiedTargetListItemMessage | null =
     React.useMemo(() => {
