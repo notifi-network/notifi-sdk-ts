@@ -3,6 +3,7 @@ import {
   objectKeys,
 } from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
+// ⬇ Import plugin type, no runtime dependency. so plugin package is not listed in package.json. IDEA: extract to a types-only package
 import type { NotifiWalletTargetContextType } from '@notifi-network/notifi-react-wallet-target-plugin';
 import { isValidPhoneNumber } from 'libphonenumber-js';
 import {
