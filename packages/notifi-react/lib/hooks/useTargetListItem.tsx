@@ -34,7 +34,7 @@ export const useTargetListItem = (input: {
   const {
     targetDocument: { targetData, targetInputs, targetInfoPrompts },
     renewTargetGroup,
-    signCoinbaseSignature,
+    plugin,
   } = useNotifiTargetContext();
   const { frontendClient, frontendClientStatus } =
     useNotifiFrontendClientContext();
@@ -146,7 +146,7 @@ export const useTargetListItem = (input: {
             message: 'Sign Wallet',
             onClick: async () => {
               if (
-                !signCoinbaseSignature ||
+                !plugin?.walletTarget.signCoinbaseSignature ||
                 !frontendClientStatus.isAuthenticated
               ) {
                 console.error(
@@ -158,7 +158,6 @@ export const useTargetListItem = (input: {
                 target: input.target as ToggleTarget,
                 value: true,
               });
-              // TODO: Handle error
               const walletTargetId = targetGroup?.web3Targets?.[0]?.id;
               const walletTargetSenderAddress =
                 targetGroup?.web3Targets?.[0]?.senderAddress;
@@ -167,8 +166,7 @@ export const useTargetListItem = (input: {
                 walletTargetId &&
                 walletTargetSenderAddress
               ) {
-                // TODO: confirm possibility to migrate to context
-                await signCoinbaseSignature(
+                await plugin?.walletTarget.signCoinbaseSignature(
                   frontendClient,
                   walletTargetId,
                   walletTargetSenderAddress,

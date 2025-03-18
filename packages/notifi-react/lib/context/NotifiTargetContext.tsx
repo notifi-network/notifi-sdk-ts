@@ -3,10 +3,7 @@ import {
   objectKeys,
 } from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
-import type {
-  NotifiWalletTargetContextType,
-  SignCoinbaseSignature,
-} from '@notifi-network/notifi-react-wallet-target-plugin';
+import type { NotifiWalletTargetContextType } from '@notifi-network/notifi-react-wallet-target-plugin';
 import { isValidPhoneNumber } from 'libphonenumber-js';
 import {
   AlterTargetGroupParams,
@@ -136,11 +133,13 @@ const isToggleTargetRenewArgs = (
   return toggleTargets.includes(args.target as ToggleTarget);
 };
 
+type TargetPlugin = {
+  walletTarget: NotifiWalletTargetContextType;
+};
+
 export type NotifiTargetContextType = {
-  isLoading: boolean; // general loading state: updateTargetDocument, initial load, renewTargetGroup
-  isLoadingWallet: boolean; // wallet target loading state: verify wallet target
+  isLoading: boolean;
   error: Error | null;
-  errorWallet: Error | null;
   updateTargetInputs: UpdateTargetInputs;
   renewTargetGroup: (
     singleTargetRenewArgs?: TargetRenewArgs,
@@ -148,8 +147,7 @@ export type NotifiTargetContextType = {
   isChangingTargets: Record<Target, boolean>;
   targetDocument: TargetDocument;
   unVerifiedTargets: Target[];
-  // TODO: Confirm possibility to remove
-  signCoinbaseSignature?: SignCoinbaseSignature;
+  plugin?: TargetPlugin;
 };
 
 const NotifiTargetContext = createContext<NotifiTargetContextType>(
@@ -158,9 +156,7 @@ const NotifiTargetContext = createContext<NotifiTargetContextType>(
 
 export type NotifiTargetContextProviderProps = {
   toggleTargetAvailability?: Partial<Record<ToggleTarget, boolean>>;
-  plugin?: {
-    walletTarget: NotifiWalletTargetContextType;
-  };
+  plugin?: TargetPlugin;
 };
 
 export const NotifiTargetContextProvider: FC<
@@ -840,9 +836,7 @@ export const NotifiTargetContextProvider: FC<
     <NotifiTargetContext.Provider
       value={{
         error,
-        errorWallet: plugin?.walletTarget.error ?? null,
         isLoading,
-        isLoadingWallet: plugin?.walletTarget.isLoading ?? false,
         renewTargetGroup,
         unVerifiedTargets,
         isChangingTargets,
@@ -853,7 +847,7 @@ export const NotifiTargetContextProvider: FC<
           targetInfoPrompts,
         },
         updateTargetInputs,
-        signCoinbaseSignature: plugin?.walletTarget.signCoinbaseSignature,
+        plugin,
       }}
     >
       {children}

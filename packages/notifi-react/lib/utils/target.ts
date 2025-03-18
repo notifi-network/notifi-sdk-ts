@@ -66,7 +66,7 @@ export const hasValidTargetMoreThan = (
           return !!targetData[key].data?.isConfirmed;
         }
         if (key === 'slack') {
-          return targetData[key].data?.verificationStatus === 'VERIFIED'; // TODO: define enum for slack verification status
+          return targetData[key].data?.verificationStatus === 'VERIFIED';
         }
       }
     }).length > moreThan
