@@ -1,20 +1,24 @@
 import { CardView } from '@/app/notifi/dashboard/page';
 import { Icon } from '@/assets/Icon';
-import { useNotifiTargetContext } from '@notifi-network/notifi-react';
+import {
+  hasValidTargetMoreThan,
+  useNotifiTargetContext,
+} from '@notifi-network/notifi-react';
 import React, { useMemo } from 'react';
 
 export type VerifyBannerProps = Readonly<{
   setCardView: (cardView: CardView) => void;
   isInHistoryDetail: boolean;
-  hasValidTargetMoreThanOne: boolean | undefined;
 }>;
 
 export const VerifyBanner: React.FC<VerifyBannerProps> = ({
   setCardView,
   isInHistoryDetail,
-  hasValidTargetMoreThanOne,
 }: VerifyBannerProps) => {
-  const { unVerifiedTargets } = useNotifiTargetContext();
+  const {
+    unVerifiedTargets,
+    targetDocument: { targetData },
+  } = useNotifiTargetContext();
 
   const unVerifiedDestinationsString = useMemo(() => {
     const convertedUnVerifiedDestinations = unVerifiedTargets.map((target) => {
@@ -47,7 +51,7 @@ export const VerifyBanner: React.FC<VerifyBannerProps> = ({
       }`}
     >
       <div className="flex flex-row items-center justify-center ml-4 text-sm font-medium">
-        {hasValidTargetMoreThanOne ? (
+        {hasValidTargetMoreThan(targetData, 0) ? (
           <Icon
             id="check"
             className="text-notifi-button-primary-bg mr-3 w-3 mb-0.5"
@@ -59,7 +63,7 @@ export const VerifyBanner: React.FC<VerifyBannerProps> = ({
           />
         )}
         <div className="text-notifi-text mr-1">
-          {hasValidTargetMoreThanOne
+          {hasValidTargetMoreThan(targetData, 0)
             ? `Verify your ${unVerifiedDestinationsString}`
             : 'Get notifications to the destinations of your choice'}
         </div>
@@ -68,7 +72,7 @@ export const VerifyBanner: React.FC<VerifyBannerProps> = ({
         onClick={() => setCardView('destination')}
         className="mr-3 w-18 h-8 bg-notifi-button-primary-blueish-bg rounded-md text-sm font-bold text-white disabled:hover:bg-notifi-button-primary-blueish-bg hover:bg-notifi-button-hover-bg"
       >
-        {hasValidTargetMoreThanOne ? 'Verify' : 'Add'}
+        {hasValidTargetMoreThan(targetData, 0) ? 'Verify' : 'Add'}
       </button>
     </div>
   );

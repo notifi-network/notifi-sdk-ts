@@ -4,6 +4,7 @@ import {
   FtuStage,
   hasValidTargetMoreThan,
   useNotifiTargetContext,
+  useNotifiTenantConfigContext,
   useNotifiTopicContext,
   useNotifiUserSettingContext,
 } from '@notifi-network/notifi-react';
@@ -14,12 +15,10 @@ import { TargetList } from './TargetList';
 export type FtuTargetListProps = {
   contactInfo: CardConfigItemV1['contactInfo'];
   onClickNext?: () => void;
-  isContactInfoRequired?: boolean;
 };
 export const FtuTargetList: React.FC<FtuTargetListProps> = ({
   contactInfo,
   onClickNext,
-  isContactInfoRequired,
 }) => {
   const [isLoading, setIsLoading] = React.useState(false);
   const { isLoading: isLoadingTopics } = useNotifiTopicContext();
@@ -27,8 +26,9 @@ export const FtuTargetList: React.FC<FtuTargetListProps> = ({
   const {
     targetDocument: { targetData },
   } = useNotifiTargetContext();
+  const { cardConfig } = useNotifiTenantConfigContext();
 
-  const isTargetListValid = isContactInfoRequired
+  const isTargetListValid = cardConfig?.isContactInfoRequired
     ? hasValidTargetMoreThan(targetData, 0)
     : true;
 

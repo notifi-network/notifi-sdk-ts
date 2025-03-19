@@ -105,7 +105,6 @@ export default function NotifiFTU() {
         <FtuTargetList
           onClickNext={() => setFtuView(FtuView.AlertEdit)}
           contactInfo={cardConfig.contactInfo}
-          isContactInfoRequired={cardConfig.isContactInfoRequired}
         />
       ) : null}
       {ftuView === FtuView.AlertEdit ? (

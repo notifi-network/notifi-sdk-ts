@@ -79,7 +79,6 @@ export default function NotifiDashboard() {
           <VerifyBanner
             setCardView={setCardView}
             isInHistoryDetail={isInHistoryDetail}
-            hasValidTargetMoreThanOne={hasValidTargetMoreThan(targetData, 0)}
           />
         ) : null}
         <div
