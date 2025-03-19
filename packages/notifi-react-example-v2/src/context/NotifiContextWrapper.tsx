@@ -5,11 +5,11 @@ import {
   NotifiEnvironment,
 } from '@notifi-network/notifi-frontend-client';
 import { NotifiContextProvider } from '@notifi-network/notifi-react';
+import { NotifiContextProviderWithWalletTargetPlugin } from '@notifi-network/notifi-react-wallet-target-plugin';
 import { MemoProgramHardwareLoginPlugin } from '@notifi-network/notifi-solana-hw-login';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import {
   Connection,
-  PublicKey,
   Transaction,
   VersionedTransaction,
   clusterApiUrl,
@@ -170,10 +170,14 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
         </NotifiContextProvider>
       ) : null}
       {selectedWallet === 'coinbase' ? (
-        <NotifiContextProvider
+        <NotifiContextProviderWithWalletTargetPlugin
           tenantId={tenantId}
           env={env}
-          toggleTargetAvailability={{ wallet: true }} // **IMPORTANT** Enable wallet only for Coinbase Wallet. Wallet target only supports Coinbase Wallet for now
+          /**IMPORTANT** Wallet Target is disabled by default (toggleTargetAvailability={{ wallet: false }}). Please Check the followings before enabling it.
+           * - Wallet Target only supports Coinbase for now. You might want to switch the availability according the connected wallet.
+           * - Wrap the component with `NotifiContextProviderWithWalletTargetPlugin` provider instead of `NotifiContextProvider`  When enabling the wallet target (toggleTargetAvailability={{ wallet: true }}).
+           */
+          toggleTargetAvailability={{ wallet: true }}
           walletBlockchain={'ETHEREUM'} // Change to any EVM chain if needed
           walletPublicKey={walletPublicKey}
           signMessage={signMessage}
@@ -185,7 +189,7 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
           notificationCountPerPage={8}
         >
           {children}
-        </NotifiContextProvider>
+        </NotifiContextProviderWithWalletTargetPlugin>
       ) : null}
       {selectedWallet === 'phantom' && solanaHardwareLoginPlugin ? (
         <NotifiContextProvider
