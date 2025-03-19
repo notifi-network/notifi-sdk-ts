@@ -8,7 +8,7 @@ import {
   NotifiUserSettingContextProvider,
 } from '@notifi-network/notifi-react';
 
-/**  NOTE: ⬇ internal context, only available within notifi-sdk-ts workspace */
+/**  NOTE: ⬇ Internal context, only available within notifi-sdk-ts workspace */
 import { GlobalStateContextProvider } from 'notifi-react/lib/context/GlobalStateContext';
 import React, { FC, PropsWithChildren } from 'react';
 

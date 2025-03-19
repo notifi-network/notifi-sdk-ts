@@ -3,10 +3,8 @@ import {
   objectKeys,
 } from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
-import type {
-  NotifiWalletTargetContextType,
-  SignCoinbaseSignature,
-} from '@notifi-network/notifi-react-wallet-target-plugin';
+// ⬇ Import plugin type, no runtime dependency. so plugin package is not listed in package.json. IDEA: extract to a types-only package
+import type { NotifiWalletTargetContextType } from '@notifi-network/notifi-react-wallet-target-plugin';
 import { isValidPhoneNumber } from 'libphonenumber-js';
 import {
   AlterTargetGroupParams,
@@ -101,7 +99,8 @@ export type TargetData = {
     useWallet: boolean;
     data?: Types.Web3TargetFragmentFragment;
     /* NOTE: unavailable by default.
-     * The condition now determine whether the `wallet` target is available or not is if the dapp connects to `coinbase` wallet. But we are not able to know the information in "notifi-react" library Level.
+     * - The current condition for determining whether the wallet target is available depends on whether the dApp is connected to the coinbase wallet. However, this information is not accessible at the "notifi-react" library level.
+     * - @!IMPORTANT: If enabling this, make sure to consume the `@notifi-network/notifi-react-wallet-target-plugin`.
      */
     isAvailable?: boolean;
   };
@@ -136,11 +135,13 @@ const isToggleTargetRenewArgs = (
   return toggleTargets.includes(args.target as ToggleTarget);
 };
 
+type TargetPlugin = {
+  walletTarget: NotifiWalletTargetContextType;
+};
+
 export type NotifiTargetContextType = {
-  isLoading: boolean; // general loading state: updateTargetDocument, initial load, renewTargetGroup
-  isLoadingWallet: boolean; // wallet target loading state: verify wallet target
+  isLoading: boolean;
   error: Error | null;
-  errorWallet: Error | null;
   updateTargetInputs: UpdateTargetInputs;
   renewTargetGroup: (
     singleTargetRenewArgs?: TargetRenewArgs,
@@ -148,8 +149,7 @@ export type NotifiTargetContextType = {
   isChangingTargets: Record<Target, boolean>;
   targetDocument: TargetDocument;
   unVerifiedTargets: Target[];
-  // TODO: Confirm possibility to remove
-  signCoinbaseSignature?: SignCoinbaseSignature;
+  plugin?: TargetPlugin;
 };
 
 const NotifiTargetContext = createContext<NotifiTargetContextType>(
@@ -158,9 +158,7 @@ const NotifiTargetContext = createContext<NotifiTargetContextType>(
 
 export type NotifiTargetContextProviderProps = {
   toggleTargetAvailability?: Partial<Record<ToggleTarget, boolean>>;
-  plugin?: {
-    walletTarget: NotifiWalletTargetContextType;
-  };
+  plugin?: TargetPlugin;
 };
 
 export const NotifiTargetContextProvider: FC<
@@ -840,9 +838,7 @@ export const NotifiTargetContextProvider: FC<
     <NotifiTargetContext.Provider
       value={{
         error,
-        errorWallet: plugin?.walletTarget.error ?? null,
         isLoading,
-        isLoadingWallet: plugin?.walletTarget.isLoading ?? false,
         renewTargetGroup,
         unVerifiedTargets,
         isChangingTargets,
@@ -853,7 +849,7 @@ export const NotifiTargetContextProvider: FC<
           targetInfoPrompts,
         },
         updateTargetInputs,
-        signCoinbaseSignature: plugin?.walletTarget.signCoinbaseSignature,
+        plugin,
       }}
     >
       {children}

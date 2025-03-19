@@ -48,8 +48,7 @@
   },
   "devDependencies": {
     "@types/dompurify": "^3.0.3",
-    "@types/marked": "^5.0.1",
-    "@notifi-network/notifi-react-wallet-target-plugin": "^5.2.1"
+    "@types/marked": "^5.0.1"
   },
   "peerDependencies": {
     "react": "^18"
