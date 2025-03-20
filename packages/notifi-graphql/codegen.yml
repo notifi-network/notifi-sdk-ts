@@ -1,4 +1,6 @@
-schema: https://api.dev.notifi.network/gql/
+schema:
+  - 'https://api.dev.notifi.network/gql?sdl':
+      handleAsSDL: true
 documents: ./lib/gql/**/*.gql.ts
 generates:
   ./lib/gql/generated.ts:
