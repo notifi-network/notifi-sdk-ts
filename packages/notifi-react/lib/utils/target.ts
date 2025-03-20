@@ -8,7 +8,6 @@ import type {
   Target,
   TargetData,
   TargetInfoPrompt,
-  TargetInputs,
   ToggleTarget,
 } from '../context';
 
@@ -19,20 +18,6 @@ export const toggleTargets = [
   'telegram',
   'wallet',
 ] as const;
-
-export const reformatSignatureForWalletTarget = (
-  signature: Uint8Array | string,
-) => {
-  if (!signature) return '';
-
-  let hexString = '0x';
-
-  Object.values(signature).forEach(
-    (v) => (hexString += v.toString(16).padStart(2, '0')),
-  );
-
-  return hexString;
-};
 
 export const hasTarget = (targetData: TargetData) => {
   return !objectKeys(targetData).every((key) => {
@@ -66,20 +51,11 @@ export const hasValidTargetMoreThan = (
           return !!targetData[key].data?.isConfirmed;
         }
         if (key === 'slack') {
-          return targetData[key].data?.verificationStatus === 'VERIFIED'; // TODO: define enum for slack verification status
+          return targetData[key].data?.verificationStatus === 'VERIFIED';
         }
       }
     }).length > moreThan
   );
-};
-
-export const getAvailableTargetInputCount = (targetInputs: TargetInputs) => {
-  return objectKeys(targetInputs).filter((key) => {
-    if (isFormTarget(key)) {
-      return targetInputs[key].value;
-    }
-    return targetInputs[key];
-  }).length;
 };
 
 export const isTargetCta = (
@@ -104,13 +80,6 @@ export const isFormTarget = (target: Target): target is FormTarget => {
 
 export const isToggleTarget = (target: Target): target is ToggleTarget =>
   toggleTargets.includes(target as ToggleTarget);
-
-export const getWalletTargetSignMessage = (
-  address: string,
-  senderAddress: string,
-  nonce: string,
-) =>
-  `Coinbase Wallet Messaging subscribe\nAddress: ${address}\nPartner Address: ${senderAddress}\nNonce: ${nonce}`;
 
 export const getTargetValidateRegex = (target: FormTarget) => {
   switch (target) {

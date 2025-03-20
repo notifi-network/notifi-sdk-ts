@@ -3,6 +3,8 @@ import {
   objectKeys,
 } from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
+// ⬇ Import plugin type, no runtime dependency. so plugin package is not listed in package.json. IDEA: extract to a types-only package
+import type { NotifiWalletTargetContextType } from '@notifi-network/notifi-react-wallet-target-plugin';
 import { isValidPhoneNumber } from 'libphonenumber-js';
 import {
   AlterTargetGroupParams,
@@ -19,7 +21,6 @@ import React, {
   useState,
 } from 'react';
 
-import { useTargetWallet } from '../hooks/useTargetWallet';
 import { formTargets, toggleTargets } from '../utils';
 import { useNotifiFrontendClientContext } from './NotifiFrontendClientContext';
 
@@ -98,7 +99,8 @@ export type TargetData = {
     useWallet: boolean;
     data?: Types.Web3TargetFragmentFragment;
     /* NOTE: unavailable by default.
-     * The condition now determine whether the `wallet` target is available or not is if the dapp connects to `coinbase` wallet. But we are not able to know the information in "notifi-react" library Level.
+     * - The current condition for determining whether the wallet target is available depends on whether the dApp is connected to the coinbase wallet. However, this information is not accessible at the "notifi-react" library level.
+     * - @!IMPORTANT: If enabling this, make sure to consume the `@notifi-network/notifi-react-wallet-target-plugin`.
      */
     isAvailable?: boolean;
   };
@@ -133,11 +135,13 @@ const isToggleTargetRenewArgs = (
   return toggleTargets.includes(args.target as ToggleTarget);
 };
 
+type TargetPlugin = {
+  walletTarget: NotifiWalletTargetContextType;
+};
+
 export type NotifiTargetContextType = {
-  isLoading: boolean; // general loading state: updateTargetDocument, initial load, renewTargetGroup
-  isLoadingWallet: boolean; // wallet target loading state: verify wallet target
+  isLoading: boolean;
   error: Error | null;
-  errorWallet: Error | null;
   updateTargetInputs: UpdateTargetInputs;
   renewTargetGroup: (
     singleTargetRenewArgs?: TargetRenewArgs,
@@ -145,6 +149,7 @@ export type NotifiTargetContextType = {
   isChangingTargets: Record<Target, boolean>;
   targetDocument: TargetDocument;
   unVerifiedTargets: Target[];
+  plugin?: TargetPlugin;
 };
 
 const NotifiTargetContext = createContext<NotifiTargetContextType>(
@@ -153,11 +158,12 @@ const NotifiTargetContext = createContext<NotifiTargetContextType>(
 
 export type NotifiTargetContextProviderProps = {
   toggleTargetAvailability?: Partial<Record<ToggleTarget, boolean>>;
+  plugin?: TargetPlugin;
 };
 
 export const NotifiTargetContextProvider: FC<
   PropsWithChildren<NotifiTargetContextProviderProps>
-> = ({ children, toggleTargetAvailability }) => {
+> = ({ children, toggleTargetAvailability, plugin }) => {
   const { frontendClient, frontendClientStatus } =
     useNotifiFrontendClientContext();
 
@@ -203,11 +209,6 @@ export const NotifiTargetContextProvider: FC<
       isAvailable: toggleTargetAvailability?.wallet ?? false,
     },
   });
-  const {
-    signCoinbaseSignature,
-    isLoading: isLoadingWallet,
-    error: errorWallet,
-  } = useTargetWallet();
   const [targetInfoPrompts, setTargetInfoPrompts] = useState<
     Partial<Record<Target, TargetInfo>>
   >({
@@ -788,10 +789,12 @@ export const NotifiTargetContextProvider: FC<
                   );
                   return;
                 }
-                const updatedWeb3Target = await signCoinbaseSignature(
-                  web3Target.id,
-                  web3Target.senderAddress,
-                );
+                const updatedWeb3Target =
+                  await plugin?.walletTarget.signCoinbaseSignature(
+                    frontendClient,
+                    web3Target.id,
+                    web3Target.senderAddress,
+                  );
                 if (!updatedWeb3Target) return;
                 refreshWeb3Target(updatedWeb3Target);
               },
@@ -828,16 +831,14 @@ export const NotifiTargetContextProvider: FC<
         updateTargetInfoPrompt('wallet', null);
       }
     },
-    [toggleTargetAvailability, signCoinbaseSignature],
+    [toggleTargetAvailability, plugin],
   );
 
   return (
     <NotifiTargetContext.Provider
       value={{
         error,
-        errorWallet,
         isLoading,
-        isLoadingWallet,
         renewTargetGroup,
         unVerifiedTargets,
         isChangingTargets,
@@ -848,6 +849,7 @@ export const NotifiTargetContextProvider: FC<
           targetInfoPrompts,
         },
         updateTargetInputs,
+        plugin,
       }}
     >
       {children}

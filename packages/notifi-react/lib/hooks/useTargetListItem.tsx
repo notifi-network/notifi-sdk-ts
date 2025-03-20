@@ -9,6 +9,7 @@ import {
   FormTarget,
   Target,
   ToggleTarget,
+  useNotifiFrontendClientContext,
   useNotifiTargetContext,
   useNotifiTenantConfigContext,
 } from '../context';
@@ -17,7 +18,6 @@ import {
   isTargetCta,
   isTargetVerified,
 } from '../utils';
-import { useTargetWallet } from './useTargetWallet';
 
 type ClassifiedTargetListItemMessage = {
   type: 'signup' | 'verify' | 'complete';
@@ -31,11 +31,13 @@ export const useTargetListItem = (input: {
   message?: TargetListItemMessage;
 }) => {
   const { cardConfig } = useNotifiTenantConfigContext();
-  const { signCoinbaseSignature } = useTargetWallet();
   const {
     targetDocument: { targetData, targetInputs, targetInfoPrompts },
     renewTargetGroup,
+    plugin,
   } = useNotifiTargetContext();
+  const { frontendClient, frontendClientStatus } =
+    useNotifiFrontendClientContext();
 
   const isRemoveButtonAvailable = React.useMemo(() => {
     const isTargetRemovable = !!cardConfig?.isContactInfoRequired
@@ -137,6 +139,15 @@ export const useTargetListItem = (input: {
             type: 'cta',
             message: 'Sign Wallet',
             onClick: async () => {
+              if (
+                !plugin?.walletTarget.signCoinbaseSignature ||
+                !frontendClientStatus.isAuthenticated
+              ) {
+                console.error(
+                  `useTargetListItem: sing wallet method not available. Please make sure "notifi-react-wallet-target-plugin" pkg is in use.`,
+                );
+                return;
+              }
               const targetGroup = await renewTargetGroup({
                 target: input.target as ToggleTarget,
                 value: true,
@@ -152,7 +163,8 @@ export const useTargetListItem = (input: {
                 walletTargetId &&
                 walletTargetSenderAddress
               ) {
-                await signCoinbaseSignature(
+                await plugin?.walletTarget.signCoinbaseSignature(
+                  frontendClient,
                   walletTargetId,
                   walletTargetSenderAddress,
                 );
@@ -185,7 +197,7 @@ export const useTargetListItem = (input: {
       default:
         return defaultCtaProps;
     }
-  }, [input.target, targetInputs, renewTargetGroup, signCoinbaseSignature]);
+  }, [input.target, targetInputs, renewTargetGroup, plugin]);
 
   const classifiedTargetListItemMessage: ClassifiedTargetListItemMessage | null =
     React.useMemo(() => {

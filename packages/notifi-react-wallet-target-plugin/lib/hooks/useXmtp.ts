@@ -1,20 +1,25 @@
+import {
+  NotifiFrontendClient,
+  isUsingEvmBlockchain,
+} from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
 import { useClient } from '@xmtp/react-sdk';
-import { isUsingEvmBlockchain } from 'notifi-frontend-client/lib/client/blockchains';
 import React from 'react';
 
-import { useNotifiFrontendClientContext } from '../context';
+import { NotifiWalletTargetProviderProps } from '../context';
 import {
-  getWalletTargetSignMessage,
-  reformatSignatureForWalletTarget,
+  createCoinbaseNonce,
+  getMessage,
+  reformatSignature,
+  subscribeCoinbaseMessaging,
 } from '../utils';
-import { createCoinbaseNonce, subscribeCoinbaseMessaging } from '../utils/xmtp';
 
-export const useTargetWallet = () => {
+export type UseXmptInput = NotifiWalletTargetProviderProps;
+
+export const useXmpt = (input: UseXmptInput) => {
+  const { walletWithSignParams } = input;
   const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState<Error | null>(null);
-  const { frontendClient, walletWithSignParams } =
-    useNotifiFrontendClientContext();
   const authMethod =
     walletWithSignParams.walletBlockchain === 'OFF_CHAIN'
       ? walletWithSignParams.signIn
@@ -24,8 +29,8 @@ export const useTargetWallet = () => {
   const getSignature = React.useCallback(
     async (message: Uint8Array | string) => {
       if (walletWithSignParams.walletBlockchain === 'OFF_CHAIN') {
-        setError(Error('OFF_CHAIN is not supported'));
-        return 'Invalid signature: OFF_CHAIN is not supported';
+        setError(Error('.getSignature: ERROR - OFF_CHAIN is not supported'));
+        return '.getSignature: ERROR - OFF_CHAIN is not supported';
       }
 
       let signature: Uint8Array | string = '';
@@ -38,10 +43,10 @@ export const useTargetWallet = () => {
       if (isUsingEvmBlockchain(walletWithSignParams)) {
         signature = await walletWithSignParams.signMessage(message);
       } else {
-        setError(Error('This chain is not supported'));
-        console.error('This chain is not supported');
+        setError(Error('.getSignature: ERROR - This chain is not supported'));
+        console.error('.getSignature: ERROR - This chain is not supported');
       }
-      return reformatSignatureForWalletTarget(signature);
+      return reformatSignature(signature);
     },
     [authMethod],
   );
@@ -49,8 +54,8 @@ export const useTargetWallet = () => {
   const xmtpXip42Impl = React.useCallback(
     async (senderAddress: string) => {
       if (walletWithSignParams.walletBlockchain === 'OFF_CHAIN') {
-        setError(Error('OFF_CHAIN is not supported'));
-        return 'Invalid implementation: OFF_CHAIN is not supported';
+        setError(Error('.getSignature: ERROR - OFF_CHAIN is not supported'));
+        return '.getSignature: ERROR - OFF_CHAIN is not supported';
       }
       type XmtpInitOption = (typeof xmtp.initialize extends (a: infer U) => void
         ? U
@@ -76,7 +81,7 @@ export const useTargetWallet = () => {
       const client = await xmtp.initialize({ options, signer });
       if (!client) {
         throw Error(
-          'xmtpXip42Impl: XMTP client is uninitialized. Please try again.',
+          'xmtpXip42Impl: ERROR - XMTP client is uninitialized. Please try again.',
         );
       }
       // NOTE: 2nd signature: create a new XMTP conversation with the tenant sender (will skip if ever signed before)
@@ -87,16 +92,17 @@ export const useTargetWallet = () => {
 
       return conversation.topic.split('/')[3];
     },
-    [authMethod, xmtp, getSignature],
+    [xmtp, getSignature],
   );
 
   const signCoinbaseSignature = React.useCallback(
     async (
+      frontendClient: NotifiFrontendClient,
       web3TargetId: Types.Web3Target['id'],
       senderAddress: string,
     ): Promise<Types.Web3TargetFragmentFragment | undefined> => {
       if (walletWithSignParams.walletBlockchain === 'OFF_CHAIN') {
-        setError(Error('OFF_CHAIN is not supported'));
+        setError(Error('.getSignature: ERROR - OFF_CHAIN is not supported'));
         return;
       }
       setIsLoading(true);
@@ -108,11 +114,7 @@ export const useTargetWallet = () => {
         const address = walletWithSignParams.walletPublicKey;
         const nonce = await createCoinbaseNonce();
 
-        const message = getWalletTargetSignMessage(
-          address,
-          senderAddress,
-          nonce,
-        );
+        const message = getMessage(address, senderAddress, nonce);
 
         // NOTE: 3rd signature: sign the notifi message above to sync with Notifi BE
         const signature = await getSignature(message);
@@ -140,58 +142,25 @@ export const useTargetWallet = () => {
 
         return walletVerifyResult.verifyXmtpTargetViaXip42.web3Target;
       } catch (e) {
-        console.error('error in signCoinbaseSignature: ', e);
+        console.error('.signCoinbaseSignature: ERROR - ', e);
         setError(
           e instanceof Error
             ? {
                 ...e,
-                message:
-                  'useTargetWallet - signCoinbaseSignature: ' + e.message,
+                message: '.signCoinbaseSignature: ERROR - ' + e.message,
               }
-            : Error('signCoinbaseSignature: Error occurred, please try again.'),
+            : Error('.signCoinbaseSignature: ERROR - please try again.'),
         );
         return;
       } finally {
         setIsLoading(false);
       }
     },
-    [authMethod, frontendClient, xmtpXip42Impl, getSignature],
+    [xmtpXip42Impl],
   );
-
   return {
     isLoading,
     error,
     signCoinbaseSignature,
   };
-
-  // NOTE && TODO: Temporarily commenting out this function because it will be needed later
-  // const xip43Impl = async () => {
-
-  //   const targetId = targetData?.wallet?.data?.id ?? '';
-  //   const address = '';
-
-  //   const timestamp = Date.now();
-  //   const message = createConsentMessage(senderAddress, timestamp);
-  //   const signature = '';
-
-  //   if (!signature) {
-  //     throw Error('Unable to sign the wallet. Please try again.');
-  //   }
-
-  //   await frontendClient.verifyXmtpTarget({
-  //     input: {
-  //       web3TargetId: targetId,
-  //       accountId: address,
-  //       consentProofSignature: signature as string,
-  //       timestamp: timestamp,
-  //       isCBW: true,
-  //     },
-  //   });
-  //   // await signCoinbaseSignature(address, senderAddress);
-  //   await frontendClient.verifyCbwTarget({
-  //     input: {
-  //       targetId: targetId,
-  //     },
-  //   });
-  // };
 };

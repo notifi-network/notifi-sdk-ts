@@ -1,13 +1,14 @@
 {
-  "name": "@notifi-network/notifi-react",
+  "name": "@notifi-network/notifi-react-wallet-target-plugin",
   "version": "5.2.1",
-  "description": "React components to access Notifi core services",
+  "description": "The Wallet Target Plugin context provider for @notifi-network/notifi-react",
   "keywords": [
     "notifi",
     "react",
     "web3",
     "blockchain",
-    "notification"
+    "notification",
+    "plugin"
   ],
   "author": "eric-notifi <eric.lee@notifi.network>",
   "homepage": "https://github.com/notifi-network/notifi-sdk-ts#readme",
@@ -40,25 +41,19 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@notifi-network/notifi-frontend-client": "^5.2.1",
-    "clsx": "^1.2.1",
-    "date-fns": "^2.29.3",
-    "dompurify": "^3.0.5",
-    "libphonenumber-js": "^1.10.13"
-  },
-  "devDependencies": {
-    "@types/dompurify": "^3.0.3",
-    "@types/marked": "^5.0.1"
+    "@xmtp/consent-proof-signature": "^0.1.2",
+    "@xmtp/content-type-reaction": "^1.1.7",
+    "@xmtp/content-type-remote-attachment": "^1.1.8",
+    "@xmtp/content-type-reply": "^1.1.9",
+    "@xmtp/react-sdk": "^6.0.1",
+    "@xmtp/xmtp-js": "^11.5.0"
   },
   "peerDependencies": {
-    "react": "^18"
+    "react": "^18",
+    "@notifi-network/notifi-frontend-client": "^5.2.1",
+    "@notifi-network/notifi-react": "^5.2.1"
   },
   "engines": {
     "node": ">=18"
-  },
-  "tsup": {
-    "noExternal": [
-      "libphonenumber-js"
-    ]
   }
 }
