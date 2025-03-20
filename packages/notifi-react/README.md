@@ -582,6 +582,9 @@ export const MyComponent = () => {
 
 - **targetData**: The target data which is the current state of the targets in the backend.
 
+> **NOTE**: targetData.wallet
+> Use `NotifiContextProviderWalletTargetPlugin` context in `@notifi-network/notifi-react-wallet-target-plugin` if Target.wallet.isAvailable is set to `true`. For more details, refer to `@notifi-network/notifi-react-wallet-target-plugin` README.
+
 <br></br>
 
 ## **NotifiTopicContext**
@@ -781,57 +784,3 @@ For more detail about CSS classes, please refer to the [source code.](https://gi
 - Remove the `NotifiContext` component from the codebase.
 
 - Remove the legacy css override related to the `NotifiSubscriptionCard`.
-
-## Dependency related configuration
-
-When using `@notifi-network/notifi-react`, it requires some additional configuration for specific dependencies.
-
-### "@xmtp" related configuration
-
-The `@notifi-network/notifi-react`'s dependency, `@xmtp/xxx`, requires specific configuration to handle the `wasm` file.
-The following configuration is required in nextjs (the recommended framework).
-
-- **Nextjs version 14.2.0 or above**
-
-  ```js
-  nextConfig = {
-    experimental: {
-      serverComponentsExternalPackages: [
-        '@xmtp/user-preferences-bindings-wasm',
-      ],
-    },
-  };
-
-  // ...other configs
-  ```
-
-- **Nextjs version below 14.2.0**
-
-  It requires manual copy of the wasm file to the server chunk folder. We will need to grab the `user_preferences_bindings_wasm_bg.wasm` file from [@xmtp/user-preferences-bindings-wasm
-  ](https://www.npmjs.com/package/@xmtp/user-preferences-bindings-wasm) npm package: `Code > dist > bundler > user_preferences_bindings_wasm_bg.wasm`. And put it in the `public/wasm` directory. Then add the following configuration in the `next.config.js` file.
-
-  ```js
-  nextConfig = {
-    ...nextConfig,
-    webpack: (config) => {
-      config.plugins.push(
-        new CopyPlugin({
-          patterns: [{ from: 'public/wasm', to: './server/chunks' }],
-        }),
-      );
-      return config;
-    },
-  };
-  // ...other configs
-  ```
-
-The projects might encounter the following error if the above configuration is not set up properly.
-
-```bash
-Error: ENOENT: no such file or directory, open '/path/to/project/.next/server/vendor-chunks/user_preferences_bindings_wasm_bg.wasm'
-```
-
-> Reference:
->
-> - [official xmpt example](https://github.com/xmtp/xmtp-web/blob/main/examples/nextjs/next.config.mjs)
-> - [Notifi React Example config](https://github.com/notifi-network/notifi-sdk-ts/blob/main/packages/notifi-react-example-v2/next.config.mjs)
