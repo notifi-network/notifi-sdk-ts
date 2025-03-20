@@ -50,8 +50,8 @@
   },
   "peerDependencies": {
     "react": "^18",
-    "@notifi-network/notifi-frontend-client": "^5.2.1",
-    "@notifi-network/notifi-react": "^5.2.1"
+    "@notifi-network/notifi-frontend-client": "*",
+    "@notifi-network/notifi-react": "*"
   },
   "engines": {
     "node": ">=18"
