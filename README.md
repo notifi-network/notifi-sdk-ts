@@ -244,6 +244,15 @@ npm run build
 
 This will establish a local server by `light-server` to host the Type documentation page on `http://localhost:4000`.
 
+### Bundle size analysis
+
+To analyze the bundle size of the Notifi packages, please run the following command:
+
+```bash
+# on the root directory
+npx lerna --scope=@notifi-network/notifi-react-example-v2 run build:analyze
+```
+
 </br>
 </br>
 

@@ -29,6 +29,7 @@ function App() {
     /* Same props as NotifiContextProvider */
     >
       {/* Include Notifi features like NotifiCardModal or custom forms here */}
+      {children}
     </NotifiContextProviderWithWalletTargetPlugin>
   );
 }
@@ -87,3 +88,27 @@ Error: ENOENT: no such file or directory, open '/path/to/project/.next/server/ve
 >
 > - [official xmpt example](https://github.com/xmtp/xmtp-web/blob/main/examples/nextjs/next.config.mjs)
 > - [Notifi React Example config](https://github.com/notifi-network/notifi-sdk-ts/blob/main/packages/notifi-react-example-v2/next.config.mjs)
+
+## Advanced Usage
+
+Instead of using `NotifiContextProviderWithWalletTargetPlugin`, which wraps `NotifiContextProvider`, you can use `NotifiWalletTargetContext` independently. This is useful when integrating `NotifiWalletTargetContext` into a different part of your app or pairing it with another context provider.
+
+```tsx
+import { NotifiTargetContextProvider } from '@notifi-network/notifi-react';
+import { NotifiWalletTargetContext } from '@notifi-network/notifi-react-wallet-target-plugin';
+
+// ... other imports
+
+function App() {
+  return (
+    <NotifiWalletTargetContext {...props}>
+      <NotifiTargetContextProvider toggleTargetAvailability={{ wallet: true }}>
+        {/* Add Notifi components like NotifiCardModal or custom forms here */}
+        {children}
+      </NotifiTargetContextProvider>
+    </NotifiWalletTargetContext>
+  );
+}
+```
+
+This approach gives you more flexibility in managing notification contexts within your application.

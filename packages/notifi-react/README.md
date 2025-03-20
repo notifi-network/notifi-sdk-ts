@@ -582,8 +582,9 @@ export const MyComponent = () => {
 
 - **targetData**: The target data which is the current state of the targets in the backend.
 
-> **NOTE**: targetData.wallet
-> Use `NotifiContextProviderWalletTargetPlugin` context in `@notifi-network/notifi-react-wallet-target-plugin` if Target.wallet.isAvailable is set to `true`. For more details, refer to `@notifi-network/notifi-react-wallet-target-plugin` README.
+> **!!IMPORTANT NOTE**: targetData.wallet
+>
+> For version 6.0.0 or above, Please use `NotifiContextProviderWalletTargetPlugin` context in `@notifi-network/notifi-react-wallet-target-plugin` if Target.wallet.isAvailable is set to `true`. For more details, refer to `@notifi-network/notifi-react-wallet-target-plugin` README.
 
 <br></br>
 
