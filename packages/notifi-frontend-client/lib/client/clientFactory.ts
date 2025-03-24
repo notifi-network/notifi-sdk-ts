@@ -3,7 +3,6 @@ import {
   NotifiSubscriptionService,
 } from '@notifi-network/notifi-graphql';
 import { GraphQLClient } from 'graphql-request';
-import { RequestConfig } from 'graphql-request/build/esm/types';
 import WebSocket from 'ws';
 
 import {
@@ -21,6 +20,10 @@ import {
 } from '../storage';
 import { NotifiFrontendClient, UserParams } from './NotifiFrontendClient';
 import { isEvmBlockchain } from './blockchains';
+
+type RequestConfig = NonNullable<
+  ConstructorParameters<typeof GraphQLClient>[1]
+>;
 
 export const newNotifiStorage = (config: NotifiFrontendConfiguration) => {
   const driver =

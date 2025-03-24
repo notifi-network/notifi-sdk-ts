@@ -4,6 +4,8 @@
   },
   "extends": "../../tsconfig.json",
   "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "typeRoots": ["../../node_modules/@types", "."],
     "types": ["express", "node"]
   },
