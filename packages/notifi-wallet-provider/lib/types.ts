@@ -50,7 +50,8 @@ export abstract class NotifiWallet {
     | KeplrSignMessage
     | MetamaskSignMessage
     | XionSignMessage
-    | PhantomSignMessage;
+    | PhantomSignMessage
+    | PhantomSolanaSignMessage;
   abstract connect?: () => Promise<Partial<WalletKeysBase> | null>;
   abstract disconnect?: () => void;
   abstract websiteURL: string;
@@ -112,6 +113,9 @@ export class XionWallet implements NotifiWallet {
 }
 
 export type PhantomSignMessage = (message: Uint8Array) => Promise<Uint8Array>;
+export type PhantomSolanaSignMessage = (
+  message: Uint8Array,
+) => Promise<Uint8Array | undefined>;
 export class PhantomWallet implements NotifiWallet {
   constructor(
     public isInstalled: boolean,
@@ -130,6 +134,24 @@ export class PhantomWallet implements NotifiWallet {
   ) {}
 }
 
+export class PhantomSolanaWallet implements NotifiWallet {
+  constructor(
+    public isInstalled: boolean,
+    public walletKeys: PhantomWalletKeys | null,
+    public signArbitrary: PhantomSolanaSignMessage,
+    public connect: () => Promise<PhantomWalletKeys | null>,
+    public disconnect: () => void,
+    public websiteURL: string,
+  ) {}
+}
+
+export class SolflareWallet extends PhantomSolanaWallet {}
+export class LedgerWallet extends PhantomSolanaWallet {}
+export class SolletWallet extends PhantomSolanaWallet {}
+export class SolletExtensionWallet extends PhantomSolanaWallet {}
+export class SlopeWallet extends PhantomSolanaWallet {}
+export class TorusWallet extends PhantomSolanaWallet {}
+
 export type Wallets = {
   metamask: MetamaskWallet;
   keplr: KeplrWallet;
@@ -142,4 +164,11 @@ export type Wallets = {
   walletconnect: WalletConnectWallet;
   xion: XionWallet;
   phantom: PhantomWallet;
+  solflare: SolflareWallet;
+  ledger: LedgerWallet;
+  sollet: SolletWallet;
+  solletExtension: SolletExtensionWallet;
+  slope: SlopeWallet;
+  torus: TorusWallet;
+  phantomSolana: PhantomSolanaWallet;
 };
