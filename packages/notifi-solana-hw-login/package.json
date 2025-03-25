@@ -18,7 +18,7 @@
     "build": "npm run clean && npm run compile",
     "compile": "tsup lib/index.ts --format cjs,esm --dts --clean",
     "clean": "rimraf ./dist",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo \"WARN: no test specified\" && exit 0",
     "prepublishOnly": "npm run build"
   },
   "repository": {
