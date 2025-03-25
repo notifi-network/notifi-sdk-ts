@@ -18,8 +18,8 @@
     "build": "npm run clean && npm run compile",
     "compile": "tsup lib/index.ts --format cjs,esm --dts --clean",
     "clean": "rimraf ./dist",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "test": "echo \"WARN: no test specified\" && exit 0"
   },
   "dependencies": {
     "@notifi-network/notifi-graphql": "^6.0.0"

@@ -148,6 +148,8 @@ npm run build
 
 #### Unit tests (Jest) & Component tests (Cypress)
 
+We can run tests for all packages in the monorepo using npm run test. However, if you've only modified specific packages, you may prefer to test only those. In that case, please refer to the following details.
+
 1. Component Tests for @notifi-network/notifi-react (Cypress):
 
    For changes in the `@notifi-network/notifi-react package`, run Cypress tests to verify UI component functionality. Execute these tests locally against the `notifi-react-example-v2` package:
