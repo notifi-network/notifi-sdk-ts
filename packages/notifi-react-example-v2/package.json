@@ -20,7 +20,9 @@
     "jwt-decode": "^4.0.0",
     "next": "^14.2.7",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "@ethersproject/bytes": "^5.8.0",
+    "bip39": "^3.1.0"
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^14.2.5",
