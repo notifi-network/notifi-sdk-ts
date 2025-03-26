@@ -7,7 +7,10 @@ import { DashboardSideBar } from '@/components/DashboardSideBar';
 import { TopicList } from '@/components/TopicList';
 import { VerifyBanner } from '@/components/VerifyBanner';
 import { isEVMChain } from '@/utils/typeUtils';
-import { useNotifiTargetContext } from '@notifi-network/notifi-react';
+import {
+  hasValidTargetMoreThan,
+  useNotifiTargetContext,
+} from '@notifi-network/notifi-react';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import Image from 'next/image';
 import { useState } from 'react';
@@ -16,7 +19,10 @@ export type CardView = 'history' | 'destination' | 'alertSubscription';
 
 export default function NotifiDashboard() {
   const [cardView, setCardView] = useState<CardView>('history');
-  const { unVerifiedTargets } = useNotifiTargetContext();
+  const {
+    unVerifiedTargets,
+    targetDocument: { targetData },
+  } = useNotifiTargetContext();
   const { selectedWallet, wallets } = useWallets();
   const [isSideBarOpen, setIsSideBarOpen] = useState<boolean>(false);
   const [isInHistoryDetail, setIsInHistoryDetail] = useState<boolean>(false);
@@ -68,7 +74,8 @@ export default function NotifiDashboard() {
             className="mt-5 mb-4"
           />
         </div>
-        {unVerifiedTargets.length > 0 && cardView === 'history' ? (
+        {(!hasValidTargetMoreThan(targetData, 0) && cardView === 'history') ||
+        (unVerifiedTargets.length > 0 && cardView === 'history') ? (
           <VerifyBanner
             setCardView={setCardView}
             isInHistoryDetail={isInHistoryDetail}
