@@ -5,7 +5,7 @@
     "build": "npx lerna run build",
     "format": "prettier --config .prettierrc packages/**/lib/**/*.ts* --write",
     "lint": "eslint --ext .ts,.tsx packages/**/lib --fix",
-    "test": "npx lerna run test",
+    "test": "npx lerna run test --concurrency 1",
     "test:node": "npx lerna --scope=@notifi-network/notifi-node run test",
     "test:frontend-client": "npx lerna --scope=@notifi-network/notifi-frontend-client run test",
     "serve-docs": "npm run docs && light-server -s ./docs -p 4000",
