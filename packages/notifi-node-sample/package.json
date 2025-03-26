@@ -10,8 +10,7 @@
     "url": "git+https://github.com/notifi-network/notifi-sdk-ts.git"
   },
   "scripts": {
-    "dev": "nodemon lib/index.ts",
-    "test": "echo \"WARN: no test specified\" && exit 0"
+    "dev": "nodemon lib/index.ts"
   },
   "dependencies": {
     "@notifi-network/notifi-node": "^6.0.0",

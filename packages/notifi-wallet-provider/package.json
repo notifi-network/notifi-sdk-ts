@@ -29,8 +29,7 @@
     "clean": "rimraf ./dist",
     "compile": "tsup lib/index.ts --sourcemap --format cjs,esm --dts --clean --external react",
     "format": "prettier --config .prettierrc **/*.ts --write",
-    "lint": "eslint .",
-    "test": "echo \"WARN: no test specified\" && exit 0"
+    "lint": "eslint ."
   },
   "bugs": {
     "url": "https://github.com/notifi-network/notifi-sdk-ts/issues"

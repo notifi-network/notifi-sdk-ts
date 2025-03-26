@@ -20,7 +20,6 @@
     "url": "git+https://github.com/notifi-network/notifi-sdk-ts.git"
   },
   "scripts": {
-    "test": "echo \"WARN: no test specified\" && exit 0",
     "dev": "next dev",
     "build:next": "next build",
     "start": "next start",
