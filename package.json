@@ -9,12 +9,13 @@
     "test:node": "npx lerna --scope=@notifi-network/notifi-node run test",
     "test:frontend-client": "npx lerna --scope=@notifi-network/notifi-frontend-client run test",
     "serve-docs": "npm run docs && light-server -s ./docs -p 4000",
-    "docs": "npm run build-docs && cp -r packages/notifi-frontend-client/docs/notifi-frontend-client packages/notifi-node/docs/notifi-node packages/notifi-graphql/docs/notifi-graphql packages/notifi-react/docs/notifi-react docs",
-    "build-docs": "npm run build-docs:frontend-client && npm run build-docs:graphql && npm run build-docs:node && npm run build-docs:react",
+    "docs": "npm run build-docs && cp -r packages/notifi-frontend-client/docs/notifi-frontend-client packages/notifi-node/docs/notifi-node packages/notifi-graphql/docs/notifi-graphql packages/notifi-react/docs/notifi-react packages/notifi-react-wallet-target-plugin/docs/notifi-react-wallet-target-plugin docs",
+    "build-docs": "npm run build-docs:frontend-client && npm run build-docs:graphql && npm run build-docs:node && npm run build-docs:react && npm run build-docs:react-wallet-target-plugin",
     "build-docs:frontend-client": "npx typedoc --options packages/notifi-frontend-client/typedoc.json",
     "build-docs:graphql": "npx typedoc --options packages/notifi-graphql/typedoc.json",
     "build-docs:node": "npx typedoc --options packages/notifi-node/typedoc.json",
     "build-docs:react": "npx typedoc --skipErrorChecking --options packages/notifi-react/typedoc.json",
+    "build-docs:react-wallet-target-plugin": "npx typedoc --skipErrorChecking --options packages/notifi-react-wallet-target-plugin/typedoc.json",
     "prepare": "husky"
   },
   "devDependencies": {
