@@ -38,7 +38,8 @@
     "ws": "^8.11.0"
   },
   "devDependencies": {
-    "ethers": "^6.11.1"
+    "ethers": "^6.11.1",
+    "@ethersproject/bytes": "^5.8.0"
   },
   "gitHead": "2b02f90e5b01bf13a9ce842a603a7cb21b3d2881"
 }

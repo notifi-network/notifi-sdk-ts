@@ -37,7 +37,8 @@
     "clean": "rimraf ./dist",
     "compile": "tsup lib/index.ts --sourcemap --format cjs,esm --dts --clean --external react",
     "format": "prettier --config .prettierrc **/*.ts --write",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "@notifi-network/notifi-frontend-client": "^6.0.0",

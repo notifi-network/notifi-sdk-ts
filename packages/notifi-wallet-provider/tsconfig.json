@@ -1,7 +1,8 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "jsx": "react",
-    "lib": ["ES2021", "DOM"]
+    "jsx": "react-jsx",
+    "lib": ["ES2021", "DOM"],
+    "typeRoots": ["../../node_modules/@types"]
   }
 }
