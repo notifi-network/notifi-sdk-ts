@@ -61,20 +61,6 @@ describe('NotifiFrontendClient Unit Test', () => {
     expect(result[0].name).toBe('Default');
   });
 
-  /**@deprecated use alterTargetGroup instead */
-  it('ensureTargetGroup-email', async () => {
-    await login();
-    const result = await client.ensureTargetGroup({
-      name: 'Default',
-      emailAddress: 'tester@notifi.network',
-    });
-    expect(result).toHaveProperty('name');
-    expect(result.name).toBe('Default');
-    expect(result).toHaveProperty('emailTargets');
-    expect(result.emailTargets?.length).toBe(1);
-    expect(result.emailTargets![0]!.emailAddress).toBe('tester@notifi.network');
-  });
-
   it('alterTargetGroup-email', async () => {
     await login();
     const result = await client.alterTargetGroup({
