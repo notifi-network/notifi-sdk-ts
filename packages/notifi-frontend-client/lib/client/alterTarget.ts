@@ -30,33 +30,37 @@ export const alterTarget = async (
   const alterTargetService = alterTarget.service;
   if (alterTarget.type === 'create') {
     switch (alterTarget.target) {
-      case 'email':
+      case 'email': {
         const emailTargetMutation = await alterTargetService.createEmailTarget({
           name: alterTarget.value,
           value: alterTarget.value,
         });
         return emailTargetMutation.createEmailTarget?.id;
-      case 'phoneNumber':
+      }
+      case 'phoneNumber': {
         const smsTargetMutation = await alterTargetService.createSmsTarget({
           name: alterTarget.value,
           value: alterTarget.value,
         });
         return smsTargetMutation.createSmsTarget?.id;
-      case 'telegram':
+      }
+      case 'telegram': {
         const telegramTargetMutation =
           await alterTargetService.createTelegramTarget({
             name: alterTarget.value,
             value: alterTarget.value,
           });
         return telegramTargetMutation.createTelegramTarget?.id;
-      case 'discord':
+      }
+      case 'discord': {
         const discordTargetMutation =
           await alterTargetService.createDiscordTarget({
             name: alterTarget.value,
             value: alterTarget.value,
           });
         return discordTargetMutation.createDiscordTarget?.id;
-      case 'slack':
+      }
+      case 'slack': {
         const slackChannelTargetMutation =
           await alterTargetService.createSlackChannelTarget({
             name: alterTarget.value,
@@ -64,7 +68,8 @@ export const alterTarget = async (
           });
         return slackChannelTargetMutation.createSlackChannelTarget
           .slackChannelTarget?.id;
-      case 'wallet':
+      }
+      case 'wallet': {
         const web3TargetMutation = await alterTargetService.createWeb3Target({
           name: alterTarget.value,
           accountId: '',
@@ -72,6 +77,7 @@ export const alterTarget = async (
           web3TargetProtocol: 'XMTP',
         });
         return web3TargetMutation.createWeb3Target?.id;
+      }
     }
   }
   if (alterTarget.type === 'delete') {

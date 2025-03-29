@@ -40,7 +40,7 @@ export const useTargetListItem = (input: {
     useNotifiFrontendClientContext();
 
   const isRemoveButtonAvailable = React.useMemo(() => {
-    const isTargetRemovable = !!cardConfig?.isContactInfoRequired
+    const isTargetRemovable = cardConfig?.isContactInfoRequired
       ? hasValidTargetMoreThan(targetData, 1)
       : true;
 

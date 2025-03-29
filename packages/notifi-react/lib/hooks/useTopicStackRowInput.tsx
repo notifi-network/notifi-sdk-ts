@@ -55,7 +55,6 @@ export const useTopicStackRowInput = (
 
   const isUserInputParamsValid = React.useMemo(() => {
     if (filterOptionsToBeSubscribed && filterName) {
-      filterOptionsToBeSubscribed.input[filterName];
       const isAllFieldsInputted = userInputParams.every((userInputParam) => {
         const input = filterOptionsToBeSubscribed.input;
         return (
@@ -128,7 +127,9 @@ export const useTopicStackRowInput = (
       targetGroupId,
     );
     setSubscriptionValue(null);
-    onSave && onSave();
+    if (onSave) {
+      onSave();
+    }
   };
 
   return {
