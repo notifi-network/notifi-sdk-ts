@@ -1,1 +1,5 @@
-generated.ts
+**/generated.ts
+**/node_modules
+**/.next
+**/out
+**/dist

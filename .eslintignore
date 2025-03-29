@@ -1,5 +1,9 @@
 **/dist
-node_modules
+**/node_modules
 **/generated.ts
-
-postcss.config.js
+**/.next
+**/out
+**/.vscode
+**/postcss.config.js
+**/*.log
+**/*.md
