@@ -1,7 +1,7 @@
 import { gql } from 'graphql-request';
 
-import { PageInfoFragment } from '../fragments/PageInfoFragment.gql';
 import { ActiveAlertFragment } from '../fragments/ActiveAlertFragment.gql';
+import { PageInfoFragment } from '../fragments/PageInfoFragment.gql';
 
 export const GetActiveAlerts = gql`
   query getActiveAlerts($first: Int, $after: String, $fusionEventId: String!) {

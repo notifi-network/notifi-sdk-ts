@@ -147,7 +147,7 @@ const updateTargets = async (
   }
   if (updateTargetInGroup.type === 'ensure') {
     const target = targets?.find((it) => it?.name === updateTargetInGroup.name);
-    if (!!target) {
+    if (target) {
       return [target.id];
     }
     const created = await alterTarget({

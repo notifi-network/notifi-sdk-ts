@@ -671,7 +671,6 @@ export class NotifiFrontendClient {
         case 'SWELLCHAIN':
         case 'BOB':
         case 'SEI':
-
         case 'SONIC': {
           const result = await this._service.logInFromDapp({
             walletBlockchain,
@@ -733,7 +732,7 @@ export class NotifiFrontendClient {
       // Happens for chains that we discontinued support for
       // e.g. Acala, EVMOS
       throw new Error(
-        `Unsupported blockchain: ${signMessageParams.walletBlockchain}. Please contact us if you beleive this is an error or if you need support for a new blockchain.`,
+        `Unsupported blockchain: ${signMessageParams.walletBlockchain}. Please contact us if you believe this is an error or if you need support for a new blockchain.`,
       );
     }
 
@@ -885,7 +884,7 @@ export class NotifiFrontendClient {
     const hashArray = Array.from(new Uint8Array(hashBuffer));
 
     let prefix = '0x';
-    // TDOO: ⬇ Legacy purpose and will be deprecated after SDK V2. the prefix format will be aligned across all blockchains.
+    // TODO: ⬇ Legacy purpose and will be deprecated after SDK V2. the prefix format will be aligned across all blockchains.
     if (walletBlockchain === 'SOLANA' || walletBlockchain === 'OSMOSIS') {
       prefix = 'Notifi Auth: 0x';
     }
@@ -1298,8 +1297,8 @@ export class NotifiFrontendClient {
    * @deprecated use addEventListener instead.
    */
   subscribeNotificationHistoryStateChanged(
-    onMessageReceived: (data: any) => void | undefined,
-    onError?: (data: any) => void | undefined,
+    onMessageReceived: (data: unknown) => void | undefined,
+    onError?: (data: unknown) => void | undefined,
     onComplete?: () => void | undefined,
   ): ReturnType<NotifiService['subscribeNotificationHistoryStateChanged']> {
     return this._service.subscribeNotificationHistoryStateChanged(

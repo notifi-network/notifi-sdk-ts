@@ -95,7 +95,9 @@ export const useInjectedWallet = (
     } catch (e: any) {
       console.error(e);
       disconnectWallet();
-      e.message && errorHandler(new Error(e.message));
+      if (e.message) {
+        errorHandler(new Error(e.message));
+      }
       return null;
     } finally {
       loadingHandler(false);

@@ -629,7 +629,7 @@ export const NotifiTargetContextProvider: FC<
 
   const refreshTelegramTarget = useCallback(
     async (telegramTarget?: Types.TelegramTargetFragmentFragment) => {
-      if (!!telegramTarget) {
+      if (telegramTarget) {
         const infoPrompt: TargetInfoPrompt = telegramTarget.isConfirmed
           ? {
               type: 'message',

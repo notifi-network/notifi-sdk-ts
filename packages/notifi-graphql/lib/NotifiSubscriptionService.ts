@@ -115,14 +115,15 @@ export class NotifiSubscriptionService {
     const subscription = observable.subscribe({
       next: (data) => {
         switch (subscriptionQuery) {
-          case stateChangedSubscriptionQuery:
+          case stateChangedSubscriptionQuery: {
             const stateChangedData = getSubscriptionData('stateChanged', data);
             if (!stateChangedData) {
               throw new Error('Invalid stateChanged event data');
             }
             this.eventEmitter.emit('stateChanged', id, stateChangedData);
             break;
-          case tenantActiveAlertChangedSubscriptionQuery:
+          }
+          case tenantActiveAlertChangedSubscriptionQuery: {
             const tenantActiveAlertChangedData = getSubscriptionData(
               'tenantActiveAlertChanged',
               data,
@@ -136,6 +137,7 @@ export class NotifiSubscriptionService {
               tenantActiveAlertChangedData,
             );
             break;
+          }
           default:
             console.warn('Unknown subscription query:', subscriptionQuery);
         }

@@ -1,6 +1,6 @@
 import { FusionMessage } from '@notifi-network/notifi-dataplane';
 import { NotifiNodeClient } from '@notifi-network/notifi-node';
-import express, { Request } from 'express';
+import express, { Request, Response } from 'express';
 
 import { loggerMiddleWare } from './middleware/logger';
 import {
@@ -35,39 +35,42 @@ type LoginFromServiceHttpBody = {
   sid?: string;
   secret?: string;
 };
-app.post('/login', (req: Request<{}, {}, LoginFromServiceHttpBody>, res) => {
-  const body = req.body ?? {};
+app.post(
+  '/login',
+  (req: Request<object, object, LoginFromServiceHttpBody>, res) => {
+    const body = req.body ?? {};
 
-  const sid = body.sid ?? process.env.NOTIFI_SID;
-  const secret = body.secret ?? process.env.NOTIFI_SECRET;
-  if (!sid || !secret) {
-    return res.status(401).json({
-      message: 'sid is required/ secret is required',
-    });
-  }
+    const sid = body.sid ?? process.env.NOTIFI_SID;
+    const secret = body.secret ?? process.env.NOTIFI_SECRET;
+    if (!sid || !secret) {
+      return res.status(401).json({
+        message: 'sid is required/ secret is required',
+      });
+    }
 
-  client = res.locals.client;
+    client = res.locals.client;
 
-  if (!client) {
-    return res.status(500).json({
-      message: 'notifi-node: login - failed to initialize client',
-    });
-  }
+    if (!client) {
+      return res.status(500).json({
+        message: 'notifi-node: login - failed to initialize client',
+      });
+    }
 
-  return client
-    .logIn({ sid, secret })
-    .then((result) => {
-      return res.status(200).json(result);
-    })
-    .catch((e: unknown) => {
-      let message = 'Unknown server error';
-      if (e instanceof Error) {
-        message = `notifi-node: login - ${e.message}`;
-      }
-      console.error('Error in login', message);
-      return res.status(500).json({ message });
-    });
-});
+    return client
+      .logIn({ sid, secret })
+      .then((result) => {
+        return res.status(200).json(result);
+      })
+      .catch((e: unknown) => {
+        let message = 'Unknown server error';
+        if (e instanceof Error) {
+          message = `notifi-node: login - ${e.message}`;
+        }
+        console.error('Error in login', message);
+        return res.status(500).json({ message });
+      });
+  },
+);
 
 type CreateTenantUserHttpBody = {
   walletBlockchain?: string;
@@ -76,8 +79,12 @@ type CreateTenantUserHttpBody = {
 app.post(
   '/create-tenant-user',
   notifiAuthMiddleware,
-  (req: Request<{}, {}, CreateTenantUserHttpBody>, res) => {
+  (req: Request<object, object, CreateTenantUserHttpBody>, res: Response) => {
     if (!client || client.status.status === 'uninitialized') {
+      return res.status(400).json({
+        message:
+          'notifi-node: createTenantUser - client not initialized, call /login first',
+      });
     }
 
     const { walletBlockchain, walletPublicKey } = req.body ?? {};
@@ -88,9 +95,9 @@ app.post(
       });
     }
 
-    if (!client) {
+    if (!client && !!res.locals.client) {
       client = res.locals.client;
-      client && client.initialize(res.locals.jwt);
+      client?.initialize(res.locals.jwt);
     }
 
     if (!client || client.status.status === 'uninitialized') {
@@ -127,10 +134,10 @@ type GetActiveAlertsHttpBody = {
 app.post(
   '/get-active-alerts',
   notifiAuthMiddleware,
-  (req: Request<{}, {}, GetActiveAlertsHttpBody>, res) => {
-    if (!client) {
+  (req: Request<object, object, GetActiveAlertsHttpBody>, res: Response) => {
+    if (!client && !!res.locals.client) {
       client = res.locals.client;
-      client && client.initialize(res.locals.jwt);
+      client?.initialize(res.locals.jwt);
     }
 
     if (!client || client.status.status === 'uninitialized') {
@@ -170,10 +177,13 @@ type GetFusionNotificationHistoryHttpBody = {
 app.post(
   '/publish-fusion-message',
   notifiAuthMiddleware,
-  (req: Request<{}, {}, GetFusionNotificationHistoryHttpBody>, res) => {
-    if (!client) {
+  (
+    req: Request<object, object, GetFusionNotificationHistoryHttpBody>,
+    res: Response,
+  ) => {
+    if (!client && !!res.locals.client) {
       client = res.locals.client;
-      client && client.initialize(res.locals.jwt);
+      client?.initialize(res.locals.jwt);
     }
 
     if (!client || client.status.status === 'uninitialized') {
@@ -214,7 +224,10 @@ let tenantActiveAlertChangedSubscription:
 app.post(
   '/subscribe-active-alert-changed-event',
   notifiAuthMiddleware,
-  (_req: Request<{}, {}, SubscribeTenantActiveAlertChangedHttpBody>, res) => {
+  (
+    _req: Request<object, object, SubscribeTenantActiveAlertChangedHttpBody>,
+    res: Response,
+  ) => {
     if (tenantActiveAlertChangedSubscription)
       return res
         .status(200)
@@ -260,7 +273,10 @@ type UnsubscribeTenantActiveAlertChangedHttpBody = ServiceMiddleWareHttpBody;
 app.post(
   '/unsubscribe-tenant-active-alert-changed-event',
   notifiAuthMiddleware,
-  (_req: Request<{}, {}, UnsubscribeTenantActiveAlertChangedHttpBody>, res) => {
+  (
+    _req: Request<object, object, UnsubscribeTenantActiveAlertChangedHttpBody>,
+    res: Response,
+  ) => {
     if (!client || client.status.status === 'uninitialized')
       return res.status(400).json({
         message:

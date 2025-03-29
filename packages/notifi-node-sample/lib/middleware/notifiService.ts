@@ -42,7 +42,7 @@ export type ServiceMiddleWareHttpBody = {
   env?: string;
 };
 export const notifiServiceMiddleware = (
-  req: Request<{}, {}, ServiceMiddleWareHttpBody>,
+  req: Request<object, object, ServiceMiddleWareHttpBody>,
   res: Response,
   next: NextFunction,
 ) => {
