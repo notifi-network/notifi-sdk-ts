@@ -4,7 +4,7 @@ import {
   checkIsConfigWithDelegate,
   checkIsConfigWithOidc,
   checkIsConfigWithPublicKeyAndAddress,
-} from '../configuration/NotifiFrontendConfiguration';
+} from '../configuration';
 import { StorageDriver } from './NotifiFrontendStorage';
 
 const getEnvPrefix = (env?: NotifiEnvironment): string => {

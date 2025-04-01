@@ -1,16 +1,6 @@
-import { Types } from '@notifi-network/notifi-graphql';
-
-import {
-  CosmosBlockchain,
-  EvmBlockchain,
-  isEvmBlockchain,
-} from '../client/blockchains';
-
-export type NotifiEnvironment =
-  | 'Production'
-  | 'Staging'
-  | 'Development'
-  | 'Local';
+import { isEvmBlockchain } from '../client';
+import { AuthParams } from './Auth';
+import { NotifiEnvironment } from './Env';
 
 export type NotifiEnvironmentConfiguration = Readonly<{
   env?: NotifiEnvironment;
@@ -19,40 +9,29 @@ export type NotifiEnvironmentConfiguration = Readonly<{
     driverType?: 'LocalForage' | 'InMemory';
   }>;
 }>;
-type WalletBlockchainWithPublicKey = EvmBlockchain | 'SOLANA';
 
-type WalletBlockchainWithDelegate = CosmosBlockchain;
-
-type WalletBlockchainWithPublicKeyAndAddress = Exclude<
-  Types.WalletBlockchain,
-  WalletBlockchainWithPublicKey | 'OFF_CHAIN'
->;
-
-export type NotifiConfigWithPublicKey = Readonly<{
-  walletBlockchain: WalletBlockchainWithPublicKey;
-  walletPublicKey: string;
-}> &
+export type NotifiConfigWithPublicKey = Extract<
+  AuthParams,
+  { walletPublicKey: string }
+> &
   NotifiEnvironmentConfiguration;
 
-export type NotifiConfigWithPublicKeyAndAddress = Readonly<{
-  walletBlockchain: WalletBlockchainWithPublicKeyAndAddress;
-  authenticationKey: string;
-  accountAddress: string;
-}> &
+export type NotifiConfigWithPublicKeyAndAddress = Extract<
+  AuthParams,
+  { authenticationKey: string }
+> &
   NotifiEnvironmentConfiguration;
 
-export type NotifiConfigWithDelegate = Readonly<{
-  walletBlockchain: WalletBlockchainWithDelegate;
-  delegatedAddress: string;
-  delegatedPublicKey: string;
-  delegatorAddress: string;
-}> &
+export type NotifiConfigWithDelegate = Extract<
+  AuthParams,
+  { delegatedAddress: string }
+> &
   NotifiEnvironmentConfiguration;
 
-export type NotifiConfigWithOidc = Readonly<{
-  walletBlockchain: 'OFF_CHAIN';
-  userAccount: string;
-}> &
+export type NotifiConfigWithOidc = Extract<
+  AuthParams,
+  { userAccount: string }
+> &
   NotifiEnvironmentConfiguration;
 
 export type NotifiFrontendConfiguration =
@@ -68,30 +47,6 @@ export type ConfigFactoryInput =
   | ConfigFactoryInputDelegated
   | ConfigFactoryInputOidc;
 
-export const checkIsConfigWithPublicKeyAndAddress = (
-  config: NotifiFrontendConfiguration,
-): config is NotifiConfigWithPublicKeyAndAddress => {
-  return 'accountAddress' in config;
-};
-
-export const checkIsConfigWithPublicKey = (
-  config: NotifiFrontendConfiguration,
-): config is NotifiConfigWithPublicKey => {
-  return 'walletPublicKey' in config;
-};
-
-export const checkIsConfigWithDelegate = (
-  config: NotifiFrontendConfiguration,
-): config is NotifiConfigWithDelegate => {
-  return 'delegatedAddress' in config;
-};
-
-export const checkIsConfigWithOidc = (
-  config: NotifiFrontendConfiguration,
-): config is NotifiConfigWithOidc => {
-  return config.walletBlockchain === 'OFF_CHAIN';
-};
-
 /**@deprecated No longer need to use configFactory, use instantiateFrontendClient instead */
 export type ConfigFactoryInputDelegated = {
   account: Readonly<{
@@ -101,7 +56,7 @@ export type ConfigFactoryInputDelegated = {
   }>;
   tenantId: string;
   env?: NotifiEnvironment;
-  walletBlockchain: WalletBlockchainWithDelegate;
+  walletBlockchain: NotifiConfigWithDelegate['walletBlockchain'];
   storageOption?: NotifiEnvironmentConfiguration['storageOption'];
 };
 
@@ -239,28 +194,4 @@ export const newFrontendConfig = (
   } else {
     return configFactoryPublicKey(config);
   }
-};
-
-export const envUrl = (
-  env?: NotifiEnvironment,
-  endpointType?: 'websocket' | 'http',
-): string => {
-  if (!env) env = 'Production';
-
-  let url = '';
-  switch (env) {
-    case 'Development':
-      url = '://api.dev.notifi.network/gql';
-      break;
-    case 'Local':
-      url = '://localhost:5001/gql';
-      break;
-    case 'Production':
-      url = '://api.notifi.network/gql';
-      break;
-    case 'Staging':
-      url = '://api.stg.notifi.network/gql';
-  }
-
-  return `${endpointType === 'websocket' ? 'wss' : env === 'Local' ? 'http' : 'https'}${url}`;
 };
