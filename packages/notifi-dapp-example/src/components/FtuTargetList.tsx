@@ -2,7 +2,9 @@ import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
 import {
   FtuStage,
+  hasValidTargetMoreThan,
   useNotifiTargetContext,
+  useNotifiTenantConfigContext,
   useNotifiTopicContext,
   useNotifiUserSettingContext,
 } from '@notifi-network/notifi-react';
@@ -18,9 +20,17 @@ export const FtuTargetList: React.FC<FtuTargetListProps> = ({
   contactInfo,
   onClickNext,
 }) => {
-  const { isLoading: isLoadingTargets } = useNotifiTargetContext();
+  const [isLoading, setIsLoading] = React.useState(false);
   const { isLoading: isLoadingTopics } = useNotifiTopicContext();
   const { updateFtuStage } = useNotifiUserSettingContext();
+  const {
+    targetDocument: { targetData },
+  } = useNotifiTargetContext();
+  const { cardConfig } = useNotifiTenantConfigContext();
+
+  const isTargetListValid = cardConfig?.isContactInfoRequired
+    ? hasValidTargetMoreThan(targetData, 0)
+    : true;
 
   return (
     <div className="w-full sm:min-h-[520px] sm:w-4/6 bg-notifi-card-bg rounded-2xl flex flex-col items-center justify-between mt-[1rem] mb-8 px-4">
@@ -37,7 +47,7 @@ export const FtuTargetList: React.FC<FtuTargetListProps> = ({
           <p className="text-sm opacity-50 font-medium md:my-4 mt-2 mb-6 text-notifi-text-medium text-center">
             Select any of the following destinations to receive notifications
           </p>
-          {isLoadingTargets || isLoadingTopics ? (
+          {isLoadingTopics ? (
             <div>
               <LoadingSpinner />
             </div>
@@ -48,10 +58,16 @@ export const FtuTargetList: React.FC<FtuTargetListProps> = ({
       </div>
       <button
         className="rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text w-72 h-11 mt-9 sm:mt-0 mb-9 text-sm font-bold disabled:hover:bg-notifi-button-primary-blueish-bg hover:bg-notifi-button-hover-bg"
-        onClick={() => {
-          updateFtuStage(FtuStage.Alerts);
-          onClickNext?.();
+        onClick={async () => {
+          setIsLoading(true);
+          try {
+            await updateFtuStage(FtuStage.Alerts);
+            onClickNext?.();
+          } finally {
+            setIsLoading(false);
+          }
         }}
+        disabled={isLoading || !isTargetListValid}
       >
         <span>Next</span>
       </button>
