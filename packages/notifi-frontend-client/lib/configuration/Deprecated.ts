@@ -1,7 +1,8 @@
 import { isEvmBlockchain } from '../client';
-import { AuthParams } from './Auth';
+import { NotifiFrontendConfiguration } from './Client';
 import { NotifiEnvironment } from './Env';
 
+/**@deprecated Use NotifiFrontendConfiguration instead */
 export type NotifiEnvironmentConfiguration = Readonly<{
   env?: NotifiEnvironment;
   tenantId: string;
@@ -10,35 +11,27 @@ export type NotifiEnvironmentConfiguration = Readonly<{
   }>;
 }>;
 
-export type NotifiConfigWithPublicKey = Extract<
-  AuthParams,
+/**@deprecated Extract from AuthParm instead */
+type NotifiConfigWithPublicKey = Extract<
+  NotifiFrontendConfiguration,
   { walletPublicKey: string }
-> &
-  NotifiEnvironmentConfiguration;
+>;
 
-export type NotifiConfigWithPublicKeyAndAddress = Extract<
-  AuthParams,
+/**@deprecated Extract from AuthParm instead */
+type NotifiConfigWithPublicKeyAndAddress = Extract<
+  NotifiFrontendConfiguration,
   { authenticationKey: string }
-> &
-  NotifiEnvironmentConfiguration;
-
-export type NotifiConfigWithDelegate = Extract<
-  AuthParams,
+>;
+/**@deprecated Extract from AuthParm instead */
+type NotifiConfigWithDelegate = Extract<
+  NotifiFrontendConfiguration,
   { delegatedAddress: string }
-> &
-  NotifiEnvironmentConfiguration;
-
-export type NotifiConfigWithOidc = Extract<
-  AuthParams,
+>;
+/**@deprecated Extract from AuthParm instead */
+type NotifiConfigWithOidc = Extract<
+  NotifiFrontendConfiguration,
   { userAccount: string }
-> &
-  NotifiEnvironmentConfiguration;
-
-export type NotifiFrontendConfiguration =
-  | NotifiConfigWithPublicKey
-  | NotifiConfigWithPublicKeyAndAddress
-  | NotifiConfigWithDelegate
-  | NotifiConfigWithOidc;
+>;
 
 /**@deprecated No longer need to use configFactory, use instantiateFrontendClient instead */
 export type ConfigFactoryInput =
@@ -57,7 +50,7 @@ export type ConfigFactoryInputDelegated = {
   tenantId: string;
   env?: NotifiEnvironment;
   walletBlockchain: NotifiConfigWithDelegate['walletBlockchain'];
-  storageOption?: NotifiEnvironmentConfiguration['storageOption'];
+  storageOption?: NotifiFrontendConfiguration['storageOption'];
 };
 
 /**@deprecated No longer need to use configFactory, use instantiateFrontendClient instead */
@@ -69,7 +62,7 @@ export type ConfigFactoryInputPublicKeyAndAddress = {
   tenantId: string;
   env?: NotifiEnvironment;
   walletBlockchain: NotifiConfigWithPublicKeyAndAddress['walletBlockchain'];
-  storageOption?: NotifiEnvironmentConfiguration['storageOption'];
+  storageOption?: NotifiFrontendConfiguration['storageOption'];
 };
 
 /**@deprecated No longer need to use configFactory, use instantiateFrontendClient instead */
@@ -80,7 +73,7 @@ export type ConfigFactoryInputPublicKey = {
   tenantId: string;
   env?: NotifiEnvironment;
   walletBlockchain: NotifiConfigWithPublicKey['walletBlockchain'];
-  storageOption?: NotifiEnvironmentConfiguration['storageOption'];
+  storageOption?: NotifiFrontendConfiguration['storageOption'];
 };
 
 /**@deprecated No longer need to use configFactory, use instantiateFrontendClient instead */
@@ -91,7 +84,7 @@ export type ConfigFactoryInputOidc = {
   tenantId: string;
   env?: NotifiEnvironment;
   walletBlockchain: 'OFF_CHAIN';
-  storageOption?: NotifiEnvironmentConfiguration['storageOption'];
+  storageOption?: NotifiFrontendConfiguration['storageOption'];
 };
 
 /**@deprecated No longer need to use configFactory, use instantiateFrontendClient instead */

@@ -2,8 +2,7 @@ import { NotifiEmitterEvents, Types } from '@notifi-network/notifi-graphql';
 import { NotifiService } from '@notifi-network/notifi-graphql';
 
 import {
-  type NotifiConfigWithPublicKey,
-  type NotifiConfigWithPublicKeyAndAddress,
+  AuthParams,
   type NotifiFrontendConfiguration,
   checkIsConfigWithDelegate,
   checkIsConfigWithPublicKey,
@@ -748,8 +747,10 @@ export class NotifiFrontendClient {
         );
       return { signature: signatureHex, signedMessage };
     } else if (isUsingEvmBlockchain(signMessageParams)) {
-      const { walletPublicKey, tenantId } = this
-        ._configuration as NotifiConfigWithPublicKey;
+      const { walletPublicKey, tenantId } = this._configuration as Extract<
+        NotifiFrontendConfiguration,
+        Extract<AuthParams, { walletPublicKey: string }> // BlockchainAuthParamsWithPublicKey
+      >;
       const signedMessage = `${SIGNING_MESSAGE}${walletPublicKey}${tenantId}${timestamp.toString()}`;
       const messageBuffer = new TextEncoder().encode(signedMessage);
 
@@ -764,16 +765,20 @@ export class NotifiFrontendClient {
       signMessageParams.walletBlockchain === 'INJECTIVE'
     ) {
       //TODO: Implement
-      const { authenticationKey, tenantId } = this
-        ._configuration as NotifiConfigWithPublicKeyAndAddress;
+      const { authenticationKey, tenantId } = this._configuration as Extract<
+        NotifiFrontendConfiguration,
+        Extract<AuthParams, { authenticationKey: string }>
+      >;
       const signedMessage = `${SIGNING_MESSAGE}${authenticationKey}${tenantId}${timestamp.toString()}`;
       const messageBuffer = new TextEncoder().encode(signedMessage);
       const signedBuffer = await signMessageParams.signMessage(messageBuffer);
       const signature = Buffer.from(signedBuffer).toString('base64');
       return { signature, signedMessage };
     } else if (isUsingSolanaBlockchain(signMessageParams)) {
-      const { walletPublicKey, tenantId } = this
-        ._configuration as NotifiConfigWithPublicKey;
+      const { walletPublicKey, tenantId } = this._configuration as Extract<
+        NotifiFrontendConfiguration,
+        Extract<AuthParams, { walletPublicKey: string }>
+      >;
       const signedMessage = `${SIGNING_MESSAGE}${signMessageParams.nonce}`;
       const messageBuffer = new TextEncoder().encode(signedMessage);
 
@@ -789,8 +794,10 @@ export class NotifiFrontendClient {
     // Can only be the lonely chains now, e.g. Solana, Sui, ...
     switch (signMessageParams.walletBlockchain) {
       case 'SUI': {
-        const { accountAddress, tenantId } = this
-          ._configuration as NotifiConfigWithPublicKeyAndAddress;
+        const { accountAddress, tenantId } = this._configuration as Extract<
+          NotifiFrontendConfiguration,
+          Extract<AuthParams, { authenticationKey: string }>
+        >;
         const signedMessage = `${SIGNING_MESSAGE}${accountAddress}${tenantId}${timestamp.toString()}`;
         const messageBuffer = new TextEncoder().encode(signedMessage);
         const signedBuffer = await signMessageParams.signMessage(messageBuffer);
@@ -799,7 +806,10 @@ export class NotifiFrontendClient {
       }
       case 'NEAR': {
         const { authenticationKey, accountAddress, tenantId } = this
-          ._configuration as NotifiConfigWithPublicKeyAndAddress;
+          ._configuration as Extract<
+          NotifiFrontendConfiguration,
+          Extract<AuthParams, { authenticationKey: string }>
+        >;
 
         const message = `${
           `ed25519:` + authenticationKey
