@@ -1,11 +1,11 @@
-.tooltip-container {
+.notifi-tooltip-container {
   display: inline-block;
   position: relative;
   height: 1rem;
   width: 1rem;
 }
 
-.tooltip-content {
+.notifi-tooltip-content {
   padding: 1rem;
   border-radius: 6px;
   background-color: var(--notifi-target-list-tooltip-bg);
@@ -18,41 +18,41 @@
   color: var(--tooltip-content-text);
 }
 
-.tooltip-content > a {
+.notifi-tooltip-content > a {
   color: var(--tooltip-content-a-text);
 }
 
-.tooltip-icon:hover ~ .tooltip-content.top-right,
-.item-tooltip-content.top-right:hover {
+.notifi-tooltip-icon:hover ~ .notifi-tooltip-content.top-right,
+.notifi-tooltip-content.top-right:hover {
   top: 1.5rem;
   right: -1rem;
   display: block;
 }
 
-.tooltip-icon:hover ~ .tooltip-content.top-left,
-.tooltip-content.top-left:hover {
+.notifi-tooltip-icon:hover ~ .notifi-tooltip-content.top-left,
+.notifi-tooltip-content.top-left:hover {
   top: 1.5rem;
   left: -1rem;
   display: block;
 }
 
-.tooltip-icon:hover ~ .tooltip-content.bottom-right,
-.tooltip-content.bottom-right:hover {
+.notifi-tooltip-icon:hover ~ .notifi-tooltip-content.bottom-right,
+.notifi-tooltip-content.bottom-right:hover {
   bottom: 1.5rem;
   right: -1rem;
   display: block;
 }
 
-.tooltip-icon:hover ~ .tooltip-content.bottom-left,
-.tooltip-content.bottom-left:hover {
+.notifi-tooltip-icon:hover ~ .notifi-tooltip-content.bottom-left,
+.notifi-tooltip-content.bottom-left:hover {
   bottom: 1.5rem;
   left: -1rem;
   display: block;
 }
-.tooltip-icon:hover {
+.notifi-tooltip-icon:hover {
   color: var(--tooltip-icon-color-hover);
 }
 
-.tooltip-icon {
+.notifi-tooltip-icon {
   margin-bottom: -5px;
 }

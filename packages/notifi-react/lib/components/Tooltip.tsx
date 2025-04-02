@@ -19,16 +19,16 @@ export const Tooltip: React.FC<PropsWithChildren<TooltipProps>> = ({
 }) => {
   return (
     <div
-      className={clsx('tooltip-container', props.classNames?.container)}
+      className={clsx('notifi-tooltip-container', props.classNames?.container)}
       ref={props.tooltipRef}
     >
       <Icon
-        className={clsx('tooltip-icon', props.classNames?.tooltipIcon)}
+        className={clsx('notifi-tooltip-icon', props.classNames?.tooltipIcon)}
         type="info"
       />
       <div
         className={clsx(
-          'tooltip-content',
+          'notifi-tooltip-content',
           props.classNames?.tooltipContent,
           props.tooltipIconPosition,
         )}
