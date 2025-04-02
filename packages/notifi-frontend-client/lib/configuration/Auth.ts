@@ -8,7 +8,7 @@ export type AuthParams =
   | BlockchainAuthParamsWithDelegate
   | OidcAuthParams;
 
-/** Keeps internal. If needed, use Typescript Extract. e.g. Extract<AuthParams, { walletPublicKey: string }> */
+/** Keeps internal in purpose. If needed, use Typescript Extract. e.g. Extract<AuthParams, { walletPublicKey: string }> */
 type BlockchainAuthParamsWithPublicKey = {
   walletBlockchain: EvmBlockchain | 'SOLANA';
   walletPublicKey: string;
@@ -26,8 +26,8 @@ type BlockchainAuthParamsWithDelegate = {
 type BlockchainAuthParamsWithPublicKeyAndAddress = {
   walletBlockchain: Exclude<
     // TODO: migrate to BlockchainType
-    Types.WalletBlockchain,
-    EvmBlockchain | 'SOLANA' | 'OFF_CHAIN'
+    Types.BlockchainType,
+    EvmBlockchain | 'SOLANA' | 'OFF_CHAIN' | 'UNSPECIFIED'
   >;
   authenticationKey: string;
   accountAddress: string;

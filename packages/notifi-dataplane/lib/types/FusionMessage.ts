@@ -7,7 +7,7 @@ export interface FusionMessage {
   specificWallets?: ReadonlyArray<
     Readonly<{
       walletPublicKey: string;
-      walletBlockchain: Types.WalletBlockchain;
+      walletBlockchain: Types.BlockchainType;
     }>
   >;
 }
