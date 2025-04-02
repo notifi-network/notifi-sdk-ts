@@ -2,8 +2,7 @@ import { NotifiEmitterEvents, Types } from '@notifi-network/notifi-graphql';
 import { NotifiService } from '@notifi-network/notifi-graphql';
 
 import {
-  type NotifiConfigWithPublicKey,
-  type NotifiConfigWithPublicKeyAndAddress,
+  AuthParams,
   type NotifiFrontendConfiguration,
   checkIsConfigWithDelegate,
   checkIsConfigWithPublicKey,
@@ -11,10 +10,8 @@ import {
 } from '../configuration';
 import type {
   CardConfigItemV1,
-  EventTypeItem,
   FusionEventTopic,
   TenantConfig,
-  WalletBalanceEventTypeItem,
 } from '../models';
 import type { Authorization, NotifiStorage, Roles } from '../storage';
 import {
@@ -22,8 +19,9 @@ import {
   createInMemoryStorageDriver,
   createLocalForageStorageDriver,
 } from '../storage';
-import { notNullOrEmpty, packFilterOptions } from '../utils';
+import { notNullOrEmpty } from '../utils';
 import { areIdsEqual } from '../utils/areIdsEqual';
+import { normalizeHexString } from '../utils/crypto';
 import {
   AlterTargetGroupParams,
   alterTargetGroupImpl,
@@ -48,7 +46,6 @@ import {
   isUsingSolanaBlockchain,
   isUsingUnmaintainedBlockchain,
 } from './blockchains';
-import { ensureSourceAndFilters, normalizeHexString } from './ensureSource';
 import {
   ensureDiscord,
   ensureEmail,
@@ -57,7 +54,7 @@ import {
   ensureTelegram,
   ensureWeb3,
   renewTelegram,
-} from './ensureTarget';
+} from './deprecated';
 
 type HexString = `0x${string}`;
 
@@ -748,8 +745,10 @@ export class NotifiFrontendClient {
         );
       return { signature: signatureHex, signedMessage };
     } else if (isUsingEvmBlockchain(signMessageParams)) {
-      const { walletPublicKey, tenantId } = this
-        ._configuration as NotifiConfigWithPublicKey;
+      const { walletPublicKey, tenantId } = this._configuration as Extract<
+        NotifiFrontendConfiguration,
+        Extract<AuthParams, { walletPublicKey: string }> // BlockchainAuthParamsWithPublicKey
+      >;
       const signedMessage = `${SIGNING_MESSAGE}${walletPublicKey}${tenantId}${timestamp.toString()}`;
       const messageBuffer = new TextEncoder().encode(signedMessage);
 
@@ -764,16 +763,20 @@ export class NotifiFrontendClient {
       signMessageParams.walletBlockchain === 'INJECTIVE'
     ) {
       //TODO: Implement
-      const { authenticationKey, tenantId } = this
-        ._configuration as NotifiConfigWithPublicKeyAndAddress;
+      const { authenticationKey, tenantId } = this._configuration as Extract<
+        NotifiFrontendConfiguration,
+        Extract<AuthParams, { authenticationKey: string }>
+      >;
       const signedMessage = `${SIGNING_MESSAGE}${authenticationKey}${tenantId}${timestamp.toString()}`;
       const messageBuffer = new TextEncoder().encode(signedMessage);
       const signedBuffer = await signMessageParams.signMessage(messageBuffer);
       const signature = Buffer.from(signedBuffer).toString('base64');
       return { signature, signedMessage };
     } else if (isUsingSolanaBlockchain(signMessageParams)) {
-      const { walletPublicKey, tenantId } = this
-        ._configuration as NotifiConfigWithPublicKey;
+      const { walletPublicKey, tenantId } = this._configuration as Extract<
+        NotifiFrontendConfiguration,
+        Extract<AuthParams, { walletPublicKey: string }>
+      >;
       const signedMessage = `${SIGNING_MESSAGE}${signMessageParams.nonce}`;
       const messageBuffer = new TextEncoder().encode(signedMessage);
 
@@ -789,8 +792,10 @@ export class NotifiFrontendClient {
     // Can only be the lonely chains now, e.g. Solana, Sui, ...
     switch (signMessageParams.walletBlockchain) {
       case 'SUI': {
-        const { accountAddress, tenantId } = this
-          ._configuration as NotifiConfigWithPublicKeyAndAddress;
+        const { accountAddress, tenantId } = this._configuration as Extract<
+          NotifiFrontendConfiguration,
+          Extract<AuthParams, { authenticationKey: string }>
+        >;
         const signedMessage = `${SIGNING_MESSAGE}${accountAddress}${tenantId}${timestamp.toString()}`;
         const messageBuffer = new TextEncoder().encode(signedMessage);
         const signedBuffer = await signMessageParams.signMessage(messageBuffer);
@@ -799,7 +804,10 @@ export class NotifiFrontendClient {
       }
       case 'NEAR': {
         const { authenticationKey, accountAddress, tenantId } = this
-          ._configuration as NotifiConfigWithPublicKeyAndAddress;
+          ._configuration as Extract<
+          NotifiFrontendConfiguration,
+          Extract<AuthParams, { authenticationKey: string }>
+        >;
 
         const message = `${
           `ed25519:` + authenticationKey
@@ -1009,19 +1017,6 @@ export class NotifiFrontendClient {
     if (result === undefined) {
       throw new Error('Failed to delete alerts');
     }
-    return result;
-  }
-
-  async updateWallets() {
-    const walletEventTypeItem: WalletBalanceEventTypeItem = {
-      name: 'User Wallets',
-      type: 'walletBalance',
-    };
-    const result = await ensureSourceAndFilters(
-      this._service,
-      walletEventTypeItem,
-      {},
-    );
     return result;
   }
 
@@ -1306,70 +1301,6 @@ export class NotifiFrontendClient {
       onError,
       onComplete,
     );
-  }
-
-  /** @deprecated legacy infrastructure, use ensureFusionAlerts instead */
-  async ensureAlert({
-    eventType,
-    inputs,
-    targetGroupName = 'Default',
-  }: Readonly<{
-    eventType: EventTypeItem;
-    inputs: Record<string, unknown>;
-    targetGroupName?: string;
-  }>): Promise<Types.AlertFragmentFragment> {
-    const [alertsQuery, targetGroupsQuery, sourceAndFilters] =
-      await Promise.all([
-        this._service.getAlerts({}),
-        this._service.getTargetGroups({}),
-        ensureSourceAndFilters(this._service, eventType, inputs),
-      ]);
-
-    const targetGroup = targetGroupsQuery.targetGroup?.find(
-      (it) => it?.name === targetGroupName,
-    );
-    if (targetGroup === undefined) {
-      throw new Error('Target group does not exist');
-    }
-
-    const { sourceGroup, filter, filterOptions } = sourceAndFilters;
-    const packedOptions = packFilterOptions(filterOptions);
-
-    const existing = alertsQuery.alert?.find(
-      (it) => it !== undefined && it.name === eventType.name,
-    );
-
-    if (existing !== undefined) {
-      if (
-        existing.sourceGroup.id === sourceGroup.id &&
-        existing.targetGroup.id === targetGroup.id &&
-        existing.filter.id === filter.id &&
-        existing.filterOptions === packedOptions
-      ) {
-        return existing;
-      }
-
-      // Alerts are immutable, delete the existing instead
-      await this.deleteAlert({
-        id: existing.id,
-      });
-    }
-
-    const mutation = await this._service.createAlert({
-      name: eventType.name,
-      sourceGroupId: sourceGroup.id,
-      filterId: filter.id,
-      targetGroupId: targetGroup.id,
-      filterOptions: packedOptions,
-      groupName: 'managed',
-    });
-
-    const created = mutation.createAlert;
-    if (created === undefined) {
-      throw new Error('Failed to create alert');
-    }
-
-    return created;
   }
 
   /** @deprecated use fetchFusionData instead. This is for legacy  */

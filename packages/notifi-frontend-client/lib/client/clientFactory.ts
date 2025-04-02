@@ -6,12 +6,9 @@ import { GraphQLClient } from 'graphql-request';
 import WebSocket from 'ws';
 
 import {
-  ConfigFactoryInput,
-  NotifiEnvironment,
-  NotifiEnvironmentConfiguration,
+  NotifiEnvironment, // NotifiEnvironmentConfiguration,
   NotifiFrontendConfiguration,
   envUrl,
-  newFrontendConfig,
 } from '../configuration';
 import {
   NotifiFrontendStorage,
@@ -53,19 +50,11 @@ export const newNotifiService = (
   return new NotifiService(client, subService);
 };
 
-/**@deprecated Use instantiateFrontendClient instead */
-export const newFrontendClient = (args: ConfigFactoryInput) => {
-  const config = newFrontendConfig(args);
-  const service = newNotifiService(config);
-  const storage = newNotifiStorage(config);
-  return new NotifiFrontendClient(config, service, storage);
-};
-
 export const instantiateFrontendClient = (
   tenantId: string,
   params: UserParams,
   env?: NotifiEnvironment,
-  storageOption?: NotifiEnvironmentConfiguration['storageOption'],
+  storageOption?: NotifiFrontendConfiguration['storageOption'],
   gqlClientRequestConfig?: RequestConfig, // NOTE: `graphql-request` by default uses XMLHttpRequest API. To adopt fetch API, pass in { fetch: fetch }
 ): NotifiFrontendClient => {
   let config: NotifiFrontendConfiguration | null = null;
