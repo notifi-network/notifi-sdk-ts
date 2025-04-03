@@ -3,7 +3,7 @@ import { Types } from '@notifi-network/notifi-graphql';
 export type SmartLinkConfig = {
   id: string;
   icon: string;
-  blockchainType: Types.WalletBlockchain;
+  blockchainType: Types.BlockchainType;
   name: string;
   description: string;
   title: string;

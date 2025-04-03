@@ -25,11 +25,10 @@ type BlockchainAuthParamsWithDelegate = {
 /**  NOTE: Extract<AuthParams, { authenticationKey: string }> */
 type BlockchainAuthParamsWithPublicKeyAndAddress = {
   walletBlockchain: Exclude<
-    // TODO: migrate to BlockchainType
     Types.BlockchainType,
     EvmBlockchain | 'SOLANA' | 'OFF_CHAIN' | 'UNSPECIFIED'
   >;
-  authenticationKey: string;
+  walletPublicKey: string;
   accountAddress: string;
 };
 
@@ -49,7 +48,7 @@ export const checkIsConfigWithPublicKeyAndAddress = <T extends AuthParams>(
 export const checkIsConfigWithPublicKey = <T extends AuthParams>(
   config: T,
 ): config is Extract<T, BlockchainAuthParamsWithPublicKey> => {
-  return 'walletPublicKey' in config;
+  return 'walletPublicKey' in config && !('accountAddress' in config);
 };
 
 export const checkIsConfigWithDelegate = <T extends AuthParams>(

@@ -1,6 +1,6 @@
 export * from './NotifiFrontendClient';
 export * from './NotifiSmartLinkClient';
-export { instantiateFrontendClient } from './clientFactory';
+export { instantiateFrontendClient, newSmartLinkClient } from './clientFactory';
 export * from './blockchains';
 export * from './deprecated';
 export type {

@@ -1,10 +1,6 @@
 import { AuthParams } from './Auth';
 import { NotifiEnvironment } from './Env';
 
-export type NotifiClientConfig =
-  | NotifiFrontendConfiguration
-  | NotifiSmartLinkClientConfig;
-
 /** Initializes the NotifiFrontendClient with the given configuration. */
 export type NotifiFrontendConfiguration = AuthParams &
   Readonly<{

@@ -494,7 +494,7 @@ export class NotifiFrontendClient {
           nonce,
         };
       } else if (checkIsConfigWithPublicKeyAndAddress(this._configuration)) {
-        const { authenticationKey, accountAddress } = this._configuration;
+        const { walletPublicKey, accountAddress } = this._configuration;
         const { nonce } = await this._beginLogInWithWeb3({
           authAddress: accountAddress,
           authType: 'COSMOS_ADR36',
@@ -507,7 +507,7 @@ export class NotifiFrontendClient {
             signMessage: cosmosSignMessage,
           },
           signingAddress: accountAddress,
-          signingPubkey: authenticationKey,
+          signingPubkey: walletPublicKey,
           nonce,
         };
       }
@@ -520,7 +520,7 @@ export class NotifiFrontendClient {
         const { nonce } = await this._beginLogInWithWeb3({
           authAddress: this._configuration.accountAddress,
           authType: 'APTOS_SIGNED_MESSAGE',
-          walletPubkey: this._configuration.authenticationKey,
+          walletPubkey: this._configuration.walletPublicKey,
         });
 
         return {
@@ -530,7 +530,7 @@ export class NotifiFrontendClient {
             signMessage: aptosSignMessage,
           },
           signingAddress: this._configuration.accountAddress,
-          signingPubkey: this._configuration.authenticationKey,
+          signingPubkey: this._configuration.walletPublicKey,
           nonce,
         };
       }
@@ -686,7 +686,7 @@ export class NotifiFrontendClient {
         case 'BITCOIN': {
           const result = await this._service.logInFromDapp({
             walletBlockchain,
-            walletPublicKey: this._configuration.authenticationKey,
+            walletPublicKey: this._configuration.walletPublicKey,
             accountId: this._configuration.accountAddress,
             dappAddress: tenantId,
             timestamp,
@@ -747,7 +747,10 @@ export class NotifiFrontendClient {
     } else if (isUsingEvmBlockchain(signMessageParams)) {
       const { walletPublicKey, tenantId } = this._configuration as Extract<
         NotifiFrontendConfiguration,
-        Extract<AuthParams, { walletPublicKey: string }> // BlockchainAuthParamsWithPublicKey
+        Extract<
+          AuthParams,
+          { walletPublicKey: string } & { accountAddress?: never }
+        > // BlockchainAuthParamsWithPublicKey
       >;
       const signedMessage = `${SIGNING_MESSAGE}${walletPublicKey}${tenantId}${timestamp.toString()}`;
       const messageBuffer = new TextEncoder().encode(signedMessage);
@@ -763,11 +766,11 @@ export class NotifiFrontendClient {
       signMessageParams.walletBlockchain === 'INJECTIVE'
     ) {
       //TODO: Implement
-      const { authenticationKey, tenantId } = this._configuration as Extract<
+      const { walletPublicKey, tenantId } = this._configuration as Extract<
         NotifiFrontendConfiguration,
-        Extract<AuthParams, { authenticationKey: string }>
+        Extract<AuthParams, { accountAddress: string }>
       >;
-      const signedMessage = `${SIGNING_MESSAGE}${authenticationKey}${tenantId}${timestamp.toString()}`;
+      const signedMessage = `${SIGNING_MESSAGE}${walletPublicKey}${tenantId}${timestamp.toString()}`;
       const messageBuffer = new TextEncoder().encode(signedMessage);
       const signedBuffer = await signMessageParams.signMessage(messageBuffer);
       const signature = Buffer.from(signedBuffer).toString('base64');
@@ -794,7 +797,7 @@ export class NotifiFrontendClient {
       case 'SUI': {
         const { accountAddress, tenantId } = this._configuration as Extract<
           NotifiFrontendConfiguration,
-          Extract<AuthParams, { authenticationKey: string }>
+          Extract<AuthParams, { accountAddress: string }>
         >;
         const signedMessage = `${SIGNING_MESSAGE}${accountAddress}${tenantId}${timestamp.toString()}`;
         const messageBuffer = new TextEncoder().encode(signedMessage);
@@ -803,14 +806,14 @@ export class NotifiFrontendClient {
         return { signature, signedMessage };
       }
       case 'NEAR': {
-        const { authenticationKey, accountAddress, tenantId } = this
+        const { walletPublicKey, accountAddress, tenantId } = this
           ._configuration as Extract<
           NotifiFrontendConfiguration,
-          Extract<AuthParams, { authenticationKey: string }>
+          Extract<AuthParams, { accountAddress: string }>
         >;
 
         const message = `${
-          `ed25519:` + authenticationKey
+          `ed25519:` + walletPublicKey
         }${tenantId}${accountAddress}${timestamp.toString()}`;
         const textAsBuffer = new TextEncoder().encode(message);
         const hashBuffer = await window.crypto.subtle.digest(

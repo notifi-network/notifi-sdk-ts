@@ -6,7 +6,7 @@ import { GraphQLClient } from 'graphql-request';
 import WebSocket from 'ws';
 
 import {
-  NotifiEnvironment, // NotifiEnvironmentConfiguration,
+  NotifiEnvironment,
   NotifiFrontendConfiguration,
   NotifiSmartLinkClientConfig,
   envUrl,
@@ -66,7 +66,7 @@ export const instantiateFrontendClient = (
       tenantId,
       env,
       walletBlockchain: params.walletBlockchain,
-      authenticationKey: params.walletPublicKey, // NOTE: authenticationKey is a legacy field used to standardize the key name for indexedDB key. Now we directly add check condition when create storage driver
+      walletPublicKey: params.walletPublicKey,
       accountAddress: params.accountAddress,
       storageOption,
     };
