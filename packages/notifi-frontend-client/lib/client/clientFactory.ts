@@ -6,17 +6,19 @@ import { GraphQLClient } from 'graphql-request';
 import WebSocket from 'ws';
 
 import {
-  NotifiEnvironment, // NotifiEnvironmentConfiguration,
+  NotifiEnvironment,
   NotifiFrontendConfiguration,
+  NotifiSmartLinkClientConfig,
   envUrl,
 } from '../configuration';
+import { isEvmBlockchain } from '../models/Blockchain';
 import {
   NotifiFrontendStorage,
   createInMemoryStorageDriver,
   createLocalForageStorageDriver,
 } from '../storage';
 import { NotifiFrontendClient, UserParams } from './NotifiFrontendClient';
-import { isEvmBlockchain } from './blockchains';
+import { NotifiSmartLinkClient } from './NotifiSmartLinkClient';
 
 type RequestConfig = NonNullable<
   ConstructorParameters<typeof GraphQLClient>[1]
@@ -30,8 +32,8 @@ export const newNotifiStorage = (config: NotifiFrontendConfiguration) => {
   return new NotifiFrontendStorage(driver);
 };
 
-export const newNotifiService = (
-  config: NotifiFrontendConfiguration,
+export const newNotifiService = <T extends { env?: NotifiEnvironment }>(
+  config: T,
   gqlClientRequestConfig?: RequestConfig,
 ) => {
   const url = envUrl(config.env, 'http');
@@ -64,7 +66,7 @@ export const instantiateFrontendClient = (
       tenantId,
       env,
       walletBlockchain: params.walletBlockchain,
-      authenticationKey: params.walletPublicKey, // NOTE: authenticationKey is a legacy field used to standardize the key name for indexedDB key. Now we directly add check condition when create storage driver
+      walletPublicKey: params.walletPublicKey,
       accountAddress: params.accountAddress,
       storageOption,
     };
@@ -108,4 +110,12 @@ export const instantiateFrontendClient = (
   const service = newNotifiService(config, gqlClientRequestConfig);
   const storage = newNotifiStorage(config);
   return new NotifiFrontendClient(config, service, storage);
+};
+
+export const newSmartLinkClient = (
+  config: NotifiSmartLinkClientConfig,
+  gqlClientRequestConfig?: RequestConfig, // NOTE: `graphql-request` by default uses XMLHttpRequest API. To adopt fetch API, pass in { fetch: fetch }
+): NotifiSmartLinkClient => {
+  const service = newNotifiService(config, gqlClientRequestConfig);
+  return new NotifiSmartLinkClient(config, service);
 };

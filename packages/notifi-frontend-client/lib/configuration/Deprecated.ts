@@ -1,4 +1,4 @@
-import { isEvmBlockchain } from '../client';
+import { isEvmBlockchain } from '../models';
 import { NotifiFrontendConfiguration } from './Client';
 import { NotifiEnvironment } from './Env';
 
@@ -14,13 +14,13 @@ export type NotifiEnvironmentConfiguration = Readonly<{
 /**@deprecated Extract from AuthParm instead */
 type NotifiConfigWithPublicKey = Extract<
   NotifiFrontendConfiguration,
-  { walletPublicKey: string }
+  { walletPublicKey: string } & { accountAddress?: never }
 >;
 
 /**@deprecated Extract from AuthParm instead */
 type NotifiConfigWithPublicKeyAndAddress = Extract<
   NotifiFrontendConfiguration,
-  { authenticationKey: string }
+  { accountAddress: string }
 >;
 /**@deprecated Extract from AuthParm instead */
 type NotifiConfigWithDelegate = Extract<
@@ -123,7 +123,7 @@ const configFactoryPublicKeyAndAddress: FrontendClientConfigFactory<
     tenantId: args.tenantId,
     env: args.env,
     walletBlockchain: args.walletBlockchain,
-    authenticationKey: args.account.publicKey,
+    walletPublicKey: args.account.publicKey,
     accountAddress: args.account.address,
     storageOption: args.storageOption,
   };
