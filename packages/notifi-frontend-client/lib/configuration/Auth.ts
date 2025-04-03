@@ -1,6 +1,6 @@
-import { Types } from '@notifi-network/notifi-graphql';
+import type { Types } from '@notifi-network/notifi-graphql';
 
-import { CosmosBlockchain, EvmBlockchain } from '../client';
+import type { CosmosBlockchain, EvmBlockchain } from '../models';
 
 export type AuthParams =
   | BlockchainAuthParamsWithPublicKey

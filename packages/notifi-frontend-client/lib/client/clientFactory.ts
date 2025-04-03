@@ -11,6 +11,7 @@ import {
   NotifiSmartLinkClientConfig,
   envUrl,
 } from '../configuration';
+import { isEvmBlockchain } from '../models/Blockchain';
 import {
   NotifiFrontendStorage,
   createInMemoryStorageDriver,
@@ -18,7 +19,6 @@ import {
 } from '../storage';
 import { NotifiFrontendClient, UserParams } from './NotifiFrontendClient';
 import { NotifiSmartLinkClient } from './NotifiSmartLinkClient';
-import { isEvmBlockchain } from './blockchains';
 
 type RequestConfig = NonNullable<
   ConstructorParameters<typeof GraphQLClient>[1]

@@ -1,4 +1,4 @@
-import { isEvmBlockchain } from '../client';
+import { isEvmBlockchain } from '../models';
 import { NotifiFrontendConfiguration } from './Client';
 import { NotifiEnvironment } from './Env';
 

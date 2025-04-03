@@ -1,17 +1,38 @@
-import { NotifiEmitterEvents, Types } from '@notifi-network/notifi-graphql';
-import { NotifiService } from '@notifi-network/notifi-graphql';
+import type {
+  NotifiEmitterEvents,
+  Types,
+} from '@notifi-network/notifi-graphql';
+import type { NotifiService } from '@notifi-network/notifi-graphql';
 
 import {
-  AuthParams,
+  type AuthParams,
   type NotifiFrontendConfiguration,
   checkIsConfigWithDelegate,
   checkIsConfigWithPublicKey,
   checkIsConfigWithPublicKeyAndAddress,
 } from '../configuration';
-import type {
-  CardConfigItemV1,
-  FusionEventTopic,
-  TenantConfig,
+import {
+  APTOS_BLOCKCHAINS,
+  type AptosBlockchain,
+  type BtcBlockchain,
+  COSMOS_BLOCKCHAINS,
+  type CardConfigItemV1,
+  type CosmosBlockchain,
+  type EvmBlockchain,
+  type FusionEventTopic,
+  SOLANA_BLOCKCHAINS,
+  type SolanaBlockchain,
+  type TenantConfig,
+  type UnmaintainedBlockchain,
+  isAptosBlockchain,
+  isCosmosBlockchain,
+  isSolanaBlockchain,
+  isUsingAptosBlockchain,
+  isUsingBtcBlockchain,
+  isUsingCosmosBlockchain,
+  isUsingEvmBlockchain,
+  isUsingSolanaBlockchain,
+  isUsingUnmaintainedBlockchain,
 } from '../models';
 import type { Authorization, NotifiStorage, Roles } from '../storage';
 import {
@@ -23,29 +44,9 @@ import { notNullOrEmpty } from '../utils';
 import { areIdsEqual } from '../utils/areIdsEqual';
 import { normalizeHexString } from '../utils/crypto';
 import {
-  AlterTargetGroupParams,
+  type AlterTargetGroupParams,
   alterTargetGroupImpl,
 } from './alterTargetGroup';
-import {
-  APTOS_BLOCKCHAINS,
-  AptosBlockchain,
-  BtcBlockchain,
-  COSMOS_BLOCKCHAINS,
-  CosmosBlockchain,
-  EvmBlockchain,
-  SOLANA_BLOCKCHAINS,
-  SolanaBlockchain,
-  UnmaintainedBlockchain,
-  isAptosBlockchain,
-  isCosmosBlockchain,
-  isSolanaBlockchain,
-  isUsingAptosBlockchain,
-  isUsingBtcBlockchain,
-  isUsingCosmosBlockchain,
-  isUsingEvmBlockchain,
-  isUsingSolanaBlockchain,
-  isUsingUnmaintainedBlockchain,
-} from './blockchains';
 import {
   ensureDiscord,
   ensureEmail,

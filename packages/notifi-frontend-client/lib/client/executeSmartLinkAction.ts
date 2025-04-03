@@ -1,7 +1,7 @@
 import { NotifiService, Types } from '@notifi-network/notifi-graphql';
 
 import { AuthParams, checkIsConfigWithPublicKey } from '../configuration';
-import { isEvmBlockchain } from './blockchains';
+import { isEvmBlockchain } from '../models';
 
 export type ExecuteSmartLinkActionArgs = {
   actionId: string;
