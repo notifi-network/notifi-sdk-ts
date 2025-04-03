@@ -8,6 +8,7 @@ import WebSocket from 'ws';
 import {
   NotifiEnvironment, // NotifiEnvironmentConfiguration,
   NotifiFrontendConfiguration,
+  NotifiSmartLinkClientConfig,
   envUrl,
 } from '../configuration';
 import {
@@ -16,6 +17,7 @@ import {
   createLocalForageStorageDriver,
 } from '../storage';
 import { NotifiFrontendClient, UserParams } from './NotifiFrontendClient';
+import { NotifiSmartLinkClient } from './NotifiSmartLinkClient';
 import { isEvmBlockchain } from './blockchains';
 
 type RequestConfig = NonNullable<
@@ -30,8 +32,8 @@ export const newNotifiStorage = (config: NotifiFrontendConfiguration) => {
   return new NotifiFrontendStorage(driver);
 };
 
-export const newNotifiService = (
-  config: NotifiFrontendConfiguration,
+export const newNotifiService = <T extends { env?: NotifiEnvironment }>(
+  config: T,
   gqlClientRequestConfig?: RequestConfig,
 ) => {
   const url = envUrl(config.env, 'http');
@@ -108,4 +110,12 @@ export const instantiateFrontendClient = (
   const service = newNotifiService(config, gqlClientRequestConfig);
   const storage = newNotifiStorage(config);
   return new NotifiFrontendClient(config, service, storage);
+};
+
+export const newSmartLinkClient = (
+  config: NotifiSmartLinkClientConfig,
+  gqlClientRequestConfig?: RequestConfig, // NOTE: `graphql-request` by default uses XMLHttpRequest API. To adopt fetch API, pass in { fetch: fetch }
+): NotifiSmartLinkClient => {
+  const service = newNotifiService(config, gqlClientRequestConfig);
+  return new NotifiSmartLinkClient(config, service);
 };
