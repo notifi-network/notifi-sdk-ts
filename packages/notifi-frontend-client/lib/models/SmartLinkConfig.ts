@@ -39,15 +39,16 @@ type ActionInputBase = {
   isRequired: boolean;
 };
 
-type ActionInputTextBox<T extends 'TEXT' | 'NUMBER'> = ActionInputBase & {
-  type: 'TEXTBOX';
-  inputType: T;
-  placeholder: T extends 'NUMBER' ? number : string;
-  default: T extends 'NUMBER' ? number : string;
-  constraintType?: T extends 'NUMBER' ? NumberConstraint : StringConstraint;
-  prefix?: string;
-  suffix?: string;
-};
+export type ActionInputTextBox<T extends 'TEXT' | 'NUMBER'> =
+  ActionInputBase & {
+    type: 'TEXTBOX';
+    inputType: T;
+    placeholder: T extends 'NUMBER' ? number : string;
+    default: T extends 'NUMBER' ? number : string;
+    constraintType?: T extends 'NUMBER' ? NumberConstraint : StringConstraint;
+    prefix?: string;
+    suffix?: string;
+  };
 
 type ActionInputCheckBox = ActionInputBase & {
   type: 'CHECKBOX';

@@ -14,6 +14,7 @@
 @import url('./target-state-banner.css');
 @import url('./error.css');
 @import url('./tooltip.css');
+@import url('./smartlink.css');
 
 .btn {
   border: none;
