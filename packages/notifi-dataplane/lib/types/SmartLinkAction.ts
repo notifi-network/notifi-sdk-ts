@@ -11,7 +11,7 @@ export type ActivateSmartLinkActionInput = {
   authParams: AuthParams;
   inputs: Record<number, SmartLinkActionUserInput>;
 };
-type SmartLinkActionUserInput = TextBoxUserInput | CheckBoxUserInput;
+export type SmartLinkActionUserInput = TextBoxUserInput | CheckBoxUserInput;
 type TextBoxUserInput = {
   type: 'TEXTBOX';
   value: string | number;
