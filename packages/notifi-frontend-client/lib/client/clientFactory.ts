@@ -1,3 +1,4 @@
+import { NotifiDataplaneClient } from '@notifi-network/notifi-dataplane';
 import {
   NotifiService,
   NotifiSubscriptionService,
@@ -50,6 +51,13 @@ export const newNotifiService = <T extends { env?: NotifiEnvironment }>(
     typeof window !== 'undefined' ? undefined : WebSocket,
   );
   return new NotifiService(client, subService);
+};
+
+export const newDataplaneClient = <T extends { env?: NotifiEnvironment }>(
+  config: T,
+) => {
+  const dpapiUrl = envUrl(config.env, 'http', 'notifi-dataplane');
+  return new NotifiDataplaneClient(dpapiUrl);
 };
 
 export const instantiateFrontendClient = (
@@ -117,5 +125,6 @@ export const newSmartLinkClient = (
   gqlClientRequestConfig?: RequestConfig, // NOTE: `graphql-request` by default uses XMLHttpRequest API. To adopt fetch API, pass in { fetch: fetch }
 ): NotifiSmartLinkClient => {
   const service = newNotifiService(config, gqlClientRequestConfig);
-  return new NotifiSmartLinkClient(config, service);
+  const dpClient = newDataplaneClient(config);
+  return new NotifiSmartLinkClient(config, service, dpClient);
 };

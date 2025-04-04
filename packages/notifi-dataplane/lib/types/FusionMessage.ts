@@ -1,4 +1,4 @@
-import { Types } from 'notifi-graphql/dist';
+import type { Types } from '@notifi-network/notifi-graphql';
 
 export interface FusionMessage {
   eventTypeId: string;
