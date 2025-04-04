@@ -1,3 +1,8 @@
+import {
+  ActivateSmartLinkActionInput,
+  ActivateSmartLinkActionResponse,
+  isActivateSmartLinkActionResponse,
+} from './types';
 import { FusionMessage } from './types/FusionMessage';
 import { PublishFusionMessageResponse } from './types/PublishFusionMessageResponse';
 
@@ -32,5 +37,13 @@ export class NotifiDataplaneClient {
     }
     const result = await response.json();
     return result;
+  }
+
+  async activateSmartLinkAction(
+    args: ActivateSmartLinkActionInput,
+  ): Promise<ActivateSmartLinkActionResponse> {
+    // TODO: Implement this method
+    // Feel free to update ActivateSmartLinkActionResponse with decoded transaction payload
+    return {} as ActivateSmartLinkActionResponse;
   }
 }
