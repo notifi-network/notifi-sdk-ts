@@ -8,29 +8,29 @@ export type SmartLinkConfig = {
   description: string;
   title: string;
   subtitle: string;
-  components: (Action | Txt | Img)[];
+  components: (SmartLinkAction | SmartLinkTxt | SmartLinkImg)[];
   isActive: boolean;
 };
 
-type Txt = {
+export type SmartLinkTxt = {
   type: 'TEXT';
   text: string;
 };
 
-type Img = {
+export type SmartLinkImg = {
   type: 'IMAGE';
   src: string;
   alt: string;
 };
 
-type Action = {
+export type SmartLinkAction = {
   type: 'ACTION';
   id: string;
   inputs: ActionInput[];
   label: string /** This is the label that will be displayed on Action button */;
 };
 
-type ActionInput =
+export type ActionInput =
   | ActionInputTextBox<'NUMBER'>
   | ActionInputTextBox<'TEXT'>
   | ActionInputCheckBox;
