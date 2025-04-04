@@ -1,6 +1,6 @@
 import { NotifiService } from '@notifi-network/notifi-graphql';
 
-import { isSmartLinkConfig } from '../models/SmartLink';
+import { isSmartLinkConfig } from '../models/SmartLinkConfig';
 
 export const fetchSmartLinkConfigImpl = async (
   service: NotifiService,

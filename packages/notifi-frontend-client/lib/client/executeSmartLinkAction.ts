@@ -1,57 +1,48 @@
-import { NotifiService, Types } from '@notifi-network/notifi-graphql';
+import {
+  type ActivateSmartLinkActionInput,
+  type ActivateSmartLinkActionResponse,
+  NotifiDataplaneClient,
+} from '@notifi-network/notifi-dataplane';
 
 import { AuthParams, checkIsConfigWithPublicKey } from '../configuration';
 import { isEvmBlockchain } from '../models';
 
 export type ExecuteSmartLinkActionArgs = {
+  smartLinkId: string;
   actionId: string;
-  inputs: Record<number, string>;
+  inputs: ActivateSmartLinkActionInput['inputs'];
   execute: ActionHandler;
 };
+export type ActionHandler = (
+  action: ActivateSmartLinkActionResponse,
+) => Promise<void>;
+
 export const executeSmartLinkActionImpl = async (
-  service: NotifiService,
+  service: NotifiDataplaneClient,
   authParams: AuthParams,
   args: ExecuteSmartLinkActionArgs,
 ): Promise<void> => {
-  let actionPayload: SmartLinkAction | undefined = undefined;
+  let actionPayload: ActivateSmartLinkActionResponse | undefined = undefined;
 
   // Try handle different cases in the better way
   if (isEvmBlockchain(authParams.walletBlockchain)) {
     if (checkIsConfigWithPublicKey(authParams)) {
       const activateSmartLinkActionArgs: ActivateSmartLinkActionInput = {
+        smartLinkId: args.smartLinkId,
         actionId: args.actionId,
         authParams,
-        input: args.inputs,
+        inputs: args.inputs,
       };
-      // eslint-disable-next-line
-      // @ts-ignore TODO: ⚠️ Endpoint is not available yet
       actionPayload = await service.activateSmartLinkAction(
         activateSmartLinkActionArgs,
       );
     }
   }
-
   if (!actionPayload) {
-    throw new Error('Action payload is undefined');
+    throw new Error(
+      'NotifiSmartLinkClient.executeSmartLinkActionImpl: Action payload is undefined',
+    );
   }
-  // ⚠️  Must make sure ActionExecutable is blockchain agnostic
+  // TODO: ⚠️  Must make sure ActionExecutable is blockchain agnostic
   await args.execute(actionPayload);
-};
-
-// TBC: ⚠️  Must make sure ActionExecutable is blockchain agnostic
-// export type EvmActionHandler = (payload: ActionExecutable) => Promise<void>;
-
-export type ActionHandler = (action: SmartLinkAction) => Promise<void>;
-type SmartLinkAction = {
-  blockchainType: Types.BlockchainType;
-  smartLinkId: string;
-  type: 'HTML' | 'Transaction';
-  data: string;
-};
-
-// TODO: below types will be from gql typegen
-type ActivateSmartLinkActionInput = {
-  actionId: string;
-  authParams: AuthParams; //⚠️ Simiar auth params as loginFromDapp. Maybe Blockchain specific like `blockchainType`, `walletPublickey`, ...etc). See more details below.
-  input: Record<number, string>;
 };

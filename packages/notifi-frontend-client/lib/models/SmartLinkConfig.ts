@@ -1,4 +1,4 @@
-import { Types } from '@notifi-network/notifi-graphql';
+import type { Types } from '@notifi-network/notifi-graphql';
 
 export type SmartLinkConfig = {
   id: string;
@@ -40,7 +40,8 @@ type ActionInputBase = {
 };
 
 type ActionInputTextBox<T extends 'TEXT' | 'NUMBER'> = ActionInputBase & {
-  type: T;
+  type: 'TEXTBOX';
+  inputType: T;
   placeholder: T extends 'NUMBER' ? number : string;
   default: T extends 'NUMBER' ? number : string;
   constraintType?: T extends 'NUMBER' ? NumberConstraint : StringConstraint;
