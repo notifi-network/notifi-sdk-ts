@@ -9,7 +9,9 @@ import {
 import React, { FC, PropsWithChildren } from 'react';
 
 type NotifiSmartLinkContextType = {
-  fetchSmartLinkConfig: (id: string) => Promise<SmartLinkConfig | null>;
+  fetchSmartLinkConfig: (
+    id: string,
+  ) => Promise<{ smartLinkConfig: SmartLinkConfig; isActive: boolean } | null>;
   executeSmartLinkAction: (args: ExecuteSmartLinkActionArgs) => Promise<void>;
   isLoading: boolean;
   error: Error | null;
@@ -48,9 +50,10 @@ export const NotifiSmartLinkContextProvider: FC<
 
       try {
         setIsLoading(true);
-        const smartLinkConfig = await smartLinkClient.fetchSmartLinkConfig(id);
+        const smartLinkConfigWithIsActive =
+          await smartLinkClient.fetchSmartLinkConfig(id);
         setError(null);
-        return smartLinkConfig;
+        return smartLinkConfigWithIsActive;
       } catch (e) {
         setError(e as Error);
         return null;

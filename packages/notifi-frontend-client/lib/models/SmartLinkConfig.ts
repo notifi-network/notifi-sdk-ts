@@ -9,7 +9,6 @@ export type SmartLinkConfig = {
   title: string;
   subtitle: string;
   components: (SmartLinkAction | SmartLinkTxt | SmartLinkImg)[];
-  isActive: boolean;
 };
 
 export type SmartLinkTxt = {
@@ -79,7 +78,6 @@ export const isSmartLinkConfig = (obj: unknown): obj is SmartLinkConfig => {
     typeof config.blockchainType === 'string' &&
     typeof config.title === 'string' &&
     typeof config.subtitle === 'string' &&
-    Array.isArray(config.components) &&
-    typeof config.isActive === 'boolean'
+    Array.isArray(config.components)
   );
 };
