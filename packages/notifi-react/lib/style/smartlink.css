@@ -14,8 +14,7 @@
 
 .notifi-smartlink-name {
   display: flex;
-  /* TODO: color: var(--notifi-smartlink-name-text), */
-  color: rgb(var(--notifi-color-dusk));
+  color: var(--notifi-smartlink-name-text);
   margin-left: 1rem;
   margin-right: 1rem;
   margin-bottom: 0.5rem;
@@ -36,8 +35,7 @@
 }
 
 .notifi-smartlink-subtitle {
-  /* TODO: color mode switchable */
-  color: rgb(var(--notifi-color-dusk));
+  color: var(--notifi-smartlink-subtitle-text);
   margin-left: 1rem;
   margin-right: 1rem;
 }
@@ -60,16 +58,14 @@
 
 .notifi-smartlink-action-btn {
   padding: 0.5rem;
-  /* TODO: color mode switchable */
-  background-color: rgb(var(--notifi-color-midnight));
+  background-color: var(--notifi-smartlink-action-btn-bg);
   border-radius: 6px;
-  color: white;
+  color: var(--notifi-smartlink-action-btn-text);
   cursor: pointer;
 }
 
 .notifi-smartlink-action-btn:disabled {
-  /* TODO: color mode switchable */
-  background-color: rgba(var(--notifi-color-midnight), 0.5);
+  background-color: var(--notifi-smartlink-action-btn-disabled-bg);
   cursor: not-allowed;
 }
 
@@ -77,30 +73,19 @@
 
 .notifi-smartlink-action-input-textbox-container {
   display: flex;
-  /* TODO: make color mode switchable */
-  background-color: rgba(245, 246, 251, 1);
+  background-color: var(--notifi-smartlink-action-input-textbox-container-bg);
   border-radius: 6px;
   align-items: center;
   padding: 0.5rem;
 }
 
 .notifi-smartlink-action-input-textbox-container.invalid {
-  /* TODO: make color mode switchable */
-  border: 1px solid red;
+  border: 1px solid
+    var(--notifi-smartlink-action-input-textbox-container-invalid-border);
 }
 
 .notifi-smartlink-action-input-textbox {
   flex: 1;
-  outline: none;
-  border: none;
-  background: none;
-  padding: 0;
-  margin: 0;
-  font: inherit;
-  color: inherit;
-  width: auto;
-  box-shadow: none;
-  border-radius: 0;
 }
 .notifi-smartlink-action-input-textbox-prefix,
 .notifi-smartlink-action-input-textbox-suffix {
@@ -112,7 +97,7 @@
 .notifi-smartlink-action-input-checkbox-container {
   display: flex;
   gap: 0.5rem;
-  align-items: start;
+  align-items: flex-start;
 }
 
 .notifi-smartlink-action-input-checkbox {

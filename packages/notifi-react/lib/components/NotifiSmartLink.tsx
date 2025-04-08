@@ -12,10 +12,11 @@ import { SmartLinkAction, SmartLinkActionProps } from './SmartLinkAction';
 
 export type NotifiSmartLinkProps = {
   smartLinkId: string;
-  nameLogoSrc?: string;
   actionHandler: (
     args: Omit<ExecuteSmartLinkActionArgs, 'authParams'>,
   ) => Promise<void>;
+  theme?: 'dark' | 'light';
+  nameLogoSrc?: string;
   classNames?: {
     container?: string;
     image?: string;
@@ -70,8 +71,11 @@ export const NotifiSmartLink: React.FC<NotifiSmartLinkProps> = (props) => {
 
   return (
     <div
-      className={clsx('notifi-smartlink', props.classNames?.container)}
-      onClick={() => console.log(smartLinkConfig)}
+      className={clsx(
+        props.theme === 'dark' ? 'notifi-theme-dark' : 'notifi-theme-light',
+        'notifi-smartlink',
+        props.classNames?.container,
+      )}
     >
       <img
         className={clsx('notifi-smartlink-banner', props.classNames?.image)}

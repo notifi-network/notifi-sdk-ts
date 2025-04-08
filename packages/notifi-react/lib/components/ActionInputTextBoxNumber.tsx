@@ -55,6 +55,7 @@ export const ActionInputTextBoxNumber: React.FC<
         min={props.input.constraintType?.min}
         max={props.input.constraintType?.max}
         className={clsx(
+          'clean-input',
           'notifi-smartlink-action-input-textbox',
           props.classNames?.input,
         )}

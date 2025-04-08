@@ -7,6 +7,7 @@ export type ActionInputCheckBoxProps = {
   userInputId: number; // TODO: for exec action
   classNames?: {
     container?: string;
+    input?: string;
   };
 };
 
@@ -27,8 +28,10 @@ export const ActionInputCheckBox: React.FC<ActionInputCheckBoxProps> = (
         type="checkbox"
         required={props.input.isRequired}
         onChange={updateUserInput}
-        // TODO: implement override default style
-        className={clsx('notifi-smartlink-action-input-checkbox')}
+        className={clsx(
+          'notifi-smartlink-action-input-checkbox',
+          props.classNames?.input,
+        )}
       />
       <div>{props.input.title}</div>
     </div>

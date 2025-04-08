@@ -48,6 +48,7 @@ export const ActionInputTextBoxString: React.FC<
         maxLength={props.input.constraintType?.maxLength}
         minLength={props.input.constraintType?.minLength}
         className={clsx(
+          'clean-input',
           'notifi-smartlink-action-input-textbox',
           props.classNames?.input,
         )}
