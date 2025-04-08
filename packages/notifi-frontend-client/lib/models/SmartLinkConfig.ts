@@ -50,7 +50,7 @@ export type ActionInputTextBox<T extends 'TEXT' | 'NUMBER'> =
     suffix?: string;
   };
 
-type ActionInputCheckBox = ActionInputBase & {
+export type ActionInputCheckBox = ActionInputBase & {
   type: 'CHECKBOX';
   title: string;
 };
