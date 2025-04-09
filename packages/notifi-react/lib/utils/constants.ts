@@ -112,7 +112,4 @@ export const defaultCopy = {
     inValidErrorMessage: (target: Target) =>
       `Please enter a valid ${target} address`,
   },
-  smartLink: {
-    nameLogoSrc: 'https://dev.notifi.network/images/icon-logomark-default.jpg',
-  },
 };

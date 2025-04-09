@@ -6,7 +6,6 @@ import clsx from 'clsx';
 import React from 'react';
 
 import { useNotifiSmartLinkContext } from '../context/NotifiSmartLinkContext';
-import { defaultCopy } from '../utils';
 import { ErrorView, ErrorViewProps } from './ErrorView';
 import { SmartLinkAction, SmartLinkActionProps } from './SmartLinkAction';
 
@@ -16,7 +15,6 @@ export type NotifiSmartLinkProps = {
     args: Omit<ExecuteSmartLinkActionArgs, 'authParams'>,
   ) => Promise<void>;
   theme?: 'dark' | 'light';
-  nameLogoSrc?: string;
   classNames?: {
     container?: string;
     image?: string;
@@ -79,7 +77,7 @@ export const NotifiSmartLink: React.FC<NotifiSmartLinkProps> = (props) => {
     >
       <img
         className={clsx('notifi-smartlink-banner', props.classNames?.image)}
-        src={smartLinkConfig.icon}
+        src={smartLinkConfig.bannerImgUrl}
       />
       <div className={clsx('notifi-smartlink-name', props.classNames?.name)}>
         <img
@@ -87,10 +85,10 @@ export const NotifiSmartLink: React.FC<NotifiSmartLinkProps> = (props) => {
             'notifi-smartlink-namelogo',
             props.classNames?.nameLogo,
           )}
-          src={props.nameLogoSrc ?? defaultCopy.smartLink.nameLogoSrc}
+          src={smartLinkConfig.icon}
           alt="name-img"
         />
-        <div>{smartLinkConfig.name}</div>
+        <div>{smartLinkConfig.tenantName}</div>
       </div>
       <div className={clsx('notifi-smartlink-title', props.classNames?.title)}>
         {smartLinkConfig.title}
