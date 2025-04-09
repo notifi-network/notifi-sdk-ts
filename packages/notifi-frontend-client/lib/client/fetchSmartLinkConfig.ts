@@ -1,11 +1,16 @@
 import { NotifiService } from '@notifi-network/notifi-graphql';
 
-import { isSmartLinkConfig } from '../models/SmartLinkConfig';
+import { SmartLinkConfig, isSmartLinkConfig } from '../models/SmartLinkConfig';
+
+export type SmartLinkConfigWithIsActive = {
+  smartLinkConfig: SmartLinkConfig;
+  isActive: boolean;
+};
 
 export const fetchSmartLinkConfigImpl = async (
   service: NotifiService,
   id: string,
-) => {
+): Promise<SmartLinkConfigWithIsActive> => {
   const smartLinkConfigRaw = (
     await service.getSmartLinkConfig({
       input: {
@@ -18,10 +23,11 @@ export const fetchSmartLinkConfigImpl = async (
     throw new Error('SmartLinkConfig is undefined');
   }
   const parsed = JSON.parse(smartLinkConfigJsonString);
-  if (!isSmartLinkConfig(parsed))
-    throw new Error(
-      `.fetchSmartLinkConfig: Invalid SmartLinkConfig - ${parsed}`,
-    );
-  // NOTE: Make sure the isActive field is consistent
-  return { ...parsed, isActive: smartLinkConfigRaw.isActive };
+  if (!isSmartLinkConfig(parsed)) {
+    const errMsg = `.fetchSmartLinkConfig: Invalid SmartLinkConfig - ${parsed}`;
+    console.error(errMsg);
+    throw new Error(errMsg);
+  }
+
+  return { smartLinkConfig: parsed, isActive: smartLinkConfigRaw.isActive };
 };

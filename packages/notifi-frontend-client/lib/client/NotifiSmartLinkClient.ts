@@ -2,12 +2,14 @@ import { NotifiDataplaneClient } from '@notifi-network/notifi-dataplane';
 import { NotifiService } from '@notifi-network/notifi-graphql';
 
 import type { NotifiSmartLinkClientConfig } from '../configuration';
-import type { SmartLinkConfig } from '../models';
 import {
   type ExecuteSmartLinkActionArgs,
   executeSmartLinkActionImpl,
 } from './executeSmartLinkAction';
-import { fetchSmartLinkConfigImpl } from './fetchSmartLinkConfig';
+import {
+  SmartLinkConfigWithIsActive,
+  fetchSmartLinkConfigImpl,
+} from './fetchSmartLinkConfig';
 
 export class NotifiSmartLinkClient {
   constructor(
@@ -16,7 +18,7 @@ export class NotifiSmartLinkClient {
     private _dpService: NotifiDataplaneClient,
   ) {}
 
-  async fetchSmartLinkConfig(id: string): Promise<SmartLinkConfig> {
+  async fetchSmartLinkConfig(id: string): Promise<SmartLinkConfigWithIsActive> {
     return await fetchSmartLinkConfigImpl(this._service, id);
   }
 
