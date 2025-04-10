@@ -33,24 +33,20 @@ export type NotifiSmartLinkProps = {
 };
 
 export const NotifiSmartLink: React.FC<NotifiSmartLinkProps> = (props) => {
-  const { fetchSmartLinkConfig, error } = useNotifiSmartLinkContext();
-  // TODO: smartLink inActive flow not defined yet
-  const [isSmartLinkActive, setIsSmartLinkActive] = React.useState(false);
-  const [smartLinkConfig, setSmartLinkConfig] =
-    React.useState<SmartLinkConfig | null>(null);
+  const {
+    fetchSmartLinkConfig,
+    error,
+    renewSmartLinkConfigAndActionDictionary,
+    smartLinkConfigDictionary,
+  } = useNotifiSmartLinkContext();
+  // const [smartLinkConfig, setSmartLinkConfig] =
+  //   React.useState<SmartLinkConfig | null>(null);
 
   React.useEffect(() => {
-    fetchSmartLinkConfig(props.smartLinkId)
-      .then((smartLinkConfigWithIsActive) => {
-        if (smartLinkConfigWithIsActive) {
-          setSmartLinkConfig(smartLinkConfigWithIsActive.smartLinkConfig);
-          setIsSmartLinkActive(smartLinkConfigWithIsActive.isActive);
-        }
-      })
-      .catch((error) => {
-        console.error('Error fetching smart link config:', error);
-      });
+    renewSmartLinkConfigAndActionDictionary(props.smartLinkId);
   }, [props.smartLinkId]);
+
+  const smartLinkConfig = smartLinkConfigDictionary[props.smartLinkId];
 
   if (!smartLinkConfig) {
     return null;
