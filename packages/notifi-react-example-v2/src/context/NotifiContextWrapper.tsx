@@ -4,7 +4,10 @@ import {
   InputObject,
   NotifiEnvironment,
 } from '@notifi-network/notifi-frontend-client';
-import { NotifiContextProvider } from '@notifi-network/notifi-react';
+import {
+  NotifiContextProvider,
+  NotifiSmartLinkContextProvider,
+} from '@notifi-network/notifi-react';
 import { NotifiContextProviderWithWalletTargetPlugin } from '@notifi-network/notifi-react-wallet-target-plugin';
 import { MemoProgramHardwareLoginPlugin } from '@notifi-network/notifi-solana-hw-login';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
@@ -133,23 +136,31 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
       </ul>
 
       {selectedWallet === 'metamask' ? (
-        <NotifiContextProvider
-          tenantId={tenantId}
+        <NotifiSmartLinkContextProvider
           env={env}
-          // toggleTargetAvailability={{ discord: false }}
-          walletBlockchain={'ARBITRUM'} // Change to any EVM chain if needed
-          walletPublicKey={walletPublicKey}
-          signMessage={signMessage}
-          cardId={cardId}
-          inputs={{
-            pricePairs: pricePairInputs,
-            walletAddress: [{ label: '', value: walletPublicKey }],
+          authParams={{
+            walletPublicKey,
+            walletBlockchain: 'ARBITRUM', // Change to any EVM chain if needed
           }}
-          notificationCountPerPage={8}
-          isEnabledLoginViaTransaction // TODO: Enable when ready
         >
-          {children}
-        </NotifiContextProvider>
+          <NotifiContextProvider
+            tenantId={tenantId}
+            env={env}
+            // toggleTargetAvailability={{ discord: false }}
+            walletBlockchain={'ARBITRUM'} // Change to any EVM chain if needed
+            walletPublicKey={walletPublicKey}
+            signMessage={signMessage}
+            cardId={cardId}
+            inputs={{
+              pricePairs: pricePairInputs,
+              walletAddress: [{ label: '', value: walletPublicKey }],
+            }}
+            notificationCountPerPage={8}
+            isEnabledLoginViaTransaction // TODO: Enable when ready
+          >
+            {children}
+          </NotifiContextProvider>
+        </NotifiSmartLinkContextProvider>
       ) : null}
       {selectedWallet === 'keplr' ? (
         <NotifiContextProvider

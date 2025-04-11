@@ -1,4 +1,4 @@
-import { WalletBlockchain } from 'notifi-graphql/lib/gql/generated';
+import { BlockchainType } from 'notifi-graphql/lib/gql/generated';
 
 // Grouping  of blockchains supported by Notifi
 export const COSMOS_BLOCKCHAINS = [
@@ -67,6 +67,7 @@ const ALL_BLOCKCHAINS = [
   'SUI',
   'NEAR',
   'INJECTIVE',
+  'UNSPECIFIED',
 ] as const;
 
 type Blockchain = (typeof ALL_BLOCKCHAINS)[number];
@@ -148,8 +149,8 @@ export function isUsingSolanaBlockchain<
 // IGNORE BELOW HERE, this simpply serves to ensure all blockchains are covered
 // This will cause a type error if AllBlockchains differs from WalletBlockchain
 type BlockchainTypeCheck = [
-  Blockchain extends WalletBlockchain ? true : false,
-  WalletBlockchain extends Blockchain ? true : false,
+  Blockchain extends BlockchainType ? true : false,
+  BlockchainType extends Blockchain ? true : false,
 ] extends [true, true]
   ? true
   : false;
