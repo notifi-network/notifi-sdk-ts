@@ -30,7 +30,7 @@ export type WalletKeysBase = {
   grantee: string; //TODO: specifically for Xion now, make it generic pattern, checking the format
 };
 
-export type MetamaskWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'hex'>;
+export type MetamaskWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'hex'>; // TODO: rename to EvmWalletKeys
 export type KeplrWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'base64'>;
 export type XionWalletKeys = PickKeys<
   WalletKeysBase,
@@ -53,7 +53,7 @@ export abstract class NotifiWallet {
     | XionSignMessage
     | PhantomSignMessage;
   // TODO: Impl sendTransaction for Keplr and Xion
-  abstract sendTransaction?: any;
+  abstract sendTransaction?: EvmSendTransaction;
   abstract connect?: () => Promise<Partial<WalletKeysBase> | null>;
   abstract disconnect?: () => void;
   abstract websiteURL: string;
@@ -67,27 +67,16 @@ export type NotifiWalletStorage = {
 export type PickKeys<T, K extends keyof T> = Pick<T, K>;
 export type MetamaskSignMessage = (
   message: string,
-) => Promise<`0x${string}` | undefined>;
+) => Promise<`0x${string}` | undefined>; // TODO: rename to EvmSignMessage
 
 export type MetamaskSendTransaction = (
   transaction: object[],
 ) => Promise<`0x${string}` | undefined>;
+
 export type EvmSendTransaction = (
   transaction: any, // TODO: Two types 1. raw payload 2. Wagmi wrapped payload
 ) => Promise<`0x${string}` | undefined>;
 
-// export class MetamaskWallet implements NotifiWallet {
-//   constructor(
-//     public isInstalled: boolean,
-//     public walletKeys: MetamaskWalletKeys | null,
-//     public signArbitrary: MetamaskSignMessage,
-//     public connect: () => Promise<MetamaskWalletKeys | null>,
-//     public disconnect: () => void,
-//     public websiteURL: string,
-//     public sendTransaction: MetamaskSendTransaction,
-//   ) {}
-// }
-// TODO: Refactor to has EVM chain base
 export class EvmWallet implements NotifiWallet {
   constructor(
     public isInstalled: boolean,
@@ -111,14 +100,6 @@ export class BinanceWallet implements NotifiWallet {
     public sendTransaction: MetamaskSendTransaction,
   ) {}
 }
-
-// TODO: Consolidate WagmiWallet and MetamaskWallet
-// export class CoinbaseWallet extends WagmiWallet {}
-// export class WalletConnectWallet extends WagmiWallet {}
-// export class RabbyWallet extends MetamaskWallet {}
-// export class ZerionWallet extends MetamaskWallet {}
-// export class OKXWallet extends MetamaskWallet {}
-// export class RainbowWallet extends MetamaskWallet {}
 
 export type KeplrSignMessage = (
   message: string | Uint8Array,

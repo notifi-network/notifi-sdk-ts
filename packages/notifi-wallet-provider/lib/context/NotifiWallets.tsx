@@ -14,13 +14,11 @@ import { useWagmiWallet } from '../hooks/useWagmiWallet';
 import { useXion } from '../hooks/useXion';
 import {
   BinanceWallet,
-  EvmWallet, // CoinbaseWallet,
-  KeplrWallet, // MetamaskWallet,
-  // OKXWallet,
-  PhantomWallet, // RabbyWallet,
-  // RainbowWallet,
+  EvmWallet,
+  KeplrWallet,
+  PhantomWallet,
   Wallets,
-  XionWallet, // ZerionWallet,
+  XionWallet,
 } from '../types';
 import { getWalletsFromLocalStorage } from '../utils/localStorageUtils';
 import { NotifiWagmiProvider } from './WagmiProvider';
