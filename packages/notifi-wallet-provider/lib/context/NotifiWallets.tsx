@@ -14,17 +14,13 @@ import { useWagmiWallet } from '../hooks/useWagmiWallet';
 import { useXion } from '../hooks/useXion';
 import {
   BinanceWallet,
-  CoinbaseWallet,
-  KeplrWallet,
-  MetamaskWallet,
-  OKXWallet,
-  PhantomWallet,
-  RabbyWallet,
-  RainbowWallet,
-  WalletConnectWallet,
+  EvmWallet, // CoinbaseWallet,
+  KeplrWallet, // MetamaskWallet,
+  // OKXWallet,
+  PhantomWallet, // RabbyWallet,
+  // RainbowWallet,
   Wallets,
-  XionWallet,
-  ZerionWallet,
+  XionWallet, // ZerionWallet,
 } from '../types';
 import { getWalletsFromLocalStorage } from '../utils/localStorageUtils';
 import { NotifiWagmiProvider } from './WagmiProvider';
@@ -46,17 +42,17 @@ const WalletContext = createContext<WalletContextType>({
     console.log('Not implemented');
   },
   wallets: {
-    metamask: {} as MetamaskWallet, // intentionally empty initial object
-    keplr: {} as KeplrWallet, // intentionally empty initial object
-    coinbase: {} as CoinbaseWallet, // intentionally empty initial object
-    rabby: {} as RabbyWallet, // intentionally empty initial object
-    rainbow: {} as RainbowWallet, // intentionally empty initial object
-    zerion: {} as ZerionWallet, // intentionally empty initial object
-    okx: {} as OKXWallet, // intentionally empty initial object
-    binance: {} as BinanceWallet, // intentionally empty initial object
-    walletconnect: {} as WalletConnectWallet, // intentionally empty initial object
-    xion: {} as XionWallet, // intentionally empty initial object
-    phantom: {} as PhantomWallet, // intentionally empty initial object
+    metamask: {} as EvmWallet,
+    keplr: {} as KeplrWallet,
+    coinbase: {} as EvmWallet,
+    rabby: {} as EvmWallet,
+    rainbow: {} as EvmWallet,
+    zerion: {} as EvmWallet,
+    okx: {} as EvmWallet,
+    binance: {} as BinanceWallet, // TODO: migrate to EvmWallet & useInjectedWallet
+    walletconnect: {} as EvmWallet,
+    xion: {} as XionWallet,
+    phantom: {} as PhantomWallet,
   },
   error: null,
   isLoading: false,
@@ -91,8 +87,8 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
     }, durationInMs ?? 5000);
   };
 
-  const keplr = useKeplr(setIsLoading, throwError, selectWallet);
-  const binance = useBinance(setIsLoading, throwError, selectWallet);
+  /* Wallet instances */
+  /* - Wagmi wallet instances */
   const walletConnect = useWagmiWallet(
     setIsLoading,
     throwError,
@@ -105,6 +101,8 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
     selectWallet,
     'coinbase',
   );
+
+  /* - Injected wallet instances */
   const metamask = useInjectedWallet(
     setIsLoading,
     throwError,
@@ -130,42 +128,51 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
     selectWallet,
     'rainbow',
   );
+
+  /* - Independent unusable instance - (TODO: should try to migrate to using browser native integration to lighten pkg weight)  */
   const xion = useXion(setIsLoading, throwError, selectWallet, 'xion');
 
+  /* - Browser native integration instances */
+  const keplr = useKeplr(setIsLoading, throwError, selectWallet);
+  const binance = useBinance(setIsLoading, throwError, selectWallet); // TODO: migrate to EvmWallet & useInjectedWallet
   const phantom = usePhantom(setIsLoading, throwError, selectWallet);
 
   const wallets: Wallets = {
-    metamask: new MetamaskWallet(
+    metamask: new EvmWallet(
       metamask.isWalletInstalled,
       metamask.walletKeys,
       metamask.signArbitrary,
       metamask.connectWallet,
       metamask.disconnectWallet,
       metamask.websiteURL,
+      metamask.sendTransaction,
     ),
-    coinbase: new CoinbaseWallet(
+    coinbase: new EvmWallet(
       coinbase.isWalletInstalled,
       coinbase.walletKeys,
       coinbase.signArbitrary,
       coinbase.connectWallet,
       coinbase.disconnectWallet,
       coinbase.websiteURL,
+      coinbase.sendTransaction,
     ),
-    rabby: new RabbyWallet(
+    rabby: new EvmWallet(
       rabby.isWalletInstalled,
       rabby.walletKeys,
       rabby.signArbitrary,
       rabby.connectWallet,
       rabby.disconnectWallet,
       rabby.websiteURL,
+      rabby.sendTransaction,
     ),
-    walletconnect: new WalletConnectWallet(
+    walletconnect: new EvmWallet(
       walletConnect.isWalletInstalled,
       walletConnect.walletKeys,
       walletConnect.signArbitrary,
       walletConnect.connectWallet,
       walletConnect.disconnectWallet,
       walletConnect.websiteURL,
+      walletConnect.sendTransaction,
     ),
     binance: new BinanceWallet(
       binance.isWalletInstalled,
@@ -174,30 +181,34 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
       binance.connectWallet,
       binance.disconnectWallet,
       binance.websiteURL,
+      binance.sendTransaction,
     ),
-    okx: new OKXWallet(
+    okx: new EvmWallet(
       okx.isWalletInstalled,
       okx.walletKeys,
       okx.signArbitrary,
       okx.connectWallet,
       okx.disconnectWallet,
       okx.websiteURL,
+      okx.sendTransaction,
     ),
-    rainbow: new RainbowWallet(
+    rainbow: new EvmWallet(
       rainbow.isWalletInstalled,
       rainbow.walletKeys,
       rainbow.signArbitrary,
       rainbow.connectWallet,
       rainbow.disconnectWallet,
       rainbow.websiteURL,
+      rainbow.sendTransaction,
     ),
-    zerion: new ZerionWallet(
+    zerion: new EvmWallet(
       zerion.isWalletInstalled,
       zerion.walletKeys,
       zerion.signArbitrary,
       zerion.connectWallet,
       zerion.disconnectWallet,
       zerion.websiteURL,
+      zerion.sendTransaction,
     ),
     keplr: new KeplrWallet(
       keplr.isKeplrInstalled,
