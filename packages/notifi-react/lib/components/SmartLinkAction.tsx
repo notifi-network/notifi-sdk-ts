@@ -1,8 +1,8 @@
 import {
   SmartLinkAction as Action,
-  ActionInput,
-  ActionInputCheckBox as ActionInputCheckBoxType,
-  ActionInputTextBox,
+  ActionInputParamsCheckBox as ActionInputCheckBoxType,
+  ActionInputParams,
+  ActionInputParamsTextBox,
 } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import React from 'react';
@@ -92,8 +92,8 @@ export const SmartLinkAction: React.FC<SmartLinkActionProps> = (props) => {
 // Utils
 // TODO: move to utils?
 const isNumberTextBox = (
-  input: ActionInput,
-): input is ActionInputTextBox<'NUMBER'> => {
+  input: ActionInputParams,
+): input is ActionInputParamsTextBox<'NUMBER'> => {
   if (input.type !== 'TEXTBOX') {
     return false;
   }
@@ -101,14 +101,16 @@ const isNumberTextBox = (
 };
 
 const isStringTextBox = (
-  input: ActionInput,
-): input is ActionInputTextBox<'TEXT'> => {
+  input: ActionInputParams,
+): input is ActionInputParamsTextBox<'TEXT'> => {
   if (input.type !== 'TEXTBOX') {
     return false;
   }
   return input.inputType === 'TEXT';
 };
-const isCheckBox = (input: ActionInput): input is ActionInputCheckBoxType => {
+const isCheckBox = (
+  input: ActionInputParams,
+): input is ActionInputCheckBoxType => {
   if (input.type !== 'CHECKBOX') {
     return false;
   }

@@ -3,6 +3,8 @@ import type { Types } from '@notifi-network/notifi-graphql';
 export type SmartLinkConfig = {
   id: string;
   icon: string;
+  tenantName: string;
+  bannerImgUrl: string;
   blockchainType: Types.BlockchainType;
   name: string;
   description: string;
@@ -25,21 +27,22 @@ export type SmartLinkImg = {
 export type SmartLinkAction = {
   type: 'ACTION';
   id: string;
-  inputs: ActionInput[];
+  inputs: ActionInputParams[];
   label: string /** This is the label that will be displayed on Action button */;
 };
 
-export type ActionInput =
-  | ActionInputTextBox<'NUMBER'>
-  | ActionInputTextBox<'TEXT'>
-  | ActionInputCheckBox;
+export type ActionInputParams =
+  | ActionInputParamsTextBox<'NUMBER'>
+  | ActionInputParamsTextBox<'TEXT'>
+  | ActionInputParamsCheckBox;
 
-type ActionInputBase = {
+type ActionInputBaseParams = {
   isRequired: boolean;
+  id: string;
 };
 
-export type ActionInputTextBox<T extends 'TEXT' | 'NUMBER'> =
-  ActionInputBase & {
+export type ActionInputParamsTextBox<T extends 'TEXT' | 'NUMBER'> =
+  ActionInputBaseParams & {
     type: 'TEXTBOX';
     inputType: T;
     placeholder: T extends 'NUMBER' ? number : string;
@@ -49,7 +52,7 @@ export type ActionInputTextBox<T extends 'TEXT' | 'NUMBER'> =
     suffix?: string;
   };
 
-export type ActionInputCheckBox = ActionInputBase & {
+export type ActionInputParamsCheckBox = ActionInputBaseParams & {
   type: 'CHECKBOX';
   title: string;
 };

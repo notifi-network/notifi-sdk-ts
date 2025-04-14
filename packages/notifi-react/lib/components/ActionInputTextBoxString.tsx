@@ -1,9 +1,9 @@
-import { ActionInputTextBox } from '@notifi-network/notifi-frontend-client';
+import { ActionInputParamsTextBox } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import React from 'react';
 
 export type ActionInputTextBoxStringProps = {
-  input: ActionInputTextBox<'TEXT'>;
+  input: ActionInputParamsTextBox<'TEXT'>;
   userInputId: number; // TODO: for exec action
   classNames?: {
     container?: string;
