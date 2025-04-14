@@ -27,27 +27,27 @@ export default function NotifiSmartLinkExample() {
             if (!selectedWallet) return;
             if ('sendTransaction' in wallets[selectedWallet]) {
               // TODO: Below only for test sending transaction, need remove
-              // if (selectedWallet === 'metamask') {
-              //   wallets[selectedWallet].sendTransaction({
-              //     from: wallets[selectedWallet].walletKeys?.hex,
-              //     to: wallets[selectedWallet].walletKeys?.hex,
-              //   });
-              // }
+              if (selectedWallet === 'metamask') {
+                wallets[selectedWallet].sendTransaction({
+                  from: wallets[selectedWallet].walletKeys?.hex,
+                  to: wallets[selectedWallet].walletKeys?.hex,
+                });
+              }
 
               // TODO: Impl executeAction (Payload is {} for now)
-              const { payload } = args;
-              const encodedTxs = payload.transactions;
-              // TODO: Serialize the transaction
-              if (!encodedTxs) return;
-              for (const encodedTx of encodedTxs) {
-                const wa = wallets[selectedWallet];
-                const { blockchainType, UnsignedTransaction } = encodedTx;
-                const serializedTx = serializeTx(UnsignedTransaction);
-                if (selectedWallet === 'metamask') {
-                  // TODO: Sign the transaction
-                  await wallets[selectedWallet].sendTransaction(serializedTx);
-                }
-              }
+              // const { payload } = args;
+              // const encodedTxs = payload.transactions;
+              // Serialize the transaction
+              // if (!encodedTxs) return;
+              // for (const encodedTx of encodedTxs) {
+              //   const wa = wallets[selectedWallet];
+              //   const { blockchainType, UnsignedTransaction } = encodedTx;
+              //   const serializedTx = serializeTx(UnsignedTransaction);
+              //   if (selectedWallet === 'metamask') {
+              //     // TODO: Sign the transaction
+              //     await wallets[selectedWallet].sendTransaction(serializedTx);
+              //   }
+              // }
             }
           }}
         />
