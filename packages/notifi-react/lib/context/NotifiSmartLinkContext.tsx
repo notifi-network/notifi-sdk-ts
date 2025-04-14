@@ -1,6 +1,6 @@
 import { SmartLinkActionUserInput } from '@notifi-network/notifi-dataplane';
 import {
-  ActionInput,
+  ActionInputParams,
   AuthParams,
   type ExecuteSmartLinkActionArgs,
   type NotifiEnvironment,
@@ -39,7 +39,7 @@ type ActionDictionary = Record<
   string,
   {
     smartLinkId: string;
-    inputParams: ActionInput[];
+    inputParams: ActionInputParams[];
     userInputs: Record<number, SmartLinkActionUserInput>;
   }
 >;
@@ -221,8 +221,8 @@ const getActionDictionary = (
         (acc: Record<number, SmartLinkActionUserInput>, input, id) => {
           const userInput: SmartLinkActionUserInput =
             input.type === 'TEXTBOX'
-              ? { type: 'TEXTBOX', value: input.default }
-              : { type: 'CHECKBOX', value: false };
+              ? { type: 'TEXTBOX', value: input.default, id: input.id }
+              : { type: 'CHECKBOX', value: false, id: input.id };
           acc[id] = userInput;
           return acc;
         },

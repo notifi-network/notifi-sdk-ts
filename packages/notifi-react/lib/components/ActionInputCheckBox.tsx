@@ -1,4 +1,4 @@
-import { ActionInputCheckBox as ActionInputCheckBoxType } from '@notifi-network/notifi-frontend-client';
+import { ActionInputParamsCheckBox as ActionInputCheckBoxType } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import React from 'react';
 

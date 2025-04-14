@@ -1,4 +1,4 @@
-import { ActionInputTextBox as ActionInputTextBoxType } from '@notifi-network/notifi-frontend-client';
+import { ActionInputParamsTextBox as ActionInputTextBoxType } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import React from 'react';
 
