@@ -7,7 +7,11 @@ import React from 'react';
 
 import { useNotifiSmartLinkContext } from '../context/NotifiSmartLinkContext';
 import { ErrorView, ErrorViewProps } from './ErrorView';
-import { SmartLinkAction, SmartLinkActionProps } from './SmartLinkAction';
+import {
+  PreAction,
+  SmartLinkAction,
+  SmartLinkActionProps,
+} from './SmartLinkAction';
 
 export type NotifiSmartLinkProps = {
   smartLinkId: string;
@@ -16,6 +20,7 @@ export type NotifiSmartLinkProps = {
   ) => Promise<void>;
   theme?: 'dark' | 'light';
   nameLogoSrc?: string;
+  preAction?: PreAction;
   classNames?: {
     container?: string;
     image?: string;
@@ -37,13 +42,14 @@ export const NotifiSmartLink: React.FC<NotifiSmartLinkProps> = (props) => {
     error,
     renewSmartLinkConfigAndActionDictionary,
     smartLinkConfigDictionary,
+    authParams,
   } = useNotifiSmartLinkContext();
   // const [smartLinkConfig, setSmartLinkConfig] =
   //   React.useState<SmartLinkConfig | null>(null);
 
   React.useEffect(() => {
     renewSmartLinkConfigAndActionDictionary(props.smartLinkId);
-  }, [props.smartLinkId]);
+  }, [props.smartLinkId, authParams]);
 
   const smartLinkConfig = smartLinkConfigDictionary[props.smartLinkId];
 
@@ -110,6 +116,7 @@ export const NotifiSmartLink: React.FC<NotifiSmartLinkProps> = (props) => {
           >
             {component.type === 'ACTION' ? (
               <SmartLinkAction
+                preAction={props.preAction}
                 action={component}
                 classNames={props.classNames?.SmartLinkAction}
               />
