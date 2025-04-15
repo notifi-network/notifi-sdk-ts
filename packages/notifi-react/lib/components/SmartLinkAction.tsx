@@ -20,8 +20,15 @@ import {
   ActionInputTextBoxStringProps,
 } from './ActionInputTextBoxString';
 
+export type PreAction = {
+  isRequired: boolean;
+  label: string;
+  onClick: () => Promise<void>;
+};
+
 export type SmartLinkActionProps = {
   action: Action;
+  preAction?: PreAction;
   classNames?: {
     container?: string;
     textInputContainer?: string;
@@ -35,6 +42,9 @@ export type SmartLinkActionProps = {
 export const SmartLinkAction: React.FC<SmartLinkActionProps> = (props) => {
   // TODO: impl useCallback
   const executeAction = async () => {
+    if (props.preAction && props.preAction.isRequired) {
+      return props.preAction.onClick();
+    }
     // TODO: implement action execution logic
   };
 
@@ -83,7 +93,9 @@ export const SmartLinkAction: React.FC<SmartLinkActionProps> = (props) => {
         className={clsx('btn', 'notifi-smartlink-action-btn')}
         onClick={executeAction}
       >
-        {props.action.label}
+        {props.preAction && props.preAction.isRequired
+          ? props.preAction.label
+          : props.action.label}
       </button>
     </div>
   );

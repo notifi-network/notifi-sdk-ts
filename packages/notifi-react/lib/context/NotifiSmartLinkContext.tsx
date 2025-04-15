@@ -13,6 +13,7 @@ import { SmartLinkConfigWithIsActive } from 'notifi-frontend-client/lib/client/f
 import React, { FC, PropsWithChildren } from 'react';
 
 type NotifiSmartLinkContextType = {
+  authParams: AuthParams;
   fetchSmartLinkConfig: (
     id: string,
   ) => Promise<SmartLinkConfigWithIsActive | null>;
@@ -178,6 +179,7 @@ export const NotifiSmartLinkContextProvider: FC<
   return (
     <NotifiSmartLinkContext.Provider
       value={{
+        authParams,
         renewSmartLinkConfigAndActionDictionary,
         fetchSmartLinkConfig,
         executeSmartLinkAction,
