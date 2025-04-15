@@ -31,7 +31,7 @@ const NotifiSmartLinkContext = React.createContext<NotifiSmartLinkContextType>(
   {} as NotifiSmartLinkContextType /** Intentionally empty for validator */,
 );
 
-type NotifiSmartLinkContextProps = {
+export type NotifiSmartLinkContextProps = {
   env?: NotifiEnvironment;
   authParams: AuthParams;
 };
