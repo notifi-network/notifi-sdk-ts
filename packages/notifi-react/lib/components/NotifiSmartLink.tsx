@@ -38,18 +38,14 @@ export type NotifiSmartLinkProps = {
 
 export const NotifiSmartLink: React.FC<NotifiSmartLinkProps> = (props) => {
   const {
-    fetchSmartLinkConfig,
     error,
     renewSmartLinkConfigAndActionDictionary,
     smartLinkConfigDictionary,
-    authParams,
   } = useNotifiSmartLinkContext();
-  // const [smartLinkConfig, setSmartLinkConfig] =
-  //   React.useState<SmartLinkConfig | null>(null);
 
   React.useEffect(() => {
     renewSmartLinkConfigAndActionDictionary(props.smartLinkId);
-  }, [props.smartLinkId, authParams]);
+  }, [props.smartLinkId]);
 
   const smartLinkConfig = smartLinkConfigDictionary[props.smartLinkId];
 
@@ -116,8 +112,8 @@ export const NotifiSmartLink: React.FC<NotifiSmartLinkProps> = (props) => {
           >
             {component.type === 'ACTION' ? (
               <SmartLinkAction
+                smartLinkIdWithActionId={`${props.smartLinkId}:;:${component.id}`}
                 preAction={props.preAction}
-                action={component}
                 classNames={props.classNames?.SmartLinkAction}
               />
             ) : null}

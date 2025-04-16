@@ -2,8 +2,14 @@ import { ActionInputParamsTextBox } from '@notifi-network/notifi-frontend-client
 import clsx from 'clsx';
 import React from 'react';
 
+import {
+  type SmartLinkIdWithActionId,
+  useNotifiSmartLinkContext,
+} from '../context';
+
 export type ActionInputTextBoxStringProps = {
   input: ActionInputParamsTextBox<'TEXT'>;
+  smartLinkIdWithActionId: SmartLinkIdWithActionId;
   userInputId: number; // TODO: for exec action
   classNames?: {
     container?: string;
@@ -16,7 +22,8 @@ export const ActionInputTextBoxString: React.FC<
 > = (props) => {
   const [value, setValue] = React.useState<string>(props.input.default);
   const [isValid, setIsValid] = React.useState<boolean>(true);
-
+  const { updateActionUserInputs } = useNotifiSmartLinkContext();
+  // TODO: implement useCallback and more proper name
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target;
     const isInputValid = input.checkValidity();
@@ -24,14 +31,19 @@ export const ActionInputTextBoxString: React.FC<
       props.input.constraintType?.pattern || '',
     );
     const isConstraintMet = isInputValid && isPatternValid.test(input.value);
-    if (isConstraintMet) {
-      setIsValid(true);
-    } else {
-      setIsValid(false);
-    }
+    setIsValid(isConstraintMet);
 
     setValue(input.value);
-    // TODO: implement update user input logic
+    updateActionUserInputs(props.smartLinkIdWithActionId, {
+      [props.userInputId]: {
+        userInput: {
+          id: props.input.id,
+          type: 'TEXTBOX',
+          value: input.value,
+        },
+        isValid: props.input.isRequired ? isConstraintMet : true,
+      },
+    });
   };
   return (
     <div
@@ -44,7 +56,6 @@ export const ActionInputTextBoxString: React.FC<
       <input
         type="text"
         placeholder={props.input.placeholder.toString()}
-        defaultValue={props.input.default.toString()}
         maxLength={props.input.constraintType?.maxLength}
         minLength={props.input.constraintType?.minLength}
         className={clsx(

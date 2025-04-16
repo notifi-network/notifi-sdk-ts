@@ -1,22 +1,23 @@
 import { SmartLinkActionUserInput } from '@notifi-network/notifi-dataplane';
 import {
-  ActionInputParams,
   AuthParams,
   type ExecuteSmartLinkActionArgs,
   type NotifiEnvironment,
   NotifiSmartLinkClient,
+  SmartLinkAction,
   type SmartLinkConfig,
   newSmartLinkClient,
   objectKeys,
 } from '@notifi-network/notifi-frontend-client';
-import { SmartLinkConfigWithIsActive } from 'notifi-frontend-client/lib/client/fetchSmartLinkConfig';
 import React, { FC, PropsWithChildren } from 'react';
 
 type NotifiSmartLinkContextType = {
+  // TODO: rather than define the redundant type, we can extract the type from function
+  updateActionUserInputs: (
+    smartLinkIdWithActionId: SmartLinkIdWithActionId,
+    userInput: { [userInputId: number]: ActionUserInputWithValidation },
+  ) => void;
   authParams: AuthParams;
-  fetchSmartLinkConfig: (
-    id: string,
-  ) => Promise<SmartLinkConfigWithIsActive | null>;
   smartLinkConfigDictionary: Record<string, SmartLinkConfig>;
   actionDictionary: ActionDictionary;
   renewSmartLinkConfigAndActionDictionary: (
@@ -27,6 +28,20 @@ type NotifiSmartLinkContextType = {
   error: Error | null;
 };
 
+export type SmartLinkIdWithActionId = `${string}:;:${string}`; // `${smartLinkId}:;:${actionId}`
+type SmartLinkConfigDictionary = Record<string, SmartLinkConfig>;
+type ActionDictionary = Record<
+  SmartLinkIdWithActionId,
+  {
+    action: SmartLinkAction;
+    userInputs: Record<number, ActionUserInputWithValidation>;
+  }
+>;
+type ActionUserInputWithValidation = {
+  userInput: SmartLinkActionUserInput;
+  isValid: boolean;
+};
+
 const NotifiSmartLinkContext = React.createContext<NotifiSmartLinkContextType>(
   {} as NotifiSmartLinkContextType /** Intentionally empty for validator */,
 );
@@ -35,17 +50,6 @@ export type NotifiSmartLinkContextProps = {
   env?: NotifiEnvironment;
   authParams: AuthParams;
 };
-
-type ActionDictionary = Record<
-  string,
-  {
-    smartLinkId: string;
-    inputParams: ActionInputParams[];
-    userInputs: Record<number, SmartLinkActionUserInput>;
-  }
->;
-
-type SmartLinkConfigDictionary = Record<string, SmartLinkConfig>;
 
 export const NotifiSmartLinkContextProvider: FC<
   PropsWithChildren<NotifiSmartLinkContextProps>
@@ -65,53 +69,30 @@ export const NotifiSmartLinkContextProvider: FC<
   }, [authParams]);
 
   // TODO: implement useCallback to update action dictionary
-  const updateActionDictionary = (
-    actionId: string,
-    userInput: ActionDictionary[string]['userInputs'],
+  const updateActionUserInputs = (
+    smartLinkIdWithActionId: SmartLinkIdWithActionId,
+    userInput: { [userInputId: number]: ActionUserInputWithValidation },
   ) => {
-    if (!objectKeys(actionDictionary).includes(actionId)) {
+    if (!objectKeys(actionDictionary).includes(smartLinkIdWithActionId)) {
       setError(
         new Error(
-          '.updateActionDictionary: Action ID not found in NotifiSmartLinkContext',
+          '.updateActionDictionary: IDs not matched in NotifiSmartLinkContext',
         ),
       );
       return;
     }
+
     setActionDictionary((prev) => ({
       ...prev,
-      [actionId]: {
-        ...prev[actionId],
+      [smartLinkIdWithActionId]: {
+        ...prev[smartLinkIdWithActionId],
         userInputs: {
-          ...prev[actionId].userInputs,
+          ...prev[smartLinkIdWithActionId].userInputs,
           ...userInput,
         },
       },
     }));
   };
-
-  const fetchSmartLinkConfig = React.useCallback(
-    async (smartLinkId: string) => {
-      if (!smartLinkClient) {
-        const error = new Error('SmartLinkClient is not initialized');
-        setError(error);
-        return null;
-      }
-
-      try {
-        setIsLoading(true);
-        const smartLinkConfigWithIsActive =
-          await smartLinkClient.fetchSmartLinkConfig(smartLinkId);
-        setError(null);
-        return smartLinkConfigWithIsActive;
-      } catch (e) {
-        setError(e as Error);
-        return null;
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [smartLinkClient],
-  );
 
   const executeSmartLinkAction = React.useCallback(
     async (args: ExecuteSmartLinkActionArgs) => {
@@ -146,7 +127,8 @@ export const NotifiSmartLinkContextProvider: FC<
         const { smartLinkConfig, isActive } =
           await smartLinkClient.fetchSmartLinkConfig(smartLinkId);
 
-        const actionDict = getActionDictionary(smartLinkId, smartLinkConfig);
+        const actionDict = initActionDictionary(smartLinkId, smartLinkConfig);
+
         /* Only append the new actionId to the actionDictionary */
         setActionDictionary((prev) => {
           const additions = objectKeys(actionDict)
@@ -176,12 +158,14 @@ export const NotifiSmartLinkContextProvider: FC<
     [smartLinkClient],
   );
 
+  if (!smartLinkClient) return null;
+
   return (
     <NotifiSmartLinkContext.Provider
       value={{
+        updateActionUserInputs,
         authParams,
         renewSmartLinkConfigAndActionDictionary,
-        fetchSmartLinkConfig,
         executeSmartLinkAction,
         smartLinkConfigDictionary,
         actionDictionary,
@@ -206,7 +190,7 @@ export const useNotifiSmartLinkContext = () => {
 
 // Utils
 
-const getActionDictionary = (
+const initActionDictionary = (
   smartLinkId: string,
   smartLinkConfig: SmartLinkConfig,
 ) => {
@@ -217,32 +201,37 @@ const getActionDictionary = (
   const actionDict = smartLinkActions.reduce(
     (acc: ActionDictionary, action) => {
       const actionId = action.id;
-      const inputParams = action.inputs;
       // TODO: Fix O(n^2) issue
       const userInputs = action.inputs.reduce(
-        (acc: Record<number, SmartLinkActionUserInput>, input, id) => {
-          const userInput: SmartLinkActionUserInput =
+        (acc: Record<number, ActionUserInputWithValidation>, input, id) => {
+          const userInput: ActionUserInputWithValidation =
             input.type === 'TEXTBOX'
-              ? { type: 'TEXTBOX', value: input.default, id: input.id }
-              : { type: 'CHECKBOX', value: false, id: input.id };
+              ? {
+                  userInput: {
+                    type: 'TEXTBOX',
+                    value: input.default,
+                    id: input.id,
+                  },
+                  isValid: false,
+                }
+              : {
+                  userInput: { type: 'CHECKBOX', value: false, id: input.id },
+                  isValid: false,
+                };
+
           acc[id] = userInput;
           return acc;
         },
         {},
       );
 
-      acc[actionId] = {
-        smartLinkId: 'placeholder',
-        inputParams,
+      acc[`${smartLinkId}:;:${actionId}`] = {
+        action,
         userInputs,
       };
       return acc;
     },
     {},
   );
-
-  objectKeys(actionDict).forEach((actionId) => {
-    actionDict[actionId].smartLinkId = smartLinkId;
-  });
   return actionDict;
 };
