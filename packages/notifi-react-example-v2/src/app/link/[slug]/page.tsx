@@ -5,8 +5,8 @@ import React from 'react';
 export async function generateStaticParams() {
   // Replace this with your supported SmartLink IDs
   return [
-    { slug: '66881b08-189b-4276-9ca0-9cd6fe099b4a' },
-    { slug: '0f624c59e09a4d2183a79bfc95177c67' },
+    { slug: '49f71f1b980742859c5e2ff6b1daef94' },
+    { slug: 'f58cbfe9c82d4311bf44fd4c37bee425' },
   ];
 }
 export default function Page() {
