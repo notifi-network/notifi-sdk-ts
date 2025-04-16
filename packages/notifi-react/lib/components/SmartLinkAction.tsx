@@ -1,6 +1,5 @@
 import { SmartLinkActionUserInput } from '@notifi-network/notifi-dataplane';
 import {
-  ActionHandler,
   ActionInputParamsCheckBox as ActionInputCheckBoxType,
   ActionInputParams,
   ActionInputParamsTextBox,
@@ -9,6 +8,7 @@ import clsx from 'clsx';
 import React from 'react';
 
 import {
+  type ActionHandler,
   type SmartLinkIdWithActionId,
   useNotifiSmartLinkContext,
 } from '../context';

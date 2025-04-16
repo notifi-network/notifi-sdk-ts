@@ -1,8 +1,10 @@
-import { ActionHandler } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import React from 'react';
 
-import { useNotifiSmartLinkContext } from '../context/NotifiSmartLinkContext';
+import {
+  type ActionHandler,
+  useNotifiSmartLinkContext,
+} from '../context/NotifiSmartLinkContext';
 import { ErrorView, ErrorViewProps } from './ErrorView';
 import {
   PreAction,

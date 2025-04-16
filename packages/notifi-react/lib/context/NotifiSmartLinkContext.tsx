@@ -1,7 +1,9 @@
-import { SmartLinkActionUserInput } from '@notifi-network/notifi-dataplane';
+import {
+  ActivateSmartLinkActionResponse,
+  SmartLinkActionUserInput,
+} from '@notifi-network/notifi-dataplane';
 import {
   AuthParams,
-  type ExecuteSmartLinkActionArgs,
   type NotifiEnvironment,
   NotifiSmartLinkClient,
   SmartLinkAction,
@@ -22,10 +24,22 @@ type NotifiSmartLinkContextType = {
   renewSmartLinkConfigAndActionDictionary: (
     smartLinkId: string,
   ) => Promise<void>;
-  executeSmartLinkAction: (args: ExecuteSmartLinkActionArgs) => Promise<void>;
+  executeSmartLinkAction: (
+    args: Parameters<NotifiSmartLinkClient['activateSmartLinkAction']>[0] & {
+      execute: ActionHandler;
+    },
+  ) => Promise<void>;
   isLoading: boolean;
   error: Error | null;
 };
+
+export type ActionHandlerArgs = {
+  smartLinkId: string;
+  actionId: string;
+  payload: ActivateSmartLinkActionResponse;
+};
+
+export type ActionHandler = (args: ActionHandlerArgs) => Promise<void>;
 
 export type SmartLinkIdWithActionId = `${string}:;:${string}`; // `${smartLinkId}:;:${actionId}`
 type SmartLinkConfigDictionary = Record<string, SmartLinkConfig>;
@@ -101,10 +115,19 @@ export const NotifiSmartLinkContextProvider: FC<
         }
         try {
           setIsLoading(true);
-          await smartLinkClient.executeSmartLinkAction(args);
+          const { execute, ...activateSmartLinkActionArgs } = args;
+          const payload = await smartLinkClient.activateSmartLinkAction(
+            activateSmartLinkActionArgs,
+          );
+          await execute({
+            smartLinkId: activateSmartLinkActionArgs.smartLinkId,
+            actionId: activateSmartLinkActionArgs.actionId,
+            payload,
+          });
           setError(null);
         } catch (e) {
           setError(e as Error);
+          console.error(e);
         } finally {
           setIsLoading(false);
         }
