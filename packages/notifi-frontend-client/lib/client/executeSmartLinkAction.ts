@@ -4,7 +4,13 @@ import {
   NotifiDataplaneClient,
 } from '@notifi-network/notifi-dataplane';
 
-import { AuthParams, checkIsConfigWithPublicKey } from '../configuration';
+import {
+  AuthParams,
+  checkIsConfigWithDelegate,
+  checkIsConfigWithOidc,
+  checkIsConfigWithPublicKey,
+  checkIsConfigWithPublicKeyAndAddress,
+} from '../configuration';
 import { isEvmBlockchain } from '../models';
 
 export type ExecuteSmartLinkActionArgs = Omit<
@@ -19,6 +25,7 @@ type ActionHandlerArgs = {
   actionId: string;
   payload: ActivateSmartLinkActionResponse;
 };
+
 export type ActionHandler = (args: ActionHandlerArgs) => Promise<void>;
 
 export const executeSmartLinkActionImpl = async (
@@ -26,31 +33,61 @@ export const executeSmartLinkActionImpl = async (
   authParams: AuthParams,
   args: ExecuteSmartLinkActionArgs,
 ): Promise<void> => {
-  let actionPayload: ActivateSmartLinkActionResponse | undefined = undefined;
+  const activateSmartLinkActionArgs: ActivateSmartLinkActionInput = {
+    smartLinkId: args.smartLinkId,
+    actionId: args.actionId,
+    authParams,
+    inputs: args.inputs,
+  };
 
-  // Try handle different cases in the better way
-  if (isEvmBlockchain(authParams.walletBlockchain)) {
-    if (checkIsConfigWithPublicKey(authParams)) {
+  const actionPayload = await _activateSmartLinkAction(
+    service,
+    authParams,
+    activateSmartLinkActionArgs,
+  );
+
+  await args.execute({
+    smartLinkId: args.smartLinkId,
+    actionId: args.actionId,
+    payload: actionPayload,
+  });
+};
+
+/* Internal Utils */
+
+const _activateSmartLinkAction = async (
+  service: NotifiDataplaneClient,
+  authParams: AuthParams,
+  args: ActivateSmartLinkActionInput,
+): Promise<ActivateSmartLinkActionResponse> => {
+  if (checkIsConfigWithPublicKey(authParams)) {
+    /* CASE#1: EVM chains */
+    if (isEvmBlockchain(authParams.walletBlockchain)) {
       const activateSmartLinkActionArgs: ActivateSmartLinkActionInput = {
         smartLinkId: args.smartLinkId,
         actionId: args.actionId,
         authParams,
         inputs: args.inputs,
       };
-      actionPayload = await service.activateSmartLinkAction(
-        activateSmartLinkActionArgs,
-      );
+      return service.activateSmartLinkAction(activateSmartLinkActionArgs);
+    }
+
+    if (authParams.walletBlockchain === 'SOLANA') {
+      /* CASE#2: Solana - Await to implement */
     }
   }
-  if (!actionPayload) {
-    throw new Error(
-      'NotifiSmartLinkClient.executeSmartLinkActionImpl: Action payload is undefined',
-    );
+
+  if (checkIsConfigWithDelegate(authParams)) {
+    /* CASE#3: Cosmos - Await to implement */
   }
-  // TODO: ⚠️  Must make sure ActionExecutable is blockchain agnostic
-  await args.execute({
-    smartLinkId: args.smartLinkId,
-    actionId: args.actionId,
-    payload: actionPayload,
-  });
+
+  if (checkIsConfigWithPublicKeyAndAddress(authParams)) {
+    /* CASE#4: Other chains - Await to implement */
+  }
+
+  if (checkIsConfigWithOidc(authParams)) {
+    /* CASE#5: OFF_CHAIN - Await to implement */
+  }
+  const errMsg = `NotifiSmartLinkClient.executeSmartLinkActionImpl: SmartLink action for ${authParams.walletBlockchain} is not supported yet`;
+  throw new Error(errMsg);
 };
