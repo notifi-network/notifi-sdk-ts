@@ -10,7 +10,7 @@ import {
 export type ActionInputTextBoxStringProps = {
   input: ActionInputParamsTextBox<'TEXT'>;
   smartLinkIdWithActionId: SmartLinkIdWithActionId;
-  userInputId: number; // TODO: for exec action
+  userInputId: number;
   classNames?: {
     container?: string;
     input?: string;
@@ -53,6 +53,12 @@ export const ActionInputTextBoxString: React.FC<
         !isValid && 'invalid',
       )}
     >
+      {props.input.prefix ? (
+        /* No class override, only support default className */
+        <div className="notifi-smartlink-action-input-textbox-prefix">
+          {props.input.prefix}
+        </div>
+      ) : null}
       <input
         type="text"
         placeholder={props.input.placeholder.toString()}
@@ -67,6 +73,12 @@ export const ActionInputTextBoxString: React.FC<
         onBlur={() => value === '' && setIsValid(true)}
         value={value}
       />
+      {props.input.suffix ? (
+        /* No class override, only support default className */
+        <div className="notifi-smartlink-action-input-textbox-suffix">
+          {props.input.suffix}
+        </div>
+      ) : null}
     </div>
   );
 };

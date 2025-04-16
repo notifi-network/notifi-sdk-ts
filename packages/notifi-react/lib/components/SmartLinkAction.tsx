@@ -117,7 +117,6 @@ export const SmartLinkAction: React.FC<SmartLinkActionProps> = (props) => {
 };
 
 // Utils
-// TODO: move to utils?
 const isNumberTextBox = (
   input: ActionInputParams,
 ): input is ActionInputParamsTextBox<'NUMBER'> => {

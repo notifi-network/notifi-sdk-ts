@@ -1,7 +1,4 @@
-import {
-  ExecuteSmartLinkActionArgs,
-  SmartLinkConfig,
-} from '@notifi-network/notifi-frontend-client';
+import { ExecuteSmartLinkActionArgs } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import React from 'react';
 
@@ -130,7 +127,6 @@ export const NotifiSmartLink: React.FC<NotifiSmartLinkProps> = (props) => {
             {component.type === 'IMAGE' ? (
               <img
                 className={clsx(
-                  // TODO: No style yet
                   'notifi-smartlink-image',
                   props.classNames?.smartLinkImage,
                 )}
