@@ -2,8 +2,14 @@ import { ActionInputParamsTextBox as ActionInputTextBoxType } from '@notifi-netw
 import clsx from 'clsx';
 import React from 'react';
 
+import {
+  type SmartLinkIdWithActionId,
+  useNotifiSmartLinkContext,
+} from '../context';
+
 export type ActionInputTextBoxNumberProps = {
   input: ActionInputTextBoxType<'NUMBER'>;
+  smartLinkIdWithActionId: SmartLinkIdWithActionId;
   userInputId: number; // TODO: for exec action
   classNames?: {
     container?: string;
@@ -15,7 +21,8 @@ export const ActionInputTextBoxNumber: React.FC<
   ActionInputTextBoxNumberProps
 > = (props: ActionInputTextBoxNumberProps) => {
   const [value, setValue] = React.useState<number>();
-
+  const { updateActionUserInputs } = useNotifiSmartLinkContext();
+  // TODO: implement useCallback and more proper name
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target;
     if (input.value === '') return;
@@ -34,7 +41,16 @@ export const ActionInputTextBoxNumber: React.FC<
     }
 
     setValue(Number(input.value));
-    // TODO: implement update user input logic
+    updateActionUserInputs(props.smartLinkIdWithActionId, {
+      [props.userInputId]: {
+        userInput: {
+          type: 'TEXTBOX',
+          value: Number(input.value),
+          id: props.input.id,
+        },
+        isValid: true,
+      },
+    });
   };
   return (
     <div
@@ -59,7 +75,7 @@ export const ActionInputTextBoxNumber: React.FC<
           'notifi-smartlink-action-input-textbox',
           props.classNames?.input,
         )}
-        value={value}
+        value={value ?? ''}
         required={props.input.isRequired}
         onChange={(e) => setValue(Number(e.target.value))}
         onBlur={handleChange}

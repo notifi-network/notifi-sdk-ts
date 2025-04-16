@@ -1,22 +1,22 @@
 import { SmartLinkActionUserInput } from '@notifi-network/notifi-dataplane';
 import {
-  ActionInputParams,
   AuthParams,
   type ExecuteSmartLinkActionArgs,
   type NotifiEnvironment,
   NotifiSmartLinkClient,
+  SmartLinkAction,
   type SmartLinkConfig,
   newSmartLinkClient,
   objectKeys,
 } from '@notifi-network/notifi-frontend-client';
-import { SmartLinkConfigWithIsActive } from 'notifi-frontend-client/lib/client/fetchSmartLinkConfig';
 import React, { FC, PropsWithChildren } from 'react';
 
 type NotifiSmartLinkContextType = {
+  updateActionUserInputs: (
+    smartLinkIdWithActionId: SmartLinkIdWithActionId,
+    userInput: { [userInputId: number]: ActionUserInputWithValidation },
+  ) => void;
   authParams: AuthParams;
-  fetchSmartLinkConfig: (
-    id: string,
-  ) => Promise<SmartLinkConfigWithIsActive | null>;
   smartLinkConfigDictionary: Record<string, SmartLinkConfig>;
   actionDictionary: ActionDictionary;
   renewSmartLinkConfigAndActionDictionary: (
@@ -27,6 +27,20 @@ type NotifiSmartLinkContextType = {
   error: Error | null;
 };
 
+export type SmartLinkIdWithActionId = `${string}:;:${string}`; // `${smartLinkId}:;:${actionId}`
+type SmartLinkConfigDictionary = Record<string, SmartLinkConfig>;
+type ActionDictionary = Record<
+  SmartLinkIdWithActionId,
+  {
+    action: SmartLinkAction;
+    userInputs: Record<number, ActionUserInputWithValidation>;
+  }
+>;
+type ActionUserInputWithValidation = {
+  userInput: SmartLinkActionUserInput;
+  isValid: boolean;
+};
+
 const NotifiSmartLinkContext = React.createContext<NotifiSmartLinkContextType>(
   {} as NotifiSmartLinkContextType /** Intentionally empty for validator */,
 );
@@ -35,17 +49,6 @@ export type NotifiSmartLinkContextProps = {
   env?: NotifiEnvironment;
   authParams: AuthParams;
 };
-
-type ActionDictionary = Record<
-  string,
-  {
-    smartLinkId: string;
-    inputParams: ActionInputParams[];
-    userInputs: Record<number, SmartLinkActionUserInput>;
-  }
->;
-
-type SmartLinkConfigDictionary = Record<string, SmartLinkConfig>;
 
 export const NotifiSmartLinkContextProvider: FC<
   PropsWithChildren<NotifiSmartLinkContextProps>
@@ -59,129 +62,109 @@ export const NotifiSmartLinkContextProvider: FC<
     React.useState<ActionDictionary>({});
   const [smartLinkConfigDictionary, setSmartLinkConfigDictionary] =
     React.useState<SmartLinkConfigDictionary>({});
+
   React.useEffect(() => {
     const smartLinkClient = newSmartLinkClient({ env, authParams });
     setSmartLinkClient(smartLinkClient);
   }, [authParams]);
 
-  // TODO: implement useCallback to update action dictionary
-  const updateActionDictionary = (
-    actionId: string,
-    userInput: ActionDictionary[string]['userInputs'],
-  ) => {
-    if (!objectKeys(actionDictionary).includes(actionId)) {
-      setError(
-        new Error(
-          '.updateActionDictionary: Action ID not found in NotifiSmartLinkContext',
-        ),
-      );
-      return;
-    }
-    setActionDictionary((prev) => ({
-      ...prev,
-      [actionId]: {
-        ...prev[actionId],
-        userInputs: {
-          ...prev[actionId].userInputs,
-          ...userInput,
+  const updateActionUserInputs: NotifiSmartLinkContextType['updateActionUserInputs'] =
+    (smartLinkIdWithActionId, userInput) => {
+      if (!objectKeys(actionDictionary).includes(smartLinkIdWithActionId)) {
+        setError(
+          new Error(
+            '.updateActionDictionary: IDs not matched in NotifiSmartLinkContext',
+          ),
+        );
+        return;
+      }
+
+      setActionDictionary((prev) => ({
+        ...prev,
+        [smartLinkIdWithActionId]: {
+          ...prev[smartLinkIdWithActionId],
+          userInputs: {
+            ...prev[smartLinkIdWithActionId].userInputs,
+            ...userInput,
+          },
         },
+      }));
+    };
+
+  const executeSmartLinkAction: NotifiSmartLinkContextType['executeSmartLinkAction'] =
+    React.useCallback(
+      async (args) => {
+        if (!smartLinkClient) {
+          const error = new Error('NotifiSmartLinkClient is not initialized');
+          setError(error);
+          return;
+        }
+        try {
+          setIsLoading(true);
+          await smartLinkClient.executeSmartLinkAction(args);
+          setError(null);
+        } catch (e) {
+          setError(e as Error);
+        } finally {
+          setIsLoading(false);
+        }
       },
-    }));
-  };
+      [smartLinkClient],
+    );
 
-  const fetchSmartLinkConfig = React.useCallback(
-    async (smartLinkId: string) => {
-      if (!smartLinkClient) {
-        const error = new Error('SmartLinkClient is not initialized');
-        setError(error);
-        return null;
-      }
+  const renewSmartLinkConfigAndActionDictionary: NotifiSmartLinkContextType['renewSmartLinkConfigAndActionDictionary'] =
+    React.useCallback(
+      async (smartLinkId) => {
+        if (!smartLinkClient) {
+          const error = new Error('SmartLinkClient is not initialized');
+          setError(error);
+          return;
+        }
 
-      try {
-        setIsLoading(true);
-        const smartLinkConfigWithIsActive =
-          await smartLinkClient.fetchSmartLinkConfig(smartLinkId);
-        setError(null);
-        return smartLinkConfigWithIsActive;
-      } catch (e) {
-        setError(e as Error);
-        return null;
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [smartLinkClient],
-  );
+        try {
+          setIsLoading(true);
+          const { smartLinkConfig, isActive } =
+            await smartLinkClient.fetchSmartLinkConfig(smartLinkId);
 
-  const executeSmartLinkAction = React.useCallback(
-    async (args: ExecuteSmartLinkActionArgs) => {
-      if (!smartLinkClient) {
-        const error = new Error('NotifiSmartLinkClient is not initialized');
-        setError(error);
-        return;
-      }
-      try {
-        setIsLoading(true);
-        await smartLinkClient.executeSmartLinkAction(args);
-        setError(null);
-      } catch (e) {
-        setError(e as Error);
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [smartLinkClient],
-  );
+          const actionDict = initActionDictionary(smartLinkId, smartLinkConfig);
 
-  const renewSmartLinkConfigAndActionDictionary = React.useCallback(
-    async (smartLinkId: string) => {
-      if (!smartLinkClient) {
-        const error = new Error('SmartLinkClient is not initialized');
-        setError(error);
-        return;
-      }
+          /* Only append the new actionId to the actionDictionary */
+          setActionDictionary((prev) => {
+            const additions = objectKeys(actionDict)
+              .filter((id) => !objectKeys(prev).includes(id))
+              .reduce((acc: ActionDictionary, id) => {
+                acc[id] = actionDict[id];
+                return acc;
+              }, {});
+            return {
+              ...prev,
+              ...additions,
+            };
+          });
 
-      try {
-        setIsLoading(true);
-        const { smartLinkConfig, isActive } =
-          await smartLinkClient.fetchSmartLinkConfig(smartLinkId);
-
-        const actionDict = getActionDictionary(smartLinkId, smartLinkConfig);
-        /* Only append the new actionId to the actionDictionary */
-        setActionDictionary((prev) => {
-          const additions = objectKeys(actionDict)
-            .filter((id) => !objectKeys(prev).includes(id))
-            .reduce((acc: ActionDictionary, id) => {
-              acc[id] = actionDict[id];
-              return acc;
-            }, {});
-          return {
+          setSmartLinkConfigDictionary((prev) => ({
             ...prev,
-            ...additions,
-          };
-        });
+            [smartLinkId]: smartLinkConfig,
+          }));
+          setError(null);
+        } catch (e) {
+          setError(e as Error);
+          return;
+        } finally {
+          setIsLoading(false);
+        }
+      },
+      [smartLinkClient],
+    );
 
-        setSmartLinkConfigDictionary((prev) => ({
-          ...prev,
-          [smartLinkId]: smartLinkConfig,
-        }));
-        setError(null);
-      } catch (e) {
-        setError(e as Error);
-        return;
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [smartLinkClient],
-  );
+  if (!smartLinkClient) return null;
 
   return (
     <NotifiSmartLinkContext.Provider
       value={{
+        updateActionUserInputs,
         authParams,
         renewSmartLinkConfigAndActionDictionary,
-        fetchSmartLinkConfig,
         executeSmartLinkAction,
         smartLinkConfigDictionary,
         actionDictionary,
@@ -206,7 +189,7 @@ export const useNotifiSmartLinkContext = () => {
 
 // Utils
 
-const getActionDictionary = (
+const initActionDictionary = (
   smartLinkId: string,
   smartLinkConfig: SmartLinkConfig,
 ) => {
@@ -217,32 +200,37 @@ const getActionDictionary = (
   const actionDict = smartLinkActions.reduce(
     (acc: ActionDictionary, action) => {
       const actionId = action.id;
-      const inputParams = action.inputs;
       // TODO: Fix O(n^2) issue
       const userInputs = action.inputs.reduce(
-        (acc: Record<number, SmartLinkActionUserInput>, input, id) => {
-          const userInput: SmartLinkActionUserInput =
+        (acc: Record<number, ActionUserInputWithValidation>, input, id) => {
+          const userInput: ActionUserInputWithValidation =
             input.type === 'TEXTBOX'
-              ? { type: 'TEXTBOX', value: input.default, id: input.id }
-              : { type: 'CHECKBOX', value: false, id: input.id };
+              ? {
+                  userInput: {
+                    type: 'TEXTBOX',
+                    value: input.default,
+                    id: input.id,
+                  },
+                  isValid: false,
+                }
+              : {
+                  userInput: { type: 'CHECKBOX', value: false, id: input.id },
+                  isValid: false,
+                };
+
           acc[id] = userInput;
           return acc;
         },
         {},
       );
 
-      acc[actionId] = {
-        smartLinkId: 'placeholder',
-        inputParams,
+      acc[`${smartLinkId}:;:${actionId}`] = {
+        action,
         userInputs,
       };
       return acc;
     },
     {},
   );
-
-  objectKeys(actionDict).forEach((actionId) => {
-    actionDict[actionId].smartLinkId = smartLinkId;
-  });
   return actionDict;
 };

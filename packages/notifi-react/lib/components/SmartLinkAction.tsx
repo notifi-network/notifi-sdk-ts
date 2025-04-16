@@ -1,5 +1,4 @@
 import {
-  SmartLinkAction as Action,
   ActionInputParamsCheckBox as ActionInputCheckBoxType,
   ActionInputParams,
   ActionInputParamsTextBox,
@@ -7,6 +6,10 @@ import {
 import clsx from 'clsx';
 import React from 'react';
 
+import {
+  type SmartLinkIdWithActionId,
+  useNotifiSmartLinkContext,
+} from '../context';
 import {
   ActionInputCheckBox,
   ActionInputCheckBoxProps,
@@ -27,7 +30,7 @@ export type PreAction = {
 };
 
 export type SmartLinkActionProps = {
-  action: Action;
+  smartLinkIdWithActionId: SmartLinkIdWithActionId;
   preAction?: PreAction;
   classNames?: {
     container?: string;
@@ -40,24 +43,35 @@ export type SmartLinkActionProps = {
 };
 
 export const SmartLinkAction: React.FC<SmartLinkActionProps> = (props) => {
+  const { actionDictionary } = useNotifiSmartLinkContext();
   // TODO: impl useCallback
   const executeAction = async () => {
     if (props.preAction && props.preAction.isRequired) {
       return props.preAction.onClick();
     }
+    const [smartLinkId, actionId] = props.smartLinkIdWithActionId.split(':;:');
+    console.log({ smartLinkId, actionId });
     // TODO: implement action execution logic
   };
+  const action = actionDictionary[props.smartLinkIdWithActionId].action;
+
+  const isButtonEnabled = React.useMemo(() => {
+    const userInputs =
+      actionDictionary[props.smartLinkIdWithActionId].userInputs;
+    return Object.values(userInputs)
+      .map((userInput) => userInput.isValid)
+      .every((isValid) => isValid);
+  }, [actionDictionary, props.smartLinkIdWithActionId]);
 
   return (
     <div
       className={clsx('notifi-smartlink-action', props.classNames?.container)}
     >
-      {props.action.inputs.map((input, id) => {
-        // TODO: Extract to SmartLinkActionUserInput component
+      {action.inputs.map((input, id) => {
         if (isNumberTextBox(input)) {
           return (
-            // TODO: impl classNames
             <ActionInputTextBoxNumber
+              smartLinkIdWithActionId={props.smartLinkIdWithActionId}
               input={input}
               key={id}
               userInputId={id}
@@ -67,8 +81,8 @@ export const SmartLinkAction: React.FC<SmartLinkActionProps> = (props) => {
         }
         if (isStringTextBox(input)) {
           return (
-            // TODO: impl classNames
             <ActionInputTextBoxString
+              smartLinkIdWithActionId={props.smartLinkIdWithActionId}
               input={input}
               key={id}
               userInputId={id}
@@ -78,8 +92,8 @@ export const SmartLinkAction: React.FC<SmartLinkActionProps> = (props) => {
         }
         if (isCheckBox(input)) {
           return (
-            // TODO: impl classNames
             <ActionInputCheckBox
+              smartLinkIdWithActionId={props.smartLinkIdWithActionId}
               input={input}
               key={id}
               userInputId={id}
@@ -92,17 +106,17 @@ export const SmartLinkAction: React.FC<SmartLinkActionProps> = (props) => {
       <button
         className={clsx('btn', 'notifi-smartlink-action-btn')}
         onClick={executeAction}
+        disabled={!isButtonEnabled}
       >
         {props.preAction && props.preAction.isRequired
           ? props.preAction.label
-          : props.action.label}
+          : action.label}
       </button>
     </div>
   );
 };
 
 // Utils
-// TODO: move to utils?
 const isNumberTextBox = (
   input: ActionInputParams,
 ): input is ActionInputParamsTextBox<'NUMBER'> => {

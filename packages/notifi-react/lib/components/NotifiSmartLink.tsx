@@ -1,7 +1,4 @@
-import {
-  ExecuteSmartLinkActionArgs,
-  SmartLinkConfig,
-} from '@notifi-network/notifi-frontend-client';
+import { ExecuteSmartLinkActionArgs } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import React from 'react';
 
@@ -38,18 +35,14 @@ export type NotifiSmartLinkProps = {
 
 export const NotifiSmartLink: React.FC<NotifiSmartLinkProps> = (props) => {
   const {
-    fetchSmartLinkConfig,
     error,
     renewSmartLinkConfigAndActionDictionary,
     smartLinkConfigDictionary,
-    authParams,
   } = useNotifiSmartLinkContext();
-  // const [smartLinkConfig, setSmartLinkConfig] =
-  //   React.useState<SmartLinkConfig | null>(null);
 
   React.useEffect(() => {
     renewSmartLinkConfigAndActionDictionary(props.smartLinkId);
-  }, [props.smartLinkId, authParams]);
+  }, [props.smartLinkId]);
 
   const smartLinkConfig = smartLinkConfigDictionary[props.smartLinkId];
 
@@ -116,8 +109,8 @@ export const NotifiSmartLink: React.FC<NotifiSmartLinkProps> = (props) => {
           >
             {component.type === 'ACTION' ? (
               <SmartLinkAction
+                smartLinkIdWithActionId={`${props.smartLinkId}:;:${component.id}`}
                 preAction={props.preAction}
-                action={component}
                 classNames={props.classNames?.SmartLinkAction}
               />
             ) : null}
@@ -134,7 +127,6 @@ export const NotifiSmartLink: React.FC<NotifiSmartLinkProps> = (props) => {
             {component.type === 'IMAGE' ? (
               <img
                 className={clsx(
-                  // TODO: No style yet
                   'notifi-smartlink-image',
                   props.classNames?.smartLinkImage,
                 )}
