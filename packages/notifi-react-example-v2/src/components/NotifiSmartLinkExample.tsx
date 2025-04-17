@@ -21,6 +21,23 @@ export const NotifiSmartLinkExample: React.FC = () => {
   if (!smartLinkId) {
     return null;
   }
+  const preAction = React.useMemo(() => {
+    if (selectedWallet !== 'metamask' || !wallets['metamask'].isInstalled) {
+      return {
+        onClick: async () => {
+          if (!wallets['metamask'].isInstalled) {
+            window.open('https://metamask.io/', '_blank');
+            return;
+          }
+          wallets['metamask'].connect();
+        },
+        label: !wallets['metamask'].isInstalled
+          ? 'Install Wallet (Metamask)'
+          : 'Connect Wallet (Metamask)',
+        disabled: false,
+      };
+    }
+  }, [selectedWallet, wallets]);
 
   return (
     <div>
@@ -35,20 +52,7 @@ export const NotifiSmartLinkExample: React.FC = () => {
       <div style={{ padding: '1.5rem' }}>
         <NotifiSmartLink
           smartLinkId={smartLinkId}
-          preAction={{
-            isRequired:
-              selectedWallet !== 'metamask' || !wallets['metamask'].isInstalled,
-            onClick: async () => {
-              if (!wallets['metamask'].isInstalled) {
-                window.open('https://metamask.io/', '_blank');
-                return;
-              }
-              wallets['metamask'].connect();
-            },
-            label: !wallets['metamask'].isInstalled
-              ? 'Install Wallet (Metamask)'
-              : 'Connect Wallet (Metamask)',
-          }}
+          preAction={preAction}
           actionHandler={async (args) => {
             console.log('Action triggered (react-example-v2)', {
               args,
