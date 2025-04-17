@@ -26,7 +26,7 @@ import {
 } from './ActionInputTextBoxString';
 
 export type PreAction = {
-  isRequired: boolean;
+  disabled: boolean;
   label: string;
   onClick: () => Promise<void>;
 };
@@ -50,9 +50,6 @@ export const SmartLinkAction: React.FC<SmartLinkActionProps> = (props) => {
     useNotifiSmartLinkContext();
   // TODO: impl useCallback
   const executeAction = async () => {
-    if (props.preAction && props.preAction.isRequired) {
-      return props.preAction.onClick();
-    }
     const [smartLinkId, actionId] = props.smartLinkIdWithActionId.split(':;:');
 
     const inputsWithValidation =
@@ -128,15 +125,26 @@ export const SmartLinkAction: React.FC<SmartLinkActionProps> = (props) => {
         }
         return null;
       })}
-      <button
-        className={clsx('btn', 'notifi-smartlink-action-btn')}
-        onClick={executeAction}
-        disabled={!isButtonEnabled}
-      >
-        {props.preAction && props.preAction.isRequired
-          ? props.preAction.label
-          : action.label}
-      </button>
+
+      {props.preAction ? (
+        /* Pre Action Button */
+        <button
+          className={clsx('btn', 'notifi-smartlink-action-btn')}
+          onClick={() => props.preAction!.onClick()}
+          disabled={props.preAction.disabled}
+        >
+          {props.preAction.label}
+        </button>
+      ) : (
+        /* Main Action Button */
+        <button
+          className={clsx('btn', 'notifi-smartlink-action-btn')}
+          onClick={executeAction}
+          disabled={!isButtonEnabled}
+        >
+          {action.label}
+        </button>
+      )}
     </div>
   );
 };
