@@ -1,5 +1,6 @@
 import { SmartLinkActionUserInput } from '@notifi-network/notifi-dataplane';
 import {
+  ActionHandler,
   ActionInputParamsCheckBox as ActionInputCheckBoxType,
   ActionInputParams,
   ActionInputParamsTextBox,
@@ -33,6 +34,7 @@ export type PreAction = {
 export type SmartLinkActionProps = {
   smartLinkIdWithActionId: SmartLinkIdWithActionId;
   preAction?: PreAction;
+  actionHandler: ActionHandler;
   classNames?: {
     container?: string;
     textInputContainer?: string;
@@ -44,7 +46,8 @@ export type SmartLinkActionProps = {
 };
 
 export const SmartLinkAction: React.FC<SmartLinkActionProps> = (props) => {
-  const { actionDictionary } = useNotifiSmartLinkContext();
+  const { actionDictionary, executeSmartLinkAction } =
+    useNotifiSmartLinkContext();
   // TODO: impl useCallback
   const executeAction = async () => {
     if (props.preAction && props.preAction.isRequired) {
@@ -65,7 +68,15 @@ export const SmartLinkAction: React.FC<SmartLinkActionProps> = (props) => {
       },
       {},
     );
+    // TODO: remove below
     console.log({ smartLinkId, actionId, actionUserInputs });
+    // TODO: HANDLE ERROR
+    await executeSmartLinkAction({
+      smartLinkId,
+      actionId,
+      inputs: actionUserInputs,
+      execute: props.actionHandler,
+    });
   };
   const action = actionDictionary[props.smartLinkIdWithActionId].action;
 

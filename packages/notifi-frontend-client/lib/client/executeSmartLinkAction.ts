@@ -7,15 +7,19 @@ import {
 import { AuthParams, checkIsConfigWithPublicKey } from '../configuration';
 import { isEvmBlockchain } from '../models';
 
-export type ExecuteSmartLinkActionArgs = {
-  smartLinkId: string;
-  actionId: string;
-  inputs: ActivateSmartLinkActionInput['inputs'];
+export type ExecuteSmartLinkActionArgs = Omit<
+  ActivateSmartLinkActionInput,
+  'authParams'
+> & {
   execute: ActionHandler;
 };
-export type ActionHandler = (
-  action: ActivateSmartLinkActionResponse,
-) => Promise<void>;
+
+type ActionHandlerArgs = {
+  smartLinkId: string;
+  actionId: string;
+  payload: ActivateSmartLinkActionResponse;
+};
+export type ActionHandler = (args: ActionHandlerArgs) => Promise<void>;
 
 export const executeSmartLinkActionImpl = async (
   service: NotifiDataplaneClient,
@@ -44,5 +48,9 @@ export const executeSmartLinkActionImpl = async (
     );
   }
   // TODO: ⚠️  Must make sure ActionExecutable is blockchain agnostic
-  await args.execute(actionPayload);
+  await args.execute({
+    smartLinkId: args.smartLinkId,
+    actionId: args.actionId,
+    payload: actionPayload,
+  });
 };
