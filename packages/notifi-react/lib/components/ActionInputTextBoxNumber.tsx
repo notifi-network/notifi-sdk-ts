@@ -27,25 +27,26 @@ export const ActionInputTextBoxNumber: React.FC<
     const input = e.target;
     if (input.value === '') return;
 
+    let valueToSet = Number(input.value);
     if (
       props.input.constraintType?.min &&
       props.input.constraintType.min >= Number(input.value)
     ) {
-      return setValue(props.input.constraintType.min);
+      valueToSet = props.input.constraintType.min;
     }
     if (
       props.input.constraintType?.max &&
       props.input.constraintType.max <= Number(input.value)
     ) {
-      return setValue(props.input.constraintType.max);
+      valueToSet = props.input.constraintType.max;
     }
 
-    setValue(Number(input.value));
+    setValue(valueToSet);
     updateActionUserInputs(props.smartLinkIdWithActionId, {
       [props.userInputId]: {
         userInput: {
           type: 'TEXTBOX',
-          value: Number(input.value),
+          value: valueToSet,
           id: props.input.id,
         },
         isValid: true,

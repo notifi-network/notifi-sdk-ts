@@ -1,3 +1,4 @@
+import { SmartLinkActionUserInput } from '@notifi-network/notifi-dataplane';
 import {
   ActionInputParamsCheckBox as ActionInputCheckBoxType,
   ActionInputParams,
@@ -50,8 +51,21 @@ export const SmartLinkAction: React.FC<SmartLinkActionProps> = (props) => {
       return props.preAction.onClick();
     }
     const [smartLinkId, actionId] = props.smartLinkIdWithActionId.split(':;:');
-    console.log({ smartLinkId, actionId });
-    // TODO: implement action execution logic
+
+    const inputsWithValidation =
+      actionDictionary[props.smartLinkIdWithActionId].userInputs;
+    const actionUserInputs = Object.values(inputsWithValidation).reduce(
+      (
+        acc: Record<number, SmartLinkActionUserInput>,
+        inputWithValidation,
+        id,
+      ) => {
+        acc[id] = inputWithValidation.userInput;
+        return acc;
+      },
+      {},
+    );
+    console.log({ smartLinkId, actionId, actionUserInputs });
   };
   const action = actionDictionary[props.smartLinkIdWithActionId].action;
 
