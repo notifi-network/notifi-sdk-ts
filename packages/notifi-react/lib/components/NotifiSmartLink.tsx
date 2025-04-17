@@ -1,8 +1,10 @@
-import { ExecuteSmartLinkActionArgs } from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import React from 'react';
 
-import { useNotifiSmartLinkContext } from '../context/NotifiSmartLinkContext';
+import {
+  type ActionHandler,
+  useNotifiSmartLinkContext,
+} from '../context/NotifiSmartLinkContext';
 import { ErrorView, ErrorViewProps } from './ErrorView';
 import {
   PreAction,
@@ -12,9 +14,7 @@ import {
 
 export type NotifiSmartLinkProps = {
   smartLinkId: string;
-  actionHandler: (
-    args: Omit<ExecuteSmartLinkActionArgs, 'authParams'>,
-  ) => Promise<void>;
+  actionHandler: ActionHandler;
   theme?: 'dark' | 'light';
   nameLogoSrc?: string;
   preAction?: PreAction;
@@ -54,6 +54,12 @@ export const NotifiSmartLink: React.FC<NotifiSmartLinkProps> = (props) => {
     return (
       <ErrorView
         detail={error.message}
+        cta={{
+          icon: 'arrow-back',
+          action: () => {
+            renewSmartLinkConfigAndActionDictionary(props.smartLinkId);
+          },
+        }}
         classNames={props.classNames?.ErrorView}
       />
     );
@@ -112,6 +118,7 @@ export const NotifiSmartLink: React.FC<NotifiSmartLinkProps> = (props) => {
                 smartLinkIdWithActionId={`${props.smartLinkId}:;:${component.id}`}
                 preAction={props.preAction}
                 classNames={props.classNames?.SmartLinkAction}
+                actionHandler={props.actionHandler}
               />
             ) : null}
             {component.type === 'TEXT' ? (

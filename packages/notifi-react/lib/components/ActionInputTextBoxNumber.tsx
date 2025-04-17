@@ -22,30 +22,46 @@ export const ActionInputTextBoxNumber: React.FC<
 > = (props: ActionInputTextBoxNumberProps) => {
   const [value, setValue] = React.useState<number>();
   const { updateActionUserInputs } = useNotifiSmartLinkContext();
-  // TODO: implement useCallback and more proper name
+
+  React.useEffect(() => {
+    /* Reset input field when being unmounted */
+    return () => {
+      updateActionUserInputs(props.smartLinkIdWithActionId, {
+        [props.userInputId]: {
+          userInput: {
+            type: 'TEXTBOX',
+            value: '',
+            id: props.input.id,
+          },
+          isValid: false,
+        },
+      });
+    };
+  }, []);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target;
     if (input.value === '') return;
 
+    let valueToSet = Number(input.value);
     if (
       props.input.constraintType?.min &&
       props.input.constraintType.min >= Number(input.value)
     ) {
-      return setValue(props.input.constraintType.min);
+      valueToSet = props.input.constraintType.min;
     }
     if (
       props.input.constraintType?.max &&
       props.input.constraintType.max <= Number(input.value)
     ) {
-      return setValue(props.input.constraintType.max);
+      valueToSet = props.input.constraintType.max;
     }
 
-    setValue(Number(input.value));
+    setValue(valueToSet);
     updateActionUserInputs(props.smartLinkIdWithActionId, {
       [props.userInputId]: {
         userInput: {
           type: 'TEXTBOX',
-          value: Number(input.value),
+          value: valueToSet,
           id: props.input.id,
         },
         isValid: true,

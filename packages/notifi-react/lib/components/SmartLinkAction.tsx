@@ -1,3 +1,4 @@
+import { SmartLinkActionUserInput } from '@notifi-network/notifi-dataplane';
 import {
   ActionInputParamsCheckBox as ActionInputCheckBoxType,
   ActionInputParams,
@@ -7,6 +8,7 @@ import clsx from 'clsx';
 import React from 'react';
 
 import {
+  type ActionHandler,
   type SmartLinkIdWithActionId,
   useNotifiSmartLinkContext,
 } from '../context';
@@ -32,6 +34,7 @@ export type PreAction = {
 export type SmartLinkActionProps = {
   smartLinkIdWithActionId: SmartLinkIdWithActionId;
   preAction?: PreAction;
+  actionHandler: ActionHandler;
   classNames?: {
     container?: string;
     textInputContainer?: string;
@@ -43,15 +46,37 @@ export type SmartLinkActionProps = {
 };
 
 export const SmartLinkAction: React.FC<SmartLinkActionProps> = (props) => {
-  const { actionDictionary } = useNotifiSmartLinkContext();
+  const { actionDictionary, executeSmartLinkAction } =
+    useNotifiSmartLinkContext();
   // TODO: impl useCallback
   const executeAction = async () => {
     if (props.preAction && props.preAction.isRequired) {
       return props.preAction.onClick();
     }
     const [smartLinkId, actionId] = props.smartLinkIdWithActionId.split(':;:');
-    console.log({ smartLinkId, actionId });
-    // TODO: implement action execution logic
+
+    const inputsWithValidation =
+      actionDictionary[props.smartLinkIdWithActionId].userInputs;
+    const actionUserInputs = Object.values(inputsWithValidation).reduce(
+      (
+        acc: Record<number, SmartLinkActionUserInput>,
+        inputWithValidation,
+        id,
+      ) => {
+        acc[id] = inputWithValidation.userInput;
+        return acc;
+      },
+      {},
+    );
+    // TODO: remove below
+    console.log({ smartLinkId, actionId, actionUserInputs });
+    // TODO: HANDLE ERROR
+    await executeSmartLinkAction({
+      smartLinkId,
+      actionId,
+      inputs: actionUserInputs,
+      execute: props.actionHandler,
+    });
   };
   const action = actionDictionary[props.smartLinkIdWithActionId].action;
 

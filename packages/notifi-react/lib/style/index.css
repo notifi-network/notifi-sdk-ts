@@ -40,6 +40,16 @@
   border-radius: 0;
 }
 
+/* class "clean-input" removes default arrow buttons in input[type=number] */
+input.clean-input::-webkit-outer-spin-button,
+input.clean-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input.clean-input[type='number'] {
+  -moz-appearance: textfield; /* Firefox */
+}
+
 :root {
   /* Color variables */
   --notifi-color-grey1: 28, 28, 35; /* #1c1c23 */
