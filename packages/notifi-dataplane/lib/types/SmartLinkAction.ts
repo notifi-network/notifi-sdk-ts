@@ -47,8 +47,8 @@ export const isActivateSmartLinkActionResponse = (
   if (typeof response !== 'object' || response === null) {
     return false;
   }
-  if ('transactions' in response && Array.isArray(response.transactions)) {
-    return true;
+  if ('transactions' in response && !Array.isArray(response.transactions)) {
+    return false;
   }
   const { successMessage, failureMessage } =
     response as ActivateSmartLinkActionResponse;
