@@ -21,6 +21,21 @@ export const ActionInputCheckBox: React.FC<ActionInputCheckBoxProps> = (
   props,
 ) => {
   const { updateActionUserInputs } = useNotifiSmartLinkContext();
+  React.useEffect(() => {
+    /* Reset input field when being unmounted */
+    return () => {
+      updateActionUserInputs(props.smartLinkIdWithActionId, {
+        [props.userInputId]: {
+          userInput: {
+            type: 'CHECKBOX',
+            value: false,
+            id: props.input.id,
+          },
+          isValid: false,
+        },
+      });
+    };
+  }, []);
   // TODO: implement useCallback
   const updateUserInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     // TODO: implement update user input logic

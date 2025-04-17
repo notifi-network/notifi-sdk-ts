@@ -14,5 +14,5 @@ export type NotifiFrontendConfiguration = AuthParams &
 /** Initializes the NotifiSmartLinkClient with the given configuration. */
 export type NotifiSmartLinkClientConfig = {
   env?: NotifiEnvironment;
-  authParams: AuthParams;
+  authParams?: AuthParams;
 };

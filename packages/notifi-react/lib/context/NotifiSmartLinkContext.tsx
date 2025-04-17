@@ -18,7 +18,7 @@ type NotifiSmartLinkContextType = {
     smartLinkIdWithActionId: SmartLinkIdWithActionId,
     userInput: { [userInputId: number]: ActionUserInputWithValidation },
   ) => void;
-  authParams: AuthParams;
+  authParams?: AuthParams;
   smartLinkConfigDictionary: Record<string, SmartLinkConfig>;
   actionDictionary: ActionDictionary;
   renewSmartLinkConfigAndActionDictionary: (
@@ -61,7 +61,7 @@ const NotifiSmartLinkContext = React.createContext<NotifiSmartLinkContextType>(
 
 export type NotifiSmartLinkContextProps = {
   env?: NotifiEnvironment;
-  authParams: AuthParams;
+  authParams?: AuthParams;
 };
 
 export const NotifiSmartLinkContextProvider: FC<

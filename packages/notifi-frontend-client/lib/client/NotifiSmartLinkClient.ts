@@ -25,6 +25,12 @@ export class NotifiSmartLinkClient {
   async activateSmartLinkAction(
     args: Omit<ActivateSmartLinkActionInput, 'authParams'>,
   ): Promise<ActivateSmartLinkActionResponse> {
+    if (!this._configuration.authParams) {
+      throw new Error(
+        'NotifiSmartLinkClient.activateSmartLinkAction: authParams is required',
+      );
+    }
+
     const SmartLinkConfigWithIsActive = await this.fetchSmartLinkConfig(
       args.smartLinkId,
     );
@@ -34,7 +40,7 @@ export class NotifiSmartLinkClient {
       SmartLinkConfigWithIsActive.smartLinkConfig.blockchainType
     ) {
       throw new Error(
-        `executeSmartLinkAction: connected wallet (now ${this._configuration.authParams.walletBlockchain}) must be on (${SmartLinkConfigWithIsActive.smartLinkConfig.blockchainType}) blockchain`,
+        `NotifiSmartLinkClient.executeSmartLinkAction: connected wallet (now ${this._configuration.authParams.walletBlockchain}) must be on (${SmartLinkConfigWithIsActive.smartLinkConfig.blockchainType}) blockchain`,
       );
     }
 

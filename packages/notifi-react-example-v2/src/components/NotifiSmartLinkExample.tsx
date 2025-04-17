@@ -24,6 +24,13 @@ export const NotifiSmartLinkExample: React.FC = () => {
 
   return (
     <div>
+      {!!selectedWallet && wallets[selectedWallet] ? (
+        <button
+          onClick={async () => await wallets[selectedWallet].disconnect()}
+        >
+          Disconnect Wallet
+        </button>
+      ) : null}
       <h3>Smart Link Example: metamask</h3>
       <div style={{ padding: '1.5rem' }}>
         <NotifiSmartLink

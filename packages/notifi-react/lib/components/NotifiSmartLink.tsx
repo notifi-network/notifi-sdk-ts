@@ -54,6 +54,12 @@ export const NotifiSmartLink: React.FC<NotifiSmartLinkProps> = (props) => {
     return (
       <ErrorView
         detail={error.message}
+        cta={{
+          icon: 'arrow-back',
+          action: () => {
+            renewSmartLinkConfigAndActionDictionary(props.smartLinkId);
+          },
+        }}
         classNames={props.classNames?.ErrorView}
       />
     );

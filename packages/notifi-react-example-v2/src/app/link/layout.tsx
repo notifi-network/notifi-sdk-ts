@@ -11,23 +11,21 @@ export default function NotifiLayout({
   children: React.ReactNode;
 }) {
   const { wallets, selectedWallet } = useWallets();
-  const authParams: Extract<
-    AuthParams,
-    { walletPublicKey: string } & { accountAddress?: never }
-  > = React.useMemo(() => {
+  const authParams: AuthParamsWithPublickey | undefined = React.useMemo(() => {
     if (selectedWallet === 'metamask') {
       return {
         walletPublicKey: wallets[selectedWallet].walletKeys?.hex ?? '',
-        walletBlockchain: 'ARBITRUM',
+        walletBlockchain: 'ETHEREUM',
       };
     }
-    /* Impl other wallet logic if needed */
 
-    // If not defined, fallback to a default value
-    return {
-      walletPublicKey: '0x000',
-      walletBlockchain: 'ARBITRUM',
-    };
+    /* Impl other wallet logic if needed. Example below: */
+    // if (selectedWallet === 'phantom') {
+    //   return {
+    //     walletPublicKey: wallets[selectedWallet].walletKeys?.base58 ?? '',
+    //     walletBlockchain: 'SOLANA',
+    //   };
+    // }
   }, [wallets, selectedWallet]);
 
   return (
@@ -41,3 +39,8 @@ export default function NotifiLayout({
     </Suspense>
   );
 }
+
+type AuthParamsWithPublickey = Extract<
+  AuthParams,
+  { walletPublicKey: string } & { accountAddress?: never }
+>;

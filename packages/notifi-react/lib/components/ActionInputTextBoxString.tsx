@@ -23,6 +23,21 @@ export const ActionInputTextBoxString: React.FC<
   const [value, setValue] = React.useState<string>(props.input.default);
   const [isValid, setIsValid] = React.useState<boolean>(true);
   const { updateActionUserInputs } = useNotifiSmartLinkContext();
+  React.useEffect(() => {
+    /* Reset input field when being unmounted */
+    return () => {
+      updateActionUserInputs(props.smartLinkIdWithActionId, {
+        [props.userInputId]: {
+          userInput: {
+            type: 'TEXTBOX',
+            value: '',
+            id: props.input.id,
+          },
+          isValid: false,
+        },
+      });
+    };
+  }, []);
   // TODO: implement useCallback and more proper name
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target;
