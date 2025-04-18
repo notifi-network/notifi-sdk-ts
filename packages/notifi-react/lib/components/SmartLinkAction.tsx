@@ -48,8 +48,8 @@ export type SmartLinkActionProps = {
 export const SmartLinkAction: React.FC<SmartLinkActionProps> = (props) => {
   const { actionDictionary, executeSmartLinkAction } =
     useNotifiSmartLinkContext();
-  // TODO: impl useCallback
-  const executeAction = async () => {
+
+  const executeAction = React.useCallback(async () => {
     const [smartLinkId, actionId] = props.smartLinkIdWithActionId.split(':;:');
 
     const inputsWithValidation =
@@ -65,16 +65,24 @@ export const SmartLinkAction: React.FC<SmartLinkActionProps> = (props) => {
       },
       {},
     );
+
     // TODO: remove below
     console.log({ smartLinkId, actionId, actionUserInputs });
-    // TODO: HANDLE ERROR
+
+    /* ⬇ ERROR already handled within context */
     await executeSmartLinkAction({
       smartLinkId,
       actionId,
       inputs: actionUserInputs,
       execute: props.actionHandler,
     });
-  };
+  }, [
+    actionDictionary,
+    props.actionHandler,
+    props.smartLinkIdWithActionId,
+    executeSmartLinkAction,
+  ]);
+
   const action = actionDictionary[props.smartLinkIdWithActionId].action;
 
   const isButtonEnabled = React.useMemo(() => {

@@ -43,10 +43,11 @@ export const NotifiSmartLink: React.FC<NotifiSmartLinkProps> = (props) => {
   React.useEffect(() => {
     renewSmartLinkConfigAndActionDictionary(props.smartLinkId);
   }, [props.smartLinkId]);
+  // TODO: `isActive` flow not defined yet
+  const smartLinkConfigWithIsActive =
+    smartLinkConfigDictionary[props.smartLinkId];
 
-  const smartLinkConfig = smartLinkConfigDictionary[props.smartLinkId];
-
-  if (!smartLinkConfig) {
+  if (!smartLinkConfigWithIsActive) {
     return null;
   }
 
@@ -65,10 +66,6 @@ export const NotifiSmartLink: React.FC<NotifiSmartLinkProps> = (props) => {
     );
   }
 
-  if (!smartLinkConfig) {
-    return null;
-  }
-
   return (
     <div
       className={clsx(
@@ -79,7 +76,7 @@ export const NotifiSmartLink: React.FC<NotifiSmartLinkProps> = (props) => {
     >
       <img
         className={clsx('notifi-smartlink-banner', props.classNames?.image)}
-        src={smartLinkConfig.bannerImgUrl}
+        src={smartLinkConfigWithIsActive.smartLinkConfig.bannerImgUrl}
       />
       <div className={clsx('notifi-smartlink-name', props.classNames?.name)}>
         <img
@@ -87,13 +84,13 @@ export const NotifiSmartLink: React.FC<NotifiSmartLinkProps> = (props) => {
             'notifi-smartlink-namelogo',
             props.classNames?.nameLogo,
           )}
-          src={smartLinkConfig.icon}
+          src={smartLinkConfigWithIsActive.smartLinkConfig.icon}
           alt="name-img"
         />
-        <div>{smartLinkConfig.tenantName}</div>
+        <div>{smartLinkConfigWithIsActive.smartLinkConfig.tenantName}</div>
       </div>
       <div className={clsx('notifi-smartlink-title', props.classNames?.title)}>
-        {smartLinkConfig.title}
+        {smartLinkConfigWithIsActive.smartLinkConfig.title}
       </div>
       <div
         className={clsx(
@@ -101,48 +98,50 @@ export const NotifiSmartLink: React.FC<NotifiSmartLinkProps> = (props) => {
           props.classNames?.subtitle,
         )}
       >
-        {smartLinkConfig.subtitle}
+        {smartLinkConfigWithIsActive.smartLinkConfig.subtitle}
       </div>
 
-      {smartLinkConfig.components.map((component, id) => {
-        return (
-          <div
-            key={id}
-            className={clsx(
-              'notifi-smartlink-component',
-              props.classNames?.componentContainer,
-            )}
-          >
-            {component.type === 'ACTION' ? (
-              <SmartLinkAction
-                smartLinkIdWithActionId={`${props.smartLinkId}:;:${component.id}`}
-                preAction={props.preAction}
-                classNames={props.classNames?.SmartLinkAction}
-                actionHandler={props.actionHandler}
-              />
-            ) : null}
-            {component.type === 'TEXT' ? (
-              <div
-                className={clsx(
-                  'notifi-smartlink-text',
-                  props.classNames?.smartLinkText,
-                )}
-              >
-                {component.text}
-              </div>
-            ) : null}
-            {component.type === 'IMAGE' ? (
-              <img
-                className={clsx(
-                  'notifi-smartlink-image',
-                  props.classNames?.smartLinkImage,
-                )}
-                src={component.src}
-              />
-            ) : null}
-          </div>
-        );
-      })}
+      {smartLinkConfigWithIsActive.smartLinkConfig.components.map(
+        (component, id) => {
+          return (
+            <div
+              key={id}
+              className={clsx(
+                'notifi-smartlink-component',
+                props.classNames?.componentContainer,
+              )}
+            >
+              {component.type === 'ACTION' ? (
+                <SmartLinkAction
+                  smartLinkIdWithActionId={`${props.smartLinkId}:;:${component.id}`}
+                  preAction={props.preAction}
+                  classNames={props.classNames?.SmartLinkAction}
+                  actionHandler={props.actionHandler}
+                />
+              ) : null}
+              {component.type === 'TEXT' ? (
+                <div
+                  className={clsx(
+                    'notifi-smartlink-text',
+                    props.classNames?.smartLinkText,
+                  )}
+                >
+                  {component.text}
+                </div>
+              ) : null}
+              {component.type === 'IMAGE' ? (
+                <img
+                  className={clsx(
+                    'notifi-smartlink-image',
+                    props.classNames?.smartLinkImage,
+                  )}
+                  src={component.src}
+                />
+              ) : null}
+            </div>
+          );
+        },
+      )}
     </div>
   );
 };

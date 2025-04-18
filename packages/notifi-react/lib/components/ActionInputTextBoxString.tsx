@@ -38,8 +38,10 @@ export const ActionInputTextBoxString: React.FC<
       });
     };
   }, []);
-  // TODO: implement useCallback and more proper name
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+  const validateAndUpdateActionInputs = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const input = e.target;
     const isInputValid = input.checkValidity();
     const isPatternValid = new RegExp(
@@ -84,7 +86,7 @@ export const ActionInputTextBoxString: React.FC<
           'notifi-smartlink-action-input-textbox',
           props.classNames?.input,
         )}
-        onChange={handleChange}
+        onChange={validateAndUpdateActionInputs}
         onBlur={() => value === '' && setIsValid(true)}
         value={value}
       />

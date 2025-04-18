@@ -11,26 +11,27 @@ import {
   newSmartLinkClient,
   objectKeys,
 } from '@notifi-network/notifi-frontend-client';
+import { SmartLinkConfigWithIsActive } from 'notifi-frontend-client/lib/client/fetchSmartLinkConfig';
 import React, { FC, PropsWithChildren } from 'react';
 
 type NotifiSmartLinkContextType = {
+  authParams?: AuthParams;
+  smartLinkConfigDictionary: SmartLinkConfigDictionary;
+  actionDictionary: ActionDictionary;
+  isLoading: boolean;
+  error: Error | null;
+  renewSmartLinkConfigAndActionDictionary: (
+    smartLinkId: string,
+  ) => Promise<void>;
   updateActionUserInputs: (
     smartLinkIdWithActionId: SmartLinkIdWithActionId,
     userInput: { [userInputId: number]: ActionUserInputWithValidation },
   ) => void;
-  authParams?: AuthParams;
-  smartLinkConfigDictionary: Record<string, SmartLinkConfig>;
-  actionDictionary: ActionDictionary;
-  renewSmartLinkConfigAndActionDictionary: (
-    smartLinkId: string,
-  ) => Promise<void>;
   executeSmartLinkAction: (
     args: Parameters<NotifiSmartLinkClient['activateSmartLinkAction']>[0] & {
       execute: ActionHandler;
     },
   ) => Promise<void>;
-  isLoading: boolean;
-  error: Error | null;
 };
 
 export type ActionHandlerArgs = {
@@ -41,8 +42,7 @@ export type ActionHandlerArgs = {
 
 export type ActionHandler = (args: ActionHandlerArgs) => Promise<void>;
 
-export type SmartLinkIdWithActionId = `${string}:;:${string}`; // `${smartLinkId}:;:${actionId}`
-type SmartLinkConfigDictionary = Record<string, SmartLinkConfig>;
+type SmartLinkConfigDictionary = Record<string, SmartLinkConfigWithIsActive>;
 type ActionDictionary = Record<
   SmartLinkIdWithActionId,
   {
@@ -50,6 +50,8 @@ type ActionDictionary = Record<
     userInputs: Record<number, ActionUserInputWithValidation>;
   }
 >;
+export type SmartLinkIdWithActionId = `${string}:;:${string}`; // `${smartLinkId}:;:${actionId}`
+
 type ActionUserInputWithValidation = {
   userInput: SmartLinkActionUserInput;
   isValid: boolean;
@@ -67,15 +69,14 @@ export type NotifiSmartLinkContextProps = {
 export const NotifiSmartLinkContextProvider: FC<
   PropsWithChildren<NotifiSmartLinkContextProps>
 > = ({ authParams, children, env = 'Production' }) => {
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [error, setError] = React.useState<Error | null>(null);
-
   const [smartLinkClient, setSmartLinkClient] =
     React.useState<NotifiSmartLinkClient | null>(null);
-  const [actionDictionary, setActionDictionary] =
-    React.useState<ActionDictionary>({});
   const [smartLinkConfigDictionary, setSmartLinkConfigDictionary] =
     React.useState<SmartLinkConfigDictionary>({});
+  const [actionDictionary, setActionDictionary] =
+    React.useState<ActionDictionary>({});
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [error, setError] = React.useState<Error | null>(null);
 
   React.useEffect(() => {
     const smartLinkClient = newSmartLinkClient({ env, authParams });
@@ -146,10 +147,13 @@ export const NotifiSmartLinkContextProvider: FC<
 
         try {
           setIsLoading(true);
-          const { smartLinkConfig, isActive } =
+          const smartLinkConfigWithIsActive =
             await smartLinkClient.fetchSmartLinkConfig(smartLinkId);
 
-          const actionDict = initActionDictionary(smartLinkId, smartLinkConfig);
+          const actionDict = initActionDictionary(
+            smartLinkId,
+            smartLinkConfigWithIsActive.smartLinkConfig,
+          );
 
           /* Only append the new actionId to the actionDictionary */
           setActionDictionary((prev) => {
@@ -167,7 +171,7 @@ export const NotifiSmartLinkContextProvider: FC<
 
           setSmartLinkConfigDictionary((prev) => ({
             ...prev,
-            [smartLinkId]: smartLinkConfig,
+            [smartLinkId]: smartLinkConfigWithIsActive,
           }));
           setError(null);
         } catch (e) {

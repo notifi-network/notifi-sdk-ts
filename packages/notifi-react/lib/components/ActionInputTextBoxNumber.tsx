@@ -38,7 +38,10 @@ export const ActionInputTextBoxNumber: React.FC<
       });
     };
   }, []);
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+  const validateAndUpdateActionInputs = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const input = e.target;
     if (input.value === '') return;
 
@@ -68,6 +71,7 @@ export const ActionInputTextBoxNumber: React.FC<
       },
     });
   };
+
   return (
     <div
       className={clsx(
@@ -94,7 +98,7 @@ export const ActionInputTextBoxNumber: React.FC<
         value={value ?? ''}
         required={props.input.isRequired}
         onChange={(e) => setValue(Number(e.target.value))}
-        onBlur={handleChange}
+        onBlur={validateAndUpdateActionInputs}
       />
       {props.input.suffix ? (
         /* No class override, only support default className */

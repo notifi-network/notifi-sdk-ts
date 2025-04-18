@@ -36,8 +36,10 @@ export const ActionInputCheckBox: React.FC<ActionInputCheckBoxProps> = (
       });
     };
   }, []);
-  // TODO: implement useCallback
-  const updateUserInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+  const validateAndUpdateActionInputs = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     // TODO: implement update user input logic
     const isChecked = e.target.checked;
     updateActionUserInputs(props.smartLinkIdWithActionId, {
@@ -61,7 +63,7 @@ export const ActionInputCheckBox: React.FC<ActionInputCheckBoxProps> = (
       <input
         type="checkbox"
         required={props.input.isRequired}
-        onChange={updateUserInput}
+        onChange={validateAndUpdateActionInputs}
         className={clsx(
           'notifi-smartlink-action-input-checkbox',
           props.classNames?.input,
