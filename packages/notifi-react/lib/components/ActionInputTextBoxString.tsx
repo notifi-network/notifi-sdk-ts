@@ -20,26 +20,16 @@ export type ActionInputTextBoxStringProps = {
 export const ActionInputTextBoxString: React.FC<
   ActionInputTextBoxStringProps
 > = (props) => {
-  const [value, setValue] = React.useState<string>(props.input.default);
   const [isValid, setIsValid] = React.useState<boolean>(true);
-  const { updateActionUserInputs } = useNotifiSmartLinkContext();
-  React.useEffect(() => {
-    /* Reset input field when being unmounted */
-    return () => {
-      updateActionUserInputs(props.smartLinkIdWithActionId, {
-        [props.userInputId]: {
-          userInput: {
-            type: 'TEXTBOX',
-            value: '',
-            id: props.input.id,
-          },
-          isValid: false,
-        },
-      });
-    };
-  }, []);
-  // TODO: implement useCallback and more proper name
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const { updateActionUserInputs, actionDictionary } =
+    useNotifiSmartLinkContext();
+  const defaultValue = actionDictionary[props.smartLinkIdWithActionId]
+    .userInputs[props.userInputId].userInput.value as string;
+  const [value, setValue] = React.useState<string>(defaultValue);
+
+  const validateAndUpdateActionInputs = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const input = e.target;
     const isInputValid = input.checkValidity();
     const isPatternValid = new RegExp(
@@ -84,7 +74,7 @@ export const ActionInputTextBoxString: React.FC<
           'notifi-smartlink-action-input-textbox',
           props.classNames?.input,
         )}
-        onChange={handleChange}
+        onChange={validateAndUpdateActionInputs}
         onBlur={() => value === '' && setIsValid(true)}
         value={value}
       />

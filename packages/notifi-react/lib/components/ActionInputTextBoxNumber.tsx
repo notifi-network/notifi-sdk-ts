@@ -10,7 +10,7 @@ import {
 export type ActionInputTextBoxNumberProps = {
   input: ActionInputTextBoxType<'NUMBER'>;
   smartLinkIdWithActionId: SmartLinkIdWithActionId;
-  userInputId: number; // TODO: for exec action
+  userInputId: number;
   classNames?: {
     container?: string;
     input?: string;
@@ -20,25 +20,15 @@ export type ActionInputTextBoxNumberProps = {
 export const ActionInputTextBoxNumber: React.FC<
   ActionInputTextBoxNumberProps
 > = (props: ActionInputTextBoxNumberProps) => {
-  const [value, setValue] = React.useState<number>();
-  const { updateActionUserInputs } = useNotifiSmartLinkContext();
+  const { updateActionUserInputs, actionDictionary } =
+    useNotifiSmartLinkContext();
+  const defaultValue = actionDictionary[props.smartLinkIdWithActionId]
+    .userInputs[props.userInputId].userInput.value as number;
+  const [value, setValue] = React.useState<number>(defaultValue);
 
-  React.useEffect(() => {
-    /* Reset input field when being unmounted */
-    return () => {
-      updateActionUserInputs(props.smartLinkIdWithActionId, {
-        [props.userInputId]: {
-          userInput: {
-            type: 'TEXTBOX',
-            value: '',
-            id: props.input.id,
-          },
-          isValid: false,
-        },
-      });
-    };
-  }, []);
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const validateAndUpdateActionInputs = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const input = e.target;
     if (input.value === '') return;
 
@@ -68,6 +58,7 @@ export const ActionInputTextBoxNumber: React.FC<
       },
     });
   };
+
   return (
     <div
       className={clsx(
@@ -94,7 +85,7 @@ export const ActionInputTextBoxNumber: React.FC<
         value={value ?? ''}
         required={props.input.isRequired}
         onChange={(e) => setValue(Number(e.target.value))}
-        onBlur={handleChange}
+        onBlur={validateAndUpdateActionInputs}
       />
       {props.input.suffix ? (
         /* No class override, only support default className */
