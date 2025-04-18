@@ -1,0 +1,108 @@
+/* NotifiSmartLink styles */
+
+.notifi-smartlink {
+  max-width: 26rem;
+  padding: 1rem;
+}
+
+.notifi-smartlink-banner,
+.notifi-smartlink-image {
+  width: 100%;
+  height: 8.5625rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.notifi-smartlink-name {
+  display: flex;
+  color: var(--notifi-smartlink-name-text);
+  margin-left: 1rem;
+  margin-right: 1rem;
+  margin-bottom: 0.5rem;
+}
+.notifi-smartlink-namelogo {
+  border-radius: 50rem;
+  width: 1.75rem;
+  height: 1.75rem;
+  margin-right: 0.5rem;
+}
+
+.notifi-smartlink-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.notifi-smartlink-subtitle {
+  color: var(--notifi-smartlink-subtitle-text);
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+.notifi-smartlink-component {
+  margin: 1rem;
+}
+
+.notifi-smartlink-text {
+  font-weight: 700;
+}
+
+/* SmartLinkAction styles*/
+
+.notifi-smartlink-action {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.notifi-smartlink-action-btn {
+  padding: 0.5rem;
+  background-color: var(--notifi-smartlink-action-btn-bg);
+  border-radius: 6px;
+  color: var(--notifi-smartlink-action-btn-text);
+  cursor: pointer;
+}
+
+.notifi-smartlink-action-btn:disabled {
+  background-color: var(--notifi-smartlink-action-btn-disabled-bg);
+  cursor: not-allowed;
+}
+
+/* SmartLinkActionInputTextBox styles*/
+
+.notifi-smartlink-action-input-textbox-container {
+  display: flex;
+  background-color: var(--notifi-smartlink-action-input-textbox-container-bg);
+  border-radius: 6px;
+  align-items: center;
+  padding: 0.5rem;
+}
+
+.notifi-smartlink-action-input-textbox-container.invalid {
+  border: 1px solid
+    var(--notifi-smartlink-action-input-textbox-container-invalid-border);
+}
+
+.notifi-smartlink-action-input-textbox {
+  flex: 1;
+}
+.notifi-smartlink-action-input-textbox-prefix,
+.notifi-smartlink-action-input-textbox-suffix {
+  color: rgb(var(--notifi-color-dusk));
+}
+
+/* ActionInputCheckBox Styles */
+
+.notifi-smartlink-action-input-checkbox-container {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.notifi-smartlink-action-input-checkbox {
+  margin-top: 0.25rem;
+  flex-shrink: 0;
+  flex-grow: 0;
+}

@@ -33,6 +33,7 @@
   "homepage": "https://github.com/notifi-network/notifi-sdk-ts#readme",
   "dependencies": {
     "@notifi-network/notifi-graphql": "^6.0.1",
+    "@notifi-network/notifi-dataplane": "^6.0.1",
     "graphql-request": "^6.0.0",
     "localforage": "^1.10.0",
     "ws": "^8.11.0"

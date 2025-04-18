@@ -77,7 +77,8 @@ export class NotifiService
     Operations.DeleteTelegramTargetService,
     Operations.DeleteSmsTargetService,
     Operations.DeleteSlackChannelTargetService,
-    Operations.DeleteWeb3TargetService
+    Operations.DeleteWeb3TargetService,
+    Operations.GetSmartLinkConfigService
 {
   private _jwt: string | undefined;
   private _typedClient: ReturnType<typeof getSdk>;
@@ -716,6 +717,13 @@ export class NotifiService
   ): Promise<Generated.GetWebPushTargetsQuery> {
     const headers = this._requestHeaders();
     return this._typedClient.getWebPushTargets(variables, headers);
+  }
+
+  async getSmartLinkConfig(
+    variables: Generated.GetSmartLinkConfigQueryVariables,
+  ): Promise<Generated.GetSmartLinkConfigQuery> {
+    const headers = this._requestHeaders();
+    return this._typedClient.getSmartLinkConfig(variables, headers);
   }
 
   private _onAuthComplete(jwt: string | undefined): void {

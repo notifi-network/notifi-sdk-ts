@@ -1,6 +1,13 @@
 import converter from 'bech32-converting';
 import { useCallback, useEffect, useState } from 'react';
-import { useAccount, useConnect, useDisconnect, useSignMessage } from 'wagmi';
+import {
+  useAccount,
+  useConnect,
+  useDisconnect,
+  useSendTransaction,
+  useSignMessage,
+} from 'wagmi';
+import { SendTransactionArgs, SendTransactionResult } from 'wagmi/actions';
 
 import { MetamaskWalletKeys, Wallets } from '../types';
 import {
@@ -20,6 +27,8 @@ export const useWagmiWallet = (
 
   const { disconnect } = useDisconnect();
   const { signMessageAsync } = useSignMessage();
+  // TODO: figure out config
+  const { sendTransactionAsync } = useSendTransaction();
   const { address, isConnected: isWalletConnected, connector } = useAccount();
   const { connect, connectors } = useConnect();
 
@@ -125,6 +134,21 @@ export const useWagmiWallet = (
     },
     [walletKeys?.hex],
   );
+  const sendTransaction = async (transaction: SendTransactionArgs) => {
+    let result: SendTransactionResult | undefined;
+    try {
+      result = await sendTransactionAsync(transaction);
+    } catch (e) {
+      errorHandler(
+        new Error('useWagmi-sendTransaction: Failed to send transaction'),
+        5000,
+      );
+      console.error(e);
+    } finally {
+      loadingHandler(false);
+    }
+    return result?.hash;
+  };
 
   return {
     walletKeys,
@@ -133,5 +157,6 @@ export const useWagmiWallet = (
     signArbitrary,
     disconnectWallet,
     websiteURL: walletsWebsiteLink[walletName],
+    sendTransaction,
   };
 };

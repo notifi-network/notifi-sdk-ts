@@ -144,6 +144,28 @@ export const useInjectedWallet = (
     },
     [walletKeys?.hex],
   );
+  // TODO: define the type of transactions
+  const sendTransaction = async (transaction: object) => {
+    let txHash: string | undefined;
+    try {
+      txHash = await provider.request?.({
+        method: 'eth_sendTransaction',
+        params: [transaction],
+      });
+    } catch (e) {
+      errorHandler(
+        new Error(
+          'useInjectedWallet-sendTransaction: Failed to send transaction',
+        ),
+        5000,
+      );
+      console.error(e);
+    } finally {
+      loadingHandler(false);
+    }
+    // TODO: add validator for txHash
+    return txHash as `0x${string}` | undefined;
+  };
 
   return {
     walletKeys,
@@ -151,6 +173,7 @@ export const useInjectedWallet = (
     connectWallet,
     signArbitrary,
     disconnectWallet,
+    sendTransaction,
     websiteURL: walletsWebsiteLink[walletName],
   };
 };

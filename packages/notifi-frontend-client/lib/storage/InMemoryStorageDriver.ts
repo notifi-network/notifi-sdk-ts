@@ -4,7 +4,7 @@ import {
   checkIsConfigWithDelegate,
   checkIsConfigWithOidc,
   checkIsConfigWithPublicKeyAndAddress,
-} from '../configuration/NotifiFrontendConfiguration';
+} from '../configuration';
 import { StorageDriver } from './NotifiFrontendStorage';
 
 const getEnvPrefix = (env?: NotifiEnvironment): string => {
@@ -30,7 +30,7 @@ export const createInMemoryStorageDriver = (
   if (checkIsConfigWithOidc(config)) {
     keyPrefix += `:${config.userAccount}`;
   } else if (checkIsConfigWithPublicKeyAndAddress(config)) {
-    keyPrefix += `:${config.accountAddress}:${config.authenticationKey}`;
+    keyPrefix += `:${config.accountAddress}:${config.walletPublicKey}`;
   } else if (checkIsConfigWithDelegate(config)) {
     keyPrefix += `:${config.delegatorAddress}`;
   } else {
