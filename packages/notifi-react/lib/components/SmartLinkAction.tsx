@@ -35,6 +35,9 @@ export type SmartLinkActionProps = {
   smartLinkIdWithActionId: SmartLinkIdWithActionId;
   preAction?: PreAction;
   actionHandler: ActionHandler;
+  copy?: {
+    inactiveLabel: string;
+  };
   classNames?: {
     container?: string;
     textInputContainer?: string;
@@ -46,14 +49,20 @@ export type SmartLinkActionProps = {
 };
 
 export const SmartLinkAction: React.FC<SmartLinkActionProps> = (props) => {
-  const { actionDictionary, executeSmartLinkAction } =
-    useNotifiSmartLinkContext();
+  const {
+    actionDictionary,
+    executeSmartLinkAction,
+    smartLinkConfigDictionary,
+  } = useNotifiSmartLinkContext();
+
+  const [smartLinkId, actionId] = props.smartLinkIdWithActionId.split(':;:');
 
   const executeAction = React.useCallback(async () => {
-    const [smartLinkId, actionId] = props.smartLinkIdWithActionId.split(':;:');
+    if (!smartLinkConfigDictionary[smartLinkId].isActive) return;
 
     const inputsWithValidation =
       actionDictionary[props.smartLinkIdWithActionId].userInputs;
+
     const actionUserInputs = Object.values(inputsWithValidation).reduce(
       (
         acc: Record<number, SmartLinkActionUserInput>,
@@ -66,7 +75,7 @@ export const SmartLinkAction: React.FC<SmartLinkActionProps> = (props) => {
       {},
     );
 
-    // TODO: remove below
+    // TODO: remove below before merging into main
     console.log({ smartLinkId, actionId, actionUserInputs });
 
     /* ⬇ ERROR already handled within context */
@@ -86,6 +95,7 @@ export const SmartLinkAction: React.FC<SmartLinkActionProps> = (props) => {
   const action = actionDictionary[props.smartLinkIdWithActionId].action;
 
   const isButtonEnabled = React.useMemo(() => {
+    if (!smartLinkConfigDictionary[smartLinkId].isActive) return false;
     const userInputs =
       actionDictionary[props.smartLinkIdWithActionId].userInputs;
     return Object.values(userInputs)
@@ -150,7 +160,9 @@ export const SmartLinkAction: React.FC<SmartLinkActionProps> = (props) => {
           onClick={executeAction}
           disabled={!isButtonEnabled}
         >
-          {action.label}
+          {!smartLinkConfigDictionary[smartLinkId].isActive
+            ? (props.copy?.inactiveLabel ?? 'Unavailable')
+            : action.label}
         </button>
       )}
     </div>

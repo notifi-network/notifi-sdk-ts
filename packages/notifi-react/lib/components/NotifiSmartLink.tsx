@@ -18,6 +18,9 @@ export type NotifiSmartLinkProps = {
   theme?: 'dark' | 'light';
   nameLogoSrc?: string;
   preAction?: PreAction;
+  copy?: {
+    SmartLinkAction?: SmartLinkActionProps['copy'];
+  };
   classNames?: {
     container?: string;
     image?: string;
@@ -43,7 +46,6 @@ export const NotifiSmartLink: React.FC<NotifiSmartLinkProps> = (props) => {
   React.useEffect(() => {
     renewSmartLinkConfigAndActionDictionary(props.smartLinkId);
   }, [props.smartLinkId]);
-  // TODO: `isActive` flow not defined yet
   const smartLinkConfigWithIsActive =
     smartLinkConfigDictionary[props.smartLinkId];
 
@@ -115,6 +117,7 @@ export const NotifiSmartLink: React.FC<NotifiSmartLinkProps> = (props) => {
                 <SmartLinkAction
                   smartLinkIdWithActionId={`${props.smartLinkId}:;:${component.id}`}
                   preAction={props.preAction}
+                  copy={props.copy?.SmartLinkAction}
                   classNames={props.classNames?.SmartLinkAction}
                   actionHandler={props.actionHandler}
                 />
