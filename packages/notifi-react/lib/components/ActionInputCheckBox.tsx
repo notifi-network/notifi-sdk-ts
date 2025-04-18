@@ -10,7 +10,7 @@ import {
 export type ActionInputCheckBoxProps = {
   input: ActionInputCheckBoxType;
   smartLinkIdWithActionId: SmartLinkIdWithActionId;
-  userInputId: number; // TODO: for exec action
+  userInputId: number;
   classNames?: {
     container?: string;
     input?: string;
@@ -20,28 +20,17 @@ export type ActionInputCheckBoxProps = {
 export const ActionInputCheckBox: React.FC<ActionInputCheckBoxProps> = (
   props,
 ) => {
-  const { updateActionUserInputs } = useNotifiSmartLinkContext();
-  React.useEffect(() => {
-    /* Reset input field when being unmounted */
-    return () => {
-      updateActionUserInputs(props.smartLinkIdWithActionId, {
-        [props.userInputId]: {
-          userInput: {
-            type: 'CHECKBOX',
-            value: false,
-            id: props.input.id,
-          },
-          isValid: false,
-        },
-      });
-    };
-  }, []);
+  const { updateActionUserInputs, actionDictionary } =
+    useNotifiSmartLinkContext();
 
+  const defaultValue = actionDictionary[props.smartLinkIdWithActionId]
+    .userInputs[props.userInputId].userInput.value as boolean;
+  const [value, setValue] = React.useState<boolean>(defaultValue);
   const validateAndUpdateActionInputs = (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    // TODO: implement update user input logic
     const isChecked = e.target.checked;
+    setValue(isChecked);
     updateActionUserInputs(props.smartLinkIdWithActionId, {
       [props.userInputId]: {
         userInput: {
@@ -62,6 +51,7 @@ export const ActionInputCheckBox: React.FC<ActionInputCheckBoxProps> = (
     >
       <input
         type="checkbox"
+        checked={value}
         required={props.input.isRequired}
         onChange={validateAndUpdateActionInputs}
         className={clsx(

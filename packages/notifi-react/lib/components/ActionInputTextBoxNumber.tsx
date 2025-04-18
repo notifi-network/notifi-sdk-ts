@@ -10,7 +10,7 @@ import {
 export type ActionInputTextBoxNumberProps = {
   input: ActionInputTextBoxType<'NUMBER'>;
   smartLinkIdWithActionId: SmartLinkIdWithActionId;
-  userInputId: number; // TODO: for exec action
+  userInputId: number;
   classNames?: {
     container?: string;
     input?: string;
@@ -20,24 +20,11 @@ export type ActionInputTextBoxNumberProps = {
 export const ActionInputTextBoxNumber: React.FC<
   ActionInputTextBoxNumberProps
 > = (props: ActionInputTextBoxNumberProps) => {
-  const [value, setValue] = React.useState<number>();
-  const { updateActionUserInputs } = useNotifiSmartLinkContext();
-
-  React.useEffect(() => {
-    /* Reset input field when being unmounted */
-    return () => {
-      updateActionUserInputs(props.smartLinkIdWithActionId, {
-        [props.userInputId]: {
-          userInput: {
-            type: 'TEXTBOX',
-            value: '',
-            id: props.input.id,
-          },
-          isValid: false,
-        },
-      });
-    };
-  }, []);
+  const { updateActionUserInputs, actionDictionary } =
+    useNotifiSmartLinkContext();
+  const defaultValue = actionDictionary[props.smartLinkIdWithActionId]
+    .userInputs[props.userInputId].userInput.value as number;
+  const [value, setValue] = React.useState<number>(defaultValue);
 
   const validateAndUpdateActionInputs = (
     e: React.ChangeEvent<HTMLInputElement>,
