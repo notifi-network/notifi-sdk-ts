@@ -13,6 +13,7 @@ export type ActionInputCheckBoxProps = {
   userInputId: number;
   classNames?: {
     container?: string;
+    inputContainer?: string;
     input?: string;
   };
 };
@@ -45,21 +46,28 @@ export const ActionInputCheckBox: React.FC<ActionInputCheckBoxProps> = (
   return (
     <div
       className={clsx(
-        'notifi-smartlink-action-input-checkbox-container',
+        'notifi-smartlink-action-input-checkbox',
         props.classNames?.container,
       )}
     >
-      <input
-        type="checkbox"
-        checked={value}
-        required={props.input.isRequired}
-        onChange={validateAndUpdateActionInputs}
+      <div
         className={clsx(
-          'notifi-smartlink-action-input-checkbox',
-          props.classNames?.input,
+          'notifi-smartlink-action-input-checkbox-container',
+          props.classNames?.inputContainer,
         )}
-      />
-      <div>{props.input.title}</div>
+      >
+        <input
+          type="checkbox"
+          checked={value}
+          required={props.input.isRequired}
+          onChange={validateAndUpdateActionInputs}
+          className={clsx(
+            'notifi-smartlink-action-input-checkbox-input',
+            props.classNames?.input,
+          )}
+        />
+        <div>{props.input.title}</div>
+      </div>
     </div>
   );
 };

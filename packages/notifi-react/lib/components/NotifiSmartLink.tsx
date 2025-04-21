@@ -89,7 +89,9 @@ export const NotifiSmartLink: React.FC<NotifiSmartLinkProps> = (props) => {
           src={smartLinkConfigWithIsActive.smartLinkConfig.icon}
           alt="name-img"
         />
-        <div>{smartLinkConfigWithIsActive.smartLinkConfig.tenantName}</div>
+        <div className="notifi-smartlink-name-text">
+          <div>{smartLinkConfigWithIsActive.smartLinkConfig.tenantName}</div>
+        </div>
       </div>
       <div className={clsx('notifi-smartlink-title', props.classNames?.title)}>
         {smartLinkConfigWithIsActive.smartLinkConfig.title}
