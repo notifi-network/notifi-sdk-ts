@@ -50,16 +50,11 @@ export class NotifiDataplaneClient {
     });
     const response = await fetch(url, {
       headers: new Headers([
-        ['Accept', '*/*'],
-        ['Accept-Language', 'en-US,en;q=0.9'],
-        ['Cache-Control', 'no-cache'],
         ['Content-Type', 'application/json'],
-        ['Pragma', 'no-cache'],
       ]),
       body: body,
       method: 'POST',
       mode: 'cors',
-      credentials: 'include',
     });
     if (!response.ok) {
       throw new Error(`ERROR: ${response.status} - ${response.statusText}`);
