@@ -8,9 +8,9 @@
 .notifi-smartlink-banner,
 .notifi-smartlink-image {
   width: 100%;
-  height: 8.5625rem;
   border-radius: 8px;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
+  object-fit: contain;
 }
 
 .notifi-smartlink-name {
@@ -18,7 +18,7 @@
   color: var(--notifi-smartlink-name-text);
   margin-left: 1rem;
   margin-right: 1rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
 }
 .notifi-smartlink-namelogo {
   border-radius: 50rem;
@@ -42,7 +42,14 @@
 }
 
 .notifi-smartlink-component {
-  margin: 1rem;
+}
+
+.notifi-smartlink-component .notifi-smartlink-action {
+  padding: 1rem;
+}
+
+.notifi-smartlink-component .notifi-smartlink-text {
+  padding: 1rem 1rem 0.5rem 1rem;
 }
 
 .notifi-smartlink-text {
@@ -63,6 +70,7 @@
   border-radius: 6px;
   color: var(--notifi-smartlink-action-btn-text);
   cursor: pointer;
+  margin-top: 0.5rem;
 }
 
 .notifi-smartlink-action-btn:disabled {
