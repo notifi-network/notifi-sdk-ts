@@ -13,6 +13,8 @@ export type ActionInputTextBoxNumberProps = {
   userInputId: number;
   classNames?: {
     container?: string;
+    constraintPrompt?: string;
+    inputContainer?: string;
     input?: string;
   };
 };
@@ -23,23 +25,23 @@ export const ActionInputTextBoxNumber: React.FC<
   const { updateActionUserInputs, actionDictionary } =
     useNotifiSmartLinkContext();
   const defaultValue = actionDictionary[props.smartLinkIdWithActionId]
-    .userInputs[props.userInputId].userInput.value as number;
-  const [value, setValue] = React.useState<number>(defaultValue);
+    .userInputs[props.userInputId].userInput.value as number | '';
+  const [value, setValue] = React.useState<number | ''>(defaultValue);
 
   const validateAndUpdateActionInputs = (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const input = e.target;
-    if (input.value === '') return;
+    let valueToSet: number | '' = Number(input.value);
 
-    let valueToSet = Number(input.value);
-    if (
+    if (input.value === '') {
+      valueToSet = '';
+    } else if (
       props.input.constraintType?.min &&
       props.input.constraintType.min >= Number(input.value)
     ) {
       valueToSet = props.input.constraintType.min;
-    }
-    if (
+    } else if (
       props.input.constraintType?.max &&
       props.input.constraintType.max <= Number(input.value)
     ) {
@@ -54,7 +56,7 @@ export const ActionInputTextBoxNumber: React.FC<
           value: valueToSet,
           id: props.input.id,
         },
-        isValid: true,
+        isValid: props.input.isRequired ? input.value !== '' : true,
       },
     });
   };
@@ -62,37 +64,68 @@ export const ActionInputTextBoxNumber: React.FC<
   return (
     <div
       className={clsx(
-        'notifi-smartlink-action-input-textbox-container',
+        'notifi-smartlink-action-input-textbox',
         props.classNames?.container,
       )}
     >
-      {props.input.prefix ? (
-        /* No class override, only support default className */
-        <div className="notifi-smartlink-action-input-textbox-prefix">
-          {props.input.prefix}
+      {getConstraintPrompt(props.input.constraintType) ? (
+        <div
+          className={clsx(
+            'notifi-smartlink-action-input-textbox-constraint-prompt',
+            props.classNames?.constraintPrompt,
+          )}
+        >
+          {getConstraintPrompt(props.input.constraintType)}
         </div>
       ) : null}
-      <input
-        type="number"
-        placeholder={props.input.placeholder.toString()}
-        min={props.input.constraintType?.min}
-        max={props.input.constraintType?.max}
+      <div
         className={clsx(
-          'clean-input',
-          'notifi-smartlink-action-input-textbox',
-          props.classNames?.input,
+          'notifi-smartlink-action-input-textbox-container',
+          props.classNames?.inputContainer,
         )}
-        value={value ?? ''}
-        required={props.input.isRequired}
-        onChange={(e) => setValue(Number(e.target.value))}
-        onBlur={validateAndUpdateActionInputs}
-      />
-      {props.input.suffix ? (
-        /* No class override, only support default className */
-        <div className="notifi-smartlink-action-input-textbox-suffix">
-          {props.input.suffix}
-        </div>
-      ) : null}
+      >
+        {props.input.prefix ? (
+          /* No class override, only support default className */
+          <div className="notifi-smartlink-action-input-textbox-prefix">
+            {props.input.prefix}
+          </div>
+        ) : null}
+        <input
+          type="number"
+          placeholder={props.input.placeholder.toString()}
+          min={props.input.constraintType?.min}
+          max={props.input.constraintType?.max}
+          className={clsx(
+            'clean-input',
+            'notifi-smartlink-action-input-textbox-input',
+            props.classNames?.input,
+          )}
+          value={value ?? ''}
+          required={props.input.isRequired}
+          onChange={validateAndUpdateActionInputs}
+        />
+        {props.input.suffix ? (
+          /* No class override, only support default className */
+          <div className="notifi-smartlink-action-input-textbox-suffix">
+            {props.input.suffix}
+          </div>
+        ) : null}
+      </div>
     </div>
   );
+};
+// Utils
+
+const getConstraintPrompt = (
+  constraintType: ActionInputTextBoxType<'NUMBER'>['constraintType'],
+): string | undefined => {
+  if (!constraintType) return '';
+  const { min, max } = constraintType;
+  if (min && max) {
+    return `Enter an amount between ${min} - ${max}`;
+  } else if (min) {
+    return `Enter an amount above ${min}`;
+  } else if (max) {
+    return `Enter an amount below ${max}`;
+  }
 };

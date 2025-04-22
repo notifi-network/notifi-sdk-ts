@@ -49,15 +49,22 @@ export const NotifiSmartLinkExample: React.FC = () => {
         </button>
       ) : null}
       <h3>Smart Link Example: metamask</h3>
-      <div style={{ padding: '1.5rem' }}>
+      <div className="notifi-smartlink-container">
         <NotifiSmartLink
           smartLinkId={smartLinkId}
           preAction={preAction}
           actionHandler={async (args) => {
             console.log('Action triggered (react-example-v2)', {
+              selectedWallet,
               args,
               authParams,
             });
+            if (!selectedWallet || selectedWallet !== 'metamask') return;
+            if (!args.payload.transactions) return;
+
+            await wallets[selectedWallet].sendTransaction(
+              JSON.parse(args.payload.transactions[0].UnsignedTransaction),
+            );
           }}
         />
       </div>

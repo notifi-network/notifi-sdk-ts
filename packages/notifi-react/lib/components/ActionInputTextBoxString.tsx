@@ -13,6 +13,7 @@ export type ActionInputTextBoxStringProps = {
   userInputId: number;
   classNames?: {
     container?: string;
+    inputContainer?: string;
     input?: string;
   };
 };
@@ -53,37 +54,44 @@ export const ActionInputTextBoxString: React.FC<
   return (
     <div
       className={clsx(
-        'notifi-smartlink-action-input-textbox-container',
+        'notifi-smartlink-action-input-textbox',
         props.classNames?.container,
-        !isValid && 'invalid',
       )}
     >
-      {props.input.prefix ? (
-        /* No class override, only support default className */
-        <div className="notifi-smartlink-action-input-textbox-prefix">
-          {props.input.prefix}
-        </div>
-      ) : null}
-      <input
-        type="text"
-        placeholder={props.input.placeholder.toString()}
-        maxLength={props.input.constraintType?.maxLength}
-        minLength={props.input.constraintType?.minLength}
+      <div
         className={clsx(
-          'clean-input',
-          'notifi-smartlink-action-input-textbox',
-          props.classNames?.input,
+          'notifi-smartlink-action-input-textbox-container',
+          props.classNames?.inputContainer,
+          !isValid && 'invalid',
         )}
-        onChange={validateAndUpdateActionInputs}
-        onBlur={() => value === '' && setIsValid(true)}
-        value={value}
-      />
-      {props.input.suffix ? (
-        /* No class override, only support default className */
-        <div className="notifi-smartlink-action-input-textbox-suffix">
-          {props.input.suffix}
-        </div>
-      ) : null}
+      >
+        {props.input.prefix ? (
+          /* No class override, only support default className */
+          <div className="notifi-smartlink-action-input-textbox-prefix">
+            {props.input.prefix}
+          </div>
+        ) : null}
+        <input
+          type="text"
+          placeholder={props.input.placeholder.toString()}
+          maxLength={props.input.constraintType?.maxLength}
+          minLength={props.input.constraintType?.minLength}
+          className={clsx(
+            'clean-input',
+            'notifi-smartlink-action-input-textbox-input',
+            props.classNames?.input,
+          )}
+          onChange={validateAndUpdateActionInputs}
+          onBlur={() => value === '' && setIsValid(true)}
+          value={value}
+        />
+        {props.input.suffix ? (
+          /* No class override, only support default className */
+          <div className="notifi-smartlink-action-input-textbox-suffix">
+            {props.input.suffix}
+          </div>
+        ) : null}
+      </div>
     </div>
   );
 };

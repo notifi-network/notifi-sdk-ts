@@ -15,7 +15,7 @@ export default function NotifiLayout({
     if (selectedWallet === 'metamask') {
       return {
         walletPublicKey: wallets[selectedWallet].walletKeys?.hex ?? '',
-        walletBlockchain: 'ARBITRUM',
+        walletBlockchain: 'ETHEREUM',
       };
     }
 

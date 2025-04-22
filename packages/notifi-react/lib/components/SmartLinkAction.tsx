@@ -69,14 +69,25 @@ export const SmartLinkAction: React.FC<SmartLinkActionProps> = (props) => {
         inputWithValidation,
         id,
       ) => {
+        /* ⬇ If the TEXTBOX type input is not required and the user input is init value (''), set it to the default value. NOTE: CheckBox init value = false */
+        const inputParams =
+          actionDictionary[props.smartLinkIdWithActionId].action.inputs[id];
+        if (
+          !inputParams.isRequired &&
+          inputWithValidation.userInput.value === ''
+        ) {
+          const defaultValue = getTextBoxDefaultValue(inputParams);
+          acc[id] = {
+            ...inputWithValidation.userInput,
+            value: defaultValue,
+          };
+        }
+        /* ⬇ ELSE, set the user input value */
         acc[id] = inputWithValidation.userInput;
         return acc;
       },
       {},
     );
-
-    // TODO: remove below before merging into main
-    console.log({ smartLinkId, actionId, actionUserInputs });
 
     /* ⬇ ERROR already handled within context */
     await executeSmartLinkAction({
@@ -194,4 +205,15 @@ const isCheckBox = (
     return false;
   }
   return input.type === 'CHECKBOX';
+};
+
+const getTextBoxDefaultValue = (actionInputParams: ActionInputParams) => {
+  switch (actionInputParams.type) {
+    case 'TEXTBOX':
+      return actionInputParams.default;
+    default:
+      throw new Error(
+        `NotifiSmartLink.getDefaultValue: Unknown action input type: ${JSON.stringify(actionInputParams.type)}`,
+      );
+  }
 };

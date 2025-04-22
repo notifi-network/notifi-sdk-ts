@@ -1,24 +1,30 @@
 /* NotifiSmartLink styles */
 
 .notifi-smartlink {
-  max-width: 26rem;
-  padding: 1rem;
+  color: var(--notifi-font-color);
+  font-family: inherit;
+  background-color: var(--notifi-smartlink-background);
+  position: relative;
+  border-radius: 8px;
+}
+
+.notifi-smartlink-error {
+  height: 20rem;
+  position: relative;
 }
 
 .notifi-smartlink-banner,
 .notifi-smartlink-image {
   width: 100%;
-  height: 8.5625rem;
   border-radius: 8px;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
+  object-fit: contain;
 }
 
 .notifi-smartlink-name {
   display: flex;
   color: var(--notifi-smartlink-name-text);
-  margin-left: 1rem;
-  margin-right: 1rem;
-  margin-bottom: 0.5rem;
+  margin: 0rem 2rem 0.75rem 2rem;
 }
 .notifi-smartlink-namelogo {
   border-radius: 50rem;
@@ -26,27 +32,41 @@
   height: 1.75rem;
   margin-right: 0.5rem;
 }
+.notifi-smartlink-name-text {
+  display: flex;
+  align-items: center;
+  letter-spacing: -0.185px;
+}
 
 .notifi-smartlink-title {
-  font-size: 1.1rem;
+  font-size: 1.375rem;
   font-weight: 700;
-  margin-left: 1rem;
-  margin-right: 1rem;
-  margin-bottom: 0.5rem;
+  margin: 0 2rem 0.5rem 2rem;
+  letter-spacing: -0.185px;
 }
 
 .notifi-smartlink-subtitle {
+  font-size: 1.125rem;
+  letter-spacing: -0.185px;
   color: var(--notifi-smartlink-subtitle-text);
-  margin-left: 1rem;
-  margin-right: 1rem;
+  margin: 0 2rem 0 2rem;
 }
 
 .notifi-smartlink-component {
-  margin: 1rem;
+}
+
+.notifi-smartlink-component .notifi-smartlink-action {
+  padding: 1rem 2rem 1rem 2rem;
+}
+
+.notifi-smartlink-component .notifi-smartlink-text {
+  padding: 1rem 2rem 0.5rem 2rem;
 }
 
 .notifi-smartlink-text {
+  font-size: 1.125rem;
   font-weight: 700;
+  letter-spacing: -0.185px;
 }
 
 /* SmartLinkAction styles*/
@@ -54,13 +74,13 @@
 .notifi-smartlink-action {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 1rem;
 }
 
 .notifi-smartlink-action-btn {
   padding: 0.5rem;
   background-color: var(--notifi-smartlink-action-btn-bg);
-  border-radius: 6px;
+  border-radius: 4px;
   color: var(--notifi-smartlink-action-btn-text);
   cursor: pointer;
 }
@@ -71,38 +91,59 @@
 }
 
 /* SmartLinkActionInputTextBox styles*/
+.notifi-smartlink-action-input-textbox {
+}
+
+.notifi-smartlink-action-input-textbox-constraint-prompt {
+  font-size: 0.75rem;
+  color: var(--notifi-smartlink-action-input-textbox-constraint-prompt-text);
+  text-align: right;
+}
 
 .notifi-smartlink-action-input-textbox-container {
   display: flex;
   background-color: var(--notifi-smartlink-action-input-textbox-container-bg);
   border-radius: 6px;
   align-items: center;
-  padding: 0.5rem;
+  padding: 1rem;
 }
 
 .notifi-smartlink-action-input-textbox-container.invalid {
-  border: 1px solid
+  box-shadow: 0 0 0 1px
     var(--notifi-smartlink-action-input-textbox-container-invalid-border);
 }
 
-.notifi-smartlink-action-input-textbox {
+.notifi-smartlink-action-input-textbox-input {
   flex: 1;
 }
-.notifi-smartlink-action-input-textbox-prefix,
+
+.notifi-smartlink-action-input-textbox-input::placeholder {
+  color: var(--notifi-smartlink-action-input-textbox-input-placeholder-text);
+}
+
+.notifi-smartlink-action-input-textbox-prefix {
+  margin-right: 0.5rem;
+  color: rgb(var(--notifi-color-dusk));
+}
+
 .notifi-smartlink-action-input-textbox-suffix {
   color: rgb(var(--notifi-color-dusk));
 }
 
 /* ActionInputCheckBox Styles */
+.notifi-smartlink-action-input-checkbox {
+}
 
 .notifi-smartlink-action-input-checkbox-container {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.75rem;
   align-items: flex-start;
+  letter-spacing: -0.185px;
 }
 
-.notifi-smartlink-action-input-checkbox {
-  margin-top: 0.25rem;
+.notifi-smartlink-action-input-checkbox-input {
   flex-shrink: 0;
   flex-grow: 0;
+  transform: scale(1.5);
+  accent-color: rgb(var(--notifi-color-secondary-light));
 }

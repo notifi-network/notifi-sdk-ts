@@ -238,11 +238,11 @@ const initActionDictionary = (
                     value: '', // init value as empty
                     id: input.id,
                   },
-                  isValid: false,
+                  isValid: input.isRequired ? false : true,
                 }
               : {
                   userInput: { type: 'CHECKBOX', value: false, id: input.id }, // init value as unchecked
-                  isValid: false,
+                  isValid: input.isRequired ? false : true,
                 };
 
           acc[id] = userInput;

@@ -162,12 +162,13 @@
     var(--notifi-color-rose)
   );
   /* SmartLink colors variables */
+  --notifi-smartlink-background: rgb(var(--notifi-color-white));
   --notifi-smartlink-name-text: rgb(var(--notifi-color-dusk));
   --notifi-smartlink-subtitle-text: rgb(var(--notifi-color-dusk));
   --notifi-smartlink-action-btn-bg: rgb(var(--notifi-color-midnight));
   --notifi-smartlink-action-btn-disabled-bg: rgba(
     var(--notifi-color-midnight),
-    0.3
+    0.4
   );
   --notifi-smartlink-action-btn-text: white;
   --notifi-smartlink-action-input-textbox-container-bg: rgb(
@@ -175,5 +176,11 @@
   );
   --notifi-smartlink-action-input-textbox-container-invalid-border: rgb(
     var(--notifi-color-error)
+  );
+  --notifi-smartlink-action-input-textbox-constraint-prompt-text: rgb(
+    var(--notifi-color-heather)
+  );
+  --notifi-smartlink-action-input-textbox-input-placeholder-text: rgb(
+    var(--notifi-color-dusk)
   );
 }
