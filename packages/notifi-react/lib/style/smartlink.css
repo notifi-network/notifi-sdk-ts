@@ -1,7 +1,16 @@
 /* NotifiSmartLink styles */
 
 .notifi-smartlink {
-  max-width: 29rem;
+  color: var(--notifi-font-color);
+  font-family: inherit;
+  background-color: var(--notifi-smartlink-background);
+  position: relative;
+  border-radius: 8px;
+}
+
+.notifi-smartlink-error {
+  height: 20rem;
+  position: relative;
 }
 
 .notifi-smartlink-banner,
@@ -30,14 +39,14 @@
 }
 
 .notifi-smartlink-title {
-  font-size: 1.37rem;
+  font-size: 1.375rem;
   font-weight: 700;
   margin: 0 2rem 0.5rem 2rem;
   letter-spacing: -0.185px;
 }
 
 .notifi-smartlink-subtitle {
-  font-size: 1.12rem;
+  font-size: 1.125rem;
   letter-spacing: -0.185px;
   color: var(--notifi-smartlink-subtitle-text);
   margin: 0 2rem 0 2rem;

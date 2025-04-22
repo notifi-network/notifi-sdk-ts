@@ -49,7 +49,7 @@ export const NotifiSmartLinkExample: React.FC = () => {
         </button>
       ) : null}
       <h3>Smart Link Example: metamask</h3>
-      <div style={{ padding: '1.5rem' }}>
+      <div className="notifi-smartlink-container">
         <NotifiSmartLink
           smartLinkId={smartLinkId}
           preAction={preAction}

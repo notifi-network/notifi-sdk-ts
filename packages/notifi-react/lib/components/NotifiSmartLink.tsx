@@ -15,7 +15,7 @@ import {
 export type NotifiSmartLinkProps = {
   smartLinkId: string;
   actionHandler: ActionHandler;
-  theme?: 'dark' | 'light';
+  theme?: /*'dark' |*/ 'light' /* Only light is supported for now */;
   nameLogoSrc?: string;
   preAction?: PreAction;
   copy?: {
@@ -55,23 +55,35 @@ export const NotifiSmartLink: React.FC<NotifiSmartLinkProps> = (props) => {
 
   if (error) {
     return (
-      <ErrorView
-        detail={error.message}
-        cta={{
-          icon: 'arrow-back',
-          action: () => {
-            renewSmartLinkConfigAndActionDictionary(props.smartLinkId);
-          },
-        }}
-        classNames={props.classNames?.ErrorView}
-      />
+      <div
+        className={clsx(
+          'notifi-theme-light',
+          'notifi-smartlink-error',
+          props.classNames?.container,
+        )}
+      >
+        <ErrorView
+          detail={error.message}
+          cta={{
+            icon: 'arrow-back',
+            action: () => {
+              renewSmartLinkConfigAndActionDictionary(props.smartLinkId);
+            },
+          }}
+          classNames={props.classNames?.ErrorView}
+        />
+      </div>
     );
   }
 
   return (
     <div
       className={clsx(
-        props.theme === 'dark' ? 'notifi-theme-dark' : 'notifi-theme-light',
+        /**
+         * NOTE: Currently, only light theme is supported.
+         * TODO: props.theme === 'dark' ? 'notifi-theme-dark' : 'notifi-theme-light',
+         */
+        'notifi-theme-light',
         'notifi-smartlink',
         props.classNames?.container,
       )}

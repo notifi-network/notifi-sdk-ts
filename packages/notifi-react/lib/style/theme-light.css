@@ -162,6 +162,7 @@
     var(--notifi-color-rose)
   );
   /* SmartLink colors variables */
+  --notifi-smartlink-background: rgb(var(--notifi-color-white));
   --notifi-smartlink-name-text: rgb(var(--notifi-color-dusk));
   --notifi-smartlink-subtitle-text: rgb(var(--notifi-color-dusk));
   --notifi-smartlink-action-btn-bg: rgb(var(--notifi-color-midnight));
