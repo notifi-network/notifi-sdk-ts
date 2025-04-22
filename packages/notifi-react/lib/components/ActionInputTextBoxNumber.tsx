@@ -25,23 +25,25 @@ export const ActionInputTextBoxNumber: React.FC<
   const { updateActionUserInputs, actionDictionary } =
     useNotifiSmartLinkContext();
   const defaultValue = actionDictionary[props.smartLinkIdWithActionId]
-    .userInputs[props.userInputId].userInput.value as number;
-  const [value, setValue] = React.useState<number>(defaultValue);
+    .userInputs[props.userInputId].userInput.value as number | '';
+  const [value, setValue] = React.useState<number | ''>(defaultValue);
 
   const validateAndUpdateActionInputs = (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const input = e.target;
-    if (input.value === '') return;
+    let isValid = true;
+    let valueToSet: number | '' = Number(input.value);
 
-    let valueToSet = Number(input.value);
-    if (
+    if (input.value === '') {
+      isValid = false;
+      valueToSet = '';
+    } else if (
       props.input.constraintType?.min &&
       props.input.constraintType.min >= Number(input.value)
     ) {
       valueToSet = props.input.constraintType.min;
-    }
-    if (
+    } else if (
       props.input.constraintType?.max &&
       props.input.constraintType.max <= Number(input.value)
     ) {
@@ -56,7 +58,7 @@ export const ActionInputTextBoxNumber: React.FC<
           value: valueToSet,
           id: props.input.id,
         },
-        isValid: true,
+        isValid,
       },
     });
   };
@@ -68,15 +70,14 @@ export const ActionInputTextBoxNumber: React.FC<
         props.classNames?.container,
       )}
     >
-      {getConstrintPrompt(props.input.constraintType) ? (
-        // TODO: Style
+      {getConstraintPrompt(props.input.constraintType) ? (
         <div
           className={clsx(
             'notifi-smartlink-action-input-textbox-constraint-prompt',
             props.classNames?.constraintPrompt,
           )}
         >
-          {getConstrintPrompt(props.input.constraintType)}
+          {getConstraintPrompt(props.input.constraintType)}
         </div>
       ) : null}
       <div
@@ -103,8 +104,7 @@ export const ActionInputTextBoxNumber: React.FC<
           )}
           value={value ?? ''}
           required={props.input.isRequired}
-          onChange={(e) => setValue(Number(e.target.value))}
-          onBlur={validateAndUpdateActionInputs}
+          onChange={validateAndUpdateActionInputs}
         />
         {props.input.suffix ? (
           /* No class override, only support default className */
@@ -118,7 +118,7 @@ export const ActionInputTextBoxNumber: React.FC<
 };
 // Utils
 
-const getConstrintPrompt = (
+const getConstraintPrompt = (
   constraintType: ActionInputTextBoxType<'NUMBER'>['constraintType'],
 ): string | undefined => {
   if (!constraintType) return '';
