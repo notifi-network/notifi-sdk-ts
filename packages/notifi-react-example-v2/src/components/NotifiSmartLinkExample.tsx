@@ -55,9 +55,16 @@ export const NotifiSmartLinkExample: React.FC = () => {
           preAction={preAction}
           actionHandler={async (args) => {
             console.log('Action triggered (react-example-v2)', {
+              selectedWallet,
               args,
               authParams,
             });
+            if (!selectedWallet || selectedWallet !== 'metamask') return;
+            if (!args.payload.transactions) return;
+
+            await wallets[selectedWallet].sendTransaction(
+              JSON.parse(args.payload.transactions[0].UnsignedTransaction),
+            );
           }}
         />
       </div>

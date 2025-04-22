@@ -32,11 +32,9 @@ export const ActionInputTextBoxNumber: React.FC<
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const input = e.target;
-    let isValid = true;
     let valueToSet: number | '' = Number(input.value);
 
     if (input.value === '') {
-      isValid = false;
       valueToSet = '';
     } else if (
       props.input.constraintType?.min &&
@@ -58,7 +56,7 @@ export const ActionInputTextBoxNumber: React.FC<
           value: valueToSet,
           id: props.input.id,
         },
-        isValid,
+        isValid: props.input.isRequired ? input.value !== '' : true,
       },
     });
   };
