@@ -24,9 +24,14 @@ export const ActionInputTextBoxNumber: React.FC<
 > = (props: ActionInputTextBoxNumberProps) => {
   const { updateActionUserInputs, actionDictionary } =
     useNotifiSmartLinkContext();
-  const defaultValue = actionDictionary[props.smartLinkIdWithActionId]
-    .userInputs[props.userInputId].userInput.value as number | '';
-  const [value, setValue] = React.useState<number | ''>(defaultValue);
+  const [value, setValue] = React.useState<number | ''>('');
+
+  React.useEffect(() => {
+    const value = actionDictionary[props.smartLinkIdWithActionId].userInputs[
+      props.userInputId
+    ].userInput.value as number | '';
+    setValue(value);
+  }, [actionDictionary, props.smartLinkIdWithActionId, props.userInputId]);
 
   const validateAndUpdateActionInputs = (
     e: React.ChangeEvent<HTMLInputElement>,
