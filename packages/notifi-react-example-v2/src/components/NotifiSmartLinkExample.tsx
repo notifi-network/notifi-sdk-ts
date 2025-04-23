@@ -29,12 +29,13 @@ export const NotifiSmartLinkExample: React.FC = () => {
             window.open('https://metamask.io/', '_blank');
             return;
           }
-          wallets['metamask'].connect();
+          await wallets['metamask'].connect();
         },
         label: !wallets['metamask'].isInstalled
           ? 'Install Wallet (Metamask)'
           : 'Connect Wallet (Metamask)',
         disabled: false,
+        onError: (e: Error) => console.log(`We got an error: ${e.message}`),
       };
     }
   }, [selectedWallet, wallets]);

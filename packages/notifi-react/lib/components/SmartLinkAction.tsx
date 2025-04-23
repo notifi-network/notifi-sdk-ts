@@ -24,11 +24,13 @@ import {
   ActionInputTextBoxString,
   ActionInputTextBoxStringProps,
 } from './ActionInputTextBoxString';
+import { LoadingAnimation } from './LoadingAnimation';
 
 export type PreAction = {
   disabled: boolean;
   label: string;
   onClick: () => Promise<void>;
+  onError?: (e: Error) => void;
 };
 
 export type SmartLinkActionProps = {
@@ -49,6 +51,7 @@ export type SmartLinkActionProps = {
 };
 
 export const SmartLinkAction: React.FC<SmartLinkActionProps> = (props) => {
+  const [isLoading, setIsLoading] = React.useState(false);
   const {
     actionDictionary,
     executeSmartLinkAction,
@@ -57,8 +60,22 @@ export const SmartLinkAction: React.FC<SmartLinkActionProps> = (props) => {
 
   const [smartLinkId, actionId] = props.smartLinkIdWithActionId.split(':;:');
 
+  const executePreAction = React.useCallback(async () => {
+    if (isLoading) return;
+    setIsLoading(true);
+    try {
+      await props.preAction!.onClick();
+    } catch (e) {
+      props.preAction!.onError?.(e as Error);
+      console.error(e);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [props.preAction]);
+
   const executeAction = React.useCallback(async () => {
     if (!smartLinkConfigDictionary[smartLinkId].isActive) return;
+    if (isLoading) return;
 
     const inputsWithValidation =
       actionDictionary[props.smartLinkIdWithActionId].userInputs;
@@ -88,7 +105,7 @@ export const SmartLinkAction: React.FC<SmartLinkActionProps> = (props) => {
       },
       {},
     );
-
+    setIsLoading(true);
     /* ⬇ ERROR already handled within context */
     await executeSmartLinkAction({
       smartLinkId,
@@ -96,6 +113,7 @@ export const SmartLinkAction: React.FC<SmartLinkActionProps> = (props) => {
       inputs: actionUserInputs,
       execute: props.actionHandler,
     });
+    setIsLoading(false);
   }, [
     actionDictionary,
     props.actionHandler,
@@ -109,10 +127,13 @@ export const SmartLinkAction: React.FC<SmartLinkActionProps> = (props) => {
     if (!smartLinkConfigDictionary[smartLinkId].isActive) return false;
     const userInputs =
       actionDictionary[props.smartLinkIdWithActionId].userInputs;
-    return Object.values(userInputs)
-      .map((userInput) => userInput.isValid)
-      .every((isValid) => isValid);
-  }, [actionDictionary, props.smartLinkIdWithActionId]);
+    return (
+      !isLoading &&
+      Object.values(userInputs)
+        .map((userInput) => userInput.isValid)
+        .every((isValid) => isValid)
+    );
+  }, [actionDictionary, props.smartLinkIdWithActionId, isLoading]);
 
   return (
     <div
@@ -159,10 +180,25 @@ export const SmartLinkAction: React.FC<SmartLinkActionProps> = (props) => {
         /* Pre Action Button */
         <button
           className={clsx('btn', 'notifi-smartlink-action-btn')}
-          onClick={() => props.preAction!.onClick()}
-          disabled={props.preAction.disabled}
+          onClick={executePreAction}
+          disabled={props.preAction.disabled || isLoading}
         >
-          {props.preAction.label}
+          {isLoading ? (
+            <LoadingAnimation
+              type="spinner"
+              classNames={{
+                spinner: 'notifi-smartlink-action-btn-loading-spinner',
+              }}
+            />
+          ) : null}
+          <div
+            className={clsx(
+              'notifi-smartlink-action-btn-text',
+              isLoading && 'hidden',
+            )}
+          >
+            {props.preAction.label}
+          </div>
         </button>
       ) : (
         /* Main Action Button */
@@ -171,9 +207,24 @@ export const SmartLinkAction: React.FC<SmartLinkActionProps> = (props) => {
           onClick={executeAction}
           disabled={!isButtonEnabled}
         >
-          {!smartLinkConfigDictionary[smartLinkId].isActive
-            ? (props.copy?.inactiveLabel ?? 'Unavailable')
-            : action.label}
+          {isLoading ? (
+            <LoadingAnimation
+              type="spinner"
+              classNames={{
+                spinner: 'notifi-smartlink-action-btn-loading-spinner',
+              }}
+            />
+          ) : null}
+          <div
+            className={clsx(
+              'notifi-smartlink-action-btn-text',
+              isLoading && 'hidden',
+            )}
+          >
+            {!smartLinkConfigDictionary[smartLinkId].isActive
+              ? (props.copy?.inactiveLabel ?? 'Unavailable')
+              : action.label}
+          </div>
         </button>
       )}
     </div>
