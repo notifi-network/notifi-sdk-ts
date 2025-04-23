@@ -23,9 +23,10 @@ type NotifiSmartLinkContextType = {
   renewSmartLinkConfigAndActionDictionary: (
     smartLinkId: string,
   ) => Promise<void>;
+  /* If userInput is undefined, reset the userInputs to initial state */
   updateActionUserInputs: (
     smartLinkIdWithActionId: SmartLinkIdWithActionId,
-    userInput: { [userInputId: number]: ActionUserInputWithValidation },
+    userInput?: { [userInputId: number]: ActionUserInputWithValidation },
   ) => void;
   executeSmartLinkAction: (
     args: Parameters<NotifiSmartLinkClient['activateSmartLinkAction']>[0] & {
@@ -84,13 +85,26 @@ export const NotifiSmartLinkContextProvider: FC<
   }, [authParams]);
 
   const updateActionUserInputs: NotifiSmartLinkContextType['updateActionUserInputs'] =
-    (smartLinkIdWithActionId, userInput) => {
+    (smartLinkIdWithActionId, userInput?) => {
       if (!objectKeys(actionDictionary).includes(smartLinkIdWithActionId)) {
         setError(
           new Error(
             '.updateActionDictionary: IDs not matched in NotifiSmartLinkContext',
           ),
         );
+        return;
+      }
+
+      if (!userInput) {
+        const action = actionDictionary[smartLinkIdWithActionId].action;
+
+        setActionDictionary((prev) => ({
+          ...prev,
+          [smartLinkIdWithActionId]: {
+            action,
+            userInputs: getInitialUserInputs(action),
+          },
+        }));
         return;
       }
 
@@ -228,28 +242,7 @@ const initActionDictionary = (
     (acc: ActionDictionary, action) => {
       const actionId = action.id;
       // TODO: Fix O(n^2) issue
-      const userInputs = action.inputs.reduce(
-        (acc: Record<number, ActionUserInputWithValidation>, input, id) => {
-          const userInput: ActionUserInputWithValidation =
-            input.type === 'TEXTBOX'
-              ? {
-                  userInput: {
-                    type: 'TEXTBOX',
-                    value: '', // init value as empty
-                    id: input.id,
-                  },
-                  isValid: input.isRequired ? false : true,
-                }
-              : {
-                  userInput: { type: 'CHECKBOX', value: false, id: input.id }, // init value as unchecked
-                  isValid: input.isRequired ? false : true,
-                };
-
-          acc[id] = userInput;
-          return acc;
-        },
-        {},
-      );
+      const userInputs = getInitialUserInputs(action);
 
       acc[`${smartLinkId}:;:${actionId}`] = {
         action,
@@ -260,4 +253,32 @@ const initActionDictionary = (
     {},
   );
   return actionDict;
+};
+
+const getInitialUserInputs = (
+  action: SmartLinkAction,
+): Record<number, ActionUserInputWithValidation> => {
+  const userInputs = action.inputs.reduce(
+    (acc: Record<number, ActionUserInputWithValidation>, input, id) => {
+      const userInput: ActionUserInputWithValidation =
+        input.type === 'TEXTBOX'
+          ? {
+              userInput: {
+                type: 'TEXTBOX',
+                value: '', // init value as empty
+                id: input.id,
+              },
+              isValid: input.isRequired ? false : true,
+            }
+          : {
+              userInput: { type: 'CHECKBOX', value: false, id: input.id }, // init value as unchecked
+              isValid: input.isRequired ? false : true,
+            };
+
+      acc[id] = userInput;
+      return acc;
+    },
+    {},
+  );
+  return userInputs;
 };

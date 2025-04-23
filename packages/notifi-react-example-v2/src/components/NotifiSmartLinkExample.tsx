@@ -10,7 +10,7 @@ import React from 'react';
 
 export const NotifiSmartLinkExample: React.FC = () => {
   const { wallets, selectedWallet } = useWallets();
-  const { authParams } = useNotifiSmartLinkContext();
+  const { authParams, updateActionUserInputs } = useNotifiSmartLinkContext();
   const currentPath = usePathname();
 
   const smartLinkId = React.useMemo(() => {
@@ -62,9 +62,16 @@ export const NotifiSmartLinkExample: React.FC = () => {
             if (!selectedWallet || selectedWallet !== 'metamask') return;
             if (!args.payload.transactions) return;
 
-            await wallets[selectedWallet].sendTransaction(
-              JSON.parse(args.payload.transactions[0].UnsignedTransaction),
-            );
+            const smartLinkIdWithActionId: `${string}:;:${string}` = `${args.smartLinkId}:;:${args.actionId}`;
+
+            try {
+              await wallets[selectedWallet].sendTransaction(
+                JSON.parse(args.payload.transactions[0].UnsignedTransaction),
+              );
+            } finally {
+              /* Reset the user inputs to the initial state */
+              updateActionUserInputs(smartLinkIdWithActionId);
+            }
           }}
         />
       </div>

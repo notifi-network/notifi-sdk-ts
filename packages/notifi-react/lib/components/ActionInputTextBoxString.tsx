@@ -24,9 +24,14 @@ export const ActionInputTextBoxString: React.FC<
   const [isValid, setIsValid] = React.useState<boolean>(true);
   const { updateActionUserInputs, actionDictionary } =
     useNotifiSmartLinkContext();
-  const defaultValue = actionDictionary[props.smartLinkIdWithActionId]
-    .userInputs[props.userInputId].userInput.value as string;
-  const [value, setValue] = React.useState<string>(defaultValue);
+  const [value, setValue] = React.useState<string>('');
+
+  React.useEffect(() => {
+    const value = actionDictionary[props.smartLinkIdWithActionId].userInputs[
+      props.userInputId
+    ].userInput.value as string | '';
+    setValue(value);
+  }, [actionDictionary, props.smartLinkIdWithActionId, props.userInputId]);
 
   const validateAndUpdateActionInputs = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -36,7 +41,12 @@ export const ActionInputTextBoxString: React.FC<
     const isPatternValid = new RegExp(
       props.input.constraintType?.pattern || '',
     );
-    const isConstraintMet = isInputValid && isPatternValid.test(input.value);
+    const isConstraintMet = props.input.isRequired
+      ? /* If the input is required, check if the input is valid and the pattern matches */
+        isInputValid && isPatternValid.test(input.value) && input.value !== ''
+      : /* If the input is NOT required, check if the pattern matches or the input is empty */
+        isPatternValid.test(input.value) || input.value === '';
+
     setIsValid(isConstraintMet);
 
     setValue(input.value);
@@ -47,7 +57,7 @@ export const ActionInputTextBoxString: React.FC<
           type: 'TEXTBOX',
           value: input.value,
         },
-        isValid: props.input.isRequired ? isConstraintMet : true,
+        isValid: isConstraintMet,
       },
     });
   };
