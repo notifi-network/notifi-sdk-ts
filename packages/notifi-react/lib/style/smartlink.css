@@ -83,11 +83,24 @@
   border-radius: 4px;
   color: var(--notifi-smartlink-action-btn-text);
   cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .notifi-smartlink-action-btn:disabled {
   background-color: var(--notifi-smartlink-action-btn-disabled-bg);
   cursor: not-allowed;
+}
+
+.notifi-smartlink-action-btn-text.hidden {
+  visibility: hidden;
+}
+
+.notifi-smartlink-action-btn-loading-spinner {
+  width: 20px;
+  height: 20px;
 }
 
 /* SmartLinkActionInputTextBox styles*/
