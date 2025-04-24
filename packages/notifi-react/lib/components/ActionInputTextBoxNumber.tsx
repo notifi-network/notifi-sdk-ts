@@ -36,19 +36,22 @@ export const ActionInputTextBoxNumber: React.FC<
   ) => {
     const input = e.target;
     let valueToSet: number | '' = Number(input.value);
+    const min = props.input.constraintType?.min;
+    const max = props.input.constraintType?.max;
+    const step = 4;
 
     if (input.value === '') {
       valueToSet = '';
-    } else if (
-      props.input.constraintType?.min &&
-      props.input.constraintType.min >= Number(input.value)
-    ) {
-      valueToSet = props.input.constraintType.min;
-    } else if (
-      props.input.constraintType?.max &&
-      props.input.constraintType.max <= Number(input.value)
-    ) {
-      valueToSet = props.input.constraintType.max;
+    } else if (min && min >= Number(input.value)) {
+      valueToSet = min;
+    } else if (max && max <= Number(input.value)) {
+      valueToSet = max;
+    }
+    /* If the input is a decimal number and the length of the decimal part is greater than step, remove the last digit */
+    const [_, decimalPart] = valueToSet.toString().split('.');
+    console.log({ valueToSet, decimalPart });
+    if (decimalPart && decimalPart.length > step && valueToSet !== '') {
+      valueToSet = Number(valueToSet.toString().slice(0, -1));
     }
 
     updateActionUserInputs(props.smartLinkIdWithActionId, {
@@ -97,7 +100,6 @@ export const ActionInputTextBoxNumber: React.FC<
           placeholder={props.input.placeholder.toString()}
           min={props.input.constraintType?.min}
           max={props.input.constraintType?.max}
-          step="0.0001"
           className={clsx(
             'clean-input',
             'notifi-smartlink-action-input-textbox-input',
