@@ -24,13 +24,11 @@ export const ActionInputTextBoxString: React.FC<
   const [isValid, setIsValid] = React.useState<boolean>(true);
   const { updateActionUserInputs, actionDictionary } =
     useNotifiSmartLinkContext();
-  const [value, setValue] = React.useState<string>('');
 
-  React.useEffect(() => {
-    const value = actionDictionary[props.smartLinkIdWithActionId].userInputs[
+  const value = React.useMemo(() => {
+    return actionDictionary[props.smartLinkIdWithActionId].userInputs[
       props.userInputId
     ].userInput.value as string | '';
-    setValue(value);
   }, [actionDictionary, props.smartLinkIdWithActionId, props.userInputId]);
 
   const validateAndUpdateActionInputs = (
@@ -49,7 +47,6 @@ export const ActionInputTextBoxString: React.FC<
 
     setIsValid(isConstraintMet);
 
-    setValue(input.value);
     updateActionUserInputs(props.smartLinkIdWithActionId, {
       [props.userInputId]: {
         userInput: {
