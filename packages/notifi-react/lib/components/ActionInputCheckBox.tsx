@@ -24,20 +24,16 @@ export const ActionInputCheckBox: React.FC<ActionInputCheckBoxProps> = (
   const { updateActionUserInputs, actionDictionary } =
     useNotifiSmartLinkContext();
 
-  const [value, setValue] = React.useState<boolean>(false);
-
-  React.useEffect(() => {
-    const value = actionDictionary[props.smartLinkIdWithActionId].userInputs[
+  const value = React.useMemo(() => {
+    return actionDictionary[props.smartLinkIdWithActionId].userInputs[
       props.userInputId
     ].userInput.value as boolean;
-    setValue(value);
   }, [actionDictionary, props.smartLinkIdWithActionId, props.userInputId]);
 
   const validateAndUpdateActionInputs = (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const isChecked = e.target.checked;
-    setValue(isChecked);
     updateActionUserInputs(props.smartLinkIdWithActionId, {
       [props.userInputId]: {
         userInput: {

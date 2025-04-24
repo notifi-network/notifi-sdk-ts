@@ -24,13 +24,11 @@ export const ActionInputTextBoxNumber: React.FC<
 > = (props: ActionInputTextBoxNumberProps) => {
   const { updateActionUserInputs, actionDictionary } =
     useNotifiSmartLinkContext();
-  const [value, setValue] = React.useState<number | ''>('');
 
-  React.useEffect(() => {
-    const value = actionDictionary[props.smartLinkIdWithActionId].userInputs[
+  const value = React.useMemo(() => {
+    return actionDictionary[props.smartLinkIdWithActionId].userInputs[
       props.userInputId
     ].userInput.value as number | '';
-    setValue(value);
   }, [actionDictionary, props.smartLinkIdWithActionId, props.userInputId]);
 
   const validateAndUpdateActionInputs = (
@@ -53,7 +51,6 @@ export const ActionInputTextBoxNumber: React.FC<
       valueToSet = props.input.constraintType.max;
     }
 
-    setValue(valueToSet);
     updateActionUserInputs(props.smartLinkIdWithActionId, {
       [props.userInputId]: {
         userInput: {
@@ -100,12 +97,13 @@ export const ActionInputTextBoxNumber: React.FC<
           placeholder={props.input.placeholder.toString()}
           min={props.input.constraintType?.min}
           max={props.input.constraintType?.max}
+          step="0.0001"
           className={clsx(
             'clean-input',
             'notifi-smartlink-action-input-textbox-input',
             props.classNames?.input,
           )}
-          value={value ?? ''}
+          value={value}
           required={props.input.isRequired}
           onChange={validateAndUpdateActionInputs}
         />
