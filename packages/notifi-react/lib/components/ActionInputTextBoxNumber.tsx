@@ -49,7 +49,6 @@ export const ActionInputTextBoxNumber: React.FC<
     }
     /* If the input is a decimal number and the length of the decimal part is greater than step, remove the last digit */
     const [_, decimalPart] = valueToSet.toString().split('.');
-    console.log({ valueToSet, decimalPart });
     if (decimalPart && decimalPart.length > step && valueToSet !== '') {
       valueToSet = Number(valueToSet.toString().slice(0, -1));
     }
@@ -107,6 +106,9 @@ export const ActionInputTextBoxNumber: React.FC<
           )}
           value={value}
           required={props.input.isRequired}
+          onKeyDown={(e) =>
+            ['e', 'E', '+', '-'].includes(e.key) && e.preventDefault()
+          }
           onChange={validateAndUpdateActionInputs}
         />
         {props.input.suffix ? (
