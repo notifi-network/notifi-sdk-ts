@@ -94,7 +94,7 @@
   cursor: not-allowed;
 }
 
-.notifi-smartlink-action-btn-text.hidden {
+.notifi-smartlink-action-btn-text.notifi-smartlink-action-btn-txt-hidden {
   visibility: hidden;
 }
 
