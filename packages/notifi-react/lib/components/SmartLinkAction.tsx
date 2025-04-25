@@ -194,7 +194,7 @@ export const SmartLinkAction: React.FC<SmartLinkActionProps> = (props) => {
           <div
             className={clsx(
               'notifi-smartlink-action-btn-text',
-              isLoading && 'hidden',
+              isLoading && 'notifi-smartlink-action-btn-txt-hidden',
             )}
           >
             {props.preAction.label}
@@ -218,7 +218,7 @@ export const SmartLinkAction: React.FC<SmartLinkActionProps> = (props) => {
           <div
             className={clsx(
               'notifi-smartlink-action-btn-text',
-              isLoading && 'hidden',
+              isLoading && 'notifi-smartlink-action-btn-txt-hidden',
             )}
           >
             {!smartLinkConfigDictionary[smartLinkId].isActive
