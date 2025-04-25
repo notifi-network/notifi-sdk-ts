@@ -111,6 +111,7 @@
   font-size: 0.75rem;
   color: var(--notifi-smartlink-action-input-textbox-constraint-prompt-text);
   text-align: right;
+  font-weight: 600;
 }
 
 .notifi-smartlink-action-input-textbox-container {
