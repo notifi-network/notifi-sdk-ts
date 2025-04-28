@@ -96,10 +96,20 @@ export const useTargetListItem = (input: {
                 targetGroup?.telegramTargets?.[0]?.confirmationUrl &&
                 !targetGroup?.telegramTargets?.[0]?.isConfirmed
               ) {
-                window.open(
-                  targetGroup?.telegramTargets?.[0]?.confirmationUrl,
-                  '_blank',
-                );
+                const confirmationUrl =
+                  targetGroup?.telegramTargets?.[0]?.confirmationUrl;
+
+                // Attempt to open a new window
+                const newWindow = window.open(confirmationUrl, '_blank');
+
+                // Check if the new window was blocked or failed to open
+                if (
+                  !newWindow ||
+                  newWindow.closed ||
+                  typeof newWindow.closed === 'undefined'
+                ) {
+                  window.location.href = confirmationUrl;
+                }
               }
               //NOTE: Wait for 1 second for target context state change
               await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -123,10 +133,20 @@ export const useTargetListItem = (input: {
                 targetGroup?.discordTargets?.[0]?.verificationLink &&
                 !targetGroup?.discordTargets?.[0]?.isConfirmed
               ) {
-                window.open(
-                  targetGroup?.discordTargets?.[0]?.verificationLink,
-                  '_blank',
-                );
+                const confirmationUrl =
+                  targetGroup?.discordTargets?.[0]?.verificationLink;
+
+                // Attempt to open a new window
+                const newWindow = window.open(confirmationUrl, '_blank');
+
+                // Check if the new window was blocked or failed to open
+                if (
+                  !newWindow ||
+                  newWindow.closed ||
+                  typeof newWindow.closed === 'undefined'
+                ) {
+                  window.location.href = confirmationUrl;
+                }
               }
               //NOTE: Wait for 1 second for target context state change
               await new Promise((resolve) => setTimeout(resolve, 1000));
