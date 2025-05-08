@@ -12,8 +12,8 @@
     "test:smartlink": "cypress run --component --spec 'cypress/component/NotifiSmartLink.cy.tsx' --browser chrome",
     "cypress:open": "cypress open",
     "cypress:ci": "npm run cypress:ci-card && npm run cypress:ci-smartlink",
-    "cypress:ci-card": "cypress run --component --group notifi-e2e --spec 'cypress/component/NotifiCardModal.cy.tsx' --browser chrome --record",
-    "cypress:ci-smartlink": "cypress run --component --group notifi-e2e --spec 'cypress/component/NotifiSmartLink.cy.tsx' --browser chrome --record"
+    "cypress:ci-card": "cypress run --component --group notifi-e2e --spec 'cypress/component/NotifiCardModal.cy.tsx' --browser chrome --record --parallel",
+    "cypress:ci-smartlink": "cypress run --component --group notifi-e2e --spec 'cypress/component/NotifiSmartLink.cy.tsx' --browser chrome --record --parallel"
   },
   "dependencies": {
     "@ethersproject/bytes": "^5.8.0",
