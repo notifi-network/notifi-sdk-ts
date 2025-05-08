@@ -16,7 +16,7 @@ import {
 import { NotifiContextProvider } from '@notifi-network/notifi-react';
 import { generateMnemonic } from 'bip39';
 import { ethers } from 'ethers';
-import { useState } from 'react';
+import { ComponentProps, useState } from 'react';
 
 import { aliasQuery, hasOperationName } from '../utils';
 
@@ -236,10 +236,10 @@ const NotifiSmartLinkCypressComponent: React.FC<
   };
   const [renderPreAction, setRenderPreAction] = useState(!!preActionMetadata);
 
-  const preAction = {
-    disabled: preActionMetadata?.isPreActionDisabled,
+  const preAction: ComponentProps<typeof NotifiSmartLink>['preAction'] = {
+    disabled: preActionMetadata?.isPreActionDisabled ?? false,
     label: 'Pre Action',
-    onClick: () => setRenderPreAction(false),
+    onClick: async () => setRenderPreAction(false),
   };
 
   const actionHandler: ActionHandler = async (args) => {
