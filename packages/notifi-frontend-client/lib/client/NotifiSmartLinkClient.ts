@@ -52,35 +52,3 @@ export class NotifiSmartLinkClient {
     });
   }
 }
-
-// TODO: Temp note to be removed - this check should happen in dataplane client
-// const _activateSmartLinkAction = async (
-//   service: NotifiDataplaneClient,
-//   authParams: AuthParams,
-//   args: ActivateSmartLinkActionInput,
-// ): Promise<ActivateSmartLinkActionResponse> => {
-//   if (checkIsConfigWithPublicKey(authParams)) {
-//     /* CASE#1: EVM chains */
-//     if (isEvmBlockchain(authParams.walletBlockchain)) {
-//       return service.activateSmartLinkAction(args);
-//     }
-
-//     if (authParams.walletBlockchain === 'SOLANA') {
-//       /* CASE#2: Solana - Await to implement */
-//     }
-//   }
-
-//   if (checkIsConfigWithDelegate(authParams)) {
-//     /* CASE#3: Cosmos - Await to implement */
-//   }
-
-//   if (checkIsConfigWithPublicKeyAndAddress(authParams)) {
-//     /* CASE#4: Other chains - Await to implement */
-//   }
-
-//   if (checkIsConfigWithOidc(authParams)) {
-//     /* CASE#5: OFF_CHAIN - Await to implement */
-//   }
-//   const errMsg = `NotifiSmartLinkClient.executeSmartLinkActionImpl: SmartLink action for ${authParams.walletBlockchain} is not supported yet`;
-//   throw new Error(errMsg);
-// };

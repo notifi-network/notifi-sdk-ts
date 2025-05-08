@@ -19,6 +19,8 @@
     "compile": "tsup lib/index.ts --format cjs,esm --dts --clean",
     "clean": "rimraf ./dist",
     "test": "jest",
+    "test:frontend-client": "jest ./__test_/NotifiFrontendClient.test.ts",
+    "test:smartlink-client": "jest ./__test__/NotifiSmartLinkClient.test.ts",
     "prepublishOnly": "npm run build"
   },
   "repository": {

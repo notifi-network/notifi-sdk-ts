@@ -1,6 +1,9 @@
 'use client';
 
-import { AuthParams } from '@notifi-network/notifi-frontend-client';
+import {
+  AuthParams,
+  NotifiEnvironment,
+} from '@notifi-network/notifi-frontend-client';
 import { NotifiSmartLinkContextProvider } from '@notifi-network/notifi-react';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import React, { Suspense } from 'react';
@@ -11,11 +14,15 @@ export default function NotifiLayout({
   children: React.ReactNode;
 }) {
   const { wallets, selectedWallet } = useWallets();
+  const env = process.env.NEXT_PUBLIC_ENV;
+  if (!env) {
+    throw new Error('NEXT_PUBLIC_ENV is not defined');
+  }
   const authParams: AuthParamsWithPublickey | undefined = React.useMemo(() => {
     if (selectedWallet === 'metamask') {
       return {
         walletPublicKey: wallets[selectedWallet].walletKeys?.hex ?? '',
-        walletBlockchain: 'ETHEREUM',
+        walletBlockchain: 'ARBITRUM',
       };
     }
 
@@ -31,7 +38,7 @@ export default function NotifiLayout({
   return (
     <Suspense>
       <NotifiSmartLinkContextProvider
-        env={'Development'}
+        env={env as NotifiEnvironment}
         authParams={authParams}
       >
         {children}
