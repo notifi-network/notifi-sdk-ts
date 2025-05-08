@@ -1,0 +1,163 @@
+/* NotifiSmartLink styles */
+
+.notifi-smartlink {
+  color: var(--notifi-font-color);
+  font-family: inherit;
+  background-color: var(--notifi-smartlink-background);
+  position: relative;
+  border-radius: 8px;
+}
+
+.notifi-smartlink-error {
+  height: 20rem;
+  position: relative;
+}
+
+.notifi-smartlink-banner,
+.notifi-smartlink-image {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+  object-fit: contain;
+}
+
+.notifi-smartlink-name {
+  display: flex;
+  color: var(--notifi-smartlink-name-text);
+  margin: 0rem 2rem 0.75rem 2rem;
+}
+.notifi-smartlink-namelogo {
+  border-radius: 50rem;
+  width: 1.75rem;
+  height: 1.75rem;
+  margin-right: 0.5rem;
+}
+.notifi-smartlink-name-text {
+  display: flex;
+  align-items: center;
+  letter-spacing: -0.185px;
+}
+
+.notifi-smartlink-title {
+  font-size: 1.375rem;
+  font-weight: 700;
+  margin: 0 2rem 0.5rem 2rem;
+  letter-spacing: -0.185px;
+}
+
+.notifi-smartlink-subtitle {
+  font-size: 1.125rem;
+  letter-spacing: -0.185px;
+  color: var(--notifi-smartlink-subtitle-text);
+  margin: 0 2rem 0 2rem;
+}
+
+.notifi-smartlink-component {
+}
+
+.notifi-smartlink-component .notifi-smartlink-action {
+  padding: 1rem 2rem 1rem 2rem;
+}
+
+.notifi-smartlink-component .notifi-smartlink-text {
+  padding: 1rem 2rem 0.5rem 2rem;
+}
+
+.notifi-smartlink-text {
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: -0.185px;
+}
+
+/* SmartLinkAction styles*/
+
+.notifi-smartlink-action {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.notifi-smartlink-action-btn {
+  padding: 0.5rem;
+  background-color: var(--notifi-smartlink-action-btn-bg);
+  border-radius: 4px;
+  color: var(--notifi-smartlink-action-btn-text);
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notifi-smartlink-action-btn:disabled {
+  background-color: var(--notifi-smartlink-action-btn-disabled-bg);
+  cursor: not-allowed;
+}
+
+.notifi-smartlink-action-btn-text.notifi-smartlink-action-btn-txt-hidden {
+  visibility: hidden;
+}
+
+.notifi-smartlink-action-btn-loading-spinner {
+  width: 20px;
+  height: 20px;
+}
+
+/* SmartLinkActionInputTextBox styles*/
+.notifi-smartlink-action-input-textbox {
+}
+
+.notifi-smartlink-action-input-textbox-constraint-prompt {
+  font-size: 0.75rem;
+  color: var(--notifi-smartlink-action-input-textbox-constraint-prompt-text);
+  text-align: right;
+  font-weight: 600;
+}
+
+.notifi-smartlink-action-input-textbox-container {
+  display: flex;
+  background-color: var(--notifi-smartlink-action-input-textbox-container-bg);
+  border-radius: 6px;
+  align-items: center;
+  padding: 1rem;
+}
+
+.notifi-smartlink-action-input-textbox-container.invalid {
+  box-shadow: 0 0 0 1px
+    var(--notifi-smartlink-action-input-textbox-container-invalid-border);
+}
+
+.notifi-smartlink-action-input-textbox-input {
+  flex: 1;
+}
+
+.notifi-smartlink-action-input-textbox-input::placeholder {
+  color: var(--notifi-smartlink-action-input-textbox-input-placeholder-text);
+}
+
+.notifi-smartlink-action-input-textbox-prefix {
+  margin-right: 0.5rem;
+  color: rgb(var(--notifi-color-dusk));
+}
+
+.notifi-smartlink-action-input-textbox-suffix {
+  color: rgb(var(--notifi-color-dusk));
+}
+
+/* ActionInputCheckBox Styles */
+.notifi-smartlink-action-input-checkbox {
+}
+
+.notifi-smartlink-action-input-checkbox-container {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  letter-spacing: -0.185px;
+}
+
+.notifi-smartlink-action-input-checkbox-input {
+  flex-shrink: 0;
+  flex-grow: 0;
+  transform: scale(1.5);
+  accent-color: rgb(var(--notifi-color-secondary-light));
+}

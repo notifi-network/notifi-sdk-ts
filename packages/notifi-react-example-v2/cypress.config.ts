@@ -15,9 +15,13 @@ export default defineConfig({
     DAPP_ADDRESS: 'ueq5rm4w8vconyp9hkd1', // Default test tenant (change if needed)
     CARD_ID: '61442256a6e9458cadc053a19be67ecc', // Default test card (change if needed)
     ENV: 'Production',
+
     MNEMONIC:
       'civil squeeze word coach always source aunt believe yard urge night alert', // Change to your own mnemonic if needed
     WALLET_BLOCKCHAIN: 'ETHEREUM',
+    /* SMARTLINK ENV VARS */
+    SMARTLINK_ENV: 'Development',
+    SMARTLINK_ID: '1302fc05485341eab8931e759cc0a08c',
   },
   retries: {
     runMode: 2,

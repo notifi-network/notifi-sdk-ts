@@ -1,7 +1,7 @@
 import {
   NotifiEnvironment,
-  NotifiEnvironmentConfiguration,
   NotifiFrontendClient,
+  NotifiFrontendConfiguration,
   WalletWithSignParams,
   instantiateFrontendClient,
 } from '@notifi-network/notifi-frontend-client';
@@ -49,7 +49,7 @@ export const NotifiFrontendClientContext =
 export type NotifiFrontendClientProviderProps = {
   tenantId: string;
   env?: NotifiEnvironment;
-  storageOption?: NotifiEnvironmentConfiguration['storageOption'];
+  storageOption?: NotifiFrontendConfiguration['storageOption'];
   isEnabledLoginViaTransaction?: boolean;
 } & WalletWithSignParams;
 
