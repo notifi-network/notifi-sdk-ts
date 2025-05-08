@@ -1,17 +1,22 @@
 /// <reference types="cypress" />
 import { arrayify } from '@ethersproject/bytes';
 import {
+  AuthParams,
   EvmUserParams,
   envUrl,
   instantiateFrontendClient,
 } from '@notifi-network/notifi-frontend-client';
 import {
+  ActionHandler,
   NotifiCardModal,
   NotifiCardModalProps,
+  NotifiSmartLink,
+  NotifiSmartLinkContextProvider,
 } from '@notifi-network/notifi-react';
 import { NotifiContextProvider } from '@notifi-network/notifi-react';
 import { generateMnemonic } from 'bip39';
 import { ethers } from 'ethers';
+import { ComponentProps, useState } from 'react';
 
 import { aliasQuery, hasOperationName } from '../utils';
 
@@ -25,6 +30,8 @@ declare global {
       loadCSS(): void;
       overrideCardConfig(items: Record<string, any>): void;
       overrideTargetGroup(isEmpty?: boolean): void;
+      /* ⬇ SmartLink commands */
+      mountSmartLink(preActionMetadata?: PreActionMetadata): void;
     }
   }
 }
@@ -206,9 +213,58 @@ const clearNotifiStorage = async () => {
   };
 };
 
+type PreActionMetadata = {
+  isPreActionDisabled: boolean;
+};
+const mountSmartLink = (preActionMetadata?: PreActionMetadata) => {
+  cy.mount(
+    <NotifiSmartLinkCypressComponent preActionMetadata={preActionMetadata} />,
+  );
+};
+
+type NotifiSmartLinkCypressComponentProps = {
+  preActionMetadata?: PreActionMetadata;
+};
+const NotifiSmartLinkCypressComponent: React.FC<
+  React.PropsWithChildren<NotifiSmartLinkCypressComponentProps>
+> = ({ preActionMetadata }) => {
+  const smartLinkId = Cypress.env('SMARTLINK_ID');
+  const env = Cypress.env('SMARTLINK_ENV');
+  const authParams: AuthParams = {
+    walletBlockchain: Cypress.env('WALLET_BLOCKCHAIN'),
+    walletPublicKey: getConnectedWallet(true).address,
+  };
+  const [renderPreAction, setRenderPreAction] = useState(!!preActionMetadata);
+
+  const preAction: ComponentProps<typeof NotifiSmartLink>['preAction'] = {
+    disabled: preActionMetadata?.isPreActionDisabled ?? false,
+    label: 'Pre Action',
+    onClick: async () => setRenderPreAction(false),
+  };
+
+  const actionHandler: ActionHandler = async (args) => {
+    console.info('Action triggered (react-example-v2)', {
+      args,
+      authParams,
+    });
+  };
+
+  return (
+    <NotifiSmartLinkContextProvider env={env} authParams={authParams}>
+      <NotifiSmartLink
+        smartLinkId={smartLinkId}
+        actionHandler={actionHandler}
+        preAction={renderPreAction ? preAction : undefined}
+      />
+    </NotifiSmartLinkContextProvider>
+  );
+};
+
 Cypress.Commands.add('clearNotifiStorage', clearNotifiStorage);
 Cypress.Commands.add('updateTargetGroup', updateTargetGroup);
 Cypress.Commands.add('mountCardModal', mountCardModal);
 Cypress.Commands.add('loadCSS', loadCSS);
 Cypress.Commands.add('overrideCardConfig', overrideCardConfig);
 Cypress.Commands.add('overrideTargetGroup', overrideTargetGroup);
+/* ⬇ SmartLink commands */
+Cypress.Commands.add('mountSmartLink', mountSmartLink);

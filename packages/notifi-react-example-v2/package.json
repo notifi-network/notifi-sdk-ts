@@ -7,9 +7,11 @@
     "build:next": "next build",
     "build:analyze": "ANALYZE=true next build",
     "start": "next start",
-    "test": "cypress run --component --spec 'cypress/component/NotifiCardModal.cy.tsx' --browser chrome",
+    "test": "cypress run --component --spec 'cypress/component/Notifi*.cy.tsx' --browser chrome",
+    "test:card": "cypress run --component --spec 'cypress/component/NotifiCardModal.cy.tsx' --browser chrome",
+    "test:smartlink": "cypress run --component --spec 'cypress/component/NotifiSmartLink.cy.tsx' --browser chrome",
     "cypress:open": "cypress open",
-    "cypress:ci": "cypress run --component --group notifi-e2e --spec 'cypress/component/NotifiCardModal.cy.tsx' --browser chrome --record"
+    "cypress:ci": "cypress run --component --group notifi-e2e --spec 'cypress/component/Notifi*.cy.tsx' --browser chrome --record"
   },
   "dependencies": {
     "@ethersproject/bytes": "^5.8.0",
