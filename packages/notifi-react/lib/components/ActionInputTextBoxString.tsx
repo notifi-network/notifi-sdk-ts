@@ -80,7 +80,7 @@ export const ActionInputTextBoxString: React.FC<
         ) : null}
         <input
           type="text"
-          placeholder={props.input.placeholder.toString()}
+          placeholder={props.input.placeholder?.toString() ?? ''}
           maxLength={props.input.constraintType?.maxLength}
           minLength={props.input.constraintType?.minLength}
           className={clsx(

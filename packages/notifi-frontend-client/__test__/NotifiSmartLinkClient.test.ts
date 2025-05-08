@@ -24,15 +24,16 @@ describe('Notifi SmartLink & Action Unit Tests', () => {
     expect(smartLinkConfig).toHaveProperty('isActive');
   });
 
-  it('Activate SmartLinkAction', async () => {
+  it('Activate SmartLinkAction w/ transactions', async () => {
     const client = newSmartLinkClient({
       env,
       authParams,
     });
     const { smartLinkConfig } = await client.fetchSmartLinkConfig(smartLink);
-    const activateSmartLinkActionInput = getFirstActionInput(
+    const activateSmartLinkActionInput = getActionInput(
       smartLink,
       smartLinkConfig,
+      0, // 1st Action
     );
     const response = await client.activateSmartLinkAction(
       activateSmartLinkActionInput,
@@ -41,27 +42,46 @@ describe('Notifi SmartLink & Action Unit Tests', () => {
     expect(response).toHaveProperty('failureMessage');
     expect(response).toHaveProperty('transactions');
   });
+  it('Activate SmartLinkAction w/o transactions', async () => {
+    const client = newSmartLinkClient({
+      env,
+      authParams,
+    });
+    const { smartLinkConfig } = await client.fetchSmartLinkConfig(smartLink);
+    const activateSmartLinkActionInput = getActionInput(
+      smartLink,
+      smartLinkConfig,
+      1, // 2nd Action
+    );
+    const response = await client.activateSmartLinkAction(
+      activateSmartLinkActionInput,
+    );
+    expect(response).toHaveProperty('successMessage');
+    expect(response).toHaveProperty('failureMessage');
+    expect(response).not.toHaveProperty('transactions');
+  });
 });
 
 // Utils & Constants (TODO: Move to a separate module when growing)
-const env: NotifiEnvironment = 'Development'; // TODO: Update to production
-const smartLink = '1302fc05485341eab8931e759cc0a08c'; // TODO: Update to production
-
+/* Test SmartLink ID under Tenant `notifi.network.unitest` */
+const smartLink = '1e74002c84f3445480c54424a145a62a';
+const env: NotifiEnvironment = 'Production';
 const authParams: AuthParams = {
-  walletBlockchain: 'ETHEREUM',
+  walletBlockchain: 'ARBITRUM',
   walletPublicKey: '0x0',
 };
 
-/* Grab 1st Action and generate a valid user inputs */
-const getFirstActionInput = (
+/* Grab nth Action and generate a valid user inputs */
+const getActionInput = (
   smartLinkId: string,
   smartLinkConfig: SmartLinkConfig,
+  itemNumber: number,
 ): Omit<ActivateSmartLinkActionInput, 'authParams'> => {
   const smartLinkActions = smartLinkConfig.components.filter(
     (component) => component.type === 'ACTION',
   );
-  const actionId = smartLinkActions[0].id;
-  const inputs = smartLinkActions[0].inputs.reduce(
+  const actionId = smartLinkActions[itemNumber].id;
+  const inputs = smartLinkActions[itemNumber].inputs.reduce(
     (acc: Record<number, SmartLinkActionUserInput>, input, id) => {
       const userInput: SmartLinkActionUserInput =
         input.type === 'TEXTBOX'
