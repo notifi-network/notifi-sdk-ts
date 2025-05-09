@@ -20,8 +20,11 @@ export default defineConfig({
       'civil squeeze word coach always source aunt believe yard urge night alert', // Change to your own mnemonic if needed
     WALLET_BLOCKCHAIN: 'ETHEREUM',
     /* SMARTLINK ENV VARS */
-    SMARTLINK_ENV: 'Development',
-    SMARTLINK_ID: '1302fc05485341eab8931e759cc0a08c',
+    SMARTLINK_ENV: 'Production',
+    SMARTLINK_ID: '1e74002c84f3445480c54424a145a62a',
+    SMARTLINK_BLOCKCHAIN: 'ARBITRUM',
+    // SMARTLINK_ENV: 'Development',
+    // SMARTLINK_ID: '1302fc05485341eab8931e759cc0a08c',
   },
   retries: {
     runMode: 2,

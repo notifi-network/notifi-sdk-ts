@@ -231,7 +231,7 @@ const NotifiSmartLinkCypressComponent: React.FC<
   const smartLinkId = Cypress.env('SMARTLINK_ID');
   const env = Cypress.env('SMARTLINK_ENV');
   const authParams: AuthParams = {
-    walletBlockchain: Cypress.env('WALLET_BLOCKCHAIN'),
+    walletBlockchain: Cypress.env('SMARTLINK_BLOCKCHAIN'),
     walletPublicKey: getConnectedWallet(true).address,
   };
   const [renderPreAction, setRenderPreAction] = useState(!!preActionMetadata);
