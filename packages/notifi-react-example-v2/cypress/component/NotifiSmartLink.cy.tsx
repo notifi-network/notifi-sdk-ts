@@ -28,8 +28,13 @@ describe('NotifiSmartLink Test', () => {
       .should('be.disabled');
     cy.get('.notifi-smartlink-action-input-textbox-input')
       .should('exist')
+      .first()
       .type('1');
     cy.get('.notifi-smartlink-action-btn').should('exist').should('be.enabled');
+  });
+
+  it('Execute SmartLink: ERROR - unmatched blockchain', () => {
+    // TODO
   });
 
   it('Execute SmartLink: w/o preAction, ', () => {
@@ -37,9 +42,11 @@ describe('NotifiSmartLink Test', () => {
     cy.wait('@gqlGetSmartLinkConfigQuery');
     cy.get('.notifi-smartlink-action-input-textbox-input')
       .should('exist')
+      .first()
       .type('1');
     cy.get('.notifi-smartlink-action-btn')
       .should('exist')
+      .first()
       .should('be.enabled')
       .click();
     cy.wait('@gqlGetSmartLinkConfigQuery');
@@ -59,6 +66,7 @@ describe('NotifiSmartLink Test', () => {
     cy.wait('@gqlGetSmartLinkConfigQuery');
     cy.get('.notifi-smartlink-action-btn')
       .should('exist')
+      .first()
       .should('be.disabled');
   });
 
@@ -69,14 +77,17 @@ describe('NotifiSmartLink Test', () => {
     cy.wait('@gqlGetSmartLinkConfigQuery');
     cy.get('.notifi-smartlink-action-btn')
       .should('exist')
+      .first()
       .should('be.enabled')
       .click();
 
     cy.get('.notifi-smartlink-action-input-textbox-input')
       .should('exist')
+      .first()
       .type('1');
     cy.get('.notifi-smartlink-action-btn')
       .should('exist')
+      .first()
       .should('be.enabled')
       .click();
     cy.wait('@gqlGetSmartLinkConfigQuery');
