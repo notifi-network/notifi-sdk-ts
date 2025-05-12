@@ -33,11 +33,26 @@ describe('NotifiSmartLink Test', () => {
     cy.get('.notifi-smartlink-action-btn').should('exist').should('be.enabled');
   });
 
-  it('Execute SmartLink: ERROR - unmatched blockchain', () => {
-    // TODO
+  it('Execute SmartLink Action - unmatched blockchain', () => {
+    cy.mountSmartLink('ETHEREUM');
+    cy.wait('@gqlGetSmartLinkConfigQuery');
+    cy.get('.notifi-smartlink-action-input-textbox-input')
+      .should('exist')
+      .first()
+      .type('1');
+    cy.get('.notifi-smartlink-action-btn')
+      .should('exist')
+      .first()
+      .should('be.enabled')
+      .click();
+    cy.get('.notifi-error-global-error-detail').should('exist');
+    cy.get('.notifi-error-global-error-detail').should(
+      'contain',
+      'NotifiSmartLinkClient.executeSmartLinkAction: connected wallet (now ETHEREUM) must be on (ARBITRUM) blockchain',
+    );
   });
 
-  it('Execute SmartLink: w/o preAction, ', () => {
+  it('Execute SmartLink Action - w/o preAction, ', () => {
     cy.mountSmartLink('ARBITRUM');
     cy.wait('@gqlGetSmartLinkConfigQuery');
     cy.get('.notifi-smartlink-action-input-textbox-input')
@@ -59,7 +74,7 @@ describe('NotifiSmartLink Test', () => {
     });
   });
 
-  it('Execute SmartLink - disabled preAction ', () => {
+  it('Execute SmartLink Action - w/ preAction (disabled) ', () => {
     cy.mountSmartLink('ARBITRUM', {
       isPreActionDisabled: true,
     });
@@ -70,7 +85,7 @@ describe('NotifiSmartLink Test', () => {
       .should('be.disabled');
   });
 
-  it('Execute SmartLink - enabled preAction ', () => {
+  it('Execute SmartLink Action - w/ preAction (enabled)', () => {
     cy.mountSmartLink('ARBITRUM', {
       isPreActionDisabled: false,
     });
