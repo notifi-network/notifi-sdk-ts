@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  ActionHandler,
   NotifiSmartLink,
   useNotifiSmartLinkContext,
 } from '@notifi-network/notifi-react';
@@ -41,6 +42,31 @@ export const NotifiSmartLinkExample: React.FC = () => {
     }
   }, [selectedWallet, wallets]);
 
+  const actionHandler: ActionHandler = React.useCallback(
+    async (args) => {
+      if (!selectedWallet || selectedWallet !== 'metamask') return;
+      if (!args.payload.transactions) return;
+
+      const smartLinkIdWithActionId: `${string}:;:${string}` = `${args.smartLinkId}:;:${args.actionId}`;
+      console.info('Action triggered (react-example-v2)', {
+        selectedWallet,
+        args,
+        authParams,
+        userInputs: actionDictionary[smartLinkIdWithActionId].userInputs,
+      });
+
+      try {
+        await wallets[selectedWallet].sendTransaction(
+          JSON.parse(args.payload.transactions[0].UnsignedTransaction),
+        );
+      } finally {
+        /* Reset the user inputs to the initial state */
+        updateActionUserInputs(smartLinkIdWithActionId);
+      }
+    },
+    [selectedWallet, wallets, actionDictionary],
+  );
+
   return (
     <div>
       {!!selectedWallet && wallets[selectedWallet] ? (
@@ -55,27 +81,7 @@ export const NotifiSmartLinkExample: React.FC = () => {
         <NotifiSmartLink
           smartLinkId={smartLinkId}
           preAction={preAction}
-          actionHandler={async (args) => {
-            if (!selectedWallet || selectedWallet !== 'metamask') return;
-            if (!args.payload.transactions) return;
-
-            const smartLinkIdWithActionId: `${string}:;:${string}` = `${args.smartLinkId}:;:${args.actionId}`;
-            console.info('Action triggered (react-example-v2)', {
-              selectedWallet,
-              args,
-              authParams,
-              userInputs: actionDictionary[smartLinkIdWithActionId].userInputs,
-            });
-
-            try {
-              await wallets[selectedWallet].sendTransaction(
-                JSON.parse(args.payload.transactions[0].UnsignedTransaction),
-              );
-            } finally {
-              /* Reset the user inputs to the initial state */
-              updateActionUserInputs(smartLinkIdWithActionId);
-            }
-          }}
+          actionHandler={actionHandler}
         />
       </div>
     </div>
