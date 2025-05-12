@@ -21,7 +21,7 @@ describe('NotifiSmartLink Test', () => {
   });
 
   it('Render SmartLink', () => {
-    cy.mountSmartLink();
+    cy.mountSmartLink('ARBITRUM');
     cy.wait('@gqlGetSmartLinkConfigQuery');
     cy.get('.notifi-smartlink-action-btn')
       .should('exist')
@@ -38,7 +38,7 @@ describe('NotifiSmartLink Test', () => {
   });
 
   it('Execute SmartLink: w/o preAction, ', () => {
-    cy.mountSmartLink();
+    cy.mountSmartLink('ARBITRUM');
     cy.wait('@gqlGetSmartLinkConfigQuery');
     cy.get('.notifi-smartlink-action-input-textbox-input')
       .should('exist')
@@ -60,7 +60,7 @@ describe('NotifiSmartLink Test', () => {
   });
 
   it('Execute SmartLink - disabled preAction ', () => {
-    cy.mountSmartLink({
+    cy.mountSmartLink('ARBITRUM', {
       isPreActionDisabled: true,
     });
     cy.wait('@gqlGetSmartLinkConfigQuery');
@@ -71,7 +71,7 @@ describe('NotifiSmartLink Test', () => {
   });
 
   it('Execute SmartLink - enabled preAction ', () => {
-    cy.mountSmartLink({
+    cy.mountSmartLink('ARBITRUM', {
       isPreActionDisabled: false,
     });
     cy.wait('@gqlGetSmartLinkConfigQuery');
