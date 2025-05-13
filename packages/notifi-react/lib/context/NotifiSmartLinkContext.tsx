@@ -1,9 +1,9 @@
 import {
-  ActivateSmartLinkActionResponse,
-  SmartLinkActionUserInput,
+  type ActivateSmartLinkActionResponse,
+  type SmartLinkActionUserInput,
 } from '@notifi-network/notifi-dataplane';
 import {
-  AuthParams,
+  type AuthParams,
   type NotifiEnvironment,
   NotifiSmartLinkClient,
   SmartLinkAction,
@@ -11,7 +11,7 @@ import {
   newSmartLinkClient,
   objectKeys,
 } from '@notifi-network/notifi-frontend-client';
-import { SmartLinkConfigWithIsActive } from 'notifi-frontend-client/lib/client/fetchSmartLinkConfig';
+import { type SmartLinkConfigWithIsActive } from 'notifi-frontend-client/lib/client/fetchSmartLinkConfig';
 import React, { FC, PropsWithChildren } from 'react';
 
 type NotifiSmartLinkContextType = {

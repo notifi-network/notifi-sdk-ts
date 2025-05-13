@@ -1,4 +1,4 @@
-import { SmartLinkActionUserInput } from '@notifi-network/notifi-dataplane';
+import { type SmartLinkActionUserInput } from '@notifi-network/notifi-dataplane';
 import {
   ActionInputParamsCheckBox as ActionInputCheckBoxType,
   ActionInputParams,
