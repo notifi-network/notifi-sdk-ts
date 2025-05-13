@@ -27,7 +27,6 @@ type ActionInputCheckBox = ActionInputBase & {
 };
 
 /* Response type for ActivateSmartLinkAction */
-// TODO: TBD ⚠️ How to handle html??
 export type ActivateSmartLinkActionResponse = {
   successMessage: string;
   failureMessage: string;

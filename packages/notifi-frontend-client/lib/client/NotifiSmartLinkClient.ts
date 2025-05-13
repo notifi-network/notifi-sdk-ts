@@ -1,6 +1,6 @@
 import {
-  ActivateSmartLinkActionInput,
-  ActivateSmartLinkActionResponse,
+  type ActivateSmartLinkActionInput,
+  type ActivateSmartLinkActionResponse,
   NotifiDataplaneClient,
 } from '@notifi-network/notifi-dataplane';
 import { NotifiService } from '@notifi-network/notifi-graphql';

@@ -16,7 +16,6 @@ export type NotifiSmartLinkProps = {
   smartLinkId: string;
   actionHandler: ActionHandler;
   theme?: /*'dark' |*/ 'light' /* Only light is supported for now */;
-  nameLogoSrc?: string;
   preAction?: PreAction;
   copy?: {
     SmartLinkAction?: SmartLinkActionProps['copy'];
@@ -81,7 +80,7 @@ export const NotifiSmartLink: React.FC<NotifiSmartLinkProps> = (props) => {
       className={clsx(
         /**
          * NOTE: Currently, only light theme is supported.
-         * TODO: props.theme === 'dark' ? 'notifi-theme-dark' : 'notifi-theme-light',
+         * To support dark theme: props.theme === 'dark' ? 'notifi-theme-dark' : 'notifi-theme-light',
          */
         'notifi-theme-light',
         'notifi-smartlink',
