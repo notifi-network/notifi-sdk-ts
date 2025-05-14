@@ -1,5 +1,20 @@
-// All method in ensureTarget.ts are deprecated, use methods in alterTarget.ts instead
 import type { Operations, Types } from '@notifi-network/notifi-graphql';
+
+import { ConfigFactoryInput, newFrontendConfig } from '../configuration';
+import { NotifiFrontendClient } from './NotifiFrontendClient';
+import { newNotifiService, newNotifiStorage } from './clientFactory';
+
+/** ⬇ clientFactory.ts */
+
+/**@deprecated Use instantiateFrontendClient instead */
+export const newFrontendClient = (args: ConfigFactoryInput) => {
+  const config = newFrontendConfig(args);
+  const service = newNotifiService(config);
+  const storage = newNotifiStorage(config);
+  return new NotifiFrontendClient(config, service, storage);
+};
+
+/** ⬇ ensureSource.ts */
 
 type EnsureTargetFuncFactory = <
   CreateService,

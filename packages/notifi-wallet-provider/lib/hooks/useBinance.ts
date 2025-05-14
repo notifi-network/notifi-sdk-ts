@@ -148,6 +148,32 @@ export const useBinance = (
     },
     [walletKeys?.hex],
   );
+  // TODO: define the type of transactions
+  const sendTransaction = async (transaction: object) => {
+    let txHash: string | undefined;
+    if (!provider || !walletKeys) {
+      handleWalletNotExists('Sign Arbitrary');
+      return;
+    }
+    try {
+      txHash = await provider.request?.({
+        method: 'eth_sendTransaction',
+        params: [transaction],
+      });
+    } catch (e) {
+      errorHandler(
+        new Error(
+          'useInjectedWallet-sendTransaction: Failed to send transaction',
+        ),
+        5000,
+      );
+      console.error(e);
+    } finally {
+      loadingHandler(false);
+    }
+    // TODO: add validator for txHash
+    return txHash as `0x${string}` | undefined;
+  };
 
   return {
     walletKeys,
@@ -156,6 +182,7 @@ export const useBinance = (
     signArbitrary,
     disconnectWallet,
     websiteURL: walletsWebsiteLink[walletName],
+    sendTransaction,
   };
 };
 

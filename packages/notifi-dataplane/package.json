@@ -20,7 +20,7 @@
     "clean": "rimraf ./dist",
     "prepublishOnly": "npm run build"
   },
-  "dependencies": {
+  "devDependencies": {
     "@notifi-network/notifi-graphql": "^6.0.1"
   },
   "repository": {

@@ -1,0 +1,186 @@
+.notifi-theme-light {
+  --notifi-font-color: rgb(var(--notifi-color-midnight));
+  --notifi-card-background: rgb(var(--notifi-color-cloud));
+  --notifi-connect-bg: rgba(var(--notifi-color-white), 1);
+  --notifi-connect-button: rgb(var(--notifi-color-midnight));
+  --notifi-connect-button-text: rgba(var(--notifi-color-white), 1);
+  --notifi-connect-alert-icon: rgba(var(--notifi-color-secondary-light), 1);
+  --notifi-ftu-header-bg: rgba(var(--notifi-color-white), 1);
+  --notifi-input-field-background: rgba(var(--notifi-color-white), 1);
+  --notifi-toggle-inactive: rgba(var(--notifi-color-heather), 1);
+  --notifi-toggle-active: rgba(var(--notifi-color-secondary-light), 1);
+  --notifi-toggle-handle: rgba(var(--notifi-color-white), 1);
+  --notifi-nav-header-background: rgba(var(--notifi-color-white), 1);
+  --notifi-ftu-button-text: rgba(var(--notifi-color-white), 1);
+  --notifi-ftu-button: rgb(var(--notifi-color-midnight));
+  --notifi-target-list-cat-button-bg: rgba(
+    var(--notifi-color-secondary-light),
+    1
+  );
+  --notifi-target-list-cat-button-text: rgba(var(--notifi-color-white), 1);
+  --notifi-target-list-cta-link-text: rgba(
+    var(--notifi-color-secondary-light),
+    1
+  );
+  --notifi-notifi-target-list-item-bg: rgba(var(--notifi-color-white), 1);
+  --notifi-notifi-topic-list-row-bg: rgba(var(--notifi-color-white), 1);
+  --notifi-topic-options-item-bg: rgb(var(--notifi-color-eggshell));
+  --notifi-topic-options-item-text: rgb(var(--notifi-color-dusk));
+  --notifi-topic-option-radio-inner-ring: rgb(var(--notifi-color-light));
+  --notifi-topic-option-radio-bg: rgba(var(--notifi-color-white), 1);
+  --notifi-subscription-input-dropdown-value-bg: rgb(
+    var(--notifi-color-eggshell)
+  );
+  --notifi-subscription-input-dropdown-list-bg: rgb(
+    var(--notifi-color-eggshell)
+  );
+  --notifi-spinner-color: rgb(var(--notifi-color-seaglass-dark));
+  --notifi-topic-stack-row-input-button-bg: rgb(
+    var(--notifi-color-seaglass-dark)
+  );
+  --notifi-topic-stack-row-input-button-text: rgba(
+    var(--notifi-color-white),
+    1
+  );
+  --notifi-nav-footer-bg: rgba(var(--notifi-color-white), 1);
+  --notifi-history-row-bg: rgba(var(--notifi-color-white), 1);
+  --notifi-history-row-unread-indicator: rgba(
+    var(--notifi-color-secondary-light),
+    1
+  );
+  --notifi-history-row-title-text: rgb(var(--notifi-color-midnight));
+  --notifi-history-row-timestamp-text: rgb(var(--notifi-color-dusk));
+  --notifi-history-row-subject-text: rgb(var(--notifi-color-dusk));
+  --notifi-history-detail-bg: rgba(var(--notifi-color-white), 1);
+  --notifi-history-detail-timestamp-text: rgb(var(--notifi-color-dusk));
+  --notifi-history-list-empty-icon: rgba(
+    var(--notifi-color-secondary-light),
+    1
+  );
+  --notifi-history-list-empty-description-text: rgb(var(--notifi-color-dusk));
+  --notifi-target-state-banner-bg: rgba(var(--notifi-color-white), 1);
+  --notifi-target-state-verify-icon-color: rgb(var(--notifi-color-black));
+  --notifi-inbox-config-topic-title-text: rgb(var(--notifi-color-dusk));
+  --notifi-inbox-header-border: rgba(var(--notifi-color-grey7), 0);
+  --notifi-target-list-remove-text: rgb(var(--notifi-color-dusk));
+  --notifi-target-cta-action-not-require-text: rgb(var(--notifi-color-green4));
+  --notifi-target-cta-action-not-require-bg: rgba(
+    var(--notifi-color-green4),
+    0.4
+  );
+  --notifi-target-list-target-verify-message-text: rgb(
+    var(--notifi-color-dusk)
+  );
+  --notifi-target-state-banner-signup-icon-color: rgba(
+    var(--notifi-color-secondary-light),
+    1
+  );
+  --notifi-target-state-banner-signup-cta-bg: rgba(
+    var(--notifi-color-secondary-light),
+    1
+  );
+  --notifi-topic-options-item-selected-text: rgba(
+    var(--notifi-color-secondary-light),
+    1
+  );
+  --notifi-topic-list-tooltip-bg: rgb(var(--notifi-color-eggshell));
+  --notifi-topic-list-tooltip-content-border: rgba(
+    var(--notifi-color-heather),
+    1
+  );
+  --notifi-target-list-tooltip-bg: rgb(var(--notifi-color-eggshell));
+  --tooltip-content-border: rgba(var(--notifi-color-heather), 1);
+  --tooltip-content-text: rgb(var(--notifi-color-black));
+  --tooltip-icon-color-hover: rgb(var(--notifi-color-dusk));
+  --notifi-target-list-item-warning-bg: rgba(var(--notifi-color-black), 0.05);
+  --notifi-target-list-item-warning-text: rgba(var(--notifi-color-dusk), 1);
+  --notifi-topic-list-tooltip-icon-color-hover: rgb(var(--notifi-color-dusk));
+  --notifi-input-separator-text: rgba(var(--notifi-color-heather), 1);
+  --notifi-ftu-footer-bg: rgba(var(--notifi-color-white), 0);
+  --notifi-ftu-footer-border: rgb(var(--notifi-color-cloud));
+  --notifi-ftu-header-border: rgba(var(--notifi-color-cloud), 0);
+  --notifi-target-state-banner-signup-history-bg: rgb(
+    var(--notifi-color-cloud)
+  );
+  --notifi-target-state-banner-verify-history-bg: rgba(
+    var(--notifi-color-cloud),
+    0.5
+  );
+  --notifi-target-state-banner-verify-cta-history-bg: rgba(
+    var(--notifi-color-white),
+    1
+  );
+  --notifi-target-state-banner-verify-icon-color: rgb(
+    var(--notifi-color-eggshell)
+  );
+  --notifi-inbox-footer-border: rgb(var(--notifi-color-cloud));
+  --notifi-powered-by-text: rgb(var(--notifi-color-midnight));
+  --notifi-topic-stack-separator: rgba(var(--notifi-color-heather), 1);
+  --notifi-topic-stack-row-cta-text: rgba(
+    var(--notifi-color-secondary-light),
+    1
+  );
+  --notifi-target-input-toggle-unavailable-text: rgb(var(--notifi-color-grey3));
+  --notifi-connect-description-text: rgb(var(--notifi-color-grey3));
+  --notifi-connect-footer-content-text: rgb(var(--notifi-color-grey3));
+  --notifi-history-detail-message-a-text: rgb(
+    var(--notifi-color-seaglass-dark)
+  );
+  --notifi-target-input-field-input-container-focused-border: rgba(
+    var(--notifi-color-seaglass-dark)
+  );
+  --tooltip-content-a-text: rgb(var(--notifi-color-seaglass-dark));
+  --notifi-topic-option-item-radio-selected-before-bg: rgb(
+    var(--notifi-color-seaglass-dark)
+  );
+  --notifi-topic-option-item-radio-selected-before-border: rgb(
+    var(--notifi-color-seaglass-dark)
+  );
+  --notifi-error-global-error-title-text: rgb(var(--notifi-color-error));
+  --notifi-ftu-target-edit-invalid-email-warning-text: rgb(
+    var(--notifi-color-error)
+  );
+  --notifi-target-input-field-input-container-warning-text: rgb(
+    var(--notifi-color-error)
+  );
+  --notifi-history-row-hover-border: rgb(var(--notifi-color-dusk));
+  --notifi-target-input-field-input-placeholder-text: rgb(
+    var(--notifi-color-dusk)
+  );
+  --notifi-target-state-banner-verify-cta-text: rgb(var(--notifi-color-dusk));
+  --notifi-topic-options-item-radio-before-border: rgb(
+    var(--notifi-color-dusk)
+  );
+  --notifi-topic-stack-row-input-button-disabled-bg: rgb(
+    var(--notifi-color-dusk)
+  );
+  --notifi-topic-stack-content-subtitle-text: rgb(
+    var(--notifi-color-text-light)
+  );
+  --notifi-topic-stack-cta-text: rgb(var(--notifi-color-text-light));
+  --notifi-target-state-banner-verify-description-text: rgb(
+    var(--notifi-color-rose)
+  );
+  /* SmartLink colors variables */
+  --notifi-smartlink-background: rgb(var(--notifi-color-white));
+  --notifi-smartlink-name-text: rgb(var(--notifi-color-dusk));
+  --notifi-smartlink-subtitle-text: rgb(var(--notifi-color-dusk));
+  --notifi-smartlink-action-btn-bg: rgb(var(--notifi-color-midnight));
+  --notifi-smartlink-action-btn-disabled-bg: rgba(
+    var(--notifi-color-midnight),
+    0.4
+  );
+  --notifi-smartlink-action-btn-text: white;
+  --notifi-smartlink-action-input-textbox-container-bg: rgb(
+    var(--notifi-color-eggshell)
+  );
+  --notifi-smartlink-action-input-textbox-container-invalid-border: rgb(
+    var(--notifi-color-error)
+  );
+  --notifi-smartlink-action-input-textbox-constraint-prompt-text: rgb(
+    var(--notifi-color-heather)
+  );
+  --notifi-smartlink-action-input-textbox-input-placeholder-text: rgb(
+    var(--notifi-color-dusk)
+  );
+}

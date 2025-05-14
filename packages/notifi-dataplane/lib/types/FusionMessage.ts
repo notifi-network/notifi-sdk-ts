@@ -1,4 +1,4 @@
-import { Types } from 'notifi-graphql/dist';
+import type { Types } from '@notifi-network/notifi-graphql';
 
 export interface FusionMessage {
   eventTypeId: string;
@@ -7,7 +7,7 @@ export interface FusionMessage {
   specificWallets?: ReadonlyArray<
     Readonly<{
       walletPublicKey: string;
-      walletBlockchain: Types.WalletBlockchain;
+      walletBlockchain: Types.BlockchainType;
     }>
   >;
 }

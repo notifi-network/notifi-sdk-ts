@@ -1,43 +1,29 @@
-import { NotifiEmitterEvents, Types } from '@notifi-network/notifi-graphql';
-import { NotifiService } from '@notifi-network/notifi-graphql';
+import type {
+  NotifiEmitterEvents,
+  Types,
+} from '@notifi-network/notifi-graphql';
+import type { NotifiService } from '@notifi-network/notifi-graphql';
 
 import {
-  type NotifiConfigWithPublicKey,
-  type NotifiConfigWithPublicKeyAndAddress,
+  type AuthParams,
   type NotifiFrontendConfiguration,
   checkIsConfigWithDelegate,
   checkIsConfigWithPublicKey,
   checkIsConfigWithPublicKeyAndAddress,
 } from '../configuration';
-import type {
-  CardConfigItemV1,
-  EventTypeItem,
-  FusionEventTopic,
-  TenantConfig,
-  WalletBalanceEventTypeItem,
-} from '../models';
-import type { Authorization, NotifiStorage, Roles } from '../storage';
-import {
-  NotifiFrontendStorage,
-  createInMemoryStorageDriver,
-  createLocalForageStorageDriver,
-} from '../storage';
-import { notNullOrEmpty, packFilterOptions } from '../utils';
-import { areIdsEqual } from '../utils/areIdsEqual';
-import {
-  AlterTargetGroupParams,
-  alterTargetGroupImpl,
-} from './alterTargetGroup';
 import {
   APTOS_BLOCKCHAINS,
-  AptosBlockchain,
-  BtcBlockchain,
+  type AptosBlockchain,
+  type BtcBlockchain,
   COSMOS_BLOCKCHAINS,
-  CosmosBlockchain,
-  EvmBlockchain,
+  type CardConfigItemV1,
+  type CosmosBlockchain,
+  type EvmBlockchain,
+  type FusionEventTopic,
   SOLANA_BLOCKCHAINS,
-  SolanaBlockchain,
-  UnmaintainedBlockchain,
+  type SolanaBlockchain,
+  type TenantConfig,
+  type UnmaintainedBlockchain,
   isAptosBlockchain,
   isCosmosBlockchain,
   isSolanaBlockchain,
@@ -47,8 +33,20 @@ import {
   isUsingEvmBlockchain,
   isUsingSolanaBlockchain,
   isUsingUnmaintainedBlockchain,
-} from './blockchains';
-import { ensureSourceAndFilters, normalizeHexString } from './ensureSource';
+} from '../models';
+import type { Authorization, NotifiStorage, Roles } from '../storage';
+import {
+  NotifiFrontendStorage,
+  createInMemoryStorageDriver,
+  createLocalForageStorageDriver,
+} from '../storage';
+import { notNullOrEmpty } from '../utils';
+import { areIdsEqual } from '../utils/areIdsEqual';
+import { normalizeHexString } from '../utils/crypto';
+import {
+  type AlterTargetGroupParams,
+  alterTargetGroupImpl,
+} from './alterTargetGroup';
 import {
   ensureDiscord,
   ensureEmail,
@@ -57,7 +55,7 @@ import {
   ensureTelegram,
   ensureWeb3,
   renewTelegram,
-} from './ensureTarget';
+} from './deprecated';
 
 type HexString = `0x${string}`;
 
@@ -497,7 +495,7 @@ export class NotifiFrontendClient {
           nonce,
         };
       } else if (checkIsConfigWithPublicKeyAndAddress(this._configuration)) {
-        const { authenticationKey, accountAddress } = this._configuration;
+        const { walletPublicKey, accountAddress } = this._configuration;
         const { nonce } = await this._beginLogInWithWeb3({
           authAddress: accountAddress,
           authType: 'COSMOS_ADR36',
@@ -510,7 +508,7 @@ export class NotifiFrontendClient {
             signMessage: cosmosSignMessage,
           },
           signingAddress: accountAddress,
-          signingPubkey: authenticationKey,
+          signingPubkey: walletPublicKey,
           nonce,
         };
       }
@@ -523,7 +521,7 @@ export class NotifiFrontendClient {
         const { nonce } = await this._beginLogInWithWeb3({
           authAddress: this._configuration.accountAddress,
           authType: 'APTOS_SIGNED_MESSAGE',
-          walletPubkey: this._configuration.authenticationKey,
+          walletPubkey: this._configuration.walletPublicKey,
         });
 
         return {
@@ -533,7 +531,7 @@ export class NotifiFrontendClient {
             signMessage: aptosSignMessage,
           },
           signingAddress: this._configuration.accountAddress,
-          signingPubkey: this._configuration.authenticationKey,
+          signingPubkey: this._configuration.walletPublicKey,
           nonce,
         };
       }
@@ -689,7 +687,7 @@ export class NotifiFrontendClient {
         case 'BITCOIN': {
           const result = await this._service.logInFromDapp({
             walletBlockchain,
-            walletPublicKey: this._configuration.authenticationKey,
+            walletPublicKey: this._configuration.walletPublicKey,
             accountId: this._configuration.accountAddress,
             dappAddress: tenantId,
             timestamp,
@@ -748,8 +746,13 @@ export class NotifiFrontendClient {
         );
       return { signature: signatureHex, signedMessage };
     } else if (isUsingEvmBlockchain(signMessageParams)) {
-      const { walletPublicKey, tenantId } = this
-        ._configuration as NotifiConfigWithPublicKey;
+      const { walletPublicKey, tenantId } = this._configuration as Extract<
+        NotifiFrontendConfiguration,
+        Extract<
+          AuthParams,
+          { walletPublicKey: string } & { accountAddress?: never }
+        > // BlockchainAuthParamsWithPublicKey
+      >;
       const signedMessage = `${SIGNING_MESSAGE}${walletPublicKey}${tenantId}${timestamp.toString()}`;
       const messageBuffer = new TextEncoder().encode(signedMessage);
 
@@ -764,16 +767,20 @@ export class NotifiFrontendClient {
       signMessageParams.walletBlockchain === 'INJECTIVE'
     ) {
       //TODO: Implement
-      const { authenticationKey, tenantId } = this
-        ._configuration as NotifiConfigWithPublicKeyAndAddress;
-      const signedMessage = `${SIGNING_MESSAGE}${authenticationKey}${tenantId}${timestamp.toString()}`;
+      const { walletPublicKey, tenantId } = this._configuration as Extract<
+        NotifiFrontendConfiguration,
+        Extract<AuthParams, { accountAddress: string }>
+      >;
+      const signedMessage = `${SIGNING_MESSAGE}${walletPublicKey}${tenantId}${timestamp.toString()}`;
       const messageBuffer = new TextEncoder().encode(signedMessage);
       const signedBuffer = await signMessageParams.signMessage(messageBuffer);
       const signature = Buffer.from(signedBuffer).toString('base64');
       return { signature, signedMessage };
     } else if (isUsingSolanaBlockchain(signMessageParams)) {
-      const { walletPublicKey, tenantId } = this
-        ._configuration as NotifiConfigWithPublicKey;
+      const { walletPublicKey, tenantId } = this._configuration as Extract<
+        NotifiFrontendConfiguration,
+        Extract<AuthParams, { walletPublicKey: string }>
+      >;
       const signedMessage = `${SIGNING_MESSAGE}${signMessageParams.nonce}`;
       const messageBuffer = new TextEncoder().encode(signedMessage);
 
@@ -789,8 +796,10 @@ export class NotifiFrontendClient {
     // Can only be the lonely chains now, e.g. Solana, Sui, ...
     switch (signMessageParams.walletBlockchain) {
       case 'SUI': {
-        const { accountAddress, tenantId } = this
-          ._configuration as NotifiConfigWithPublicKeyAndAddress;
+        const { accountAddress, tenantId } = this._configuration as Extract<
+          NotifiFrontendConfiguration,
+          Extract<AuthParams, { accountAddress: string }>
+        >;
         const signedMessage = `${SIGNING_MESSAGE}${accountAddress}${tenantId}${timestamp.toString()}`;
         const messageBuffer = new TextEncoder().encode(signedMessage);
         const signedBuffer = await signMessageParams.signMessage(messageBuffer);
@@ -798,11 +807,14 @@ export class NotifiFrontendClient {
         return { signature, signedMessage };
       }
       case 'NEAR': {
-        const { authenticationKey, accountAddress, tenantId } = this
-          ._configuration as NotifiConfigWithPublicKeyAndAddress;
+        const { walletPublicKey, accountAddress, tenantId } = this
+          ._configuration as Extract<
+          NotifiFrontendConfiguration,
+          Extract<AuthParams, { accountAddress: string }>
+        >;
 
         const message = `${
-          `ed25519:` + authenticationKey
+          `ed25519:` + walletPublicKey
         }${tenantId}${accountAddress}${timestamp.toString()}`;
         const textAsBuffer = new TextEncoder().encode(message);
         const hashBuffer = await window.crypto.subtle.digest(
@@ -884,7 +896,7 @@ export class NotifiFrontendClient {
     const hashArray = Array.from(new Uint8Array(hashBuffer));
 
     let prefix = '0x';
-    // TODO: ⬇ Legacy purpose and will be deprecated after SDK V2. the prefix format will be aligned across all blockchains.
+    // ⬇ Legacy purpose and will be deprecated after SDK V2. the prefix format will be aligned across all blockchains.
     if (walletBlockchain === 'SOLANA' || walletBlockchain === 'OSMOSIS') {
       prefix = 'Notifi Auth: 0x';
     }
@@ -1009,19 +1021,6 @@ export class NotifiFrontendClient {
     if (result === undefined) {
       throw new Error('Failed to delete alerts');
     }
-    return result;
-  }
-
-  async updateWallets() {
-    const walletEventTypeItem: WalletBalanceEventTypeItem = {
-      name: 'User Wallets',
-      type: 'walletBalance',
-    };
-    const result = await ensureSourceAndFilters(
-      this._service,
-      walletEventTypeItem,
-      {},
-    );
     return result;
   }
 
@@ -1306,70 +1305,6 @@ export class NotifiFrontendClient {
       onError,
       onComplete,
     );
-  }
-
-  /** @deprecated legacy infrastructure, use ensureFusionAlerts instead */
-  async ensureAlert({
-    eventType,
-    inputs,
-    targetGroupName = 'Default',
-  }: Readonly<{
-    eventType: EventTypeItem;
-    inputs: Record<string, unknown>;
-    targetGroupName?: string;
-  }>): Promise<Types.AlertFragmentFragment> {
-    const [alertsQuery, targetGroupsQuery, sourceAndFilters] =
-      await Promise.all([
-        this._service.getAlerts({}),
-        this._service.getTargetGroups({}),
-        ensureSourceAndFilters(this._service, eventType, inputs),
-      ]);
-
-    const targetGroup = targetGroupsQuery.targetGroup?.find(
-      (it) => it?.name === targetGroupName,
-    );
-    if (targetGroup === undefined) {
-      throw new Error('Target group does not exist');
-    }
-
-    const { sourceGroup, filter, filterOptions } = sourceAndFilters;
-    const packedOptions = packFilterOptions(filterOptions);
-
-    const existing = alertsQuery.alert?.find(
-      (it) => it !== undefined && it.name === eventType.name,
-    );
-
-    if (existing !== undefined) {
-      if (
-        existing.sourceGroup.id === sourceGroup.id &&
-        existing.targetGroup.id === targetGroup.id &&
-        existing.filter.id === filter.id &&
-        existing.filterOptions === packedOptions
-      ) {
-        return existing;
-      }
-
-      // Alerts are immutable, delete the existing instead
-      await this.deleteAlert({
-        id: existing.id,
-      });
-    }
-
-    const mutation = await this._service.createAlert({
-      name: eventType.name,
-      sourceGroupId: sourceGroup.id,
-      filterId: filter.id,
-      targetGroupId: targetGroup.id,
-      filterOptions: packedOptions,
-      groupName: 'managed',
-    });
-
-    const created = mutation.createAlert;
-    if (created === undefined) {
-      throw new Error('Failed to create alert');
-    }
-
-    return created;
   }
 
   /** @deprecated use fetchFusionData instead. This is for legacy  */
