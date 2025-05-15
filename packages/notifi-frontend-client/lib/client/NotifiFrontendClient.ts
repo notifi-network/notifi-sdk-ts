@@ -23,6 +23,8 @@ import {
   SOLANA_BLOCKCHAINS,
   type SolanaBlockchain,
   type TenantConfig,
+  type TenantConfigV2,
+  type TopicMetadata,
   type UnmaintainedBlockchain,
   isAptosBlockchain,
   isCosmosBlockchain,
@@ -40,7 +42,7 @@ import {
   createInMemoryStorageDriver,
   createLocalForageStorageDriver,
 } from '../storage';
-import { notNullOrEmpty } from '../utils';
+import { notNullOrEmpty, parseTenantConfig } from '../utils';
 import { areIdsEqual } from '../utils/areIdsEqual';
 import { normalizeHexString } from '../utils/crypto';
 import {
@@ -310,6 +312,7 @@ export type SignMessageResult = { signature: string; signedMessage: string };
 
 export type AuthenticateResult = SignMessageResult | OidcCredentials;
 
+/**@deprecated use CardConfigItemV2 */
 export type CardConfigType = CardConfigItemV1;
 
 type BeginLoginProps = Omit<Types.BeginLogInByTransactionInput, 'dappAddress'>;
@@ -338,8 +341,6 @@ const CHAINS_WITH_LOGIN_WEB3 = [
   ...COSMOS_BLOCKCHAINS,
   ...SOLANA_BLOCKCHAINS,
 ] as const;
-
-export type SupportedCardConfigType = CardConfigItemV1;
 
 export type UserState = Readonly<
   | {
@@ -1091,7 +1092,7 @@ export class NotifiFrontendClient {
 
   async fetchTenantConfig(
     variables: FindSubscriptionCardParams,
-  ): Promise<TenantConfig> {
+  ): Promise<TenantConfig | TenantConfigV2> {
     const query = await this._service.findTenantConfig({
       input: {
         ...variables,
@@ -1108,11 +1109,10 @@ export class NotifiFrontendClient {
       throw new Error('Invalid config data');
     }
 
-    const cardConfig = JSON.parse(tenantConfigJsonString) as CardConfigItemV1;
+    const tenantConfig = parseTenantConfig(tenantConfigJsonString);
     const fusionEventDescriptors = result.fusionEvents;
-
-    if (!cardConfig || cardConfig.version !== 'v1' || !fusionEventDescriptors)
-      throw new Error('Unsupported config format');
+    if (!fusionEventDescriptors)
+      throw new Error('fusionEventDescriptors not found');
 
     const fusionEventDescriptorMap = new Map<
       string,
@@ -1121,21 +1121,37 @@ export class NotifiFrontendClient {
 
     fusionEventDescriptorMap.delete('');
 
-    const fusionEventTopics: FusionEventTopic[] = cardConfig.eventTypes
-      .map((eventType) => {
-        if (eventType.type === 'fusion') {
-          const fusionEventDescriptor = fusionEventDescriptorMap.get(
-            eventType.name,
-          );
-          return {
-            uiConfig: eventType,
-            fusionEventDescriptor,
-          };
-        }
-      })
-      .filter((item): item is FusionEventTopic => !!item);
+    const topicMetadatas = tenantConfig.eventTypes.map((eventType) => {
+      if (eventType.type === 'fusion') {
+        const fusionEventDescriptor = fusionEventDescriptorMap.get(
+          eventType.name,
+        );
+        return {
+          uiConfig: eventType,
+          fusionEventDescriptor,
+        };
+      }
+    });
 
-    return { cardConfig, fusionEventTopics };
+    if (tenantConfig.version === 'v1') {
+      // V1 deprecated
+      const topicMetadatasV1 = topicMetadatas.filter(
+        (item): item is FusionEventTopic => !!item,
+      );
+      return {
+        cardConfig: tenantConfig, // NOTE: cardConfig is legacy naming of tenantConfig
+        fusionEventTopics: topicMetadatasV1,
+      };
+    }
+
+    // V2
+    const topicMetadatasV2 = topicMetadatas.filter(
+      (item): item is TopicMetadata => !!item,
+    );
+    return {
+      cardConfig: tenantConfig, // NOTE: cardConfig is legacy naming of tenantConfig
+      fusionEventTopics: topicMetadatasV2,
+    };
   }
 
   async copyAuthorization(config: NotifiFrontendConfiguration) {

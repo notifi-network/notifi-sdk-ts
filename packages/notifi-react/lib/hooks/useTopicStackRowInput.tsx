@@ -2,6 +2,7 @@ import {
   FusionEventTopic,
   FusionFilterOptions,
   InputObject,
+  TopicMetadata,
   UiType,
   UserInputParam,
 } from '@notifi-network/notifi-frontend-client';
@@ -22,7 +23,7 @@ import {
 } from '../utils';
 
 export const useTopicStackRowInput = (
-  topics: FusionEventTopic[],
+  topics: (FusionEventTopic | TopicMetadata)[],
   userInputParams: UserInputParam<UiType>[],
   filterName?: string,
   onSave?: () => void,

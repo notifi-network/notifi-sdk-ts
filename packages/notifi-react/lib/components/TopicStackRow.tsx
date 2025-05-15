@@ -103,7 +103,8 @@ export const TopicStackRow = <T extends TopicRowCategory>(
     ? props.topicGroupName
     : getFusionEventMetadata(benchmarkTopic)?.uiConfigOverride
         ?.topicDisplayName || // 1. Show topic displayname in fusionEventMetadata
-      benchmarkTopic.uiConfig.displayNameOverride || // 2. Fall back to cardConfig'displayNameOverride  (May deprecated sooner or later)
+      ('displayNameOverride' in benchmarkTopic.uiConfig &&
+        benchmarkTopic.uiConfig.displayNameOverride) || // 2. Fall back to cardConfig'displayNameOverride  (May deprecated sooner or later)
       benchmarkTopic.uiConfig.name; // 3. Fall back to topic name
 
   const topicStackAlerts = getTopicStackAlerts(fusionEventTypeId);

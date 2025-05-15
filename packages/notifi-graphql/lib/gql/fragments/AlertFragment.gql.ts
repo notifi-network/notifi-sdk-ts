@@ -10,12 +10,6 @@ export const AlertFragment = gql`
     groupName
     name
     filterOptions
-    filter {
-      ...FilterFragment
-    }
-    sourceGroup {
-      ...SourceGroupFragment
-    }
     targetGroup {
       ...TargetGroupFragment
     }

@@ -1,4 +1,7 @@
-import { FusionEventTopic } from '@notifi-network/notifi-frontend-client';
+import {
+  FusionEventTopic,
+  TopicMetadata,
+} from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import React from 'react';
 
@@ -75,10 +78,11 @@ export const TopicRow = <T extends TopicRowCategory>(
     ? props.topicGroupName
     : getFusionEventMetadata(benchmarkTopic)?.uiConfigOverride
         ?.topicDisplayName || // 1. Show topic displayname in fusionEventMetadata
-      benchmarkTopic.uiConfig.displayNameOverride || // 2. Fall back to cardConfig'displayNameOverride  (May deprecated sooner or later)
+      ('displayNameOverride' in benchmarkTopic.uiConfig &&
+        benchmarkTopic.uiConfig.displayNameOverride) || // 2. Fall back to cardConfig'displayNameOverride  (May deprecated sooner or later)
       benchmarkTopic.uiConfig.name; // 3. Fall back to topic name
 
-  const toggleTopic = async (topics: FusionEventTopic[]) => {
+  const toggleTopic = async (topics: (FusionEventTopic | TopicMetadata)[]) => {
     if (!targetGroupId || topics.length === 0) return;
     setIsOptimisticRendering(true);
     if (!isAlertSubscribed(fusionEventTypeId)) {
