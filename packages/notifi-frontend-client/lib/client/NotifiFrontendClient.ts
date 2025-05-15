@@ -312,7 +312,7 @@ export type SignMessageResult = { signature: string; signedMessage: string };
 
 export type AuthenticateResult = SignMessageResult | OidcCredentials;
 
-/**@deprecated use TenantConfigMetadata */
+/**@deprecated use CardConfigItemV2 */
 export type CardConfigType = CardConfigItemV1;
 
 type BeginLoginProps = Omit<Types.BeginLogInByTransactionInput, 'dappAddress'>;
