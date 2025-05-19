@@ -34,15 +34,21 @@ describe('NotifiFrontendClient Unit Test', () => {
     expect(client.userState?.status).toBe('authenticated');
   });
 
-  it('fetchTenantConfig', async () => {
+  it('fetchTenantConfig (V1 & V2)', async () => {
     await login();
-    const result = await client.fetchTenantConfig({
-      id: cardId,
-      type: 'SUBSCRIPTION_CARD',
-    });
-    expect(result).toHaveProperty('cardConfig');
-    expect(result.cardConfig).toHaveProperty('name');
-    expect(result.cardConfig.id).toBe(cardId);
+    for (const version of ['v1', 'v2'] as const) {
+      const cardId = getCardId(version);
+
+      const result = await client.fetchTenantConfig({
+        id: cardId,
+        type: 'SUBSCRIPTION_CARD',
+      });
+      expect(result).toHaveProperty('cardConfig');
+      expect(result.cardConfig).toHaveProperty('name');
+      expect(result.cardConfig).toHaveProperty('version');
+      expect(result.cardConfig.id).toBe(cardId);
+      expect(result.cardConfig.version).toBe(version);
+    }
   });
 
   it('fetchFusionData', async () => {
@@ -182,8 +188,17 @@ describe('NotifiFrontendClient Unit Test', () => {
 
 // Utils & Constants (TODO: Move to a separate module when growing)
 const env = 'Production';
+/* ⬇ Unit Test exclusive tenant: notifi.network.unitest */
 const dappAddress = 'xdjczkhmgann9g24871z';
-const cardId = '019305821e1772c1b3b8d07df1d724ee';
+const getCardId = (version: 'v1' | 'v2') => {
+  if (version === 'v1') {
+    return '019305821e1772c1b3b8d07df1d724ee';
+  }
+  if (version === 'v2') {
+    return '0196d28771c2777eaa506898dd4975b4';
+  }
+  throw new Error('Invalid card version');
+};
 const walletBlockchain = 'ETHEREUM';
 
 const getConnectedWallet = () => {
