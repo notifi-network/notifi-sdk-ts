@@ -1,6 +1,6 @@
 import { Types } from '@notifi-network/notifi-graphql';
 
-import { ValueOrRef } from './SubscriptionCardConfig';
+import { ValueOrRef } from './TenantConfig';
 
 export type FusionEventMetadata = {
   uiConfigOverride?: {
@@ -11,7 +11,7 @@ export type FusionEventMetadata = {
     isSubscriptionValueInputable?: boolean;
     subscriptionValueOrRef?: ValueOrRef<InputObject[]>;
     /* NOTE: the generic type
-     * 1. if it is a value type, it will be any array with only one element. And the string must be '*'. This case, isSubscriptionValueInputable must be false or undefined.
+     * 1. if the type field is 'value', the value field will be an array with only one element where the value must be '*'. This case, isSubscriptionValueInputable must be false or undefined.
        - {type: 'value', value: [{label: '', value: '*'}]}: In this case, we do not care the label because we will not render any options. we only subscribe the value '*'
      * 2. if it is a ref type, it will be an array of InputObject . see example below. This case, isSubscriptionValueInputable could be true or false.
          - Example#1: isSubscriptionValueInputable is (false or undefined) & subscriptionValueOrRef is {type: 'ref', ref: 'walletAddress'}.  This case, we use the resolveObjectArrayRef to get the subscriptionValue from inputs and use its value of first InputObject element. So the inputs will be {walletAddress: [{label: 'ETH', value: '<user-wallet-address>'}]}

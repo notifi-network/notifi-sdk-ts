@@ -1,4 +1,7 @@
-import { FusionEventTopic } from '@notifi-network/notifi-frontend-client';
+import {
+  FusionEventTopic,
+  TopicMetadata,
+} from '@notifi-network/notifi-frontend-client';
 import clsx from 'clsx';
 import React from 'react';
 
@@ -24,7 +27,6 @@ export type TopicStackRowInputPropsBase = {
     button?: string;
     loadingSpinner?: React.CSSProperties;
   };
-  // topic: FusionEventTopic;
   onSave?: () => void;
   copy?: {
     buttonContent?: string;
@@ -32,11 +34,11 @@ export type TopicStackRowInputPropsBase = {
 };
 
 type TopicStackGroupRowInputProps = TopicStackRowInputPropsBase & {
-  topics: FusionEventTopic[];
+  topics: (FusionEventTopic | TopicMetadata)[];
 };
 
 type TopicStackStandaloneRowInputProps = TopicStackRowInputPropsBase & {
-  topic: FusionEventTopic;
+  topic: FusionEventTopic | TopicMetadata;
 };
 
 export type TopicStackRowInputProps<T extends TopicRowCategory> =
