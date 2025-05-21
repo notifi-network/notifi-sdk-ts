@@ -13,6 +13,8 @@ export const AlertFragment = gql`
     targetGroup {
       ...TargetGroupFragment
     }
+    subscriptionValue
+    fusionEventId
   }
   ${FilterFragment}
   ${SourceGroupFragment}

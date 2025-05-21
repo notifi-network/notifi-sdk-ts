@@ -10,6 +10,8 @@ export const CreateFusionAlerts = gql`
         id
         name
         filterOptions
+        subscriptionValue
+        fusionEventId
       }
       errors {
         ...ArgumentErrorFragment
