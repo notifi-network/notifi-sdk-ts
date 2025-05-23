@@ -2,6 +2,7 @@ import {
   AlertFilter,
   EventTypeItem,
   Filter,
+  FrequencyFilter,
   FusionEventMetadata,
   FusionEventTopic,
   FusionFilterOptions,
@@ -122,44 +123,39 @@ export const getFusionFilter = (
 export const isTopicGroupValid = (
   topics: (FusionEventTopic | TopicMetadata)[],
 ): boolean => {
-  // NOTE: Ensure all topics have no filters at the same time
-  const isAllTopicWithoutFilters = topics.every(
+  // CASE#1: Legacy CM topics (fusionMetadata = {})
+  const isLegacyCmTopicGroup = topics.every(
+    (topic) => Object.keys(getFusionEventMetadata(topic) ?? {}).length === 0,
+  );
+  if (isLegacyCmTopicGroup) return true;
+
+  // CASE#2: CM topics or  Non-CM topics with no `AlertFilter` (could possibly with `FrequencyFilter`)
+  const isAllTopicWithoutAlertFilters = topics.every(
     (topic) =>
       getFusionEventMetadata(topic)?.filters.filter(isAlertFilter).length === 0,
   );
-  console.log(3);
-  if (isAllTopicWithoutFilters) {
-    return true;
-  }
-  console.log(4);
+  if (isAllTopicWithoutAlertFilters) return true;
 
-  // NOTE: Ensure all topics have the same userInputParams' options & default value
-  const benchmarkTopic = topics[0];
-  const benchmarkTopicMetadata = getFusionEventMetadata(benchmarkTopic);
+  // CASE#3: Non-CM topics with `AlertFilter`
+  const isAllTopicsWithAlertFilters = topics.every((topic) => {
+    const alertFilterCount =
+      getFusionEventMetadata(topic)?.filters?.filter(isAlertFilter).length;
+    return !!alertFilterCount && alertFilterCount > 0;
+  });
 
-  const benchmarkTopicFilters = benchmarkTopicMetadata?.filters;
-
-  // CASE#1: CM topic (filters always empty array) or Non-CM topic with no filters
-  if (!benchmarkTopicFilters || benchmarkTopicFilters.length === 0) {
-    return true;
-  }
-
-  // CASE#2: Non-CM topic with only FrequencyFilter
-  if (
-    benchmarkTopicFilters.length === 1 &&
-    benchmarkTopicFilters[0].type === 'FrequencyAlertFilter'
-  ) {
-    return true;
-  }
-
-  // CASE#3: Non-CM topic with AlertFilter
-  const benchmarkAlertFilter = benchmarkTopicFilters.find(isAlertFilter);
-  const benchmarkUserInputParams = benchmarkAlertFilter?.userInputParams;
-  console.log(5, benchmarkTopicMetadata);
-  if (!benchmarkAlertFilter) {
+  if (!isAllTopicsWithAlertFilters) {
+    console.info(
+      `WARN - Failed grouping Topics: "${topics[0].uiConfig.topicGroupName}" due to leak of AlertFilter`,
+    );
     return false;
   }
-  console.log(6);
+  // NOTE: Ensure `userInputParams` in all topics are identical (options & default value)
+  const benchmarkTopic = topics[0];
+  const benchmarkTopicMetadata = getFusionEventMetadata(benchmarkTopic);
+  const benchmarkAlertFilter =
+    benchmarkTopicMetadata!.filters.find(isAlertFilter); // Safe:  ⬆`isAllTopicsWithAlertFilters`⬆ ensured every topic has at least one AlertFilter
+
+  const benchmarkUserInputParams = benchmarkAlertFilter!.userInputParams; // Safe: ⬆`isAllTopicsWithAlertFilters`⬆ ensured every topic has at least one AlertFilter
 
   if (benchmarkUserInputParams && benchmarkUserInputParams.length > 0) {
     const isGroupNameNotMatched = topics.find(
@@ -262,6 +258,9 @@ export const isAlertFilter = (filter: Filter): filter is AlertFilter => {
     filter.type === 'AlertFilter'
   );
 };
+
+export const isFrequencyFilter = (filter: Filter): filter is FrequencyFilter =>
+  filter.type === 'FrequencyAlertFilter';
 
 export const isFusionFilterOptions = (
   filterOptions: unknown,
