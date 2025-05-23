@@ -127,20 +127,33 @@ export const isTopicGroupValid = (
     (topic) =>
       getFusionEventMetadata(topic)?.filters.filter(isAlertFilter).length === 0,
   );
+  console.log(3);
   if (isAllTopicWithoutFilters) {
     return true;
   }
+  console.log(4);
 
   // NOTE: Ensure all topics have the same userInputParams' options & default value
   const benchmarkTopic = topics[0];
   const benchmarkTopicMetadata = getFusionEventMetadata(benchmarkTopic);
+
+  // TODO: CM topic grouping unavailable ⬇
+  if (
+    !!benchmarkTopicMetadata &&
+    'filters' in benchmarkTopicMetadata &&
+    benchmarkTopicMetadata.filters.length === 0
+  ) {
+    return true;
+  }
+
   const benchmarkAlertFilter =
     benchmarkTopicMetadata?.filters.find(isAlertFilter);
   const benchmarkUserInputParams = benchmarkAlertFilter?.userInputParams;
-
+  console.log(5, benchmarkTopicMetadata);
   if (!benchmarkAlertFilter) {
     return false;
   }
+  console.log(6);
 
   if (benchmarkUserInputParams && benchmarkUserInputParams.length > 0) {
     const isGroupNameNotMatched = topics.find(

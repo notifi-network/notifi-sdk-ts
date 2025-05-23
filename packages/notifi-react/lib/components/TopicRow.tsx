@@ -69,9 +69,9 @@ export const TopicRow = <T extends TopicRowCategory>(
   const isSubscribed = isOptimisticRendering
     ? !isAlertSubscribed(fusionEventTypeId)
     : isAlertSubscribed(fusionEventTypeId);
-
+  console.log(1, { topics: props });
   if (isTopicGroup && !isTopicGroupValid(props.topics)) return null;
-
+  console.log(2);
   const userInputParams = getUserInputParams(benchmarkTopic);
 
   const title = isTopicGroup
