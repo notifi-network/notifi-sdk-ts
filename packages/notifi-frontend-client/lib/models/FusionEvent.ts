@@ -36,12 +36,13 @@ export type FilterBase = {
 };
 
 export type FrequencyFilter = FilterBase & {
+  type: 'FrequencyAlertFilter';
   minimumDurationBetweenTriggersInMinutes: number;
 };
 
 export type AlertFilter = FilterBase & {
+  type: 'AlertFilter';
   userInputParams: UserInputParam<UiType>[];
-  type: FilterType;
   staticFilterParams?: Record<string, object | string | number>;
   requiredParserVariables: Array<RequiredParserVariable>;
   description: string;
@@ -82,7 +83,6 @@ export type CustomInputConstraints = {
   lowerBound?: number;
 };
 export type UiType = 'radio' | 'button';
-export type FilterType = 'AlertFilter';
 
 export type FusionFilterOptions = {
   version: 1;
