@@ -137,17 +137,23 @@ export const isTopicGroupValid = (
   const benchmarkTopic = topics[0];
   const benchmarkTopicMetadata = getFusionEventMetadata(benchmarkTopic);
 
-  // TODO: CM topic grouping unavailable ⬇
+  const benchmarkTopicFilters = benchmarkTopicMetadata?.filters;
+
+  // CASE#1: CM topic (filters always empty array) or Non-CM topic with no filters
+  if (!benchmarkTopicFilters || benchmarkTopicFilters.length === 0) {
+    return true;
+  }
+
+  // CASE#2: Non-CM topic with only FrequencyFilter
   if (
-    !!benchmarkTopicMetadata &&
-    'filters' in benchmarkTopicMetadata &&
-    benchmarkTopicMetadata.filters.length === 0
+    benchmarkTopicFilters.length === 1 &&
+    benchmarkTopicFilters[0].type === 'FrequencyAlertFilter'
   ) {
     return true;
   }
 
-  const benchmarkAlertFilter =
-    benchmarkTopicMetadata?.filters.find(isAlertFilter);
+  // CASE#3: Non-CM topic with AlertFilter
+  const benchmarkAlertFilter = benchmarkTopicFilters.find(isAlertFilter);
   const benchmarkUserInputParams = benchmarkAlertFilter?.userInputParams;
   console.log(5, benchmarkTopicMetadata);
   if (!benchmarkAlertFilter) {
@@ -243,13 +249,10 @@ export const isTopicGroupValid = (
 export const isFusionEventMetadata = (
   metadata: unknown,
 ): metadata is FusionEventMetadata => {
-  const metadataToVerify = metadata as any;
-  if (typeof metadataToVerify !== 'object' || !metadataToVerify) {
+  if (typeof metadata !== 'object' || !metadata) {
     return false;
   }
-  return (
-    'filters' in metadataToVerify && Array.isArray(metadataToVerify.filters)
-  );
+  return 'filters' in metadata && Array.isArray(metadata.filters);
 };
 
 export const isAlertFilter = (filter: Filter): filter is AlertFilter => {
@@ -263,13 +266,10 @@ export const isAlertFilter = (filter: Filter): filter is AlertFilter => {
 export const isFusionFilterOptions = (
   filterOptions: unknown,
 ): filterOptions is FusionFilterOptions => {
-  const filterOptionsToVerify = filterOptions as any;
-  if (typeof filterOptionsToVerify !== 'object' || !filterOptionsToVerify) {
+  if (typeof filterOptions !== 'object' || !filterOptions) {
     return false;
   }
-  return (
-    'version' in filterOptionsToVerify && filterOptionsToVerify.version === 1
-  );
+  return 'version' in filterOptions && filterOptions.version === 1;
 };
 
 export const getUpdatedAlertFilterOptions = (
