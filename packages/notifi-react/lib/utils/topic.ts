@@ -123,20 +123,33 @@ export const getFusionFilter = (
 export const isTopicGroupValid = (
   topics: (FusionEventTopic | TopicMetadata)[],
 ): boolean => {
-  // CASE#1: Legacy CM topics (fusionMetadata = {})
+  const groupName = topics[0].uiConfig.topicGroupName;
+  console.log('topics', topics);
+  console.log('groupName', groupName);
+  const isGroupNameConsistent = topics.every(
+    (topic) => topic.uiConfig.topicGroupName === groupName,
+  );
+  if (!isGroupNameConsistent) {
+    console.info(
+      `WARN - Failed grouping Topic Group - "${groupName}" due to inconsistent group name`,
+    );
+    return false;
+  }
+
+  // CASE#1: Deprecated Legacy CM topics ex. {metadata: {}}
   const isLegacyCmTopicGroup = topics.every(
     (topic) => Object.keys(getFusionEventMetadata(topic) ?? {}).length === 0,
   );
   if (isLegacyCmTopicGroup) return true;
 
-  // CASE#2: CM topics or  Non-CM topics with no `AlertFilter` (could possibly with `FrequencyFilter`)
+  // CASE#2: CM topics or  Non-CM topics have `filters` property in fusionMetadata, but have no `AlertFilter`  (could possibly with `FrequencyFilter`). ex. {metadata: {filters: [{type: 'FrequencyAlertFilter', ...}]} or {metadata: {filters: []}}
   const isAllTopicWithoutAlertFilters = topics.every(
     (topic) =>
       getFusionEventMetadata(topic)?.filters.filter(isAlertFilter).length === 0,
   );
   if (isAllTopicWithoutAlertFilters) return true;
 
-  // CASE#3: Non-CM topics with `AlertFilter`
+  // CASE#3: Non-CM topics have `filters` property in fusionMetadata, and have at least one `AlertFilter`. ex. {metadata: {filters: [{type: 'AlertFilter', ...}]}}
   const isAllTopicsWithAlertFilters = topics.every((topic) => {
     const alertFilterCount =
       getFusionEventMetadata(topic)?.filters?.filter(isAlertFilter).length;
@@ -145,11 +158,11 @@ export const isTopicGroupValid = (
 
   if (!isAllTopicsWithAlertFilters) {
     console.info(
-      `WARN - Failed grouping Topics: "${topics[0].uiConfig.topicGroupName}" due to leak of AlertFilter`,
+      `WARN - Failed grouping Topic Group -"${groupName}" due to leak of AlertFilter`,
     );
     return false;
   }
-  // NOTE: Ensure `userInputParams` in all topics are identical (options & default value)
+  // NOTE: Ensure `userInputParams` in all topics are identical in the following properties - name, options, defaultValue)
   const benchmarkTopic = topics[0];
   const benchmarkTopicMetadata = getFusionEventMetadata(benchmarkTopic);
   const benchmarkAlertFilter =
@@ -158,59 +171,19 @@ export const isTopicGroupValid = (
   const benchmarkUserInputParams = benchmarkAlertFilter!.userInputParams; // Safe: ⬆`isAllTopicsWithAlertFilters`⬆ ensured every topic has at least one AlertFilter
 
   if (benchmarkUserInputParams && benchmarkUserInputParams.length > 0) {
-    const isGroupNameNotMatched = topics.find(
-      (topic) =>
-        topic.uiConfig.topicGroupName !==
-        benchmarkTopic.uiConfig.topicGroupName,
-    );
-    if (isGroupNameNotMatched) {
-      return false;
-    }
-
-    const userInputParamsList = topics.map((topic) => {
-      return getUserInputParams(topic);
-    });
-
-    for (let i = 1; i < userInputParamsList.length; i++) {
-      const userInputParams = userInputParamsList[i];
-      const userInputParamMap = new Map<string, UserInputParam<UiType>>(
-        userInputParams.map((userInputParam) => [
-          userInputParam.name,
-          userInputParam,
-        ]),
-      );
-
-      const benchmarkUserInputParamMap = new Map<
-        string,
-        UserInputParam<UiType>
-      >(
-        benchmarkUserInputParams.map((userInputParam) => [
-          userInputParam.name,
-          userInputParam,
-        ]),
-      );
-      // TODO: Fix O(n^2) complexity
-      const benchmarkUserInputParamKeys = Array.from(
-        benchmarkUserInputParamMap.keys(),
-      );
-      for (const key of benchmarkUserInputParamKeys) {
-        const benchmarkUserInputParam = benchmarkUserInputParamMap.get(key);
-        const userInputParam = userInputParamMap.get(key);
-        if (!userInputParam || !benchmarkUserInputParam) {
-          return false;
-        }
-
-        const benchmarkParamOptions = benchmarkUserInputParam.options.join('');
-        const userInputParamOptions = userInputParam.options.join('');
-        if (benchmarkParamOptions !== userInputParamOptions) {
-          return false;
-        }
-
-        if (
-          benchmarkUserInputParam.defaultValue !== userInputParam.defaultValue
-        ) {
-          return false;
-        }
+    for (let i = 1; i < topics.length; i++) {
+      const topic = topics[i];
+      const currentUserParams = getUserInputParams(topic);
+      if (
+        !areUserInputParamsStrictlyEqual(
+          benchmarkUserInputParams,
+          currentUserParams,
+        )
+      ) {
+        console.info(
+          `WARN - Failed grouping Topic Group - "${groupName}" due to inconsistent userInputParams`,
+        );
+        return false;
       }
     }
   }
@@ -237,6 +210,32 @@ export const isTopicGroupValid = (
       return benchmarkSubscriptionRef === subTopicSubscriptionRef;
     });
     return isValid;
+  }
+
+  return true;
+};
+
+/**
+ * @description
+ * Compares two userInputParams by `name`, `defaultValue`, and `options` for strict equality.
+ */
+export const areUserInputParamsStrictlyEqual = (
+  a: UserInputParam<UiType>[],
+  b: UserInputParam<UiType>[],
+): boolean => {
+  if (a.length !== b.length) return false;
+
+  for (let i = 0; i < a.length; i++) {
+    const param1 = a[i];
+    const param2 = b[i];
+
+    if (param1.name !== param2.name) return false;
+    if (param1.defaultValue !== param2.defaultValue) return false;
+
+    if (param1.options.length !== param2.options.length) return false;
+    for (let j = 0; j < param1.options.length; j++) {
+      if (param1.options[j] !== param2.options[j]) return false;
+    }
   }
 
   return true;
