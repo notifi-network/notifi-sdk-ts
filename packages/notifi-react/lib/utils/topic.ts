@@ -124,8 +124,6 @@ export const isTopicGroupValid = (
   topics: (FusionEventTopic | TopicMetadata)[],
 ): boolean => {
   const groupName = topics[0].uiConfig.topicGroupName;
-  console.log('topics', topics);
-  console.log('groupName', groupName);
   const isGroupNameConsistent = topics.every(
     (topic) => topic.uiConfig.topicGroupName === groupName,
   );
@@ -158,11 +156,16 @@ export const isTopicGroupValid = (
 
   if (!isAllTopicsWithAlertFilters) {
     console.info(
-      `WARN - Failed grouping Topic Group -"${groupName}" due to leak of AlertFilter`,
+      `WARN - Failed to group Topic Group "${groupName}" due to missing AlertFilter(s)`,
     );
     return false;
   }
-  // NOTE: Ensure `userInputParams` in all topics are identical in the following properties - name, options, defaultValue)
+
+  /** ⬇ Ensure all topics' `userInputParams` are strictly equal in the following properties ⬇ :
+   * - name
+   * - options
+   * - defaultValue
+   */
   const benchmarkTopic = topics[0];
   const benchmarkTopicMetadata = getFusionEventMetadata(benchmarkTopic);
   const benchmarkAlertFilter =
@@ -181,14 +184,16 @@ export const isTopicGroupValid = (
         )
       ) {
         console.info(
-          `WARN - Failed grouping Topic Group - "${groupName}" due to inconsistent userInputParams`,
+          `WARN - Failed to group Topic Group "${groupName}" due to inconsistent userInputParams`,
         );
         return false;
       }
     }
   }
 
-  // NOTE: If It is stackable topic, ensure all topics have the same subscriptionRef
+  /** ⬇ For stackable topics (isSubscriptionValueInputable = true) ⬇
+   * ensure all topics reference the same `subscriptionRef`
+   */
   const benchmarkSubscriptionValueOrRef =
     benchmarkTopicMetadata?.uiConfigOverride?.subscriptionValueOrRef;
   const benchmarkSubscriptionRef =
