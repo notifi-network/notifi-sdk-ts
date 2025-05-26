@@ -13,7 +13,7 @@ describe('NotifiSmartLink Test', () => {
 
     cy.intercept(
       'POST',
-      `${envUrl(env, 'http', 'notifi-dataplane')}/Link/${smartLinkId}`,
+      `${envUrl(env, 'http', 'notifi-dataplane')}/link/${smartLinkId}`,
       (req) => {
         req.alias = 'dpapiActivateSmartLinkAction';
       },
