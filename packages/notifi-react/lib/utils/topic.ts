@@ -1,20 +1,20 @@
 import {
-  AlertFilter,
-  EventTypeItem,
-  Filter,
-  FrequencyFilter,
-  FusionEventMetadata,
-  FusionEventTopic,
-  FusionFilterOptions,
-  FusionToggleEventTypeItem,
-  InputObject,
-  LabelEventTypeItem,
-  LabelUiConfig,
-  TopicMetadata,
-  TopicUiConfig,
-  UiType,
-  UserInputParam,
-  ValueType,
+  type AlertFilter,
+  type EventTypeItem,
+  type Filter,
+  type FrequencyFilter,
+  type FusionEventMetadata,
+  type FusionEventTopic,
+  type FusionFilterOptions,
+  type FusionToggleEventTypeItem,
+  type InputObject,
+  type LabelEventTypeItem,
+  type LabelUiConfig,
+  type TopicMetadata,
+  type TopicUiConfig,
+  type UiType,
+  type UserInputParam,
+  type ValueType,
   objectKeys,
 } from '@notifi-network/notifi-frontend-client';
 
@@ -293,35 +293,6 @@ export const getUpdatedAlertFilterOptions = (
   };
 };
 
-/** @deprecated use `userInputParam.prefixAndSuffix` */
-export const derivePrefixAndSuffixFromValueType = (
-  kind: ValueType,
-): { prefix: string; suffix: string } => {
-  switch (kind) {
-    case 'price':
-      return {
-        prefix: '$',
-        suffix: '',
-      };
-    case 'percentage':
-      return {
-        prefix: '',
-        suffix: '%',
-      };
-    case 'string':
-    case 'integer':
-      return {
-        prefix: '',
-        suffix: '',
-      };
-    default:
-      return {
-        prefix: '',
-        suffix: '',
-      };
-  }
-};
-
 export type AlertMetadataBase = {
   fusionEventTypeId: string;
 };
@@ -377,18 +348,6 @@ export type TopicStackAlert = {
   filterOptions: FusionFilterOptions;
 };
 
-/** @deprecated - Use resolveAlertName instead */
-export const resolveTopicStackAlertName = (alertName: string) => {
-  const [fusionEventTypeId, subscriptionValue, subscriptionLabel, timestamp] =
-    alertName.split(':;:');
-  return {
-    fusionEventTypeId,
-    subscriptionValue,
-    subscriptionLabel,
-    timestamp,
-  };
-};
-
 export const composeTopicStackAlertName = (
   fusionEventTypeId: string,
   subscriptionValue: string,
@@ -397,12 +356,11 @@ export const composeTopicStackAlertName = (
   return `${fusionEventTypeId}:;:${subscriptionValue}:;:${subscriptionLabel}:;:${Date.now()}`;
 };
 
-export enum ConvertOptionDirection {
-  /**Note: Convert the value rendered in browser to notifi backend acceptable format */
-  FtoB = 'frontendToBackend',
-  /**Note: Convert the value received from notifi backend to frontend renderable format */
-  BtoF = 'BackendToFrontend',
-}
+/**
+ * ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇
+ * ⬇ ⬇ Deprecated functions ⬇ ⬇
+ * ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇
+ */
 
 /** @deprecated no longer need this, use "value" directly. Reason: to simplify and show the values without any conversion. If the developer needs to convert the 50% to .5, then they can normalize their values by converting from .5 to 50. We give flexibility to the developers to pass any values from parsers  */
 export const convertOptionValue = (
@@ -418,4 +376,53 @@ export const convertOptionValue = (
       : Number(value) * 100;
   }
   return value;
+};
+
+/** @deprecated - conversion logic is handled by BE */
+export enum ConvertOptionDirection {
+  /**Note: Convert the value rendered in browser to notifi backend acceptable format */
+  FtoB = 'frontendToBackend',
+  /**Note: Convert the value received from notifi backend to frontend renderable format */
+  BtoF = 'BackendToFrontend',
+}
+
+/** @deprecated - Use resolveAlertName instead */
+export const resolveTopicStackAlertName = (alertName: string) => {
+  const [fusionEventTypeId, subscriptionValue, subscriptionLabel, timestamp] =
+    alertName.split(':;:');
+  return {
+    fusionEventTypeId,
+    subscriptionValue,
+    subscriptionLabel,
+    timestamp,
+  };
+};
+
+/** @deprecated use `userInputParam.prefixAndSuffix` */
+export const derivePrefixAndSuffixFromValueType = (
+  kind: ValueType,
+): { prefix: string; suffix: string } => {
+  switch (kind) {
+    case 'price':
+      return {
+        prefix: '$',
+        suffix: '',
+      };
+    case 'percentage':
+      return {
+        prefix: '',
+        suffix: '%',
+      };
+    case 'string':
+    case 'integer':
+      return {
+        prefix: '',
+        suffix: '',
+      };
+    default:
+      return {
+        prefix: '',
+        suffix: '',
+      };
+  }
 };
