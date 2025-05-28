@@ -37,7 +37,7 @@ export const NotifiSmartLinkExample: React.FC = () => {
           ? 'Install Wallet (Metamask)'
           : 'Connect Wallet (Metamask)',
         disabled: false,
-        onError: (e: Error) => console.log(`We got an error: ${e.message}`),
+        onError: (e: Error) => console.error(`We got an error: ${e.message}`),
       };
     }
   }, [selectedWallet, wallets]);

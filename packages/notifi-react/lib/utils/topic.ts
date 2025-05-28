@@ -1,19 +1,20 @@
 import {
-  AlertFilter,
-  EventTypeItem,
-  Filter,
-  FusionEventMetadata,
-  FusionEventTopic,
-  FusionFilterOptions,
-  FusionToggleEventTypeItem,
-  InputObject,
-  LabelEventTypeItem,
-  LabelUiConfig,
-  TopicMetadata,
-  TopicUiConfig,
-  UiType,
-  UserInputParam,
-  ValueType,
+  type AlertFilter,
+  type EventTypeItem,
+  type Filter,
+  type FrequencyFilter,
+  type FusionEventMetadata,
+  type FusionEventTopic,
+  type FusionFilterOptions,
+  type FusionToggleEventTypeItem,
+  type InputObject,
+  type LabelEventTypeItem,
+  type LabelUiConfig,
+  type TopicMetadata,
+  type TopicUiConfig,
+  type UiType,
+  type UserInputParam,
+  type ValueType,
   objectKeys,
 } from '@notifi-network/notifi-frontend-client';
 
@@ -122,85 +123,77 @@ export const getFusionFilter = (
 export const isTopicGroupValid = (
   topics: (FusionEventTopic | TopicMetadata)[],
 ): boolean => {
-  // NOTE: Ensure all topics have no filters at the same time
-  const isAllTopicWithoutFilters = topics.every(
-    (topic) =>
-      getFusionEventMetadata(topic)?.filters.filter(isAlertFilter).length === 0,
+  const groupName = topics[0].uiConfig.topicGroupName;
+  const isGroupNameConsistent = topics.every(
+    (topic) => topic.uiConfig.topicGroupName === groupName,
   );
-  if (isAllTopicWithoutFilters) {
-    return true;
-  }
-
-  // NOTE: Ensure all topics have the same userInputParams' options & default value
-  const benchmarkTopic = topics[0];
-  const benchmarkTopicMetadata = getFusionEventMetadata(benchmarkTopic);
-  const benchmarkAlertFilter =
-    benchmarkTopicMetadata?.filters.find(isAlertFilter);
-  const benchmarkUserInputParams = benchmarkAlertFilter?.userInputParams;
-
-  if (!benchmarkAlertFilter) {
+  if (!isGroupNameConsistent) {
+    console.info(
+      `WARN - Failed grouping Topic Group - "${groupName}" due to inconsistent group name`,
+    );
     return false;
   }
 
-  if (benchmarkUserInputParams && benchmarkUserInputParams.length > 0) {
-    const isGroupNameNotMatched = topics.find(
-      (topic) =>
-        topic.uiConfig.topicGroupName !==
-        benchmarkTopic.uiConfig.topicGroupName,
+  // CASE#1: Deprecated Legacy CM topics ex. {metadata: {}}
+  const isLegacyCmTopicGroup = topics.every(
+    (topic) => Object.keys(getFusionEventMetadata(topic) ?? {}).length === 0,
+  );
+  if (isLegacyCmTopicGroup) return true;
+
+  // CASE#2: CM topics or  Non-CM topics have `filters` property in fusionMetadata, but have no `AlertFilter`  (could possibly with `FrequencyFilter`). ex. {metadata: {filters: [{type: 'FrequencyAlertFilter', ...}]} or {metadata: {filters: []}}
+  const isAllTopicWithoutAlertFilters = topics.every(
+    (topic) =>
+      getFusionEventMetadata(topic)?.filters.filter(isAlertFilter).length === 0,
+  );
+  if (isAllTopicWithoutAlertFilters) return true;
+
+  // CASE#3: Non-CM topics have `filters` property in fusionMetadata, and have at least one `AlertFilter`. ex. {metadata: {filters: [{type: 'AlertFilter', ...}]}}
+  const isAllTopicsWithAlertFilters = topics.every((topic) => {
+    const alertFilterCount =
+      getFusionEventMetadata(topic)?.filters?.filter(isAlertFilter).length;
+    return !!alertFilterCount && alertFilterCount > 0;
+  });
+
+  if (!isAllTopicsWithAlertFilters) {
+    console.info(
+      `WARN - Failed to group Topic Group "${groupName}" due to missing AlertFilter(s)`,
     );
-    if (isGroupNameNotMatched) {
-      return false;
-    }
+    return false;
+  }
 
-    const userInputParamsList = topics.map((topic) => {
-      return getUserInputParams(topic);
-    });
+  /** ⬇ Ensure all topics' `userInputParams` are strictly equal in the following properties ⬇ :
+   * - name
+   * - options
+   * - defaultValue
+   */
+  const benchmarkTopic = topics[0];
+  const benchmarkTopicMetadata = getFusionEventMetadata(benchmarkTopic);
+  const benchmarkAlertFilter =
+    benchmarkTopicMetadata!.filters.find(isAlertFilter); // Safe:  ⬆`isAllTopicsWithAlertFilters`⬆ ensured every topic has at least one AlertFilter
 
-    for (let i = 1; i < userInputParamsList.length; i++) {
-      const userInputParams = userInputParamsList[i];
-      const userInputParamMap = new Map<string, UserInputParam<UiType>>(
-        userInputParams.map((userInputParam) => [
-          userInputParam.name,
-          userInputParam,
-        ]),
-      );
+  const benchmarkUserInputParams = benchmarkAlertFilter!.userInputParams; // Safe: ⬆`isAllTopicsWithAlertFilters`⬆ ensured every topic has at least one AlertFilter
 
-      const benchmarkUserInputParamMap = new Map<
-        string,
-        UserInputParam<UiType>
-      >(
-        benchmarkUserInputParams.map((userInputParam) => [
-          userInputParam.name,
-          userInputParam,
-        ]),
-      );
-      // TODO: Fix O(n^2) complexity
-      const benchmarkUserInputParamKeys = Array.from(
-        benchmarkUserInputParamMap.keys(),
-      );
-      for (const key of benchmarkUserInputParamKeys) {
-        const benchmarkUserInputParam = benchmarkUserInputParamMap.get(key);
-        const userInputParam = userInputParamMap.get(key);
-        if (!userInputParam || !benchmarkUserInputParam) {
-          return false;
-        }
-
-        const benchmarkParamOptions = benchmarkUserInputParam.options.join('');
-        const userInputParamOptions = userInputParam.options.join('');
-        if (benchmarkParamOptions !== userInputParamOptions) {
-          return false;
-        }
-
-        if (
-          benchmarkUserInputParam.defaultValue !== userInputParam.defaultValue
-        ) {
-          return false;
-        }
+  if (benchmarkUserInputParams && benchmarkUserInputParams.length > 0) {
+    for (let i = 1; i < topics.length; i++) {
+      const topic = topics[i];
+      const currentUserParams = getUserInputParams(topic);
+      if (
+        !areUserInputParamsStrictlyEqual(
+          benchmarkUserInputParams,
+          currentUserParams,
+        )
+      ) {
+        console.info(
+          `WARN - Failed to group Topic Group "${groupName}" due to inconsistent userInputParams`,
+        );
+        return false;
       }
     }
   }
 
-  // NOTE: If It is stackable topic, ensure all topics have the same subscriptionRef
+  /** ⬇ For stackable topics (isSubscriptionValueInputable = true) ⬇
+   * ensure all topics reference the same `subscriptionRef`
+   */
   const benchmarkSubscriptionValueOrRef =
     benchmarkTopicMetadata?.uiConfigOverride?.subscriptionValueOrRef;
   const benchmarkSubscriptionRef =
@@ -227,16 +220,39 @@ export const isTopicGroupValid = (
   return true;
 };
 
+/**
+ * @description
+ * Compares two userInputParams by `name`, `defaultValue`, and `options` for strict equality.
+ */
+export const areUserInputParamsStrictlyEqual = (
+  a: UserInputParam<UiType>[],
+  b: UserInputParam<UiType>[],
+): boolean => {
+  if (a.length !== b.length) return false;
+
+  for (let i = 0; i < a.length; i++) {
+    const param1 = a[i];
+    const param2 = b[i];
+
+    if (param1.name !== param2.name) return false;
+    if (param1.defaultValue !== param2.defaultValue) return false;
+
+    if (param1.options.length !== param2.options.length) return false;
+    for (let j = 0; j < param1.options.length; j++) {
+      if (param1.options[j] !== param2.options[j]) return false;
+    }
+  }
+
+  return true;
+};
+
 export const isFusionEventMetadata = (
   metadata: unknown,
 ): metadata is FusionEventMetadata => {
-  const metadataToVerify = metadata as any;
-  if (typeof metadataToVerify !== 'object' || !metadataToVerify) {
+  if (typeof metadata !== 'object' || !metadata) {
     return false;
   }
-  return (
-    'filters' in metadataToVerify && Array.isArray(metadataToVerify.filters)
-  );
+  return 'filters' in metadata && Array.isArray(metadata.filters);
 };
 
 export const isAlertFilter = (filter: Filter): filter is AlertFilter => {
@@ -247,16 +263,16 @@ export const isAlertFilter = (filter: Filter): filter is AlertFilter => {
   );
 };
 
+export const isFrequencyFilter = (filter: Filter): filter is FrequencyFilter =>
+  filter.type === 'FrequencyAlertFilter';
+
 export const isFusionFilterOptions = (
   filterOptions: unknown,
 ): filterOptions is FusionFilterOptions => {
-  const filterOptionsToVerify = filterOptions as any;
-  if (typeof filterOptionsToVerify !== 'object' || !filterOptionsToVerify) {
+  if (typeof filterOptions !== 'object' || !filterOptions) {
     return false;
   }
-  return (
-    'version' in filterOptionsToVerify && filterOptionsToVerify.version === 1
-  );
+  return 'version' in filterOptions && filterOptions.version === 1;
 };
 
 export const getUpdatedAlertFilterOptions = (
@@ -275,35 +291,6 @@ export const getUpdatedAlertFilterOptions = (
       },
     },
   };
-};
-
-/** @deprecated use `userInputParam.prefixAndSuffix` */
-export const derivePrefixAndSuffixFromValueType = (
-  kind: ValueType,
-): { prefix: string; suffix: string } => {
-  switch (kind) {
-    case 'price':
-      return {
-        prefix: '$',
-        suffix: '',
-      };
-    case 'percentage':
-      return {
-        prefix: '',
-        suffix: '%',
-      };
-    case 'string':
-    case 'integer':
-      return {
-        prefix: '',
-        suffix: '',
-      };
-    default:
-      return {
-        prefix: '',
-        suffix: '',
-      };
-  }
 };
 
 export type AlertMetadataBase = {
@@ -361,18 +348,6 @@ export type TopicStackAlert = {
   filterOptions: FusionFilterOptions;
 };
 
-/** @deprecated - Use resolveAlertName instead */
-export const resolveTopicStackAlertName = (alertName: string) => {
-  const [fusionEventTypeId, subscriptionValue, subscriptionLabel, timestamp] =
-    alertName.split(':;:');
-  return {
-    fusionEventTypeId,
-    subscriptionValue,
-    subscriptionLabel,
-    timestamp,
-  };
-};
-
 export const composeTopicStackAlertName = (
   fusionEventTypeId: string,
   subscriptionValue: string,
@@ -381,12 +356,11 @@ export const composeTopicStackAlertName = (
   return `${fusionEventTypeId}:;:${subscriptionValue}:;:${subscriptionLabel}:;:${Date.now()}`;
 };
 
-export enum ConvertOptionDirection {
-  /**Note: Convert the value rendered in browser to notifi backend acceptable format */
-  FtoB = 'frontendToBackend',
-  /**Note: Convert the value received from notifi backend to frontend renderable format */
-  BtoF = 'BackendToFrontend',
-}
+/**
+ * ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇
+ * ⬇ ⬇ Deprecated functions ⬇ ⬇
+ * ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇
+ */
 
 /** @deprecated no longer need this, use "value" directly. Reason: to simplify and show the values without any conversion. If the developer needs to convert the 50% to .5, then they can normalize their values by converting from .5 to 50. We give flexibility to the developers to pass any values from parsers  */
 export const convertOptionValue = (
@@ -402,4 +376,53 @@ export const convertOptionValue = (
       : Number(value) * 100;
   }
   return value;
+};
+
+/** @deprecated - conversion logic is handled by BE */
+export enum ConvertOptionDirection {
+  /**Note: Convert the value rendered in browser to notifi backend acceptable format */
+  FtoB = 'frontendToBackend',
+  /**Note: Convert the value received from notifi backend to frontend renderable format */
+  BtoF = 'BackendToFrontend',
+}
+
+/** @deprecated - Use resolveAlertName instead */
+export const resolveTopicStackAlertName = (alertName: string) => {
+  const [fusionEventTypeId, subscriptionValue, subscriptionLabel, timestamp] =
+    alertName.split(':;:');
+  return {
+    fusionEventTypeId,
+    subscriptionValue,
+    subscriptionLabel,
+    timestamp,
+  };
+};
+
+/** @deprecated use `userInputParam.prefixAndSuffix` */
+export const derivePrefixAndSuffixFromValueType = (
+  kind: ValueType,
+): { prefix: string; suffix: string } => {
+  switch (kind) {
+    case 'price':
+      return {
+        prefix: '$',
+        suffix: '',
+      };
+    case 'percentage':
+      return {
+        prefix: '',
+        suffix: '%',
+      };
+    case 'string':
+    case 'integer':
+      return {
+        prefix: '',
+        suffix: '',
+      };
+    default:
+      return {
+        prefix: '',
+        suffix: '',
+      };
+  }
 };
