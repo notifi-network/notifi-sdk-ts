@@ -86,6 +86,7 @@ export class NotifiService
   constructor(
     graphQLClient: GraphQLClient,
     private _notifiSubService: NotifiSubscriptionService,
+    private _optionHeaders?: Record<string, string>,
   ) {
     this._typedClient = getSdk(graphQLClient);
   }
@@ -740,6 +741,12 @@ export class NotifiService
 
     if (this._jwt !== undefined) {
       headers['Authorization'] = `Bearer ${this._jwt}`;
+    }
+
+    if (this._optionHeaders) {
+      Object.entries(this._optionHeaders).forEach(([key, value]) => {
+        headers[key] = value;
+      });
     }
 
     return headers;

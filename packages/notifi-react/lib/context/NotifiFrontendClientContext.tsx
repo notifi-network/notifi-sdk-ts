@@ -7,6 +7,7 @@ import {
 } from '@notifi-network/notifi-frontend-client';
 import React from 'react';
 
+import { version } from '../../package.json';
 import { loginViaSolanaHardwareWallet } from '../utils';
 
 export type FrontendClientStatus = {
@@ -87,11 +88,16 @@ export const NotifiFrontendClientContextProvider: React.FC<
     isEnabledLoginViaTransaction;
 
   React.useEffect(() => {
+    const optionHeaders = {
+      'X-Notifi-React-Version': version,
+    };
     const frontendClient = instantiateFrontendClient(
       tenantId,
       walletWithSignParams,
       env,
       storageOption,
+      undefined,
+      optionHeaders,
     );
 
     setIsLoading(true);
