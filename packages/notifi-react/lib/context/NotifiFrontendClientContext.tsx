@@ -88,9 +88,8 @@ export const NotifiFrontendClientContextProvider: React.FC<
     isEnabledLoginViaTransaction;
 
   React.useEffect(() => {
-    // TODO: Expose optionHeaders props to the user, so that they can pass custom headers
-    const optionHeaders = {
-      'X-Notifi-React-Version': version,
+    const requestHeaders = {
+      'X-Notifi-Client-Version': version,
     };
     const frontendClient = instantiateFrontendClient(
       tenantId,
@@ -98,7 +97,7 @@ export const NotifiFrontendClientContextProvider: React.FC<
       env,
       storageOption,
       undefined,
-      optionHeaders,
+      requestHeaders,
     );
 
     setIsLoading(true);

@@ -745,7 +745,10 @@ export class NotifiService
 
     if (this._optionHeaders) {
       Object.entries(this._optionHeaders).forEach(([key, value]) => {
-        headers[key] = value;
+        /* Request ID is always set by the notifi-graphql service. */
+        if (!(key === 'X-Request-Id')) {
+          headers[key] = value;
+        }
       });
     }
 

@@ -6,6 +6,7 @@ import {
 import { GraphQLClient } from 'graphql-request';
 import WebSocket from 'ws';
 
+import { version } from '../../package.json';
 import {
   NotifiEnvironment,
   NotifiFrontendConfiguration,
@@ -51,6 +52,14 @@ export const newNotifiService = <T extends { env?: NotifiEnvironment }>(
      */
     typeof window !== 'undefined' ? undefined : WebSocket,
   );
+
+  if (!optionHeaders) {
+    optionHeaders = {};
+  }
+  if (!('X-Notifi-Client-Version' in optionHeaders)) {
+    optionHeaders['X-Notifi-Client-Version'] = version;
+  }
+
   return new NotifiService(client, subService, optionHeaders);
 };
 
