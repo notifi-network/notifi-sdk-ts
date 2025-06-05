@@ -6,6 +6,7 @@ import {
 import { GraphQLClient } from 'graphql-request';
 import WebSocket from 'ws';
 
+import { version } from '../../package.json';
 import {
   NotifiEnvironment,
   NotifiFrontendConfiguration,
@@ -36,6 +37,7 @@ export const newNotifiStorage = (config: NotifiFrontendConfiguration) => {
 export const newNotifiService = <T extends { env?: NotifiEnvironment }>(
   config: T,
   gqlClientRequestConfig?: RequestConfig,
+  optionHeaders?: Record<string, string>,
 ) => {
   const url = envUrl(config.env, 'http');
   const wsurl = envUrl(config.env, 'websocket');
@@ -50,7 +52,15 @@ export const newNotifiService = <T extends { env?: NotifiEnvironment }>(
      */
     typeof window !== 'undefined' ? undefined : WebSocket,
   );
-  return new NotifiService(client, subService);
+
+  if (!optionHeaders) {
+    optionHeaders = {};
+  }
+  if (!('X-Notifi-Client-Version' in optionHeaders)) {
+    optionHeaders['X-Notifi-Client-Version'] = version;
+  }
+
+  return new NotifiService(client, subService, optionHeaders);
 };
 
 export const newDataplaneClient = <T extends { env?: NotifiEnvironment }>(
@@ -66,6 +76,7 @@ export const instantiateFrontendClient = (
   env?: NotifiEnvironment,
   storageOption?: NotifiFrontendConfiguration['storageOption'],
   gqlClientRequestConfig?: RequestConfig, // NOTE: `graphql-request` by default uses XMLHttpRequest API. To adopt fetch API, pass in { fetch: fetch }
+  optionHeaders?: Record<string, string>,
 ): NotifiFrontendClient => {
   let config: NotifiFrontendConfiguration | null = null;
   if ('accountAddress' in params) {
@@ -115,7 +126,11 @@ export const instantiateFrontendClient = (
     throw new Error('ERROR - instantiateFrontendClient: Invalid UserParams');
   }
 
-  const service = newNotifiService(config, gqlClientRequestConfig);
+  const service = newNotifiService(
+    config,
+    gqlClientRequestConfig,
+    optionHeaders,
+  );
   const storage = newNotifiStorage(config);
   return new NotifiFrontendClient(config, service, storage);
 };
