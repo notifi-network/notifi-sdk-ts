@@ -8,6 +8,7 @@ import {
 } from '../context';
 import { useGlobalStateContext } from '../context/GlobalStateContext';
 import { useConnect } from '../hooks/useConnect';
+import { getFusionEventMetadata } from '../utils';
 import { defaultCopy } from '../utils/constants';
 import { LoadingAnimation } from './LoadingAnimation';
 import { NavHeaderRightCta } from './NavHeader';
@@ -92,9 +93,12 @@ export const Connect: React.FC<ConnectProps> = (props) => {
         });
         return;
       }
+      const fusionEventMetadata = getFusionEventMetadata(topic);
       topicNames.push({
         index: topic.uiConfig.index ?? id,
-        value: topic.uiConfig.name,
+        value:
+          fusionEventMetadata?.uiConfigOverride?.topicDisplayName ??
+          topic.uiConfig.name,
       });
     });
     return [...topicNames, ...topicGroupNames].sort(
