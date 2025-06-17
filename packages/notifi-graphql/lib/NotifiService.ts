@@ -25,7 +25,6 @@ export class NotifiService
     Operations.CreateSourceGroupService,
     Operations.CreateTargetGroupService,
     Operations.CreateTelegramTargetService,
-    Operations.CreateTenantUserService,
     Operations.DeleteAlertService,
     Operations.DeleteUserAlertService,
     Operations.DeleteSourceGroupService,
@@ -45,8 +44,6 @@ export class NotifiService
     Operations.GetSourcesService,
     Operations.GetTargetGroupsService,
     Operations.GetTelegramTargetsService,
-    Operations.GetTenantConnectedWalletsService,
-    Operations.GetTenantUserService,
     Operations.GetTopicsService,
     Operations.LogInFromDappService,
     Operations.LogInFromServiceService,
@@ -262,13 +259,6 @@ export class NotifiService
     return this._typedClient.deleteTelegramTarget(variables, headers);
   }
 
-  async createTenantUser(
-    variables: Generated.CreateTenantUserMutationVariables,
-  ): Promise<Generated.CreateTenantUserMutation> {
-    const headers = this._requestHeaders();
-    return this._typedClient.createTenantUser(variables, headers);
-  }
-
   async createTelegramTarget(
     variables: Generated.CreateTelegramTargetMutationVariables,
   ): Promise<Generated.CreateTelegramTargetMutation> {
@@ -459,20 +449,6 @@ export class NotifiService
   ): Promise<Generated.GetTelegramTargetsQuery> {
     const headers = this._requestHeaders();
     return this._typedClient.getTelegramTargets(variables, headers);
-  }
-
-  async getTenantConnectedWallets(
-    variables: Generated.GetTenantConnectedWalletQueryVariables,
-  ): Promise<Generated.GetTenantConnectedWalletQuery> {
-    const headers = this._requestHeaders();
-    return this._typedClient.getTenantConnectedWallet(variables, headers);
-  }
-
-  async getTenantUser(
-    variables: Generated.GetTenantUserQueryVariables,
-  ): Promise<Generated.GetTenantUserQuery> {
-    const headers = this._requestHeaders();
-    return this._typedClient.getTenantUser(variables, headers);
   }
 
   async getTopics(

@@ -1,5 +1,5 @@
 schema:
-  - 'https://api.dev.notifi.network/gql?sdl':
+  - 'https://api.notifi.network/gql?sdl':
       handleAsSDL: true
 documents: ./lib/gql/**/*.gql.ts
 generates:

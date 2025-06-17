@@ -72,60 +72,6 @@ app.post(
   },
 );
 
-type CreateTenantUserHttpBody = {
-  walletBlockchain?: string;
-  walletPublicKey?: string;
-} & ServiceMiddleWareHttpBody;
-app.post(
-  '/create-tenant-user',
-  notifiAuthMiddleware,
-  (req: Request<object, object, CreateTenantUserHttpBody>, res: Response) => {
-    if (!client || client.status.status === 'uninitialized') {
-      return res.status(400).json({
-        message:
-          'notifi-node: createTenantUser - client not initialized, call /login first',
-      });
-    }
-
-    const { walletBlockchain, walletPublicKey } = req.body ?? {};
-
-    if (!walletPublicKey || !walletBlockchain) {
-      return res.status(400).json({
-        message: 'walletPublicKey is required/ walletBlockchain is required',
-      });
-    }
-
-    if (!client && !!res.locals.client) {
-      client = res.locals.client;
-      client?.initialize(res.locals.jwt);
-    }
-
-    if (!client || client.status.status === 'uninitialized') {
-      return res.status(400).json({
-        message:
-          'notifi-node: createTenantUser - client not initialized, call /login first',
-      });
-    }
-
-    return client
-      .createTenantUser({
-        walletBlockchain: walletBlockchain as WalletBlockchain, // ⬅ Ensure you input the correct value in request body: https://docs.notifi.network/notifi-sdk-ts/modules/_internal_.html#WalletBlockchain
-        walletPublicKey,
-      })
-      .then((userId) => {
-        return res.status(200).json({ userId });
-      })
-      .catch((e: unknown) => {
-        let message = 'Unknown server error';
-        if (e instanceof Error) {
-          message = `notifi-node: createTenantUser (jwt: ${trimJwt(res.locals.jwt)}) - ${e.message}`;
-        }
-
-        return res.status(500).json({ message });
-      });
-  },
-);
-
 type GetActiveAlertsHttpBody = {
   first?: number;
   after?: string;
@@ -241,7 +187,7 @@ app.post(
     if (!client || client.status.status === 'uninitialized') {
       return res.status(400).json({
         message:
-          'notifi-node: createTenantUser - client not initialized, call /login first',
+          'notifi-node: subscribeActiveAlertChangeEvent - client not initialized, call /login first',
       });
     }
 
@@ -320,15 +266,4 @@ const isFusionMessage = (message: unknown): message is FusionMessage => {
   if (!keys.includes('eventTypeId') || !keys.includes('variablesJson'))
     return false;
   return true;
-};
-
-// NOTE: we could import it form `notifi-graphql` package. But for performance concerns and better practice (not to install extra package just for type), we extract the WalletBlockchain type manually
-type WalletBlockchain = (NotifiNodeClient['createTenantUser'] extends (
-  arg: infer T,
-) => any
-  ? T
-  : never)['walletBlockchain'];
-
-const trimJwt = (jwt: string) => {
-  return jwt.slice(0, 5) + '...' + jwt.slice(-5);
 };
