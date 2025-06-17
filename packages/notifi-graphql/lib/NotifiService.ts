@@ -44,7 +44,6 @@ export class NotifiService
     Operations.GetSourcesService,
     Operations.GetTargetGroupsService,
     Operations.GetTelegramTargetsService,
-    Operations.GetTenantConnectedWalletsService,
     Operations.GetTenantUserService,
     Operations.GetTopicsService,
     Operations.LogInFromDappService,
@@ -451,13 +450,6 @@ export class NotifiService
   ): Promise<Generated.GetTelegramTargetsQuery> {
     const headers = this._requestHeaders();
     return this._typedClient.getTelegramTargets(variables, headers);
-  }
-
-  async getTenantConnectedWallets(
-    variables: Generated.GetTenantConnectedWalletQueryVariables,
-  ): Promise<Generated.GetTenantConnectedWalletQuery> {
-    const headers = this._requestHeaders();
-    return this._typedClient.getTenantConnectedWallet(variables, headers);
   }
 
   async getTenantUser(
