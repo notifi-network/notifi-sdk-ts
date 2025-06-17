@@ -28,7 +28,6 @@ export * from './GetSourceGroups';
 export * from './GetSources';
 export * from './GetTargetGroups';
 export * from './GetTelegramTargets';
-export * from './GetTenantUser';
 export * from './GetTopics';
 export * from './LogInFromDappService';
 export * from './LogInFromServiceService';
