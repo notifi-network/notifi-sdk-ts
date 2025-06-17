@@ -65,35 +65,6 @@ export class NotifiNodeClient {
     return this.dpapiService.publishFusionMessage(this.clientState.jwt, params);
   }
 
-  async createTenantUser(
-    params: Gql.CreateTenantUserMutationVariables['input'],
-  ): Promise<string /* UserID */> {
-    this.isClientValid('createTenantUser');
-    const result = await this.service.createTenantUser({
-      input: params,
-    });
-
-    const userId = result.createTenantUser?.id;
-    if (userId === undefined) {
-      throw new Error('Create tenant user failed');
-    }
-
-    return userId;
-  }
-
-  async getTenantConnectedWallet(
-    params: Gql.GetTenantConnectedWalletQueryVariables,
-  ): Promise<Gql.GetTenantConnectedWalletQuery['tenantConnectedWallet']> {
-    this.isClientValid('getTenantConnectedWallet');
-    const result = await this.service.getTenantConnectedWallets(params);
-    const connection = result.tenantConnectedWallet;
-    if (connection === undefined) {
-      throw new Error('Get tenant connected wallet failed');
-    }
-
-    return connection;
-  }
-
   async getActiveAlerts(
     params: Gql.GetActiveAlertsQueryVariables,
   ): Promise<Gql.GetActiveAlertsQuery['activeAlerts']> {

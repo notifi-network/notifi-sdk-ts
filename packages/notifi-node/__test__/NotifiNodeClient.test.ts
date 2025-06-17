@@ -72,23 +72,6 @@ describe('NotifiNodeClient Unit Test', () => {
     expect(indexToResultIdMap).toBeDefined();
   });
 
-  it('createTenantUser', async () => {
-    await login();
-    const result = await client.createTenantUser({
-      walletBlockchain: WALLET_BLOCKCHAIN,
-      walletPublicKey: getRandomEvmPublicKey(),
-    });
-    expect(result).toBeDefined();
-    expect(typeof result).toBe('string');
-  });
-
-  it('getTenantConnectedWallets', async () => {
-    await login();
-    const result = await client.getTenantConnectedWallet({});
-    expect(result).toHaveProperty('pageInfo');
-    expect(result).toHaveProperty('nodes');
-  });
-
   it('getActiveAlerts', async () => {
     await login();
     const result = await client.getActiveAlerts({

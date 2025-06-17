@@ -90,20 +90,6 @@ const { status, jwt } = client.status;
 
 > **NOTE**: Make sure not to expose the `SID`, `Secret` and `Token (jwt)` publicly. Otherwise, it could be abused by malicious users.
 
-### Creating a User
-
-```ts
-const { status } = client.status;
-if (!status === 'initialized') throw new Error('Client not initialized');
-
-const userId = await client.createTenantUser(token, {
-  walletBlockchain: 'ETHEREUM', // Or other notifi supported blockchain: https://docs.notifi.network/notifi-sdk-ts/modules/_internal_.html#WalletBlockchain
-  walletPublicKey: 'user-wallet-public-key',
-});
-
-// You can start sending notifications to this user
-```
-
 ### Sending a Notification message
 
 Use `publishFusionMessage` method to send one or more messages to the users. The example below sends a notification to the all users who have subscribed to the `event-type-id`.

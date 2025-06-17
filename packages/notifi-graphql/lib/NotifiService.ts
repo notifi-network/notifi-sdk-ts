@@ -25,7 +25,6 @@ export class NotifiService
     Operations.CreateSourceGroupService,
     Operations.CreateTargetGroupService,
     Operations.CreateTelegramTargetService,
-    Operations.CreateTenantUserService,
     Operations.DeleteAlertService,
     Operations.DeleteUserAlertService,
     Operations.DeleteSourceGroupService,
@@ -260,13 +259,6 @@ export class NotifiService
   ): Promise<Generated.DeleteTelegramTargetMutation> {
     const headers = this._requestHeaders();
     return this._typedClient.deleteTelegramTarget(variables, headers);
-  }
-
-  async createTenantUser(
-    variables: Generated.CreateTenantUserMutationVariables,
-  ): Promise<Generated.CreateTenantUserMutation> {
-    const headers = this._requestHeaders();
-    return this._typedClient.createTenantUser(variables, headers);
   }
 
   async createTelegramTarget(

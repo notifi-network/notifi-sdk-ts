@@ -11,7 +11,6 @@ export * from './CreateSource';
 export * from './CreateSourceGroup';
 export * from './CreateTargetGroup';
 export * from './CreateTelegramTarget';
-export * from './CreateTenantUser';
 export * from './DeleteAlert';
 export * from './DeleteDirectPushAlert';
 export * from './DeleteUserAlert';
