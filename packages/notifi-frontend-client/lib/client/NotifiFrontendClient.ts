@@ -683,39 +683,6 @@ export class NotifiFrontendClient {
       }
 
       switch (walletBlockchain) {
-        // case 'BLAST':
-        // case 'BERACHAIN':
-        // case 'CELO':
-        // case 'MANTLE':
-        // case 'LINEA':
-        // case 'SCROLL':
-        // case 'MANTA':
-        // case 'MONAD':
-        // case 'BASE':
-        // case 'THE_ROOT_NETWORK':
-        // case 'ETHEREUM':
-        // case 'POLYGON':
-        // case 'ARBITRUM':
-        // case 'AVALANCHE':
-        // case 'BINANCE':
-        // case 'OPTIMISM':
-        // case 'ZKSYNC':
-        // case 'SOLANA':
-        // case 'ROME':
-        // case 'SWELLCHAIN':
-        // case 'BOB':
-        // case 'SONIC':
-        case 'SEI': {
-          const result = await this._service.logInFromDapp({
-            walletBlockchain,
-            walletPublicKey: this._configuration.walletPublicKey,
-            dappAddress: tenantId,
-            timestamp,
-            signature: authentication.signature,
-          });
-          user = result.logInFromDapp;
-          break;
-        }
         case 'SUI':
         case 'NEAR':
         case 'ARCH':
@@ -746,7 +713,7 @@ export class NotifiFrontendClient {
     await this._handleLogInResult(user);
     return user;
   }
-
+  // TODO: Optimize type, not to use in line arg
   private async _authenticate({
     signMessageParams,
     timestamp,
@@ -791,8 +758,20 @@ export class NotifiFrontendClient {
         Buffer.from(signedBuffer).toString('hex'),
       );
       return { signature, signedMessage };
+    } else if (isUsingSolanaBlockchain(signMessageParams)) {
+      const signedMessage = `${SIGNING_MESSAGE}${signMessageParams.nonce}`;
+      const messageBuffer = new TextEncoder().encode(signedMessage);
+
+      const signedBuffer = await signMessageParams.signMessage(messageBuffer);
+
+      if (!signedBuffer) {
+        throw Error('._authenticate - Signature not completed');
+      }
+      const signature = Buffer.from(signedBuffer).toString('base64');
+      return { signature, signedMessage };
     } else if (
       isUsingBtcBlockchain(signMessageParams) ||
+      // ⬇ INJECTIVE becomes legacy: we should always separate BlockchainType if it supports both EVM & COSMOS. ex. 'INJ_EVM' & 'INJ'
       signMessageParams.walletBlockchain === 'INJECTIVE'
     ) {
       //TODO: Implement
@@ -803,17 +782,6 @@ export class NotifiFrontendClient {
       const signedMessage = `${SIGNING_MESSAGE}${walletPublicKey}${tenantId}${timestamp.toString()}`;
       const messageBuffer = new TextEncoder().encode(signedMessage);
       const signedBuffer = await signMessageParams.signMessage(messageBuffer);
-      const signature = Buffer.from(signedBuffer).toString('base64');
-      return { signature, signedMessage };
-    } else if (isUsingSolanaBlockchain(signMessageParams)) {
-      const signedMessage = `${SIGNING_MESSAGE}${signMessageParams.nonce}`;
-      const messageBuffer = new TextEncoder().encode(signedMessage);
-
-      const signedBuffer = await signMessageParams.signMessage(messageBuffer);
-
-      if (!signedBuffer) {
-        throw Error('._authenticate - Signature not completed');
-      }
       const signature = Buffer.from(signedBuffer).toString('base64');
       return { signature, signedMessage };
     }
