@@ -1,6 +1,6 @@
 {
   "name": "@notifi-network/notifi-react",
-  "version": "7.2.3",
+  "version": "7.3.0",
   "description": "React components to access Notifi core services",
   "keywords": [
     "notifi",
@@ -41,7 +41,7 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "@notifi-network/notifi-frontend-client": "^7.2.3",
+    "@notifi-network/notifi-frontend-client": "^7.3.0",
     "clsx": "^1.2.1",
     "date-fns": "^2.29.3",
     "dompurify": "^3.0.5",
