@@ -35,6 +35,8 @@ export const EVM_BLOCKCHAINS = [
   'LINEA',
   'MANTA',
   'BERACHAIN',
+  'HYPEREVM',
+  'UNICHAIN',
   'OPTIMISM',
   'THE_ROOT_NETWORK',
   'SEI',

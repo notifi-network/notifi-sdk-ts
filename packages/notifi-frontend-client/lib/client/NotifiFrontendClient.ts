@@ -650,6 +650,8 @@ export class NotifiFrontendClient {
       switch (walletBlockchain) {
         case 'BLAST':
         case 'BERACHAIN':
+        case 'HYPEREVM':
+        case 'UNICHAIN':
         case 'CELO':
         case 'MANTLE':
         case 'LINEA':
