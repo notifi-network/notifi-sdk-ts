@@ -18,6 +18,7 @@ import {
   COSMOS_BLOCKCHAINS,
   type CardConfigItemV1,
   type CosmosBlockchain,
+  EVM_BLOCKCHAINS,
   type EvmBlockchain,
   type FusionEventTopic,
   SOLANA_BLOCKCHAINS,
@@ -28,6 +29,7 @@ import {
   type UnmaintainedBlockchain,
   isAptosBlockchain,
   isCosmosBlockchain,
+  isEvmBlockchain,
   isSolanaBlockchain,
   isUsingAptosBlockchain,
   isUsingBtcBlockchain,
@@ -86,6 +88,7 @@ type BtcSignMessageParams = Readonly<{
 
 type EvmSignMessageParams = Readonly<{
   walletBlockchain: EvmBlockchain;
+  nonce: string;
   signMessage: Uint8SignMessageFunction;
 }>;
 
@@ -340,6 +343,7 @@ const CHAINS_WITH_LOGIN_WEB3 = [
   ...APTOS_BLOCKCHAINS,
   ...COSMOS_BLOCKCHAINS,
   ...SOLANA_BLOCKCHAINS,
+  ...EVM_BLOCKCHAINS,
 ] as const;
 
 export type UserState = Readonly<
@@ -363,6 +367,7 @@ type LoginWeb3Params = Omit<
     | { walletBlockchain: CosmosBlockchain }
     | { walletBlockchain: AptosBlockchain }
     | { walletBlockchain: SolanaBlockchain }
+    | { walletBlockchain: EvmBlockchain }
   >,
   'message' | 'nonce'
 >;
@@ -563,8 +568,37 @@ export class NotifiFrontendClient {
           nonce,
         };
       }
+    } else if (isEvmBlockchain(signMessageParams.walletBlockchain)) {
+      console.log(1.13, 'in prepareLoginWithWeb3 evm');
+      if (checkIsConfigWithPublicKey(this._configuration)) {
+        const { nonce } = await this._beginLogInWithWeb3({
+          authAddress: this._configuration.walletPublicKey,
+          authType: 'ETHEREUM_PERSONAL_SIGN',
+        });
+        console.log({
+          signMessageParams: {
+            walletBlockchain: signMessageParams.walletBlockchain,
+            nonce,
+            signMessage:
+              signMessageParams.signMessage as Uint8SignMessageFunction,
+          },
+          signingAddress: this._configuration.walletPublicKey,
+          signingPubkey: this._configuration.walletPublicKey,
+          nonce,
+        });
+        return {
+          signMessageParams: {
+            walletBlockchain: signMessageParams.walletBlockchain,
+            nonce,
+            signMessage:
+              signMessageParams.signMessage as Uint8SignMessageFunction,
+          },
+          signingAddress: this._configuration.walletPublicKey,
+          signingPubkey: this._configuration.walletPublicKey,
+          nonce,
+        };
+      }
     }
-
     throw new Error(
       `Invalid loginWeb3Params: ${JSON.stringify(signMessageParams)}`,
     );
@@ -633,6 +667,7 @@ export class NotifiFrontendClient {
       });
       user = result.logInByOidc.user;
     } else {
+      // Legacy login flow
       const authentication = await this._authenticate({
         signMessageParams: loginParams,
         timestamp,
@@ -648,47 +683,12 @@ export class NotifiFrontendClient {
       }
 
       switch (walletBlockchain) {
-        case 'BLAST':
-        case 'BERACHAIN':
-        case 'HYPEREVM':
-        case 'UNICHAIN':
-        case 'CELO':
-        case 'MANTLE':
-        case 'LINEA':
-        case 'SCROLL':
-        case 'MANTA':
-        case 'MONAD':
-        case 'BASE':
-        case 'THE_ROOT_NETWORK':
-        case 'ETHEREUM':
-        case 'POLYGON':
-        case 'ARBITRUM':
-        case 'BOTANIX':
-        case 'AVALANCHE':
-        case 'BINANCE':
-        case 'OPTIMISM':
-        case 'ZKSYNC':
-        case 'SOLANA':
-        case 'ROME':
-        case 'SWELLCHAIN':
-        case 'BOB':
-        case 'SEI':
-        case 'SONIC': {
-          const result = await this._service.logInFromDapp({
-            walletBlockchain,
-            walletPublicKey: this._configuration.walletPublicKey,
-            dappAddress: tenantId,
-            timestamp,
-            signature: authentication.signature,
-          });
-          user = result.logInFromDapp;
-          break;
-        }
         case 'SUI':
         case 'NEAR':
         case 'ARCH':
         case 'INJECTIVE':
         case 'BITCOIN': {
+          console.log(2, 'in logIn SUI/NEAR/INJECTIVE/BTC');
           const result = await this._service.logInFromDapp({
             walletBlockchain,
             walletPublicKey: this._configuration.walletPublicKey,
@@ -713,7 +713,7 @@ export class NotifiFrontendClient {
     await this._handleLogInResult(user);
     return user;
   }
-
+  // TODO: Optimize type, not to use in line arg
   private async _authenticate({
     signMessageParams,
     timestamp,
@@ -750,24 +750,28 @@ export class NotifiFrontendClient {
         );
       return { signature: signatureHex, signedMessage };
     } else if (isUsingEvmBlockchain(signMessageParams)) {
-      const { walletPublicKey, tenantId } = this._configuration as Extract<
-        NotifiFrontendConfiguration,
-        Extract<
-          AuthParams,
-          { walletPublicKey: string } & { accountAddress?: never }
-        > // BlockchainAuthParamsWithPublicKey
-      >;
-      const signedMessage = `${SIGNING_MESSAGE}${walletPublicKey}${tenantId}${timestamp.toString()}`;
+      console.log(3, signMessageParams);
+      const signedMessage = `${SIGNING_MESSAGE}${signMessageParams.nonce}`;
       const messageBuffer = new TextEncoder().encode(signedMessage);
-
       const signedBuffer = await signMessageParams.signMessage(messageBuffer);
       const signature = normalizeHexString(
         Buffer.from(signedBuffer).toString('hex'),
       );
+      return { signature, signedMessage };
+    } else if (isUsingSolanaBlockchain(signMessageParams)) {
+      const signedMessage = `${SIGNING_MESSAGE}${signMessageParams.nonce}`;
+      const messageBuffer = new TextEncoder().encode(signedMessage);
 
+      const signedBuffer = await signMessageParams.signMessage(messageBuffer);
+
+      if (!signedBuffer) {
+        throw Error('._authenticate - Signature not completed');
+      }
+      const signature = Buffer.from(signedBuffer).toString('base64');
       return { signature, signedMessage };
     } else if (
       isUsingBtcBlockchain(signMessageParams) ||
+      // ⬇ INJECTIVE becomes legacy: we should always separate BlockchainType if it supports both EVM & COSMOS. ex. 'INJ_EVM' & 'INJ'
       signMessageParams.walletBlockchain === 'INJECTIVE'
     ) {
       //TODO: Implement
@@ -780,24 +784,9 @@ export class NotifiFrontendClient {
       const signedBuffer = await signMessageParams.signMessage(messageBuffer);
       const signature = Buffer.from(signedBuffer).toString('base64');
       return { signature, signedMessage };
-    } else if (isUsingSolanaBlockchain(signMessageParams)) {
-      const { walletPublicKey, tenantId } = this._configuration as Extract<
-        NotifiFrontendConfiguration,
-        Extract<AuthParams, { walletPublicKey: string }>
-      >;
-      const signedMessage = `${SIGNING_MESSAGE}${signMessageParams.nonce}`;
-      const messageBuffer = new TextEncoder().encode(signedMessage);
-
-      const signedBuffer = await signMessageParams.signMessage(messageBuffer);
-
-      if (!signedBuffer) {
-        throw Error('._authenticate - Signature not completed');
-      }
-      const signature = Buffer.from(signedBuffer).toString('base64');
-      return { signature, signedMessage };
     }
 
-    // Can only be the lonely chains now, e.g. Solana, Sui, ...
+    // Can only be the lonely chains now, e.g. Sui, NEAR ...
     switch (signMessageParams.walletBlockchain) {
       case 'SUI': {
         const { accountAddress, tenantId } = this._configuration as Extract<
