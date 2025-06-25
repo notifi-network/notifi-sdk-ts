@@ -663,6 +663,7 @@ export class NotifiFrontendClient {
         case 'ETHEREUM':
         case 'POLYGON':
         case 'ARBITRUM':
+        case 'BOTANIX':
         case 'AVALANCHE':
         case 'BINANCE':
         case 'OPTIMISM':
