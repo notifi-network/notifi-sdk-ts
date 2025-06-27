@@ -96,6 +96,7 @@ type SolanaSignMessageParams = Readonly<{
   walletBlockchain: SolanaBlockchain;
   nonce: string;
   signMessage: Uint8SignMessageFunction;
+  isUsingHardwareWallet?: boolean;
   hardwareLoginPlugin?: {
     signTransaction: (message: string) => Promise<string>;
   };
@@ -137,6 +138,7 @@ export type SignMessageParams =
 
 type SolanaWalletWithSignParams = Readonly<{
   signMessage: Uint8SignMessageFunction;
+  isUsingHardwareWallet?: boolean;
   hardwareLoginPlugin?: {
     /**
      * @deprecated Use signTransaction() instead. We no longer have to send a txn, and instead simply rely on the signed TX as we can verify this on Notifi Services.
@@ -544,22 +546,41 @@ export class NotifiFrontendClient {
     } else if (isSolanaBlockchain(signMessageParams.walletBlockchain)) {
       // Check if we're using a hardware wallet by looking for the hardwareLoginPlugin
 
-      if (signMessageParams.walletBlockchain !== 'SOLANA')
-        throw new Error(
-          'loginViaSolanaHardwareWallet: Only SOLANA is supported',
-        );
-
+      // if (signMessageParams.walletBlockchain !== 'SOLANA')
+      //   throw new Error(
+      //     'loginViaSolanaHardwareWallet: Only SOLANA is supported',
+      //   );
+      console.log(1.12, 'in prepareLoginWithWeb3 solana', {
+        signMessageParams,
+      });
       if (checkIsConfigWithPublicKey(this._configuration)) {
-        const { nonce } = await this._beginLogInWithWeb3({
-          walletPubkey: this._configuration.walletPublicKey,
-          authType: 'SOLANA_SIGN_MESSAGE',
-          authAddress: this._configuration.walletPublicKey,
-        });
+        const { isUsingHardwareWallet, hardwareLoginPlugin } =
+          signMessageParams as SolanaSignMessageParams;
+        const { nonce } =
+          isUsingHardwareWallet && hardwareLoginPlugin
+            ? await this._beginLogInWithWeb3({
+                walletPubkey: this._configuration.walletPublicKey,
+                authType: 'SOLANA_HARDWARE_SIGN_MESSAGE',
+                authAddress: this._configuration.walletPublicKey,
+              })
+            : await this._beginLogInWithWeb3({
+                walletPubkey: this._configuration.walletPublicKey,
+                authType: 'SOLANA_SIGN_MESSAGE',
+                authAddress: this._configuration.walletPublicKey,
+              });
+
+        // const { nonce } = await this._beginLogInWithWeb3({
+        //   walletPubkey: this._configuration.walletPublicKey,
+        //   authType: 'SOLANA_HARDWARE_SIGN_MESSAGE',
+        //   authAddress: this._configuration.walletPublicKey,
+        // });
 
         return {
           signMessageParams: {
             walletBlockchain: signMessageParams.walletBlockchain,
             nonce,
+            isUsingHardwareWallet,
+            hardwareLoginPlugin,
             signMessage:
               signMessageParams.signMessage as Uint8SignMessageFunction,
           },
@@ -615,10 +636,10 @@ export class NotifiFrontendClient {
         `Wallet blockchain must be one of ${CHAINS_WITH_LOGIN_WEB3.join(', ')} for loginWithWeb3`,
       );
     }
-
+    console.log(2, 'logInWithWeb3', loginWeb3Params);
     const { nonce, signingAddress, signingPubkey, signMessageParams } =
       await this.prepareLoginWithWeb3(loginWeb3Params);
-
+    console.log(2, 'logInWithWeb3 - beofre auth', loginWeb3Params);
     const authentication = await this._authenticate({
       signMessageParams,
       timestamp: Math.round(Date.now() / 1000),
@@ -645,8 +666,9 @@ export class NotifiFrontendClient {
     const { tenantId, walletBlockchain } = this._configuration;
 
     let user: Types.UserFragmentFragment | undefined = undefined;
-
+    console.log(0, 'logIn');
     if (isLoginWeb3Params(loginParams)) {
+      console.log(1, 'in logIn loginWeb3Params', { loginParams });
       user = await this.logInWithWeb3(loginParams);
     } else if (walletBlockchain === 'OFF_CHAIN') {
       const authentication = await this._authenticate({
@@ -667,6 +689,7 @@ export class NotifiFrontendClient {
       });
       user = result.logInByOidc.user;
     } else {
+      console.log(1.1, 'in logIn legacy login flow');
       // Legacy login flow
       const authentication = await this._authenticate({
         signMessageParams: loginParams,
@@ -761,14 +784,25 @@ export class NotifiFrontendClient {
     } else if (isUsingSolanaBlockchain(signMessageParams)) {
       const signedMessage = `${SIGNING_MESSAGE}${signMessageParams.nonce}`;
       const messageBuffer = new TextEncoder().encode(signedMessage);
+      const { isUsingHardwareWallet, hardwareLoginPlugin } = signMessageParams;
 
-      const signedBuffer = await signMessageParams.signMessage(messageBuffer);
+      console.log(2, 'authenticate - before signMessage');
 
-      if (!signedBuffer) {
-        throw Error('._authenticate - Signature not completed');
+      const signature =
+        isUsingHardwareWallet && hardwareLoginPlugin
+          ? await hardwareLoginPlugin.signTransaction(signMessageParams.nonce)
+          : await signMessageParams.signMessage(messageBuffer);
+      console.log(2, 'authenticate - after sign ');
+
+      if (typeof signature === 'string') {
+        /* CASE1: HardWare wallet (signTransaction) returns a string */
+        return { signature, signedMessage };
       }
-      const signature = Buffer.from(signedBuffer).toString('base64');
-      return { signature, signedMessage };
+
+      /* CASE2: SignMessage (signArbitrary) returns Uint8Array */
+      const stringifiedSignature = Buffer.from(signature).toString('base64');
+
+      return { signature: stringifiedSignature, signedMessage };
     } else if (
       isUsingBtcBlockchain(signMessageParams) ||
       // ⬇ INJECTIVE becomes legacy: we should always separate BlockchainType if it supports both EVM & COSMOS. ex. 'INJ_EVM' & 'INJ'
