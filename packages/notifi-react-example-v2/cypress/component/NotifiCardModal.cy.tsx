@@ -17,8 +17,12 @@ describe('NotifiCardModal First Time User Test', () => {
     cy.intercept('POST', envUrl(env), (req) => {
       aliasQuery(req, 'fetchFusionData');
     });
+
     cy.intercept('POST', envUrl(env), (req) =>
-      aliasMutation(req, 'logInFromDapp'),
+      aliasMutation(req, 'beginLogInWithWeb3'),
+    );
+    cy.intercept('POST', envUrl(env), (req) =>
+      aliasMutation(req, 'completeLogInWithWeb3'),
     );
     cy.intercept('POST', envUrl(env), (req) => {
       aliasMutation(req, 'updateTargetGroup');
@@ -103,7 +107,8 @@ describe('NotifiCardModal First Time User Test', () => {
       const cardConfig = JSON.parse(tenantConfig.dataJson) as CardConfigItemV1;
       cy.get('[data-cy="notifi-connect-button"]').should('exist').click();
       // #1 - Connect view (Connect.tsx): Click on connect button, the following queries should be made
-      cy.wait('@gqlLogInFromDappMutation');
+      cy.wait('@gqlBeginLogInWithWeb3Mutation');
+      cy.wait('@gqlCompleteLogInWithWeb3Mutation');
       cy.wait('@gqlFetchFusionDataQuery');
       // NOTE: Initial fetch after logging in. The following requests are triggered by the effect of frontendClientStatus.isAuthenticated (after logging in)
       cy.wait('@gqlGetUserSettingsQuery'); // --> NotifiUserSettingContext
@@ -170,7 +175,8 @@ describe('NotifiCardModal First Time User Test', () => {
     cy.wait('@gqlFindTenantConfigQuery').then(() => {
       cy.get('[data-cy="notifi-connect-button"]').should('exist').click();
       // #1 - Connect view (Connect.tsx): Click on connect button, the following queries should be made
-      cy.wait('@gqlLogInFromDappMutation');
+      cy.wait('@gqlBeginLogInWithWeb3Mutation');
+      cy.wait('@gqlCompleteLogInWithWeb3Mutation');
       cy.wait('@gqlFetchFusionDataQuery');
       // NOTE: Initial fetch after logging in. The following requests are triggered by the effect of frontendClientStatus.isAuthenticated (after logging in)
       cy.wait('@gqlGetUserSettingsQuery'); // --> NotifiUserSettingContext
@@ -203,7 +209,16 @@ describe('NotifiCardModal Inbox Test', () => {
     });
     // We do not put fetchFusionData here because we will need to override it
     cy.intercept('POST', envUrl(env), (req) =>
-      aliasMutation(req, 'logInFromDapp'),
+      aliasMutation(req, 'beginLogInWithWeb3'),
+    );
+    cy.intercept('POST', envUrl(env), (req) =>
+      aliasMutation(req, 'completeLogInWithWeb3'),
+    );
+    cy.intercept('POST', envUrl(env), (req) =>
+      aliasMutation(req, 'beginLogInWithWeb3'),
+    );
+    cy.intercept('POST', envUrl(env), (req) =>
+      aliasMutation(req, 'completeLogInWithWeb3'),
     );
     cy.intercept('POST', envUrl(env), (req) => {
       aliasMutation(req, 'updateTargetGroup');
@@ -241,7 +256,9 @@ describe('NotifiCardModal Inbox Test', () => {
     cy.wait('@gqlFindTenantConfigQuery');
     cy.get('[data-cy="notifi-connect-button"]').should('exist').click();
     // #1 - Connect view (Connect.tsx): Click on connect button, the following queries should be made
-    cy.wait('@gqlLogInFromDappMutation');
+    cy.wait('@gqlBeginLogInWithWeb3Mutation');
+    cy.wait('@gqlCompleteLogInWithWeb3Mutation');
+
     cy.wait('@gqlFetchFusionDataQuery');
     // NOTE: Initial fetch after logging in. The following requests are triggered by the effect of frontendClientStatus.isAuthenticated (after logging in)
     cy.wait('@gqlGetUserSettingsQuery'); // --> NotifiUserSettingContext
@@ -279,7 +296,8 @@ describe('NotifiCardModal Inbox Test', () => {
 
     cy.get('[data-cy="notifi-connect-button"]').should('exist').click();
     // #1 - Connect view (Connect.tsx): Click on connect button, the following queries should be made
-    cy.wait('@gqlLogInFromDappMutation');
+    cy.wait('@gqlBeginLogInWithWeb3Mutation');
+    cy.wait('@gqlCompleteLogInWithWeb3Mutation');
     cy.wait('@gqlFetchFusionDataQuery');
     // NOTE: Initial fetch after logging in. The following requests are triggered by the effect of frontendClientStatus.isAuthenticated (after logging in)
     cy.wait('@gqlGetUserSettingsQuery'); // --> NotifiUserSettingContext
@@ -305,7 +323,9 @@ describe('NotifiCardModal Inbox Test', () => {
 
     cy.get('[data-cy="notifi-connect-button"]').should('exist').click();
     // #1 - Connect view (Connect.tsx): Click on connect button, the following queries should be made
-    cy.wait('@gqlLogInFromDappMutation');
+    // cy.wait('@gqlLogInFromDappMutation');
+    cy.wait('@gqlBeginLogInWithWeb3Mutation');
+    cy.wait('@gqlCompleteLogInWithWeb3Mutation');
     cy.wait('@gqlFetchFusionDataQuery');
     // NOTE: Initial fetch after logging in. The following requests are triggered by the effect of frontendClientStatus.isAuthenticated (after logging in)
     cy.wait('@gqlGetUserSettingsQuery'); // --> NotifiUserSettingContext
