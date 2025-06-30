@@ -4,12 +4,11 @@ import {
   NotifiFrontendConfiguration,
   WalletWithSignParams,
   instantiateFrontendClient,
+  isSolanaBlockchain,
 } from '@notifi-network/notifi-frontend-client';
 import React from 'react';
 
 import { version } from '../../package.json';
-
-// import { loginViaSolanaHardwareWallet } from '../utils';
 
 export type FrontendClientStatus = {
   isExpired: boolean;
@@ -250,7 +249,7 @@ export const NotifiFrontendClientContextProvider: React.FC<
       !frontendClient ||
       !frontendClientStatus.isInitialized ||
       walletWithSignParams.walletBlockchain === 'OFF_CHAIN' ||
-      walletWithSignParams.walletBlockchain !== 'SOLANA' // Only Solana supports hardware wallet login for now
+      !isSolanaBlockchain(walletWithSignParams.walletBlockchain) // Only Solana supports hardware wallet login for now
     ) {
       setError(
         new Error(
@@ -261,21 +260,11 @@ export const NotifiFrontendClientContextProvider: React.FC<
     }
     setIsLoading(true);
     try {
-      console.log(
-        'loginViaHardwareWallet: Attempting to login via hardware wallet',
-        {
-          ...walletWithSignParams,
-          isUsingHardwareWallet: true,
-        },
-      );
-      await frontendClient.logIn({
+      const loginInput = {
         ...walletWithSignParams,
         isUsingHardwareWallet: true,
-      });
-      console.log(
-        'loginViaHardwareWallet: Successfully logged in via hardware wallet',
-      );
-      // await loginViaSolanaHardwareWallet(frontendClient, walletWithSignParams);
+      };
+      await frontendClient.logIn(loginInput);
       _refreshFrontendClient(frontendClient);
       setError(null);
     } catch (error) {
