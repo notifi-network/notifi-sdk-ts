@@ -19,7 +19,8 @@ import {
   createInMemoryStorageDriver,
   createLocalForageStorageDriver,
 } from '../storage';
-import { NotifiFrontendClient, UserParams } from './NotifiFrontendClient';
+import { UserParams } from './AuthManager';
+import { NotifiFrontendClient } from './NotifiFrontendClient';
 import { NotifiSmartLinkClient } from './NotifiSmartLinkClient';
 
 type RequestConfig = NonNullable<
