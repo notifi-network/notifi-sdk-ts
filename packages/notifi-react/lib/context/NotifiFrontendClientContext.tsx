@@ -101,7 +101,7 @@ export const NotifiFrontendClientContextProvider: React.FC<
     );
 
     setIsLoading(true);
-    frontendClient
+    frontendClient.auth
       .initialize()
       .then(() => {
         _refreshFrontendClient(frontendClient);
@@ -128,7 +128,7 @@ export const NotifiFrontendClientContextProvider: React.FC<
       return;
 
     const getNonce = async () => {
-      const nonce = await frontendClient?.beginLoginViaTransaction({
+      const nonce = await frontendClient?.auth.beginLoginViaTransaction({
         walletAddress: walletWithSignParams.walletPublicKey,
         walletBlockchain: walletWithSignParams.walletBlockchain,
       });
@@ -149,7 +149,7 @@ export const NotifiFrontendClientContextProvider: React.FC<
     }
     setIsLoading(true);
     try {
-      await frontendClient.logIn(walletWithSignParams);
+      await frontendClient.auth.logIn(walletWithSignParams);
       _refreshFrontendClient(frontendClient);
       setError(null);
     } catch (error) {
@@ -177,7 +177,7 @@ export const NotifiFrontendClientContextProvider: React.FC<
       return;
     }
     try {
-      await frontendClient?.logOut();
+      await frontendClient?.auth.logOut();
       _refreshFrontendClient(frontendClient);
       setError(null);
     } catch (error) {
@@ -204,7 +204,7 @@ export const NotifiFrontendClientContextProvider: React.FC<
 
       setIsLoading(true);
       try {
-        await frontendClient?.completeLoginViaTransaction({
+        await frontendClient?.auth.completeLoginViaTransaction({
           walletAddress: walletWithSignParams.walletPublicKey,
           walletBlockchain: walletWithSignParams.walletBlockchain,
           transactionSignature: signatureSignedWithNotifiNonce,
@@ -232,9 +232,10 @@ export const NotifiFrontendClientContextProvider: React.FC<
   const _refreshFrontendClient = React.useCallback(
     (frontendClient: NotifiFrontendClient) => {
       setFrontendClientStatus({
-        isExpired: frontendClient.userState?.status === 'expired',
+        isExpired: frontendClient.auth.userState?.status === 'expired',
         isInitialized: !!frontendClient,
-        isAuthenticated: frontendClient.userState?.status === 'authenticated',
+        isAuthenticated:
+          frontendClient.auth.userState?.status === 'authenticated',
       });
       setFrontendClient(frontendClient);
     },
@@ -264,7 +265,7 @@ export const NotifiFrontendClientContextProvider: React.FC<
         ...walletWithSignParams,
         isUsingHardwareWallet: true,
       };
-      await frontendClient.logIn(loginInput);
+      await frontendClient.auth.logIn(loginInput);
       _refreshFrontendClient(frontendClient);
       setError(null);
     } catch (error) {

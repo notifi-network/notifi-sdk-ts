@@ -20,7 +20,7 @@ import {
 } from '../storage';
 import { notNullOrEmpty, parseTenantConfig } from '../utils';
 import { areIdsEqual } from '../utils/areIdsEqual';
-import { AuthManager, LoginParams, UserState } from './AuthManager';
+import { AuthManager, LoginParams } from './AuthManager';
 import {
   type AlterTargetGroupParams,
   alterTargetGroupImpl,
@@ -61,40 +61,12 @@ export class NotifiFrontendClient {
     );
   }
 
-  private _clientRandomUuid: string | null = null;
-  private _userState: UserState | null = null;
-
-  get userState(): UserState | null {
-    return this._authManager.userState;
-  }
-
-  async initialize(): Promise<UserState> {
-    return await this._authManager.initialize();
-  }
-
-  async logOut(): Promise<UserState> {
-    return await this._authManager.logOut();
-  }
-
-  async logIn(loginParams: LoginParams): Promise<Types.UserFragmentFragment> {
-    const user = await this._authManager.logIn(loginParams);
-    return user;
+  get auth(): AuthManager {
+    return this._authManager;
   }
 
   async fetchFusionData(): Promise<Types.FetchFusionDataQuery> {
     return this._service.fetchFusionData({});
-  }
-
-  async beginLoginViaTransaction(
-    props: BeginLoginProps,
-  ): Promise<Types.BeginLogInByTransactionResult> {
-    return this._authManager.beginLoginViaTransaction(props);
-  }
-
-  async completeLoginViaTransaction(
-    props: CompleteLoginProps,
-  ): Promise<Types.CompleteLogInByTransactionMutation> {
-    return this._authManager.completeLoginViaTransaction(props);
   }
 
   async getTargetGroups(): Promise<
@@ -712,5 +684,30 @@ export class NotifiFrontendClient {
     if (result === undefined) {
       throw new Error('Failed to delete alert');
     }
+  }
+  /**@deprecated Use frontendClient.auth.userState instead */
+  get userState() {
+    return this._authManager.userState;
+  }
+  /**@deprecated Use frontendClient.auth.initialize instead */
+  async initialize() {
+    return await this._authManager.initialize();
+  }
+  /**@deprecated Use frontendClient.auth.logOut instead */
+  async logOut() {
+    return await this._authManager.logOut();
+  }
+  /**@deprecated Use frontendClient.auth.logIn instead */
+  async logIn(loginParams: LoginParams) {
+    const user = await this._authManager.logIn(loginParams);
+    return user;
+  }
+  /**@deprecated Use frontendClient.auth.beginLoginViaTransaction instead */
+  async beginLoginViaTransaction(props: BeginLoginProps) {
+    return this._authManager.beginLoginViaTransaction(props);
+  }
+  /**@deprecated Use frontendClient.auth.completeLoginViaTransaction instead */
+  async completeLoginViaTransaction(props: CompleteLoginProps) {
+    return this._authManager.completeLoginViaTransaction(props);
   }
 }

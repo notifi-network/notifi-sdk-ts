@@ -31,7 +31,7 @@ describe('NotifiFrontendClient Unit Test', () => {
 
   it('login', async () => {
     await login();
-    expect(client.userState?.status).toBe('authenticated');
+    expect(client.auth.userState?.status).toBe('authenticated');
   });
 
   it('fetchTenantConfig (V1 & V2)', async () => {
