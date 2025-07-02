@@ -149,9 +149,9 @@ export const updateTargetGroup = async (targetGroup?: TargetGroup) => {
     env,
   );
 
-  await client.initialize();
-  if (client.userState?.status !== 'authenticated') {
-    await client.logIn({
+  await client.auth.initialize();
+  if (client.auth.userState?.status !== 'authenticated') {
+    await client.auth.logIn({
       signMessage: async (message: Uint8Array) =>
         arrayify(await wallet.signMessage(message)),
       walletBlockchain,
