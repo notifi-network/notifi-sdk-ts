@@ -22,11 +22,7 @@ import {
   isCosmosBlockchain,
   isEvmBlockchain,
   isSolanaBlockchain,
-  isUsingAptosBlockchain,
   isUsingBtcBlockchain,
-  isUsingCosmosBlockchain,
-  isUsingEvmBlockchain,
-  isUsingSolanaBlockchain,
   isUsingUnmaintainedBlockchain,
 } from '../models';
 import { Authorization, NotifiStorage, Roles } from '../storage';
@@ -267,10 +263,7 @@ export class AuthManager {
     const { nonce, signingAddress, signingPubkey, signMessageParams } =
       await this._prepareLoginWithWeb3(loginWeb3Params);
 
-    const authentication = await this._authenticate({
-      signMessageParams,
-      timestamp: Math.round(Date.now() / 1000),
-    });
+    const authentication = await this._authWithWeb3(signMessageParams);
 
     if (!('signature' in authentication) || !authentication.signature) {
       throw new Error(
@@ -293,6 +286,16 @@ export class AuthManager {
     return completeLogInWithWeb3.user;
   }
 
+  // TODO: No need this extra terminology, just use strategy in _logInWithWeb3
+  private async _authWithWeb3(params: SignMessageParams) {
+    const strategy = this.getStrategyForBlockchain(params.walletBlockchain);
+
+    if (!strategy)
+      throw new Error(`Unsupported blockchain: ${params.walletBlockchain}`);
+    return strategy.authenticate(params);
+  }
+
+  /**@deprecated Use _authWithWeb3 instead, will remove after all BlockchainType has been migrated */
   private async _authenticate({
     signMessageParams,
     timestamp,
@@ -317,45 +320,7 @@ export class AuthManager {
       );
     }
 
-    if (isUsingCosmosBlockchain(signMessageParams)) {
-      const { signatureBase64, signedMessage } =
-        await signMessageParams.signMessage(signMessageParams.message);
-      return { signature: signatureBase64, signedMessage };
-    } else if (isUsingAptosBlockchain(signMessageParams)) {
-      const { signatureHex, signedMessage } =
-        await signMessageParams.signMessage(
-          SIGNING_MESSAGE_WITHOUT_NONCE,
-          signMessageParams.nonce,
-        );
-      return { signature: signatureHex, signedMessage };
-    } else if (isUsingEvmBlockchain(signMessageParams)) {
-      const signedMessage = `${SIGNING_MESSAGE}${signMessageParams.nonce}`;
-      const messageBuffer = new TextEncoder().encode(signedMessage);
-      const signedBuffer = await signMessageParams.signMessage(messageBuffer);
-      const signature = normalizeHexString(
-        Buffer.from(signedBuffer).toString('hex'),
-      );
-      return { signature, signedMessage };
-    } else if (isUsingSolanaBlockchain(signMessageParams)) {
-      const signedMessage = `${SIGNING_MESSAGE}${signMessageParams.nonce}`;
-      const messageBuffer = new TextEncoder().encode(signedMessage);
-      const { isUsingHardwareWallet, hardwareLoginPlugin } = signMessageParams;
-
-      const signature =
-        isUsingHardwareWallet && hardwareLoginPlugin
-          ? await hardwareLoginPlugin.signTransaction(signMessageParams.nonce)
-          : await signMessageParams.signMessage(messageBuffer);
-
-      if (typeof signature === 'string') {
-        /* CASE1: HardWare wallet (signTransaction) returns a string */
-        return { signature, signedMessage };
-      }
-
-      /* CASE2: SignMessage (signArbitrary) - returns Uint8Array */
-      const stringifiedSignature = Buffer.from(signature).toString('base64');
-
-      return { signature: stringifiedSignature, signedMessage };
-    } else if (
+    if (
       isUsingBtcBlockchain(signMessageParams) ||
       // ⬇ INJECTIVE becomes legacy: we should always separate BlockchainType if it supports both EVM & COSMOS. ex. 'INJ_EVM' & 'INJ'
       signMessageParams.walletBlockchain === 'INJECTIVE'
@@ -413,157 +378,25 @@ export class AuthManager {
         }
         return oidcCredentials;
       }
+      default: {
+        throw new Error(
+          `.authenticate(Legacy): Unsupported wallet blockchain: ${signMessageParams.walletBlockchain}`,
+        );
+      }
     }
   }
 
-  private async _prepareLoginWithWeb3(
-    signMessageParams: LoginWeb3Params,
-  ): Promise<{
+  private async _prepareLoginWithWeb3(params: LoginWeb3Params): Promise<{
     signMessageParams: SignMessageParams;
     signingAddress: string;
     signingPubkey: string;
     nonce: string;
   }> {
-    if (isCosmosBlockchain(signMessageParams.walletBlockchain)) {
-      // Narrow the type of signMessage for XION
-      const cosmosSignMessage =
-        signMessageParams.signMessage as CosmosSignMessageFunction;
-
-      if (checkIsConfigWithDelegate(this._configuration)) {
-        const { delegatedAddress, delegatedPublicKey, delegatorAddress } =
-          this._configuration;
-        const { nonce } = await this._beginLogInWithWeb3({
-          authAddress: delegatorAddress,
-          authType: 'COSMOS_AUTHZ_GRANT',
-        });
-
-        const signedMessage = `${SIGNING_MESSAGE}${nonce}`;
-        return {
-          signMessageParams: {
-            walletBlockchain: signMessageParams.walletBlockchain,
-            message: signedMessage,
-            signMessage: cosmosSignMessage,
-          },
-          signingAddress: delegatedAddress,
-          signingPubkey: delegatedPublicKey,
-          nonce,
-        };
-      } else if (checkIsConfigWithPublicKeyAndAddress(this._configuration)) {
-        const { walletPublicKey, accountAddress } = this._configuration;
-        const { nonce } = await this._beginLogInWithWeb3({
-          authAddress: accountAddress,
-          authType: 'COSMOS_ADR36',
-        });
-        const signedMessage = `${SIGNING_MESSAGE}${nonce}`;
-        return {
-          signMessageParams: {
-            walletBlockchain: signMessageParams.walletBlockchain,
-            message: signedMessage,
-            signMessage: cosmosSignMessage,
-          },
-          signingAddress: accountAddress,
-          signingPubkey: walletPublicKey,
-          nonce,
-        };
-      }
-    } else if (isAptosBlockchain(signMessageParams.walletBlockchain)) {
-      // Narrow the type of signMessage for APTOS/MOVEMENT
-      const aptosSignMessage =
-        signMessageParams.signMessage as AptosSignMessageFunction;
-
-      if (checkIsConfigWithPublicKeyAndAddress(this._configuration)) {
-        const { nonce } = await this._beginLogInWithWeb3({
-          authAddress: this._configuration.accountAddress,
-          authType: 'APTOS_SIGNED_MESSAGE',
-          walletPubkey: this._configuration.walletPublicKey,
-        });
-
-        return {
-          signMessageParams: {
-            walletBlockchain: signMessageParams.walletBlockchain,
-            nonce,
-            signMessage: aptosSignMessage,
-          },
-          signingAddress: this._configuration.accountAddress,
-          signingPubkey: this._configuration.walletPublicKey,
-          nonce,
-        };
-      }
-    } else if (isSolanaBlockchain(signMessageParams.walletBlockchain)) {
-      if (checkIsConfigWithPublicKey(this._configuration)) {
-        const { isUsingHardwareWallet, hardwareLoginPlugin } =
-          signMessageParams as SolanaSignMessageParams;
-        const { nonce } =
-          isUsingHardwareWallet && hardwareLoginPlugin
-            ? await this._beginLogInWithWeb3({
-                walletPubkey: this._configuration.walletPublicKey,
-                authType: 'SOLANA_HARDWARE_SIGN_MESSAGE',
-                authAddress: this._configuration.walletPublicKey,
-              })
-            : await this._beginLogInWithWeb3({
-                walletPubkey: this._configuration.walletPublicKey,
-                authType: 'SOLANA_SIGN_MESSAGE',
-                authAddress: this._configuration.walletPublicKey,
-              });
-        return {
-          signMessageParams: {
-            walletBlockchain: signMessageParams.walletBlockchain,
-            nonce,
-            isUsingHardwareWallet,
-            hardwareLoginPlugin,
-            signMessage:
-              signMessageParams.signMessage as Uint8SignMessageFunction,
-          },
-          signingAddress: this._configuration.walletPublicKey,
-          signingPubkey: this._configuration.walletPublicKey,
-          nonce,
-        };
-      }
-    } else if (isEvmBlockchain(signMessageParams.walletBlockchain)) {
-      if (checkIsConfigWithPublicKey(this._configuration)) {
-        const { nonce } = await this._beginLogInWithWeb3({
-          authAddress: this._configuration.walletPublicKey,
-          authType: 'ETHEREUM_PERSONAL_SIGN',
-        });
-        return {
-          signMessageParams: {
-            walletBlockchain: signMessageParams.walletBlockchain,
-            nonce,
-            signMessage:
-              signMessageParams.signMessage as Uint8SignMessageFunction,
-          },
-          signingAddress: this._configuration.walletPublicKey,
-          signingPubkey: this._configuration.walletPublicKey,
-          nonce,
-        };
-      }
-    }
-    throw new Error(
-      `Invalid loginWeb3Params: ${JSON.stringify(signMessageParams)}`,
-    );
+    const strategy = this.getStrategyForBlockchain(params.walletBlockchain);
+    if (!strategy)
+      throw new Error(`Invalid loginWeb3Params: ${JSON.stringify(params)}`);
+    return strategy.prepareLoginWithWeb3(params);
   }
-
-  private async _beginLogInWithWeb3({
-    authType,
-    authAddress,
-    walletPubkey,
-  }: BeginLoginWithWeb3Props): Promise<Types.BeginLogInWithWeb3Response> {
-    const { tenantId } = this._configuration;
-    const result = await this._service.beginLogInWithWeb3({
-      dappAddress: tenantId,
-      authAddress,
-      blockchainType: this._configuration.walletBlockchain,
-      authType,
-      walletPubkey,
-    });
-
-    if (!result.beginLogInWithWeb3.beginLogInWithWeb3Response) {
-      throw new Error('Failed to begin login process');
-    }
-
-    return result.beginLogInWithWeb3.beginLogInWithWeb3Response;
-  }
-
   private async _handleLogInResult(
     user: Types.UserFragmentFragment | undefined,
   ): Promise<void> {
@@ -589,6 +422,224 @@ export class AuthManager {
     }
 
     await Promise.all([saveAuthorizationPromise, saveRolesPromise]);
+  }
+
+  private getStrategyForBlockchain(
+    blockchain: Types.BlockchainType,
+  ): BlockchainAuthStrategy {
+    if (isCosmosBlockchain(blockchain)) {
+      return new CosmosAuthStrategy(this._service, this._configuration);
+    }
+    if (isAptosBlockchain(blockchain)) {
+      return new AptosAuthStrategy(this._service, this._configuration);
+    }
+    if (isSolanaBlockchain(blockchain)) {
+      return new SolanaAuthStrategy(this._service, this._configuration);
+    }
+    if (isEvmBlockchain(blockchain)) {
+      return new EvmAuthStrategy(this._service, this._configuration);
+    }
+    throw new Error(
+      `ERROR - getStrategyForBlockchain: Unsupported blockchain: ${blockchain}`,
+    );
+  }
+}
+
+interface BlockchainAuthStrategy {
+  authenticate(params: SignMessageParams): Promise<AuthenticateResult>;
+  prepareLoginWithWeb3(params: LoginWeb3Params): Promise<{
+    signMessageParams: SignMessageParams;
+    signingAddress: string;
+    signingPubkey: string;
+    nonce: string;
+  }>;
+}
+
+class CosmosAuthStrategy implements BlockchainAuthStrategy {
+  constructor(
+    private service: NotifiService,
+    private config: NotifiFrontendConfiguration,
+  ) {}
+  async authenticate(params: CosmosSignMessageParams) {
+    const { signatureBase64, signedMessage } = await params.signMessage(
+      params.message,
+    );
+    return { signature: signatureBase64, signedMessage };
+  }
+  async prepareLoginWithWeb3(params: LoginWeb3Params) {
+    if (checkIsConfigWithDelegate(this.config)) {
+      const { delegatedAddress, delegatedPublicKey, delegatorAddress } =
+        this.config;
+      const { nonce } = await beginLogInWithWeb3({
+        service: this.service,
+        config: this.config,
+        authAddress: delegatorAddress,
+        authType: 'COSMOS_AUTHZ_GRANT',
+      });
+
+      const signedMessage = `${SIGNING_MESSAGE}${nonce}`;
+      return {
+        signMessageParams: {
+          walletBlockchain: params.walletBlockchain as CosmosBlockchain,
+          message: signedMessage,
+          signMessage: params.signMessage as CosmosSignMessageFunction,
+        },
+        signingAddress: delegatedAddress,
+        signingPubkey: delegatedPublicKey,
+        nonce,
+      };
+    } else if (checkIsConfigWithPublicKeyAndAddress(this.config)) {
+      const { walletPublicKey, accountAddress } = this.config;
+      const { nonce } = await beginLogInWithWeb3({
+        service: this.service,
+        config: this.config,
+        authAddress: accountAddress,
+        authType: 'COSMOS_ADR36',
+      });
+      const signedMessage = `${SIGNING_MESSAGE}${nonce}`;
+      return {
+        signMessageParams: {
+          walletBlockchain: params.walletBlockchain as CosmosBlockchain,
+          message: signedMessage,
+          signMessage: params.signMessage as CosmosSignMessageFunction,
+        },
+        signingAddress: accountAddress,
+        signingPubkey: walletPublicKey,
+        nonce,
+      };
+    }
+    throw new Error('Invalid Cosmos login parameters');
+  }
+}
+
+class AptosAuthStrategy implements BlockchainAuthStrategy {
+  constructor(
+    private service: NotifiService,
+    private config: NotifiFrontendConfiguration,
+  ) {}
+  async authenticate(params: AptosSignMessageParams) {
+    const { signatureHex, signedMessage } = await params.signMessage(
+      SIGNING_MESSAGE_WITHOUT_NONCE,
+      params.nonce,
+    );
+    return { signature: signatureHex, signedMessage };
+  }
+  async prepareLoginWithWeb3(params: LoginWeb3Params) {
+    if (checkIsConfigWithPublicKeyAndAddress(this.config)) {
+      const { nonce } = await beginLogInWithWeb3({
+        service: this.service,
+        config: this.config,
+        authAddress: this.config.accountAddress,
+        authType: 'APTOS_SIGNED_MESSAGE',
+        walletPubkey: this.config.walletPublicKey,
+      });
+      return {
+        signMessageParams: {
+          walletBlockchain: params.walletBlockchain as AptosBlockchain,
+          nonce,
+          signMessage: params.signMessage as AptosSignMessageFunction,
+        },
+        signingAddress: this.config.accountAddress,
+        signingPubkey: this.config.walletPublicKey,
+        nonce,
+      };
+    }
+    throw new Error('Invalid Aptos login parameters');
+  }
+}
+
+class SolanaAuthStrategy implements BlockchainAuthStrategy {
+  constructor(
+    private service: NotifiService,
+    private config: NotifiFrontendConfiguration,
+  ) {}
+  async authenticate(params: SolanaSignMessageParams) {
+    const signedMessage = `${SIGNING_MESSAGE}${params.nonce}`;
+    const messageBuffer = new TextEncoder().encode(signedMessage);
+    const signature =
+      params.isUsingHardwareWallet && params.hardwareLoginPlugin
+        ? await params.hardwareLoginPlugin.signTransaction(params.nonce)
+        : await params.signMessage(messageBuffer);
+    if (typeof signature === 'string') {
+      /* CASE1: Hardware wallet (signTransaction returns a string) */
+      return { signature, signedMessage };
+    }
+    /* CASE2: Software wallet (signMessage returns a Uint8Array) */
+    const stringifiedSignature = Buffer.from(signature).toString('base64');
+    return { signature: stringifiedSignature, signedMessage };
+  }
+  async prepareLoginWithWeb3(params: LoginWeb3Params) {
+    if (checkIsConfigWithPublicKey(this.config)) {
+      const { isUsingHardwareWallet, hardwareLoginPlugin } =
+        params as SolanaSignMessageParams;
+      const { nonce } =
+        isUsingHardwareWallet && hardwareLoginPlugin
+          ? await beginLogInWithWeb3({
+              service: this.service,
+              config: this.config,
+              walletPubkey: this.config.walletPublicKey,
+              authType: 'SOLANA_HARDWARE_SIGN_MESSAGE',
+              authAddress: this.config.walletPublicKey,
+            })
+          : await beginLogInWithWeb3({
+              service: this.service,
+              config: this.config,
+              walletPubkey: this.config.walletPublicKey,
+              authType: 'SOLANA_SIGN_MESSAGE',
+              authAddress: this.config.walletPublicKey,
+            });
+
+      return {
+        signMessageParams: {
+          walletBlockchain: params.walletBlockchain as SolanaBlockchain,
+          nonce,
+          isUsingHardwareWallet,
+          hardwareLoginPlugin,
+          signMessage: params.signMessage as Uint8SignMessageFunction,
+        },
+        signingAddress: this.config.walletPublicKey,
+        signingPubkey: this.config.walletPublicKey,
+        nonce,
+      };
+    }
+    throw new Error('Invalid Solana login parameters');
+  }
+}
+
+class EvmAuthStrategy implements BlockchainAuthStrategy {
+  constructor(
+    private service: NotifiService,
+    private config: NotifiFrontendConfiguration,
+  ) {}
+  async authenticate(params: EvmSignMessageParams) {
+    const signedMessage = `${SIGNING_MESSAGE}${params.nonce}`;
+    const messageBuffer = new TextEncoder().encode(signedMessage);
+    const signedBuffer = await params.signMessage(messageBuffer);
+    const signature = normalizeHexString(
+      Buffer.from(signedBuffer).toString('hex'),
+    );
+    return { signature, signedMessage };
+  }
+  async prepareLoginWithWeb3(params: LoginWeb3Params) {
+    if (checkIsConfigWithPublicKey(this.config)) {
+      const { nonce } = await beginLogInWithWeb3({
+        service: this.service,
+        config: this.config,
+        authAddress: this.config.walletPublicKey,
+        authType: 'ETHEREUM_PERSONAL_SIGN',
+      });
+      return {
+        signMessageParams: {
+          walletBlockchain: params.walletBlockchain as EvmBlockchain,
+          nonce,
+          signMessage: params.signMessage as Uint8SignMessageFunction,
+        },
+        signingAddress: this.config.walletPublicKey,
+        signingPubkey: this.config.walletPublicKey,
+        nonce,
+      };
+    }
+    throw new Error('Invalid EVM login parameters');
   }
 }
 
@@ -911,3 +962,29 @@ function isLoginWeb3Params(params: LoginParams): params is LoginWeb3Params {
     params.walletBlockchain as (typeof CHAINS_WITH_LOGIN_WEB3)[number],
   );
 }
+
+// Utils
+
+const beginLogInWithWeb3 = async (
+  params: BeginLoginWithWeb3Props & {
+    service: NotifiService;
+    config: NotifiFrontendConfiguration;
+  },
+): Promise<Types.BeginLogInWithWeb3Response> => {
+  const { service, config, authType, authAddress, walletPubkey } = params;
+  const { tenantId, walletBlockchain } = config;
+
+  const result = await service.beginLogInWithWeb3({
+    dappAddress: tenantId,
+    authAddress,
+    blockchainType: walletBlockchain,
+    authType,
+    walletPubkey,
+  });
+
+  if (!result.beginLogInWithWeb3.beginLogInWithWeb3Response) {
+    throw new Error('Failed to begin login process');
+  }
+
+  return result.beginLogInWithWeb3.beginLogInWithWeb3Response;
+};
