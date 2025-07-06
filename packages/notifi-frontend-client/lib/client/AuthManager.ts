@@ -260,23 +260,28 @@ export class AuthManager {
       );
     }
 
-    const { nonce, signingAddress, signingPubkey, signMessageParams } =
-      await this._prepareLoginWithWeb3(loginWeb3Params);
+    const strategy = this.getStrategyForBlockchain(
+      loginWeb3Params.walletBlockchain,
+    );
 
-    const authentication = await this._authWithWeb3(signMessageParams);
+    const { signMessageParams, signingAddress, signingPubkey, nonce } =
+      await strategy.prepareLoginWithWeb3(loginWeb3Params);
+
+    const authentication = await strategy.authenticate(signMessageParams);
 
     if (!('signature' in authentication) || !authentication.signature) {
       throw new Error(
         'Web3loginAuth - Signature required. Please sign the transaction to confirm your notifications.',
       );
     }
+
     const { completeLogInWithWeb3 } = await this._service.completeLogInWithWeb3(
       {
         nonce,
         signature: authentication.signature,
         signedMessage: authentication.signedMessage,
         signingAddress,
-        signingPubkey: '', // TODO: why?
+        signingPubkey: '', // TODO: why not signingPubkey?
       },
     );
     //This is to ensure that hardware wallet logins are given authentication.
@@ -284,15 +289,6 @@ export class AuthManager {
     await this._handleLogInResult(completeLogInWithWeb3.user);
 
     return completeLogInWithWeb3.user;
-  }
-
-  // TODO: No need this extra terminology, just use strategy in _logInWithWeb3
-  private async _authWithWeb3(params: SignMessageParams) {
-    const strategy = this.getStrategyForBlockchain(params.walletBlockchain);
-
-    if (!strategy)
-      throw new Error(`Unsupported blockchain: ${params.walletBlockchain}`);
-    return strategy.authenticate(params);
   }
 
   /**@deprecated Use _authWithWeb3 instead, will remove after all BlockchainType has been migrated */
@@ -386,17 +382,6 @@ export class AuthManager {
     }
   }
 
-  private async _prepareLoginWithWeb3(params: LoginWeb3Params): Promise<{
-    signMessageParams: SignMessageParams;
-    signingAddress: string;
-    signingPubkey: string;
-    nonce: string;
-  }> {
-    const strategy = this.getStrategyForBlockchain(params.walletBlockchain);
-    if (!strategy)
-      throw new Error(`Invalid loginWeb3Params: ${JSON.stringify(params)}`);
-    return strategy.prepareLoginWithWeb3(params);
-  }
   private async _handleLogInResult(
     user: Types.UserFragmentFragment | undefined,
   ): Promise<void> {
