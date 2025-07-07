@@ -923,23 +923,17 @@ export type UserState = Readonly<
     }
 >;
 
+type LoginWithWeb3Blockchain = {
+  walletBlockchain: (typeof CHAINS_WITH_LOGIN_WEB3)[number];
+};
+
 type LoginWeb3Params = Omit<
-  Extract<
-    SignMessageParams,
-    | { walletBlockchain: CosmosBlockchain }
-    | { walletBlockchain: AptosBlockchain }
-    | { walletBlockchain: SolanaBlockchain }
-    | { walletBlockchain: EvmBlockchain }
-  >,
+  Extract<SignMessageParams, LoginWithWeb3Blockchain>,
   'message' | 'nonce'
 >;
 
 export type LoginParams =
-  | Exclude<
-      SignMessageParams,
-      | { walletBlockchain: CosmosBlockchain }
-      | { walletBlockchain: AptosBlockchain }
-    >
+  | Exclude<SignMessageParams, LoginWithWeb3Blockchain>
   | LoginWeb3Params;
 
 function isLoginWeb3Params(params: LoginParams): params is LoginWeb3Params {
