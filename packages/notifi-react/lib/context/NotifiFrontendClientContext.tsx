@@ -1,20 +1,12 @@
 import {
-  AptosBlockchain,
-  BtcBlockchain,
-  CosmosBlockchain,
-  EvmBlockchain,
+  LoginParams,
   NotifiEnvironment,
   NotifiFrontendClient,
   NotifiFrontendConfiguration,
-  OidcSignInFunction,
-  Uint8SignMessageFunction,
-  UnmaintainedBlockchain,
+  UserParams,
   instantiateFrontendClient,
   isSolanaBlockchain,
 } from '@notifi-network/notifi-frontend-client';
-import { AptosSignMessageFunction } from 'notifi-frontend-client/lib/client/auth/AptosAuthStrategy';
-import { CosmosSignMessageFunction } from 'notifi-frontend-client/lib/client/auth/CosmosAuthStrategy';
-import { UserParams } from 'notifi-frontend-client/lib/client/clientFactory';
 import React from 'react';
 
 import { version } from '../../package.json';
@@ -35,7 +27,7 @@ export type LoginViaTransaction = {
     signatureSignedWithNotifiNonce: string,
   ) => Promise<NotifiFrontendClient | undefined>;
 };
-
+export type LoginParamsWithUserParams = LoginParams & UserParams;
 export type NotifiFrontendClientContextType = {
   frontendClient: NotifiFrontendClient;
   frontendClientStatus: FrontendClientStatus;
@@ -48,7 +40,7 @@ export type NotifiFrontendClientContextType = {
   // 1. If the walletBlockchain prop is OFF_CHAIN
   // 2. If the isEnabledLoginViaTransaction prop is false or undefined
   loginViaTransaction: LoginViaTransaction | null;
-  walletWithSignParams: WalletWithSignParams;
+  walletWithSignParams: LoginParamsWithUserParams;
 };
 
 export const NotifiFrontendClientContext =
@@ -61,7 +53,7 @@ export type NotifiFrontendClientProviderProps = {
   env?: NotifiEnvironment;
   storageOption?: NotifiFrontendConfiguration['storageOption'];
   isEnabledLoginViaTransaction?: boolean;
-} & WalletWithSignParams;
+} & LoginParamsWithUserParams;
 
 export const NotifiFrontendClientContextProvider: React.FC<
   React.PropsWithChildren<NotifiFrontendClientProviderProps>
@@ -327,72 +319,72 @@ export const useNotifiFrontendClientContext = () =>
 //  * 2. Naming might look confusing as it is a legacy naming to avoid breaking changes
 //  */
 
-type SolanaWalletWithSignParams = Readonly<{
-  signMessage: Uint8SignMessageFunction;
-  isUsingHardwareWallet?: boolean;
-  hardwareLoginPlugin?: {
-    /**
-     * @deprecated Use signTransaction() instead. We no longer have to send a txn, and instead simply rely on the signed TX as we can verify this on Notifi Services.
-     */
-    sendMessage?: (message: string) => Promise<string>;
-    signTransaction: (message: string) => Promise<string>;
-  };
-}> &
-  Extract<UserParams, { walletBlockchain: 'SOLANA' }>;
+// type SolanaAuthWithUserParams = Readonly<{
+//   signMessage: Uint8SignMessageFunction;
+//   isUsingHardwareWallet?: boolean;
+//   hardwareLoginPlugin?: {
+//     /**
+//      * @deprecated Use signTransaction() instead. We no longer have to send a txn, and instead simply rely on the signed TX as we can verify this on Notifi Services.
+//      */
+//     sendMessage?: (message: string) => Promise<string>;
+//     signTransaction: (message: string) => Promise<string>;
+//   };
+// }> &
+//   Extract<UserParams, { walletBlockchain: 'SOLANA' }>;
 
-type AptosWalletWithSignParams = Readonly<{
-  signMessage: AptosSignMessageFunction;
-}> &
-  Extract<UserParams, { walletBlockchain: AptosBlockchain }>;
+// type AptosAuthWithUserParams = Readonly<
+//   Extract<LoginParams, { walletBlockchain: AptosBlockchain }>
+// > &
+//   Extract<UserParams, { walletBlockchain: AptosBlockchain }>;
 
-type BtcWalletWithSignParams = Readonly<{
-  signMessage: Uint8SignMessageFunction;
-}> &
-  Extract<UserParams, { walletBlockchain: BtcBlockchain }>;
+// type BtcAuthWithUserParams = Readonly<
+//   Extract<LoginParams, { walletBlockchain: BtcBlockchain }>
+// > &
+//   Extract<UserParams, { walletBlockchain: BtcBlockchain }>;
 
-type CosmosWalletWithSignParams = Readonly<{
-  signMessage: CosmosSignMessageFunction;
-}> &
-  Extract<UserParams, { walletBlockchain: CosmosBlockchain }>;
+// type CosmosAuthWithUserParams = Readonly<
+//   Extract<LoginParams, { walletBlockchain: CosmosBlockchain }>
+// > &
+//   Extract<UserParams, { walletBlockchain: CosmosBlockchain }>;
 
-type EvmWalletWithSignParams = Readonly<{
-  signMessage: Uint8SignMessageFunction;
-}> &
-  Extract<UserParams, { walletBlockchain: EvmBlockchain }>;
+// type EvmAuthWithUserParams = Readonly<
+//   Extract<LoginParams, { walletBlockchain: EvmBlockchain }>
+// > &
+//   Extract<UserParams, { walletBlockchain: EvmBlockchain }>;
 
-type NearWalletWithSignParams = Readonly<{
-  signMessage: Uint8SignMessageFunction;
-}> &
-  Extract<UserParams, { walletBlockchain: 'NEAR' }>;
+// type NearAuthWithUserParams = Readonly<
+//   Extract<LoginParams, { walletBlockchain: 'NEAR' }>
+// > &
+//   Extract<UserParams, { walletBlockchain: 'NEAR' }>;
 
-type SuiWalletWithSignParams = Readonly<{
-  signMessage: Uint8SignMessageFunction;
-}> &
-  Extract<UserParams, { walletBlockchain: 'SUI' }>;
+// type SuiAuthWithUserParams = Readonly<
+//   Extract<LoginParams, { walletBlockchain: 'SUI' }>
+// > &
+//   Extract<UserParams, { walletBlockchain: 'SUI' }>;
 
-type InjectiveWalletWithSignParams = Readonly<{
-  signMessage: Uint8SignMessageFunction;
-}> &
-  Extract<UserParams, { walletBlockchain: 'INJECTIVE' }>;
+// type InjectiveAuthWithUserParams = Readonly<
+//   Extract<LoginParams, { walletBlockchain: 'INJECTIVE' }>
+// > &
+//   Extract<UserParams, { walletBlockchain: 'INJECTIVE' }>;
 
-type OffChainWalletWithSignParams = Readonly<{
-  signIn: OidcSignInFunction;
-}> &
-  Extract<UserParams, { walletBlockchain: 'OFF_CHAIN' }>;
+// type OffChainAuthWithUserParams = Readonly<
+//   Extract<LoginParams, { walletBlockchain: 'OFF_CHAIN' }>
+// > &
+//   Extract<UserParams, { walletBlockchain: 'OFF_CHAIN' }>;
 
-type UnmaintainedWalletWithSignParams = Readonly<{
-  signMessage: Uint8SignMessageFunction;
-}> &
-  Extract<UserParams, { walletBlockchain: UnmaintainedBlockchain }>;
+// type UnmaintainedAuthWithUserParams = Readonly<
+//   Extract<LoginParams, { walletBlockchain: UnmaintainedBlockchain }>
+// > &
+//   Extract<UserParams, { walletBlockchain: UnmaintainedBlockchain }>;
 
-export type WalletWithSignParams =
-  | SolanaWalletWithSignParams
-  | AptosWalletWithSignParams
-  | BtcWalletWithSignParams
-  | EvmWalletWithSignParams
-  | NearWalletWithSignParams
-  | SuiWalletWithSignParams
-  | OffChainWalletWithSignParams
-  | CosmosWalletWithSignParams
-  | InjectiveWalletWithSignParams
-  | UnmaintainedWalletWithSignParams;
+// export type AuthWithUserParams =
+//   | SolanaAuthWithUserParams
+//   | AptosAuthWithUserParams
+//   | BtcAuthWithUserParams
+//   | EvmAuthWithUserParams
+//   | NearAuthWithUserParams
+//   | SuiAuthWithUserParams
+//   | OffChainAuthWithUserParams
+//   | CosmosAuthWithUserParams
+//   | InjectiveAuthWithUserParams
+//   | UnmaintainedAuthWithUserParams;
