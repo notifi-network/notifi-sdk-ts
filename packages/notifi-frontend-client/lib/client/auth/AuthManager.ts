@@ -143,18 +143,17 @@ export class AuthManager {
 
     let user: Types.UserFragmentFragment | undefined = undefined;
     if (isLoginWeb3Params(loginParams)) {
+      /* Case #1: Modern login flow — handles authentication via LoginWithWeb3 */
       user = await this._logInWithWeb3(loginParams);
     } else if (walletBlockchain === 'OFF_CHAIN') {
+      /* Case #2: OIDC login flow */
       const authentication = await this._authenticate({
         signMessageParams: loginParams,
         timestamp,
       });
-
       if (!('oidcProvider' in authentication)) {
         throw new Error('logIn - Invalid signature - expected OidcCredentials');
       }
-
-      // 3rd party OIDC login
       const { oidcProvider, jwt } = authentication;
       const result = await this._service.logInByOidc({
         dappId: tenantId,
@@ -163,7 +162,7 @@ export class AuthManager {
       });
       user = result.logInByOidc.user;
     } else {
-      // Legacy login flow
+      /* Case #3: Legacy login flow (planned for migration) */
       const authentication = await this._authenticate({
         signMessageParams: loginParams,
         timestamp,
@@ -294,7 +293,7 @@ export class AuthManager {
       );
     }
 
-    const strategy = this.getStrategyForBlockchain(
+    const strategy = this._getStrategyForBlockchain(
       loginWeb3Params.walletBlockchain,
     );
 
@@ -443,7 +442,7 @@ export class AuthManager {
     await Promise.all([saveAuthorizationPromise, saveRolesPromise]);
   }
 
-  private getStrategyForBlockchain(
+  private _getStrategyForBlockchain(
     blockchain: Types.BlockchainType,
   ): BlockchainAuthStrategy {
     if (isCosmosBlockchain(blockchain)) {
