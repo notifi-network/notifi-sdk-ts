@@ -1,9 +1,9 @@
 import { NotifiService } from '@notifi-network/notifi-graphql';
-import { SolanaBlockchain } from 'notifi-frontend-client/dist/index.mjs';
 import {
   NotifiFrontendConfiguration,
   checkIsConfigWithPublicKey,
 } from 'notifi-frontend-client/lib/configuration';
+import { SolanaBlockchain } from 'notifi-frontend-client/lib/models';
 
 import {
   BlockchainAuthStrategy,

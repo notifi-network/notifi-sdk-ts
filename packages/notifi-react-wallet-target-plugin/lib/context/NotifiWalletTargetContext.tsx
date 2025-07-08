@@ -1,8 +1,6 @@
-import {
-  NotifiFrontendClient,
-  WalletWithSignParams,
-} from '@notifi-network/notifi-frontend-client';
+import { NotifiFrontendClient } from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
+import { WalletWithSignParams } from '@notifi-network/notifi-react';
 import React, { FC } from 'react';
 
 import { useXmpt } from '../hooks';

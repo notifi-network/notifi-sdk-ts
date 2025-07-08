@@ -14,6 +14,8 @@ import { CosmosSignMessageParams } from './CosmosAuthStrategy';
 import { EvmSignMessageParams } from './EvmAuthStrategy';
 import { SolanaSignMessageParams } from './SolanaAuthStrategy';
 
+export * from './AuthManager';
+
 export interface BlockchainAuthStrategy {
   authenticate(params: SignMessageParams): Promise<AuthenticateResult>;
   prepareLoginWithWeb3(params: LoginWeb3Params): Promise<{
