@@ -1,5 +1,5 @@
 import { NotifiService, Types } from '@notifi-network/notifi-graphql';
-import {
+import type {
   AuthParams,
   NotifiFrontendConfiguration,
 } from 'notifi-frontend-client/lib/configuration';

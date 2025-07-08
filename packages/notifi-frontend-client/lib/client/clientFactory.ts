@@ -11,11 +11,10 @@ import {
   NotifiEnvironment,
   NotifiFrontendConfiguration,
   NotifiSmartLinkClientConfig,
+  UserParams,
   envUrl,
 } from '../configuration';
 import { isEvmBlockchain } from '../models/Blockchain';
-// import { UserParams } from './AuthManager';
-import * as blockchain from '../models/Blockchain';
 import {
   NotifiFrontendStorage,
   createInMemoryStorageDriver,
@@ -145,81 +144,3 @@ export const newSmartLinkClient = (
   const dpClient = newDataplaneClient(config);
   return new NotifiSmartLinkClient(config, service, dpClient);
 };
-
-/** NOTE:
- * Used for instantiating client object (.instantiateFrontendClient) - requires only UserParams (w/o authentication method(s)) to be passed in
- */
-export type UserParams =
-  | SolanaUserParams
-  | EvmUserParams
-  | AptosUserParams
-  | NearUserParams
-  | SuiUserParams
-  | CosmosUserParams
-  | OffChainUserParams
-  | UnmaintainedUserParams
-  | BtcUserParams
-  | InjectiveUserParams;
-export type SolanaUserParams = Readonly<{
-  walletBlockchain: 'SOLANA';
-  walletPublicKey: string;
-}>;
-
-export type AptosUserParams = Readonly<{
-  walletBlockchain: blockchain.AptosBlockchain;
-  accountAddress: string;
-  walletPublicKey: string;
-}>;
-
-export type BtcUserParams = Readonly<{
-  walletBlockchain: blockchain.BtcBlockchain;
-  accountAddress: string;
-  walletPublicKey: string;
-}>;
-
-export type EvmUserParams = Readonly<{
-  walletBlockchain: blockchain.EvmBlockchain;
-  walletPublicKey: string;
-}>;
-
-export type InjectiveUserParams = Readonly<{
-  walletBlockchain: 'INJECTIVE';
-  accountAddress: string;
-  walletPublicKey: string;
-}>;
-
-export type CosmosUserParams =
-  | Readonly<{
-      walletBlockchain: blockchain.CosmosBlockchain;
-      accountAddress: string;
-      walletPublicKey: string;
-    }>
-  | Readonly<{
-      walletBlockchain: blockchain.CosmosBlockchain;
-      walletPublicKey: string;
-      signingAddress: string;
-      signingPubkey: string;
-    }>;
-
-export type UnmaintainedUserParams = Readonly<{
-  walletBlockchain: blockchain.UnmaintainedBlockchain;
-  accountAddress: string;
-  walletPublicKey: string;
-}>;
-
-export type NearUserParams = Readonly<{
-  walletBlockchain: 'NEAR';
-  accountAddress: string;
-  walletPublicKey: string;
-}>;
-
-export type SuiUserParams = Readonly<{
-  walletBlockchain: 'SUI';
-  accountAddress: string;
-  walletPublicKey: string;
-}>;
-
-export type OffChainUserParams = Readonly<{
-  walletBlockchain: 'OFF_CHAIN';
-  userAccount: string;
-}>;
