@@ -1,17 +1,17 @@
 import { NotifiService } from '@notifi-network/notifi-graphql';
-import {
-  NotifiFrontendConfiguration,
-  checkIsConfigWithPublicKey,
-} from 'notifi-frontend-client/lib/configuration';
-import { SolanaBlockchain } from 'notifi-frontend-client/lib/models';
 
 import {
-  BlockchainAuthStrategy,
-  LoginWeb3Params,
+  type BlockchainAuthStrategy,
+  type LoginWeb3Params,
   SIGNING_MESSAGE,
-  Uint8SignMessageFunction,
+  type Uint8SignMessageFunction,
   beginLogInWithWeb3,
 } from '.';
+import {
+  type NotifiFrontendConfiguration,
+  checkIsConfigWithPublicKey,
+} from '../../configuration';
+import { SolanaBlockchain } from '../../models';
 
 export class SolanaAuthStrategy implements BlockchainAuthStrategy {
   constructor(

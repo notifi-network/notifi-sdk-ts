@@ -1,8 +1,18 @@
 import { NotifiService, Types } from '@notifi-network/notifi-graphql';
+
+import {
+  type AuthenticateResult,
+  BlockchainAuthStrategy,
+  CHAINS_WITH_LOGIN_WEB3,
+  type LoginParams,
+  type LoginWeb3Params,
+  SIGNING_MESSAGE,
+  type SignMessageParams,
+} from '.';
 import type {
   AuthParams,
   NotifiFrontendConfiguration,
-} from 'notifi-frontend-client/lib/configuration';
+} from '../../configuration';
 import {
   isAptosBlockchain,
   isCosmosBlockchain,
@@ -10,23 +20,9 @@ import {
   isSolanaBlockchain,
   isUsingBtcBlockchain,
   isUsingUnmaintainedBlockchain,
-} from 'notifi-frontend-client/lib/models';
-import {
-  Authorization,
-  NotifiStorage,
-  Roles,
-} from 'notifi-frontend-client/lib/storage';
-import { notNullOrEmpty } from 'notifi-frontend-client/lib/utils';
-
-import {
-  AuthenticateResult,
-  BlockchainAuthStrategy,
-  CHAINS_WITH_LOGIN_WEB3,
-  LoginParams,
-  LoginWeb3Params,
-  SIGNING_MESSAGE,
-  SignMessageParams,
-} from '.';
+} from '../../models';
+import { Authorization, NotifiStorage, Roles } from '../../storage';
+import { notNullOrEmpty } from '../../utils';
 import { AptosAuthStrategy } from './AptosAuthStrategy';
 import { CosmosAuthStrategy } from './CosmosAuthStrategy';
 import { EvmAuthStrategy } from './EvmAuthStrategy';

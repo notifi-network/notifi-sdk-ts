@@ -21,6 +21,7 @@
     "test": "jest",
     "test:frontend-client": "jest ./__test__/NotifiFrontendClient.test.ts",
     "test:smartlink-client": "jest ./__test__/NotifiSmartLinkClient.test.ts",
+    "test:auth-manager": "jest ./__test__/AuthManager.test.ts",
     "prepublishOnly": "npm run build"
   },
   "repository": {

@@ -1,17 +1,17 @@
 import { NotifiService } from '@notifi-network/notifi-graphql';
-import {
-  NotifiFrontendConfiguration,
-  checkIsConfigWithDelegate,
-  checkIsConfigWithPublicKeyAndAddress,
-} from 'notifi-frontend-client/lib/configuration';
-import { CosmosBlockchain } from 'notifi-frontend-client/lib/models';
 
 import {
   BlockchainAuthStrategy,
-  LoginWeb3Params,
+  type LoginWeb3Params,
   SIGNING_MESSAGE,
   beginLogInWithWeb3,
 } from '.';
+import {
+  type NotifiFrontendConfiguration,
+  checkIsConfigWithDelegate,
+  checkIsConfigWithPublicKeyAndAddress,
+} from '../../configuration';
+import { type CosmosBlockchain } from '../../models';
 
 export class CosmosAuthStrategy implements BlockchainAuthStrategy {
   constructor(

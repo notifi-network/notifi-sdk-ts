@@ -1,18 +1,18 @@
 import { NotifiService, Types } from '@notifi-network/notifi-graphql';
-import { NotifiFrontendConfiguration } from 'notifi-frontend-client/lib/configuration';
+
+import { NotifiFrontendConfiguration } from '../../configuration';
 import {
   APTOS_BLOCKCHAINS,
-  BtcBlockchain,
+  type BtcBlockchain,
   COSMOS_BLOCKCHAINS,
   EVM_BLOCKCHAINS,
   SOLANA_BLOCKCHAINS,
-  UnmaintainedBlockchain,
-} from 'notifi-frontend-client/lib/models';
-
-import { AptosSignMessageParams } from './AptosAuthStrategy';
-import { CosmosSignMessageParams } from './CosmosAuthStrategy';
-import { EvmSignMessageParams } from './EvmAuthStrategy';
-import { SolanaSignMessageParams } from './SolanaAuthStrategy';
+  type UnmaintainedBlockchain,
+} from '../../models';
+import { type AptosSignMessageParams } from './AptosAuthStrategy';
+import { type CosmosSignMessageParams } from './CosmosAuthStrategy';
+import { type EvmSignMessageParams } from './EvmAuthStrategy';
+import { type SolanaSignMessageParams } from './SolanaAuthStrategy';
 
 export * from './AuthManager';
 
