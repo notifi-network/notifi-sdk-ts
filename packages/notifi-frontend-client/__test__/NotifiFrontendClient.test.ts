@@ -1,7 +1,7 @@
 import { arrayify } from '@ethersproject/bytes';
 import {
-  EvmUserParams,
   NotifiFrontendClient,
+  UserParams,
   envUrl,
   instantiateFrontendClient,
 } from '@notifi-network/notifi-frontend-client';
@@ -19,7 +19,7 @@ describe('NotifiFrontendClient Unit Test', () => {
     console.info(`Starting test: ${currentTestName}`);
 
     wallet = getConnectedWallet();
-    const evmUserParams: EvmUserParams = {
+    const evmUserParams: UserParams = {
       walletBlockchain: walletBlockchain,
       walletPublicKey: wallet.address,
     };

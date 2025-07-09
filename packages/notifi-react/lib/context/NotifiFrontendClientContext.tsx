@@ -1,8 +1,9 @@
 import {
+  LoginParams,
   NotifiEnvironment,
   NotifiFrontendClient,
   NotifiFrontendConfiguration,
-  WalletWithSignParams,
+  UserParams,
   instantiateFrontendClient,
   isSolanaBlockchain,
 } from '@notifi-network/notifi-frontend-client';
@@ -26,7 +27,7 @@ export type LoginViaTransaction = {
     signatureSignedWithNotifiNonce: string,
   ) => Promise<NotifiFrontendClient | undefined>;
 };
-
+export type LoginParamsWithUserParams = LoginParams & UserParams;
 export type NotifiFrontendClientContextType = {
   frontendClient: NotifiFrontendClient;
   frontendClientStatus: FrontendClientStatus;
@@ -39,7 +40,7 @@ export type NotifiFrontendClientContextType = {
   // 1. If the walletBlockchain prop is OFF_CHAIN
   // 2. If the isEnabledLoginViaTransaction prop is false or undefined
   loginViaTransaction: LoginViaTransaction | null;
-  walletWithSignParams: WalletWithSignParams;
+  walletWithSignParams: LoginParamsWithUserParams;
 };
 
 export const NotifiFrontendClientContext =
@@ -52,7 +53,7 @@ export type NotifiFrontendClientProviderProps = {
   env?: NotifiEnvironment;
   storageOption?: NotifiFrontendConfiguration['storageOption'];
   isEnabledLoginViaTransaction?: boolean;
-} & WalletWithSignParams;
+} & LoginParamsWithUserParams;
 
 export const NotifiFrontendClientContextProvider: React.FC<
   React.PropsWithChildren<NotifiFrontendClientProviderProps>

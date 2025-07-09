@@ -11,6 +11,7 @@ import {
   NotifiEnvironment,
   NotifiFrontendConfiguration,
   NotifiSmartLinkClientConfig,
+  UserParams,
   envUrl,
 } from '../configuration';
 import { isEvmBlockchain } from '../models/Blockchain';
@@ -19,7 +20,6 @@ import {
   createInMemoryStorageDriver,
   createLocalForageStorageDriver,
 } from '../storage';
-import { UserParams } from './AuthManager';
 import { NotifiFrontendClient } from './NotifiFrontendClient';
 import { NotifiSmartLinkClient } from './NotifiSmartLinkClient';
 

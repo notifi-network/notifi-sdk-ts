@@ -20,11 +20,11 @@ import {
 } from '../storage';
 import { notNullOrEmpty, parseTenantConfig } from '../utils';
 import { areIdsEqual } from '../utils/areIdsEqual';
-import { AuthManager, LoginParams } from './AuthManager';
 import {
   type AlterTargetGroupParams,
   alterTargetGroupImpl,
 } from './alterTargetGroup';
+import { AuthManager, LoginParams } from './auth';
 import {
   ensureDiscord,
   ensureEmail,
