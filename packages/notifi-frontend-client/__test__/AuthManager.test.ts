@@ -3,23 +3,19 @@ import {
   AuthManager,
   type EvmUserParams,
   type NotifiFrontendConfiguration,
-  envUrl,
 } from '@notifi-network/notifi-frontend-client';
-import { ethers } from 'ethers';
 import expect from 'expect';
 
 import {
   newNotifiService,
   newNotifiStorage,
 } from '../lib/client/clientFactory';
+import { dappAddress, getEvmConnectedWallet } from './constants';
 
 describe('AuthManager Unit Test', () => {
-  beforeEach(() => {});
-
   it('login - EVM', async () => {
     const blockchainType = 'ETHEREUM';
-    const wallet = ethers.Wallet.createRandom();
-    wallet.connect(new ethers.JsonRpcProvider(envUrl()));
+    const wallet = getEvmConnectedWallet();
     const evmUserParams: EvmUserParams = {
       walletBlockchain: blockchainType,
       walletPublicKey: wallet.address,
@@ -43,6 +39,3 @@ describe('AuthManager Unit Test', () => {
     expect(userState.authorization).toHaveProperty('token');
   });
 });
-
-/* ⬇ Unit Test exclusive tenant: notifi.network.unitest */
-const dappAddress = 'xdjczkhmgann9g24871z';
