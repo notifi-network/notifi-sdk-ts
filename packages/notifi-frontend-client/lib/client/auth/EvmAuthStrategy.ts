@@ -1,18 +1,18 @@
 import { NotifiService } from '@notifi-network/notifi-graphql';
-import {
-  NotifiFrontendConfiguration,
-  checkIsConfigWithPublicKey,
-} from 'notifi-frontend-client/lib/configuration';
-import { EvmBlockchain } from 'notifi-frontend-client/lib/models';
-import { normalizeHexString } from 'notifi-frontend-client/lib/utils';
 
 import {
   BlockchainAuthStrategy,
-  LoginWeb3Params,
+  type LoginWeb3Params,
   SIGNING_MESSAGE,
-  Uint8SignMessageFunction,
+  type Uint8SignMessageFunction,
   beginLogInWithWeb3,
 } from '.';
+import {
+  type NotifiFrontendConfiguration,
+  checkIsConfigWithPublicKey,
+} from '../../configuration';
+import { type EvmBlockchain } from '../../models';
+import { normalizeHexString } from '../../utils';
 
 export class EvmAuthStrategy implements BlockchainAuthStrategy {
   constructor(

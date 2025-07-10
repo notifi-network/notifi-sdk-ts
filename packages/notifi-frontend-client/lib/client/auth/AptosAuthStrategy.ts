@@ -1,16 +1,16 @@
 import { NotifiService } from '@notifi-network/notifi-graphql';
-import {
-  NotifiFrontendConfiguration,
-  checkIsConfigWithPublicKeyAndAddress,
-} from 'notifi-frontend-client/lib/configuration';
-import { AptosBlockchain } from 'notifi-frontend-client/lib/models';
 
 import {
   BlockchainAuthStrategy,
-  LoginWeb3Params,
+  type LoginWeb3Params,
   SIGNING_MESSAGE_WITHOUT_NONCE,
   beginLogInWithWeb3,
 } from '.';
+import {
+  NotifiFrontendConfiguration,
+  checkIsConfigWithPublicKeyAndAddress,
+} from '../../configuration';
+import { AptosBlockchain } from '../../models';
 
 export class AptosAuthStrategy implements BlockchainAuthStrategy {
   constructor(
