@@ -32,6 +32,7 @@ export const EVM_BLOCKCHAINS = [
   'BLAST',
   'CELO',
   'MANTLE',
+  'INK',
   'SCROLL',
   'LINEA',
   'MANTA',
