@@ -664,6 +664,7 @@ export class NotifiFrontendClient {
         case 'POLYGON':
         case 'ARBITRUM':
         case 'BOTANIX':
+        case 'INK':
         case 'AVALANCHE':
         case 'BINANCE':
         case 'OPTIMISM':
