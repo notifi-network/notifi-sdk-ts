@@ -5,8 +5,10 @@ import {
   type NotifiFrontendConfiguration,
   SolanaUserParams,
 } from '@notifi-network/notifi-frontend-client';
-import { generateKeyPairSigner, signBytes } from '@solana/kit';
+import { Keypair } from '@solana/web3.js';
+import { generateKeyPairSync } from 'crypto';
 import expect from 'expect';
+import nacl from 'tweetnacl';
 
 import {
   newNotifiService,
@@ -43,11 +45,11 @@ describe('AuthManager Unit Test', () => {
 
   it('login - SOLANA', async () => {
     /* Reference: https://solana.com/developers/cookbook/wallets/sign-message */
-    const signer = await generateKeyPairSigner();
+    const signer = Keypair.generate();
 
     const solUserParams: SolanaUserParams = {
       walletBlockchain: 'SOLANA',
-      walletPublicKey: signer.address,
+      walletPublicKey: signer.publicKey.toBase58(),
     };
 
     const config: NotifiFrontendConfiguration = {
@@ -62,7 +64,8 @@ describe('AuthManager Unit Test', () => {
     const authManager = new AuthManager(service, storage, config);
     const userState = await authManager.logIn({
       signMessage: async (message: Uint8Array) => {
-        const signature = await signBytes(signer.keyPair.privateKey, message);
+        // const signature = await signBytes(signer.keyPair.privateKey, message);
+        const signature = nacl.sign.detached(message, signer.secretKey);
         return signature;
       },
       walletBlockchain: solUserParams.walletBlockchain,
