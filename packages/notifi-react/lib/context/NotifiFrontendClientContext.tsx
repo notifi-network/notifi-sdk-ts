@@ -1,14 +1,15 @@
 import {
+  LoginParams,
   NotifiEnvironment,
   NotifiFrontendClient,
   NotifiFrontendConfiguration,
-  WalletWithSignParams,
+  UserParams,
   instantiateFrontendClient,
+  isSolanaBlockchain,
 } from '@notifi-network/notifi-frontend-client';
 import React from 'react';
 
 import { version } from '../../package.json';
-import { loginViaSolanaHardwareWallet } from '../utils';
 
 export type FrontendClientStatus = {
   isExpired: boolean;
@@ -26,7 +27,7 @@ export type LoginViaTransaction = {
     signatureSignedWithNotifiNonce: string,
   ) => Promise<NotifiFrontendClient | undefined>;
 };
-
+export type LoginParamsWithUserParams = LoginParams & UserParams;
 export type NotifiFrontendClientContextType = {
   frontendClient: NotifiFrontendClient;
   frontendClientStatus: FrontendClientStatus;
@@ -39,7 +40,7 @@ export type NotifiFrontendClientContextType = {
   // 1. If the walletBlockchain prop is OFF_CHAIN
   // 2. If the isEnabledLoginViaTransaction prop is false or undefined
   loginViaTransaction: LoginViaTransaction | null;
-  walletWithSignParams: WalletWithSignParams;
+  walletWithSignParams: LoginParamsWithUserParams;
 };
 
 export const NotifiFrontendClientContext =
@@ -52,7 +53,7 @@ export type NotifiFrontendClientProviderProps = {
   env?: NotifiEnvironment;
   storageOption?: NotifiFrontendConfiguration['storageOption'];
   isEnabledLoginViaTransaction?: boolean;
-} & WalletWithSignParams;
+} & LoginParamsWithUserParams;
 
 export const NotifiFrontendClientContextProvider: React.FC<
   React.PropsWithChildren<NotifiFrontendClientProviderProps>
@@ -101,7 +102,7 @@ export const NotifiFrontendClientContextProvider: React.FC<
     );
 
     setIsLoading(true);
-    frontendClient
+    frontendClient.auth
       .initialize()
       .then(() => {
         _refreshFrontendClient(frontendClient);
@@ -128,7 +129,7 @@ export const NotifiFrontendClientContextProvider: React.FC<
       return;
 
     const getNonce = async () => {
-      const nonce = await frontendClient?.beginLoginViaTransaction({
+      const nonce = await frontendClient?.auth.beginLoginViaTransaction({
         walletAddress: walletWithSignParams.walletPublicKey,
         walletBlockchain: walletWithSignParams.walletBlockchain,
       });
@@ -149,7 +150,7 @@ export const NotifiFrontendClientContextProvider: React.FC<
     }
     setIsLoading(true);
     try {
-      await frontendClient.logIn(walletWithSignParams);
+      await frontendClient.auth.logIn(walletWithSignParams);
       _refreshFrontendClient(frontendClient);
       setError(null);
     } catch (error) {
@@ -177,7 +178,7 @@ export const NotifiFrontendClientContextProvider: React.FC<
       return;
     }
     try {
-      await frontendClient?.logOut();
+      await frontendClient?.auth.logOut();
       _refreshFrontendClient(frontendClient);
       setError(null);
     } catch (error) {
@@ -204,7 +205,7 @@ export const NotifiFrontendClientContextProvider: React.FC<
 
       setIsLoading(true);
       try {
-        await frontendClient?.completeLoginViaTransaction({
+        await frontendClient?.auth.completeLoginViaTransaction({
           walletAddress: walletWithSignParams.walletPublicKey,
           walletBlockchain: walletWithSignParams.walletBlockchain,
           transactionSignature: signatureSignedWithNotifiNonce,
@@ -232,9 +233,10 @@ export const NotifiFrontendClientContextProvider: React.FC<
   const _refreshFrontendClient = React.useCallback(
     (frontendClient: NotifiFrontendClient) => {
       setFrontendClientStatus({
-        isExpired: frontendClient.userState?.status === 'expired',
+        isExpired: frontendClient.auth.userState?.status === 'expired',
         isInitialized: !!frontendClient,
-        isAuthenticated: frontendClient.userState?.status === 'authenticated',
+        isAuthenticated:
+          frontendClient.auth.userState?.status === 'authenticated',
       });
       setFrontendClient(frontendClient);
     },
@@ -248,7 +250,8 @@ export const NotifiFrontendClientContextProvider: React.FC<
     if (
       !frontendClient ||
       !frontendClientStatus.isInitialized ||
-      walletWithSignParams.walletBlockchain === 'OFF_CHAIN'
+      walletWithSignParams.walletBlockchain === 'OFF_CHAIN' ||
+      !isSolanaBlockchain(walletWithSignParams.walletBlockchain) // Only Solana supports hardware wallet login for now
     ) {
       setError(
         new Error(
@@ -259,7 +262,11 @@ export const NotifiFrontendClientContextProvider: React.FC<
     }
     setIsLoading(true);
     try {
-      await loginViaSolanaHardwareWallet(frontendClient, walletWithSignParams);
+      const loginInput = {
+        ...walletWithSignParams,
+        isUsingHardwareWallet: true,
+      };
+      await frontendClient.auth.logIn(loginInput);
       _refreshFrontendClient(frontendClient);
       setError(null);
     } catch (error) {

@@ -75,7 +75,7 @@ export const NotifiUserSettingContextProvider: FC<PropsWithChildren> = ({
         setIsLoading(false);
       }
     },
-    [frontendClient?.userState?.status],
+    [frontendClient?.auth.userState?.status],
   );
   return (
     <NotifiUserSettingContext.Provider
