@@ -6,7 +6,6 @@ import {
   SolanaUserParams,
 } from '@notifi-network/notifi-frontend-client';
 import { Keypair } from '@solana/web3.js';
-import { generateKeyPairSync } from 'crypto';
 import expect from 'expect';
 import nacl from 'tweetnacl';
 
@@ -64,7 +63,6 @@ describe('AuthManager Unit Test', () => {
     const authManager = new AuthManager(service, storage, config);
     const userState = await authManager.logIn({
       signMessage: async (message: Uint8Array) => {
-        // const signature = await signBytes(signer.keyPair.privateKey, message);
         const signature = nacl.sign.detached(message, signer.secretKey);
         return signature;
       },
