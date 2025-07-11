@@ -5,7 +5,7 @@ import {
   type NotifiFrontendConfiguration,
   SolanaUserParams,
 } from '@notifi-network/notifi-frontend-client';
-import { Keypair } from '@solana/web3.js';
+import bs58 from 'bs58';
 import expect from 'expect';
 import nacl from 'tweetnacl';
 
@@ -44,11 +44,10 @@ describe('AuthManager Unit Test', () => {
 
   it('login - SOLANA', async () => {
     /* Reference: https://solana.com/developers/cookbook/wallets/sign-message */
-    const signer = Keypair.generate();
-
+    const signer = nacl.sign.keyPair();
     const solUserParams: SolanaUserParams = {
       walletBlockchain: 'SOLANA',
-      walletPublicKey: signer.publicKey.toBase58(),
+      walletPublicKey: bs58.encode(signer.publicKey),
     };
 
     const config: NotifiFrontendConfiguration = {
