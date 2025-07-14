@@ -1,37 +1,40 @@
 import { arrayify } from '@ethersproject/bytes';
 import {
-  EvmUserParams,
   NotifiFrontendClient,
-  envUrl,
+  type UserParams,
   instantiateFrontendClient,
 } from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
 import { ethers } from 'ethers';
 import expect from 'expect';
 
-describe('NotifiFrontendClient Unit Test', () => {
-  let client: NotifiFrontendClient;
+import { dappAddress, getCardId, getEvmConnectedWallet } from './constants';
 
+describe('NotifiFrontendClient Unit Test', () => {
+  const walletBlockchain = 'ETHEREUM';
+  let client: NotifiFrontendClient;
   let wallet: ethers.HDNodeWallet;
 
   beforeEach(() => {
-    const currentTestName = expect.getState().currentTestName;
-    console.info(`Starting test: ${currentTestName}`);
-
-    wallet = getConnectedWallet();
-    const evmUserParams: EvmUserParams = {
+    wallet = getEvmConnectedWallet();
+    const evmUserParams: UserParams = {
       walletBlockchain: walletBlockchain,
       walletPublicKey: wallet.address,
     };
-    client = instantiateFrontendClient(dappAddress, evmUserParams, env, {
-      /* ⬇ explicitly specify 'InMemory' driverType as Nodejs environment does not have 'localStorage' (default option) */
-      driverType: 'InMemory',
-    });
+    client = instantiateFrontendClient(
+      dappAddress,
+      evmUserParams,
+      'Production',
+      {
+        /* ⬇ explicitly specify 'InMemory' driverType as Nodejs environment does not have 'localStorage' (default option) */
+        driverType: 'InMemory',
+      },
+    );
   });
 
   it('login', async () => {
     await login();
-    expect(client.userState?.status).toBe('authenticated');
+    expect(client.auth.userState?.status).toBe('authenticated');
   });
 
   it('fetchTenantConfig (V1 & V2)', async () => {
@@ -185,24 +188,3 @@ describe('NotifiFrontendClient Unit Test', () => {
     });
   };
 });
-
-// Utils & Constants (TODO: Move to a separate module when growing)
-const env = 'Production';
-/* ⬇ Unit Test exclusive tenant: notifi.network.unitest */
-const dappAddress = 'xdjczkhmgann9g24871z';
-const getCardId = (version: 'v1' | 'v2') => {
-  if (version === 'v1') {
-    return '019305821e1772c1b3b8d07df1d724ee';
-  }
-  if (version === 'v2') {
-    return '0196d28771c2777eaa506898dd4975b4';
-  }
-  throw new Error('Invalid card version');
-};
-const walletBlockchain = 'ETHEREUM';
-
-const getConnectedWallet = () => {
-  const _wallet = ethers.Wallet.createRandom();
-  _wallet.connect(new ethers.JsonRpcProvider(envUrl(env)));
-  return _wallet;
-};

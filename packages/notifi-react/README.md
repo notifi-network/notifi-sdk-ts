@@ -41,7 +41,7 @@ _Environment_
 #### Prerequisites (**IMPORTANT**)
 
 - To use `NotifiCardModal`, you need to wrap your component with `NotifiContextProvider` first.
-- Notifi supports both `on-chain` and `off-chain` authentication. The authentication method differs based on the `WalletWithSignParams` [props](https://github.com/notifi-network/notifi-sdk-ts/blob/1457d642900b8969abb8f1ad353aaeb7059a6946/packages/notifi-react/lib/context/NotifiFrontendClientContext.tsx#L49) passed to the `NotifiContextProvider`.
+- Notifi supports both `on-chain` and `off-chain` authentication. The authentication method differs based on the `LoginParamsWithUserParams` [type](https://github.com/notifi-network/notifi-sdk-ts/blob/55b6d24c90d962e5ae4e20508015904754edbf0f/packages/notifi-react/lib/context/NotifiFrontendClientContext.tsx#L56) passed to the `NotifiContextProvider`.
   - For `on-chain` authentication, `walletBlockchain='<blockchain>'`, `signMessage` callback function, and the respective `wallet keys or addresses` for the `blockchain` are required. The common EVM blockchain example is shown above.
   - For `off-chain` authentication, `walletBlockchain='OFF_CHAIN'`, `signIn` callback function, and `userAccount` are required. `userAccount` can be any user-related unique identifier derived from a JWT token. The Google off-chain OIDC authentication example is shown below.
 

@@ -1,4 +1,6 @@
+import { LoginParams } from '../client';
 import { isEvmBlockchain } from '../models';
+import { UserParams } from './Auth';
 import { NotifiFrontendConfiguration } from './Client';
 import { NotifiEnvironment } from './Env';
 
@@ -98,6 +100,9 @@ export type FrontendClientConfigFactory<T extends NotifiFrontendConfiguration> =
           ? ConfigFactoryInputPublicKey
           : ConfigFactoryInputOidc,
   ) => NotifiFrontendConfiguration;
+
+/**@deprecated Legacy type only for backward compatibility. Use `LoginParamsWithUserParams` in `notifi-react` instead. */
+export type WalletWithSignParams = LoginParams & UserParams;
 
 /**@deprecated No longer need to use configFactory, use instantiateFrontendClient instead */
 const configFactoryPublicKey: FrontendClientConfigFactory<
