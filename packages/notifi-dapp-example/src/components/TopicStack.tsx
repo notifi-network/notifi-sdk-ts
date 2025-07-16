@@ -31,7 +31,7 @@ type InputParmValueMetadata = {
 };
 
 export const TopicStack: React.FC<TopicStackProps> = (props) => {
-  const { unsubscribeAlert, getAlertFilterOptions } = useNotifiTopicContext();
+  const { getAlertFilterOptions, unsubscribeAlerts } = useNotifiTopicContext();
   const { getFusionTopic } = useNotifiTenantConfigContext();
   const benchmarkAlert = props.topicStackAlerts[0];
   const userInputOptions = React.useMemo(() => {
@@ -84,9 +84,9 @@ export const TopicStack: React.FC<TopicStackProps> = (props) => {
       <div
         onClick={async () => {
           if (isLoading) return;
-          for (const alert of props.topicStackAlerts) {
-            await unsubscribeAlert(alert.alertName);
-          }
+          const alerts = props.topicStackAlerts.map((alert) => alert.alertName);
+          if (alerts.length === 0) return;
+          await unsubscribeAlerts(alerts);
         }}
       >
         <Icon
