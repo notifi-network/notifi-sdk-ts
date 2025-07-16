@@ -607,7 +607,7 @@ export const MyComponent = () => {
     isLoading,
     error,
     subscribeAlertsDefault,
-    unsubscribeAlert,
+    unsubscribeAlerts,
     isAlertSubscribed,
     subscribeAlertsWithFilterOptions,
     getAlertFilterOptions,
@@ -622,7 +622,7 @@ export const MyComponent = () => {
 
 - **subscribeAlertsDefault**: A function to subscribe to the respective topic with the default filterOptions. This will create an alert configuration for the user.
 
-- **unsubscribeAlert**: A function to unsubscribe to the respective topic. This will remove the alert configuration from the user's alert list.
+- **unsubscribeAlerts**: A function to unsubscribe to the respective topics. This will remove target alerts from the user's alert list.
 
 - **isAlertSubscribed**: A function to check if the topic is subscribed (This checks whether an alert configuration exists).
 
