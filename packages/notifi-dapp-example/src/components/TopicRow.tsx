@@ -41,7 +41,7 @@ export const TopicRow = <T extends TopicRowCategory>(
     isAlertSubscribed,
     isLoading: isLoadingTopic,
     subscribeAlertsDefault,
-    unsubscribeAlert,
+    unsubscribeAlerts,
   } = useNotifiTopicContext();
 
   const {
@@ -76,7 +76,7 @@ export const TopicRow = <T extends TopicRowCategory>(
     if (!isAlertSubscribed(fusionEventTypeId)) {
       return subscribeAlertsDefault([topic], targetGroupId);
     }
-    unsubscribeAlert(fusionEventTypeId);
+    unsubscribeAlerts([fusionEventTypeId]);
   };
 
   const toggleTopicGroup = async (topics: FusionEventTopic[]) => {
@@ -89,9 +89,10 @@ export const TopicRow = <T extends TopicRowCategory>(
         ? isAlertSubscribed(topic.fusionEventDescriptor.id)
         : false,
     );
-    for (const topic of topicsToBeUnsubscribed) {
-      await unsubscribeAlert(topic.fusionEventDescriptor.id!);
-    }
+    const alertIds = topicsToBeUnsubscribed.map(
+      (topic) => topic.fusionEventDescriptor.id!,
+    );
+    await unsubscribeAlerts(alertIds);
   };
 
   const correctUserInputParamsOrder = (
