@@ -310,7 +310,7 @@ export class AuthManager {
         signature: authentication.signature,
         signedMessage: authentication.signedMessage,
         signingAddress,
-        signingPubkey: '', // TODO: why not signingPubkey?
+        signingPubkey, // TODO: why not signingPubkey?
       },
     );
     //This is to ensure that hardware wallet logins are given authentication.
