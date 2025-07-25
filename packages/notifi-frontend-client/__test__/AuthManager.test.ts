@@ -1,3 +1,4 @@
+import { Account, Ed25519PrivateKey } from '@aptos-labs/ts-sdk';
 import { Secp256k1HdWallet, StdSignDoc } from '@cosmjs/amino';
 import { arrayify } from '@ethersproject/bytes';
 import {
@@ -8,6 +9,7 @@ import {
 } from '@notifi-network/notifi-frontend-client';
 import bs58 from 'bs58';
 import expect from 'expect';
+import { AptosSignMessageFunction } from 'notifi-frontend-client/lib/client/auth/AptosAuthStrategy';
 import { CosmosSignMessageFunction } from 'notifi-frontend-client/lib/client/auth/CosmosAuthStrategy';
 import nacl from 'tweetnacl';
 
@@ -122,6 +124,50 @@ describe('AuthManager Unit Test', () => {
         signedMessage: message,
       };
     };
+    const userState = await authManager.logIn({
+      signMessage,
+      walletBlockchain: blockchainType,
+    });
+    expect(userState.authorization).toHaveProperty('token');
+  });
+  it('AptosAuthStrategy: APTOS_SIGN_MESSAGE', async () => {
+    const blockchainType = 'APTOS';
+    const derivationPath = "m/44'/637'/0'/0'/0'";
+    const mnemonic =
+      'belt purity enforce meadow peanut pupil ignore inform skill common connect source';
+    const privateKey = Ed25519PrivateKey.fromDerivationPath(
+      derivationPath,
+      mnemonic,
+    );
+    const account = Account.fromPrivateKey({ privateKey });
+    const accountAddress = account.accountAddress.toString(); // 0x40e30fd0c9ed22e94b166f7c7a91b593af9f8dd786408849d49531798a7c0a61
+    const walletPublicKey = account.publicKey.toString(); // 0xabcbb8e52d832ce5d4d6d3df2fca23f0cd5778a446e458bec57d6bc16ce187e2
+
+    const signMessage: AptosSignMessageFunction = async (message, nonce) => {
+      // Note: https://github.com/aptos-labs/aptos-developer-discussions/discussions/180
+      // Note: https://github.com/aptos-labs/wallet-standard/blob/12d18409479390d1b69c6e74c51a51d005ae6a5f/example/basic/wallet.ts#L368
+      const messageToSign = `APTOS\naddress: ${account.accountAddress.toString()}\nmessage: ${message}\nnonce: ${nonce}`;
+      /* ⬆ This is the format used by Notifi backend */
+      const encodedMessageToSign = new TextEncoder().encode(messageToSign);
+      const signature = account.sign(encodedMessageToSign);
+      const signatureHex =
+        `0x${Buffer.from(signature.toUint8Array()).toString('hex')}` as `0x${string}`;
+      return {
+        signatureHex,
+        signedMessage: messageToSign,
+      };
+    };
+
+    const config: NotifiFrontendConfiguration = {
+      tenantId: dappAddress,
+      walletBlockchain: blockchainType,
+      accountAddress: accountAddress,
+      walletPublicKey,
+      storageOption: { driverType: 'InMemory' },
+    };
+    const service = newNotifiService(config);
+    const storage = newNotifiStorage(config);
+    const authManager = new AuthManager(service, storage, config);
     const userState = await authManager.logIn({
       signMessage,
       walletBlockchain: blockchainType,
