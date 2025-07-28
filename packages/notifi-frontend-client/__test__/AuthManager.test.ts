@@ -23,6 +23,10 @@ import {
 import { dappAddress, getEvmConnectedWallet } from './constants';
 
 describe('AuthManager Unit Test', () => {
+  beforeEach(() => {
+    // Sleep 1 second to avoid rate limiting issues
+    return new Promise((resolve) => setTimeout(resolve, 1000));
+  });
   it('ETHEREUM_PERSONAL_SIGN', async () => {
     const blockchainType = 'ETHEREUM';
     const wallet = getEvmConnectedWallet();
