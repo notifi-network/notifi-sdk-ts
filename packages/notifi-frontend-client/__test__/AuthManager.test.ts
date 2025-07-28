@@ -1,11 +1,14 @@
 import { Account, Ed25519PrivateKey } from '@aptos-labs/ts-sdk';
 import { Secp256k1HdWallet, StdSignDoc } from '@cosmjs/amino';
 import { arrayify } from '@ethersproject/bytes';
+import { mnemonicToSeedHex } from '@mysten/sui.js/cryptography';
+import { Ed25519Keypair } from '@mysten/sui.js/keypairs/ed25519';
 import {
   AuthManager,
   type EvmUserParams,
   type NotifiFrontendConfiguration,
   SolanaUserParams,
+  Uint8SignMessageFunction,
 } from '@notifi-network/notifi-frontend-client';
 import bs58 from 'bs58';
 import expect from 'expect';
@@ -168,6 +171,38 @@ describe('AuthManager Unit Test', () => {
     const service = newNotifiService(config);
     const storage = newNotifiStorage(config);
     const authManager = new AuthManager(service, storage, config);
+    const userState = await authManager.logIn({
+      signMessage,
+      walletBlockchain: blockchainType,
+    });
+    expect(userState.authorization).toHaveProperty('token');
+  });
+
+  it.only('SUI - Legacy loginFromDapp - TODO: migrate to SUI_SIGN_MESSAGE', async () => {
+    const blockchainType = 'SUI';
+    const mnemonic =
+      'belt purity enforce meadow peanut pupil ignore inform skill common connect source';
+    const seed = await mnemonicToSeedHex(mnemonic);
+    const keypair = Ed25519Keypair.deriveKeypairFromSeed(seed);
+    const accountAddress = keypair.getPublicKey().toSuiAddress(); // 0x46d6866f92b37fbd97f5bc6757c2bf98669c6bceceacdccd268dc0c863ab7592
+    // const pubkeyBase64 = keypair.getPublicKey().toBase64(); // Y5bTNKiXOzldEw8gTGtBrnZ/Ft8lS3yoaN+wzEcSl3g=
+
+    const config: NotifiFrontendConfiguration = {
+      tenantId: dappAddress,
+      walletBlockchain: blockchainType,
+      walletPublicKey: accountAddress,
+      accountAddress: accountAddress,
+      storageOption: { driverType: 'InMemory' },
+    };
+    const service = newNotifiService(config);
+    const storage = newNotifiStorage(config);
+    const authManager = new AuthManager(service, storage, config);
+
+    const signMessage: Uint8SignMessageFunction = async (message) => {
+      const signedResult = await keypair.signPersonalMessage(message);
+      return Buffer.from(signedResult.signature);
+    };
+
     const userState = await authManager.logIn({
       signMessage,
       walletBlockchain: blockchainType,
