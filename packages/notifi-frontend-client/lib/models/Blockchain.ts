@@ -51,6 +51,8 @@ export const APTOS_BLOCKCHAINS = ['APTOS', 'MOVEMENT'] as const;
 
 export const SOLANA_BLOCKCHAINS = ['SOLANA'] as const;
 
+export const SUI_BLOCKCHAINS = ['SUI'] as const;
+
 export const BTC_BLOCKCHAINS = ['BITCOIN', 'ARCH'] as const;
 
 // These are chains which we are no longer actively maintaining
@@ -63,11 +65,11 @@ const ALL_BLOCKCHAINS = [
   ...EVM_BLOCKCHAINS,
   ...APTOS_BLOCKCHAINS,
   ...BTC_BLOCKCHAINS,
+  ...SOLANA_BLOCKCHAINS,
+  ...SUI_BLOCKCHAINS,
   ...UNMAINTAINED_BLOCKCHAINS,
   // Les pieces uniques, tres speciales!
   'OFF_CHAIN',
-  'SOLANA',
-  'SUI',
   'NEAR',
   'INJECTIVE',
   'UNSPECIFIED',
@@ -147,6 +149,18 @@ export function isUsingSolanaBlockchain<
   T extends { walletBlockchain: Blockchain },
 >(params: T): params is Extract<T, { walletBlockchain: SolanaBlockchain }> {
   return isSolanaBlockchain(params.walletBlockchain);
+}
+
+export type SuiBlockchain = (typeof SUI_BLOCKCHAINS)[number];
+export function isSuiBlockchain(
+  blockchain: Blockchain,
+): blockchain is SuiBlockchain {
+  return SUI_BLOCKCHAINS.includes(blockchain as any);
+}
+export function isUsingSuiBlockchain<
+  T extends { walletBlockchain: Blockchain },
+>(params: T): params is Extract<T, { walletBlockchain: SuiBlockchain }> {
+  return isSuiBlockchain(params.walletBlockchain);
 }
 
 // IGNORE BELOW HERE, this simpply serves to ensure all blockchains are covered
