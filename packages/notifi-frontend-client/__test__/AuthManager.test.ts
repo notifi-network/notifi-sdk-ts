@@ -22,12 +22,12 @@ import {
 } from '../lib/client/clientFactory';
 import { dappAddress, getEvmConnectedWallet } from './constants';
 
-describe('AuthManager Unit Test', () => {
+describe('AuthManager Unit Test - Blockchain Auth Strategies', () => {
   beforeEach(() => {
     // Sleep 1 second to avoid rate limiting issues
     return new Promise((resolve) => setTimeout(resolve, 1000));
   });
-  it('ETHEREUM_PERSONAL_SIGN', async () => {
+  it('EvmAuthStrategy: ETHEREUM_PERSONAL_SIGN', async () => {
     const blockchainType = 'ETHEREUM';
     const wallet = getEvmConnectedWallet();
     const evmUserParams: EvmUserParams = {
@@ -53,7 +53,7 @@ describe('AuthManager Unit Test', () => {
     expect(userState.authorization).toHaveProperty('token');
   });
 
-  it('SOLANA_SIGN_MESSAGE', async () => {
+  it('SolanaAuthStrategy: SOLANA_SIGN_MESSAGE', async () => {
     /* Reference: https://solana.com/developers/cookbook/wallets/sign-message */
     const signer = nacl.sign.keyPair();
     const solUserParams: SolanaUserParams = {
@@ -81,7 +81,7 @@ describe('AuthManager Unit Test', () => {
     expect(userState.authorization).toHaveProperty('token');
   });
 
-  it('COSMOS_ADR36', async () => {
+  it('CosmosAuthStrategy: COSMOS_ADR36', async () => {
     const blockchainType = 'NIBIRU';
     const mnemonic =
       'belt purity enforce meadow peanut pupil ignore inform skill common connect source';
@@ -182,15 +182,13 @@ describe('AuthManager Unit Test', () => {
     expect(userState.authorization).toHaveProperty('token');
   });
 
-  it.only('SUI - Legacy loginFromDapp - TODO: migrate to SUI_SIGN_MESSAGE', async () => {
+  it('SuiAuthStrategy: SUI_SIGN_MESSAGE', async () => {
     const blockchainType = 'SUI';
     const mnemonic =
       'belt purity enforce meadow peanut pupil ignore inform skill common connect source';
     const seed = await mnemonicToSeedHex(mnemonic);
     const keypair = Ed25519Keypair.deriveKeypairFromSeed(seed);
     const accountAddress = keypair.getPublicKey().toSuiAddress(); // 0x46d6866f92b37fbd97f5bc6757c2bf98669c6bceceacdccd268dc0c863ab7592
-    // const pubkeyBase64 = keypair.getPublicKey().toBase64(); // Y5bTNKiXOzldEw8gTGtBrnZ/Ft8lS3yoaN+wzEcSl3g=
-
     const config: NotifiFrontendConfiguration = {
       tenantId: dappAddress,
       walletBlockchain: blockchainType,

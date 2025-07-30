@@ -18,6 +18,7 @@ import {
   isCosmosBlockchain,
   isEvmBlockchain,
   isSolanaBlockchain,
+  isSuiBlockchain,
   isUsingBtcBlockchain,
   isUsingUnmaintainedBlockchain,
 } from '../../models';
@@ -27,6 +28,7 @@ import { AptosAuthStrategy } from './AptosAuthStrategy';
 import { CosmosAuthStrategy } from './CosmosAuthStrategy';
 import { EvmAuthStrategy } from './EvmAuthStrategy';
 import { SolanaAuthStrategy } from './SolanaAuthStrategy';
+import { SuiAuthStrategy } from './SuiAuthStrategy';
 
 export type UserState = Readonly<
   | {
@@ -174,7 +176,6 @@ export class AuthManager {
       }
 
       switch (walletBlockchain) {
-        case 'SUI':
         case 'NEAR':
         case 'ARCH':
         case 'INJECTIVE':
@@ -362,19 +363,8 @@ export class AuthManager {
       return { signature, signedMessage };
     }
 
-    // Can only be the lonely chains now, e.g. Sui, NEAR ...
+    // Can only be the lonely chains now, e.g. NEAR & OFF_CHAIN
     switch (signMessageParams.walletBlockchain) {
-      case 'SUI': {
-        const { accountAddress, tenantId } = this._configuration as Extract<
-          NotifiFrontendConfiguration,
-          Extract<AuthParams, { accountAddress: string }>
-        >;
-        const signedMessage = `${SIGNING_MESSAGE}${accountAddress}${tenantId}${timestamp.toString()}`;
-        const messageBuffer = new TextEncoder().encode(signedMessage);
-        const signedBuffer = await signMessageParams.signMessage(messageBuffer);
-        const signature = signedBuffer.toString();
-        return { signature, signedMessage };
-      }
       case 'NEAR': {
         const { walletPublicKey, accountAddress, tenantId } = this
           ._configuration as Extract<
@@ -452,6 +442,9 @@ export class AuthManager {
     }
     if (isEvmBlockchain(blockchain)) {
       return new EvmAuthStrategy(this._service, this._configuration);
+    }
+    if (isSuiBlockchain(blockchain)) {
+      return new SuiAuthStrategy(this._service, this._configuration);
     }
     throw new Error(
       `ERROR - getStrategyForBlockchain: Unsupported blockchain: ${blockchain}`,

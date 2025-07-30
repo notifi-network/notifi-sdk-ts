@@ -7,12 +7,14 @@ import {
   COSMOS_BLOCKCHAINS,
   EVM_BLOCKCHAINS,
   SOLANA_BLOCKCHAINS,
+  SUI_BLOCKCHAINS,
   type UnmaintainedBlockchain,
 } from '../../models';
 import { type AptosSignMessageParams } from './AptosAuthStrategy';
 import { type CosmosSignMessageParams } from './CosmosAuthStrategy';
 import { type EvmSignMessageParams } from './EvmAuthStrategy';
 import { type SolanaSignMessageParams } from './SolanaAuthStrategy';
+import { SuiSignMessageParams } from './SuiAuthStrategy';
 
 export * from './AuthManager';
 
@@ -26,6 +28,7 @@ export const CHAINS_WITH_LOGIN_WEB3 = [
   ...COSMOS_BLOCKCHAINS,
   ...SOLANA_BLOCKCHAINS,
   ...EVM_BLOCKCHAINS,
+  ...SUI_BLOCKCHAINS,
 ] as const;
 
 // ─── Types ────────────────────────────────────────────────────
@@ -59,13 +62,10 @@ export type SignMessageParams =
   | EvmSignMessageParams
   | AptosSignMessageParams
   | SolanaSignMessageParams
+  | SuiSignMessageParams
   | UnmaintainedSignMessageParams
   | Readonly<{
       walletBlockchain: 'NEAR';
-      signMessage: Uint8SignMessageFunction;
-    }>
-  | Readonly<{
-      walletBlockchain: 'SUI';
       signMessage: Uint8SignMessageFunction;
     }>
   | Readonly<{
