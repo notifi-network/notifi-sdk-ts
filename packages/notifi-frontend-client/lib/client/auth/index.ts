@@ -9,12 +9,26 @@ import {
   SOLANA_BLOCKCHAINS,
   SUI_BLOCKCHAINS,
   type UnmaintainedBlockchain,
+  isAptosBlockchain,
+  isCosmosBlockchain,
+  isEvmBlockchain,
+  isSolanaBlockchain,
+  isSuiBlockchain,
 } from '../../models';
-import { type AptosSignMessageParams } from './AptosAuthStrategy';
-import { type CosmosSignMessageParams } from './CosmosAuthStrategy';
-import { type EvmSignMessageParams } from './EvmAuthStrategy';
-import { type SolanaSignMessageParams } from './SolanaAuthStrategy';
-import { SuiSignMessageParams } from './SuiAuthStrategy';
+import {
+  AptosAuthStrategy,
+  type AptosSignMessageParams,
+} from './AptosAuthStrategy';
+import {
+  CosmosAuthStrategy,
+  type CosmosSignMessageParams,
+} from './CosmosAuthStrategy';
+import { EvmAuthStrategy, type EvmSignMessageParams } from './EvmAuthStrategy';
+import {
+  SolanaAuthStrategy,
+  type SolanaSignMessageParams,
+} from './SolanaAuthStrategy';
+import { SuiAuthStrategy, SuiSignMessageParams } from './SuiAuthStrategy';
 
 export * from './AuthManager';
 
@@ -108,6 +122,14 @@ type BeginLoginWithWeb3Props = Omit<
 
 // ─── Utils ────────────────────────────────────────────────────
 
+export const isLoginWeb3Params = (
+  params: LoginParams,
+): params is LoginWeb3Params => {
+  return CHAINS_WITH_LOGIN_WEB3.includes(
+    params.walletBlockchain as (typeof CHAINS_WITH_LOGIN_WEB3)[number],
+  );
+};
+
 export const beginLogInWithWeb3 = async (
   params: BeginLoginWithWeb3Props & {
     service: NotifiService;
@@ -130,4 +152,29 @@ export const beginLogInWithWeb3 = async (
   }
 
   return result.beginLogInWithWeb3.beginLogInWithWeb3Response;
+};
+
+export const getStrategyForBlockchain = (
+  blockchain: Types.BlockchainType,
+  service: NotifiService,
+  config: NotifiFrontendConfiguration,
+): BlockchainAuthStrategy => {
+  if (isCosmosBlockchain(blockchain)) {
+    return new CosmosAuthStrategy(service, config);
+  }
+  if (isAptosBlockchain(blockchain)) {
+    return new AptosAuthStrategy(service, config);
+  }
+  if (isSolanaBlockchain(blockchain)) {
+    return new SolanaAuthStrategy(service, config);
+  }
+  if (isEvmBlockchain(blockchain)) {
+    return new EvmAuthStrategy(service, config);
+  }
+  if (isSuiBlockchain(blockchain)) {
+    return new SuiAuthStrategy(service, config);
+  }
+  throw new Error(
+    `ERROR - getStrategyForBlockchain: Unsupported blockchain: ${blockchain}`,
+  );
 };
