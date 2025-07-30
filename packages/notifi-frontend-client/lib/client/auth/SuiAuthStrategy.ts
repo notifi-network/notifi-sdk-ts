@@ -11,7 +11,7 @@ import {
   type NotifiFrontendConfiguration,
   checkIsConfigWithPublicKeyAndAddress,
 } from '../../configuration';
-import { type SuiBlockchain } from '../../models';
+import { type SuiBlockchain, isUsingSuiBlockchain } from '../../models';
 
 export class SuiAuthStrategy implements BlockchainAuthStrategy {
   constructor(
@@ -26,25 +26,28 @@ export class SuiAuthStrategy implements BlockchainAuthStrategy {
     return { signature, signedMessage };
   }
   async prepareLoginWithWeb3(params: LoginWeb3Params) {
-    if (checkIsConfigWithPublicKeyAndAddress(this.config)) {
-      const { nonce } = await beginLogInWithWeb3({
-        service: this.service,
-        config: this.config,
-        authAddress: this.config.walletPublicKey,
-        authType: 'SUI_SIGNED_MESSAGE',
-      });
-      return {
-        signMessageParams: {
-          walletBlockchain: params.walletBlockchain as SuiBlockchain,
-          nonce,
-          signMessage: params.signMessage as Uint8SignMessageFunction,
-        },
-        signingAddress: this.config.accountAddress,
-        signingPubkey: this.config.walletPublicKey,
+    if (
+      !isUsingSuiBlockchain(params) ||
+      !checkIsConfigWithPublicKeyAndAddress(this.config)
+    )
+      throw new Error('SuiAuthStrategy: Invalid SUI login parameters');
+
+    const { nonce } = await beginLogInWithWeb3({
+      service: this.service,
+      config: this.config,
+      authAddress: this.config.walletPublicKey,
+      authType: 'SUI_SIGNED_MESSAGE',
+    });
+    return {
+      signMessageParams: {
+        walletBlockchain: params.walletBlockchain,
         nonce,
-      };
-    }
-    throw new Error('Invalid SUI login parameters');
+        signMessage: params.signMessage,
+      },
+      signingAddress: this.config.accountAddress,
+      signingPubkey: this.config.walletPublicKey,
+      nonce,
+    };
   }
 }
 

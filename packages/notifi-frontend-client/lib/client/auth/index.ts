@@ -58,17 +58,15 @@ export interface BlockchainAuthStrategy {
 }
 
 export type LoginParams =
-  | Exclude<SignMessageParams, LoginWithWeb3Blockchain>
-  | LoginWeb3Params;
+  | LoginWeb3Params
+  | Exclude<SignMessageParams, LoginWeb3Params['walletBlockchain']>;
 
-type LoginWithWeb3Blockchain = {
-  walletBlockchain: (typeof CHAINS_WITH_LOGIN_WEB3)[number];
-};
-
-export type LoginWeb3Params = Omit<
-  Extract<SignMessageParams, LoginWithWeb3Blockchain>,
-  'message' | 'nonce'
->;
+export type LoginWeb3Params =
+  | Omit<CosmosSignMessageParams, 'message'>
+  | Omit<EvmSignMessageParams, 'nonce'>
+  | Omit<AptosSignMessageParams, 'nonce'>
+  | Omit<SolanaSignMessageParams, 'nonce'>
+  | Omit<SuiSignMessageParams, 'nonce'>;
 
 export type SignMessageParams =
   | CosmosSignMessageParams
