@@ -95,13 +95,11 @@ export class NotifiFrontendClient {
 
     const duplicateAlertsIds = duplicateAlerts
       .map((alert) => alert?.id)
-      .filter((id): id is string => !!id); // TODO: n(^2) --> consider to move to BE when this grows huge
+      .filter((id): id is string => !!id);
 
     /* Alerts are immutable, delete the existing instead */
-    // TODO: refactor using deleteAlerts
-    for (const id of duplicateAlertsIds) {
-      await this.deleteAlert({ id });
-    }
+    const alertIdsToDelete = duplicateAlertsIds.map((id) => id);
+    await this.deleteAlerts({ ids: alertIdsToDelete });
 
     const mutation = await this._service.createFusionAlerts({ input });
     return mutation.createFusionAlerts;
