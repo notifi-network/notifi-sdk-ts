@@ -148,51 +148,91 @@ npm run build
 
 #### Unit tests (Jest) & Component tests (Cypress)
 
-We can run tests for all packages in the monorepo using npm run test. However, if you've only modified specific packages, you may prefer to test only those. In that case, please refer to the following details.
+You can run tests for **all packages** in the monorepo using:
 
-1. Component Tests for @notifi-network/notifi-react (Cypress):
+```bash
+npm run test
+```
 
-   For changes in the `@notifi-network/notifi-react package`, run Cypress tests to verify UI component functionality. Execute these tests locally against the `notifi-react-example-v2` package:
-   </br>
+However, if you’ve only made changes to specific packages, it’s more efficient to run tests for just those. Here are the details:
+
+1. Component Tests for `@notifi-network/notifi-react` (Cypress)
+
+   If you’ve modified the `@notifi-network/notifi-react` package, please run Cypress tests to validate UI component behavior.
+
+   These tests should be executed locally via the `@notifi-network/notifi-react-example-v2` package:
 
    ```bash
-   # Run all tests
-   npm run test
 
-   # Open Cypress test runner
+   # Open the Cypress test runner for the example project
    npx lerna --scope=@notifi-network/notifi-react-example-v2 run cypress:open
-
+   # or run headless tests
+   npx lerna --scope=@notifi-network/notifi-react-example-v2 run test
    ```
 
-   Detailed scenarios can be found in the [Cypress test scripts](https://github.com/notifi-network/notifi-sdk-ts/blob/main/packages/notifi-react-example-v2/cypress/component/NotifiCardModal.cy.tsx)
+   You can find detailed test scenarios in the [Cypress test script](https://github.com/notifi-network/notifi-sdk-ts/blob/main/packages/notifi-react-example-v2/cypress/component/NotifiCardModal.cy.tsx).
 
-   > IMPORTANT:
-   > If you modify test scripts, please run them multiple times (at least 5–10) to confirm stability:
-   > `for i in {1..10}; do npm run test; done; `.
+   > ⚠️ **IMPORTANT:**
+   > If you modify any test scripts, please run them repeatedly (at least 5–10 times) to ensure stability:
+   >
+   > ```bash
+   > for i in {1..10}; do npm npx lerna --scope=@notifi-network/notifi-react-example-v2 run test; done
+   > ```
 
-   </br>
+2. Unit Tests for Other Packages (Jest)
 
-2. Unit Tests for Other Packages (Jest):
-   For non-UI packages, run Jest tests to verify functionality. Before testing, configure the .env file in `packages/notifi-node/`:
+   For non-UI packages, we use Jest for testing.
 
-   - Copy `.env.example` to `.env` and populate necessary environment variables.
-   - Run tests with `npm run test:node && npm run test:frontend-client`
+   Before running these tests, make sure to configure your environment:
 
-    </br>
+   - Navigate to `packages/notifi-node/`
+   - Copy `.env.example` to `.env`
+   - Fill in the required environment variables
 
-> **Tips**:
-> Use `lerna` commands to run scripts for a specific package (`npx lerna --scope=@notifi-network/<package-name> run <script-name>`).
->
-> - Start the development server for `notifi-react-example-v2`:
->   `npx lerna --scope=@notifi-network/notifi-react-example-v2 run dev`
-> - Open Cypress test runner for `notifi-react-example-v2`:
->   `npx lerna --scope=@notifi-network/notifi-react-example-v2 run cypress:open`
->
-> **Other conventions**:
->
-> - Avoid leaving commented code in the codebase. If necessary, use the following guidelines:
->   - For actionable items: `// TODO: <your comment>`
->   - For code descriptions: `/* <your comment> */`
+   Then run:
+
+   ```bash
+   npm run test:node && npm run test:frontend-client
+   ```
+
+<br/>
+
+### Tips & Code Style Conventions
+
+Use `lerna` commands to run scripts for a specific package:
+
+```bash
+npx lerna --scope=@notifi-network/<package-name> run <script-name>
+```
+
+**Common examples:**
+
+- Start the development server for `notifi-react-example-v2`:
+
+  ```bash
+  npx lerna --scope=@notifi-network/notifi-react-example-v2 run dev
+  ```
+
+- Open the Cypress test runner for `notifi-react-example-v2`:
+
+  ```bash
+  npx lerna --scope=@notifi-network/notifi-react-example-v2 run cypress:open
+  ```
+
+- **Avoid leaving commented-out code** in the codebase.
+  If comments are necessary, follow these conventions:
+
+  - For actionable tasks:
+
+    ```ts
+    // TODO: clarify this logic
+    ```
+
+  - For descriptive or contextual comments:
+
+    ```ts
+    /* Explains the reason for this conditional block */
+    ```
 
 </br>
 
