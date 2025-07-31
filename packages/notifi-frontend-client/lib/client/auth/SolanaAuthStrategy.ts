@@ -11,7 +11,7 @@ import {
   type NotifiFrontendConfiguration,
   checkIsConfigWithPublicKey,
 } from '../../configuration';
-import { SolanaBlockchain } from '../../models';
+import { SolanaBlockchain, isUsingSolanaBlockchain } from '../../models';
 
 export class SolanaAuthStrategy implements BlockchainAuthStrategy {
   constructor(
@@ -34,40 +34,43 @@ export class SolanaAuthStrategy implements BlockchainAuthStrategy {
     return { signature: stringifiedSignature, signedMessage };
   }
   async prepareLoginWithWeb3(params: LoginWeb3Params) {
-    if (checkIsConfigWithPublicKey(this.config)) {
-      const { isUsingHardwareWallet, hardwareLoginPlugin } =
-        params as SolanaSignMessageParams;
-      const { nonce } =
-        isUsingHardwareWallet && hardwareLoginPlugin
-          ? await beginLogInWithWeb3({
-              service: this.service,
-              config: this.config,
-              walletPubkey: this.config.walletPublicKey,
-              authType: 'SOLANA_HARDWARE_SIGN_MESSAGE',
-              authAddress: this.config.walletPublicKey,
-            })
-          : await beginLogInWithWeb3({
-              service: this.service,
-              config: this.config,
-              walletPubkey: this.config.walletPublicKey,
-              authType: 'SOLANA_SIGN_MESSAGE',
-              authAddress: this.config.walletPublicKey,
-            });
+    if (
+      !isUsingSolanaBlockchain(params) ||
+      !checkIsConfigWithPublicKey(this.config)
+    )
+      throw new Error('SolanaAuthStrategy: Invalid Solana login parameters');
 
-      return {
-        signMessageParams: {
-          walletBlockchain: params.walletBlockchain as SolanaBlockchain,
-          nonce,
-          isUsingHardwareWallet,
-          hardwareLoginPlugin,
-          signMessage: params.signMessage as Uint8SignMessageFunction,
-        },
-        signingAddress: this.config.walletPublicKey,
-        signingPubkey: this.config.walletPublicKey,
+    const { isUsingHardwareWallet, hardwareLoginPlugin } =
+      params as SolanaSignMessageParams;
+    const { nonce } =
+      isUsingHardwareWallet && hardwareLoginPlugin
+        ? await beginLogInWithWeb3({
+            service: this.service,
+            config: this.config,
+            walletPubkey: this.config.walletPublicKey,
+            authType: 'SOLANA_HARDWARE_SIGN_MESSAGE',
+            authAddress: this.config.walletPublicKey,
+          })
+        : await beginLogInWithWeb3({
+            service: this.service,
+            config: this.config,
+            walletPubkey: this.config.walletPublicKey,
+            authType: 'SOLANA_SIGN_MESSAGE',
+            authAddress: this.config.walletPublicKey,
+          });
+
+    return {
+      signMessageParams: {
+        walletBlockchain: params.walletBlockchain,
         nonce,
-      };
-    }
-    throw new Error('Invalid Solana login parameters');
+        isUsingHardwareWallet,
+        hardwareLoginPlugin,
+        signMessage: params.signMessage,
+      },
+      signingAddress: this.config.walletPublicKey,
+      signingPubkey: this.config.walletPublicKey, // NOT REQUIRED for Solana, can be empty string ''
+      nonce,
+    };
   }
 }
 

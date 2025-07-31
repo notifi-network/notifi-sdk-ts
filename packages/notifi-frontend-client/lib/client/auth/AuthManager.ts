@@ -1,34 +1,21 @@
 import { NotifiService, Types } from '@notifi-network/notifi-graphql';
 
 import {
-  type AuthenticateResult,
-  BlockchainAuthStrategy,
   CHAINS_WITH_LOGIN_WEB3,
   type LoginParams,
   type LoginWeb3Params,
   SIGNING_MESSAGE,
   type SignMessageParams,
+  getStrategyForBlockchain,
+  isLoginWeb3Params,
 } from '.';
 import type {
   AuthParams,
   NotifiFrontendConfiguration,
 } from '../../configuration';
-import {
-  isAptosBlockchain,
-  isCosmosBlockchain,
-  isEvmBlockchain,
-  isSolanaBlockchain,
-  isSuiBlockchain,
-  isUsingBtcBlockchain,
-  isUsingUnmaintainedBlockchain,
-} from '../../models';
+import { isUnmaintainedBlockchain, isUsingBtcBlockchain } from '../../models';
 import { Authorization, NotifiStorage, Roles } from '../../storage';
 import { notNullOrEmpty } from '../../utils';
-import { AptosAuthStrategy } from './AptosAuthStrategy';
-import { CosmosAuthStrategy } from './CosmosAuthStrategy';
-import { EvmAuthStrategy } from './EvmAuthStrategy';
-import { SolanaAuthStrategy } from './SolanaAuthStrategy';
-import { SuiAuthStrategy } from './SuiAuthStrategy';
 
 export type UserState = Readonly<
   | {
@@ -44,15 +31,6 @@ export type UserState = Readonly<
       authorization: Authorization;
     }
 >;
-
-// TODO: This is for login() args, need migration
-
-function isLoginWeb3Params(params: LoginParams): params is LoginWeb3Params {
-  return CHAINS_WITH_LOGIN_WEB3.includes(
-    params.walletBlockchain as (typeof CHAINS_WITH_LOGIN_WEB3)[number],
-  );
-}
-// ⬆ This is used for login() args, need migration
 
 export class AuthManager {
   private _userState: UserState | null = null;
@@ -136,19 +114,33 @@ export class AuthManager {
   }
 
   async logIn(loginParams: LoginParams): Promise<Types.UserFragmentFragment> {
-    const timestamp = Math.round(Date.now() / 1000);
     const { tenantId, walletBlockchain } = this._configuration;
+    if (walletBlockchain !== loginParams.walletBlockchain)
+      throw new Error(
+        `.logIn - blockchain mismatch: ${walletBlockchain} !== ${loginParams.walletBlockchain}`,
+      );
+    if (isUnmaintainedBlockchain(loginParams.walletBlockchain))
+      throw new Error(
+        `Unsupported blockchain: ${loginParams.walletBlockchain}. Please contact us if you believe this is an error or if you need support for a new blockchain.`,
+      );
 
     let user: Types.UserFragmentFragment | undefined = undefined;
     if (isLoginWeb3Params(loginParams)) {
       /* Case #1: Modern login flow — handles authentication via LoginWithWeb3 */
       user = await this._logInWithWeb3(loginParams);
-    } else if (walletBlockchain === 'OFF_CHAIN') {
-      /* Case #2: OIDC login flow */
-      const authentication = await this._authenticate({
+    } else if (
+      ['NEAR', 'ARCH', 'INJECTIVE', 'BITCOIN'].includes(
+        loginParams.walletBlockchain,
+      )
+    ) {
+      /* Case #2: Legacy login flow (planned for migration) */
+      user = await this._logInLegacy({
         signMessageParams: loginParams,
-        timestamp,
+        timestamp: Math.round(Date.now() / 1000),
       });
+    } else if (loginParams.walletBlockchain === 'OFF_CHAIN') {
+      /* Case #3: OIDC login flow */
+      const authentication = await loginParams.signIn();
       if (!('oidcProvider' in authentication)) {
         throw new Error('logIn - Invalid signature - expected OidcCredentials');
       }
@@ -160,46 +152,10 @@ export class AuthManager {
       });
       user = result.logInByOidc.user;
     } else {
-      /* Case #3: Legacy login flow (planned for migration) */
-      const authentication = await this._authenticate({
-        signMessageParams: loginParams,
-        timestamp,
-      });
-
-      if (
-        !('signature' in authentication) ||
-        typeof authentication.signature !== 'string'
-      ) {
-        throw new Error(
-          'logIn - Invalid signature - expected string signature and signedMessage',
-        );
-      }
-
-      switch (walletBlockchain) {
-        case 'NEAR':
-        case 'ARCH':
-        case 'INJECTIVE':
-        case 'BITCOIN': {
-          const result = await this._service.logInFromDapp({
-            walletBlockchain,
-            walletPublicKey: this._configuration.walletPublicKey,
-            accountId: this._configuration.accountAddress,
-            dappAddress: tenantId,
-            timestamp,
-            signature: authentication.signature,
-          });
-          user = result.logInFromDapp;
-          break;
-        }
-        default: {
-          throw new Error(`Unsupported wallet blockchain: ${walletBlockchain}`);
-        }
-      }
+      throw new Error(`Unsupported wallet blockchain: ${walletBlockchain}`);
     }
 
-    if (user === undefined) {
-      return Promise.reject('Failed to login');
-    }
+    if (!user) return Promise.reject('.logIn: Failed to login');
 
     await this._handleLogInResult(user);
     return user;
@@ -274,7 +230,6 @@ export class AuthManager {
     });
 
     await this._handleLogInResult(result.completeLogInByTransaction);
-
     return result;
   }
 
@@ -290,8 +245,10 @@ export class AuthManager {
       );
     }
 
-    const strategy = this._getStrategyForBlockchain(
+    const strategy = getStrategyForBlockchain(
       loginWeb3Params.walletBlockchain,
+      this._service,
+      this._configuration,
     );
 
     const { signMessageParams, signingAddress, signingPubkey, nonce } =
@@ -311,24 +268,20 @@ export class AuthManager {
         signature: authentication.signature,
         signedMessage: authentication.signedMessage,
         signingAddress,
-        signingPubkey, // TODO: why not signingPubkey?
+        signingPubkey,
       },
     );
-    //This is to ensure that hardware wallet logins are given authentication.
-    //TODO: This is used for Solana Hardware Wallet Sign. May change in future for various HW wallet signs.
-    await this._handleLogInResult(completeLogInWithWeb3.user);
-
     return completeLogInWithWeb3.user;
   }
 
   /**@deprecated Use _authWithWeb3 instead, will remove after all BlockchainType has been migrated */
-  private async _authenticate({
+  private async _logInLegacy({
     signMessageParams,
     timestamp,
   }: Readonly<{
     signMessageParams: SignMessageParams;
     timestamp: number;
-  }>): Promise<AuthenticateResult> {
+  }>): Promise<Types.UserFragmentFragment | undefined> {
     if (
       this._configuration.walletBlockchain !==
       signMessageParams.walletBlockchain
@@ -338,67 +291,63 @@ export class AuthManager {
       );
     }
 
-    if (isUsingUnmaintainedBlockchain(signMessageParams)) {
-      // Happens for chains that we discontinued support for
-      // e.g. Acala, EVMOS
-      throw new Error(
-        `Unsupported blockchain: ${signMessageParams.walletBlockchain}. Please contact us if you believe this is an error or if you need support for a new blockchain.`,
-      );
-    }
+    let signedMessage: string | undefined;
+    let signature: string | undefined;
+    let publicKey: string | undefined;
+    let address: string | undefined;
 
     if (
       isUsingBtcBlockchain(signMessageParams) ||
       // ⬇ INJECTIVE becomes legacy: we should always separate BlockchainType if it supports both EVM & COSMOS. ex. 'INJ_EVM' & 'INJ'
       signMessageParams.walletBlockchain === 'INJECTIVE'
     ) {
-      //TODO: Implement
-      const { walletPublicKey, tenantId } = this._configuration as Extract<
+      const { walletPublicKey, tenantId, accountAddress } = this
+        ._configuration as Extract<
         NotifiFrontendConfiguration,
         Extract<AuthParams, { accountAddress: string }>
       >;
-      const signedMessage = `${SIGNING_MESSAGE}${walletPublicKey}${tenantId}${timestamp.toString()}`;
+      signedMessage = `${SIGNING_MESSAGE}${walletPublicKey}${tenantId}${timestamp.toString()}`;
       const messageBuffer = new TextEncoder().encode(signedMessage);
       const signedBuffer = await signMessageParams.signMessage(messageBuffer);
-      const signature = Buffer.from(signedBuffer).toString('base64');
-      return { signature, signedMessage };
+      signature = Buffer.from(signedBuffer).toString('base64');
+      publicKey = walletPublicKey;
+      address = accountAddress;
+    } else if (signMessageParams.walletBlockchain === 'NEAR') {
+      const { walletPublicKey, accountAddress, tenantId } = this
+        ._configuration as Extract<
+        NotifiFrontendConfiguration,
+        Extract<AuthParams, { accountAddress: string }>
+      >;
+
+      signedMessage = `${
+        `ed25519:` + walletPublicKey
+      }${tenantId}${accountAddress}${timestamp.toString()}`;
+      const textAsBuffer = new TextEncoder().encode(signedMessage);
+      const hashBuffer = await window.crypto.subtle.digest(
+        'SHA-256',
+        textAsBuffer,
+      );
+      const messageBuffer = new Uint8Array(hashBuffer);
+
+      const signedBuffer = await signMessageParams.signMessage(messageBuffer);
+      signature = Buffer.from(signedBuffer).toString('base64');
+      address = accountAddress;
+      publicKey = walletPublicKey;
+    } else {
+      throw new Error(
+        `.authenticate(Legacy): Unsupported wallet blockchain: ${signMessageParams.walletBlockchain}`,
+      );
     }
 
-    // Can only be the lonely chains now, e.g. NEAR & OFF_CHAIN
-    switch (signMessageParams.walletBlockchain) {
-      case 'NEAR': {
-        const { walletPublicKey, accountAddress, tenantId } = this
-          ._configuration as Extract<
-          NotifiFrontendConfiguration,
-          Extract<AuthParams, { accountAddress: string }>
-        >;
-
-        const message = `${
-          `ed25519:` + walletPublicKey
-        }${tenantId}${accountAddress}${timestamp.toString()}`;
-        const textAsBuffer = new TextEncoder().encode(message);
-        const hashBuffer = await window.crypto.subtle.digest(
-          'SHA-256',
-          textAsBuffer,
-        );
-        const messageBuffer = new Uint8Array(hashBuffer);
-
-        const signedBuffer = await signMessageParams.signMessage(messageBuffer);
-        const signature = Buffer.from(signedBuffer).toString('base64');
-        return { signature, signedMessage: message };
-      }
-      case 'OFF_CHAIN': {
-        const oidcCredentials = await signMessageParams.signIn();
-        if (!oidcCredentials) {
-          throw new Error('._authenticate: OIDC login failed');
-        }
-        return oidcCredentials;
-      }
-      default: {
-        throw new Error(
-          `.authenticate(Legacy): Unsupported wallet blockchain: ${signMessageParams.walletBlockchain}`,
-        );
-      }
-    }
+    const result = await this._service.logInFromDapp({
+      walletBlockchain: signMessageParams.walletBlockchain,
+      walletPublicKey: publicKey,
+      accountId: address,
+      dappAddress: this._configuration.tenantId,
+      timestamp,
+      signature,
+    });
+    return result?.logInFromDapp;
   }
 
   private async _handleLogInResult(
@@ -424,30 +373,6 @@ export class AuthManager {
       };
       this._userState = userState;
     }
-
     await Promise.all([saveAuthorizationPromise, saveRolesPromise]);
-  }
-
-  private _getStrategyForBlockchain(
-    blockchain: Types.BlockchainType,
-  ): BlockchainAuthStrategy {
-    if (isCosmosBlockchain(blockchain)) {
-      return new CosmosAuthStrategy(this._service, this._configuration);
-    }
-    if (isAptosBlockchain(blockchain)) {
-      return new AptosAuthStrategy(this._service, this._configuration);
-    }
-    if (isSolanaBlockchain(blockchain)) {
-      return new SolanaAuthStrategy(this._service, this._configuration);
-    }
-    if (isEvmBlockchain(blockchain)) {
-      return new EvmAuthStrategy(this._service, this._configuration);
-    }
-    if (isSuiBlockchain(blockchain)) {
-      return new SuiAuthStrategy(this._service, this._configuration);
-    }
-    throw new Error(
-      `ERROR - getStrategyForBlockchain: Unsupported blockchain: ${blockchain}`,
-    );
   }
 }
