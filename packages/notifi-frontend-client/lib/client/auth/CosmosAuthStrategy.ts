@@ -67,7 +67,7 @@ export class CosmosAuthStrategy implements BlockchainAuthStrategy {
           signMessage: params.signMessage,
         },
         signingAddress: accountAddress,
-        signingPubkey: walletPublicKey,
+        signingPubkey: walletPublicKey, // REQUIRED for Cosmos: must be the public key corresponding to the accountAddress
         nonce,
       };
     }

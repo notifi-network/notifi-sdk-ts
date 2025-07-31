@@ -45,7 +45,7 @@ export class SuiAuthStrategy implements BlockchainAuthStrategy {
         signMessage: params.signMessage,
       },
       signingAddress: this.config.accountAddress,
-      signingPubkey: this.config.walletPublicKey,
+      signingPubkey: this.config.walletPublicKey, // NOT REQUIRED for Sui, can be empty string ''
       nonce,
     };
   }

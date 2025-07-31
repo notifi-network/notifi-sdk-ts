@@ -48,7 +48,7 @@ export class EvmAuthStrategy implements BlockchainAuthStrategy {
         signMessage: params.signMessage,
       },
       signingAddress: this.config.walletPublicKey,
-      signingPubkey: this.config.walletPublicKey,
+      signingPubkey: this.config.walletPublicKey, // NOT REQUIRED for EVM chains, can be empty string ''
       nonce,
     };
   }

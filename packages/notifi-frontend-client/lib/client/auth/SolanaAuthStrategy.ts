@@ -68,7 +68,7 @@ export class SolanaAuthStrategy implements BlockchainAuthStrategy {
         signMessage: params.signMessage,
       },
       signingAddress: this.config.walletPublicKey,
-      signingPubkey: this.config.walletPublicKey,
+      signingPubkey: this.config.walletPublicKey, // NOT REQUIRED for Solana, can be empty string ''
       nonce,
     };
   }

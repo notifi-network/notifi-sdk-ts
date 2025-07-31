@@ -45,7 +45,7 @@ export class AptosAuthStrategy implements BlockchainAuthStrategy {
         signMessage: params.signMessage,
       },
       signingAddress: this.config.accountAddress,
-      signingPubkey: this.config.walletPublicKey,
+      signingPubkey: this.config.walletPublicKey, // REQUIRED for Aptos chains: must be the public key corresponding to the accountAddress
       nonce,
     };
   }

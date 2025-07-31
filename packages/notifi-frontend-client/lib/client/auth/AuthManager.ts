@@ -268,7 +268,7 @@ export class AuthManager {
         signature: authentication.signature,
         signedMessage: authentication.signedMessage,
         signingAddress,
-        signingPubkey, // TODO: why not signingPubkey?
+        signingPubkey,
       },
     );
     return completeLogInWithWeb3.user;
