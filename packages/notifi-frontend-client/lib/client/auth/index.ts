@@ -57,16 +57,18 @@ export interface BlockchainAuthStrategy {
   }>;
 }
 
+/* NOTE: ⬇ AuthManager.logIn argument type - LoginParams */
 export type LoginParams =
   | LoginWeb3Params
   | Exclude<SignMessageParams, LoginWeb3Params['walletBlockchain']>;
 
-export type LoginWeb3Params =
-  | Omit<CosmosSignMessageParams, 'message'>
-  | Omit<EvmSignMessageParams, 'nonce'>
-  | Omit<AptosSignMessageParams, 'nonce'>
-  | Omit<SolanaSignMessageParams, 'nonce'>
-  | Omit<SuiSignMessageParams, 'nonce'>;
+export type LoginWeb3Params = CleanedLoginWeb3Params<SignMessageParams>;
+
+type CleanedLoginWeb3Params<T> = T extends {
+  walletBlockchain: (typeof CHAINS_WITH_LOGIN_WEB3)[number];
+}
+  ? Omit<T, 'nonce' | 'message'>
+  : never;
 
 export type SignMessageParams =
   | CosmosSignMessageParams
@@ -75,24 +77,30 @@ export type SignMessageParams =
   | AptosSignMessageParams
   | SolanaSignMessageParams
   | SuiSignMessageParams
-  | UnmaintainedSignMessageParams
-  | Readonly<{
-      walletBlockchain: 'NEAR';
-      signMessage: Uint8SignMessageFunction;
-    }>
-  | Readonly<{
-      walletBlockchain: 'OFF_CHAIN';
-      signIn: OidcSignInFunction;
-    }>
-  | Readonly<{
-      walletBlockchain: 'INJECTIVE';
-      signMessage: Uint8SignMessageFunction;
-    }>;
+  | NearSignMessageParams
+  | InjectiveSignMessageParams
+  | OffChainSignMessageParams
+  | UnmaintainedSignMessageParams;
 
-// TODO: add message here when we migrate to loginwithweb3...
+/* NOTE: ⬇ Chains either under migration list or do not support web3 login flow */
 type BtcSignMessageParams = Readonly<{
   walletBlockchain: BtcBlockchain;
   signMessage: Uint8SignMessageFunction;
+}>;
+
+type NearSignMessageParams = Readonly<{
+  walletBlockchain: 'NEAR';
+  signMessage: Uint8SignMessageFunction;
+}>;
+
+type InjectiveSignMessageParams = Readonly<{
+  walletBlockchain: 'INJECTIVE';
+  signMessage: Uint8SignMessageFunction;
+}>;
+
+type OffChainSignMessageParams = Readonly<{
+  walletBlockchain: 'OFF_CHAIN';
+  signIn: OidcSignInFunction;
 }>;
 
 type UnmaintainedSignMessageParams = Readonly<{
