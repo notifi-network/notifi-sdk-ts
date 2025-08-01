@@ -7,12 +7,28 @@ import {
   COSMOS_BLOCKCHAINS,
   EVM_BLOCKCHAINS,
   SOLANA_BLOCKCHAINS,
+  SUI_BLOCKCHAINS,
   type UnmaintainedBlockchain,
+  isAptosBlockchain,
+  isCosmosBlockchain,
+  isEvmBlockchain,
+  isSolanaBlockchain,
+  isSuiBlockchain,
 } from '../../models';
-import { type AptosSignMessageParams } from './AptosAuthStrategy';
-import { type CosmosSignMessageParams } from './CosmosAuthStrategy';
-import { type EvmSignMessageParams } from './EvmAuthStrategy';
-import { type SolanaSignMessageParams } from './SolanaAuthStrategy';
+import {
+  AptosAuthStrategy,
+  type AptosSignMessageParams,
+} from './AptosAuthStrategy';
+import {
+  CosmosAuthStrategy,
+  type CosmosSignMessageParams,
+} from './CosmosAuthStrategy';
+import { EvmAuthStrategy, type EvmSignMessageParams } from './EvmAuthStrategy';
+import {
+  SolanaAuthStrategy,
+  type SolanaSignMessageParams,
+} from './SolanaAuthStrategy';
+import { SuiAuthStrategy, SuiSignMessageParams } from './SuiAuthStrategy';
 
 export * from './AuthManager';
 
@@ -26,6 +42,7 @@ export const CHAINS_WITH_LOGIN_WEB3 = [
   ...COSMOS_BLOCKCHAINS,
   ...SOLANA_BLOCKCHAINS,
   ...EVM_BLOCKCHAINS,
+  ...SUI_BLOCKCHAINS,
 ] as const;
 
 // ─── Types ────────────────────────────────────────────────────
@@ -40,18 +57,18 @@ export interface BlockchainAuthStrategy {
   }>;
 }
 
+/* NOTE: ⬇ AuthManager.logIn argument type - LoginParams */
 export type LoginParams =
-  | Exclude<SignMessageParams, LoginWithWeb3Blockchain>
-  | LoginWeb3Params;
+  | LoginWeb3Params
+  | Exclude<SignMessageParams, LoginWeb3Params['walletBlockchain']>;
 
-type LoginWithWeb3Blockchain = {
+export type LoginWeb3Params = CleanedLoginWeb3Params<SignMessageParams>;
+
+type CleanedLoginWeb3Params<T> = T extends {
   walletBlockchain: (typeof CHAINS_WITH_LOGIN_WEB3)[number];
-};
-
-export type LoginWeb3Params = Omit<
-  Extract<SignMessageParams, LoginWithWeb3Blockchain>,
-  'message' | 'nonce'
->;
+}
+  ? Omit<T, 'nonce' | 'message'>
+  : never;
 
 export type SignMessageParams =
   | CosmosSignMessageParams
@@ -59,28 +76,31 @@ export type SignMessageParams =
   | EvmSignMessageParams
   | AptosSignMessageParams
   | SolanaSignMessageParams
-  | UnmaintainedSignMessageParams
-  | Readonly<{
-      walletBlockchain: 'NEAR';
-      signMessage: Uint8SignMessageFunction;
-    }>
-  | Readonly<{
-      walletBlockchain: 'SUI';
-      signMessage: Uint8SignMessageFunction;
-    }>
-  | Readonly<{
-      walletBlockchain: 'OFF_CHAIN';
-      signIn: OidcSignInFunction;
-    }>
-  | Readonly<{
-      walletBlockchain: 'INJECTIVE';
-      signMessage: Uint8SignMessageFunction;
-    }>;
+  | SuiSignMessageParams
+  | NearSignMessageParams
+  | InjectiveSignMessageParams
+  | OffChainSignMessageParams
+  | UnmaintainedSignMessageParams;
 
-// TODO: add message here when we migrate to loginwithweb3...
+/* NOTE: ⬇ Chains either under migration list or do not support web3 login flow */
 type BtcSignMessageParams = Readonly<{
   walletBlockchain: BtcBlockchain;
   signMessage: Uint8SignMessageFunction;
+}>;
+
+type NearSignMessageParams = Readonly<{
+  walletBlockchain: 'NEAR';
+  signMessage: Uint8SignMessageFunction;
+}>;
+
+type InjectiveSignMessageParams = Readonly<{
+  walletBlockchain: 'INJECTIVE';
+  signMessage: Uint8SignMessageFunction;
+}>;
+
+type OffChainSignMessageParams = Readonly<{
+  walletBlockchain: 'OFF_CHAIN';
+  signIn: OidcSignInFunction;
 }>;
 
 type UnmaintainedSignMessageParams = Readonly<{
@@ -108,6 +128,14 @@ type BeginLoginWithWeb3Props = Omit<
 
 // ─── Utils ────────────────────────────────────────────────────
 
+export const isLoginWeb3Params = (
+  params: LoginParams,
+): params is LoginWeb3Params => {
+  return CHAINS_WITH_LOGIN_WEB3.includes(
+    params.walletBlockchain as (typeof CHAINS_WITH_LOGIN_WEB3)[number],
+  );
+};
+
 export const beginLogInWithWeb3 = async (
   params: BeginLoginWithWeb3Props & {
     service: NotifiService;
@@ -130,4 +158,29 @@ export const beginLogInWithWeb3 = async (
   }
 
   return result.beginLogInWithWeb3.beginLogInWithWeb3Response;
+};
+
+export const getStrategyForBlockchain = (
+  blockchain: Types.BlockchainType,
+  service: NotifiService,
+  config: NotifiFrontendConfiguration,
+): BlockchainAuthStrategy => {
+  if (isCosmosBlockchain(blockchain)) {
+    return new CosmosAuthStrategy(service, config);
+  }
+  if (isAptosBlockchain(blockchain)) {
+    return new AptosAuthStrategy(service, config);
+  }
+  if (isSolanaBlockchain(blockchain)) {
+    return new SolanaAuthStrategy(service, config);
+  }
+  if (isEvmBlockchain(blockchain)) {
+    return new EvmAuthStrategy(service, config);
+  }
+  if (isSuiBlockchain(blockchain)) {
+    return new SuiAuthStrategy(service, config);
+  }
+  throw new Error(
+    `ERROR - getStrategyForBlockchain: Unsupported blockchain: ${blockchain}`,
+  );
 };

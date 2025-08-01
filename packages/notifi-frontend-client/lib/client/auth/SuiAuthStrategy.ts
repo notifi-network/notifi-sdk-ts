@@ -9,37 +9,34 @@ import {
 } from '.';
 import {
   type NotifiFrontendConfiguration,
-  checkIsConfigWithPublicKey,
+  checkIsConfigWithPublicKeyAndAddress,
 } from '../../configuration';
-import { type EvmBlockchain, isUsingEvmBlockchain } from '../../models';
-import { normalizeHexString } from '../../utils';
+import { type SuiBlockchain, isUsingSuiBlockchain } from '../../models';
 
-export class EvmAuthStrategy implements BlockchainAuthStrategy {
+export class SuiAuthStrategy implements BlockchainAuthStrategy {
   constructor(
     private service: NotifiService,
     private config: NotifiFrontendConfiguration,
   ) {}
-  async authenticate(params: EvmSignMessageParams) {
+  async authenticate(params: SuiSignMessageParams) {
     const signedMessage = `${SIGNING_MESSAGE}${params.nonce}`;
     const messageBuffer = new TextEncoder().encode(signedMessage);
     const signedBuffer = await params.signMessage(messageBuffer);
-    const signature = normalizeHexString(
-      Buffer.from(signedBuffer).toString('hex'),
-    );
+    const signature = signedBuffer.toString();
     return { signature, signedMessage };
   }
   async prepareLoginWithWeb3(params: LoginWeb3Params) {
     if (
-      !isUsingEvmBlockchain(params) ||
-      !checkIsConfigWithPublicKey(this.config)
+      !isUsingSuiBlockchain(params) ||
+      !checkIsConfigWithPublicKeyAndAddress(this.config)
     )
-      throw new Error('EvmAuthStrategy: Invalid EVM login parameters');
+      throw new Error('SuiAuthStrategy: Invalid SUI login parameters');
 
     const { nonce } = await beginLogInWithWeb3({
       service: this.service,
       config: this.config,
       authAddress: this.config.walletPublicKey,
-      authType: 'ETHEREUM_PERSONAL_SIGN',
+      authType: 'SUI_SIGNED_MESSAGE',
     });
     return {
       signMessageParams: {
@@ -47,15 +44,15 @@ export class EvmAuthStrategy implements BlockchainAuthStrategy {
         nonce,
         signMessage: params.signMessage,
       },
-      signingAddress: this.config.walletPublicKey,
-      signingPubkey: this.config.walletPublicKey, // NOT REQUIRED for EVM chains, can be empty string ''
+      signingAddress: this.config.accountAddress,
+      signingPubkey: this.config.walletPublicKey, // NOT REQUIRED for Sui, can be empty string ''
       nonce,
     };
   }
 }
 
-export type EvmSignMessageParams = Readonly<{
-  walletBlockchain: EvmBlockchain;
+export type SuiSignMessageParams = Readonly<{
+  walletBlockchain: SuiBlockchain;
   nonce: string;
   signMessage: Uint8SignMessageFunction;
 }>;

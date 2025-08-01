@@ -11,7 +11,7 @@ import {
   checkIsConfigWithDelegate,
   checkIsConfigWithPublicKeyAndAddress,
 } from '../../configuration';
-import { type CosmosBlockchain } from '../../models';
+import { type CosmosBlockchain, isUsingCosmosBlockchain } from '../../models';
 
 export class CosmosAuthStrategy implements BlockchainAuthStrategy {
   constructor(
@@ -25,6 +25,9 @@ export class CosmosAuthStrategy implements BlockchainAuthStrategy {
     return { signature: signatureBase64, signedMessage };
   }
   async prepareLoginWithWeb3(params: LoginWeb3Params) {
+    if (!isUsingCosmosBlockchain(params))
+      throw new Error('CosmosAuthStrategy: Invalid Cosmos login parameters');
+
     if (checkIsConfigWithDelegate(this.config)) {
       const { delegatedAddress, delegatedPublicKey, delegatorAddress } =
         this.config;
@@ -38,15 +41,17 @@ export class CosmosAuthStrategy implements BlockchainAuthStrategy {
       const signedMessage = `${SIGNING_MESSAGE}${nonce}`;
       return {
         signMessageParams: {
-          walletBlockchain: params.walletBlockchain as CosmosBlockchain,
+          walletBlockchain: params.walletBlockchain,
           message: signedMessage,
-          signMessage: params.signMessage as CosmosSignMessageFunction,
+          signMessage: params.signMessage,
         },
         signingAddress: delegatedAddress,
         signingPubkey: delegatedPublicKey,
         nonce,
       };
-    } else if (checkIsConfigWithPublicKeyAndAddress(this.config)) {
+    }
+
+    if (checkIsConfigWithPublicKeyAndAddress(this.config)) {
       const { walletPublicKey, accountAddress } = this.config;
       const { nonce } = await beginLogInWithWeb3({
         service: this.service,
@@ -57,16 +62,17 @@ export class CosmosAuthStrategy implements BlockchainAuthStrategy {
       const signedMessage = `${SIGNING_MESSAGE}${nonce}`;
       return {
         signMessageParams: {
-          walletBlockchain: params.walletBlockchain as CosmosBlockchain,
+          walletBlockchain: params.walletBlockchain,
           message: signedMessage,
-          signMessage: params.signMessage as CosmosSignMessageFunction,
+          signMessage: params.signMessage,
         },
         signingAddress: accountAddress,
-        signingPubkey: walletPublicKey,
+        signingPubkey: walletPublicKey, // REQUIRED for Cosmos: must be the public key corresponding to the accountAddress
         nonce,
       };
     }
-    throw new Error('Invalid Cosmos login parameters');
+
+    throw new Error('CosmosAuthStrategy: Invalid Configuration');
   }
 }
 
