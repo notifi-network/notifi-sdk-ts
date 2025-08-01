@@ -42,6 +42,7 @@ export const EVM_BLOCKCHAINS = [
   'THE_ROOT_NETWORK',
   'SEI',
   'SONIC',
+  'INK',
   'SWELLCHAIN',
   'ROME',
   'ZKSYNC',
