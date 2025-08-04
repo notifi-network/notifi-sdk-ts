@@ -12,7 +12,6 @@ import type * as Operations from './operations';
 
 export class NotifiService
   implements
-    Operations.AddSourceToSourceGroupService,
     Operations.BeginLogInByTransactionService,
     Operations.BroadcastMessageService,
     Operations.CompleteLogInByTransactionService,
@@ -21,13 +20,10 @@ export class NotifiService
     Operations.CreateDirectPushAlertService,
     Operations.CreateEmailTargetService,
     Operations.CreateSmsTargetService,
-    Operations.CreateSourceService,
-    Operations.CreateSourceGroupService,
     Operations.CreateTargetGroupService,
     Operations.CreateTelegramTargetService,
     Operations.DeleteAlertService,
     Operations.DeleteUserAlertService,
-    Operations.DeleteSourceGroupService,
     Operations.DeleteTargetGroupService,
     Operations.FetchDataService,
     Operations.FindTenantConfigService,
@@ -45,10 +41,8 @@ export class NotifiService
     Operations.LogInFromDappService,
     Operations.LogInFromServiceService,
     Operations.RefreshAuthorizationService,
-    Operations.RemoveSourceFromSourceGroupService,
     Operations.SendEmailTargetVerificationRequestService,
     Operations.SendMessageService,
-    Operations.UpdateSourceGroupService,
     Operations.UpdateTargetGroupService,
     Operations.CreateDiscordTargetService,
     Operations.GetDiscordTargetsService,
@@ -93,13 +87,6 @@ export class NotifiService
   async logOut(): Promise<void> {
     this._jwt = undefined;
     this._notifiSubService.setJwt(undefined);
-  }
-
-  async addSourceToSourceGroup(
-    variables: Generated.AddSourceToSourceGroupMutationVariables,
-  ): Promise<Generated.AddSourceToSourceGroupMutation> {
-    const headers = this._requestHeaders();
-    return this._typedClient.addSourceToSourceGroup(variables, headers);
   }
 
   async beginLogInByTransaction(
@@ -228,20 +215,6 @@ export class NotifiService
     return this._typedClient.deleteSmsTarget(variables, headers);
   }
 
-  async createSource(
-    variables: Generated.CreateSourceMutationVariables,
-  ): Promise<Generated.CreateSourceMutation> {
-    const headers = this._requestHeaders();
-    return this._typedClient.createSource(variables, headers);
-  }
-
-  async createSourceGroup(
-    variables: Generated.CreateSourceGroupMutationVariables,
-  ): Promise<Generated.CreateSourceGroupMutation> {
-    const headers = this._requestHeaders();
-    return this._typedClient.createSourceGroup(variables, headers);
-  }
-
   async createTargetGroup(
     variables: Generated.CreateTargetGroupMutationVariables,
   ): Promise<Generated.CreateTargetGroupMutation> {
@@ -289,13 +262,6 @@ export class NotifiService
   ): Promise<Generated.DeleteUserAlertMutation> {
     const headers = this._requestHeaders();
     return this._typedClient.deleteUserAlert(variables, headers);
-  }
-
-  async deleteSourceGroup(
-    variables: Generated.DeleteSourceGroupMutationVariables,
-  ): Promise<Generated.DeleteSourceGroupMutation> {
-    const headers = this._requestHeaders();
-    return this._typedClient.deleteSourceGroup(variables, headers);
   }
 
   async deleteTargetGroup(
@@ -563,13 +529,6 @@ export class NotifiService
     return result;
   }
 
-  async removeSourceFromSourceGroup(
-    variables: Generated.RemoveSourceFromSourceGroupMutationVariables,
-  ): Promise<Generated.RemoveSourceFromSourceGroupMutation> {
-    const headers = this._requestHeaders();
-    return this._typedClient.removeSourceFromSourceGroup(variables, headers);
-  }
-
   async sendEmailTargetVerificationRequest(
     variables: Generated.SendEmailTargetVerificationRequestMutationVariables,
   ): Promise<Generated.SendEmailTargetVerificationRequestMutation> {
@@ -585,13 +544,6 @@ export class NotifiService
   ): Promise<Generated.SendMessageMutation> {
     const headers = this._requestHeaders();
     return this._typedClient.sendMessage(variables, headers);
-  }
-
-  async updateSourceGroup(
-    variables: Generated.UpdateSourceGroupMutationVariables,
-  ): Promise<Generated.UpdateSourceGroupMutation> {
-    const headers = this._requestHeaders();
-    return this._typedClient.updateSourceGroup(variables, headers);
   }
 
   async updateTargetGroup(
