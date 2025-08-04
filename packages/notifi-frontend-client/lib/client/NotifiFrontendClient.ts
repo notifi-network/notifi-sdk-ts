@@ -13,11 +13,6 @@ import {
   type TopicMetadata,
 } from '../models';
 import type { NotifiStorage } from '../storage';
-import {
-  NotifiFrontendStorage,
-  createInMemoryStorageDriver,
-  createLocalForageStorageDriver,
-} from '../storage';
 import { notNullOrEmpty, parseTenantConfig } from '../utils';
 import { areIdsEqual } from '../utils/areIdsEqual';
 import {
@@ -249,21 +244,6 @@ export class NotifiFrontendClient {
     };
   }
 
-  async copyAuthorization(config: NotifiFrontendConfiguration) {
-    const auth = await this._storage.getAuthorization();
-    const roles = await this._storage.getRoles();
-
-    const driver =
-      config.storageOption?.driverType === 'InMemory'
-        ? createInMemoryStorageDriver(config)
-        : createLocalForageStorageDriver(config);
-    const otherStorage = new NotifiFrontendStorage(driver);
-
-    await Promise.all([
-      otherStorage.setAuthorization(auth),
-      otherStorage.setRoles(roles),
-    ]);
-  }
   async sendEmailTargetVerification({
     targetId,
   }: Readonly<{ targetId: string }>): Promise<string> {
