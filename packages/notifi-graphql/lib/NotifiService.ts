@@ -33,7 +33,6 @@ export class NotifiService
     Operations.GetEmailTargetsService,
     Operations.GetFiltersService,
     Operations.GetFusionNotificationHistoryService,
-    Operations.GetNotificationHistoryService,
     Operations.GetSmsTargetsService,
     Operations.GetTargetGroupsService,
     Operations.GetTelegramTargetsService,
@@ -360,16 +359,6 @@ export class NotifiService
   ): Promise<Generated.GetFusionNotificationHistoryQuery> {
     const headers = this._requestHeaders();
     return this._typedClient.getFusionNotificationHistory(variables, headers);
-  }
-
-  /**
-   * @deprecated Use getFusionNotificationHistory instead
-   */
-  async getNotificationHistory(
-    variables: Generated.GetNotificationHistoryQueryVariables,
-  ): Promise<Generated.GetNotificationHistoryQuery> {
-    const headers = this._requestHeaders();
-    return this._typedClient.getNotificationHistory(variables, headers);
   }
 
   async getSmsTargets(

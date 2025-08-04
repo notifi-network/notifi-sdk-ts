@@ -366,35 +366,6 @@ export class NotifiFrontendClient {
    */
 
   /**
-   * @deprecated use the return type of addEventListener & removeEventListener instead.
-   * @description never use this when having multiple gql subscription in the app. This case, dispose websocket could break other subscriptions.
-   */
-  async wsDispose() {
-    this._service.wsDispose();
-  }
-
-  /**
-   * @deprecated Use getFusionNotificationHistory instead
-   */
-  async getNotificationHistory(
-    variables: Types.GetNotificationHistoryQueryVariables,
-  ): Promise<
-    Readonly<{
-      pageInfo: Types.PageInfoFragmentFragment;
-      nodes: ReadonlyArray<Types.NotificationHistoryEntryFragmentFragment>;
-    }>
-  > {
-    const query = await this._service.getNotificationHistory(variables);
-    const nodes = query.notificationHistory?.nodes;
-    const pageInfo = query.notificationHistory?.pageInfo;
-    if (nodes === undefined || pageInfo === undefined) {
-      throw new Error('Failed to fetch notification history');
-    }
-
-    return { pageInfo, nodes };
-  }
-
-  /**
    * @deprecated use addEventListener instead.
    */
   subscribeNotificationHistoryStateChanged(
@@ -412,45 +383,6 @@ export class NotifiFrontendClient {
   /** @deprecated use fetchFusionData instead. This is for legacy  */
   async fetchData(): Promise<Types.FetchDataQuery> {
     return this._service.fetchData({});
-  }
-
-  /**@deprecated for legacy infra, use fetchTenantConfig instead for new infra (fusionEvent)  */
-  async fetchSubscriptionCard(
-    variables: FindSubscriptionCardParams,
-  ): Promise<CardConfigType> {
-    const query = await this._service.findTenantConfig({
-      input: {
-        ...variables,
-        tenant: this._configuration.tenantId,
-      },
-    });
-    const result = query.findTenantConfig;
-    if (result === undefined) {
-      throw new Error('Failed to find tenant config');
-    }
-
-    const value = result.dataJson;
-    if (value === undefined) {
-      throw new Error('Invalid config data');
-    }
-
-    const obj = JSON.parse(value);
-    let card: CardConfigType | undefined = undefined;
-    switch (obj.version) {
-      case 'v1': {
-        card = obj as CardConfigItemV1;
-        break;
-      }
-      default: {
-        throw new Error('Unsupported config version');
-      }
-    }
-
-    if (card === undefined) {
-      throw new Error('Unsupported config format');
-    }
-
-    return card;
   }
 
   /** @deprecated Use renewTargetGroup instead */
