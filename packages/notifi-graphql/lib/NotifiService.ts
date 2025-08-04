@@ -55,7 +55,6 @@ export class NotifiService
     Operations.CreateWeb3TargetService,
     Operations.GetWeb3TargetsService,
     Operations.VerifyCbwTargetService,
-    Operations.VerifyXmtpTargetService,
     Operations.VerifyXmtpTargetViaXip42Service,
     Operations.DeleteDiscordTargetService,
     Operations.DeleteEmailTargetService,
@@ -551,13 +550,6 @@ export class NotifiService
   ): Promise<Generated.VerifyCbwTargetMutation> {
     const headers = this._requestHeaders();
     return this._typedClient.verifyCbwTarget(variables, headers);
-  }
-
-  async verifyXmtpTarget(
-    variables: Generated.VerifyXmtpTargetMutationVariables,
-  ): Promise<Generated.VerifyXmtpTargetMutation> {
-    const headers = this._requestHeaders();
-    return this._typedClient.verifyXmtpTarget(variables, headers);
   }
 
   async verifyXmtpTargetViaXip42(
