@@ -338,11 +338,6 @@ export class NotifiFrontendClient {
    * ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇
    */
 
-  /** @deprecated use fetchFusionData instead. This is for legacy  */
-  async fetchData(): Promise<Types.FetchDataQuery> {
-    return this._service.fetchData({});
-  }
-
   /** @deprecated Use renewTargetGroup instead */
   async ensureTargetGroup({
     name,

@@ -31,7 +31,6 @@ export * from './UpdateTargetGroup';
 export * from './GetDiscordTargets';
 export * from './ConnectWallet';
 export * from './GetConnectedWallets';
-export * from './FetchData';
 export * from './GetUnreadNotificationHistoryCount';
 export * from './GetFusionNotificationHistory';
 export * from './MarkFusionNotificationHistoryAsRead';

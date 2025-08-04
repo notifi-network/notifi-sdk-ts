@@ -23,7 +23,6 @@ export class NotifiService
     Operations.DeleteAlertService,
     Operations.DeleteUserAlertService,
     Operations.DeleteTargetGroupService,
-    Operations.FetchDataService,
     Operations.FindTenantConfigService,
     Operations.GetAlertsService,
     Operations.GetConfigurationForDappService,
@@ -265,14 +264,6 @@ export class NotifiService
   ): Promise<Generated.DeleteTargetGroupMutation> {
     const headers = this._requestHeaders();
     return this._typedClient.deleteTargetGroup(variables, headers);
-  }
-
-  /** @deprecated use fetchFusionData instead. This is for legacy  */
-  async fetchData(
-    variables: Generated.FetchDataQueryVariables,
-  ): Promise<Generated.FetchDataQuery> {
-    const headers = this._requestHeaders();
-    return this._typedClient.fetchData(variables, headers);
   }
 
   async fetchFusionData(
