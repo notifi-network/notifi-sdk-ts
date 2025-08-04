@@ -365,15 +365,6 @@ export class NotifiFrontendClient {
    * ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇
    */
 
-  /** @deprecated only for legacy infrastructure */
-  async getSourceGroups(): Promise<
-    ReadonlyArray<Types.SourceGroupFragmentFragment>
-  > {
-    const query = await this._service.getSourceGroups({});
-    const results = query.sourceGroup?.filter(notNullOrEmpty) ?? [];
-    return results;
-  }
-
   /**
    * @deprecated use the return type of addEventListener & removeEventListener instead.
    * @description never use this when having multiple gql subscription in the app. This case, dispose websocket could break other subscriptions.

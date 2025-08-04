@@ -39,9 +39,6 @@ export class NotifiService
     Operations.GetFusionNotificationHistoryService,
     Operations.GetNotificationHistoryService,
     Operations.GetSmsTargetsService,
-    Operations.GetSourceConnectionService,
-    Operations.GetSourceGroupsService,
-    Operations.GetSourcesService,
     Operations.GetTargetGroupsService,
     Operations.GetTelegramTargetsService,
     Operations.GetTopicsService,
@@ -414,27 +411,6 @@ export class NotifiService
   ): Promise<Generated.GetSmsTargetsQuery> {
     const headers = this._requestHeaders();
     return this._typedClient.getSmsTargets(variables, headers);
-  }
-
-  async getSourceConnection(
-    variables: Generated.GetSourceConnectionQueryVariables,
-  ): Promise<Generated.GetSourceConnectionQuery> {
-    const headers = this._requestHeaders();
-    return this._typedClient.getSourceConnection(variables, headers);
-  }
-
-  async getSourceGroups(
-    variables: Generated.GetSourceGroupsQueryVariables,
-  ): Promise<Generated.GetSourceGroupsQuery> {
-    const headers = this._requestHeaders();
-    return this._typedClient.getSourceGroups(variables, headers);
-  }
-
-  async getSources(
-    variables: Generated.GetSourcesQueryVariables,
-  ): Promise<Generated.GetSourcesQuery> {
-    const headers = this._requestHeaders();
-    return this._typedClient.getSources(variables, headers);
   }
 
   async getTargetGroups(
