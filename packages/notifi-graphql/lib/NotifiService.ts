@@ -1,11 +1,9 @@
 import { GraphQLClient } from 'graphql-request';
-import { Subscription } from 'relay-runtime';
 import { v4 as uuid } from 'uuid';
 
 import { version } from '../package.json';
 import { NotifiEmitterEvents } from './NotifiEventEmitter';
 import { NotifiSubscriptionService } from './NotifiSubscriptionService';
-import { stateChangedSubscriptionQuery } from './gql';
 import * as Generated from './gql/generated';
 import { getSdk } from './gql/generated';
 import type * as Operations from './operations';
@@ -396,22 +394,6 @@ export class NotifiService
     return this._typedClient.getUnreadNotificationHistoryCount(
       variables,
       headers,
-    );
-  }
-  /**
-   * @deprecated Use addEventListener instead
-   */
-  subscribeNotificationHistoryStateChanged(
-    onMessageReceived: (data: any) => void | undefined,
-    onError?: (data: any) => void | undefined,
-    onComplete?: () => void | undefined,
-  ): Subscription | null {
-    return this._notifiSubService.subscribe(
-      this._jwt,
-      stateChangedSubscriptionQuery,
-      onMessageReceived,
-      onError,
-      onComplete,
     );
   }
 

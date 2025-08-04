@@ -365,21 +365,6 @@ export class NotifiFrontendClient {
    * ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇
    */
 
-  /**
-   * @deprecated use addEventListener instead.
-   */
-  subscribeNotificationHistoryStateChanged(
-    onMessageReceived: (data: unknown) => void | undefined,
-    onError?: (data: unknown) => void | undefined,
-    onComplete?: () => void | undefined,
-  ): ReturnType<NotifiService['subscribeNotificationHistoryStateChanged']> {
-    return this._service.subscribeNotificationHistoryStateChanged(
-      onMessageReceived,
-      onError,
-      onComplete,
-    );
-  }
-
   /** @deprecated use fetchFusionData instead. This is for legacy  */
   async fetchData(): Promise<Types.FetchDataQuery> {
     return this._service.fetchData({});
