@@ -1,18 +1,15 @@
 import { GraphQLClient } from 'graphql-request';
-import { Subscription } from 'relay-runtime';
 import { v4 as uuid } from 'uuid';
 
 import { version } from '../package.json';
 import { NotifiEmitterEvents } from './NotifiEventEmitter';
 import { NotifiSubscriptionService } from './NotifiSubscriptionService';
-import { stateChangedSubscriptionQuery } from './gql';
 import * as Generated from './gql/generated';
 import { getSdk } from './gql/generated';
 import type * as Operations from './operations';
 
 export class NotifiService
   implements
-    Operations.AddSourceToSourceGroupService,
     Operations.BeginLogInByTransactionService,
     Operations.BroadcastMessageService,
     Operations.CompleteLogInByTransactionService,
@@ -21,15 +18,11 @@ export class NotifiService
     Operations.CreateDirectPushAlertService,
     Operations.CreateEmailTargetService,
     Operations.CreateSmsTargetService,
-    Operations.CreateSourceService,
-    Operations.CreateSourceGroupService,
     Operations.CreateTargetGroupService,
     Operations.CreateTelegramTargetService,
     Operations.DeleteAlertService,
     Operations.DeleteUserAlertService,
-    Operations.DeleteSourceGroupService,
     Operations.DeleteTargetGroupService,
-    Operations.FetchDataService,
     Operations.FindTenantConfigService,
     Operations.GetAlertsService,
     Operations.GetConfigurationForDappService,
@@ -37,21 +30,15 @@ export class NotifiService
     Operations.GetEmailTargetsService,
     Operations.GetFiltersService,
     Operations.GetFusionNotificationHistoryService,
-    Operations.GetNotificationHistoryService,
     Operations.GetSmsTargetsService,
-    Operations.GetSourceConnectionService,
-    Operations.GetSourceGroupsService,
-    Operations.GetSourcesService,
     Operations.GetTargetGroupsService,
     Operations.GetTelegramTargetsService,
     Operations.GetTopicsService,
     Operations.LogInFromDappService,
     Operations.LogInFromServiceService,
     Operations.RefreshAuthorizationService,
-    Operations.RemoveSourceFromSourceGroupService,
     Operations.SendEmailTargetVerificationRequestService,
     Operations.SendMessageService,
-    Operations.UpdateSourceGroupService,
     Operations.UpdateTargetGroupService,
     Operations.CreateDiscordTargetService,
     Operations.GetDiscordTargetsService,
@@ -67,7 +54,6 @@ export class NotifiService
     Operations.CreateWeb3TargetService,
     Operations.GetWeb3TargetsService,
     Operations.VerifyCbwTargetService,
-    Operations.VerifyXmtpTargetService,
     Operations.VerifyXmtpTargetViaXip42Service,
     Operations.DeleteDiscordTargetService,
     Operations.DeleteEmailTargetService,
@@ -96,13 +82,6 @@ export class NotifiService
   async logOut(): Promise<void> {
     this._jwt = undefined;
     this._notifiSubService.setJwt(undefined);
-  }
-
-  async addSourceToSourceGroup(
-    variables: Generated.AddSourceToSourceGroupMutationVariables,
-  ): Promise<Generated.AddSourceToSourceGroupMutation> {
-    const headers = this._requestHeaders();
-    return this._typedClient.addSourceToSourceGroup(variables, headers);
   }
 
   async beginLogInByTransaction(
@@ -231,20 +210,6 @@ export class NotifiService
     return this._typedClient.deleteSmsTarget(variables, headers);
   }
 
-  async createSource(
-    variables: Generated.CreateSourceMutationVariables,
-  ): Promise<Generated.CreateSourceMutation> {
-    const headers = this._requestHeaders();
-    return this._typedClient.createSource(variables, headers);
-  }
-
-  async createSourceGroup(
-    variables: Generated.CreateSourceGroupMutationVariables,
-  ): Promise<Generated.CreateSourceGroupMutation> {
-    const headers = this._requestHeaders();
-    return this._typedClient.createSourceGroup(variables, headers);
-  }
-
   async createTargetGroup(
     variables: Generated.CreateTargetGroupMutationVariables,
   ): Promise<Generated.CreateTargetGroupMutation> {
@@ -294,26 +259,11 @@ export class NotifiService
     return this._typedClient.deleteUserAlert(variables, headers);
   }
 
-  async deleteSourceGroup(
-    variables: Generated.DeleteSourceGroupMutationVariables,
-  ): Promise<Generated.DeleteSourceGroupMutation> {
-    const headers = this._requestHeaders();
-    return this._typedClient.deleteSourceGroup(variables, headers);
-  }
-
   async deleteTargetGroup(
     variables: Generated.DeleteTargetGroupMutationVariables,
   ): Promise<Generated.DeleteTargetGroupMutation> {
     const headers = this._requestHeaders();
     return this._typedClient.deleteTargetGroup(variables, headers);
-  }
-
-  /** @deprecated use fetchFusionData instead. This is for legacy  */
-  async fetchData(
-    variables: Generated.FetchDataQueryVariables,
-  ): Promise<Generated.FetchDataQuery> {
-    const headers = this._requestHeaders();
-    return this._typedClient.fetchData(variables, headers);
   }
 
   async fetchFusionData(
@@ -399,42 +349,11 @@ export class NotifiService
     return this._typedClient.getFusionNotificationHistory(variables, headers);
   }
 
-  /**
-   * @deprecated Use getFusionNotificationHistory instead
-   */
-  async getNotificationHistory(
-    variables: Generated.GetNotificationHistoryQueryVariables,
-  ): Promise<Generated.GetNotificationHistoryQuery> {
-    const headers = this._requestHeaders();
-    return this._typedClient.getNotificationHistory(variables, headers);
-  }
-
   async getSmsTargets(
     variables: Generated.GetSmsTargetsQueryVariables,
   ): Promise<Generated.GetSmsTargetsQuery> {
     const headers = this._requestHeaders();
     return this._typedClient.getSmsTargets(variables, headers);
-  }
-
-  async getSourceConnection(
-    variables: Generated.GetSourceConnectionQueryVariables,
-  ): Promise<Generated.GetSourceConnectionQuery> {
-    const headers = this._requestHeaders();
-    return this._typedClient.getSourceConnection(variables, headers);
-  }
-
-  async getSourceGroups(
-    variables: Generated.GetSourceGroupsQueryVariables,
-  ): Promise<Generated.GetSourceGroupsQuery> {
-    const headers = this._requestHeaders();
-    return this._typedClient.getSourceGroups(variables, headers);
-  }
-
-  async getSources(
-    variables: Generated.GetSourcesQueryVariables,
-  ): Promise<Generated.GetSourcesQuery> {
-    const headers = this._requestHeaders();
-    return this._typedClient.getSources(variables, headers);
   }
 
   async getTargetGroups(
@@ -465,22 +384,6 @@ export class NotifiService
     return this._typedClient.getUnreadNotificationHistoryCount(
       variables,
       headers,
-    );
-  }
-  /**
-   * @deprecated Use addEventListener instead
-   */
-  subscribeNotificationHistoryStateChanged(
-    onMessageReceived: (data: any) => void | undefined,
-    onError?: (data: any) => void | undefined,
-    onComplete?: () => void | undefined,
-  ): Subscription | null {
-    return this._notifiSubService.subscribe(
-      this._jwt,
-      stateChangedSubscriptionQuery,
-      onMessageReceived,
-      onError,
-      onComplete,
     );
   }
 
@@ -587,13 +490,6 @@ export class NotifiService
     return result;
   }
 
-  async removeSourceFromSourceGroup(
-    variables: Generated.RemoveSourceFromSourceGroupMutationVariables,
-  ): Promise<Generated.RemoveSourceFromSourceGroupMutation> {
-    const headers = this._requestHeaders();
-    return this._typedClient.removeSourceFromSourceGroup(variables, headers);
-  }
-
   async sendEmailTargetVerificationRequest(
     variables: Generated.SendEmailTargetVerificationRequestMutationVariables,
   ): Promise<Generated.SendEmailTargetVerificationRequestMutation> {
@@ -609,13 +505,6 @@ export class NotifiService
   ): Promise<Generated.SendMessageMutation> {
     const headers = this._requestHeaders();
     return this._typedClient.sendMessage(variables, headers);
-  }
-
-  async updateSourceGroup(
-    variables: Generated.UpdateSourceGroupMutationVariables,
-  ): Promise<Generated.UpdateSourceGroupMutation> {
-    const headers = this._requestHeaders();
-    return this._typedClient.updateSourceGroup(variables, headers);
   }
 
   async updateTargetGroup(
@@ -652,13 +541,6 @@ export class NotifiService
   ): Promise<Generated.VerifyCbwTargetMutation> {
     const headers = this._requestHeaders();
     return this._typedClient.verifyCbwTarget(variables, headers);
-  }
-
-  async verifyXmtpTarget(
-    variables: Generated.VerifyXmtpTargetMutationVariables,
-  ): Promise<Generated.VerifyXmtpTargetMutation> {
-    const headers = this._requestHeaders();
-    return this._typedClient.verifyXmtpTarget(variables, headers);
   }
 
   async verifyXmtpTargetViaXip42(

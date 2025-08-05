@@ -14,7 +14,7 @@ export const newFrontendClient = (args: ConfigFactoryInput) => {
   return new NotifiFrontendClient(config, service, storage);
 };
 
-/** ⬇ ensureSource.ts */
+/** ⬇ ensureTargets.ts */
 
 type EnsureTargetFuncFactory = <
   CreateService,

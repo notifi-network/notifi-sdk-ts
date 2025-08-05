@@ -13,11 +13,6 @@ import {
   type TopicMetadata,
 } from '../models';
 import type { NotifiStorage } from '../storage';
-import {
-  NotifiFrontendStorage,
-  createInMemoryStorageDriver,
-  createLocalForageStorageDriver,
-} from '../storage';
 import { notNullOrEmpty, parseTenantConfig } from '../utils';
 import { areIdsEqual } from '../utils/areIdsEqual';
 import {
@@ -249,21 +244,6 @@ export class NotifiFrontendClient {
     };
   }
 
-  async copyAuthorization(config: NotifiFrontendConfiguration) {
-    const auth = await this._storage.getAuthorization();
-    const roles = await this._storage.getRoles();
-
-    const driver =
-      config.storageOption?.driverType === 'InMemory'
-        ? createInMemoryStorageDriver(config)
-        : createLocalForageStorageDriver(config);
-    const otherStorage = new NotifiFrontendStorage(driver);
-
-    await Promise.all([
-      otherStorage.setAuthorization(auth),
-      otherStorage.setRoles(roles),
-    ]);
-  }
   async sendEmailTargetVerification({
     targetId,
   }: Readonly<{ targetId: string }>): Promise<string> {
@@ -297,13 +277,6 @@ export class NotifiFrontendClient {
     input: Types.UpdateUserSettingsMutationVariables,
   ): Promise<Types.UpdateUserSettingsMutation> {
     const mutation = await this._service.updateUserSettings(input);
-    return mutation;
-  }
-
-  async verifyXmtpTarget(
-    input: Types.VerifyXmtpTargetMutationVariables,
-  ): Promise<Types.VerifyXmtpTargetMutation> {
-    const mutation = await this._service.verifyXmtpTarget(input);
     return mutation;
   }
 
@@ -364,103 +337,6 @@ export class NotifiFrontendClient {
    * ⬇ ⬇ Deprecated methods ⬇ ⬇
    * ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇ ⬇
    */
-
-  /** @deprecated only for legacy infrastructure */
-  async getSourceGroups(): Promise<
-    ReadonlyArray<Types.SourceGroupFragmentFragment>
-  > {
-    const query = await this._service.getSourceGroups({});
-    const results = query.sourceGroup?.filter(notNullOrEmpty) ?? [];
-    return results;
-  }
-
-  /**
-   * @deprecated use the return type of addEventListener & removeEventListener instead.
-   * @description never use this when having multiple gql subscription in the app. This case, dispose websocket could break other subscriptions.
-   */
-  async wsDispose() {
-    this._service.wsDispose();
-  }
-
-  /**
-   * @deprecated Use getFusionNotificationHistory instead
-   */
-  async getNotificationHistory(
-    variables: Types.GetNotificationHistoryQueryVariables,
-  ): Promise<
-    Readonly<{
-      pageInfo: Types.PageInfoFragmentFragment;
-      nodes: ReadonlyArray<Types.NotificationHistoryEntryFragmentFragment>;
-    }>
-  > {
-    const query = await this._service.getNotificationHistory(variables);
-    const nodes = query.notificationHistory?.nodes;
-    const pageInfo = query.notificationHistory?.pageInfo;
-    if (nodes === undefined || pageInfo === undefined) {
-      throw new Error('Failed to fetch notification history');
-    }
-
-    return { pageInfo, nodes };
-  }
-
-  /**
-   * @deprecated use addEventListener instead.
-   */
-  subscribeNotificationHistoryStateChanged(
-    onMessageReceived: (data: unknown) => void | undefined,
-    onError?: (data: unknown) => void | undefined,
-    onComplete?: () => void | undefined,
-  ): ReturnType<NotifiService['subscribeNotificationHistoryStateChanged']> {
-    return this._service.subscribeNotificationHistoryStateChanged(
-      onMessageReceived,
-      onError,
-      onComplete,
-    );
-  }
-
-  /** @deprecated use fetchFusionData instead. This is for legacy  */
-  async fetchData(): Promise<Types.FetchDataQuery> {
-    return this._service.fetchData({});
-  }
-
-  /**@deprecated for legacy infra, use fetchTenantConfig instead for new infra (fusionEvent)  */
-  async fetchSubscriptionCard(
-    variables: FindSubscriptionCardParams,
-  ): Promise<CardConfigType> {
-    const query = await this._service.findTenantConfig({
-      input: {
-        ...variables,
-        tenant: this._configuration.tenantId,
-      },
-    });
-    const result = query.findTenantConfig;
-    if (result === undefined) {
-      throw new Error('Failed to find tenant config');
-    }
-
-    const value = result.dataJson;
-    if (value === undefined) {
-      throw new Error('Invalid config data');
-    }
-
-    const obj = JSON.parse(value);
-    let card: CardConfigType | undefined = undefined;
-    switch (obj.version) {
-      case 'v1': {
-        card = obj as CardConfigItemV1;
-        break;
-      }
-      default: {
-        throw new Error('Unsupported config version');
-      }
-    }
-
-    if (card === undefined) {
-      throw new Error('Unsupported config format');
-    }
-
-    return card;
-  }
 
   /** @deprecated Use renewTargetGroup instead */
   async ensureTargetGroup({
