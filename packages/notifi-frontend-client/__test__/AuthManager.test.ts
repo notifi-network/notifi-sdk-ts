@@ -1,8 +1,8 @@
 import { Account, Ed25519PrivateKey } from '@aptos-labs/ts-sdk';
 import { Secp256k1HdWallet, StdSignDoc } from '@cosmjs/amino';
 import { arrayify } from '@ethersproject/bytes';
-import { mnemonicToSeedHex } from '@mysten/sui.js/cryptography';
-import { Ed25519Keypair } from '@mysten/sui.js/keypairs/ed25519';
+import { mnemonicToSeedHex } from '@mysten/sui/cryptography';
+import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
 import {
   AuthManager,
   type EvmUserParams,

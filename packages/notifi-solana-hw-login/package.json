@@ -31,7 +31,7 @@
   },
   "homepage": "https://github.com/notifi-network/notifi-sdk-ts#readme",
   "peerDependencies": {
-    "@solana/wallet-adapter-react": "^0.15.30",
+    "@solana/wallet-adapter-react": "^0.15.39",
     "@solana/web3.js": "^1.73.3"
   },
   "gitHead": "2b02f90e5b01bf13a9ce842a603a7cb21b3d2881"
