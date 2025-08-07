@@ -55,7 +55,7 @@
     "react": "^18"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=20.18.0"
   },
   "tsup": {
     "noExternal": [
