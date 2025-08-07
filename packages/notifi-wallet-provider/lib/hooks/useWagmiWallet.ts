@@ -49,9 +49,6 @@ export const useWagmiWallet = (
     const provider = connectors.find((v) =>
       v.name.toLowerCase()?.includes(walletName),
     );
-    if (walletName === 'coinbase') {
-      console.log({ provider, walletName, connectors });
-    }
     setIsWalletInstalled(!!provider);
   }, [connectors]);
 
@@ -70,7 +67,6 @@ export const useWagmiWallet = (
   const connectWallet = async (
     timeoutInMiniSec?: number,
   ): Promise<MetamaskWalletKeys | null> => {
-    console.log({ isWalletConnected });
     /* ⬇  Disable for now because of the viem issue (isWalletConnected turns true even if the wallet is not connected) */
     // if (isWalletConnected) return null;
 
@@ -84,17 +80,13 @@ export const useWagmiWallet = (
       const provider = connectors.find((v) =>
         v.name.toLowerCase()?.includes(walletName),
       );
-      console.log({ provider, connectors });
       if (!provider) return null;
-      console.log(`found provider and starting connection`);
       connect({ connector: provider });
       return null;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (e: any) {
-      console.log(`failed to connect to ${walletName} wallet`, e);
+    } catch (e: unknown) {
       console.error(e);
       disconnectWallet();
-      if (e.message) {
+      if (e instanceof Error) {
         errorHandler(new Error(e.message));
       }
       return null;
@@ -102,7 +94,6 @@ export const useWagmiWallet = (
       loadingHandler(false);
       clearTimeout(timer);
     }
-    console.log(`connected to ${walletName} wallet`);
   };
 
   const disconnectWallet = () => {
@@ -141,7 +132,7 @@ export const useWagmiWallet = (
         clearTimeout(timer);
       }
     },
-    [walletKeys?.hex],
+    [walletKeys?.hex, address, isConnected],
   );
   const sendTransaction = async (
     transaction: SendTransactionVariables<Config, number>,

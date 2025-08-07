@@ -42,7 +42,6 @@ export const useKeplr = (
       .finally(() => loadingHandler(false));
 
     const handleAccountChange = () => {
-      console.log('Keplr account changed');
       if (!window.keplr) return handleKeplrNotExists('handleAccountChange');
 
       window.keplr.getKey('injective-1').then((key) => {
