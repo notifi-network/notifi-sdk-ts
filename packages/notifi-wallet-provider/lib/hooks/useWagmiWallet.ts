@@ -1,13 +1,14 @@
 import converter from 'bech32-converting';
 import { useCallback, useEffect, useState } from 'react';
 import {
+  Config,
   useAccount,
   useConnect,
   useDisconnect,
   useSendTransaction,
   useSignMessage,
 } from 'wagmi';
-import { SendTransactionArgs, SendTransactionResult } from 'wagmi/actions';
+import { SendTransactionData, SendTransactionVariables } from 'wagmi/query';
 
 import { MetamaskWalletKeys, Wallets } from '../types';
 import {
@@ -48,6 +49,9 @@ export const useWagmiWallet = (
     const provider = connectors.find((v) =>
       v.name.toLowerCase()?.includes(walletName),
     );
+    if (walletName === 'coinbase') {
+      console.log({ provider, walletName, connectors });
+    }
     setIsWalletInstalled(!!provider);
   }, [connectors]);
 
@@ -66,7 +70,9 @@ export const useWagmiWallet = (
   const connectWallet = async (
     timeoutInMiniSec?: number,
   ): Promise<MetamaskWalletKeys | null> => {
-    if (isWalletConnected) return null;
+    console.log({ isWalletConnected });
+    /* ⬇  Disable for now because of the viem issue (isWalletConnected turns true even if the wallet is not connected) */
+    // if (isWalletConnected) return null;
 
     loadingHandler(true);
     const timer = setTimeout(() => {
@@ -78,12 +84,14 @@ export const useWagmiWallet = (
       const provider = connectors.find((v) =>
         v.name.toLowerCase()?.includes(walletName),
       );
+      console.log({ provider, connectors });
       if (!provider) return null;
-
+      console.log(`found provider and starting connection`);
       connect({ connector: provider });
       return null;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
+      console.log(`failed to connect to ${walletName} wallet`, e);
       console.error(e);
       disconnectWallet();
       if (e.message) {
@@ -94,6 +102,7 @@ export const useWagmiWallet = (
       loadingHandler(false);
       clearTimeout(timer);
     }
+    console.log(`connected to ${walletName} wallet`);
   };
 
   const disconnectWallet = () => {
@@ -134,8 +143,10 @@ export const useWagmiWallet = (
     },
     [walletKeys?.hex],
   );
-  const sendTransaction = async (transaction: SendTransactionArgs) => {
-    let result: SendTransactionResult | undefined;
+  const sendTransaction = async (
+    transaction: SendTransactionVariables<Config, number>,
+  ) => {
+    let result: SendTransactionData = '0x0';
     try {
       result = await sendTransactionAsync(transaction);
     } catch (e) {
@@ -147,7 +158,7 @@ export const useWagmiWallet = (
     } finally {
       loadingHandler(false);
     }
-    return result?.hash;
+    return result;
   };
 
   return {

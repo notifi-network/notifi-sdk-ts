@@ -68,8 +68,11 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
                 key={walletName}
                 className="relative size-[126px] flex items-center justify-between gap-0.5 flex-col rounded-lg border border-notifi-card-border bg-notifi-destination-card-bg cursor-pointer py-3 px-4 text-notifi-text"
                 onClick={async () => {
+                  console.log(`Connecting to ${walletName} wallet...`, {
+                    isInstalled,
+                  });
                   if (!isInstalled) return;
-
+                  console.log({ connect });
                   await connect?.();
                   setIsOpenWalletsModal(false);
                   /** No need to handle loading and error case, use `const {isLoading, error} = useWallets()  */
@@ -85,7 +88,6 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
                 <div className="text-center">
                   {convertWalletName(walletName)}
                 </div>
-
                 {!isInstalled ? (
                   <div
                     onClick={() => {
