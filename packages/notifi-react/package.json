@@ -48,7 +48,6 @@
     "libphonenumber-js": "^1.10.13"
   },
   "devDependencies": {
-    "@types/dompurify": "^3.0.3",
     "@types/marked": "^5.0.1"
   },
   "peerDependencies": {

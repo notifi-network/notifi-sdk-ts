@@ -8,7 +8,7 @@
     "test": "npx lerna run test --concurrency 1",
     "test:node": "npx lerna --scope=@notifi-network/notifi-node run test",
     "test:frontend-client": "npx lerna --scope=@notifi-network/notifi-frontend-client run test",
-    "serve-docs": "npm run docs && light-server -s ./docs -p 4000",
+    "serve-docs": "npm run docs && http-server ./docs -p 4000",
     "docs": "npm run build-docs && cp -r packages/notifi-frontend-client/docs/notifi-frontend-client packages/notifi-node/docs/notifi-node packages/notifi-graphql/docs/notifi-graphql packages/notifi-react/docs/notifi-react packages/notifi-react-wallet-target-plugin/docs/notifi-react-wallet-target-plugin docs",
     "build-docs": "npm run build-docs:frontend-client && npm run build-docs:graphql && npm run build-docs:node && npm run build-docs:react && npm run build-docs:react-wallet-target-plugin",
     "build-docs:frontend-client": "npx typedoc --options packages/notifi-frontend-client/typedoc.json",
@@ -30,7 +30,6 @@
     "husky": "^9.1.6",
     "jest": "^29.0.0",
     "lerna": "^8.1.8",
-    "light-server": "^2.9.1",
     "nx": "^20.0.0",
     "prettier": "^3.0.0",
     "rimraf": "^5.0.0",
@@ -39,7 +38,8 @@
     "typedoc": "^0.26.7",
     "typedoc-plugin-missing-exports": "^3.0.0",
     "typescript": "^5.5.0",
-    "@types/node": "22"
+    "@types/node": "22",
+    "http-server": "14.1.1"
   },
   "workspaces": [
     "packages/notifi-dapp-example",
