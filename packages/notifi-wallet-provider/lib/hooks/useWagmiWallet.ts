@@ -1,5 +1,5 @@
 import converter from 'bech32-converting';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Config,
   useAccount,
@@ -17,6 +17,12 @@ import {
 } from '../utils/localStorageUtils';
 import { walletsWebsiteLink } from '../utils/wallet';
 
+/**
+ * NOTE:
+ * Unlink other useWallet hooks (ex, usePhantom, useKepler ..etc), `selectedWallet` is required here because wagmi does not support async connect methods.
+ * As a result, the post-login logic is handled in a separate hook, which uses
+ * `selectedWallet` to determine whether the wallet is currently active.
+ */
 export const useWagmiWallet = (
   loadingHandler: React.Dispatch<React.SetStateAction<boolean>>,
   errorHandler: (e: Error, durationInMs?: number) => void,
@@ -25,13 +31,12 @@ export const useWagmiWallet = (
   walletName: keyof Wallets,
 ) => {
   const [walletKeys, setWalletKeys] = useState<MetamaskWalletKeys | null>(null);
-  const [isWalletInstalled, setIsWalletInstalled] = useState<boolean>(false);
 
   const { disconnect } = useDisconnect();
   const { signMessageAsync } = useSignMessage();
   // TODO: figure out config
   const { sendTransactionAsync } = useSendTransaction();
-  const { address, isConnected: isWalletConnected, connector } = useAccount();
+  const { address, isConnected } = useAccount();
   const {
     connect,
     connectors,
@@ -39,33 +44,13 @@ export const useWagmiWallet = (
     isPending: isConnecting,
   } = useConnect();
 
-  const isConnected =
-    isWalletConnected && connector?.name.toLowerCase().includes(walletName);
-
-  const handleWalletNotExists = (location: string) => {
-    cleanWalletsInLocalStorage();
-    errorHandler(
-      new Error(
-        `ERROR - ${location}: ${walletName} not initialized or not installed`,
-      ),
-    );
-  };
-
-  useEffect(() => {
-    const provider = connectors.find((v) =>
-      v.name.toLowerCase()?.includes(walletName),
-    );
-    setIsWalletInstalled(!!provider);
+  const isWalletInstalled = useMemo(() => {
+    return !!connectors.find((v) => v.name.toLowerCase()?.includes(walletName));
   }, [connectors]);
 
   useEffect(() => {
-    if (
-      !isConnected ||
-      !address ||
-      !isWalletInstalled ||
-      selectedWallet !== walletName
-    )
-      return;
+    if (!isConnected || !address || !isWalletInstalled) return;
+    if (selectedWallet !== walletName) return;
 
     const walletKeys = {
       bech32: converter('inj').toBech32(address),
@@ -91,11 +76,7 @@ export const useWagmiWallet = (
     loadingHandler(isConnecting);
   }, [isConnecting]);
 
-  const connectWallet = async () // timeoutInMiniSec?: number,
-  : Promise<MetamaskWalletKeys | null> => {
-    // KNOWN ISSUE: Disable because the behavior of this hook (isWalletConnected) is unpredictable
-    // if (isWalletConnected) return null;
-
+  const connectWallet = async (): Promise<MetamaskWalletKeys | null> => {
     const provider = connectors.find((v) =>
       v.name.toLowerCase()?.includes(walletName),
     );
@@ -106,6 +87,7 @@ export const useWagmiWallet = (
       return null;
     }
     selectWallet(walletName);
+    // if (isConnected) return null; /* ⬅ DISABLED - this is not only for certain wallet, this turns true when any wallet in connectors is connected. (KNOWN ISSUE) */
     connect({ connector: provider });
     return null;
   };
@@ -120,8 +102,13 @@ export const useWagmiWallet = (
 
   const signArbitrary = useCallback(
     async (message: string): Promise<`0x${string}` | undefined> => {
-      if (!isConnected || !walletKeys || !address) {
-        handleWalletNotExists('Sign Arbitrary');
+      if (!isConnected || !walletKeys || !address || !isWalletInstalled) {
+        cleanWalletsInLocalStorage();
+        errorHandler(
+          new Error(
+            `ERROR - useWagmiWallet.signArbitrary:: ${walletName} not initialized or not installed`,
+          ),
+        );
         return;
       }
 
@@ -146,8 +133,9 @@ export const useWagmiWallet = (
         clearTimeout(timer);
       }
     },
-    [walletKeys?.hex, address, isConnected],
+    [walletKeys?.hex, address, isConnected, isWalletInstalled],
   );
+
   const sendTransaction = async (
     transaction: SendTransactionVariables<Config, number>,
   ) => {
