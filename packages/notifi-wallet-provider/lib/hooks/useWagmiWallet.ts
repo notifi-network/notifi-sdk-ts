@@ -21,6 +21,7 @@ export const useWagmiWallet = (
   loadingHandler: React.Dispatch<React.SetStateAction<boolean>>,
   errorHandler: (e: Error, durationInMs?: number) => void,
   selectWallet: (wallet: keyof Wallets | null) => void,
+  selectedWallet: keyof Wallets | null,
   walletName: keyof Wallets,
 ) => {
   const [walletKeys, setWalletKeys] = useState<MetamaskWalletKeys | null>(null);
@@ -31,7 +32,17 @@ export const useWagmiWallet = (
   // TODO: figure out config
   const { sendTransactionAsync } = useSendTransaction();
   const { address, isConnected: isWalletConnected, connector } = useAccount();
-  const { connect, connectors } = useConnect();
+  const {
+    connect,
+    connectors,
+    error: connectError,
+    isPending: isConnecting,
+    isSuccess: isNewlyConnected,
+  } = useConnect();
+
+  // useEffect(() => {
+  //   console.log(10, { isSuccessfullyConnected, isWalletConnected, address });
+  // }, [isSuccessfullyConnected]);
 
   const isConnected =
     isWalletConnected && connector?.name.toLowerCase().includes(walletName);
@@ -52,48 +63,99 @@ export const useWagmiWallet = (
     setIsWalletInstalled(!!provider);
   }, [connectors]);
 
+  // useEffect(() => {
+  //   // if (!address || !isWalletInstalled) return;
+  //   console.log(10, { isNewlyConnected, address });
+  //   // if (!address || !isSuccessfullyConnected || selectedWallet !== walletName)
+  //   if (!address || !isNewlyConnected || selectedWallet !== walletName) return;
+  //   // if (isConnected) {
+  //   // if (isSuccessfullyConnected) {
+  //   const walletKeys = {
+  //     bech32: converter('inj').toBech32(address),
+  //     hex: address,
+  //   };
+  //   setWalletKeys(walletKeys);
+  //   // selectWallet(walletName);
+  //   setWalletKeysToLocalStorage(walletName, walletKeys);
+  //   //   return;
+  //   // }
+  //   // disconnect();
+  // }, [address, isNewlyConnected, selectedWallet]);
+  // // }, [address, isWalletInstalled, isConnected]);
+
   useEffect(() => {
-    if (!isConnected || !address || !isWalletInstalled) return;
+    if (
+      !isConnected ||
+      !address ||
+      !isWalletInstalled ||
+      selectedWallet !== walletName
+    )
+      return;
 
     const walletKeys = {
       bech32: converter('inj').toBech32(address),
       hex: address,
     };
     setWalletKeys(walletKeys);
-    selectWallet(walletName);
+    console.log(3, 'setLocalStorage', { walletName, walletKeys });
     setWalletKeysToLocalStorage(walletName, walletKeys);
-  }, [address, isWalletInstalled, isConnected]);
+  }, [address, isWalletInstalled, isConnected, selectedWallet]);
 
-  const connectWallet = async (
-    timeoutInMiniSec?: number,
-  ): Promise<MetamaskWalletKeys | null> => {
+  useEffect(() => {
+    switch (connectError?.name) {
+      case 'UserRejectedRequestError': {
+        const errorMsg = `useWagmiWallets - ${connectError.message}`;
+        console.error(errorMsg);
+        disconnectWallet();
+        errorHandler(new Error(errorMsg), 5000);
+        break;
+      }
+    }
+  }, [connectError]);
+
+  useEffect(() => {
+    loadingHandler(isConnecting);
+  }, [isConnecting]);
+
+  const connectWallet = async () // timeoutInMiniSec?: number,
+  : Promise<MetamaskWalletKeys | null> => {
     /* ⬇  Disable for now because of the viem issue (isWalletConnected turns true even if the wallet is not connected) */
     // if (isWalletConnected) return null;
 
-    loadingHandler(true);
-    const timer = setTimeout(() => {
-      disconnectWallet();
-      loadingHandler(false);
-    }, timeoutInMiniSec ?? 5000);
+    // loadingHandler(true);
+    // const timer = setTimeout(() => {
+    //   disconnectWallet();
+    //   loadingHandler(false);
+    // }, timeoutInMiniSec ?? 0);
 
-    try {
-      const provider = connectors.find((v) =>
-        v.name.toLowerCase()?.includes(walletName),
-      );
-      if (!provider) return null;
-      connect({ connector: provider });
+    // try {
+    const provider = connectors.find((v) =>
+      v.name.toLowerCase()?.includes(walletName),
+    );
+    console.log(4, 'gone through connectWallet', provider);
+    // if (!provider) return null;
+    if (!provider) {
+      const errorMsg = `useWagmiWallets - ${walletName} not initialized or not installed`;
+      console.error(errorMsg);
+      errorHandler(new Error(errorMsg), 5000);
       return null;
-    } catch (e: unknown) {
-      console.error(e);
-      disconnectWallet();
-      if (e instanceof Error) {
-        errorHandler(new Error(e.message));
-      }
-      return null;
-    } finally {
-      loadingHandler(false);
-      clearTimeout(timer);
     }
+    console.log(5, 'provider', provider);
+    selectWallet(walletName);
+    connect({ connector: provider });
+    return null;
+    // } catch (e: unknown) {
+    //   console.log(1, 'error in connectWallet', e);
+    //   console.error(e);
+    //   disconnectWallet();
+    //   if (e instanceof Error) {
+    //     errorHandler(new Error(e.message));
+    //   }
+    //   return null;
+    // } finally {
+    //   loadingHandler(false);
+    //   clearTimeout(timer);
+    // }
   };
 
   const disconnectWallet = () => {

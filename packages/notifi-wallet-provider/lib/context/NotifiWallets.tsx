@@ -91,12 +91,14 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
     setIsLoading,
     throwError,
     selectWallet,
+    selectedWallet,
     'walletconnect',
   );
   const coinbase = useWagmiWallet(
     setIsLoading,
     throwError,
     selectWallet,
+    selectedWallet,
     'coinbase',
   );
 
@@ -238,6 +240,7 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
 
   useEffect(() => {
     const storageWallet = getWalletsFromLocalStorage();
+    console.log(1, 'storageWallet', storageWallet, wallets);
     if (storageWallet) {
       const walletName = storageWallet.walletName;
       if (
