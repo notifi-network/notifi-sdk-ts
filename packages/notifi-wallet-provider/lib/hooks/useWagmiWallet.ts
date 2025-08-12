@@ -119,6 +119,7 @@ export const useWagmiWallet = (
 
   const connectWallet = async () // timeoutInMiniSec?: number,
   : Promise<MetamaskWalletKeys | null> => {
+    console.log({ isWalletConnected, walletName });
     /* ⬇  Disable for now because of the viem issue (isWalletConnected turns true even if the wallet is not connected) */
     // if (isWalletConnected) return null;
 
@@ -140,7 +141,6 @@ export const useWagmiWallet = (
       errorHandler(new Error(errorMsg), 5000);
       return null;
     }
-    console.log(5, 'provider', provider);
     selectWallet(walletName);
     connect({ connector: provider });
     return null;

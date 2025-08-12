@@ -19,6 +19,7 @@ function LoginComponent() {
   useNotifiRouter();
   return null;
 }
+console.log('Rendering Home Component');
 
 export default function Home() {
   const { isLoadingRouter } = useRouterAsync();
@@ -29,10 +30,17 @@ export default function Home() {
   const [isSigningMessage, setIsSigningMessage] = useState(false);
 
   useEffect(() => {
-    if (selectedWallet && wallets[selectedWallet].walletKeys)
+    console.log(100, 'setIsSigningMessage', selectedWallet, wallets);
+    if (selectedWallet && wallets[selectedWallet].walletKeys) {
+      console.log(
+        101,
+        'setIsSigningMessage',
+        selectedWallet,
+        wallets[selectedWallet].walletKeys,
+      );
       setIsSigningMessage(true);
-    else setIsSigningMessage(false);
-  }, [selectedWallet]);
+    } else setIsSigningMessage(false);
+  }, [selectedWallet, wallets]);
 
   useEffect(() => {
     if (error) {
