@@ -240,7 +240,6 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
 
   useEffect(() => {
     const storageWallet = getWalletsFromLocalStorage();
-    console.log(1, 'storageWallet', storageWallet, wallets);
     if (storageWallet) {
       const walletName = storageWallet.walletName;
       if (

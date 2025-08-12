@@ -37,12 +37,7 @@ export const useWagmiWallet = (
     connectors,
     error: connectError,
     isPending: isConnecting,
-    isSuccess: isNewlyConnected,
   } = useConnect();
-
-  // useEffect(() => {
-  //   console.log(10, { isSuccessfullyConnected, isWalletConnected, address });
-  // }, [isSuccessfullyConnected]);
 
   const isConnected =
     isWalletConnected && connector?.name.toLowerCase().includes(walletName);
@@ -63,26 +58,6 @@ export const useWagmiWallet = (
     setIsWalletInstalled(!!provider);
   }, [connectors]);
 
-  // useEffect(() => {
-  //   // if (!address || !isWalletInstalled) return;
-  //   console.log(10, { isNewlyConnected, address });
-  //   // if (!address || !isSuccessfullyConnected || selectedWallet !== walletName)
-  //   if (!address || !isNewlyConnected || selectedWallet !== walletName) return;
-  //   // if (isConnected) {
-  //   // if (isSuccessfullyConnected) {
-  //   const walletKeys = {
-  //     bech32: converter('inj').toBech32(address),
-  //     hex: address,
-  //   };
-  //   setWalletKeys(walletKeys);
-  //   // selectWallet(walletName);
-  //   setWalletKeysToLocalStorage(walletName, walletKeys);
-  //   //   return;
-  //   // }
-  //   // disconnect();
-  // }, [address, isNewlyConnected, selectedWallet]);
-  // // }, [address, isWalletInstalled, isConnected]);
-
   useEffect(() => {
     if (
       !isConnected ||
@@ -97,7 +72,6 @@ export const useWagmiWallet = (
       hex: address,
     };
     setWalletKeys(walletKeys);
-    console.log(3, 'setLocalStorage', { walletName, walletKeys });
     setWalletKeysToLocalStorage(walletName, walletKeys);
   }, [address, isWalletInstalled, isConnected, selectedWallet]);
 
@@ -119,22 +93,12 @@ export const useWagmiWallet = (
 
   const connectWallet = async () // timeoutInMiniSec?: number,
   : Promise<MetamaskWalletKeys | null> => {
-    console.log({ isWalletConnected, walletName });
-    /* ⬇  Disable for now because of the viem issue (isWalletConnected turns true even if the wallet is not connected) */
+    // KNOWN ISSUE: Disable because the behavior of this hook (isWalletConnected) is unpredictable
     // if (isWalletConnected) return null;
 
-    // loadingHandler(true);
-    // const timer = setTimeout(() => {
-    //   disconnectWallet();
-    //   loadingHandler(false);
-    // }, timeoutInMiniSec ?? 0);
-
-    // try {
     const provider = connectors.find((v) =>
       v.name.toLowerCase()?.includes(walletName),
     );
-    console.log(4, 'gone through connectWallet', provider);
-    // if (!provider) return null;
     if (!provider) {
       const errorMsg = `useWagmiWallets - ${walletName} not initialized or not installed`;
       console.error(errorMsg);
@@ -144,18 +108,6 @@ export const useWagmiWallet = (
     selectWallet(walletName);
     connect({ connector: provider });
     return null;
-    // } catch (e: unknown) {
-    //   console.log(1, 'error in connectWallet', e);
-    //   console.error(e);
-    //   disconnectWallet();
-    //   if (e instanceof Error) {
-    //     errorHandler(new Error(e.message));
-    //   }
-    //   return null;
-    // } finally {
-    //   loadingHandler(false);
-    //   clearTimeout(timer);
-    // }
   };
 
   const disconnectWallet = () => {
