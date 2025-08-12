@@ -69,7 +69,6 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
                 className="relative size-[126px] flex items-center justify-between gap-0.5 flex-col rounded-lg border border-notifi-card-border bg-notifi-destination-card-bg cursor-pointer py-3 px-4 text-notifi-text"
                 onClick={async () => {
                   if (!isInstalled) return;
-
                   await connect?.();
                   setIsOpenWalletsModal(false);
                   /** No need to handle loading and error case, use `const {isLoading, error} = useWallets()  */
@@ -85,7 +84,6 @@ export const WalletSelectModal: FC<WalletSelectModalProps> = ({
                 <div className="text-center">
                   {convertWalletName(walletName)}
                 </div>
-
                 {!isInstalled ? (
                   <div
                     onClick={() => {

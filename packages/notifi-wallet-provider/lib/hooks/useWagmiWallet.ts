@@ -1,13 +1,14 @@
 import converter from 'bech32-converting';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
+  Config,
   useAccount,
   useConnect,
   useDisconnect,
   useSendTransaction,
   useSignMessage,
 } from 'wagmi';
-import { SendTransactionArgs, SendTransactionResult } from 'wagmi/actions';
+import { SendTransactionData, SendTransactionVariables } from 'wagmi/query';
 
 import { MetamaskWalletKeys, Wallets } from '../types';
 import {
@@ -16,84 +17,79 @@ import {
 } from '../utils/localStorageUtils';
 import { walletsWebsiteLink } from '../utils/wallet';
 
+/**
+ * NOTE:
+ * Unlink other useWallet hooks (ex, usePhantom, useKepler ..etc), `selectedWallet` is required here because wagmi does not support async connect methods.
+ * As a result, the post-login logic is handled in a separate hook, which uses
+ * `selectedWallet` to determine whether the wallet is currently active.
+ */
 export const useWagmiWallet = (
   loadingHandler: React.Dispatch<React.SetStateAction<boolean>>,
   errorHandler: (e: Error, durationInMs?: number) => void,
   selectWallet: (wallet: keyof Wallets | null) => void,
+  selectedWallet: keyof Wallets | null,
   walletName: keyof Wallets,
 ) => {
   const [walletKeys, setWalletKeys] = useState<MetamaskWalletKeys | null>(null);
-  const [isWalletInstalled, setIsWalletInstalled] = useState<boolean>(false);
 
   const { disconnect } = useDisconnect();
   const { signMessageAsync } = useSignMessage();
   // TODO: figure out config
   const { sendTransactionAsync } = useSendTransaction();
-  const { address, isConnected: isWalletConnected, connector } = useAccount();
-  const { connect, connectors } = useConnect();
+  const { address, isConnected } = useAccount();
+  const {
+    connect,
+    connectors,
+    error: connectError,
+    isPending: isConnecting,
+  } = useConnect();
 
-  const isConnected =
-    isWalletConnected && connector?.name.toLowerCase().includes(walletName);
-
-  const handleWalletNotExists = (location: string) => {
-    cleanWalletsInLocalStorage();
-    errorHandler(
-      new Error(
-        `ERROR - ${location}: ${walletName} not initialized or not installed`,
-      ),
-    );
-  };
-
-  useEffect(() => {
-    const provider = connectors.find((v) =>
-      v.name.toLowerCase()?.includes(walletName),
-    );
-    setIsWalletInstalled(!!provider);
+  const isWalletInstalled = useMemo(() => {
+    return !!connectors.find((v) => v.name.toLowerCase()?.includes(walletName));
   }, [connectors]);
 
   useEffect(() => {
     if (!isConnected || !address || !isWalletInstalled) return;
+    if (selectedWallet !== walletName) return;
 
     const walletKeys = {
       bech32: converter('inj').toBech32(address),
       hex: address,
     };
     setWalletKeys(walletKeys);
-    selectWallet(walletName);
     setWalletKeysToLocalStorage(walletName, walletKeys);
-  }, [address, isWalletInstalled, isConnected]);
+  }, [address, isWalletInstalled, isConnected, selectedWallet]);
 
-  const connectWallet = async (
-    timeoutInMiniSec?: number,
-  ): Promise<MetamaskWalletKeys | null> => {
-    if (isWalletConnected) return null;
-
-    loadingHandler(true);
-    const timer = setTimeout(() => {
-      disconnectWallet();
-      loadingHandler(false);
-    }, timeoutInMiniSec ?? 5000);
-
-    try {
-      const provider = connectors.find((v) =>
-        v.name.toLowerCase()?.includes(walletName),
-      );
-      if (!provider) return null;
-
-      connect({ connector: provider });
-      return null;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (e: any) {
-      console.error(e);
-      disconnectWallet();
-      if (e.message) {
-        errorHandler(new Error(e.message));
+  useEffect(() => {
+    switch (connectError?.name) {
+      case 'UserRejectedRequestError': {
+        const errorMsg = `useWagmiWallets - ${connectError.message}`;
+        console.error(errorMsg);
+        disconnectWallet();
+        errorHandler(new Error(errorMsg), 5000);
+        break;
       }
-      return null;
-    } finally {
-      loadingHandler(false);
-      clearTimeout(timer);
     }
+  }, [connectError]);
+
+  useEffect(() => {
+    loadingHandler(isConnecting);
+  }, [isConnecting]);
+
+  const connectWallet = async (): Promise<MetamaskWalletKeys | null> => {
+    const provider = connectors.find((v) =>
+      v.name.toLowerCase()?.includes(walletName),
+    );
+    if (!provider) {
+      const errorMsg = `useWagmiWallets - ${walletName} not initialized or not installed`;
+      console.error(errorMsg);
+      errorHandler(new Error(errorMsg), 5000);
+      return null;
+    }
+    selectWallet(walletName);
+    // if (isConnected) return null; /* ⬅ DISABLED - this is not only for certain wallet, this turns true when any wallet in connectors is connected. (KNOWN ISSUE) */
+    connect({ connector: provider });
+    return null;
   };
 
   const disconnectWallet = () => {
@@ -106,8 +102,13 @@ export const useWagmiWallet = (
 
   const signArbitrary = useCallback(
     async (message: string): Promise<`0x${string}` | undefined> => {
-      if (!isConnected || !walletKeys || !address) {
-        handleWalletNotExists('Sign Arbitrary');
+      if (!isConnected || !walletKeys || !address || !isWalletInstalled) {
+        cleanWalletsInLocalStorage();
+        errorHandler(
+          new Error(
+            `ERROR - useWagmiWallet.signArbitrary:: ${walletName} not initialized or not installed`,
+          ),
+        );
         return;
       }
 
@@ -132,10 +133,13 @@ export const useWagmiWallet = (
         clearTimeout(timer);
       }
     },
-    [walletKeys?.hex],
+    [walletKeys?.hex, address, isConnected, isWalletInstalled],
   );
-  const sendTransaction = async (transaction: SendTransactionArgs) => {
-    let result: SendTransactionResult | undefined;
+
+  const sendTransaction = async (
+    transaction: SendTransactionVariables<Config, number>,
+  ) => {
+    let result: SendTransactionData = '0x0';
     try {
       result = await sendTransactionAsync(transaction);
     } catch (e) {
@@ -147,7 +151,7 @@ export const useWagmiWallet = (
     } finally {
       loadingHandler(false);
     }
-    return result?.hash;
+    return result;
   };
 
   return {

@@ -1,7 +1,6 @@
 import type { Keplr, StdSignature } from '@keplr-wallet/types';
 import { Connection, Transaction } from '@solana/web3.js';
 import { BrowserProvider, Eip1193Provider } from 'ethers';
-import { SendTransactionArgs } from 'wagmi/actions';
 
 import { PhantomProvider } from './utils/solana.type';
 

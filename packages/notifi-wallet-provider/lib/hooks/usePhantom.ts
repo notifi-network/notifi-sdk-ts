@@ -41,7 +41,6 @@ export const usePhantom = (
       .finally(() => loadingHandler(false));
 
     const handleAccountChange = () => {
-      console.log('Phantom account changed');
       if (!window.phantom) return handlePhantomNotExists('handleAccountChange');
       // TODO: handle public null case
       const walletKeys: PhantomWalletKeys = {

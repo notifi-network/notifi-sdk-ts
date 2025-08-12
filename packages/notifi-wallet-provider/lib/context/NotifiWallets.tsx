@@ -91,12 +91,14 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
     setIsLoading,
     throwError,
     selectWallet,
+    selectedWallet,
     'walletconnect',
   );
   const coinbase = useWagmiWallet(
     setIsLoading,
     throwError,
     selectWallet,
+    selectedWallet,
     'coinbase',
   );
 

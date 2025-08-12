@@ -29,10 +29,10 @@ export default function Home() {
   const [isSigningMessage, setIsSigningMessage] = useState(false);
 
   useEffect(() => {
-    if (selectedWallet && wallets[selectedWallet].walletKeys)
+    if (selectedWallet && wallets[selectedWallet].walletKeys) {
       setIsSigningMessage(true);
-    else setIsSigningMessage(false);
-  }, [selectedWallet]);
+    } else setIsSigningMessage(false);
+  }, [selectedWallet, wallets]);
 
   useEffect(() => {
     if (error) {
