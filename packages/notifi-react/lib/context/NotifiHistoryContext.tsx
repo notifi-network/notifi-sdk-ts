@@ -403,7 +403,7 @@ export const validateEventDetails = (details: {
 };
 
 // TODO: update the type for EventData and AlertData
-type HistoryFusionEventVariables<T extends object = object> = {
+type HistoryFusionEventVariables = {
   EventData: unknown;
   AlertData: unknown;
   NotifiData: {
@@ -434,7 +434,7 @@ const parseHistoryFusionVariablesJson = (
       return variables as HistoryFusionEventVariables;
     }
     return null;
-  } catch (e) {
+  } catch (_e) {
     console.warn(
       'NotifiHistoryContext: Found invalid fusionVariablesJson: ',
       variablesJson,
