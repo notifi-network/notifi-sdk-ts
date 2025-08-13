@@ -8,10 +8,6 @@ interface StdSignature {
   readonly pub_key: PubKey;
   readonly signature: string;
 }
-interface StdSignature {
-  readonly pub_key: PubKey;
-  readonly signature: string;
-}
 
 export type SubscribeMessageType = {
   address: string;
