@@ -36,7 +36,7 @@ export const useKeplr = (
         // https://docs.keplr.app/api/#custom-event
         window.addEventListener('keplr_keystorechange', handleAccountChange);
       })
-      .catch((e) => {
+      .catch((_e) => {
         setIsKeplrInstalled(false);
       })
       .finally(() => loadingHandler(false));

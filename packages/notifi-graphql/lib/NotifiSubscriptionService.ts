@@ -224,8 +224,8 @@ export class NotifiSubscriptionService {
   subscribe = (
     jwt: string | undefined,
     subscriptionQuery: string,
-    onMessageReceived: (data: any) => void | undefined,
-    onError?: (data: any) => void | undefined,
+    onMessageReceived: (data: unknown) => void | undefined,
+    onError?: (data: unknown) => void | undefined,
     onComplete?: () => void | undefined,
   ) => {
     this._jwt = jwt;

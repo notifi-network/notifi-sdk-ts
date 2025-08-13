@@ -61,7 +61,7 @@ export const BTC_BLOCKCHAINS = ['BITCOIN', 'ARCH'] as const;
 export const UNMAINTAINED_BLOCKCHAINS = ['ACALA', 'EVMOS', 'ABSTRACT'] as const;
 
 // All blockchains supported by Notifi - this is used mainly for sanity checking below
-const ALL_BLOCKCHAINS = [
+const _ALL_BLOCKCHAINS = [
   ...COSMOS_BLOCKCHAINS,
   ...EVM_BLOCKCHAINS,
   ...APTOS_BLOCKCHAINS,
@@ -76,13 +76,15 @@ const ALL_BLOCKCHAINS = [
   'UNSPECIFIED',
 ] as const;
 
-type Blockchain = (typeof ALL_BLOCKCHAINS)[number];
+type Blockchain = (typeof _ALL_BLOCKCHAINS)[number];
 
 export type UnmaintainedBlockchain = (typeof UNMAINTAINED_BLOCKCHAINS)[number];
 export function isUnmaintainedBlockchain(
   blockchain: Blockchain,
 ): blockchain is UnmaintainedBlockchain {
-  return UNMAINTAINED_BLOCKCHAINS.includes(blockchain as any);
+  return UNMAINTAINED_BLOCKCHAINS.includes(
+    blockchain as UnmaintainedBlockchain,
+  );
 }
 export function isUsingUnmaintainedBlockchain<
   T extends { walletBlockchain: Blockchain },
@@ -96,7 +98,7 @@ export type CosmosBlockchain = (typeof COSMOS_BLOCKCHAINS)[number];
 export function isCosmosBlockchain(
   blockchain: Blockchain,
 ): blockchain is CosmosBlockchain {
-  return COSMOS_BLOCKCHAINS.includes(blockchain as any);
+  return COSMOS_BLOCKCHAINS.includes(blockchain as CosmosBlockchain);
 }
 export function isUsingCosmosBlockchain<
   T extends { walletBlockchain: Blockchain },
@@ -108,7 +110,7 @@ export type EvmBlockchain = (typeof EVM_BLOCKCHAINS)[number];
 export function isEvmBlockchain(
   blockchain: Blockchain,
 ): blockchain is EvmBlockchain {
-  return EVM_BLOCKCHAINS.includes(blockchain as any);
+  return EVM_BLOCKCHAINS.includes(blockchain as EvmBlockchain);
 }
 export function isUsingEvmBlockchain<
   T extends { walletBlockchain: Blockchain },
@@ -120,7 +122,7 @@ export type AptosBlockchain = (typeof APTOS_BLOCKCHAINS)[number];
 export function isAptosBlockchain(
   blockchain: Blockchain,
 ): blockchain is AptosBlockchain {
-  return APTOS_BLOCKCHAINS.includes(blockchain as any);
+  return APTOS_BLOCKCHAINS.includes(blockchain as AptosBlockchain);
 }
 export function isUsingAptosBlockchain<
   T extends { walletBlockchain: Blockchain },
@@ -132,7 +134,7 @@ export type BtcBlockchain = (typeof BTC_BLOCKCHAINS)[number];
 export function isBtcBlockchain(
   blockchain: Blockchain,
 ): blockchain is BtcBlockchain {
-  return BTC_BLOCKCHAINS.includes(blockchain as any);
+  return BTC_BLOCKCHAINS.includes(blockchain as BtcBlockchain);
 }
 export function isUsingBtcBlockchain<
   T extends { walletBlockchain: Blockchain },
@@ -144,7 +146,7 @@ export type SolanaBlockchain = (typeof SOLANA_BLOCKCHAINS)[number];
 export function isSolanaBlockchain(
   blockchain: Blockchain,
 ): blockchain is SolanaBlockchain {
-  return SOLANA_BLOCKCHAINS.includes(blockchain as any);
+  return SOLANA_BLOCKCHAINS.includes(blockchain as SolanaBlockchain);
 }
 export function isUsingSolanaBlockchain<
   T extends { walletBlockchain: Blockchain },
@@ -156,7 +158,7 @@ export type SuiBlockchain = (typeof SUI_BLOCKCHAINS)[number];
 export function isSuiBlockchain(
   blockchain: Blockchain,
 ): blockchain is SuiBlockchain {
-  return SUI_BLOCKCHAINS.includes(blockchain as any);
+  return SUI_BLOCKCHAINS.includes(blockchain as SuiBlockchain);
 }
 export function isUsingSuiBlockchain<
   T extends { walletBlockchain: Blockchain },

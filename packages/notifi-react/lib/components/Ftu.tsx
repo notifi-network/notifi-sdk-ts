@@ -38,10 +38,7 @@ export type FtuProps = {
 export const Ftu: React.FC<FtuProps> = (props) => {
   const { ftuStage } = useNotifiUserSettingContext();
   const { cardConfig } = useNotifiTenantConfigContext();
-  const {
-    targetDocument: { targetData },
-    isLoading: isLoadingTarget,
-  } = useNotifiTargetContext();
+  const { isLoading: isLoadingTarget } = useNotifiTargetContext();
   const { updateFtuStage } = useNotifiUserSettingContext();
   const [ftuView, setFtuView] = React.useState<FtuView | null>(null);
   const { frontendClientStatus } = useNotifiFrontendClientContext();
