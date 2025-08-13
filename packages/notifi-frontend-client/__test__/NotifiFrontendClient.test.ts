@@ -30,6 +30,8 @@ describe('NotifiFrontendClient Unit Test', () => {
         driverType: 'InMemory',
       },
     );
+    // Sleep 1 second to avoid rate limiting issues
+    return new Promise((resolve) => setTimeout(resolve, 1000));
   });
 
   it('login', async () => {
