@@ -21,10 +21,10 @@ export const NotifiContextProviderWithWalletTargetPlugin: FC<
   PropsWithChildren<NotifiContextProviderProps>
 > = ({ children, ...params }) => {
   const {
-    tenantId,
-    env,
-    storageOption,
-    isEnabledLoginViaTransaction,
+    tenantId: _tenantId,
+    env: _env,
+    storageOption: _storageOption,
+    isEnabledLoginViaTransaction: _isEnabledLoginViaTransaction,
     ...walletWithSignParams
   } = params;
   const contextValue = useXmpt({

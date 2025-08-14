@@ -109,7 +109,9 @@ const updateTargets = async (
     return [];
   }
 
-  let targets: (({ id: string } & Record<any, any>) | undefined)[] | undefined;
+  let targets:
+    | (({ id: string } & Record<string, unknown>) | undefined)[]
+    | undefined;
 
   switch (type) {
     case 'email':

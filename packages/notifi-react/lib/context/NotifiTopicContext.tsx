@@ -312,7 +312,7 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
         const id = alerts[alertName].id;
         try {
           await frontendClient.deleteAlert({ id });
-        } catch (e) {
+        } catch (_e) {
           /* Intentionally left blank */
         }
       }

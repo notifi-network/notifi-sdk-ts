@@ -13,14 +13,14 @@ export type NotifiSubscriptionEvents = {
 };
 
 export type ListenerPayload<
-  T extends Record<string, any[]>,
+  T extends Record<string, unknown[]>,
   K extends keyof T,
 > = {
   callback: (...args: T[K]) => void;
   subscription: Subscription;
 };
 
-export class NotifiEventEmitter<T extends Record<string, Array<any>>> {
+export class NotifiEventEmitter<T extends Record<string, Array<unknown>>> {
   private listeners: {
     [K in keyof T]?: Record<string, ListenerPayload<T, K>>;
   } = {};

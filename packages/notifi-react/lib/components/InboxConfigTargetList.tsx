@@ -1,7 +1,6 @@
 import clsx from 'clsx';
 import React from 'react';
 
-import { useNotifiTargetContext } from '../context';
 import { defaultCopy } from '../utils';
 import { InboxView } from './Inbox';
 import { NavHeader, NavHeaderProps, NavHeaderRightCta } from './NavHeader';
@@ -26,10 +25,6 @@ export type InboxConfigTargetListProps = {
 export const InboxConfigTargetList: React.FC<InboxConfigTargetListProps> = (
   props,
 ) => {
-  const {
-    targetDocument: { targetData },
-  } = useNotifiTargetContext();
-
   return (
     <div
       className={clsx(

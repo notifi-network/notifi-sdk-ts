@@ -39,8 +39,6 @@ export type EIP6963AnnounceProviderEvent = {
 
 declare global {
   interface WindowEventMap {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     'eip6963:announceProvider': CustomEvent;
   }
 }

@@ -1,7 +1,6 @@
 import clsx from 'clsx';
 import React from 'react';
 
-import { Icon } from '../assets/Icons';
 import { useNotifiTopicContext } from '../context';
 import { useComponentPosition } from '../hooks/useComponentPosition';
 import {
