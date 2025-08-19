@@ -31,14 +31,21 @@ export default function NotifiSingupLayout({
 
   return (
     <>
-      {showDisconnectButton ? (
+      {/* {showDisconnectButton ? (
         <div className={`fixed z-40 top-7 right-0.5 hidden md:block`}>
           <Disconnect />
         </div>
-      ) : null}
+      ) : null} */}
 
       <QueryClientProvider client={new QueryClient()}>
-        <NotifiContextWrapper>{children}</NotifiContextWrapper>
+        <NotifiContextWrapper>
+          {showDisconnectButton ? (
+            <div className={`fixed z-40 top-7 right-0.5 hidden md:block`}>
+              <Disconnect />
+            </div>
+          ) : null}
+          {children}
+        </NotifiContextWrapper>
       </QueryClientProvider>
     </>
   );
