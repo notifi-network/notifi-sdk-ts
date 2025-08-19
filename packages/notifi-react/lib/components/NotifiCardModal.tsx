@@ -48,11 +48,8 @@ const navHeaderRightCta: NavHeaderRightCta = {
 };
 
 export const NotifiCardModal: React.FC<NotifiCardModalProps> = (props) => {
-  const {
-    logout,
-    frontendClientStatus,
-    error: clientError,
-  } = useNotifiFrontendClientContext();
+  const { frontendClientStatus, error: clientError } =
+    useNotifiFrontendClientContext();
   const {
     ftuStage,
     error: userSettingError,
@@ -181,7 +178,6 @@ export const NotifiCardModal: React.FC<NotifiCardModalProps> = (props) => {
         props.classNames?.container,
       )}
     >
-      <div onClick={() => logout()}>logout</div>
       {CardModalView === 'connect' ? (
         <Connect
           setCardModalView={setCardModalView}
