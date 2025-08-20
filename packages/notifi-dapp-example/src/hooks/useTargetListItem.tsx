@@ -5,6 +5,7 @@ import {
   hasValidTargetMoreThan,
   isTargetCta,
   isTargetVerified,
+  useNotifiFrontendClientContext,
   useNotifiTargetContext,
   useNotifiTenantConfigContext,
 } from '@notifi-network/notifi-react';
@@ -29,14 +30,17 @@ export const useTargetListItem = (input: {
   message?: TargetListItemMessage;
 }) => {
   const { cardConfig } = useNotifiTenantConfigContext();
-  const { signCoinbaseSignature } = useTargetWallet();
   const {
     targetDocument: { targetData, targetInputs, targetInfoPrompts },
     renewTargetGroup,
+    plugin,
   } = useNotifiTargetContext();
 
+  const { frontendClient, frontendClientStatus } =
+    useNotifiFrontendClientContext();
+
   const isRemoveButtonAvailable = React.useMemo(() => {
-    const isTargetRemovable = !!cardConfig?.isContactInfoRequired
+    const isTargetRemovable = cardConfig?.isContactInfoRequired
       ? hasValidTargetMoreThan(targetData, 0)
       : true;
 
@@ -174,7 +178,8 @@ export const useTargetListItem = (input: {
                 walletTargetId &&
                 walletTargetSenderAddress
               ) {
-                await signCoinbaseSignature(
+                await plugin?.walletTarget.signCoinbaseSignature(
+                  frontendClient,
                   walletTargetId,
                   walletTargetSenderAddress,
                 );
