@@ -16,7 +16,6 @@ import {
   TargetListItemMessage,
   TooltipEndingLink,
 } from '../components/TargetListItem';
-import { useTargetWallet } from './useTargetWallet';
 
 type ClassifiedTargetListItemMessage = {
   type: 'signup' | 'verify' | 'complete';
@@ -96,27 +95,13 @@ export const useTargetListItem = (input: {
                 target: input.target as ToggleTarget,
                 value: true,
               });
-              if (
-                targetGroup?.telegramTargets?.[0]?.confirmationUrl &&
-                !targetGroup?.telegramTargets?.[0]?.isConfirmed
-              ) {
-                const confirmationUrl =
-                  targetGroup?.telegramTargets?.[0]?.confirmationUrl;
+              await new Promise((resolve) => setTimeout(resolve, 500));
 
-                // Attempt to open a new window
-                const newWindow = window.open(confirmationUrl, '_blank');
-
-                // Check if the new window was blocked or failed to open
-                if (
-                  !newWindow ||
-                  newWindow.closed ||
-                  typeof newWindow.closed === 'undefined'
-                ) {
-                  window.location.href = confirmationUrl;
-                }
+              const url = targetGroup?.telegramTargets?.[0]?.confirmationUrl;
+              const isVerified = targetGroup?.telegramTargets?.[0]?.isConfirmed;
+              if (url && !isVerified) {
+                await processVerificationLink(url);
               }
-              //NOTE: Wait for 1 second for target context state change
-              await new Promise((resolve) => setTimeout(resolve, 1000));
             },
           },
         };
@@ -133,27 +118,15 @@ export const useTargetListItem = (input: {
                 value: true,
               });
 
-              if (
-                targetGroup?.discordTargets?.[0]?.verificationLink &&
-                !targetGroup?.discordTargets?.[0]?.isConfirmed
-              ) {
-                const confirmationUrl =
-                  targetGroup?.discordTargets?.[0]?.verificationLink;
+              //NOTE: Wait for 0.5 second for target context state change
+              await new Promise((resolve) => setTimeout(resolve, 500));
 
-                // Attempt to open a new window
-                const newWindow = window.open(confirmationUrl, '_blank');
+              const url = targetGroup?.discordTargets?.[0]?.verificationLink;
+              const isVerified = targetGroup?.discordTargets?.[0]?.isConfirmed;
 
-                // Check if the new window was blocked or failed to open
-                if (
-                  !newWindow ||
-                  newWindow.closed ||
-                  typeof newWindow.closed === 'undefined'
-                ) {
-                  window.location.href = confirmationUrl;
-                }
+              if (url && !isVerified) {
+                await processVerificationLink(url);
               }
-              //NOTE: Wait for 1 second for target context state change
-              await new Promise((resolve) => setTimeout(resolve, 1000));
             },
           },
         };
@@ -165,10 +138,21 @@ export const useTargetListItem = (input: {
             type: 'cta',
             message: 'Sign Wallet',
             onClick: async () => {
+              if (
+                !plugin?.walletTarget.signCoinbaseSignature ||
+                !frontendClientStatus.isAuthenticated
+              ) {
+                console.error(
+                  `useTargetListItem: sing wallet method not available. Please make sure "notifi-react-wallet-target-plugin" pkg is in use.`,
+                );
+                return;
+              }
               const targetGroup = await renewTargetGroup({
                 target: input.target as ToggleTarget,
                 value: true,
               });
+              //NOTE: Wait for 0.5 second for target context state change
+              await new Promise((resolve) => setTimeout(resolve, 500));
               // TODO: Handle error
               const walletTargetId = targetGroup?.web3Targets?.[0]?.id;
               const walletTargetSenderAddress =
@@ -199,10 +183,13 @@ export const useTargetListItem = (input: {
                 target: input.target as ToggleTarget,
                 value: true,
               });
+              //NOTE: Wait for 0.5 second for target context state change
+              await new Promise((resolve) => setTimeout(resolve, 500));
+
               const verificationLink =
                 targetGroup?.slackChannelTargets?.[0]?.verificationLink;
               if (!verificationLink) return;
-              window.open(verificationLink, '_blank');
+              await processVerificationLink(verificationLink);
             },
           },
         };
@@ -252,4 +239,17 @@ export const useTargetListItem = (input: {
     isRemoveButtonAvailable,
     classifiedTargetListItemMessage,
   };
+};
+
+// utils
+const processVerificationLink = async (link: string) => {
+  const newWindow = window.open(link, '_blank');
+  /* ⬇ WORKAROUND: If window popup is blocked, redirect with current window */
+  if (
+    !newWindow ||
+    newWindow.closed ||
+    typeof newWindow.closed === 'undefined'
+  ) {
+    window.open(link, '_self');
+  }
 };
