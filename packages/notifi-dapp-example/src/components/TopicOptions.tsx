@@ -3,6 +3,7 @@ import { capitalize } from '@/utils/stringUtils';
 import {
   CustomInputConstraints,
   FusionEventTopic,
+  TopicMetadata,
   UiType,
   UserInputParam,
   ValueType,
@@ -13,7 +14,7 @@ import React from 'react';
 import { TopicRowCategory } from './TopicList';
 
 type TopicGroupOptionsProps = {
-  topics: FusionEventTopic[];
+  topics: (FusionEventTopic | TopicMetadata)[];
   userInputParam: UserInputParam<UiType>;
   index: number;
   description: string;
@@ -25,7 +26,7 @@ type TopicGroupOptionsProps = {
       };
 };
 type TopicStandAloneOptionsProps = {
-  topic: FusionEventTopic;
+  topic: FusionEventTopic | TopicMetadata;
   userInputParam: UserInputParam<UiType>;
   index: number;
   description?: string;
