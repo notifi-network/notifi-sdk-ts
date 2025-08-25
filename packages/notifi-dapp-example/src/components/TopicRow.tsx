@@ -3,6 +3,7 @@
 import { Icon } from '@/assets/Icon';
 import {
   FusionEventTopic,
+  TopicMetadata,
   UiType,
   UserInputParam,
 } from '@notifi-network/notifi-frontend-client';
@@ -71,7 +72,9 @@ export const TopicRow = <T extends TopicRowCategory>(
       ? uiConfigOverride?.topicDisplayName
       : (benchmarkTopic.uiConfig.name ?? benchmarkTopic.uiConfig.name);
 
-  const toggleStandAloneTopic = async (topic: FusionEventTopic) => {
+  const toggleStandAloneTopic = async (
+    topic: FusionEventTopic | TopicMetadata,
+  ) => {
     if (!targetGroupId) return;
     if (!isAlertSubscribed(fusionEventTypeId)) {
       return subscribeAlertsDefault([topic], targetGroupId);
@@ -79,7 +82,9 @@ export const TopicRow = <T extends TopicRowCategory>(
     unsubscribeAlerts([fusionEventTypeId]);
   };
 
-  const toggleTopicGroup = async (topics: FusionEventTopic[]) => {
+  const toggleTopicGroup = async (
+    topics: (FusionEventTopic | TopicMetadata)[],
+  ) => {
     if (!targetGroupId) return;
     if (!isAlertSubscribed(fusionEventTypeId)) {
       return subscribeAlertsDefault(topics, targetGroupId);
