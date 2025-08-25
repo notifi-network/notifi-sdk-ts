@@ -6,9 +6,11 @@ import { useGlobalStateContext } from '@/context/GlobalStateContext';
 import {
   FusionEventMetadata,
   FusionEventTopic,
+  TopicMetadata,
 } from '@notifi-network/notifi-frontend-client';
 import {
   FtuStage,
+  getFusionEventMetadata,
   isFusionEventMetadata,
   useNotifiFrontendClientContext,
   useNotifiTargetContext,
@@ -122,15 +124,3 @@ export default function NotifiFTU() {
     </>
   );
 }
-
-export const getFusionEventMetadata = (
-  topic: FusionEventTopic,
-): FusionEventMetadata | null => {
-  const parsedMetadata = JSON.parse(
-    topic.fusionEventDescriptor.metadata ?? '{}',
-  );
-  if (isFusionEventMetadata(parsedMetadata)) {
-    return parsedMetadata;
-  }
-  return null;
-};

@@ -1,5 +1,6 @@
 import {
   FusionEventTopic,
+  TopicMetadata,
   UiType,
   UserInputParam,
 } from '@notifi-network/notifi-frontend-client';
@@ -57,7 +58,7 @@ export const useUserInputParmToFilterOption = (
 
   const renewFilterOptions = async (
     option: number | string,
-    topics: FusionEventTopic[],
+    topics: (FusionEventTopic | TopicMetadata)[],
   ) => {
     if (!alertFilterOptions || !targetGroupId) return;
     const updatedAlertFilterOptiopns = getUpdatedAlertFilterOptions(

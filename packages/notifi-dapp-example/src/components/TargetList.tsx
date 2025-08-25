@@ -1,4 +1,7 @@
-import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
+import {
+  CardConfigItemV1,
+  CardConfigItemV2,
+} from '@notifi-network/notifi-frontend-client';
 import { objectKeys } from '@notifi-network/notifi-frontend-client';
 import {
   NotifiTenantConfigContextType,
@@ -11,7 +14,9 @@ import { CoinbaseInfoModal } from './CoinbaseInfoModal';
 import { TargetListItem, TargetListItemProps } from './TargetListItem';
 
 export type TargetListProps = {
-  contactInfo: CardConfigItemV1['contactInfo'];
+  contactInfo:
+    | CardConfigItemV1['contactInfo']
+    | CardConfigItemV2['contactInfo'];
   parentComponent?: 'inbox' | 'ftu';
 };
 export const TargetList: React.FC<TargetListProps> = (props) => {
@@ -26,9 +31,6 @@ export const TargetList: React.FC<TargetListProps> = (props) => {
   const toggleCBInfoModal = () => {
     setIsCBInfoModalOpen(!isCBInfoModalOpen);
   };
-
-  const isSignWalletRequired =
-    targetInfoPrompts.wallet?.infoPrompt?.message === 'Sign Wallet';
 
   const targetListItemArgsList = React.useMemo(() => {
     const order = [

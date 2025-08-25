@@ -1,5 +1,8 @@
 import { LoadingSpinner } from '@/components/LoadingSpinner';
-import { CardConfigItemV1 } from '@notifi-network/notifi-frontend-client';
+import {
+  CardConfigItemV1,
+  CardConfigItemV2,
+} from '@notifi-network/notifi-frontend-client';
 import {
   FtuStage,
   hasValidTargetMoreThan,
@@ -13,7 +16,9 @@ import React from 'react';
 import { TargetList } from './TargetList';
 
 export type FtuTargetListProps = {
-  contactInfo: CardConfigItemV1['contactInfo'];
+  contactInfo:
+    | CardConfigItemV1['contactInfo']
+    | CardConfigItemV2['contactInfo'];
   onClickNext?: () => void;
 };
 export const FtuTargetList: React.FC<FtuTargetListProps> = ({

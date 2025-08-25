@@ -1,6 +1,9 @@
 'use client';
 
-import { FusionEventTopic } from '@notifi-network/notifi-frontend-client';
+import {
+  FusionEventTopic,
+  TopicMetadata,
+} from '@notifi-network/notifi-frontend-client';
 import {
   getFusionEventMetadata,
   useNotifiTenantConfigContext,
@@ -25,12 +28,12 @@ type TopicRowMetadataBase = {
 };
 
 export type TopicStandaloneRowMetadata = TopicRowMetadataBase & {
-  topic: FusionEventTopic;
+  topic: FusionEventTopic | TopicMetadata;
 };
 
 export type TopicGroupRowMetadata = TopicRowMetadataBase & {
   topicGroupName: string;
-  topics: FusionEventTopic[];
+  topics: (FusionEventTopic | TopicMetadata)[];
 };
 
 export const TopicList: React.FC<TopicListProps> = ({
