@@ -1,7 +1,7 @@
 'use client';
 
 import { Icon } from '@/assets/Icon';
-import { isEVMChain } from '@/utils/typeUtils';
+import { getAccountAddress } from '@/utils/wallet';
 import { useNotifiFrontendClientContext } from '@notifi-network/notifi-react';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import React, { useState } from 'react';
@@ -9,13 +9,14 @@ import React, { useState } from 'react';
 export default function Disconnect() {
   const { wallets, selectedWallet } = useWallets();
   const [isWalletMenuOpen, setIsWalletMenuOpen] = useState<boolean>(false);
-  const { logout } = useNotifiFrontendClientContext();
+  const { logout, walletWithSignParams } = useNotifiFrontendClientContext();
   const keys = selectedWallet && wallets[selectedWallet].walletKeys;
-  const accountAddress = keys
-    ? isEVMChain(keys)
-      ? keys.hex?.toLowerCase()
-      : keys.bech32
-    : '';
+
+  if (!walletWithSignParams || !keys) return null;
+
+  const chain = walletWithSignParams.walletBlockchain;
+
+  const accountAddress = getAccountAddress(chain, keys);
 
   if (!accountAddress) return null;
 
