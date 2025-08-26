@@ -139,7 +139,7 @@ export const TopicOptions = <T extends TopicRowCategory>(
                     <label className="relative flex items-center rounded-full cursor-pointer">
                       <input
                         checked={option === selectedOption}
-                        onClick={() => {
+                        onChange={() => {
                           selectOrInputValue(option);
                         }}
                         name={
