@@ -25,7 +25,6 @@ export const useNotifiRouter = () => {
   const pathname = usePathname();
 
   useEffect(() => {
-    console.log(2, 'rerender routing effect');
     if (!frontendClientStatus.isInitialized) return;
     if (frontendClientStatus.isExpired) {
       handleRoute('/notifi/expiry');
@@ -33,11 +32,9 @@ export const useNotifiRouter = () => {
     }
     if (frontendClientStatus.isAuthenticated && !isLoadingFtu) {
       if (ftuStage === FtuStage.Done) {
-        console.log(4, 'rerender routing effect done');
         handleRoute('/notifi/dashboard');
         return;
       } else {
-        console.log(5, 'rerender routing effect ftu');
         handleRoute('/notifi/ftu');
         return;
       }
@@ -45,10 +42,8 @@ export const useNotifiRouter = () => {
   }, [frontendClientStatus, ftuStage, isLoadingFtu]);
 
   useEffect(() => {
-    console.log(3, 'rerender login effect');
     if (isLoginStarted.current || frontendClientStatus.isAuthenticated) return;
     if (pathname !== '/') {
-      console.log(6, 'rerender login effect redirect');
       handleRoute('/');
       return;
     }
