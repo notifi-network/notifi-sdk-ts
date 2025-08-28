@@ -1,10 +1,10 @@
 import { Icon } from '@/assets/Icon';
-import { formatTimestampInHistoryRow } from '@/utils/notifiHistoryUtils';
 import { Types } from '@notifi-network/notifi-graphql';
 import {
   HistoryItem,
   useNotifiHistoryContext,
 } from '@notifi-network/notifi-react';
+import { format, isToday, isWithinInterval, subDays } from 'date-fns';
 
 type HistoryListRowProps = {
   historyDetailEntry: HistoryItem;
@@ -77,5 +77,22 @@ export const HistoryListRow: React.FC<HistoryListRowProps> = ({
         {formatTimestampInHistoryRow(historyDetailEntry.timestamp)}
       </div>
     </div>
+  );
+};
+// Utils
+
+export const formatTimestampInHistoryRow = (timestamp: string) => {
+  const dateObject = new Date(timestamp);
+  const now = new Date();
+  const sevenDaysAgo = subDays(now, 7);
+  return format(
+    new Date(timestamp),
+    isToday(timestamp)
+      ? 'h:mm b'
+      : isWithinInterval(dateObject, { start: sevenDaysAgo, end: now })
+        ? 'eeee'
+        : dateObject.getFullYear() <= now.getFullYear() - 1
+          ? 'MMM d yyyy'
+          : 'MMM d',
   );
 };
