@@ -165,6 +165,7 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
 
   return (
     <NotifiContextProvider
+      key={walletPublicKey}
       tenantId={tenantId}
       env={env}
       walletBlockchain={walletBlockchain}
