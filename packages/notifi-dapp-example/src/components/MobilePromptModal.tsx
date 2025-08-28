@@ -1,6 +1,6 @@
 import { Icon } from '@/assets/Icon';
-import { convertWalletName } from '@/utils/stringUtils';
-import { objectKeys } from '@/utils/typeUtils';
+import { convertWalletName } from '@/utils/wallet';
+import { objectKeys } from '@notifi-network/notifi-frontend-client';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';

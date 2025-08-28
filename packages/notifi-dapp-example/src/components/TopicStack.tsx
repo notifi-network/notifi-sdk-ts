@@ -1,7 +1,5 @@
 import { Icon } from '@/assets/Icon';
-import { formatPriceNumber } from '@/utils/stringUtils';
 import {
-  FusionEventTopic,
   UserInputOptions,
   ValueType,
 } from '@notifi-network/notifi-frontend-client';
