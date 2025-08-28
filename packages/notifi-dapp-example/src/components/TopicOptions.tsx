@@ -1,5 +1,4 @@
 import { useUserInputParmToFilterOption } from '@/hooks/useUserInputParmToFilterOption';
-import { capitalize } from '@/utils/stringUtils';
 import {
   CustomInputConstraints,
   FusionEventTopic,
@@ -140,7 +139,7 @@ export const TopicOptions = <T extends TopicRowCategory>(
                     <label className="relative flex items-center rounded-full cursor-pointer">
                       <input
                         checked={option === selectedOption}
-                        onClick={() => {
+                        onChange={() => {
                           selectOrInputValue(option);
                         }}
                         name={
@@ -172,7 +171,7 @@ export const TopicOptions = <T extends TopicRowCategory>(
                       className="font-light text-notifi-text cursor-pointer select-none ml-2"
                       htmlFor="html"
                     >
-                      {capitalize(String(option))}
+                      {option.charAt(0).toUpperCase() + option.slice(1)}
                     </label>
                   </div>
                 </div>

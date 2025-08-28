@@ -3,13 +3,13 @@ import React from 'react';
 export type ToggleProps = Readonly<{
   disabled: boolean;
   checked: boolean;
-  onChange?: () => void;
+  setChecked: React.Dispatch<React.SetStateAction<boolean>>;
 }>;
 
 export const Toggle: React.FC<ToggleProps> = ({
   disabled,
   checked,
-  onChange,
+  setChecked,
 }: ToggleProps) => {
   return (
     <label
@@ -23,8 +23,8 @@ export const Toggle: React.FC<ToggleProps> = ({
         className="sr-only peer"
         checked={checked}
         disabled={disabled}
-        onChange={() => {
-          onChange?.();
+        onChange={(e) => {
+          setChecked(e.target.checked);
         }}
       />
       <div className="w-7 h-4 rounded-full peer bg-notifi-toggle-off-bg peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:absolute after:top-0.5 after:right-0.5 after:start-[2px] after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-notifi-toggle-on-bg relative"></div>
