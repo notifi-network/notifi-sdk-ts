@@ -5,6 +5,7 @@ import {
   useNotifiUserSettingContext,
 } from '@notifi-network/notifi-react';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
+import { usePathname } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 
 import { useRouterAsync } from './useRouterAsync';
@@ -21,6 +22,7 @@ export const useNotifiRouter = () => {
   const { ftuStage, isLoading: isLoadingFtu } = useNotifiUserSettingContext();
   const { wallets, selectedWallet } = useWallets();
   const isLoginStarted = useRef(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     if (!frontendClientStatus.isInitialized) return;
@@ -41,6 +43,10 @@ export const useNotifiRouter = () => {
 
   useEffect(() => {
     if (isLoginStarted.current || frontendClientStatus.isAuthenticated) return;
+    if (pathname !== '/') {
+      handleRoute('/');
+      return;
+    }
     isLoginStarted.current = true;
     login(); // NOTE: No need handle error & loading, use isLoading & error hook instead
   }, []);
