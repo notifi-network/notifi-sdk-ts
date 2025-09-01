@@ -56,9 +56,6 @@ export default function Home() {
             alt="GMX logo"
           />
         </div>
-        {/* <div className="p-2 rounded-lg h-7 hidden md:block">
-          <PoweredByNotifi />
-        </div> */}
       </div>
 
       <EcosystemHero
