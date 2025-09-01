@@ -53,5 +53,8 @@
     "packages/notifi-react",
     "packages/notifi-react-example-v2",
     "packages/notifi-react-wallet-target-plugin"
-  ]
+  ],
+  "engines": {
+    "node": "22.17.1"
+  }
 }
