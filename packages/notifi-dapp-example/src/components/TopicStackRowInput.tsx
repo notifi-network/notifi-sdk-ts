@@ -49,7 +49,8 @@ export const TopicStackRowInput = <T extends TopicRowCategory>(
 ) => {
   const isTopicGroup = isTopicGroupStackRowInput(props);
   const benchmarkTopic = isTopicGroup ? props.topics[0] : props.topic;
-  const { setGlobalError } = useGlobalStateContext();
+  // const { setGlobalError } = useGlobalStateContext();
+  const { popGlobalInfoModal } = useGlobalStateContext();
   const subscriptionValueOrRef = getFusionEventMetadata(
     isTopicGroup ? props.topics[0] : props.topic,
   )?.uiConfigOverride?.subscriptionValueOrRef;
@@ -195,7 +196,12 @@ export const TopicStackRowInput = <T extends TopicRowCategory>(
   };
 
   if (topicError) {
-    setGlobalError(topicError.message);
+    // setGlobalError(topicError.message);
+    popGlobalInfoModal({
+      message: topicError.message,
+      iconOrEmoji: { type: 'icon', id: 'warning' },
+      timeout: 5000,
+    });
   }
 
   return (
