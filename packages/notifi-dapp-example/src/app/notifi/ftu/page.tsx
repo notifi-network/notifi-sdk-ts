@@ -4,14 +4,8 @@ import { FtuAlertEdit } from '@/components/FtuAlertEdit';
 import { FtuTargetList } from '@/components/FtuTargetList';
 import { useGlobalStateContext } from '@/context/GlobalStateContext';
 import {
-  FusionEventMetadata,
-  FusionEventTopic,
-  TopicMetadata,
-} from '@notifi-network/notifi-frontend-client';
-import {
   FtuStage,
   getFusionEventMetadata,
-  isFusionEventMetadata,
   useNotifiFrontendClientContext,
   useNotifiTargetContext,
   useNotifiTenantConfigContext,
@@ -39,7 +33,7 @@ export default function NotifiFTU() {
   const [ftuView, setFtuView] = React.useState<FtuView | null>(null);
   const { frontendClientStatus } = useNotifiFrontendClientContext();
   const isInitialLoaded = React.useRef(false);
-  const { setGlobalError } = useGlobalStateContext();
+  const { popGlobalInfoModal } = useGlobalStateContext();
 
   if (!cardConfig) {
     return null;
@@ -47,7 +41,11 @@ export default function NotifiFTU() {
 
   const subscribeAndUpdateFtuStage = async () => {
     if (!targetGroupId || !frontendClientStatus.isAuthenticated) {
-      setGlobalError('Missing targetGroupId or user is not authenticated');
+      popGlobalInfoModal({
+        message: 'Missing targetGroupId or user is not authenticated',
+        iconOrEmoji: { type: 'icon', id: 'warning' },
+        timeout: 5000,
+      });
       return;
     }
     try {
@@ -64,8 +62,12 @@ export default function NotifiFTU() {
       } else {
         await updateFtuStage(FtuStage.Alerts);
       }
-    } catch (error) {
-      setGlobalError('Failed to subscribe and update FTU stage:');
+    } catch (_e) {
+      popGlobalInfoModal({
+        message: 'Failed to subscribe and update FTU stage:',
+        iconOrEmoji: { type: 'icon', id: 'warning' },
+        timeout: 5000,
+      });
     }
   };
 
