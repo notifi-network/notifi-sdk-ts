@@ -6,9 +6,10 @@ import { DashboardHistory } from '@/components/DashboardHistory';
 import { DashboardSideBar } from '@/components/DashboardSideBar';
 import { TopicList } from '@/components/TopicList';
 import { VerifyBanner } from '@/components/VerifyBanner';
-import { isEVMChain } from '@/utils/typeUtils';
+import { getAccountAddress } from '@/utils/wallet';
 import {
   hasValidTargetMoreThan,
+  useNotifiFrontendClientContext,
   useNotifiTargetContext,
 } from '@notifi-network/notifi-react';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
@@ -23,17 +24,21 @@ export default function NotifiDashboard() {
     unVerifiedTargets,
     targetDocument: { targetData },
   } = useNotifiTargetContext();
+  const { walletWithSignParams } = useNotifiFrontendClientContext();
   const { selectedWallet, wallets } = useWallets();
   const [isSideBarOpen, setIsSideBarOpen] = useState<boolean>(false);
   const [isInHistoryDetail, setIsInHistoryDetail] = useState<boolean>(false);
 
   if (!selectedWallet || !wallets[selectedWallet].walletKeys) return null;
 
-  let accountAddress: string | undefined = '';
+  let accountAddress: string | null = '';
   const keys = wallets[selectedWallet].walletKeys;
 
   if (keys) {
-    accountAddress = isEVMChain(keys) ? keys.hex?.toLowerCase() : keys.bech32;
+    accountAddress = getAccountAddress(
+      walletWithSignParams.walletBlockchain,
+      keys,
+    );
   }
 
   if (!accountAddress) return;

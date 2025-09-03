@@ -48,6 +48,7 @@ export const useInjectedWallet = (
       provider
         .request?.({ method: 'eth_accounts' })
         .then((accounts: string[]) => {
+          if (!accounts || accounts.length === 0) return;
           const walletKeys = {
             bech32: converter('inj').toBech32(accounts[0]), // TODO: dynamic cosmos chain addr conversion
             hex: accounts[0],

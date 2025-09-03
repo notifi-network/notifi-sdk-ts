@@ -84,7 +84,7 @@ export const HistoryList: React.FC<HistoryListProps> = ({
             <Toggle
               disabled={false}
               checked={!isIncludeRead}
-              onChange={() => setIsIncludeRead(!isIncludeRead)}
+              setChecked={() => setIsIncludeRead(!isIncludeRead)}
             />
           </div>
         </div>

@@ -3,6 +3,7 @@
 import { Icon } from '@/assets/Icon';
 import {
   FusionEventTopic,
+  TopicMetadata,
   UiType,
   UserInputParam,
 } from '@notifi-network/notifi-frontend-client';
@@ -71,18 +72,11 @@ export const TopicRow = <T extends TopicRowCategory>(
       ? uiConfigOverride?.topicDisplayName
       : (benchmarkTopic.uiConfig.name ?? benchmarkTopic.uiConfig.name);
 
-  const toggleStandAloneTopic = async (topic: FusionEventTopic) => {
-    if (!targetGroupId) return;
+  const toggleTopic = async (topics: (FusionEventTopic | TopicMetadata)[]) => {
+    if (!targetGroupId || topics.length === 0) return;
     if (!isAlertSubscribed(fusionEventTypeId)) {
-      return subscribeAlertsDefault([topic], targetGroupId);
-    }
-    unsubscribeAlerts([fusionEventTypeId]);
-  };
-
-  const toggleTopicGroup = async (topics: FusionEventTopic[]) => {
-    if (!targetGroupId) return;
-    if (!isAlertSubscribed(fusionEventTypeId)) {
-      return subscribeAlertsDefault(topics, targetGroupId);
+      await subscribeAlertsDefault(topics, targetGroupId);
+      return;
     }
     const topicsToBeUnsubscribed = topics.filter((topic) =>
       topic.fusionEventDescriptor.id
@@ -133,11 +127,8 @@ export const TopicRow = <T extends TopicRowCategory>(
           <Toggle
             checked={isAlertSubscribed(fusionEventTypeId)}
             disabled={isLoadingTopic}
-            onChange={async () => {
-              if (isTopicGroup) {
-                return toggleTopicGroup(props.topics);
-              }
-              toggleStandAloneTopic(benchmarkTopic);
+            setChecked={async () => {
+              toggleTopic(isTopicGroup ? props.topics : [props.topic]);
             }}
           />
         </div>

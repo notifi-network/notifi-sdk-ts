@@ -1,8 +1,8 @@
 'use client';
 
 import { Icon } from '@/assets/Icon';
-import { formatTimestampInHistoryDetail } from '@/utils/notifiHistoryUtils';
 import { HistoryItem } from '@notifi-network/notifi-react';
+import { format, parseISO } from 'date-fns';
 import DOMPurify from 'dompurify';
 import { Dispatch, SetStateAction, useMemo } from 'react';
 
@@ -68,4 +68,14 @@ export const HistoryDetail: React.FC<HistoryDetailProps> = ({
       </div>
     </div>
   );
+};
+
+// Utils
+
+const formatTimestampInHistoryDetail = (date: string): string => {
+  try {
+    return format(parseISO(date), 'PPPp');
+  } catch {
+    return '-';
+  }
 };

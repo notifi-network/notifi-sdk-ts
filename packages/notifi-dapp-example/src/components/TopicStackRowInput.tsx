@@ -3,11 +3,11 @@ import {
   FusionEventTopic,
   FusionFilterOptions,
   InputObject,
+  TopicMetadata,
   UiType,
   UserInputParam,
 } from '@notifi-network/notifi-frontend-client';
 import {
-  TopicStackAlert,
   TopicWithFilterOption,
   composeTopicStackAlertName,
   convertOptionValue,
@@ -27,13 +27,13 @@ import { TopicRowCategory } from './TopicList';
 import { TopicOptions } from './TopicOptions';
 
 type TopicGroupStackRowInputProps = {
-  topics: FusionEventTopic[];
+  topics: (FusionEventTopic | TopicMetadata)[];
   onSave?: () => void;
   setIsTopicStackRowInputVisible: (visible: boolean) => void;
   isTopicStackRowInputVisible: boolean;
 };
 type TopicStandAloneStackRowInputProps = {
-  topic: FusionEventTopic;
+  topic: FusionEventTopic | TopicMetadata;
   onSave?: () => void;
   setIsTopicStackRowInputVisible: (visible: boolean) => void;
   isTopicStackRowInputVisible: boolean;
@@ -49,13 +49,13 @@ export const TopicStackRowInput = <T extends TopicRowCategory>(
 ) => {
   const isTopicGroup = isTopicGroupStackRowInput(props);
   const benchmarkTopic = isTopicGroup ? props.topics[0] : props.topic;
-  const { setGlobalError } = useGlobalStateContext();
+  const { popGlobalInfoModal } = useGlobalStateContext();
   const subscriptionValueOrRef = getFusionEventMetadata(
     isTopicGroup ? props.topics[0] : props.topic,
   )?.uiConfigOverride?.subscriptionValueOrRef;
 
   if (!subscriptionValueOrRef) {
-    return null; // TODO: handle undefined or error
+    return null;
   }
 
   const [subscriptionValue, setSubscriptionValue] =
@@ -64,8 +64,6 @@ export const TopicStackRowInput = <T extends TopicRowCategory>(
     React.useState<FusionFilterOptions | null>(null);
   const [isLoading, setIsLoading] = React.useState(false);
 
-  // TODO: Move to hooks
-  // TODO: use useMemo when it (filters array) possibly grows huge
   const filterName = getFusionEventMetadata(
     isTopicGroup ? props.topics[0] : props.topic,
   )?.filters.find(isAlertFilter)?.name;
@@ -90,7 +88,6 @@ export const TopicStackRowInput = <T extends TopicRowCategory>(
   };
 
   React.useEffect(() => {
-    // Initial set up for filterOptionsToBeSubscribed
     if (userInputParams && filterName) {
       const input: FusionFilterOptions['input'] = {
         [filterName]: {},
@@ -115,7 +112,6 @@ export const TopicStackRowInput = <T extends TopicRowCategory>(
   // TODO: Move to hooks
   const isUserInputParamsValid = React.useMemo(() => {
     if (filterOptionsToBeSubscribed && filterName) {
-      filterOptionsToBeSubscribed.input[filterName];
       const isAllFieldsInputted = userInputParams.every((userInputParam) => {
         const input = filterOptionsToBeSubscribed.input;
         return (
@@ -189,12 +185,18 @@ export const TopicStackRowInput = <T extends TopicRowCategory>(
     }
     setSubscriptionValue(null);
     props.setIsTopicStackRowInputVisible(false);
-    props.onSave && props.onSave();
+    if (props.onSave) {
+      props.onSave();
+    }
     setIsLoading(false);
   };
 
   if (topicError) {
-    setGlobalError(topicError.message);
+    popGlobalInfoModal({
+      message: topicError.message,
+      iconOrEmoji: { type: 'icon', id: 'warning' },
+      timeout: 5000,
+    });
   }
 
   return (
