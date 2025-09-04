@@ -1,5 +1,10 @@
-import { NotifiFrontendClient } from '@notifi-network/notifi-frontend-client';
+import {
+  NotifiFrontendClient,
+  TopicUiConfig,
+  resolveStringRef,
+} from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
+import { FusionEventTypeItem } from 'notifi-frontend-client/dist';
 import React, {
   FC,
   PropsWithChildren,
@@ -139,22 +144,23 @@ export const NotifiHistoryContextProvider: FC<
   const getHistoryItems = React.useCallback(
     async (initialLoad?: boolean) => {
       if (!frontendClientStatus.isAuthenticated) return;
-      const cardEventTypeNames = new Set(
-        cardConfig?.eventTypes?.map((event) => event.name) ?? [],
+      const cardEventFusionIds = new Set(
+        cardConfig?.eventTypes
+          ?.filter(
+            (event): event is TopicUiConfig | FusionEventTypeItem =>
+              event.type === 'fusion',
+          )
+          .map((event) => {
+            const fusionEventId = event.fusionEventId;
+            if (typeof fusionEventId === 'string') return fusionEventId;
+            return resolveStringRef(
+              'getHistoryItems: Legacy event - CardConfigItemV1',
+              fusionEventId,
+              {},
+            );
+          }) ?? [],
       );
-      // TODO: Use FusionEventId to filter the history items (Blocker: MVP-5101)
-      // const cardEventFusionIds = new Set(
-      //   cardConfig?.eventTypes?.map((event) =>
-      //     event.type === 'fusion'
-      //       ? resolveStringRef(
-      //           `getHistoryItem - resolve ${event.name}`,
-      //           event.fusionEventId,
-      //           {},
-      //         )
-      //       : '',
-      //   ) ?? [],
-      // );
-      if (cardEventTypeNames.size === 0) {
+      if (cardEventFusionIds.size === 0) {
         return;
       }
       if (!initialLoad && !cursorInfo.hasNextPage) {
@@ -176,13 +182,14 @@ export const NotifiHistoryContextProvider: FC<
         if (!result || result.nodes?.length === 0 || !result.nodes) {
           return;
         }
-        //NOTE: Filter out the unsupported legacy history items
+        // NOTE: Filter out the unsupported legacy history items
         const validHistoryItems = result.nodes.filter((node) => {
           if (!node.detail || !validateEventDetails(node.detail)) return false;
-          return cardEventTypeNames.has(node.detail.sourceName);
-          // TODO: Use FusionEventId to filter the history items (Blocker: MVP-5101)
-          // ||
-          // cardEventFusionIds.has(node.detail.fusionEventId)
+          // Filter by fusionEventId for uniqueness
+          const fusionEventId = parseHistoryFusionVariablesJson(
+            node.fusionEventVariables,
+          )?.NotifiData.EventTypeId;
+          return fusionEventId && cardEventFusionIds.has(fusionEventId);
         });
 
         setHistoryItems((existing) =>
@@ -334,12 +341,12 @@ export const NotifiHistoryContextProvider: FC<
         };
       }
 
+      const fusionEventId =
+        parseHistoryFusionVariablesJson(fusionEventVariables)?.NotifiData
+          .EventTypeId;
       const fusionEventTopic = fusionEventTopics.find(
         (fusionEventTopic) =>
-          // TODO: Use FusionEventId to find the topic (Blocker: MVP-5101)
-          // fusionEventTopic.uiConfig.fusionEventId ===
-          //   eventDetails.fusionEventId ||
-          fusionEventTopic.uiConfig.name === eventDetails.sourceName,
+          fusionEventTopic.fusionEventDescriptor.id === fusionEventId,
       );
       const fusionEventMetadata = fusionEventTopic
         ? getFusionEventMetadata(fusionEventTopic)
