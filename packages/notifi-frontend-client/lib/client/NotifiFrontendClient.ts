@@ -13,7 +13,7 @@ import {
   type TopicMetadata,
 } from '../models';
 import type { NotifiStorage } from '../storage';
-import { notNullOrEmpty, parseTenantConfig } from '../utils';
+import { notNullOrEmpty, parseTenantConfig, resolveStringRef } from '../utils';
 import { areIdsEqual } from '../utils/areIdsEqual';
 import {
   type AlterTargetGroupParams,
@@ -207,14 +207,20 @@ export class NotifiFrontendClient {
     const fusionEventDescriptorMap = new Map<
       string,
       Types.FusionEventDescriptor
-    >(fusionEventDescriptors.map((item) => [item?.name ?? '', item ?? {}]));
+    >(fusionEventDescriptors.map((item) => [item?.id ?? '', item ?? {}]));
 
     fusionEventDescriptorMap.delete('');
 
     const topicMetadatas = tenantConfig.eventTypes.map((eventType) => {
       if (eventType.type === 'fusion') {
         const fusionEventDescriptor = fusionEventDescriptorMap.get(
-          eventType.name,
+          typeof eventType.fusionEventId === 'string'
+            ? eventType.fusionEventId
+            : resolveStringRef(
+                'fetchTenantConfig: Lagacy event - CardConfigItemV1',
+                eventType.fusionEventId,
+                {},
+              ),
         );
         return {
           uiConfig: eventType,
