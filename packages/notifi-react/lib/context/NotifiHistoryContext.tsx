@@ -151,13 +151,13 @@ export const NotifiHistoryContextProvider: FC<
               event.type === 'fusion',
           )
           .map((event) => {
-            const fusionEventId = event.fusionEventId;
-            if (typeof fusionEventId === 'string') return fusionEventId;
-            return resolveStringRef(
-              'getHistoryItems: Legacy event - CardConfigItemV1',
-              fusionEventId,
-              {},
-            );
+            return typeof event.fusionEventId === 'string'
+              ? event.fusionEventId
+              : resolveStringRef(
+                  'getHistoryItems: Legacy event - CardConfigItemV1',
+                  event.fusionEventId,
+                  {},
+                );
           }) ?? [],
       );
       if (cardEventFusionIds.size === 0) {
