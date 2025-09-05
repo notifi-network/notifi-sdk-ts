@@ -2,6 +2,7 @@ import {
   FusionEventTopic,
   TopicMetadata,
   parseTenantConfig,
+  resolveStringRef,
 } from '@notifi-network/notifi-frontend-client';
 import { Types } from '@notifi-network/notifi-graphql';
 import { CyHttpMessages } from 'cypress/types/net-stubbing';
@@ -19,7 +20,7 @@ export const getTopicList = (
     throw new Error('No fusion events found in tenant config');
 
   const fusionEventDescriptorMap = new Map<string, Types.FusionEventDescriptor>(
-    fusionEventDescriptors.map((item: any) => [item?.name ?? '', item ?? {}]),
+    fusionEventDescriptors.map((item: any) => [item?.id ?? '', item ?? {}]),
   );
 
   fusionEventDescriptorMap.delete('');
@@ -28,7 +29,13 @@ export const getTopicList = (
     .map((eventType) => {
       if (eventType.type === 'fusion') {
         const fusionEventDescriptor = fusionEventDescriptorMap.get(
-          eventType.name,
+          typeof eventType.fusionEventId === 'string'
+            ? eventType.fusionEventId
+            : resolveStringRef(
+                'fetchTenantConfig: Lagacy event - CardConfigItemV1',
+                eventType.fusionEventId,
+                {},
+              ),
         );
         return {
           uiConfig: eventType,
