@@ -44,6 +44,10 @@ export const EVM_BLOCKCHAINS = [
   'SONIC',
   'INK',
   'SWELLCHAIN',
+  'HEMI',
+  'CORE_BLOCKCHAIN_MAINNET',
+  'GOAT_NETWORK',
+  'NIBURU_CATACLYSM1',
   'ROME',
   'ZKSYNC',
 ] as const;
