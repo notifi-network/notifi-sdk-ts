@@ -156,7 +156,7 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
               walletAddress: [{ label: '', value: walletPublicKey }],
             }}
             notificationCountPerPage={8}
-            isEnabledLoginViaTransaction // TODO: Enable when ready
+            isEnabledLoginViaTransaction
           >
             {children}
           </NotifiContextProvider>
