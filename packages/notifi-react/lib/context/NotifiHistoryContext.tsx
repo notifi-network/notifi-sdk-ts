@@ -1,4 +1,5 @@
 import {
+  HistoryFusionEventVariables,
   NotifiFrontendClient,
   TopicUiConfig,
   resolveStringRef,
@@ -407,25 +408,6 @@ export const validateEventDetails = (details: {
   __typename: string;
 }): details is ValidEventDetail => {
   return details.__typename === 'GenericEventDetails';
-};
-
-// TODO: update the type for EventData and AlertData
-type HistoryFusionEventVariables = {
-  EventData: unknown;
-  AlertData: unknown;
-  NotifiData: {
-    TenantId: string;
-    TenantName: string;
-    ChangeSignature: string;
-    SourceTypeId: string;
-    AlertId: string;
-    ComparisonValue: string;
-    EventTypeId: string;
-    TopicHistoryDisplayName: string;
-    Blockchain: string;
-    PixelUrl: string;
-  };
-  unsubscribe_url: string;
 };
 
 const parseHistoryFusionVariablesJson = (

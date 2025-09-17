@@ -93,3 +93,24 @@ export type UserInputOptions = Record<
   UserInputParam<UiType>['name'],
   UserInputParam<UiType>['options'][number]
 >;
+
+/**
+ * FusionNotificationHistoryEntry.fusionEventVariables
+ */
+export type HistoryFusionEventVariables = {
+  EventData: unknown;
+  AlertData: unknown;
+  NotifiData: {
+    TenantId: string;
+    TenantName: string;
+    ChangeSignature: string;
+    SourceTypeId: string;
+    AlertId: string;
+    ComparisonValue: string;
+    EventTypeId: string;
+    TopicHistoryDisplayName: string;
+    Blockchain: string;
+    PixelUrl: string;
+  };
+  unsubscribe_url: string;
+};
