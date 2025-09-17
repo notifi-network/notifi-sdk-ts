@@ -1,5 +1,4 @@
 import { useNotifiFrontendClientContext } from '@notifi-network/notifi-react';
-import { ethers } from 'ethers';
 import React from 'react';
 
 export const useSignTransaction = () => {
@@ -9,11 +8,9 @@ export const useSignTransaction = () => {
   const { walletWithSignParams, loginViaTransaction } =
     useNotifiFrontendClientContext();
 
-  const isSupported = [
-    'SOLANA',
-    // TODO: ⬇ Impl other blockchains transaction
-    'ARBITRUM',
-  ].includes(walletWithSignParams.walletBlockchain);
+  const isSupported = ['SOLANA', 'ARBITRUM'].includes(
+    walletWithSignParams.walletBlockchain,
+  );
 
   const signTransaction = React.useCallback(async () => {
     if (!loginViaTransaction) return;

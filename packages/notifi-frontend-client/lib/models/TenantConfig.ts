@@ -1,4 +1,3 @@
-// TODO: Import from library rather than copy / paste
 import { Types as Gql, Types } from '@notifi-network/notifi-graphql';
 
 import { CardConfigType } from '../client';
@@ -13,7 +12,10 @@ export type SmsContactInfo = ContactInfo &
     supportedCountryCodes: ReadonlyArray<CountryCode>;
   }>;
 
-/** Difference from Target in NotifiTargetContext is `sms` (phoneNumber in NotifiTargetContext) --> consolidate in the future */
+/**
+ * The difference from `Target` in `NotifiTargetContext` is the use of `sms`
+ * instead of `phoneNumber` (as used in `NotifiTargetContext`).
+ */
 export type TenantConfigTarget =
   | 'email'
   | 'sms'
