@@ -20,8 +20,9 @@
     "url": "git+https://github.com/notifi-network/notifi-sdk-ts.git"
   },
   "scripts": {
-    "dev": "next dev",
-    "build:next": "next build",
+    "dev": "npm run generate:sprite-icon-id && next dev",
+    "build:next": "npm run generate:sprite-icon-id && next build",
+    "generate:sprite-icon-id": "node src/utils/generateSpriteIconId.js",
     "start": "next start",
     "lint": "next lint"
   },
