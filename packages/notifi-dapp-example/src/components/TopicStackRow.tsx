@@ -1,5 +1,4 @@
 import { Icon } from '@/assets/Icon';
-import { useUserInputParmToFilterOption } from '@/hooks/useUserInputParmToFilterOption';
 import {
   TopicStackAlert,
   getFusionEventMetadata,
@@ -105,15 +104,11 @@ export const TopicStackRow = <T extends TopicRowCategory>(
       {isTopicStackRowInputVisible || topicStackAlerts.length === 0 ? (
         isTopicGroup ? (
           <TopicStackRowInput
-            isTopicStackRowInputVisible={isTopicStackRowInputVisible}
-            setIsTopicStackRowInputVisible={setIsTopicStackRowInputVisible}
             topics={props.topics}
             onSave={() => setIsTopicStackRowInputVisible(false)}
           />
         ) : (
           <TopicStackRowInput
-            isTopicStackRowInputVisible={isTopicStackRowInputVisible}
-            setIsTopicStackRowInputVisible={setIsTopicStackRowInputVisible}
             topic={props.topic}
             onSave={() => setIsTopicStackRowInputVisible(false)}
           />
