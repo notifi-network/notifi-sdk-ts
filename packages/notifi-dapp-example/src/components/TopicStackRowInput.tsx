@@ -1,22 +1,18 @@
-import { useGlobalStateContext } from '@/context/GlobalStateContext';
+import { useTopicStackRowInput } from '@/hooks/useTopicStackRowInput';
 import {
   FusionEventTopic,
-  FusionFilterOptions,
-  InputObject,
   TopicMetadata,
   UiType,
   UserInputParam,
 } from '@notifi-network/notifi-frontend-client';
 import {
-  TopicWithFilterOption,
-  composeTopicStackAlertName,
   convertOptionValue,
   getFusionEventMetadata,
   getFusionFilter,
   getUpdatedAlertFilterOptions,
   getUserInputParams,
   isAlertFilter,
-  useNotifiTargetContext,
+  isTopicGroupValid,
   useNotifiTopicContext,
 } from '@notifi-network/notifi-react';
 import React from 'react';
@@ -26,56 +22,73 @@ import { SubscriptionValueInput } from './SubscriptionValueInput';
 import { TopicRowCategory } from './TopicList';
 import { TopicOptions } from './TopicOptions';
 
-type TopicGroupStackRowInputProps = {
-  topics: (FusionEventTopic | TopicMetadata)[];
+export type TopicStackRowInputPropsBase = {
+  classNames?: {
+    container?: string;
+    button?: string;
+    loadingSpinner?: React.CSSProperties;
+  };
   onSave?: () => void;
-  setIsTopicStackRowInputVisible: (visible: boolean) => void;
-  isTopicStackRowInputVisible: boolean;
+  copy?: {
+    buttonContent?: string;
+  };
 };
-type TopicStandAloneStackRowInputProps = {
+type TopicStackGroupRowInputProps = TopicStackRowInputPropsBase & {
+  topics: (FusionEventTopic | TopicMetadata)[];
+};
+
+type TopicStackStandaloneRowInputProps = TopicStackRowInputPropsBase & {
   topic: FusionEventTopic | TopicMetadata;
-  onSave?: () => void;
-  setIsTopicStackRowInputVisible: (visible: boolean) => void;
-  isTopicStackRowInputVisible: boolean;
 };
 
 export type TopicStackRowInputProps<T extends TopicRowCategory> =
   T extends 'standalone'
-    ? TopicStandAloneStackRowInputProps
-    : TopicGroupStackRowInputProps;
+    ? TopicStackStandaloneRowInputProps
+    : TopicStackGroupRowInputProps;
 
 export const TopicStackRowInput = <T extends TopicRowCategory>(
   props: TopicStackRowInputProps<T>,
 ) => {
-  const isTopicGroup = isTopicGroupStackRowInput(props);
+  const isTopicGroup = isTopicStackRowInput(props);
   const benchmarkTopic = isTopicGroup ? props.topics[0] : props.topic;
-  const { popGlobalInfoModal } = useGlobalStateContext();
-  const subscriptionValueOrRef = getFusionEventMetadata(
-    isTopicGroup ? props.topics[0] : props.topic,
-  )?.uiConfigOverride?.subscriptionValueOrRef;
-
-  if (!subscriptionValueOrRef) {
-    return null;
-  }
-
-  const [subscriptionValue, setSubscriptionValue] =
-    React.useState<InputObject | null>(null);
-  const [filterOptionsToBeSubscribed, setFilterOptionsToBeSubscribed] =
-    React.useState<FusionFilterOptions | null>(null);
-  const [isLoading, setIsLoading] = React.useState(false);
-
-  const filterName = getFusionEventMetadata(
-    isTopicGroup ? props.topics[0] : props.topic,
-  )?.filters.find(isAlertFilter)?.name;
+  /* NOTE: benchmarkTopic is either the 'first topic in the group' or the 'standalone topic'. This represent the target topic to be rendered. */
+  const fusionEventTypeId = benchmarkTopic.fusionEventDescriptor.id;
+  if (!fusionEventTypeId) return null;
+  if (isTopicGroup && !isTopicGroupValid(props.topics)) return null;
+  const subscriptionValueOrRef =
+    getFusionEventMetadata(benchmarkTopic)?.uiConfigOverride
+      ?.subscriptionValueOrRef;
 
   const description =
     getFusionFilter(isTopicGroup ? props.topics[0] : props.topic)
       ?.description ?? '';
+  if (!subscriptionValueOrRef) {
+    console.error(
+      'ERROR - unable to render TopicStackRowInput. Ensure fusionEventMetadata includes subscriptionValueOrRef',
+    );
+    return null;
+  }
+  const { isLoading: isLoadingTopic } = useNotifiTopicContext();
 
-  const userInputParams = getUserInputParams(
-    isTopicGroup ? props.topics[0] : props.topic,
+  const filterName =
+    getFusionEventMetadata(benchmarkTopic)?.filters.find(isAlertFilter)?.name;
+
+  const userInputParams = getUserInputParams(benchmarkTopic);
+
+  const {
+    subscriptionValue,
+    setSubscriptionValue,
+    filterOptionsToBeSubscribed,
+    setFilterOptionsToBeSubscribed,
+    subscribeTopic,
+    isTopicReadyToSubscribe,
+  } = useTopicStackRowInput(
+    isTopicGroup ? props.topics : [benchmarkTopic],
+    userInputParams,
+    filterName,
+    props.onSave,
   );
-
+  // TODO: refactor
   const correctUserInputParamsOrder = (
     userInputParams: UserInputParam<UiType>[],
   ) => {
@@ -86,119 +99,6 @@ export const TopicStackRowInput = <T extends TopicRowCategory>(
       return reversedParams;
     }
   };
-
-  React.useEffect(() => {
-    if (userInputParams && filterName) {
-      const input: FusionFilterOptions['input'] = {
-        [filterName]: {},
-      };
-      userInputParams.forEach((userInputParam) => {
-        if (userInputParam.uiType === 'radio') {
-          input[filterName][userInputParam.name] = userInputParam.defaultValue;
-        } else {
-          input[filterName][userInputParam.name] = '';
-        }
-      });
-      setFilterOptionsToBeSubscribed({
-        version: 1,
-        input,
-      });
-    }
-    if (subscriptionValue) {
-      props.setIsTopicStackRowInputVisible(true);
-    }
-  }, []);
-
-  // TODO: Move to hooks
-  const isUserInputParamsValid = React.useMemo(() => {
-    if (filterOptionsToBeSubscribed && filterName) {
-      const isAllFieldsInputted = userInputParams.every((userInputParam) => {
-        const input = filterOptionsToBeSubscribed.input;
-        return (
-          !!input[filterName][userInputParam.name] &&
-          input[filterName][userInputParam.name] !== ''
-        );
-      });
-      return isAllFieldsInputted ? true : false;
-    }
-    return false;
-  }, [filterOptionsToBeSubscribed]);
-
-  const { subscribeAlertsWithFilterOptions, error: topicError } =
-    useNotifiTopicContext();
-  const {
-    targetDocument: { targetGroupId },
-  } = useNotifiTargetContext();
-
-  const isTopicReadyToSubscribe = !!(
-    filterOptionsToBeSubscribed &&
-    subscriptionValue &&
-    targetGroupId &&
-    isUserInputParamsValid
-  );
-
-  const onSave = async () => {
-    if (!isTopicReadyToSubscribe || !benchmarkTopic.fusionEventDescriptor.id)
-      return;
-
-    const subscribeTopics = isTopicGroup ? props.topics : [props.topic];
-    const topicWithFilterOptionsList = subscribeTopics
-      .map((topic) => {
-        return !topic.fusionEventDescriptor.id
-          ? null
-          : ({
-              topic: topic,
-              filterOptions: filterOptionsToBeSubscribed,
-              customAlertName: composeTopicStackAlertName(
-                topic.fusionEventDescriptor.id,
-                subscriptionValue.value,
-                subscriptionValue.label,
-              ),
-              subscriptionValue: subscriptionValue.value,
-            } as TopicWithFilterOption);
-      })
-      .filter(
-        (
-          topicWithFilterOptions,
-        ): topicWithFilterOptions is TopicWithFilterOption =>
-          topicWithFilterOptions !== null,
-      );
-    await subscribeAlertsWithFilterOptions(
-      topicWithFilterOptionsList,
-      targetGroupId,
-    );
-    if (userInputParams && filterName) {
-      const input: FusionFilterOptions['input'] = {
-        [filterName]: {},
-      };
-      userInputParams.forEach((userInputParam) => {
-        if (userInputParam.uiType === 'radio') {
-          input[filterName][userInputParam.name] = userInputParam.defaultValue;
-        } else {
-          input[filterName][userInputParam.name] = '';
-        }
-      });
-      setFilterOptionsToBeSubscribed({
-        version: 1,
-        input,
-      });
-    }
-    setSubscriptionValue(null);
-    props.setIsTopicStackRowInputVisible(false);
-    if (props.onSave) {
-      props.onSave();
-    }
-    setIsLoading(false);
-  };
-
-  if (topicError) {
-    popGlobalInfoModal({
-      message: topicError.message,
-      iconOrEmoji: { type: 'icon', id: 'warning' },
-      timeout: 5000,
-    });
-  }
-
   return (
     <div className="">
       <SubscriptionValueInput
@@ -273,9 +173,9 @@ export const TopicStackRowInput = <T extends TopicRowCategory>(
             <button
               disabled={!isTopicReadyToSubscribe}
               className="ml-14 h-9 w-18 rounded-lg bg-notifi-button-primary-blueish-bg text-notifi-button-primary-text mt-1 mb-4 disabled:opacity-50 disabled:hover:bg-notifi-button-primary-blueish-bg "
-              onClick={onSave}
+              onClick={subscribeTopic}
             >
-              {isLoading ? <LoadingAnimation /> : 'Save'}
+              {isLoadingTopic ? <LoadingAnimation /> : 'Save'}
             </button>
           </div>
         </div>
@@ -284,8 +184,10 @@ export const TopicStackRowInput = <T extends TopicRowCategory>(
   );
 };
 
-const isTopicGroupStackRowInput = (
+// Utils
+
+const isTopicStackRowInput = (
   props: TopicStackRowInputProps<TopicRowCategory>,
-): props is TopicGroupStackRowInputProps => {
+): props is TopicStackGroupRowInputProps => {
   return 'topics' in props;
 };
