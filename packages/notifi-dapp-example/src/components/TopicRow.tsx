@@ -114,26 +114,31 @@ export const TopicRow = <T extends TopicRowCategory>(
                 <Icon className="m-2" id={icon} />
               </div>
             )}
-            <label>{title}</label>
-          </div>
-        </div>
-        <div className="flex flex-row items-center gap-1">
-          <div className="group inline-block align-middle">
-            {benchmarkTopic.uiConfig.tooltipContent ? (
-              <Tooltip>{benchmarkTopic.uiConfig.tooltipContent}</Tooltip>
-            ) : null}
+            <label>
+              {title}
+              <div className="group inline-block align-middle">
+                {benchmarkTopic.uiConfig.tooltipContent ? (
+                  <div className="relative">
+                    <Icon id="info" className="text-notifi-text-light" />
+                    <div className="hidden group-hover:block absolute text-sm font-medium max-w-48 bg-notifi-card-bg p-4 rounded-md z-10 border border-notifi-card-border w-48 bottom-[1.5rem] right-[-5rem]">
+                      <div>{benchmarkTopic.uiConfig.tooltipContent}</div>
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+            </label>
           </div>
           {/* hide toggle button if it is the Trading Pair Price Alert, but shown save button instead below */}
-          <Toggle
-            checked={isAlertSubscribed(fusionEventTypeId)}
-            disabled={isLoadingTopic}
-            setChecked={async () => {
-              toggleTopic(isTopicGroup ? props.topics : [props.topic]);
-            }}
-          />
         </div>
+        {/* hide toggle button if it is the Trading Pair Price Alert, but shown save button instead below */}
+        <Toggle
+          checked={isAlertSubscribed(fusionEventTypeId)}
+          disabled={isLoadingTopic}
+          setChecked={async () => {
+            toggleTopic(isTopicGroup ? props.topics : [props.topic]);
+          }}
+        />
       </div>
-
       {/* render radio button or button inputs if content with userInputParams length equals to 1 */}
       {isAlertSubscribed(fusionEventTypeId) ? (
         <div>
