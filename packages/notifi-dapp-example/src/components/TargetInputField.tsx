@@ -21,7 +21,7 @@ export const TargetInputField: React.FC<TargetInputFieldProps> = (props) => {
     targetDocument: { targetInputs, targetData },
     updateTargetInputs,
   } = useNotifiTargetContext();
-  const [isInputFocused, setIsInputFocused] = React.useState(false);
+  // const [isInputFocused, setIsInputFocused] = React.useState(false);
 
   const [isShowingInvalidWarning, setIsShowingInvalidWarning] =
     React.useState(false);
@@ -68,8 +68,8 @@ export const TargetInputField: React.FC<TargetInputFieldProps> = (props) => {
               : 'text'
         }
         className={`text-notifi-text border bg-notifi-card-bg rounded-3xl w-full sm:w-72 h-11 text-sm pl-3 focus:border-solid focus:border-blue-800 focus:outline-none ${
-          isShowingInvalidWarning ? 'border-notifi-error' : 'border-none'
-        } flex ${isShowingInvalidWarning ? 'pt-3' : 'pt-0'}`}
+          isShowingInvalidWarning ? 'border-notifi-error' : 'border-transparent'
+        } flex items-center`}
         value={targetToBeSaved.value}
         onChange={(evt) => {
           const targetInput = evt.target.value;
@@ -86,12 +86,12 @@ export const TargetInputField: React.FC<TargetInputFieldProps> = (props) => {
           });
         }}
         onFocus={() => {
-          setIsInputFocused(true);
+          // setIsInputFocused(true);
           setIsShowingInvalidWarning(false);
           props.onFocus?.(props.targetType);
         }}
         onBlur={() => {
-          setIsInputFocused(false);
+          // setIsInputFocused(false);
           props.onBlur?.(props.targetType);
           if (targetToBeSaved.error) {
             if (props.targetType === 'email') {
@@ -103,13 +103,6 @@ export const TargetInputField: React.FC<TargetInputFieldProps> = (props) => {
         placeholder={inputPlaceholder}
         disabled={props.disabled}
       />
-      {isShowingInvalidWarning ? (
-        <div className="absolute top-[5px] left-[11px] flex flex-col items-start">
-          <p className="text-notifi-error text-xs block">
-            {targetToBeSaved.error}
-          </p>
-        </div>
-      ) : null}
     </div>
   );
 };
