@@ -40,13 +40,13 @@ import {
   createNotifiService,
 } from '@notifi-network/notifi-node';
 
-const gqlClient = createGraphQLClient();
+const graphqlClient = createGraphQLClient();
 const dpapiClient = createDataplaneClient();
 const subService = createNotifiSubscriptionService();
 const notifiService = createNotifiService(graphqlClient, subService);
 
 // Instantiate a NotifiNodeClient
-const client = new NotifiNodeClient(notifiService);
+const client = new NotifiNodeClient(notifiService, dpapiClient);
 ```
 
 > **NOTE**:
@@ -88,7 +88,7 @@ const { status } = client.status;
 const { status, jwt } = client.status;
 ```
 
-> **NOTE**: Make sure not to expose the `SID`, `Secret` and `Token (jwt)` publicly. Otherwise, it could be abused by malicious users.
+> [!WARNING] Make sure not to expose the `SID`, `Secret` and `Token (jwt)` publicly. Otherwise, it could be abused by malicious users.
 
 ### Sending a Notification message
 
