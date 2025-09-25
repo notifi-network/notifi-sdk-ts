@@ -21,7 +21,6 @@ export const TargetInputField: React.FC<TargetInputFieldProps> = (props) => {
     targetDocument: { targetInputs, targetData },
     updateTargetInputs,
   } = useNotifiTargetContext();
-  // const [isInputFocused, setIsInputFocused] = React.useState(false);
 
   const [isShowingInvalidWarning, setIsShowingInvalidWarning] =
     React.useState(false);
@@ -86,16 +85,13 @@ export const TargetInputField: React.FC<TargetInputFieldProps> = (props) => {
           });
         }}
         onFocus={() => {
-          // setIsInputFocused(true);
           setIsShowingInvalidWarning(false);
           props.onFocus?.(props.targetType);
         }}
         onBlur={() => {
-          // setIsInputFocused(false);
           props.onBlur?.(props.targetType);
           if (targetToBeSaved.error) {
             if (props.targetType === 'email') {
-              // NOTE: Now we only show error for invalid email input
               setIsShowingInvalidWarning(true);
             }
           }
