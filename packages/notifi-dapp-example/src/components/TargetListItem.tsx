@@ -1,4 +1,4 @@
-import { SpriteIconId } from '@/assets/Icon';
+import { SpriteIconId } from '@/assets/SpriteIconId';
 import {
   FormTarget,
   TargetInfo,

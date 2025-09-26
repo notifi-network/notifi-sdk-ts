@@ -154,7 +154,6 @@ export const useTargetListItem = (input: {
               });
               //NOTE: Wait for 0.5 second for target context state change
               await new Promise((resolve) => setTimeout(resolve, 500));
-              // TODO: Handle error
               const walletTargetId = targetGroup?.web3Targets?.[0]?.id;
               const walletTargetSenderAddress =
                 targetGroup?.web3Targets?.[0]?.senderAddress;
@@ -163,11 +162,15 @@ export const useTargetListItem = (input: {
                 walletTargetId &&
                 walletTargetSenderAddress
               ) {
-                await plugin?.walletTarget.signCoinbaseSignature(
-                  frontendClient,
-                  walletTargetId,
-                  walletTargetSenderAddress,
-                );
+                try {
+                  await plugin?.walletTarget.signCoinbaseSignature(
+                    frontendClient,
+                    walletTargetId,
+                    walletTargetSenderAddress,
+                  );
+                } catch (e) {
+                  console.error('Error signing wallet target', e);
+                }
               }
             },
           },

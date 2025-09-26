@@ -98,7 +98,6 @@ export const TopicStack: React.FC<TopicStackProps> = (props) => {
 
 // Utils
 
-// TODO: refactor & consolidate this type with `UserInputOptions` from `@notifi-network/notifi-frontend-client`
 type AboveOrBelowThresholdUserInputOptions = Record<
   'threshold' | 'thresholdDirection',
   string

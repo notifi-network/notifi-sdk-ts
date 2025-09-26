@@ -185,7 +185,7 @@ export const TopicOptions = <T extends TopicRowCategory>(
               props.userInputParam.options[0] ? 'w-[6.5rem]' : 'w-[247px]'
             }`}
           >
-            {/* TODO: prefix/suffix renders differently based on if the threshold options is empty or not, we'll add a field for these conditions or we'll update to have the render consistent with the different conditions. */}
+            {/* The prefix/suffix rendering differs depending on whether the threshold options are empty. */}
             <div
               className={`absolute left-3 bottom-3 ${
                 props.userInputParam.options[0]
@@ -295,7 +295,7 @@ export const TopicOptions = <T extends TopicRowCategory>(
                   : 'focus:outline-none focus:border-notifi-card-border'
               }`}
             />
-            {/* TODO: prefix/suffix renders differently based on if the threshold options is empty or not, we'll add a field for these conditions or we'll update to have the render consistent with the different conditions. */}
+            {/* The prefix/suffix rendering differs depending on whether the threshold options are empty. */}
             <div
               className={`absolute bottom-3 ${
                 props.userInputParam.options[0]

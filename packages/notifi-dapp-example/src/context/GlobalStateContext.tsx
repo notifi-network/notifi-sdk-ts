@@ -1,6 +1,7 @@
 'use client';
 
-import { Icon, SpriteIconId } from '@/assets/Icon';
+import { Icon } from '@/assets/Icon';
+import { SpriteIconId } from '@/assets/SpriteIconId';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import {
   Dispatch,

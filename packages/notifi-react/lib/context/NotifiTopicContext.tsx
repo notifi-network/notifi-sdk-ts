@@ -250,7 +250,6 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
 
           const userInputParams = filters[0].userInputParams;
           const userInputOptions: UserInputOptions = {};
-          //TODO: O(n^2) to fix
           userInputParams.forEach((userInputParm) => {
             userInputOptions[userInputParm.name] = convertOptionValue(
               userInputParm.defaultValue,

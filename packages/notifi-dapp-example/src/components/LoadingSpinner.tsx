@@ -1,6 +1,5 @@
 import { FC } from 'react';
 
-// TODO: Take props ?
 export const LoadingSpinner: FC = () => {
   return (
     <div className="flex justify-center items-center h-full">

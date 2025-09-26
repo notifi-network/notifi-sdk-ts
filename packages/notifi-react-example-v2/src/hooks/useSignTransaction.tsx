@@ -1,5 +1,4 @@
 import { useNotifiFrontendClientContext } from '@notifi-network/notifi-react';
-import { ethers } from 'ethers';
 import React from 'react';
 
 export const useSignTransaction = () => {
@@ -9,11 +8,9 @@ export const useSignTransaction = () => {
   const { walletWithSignParams, loginViaTransaction } =
     useNotifiFrontendClientContext();
 
-  const isSupported = [
-    'SOLANA',
-    // TODO: ⬇ Impl other blockchains transaction
-    'ARBITRUM',
-  ].includes(walletWithSignParams.walletBlockchain);
+  const isSupported = ['SOLANA', 'ARBITRUM'].includes(
+    walletWithSignParams.walletBlockchain,
+  );
 
   const signTransaction = React.useCallback(async () => {
     if (!loginViaTransaction) return;
@@ -45,10 +42,8 @@ export const useSignTransaction = () => {
         }
         break;
       case 'ARBITRUM':
-        // TODO: WIP below
+        /* NOT SUPPORTED YET */
         try {
-          // eslint-disable-next-line
-          // @ts-ignore
           transactionSigner = window.ethereum;
           if (!transactionSigner) throw new Error('No signer - ETH');
           const accounts = await transactionSigner.request({
@@ -56,9 +51,6 @@ export const useSignTransaction = () => {
             params: [],
           });
 
-          // const memo = ethers.hexlify(
-          //   ethers.toUtf8Bytes(loginViaTransaction.nonce),
-          // );
           const signature = await transactionSigner.request({
             method: 'eth_sendTransaction',
             params: [
@@ -81,7 +73,7 @@ export const useSignTransaction = () => {
         }
         break;
       default:
-        // TODO: Impl other blockchains transaction
+        /*  Impl other blockchains transaction */
         throw new Error('Unsupported blockchain');
     }
   }, [loginViaTransaction?.nonce]);

@@ -31,12 +31,10 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
 
   return (
     <div
-      className={`bg-notifi-destination-card-bg rounded-xl w-[320px] ${isRemoveButtonAvailable ? 'relative pb-4' : ''}`}
+      className={`bg-notifi-destination-card-bg rounded-xl w-[320px] ${isRemoveButtonAvailable ? 'relative' : ''}`}
     >
       {/*  ICON / LABEL  / INPUT FIELD */}
-      <div
-        className={`flex flex-row justify-between px-[14px] pt-4 ${isRemoveButtonAvailable ? 'pb-4' : ''}`}
-      >
+      <div className={`flex flex-row justify-between px-[14px] pt-4 pb-4`}>
         <div className={`flex flex-row justify-center items-center`}>
           <Icon
             id={props.iconType}
@@ -59,15 +57,17 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
         </div>
 
         {/* TARGET SIGNUP CTA */}
-        {!props.targetInfo &&
-        !targetInputs[props.target].error &&
-        targetInputs[props.target].value ? (
-          <TargetCta {...signupCtaProps} />
-        ) : null}
+        <div className="h-8 flex items-center">
+          {!props.targetInfo &&
+          !targetInputs[props.target].error &&
+          targetInputs[props.target].value ? (
+            <TargetCta {...signupCtaProps} />
+          ) : null}
+        </div>
       </div>
 
       {!props.targetInfo ? (
-        <div className="mt-[10px] px-[14px] pb-4">
+        <div className="px-[14px] pb-4">
           <TargetInputField
             targetType={props.target}
             validateRegex={getTargetValidateRegex(props.target)}

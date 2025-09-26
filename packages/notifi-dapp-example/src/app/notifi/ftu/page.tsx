@@ -15,7 +15,7 @@ import {
 import React from 'react';
 import { useEffect } from 'react';
 
-export enum FtuView {
+enum FtuView {
   TargetList = 'list',
   AlertEdit = 'alertEdit',
 }

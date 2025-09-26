@@ -241,7 +241,6 @@ const initActionDictionary = (
   const actionDict = smartLinkActions.reduce(
     (acc: ActionDictionary, action) => {
       const actionId = action.id;
-      // TODO: Fix O(n^2) issue
       const userInputs = getInitialUserInputs(action);
 
       acc[`${smartLinkId}:;:${actionId}`] = {
