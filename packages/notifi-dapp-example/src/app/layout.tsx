@@ -25,7 +25,7 @@ export default function RootLayout({
       <body
         className={`${inter.className} notifi-dapp bg-gradient-gmx`}
         dark-mode="true"
-        // NOTE: Not support dark/light mode yet. TODO: consider adding a theme wrapper
+        /* NOTE: Not support dark/light mode yet. Add theme wrapper if needed in the future. */
       >
         <GlobalStateContextProvider>
           <NotifiWalletsWrapper>{children}</NotifiWalletsWrapper>
