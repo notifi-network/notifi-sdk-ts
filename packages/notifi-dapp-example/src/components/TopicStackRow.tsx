@@ -82,15 +82,15 @@ export const TopicStackRow = <T extends TopicRowCategory>(
                 <Icon className="m-2" id={icon} />
               </div>
             )}
-            <label>{title}</label>
+            <label>
+              {title}
+              <div className="group inline-block align-middle">
+                {benchmarkTopic.uiConfig.tooltipContent ? (
+                  <Tooltip>{benchmarkTopic.uiConfig.tooltipContent}</Tooltip>
+                ) : null}
+              </div>
+            </label>
           </div>
-        </div>
-        <div className="group inline-block align-middle -mr-1">
-          {benchmarkTopic.uiConfig.tooltipContent ? (
-            <Tooltip>
-              <div>{benchmarkTopic.uiConfig.tooltipContent}</div>
-            </Tooltip>
-          ) : null}
         </div>
       </div>
       {topicStackAlerts.length > 0 ? (

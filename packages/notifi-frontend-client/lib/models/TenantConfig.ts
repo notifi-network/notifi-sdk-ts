@@ -212,7 +212,6 @@ export type CustomHealthCheckItem = Readonly<{
   optOutAtSignup?: boolean;
 }>;
 
-// TODO: Relates to Source, remove source
 /**@deprecated */
 type RatiosBelow = Readonly<{
   type: 'below';

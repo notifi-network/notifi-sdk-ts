@@ -42,10 +42,8 @@ export const useSignTransaction = () => {
         }
         break;
       case 'ARBITRUM':
-        // TODO: WIP below
+        /* NOT SUPPORTED YET */
         try {
-          // eslint-disable-next-line
-          // @ts-ignore
           transactionSigner = window.ethereum;
           if (!transactionSigner) throw new Error('No signer - ETH');
           const accounts = await transactionSigner.request({
@@ -53,9 +51,6 @@ export const useSignTransaction = () => {
             params: [],
           });
 
-          // const memo = ethers.hexlify(
-          //   ethers.toUtf8Bytes(loginViaTransaction.nonce),
-          // );
           const signature = await transactionSigner.request({
             method: 'eth_sendTransaction',
             params: [
@@ -78,7 +73,7 @@ export const useSignTransaction = () => {
         }
         break;
       default:
-        // TODO: Impl other blockchains transaction
+        /*  Impl other blockchains transaction */
         throw new Error('Unsupported blockchain');
     }
   }, [loginViaTransaction?.nonce]);

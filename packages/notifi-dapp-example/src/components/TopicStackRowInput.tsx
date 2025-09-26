@@ -88,7 +88,7 @@ export const TopicStackRowInput = <T extends TopicRowCategory>(
     filterName,
     props.onSave,
   );
-  // TODO: refactor
+
   const correctUserInputParamsOrder = (
     userInputParams: UserInputParam<UiType>[],
   ) => {
@@ -99,6 +99,7 @@ export const TopicStackRowInput = <T extends TopicRowCategory>(
       return reversedParams;
     }
   };
+
   return (
     <div className="">
       <SubscriptionValueInput
