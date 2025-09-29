@@ -7,7 +7,7 @@ import {
 } from '@notifi-network/notifi-react';
 import React from 'react';
 
-import { Tooltip } from '../../Tooltip';
+import { Tooltip } from './Tooltip';
 import { TopicRowCategory } from './TopicList';
 import { TopicRowProps, isTopicGroupRow } from './TopicRow';
 import { TopicStack } from './TopicStack';
