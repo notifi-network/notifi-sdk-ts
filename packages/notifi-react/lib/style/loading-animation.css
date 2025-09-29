@@ -10,12 +10,12 @@
   border: 4px transparent solid;
   border-top: 4px var(--notifi-spinner-color) solid;
   border-radius: 50%;
-  -webkit-animation: spinner 0.6s infinite linear;
-  animation: spinner 0.6s infinite linear;
+  -webkit-animation: notifi-spinner 0.6s infinite linear;
+  animation: notifi-spinner 0.6s infinite linear;
   position: absolute;
 }
 
-@-webkit-keyframes spinner {
+@-webkit-keyframes notifi-spinner {
   from {
     -webkit-transform: rotate(0deg);
   }
@@ -23,7 +23,7 @@
     -webkit-transform: rotate(359deg);
   }
 }
-@keyframes spinner {
+@keyframes notifi-spinner {
   from {
     transform: rotate(0deg);
   }
