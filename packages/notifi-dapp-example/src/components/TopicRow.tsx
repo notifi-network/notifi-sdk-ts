@@ -17,7 +17,6 @@ import {
 } from '@notifi-network/notifi-react';
 import React from 'react';
 
-import { Tooltip } from '../../Tooltip';
 import { Toggle } from './Toggle';
 import {
   TopicGroupRowMetadata,

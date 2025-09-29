@@ -8,9 +8,9 @@ import {
 } from '@notifi-network/notifi-react';
 import React from 'react';
 
-import { Tooltip } from '../../Tooltip';
 import { TargetCta } from './TargetCta';
 import { TargetListItemToggleProps } from './TargetListItem';
+import { Tooltip } from './Tooltip';
 
 export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
   props,
