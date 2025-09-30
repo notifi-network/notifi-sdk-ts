@@ -126,6 +126,9 @@
   --notifi-history-detail-message-a-text: rgb(
     var(--notifi-color-seaglass-dark)
   );
+  --notifi-target-input-field-input-container-bg: rgb(
+    var(--notifi-color-eggshell)
+  );
   --notifi-target-input-field-input-container-focused-border: rgba(
     var(--notifi-color-seaglass-dark)
   );

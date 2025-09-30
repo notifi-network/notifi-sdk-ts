@@ -49,8 +49,6 @@
 
 .notifi-target-list-icon {
   color: rgba(var(--notifi-color-heather), 1);
-  /* width: 24px;
-  height: 24px; */
   display: flex;
   align-items: flex-start;
   margin-right: 0.5rem;
