@@ -160,8 +160,7 @@ export const Connect: React.FC<ConnectProps> = (props) => {
         </div>
       </div>
       {walletWithSignParams.walletBlockchain === 'SOLANA' ? (
-        /* NOTE: Only Solana requires special handling for hardware wallet login (see detail in NotifiFrontendClientContext.tsx) */
-        // TODO: Crete a separate component SolanaHardwareWalletToggle.tsx
+        /* Only Solana requires special handling for hardware wallet login (see detail in NotifiFrontendClientContext.tsx) */
         <div
           className={clsx(
             'notifi-connect-hardware-wallet',

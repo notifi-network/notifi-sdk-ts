@@ -81,7 +81,7 @@ describe('NotifiNodeClient Unit Test', () => {
     expect(result).toHaveProperty('nodes');
   });
 
-  // ⬇ Internal helper functions (TODO: Move to a separate module when growing)
+  // ⬇ Internal helper functions
 
   const getRandomEvmPublicKey = () => {
     return ethers.Wallet.createRandom().address;

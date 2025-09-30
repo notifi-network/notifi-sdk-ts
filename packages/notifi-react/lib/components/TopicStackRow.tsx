@@ -62,9 +62,6 @@ export const TopicStackRow = <T extends TopicRowCategory>(
   if (!fusionEventTypeId) return null;
   if (isTopicGroup && !isTopicGroupValid(props.topics)) return null;
 
-  // if (isTopicGroup) {
-  // const topics = isTopicGroup ? props.topics : [benchmarkTopic];
-
   const alertsStack = React.useMemo(() => {
     const topics = isTopicGroup ? props.topics : [benchmarkTopic];
     const existingAlerts = topics.flatMap(

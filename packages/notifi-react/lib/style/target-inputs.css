@@ -17,9 +17,7 @@
 .notifi-target-input-field-input-container {
   display: flex;
   flex-direction: row;
-  /* background-color: var(--notifi-input-field-background); */
-  /* TODO: Change to its own color variable */
-  background-color: var(--notifi-topic-options-item-bg);
+  background-color: var(--notifi-target-input-field-input-container-bg);
   border-radius: 0.5rem;
   padding: 1rem;
   align-items: center;

@@ -27,7 +27,6 @@ let nextConfig = {
         get() {
           return 'source-map';
         },
-        // eslint-disable-next-line
         set() {},
       });
     }

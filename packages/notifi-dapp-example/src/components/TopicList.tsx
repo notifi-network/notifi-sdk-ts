@@ -42,7 +42,6 @@ export const TopicList: React.FC<TopicListProps> = ({
 }) => {
   const { fusionEventTopics } = useNotifiTenantConfigContext();
 
-  // TODO: Move this to a hook
   const topicRows = React.useMemo(() => {
     const fusionEventTopicGroups: Record<string, TopicGroupRowMetadata> = {};
     const fusionEventStandaloneTopics: TopicStandaloneRowMetadata[] = [];
