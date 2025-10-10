@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { EvmOptions } from '../context';
 import { Ethereum, MetamaskWalletKeys, WalletKeys, Wallets } from '../types';
-import { defaultCosmosChainPrefix } from '../utils/constants';
+import { defaultValue } from '../utils/constants';
 import {
   cleanWalletsInLocalStorage,
   setWalletKeysToLocalStorage,
@@ -54,7 +54,7 @@ export const useInjectedWallet = (
           if (!accounts || accounts.length === 0) return;
           const walletKeys = {
             bech32: converter(
-              options?.cosmosChainPrefix ?? defaultCosmosChainPrefix,
+              options?.cosmosChainPrefix ?? defaultValue.cosmosChainPrefix,
             ).toBech32(accounts[0]),
             hex: accounts[0],
           };
@@ -90,7 +90,7 @@ export const useInjectedWallet = (
 
       walletKeys = {
         bech32: converter(
-          options?.cosmosChainPrefix ?? defaultCosmosChainPrefix,
+          options?.cosmosChainPrefix ?? defaultValue.cosmosChainPrefix,
         ).toBech32(accounts[0]),
         hex: accounts[0],
       };

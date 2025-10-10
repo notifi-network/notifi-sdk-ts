@@ -21,7 +21,7 @@ import {
   XionWallet,
 } from '../types';
 import { getWalletsFromLocalStorage } from '../utils/localStorageUtils';
-import { NotifiWagmiProvider } from './WagmiProvider';
+import { NotifiWagmiProvider, NotifiWagmiProviderProps } from './WagmiProvider';
 import { XionProvider } from './XionProvider';
 
 let timer: number | NodeJS.Timeout;
@@ -68,11 +68,11 @@ export type KeplrOptions = {
   chainId: string;
 };
 
-export type NotifiWalletProviderProps = PropsWithChildren & {
+export type NotifiWalletProps = PropsWithChildren & {
   walletOptions?: WalletOptions;
 };
 
-const NotifiWallet: React.FC<NotifiWalletProviderProps> = ({
+const NotifiWallet: React.FC<NotifiWalletProps> = ({
   children,
   walletOptions,
 }) => {
@@ -314,13 +314,19 @@ const NotifiWallet: React.FC<NotifiWalletProviderProps> = ({
   );
 };
 
-export const NotifiWalletProvider: React.FC<PropsWithChildren> = ({
+export type NotifiWalletProviderProps = PropsWithChildren &
+  NotifiWalletProps &
+  NotifiWagmiProviderProps;
+
+export const NotifiWalletProvider: React.FC<NotifiWalletProviderProps> = ({
   children,
+  wagmiConfig,
+  walletOptions,
 }) => {
   return (
-    <NotifiWagmiProvider>
+    <NotifiWagmiProvider wagmiConfig={wagmiConfig}>
       <XionProvider>
-        <NotifiWallet>{children}</NotifiWallet>
+        <NotifiWallet walletOptions={walletOptions}>{children}</NotifiWallet>
       </XionProvider>
     </NotifiWagmiProvider>
   );

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { KeplrOptions } from '../context';
 import { KeplrWalletKeys, Wallets } from '../types';
-import { defaultCosmosChain } from '../utils/constants';
+import { defaultValue } from '../utils/constants';
 import {
   cleanWalletsInLocalStorage,
   setWalletKeysToLocalStorage,
@@ -48,7 +48,7 @@ export const useKeplr = (
       if (!window.keplr) return handleKeplrNotExists('handleAccountChange');
 
       window.keplr
-        .getKey(options?.chainId ?? defaultCosmosChain)
+        .getKey(options?.chainId ?? defaultValue.cosmosChain)
         .then((key) => {
           const walletKeys = {
             bech32: key.bech32Address,
@@ -71,9 +71,9 @@ export const useKeplr = (
     }
     loadingHandler(true);
     try {
-      await window.keplr.enable(options?.chainId ?? defaultCosmosChain);
+      await window.keplr.enable(options?.chainId ?? defaultValue.cosmosChain);
       const key = await window.keplr.getKey(
-        options?.chainId ?? defaultCosmosChain,
+        options?.chainId ?? defaultValue.cosmosChain,
       );
       const walletKeys = {
         bech32: key.bech32Address,
@@ -116,7 +116,7 @@ export const useKeplr = (
       loadingHandler(true);
       try {
         const result = await window.keplr.signArbitrary(
-          options?.chainId ?? defaultCosmosChain,
+          options?.chainId ?? defaultValue.cosmosChain,
           walletKeysKeplr?.bech32,
           message,
         );

@@ -12,7 +12,7 @@ import { SendTransactionData, SendTransactionVariables } from 'wagmi/query';
 
 import { EvmOptions } from '../context';
 import { MetamaskWalletKeys, Wallets } from '../types';
-import { defaultCosmosChainPrefix } from '../utils/constants';
+import { defaultValue } from '../utils/constants';
 import {
   cleanWalletsInLocalStorage,
   setWalletKeysToLocalStorage,
@@ -57,7 +57,7 @@ export const useWagmiWallet = (
 
     const walletKeys = {
       bech32: converter(
-        options?.cosmosChainPrefix ?? defaultCosmosChainPrefix,
+        options?.cosmosChainPrefix ?? defaultValue.cosmosChainPrefix,
       ).toBech32(address),
       hex: address,
     };
