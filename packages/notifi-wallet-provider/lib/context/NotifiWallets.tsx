@@ -57,7 +57,25 @@ const WalletContext = createContext<WalletContextType>({
   isAuthenticationVerified: false,
 });
 
-const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
+export type WalletOptions = {
+  keplr?: KeplrOptions;
+  evm?: EvmOptions;
+};
+export type EvmOptions = {
+  cosmosChainPrefix?: string; // default 'inj'
+};
+export type KeplrOptions = {
+  chainId: string;
+};
+
+export type NotifiWalletProviderProps = PropsWithChildren & {
+  walletOptions?: WalletOptions;
+};
+
+const NotifiWallet: React.FC<NotifiWalletProviderProps> = ({
+  children,
+  walletOptions,
+}) => {
   const [selectedWallet, setSelectedWallet] = useState<keyof Wallets | null>(
     null,
   );
@@ -93,6 +111,7 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
     selectWallet,
     selectedWallet,
     'walletconnect',
+    walletOptions?.evm,
   );
   const coinbase = useWagmiWallet(
     setIsLoading,
@@ -100,6 +119,7 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
     selectWallet,
     selectedWallet,
     'coinbase',
+    walletOptions?.evm,
   );
 
   /* - Injected wallet instances */
@@ -108,6 +128,7 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
     throwError,
     selectWallet,
     'metamask',
+    walletOptions?.evm,
   );
   const okx = useInjectedWallet(setIsLoading, throwError, selectWallet, 'okx');
   const zerion = useInjectedWallet(
@@ -115,25 +136,33 @@ const NotifiWallet: React.FC<PropsWithChildren> = ({ children }) => {
     throwError,
     selectWallet,
     'zerion',
+    walletOptions?.evm,
   );
   const rabby = useInjectedWallet(
     setIsLoading,
     throwError,
     selectWallet,
     'rabby',
+    walletOptions?.evm,
   );
   const rainbow = useInjectedWallet(
     setIsLoading,
     throwError,
     selectWallet,
     'rainbow',
+    walletOptions?.evm,
   );
 
   /* - Independent unusable instance - (TODO: should try to migrate to using browser native integration to lighten pkg weight)  */
   const xion = useXion(setIsLoading, throwError, selectWallet, 'xion');
 
   /* - Browser native integration instances */
-  const keplr = useKeplr(setIsLoading, throwError, selectWallet);
+  const keplr = useKeplr(
+    setIsLoading,
+    throwError,
+    selectWallet,
+    walletOptions?.keplr,
+  );
   const binance = useBinance(setIsLoading, throwError, selectWallet); // TODO: migrate to EvmWallet & useInjectedWallet
   const phantom = usePhantom(setIsLoading, throwError, selectWallet);
 
