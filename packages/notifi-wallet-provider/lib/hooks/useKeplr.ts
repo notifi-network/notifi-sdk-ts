@@ -2,7 +2,9 @@ import type { Keplr, StdSignature } from '@keplr-wallet/types';
 import { Buffer } from 'buffer';
 import { useCallback, useEffect, useState } from 'react';
 
+import { KeplrOptions } from '../context';
 import { KeplrWalletKeys, Wallets } from '../types';
+import { defaultValue } from '../utils/constants';
 import {
   cleanWalletsInLocalStorage,
   setWalletKeysToLocalStorage,
@@ -13,6 +15,7 @@ export const useKeplr = (
   loadingHandler: React.Dispatch<React.SetStateAction<boolean>>,
   errorHandler: (e: Error, durationInMs?: number) => void,
   selectWallet: (wallet: keyof Wallets | null) => void,
+  options?: KeplrOptions,
 ) => {
   const [walletKeysKeplr, setWalletKeysKeplr] =
     useState<KeplrWalletKeys | null>(null);
@@ -44,14 +47,15 @@ export const useKeplr = (
     const handleAccountChange = () => {
       if (!window.keplr) return handleKeplrNotExists('handleAccountChange');
 
-      window.keplr.getKey('injective-1').then((key) => {
-        // TODO: dynamic cosmos chain id
-        const walletKeys = {
-          bech32: key.bech32Address,
-          base64: Buffer.from(key.pubKey).toString('base64'),
-        };
-        setWalletKeysKeplr(walletKeys);
-      });
+      window.keplr
+        .getKey(options?.chainId ?? defaultValue.cosmosChain)
+        .then((key) => {
+          const walletKeys = {
+            bech32: key.bech32Address,
+            base64: Buffer.from(key.pubKey).toString('base64'),
+          };
+          setWalletKeysKeplr(walletKeys);
+        });
     };
 
     return () => {
@@ -60,18 +64,17 @@ export const useKeplr = (
     };
   }, []);
 
-  const connectKeplr = async (
-    // TODO: dynamic cosmos chain id (Rather than passing in the chainId to the function, it should be provided by the context provider level)
-    chainId?: string,
-  ): Promise<KeplrWalletKeys | null> => {
+  const connectKeplr = async (): Promise<KeplrWalletKeys | null> => {
     if (!window.keplr) {
       handleKeplrNotExists('connectKeplr');
       return null;
     }
     loadingHandler(true);
     try {
-      await window.keplr.enable(chainId ?? 'injective-1');
-      const key = await window.keplr.getKey(chainId ?? 'injective-1');
+      await window.keplr.enable(options?.chainId ?? defaultValue.cosmosChain);
+      const key = await window.keplr.getKey(
+        options?.chainId ?? defaultValue.cosmosChain,
+      );
       const walletKeys = {
         bech32: key.bech32Address,
         base64: Buffer.from(key.pubKey).toString('base64'),
@@ -105,10 +108,7 @@ export const useKeplr = (
   };
 
   const signArbitraryKeplr = useCallback(
-    async (
-      message: string | Uint8Array,
-      chainId?: string,
-    ): Promise<StdSignature | undefined> => {
+    async (message: string | Uint8Array): Promise<StdSignature | undefined> => {
       if (!window.keplr || !walletKeysKeplr) {
         handleKeplrNotExists('signArbitraryKeplr');
         return;
@@ -116,7 +116,7 @@ export const useKeplr = (
       loadingHandler(true);
       try {
         const result = await window.keplr.signArbitrary(
-          chainId ?? 'injective-1',
+          options?.chainId ?? defaultValue.cosmosChain,
           walletKeysKeplr?.bech32,
           message,
         );
