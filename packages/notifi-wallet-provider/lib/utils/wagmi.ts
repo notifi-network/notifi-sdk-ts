@@ -2,8 +2,9 @@ import { createConfig, http } from 'wagmi';
 import * as chains from 'wagmi/chains';
 import { coinbaseWallet, injected, walletConnect } from 'wagmi/connectors';
 
+import { defaultValue } from './constants';
+
 /* Currently supported EVM chains by Notifi */
-// TODO: Allow users to pass in their own chains
 const notifiEvmChains = [
   chains.mainnet,
   chains.polygon,
@@ -32,13 +33,13 @@ const notifiEvmChains = [
   chains.zksync,
 ] as Parameters<typeof createConfig>[0]['chains'];
 
-export const config = createConfig({
+export const defaultWagmiConfig = createConfig({
   chains: notifiEvmChains,
   connectors: [
     injected(),
-    coinbaseWallet({ appName: 'Notifi' }), // TODO: Allow users to pass in their own appName
+    coinbaseWallet({ appName: defaultValue.appName }),
     walletConnect({
-      projectId: '632a105feb9cf8380428a4f240eb6f13', // TODO: Allow users to pass in their own projectId
+      projectId: defaultValue.walletConnectId,
       qrModalOptions: {
         explorerExcludedWalletIds: 'ALL',
         enableExplorer: false,

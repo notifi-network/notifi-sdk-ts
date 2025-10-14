@@ -1,7 +1,9 @@
 import converter from 'bech32-converting';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
+import { EvmOptions } from '../context';
 import { Ethereum, MetamaskWalletKeys, WalletKeys, Wallets } from '../types';
+import { defaultValue } from '../utils/constants';
 import {
   cleanWalletsInLocalStorage,
   setWalletKeysToLocalStorage,
@@ -14,6 +16,7 @@ export const useInjectedWallet = (
   errorHandler: (e: Error, durationInMs?: number) => void,
   selectWallet: (wallet: keyof Wallets | null) => void,
   walletName: keyof Wallets,
+  options?: EvmOptions,
 ) => {
   const [walletKeys, setWalletKeys] = useState<MetamaskWalletKeys | null>(null);
   const [isWalletInstalled, setIsWalletInstalled] = useState<boolean>(false);
@@ -50,7 +53,9 @@ export const useInjectedWallet = (
         .then((accounts: string[]) => {
           if (!accounts || accounts.length === 0) return;
           const walletKeys = {
-            bech32: converter('inj').toBech32(accounts[0]), // TODO: dynamic cosmos chain addr conversion
+            bech32: converter(
+              options?.cosmosChainPrefix ?? defaultValue.cosmosChainPrefix,
+            ).toBech32(accounts[0]),
             hex: accounts[0],
           };
           setWalletKeys(walletKeys);
@@ -84,7 +89,9 @@ export const useInjectedWallet = (
       });
 
       walletKeys = {
-        bech32: converter('inj').toBech32(accounts[0]),
+        bech32: converter(
+          options?.cosmosChainPrefix ?? defaultValue.cosmosChainPrefix,
+        ).toBech32(accounts[0]),
         hex: accounts[0],
       };
 
