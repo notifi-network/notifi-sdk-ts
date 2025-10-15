@@ -98,12 +98,10 @@ export const useInjectedWallet = (
       selectWallet(walletName);
       setWalletKeys(walletKeys);
       setWalletKeysToLocalStorage(walletName, walletKeys);
-      // return walletKeys;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (e: any) {
+    } catch (e) {
       console.error(e);
       disconnectWallet();
-      if (e.message) {
+      if (e instanceof Error && e.message) {
         errorHandler(new Error(e.message));
       }
       return null;
@@ -152,7 +150,6 @@ export const useInjectedWallet = (
     },
     [walletKeys?.hex],
   );
-  // TODO: define the type of transactions
   const sendTransaction = async (transaction: object) => {
     let txHash: string | undefined;
     try {
@@ -171,8 +168,10 @@ export const useInjectedWallet = (
     } finally {
       loadingHandler(false);
     }
-    // TODO: add validator for txHash
-    return txHash as `0x${string}` | undefined;
+    if (txHash && txHash.startsWith('0x')) {
+      return txHash as `0x${string}`;
+    }
+    return undefined;
   };
 
   return {

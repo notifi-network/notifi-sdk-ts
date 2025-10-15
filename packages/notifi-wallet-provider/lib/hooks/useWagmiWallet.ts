@@ -37,7 +37,6 @@ export const useWagmiWallet = (
 
   const { disconnect } = useDisconnect();
   const { signMessageAsync } = useSignMessage();
-  // TODO: figure out config
   const { sendTransactionAsync } = useSendTransaction();
   const { address, isConnected } = useAccount();
   const {
