@@ -47,7 +47,7 @@ const WalletContext = createContext<WalletContextType>({
     rainbow: {} as EvmWallet,
     zerion: {} as EvmWallet,
     okx: {} as EvmWallet,
-    binance: {} as BinanceWallet, // TODO: migrate to EvmWallet & useInjectedWallet
+    binance: {} as BinanceWallet,
     walletconnect: {} as EvmWallet,
     xion: {} as XionWallet,
     phantom: {} as PhantomWallet,
@@ -163,7 +163,7 @@ const NotifiWallet: React.FC<NotifiWalletProps> = ({
     selectWallet,
     walletOptions?.keplr,
   );
-  const binance = useBinance(setIsLoading, throwError, selectWallet); // TODO: migrate to EvmWallet & useInjectedWallet
+  const binance = useBinance(setIsLoading, throwError, selectWallet);
   const phantom = usePhantom(setIsLoading, throwError, selectWallet);
 
   const wallets: Wallets = {

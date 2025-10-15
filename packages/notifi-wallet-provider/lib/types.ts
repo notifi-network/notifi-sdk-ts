@@ -1,12 +1,17 @@
 import type { Keplr, StdSignature } from '@keplr-wallet/types';
 import { Connection, Transaction } from '@solana/web3.js';
 import { BrowserProvider, Eip1193Provider } from 'ethers';
+import { Config } from 'wagmi';
+import { SendTransactionVariables } from 'wagmi/query';
 
 import { PhantomProvider } from './utils/solana.type';
 
 export type Ethereum = Eip1193Provider & BrowserProvider;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type BinanceChain = Ethereum & { requestAccounts: () => any };
+export type BinanceChain = Ethereum & {
+  requestAccounts: () => Promise<
+    { addresses: { type: string; address: string }[] }[]
+  >;
+};
 declare global {
   interface Window {
     keplr: Keplr;
@@ -29,7 +34,7 @@ export type WalletKeysBase = {
   grantee: string; //TODO: specifically for Xion now, make it generic pattern, checking the format
 };
 
-export type MetamaskWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'hex'>; // TODO: rename to EvmWalletKeys
+export type MetamaskWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'hex'>; // Adoptable to all EVM wallets
 export type KeplrWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'base64'>;
 export type XionWalletKeys = PickKeys<
   WalletKeysBase,
@@ -66,14 +71,12 @@ export type NotifiWalletStorage = {
 export type PickKeys<T, K extends keyof T> = Pick<T, K>;
 export type MetamaskSignMessage = (
   message: string,
-) => Promise<`0x${string}` | undefined>; // TODO: rename to EvmSignMessage
-
-export type MetamaskSendTransaction = (
-  transaction: object[],
-) => Promise<`0x${string}` | undefined>;
+) => Promise<`0x${string}` | undefined>; // Adoptable to all EVM wallets
 
 export type EvmSendTransaction = (
-  transaction: any, // TODO: Two types 1. raw payload 2. Wagmi wrapped payload
+  transaction:
+    | object // Injected Wallet specific: Raw payload (normal object)
+    | SendTransactionVariables<Config, number>, //  Wagmi wrapped payload
 ) => Promise<`0x${string}` | undefined>;
 
 export class EvmWallet implements NotifiWallet {
@@ -96,7 +99,7 @@ export class BinanceWallet implements NotifiWallet {
     public connect: () => Promise<MetamaskWalletKeys | null>,
     public disconnect: () => void,
     public websiteURL: string,
-    public sendTransaction: MetamaskSendTransaction,
+    public sendTransaction: EvmSendTransaction,
   ) {}
 }
 
