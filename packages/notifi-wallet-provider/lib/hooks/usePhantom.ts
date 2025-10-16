@@ -42,7 +42,6 @@ export const usePhantom = (
 
     const handleAccountChange = () => {
       if (!window.phantom) return handlePhantomNotExists('handleAccountChange');
-      // TODO: handle public null case
       const walletKeys: PhantomWalletKeys = {
         base58: window.phantom.solana.publicKey?.toBase58() ?? '',
       };

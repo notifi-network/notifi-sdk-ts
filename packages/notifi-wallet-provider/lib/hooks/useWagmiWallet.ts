@@ -10,7 +10,9 @@ import {
 } from 'wagmi';
 import { SendTransactionData, SendTransactionVariables } from 'wagmi/query';
 
+import { EvmOptions } from '../context';
 import { MetamaskWalletKeys, Wallets } from '../types';
+import { defaultValue } from '../utils/constants';
 import {
   cleanWalletsInLocalStorage,
   setWalletKeysToLocalStorage,
@@ -29,12 +31,12 @@ export const useWagmiWallet = (
   selectWallet: (wallet: keyof Wallets | null) => void,
   selectedWallet: keyof Wallets | null,
   walletName: keyof Wallets,
+  options?: EvmOptions,
 ) => {
   const [walletKeys, setWalletKeys] = useState<MetamaskWalletKeys | null>(null);
 
   const { disconnect } = useDisconnect();
   const { signMessageAsync } = useSignMessage();
-  // TODO: figure out config
   const { sendTransactionAsync } = useSendTransaction();
   const { address, isConnected } = useAccount();
   const {
@@ -53,7 +55,9 @@ export const useWagmiWallet = (
     if (selectedWallet !== walletName) return;
 
     const walletKeys = {
-      bech32: converter('inj').toBech32(address),
+      bech32: converter(
+        options?.cosmosChainPrefix ?? defaultValue.cosmosChainPrefix,
+      ).toBech32(address),
       hex: address,
     };
     setWalletKeys(walletKeys);
