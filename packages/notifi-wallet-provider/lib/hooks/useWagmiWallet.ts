@@ -51,18 +51,37 @@ export const useWagmiWallet = (
   }, [connectors]);
 
   useEffect(() => {
-    if (!isConnected || !address || !isWalletInstalled) return;
-    if (selectedWallet !== walletName) return;
+    if (!isConnected || !address || !isWalletInstalled) {
+      // Clear wallet keys when disconnected or wallet not available
+      if (walletKeys && selectedWallet === walletName) {
+        setWalletKeys(null);
+      }
+      return;
+    }
+    if (selectedWallet !== walletName) {
+      // Clear wallet keys when switching to different wallet
+      if (walletKeys) {
+        setWalletKeys(null);
+      }
+      return;
+    }
 
-    const walletKeys = {
+    const walletKeysData = {
       bech32: converter(
         options?.cosmosChainPrefix ?? defaultValue.cosmosChainPrefix,
       ).toBech32(address),
       hex: address,
     };
-    setWalletKeys(walletKeys);
-    setWalletKeysToLocalStorage(walletName, walletKeys);
-  }, [address, isWalletInstalled, isConnected, selectedWallet]);
+    setWalletKeys(walletKeysData);
+    setWalletKeysToLocalStorage(walletName, walletKeysData);
+  }, [
+    address,
+    isWalletInstalled,
+    isConnected,
+    selectedWallet,
+    walletName,
+    options?.cosmosChainPrefix,
+  ]);
 
   useEffect(() => {
     switch (connectError?.name) {
