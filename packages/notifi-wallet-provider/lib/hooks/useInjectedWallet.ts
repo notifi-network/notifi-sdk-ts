@@ -1,7 +1,7 @@
 import converter from 'bech32-converting';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { EvmOptions } from '../context';
+import { EvmOptions } from '../context/NotifiWallets';
 import { Ethereum, MetamaskWalletKeys, WalletKeys, Wallets } from '../types';
 import { defaultValue } from '../utils/constants';
 import {

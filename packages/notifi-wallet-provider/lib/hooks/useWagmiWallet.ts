@@ -10,7 +10,7 @@ import {
 } from 'wagmi';
 import { SendTransactionData, SendTransactionVariables } from 'wagmi/query';
 
-import { EvmOptions } from '../context';
+import { EvmOptions } from '../context/NotifiWallets';
 import { MetamaskWalletKeys, Wallets } from '../types';
 import { defaultValue } from '../utils/constants';
 import {
@@ -125,11 +125,46 @@ export const useWagmiWallet = (
 
   const signArbitrary = useCallback(
     async (message: string): Promise<`0x${string}` | undefined> => {
-      if (!isConnected || !walletKeys || !address || !isWalletInstalled) {
+      // Check if this wallet is selected and basic requirements are met
+      if (selectedWallet !== walletName) {
+        errorHandler(
+          new Error(
+            `ERROR - useWagmiWallet.signArbitrary:: ${walletName} is not the selected wallet`,
+          ),
+        );
+        return;
+      }
+
+      if (!isConnected || !address || !isWalletInstalled) {
         cleanWalletsInLocalStorage();
         errorHandler(
           new Error(
-            `ERROR - useWagmiWallet.signArbitrary:: ${walletName} not initialized or not installed`,
+            `ERROR - useWagmiWallet.signArbitrary:: ${walletName} not connected or not installed`,
+          ),
+        );
+        return;
+      }
+
+      // If walletKeys is not set but we have address and are connected,
+      // create the wallet keys directly instead of waiting
+      let currentWalletKeys = walletKeys;
+      if (!currentWalletKeys && address && isConnected) {
+        currentWalletKeys = {
+          bech32: converter(
+            options?.cosmosChainPrefix ?? defaultValue.cosmosChainPrefix,
+          ).toBech32(address),
+          hex: address,
+        };
+        // Update the state for future use
+        setWalletKeys(currentWalletKeys);
+        setWalletKeysToLocalStorage(walletName, currentWalletKeys);
+      }
+
+      if (!currentWalletKeys) {
+        cleanWalletsInLocalStorage();
+        errorHandler(
+          new Error(
+            `ERROR - useWagmiWallet.signArbitrary:: ${walletName} wallet keys not initialized`,
           ),
         );
         return;
@@ -142,6 +177,7 @@ export const useWagmiWallet = (
 
       try {
         const signature: `0x${string}` = await signMessageAsync({
+          account: address,
           message: message,
         });
 
@@ -156,7 +192,15 @@ export const useWagmiWallet = (
         clearTimeout(timer);
       }
     },
-    [walletKeys?.hex, address, isConnected, isWalletInstalled],
+    [
+      walletKeys?.hex,
+      address,
+      isConnected,
+      isWalletInstalled,
+      selectedWallet,
+      walletName,
+      options?.cosmosChainPrefix,
+    ],
   );
 
   const sendTransaction = async (
