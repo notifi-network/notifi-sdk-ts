@@ -2,7 +2,7 @@ import type { Keplr, StdSignature } from '@keplr-wallet/types';
 import { Buffer } from 'buffer';
 import { useCallback, useEffect, useState } from 'react';
 
-import { KeplrOptions } from '../context';
+import { KeplrOptions } from '../context/NotifiWallets';
 import { KeplrWalletKeys, Wallets } from '../types';
 import { defaultValue } from '../utils/constants';
 import {
