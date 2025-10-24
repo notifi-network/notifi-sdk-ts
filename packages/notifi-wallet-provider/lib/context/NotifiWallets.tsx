@@ -12,7 +12,6 @@ type WalletContextType = {
   wallets: Wallets;
   error: Error | null;
   isLoading: boolean;
-  isAuthenticationVerified: boolean;
 };
 
 const WalletContext = createContext<WalletContextType>({
@@ -23,7 +22,6 @@ const WalletContext = createContext<WalletContextType>({
   wallets: {} as Wallets,
   error: null,
   isLoading: false,
-  isAuthenticationVerified: false,
 });
 
 export type WalletOptions = {
@@ -57,7 +55,6 @@ const NotifiWallet: React.FC<NotifiWalletProps> = ({
         wallets: walletManager.wallets,
         error: walletManager.error,
         isLoading: walletManager.isLoading,
-        isAuthenticationVerified: walletManager.isAuthenticationVerified,
       }}
     >
       <Abstraxion
