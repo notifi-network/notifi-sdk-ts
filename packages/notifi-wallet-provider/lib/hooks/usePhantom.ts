@@ -168,3 +168,5 @@ const getPhantomFromWindow = async (): Promise<PhantomProvider> => {
     document.addEventListener('readystatechange', onDocumentStateChange);
   });
 };
+
+export type PhantomWalletHookType = ReturnType<typeof usePhantom>;

@@ -169,3 +169,4 @@ const getKeplrFromWindow = async (): Promise<Keplr> => {
     document.addEventListener('readystatechange', onDocumentStateChange);
   });
 };
+export type KeplrWalletHookType = ReturnType<typeof useKeplr>;

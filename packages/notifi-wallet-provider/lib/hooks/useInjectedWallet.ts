@@ -184,3 +184,5 @@ export const useInjectedWallet = (
     websiteURL: walletsWebsiteLink[walletName],
   };
 };
+
+export type InjectedWalletHookType = ReturnType<typeof useInjectedWallet>;

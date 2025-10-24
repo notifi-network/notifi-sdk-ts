@@ -1,113 +1,38 @@
+import { Wallets } from '../types';
+import { BLOCKCHAIN_WALLETS } from '../utils/walletConfigs';
+import { createWalletHooks } from './hookCreators';
 import {
-  BinanceWallet,
-  EvmWallet,
-  KeplrWallet,
-  PhantomWallet,
-  XionWallet,
-} from '../types';
-import { createWalletHooks } from './walletHooksFactory';
+  createBinanceWallet,
+  createEvmWallet,
+  createKeplrWallet,
+  createPhantomWallet,
+  createXionWallet,
+} from './walletCreators';
 
 type WalletHooks = ReturnType<typeof createWalletHooks>;
 
-export const createWallets = (hooks: WalletHooks) => {
-  return {
-    metamask: new EvmWallet(
-      hooks.metamask.isWalletInstalled,
-      hooks.metamask.walletKeys,
-      hooks.metamask.signArbitrary,
-      hooks.metamask.connectWallet,
-      hooks.metamask.disconnectWallet,
-      hooks.metamask.websiteURL,
-      hooks.metamask.sendTransaction,
-    ),
-    coinbase: new EvmWallet(
-      hooks.coinbase.isWalletInstalled,
-      hooks.coinbase.walletKeys,
-      hooks.coinbase.signArbitrary,
-      hooks.coinbase.connectWallet,
-      hooks.coinbase.disconnectWallet,
-      hooks.coinbase.websiteURL,
-      hooks.coinbase.sendTransaction,
-    ),
-    rabby: new EvmWallet(
-      hooks.rabby.isWalletInstalled,
-      hooks.rabby.walletKeys,
-      hooks.rabby.signArbitrary,
-      hooks.rabby.connectWallet,
-      hooks.rabby.disconnectWallet,
-      hooks.rabby.websiteURL,
-      hooks.rabby.sendTransaction,
-    ),
-    walletconnect: new EvmWallet(
-      hooks.walletConnect.isWalletInstalled,
-      hooks.walletConnect.walletKeys,
-      hooks.walletConnect.signArbitrary,
-      hooks.walletConnect.connectWallet,
-      hooks.walletConnect.disconnectWallet,
-      hooks.walletConnect.websiteURL,
-      hooks.walletConnect.sendTransaction,
-    ),
-    binance: new BinanceWallet(
-      hooks.binance.isWalletInstalled,
-      hooks.binance.walletKeys,
-      hooks.binance.signArbitrary,
-      hooks.binance.connectWallet,
-      hooks.binance.disconnectWallet,
-      hooks.binance.websiteURL,
-      hooks.binance.sendTransaction,
-    ),
-    okx: new EvmWallet(
-      hooks.okx.isWalletInstalled,
-      hooks.okx.walletKeys,
-      hooks.okx.signArbitrary,
-      hooks.okx.connectWallet,
-      hooks.okx.disconnectWallet,
-      hooks.okx.websiteURL,
-      hooks.okx.sendTransaction,
-    ),
-    rainbow: new EvmWallet(
-      hooks.rainbow.isWalletInstalled,
-      hooks.rainbow.walletKeys,
-      hooks.rainbow.signArbitrary,
-      hooks.rainbow.connectWallet,
-      hooks.rainbow.disconnectWallet,
-      hooks.rainbow.websiteURL,
-      hooks.rainbow.sendTransaction,
-    ),
-    zerion: new EvmWallet(
-      hooks.zerion.isWalletInstalled,
-      hooks.zerion.walletKeys,
-      hooks.zerion.signArbitrary,
-      hooks.zerion.connectWallet,
-      hooks.zerion.disconnectWallet,
-      hooks.zerion.websiteURL,
-      hooks.zerion.sendTransaction,
-    ),
-    keplr: new KeplrWallet(
-      hooks.keplr.isKeplrInstalled,
-      hooks.keplr.walletKeysKeplr,
-      hooks.keplr.signArbitraryKeplr,
-      hooks.keplr.connectKeplr,
-      hooks.keplr.disconnectKeplr,
-      hooks.keplr.websiteURL,
-    ),
-    xion: new XionWallet(
-      hooks.xion.isWalletInstalled,
-      hooks.xion.walletKeys,
-      hooks.xion.signArbitrary,
-      hooks.xion.connectWallet,
-      hooks.xion.disconnectWallet,
-      hooks.xion.websiteURL,
-    ),
-    phantom: new PhantomWallet(
-      hooks.phantom.isPhantomInstalled,
-      hooks.phantom.walletKeysPhantom,
-      hooks.phantom.signArbitraryPhantom,
-      hooks.phantom.connectPhantom,
-      hooks.phantom.disconnectPhantom,
-      hooks.phantom.websiteURL,
-      hooks.phantom.signTransactionPhantom,
-      hooks.phantom.signHardwareTransactionPhantom,
-    ),
-  };
+export const createWallets = (hooks: WalletHooks): Wallets => {
+  const wallets = {} as Wallets;
+
+  BLOCKCHAIN_WALLETS.evm.forEach((walletName) => {
+    const hook = hooks[walletName];
+    if (hook) {
+      wallets[walletName] = createEvmWallet(hook);
+    }
+  });
+
+  if (hooks.binance) {
+    wallets.binance = createBinanceWallet(hooks.binance);
+  }
+  if (hooks.keplr) {
+    wallets.keplr = createKeplrWallet(hooks.keplr);
+  }
+  if (hooks.xion) {
+    wallets.xion = createXionWallet(hooks.xion);
+  }
+  if (hooks.phantom) {
+    wallets.phantom = createPhantomWallet(hooks.phantom);
+  }
+
+  return wallets;
 };

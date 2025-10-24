@@ -189,6 +189,8 @@ export const useBinance = (
   };
 };
 
+export type BinanceWalletHookType = ReturnType<typeof useBinance>;
+
 const geBinanceFromWindow = async (): Promise<BinanceChain> => {
   if (typeof window === 'undefined' || !window.BinanceChain) {
     throw new Error(

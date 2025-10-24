@@ -25,6 +25,7 @@ import {
  * As a result, the post-login logic is handled in a separate hook, which uses
  * `selectedWallet` to determine whether the wallet is currently active.
  */
+
 export const useWagmiWallet = (
   loadingHandler: React.Dispatch<React.SetStateAction<boolean>>,
   errorHandler: (e: Error, durationInMs?: number) => void,
@@ -231,3 +232,5 @@ export const useWagmiWallet = (
     sendTransaction,
   };
 };
+
+export type WagmiWalletHookType = ReturnType<typeof useWagmiWallet>;

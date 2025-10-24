@@ -111,3 +111,5 @@ export const useXion = (
     websiteURL: walletsWebsiteLink[walletName],
   };
 };
+
+export type XionWalletHookType = ReturnType<typeof useXion>;
