@@ -2,12 +2,12 @@ import converter from 'bech32-converting';
 import { useCallback, useEffect, useState } from 'react';
 
 import { BinanceChain, MetamaskWalletKeys, Wallets } from '../types';
-import { defaultValue } from '../utils/constants';
 import {
   cleanWalletsInLocalStorage,
+  defaultValue,
   setWalletKeysToLocalStorage,
-} from '../utils/localStorageUtils';
-import { walletsWebsiteLink } from '../utils/wallet';
+  walletsWebsiteLink,
+} from '../utils';
 
 const walletName: keyof Wallets = 'binance';
 

@@ -3,12 +3,12 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { EvmOptions } from '../context/NotifiWallets';
 import { Ethereum, MetamaskWalletKeys, WalletKeys, Wallets } from '../types';
-import { defaultValue } from '../utils/constants';
 import {
   cleanWalletsInLocalStorage,
+  defaultValue,
   setWalletKeysToLocalStorage,
-} from '../utils/localStorageUtils';
-import { walletsWebsiteLink } from '../utils/wallet';
+  walletsWebsiteLink,
+} from '../utils';
 import { useSyncInjectedProviders } from './useSyncInjectedProviders';
 
 export const useInjectedWallet = (

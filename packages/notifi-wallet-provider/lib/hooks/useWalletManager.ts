@@ -2,8 +2,7 @@ import { useModal } from '@burnt-labs/abstraxion';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { WalletOptions } from '../context/NotifiWallets';
-import { createWalletHooks } from '../factories/walletHooksFactory';
-import { createWallets } from '../factories/walletInstanceFactory';
+import { createWalletHooks, createWallets } from '../factories';
 import { Wallets } from '../types';
 import { getWalletsFromLocalStorage } from '../utils/localStorageUtils';
 

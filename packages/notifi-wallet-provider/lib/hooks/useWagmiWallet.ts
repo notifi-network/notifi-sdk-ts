@@ -12,12 +12,12 @@ import { SendTransactionData, SendTransactionVariables } from 'wagmi/query';
 
 import { EvmOptions } from '../context/NotifiWallets';
 import { MetamaskWalletKeys, Wallets } from '../types';
-import { defaultValue } from '../utils/constants';
 import {
   cleanWalletsInLocalStorage,
+  defaultValue,
   setWalletKeysToLocalStorage,
-} from '../utils/localStorageUtils';
-import { walletsWebsiteLink } from '../utils/wallet';
+  walletsWebsiteLink,
+} from '../utils';
 
 /**
  * NOTE:

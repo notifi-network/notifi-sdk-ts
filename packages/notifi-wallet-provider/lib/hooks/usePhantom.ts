@@ -3,11 +3,11 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { PhantomWalletKeys, Wallets } from '../types';
 import {
+  PhantomProvider,
   cleanWalletsInLocalStorage,
   setWalletKeysToLocalStorage,
-} from '../utils/localStorageUtils';
-import { PhantomProvider } from '../utils/solana.type';
-import { walletsWebsiteLink } from '../utils/wallet';
+  walletsWebsiteLink,
+} from '../utils';
 
 export const usePhantom = (
   loadingHandler: React.Dispatch<React.SetStateAction<boolean>>,

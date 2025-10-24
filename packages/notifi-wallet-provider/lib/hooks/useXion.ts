@@ -9,8 +9,8 @@ import { Wallets, XionWalletKeys } from '../types';
 import {
   cleanWalletsInLocalStorage,
   setWalletKeysToLocalStorage,
-} from '../utils/localStorageUtils';
-import { walletsWebsiteLink } from '../utils/wallet';
+  walletsWebsiteLink,
+} from '../utils';
 
 export const useXion = (
   loadingHandler: React.Dispatch<React.SetStateAction<boolean>>,
