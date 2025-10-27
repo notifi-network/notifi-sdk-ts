@@ -4,12 +4,12 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { KeplrOptions } from '../context/NotifiWallets';
 import { KeplrWalletKeys, Wallets } from '../types';
-import { defaultValue } from '../utils/constants';
 import {
   cleanWalletsInLocalStorage,
+  defaultValue,
   setWalletKeysToLocalStorage,
-} from '../utils/localStorageUtils';
-import { walletsWebsiteLink } from '../utils/wallet';
+  walletsWebsiteLink,
+} from '../utils';
 
 export const useKeplr = (
   loadingHandler: React.Dispatch<React.SetStateAction<boolean>>,
@@ -169,3 +169,4 @@ const getKeplrFromWindow = async (): Promise<Keplr> => {
     document.addEventListener('readystatechange', onDocumentStateChange);
   });
 };
+export type KeplrWalletHookType = ReturnType<typeof useKeplr>;

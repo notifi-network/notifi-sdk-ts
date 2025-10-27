@@ -12,12 +12,12 @@ import { SendTransactionData, SendTransactionVariables } from 'wagmi/query';
 
 import { EvmOptions } from '../context/NotifiWallets';
 import { MetamaskWalletKeys, Wallets } from '../types';
-import { defaultValue } from '../utils/constants';
 import {
   cleanWalletsInLocalStorage,
+  defaultValue,
   setWalletKeysToLocalStorage,
-} from '../utils/localStorageUtils';
-import { walletsWebsiteLink } from '../utils/wallet';
+  walletsWebsiteLink,
+} from '../utils';
 
 /**
  * NOTE:
@@ -25,6 +25,7 @@ import { walletsWebsiteLink } from '../utils/wallet';
  * As a result, the post-login logic is handled in a separate hook, which uses
  * `selectedWallet` to determine whether the wallet is currently active.
  */
+
 export const useWagmiWallet = (
   loadingHandler: React.Dispatch<React.SetStateAction<boolean>>,
   errorHandler: (e: Error, durationInMs?: number) => void,
@@ -110,7 +111,6 @@ export const useWagmiWallet = (
       return null;
     }
     selectWallet(walletName);
-    // if (isConnected) return null; /* ⬅ DISABLED - this is not only for certain wallet, this turns true when any wallet in connectors is connected. (KNOWN ISSUE) */
     connect({ connector: provider });
     return null;
   };
@@ -231,3 +231,5 @@ export const useWagmiWallet = (
     sendTransaction,
   };
 };
+
+export type WagmiWalletHookType = ReturnType<typeof useWagmiWallet>;

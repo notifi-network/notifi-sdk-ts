@@ -2,8 +2,7 @@ import { useModal } from '@burnt-labs/abstraxion';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { WalletOptions } from '../context/NotifiWallets';
-import { createWalletHooks } from '../factories/walletHooksFactory';
-import { createWallets } from '../factories/walletInstanceFactory';
+import { createWalletHooks, createWallets } from '../factories';
 import { Wallets } from '../types';
 import { getWalletsFromLocalStorage } from '../utils/localStorageUtils';
 
@@ -15,8 +14,7 @@ export const useWalletManager = (walletOptions?: WalletOptions) => {
   );
   const [error, setError] = useState<Error | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isAuthenticationVerified, setIsAuthenticationVerified] =
-    useState<boolean>(false);
+
   const [, setShowModal]: [
     boolean,
     React.Dispatch<React.SetStateAction<boolean>>,
@@ -66,25 +64,12 @@ export const useWalletManager = (walletOptions?: WalletOptions) => {
     }
   }, [wallets, selectedWallet]);
 
-  // Authentication verification
-  useEffect(() => {
-    const storageWallet = getWalletsFromLocalStorage();
-    const walletName = storageWallet?.walletName;
-
-    if (walletName) {
-      if (selectedWallet) setIsAuthenticationVerified(true);
-    } else {
-      setIsAuthenticationVerified(true);
-    }
-  }, [selectedWallet]);
-
   return {
     selectedWallet,
     selectWallet,
     wallets,
     error,
     isLoading,
-    isAuthenticationVerified,
     setShowModal,
   };
 };
