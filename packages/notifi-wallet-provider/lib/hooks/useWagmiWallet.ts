@@ -111,7 +111,6 @@ export const useWagmiWallet = (
       return null;
     }
     selectWallet(walletName);
-    // if (isConnected) return null; /* ⬅ DISABLED - this is not only for certain wallet, this turns true when any wallet in connectors is connected. (KNOWN ISSUE) */
     connect({ connector: provider });
     return null;
   };

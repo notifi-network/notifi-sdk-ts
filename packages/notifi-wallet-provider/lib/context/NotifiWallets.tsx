@@ -17,7 +17,7 @@ type WalletContextType = {
 const WalletContext = createContext<WalletContextType>({
   selectedWallet: null,
   selectWallet: () => {
-    console.log('Not implemented');
+    console.warn('Not implemented');
   },
   wallets: {} as Wallets,
   error: null,
