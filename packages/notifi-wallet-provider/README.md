@@ -2,6 +2,9 @@
 
 Simply wrap the React components with `NotifiWalletProvider` to utilize Notifi's supported wallets.
 
+> [!TIP]
+> Check [Typedoc](https://docs.notifi.network/notifi-sdk-ts/notifi-wallet-provider/types/Types.Wallets.html) for supported wallets and other details.
+
 ## Prerequisites
 
 - Node.js version > 22
