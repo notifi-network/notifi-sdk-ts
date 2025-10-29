@@ -1,0 +1,5 @@
+{
+  "entryPoints": ["./lib/index.ts"],
+  "tsconfig": "./tsconfig.json",
+  "out": "docs/notifi-wallet-provider"
+}

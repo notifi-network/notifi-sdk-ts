@@ -2,15 +2,12 @@
 
 Simply wrap the React components with `NotifiWalletProvider` to utilize Notifi's supported wallets.
 
-> **Supported wallets**
->
-> - [x] Metamask browser extension
-> - [x] Keplr browser extension
-> - [ ] more to come ...
+> [!TIP]
+> Check [Typedoc](https://docs.notifi.network/notifi-sdk-ts/notifi-wallet-provider/types/Types.Wallets.html) for supported wallets and other details.
 
 ## Prerequisites
 
-- Node.js version > 18
+- Node.js version > 22
 - React version > 17
 
 ## Installation
@@ -50,14 +47,13 @@ function MyComponent() {
   return (
     <div>
       <div className="flex grow gap-6 px-5 justify-center items-center">
-        {Object.keys(wallets) // `keplr` & `metamask`
+        {Object.keys(wallets)
           .filter((wallet) => wallets[wallet].isInstalled)
           .map((wallet) => {
             return (
               <button
                 key={wallet}
                 disabled={isLoading}
-                className="bg-white size-32 flex items-center justify-center flex-col gap-3 rounded-lg border border-gray-600/10 cursor-pointer"
                 onClick={() => {
                   wallets[wallet].connect(); // Refer to `Wallet methods` section for more supported wallet methods
                 }}
