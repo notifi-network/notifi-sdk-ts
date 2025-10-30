@@ -1,12 +1,14 @@
 import converter from 'bech32-converting';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
+import { EvmOptions } from '../context/NotifiWallets';
 import { Ethereum, MetamaskWalletKeys, WalletKeys, Wallets } from '../types';
 import {
   cleanWalletsInLocalStorage,
+  defaultValue,
   setWalletKeysToLocalStorage,
-} from '../utils/localStorageUtils';
-import { walletsWebsiteLink } from '../utils/wallet';
+  walletsWebsiteLink,
+} from '../utils';
 import { useSyncInjectedProviders } from './useSyncInjectedProviders';
 
 export const useInjectedWallet = (
@@ -14,6 +16,7 @@ export const useInjectedWallet = (
   errorHandler: (e: Error, durationInMs?: number) => void,
   selectWallet: (wallet: keyof Wallets | null) => void,
   walletName: keyof Wallets,
+  options?: EvmOptions,
 ) => {
   const [walletKeys, setWalletKeys] = useState<MetamaskWalletKeys | null>(null);
   const [isWalletInstalled, setIsWalletInstalled] = useState<boolean>(false);
@@ -50,7 +53,9 @@ export const useInjectedWallet = (
         .then((accounts: string[]) => {
           if (!accounts || accounts.length === 0) return;
           const walletKeys = {
-            bech32: converter('inj').toBech32(accounts[0]), // TODO: dynamic cosmos chain addr conversion
+            bech32: converter(
+              options?.cosmosChainPrefix ?? defaultValue.cosmosChainPrefix,
+            ).toBech32(accounts[0]),
             hex: accounts[0],
           };
           setWalletKeys(walletKeys);
@@ -84,19 +89,19 @@ export const useInjectedWallet = (
       });
 
       walletKeys = {
-        bech32: converter('inj').toBech32(accounts[0]),
+        bech32: converter(
+          options?.cosmosChainPrefix ?? defaultValue.cosmosChainPrefix,
+        ).toBech32(accounts[0]),
         hex: accounts[0],
       };
 
       selectWallet(walletName);
       setWalletKeys(walletKeys);
       setWalletKeysToLocalStorage(walletName, walletKeys);
-      // return walletKeys;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (e: any) {
+    } catch (e) {
       console.error(e);
       disconnectWallet();
-      if (e.message) {
+      if (e instanceof Error && e.message) {
         errorHandler(new Error(e.message));
       }
       return null;
@@ -145,7 +150,6 @@ export const useInjectedWallet = (
     },
     [walletKeys?.hex],
   );
-  // TODO: define the type of transactions
   const sendTransaction = async (transaction: object) => {
     let txHash: string | undefined;
     try {
@@ -164,8 +168,10 @@ export const useInjectedWallet = (
     } finally {
       loadingHandler(false);
     }
-    // TODO: add validator for txHash
-    return txHash as `0x${string}` | undefined;
+    if (txHash && txHash.startsWith('0x')) {
+      return txHash as `0x${string}`;
+    }
+    return undefined;
   };
 
   return {
@@ -178,3 +184,5 @@ export const useInjectedWallet = (
     websiteURL: walletsWebsiteLink[walletName],
   };
 };
+
+export type InjectedWalletHookType = ReturnType<typeof useInjectedWallet>;

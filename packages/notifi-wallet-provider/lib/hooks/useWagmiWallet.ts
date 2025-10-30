@@ -10,12 +10,14 @@ import {
 } from 'wagmi';
 import { SendTransactionData, SendTransactionVariables } from 'wagmi/query';
 
+import { EvmOptions } from '../context/NotifiWallets';
 import { MetamaskWalletKeys, Wallets } from '../types';
 import {
   cleanWalletsInLocalStorage,
+  defaultValue,
   setWalletKeysToLocalStorage,
-} from '../utils/localStorageUtils';
-import { walletsWebsiteLink } from '../utils/wallet';
+  walletsWebsiteLink,
+} from '../utils';
 
 /**
  * NOTE:
@@ -23,18 +25,19 @@ import { walletsWebsiteLink } from '../utils/wallet';
  * As a result, the post-login logic is handled in a separate hook, which uses
  * `selectedWallet` to determine whether the wallet is currently active.
  */
+
 export const useWagmiWallet = (
   loadingHandler: React.Dispatch<React.SetStateAction<boolean>>,
   errorHandler: (e: Error, durationInMs?: number) => void,
   selectWallet: (wallet: keyof Wallets | null) => void,
   selectedWallet: keyof Wallets | null,
   walletName: keyof Wallets,
+  options?: EvmOptions,
 ) => {
   const [walletKeys, setWalletKeys] = useState<MetamaskWalletKeys | null>(null);
 
   const { disconnect } = useDisconnect();
   const { signMessageAsync } = useSignMessage();
-  // TODO: figure out config
   const { sendTransactionAsync } = useSendTransaction();
   const { address, isConnected } = useAccount();
   const {
@@ -49,16 +52,37 @@ export const useWagmiWallet = (
   }, [connectors]);
 
   useEffect(() => {
-    if (!isConnected || !address || !isWalletInstalled) return;
-    if (selectedWallet !== walletName) return;
+    if (!isConnected || !address || !isWalletInstalled) {
+      // Clear wallet keys when disconnected or wallet not available
+      if (walletKeys && selectedWallet === walletName) {
+        setWalletKeys(null);
+      }
+      return;
+    }
+    if (selectedWallet !== walletName) {
+      // Clear wallet keys when switching to different wallet
+      if (walletKeys) {
+        setWalletKeys(null);
+      }
+      return;
+    }
 
-    const walletKeys = {
-      bech32: converter('inj').toBech32(address),
+    const walletKeysData = {
+      bech32: converter(
+        options?.cosmosChainPrefix ?? defaultValue.cosmosChainPrefix,
+      ).toBech32(address),
       hex: address,
     };
-    setWalletKeys(walletKeys);
-    setWalletKeysToLocalStorage(walletName, walletKeys);
-  }, [address, isWalletInstalled, isConnected, selectedWallet]);
+    setWalletKeys(walletKeysData);
+    setWalletKeysToLocalStorage(walletName, walletKeysData);
+  }, [
+    address,
+    isWalletInstalled,
+    isConnected,
+    selectedWallet,
+    walletName,
+    options?.cosmosChainPrefix,
+  ]);
 
   useEffect(() => {
     switch (connectError?.name) {
@@ -87,7 +111,6 @@ export const useWagmiWallet = (
       return null;
     }
     selectWallet(walletName);
-    // if (isConnected) return null; /* ⬅ DISABLED - this is not only for certain wallet, this turns true when any wallet in connectors is connected. (KNOWN ISSUE) */
     connect({ connector: provider });
     return null;
   };
@@ -102,11 +125,46 @@ export const useWagmiWallet = (
 
   const signArbitrary = useCallback(
     async (message: string): Promise<`0x${string}` | undefined> => {
-      if (!isConnected || !walletKeys || !address || !isWalletInstalled) {
+      // Check if this wallet is selected and basic requirements are met
+      if (selectedWallet !== walletName) {
+        errorHandler(
+          new Error(
+            `ERROR - useWagmiWallet.signArbitrary:: ${walletName} is not the selected wallet`,
+          ),
+        );
+        return;
+      }
+
+      if (!isConnected || !address || !isWalletInstalled) {
         cleanWalletsInLocalStorage();
         errorHandler(
           new Error(
-            `ERROR - useWagmiWallet.signArbitrary:: ${walletName} not initialized or not installed`,
+            `ERROR - useWagmiWallet.signArbitrary:: ${walletName} not connected or not installed`,
+          ),
+        );
+        return;
+      }
+
+      // If walletKeys is not set but we have address and are connected,
+      // create the wallet keys directly instead of waiting
+      let currentWalletKeys = walletKeys;
+      if (!currentWalletKeys && address && isConnected) {
+        currentWalletKeys = {
+          bech32: converter(
+            options?.cosmosChainPrefix ?? defaultValue.cosmosChainPrefix,
+          ).toBech32(address),
+          hex: address,
+        };
+        // Update the state for future use
+        setWalletKeys(currentWalletKeys);
+        setWalletKeysToLocalStorage(walletName, currentWalletKeys);
+      }
+
+      if (!currentWalletKeys) {
+        cleanWalletsInLocalStorage();
+        errorHandler(
+          new Error(
+            `ERROR - useWagmiWallet.signArbitrary:: ${walletName} wallet keys not initialized`,
           ),
         );
         return;
@@ -119,6 +177,7 @@ export const useWagmiWallet = (
 
       try {
         const signature: `0x${string}` = await signMessageAsync({
+          account: address,
           message: message,
         });
 
@@ -133,7 +192,15 @@ export const useWagmiWallet = (
         clearTimeout(timer);
       }
     },
-    [walletKeys?.hex, address, isConnected, isWalletInstalled],
+    [
+      walletKeys?.hex,
+      address,
+      isConnected,
+      isWalletInstalled,
+      selectedWallet,
+      walletName,
+      options?.cosmosChainPrefix,
+    ],
   );
 
   const sendTransaction = async (
@@ -164,3 +231,5 @@ export const useWagmiWallet = (
     sendTransaction,
   };
 };
+
+export type WagmiWalletHookType = ReturnType<typeof useWagmiWallet>;

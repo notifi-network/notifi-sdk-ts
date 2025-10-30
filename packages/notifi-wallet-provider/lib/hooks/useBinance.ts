@@ -4,9 +4,10 @@ import { useCallback, useEffect, useState } from 'react';
 import { BinanceChain, MetamaskWalletKeys, Wallets } from '../types';
 import {
   cleanWalletsInLocalStorage,
+  defaultValue,
   setWalletKeysToLocalStorage,
-} from '../utils/localStorageUtils';
-import { walletsWebsiteLink } from '../utils/wallet';
+  walletsWebsiteLink,
+} from '../utils';
 
 const walletName: keyof Wallets = 'binance';
 
@@ -14,6 +15,7 @@ export const useBinance = (
   loadingHandler: React.Dispatch<React.SetStateAction<boolean>>,
   errorHandler: (e: Error, durationInMs?: number) => void,
   selectWallet: (wallet: keyof Wallets | null) => void,
+  options?: { cosmosChainPrefix?: string },
 ) => {
   const [walletKeys, setWalletKeys] = useState<MetamaskWalletKeys | null>(null);
   const [isWalletInstalled, setIsWalletInstalled] = useState<boolean>(false);
@@ -42,22 +44,19 @@ export const useBinance = (
     if (!provider) return;
 
     const handleAccountChange = () => {
-      provider
-        .requestAccounts()
-        .then(
-          (response: { addresses: { type: string; address: string }[] }[]) => {
-            const address = response?.[0]?.addresses?.find(
-              (v) => v.type === 'eth',
-            )?.address as string;
+      provider.requestAccounts().then((response) => {
+        const address = response?.[0]?.addresses?.find((v) => v.type === 'eth')
+          ?.address as string;
 
-            const walletKeys = {
-              bech32: converter('inj').toBech32(address), // TODO: dynamic cosmos chain addr conversion
-              hex: address,
-            };
+        const walletKeys = {
+          bech32: converter(
+            options?.cosmosChainPrefix ?? defaultValue.cosmosChainPrefix,
+          ).toBech32(address),
+          hex: address,
+        };
 
-            setWalletKeys(walletKeys);
-          },
-        );
+        setWalletKeys(walletKeys);
+      });
     };
 
     provider.on?.('accountsChanged', handleAccountChange);
@@ -88,7 +87,9 @@ export const useBinance = (
         ?.address as string;
 
       const walletKeys = {
-        bech32: converter('inj').toBech32(address), // TODO: dynamic cosmos chain addr conversion
+        bech32: converter(
+          options?.cosmosChainPrefix ?? defaultValue.cosmosChainPrefix,
+        ).toBech32(address),
         hex: address,
       };
 
@@ -96,11 +97,10 @@ export const useBinance = (
       setWalletKeys(walletKeys);
       setWalletKeysToLocalStorage(walletName as keyof Wallets, walletKeys);
       return walletKeys;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (e: any) {
+    } catch (e) {
       console.error(e);
       disconnectWallet();
-      if (e.message) {
+      if (e instanceof Error && e.message) {
         errorHandler(new Error(e.message));
       }
       return null;
@@ -148,8 +148,9 @@ export const useBinance = (
     },
     [walletKeys?.hex],
   );
-  // TODO: define the type of transactions
-  const sendTransaction = async (transaction: object) => {
+  const sendTransaction = async (
+    transaction: object,
+  ): Promise<`0x${string}` | undefined> => {
     let txHash: string | undefined;
     if (!provider || !walletKeys) {
       handleWalletNotExists('Sign Arbitrary');
@@ -171,8 +172,10 @@ export const useBinance = (
     } finally {
       loadingHandler(false);
     }
-    // TODO: add validator for txHash
-    return txHash as `0x${string}` | undefined;
+    if (txHash && txHash.startsWith('0x')) {
+      return txHash as `0x${string}`;
+    }
+    return undefined;
   };
 
   return {
@@ -185,6 +188,8 @@ export const useBinance = (
     sendTransaction,
   };
 };
+
+export type BinanceWalletHookType = ReturnType<typeof useBinance>;
 
 const geBinanceFromWindow = async (): Promise<BinanceChain> => {
   if (typeof window === 'undefined' || !window.BinanceChain) {
