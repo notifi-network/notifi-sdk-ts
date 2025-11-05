@@ -1,0 +1,11 @@
+
+echo "Running pre-commit hook..."
+
+echo "🔍 Checking code format with Prettier..."
+if ! npx prettier --config .prettierrc packages/**/lib/**/*.ts* --check; then
+    echo "❌ Code format check failed. Please run 'npm run format' and commit the changes."
+    exit 1
+fi
+echo "✅ Code format check passed!"
+
+echo "🎉 Pre-commit checks passed!"

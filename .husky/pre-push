@@ -1,13 +1,6 @@
 
 echo "Running pre-push hook..."
 
-echo "🔍 Checking code format with Prettier..."
-if ! npx prettier --config .prettierrc packages/**/lib/**/*.ts* --check; then
-    echo "❌ Code format check failed. Please run 'npm run format' and commit the changes."
-    exit 1
-fi
-echo "✅ Code format check passed!"
-
 echo "🔍 Running lint check..."
 if npm run lint; then
     echo "✅ Lint check passed!"
@@ -28,4 +21,4 @@ if ! npm run build; then
 fi
 echo "✅ Build check passed!"
 
-echo "🎉 All checks passed! Ready to push."  
+echo "🎉 All checks passed! Ready to push."
