@@ -6,7 +6,7 @@ if npm run lint; then
     echo "✅ Lint check passed!"
 else
     lint_exit_code=$?
-    if [ $lint_exit_code -ge 2 ]; then
+    if [ $lint_exit_code -ge 1 ]; then
         echo "❌ Lint check failed with errors. Please fix the errors."
         exit 1
     else
