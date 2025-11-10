@@ -88,6 +88,22 @@ describe('NotifiFrontendClient Unit Test', () => {
     expect(result.emailTargets![0]!.emailAddress).toBe('tester@notifi.network');
   });
 
+  it('alterTargetGroup-sms', async () => {
+    await login();
+    const result = await client.alterTargetGroup({
+      name: 'Default',
+      phoneNumber: {
+        type: 'ensure',
+        name: '+18882378289',
+      },
+    });
+
+    expect(result).toHaveProperty('name');
+    expect(result.name).toBe('Default');
+    expect(result.smsTargets?.length).toBe(1);
+    expect(result.smsTargets![0]!.phoneNumber).toBe('+18882378289');
+  });
+
   it('ensureFusionAlerts & deleteAlerts & getAlerts', async () => {
     await login();
 
@@ -170,9 +186,10 @@ describe('NotifiFrontendClient Unit Test', () => {
 
     await client.alterTargetGroup({
       name: 'Default',
-      email: {
+      // Utilize sms target instead of email target to reduce overhead of emitting fusion event (system messsage)
+      phoneNumber: {
         type: 'ensure',
-        name: 'tester@notifi.network',
+        name: '+18882378289',
       },
     });
 
@@ -181,7 +198,7 @@ describe('NotifiFrontendClient Unit Test', () => {
 
   // ⬇ Internal helper functions
   const login = async () => {
-    return client.logIn({
+    return client.auth.logIn({
       signMessage: async (message: Uint8Array) => {
         const signature = await wallet.signMessage(message);
         return arrayify(signature);

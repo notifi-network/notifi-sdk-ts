@@ -124,18 +124,25 @@ This is useful for the cross platform applications which adopt the Progressive W
 
 Before contributing, please make sure the following steps are followed.
 
-#### Code formatting
+> [!TIP]
+> This repository uses [Husky](https://typicode.github.io/husky/) to manage Git hooks for maintaining code quality and consistency.
+>
+> - Pre-commit: Checks code formatting
+> - Pre-push: Verifies syntax correctness and ensures a successful build.
+>
+> ⚠️ Commits or pushes that fail these checks will be rejected until the issues are resolved.
 
-Before pushing the change, ensure the formatting is correct by running the following command
+#### Code formatting & linting
+
+Before pushing changes, make sure your code is properly formatted and passes lint checks by running:
 
 ```bash
 # on the root directory
-npm run format
+npm run format && npm run lint
 ```
 
-> **!IMPORTANT NOTE**:
-> A push may be rejected if the code formatting is incorrect, as this repository enforces a pre-push Git hook to maintain consistent formatting.
-> If your IDE does not automatically use <u>`"prettier.configPath": "./.prettierrc"`</u> , please run <u>npm run format</u> and commit the changes before pushing.
+> [!WARNING]
+> If your IDE does not automatically use <u>`"prettier.configPath": "./.prettierrc"`</u> , please manually run `npm run format` and commit the formatted changes before pushing.
 
 #### Build packages
 
