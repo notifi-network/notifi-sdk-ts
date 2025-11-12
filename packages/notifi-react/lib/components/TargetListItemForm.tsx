@@ -35,6 +35,44 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
     message: props.message,
   });
 
+  const [isEditing, setIsEditing] = React.useState(false);
+  const originalValueRef = React.useRef<string>('');
+
+  const handleEdit = () => {
+    const target = props.target as FormTarget;
+    originalValueRef.current = targetInputs[target].value;
+    setIsEditing(true);
+  };
+
+  const handleCancel = () => {
+    const target = props.target as FormTarget;
+    updateTargetInputs(target, { value: originalValueRef.current });
+    setIsEditing(false);
+  };
+
+  const handleSave = async () => {
+    const target = props.target as FormTarget;
+    await renewTargetGroup({
+      target: target,
+      value: targetInputs[target].value,
+    });
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    setIsEditing(false);
+  };
+
+  const showInputForm = !props.targetInfo || isEditing;
+
+  const editableSignupCtaProps = isEditing
+    ? {
+        ...signupCtaProps,
+        targetInfoPrompt: {
+          type: 'cta' as const,
+          message: 'Save',
+          onClick: handleSave,
+        },
+      }
+    : signupCtaProps;
+
   return (
     <div
       className={clsx(
@@ -65,11 +103,16 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
               'notifi-target-list-item-target-id',
               props.classNames?.targetId,
             )}
+            onClick={props.targetInfo && !isEditing ? handleEdit : undefined}
+            style={
+              props.targetInfo && !isEditing ? { cursor: 'pointer' } : undefined
+            }
           >
             {targetData[props.target] || <label>{props.label}</label>}
             {/* VERIFIED CHECK ICON */}
             {!!props.targetInfo &&
-            props.targetInfo.infoPrompt.message === 'Verified' ? (
+            props.targetInfo.infoPrompt.message === 'Verified' &&
+            !isEditing ? (
               <TargetCta
                 type={props.targetCtaType}
                 targetInfoPrompt={props.targetInfo.infoPrompt}
@@ -80,17 +123,44 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
         </div>
 
         {/* TARGET SIGNUP CTA */}
-        {!props.targetInfo &&
+        {!isEditing &&
+        !props.targetInfo &&
         !targetInputs[props.target].error &&
         targetInputs[props.target].value ? (
           <TargetCta
-            {...signupCtaProps}
+            {...editableSignupCtaProps}
             classNames={props.classNames?.TargetCta}
+          />
+        ) : null}
+        {/* SAVE BUTTON WHEN EDITING */}
+        {isEditing &&
+        !targetInputs[props.target].error &&
+        targetInputs[props.target].value ? (
+          <TargetCta
+            {...editableSignupCtaProps}
+            classNames={props.classNames?.TargetCta}
+          />
+        ) : null}
+        {/* CANCEL BUTTON WHEN EDITING */}
+        {isEditing ? (
+          <TargetCta
+            type="link"
+            targetInfoPrompt={{
+              type: 'cta',
+              message: 'Cancel',
+              onClick: handleCancel,
+            }}
+            classNames={{
+              container: 'notifi-target-list-item-cancel',
+              actionRequired: {
+                link: 'notifi-target-list-item-cancel-link',
+              },
+            }}
           />
         ) : null}
       </div>
 
-      {!props.targetInfo ? (
+      {showInputForm ? (
         <div className="notifi-target-list-item-input-form">
           <TargetInputField
             targetType={props.target}
@@ -137,7 +207,7 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
         </div>
       ) : null}
       {/* REMOVE TARGET CTA */}
-      {isRemoveButtonAvailable ? (
+      {isRemoveButtonAvailable && !isEditing ? (
         <TargetCta
           type="link"
           targetInfoPrompt={{
