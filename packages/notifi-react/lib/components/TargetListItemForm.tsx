@@ -108,7 +108,7 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
               props.targetInfo && !isEditing ? { cursor: 'pointer' } : undefined
             }
           >
-            {targetData[props.target] || <label>{props.label}</label>}
+            {isEditing ? `Edit ${props.label}` : (targetData[props.target] || <label>{props.label}</label>)}
             {/* VERIFIED CHECK ICON */}
             {!!props.targetInfo &&
             props.targetInfo.infoPrompt.message === 'Verified' &&
@@ -170,7 +170,7 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
       ) : null}
 
       {/* TARGET STATUS MESSAGE */}
-      {classifiedTargetListItemMessage ? (
+      {classifiedTargetListItemMessage && !isEditing ? (
         <div
           className={clsx(
             'notifi-target-list-item-warning',
