@@ -26,7 +26,8 @@ export type IconType =
   | 'check-circle'
   | 'bell-thin'
   | 'close'
-  | 'triangle-down';
+  | 'triangle-down'
+  | 'edit';
 
 export const Icon: React.FC<Props & { type: IconType }> = (
   props: Props & { type: IconType },
@@ -762,6 +763,24 @@ export const Icon: React.FC<Props & { type: IconType }> = (
             d="M4.08894 4.61125C3.69842 5.00178 3.69842 5.63494 4.08894 6.02547L6.5643 8.50083L4.08977 10.9754C3.69924 11.3659 3.69924 11.999 4.08977 12.3896C4.48029 12.7801 5.11346 12.7801 5.50398 12.3896L7.97852 9.91504L10.4529 12.3894C10.8434 12.78 11.4766 12.78 11.8671 12.3894C12.2576 11.9989 12.2576 11.3657 11.8671 10.9752L9.39273 8.50083L11.8679 6.02561C12.2585 5.63509 12.2585 5.00192 11.8679 4.6114C11.4774 4.22087 10.8443 4.22087 10.4537 4.6114L7.97852 7.08661L5.50316 4.61125C5.11263 4.22073 4.47947 4.22073 4.08894 4.61125Z"
             fill="currentColor"
           />
+        </svg>
+      );
+    case 'edit':
+      return (
+        <svg
+          {...props}
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+          <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
         </svg>
       );
     default:

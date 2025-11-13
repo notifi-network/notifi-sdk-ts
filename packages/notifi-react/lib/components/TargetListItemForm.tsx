@@ -103,10 +103,6 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
               'notifi-target-list-item-target-id',
               props.classNames?.targetId,
             )}
-            onClick={props.targetInfo && !isEditing ? handleEdit : undefined}
-            style={
-              props.targetInfo && !isEditing ? { cursor: 'pointer' } : undefined
-            }
           >
             {isEditing ? `Edit ${props.label}` : (targetData[props.target] || <label>{props.label}</label>)}
             {/* VERIFIED CHECK ICON */}
@@ -120,6 +116,17 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
               />
             ) : null}
           </div>
+
+          {/* EDIT ICON */}
+          {props.targetInfo && !isEditing ? (
+            <div
+              className="notifi-target-list-item-edit-icon"
+              onClick={handleEdit}
+              style={{ cursor: 'pointer' }}
+            >
+              <Icon type="edit" />
+            </div>
+          ) : null}
         </div>
 
         {/* TARGET SIGNUP CTA */}
