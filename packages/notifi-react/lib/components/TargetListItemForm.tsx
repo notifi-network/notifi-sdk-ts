@@ -37,13 +37,17 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
   });
 
   const [isEditing, setIsEditing] = React.useState(false);
-  // TODO: rename to isInputFormAvailable
-  const showInputForm = !props.targetInfo || isEditing;
+  const isInputFormAvailable = !props.targetInfo || isEditing;
 
   const isSaveButtonAvailable =
     ((!isEditing && !props.targetInfo) || isEditing) &&
     !targetInputs[props.target].error &&
     targetInputs[props.target].value;
+
+  const isVerifiedAndNotEditing =
+    !!props.targetInfo &&
+    isTargetVerified(props.targetInfo.infoPrompt) &&
+    !isEditing;
 
   return (
     <div
@@ -73,6 +77,7 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
           <div
             className={clsx(
               'notifi-target-list-item-target-id',
+              isVerifiedAndNotEditing && 'has-verified-icon',
               props.classNames?.targetId,
             )}
           >
@@ -80,12 +85,10 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
               ? `Edit ${props.label}`
               : targetData[props.target] || <label>{props.label}</label>}
             {/* VERIFIED CHECK ICON */}
-            {!!props.targetInfo &&
-            props.targetInfo.infoPrompt.message === 'Verified' &&
-            !isEditing ? (
+            {isVerifiedAndNotEditing ? (
               <TargetCta
                 type={props.targetCtaType}
-                targetInfoPrompt={props.targetInfo.infoPrompt}
+                targetInfoPrompt={props.targetInfo!.infoPrompt}
                 classNames={props.classNames?.TargetCta}
               />
             ) : null}
@@ -96,7 +99,6 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
             <div
               className="notifi-target-list-item-edit-icon"
               onClick={() => setIsEditing(true)}
-              style={{ cursor: 'pointer' }}
             >
               <Icon type="edit" />
             </div>
@@ -129,7 +131,7 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
         ) : null}
       </div>
 
-      {showInputForm ? (
+      {isInputFormAvailable ? (
         <div className="notifi-target-list-item-input-form">
           <TargetInputField
             targetType={props.target}

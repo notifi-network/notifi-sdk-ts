@@ -60,6 +60,7 @@
   align-items: flex-start;
   margin: auto;
   margin-left: 0.5rem;
+  cursor: pointer;
 }
 
 .notifi-target-list-item-target-id {
@@ -68,9 +69,12 @@
   display: inline;
   overflow: auto;
   word-wrap: break-word;
-  padding-right: 25px;
   letter-spacing: 0.42px;
   overflow: hidden;
+}
+
+.notifi-target-list-item-target-id.has-verified-icon {
+  padding-right: 25px;
 }
 
 .notifi-target-list-item-remove {

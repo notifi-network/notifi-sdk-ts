@@ -86,6 +86,7 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
           <div
             className={clsx(
               'notifi-target-list-item-target-id',
+              isVerified && 'has-verified-icon',
               props.classNames?.targetId,
             )}
           >
