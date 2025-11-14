@@ -29,6 +29,7 @@ type ClassifiedTargetListItemMessage = {
 export const useTargetListItem = (input: {
   target: Target;
   message?: TargetListItemMessage;
+  targetInfoPromptAddOnAction?: () => Promise<void>;
 }) => {
   const { cardConfig } = useNotifiTenantConfigContext();
   const {
@@ -81,6 +82,8 @@ export const useTargetListItem = (input: {
               });
               //NOTE: Wait for 1 second for target context state change
               await new Promise((resolve) => setTimeout(resolve, 1000));
+              // TODO: expend the AddOnAction to other targets
+              await input.targetInfoPromptAddOnAction?.();
             },
           },
         };
