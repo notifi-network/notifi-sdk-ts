@@ -37,7 +37,13 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
   });
 
   const [isEditing, setIsEditing] = React.useState(false);
+  // TODO: rename to isInputFormAvailable
   const showInputForm = !props.targetInfo || isEditing;
+
+  const isSaveButtonAvailable =
+    ((!isEditing && !props.targetInfo) || isEditing) &&
+    !targetInputs[props.target].error &&
+    targetInputs[props.target].value;
 
   return (
     <div
@@ -97,20 +103,8 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
           ) : null}
         </div>
 
-        {/* TARGET SIGNUP CTA */}
-        {!isEditing &&
-        !props.targetInfo &&
-        !targetInputs[props.target].error &&
-        targetInputs[props.target].value ? (
-          <TargetCta
-            {...signupCtaProps}
-            classNames={props.classNames?.TargetCta}
-          />
-        ) : null}
-        {/* SAVE BUTTON WHEN EDITING */}
-        {isEditing &&
-        !targetInputs[props.target].error &&
-        targetInputs[props.target].value ? (
+        {/* TARGET SIGNUP CTA / SAVE BUTTON */}
+        {isSaveButtonAvailable ? (
           <TargetCta
             {...signupCtaProps}
             classNames={props.classNames?.TargetCta}
