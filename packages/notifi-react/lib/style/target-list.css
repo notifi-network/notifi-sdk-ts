@@ -54,6 +54,14 @@
   margin-right: 0.5rem;
 }
 
+.notifi-target-list-item-edit-icon {
+  color: rgba(var(--notifi-color-heather), 1);
+  display: flex;
+  align-items: flex-start;
+  margin: auto;
+  margin-left: 0.5rem;
+}
+
 .notifi-target-list-item-target-id {
   font-size: 0.85rem;
   font-weight: 600;
