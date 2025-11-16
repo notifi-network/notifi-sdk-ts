@@ -29,6 +29,7 @@ type ClassifiedTargetListItemMessage = {
 export const useTargetListItem = (input: {
   target: Target;
   message?: TargetListItemMessage;
+  targetInfoPromptAddOnAction?: () => Promise<void>;
 }) => {
   const { cardConfig } = useNotifiTenantConfigContext();
   const {
@@ -81,6 +82,7 @@ export const useTargetListItem = (input: {
               });
               //NOTE: Wait for 1 second for target context state change
               await new Promise((resolve) => setTimeout(resolve, 1000));
+              await input.targetInfoPromptAddOnAction?.();
             },
           },
         };
@@ -104,6 +106,7 @@ export const useTargetListItem = (input: {
               if (url && !isVerified) {
                 await processVerificationLink(url);
               }
+              await input.targetInfoPromptAddOnAction?.();
             },
           },
         };
@@ -128,6 +131,7 @@ export const useTargetListItem = (input: {
               if (url && !isVerified) {
                 await processVerificationLink(url);
               }
+              await input.targetInfoPromptAddOnAction?.();
             },
           },
         };
@@ -172,6 +176,7 @@ export const useTargetListItem = (input: {
                   console.error('Error signing wallet target', e);
                 }
               }
+              await input.targetInfoPromptAddOnAction?.();
             },
           },
         };
@@ -194,6 +199,7 @@ export const useTargetListItem = (input: {
                 targetGroup?.slackChannelTargets?.[0]?.verificationLink;
               if (!verificationLink) return;
               await processVerificationLink(verificationLink);
+              await input.targetInfoPromptAddOnAction?.();
             },
           },
         };

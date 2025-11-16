@@ -33,7 +33,21 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
   } = useTargetListItem({
     target: props.target,
     message: props.message,
+    targetInfoPromptAddOnAction: async () => setIsEditing(false),
   });
+
+  const [isEditing, setIsEditing] = React.useState(false);
+  const isInputFormAvailable = !props.targetInfo || isEditing;
+
+  const isSaveButtonAvailable =
+    ((!isEditing && !props.targetInfo) || isEditing) &&
+    !targetInputs[props.target].error &&
+    targetInputs[props.target].value;
+
+  const isVerifiedAndNotEditing =
+    !!props.targetInfo &&
+    isTargetVerified(props.targetInfo.infoPrompt) &&
+    !isEditing;
 
   return (
     <div
@@ -63,34 +77,61 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
           <div
             className={clsx(
               'notifi-target-list-item-target-id',
+              isVerifiedAndNotEditing && 'has-verified-icon',
               props.classNames?.targetId,
             )}
           >
-            {targetData[props.target] || <label>{props.label}</label>}
+            {isEditing
+              ? `Edit ${props.label}`
+              : targetData[props.target] || <label>{props.label}</label>}
             {/* VERIFIED CHECK ICON */}
-            {!!props.targetInfo &&
-            props.targetInfo.infoPrompt.message === 'Verified' ? (
+            {isVerifiedAndNotEditing ? (
               <TargetCta
                 type={props.targetCtaType}
-                targetInfoPrompt={props.targetInfo.infoPrompt}
+                targetInfoPrompt={props.targetInfo!.infoPrompt}
                 classNames={props.classNames?.TargetCta}
               />
             ) : null}
           </div>
+
+          {/* EDIT ICON */}
+          {props.targetInfo && !isEditing ? (
+            <div
+              className="notifi-target-list-item-edit-icon"
+              onClick={() => setIsEditing(true)}
+            >
+              <Icon type="edit" />
+            </div>
+          ) : null}
         </div>
 
-        {/* TARGET SIGNUP CTA */}
-        {!props.targetInfo &&
-        !targetInputs[props.target].error &&
-        targetInputs[props.target].value ? (
+        {/* TARGET SIGNUP CTA / SAVE BUTTON */}
+        {isSaveButtonAvailable ? (
           <TargetCta
             {...signupCtaProps}
             classNames={props.classNames?.TargetCta}
           />
         ) : null}
+        {/* CANCEL BUTTON WHEN EDITING */}
+        {isEditing ? (
+          <TargetCta
+            type="link"
+            targetInfoPrompt={{
+              type: 'cta',
+              message: 'Cancel',
+              onClick: () => setIsEditing(false),
+            }}
+            classNames={{
+              container: 'notifi-target-list-item-cancel',
+              actionRequired: {
+                link: 'notifi-target-list-item-cancel-link',
+              },
+            }}
+          />
+        ) : null}
       </div>
 
-      {!props.targetInfo ? (
+      {isInputFormAvailable ? (
         <div className="notifi-target-list-item-input-form">
           <TargetInputField
             targetType={props.target}
@@ -100,7 +141,7 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
       ) : null}
 
       {/* TARGET STATUS MESSAGE */}
-      {classifiedTargetListItemMessage ? (
+      {classifiedTargetListItemMessage && !isEditing ? (
         <div
           className={clsx(
             'notifi-target-list-item-warning',
@@ -137,7 +178,7 @@ export const TargetListItemForm: React.FC<TargetListItemFromProps> = (
         </div>
       ) : null}
       {/* REMOVE TARGET CTA */}
-      {isRemoveButtonAvailable ? (
+      {isRemoveButtonAvailable && !isEditing ? (
         <TargetCta
           type="link"
           targetInfoPrompt={{
