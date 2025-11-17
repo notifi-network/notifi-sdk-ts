@@ -1,6 +1,6 @@
 {
   "name": "@notifi-network/notifi-node",
-  "version": "7.5.0",
+  "version": "7.6.0",
   "description": "Server-initiated operations with Notifi",
   "homepage": "https://github.com/notifi-network/notifi-sdk-ts#readme",
   "license": "MIT",

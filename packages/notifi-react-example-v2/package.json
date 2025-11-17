@@ -1,6 +1,6 @@
 {
   "name": "@notifi-network/notifi-react-example-v2",
-  "version": "7.5.0",
+  "version": "7.6.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -15,10 +15,10 @@
   },
   "dependencies": {
     "@ethersproject/bytes": "^5.8.0",
-    "@notifi-network/notifi-react": "^7.5.0",
+    "@notifi-network/notifi-react": "^7.6.0",
     "@notifi-network/notifi-react-wallet-target-plugin": "^7.5.0",
     "@notifi-network/notifi-solana-hw-login": "^7.5.0",
-    "@notifi-network/notifi-wallet-provider": "^7.5.0",
+    "@notifi-network/notifi-wallet-provider": "^7.6.0",
     "bip39": "^3.1.0",
     "ethers": "^6.11.1",
     "jwt-decode": "^4.0.0",
