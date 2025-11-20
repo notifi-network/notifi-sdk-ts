@@ -22,6 +22,13 @@ export const createWallets = (hooks: WalletHooks): Wallets => {
     }
   });
 
+  BLOCKCHAIN_WALLETS.cardano.forEach((walletName) => {
+    const hook = hooks[walletName];
+    if (hook && walletName === 'midnight') {
+      wallets[walletName] = createMidnightWallet(hook as any);
+    }
+  });
+
   if (hooks.binance) {
     wallets.binance = createBinanceWallet(hooks.binance);
   }
@@ -33,9 +40,6 @@ export const createWallets = (hooks: WalletHooks): Wallets => {
   }
   if (hooks.phantom) {
     wallets.phantom = createPhantomWallet(hooks.phantom);
-  }
-  if (hooks.midnight) {
-    wallets.midnight = createMidnightWallet(hooks.midnight);
   }
 
   return wallets;

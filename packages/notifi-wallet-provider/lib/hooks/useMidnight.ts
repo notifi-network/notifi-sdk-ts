@@ -38,19 +38,40 @@ export const useMidnight = (
     );
   };
 
-  // Only detect wallet installation, don't auto-connect
+  // Temporary debug version with more flexible detection
   useEffect(() => {
     loadingHandler(true);
-    getMidnightFromWindow()
-      .then((midnight) => {
+    
+    // Enhanced detection logic - check for Lace wallet
+    const checkMidnightWallet = () => {
+      console.log('🔍 Debugging Midnight wallet detection...');
+      console.log('window.cardano:', window.cardano);
+      console.log('window.cardano?.lace:', window.cardano?.lace);
+      
+      // Primary check: Lace wallet via cardano interface
+      if (window.cardano?.lace) {
+        console.log('✅ Found Lace wallet (Midnight support):', window.cardano.lace);
         setIsMidnightInstalled(true);
-        // Note: Midnight doesn't have account change events like other wallets
-        // This might be added in future versions of the wallet
-      })
-      .catch(() => {
-        setIsMidnightInstalled(false);
-      })
-      .finally(() => loadingHandler(false));
+        return true;
+      }
+      
+      // Fallback check: Direct midnight interface
+      if (window.midnight?.mnLace) {
+        console.log('✅ Found direct Midnight interface:', window.midnight.mnLace);
+        setIsMidnightInstalled(true);
+        return true;
+      }
+      
+      console.log('❌ No Midnight/Lace wallet interface found');
+      setIsMidnightInstalled(false);
+      return false;
+    };
+    
+    // Run detection
+    const detected = checkMidnightWallet();
+    console.log('🎯 Final detection result:', detected);
+    
+    loadingHandler(false);
 
     // Clean up function
     return () => {
@@ -59,44 +80,81 @@ export const useMidnight = (
   }, []);
 
   const connectMidnight = useCallback(async (): Promise<MidnightWalletKeys | null> => {
-    if (!window.midnight?.mnLace) {
+    // Try to get Lace wallet first, then fallback to midnight interface
+    const midnightWallet = window.cardano?.lace || window.midnight?.mnLace;
+    
+    if (!midnightWallet) {
       handleMidnightNotExists('connectMidnight');
       return null;
     }
 
     loadingHandler(true);
     try {
-      // Check if already enabled first (avoid unnecessary popups)
-      const isEnabled = await window.midnight.mnLace.isEnabled();
+      console.log('🔗 Attempting to connect to Midnight wallet...');
       
-      // Always call enable() but it won't show popup if already enabled
-      const walletApi = await window.midnight.mnLace.enable();
+      // Always call enable() to request permission - this will show the popup
+      const walletApi = await midnightWallet.enable();
+      console.log('✅ Wallet enabled successfully:', walletApi);
       
-      // Get wallet state
-      const state: MidnightWalletState = await walletApi.state();
+      // Try multiple methods to get addresses
+      let accounts = [];
       
-      if (!state.address) {
-        throw new Error('No address returned from Midnight wallet');
+      try {
+        // Method 1: Try getUsedAddresses first
+        accounts = await walletApi.getUsedAddresses();
+        console.log('📋 getUsedAddresses() result:', accounts);
+      } catch (e) {
+        console.log('⚠️ getUsedAddresses() failed:', e);
       }
-
-      // Create wallet keys based on the address format
+      
+      // Method 2: If no used addresses, try getUnusedAddresses
+      if (!accounts || accounts.length === 0) {
+        try {
+          accounts = await walletApi.getUnusedAddresses();
+          console.log('📋 getUnusedAddresses() result:', accounts);
+        } catch (e) {
+          console.log('⚠️ getUnusedAddresses() failed:', e);
+        }
+      }
+      
+      // Method 3: If still no addresses, try getChangeAddress
+      if (!accounts || accounts.length === 0) {
+        try {
+          const changeAddress = await walletApi.getChangeAddress();
+          if (changeAddress) {
+            accounts = [changeAddress];
+            console.log('📋 getChangeAddress() result:', changeAddress);
+          }
+        } catch (e) {
+          console.log('⚠️ getChangeAddress() failed:', e);
+        }
+      }
+      
+      if (!accounts || accounts.length === 0) {
+        throw new Error('No addresses found in wallet. Please ensure your wallet has at least one address.');
+      }
+      
+      const bech32 = accounts[0];
+      // Convert to hex format (basic conversion for now)
+      const hex = '0x' + Buffer.from(bech32, 'utf8').toString('hex');
+      
       const walletKeys: MidnightWalletKeys = {
-        bech32: state.address, // Primary Midnight address (Bech32m encoded)
-        hex: state.address,    // For compatibility - may need conversion based on address type
+        bech32,
+        hex,
       };
-
+      
+      console.log('🔑 Wallet keys generated:', walletKeys);
+      
       setWalletKeysMidnight(walletKeys);
-      setWalletKeysToLocalStorage({
-        walletName: 'midnight',
-        walletKeys,
-      });
+      setWalletKeysToLocalStorage('midnight', walletKeys);
       selectWallet('midnight');
-
+      
+      console.log('🎉 Midnight wallet connected successfully!');
       return walletKeys;
-    } catch (e) {
-      console.error('Midnight wallet connection error:', e);
+    } catch (error) {
+      console.error('❌ Error connecting to Midnight wallet:', error);
       errorHandler(
-        new Error('Failed to connect Midnight wallet. Please try again.'),
+        new Error(`Failed to connect to Midnight wallet: ${error}`),
       );
       return null;
     } finally {
@@ -152,12 +210,19 @@ export const useMidnight = (
 };
 
 const getMidnightFromWindow = async (): Promise<MidnightProvider> => {
-  if (typeof window === 'undefined' || !window.midnight?.mnLace) {
-    throw new Error(
-      'Cannot get Midnight wallet without a window | Midnight wallet not found',
-    );
+  if (typeof window === 'undefined') {
+    throw new Error('Cannot get Midnight wallet without a window');
   }
   
-  // Return the Midnight provider
-  return window.midnight.mnLace;
+  // Check for Lace wallet (which supports Midnight)
+  if (window.cardano?.lace) {
+    return window.cardano.lace;
+  }
+  
+  // Fallback to original midnight interface
+  if (window.midnight?.mnLace) {
+    return window.midnight.mnLace;
+  }
+  
+  throw new Error('Midnight wallet not found - please install Lace wallet');
 };
