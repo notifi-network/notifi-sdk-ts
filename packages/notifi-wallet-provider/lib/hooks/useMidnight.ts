@@ -170,26 +170,51 @@ export const useMidnight = (
 
   const signArbitraryMidnight = useCallback(
     async (message: string): Promise<string | undefined> => {
-      if (!window.midnight?.mnLace || !walletKeysMidnight) {
+      console.log('🔥 signArbitraryMidnight called with message:', message);
+      
+      // Use the same detection logic as connection
+      const midnightWallet = window.cardano?.lace || window.midnight?.mnLace;
+      
+      if (!midnightWallet || !walletKeysMidnight) {
+        console.error('❌ Midnight wallet or keys not available');
+        console.log('midnightWallet:', midnightWallet);
+        console.log('walletKeysMidnight:', walletKeysMidnight);
         handleMidnightNotExists('signArbitraryMidnight');
-        return;
+        return undefined;
       }
 
       loadingHandler(true);
       try {
-        const walletApi = await window.midnight.mnLace.enable();
+        console.log('🔗 Getting wallet API...');
+        const walletApi = await midnightWallet.enable();
+        console.log('✅ Wallet API obtained:', walletApi);
         
-        // signData is a required method in CIP-30, no need to check for undefined
+        const messageHex = Buffer.from(message, 'utf8').toString('hex');
+        console.log('📝 Message in hex:', messageHex);
+        console.log('🔑 Using address:', walletKeysMidnight.bech32);
+        
+        // signData is a required method in CIP-30
         const result = await walletApi.signData(
           walletKeysMidnight.bech32,
-          Buffer.from(message, 'utf8').toString('hex'),
+          messageHex,
         );
         
-        return result.signature;
-      } catch (e) {
-        console.error('Midnight signing error:', e);
+        console.log('✅ Raw signature result:', result);
+        
+        // Handle different possible return formats
+        let signature: string | undefined;
+        if (typeof result === 'string') {
+          signature = result;
+        } else if (result && typeof result === 'object') {
+          signature = result.signature || result.sig || result.data;
+        }
+        
+        console.log('🎯 Final signature:', signature);
+        return signature;
+      } catch (error) {
+        console.error('❌ Midnight signing error:', error);
         errorHandler(
-          new Error('Failed to sign message with Midnight wallet'),
+          new Error(`Failed to sign message with Midnight wallet: ${error}`),
         );
         return undefined;
       } finally {
