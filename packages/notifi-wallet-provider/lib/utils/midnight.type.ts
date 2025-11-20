@@ -43,7 +43,7 @@ export interface MidnightWalletAPI {
   getNetworkId?(): Promise<MidnightNetworkId>;
 
   // Transaction methods
-  signData?(
+  signData(
     addr: Address,
     payload: HexString,
   ): Promise<{

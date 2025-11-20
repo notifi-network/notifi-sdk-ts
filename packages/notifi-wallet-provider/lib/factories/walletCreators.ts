@@ -1,6 +1,7 @@
 import { type BinanceWalletHookType } from '../hooks/useBinance';
 import { type InjectedWalletHookType } from '../hooks/useInjectedWallet';
 import { type KeplrWalletHookType } from '../hooks/useKeplr';
+import { type MidnightWalletHookType } from '../hooks/useMidnight';
 import { PhantomWalletHookType } from '../hooks/usePhantom';
 import { type WagmiWalletHookType } from '../hooks/useWagmiWallet';
 import { type XionWalletHookType } from '../hooks/useXion';
@@ -8,6 +9,7 @@ import {
   BinanceWallet,
   EvmWallet,
   KeplrWallet,
+  MidnightWallet,
   PhantomWallet,
   XionWallet,
 } from '../types';
@@ -79,5 +81,19 @@ export const createPhantomWallet = (
     hook.websiteURL,
     hook.signTransactionPhantom,
     hook.signHardwareTransactionPhantom,
+  );
+};
+
+// Midnight wallet creation function
+export const createMidnightWallet = (
+  hook: MidnightWalletHookType,
+): MidnightWallet => {
+  return new MidnightWallet(
+    hook.isMidnightInstalled,
+    hook.walletKeysMidnight,
+    hook.signArbitraryMidnight,
+    hook.connectMidnight,
+    hook.disconnectMidnight,
+    hook.websiteURL,
   );
 };
