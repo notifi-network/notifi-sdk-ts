@@ -5,6 +5,7 @@ import {
   createBinanceWallet,
   createEvmWallet,
   createKeplrWallet,
+  createMidnightWallet,
   createPhantomWallet,
   createXionWallet,
 } from './walletCreators';
@@ -32,6 +33,9 @@ export const createWallets = (hooks: WalletHooks): Wallets => {
   }
   if (hooks.phantom) {
     wallets.phantom = createPhantomWallet(hooks.phantom);
+  }
+  if (hooks.midnight) {
+    wallets.midnight = createMidnightWallet(hooks.midnight);
   }
 
   return wallets;

@@ -81,3 +81,17 @@ export const createPhantomWallet = (
     hook.signHardwareTransactionPhantom,
   );
 };
+
+// Midnight wallet creation function
+export const createMidnightWallet = (
+  hook: MidnightWalletHookType,
+): MidnightWallet => {
+  return new MidnightWallet(
+    hook.isMidnightInstalled,
+    hook.walletKeysMidnight,
+    hook.signArbitraryMidnight,
+    hook.connectMidnight,
+    hook.disconnectMidnight,
+    hook.websiteURL,
+  );
+};
