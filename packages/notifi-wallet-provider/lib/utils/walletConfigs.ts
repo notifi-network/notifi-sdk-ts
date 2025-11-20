@@ -14,12 +14,13 @@ export const BLOCKCHAIN_WALLETS = {
   cosmos: ['keplr'] as const,
   binance: ['binance'] as const,
   xion: ['xion'] as const,
+  cardano: ['midnight'] as const,
 } as const;
 
 export const INTEGRATION_WALLETS = {
   injected: ['metamask', 'okx', 'zerion', 'rabby', 'rainbow'] as const,
   wagmi: ['walletconnect', 'coinbase'] as const,
-  native: ['binance', 'keplr', 'phantom'] as const,
+  native: ['binance', 'keplr', 'phantom', 'midnight'] as const,
   abstraxion: ['xion'] as const,
 } as const;
 

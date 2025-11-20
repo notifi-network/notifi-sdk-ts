@@ -4,6 +4,7 @@ import { BrowserProvider, Eip1193Provider } from 'ethers';
 import { Config } from 'wagmi';
 import { SendTransactionVariables } from 'wagmi/query';
 
+import { MidnightProvider } from './utils/midnight.type';
 import { PhantomProvider } from './utils/solana.type';
 
 export type Ethereum = Eip1193Provider & BrowserProvider;
@@ -18,6 +19,11 @@ declare global {
     BinanceChain: BinanceChain;
     // NOTE: Only support solana for now (for EVM, use EIP1193Provider)
     phantom: { bitcoin: never; ethereum: never; solana: PhantomProvider };
+    // Midnight wallet interface
+    midnight?: {
+      mnLace?: MidnightProvider;
+      [key: string]: MidnightProvider | undefined;
+    };
   }
 }
 
@@ -41,12 +47,14 @@ export type XionWalletKeys = PickKeys<
   'bech32' | 'base64' | 'grantee'
 >;
 export type PhantomWalletKeys = PickKeys<WalletKeysBase, 'base58'>;
+export type MidnightWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'hex'>;
 
 export type WalletKeys =
   | MetamaskWalletKeys
   | KeplrWalletKeys
   | XionWalletKeys
-  | PhantomWalletKeys;
+  | PhantomWalletKeys
+  | MidnightWalletKeys;
 
 export abstract class NotifiWallet {
   abstract isInstalled: boolean;
@@ -55,7 +63,8 @@ export abstract class NotifiWallet {
     | KeplrSignMessage
     | MetamaskSignMessage
     | XionSignMessage
-    | PhantomSignMessage;
+    | PhantomSignMessage
+    | MidnightSignMessage;
   // TODO: Impl sendTransaction for Keplr and Xion
   abstract sendTransaction?: EvmSendTransaction;
   abstract connect?: () => Promise<Partial<WalletKeysBase> | null>;
@@ -131,6 +140,10 @@ export class XionWallet implements NotifiWallet {
 }
 
 export type PhantomSignMessage = (message: Uint8Array) => Promise<Uint8Array>;
+export type MidnightSignMessage = (
+  message: string,
+) => Promise<string | undefined>;
+
 export class PhantomWallet implements NotifiWallet {
   constructor(
     public isInstalled: boolean,
@@ -149,6 +162,17 @@ export class PhantomWallet implements NotifiWallet {
   ) {}
 }
 
+export class MidnightWallet implements NotifiWallet {
+  constructor(
+    public isInstalled: boolean,
+    public walletKeys: MidnightWalletKeys | null,
+    public signArbitrary: MidnightSignMessage,
+    public connect: () => Promise<MidnightWalletKeys | null>,
+    public disconnect: () => void,
+    public websiteURL: string,
+  ) {}
+}
+
 export type Wallets = {
   metamask: EvmWallet;
   keplr: KeplrWallet;
@@ -161,4 +185,5 @@ export type Wallets = {
   walletconnect: EvmWallet;
   xion: XionWallet;
   phantom: PhantomWallet;
+  midnight: MidnightWallet;
 };
