@@ -47,7 +47,7 @@ export type XionWalletKeys = PickKeys<
   'bech32' | 'base64' | 'grantee'
 >;
 export type PhantomWalletKeys = PickKeys<WalletKeysBase, 'base58'>;
-export type MidnightWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'hex'>;
+export type MidnightWalletKeys = PickKeys<WalletKeysBase, 'bech32'>;
 
 export type WalletKeys =
   | MetamaskWalletKeys
