@@ -7,6 +7,7 @@ import {
   useInjectedWallet,
 } from '../hooks/useInjectedWallet';
 import { type KeplrWalletHookType, useKeplr } from '../hooks/useKeplr';
+import { type LaceWalletHookType, useLace } from '../hooks/useLace';
 import { type PhantomWalletHookType, usePhantom } from '../hooks/usePhantom';
 import {
   type WagmiWalletHookType,
@@ -98,6 +99,7 @@ export const createSpecialWalletHooks = (params: WalletHookParams) => {
       selectWallet,
       'xion',
     ) as XionWalletHookType,
+    lace: useLace(setIsLoading, throwError, selectWallet) as LaceWalletHookType,
   };
 };
 

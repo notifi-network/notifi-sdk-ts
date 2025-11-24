@@ -19,4 +19,5 @@ export const walletsWebsiteLink: { [key in keyof Wallets]: string } = {
   zerion: 'https://zerion.io/',
   xion: 'https://xion.burnt.com/',
   phantom: 'https://phantom.app/download',
+  lace: 'https://lace.io/',
 };

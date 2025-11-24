@@ -106,6 +106,19 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
           },
         });
         break;
+      case 'lace':
+        accountAddress = wallets[selectedWallet].walletKeys?.bech32 ?? '';
+        walletPublicKey = wallets[selectedWallet].walletKeys?.bech32 ?? '';
+        if (!walletPublicKey) throw new Error('ERROR: invalid walletPublicKey');
+        signMessage = async (message: Uint8Array): Promise<Uint8Array> => {
+          const messageString = Buffer.from(message).toString('utf8');
+          const result =
+            await wallets[selectedWallet].signArbitrary(messageString);
+          if (!result) throw new Error('ERROR: invalid signature');
+          const signatureBytes = Buffer.from(result, 'hex');
+          return signatureBytes;
+        };
+        break;
     }
   }
 
@@ -219,6 +232,23 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
         >
           {children}
         </NotifiContextProvider>
+      ) : null}
+      {selectedWallet === 'lace' ? (
+        <div>
+          <div
+            style={{
+              marginBottom: '20px',
+              padding: '10px',
+              backgroundColor: '#fff3cd',
+              border: '1px solid #ffc107',
+              borderRadius: '4px',
+            }}
+          >
+            ⚠️ Lace wallet (Cardano/Midnight) integration - CARDANO blockchain
+            support coming soon
+          </div>
+          {children}
+        </div>
       ) : null}
     </>
   );
