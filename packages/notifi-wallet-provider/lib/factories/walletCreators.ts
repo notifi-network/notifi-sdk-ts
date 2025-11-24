@@ -1,7 +1,7 @@
 import { type BinanceWalletHookType } from '../hooks/useBinance';
 import { type InjectedWalletHookType } from '../hooks/useInjectedWallet';
 import { type KeplrWalletHookType } from '../hooks/useKeplr';
-import { type MidnightWalletHookType } from '../hooks/useMidnight';
+import { type LaceWalletHookType } from '../hooks/useLace';
 import { PhantomWalletHookType } from '../hooks/usePhantom';
 import { type WagmiWalletHookType } from '../hooks/useWagmiWallet';
 import { type XionWalletHookType } from '../hooks/useXion';
@@ -9,7 +9,7 @@ import {
   BinanceWallet,
   EvmWallet,
   KeplrWallet,
-  MidnightWallet,
+  LaceWallet,
   PhantomWallet,
   XionWallet,
 } from '../types';
@@ -84,16 +84,14 @@ export const createPhantomWallet = (
   );
 };
 
-// Midnight wallet creation function
-export const createMidnightWallet = (
-  hook: MidnightWalletHookType,
-): MidnightWallet => {
-  return new MidnightWallet(
-    hook.isMidnightInstalled,
-    hook.walletKeysMidnight,
-    hook.signArbitraryMidnight,
-    hook.connectMidnight,
-    hook.disconnectMidnight,
+// Lace wallet creation function
+export const createLaceWallet = (hook: LaceWalletHookType): LaceWallet => {
+  return new LaceWallet(
+    hook.isLaceInstalled,
+    hook.walletKeysLace,
+    hook.signArbitraryLace,
+    hook.connectLace,
+    hook.disconnectLace,
     hook.websiteURL,
   );
 };

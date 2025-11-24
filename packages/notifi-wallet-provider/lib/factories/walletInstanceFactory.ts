@@ -5,7 +5,7 @@ import {
   createBinanceWallet,
   createEvmWallet,
   createKeplrWallet,
-  createMidnightWallet,
+  createLaceWallet,
   createPhantomWallet,
   createXionWallet,
 } from './walletCreators';
@@ -24,8 +24,8 @@ export const createWallets = (hooks: WalletHooks): Wallets => {
 
   BLOCKCHAIN_WALLETS.cardano.forEach((walletName) => {
     const hook = hooks[walletName];
-    if (hook && walletName === 'midnight') {
-      wallets[walletName] = createMidnightWallet(hook as any);
+    if (hook && walletName === 'lace') {
+      wallets[walletName] = createLaceWallet(hook as any);
     }
   });
 

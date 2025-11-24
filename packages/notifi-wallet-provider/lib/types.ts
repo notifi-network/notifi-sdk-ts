@@ -4,7 +4,7 @@ import { BrowserProvider, Eip1193Provider } from 'ethers';
 import { Config } from 'wagmi';
 import { SendTransactionVariables } from 'wagmi/query';
 
-import { MidnightProvider } from './utils/midnight.type';
+import { LaceProvider } from './utils/lace.type';
 import { PhantomProvider } from './utils/solana.type';
 
 export type Ethereum = Eip1193Provider & BrowserProvider;
@@ -19,11 +19,8 @@ declare global {
     BinanceChain: BinanceChain;
     // NOTE: Only support solana for now (for EVM, use EIP1193Provider)
     phantom: { bitcoin: never; ethereum: never; solana: PhantomProvider };
-    // Midnight wallet interface
-    midnight?: {
-      mnLace?: MidnightProvider;
-      [key: string]: MidnightProvider | undefined;
-    };
+    // NOTE: window.cardano and window.midnight interfaces are declared in lace.type.ts
+    // Lace wallet is accessed via window.cardano.lace (primary) or window.midnight.mnLace (fallback)
   }
 }
 
@@ -38,6 +35,7 @@ export type WalletKeysBase = {
   base64: string;
   hex: string;
   grantee: string; //TODO: specifically for Xion now, make it generic pattern, checking the format
+  cbor: string; // CBOR-encoded address (hex string) used by Cardano/Lace
 };
 
 export type MetamaskWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'hex'>; // Adoptable to all EVM wallets
@@ -47,14 +45,14 @@ export type XionWalletKeys = PickKeys<
   'bech32' | 'base64' | 'grantee'
 >;
 export type PhantomWalletKeys = PickKeys<WalletKeysBase, 'base58'>;
-export type MidnightWalletKeys = PickKeys<WalletKeysBase, 'bech32'>;
+export type LaceWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'cbor'>;
 
 export type WalletKeys =
   | MetamaskWalletKeys
   | KeplrWalletKeys
   | XionWalletKeys
   | PhantomWalletKeys
-  | MidnightWalletKeys;
+  | LaceWalletKeys;
 
 export abstract class NotifiWallet {
   abstract isInstalled: boolean;
@@ -64,7 +62,7 @@ export abstract class NotifiWallet {
     | MetamaskSignMessage
     | XionSignMessage
     | PhantomSignMessage
-    | MidnightSignMessage;
+    | LaceSignMessage;
   // TODO: Impl sendTransaction for Keplr and Xion
   abstract sendTransaction?: EvmSendTransaction;
   abstract connect?: () => Promise<Partial<WalletKeysBase> | null>;
@@ -140,9 +138,7 @@ export class XionWallet implements NotifiWallet {
 }
 
 export type PhantomSignMessage = (message: Uint8Array) => Promise<Uint8Array>;
-export type MidnightSignMessage = (
-  message: string,
-) => Promise<string | undefined>;
+export type LaceSignMessage = (message: string) => Promise<string | undefined>;
 
 export class PhantomWallet implements NotifiWallet {
   constructor(
@@ -162,12 +158,12 @@ export class PhantomWallet implements NotifiWallet {
   ) {}
 }
 
-export class MidnightWallet implements NotifiWallet {
+export class LaceWallet implements NotifiWallet {
   constructor(
     public isInstalled: boolean,
-    public walletKeys: MidnightWalletKeys | null,
-    public signArbitrary: MidnightSignMessage,
-    public connect: () => Promise<MidnightWalletKeys | null>,
+    public walletKeys: LaceWalletKeys | null,
+    public signArbitrary: LaceSignMessage,
+    public connect: () => Promise<LaceWalletKeys | null>,
     public disconnect: () => void,
     public websiteURL: string,
   ) {}
@@ -185,5 +181,5 @@ export type Wallets = {
   walletconnect: EvmWallet;
   xion: XionWallet;
   phantom: PhantomWallet;
-  midnight: MidnightWallet;
+  lace: LaceWallet;
 };
