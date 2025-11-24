@@ -20,6 +20,7 @@ export default function Home() {
     'keplr',
     'coinbase',
     'phantom',
+    'lace',
   ];
 
   React.useEffect(() => {
