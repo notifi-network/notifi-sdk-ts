@@ -1,31 +1,82 @@
 /**
- * Lace wallet type definitions and interfaces
- * Lace is a Cardano wallet that supports Midnight network (privacy sidechain)
- * Based on CIP-30 standards
+ * Cardano and Midnight wallet type definitions and interfaces
+ *
+ * This file defines:
+ * 1. CIP-30 standard interfaces for Cardano wallets
+ * 2. Midnight network extensions (privacy sidechain)
+ * 3. Lace wallet specific types that support both networks
  */
 
-// Basic Midnight types
+// Basic types
 export type HexString = string;
 export type Address = HexString;
 export type Value = HexString;
 export type TransactionHash = HexString;
 export type Cbor = HexString;
 
-// Network ID enum for Midnight
+// Pagination interface for CIP-30
+export interface Paginate {
+  page: number;
+  limit: number;
+}
+
+// ============================================================================
+// CIP-30 Standard Interfaces (Cardano)
+// Reference: https://cips.cardano.org/cip/CIP-30
+// ============================================================================
+
+export interface CIP30WalletAPI {
+  getNetworkId(): Promise<number>;
+  getUsedAddresses(): Promise<Cbor[]>;
+  getUnusedAddresses(): Promise<Cbor[]>;
+  getChangeAddress(): Promise<Cbor>;
+  getRewardAddresses(): Promise<Cbor[]>;
+  getBalance?(): Promise<Cbor>;
+  getUtxos?(amount?: Cbor, paginate?: Paginate): Promise<Cbor[] | null>;
+
+  signTx?(tx: Cbor, partialSign?: boolean): Promise<Cbor>;
+  signData(
+    addr: Address,
+    payload: HexString,
+  ): Promise<{
+    signature: HexString;
+    key: HexString;
+  }>;
+  submitTx?(tx: Cbor): Promise<TransactionHash>;
+
+  experimental?: {
+    [key: string]: any;
+  };
+}
+
+export interface CIP30WalletInfo {
+  name: string;
+  icon: string;
+  apiVersion: string;
+  enable(): Promise<CIP30WalletAPI>;
+  isEnabled(): Promise<boolean>;
+
+  experimental?: {
+    [key: string]: any;
+  };
+}
+
+// ============================================================================
+// Midnight Network Extensions
+// ============================================================================
+
 export enum MidnightNetworkId {
   TESTNET = 0,
   MAINNET = 1,
   DEVNET = 2,
 }
 
-// Service configuration interface
 export interface ServiceUriConfig {
   node?: string;
   indexer?: string;
   proofServer?: string;
 }
 
-// Wallet state interface
 export interface MidnightWalletState {
   address: string;
   balance?: {
@@ -35,71 +86,47 @@ export interface MidnightWalletState {
   };
 }
 
-// Core Midnight Wallet API (after enabling)
-// Supports both Midnight network APIs and CIP-30 Cardano APIs
-export interface MidnightWalletAPI {
-  // Midnight network methods
+export interface MidnightWalletAPI extends CIP30WalletAPI {
   state(): Promise<MidnightWalletState>;
-  getNetworkId?(): Promise<MidnightNetworkId>;
-
-  // CIP-30 Cardano standard methods
-  getUsedAddresses?(): Promise<Cbor[]>;
-  getUnusedAddresses?(): Promise<Cbor[]>;
-  getChangeAddress?(): Promise<Cbor>;
-  getRewardAddresses?(): Promise<Cbor[]>;
-
-  // Transaction signing methods
-  signData(
-    addr: Address,
-    payload: HexString,
-  ): Promise<{
-    signature: HexString;
-    key: HexString;
-  }>;
-
-  // Optional experimental methods
-  experimental?: {
-    [key: string]: any;
-  };
+  getNetworkId(): Promise<MidnightNetworkId>;
 }
 
-// Midnight Wallet Info (before enabling)
-export interface MidnightWalletInfo {
-  name: string;
-  icon: string;
-  apiVersion: string;
+export interface MidnightWalletInfo extends CIP30WalletInfo {
   enable(): Promise<MidnightWalletAPI>;
-  isEnabled(): Promise<boolean>;
   serviceUriConfig(): Promise<ServiceUriConfig>;
-
-  // Optional experimental features
-  experimental?: {
-    [key: string]: any;
-  };
 }
 
-// Main Midnight interface injected into window
-export interface Midnight {
+// ============================================================================
+// Window Provider Interfaces
+// ============================================================================
+
+export interface CardanoProvider {
+  lace?: CIP30WalletInfo;
+  [walletName: string]: CIP30WalletInfo | any;
+}
+
+export interface MidnightProvider {
   mnLace?: MidnightWalletInfo;
   [walletName: string]: MidnightWalletInfo | undefined;
 }
 
-// Cardano provider interface (standard CIP-30)
-export interface CardanoProvider {
-  lace?: MidnightWalletInfo;
-  [walletName: string]: MidnightWalletInfo | any;
-}
-
-// Extend the global Window interface
 declare global {
   interface Window {
-    midnight?: Midnight;
     cardano?: CardanoProvider;
+    midnight?: MidnightProvider;
   }
 }
 
-// Lace Provider type for hook usage (supports Midnight network)
-export type LaceProvider = MidnightWalletInfo;
+// ============================================================================
+// Lace Wallet Specific Types
+// ============================================================================
+
+export type LaceCardanoProvider = CIP30WalletInfo;
+export type LaceMidnightProvider = MidnightWalletInfo;
+export type LaceProvider = CIP30WalletInfo | MidnightWalletInfo;
+
+// @deprecated Use LaceCardanoProvider or LaceMidnightProvider instead
+export type MidnightWalletInfo_DEPRECATED = MidnightWalletInfo;
 
 // Address format utilities for Midnight
 export interface MidnightAddressComponents {

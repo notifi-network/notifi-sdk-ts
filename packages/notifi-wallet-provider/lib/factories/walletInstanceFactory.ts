@@ -25,7 +25,7 @@ export const createWallets = (hooks: WalletHooks): Wallets => {
   BLOCKCHAIN_WALLETS.cardano.forEach((walletName) => {
     const hook = hooks[walletName];
     if (hook && walletName === 'lace') {
-      wallets[walletName] = createLaceWallet(hook as any);
+      wallets[walletName] = createLaceWallet(hook);
     }
   });
 
