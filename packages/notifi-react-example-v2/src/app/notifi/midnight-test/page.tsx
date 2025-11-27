@@ -5,7 +5,13 @@ import { useState } from 'react';
 
 export default function LaceTestPage() {
   const { wallets, selectedWallet } = useWallets();
-  const [signatureResult, setSignatureResult] = useState<string>('');
+  const [signatureResult, setSignatureResult] = useState<
+    | {
+        signature: string;
+        key: string;
+      }
+    | undefined
+  >();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSignMessage = async () => {
@@ -25,7 +31,7 @@ export default function LaceTestPage() {
       console.log('🔥 Signing message: "hello notifi"');
       const signature = await laceWallet.signArbitrary('hello notifi');
       console.log('✅ Signature result:', signature);
-      setSignatureResult(signature || 'No signature returned');
+      setSignatureResult(signature);
     } catch (error) {
       console.error('❌ Signing failed:', error);
       alert(`Signing failed: ${error}`);
@@ -88,7 +94,7 @@ export default function LaceTestPage() {
         <div style={{ marginBottom: '20px' }}>
           <h3>Signature Result:</h3>
           <textarea
-            value={signatureResult}
+            value={`{${signatureResult.signature}:${signatureResult.key}}`}
             readOnly
             style={{
               width: '100%',
