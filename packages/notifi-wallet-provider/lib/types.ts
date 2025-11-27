@@ -4,7 +4,7 @@ import { BrowserProvider, Eip1193Provider } from 'ethers';
 import { Config } from 'wagmi';
 import { SendTransactionVariables } from 'wagmi/query';
 
-import { LaceProvider } from './utils/lace.type';
+import { CIP30WalletAPI, LaceProvider } from './utils/lace.type';
 import { PhantomProvider } from './utils/solana.type';
 
 export type Ethereum = Eip1193Provider & BrowserProvider;
@@ -138,7 +138,9 @@ export class XionWallet implements NotifiWallet {
 }
 
 export type PhantomSignMessage = (message: Uint8Array) => Promise<Uint8Array>;
-export type LaceSignMessage = (message: string) => Promise<string | undefined>;
+export type LaceSignMessage = (
+  message: string,
+) => Promise<ReturnType<CIP30WalletAPI['signData']> | undefined>;
 
 export class PhantomWallet implements NotifiWallet {
   constructor(
