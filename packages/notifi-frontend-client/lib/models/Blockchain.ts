@@ -52,6 +52,8 @@ export const EVM_BLOCKCHAINS = [
   'ZKSYNC',
 ] as const;
 
+export const CARDANO_BLOCKCHAINS = ['CARDANO'] as const;
+
 export const APTOS_BLOCKCHAINS = ['APTOS', 'MOVEMENT'] as const;
 
 export const SOLANA_BLOCKCHAINS = ['SOLANA'] as const;
@@ -68,6 +70,7 @@ export const UNMAINTAINED_BLOCKCHAINS = ['ACALA', 'EVMOS', 'ABSTRACT'] as const;
 const _ALL_BLOCKCHAINS = [
   ...COSMOS_BLOCKCHAINS,
   ...EVM_BLOCKCHAINS,
+  ...CARDANO_BLOCKCHAINS,
   ...APTOS_BLOCKCHAINS,
   ...BTC_BLOCKCHAINS,
   ...SOLANA_BLOCKCHAINS,
@@ -168,6 +171,18 @@ export function isUsingSuiBlockchain<
   T extends { walletBlockchain: Blockchain },
 >(params: T): params is Extract<T, { walletBlockchain: SuiBlockchain }> {
   return isSuiBlockchain(params.walletBlockchain);
+}
+
+export type CardanoBlockchain = (typeof CARDANO_BLOCKCHAINS)[number];
+export function isCardanoBlockchain(
+  blockchain: Blockchain,
+): blockchain is CardanoBlockchain {
+  return CARDANO_BLOCKCHAINS.includes(blockchain as CardanoBlockchain);
+}
+export function isUsingCardanoBlockchain<
+  T extends { walletBlockchain: Blockchain },
+>(params: T): params is Extract<T, { walletBlockchain: SuiBlockchain }> {
+  return isCardanoBlockchain(params.walletBlockchain);
 }
 
 // IGNORE BELOW HERE, this simpply serves to ensure all blockchains are covered

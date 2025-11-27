@@ -4,12 +4,14 @@ import { NotifiFrontendConfiguration } from '../../configuration';
 import {
   APTOS_BLOCKCHAINS,
   type BtcBlockchain,
+  CARDANO_BLOCKCHAINS,
   COSMOS_BLOCKCHAINS,
   EVM_BLOCKCHAINS,
   SOLANA_BLOCKCHAINS,
   SUI_BLOCKCHAINS,
   type UnmaintainedBlockchain,
   isAptosBlockchain,
+  isCardanoBlockchain,
   isCosmosBlockchain,
   isEvmBlockchain,
   isSolanaBlockchain,
@@ -19,6 +21,10 @@ import {
   AptosAuthStrategy,
   type AptosSignMessageParams,
 } from './AptosAuthStrategy';
+import {
+  CardanoAuthStrategy,
+  CardanoSignMessageParams,
+} from './CardanoAuthStrategy';
 import {
   CosmosAuthStrategy,
   type CosmosSignMessageParams,
@@ -39,6 +45,7 @@ export const SIGNING_MESSAGE = `${SIGNING_MESSAGE_WITHOUT_NONCE} \n \n 'Nonce:' 
 
 export const CHAINS_WITH_LOGIN_WEB3 = [
   ...APTOS_BLOCKCHAINS,
+  ...CARDANO_BLOCKCHAINS,
   ...COSMOS_BLOCKCHAINS,
   ...SOLANA_BLOCKCHAINS,
   ...EVM_BLOCKCHAINS,
@@ -77,6 +84,7 @@ export type SignMessageParams =
   | AptosSignMessageParams
   | SolanaSignMessageParams
   | SuiSignMessageParams
+  | CardanoSignMessageParams
   | NearSignMessageParams
   | InjectiveSignMessageParams
   | OffChainSignMessageParams
@@ -179,6 +187,9 @@ export const getStrategyForBlockchain = (
   }
   if (isSuiBlockchain(blockchain)) {
     return new SuiAuthStrategy(service, config);
+  }
+  if (isCardanoBlockchain(blockchain)) {
+    return new CardanoAuthStrategy(service, config);
   }
   throw new Error(
     `ERROR - getStrategyForBlockchain: Unsupported blockchain: ${blockchain}`,
