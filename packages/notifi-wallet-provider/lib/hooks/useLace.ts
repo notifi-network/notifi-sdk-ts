@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { LaceWalletKeys, Wallets } from '../types';
 import {
+  CIP30WalletAPI,
   Cbor,
   cleanWalletsInLocalStorage,
   setWalletKeysToLocalStorage,
@@ -12,7 +13,9 @@ export type LaceWalletHookType = {
   isLaceInstalled: boolean;
   walletKeysLace: LaceWalletKeys | null;
   connectLace: () => Promise<LaceWalletKeys | null>;
-  signArbitraryLace: (message: string) => Promise<string | undefined>;
+  signArbitraryLace: (
+    message: string,
+  ) => Promise<ReturnType<CIP30WalletAPI['signData']> | undefined>;
   disconnectLace: () => void;
   websiteURL: string;
 };
@@ -157,7 +160,9 @@ export const useLace = (
   }, [selectWallet]);
 
   const signArbitraryLace = useCallback(
-    async (message: string): Promise<string | undefined> => {
+    async (
+      message: string,
+    ): Promise<ReturnType<CIP30WalletAPI['signData']> | undefined> => {
       const laceWallet = window.cardano?.lace || window.midnight?.mnLace;
 
       if (!laceWallet || !walletKeysLace) {
@@ -176,10 +181,7 @@ export const useLace = (
           messageHex,
         );
 
-        // signData returns { signature: HexString; key: HexString; }
-        const signature = result.signature;
-
-        return signature;
+        return result;
       } catch (error) {
         errorHandler(
           new Error(`Failed to sign message with Lace wallet: ${error}`),
