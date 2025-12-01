@@ -3,6 +3,7 @@ import { type EternlWalletHookType } from '../hooks/useEternl';
 import { type InjectedWalletHookType } from '../hooks/useInjectedWallet';
 import { type KeplrWalletHookType } from '../hooks/useKeplr';
 import { type LaceWalletHookType } from '../hooks/useLace';
+import { type NufiWalletHookType } from '../hooks/useNufi';
 import { PhantomWalletHookType } from '../hooks/usePhantom';
 import { type WagmiWalletHookType } from '../hooks/useWagmiWallet';
 import { type XionWalletHookType } from '../hooks/useXion';
@@ -104,6 +105,17 @@ export const createEternlWallet = (hook: EternlWalletHookType): LaceWallet => {
     hook.signArbitraryEternl,
     hook.connectEternl,
     hook.disconnectEternl,
+    hook.websiteURL,
+  );
+};
+
+export const createNufiWallet = (hook: NufiWalletHookType): LaceWallet => {
+  return new LaceWallet(
+    hook.isNufiInstalled,
+    hook.walletKeysNufi,
+    hook.signArbitraryNufi,
+    hook.connectNufi,
+    hook.disconnectNufi,
     hook.websiteURL,
   );
 };

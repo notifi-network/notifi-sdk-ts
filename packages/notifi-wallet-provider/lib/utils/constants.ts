@@ -21,4 +21,5 @@ export const walletsWebsiteLink: { [key in keyof Wallets]: string } = {
   phantom: 'https://phantom.app/download',
   lace: 'https://lace.io/',
   eternl: 'https://eternl.io/',
+  nufi: 'https://nu.fi/',
 };

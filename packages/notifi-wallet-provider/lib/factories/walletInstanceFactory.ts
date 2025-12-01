@@ -7,6 +7,7 @@ import {
   createEvmWallet,
   createKeplrWallet,
   createLaceWallet,
+  createNufiWallet,
   createPhantomWallet,
   createXionWallet,
 } from './walletCreators';
@@ -34,6 +35,12 @@ export const createWallets = (hooks: WalletHooks): Wallets => {
       const hook = hooks.eternl;
       if (hook) {
         wallets.eternl = createEternlWallet(hook);
+      }
+    }
+    if (walletName === 'nufi') {
+      const hook = hooks.nufi;
+      if (hook) {
+        wallets.nufi = createNufiWallet(hook);
       }
     }
   });

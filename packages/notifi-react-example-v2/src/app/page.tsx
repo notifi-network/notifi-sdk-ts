@@ -22,6 +22,7 @@ export default function Home() {
     'phantom',
     'lace',
     'eternl',
+    'nufi',
   ];
 
   React.useEffect(() => {

@@ -24,7 +24,9 @@ export const setWalletKeysToLocalStorage = <T extends keyof Wallets>(
             ? LaceWalletKeys
             : T extends 'eternl'
               ? LaceWalletKeys
-              : never,
+              : T extends 'nufi'
+                ? LaceWalletKeys
+                : never,
 ) => {
   const storageWallet: NotifiWalletStorage = {
     walletName: wallet,

@@ -9,11 +9,13 @@ export default function LaceTestPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   const isCardanoWallet =
-    selectedWallet === 'lace' || selectedWallet === 'eternl';
+    selectedWallet === 'lace' ||
+    selectedWallet === 'eternl' ||
+    selectedWallet === 'nufi';
 
   const handleSignMessage = async () => {
     if (!selectedWallet || !isCardanoWallet) {
-      alert('Please connect to a Cardano wallet (Lace or Eternl) first');
+      alert('Please connect to a Cardano wallet (Lace, Eternl, or Nufi) first');
       return;
     }
 
@@ -41,7 +43,7 @@ export default function LaceTestPage() {
 
   return (
     <div style={{ padding: '20px' }}>
-      <h1>🌙 Cardano Wallet Test (Lace/Eternl - Midnight Network)</h1>
+      <h1>🌙 Cardano Wallet Test (Lace/Eternl/Nufi - Midnight Network)</h1>
 
       <div style={{ marginBottom: '20px' }}>
         <h3>Wallet Status:</h3>

@@ -38,6 +38,19 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
     throw new Error('ERROR: cannot find tenantId, env, or cardId');
 
   const { wallets, selectedWallet } = useWallets();
+
+  console.log('🔍 NotifiContextWrapper Debug:', {
+    selectedWallet,
+    hasWallet: selectedWallet ? !!wallets[selectedWallet] : false,
+    hasWalletKeys: selectedWallet
+      ? !!wallets[selectedWallet]?.walletKeys
+      : false,
+    walletKeys: selectedWallet ? wallets[selectedWallet]?.walletKeys : null,
+    hasSignArbitrary: selectedWallet
+      ? !!wallets[selectedWallet]?.signArbitrary
+      : false,
+  });
+
   if (
     !selectedWallet ||
     !wallets[selectedWallet].walletKeys ||
@@ -108,6 +121,7 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
         break;
       case 'lace':
       case 'eternl':
+      case 'nufi':
         accountAddress = wallets[selectedWallet].walletKeys?.bech32 ?? '';
         walletPublicKey = wallets[selectedWallet].walletKeys?.bech32 ?? '';
         if (!walletPublicKey) throw new Error('ERROR: invalid walletPublicKey');
@@ -247,6 +261,22 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
           >
             ⚠️ Cardano wallets (Lace/Eternl) - CARDANO blockchain support coming
             soon
+          </div>
+          {children}
+        </div>
+      ) : null}
+      {selectedWallet === 'nufi' ? (
+        <div>
+          <div
+            style={{
+              marginBottom: '20px',
+              padding: '10px',
+              backgroundColor: '#fff3cd',
+              border: '1px solid #ffc107',
+              borderRadius: '4px',
+            }}
+          >
+            ⚠️ Nufi wallet - CARDANO blockchain support coming soon
           </div>
           {children}
         </div>
