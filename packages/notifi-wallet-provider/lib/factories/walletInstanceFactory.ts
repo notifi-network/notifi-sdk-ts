@@ -3,6 +3,7 @@ import { BLOCKCHAIN_WALLETS } from '../utils/walletConfigs';
 import { createWalletHooks } from './hookCreators';
 import {
   createBinanceWallet,
+  createEternlWallet,
   createEvmWallet,
   createKeplrWallet,
   createLaceWallet,
@@ -23,9 +24,17 @@ export const createWallets = (hooks: WalletHooks): Wallets => {
   });
 
   BLOCKCHAIN_WALLETS.cardano.forEach((walletName) => {
-    const hook = hooks[walletName];
-    if (hook && walletName === 'lace') {
-      wallets[walletName] = createLaceWallet(hook);
+    if (walletName === 'lace') {
+      const hook = hooks.lace;
+      if (hook) {
+        wallets.lace = createLaceWallet(hook);
+      }
+    }
+    if (walletName === 'eternl') {
+      const hook = hooks.eternl;
+      if (hook) {
+        wallets.eternl = createEternlWallet(hook);
+      }
     }
   });
 

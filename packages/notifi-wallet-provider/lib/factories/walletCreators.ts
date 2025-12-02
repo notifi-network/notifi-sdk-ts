@@ -1,4 +1,5 @@
 import { type BinanceWalletHookType } from '../hooks/useBinance';
+import { type EternlWalletHookType } from '../hooks/useEternl';
 import { type InjectedWalletHookType } from '../hooks/useInjectedWallet';
 import { type KeplrWalletHookType } from '../hooks/useKeplr';
 import { type LaceWalletHookType } from '../hooks/useLace';
@@ -92,6 +93,17 @@ export const createLaceWallet = (hook: LaceWalletHookType): LaceWallet => {
     hook.signArbitraryLace,
     hook.connectLace,
     hook.disconnectLace,
+    hook.websiteURL,
+  );
+};
+
+export const createEternlWallet = (hook: EternlWalletHookType): LaceWallet => {
+  return new LaceWallet(
+    hook.isEternlInstalled,
+    hook.walletKeysEternl,
+    hook.signArbitraryEternl,
+    hook.connectEternl,
+    hook.disconnectEternl,
     hook.websiteURL,
   );
 };

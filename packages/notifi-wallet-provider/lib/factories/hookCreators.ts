@@ -2,6 +2,7 @@ import React from 'react';
 
 import type { WalletOptions } from '../context/NotifiWallets';
 import { type BinanceWalletHookType, useBinance } from '../hooks/useBinance';
+import { type EternlWalletHookType, useEternl } from '../hooks/useEternl';
 import {
   type InjectedWalletHookType,
   useInjectedWallet,
@@ -100,6 +101,11 @@ export const createSpecialWalletHooks = (params: WalletHookParams) => {
       'xion',
     ) as XionWalletHookType,
     lace: useLace(setIsLoading, throwError, selectWallet) as LaceWalletHookType,
+    eternl: useEternl(
+      setIsLoading,
+      throwError,
+      selectWallet,
+    ) as EternlWalletHookType,
   };
 };
 

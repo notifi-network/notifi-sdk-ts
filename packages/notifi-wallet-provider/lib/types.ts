@@ -46,6 +46,7 @@ export type XionWalletKeys = PickKeys<
 >;
 export type PhantomWalletKeys = PickKeys<WalletKeysBase, 'base58'>;
 export type LaceWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'cbor'>;
+export type EternlWalletKeys = LaceWalletKeys;
 
 export type WalletKeys =
   | MetamaskWalletKeys
@@ -184,4 +185,5 @@ export type Wallets = {
   xion: XionWallet;
   phantom: PhantomWallet;
   lace: LaceWallet;
+  eternl: LaceWallet;
 };

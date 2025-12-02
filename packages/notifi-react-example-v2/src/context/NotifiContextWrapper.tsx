@@ -107,6 +107,7 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
         });
         break;
       case 'lace':
+      case 'eternl':
         accountAddress = wallets[selectedWallet].walletKeys?.bech32 ?? '';
         walletPublicKey = wallets[selectedWallet].walletKeys?.bech32 ?? '';
         if (!walletPublicKey) throw new Error('ERROR: invalid walletPublicKey');
@@ -115,7 +116,7 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
           const result =
             await wallets[selectedWallet].signArbitrary(messageString);
           if (!result) throw new Error('ERROR: invalid signature');
-          const signatureBytes = Buffer.from(result, 'hex');
+          const signatureBytes = Buffer.from(result.signature, 'hex');
           return signatureBytes;
         };
         break;
@@ -233,7 +234,7 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
           {children}
         </NotifiContextProvider>
       ) : null}
-      {selectedWallet === 'lace' ? (
+      {selectedWallet === 'lace' || selectedWallet === 'eternl' ? (
         <div>
           <div
             style={{
@@ -244,8 +245,8 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
               borderRadius: '4px',
             }}
           >
-            ⚠️ Lace wallet (Cardano/Midnight) integration - CARDANO blockchain
-            support coming soon
+            ⚠️ Cardano wallets (Lace/Eternl) - CARDANO blockchain support coming
+            soon
           </div>
           {children}
         </div>
