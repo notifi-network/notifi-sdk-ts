@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { LaceWalletKeys, Wallets } from '../types';
 import {
   CIP30WalletAPI,
+  CIP30WalletInfo,
   Cbor,
   cleanWalletsInLocalStorage,
   setWalletKeysToLocalStorage,
@@ -41,17 +42,15 @@ export const useNufi = (
   };
 
   useEffect(() => {
-    const checkNufiWallet = () => {
-      if (window.cardano?.nufi) {
+    loadingHandler(true);
+    getNufiFromWindow()
+      .then(() => {
         setIsNufiInstalled(true);
-        return true;
-      }
-
-      setIsNufiInstalled(false);
-      return false;
-    };
-
-    checkNufiWallet();
+      })
+      .catch(() => {
+        setIsNufiInstalled(false);
+      })
+      .finally(() => loadingHandler(false));
   }, []);
 
   const connectNufi = useCallback(async (): Promise<LaceWalletKeys | null> => {
@@ -190,4 +189,33 @@ export const useNufi = (
     disconnectNufi,
     websiteURL: walletsWebsiteLink['nufi'],
   };
+};
+
+const getNufiFromWindow = async (): Promise<CIP30WalletInfo> => {
+  if (typeof window === 'undefined' || !window.cardano?.nufi) {
+    throw new Error(
+      'Cannot get nufi without a window | Cannot get nufi from window',
+    );
+  }
+  if (window.cardano?.nufi) {
+    return window.cardano.nufi;
+  } else if (document.readyState === 'complete') {
+    throw new Error('Please install the Nufi wallet extension');
+  }
+  return new Promise<CIP30WalletInfo>((resolve, reject) => {
+    const onDocumentStateChange = (event: Event) => {
+      if (
+        event.target &&
+        (event.target as Document).readyState === 'complete'
+      ) {
+        if (window.cardano?.nufi) {
+          resolve(window.cardano.nufi);
+        } else {
+          reject('Please install the Nufi wallet extension');
+        }
+        document.removeEventListener('readystatechange', onDocumentStateChange);
+      }
+    };
+    document.addEventListener('readystatechange', onDocumentStateChange);
+  });
 };

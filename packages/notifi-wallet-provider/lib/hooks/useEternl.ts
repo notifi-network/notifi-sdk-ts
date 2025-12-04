@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { LaceWalletKeys, Wallets } from '../types';
 import {
   CIP30WalletAPI,
+  CIP30WalletInfo,
   Cbor,
   cleanWalletsInLocalStorage,
   setWalletKeysToLocalStorage,
@@ -40,17 +41,15 @@ export const useEternl = (
   };
 
   useEffect(() => {
-    const checkEternlWallet = () => {
-      if (window.cardano?.eternl) {
+    loadingHandler(true);
+    getEternlFromWindow()
+      .then(() => {
         setIsEternlInstalled(true);
-        return true;
-      }
-
-      setIsEternlInstalled(false);
-      return false;
-    };
-
-    checkEternlWallet();
+      })
+      .catch(() => {
+        setIsEternlInstalled(false);
+      })
+      .finally(() => loadingHandler(false));
   }, []);
 
   const connectEternl =
@@ -193,4 +192,33 @@ export const useEternl = (
     disconnectEternl,
     websiteURL: walletsWebsiteLink['eternl'],
   };
+};
+
+const getEternlFromWindow = async (): Promise<CIP30WalletInfo> => {
+  if (typeof window === 'undefined' || !window.cardano?.eternl) {
+    throw new Error(
+      'Cannot get eternl without a window | Cannot get eternl from window',
+    );
+  }
+  if (window.cardano?.eternl) {
+    return window.cardano.eternl;
+  } else if (document.readyState === 'complete') {
+    throw new Error('Please install the Eternl wallet extension');
+  }
+  return new Promise<CIP30WalletInfo>((resolve, reject) => {
+    const onDocumentStateChange = (event: Event) => {
+      if (
+        event.target &&
+        (event.target as Document).readyState === 'complete'
+      ) {
+        if (window.cardano?.eternl) {
+          resolve(window.cardano.eternl);
+        } else {
+          reject('Please install the Eternl wallet extension');
+        }
+        document.removeEventListener('readystatechange', onDocumentStateChange);
+      }
+    };
+    document.addEventListener('readystatechange', onDocumentStateChange);
+  });
 };

@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { LaceWalletKeys, Wallets } from '../types';
 import {
   CIP30WalletAPI,
+  CIP30WalletInfo,
   Cbor,
   cleanWalletsInLocalStorage,
   setWalletKeysToLocalStorage,
@@ -43,22 +44,15 @@ export const useLace = (
   };
 
   useEffect(() => {
-    const checkLaceWallet = () => {
-      if (window.cardano?.lace) {
+    loadingHandler(true);
+    getLaceFromWindow()
+      .then(() => {
         setIsLaceInstalled(true);
-        return true;
-      }
-
-      if (window.midnight?.mnLace) {
-        setIsLaceInstalled(true);
-        return true;
-      }
-
-      setIsLaceInstalled(false);
-      return false;
-    };
-
-    checkLaceWallet();
+      })
+      .catch(() => {
+        setIsLaceInstalled(false);
+      })
+      .finally(() => loadingHandler(false));
   }, []);
 
   const connectLace = useCallback(async (): Promise<LaceWalletKeys | null> => {
@@ -202,4 +196,41 @@ export const useLace = (
     disconnectLace,
     websiteURL: walletsWebsiteLink['lace'],
   };
+};
+
+const getLaceFromWindow = async (): Promise<CIP30WalletInfo> => {
+  if (typeof window === 'undefined') {
+    throw new Error('Cannot get lace without a window');
+  }
+
+  if (window.cardano?.lace) {
+    return window.cardano.lace;
+  }
+
+  if (window.midnight?.mnLace) {
+    return window.midnight.mnLace;
+  }
+
+  if (document.readyState === 'complete') {
+    throw new Error('Please install the Lace wallet extension');
+  }
+
+  return new Promise<CIP30WalletInfo>((resolve, reject) => {
+    const onDocumentStateChange = (event: Event) => {
+      if (
+        event.target &&
+        (event.target as Document).readyState === 'complete'
+      ) {
+        if (window.cardano?.lace) {
+          resolve(window.cardano.lace);
+        } else if (window.midnight?.mnLace) {
+          resolve(window.midnight.mnLace);
+        } else {
+          reject('Please install the Lace wallet extension');
+        }
+        document.removeEventListener('readystatechange', onDocumentStateChange);
+      }
+    };
+    document.addEventListener('readystatechange', onDocumentStateChange);
+  });
 };
