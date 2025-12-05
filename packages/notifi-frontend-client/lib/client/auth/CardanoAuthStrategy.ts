@@ -9,6 +9,7 @@ import {
 } from '.';
 import {
   type NotifiFrontendConfiguration,
+  checkIsConfigWithPublicKey,
   checkIsConfigWithPublicKeyAndAddress,
 } from '../../configuration';
 import { type CardanoBlockchain, isUsingCardanoBlockchain } from '../../models';
@@ -17,7 +18,7 @@ export class CardanoAuthStrategy implements BlockchainAuthStrategy {
   constructor(
     private service: NotifiService,
     private config: NotifiFrontendConfiguration,
-  ) {}
+  ) { }
   async authenticate(params: CardanoSignMessageParams) {
     const signedMessage = `${SIGNING_MESSAGE}${params.nonce}`;
     const messageBuffer = new TextEncoder().encode(signedMessage);
@@ -28,7 +29,7 @@ export class CardanoAuthStrategy implements BlockchainAuthStrategy {
   async prepareLoginWithWeb3(params: LoginWeb3Params) {
     if (
       !isUsingCardanoBlockchain(params) ||
-      !checkIsConfigWithPublicKeyAndAddress(this.config)
+      !checkIsConfigWithPublicKey(this.config)
     )
       throw new Error('CardanoAuthStrategy: Invalid Cardano login parameters');
 
@@ -41,11 +42,11 @@ export class CardanoAuthStrategy implements BlockchainAuthStrategy {
     return {
       signMessageParams: {
         walletBlockchain: params.walletBlockchain,
-        nonce,
+        nonce: nonce,
         signMessage: params.signMessage,
       },
-      signingAddress: this.config.accountAddress,
-      signingPubkey: this.config.walletPublicKey, // NOT REQUIRED for Cardano, can be empty string ''
+      signingPubkey: this.config.walletPublicKey,
+      signingAddress: this.config.walletPublicKey, // NOT REQUIRED for Cardano, can be empty string ''
       nonce,
     };
   }

@@ -181,7 +181,7 @@ export function isCardanoBlockchain(
 }
 export function isUsingCardanoBlockchain<
   T extends { walletBlockchain: Blockchain },
->(params: T): params is Extract<T, { walletBlockchain: SuiBlockchain }> {
+>(params: T): params is Extract<T, { walletBlockchain: CardanoBlockchain }> {
   return isCardanoBlockchain(params.walletBlockchain);
 }
 

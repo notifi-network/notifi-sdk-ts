@@ -131,16 +131,16 @@ export type InjectiveUserParams = Readonly<{
 
 export type CosmosUserParams =
   | Readonly<{
-      walletBlockchain: blockchain.CosmosBlockchain;
-      accountAddress: string;
-      walletPublicKey: string;
-    }>
+    walletBlockchain: blockchain.CosmosBlockchain;
+    accountAddress: string;
+    walletPublicKey: string;
+  }>
   | Readonly<{
-      walletBlockchain: blockchain.CosmosBlockchain;
-      walletPublicKey: string;
-      signingAddress: string;
-      signingPubkey: string;
-    }>;
+    walletBlockchain: blockchain.CosmosBlockchain;
+    walletPublicKey: string;
+    signingAddress: string;
+    signingPubkey: string;
+  }>;
 
 export type UnmaintainedUserParams = Readonly<{
   walletBlockchain: blockchain.UnmaintainedBlockchain;
@@ -151,6 +151,11 @@ export type UnmaintainedUserParams = Readonly<{
 export type NearUserParams = Readonly<{
   walletBlockchain: 'NEAR';
   accountAddress: string;
+  walletPublicKey: string;
+}>;
+
+export type CardanoUserParams = Readonly<{
+  walletBlockchain: 'CARDANO';
   walletPublicKey: string;
 }>;
 
@@ -170,6 +175,7 @@ export type UserParams =
   | EvmUserParams
   | AptosUserParams
   | NearUserParams
+  | CardanoUserParams
   | SuiUserParams
   | CosmosUserParams
   | OffChainUserParams
