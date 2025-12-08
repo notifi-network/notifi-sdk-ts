@@ -56,7 +56,7 @@ import * as blockchain from '../models/Blockchain';
 /** Keeps internal in purpose. If needed, use Typescript Extract.
  *  e.g. Extract<AuthParams, { walletPublicKey: string }> */
 export type BlockchainAuthParamsWithPublicKey = {
-  walletBlockchain: EvmBlockchain | 'SOLANA';
+  walletBlockchain: EvmBlockchain | 'SOLANA' | 'CARDANO';
   walletPublicKey: string;
 };
 
@@ -154,6 +154,11 @@ export type NearUserParams = Readonly<{
   walletPublicKey: string;
 }>;
 
+export type CardanoUserParams = Readonly<{
+  walletBlockchain: 'CARDANO';
+  walletPublicKey: string;
+}>;
+
 export type SuiUserParams = Readonly<{
   walletBlockchain: 'SUI';
   accountAddress: string;
@@ -170,6 +175,7 @@ export type UserParams =
   | EvmUserParams
   | AptosUserParams
   | NearUserParams
+  | CardanoUserParams
   | SuiUserParams
   | CosmosUserParams
   | OffChainUserParams
