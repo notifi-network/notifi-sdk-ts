@@ -56,7 +56,7 @@ import * as blockchain from '../models/Blockchain';
 /** Keeps internal in purpose. If needed, use Typescript Extract.
  *  e.g. Extract<AuthParams, { walletPublicKey: string }> */
 export type BlockchainAuthParamsWithPublicKey = {
-  walletBlockchain: EvmBlockchain | 'SOLANA';
+  walletBlockchain: EvmBlockchain | 'SOLANA' | 'CARDANO';
   walletPublicKey: string;
 };
 
@@ -131,16 +131,16 @@ export type InjectiveUserParams = Readonly<{
 
 export type CosmosUserParams =
   | Readonly<{
-    walletBlockchain: blockchain.CosmosBlockchain;
-    accountAddress: string;
-    walletPublicKey: string;
-  }>
+      walletBlockchain: blockchain.CosmosBlockchain;
+      accountAddress: string;
+      walletPublicKey: string;
+    }>
   | Readonly<{
-    walletBlockchain: blockchain.CosmosBlockchain;
-    walletPublicKey: string;
-    signingAddress: string;
-    signingPubkey: string;
-  }>;
+      walletBlockchain: blockchain.CosmosBlockchain;
+      walletPublicKey: string;
+      signingAddress: string;
+      signingPubkey: string;
+    }>;
 
 export type UnmaintainedUserParams = Readonly<{
   walletBlockchain: blockchain.UnmaintainedBlockchain;
