@@ -79,7 +79,7 @@ export const useLace = (
 
         pollingIntervalId = setInterval(() => {
           retryCount++;
-          if (window.cardano?.lace || window.midnight?.mnLace) {
+          if (window.cardano?.lace) {
             handleWalletDetected();
           } else if (retryCount >= maxRetries) {
             if (pollingIntervalId) clearInterval(pollingIntervalId);
@@ -98,7 +98,7 @@ export const useLace = (
   }, []);
 
   const connectLace = useCallback(async (): Promise<LaceWalletKeys | null> => {
-    const laceWallet = window.cardano?.lace || window.midnight?.mnLace;
+    const laceWallet = window.cardano?.lace;
 
     if (!laceWallet) {
       handleLaceNotExists('connectLace');
@@ -199,7 +199,7 @@ export const useLace = (
     async (
       message: string,
     ): Promise<ReturnType<CIP30WalletAPI['signData']> | undefined> => {
-      const laceWallet = window.cardano?.lace || window.midnight?.mnLace;
+      const laceWallet = window.cardano?.lace;
 
       if (!laceWallet || !walletKeysLace) {
         handleLaceNotExists('signArbitraryLace');
@@ -242,15 +242,11 @@ export const useLace = (
 
 // Detect if Lace wallet is installed
 // Uses event-driven approach to wait for document ready, more efficient
-// Supports two locations: window.cardano.lace and window.midnight.mnLace
+// Supports window.cardano.lace (CIP-30 standard location)
 const getLaceFromWindow = async (): Promise<CIP30WalletInfo> => {
-  // Check immediately if already exists (supports both locations)
+  // Check immediately if already exists
   if (window.cardano?.lace) {
     return window.cardano.lace;
-  }
-
-  if (window.midnight?.mnLace) {
-    return window.midnight.mnLace;
   }
 
   // If page is fully loaded but wallet not found, throw error
@@ -267,8 +263,6 @@ const getLaceFromWindow = async (): Promise<CIP30WalletInfo> => {
       ) {
         if (window.cardano?.lace) {
           resolve(window.cardano.lace);
-        } else if (window.midnight?.mnLace) {
-          resolve(window.midnight.mnLace);
         } else {
           reject('Lace wallet not found');
         }
