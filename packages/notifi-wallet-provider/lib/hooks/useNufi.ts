@@ -42,15 +42,57 @@ export const useNufi = (
   };
 
   useEffect(() => {
+    let mounted = true;
+    let pollingIntervalId: NodeJS.Timeout | null = null;
+
+    const handleWalletDetected = () => {
+      if (mounted) {
+        setIsNufiInstalled(true);
+        loadingHandler(false);
+      }
+      if (pollingIntervalId) {
+        clearInterval(pollingIntervalId);
+      }
+    };
+
+    const handleWalletNotFound = () => {
+      if (mounted) {
+        setIsNufiInstalled(false);
+        loadingHandler(false);
+      }
+    };
+
     loadingHandler(true);
+
+    // Primary method: Use getNufiFromWindow (event-driven, waits for document ready)
     getNufiFromWindow()
       .then(() => {
-        setIsNufiInstalled(true);
+        handleWalletDetected();
       })
       .catch(() => {
-        setIsNufiInstalled(false);
-      })
-      .finally(() => loadingHandler(false));
+        // Fallback: Start polling if getNufiFromWindow fails
+        // Some wallets may inject after document.readyState === 'complete'
+        let retryCount = 0;
+        const maxRetries = 30; // Poll for 3 seconds (30 * 100ms)
+
+        pollingIntervalId = setInterval(() => {
+          retryCount++;
+          if (window.cardano?.nufi) {
+            handleWalletDetected();
+          } else if (retryCount >= maxRetries) {
+            if (pollingIntervalId) clearInterval(pollingIntervalId);
+            handleWalletNotFound();
+          }
+        }, 100);
+      });
+
+    return () => {
+      mounted = false;
+      if (pollingIntervalId) {
+        clearInterval(pollingIntervalId);
+      }
+      loadingHandler(false);
+    };
   }, []);
 
   const connectNufi = useCallback(async (): Promise<LaceWalletKeys | null> => {
@@ -191,17 +233,20 @@ export const useNufi = (
   };
 };
 
+// Detect if Nufi wallet is installed
+// Uses event-driven approach to wait for document ready, more efficient
 const getNufiFromWindow = async (): Promise<CIP30WalletInfo> => {
-  if (typeof window === 'undefined' || !window.cardano?.nufi) {
-    throw new Error(
-      'Cannot get nufi without a window | Cannot get nufi from window',
-    );
-  }
+  // Check immediately if already exists
   if (window.cardano?.nufi) {
     return window.cardano.nufi;
-  } else if (document.readyState === 'complete') {
-    throw new Error('Please install the Nufi wallet extension');
   }
+
+  // If page is fully loaded but wallet not found, throw error
+  if (document.readyState === 'complete') {
+    throw new Error('Nufi wallet not found');
+  }
+
+  // Wait for page to finish loading using event listener
   return new Promise<CIP30WalletInfo>((resolve, reject) => {
     const onDocumentStateChange = (event: Event) => {
       if (
@@ -211,7 +256,7 @@ const getNufiFromWindow = async (): Promise<CIP30WalletInfo> => {
         if (window.cardano?.nufi) {
           resolve(window.cardano.nufi);
         } else {
-          reject('Please install the Nufi wallet extension');
+          reject('Nufi wallet not found');
         }
         document.removeEventListener('readystatechange', onDocumentStateChange);
       }

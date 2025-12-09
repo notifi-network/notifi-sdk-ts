@@ -44,15 +44,57 @@ export const useLace = (
   };
 
   useEffect(() => {
+    let mounted = true;
+    let pollingIntervalId: NodeJS.Timeout | null = null;
+
+    const handleWalletDetected = () => {
+      if (mounted) {
+        setIsLaceInstalled(true);
+        loadingHandler(false);
+      }
+      if (pollingIntervalId) {
+        clearInterval(pollingIntervalId);
+      }
+    };
+
+    const handleWalletNotFound = () => {
+      if (mounted) {
+        setIsLaceInstalled(false);
+        loadingHandler(false);
+      }
+    };
+
     loadingHandler(true);
+
+    // Primary method: Use getLaceFromWindow (event-driven, waits for document ready)
     getLaceFromWindow()
       .then(() => {
-        setIsLaceInstalled(true);
+        handleWalletDetected();
       })
       .catch(() => {
-        setIsLaceInstalled(false);
-      })
-      .finally(() => loadingHandler(false));
+        // Fallback: Start polling if getLaceFromWindow fails
+        // Some wallets may inject after document.readyState === 'complete'
+        let retryCount = 0;
+        const maxRetries = 30; // Poll for 3 seconds (30 * 100ms)
+
+        pollingIntervalId = setInterval(() => {
+          retryCount++;
+          if (window.cardano?.lace || window.midnight?.mnLace) {
+            handleWalletDetected();
+          } else if (retryCount >= maxRetries) {
+            if (pollingIntervalId) clearInterval(pollingIntervalId);
+            handleWalletNotFound();
+          }
+        }, 100);
+      });
+
+    return () => {
+      mounted = false;
+      if (pollingIntervalId) {
+        clearInterval(pollingIntervalId);
+      }
+      loadingHandler(false);
+    };
   }, []);
 
   const connectLace = useCallback(async (): Promise<LaceWalletKeys | null> => {
@@ -198,11 +240,11 @@ export const useLace = (
   };
 };
 
+// Detect if Lace wallet is installed
+// Uses event-driven approach to wait for document ready, more efficient
+// Supports two locations: window.cardano.lace and window.midnight.mnLace
 const getLaceFromWindow = async (): Promise<CIP30WalletInfo> => {
-  if (typeof window === 'undefined') {
-    throw new Error('Cannot get lace without a window');
-  }
-
+  // Check immediately if already exists (supports both locations)
   if (window.cardano?.lace) {
     return window.cardano.lace;
   }
@@ -211,10 +253,12 @@ const getLaceFromWindow = async (): Promise<CIP30WalletInfo> => {
     return window.midnight.mnLace;
   }
 
+  // If page is fully loaded but wallet not found, throw error
   if (document.readyState === 'complete') {
-    throw new Error('Please install the Lace wallet extension');
+    throw new Error('Lace wallet not found');
   }
 
+  // Wait for page to finish loading using event listener
   return new Promise<CIP30WalletInfo>((resolve, reject) => {
     const onDocumentStateChange = (event: Event) => {
       if (
@@ -226,7 +270,7 @@ const getLaceFromWindow = async (): Promise<CIP30WalletInfo> => {
         } else if (window.midnight?.mnLace) {
           resolve(window.midnight.mnLace);
         } else {
-          reject('Please install the Lace wallet extension');
+          reject('Lace wallet not found');
         }
         document.removeEventListener('readystatechange', onDocumentStateChange);
       }

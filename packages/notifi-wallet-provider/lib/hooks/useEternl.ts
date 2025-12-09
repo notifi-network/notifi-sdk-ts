@@ -41,15 +41,57 @@ export const useEternl = (
   };
 
   useEffect(() => {
+    let mounted = true;
+    let pollingIntervalId: NodeJS.Timeout | null = null;
+
+    const handleWalletDetected = () => {
+      if (mounted) {
+        setIsEternlInstalled(true);
+        loadingHandler(false);
+      }
+      if (pollingIntervalId) {
+        clearInterval(pollingIntervalId);
+      }
+    };
+
+    const handleWalletNotFound = () => {
+      if (mounted) {
+        setIsEternlInstalled(false);
+        loadingHandler(false);
+      }
+    };
+
     loadingHandler(true);
+
+    // Primary method: Use getEternlFromWindow (event-driven, waits for document ready)
     getEternlFromWindow()
       .then(() => {
-        setIsEternlInstalled(true);
+        handleWalletDetected();
       })
       .catch(() => {
-        setIsEternlInstalled(false);
-      })
-      .finally(() => loadingHandler(false));
+        // Fallback: Start polling if getEternlFromWindow fails
+        // Some wallets may inject after document.readyState === 'complete'
+        let retryCount = 0;
+        const maxRetries = 30; // Poll for 3 seconds (30 * 100ms)
+
+        pollingIntervalId = setInterval(() => {
+          retryCount++;
+          if (window.cardano?.eternl) {
+            handleWalletDetected();
+          } else if (retryCount >= maxRetries) {
+            if (pollingIntervalId) clearInterval(pollingIntervalId);
+            handleWalletNotFound();
+          }
+        }, 100);
+      });
+
+    return () => {
+      mounted = false;
+      if (pollingIntervalId) {
+        clearInterval(pollingIntervalId);
+      }
+      loadingHandler(false);
+    };
   }, []);
 
   const connectEternl =
@@ -194,17 +236,20 @@ export const useEternl = (
   };
 };
 
+// Detect if Eternl wallet is installed
+// Uses event-driven approach to wait for document ready, more efficient
 const getEternlFromWindow = async (): Promise<CIP30WalletInfo> => {
-  if (typeof window === 'undefined' || !window.cardano?.eternl) {
-    throw new Error(
-      'Cannot get eternl without a window | Cannot get eternl from window',
-    );
-  }
+  // Check immediately if already exists
   if (window.cardano?.eternl) {
     return window.cardano.eternl;
-  } else if (document.readyState === 'complete') {
-    throw new Error('Please install the Eternl wallet extension');
   }
+
+  // If page is fully loaded but wallet not found, throw error
+  if (document.readyState === 'complete') {
+    throw new Error('Eternl wallet not found');
+  }
+
+  // Wait for page to finish loading using event listener
   return new Promise<CIP30WalletInfo>((resolve, reject) => {
     const onDocumentStateChange = (event: Event) => {
       if (
@@ -214,7 +259,7 @@ const getEternlFromWindow = async (): Promise<CIP30WalletInfo> => {
         if (window.cardano?.eternl) {
           resolve(window.cardano.eternl);
         } else {
-          reject('Please install the Eternl wallet extension');
+          reject('Eternl wallet not found');
         }
         document.removeEventListener('readystatechange', onDocumentStateChange);
       }
