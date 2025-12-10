@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build": "npx lerna run build",
-    "format": "prettier --config .prettierrc packages/**/lib/**/*.ts* --write",
+    "format": "prettier --config .prettierrc \"packages/**/lib/**/*.ts*\" --write",
     "lint": "eslint --ext .ts,.tsx packages/**/lib --fix",
     "test": "npx lerna run test --concurrency 1",
     "test:node": "npx lerna --scope=@notifi-network/notifi-node run test",
