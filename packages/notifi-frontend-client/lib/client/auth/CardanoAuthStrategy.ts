@@ -18,7 +18,7 @@ export class CardanoAuthStrategy implements BlockchainAuthStrategy {
   constructor(
     private service: NotifiService,
     private config: NotifiFrontendConfiguration,
-  ) { }
+  ) {}
   async authenticate(params: CardanoSignMessageParams) {
     const signedMessage = `${SIGNING_MESSAGE}${params.nonce}`;
     const messageBuffer = new TextEncoder().encode(signedMessage);
