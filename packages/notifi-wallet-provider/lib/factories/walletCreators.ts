@@ -4,6 +4,7 @@ import { type InjectedWalletHookType } from '../hooks/useInjectedWallet';
 import { type KeplrWalletHookType } from '../hooks/useKeplr';
 import { type LaceWalletHookType } from '../hooks/useLace';
 import { type NufiWalletHookType } from '../hooks/useNufi';
+import { type OkxCardanoWalletHookType } from '../hooks/useOkxCardano';
 import { PhantomWalletHookType } from '../hooks/usePhantom';
 import { type WagmiWalletHookType } from '../hooks/useWagmiWallet';
 import { type XionWalletHookType } from '../hooks/useXion';
@@ -116,6 +117,19 @@ export const createNufiWallet = (hook: NufiWalletHookType): LaceWallet => {
     hook.signArbitraryNufi,
     hook.connectNufi,
     hook.disconnectNufi,
+    hook.websiteURL,
+  );
+};
+
+export const createOkxCardanoWallet = (
+  hook: OkxCardanoWalletHookType,
+): LaceWallet => {
+  return new LaceWallet(
+    hook.isOkxCardanoInstalled,
+    hook.walletKeysOkxCardano,
+    hook.signArbitraryOkxCardano,
+    hook.connectOkxCardano,
+    hook.disconnectOkxCardano,
     hook.websiteURL,
   );
 };

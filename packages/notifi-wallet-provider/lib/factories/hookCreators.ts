@@ -10,6 +10,10 @@ import {
 import { type KeplrWalletHookType, useKeplr } from '../hooks/useKeplr';
 import { type LaceWalletHookType, useLace } from '../hooks/useLace';
 import { type NufiWalletHookType, useNufi } from '../hooks/useNufi';
+import {
+  type OkxCardanoWalletHookType,
+  useOkxCardano,
+} from '../hooks/useOkxCardano';
 import { type PhantomWalletHookType, usePhantom } from '../hooks/usePhantom';
 import {
   type WagmiWalletHookType,
@@ -108,6 +112,11 @@ export const createSpecialWalletHooks = (params: WalletHookParams) => {
       selectWallet,
     ) as EternlWalletHookType,
     nufi: useNufi(setIsLoading, throwError, selectWallet) as NufiWalletHookType,
+    'okx-cardano': useOkxCardano(
+      setIsLoading,
+      throwError,
+      selectWallet,
+    ) as OkxCardanoWalletHookType,
   };
 };
 

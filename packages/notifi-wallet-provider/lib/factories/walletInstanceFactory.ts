@@ -8,6 +8,7 @@ import {
   createKeplrWallet,
   createLaceWallet,
   createNufiWallet,
+  createOkxCardanoWallet,
   createPhantomWallet,
   createXionWallet,
 } from './walletCreators';
@@ -41,6 +42,12 @@ export const createWallets = (hooks: WalletHooks): Wallets => {
       const hook = hooks.nufi;
       if (hook) {
         wallets.nufi = createNufiWallet(hook);
+      }
+    }
+    if (walletName === 'okx-cardano') {
+      const hook = hooks['okx-cardano'];
+      if (hook) {
+        wallets['okx-cardano'] = createOkxCardanoWallet(hook);
       }
     }
   });

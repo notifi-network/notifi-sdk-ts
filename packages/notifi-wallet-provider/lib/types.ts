@@ -48,6 +48,7 @@ export type PhantomWalletKeys = PickKeys<WalletKeysBase, 'base58'>;
 export type LaceWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'cbor'>;
 export type EternlWalletKeys = LaceWalletKeys;
 export type NufiWalletKeys = LaceWalletKeys;
+export type OkxCardanoWalletKeys = LaceWalletKeys;
 
 export type WalletKeys =
   | MetamaskWalletKeys
@@ -188,4 +189,5 @@ export type Wallets = {
   lace: LaceWallet;
   eternl: LaceWallet;
   nufi: LaceWallet;
+  'okx-cardano': LaceWallet;
 };

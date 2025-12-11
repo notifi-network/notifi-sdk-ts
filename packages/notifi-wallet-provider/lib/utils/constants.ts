@@ -22,4 +22,5 @@ export const walletsWebsiteLink: { [key in keyof Wallets]: string } = {
   lace: 'https://lace.io/',
   eternl: 'https://eternl.io/',
   nufi: 'https://nu.fi/',
+  'okx-cardano': 'https://www.okx.com/web3',
 };
