@@ -2,6 +2,7 @@ import React from 'react';
 
 import type { WalletOptions } from '../context/NotifiWallets';
 import { type BinanceWalletHookType, useBinance } from '../hooks/useBinance';
+import { type CtrlWalletHookType, useCtrl } from '../hooks/useCtrl';
 import { type EternlWalletHookType, useEternl } from '../hooks/useEternl';
 import {
   type InjectedWalletHookType,
@@ -123,6 +124,7 @@ export const createSpecialWalletHooks = (params: WalletHookParams) => {
       throwError,
       selectWallet,
     ) as YoroiWalletHookType,
+    ctrl: useCtrl(setIsLoading, throwError, selectWallet) as CtrlWalletHookType,
   };
 };
 

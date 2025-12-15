@@ -1,4 +1,5 @@
 import { type BinanceWalletHookType } from '../hooks/useBinance';
+import { type CtrlWalletHookType } from '../hooks/useCtrl';
 import { type EternlWalletHookType } from '../hooks/useEternl';
 import { type InjectedWalletHookType } from '../hooks/useInjectedWallet';
 import { type KeplrWalletHookType } from '../hooks/useKeplr';
@@ -142,6 +143,17 @@ export const createYoroiWallet = (hook: YoroiWalletHookType): LaceWallet => {
     hook.signArbitraryYoroi,
     hook.connectYoroi,
     hook.disconnectYoroi,
+    hook.websiteURL,
+  );
+};
+
+export const createCtrlWallet = (hook: CtrlWalletHookType): LaceWallet => {
+  return new LaceWallet(
+    hook.isCtrlInstalled,
+    hook.walletKeysCtrl,
+    hook.signArbitraryCtrl,
+    hook.connectCtrl,
+    hook.disconnectCtrl,
     hook.websiteURL,
   );
 };

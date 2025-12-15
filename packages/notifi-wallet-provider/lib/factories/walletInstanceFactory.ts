@@ -3,6 +3,7 @@ import { BLOCKCHAIN_WALLETS } from '../utils/walletConfigs';
 import { createWalletHooks } from './hookCreators';
 import {
   createBinanceWallet,
+  createCtrlWallet,
   createEternlWallet,
   createEvmWallet,
   createKeplrWallet,
@@ -55,6 +56,12 @@ export const createWallets = (hooks: WalletHooks): Wallets => {
       const hook = hooks.yoroi;
       if (hook) {
         wallets.yoroi = createYoroiWallet(hook);
+      }
+    }
+    if (walletName === 'ctrl') {
+      const hook = hooks.ctrl;
+      if (hook) {
+        wallets.ctrl = createCtrlWallet(hook);
       }
     }
   });

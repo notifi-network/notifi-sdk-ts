@@ -50,6 +50,7 @@ export type EternlWalletKeys = LaceWalletKeys;
 export type NufiWalletKeys = LaceWalletKeys;
 export type OkxCardanoWalletKeys = LaceWalletKeys;
 export type YoroiWalletKeys = LaceWalletKeys;
+export type CtrlWalletKeys = LaceWalletKeys;
 
 export type WalletKeys =
   | MetamaskWalletKeys
@@ -192,4 +193,5 @@ export type Wallets = {
   nufi: LaceWallet;
   'okx-cardano': LaceWallet;
   yoroi: LaceWallet;
+  ctrl: LaceWallet;
 };
