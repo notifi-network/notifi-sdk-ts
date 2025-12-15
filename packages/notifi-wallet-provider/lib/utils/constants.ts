@@ -23,4 +23,5 @@ export const walletsWebsiteLink: { [key in keyof Wallets]: string } = {
   eternl: 'https://eternl.io/',
   nufi: 'https://nu.fi/',
   'okx-cardano': 'https://www.okx.com/web3',
+  yoroi: 'https://yoroi-wallet.com/',
 };

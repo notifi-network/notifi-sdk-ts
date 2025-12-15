@@ -105,6 +105,7 @@ export interface CardanoProvider {
   eternl?: CIP30WalletInfo;
   nufi?: CIP30WalletInfo;
   okxwallet?: CIP30WalletInfo;
+  yoroi?: CIP30WalletInfo;
   [walletName: string]: CIP30WalletInfo | any;
 }
 

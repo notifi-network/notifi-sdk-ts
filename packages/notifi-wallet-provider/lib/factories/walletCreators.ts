@@ -8,6 +8,7 @@ import { type OkxCardanoWalletHookType } from '../hooks/useOkxCardano';
 import { PhantomWalletHookType } from '../hooks/usePhantom';
 import { type WagmiWalletHookType } from '../hooks/useWagmiWallet';
 import { type XionWalletHookType } from '../hooks/useXion';
+import { type YoroiWalletHookType } from '../hooks/useYoroi';
 import {
   BinanceWallet,
   EvmWallet,
@@ -130,6 +131,17 @@ export const createOkxCardanoWallet = (
     hook.signArbitraryOkxCardano,
     hook.connectOkxCardano,
     hook.disconnectOkxCardano,
+    hook.websiteURL,
+  );
+};
+
+export const createYoroiWallet = (hook: YoroiWalletHookType): LaceWallet => {
+  return new LaceWallet(
+    hook.isYoroiInstalled,
+    hook.walletKeysYoroi,
+    hook.signArbitraryYoroi,
+    hook.connectYoroi,
+    hook.disconnectYoroi,
     hook.websiteURL,
   );
 };

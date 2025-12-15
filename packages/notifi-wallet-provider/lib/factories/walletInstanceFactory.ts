@@ -11,6 +11,7 @@ import {
   createOkxCardanoWallet,
   createPhantomWallet,
   createXionWallet,
+  createYoroiWallet,
 } from './walletCreators';
 
 type WalletHooks = ReturnType<typeof createWalletHooks>;
@@ -48,6 +49,12 @@ export const createWallets = (hooks: WalletHooks): Wallets => {
       const hook = hooks['okx-cardano'];
       if (hook) {
         wallets['okx-cardano'] = createOkxCardanoWallet(hook);
+      }
+    }
+    if (walletName === 'yoroi') {
+      const hook = hooks.yoroi;
+      if (hook) {
+        wallets.yoroi = createYoroiWallet(hook);
       }
     }
   });

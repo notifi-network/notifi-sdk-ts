@@ -14,7 +14,7 @@ export const BLOCKCHAIN_WALLETS = {
   cosmos: ['keplr'] as const,
   binance: ['binance'] as const,
   xion: ['xion'] as const,
-  cardano: ['lace', 'eternl', 'nufi', 'okx-cardano'] as const,
+  cardano: ['lace', 'eternl', 'nufi', 'okx-cardano', 'yoroi'] as const,
 } as const;
 
 export const INTEGRATION_WALLETS = {
@@ -28,6 +28,7 @@ export const INTEGRATION_WALLETS = {
     'eternl',
     'nufi',
     'okx-cardano',
+    'yoroi',
   ] as const,
   abstraxion: ['xion'] as const,
 } as const;

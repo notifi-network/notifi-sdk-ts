@@ -20,6 +20,7 @@ import {
   useWagmiWallet,
 } from '../hooks/useWagmiWallet';
 import { type XionWalletHookType, useXion } from '../hooks/useXion';
+import { type YoroiWalletHookType, useYoroi } from '../hooks/useYoroi';
 import { Wallets } from '../types';
 import {
   INTEGRATION_WALLETS,
@@ -117,6 +118,11 @@ export const createSpecialWalletHooks = (params: WalletHookParams) => {
       throwError,
       selectWallet,
     ) as OkxCardanoWalletHookType,
+    yoroi: useYoroi(
+      setIsLoading,
+      throwError,
+      selectWallet,
+    ) as YoroiWalletHookType,
   };
 };
 
