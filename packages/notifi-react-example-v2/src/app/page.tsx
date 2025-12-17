@@ -21,6 +21,8 @@ export default function Home() {
     'coinbase',
     'phantom',
     'lace',
+    'eternl',
+    'nufi',
   ];
 
   React.useEffect(() => {

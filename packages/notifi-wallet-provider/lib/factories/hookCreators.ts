@@ -2,18 +2,26 @@ import React from 'react';
 
 import type { WalletOptions } from '../context/NotifiWallets';
 import { type BinanceWalletHookType, useBinance } from '../hooks/useBinance';
+import { type CtrlWalletHookType, useCtrl } from '../hooks/useCtrl';
+import { type EternlWalletHookType, useEternl } from '../hooks/useEternl';
 import {
   type InjectedWalletHookType,
   useInjectedWallet,
 } from '../hooks/useInjectedWallet';
 import { type KeplrWalletHookType, useKeplr } from '../hooks/useKeplr';
 import { type LaceWalletHookType, useLace } from '../hooks/useLace';
+import { type NufiWalletHookType, useNufi } from '../hooks/useNufi';
+import {
+  type OkxCardanoWalletHookType,
+  useOkxCardano,
+} from '../hooks/useOkxCardano';
 import { type PhantomWalletHookType, usePhantom } from '../hooks/usePhantom';
 import {
   type WagmiWalletHookType,
   useWagmiWallet,
 } from '../hooks/useWagmiWallet';
 import { type XionWalletHookType, useXion } from '../hooks/useXion';
+import { type YoroiWalletHookType, useYoroi } from '../hooks/useYoroi';
 import { Wallets } from '../types';
 import {
   INTEGRATION_WALLETS,
@@ -100,6 +108,23 @@ export const createSpecialWalletHooks = (params: WalletHookParams) => {
       'xion',
     ) as XionWalletHookType,
     lace: useLace(setIsLoading, throwError, selectWallet) as LaceWalletHookType,
+    eternl: useEternl(
+      setIsLoading,
+      throwError,
+      selectWallet,
+    ) as EternlWalletHookType,
+    nufi: useNufi(setIsLoading, throwError, selectWallet) as NufiWalletHookType,
+    'okx-cardano': useOkxCardano(
+      setIsLoading,
+      throwError,
+      selectWallet,
+    ) as OkxCardanoWalletHookType,
+    yoroi: useYoroi(
+      setIsLoading,
+      throwError,
+      selectWallet,
+    ) as YoroiWalletHookType,
+    ctrl: useCtrl(setIsLoading, throwError, selectWallet) as CtrlWalletHookType,
   };
 };
 

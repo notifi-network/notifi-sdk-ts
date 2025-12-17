@@ -1,10 +1,15 @@
 import { type BinanceWalletHookType } from '../hooks/useBinance';
+import { type CtrlWalletHookType } from '../hooks/useCtrl';
+import { type EternlWalletHookType } from '../hooks/useEternl';
 import { type InjectedWalletHookType } from '../hooks/useInjectedWallet';
 import { type KeplrWalletHookType } from '../hooks/useKeplr';
 import { type LaceWalletHookType } from '../hooks/useLace';
+import { type NufiWalletHookType } from '../hooks/useNufi';
+import { type OkxCardanoWalletHookType } from '../hooks/useOkxCardano';
 import { PhantomWalletHookType } from '../hooks/usePhantom';
 import { type WagmiWalletHookType } from '../hooks/useWagmiWallet';
 import { type XionWalletHookType } from '../hooks/useXion';
+import { type YoroiWalletHookType } from '../hooks/useYoroi';
 import {
   BinanceWallet,
   EvmWallet,
@@ -92,6 +97,63 @@ export const createLaceWallet = (hook: LaceWalletHookType): LaceWallet => {
     hook.signArbitraryLace,
     hook.connectLace,
     hook.disconnectLace,
+    hook.websiteURL,
+  );
+};
+
+export const createEternlWallet = (hook: EternlWalletHookType): LaceWallet => {
+  return new LaceWallet(
+    hook.isEternlInstalled,
+    hook.walletKeysEternl,
+    hook.signArbitraryEternl,
+    hook.connectEternl,
+    hook.disconnectEternl,
+    hook.websiteURL,
+  );
+};
+
+export const createNufiWallet = (hook: NufiWalletHookType): LaceWallet => {
+  return new LaceWallet(
+    hook.isNufiInstalled,
+    hook.walletKeysNufi,
+    hook.signArbitraryNufi,
+    hook.connectNufi,
+    hook.disconnectNufi,
+    hook.websiteURL,
+  );
+};
+
+export const createOkxCardanoWallet = (
+  hook: OkxCardanoWalletHookType,
+): LaceWallet => {
+  return new LaceWallet(
+    hook.isOkxCardanoInstalled,
+    hook.walletKeysOkxCardano,
+    hook.signArbitraryOkxCardano,
+    hook.connectOkxCardano,
+    hook.disconnectOkxCardano,
+    hook.websiteURL,
+  );
+};
+
+export const createYoroiWallet = (hook: YoroiWalletHookType): LaceWallet => {
+  return new LaceWallet(
+    hook.isYoroiInstalled,
+    hook.walletKeysYoroi,
+    hook.signArbitraryYoroi,
+    hook.connectYoroi,
+    hook.disconnectYoroi,
+    hook.websiteURL,
+  );
+};
+
+export const createCtrlWallet = (hook: CtrlWalletHookType): LaceWallet => {
+  return new LaceWallet(
+    hook.isCtrlInstalled,
+    hook.walletKeysCtrl,
+    hook.signArbitraryCtrl,
+    hook.connectCtrl,
+    hook.disconnectCtrl,
     hook.websiteURL,
   );
 };

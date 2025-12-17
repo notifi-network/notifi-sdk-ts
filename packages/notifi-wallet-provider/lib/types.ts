@@ -4,7 +4,7 @@ import { BrowserProvider, Eip1193Provider } from 'ethers';
 import { Config } from 'wagmi';
 import { SendTransactionVariables } from 'wagmi/query';
 
-import { LaceProvider } from './utils/lace.type';
+import { CIP30WalletAPI, LaceProvider } from './utils/lace.type';
 import { PhantomProvider } from './utils/solana.type';
 
 export type Ethereum = Eip1193Provider & BrowserProvider;
@@ -46,6 +46,11 @@ export type XionWalletKeys = PickKeys<
 >;
 export type PhantomWalletKeys = PickKeys<WalletKeysBase, 'base58'>;
 export type LaceWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'cbor'>;
+export type EternlWalletKeys = LaceWalletKeys;
+export type NufiWalletKeys = LaceWalletKeys;
+export type OkxCardanoWalletKeys = LaceWalletKeys;
+export type YoroiWalletKeys = LaceWalletKeys;
+export type CtrlWalletKeys = LaceWalletKeys;
 
 export type WalletKeys =
   | MetamaskWalletKeys
@@ -138,7 +143,9 @@ export class XionWallet implements NotifiWallet {
 }
 
 export type PhantomSignMessage = (message: Uint8Array) => Promise<Uint8Array>;
-export type LaceSignMessage = (message: string) => Promise<string | undefined>;
+export type LaceSignMessage = (
+  message: string,
+) => Promise<ReturnType<CIP30WalletAPI['signData']> | undefined>;
 
 export class PhantomWallet implements NotifiWallet {
   constructor(
@@ -182,4 +189,9 @@ export type Wallets = {
   xion: XionWallet;
   phantom: PhantomWallet;
   lace: LaceWallet;
+  eternl: LaceWallet;
+  nufi: LaceWallet;
+  'okx-cardano': LaceWallet;
+  yoroi: LaceWallet;
+  ctrl: LaceWallet;
 };

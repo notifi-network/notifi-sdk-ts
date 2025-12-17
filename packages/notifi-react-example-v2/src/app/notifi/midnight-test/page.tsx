@@ -8,14 +8,19 @@ export default function LaceTestPage() {
   const [signatureResult, setSignatureResult] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
 
+  const isCardanoWallet =
+    selectedWallet === 'lace' ||
+    selectedWallet === 'eternl' ||
+    selectedWallet === 'nufi';
+
   const handleSignMessage = async () => {
-    if (!selectedWallet || selectedWallet !== 'lace') {
-      alert('Please connect to Lace wallet first');
+    if (!selectedWallet || !isCardanoWallet) {
+      alert('Please connect to a Cardano wallet (Lace, Eternl, or Nufi) first');
       return;
     }
 
-    const laceWallet = wallets.lace;
-    if (!laceWallet.signArbitrary) {
+    const cardanoWallet = wallets[selectedWallet];
+    if (!cardanoWallet.signArbitrary) {
       alert('Sign function not available');
       return;
     }
@@ -23,9 +28,11 @@ export default function LaceTestPage() {
     setIsLoading(true);
     try {
       console.log('🔥 Signing message: "hello notifi"');
-      const signature = await laceWallet.signArbitrary('hello notifi');
+      const signature = await cardanoWallet.signArbitrary('hello notifi');
       console.log('✅ Signature result:', signature);
-      setSignatureResult(signature || 'No signature returned');
+      setSignatureResult(
+        JSON.stringify(signature, null, 2) || 'No signature returned',
+      );
     } catch (error) {
       console.error('❌ Signing failed:', error);
       alert(`Signing failed: ${error}`);
@@ -36,7 +43,7 @@ export default function LaceTestPage() {
 
   return (
     <div style={{ padding: '20px' }}>
-      <h1>🌙 Lace Wallet Test (Midnight Network)</h1>
+      <h1>🌙 Cardano Wallet Test (Lace/Eternl/Nufi - Midnight Network)</h1>
 
       <div style={{ marginBottom: '20px' }}>
         <h3>Wallet Status:</h3>
@@ -44,10 +51,10 @@ export default function LaceTestPage() {
           <strong>Selected Wallet:</strong> {selectedWallet || 'None'}
         </p>
         <p>
-          <strong>Is Lace:</strong>{' '}
-          {selectedWallet === 'lace' ? '✅ Yes' : '❌ No'}
+          <strong>Is Cardano Wallet:</strong>{' '}
+          {isCardanoWallet ? '✅ Yes' : '❌ No'}
         </p>
-        {selectedWallet === 'lace' && (
+        {isCardanoWallet && (
           <div>
             <p>
               <strong>Wallet Keys:</strong>
@@ -59,7 +66,7 @@ export default function LaceTestPage() {
                 fontSize: '12px',
               }}
             >
-              {JSON.stringify(wallets.lace.walletKeys, null, 2)}
+              {JSON.stringify(wallets[selectedWallet].walletKeys, null, 2)}
             </pre>
           </div>
         )}
@@ -69,15 +76,15 @@ export default function LaceTestPage() {
         <h3>Test Signing:</h3>
         <button
           onClick={handleSignMessage}
-          disabled={isLoading || selectedWallet !== 'lace'}
+          disabled={isLoading || !isCardanoWallet}
           style={{
             padding: '12px 24px',
             fontSize: '16px',
-            backgroundColor: selectedWallet === 'lace' ? '#007bff' : '#ccc',
+            backgroundColor: isCardanoWallet ? '#007bff' : '#ccc',
             color: 'white',
             border: 'none',
             borderRadius: '4px',
-            cursor: selectedWallet === 'lace' ? 'pointer' : 'not-allowed',
+            cursor: isCardanoWallet ? 'pointer' : 'not-allowed',
           }}
         >
           {isLoading ? '🔄 Signing...' : '✍️ Sign "hello notifi"'}
@@ -112,11 +119,12 @@ export default function LaceTestPage() {
         <h4>📋 Instructions:</h4>
         <ol>
           <li>
-            Go back to <a href="/">home page</a> and connect to Lace wallet
+            Go back to <a href="/">home page</a> and connect to a Cardano wallet
+            (Lace or Eternl)
           </li>
           <li>Return to this page via the Notifi pages</li>
           <li>Click the "Sign hello notifi" button</li>
-          <li>Approve the signature in your Lace wallet</li>
+          <li>Approve the signature in your wallet</li>
           <li>See the signature result below</li>
         </ol>
       </div>

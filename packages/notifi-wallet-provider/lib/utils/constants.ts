@@ -20,4 +20,9 @@ export const walletsWebsiteLink: { [key in keyof Wallets]: string } = {
   xion: 'https://xion.burnt.com/',
   phantom: 'https://phantom.app/download',
   lace: 'https://lace.io/',
+  eternl: 'https://eternl.io/',
+  nufi: 'https://nu.fi/',
+  'okx-cardano': 'https://www.okx.com/web3',
+  yoroi: 'https://yoroi-wallet.com/',
+  ctrl: 'https://ctrl.xyz',
 };

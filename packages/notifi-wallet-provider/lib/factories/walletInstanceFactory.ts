@@ -3,11 +3,16 @@ import { BLOCKCHAIN_WALLETS } from '../utils/walletConfigs';
 import { createWalletHooks } from './hookCreators';
 import {
   createBinanceWallet,
+  createCtrlWallet,
+  createEternlWallet,
   createEvmWallet,
   createKeplrWallet,
   createLaceWallet,
+  createNufiWallet,
+  createOkxCardanoWallet,
   createPhantomWallet,
   createXionWallet,
+  createYoroiWallet,
 } from './walletCreators';
 
 type WalletHooks = ReturnType<typeof createWalletHooks>;
@@ -23,9 +28,41 @@ export const createWallets = (hooks: WalletHooks): Wallets => {
   });
 
   BLOCKCHAIN_WALLETS.cardano.forEach((walletName) => {
-    const hook = hooks[walletName];
-    if (hook && walletName === 'lace') {
-      wallets[walletName] = createLaceWallet(hook);
+    if (walletName === 'lace') {
+      const hook = hooks.lace;
+      if (hook) {
+        wallets.lace = createLaceWallet(hook);
+      }
+    }
+    if (walletName === 'eternl') {
+      const hook = hooks.eternl;
+      if (hook) {
+        wallets.eternl = createEternlWallet(hook);
+      }
+    }
+    if (walletName === 'nufi') {
+      const hook = hooks.nufi;
+      if (hook) {
+        wallets.nufi = createNufiWallet(hook);
+      }
+    }
+    if (walletName === 'okx-cardano') {
+      const hook = hooks['okx-cardano'];
+      if (hook) {
+        wallets['okx-cardano'] = createOkxCardanoWallet(hook);
+      }
+    }
+    if (walletName === 'yoroi') {
+      const hook = hooks.yoroi;
+      if (hook) {
+        wallets.yoroi = createYoroiWallet(hook);
+      }
+    }
+    if (walletName === 'ctrl') {
+      const hook = hooks.ctrl;
+      if (hook) {
+        wallets.ctrl = createCtrlWallet(hook);
+      }
     }
   });
 

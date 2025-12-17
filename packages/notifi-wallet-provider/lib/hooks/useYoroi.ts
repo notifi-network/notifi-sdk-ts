@@ -10,35 +10,33 @@ import {
   walletsWebsiteLink,
 } from '../utils';
 
-export type LaceWalletHookType = {
-  isLaceInstalled: boolean;
-  walletKeysLace: LaceWalletKeys | null;
-  connectLace: () => Promise<LaceWalletKeys | null>;
-  signArbitraryLace: (
+export type YoroiWalletHookType = {
+  isYoroiInstalled: boolean;
+  walletKeysYoroi: LaceWalletKeys | null;
+  connectYoroi: () => Promise<LaceWalletKeys | null>;
+  signArbitraryYoroi: (
     message: string,
   ) => Promise<ReturnType<CIP30WalletAPI['signData']> | undefined>;
-  disconnectLace: () => void;
+  disconnectYoroi: () => void;
   websiteURL: string;
 };
 
-// NOTE: Lace wallet does not support account change events currently since the restriction of CIP-30.
-
-export const useLace = (
+export const useYoroi = (
   loadingHandler: React.Dispatch<React.SetStateAction<boolean>>,
   errorHandler: (e: Error, durationInMs?: number) => void,
   selectWallet: (wallet: keyof Wallets | null) => void,
-): LaceWalletHookType => {
-  const [walletKeysLace, setWalletKeysLace] = useState<LaceWalletKeys | null>(
+): YoroiWalletHookType => {
+  const [walletKeysYoroi, setWalletKeysYoroi] = useState<LaceWalletKeys | null>(
     null,
   );
 
-  const [isLaceInstalled, setIsLaceInstalled] = useState<boolean>(false);
+  const [isYoroiInstalled, setIsYoroiInstalled] = useState<boolean>(false);
 
-  const handleLaceNotExists = (location: string) => {
+  const handleYoroiNotExists = (location: string) => {
     cleanWalletsInLocalStorage();
     errorHandler(
       new Error(
-        `ERROR - ${location}: Lace wallet not initialized or not installed`,
+        `ERROR - ${location}: Yoroi wallet not initialized or not installed`,
       ),
     );
   };
@@ -49,7 +47,7 @@ export const useLace = (
 
     const handleWalletDetected = () => {
       if (mounted) {
-        setIsLaceInstalled(true);
+        setIsYoroiInstalled(true);
         loadingHandler(false);
       }
       if (pollingIntervalId) {
@@ -59,27 +57,27 @@ export const useLace = (
 
     const handleWalletNotFound = () => {
       if (mounted) {
-        setIsLaceInstalled(false);
+        setIsYoroiInstalled(false);
         loadingHandler(false);
       }
     };
 
     loadingHandler(true);
 
-    // Primary method: Use getLaceFromWindow (event-driven, waits for document ready)
-    getLaceFromWindow()
+    // Primary method: Use getYoroiFromWindow (event-driven, waits for document ready)
+    getYoroiFromWindow()
       .then(() => {
         handleWalletDetected();
       })
       .catch(() => {
-        // Fallback: Start polling if getLaceFromWindow fails
+        // Fallback: Start polling if getYoroiFromWindow fails
         // Some wallets may inject after document.readyState === 'complete'
         let retryCount = 0;
         const maxRetries = 30; // Poll for 3 seconds (30 * 100ms)
 
         pollingIntervalId = setInterval(() => {
           retryCount++;
-          if (window.cardano?.lace) {
+          if (window.cardano?.yoroi) {
             handleWalletDetected();
           } else if (retryCount >= maxRetries) {
             if (pollingIntervalId) clearInterval(pollingIntervalId);
@@ -97,21 +95,20 @@ export const useLace = (
     };
   }, []);
 
-  const connectLace = useCallback(async (): Promise<LaceWalletKeys | null> => {
-    const laceWallet = window.cardano?.lace;
+  const connectYoroi = useCallback(async (): Promise<LaceWalletKeys | null> => {
+    const yoroiWallet = window.cardano?.yoroi;
 
-    if (!laceWallet) {
-      handleLaceNotExists('connectLace');
+    if (!yoroiWallet) {
+      handleYoroiNotExists('connectYoroi');
       return null;
     }
 
     loadingHandler(true);
     try {
-      const walletApi = await laceWallet.enable();
+      const walletApi = await yoroiWallet.enable();
 
       let accounts: Cbor[] = [];
 
-      // 1. Try to get used addresses
       try {
         if (walletApi.getUsedAddresses) {
           accounts = await walletApi.getUsedAddresses();
@@ -120,7 +117,6 @@ export const useLace = (
         console.warn('⚠️ getUsedAddresses() failed:', e);
       }
 
-      // 2. If no used addresses, try to get unused addresses
       if (!accounts || accounts.length === 0) {
         try {
           if (walletApi.getUnusedAddresses) {
@@ -131,7 +127,6 @@ export const useLace = (
         }
       }
 
-      // 3. If still no addresses, try to get change address
       if (!accounts || accounts.length === 0) {
         try {
           if (walletApi.getChangeAddress) {
@@ -145,13 +140,12 @@ export const useLace = (
         }
       }
 
-      // Final check for addresses
       if (!accounts || accounts.length === 0) {
         const errMsg =
           'No addresses found in wallet. Please ensure your wallet has at least one address.';
         const err = new Error(errMsg);
         errorHandler(err);
-        console.error(`ERROR: connectLace - ${errMsg}`);
+        console.error(`ERROR: connectYoroi - ${errMsg}`);
         return null;
       }
 
@@ -159,7 +153,6 @@ export const useLace = (
 
       let bech32Address = cborAddress;
       try {
-        // Decode CBOR to bech32
         const { bech32 } = await import('bech32');
         const buffer = Buffer.from(cborAddress, 'hex');
         const words = bech32.toWords(buffer);
@@ -173,13 +166,13 @@ export const useLace = (
         cbor: cborAddress,
       };
 
-      setWalletKeysLace(walletKeys);
-      setWalletKeysToLocalStorage('lace', walletKeys);
-      selectWallet('lace');
+      setWalletKeysYoroi(walletKeys);
+      setWalletKeysToLocalStorage('yoroi', walletKeys);
+      selectWallet('yoroi');
 
       return walletKeys;
     } catch (e) {
-      console.error('Error connecting to Lace wallet:', e);
+      console.error('Error connecting to Yoroi wallet:', e);
       if (e instanceof Error) {
         errorHandler(e);
       }
@@ -189,69 +182,68 @@ export const useLace = (
     }
   }, [loadingHandler, errorHandler, selectWallet]);
 
-  const disconnectLace = useCallback(() => {
-    setWalletKeysLace(null);
+  const disconnectYoroi = useCallback(() => {
+    setWalletKeysYoroi(null);
     cleanWalletsInLocalStorage();
     selectWallet(null);
   }, [selectWallet]);
 
-  const signArbitraryLace = useCallback(
+  const signArbitraryYoroi = useCallback(
     async (
       message: string,
     ): Promise<ReturnType<CIP30WalletAPI['signData']> | undefined> => {
-      const laceWallet = window.cardano?.lace;
+      const yoroiWallet = window.cardano?.yoroi;
 
-      if (!laceWallet || !walletKeysLace) {
-        handleLaceNotExists('signArbitraryLace');
+      if (!yoroiWallet || !walletKeysYoroi) {
+        handleYoroiNotExists('signArbitraryYoroi');
         return undefined;
       }
 
       loadingHandler(true);
       try {
-        const walletApi = await laceWallet.enable();
+        const walletApi = await yoroiWallet.enable();
 
         const messageHex = Buffer.from(message, 'utf8').toString('hex');
 
         const result = await walletApi.signData(
-          walletKeysLace.cbor,
+          walletKeysYoroi.cbor,
           messageHex,
         );
 
         return result;
       } catch (error) {
         errorHandler(
-          new Error(`Failed to sign message with Lace wallet: ${error}`),
+          new Error(`Failed to sign message with Yoroi wallet: ${error}`),
         );
         return undefined;
       } finally {
         loadingHandler(false);
       }
     },
-    [walletKeysLace, loadingHandler, errorHandler],
+    [walletKeysYoroi, loadingHandler, errorHandler],
   );
 
   return {
-    isLaceInstalled,
-    walletKeysLace,
-    connectLace,
-    signArbitraryLace,
-    disconnectLace,
-    websiteURL: walletsWebsiteLink['lace'],
+    isYoroiInstalled,
+    walletKeysYoroi,
+    connectYoroi,
+    signArbitraryYoroi,
+    disconnectYoroi,
+    websiteURL: walletsWebsiteLink['yoroi'],
   };
 };
 
-// Detect if Lace wallet is installed
+// Detect if Yoroi wallet is installed
 // Uses event-driven approach to wait for document ready, more efficient
-// Supports window.cardano.lace (CIP-30 standard location)
-const getLaceFromWindow = async (): Promise<CIP30WalletInfo> => {
+const getYoroiFromWindow = async (): Promise<CIP30WalletInfo> => {
   // Check immediately if already exists
-  if (window.cardano?.lace) {
-    return window.cardano.lace;
+  if (window.cardano?.yoroi) {
+    return window.cardano.yoroi;
   }
 
   // If page is fully loaded but wallet not found, throw error
   if (document.readyState === 'complete') {
-    throw new Error('Lace wallet not found');
+    throw new Error('Yoroi wallet not found');
   }
 
   // Wait for page to finish loading using event listener
@@ -261,10 +253,10 @@ const getLaceFromWindow = async (): Promise<CIP30WalletInfo> => {
         event.target &&
         (event.target as Document).readyState === 'complete'
       ) {
-        if (window.cardano?.lace) {
-          resolve(window.cardano.lace);
+        if (window.cardano?.yoroi) {
+          resolve(window.cardano.yoroi);
         } else {
-          reject('Lace wallet not found');
+          reject('Yoroi wallet not found');
         }
         document.removeEventListener('readystatechange', onDocumentStateChange);
       }
