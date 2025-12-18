@@ -130,8 +130,9 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
           const result =
             await wallets[selectedWallet].signArbitrary(messageString);
           if (!result) throw new Error('ERROR: invalid signature');
-          const signatureBytes = Buffer.from(result.signature, 'hex');
-          return signatureBytes;
+          const { signature, key } = result;
+          const combinedSignature = `${signature}:${key}`;
+          return new TextEncoder().encode(combinedSignature);
         };
         break;
     }
@@ -248,38 +249,24 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
           {children}
         </NotifiContextProvider>
       ) : null}
-      {selectedWallet === 'lace' || selectedWallet === 'eternl' ? (
-        <div>
-          <div
-            style={{
-              marginBottom: '20px',
-              padding: '10px',
-              backgroundColor: '#fff3cd',
-              border: '1px solid #ffc107',
-              borderRadius: '4px',
-            }}
-          >
-            ⚠️ Cardano wallets (Lace/Eternl) - CARDANO blockchain support coming
-            soon
-          </div>
+      {selectedWallet === 'lace' ||
+      selectedWallet === 'eternl' ||
+      selectedWallet === 'nufi' ? (
+        <NotifiContextProvider
+          tenantId={tenantId}
+          env={env}
+          walletBlockchain={'CARDANO'}
+          walletPublicKey={walletPublicKey}
+          signMessage={signMessage}
+          cardId={cardId}
+          inputs={{
+            pricePairs: pricePairInputs,
+            walletAddress: [{ label: '', value: walletPublicKey }],
+          }}
+          notificationCountPerPage={8}
+        >
           {children}
-        </div>
-      ) : null}
-      {selectedWallet === 'nufi' ? (
-        <div>
-          <div
-            style={{
-              marginBottom: '20px',
-              padding: '10px',
-              backgroundColor: '#fff3cd',
-              border: '1px solid #ffc107',
-              borderRadius: '4px',
-            }}
-          >
-            ⚠️ Nufi wallet - CARDANO blockchain support coming soon
-          </div>
-          {children}
-        </div>
+        </NotifiContextProvider>
       ) : null}
     </>
   );

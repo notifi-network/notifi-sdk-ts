@@ -61,11 +61,7 @@ export default function Home() {
           </ul>
 
           {objectKeys(wallets)
-            .filter(
-              (wallet) =>
-                supportedWallets.includes(wallet) &&
-                wallets[wallet].isInstalled,
-            )
+            .filter((wallet) => supportedWallets.includes(wallet))
             .map((wallet) => {
               return (
                 <button
