@@ -25,11 +25,6 @@ import {
 } from '../lib/client/clientFactory';
 import { dappAddress, getEvmConnectedWallet } from './constants';
 
-// Helper function for BIP32 hardened derivation
-function harden(num: number): number {
-  return 0x80000000 + num;
-}
-
 describe('AuthManager Unit Test - Blockchain Auth Strategies', () => {
   beforeEach(() => {
     // Sleep 1 second to avoid rate limiting issues
@@ -220,7 +215,7 @@ describe('AuthManager Unit Test - Blockchain Auth Strategies', () => {
     expect(userState.authorization).toHaveProperty('token');
   });
 
-  it.only('CardanoAuthStrategy: CARDANO_SIGN_MESSAGE', async () => {
+  it('CardanoAuthStrategy: CARDANO_SIGN_MESSAGE', async () => {
     /* Reference: https://cips.cardano.org/cip/CIP-30 */
     const blockchainType = 'CARDANO';
     const mnemonic =
@@ -237,11 +232,11 @@ describe('AuthManager Unit Test - Blockchain Auth Strategies', () => {
       Buffer.from(''),
     );
 
-    // Derive account key (m/1852'/1815'/0')
+    // Derive account key (m/1852'/1815'/0') : BIP32 hardened derivation
     const accountKey = rootKey
-      .derive(harden(1852)) // purpose
-      .derive(harden(1815)) // coin_type (ADA)
-      .derive(harden(0)); // account
+      .derive(0x80000000 + 1852) // purpose
+      .derive(0x80000000 + 1815) // coin_type (ADA)
+      .derive(0x80000000 + 0); // account
 
     // Derive payment key (m/1852'/1815'/0'/0/0)
     const paymentKey = accountKey
