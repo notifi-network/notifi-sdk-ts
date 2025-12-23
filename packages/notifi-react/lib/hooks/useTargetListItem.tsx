@@ -197,7 +197,10 @@ export const useTargetListItem = (input: {
 
               const verificationLink =
                 targetGroup?.slackChannelTargets?.[0]?.webhookVerificationLink;
-              if (!verificationLink) return;
+              const isVerified =
+                targetGroup?.slackChannelTargets?.[0]?.verificationStatus ===
+                'VERIFIED';
+              if (!verificationLink || isVerified) return;
               await processVerificationLink(verificationLink);
               await input.targetInfoPromptAddOnAction?.();
             },
