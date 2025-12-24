@@ -190,8 +190,11 @@ export const useTargetListItem = (input: {
               await new Promise((resolve) => setTimeout(resolve, 500));
 
               const verificationLink =
-                targetGroup?.slackChannelTargets?.[0]?.verificationLink;
-              if (!verificationLink) return;
+                targetGroup?.slackChannelTargets?.[0]?.webhookVerificationLink;
+              const isVerified =
+                targetGroup?.slackChannelTargets?.[0]?.verificationStatus ===
+                'VERIFIED';
+              if (!verificationLink || isVerified) return;
               await processVerificationLink(verificationLink);
             },
           },

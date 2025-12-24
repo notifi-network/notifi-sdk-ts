@@ -734,7 +734,7 @@ export const NotifiTargetContextProvider: FC<
               type: 'cta',
               message: 'Set Up',
               onClick: () =>
-                window.open(slackTarget.verificationLink, '_blank'),
+                window.open(slackTarget.webhookVerificationLink, '_blank'),
             });
             break;
           case 'VERIFIED':
