@@ -2,6 +2,7 @@
 
 import Disconnect from '@/components/Disconnect';
 import { NotifiContextWrapper } from '@/context/NotifiContextWrapper';
+import { sanitizeCardId } from '@/utils/cardIdValidation';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -12,7 +13,8 @@ function NotifiLayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const urlCardId = searchParams.get('cardid');
+  const rawCardId = searchParams.get('cardid');
+  const urlCardId = sanitizeCardId(rawCardId);
 
   useEffect(() => {
     if (
@@ -29,7 +31,7 @@ function NotifiLayoutContent({ children }: { children: React.ReactNode }) {
 
   return (
     <QueryClientProvider client={new QueryClient()}>
-      <NotifiContextWrapper cardId={urlCardId ?? undefined}>
+      <NotifiContextWrapper cardId={urlCardId}>
         {showDisconnectButton ? (
           <div className={`fixed z-40 top-7 right-0.5 hidden md:block`}>
             <Disconnect />

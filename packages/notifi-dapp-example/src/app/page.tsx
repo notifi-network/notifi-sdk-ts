@@ -9,6 +9,7 @@ import { useGlobalStateContext } from '@/context/GlobalStateContext';
 import { NotifiContextWrapper } from '@/context/NotifiContextWrapper';
 import { useNotifiRouter } from '@/hooks/useNotifiRouter';
 import { useRouterAsync } from '@/hooks/useRouterAsync';
+import { sanitizeCardId } from '@/utils/cardIdValidation';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Image from 'next/image';
@@ -23,7 +24,8 @@ function LoginComponent() {
 
 function HomeContent() {
   const searchParams = useSearchParams();
-  const urlCardId = searchParams.get('cardid');
+  const rawCardId = searchParams.get('cardid');
+  const urlCardId = sanitizeCardId(rawCardId);
   const { isLoadingRouter } = useRouterAsync();
   const { popGlobalInfoModal } = useGlobalStateContext();
   const { selectedWallet, wallets, error, isLoading } = useWallets();
@@ -109,7 +111,7 @@ function HomeContent() {
 
       {isSigningMessage ? (
         <QueryClientProvider client={new QueryClient()}>
-          <NotifiContextWrapper cardId={urlCardId ?? undefined}>
+          <NotifiContextWrapper cardId={urlCardId}>
             <LoginComponent />
           </NotifiContextWrapper>
         </QueryClientProvider>
