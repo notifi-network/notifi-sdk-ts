@@ -27,15 +27,15 @@ export const useNotifiRouter = () => {
   useEffect(() => {
     if (!frontendClientStatus.isInitialized) return;
     if (frontendClientStatus.isExpired) {
-      handleRoute('/notifi/expiry');
+      handleRoute('/notifi/expiry', true);
       return;
     }
     if (frontendClientStatus.isAuthenticated && !isLoadingFtu) {
       if (ftuStage === FtuStage.Done) {
-        handleRoute('/notifi/dashboard');
+        handleRoute('/notifi/dashboard', true);
         return;
       } else {
-        handleRoute('/notifi/ftu');
+        handleRoute('/notifi/ftu', true);
         return;
       }
     }
