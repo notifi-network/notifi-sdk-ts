@@ -11,7 +11,11 @@ import React, { PropsWithChildren } from 'react';
 const tenantId = process.env.NEXT_PUBLIC_TENANT_ID!;
 const env = process.env.NEXT_PUBLIC_ENV! as NotifiEnvironment;
 const walletBlockchain = process.env.NEXT_PUBLIC_CHAIN! as any;
-const cardId = process.env.NEXT_PUBLIC_NOTIFI_SUBSCRIPTION_CARD_ID!;
+const defaultCardId = process.env.NEXT_PUBLIC_NOTIFI_SUBSCRIPTION_CARD_ID!;
+
+type NotifiContextWrapperProps = {
+  cardId?: string;
+};
 
 const getPricePair = (
   pricePair: [],
@@ -67,9 +71,9 @@ const sortList = (
   });
 };
 
-export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
-  children,
-}) => {
+export const NotifiContextWrapper: React.FC<
+  PropsWithChildren<NotifiContextWrapperProps>
+> = ({ children, cardId }) => {
   const { wallets, selectedWallet } = useWallets();
 
   const { isLoading: isArbLoading, data: arbData } = useQuery({
@@ -176,7 +180,7 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
         walletAddress: [{ label: '', value: walletPublicKey }],
       }}
       signMessage={signMessage}
-      cardId={cardId}
+      cardId={cardId ?? defaultCardId}
     >
       {children}
     </NotifiContextProvider>

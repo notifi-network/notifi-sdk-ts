@@ -12,7 +12,8 @@ import { useRouterAsync } from '@/hooks/useRouterAsync';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { Suspense, useEffect, useState } from 'react';
 
 // Rendering this Component will trigger the login function
 function LoginComponent() {
@@ -20,7 +21,9 @@ function LoginComponent() {
   return null;
 }
 
-export default function Home() {
+function HomeContent() {
+  const searchParams = useSearchParams();
+  const urlCardId = searchParams.get('cardid');
   const { isLoadingRouter } = useRouterAsync();
   const { popGlobalInfoModal } = useGlobalStateContext();
   const { selectedWallet, wallets, error, isLoading } = useWallets();
@@ -106,11 +109,19 @@ export default function Home() {
 
       {isSigningMessage ? (
         <QueryClientProvider client={new QueryClient()}>
-          <NotifiContextWrapper>
+          <NotifiContextWrapper cardId={urlCardId ?? undefined}>
             <LoginComponent />
           </NotifiContextWrapper>
         </QueryClientProvider>
       ) : null}
     </main>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <HomeContent />
+    </Suspense>
   );
 }
