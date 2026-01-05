@@ -6,6 +6,7 @@ import { NotifiContextProvider } from '@notifi-network/notifi-react';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import { useQuery } from '@tanstack/react-query';
 import { getBytes } from 'ethers';
+import { useRouter } from 'next/navigation';
 import React, { PropsWithChildren, useEffect, useState } from 'react';
 
 import { validateCardIdExists } from '../utils/cardIdValidation';
@@ -77,6 +78,7 @@ export const NotifiContextWrapper: React.FC<
   PropsWithChildren<NotifiContextWrapperProps>
 > = ({ children, cardId }) => {
   const { wallets, selectedWallet } = useWallets();
+  const router = useRouter();
   const [currentCardId, setCurrentCardId] = useState(cardId ?? defaultCardId);
   const [isValidatingCardId, setIsValidatingCardId] = useState(false);
   const hasValidated = React.useRef(false);
@@ -84,6 +86,17 @@ export const NotifiContextWrapper: React.FC<
 
   useEffect(() => {
     if (!isUsingCustomCardId || hasValidated.current) return;
+
+    const removeCardIdFromUrl = () => {
+      if (typeof window !== 'undefined') {
+        const newSearchParams = new URLSearchParams(window.location.search);
+        newSearchParams.delete('cardid');
+        const newSearch = newSearchParams.toString();
+        const newPath =
+          window.location.pathname + (newSearch ? `?${newSearch}` : '');
+        router.replace(newPath);
+      }
+    };
 
     const validateCardId = async () => {
       setIsValidatingCardId(true);
@@ -95,6 +108,7 @@ export const NotifiContextWrapper: React.FC<
             `CardId "${cardId}" not found in backend. Falling back to default cardId "${defaultCardId}"`,
           );
           setCurrentCardId(defaultCardId);
+          removeCardIdFromUrl();
         }
       } catch (error) {
         console.warn(
@@ -102,6 +116,7 @@ export const NotifiContextWrapper: React.FC<
           error,
         );
         setCurrentCardId(defaultCardId);
+        removeCardIdFromUrl();
       } finally {
         setIsValidatingCardId(false);
         hasValidated.current = true;
