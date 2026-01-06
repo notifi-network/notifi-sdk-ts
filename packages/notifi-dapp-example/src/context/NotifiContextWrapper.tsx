@@ -6,12 +6,19 @@ import { NotifiContextProvider } from '@notifi-network/notifi-react';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
 import { useQuery } from '@tanstack/react-query';
 import { getBytes } from 'ethers';
-import React, { PropsWithChildren } from 'react';
+import { useRouter } from 'next/navigation';
+import React, { PropsWithChildren, useEffect, useState } from 'react';
+
+import { validateCardIdExists } from '../utils/cardIdValidation';
 
 const tenantId = process.env.NEXT_PUBLIC_TENANT_ID!;
 const env = process.env.NEXT_PUBLIC_ENV! as NotifiEnvironment;
 const walletBlockchain = process.env.NEXT_PUBLIC_CHAIN! as any;
-const cardId = process.env.NEXT_PUBLIC_NOTIFI_SUBSCRIPTION_CARD_ID!;
+const defaultCardId = process.env.NEXT_PUBLIC_NOTIFI_SUBSCRIPTION_CARD_ID!;
+
+type NotifiContextWrapperProps = {
+  cardId?: string;
+};
 
 const getPricePair = (
   pricePair: [],
@@ -67,10 +74,57 @@ const sortList = (
   });
 };
 
-export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
-  children,
-}) => {
+export const NotifiContextWrapper: React.FC<
+  PropsWithChildren<NotifiContextWrapperProps>
+> = ({ children, cardId }) => {
   const { wallets, selectedWallet } = useWallets();
+  const router = useRouter();
+  const [currentCardId, setCurrentCardId] = useState(cardId ?? defaultCardId);
+  const [isValidatingCardId, setIsValidatingCardId] = useState(false);
+  const hasValidated = React.useRef(false);
+  const isUsingCustomCardId = cardId !== undefined && cardId !== defaultCardId;
+
+  useEffect(() => {
+    if (!isUsingCustomCardId || hasValidated.current) return;
+
+    const removeCardIdFromUrl = () => {
+      if (typeof window !== 'undefined') {
+        const newSearchParams = new URLSearchParams(window.location.search);
+        newSearchParams.delete('cardid');
+        const newSearch = newSearchParams.toString();
+        const newPath =
+          window.location.pathname + (newSearch ? `?${newSearch}` : '');
+        router.replace(newPath);
+      }
+    };
+
+    const validateCardId = async () => {
+      setIsValidatingCardId(true);
+      try {
+        const isValid = await validateCardIdExists(cardId!, tenantId, env);
+
+        if (!isValid) {
+          console.warn(
+            `CardId "${cardId}" not found in backend. Falling back to default cardId "${defaultCardId}"`,
+          );
+          setCurrentCardId(defaultCardId);
+          removeCardIdFromUrl();
+        }
+      } catch (error) {
+        console.warn(
+          `Failed to validate cardId "${cardId}". Falling back to default cardId "${defaultCardId}"`,
+          error,
+        );
+        setCurrentCardId(defaultCardId);
+        removeCardIdFromUrl();
+      } finally {
+        setIsValidatingCardId(false);
+        hasValidated.current = true;
+      }
+    };
+
+    validateCardId();
+  }, [cardId, isUsingCustomCardId]);
 
   const { isLoading: isArbLoading, data: arbData } = useQuery({
     queryKey: ['arb'],
@@ -165,7 +219,7 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
 
   return (
     <NotifiContextProvider
-      key={walletPublicKey}
+      key={`${walletPublicKey}-${currentCardId}`}
       tenantId={tenantId}
       env={env}
       walletBlockchain={walletBlockchain}
@@ -176,7 +230,7 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
         walletAddress: [{ label: '', value: walletPublicKey }],
       }}
       signMessage={signMessage}
-      cardId={cardId}
+      cardId={currentCardId}
     >
       {children}
     </NotifiContextProvider>

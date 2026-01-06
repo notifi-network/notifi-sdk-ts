@@ -39,18 +39,6 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
 
   const { wallets, selectedWallet } = useWallets();
 
-  console.log('🔍 NotifiContextWrapper Debug:', {
-    selectedWallet,
-    hasWallet: selectedWallet ? !!wallets[selectedWallet] : false,
-    hasWalletKeys: selectedWallet
-      ? !!wallets[selectedWallet]?.walletKeys
-      : false,
-    walletKeys: selectedWallet ? wallets[selectedWallet]?.walletKeys : null,
-    hasSignArbitrary: selectedWallet
-      ? !!wallets[selectedWallet]?.signArbitrary
-      : false,
-  });
-
   if (
     !selectedWallet ||
     !wallets[selectedWallet].walletKeys ||
