@@ -24,10 +24,20 @@ export const InboxNavTabs: React.FC<PropsWithChildren<InboxNavTabsProps>> = (
       data-cy="notifi-inbox-nav-tabs"
       className={clsx('notifi-inbox-nav-tabs', props.classNames?.container)}
     >
-      <div onClick={() => props.setInboxView(InboxView.InboxHistory)}>
+      <div
+        onClick={() => props.setInboxView(InboxView.InboxHistory)}
+        className={clsx('notifi-inbox-bell-tab', {
+          active: bellActive,
+        })}
+      >
         <Icon type={bellActive ? 'bell-fill' : 'bell'} />
       </div>
-      <div onClick={() => props.setInboxView(InboxView.InboxConfigTopic)}>
+      <div
+        onClick={() => props.setInboxView(InboxView.InboxConfigTopic)}
+        className={clsx('notifi-inbox-config-tab', {
+          active: configActive,
+        })}
+      >
         <Icon type={configActive ? 'gear-fill' : 'gear'} />
       </div>
     </div>
