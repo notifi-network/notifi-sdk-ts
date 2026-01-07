@@ -169,7 +169,7 @@ export const NotifiContextWrapper: React.FC<PropsWithChildren> = ({
             signMessage={signMessage}
             cardId={cardId}
             inputs={{
-              // pricePairs: pricePairInputs,
+              pricePairs: pricePairInputs,
               walletAddress: [{ label: '', value: walletPublicKey }],
             }}
             notificationCountPerPage={8}
