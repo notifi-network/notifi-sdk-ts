@@ -26,7 +26,6 @@ export const HistoryRow: React.FC<HistoryRowProps> = (props) => {
   const icon = props.historyItem.icon as Types.GenericEventIconHint;
   const { markAsRead } = useNotifiHistoryContext();
 
-  console.log({ historyItem: props.historyItem });
   return (
     <div
       className={clsx(
