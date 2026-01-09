@@ -33,11 +33,25 @@ export const SubscriptionValueInput: React.FC<SubscriptionValueInputProps> = (
   const { inputs } = useNotifiTenantConfigContext();
   const subscriptionValueOrRef = props.subscriptionValueRef;
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
-  const subscriptionValueOptions = resolveObjectArrayRef(
-    'subscriptionValueOptions',
-    subscriptionValueOrRef,
-    inputs,
-  );
+  // const subscriptionValueOptions = resolveObjectArrayRef(
+  //   'subscriptionValueOptions',
+  //   subscriptionValueOrRef,
+  //   inputs,
+  // );
+
+  const subscriptionValueOptions = React.useMemo(() => {
+    try {
+      return resolveObjectArrayRef(
+        'subscriptionValueOptions',
+        subscriptionValueOrRef,
+        inputs,
+      );
+    } catch (e) {
+      console.error(e);
+      return [];
+    }
+  }, [subscriptionValueOrRef, inputs]);
+
   return (
     <div
       className={clsx('subscription-value-input', props.className?.container)}
@@ -101,17 +115,8 @@ export const SubscriptionValueInput: React.FC<SubscriptionValueInputProps> = (
         </div>
       ) : null}
       {subscriptionValueOptions.length === 0 ? (
-        <div>
-          <input
-            type="text"
-            value={props.subscriptionValue?.value}
-            onChange={(e) =>
-              props.setSubscriptionValue({
-                value: e.target.value,
-                label: '',
-              })
-            }
-          />
+        <div style={{ color: 'red' }}>
+          ERROR: No subscription value options available
         </div>
       ) : null}
     </div>
