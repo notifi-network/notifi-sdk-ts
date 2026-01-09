@@ -48,7 +48,15 @@ export const HistoryRow: React.FC<HistoryRowProps> = (props) => {
         )}
       ></div>
       <div className={clsx('notifi-history-row-icon', props.className?.icon)}>
-        <Icon type={icon} />
+        {props.historyItem.customIconUrl ? (
+          <img
+            src={props.historyItem.customIconUrl}
+            className="notifi-history-row-custom-icon"
+            alt="custom icon"
+          />
+        ) : (
+          <Icon type={icon} />
+        )}
       </div>
       <div
         className={clsx('notifi-history-row-content', props.className?.content)}

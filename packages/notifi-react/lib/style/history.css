@@ -106,6 +106,10 @@
   width: 3rem;
   color: var(--notifi-color-heather);
 }
+.notifi-history-row-custom-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
 
 .notifi-history-row-content {
   width: 100%;
