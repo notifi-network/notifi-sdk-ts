@@ -33,87 +33,90 @@ export const SubscriptionValueInput: React.FC<SubscriptionValueInputProps> = (
   const { inputs } = useNotifiTenantConfigContext();
   const subscriptionValueOrRef = props.subscriptionValueRef;
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
-  const subscriptionValueOptions = resolveObjectArrayRef(
-    'subscriptionValueOptions',
-    subscriptionValueOrRef,
-    inputs,
-  );
+
+  const subscriptionValueOptions = React.useMemo(() => {
+    try {
+      return resolveObjectArrayRef(
+        'subscriptionValueOptions',
+        subscriptionValueOrRef,
+        inputs,
+      );
+    } catch (e) {
+      console.error(e);
+      return [];
+    }
+  }, [subscriptionValueOrRef, inputs]);
+
   return (
     <div
       className={clsx('subscription-value-input', props.className?.container)}
     >
-      {subscriptionValueOptions.length > 0 ? (
+      <div
+        className={clsx(
+          'subscription-value-input-dropdown',
+          props.className?.dropdownContainer,
+        )}
+      >
         <div
           className={clsx(
-            'subscription-value-input-dropdown',
-            props.className?.dropdownContainer,
+            'subscription-value-input-dropdown-value',
+            props.className?.dropdownValue,
           )}
+          onClick={() => setIsDropdownOpen((prev) => !prev)}
         >
           <div
             className={clsx(
-              'subscription-value-input-dropdown-value',
-              props.className?.dropdownValue,
+              'subscription-value-input-dropdown-value-content',
+              props.className?.dropdownValueContent,
+              !props.subscriptionValue ? 'unselected' : '',
             )}
-            onClick={() => setIsDropdownOpen((prev) => !prev)}
           >
-            <div
-              className={clsx(
-                'subscription-value-input-dropdown-value-content',
-                props.className?.dropdownValueContent,
-                !props.subscriptionValue ? 'unselected' : '',
-              )}
-            >
-              {props.subscriptionValue
-                ? props.subscriptionValue.label
-                : (props.copy?.dropdownPlaceholder ??
-                  defaultCopy.subscriptionValueInput.dropdownPlaceholder)}
-            </div>
-
-            <div
-              className={clsx(
-                'subscription-value-input-dropdown-icon',
-                props.className?.dropdownIcon,
-              )}
-            >
-              <Icon type="triangle-down" />
-            </div>
+            {props.subscriptionValue
+              ? props.subscriptionValue.label
+              : (props.copy?.dropdownPlaceholder ??
+                defaultCopy.subscriptionValueInput.dropdownPlaceholder)}
           </div>
-          {isDropdownOpen && (
-            <div
-              className={clsx(
-                'subscription-value-input-dropdown-list',
-                props.className?.dropdownList,
-              )}
-            >
-              {subscriptionValueOptions.map((option) => (
-                <div
-                  onClick={() => {
-                    props.setSubscriptionValue(option);
-                    setIsDropdownOpen(false);
-                  }}
-                  key={option.label}
-                >
-                  {option.label}
-                </div>
-              ))}
-            </div>
-          )}
+
+          <div
+            className={clsx(
+              'subscription-value-input-dropdown-icon',
+              props.className?.dropdownIcon,
+            )}
+          >
+            <Icon type="triangle-down" />
+          </div>
         </div>
-      ) : null}
-      {subscriptionValueOptions.length === 0 ? (
-        <div>
-          <input
-            type="text"
-            value={props.subscriptionValue?.value}
-            onChange={(e) =>
-              props.setSubscriptionValue({
-                value: e.target.value,
-                label: '',
-              })
-            }
-          />
-        </div>
-      ) : null}
+        {isDropdownOpen && (
+          <div
+            className={clsx(
+              'subscription-value-input-dropdown-list',
+              props.className?.dropdownList,
+            )}
+          >
+            {/* NORMAL CASE: Render available subscriptionValue options */}
+            {subscriptionValueOptions.length > 0
+              ? subscriptionValueOptions.map((option) => (
+                  <div
+                    onClick={() => {
+                      props.setSubscriptionValue(option);
+                      setIsDropdownOpen(false);
+                    }}
+                    key={option.label}
+                  >
+                    {option.label}
+                  </div>
+                ))
+              : null}
+
+            {/* ERROR CASE: No corresponding subscriptionValue defined in NotifiContext.inputs */}
+            {subscriptionValueOptions.length === 0 ? (
+              <div style={{ color: '#D5828B', cursor: 'not-allowed' }}>
+                Oooops! no subscribable option now.
+              </div>
+            ) : null}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
