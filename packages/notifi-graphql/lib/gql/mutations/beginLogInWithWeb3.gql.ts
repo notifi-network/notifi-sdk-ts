@@ -1,5 +1,7 @@
 import { gql } from 'graphql-request';
 
+import { ErrorFragments } from '../fragments/ErrorFragments.gql';
+
 export const BeginLogInWithWeb3 = gql`
   mutation beginLogInWithWeb3(
     $authAddress: String!
@@ -20,6 +22,10 @@ export const BeginLogInWithWeb3 = gql`
       beginLogInWithWeb3Response {
         nonce
       }
+      errors {
+        ...ArgumentErrorFragment
+      }
     }
   }
+  ${ErrorFragments}
 `;
