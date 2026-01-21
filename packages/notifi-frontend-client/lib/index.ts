@@ -3,3 +3,4 @@ export * from './utils';
 export * from './client';
 export * from './models';
 export * from './storage';
+export * from './errors';
