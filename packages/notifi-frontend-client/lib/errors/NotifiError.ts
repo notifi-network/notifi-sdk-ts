@@ -71,6 +71,25 @@ export class NotifiError extends Error {
     // Unknown error
     return new NotifiUnknownError(String(e), 'UNKNOWN', e);
   }
+
+  /**
+   * Check payload errors and throw if exists
+   * @throws {NotifiError} if payload contains errors
+   */
+  static throwIfPayloadError<
+    T extends {
+      errors?: ReadonlyArray<{
+        __typename: string;
+        message: string;
+      } | null> | null;
+    },
+  >(payload: T): T {
+    const errors = payload.errors;
+    if (errors && errors.length > 0 && errors[0]) {
+      throw NotifiError.from(errors[0]);
+    }
+    return payload;
+  }
 }
 
 /**
