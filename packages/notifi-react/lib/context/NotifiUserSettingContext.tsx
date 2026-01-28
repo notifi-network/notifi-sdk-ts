@@ -1,3 +1,4 @@
+import { NotifiError } from '@notifi-network/notifi-frontend-client';
 import React, {
   FC,
   PropsWithChildren,
@@ -70,7 +71,7 @@ export const NotifiUserSettingContextProvider: FC<PropsWithChildren> = ({
         });
         setFtuStage(ftuConfigStep);
       } catch (err) {
-        setError(err as Error);
+        setError(NotifiError.from(err));
       } finally {
         setIsLoading(false);
       }
