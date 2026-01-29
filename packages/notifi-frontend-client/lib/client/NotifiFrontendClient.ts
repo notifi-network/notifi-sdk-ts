@@ -95,7 +95,9 @@ export class NotifiFrontendClient {
 
     /* Alerts are immutable, delete the existing instead */
     const alertIdsToDelete = duplicateAlertsIds.map((id) => id);
-    await this.deleteAlerts({ ids: alertIdsToDelete });
+    if (alertIdsToDelete.length > 0) {
+      await this.deleteAlerts({ ids: alertIdsToDelete });
+    }
 
     const mutation = await this._service.createFusionAlerts({ input });
     NotifiError.throwIfPayloadError(mutation.createFusionAlerts);
