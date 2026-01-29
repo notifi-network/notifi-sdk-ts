@@ -34,6 +34,8 @@ jobs:
         run: npm run build
 
       - name: Run tests - @notifi-network/notifi-node
+        id: test-notifi-node
+        continue-on-error: true
         run: npm run test:node
         env:
           FUSION_EVENT_ID: ${{ secrets.FUSION_EVENT_ID }}
@@ -41,4 +43,14 @@ jobs:
           TENANT_SID: ${{ secrets.TENANT_SID }}
 
       - name: Run tests - @notifi-network/notifi-frontend-client
+        id: test-notifi-frontend-client
+        continue-on-error: true
         run: npm run test:frontend-client
+
+      - name: Check all test results
+        if: always()
+        run: |
+          if [ "${{ steps.test-notifi-node.outcome }}" == "failure" ] || [ "${{ steps.test-notifi-frontend-client.outcome }}" == "failure" ]; then
+            echo "One or more tests failed"
+            exit 1
+          fi

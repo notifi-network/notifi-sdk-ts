@@ -1,6 +1,7 @@
 import {
   FusionEventTopic,
   FusionFilterOptions,
+  NotifiError,
   TopicMetadata,
   UserInputOptions,
   resolveObjectArrayRef,
@@ -222,7 +223,7 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
       refreshAlerts(data);
       setError(null);
     } catch (e) {
-      setError(e as Error);
+      setError(NotifiError.from(e));
     } finally {
       setIsLoading(false);
     }
@@ -323,7 +324,7 @@ export const NotifiTopicContextProvider: FC<PropsWithChildren> = ({
       refreshAlerts(data);
       setError(null);
     } catch (e) {
-      setError(e as Error);
+      setError(NotifiError.from(e));
     } finally {
       setIsLoading(false);
     }

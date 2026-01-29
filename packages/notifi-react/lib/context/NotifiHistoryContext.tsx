@@ -1,5 +1,6 @@
 import {
   HistoryFusionEventVariables,
+  NotifiError,
   NotifiFrontendClient,
   TopicUiConfig,
   resolveStringRef,
@@ -121,14 +122,13 @@ export const NotifiHistoryContextProvider: FC<
       currentSubscription.current = frontendClient.addEventListener(
         'stateChanged',
         historyUpdateHandler,
-        (error) => {
-          if (error instanceof Error) {
-            setError({
-              ...error,
-              message: `NotifiHistoryContext - stateChanged: ${error.message}`,
-            });
-          }
-          console.error('NotifiHistoryContext - stateChanged:', error);
+        (e) => {
+          const error = NotifiError.from(e);
+          setError({
+            ...error,
+            message: `NotifiHistoryContext - stateChanged: ${error.message}`,
+          });
+          console.error('NotifiHistoryContext - stateChanged:', e);
         },
       );
 

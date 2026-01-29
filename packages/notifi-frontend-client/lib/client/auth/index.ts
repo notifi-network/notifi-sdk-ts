@@ -1,6 +1,7 @@
 import { NotifiService, Types } from '@notifi-network/notifi-graphql';
 
 import { NotifiFrontendConfiguration } from '../../configuration';
+import { NotifiError } from '../../errors';
 import {
   APTOS_BLOCKCHAINS,
   type BtcBlockchain,
@@ -160,6 +161,8 @@ export const beginLogInWithWeb3 = async (
     authType,
     walletPubkey,
   });
+
+  NotifiError.throwIfPayloadError(result.beginLogInWithWeb3);
 
   if (!result.beginLogInWithWeb3.beginLogInWithWeb3Response) {
     throw new Error('Failed to begin login process');

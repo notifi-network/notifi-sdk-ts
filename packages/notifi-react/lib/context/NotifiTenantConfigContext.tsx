@@ -2,6 +2,7 @@ import {
   CardConfigItemV1,
   CardConfigItemV2,
   FusionEventTopic,
+  NotifiError,
   TopicMetadata,
 } from '@notifi-network/notifi-frontend-client';
 import React, {
@@ -64,12 +65,11 @@ export const NotifiTenantConfigContextProvider: FC<
       })
       .catch((e) => {
         isInitialLoaded.current = false;
-        if (e instanceof Error) {
-          setError({
-            ...e,
-            message: `Failed to fetch tenant config (.fetchTenantConfig): ${e.message}`,
-          });
-        }
+        const error = NotifiError.from(e);
+        setError({
+          ...error,
+          message: `Failed to fetch tenant config (.fetchTenantConfig): ${error.message}`,
+        });
         console.error(e);
       })
       .finally(() => setIsLoading(false));

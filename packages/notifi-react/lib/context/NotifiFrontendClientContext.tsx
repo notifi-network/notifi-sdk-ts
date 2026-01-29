@@ -1,6 +1,7 @@
 import {
   LoginParams,
   NotifiEnvironment,
+  NotifiError,
   NotifiFrontendClient,
   NotifiFrontendConfiguration,
   UserParams,
@@ -109,12 +110,11 @@ export const NotifiFrontendClientContextProvider: React.FC<
         setError(null);
       })
       .catch((e) => {
-        if (e instanceof Error) {
-          setError({
-            ...e,
-            message: `  failed to initialize frontendClient (.initialize): ${e.message}`,
-          });
-        }
+        const error = NotifiError.from(e);
+        setError({
+          ...error,
+          message: `  failed to initialize frontendClient (.initialize): ${error.message}`,
+        });
         console.error(e);
       })
       .finally(() => setIsLoading(false));
@@ -153,15 +153,14 @@ export const NotifiFrontendClientContextProvider: React.FC<
       await frontendClient.auth.logIn(walletWithSignParams);
       _refreshFrontendClient(frontendClient);
       setError(null);
-    } catch (error) {
-      if (error instanceof Error) {
-        const newError = {
-          ...error,
-          message: `.login - ${error.message}`,
-        };
-        setError(newError);
-        console.error(newError);
-      }
+    } catch (e) {
+      const error = NotifiError.from(e);
+      const newError = {
+        ...error,
+        message: `.login - ${error.message}`,
+      };
+      setError(newError);
+      console.error(newError);
     } finally {
       setIsLoading(false);
     }
@@ -179,15 +178,14 @@ export const NotifiFrontendClientContextProvider: React.FC<
       await frontendClient?.auth.logOut();
       _refreshFrontendClient(frontendClient);
       setError(null);
-    } catch (error) {
-      if (error instanceof Error) {
-        const newError = {
-          ...error,
-          message: `logout: Failed to logout - ${JSON.stringify(error.message)}`,
-        };
-        setError(newError);
-        console.error(newError);
-      }
+    } catch (e) {
+      const error = NotifiError.from(e);
+      const newError = {
+        ...error,
+        message: `logout: Failed to logout - ${JSON.stringify(error.message)}`,
+      };
+      setError(newError);
+      console.error(newError);
     }
   };
 
@@ -210,15 +208,14 @@ export const NotifiFrontendClientContextProvider: React.FC<
         });
         _refreshFrontendClient(frontendClient);
         setError(null);
-      } catch (error) {
-        if (error instanceof Error) {
-          const newError = {
-            ...error,
-            message: `loginViaTrasaction: failed to call .completeLoginViaTransaction: ${error.message}`,
-          };
-          setError(newError);
-          console.error(newError);
-        }
+      } catch (e) {
+        const error = NotifiError.from(e);
+        const newError = {
+          ...error,
+          message: `loginViaTrasaction: failed to call .completeLoginViaTransaction: ${error.message}`,
+        };
+        setError(newError);
+        console.error(newError);
       } finally {
         setIsLoading(false);
       }
@@ -267,15 +264,14 @@ export const NotifiFrontendClientContextProvider: React.FC<
       await frontendClient.auth.logIn(loginInput);
       _refreshFrontendClient(frontendClient);
       setError(null);
-    } catch (error) {
-      if (error instanceof Error) {
-        const newError = {
-          ...error,
-          message: `loginViaHardwareWallet: User rejects to sign, or mis-impl the signMessage method: ${error.message}`,
-        };
-        setError(newError);
-        console.error(newError);
-      }
+    } catch (e) {
+      const error = NotifiError.from(e);
+      const newError = {
+        ...error,
+        message: `loginViaHardwareWallet: User rejects to sign, or mis-impl the signMessage method: ${error.message}`,
+      };
+      setError(newError);
+      console.error(newError);
     } finally {
       setIsLoading(false);
     }

@@ -1,6 +1,11 @@
 import { gql } from 'graphql-request';
 
+import { ErrorFragments } from '../fragments/ErrorFragments.gql';
+import { UserFragment } from '../fragments/UserFragment.gql';
+
 export const CompleteLogInWithWeb3 = gql`
+  ${UserFragment}
+
   mutation completeLogInWithWeb3(
     $nonce: String!
     $signature: String!
@@ -20,6 +25,10 @@ export const CompleteLogInWithWeb3 = gql`
       user {
         ...UserFragment
       }
+      errors {
+        ...ArgumentErrorFragment
+      }
     }
   }
+  ${ErrorFragments}
 `;

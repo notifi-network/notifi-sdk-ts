@@ -1,5 +1,7 @@
 import { NotifiService } from '@notifi-network/notifi-graphql';
 
+import { NotifiError } from '../errors';
+
 export type NotifiTarget =
   | 'email'
   | 'phoneNumber'
@@ -66,6 +68,9 @@ export const alterTarget = async (
             name: alterTarget.value,
             value: alterTarget.value,
           });
+        NotifiError.throwIfPayloadError(
+          slackChannelTargetMutation.createSlackChannelTarget,
+        );
         return slackChannelTargetMutation.createSlackChannelTarget
           .slackChannelTarget?.id;
       }
@@ -102,11 +107,16 @@ export const alterTarget = async (
           id: alterTarget.id,
         });
         return;
-      case 'slack':
-        await alterTargetService.deleteSlackChannelTarget({
-          id: alterTarget.id,
-        });
+      case 'slack': {
+        const deleteSlackChannelTargetMutation =
+          await alterTargetService.deleteSlackChannelTarget({
+            id: alterTarget.id,
+          });
+        NotifiError.throwIfPayloadError(
+          deleteSlackChannelTargetMutation.deleteSlackChannelTarget,
+        );
         return;
+      }
       case 'wallet':
         await alterTargetService.deleteWeb3Target({
           id: alterTarget.id,

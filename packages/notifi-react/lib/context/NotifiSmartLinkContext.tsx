@@ -5,6 +5,7 @@ import {
 import {
   type AuthParams,
   type NotifiEnvironment,
+  NotifiError,
   NotifiSmartLinkClient,
   SmartLinkAction,
   type SmartLinkConfig,
@@ -141,7 +142,7 @@ export const NotifiSmartLinkContextProvider: FC<
           });
           setError(null);
         } catch (e) {
-          setError(e as Error);
+          setError(NotifiError.from(e));
           console.error(e);
         } finally {
           setIsLoading(false);
@@ -189,7 +190,7 @@ export const NotifiSmartLinkContextProvider: FC<
           }));
           setError(null);
         } catch (e) {
-          setError(e as Error);
+          setError(NotifiError.from(e));
           return;
         } finally {
           setIsLoading(false);

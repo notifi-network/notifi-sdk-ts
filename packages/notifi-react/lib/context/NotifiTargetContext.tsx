@@ -1,4 +1,5 @@
 import {
+  NotifiError,
   NotifiFrontendClient,
   objectKeys,
 } from '@notifi-network/notifi-frontend-client';
@@ -460,12 +461,12 @@ export const NotifiTargetContextProvider: FC<
               refreshTargetDocument(data);
               setError(null);
             })
-            .catch((e) => setError(e as Error))
+            .catch((e) => setError(NotifiError.from(e)))
             .finally(() => setIsLoading(false));
           return _result;
         })
         .catch((e) => {
-          setError(e as Error);
+          setError(NotifiError.from(e));
           return null;
         })
         .finally(() => setIsLoading(false));
