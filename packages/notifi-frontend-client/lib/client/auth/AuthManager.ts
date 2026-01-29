@@ -254,7 +254,7 @@ export class AuthManager {
     );
 
     const { signMessageParams, signingAddress, signingPubkey, nonce } =
-      await strategy.prepareLoginWithWeb3(loginWeb3Params);
+      await strategy.prepareLoginWithWeb3(loginWeb3Params); // Not handling gql PayloadError here because prepareLoginWithWeb3 does not perform any gql operations
 
     const authentication = await strategy.authenticate(signMessageParams);
 
