@@ -13,6 +13,7 @@ import type {
   AuthParams,
   NotifiFrontendConfiguration,
 } from '../../configuration';
+import { NotifiError } from '../../errors';
 import { isUnmaintainedBlockchain, isUsingBtcBlockchain } from '../../models';
 import { Authorization, NotifiStorage, Roles } from '../../storage';
 import { notNullOrEmpty } from '../../utils';
@@ -150,6 +151,7 @@ export class AuthManager {
         oidcProvider,
         idToken: jwt,
       });
+      NotifiError.throwIfPayloadError(result.logInByOidc);
       user = result.logInByOidc.user;
     } else {
       throw new Error(`Unsupported wallet blockchain: ${walletBlockchain}`);
@@ -252,7 +254,7 @@ export class AuthManager {
     );
 
     const { signMessageParams, signingAddress, signingPubkey, nonce } =
-      await strategy.prepareLoginWithWeb3(loginWeb3Params);
+      await strategy.prepareLoginWithWeb3(loginWeb3Params); // Not handling gql PayloadError here because prepareLoginWithWeb3 does not perform any gql operations
 
     const authentication = await strategy.authenticate(signMessageParams);
 
@@ -271,6 +273,7 @@ export class AuthManager {
         signingPubkey,
       },
     );
+    NotifiError.throwIfPayloadError(completeLogInWithWeb3);
     return completeLogInWithWeb3.user;
   }
 

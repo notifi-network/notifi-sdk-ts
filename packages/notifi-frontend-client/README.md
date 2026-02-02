@@ -394,6 +394,57 @@ const errorHandler = (error: Error) => {
 client.removeEventListener('stateChanged', id);
 ```
 
+## 🚨 Error Handling
+
+The SDK provides a unified error handling system with typed errors.
+
+### Error Types
+
+| Error Class                 | Error Type       | Description                                  |
+| --------------------------- | ---------------- | -------------------------------------------- |
+| `NotifiError`               | (base)           | Base class for all errors                    |
+| `NotifiTargetError`         | `TARGET`         | Target-related errors (e.g., limit exceeded) |
+| `NotifiAuthenticationError` | `AUTHENTICATION` | Auth errors (e.g., unauthorized)             |
+| `NotifiValidationError`     | `VALIDATION`     | Validation errors (e.g., invalid arguments)  |
+| `NotifiUnknownError`        | `UNKNOWN`        | Fallback for unclassified errors             |
+
+### Handling Errors
+
+Use `NotifiError.from()` to convert any error to a typed `NotifiError`:
+
+```ts
+import {
+  NotifiAuthenticationError,
+  NotifiError,
+  NotifiTargetError,
+} from '@notifi-network/notifi-frontend-client';
+
+try {
+  await client.alterTargetGroup({
+    /* ... */
+  });
+} catch (e) {
+  const error = NotifiError.from(e);
+
+  if (error instanceof NotifiTargetError) {
+    console.error('Target error:', error.code, error.message);
+  } else if (error instanceof NotifiAuthenticationError) {
+    console.error('Auth error:', error.code, error.message);
+  }
+
+  // Access error properties
+  console.log(error.errorType); // 'TARGET', 'AUTHENTICATION', 'VALIDATION', 'UNKNOWN'
+  console.log(error.code); // Specific error code (e.g., 'TargetLimitExceededError')
+  console.log(error.timestamp); // Error timestamp
+  console.log(error.cause); // Original error (if available)
+}
+```
+
+> **NOTE**:
+>
+> - GraphQL payload errors (with `__typename`) are automatically mapped to the appropriate error classes.
+> - [Type documentation](https://docs.notifi.network/notifi-sdk-ts/notifi-frontend-client/classes/NotifiError.html)
+
 ## Contributing & Testing
 
 We welcome and appreciate your contributions! Please review our [contribution guidelines](https://github.com/notifi-network/notifi-sdk-ts?tab=readme-ov-file#contribute-to-the-repository-for-contributors) before getting started.

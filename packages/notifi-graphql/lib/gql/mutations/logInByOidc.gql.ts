@@ -1,5 +1,6 @@
 import { gql } from 'graphql-request';
 
+import { ErrorFragments } from '../fragments/ErrorFragments.gql';
 import { UserFragment } from '../fragments/UserFragment.gql';
 
 export const LogInByOidc = gql`
@@ -16,6 +17,11 @@ export const LogInByOidc = gql`
       user {
         ...UserFragment
       }
+      errors {
+        ...ArgumentErrorFragment
+        ...UnauthorizedAccessErrorFragment
+      }
     }
   }
+  ${ErrorFragments}
 `;

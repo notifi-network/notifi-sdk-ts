@@ -5,6 +5,7 @@ import type {
 import type { NotifiService } from '@notifi-network/notifi-graphql';
 
 import { type NotifiFrontendConfiguration } from '../configuration';
+import { NotifiError } from '../errors';
 import {
   type CardConfigItemV1,
   type FusionEventTopic,
@@ -94,9 +95,12 @@ export class NotifiFrontendClient {
 
     /* Alerts are immutable, delete the existing instead */
     const alertIdsToDelete = duplicateAlertsIds.map((id) => id);
-    await this.deleteAlerts({ ids: alertIdsToDelete });
+    if (alertIdsToDelete.length > 0) {
+      await this.deleteAlerts({ ids: alertIdsToDelete });
+    }
 
     const mutation = await this._service.createFusionAlerts({ input });
+    NotifiError.throwIfPayloadError(mutation.createFusionAlerts);
     return mutation.createFusionAlerts;
   }
 
@@ -108,6 +112,7 @@ export class NotifiFrontendClient {
     const mutation = await this._service.deleteAlerts({
       input: { alertIds: ids },
     });
+    NotifiError.throwIfPayloadError(mutation.deleteAlerts);
     const result = mutation.deleteAlerts;
     if (result === undefined) {
       throw new Error('Failed to delete alerts');
@@ -290,6 +295,7 @@ export class NotifiFrontendClient {
     input: Types.VerifyCbwTargetMutationVariables,
   ): Promise<Types.VerifyCbwTargetMutation> {
     const mutation = await this._service.verifyCbwTarget(input);
+    NotifiError.throwIfPayloadError(mutation.verifyCbwTarget);
     return mutation;
   }
 
@@ -297,6 +303,7 @@ export class NotifiFrontendClient {
     input: Types.VerifyXmtpTargetViaXip42MutationVariables,
   ): Promise<Types.VerifyXmtpTargetViaXip42Mutation> {
     const mutation = await this._service.verifyXmtpTargetViaXip42(input);
+    NotifiError.throwIfPayloadError(mutation.verifyXmtpTargetViaXip42);
     return mutation;
   }
 
@@ -304,6 +311,7 @@ export class NotifiFrontendClient {
     input: Types.CreateWebPushTargetMutationVariables,
   ): Promise<Types.CreateWebPushTargetMutation> {
     const mutation = await this._service.createWebPushTarget(input);
+    NotifiError.throwIfPayloadError(mutation.createWebPushTarget);
     return mutation;
   }
 
@@ -311,6 +319,7 @@ export class NotifiFrontendClient {
     input: Types.UpdateWebPushTargetMutationVariables,
   ): Promise<Types.UpdateWebPushTargetMutation> {
     const mutation = await this._service.updateWebPushTarget(input);
+    NotifiError.throwIfPayloadError(mutation.updateWebPushTarget);
     return mutation;
   }
 
@@ -318,6 +327,7 @@ export class NotifiFrontendClient {
     input: Types.DeleteWebPushTargetMutationVariables,
   ): Promise<Types.DeleteWebPushTargetMutation> {
     const mutation = await this._service.deleteWebPushTarget(input);
+    NotifiError.throwIfPayloadError(mutation.deleteWebPushTarget);
     return mutation;
   }
 
