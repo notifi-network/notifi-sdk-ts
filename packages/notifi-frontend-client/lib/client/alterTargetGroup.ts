@@ -76,7 +76,7 @@ export const alterTargetGroupImpl = async (
   // Collect pending deletes
   const pendingDeletes = results
     .map((r) => r.pendingDelete)
-    .filter((d): d is { target: NotifiTarget; id: string } => !!d);
+    .filter((d): d is NonNullable<UpdateTargetsResult['pendingDelete']> => !!d);
 
   if (
     areIdsEqual(emailTargetIds, existingTargetGroup.emailTargets ?? []) &&
@@ -142,7 +142,7 @@ const updateTargets = async (
   }
 
   let targets:
-    | (({ id: string } & Record<string, unknown>) | undefined)[]
+    | ReadonlyArray<({ id: string } & Record<string, unknown>) | undefined>
     | undefined;
 
   switch (type) {
