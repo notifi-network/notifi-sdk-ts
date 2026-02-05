@@ -142,9 +142,11 @@ export const TargetListItemToggle: React.FC<TargetListItemToggleProps> = (
             type: 'cta',
             message: 'Remove',
             onClick: async () => {
+              const targetId = toggleTargetData.data?.id;
               renewTargetGroup({
                 target: props.target as ToggleTarget,
                 value: false,
+                targetId,
               });
             },
           }}
