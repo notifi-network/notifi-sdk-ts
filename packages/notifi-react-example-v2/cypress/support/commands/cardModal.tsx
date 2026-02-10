@@ -3,6 +3,7 @@ import {
   envUrl,
   instantiateFrontendClient,
 } from '@notifi-network/notifi-frontend-client';
+import { Types } from '@notifi-network/notifi-graphql';
 import {
   NotifiCardModal,
   NotifiCardModalProps,
@@ -21,6 +22,18 @@ export type TargetGroup = {
   discordId?: string;
   slackId?: string;
 };
+
+export type OverrideTargetGroupOptions = {
+  /** Whether the target group is empty (backward compatible parameter) */
+  isEmpty?: boolean;
+  /** Email targets array */
+  emailTargets?: Types.EmailTargetFragmentFragment[];
+  /** Telegram targets array */
+  telegramTargets?: Types.TelegramTargetFragmentFragment[];
+  /** Slack channel targets array */
+  slackChannelTargets?: Types.SlackChannelTargetFragmentFragment[];
+};
+
 export const getConnectedWallet = (isRandomMnemonic?: boolean) => {
   const env = Cypress.env('ENV');
   const mnemonic = isRandomMnemonic
@@ -92,36 +105,42 @@ export const overrideCardConfig = (items: Record<string, any>) => {
   });
 };
 
-export const overrideTargetGroup = (isEmpty?: boolean) => {
-  const dummyTargetGroup =
-    (isEmpty ?? true)
-      ? {
-          id: 'id',
-          name: 'Default',
-          emailTargets: [],
-          smsTargets: [],
-          telegramTargets: [],
-          discordTargets: [],
-          slackChannelTargets: [],
-          web3Targets: [],
-        }
-      : {
-          id: 'id',
-          name: 'Default',
-          emailTargets: [
-            {
-              emailAddress: 'test@notifi.network',
-              id: 'id',
-              isConfirmed: false,
-              name: 'test@notifi.network',
-            },
-          ],
-          smsTargets: [],
-          telegramTargets: [],
-          discordTargets: [],
-          slackChannelTargets: [],
-          web3Targets: [],
-        };
+export const overrideTargetGroup = (
+  options?: OverrideTargetGroupOptions | boolean,
+) => {
+  // Backward compatible: convert boolean to options format
+  const opts: OverrideTargetGroupOptions =
+    typeof options === 'boolean' ? { isEmpty: options } : (options ?? {});
+
+  // Determine if the target group is empty:
+  // 1. If isEmpty is explicitly set, use that value
+  // 2. If no targets are provided, default to true (empty)
+  // 3. If any targets are provided, default to false (not empty)
+  const hasAnyTargets =
+    (opts.emailTargets?.length ?? 0) > 0 ||
+    (opts.telegramTargets?.length ?? 0) > 0 ||
+    (opts.slackChannelTargets?.length ?? 0) > 0;
+  const isEmpty = opts.isEmpty ?? !hasAnyTargets;
+
+  const dummyTargetGroup = {
+    id: 'id',
+    name: 'Default',
+    emailTargets: isEmpty
+      ? (opts.emailTargets ?? [])
+      : (opts.emailTargets ?? [
+          {
+            emailAddress: 'test@notifi.network',
+            id: 'id',
+            isConfirmed: false,
+            name: 'test@notifi.network',
+          },
+        ]),
+    smsTargets: [],
+    telegramTargets: opts.telegramTargets ?? [],
+    discordTargets: [],
+    slackChannelTargets: opts.slackChannelTargets ?? [],
+    web3Targets: [],
+  };
 
   const env = Cypress.env('ENV');
   cy.intercept('POST', envUrl(env), (req) => {

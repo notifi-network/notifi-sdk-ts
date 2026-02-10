@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 import { AuthParams } from '@notifi-network/notifi-frontend-client';
 
-import { TargetGroup } from './cardModal';
+import { OverrideTargetGroupOptions, TargetGroup } from './cardModal';
 import './cardModal';
 import { PreActionMetadata } from './smartLink';
 import './smartLink';
@@ -14,7 +14,7 @@ declare global {
       updateTargetGroup(targetGroup?: TargetGroup): Promise<void>;
       mountCardModal(isRandomMnemonic?: boolean): void;
       overrideCardConfig(items: Record<string, any>): void;
-      overrideTargetGroup(isEmpty?: boolean): void;
+      overrideTargetGroup(options?: OverrideTargetGroupOptions | boolean): void;
       /* ⬇ NotifiSmartLink commands */
       mountSmartLink(
         blockchainType: AuthParams['walletBlockchain'],
