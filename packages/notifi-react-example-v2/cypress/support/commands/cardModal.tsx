@@ -28,6 +28,8 @@ export type OverrideTargetGroupOptions = {
   isEmpty?: boolean;
   /** Email targets array */
   emailTargets?: Types.EmailTargetFragmentFragment[];
+  /** SMS targets array */
+  smsTargets?: Types.SmsTargetFragmentFragment[];
   /** Telegram targets array */
   telegramTargets?: Types.TelegramTargetFragmentFragment[];
   /** Slack channel targets array */
@@ -118,6 +120,7 @@ export const overrideTargetGroup = (
   // 3. If any targets are provided, default to false (not empty)
   const hasAnyTargets =
     (opts.emailTargets?.length ?? 0) > 0 ||
+    (opts.smsTargets?.length ?? 0) > 0 ||
     (opts.telegramTargets?.length ?? 0) > 0 ||
     (opts.slackChannelTargets?.length ?? 0) > 0;
   const isEmpty = opts.isEmpty ?? !hasAnyTargets;
@@ -135,7 +138,7 @@ export const overrideTargetGroup = (
             name: 'test@notifi.network',
           },
         ]),
-    smsTargets: [],
+    smsTargets: opts.smsTargets ?? [],
     telegramTargets: opts.telegramTargets ?? [],
     discordTargets: [],
     slackChannelTargets: opts.slackChannelTargets ?? [],

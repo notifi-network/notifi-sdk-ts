@@ -4,7 +4,12 @@ import {
   objectKeys,
 } from '@notifi-network/notifi-frontend-client';
 
-import { aliasMutation, aliasQuery, getTopicList } from '../utils';
+import {
+  aliasMutation,
+  aliasQuery,
+  getTopicList,
+  hasOperationName,
+} from '../utils';
 
 describe('NotifiCardModal First Time User Test', () => {
   beforeEach(() => {
@@ -245,6 +250,9 @@ describe('NotifiCardModal Inbox Test', () => {
     cy.intercept('POST', envUrl(env), (req) =>
       aliasMutation(req, 'createFusionAlerts'),
     );
+    cy.intercept('POST', envUrl(env), (req) =>
+      aliasMutation(req, 'deleteTelegramTarget'),
+    );
   });
 
   it('INBOX flow - History view', () => {
@@ -340,5 +348,191 @@ describe('NotifiCardModal Inbox Test', () => {
       .eq(1)
       .click();
     cy.get('.notifi-target-state-banner-verify').should('exist');
+  });
+
+  it('INBOX flow - Config view: remove telegram target', () => {
+    const env = Cypress.env('ENV');
+
+    // Define target data for consistent mocking
+    // Using SMS + Telegram combination (not Email) to avoid sedning additional verification requestion by new email registration
+    const telegramTarget = {
+      id: 'telegram-target-id-123',
+      isConfirmed: true,
+      name: 'Default',
+      telegramId: '@testuser',
+    };
+    const smsTarget = {
+      id: 'sms-target-id-456',
+      isConfirmed: true,
+      name: 'Default',
+      phoneNumber: '+12025551234',
+    };
+    const dummyTargetGroup = {
+      id: 'target-group-id',
+      name: 'Default',
+      emailTargets: [],
+      smsTargets: [smsTarget],
+      telegramTargets: [telegramTarget],
+      discordTargets: [],
+      slackChannelTargets: [],
+      web3Targets: [],
+    };
+
+    // Override targetGroup with sms and telegram targets - MUST call before mountCardModal
+    // so that intercept is registered before any requests are made
+    // NOTE: Need at least 2 verified targets for Remove button to be available
+    // (due to hasValidTargetMoreThan(targetData, 1) check in useTargetListItem.tsx)
+    cy.overrideTargetGroup({
+      smsTargets: [smsTarget],
+      telegramTargets: [telegramTarget],
+    });
+    // Override cardConfig to enable sms and telegram - MUST call before mountCardModal
+    cy.overrideCardConfig({
+      contactInfo: {
+        email: { active: false },
+        sms: { active: true },
+        telegram: { active: true },
+        discord: { active: false },
+        slack: { active: false },
+      },
+    });
+
+    // IMPORTANT: Register this intercept AFTER overrideTargetGroup so it has higher priority
+    // This single intercept handles all the GraphQL operations needed for delete flow
+    cy.intercept('POST', envUrl(env), (req) => {
+      // Mock fetchFusionData - returns the target group with telegram and sms targets
+      // This intercept has higher priority than overrideTargetGroup's intercept
+      if (hasOperationName(req, 'fetchFusionData')) {
+        aliasQuery(req, 'fetchFusionData');
+        req.reply({
+          data: {
+            targetGroup: [dummyTargetGroup],
+            alerts: [],
+            connectedWallets: [],
+          },
+        });
+        return;
+      }
+
+      // Mock getTargetGroups - returns the target group with telegram and sms targets
+      if (hasOperationName(req, 'getTargetGroups')) {
+        req.alias = 'gqlGetTargetGroupsQuery';
+        req.reply({
+          data: {
+            targetGroup: [dummyTargetGroup],
+          },
+        });
+        return;
+      }
+
+      // Mock getTelegramTargets - returns the telegram target (needed for delete check)
+      if (hasOperationName(req, 'getTelegramTargets')) {
+        req.alias = 'gqlGetTelegramTargetsQuery';
+        req.reply({
+          data: {
+            telegramTarget: [telegramTarget],
+          },
+        });
+        return;
+      }
+
+      // Mock getSmsTargets - returns the sms target
+      if (hasOperationName(req, 'getSmsTargets')) {
+        req.alias = 'gqlGetSmsTargetsQuery';
+        req.reply({
+          data: {
+            smsTarget: [smsTarget],
+          },
+        });
+        return;
+      }
+
+      // Mock updateTargetGroup - returns the updated target group (without telegram)
+      if (hasOperationName(req, 'updateTargetGroup')) {
+        req.alias = 'gqlUpdateTargetGroupMutation';
+        req.reply({
+          data: {
+            updateTargetGroup: {
+              ...dummyTargetGroup,
+              telegramTargets: [], // Telegram removed
+            },
+          },
+        });
+        return;
+      }
+
+      // Mock deleteTelegramTarget - returns the deleted target
+      if (hasOperationName(req, 'deleteTelegramTarget')) {
+        req.alias = 'gqlDeleteTelegramTargetMutation';
+        req.reply({
+          data: {
+            deleteTelegramTarget: telegramTarget,
+          },
+        });
+        return;
+      }
+    });
+
+    cy.mountCardModal();
+    cy.wait('@gqlFindTenantConfigQuery');
+
+    cy.get('[data-cy="notifi-connect-button"]').should('exist').click();
+    // #1 - Connect view (Connect.tsx): Click on connect button, the following queries should be made
+    cy.wait('@gqlBeginLogInWithWeb3Mutation');
+    cy.wait('@gqlCompleteLogInWithWeb3Mutation');
+    cy.wait('@gqlFetchFusionDataQuery');
+    // NOTE: Initial fetch after logging in
+    cy.wait('@gqlGetUserSettingsQuery');
+    cy.wait('@gqlGetFusionNotificationHistoryQuery');
+    cy.wait('@gqlGetUnreadNotificationHistoryCountQuery');
+    cy.wait('@gqlFetchFusionDataQuery'); // --> NotifiTargetContext
+    cy.wait('@gqlFetchFusionDataQuery'); // --> NotifiTopicContext
+
+    // #2 - Navigate to Config view (gear tab) and expand target list
+    cy.get('[data-cy="notifi-inbox-nav-tabs"]')
+      .should('exist')
+      .children('div')
+      .eq(1)
+      .click();
+    cy.get('.notifi-topic-list').should('exist');
+    cy.get('.notifi-target-state-banner:visible').should('exist').click();
+
+    // #3 - Click Remove button on telegram target
+    // Wait for target list to be fully rendered with correct data
+    cy.get('.notifi-target-list-item').should('exist');
+
+    // Wait for telegram target to show its username (indicates data is loaded)
+    cy.contains('@testuser').should('exist');
+
+    // Find the telegram target list item and click its Remove button
+    // The telegram target item should contain '@testuser'
+    cy.contains('.notifi-target-list-item', '@testuser')
+      .find('.notifi-target-list-item-remove')
+      .click();
+
+    // Wait for the alterTargetGroup flow to start
+    // The flow is: getTargetGroups -> (get*Targets for non-remove targets) -> (updateTargetGroup if needed) -> deleteTelegramTarget
+    // NOTE: Only targets with type 'ensure' or 'delete' will call get*Targets
+    // - email: empty -> 'remove' -> NO query
+    // - phoneNumber: has value -> 'ensure' -> calls getSmsTargets
+    // - telegram: delete operation -> 'delete' -> calls getTelegramTargets
+    // - discord: false -> 'remove' -> NO query
+    // - slack: false -> 'remove' -> NO query
+    // - wallet: false -> 'remove' -> NO query
+    cy.wait('@gqlGetTargetGroupsQuery');
+    cy.wait('@gqlGetSmsTargetsQuery');
+    cy.wait('@gqlGetTelegramTargetsQuery');
+
+    // Note: updateTargetGroup may or may not be called depending on areIdsEqual check
+    // If all target IDs match, it skips updateTargetGroup and goes directly to delete
+    // For now, we just wait for deleteTelegramTarget directly
+
+    // #4 - Verify deleteTelegramTarget mutation was called with correct targetId
+    cy.wait('@gqlDeleteTelegramTargetMutation', { timeout: 30000 }).then(
+      ({ request }) => {
+        expect(request.body.variables).to.have.property('id');
+        expect(request.body.variables.id).to.equal('telegram-target-id-123');
+      },
+    );
   });
 });
