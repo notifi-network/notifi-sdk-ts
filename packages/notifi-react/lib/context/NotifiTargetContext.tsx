@@ -449,11 +449,8 @@ export const NotifiTargetContextProvider: FC<
           let updateParam: UpdateTargetsParam;
           if (value) {
             updateParam = { type: 'ensure', name: 'Default' };
-          } else if (
-            targetId &&
-            (target === 'telegram' || target === 'slack')
-          ) {
-            // Phase 1: telegram and slack use delete
+          } else if (targetId) {
+            // All toggle targets with targetId use delete
             updateParam = { type: 'delete', id: targetId };
           } else {
             updateParam = { type: 'remove' };
