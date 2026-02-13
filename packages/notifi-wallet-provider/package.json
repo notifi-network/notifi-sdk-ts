@@ -35,7 +35,7 @@
     "url": "https://github.com/notifi-network/notifi-sdk-ts/issues"
   },
   "dependencies": {
-    "@burnt-labs/abstraxion": "^1.0.0-alpha.45",
+    "@burnt-labs/abstraxion": "1.0.0-alpha.58",
     "@keplr-wallet/types": "^0.12.206",
     "@solana/web3.js": "^1.47.1",
     "@tanstack/react-query": "5.84.1",
