@@ -44,7 +44,7 @@
     "buffer": "^6.0.3",
     "ethers": "^6.11.1",
     "viem": "2.33.2",
-    "wagmi": "2.16.1"
+    "wagmi": "2.19.5"
   },
   "peerDependencies": {
     "react": "^17.0.2 || ^18.0",
