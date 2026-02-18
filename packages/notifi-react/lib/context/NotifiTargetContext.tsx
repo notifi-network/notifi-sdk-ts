@@ -120,6 +120,7 @@ type FormTargetRenewArgs = {
 type ToggleTargetRenewArgs = {
   target: ToggleTarget;
   value: boolean;
+  targetId?: string; // Used for delete operation
 };
 
 type TargetRenewArgs = FormTargetRenewArgs | ToggleTargetRenewArgs;
@@ -443,11 +444,21 @@ export const NotifiTargetContextProvider: FC<
             [target]: formValue,
           };
         } else if (isToggleTargetRenewArgs(singleTargetRenewArgs)) {
+          const { targetId } = singleTargetRenewArgs;
+
+          let updateParam: UpdateTargetsParam;
+          if (value) {
+            updateParam = { type: 'ensure', name: 'Default' };
+          } else if (targetId) {
+            // All toggle targets with targetId use delete
+            updateParam = { type: 'delete', id: targetId };
+          } else {
+            updateParam = { type: 'remove' };
+          }
+
           data = {
             ...data,
-            [target]: value
-              ? { type: 'ensure', name: 'Default' }
-              : { type: 'remove' },
+            [target]: updateParam,
           };
         }
       }

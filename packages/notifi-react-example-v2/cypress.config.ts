@@ -26,7 +26,7 @@ export default defineConfig({
     SMARTLINK_ID: '1e74002c84f3445480c54424a145a62a',
   },
   retries: {
-    runMode: 2,
+    runMode: 0, // Temporarily disabled for faster debugging
     openMode: 0,
   },
 });

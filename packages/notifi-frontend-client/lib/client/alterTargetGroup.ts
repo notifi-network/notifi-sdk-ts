@@ -13,6 +13,11 @@ export type UpdateTargetsParam =
   | { type: 'delete'; id: string }
   | { type: 'ensure'; name: string };
 
+type UpdateTargetsResult = {
+  targetIds: string[];
+  pendingDelete?: { target: NotifiTarget; id: string };
+};
+
 /** @description by default, if "undefined", remove the target from targetGroup  */
 export const alterTargetGroupImpl = async (
   alterTargetGroupParams: AlterTargetGroupParams,
@@ -27,14 +32,7 @@ export const alterTargetGroupImpl = async (
 
   const removeTargetParam: UpdateTargetsParam = { type: 'remove' };
 
-  const [
-    emailTargetIds,
-    smsTargetIds,
-    telegramTargetIds,
-    discordTargetIds,
-    slackChannelTargetIds,
-    walletTargetIds,
-  ] = await Promise.all([
+  const results = await Promise.all([
     updateTargets(
       'email',
       alterTargetGroupParams.email ?? removeTargetParam,
@@ -67,6 +65,19 @@ export const alterTargetGroupImpl = async (
     ),
   ]);
 
+  // Extract targetIds from results
+  const emailTargetIds = results[0].targetIds;
+  const smsTargetIds = results[1].targetIds;
+  const telegramTargetIds = results[2].targetIds;
+  const discordTargetIds = results[3].targetIds;
+  const slackChannelTargetIds = results[4].targetIds;
+  const walletTargetIds = results[5].targetIds;
+
+  // Collect pending deletes
+  const pendingDeletes = results
+    .map((r) => r.pendingDelete)
+    .filter((d): d is NonNullable<UpdateTargetsResult['pendingDelete']> => !!d);
+
   if (
     areIdsEqual(emailTargetIds, existingTargetGroup.emailTargets ?? []) &&
     areIdsEqual(smsTargetIds, existingTargetGroup.smsTargets ?? []) &&
@@ -78,6 +89,16 @@ export const alterTargetGroupImpl = async (
     ) &&
     areIdsEqual(walletTargetIds, existingTargetGroup.web3Targets ?? [])
   ) {
+    // Execute pending deletes even if target group doesn't need update
+    // (target is already removed from group, now we can delete it)
+    for (const { target, id } of pendingDeletes) {
+      await alterTarget({
+        type: 'delete',
+        id,
+        target,
+        service,
+      });
+    }
     return existingTargetGroup;
   }
 
@@ -97,6 +118,17 @@ export const alterTargetGroupImpl = async (
     throw new Error('Failed to update target group');
   }
 
+  // Execute pending deletes after target group is updated
+  // (targets have been removed from group, now we can delete them)
+  for (const { target, id } of pendingDeletes) {
+    await alterTarget({
+      type: 'delete',
+      id,
+      target,
+      service,
+    });
+  }
+
   return updated;
 };
 
@@ -104,13 +136,13 @@ const updateTargets = async (
   type: NotifiTarget,
   updateTargetInGroup: UpdateTargetsParam,
   service: NotifiService,
-): Promise<string[]> => {
+): Promise<UpdateTargetsResult> => {
   if (updateTargetInGroup.type === 'remove') {
-    return [];
+    return { targetIds: [] };
   }
 
   let targets:
-    | (({ id: string } & Record<string, unknown>) | undefined)[]
+    | ReadonlyArray<({ id: string } & Record<string, unknown>) | undefined>
     | undefined;
 
   switch (type) {
@@ -139,18 +171,16 @@ const updateTargets = async (
     updateTargetInGroup.type === 'delete' &&
     targets?.find((it) => it?.id === updateTargetInGroup.id)
   ) {
-    await alterTarget({
-      type: updateTargetInGroup.type,
-      id: updateTargetInGroup.id,
-      target: type,
-      service: service,
-    });
-    return [];
+    // Don't delete here! Return pending delete info, will be executed after updateTargetGroup
+    return {
+      targetIds: [],
+      pendingDelete: { target: type, id: updateTargetInGroup.id },
+    };
   }
   if (updateTargetInGroup.type === 'ensure') {
     const target = targets?.find((it) => it?.name === updateTargetInGroup.name);
     if (target) {
-      return [target.id];
+      return { targetIds: [target.id] };
     }
     const created = await alterTarget({
       type: 'create',
@@ -159,8 +189,8 @@ const updateTargets = async (
       service: service,
     });
     if (!created) throw new Error('Failed to create target');
-    return [created];
+    return { targetIds: [created] };
   }
   /* Remove from Group (type === 'remove') */
-  return [];
+  return { targetIds: [] };
 };
