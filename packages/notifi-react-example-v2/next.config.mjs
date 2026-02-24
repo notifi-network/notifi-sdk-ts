@@ -15,6 +15,12 @@ let nextConfig = {
   webpack: (config, options) => {
     /** ⬇ For WalletConnect SSR: https://docs.walletconnect.com/web3modal/nextjs/about#extra-configuration */
     config.externals.push('pino-pretty', 'lokijs', 'encoding');
+    /** ⬇ Suppress React Native module warnings from MetaMask SDK */
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      'react-native': false,
+      '@react-native-async-storage/async-storage': false,
+    };
     /** ⬇ For @xmpt/sdk (external bindings wasm files) - Nextjs version < '^14.2.0'   */
     // config.plugins.push(
     //   new CopyPlugin({
@@ -49,6 +55,12 @@ if (args.includes('build')) {
     webpack: (config) => {
       /** ⬇ For WalletConnect SSR: https://docs.walletconnect.com/web3modal/nextjs/about#extra-configuration */
       config.externals.push('pino-pretty', 'lokijs', 'encoding');
+      /** ⬇ Suppress React Native module warnings from MetaMask SDK */
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        'react-native': false,
+        '@react-native-async-storage/async-storage': false,
+      };
       /** ⬇ For @xmpt/sdk (external bindings wasm files) - Nextjs version < '^14.2.0'   */
       // config.plugins.push(
       //   new CopyPlugin({
