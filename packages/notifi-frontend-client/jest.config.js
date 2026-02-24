@@ -8,17 +8,17 @@ module.exports = {
   ],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   testTimeout: 10000, // 10 seconds
+  // Transform ESM modules from @cosmjs, @scure, @noble
   transformIgnorePatterns: ['node_modules/(?!(@cosmjs|@scure|@noble)/)'],
-  globals: {
-    'ts-jest': {
-      tsconfig: {
-        allowJs: true,
-        esModuleInterop: true,
+  transform: {
+    '^.+\\.(t|j)sx?$': [
+      'ts-jest',
+      {
+        tsconfig: {
+          allowJs: true,
+          esModuleInterop: true,
+        },
       },
-    },
-  },
-  moduleNameMapper: {
-    '^@scure/(.*)$': '<rootDir>/node_modules/@scure/$1',
-    '^@noble/(.*)$': '<rootDir>/node_modules/@noble/$1',
+    ],
   },
 };
