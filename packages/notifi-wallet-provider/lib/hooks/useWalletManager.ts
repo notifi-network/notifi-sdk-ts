@@ -1,4 +1,3 @@
-import { useModal } from '@burnt-labs/abstraxion';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { WalletOptions } from '../context/NotifiWallets';
@@ -14,11 +13,6 @@ export const useWalletManager = (walletOptions?: WalletOptions) => {
   );
   const [error, setError] = useState<Error | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  const [, setShowModal]: [
-    boolean,
-    React.Dispatch<React.SetStateAction<boolean>>,
-  ] = useModal();
 
   const isReloaded = useRef(false);
 
@@ -55,7 +49,6 @@ export const useWalletManager = (walletOptions?: WalletOptions) => {
         Object.keys(wallets).includes(walletName) &&
         wallets[walletName].isInstalled &&
         !selectedWallet &&
-        walletName !== 'xion' &&
         !isReloaded.current
       ) {
         wallets[walletName].connect();
@@ -70,6 +63,5 @@ export const useWalletManager = (walletOptions?: WalletOptions) => {
     wallets,
     error,
     isLoading,
-    setShowModal,
   };
 };

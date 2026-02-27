@@ -20,7 +20,6 @@ import {
   type WagmiWalletHookType,
   useWagmiWallet,
 } from '../hooks/useWagmiWallet';
-import { type XionWalletHookType, useXion } from '../hooks/useXion';
 import { type YoroiWalletHookType, useYoroi } from '../hooks/useYoroi';
 import { Wallets } from '../types';
 import {
@@ -101,12 +100,6 @@ export const createSpecialWalletHooks = (params: WalletHookParams) => {
       throwError,
       selectWallet,
     ) as PhantomWalletHookType,
-    xion: useXion(
-      setIsLoading,
-      throwError,
-      selectWallet,
-      'xion',
-    ) as XionWalletHookType,
     lace: useLace(setIsLoading, throwError, selectWallet) as LaceWalletHookType,
     eternl: useEternl(
       setIsLoading,
