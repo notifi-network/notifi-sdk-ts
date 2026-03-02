@@ -4,6 +4,7 @@ import {
   Config,
   useAccount,
   useConnect,
+  useConnectors,
   useDisconnect,
   useSendTransaction,
   useSignMessage,
@@ -40,9 +41,9 @@ export const useWagmiWallet = (
   const { signMessageAsync } = useSignMessage();
   const { sendTransactionAsync } = useSendTransaction();
   const { address, isConnected } = useAccount();
+  const connectors = useConnectors();
   const {
     connect,
-    connectors,
     error: connectError,
     isPending: isConnecting,
   } = useConnect();

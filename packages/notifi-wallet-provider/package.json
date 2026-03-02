@@ -35,15 +35,17 @@
     "url": "https://github.com/notifi-network/notifi-sdk-ts/issues"
   },
   "dependencies": {
+    "@coinbase/wallet-sdk": "^4.3.6",
     "@keplr-wallet/types": "^0.12.206",
     "@solana/web3.js": "^1.47.1",
     "@tanstack/react-query": "5.84.1",
+    "@walletconnect/ethereum-provider": "^2.23.6",
     "bech32": "^2.0.0",
     "bech32-converting": "^1.0.9",
     "buffer": "^6.0.3",
     "ethers": "^6.11.1",
     "viem": "^2.45.2",
-    "wagmi": "2.19.5"
+    "wagmi": "^3.5.0"
   },
   "peerDependencies": {
     "react": "^17.0.2 || ^18.0",
