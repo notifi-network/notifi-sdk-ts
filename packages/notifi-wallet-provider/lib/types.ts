@@ -34,16 +34,11 @@ export type WalletKeysBase = {
   base58: string;
   base64: string;
   hex: string;
-  grantee: string; //TODO: specifically for Xion now, make it generic pattern, checking the format
   cbor: string; // CBOR-encoded address (hex string) used by Cardano/Lace
 };
 
 export type MetamaskWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'hex'>; // Adoptable to all EVM wallets
 export type KeplrWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'base64'>;
-export type XionWalletKeys = PickKeys<
-  WalletKeysBase,
-  'bech32' | 'base64' | 'grantee'
->;
 export type PhantomWalletKeys = PickKeys<WalletKeysBase, 'base58'>;
 export type LaceWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'cbor'>;
 export type EternlWalletKeys = LaceWalletKeys;
@@ -55,7 +50,6 @@ export type CtrlWalletKeys = LaceWalletKeys;
 export type WalletKeys =
   | MetamaskWalletKeys
   | KeplrWalletKeys
-  | XionWalletKeys
   | PhantomWalletKeys
   | LaceWalletKeys;
 
@@ -65,10 +59,9 @@ export abstract class NotifiWallet {
   abstract signArbitrary?:
     | KeplrSignMessage
     | MetamaskSignMessage
-    | XionSignMessage
     | PhantomSignMessage
     | LaceSignMessage;
-  // TODO: Impl sendTransaction for Keplr and Xion
+  // TODO: Impl sendTransaction for Keplr
   abstract sendTransaction?: EvmSendTransaction;
   abstract connect?: () => Promise<Partial<WalletKeysBase> | null>;
   abstract disconnect?: () => void;
@@ -119,24 +112,12 @@ export type KeplrSignMessage = (
   message: string | Uint8Array,
 ) => Promise<StdSignature | undefined>;
 
-export type XionSignMessage = (message: string) => Promise<string | undefined>;
-
 export class KeplrWallet implements NotifiWallet {
   constructor(
     public isInstalled: boolean,
     public walletKeys: KeplrWalletKeys | null,
     public signArbitrary: KeplrSignMessage,
     public connect: () => Promise<KeplrWalletKeys | null>,
-    public disconnect: () => void,
-    public websiteURL: string,
-  ) {}
-}
-export class XionWallet implements NotifiWallet {
-  constructor(
-    public isInstalled: boolean,
-    public walletKeys: XionWalletKeys | null,
-    public signArbitrary: XionSignMessage,
-    public connect: () => Promise<null>,
     public disconnect: () => void,
     public websiteURL: string,
   ) {}
@@ -186,7 +167,6 @@ export type Wallets = {
   okx: EvmWallet;
   binance: BinanceWallet;
   walletconnect: EvmWallet;
-  xion: XionWallet;
   phantom: PhantomWallet;
   lace: LaceWallet;
   eternl: LaceWallet;

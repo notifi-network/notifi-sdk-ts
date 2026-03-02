@@ -8,7 +8,6 @@ import { type NufiWalletHookType } from '../hooks/useNufi';
 import { type OkxCardanoWalletHookType } from '../hooks/useOkxCardano';
 import { PhantomWalletHookType } from '../hooks/usePhantom';
 import { type WagmiWalletHookType } from '../hooks/useWagmiWallet';
-import { type XionWalletHookType } from '../hooks/useXion';
 import { type YoroiWalletHookType } from '../hooks/useYoroi';
 import {
   BinanceWallet,
@@ -16,7 +15,6 @@ import {
   KeplrWallet,
   LaceWallet,
   PhantomWallet,
-  XionWallet,
 } from '../types';
 
 // Generic EVM wallet creation function
@@ -57,18 +55,6 @@ export const createKeplrWallet = (hook: KeplrWalletHookType): KeplrWallet => {
     hook.signArbitraryKeplr,
     hook.connectKeplr,
     hook.disconnectKeplr,
-    hook.websiteURL,
-  );
-};
-
-// Xion wallet creation function
-export const createXionWallet = (hook: XionWalletHookType): XionWallet => {
-  return new XionWallet(
-    hook.isWalletInstalled,
-    hook.walletKeys,
-    hook.signArbitrary,
-    hook.connectWallet,
-    hook.disconnectWallet,
     hook.websiteURL,
   );
 };

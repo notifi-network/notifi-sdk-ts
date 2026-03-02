@@ -1,7 +1,7 @@
 {
   "name": "@notifi-network/notifi-wallet-provider",
   "version": "7.6.0",
-  "description": "> TODO: description",
+  "description": "React provider for unified multi-chain wallet integration in Notifi-powered applications",
   "author": "eric-notifi <eric.lee@notifi.network>",
   "homepage": "https://github.com/notifi-network/notifi-sdk-ts",
   "license": "MIT",
@@ -35,7 +35,6 @@
     "url": "https://github.com/notifi-network/notifi-sdk-ts/issues"
   },
   "dependencies": {
-    "@burnt-labs/abstraxion": "1.0.0-alpha.58",
     "@keplr-wallet/types": "^0.12.206",
     "@solana/web3.js": "^1.47.1",
     "@tanstack/react-query": "5.84.1",
