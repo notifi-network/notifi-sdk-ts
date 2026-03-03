@@ -5,7 +5,6 @@ import {
   NotifiWalletStorage,
   PhantomWalletKeys,
   Wallets,
-  XionWalletKeys,
 } from '../types';
 
 const localStorageKey = 'NotifiWalletStorage';
@@ -16,23 +15,21 @@ export const setWalletKeysToLocalStorage = <T extends keyof Wallets>(
     ? MetamaskWalletKeys
     : T extends 'keplr'
       ? KeplrWalletKeys
-      : T extends 'xion'
-        ? XionWalletKeys
-        : T extends 'phantom'
-          ? PhantomWalletKeys
-          : T extends 'lace'
+      : T extends 'phantom'
+        ? PhantomWalletKeys
+        : T extends 'lace'
+          ? LaceWalletKeys
+          : T extends 'eternl'
             ? LaceWalletKeys
-            : T extends 'eternl'
+            : T extends 'nufi'
               ? LaceWalletKeys
-              : T extends 'nufi'
+              : T extends 'okx-cardano'
                 ? LaceWalletKeys
-                : T extends 'okx-cardano'
+                : T extends 'yoroi'
                   ? LaceWalletKeys
-                  : T extends 'yoroi'
+                  : T extends 'ctrl'
                     ? LaceWalletKeys
-                    : T extends 'ctrl'
-                      ? LaceWalletKeys
-                      : never,
+                    : never,
 ) => {
   const storageWallet: NotifiWalletStorage = {
     walletName: wallet,

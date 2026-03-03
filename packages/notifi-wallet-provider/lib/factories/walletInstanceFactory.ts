@@ -11,7 +11,6 @@ import {
   createNufiWallet,
   createOkxCardanoWallet,
   createPhantomWallet,
-  createXionWallet,
   createYoroiWallet,
 } from './walletCreators';
 
@@ -71,9 +70,6 @@ export const createWallets = (hooks: WalletHooks): Wallets => {
   }
   if (hooks.keplr) {
     wallets.keplr = createKeplrWallet(hooks.keplr);
-  }
-  if (hooks.xion) {
-    wallets.xion = createXionWallet(hooks.xion);
   }
   if (hooks.phantom) {
     wallets.phantom = createPhantomWallet(hooks.phantom);

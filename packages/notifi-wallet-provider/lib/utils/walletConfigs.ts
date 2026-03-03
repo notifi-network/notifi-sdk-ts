@@ -1,4 +1,4 @@
-export type IntegrationMethod = 'injected' | 'wagmi' | 'native' | 'abstraxion';
+export type IntegrationMethod = 'injected' | 'wagmi' | 'native';
 
 export const BLOCKCHAIN_WALLETS = {
   evm: [
@@ -13,7 +13,6 @@ export const BLOCKCHAIN_WALLETS = {
   solana: ['phantom'] as const,
   cosmos: ['keplr'] as const,
   binance: ['binance'] as const,
-  xion: ['xion'] as const,
   cardano: ['lace', 'eternl', 'nufi', 'okx-cardano', 'yoroi', 'ctrl'] as const,
 } as const;
 
@@ -31,7 +30,6 @@ export const INTEGRATION_WALLETS = {
     'yoroi',
     'ctrl',
   ] as const,
-  abstraxion: ['xion'] as const,
 } as const;
 
 export type InjectedWalletName = (typeof INTEGRATION_WALLETS.injected)[number];

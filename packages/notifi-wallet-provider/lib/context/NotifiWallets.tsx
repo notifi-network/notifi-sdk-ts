@@ -1,10 +1,8 @@
-import { Abstraxion } from '@burnt-labs/abstraxion';
 import React, { PropsWithChildren, createContext } from 'react';
 
 import { useWalletManager } from '../hooks/useWalletManager';
 import { Wallets } from '../types';
 import { NotifiWagmiProvider, NotifiWagmiProviderProps } from './WagmiProvider';
-import { XionProvider } from './XionProvider';
 
 type WalletContextType = {
   selectedWallet: keyof Wallets | null;
@@ -57,11 +55,6 @@ const NotifiWallet: React.FC<NotifiWalletProps> = ({
         isLoading: walletManager.isLoading,
       }}
     >
-      <Abstraxion
-        onClose={() => {
-          walletManager.setShowModal(false);
-        }}
-      />
       {children}
     </WalletContext.Provider>
   );
@@ -78,9 +71,7 @@ export const NotifiWalletProvider: React.FC<NotifiWalletProviderProps> = ({
 }) => {
   return (
     <NotifiWagmiProvider wagmiConfig={wagmiConfig}>
-      <XionProvider>
-        <NotifiWallet walletOptions={walletOptions}>{children}</NotifiWallet>
-      </XionProvider>
+      <NotifiWallet walletOptions={walletOptions}>{children}</NotifiWallet>
     </NotifiWagmiProvider>
   );
 };

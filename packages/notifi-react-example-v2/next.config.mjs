@@ -20,6 +20,8 @@ let nextConfig = {
       ...config.resolve.fallback,
       'react-native': false,
       '@react-native-async-storage/async-storage': false,
+      porto: false,
+      'porto/internal': false,
     };
     /** ⬇ For @xmpt/sdk (external bindings wasm files) - Nextjs version < '^14.2.0'   */
     // config.plugins.push(
@@ -60,6 +62,8 @@ if (args.includes('build')) {
         ...config.resolve.fallback,
         'react-native': false,
         '@react-native-async-storage/async-storage': false,
+        porto: false,
+        'porto/internal': false,
       };
       /** ⬇ For @xmpt/sdk (external bindings wasm files) - Nextjs version < '^14.2.0'   */
       // config.plugins.push(
