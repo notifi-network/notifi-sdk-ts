@@ -4,10 +4,7 @@ import type { WalletOptions } from '../context/NotifiWallets';
 import { type BinanceWalletHookType, useBinance } from '../hooks/useBinance';
 import { type CtrlWalletHookType, useCtrl } from '../hooks/useCtrl';
 import { type EternlWalletHookType, useEternl } from '../hooks/useEternl';
-import {
-  type InjectedWalletHookType,
-  useInjectedWallet,
-} from '../hooks/useInjectedWallet';
+import { useInjectedWallet } from '../hooks/useInjectedWallet';
 import { type KeplrWalletHookType, useKeplr } from '../hooks/useKeplr';
 import { type LaceWalletHookType, useLace } from '../hooks/useLace';
 import { type NufiWalletHookType, useNufi } from '../hooks/useNufi';
@@ -16,17 +13,9 @@ import {
   useOkxCardano,
 } from '../hooks/useOkxCardano';
 import { type PhantomWalletHookType, usePhantom } from '../hooks/usePhantom';
-import {
-  type WagmiWalletHookType,
-  useWagmiWallet,
-} from '../hooks/useWagmiWallet';
+import { useWagmiWallet } from '../hooks/useWagmiWallet';
 import { type YoroiWalletHookType, useYoroi } from '../hooks/useYoroi';
 import { Wallets } from '../types';
-import {
-  INTEGRATION_WALLETS,
-  InjectedWalletName,
-  WagmiWalletName,
-} from '../utils/walletConfigs';
 
 export type WalletHookParams = {
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -39,19 +28,45 @@ export type WalletHookParams = {
 // Create injected wallet hooks
 export const createInjectedWalletHooks = (params: WalletHookParams) => {
   const { setIsLoading, throwError, selectWallet, walletOptions } = params;
-  const hooks: Partial<Record<InjectedWalletName, InjectedWalletHookType>> = {};
+  const evmOptions = walletOptions?.evm;
 
-  INTEGRATION_WALLETS.injected.forEach((walletName) => {
-    hooks[walletName] = useInjectedWallet(
+  return {
+    metamask: useInjectedWallet(
       setIsLoading,
       throwError,
       selectWallet,
-      walletName,
-      walletOptions?.evm,
-    );
-  });
-
-  return hooks;
+      'metamask',
+      evmOptions,
+    ),
+    okx: useInjectedWallet(
+      setIsLoading,
+      throwError,
+      selectWallet,
+      'okx',
+      evmOptions,
+    ),
+    zerion: useInjectedWallet(
+      setIsLoading,
+      throwError,
+      selectWallet,
+      'zerion',
+      evmOptions,
+    ),
+    rabby: useInjectedWallet(
+      setIsLoading,
+      throwError,
+      selectWallet,
+      'rabby',
+      evmOptions,
+    ),
+    rainbow: useInjectedWallet(
+      setIsLoading,
+      throwError,
+      selectWallet,
+      'rainbow',
+      evmOptions,
+    ),
+  };
 };
 
 // Create wagmi wallet hooks
@@ -63,20 +78,26 @@ export const createWagmiWalletHooks = (params: WalletHookParams) => {
     selectedWallet,
     walletOptions,
   } = params;
-  const hooks: Partial<Record<WagmiWalletName, WagmiWalletHookType>> = {};
+  const evmOptions = walletOptions?.evm;
 
-  INTEGRATION_WALLETS.wagmi.forEach((walletName) => {
-    hooks[walletName] = useWagmiWallet(
+  return {
+    walletconnect: useWagmiWallet(
       setIsLoading,
       throwError,
       selectWallet,
       selectedWallet,
-      walletName,
-      walletOptions?.evm,
-    );
-  });
-
-  return hooks;
+      'walletconnect',
+      evmOptions,
+    ),
+    coinbase: useWagmiWallet(
+      setIsLoading,
+      throwError,
+      selectWallet,
+      selectedWallet,
+      'coinbase',
+      evmOptions,
+    ),
+  };
 };
 
 // Create special wallet hooks
