@@ -25,8 +25,8 @@ export type WalletHookParams = {
   walletOptions?: WalletOptions;
 };
 
-// Create injected wallet hooks
-export const createInjectedWalletHooks = (params: WalletHookParams) => {
+// Use injected wallet hooks
+export const useInjectedWalletHooks = (params: WalletHookParams) => {
   const { setIsLoading, throwError, selectWallet, walletOptions } = params;
   const evmOptions = walletOptions?.evm;
 
@@ -69,8 +69,8 @@ export const createInjectedWalletHooks = (params: WalletHookParams) => {
   };
 };
 
-// Create wagmi wallet hooks
-export const createWagmiWalletHooks = (params: WalletHookParams) => {
+// Use wagmi wallet hooks
+export const useWagmiWalletHooks = (params: WalletHookParams) => {
   const {
     setIsLoading,
     throwError,
@@ -100,8 +100,8 @@ export const createWagmiWalletHooks = (params: WalletHookParams) => {
   };
 };
 
-// Create special wallet hooks
-export const createSpecialWalletHooks = (params: WalletHookParams) => {
+// Use special wallet hooks
+export const useSpecialWalletHooks = (params: WalletHookParams) => {
   const { setIsLoading, throwError, selectWallet, walletOptions } = params;
 
   return {
@@ -142,11 +142,11 @@ export const createSpecialWalletHooks = (params: WalletHookParams) => {
   };
 };
 
-// Create all wallet hooks
-export const createWalletHooks = (params: WalletHookParams) => {
-  const injectedHooks = createInjectedWalletHooks(params);
-  const wagmiHooks = createWagmiWalletHooks(params);
-  const specialHooks = createSpecialWalletHooks(params);
+// Compose all wallet hooks
+export const useAllWalletHooks = (params: WalletHookParams) => {
+  const injectedHooks = useInjectedWalletHooks(params);
+  const wagmiHooks = useWagmiWalletHooks(params);
+  const specialHooks = useSpecialWalletHooks(params);
 
   return {
     ...injectedHooks,

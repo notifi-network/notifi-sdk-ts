@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { WalletOptions } from '../context/NotifiWallets';
-import { createWalletHooks, createWallets } from '../factories';
+import { createWallets, useAllWalletHooks } from '../factories';
 import { Wallets } from '../types';
 import { getWalletsFromLocalStorage } from '../utils/localStorageUtils';
 
@@ -28,8 +28,8 @@ export const useWalletManager = (walletOptions?: WalletOptions) => {
     }, durationInMs ?? 5000);
   }, []);
 
-  // Create wallet hooks
-  const walletHooks = createWalletHooks({
+  // Invoke wallet hooks
+  const walletHooks = useAllWalletHooks({
     setIsLoading,
     throwError,
     selectWallet,
