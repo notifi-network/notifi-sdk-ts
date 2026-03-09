@@ -43,12 +43,15 @@ export const cleanWalletsInLocalStorage = () => {
 };
 
 export const getWalletsFromLocalStorage = (): NotifiWalletStorage | null => {
-  const storageWalletRaw = JSON.parse(
-    window.localStorage.getItem(localStorageKey) ?? '{}',
-  );
-  let storageWallet: NotifiWalletStorage | null = null;
-  if ('walletName' in storageWalletRaw) {
-    storageWallet = storageWalletRaw as NotifiWalletStorage;
+  try {
+    const storageWalletRaw = JSON.parse(
+      window.localStorage.getItem(localStorageKey) ?? '{}',
+    );
+    if ('walletName' in storageWalletRaw) {
+      return storageWalletRaw as NotifiWalletStorage;
+    }
+    return null;
+  } catch {
+    return null;
   }
-  return storageWallet;
 };
