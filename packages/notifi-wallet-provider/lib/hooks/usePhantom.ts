@@ -41,7 +41,8 @@ export const usePhantom = (
       .finally(() => loadingHandler(false));
 
     const handleAccountChange = () => {
-      if (!window.phantom) return handlePhantomNotExists('handleAccountChange');
+      if (!window.phantom?.solana)
+        return handlePhantomNotExists('handleAccountChange');
       const walletKeys: PhantomWalletKeys = {
         base58: window.phantom.solana.publicKey?.toBase58() ?? '',
       };
@@ -51,7 +52,7 @@ export const usePhantom = (
   }, []);
 
   const connectPhantom = async (): Promise<PhantomWalletKeys | null> => {
-    if (!window.phantom.solana) {
+    if (!window.phantom?.solana) {
       handlePhantomNotExists('connectPhantom');
       return null;
     }
@@ -67,22 +68,26 @@ export const usePhantom = (
       selectWallet('phantom');
       setWalletKeysPhantom(walletKeys);
       setWalletKeysToLocalStorage('phantom', walletKeys);
-      loadingHandler(false);
       return walletKeys;
     } catch (e) {
       errorHandler(
         new Error('Phantom connection failed, check console for details'),
       );
       console.error(e);
+      return null;
+    } finally {
+      loadingHandler(false);
     }
-    loadingHandler(false);
-    return null;
   };
 
   const signTransactionPhantom = async (
     transaction: Transaction,
     connection: Connection,
   ) => {
+    if (!window.phantom?.solana) {
+      handlePhantomNotExists('signTransactionPhantom');
+      throw new Error('Phantom wallet is not available');
+    }
     const signedTransaction =
       await window.phantom.solana.signTransaction(transaction);
     const signature = await connection.sendRawTransaction(
@@ -92,13 +97,17 @@ export const usePhantom = (
   };
 
   const signHardwareTransactionPhantom = async (transaction: Transaction) => {
+    if (!window.phantom?.solana) {
+      handlePhantomNotExists('signHardwareTransactionPhantom');
+      throw new Error('Phantom wallet is not available');
+    }
     const signedTransaction =
       await window.phantom.solana.signTransaction(transaction);
     return signedTransaction;
   };
 
   const disconnectPhantom = () => {
-    if (!window.phantom.solana)
+    if (!window.phantom?.solana)
       return handlePhantomNotExists('disconnectPhantom');
     window.phantom.solana.disconnect();
     setWalletKeysPhantom(null);
@@ -108,7 +117,7 @@ export const usePhantom = (
 
   const signArbitraryPhantom = useCallback(
     async (message: string | Uint8Array): Promise<Uint8Array> => {
-      if (!window.phantom.solana || !walletKeysPhantom) {
+      if (!window.phantom?.solana || !walletKeysPhantom) {
         handlePhantomNotExists('signArbitraryPhantom');
         return new Uint8Array();
       }
@@ -141,7 +150,7 @@ export const usePhantom = (
 };
 
 const getPhantomFromWindow = async (): Promise<PhantomProvider> => {
-  if (typeof window === 'undefined' || !window.phantom.solana) {
+  if (typeof window === 'undefined' || !window.phantom?.solana) {
     throw new Error(
       'Cannot get phantom without a window | Cannot get phantom solana from window',
     );
@@ -157,7 +166,7 @@ const getPhantomFromWindow = async (): Promise<PhantomProvider> => {
         event.target &&
         (event.target as Document).readyState === 'complete'
       ) {
-        if (window.phantom.solana) {
+        if (window.phantom?.solana) {
           resolve(window.phantom.solana);
         } else {
           reject('Please install the Phantom extension (Solana)');
