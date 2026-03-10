@@ -82,16 +82,16 @@ export const useKeplr = (
       selectWallet('keplr');
       setWalletKeysKeplr(walletKeys);
       setWalletKeysToLocalStorage('keplr', walletKeys);
-      loadingHandler(false);
       return walletKeys;
     } catch (e) {
       errorHandler(
         new Error('Keplr connection failed, check console for details'),
       );
       console.error(e);
+      return null;
+    } finally {
+      loadingHandler(false);
     }
-    loadingHandler(false);
-    return null;
   };
 
   const disconnectKeplr = () => {
@@ -126,8 +126,9 @@ export const useKeplr = (
           new Error('Wallet not signed. Please connect your wallet again.'),
         );
         console.error(e);
+      } finally {
+        loadingHandler(false);
       }
-      loadingHandler(false);
     },
     [walletKeysKeplr],
   );
