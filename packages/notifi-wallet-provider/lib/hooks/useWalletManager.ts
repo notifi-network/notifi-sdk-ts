@@ -5,8 +5,6 @@ import { createWallets, useAllWalletHooks } from '../factories';
 import { Wallets } from '../types';
 import { getWalletsFromLocalStorage } from '../utils/localStorageUtils';
 
-let timer: number | NodeJS.Timeout;
-
 export const useWalletManager = (walletOptions?: WalletOptions) => {
   const [selectedWallet, setSelectedWallet] = useState<keyof Wallets | null>(
     null,
@@ -15,15 +13,16 @@ export const useWalletManager = (walletOptions?: WalletOptions) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const isReloaded = useRef(false);
+  const timerRef = useRef<number | NodeJS.Timeout>();
 
   const selectWallet = useCallback((wallet: keyof Wallets | null) => {
     setSelectedWallet(wallet);
   }, []);
 
   const throwError = useCallback((e: Error, durationInMs?: number) => {
-    clearTimeout(timer);
+    clearTimeout(timerRef.current);
     setError(e);
-    timer = setTimeout(() => {
+    timerRef.current = setTimeout(() => {
       setError(null);
     }, durationInMs ?? 5000);
   }, []);
