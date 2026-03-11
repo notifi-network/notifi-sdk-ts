@@ -131,7 +131,7 @@ export const useInjectedWallet = (
       }, 5000);
 
       try {
-        const signature: Promise<`0x${string}`> = await provider.request?.({
+        const signature: `0x${string}` = await provider.request?.({
           method: 'personal_sign',
           params: [message, walletKeys?.hex],
         });

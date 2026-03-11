@@ -129,7 +129,7 @@ export const useBinance = (
       }, 5000);
 
       try {
-        const signature: Promise<`0x${string}`> = await provider.request?.({
+        const signature: `0x${string}` = await provider.request?.({
           method: 'personal_sign',
           params: [message, walletKeys?.hex],
         });
@@ -153,7 +153,7 @@ export const useBinance = (
   ): Promise<`0x${string}` | undefined> => {
     let txHash: string | undefined;
     if (!provider || !walletKeys) {
-      handleWalletNotExists('Sign Arbitrary');
+      handleWalletNotExists('Send Transaction');
       return;
     }
     try {
