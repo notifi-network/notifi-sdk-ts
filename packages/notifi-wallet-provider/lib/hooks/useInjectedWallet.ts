@@ -2,7 +2,7 @@ import converter from 'bech32-converting';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { EvmOptions } from '../context/NotifiWallets';
-import { Ethereum, MetamaskWalletKeys, WalletKeys, Wallets } from '../types';
+import { Ethereum, EvmWalletKeys, WalletKeys, Wallets } from '../types';
 import {
   cleanWalletsInLocalStorage,
   defaultValue,
@@ -18,7 +18,7 @@ export const useInjectedWallet = (
   walletName: keyof Wallets,
   options?: EvmOptions,
 ) => {
-  const [walletKeys, setWalletKeys] = useState<MetamaskWalletKeys | null>(null);
+  const [walletKeys, setWalletKeys] = useState<EvmWalletKeys | null>(null);
   const [isWalletInstalled, setIsWalletInstalled] = useState<boolean>(false);
 
   const handleWalletNotExists = (location: string) => {
@@ -71,7 +71,7 @@ export const useInjectedWallet = (
 
   const connectWallet = async (
     timeoutInMiniSec?: number,
-  ): Promise<MetamaskWalletKeys | null> => {
+  ): Promise<EvmWalletKeys | null> => {
     if (!provider) {
       handleWalletNotExists('Connect Wallet');
       return null;

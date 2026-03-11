@@ -1,7 +1,7 @@
 import converter from 'bech32-converting';
 import { useCallback, useEffect, useState } from 'react';
 
-import { BinanceChain, MetamaskWalletKeys, Wallets } from '../types';
+import { BinanceChain, EvmWalletKeys, Wallets } from '../types';
 import {
   cleanWalletsInLocalStorage,
   defaultValue,
@@ -17,7 +17,7 @@ export const useBinance = (
   selectWallet: (wallet: keyof Wallets | null) => void,
   options?: { cosmosChainPrefix?: string },
 ) => {
-  const [walletKeys, setWalletKeys] = useState<MetamaskWalletKeys | null>(null);
+  const [walletKeys, setWalletKeys] = useState<EvmWalletKeys | null>(null);
   const [isWalletInstalled, setIsWalletInstalled] = useState<boolean>(false);
   const [provider, setProvider] = useState<BinanceChain>();
 
@@ -68,7 +68,7 @@ export const useBinance = (
 
   const connectWallet = async (
     timeoutInMiniSec?: number,
-  ): Promise<MetamaskWalletKeys | null> => {
+  ): Promise<EvmWalletKeys | null> => {
     if (!provider) {
       handleWalletNotExists('Connect Wallet');
       return null;

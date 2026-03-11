@@ -1,7 +1,7 @@
 import { Connection, Transaction } from '@solana/web3.js';
 import { useCallback, useEffect, useState } from 'react';
 
-import { PhantomWalletKeys, Wallets } from '../types';
+import { SolanaWalletKeys, Wallets } from '../types';
 import {
   PhantomProvider,
   cleanWalletsInLocalStorage,
@@ -15,7 +15,7 @@ export const usePhantom = (
   selectWallet: (wallet: keyof Wallets | null) => void,
 ) => {
   const [walletKeysPhantom, setWalletKeysPhantom] =
-    useState<PhantomWalletKeys | null>(null);
+    useState<SolanaWalletKeys | null>(null);
 
   const [isPhantomInstalled, setIsPhantomInstalled] = useState<boolean>(false);
 
@@ -43,7 +43,7 @@ export const usePhantom = (
     const handleAccountChange = () => {
       if (!window.phantom?.solana)
         return handlePhantomNotExists('handleAccountChange');
-      const walletKeys: PhantomWalletKeys = {
+      const walletKeys: SolanaWalletKeys = {
         base58: window.phantom.solana.publicKey?.toBase58() ?? '',
       };
 
@@ -51,7 +51,7 @@ export const usePhantom = (
     };
   }, []);
 
-  const connectPhantom = async (): Promise<PhantomWalletKeys | null> => {
+  const connectPhantom = async (): Promise<SolanaWalletKeys | null> => {
     if (!window.phantom?.solana) {
       handlePhantomNotExists('connectPhantom');
       return null;
@@ -62,7 +62,7 @@ export const usePhantom = (
 
       const key = await window.phantom.solana.publicKey?.toBase58();
       if (!key) throw new Error('Phantom connection failed');
-      const walletKeys: PhantomWalletKeys = {
+      const walletKeys: SolanaWalletKeys = {
         base58: key,
       };
       selectWallet('phantom');

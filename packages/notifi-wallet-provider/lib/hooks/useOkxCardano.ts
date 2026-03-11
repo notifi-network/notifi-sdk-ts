@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { LaceWalletKeys, Wallets } from '../types';
+import { CardanoWalletKeys, Wallets } from '../types';
 import {
   CIP30WalletAPI,
   CIP30WalletInfo,
@@ -12,8 +12,8 @@ import {
 
 export type OkxCardanoWalletHookType = {
   isOkxCardanoInstalled: boolean;
-  walletKeysOkxCardano: LaceWalletKeys | null;
-  connectOkxCardano: () => Promise<LaceWalletKeys | null>;
+  walletKeysOkxCardano: CardanoWalletKeys | null;
+  connectOkxCardano: () => Promise<CardanoWalletKeys | null>;
   signArbitraryOkxCardano: (
     message: string,
   ) => Promise<ReturnType<CIP30WalletAPI['signData']> | undefined>;
@@ -27,7 +27,7 @@ export const useOkxCardano = (
   selectWallet: (wallet: keyof Wallets | null) => void,
 ): OkxCardanoWalletHookType => {
   const [walletKeysOkxCardano, setWalletKeysOkxCardano] =
-    useState<LaceWalletKeys | null>(null);
+    useState<CardanoWalletKeys | null>(null);
 
   const [isOkxCardanoInstalled, setIsOkxCardanoInstalled] =
     useState<boolean>(false);
@@ -96,7 +96,7 @@ export const useOkxCardano = (
   }, []);
 
   const connectOkxCardano =
-    useCallback(async (): Promise<LaceWalletKeys | null> => {
+    useCallback(async (): Promise<CardanoWalletKeys | null> => {
       const okxCardanoWallet = window.cardano?.okxwallet;
 
       if (!okxCardanoWallet) {
@@ -165,7 +165,7 @@ export const useOkxCardano = (
           );
         }
 
-        const walletKeys: LaceWalletKeys = {
+        const walletKeys: CardanoWalletKeys = {
           bech32: bech32Address,
           cbor: cborAddress,
         };

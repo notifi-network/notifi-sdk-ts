@@ -3,7 +3,7 @@ import { Buffer } from 'buffer';
 import { useCallback, useEffect, useState } from 'react';
 
 import { KeplrOptions } from '../context/NotifiWallets';
-import { KeplrWalletKeys, Wallets } from '../types';
+import { CosmosWalletKeys, Wallets } from '../types';
 import {
   cleanWalletsInLocalStorage,
   defaultValue,
@@ -18,7 +18,7 @@ export const useKeplr = (
   options?: KeplrOptions,
 ) => {
   const [walletKeysKeplr, setWalletKeysKeplr] =
-    useState<KeplrWalletKeys | null>(null);
+    useState<CosmosWalletKeys | null>(null);
 
   const [isKeplrInstalled, setIsKeplrInstalled] = useState<boolean>(false);
 
@@ -64,7 +64,7 @@ export const useKeplr = (
     };
   }, []);
 
-  const connectKeplr = async (): Promise<KeplrWalletKeys | null> => {
+  const connectKeplr = async (): Promise<CosmosWalletKeys | null> => {
     if (!window.keplr) {
       handleKeplrNotExists('connectKeplr');
       return null;
