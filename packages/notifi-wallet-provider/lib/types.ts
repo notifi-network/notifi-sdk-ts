@@ -4,7 +4,7 @@ import { BrowserProvider, Eip1193Provider } from 'ethers';
 import { Config } from 'wagmi';
 import { SendTransactionVariables } from 'wagmi/query';
 
-import { CIP30WalletAPI, LaceProvider } from './utils/lace.type';
+import { CIP30WalletAPI } from './utils/lace.type';
 import { PhantomProvider } from './utils/solana.type';
 
 export type Ethereum = Eip1193Provider & BrowserProvider;
