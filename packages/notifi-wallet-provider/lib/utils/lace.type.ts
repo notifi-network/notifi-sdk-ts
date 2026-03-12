@@ -130,9 +130,6 @@ export type LaceCardanoProvider = CIP30WalletInfo;
 export type LaceMidnightProvider = MidnightWalletInfo;
 export type LaceProvider = CIP30WalletInfo | MidnightWalletInfo;
 
-// @deprecated Use LaceCardanoProvider or LaceMidnightProvider instead
-export type MidnightWalletInfo_DEPRECATED = MidnightWalletInfo;
-
 // Address format utilities for Midnight
 export interface MidnightAddressComponents {
   coinPublicKey: string; // 32 bytes, base16-encoded

@@ -39,7 +39,7 @@ export const useBinance = (
   }, []);
 
   useEffect(() => {
-    setIsWalletInstalled(!!provider); // TODO: Test and see if can be removed
+    setIsWalletInstalled(!!provider);
 
     if (!provider) return;
 
