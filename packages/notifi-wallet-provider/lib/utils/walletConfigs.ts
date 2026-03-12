@@ -1,5 +1,3 @@
-export type IntegrationMethod = 'injected' | 'wagmi' | 'native';
-
 export const BLOCKCHAIN_WALLETS = {
   evm: [
     'metamask',
@@ -31,6 +29,3 @@ export const INTEGRATION_WALLETS = {
     'ctrl',
   ] as const,
 } as const;
-
-export type InjectedWalletName = (typeof INTEGRATION_WALLETS.injected)[number];
-export type WagmiWalletName = (typeof INTEGRATION_WALLETS.wagmi)[number];
