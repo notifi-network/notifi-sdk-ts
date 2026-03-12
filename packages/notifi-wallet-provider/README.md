@@ -68,6 +68,37 @@ function MyComponent() {
 }
 ```
 
+## Custom Wagmi Config
+
+By default, this package uses a built-in WalletConnect project ID for quick setup. **This default ID is intended for development/testing only.** In production, you should use your own WalletConnect project ID to avoid potential rate limiting, quota sharing, or service disruption.
+
+You can obtain a project ID from [Reown (WalletConnect) Dashboard](https://cloud.reown.com). For more details, refer to the [official documentation](https://docs.reown.com/cloud/relay).
+
+Pass your own `wagmiConfig` to `NotifiWalletProvider`:
+
+```tsx
+import { createConfig, http } from 'wagmi';
+import * as chains from 'wagmi/chains';
+import { coinbaseWallet, injected, walletConnect } from 'wagmi/connectors';
+
+const myWagmiConfig = createConfig({
+  chains: [chains.mainnet, chains.polygon /* ... */],
+  connectors: [
+    injected(),
+    coinbaseWallet({ appName: 'MyApp' }),
+    walletConnect({ projectId: 'YOUR_PROJECT_ID' }),
+  ],
+  transports: {
+    [chains.mainnet.id]: http(),
+    [chains.polygon.id]: http(),
+  },
+});
+
+<NotifiWalletProvider wagmiConfig={myWagmiConfig}>
+  <App />
+</NotifiWalletProvider>;
+```
+
 ## Wallet methods
 
 - `connect` - Connect to wallet
