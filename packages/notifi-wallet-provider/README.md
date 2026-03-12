@@ -21,22 +21,27 @@ npm install @notifi-network/notifi-wallet-provider
 1. Wrap components with NotifiWalletProvider wrapper
 
 ```tsx
-//...
-<NotifiWalletProvider>
+// ...
+<NotifiWalletProvider
+  walletOptions={{
+    keplr: { chainId: 'injective-1' }, // Optional. Defaults to 'injective-1'. Set to your target Cosmos chain ID.
+    evm: { cosmosChainPrefix: 'inj' }, // Optional. Defaults to 'inj'. Set if your EVM chain uses a Cosmos-style bech32 address prefix.
+  }}
+>
   <App /> {/* or components which wants to consume context */}
 </NotifiWalletProvider>
 // ...
 ```
 
-2. Use `useWallet` hook to access wallet information
+2. Use `useWallets` hook to access wallet information
 
 ```tsx
 // ...
-import { useWallet } from '@notifi-network/notifi-wallet-provider';
+import { useWallets } from '@notifi-network/notifi-wallet-provider';
 
 function MyComponent() {
   const { selectWallet, selectedWallet, wallets, error, isLoading } =
-    useWallet();
+    useWallets();
 
   useEffect(() => {
     if (error) {
