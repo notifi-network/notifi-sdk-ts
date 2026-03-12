@@ -37,21 +37,16 @@ export type WalletKeysBase = {
   cbor: string; // CBOR-encoded address (hex string) used by Cardano/Lace
 };
 
-export type MetamaskWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'hex'>; // Adoptable to all EVM wallets
-export type KeplrWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'base64'>;
-export type PhantomWalletKeys = PickKeys<WalletKeysBase, 'base58'>;
-export type LaceWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'cbor'>;
-export type EternlWalletKeys = LaceWalletKeys;
-export type NufiWalletKeys = LaceWalletKeys;
-export type OkxCardanoWalletKeys = LaceWalletKeys;
-export type YoroiWalletKeys = LaceWalletKeys;
-export type CtrlWalletKeys = LaceWalletKeys;
+export type EvmWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'hex'>;
+export type CosmosWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'base64'>;
+export type SolanaWalletKeys = PickKeys<WalletKeysBase, 'base58'>;
+export type CardanoWalletKeys = PickKeys<WalletKeysBase, 'bech32' | 'cbor'>;
 
 export type WalletKeys =
-  | MetamaskWalletKeys
-  | KeplrWalletKeys
-  | PhantomWalletKeys
-  | LaceWalletKeys;
+  | EvmWalletKeys
+  | CosmosWalletKeys
+  | SolanaWalletKeys
+  | CardanoWalletKeys;
 
 export abstract class NotifiWallet {
   abstract isInstalled: boolean;
@@ -87,9 +82,9 @@ export type EvmSendTransaction = (
 export class EvmWallet implements NotifiWallet {
   constructor(
     public isInstalled: boolean,
-    public walletKeys: MetamaskWalletKeys | null,
+    public walletKeys: EvmWalletKeys | null,
     public signArbitrary: MetamaskSignMessage,
-    public connect: () => Promise<MetamaskWalletKeys | null>,
+    public connect: () => Promise<EvmWalletKeys | null>,
     public disconnect: () => void,
     public websiteURL: string,
     public sendTransaction: EvmSendTransaction,
@@ -99,9 +94,9 @@ export class EvmWallet implements NotifiWallet {
 export class BinanceWallet implements NotifiWallet {
   constructor(
     public isInstalled: boolean,
-    public walletKeys: MetamaskWalletKeys | null,
+    public walletKeys: EvmWalletKeys | null,
     public signArbitrary: MetamaskSignMessage,
-    public connect: () => Promise<MetamaskWalletKeys | null>,
+    public connect: () => Promise<EvmWalletKeys | null>,
     public disconnect: () => void,
     public websiteURL: string,
     public sendTransaction: EvmSendTransaction,
@@ -115,9 +110,9 @@ export type KeplrSignMessage = (
 export class KeplrWallet implements NotifiWallet {
   constructor(
     public isInstalled: boolean,
-    public walletKeys: KeplrWalletKeys | null,
+    public walletKeys: CosmosWalletKeys | null,
     public signArbitrary: KeplrSignMessage,
-    public connect: () => Promise<KeplrWalletKeys | null>,
+    public connect: () => Promise<CosmosWalletKeys | null>,
     public disconnect: () => void,
     public websiteURL: string,
   ) {}
@@ -131,9 +126,9 @@ export type LaceSignMessage = (
 export class PhantomWallet implements NotifiWallet {
   constructor(
     public isInstalled: boolean,
-    public walletKeys: PhantomWalletKeys | null,
+    public walletKeys: SolanaWalletKeys | null,
     public signArbitrary: PhantomSignMessage,
-    public connect: () => Promise<PhantomWalletKeys | null>,
+    public connect: () => Promise<SolanaWalletKeys | null>,
     public disconnect: () => void,
     public websiteURL: string,
     public signTransaction: (
@@ -149,9 +144,9 @@ export class PhantomWallet implements NotifiWallet {
 export class LaceWallet implements NotifiWallet {
   constructor(
     public isInstalled: boolean,
-    public walletKeys: LaceWalletKeys | null,
+    public walletKeys: CardanoWalletKeys | null,
     public signArbitrary: LaceSignMessage,
-    public connect: () => Promise<LaceWalletKeys | null>,
+    public connect: () => Promise<CardanoWalletKeys | null>,
     public disconnect: () => void,
     public websiteURL: string,
   ) {}
