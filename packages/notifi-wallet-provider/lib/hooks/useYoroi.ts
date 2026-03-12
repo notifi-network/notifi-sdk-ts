@@ -1,3 +1,4 @@
+import { Buffer } from 'buffer';
 import { useCallback, useEffect, useState } from 'react';
 
 import { CardanoWalletKeys, Wallets } from '../types';
