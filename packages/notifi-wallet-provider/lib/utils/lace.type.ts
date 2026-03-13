@@ -1,10 +1,9 @@
 /**
- * Cardano and Midnight wallet type definitions and interfaces
+ * Cardano wallet type definitions and interfaces
  *
  * This file defines:
  * 1. CIP-30 standard interfaces for Cardano wallets
- * 2. Midnight network extensions (privacy sidechain)
- * 3. Lace wallet specific types that support both networks
+ * 2. Lace wallet specific types
  */
 
 // Basic types
@@ -62,41 +61,6 @@ export interface CIP30WalletInfo {
 }
 
 // ============================================================================
-// Midnight Network Extensions
-// ============================================================================
-
-export enum MidnightNetworkId {
-  TESTNET = 0,
-  MAINNET = 1,
-  DEVNET = 2,
-}
-
-export interface ServiceUriConfig {
-  node?: string;
-  indexer?: string;
-  proofServer?: string;
-}
-
-export interface MidnightWalletState {
-  address: string;
-  balance?: {
-    available: number;
-    pending: number;
-    total: number;
-  };
-}
-
-export interface MidnightWalletAPI extends CIP30WalletAPI {
-  state(): Promise<MidnightWalletState>;
-  getNetworkId(): Promise<MidnightNetworkId>;
-}
-
-export interface MidnightWalletInfo extends CIP30WalletInfo {
-  enable(): Promise<MidnightWalletAPI>;
-  serviceUriConfig(): Promise<ServiceUriConfig>;
-}
-
-// ============================================================================
 // Window Provider Interfaces
 // ============================================================================
 
@@ -110,15 +74,9 @@ export interface CardanoProvider {
   [walletName: string]: CIP30WalletInfo | any;
 }
 
-export interface MidnightProvider {
-  mnLace?: MidnightWalletInfo;
-  [walletName: string]: MidnightWalletInfo | undefined;
-}
-
 declare global {
   interface Window {
     cardano?: CardanoProvider;
-    midnight?: MidnightProvider;
   }
 }
 
@@ -127,51 +85,3 @@ declare global {
 // ============================================================================
 
 export type LaceCardanoProvider = CIP30WalletInfo;
-export type LaceMidnightProvider = MidnightWalletInfo;
-export type LaceProvider = CIP30WalletInfo | MidnightWalletInfo;
-
-// @deprecated Use LaceCardanoProvider or LaceMidnightProvider instead
-export type MidnightWalletInfo_DEPRECATED = MidnightWalletInfo;
-
-// Address format utilities for Midnight
-export interface MidnightAddressComponents {
-  coinPublicKey: string; // 32 bytes, base16-encoded
-  encryptionPublicKey: string; // 59 bytes, ledger-serialized
-}
-
-// Parse Midnight shielded address internal format (coinPublicKey|encryptionPublicKey)
-// Note: This is the internal format, actual addresses use bech32m encoding
-export const parseMidnightShieldedAddress = (
-  internalAddress: string,
-): MidnightAddressComponents | null => {
-  try {
-    const parts = internalAddress.split('|');
-    if (parts.length !== 2) {
-      return null;
-    }
-    return {
-      coinPublicKey: parts[0], // base16-encoded
-      encryptionPublicKey: parts[1], // base16-serialized
-    };
-  } catch {
-    return null;
-  }
-};
-
-// Format Midnight address components into internal format
-export const formatMidnightShieldedAddress = (
-  components: MidnightAddressComponents,
-): string => {
-  return `${components.coinPublicKey}|${components.encryptionPublicKey}`;
-};
-
-// Address types supported by Midnight
-export enum MidnightAddressType {
-  UNSHIELDED = 'addr', // mn_addr (SHA256 of unshielded token public key)
-  SHIELDED = 'shield-addr', // mn_shield-addr (bech32m encoded shielded address)
-  DUST = 'dust-addr', // mn_dust-addr (dust address, currently undefined)
-}
-
-// Website links for wallet installation
-export const LACE_WALLET_WEBSITE =
-  'https://docs.midnight.network/relnotes/lace';

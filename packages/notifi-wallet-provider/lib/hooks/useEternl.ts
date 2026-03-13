@@ -1,6 +1,7 @@
+import { Buffer } from 'buffer';
 import { useCallback, useEffect, useState } from 'react';
 
-import { LaceWalletKeys, Wallets } from '../types';
+import { CardanoWalletKeys, Wallets } from '../types';
 import {
   CIP30WalletAPI,
   CIP30WalletInfo,
@@ -12,8 +13,8 @@ import {
 
 export type EternlWalletHookType = {
   isEternlInstalled: boolean;
-  walletKeysEternl: LaceWalletKeys | null;
-  connectEternl: () => Promise<LaceWalletKeys | null>;
+  walletKeysEternl: CardanoWalletKeys | null;
+  connectEternl: () => Promise<CardanoWalletKeys | null>;
   signArbitraryEternl: (
     message: string,
   ) => Promise<ReturnType<CIP30WalletAPI['signData']> | undefined>;
@@ -27,7 +28,7 @@ export const useEternl = (
   selectWallet: (wallet: keyof Wallets | null) => void,
 ): EternlWalletHookType => {
   const [walletKeysEternl, setWalletKeysEternl] =
-    useState<LaceWalletKeys | null>(null);
+    useState<CardanoWalletKeys | null>(null);
 
   const [isEternlInstalled, setIsEternlInstalled] = useState<boolean>(false);
 
@@ -95,7 +96,7 @@ export const useEternl = (
   }, []);
 
   const connectEternl =
-    useCallback(async (): Promise<LaceWalletKeys | null> => {
+    useCallback(async (): Promise<CardanoWalletKeys | null> => {
       const eternlWallet = window.cardano?.eternl;
 
       if (!eternlWallet) {
@@ -164,7 +165,7 @@ export const useEternl = (
           );
         }
 
-        const walletKeys: LaceWalletKeys = {
+        const walletKeys: CardanoWalletKeys = {
           bech32: bech32Address,
           cbor: cborAddress,
         };

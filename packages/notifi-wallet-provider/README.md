@@ -21,22 +21,27 @@ npm install @notifi-network/notifi-wallet-provider
 1. Wrap components with NotifiWalletProvider wrapper
 
 ```tsx
-//...
-<NotifiWalletProvider>
+// ...
+<NotifiWalletProvider
+  walletOptions={{
+    keplr: { chainId: 'injective-1' }, // Optional. Defaults to 'injective-1'. Set to your target Cosmos chain ID.
+    evm: { cosmosChainPrefix: 'inj' }, // Optional. Defaults to 'inj'. Set if your EVM chain uses a Cosmos-style bech32 address prefix.
+  }}
+>
   <App /> {/* or components which wants to consume context */}
 </NotifiWalletProvider>
 // ...
 ```
 
-2. Use `useWallet` hook to access wallet information
+2. Use `useWallets` hook to access wallet information
 
 ```tsx
 // ...
-import { useWallet } from '@notifi-network/notifi-wallet-provider';
+import { useWallets } from '@notifi-network/notifi-wallet-provider';
 
 function MyComponent() {
   const { selectWallet, selectedWallet, wallets, error, isLoading } =
-    useWallet();
+    useWallets();
 
   useEffect(() => {
     if (error) {
@@ -66,6 +71,37 @@ function MyComponent() {
     </div>
   );
 }
+```
+
+## Custom Wagmi Config
+
+By default, this package uses a built-in WalletConnect project ID for quick setup. **This default ID is intended for development/testing only.** In production, you should use your own WalletConnect project ID to avoid potential rate limiting, quota sharing, or service disruption.
+
+You can obtain a project ID from [Reown (WalletConnect) Dashboard](https://cloud.reown.com). For more details, refer to the [official documentation](https://docs.reown.com/cloud/relay).
+
+Pass your own `wagmiConfig` to `NotifiWalletProvider`:
+
+```tsx
+import { createConfig, http } from 'wagmi';
+import * as chains from 'wagmi/chains';
+import { coinbaseWallet, injected, walletConnect } from 'wagmi/connectors';
+
+const myWagmiConfig = createConfig({
+  chains: [chains.mainnet, chains.polygon /* ... */],
+  connectors: [
+    injected(),
+    coinbaseWallet({ appName: 'MyApp' }),
+    walletConnect({ projectId: 'YOUR_PROJECT_ID' }),
+  ],
+  transports: {
+    [chains.mainnet.id]: http(),
+    [chains.polygon.id]: http(),
+  },
+});
+
+<NotifiWalletProvider wagmiConfig={myWagmiConfig}>
+  <App />
+</NotifiWalletProvider>;
 ```
 
 ## Wallet methods

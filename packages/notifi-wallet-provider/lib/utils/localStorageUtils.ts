@@ -1,9 +1,9 @@
 import {
-  KeplrWalletKeys,
-  LaceWalletKeys,
-  MetamaskWalletKeys,
+  CardanoWalletKeys,
+  CosmosWalletKeys,
+  EvmWalletKeys,
   NotifiWalletStorage,
-  PhantomWalletKeys,
+  SolanaWalletKeys,
   Wallets,
 } from '../types';
 
@@ -12,23 +12,23 @@ const localStorageKey = 'NotifiWalletStorage';
 export const setWalletKeysToLocalStorage = <T extends keyof Wallets>(
   wallet: T,
   walletKeys: T extends 'metamask'
-    ? MetamaskWalletKeys
+    ? EvmWalletKeys
     : T extends 'keplr'
-      ? KeplrWalletKeys
+      ? CosmosWalletKeys
       : T extends 'phantom'
-        ? PhantomWalletKeys
+        ? SolanaWalletKeys
         : T extends 'lace'
-          ? LaceWalletKeys
+          ? CardanoWalletKeys
           : T extends 'eternl'
-            ? LaceWalletKeys
+            ? CardanoWalletKeys
             : T extends 'nufi'
-              ? LaceWalletKeys
+              ? CardanoWalletKeys
               : T extends 'okx-cardano'
-                ? LaceWalletKeys
+                ? CardanoWalletKeys
                 : T extends 'yoroi'
-                  ? LaceWalletKeys
+                  ? CardanoWalletKeys
                   : T extends 'ctrl'
-                    ? LaceWalletKeys
+                    ? CardanoWalletKeys
                     : never,
 ) => {
   const storageWallet: NotifiWalletStorage = {
@@ -43,12 +43,15 @@ export const cleanWalletsInLocalStorage = () => {
 };
 
 export const getWalletsFromLocalStorage = (): NotifiWalletStorage | null => {
-  const storageWalletRaw = JSON.parse(
-    window.localStorage.getItem(localStorageKey) ?? '{}',
-  );
-  let storageWallet: NotifiWalletStorage | null = null;
-  if ('walletName' in storageWalletRaw) {
-    storageWallet = storageWalletRaw as NotifiWalletStorage;
+  try {
+    const storageWalletRaw = JSON.parse(
+      window.localStorage.getItem(localStorageKey) ?? '{}',
+    );
+    if ('walletName' in storageWalletRaw) {
+      return storageWalletRaw as NotifiWalletStorage;
+    }
+    return null;
+  } catch {
+    return null;
   }
-  return storageWallet;
 };

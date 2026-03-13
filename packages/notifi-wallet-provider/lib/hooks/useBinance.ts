@@ -1,7 +1,7 @@
 import converter from 'bech32-converting';
 import { useCallback, useEffect, useState } from 'react';
 
-import { BinanceChain, MetamaskWalletKeys, Wallets } from '../types';
+import { BinanceChain, EvmWalletKeys, Wallets } from '../types';
 import {
   cleanWalletsInLocalStorage,
   defaultValue,
@@ -17,7 +17,7 @@ export const useBinance = (
   selectWallet: (wallet: keyof Wallets | null) => void,
   options?: { cosmosChainPrefix?: string },
 ) => {
-  const [walletKeys, setWalletKeys] = useState<MetamaskWalletKeys | null>(null);
+  const [walletKeys, setWalletKeys] = useState<EvmWalletKeys | null>(null);
   const [isWalletInstalled, setIsWalletInstalled] = useState<boolean>(false);
   const [provider, setProvider] = useState<BinanceChain>();
 
@@ -39,7 +39,7 @@ export const useBinance = (
   }, []);
 
   useEffect(() => {
-    setIsWalletInstalled(!!provider); // TODO: Test and see if can be removed
+    setIsWalletInstalled(!!provider);
 
     if (!provider) return;
 
@@ -68,7 +68,7 @@ export const useBinance = (
 
   const connectWallet = async (
     timeoutInMiniSec?: number,
-  ): Promise<MetamaskWalletKeys | null> => {
+  ): Promise<EvmWalletKeys | null> => {
     if (!provider) {
       handleWalletNotExists('Connect Wallet');
       return null;
@@ -129,7 +129,7 @@ export const useBinance = (
       }, 5000);
 
       try {
-        const signature: Promise<`0x${string}`> = await provider.request?.({
+        const signature: `0x${string}` = await provider.request?.({
           method: 'personal_sign',
           params: [message, walletKeys?.hex],
         });
@@ -153,7 +153,7 @@ export const useBinance = (
   ): Promise<`0x${string}` | undefined> => {
     let txHash: string | undefined;
     if (!provider || !walletKeys) {
-      handleWalletNotExists('Sign Arbitrary');
+      handleWalletNotExists('Send Transaction');
       return;
     }
     try {

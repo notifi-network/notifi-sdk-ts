@@ -1,6 +1,7 @@
+import { Buffer } from 'buffer';
 import { useCallback, useEffect, useState } from 'react';
 
-import { LaceWalletKeys, Wallets } from '../types';
+import { CardanoWalletKeys, Wallets } from '../types';
 import {
   CIP30WalletAPI,
   CIP30WalletInfo,
@@ -12,8 +13,8 @@ import {
 
 export type CtrlWalletHookType = {
   isCtrlInstalled: boolean;
-  walletKeysCtrl: LaceWalletKeys | null;
-  connectCtrl: () => Promise<LaceWalletKeys | null>;
+  walletKeysCtrl: CardanoWalletKeys | null;
+  connectCtrl: () => Promise<CardanoWalletKeys | null>;
   signArbitraryCtrl: (
     message: string,
   ) => Promise<ReturnType<CIP30WalletAPI['signData']> | undefined>;
@@ -26,9 +27,8 @@ export const useCtrl = (
   errorHandler: (e: Error, durationInMs?: number) => void,
   selectWallet: (wallet: keyof Wallets | null) => void,
 ): CtrlWalletHookType => {
-  const [walletKeysCtrl, setWalletKeysCtrl] = useState<LaceWalletKeys | null>(
-    null,
-  );
+  const [walletKeysCtrl, setWalletKeysCtrl] =
+    useState<CardanoWalletKeys | null>(null);
 
   const [isCtrlInstalled, setIsCtrlInstalled] = useState<boolean>(false);
 
@@ -95,92 +95,96 @@ export const useCtrl = (
     };
   }, []);
 
-  const connectCtrl = useCallback(async (): Promise<LaceWalletKeys | null> => {
-    const ctrlWallet = window.cardano?.ctrl;
+  const connectCtrl =
+    useCallback(async (): Promise<CardanoWalletKeys | null> => {
+      const ctrlWallet = window.cardano?.ctrl;
 
-    if (!ctrlWallet) {
-      handleCtrlNotExists('connectCtrl');
-      return null;
-    }
-
-    loadingHandler(true);
-    try {
-      const walletApi = await ctrlWallet.enable();
-
-      let accounts: Cbor[] = [];
-
-      try {
-        if (walletApi.getUsedAddresses) {
-          accounts = await walletApi.getUsedAddresses();
-        }
-      } catch (e) {
-        console.warn('⚠️ getUsedAddresses() failed:', e);
-      }
-
-      if (!accounts || accounts.length === 0) {
-        try {
-          if (walletApi.getUnusedAddresses) {
-            accounts = await walletApi.getUnusedAddresses();
-          }
-        } catch (e) {
-          console.warn('⚠️ getUnusedAddresses() failed:', e);
-        }
-      }
-
-      if (!accounts || accounts.length === 0) {
-        try {
-          if (walletApi.getChangeAddress) {
-            const changeAddress = await walletApi.getChangeAddress();
-            if (changeAddress) {
-              accounts = [changeAddress];
-            }
-          }
-        } catch (e) {
-          console.warn('⚠️ getChangeAddress() failed:', e);
-        }
-      }
-
-      if (!accounts || accounts.length === 0) {
-        const errMsg =
-          'No addresses found in wallet. Please ensure your wallet has at least one address.';
-        const err = new Error(errMsg);
-        errorHandler(err);
-        console.error(`ERROR: connectCtrl - ${errMsg}`);
+      if (!ctrlWallet) {
+        handleCtrlNotExists('connectCtrl');
         return null;
       }
 
-      const cborAddress = accounts[0];
-
-      let bech32Address = cborAddress;
+      loadingHandler(true);
       try {
-        const { bech32 } = await import('bech32');
-        const buffer = Buffer.from(cborAddress, 'hex');
-        const words = bech32.toWords(buffer);
-        bech32Address = bech32.encode('addr', words, 1000);
+        const walletApi = await ctrlWallet.enable();
+
+        let accounts: Cbor[] = [];
+
+        try {
+          if (walletApi.getUsedAddresses) {
+            accounts = await walletApi.getUsedAddresses();
+          }
+        } catch (e) {
+          console.warn('⚠️ getUsedAddresses() failed:', e);
+        }
+
+        if (!accounts || accounts.length === 0) {
+          try {
+            if (walletApi.getUnusedAddresses) {
+              accounts = await walletApi.getUnusedAddresses();
+            }
+          } catch (e) {
+            console.warn('⚠️ getUnusedAddresses() failed:', e);
+          }
+        }
+
+        if (!accounts || accounts.length === 0) {
+          try {
+            if (walletApi.getChangeAddress) {
+              const changeAddress = await walletApi.getChangeAddress();
+              if (changeAddress) {
+                accounts = [changeAddress];
+              }
+            }
+          } catch (e) {
+            console.warn('⚠️ getChangeAddress() failed:', e);
+          }
+        }
+
+        if (!accounts || accounts.length === 0) {
+          const errMsg =
+            'No addresses found in wallet. Please ensure your wallet has at least one address.';
+          const err = new Error(errMsg);
+          errorHandler(err);
+          console.error(`ERROR: connectCtrl - ${errMsg}`);
+          return null;
+        }
+
+        const cborAddress = accounts[0];
+
+        let bech32Address = cborAddress;
+        try {
+          const { bech32 } = await import('bech32');
+          const buffer = Buffer.from(cborAddress, 'hex');
+          const words = bech32.toWords(buffer);
+          bech32Address = bech32.encode('addr', words, 1000);
+        } catch (e) {
+          console.warn(
+            '⚠️ Failed to decode CBOR to bech32, using raw CBOR:',
+            e,
+          );
+        }
+
+        const walletKeys: CardanoWalletKeys = {
+          bech32: bech32Address,
+          cbor: cborAddress,
+        };
+
+        setWalletKeysCtrl(walletKeys);
+        setWalletKeysToLocalStorage('ctrl', walletKeys);
+        selectWallet('ctrl');
+
+        return walletKeys;
       } catch (e) {
-        console.warn('⚠️ Failed to decode CBOR to bech32, using raw CBOR:', e);
+        console.error('Error connecting to CTRL wallet:', e);
+        if (e instanceof Error) {
+          errorHandler(e);
+        }
+        return null;
+      } finally {
+        loadingHandler(false);
       }
-
-      const walletKeys: LaceWalletKeys = {
-        bech32: bech32Address,
-        cbor: cborAddress,
-      };
-
-      setWalletKeysCtrl(walletKeys);
-      setWalletKeysToLocalStorage('ctrl', walletKeys);
-      selectWallet('ctrl');
-
-      return walletKeys;
-    } catch (e) {
-      console.error('Error connecting to CTRL wallet:', e);
-      if (e instanceof Error) {
-        errorHandler(e);
-      }
-      return null;
-    } finally {
-      loadingHandler(false);
-    }
-  }, [loadingHandler, errorHandler, selectWallet]);
+    }, [loadingHandler, errorHandler, selectWallet]);
 
   const disconnectCtrl = useCallback(() => {
     setWalletKeysCtrl(null);

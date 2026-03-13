@@ -12,7 +12,7 @@ import {
 import { SendTransactionData, SendTransactionVariables } from 'wagmi/query';
 
 import { EvmOptions } from '../context/NotifiWallets';
-import { MetamaskWalletKeys, Wallets } from '../types';
+import { EvmWalletKeys, Wallets } from '../types';
 import {
   cleanWalletsInLocalStorage,
   defaultValue,
@@ -35,7 +35,7 @@ export const useWagmiWallet = (
   walletName: keyof Wallets,
   options?: EvmOptions,
 ) => {
-  const [walletKeys, setWalletKeys] = useState<MetamaskWalletKeys | null>(null);
+  const [walletKeys, setWalletKeys] = useState<EvmWalletKeys | null>(null);
 
   const { disconnect } = useDisconnect();
   const { signMessageAsync } = useSignMessage();
@@ -101,7 +101,7 @@ export const useWagmiWallet = (
     loadingHandler(isConnecting);
   }, [isConnecting]);
 
-  const connectWallet = async (): Promise<MetamaskWalletKeys | null> => {
+  const connectWallet = async (): Promise<EvmWalletKeys | null> => {
     const provider = connectors.find((v) =>
       v.name.toLowerCase()?.includes(walletName),
     );
