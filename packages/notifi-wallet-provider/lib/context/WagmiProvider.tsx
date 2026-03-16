@@ -8,11 +8,12 @@ export type NotifiWagmiProviderProps = PropsWithChildren & {
   wagmiConfig?: ReturnType<typeof createConfig>;
 };
 
+const queryClient = new QueryClient();
+
 export const NotifiWagmiProvider: React.FC<NotifiWagmiProviderProps> = ({
   children,
   wagmiConfig,
 }) => {
-  const queryClient = new QueryClient();
   return (
     <WagmiProvider config={wagmiConfig ?? defaultWagmiConfig}>
       <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>

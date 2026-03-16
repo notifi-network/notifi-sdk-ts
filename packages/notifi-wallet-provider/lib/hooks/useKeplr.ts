@@ -3,7 +3,7 @@ import { Buffer } from 'buffer';
 import { useCallback, useEffect, useState } from 'react';
 
 import { KeplrOptions } from '../context/NotifiWallets';
-import { KeplrWalletKeys, Wallets } from '../types';
+import { CosmosWalletKeys, Wallets } from '../types';
 import {
   cleanWalletsInLocalStorage,
   defaultValue,
@@ -18,7 +18,7 @@ export const useKeplr = (
   options?: KeplrOptions,
 ) => {
   const [walletKeysKeplr, setWalletKeysKeplr] =
-    useState<KeplrWalletKeys | null>(null);
+    useState<CosmosWalletKeys | null>(null);
 
   const [isKeplrInstalled, setIsKeplrInstalled] = useState<boolean>(false);
 
@@ -64,7 +64,7 @@ export const useKeplr = (
     };
   }, []);
 
-  const connectKeplr = async (): Promise<KeplrWalletKeys | null> => {
+  const connectKeplr = async (): Promise<CosmosWalletKeys | null> => {
     if (!window.keplr) {
       handleKeplrNotExists('connectKeplr');
       return null;
@@ -82,16 +82,16 @@ export const useKeplr = (
       selectWallet('keplr');
       setWalletKeysKeplr(walletKeys);
       setWalletKeysToLocalStorage('keplr', walletKeys);
-      loadingHandler(false);
       return walletKeys;
     } catch (e) {
       errorHandler(
         new Error('Keplr connection failed, check console for details'),
       );
       console.error(e);
+      return null;
+    } finally {
+      loadingHandler(false);
     }
-    loadingHandler(false);
-    return null;
   };
 
   const disconnectKeplr = () => {
@@ -126,8 +126,9 @@ export const useKeplr = (
           new Error('Wallet not signed. Please connect your wallet again.'),
         );
         console.error(e);
+      } finally {
+        loadingHandler(false);
       }
-      loadingHandler(false);
     },
     [walletKeysKeplr],
   );

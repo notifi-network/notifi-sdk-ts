@@ -1,6 +1,6 @@
 import { Wallets } from '../types';
 import { BLOCKCHAIN_WALLETS } from '../utils/walletConfigs';
-import { createWalletHooks } from './hookCreators';
+import { useAllWalletHooks } from './hookCreators';
 import {
   createBinanceWallet,
   createCtrlWallet,
@@ -14,7 +14,7 @@ import {
   createYoroiWallet,
 } from './walletCreators';
 
-type WalletHooks = ReturnType<typeof createWalletHooks>;
+type WalletHooks = ReturnType<typeof useAllWalletHooks>;
 
 export const createWallets = (hooks: WalletHooks): Wallets => {
   const wallets = {} as Wallets;
