@@ -11,11 +11,8 @@ import type * as Operations from './operations';
 export class NotifiService
   implements
     Operations.BeginLogInByTransactionService,
-    Operations.BroadcastMessageService,
     Operations.CompleteLogInByTransactionService,
-    Operations.ConnectWalletService,
     Operations.CreateAlertService,
-    Operations.CreateDirectPushAlertService,
     Operations.CreateEmailTargetService,
     Operations.CreateSmsTargetService,
     Operations.CreateTargetGroupService,
@@ -25,10 +22,7 @@ export class NotifiService
     Operations.DeleteTargetGroupService,
     Operations.FindTenantConfigService,
     Operations.GetAlertsService,
-    Operations.GetConfigurationForDappService,
-    Operations.GetConnectedWalletsService,
     Operations.GetEmailTargetsService,
-    Operations.GetFiltersService,
     Operations.GetFusionNotificationHistoryService,
     Operations.GetSmsTargetsService,
     Operations.GetTargetGroupsService,
@@ -38,7 +32,6 @@ export class NotifiService
     Operations.LogInFromServiceService,
     Operations.RefreshAuthorizationService,
     Operations.SendEmailTargetVerificationRequestService,
-    Operations.SendMessageService,
     Operations.UpdateTargetGroupService,
     Operations.CreateDiscordTargetService,
     Operations.GetDiscordTargetsService,
@@ -91,13 +84,6 @@ export class NotifiService
     return this._typedClient.beginLogInByTransaction(variables, headers);
   }
 
-  async broadcastMessage(
-    variables: Generated.BroadcastMessageMutationVariables,
-  ): Promise<Generated.BroadcastMessageMutation> {
-    const headers = this._requestHeaders();
-    return this._typedClient.broadcastMessage(variables, headers);
-  }
-
   async completeLogInByTransaction(
     variables: Generated.CompleteLogInByTransactionMutationVariables,
   ): Promise<Generated.CompleteLogInByTransactionMutation> {
@@ -113,13 +99,6 @@ export class NotifiService
     return result;
   }
 
-  async connectWallet(
-    variables: Generated.ConnectWalletMutationVariables,
-  ): Promise<Generated.ConnectWalletMutation> {
-    const headers = this._requestHeaders();
-    return await this._typedClient.connectWallet(variables, headers);
-  }
-
   async createAlert(
     variables: Generated.CreateAlertMutationVariables,
   ): Promise<Generated.CreateAlertMutation> {
@@ -132,13 +111,6 @@ export class NotifiService
   ): Promise<Generated.CreateFusionAlertsMutation> {
     const headers = this._requestHeaders();
     return this._typedClient.createFusionAlerts(variables, headers);
-  }
-
-  async createDirectPushAlert(
-    variables: Generated.CreateDirectPushAlertMutationVariables,
-  ): Promise<Generated.CreateDirectPushAlertMutation> {
-    const headers = this._requestHeaders();
-    return this._typedClient.createDirectPushAlert(variables, headers);
   }
 
   async createEmailTarget(
@@ -245,13 +217,6 @@ export class NotifiService
     return this._typedClient.deleteAlerts(variables, headers);
   }
 
-  async DeleteDirectPushAlert(
-    variables: Generated.DeleteDirectPushAlertMutationVariables,
-  ): Promise<Generated.DeleteDirectPushAlertMutation> {
-    const headers = this._requestHeaders();
-    return this._typedClient.deleteDirectPushAlert(variables, headers);
-  }
-
   async deleteUserAlert(
     variables: Generated.DeleteUserAlertMutationVariables,
   ): Promise<Generated.DeleteUserAlertMutation> {
@@ -294,20 +259,6 @@ export class NotifiService
     return this._typedClient.getActiveAlerts(variables, headers);
   }
 
-  async getConfigurationForDapp(
-    variables: Generated.GetConfigurationForDappQueryVariables,
-  ): Promise<Generated.GetConfigurationForDappQuery> {
-    const headers = this._requestHeaders();
-    return this._typedClient.getConfigurationForDapp(variables, headers);
-  }
-
-  async getConnectedWallets(
-    variables: Generated.GetConnectedWalletsQueryVariables,
-  ): Promise<Generated.GetConnectedWalletsQuery> {
-    const headers = this._requestHeaders();
-    return this._typedClient.getConnectedWallets(variables, headers);
-  }
-
   async getEmailTargets(
     variables: Generated.GetEmailTargetsQueryVariables,
   ): Promise<Generated.GetEmailTargetsQuery> {
@@ -333,13 +284,6 @@ export class NotifiService
   ): Promise<Generated.GetWeb3TargetsQuery> {
     const headers = this._requestHeaders();
     return this._typedClient.getWeb3Targets(variables, headers);
-  }
-
-  async getFilters(
-    variables: Generated.GetFiltersQueryVariables,
-  ): Promise<Generated.GetFiltersQuery> {
-    const headers = this._requestHeaders();
-    return this._typedClient.getFilters(variables, headers);
   }
 
   async getFusionNotificationHistory(
@@ -498,13 +442,6 @@ export class NotifiService
       variables,
       headers,
     );
-  }
-
-  async sendMessage(
-    variables: Generated.SendMessageMutationVariables,
-  ): Promise<Generated.SendMessageMutation> {
-    const headers = this._requestHeaders();
-    return this._typedClient.sendMessage(variables, headers);
   }
 
   async updateTargetGroup(
