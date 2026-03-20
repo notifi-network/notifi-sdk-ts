@@ -1,3 +1,4 @@
+import { NotifiError } from '@notifi-network/notifi-frontend-client';
 import {
   FormTarget,
   Target,
@@ -168,7 +169,10 @@ export const useTargetListItem = (input: {
                     walletTargetSenderAddress,
                   );
                 } catch (e) {
-                  console.error('Error signing wallet target', e);
+                  console.error(
+                    'Error signing wallet target',
+                    NotifiError.from(e),
+                  );
                 }
               }
             },

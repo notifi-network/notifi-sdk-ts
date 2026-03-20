@@ -1,4 +1,7 @@
-import { NotifiEnvironment } from '@notifi-network/notifi-frontend-client';
+import {
+  NotifiEnvironment,
+  NotifiError,
+} from '@notifi-network/notifi-frontend-client';
 
 export const validateCardId = (cardId: string | null): boolean => {
   if (!cardId) return false;
@@ -72,7 +75,7 @@ export const validateCardIdExists = async (
 
     return true;
   } catch (error) {
-    console.error('Error validating cardId:', error);
+    console.error('Error validating cardId:', NotifiError.from(error));
     return false;
   }
 };

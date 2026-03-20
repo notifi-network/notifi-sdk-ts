@@ -1,6 +1,7 @@
 import {
   InputObject,
   NotifiEnvironment,
+  NotifiError,
 } from '@notifi-network/notifi-frontend-client';
 import { NotifiContextProvider } from '@notifi-network/notifi-react';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
@@ -111,9 +112,10 @@ export const NotifiContextWrapper: React.FC<
           removeCardIdFromUrl();
         }
       } catch (error) {
+        const notifiError = NotifiError.from(error);
         console.warn(
           `Failed to validate cardId "${cardId}". Falling back to default cardId "${defaultCardId}"`,
-          error,
+          notifiError,
         );
         setCurrentCardId(defaultCardId);
         removeCardIdFromUrl();
