@@ -1,4 +1,7 @@
-import { NotifiError } from '@notifi-network/notifi-frontend-client';
+import {
+  NotifiError,
+  NotifiValidationError,
+} from '@notifi-network/notifi-frontend-client';
 import {
   FormTarget,
   Target,
@@ -61,7 +64,9 @@ export const useTargetListItem = (input: {
         message: 'Signup',
         onClick: async () => {
           const errorMsg = `ERROR: No signup action defined for target: ${input.target}`;
-          console.error(errorMsg);
+          console.error(
+            new NotifiValidationError(errorMsg, 'MISSING_SIGNUP_ACTION'),
+          );
         },
       },
     };
@@ -144,7 +149,10 @@ export const useTargetListItem = (input: {
                 !frontendClientStatus.isAuthenticated
               ) {
                 console.error(
-                  `useTargetListItem: sing wallet method not available. Please make sure "notifi-react-wallet-target-plugin" pkg is in use.`,
+                  new NotifiValidationError(
+                    `useTargetListItem: sing wallet method not available. Please make sure "notifi-react-wallet-target-plugin" pkg is in use.`,
+                    'WALLET_TARGET_PLUGIN_NOT_AVAILABLE',
+                  ),
                 );
                 return;
               }
