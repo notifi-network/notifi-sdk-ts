@@ -2,6 +2,7 @@ import { useUserInputParmToFilterOption } from '@/hooks/useUserInputParmToFilter
 import {
   CustomInputConstraints,
   FusionEventTopic,
+  NotifiValidationError,
   TopicMetadata,
   UiType,
   UserInputParam,
@@ -364,7 +365,7 @@ const validateCustomInputRange = (
   const upperBound = customInputConstraint?.upperBound;
   const lowerBound = customInputConstraint?.lowerBound;
   if (input === '' || isNaN(Number(input)))
-    throw new Error('validateCustomInputRange - Input cannot be empty');
+    throw new NotifiValidationError('Input cannot be empty', 'EMPTY_INPUT');
 
   if (
     isNaN(Number(upperBound)) ||
