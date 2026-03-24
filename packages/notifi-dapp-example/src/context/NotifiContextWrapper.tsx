@@ -1,6 +1,8 @@
 import {
   InputObject,
   NotifiEnvironment,
+  NotifiError,
+  NotifiValidationError,
 } from '@notifi-network/notifi-frontend-client';
 import { NotifiContextProvider } from '@notifi-network/notifi-react';
 import { useWallets } from '@notifi-network/notifi-wallet-provider';
@@ -111,9 +113,10 @@ export const NotifiContextWrapper: React.FC<
           removeCardIdFromUrl();
         }
       } catch (error) {
+        const notifiError = NotifiError.from(error);
         console.warn(
           `Failed to validate cardId "${cardId}". Falling back to default cardId "${defaultCardId}"`,
-          error,
+          notifiError,
         );
         setCurrentCardId(defaultCardId);
         removeCardIdFromUrl();
@@ -160,11 +163,19 @@ export const NotifiContextWrapper: React.FC<
     switch (selectedWallet) {
       case 'keplr':
         walletPublicKey = wallets[selectedWallet].walletKeys?.base64 ?? '';
-        if (!walletPublicKey) throw new Error('ERROR: invalid walletPublicKey');
+        if (!walletPublicKey)
+          throw new NotifiValidationError(
+            'invalid walletPublicKey',
+            'INVALID_WALLET_PUBLIC_KEY',
+          );
         signMessage = async (message: Uint8Array): Promise<Uint8Array> => {
           const result = await wallets[selectedWallet].signArbitrary(message);
 
-          if (!result) throw new Error('ERROR: invalid signature');
+          if (!result)
+            throw new NotifiValidationError(
+              'invalid signature',
+              'INVALID_SIGNATURE',
+            );
           return Uint8Array.from(Buffer.from(result.signature, 'base64'));
         };
         break;
@@ -178,12 +189,20 @@ export const NotifiContextWrapper: React.FC<
       case 'coinbase':
         walletPublicKey =
           wallets[selectedWallet].walletKeys?.hex?.toLowerCase() ?? '';
-        if (!walletPublicKey) throw new Error('ERROR: invalid walletPublicKey');
+        if (!walletPublicKey)
+          throw new NotifiValidationError(
+            'invalid walletPublicKey',
+            'INVALID_WALLET_PUBLIC_KEY',
+          );
         signMessage = async (message: Uint8Array): Promise<Uint8Array> => {
           const messageString = Buffer.from(message).toString('utf8');
           const result =
             await wallets[selectedWallet].signArbitrary(messageString);
-          if (!result) throw new Error('ERROR: invalid signature');
+          if (!result)
+            throw new NotifiValidationError(
+              'invalid signature',
+              'INVALID_SIGNATURE',
+            );
           return getBytes(result);
         };
         break;

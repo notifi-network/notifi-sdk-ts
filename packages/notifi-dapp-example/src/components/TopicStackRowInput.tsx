@@ -1,6 +1,7 @@
 import { useTopicStackRowInput } from '@/hooks/useTopicStackRowInput';
 import {
   FusionEventTopic,
+  NotifiValidationError,
   TopicMetadata,
   UiType,
   UserInputParam,
@@ -64,7 +65,10 @@ export const TopicStackRowInput = <T extends TopicRowCategory>(
       ?.description ?? '';
   if (!subscriptionValueOrRef) {
     console.error(
-      'ERROR - unable to render TopicStackRowInput. Ensure fusionEventMetadata includes subscriptionValueOrRef',
+      new NotifiValidationError(
+        'unable to render TopicStackRowInput. Ensure fusionEventMetadata includes subscriptionValueOrRef',
+        'MISSING_SUBSCRIPTION_VALUE_OR_REF',
+      ),
     );
     return null;
   }
