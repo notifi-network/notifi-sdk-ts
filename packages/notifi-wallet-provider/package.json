@@ -1,6 +1,6 @@
 {
   "name": "@notifi-network/notifi-wallet-provider",
-  "version": "7.6.0",
+  "version": "8.0.0",
   "description": "React provider for unified multi-chain wallet integration in Notifi-powered applications",
   "author": "eric-notifi <eric.lee@notifi.network>",
   "homepage": "https://github.com/notifi-network/notifi-sdk-ts",
