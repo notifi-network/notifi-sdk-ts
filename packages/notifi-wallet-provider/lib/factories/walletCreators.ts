@@ -1,4 +1,3 @@
-import { type BinanceWalletHookType } from '../hooks/useBinance';
 import { type CtrlWalletHookType } from '../hooks/useCtrl';
 import { type EternlWalletHookType } from '../hooks/useEternl';
 import { type InjectedWalletHookType } from '../hooks/useInjectedWallet';
@@ -9,34 +8,13 @@ import { type OkxCardanoWalletHookType } from '../hooks/useOkxCardano';
 import { PhantomWalletHookType } from '../hooks/usePhantom';
 import { type WagmiWalletHookType } from '../hooks/useWagmiWallet';
 import { type YoroiWalletHookType } from '../hooks/useYoroi';
-import {
-  BinanceWallet,
-  EvmWallet,
-  KeplrWallet,
-  LaceWallet,
-  PhantomWallet,
-} from '../types';
+import { EvmWallet, KeplrWallet, LaceWallet, PhantomWallet } from '../types';
 
 // Generic EVM wallet creation function
 export const createEvmWallet = (
   hook: InjectedWalletHookType | WagmiWalletHookType,
 ): EvmWallet => {
   return new EvmWallet(
-    hook.isWalletInstalled,
-    hook.walletKeys,
-    hook.signArbitrary,
-    hook.connectWallet,
-    hook.disconnectWallet,
-    hook.websiteURL,
-    hook.sendTransaction,
-  );
-};
-
-// Binance wallet creation function
-export const createBinanceWallet = (
-  hook: BinanceWalletHookType,
-): BinanceWallet => {
-  return new BinanceWallet(
     hook.isWalletInstalled,
     hook.walletKeys,
     hook.signArbitrary,

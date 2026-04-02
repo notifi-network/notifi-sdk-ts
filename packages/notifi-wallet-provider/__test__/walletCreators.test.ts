@@ -1,12 +1,10 @@
 import {
-  createBinanceWallet,
   createEvmWallet,
   createKeplrWallet,
   createLaceWallet,
   createPhantomWallet,
 } from '../lib/factories/walletCreators';
 import {
-  BinanceWallet,
   EvmWallet,
   KeplrWallet,
   LaceWallet,
@@ -35,16 +33,6 @@ const createMockWagmiHook = () => ({
   disconnectWallet: mockFn(),
   sendTransaction: mockFn(),
   websiteURL: 'https://walletconnect.org',
-});
-
-const createMockBinanceHook = () => ({
-  isWalletInstalled: true,
-  walletKeys: { bech32: 'bnb1test', hex: '0xbnb' },
-  connectWallet: mockFn(),
-  signArbitrary: mockFn(),
-  disconnectWallet: mockFn(),
-  sendTransaction: mockFn(),
-  websiteURL: 'https://www.binance.com/en/wallet-direct',
 });
 
 const createMockKeplrHook = () => ({
@@ -107,21 +95,6 @@ describe('walletCreators', () => {
         bech32: 'cosmos1wagmi',
         hex: '0xwagmi',
       });
-    });
-  });
-
-  describe('createBinanceWallet', () => {
-    it('should create BinanceWallet from hook', () => {
-      const hook = createMockBinanceHook();
-      const wallet = createBinanceWallet(hook);
-
-      expect(wallet).toBeInstanceOf(BinanceWallet);
-      expect(wallet.isInstalled).toBe(true);
-      expect(wallet.walletKeys).toEqual({ bech32: 'bnb1test', hex: '0xbnb' });
-      expect(wallet.signArbitrary).toBe(hook.signArbitrary);
-      expect(wallet.connect).toBe(hook.connectWallet);
-      expect(wallet.disconnect).toBe(hook.disconnectWallet);
-      expect(wallet.sendTransaction).toBe(hook.sendTransaction);
     });
   });
 

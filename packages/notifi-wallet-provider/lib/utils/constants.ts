@@ -10,7 +10,7 @@ export const defaultValue = {
 export const walletsWebsiteLink: { [key in keyof Wallets]: string } = {
   metamask: 'https://metamask.io/download/',
   keplr: 'https://www.keplr.app/download',
-  binance: 'https://www.bnbchain.org/en/binance-wallet',
+  binance: 'https://www.binance.com/en/web3wallet',
   okx: 'https://www.okx.com/web3',
   rabby: 'https://rabby.io/',
   walletconnect: 'https://walletconnect.com/',
