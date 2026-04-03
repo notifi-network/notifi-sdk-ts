@@ -2,7 +2,6 @@ import { Wallets } from '../types';
 import { BLOCKCHAIN_WALLETS } from '../utils/walletConfigs';
 import { useAllWalletHooks } from './hookCreators';
 import {
-  createBinanceWallet,
   createCtrlWallet,
   createEternlWallet,
   createEvmWallet,
@@ -65,9 +64,6 @@ export const createWallets = (hooks: WalletHooks): Wallets => {
     }
   });
 
-  if (hooks.binance) {
-    wallets.binance = createBinanceWallet(hooks.binance);
-  }
   if (hooks.keplr) {
     wallets.keplr = createKeplrWallet(hooks.keplr);
   }

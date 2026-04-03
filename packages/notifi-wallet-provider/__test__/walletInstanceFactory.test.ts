@@ -1,7 +1,6 @@
 import { useAllWalletHooks } from '../lib/factories/hookCreators';
 import { createWallets } from '../lib/factories/walletInstanceFactory';
 import {
-  BinanceWallet,
   EvmWallet,
   KeplrWallet,
   LaceWallet,
@@ -16,7 +15,7 @@ type WalletHooks = ReturnType<typeof useAllWalletHooks>;
 const mockFn = () => jest.fn();
 
 const createMockHooks = (): WalletHooks => ({
-  // Injected EVM wallets (5)
+  // Injected EVM wallets (6)
   metamask: {
     isWalletInstalled: true,
     walletKeys: { bech32: 'cosmos1mm', hex: '0xmm' },
@@ -62,6 +61,15 @@ const createMockHooks = (): WalletHooks => ({
     sendTransaction: mockFn(),
     websiteURL: 'https://rainbow.me/',
   },
+  binance: {
+    isWalletInstalled: true,
+    walletKeys: { bech32: 'bnb1test', hex: '0xbnb' },
+    connectWallet: mockFn(),
+    signArbitrary: mockFn(),
+    disconnectWallet: mockFn(),
+    sendTransaction: mockFn(),
+    websiteURL: 'https://www.binance.com/',
+  },
   // Wagmi EVM wallets (2)
   walletconnect: {
     isWalletInstalled: true,
@@ -89,15 +97,6 @@ const createMockHooks = (): WalletHooks => ({
     signArbitraryKeplr: mockFn(),
     disconnectKeplr: mockFn(),
     websiteURL: 'https://www.keplr.app/',
-  },
-  binance: {
-    isWalletInstalled: true,
-    walletKeys: { bech32: 'bnb1test', hex: '0xbnb' },
-    connectWallet: mockFn(),
-    signArbitrary: mockFn(),
-    disconnectWallet: mockFn(),
-    sendTransaction: mockFn(),
-    websiteURL: 'https://www.binance.com/',
   },
   phantom: {
     isPhantomInstalled: true,
@@ -171,7 +170,7 @@ describe('walletInstanceFactory — createWallets', () => {
   });
 
   describe('EVM wallets', () => {
-    it('should create all 7 EVM wallets as EvmWallet instances', () => {
+    it('should create all 8 EVM wallets as EvmWallet instances', () => {
       const hooks = createMockHooks();
       const wallets = createWallets(hooks);
 
@@ -187,6 +186,14 @@ describe('walletInstanceFactory — createWallets', () => {
       expect(wallets.zerion.isInstalled).toBe(false);
       expect(wallets.rainbow.isInstalled).toBe(false);
       expect(wallets.metamask.isInstalled).toBe(true);
+    });
+
+    it('should create Binance as EvmWallet (EIP-6963)', () => {
+      const hooks = createMockHooks();
+      const wallets = createWallets(hooks);
+
+      expect(wallets.binance).toBeInstanceOf(EvmWallet);
+      expect(wallets.binance.isInstalled).toBe(true);
     });
   });
 
@@ -232,14 +239,6 @@ describe('walletInstanceFactory — createWallets', () => {
       expect(wallets.phantom).toBeInstanceOf(PhantomWallet);
       expect(wallets.phantom.isInstalled).toBe(true);
       expect(wallets.phantom.walletKeys).toEqual({ base58: 'PhantomKey' });
-    });
-
-    it('should create Binance as BinanceWallet', () => {
-      const hooks = createMockHooks();
-      const wallets = createWallets(hooks);
-
-      expect(wallets.binance).toBeInstanceOf(BinanceWallet);
-      expect(wallets.binance.isInstalled).toBe(true);
     });
   });
 });

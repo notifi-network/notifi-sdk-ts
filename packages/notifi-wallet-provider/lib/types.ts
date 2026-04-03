@@ -8,15 +8,9 @@ import { CIP30WalletAPI } from './utils/lace.type';
 import { PhantomProvider } from './utils/solana.type';
 
 export type Ethereum = Eip1193Provider & BrowserProvider;
-export type BinanceChain = Ethereum & {
-  requestAccounts: () => Promise<
-    { addresses: { type: string; address: string }[] }[]
-  >;
-};
 declare global {
   interface Window {
     keplr: Keplr;
-    BinanceChain: BinanceChain;
     // NOTE: Only support solana for now (for EVM, use EIP1193Provider)
     phantom: { bitcoin: never; ethereum: never; solana: PhantomProvider };
     // NOTE: window.cardano and window.midnight interfaces are declared in lace.type.ts
@@ -91,18 +85,6 @@ export class EvmWallet implements NotifiWallet {
   ) {}
 }
 
-export class BinanceWallet implements NotifiWallet {
-  constructor(
-    public isInstalled: boolean,
-    public walletKeys: EvmWalletKeys | null,
-    public signArbitrary: MetamaskSignMessage,
-    public connect: () => Promise<EvmWalletKeys | null>,
-    public disconnect: () => void,
-    public websiteURL: string,
-    public sendTransaction: EvmSendTransaction,
-  ) {}
-}
-
 export type KeplrSignMessage = (
   message: string | Uint8Array,
 ) => Promise<StdSignature | undefined>;
@@ -160,7 +142,7 @@ export type Wallets = {
   rainbow: EvmWallet;
   zerion: EvmWallet;
   okx: EvmWallet;
-  binance: BinanceWallet;
+  binance: EvmWallet;
   walletconnect: EvmWallet;
   phantom: PhantomWallet;
   lace: LaceWallet;

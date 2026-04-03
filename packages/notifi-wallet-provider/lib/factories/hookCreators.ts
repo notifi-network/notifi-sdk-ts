@@ -1,7 +1,6 @@
 import React from 'react';
 
 import type { WalletOptions } from '../context/NotifiWallets';
-import { type BinanceWalletHookType, useBinance } from '../hooks/useBinance';
 import { type CtrlWalletHookType, useCtrl } from '../hooks/useCtrl';
 import { type EternlWalletHookType, useEternl } from '../hooks/useEternl';
 import { useInjectedWallet } from '../hooks/useInjectedWallet';
@@ -66,6 +65,13 @@ export const useInjectedWalletHooks = (params: WalletHookParams) => {
       'rainbow',
       evmOptions,
     ),
+    binance: useInjectedWallet(
+      setIsLoading,
+      throwError,
+      selectWallet,
+      'binance',
+      evmOptions,
+    ),
   };
 };
 
@@ -111,11 +117,6 @@ export const useSpecialWalletHooks = (params: WalletHookParams) => {
       selectWallet,
       walletOptions?.keplr,
     ) as KeplrWalletHookType,
-    binance: useBinance(
-      setIsLoading,
-      throwError,
-      selectWallet,
-    ) as BinanceWalletHookType,
     phantom: usePhantom(
       setIsLoading,
       throwError,
