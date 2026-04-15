@@ -1,10 +1,11 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 
+import { version } from '../package.json';
 import {
   NotifiMcpClient,
   NotifiMcpClientConfig,
   createNotifiMcpClient,
-} from './notifi-client';
+} from './NotifiMcpClient';
 
 export type NotifiMcpServerContext = Readonly<{
   client: NotifiMcpClient;
@@ -26,7 +27,7 @@ export const createNotifiMcpServer = (
   const client = options.client ?? createNotifiMcpClient(options.config);
   const server = new McpServer({
     name: 'notifi',
-    version: '8.0.0',
+    version,
   });
 
   return {
