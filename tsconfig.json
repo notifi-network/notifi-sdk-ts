@@ -6,6 +6,7 @@
       "@notifi-network/notifi-dataplane": ["notifi-dataplane/lib"],
       "@notifi-network/notifi-frontend-client": ["notifi-frontend-client/lib"],
       "@notifi-network/notifi-graphql": ["notifi-graphql/lib"],
+      "@notifi-network/notifi-mcp": ["notifi-mcp/lib"],
       "@notifi-network/notifi-node": ["notifi-node/lib"],
       "@notifi-network/notifi-react": ["notifi-react/lib"],
       "@notifi-network/notifi-react-wallet-target-plugin": [

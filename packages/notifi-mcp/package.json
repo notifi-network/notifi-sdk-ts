@@ -1,0 +1,44 @@
+{
+  "name": "@notifi-network/notifi-mcp",
+  "version": "8.0.0",
+  "description": "Local-first MCP server for Notifi",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "bin": {
+    "notifi-mcp": "./dist/cli.mjs"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/notifi-network/notifi-sdk-ts.git"
+  },
+  "scripts": {
+    "build": "npm run clean && npm run compile",
+    "clean": "rimraf ./dist",
+    "compile": "tsup lib/index.ts lib/cli.ts --format cjs,esm --dts --clean"
+  },
+  "bugs": {
+    "url": "https://github.com/notifi-network/notifi-sdk-ts/issues"
+  },
+  "homepage": "https://github.com/notifi-network/notifi-sdk-ts#readme",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "@notifi-network/notifi-graphql": "^8.0.0",
+    "@notifi-network/notifi-node": "^8.0.0",
+    "dotenv": "^16.4.5",
+    "zod": "^3.25.76"
+  }
+}
