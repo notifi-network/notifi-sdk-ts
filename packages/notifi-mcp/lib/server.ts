@@ -6,6 +6,7 @@ import {
   NotifiMcpClientConfig,
   createNotifiMcpClient,
 } from './NotifiMcpClient';
+import { registerNotifiMcpTools } from './tools';
 
 export type NotifiMcpServerContext = Readonly<{
   client: NotifiMcpClient;
@@ -30,8 +31,8 @@ export const createNotifiMcpServer = (
     version,
   });
 
-  return {
-    server,
-    context: { client },
-  };
+  const context: NotifiMcpServerContext = { client };
+  registerNotifiMcpTools(server, context);
+
+  return { server, context };
 };
