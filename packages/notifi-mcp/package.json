@@ -1,11 +1,12 @@
 {
   "name": "@notifi-network/notifi-mcp",
   "version": "8.0.0",
-  "description": "Local-first MCP server for Notifi",
+  "description": "Local-first MCP server for Notifi AI agents",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "exports": {
     ".": {
