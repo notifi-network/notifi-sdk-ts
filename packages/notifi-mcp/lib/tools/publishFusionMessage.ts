@@ -83,7 +83,7 @@ export const registerPublishFusionMessage = (
 ): void => {
   server.tool(
     'publish_fusion_message',
-    'Publish a notification to Notifi subscribers via a fusion event. The variablesJson payload is passed directly to the Notifi template engine — consult the tenant config or Notifi docs for the expected shape.',
+    'Publish a notification to Notifi subscribers via a fusion event. The variablesJson payload is passed directly to the Notifi template engine and should be treated as template-defined input, not a universal platform-defined schema.',
     {
       eventTypeId: z
         .string()
@@ -91,7 +91,7 @@ export const registerPublishFusionMessage = (
       variablesJson: z
         .record(z.unknown())
         .describe(
-          'Template variables object passed directly to the Notifi rendering engine. Shape depends on the topic template (e.g. CommunityManagerVariablesJsonPayload).',
+          'Template variables object passed directly to the Notifi rendering engine. Field names depend on the tenant topic template and are typically referenced in templates via eventData. CommunityManagerVariablesJsonPayload is only one topic-specific example, not the default format.',
         ),
       targetWallets: z
         .array(
@@ -106,7 +106,7 @@ export const registerPublishFusionMessage = (
         )
         .optional()
         .describe(
-          'Optional list of specific wallets to target. If omitted, all subscribers to the event receive the notification.',
+          'Optional list of specific wallets to target. If omitted, all subscribers to the event may receive the notification based on topic configuration and subscriber setup. This is wallet-level targeting, not destination-channel routing.',
         ),
       idempotencyKey: z
         .string()
