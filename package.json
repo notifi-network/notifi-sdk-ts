@@ -47,6 +47,7 @@
     "packages/notifi-dataplane",
     "packages/notifi-frontend-client",
     "packages/notifi-graphql",
+    "packages/notifi-mcp",
     "packages/notifi-node",
     "packages/notifi-node-sample",
     "packages/notifi-solana-hw-login",
