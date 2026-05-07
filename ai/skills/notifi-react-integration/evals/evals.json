@@ -1,0 +1,33 @@
+{
+  "skill_name": "notifi-react-integration",
+  "rubric": "evals/rubric.md",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Help me integrate @notifi-network/notifi-react into my React app. I already have Aptos wallet connectivity, and I want the smallest working NotifiCardModal setup first.",
+      "expected_output": "Chooses the NotifiCardModal path, wires NotifiContextProvider into the existing app structure, reuses the app's existing Aptos wallet state for on-chain auth, adapts signing from the current wallet adapter, and asks for missing runtime values (tenantId, cardId) only when they are required.",
+      "fixture": {
+        "fixture_id": "explorer",
+        "path": "ai/eval-fixtures/notifi-react-integration/explorer/fixture.json"
+      },
+      "grading": "human",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I do not want NotifiCardModal. Help me build a custom notification preferences panel with notifi-react contexts. It should at least support login, topic display, and target toggling.",
+      "expected_output": "Chooses the custom context integration path, uses the correct Notifi React contexts for auth, topics, and targets, and avoids pushing the packaged card UI.",
+      "fixture": null,
+      "grading": "human",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "I am using Google OIDC login, not a blockchain wallet. Help me integrate NotifiContextProvider with the off-chain auth path.",
+      "expected_output": "Chooses OFF_CHAIN auth, asks for or reuses a stable user identifier and signIn flow, and does not incorrectly require wallet-based signing.",
+      "fixture": null,
+      "grading": "human",
+      "files": []
+    }
+  ]
+}
