@@ -6,6 +6,13 @@
 .npmrc
 
 .nx/
+.ai-workspaces/
+.ai-workspaces/*
+!.ai-workspaces/*/
+!.ai-workspaces/*/.gitignore
+ai/.workspaces/*
+!ai/.workspaces/*/
+!ai/.workspaces/*/.gitignore
 
 **/*.log
 

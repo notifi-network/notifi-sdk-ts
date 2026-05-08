@@ -1,0 +1,6 @@
+# Eval run artifacts
+# This directory is used as a working area for eval runs.
+# Cloned fixtures and agent output should not be committed.
+
+*
+!.gitignore

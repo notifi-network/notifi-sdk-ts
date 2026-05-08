@@ -145,7 +145,7 @@ If the correct payload shape is not obvious, call `get_tenant_config` first and 
 This repo includes a tenant-operation companion skill for agents working with Notifi:
 
 ```text
-skills/notifi-tenant-operation/
+ai/skills/notifi-tenant-operation/
 ```
 
 Use that skill for:
