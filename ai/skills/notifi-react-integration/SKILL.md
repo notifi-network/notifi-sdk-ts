@@ -153,6 +153,57 @@ Implementation guidance:
 - keep the initial version small and working
 - use the existing router, layout, modal, and wallet hooks already present in the project
 
+## NotifiCardModal Entry Placement
+
+When the user wants `NotifiCardModal`, do not only think about provider wiring. Also choose a natural entry surface.
+
+Preferred heuristic:
+
+1. If the app already has a top nav or header utility area, prefer using that area for the modal entry.
+2. Prefer a small icon CTA over adding a large new section or standalone demo block.
+3. Keep the entry close to existing wallet, account, settings, or other utility actions when possible.
+4. Preserve the app's current header structure, spacing, and interaction style.
+
+If there is no clear top nav or header utility surface, fall back to the nearest existing action area instead of inventing a new layout pattern.
+
+## CTA Placement Ambiguity Handling
+
+If the app structure suggests more than one reasonable entry location, do not guess too aggressively.
+
+Guidance:
+
+- if the current UI clearly implies a best placement, proceed with the smallest natural integration
+- if there are multiple plausible locations, ask the user which entry surface they prefer
+- offer a few concrete options instead of asking an open-ended design question
+- if the user has no preference, state the default choice and proceed with the smallest reasonable option
+
+Good question pattern:
+
+- "I found an existing header/top nav. Do you want the Notifi entry as a header utility icon, an icon near wallet/account actions, a profile menu item, or a temporary minimal button while placement is still undecided?"
+
+Do not invent a brand new navigation pattern when existing app structure already provides a natural entry surface.
+
+## Modal Reopen And Readiness
+
+If the host app mounts `NotifiCardModal` inside its own dialog, popover, drawer, or other CTA-triggered shell, do not assume reopen behavior will work automatically.
+
+Guidance:
+
+- reuse the app's existing modal shell when it is already the natural integration surface
+- prefer remounting the Notifi subtree on each open instead of keeping it mounted forever behind an `open` flag
+- if reopen shows an empty modal or inconsistent state, gate the inner `NotifiCardModal` render on Notifi context readiness rather than immediately rendering it
+- use `useNotifiFrontendClientContext` and `useNotifiUserSettingContext` to wait for initialization and authenticated user-setting loading when needed
+- keep this workaround in the host app wrapper layer; do not rewrite the packaged card UI unless there is a stronger product reason
+
+Common failure mode:
+
+- first open works, but reopening after close shows an empty `.notifi-card-modal` container because the host wrapper remount timing does not align with Notifi context readiness
+
+Preferred host-app workaround:
+
+- remount the wrapper on each open
+- if the user is already authenticated, wait until the frontend client is initialized and user-setting loading is complete before rendering `NotifiCardModal`
+
 ## Custom Context Integration Path
 
 Use this when the user wants their own UI instead of `NotifiCardModal`.

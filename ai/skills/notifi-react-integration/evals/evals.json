@@ -5,7 +5,7 @@
     {
       "id": 1,
       "prompt": "Help me integrate @notifi-network/notifi-react into my React app. I already have Aptos wallet connectivity, and I want the smallest working NotifiCardModal setup first.",
-      "expected_output": "Chooses the NotifiCardModal path, wires NotifiContextProvider into the existing app structure, reuses the app's existing Aptos wallet state for on-chain auth, adapts signing from the current wallet adapter, and asks for missing runtime values (tenantId, cardId) only when they are required.",
+      "expected_output": "Chooses the NotifiCardModal path, wires NotifiContextProvider into the existing app structure, reuses the app's existing Aptos wallet state for on-chain auth, adapts signing from the current wallet adapter, asks for missing runtime values (tenantId, cardId) only when they are required, prefers an existing header or top-nav entry surface over inventing a disconnected modal trigger, and preserves a normal open-close-reopen modal flow when the card is wrapped by the host app UI.",
       "fixture": {
         "fixture_id": "explorer",
         "path": "ai/eval-fixtures/notifi-react-integration/explorer/fixture.json"

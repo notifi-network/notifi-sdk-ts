@@ -50,9 +50,9 @@ Did the agent preserve the user's existing app structure, conventions, and depen
 
 Is the generated code likely to compile and work?
 
-- **Pass**: Imports are correct, hook usage follows React rules, types are compatible, and the integration would work with the real SDK.
-- **Partial**: Minor issues (e.g. missing import, small type mismatch) but overall approach is sound.
-- **Fail**: Fundamental errors (e.g. wrong hook, broken component tree, incorrect API usage).
+- **Pass**: Imports are correct, hook usage follows React rules, types are compatible, and the integration would work with the real SDK. If the card is wrapped in a host-app modal shell, open, close, and reopen behavior remains functional.
+- **Partial**: Minor issues (e.g. missing import, small type mismatch) but overall approach is sound, or the integration mostly works but has a lifecycle issue such as flaky reopen behavior.
+- **Fail**: Fundamental errors (e.g. wrong hook, broken component tree, incorrect API usage), or the card opens once but fails on a normal reopen flow.
 
 ### 7. Minimality
 
@@ -62,17 +62,26 @@ Did the agent produce the smallest correct integration without unnecessary extra
 - **Partial**: Slightly over-engineered but nothing harmful.
 - **Fail**: Agent added significant unnecessary code (e.g. full custom UI when card modal was requested, wallet target plugin when not needed).
 
+### 8. Entry Placement And Ambiguity Handling
+
+Did the agent choose a natural `NotifiCardModal` entry surface and handle CTA placement ambiguity well?
+
+- **Pass**: The agent identifies a reasonable existing header, top nav, or utility surface for the entry. If placement is ambiguous, it asks the user a focused question with concrete options instead of guessing.
+- **Partial**: The chosen entry surface is workable but not very natural, or the agent defaults without asking even though multiple placements seem plausible.
+- **Fail**: The agent ignores an obvious existing navigation or utility surface, invents an unrelated entry pattern, or fails to address clear placement ambiguity.
+
 ## Scoring Summary
 
-| Dimension                 | Score | Notes |
-| ------------------------- | ----- | ----- |
-| Path Selection            |       |       |
-| Auth Mode                 |       |       |
-| Provider Placement        |       |       |
-| Required Params Handling  |       |       |
-| Existing App Preservation |       |       |
-| Code Correctness          |       |       |
-| Minimality                |       |       |
+| Dimension                              | Score | Notes |
+| -------------------------------------- | ----- | ----- |
+| Path Selection                         |       |       |
+| Auth Mode                              |       |       |
+| Provider Placement                     |       |       |
+| Required Params Handling               |       |       |
+| Existing App Preservation              |       |       |
+| Code Correctness                       |       |       |
+| Minimality                             |       |       |
+| Entry Placement And Ambiguity Handling |       |       |
 
 **Overall**: Pass / Partial / Fail
 
