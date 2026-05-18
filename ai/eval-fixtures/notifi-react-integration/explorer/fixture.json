@@ -1,12 +1,10 @@
 {
   "fixture_id": "explorer",
   "skill": "notifi-react-integration",
-  "description": "Movement Explorer - a Vite React app with Aptos wallet connectivity and no Notifi integration in the pinned baseline. Used to validate the smallest working `notifi-react-integration` card-modal path.",
+  "description": "Movement Explorer — a Vite React app with Aptos wallet connectivity and no Notifi integration in the pinned baseline. Used to validate the smallest working `notifi-react-integration` card-modal path.",
   "repo": "https://github.com/movementlabsxyz/explorer.git",
   "commit": "17c10c4b7bff19f38e06d874685392c76d2f7ca3",
   "setup": {
-    "clone": "git clone https://github.com/movementlabsxyz/explorer.git",
-    "checkout": "git checkout 17c10c4b7bff19f38e06d874685392c76d2f7ca3",
     "install": "pnpm install",
     "notes": "Requires pnpm 8 and a React/Vite toolchain. The app uses Aptos wallet adapters for on-chain wallet connectivity."
   },

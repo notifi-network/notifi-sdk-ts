@@ -18,7 +18,7 @@ This repo also includes optional eval definitions, fixture metadata, and a local
 | Skill | Use for | Runtime assets to copy | Optional companions |
 | --- | --- | --- | --- |
 | `notifi-react-integration` | Integrating `@notifi-network/notifi-react` into React or Next.js apps, including `NotifiContextProvider`, `NotifiCardModal`, custom context UI, auth branching, `inputs`, SmartLink, and troubleshooting | `ai/skills/notifi-react-integration/SKILL.md` | `ai/skills/notifi-react-integration/evals/`, `ai/eval-fixtures/notifi-react-integration/`, `ai/tools/skill-eval/prepare.js` |
-| `notifi-tenant-operation` | Tenant-side notification workflows such as tenant config discovery, active alert inspection, `variablesJson` reasoning, and publish operations | `ai/skills/notifi-tenant-operation/SKILL.md` and `ai/skills/notifi-tenant-operation/references/` | [`packages/notifi-mcp/README.md`](../packages/notifi-mcp/README.md) and `@notifi-network/notifi-mcp` |
+| `notifi-tenant-operation` | Tenant-side notification workflows such as tenant config discovery, active alert inspection, `variablesJson` reasoning, and publish operations | `ai/skills/notifi-tenant-operation/SKILL.md` and `ai/skills/notifi-tenant-operation/references/` | `ai/skills/notifi-tenant-operation/evals/`, [`packages/notifi-mcp/README.md`](../packages/notifi-mcp/README.md) and `@notifi-network/notifi-mcp` |
 
 If you want the simplest portable bundle, copy the full skill directory under `ai/skills/<skill-name>/`. That preserves any relative file references the skill may rely on.
 
