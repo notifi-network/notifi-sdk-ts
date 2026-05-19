@@ -289,12 +289,12 @@ function main() {
   }
 
   const rubricRelativePath =
-    evalsJson.rubric || path.join('evals', 'rubric.md');
+    evalsJson.rubric || 'evals/rubric.md';
   const rubricPath = path.join(
     aiRoot,
     'skills',
     args.skill,
-    rubricRelativePath.replace(/^evals\//, 'evals/'),
+    rubricRelativePath,
   );
 
   if (!fs.existsSync(rubricPath)) {

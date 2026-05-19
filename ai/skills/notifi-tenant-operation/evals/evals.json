@@ -1,0 +1,24 @@
+{
+  "skill_name": "notifi-tenant-operation",
+  "rubric": "evals/rubric.md",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I need to publish a notification to my Notifi subscribers. I have a tenant set up with a 'Community Announcement' fusion event. Can you help me publish a message saying 'System maintenance completed tonight at 11 PM PST'?",
+      "expected_output": "REQUIRED: Choose the MCP path (publish_fusion_message) before considering direct API calls. REQUIRED: Recommend calling get_tenant_config first to discover the fusion event ID and inspect metadata. REQUIRED: Construct variablesJson appropriate for a Community Manager-like topic with eventData containing the message. REQUIRED: Explain that the payload shape is inferred from the template, not assumed. REQUIRED: Ask for missing tenant credentials (NOTIFI_SID, NOTIFI_SECRET) if not provided. FORBIDDEN: Construct a payload without first verifying the event config. FORBIDDEN: Treat Community Manager payload shape as universal.",
+      "grading": "human"
+    },
+    {
+      "id": 2,
+      "prompt": "I just got access to a new Notifi tenant. How do I find out what fusion events are available on this tenant and what sort of payload each one expects?",
+      "expected_output": "REQUIRED: Recommend calling get_tenant_config as the first step. REQUIRED: Explain that the response contains fusionEvents array with id, name, and metadata fields. REQUIRED: Explain that dataJson and metadata contain payload structure hints. REQUIRED: Warn against guessing payload shapes before inspection. REQUIRED: Ask for NOTIFI_SID and NOTIFI_SECRET if not provided. FORBIDDEN: Suggest direct API calls before trying MCP. FORBIDDEN: Assume all tenants have the same fusion events.",
+      "grading": "human"
+    },
+    {
+      "id": 3,
+      "prompt": "My publish_fusion_message keeps failing with 'invalid payload' error. I'm sending { \"title\": \"Hello\", \"body\": \"World\" } to my fusion event. The event is called 'Price Alert'. What should I check?",
+      "expected_output": "REQUIRED: First recommend calling get_tenant_config to inspect the fusion event's expected payload structure. REQUIRED: Explain that different topics can require different fields and the Community Manager pattern is not universal. REQUIRED: Suggest checking the template definition or metadata for the required fields. REQUIRED: Recommend the agent ask the user for template details rather than guessing. FORBIDDEN: Claim the payload should work without verification. FORBIDDEN: Assume a Community Manager structure without confirming. FORBIDDEN: Make up field names that the template does not define.",
+      "grading": "human"
+    }
+  ]
+}
