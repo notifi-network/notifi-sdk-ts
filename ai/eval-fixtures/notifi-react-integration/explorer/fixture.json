@@ -1,0 +1,23 @@
+{
+  "fixture_id": "explorer",
+  "skill": "notifi-react-integration",
+  "description": "Movement Explorer — a Vite React app with Aptos wallet connectivity and no Notifi integration in the pinned baseline. Used to validate the smallest working `notifi-react-integration` card-modal path.",
+  "repo": "https://github.com/movementlabsxyz/explorer.git",
+  "commit": "17c10c4b7bff19f38e06d874685392c76d2f7ca3",
+  "setup": {
+    "install": "pnpm install",
+    "notes": "Requires pnpm 8 and a React/Vite toolchain. The app uses Aptos wallet adapters for on-chain wallet connectivity."
+  },
+  "app_context": {
+    "framework": "Vite React",
+    "wallet_stack": "@aptos-labs/wallet-adapter-react",
+    "blockchain": "APTOS",
+    "auth_mode": "on-chain",
+    "existing_notifi": false
+  },
+  "eval_use": {
+    "target_eval_ids": [1],
+    "what_agent_should_do": "Add the smallest working NotifiContextProvider + NotifiCardModal integration into the existing app structure, reusing the app's Aptos wallet state for on-chain auth.",
+    "success_looks_like": "NotifiContextProvider is placed near the existing wallet/layout boundary, NotifiCardModal renders in a sensible location, the Aptos wallet adapter state is reused for signing, and no fake tenantId/cardId values are hardcoded without flagging them as placeholders."
+  }
+}

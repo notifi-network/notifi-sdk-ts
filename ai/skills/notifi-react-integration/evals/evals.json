@@ -1,0 +1,46 @@
+{
+  "skill_name": "notifi-react-integration",
+  "rubric": "evals/rubric.md",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Help me integrate @notifi-network/notifi-react into my React app. I already have Aptos wallet connectivity, and I want the smallest working NotifiCardModal setup first.",
+      "expected_output": "REQUIRED: Choose NotifiCardModal path. REQUIRED: Wire NotifiContextProvider near the existing wallet/layout boundary (not wrapping entire app). REQUIRED: Reuse existing Aptos wallet state for on-chain auth, adapting the current signMessage from the wallet adapter. REQUIRED: Include tenantId, cardId, env as props (flag missing values as placeholders with TODO comments — do NOT quietly hardcode fake values). PREFERRED: Place NotifiCardModal trigger in an existing header/nav entry surface over a disconnected demo button. PREFERRED: Open-close-reopen modal cycle works correctly after the card is wrapped. FORBIDDEN: Creating an isolated demo wrapper or restructure the app. FORBIDDEN: Using custom context integration when NotifiCardModal is sufficient.",
+      "fixture": {
+        "fixture_id": "explorer",
+        "path": "ai/eval-fixtures/notifi-react-integration/explorer/fixture.json"
+      },
+      "grading": "human"
+    },
+    {
+      "id": 2,
+      "prompt": "I do not want NotifiCardModal. Help me build a custom notification preferences panel with notifi-react contexts. It should at least support login, topic display, and target toggling.",
+      "expected_output": "REQUIRED: Choose the custom context integration path (not NotifiCardModal). REQUIRED: Use NotifiAuthContext for login state. REQUIRED: Use NotifiTopicContext for topic display and subscription toggling. REQUIRED: Use NotifiTargetContext for target (channel) management. REQUIRED: Provide working code skeleton with correct hook usage for all 3 concerns (auth, topics, targets). FORBIDDEN: Use or suggest NotifiCardModal. FORBIDDEN: Suggest SmartLink as an alternative.",
+      "grading": "human"
+    },
+    {
+      "id": 3,
+      "prompt": "I am using Google OIDC login, not a blockchain wallet. Help me integrate NotifiContextProvider with the off-chain auth path.",
+      "expected_output": "REQUIRED: Choose OFF_CHAIN auth mode. REQUIRED: Ask for or reuse a stable user identifier (email, sub, or similar OIDC claim). REQUIRED: Use signIn flow compatible with off-chain auth (no wallet signing). REQUIRED: NotifiContextProvider configured with userIdentifier, not walletBlockchain/walletPublicKey. FORBIDDEN: Request wallet-based signing or assume a crypto wallet is available. FORBIDDEN: Suggest ON_CHAIN auth as a fallback.",
+      "grading": "human"
+    },
+    {
+      "id": 4,
+      "prompt": "I want to embed a Notifi SmartLink action button in my custom React component. I just need the simplest working setup — trigger a notification action when a user clicks a button in my app.",
+      "expected_output": "REQUIRED: Choose the NotifiSmartLink integration path. REQUIRED: Wire NotifiContextProvider in the app component tree if not already present. REQUIRED: Import and use NotifiSmartLink component or hook for the action button. REQUIRED: Configure the SmartLink with correct id and type params. REQUIRED: Flag any missing runtime values (tenantId, smartLinkId) as placeholders with TODO comments. FORBIDDEN: Suggest NotifiCardModal as a replacement for SmartLink. FORBIDDEN: Create a demo app wrapper instead of integrating into the existing app structure.",
+      "grading": "human"
+    },
+    {
+      "id": 5,
+      "prompt": "I installed @notifi-network/notifi-react and added NotifiContextProvider, but my NotifiCardModal is not rendering at all — the screen is just blank where the card should be. The console shows no errors. What should I check?",
+      "expected_output": "REQUIRED: Triage in the order specified in SKILL Troubleshooting Priorities. REQUIRED: Check that NotifiContextProvider is placed inside the wallet/auth provider (not outside). REQUIRED: Check that tenantId and cardId are correct and not undefined. REQUIRED: Check env matches the card's deployment environment. REQUIRED: Check that the modal container has non-zero dimensions (CSS issue). REQUIRED: Suggest checking the browser console for 404s or CORS errors on the Notifi API endpoint. REQUIRED: Provide specific diagnostic steps, not generic debugging advice. FORBIDDEN: Jump to custom context integration as a troubleshooting step.",
+      "grading": "human"
+    },
+    {
+      "id": 6,
+      "prompt": "I'm setting up NotifiContextProvider in my Next.js app but I don't know my tenantId or cardId yet — only that I'm on the Production environment. Can you help me wire up the provider so it's ready when I get those values? I use MetaMask for wallet connectivity.",
+      "expected_output": "REQUIRED: Provide the full NotifiContextProvider setup with tenantId, cardId, and env. REQUIRED: Mark tenantId and cardId as explicit placeholders (e.g., 'TODO: Replace with your tenantId from Notifi Admin Portal'). REQUIRED: Use ON_CHAIN auth with Ethereum/MetaMask wallet. REQUIRED: Adapt wallet state from window.ethereum, ethers, or web3-react for signMessage. REQUIRED: Explain WHERE the user can find tenantId and cardId (Notifi Admin Portal). FORBIDDEN: Hardcode fake tenantId/cardId values without TODO flags. FORBIDDEN: Skip the provider setup until the user provides values.",
+      "grading": "human"
+    }
+  ]
+}
