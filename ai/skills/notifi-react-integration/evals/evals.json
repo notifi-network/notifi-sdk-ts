@@ -41,6 +41,16 @@
       "prompt": "I'm setting up NotifiContextProvider in my Next.js app but I don't know my tenantId or cardId yet — only that I'm on the Production environment. Can you help me wire up the provider so it's ready when I get those values? I use MetaMask for wallet connectivity.",
       "expected_output": "REQUIRED: Provide the full NotifiContextProvider setup with tenantId, cardId, and env. REQUIRED: Mark tenantId and cardId as explicit placeholders (e.g., 'TODO: Replace with your tenantId from Notifi Admin Portal'). REQUIRED: Use ON_CHAIN auth with Ethereum/MetaMask wallet. REQUIRED: Adapt wallet state from window.ethereum, ethers, or web3-react for signMessage. REQUIRED: Explain WHERE the user can find tenantId and cardId (Notifi Admin Portal). FORBIDDEN: Hardcode fake tenantId/cardId values without TODO flags. FORBIDDEN: Skip the provider setup until the user provides values.",
       "grading": "human"
+    },
+    {
+      "id": 7,
+      "prompt": "I want a full-page Notifi app, not just a component integration. Start from the Notifi dapp example on GitHub and customize the pulled app for me. I have not provided tenantId, cardId, or env yet.",
+      "expected_output": "REQUIRED: Choose the full-page app from Notifi dapp example path. REQUIRED: Use the GitHub notifi-sdk-ts repo's packages/notifi-dapp-example as the baseline. REQUIRED: Work against a pulled or prepared copy of the example app, not the SDK source package in place. REQUIRED: Ask the user for tenantId, cardId, and env before implementation because they are missing. REQUIRED: Treat this as an app-generation workflow first; do not force a concrete in-app Notifi UI surface decision before the missing runtime values are clarified unless the user explicitly asks for one. FORBIDDEN: Quietly hardcode fake tenantId/cardId/env values. FORBIDDEN: Only provide snippets or advice without operating on the prepared app. FORBIDDEN: Modify packages/notifi-dapp-example directly inside the SDK repo source tree.",
+      "fixture": {
+        "fixture_id": "notifi-dapp-example-full-page",
+        "path": "ai/eval-fixtures/notifi-react-integration/notifi-dapp-example-full-page/fixture.json"
+      },
+      "grading": "human"
     }
   ]
 }
