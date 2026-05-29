@@ -13,11 +13,12 @@
     "framework": "Next.js",
     "source": "GitHub notifi-sdk-ts / packages/notifi-dapp-example",
     "existing_notifi": true,
-    "integration_mode": "full-page app generation"
+    "integration_mode": "full-page app generation",
+    "default_env": "Production"
   },
   "eval_use": {
     "target_eval_ids": [7],
-    "what_agent_should_do": "Use the prepared copy of packages/notifi-dapp-example as the working app baseline, ask the user for missing tenantId/cardId/env before implementation, and adapt the app through the appropriate Notifi integration path.",
-    "success_looks_like": "The agent identifies the full-page app path, works in the prepared copy rather than the SDK source tree, asks for missing tenantId/cardId/env before implementation, and treats the task as a runnable app workflow instead of snippet-only guidance."
+    "what_agent_should_do": "Use the prepared copy of packages/notifi-dapp-example as the working app baseline, ask the user for missing tenantId/cardId before implementation, default env to Production unless the user says otherwise, and adapt the app through the appropriate Notifi integration path.",
+    "success_looks_like": "The agent identifies the full-page app path, works in the prepared copy rather than the SDK source tree, asks for missing tenantId/cardId before implementation, defaults env to Production when unspecified, and treats the task as a runnable app workflow instead of snippet-only guidance."
   }
 }

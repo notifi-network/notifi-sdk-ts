@@ -48,7 +48,8 @@ Required behavior:
 - use the GitHub `notifi-sdk-ts` repo's `packages/notifi-dapp-example` as the baseline
 - prepare or pull a separate working copy of the example app before editing
 - modify only the pulled working copy, not the SDK source tree in place
-- ask the user for `tenantId`, `cardId`, and `env` before implementation when those runtime values are missing
+- ask the user for `tenantId` and `cardId` before implementation when those runtime values are missing
+- default `env` to Production when the user does not specify a different environment
 - treat this as an app-generation path first, then choose the appropriate integration surface inside that app (`NotifiCardModal`, custom contexts, or `NotifiSmartLink`)
 
 Do not treat this path as the default when the user already has an existing app and only needs Notifi integrated into it.
@@ -119,7 +120,7 @@ Scaffold exception:
 - placeholders must be explicit and temporary, with clear follow-up instructions
 - do not invent plausible-looking real values
 
-For the full-page dapp-example path, ask for missing `tenantId`, `cardId`, and `env` before implementation. Do not silently hardcode plausible-looking values, and do not treat this path as a placeholder-only scaffold unless the user explicitly asks for one.
+For the full-page dapp-example path, ask for missing `tenantId` and `cardId` before implementation. If the user does not specify `env`, default it to Production. Do not silently hardcode plausible-looking tenant or card values, and do not treat this path as a placeholder-only scaffold unless the user explicitly asks for one.
 
 ## Auth Branching
 
@@ -393,7 +394,7 @@ If the request is implementation-oriented, produce code changes, not just advice
 ## Good Default Workflow
 
 1. Identify whether the user wants in-place integration or a full-page app from the Notifi dapp example baseline.
-2. If the user wants the full-page app path, prepare a pulled working copy first and confirm `tenantId`, `cardId`, and `env` before implementation.
+2. If the user wants the full-page app path, prepare a pulled working copy first, confirm `tenantId` and `cardId`, and default `env` to Production unless the user explicitly asks for a different environment.
 3. Identify whether the user needs `NotifiCardModal`, custom contexts, or SmartLink.
 4. Identify auth mode.
 5. Confirm required runtime params.

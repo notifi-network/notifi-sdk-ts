@@ -41,7 +41,7 @@ Is `NotifiContextProvider` placed at the correct boundary in the app's component
 
 Did the agent correctly handle `tenantId`, `cardId`, `env`, and auth-specific params?
 
-- **Pass**: All required params are present. When values are missing, the agent either asks the user before implementation or flags placeholders only when scaffolding is explicitly appropriate for the path.
+- **Pass**: All required params are present. When values are missing, the agent either asks the user before implementation or flags placeholders only when scaffolding is explicitly appropriate for the path. Defaulting `env` to Production is acceptable when the path explicitly defines that default and the user did not request another environment.
 - **Partial**: Params are present but some are silently hardcoded as fake values without flagging.
 - **Fail**: Required params are missing or wrong, or agent invented plausible-looking but fake values.
 - **Inconclusive**: N/A — this dimension always has enough context.
