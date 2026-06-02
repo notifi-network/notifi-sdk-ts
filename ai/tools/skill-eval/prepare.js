@@ -4,6 +4,15 @@ const fs = require('fs');
 const path = require('path');
 const { spawnSync } = require('child_process');
 
+const DEFAULT_COPY_EXCLUDES = new Set([
+  '.git',
+  'node_modules',
+  '.next',
+  'out',
+  '.env.local',
+  'tsconfig.tsbuildinfo',
+]);
+
 function fail(message) {
   console.error(`Error: ${message}`);
   process.exit(1);
@@ -67,6 +76,43 @@ function readJson(filePath) {
 
 function ensureDir(dirPath) {
   fs.mkdirSync(dirPath, { recursive: true });
+}
+
+function resetDir(dirPath) {
+  fs.rmSync(dirPath, { recursive: true, force: true });
+  ensureDir(dirPath);
+}
+
+function pathExists(targetPath) {
+  return fs.existsSync(targetPath);
+}
+
+function copyDirectoryContents(sourceDir, destinationDir, excludeNames = DEFAULT_COPY_EXCLUDES) {
+  ensureDir(destinationDir);
+
+  const entries = fs.readdirSync(sourceDir, { withFileTypes: true });
+
+  for (const entry of entries) {
+    if (excludeNames.has(entry.name)) {
+      continue;
+    }
+
+    const sourcePath = path.join(sourceDir, entry.name);
+    const destinationPath = path.join(destinationDir, entry.name);
+
+    if (entry.isDirectory()) {
+      copyDirectoryContents(sourcePath, destinationPath, excludeNames);
+      continue;
+    }
+
+    if (entry.isSymbolicLink()) {
+      const linkTarget = fs.readlinkSync(sourcePath);
+      fs.symlinkSync(linkTarget, destinationPath);
+      continue;
+    }
+
+    fs.copyFileSync(sourcePath, destinationPath);
+  }
 }
 
 function runCommand(command, args, options = {}) {
@@ -168,18 +214,22 @@ function buildPromptContent({
   fixtureJson,
   runDirectory,
   fixtureDirectory,
+  sourceDirectory,
   rubricPath,
   repoRoot,
 }) {
   const relativeFixtureDirectory = getRelativePath(repoRoot, fixtureDirectory);
   const relativeRunDirectory = getRelativePath(repoRoot, runDirectory);
   const relativeRubricPath = getRelativePath(repoRoot, rubricPath);
+  const relativeSourceDirectory = getRelativePath(repoRoot, sourceDirectory);
 
   return [
     `Skill: ${evalEntry.skillName}`,
     `Eval ID: ${evalEntry.id}`,
     fixtureJson.fixture_id ? `Fixture: ${fixtureJson.fixture_id}` : null,
-    `Fixture repo path: ${relativeFixtureDirectory}`,
+    `Prepared fixture path: ${relativeFixtureDirectory}`,
+    fixtureJson.subdirectory ? `Source repo path: ${relativeSourceDirectory}` : null,
+    fixtureJson.subdirectory ? `Source subdirectory: ${fixtureJson.subdirectory}` : null,
     `Run directory: ${relativeRunDirectory}`,
     `Rubric: ${relativeRubricPath}`,
     '',
@@ -197,7 +247,7 @@ function buildPromptContent({
     '',
     'Reviewer guidance:',
     '- Use the rubric to score the result after the agent finishes.',
-    '- Check whether runtime placeholders are clearly called out instead of silently hardcoded.',
+    '- Check whether missing runtime values are requested explicitly or clearly marked, instead of being silently hardcoded.',
     '- Prefer the smallest correct integration over a demo-only wrapper.',
   ]
     .filter(Boolean)
@@ -302,42 +352,58 @@ function main() {
   }
 
   const workspaceRoot = path.join(aiRoot, '.workspaces', args.skill);
+  const sourcesRoot = path.join(workspaceRoot, 'sources');
   const fixturesRoot = path.join(workspaceRoot, 'fixtures');
   const runsRoot = path.join(workspaceRoot, 'runs');
   const fixtureId =
     fixtureJson.fixture_id || evalEntry.fixture.fixture_id || `eval-${evalId}`;
+  const sourceDirectory = path.join(sourcesRoot, fixtureId);
   const fixtureDirectory = path.join(fixturesRoot, fixtureId);
   const runDirectory = path.join(runsRoot, makeRunId(evalId));
   const promptPath = path.join(runDirectory, 'prompt.txt');
   const reviewTemplatePath = path.join(runDirectory, 'review-template.md');
   const runJsonPath = path.join(runDirectory, 'run.json');
 
+  ensureDir(sourcesRoot);
   ensureDir(fixturesRoot);
   ensureDir(runsRoot);
 
-  const fixtureGitDirectory = path.join(fixtureDirectory, '.git');
+  const sourceGitDirectory = path.join(sourceDirectory, '.git');
 
-  if (!fs.existsSync(fixtureGitDirectory)) {
-    runCommand('git', ['clone', fixtureJson.repo, fixtureDirectory]);
+  if (!fs.existsSync(sourceGitDirectory)) {
+    runCommand('git', ['clone', fixtureJson.repo, sourceDirectory]);
   }
 
   const status = runCommand('git', ['status', '--porcelain'], {
-    cwd: fixtureDirectory,
+    cwd: sourceDirectory,
     captureOutput: true,
   });
 
   if ((status.stdout || '').trim()) {
     fail(
-      `Fixture repo has local changes at ${getRelativePath(repoRoot, fixtureDirectory)}. Clean it before preparing a new run.`,
+      `Fixture source repo has local changes at ${getRelativePath(repoRoot, sourceDirectory)}. Clean it before preparing a new run.`,
     );
   }
 
-  runCommand('git', ['fetch', '--all', '--tags'], { cwd: fixtureDirectory });
+  runCommand('git', ['fetch', '--all', '--tags'], { cwd: sourceDirectory });
 
-  ensureCommitAvailable(fixtureDirectory, fixtureJson.commit);
+  ensureCommitAvailable(sourceDirectory, fixtureJson.commit);
   runCommand('git', ['checkout', fixtureJson.commit], {
-    cwd: fixtureDirectory,
+    cwd: sourceDirectory,
   });
+
+  const preparedSourceDirectory = fixtureJson.subdirectory
+    ? path.join(sourceDirectory, fixtureJson.subdirectory)
+    : sourceDirectory;
+
+  if (!pathExists(preparedSourceDirectory)) {
+    fail(
+      `Fixture subdirectory not found at ${getRelativePath(repoRoot, preparedSourceDirectory)}. Check the fixture metadata.`,
+    );
+  }
+
+  resetDir(fixtureDirectory);
+  copyDirectoryContents(preparedSourceDirectory, fixtureDirectory);
 
   if (args.install) {
     const installCommand = fixtureJson.setup && fixtureJson.setup.install;
@@ -357,6 +423,7 @@ function main() {
     fixtureJson,
     runDirectory,
     fixtureDirectory,
+    sourceDirectory,
     rubricPath,
     repoRoot,
   });
@@ -373,6 +440,8 @@ function main() {
     evalId,
     fixtureId,
     fixtureRepoPath: getRelativePath(repoRoot, fixtureDirectory),
+    sourceRepoPath: getRelativePath(repoRoot, sourceDirectory),
+    fixtureSubdirectory: fixtureJson.subdirectory || null,
     fixtureCommit: fixtureJson.commit,
     fixtureRepo: fixtureJson.repo,
     promptPath: getRelativePath(repoRoot, promptPath),
@@ -401,7 +470,7 @@ function main() {
   console.log('');
   console.log('Next step:');
   console.log(
-    'Open the fixture repo in a new agent session and use the generated prompt.txt content.',
+    'Open the prepared fixture in a new agent session and use the generated prompt.txt content.',
   );
 }
 

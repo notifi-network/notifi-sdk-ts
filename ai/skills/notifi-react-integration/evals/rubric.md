@@ -12,7 +12,7 @@ Score each dimension **Pass / Partial / Fail / Inconclusive** and add a short ju
 
 ### 1. [CRITICAL] Path Selection
 
-Did the agent pick the correct integration path (NotifiCardModal vs custom context vs SmartLink vs troubleshooting) for the prompt?
+Did the agent pick the correct path for the prompt (full-page dapp example vs NotifiCardModal vs custom context vs SmartLink vs troubleshooting)?
 
 - **Pass**: Correct path chosen, justified by the user's stated need.
 - **Partial**: Correct path chosen but explanation is weak or missing.
@@ -41,18 +41,18 @@ Is `NotifiContextProvider` placed at the correct boundary in the app's component
 
 Did the agent correctly handle `tenantId`, `cardId`, `env`, and auth-specific params?
 
-- **Pass**: All required params are present. Missing values are flagged as placeholders with clear instructions for the user to fill them in.
+- **Pass**: All required params are present. When values are missing, the agent either asks the user before implementation or flags placeholders only when scaffolding is explicitly appropriate for the path. Defaulting `env` to Production is acceptable when the path explicitly defines that default and the user did not request another environment.
 - **Partial**: Params are present but some are silently hardcoded as fake values without flagging.
 - **Fail**: Required params are missing or wrong, or agent invented plausible-looking but fake values.
 - **Inconclusive**: N/A — this dimension always has enough context.
 
-### 5. Existing App Preservation
+### 5. Existing App Or Example Baseline Preservation
 
-Did the agent preserve the user's existing app structure, conventions, and dependencies?
+Did the agent preserve the user's existing app structure or the prepared example-app baseline, conventions, and dependencies?
 
-- **Pass**: Changes fit naturally into the existing file structure, import style, and framework patterns. No unnecessary new files or wrappers.
+- **Pass**: Changes fit naturally into the existing file structure, import style, and framework patterns. No unnecessary new files or wrappers. For the full-page app path, the agent works in the prepared copy instead of mutating the SDK source tree in place.
 - **Partial**: Changes work but introduce a new pattern that diverges from the app's conventions.
-- **Fail**: Agent created an isolated demo wrapper, restructured the app, or introduced conflicting dependencies.
+- **Fail**: Agent created an isolated demo wrapper, restructured the app, introduced conflicting dependencies, or modified the SDK source package in place instead of the prepared copy.
 - **Inconclusive**: Fixtureless eval — no existing app to evaluate preservation.
 
 ### 6. [CRITICAL] Code Correctness
