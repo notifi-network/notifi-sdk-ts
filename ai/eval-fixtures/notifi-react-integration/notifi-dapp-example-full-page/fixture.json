@@ -14,11 +14,13 @@
     "source": "GitHub notifi-sdk-ts / packages/notifi-dapp-example",
     "existing_notifi": true,
     "integration_mode": "full-page app generation",
-    "default_env": "Production"
+    "default_env": "Production",
+    "blockchain_selection": "wallet-provider-supported-chain-group",
+    "wallet_selection": "chain-group-dependent"
   },
   "eval_use": {
     "target_eval_ids": [7],
-    "what_agent_should_do": "Use the prepared copy of packages/notifi-dapp-example as the working app baseline, ask the user for missing tenantId/cardId before implementation, default env to Production unless the user says otherwise, and adapt the app through the appropriate Notifi integration path.",
-    "success_looks_like": "The agent identifies the full-page app path, works in the prepared copy rather than the SDK source tree, asks for missing tenantId/cardId before implementation, defaults env to Production when unspecified, and treats the task as a runnable app workflow instead of snippet-only guidance."
+    "what_agent_should_do": "Use the prepared copy of packages/notifi-dapp-example as the working app baseline, ask the user for missing tenantId/cardId before implementation, default env to Production unless the user says otherwise, ask the user to choose a supported chain group from the notifi-wallet-provider model, and only then ask which supported wallets in that group should be included.",
+    "success_looks_like": "The agent identifies the full-page app path, works in the prepared copy rather than the SDK source tree, asks for missing tenantId/cardId before implementation, defaults env to Production when unspecified, asks for a supported chain group before asking for wallets, and treats the task as a runnable app workflow instead of snippet-only guidance."
   }
 }

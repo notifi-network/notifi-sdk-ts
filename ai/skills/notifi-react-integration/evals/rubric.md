@@ -46,6 +46,15 @@ Did the agent correctly handle `tenantId`, `cardId`, `env`, and auth-specific pa
 - **Fail**: Required params are missing or wrong, or agent invented plausible-looking but fake values.
 - **Inconclusive**: N/A — this dimension always has enough context.
 
+### 4.5 Chain Group And Wallet Selection Order
+
+Did the agent ask for the supported chain group before asking for wallets, and did it constrain both questions to the `notifi-wallet-provider` support model?
+
+- **Pass**: The agent asks the user to choose from supported chain groups first, then asks for wallets supported by the selected group.
+- **Partial**: The agent generally follows the right order but presents a slightly loose or incomplete supported list.
+- **Fail**: The agent asks for wallets before the chain group is known, offers chain choices outside the intended support model for this path, or invents unsupported chain/wallet combinations.
+- **Inconclusive**: Fixtureless eval, or the prompt already fully specifies both chain group and wallets.
+
 ### 5. Existing App Or Example Baseline Preservation
 
 Did the agent preserve the user's existing app structure or the prepared example-app baseline, conventions, and dependencies?
