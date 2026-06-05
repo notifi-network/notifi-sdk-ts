@@ -17,3 +17,5 @@ ai/.workspaces/*
 **/*.log
 
 /packages/**/docs/
+
+.sisyphus/

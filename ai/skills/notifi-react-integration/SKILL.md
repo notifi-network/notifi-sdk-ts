@@ -50,7 +50,10 @@ Required behavior:
 - modify only the pulled working copy, not the SDK source tree in place
 - ask the user for `tenantId` and `cardId` before implementation when those runtime values are missing
 - default `env` to Production when the user does not specify a different environment
-- treat this as an app-generation path first, then choose the appropriate integration surface inside that app (`NotifiCardModal`, custom contexts, or `NotifiSmartLink`)
+- ask the user to choose a supported chain group from the `notifi-wallet-provider` support model: `evm`, `solana`, `cosmos`, or `cardano`
+- after the chain group is selected, ask the user which supported wallets in that group should be included
+- use `packages/notifi-wallet-provider/lib/utils/walletConfigs.ts` as the canonical source for the chain-group and wallet mapping
+- treat this as an app-generation path first, resolve the runtime questions for this path, and only then choose the appropriate integration surface inside that app (`NotifiCardModal`, custom contexts, or `NotifiSmartLink`)
 
 Do not treat this path as the default when the user already has an existing app and only needs Notifi integrated into it.
 
@@ -121,6 +124,25 @@ Scaffold exception:
 - do not invent plausible-looking real values
 
 For the full-page dapp-example path, ask for missing `tenantId` and `cardId` before implementation. If the user does not specify `env`, default it to Production. Do not silently hardcode plausible-looking tenant or card values, and do not treat this path as a placeholder-only scaffold unless the user explicitly asks for one.
+
+For the full-page dapp-example path, do not ask the user to choose from every Notifi blockchain enum. Ask them to choose from the chain groups supported by `notifi-wallet-provider` first.
+
+Current supported chain groups for this path:
+
+- `evm`
+- `solana`
+- `cosmos`
+- `cardano`
+
+Wallet follow-up rules:
+
+- after the user chooses `evm`, ask which of these wallets to support: `metamask`, `coinbase`, `rabby`, `walletconnect`, `okx`, `rainbow`, `zerion`, `binance`
+- after the user chooses `solana`, ask whether to support `phantom`
+- after the user chooses `cosmos`, ask whether to support `keplr`
+- after the user chooses `cardano`, ask which of these wallets to support: `lace`, `eternl`, `nufi`, `okx-cardano`, `yoroi`, `ctrl`
+- do not choose wallets before the chain group is known
+- do not invent unsupported chain-group or wallet pairings
+- if the user asks for a chain outside this support model, explain that the dapp-example baseline does not provide a ready-made wallet-provider flow for it and ask whether they want to switch to a supported chain group or pursue a custom adapter path
 
 ## Auth Branching
 
@@ -395,13 +417,15 @@ If the request is implementation-oriented, produce code changes, not just advice
 
 1. Identify whether the user wants in-place integration or a full-page app from the Notifi dapp example baseline.
 2. If the user wants the full-page app path, prepare a pulled working copy first, confirm `tenantId` and `cardId`, and default `env` to Production unless the user explicitly asks for a different environment.
-3. Identify whether the user needs `NotifiCardModal`, custom contexts, or SmartLink.
-4. Identify auth mode.
-5. Confirm required runtime params.
-6. Place the provider at the smallest sensible boundary.
-7. Wire the requested UI.
-8. Add `inputs` only when the selected topics need them.
-9. Verify the integration path matches the app's existing wallet or auth stack.
+3. For the full-page app path, ask the user to choose a supported chain group from the `notifi-wallet-provider` support model.
+4. After the chain group is selected, ask which supported wallets in that group should be included.
+5. Identify whether the user needs `NotifiCardModal`, custom contexts, or SmartLink.
+6. Identify auth mode.
+7. Confirm required runtime params.
+8. Place the provider at the smallest sensible boundary.
+9. Wire the requested UI.
+10. Add `inputs` only when the selected topics need them.
+11. Verify the integration path matches the app's existing wallet or auth stack.
 
 ## Repo References
 
@@ -420,5 +444,6 @@ Use these repo locations as first-party guidance when available:
 - `packages/notifi-react-example-v2/src/context/NotifiContextWrapper.tsx`
 - `packages/notifi-dapp-example/README.md`
 - `packages/notifi-dapp-example/src/context/NotifiContextWrapper.tsx`
+- `packages/notifi-wallet-provider/lib/utils/walletConfigs.ts`
 
 Use them to stay aligned with the SDK's real provider contracts and the project's supported integration patterns.
