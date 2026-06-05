@@ -41,19 +41,24 @@ Is `NotifiContextProvider` placed at the correct boundary in the app's component
 
 Did the agent correctly handle `tenantId`, `cardId`, `env`, and auth-specific params?
 
-- **Pass**: All required params are present. When values are missing, the agent either asks the user before implementation or flags placeholders only when scaffolding is explicitly appropriate for the path. Defaulting `env` to Production is acceptable when the path explicitly defines that default and the user did not request another environment.
+- **Pass**: All required params are present. When values are missing, the agent either asks the user before implementation or flags placeholders only when scaffolding is explicitly appropriate for the path. Explicitly blocks implementation when values are missing and asks the user. Does not silently default or skip asking. Defaulting `env` to Production is acceptable when the path explicitly defines that default and the user did not request another environment.
 - **Partial**: Params are present but some are silently hardcoded as fake values without flagging.
-- **Fail**: Required params are missing or wrong, or agent invented plausible-looking but fake values.
+- **Fail**: Agent proceeds with implementation despite missing tenantId or cardId, or silently hardcodes plausible-looking fake values.
 - **Inconclusive**: N/A — this dimension always has enough context.
 
-### 4.5 Chain Group And Wallet Selection Order
+### 4.5 [CRITICAL] Chain Group And Wallet Selection Order
 
 Did the agent ask for the supported chain group before asking for wallets, and did it constrain both questions to the `notifi-wallet-provider` support model?
 
-- **Pass**: The agent asks the user to choose from supported chain groups first, then asks for wallets supported by the selected group.
+- **Pass**: The agent asks the user to choose from supported chain groups FIRST, then asks for wallets supported by the selected group. The agent does NOT proceed to implementation until both are resolved. The agent does NOT guess or assume based on wallet names.
 - **Partial**: The agent generally follows the right order but presents a slightly loose or incomplete supported list.
-- **Fail**: The agent asks for wallets before the chain group is known, offers chain choices outside the intended support model for this path, or invents unsupported chain/wallet combinations.
+- **Fail**: The agent asks for wallets before the chain group is confirmed, skips the chain group question entirely, or silently assumes a chain group (e.g. EVM) without user confirmation.
 - **Inconclusive**: Fixtureless eval, or the prompt already fully specifies both chain group and wallets.
+
+**Examples**:
+  - Pass: Agent: "Which chain group do you want to use? Options: evm, solana, cosmos, cardano." User: "EVM." Agent: "Which EVM wallets should I support? Options: metamask, coinbase, rabby..."
+  - Partial: Agent asks chain group but presents a loose/incomplete list, or asks wallets before fully confirming chain group choice.
+  - Fail: Agent: "I'll set up MetaMask for you." — no chain group question asked.
 
 ### 5. Existing App Or Example Baseline Preservation
 
@@ -107,6 +112,7 @@ Did the agent choose a natural `NotifiCardModal` entry surface and handle CTA pl
 | Auth Mode [CRITICAL]                   |       |       |
 | Provider Placement                     |       |       |
 | Required Params Handling [CRITICAL]    |       |       |
+| Chain Group And Wallet Selection Order [CRITICAL] |       |       |
 | Existing App Preservation              |       |       |
 | Code Correctness [CRITICAL]            |       |       |
 | Minimality                             |       |       |

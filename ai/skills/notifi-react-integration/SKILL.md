@@ -48,10 +48,10 @@ Required behavior:
 - use the GitHub `notifi-sdk-ts` repo's `packages/notifi-dapp-example` as the baseline
 - prepare or pull a separate working copy of the example app before editing
 - modify only the pulled working copy, not the SDK source tree in place
-- ask the user for `tenantId` and `cardId` before implementation when those runtime values are missing
+- MUST ask for `tenantId` and `cardId` before writing any code. If `tenantId` or `cardId` is missing, the agent MUST NOT generate files, install dependencies, or configure providers until the user provides them.
 - default `env` to Production when the user does not specify a different environment
-- ask the user to choose a supported chain group from the `notifi-wallet-provider` support model: `evm`, `solana`, `cosmos`, or `cardano`
-- after the chain group is selected, ask the user which supported wallets in that group should be included
+- MUST ask the user to choose a supported chain group from the `notifi-wallet-provider` support model: `evm`, `solana`, `cosmos`, or `cardano`. Do not assume or default a chain group.
+- after the user selects a chain group, the agent MUST ask which wallets from the supported list to include. The agent MUST NOT ask about wallets before the chain group is confirmed.
 - use `packages/notifi-wallet-provider/lib/utils/walletConfigs.ts` as the canonical source for the chain-group and wallet mapping
 - treat this as an app-generation path first, resolve the runtime questions for this path, and only then choose the appropriate integration surface inside that app (`NotifiCardModal`, custom contexts, or `NotifiSmartLink`)
 
@@ -81,6 +81,8 @@ Core params:
 - `cardId`
 - `env`
 
+If any core param is missing, the agent MUST NOT proceed with implementation. Do not silently default any core param except `env` (which defaults to Production when unspecified).
+
 Auth params depend on mode.
 
 ### On-chain auth
@@ -97,6 +99,8 @@ Sometimes also needed:
 
 Be careful: the correct value for `walletPublicKey` is chain and wallet dependent. Do not assume every wallet uses the same address encoding or key format.
 
+For on-chain auth, the agent MUST confirm `walletBlockchain` before collecting `walletPublicKey` and `signMessage`. Do not assume the blockchain based on the wallet type alone.
+
 ### Off-chain auth
 
 Required:
@@ -107,6 +111,8 @@ Required:
 
 `userAccount` should be a stable user identifier. Do not invent one if the app's auth model is unclear.
 
+For off-chain auth, the agent MUST confirm `userAccount` with the user. Do not invent a user identifier from incomplete information.
+
 ### Optional but common
 
 - `inputs`
@@ -115,13 +121,7 @@ Required:
 - `isEnabledLoginViaTransaction`
 - SmartLink `authParams`
 
-If `tenantId`, `cardId`, `env`, or the auth callback is missing, ask the user before writing a fake placeholder implementation unless the user explicitly asked for a scaffold.
-
-Scaffold exception:
-
-- for existing-app integration, placeholders are acceptable only when the user clearly asked for a scaffold or provider wiring before final runtime values are available
-- placeholders must be explicit and temporary, with clear follow-up instructions
-- do not invent plausible-looking real values
+If `tenantId`, `cardId`, `env`, or the auth callback is missing: the agent MUST ask the user before writing any implementation code. The sole exception is when the user explicitly requests a scaffold or placeholder setup. In that case, use explicit TODO markers with instructions for finding the real value. Do not silently hardcode plausible-looking values under any circumstances.
 
 For the full-page dapp-example path, ask for missing `tenantId` and `cardId` before implementation. If the user does not specify `env`, default it to Production. Do not silently hardcode plausible-looking tenant or card values, and do not treat this path as a placeholder-only scaffold unless the user explicitly asks for one.
 
@@ -140,9 +140,27 @@ Wallet follow-up rules:
 - after the user chooses `solana`, ask whether to support `phantom`
 - after the user chooses `cosmos`, ask whether to support `keplr`
 - after the user chooses `cardano`, ask which of these wallets to support: `lace`, `eternl`, `nufi`, `okx-cardano`, `yoroi`, `ctrl`
-- do not choose wallets before the chain group is known
+- the agent MUST NOT ask about wallets before the chain group is selected by the user. This is a hard ordering constraint. Violating this order must be treated as a blocking error.
 - do not invent unsupported chain-group or wallet pairings
 - if the user asks for a chain outside this support model, explain that the dapp-example baseline does not provide a ready-made wallet-provider flow for it and ask whether they want to switch to a supported chain group or pursue a custom adapter path
+
+## Clarification Gate
+
+Before writing any code, installing any dependency, or creating any file, the agent MUST ensure all required inputs for the chosen path are confirmed with the user.
+
+### Hard-stop conditions (MUST NOT proceed):
+
+- `tenantId` not confirmed
+- `cardId` not confirmed
+- auth mode not determined
+- for on-chain: `walletBlockchain` not confirmed
+- for off-chain: `userAccount` not confirmed
+- for full-page path: chain group not chosen before wallets
+- integration path not confirmed
+
+### Exception:
+
+If the user explicitly requests a scaffold (e.g., "just write the provider wiring, I'll add values later"), use TODO placeholders and skip the hard-stop.
 
 ## Auth Branching
 
