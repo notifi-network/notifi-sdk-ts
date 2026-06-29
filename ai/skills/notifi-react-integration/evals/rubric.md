@@ -12,7 +12,7 @@ Score each dimension **Pass / Partial / Fail / Inconclusive** and add a short ju
 
 ### 1. [CRITICAL] Path Selection
 
-Did the agent pick the correct integration path (NotifiCardModal vs custom context vs SmartLink vs troubleshooting) for the prompt?
+Did the agent pick the correct path for the prompt (full-page dapp example vs NotifiCardModal vs custom context vs SmartLink vs troubleshooting)?
 
 - **Pass**: Correct path chosen, justified by the user's stated need.
 - **Partial**: Correct path chosen but explanation is weak or missing.
@@ -41,18 +41,32 @@ Is `NotifiContextProvider` placed at the correct boundary in the app's component
 
 Did the agent correctly handle `tenantId`, `cardId`, `env`, and auth-specific params?
 
-- **Pass**: All required params are present. Missing values are flagged as placeholders with clear instructions for the user to fill them in.
+- **Pass**: All required params are present. When values are missing, the agent either asks the user before implementation or flags placeholders only when scaffolding is explicitly appropriate for the path. Explicitly blocks implementation when values are missing and asks the user. Does not silently default or skip asking. Defaulting `env` to Production is acceptable when the path explicitly defines that default and the user did not request another environment.
 - **Partial**: Params are present but some are silently hardcoded as fake values without flagging.
-- **Fail**: Required params are missing or wrong, or agent invented plausible-looking but fake values.
+- **Fail**: Agent proceeds with implementation despite missing tenantId or cardId, or silently hardcodes plausible-looking fake values.
 - **Inconclusive**: N/A — this dimension always has enough context.
 
-### 5. Existing App Preservation
+### 4.5 [CRITICAL] Chain Group And Wallet Selection Order
 
-Did the agent preserve the user's existing app structure, conventions, and dependencies?
+Did the agent ask for the supported chain group before asking for wallets, and did it constrain both questions to the `notifi-wallet-provider` support model?
 
-- **Pass**: Changes fit naturally into the existing file structure, import style, and framework patterns. No unnecessary new files or wrappers.
+- **Pass**: The agent asks the user to choose from supported chain groups FIRST, then asks for wallets supported by the selected group. The agent does NOT proceed to implementation until both are resolved. The agent does NOT guess or assume based on wallet names.
+- **Partial**: The agent generally follows the right order but presents a slightly loose or incomplete supported list.
+- **Fail**: The agent asks for wallets before the chain group is confirmed, skips the chain group question entirely, or silently assumes a chain group (e.g. EVM) without user confirmation.
+- **Inconclusive**: Fixtureless eval, or the prompt already fully specifies both chain group and wallets.
+
+**Examples**:
+  - Pass: Agent: "Which chain group do you want to use? Options: evm, solana, cosmos, cardano." User: "EVM." Agent: "Which EVM wallets should I support? Options: metamask, coinbase, rabby..."
+  - Partial: Agent asks chain group but presents a loose/incomplete list, or asks wallets before fully confirming chain group choice.
+  - Fail: Agent: "I'll set up MetaMask for you." — no chain group question asked.
+
+### 5. Existing App Or Example Baseline Preservation
+
+Did the agent preserve the user's existing app structure or the prepared example-app baseline, conventions, and dependencies?
+
+- **Pass**: Changes fit naturally into the existing file structure, import style, and framework patterns. No unnecessary new files or wrappers. For the full-page app path, the agent works in the prepared copy instead of mutating the SDK source tree in place.
 - **Partial**: Changes work but introduce a new pattern that diverges from the app's conventions.
-- **Fail**: Agent created an isolated demo wrapper, restructured the app, or introduced conflicting dependencies.
+- **Fail**: Agent created an isolated demo wrapper, restructured the app, introduced conflicting dependencies, or modified the SDK source package in place instead of the prepared copy.
 - **Inconclusive**: Fixtureless eval — no existing app to evaluate preservation.
 
 ### 6. [CRITICAL] Code Correctness
@@ -98,6 +112,7 @@ Did the agent choose a natural `NotifiCardModal` entry surface and handle CTA pl
 | Auth Mode [CRITICAL]                   |       |       |
 | Provider Placement                     |       |       |
 | Required Params Handling [CRITICAL]    |       |       |
+| Chain Group And Wallet Selection Order [CRITICAL] |       |       |
 | Existing App Preservation              |       |       |
 | Code Correctness [CRITICAL]            |       |       |
 | Minimality                             |       |       |

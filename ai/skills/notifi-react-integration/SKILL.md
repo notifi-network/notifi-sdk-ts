@@ -1,6 +1,6 @@
 ---
 name: notifi-react-integration
-description: Use this skill whenever the user wants to integrate `@notifi-network/notifi-react` into a React or Next.js app, wire up `NotifiContextProvider`, add `NotifiCardModal`, build custom notification settings UI with Notifi React context hooks, configure on-chain or off-chain auth, pass dynamic topic `inputs`, integrate `NotifiSmartLink`, or troubleshoot a Notifi React frontend integration. Also use this when the user mentions Notifi card setup, tenant/card wiring, wallet auth, wallet target plugin, SmartLink, or custom notification preferences in a frontend app.
+description: Use this skill whenever the user wants to integrate `@notifi-network/notifi-react` into a React or Next.js app, generate a full-page Notifi app from the Notifi dapp example baseline, wire up `NotifiContextProvider`, add `NotifiCardModal`, build custom notification settings UI with Notifi React context hooks, configure on-chain or off-chain auth, pass dynamic topic `inputs`, integrate `NotifiSmartLink`, or troubleshoot a Notifi React frontend integration. Also use this when the user mentions Notifi card setup, tenant/card wiring, wallet auth, wallet target plugin, SmartLink, full-page app generation, starter app setup, or custom notification preferences in a frontend app.
 ---
 
 # Notifi React Integration
@@ -11,6 +11,7 @@ This skill is for wiring Notifi into a user's React or Next.js application. It i
 
 The main job of this skill is to help the agent decide:
 
+- whether the user wants in-place integration or a full-page app generated from the Notifi dapp example baseline
 - whether the user should use `NotifiCardModal`, custom context integration, or `NotifiSmartLink`
 - which auth mode the integration needs
 - which params are required before writing code
@@ -20,6 +21,7 @@ The main job of this skill is to help the agent decide:
 
 Use this skill for:
 
+- generating a full-page app from the Notifi dapp example baseline when the user explicitly wants a starter app or standalone example app
 - embedding `NotifiCardModal`
 - wiring `NotifiContextProvider`
 - building custom notification settings UI with Notifi React hooks
@@ -37,11 +39,31 @@ Do not use this skill for:
 
 For those cases, prefer `notifi-tenant-operation` instead.
 
+## Full-Page App From Notifi Dapp Example
+
+Use this path when the user wants a full-page app, starter app, standalone example app, or wants the agent to start from Notifi's example app instead of integrating into an existing codebase.
+
+Required behavior:
+
+- use the GitHub `notifi-sdk-ts` repo's `packages/notifi-dapp-example` as the baseline
+- prepare or pull a separate working copy of the example app before editing
+- modify only the pulled working copy, not the SDK source tree in place
+- MUST ask for `tenantId` and `cardId` before writing any code. If `tenantId` or `cardId` is missing, the agent MUST NOT generate files, install dependencies, or configure providers until the user provides them.
+- default `env` to Production when the user does not specify a different environment
+- MUST ask the user to choose a supported chain group from the `notifi-wallet-provider` support model: `evm`, `solana`, `cosmos`, or `cardano`. Do not assume or default a chain group.
+- after the user selects a chain group, the agent MUST ask which wallets from the supported list to include. The agent MUST NOT ask about wallets before the chain group is confirmed.
+- use `packages/notifi-wallet-provider/lib/utils/walletConfigs.ts` as the canonical source for the chain-group and wallet mapping
+- treat this as an app-generation path first, resolve the runtime questions for this path, and only then choose the appropriate integration surface inside that app (`NotifiCardModal`, custom contexts, or `NotifiSmartLink`)
+
+Do not treat this path as the default when the user already has an existing app and only needs Notifi integrated into it.
+
 ## Start With The Smallest Correct Path
 
-Default to the smallest correct integration instead of introducing a full custom implementation.
+If the user wants a full-page app or starter app, use the dedicated dapp-example path first.
 
-Decision order:
+Otherwise, default to the smallest correct integration instead of introducing a full custom implementation.
+
+For existing-app integration, use this decision order:
 
 1. If the user wants the fastest usable Notifi UI, prefer `NotifiCardModal`.
 2. If the user wants a custom preferences UI or wants to compose their own notification flows, use custom context integration.
@@ -59,6 +81,8 @@ Core params:
 - `cardId`
 - `env`
 
+If any core param is missing, the agent MUST NOT proceed with implementation. Do not silently default any core param except `env` (which defaults to Production when unspecified).
+
 Auth params depend on mode.
 
 ### On-chain auth
@@ -75,6 +99,8 @@ Sometimes also needed:
 
 Be careful: the correct value for `walletPublicKey` is chain and wallet dependent. Do not assume every wallet uses the same address encoding or key format.
 
+For on-chain auth, the agent MUST confirm `walletBlockchain` before collecting `walletPublicKey` and `signMessage`. Do not assume the blockchain based on the wallet type alone.
+
 ### Off-chain auth
 
 Required:
@@ -85,6 +111,8 @@ Required:
 
 `userAccount` should be a stable user identifier. Do not invent one if the app's auth model is unclear.
 
+For off-chain auth, the agent MUST confirm `userAccount` with the user. Do not invent a user identifier from incomplete information.
+
 ### Optional but common
 
 - `inputs`
@@ -93,7 +121,46 @@ Required:
 - `isEnabledLoginViaTransaction`
 - SmartLink `authParams`
 
-If `tenantId`, `cardId`, or the auth callback is missing, ask the user before writing a fake placeholder implementation unless the user explicitly asked for a scaffold.
+If `tenantId`, `cardId`, `env`, or the auth callback is missing: the agent MUST ask the user before writing any implementation code. The sole exception is when the user explicitly requests a scaffold or placeholder setup. In that case, use explicit TODO markers with instructions for finding the real value. Do not silently hardcode plausible-looking values under any circumstances.
+
+For the full-page dapp-example path, ask for missing `tenantId` and `cardId` before implementation. If the user does not specify `env`, default it to Production. Do not silently hardcode plausible-looking tenant or card values, and do not treat this path as a placeholder-only scaffold unless the user explicitly asks for one.
+
+For the full-page dapp-example path, do not ask the user to choose from every Notifi blockchain enum. Ask them to choose from the chain groups supported by `notifi-wallet-provider` first.
+
+Current supported chain groups for this path:
+
+- `evm`
+- `solana`
+- `cosmos`
+- `cardano`
+
+Wallet follow-up rules:
+
+- after the user chooses `evm`, ask which of these wallets to support: `metamask`, `coinbase`, `rabby`, `walletconnect`, `okx`, `rainbow`, `zerion`, `binance`
+- after the user chooses `solana`, ask whether to support `phantom`
+- after the user chooses `cosmos`, ask whether to support `keplr`
+- after the user chooses `cardano`, ask which of these wallets to support: `lace`, `eternl`, `nufi`, `okx-cardano`, `yoroi`, `ctrl`
+- the agent MUST NOT ask about wallets before the chain group is selected by the user. This is a hard ordering constraint. Violating this order must be treated as a blocking error.
+- do not invent unsupported chain-group or wallet pairings
+- if the user asks for a chain outside this support model, explain that the dapp-example baseline does not provide a ready-made wallet-provider flow for it and ask whether they want to switch to a supported chain group or pursue a custom adapter path
+
+## Clarification Gate
+
+Before writing any code, installing any dependency, or creating any file, the agent MUST ensure all required inputs for the chosen path are confirmed with the user.
+
+### Hard-stop conditions (MUST NOT proceed):
+
+- `tenantId` not confirmed
+- `cardId` not confirmed
+- auth mode not determined
+- for on-chain: `walletBlockchain` not confirmed
+- for off-chain: `userAccount` not confirmed
+- for full-page path: chain group not chosen before wallets
+- integration path not confirmed
+
+### Exception:
+
+If the user explicitly requests a scaffold (e.g., "just write the provider wiring, I'll add values later"), use TODO placeholders and skip the hard-stop.
 
 ## Auth Branching
 
@@ -359,19 +426,24 @@ When writing code with this skill:
 - ask for missing runtime values when correctness depends on them
 - avoid fabricating tenant or card identifiers
 - avoid demo-only wrappers unless the user asked for a demo or example page
+- when the user wants a full-page app or starter app, work in a pulled copy of `packages/notifi-dapp-example` rather than editing the SDK repo's source package in place
 - explain any chain-specific or wallet-specific mapping assumptions
 
 If the request is implementation-oriented, produce code changes, not just advice.
 
 ## Good Default Workflow
 
-1. Identify whether the user needs `NotifiCardModal`, custom contexts, or SmartLink.
-2. Identify auth mode.
-3. Confirm required runtime params.
-4. Place the provider at the smallest sensible boundary.
-5. Wire the requested UI.
-6. Add `inputs` only when the selected topics need them.
-7. Verify the integration path matches the app's existing wallet or auth stack.
+1. Identify whether the user wants in-place integration or a full-page app from the Notifi dapp example baseline.
+2. If the user wants the full-page app path, prepare a pulled working copy first, confirm `tenantId` and `cardId`, and default `env` to Production unless the user explicitly asks for a different environment.
+3. For the full-page app path, ask the user to choose a supported chain group from the `notifi-wallet-provider` support model.
+4. After the chain group is selected, ask which supported wallets in that group should be included.
+5. Identify whether the user needs `NotifiCardModal`, custom contexts, or SmartLink.
+6. Identify auth mode.
+7. Confirm required runtime params.
+8. Place the provider at the smallest sensible boundary.
+9. Wire the requested UI.
+10. Add `inputs` only when the selected topics need them.
+11. Verify the integration path matches the app's existing wallet or auth stack.
 
 ## Repo References
 
@@ -388,6 +460,8 @@ Use these repo locations as first-party guidance when available:
 - `packages/notifi-react/lib/components/NotifiCardModal.tsx`
 - `packages/notifi-react/lib/components/NotifiSmartLink.tsx`
 - `packages/notifi-react-example-v2/src/context/NotifiContextWrapper.tsx`
+- `packages/notifi-dapp-example/README.md`
 - `packages/notifi-dapp-example/src/context/NotifiContextWrapper.tsx`
+- `packages/notifi-wallet-provider/lib/utils/walletConfigs.ts`
 
 Use them to stay aligned with the SDK's real provider contracts and the project's supported integration patterns.
