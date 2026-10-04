@@ -29,7 +29,9 @@ export const setWalletKeysToLocalStorage = <T extends keyof Wallets>(
                   ? CardanoWalletKeys
                   : T extends 'ctrl'
                     ? CardanoWalletKeys
-                    : never,
+                    : T extends '1am'
+                      ? CardanoWalletKeys
+                      : never,
 ) => {
   const storageWallet: NotifiWalletStorage = {
     walletName: wallet,

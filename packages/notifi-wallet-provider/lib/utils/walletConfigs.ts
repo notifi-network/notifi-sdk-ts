@@ -11,7 +11,15 @@ export const BLOCKCHAIN_WALLETS = {
   ] as const,
   solana: ['phantom'] as const,
   cosmos: ['keplr'] as const,
-  cardano: ['lace', 'eternl', 'nufi', 'okx-cardano', 'yoroi', 'ctrl'] as const,
+  cardano: [
+    'lace',
+    'eternl',
+    'nufi',
+    'okx-cardano',
+    'yoroi',
+    'ctrl',
+    '1am',
+  ] as const,
 } as const;
 
 export const INTEGRATION_WALLETS = {
@@ -33,5 +41,6 @@ export const INTEGRATION_WALLETS = {
     'okx-cardano',
     'yoroi',
     'ctrl',
+    '1am',
   ] as const,
 } as const;

@@ -5,6 +5,7 @@ import { type KeplrWalletHookType } from '../hooks/useKeplr';
 import { type LaceWalletHookType } from '../hooks/useLace';
 import { type NufiWalletHookType } from '../hooks/useNufi';
 import { type OkxCardanoWalletHookType } from '../hooks/useOkxCardano';
+import { type OneAmWalletHookType } from '../hooks/useOneAm';
 import { PhantomWalletHookType } from '../hooks/usePhantom';
 import { type WagmiWalletHookType } from '../hooks/useWagmiWallet';
 import { type YoroiWalletHookType } from '../hooks/useYoroi';
@@ -118,6 +119,17 @@ export const createCtrlWallet = (hook: CtrlWalletHookType): LaceWallet => {
     hook.signArbitraryCtrl,
     hook.connectCtrl,
     hook.disconnectCtrl,
+    hook.websiteURL,
+  );
+};
+
+export const createOneAmWallet = (hook: OneAmWalletHookType): LaceWallet => {
+  return new LaceWallet(
+    hook.isOneAmInstalled,
+    hook.walletKeysOneAm,
+    hook.signArbitraryOneAm,
+    hook.connectOneAm,
+    hook.disconnectOneAm,
     hook.websiteURL,
   );
 };

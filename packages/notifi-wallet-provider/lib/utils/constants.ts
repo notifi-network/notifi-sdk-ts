@@ -24,4 +24,5 @@ export const walletsWebsiteLink: { [key in keyof Wallets]: string } = {
   'okx-cardano': 'https://www.okx.com/web3',
   yoroi: 'https://yoroi-wallet.com/',
   ctrl: 'https://ctrl.xyz',
+  '1am': 'https://1am.xyz/',
 };

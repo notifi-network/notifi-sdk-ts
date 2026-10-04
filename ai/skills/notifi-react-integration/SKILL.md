@@ -139,7 +139,7 @@ Wallet follow-up rules:
 - after the user chooses `evm`, ask which of these wallets to support: `metamask`, `coinbase`, `rabby`, `walletconnect`, `okx`, `rainbow`, `zerion`, `binance`
 - after the user chooses `solana`, ask whether to support `phantom`
 - after the user chooses `cosmos`, ask whether to support `keplr`
-- after the user chooses `cardano`, ask which of these wallets to support: `lace`, `eternl`, `nufi`, `okx-cardano`, `yoroi`, `ctrl`
+- after the user chooses `cardano`, ask which of these wallets to support: `lace`, `eternl`, `nufi`, `okx-cardano`, `yoroi`, `ctrl`, `1am`
 - the agent MUST NOT ask about wallets before the chain group is selected by the user. This is a hard ordering constraint. Violating this order must be treated as a blocking error.
 - do not invent unsupported chain-group or wallet pairings
 - if the user asks for a chain outside this support model, explain that the dapp-example baseline does not provide a ready-made wallet-provider flow for it and ask whether they want to switch to a supported chain group or pursue a custom adapter path

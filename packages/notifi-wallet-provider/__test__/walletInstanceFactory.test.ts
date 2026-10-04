@@ -108,7 +108,7 @@ const createMockHooks = (): WalletHooks => ({
     signHardwareTransactionPhantom: mockFn(),
     websiteURL: 'https://phantom.app/',
   },
-  // Cardano wallets (6)
+  // Cardano wallets (7)
   lace: {
     isLaceInstalled: true,
     walletKeysLace: { bech32: 'addr1lace', cbor: 'lace_cbor' },
@@ -157,12 +157,20 @@ const createMockHooks = (): WalletHooks => ({
     disconnectCtrl: mockFn(),
     websiteURL: 'https://ctrl.xyz/',
   },
+  '1am': {
+    isOneAmInstalled: true,
+    walletKeysOneAm: { bech32: 'addr1oneam', cbor: 'oneam_cbor' },
+    connectOneAm: mockFn(),
+    signArbitraryOneAm: mockFn(),
+    disconnectOneAm: mockFn(),
+    websiteURL: 'https://1am.xyz/',
+  },
 });
 
 // --- Tests ---
 
 describe('walletInstanceFactory — createWallets', () => {
-  it('should create all 16 wallets', () => {
+  it('should create all 17 wallets', () => {
     const hooks = createMockHooks();
     const wallets = createWallets(hooks);
 
@@ -198,7 +206,7 @@ describe('walletInstanceFactory — createWallets', () => {
   });
 
   describe('Cardano wallets', () => {
-    it('should create all 6 Cardano wallets as LaceWallet instances', () => {
+    it('should create all 7 Cardano wallets as LaceWallet instances', () => {
       const hooks = createMockHooks();
       const wallets = createWallets(hooks);
 

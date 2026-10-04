@@ -9,6 +9,7 @@ import {
   createLaceWallet,
   createNufiWallet,
   createOkxCardanoWallet,
+  createOneAmWallet,
   createPhantomWallet,
   createYoroiWallet,
 } from './walletCreators';
@@ -60,6 +61,12 @@ export const createWallets = (hooks: WalletHooks): Wallets => {
       const hook = hooks.ctrl;
       if (hook) {
         wallets.ctrl = createCtrlWallet(hook);
+      }
+    }
+    if (walletName === '1am') {
+      const hook = hooks['1am'];
+      if (hook) {
+        wallets['1am'] = createOneAmWallet(hook);
       }
     }
   });

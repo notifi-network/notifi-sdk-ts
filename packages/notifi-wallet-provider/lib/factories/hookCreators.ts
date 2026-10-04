@@ -11,6 +11,7 @@ import {
   type OkxCardanoWalletHookType,
   useOkxCardano,
 } from '../hooks/useOkxCardano';
+import { type OneAmWalletHookType, useOneAm } from '../hooks/useOneAm';
 import { type PhantomWalletHookType, usePhantom } from '../hooks/usePhantom';
 import { useWagmiWallet } from '../hooks/useWagmiWallet';
 import { type YoroiWalletHookType, useYoroi } from '../hooks/useYoroi';
@@ -140,6 +141,11 @@ export const useSpecialWalletHooks = (params: WalletHookParams) => {
       selectWallet,
     ) as YoroiWalletHookType,
     ctrl: useCtrl(setIsLoading, throwError, selectWallet) as CtrlWalletHookType,
+    '1am': useOneAm(
+      setIsLoading,
+      throwError,
+      selectWallet,
+    ) as OneAmWalletHookType,
   };
 };
 

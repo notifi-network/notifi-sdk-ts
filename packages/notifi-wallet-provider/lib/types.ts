@@ -151,4 +151,5 @@ export type Wallets = {
   'okx-cardano': LaceWallet;
   yoroi: LaceWallet;
   ctrl: LaceWallet;
+  '1am': LaceWallet;
 };

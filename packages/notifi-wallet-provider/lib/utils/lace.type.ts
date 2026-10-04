@@ -71,6 +71,7 @@ export interface CardanoProvider {
   okxwallet?: CIP30WalletInfo;
   yoroi?: CIP30WalletInfo;
   ctrl?: CIP30WalletInfo;
+  '1am'?: CIP30WalletInfo;
   [walletName: string]: CIP30WalletInfo | any;
 }
 
