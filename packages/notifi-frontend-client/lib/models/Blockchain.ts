@@ -80,6 +80,7 @@ const _ALL_BLOCKCHAINS = [
   'OFF_CHAIN',
   'NEAR',
   'INJECTIVE',
+  'MIDNIGHT',
   'UNSPECIFIED',
 ] as const;
 
